@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OpenMapFrame.java,v $
 // $RCSfile: OpenMapFrame.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/23 20:47:46 $
-// $Author: wjeuerle $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -75,7 +75,7 @@ public class OpenMapFrame extends JFrame
      * Create the frame with "OpenMap <version>" in the title.
      */
     public OpenMapFrame() {
-	this(Environment.get(Environment.Title));
+        this(Environment.get(Environment.Title));
     }
 
     /**
@@ -85,7 +85,7 @@ public class OpenMapFrame extends JFrame
      * @param title The Frame title.
      */
     public OpenMapFrame(String title) {
-	super(title);
+        super(title);
     }
 
     /**
@@ -94,31 +94,31 @@ public class OpenMapFrame extends JFrame
      * make adjustments.
      */
     protected void setPosition() {
-	// get starting width and height
-	pack();
-	int w = getWidth();
-	int h = getHeight();
+        // get starting width and height
+        pack();
+        int w = getWidth();
+        int h = getHeight();
 
-	Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-	Debug.message("basic","Screen dimensions are " + d);
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        Debug.message("basic","Screen dimensions are " + d);
 
-	if (w > d.width) w = d.width - d.width/10;
-	if (h > d.height) h = d.height - d.height/10;
+        if (w > d.width) w = d.width - d.width/10;
+        if (h > d.height) h = d.height - d.height/10;
 
-	int x = Environment.getInteger(xProperty, -1);
-	int y = Environment.getInteger(yProperty, -1);
-	if (x < 0)
-	    x = d.width/2 - w/2;
-	if (y < 0)
-	    y = d.height/2 -h/2;
-	
-	if (Debug.debugging("basic")) {
-	    Debug.output("Setting Frame X and Y from properties to " + x + " " + y);
-	}
+        int x = Environment.getInteger(xProperty, -1);
+        int y = Environment.getInteger(yProperty, -1);
+        if (x < 0)
+            x = d.width/2 - w/2;
+        if (y < 0)
+            y = d.height/2 -h/2;
+        
+        if (Debug.debugging("basic")) {
+            Debug.output("Setting Frame X and Y from properties to " + x + " " + y);
+        }
 
-	// compose the frame, but don't show it here
-	// contentPane.setBounds(x, y, w, h);
-	setBounds(x,y,w,h);
+        // compose the frame, but don't show it here
+        // contentPane.setBounds(x, y, w, h);
+        setBounds(x,y,w,h);
     }
 
     /**
@@ -134,10 +134,10 @@ public class OpenMapFrame extends JFrame
      * @param it Iterator to use to go through the BeanContext objects.  
      */
     public void findAndInit(Iterator it) {
-	Object someObj;
-	while (it.hasNext()) {
-	    findAndInit(it.next());
-	}
+        Object someObj;
+        while (it.hasNext()) {
+            findAndInit(it.next());
+        }
     }
 
     /**
@@ -145,29 +145,29 @@ public class OpenMapFrame extends JFrame
      */
     public void findAndInit(Object someObj) {
 
-	if (someObj instanceof MapPanel && someObj instanceof Container) {
-	    Debug.message("basic", "OpenMapFrame: Found a MapPanel");
-	    getContentPane().add((Container)someObj);
+        if (someObj instanceof MapPanel && someObj instanceof Container) {
+            Debug.message("basic", "OpenMapFrame: Found a MapPanel");
+            getContentPane().add((Container)someObj);
 
-	    JMenuBar jmb = ((MapPanel)someObj).getMapMenuBar();
-	    if (jmb != null) {
-		Debug.message("basic", "OpenMapFrame: Got MenuBar from MapPanel");
-		getRootPane().setJMenuBar(jmb);
-	    }
+            JMenuBar jmb = ((MapPanel)someObj).getMapMenuBar();
+            if (jmb != null) {
+                Debug.message("basic", "OpenMapFrame: Got MenuBar from MapPanel");
+                getRootPane().setJMenuBar(jmb);
+            }
 
-	    setPosition();
-	    invalidate();
-	    show();
-	}
+            setPosition();
+            invalidate();
+            show();
+        }
 
-	// We shouldn't find this if we've already defined one 
-	// in the MapPanel, but we have this for backward
-	// compatibility.
-	if (someObj instanceof JMenuBar) {
-	    Debug.message("basic", "OpenMapFrame: Found a MenuBar");
-	    getRootPane().setJMenuBar((JMenuBar)someObj);
-	    invalidate();
-	}
+        // We shouldn't find this if we've already defined one 
+        // in the MapPanel, but we have this for backward
+        // compatibility.
+        if (someObj instanceof JMenuBar) {
+            Debug.message("basic", "OpenMapFrame: Found a MenuBar");
+            getRootPane().setJMenuBar((JMenuBar)someObj);
+            invalidate();
+        }
     }
     
     /**
@@ -178,7 +178,7 @@ public class OpenMapFrame extends JFrame
      * new objects.  
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
-	findAndInit(bcme.iterator());      
+        findAndInit(bcme.iterator());      
     }
 
     /**
@@ -191,38 +191,38 @@ public class OpenMapFrame extends JFrame
      * through the removed objects.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-	Object someObj;
-	Iterator it = bcme.iterator();
-	while (it.hasNext()) {
-	    findAndUndo(it.next());
-	}
+        Object someObj;
+        Iterator it = bcme.iterator();
+        while (it.hasNext()) {
+            findAndUndo(it.next());
+        }
     }
 
     /**
      * Called when an object is removed from the MapHandler.
      */
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof MapPanel && someObj instanceof Container) {
-	    Debug.message("basic", "OpenMapFrame: MapBean is being removed from frame");
-	    getContentPane().remove((Container)someObj);
+        if (someObj instanceof MapPanel && someObj instanceof Container) {
+            Debug.message("basic", "OpenMapFrame: MapBean is being removed from frame");
+            getContentPane().remove((Container)someObj);
 
-	    if (getJMenuBar() == ((MapPanel)someObj).getMapMenuBar()) {
-		Debug.message("basic", "OpenMapFrame: MenuPanel's MenuBar is being removed");
-		setJMenuBar(null);
-	    }
-	}
-	    
-	if (someObj instanceof JMenuBar) {
-	    if (getJMenuBar() == (JMenuBar) someObj) {
-		Debug.message("basic", "OpenMapFrame: MenuPanel is being removed");
-		setJMenuBar(null);
-	    }
-	}
+            if (getJMenuBar() == ((MapPanel)someObj).getMapMenuBar()) {
+                Debug.message("basic", "OpenMapFrame: MenuPanel's MenuBar is being removed");
+                setJMenuBar(null);
+            }
+        }
+            
+        if (someObj instanceof JMenuBar) {
+            if (getJMenuBar() == (JMenuBar) someObj) {
+                Debug.message("basic", "OpenMapFrame: MenuPanel is being removed");
+                setJMenuBar(null);
+            }
+        }
     }
 
     /** Method for BeanContextChild interface. */
-    public BeanContext getBeanContext()	{
-	return beanContextChildSupport.getBeanContext();
+    public BeanContext getBeanContext() {
+        return beanContextChildSupport.getBeanContext();
     }
     
     /** Method for BeanContextChild interface. 
@@ -230,26 +230,26 @@ public class OpenMapFrame extends JFrame
      * @param in_bc The context to which this object is being added
      */
     public void setBeanContext(BeanContext in_bc) 
-	throws PropertyVetoException {
-	if (in_bc != null) {
-	    in_bc.addBeanContextMembershipListener(this);
-	    beanContextChildSupport.setBeanContext(in_bc);
-	    findAndInit(in_bc.iterator());
-	}
+        throws PropertyVetoException {
+        if (in_bc != null) {
+            in_bc.addBeanContextMembershipListener(this);
+            beanContextChildSupport.setBeanContext(in_bc);
+            findAndInit(in_bc.iterator());
+        }
     }
     
     /** Method for BeanContextChild interface. */
     public void addVetoableChangeListener(String propertyName,
-					  VetoableChangeListener in_vcl) {
-	beanContextChildSupport.addVetoableChangeListener(propertyName,
-							  in_vcl);
+                                          VetoableChangeListener in_vcl) {
+        beanContextChildSupport.addVetoableChangeListener(propertyName,
+                                                          in_vcl);
     }
   
     /** Method for BeanContextChild interface. */
     public void removeVetoableChangeListener(String propertyName, 
-					     VetoableChangeListener in_vcl) {
-	beanContextChildSupport.removeVetoableChangeListener(propertyName,
-							     in_vcl);
+                                             VetoableChangeListener in_vcl) {
+        beanContextChildSupport.removeVetoableChangeListener(propertyName,
+                                                             in_vcl);
     }
     
     // Implementation of PropertyConsumer Interface
@@ -298,16 +298,16 @@ public class OpenMapFrame extends JFrame
      * PropertyConsumer.
      */
     public Properties getProperties(Properties getList) {
-	if (getList == null) {
-	    getList = new Properties();
-	}
+        if (getList == null) {
+            getList = new Properties();
+        }
 
-	getList.setProperty(xProperty,""+getBounds().x);
-	getList.setProperty(yProperty,""+getBounds().y);
-	getList.setProperty(Environment.Width, Integer.toString(getWidth()));
-	getList.setProperty(Environment.Height, Integer.toString(getHeight()));
+        getList.setProperty(xProperty,""+getBounds().x);
+        getList.setProperty(yProperty,""+getBounds().y);
+        getList.setProperty(Environment.Width, Integer.toString(getWidth()));
+        getList.setProperty(Environment.Height, Integer.toString(getHeight()));
 
-	return getList;
+        return getList;
     }
 
     /**
@@ -328,12 +328,12 @@ public class OpenMapFrame extends JFrame
      * PropertyConsumer.  
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
-	list.setProperty("x","Starting X coordinate of window");
-	list.setProperty("y","Starting Y coordinate of window");
-	return list;
+        if (list == null) {
+            list = new Properties();
+        }
+        list.setProperty("x","Starting X coordinate of window");
+        list.setProperty("y","Starting Y coordinate of window");
+        return list;
     }
 
     /**
@@ -352,6 +352,6 @@ public class OpenMapFrame extends JFrame
      * @return the property prefix for the frame
      */
     public String getPropertyPrefix() {
-	return Environment.OpenMapPrefix;
+        return Environment.OpenMapPrefix;
     }
 }

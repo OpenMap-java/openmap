@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeFunctionID.java,v $
 // $RCSfile: CodeFunctionID.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/18 23:37:49 $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,75 +41,75 @@ import com.bbn.openmap.util.Debug;
 public class CodeFunctionID extends CodePosition {
 
     public CodeFunctionID() {
-	// Code function IDs are not kept around, they are just used
-	// to create the SymbolPart Structure.  The first three
-	// arguments in the super call are meaningless.
-	this(5);
+        // Code function IDs are not kept around, they are just used
+        // to create the SymbolPart Structure.  The first three
+        // arguments in the super call are meaningless.
+        this(5);
     }
 
     public CodeFunctionID(int pos) {
-	// Code function IDs are not kept around, they are just used
-	// to create the SymbolPart Structure.  The first three
-	// arguments in the super call are meaningless.
-	super("Function ID", pos, 10);
+        // Code function IDs are not kept around, they are just used
+        // to create the SymbolPart Structure.  The first three
+        // arguments in the super call are meaningless.
+        super("Function ID", pos, 10);
     }
 
     public void parseHierarchy(String hCode, Properties props, SymbolPart parent) {
-	
-	List parentList = null;
-	int subLevelNumber = 1;
+        
+        List parentList = null;
+        int subLevelNumber = 1;
 
-	int pos = getStartIndex() + parent.positionShift;
-	if (pos < 4) pos = 4;
+        int pos = getStartIndex() + parent.positionShift;
+        if (pos < 4) pos = 4;
 
-	if (pos == 10) {
-	    return;
-	}
+        if (pos == 10) {
+            return;
+        }
 
-	// startIndex is one less that originally specified, need to
-	// add an extra 1 to the new position of counteract that.
-	CodeFunctionID cp = new CodeFunctionID(pos + 2);  
+        // startIndex is one less that originally specified, need to
+        // add an extra 1 to the new position of counteract that.
+        CodeFunctionID cp = new CodeFunctionID(pos + 2);  
 
-	while (subLevelNumber > 0) {
-	    String hCode2 = hCode + "." + subLevelNumber;
-	    String entry = props.getProperty(hCode2);
-	    if (entry != null) {
+        while (subLevelNumber > 0) {
+            String hCode2 = hCode + "." + subLevelNumber;
+            String entry = props.getProperty(hCode2);
+            if (entry != null) {
 
-		if (DEBUG) {
-		    Debug.output("CodeFunctionID.parse: reading " + 
-				 hCode2 + " as " + entry);
-		}
+                if (DEBUG) {
+                    Debug.output("CodeFunctionID.parse: reading " + 
+                                 hCode2 + " as " + entry);
+                }
 
-		SymbolPart sp = new SymbolPart(cp, entry, props, parent);
+                SymbolPart sp = new SymbolPart(cp, entry, props, parent);
 
-		if (parentList == null) {
-		    parentList = parent.getSubs();
-		    if (parentList == null) {
-			parentList = new ArrayList();
-			parent.setSubs(parentList);
-		    }
-		}
+                if (parentList == null) {
+                    parentList = parent.getSubs();
+                    if (parentList == null) {
+                        parentList = new ArrayList();
+                        parent.setSubs(parentList);
+                    }
+                }
 
-		if (DEBUG) {
-		    Debug.output("CodeFunctionID.parse: adding " + 
-				 sp.getPrettyName() + 
-				 " to " + parent.getPrettyName());
-		}
+                if (DEBUG) {
+                    Debug.output("CodeFunctionID.parse: adding " + 
+                                 sp.getPrettyName() + 
+                                 " to " + parent.getPrettyName());
+                }
 
-		parentList.add(sp);
+                parentList.add(sp);
 
-		if (DEBUG) {
-		    Debug.output("CodePosition.parse: looking for children of " + 
-			     sp.getPrettyName());
-		}
+                if (DEBUG) {
+                    Debug.output("CodePosition.parse: looking for children of " + 
+                             sp.getPrettyName());
+                }
 
-		cp.parseHierarchy(hCode2, props, sp);
-		subLevelNumber++;
+                cp.parseHierarchy(hCode2, props, sp);
+                subLevelNumber++;
 
-	    } else {
-		subLevelNumber = -1;
-	    }
-	}
+            } else {
+                subLevelNumber = -1;
+            }
+        }
     }
 
 }

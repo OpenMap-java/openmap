@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationMenuItem.java,v $
 // $RCSfile: LocationMenuItem.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,8 +53,8 @@ public class LocationMenuItem extends JMenuItem implements ActionListener {
      * @param text the text for the item
      */
     public LocationMenuItem(String text) {
-	super(text);
-	this.addActionListener(this);
+        super(text);
+        this.addActionListener(this);
     }
     
     /**
@@ -63,47 +63,47 @@ public class LocationMenuItem extends JMenuItem implements ActionListener {
      * @param mnemonic the mnemonic key for the item
      */
     public LocationMenuItem(String text, int mnemonic) {
-	super(text, mnemonic);
-	this.addActionListener(this);
+        super(text, mnemonic);
+        this.addActionListener(this);
     }
 
     public LocationMenuItem(String text, LocationPopupMenu aCLP, 
-			    LocationLayer aLayer) {
-	this(text);
-	setLocationPopupMenu(aCLP);
-	setLayer(aLayer);
+                            LocationLayer aLayer) {
+        this(text);
+        setLocationPopupMenu(aCLP);
+        setLayer(aLayer);
     }
 
     public void setLocationPopupMenu(LocationPopupMenu aCLP){
-	clp = aCLP;
+        clp = aCLP;
     }
 
     public LocationPopupMenu getLocationPopupMenu(){
-	return clp;
+        return clp;
     }
 
     public void setLayer(LocationLayer aLayer){
-	layer = aLayer;
+        layer = aLayer;
     }
 
     public LocationLayer getLayer(){
-	return layer;
+        return layer;
     }
 
     public void actionPerformed(java.awt.event.ActionEvent e) {
-// 	    Debug.output("Action: " + e);
-	String command = e.getActionCommand();
-	    
-	if (layer != null && e.getSource().equals(this)){
-	    if (command == LocationLayer.recenter){
-		MouseEvent evt = clp.getEvent();
-		LatLonPoint llp = layer.getProjection().inverse(evt.getX(), 
-								evt.getY());
-		clp.getMap().setCenter(llp.getLatitude(), llp.getLongitude());
-	    }
-	    else if (command.equals(LocationHandler.showdetails)){
-		clp.getLoc().showDetails(layer);
-	    }
-	}
+//          Debug.output("Action: " + e);
+        String command = e.getActionCommand();
+            
+        if (layer != null && e.getSource().equals(this)){
+            if (command == LocationLayer.recenter){
+                MouseEvent evt = clp.getEvent();
+                LatLonPoint llp = layer.getProjection().inverse(evt.getX(), 
+                                                                evt.getY());
+                clp.getMap().setCenter(llp.getLatitude(), llp.getLongitude());
+            }
+            else if (command.equals(LocationHandler.showdetails)){
+                clp.getLoc().showDetails(layer);
+            }
+        }
     }
 }

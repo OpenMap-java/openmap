@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/AbstractImageFormatter.java,v $
 // $RCSfile: AbstractImageFormatter.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 20:47:47 $
-// $Author: wjeuerle $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:08 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -88,7 +88,7 @@ public abstract class AbstractImageFormatter
      * @return byte[] representing an image of the map in it's current state.
      */
     public byte[] getImageFromMapBean(MapBean map) {
-	return getImageFromMapBean(map, -1, -1, false);
+        return getImageFromMapBean(map, -1, -1, false);
     }
 
     /**
@@ -99,7 +99,7 @@ public abstract class AbstractImageFormatter
      * @return byte[] representing an image of the map in it's current state.
      */
     public byte[] getImageFromMapBean(MapBean map, int width, int height) {
-	return getImageFromMapBean(map, width, height, true);
+        return getImageFromMapBean(map, width, height, true);
     }
 
     /**
@@ -111,87 +111,87 @@ public abstract class AbstractImageFormatter
      * @return byte[] representing an image of the map in it's current state.
      */
     public byte[] getImageFromMapBean(MapBean map, int width, int height, 
-				      boolean scaleImage) {
-	if (map == null) {
-	    return new byte[0];
-	}
+                                      boolean scaleImage) {
+        if (map == null) {
+            return new byte[0];
+        }
 
-	Proj proj = (Proj)map.getProjection();
+        Proj proj = (Proj)map.getProjection();
 
-	boolean needToScale = (width != proj.getWidth() || 
-			       height != proj.getHeight());
+        boolean needToScale = (width != proj.getWidth() || 
+                               height != proj.getHeight());
 
 
-	if (Debug.debugging("formatter")) {
-	    Debug.output("AIF: called with w:" + width + ", h:" + height + 
-			 ", need to scale (" + needToScale + ")" +
-			 " and scaleImage (" + scaleImage + ")");
-	}
+        if (Debug.debugging("formatter")) {
+            Debug.output("AIF: called with w:" + width + ", h:" + height + 
+                         ", need to scale (" + needToScale + ")" +
+                         " and scaleImage (" + scaleImage + ")");
+        }
 
-	if (width == -1) width = proj.getWidth();
-	if (height == -1) height = proj.getHeight();
+        if (width == -1) width = proj.getWidth();
+        if (height == -1) height = proj.getHeight();
 
-	Graphics graphics = getGraphics(width, height);
+        Graphics graphics = getGraphics(width, height);
 
-	if (!needToScale) {
-	    if (Debug.debugging("formatter")) {
-		Debug.output("AIF: don't need to scale, painting normally.");
-	    }
-	    // This way just paints what the MapBean is displaying.
-	    map.paintAll(graphics);
-	} else {
-	    // One problem with this approach is that it will
-	    // use the ProjectionPainter interface on the layers.  So,
-	    // you may not get the same image that is on the map.  All
-	    // layers on the map will get painted in the image - so if
-	    // a layer hasn't painted itself on the map window, you
-	    // will see it in the image.
+        if (!needToScale) {
+            if (Debug.debugging("formatter")) {
+                Debug.output("AIF: don't need to scale, painting normally.");
+            }
+            // This way just paints what the MapBean is displaying.
+            map.paintAll(graphics);
+        } else {
+            // One problem with this approach is that it will
+            // use the ProjectionPainter interface on the layers.  So,
+            // you may not get the same image that is on the map.  All
+            // layers on the map will get painted in the image - so if
+            // a layer hasn't painted itself on the map window, you
+            // will see it in the image.
 
-	    // This lets us know what the layers are
-	    map.addPropertyChangeListener(this);
+            // This lets us know what the layers are
+            map.addPropertyChangeListener(this);
 
-// 	    Layers should be set...
-	    com.bbn.openmap.LatLonPoint cp = 
-		new com.bbn.openmap.LatLonPoint(map.getCenter());
+//          Layers should be set...
+            com.bbn.openmap.LatLonPoint cp = 
+                new com.bbn.openmap.LatLonPoint(map.getCenter());
 
-	    double scaleMod = 1f;// scale factor for image scale
-	    // If we need to scale the image, 
-	    // figure out the scale factor.
-	    if (scaleImage) {
-		if (Debug.debugging("formatter")) {
-		    Debug.output("AIF: scaling image to w:" + width + 
-				 ", h:" + height);
-		}
-		double area1 = (double) proj.getHeight() * (double) proj.getWidth();
-		double area2 = (double) height*(double) width;
-		scaleMod = Math.sqrt(area1/area2);
-	    }
+            double scaleMod = 1f;// scale factor for image scale
+            // If we need to scale the image, 
+            // figure out the scale factor.
+            if (scaleImage) {
+                if (Debug.debugging("formatter")) {
+                    Debug.output("AIF: scaling image to w:" + width + 
+                                 ", h:" + height);
+                }
+                double area1 = (double) proj.getHeight() * (double) proj.getWidth();
+                double area2 = (double) height*(double) width;
+                scaleMod = Math.sqrt(area1/area2);
+            }
 
-	    Proj tp = (Proj) com.bbn.openmap.proj.ProjectionFactory.makeProjection(
-		map.getProjectionType(), cp.getLatitude(), cp.getLongitude(),
-		map.getScale()*(float)scaleMod,	width,height);
+            Proj tp = (Proj) com.bbn.openmap.proj.ProjectionFactory.makeProjection(
+                map.getProjectionType(), cp.getLatitude(), cp.getLongitude(),
+                map.getScale()*(float)scaleMod, width,height);
 
-	    tp.drawBackground((Graphics2D)graphics, map.getBckgrnd());
+            tp.drawBackground((Graphics2D)graphics, map.getBckgrnd());
 
-	    if (layers != null) {
-		for (int i = layers.length - 1; i >= 0; i--) {
-		    layers[i].renderDataForProjection(tp, graphics);
-		    if (Debug.debugging("formatter")) {
-			Debug.output("AbstractImageFormatter: rendering " + 
-				     layers[i].getName());
-		    }
-		    layers[i].setProjection(proj);
-		}
+            if (layers != null) {
+                for (int i = layers.length - 1; i >= 0; i--) {
+                    layers[i].renderDataForProjection(tp, graphics);
+                    if (Debug.debugging("formatter")) {
+                        Debug.output("AbstractImageFormatter: rendering " + 
+                                     layers[i].getName());
+                    }
+                    layers[i].setProjection(proj);
+                }
 
-	    } else {
-		Debug.output("AbstractImageFormatter can't get layers from map!");
-	    }
+            } else {
+                Debug.output("AbstractImageFormatter can't get layers from map!");
+            }
 
-	    map.removePropertyChangeListener(this);
-	    layers = null;
-	}
+            map.removePropertyChangeListener(this);
+            layers = null;
+        }
 
-	return getImageBytes();
+        return getImageBytes();
     }
 
     /**
@@ -209,7 +209,7 @@ public abstract class AbstractImageFormatter
      * @see java.awt.image.BufferedImage 
      */
     public Graphics getGraphics(int width, int height) {
-	return getGraphics(width, height, BufferedImage.TYPE_INT_RGB);
+        return getGraphics(width, height, BufferedImage.TYPE_INT_RGB);
     }
 
     /** 
@@ -228,13 +228,13 @@ public abstract class AbstractImageFormatter
      * @see java.awt.image.BufferedImage 
      */
     public Graphics getGraphics(int width, int height, int imageType) {
-	bufferedImage = new BufferedImage(width, height, imageType);
+        bufferedImage = new BufferedImage(width, height, imageType);
 
-	GraphicsEnvironment ge = 
-	    GraphicsEnvironment.getLocalGraphicsEnvironment();
-	Graphics g = ge.createGraphics(bufferedImage);
-	g.setClip(0, 0, width, height);
-	return g;
+        GraphicsEnvironment ge = 
+            GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Graphics g = ge.createGraphics(bufferedImage);
+        g.setClip(0, 0, width, height);
+        return g;
     }
 
     /**
@@ -242,7 +242,7 @@ public abstract class AbstractImageFormatter
      * @return the BufferedImage.
      */
     public BufferedImage getBufferedImage() {
-	return bufferedImage;
+        return bufferedImage;
     }
 
     /**
@@ -250,7 +250,7 @@ public abstract class AbstractImageFormatter
      * @param bi the BufferedImage to use in this formatter.
      */
     public void setBufferedImage(BufferedImage bi) {
-	bufferedImage = bi;
+        bufferedImage = bi;
     }
 
     /**
@@ -261,40 +261,40 @@ public abstract class AbstractImageFormatter
      */
     public BufferedImage getScaledBufferedImage(int scaledWidth, int scaledHeight) {
 
-	if (bufferedImage == null) {
-	    return null;
-	}
+        if (bufferedImage == null) {
+            return null;
+        }
 
-	if (Debug.debugging("formatter")) {
-	    Debug.output("Formatter: scaling image to : " + 
-			 scaledWidth + ", " + scaledHeight);
-	}
-	
-	java.awt.Image image = bufferedImage.getScaledInstance(scaledWidth, scaledHeight,
-							       java.awt.Image.SCALE_SMOOTH);
-	
-	if (Debug.debugging("formatter")) {
-	    Debug.output("Formatter: creating scaled image...");
-	}
-	
-	try {
-	    
-	    BufferedImage buffi = 
-		BufferedImageHelper.getBufferedImage(image, 0, 0, -1, -1);
+        if (Debug.debugging("formatter")) {
+            Debug.output("Formatter: scaling image to : " + 
+                         scaledWidth + ", " + scaledHeight);
+        }
+        
+        java.awt.Image image = bufferedImage.getScaledInstance(scaledWidth, scaledHeight,
+                                                               java.awt.Image.SCALE_SMOOTH);
+        
+        if (Debug.debugging("formatter")) {
+            Debug.output("Formatter: creating scaled image...");
+        }
+        
+        try {
+            
+            BufferedImage buffi = 
+                BufferedImageHelper.getBufferedImage(image, 0, 0, -1, -1);
 
-	    // Do this here, in case something bad happens in the
-	    // buffered image creation, so at least the original image
-	    // is retained.
-	    bufferedImage = buffi;
-	} catch (InterruptedException ie) {
-	    Debug.error("Formatter: Something bad happened during scaling! \n"+ ie);
-	}
-	
-	if (Debug.debugging("formatter")) {
-	    Debug.output("Formatter: image successfully scaled");
-	}
+            // Do this here, in case something bad happens in the
+            // buffered image creation, so at least the original image
+            // is retained.
+            bufferedImage = buffi;
+        } catch (InterruptedException ie) {
+            Debug.error("Formatter: Something bad happened during scaling! \n"+ ie);
+        }
+        
+        if (Debug.debugging("formatter")) {
+            Debug.output("Formatter: image successfully scaled");
+        }
 
-	return bufferedImage;
+        return bufferedImage;
     }
 
     /**
@@ -302,13 +302,13 @@ public abstract class AbstractImageFormatter
      * @return byte[] representing the image.
      */
     public byte[] getImageBytes() {
-	BufferedImage bi = getBufferedImage();
-	if (bi == null) {
-	    return new byte[0];
-	} else {
-	    Debug.message("formatter", "Formatter: creating formatted image bytes...");
-	    return formatImage(bi);
-	}
+        BufferedImage bi = getBufferedImage();
+        if (bi == null) {
+            return new byte[0];
+        } else {
+            Debug.message("formatter", "Formatter: creating formatted image bytes...");
+            return formatImage(bi);
+        }
     }
 
     /**
@@ -319,40 +319,40 @@ public abstract class AbstractImageFormatter
      * @return byte[] representing the image.  
      */
     public byte[] getScaledImageBytes(int scaledWidth, int scaledHeight) {
-	BufferedImage bi = getScaledBufferedImage(scaledWidth, scaledHeight);
-	if (bi == null) {
-	    return new byte[0];
-	} else {
-	    Debug.message("formatter", "Formatter: creating formatted image bytes...");
-	    return formatImage(bi);
-	}
+        BufferedImage bi = getScaledBufferedImage(scaledWidth, scaledHeight);
+        if (bi == null) {
+            return new byte[0];
+        } else {
+            Debug.message("formatter", "Formatter: creating formatted image bytes...");
+            return formatImage(bi);
+        }
     }
 
     /**
      * Set the layers and image type in the properties.
      */
     public void setProperties(Properties props) {
-	setProperties((String) null, props);
+        setProperties((String) null, props);
     }
 
     /**
      * Part of the PropertyConsumer interface.  Doesn't do anything yet.
      */
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
-	return props;
+        if (props == null) {
+            props = new Properties();
+        }
+        return props;
     }
 
     /**
      * Part of the PropertyConsumer interface.
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
-	return list;
+        if (list == null) {
+            list = new Properties();
+        }
+        return list;
 
     }
 
@@ -362,7 +362,7 @@ public abstract class AbstractImageFormatter
      * setProperties method.
      */
     public void setPropertyPrefix(String prefix) {
-	propertiesPrefix = prefix;
+        propertiesPrefix = prefix;
     }
 
     /**
@@ -371,7 +371,7 @@ public abstract class AbstractImageFormatter
      * setProperties method.
      */
     public String getPropertyPrefix() {
-	return propertiesPrefix;
+        return propertiesPrefix;
     }
 
     /**
@@ -388,9 +388,9 @@ public abstract class AbstractImageFormatter
      * a PropertyChangeListener.
      */
     public void propertyChange(PropertyChangeEvent pce) {
-	String propName = pce.getPropertyName();
-	if (propName == MapBean.LayersProperty) {
-	    layers = (Layer[])pce.getNewValue();
-	}
+        String propName = pce.getPropertyName();
+        if (propName == MapBean.LayersProperty) {
+            layers = (Layer[])pce.getNewValue();
+        }
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/html/StringElement.java,v $
 // $RCSfile: StringElement.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,7 +32,7 @@ public class StringElement implements Element {
     /** Construct a new StringElement with a string literal
      * @param s the string to use */
     public StringElement (String s) {
-	this.s = s;
+        this.s = s;
     }
 
     /** convert representation to html and write it out
@@ -40,7 +40,7 @@ public class StringElement implements Element {
      * @exception java.io.IOException an IO error occurred accessing out
      */
     public void generate (java.io.Writer out) throws java.io.IOException {
-	out.write(s);
+        out.write(s);
     }
 
 }

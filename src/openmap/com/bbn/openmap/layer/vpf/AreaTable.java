@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/AreaTable.java,v $
-// $Revision: 1.2 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
+// $Revision: 1.3 $ $Date: 2004/01/26 18:18:11 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -49,7 +49,7 @@ public class AreaTable extends PrimitiveTable {
 
     /** TilingAdapters used to retrieve edge table information */
     final private TilingAdapter edgeRightFaceAdapter, edgeLeftFaceAdapter,
-	edgeRightEdgeAdapter, edgeLeftEdgeAdapter;
+        edgeRightEdgeAdapter, edgeLeftEdgeAdapter;
 
     /**
      * Construct an AreaTable for a tile.
@@ -59,36 +59,36 @@ public class AreaTable extends PrimitiveTable {
      * @exception FormatException if something goes wrong reading the area
      */
     public AreaTable(CoverageTable cov, EdgeTable edg,
-		     TileDirectory tile) throws FormatException{
-	super(cov, tile, Constants.faceTableName);
+                     TileDirectory tile) throws FormatException{
+        super(cov, tile, Constants.faceTableName);
 
-	ringIDColumn = whatColumn(Constants.FAC_RINGPTR);
-	privateEdgeTable = (edg == null);
-	edges = privateEdgeTable ? new EdgeTable(cov, tile) : edg;
+        ringIDColumn = whatColumn(Constants.FAC_RINGPTR);
+        privateEdgeTable = (edg == null);
+        edges = privateEdgeTable ? new EdgeTable(cov, tile) : edg;
 
-	edgeRightFaceAdapter = edges.getRightFaceTilingAdapter();
-	edgeLeftFaceAdapter = edges.getLeftFaceTilingAdapter();
-	edgeRightEdgeAdapter = edges.getRightEdgeTilingAdapter();
-	edgeLeftEdgeAdapter = edges.getLeftEdgeTilingAdapter();
+        edgeRightFaceAdapter = edges.getRightFaceTilingAdapter();
+        edgeLeftFaceAdapter = edges.getLeftFaceTilingAdapter();
+        edgeRightEdgeAdapter = edges.getRightEdgeTilingAdapter();
+        edgeLeftEdgeAdapter = edges.getLeftEdgeTilingAdapter();
 
-	if (edges.topologyLevel() != 3) {
-	    throw new FormatException("AreaTable: need level 3 topology: "
-				      + edges.topologyLevel());
-	}
+        if (edges.topologyLevel() != 3) {
+            throw new FormatException("AreaTable: need level 3 topology: "
+                                      + edges.topologyLevel());
+        }
 
-	rings = new DcwRecordFile(cov.getDataPath() + tile.getPath() +
-				  Constants.ringTableName +
-				  (cov.appendDot ? "." : ""));
+        rings = new DcwRecordFile(cov.getDataPath() + tile.getPath() +
+                                  Constants.ringTableName +
+                                  (cov.appendDot ? "." : ""));
 
-	if ((ringStartColumn = rings.whatColumn(Constants.RNG_STARTEDGE)) == -1) {
-	    throw new FormatException("ring has no start edge: "
-				      + rings.filename);
-	}
+        if ((ringStartColumn = rings.whatColumn(Constants.RNG_STARTEDGE)) == -1) {
+            throw new FormatException("ring has no start edge: "
+                                      + rings.filename);
+        }
 
-	if ((faceIDColumn = rings.whatColumn(Constants.RNG_FACEID)) == -1) {
-	    throw new FormatException("ring has no face_id: "
-				      + rings.filename);
-	}
+        if ((faceIDColumn = rings.whatColumn(Constants.RNG_FACEID)) == -1) {
+            throw new FormatException("ring has no face_id: "
+                                      + rings.filename);
+        }
     }
 
     /**
@@ -98,10 +98,10 @@ public class AreaTable extends PrimitiveTable {
      */
     public void close() {
         if (privateEdgeTable) {
-	    edges.close();
-	}
-	rings.close();
-	super.close();
+            edges.close();
+        }
+        rings.close();
+        super.close();
     }
 
     /**
@@ -117,65 +117,65 @@ public class AreaTable extends PrimitiveTable {
     public int computeEdgePoints(List facevec, List allLLPoints)
         throws FormatException {
         int ring_ptr = ((Number)facevec.get(ringIDColumn)).intValue();
-	List ring1 = new ArrayList(rings.getColumnCount());
+        List ring1 = new ArrayList(rings.getColumnCount());
         rings.getRow(ring1, ring_ptr);
-	int fac_id = ((Number)ring1.get(faceIDColumn)).intValue();
-	
-	int startedgeid =((Number)ring1.get(ringStartColumn)).intValue();
-	if (startedgeid <= 0) {
-	    return 0;
-	}
-	int nextedgeid = startedgeid;
-	boolean firsttime = true;
-	allLLPoints.clear();
-	int polySize = 0;
-	int prev_node = -1;
-	final List edge = new ArrayList(edges.getColumnCount());
+        int fac_id = ((Number)ring1.get(faceIDColumn)).intValue();
+        
+        int startedgeid =((Number)ring1.get(ringStartColumn)).intValue();
+        if (startedgeid <= 0) {
+            return 0;
+        }
+        int nextedgeid = startedgeid;
+        boolean firsttime = true;
+        allLLPoints.clear();
+        int polySize = 0;
+        int prev_node = -1;
+        final List edge = new ArrayList(edges.getColumnCount());
 
-	do {
-	    edges.getRow(edge, nextedgeid);
-	    int start_node = edges.getStartNode(edge);
-	    int end_node = edges.getEndNode(edge);
-	    int rht_face = edgeRightFaceAdapter.getPrimId(edge);
-	    int lft_face = edgeLeftFaceAdapter.getPrimId(edge);
-	    int right_edge = edgeRightEdgeAdapter.getPrimId(edge);
-	    int left_edge = edgeLeftEdgeAdapter.getPrimId(edge);
-	    if (firsttime) {
-	        prev_node = start_node;
-		firsttime = false;
-	    }
-	  
-	    //Debug.message("dcwSpecialist",
-	    //              "edge: " + nextedgeid + " start->end: "
-	    //              + start_node + "->" + end_node);
-	    CoordFloatString cfs = edges.getCoordinates(edge);
-	    
-	    if ((fac_id == rht_face) && (fac_id == lft_face)) {
-	        if (start_node == prev_node) {
-		    nextedgeid = right_edge;
-		    prev_node = end_node;
-		} else if (end_node == prev_node) {
-		    nextedgeid = left_edge;
-		    prev_node = start_node;
-		} else {
-		    throw new FormatException(" node matching assertion failed ");
-		}
-	    } else if (fac_id == rht_face) {
-	        nextedgeid = right_edge;
-		prev_node = end_node;
-		polySize += cfs.tcount;
-		allLLPoints.add(cfs);
-	    } else if (fac_id == lft_face) { //reverse direction
-	        nextedgeid = left_edge;
-		prev_node = start_node;
-		polySize += cfs.tcount;
-		cfs.tcount *= -1;// flag reverse
-		allLLPoints.add(cfs);
-	    } else {
-	        throw new FormatException("Node Assertion failed");
-	    }
-	} while (nextedgeid != startedgeid);
-	return polySize;
+        do {
+            edges.getRow(edge, nextedgeid);
+            int start_node = edges.getStartNode(edge);
+            int end_node = edges.getEndNode(edge);
+            int rht_face = edgeRightFaceAdapter.getPrimId(edge);
+            int lft_face = edgeLeftFaceAdapter.getPrimId(edge);
+            int right_edge = edgeRightEdgeAdapter.getPrimId(edge);
+            int left_edge = edgeLeftEdgeAdapter.getPrimId(edge);
+            if (firsttime) {
+                prev_node = start_node;
+                firsttime = false;
+            }
+          
+            //Debug.message("dcwSpecialist",
+            //              "edge: " + nextedgeid + " start->end: "
+            //              + start_node + "->" + end_node);
+            CoordFloatString cfs = edges.getCoordinates(edge);
+            
+            if ((fac_id == rht_face) && (fac_id == lft_face)) {
+                if (start_node == prev_node) {
+                    nextedgeid = right_edge;
+                    prev_node = end_node;
+                } else if (end_node == prev_node) {
+                    nextedgeid = left_edge;
+                    prev_node = start_node;
+                } else {
+                    throw new FormatException(" node matching assertion failed ");
+                }
+            } else if (fac_id == rht_face) {
+                nextedgeid = right_edge;
+                prev_node = end_node;
+                polySize += cfs.tcount;
+                allLLPoints.add(cfs);
+            } else if (fac_id == lft_face) { //reverse direction
+                nextedgeid = left_edge;
+                prev_node = start_node;
+                polySize += cfs.tcount;
+                cfs.tcount *= -1;// flag reverse
+                allLLPoints.add(cfs);
+            } else {
+                throw new FormatException("Node Assertion failed");
+            }
+        } while (nextedgeid != startedgeid);
+        return polySize;
     }
 
     /**
@@ -190,18 +190,18 @@ public class AreaTable extends PrimitiveTable {
      * @see VPFGraphicWarehouse#createArea
      */
     public void drawTile(VPFGraphicWarehouse warehouse,
-			 float dpplat, float dpplon,
-			 LatLonPoint ll1, LatLonPoint ll2)
+                         float dpplat, float dpplon,
+                         LatLonPoint ll1, LatLonPoint ll2)
     {
-	try {
-	    for (List area = new ArrayList(getColumnCount()); parseRow(area);){
-		warehouse.createArea(covtable, this, area, ll1, ll2,
-				     dpplat, dpplon);
-	    }
-	} catch (FormatException f) {
-	    System.out.println("Exception: " + f.getClass() + 
-			       " " + f.getMessage());
-	}
+        try {
+            for (List area = new ArrayList(getColumnCount()); parseRow(area);){
+                warehouse.createArea(covtable, this, area, ll1, ll2,
+                                     dpplat, dpplon);
+            }
+        } catch (FormatException f) {
+            System.out.println("Exception: " + f.getClass() + 
+                               " " + f.getMessage());
+        }
     }
 
     /**
@@ -218,16 +218,16 @@ public class AreaTable extends PrimitiveTable {
      * @see VPFGraphicWarehouse#createEdge
      */
     public void drawFeature(VPFFeatureWarehouse warehouse,
-			    float dpplat, float dpplon,
-			    LatLonPoint ll1, LatLonPoint ll2,
-			    List area, String featureType) {
+                            float dpplat, float dpplon,
+                            LatLonPoint ll1, LatLonPoint ll2,
+                            List area, String featureType) {
 
-	if (warehouse == null) {
-	    return;
-	}
+        if (warehouse == null) {
+            return;
+        }
 
-	warehouse.createArea(covtable, this, area, ll1, ll2,
-			     dpplat, dpplon, featureType);
+        warehouse.createArea(covtable, this, area, ll1, ll2,
+                             dpplat, dpplon, featureType);
     }
 
 }

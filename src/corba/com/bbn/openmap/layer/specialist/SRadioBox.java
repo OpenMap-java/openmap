@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SRadioBox.java,v $
 // $RCSfile: SRadioBox.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 02:00:34 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -49,10 +49,10 @@ public class SRadioBox extends _RadioBoxStub {
 
     public SRadioBox() {}
     public SRadioBox(String label, String[] buttons, 
-		     String default_selected_button) {
+                     String default_selected_button) {
         label_ = label;
-	buttons_ = buttons;
-	currently_selected_button_ = default_selected_button;
+        buttons_ = buttons;
+        currently_selected_button_ = default_selected_button;
     }
     public void label(java.lang.String label) {
         label_ = label;
@@ -73,17 +73,17 @@ public class SRadioBox extends _RadioBoxStub {
         return currently_selected_button_;
     }
     public void selected(java.lang.String box_label,
-			 java.lang.String selected_button,
-			 java.lang.String uniqueID) {
+                         java.lang.String selected_button,
+                         java.lang.String uniqueID) {
 //      System.out.println("RadioBox: New Radio button selected:");
-// 	System.out.println(" in box: " + box_label);
-// 	System.out.println(" unique ID: " + uniqueID);
-	currently_selected_button_ = selected_button;
+//      System.out.println(" in box: " + box_label);
+//      System.out.println(" unique ID: " + uniqueID);
+        currently_selected_button_ = selected_button;
     }
     public UWidget widget() {
         UWidget uw = new UWidget();
-	uw.rb(this);
-	return uw;
+        uw.rb(this);
+        return uw;
     }
 }
 

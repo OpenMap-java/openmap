@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/BasicLocationHandler.java,v $
 // $RCSfile: BasicLocationHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:29 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -50,33 +50,33 @@ public class BasicLocationHandler
 
     /** Set the layer this handler is serving. */
     public void setLayer(LocationLayer l) {
-	layer = l;
+        layer = l;
     }
     
     /** Get the layer the handler is serving. */
     public LocationLayer getLayer() {
-	return layer;
+        return layer;
     }
 
     public void reloadData() {
     }
     
     public boolean isShowNames() {
-	return true;
+        return true;
     }
 
     public void setShowNames(boolean set) {
     }
 
     public boolean isShowLocations() {
-	return true;
+        return true;
     }
 
     public void setShowLocations(boolean set) {
     }
 
     public boolean isForceGlobal() {
-	return true;
+        return true;
     }
 
     public void setForceGlobal(boolean set) {
@@ -93,33 +93,33 @@ public class BasicLocationHandler
     protected Color[] colors = null;
 
     public Vector get(float nwLat, float nwLon, float seLat, float seLon, 
-		      Vector graphicList) {
-	if (colors == null) {
-	    colors = new Color[8];
-	    colors[0] = Color.red;
-	    colors[1] = Color.green;
-	    colors[2] = Color.yellow;
-	    colors[3] = Color.blue;
-	    colors[4] = Color.black;
-	    colors[5] = Color.white;
-	    colors[6] = Color.orange;
-	    colors[7] = Color.pink;
-	}
+                      Vector graphicList) {
+        if (colors == null) {
+            colors = new Color[8];
+            colors[0] = Color.red;
+            colors[1] = Color.green;
+            colors[2] = Color.yellow;
+            colors[3] = Color.blue;
+            colors[4] = Color.black;
+            colors[5] = Color.white;
+            colors[6] = Color.orange;
+            colors[7] = Color.pink;
+        }
 
 
-	for (int i = 0; i < 10; i++) {
-	    Location location = new BasicLocation(42f, -72f,
-						  "testing"+i, null);
-	    location.setLocationHandler(this);
-	    location.getLabel().setLinePaint(colors[i%8]);
-// 	    location.getLabel().setShowBounds(true);
-	    location.setShowName(true);
-	    location.setShowLocation(true);
-	    graphicList.addElement(location);
-	}
+        for (int i = 0; i < 10; i++) {
+            Location location = new BasicLocation(42f, -72f,
+                                                  "testing"+i, null);
+            location.setLocationHandler(this);
+            location.getLabel().setLinePaint(colors[i%8]);
+//          location.getLabel().setShowBounds(true);
+            location.setShowName(true);
+            location.setShowLocation(true);
+            graphicList.addElement(location);
+        }
 
 
-	return graphicList;
+        return graphicList;
     }
 
     public void fillLocationPopUpMenu(LocationPopupMenu locMenu) {
@@ -134,7 +134,7 @@ public class BasicLocationHandler
      * @return Component object representing the palette widgets.
      */
     public java.awt.Component getGUI() {
-	return box;
+        return box;
     }
 
     //----------------------------------------------------------------------
@@ -160,7 +160,7 @@ public class BasicLocationHandler
      * @param props the <code>Properties</code> object.
      */
     public void setProperties(Properties props) {
-	setProperties(null, props);
+        setProperties(null, props);
     }
 
     /** 
@@ -176,7 +176,7 @@ public class BasicLocationHandler
      * </UL> 
      */
     public void setProperties(String prefix, Properties properties){
-	setPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
     }
     
     /**
@@ -198,10 +198,10 @@ public class BasicLocationHandler
      * PropertyConsumer.  
      */
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
-	return props;
+        if (props == null) {
+            props = new Properties();
+        }
+        return props;
     }
 
     /**
@@ -225,11 +225,11 @@ public class BasicLocationHandler
      * PropertyConsumer.  
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
-	
-	return list;
+        if (list == null) {
+            list = new Properties();
+        }
+        
+        return list;
     }
 
     /**
@@ -240,7 +240,7 @@ public class BasicLocationHandler
      * @param prefix the prefix String.  
      */
     public void setPropertyPrefix(String prefix) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
     }
 
     /**
@@ -250,7 +250,7 @@ public class BasicLocationHandler
      * @return thre property prefix
      */
     public String getPropertyPrefix() {
-	return propertyPrefix;
+        return propertyPrefix;
     }
 
 }

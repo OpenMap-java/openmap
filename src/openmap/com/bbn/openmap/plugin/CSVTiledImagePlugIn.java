@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/CSVTiledImagePlugIn.java,v $
 // $RCSfile: CSVTiledImagePlugIn.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:47:48 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:13 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -124,12 +124,12 @@ public class CSVTiledImagePlugIn extends OMGraphicHandlerPlugIn {
      * Default constructor.
      */
     public CSVTiledImagePlugIn() {
-	super();
-	DEBUG = Debug.debugging("tiledimage");
+        super();
+        DEBUG = Debug.debugging("tiledimage");
     }
 
     public CSVTiledImagePlugIn(Component comp) {
-	super(comp);
+        super(comp);
     }
 
     /**
@@ -142,38 +142,38 @@ public class CSVTiledImagePlugIn extends OMGraphicHandlerPlugIn {
      */
     public OMGraphicList getRectangle(Projection p) {
 
-	OMGraphicList list = (OMGraphicList)getList();
-	list.clear();
+        OMGraphicList list = (OMGraphicList)getList();
+        list.clear();
 
-	if (DEBUG) {
-	    Debug.output("CSVTIPI: getRectangle");
-	}
+        if (DEBUG) {
+            Debug.output("CSVTIPI: getRectangle");
+        }
 
-	if (tilefile == null) {
-	    loadTiles(tileFileName);
-	}
+        if (tilefile == null) {
+            loadTiles(tileFileName);
+        }
 
-	// doesn't matter if loadDataFile fails or not, the iterator
-	// will be empty if it is.
+        // doesn't matter if loadDataFile fails or not, the iterator
+        // will be empty if it is.
 
-	// Now, add the tiles that are on the screen.
-	Iterator it = tiles.iterator();
-	while (it.hasNext()) {
+        // Now, add the tiles that are on the screen.
+        Iterator it = tiles.iterator();
+        while (it.hasNext()) {
 
-	    OMScalingRaster tile = (OMScalingRaster) it.next();
+            OMScalingRaster tile = (OMScalingRaster) it.next();
 
-	    if (tile.isOnMap(p)) {
-		if (DEBUG) {
-		    Debug.output("CSVTIPI: image on map");
-		}
-		tile.generate(p);
-  		list.add(tile);
-	    } else if (DEBUG) {
-		Debug.output("CSVTIPI: image not on map, skipping");
-	    }
-	}
-	repaint();
-//  	list.generate(p);
+            if (tile.isOnMap(p)) {
+                if (DEBUG) {
+                    Debug.output("CSVTIPI: image on map");
+                }
+                tile.generate(p);
+                list.add(tile);
+            } else if (DEBUG) {
+                Debug.output("CSVTIPI: image not on map, skipping");
+            }
+        }
+        repaint();
+//      list.generate(p);
         return list;
 
     } //end getRectangle
@@ -183,21 +183,21 @@ public class CSVTiledImagePlugIn extends OMGraphicHandlerPlugIn {
      * that apply to it.
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	tileFileName = props.getProperty(realPrefix + CSVFileNameProperty);
+        tileFileName = props.getProperty(realPrefix + CSVFileNameProperty);
 
-	if (DEBUG) {
-	    Debug.output("CSVTIPI: file: " + tileFileName);
-	}
+        if (DEBUG) {
+            Debug.output("CSVTIPI: file: " + tileFileName);
+        }
 
-	fileHasHeader = LayerUtils.booleanFromProperties(props, realPrefix + FileHasHeaderProperty, fileHasHeader);
+        fileHasHeader = LayerUtils.booleanFromProperties(props, realPrefix + FileHasHeaderProperty, fileHasHeader);
 
-	if (DEBUG) {
-	    Debug.output("CSVTIPI: file has header: " + fileHasHeader);
-	}
+        if (DEBUG) {
+            Debug.output("CSVTIPI: file has header: " + fileHasHeader);
+        }
     }
 
     /**
@@ -205,60 +205,60 @@ public class CSVTiledImagePlugIn extends OMGraphicHandlerPlugIn {
      * adding them to the tiles HashSet.
      */
     protected void loadTiles(String csvFileName) {
-	int imageCount = 0;
-	
-	if (csvFileName != null) {
-	    try {
-		tilefile = new CSVFile(csvFileName);
-		tilefile.setHeadersExist(fileHasHeader);
-		tilefile.loadData(false);
-		MediaTracker tracker = new MediaTracker(component); // Create a media tracker
+        int imageCount = 0;
+        
+        if (csvFileName != null) {
+            try {
+                tilefile = new CSVFile(csvFileName);
+                tilefile.setHeadersExist(fileHasHeader);
+                tilefile.loadData(false);
+                MediaTracker tracker = new MediaTracker(component); // Create a media tracker
 
-		Iterator records = tilefile.iterator();
-		while (records.hasNext()) {
-		    Vector record = (Vector) records.next();
+                Iterator records = tilefile.iterator();
+                while (records.hasNext()) {
+                    Vector record = (Vector) records.next();
 
-		    if (DEBUG) {
-			Debug.output("CSVTIPI: record: " + record);
-		    }
-		    	
-		    String imageURLString = null;
-		    
-		    try {
+                    if (DEBUG) {
+                        Debug.output("CSVTIPI: record: " + record);
+                    }
+                        
+                    String imageURLString = null;
+                    
+                    try {
 
-			float ullat = ((Double)record.get(ullatIndex)).floatValue();
-			float ullon = ((Double)record.get(ullonIndex)).floatValue();
-			float lrlat = ((Double)record.get(lrlatIndex)).floatValue();
-			float lrlon = ((Double)record.get(lrlonIndex)).floatValue(); 
-			imageURLString = (String)record.get(urlIndex);
+                        float ullat = ((Double)record.get(ullatIndex)).floatValue();
+                        float ullon = ((Double)record.get(ullonIndex)).floatValue();
+                        float lrlat = ((Double)record.get(lrlatIndex)).floatValue();
+                        float lrlon = ((Double)record.get(lrlonIndex)).floatValue(); 
+                        imageURLString = (String)record.get(urlIndex);
 
-			URL imageURL = PropUtils.getResourceOrFileOrURL(imageURLString);
-			ImageIcon ii = new ImageIcon(imageURL);
-			Image fileImage = ii.getImage();
+                        URL imageURL = PropUtils.getResourceOrFileOrURL(imageURLString);
+                        ImageIcon ii = new ImageIcon(imageURL);
+                        Image fileImage = ii.getImage();
 
-			try {
-			    tracker.addImage(fileImage, imageCount);
-			    tracker.waitForID(imageCount); 
-			} catch (Exception e) {} // Catch errors
+                        try {
+                            tracker.addImage(fileImage, imageCount);
+                            tracker.waitForID(imageCount); 
+                        } catch (Exception e) {} // Catch errors
 
-			OMScalingRaster omsr = new OMScalingRaster(ullat, ullon,
-								   lrlat, lrlon,
-								   fileImage);
-			tiles.add(omsr);
-			imageCount++;
+                        OMScalingRaster omsr = new OMScalingRaster(ullat, ullon,
+                                                                   lrlat, lrlon,
+                                                                   fileImage);
+                        tiles.add(omsr);
+                        imageCount++;
 
-		    } catch (MalformedURLException innerMurle) {
-			Debug.error("CSVTiledImagePlugIn: image tile path not valid: " + imageURLString + ", skipping...");
-		    } catch (ArrayIndexOutOfBoundsException aioobe) {
-			Debug.error("CSVTiledImagePlugIn: having trouble reading line (" +
-				    imageCount + "), skipping...\n" + aioobe.getMessage());
-		    }
-		}
+                    } catch (MalformedURLException innerMurle) {
+                        Debug.error("CSVTiledImagePlugIn: image tile path not valid: " + imageURLString + ", skipping...");
+                    } catch (ArrayIndexOutOfBoundsException aioobe) {
+                        Debug.error("CSVTiledImagePlugIn: having trouble reading line (" +
+                                    imageCount + "), skipping...\n" + aioobe.getMessage());
+                    }
+                }
 
-	    } catch (MalformedURLException murle) {
-		Debug.error("CSVTiledImagePlugIn: CSV tile file not valid: " + csvFileName);
-	    }
-	}
+            } catch (MalformedURLException murle) {
+                Debug.error("CSVTiledImagePlugIn: CSV tile file not valid: " + csvFileName);
+            }
+        }
     }
 
     /**
@@ -277,16 +277,16 @@ public class CSVTiledImagePlugIn extends OMGraphicHandlerPlugIn {
      * PropertyConsumer.
      */
     public Properties getProperties(Properties getList) {
-	if (getList == null) {
-	    getList = new Properties();
-	}
+        if (getList == null) {
+            getList = new Properties();
+        }
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	getList.put(prefix + CSVFileNameProperty, PropUtils.unnull(tileFileName));
-	getList.put(prefix + FileHasHeaderProperty,  new Boolean(fileHasHeader).toString());
+        getList.put(prefix + CSVFileNameProperty, PropUtils.unnull(tileFileName));
+        getList.put(prefix + FileHasHeaderProperty,  new Boolean(fileHasHeader).toString());
 
-	return getList;
+        return getList;
     }
 
     /**
@@ -307,15 +307,15 @@ public class CSVTiledImagePlugIn extends OMGraphicHandlerPlugIn {
      * PropertyConsumer.  
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
+        if (list == null) {
+            list = new Properties();
+        }
 
-	list.put(CSVFileNameProperty, "URL to CSV data file");
-	list.put(FileHasHeaderProperty,  "Flag to note if CSV file has descriptive header line");
-	list.put(FileHasHeaderProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(CSVFileNameProperty, "URL to CSV data file");
+        list.put(FileHasHeaderProperty,  "Flag to note if CSV file has descriptive header line");
+        list.put(FileHasHeaderProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-	return list;
+        return list;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMBitmap.java,v $
 // $RCSfile: OMBitmap.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -90,14 +90,14 @@ public class OMBitmap extends OMRasterObject implements Serializable {
    * @param bytes byte array of bitmap, each bit representing a pixel.
    */
     public OMBitmap(float lt, float ln, int w, int h, 
-		    byte[] bytes) {
+                    byte[] bytes) {
 
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	lat = lt;
-	lon = ln;
-	width = w;
-	height = h;
-	bits = bytes;
+        lat = lt;
+        lon = ln;
+        width = w;
+        height = h;
+        bits = bytes;
     }
 
   /** 
@@ -110,14 +110,14 @@ public class OMBitmap extends OMRasterObject implements Serializable {
    * @param bytes byte array of bitmap, each bit representing a pixel.
    */
     public OMBitmap(int x1, int y1, int w, int h,
-		    byte[] bytes) {
+                    byte[] bytes) {
 
         super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         x = x1;
-	y = y1;
-	width = w;
-	height = h;
-	bits = bytes;
+        y = y1;
+        width = w;
+        height = h;
+        bits = bytes;
     }
 
   /**
@@ -135,17 +135,17 @@ public class OMBitmap extends OMRasterObject implements Serializable {
    * @param bytes byte array of bitmap, each bit representing a pixel.
    */
     public OMBitmap(float lt, float ln, int offset_x1, int offset_y1,
-		    int w, int h, byte[] bytes) {
+                    int w, int h, byte[] bytes) {
 
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
-	lat = lt;
-	lon = ln;
+        lat = lt;
+        lon = ln;
         x = offset_x1;
-	y = offset_y1;
-	width = w;
-	height = h;
-	bits = bytes;
+        y = offset_y1;
+        width = w;
+        height = h;
+        bits = bytes;
     }
 
     /**
@@ -157,12 +157,12 @@ public class OMBitmap extends OMRasterObject implements Serializable {
      * @param values byte values containing bit pixel values.
      */
     public void setBits(byte[] values) {
-	super.setBits(values);
+        super.setBits(values);
         if ((values.length*8) != (height*width))
-	    Debug.output("OMBitmap: new byte[] size (" +
-			 + values.length +") (*8) doesn't" +
-			 " match [height*width (" + 
-			 height*width + ")]");
+            Debug.output("OMBitmap: new byte[] size (" +
+                         + values.length +") (*8) doesn't" +
+                         " match [height*width (" + 
+                         height*width + ")]");
     }
 
     /**
@@ -174,77 +174,77 @@ public class OMBitmap extends OMRasterObject implements Serializable {
      */
     protected boolean computePixels() {
 
-	int foreground, background;
-	int nColors = 2;
-	int npix, i, j, k, w;
-	int[] masks = {1, 2, 4, 8, 16, 32, 64, 128};
+        int foreground, background;
+        int nColors = 2;
+        int npix, i, j, k, w;
+        int[] masks = {1, 2, 4, 8, 16, 32, 64, 128};
       
-	int nPixels = width * height;
-	if (bits == null || (bits.length * 8) < nPixels) {
-	    System.err.println("OMBitmap.computePixels(): not enough bits!");
-	    return false;
-	}
+        int nPixels = width * height;
+        if (bits == null || (bits.length * 8) < nPixels) {
+            System.err.println("OMBitmap.computePixels(): not enough bits!");
+            return false;
+        }
       
-	pixels = new int[nPixels];
+        pixels = new int[nPixels];
 
-	// Init colors.
-	Paint paint = getDisplayPaint();
-	if (paint instanceof Color) {
-	    foreground = ((Color)paint).getRGB();
-	} else {
-	    foreground = Color.black.getRGB();
-	}
+        // Init colors.
+        Paint paint = getDisplayPaint();
+        if (paint instanceof Color) {
+            foreground = ((Color)paint).getRGB();
+        } else {
+            foreground = Color.black.getRGB();
+        }
 
-	paint = getFillPaint();
-	if (paint instanceof Color) {
-	    background = ((Color)paint).getRGB();
-	} else {
-	    background = OMGraphic.clear.getRGB();
-	}
+        paint = getFillPaint();
+        if (paint instanceof Color) {
+            background = ((Color)paint).getRGB();
+        } else {
+            background = OMGraphic.clear.getRGB();
+        }
 
-	int defaultColor = 128 << 24;
+        int defaultColor = 128 << 24;
 
-	// Now, using the foreground and background colors, build a set of
-	// pixels by traversing bitwise through the bitmap data.
+        // Now, using the foreground and background colors, build a set of
+        // pixels by traversing bitwise through the bitmap data.
 
-	// Determine the excess number of bits at the end of each row.
-	int excess = width % 8; // Remainder
+        // Determine the excess number of bits at the end of each row.
+        int excess = width % 8; // Remainder
 
         // And how many bytes will be used represent each row?
-	int bytes_per_row = width / 8;
+        int bytes_per_row = width / 8;
 
-	if (excess > 0) {
-	    Debug.message("omGraphics", "OMBitmap.computePixels(): excess byte");
-	    bytes_per_row++;
-	}
+        if (excess > 0) {
+            Debug.message("omGraphics", "OMBitmap.computePixels(): excess byte");
+            bytes_per_row++;
+        }
 
-	Debug.message("omGraphics", "OMBitmap.computePixels(): bits.length = " + bits.length);
+        Debug.message("omGraphics", "OMBitmap.computePixels(): bits.length = " + bits.length);
 
-	for (npix=0,i=0; i<height; i++) {		// for each row
-	    for (j=0,w=0; j<bytes_per_row; j++) {	// for each row's byte
-		int idx = (i*bytes_per_row) + j;
-		for (k=0;				// for each byte's bits
-		     (k<8) &				// bits per byte 
-			 (w<width) &		// bits per row
-			 (npix<nPixels);		// bits per bitmap
-		     k++, w++, npix++)
-		{
-		    int set = masks[k] & bits[idx];
-		    if (set > 0) {
-			pixels[npix] = foreground;
-		    } else {
-			pixels[npix] = background;
-		    }
-		}
-	    }
-	}
+        for (npix=0,i=0; i<height; i++) {               // for each row
+            for (j=0,w=0; j<bytes_per_row; j++) {       // for each row's byte
+                int idx = (i*bytes_per_row) + j;
+                for (k=0;                               // for each byte's bits
+                     (k<8) &                            // bits per byte 
+                         (w<width) &            // bits per row
+                         (npix<nPixels);                // bits per bitmap
+                     k++, w++, npix++)
+                {
+                    int set = masks[k] & bits[idx];
+                    if (set > 0) {
+                        pixels[npix] = foreground;
+                    } else {
+                        pixels[npix] = background;
+                    }
+                }
+            }
+        }
 
-	if (npix < nPixels-1) {
-	    for (i=npix; i<nPixels; i++) {
-		pixels[i] = defaultColor;
-	    }
-	}
-	return true;
+        if (npix < nPixels-1) {
+            for (i=npix; i<nPixels; i++) {
+                pixels[i] = defaultColor;
+            }
+        }
+        return true;
     }
 
     /** 
@@ -255,29 +255,29 @@ public class OMBitmap extends OMRasterObject implements Serializable {
      */
     public boolean generate(Projection proj) {
 
-	// Position() sets the bitmap location on the screen!!!!
-	if (!position(proj)) {
-	    Debug.message("omgraphic", "OMBitmap: positioning failed in generate!");
-	    return false;
-	}
+        // Position() sets the bitmap location on the screen!!!!
+        if (!position(proj)) {
+            Debug.message("omgraphic", "OMBitmap: positioning failed in generate!");
+            return false;
+        }
 
-	if (getNeedToRegenerate() || bitmap == null) {
+        if (getNeedToRegenerate() || bitmap == null) {
 
-	    computePixels();
-	    
-	    Toolkit tk = Toolkit.getDefaultToolkit();
-	    bitmap = tk.createImage(
-		new MemoryImageSource(width, height, pixels, 0, width));
-	}
+            computePixels();
+            
+            Toolkit tk = Toolkit.getDefaultToolkit();
+            bitmap = tk.createImage(
+                new MemoryImageSource(width, height, pixels, 0, width));
+        }
 
-	if (imageFilter != null) {
-	    bitmap = filterImage();
-	}
-	    
-	setShape();
+        if (imageFilter != null) {
+            bitmap = filterImage();
+        }
+            
+        setShape();
 
-	setNeedToRegenerate(false);
-	return true;
+        setNeedToRegenerate(false);
+        return true;
     }
 
     /**
@@ -287,10 +287,10 @@ public class OMBitmap extends OMRasterObject implements Serializable {
      * @param value the new line color.
      */
     public void setLinePaint(Paint value) { 
-	super.setLinePaint(value);
-	if (!selected) {
-	    setNeedToRegenerate(true);
-	}
+        super.setLinePaint(value);
+        if (!selected) {
+            setNeedToRegenerate(true);
+        }
     }
 
     /**
@@ -300,10 +300,10 @@ public class OMBitmap extends OMRasterObject implements Serializable {
      * @param value the new select color.
      */
     public void setSelectPaint(Paint value) { 
-	super.setSelectPaint(value);
-	if (selected) {
-	    setNeedToRegenerate(true);
-	}
+        super.setSelectPaint(value);
+        if (selected) {
+            setNeedToRegenerate(true);
+        }
     }
 
     /**
@@ -313,8 +313,8 @@ public class OMBitmap extends OMRasterObject implements Serializable {
      * @param value the new background color
      */
     public void setFillPaint(Paint value) { 
-	super.setFillPaint(value);
-	setNeedToRegenerate(true);
+        super.setFillPaint(value);
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -322,10 +322,10 @@ public class OMBitmap extends OMRasterObject implements Serializable {
      * select color.  
      */
     public void select() {
-	if (!isSelected()) {
-	    super.select();
-	    setNeedToRegenerate(true);
-	}
+        if (!isSelected()) {
+            super.select();
+            setNeedToRegenerate(true);
+        }
     }
 
     /**
@@ -333,10 +333,10 @@ public class OMBitmap extends OMRasterObject implements Serializable {
      * line color.  
      */
     public void deselect() {
-	if (isSelected()) {
-	    super.deselect();
-	    setNeedToRegenerate(true);
-	}
+        if (isSelected()) {
+            super.deselect();
+            setNeedToRegenerate(true);
+        }
     }
 
 }

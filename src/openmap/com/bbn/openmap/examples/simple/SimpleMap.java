@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/simple/SimpleMap.java,v $
 // $RCSfile: SimpleMap.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,42 +46,42 @@ public class SimpleMap {
 
     public static void main(String args[]) {
 
-	// Create a Swing frame
-	JFrame frame = new JFrame("Simple Map");
+        // Create a Swing frame
+        JFrame frame = new JFrame("Simple Map");
 
-	// Size the frame appropriately
-	frame.setSize(640, 480);
+        // Size the frame appropriately
+        frame.setSize(640, 480);
 
-	// Create a MapBean
-	MapBean mapBean = new MapBean();
+        // Create a MapBean
+        MapBean mapBean = new MapBean();
 
-	// Create a ShapeLayer to show world political boundaries.
-	// Set the properties of the layer.  This assumes that the
-	// datafiles "dcwpo-browse.shp" and "dcwpo-browse.ssx" are in
-	// a path specified in the CLASSPATH variable.  These files
-	// are distributed with OpenMap and reside in the toplevel
-	// "share" subdirectory.
-	ShapeLayer shapeLayer = new ShapeLayer();
-	Properties shapeLayerProps = new Properties();
-	shapeLayerProps.put("prettyName", "Political Solid");
-	shapeLayerProps.put("lineColor", "000000");
-	shapeLayerProps.put("fillColor", "BDDE83");
-	shapeLayerProps.put("shapeFile", "data/shape/dcwpo-browse.shp");
-	shapeLayerProps.put("spatialIndex", "data/shape/dcwpo-browse.ssx");
-	shapeLayer.setProperties(shapeLayerProps);
+        // Create a ShapeLayer to show world political boundaries.
+        // Set the properties of the layer.  This assumes that the
+        // datafiles "dcwpo-browse.shp" and "dcwpo-browse.ssx" are in
+        // a path specified in the CLASSPATH variable.  These files
+        // are distributed with OpenMap and reside in the toplevel
+        // "share" subdirectory.
+        ShapeLayer shapeLayer = new ShapeLayer();
+        Properties shapeLayerProps = new Properties();
+        shapeLayerProps.put("prettyName", "Political Solid");
+        shapeLayerProps.put("lineColor", "000000");
+        shapeLayerProps.put("fillColor", "BDDE83");
+        shapeLayerProps.put("shapeFile", "data/shape/dcwpo-browse.shp");
+        shapeLayerProps.put("spatialIndex", "data/shape/dcwpo-browse.ssx");
+        shapeLayer.setProperties(shapeLayerProps);
 
-	// Add the political layer to the map
-	mapBean.add(shapeLayer);
+        // Add the political layer to the map
+        mapBean.add(shapeLayer);
 
-	// Add the map to the frame
-	frame.getContentPane().add(mapBean);
+        // Add the map to the frame
+        frame.getContentPane().add(mapBean);
 
-	frame.addWindowListener(new WindowAdapter() {
-		public void windowClosing(WindowEvent e) {
-		    System.exit(0);
-		}});
+        frame.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    System.exit(0);
+                }});
 
-	// Display the frame
-	frame.setVisible(true);
+        // Display the frame
+        frame.setVisible(true);
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/ShxOutputStream.java,v $
 // $RCSfile: ShxOutputStream.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,8 +41,8 @@ public class ShxOutputStream {
      * @param os An outputstream to chain a LittleEndianOutputStream to
      */
     public ShxOutputStream(OutputStream os) {
-	BufferedOutputStream bos = new BufferedOutputStream(os);
-	_leos = new LittleEndianOutputStream(bos);
+        BufferedOutputStream bos = new BufferedOutputStream(os);
+        _leos = new LittleEndianOutputStream(bos);
     }
 
     /**
@@ -53,7 +53,7 @@ public class ShxOutputStream {
      * @return True if no exceptions occur 
      */
     public boolean writeIndex(int[][] indexData, int layerType) {
-	return writeIndex(indexData, layerType, new float[] { -90f, -180f, 90f, 180f });
+        return writeIndex(indexData, layerType, new float[] { -90f, -180f, 90f, 180f });
     }
 
     /**
@@ -68,53 +68,53 @@ public class ShxOutputStream {
      */
     public boolean writeIndex(int[][] indexData, int layerType, float[] extents) {
 
-	try {
-	    _leos.writeInt(9994);
-	    _leos.writeInt(0);
-	    _leos.writeInt(0);
-	    _leos.writeInt(0);
-	    _leos.writeInt(0);
-	    _leos.writeInt(0);
-	    _leos.writeInt(indexData[0].length * 4 + 50);
-	    _leos.writeLEInt(1000);
-	    _leos.writeLEInt(layerType);
+        try {
+            _leos.writeInt(9994);
+            _leos.writeInt(0);
+            _leos.writeInt(0);
+            _leos.writeInt(0);
+            _leos.writeInt(0);
+            _leos.writeInt(0);
+            _leos.writeInt(indexData[0].length * 4 + 50);
+            _leos.writeLEInt(1000);
+            _leos.writeLEInt(layerType);
 
-	    if (extents[0] == 90f &&
-		extents[1] == 180f &&
-		extents[2] == -90f &&
-		extents[3] == -180f) {
-		
-		//Whoa! not set from defaults correctly!
-		// use old, hardcoded way.
-		_leos.writeLEDouble(-180.0);    //Hard-coding extents.
-		_leos.writeLEDouble(-90.0);     //When viewed through ArcView, this will
-		_leos.writeLEDouble(180.0);     //cause window to zoom to world extents
-		_leos.writeLEDouble(90.0);      //instead of layer extents.
-		
-	    } else {
-		_leos.writeLEDouble((float)extents[1]);
-		_leos.writeLEDouble((float)extents[0]);
-		_leos.writeLEDouble((float)extents[3]);
-		_leos.writeLEDouble((float)extents[2]);
-	    }
-	    
-	    _leos.writeLEDouble(0.0);
-	    _leos.writeLEDouble(0.0);
-	    _leos.writeLEDouble(0.0);
-	    _leos.writeLEDouble(0.0);
+            if (extents[0] == 90f &&
+                extents[1] == 180f &&
+                extents[2] == -90f &&
+                extents[3] == -180f) {
+                
+                //Whoa! not set from defaults correctly!
+                // use old, hardcoded way.
+                _leos.writeLEDouble(-180.0);    //Hard-coding extents.
+                _leos.writeLEDouble(-90.0);     //When viewed through ArcView, this will
+                _leos.writeLEDouble(180.0);     //cause window to zoom to world extents
+                _leos.writeLEDouble(90.0);      //instead of layer extents.
+                
+            } else {
+                _leos.writeLEDouble((float)extents[1]);
+                _leos.writeLEDouble((float)extents[0]);
+                _leos.writeLEDouble((float)extents[3]);
+                _leos.writeLEDouble((float)extents[2]);
+            }
+            
+            _leos.writeLEDouble(0.0);
+            _leos.writeLEDouble(0.0);
+            _leos.writeLEDouble(0.0);
+            _leos.writeLEDouble(0.0);
 
-	    for (int i=0; i<=indexData[0].length-1; i++) {
-		_leos.writeInt(indexData[0][i]);
-		_leos.writeInt(indexData[1][i]);
-	    }
-	    _leos.flush();
-	    _leos.close();
-	}
-	catch (Exception e) {
-	    System.out.println("exception=" + e.toString());
-	    return false;
-	}
-	return true;
+            for (int i=0; i<=indexData[0].length-1; i++) {
+                _leos.writeInt(indexData[0][i]);
+                _leos.writeInt(indexData[1][i]);
+            }
+            _leos.flush();
+            _leos.close();
+        }
+        catch (Exception e) {
+            System.out.println("exception=" + e.toString());
+            return false;
+        }
+        return true;
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/csv/CSVLocationHandler.java,v $
 // $RCSfile: CSVLocationHandler.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/11/20 17:50:24 $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -101,7 +101,7 @@ import com.bbn.openmap.layer.location.*;
  */
 public class CSVLocationHandler extends AbstractLocationHandler
     implements LocationHandler, ActionListener {
-        	
+                
     /** The path to the primary CSV file holding the locations. */
     protected String locationFile;
     /** The property describing the locations of location data. */
@@ -133,7 +133,7 @@ public class CSVLocationHandler extends AbstractLocationHandler
 
     ////////////////////////
     // Location Variables
-		
+                
     /** Property to use to designate the column of the CSV file to use
      * as the latitude. */
     public static final String LatIndexProperty = "latIndex";
@@ -174,33 +174,33 @@ public class CSVLocationHandler extends AbstractLocationHandler
      * @param properties the properties set in the properties file.  
      */
     public void setProperties(String prefix,
-			      java.util.Properties properties) {
-	super.setProperties(prefix, properties);
+                              java.util.Properties properties) {
+        super.setProperties(prefix, properties);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	locationFile = properties.getProperty(prefix + LocationFileProperty);
+        locationFile = properties.getProperty(prefix + LocationFileProperty);
 
-	latIndex = PropUtils.intFromProperties(properties, 
-						prefix + LatIndexProperty, -1);
-	lonIndex = PropUtils.intFromProperties(properties, 
-						prefix + LonIndexProperty, -1);
-	iconIndex = PropUtils.intFromProperties(properties, 
-						prefix + IconIndexProperty, -1);
-	nameIndex = PropUtils.intFromProperties(properties, 
-						prefix + NameIndexProperty, -1);
-	eastIsNeg = PropUtils.booleanFromProperties(properties, 
-						     prefix + eastIsNegProperty, false);
-	defaultIconURL = properties.getProperty(prefix + DefaultIconURLProperty);
+        latIndex = PropUtils.intFromProperties(properties, 
+                                                prefix + LatIndexProperty, -1);
+        lonIndex = PropUtils.intFromProperties(properties, 
+                                                prefix + LonIndexProperty, -1);
+        iconIndex = PropUtils.intFromProperties(properties, 
+                                                prefix + IconIndexProperty, -1);
+        nameIndex = PropUtils.intFromProperties(properties, 
+                                                prefix + NameIndexProperty, -1);
+        eastIsNeg = PropUtils.booleanFromProperties(properties, 
+                                                     prefix + eastIsNegProperty, false);
+        defaultIconURL = properties.getProperty(prefix + DefaultIconURLProperty);
 
-	csvHasHeader = PropUtils.booleanFromProperties(properties, prefix + csvHeaderProperty, false);
+        csvHasHeader = PropUtils.booleanFromProperties(properties, prefix + csvHeaderProperty, false);
 
-	if (Debug.debugging("location")) {
-	    Debug.output("CSVLocationHandler indexes:\n  latIndex = " + 
-			 latIndex + "\n  lonIndex = " + 
-			 lonIndex + "\n  nameIndex = " +
-			 nameIndex + "\n  has header = " + csvHasHeader);
-	}
+        if (Debug.debugging("location")) {
+            Debug.output("CSVLocationHandler indexes:\n  latIndex = " + 
+                         latIndex + "\n  lonIndex = " + 
+                         lonIndex + "\n  nameIndex = " +
+                         nameIndex + "\n  has header = " + csvHasHeader);
+        }
     }
     
     /**
@@ -218,21 +218,21 @@ public class CSVLocationHandler extends AbstractLocationHandler
      * PropertyConsumer.  
      */
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	props.put(prefix + "class", this.getClass().getName());
-	props.put(prefix + LocationFileProperty, PropUtils.unnull(locationFile));
+        props.put(prefix + "class", this.getClass().getName());
+        props.put(prefix + LocationFileProperty, PropUtils.unnull(locationFile));
 
-	props.put(prefix + eastIsNegProperty, new Boolean(eastIsNeg).toString());
-	props.put(prefix + NameIndexProperty, (nameIndex != -1?Integer.toString(nameIndex):""));
-	props.put(prefix + LatIndexProperty, (latIndex != -1?Integer.toString(latIndex):""));
-	props.put(prefix + LonIndexProperty, (lonIndex != -1?Integer.toString(lonIndex):""));
-	props.put(prefix + IconIndexProperty, (iconIndex != -1?Integer.toString(iconIndex):""));
-	props.put(prefix + DefaultIconURLProperty, PropUtils.unnull(defaultIconURL));
+        props.put(prefix + eastIsNegProperty, new Boolean(eastIsNeg).toString());
+        props.put(prefix + NameIndexProperty, (nameIndex != -1?Integer.toString(nameIndex):""));
+        props.put(prefix + LatIndexProperty, (latIndex != -1?Integer.toString(latIndex):""));
+        props.put(prefix + LonIndexProperty, (lonIndex != -1?Integer.toString(lonIndex):""));
+        props.put(prefix + IconIndexProperty, (iconIndex != -1?Integer.toString(iconIndex):""));
+        props.put(prefix + DefaultIconURLProperty, PropUtils.unnull(defaultIconURL));
 
-	return props;
+        return props;
     }
 
     /**
@@ -256,24 +256,24 @@ public class CSVLocationHandler extends AbstractLocationHandler
      * PropertyConsumer.  
      */
     public Properties getPropertyInfo(Properties list) {
-	list = super.getPropertyInfo(list);
+        list = super.getPropertyInfo(list);
 
-	list.put("class" + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
-	list.put(LocationFileProperty, "URL of file containing location information.");
-	list .put(LocationFileProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-	list.put(eastIsNegProperty, "Flag to note that negative latitude are over the eastern hemisphere.");
-	list.put(eastIsNegProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	list.put(NameIndexProperty, "The column index, in the location file, of the location label text.");
-	list.put(LatIndexProperty, "The column index, in the location file, of the latitudes.");
-	list.put(LonIndexProperty, "The column index, in the location file, of the longitudes.");
-	list.put(IconIndexProperty, "The column index, in the location file, of the icon for locations (optional).");
-	list.put(DefaultIconURLProperty, "The URL of an image file to use as a default for the location markers (optional).");
+        list.put("class" + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
+        list.put(LocationFileProperty, "URL of file containing location information.");
+        list .put(LocationFileProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        list.put(eastIsNegProperty, "Flag to note that negative latitude are over the eastern hemisphere.");
+        list.put(eastIsNegProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(NameIndexProperty, "The column index, in the location file, of the location label text.");
+        list.put(LatIndexProperty, "The column index, in the location file, of the latitudes.");
+        list.put(LonIndexProperty, "The column index, in the location file, of the longitudes.");
+        list.put(IconIndexProperty, "The column index, in the location file, of the icon for locations (optional).");
+        list.put(DefaultIconURLProperty, "The URL of an image file to use as a default for the location markers (optional).");
 
-	return list;
+        return list;
     }
 
     public void reloadData() {
-	quadtree = createData();
+        quadtree = createData();
     }
     
     /**
@@ -281,127 +281,127 @@ public class CSVLocationHandler extends AbstractLocationHandler
      * Locations.
      */
     protected QuadTree createData() {
-	
-	QuadTree qt = new QuadTree(90.0f, -180.0f, -90.0f, 180.0f, 100, 50f);
+        
+        QuadTree qt = new QuadTree(90.0f, -180.0f, -90.0f, 180.0f, 100, 50f);
 
-	if (latIndex == -1 || lonIndex == -1){
-	    Debug.error("CSVLocationHandler: createData(): Index properties for Lat/Lon/Name are not set properly! lat index:" + latIndex + ", lon index:" + lonIndex);
-	    return null;
-	}
-	BufferedReader streamReader = null;
-	int lineCount = 0;
-	Object token = null;
+        if (latIndex == -1 || lonIndex == -1){
+            Debug.error("CSVLocationHandler: createData(): Index properties for Lat/Lon/Name are not set properly! lat index:" + latIndex + ", lon index:" + lonIndex);
+            return null;
+        }
+        BufferedReader streamReader = null;
+        int lineCount = 0;
+        Object token = null;
 
-	// readHeader should be set to true if the first line has
-	// been read, or if the csvHasHeader is false.
-	boolean readHeader = !csvHasHeader;
+        // readHeader should be set to true if the first line has
+        // been read, or if the csvHasHeader is false.
+        boolean readHeader = !csvHasHeader;
 
-	try {
+        try {
 
-	    // This lets the property be specified as a file name
-	    // even if it's not specified as file:/<name> in
-	    // the properties file.
-	    
-	    URL csvURL = PropUtils.getResourceOrFileOrURL(null, locationFile); 
-	    streamReader = new BufferedReader(new InputStreamReader(csvURL.openStream()));
-	    CSVTokenizer csvt = new CSVTokenizer(streamReader);
+            // This lets the property be specified as a file name
+            // even if it's not specified as file:/<name> in
+            // the properties file.
+            
+            URL csvURL = PropUtils.getResourceOrFileOrURL(null, locationFile); 
+            streamReader = new BufferedReader(new InputStreamReader(csvURL.openStream()));
+            CSVTokenizer csvt = new CSVTokenizer(streamReader);
 
-	    String name = null;
-	    float lat = 0;
-	    float lon = 0;
-	    Location loc = null;
-	    String iconURL = null;
+            String name = null;
+            float lat = 0;
+            float lon = 0;
+            Location loc = null;
+            String iconURL = null;
 
-	    token = csvt.token();
+            token = csvt.token();
 
-	    Debug.message("csvlocation", "CSVLocationHandler: Reading File:" 
-			  + locationFile
-			  + " NameIndex: " + nameIndex
-			  + " latIndex: " + latIndex
-			  + " lonIndex: " + lonIndex
-			  + " iconIndex: " + iconIndex
-			  + " eastIsNeg: " + eastIsNeg);
+            Debug.message("csvlocation", "CSVLocationHandler: Reading File:" 
+                          + locationFile
+                          + " NameIndex: " + nameIndex
+                          + " latIndex: " + latIndex
+                          + " lonIndex: " + lonIndex
+                          + " iconIndex: " + iconIndex
+                          + " eastIsNeg: " + eastIsNeg);
 
-	    while (!csvt.isEOF(token)) {
-		int i = 0;
+            while (!csvt.isEOF(token)) {
+                int i = 0;
 
-		Debug.message("csvlocation", "CSVLocationHandler| Starting a line | have" + (readHeader?" ":"n't ") + "read header");
-		
-		while (!csvt.isNewline(token) && !csvt.isEOF(token)){
+                Debug.message("csvlocation", "CSVLocationHandler| Starting a line | have" + (readHeader?" ":"n't ") + "read header");
+                
+                while (!csvt.isNewline(token) && !csvt.isEOF(token)){
 
-		    if (readHeader) {
-			if (i == nameIndex) {
-			    name = (String)token;
-			} else if (i == latIndex) {
-			    lat = ((Double)token).floatValue();
-			} else if (i == lonIndex) {
-			    lon = ((Double)token).floatValue();
-			    if (eastIsNeg) {
-				lon *= -1;
-			    }
-			} else if (i == iconIndex) {
-			    iconURL = (String)token;
-			}
-		    }
+                    if (readHeader) {
+                        if (i == nameIndex) {
+                            name = (String)token;
+                        } else if (i == latIndex) {
+                            lat = ((Double)token).floatValue();
+                        } else if (i == lonIndex) {
+                            lon = ((Double)token).floatValue();
+                            if (eastIsNeg) {
+                                lon *= -1;
+                            }
+                        } else if (i == iconIndex) {
+                            iconURL = (String)token;
+                        }
+                    }
 
-		    token = csvt.token();
-		    // For some reason, the check above doesn't always
-		    // work
-		    if (csvt.isEOF(token)) {
-			break;
-		    }
-		    i++;
-		}
+                    token = csvt.token();
+                    // For some reason, the check above doesn't always
+                    // work
+                    if (csvt.isEOF(token)) {
+                        break;
+                    }
+                    i++;
+                }
 
-		if (!readHeader) {
-		    readHeader = true;
-		} else {
-		    lineCount++;
+                if (!readHeader) {
+                    readHeader = true;
+                } else {
+                    lineCount++;
 
-		    // 		Debug.output(iconURL);
-		    if (iconURL == null && defaultIconURL != null) {
-			iconURL = defaultIconURL;
-		    }
+                    //          Debug.output(iconURL);
+                    if (iconURL == null && defaultIconURL != null) {
+                        iconURL = defaultIconURL;
+                    }
 
-		    loc = createLocation(lat, lon, name, iconURL);
+                    loc = createLocation(lat, lon, name, iconURL);
 
-		    qt.put(lat, lon, loc);
-		}
-		token = csvt.token();
-	    }
-	} catch (java.io.IOException ioe){
-	    throw new com.bbn.openmap.util.HandleError(ioe);
-	} catch (ArrayIndexOutOfBoundsException aioobe){
-	    throw new com.bbn.openmap.util.HandleError(aioobe);
-	} catch (NumberFormatException nfe){
-	    throw new com.bbn.openmap.util.HandleError(nfe);
-	} catch (ClassCastException cce){
-	    throw new com.bbn.openmap.util.HandleError(cce);
-	} catch (NullPointerException npe) {
-	    throw new com.bbn.openmap.util.HandleError(npe);
-	} catch (java.security.AccessControlException ace) {
-	    throw new com.bbn.openmap.util.HandleError(ace);
-	}
+                    qt.put(lat, lon, loc);
+                }
+                token = csvt.token();
+            }
+        } catch (java.io.IOException ioe){
+            throw new com.bbn.openmap.util.HandleError(ioe);
+        } catch (ArrayIndexOutOfBoundsException aioobe){
+            throw new com.bbn.openmap.util.HandleError(aioobe);
+        } catch (NumberFormatException nfe){
+            throw new com.bbn.openmap.util.HandleError(nfe);
+        } catch (ClassCastException cce){
+            throw new com.bbn.openmap.util.HandleError(cce);
+        } catch (NullPointerException npe) {
+            throw new com.bbn.openmap.util.HandleError(npe);
+        } catch (java.security.AccessControlException ace) {
+            throw new com.bbn.openmap.util.HandleError(ace);
+        }
 
-	Debug.message("csvlocation",
-		      "CSVLocationHandler | Finished File:" + locationFile + 
-		      ", read " + lineCount + " locations");
+        Debug.message("csvlocation",
+                      "CSVLocationHandler | Finished File:" + locationFile + 
+                      ", read " + lineCount + " locations");
 
-	try {	      
-	    if (streamReader != null) {
-		streamReader.close();
-	    }
-	} catch(java.io.IOException ioe) {
-	    throw new com.bbn.openmap.util.HandleError(ioe);
-	}
-		
-	if (lineCount == 0 && readHeader) {
-	    Debug.output("CSVLocationHandler has read file, but didn't find any data.\n  Check file for a header line, and make sure that the\n  properties (csvFileHasHeader) is set properly for this CSVLocationHandler. Trying again without header...");
-	    csvHasHeader = !csvHasHeader;
-	    return createData();
-	}
+        try {         
+            if (streamReader != null) {
+                streamReader.close();
+            }
+        } catch(java.io.IOException ioe) {
+            throw new com.bbn.openmap.util.HandleError(ioe);
+        }
+                
+        if (lineCount == 0 && readHeader) {
+            Debug.output("CSVLocationHandler has read file, but didn't find any data.\n  Check file for a header line, and make sure that the\n  properties (csvFileHasHeader) is set properly for this CSVLocationHandler. Trying again without header...");
+            csvHasHeader = !csvHasHeader;
+            return createData();
+        }
 
-	return qt;
+        return qt;
     }
 
     /**
@@ -417,25 +417,25 @@ public class CSVLocationHandler extends AbstractLocationHandler
      */
     protected Location createLocation(float lat, float lon, String name, String iconURL) {
 
-	// This will turn into a regular location if iconURL is null.
-	Location loc = new URLRasterLocation(lat, lon, name, iconURL);
+        // This will turn into a regular location if iconURL is null.
+        Location loc = new URLRasterLocation(lat, lon, name, iconURL);
 
-	// let the layer handler default set these initially...
-	loc.setShowName(isShowNames());
-	loc.setShowLocation(isShowLocations());
+        // let the layer handler default set these initially...
+        loc.setShowName(isShowNames());
+        loc.setShowLocation(isShowLocations());
 
-	loc.setLocationHandler(this);
-	loc.setLocationPaint(getLocationColor());
-	loc.getLabel().setLinePaint(getNameColor());
-	loc.setDetails(name + " is at lat: " + lat + ", lon: " + lon);
+        loc.setLocationHandler(this);
+        loc.setLocationPaint(getLocationColor());
+        loc.getLabel().setLinePaint(getNameColor());
+        loc.setDetails(name + " is at lat: " + lat + ", lon: " + lon);
 
-	if (iconURL != null) {
-	    loc.setDetails(loc.getDetails() + " icon: " + iconURL);
-	}
+        if (iconURL != null) {
+            loc.setDetails(loc.getDetails() + " icon: " + iconURL);
+        }
 
-	Debug.message("csvlocation", "CSVLocationHandler " + loc.getDetails());
+        Debug.message("csvlocation", "CSVLocationHandler " + loc.getDetails());
 
-	return loc;
+        return loc;
     }
 
     /**  
@@ -445,28 +445,28 @@ public class CSVLocationHandler extends AbstractLocationHandler
      * commas.
      * */
     protected String[] readCSVLineFromFile(BufferedReader ranFile, 
-					   String[] retPaths) {
-	if (ranFile != null) {
+                                           String[] retPaths) {
+        if (ranFile != null) {
 
-	    try {
-		String newLine = ranFile.readLine();
-		if (newLine == null) return null;
-		StringTokenizer token = new StringTokenizer(newLine, ",");
-		int numPaths = token.countTokens();
+            try {
+                String newLine = ranFile.readLine();
+                if (newLine == null) return null;
+                StringTokenizer token = new StringTokenizer(newLine, ",");
+                int numPaths = token.countTokens();
 
-		if (retPaths == null) {
-		    retPaths = new String[numPaths];
-		} else numPaths = retPaths.length;
-		for (int i = 0; i < numPaths; i++){
-		    retPaths[i] = token.nextToken();
-		}		    
-	    } catch (java.io.IOException ioe) {
-		return null;
-	    } catch (java.util.NoSuchElementException nsee){
-		Debug.output("CSVLocationHandler: readCSVLineFromFile: oops");
-	    }
-	}
-	return retPaths;
+                if (retPaths == null) {
+                    retPaths = new String[numPaths];
+                } else numPaths = retPaths.length;
+                for (int i = 0; i < numPaths; i++){
+                    retPaths[i] = token.nextToken();
+                }                   
+            } catch (java.io.IOException ioe) {
+                return null;
+            } catch (java.util.NoSuchElementException nsee){
+                Debug.output("CSVLocationHandler: readCSVLineFromFile: oops");
+            }
+        }
+        return retPaths;
     }
 
     /**
@@ -480,34 +480,34 @@ public class CSVLocationHandler extends AbstractLocationHandler
      *
      */
     public Vector get(float nwLat, float nwLon, float seLat, float seLon, 
-		      Vector graphicList) {
-	
-	// IF the quadtree has not been set up yet, do it!
-	if (quadtree == null){
-	    Debug.output("CSVLocationHandler: Figuring out the locations and names! (This is a one-time operation!)");
-	    quadtree = createData();
-	}
+                      Vector graphicList) {
+        
+        // IF the quadtree has not been set up yet, do it!
+        if (quadtree == null){
+            Debug.output("CSVLocationHandler: Figuring out the locations and names! (This is a one-time operation!)");
+            quadtree = createData();
+        }
 
-	if (quadtree != null) {
-	    if (Debug.debugging("csvlocation")) {
-		Debug.output("CSVLocationHandler|CSVLocationHandler.get() ul.lon = "
-				   + nwLon + " lr.lon = " + seLon +
-				   " delta = " + (seLon - nwLon)); 
-	    }
+        if (quadtree != null) {
+            if (Debug.debugging("csvlocation")) {
+                Debug.output("CSVLocationHandler|CSVLocationHandler.get() ul.lon = "
+                                   + nwLon + " lr.lon = " + seLon +
+                                   " delta = " + (seLon - nwLon)); 
+            }
 
-	    quadtree.get(nwLat, nwLon, seLat, seLon, graphicList);
-	}
-	return graphicList;
+            quadtree.get(nwLat, nwLon, seLat, seLon, graphicList);
+        }
+        return graphicList;
     }
 
     public void fillLocationPopUpMenu(LocationPopupMenu locMenu) {
 
-	LocationCBMenuItem lcbi = new LocationCBMenuItem(LocationHandler.showname, 
-							 locMenu, 
-							 getLayer());
-	lcbi.setState(locMenu.getLoc().isShowName());
-	locMenu.add(lcbi);
-	locMenu.add(new LocationMenuItem(showdetails, locMenu, getLayer()));
+        LocationCBMenuItem lcbi = new LocationCBMenuItem(LocationHandler.showname, 
+                                                         locMenu, 
+                                                         getLayer());
+        lcbi.setState(locMenu.getLoc().isShowName());
+        locMenu.add(lcbi);
+        locMenu.add(new LocationMenuItem(showdetails, locMenu, getLayer()));
     }
 
     protected Box box = null;
@@ -519,36 +519,36 @@ public class CSVLocationHandler extends AbstractLocationHandler
      * @return Component object representing the palette widgets.
      */
     public Component getGUI() {
-	if (box == null) {
-	    JCheckBox showCSVLocationCheck, showNameCheck, forceGlobalCheck;
-	    JButton rereadFilesButton;
-	    
-	    showCSVLocationCheck = new JCheckBox("Show Locations", isShowLocations());
-	    showCSVLocationCheck.setActionCommand(showLocationsCommand);
-	    showCSVLocationCheck.addActionListener(this);
-	    showCSVLocationCheck.setToolTipText("<HTML><BODY>Show location markers on the map.</BODY></HTML>");
-	    showNameCheck = new JCheckBox("Show Location Names", isShowNames());
-	    showNameCheck.setActionCommand(showNamesCommand);
-	    showNameCheck.addActionListener(this);
-	    showNameCheck.setToolTipText("<HTML><BODY>Show location names on the map.</BODY></HTML>");
-	    
-	    forceGlobalCheck = new JCheckBox("Override Location Settings", isForceGlobal());
-	    forceGlobalCheck.setActionCommand(forceGlobalCommand);
-	    forceGlobalCheck.addActionListener(this);
-	    forceGlobalCheck.setToolTipText("<HTML><BODY>Make these settings override those set<BR>on the individual map objects.</BODY></HTML>");
-	    
-	    rereadFilesButton = new JButton("Reload Data From Source");
-	    rereadFilesButton.setActionCommand(readDataCommand);
-	    rereadFilesButton.addActionListener(this);
-	    rereadFilesButton.setToolTipText("<HTML><BODY>Reload the data file, and put these settings<br>on the individual map objects.</BODY></HTML>");
-	    
-	    box = Box.createVerticalBox();
-	    box.add(showCSVLocationCheck);
-	    box.add(showNameCheck);
-	    box.add(forceGlobalCheck);
-	    box.add(rereadFilesButton);
-	}
-	return box;
+        if (box == null) {
+            JCheckBox showCSVLocationCheck, showNameCheck, forceGlobalCheck;
+            JButton rereadFilesButton;
+            
+            showCSVLocationCheck = new JCheckBox("Show Locations", isShowLocations());
+            showCSVLocationCheck.setActionCommand(showLocationsCommand);
+            showCSVLocationCheck.addActionListener(this);
+            showCSVLocationCheck.setToolTipText("<HTML><BODY>Show location markers on the map.</BODY></HTML>");
+            showNameCheck = new JCheckBox("Show Location Names", isShowNames());
+            showNameCheck.setActionCommand(showNamesCommand);
+            showNameCheck.addActionListener(this);
+            showNameCheck.setToolTipText("<HTML><BODY>Show location names on the map.</BODY></HTML>");
+            
+            forceGlobalCheck = new JCheckBox("Override Location Settings", isForceGlobal());
+            forceGlobalCheck.setActionCommand(forceGlobalCommand);
+            forceGlobalCheck.addActionListener(this);
+            forceGlobalCheck.setToolTipText("<HTML><BODY>Make these settings override those set<BR>on the individual map objects.</BODY></HTML>");
+            
+            rereadFilesButton = new JButton("Reload Data From Source");
+            rereadFilesButton.setActionCommand(readDataCommand);
+            rereadFilesButton.addActionListener(this);
+            rereadFilesButton.setToolTipText("<HTML><BODY>Reload the data file, and put these settings<br>on the individual map objects.</BODY></HTML>");
+            
+            box = Box.createVerticalBox();
+            box.add(showCSVLocationCheck);
+            box.add(showNameCheck);
+            box.add(forceGlobalCheck);
+            box.add(rereadFilesButton);
+        }
+        return box;
     }
 
     //----------------------------------------------------------------------
@@ -560,43 +560,43 @@ public class CSVLocationHandler extends AbstractLocationHandler
      * actions.
      */
     public void actionPerformed(ActionEvent e) {
-	String cmd = e.getActionCommand();
-	if (cmd == showLocationsCommand) {		
-	    JCheckBox locationCheck = (JCheckBox)e.getSource();
-	    setShowLocations(locationCheck.isSelected());	        
-	    if(Debug.debugging("location")){
-	    	Debug.output("CSVLocationHandler::actionPerformed showLocations is "
-				   + isShowLocations());
-	    }
-	    getLayer().repaint();
-	} else if (cmd == showNamesCommand) {
-	    JCheckBox namesCheck = (JCheckBox)e.getSource();
-	    setShowNames(namesCheck.isSelected());
-	    if(Debug.debugging("location")){
-	    	Debug.output("CSVLocationHandler::actionPerformed showNames is "
-			     + isShowNames());
-	    }
+        String cmd = e.getActionCommand();
+        if (cmd == showLocationsCommand) {              
+            JCheckBox locationCheck = (JCheckBox)e.getSource();
+            setShowLocations(locationCheck.isSelected());               
+            if(Debug.debugging("location")){
+                Debug.output("CSVLocationHandler::actionPerformed showLocations is "
+                                   + isShowLocations());
+            }
+            getLayer().repaint();
+        } else if (cmd == showNamesCommand) {
+            JCheckBox namesCheck = (JCheckBox)e.getSource();
+            setShowNames(namesCheck.isSelected());
+            if(Debug.debugging("location")){
+                Debug.output("CSVLocationHandler::actionPerformed showNames is "
+                             + isShowNames());
+            }
 
-	    LocationLayer ll = getLayer();
-	    if (namesCheck.isSelected() && 
-		ll.getDeclutterMatrix() != null && 
-		ll.getUseDeclutterMatrix()) {
-		ll.doPrepare();
-	    } else {
-		ll.repaint();
-	    }
-	} else if (cmd == forceGlobalCommand) {
-	    JCheckBox forceGlobalCheck = (JCheckBox)e.getSource();
-	    setForceGlobal(forceGlobalCheck.isSelected());
-	    getLayer().repaint();
-	} else if (cmd == readDataCommand) {
-	    Debug.output("Re-reading Locations file");
-	    quadtree = null;
-	    getLayer().doPrepare();
-	} else 	{
-	    Debug.error("Unknown action command \"" + cmd +
-			       "\" in LocationLayer.actionPerformed().");
-	}
+            LocationLayer ll = getLayer();
+            if (namesCheck.isSelected() && 
+                ll.getDeclutterMatrix() != null && 
+                ll.getUseDeclutterMatrix()) {
+                ll.doPrepare();
+            } else {
+                ll.repaint();
+            }
+        } else if (cmd == forceGlobalCommand) {
+            JCheckBox forceGlobalCheck = (JCheckBox)e.getSource();
+            setForceGlobal(forceGlobalCheck.isSelected());
+            getLayer().repaint();
+        } else if (cmd == readDataCommand) {
+            Debug.output("Re-reading Locations file");
+            quadtree = null;
+            getLayer().doPrepare();
+        } else  {
+            Debug.error("Unknown action command \"" + cmd +
+                               "\" in LocationLayer.actionPerformed().");
+        }
     }
 
 }

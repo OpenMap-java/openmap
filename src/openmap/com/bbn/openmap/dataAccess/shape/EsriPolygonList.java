@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygonList.java,v $
 // $RCSfile: EsriPolygonList.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/01 12:39:02 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,50 +46,50 @@ public class EsriPolygonList extends EsriGraphicList {
      * @param shape the non-null OMGraphic to add 
      */
     public void add(OMGraphic shape) {
-	try {
+        try {
 
-	    if (shape instanceof OMPoly) {
-		shape = EsriPolygon.convert((OMPoly) shape);
-		// test for null in next if statement.
-	    }
+            if (shape instanceof OMPoly) {
+                shape = EsriPolygon.convert((OMPoly) shape);
+                // test for null in next if statement.
+            }
 
-	    if (shape instanceof OMGraphicList) {
-		OMGraphicList list = (OMGraphicList)shape;
-		EsriGraphic graphic = (EsriGraphic)list.getOMGraphicAt(0);
+            if (shape instanceof OMGraphicList) {
+                OMGraphicList list = (OMGraphicList)shape;
+                EsriGraphic graphic = (EsriGraphic)list.getOMGraphicAt(0);
 
-		if (graphic instanceof EsriPolygon ||
-		    graphic instanceof EsriPolygonList) {
-		    graphics.add(shape);
-		    addExtents(((EsriGraphicList)shape).getExtents());
-		} else if (graphic instanceof OMGraphic) {
-		    // Try recursively...
-		    add((OMGraphic)graphic);
-		} else {
-		    Debug.message("esri", "EsriPolygonList.add()- graphic list isn't a EsriPolygonList, can't add.");
-		}
+                if (graphic instanceof EsriPolygon ||
+                    graphic instanceof EsriPolygonList) {
+                    graphics.add(shape);
+                    addExtents(((EsriGraphicList)shape).getExtents());
+                } else if (graphic instanceof OMGraphic) {
+                    // Try recursively...
+                    add((OMGraphic)graphic);
+                } else {
+                    Debug.message("esri", "EsriPolygonList.add()- graphic list isn't a EsriPolygonList, can't add.");
+                }
 
-	    } else if (shape instanceof EsriPolygon) {
-		graphics.add(shape);
-		addExtents(((EsriPolygon)shape).getExtents());
-  	    } else {
-		Debug.message("esri", "EsriPolygonList.add()- graphic isn't a EsriPoly or OMPoly, can't add.");
-	    }
-	} catch (ClassCastException cce) {
-	}
+            } else if (shape instanceof EsriPolygon) {
+                graphics.add(shape);
+                addExtents(((EsriPolygon)shape).getExtents());
+            } else {
+                Debug.message("esri", "EsriPolygonList.add()- graphic isn't a EsriPoly or OMPoly, can't add.");
+            }
+        } catch (ClassCastException cce) {
+        }
     }
 
     /**
      * Get the list type in ESRI type number form - 5.
      */
     public int getType() {
-	return SHAPE_TYPE_POLYGON;
+        return SHAPE_TYPE_POLYGON;
     }
 
     /**
      * Construct an EsriPolygonList.
      */
     public EsriPolygonList() {
-	super();
+        super();
     }
     
     /**
@@ -98,7 +98,7 @@ public class EsriPolygonList extends EsriGraphicList {
      * @param initialCapacity the initial capacity of the list 
      */
     public EsriPolygonList(int initialCapacity) {
-	super(initialCapacity);
+        super(initialCapacity);
     }
 
     /**
@@ -110,7 +110,7 @@ public class EsriPolygonList extends EsriGraphicList {
      * @deprecated capacityIncrement doesn't do anything.
      */
     public EsriPolygonList(int initialCapacity, int capacityIncrement) {
-	super(initialCapacity);
+        super(initialCapacity);
     }
 
     //converts rectangles into polygons
@@ -135,11 +135,11 @@ public class EsriPolygonList extends EsriGraphicList {
 
         //using the OMRect data create an OMPoly
         OMPoly poly = new OMPoly(rectPoints, omRect.DECIMAL_DEGREES, omRect.getLineType());
-	poly.setAppObject(omRect.getAppObject());
-	DrawingAttributes da = new DrawingAttributes();
-	da.setFrom(omRect);
-	da.setTo(poly);
-	return poly;
+        poly.setAppObject(omRect.getAppObject());
+        DrawingAttributes da = new DrawingAttributes();
+        da.setFrom(omRect);
+        da.setTo(poly);
+        return poly;
     }
 
     //converts circles into polygons
@@ -162,9 +162,9 @@ public class EsriPolygonList extends EsriGraphicList {
 
         float[] circlePoints = new float[initialPoints.size()];
 
-	if (proj == null) {
-	    return null;
-	}
+        if (proj == null) {
+            return null;
+        }
 
         //convert the x/y points to lat/lon points
         for (int p = 0; p < initialPoints.size(); p += 2) {
@@ -177,33 +177,33 @@ public class EsriPolygonList extends EsriGraphicList {
         }
 
         //using the circle data create an OMPoly
-	OMPoly poly = new OMPoly(circlePoints, omCircle.DECIMAL_DEGREES, omCircle.getLineType());
-	poly.setAppObject(omCircle.getAppObject());
-	DrawingAttributes da = new DrawingAttributes();
-	da.setFrom(omCircle);
-	da.setTo(poly);
-	return poly;
+        OMPoly poly = new OMPoly(circlePoints, omCircle.DECIMAL_DEGREES, omCircle.getLineType());
+        poly.setAppObject(omCircle.getAppObject());
+        DrawingAttributes da = new DrawingAttributes();
+        da.setFrom(omCircle);
+        da.setTo(poly);
+        return poly;
     }
 
 
     //converts range rings to circles which are passed to the
     //convertCircles() method to be converted to OMPolys
     public static OMGraphicList convert(OMRangeRings omRR, 
-					Projection proj) {
+                                        Projection proj) {
         //get the array of circles
         OMCircle[] circles = omRR.createCircles();
-	OMCircle circ;
-	OMGraphicList circleList = new OMGraphicList();
-	circleList.setAppObject(omRR.getAppObject());
+        OMCircle circ;
+        OMGraphicList circleList = new OMGraphicList();
+        circleList.setAppObject(omRR.getAppObject());
 
         //get the line color and fill color that are to be passed with
         //the dbf info
 //          Color lineColor = getColorString(dtlGraphic.getLineColor());
 //          Color fillColor = getColorString(dtlGraphic.getFillColor());
 
-	if (proj == null) {
-	    return circleList;
-	}
+        if (proj == null) {
+            return circleList;
+        }
 
         int i;
         for (i = 0; i < circles.length; i++) {
@@ -214,11 +214,11 @@ public class EsriPolygonList extends EsriGraphicList {
             //have to re-generate each circle in the range ring array
             if (circles[i].generate(proj)) {
                 //call convertCircles to convert each ring to an OMPoly
-		OMPoly poly = convert((OMCircle)circles[i], proj);
+                OMPoly poly = convert((OMCircle)circles[i], proj);
                 //call the method to add this ring to the EsriLayer
-		if (poly != null) {
-		    circleList.add(poly);
-		}
+                if (poly != null) {
+                    circleList.add(poly);
+                }
             } else {
                 System.out.println("Could not generate circle from RangeRing");
                 return null;
@@ -235,21 +235,21 @@ public class EsriPolygonList extends EsriGraphicList {
         //to the last rings interval
 //          dbfList = getDbfList("RangeRings(" + omRR.getIntervalUnits().toString() + ")less than", omRR.getInterval() * (i + 1), lineColor, fillColor);
 
-	DrawingAttributes da = new DrawingAttributes();
-	da.setFrom(omRR);
-	da.setTo(circleList);
+        DrawingAttributes da = new DrawingAttributes();
+        da.setFrom(omRR);
+        da.setTo(circleList);
 
-	return circleList;
+        return circleList;
     }
 
     public EsriGraphic shallowCopy() {
-	EsriPolygonList ret = new EsriPolygonList(size());
-	for (Iterator iter = iterator(); iter.hasNext(); ) {
-	    EsriGraphic g = (EsriGraphic)iter.next();
-	    ret.add((OMGraphic)g.shallowCopy());
-	}
-	ret.setAppObject(getAppObject());
-	return ret;
+        EsriPolygonList ret = new EsriPolygonList(size());
+        for (Iterator iter = iterator(); iter.hasNext(); ) {
+            EsriGraphic g = (EsriGraphic)iter.next();
+            ret.add((OMGraphic)g.shallowCopy());
+        }
+        ret.setAppObject(getAppObject());
+        return ret;
     }
 }
 

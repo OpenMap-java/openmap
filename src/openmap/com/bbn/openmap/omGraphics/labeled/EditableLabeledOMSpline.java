@@ -22,7 +22,7 @@ public class EditableLabeledOMSpline extends EditableOMSpline {
      * @see com.bbn.openmap.omGraphics.EditableOMPoly#EditableOMPoly()
      */
     public EditableLabeledOMSpline() {
-	super();
+        super();
     }
 
     /**
@@ -32,7 +32,7 @@ public class EditableLabeledOMSpline extends EditableOMSpline {
      * @see com.bbn.openmap.omGraphics.EditableOMPoly#EditableOMPoly(GraphicAttributes)
      */
     public EditableLabeledOMSpline(GraphicAttributes ga) {
-	super(ga);
+        super(ga);
     }
 
     /**
@@ -43,7 +43,7 @@ public class EditableLabeledOMSpline extends EditableOMSpline {
      * @see com.bbn.openmap.omGraphics.EditableOMPoly#EditableOMPoly(GraphicAttributes)
      */
     public EditableLabeledOMSpline(LabeledOMSpline omls) {
-	super(omls);
+        super(omls);
     }
 
     /**
@@ -51,29 +51,29 @@ public class EditableLabeledOMSpline extends EditableOMSpline {
      * @see com.bbn.openmap.omGraphics.EditableOMPoly#createGraphic(int, int)
      */
     public OMGraphic createGraphic(int renderType, int lineType) {
-	OMGraphic g = null;
-	switch (renderType) {
-	case (OMGraphic.RENDERTYPE_LATLON) :
-	    g =	new LabeledOMSpline(new float[0], OMGraphic.RADIANS, lineType);
-	    break;
-	case (OMGraphic.RENDERTYPE_OFFSET) :
-	    g = new LabeledOMSpline(90f, -180f, new int[0],
-				    OMSpline.COORDMODE_ORIGIN);
-	    break;
-	default :
-	    g = new LabeledOMSpline(new int[0]);
-	}
-	((LabeledOMSpline) g).setDoShapes(true);
-	return g;
+        OMGraphic g = null;
+        switch (renderType) {
+        case (OMGraphic.RENDERTYPE_LATLON) :
+            g = new LabeledOMSpline(new float[0], OMGraphic.RADIANS, lineType);
+            break;
+        case (OMGraphic.RENDERTYPE_OFFSET) :
+            g = new LabeledOMSpline(90f, -180f, new int[0],
+                                    OMSpline.COORDMODE_ORIGIN);
+            break;
+        default :
+            g = new LabeledOMSpline(new int[0]);
+        }
+        ((LabeledOMSpline) g).setDoShapes(true);
+        return g;
     }
 
     public java.net.URL getImageURL(String imageName) {
-	try {
-	    return Class.forName(
-		"com.bbn.openmap.omGraphics.EditableOMPoly").getResource(
-		    imageName);
-	}
-	catch (ClassNotFoundException cnfe) {}
-	return null;
+        try {
+            return Class.forName(
+                "com.bbn.openmap.omGraphics.EditableOMPoly").getResource(
+                    imageName);
+        }
+        catch (ClassNotFoundException cnfe) {}
+        return null;
     }
 }

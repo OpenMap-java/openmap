@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGeometryList.java,v $
 // $RCSfile: OMGeometryList.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/12/23 20:46:43 $
-// $Author: wjeuerle $
+// $Revision: 1.8 $
+// $Date: 2004/01/26 18:18:12 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -66,7 +66,7 @@ public class OMGeometryList extends OMGraphicList
      * Construct an OMGeometryList.
      */
     public OMGeometryList() {
-	super(10);
+        super(10);
     };
     
     /**
@@ -75,7 +75,7 @@ public class OMGeometryList extends OMGraphicList
      * @param initialCapacity the initial capacity of the list 
      */
     public OMGeometryList(int initialCapacity) {
-	super(initialCapacity);
+        super(initialCapacity);
     };
 
     /**
@@ -86,7 +86,7 @@ public class OMGeometryList extends OMGraphicList
      * @param list List of OMGeometries.
      */
     public OMGeometryList(java.util.List list) {
-	super(list);
+        super(list);
     }
 
     /**
@@ -97,8 +97,8 @@ public class OMGeometryList extends OMGraphicList
      * @exception IllegalArgumentException if OMGeometry is null
      */
     public void add(OMGeometry g) {
-	setNeedToRegenerate(true);
-	_add(g);
+        setNeedToRegenerate(true);
+        _add(g);
     }
 
     /**
@@ -108,8 +108,8 @@ public class OMGeometryList extends OMGraphicList
      * @return true if geometry was on the list, false if otherwise.
      */
     public boolean remove(OMGeometry geometry) {
-	setNeedToRegenerate(true);
-	return _remove(geometry);
+        setNeedToRegenerate(true);
+        return _remove(geometry);
     }
 
     /**
@@ -120,7 +120,7 @@ public class OMGeometryList extends OMGraphicList
      * is not found.  
      */
     public int indexOf(OMGeometry geometry) {
-	return _indexOf(geometry);
+        return _indexOf(geometry);
     }
 
     /**
@@ -132,8 +132,8 @@ public class OMGeometryList extends OMGraphicList
      * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     public void setAt(OMGeometry geometry, int index) {
-	setNeedToRegenerate(true);
-	_setAt(geometry, index);
+        setNeedToRegenerate(true);
+        _setAt(geometry, index);
     }
 
     /**
@@ -146,7 +146,7 @@ public class OMGeometryList extends OMGraphicList
      * this.size()</code>
      */
     public OMGeometry getAt(int location) {
-	return _getAt(location);
+        return _getAt(location);
     }
 
     /**
@@ -160,7 +160,7 @@ public class OMGeometryList extends OMGraphicList
      * @see OMGeometry#getAppObject
      */
     public OMGeometry getWithAppObject(Object appObj) {
-	return _getWithAppObject(appObj);
+        return _getWithAppObject(appObj);
     }
 
     /**
@@ -169,11 +169,11 @@ public class OMGeometryList extends OMGraphicList
      * @param location the location of the OMGeometry to remove
      */
     public Object removeAt(int location) {
-	Object obj = _remove(location);
-	if (obj != null) {
-	    setNeedToRegenerate(true);
-	}
-	return obj;
+        Object obj = _remove(location);
+        if (obj != null) {
+            setNeedToRegenerate(true);
+        }
+        return obj;
     }
 
     /**
@@ -185,7 +185,7 @@ public class OMGeometryList extends OMGraphicList
      * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     public void insertAt(OMGeometry geometry, int location) {
-	setNeedToRegenerate(true);
+        setNeedToRegenerate(true);
         _insert(geometry, location);
     }
 
@@ -196,11 +196,11 @@ public class OMGeometryList extends OMGraphicList
      * @param s the stroke object to use.  
      */
     public void setStroke(java.awt.Stroke s) {
-	if (s != null) {
-	    stroke = s;
-	} else {
-	    stroke = new BasicStroke();
-	}
+        if (s != null) {
+            stroke = s;
+        } else {
+            stroke = new BasicStroke();
+        }
     }
     
     /**
@@ -210,19 +210,19 @@ public class OMGeometryList extends OMGraphicList
      * @param paint java.awt.Paint 
      */
     public void setFillPaint(Paint paint) {
-	if (paint != null) {
-	    fillPaint = paint;
-	    if (Debug.debugging("omGraphics")) {
-		Debug.output("OMGraphic.setFillPaint(): fillPaint= "
-			     + fillPaint);
-	    }
-	} else {
-	    fillPaint = clear;
-	    if (Debug.debugging("omGraphics")) {
-		Debug.output("OMGraphic.setFillPaint(): fillPaint is clear");
-	    }
-	}
-	setEdgeMatchesFill();
+        if (paint != null) {
+            fillPaint = paint;
+            if (Debug.debugging("omGraphics")) {
+                Debug.output("OMGraphic.setFillPaint(): fillPaint= "
+                             + fillPaint);
+            }
+        } else {
+            fillPaint = clear;
+            if (Debug.debugging("omGraphics")) {
+                Debug.output("OMGraphic.setFillPaint(): fillPaint is clear");
+            }
+        }
+        setEdgeMatchesFill();
     }
 
     /**
@@ -235,7 +235,7 @@ public class OMGeometryList extends OMGraphicList
      * influencing appearance.
      */
     public void setTextureMask(TexturePaint texture) {
-	textureMask = texture;
+        textureMask = texture;
     }
 
     /**
@@ -245,16 +245,16 @@ public class OMGeometryList extends OMGraphicList
      * @param paint Set the line paint for all the objects on the list.
      */
     public void setLinePaint(Paint paint) {
-	if (paint != null) {
-	    linePaint = paint;
-	} else {
-	    linePaint = Color.black;
-	}
+        if (paint != null) {
+            linePaint = paint;
+        } else {
+            linePaint = Color.black;
+        }
 
-	if (!selected) {
-	    displayPaint = linePaint;
-	}
-	setEdgeMatchesFill();
+        if (!selected) {
+            displayPaint = linePaint;
+        }
+        setEdgeMatchesFill();
     }
 
     /**
@@ -264,16 +264,16 @@ public class OMGeometryList extends OMGraphicList
      * @param paint java.awt.Paint 
      */
     public void setSelectPaint(Paint paint) {
-	if (paint != null) {
-	    selectPaint = paint;
-	} else {
-	    selectPaint = Color.black;
-	}
+        if (paint != null) {
+            selectPaint = paint;
+        } else {
+            selectPaint = Color.black;
+        }
 
-	if (selected) {
-	    displayPaint = selectPaint;
-	}
-	setEdgeMatchesFill();
+        if (selected) {
+            displayPaint = selectPaint;
+        }
+        setEdgeMatchesFill();
     }
 
     /**
@@ -282,18 +282,18 @@ public class OMGeometryList extends OMGraphicList
      * @param paint java.awt.Paint
      */
     public void setMattingPaint(Paint paint) {
-	if (paint != null) {
-	    mattingPaint = paint;
-	} else {
-	    mattingPaint = Color.black;
-	}
+        if (paint != null) {
+            mattingPaint = paint;
+        } else {
+            mattingPaint = Color.black;
+        }
     }
 
     /**
      * Set the matting flag for all the list.
      */
     public void setMatted(boolean value) {
-	matted = value;
+        matted = value;
     }
 
     /**
@@ -306,65 +306,65 @@ public class OMGeometryList extends OMGraphicList
      * @param gr the AWT Graphics context
      */
     public synchronized void render(Graphics gr) {
-	Shape shp = getShape();
-	if (shp != null) { 
+        Shape shp = getShape();
+        if (shp != null) { 
 
-	    if (matted) {
-		if (gr instanceof Graphics2D && 
-		    stroke instanceof BasicStroke) {
-		    ((Graphics2D)gr).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
-		    setGraphicsColor(gr, mattingPaint);
-		    draw(gr);
-		}
-	    }
+            if (matted) {
+                if (gr instanceof Graphics2D && 
+                    stroke instanceof BasicStroke) {
+                    ((Graphics2D)gr).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
+                    setGraphicsColor(gr, mattingPaint);
+                    draw(gr);
+                }
+            }
 
-	    setGraphicsForFill(gr);
-	    ((Graphics2D)gr).fill(shp);
-	    setGraphicsForEdge(gr);
-	    ((Graphics2D)gr).draw(shp);
+            setGraphicsForFill(gr);
+            ((Graphics2D)gr).fill(shp);
+            setGraphicsForEdge(gr);
+            ((Graphics2D)gr).draw(shp);
 
-	} else {
-	    ListIterator iterator;
-	    java.util.List targets = getTargets();
-	    OMGeometry geometry;
+        } else {
+            ListIterator iterator;
+            java.util.List targets = getTargets();
+            OMGeometry geometry;
 
-	    if (traverseMode == FIRST_ADDED_ON_TOP) {
-		iterator = targets.listIterator(targets.size());
-		while (iterator.hasPrevious()) {
-		    geometry = (OMGeometry) iterator.previous();
-			
-		    if (geometry.isVisible()) {
-			renderGeometry(geometry, gr);
-		    }
+            if (traverseMode == FIRST_ADDED_ON_TOP) {
+                iterator = targets.listIterator(targets.size());
+                while (iterator.hasPrevious()) {
+                    geometry = (OMGeometry) iterator.previous();
+                        
+                    if (geometry.isVisible()) {
+                        renderGeometry(geometry, gr);
+                    }
 
-		}
-	    } else {
-		iterator = targets.listIterator();
-		while (iterator.hasNext()) {
-		    geometry = (OMGeometry) iterator.next();
+                }
+            } else {
+                iterator = targets.listIterator();
+                while (iterator.hasNext()) {
+                    geometry = (OMGeometry) iterator.next();
 
-		    if (geometry.isVisible()) {
-			renderGeometry(geometry, gr);
-		    }
-		}
-	    }
-	}
+                    if (geometry.isVisible()) {
+                        renderGeometry(geometry, gr);
+                    }
+                }
+            }
+        }
     }
 
     protected void renderGeometry(OMGeometry geometry, Graphics gr) {
-	if (matted) {
-	    if (gr instanceof Graphics2D && 
-		stroke instanceof BasicStroke) {
-		((Graphics2D)gr).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
-		setGraphicsColor(gr, mattingPaint);
-		geometry.draw(gr);
-	    }
-	}
+        if (matted) {
+            if (gr instanceof Graphics2D && 
+                stroke instanceof BasicStroke) {
+                ((Graphics2D)gr).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
+                setGraphicsColor(gr, mattingPaint);
+                geometry.draw(gr);
+            }
+        }
 
-	setGraphicsForFill(gr);
-	geometry.fill(gr);
-	setGraphicsForEdge(gr);
-	geometry.draw(gr);
+        setGraphicsForFill(gr);
+        geometry.fill(gr);
+        setGraphicsForEdge(gr);
+        geometry.draw(gr);
     }
 
     /**
@@ -379,16 +379,16 @@ public class OMGeometryList extends OMGraphicList
      * @param gr the AWT Graphics context 
      */
     public void renderAllAsSelected(Graphics gr) {
-	if (shape != null) { 
+        if (shape != null) { 
 
-	    setGraphicsForFill(gr);
-	    ((Graphics2D)gr).fill(shape);
-	    select();
-	    setGraphicsForEdge(gr);
-	    ((Graphics2D)gr).draw(shape);
-	    deselect();
+            setGraphicsForFill(gr);
+            ((Graphics2D)gr).fill(shape);
+            select();
+            setGraphicsForEdge(gr);
+            ((Graphics2D)gr).draw(shape);
+            deselect();
 
-	}
+        }
     }
 
     /**
@@ -404,27 +404,27 @@ public class OMGeometryList extends OMGraphicList
      * @see OMGeometry#regenerate
      */
     public synchronized void generate(Projection p, boolean forceProjectAll) {
-	
-	// Important!  Resets the shape.
-	shape = null;
+        
+        // Important!  Resets the shape.
+        shape = null;
 
-	// Create a shape object out of all of the shape objects.
-	ListIterator iterator;
+        // Create a shape object out of all of the shape objects.
+        ListIterator iterator;
 
-	if (traverseMode == FIRST_ADDED_ON_TOP) {
-	    iterator = graphics.listIterator(graphics.size());
-	    while (iterator.hasPrevious()) {
-		updateShape((OMGeometry) iterator.previous(), 
-			    p, forceProjectAll);
-	    }
-	} else {
-	    iterator = graphics.listIterator();
-	    while (iterator.hasNext()) {
-		updateShape((OMGeometry) iterator.next(), 
-			    p, forceProjectAll);
-	    }
-	}
-	setNeedToRegenerate(false);
+        if (traverseMode == FIRST_ADDED_ON_TOP) {
+            iterator = graphics.listIterator(graphics.size());
+            while (iterator.hasPrevious()) {
+                updateShape((OMGeometry) iterator.previous(), 
+                            p, forceProjectAll);
+            }
+        } else {
+            iterator = graphics.listIterator();
+            while (iterator.hasNext()) {
+                updateShape((OMGeometry) iterator.next(), 
+                            p, forceProjectAll);
+            }
+        }
+        setNeedToRegenerate(false);
     }
 
     /**
@@ -433,27 +433,27 @@ public class OMGeometryList extends OMGraphicList
      * shape object.
      */
     protected void updateShape(OMGeometry geometry, Projection p, 
-			       boolean forceProject) {
+                               boolean forceProject) {
 
-	if (forceProject) {
-	    geometry.generate(p);
-	} else {
-	    geometry.regenerate(p);
-	}
-		    
-	if (geometry.isVisible()) {
-	    GeneralPath gp = (GeneralPath)geometry.getShape();
+        if (forceProject) {
+            geometry.generate(p);
+        } else {
+            geometry.regenerate(p);
+        }
+                    
+        if (geometry.isVisible()) {
+            GeneralPath gp = (GeneralPath)geometry.getShape();
 
-	    if (gp == null) {
-		return;
-	    }
+            if (gp == null) {
+                return;
+            }
 
-	    if (shape == null) {
-		shape = gp;
-	    } else {
-		((GeneralPath)shape).append(gp, connectParts);
-	    }
-	}
+            if (shape == null) {
+                shape = gp;
+            } else {
+                ((GeneralPath)shape).append(gp, connectParts);
+            }
+        }
     }
 
     /**
@@ -473,43 +473,43 @@ public class OMGeometryList extends OMGraphicList
      * (ungenerated).
      */
     protected float _distance(int x, int y) {
-	float temp, distance = Float.POSITIVE_INFINITY;
+        float temp, distance = Float.POSITIVE_INFINITY;
 
-	if (isVague()) {
+        if (isVague()) {
 
-	    if (getNeedToRegenerate() || shape == null) {
-		return distance;
-	    }
+            if (getNeedToRegenerate() || shape == null) {
+                return distance;
+            }
 
-	    if (shape.contains((double)x, (double)y)) {
-		// 	    if (Debug.debugging("omgraphicdetail")) {
-		// 		Debug.output(" contains " + x + ", " + y);
-		// 	    }
-		distance = 0f;
-	    } else {
-		distance = distanceToEdge(x, y);
-	    }
-	} else {
-	    distance = super._distance(x, y);
-	}
+            if (shape.contains((double)x, (double)y)) {
+                //          if (Debug.debugging("omgraphicdetail")) {
+                //              Debug.output(" contains " + x + ", " + y);
+                //          }
+                distance = 0f;
+            } else {
+                distance = distanceToEdge(x, y);
+            }
+        } else {
+            distance = super._distance(x, y);
+        }
 
-	return distance;
+        return distance;
     }
 
     protected synchronized OMDist _findClosest(int x, int y, float limit, boolean resetSelect) {
 
-	if (shape != null) {
-	    float currentDistance = _distance(x, y);
-	    OMDist omd = new OMDist();
+        if (shape != null) {
+            float currentDistance = _distance(x, y);
+            OMDist omd = new OMDist();
 
-	    if (currentDistance < limit) {
-		omd.omg = this;
-		omd.d = currentDistance;
-	    }
-	    return omd;
-	} else {
-	    return super._findClosest(x, y, limit, resetSelect);
-	}
+            if (currentDistance < limit) {
+                omd.omg = this;
+                omd.d = currentDistance;
+            }
+            return omd;
+        } else {
+            return super._findClosest(x, y, limit, resetSelect);
+        }
     }
 
     /**
@@ -529,7 +529,7 @@ public class OMGeometryList extends OMGraphicList
      * null if not found.
      */
     public OMGeometry findClosestGeometry(int x, int y, float limit) {
-	return _findClosest(x, y, limit).omg;
+        return _findClosest(x, y, limit).omg;
     }
 
     /**
@@ -539,7 +539,7 @@ public class OMGeometryList extends OMGraphicList
      * close to the coordinates that isn't an OMGraphic.
      */
     public OMGraphic findClosest(int x, int y, float limit) {
-	return objectToOMGraphic(_findClosest(x, y, limit).omg);
+        return objectToOMGraphic(_findClosest(x, y, limit).omg);
     }
 
     /**
@@ -551,7 +551,7 @@ public class OMGeometryList extends OMGraphicList
      * OMGraphic or OMGeometry.
      */
     public OMGraphic selectClosest(int x, int y, float limit) {
-	return objectToOMGraphic(_selectClosest(x, y, limit));
+        return objectToOMGraphic(_selectClosest(x, y, limit));
     }
 
     /**
@@ -604,7 +604,7 @@ public class OMGeometryList extends OMGraphicList
      * none found.  
      */
     public OMGeometry selectClosestGeometry(int x, int y, float limit) {
-	return _selectClosest(x, y, limit);
+        return _selectClosest(x, y, limit);
     }
 
     /** 
@@ -621,18 +621,18 @@ public class OMGeometryList extends OMGraphicList
      * @return the geometry that contains the pixel, NONE (null) if none are found.  
      */
     public OMGeometry getContains(int x, int y) {
-	if (shape != null && isVague() && shape.contains(x, y)) {
-	    return this;
-	} else {
-	    return _getContains(x, y);
-	}
+        if (shape != null && isVague() && shape.contains(x, y)) {
+            return this;
+        } else {
+            return _getContains(x, y);
+        }
     }
 
     /**
      * Returns this list if x, y is inside the bounds of the contents of this list.
      */
     public OMGraphic getOMGraphicThatContains(int x, int y) {
-	return objectToOMGraphic(getContains(x, y));
+        return objectToOMGraphic(getContains(x, y));
     }
 
     /**
@@ -642,7 +642,7 @@ public class OMGeometryList extends OMGraphicList
      * an action to take on the list (deselectAll).  
      */
     public void doAction(OMGeometry geometry, OMAction action) {
-	_doAction(geometry, action);
+        _doAction(geometry, action);
     }
 
     /** 
@@ -651,21 +651,21 @@ public class OMGeometryList extends OMGraphicList
      * @param objstream ObjectInputStream of geometry list.
      */
     public void readGraphics(ObjectInputStream objstream) throws IOException {
-	
-	Debug.message("omgraphics", "OMGeometryList: Reading cached geometries");
-	
-	try { 
-	    while (true) {
-		try {
-		    OMGeometry omg = (OMGeometry)objstream.readObject();
-		    this.add(omg);
-		} catch (ClassNotFoundException e) {
-		    e.printStackTrace();
-		} catch (OptionalDataException ode) {
-		    ode.printStackTrace();
-		}
-	    }
-	} catch (EOFException e) {}
+        
+        Debug.message("omgraphics", "OMGeometryList: Reading cached geometries");
+        
+        try { 
+            while (true) {
+                try {
+                    OMGeometry omg = (OMGeometry)objstream.readObject();
+                    this.add(omg);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (OptionalDataException ode) {
+                    ode.printStackTrace();
+                }
+            }
+        } catch (EOFException e) {}
     }
     
     /**
@@ -674,7 +674,7 @@ public class OMGeometryList extends OMGraphicList
      * object (if false).
      */
     public void setConnectParts(boolean value) {
-	connectParts = value;
+        connectParts = value;
     }
 
     /**
@@ -683,7 +683,7 @@ public class OMGeometryList extends OMGraphicList
      * object (if false).
      */
     public boolean getConnectParts() {
-	return connectParts;
+        return connectParts;
     }
 
 }

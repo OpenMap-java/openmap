@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/OMDTEDGrid.java,v $
 // $RCSfile: OMDTEDGrid.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/01/24 02:56:11 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -75,7 +75,7 @@ public class OMDTEDGrid extends OMGrid {
      * @param value latitude in decimal degrees.  
      */
     public void setLowerLat(float value) {
-	setLatitude(value);
+        setLatitude(value);
     }
 
     /**
@@ -84,7 +84,7 @@ public class OMDTEDGrid extends OMGrid {
      * @return the latitude in decimal degrees.
      */
     public float getLowerLat() {
-	return getLatitude();
+        return getLatitude();
     }
 
     /**
@@ -93,7 +93,7 @@ public class OMDTEDGrid extends OMGrid {
      * @param value the longitude in decimal degrees.  
      */
     public void setLeftLon(float value) {
-	setLongitude(value);
+        setLongitude(value);
     }
 
     /**
@@ -102,7 +102,7 @@ public class OMDTEDGrid extends OMGrid {
      * @return longitude in decimal degrees.
      */
     public float getLeftLon() {
-	return getLongitude();
+        return getLongitude();
     }
 
     /**
@@ -112,8 +112,8 @@ public class OMDTEDGrid extends OMGrid {
      */
     public void setUpperLat(float value) {
         if (latitude1 == value) return;
-	latitude1 = value;
-	setNeedToRegenerate(true);
+        latitude1 = value;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -132,8 +132,8 @@ public class OMDTEDGrid extends OMGrid {
      */
     public void setRightLon(float value) {
         if (longitude1 == value) return;
-	longitude1 = value;
-	setNeedToRegenerate(true);
+        longitude1 = value;
+        setNeedToRegenerate(true);
     }
 
     /**

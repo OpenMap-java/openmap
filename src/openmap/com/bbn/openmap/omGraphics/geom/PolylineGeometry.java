@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/PolylineGeometry.java,v $
 // $RCSfile: PolylineGeometry.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:46:45 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:13 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -78,154 +78,154 @@ public abstract class PolylineGeometry extends PolygonGeometry
      * @return the distance of the object to the location given.
      */
     public float distance(int x, int y) {
-	if (shape != null) {
-	    return super.distance(x, y);
-	}
+        if (shape != null) {
+            return super.distance(x, y);
+        }
 
-	// If shape is null, then we have to do things the old way.
+        // If shape is null, then we have to do things the old way.
 
-	float temp, distance = Float.POSITIVE_INFINITY;
+        float temp, distance = Float.POSITIVE_INFINITY;
 
-	if (getNeedToRegenerate()) {
-	    return distance;
-	}
+        if (getNeedToRegenerate()) {
+            return distance;
+        }
 
-	// safety: grab local reference of projected points
-	int[][] xpts = xpoints;
-	int[][] ypts = ypoints;
-	int[] _x, _y;
-	int len = xpts.length;
+        // safety: grab local reference of projected points
+        int[][] xpts = xpoints;
+        int[][] ypts = ypoints;
+        int[] _x, _y;
+        int len = xpts.length;
 
-	for (int i = 0; i < len; i++) {
-	    _x = xpts[i];
-	    _y = ypts[i];
+        for (int i = 0; i < len; i++) {
+            _x = xpts[i];
+            _y = ypts[i];
 
-	    // get the closest point
-	    temp = DrawUtil.closestPolyDistance(_x, _y, x, y, false);
-	    if (temp < distance) distance = temp;
-	}
+            // get the closest point
+            temp = DrawUtil.closestPolyDistance(_x, _y, x, y, false);
+            if (temp < distance) distance = temp;
+        }
 
-	return distance;
+        return distance;
     }
 
     public static class LL extends PolygonGeometry.LL {
 
-	/**
-	 * Create an LL PolygonGeometry from a list of float lat/lon pairs.
-	 * <p>
-	 * NOTES:
-	 * <ul>
-	 * <li>llPoints array is converted into radians IN PLACE for more
-	 * efficient handling internally if it's not already in radians!
-	 * For even better performance, you should send us an array
-	 * already in radians format!
-	 * <li>If you want the poly to be connected (as a polygon), you
-	 * need to ensure that the first and last coordinate pairs are the
-	 * same.
-	 * </ul>
-	 *
-	 * @param llPoints array of lat/lon points, arranged lat, lon,
-	 * lat, lon, etc.
-	 * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
-	 * or OMGraphic.DECIMAL_DEGREES
-	 * @param lType line type, from a list defined in OMGraphic.
-	 */
-	public LL(float[] llPoints, int units, int lType) {
-	    this(llPoints, units, lType, -1);
-	}
+        /**
+         * Create an LL PolygonGeometry from a list of float lat/lon pairs.
+         * <p>
+         * NOTES:
+         * <ul>
+         * <li>llPoints array is converted into radians IN PLACE for more
+         * efficient handling internally if it's not already in radians!
+         * For even better performance, you should send us an array
+         * already in radians format!
+         * <li>If you want the poly to be connected (as a polygon), you
+         * need to ensure that the first and last coordinate pairs are the
+         * same.
+         * </ul>
+         *
+         * @param llPoints array of lat/lon points, arranged lat, lon,
+         * lat, lon, etc.
+         * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
+         * or OMGraphic.DECIMAL_DEGREES
+         * @param lType line type, from a list defined in OMGraphic.
+         */
+        public LL(float[] llPoints, int units, int lType) {
+            this(llPoints, units, lType, -1);
+        }
 
-	/**
-	 * Create an OMPoly from a list of float lat/lon pairs.
-	 * <p>
-	 * NOTES:
-	 * <ul>
-	 * <li>llPoints array is converted into radians IN PLACE for more
-	 * efficient handling internally if it's not already in radians!
-	 * For even better performance, you should send us an array
-	 * already in radians format!
-	 * <li>If you want the poly to be connected (as a polygon), you
-	 * need to ensure that the first and last coordinate pairs are the
-	 * same.
-	 * </ul>
-	 *
-	 * @param llPoints array of lat/lon points, arranged lat, lon,
-	 * lat, lon, etc.
-	 * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
-	 * or OMGraphic.DECIMAL_DEGREES
-	 * @param lType line type, from a list defined in OMGraphic.
-	 * @param nsegs number of segment points (only for
-	 * LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and if &lt;
-	 * 1, this value is generated internally)
-	 */
-	public LL(float[] llPoints, int units, int lType, int nsegs) {
-	    super(llPoints, units, lType, nsegs);
-	    setIsPolygon(false);
-	}
+        /**
+         * Create an OMPoly from a list of float lat/lon pairs.
+         * <p>
+         * NOTES:
+         * <ul>
+         * <li>llPoints array is converted into radians IN PLACE for more
+         * efficient handling internally if it's not already in radians!
+         * For even better performance, you should send us an array
+         * already in radians format!
+         * <li>If you want the poly to be connected (as a polygon), you
+         * need to ensure that the first and last coordinate pairs are the
+         * same.
+         * </ul>
+         *
+         * @param llPoints array of lat/lon points, arranged lat, lon,
+         * lat, lon, etc.
+         * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
+         * or OMGraphic.DECIMAL_DEGREES
+         * @param lType line type, from a list defined in OMGraphic.
+         * @param nsegs number of segment points (only for
+         * LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and if &lt;
+         * 1, this value is generated internally)
+         */
+        public LL(float[] llPoints, int units, int lType, int nsegs) {
+            super(llPoints, units, lType, nsegs);
+            setIsPolygon(false);
+        }
     }
 
     public static class XY extends PolygonGeometry.XY {
 
-	/**
-	 * Create an OMPoly from a list of xy pairs.
-	 * If you want the poly to be connected, you need to ensure that
-	 * the first and last coordinate pairs are the same.
-	 *
-	 * @param xypoints array of x/y points, arranged x, y, x, y, etc.
-	 */
-	public XY(int[] xypoints) {
-	    super(xypoints);
-	    setIsPolygon(false);
-	}
-	
-	/**
-	 * Create an x/y OMPoly.
-	 * If you want the poly to be connected, you need to ensure that
-	 * the first and last coordinate pairs are the same.
-	 *
-	 * @param xPoints int[] of x coordinates
-	 * @param yPoints int[] of y coordinates
-	 */
-	public XY(int[] xPoints, int[] yPoints) {
-	    super(xPoints, yPoints);
-	    setIsPolygon(false);
-	}
+        /**
+         * Create an OMPoly from a list of xy pairs.
+         * If you want the poly to be connected, you need to ensure that
+         * the first and last coordinate pairs are the same.
+         *
+         * @param xypoints array of x/y points, arranged x, y, x, y, etc.
+         */
+        public XY(int[] xypoints) {
+            super(xypoints);
+            setIsPolygon(false);
+        }
+        
+        /**
+         * Create an x/y OMPoly.
+         * If you want the poly to be connected, you need to ensure that
+         * the first and last coordinate pairs are the same.
+         *
+         * @param xPoints int[] of x coordinates
+         * @param yPoints int[] of y coordinates
+         */
+        public XY(int[] xPoints, int[] yPoints) {
+            super(xPoints, yPoints);
+            setIsPolygon(false);
+        }
     }
 
     public static class Offset extends PolygonGeometry.Offset {
-	
-	/**
-	 * Create an x/y OMPoly at an offset from lat/lon.
-	 * If you want the poly to be connected, you need to ensure that
-	 * the first and last coordinate pairs are the same.
-	 *
-	 * @param latPoint latitude in decimal degrees
-	 * @param lonPoint longitude in decimal degrees
-	 * @param xypoints int[] of x,y pairs
-	 * @param cMode offset coordinate mode
-	 */
-	public Offset(float latPoint, float lonPoint, 
-		      int[] xypoints, int cMode) {
-	    super(latPoint, lonPoint, xypoints, cMode);
-	    setIsPolygon(false);
-	}
-	
-	/**
-	 * Create an x/y OMPoly at an offset from lat/lon.
-	 * If you want the poly to be connected, you need to ensure that
-	 * the first and last coordinate pairs are the same.
-	 *
-	 * @param latPoint latitude in decimal degrees
-	 * @param lonPoint longitude in decimal degrees
-	 * @param xPoints int[] of x coordinates
-	 * @param yPoints int[] of y coordinates
-	 * @param cMode offset coordinate mode
-	 */
-	public Offset(float latPoint, float lonPoint, 
-		      int[] xPoints, int[] yPoints, 
-		      int cMode) {
-	    
-	    super(latPoint, lonPoint, xPoints, yPoints, cMode);
-	    setIsPolygon(false);
-	}
+        
+        /**
+         * Create an x/y OMPoly at an offset from lat/lon.
+         * If you want the poly to be connected, you need to ensure that
+         * the first and last coordinate pairs are the same.
+         *
+         * @param latPoint latitude in decimal degrees
+         * @param lonPoint longitude in decimal degrees
+         * @param xypoints int[] of x,y pairs
+         * @param cMode offset coordinate mode
+         */
+        public Offset(float latPoint, float lonPoint, 
+                      int[] xypoints, int cMode) {
+            super(latPoint, lonPoint, xypoints, cMode);
+            setIsPolygon(false);
+        }
+        
+        /**
+         * Create an x/y OMPoly at an offset from lat/lon.
+         * If you want the poly to be connected, you need to ensure that
+         * the first and last coordinate pairs are the same.
+         *
+         * @param latPoint latitude in decimal degrees
+         * @param lonPoint longitude in decimal degrees
+         * @param xPoints int[] of x coordinates
+         * @param yPoints int[] of y coordinates
+         * @param cMode offset coordinate mode
+         */
+        public Offset(float latPoint, float lonPoint, 
+                      int[] xPoints, int[] yPoints, 
+                      int cMode) {
+            
+            super(latPoint, lonPoint, xPoints, yPoints, cMode);
+            setIsPolygon(false);
+        }
     }
 }

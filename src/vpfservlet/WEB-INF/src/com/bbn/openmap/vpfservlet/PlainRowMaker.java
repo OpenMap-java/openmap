@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/PlainRowMaker.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -35,9 +35,9 @@ public class PlainRowMaker implements RowMaker {
      * @return a HTML representation of the VPF row
      */    
     public TableRowElement generateRow(List l) {
-	TableRowElement tr = new TableRowElement();
-	addToRow(tr, l);
-	return tr;
+        TableRowElement tr = new TableRowElement();
+        addToRow(tr, l);
+        return tr;
     }
     /**
      * Adds the elements of the list to the table row
@@ -45,9 +45,9 @@ public class PlainRowMaker implements RowMaker {
      * @param l the VPF row
      */
     public void addToRow(TableRowElement row, List l) {
-	for (Iterator li = l.iterator(); li.hasNext(); ) {
-	    row.addElement(li.next().toString());
-	}
+        for (Iterator li = l.iterator(); li.hasNext(); ) {
+            row.addElement(li.next().toString());
+        }
     }
 
     /**

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ColorFactory.java,v $
 // $RCSfile: ColorFactory.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:44:37 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -78,12 +78,12 @@ public class ColorFactory {
      * @see #parseColor(String, boolean)
      */
     public static Color parseColorFromProperties(Properties p, 
-						 String propName, 
-						 String dfault)
-	throws NumberFormatException
+                                                 String propName, 
+                                                 String dfault)
+        throws NumberFormatException
     {
-	String colorString = p.getProperty(propName, dfault);
-	return parseColor(colorString, false);
+        String colorString = p.getProperty(propName, dfault);
+        return parseColor(colorString, false);
     }
 
     /** 
@@ -100,13 +100,13 @@ public class ColorFactory {
      * @see #parseColor(String, boolean)
      */
     public static Color parseColorFromProperties(Properties p, 
-						 String propName, 
-						 String dfault,
-						 boolean forceAlpha)
-	throws NumberFormatException
+                                                 String propName, 
+                                                 String dfault,
+                                                 boolean forceAlpha)
+        throws NumberFormatException
     {
-	String colorString = p.getProperty(propName, dfault);
-	return parseColor(colorString, forceAlpha);
+        String colorString = p.getProperty(propName, dfault);
+        return parseColor(colorString, forceAlpha);
     }
 
     /** 
@@ -122,15 +122,15 @@ public class ColorFactory {
      * @see #parseColor(String, boolean)
      */
     public static Paint parseColorFromProperties(Properties p, 
-						 String propName, 
-						 Paint dfault)
-	throws NumberFormatException
+                                                 String propName, 
+                                                 Paint dfault)
+        throws NumberFormatException
     {
-	String colorString = p.getProperty(propName);
-	if (colorString != null) {
-	    return parseColor(colorString, false);
-	}
-	return dfault;
+        String colorString = p.getProperty(propName);
+        if (colorString != null) {
+            return parseColor(colorString, false);
+        }
+        return dfault;
     }
 
     /**
@@ -144,9 +144,9 @@ public class ColorFactory {
      * @see #parseColor(String, boolean)
      */
     public static Color parseColor(String colorString)
-	throws NumberFormatException
+        throws NumberFormatException
     {
-	return parseColor(colorString, false);
+        return parseColor(colorString, false);
     }
 
     /**
@@ -168,28 +168,28 @@ public class ColorFactory {
      * @see #createColor(int, boolean)
      */
     public static Color parseColor(String colorString, boolean forceAlpha)
-	throws NumberFormatException
+        throws NumberFormatException
     {
 
-	int value;
+        int value;
 
-	try {
-	    value = (int)Long.parseLong(colorString, 16);
-	} catch (NumberFormatException nfe) {
-	    value = Long.decode(colorString).intValue();
-	    // If decode can't catch it, throw an Exception...
-	}
+        try {
+            value = (int)Long.parseLong(colorString, 16);
+        } catch (NumberFormatException nfe) {
+            value = Long.decode(colorString).intValue();
+            // If decode can't catch it, throw an Exception...
+        }
 
-	// We want to test for this - if the length of the colorString
-	// is less than 7, then the caller probably doesn't care about
-	// transparency and wants the color to be opaque.  However,
-	// "0" is a common number for clear, and should be
-	// transparent.
-	if (colorString.length() < 7 && !colorString.equals("0")) {
-	    // Just a RGB value, use regular JDK1.1 constructor
-	    return new Color(value);
-	}
-	return createColor(value, forceAlpha);
+        // We want to test for this - if the length of the colorString
+        // is less than 7, then the caller probably doesn't care about
+        // transparency and wants the color to be opaque.  However,
+        // "0" is a common number for clear, and should be
+        // transparent.
+        if (colorString.length() < 7 && !colorString.equals("0")) {
+            // Just a RGB value, use regular JDK1.1 constructor
+            return new Color(value);
+        }
+        return createColor(value, forceAlpha);
     }
 
 
@@ -203,8 +203,8 @@ public class ColorFactory {
      * @see #createColor(int, boolean)
      */
     public static Color createColor(float red, float green, 
-				    float blue, float alpha) {
-	return createColor(red, green, blue, alpha, false);
+                                    float blue, float alpha) {
+        return createColor(red, green, blue, alpha, false);
     }
 
 
@@ -219,15 +219,15 @@ public class ColorFactory {
      * @see #createColor(int, boolean)
      */
     public static Color createColor(
-	    float red, float green, float blue, float alpha,
-	    boolean forceAlpha)
+            float red, float green, float blue, float alpha,
+            boolean forceAlpha)
     {
-	int value =
-	    (((int)(alpha*255)&0xff) << 24) |
-	    (((int)(red*255)&0xff) << 16) |
-	    (((int)(green*255)&0xff) << 8) |
-	      (int)(blue*255)&0xff;
-	return createColor(value, forceAlpha);
+        int value =
+            (((int)(alpha*255)&0xff) << 24) |
+            (((int)(red*255)&0xff) << 16) |
+            (((int)(green*255)&0xff) << 8) |
+              (int)(blue*255)&0xff;
+        return createColor(value, forceAlpha);
     }
 
 
@@ -241,9 +241,9 @@ public class ColorFactory {
      * @see #createColor(int, boolean)
      */
     public static Color createColor(
-	    int red, int green, int blue, int alpha)
+            int red, int green, int blue, int alpha)
     {
-	return createColor(red, green, blue, alpha, false);
+        return createColor(red, green, blue, alpha, false);
     }
 
 
@@ -258,12 +258,12 @@ public class ColorFactory {
      * @see #createColor(int, boolean)
      */
     public static Color createColor(
-	    int red, int green, int blue, int alpha,
-	    boolean forceAlpha)
+            int red, int green, int blue, int alpha,
+            boolean forceAlpha)
     {
-	int value =
-	    ((alpha&0xff) << 24) | ((red&0xff) << 16) | ((green&0xff) << 8) | blue&0xff;
-	return createColor(value, forceAlpha);
+        int value =
+            ((alpha&0xff) << 24) | ((red&0xff) << 16) | ((green&0xff) << 8) | blue&0xff;
+        return createColor(value, forceAlpha);
     }
 
 
@@ -274,7 +274,7 @@ public class ColorFactory {
      * @see #createColor(int, boolean)
      */
     public static Color createColor(int value) {
-	return createColor(value, false);
+        return createColor(value, false);
     }
 
 
@@ -286,23 +286,23 @@ public class ColorFactory {
      * @return Color or OMColor that has an ARGB value
      */
     public static Color createColor(int value, boolean forceAlpha) {
-	if (!OMColor.nativeAlpha) {
-	    return (forceAlpha) ? new OMColor(value) : new Color(value);
-	}
-	// alpha is supported by the Java VM.
-	try {
-	    // we prefer the generic Java 2 solution (supports alpha)
-	    return (Color)OMColor.alphaValueConstructor.newInstance(new Object[] {
-			new Integer(value), new Boolean(true)
-		    });
-	} catch (Exception e) {
-	    System.err.println("ColorFactory.parseColor(): internal error...");
-	    return (forceAlpha) ? new OMColor(value) : new Color(value);
-	}
+        if (!OMColor.nativeAlpha) {
+            return (forceAlpha) ? new OMColor(value) : new Color(value);
+        }
+        // alpha is supported by the Java VM.
+        try {
+            // we prefer the generic Java 2 solution (supports alpha)
+            return (Color)OMColor.alphaValueConstructor.newInstance(new Object[] {
+                        new Integer(value), new Boolean(true)
+                    });
+        } catch (Exception e) {
+            System.err.println("ColorFactory.parseColor(): internal error...");
+            return (forceAlpha) ? new OMColor(value) : new Color(value);
+        }
     }
 
     public static String getHexColorString(Color color) {
-	return Integer.toHexString((color.getRGB() & 0x00FFFFFF) | 
-				   (color.getAlpha() << 24));
+        return Integer.toHexString((color.getRGB() & 0x00FFFFFF) | 
+                                   (color.getAlpha() << 24));
     }
 }

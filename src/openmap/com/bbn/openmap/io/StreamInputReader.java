@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/StreamInputReader.java,v $
 // $RCSfile: StreamInputReader.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,7 +53,7 @@ public abstract class StreamInputReader implements InputReader {
     protected String name = null;
 
     public String getName() {
-	return name;
+        return name;
     }
 
     /**
@@ -63,8 +63,8 @@ public abstract class StreamInputReader implements InputReader {
      * anything else that will be interested.  
      */
     protected int count(int add) {
-	inputStreamCount += add;
-	return (int) add;
+        inputStreamCount += add;
+        return (int) add;
     }
 
     /**
@@ -75,12 +75,12 @@ public abstract class StreamInputReader implements InputReader {
      * reopen the stream at the beginning of the source file.  
      */
     protected void reopen() throws IOException {
-	if (inputStream != null) {
-	    Debug.message("binaryfile", "StreamInputReader: Closing inputStream");
-	    inputStream.close();
-	}
+        if (inputStream != null) {
+            Debug.message("binaryfile", "StreamInputReader: Closing inputStream");
+            inputStream.close();
+        }
 
-	inputStreamCount = 0;
+        inputStreamCount = 0;
     }
 
     /**
@@ -93,20 +93,20 @@ public abstract class StreamInputReader implements InputReader {
      */
     public long skipBytes(long n) throws IOException {
 
-	long count = 0;
-	long gotsofar = 0;
+        long count = 0;
+        long gotsofar = 0;
 
-	while (count < n) {
-	    gotsofar = inputStream.skip(n - count);
-	    if (gotsofar == 0) { // added from david marklund
-		Debug.error("StreamInputReader can't skip " + n + " bytes as instructed");
-		break;
-	    }
-	    count += gotsofar;
-	}
+        while (count < n) {
+            gotsofar = inputStream.skip(n - count);
+            if (gotsofar == 0) { // added from david marklund
+                Debug.error("StreamInputReader can't skip " + n + " bytes as instructed");
+                break;
+            }
+            count += gotsofar;
+        }
 
-	count((int) count);
-	return count;
+        count((int) count);
+        return count;
     }
 
     /**
@@ -117,7 +117,7 @@ public abstract class StreamInputReader implements InputReader {
      * the underlying file
      */
     public long getFilePointer() throws IOException {
-	return inputStreamCount;
+        return inputStreamCount;
     }
 
     /**
@@ -128,39 +128,39 @@ public abstract class StreamInputReader implements InputReader {
      * underlying file.
      */
     public void seek(long pos) throws IOException {
-	boolean seekComments = false;
-	long skipped;
-	if (Debug.debugging("binaryfileseek")) {
-	    seekComments = true;
-	}
+        boolean seekComments = false;
+        long skipped;
+        if (Debug.debugging("binaryfileseek")) {
+            seekComments = true;
+        }
 
-	long curPosition = inputStreamCount;
-	if (pos >= curPosition) {
-	    if (seekComments) {
-		Debug.output("StreamInputReader - seeking to " + pos +
-			     " from " + curPosition);
-	    }
+        long curPosition = inputStreamCount;
+        if (pos >= curPosition) {
+            if (seekComments) {
+                Debug.output("StreamInputReader - seeking to " + pos +
+                             " from " + curPosition);
+            }
 
-	    skipped = skipBytes(pos - curPosition);
+            skipped = skipBytes(pos - curPosition);
 
-	    if (seekComments) {
-		Debug.output("   now at: " + inputStreamCount + ", having skipped " + 
-			     skipped);
-	    }
-	} else {
-	    if (seekComments) {
-		Debug.output("StreamInputReader - having to start over for seek - " + 
-			     pos + " from " + curPosition);
-	    }
-	    reopen();
-	    if (seekComments) 
-		Debug.output("   skipping to: " + pos);
-	    skipped = skipBytes(pos);
-	    if (seekComments) {
-		Debug.output("   now at: " + inputStreamCount + 
-			     ", having skipped " + skipped);
-	    }
-	}
+            if (seekComments) {
+                Debug.output("   now at: " + inputStreamCount + ", having skipped " + 
+                             skipped);
+            }
+        } else {
+            if (seekComments) {
+                Debug.output("StreamInputReader - having to start over for seek - " + 
+                             pos + " from " + curPosition);
+            }
+            reopen();
+            if (seekComments) 
+                Debug.output("   skipping to: " + pos);
+            skipped = skipBytes(pos);
+            if (seekComments) {
+                Debug.output("   now at: " + inputStreamCount + 
+                             ", having skipped " + skipped);
+            }
+        }
     }
 
     /**
@@ -172,7 +172,7 @@ public abstract class StreamInputReader implements InputReader {
      * @exception IOException Any IO errors encountered in accessing the file 
      */
     public long length() throws IOException {
-	return inputStreamCount + inputStream.available();
+        return inputStreamCount + inputStream.available();
     }
 
     /**
@@ -182,7 +182,7 @@ public abstract class StreamInputReader implements InputReader {
      * @exception IOException Any IO errors encountered in accessing the file
      */
     public long available() throws IOException {
-  	return inputStream.available();
+        return inputStream.available();
     }
 
     /** 
@@ -191,24 +191,24 @@ public abstract class StreamInputReader implements InputReader {
      * @exception IOException Any IO errors encountered in accessing the file
      */
     public void close() throws IOException {
-	try {
-	    Debug.message("binaryfile", "StreamInputReader.close()");
+        try {
+            Debug.message("binaryfile", "StreamInputReader.close()");
 
-	    // From the Sun Network Programming Guide for 1.4, if there are
-	    // problems with Connection reset by peer, then you should
-	    // do this before closing the stream, giving all the data
-	    // a chance to be read.  Haven't decided to do this by
-	    // default, but put it in here for easy access if people
-	    // decided they need it.
-	    if (Debug.debugging("connection_problems")) {
-		Thread.sleep(1000);
-	    }
+            // From the Sun Network Programming Guide for 1.4, if there are
+            // problems with Connection reset by peer, then you should
+            // do this before closing the stream, giving all the data
+            // a chance to be read.  Haven't decided to do this by
+            // default, but put it in here for easy access if people
+            // decided they need it.
+            if (Debug.debugging("connection_problems")) {
+                Thread.sleep(1000);
+            }
 
-	    if (inputStream != null) inputStream.close();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
-	inputStream = null;
+            if (inputStream != null) inputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        inputStream = null;
     }
 
     /**
@@ -218,8 +218,8 @@ public abstract class StreamInputReader implements InputReader {
      * @exception IOException Any IO errors encountered in reading from the file
      */
     public int read() throws IOException {
-	count(1);
-	return inputStream.read();
+        count(1);
+        return inputStream.read();
     }
 
     /**
@@ -233,23 +233,23 @@ public abstract class StreamInputReader implements InputReader {
      */
     public int read(byte b[], int off, int len) throws IOException {
 
-	int gotsofar = 0;
-	while (gotsofar < len) {
-	    int read = inputStream.read(b, off + gotsofar, len - gotsofar);
-	    if (read == -1) {
-		if (gotsofar > 0) {
-		    // Hit the EOF in the middle of the loop.
-		    return gotsofar;
-		} else {
-		    return read;
-		}
-	    } else {
-		gotsofar += read;
-	    }
-	}
-	
-	count(gotsofar);
-	return gotsofar;
+        int gotsofar = 0;
+        while (gotsofar < len) {
+            int read = inputStream.read(b, off + gotsofar, len - gotsofar);
+            if (read == -1) {
+                if (gotsofar > 0) {
+                    // Hit the EOF in the middle of the loop.
+                    return gotsofar;
+                } else {
+                    return read;
+                }
+            } else {
+                gotsofar += read;
+            }
+        }
+        
+        count(gotsofar);
+        return gotsofar;
     }
 
     /** 
@@ -262,7 +262,7 @@ public abstract class StreamInputReader implements InputReader {
      * @see java.io.RandomAccessFile#read(byte[])
      */
     public int read(byte b[]) throws IOException {
-	return inputStream.read(b, 0, b.length);
+        return inputStream.read(b, 0, b.length);
     }
 
     /** 
@@ -278,39 +278,39 @@ public abstract class StreamInputReader implements InputReader {
      * was <code>false</code>, but NO bytes had been read.
      */
     public byte[] readBytes(int howmany, boolean allowless) 
-	throws EOFException, FormatException {
+        throws EOFException, FormatException {
 
-	byte foo[] = new byte[howmany];
-	int gotsofar = 0;
-	int err = 0;
-	try {
-	    while (gotsofar < howmany) {
-		err = inputStream.read(foo, gotsofar, howmany - gotsofar);
+        byte foo[] = new byte[howmany];
+        int gotsofar = 0;
+        int err = 0;
+        try {
+            while (gotsofar < howmany) {
+                err = inputStream.read(foo, gotsofar, howmany - gotsofar);
 
-		if (err == -1) {
-		    if (allowless) {
-			//return a smaller array, so the caller can tell how much
-			//they really got
-			byte retval[] = new byte[gotsofar];
-			System.arraycopy(foo, 0, retval, 0, gotsofar);
-			count(gotsofar);
-			return retval;
-		    } else { //some kind of failure...
-			if (gotsofar > 0) {
-			    throw new FormatException("StreamInputReader: EOF while reading data");
-			} else {
-			    throw new EOFException();
-			}
-		    }
-		}
-		gotsofar += err;
-	    }
-	} catch (IOException i) {
-	    throw new FormatException("StreamInputReader: readBytes IOException: " +
-				      i.getMessage());
-	}
-	count(howmany);
-	return foo;
+                if (err == -1) {
+                    if (allowless) {
+                        //return a smaller array, so the caller can tell how much
+                        //they really got
+                        byte retval[] = new byte[gotsofar];
+                        System.arraycopy(foo, 0, retval, 0, gotsofar);
+                        count(gotsofar);
+                        return retval;
+                    } else { //some kind of failure...
+                        if (gotsofar > 0) {
+                            throw new FormatException("StreamInputReader: EOF while reading data");
+                        } else {
+                            throw new EOFException();
+                        }
+                    }
+                }
+                gotsofar += err;
+            }
+        } catch (IOException i) {
+            throw new FormatException("StreamInputReader: readBytes IOException: " +
+                                      i.getMessage());
+        }
+        count(howmany);
+        return foo;
     }
 
 }

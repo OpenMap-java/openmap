@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/TilingAdapter.java,v $
-// $Revision: 1.3 $ $Date: 2003/12/30 17:06:54 $ $Author: wjeuerle $
+// $Revision: 1.4 $ $Date: 2004/01/26 18:18:12 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -61,24 +61,24 @@ public interface TilingAdapter {
      * Alternate tile will always return -1.
      */
     public static class UntiledAdapter implements TilingAdapter {
-	/** the primitive column*/
-	final private int column;
+        /** the primitive column*/
+        final private int column;
 
-	public UntiledAdapter(int column) {
-	    this.column = column;
-	}
-	public int getTileId(List l) {
-	    return -1;
-	}
-	public int getPrimId(List l) {
-	    return ((Number)l.get(column)).intValue();
-	}
-	public int getTilePrimId(List l) {
-	    return ((Number)l.get(column)).intValue();
-	}
-	public DcwCrossTileID getPrim(List l) {
-	    return new DcwCrossTileID(getPrimId(l), -1, getTilePrimId(l));
-	}
+        public UntiledAdapter(int column) {
+            this.column = column;
+        }
+        public int getTileId(List l) {
+            return -1;
+        }
+        public int getPrimId(List l) {
+            return ((Number)l.get(column)).intValue();
+        }
+        public int getTilePrimId(List l) {
+            return ((Number)l.get(column)).intValue();
+        }
+        public DcwCrossTileID getPrim(List l) {
+            return new DcwCrossTileID(getPrimId(l), -1, getTilePrimId(l));
+        }
     }
 
     /**
@@ -86,23 +86,23 @@ public interface TilingAdapter {
      * cross-tile identifier.
      */
     public static class CrossTileAdapter implements TilingAdapter {
-	/** the primitive column */
-	final private int column;
-	public CrossTileAdapter(int column) {
-	    this.column = column;
-	}
-	public int getTileId(List l) {
-	    return getPrim(l).nextTileID;
-	}
-	public int getPrimId(List l) {
-	    return getPrim(l).currentTileKey;
-	}
-	public int getTilePrimId(List l) {
-	    return getPrim(l).nextTileKey;
-	}
-	public DcwCrossTileID getPrim(List l) {
-	    return (DcwCrossTileID)l.get(column);
-	}
+        /** the primitive column */
+        final private int column;
+        public CrossTileAdapter(int column) {
+            this.column = column;
+        }
+        public int getTileId(List l) {
+            return getPrim(l).nextTileID;
+        }
+        public int getPrimId(List l) {
+            return getPrim(l).currentTileKey;
+        }
+        public int getTilePrimId(List l) {
+            return getPrim(l).nextTileKey;
+        }
+        public DcwCrossTileID getPrim(List l) {
+            return (DcwCrossTileID)l.get(column);
+        }
     }
 
     /**
@@ -110,26 +110,26 @@ public interface TilingAdapter {
      * column, and the primitive identifier comes from a numeric column.
      */
     public static class TiledAdapter implements TilingAdapter {
-	/** the tile column */
-	final private int tilecolumn;
-	/** the primitive column */
-	final private int primcolumn;
-	public TiledAdapter(int tilecolumn, int primcolumn) {
-	    this.tilecolumn = tilecolumn;
-	    this.primcolumn = primcolumn;
-	}
-	public int getTileId(List l) {
-	    return ((Number)l.get(tilecolumn)).intValue();
-	}
-	public int getPrimId(List l) {
-	    return getTilePrimId(l);
-	}
-	public int getTilePrimId(List l) {
-	    return ((Number)l.get(primcolumn)).intValue();
-	}
-	public DcwCrossTileID getPrim(List l) {
-	    return new DcwCrossTileID(getPrimId(l),
-				      getTileId(l), getTilePrimId(l));
-	}
+        /** the tile column */
+        final private int tilecolumn;
+        /** the primitive column */
+        final private int primcolumn;
+        public TiledAdapter(int tilecolumn, int primcolumn) {
+            this.tilecolumn = tilecolumn;
+            this.primcolumn = primcolumn;
+        }
+        public int getTileId(List l) {
+            return ((Number)l.get(tilecolumn)).intValue();
+        }
+        public int getPrimId(List l) {
+            return getTilePrimId(l);
+        }
+        public int getTilePrimId(List l) {
+            return ((Number)l.get(primcolumn)).intValue();
+        }
+        public DcwCrossTileID getPrim(List l) {
+            return new DcwCrossTileID(getPrimId(l),
+                                      getTileId(l), getTilePrimId(l));
+        }
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionFactory.java,v $
 // $RCSfile: ProjectionFactory.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,37 +47,37 @@ public class ProjectionFactory {
      * @return Projection
      */
     public static Projection makeProjection (int projType,
-					     float centerLat,
-					     float centerLon,
-					     float scale,
-					     int width,
-					     int height)
+                                             float centerLat,
+                                             float centerLon,
+                                             float scale,
+                                             int width,
+                                             int height)
     {
-	llp.setLatLon(centerLat, centerLon);
-	switch (projType) {
-	    case CADRG.CADRGType:
-		return new CADRG(llp, scale, width, height);
-	    case Mercator.MercatorType:
-		return new Mercator(llp, scale, width, height);
-	    case MercatorView.MercatorViewType:
-		return new MercatorView(llp, scale, width, height);
-	    case LLXY.LLXYType:
-		return new LLXY(llp, scale, width, height);
-	    case LLXYView.LLXYViewType:
-		return new LLXYView(llp, scale, width, height);
-	    case Orthographic.OrthographicType:
-		return new Orthographic(llp, scale, width, height);
-	    case OrthographicView.OrthographicViewType:
-		return new OrthographicView(llp, scale, width, height);
-//	    case MassStatePlane.MassStatePlaneType:
-//	        return new MassStatePlane(llp, scale, width, height);
-	    case Gnomonic.GnomonicType:
-		return new Gnomonic(llp, scale, width, height);
-	    default:
-		System.err.println("Unknown projection type " + projType +
-				   " in ProjectionFactory.create()");
-		return null;
-	}
+        llp.setLatLon(centerLat, centerLon);
+        switch (projType) {
+            case CADRG.CADRGType:
+                return new CADRG(llp, scale, width, height);
+            case Mercator.MercatorType:
+                return new Mercator(llp, scale, width, height);
+            case MercatorView.MercatorViewType:
+                return new MercatorView(llp, scale, width, height);
+            case LLXY.LLXYType:
+                return new LLXY(llp, scale, width, height);
+            case LLXYView.LLXYViewType:
+                return new LLXYView(llp, scale, width, height);
+            case Orthographic.OrthographicType:
+                return new Orthographic(llp, scale, width, height);
+            case OrthographicView.OrthographicViewType:
+                return new OrthographicView(llp, scale, width, height);
+//          case MassStatePlane.MassStatePlaneType:
+//              return new MassStatePlane(llp, scale, width, height);
+            case Gnomonic.GnomonicType:
+                return new Gnomonic(llp, scale, width, height);
+            default:
+                System.err.println("Unknown projection type " + projType +
+                                   " in ProjectionFactory.create()");
+                return null;
+        }
     }
 
 
@@ -91,10 +91,10 @@ public class ProjectionFactory {
      * @param p the projection from which to copy other parameters
      */
     public static Projection makeProjection (int newProjType, Projection p) {
-	LatLonPoint ctr = p.getCenter();
-	return makeProjection(newProjType,
-			      ctr.getLatitude(), ctr.getLongitude(),
-			      p.getScale(), p.getWidth(), p.getHeight());
+        LatLonPoint ctr = p.getCenter();
+        return makeProjection(newProjType,
+                              ctr.getLatitude(), ctr.getLongitude(),
+                              p.getScale(), p.getWidth(), p.getHeight());
     }
 
     /** 
@@ -104,27 +104,27 @@ public class ProjectionFactory {
      */
     public static int getProjType(String projName){
 
-	int projType = Mercator.MercatorType;
+        int projType = Mercator.MercatorType;
 
-	if (projName == null){}
-	else if (projName.equalsIgnoreCase(Mercator.MercatorName))
-	    projType = Mercator.MercatorType;
-	else if (projName.equalsIgnoreCase(MercatorView.MercatorViewName))
-	    projType = MercatorView.MercatorViewType;
-	else if (projName.equalsIgnoreCase(Orthographic.OrthographicName))
-	    projType = Orthographic.OrthographicType;
-	else if (projName.equalsIgnoreCase(OrthographicView.OrthographicViewName))
-	    projType = OrthographicView.OrthographicViewType;
-	else if (projName.equalsIgnoreCase(LLXY.LLXYName))
-	    projType = LLXY.LLXYType;
-	else if (projName.equalsIgnoreCase(LLXYView.LLXYViewName))
-	    projType = LLXYView.LLXYViewType;
-	else if (projName.equalsIgnoreCase(CADRG.CADRGName))
-	    projType = CADRG.CADRGType;
-	else if (projName.equalsIgnoreCase(Gnomonic.GnomonicName))
-	    projType = Gnomonic.GnomonicType;
+        if (projName == null){}
+        else if (projName.equalsIgnoreCase(Mercator.MercatorName))
+            projType = Mercator.MercatorType;
+        else if (projName.equalsIgnoreCase(MercatorView.MercatorViewName))
+            projType = MercatorView.MercatorViewType;
+        else if (projName.equalsIgnoreCase(Orthographic.OrthographicName))
+            projType = Orthographic.OrthographicType;
+        else if (projName.equalsIgnoreCase(OrthographicView.OrthographicViewName))
+            projType = OrthographicView.OrthographicViewType;
+        else if (projName.equalsIgnoreCase(LLXY.LLXYName))
+            projType = LLXY.LLXYType;
+        else if (projName.equalsIgnoreCase(LLXYView.LLXYViewName))
+            projType = LLXYView.LLXYViewType;
+        else if (projName.equalsIgnoreCase(CADRG.CADRGName))
+            projType = CADRG.CADRGType;
+        else if (projName.equalsIgnoreCase(Gnomonic.GnomonicName))
+            projType = Gnomonic.GnomonicType;
 
-	return projType;
+        return projType;
     }
 
     /**
@@ -143,13 +143,13 @@ public class ProjectionFactory {
 //      projNames[6] = CADRG.CADRGName;
 //      projNames[7] = Gnomonic.GnomonicName;
 
-	int nProjections = 5;
-	String projNames[] = new String[nProjections];
-	projNames[0] = Mercator.MercatorName;
-	projNames[1] = Orthographic.OrthographicName;
-	projNames[2] = LLXY.LLXYName;
-	projNames[3] = CADRG.CADRGName;
-	projNames[4] = Gnomonic.GnomonicName;
-	return projNames;
+        int nProjections = 5;
+        String projNames[] = new String[nProjections];
+        projNames[0] = Mercator.MercatorName;
+        projNames[1] = Orthographic.OrthographicName;
+        projNames[2] = LLXY.LLXYName;
+        projNames[3] = CADRG.CADRGName;
+        projNames[4] = Gnomonic.GnomonicName;
+        return projNames;
     }
 }

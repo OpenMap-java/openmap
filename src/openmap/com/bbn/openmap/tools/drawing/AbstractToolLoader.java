@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/AbstractToolLoader.java,v $
 // $RCSfile: AbstractToolLoader.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,19 +47,19 @@ public abstract class AbstractToolLoader implements EditToolLoader {
     public abstract void init();
 
     public void addEditClassWrapper(EditClassWrapper ecw) {
-	if (graphicInfo == null) {
-	    graphicInfo = new HashMap();
-	}
+        if (graphicInfo == null) {
+            graphicInfo = new HashMap();
+        }
 
-	if (ecw != null) {
-	    graphicInfo.put(ecw.getClassName().intern(), ecw);
-	}
+        if (ecw != null) {
+            graphicInfo.put(ecw.getClassName().intern(), ecw);
+        }
     }
 
     public void removeEditClassWrapper(EditClassWrapper ecw) {
-	if (graphicInfo != null && ecw != null) {
-	    graphicInfo.remove(ecw.getClassName().intern());
-	}
+        if (graphicInfo != null && ecw != null) {
+            graphicInfo.remove(ecw.getClassName().intern());
+        }
     }
 
     /**
@@ -67,15 +67,15 @@ public abstract class AbstractToolLoader implements EditToolLoader {
      * EditableOMGraphics for.
      */
     public String[] getEditableClasses() {
-	String[] strings = null;
-	if (graphicInfo != null) {
-	    Object[] keys = graphicInfo.keySet().toArray();
-	    strings = new String[keys.length];
-	    for (int i = 0; i < keys.length; i++) {
-		strings[i] = (String)keys[i];
-	    }
-	}
-	return strings;
+        String[] strings = null;
+        if (graphicInfo != null) {
+            Object[] keys = graphicInfo.keySet().toArray();
+            strings = new String[keys.length];
+            for (int i = 0; i < keys.length; i++) {
+                strings[i] = (String)keys[i];
+            }
+        }
+        return strings;
     }
 
     /**
@@ -83,28 +83,28 @@ public abstract class AbstractToolLoader implements EditToolLoader {
      * EditableOMGraphic for that graphic.
      */
     public EditableOMGraphic getEditableGraphic(String classname) {
-	EditableOMGraphic eomg = null;
+        EditableOMGraphic eomg = null;
 
-	if (graphicInfo != null) {
-	    EditClassWrapper ecw = (EditClassWrapper)graphicInfo.get(classname.intern());
-	    if (ecw != null) {
-		String ecn = ecw.getEditableClassName();
-		try {
-		    Object obj = Class.forName(ecn).newInstance();
-		    if (obj instanceof EditableOMGraphic) {
-			eomg = (EditableOMGraphic) obj;
-		    }
-		} catch (ClassNotFoundException cnfe) {
-		    Debug.error("AbstractToolLoader can't get editable graphic for " + classname + "\n    ClassNotFoundException caught.");
-		} catch (InstantiationException ie) {
-		    Debug.error("AbstractToolLoader can't get editable graphic for " + classname + "\n    InstantiationException caught.");
-		} catch (IllegalAccessException iae) {
-		    Debug.error("AbstractToolLoader can't get editable graphic for " + classname + "\n    IllegalAccessException caught.");
-		}
-	    }
-	}
+        if (graphicInfo != null) {
+            EditClassWrapper ecw = (EditClassWrapper)graphicInfo.get(classname.intern());
+            if (ecw != null) {
+                String ecn = ecw.getEditableClassName();
+                try {
+                    Object obj = Class.forName(ecn).newInstance();
+                    if (obj instanceof EditableOMGraphic) {
+                        eomg = (EditableOMGraphic) obj;
+                    }
+                } catch (ClassNotFoundException cnfe) {
+                    Debug.error("AbstractToolLoader can't get editable graphic for " + classname + "\n    ClassNotFoundException caught.");
+                } catch (InstantiationException ie) {
+                    Debug.error("AbstractToolLoader can't get editable graphic for " + classname + "\n    InstantiationException caught.");
+                } catch (IllegalAccessException iae) {
+                    Debug.error("AbstractToolLoader can't get editable graphic for " + classname + "\n    IllegalAccessException caught.");
+                }
+            }
+        }
 
-	return eomg;
+        return eomg;
     }
 
     /**
@@ -114,21 +114,21 @@ public abstract class AbstractToolLoader implements EditToolLoader {
      * like point type and rendertype.
      */
     public EditableOMGraphic getEditableGraphic(String classname, 
-						GraphicAttributes ga) {
-	EditableOMGraphic eomg = getEditableGraphic(classname);
-	if (eomg != null && ga != null) {
-	    // This is a little redundant - the graphic is created
-	    // with the call to getEditableGraphic(classname), but is
-	    // then destroyed and created again with the
-	    // GraphicAttributes settings.  I'm not sure how to get
-	    // around this at this point in a generic fashion.  Before
-	    // the AbstractToolLoader was created, each EditToolLoader
-	    // called the EditableOMGraphic constructor with the
-	    // GraphicAttributes as an argument.  Hard to do when you
-	    // only have a editableClassName.
-	    eomg.createGraphic(ga);
-	}
-	return null;
+                                                GraphicAttributes ga) {
+        EditableOMGraphic eomg = getEditableGraphic(classname);
+        if (eomg != null && ga != null) {
+            // This is a little redundant - the graphic is created
+            // with the call to getEditableGraphic(classname), but is
+            // then destroyed and created again with the
+            // GraphicAttributes settings.  I'm not sure how to get
+            // around this at this point in a generic fashion.  Before
+            // the AbstractToolLoader was created, each EditToolLoader
+            // called the EditableOMGraphic constructor with the
+            // GraphicAttributes as an argument.  Hard to do when you
+            // only have a editableClassName.
+            eomg.createGraphic(ga);
+        }
+        return null;
     }
 
     /**
@@ -141,25 +141,25 @@ public abstract class AbstractToolLoader implements EditToolLoader {
      * Get an Icon for a classname.
      */
     public ImageIcon getIcon(String classname) {
-	if (graphicInfo != null) {
-	    EditClassWrapper ecw = (EditClassWrapper)graphicInfo.get(classname.intern());
-	    if (ecw != null) {
-		return ecw.getIcon();
-	    }
-	}
-	return null;
+        if (graphicInfo != null) {
+            EditClassWrapper ecw = (EditClassWrapper)graphicInfo.get(classname.intern());
+            if (ecw != null) {
+                return ecw.getIcon();
+            }
+        }
+        return null;
     }
 
     /**
      * Get the pretty name, suitable for a GUI, for a classname.
      */
     public String getPrettyName(String classname) {
-	if (graphicInfo != null) {
-	    EditClassWrapper ecw = (EditClassWrapper)graphicInfo.get(classname.intern());
-	    if (ecw != null) {
-		return ecw.getPrettyName();
-	    }
-	}
-	return null;
+        if (graphicInfo != null) {
+            EditClassWrapper ecw = (EditClassWrapper)graphicInfo.get(classname.intern());
+            if (ecw != null) {
+                return ecw.getPrettyName();
+            }
+        }
+        return null;
     }
 }

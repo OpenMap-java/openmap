@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GridBagToolBar.java,v $
 // $RCSfile: GridBagToolBar.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/10/23 21:01:16 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,18 +35,18 @@ public class GridBagToolBar extends javax.swing.JToolBar {
     GridBagConstraints c = new GridBagConstraints();
 
     public GridBagToolBar() {
-	setLayout(gridbag);
-	c.gridy = 0;
-	c.weightx = 0;
-	c.anchor = GridBagConstraints.WEST;
-	setFloatable(false);
-	if (Debug.debugging("layout")) {
-	    setBorder(BorderFactory.createLineBorder(Color.blue));
-	}
+        setLayout(gridbag);
+        c.gridy = 0;
+        c.weightx = 0;
+        c.anchor = GridBagConstraints.WEST;
+        setFloatable(false);
+        if (Debug.debugging("layout")) {
+            setBorder(BorderFactory.createLineBorder(Color.blue));
+        }
     }
 
     public Component add(Component comp) {
-	gridbag.setConstraints(comp, c);
-	return super.add(comp);
+        gridbag.setConstraints(comp, c);
+        return super.add(comp);
     }
 }

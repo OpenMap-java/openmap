@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeWarfightingModifier.java,v $
 // $RCSfile: CodeWarfightingModifier.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,7 +35,7 @@ import com.bbn.openmap.util.PropUtils;
 public class CodeWarfightingModifier extends CodePosition {
 
     public CodeWarfightingModifier() {
-	super("Modifier", 11, 12);
+        super("Modifier", 11, 12);
     }
 
     /**
@@ -44,17 +44,17 @@ public class CodeWarfightingModifier extends CodePosition {
      * be read, this method should be overriden.
      */
     public void parsePositions(String prefix, Properties props) {
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	for (int index = 1; index > 0 && index < 128; index++) {
-	    String entry = props.getProperty(prefix + Integer.toString(index));
+        for (int index = 1; index > 0 && index < 128; index++) {
+            String entry = props.getProperty(prefix + Integer.toString(index));
 
-	    if (entry != null) {
-		addPositionChoice(index, entry, prefix, props);
-	    } else {
-		index = -1;
-	    }
-	}
+            if (entry != null) {
+                addPositionChoice(index, entry, prefix, props);
+            } else {
+                index = -1;
+            }
+        }
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/ChoiceItem.java,v $
 // $RCSfile: ChoiceItem.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,29 +29,29 @@ public class ChoiceItem {
     private Object value = null;
 
     public ChoiceItem() {
-	label = null;
-	value = null;
+        label = null;
+        value = null;
     }
-	    
+            
     public ChoiceItem(String label, Object value) {
-	this.label = label;
-	this.value = value;
+        this.label = label;
+        this.value = value;
     }
 
     public Object value() {
-	return this.value;
+        return this.value;
     }
 
     public String label() {
-	return this.label;
+        return this.label;
     }
 
     public void set(String label, Object value) {
-	this.label = label;
-	this.value = value;
+        this.label = label;
+        this.value = value;
     }
 
     public void set(Object value) {
-	this.value = value;
+        this.value = value;
     }
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/ListResetPCPolicy.java,v $
 // $RCSfile: ListResetPCPolicy.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/02 15:55:33 $
-// $Author: blubin $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:10 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -53,49 +53,49 @@ public class ListResetPCPolicy implements ProjectionChangePolicy {
      * Don't pass in a null layer.
      */
     public ListResetPCPolicy(OMGraphicHandlerLayer layer) {
-	this.layer = layer;
+        this.layer = layer;
     }
 
     public void setLayer(OMGraphicHandlerLayer l) {
-	layer = l;
+        layer = l;
     }
 
     public OMGraphicHandlerLayer getLayer() {
-	return layer;
+        return layer;
     }
 
     public void projectionChanged(ProjectionEvent pe) {
-	if (layer != null) {
-	    Projection proj = layer.setProjection(pe);
-	    // proj will be null if the projection hasn't changed, a 
-	    // signal that work does not need to be done.
-	    if (proj != null) {
-		if (Debug.debugging("layer")) {
-		    Debug.output(getLayer().getName() + ": ListResetPCPolicy projectionChanged with NEW projection, resetting list.");
-		}
-		layer.setList(null);
-		layer.doPrepare();
-	    } else {
-		if (Debug.debugging("layer")) {
-		    Debug.output(getLayer().getName() + ": ListResetPCPolicy projectionChanged with OLD projection, repainting.");
-		}
-		if (!layer.isWorking()) {
-		    // This repaint may look redundant, but it handles
-		    // the situation where a layer is removed from a
-		    // map and readded when the projection doesn't
-		    // change.  Since it already had the projection,
-		    // and remove() hasn't been called yet, the proj
-		    // == null.  When the new layer is added, it
-		    // receives a projectionChanged call, and even
-		    // though it's all set, it still needs to call
-		    // repaint to have itself show up on the map.
-		    layer.repaint();
-		    layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-		}
-	    }
-	} else {
-	    Debug.error("ListResetPCPolicy.projectionChanged():  NULL layer, can't do anything.");
-	}
+        if (layer != null) {
+            Projection proj = layer.setProjection(pe);
+            // proj will be null if the projection hasn't changed, a 
+            // signal that work does not need to be done.
+            if (proj != null) {
+                if (Debug.debugging("layer")) {
+                    Debug.output(getLayer().getName() + ": ListResetPCPolicy projectionChanged with NEW projection, resetting list.");
+                }
+                layer.setList(null);
+                layer.doPrepare();
+            } else {
+                if (Debug.debugging("layer")) {
+                    Debug.output(getLayer().getName() + ": ListResetPCPolicy projectionChanged with OLD projection, repainting.");
+                }
+                if (!layer.isWorking()) {
+                    // This repaint may look redundant, but it handles
+                    // the situation where a layer is removed from a
+                    // map and readded when the projection doesn't
+                    // change.  Since it already had the projection,
+                    // and remove() hasn't been called yet, the proj
+                    // == null.  When the new layer is added, it
+                    // receives a projectionChanged call, and even
+                    // though it's all set, it still needs to call
+                    // repaint to have itself show up on the map.
+                    layer.repaint();
+                    layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+                }
+            }
+        } else {
+            Debug.error("ListResetPCPolicy.projectionChanged():  NULL layer, can't do anything.");
+        }
     }
 
     /**
@@ -109,8 +109,8 @@ public class ListResetPCPolicy implements ProjectionChangePolicy {
      * that overrides this method so that nothing does.
      */
     public void workerComplete(OMGraphicList aList) {
-	if (layer != null) {
-	    layer.setList(aList);
-	}
+        if (layer != null) {
+            layer.setList(aList);
+        }
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/MenuList.java,v $
 // $RCSfile: MenuList.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:20:42 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,7 +76,7 @@ public class MenuList extends OMComponent {
      * Create an empty MenuList.
      */
     public MenuList() {
-	menus = new LinkedList();
+        menus = new LinkedList();
     }
 
     /**
@@ -88,16 +88,16 @@ public class MenuList extends OMComponent {
      * random order.
      */
     public JMenuBar getMenuBar() {
-	if (menuBar == null) {
-	    menuBar = new MenuBar();
-	}
+        if (menuBar == null) {
+            menuBar = new MenuBar();
+        }
 
-	menuBar.removeAll();
-	Iterator iterator = menus.iterator();
-	while (iterator.hasNext()) {
-	    menuBar.findAndInit(iterator.next());
-	}
-	return menuBar;
+        menuBar.removeAll();
+        Iterator iterator = menus.iterator();
+        while (iterator.hasNext()) {
+            menuBar.findAndInit(iterator.next());
+        }
+        return menuBar;
     }
 
     /**
@@ -108,16 +108,16 @@ public class MenuList extends OMComponent {
      * want.
      */
     public JMenu getMenu() {
-	if (menu == null) {
-	    menu = new JMenu("OpenMap");
-	}
+        if (menu == null) {
+            menu = new JMenu("OpenMap");
+        }
 
-	menu.removeAll();
-	Iterator iterator = menus.iterator();
-	while (iterator.hasNext()) {
-	    menu.add((JMenu)iterator.next());
-	}
-	return menu;
+        menu.removeAll();
+        Iterator iterator = menus.iterator();
+        while (iterator.hasNext()) {
+            menu.add((JMenu)iterator.next());
+        }
+        return menu;
     }
 
     /**
@@ -125,72 +125,72 @@ public class MenuList extends OMComponent {
      * menus.
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
-	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-	Vector menuItems = PropUtils.parseSpacedMarkers(props.getProperty(realPrefix + MenusProperty));
-	if (!menuItems.isEmpty()) {
+        super.setProperties(prefix, props);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        Vector menuItems = PropUtils.parseSpacedMarkers(props.getProperty(realPrefix + MenusProperty));
+        if (!menuItems.isEmpty()) {
 
-	    int nMenuItems = menuItems.size();
+            int nMenuItems = menuItems.size();
 
-	    if (Debug.debugging("menu")) {
-		Debug.output("MenuList created with " + nMenuItems + " menus" + 
-			     (nMenuItems==1?"":"s") + " in properties");
-	    }
+            if (Debug.debugging("menu")) {
+                Debug.output("MenuList created with " + nMenuItems + " menus" + 
+                             (nMenuItems==1?"":"s") + " in properties");
+            }
 
-	    for (int i = 0; i < nMenuItems; i++) {
-		String itemPrefix = (String)menuItems.elementAt(i);
-		String classProperty = itemPrefix + ".class";
-		String className = props.getProperty(classProperty);
-		if (className == null) {
-		    Debug.error("MenuList.setProperties(): Failed to locate property \"" + classProperty + "\"\n  Skipping menu \"" + itemPrefix + "\"");
-		    continue;
-		}
+            for (int i = 0; i < nMenuItems; i++) {
+                String itemPrefix = (String)menuItems.elementAt(i);
+                String classProperty = itemPrefix + ".class";
+                String className = props.getProperty(classProperty);
+                if (className == null) {
+                    Debug.error("MenuList.setProperties(): Failed to locate property \"" + classProperty + "\"\n  Skipping menu \"" + itemPrefix + "\"");
+                    continue;
+                }
 
-		Object obj = ComponentFactory.create(className, itemPrefix, props);
-		if (obj instanceof JMenu) {
-		    menus.add(obj);
-		}
-	    }
-	} else {
-	    if (Debug.debugging("menu")) {
-		Debug.output("MenuList created without menus in properties");
-	    }
-	}
+                Object obj = ComponentFactory.create(className, itemPrefix, props);
+                if (obj instanceof JMenu) {
+                    menus.add(obj);
+                }
+            }
+        } else {
+            if (Debug.debugging("menu")) {
+                Debug.output("MenuList created without menus in properties");
+            }
+        }
     }
 
     /**
      * PropertyConsumer interface method.
      */
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
-	StringBuffer itemList = new StringBuffer();
-	Iterator iterator = menus.iterator();
-	while (iterator.hasNext()) {
-	    JMenu menu = (JMenu)iterator.next();
+        props = super.getProperties(props);
+        StringBuffer itemList = new StringBuffer();
+        Iterator iterator = menus.iterator();
+        while (iterator.hasNext()) {
+            JMenu menu = (JMenu)iterator.next();
 
-	    if (menu instanceof PropertyConsumer) {
-		PropertyConsumer ps = (PropertyConsumer)menu;
-		String prefix = ps.getPropertyPrefix();
-		if (prefix == null) {
-		    prefix = menu.getText().toLowerCase();
-		    ps.setPropertyPrefix(prefix);
-		}
-		
-		itemList.append(prefix + " ");
-		ps.getProperties(props);
-	    }
-	}
-	props.put(PropUtils.getScopedPropertyPrefix(this) + MenusProperty, itemList.toString());
-	return props;
+            if (menu instanceof PropertyConsumer) {
+                PropertyConsumer ps = (PropertyConsumer)menu;
+                String prefix = ps.getPropertyPrefix();
+                if (prefix == null) {
+                    prefix = menu.getText().toLowerCase();
+                    ps.setPropertyPrefix(prefix);
+                }
+                
+                itemList.append(prefix + " ");
+                ps.getProperties(props);
+            }
+        }
+        props.put(PropUtils.getScopedPropertyPrefix(this) + MenusProperty, itemList.toString());
+        return props;
     }
 
     /**
      * PropertyConsumer interface method.
      */
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
-	props.put(MenusProperty, "List of marker names for menu component properties.");
-	return props;
+        props = super.getPropertyInfo(props);
+        props.put(MenusProperty, "List of marker names for menu component properties.");
+        return props;
     }
 
     /**
@@ -198,14 +198,14 @@ public class MenuList extends OMComponent {
      * MapHandler/BeanContext.  The MenuList will add its menus to the
      * BeanContext.
      */
-    public void setBeanContext(BeanContext bc) 	
-	throws PropertyVetoException {
+    public void setBeanContext(BeanContext bc)  
+        throws PropertyVetoException {
 
-	super.setBeanContext(bc);
-	Iterator it = menus.iterator();
-	while (bc != null && it.hasNext()) {
-	    bc.add(it.next());
-	}
+        super.setBeanContext(bc);
+        Iterator it = menus.iterator();
+        while (bc != null && it.hasNext()) {
+            bc.add(it.next());
+        }
     }
 
 }

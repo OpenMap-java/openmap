@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/terrain/LOSGenerator.java,v $
 // $RCSfile: LOSGenerator.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/24 03:40:33 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,15 +63,15 @@ public class LOSGenerator {
     public LOSGenerator() {}
 
     public LOSGenerator(DTEDFrameCache cache) {
-	setDtedCache(cache);
+        setDtedCache(cache);
     }
     
     public void setDtedCache(DTEDFrameCache cache) {
-	dtedCache = cache;
+        dtedCache = cache;
     }
 
     public DTEDFrameCache getDtedCache() {
-	return dtedCache;
+        return dtedCache;
     }
 
     /**
@@ -97,67 +97,67 @@ public class LOSGenerator {
      * points.
      */
     public boolean isLOS(LatLonPoint startLLP,
-			 int startObjHeight,
-			 LatLonPoint endLLP,
-			 int endObjHeight, int numPoints) {
+                         int startObjHeight,
+                         LatLonPoint endLLP,
+                         int endObjHeight, int numPoints) {
 
-	boolean ret = false;
+        boolean ret = false;
 
-	if (Debug.debugging("los")) {
-	    Debug.output("LOSGenerator.isLOS: " + startLLP + " at height:" +
-			 startObjHeight + ", " + endLLP + " at height:" +
-			 endObjHeight + ", numPoints = " + numPoints);
-	}
+        if (Debug.debugging("los")) {
+            Debug.output("LOSGenerator.isLOS: " + startLLP + " at height:" +
+                         startObjHeight + ", " + endLLP + " at height:" +
+                         endObjHeight + ", numPoints = " + numPoints);
+        }
 
-	if (dtedCache == null) {
-	    return ret;
-	}
+        if (dtedCache == null) {
+            return ret;
+        }
 
         int startTotalHeight = startObjHeight + 
-	    dtedCache.getElevation(startLLP.getLatitude(), 
-				   startLLP.getLongitude());
+            dtedCache.getElevation(startLLP.getLatitude(), 
+                                   startLLP.getLongitude());
 
-	float[] llpoints = GreatCircle.great_circle(startLLP.radlat_,
-						    startLLP.radlon_,
-						    endLLP.radlat_,
-						    endLLP.radlon_,
-						    numPoints,
-						    true);
-	LatLonPoint llp = new LatLonPoint();
-	int size = llpoints.length;
-	double losSlope = -MoreMath.HALF_PI;
-	for (int i = 0; i < size; i+=2) {
-	    llp.setLatLon(llpoints[i], llpoints[i+1], true);
-	    int height = 0;
-	    if (i >= size - 2) {
-		height = endObjHeight;
-	    }
-	    double slope = calculateLOSSlope(startLLP, startTotalHeight,
-					     llp, height);
+        float[] llpoints = GreatCircle.great_circle(startLLP.radlat_,
+                                                    startLLP.radlon_,
+                                                    endLLP.radlat_,
+                                                    endLLP.radlon_,
+                                                    numPoints,
+                                                    true);
+        LatLonPoint llp = new LatLonPoint();
+        int size = llpoints.length;
+        double losSlope = -MoreMath.HALF_PI;
+        for (int i = 0; i < size; i+=2) {
+            llp.setLatLon(llpoints[i], llpoints[i+1], true);
+            int height = 0;
+            if (i >= size - 2) {
+                height = endObjHeight;
+            }
+            double slope = calculateLOSSlope(startLLP, startTotalHeight,
+                                             llp, height);
 
-	    if (Debug.debugging("losdetail")) {
-		Debug.output("   LOS:" + (i/2) + " - slope = " + slope + " at height of point: " + height);
-	    }
+            if (Debug.debugging("losdetail")) {
+                Debug.output("   LOS:" + (i/2) + " - slope = " + slope + " at height of point: " + height);
+            }
 
-	    // if the slope is greater than the current slope, it is
-	    // visible.  If it's less than or equal to the current
-	    // slope, it is not visible.
-	    if (losSlope < slope) {
-		losSlope = slope;
-		ret = true;
-		// If the last point has the largest slope, then the
-		// point is LOS.
-	    } else {
-		ret = false;
-	    }
-	}
+            // if the slope is greater than the current slope, it is
+            // visible.  If it's less than or equal to the current
+            // slope, it is not visible.
+            if (losSlope < slope) {
+                losSlope = slope;
+                ret = true;
+                // If the last point has the largest slope, then the
+                // point is LOS.
+            } else {
+                ret = false;
+            }
+        }
 
-	if (Debug.debugging("los")) {
-	    Debug.output("LOSGenerator - points " + 
-			 (ret?"":" NOT ") + " in LOS");
-	}
+        if (Debug.debugging("los")) {
+            Debug.output("LOSGenerator - points " + 
+                         (ret?"":" NOT ") + " in LOS");
+        }
 
-	return ret;
+        return ret;
     }
 
     /** 
@@ -184,27 +184,27 @@ public class LOSGenerator {
      * pointing straight down, in radians.
      */
     public double calculateLOSSlope(LatLonPoint startLLP, 
-				    int startTotalHeight,
-				    LatLonPoint endLLP, 
-				    int endObjHeight) {
+                                    int startTotalHeight,
+                                    LatLonPoint endLLP, 
+                                    int endObjHeight) {
 
-	if (dtedCache == null) {
-	    return 0;
-	}
+        if (dtedCache == null) {
+            return 0;
+        }
 
-	float arc_dist = GreatCircle.spherical_distance(startLLP.radlat_,
-							startLLP.radlon_,
-							endLLP.radlat_, 
-							endLLP.radlon_);
+        float arc_dist = GreatCircle.spherical_distance(startLLP.radlat_,
+                                                        startLLP.radlon_,
+                                                        endLLP.radlat_, 
+                                                        endLLP.radlon_);
 
         int endTotalHeight = endObjHeight + 
-	    dtedCache.getElevation(endLLP.getLatitude(), 
-				   endLLP.getLongitude());
+            dtedCache.getElevation(endLLP.getLatitude(), 
+                                   endLLP.getLongitude());
 
 
-	return calculateLOSSlope(startTotalHeight, 
-				 endTotalHeight, 
-				 arc_dist);
+        return calculateLOSSlope(startTotalHeight, 
+                                 endTotalHeight, 
+                                 arc_dist);
     }
 
     /**
@@ -221,25 +221,25 @@ public class LOSGenerator {
      * spherical model of the earth that separates the two points.
      */
     public double calculateLOSSlope(int startTotalHeight,
-				    int endTotalHeight,
-				    float arc_dist) {
-	double ret = 0;
-	double P = Math.sin(arc_dist)*
-	    (endTotalHeight+Planet.wgs84_earthEquatorialRadiusMeters);
+                                    int endTotalHeight,
+                                    float arc_dist) {
+        double ret = 0;
+        double P = Math.sin(arc_dist)*
+            (endTotalHeight+Planet.wgs84_earthEquatorialRadiusMeters);
 
-	double xPrime = Math.cos(arc_dist)*
-	    (endTotalHeight+Planet.wgs84_earthEquatorialRadiusMeters);
-	
-	double bottom;
-	double cutoff = 
-	    startTotalHeight + Planet.wgs84_earthEquatorialRadiusMeters;
+        double xPrime = Math.cos(arc_dist)*
+            (endTotalHeight+Planet.wgs84_earthEquatorialRadiusMeters);
+        
+        double bottom;
+        double cutoff = 
+            startTotalHeight + Planet.wgs84_earthEquatorialRadiusMeters;
 
-	// Suggested changes, submitted by Mark Wigmore. Introduces
-	// use of doubles, and avoidance of PI/2 tan() calculations.
+        // Suggested changes, submitted by Mark Wigmore. Introduces
+        // use of doubles, and avoidance of PI/2 tan() calculations.
 
-	bottom = cutoff - xPrime;
-	ret = MoreMath.HALF_PI_D - Math.atan(bottom/P);
-	return ret;
+        bottom = cutoff - xPrime;
+        ret = MoreMath.HALF_PI_D - Math.atan(bottom/P);
+        return ret;
     }
 }
 

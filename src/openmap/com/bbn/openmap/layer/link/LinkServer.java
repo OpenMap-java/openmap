@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkServer.java,v $
 // $RCSfile: LinkServer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:27 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -55,27 +55,27 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
      * @param s the socket to communicate over.
      */
     public LinkServer(Socket s) {
-	try {
-	    link = new Link(s);
-	} catch (java.io.IOException ioe) {
-	    System.err.println("LinkServer: IOException while creating child server:");
-	    System.err.println(ioe);
-	}
+        try {
+            link = new Link(s);
+        } catch (java.io.IOException ioe) {
+            System.err.println("LinkServer: IOException while creating child server:");
+            System.err.println(ioe);
+        }
     }
     
     /** From the Runnable interface.  The thread starts here... */
     public void run() {
-	try {
-	    handleClient();
-	} catch (java.io.IOException ioe) {
-	    link.cleanUp();
-	    link = null;
-	    if (com.bbn.openmap.util.Debug.debugging("link")) {
-		System.err.println(ioe);
-	    }
-	    com.bbn.openmap.util.Debug.output("LinkServer: Client disconnected");
-	    System.gc();
-	}
+        try {
+            handleClient();
+        } catch (java.io.IOException ioe) {
+            link.cleanUp();
+            link = null;
+            if (com.bbn.openmap.util.Debug.debugging("link")) {
+                System.err.println(ioe);
+            }
+            com.bbn.openmap.util.Debug.output("LinkServer: Client disconnected");
+            System.gc();
+        }
     }
 
     /** 
@@ -85,30 +85,30 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
      * @throws IOException
      */
     public void handleClient() throws IOException {
-	boolean validQuery;
-	
-	while (true) {
-	    link.readAndParse();
-	    validQuery = false;
+        boolean validQuery;
+        
+        while (true) {
+            link.readAndParse();
+            validQuery = false;
 
-	    // For instance, you could do something like this...
-	    
-// 	    LinkMapRequest graphicsQuery = link.getMapRequest();
-// 	    LinkActionRequest gestureQuery = link.getActionRequest();
+            // For instance, you could do something like this...
+            
+//          LinkMapRequest graphicsQuery = link.getMapRequest();
+//          LinkActionRequest gestureQuery = link.getActionRequest();
 
-// 	    if (graphicsQuery != null) {
-// 		getRectangle(graphicsQuery, link);
-// 		validQuery = true;
-// 	    } 
-// 	    if (gestureQuery != null) {
-// 		handleGesture(gestureQuery, link);
-// 		validQuery = true;
-// 	    }
-	    
-	    if (!validQuery) {
-		huh(link);
-	    }
-	}
+//          if (graphicsQuery != null) {
+//              getRectangle(graphicsQuery, link);
+//              validQuery = true;
+//          } 
+//          if (gestureQuery != null) {
+//              handleGesture(gestureQuery, link);
+//              validQuery = true;
+//          }
+            
+            if (!validQuery) {
+                huh(link);
+            }
+        }
     }
 
     /**
@@ -116,8 +116,8 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
      * @throws IOException
      */
     public void huh(Link link) throws IOException {
-	link.start(Link.HUH_HEADER);
-	link.end(Link.END_TOTAL);
+        link.start(Link.HUH_HEADER);
+        link.end(Link.END_TOTAL);
     }
 
     /** 
@@ -131,17 +131,17 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
      * @throws IOException
      */
     public void getRectangle(LinkMapRequest query, Link link) 
-	throws IOException{
+        throws IOException{
 
-	int count = 0;
-	LinkGraphicList lgl = new LinkGraphicList(link, new LinkProperties());
+        int count = 0;
+        LinkGraphicList lgl = new LinkGraphicList(link, new LinkProperties());
 
-	// Send nothing
-	
-	lgl.end(Link.END_SECTION);
-		
-	int des = LinkUtil.setMask(0, LinkActionRequest.MOUSE_CLICKED_MASK);
-	new LinkActionRequest(link, des, Link.END_TOTAL);
+        // Send nothing
+        
+        lgl.end(Link.END_SECTION);
+                
+        int des = LinkUtil.setMask(0, LinkActionRequest.MOUSE_CLICKED_MASK);
+        new LinkActionRequest(link, des, Link.END_TOTAL);
     }
 
     /** 
@@ -155,28 +155,28 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
      * @throws IOException
      */
     public void handleGesture(LinkActionRequest lar, Link link)
-	throws IOException {
+        throws IOException {
 
 
-	LinkProperties properties = new LinkProperties();
-	properties.setProperty(LPC_INFO, ("Mouse Clicked at: x = " + 
-							      lar.getX() + 
-							      ", y = " + lar.getY()));
+        LinkProperties properties = new LinkProperties();
+        properties.setProperty(LPC_INFO, ("Mouse Clicked at: x = " + 
+                                                              lar.getX() + 
+                                                              ", y = " + lar.getY()));
 
-	LinkActionList lal = new LinkActionList(link, properties);
-	int descriptor = lar.getDescriptor();
+        LinkActionList lal = new LinkActionList(link, properties);
+        int descriptor = lar.getDescriptor();
 
-	String gid = lar.getProperties().getProperty(LPC_GRAPHICID);
-	if (gid == null) {
-	    System.out.println("Deselecting graphics");
-	    lal.deselectGraphics();
-	} else {
-	    System.out.println("Selecting graphic");
-	    lal.modifyGraphic(LinkActionList.MODIFY_SELECT_GRAPHIC_MASK,
-			      lar.getProperties());
-	}
-	
-	lal.end(Link.END_TOTAL);
+        String gid = lar.getProperties().getProperty(LPC_GRAPHICID);
+        if (gid == null) {
+            System.out.println("Deselecting graphics");
+            lal.deselectGraphics();
+        } else {
+            System.out.println("Selecting graphic");
+            lal.modifyGraphic(LinkActionList.MODIFY_SELECT_GRAPHIC_MASK,
+                              lar.getProperties());
+        }
+        
+        lal.end(Link.END_TOTAL);
     }
 
 }

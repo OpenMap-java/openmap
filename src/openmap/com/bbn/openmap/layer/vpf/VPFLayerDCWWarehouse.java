@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayerDCWWarehouse.java,v $
-// $Revision: 1.2 $ $Date: 2003/12/30 17:06:54 $ $Author: wjeuerle $
+// $Revision: 1.3 $ $Date: 2004/01/26 18:18:12 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -68,81 +68,81 @@ public class VPFLayerDCWWarehouse
      */
     public VPFLayerDCWWarehouse() {
         super();
-	DEBUG = Debug.debugging("DCW");
+        DEBUG = Debug.debugging("DCW");
     }
     
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String list = props.getProperty(realPrefix + AreaTypeExcludeProperty);
-	if (list != null) {
-	    areaTypeExcludes = getNumbersFromPropertyList(list);
-	} else {
-	    areaTypeExcludes = getNumbersFromPropertyList("0 2"); 
-	    // topology artifacts and oceans, buy default
-	}
+        String list = props.getProperty(realPrefix + AreaTypeExcludeProperty);
+        if (list != null) {
+            areaTypeExcludes = getNumbersFromPropertyList(list);
+        } else {
+            areaTypeExcludes = getNumbersFromPropertyList("0 2"); 
+            // topology artifacts and oceans, buy default
+        }
 
-	if (DEBUG) Debug.output("Excluding area types: " + areaTypeExcludes);
+        if (DEBUG) Debug.output("Excluding area types: " + areaTypeExcludes);
 
-	list = props.getProperty(realPrefix + LineTypeExcludeProperty);
-	if (list != null) {
-	    lineTypeExcludes = getNumbersFromPropertyList(list);
-	}
+        list = props.getProperty(realPrefix + LineTypeExcludeProperty);
+        if (list != null) {
+            lineTypeExcludes = getNumbersFromPropertyList(list);
+        }
 
-	if (DEBUG) Debug.output("Excluding area types: " + lineTypeExcludes);
+        if (DEBUG) Debug.output("Excluding area types: " + lineTypeExcludes);
 
-	list = props.getProperty(realPrefix + TextTypeExcludeProperty);
-	if (list != null) {
-	    textTypeExcludes = getNumbersFromPropertyList(list);
-	}
+        list = props.getProperty(realPrefix + TextTypeExcludeProperty);
+        if (list != null) {
+            textTypeExcludes = getNumbersFromPropertyList(list);
+        }
 
-	if (DEBUG) Debug.output("Excluding area types: " + textTypeExcludes);
-	
+        if (DEBUG) Debug.output("Excluding area types: " + textTypeExcludes);
+        
     }
 
     /**
      * From a string of space separated numbers, creates an int[].
      */
     protected int[] getNumbersFromPropertyList(String list) {
-	List realList = new ArrayList();
+        List realList = new ArrayList();
 
-	List excludes = PropUtils.parseSpacedMarkers(list);
+        List excludes = PropUtils.parseSpacedMarkers(list);
 
-	for (Iterator it = excludes.iterator(); it.hasNext(); ) {
-	    String number = (String)it.next();
-	    try {
-		realList.add(Integer.valueOf(number));
-	    } catch (NumberFormatException nfe) {}
-	}
+        for (Iterator it = excludes.iterator(); it.hasNext(); ) {
+            String number = (String)it.next();
+            try {
+                realList.add(Integer.valueOf(number));
+            } catch (NumberFormatException nfe) {}
+        }
 
-	int[] numbers = null;
+        int[] numbers = null;
 
-	int size = realList.size();
+        int size = realList.size();
 
-	if (size > 0) {
-	    numbers = new int[size];
-	    int count = 0;
-	    for (Iterator it = realList.iterator(); it.hasNext(); ) {
-		numbers[count++] = ((Integer)it.next()).intValue();
-	    }
-	}
-	return numbers;
+        if (size > 0) {
+            numbers = new int[size];
+            int count = 0;
+            for (Iterator it = realList.iterator(); it.hasNext(); ) {
+                numbers[count++] = ((Integer)it.next()).intValue();
+            }
+        }
+        return numbers;
     }
 
     /**
      * returns true if the num is a number somewhere on the list.
      */
     protected boolean onList(int[] list, int num) {
-	if (list != null) {
-	    for (int i = 0; i < list.length; i++) {
-		if (num == list[i]) {
-		    return true;
-		}
-	    }
-	}
-	return false;
+        if (list != null) {
+            for (int i = 0; i < list.length; i++) {
+                if (num == list[i]) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -150,133 +150,133 @@ public class VPFLayerDCWWarehouse
      * returns an empty List
      */
     public List getFeatures() {
-	return Collections.EMPTY_LIST;
+        return Collections.EMPTY_LIST;
     }
 
     /**
      *
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
-			   List facevec,
-			   LatLonPoint ll1,
-			   LatLonPoint ll2,
-			   float dpplat,
-			   float dpplon)
+                           List facevec,
+                           LatLonPoint ll1,
+                           LatLonPoint ll2,
+                           float dpplat,
+                           float dpplon)
     {
-	List ipts = new ArrayList();
+        List ipts = new ArrayList();
 
-	if (areaTypeExcludes != null) {
+        if (areaTypeExcludes != null) {
 
-	    MutableInt areatype = new MutableInt(-1);
-	    String descript = covtable.getAreaDescription(facevec, areatype);
+            MutableInt areatype = new MutableInt(-1);
+            String descript = covtable.getAreaDescription(facevec, areatype);
 
-	    if (onList(areaTypeExcludes, areatype.value)) {
-		return;
-	    }
-	}
-	
-//  	if (areatype.value == 0) {//topology artifact
-//  	    return;
-//  	}
-	
-//  	if (areatype.value == 2) {
-//  	    if (Debug.debugging("vpf")) {
-//  	        Debug.output("Skipping open ocean: " + descript);
-//  	    }
-//  	    return;
-//  	}
+            if (onList(areaTypeExcludes, areatype.value)) {
+                return;
+            }
+        }
+        
+//      if (areatype.value == 0) {//topology artifact
+//          return;
+//      }
+        
+//      if (areatype.value == 2) {
+//          if (Debug.debugging("vpf")) {
+//              Debug.output("Skipping open ocean: " + descript);
+//          }
+//          return;
+//      }
 
-	int totalSize = 0;
+        int totalSize = 0;
         try {
-	    totalSize = areatable.computeEdgePoints(facevec, ipts);
-	} catch (FormatException f) {
- 	    Debug.output("FormatException in computeEdgePoints: " + f);
-	    return;
-	}
-	if (totalSize == 0) {
-	    return;
-	}
-	    
-	OMPoly py = createAreaOMPoly(ipts, totalSize, ll1, ll2, 
-				     dpplat, dpplon,
-				     covtable.doAntarcticaWorkaround);
+            totalSize = areatable.computeEdgePoints(facevec, ipts);
+        } catch (FormatException f) {
+            Debug.output("FormatException in computeEdgePoints: " + f);
+            return;
+        }
+        if (totalSize == 0) {
+            return;
+        }
+            
+        OMPoly py = createAreaOMPoly(ipts, totalSize, ll1, ll2, 
+                                     dpplat, dpplon,
+                                     covtable.doAntarcticaWorkaround);
 
-//  	if (areatype.value == -1) {
-//  	    areatype.value = 0;
-//  	}
+//      if (areatype.value == -1) {
+//          areatype.value = 0;
+//      }
 
-	drawingAttributes.setTo(py);
+        drawingAttributes.setTo(py);
 
-	// HACK to get tile boundaries to not show up for areas.
-	py.setLinePaint(py.getFillPaint());
-	py.setSelectPaint(py.getFillPaint());
+        // HACK to get tile boundaries to not show up for areas.
+        py.setLinePaint(py.getFillPaint());
+        py.setSelectPaint(py.getFillPaint());
 
-	graphics.add(py);
+        graphics.add(py);
     }
 
     /**
      *
      */
     public void createEdge(CoverageTable covtable, EdgeTable edgetable,
-			   List edgevec,
-			   LatLonPoint ll1,
-			   LatLonPoint ll2,
-			   float dpplat,
-			   float dpplon,
-			   CoordFloatString coords)
+                           List edgevec,
+                           LatLonPoint ll1,
+                           LatLonPoint ll2,
+                           float dpplat,
+                           float dpplon,
+                           CoordFloatString coords)
     {
-	//  Kept these here to keep in mind that it may be possible to
-	//  further figure out what exactly we have here.
-	if (lineTypeExcludes != null) {
+        //  Kept these here to keep in mind that it may be possible to
+        //  further figure out what exactly we have here.
+        if (lineTypeExcludes != null) {
 
-	    MutableInt lineType = new MutableInt(-1);
-	    String desc = covtable.getLineDescription(edgevec, lineType);
+            MutableInt lineType = new MutableInt(-1);
+            String desc = covtable.getLineDescription(edgevec, lineType);
 
-	    if (onList(lineTypeExcludes, lineType.value)) {
-		return;
-	    }
-	}
+            if (onList(lineTypeExcludes, lineType.value)) {
+                return;
+            }
+        }
 
-	OMPoly py = createEdgeOMPoly(coords, ll1, ll2, dpplat, dpplon);
-	drawingAttributes.setTo(py);
-	py.setIsPolygon(false);
-	graphics.add(py);
+        OMPoly py = createEdgeOMPoly(coords, ll1, ll2, dpplat, dpplon);
+        drawingAttributes.setTo(py);
+        py.setIsPolygon(false);
+        graphics.add(py);
     }
 
     /**
      *
      */
     public void createText(CoverageTable covtable, TextTable texttable,
-			   List textvec,
-			   float latitude,
-			   float longitude,
-			   String text)
+                           List textvec,
+                           float latitude,
+                           float longitude,
+                           String text)
     {
-	//  Kept these here to keep in mind that it may be possible to
-	//  further figure out what exactly we have here.
-	if (textTypeExcludes != null) {
+        //  Kept these here to keep in mind that it may be possible to
+        //  further figure out what exactly we have here.
+        if (textTypeExcludes != null) {
 
-	    MutableInt textType = new MutableInt(-1);
-	    String desc = covtable.getTextDescription(textvec, textType);
+            MutableInt textType = new MutableInt(-1);
+            String desc = covtable.getTextDescription(textvec, textType);
 
-	    if (onList(textTypeExcludes, textType.value)) {
-		return;
-	    }
-	}
+            if (onList(textTypeExcludes, textType.value)) {
+                return;
+            }
+        }
 
-	OMText txt = createOMText(text, latitude, longitude);
-	drawingAttributes.setTo(txt);
-	graphics.add(txt);
+        OMText txt = createOMText(text, latitude, longitude);
+        drawingAttributes.setTo(txt);
+        graphics.add(txt);
     }
 
     /**
      * Method called by the VPF reader code to construct a node feature.
      */
     public void createNode(CoverageTable c, NodeTable t, List nodeprim,
-			   float latitude, float longitude,
-			   boolean isEntityNode) {
-	OMPoint pt = createOMPoint(latitude, longitude);
-	drawingAttributes.setTo(pt);
-	graphics.add(pt);
+                           float latitude, float longitude,
+                           boolean isEntityNode) {
+        OMPoint pt = createOMPoint(latitude, longitude);
+        drawingAttributes.setTo(pt);
+        graphics.add(pt);
     }
 }

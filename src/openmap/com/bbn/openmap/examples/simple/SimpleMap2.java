@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/simple/SimpleMap2.java,v $
 // $RCSfile: SimpleMap2.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/05/14 17:27:24 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,96 +60,96 @@ public class SimpleMap2 {
 
     public static void main(String args[]) {
 
-	// Create a Swing frame.  The OpenMapFrame knows how to use
-	// the MapHandler to locate and place certain objects.
-	OpenMapFrame frame = new OpenMapFrame("Simple Map 2");
-	// Size the frame appropriately
-	frame.setSize(640, 480);
+        // Create a Swing frame.  The OpenMapFrame knows how to use
+        // the MapHandler to locate and place certain objects.
+        OpenMapFrame frame = new OpenMapFrame("Simple Map 2");
+        // Size the frame appropriately
+        frame.setSize(640, 480);
 
-	try {
+        try {
 
-	    // The BasicMapPanel automatically creates many 
-	    // default components, including the MapBean and the
-	    // MapHandler.  You can extend the BasicMapPanel class if
-	    // you like to add different functionality or different
-	    // types of objects.
-	    MapPanel mapPanel = new BasicMapPanel();
+            // The BasicMapPanel automatically creates many 
+            // default components, including the MapBean and the
+            // MapHandler.  You can extend the BasicMapPanel class if
+            // you like to add different functionality or different
+            // types of objects.
+            MapPanel mapPanel = new BasicMapPanel();
 
-	    // Get the default MapHandler the BasicMapPanel created.
-	    MapHandler mapHandler = mapPanel.getMapHandler();
-	    mapHandler.add(frame);
+            // Get the default MapHandler the BasicMapPanel created.
+            MapHandler mapHandler = mapPanel.getMapHandler();
+            mapHandler.add(frame);
 
-	    // Get the default MapBean that the BasicMapPanel created.
-	    MapBean mapBean = mapPanel.getMapBean();
+            // Get the default MapBean that the BasicMapPanel created.
+            MapBean mapBean = mapPanel.getMapBean();
 
-	    // Set the map's center
-	    mapBean.setCenter(new LatLonPoint(43.0f, -95.0f));
+            // Set the map's center
+            mapBean.setCenter(new LatLonPoint(43.0f, -95.0f));
 
-	    // Set the map's scale 1:120 million
-	    mapBean.setScale(120000000f);
+            // Set the map's scale 1:120 million
+            mapBean.setScale(120000000f);
 
-	    // Create and add a LayerHandler to the MapHandler.  The
-	    // LayerHandler manages Layers, whether they are part of the
-	    // map or not.  layer.setVisible(true) will add it to the map.
-	    // The LayerHandler has methods to do this, too.  The
-	    // LayerHandler will find the MapBean in the MapHandler.
-	    mapHandler.add(new LayerHandler());
+            // Create and add a LayerHandler to the MapHandler.  The
+            // LayerHandler manages Layers, whether they are part of the
+            // map or not.  layer.setVisible(true) will add it to the map.
+            // The LayerHandler has methods to do this, too.  The
+            // LayerHandler will find the MapBean in the MapHandler.
+            mapHandler.add(new LayerHandler());
 
-	    // Add a route layer.  
-	    RouteLayer routeLayer = new RouteLayer();
-	    routeLayer.setVisible(true);
-	    // The LayerHandler will find the Layer in the MapHandler.
-	    mapHandler.add(routeLayer);
+            // Add a route layer.  
+            RouteLayer routeLayer = new RouteLayer();
+            routeLayer.setVisible(true);
+            // The LayerHandler will find the Layer in the MapHandler.
+            mapHandler.add(routeLayer);
 
-	    mapHandler.add(new GraticuleLayer());
+            mapHandler.add(new GraticuleLayer());
 
-	    // Create a ShapeLayer to show world political boundaries.
-	    // Set the properties of the layer.  This assumes that the
-	    // datafiles "dcwpo-browse.shp" and "dcwpo-browse.ssx" are in
-	    // a path specified in the CLASSPATH variable.  These files
-	    // are distributed with OpenMap and reside in the toplevel
-	    // "share" subdirectory.
-	    ShapeLayer shapeLayer = new ShapeLayer();
+            // Create a ShapeLayer to show world political boundaries.
+            // Set the properties of the layer.  This assumes that the
+            // datafiles "dcwpo-browse.shp" and "dcwpo-browse.ssx" are in
+            // a path specified in the CLASSPATH variable.  These files
+            // are distributed with OpenMap and reside in the toplevel
+            // "share" subdirectory.
+            ShapeLayer shapeLayer = new ShapeLayer();
 
-	    // Since this Properties object is being used just for
-	    // this layer, the properties do not have to be scoped
-	    // with marker name, like the layer properties in the
-	    // ../hello/HelloWorld.properties file.
-	    Properties shapeLayerProps = new Properties();
-	    shapeLayerProps.put("prettyName", "Political Solid");
-	    shapeLayerProps.put("lineColor", "000000");
-	    shapeLayerProps.put("fillColor", "BDDE83");
-	    shapeLayerProps.put("shapeFile", "data/shape/dcwpo-browse.shp");
-	    shapeLayerProps.put("spatialIndex", "data/shape/dcwpo-browse.ssx");
-	    shapeLayer.setProperties(shapeLayerProps);
-	    shapeLayer.setVisible(true);
+            // Since this Properties object is being used just for
+            // this layer, the properties do not have to be scoped
+            // with marker name, like the layer properties in the
+            // ../hello/HelloWorld.properties file.
+            Properties shapeLayerProps = new Properties();
+            shapeLayerProps.put("prettyName", "Political Solid");
+            shapeLayerProps.put("lineColor", "000000");
+            shapeLayerProps.put("fillColor", "BDDE83");
+            shapeLayerProps.put("shapeFile", "data/shape/dcwpo-browse.shp");
+            shapeLayerProps.put("spatialIndex", "data/shape/dcwpo-browse.ssx");
+            shapeLayer.setProperties(shapeLayerProps);
+            shapeLayer.setVisible(true);
 
-	    mapHandler.add(shapeLayer);
-	
-	    // Create the directional and zoom control tool	
-	    OMToolSet omts = new OMToolSet();
-	    // Create an OpenMap toolbar
-	    ToolPanel toolBar = new ToolPanel();
+            mapHandler.add(shapeLayer);
+        
+            // Create the directional and zoom control tool     
+            OMToolSet omts = new OMToolSet();
+            // Create an OpenMap toolbar
+            ToolPanel toolBar = new ToolPanel();
 
-	    // Add the ToolPanel and the OMToolSet to the MapHandler.  The
-	    // OpenMapFrame will find the ToolPanel and attach it to the
-	    // top part of its content pane, and the ToolPanel will find
-	    // the OMToolSet and add it to itself.
-	    mapHandler.add(omts);
-	    mapHandler.add(toolBar);
-	    // Display the frame
-	    frame.setVisible(true);
+            // Add the ToolPanel and the OMToolSet to the MapHandler.  The
+            // OpenMapFrame will find the ToolPanel and attach it to the
+            // top part of its content pane, and the ToolPanel will find
+            // the OMToolSet and add it to itself.
+            mapHandler.add(omts);
+            mapHandler.add(toolBar);
+            // Display the frame
+            frame.setVisible(true);
 
-	} catch (MultipleSoloMapComponentException msmce) {
-	    // The MapHandler is only allowed to have one of certain
-	    // items.  These items implement the SoloMapComponent
-	    // interface.  The MapHandler can have a policy that
-	    // determines what to do when duplicate instances of the
-	    // same type of object are added - replace or ignore.
+        } catch (MultipleSoloMapComponentException msmce) {
+            // The MapHandler is only allowed to have one of certain
+            // items.  These items implement the SoloMapComponent
+            // interface.  The MapHandler can have a policy that
+            // determines what to do when duplicate instances of the
+            // same type of object are added - replace or ignore.
 
-	    // In this example, this will never happen, since we are
-	    // controlling that one MapBean, LayerHandler,
-	    // MouseDelegator, etc is being added to the MapHandler.
-	}
+            // In this example, this will never happen, since we are
+            // controlling that one MapBean, LayerHandler,
+            // MouseDelegator, etc is being added to the MapHandler.
+        }
     }
 }

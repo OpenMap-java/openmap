@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/LOSStateMachine.java,v $
 // $RCSfile: LOSStateMachine.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,26 +37,26 @@ class LOSStateMachine extends StateMachine {
     public static final int TOOL_VIEW = 3;
 
     public LOSStateMachine(LOSGenerator generator){
-	losg = generator;
-	State[] losStates = init();
-	setStates(losStates);
+        losg = generator;
+        State[] losStates = init();
+        setStates(losStates);
 
-	// set reset state
-	setResetState(TOOL_DO_NOTHING);
-	reset();
-	setMapMouseListenerResponses(true);
+        // set reset state
+        setResetState(TOOL_DO_NOTHING);
+        reset();
+        setMapMouseListenerResponses(true);
     }
 
 
     protected State[] init(){
-	State[] LOSStates = new State[4];
+        State[] LOSStates = new State[4];
 
-	LOSStates[TOOL_DO_NOTHING] = new LOSDoNothingState(losg);
-	LOSStates[TOOL_DRAW] = new LOSDrawState(losg);
-	LOSStates[TOOL_DEFINED] = new LOSDefinedState(losg);
-	LOSStates[TOOL_VIEW] = new LOSViewState(losg);
+        LOSStates[TOOL_DO_NOTHING] = new LOSDoNothingState(losg);
+        LOSStates[TOOL_DRAW] = new LOSDrawState(losg);
+        LOSStates[TOOL_DEFINED] = new LOSDefinedState(losg);
+        LOSStates[TOOL_VIEW] = new LOSViewState(losg);
 
-	return LOSStates;
+        return LOSStates;
     }
 }
 

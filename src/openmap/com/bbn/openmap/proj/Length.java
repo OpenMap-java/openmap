@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Length.java,v $
 // $RCSfile: Length.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/17 00:25:48 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,9 +63,9 @@ public class Length {
      * are converted to lower case for consistency.
      */
     public Length(String name, String abbr, float unitEquatorCircumference) {
-	this.name = name.toLowerCase().intern();
-	constant = unitEquatorCircumference/com.bbn.openmap.MoreMath.TWO_PI;
-	this.abbr = abbr.toLowerCase().intern();
+        this.name = name.toLowerCase().intern();
+        constant = unitEquatorCircumference/com.bbn.openmap.MoreMath.TWO_PI;
+        this.abbr = abbr.toLowerCase().intern();
     }
 
     /**
@@ -73,11 +73,11 @@ public class Length {
      * to a number of radians.
      */
     public float toRadians(float numUnits) {
-	if (Debug.debugging("length")) {
-	    Debug.output("Translating " + name + " from radians");
-	}
+        if (Debug.debugging("length")) {
+            Debug.output("Translating " + name + " from radians");
+        }
 
-	return numUnits/constant;
+        return numUnits/constant;
     }
 
     /**
@@ -85,25 +85,25 @@ public class Length {
      * represented by this length.
      */
     public float fromRadians(float numRadians) {
-	if (Debug.debugging("length")) {
-	    Debug.output("Translating radians from " + name);
-	}
-	
-	return numRadians*constant;
+        if (Debug.debugging("length")) {
+            Debug.output("Translating radians from " + name);
+        }
+        
+        return numRadians*constant;
     }
 
     /**
      * Return the name for this length type.
      */
     public String toString() {
-	return name;
+        return name;
     }
 
     /**
      * Return the abbreviation for this length type.
      */
     public String getAbbr() {
-	return abbr;
+        return abbr;
     }
     
     /** 
@@ -111,7 +111,7 @@ public class Length {
      * implementations of this class.
      */
     public static Length[] getAvailable() {
-	return new Length[] {METER, KM, FEET, MILE, DM, NM, DECIMAL_DEGREE};
+        return new Length[] {METER, KM, FEET, MILE, DM, NM, DECIMAL_DEGREE};
     }
 
     /**
@@ -121,14 +121,14 @@ public class Length {
      * available options.
      */
     public static Length get(String name) {
-	Length[] choices = getAvailable();
+        Length[] choices = getAvailable();
 
-	for (int i = 0; i < choices.length; i++) {
-	    if (name.toLowerCase().intern() == choices[i].toString() ||
-		name.toLowerCase().intern() == choices[i].getAbbr()) {
-		return choices[i];
-	    }
-	}
-	return null;
+        for (int i = 0; i < choices.length; i++) {
+            if (name.toLowerCase().intern() == choices[i].toString() ||
+                name.toLowerCase().intern() == choices[i].getAbbr()) {
+                return choices[i];
+            }
+        }
+        return null;
     }
 }

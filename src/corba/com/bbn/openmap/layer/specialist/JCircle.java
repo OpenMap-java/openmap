@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JCircle.java,v $
 // $RCSfile: JCircle.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,22 +40,22 @@ public class JCircle extends OMCircle implements Serializable, JObjectHolder {
 
     /** Constructor. */
     public JCircle(ECircle ecircle) {
-	super();
-	JGraphic.fillOMGraphicParams(this, ecircle.egraphic);
+        super();
+        JGraphic.fillOMGraphicParams(this, ecircle.egraphic);
 
-	setX(ecircle.p1.x);
-	setY(ecircle.p1.y);
-	setLatLon(ecircle.ll1.lat, ecircle.ll1.lon);
+        setX(ecircle.p1.x);
+        setY(ecircle.p1.y);
+        setLatLon(ecircle.ll1.lat, ecircle.ll1.lon);
 
-	// HACK - Due to a problem in the projection libs, LatLon
-	// ellipses aren't supported right now.  So for now, we're
-	// picking the major value and making a circle
-	setRadius(ecircle.major);
-// 	setMajor(ecircle.major);
-// 	setMinor(ecircle.minor);
+        // HACK - Due to a problem in the projection libs, LatLon
+        // ellipses aren't supported right now.  So for now, we're
+        // picking the major value and making a circle
+        setRadius(ecircle.major);
+//      setMajor(ecircle.major);
+//      setMinor(ecircle.minor);
 
-	setWidth(ecircle.width);
-	setHeight(ecircle.height);
+        setWidth(ecircle.width);
+        setHeight(ecircle.height);
     }
 
     public void setObject(com.bbn.openmap.CSpecialist.EComp aObject) {
@@ -67,53 +67,53 @@ public class JCircle extends OMCircle implements Serializable, JObjectHolder {
     }
 
     public void update(com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
-	JGraphic.update((JObjectHolder)this, update);
+        JGraphic.update((JObjectHolder)this, update);
     }
 
     /** update() - takes a CircPackage.CF_update and changes the fields
      *  that need to be.  Called as a result of a gesture.*/
     public void update(com.bbn.openmap.CSpecialist.CirclePackage.CF_update update) {
 
-        needToRegenerate = true;		// flag dirty
-        	// do the updates, but don't rerender just yet
-	switch (update.discriminator().value()) {
+        needToRegenerate = true;                // flag dirty
+                // do the updates, but don't rerender just yet
+        switch (update.discriminator().value()) {
 
-	      // set fixed point
-	  case com.bbn.openmap.CSpecialist.CirclePackage.settableFields._CF_ll1:
-	      LLPoint ll = update.ll1();
-	      setLatLon(ll.lat, ll.lon);
-	      break;
+              // set fixed point
+          case com.bbn.openmap.CSpecialist.CirclePackage.settableFields._CF_ll1:
+              LLPoint ll = update.ll1();
+              setLatLon(ll.lat, ll.lon);
+              break;
 
-	  case com.bbn.openmap.CSpecialist.CirclePackage.settableFields._CF_p1:
-	      XYPoint pt1 = update.p1();
-	      setX(pt1.x);
-	      setY(pt1.y);
-	      break;
+          case com.bbn.openmap.CSpecialist.CirclePackage.settableFields._CF_p1:
+              XYPoint pt1 = update.p1();
+              setX(pt1.x);
+              setY(pt1.y);
+              break;
 
-	  case com.bbn.openmap.CSpecialist.CirclePackage.settableFields._CF_major:
-	      // HACK - Projection lib doesn't handle LatLon Ellipses -make it a circle
-	      setRadius(update.major());
-// 	      setMajor(update.major());
-	      break;
+          case com.bbn.openmap.CSpecialist.CirclePackage.settableFields._CF_major:
+              // HACK - Projection lib doesn't handle LatLon Ellipses -make it a circle
+              setRadius(update.major());
+//            setMajor(update.major());
+              break;
 
-	  case com.bbn.openmap.CSpecialist.CirclePackage.settableFields._CF_minor:
-	      // HACK - Projection lib doesn't handle LatLon Ellipses -make it a circle
-	      setRadius(update.minor());
-//  	      setMinor(update.minor());
-	      break;
+          case com.bbn.openmap.CSpecialist.CirclePackage.settableFields._CF_minor:
+              // HACK - Projection lib doesn't handle LatLon Ellipses -make it a circle
+              setRadius(update.minor());
+//            setMinor(update.minor());
+              break;
 
-	  case com.bbn.openmap.CSpecialist.CirclePackage.settableFields._CF_height:
-	      setHeight(update.height());
-	      break;
+          case com.bbn.openmap.CSpecialist.CirclePackage.settableFields._CF_height:
+              setHeight(update.height());
+              break;
 
-	  case com.bbn.openmap.CSpecialist.CirclePackage.settableFields._CF_width:
-	      setWidth(update.width());
-	      break;
+          case com.bbn.openmap.CSpecialist.CirclePackage.settableFields._CF_width:
+              setWidth(update.width());
+              break;
 
-	  default:
-	      System.err.println(
-		  "JCircle.update: invalid circle update");
-	      break;
-	}
+          default:
+              System.err.println(
+                  "JCircle.update: invalid circle update");
+              break;
+        }
     }
 }

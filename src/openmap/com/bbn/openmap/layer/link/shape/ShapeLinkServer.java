@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/ShapeLinkServer.java,v $
 // $RCSfile: ShapeLinkServer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:28 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -67,15 +67,15 @@ public class ShapeLinkServer extends LinkServer implements LinkPropertiesConstan
     protected LinkProperties lineProperties;
 
     public ShapeLinkServer(Socket socket,
-			   String shapeFile,String spatialIndexFile){
+                           String shapeFile,String spatialIndexFile){
         super(socket);
-	locateAndSetShapeData(shapeFile, spatialIndexFile);
+        locateAndSetShapeData(shapeFile, spatialIndexFile);
     }
 
     public void finalize() {
-	if (Debug.debugging("gc")) {
-	    Debug.output("ShapeLinkServer instance gc'd - client gone");
-	}
+        if (Debug.debugging("gc")) {
+            Debug.output("ShapeLinkServer instance gc'd - client gone");
+        }
     }
 
     /** 
@@ -83,171 +83,171 @@ public class ShapeLinkServer extends LinkServer implements LinkPropertiesConstan
      * client, and responds to requests that are made.
      */
     public void handleClient() throws IOException {
-	boolean validQuery;
-	try {
-	    while (true) {
-		link.readAndParse();
-		validQuery = false;
-		
-		// For instance, you could do something like this...
-		
-		LinkMapRequest graphicsQuery = link.getMapRequest();
-		// 	    LinkActionRequest gestureQuery = link.getActionRequest();
-		
-		if (graphicsQuery != null){
-		    getRectangle(graphicsQuery, link);
-		    validQuery = true;
-		} 
-		graphicsQuery = null;
+        boolean validQuery;
+        try {
+            while (true) {
+                link.readAndParse();
+                validQuery = false;
+                
+                // For instance, you could do something like this...
+                
+                LinkMapRequest graphicsQuery = link.getMapRequest();
+                //          LinkActionRequest gestureQuery = link.getActionRequest();
+                
+                if (graphicsQuery != null){
+                    getRectangle(graphicsQuery, link);
+                    validQuery = true;
+                } 
+                graphicsQuery = null;
 
-//  		if (gestureQuery != null){
-//  		    handleGesture(gestureQuery, link);
-//  		    validQuery = true;
-//  		}
-	    
-		if (!validQuery){
-		    huh(link);
-		}
-	    }
-	} catch (IOException ioe) {
-	    spatialIndex = null;
-	    lineColor = null;
-	    fillColor = null;
-	    lineProperties = null;
-	    throw ioe;
-	}
+//              if (gestureQuery != null){
+//                  handleGesture(gestureQuery, link);
+//                  validQuery = true;
+//              }
+            
+                if (!validQuery){
+                    huh(link);
+                }
+            }
+        } catch (IOException ioe) {
+            spatialIndex = null;
+            lineColor = null;
+            fillColor = null;
+            lineProperties = null;
+            throw ioe;
+        }
     }
 
     public void setFillColor(Color fColor){
-	fillColor = fColor;
+        fillColor = fColor;
     }
 
     public void setLineColor(Color lColor){
-	lineColor = lColor;
+        lineColor = lColor;
     }
 
     public Color getFillColor(){
-	return fillColor;
+        return fillColor;
     }
 
     public Color getLineColor(){
-	return lineColor;
+        return lineColor;
     }
 
     public void getRectangle(LinkMapRequest query, Link link) 
-	throws IOException {
-	String value;
-	
-	if (spatialIndex == null) link.end(Link.END_TOTAL);
+        throws IOException {
+        String value;
+        
+        if (spatialIndex == null) link.end(Link.END_TOTAL);
 
-	LinkProperties args = query.getProperties();
-	LinkGraphicList lgl = new LinkGraphicList(link, args);
-// 	System.out.println(args);
-	lineProperties = new LinkProperties();
-	value = args.getProperty(LPC_LINECOLOR);
-	if (value != null) lineProperties.setProperty(LPC_LINECOLOR, value);
-	value = args.getProperty(LPC_FILLCOLOR);
-	if (value != null) lineProperties.setProperty(LPC_FILLCOLOR, value);
-	value = args.getProperty(LPC_HIGHLIGHTCOLOR);
-	if (value != null) lineProperties.setProperty(LPC_HIGHLIGHTCOLOR, value);
-	value = args.getProperty(LPC_LINEWIDTH);
-	if (value != null) lineProperties.setProperty(LPC_LINEWIDTH, value);
-	
-	LinkBoundingPoly[] bounds = query.getBoundingPolys();
+        LinkProperties args = query.getProperties();
+        LinkGraphicList lgl = new LinkGraphicList(link, args);
+//      System.out.println(args);
+        lineProperties = new LinkProperties();
+        value = args.getProperty(LPC_LINECOLOR);
+        if (value != null) lineProperties.setProperty(LPC_LINECOLOR, value);
+        value = args.getProperty(LPC_FILLCOLOR);
+        if (value != null) lineProperties.setProperty(LPC_FILLCOLOR, value);
+        value = args.getProperty(LPC_HIGHLIGHTCOLOR);
+        if (value != null) lineProperties.setProperty(LPC_HIGHLIGHTCOLOR, value);
+        value = args.getProperty(LPC_LINEWIDTH);
+        if (value != null) lineProperties.setProperty(LPC_LINEWIDTH, value);
+        
+        LinkBoundingPoly[] bounds = query.getBoundingPolys();
 
-	for (int i = 0; i < bounds.length; i++){
-	    fetchGraphics((double)bounds[i].minX, (double)bounds[i].minY, 
-			  (double)bounds[i].maxX, (double)bounds[i].maxY, 
-			  lgl, lineProperties);
-	}
+        for (int i = 0; i < bounds.length; i++){
+            fetchGraphics((double)bounds[i].minX, (double)bounds[i].minY, 
+                          (double)bounds[i].maxX, (double)bounds[i].maxY, 
+                          lgl, lineProperties);
+        }
 
-	lgl.end(Link.END_TOTAL);
+        lgl.end(Link.END_TOTAL);
     }
 
     /**
      *
      */
     protected void fetchGraphics(double xmin, double ymin,
-				 double xmax, double ymax,
-				 LinkGraphicList lgl, LinkProperties properties)
-	throws IOException {
+                                 double xmax, double ymax,
+                                 LinkGraphicList lgl, LinkProperties properties)
+        throws IOException {
 
-	Debug.message("shape","fetchGraphics: " + xmin + ", " + ymin + ", " +
-		      xmax + ", " + ymax);
+        Debug.message("shape","fetchGraphics: " + xmin + ", " + ymin + ", " +
+                      xmax + ", " + ymax);
 
-	try {
-	    ESRIRecord records[] = spatialIndex.locateRecords(xmin, ymin,
-							      xmax, ymax);
-	    int nRecords = records.length;
-	    ESRILinkRecord rec;
-	    for (int i = 0; i < nRecords; i++) {
-		if (records[i] instanceof ESRILinkRecord){
-		    rec = (ESRILinkRecord)records[i];
-		    rec.writeLinkGraphics(lgl, properties);
-		}
-	    }
-	} catch (java.io.IOException ex) {
-	    if (Debug.debugging("shape")){
-		ex.printStackTrace();
-	    }
-	    return;
-	} catch (com.bbn.openmap.io.FormatException fe) {
-	    Debug.error("ShapeLinkServer caught FormatException in the file");
-	    fe.printStackTrace();
-	}
+        try {
+            ESRIRecord records[] = spatialIndex.locateRecords(xmin, ymin,
+                                                              xmax, ymax);
+            int nRecords = records.length;
+            ESRILinkRecord rec;
+            for (int i = 0; i < nRecords; i++) {
+                if (records[i] instanceof ESRILinkRecord){
+                    rec = (ESRILinkRecord)records[i];
+                    rec.writeLinkGraphics(lgl, properties);
+                }
+            }
+        } catch (java.io.IOException ex) {
+            if (Debug.debugging("shape")){
+                ex.printStackTrace();
+            }
+            return;
+        } catch (com.bbn.openmap.io.FormatException fe) {
+            Debug.error("ShapeLinkServer caught FormatException in the file");
+            fe.printStackTrace();
+        }
     }
 
     protected void locateAndSetShapeData(String shapeFileName,
-					 String spatialIndexFileName) {
-	Debug.message("shape", "ShapeLinkServer: Reading shape file.");
-	File spatialIndexFile = new File(spatialIndexFileName);
+                                         String spatialIndexFileName) {
+        Debug.message("shape", "ShapeLinkServer: Reading shape file.");
+        File spatialIndexFile = new File(spatialIndexFileName);
 
-	if (spatialIndexFile.isAbsolute()) {
-// 	    System.out.println("Absolute!");
-	    try {
-		spatialIndex = new LinkSpatialIndex(spatialIndexFileName,
-						    shapeFileName);
-	    } catch (java.io.IOException e) {
-		if (Debug.debugging("shape")){
-		    e.printStackTrace();
-		}
-	    }
-	} else {
-// 	    System.out.println("Relative!");
-	    Vector dirs = Environment.getClasspathDirs();
-	    int nDirs = dirs.size();
-	    if (nDirs > 0) {
-		for (int i = 0; i < nDirs; i++) {
-		    String dir = (String) dirs.elementAt(i);
-		    File sif = new File(dir, spatialIndexFileName);
-		    if (sif.isFile()) {
-			File sf = new File(dir, shapeFileName);
-			try {
-// 			    System.out.println(sif.toString());
-// 			    System.out.println(sf.toString());
-			    spatialIndex = new LinkSpatialIndex(sif.toString(),
-								sf.toString());
-			    break;
-			} catch (java.io.IOException e) {
-			    if (Debug.debugging("shape")){
-				e.printStackTrace();
-			    }
-			}
-		    }
-		}
-		if (spatialIndex == null) {
-		    System.err.println("Unable to find file: "
-				       + shapeFileName);
-		    System.err.println("Unable to find file: "
-				       + spatialIndexFileName);
-		}
-	    } else {
-		System.err.println("No directories in CLASSPATH!");
-		System.err.println("Unable to locate file: "
-				   + shapeFileName);
-		System.err.println("Unable to locate file: "
-				   + spatialIndexFileName);
-	    }
-	}
+        if (spatialIndexFile.isAbsolute()) {
+//          System.out.println("Absolute!");
+            try {
+                spatialIndex = new LinkSpatialIndex(spatialIndexFileName,
+                                                    shapeFileName);
+            } catch (java.io.IOException e) {
+                if (Debug.debugging("shape")){
+                    e.printStackTrace();
+                }
+            }
+        } else {
+//          System.out.println("Relative!");
+            Vector dirs = Environment.getClasspathDirs();
+            int nDirs = dirs.size();
+            if (nDirs > 0) {
+                for (int i = 0; i < nDirs; i++) {
+                    String dir = (String) dirs.elementAt(i);
+                    File sif = new File(dir, spatialIndexFileName);
+                    if (sif.isFile()) {
+                        File sf = new File(dir, shapeFileName);
+                        try {
+//                          System.out.println(sif.toString());
+//                          System.out.println(sf.toString());
+                            spatialIndex = new LinkSpatialIndex(sif.toString(),
+                                                                sf.toString());
+                            break;
+                        } catch (java.io.IOException e) {
+                            if (Debug.debugging("shape")){
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+                if (spatialIndex == null) {
+                    System.err.println("Unable to find file: "
+                                       + shapeFileName);
+                    System.err.println("Unable to find file: "
+                                       + spatialIndexFileName);
+                }
+            } else {
+                System.err.println("No directories in CLASSPATH!");
+                System.err.println("Unable to locate file: "
+                                   + shapeFileName);
+                System.err.println("Unable to locate file: "
+                                   + spatialIndexFileName);
+            }
+        }
     }
 }

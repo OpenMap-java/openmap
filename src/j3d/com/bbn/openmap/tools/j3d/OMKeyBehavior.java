@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OMKeyBehavior.java,v $
 // $RCSfile: OMKeyBehavior.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -121,7 +121,7 @@ public class OMKeyBehavior extends Behavior {
 
 
     public OMKeyBehavior(TransformGroup cameraTG, Projection proj) {
-	this(cameraTG, proj, null);
+        this(cameraTG, proj, null);
     }
 
     public OMKeyBehavior(TransformGroup cameraTG, Projection proj, Vector3d initialLocation) {
@@ -135,7 +135,7 @@ public class OMKeyBehavior extends Behavior {
         transform3D = new Transform3D();
         locationTransform3D = new Transform3D();
 
-	// These are the looking transforms, for the view.
+        // These are the looking transforms, for the view.
         xRotLookTransform = new Transform3D();
         yRotLookTransform = new Transform3D();
         zRotLookTransform = new Transform3D();
@@ -159,29 +159,29 @@ public class OMKeyBehavior extends Behavior {
     public void setViewerLocation(Vector3d initialLocation) {
         cameraTransformGroup.getTransform(locationTransform3D);
 
-	// scale of < 1 shrinks the object. (.5) is the scale.
-	float scale = 1f;
+        // scale of < 1 shrinks the object. (.5) is the scale.
+        float scale = 1f;
 
-	if (initialLocation == null) {
+        if (initialLocation == null) {
 
-	    initialLocation = new Vector3d();
+            initialLocation = new Vector3d();
 
-	    // So, this lays out where the land is, in relation to the
-	    // viewer.  We should get the projection from the MapBean, and
-	    // offset the transform to the middle of the map.
-	    if (projection != null) {
-		float centerXOffset = projection.getWidth() / 2f * scale;
-		float centerYOffset = projection.getHeight() * 2 / 3f * scale;
+            // So, this lays out where the land is, in relation to the
+            // viewer.  We should get the projection from the MapBean, and
+            // offset the transform to the middle of the map.
+            if (projection != null) {
+                float centerXOffset = projection.getWidth() / 2f * scale;
+                float centerYOffset = projection.getHeight() * 2 / 3f * scale;
 
-		Debug.message("3d", "OM3DViewer with projection " + projection +
-			      ", setting center of scene to " + centerXOffset +
-			      ", " + centerYOffset);
+                Debug.message("3d", "OM3DViewer with projection " + projection +
+                              ", setting center of scene to " + centerXOffset +
+                              ", " + centerYOffset);
 
-		initialLocation.set((double)centerXOffset, (double)50, (double)centerYOffset);
-	    } else {
-		initialLocation.set(0.0, 50, 0.0);
-	    }
-	}
+                initialLocation.set((double)centerXOffset, (double)50, (double)centerYOffset);
+            } else {
+                initialLocation.set(0.0, 50, 0.0);
+            }
+        }
 
         Transform3D toMove = new Transform3D();
         toMove.set(scale, initialLocation);
@@ -275,10 +275,10 @@ public class OMKeyBehavior extends Behavior {
         } else if (keycode == backKey) {
             moveDown();
         } else if (keycode == leftKey) {
-// 	    rollLeft();
+//          rollLeft();
             lookUp();
         } else if (keycode == rightKey) {
-// 	    rollRight();
+//          rollRight();
             lookDown();
         }
     }
@@ -425,19 +425,19 @@ public class OMKeyBehavior extends Behavior {
     protected void changePosition(Transform3D toMove) {
         cameraTransformGroup.getTransform(transform3D);
 
-	// Gather the total look transform on all three axis
+        // Gather the total look transform on all three axis
         Transform3D viewTransform = new Transform3D();
         viewTransform.invert(xRotLookTransform);
-	viewTransform.mulInverse(yRotLookTransform);
-	viewTransform.mulInverse(zRotLookTransform);
+        viewTransform.mulInverse(yRotLookTransform);
+        viewTransform.mulInverse(zRotLookTransform);
 
-	transform3D.mul(viewTransform);
-	transform3D.mul(toMove);
+        transform3D.mul(viewTransform);
+        transform3D.mul(toMove);
 
-	// May have to create and multiply the non-inverse look transforms.
-	transform3D.mulInverse(viewTransform);
-	
-	cameraTransformGroup.setTransform(transform3D);
+        // May have to create and multiply the non-inverse look transforms.
+        transform3D.mulInverse(viewTransform);
+        
+        cameraTransformGroup.setTransform(transform3D);
     }
 
     public void doRotateY(double radians) {
@@ -446,7 +446,7 @@ public class OMKeyBehavior extends Behavior {
         }
         Transform3D toMove = new Transform3D();
         toMove.rotY(radians);
-	changePosition(toMove);
+        changePosition(toMove);
     }
 
     public void doLookY(double radians) {
@@ -460,7 +460,7 @@ public class OMKeyBehavior extends Behavior {
         cameraTransformGroup.setTransform(transform3D);
 
         //Keep track of the view y rotation.
-	yRotLookTransform.mul(toMove);
+        yRotLookTransform.mul(toMove);
     }
 
     public void doRotateX(double radians) {
@@ -492,7 +492,7 @@ public class OMKeyBehavior extends Behavior {
         }
         Transform3D toMove = new Transform3D();
         toMove.rotZ(radians);
-	changePosition(toMove);
+        changePosition(toMove);
     }
 
     public void doLookZ(double radians) {
@@ -517,7 +517,7 @@ public class OMKeyBehavior extends Behavior {
 
         Transform3D toMove = new Transform3D();
         toMove.setTranslation(theMove);
-	changePosition(toMove);
+        changePosition(toMove);
     }
 
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SGraphic.java,v $
 // $RCSfile: SGraphic.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/05/07 20:56:59 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,45 +46,45 @@ public abstract class SGraphic {
     // create a raw EGraphic
     public static EGraphic createEGraphic() {
         EGraphic eg = new EGraphic();
-	eg.graph = null;
-	eg.obj = nullComp;
-	eg.gType = GraphicType.GT_Raster;
-	eg.rType = RenderType.RT_LatLon;
-	eg.lType = com.bbn.openmap.CSpecialist.GraphicPackage.LineType.LT_Unknown;
-	eg.dcType = DeclutterType.DC_None;
-	eg.lineWidth = 1;
-	eg.gID = Long.toString(gid++);
-	eg.color = nullColor;
-	eg.fillColor = nullColor;
-	eg.stipple = nullStipple;
-	eg.fillStipple = nullStipple;
-	return eg;
+        eg.graph = null;
+        eg.obj = nullComp;
+        eg.gType = GraphicType.GT_Raster;
+        eg.rType = RenderType.RT_LatLon;
+        eg.lType = com.bbn.openmap.CSpecialist.GraphicPackage.LineType.LT_Unknown;
+        eg.dcType = DeclutterType.DC_None;
+        eg.lineWidth = 1;
+        eg.gID = Long.toString(gid++);
+        eg.color = nullColor;
+        eg.fillColor = nullColor;
+        eg.stipple = nullStipple;
+        eg.fillStipple = nullStipple;
+        return eg;
     }
 
 
     public SGraphic(Graphic g, GraphicType gType, RenderType rType,
-		    LineType lType, DeclutterType dcType) {
+                    LineType lType, DeclutterType dcType) {
         eg = new EGraphic();
-	eg.graph = g;
-	eg.obj = nullComp;
-	eg.gType = gType;
-	eg.rType = rType;
-	eg.lType = lType;
-	eg.dcType = dcType;
-	eg.lineWidth = 1;
-	eg.gID = Long.toString(gid++);
-	eg.color = nullColor;
-	eg.fillColor = nullColor;
-	eg.stipple = nullStipple;
-	eg.fillStipple = nullStipple;
-	graphicUpdateList_ = new Vector();
+        eg.graph = g;
+        eg.obj = nullComp;
+        eg.gType = gType;
+        eg.rType = rType;
+        eg.lType = lType;
+        eg.dcType = dcType;
+        eg.lineWidth = 1;
+        eg.gID = Long.toString(gid++);
+        eg.color = nullColor;
+        eg.fillColor = nullColor;
+        eg.stipple = nullStipple;
+        eg.fillStipple = nullStipple;
+        graphicUpdateList_ = new Vector();
     }
 
     /** construct an SGraphic without a reference to the actual CORBA
         object. */
     public SGraphic(GraphicType gType, RenderType rType,
-		    LineType lType, DeclutterType dcType) {
-	    this(null, gType, rType, lType, dcType);
+                    LineType lType, DeclutterType dcType) {
+            this(null, gType, rType, lType, dcType);
     }
   
     public java.lang.String gID() {
@@ -100,7 +100,7 @@ public abstract class SGraphic {
     } 
 
     public void object(Comp object) {
-	eg.obj = (object == null) ? nullComp : object.fill();
+        eg.obj = (object == null) ? nullComp : object.fill();
     }
 
     public Comp object() {
@@ -108,7 +108,7 @@ public abstract class SGraphic {
     }
   
     public SComp sobject() {
-	return((eg.obj.comp instanceof SComp)?(SComp)eg.obj.comp:null);
+        return((eg.obj.comp instanceof SComp)?(SComp)eg.obj.comp:null);
     }
 
     public void lType(LineType lType) {
@@ -128,27 +128,27 @@ public abstract class SGraphic {
     }
 
     public void color(CColor color) {
-	eg.color = (color == null) ? nullColor : color.fill();
+        eg.color = (color == null) ? nullColor : color.fill();
     }
 
     public CColor color() {
-	return eg.color.color;
+        return eg.color.color;
     }
 
     public SColor scolor() {
-	return((eg.color.color instanceof SColor)?(SColor)eg.color.color:null);
+        return((eg.color.color instanceof SColor)?(SColor)eg.color.color:null);
     }
 
     public void fillColor(CColor fillColor) {
-	eg.fillColor = (fillColor == null) ? nullColor : fillColor.fill();
+        eg.fillColor = (fillColor == null) ? nullColor : fillColor.fill();
     }
 
     public CColor fillColor() {
-	return eg.fillColor.color;
+        return eg.fillColor.color;
     }
 
     public SColor sfillColor() {
-	return((eg.fillColor.color instanceof SColor)?(SColor)eg.fillColor.color:null);
+        return((eg.fillColor.color instanceof SColor)?(SColor)eg.fillColor.color:null);
     }
 
     public void lineWidth(short lineWidth) {
@@ -160,27 +160,27 @@ public abstract class SGraphic {
     }
 
     public void stipple(CStipple stipple) {
-	eg.stipple = (stipple == null) ? nullStipple : stipple.fill();
+        eg.stipple = (stipple == null) ? nullStipple : stipple.fill();
     }
 
     public CStipple stipple() {
-	return eg.stipple.stipple;
+        return eg.stipple.stipple;
     }
 
     public SStipple sstipple() {
-	return((eg.stipple.stipple instanceof SStipple)?(SStipple)eg.stipple.stipple:null);
+        return((eg.stipple.stipple instanceof SStipple)?(SStipple)eg.stipple.stipple:null);
     }
 
     public void fillStipple(CStipple fillStipple) {
-	eg.fillStipple = (fillStipple == null) ? nullStipple :fillStipple.fill();
+        eg.fillStipple = (fillStipple == null) ? nullStipple :fillStipple.fill();
     }
 
     public CStipple fillStipple() {
-	return eg.fillStipple.stipple;
+        return eg.fillStipple.stipple;
     }
 
     public SStipple sfillStipple() {
-	return((eg.fillStipple.stipple instanceof SStipple)?(SStipple)eg.fillStipple.stipple:null);
+        return((eg.fillStipple.stipple instanceof SStipple)?(SStipple)eg.fillStipple.stipple:null);
     }
 
     public void dcType(DeclutterType dcType) {
@@ -192,98 +192,98 @@ public abstract class SGraphic {
     }
 
     public EGraphic gfill() {
-	return eg;
+        return eg;
     }
 
     abstract public UGraphic ufill();
 
     public void changeObject(Comp obj) {
         object(obj);
-	GF_update gupdate = new GF_update();
-	gupdate.obj(eg.obj);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.gf_update(gupdate);
-	addGraphicChange(ug);
+        GF_update gupdate = new GF_update();
+        gupdate.obj(eg.obj);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.gf_update(gupdate);
+        addGraphicChange(ug);
     }
 
     public void changeLType(LineType lType) {
         eg.lType = lType;
-	GF_update gupdate = new GF_update();
-	gupdate.lType(lType);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.gf_update(gupdate);
-	addGraphicChange(ug);
+        GF_update gupdate = new GF_update();
+        gupdate.lType(lType);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.gf_update(gupdate);
+        addGraphicChange(ug);
     }
 
     public void changeRType(RenderType rType) {
         eg.rType = rType;
-	GF_update gupdate = new GF_update();
-	gupdate.rType(rType);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.gf_update(gupdate);
-	addGraphicChange(ug);
+        GF_update gupdate = new GF_update();
+        gupdate.rType(rType);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.gf_update(gupdate);
+        addGraphicChange(ug);
     }
 
     public void changeColor(CColor color) {
         color(color);
-	GF_update gupdate = new GF_update();
-	gupdate.color(eg.color);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.gf_update(gupdate);
-	addGraphicChange(ug);
+        GF_update gupdate = new GF_update();
+        gupdate.color(eg.color);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.gf_update(gupdate);
+        addGraphicChange(ug);
     }
 
     public void changeFillColor(SColor fillColor) {
         fillColor(fillColor);
-	GF_update gupdate = new GF_update();
-	gupdate.fillColor(eg.fillColor);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.gf_update(gupdate);
-	addGraphicChange(ug);
+        GF_update gupdate = new GF_update();
+        gupdate.fillColor(eg.fillColor);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.gf_update(gupdate);
+        addGraphicChange(ug);
     }
 
     public void changeLineWidth(short lineWidth) {
         eg.lineWidth = lineWidth;
-	GF_update gupdate = new GF_update();
-	gupdate.lineWidth(lineWidth);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.gf_update(gupdate);
-	addGraphicChange(ug);
+        GF_update gupdate = new GF_update();
+        gupdate.lineWidth(lineWidth);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.gf_update(gupdate);
+        addGraphicChange(ug);
     }
   
     public void changeStipple(SStipple stipple) {
         stipple(stipple);
-	GF_update gupdate = new GF_update();
-	gupdate.stipple(eg.stipple);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.gf_update(gupdate);
-	addGraphicChange(ug);
+        GF_update gupdate = new GF_update();
+        gupdate.stipple(eg.stipple);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.gf_update(gupdate);
+        addGraphicChange(ug);
     }
 
     public void changeFillStipple(SStipple fillStipple) {
         fillStipple(fillStipple);
-	GF_update gupdate = new GF_update();
-	gupdate.fillStipple(eg.fillStipple);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.gf_update(gupdate);
-	addGraphicChange(ug);
+        GF_update gupdate = new GF_update();
+        gupdate.fillStipple(eg.fillStipple);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.gf_update(gupdate);
+        addGraphicChange(ug);
     }
 
     public void changeDcType(DeclutterType dct) {
-	//       dcType_ = dct;
-	//       GF_update gupdate = new GF_update();
-	//       gupdate.dcType(dct);
-	//       UpdateGraphic ug = new UpdateGraphic();
-	//       ug.gf_update(gupdate);
-	//       addGraphicChange(ug);
+        //       dcType_ = dct;
+        //       GF_update gupdate = new GF_update();
+        //       gupdate.dcType(dct);
+        //       UpdateGraphic ug = new UpdateGraphic();
+        //       ug.gf_update(gupdate);
+        //       addGraphicChange(ug);
     }
 
 
     /**  <b>addGraphicChange</b> is called from within each graphic
-	 object type (SCirc, SBitmap, etc. to add it to the change list.
-	 Don't call this directly, the object will take care of it. It
-	 adds the change to the specific parameter of the object to a
-	 total list of changes that the object is tracking. */
+         object type (SCirc, SBitmap, etc. to add it to the change list.
+         Don't call this directly, the object will take care of it. It
+         adds the change to the specific parameter of the object to a
+         total list of changes that the object is tracking. */
     protected void addGraphicChange(UpdateGraphic ug) {
         graphicUpdateList_.addElement(ug);
     }
@@ -294,13 +294,13 @@ public abstract class SGraphic {
      *  this method to obtain the <b>UpdateRecord</b> needed for the
      *  graphic updates as a result of a gesture action.  */
     public UpdateRecord getGraphicUpdates() {
-	UpdateRecord ur = new UpdateRecord();
-	ur.gID = eg.gID;
-	ur.objectUpdates = new UpdateGraphic[graphicUpdateList_.size()];
-	for (int i = 0; i < graphicUpdateList_.size(); i++)
-	    ur.objectUpdates[i] = 
-		(UpdateGraphic) graphicUpdateList_.elementAt(i);
-	return ur;
+        UpdateRecord ur = new UpdateRecord();
+        ur.gID = eg.gID;
+        ur.objectUpdates = new UpdateGraphic[graphicUpdateList_.size()];
+        for (int i = 0; i < graphicUpdateList_.size(); i++)
+            ur.objectUpdates[i] = 
+                (UpdateGraphic) graphicUpdateList_.elementAt(i);
+        return ur;
     }
 }
 

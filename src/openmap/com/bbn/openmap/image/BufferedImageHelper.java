@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/BufferedImageHelper.java,v $
 // $RCSfile: BufferedImageHelper.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/07/15 23:51:04 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,11 +64,11 @@ public class BufferedImageHelper {
      * Get the JAI class if it's available.
      */
     protected static Object getJAI() {
-	if (checkedForJAI == false) {
-	    jaiObj = ComponentFactory.create("javax.media.jai.JAI");
-	    checkedForJAI = true;
-	}
-	return jaiObj;
+        if (checkedForJAI == false) {
+            jaiObj = ComponentFactory.create("javax.media.jai.JAI");
+            checkedForJAI = true;
+        }
+        return jaiObj;
     }
 
     /**
@@ -82,61 +82,61 @@ public class BufferedImageHelper {
      * anything goes wrong.
      */
     public static BufferedImage getJAIBufferedImage(String opName, Object param) {
-	boolean DEBUG = Debug.debugging("bufferedimage");
+        boolean DEBUG = Debug.debugging("bufferedimage");
 
-	Object jai = getJAI();
+        Object jai = getJAI();
 
-	if (jai == null) {
-	    return null;
-	}
+        if (jai == null) {
+            return null;
+        }
 
-	if (DEBUG) {
-	    Debug.output("Using JAI to create image from " + opName);
-	}
+        if (DEBUG) {
+            Debug.output("Using JAI to create image from " + opName);
+        }
 
-	try {
-	    // Do a little reflection to run methods on classes we might not know about.
-	    Class[] createArgs = new Class[] {Class.forName("java.lang.String"), 
-					      Class.forName("java.lang.Object")};
+        try {
+            // Do a little reflection to run methods on classes we might not know about.
+            Class[] createArgs = new Class[] {Class.forName("java.lang.String"), 
+                                              Class.forName("java.lang.Object")};
 
-	    Method createMethod = jai.getClass().getDeclaredMethod("create", createArgs);
+            Method createMethod = jai.getClass().getDeclaredMethod("create", createArgs);
 
-	    Object[] createParams = new Object[] {opName, param};
-	    Object planarImageObject = createMethod.invoke(jai, createParams);
+            Object[] createParams = new Object[] {opName, param};
+            Object planarImageObject = createMethod.invoke(jai, createParams);
 
-	    if (planarImageObject != null) {
-		Method getBufferedImageMethod = planarImageObject.getClass().getMethod("getAsBufferedImage", null);
+            if (planarImageObject != null) {
+                Method getBufferedImageMethod = planarImageObject.getClass().getMethod("getAsBufferedImage", null);
 
-		return (BufferedImage) getBufferedImageMethod.invoke(planarImageObject, null);
-	    }
+                return (BufferedImage) getBufferedImageMethod.invoke(planarImageObject, null);
+            }
 
-	} catch (ClassNotFoundException cnfe) {
-	    if (DEBUG) {
-		Debug.error("BufferedImageHelper.getJAIBufferedImage() ClassNotFoundException error: \n" + cnfe.getMessage());
-	    }
-	} catch (IllegalAccessException iae) {
-	    if (DEBUG) {
-		Debug.error("BufferedImageHelper.getJAIBufferedImage() IllegalAccessException error: \n" + iae.getMessage());
-	    }
-	} catch (InvocationTargetException ite) {
-	    if (DEBUG) {
-		Debug.error("BufferedImageHelper.getJAIBufferedImage() InvocationTargetException error: \n" + ite.getMessage());
-	    }
-	} catch (NoSuchMethodException nsme) {
-	    if (DEBUG) {
-		Debug.error("BufferedImageHelper.getJAIBufferedImage() NoSuchMethodException error: " + nsme.toString());
-		nsme.printStackTrace();
-	    }
-	} catch (SecurityException se) {
-	    if (DEBUG) {
-		Debug.error("BufferedImageHelper.getJAIBufferedImage() SecurityException error: \n" + se.getMessage());
-	    }
-	}
+        } catch (ClassNotFoundException cnfe) {
+            if (DEBUG) {
+                Debug.error("BufferedImageHelper.getJAIBufferedImage() ClassNotFoundException error: \n" + cnfe.getMessage());
+            }
+        } catch (IllegalAccessException iae) {
+            if (DEBUG) {
+                Debug.error("BufferedImageHelper.getJAIBufferedImage() IllegalAccessException error: \n" + iae.getMessage());
+            }
+        } catch (InvocationTargetException ite) {
+            if (DEBUG) {
+                Debug.error("BufferedImageHelper.getJAIBufferedImage() InvocationTargetException error: \n" + ite.getMessage());
+            }
+        } catch (NoSuchMethodException nsme) {
+            if (DEBUG) {
+                Debug.error("BufferedImageHelper.getJAIBufferedImage() NoSuchMethodException error: " + nsme.toString());
+                nsme.printStackTrace();
+            }
+        } catch (SecurityException se) {
+            if (DEBUG) {
+                Debug.error("BufferedImageHelper.getJAIBufferedImage() SecurityException error: \n" + se.getMessage());
+            }
+        }
 
-	return null;
-	// All this above to replace this:
-// 	PlanarImage planarImage = JAI.create(opName, param);
-// 	return getBufferedImage(planarImage.getAsBufferedImage(), x, y, w, h);
+        return null;
+        // All this above to replace this:
+//      PlanarImage planarImage = JAI.create(opName, param);
+//      return getBufferedImage(planarImage.getAsBufferedImage(), x, y, w, h);
     }
 
     /**
@@ -157,23 +157,23 @@ public class BufferedImageHelper {
      * @throws InterruptedException
      */
     public static BufferedImage getJAIBufferedImage(String opName, Object param, 
-						    int x, int y, int w, int h) 
-	throws InterruptedException {
+                                                    int x, int y, int w, int h) 
+        throws InterruptedException {
 
-	BufferedImage bi = getJAIBufferedImage(opName, param);
+        BufferedImage bi = getJAIBufferedImage(opName, param);
 
-	// If the whole image isn't wanted, do another operation...
-	if (bi != null && (x != 0 || y != 0 || w > 0 || h > 0)) {
+        // If the whole image isn't wanted, do another operation...
+        if (bi != null && (x != 0 || y != 0 || w > 0 || h > 0)) {
 
-	    int imageType = BufferedImage.TYPE_INT_RGB;
-	    if (bi.getColorModel().hasAlpha()) {
-		imageType = BufferedImage.TYPE_INT_ARGB;
-	    }
+            int imageType = BufferedImage.TYPE_INT_RGB;
+            if (bi.getColorModel().hasAlpha()) {
+                imageType = BufferedImage.TYPE_INT_ARGB;
+            }
 
-	    return getBufferedImage(bi, x, y, w, h, imageType);
-	} 
-	// else return null or the original image.
-	return bi;
+            return getBufferedImage(bi, x, y, w, h, imageType);
+        } 
+        // else return null or the original image.
+        return bi;
     }
 
     /**
@@ -183,8 +183,8 @@ public class BufferedImageHelper {
      * @throws InterruptedException
      */
     public static BufferedImage getBufferedImage(URL url) 
-	throws InterruptedException {
-	return getBufferedImage(url, 0, 0, -1, -1);
+        throws InterruptedException {
+        return getBufferedImage(url, 0, 0, -1, -1);
     }
 
     /**
@@ -199,26 +199,26 @@ public class BufferedImageHelper {
      * @throws InterruptedException
      */
     public static BufferedImage getBufferedImage(URL url,
-						 int x, int y,
-						 int w, int h) 
-	throws InterruptedException {
+                                                 int x, int y,
+                                                 int w, int h) 
+        throws InterruptedException {
 
-	BufferedImage bi = getJAIBufferedImage("url", url, x, y, w, h);
+        BufferedImage bi = getJAIBufferedImage("url", url, x, y, w, h);
 
-	if (bi != null) {
-	    return bi;
-	}
+        if (bi != null) {
+            return bi;
+        }
 
-	if (Debug.debugging("bufferedimage")) {
-	    Debug.output("BufferedImageHelper.getBufferedImage(URL) can't use JAI, using ImageIcon");
-	}
+        if (Debug.debugging("bufferedimage")) {
+            Debug.output("BufferedImageHelper.getBufferedImage(URL) can't use JAI, using ImageIcon");
+        }
 
-	// if JAI is not installed....
-	ImageIcon ii = new ImageIcon(url);
-	if (w <= 0) w = ii.getIconWidth();
-	if (h <= 0) h = ii.getIconHeight();
-	return getBufferedImage(ii.getImage(), x, y, w, h,
-				BufferedImage.TYPE_INT_ARGB);
+        // if JAI is not installed....
+        ImageIcon ii = new ImageIcon(url);
+        if (w <= 0) w = ii.getIconWidth();
+        if (h <= 0) h = ii.getIconHeight();
+        return getBufferedImage(ii.getImage(), x, y, w, h,
+                                BufferedImage.TYPE_INT_ARGB);
     }
 
     /**
@@ -228,8 +228,8 @@ public class BufferedImageHelper {
      * @throws InterruptedException
      */
     public static BufferedImage getBufferedImage(String path) 
-	throws InterruptedException {
-	return getBufferedImage(path, 0, 0, -1, -1);
+        throws InterruptedException {
+        return getBufferedImage(path, 0, 0, -1, -1);
     }
 
     /**
@@ -244,26 +244,26 @@ public class BufferedImageHelper {
      * @throws InterruptedException
      */
     public static BufferedImage getBufferedImage(String path,
-						 int x, int y,
-						 int w, int h) 
-	throws InterruptedException {
+                                                 int x, int y,
+                                                 int w, int h) 
+        throws InterruptedException {
 
-	BufferedImage bi =  getJAIBufferedImage("file", path, x, y, w, h);
+        BufferedImage bi =  getJAIBufferedImage("file", path, x, y, w, h);
 
-	if (bi != null) {
-	    return bi;
-	}
+        if (bi != null) {
+            return bi;
+        }
 
-	if (Debug.debugging("bufferedimage")) {
-	    Debug.output("BufferedImageHelper.getBufferedImage(path) can't use JAI, using ImageIcon");
-	}
+        if (Debug.debugging("bufferedimage")) {
+            Debug.output("BufferedImageHelper.getBufferedImage(path) can't use JAI, using ImageIcon");
+        }
 
-	// if JAI is not installed....
-	ImageIcon ii = new ImageIcon(path);
-	if (w <= 0) w = ii.getIconWidth();
-	if (h <= 0) h = ii.getIconHeight();
-	return getBufferedImage(ii.getImage(), x, y, w, h, 
-				BufferedImage.TYPE_INT_ARGB);
+        // if JAI is not installed....
+        ImageIcon ii = new ImageIcon(path);
+        if (w <= 0) w = ii.getIconWidth();
+        if (h <= 0) h = ii.getIconHeight();
+        return getBufferedImage(ii.getImage(), x, y, w, h, 
+                                BufferedImage.TYPE_INT_ARGB);
     }
 
     /** 
@@ -282,10 +282,10 @@ public class BufferedImageHelper {
      * @throws InterruptedException
      */
     public static BufferedImage getBufferedImage(Image image,
-						 int x, int y,
-						 int w, int h) 
-	throws InterruptedException {
-	return getBufferedImage(image, x, y, w, h, BufferedImage.TYPE_INT_RGB);
+                                                 int x, int y,
+                                                 int w, int h) 
+        throws InterruptedException {
+        return getBufferedImage(image, x, y, w, h, BufferedImage.TYPE_INT_RGB);
     }
 
     /**
@@ -306,23 +306,23 @@ public class BufferedImageHelper {
      * @throws InterruptedException
      */
     public static BufferedImage getBufferedImage(Image image,
-						 int x, int y,
-						 int w, int h,
-						 int imageType) 
-	throws InterruptedException {
+                                                 int x, int y,
+                                                 int w, int h,
+                                                 int imageType) 
+        throws InterruptedException {
 
-	if (w <= 0 || h <= 0) {
-	    if (Debug.debugging("bufferedimage")) {
-		Debug.output("BufferedImageHelper.getBufferedImage() don't know h/w, using pixel grabber");
-	    }
-	    return getBufferedImageFromPixelGrabber(image, x, y, w, h, imageType);
-	} else {
-	    BufferedImage bufferedImage = new BufferedImage(w, h, imageType);
-	    Graphics2D g2d = bufferedImage.createGraphics();
-	    g2d.drawImage(image, x, y, null);
-	    g2d.dispose();
-	    return bufferedImage;
-	}
+        if (w <= 0 || h <= 0) {
+            if (Debug.debugging("bufferedimage")) {
+                Debug.output("BufferedImageHelper.getBufferedImage() don't know h/w, using pixel grabber");
+            }
+            return getBufferedImageFromPixelGrabber(image, x, y, w, h, imageType);
+        } else {
+            BufferedImage bufferedImage = new BufferedImage(w, h, imageType);
+            Graphics2D g2d = bufferedImage.createGraphics();
+            g2d.drawImage(image, x, y, null);
+            g2d.dispose();
+            return bufferedImage;
+        }
     }
 
     /**
@@ -343,32 +343,32 @@ public class BufferedImageHelper {
      * anything goes wrong.
      */
     public static BufferedImage getBufferedImageFromPixelGrabber(Image image,
-								 int x, int y,
-								 int w, int h,
-								 int imageType) {
+                                                                 int x, int y,
+                                                                 int w, int h,
+                                                                 int imageType) {
 
-	PixelGrabber pg = new PixelGrabber(image, x, y, w, h, true);
-	int[] pixels = ImageHelper.grabPixels(pg);
+        PixelGrabber pg = new PixelGrabber(image, x, y, w, h, true);
+        int[] pixels = ImageHelper.grabPixels(pg);
 
-	if (pixels == null){
-	    return null;
-	}
+        if (pixels == null){
+            return null;
+        }
 
-	w = pg.getWidth();
-	h = pg.getHeight();
-	pg = null;
+        w = pg.getWidth();
+        h = pg.getHeight();
+        pg = null;
 
-	BufferedImage bi = new BufferedImage(w, h, imageType);
-	if (Debug.debugging("imagehelper")){
-	    Debug.output("BufferedImageHelper.getBufferedImage(): Got buffered image...");
-	}
+        BufferedImage bi = new BufferedImage(w, h, imageType);
+        if (Debug.debugging("imagehelper")){
+            Debug.output("BufferedImageHelper.getBufferedImage(): Got buffered image...");
+        }
 
-	bi.setRGB(0, 0, w, h, pixels, 0, w);
+        bi.setRGB(0, 0, w, h, pixels, 0, w);
 
-	if (Debug.debugging("imagehelper")){
-	    Debug.output("BufferedImageHelper.getBufferedImage(): set pixels in image...");
-	}
+        if (Debug.debugging("imagehelper")){
+            Debug.output("BufferedImageHelper.getBufferedImage(): set pixels in image...");
+        }
 
-	return bi;
+        return bi;
     }
 }

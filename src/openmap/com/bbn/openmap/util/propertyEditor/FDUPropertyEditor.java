@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/FDUPropertyEditor.java,v $
 // $RCSfile: FDUPropertyEditor.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/19 20:41:54 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,17 +38,17 @@ public class FDUPropertyEditor extends MultiDirectoryPropertyEditor {
     
     /** Create MultiDirectoryPropertyEditor.  */
     public FDUPropertyEditor() {
-	button = new JButton("Set");
+        button = new JButton("Set");
     }
 
     public void actionPerformed(ActionEvent e) {
-	JFileChooser chooser = getFileChooser();
-	int returnVal = chooser.showDialog((Component)null, "Select");
-	if (returnVal==JFileChooser.APPROVE_OPTION) {
-	    String newFilename = chooser.getSelectedFile().getAbsolutePath();
-	    setValue(newFilename);
-	    firePropertyChange();
-	}
+        JFileChooser chooser = getFileChooser();
+        int returnVal = chooser.showDialog((Component)null, "Select");
+        if (returnVal==JFileChooser.APPROVE_OPTION) {
+            String newFilename = chooser.getSelectedFile().getAbsolutePath();
+            setValue(newFilename);
+            firePropertyChange();
+        }
     }
 
     /**
@@ -57,9 +57,9 @@ public class FDUPropertyEditor extends MultiDirectoryPropertyEditor {
      * @return JFileChooser 
      */
     public JFileChooser getFileChooser() {
-	JFileChooser chooser = new JFileChooser(getLastLocation());
-	chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-	chooser.setMultiSelectionEnabled(true);
-	return chooser;
+        JFileChooser chooser = new JFileChooser(getLastLocation());
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        chooser.setMultiSelectionEnabled(true);
+        return chooser;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapListenerSupport.java,v $
 // $RCSfile: NetMapListenerSupport.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,7 @@ public class NetMapListenerSupport implements java.io.Serializable {
      * Construct a NetMapListenerSupport.
      */
     public NetMapListenerSupport () {
-	this(null);
+        this(null);
     }
 
     /**
@@ -49,7 +49,7 @@ public class NetMapListenerSupport implements java.io.Serializable {
      * @param aSource source Object
      */
     public NetMapListenerSupport(Object aSource) {
-	source = aSource;
+        source = aSource;
     }
 
     /**
@@ -57,7 +57,7 @@ public class NetMapListenerSupport implements java.io.Serializable {
      * @param aSource source Object
      */
     public synchronized void setSource(Object aSource) {
-	source = aSource;
+        source = aSource;
     }
 
     /**
@@ -65,7 +65,7 @@ public class NetMapListenerSupport implements java.io.Serializable {
      * @return Object source
      */
     public synchronized Object getSource() {
-	return source;
+        return source;
     }
 
     /**
@@ -73,12 +73,12 @@ public class NetMapListenerSupport implements java.io.Serializable {
      * @param l NetMapListener
      */
     public synchronized void addNetMapListener(NetMapListener l) {
-	if (listeners == null) {
-	    listeners = new java.util.Vector();
-	}
-	if (!listeners.contains(l)) {
-	    listeners.addElement(l);
-	}
+        if (listeners == null) {
+            listeners = new java.util.Vector();
+        }
+        if (!listeners.contains(l)) {
+            listeners.addElement(l);
+        }
     }
 
 
@@ -87,10 +87,10 @@ public class NetMapListenerSupport implements java.io.Serializable {
      * @param l NetMapListener
      */
     public synchronized void removeNetMapListener(NetMapListener l) {
-	if (listeners == null) {
-	    return;
-	}
-	listeners.removeElement(l);
+        if (listeners == null) {
+            return;
+        }
+        listeners.removeElement(l);
     }
 
     /**
@@ -98,48 +98,48 @@ public class NetMapListenerSupport implements java.io.Serializable {
      * @return Vector of listeners, null if none have been added.
      */
     public synchronized java.util.Vector getListeners() {
-	if (listeners == null) {
-	    return null;
-	}
+        if (listeners == null) {
+            return null;
+        }
 
-	return (java.util.Vector) listeners.clone();
+        return (java.util.Vector) listeners.clone();
     }
 
     /**
      * Remove all listeners.
      */
     public void clearNetMapListeners() {
-	listeners.clear();
+        listeners.clear();
     }
 
     /**
      * Send a center event to all registered listeners.
      */
     public void fireNetMapEvent(Properties eventProperties) {
-	java.util.Vector targets;
-	NetMapListener target;
-	Object theSource = getSource();
+        java.util.Vector targets;
+        NetMapListener target;
+        Object theSource = getSource();
 
-	targets = getListeners();
+        targets = getListeners();
 
-	if (listeners == null) {
-	    return;
-	}
+        if (listeners == null) {
+            return;
+        }
 
-	int nTargets = targets.size();
+        int nTargets = targets.size();
 
-	if (nTargets == 0) return;
+        if (nTargets == 0) return;
 
-	NetMapEvent evt = new NetMapEvent(theSource, eventProperties);
+        NetMapEvent evt = new NetMapEvent(theSource, eventProperties);
 
-	for (int i = 0; i < nTargets; i++) {
-	    target = (NetMapListener)targets.elementAt(i);
-	    if (Debug.debugging("mapbean")) {
-		Debug.output("NetMapListenerSupport.fireNetMapEvent(): " +
-			     "target is: " + target);
-	    }
+        for (int i = 0; i < nTargets; i++) {
+            target = (NetMapListener)targets.elementAt(i);
+            if (Debug.debugging("mapbean")) {
+                Debug.output("NetMapListenerSupport.fireNetMapEvent(): " +
+                             "target is: " + target);
+            }
 
-	    target.catchEvent(evt);
-	}
+            target.catchEvent(evt);
+        }
     }
 }

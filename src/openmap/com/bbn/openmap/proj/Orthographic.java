@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Orthographic.java,v $
 // $RCSfile: Orthographic.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:56 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:14 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -64,10 +64,10 @@ public class Orthographic extends Azimuth {
      * @param height height of screen
      */
     public Orthographic(
-	LatLonPoint center, float scale, int width, int height)
+        LatLonPoint center, float scale, int width, int height)
     {
-	super(center, scale, width, height, OrthographicType);
-	setMinScale(1000.0f);
+        super(center, scale, width, height, OrthographicType);
+        setMinScale(1000.0f);
     }
 
     /**
@@ -79,15 +79,15 @@ public class Orthographic extends Azimuth {
      * @param type subclass's type
      */
     public Orthographic(
-	LatLonPoint center, float scale, int width, int height, int type)
+        LatLonPoint center, float scale, int width, int height, int type)
     {
-	super(center, scale, width, height, type);
-	setMinScale(1000.0f);
+        super(center, scale, width, height, type);
+        setMinScale(1000.0f);
     }
 
 
 //    protected void finalize() {
-//	Debug.message("proj", "Orthographic finalized");
+//      Debug.message("proj", "Orthographic finalized");
 //    }
 
 
@@ -97,7 +97,7 @@ public class Orthographic extends Azimuth {
      * @see Projection#getProjectionID
      */
     public String toString() {
-	return "Orthographic[" + super.toString();
+        return "Orthographic[" + super.toString();
     }
 
 
@@ -109,16 +109,16 @@ public class Orthographic extends Azimuth {
      * used in the forward() and inverse() calls.<p>
      */
     protected void computeParameters() {
-	Debug.message("proj", "Orthographic.computeParameters()");
-	super.computeParameters();
+        Debug.message("proj", "Orthographic.computeParameters()");
+        super.computeParameters();
 
-	// do some precomputation of stuff
-	cosCtrLat = (float)Math.cos(ctrLat);
-	sinCtrLat = (float)Math.sin(ctrLat);
-	
-	// compute the offsets
-	hy = height/2;
-	wx = width/2;
+        // do some precomputation of stuff
+        cosCtrLat = (float)Math.cos(ctrLat);
+        sinCtrLat = (float)Math.sin(ctrLat);
+        
+        // compute the offsets
+        hy = height/2;
+        wx = width/2;
     }
 
     
@@ -133,12 +133,12 @@ public class Orthographic extends Azimuth {
      *
      */
     public float normalize_latitude(float lat) {
-	if (lat > NORTH_BOUNDARY) {
-	    return NORTH_BOUNDARY;
-	} else if (lat < SOUTH_BOUNDARY) {
-	    return SOUTH_BOUNDARY;
-	}
-	return lat;
+        if (lat > NORTH_BOUNDARY) {
+            return NORTH_BOUNDARY;
+        } else if (lat < SOUTH_BOUNDARY) {
+            return SOUTH_BOUNDARY;
+        }
+        return lat;
     }
 
 
@@ -151,10 +151,10 @@ public class Orthographic extends Azimuth {
      * @return boolean true if within the visible hemisphere, false if not
      */
     final public static boolean hemisphere_clip(
-	float phi1, float lambda0, float phi, float lambda)
+        float phi1, float lambda0, float phi, float lambda)
     {
-	return (GreatCircle.spherical_distance(
-	    phi1, lambda0, phi, lambda)/*-epsilon*/ <= MoreMath.HALF_PI);
+        return (GreatCircle.spherical_distance(
+            phi1, lambda0, phi, lambda)/*-epsilon*/ <= MoreMath.HALF_PI);
     }
 
 
@@ -168,21 +168,21 @@ public class Orthographic extends Azimuth {
      * @return Point p
      */
     private Point edge_point(Point p, float current_azimuth) {
-	LatLonPoint tmpll = GreatCircle.spherical_between(
-		ctrLat, ctrLon, MoreMath.HALF_PI/*-epsilon*/, current_azimuth);
+        LatLonPoint tmpll = GreatCircle.spherical_between(
+                ctrLat, ctrLon, MoreMath.HALF_PI/*-epsilon*/, current_azimuth);
 
-	float phi = tmpll.radlat_;
-	float lambda = tmpll.radlon_;
-	float cosPhi = (float)Math.cos(phi);
-	float lambdaMinusCtrLon = (float)(lambda-ctrLon);
+        float phi = tmpll.radlat_;
+        float lambda = tmpll.radlon_;
+        float cosPhi = (float)Math.cos(phi);
+        float lambdaMinusCtrLon = (float)(lambda-ctrLon);
 
-	p.x = (int)(scaled_radius * cosPhi *
-		    (float)Math.sin(lambdaMinusCtrLon)) + wx;
-	p.y = hy - (int)(scaled_radius *
-			 (cosCtrLat * (float)Math.sin(phi) -
-			  sinCtrLat * cosPhi *
-			  (float)Math.cos(lambdaMinusCtrLon)));
-	return p;
+        p.x = (int)(scaled_radius * cosPhi *
+                    (float)Math.sin(lambdaMinusCtrLon)) + wx;
+        p.y = hy - (int)(scaled_radius *
+                         (cosCtrLat * (float)Math.sin(phi) -
+                          sinCtrLat * cosPhi *
+                          (float)Math.cos(lambdaMinusCtrLon)));
+        return p;
     }
 
 
@@ -195,9 +195,9 @@ public class Orthographic extends Azimuth {
      * @return boolean
      */
     public boolean isPlotable(float lat, float lon) {
-	lat = normalize_latitude(ProjMath.degToRad(lat));
-	lon = wrap_longitude(ProjMath.degToRad(lon));
-	return hemisphere_clip(ctrLat, ctrLon, lat, lon);
+        lat = normalize_latitude(ProjMath.degToRad(lat));
+        lon = wrap_longitude(ProjMath.degToRad(lon));
+        return hemisphere_clip(ctrLat, ctrLon, lat, lon);
     }
 
 
@@ -212,29 +212,29 @@ public class Orthographic extends Azimuth {
      * @return Point pt
      */
     protected Point _forward (
-	    float phi, float lambda, Point p, AzimuthVar azVar)
+            float phi, float lambda, Point p, AzimuthVar azVar)
     {
-	float cosPhi = (float)Math.cos(phi);
-	float lambdaMinusCtrLon = (float)(lambda-ctrLon);
+        float cosPhi = (float)Math.cos(phi);
+        float lambdaMinusCtrLon = (float)(lambda-ctrLon);
 
-	// normalize invalid point to the edge of the sphere
-	if (!hemisphere_clip(ctrLat, ctrLon, phi, lambda)) {
-	    float az = 
-		GreatCircle.spherical_azimuth(ctrLat, ctrLon, phi, lambda);
-	    if (azVar != null) {
-		azVar.invalid_forward = true;	// set the invalid flag
-		azVar.current_azimuth = az;	// record azimuth of this point
-	    }
-	    return edge_point(p, az);
-	}
+        // normalize invalid point to the edge of the sphere
+        if (!hemisphere_clip(ctrLat, ctrLon, phi, lambda)) {
+            float az = 
+                GreatCircle.spherical_azimuth(ctrLat, ctrLon, phi, lambda);
+            if (azVar != null) {
+                azVar.invalid_forward = true;   // set the invalid flag
+                azVar.current_azimuth = az;     // record azimuth of this point
+            }
+            return edge_point(p, az);
+        }
 
-	p.x = (int)(scaled_radius * cosPhi *
-		    (float)Math.sin(lambdaMinusCtrLon)) + wx;
-	p.y = hy - (int)(scaled_radius *
-			 (cosCtrLat * (float)Math.sin(phi) -
-			  sinCtrLat * cosPhi *
-			  (float)Math.cos(lambdaMinusCtrLon)));
-	return p;
+        p.x = (int)(scaled_radius * cosPhi *
+                    (float)Math.sin(lambdaMinusCtrLon)) + wx;
+        p.y = hy - (int)(scaled_radius *
+                         (cosCtrLat * (float)Math.sin(phi) -
+                          sinCtrLat * cosPhi *
+                          (float)Math.cos(lambdaMinusCtrLon)));
+        return p;
     }
 
 
@@ -247,62 +247,62 @@ public class Orthographic extends Azimuth {
      * @see Proj#inverse(Point)
      */
     public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
-	// convert from screen to world coordinates
-	x = x - wx;
-	y = hy - y;
+        // convert from screen to world coordinates
+        x = x - wx;
+        y = hy - y;
 
-// 	Debug.output("Orthographic.inverse: x,y=" + x + "," + y);
+//      Debug.output("Orthographic.inverse: x,y=" + x + "," + y);
 
-	// sqrt(pt . pt)
-	float rho = (float)Math.sqrt(x*x + y*y);
-	if (rho == 0f) {
-	    Debug.message("proj", "Orthographic.inverse: center!");
-	    llp.setLatLon(
-		    ProjMath.radToDeg(ctrLat),
-		    ProjMath.radToDeg(ctrLon));
-	    return llp;
-	}
+        // sqrt(pt . pt)
+        float rho = (float)Math.sqrt(x*x + y*y);
+        if (rho == 0f) {
+            Debug.message("proj", "Orthographic.inverse: center!");
+            llp.setLatLon(
+                    ProjMath.radToDeg(ctrLat),
+                    ProjMath.radToDeg(ctrLon));
+            return llp;
+        }
 
-	//float c = (float)Math.asin(rho/scaled_radius);
-	//float cosC = (float)Math.cos(c);
-	//float sinC = (float)Math.sin(c);
-	float sinC = rho/scaled_radius;
-	float cosC = (float)Math.sqrt(1 - sinC * sinC);
+        //float c = (float)Math.asin(rho/scaled_radius);
+        //float cosC = (float)Math.cos(c);
+        //float sinC = (float)Math.sin(c);
+        float sinC = rho/scaled_radius;
+        float cosC = (float)Math.sqrt(1 - sinC * sinC);
 
-	// calculate latitude 
-	float lat = (float)Math.asin(
-	    cosC * sinCtrLat + (y * sinC * (cosCtrLat/rho)));
+        // calculate latitude 
+        float lat = (float)Math.asin(
+            cosC * sinCtrLat + (y * sinC * (cosCtrLat/rho)));
 
-	// calculate longitude
-	float lon;
-	if (ctrLat == NORTH_POLE) {
-	    lon = ctrLon + (float)Math.atan2(x, -y);
-	} else if (ctrLat == SOUTH_POLE) {
-	    lon = ctrLon + (float)Math.atan2(x, y);
-	} else {
-	    lon = ctrLon + (float)Math.atan2(
-		(x * sinC),
-		(rho * cosCtrLat * cosC - y * sinCtrLat * sinC));
-	}
-// 	Debug.output("Orthographic.inverse: lat,lon=" +
-// 			   ProjMath.radToDeg(lat) + "," +
-// 			   ProjMath.radToDeg(lon));
+        // calculate longitude
+        float lon;
+        if (ctrLat == NORTH_POLE) {
+            lon = ctrLon + (float)Math.atan2(x, -y);
+        } else if (ctrLat == SOUTH_POLE) {
+            lon = ctrLon + (float)Math.atan2(x, y);
+        } else {
+            lon = ctrLon + (float)Math.atan2(
+                (x * sinC),
+                (rho * cosCtrLat * cosC - y * sinCtrLat * sinC));
+        }
+//      Debug.output("Orthographic.inverse: lat,lon=" +
+//                         ProjMath.radToDeg(lat) + "," +
+//                         ProjMath.radToDeg(lon));
 
-	// check if point in outer space
-//	if (MoreMath.approximately_equal(lat, ctrLat) &&
-//	       MoreMath.approximately_equal(lon, ctrLon) &&
-//	       (Math.abs(x-(width/2))<2) &&
-//	       (Math.abs(y-(height/2))<2))
-	if (Float.isNaN(lat) || Float.isNaN(lon))
-	{
-//	    Debug.message("proj", "Orthographic.inverse(): outer space!");
-	    lat = ctrLat;
-	    lon = ctrLon;
-	}
-	llp.setLatLon(
-		ProjMath.radToDeg(lat),
-		ProjMath.radToDeg(lon));
-	return llp;
+        // check if point in outer space
+//      if (MoreMath.approximately_equal(lat, ctrLat) &&
+//             MoreMath.approximately_equal(lon, ctrLon) &&
+//             (Math.abs(x-(width/2))<2) &&
+//             (Math.abs(y-(height/2))<2))
+        if (Float.isNaN(lat) || Float.isNaN(lon))
+        {
+//          Debug.message("proj", "Orthographic.inverse(): outer space!");
+            lat = ctrLat;
+            lon = ctrLon;
+        }
+        llp.setLatLon(
+                ProjMath.radToDeg(lat),
+                ProjMath.radToDeg(lon));
+        return llp;
     }
 
 
@@ -313,7 +313,7 @@ public class Orthographic extends Azimuth {
      * @return LatLonPoint llp
      */
     public LatLonPoint inverse(Point pt, LatLonPoint llp) {
-	return inverse(pt.x, pt.y, llp);
+        return inverse(pt.x, pt.y, llp);
     }
 
 
@@ -327,67 +327,67 @@ public class Orthographic extends Azimuth {
      * @return LatLonPoint
      */
     public LatLonPoint getUpperLeft() {
-	LatLonPoint tmp = new LatLonPoint();
-	float lat, lon;
+        LatLonPoint tmp = new LatLonPoint();
+        float lat, lon;
 
-	// over north pole
-	if (overNorthPole()) {
-	    lat = NORTH_POLE;
-	    lon = -DATELINE;
-	}
+        // over north pole
+        if (overNorthPole()) {
+            lat = NORTH_POLE;
+            lon = -DATELINE;
+        }
 
-	// over south pole
-	else if (overSouthPole()) {
-	    lon = -DATELINE;
+        // over south pole
+        else if (overSouthPole()) {
+            lon = -DATELINE;
 
-	    // get the left top corner
-	    tmp = inverse(0, 0, tmp);
+            // get the left top corner
+            tmp = inverse(0, 0, tmp);
 
-	    // check for invalid
-	    if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
-		lat = ctrLat + MoreMath.HALF_PI;
-	    } else {
-		// northernmost coord is left top
-		lat = tmp.radlat_;
-	    }
-	}
+            // check for invalid
+            if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
+                lat = ctrLat + MoreMath.HALF_PI;
+            } else {
+                // northernmost coord is left top
+                lat = tmp.radlat_;
+            }
+        }
 
-	// view in northern hemisphere
-	else if (ctrLat >= 0f) {
-	    // get the left top corner
-	    tmp = inverse(0,0,tmp);
+        // view in northern hemisphere
+        else if (ctrLat >= 0f) {
+            // get the left top corner
+            tmp = inverse(0,0,tmp);
 
-	    // check for invalid
-	    if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
-		lat = inverse(width/2, 0, tmp).radlat_;
-		lon = -DATELINE;
-	    } else {
-		// westernmost coord is left top
-		lon = tmp.radlon_;
-		// northernmost coord is center top
-		lat = inverse(width/2, 0, tmp).radlat_;
-	    }
-	}
+            // check for invalid
+            if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
+                lat = inverse(width/2, 0, tmp).radlat_;
+                lon = -DATELINE;
+            } else {
+                // westernmost coord is left top
+                lon = tmp.radlon_;
+                // northernmost coord is center top
+                lat = inverse(width/2, 0, tmp).radlat_;
+            }
+        }
 
-	// view in southern hemisphere
-	else {
-	    // get the left top corner
-	    tmp = inverse(0, 0, tmp);
+        // view in southern hemisphere
+        else {
+            // get the left top corner
+            tmp = inverse(0, 0, tmp);
 
-	    // check for invalid
-	    if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
-		lat = ctrLat + MoreMath.HALF_PI;
-		lon = -DATELINE;
-	    } else {
-		// northernmost coord is left top
-		lat = tmp.radlat_;
-		// westernmost coord is left bottom
-		lon = inverse(0, height-1, tmp).radlon_;
-	    }
-	}
-	tmp.setLatLon(lat, lon, true);
-//	Debug.output("ul="+tmp);
-	return tmp;
+            // check for invalid
+            if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
+                lat = ctrLat + MoreMath.HALF_PI;
+                lon = -DATELINE;
+            } else {
+                // northernmost coord is left top
+                lat = tmp.radlat_;
+                // westernmost coord is left bottom
+                lon = inverse(0, height-1, tmp).radlon_;
+            }
+        }
+        tmp.setLatLon(lat, lon, true);
+//      Debug.output("ul="+tmp);
+        return tmp;
     }
 
 
@@ -403,137 +403,137 @@ public class Orthographic extends Azimuth {
      * @return LatLonPoint
      */
     public LatLonPoint getLowerRight() {
-	LatLonPoint tmp = new LatLonPoint();
-	float lat, lon;
+        LatLonPoint tmp = new LatLonPoint();
+        float lat, lon;
 
-	// over north pole
-	if (overNorthPole()) {
-	    lon = DATELINE;
+        // over north pole
+        if (overNorthPole()) {
+            lon = DATELINE;
 
-	    // get the right bottom corner
-	    tmp = inverse(width-1, height-1, tmp);
+            // get the right bottom corner
+            tmp = inverse(width-1, height-1, tmp);
 
-	    // check for invalid
-	    if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
-		lat = ctrLat - MoreMath.HALF_PI;
-	    } else {
-		// southernmost coord is right bottom
-		lat = tmp.radlat_;
-	    }
-	}
+            // check for invalid
+            if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
+                lat = ctrLat - MoreMath.HALF_PI;
+            } else {
+                // southernmost coord is right bottom
+                lat = tmp.radlat_;
+            }
+        }
 
-	// over south pole
-	else if (overSouthPole()) {
-	    lat = SOUTH_POLE;
-	    lon = DATELINE;
-	}
+        // over south pole
+        else if (overSouthPole()) {
+            lat = SOUTH_POLE;
+            lon = DATELINE;
+        }
 
-	// view in northern hemisphere
-	else if (ctrLat >= 0f) {
-	    // get the right bottom corner
-	    tmp = inverse(width-1, height-1, tmp);
+        // view in northern hemisphere
+        else if (ctrLat >= 0f) {
+            // get the right bottom corner
+            tmp = inverse(width-1, height-1, tmp);
 
-	    // check for invalid
-	    if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
-		lat = ctrLat - MoreMath.HALF_PI;
-		lon = DATELINE;
-	    } else {
-		// southernmost coord is right bottom
-		lat = tmp.radlat_;
-		// easternmost coord is right top
-		lon = inverse(width-1, 0, tmp).radlon_; 
-	    }
-	}
+            // check for invalid
+            if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
+                lat = ctrLat - MoreMath.HALF_PI;
+                lon = DATELINE;
+            } else {
+                // southernmost coord is right bottom
+                lat = tmp.radlat_;
+                // easternmost coord is right top
+                lon = inverse(width-1, 0, tmp).radlon_; 
+            }
+        }
 
-	// view in southern hemisphere
-	else {
-	    // get the right bottom corner
-	    tmp = inverse(width-1, height-1, tmp);
+        // view in southern hemisphere
+        else {
+            // get the right bottom corner
+            tmp = inverse(width-1, height-1, tmp);
 
-	    // check for invalid
-	    if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
-		lat = inverse(width/2, height-1, tmp).radlat_;
-		lon = DATELINE;
-	    } else {
-		// easternmost coord is right bottom
-		lon = tmp.radlon_;
-		// southernmost coord is center bottom
-		lat = inverse(width/2, height-1, tmp).radlat_;
-	    }
-	}
-	tmp.setLatLon(lat, lon, true);
-//	Debug.output("lr="+tmp);
-	return tmp;
+            // check for invalid
+            if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
+                lat = inverse(width/2, height-1, tmp).radlat_;
+                lon = DATELINE;
+            } else {
+                // easternmost coord is right bottom
+                lon = tmp.radlon_;
+                // southernmost coord is center bottom
+                lat = inverse(width/2, height-1, tmp).radlat_;
+            }
+        }
+        tmp.setLatLon(lat, lon, true);
+//      Debug.output("lr="+tmp);
+        return tmp;
     }
 
     /**
      * Get the name string of the projection.
      */
     public String getName() {
-	return OrthographicName;
+        return OrthographicName;
     }
 
     /*
     public void testPoint(float lat, float lon) {
-	float x, y;
-	lon = wrap_longitude(ProjMath.degToRad(lon));
-	lat = normalize_latitude(ProjMath.degToRad(lat));
-	x = forward_x(lat, lon);
-	y = forward_y(lat, lon);
+        float x, y;
+        lon = wrap_longitude(ProjMath.degToRad(lon));
+        lat = normalize_latitude(ProjMath.degToRad(lat));
+        x = forward_x(lat, lon);
+        y = forward_y(lat, lon);
 
-	Debug.output("(lon="+ProjMath.radToDeg(lon)+",lat="+
-		ProjMath.radToDeg(lat)+
-			   ") = (x="+x+",y="+y+")");
-	lat = inverse_lat(x, y);
-	lon = wrap_longitude(inverse_lon(x, y));
-	Debug.output("(x="+x+",y="+y+") = (lon="+
-			   ProjMath.radToDeg(lon)+",lat="+
-			   ProjMath.radToDeg(lat)+")");
+        Debug.output("(lon="+ProjMath.radToDeg(lon)+",lat="+
+                ProjMath.radToDeg(lat)+
+                           ") = (x="+x+",y="+y+")");
+        lat = inverse_lat(x, y);
+        lon = wrap_longitude(inverse_lon(x, y));
+        Debug.output("(x="+x+",y="+y+") = (lon="+
+                           ProjMath.radToDeg(lon)+",lat="+
+                           ProjMath.radToDeg(lat)+")");
     }
 
     public static void main (String argv[]) {
-	Orthographic proj=null;
-	proj = new Orthographic(new LatLonPoint(40.0f, 0.0f), 1.0f, 620, 480);
+        Orthographic proj=null;
+        proj = new Orthographic(new LatLonPoint(40.0f, 0.0f), 1.0f, 620, 480);
 
-	Debug.output("testing");
-	proj.setEarthRadius(1.0f);
-	Debug.output("setEarthRadius("+proj.getEarthRadius()+")");
-	proj.setPPM(1);
-	Debug.output("setPPM("+proj.getPPM()+")");
-	proj.setMinScale(1.0f);
-	Debug.output("setMinScale("+proj.getMinScale()+")");
-	try {
-	    proj.setScale(1.0f);
-	} catch (java.beans.PropertyVetoException e) {
-	}
-	Debug.output("setScale("+proj.getScale()+")");
-	Debug.output(proj);
-	Debug.output();
+        Debug.output("testing");
+        proj.setEarthRadius(1.0f);
+        Debug.output("setEarthRadius("+proj.getEarthRadius()+")");
+        proj.setPPM(1);
+        Debug.output("setPPM("+proj.getPPM()+")");
+        proj.setMinScale(1.0f);
+        Debug.output("setMinScale("+proj.getMinScale()+")");
+        try {
+            proj.setScale(1.0f);
+        } catch (java.beans.PropertyVetoException e) {
+        }
+        Debug.output("setScale("+proj.getScale()+")");
+        Debug.output(proj);
+        Debug.output();
 
-	Debug.output("---testing latitude");
-	proj.testPoint(0.0f, 0.0f);
-	proj.testPoint(10.0f, 0.0f);
-	proj.testPoint(40.0f, 0.0f);
-	proj.testPoint(-80.0f, 0.0f);
-	proj.testPoint(-90.0f, 0.0f);
-	proj.testPoint(100.0f, 0.0f);
-	proj.testPoint(-3272.0f, 0.0f);
-	Debug.output("---testing longitude");
-	proj.testPoint(0.0f, 10.0f);
-	proj.testPoint(0.0f, -10.0f);
-	proj.testPoint(0.0f, 90.0f);
-	proj.testPoint(0.0f, -90.0f);
-	proj.testPoint(0.0f, 170.0f);
-	proj.testPoint(0.0f, -170.0f);
-	proj.testPoint(0.0f, 180.0f);
-	proj.testPoint(0.0f, -180.0f);
-	proj.testPoint(0.0f, 190.0f);
-	proj.testPoint(0.0f, -190.0f);
-	Debug.output("---testing lat&lon");
-	proj.testPoint(100.0f, 370.0f);
-	proj.testPoint(-30.0f, -370.0f);
-	proj.testPoint(-80.0f, 550.0f);
-	proj.testPoint(0.0f, -550.0f);
+        Debug.output("---testing latitude");
+        proj.testPoint(0.0f, 0.0f);
+        proj.testPoint(10.0f, 0.0f);
+        proj.testPoint(40.0f, 0.0f);
+        proj.testPoint(-80.0f, 0.0f);
+        proj.testPoint(-90.0f, 0.0f);
+        proj.testPoint(100.0f, 0.0f);
+        proj.testPoint(-3272.0f, 0.0f);
+        Debug.output("---testing longitude");
+        proj.testPoint(0.0f, 10.0f);
+        proj.testPoint(0.0f, -10.0f);
+        proj.testPoint(0.0f, 90.0f);
+        proj.testPoint(0.0f, -90.0f);
+        proj.testPoint(0.0f, 170.0f);
+        proj.testPoint(0.0f, -170.0f);
+        proj.testPoint(0.0f, 180.0f);
+        proj.testPoint(0.0f, -180.0f);
+        proj.testPoint(0.0f, 190.0f);
+        proj.testPoint(0.0f, -190.0f);
+        Debug.output("---testing lat&lon");
+        proj.testPoint(100.0f, 370.0f);
+        proj.testPoint(-30.0f, -370.0f);
+        proj.testPoint(-80.0f, 550.0f);
+        proj.testPoint(0.0f, -550.0f);
     }
     */
 }

@@ -31,8 +31,8 @@ public class MysqlPoint extends MysqlGeometry {
     private double Northings;
 
     public MysqlPoint() {
-	super();
-	this.setType(this.POINTTYPE);
+        super();
+        this.setType(this.POINTTYPE);
     }
 
     /**
@@ -40,7 +40,7 @@ public class MysqlPoint extends MysqlGeometry {
      * @return double
      */
     public double getEastings() {
-	return Eastings;
+        return Eastings;
     }
 
     /**
@@ -48,7 +48,7 @@ public class MysqlPoint extends MysqlGeometry {
      * @return double
      */
     public double getNorthings() {
-	return Northings;
+        return Northings;
     }
 
     /**
@@ -56,7 +56,7 @@ public class MysqlPoint extends MysqlGeometry {
      * @param eastings The eastings to set
      */
     public void setEastings(double eastings) {
-	Eastings = eastings;
+        Eastings = eastings;
     }
 
     /**
@@ -64,7 +64,7 @@ public class MysqlPoint extends MysqlGeometry {
      * @param northings The northings to set
      */
     public void setNorthings(double northings) {
-	Northings = northings;
+        Northings = northings;
     }
 
 }

@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/MapContent.java,v $
 // $RCSfile: MapContent.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/24 03:46:06 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -69,15 +69,15 @@ public class MapContent extends BranchGroup implements OM3DConstants {
         super();
         init(mapHandler);
 
-	if ((contentMask & CONTENT_MASK_OM3DGRAPHICHANDLERS) != 0) {
-	    createMapObjects();
-	} 
-	if ((contentMask & CONTENT_MASK_IMAGEMAP) != 0) {
-	    createMapImage();
-	}
-	if ((contentMask & CONTENT_MASK_ELEVATIONMAP) != 0) {
-	    createMapElevations();
-	}
+        if ((contentMask & CONTENT_MASK_OM3DGRAPHICHANDLERS) != 0) {
+            createMapObjects();
+        } 
+        if ((contentMask & CONTENT_MASK_IMAGEMAP) != 0) {
+            createMapImage();
+        }
+        if ((contentMask & CONTENT_MASK_ELEVATIONMAP) != 0) {
+            createMapElevations();
+        }
     }
 
 
@@ -241,101 +241,101 @@ public class MapContent extends BranchGroup implements OM3DConstants {
      * @param transformGroup any transform group containing Shape3D objects.
      */
     protected void add(TransformGroup transformGroup) {
-	addChild(transformGroup);
+        addChild(transformGroup);
     }
 
 
     protected void createMapElevations() {
-	Debug.error("MapContent.createMapElevations not implemented.");
+        Debug.error("MapContent.createMapElevations not implemented.");
     }
 
     protected void createMapImage() {
 
-	if (proj == null || mapHandler == null) {
-	    Debug.error("MapContent: MapHandler not set!");
-	    return;
-	}
+        if (proj == null || mapHandler == null) {
+            Debug.error("MapContent: MapHandler not set!");
+            return;
+        }
 
-	int pwidth = 512;
-	int pheight = 512;
+        int pwidth = 512;
+        int pheight = 512;
 
-	AcmeGifFormatter formatter = new AcmeGifFormatter();
-	Graphics graphics = formatter.getGraphics(pwidth, pheight);
+        AcmeGifFormatter formatter = new AcmeGifFormatter();
+        Graphics graphics = formatter.getGraphics(pwidth, pheight);
 
-	Paint background;
-	if (map == null) {
-	    background = MapBean.DEFAULT_BACKGROUND_COLOR;
-	} else {
-	    background = map.getBckgrnd();
-	}
-	proj.drawBackground((Graphics2D)graphics, background);
+        Paint background;
+        if (map == null) {
+            background = MapBean.DEFAULT_BACKGROUND_COLOR;
+        } else {
+            background = map.getBckgrnd();
+        }
+        proj.drawBackground((Graphics2D)graphics, background);
 
-	layerHandler = (LayerHandler) mapHandler.get("com.bbn.openmap.LayerHandler");
- 	if (layerHandler != null) {
-	    Debug.message("3d", "LayerMapContent: putting layer graphics on the map.");
-	    Layer[] layers = layerHandler.getLayers();
-	    int size = layers.length;
+        layerHandler = (LayerHandler) mapHandler.get("com.bbn.openmap.LayerHandler");
+        if (layerHandler != null) {
+            Debug.message("3d", "LayerMapContent: putting layer graphics on the map.");
+            Layer[] layers = layerHandler.getLayers();
+            int size = layers.length;
 
-	    for (int i = size - 1; i >= 0; i--) {
-		Layer layer = layers[i];
+            for (int i = size - 1; i >= 0; i--) {
+                Layer layer = layers[i];
 
-		if (layer.isVisible() && !(layer instanceof OM3DGraphicHandler)) {
+                if (layer.isVisible() && !(layer instanceof OM3DGraphicHandler)) {
 
-		    layer.renderDataForProjection(proj, graphics);
-		}
-	    }
-	}
+                    layer.renderDataForProjection(proj, graphics);
+                }
+            }
+        }
 
-	BufferedImage bimage = formatter.getBufferedImage();
+        BufferedImage bimage = formatter.getBufferedImage();
 
-	// Now we have our textured image.
+        // Now we have our textured image.
 
-	QuadArray plane = new QuadArray(4, GeometryArray.COORDINATES
+        QuadArray plane = new QuadArray(4, GeometryArray.COORDINATES
                                         | GeometryArray.TEXTURE_COORDINATE_2);
-	float height = (float)pheight;
-	float width = (float)pwidth;
+        float height = (float)pheight;
+        float width = (float)pwidth;
 
-	Point3f p = new Point3f(0f, 0f, 0f);//-1.0f,  1.0f,  0.0f);
-	plane.setCoordinate(0, p);
-	p.set(0f, 0f, height);//-1.0f, -1.0f,  0.0f);
-	plane.setCoordinate(1, p);
-	p.set(width, 0f, height);//1.0f, -1.0f,  0.0f);
-	plane.setCoordinate(2, p);
-	p.set(0f, 0f, height);//1.0f,  1.0f,  0.0f);
-	plane.setCoordinate(3, p);
+        Point3f p = new Point3f(0f, 0f, 0f);//-1.0f,  1.0f,  0.0f);
+        plane.setCoordinate(0, p);
+        p.set(0f, 0f, height);//-1.0f, -1.0f,  0.0f);
+        plane.setCoordinate(1, p);
+        p.set(width, 0f, height);//1.0f, -1.0f,  0.0f);
+        plane.setCoordinate(2, p);
+        p.set(0f, 0f, height);//1.0f,  1.0f,  0.0f);
+        plane.setCoordinate(3, p);
 
-	Point2f q = new Point2f(0.0f,  1.0f);
-	plane.setTextureCoordinate(0, q);
-	q.set(0.0f, 0.0f);
-	plane.setTextureCoordinate(1, q);
-	q.set(1.0f, 0.0f);
-	plane.setTextureCoordinate(2, q);
-	q.set(1.0f, 1.0f);
-	plane.setTextureCoordinate(3, q);
+        Point2f q = new Point2f(0.0f,  1.0f);
+        plane.setTextureCoordinate(0, q);
+        q.set(0.0f, 0.0f);
+        plane.setTextureCoordinate(1, q);
+        q.set(1.0f, 0.0f);
+        plane.setTextureCoordinate(2, q);
+        q.set(1.0f, 1.0f);
+        plane.setTextureCoordinate(3, q);
 
-	Appearance appear = new Appearance();
+        Appearance appear = new Appearance();
 
-	TextureLoader loader = new TextureLoader(bimage);
-	ImageComponent2D image = loader.getImage();
+        TextureLoader loader = new TextureLoader(bimage);
+        ImageComponent2D image = loader.getImage();
 
-	if (Debug.debugging("3d")) {
-	    Debug.output("MapContent: image height: " + image.getHeight() +
-			 ", width: " + image.getWidth());
-	}
+        if (Debug.debugging("3d")) {
+            Debug.output("MapContent: image height: " + image.getHeight() +
+                         ", width: " + image.getWidth());
+        }
 
-	// can't use parameterless constuctor
-	Texture2D texture = new Texture2D(Texture.BASE_LEVEL, Texture.RGBA,
-					  image.getWidth(), image.getHeight());
-	texture.setImage(0, image);
-	//texture.setEnable(false);
+        // can't use parameterless constuctor
+        Texture2D texture = new Texture2D(Texture.BASE_LEVEL, Texture.RGBA,
+                                          image.getWidth(), image.getHeight());
+        texture.setImage(0, image);
+        //texture.setEnable(false);
 
-	appear.setTexture(texture);
+        appear.setTexture(texture);
 
-	appear.setTransparencyAttributes(
-	    new TransparencyAttributes(TransparencyAttributes.FASTEST, 0.1f));
+        appear.setTransparencyAttributes(
+            new TransparencyAttributes(TransparencyAttributes.FASTEST, 0.1f));
 
-	Shape3D planeObj = new Shape3D(plane, appear);
-	addChild(planeObj);
+        Shape3D planeObj = new Shape3D(plane, appear);
+        addChild(planeObj);
 
     }
 

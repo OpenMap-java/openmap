@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/hello/TextLayer.java,v $
 // $RCSfile: TextLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,8 +43,8 @@ public class TextLayer extends Layer {
      * Construct a TextLayer instance.
      */
     public TextLayer() {
-	font = new Font("TimesRoman", Font.BOLD + Font.ITALIC, 48);
-	setName("Hello, World");	// pretty name for menus
+        font = new Font("TimesRoman", Font.BOLD + Font.ITALIC, 48);
+        setName("Hello, World");        // pretty name for menus
     }
 
     /**
@@ -52,15 +52,15 @@ public class TextLayer extends Layer {
      * for this layer.
      */
     public void paint(Graphics g) {
-	Rectangle r = g.getClipBounds();
-	int halfHeight = r.height / 2;
-	int halfWidth = r.width / 2;
-	g.setFont(font);
+        Rectangle r = g.getClipBounds();
+        int halfHeight = r.height / 2;
+        int halfWidth = r.width / 2;
+        g.setFont(font);
         FontMetrics fm = g.getFontMetrics(font);
-	int halfStringWidth = fm.stringWidth(HelloWorld.message) / 2;
-	g.setColor(Color.red);
-	g.drawString(HelloWorld.message,
-		     halfWidth - halfStringWidth, halfHeight);
+        int halfStringWidth = fm.stringWidth(HelloWorld.message) / 2;
+        g.setColor(Color.red);
+        g.drawString(HelloWorld.message,
+                     halfWidth - halfStringWidth, halfHeight);
     }
 
     /**

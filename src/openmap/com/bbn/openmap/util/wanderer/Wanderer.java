@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/Wanderer.java,v $
 // $RCSfile: Wanderer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/13 01:19:09 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,20 +39,20 @@ public class Wanderer {
     WandererCallback callback = null;
 
     public Wanderer() {
-	
+        
     }
 
     public Wanderer(WandererCallback callback) {
-	this();
-	this.callback = callback;
+        this();
+        this.callback = callback;
     }
 
     public void setCallback(WandererCallback cb) {
-	callback = cb;
+        callback = cb;
     }
 
     public WandererCallback getCallback() {
-	return callback;
+        return callback;
     }
 
     /** 
@@ -63,56 +63,56 @@ public class Wanderer {
      * @param file File (directory) to start at.
      */
     public void handleEntry(File file) {
-	try {
-	    String[] filenames = file.list();
-	    boolean dirTest = false;
-	    boolean not14 = false;
+        try {
+            String[] filenames = file.list();
+            boolean dirTest = false;
+            boolean not14 = false;
 
-	    try {
-		java.lang.reflect.Method method = 
-		    file.getClass().getDeclaredMethod("isDirectory", null);
-		Object obj = method.invoke(file, null);
-		if (obj instanceof Boolean) {
-		    dirTest = ((Boolean)obj).booleanValue();
-		}
-	    } catch (NoSuchMethodException nsme) {
-		not14 = true;
-	    } catch (SecurityException se) {
-		not14 = true;
-	    } catch (IllegalAccessException iae) {
-		not14 = true;
-	    } catch (IllegalArgumentException iae2) {
-		not14 = true;
-	    } catch (java.lang.reflect.InvocationTargetException ite) {
-		not14 = true;
-	    }
+            try {
+                java.lang.reflect.Method method = 
+                    file.getClass().getDeclaredMethod("isDirectory", null);
+                Object obj = method.invoke(file, null);
+                if (obj instanceof Boolean) {
+                    dirTest = ((Boolean)obj).booleanValue();
+                }
+            } catch (NoSuchMethodException nsme) {
+                not14 = true;
+            } catch (SecurityException se) {
+                not14 = true;
+            } catch (IllegalAccessException iae) {
+                not14 = true;
+            } catch (IllegalArgumentException iae2) {
+                not14 = true;
+            } catch (java.lang.reflect.InvocationTargetException ite) {
+                not14 = true;
+            }
 
-	    if (not14) {
-		dirTest = (filenames != null);
-	    }
+            if (not14) {
+                dirTest = (filenames != null);
+            }
 
-	    if (dirTest) {
-		// It's a directory...
-		handleDirectory(file, filenames);
-		callback.handleDirectory(file);
-	    } else {
-		callback.handleFile(file);
-	    }
-	} catch (NullPointerException npe) {
-	} catch (SecurityException se) {
-	}
+            if (dirTest) {
+                // It's a directory...
+                handleDirectory(file, filenames);
+                callback.handleDirectory(file);
+            } else {
+                callback.handleFile(file);
+            }
+        } catch (NullPointerException npe) {
+        } catch (SecurityException se) {
+        }
     }
 
     public void handleDirectory(File directory, String[] contentNames) 
-	throws SecurityException {
+        throws SecurityException {
 
-	File[] contents = new File[contentNames.length]; // file.listFiles();
-	for (int i=0; i < contents.length; i++)
-	    contents[i] = new File(directory.getAbsolutePath() + File.separator, contentNames[i]);
-	
-	for (int i = 0; i < contents.length; i++) {
-	    handleEntry(contents[i]);
-	}
+        File[] contents = new File[contentNames.length]; // file.listFiles();
+        for (int i=0; i < contents.length; i++)
+            contents[i] = new File(directory.getAbsolutePath() + File.separator, contentNames[i]);
+        
+        for (int i = 0; i < contents.length; i++) {
+            handleEntry(contents[i]);
+        }
     }
 
     /**
@@ -122,22 +122,22 @@ public class Wanderer {
      * usage statement.  
      */
     public static void main(String[] argv) {
-	Debug.init();
+        Debug.init();
 
-	ArgParser ap = new ArgParser("Wanderer");
+        ArgParser ap = new ArgParser("Wanderer");
 
-	if (argv.length == 0) {
-	    ap.bail("", true);
-	}
+        if (argv.length == 0) {
+            ap.bail("", true);
+        }
 
-	String[] dirs = argv;
+        String[] dirs = argv;
 
-	Wanderer wanderer = new Wanderer(new TestWandererCallback());
+        Wanderer wanderer = new Wanderer(new TestWandererCallback());
 
-	// Assume that the arguments are paths to directories or
-	// files.
-	for (int i = 0; i < dirs.length; i++) {
-	    wanderer.handleEntry(new File(dirs[i]));
-	}
+        // Assume that the arguments are paths to directories or
+        // files.
+        for (int i = 0; i < dirs.length; i++) {
+            wanderer.handleEntry(new File(dirs[i]));
+        }
     }
 }

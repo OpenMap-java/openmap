@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/MercatorView.java,v $
 // $RCSfile: MercatorView.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:56 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:14 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -54,17 +54,17 @@ public class MercatorView extends Mercator {
     // Screen = the space that we're looking at.
 
     protected LatLonPoint uCtr;
-    protected float uCtrLat;	// User Center in lat/lon
+    protected float uCtrLat;    // User Center in lat/lon
     protected float uCtrLon;
     
-    protected int sCtrX;	// Screen Origin in pixels (center=0,0)
-    protected int sCtrY;	// 
+    protected int sCtrX;        // Screen Origin in pixels (center=0,0)
+    protected int sCtrY;        // 
     
-    protected int uCtrX;	// User Origin in pixels
-    protected int uCtrY;	// 0,0 = lat/lon center
+    protected int uCtrX;        // User Origin in pixels
+    protected int uCtrY;        // 0,0 = lat/lon center
     
-    protected int dUSX;		// delta between U and S, X axis
-    protected int dUSY;		// delta between U and S, Y axis
+    protected int dUSX;         // delta between U and S, X axis
+    protected int dUSY;         // delta between U and S, Y axis
 
     
     /**
@@ -76,8 +76,8 @@ public class MercatorView extends Mercator {
      */
     public MercatorView (LatLonPoint center, float scale, int width, int height)
     {
-	super(center, scale, width, height, MercatorViewType);
-	computeParameters();
+        super(center, scale, width, height, MercatorViewType);
+        computeParameters();
     }
 
     /**
@@ -86,7 +86,7 @@ public class MercatorView extends Mercator {
      * @see Projection#getProjectionID
      */
     public String toString() {
-	return "MercatorView[" + super.toString();
+        return "MercatorView[" + super.toString();
     }
 
 
@@ -98,63 +98,63 @@ public class MercatorView extends Mercator {
      * used in the forward() and inverse() calls.<p>
      */
     protected void computeParameters() {
-	Debug.message("mercatorview", "MercatorView.computeParameters()");
+        Debug.message("mercatorview", "MercatorView.computeParameters()");
 
-	// We have no way of constructing the User Space at anything
-	// other than 0,0 for now.
-	if (uCtr == null)
-	    {
-		uCtrLat = (float) 0.0;
-		uCtrLon = (float) 0.0;
-		uCtr = new LatLonPoint(uCtrLat, uCtrLon);
-	    }
-	
-	if (helper == null)
-	    {
-		helper = new MercatorViewHelper(uCtr, scale, width, height);
-	    }
+        // We have no way of constructing the User Space at anything
+        // other than 0,0 for now.
+        if (uCtr == null)
+            {
+                uCtrLat = (float) 0.0;
+                uCtrLon = (float) 0.0;
+                uCtr = new LatLonPoint(uCtrLat, uCtrLon);
+            }
+        
+        if (helper == null)
+            {
+                helper = new MercatorViewHelper(uCtr, scale, width, height);
+            }
 
-	synchronized (helper) {
-	    super.computeParameters();
-	    
-	    // Screen stuff
-	    Point temp = new Point();
+        synchronized (helper) {
+            super.computeParameters();
+            
+            // Screen stuff
+            Point temp = new Point();
 
 
-	    helper.setAllParams(pixelsPerMeter,
-				planetRadius,
-				planetPixelRadius,
-				planetPixelCircumference,
-				minscale, maxscale,
-				scale,
-				scaled_radius,
-				width, height,
-				uCtrLat,
-				uCtrLon);
+            helper.setAllParams(pixelsPerMeter,
+                                planetRadius,
+                                planetPixelRadius,
+                                planetPixelCircumference,
+                                minscale, maxscale,
+                                scale,
+                                scaled_radius,
+                                width, height,
+                                uCtrLat,
+                                uCtrLon);
 
-	    helper.forward (ctrLat, ctrLon, temp, true);
-	    sCtrX = temp.x;
-	    sCtrY = temp.y;
-	    
-	    helper.forward (uCtrLat, uCtrLon, temp);
-	    uCtrX = temp.x;
-	    uCtrY = temp.y;
-	    
-	    dUSX = sCtrX - uCtrX;
-	    dUSY = sCtrY - uCtrY;
-	    
-	}
+            helper.forward (ctrLat, ctrLon, temp, true);
+            sCtrX = temp.x;
+            sCtrY = temp.y;
+            
+            helper.forward (uCtrLat, uCtrLon, temp);
+            uCtrX = temp.x;
+            uCtrY = temp.y;
+            
+            dUSX = sCtrX - uCtrX;
+            dUSY = sCtrY - uCtrY;
+            
+        }
 
-	Debug.message("mercatorview",
-		      "User Center LL: " + uCtrLon + "," + uCtrLat
-		      + " User Center xy: " + uCtrX + "," + uCtrY
-		      + " Screen Center LL: "
-		      + ProjMath.radToDeg(ctrLon) + ","
-		      + ProjMath.radToDeg(ctrLat)
-		      + " Screen Center xy: " + sCtrX + "," + sCtrY
-		      + " Screen wh: " + width + "x" + height
-		      + " Screen halfwh: " + this.wx + "x" + this.hy
-		      + " Delta xy: " + dUSX + "," + dUSY);
+        Debug.message("mercatorview",
+                      "User Center LL: " + uCtrLon + "," + uCtrLat
+                      + " User Center xy: " + uCtrX + "," + uCtrY
+                      + " Screen Center LL: "
+                      + ProjMath.radToDeg(ctrLon) + ","
+                      + ProjMath.radToDeg(ctrLat)
+                      + " Screen Center xy: " + sCtrX + "," + sCtrY
+                      + " Screen wh: " + width + "x" + height
+                      + " Screen halfwh: " + this.wx + "x" + this.hy
+                      + " Delta xy: " + dUSX + "," + dUSY);
     }
 
     /**
@@ -164,21 +164,21 @@ public class MercatorView extends Mercator {
      * @return Point p
      */
     public Point forward (LatLonPoint pt, Point p) {
-	helper.forward(pt, p);
-	
-	Debug.message("mercatorview-f",
-		      "forward llp,p: "
-		      + pt.getLongitude() + "," + pt.getLatitude()
-    		      + " merc xy: " + p.x + "," + p.y);
-	
-	p.x = p.x + wx - dUSX;
-	p.y = this.hy - p.y + dUSY;
+        helper.forward(pt, p);
+        
+        Debug.message("mercatorview-f",
+                      "forward llp,p: "
+                      + pt.getLongitude() + "," + pt.getLatitude()
+                      + " merc xy: " + p.x + "," + p.y);
+        
+        p.x = p.x + wx - dUSX;
+        p.y = this.hy - p.y + dUSY;
 
-	Debug.message("mercatorview-f",
-		      "forward llp,p: "
-		      + pt.getLongitude() + "," + pt.getLatitude()
-		      + " view xy: " + p.x + "," + p.y);
-	return p;
+        Debug.message("mercatorview-f",
+                      "forward llp,p: "
+                      + pt.getLongitude() + "," + pt.getLatitude()
+                      + " view xy: " + p.x + "," + p.y);
+        return p;
     }
 
 
@@ -190,21 +190,21 @@ public class MercatorView extends Mercator {
      * @return Point p
      */
     public Point forward (float lat, float lon, Point p) {
-	helper.forward(lat, lon, p);
-	
-	Debug.message("mercatorview-f",
-		      "forward l,l,p: "
-		      + lon + "," + lat
-		      + " merc xy: " + p.x + "," + p.y);
-	
-	p.x = p.x + wx - dUSX;
-	p.y = this.hy - p.y + dUSY;
+        helper.forward(lat, lon, p);
+        
+        Debug.message("mercatorview-f",
+                      "forward l,l,p: "
+                      + lon + "," + lat
+                      + " merc xy: " + p.x + "," + p.y);
+        
+        p.x = p.x + wx - dUSX;
+        p.y = this.hy - p.y + dUSY;
 
-	Debug.message("mercatorview-f",
-		      "forward l,l,p: "
-		      + lon + "," + lat
-		      + " view xy: " + p.x + "," + p.y);
-	return p;
+        Debug.message("mercatorview-f",
+                      "forward l,l,p: "
+                      + lon + "," + lat
+                      + " view xy: " + p.x + "," + p.y);
+        return p;
     }
 
 
@@ -218,23 +218,23 @@ public class MercatorView extends Mercator {
      * @return Point p
      */
     public Point forward (
-	float lat, float lon, Point p, boolean isRadian)
+        float lat, float lon, Point p, boolean isRadian)
     {
-	helper.forward(lat, lon, p, isRadian);
-	
-	Debug.message("mercatorview-f",
-		      "forward l,l,p,i: "
-		      + ProjMath.radToDeg(lon) + "," + ProjMath.radToDeg(lat)
-		      + " merc xy: " + p.x + "," + p.y);
-	
-	p.x = p.x + wx - dUSX;
-	p.y = this.hy - p.y + dUSY;
+        helper.forward(lat, lon, p, isRadian);
+        
+        Debug.message("mercatorview-f",
+                      "forward l,l,p,i: "
+                      + ProjMath.radToDeg(lon) + "," + ProjMath.radToDeg(lat)
+                      + " merc xy: " + p.x + "," + p.y);
+        
+        p.x = p.x + wx - dUSX;
+        p.y = this.hy - p.y + dUSY;
 
-	Debug.message("mercatorview-f",
-		      "forward l,l,p,i: "
-		      + ProjMath.radToDeg(lon) + "," + ProjMath.radToDeg(lat)
-		      + " view xy: " + p.x + "," + p.y);
-	return p;
+        Debug.message("mercatorview-f",
+                      "forward l,l,p,i: "
+                      + ProjMath.radToDeg(lon) + "," + ProjMath.radToDeg(lat)
+                      + " view xy: " + p.x + "," + p.y);
+        return p;
     }
 
 
@@ -245,15 +245,15 @@ public class MercatorView extends Mercator {
      * @return LatLonPoint llp
      */
     public LatLonPoint inverse (Point pt, LatLonPoint llp) {
-	// convert from screen to user coordinates
-	int x = pt.x - wx + dUSX;
-	int y = this.hy - pt.y + dUSY;
+        // convert from screen to user coordinates
+        int x = pt.x - wx + dUSX;
+        int y = this.hy - pt.y + dUSY;
 
-	Debug.message("mercatorview-i",
-		      "pt: " + pt.x + "," + pt.y
-		      + "xy: " + x + "," + y);
+        Debug.message("mercatorview-i",
+                      "pt: " + pt.x + "," + pt.y
+                      + "xy: " + x + "," + y);
 
-	return(helper.inverse(x, y, llp));
+        return(helper.inverse(x, y, llp));
     }
 
 
@@ -266,20 +266,20 @@ public class MercatorView extends Mercator {
      * @see Proj#inverse(Point)
      */
     public LatLonPoint inverse (int x, int y, LatLonPoint llp) {
-	// convert from screen to world coordinates
-	int tx = x - wx + dUSX;
-	int ty = this.hy - y + dUSY;
+        // convert from screen to world coordinates
+        int tx = x - wx + dUSX;
+        int ty = this.hy - y + dUSY;
 
-	// This is only to aid printing....
-	LatLonPoint tllp = helper.inverse(tx, ty, llp);
+        // This is only to aid printing....
+        LatLonPoint tllp = helper.inverse(tx, ty, llp);
 
-	Debug.message("mercatorview-i",
-		      "xy: " + x + "," + y
-		      + " txty: " + tx + "," + ty
-		      + " llp: " + tllp.getLongitude()
-		      + "," + tllp.getLatitude());
+        Debug.message("mercatorview-i",
+                      "xy: " + x + "," + y
+                      + " txty: " + tx + "," + ty
+                      + " llp: " + tllp.getLongitude()
+                      + "," + tllp.getLatitude());
 
-	return(helper.inverse(tx, ty, llp));
+        return(helper.inverse(tx, ty, llp));
     }
 
 
@@ -295,105 +295,105 @@ public class MercatorView extends Mercator {
      */
 
     private class MercatorViewHelper extends Mercator {
-	
-	/**
-	 * MercatorViewHelper Constructor
-	 * @param center the center of the projection into "user space"
-	 * @param scale the scale of the projection
-	 * @param width the  width of the projection into user space
-	 * @param height the height of the projection into user space
-	 */
-	
-	public MercatorViewHelper (LatLonPoint center, float scale,
-			 int width, int height)
-	{
-	    super(center, scale, width, height, MercatorType);
-	}
+        
+        /**
+         * MercatorViewHelper Constructor
+         * @param center the center of the projection into "user space"
+         * @param scale the scale of the projection
+         * @param width the  width of the projection into user space
+         * @param height the height of the projection into user space
+         */
+        
+        public MercatorViewHelper (LatLonPoint center, float scale,
+                         int width, int height)
+        {
+            super(center, scale, width, height, MercatorType);
+        }
 
-	public void setAllParams(int hPixelsPerMeter,
-				 float hPlanetRadius,
-				 float hPlanetPixelRadius,
-				 float hPlanetPixelCircumference,
-				 float hMinscale,
-				 float hMaxscale,
-				 float hScale,
-				 float hScaled_radius,
-				 int hWidth,
-				 int hHeight,
-				 float hCtrLat,
-				 float hCtrLon)
-	{
-	    this.pixelsPerMeter = hPixelsPerMeter;
-	    this.planetRadius = hPlanetRadius;
-	    this.planetPixelRadius = hPlanetPixelRadius;
-	    this.planetPixelCircumference = hPlanetPixelCircumference;
-	    this.minscale = hMinscale;
-	    this.maxscale = hMaxscale;
-	    this.scale = hScale;
-	    this.scaled_radius = hScaled_radius;
-	    this.width = hWidth;
-	    this.height = hHeight;
-	    this.ctrLat = hCtrLat;
-	    this.ctrLon = hCtrLon;
-	    this.computeParameters();
-	}
-			
-			    
-	public String toString() {
-	    return "MercatorViewHelper[" + super.toString();
-	}
+        public void setAllParams(int hPixelsPerMeter,
+                                 float hPlanetRadius,
+                                 float hPlanetPixelRadius,
+                                 float hPlanetPixelCircumference,
+                                 float hMinscale,
+                                 float hMaxscale,
+                                 float hScale,
+                                 float hScaled_radius,
+                                 int hWidth,
+                                 int hHeight,
+                                 float hCtrLat,
+                                 float hCtrLon)
+        {
+            this.pixelsPerMeter = hPixelsPerMeter;
+            this.planetRadius = hPlanetRadius;
+            this.planetPixelRadius = hPlanetPixelRadius;
+            this.planetPixelCircumference = hPlanetPixelCircumference;
+            this.minscale = hMinscale;
+            this.maxscale = hMaxscale;
+            this.scale = hScale;
+            this.scaled_radius = hScaled_radius;
+            this.width = hWidth;
+            this.height = hHeight;
+            this.ctrLat = hCtrLat;
+            this.ctrLon = hCtrLon;
+            this.computeParameters();
+        }
+                        
+                            
+        public String toString() {
+            return "MercatorViewHelper[" + super.toString();
+        }
 
-	/** 
-	 */
-	public Point forward (LatLonPoint pt, Point p) {
-	    super.forward(pt, p);
+        /** 
+         */
+        public Point forward (LatLonPoint pt, Point p) {
+            super.forward(pt, p);
 
-	    Debug.message("mercatorview-f",
-			  "forward l,l,p: "
-			  + pt.getLongitude() + "," + pt.getLatitude()
-			  + " help xy: " + p.x + "," + p.y);
+            Debug.message("mercatorview-f",
+                          "forward l,l,p: "
+                          + pt.getLongitude() + "," + pt.getLatitude()
+                          + " help xy: " + p.x + "," + p.y);
 
-	    p.x = p.x - this.wx;
-	    p.y = this.hy - p.y;
-	    return p;
-	}
+            p.x = p.x - this.wx;
+            p.y = this.hy - p.y;
+            return p;
+        }
 
 
-	public Point forward (float lat, float lon, Point p) {
-	    super.forward(lat, lon, p);
+        public Point forward (float lat, float lon, Point p) {
+            super.forward(lat, lon, p);
 
-	    Debug.message("mercatorview-f",
-			  "forward l,l,p: "
-			  + lon + "," + lat
-			  + " help xy: " + p.x + "," + p.y);
-	    p.x = p.x - this.wx;
-	    p.y = this.hy - p.y;
-	    return p;
-	}
+            Debug.message("mercatorview-f",
+                          "forward l,l,p: "
+                          + lon + "," + lat
+                          + " help xy: " + p.x + "," + p.y);
+            p.x = p.x - this.wx;
+            p.y = this.hy - p.y;
+            return p;
+        }
 
-	public Point forward (float lat, float lon, Point p, boolean isRadian)
-	{
-	    super.forward(lat, lon, p, isRadian);
-	    Debug.message("mercatorview-f",
-			  "forward l,l,p: "
-			  + ProjMath.radToDeg(lon) + "," + ProjMath.radToDeg(lat)
-			  + " help xy: " + p.x + "," + p.y);
-	    p.x = p.x - this.wx;
-	    p.y = this.hy - p.y;
-	    return p;
-	}
+        public Point forward (float lat, float lon, Point p, boolean isRadian)
+        {
+            super.forward(lat, lon, p, isRadian);
+            Debug.message("mercatorview-f",
+                          "forward l,l,p: "
+                          + ProjMath.radToDeg(lon) + "," + ProjMath.radToDeg(lat)
+                          + " help xy: " + p.x + "," + p.y);
+            p.x = p.x - this.wx;
+            p.y = this.hy - p.y;
+            return p;
+        }
 
-	public LatLonPoint inverse (Point pt, LatLonPoint llp) {
-	    int x = pt.x + this.wx;
-	    int y = this.hy - pt.y;
-	    return(super.inverse(x, y, llp));
-	}
+        public LatLonPoint inverse (Point pt, LatLonPoint llp) {
+            int x = pt.x + this.wx;
+            int y = this.hy - pt.y;
+            return(super.inverse(x, y, llp));
+        }
 
-	public LatLonPoint inverse (int x, int y, LatLonPoint llp) {
-	    x = x + this.wx;
-	    y = this.hy - y;
-	    return(super.inverse(x, y, llp));
-	}
+        public LatLonPoint inverse (int x, int y, LatLonPoint llp) {
+            x = x + this.wx;
+            y = this.hy - y;
+            return(super.inverse(x, y, llp));
+        }
     }
 }
 

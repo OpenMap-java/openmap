@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/ReferenceRowMaker.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -32,17 +32,17 @@ public abstract class ReferenceRowMaker extends PlainRowMaker {
     final protected HttpServletResponse response;
 
     public ReferenceRowMaker(HttpServletRequest request,
-			     HttpServletResponse response) {
-	this.request = request;
-	this.response = response;
+                             HttpServletResponse response) {
+        this.request = request;
+        this.response = response;
     }
 
     public String toURL(String servletName, String pathname, String filename) {
-	return VPFHttpServlet.toURL(request, response, servletName, 
-				    pathname, filename);
+        return VPFHttpServlet.toURL(request, response, servletName, 
+                                    pathname, filename);
     }
     public String fileURL(String pathname, String filename) {
-	return VPFHttpServlet.fileURL(request, response, pathname, filename);
+        return VPFHttpServlet.fileURL(request, response, pathname, filename);
     }
 }
 

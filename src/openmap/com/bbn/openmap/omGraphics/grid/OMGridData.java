@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/OMGridData.java,v $
 // $RCSfile: OMGridData.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/01/17 00:22:34 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,11 +37,11 @@ public abstract class OMGridData implements GridData {
     protected boolean major = OMGrid.COLUMN_MAJOR;
 
     public void setMajor(boolean value) {
-	major = value;
+        major = value;
     }
 
     public boolean getMajor() {
-	return major;
+        return major;
     }
 
     /**
@@ -49,43 +49,43 @@ public abstract class OMGridData implements GridData {
      */
     public static class Boolean extends OMGridData implements GridData.Boolean {
 
-	protected boolean[][] data;
+        protected boolean[][] data;
 
-	public Boolean(boolean[][] d) {
-	    setData(d);
-	}
+        public Boolean(boolean[][] d) {
+            setData(d);
+        }
 
-	public void setData(boolean[][] d) {
-	    data = d;
-	}
-	
-	public boolean[][] getData() {
-	    return data;
-	}
+        public void setData(boolean[][] d) {
+            data = d;
+        }
+        
+        public boolean[][] getData() {
+            return data;
+        }
 
-	public Object get(int x, int y) {
-	    return new java.lang.Boolean(getBooleanValue(x, y));
-	}
+        public Object get(int x, int y) {
+            return new java.lang.Boolean(getBooleanValue(x, y));
+        }
 
-	public boolean getBooleanValue(int x, int y) {
-	    return data[x][y];
-	}
+        public boolean getBooleanValue(int x, int y) {
+            return data[x][y];
+        }
 
-	public int getNumColumns() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data.length;
-	    } else {
-		return data[0].length;
-	    }
-	}
+        public int getNumColumns() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data.length;
+            } else {
+                return data[0].length;
+            }
+        }
 
-	public int getNumRows() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data[0].length;
-	    } else {
-		return data.length;
-	    }
-	}
+        public int getNumRows() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data[0].length;
+            } else {
+                return data.length;
+            }
+        }
     }
 
     /**
@@ -93,43 +93,43 @@ public abstract class OMGridData implements GridData {
      */
     public static class Byte extends OMGridData implements GridData.Byte {
 
-	protected byte[][] data;
+        protected byte[][] data;
 
-	public Byte(byte[][] d) {
-	    setData(d);
-	}
+        public Byte(byte[][] d) {
+            setData(d);
+        }
 
-	public void setData(byte[][] d) {
-	    data = d;
-	}
-	
-	public byte[][] getData() {
-	    return data;
-	}
+        public void setData(byte[][] d) {
+            data = d;
+        }
+        
+        public byte[][] getData() {
+            return data;
+        }
 
-	public Object get(int x, int y) {
-	    return new java.lang.Byte(getByteValue(x, y));
-	}
+        public Object get(int x, int y) {
+            return new java.lang.Byte(getByteValue(x, y));
+        }
 
-	public byte getByteValue(int x, int y) {
-	    return data[x][y];
-	}
+        public byte getByteValue(int x, int y) {
+            return data[x][y];
+        }
 
-	public int getNumColumns() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data.length;
-	    } else {
-		return data[0].length;
-	    }
-	}
+        public int getNumColumns() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data.length;
+            } else {
+                return data[0].length;
+            }
+        }
 
-	public int getNumRows() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data[0].length;
-	    } else {
-		return data.length;
-	    }
-	}
+        public int getNumRows() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data[0].length;
+            } else {
+                return data.length;
+            }
+        }
     }
 
     /**
@@ -137,43 +137,43 @@ public abstract class OMGridData implements GridData {
      */
     public static class Char extends OMGridData implements GridData.Char {
 
-	protected char[][] data;
+        protected char[][] data;
 
-	public Char(char[][] d) {
-	    setData(d);
-	}
+        public Char(char[][] d) {
+            setData(d);
+        }
 
-	public void setData(char[][] d) {
-	    data = d;
-	}
-	
-	public char[][] getData() {
-	    return data;
-	}
+        public void setData(char[][] d) {
+            data = d;
+        }
+        
+        public char[][] getData() {
+            return data;
+        }
 
-	public Object get(int x, int y) {
-	    return new Character(getCharValue(x, y));
-	}
+        public Object get(int x, int y) {
+            return new Character(getCharValue(x, y));
+        }
 
-	public char getCharValue(int x, int y) {
-	    return data[x][y];
-	}
+        public char getCharValue(int x, int y) {
+            return data[x][y];
+        }
 
-	public int getNumColumns() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data.length;
-	    } else {
-		return data[0].length;
-	    }
-	}
+        public int getNumColumns() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data.length;
+            } else {
+                return data[0].length;
+            }
+        }
 
-	public int getNumRows() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data[0].length;
-	    } else {
-		return data.length;
-	    }
-	}
+        public int getNumRows() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data[0].length;
+            } else {
+                return data.length;
+            }
+        }
     }
 
     /**
@@ -181,43 +181,43 @@ public abstract class OMGridData implements GridData {
      */
     public static class Float extends OMGridData implements GridData.Float {
 
-	protected float[][] data;
+        protected float[][] data;
 
-	public Float(float[][] d) {
-	    setData(d);
-	}
+        public Float(float[][] d) {
+            setData(d);
+        }
 
-	public void setData(float[][] d) {
-	    data = d;
-	}
-	
-	public float[][] getData() {
-	    return data;
-	}
+        public void setData(float[][] d) {
+            data = d;
+        }
+        
+        public float[][] getData() {
+            return data;
+        }
 
-	public Object get(int x, int y) {
-	    return new java.lang.Float(getFloatValue(x, y));
-	}
+        public Object get(int x, int y) {
+            return new java.lang.Float(getFloatValue(x, y));
+        }
 
-	public float getFloatValue(int x, int y) {
-	    return data[x][y];
-	}
+        public float getFloatValue(int x, int y) {
+            return data[x][y];
+        }
 
-	public int getNumColumns() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data.length;
-	    } else {
-		return data[0].length;
-	    }
-	}
+        public int getNumColumns() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data.length;
+            } else {
+                return data[0].length;
+            }
+        }
 
-	public int getNumRows() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data[0].length;
-	    } else {
-		return data.length;
-	    }
-	}
+        public int getNumRows() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data[0].length;
+            } else {
+                return data.length;
+            }
+        }
     }
  
     /**
@@ -225,43 +225,43 @@ public abstract class OMGridData implements GridData {
      */
     public static class Int extends OMGridData implements GridData.Int {
 
-	protected int[][] data;
+        protected int[][] data;
 
-	public Int(int[][] d) {
-	    setData(d);
-	}
+        public Int(int[][] d) {
+            setData(d);
+        }
 
-	public void setData(int[][] d) {
-	    data = d;
-	}
-	
-	public int[][] getData() {
-	    return data;
-	}
+        public void setData(int[][] d) {
+            data = d;
+        }
+        
+        public int[][] getData() {
+            return data;
+        }
 
-	public Object get(int x, int y) {
-	    return new Integer(getIntValue(x, y));
-	}
+        public Object get(int x, int y) {
+            return new Integer(getIntValue(x, y));
+        }
 
-	public int getIntValue(int x, int y) {
-	    return data[x][y];
-	}
+        public int getIntValue(int x, int y) {
+            return data[x][y];
+        }
 
-	public int getNumColumns() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data.length;
-	    } else {
-		return data[0].length;
-	    }
-	}
+        public int getNumColumns() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data.length;
+            } else {
+                return data[0].length;
+            }
+        }
 
-	public int getNumRows() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data[0].length;
-	    } else {
-		return data.length;
-	    }
-	}
+        public int getNumRows() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data[0].length;
+            } else {
+                return data.length;
+            }
+        }
     }
 
 
@@ -270,43 +270,43 @@ public abstract class OMGridData implements GridData {
      */
     public static class Short extends OMGridData implements GridData.Short {
 
-	protected short[][] data;
+        protected short[][] data;
 
-	public Short(short[][] d) {
-	    setData(d);
-	}
+        public Short(short[][] d) {
+            setData(d);
+        }
 
-	public void setData(short[][] d) {
-	    data = d;
-	}
-	
-	public short[][] getData() {
-	    return data;
-	}
+        public void setData(short[][] d) {
+            data = d;
+        }
+        
+        public short[][] getData() {
+            return data;
+        }
 
-	public Object get(int x, int y) {
-	    return new java.lang.Short(getShortValue(x, y));
-	}
+        public Object get(int x, int y) {
+            return new java.lang.Short(getShortValue(x, y));
+        }
 
-	public short getShortValue(int x, int y) {
-	    return data[x][y];
-	}
+        public short getShortValue(int x, int y) {
+            return data[x][y];
+        }
 
-	public int getNumColumns() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data.length;
-	    } else {
-		return data[0].length;
-	    }
-	}
+        public int getNumColumns() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data.length;
+            } else {
+                return data[0].length;
+            }
+        }
 
-	public int getNumRows() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data[0].length;
-	    } else {
-		return data.length;
-	    }
-	}
+        public int getNumRows() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data[0].length;
+            } else {
+                return data.length;
+            }
+        }
     }
 
     /**
@@ -314,42 +314,42 @@ public abstract class OMGridData implements GridData {
      */
     public static class Double extends OMGridData implements GridData.Double {
 
-	protected double[][] data;
+        protected double[][] data;
 
-	public Double(double[][] d) {
-	    setData(d);
-	}
+        public Double(double[][] d) {
+            setData(d);
+        }
 
-	public void setData(double[][] d) {
-	    data = d;
-	}
-	
-	public double[][] getData() {
-	    return data;
-	}
+        public void setData(double[][] d) {
+            data = d;
+        }
+        
+        public double[][] getData() {
+            return data;
+        }
 
-	public Object get(int x, int y) {
-	    return new java.lang.Double(getDoubleValue(x, y));
-	}
+        public Object get(int x, int y) {
+            return new java.lang.Double(getDoubleValue(x, y));
+        }
 
-	public double getDoubleValue(int x, int y) {
-	    return data[x][y];
-	}
+        public double getDoubleValue(int x, int y) {
+            return data[x][y];
+        }
 
-	public int getNumColumns() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data.length;
-	    } else {
-		return data[0].length;
-	    }
-	}
+        public int getNumColumns() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data.length;
+            } else {
+                return data[0].length;
+            }
+        }
 
-	public int getNumRows() {
-	    if (major == OMGrid.COLUMN_MAJOR) {
-		return data[0].length;
-	    } else {
-		return data.length;
-	    }
-	}
+        public int getNumRows() {
+            if (major == OMGrid.COLUMN_MAJOR) {
+                return data[0].length;
+            } else {
+                return data.length;
+            }
+        }
     }
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/BufferedLayer.java,v $
 // $RCSfile: BufferedLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 20:43:24 $
-// $Author: wjeuerle $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:08 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -114,43 +114,43 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     MapBean mapBean;
 
     public BufferedLayer() {
-	this.setLayout(new BorderLayout());
+        this.setLayout(new BorderLayout());
 
-	// Adds the mapbean to the layer
-	MapBean mb = new BLMapBean(this);
+        // Adds the mapbean to the layer
+        MapBean mb = new BLMapBean(this);
 
-	// Add it the layer properly...
-	setMapBean(mb);
+        // Add it the layer properly...
+        setMapBean(mb);
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	hasActiveLayers = LayerUtils.booleanFromProperties(props, prefix + HasActiveLayersProperty, hasActiveLayers);
+        hasActiveLayers = LayerUtils.booleanFromProperties(props, prefix + HasActiveLayersProperty, hasActiveLayers);
 
-	Vector layersValue = PropUtils.parseSpacedMarkers(props.getProperty(prefix + LayersProperty));
-	Vector startuplayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix + VisibleLayersProperty));
+        Vector layersValue = PropUtils.parseSpacedMarkers(props.getProperty(prefix + LayersProperty));
+        Vector startuplayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix + VisibleLayersProperty));
 
-	Layer[] layers = LayerHandler.getLayers(layersValue, startuplayers, props);
+        Layer[] layers = LayerHandler.getLayers(layersValue, startuplayers, props);
 
-	for (int i = 0; i < layers.length; i++) {
-	    mapBean.add(layers[i]);
-	}
+        for (int i = 0; i < layers.length; i++) {
+            mapBean.add(layers[i]);
+        }
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
 
-	return props;
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
+        props = super.getPropertyInfo(props);
 
-	return props;
+        return props;
     }
 
     /**
@@ -160,11 +160,11 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * change between projection changes.
      */
     public void setHasActiveLayers(boolean value) {
-	hasActiveLayers = value;
+        hasActiveLayers = value;
     }
 
     public boolean getHasActiveLayers() {
-	return hasActiveLayers;
+        return hasActiveLayers;
     }
 
     /**
@@ -173,42 +173,42 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * transparency.
      */
     public void setHasTransparentBackground(boolean value) {
-	hasTransparentBackground = value;
+        hasTransparentBackground = value;
     }
 
     public boolean getHasTransparentBackground() {
-	return hasTransparentBackground;
+        return hasTransparentBackground;
     }
 
     /**
      * Remove all layers from the group.
      */
     public void clearLayers() {
-	mapBean.removeAll();
-	resetPalette();
+        mapBean.removeAll();
+        resetPalette();
     }
 
     /**
      * Add a layer to the group.
      */
     public void addLayer(Layer layer) {
-	mapBean.add(layer);
-	resetPalette();
+        mapBean.add(layer);
+        resetPalette();
     }
 
     /**
      * Remove the layer from group.
      */
     public void removeLayer(Layer layer) {
-	mapBean.remove(layer);
-	resetPalette();
+        mapBean.remove(layer);
+        resetPalette();
     }
 
     /**
      * Return if there is at least one layer assigned to the group.
      */
     public boolean hasLayers() {
-	return (mapBean.getComponentCount() > 0);
+        return (mapBean.getComponentCount() > 0);
     }
 
     /**
@@ -216,12 +216,12 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * @return a Component[].
      */
     public Component[] getLayers() {
-	return mapBean.getComponents();
+        return mapBean.getComponents();
     }
 
     public void firePaletteEvent(ComponentEvent event) {
-	super.firePaletteEvent(event);
-	hasActiveLayers = (event.getID() == ComponentEvent.COMPONENT_SHOWN);
+        super.firePaletteEvent(event);
+        hasActiveLayers = (event.getID() == ComponentEvent.COMPONENT_SHOWN);
     }
 
     /**
@@ -234,12 +234,12 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * @param mb new MapBean
      */
     public void setMapBean(MapBean mb) {
-	if (mapBean != null) {
-	    remove(mapBean);
-	}
+        if (mapBean != null) {
+            remove(mapBean);
+        }
 
-	mapBean = mb;
-	add(mapBean, BorderLayout.CENTER);
+        mapBean = mb;
+        add(mapBean, BorderLayout.CENTER);
     }
 
     /**
@@ -247,7 +247,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * @return MapBean
      */
     public MapBean getMapBean() {
-	return mapBean;
+        return mapBean;
     }
 
     /**
@@ -258,7 +258,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * @param color java.awt.Color.  
      */
     public void setBackground(Color color) {
-	setBckgrnd(color);
+        setBckgrnd(color);
     }
 
     /**
@@ -269,14 +269,14 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * @param paint java.awt.Paint
      */
     public void setBckgrnd(Paint paint) {
-	mapBean.setBckgrnd(paint);
+        mapBean.setBckgrnd(paint);
 
-	if (paint instanceof Color) {
-	    setHasTransparentBackground(((Color)paint).getAlpha() < 255);
-	} else {
-	    // then we don't know, assume it is.
-	    setHasTransparentBackground(true);
-	}
+        if (paint instanceof Color) {
+            setHasTransparentBackground(((Color)paint).getAlpha() < 255);
+        } else {
+            // then we don't know, assume it is.
+            setHasTransparentBackground(true);
+        }
     }
 
     /**
@@ -286,7 +286,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * @return color java.awt.Color  
      */
     public Color getBackground() {
-	return mapBean.getBackground();
+        return mapBean.getBackground();
     }
 
     /**
@@ -294,7 +294,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * @return java.awt.Paint
      */
     public Paint getBckgrnd(Paint paint) {
-	return mapBean.getBckgrnd();
+        return mapBean.getBckgrnd();
     }
 
     /**
@@ -303,12 +303,12 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * layers to receive it as well.
      */
     public void projectionChanged(com.bbn.openmap.event.ProjectionEvent pe) {
-	Projection proj = setProjection(pe);
+        Projection proj = setProjection(pe);
 
-	if (proj != null && mapBean instanceof BLMapBean && hasTransparentBackground) {
-	    ((BLMapBean)mapBean).wipeImage();
-	}
-	mapBean.setProjection(proj);
+        if (proj != null && mapBean instanceof BLMapBean && hasTransparentBackground) {
+            ((BLMapBean)mapBean).wipeImage();
+        }
+        mapBean.setProjection(proj);
     }
 
     /**
@@ -321,8 +321,8 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * buffer.
      */
     public void resetPalette() {
-	panel = null;
-	super.resetPalette();
+        panel = null;
+        super.resetPalette();
     }
 
     /**
@@ -332,62 +332,62 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * visibility control for the group layers.
      */
     public Component getGUI() {
-	if (panel == null) {
-	    Component[] layerComps = getLayers();
+        if (panel == null) {
+            Component[] layerComps = getLayers();
 
-	    panel = new JPanel();
-	    JTabbedPane tabs = new JTabbedPane();
+            panel = new JPanel();
+            JTabbedPane tabs = new JTabbedPane();
 
-	    JPanel bfPanel = new JPanel();
-	    bfPanel.setLayout(new BoxLayout(bfPanel, BoxLayout.Y_AXIS));
-	    bfPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // LEFT
-	    bfPanel.setAlignmentY(Component.CENTER_ALIGNMENT); // BOTTOM
-	    tabs.addTab("Layer Visibility", bfPanel);
+            JPanel bfPanel = new JPanel();
+            bfPanel.setLayout(new BoxLayout(bfPanel, BoxLayout.Y_AXIS));
+            bfPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // LEFT
+            bfPanel.setAlignmentY(Component.CENTER_ALIGNMENT); // BOTTOM
+            tabs.addTab("Layer Visibility", bfPanel);
 
-	    for (int i = 0; i < layerComps.length; i++) {
-		Layer layer = (Layer)layerComps[i];
-		Component layerGUI = layer.getGUI();
-		if (layerGUI != null) {
-		    tabs.addTab(layer.getName(), layerGUI);
-		}
+            for (int i = 0; i < layerComps.length; i++) {
+                Layer layer = (Layer)layerComps[i];
+                Component layerGUI = layer.getGUI();
+                if (layerGUI != null) {
+                    tabs.addTab(layer.getName(), layerGUI);
+                }
 
-		VisHelper layerVisibility = new VisHelper(layer);
-		bfPanel.add(layerVisibility);
-	    }
-	    panel.add(tabs);
-	}
-	return panel;
+                VisHelper layerVisibility = new VisHelper(layer);
+                bfPanel.add(layerVisibility);
+            }
+            panel.add(tabs);
+        }
+        return panel;
     }
 
     public void paint(Graphics g) {
-	if (hasLayers()) {
-	    super.paint(g);
-	}
+        if (hasLayers()) {
+            super.paint(g);
+        }
     }
 
     /**
      *  Class that helps track turning on/off layers in the buffered layer.
      */
     protected class VisHelper extends JCheckBox implements ActionListener {
-	Layer layer;
-	public VisHelper(Layer l) {
-	    super(l.getName(), l.isVisible());
-	    super.addActionListener(this);
-	    layer = l;
-	}
+        Layer layer;
+        public VisHelper(Layer l) {
+            super(l.getName(), l.isVisible());
+            super.addActionListener(this);
+            layer = l;
+        }
 
-	public void actionPerformed(ActionEvent ae) {
-	    layer.setVisible(((JCheckBox)ae.getSource()).isSelected());
-	    if (Debug.debugging("bufferedlayer")) {
-		Debug.output("Turning " + layer.getName() + (((JCheckBox)ae.getSource()).isSelected()?" on":" off"));
-	    }
+        public void actionPerformed(ActionEvent ae) {
+            layer.setVisible(((JCheckBox)ae.getSource()).isSelected());
+            if (Debug.debugging("bufferedlayer")) {
+                Debug.output("Turning " + layer.getName() + (((JCheckBox)ae.getSource()).isSelected()?" on":" off"));
+            }
 
-	    if (mapBean instanceof BLMapBean && hasTransparentBackground) {
-		((BLMapBean)mapBean).wipeImage();
-	    }
+            if (mapBean instanceof BLMapBean && hasTransparentBackground) {
+                ((BLMapBean)mapBean).wipeImage();
+            }
 
-	    layer.repaint();
-	}
+            layer.repaint();
+        }
     }
 
     /**
@@ -395,12 +395,12 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * given the projection and the graphics to paint into.
      */
     public void renderDataForProjection(Projection proj, Graphics g) {
-	Component[] layersComps = mapBean.getComponents();
-	
-	for (int i = layersComps.length - 1; i >= 0; i--) {
-	    Layer layer = (Layer) layersComps[i];
-	    layer.renderDataForProjection(proj, g);
-	}
+        Component[] layersComps = mapBean.getComponents();
+        
+        for (int i = layersComps.length - 1; i >= 0; i--) {
+            Layer layer = (Layer) layersComps[i];
+            layer.renderDataForProjection(proj, g);
+        }
     }
 
     /**
@@ -408,9 +408,9 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * background changes.  Act on if necessary.
      */
     public void propertyChange(PropertyChangeEvent pce) {
-	if (pce.getPropertyName() == MapBean.BackgroundProperty) {
-	    mapBean.setBckgrnd((Paint)pce.getNewValue());
-	}
+        if (pce.getPropertyName() == MapBean.BackgroundProperty) {
+            mapBean.setBckgrnd((Paint)pce.getNewValue());
+        }
     }
 
     /**
@@ -420,68 +420,68 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * is overridden in this class over a standard BufferedMapBean.
      */
     public class BLMapBean extends BufferedMapBean {
-	/** The layer to call back. */
-	Layer layer;
-	
-	/**
-	 * @param parent the parent layer of this MapBean.
-	 */
-	public BLMapBean(Layer parent) {
-	    super();
-	    background = OMColor.clear;
-	    layer = parent;
-	}
+        /** The layer to call back. */
+        Layer layer;
+        
+        /**
+         * @param parent the parent layer of this MapBean.
+         */
+        public BLMapBean(Layer parent) {
+            super();
+            background = OMColor.clear;
+            layer = parent;
+        }
 
-	/**
-	 * Set the buffer dirty, and call repaint on the layer.
-	 */
-	public void repaint() {
-	    setBufferDirty(true);
+        /**
+         * Set the buffer dirty, and call repaint on the layer.
+         */
+        public void repaint() {
+            setBufferDirty(true);
 
-	    if (Debug.debugging("bufferedlayer")) {
-		Debug.output("BLMapBean.repaint() has active layers = " + hasActiveLayers);
-	    }
+            if (Debug.debugging("bufferedlayer")) {
+                Debug.output("BLMapBean.repaint() has active layers = " + hasActiveLayers);
+            }
 
-	    if (hasActiveLayers && hasTransparentBackground) {
-		wipeImage();
-	    }
+            if (hasActiveLayers && hasTransparentBackground) {
+                wipeImage();
+            }
 
-	    if (layer != null) {
-		layer.repaint();
-	    }
-	}
+            if (layer != null) {
+                layer.repaint();
+            }
+        }
 
-	/**
-	 * We need this because if the background to the BufferedLayer
-	 * is clear, we need to clear out anything that was previously
-	 * there. This seems to be the only way to do it.
-	 */
-	public void wipeImage() {
-	    setBufferDirty(true);
+        /**
+         * We need this because if the background to the BufferedLayer
+         * is clear, we need to clear out anything that was previously
+         * there. This seems to be the only way to do it.
+         */
+        public void wipeImage() {
+            setBufferDirty(true);
 
-	    // Need to do some optimization for this to figure out
-	    // which is really faster, recreating a new image, or
-	    // cycling though the pixels.  Plus, the image should be
-	    // reset if the background is slighly transparent if any
-	    // layer can change between overall cleansings.
+            // Need to do some optimization for this to figure out
+            // which is really faster, recreating a new image, or
+            // cycling though the pixels.  Plus, the image should be
+            // reset if the background is slighly transparent if any
+            // layer can change between overall cleansings.
 
- 	    if (this.getBackground() == OMColor.clear) {
-		drawingBuffer = createImage(this.getWidth(), this.getHeight());
-	    }
-	}
+            if (this.getBackground() == OMColor.clear) {
+                drawingBuffer = createImage(this.getWidth(), this.getHeight());
+            }
+        }
 
-	/**
-	 * We need the buffer to be able to be transparent.
-	 */
-	public Image createImage(int width, int height) {
-	    if (Debug.debugging("bufferedlayer")) {
-		Debug.output("BLMapBean.createImage()");
-	    }
+        /**
+         * We need the buffer to be able to be transparent.
+         */
+        public Image createImage(int width, int height) {
+            if (Debug.debugging("bufferedlayer")) {
+                Debug.output("BLMapBean.createImage()");
+            }
 
-	    if (width <= 0) width = 1;
-	    if (height <= 0) height = 1;
+            if (width <= 0) width = 1;
+            if (height <= 0) height = 1;
 
-	    return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-	}
+            return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        }
     }
 }

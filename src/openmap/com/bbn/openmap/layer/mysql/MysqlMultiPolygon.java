@@ -28,19 +28,19 @@ package com.bbn.openmap.layer.mysql;
 public class MysqlMultiPolygon extends MysqlMulti {
 
     public MysqlMultiPolygon() {
-	super();
-	this.setType(this.MULTIPOLYGONTYPE);
+        super();
+        this.setType(this.MULTIPOLYGONTYPE);
     }
 
 
     public void addElement(MysqlGeometry l) {
-	if (l.getType().equals(l.POLYGONTTYPE)) {
-	    super.elements.add((MysqlPolygon) l);
-	}
+        if (l.getType().equals(l.POLYGONTTYPE)) {
+            super.elements.add((MysqlPolygon) l);
+        }
     }
 
     public MysqlGeometry getElementByIndex(int i) {
-	return (MysqlPolygon) super.elements.elementAt(i);
+        return (MysqlPolygon) super.elements.elementAt(i);
     }
 
 }

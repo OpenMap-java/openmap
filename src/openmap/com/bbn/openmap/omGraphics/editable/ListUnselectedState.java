@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/ListUnselectedState.java,v $
 // $RCSfile: ListUnselectedState.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/11/14 20:50:27 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import com.bbn.openmap.util.Debug;
 public class ListUnselectedState extends GraphicUnselectedState {
 
     public ListUnselectedState(EditableOMGraphic eomg) {
-	super(eomg);
+        super(eomg);
     }
 
     /**
@@ -44,42 +44,42 @@ public class ListUnselectedState extends GraphicUnselectedState {
      * changed to edit mode.
      */
     public boolean mousePressed(MouseEvent e){ 
-	Debug.message("eomg", "ListStateMachine|unselected state|mousePressed");
-	GrabPoint mp = graphic.getMovingPoint(e);
+        Debug.message("eomg", "ListStateMachine|unselected state|mousePressed");
+        GrabPoint mp = graphic.getMovingPoint(e);
 
-	if (mp != null) {
-	    // Else, set the moving point, and go to edit mode.  If
-	    // the mouse is released, we'll consider ourselves
-	    // unselected again.
-	    graphic.getStateMachine().setEdit();
-	    graphic.fireEvent(EOMGCursors.EDIT, "");
-	    graphic.redraw(e, true);
-	}
-	return getMapMouseListenerResponse();
+        if (mp != null) {
+            // Else, set the moving point, and go to edit mode.  If
+            // the mouse is released, we'll consider ourselves
+            // unselected again.
+            graphic.getStateMachine().setEdit();
+            graphic.fireEvent(EOMGCursors.EDIT, "");
+            graphic.redraw(e, true);
+        }
+        return getMapMouseListenerResponse();
     }
 
     public boolean mouseReleased(MouseEvent e) {
-	Debug.message("eomg", "ListStateMachine|unselected state|mouseReleased");
-	GrabPoint mp = graphic.getMovingPoint(e);
+        Debug.message("eomg", "ListStateMachine|unselected state|mouseReleased");
+        GrabPoint mp = graphic.getMovingPoint(e);
 
-	if (mp != null) {
-	    graphic.getStateMachine().setSelected();
-	    graphic.fireEvent(EOMGCursors.EDIT, "");
-	    graphic.setMovingPoint(null);
-	}
-	return getMapMouseListenerResponse();
+        if (mp != null) {
+            graphic.getStateMachine().setSelected();
+            graphic.fireEvent(EOMGCursors.EDIT, "");
+            graphic.setMovingPoint(null);
+        }
+        return getMapMouseListenerResponse();
     }
 
     public boolean mouseMoved(MouseEvent e) {
-	Debug.message("eomgdetail", "ListStateMachine|unselected state|mouseMoved");
+        Debug.message("eomgdetail", "ListStateMachine|unselected state|mouseMoved");
 
-	GrabPoint mp = graphic.getMovingPoint(e);
-	if (mp != null) {
-	    graphic.fireEvent(EOMGCursors.EDIT, "Click to select the graphic.");
-	} else {
-	    graphic.fireEvent(EOMGCursors.DEFAULT, "");
-	}
-	return false;
+        GrabPoint mp = graphic.getMovingPoint(e);
+        if (mp != null) {
+            graphic.fireEvent(EOMGCursors.EDIT, "Click to select the graphic.");
+        } else {
+            graphic.fireEvent(EOMGCursors.DEFAULT, "");
+        }
+        return false;
     }
 }
 

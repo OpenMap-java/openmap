@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/DrawingTool.java,v $
 // $RCSfile: DrawingTool.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/18 00:42:32 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -86,7 +86,7 @@ public interface DrawingTool {
      * be fulfilled.  
      */
     public OMGraphic create(String classname, GraphicAttributes ga, 
-			    DrawingToolRequestor requestor);
+                            DrawingToolRequestor requestor);
 
     /** 
      * Same as create(String, GraphicAttributes, DrawingToolRequestor),
@@ -105,7 +105,7 @@ public interface DrawingTool {
      * be fulfilled.  
      */
     public OMGraphic create(String classname, GraphicAttributes ga, 
-			    DrawingToolRequestor requestor, boolean showGUI);
+                            DrawingToolRequestor requestor, boolean showGUI);
 
     /**
      * Given an OMGraphic, set things up so that the OMGraphic will be
@@ -141,7 +141,7 @@ public interface DrawingTool {
      * be fulfilled.  
      */
     public OMGraphic edit(OMGraphic g, DrawingToolRequestor requestor, 
-			  boolean showGUI);
+                          boolean showGUI);
 
     /**
      * Given an EditableOMGraphic, direct events to the
@@ -156,7 +156,7 @@ public interface DrawingTool {
      * be fulfilled.  
      */
     public OMGraphic edit(EditableOMGraphic eomg, 
-			  DrawingToolRequestor requestor);
+                          DrawingToolRequestor requestor);
 
     /**
      * A slightly different edit method, where the EditableOMGraphic
@@ -170,8 +170,8 @@ public interface DrawingTool {
      * @return OMGraphic being modified.
      */
     public OMGraphic edit(OMGraphic g, 
-			  DrawingToolRequestor requestor, 
-			  MouseEvent e);
+                          DrawingToolRequestor requestor, 
+                          MouseEvent e);
 
     /**
      * A slightly different edit method, where the EditableOMGraphic
@@ -186,8 +186,8 @@ public interface DrawingTool {
      * EditableOMGraphic.  
      */
     public OMGraphic edit(EditableOMGraphic eomg, 
-			  DrawingToolRequestor requestor,
-			  MouseEvent e);
+                          DrawingToolRequestor requestor,
+                          MouseEvent e);
 
     /**
      * Check to see if the class type can be created/edited by the

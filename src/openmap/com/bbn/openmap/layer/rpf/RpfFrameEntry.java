@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrameEntry.java,v $
 // $RCSfile: RpfFrameEntry.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,18 +54,18 @@ public class RpfFrameEntry {
     public long diskspace;
 
     public RpfFrameEntry(){
-	exists = false;
-	directory = null;
+        exists = false;
+        directory = null;
     }
     
     public String toString(){
-	StringBuffer s = new StringBuffer();
-	s.append("File Name: " + filename + "\n");
-	s.append("In Directory: " + directory + "\n");
-	s.append("Is Located At: " + framePath + "\n");
-	s.append("Exists: " + exists + "\n");
-	s.append("Size: " + diskspace);
-	return s.toString();
+        StringBuffer s = new StringBuffer();
+        s.append("File Name: " + filename + "\n");
+        s.append("In Directory: " + directory + "\n");
+        s.append("Is Located At: " + framePath + "\n");
+        s.append("Exists: " + exists + "\n");
+        s.append("Size: " + diskspace);
+        return s.toString();
     }
 }
 

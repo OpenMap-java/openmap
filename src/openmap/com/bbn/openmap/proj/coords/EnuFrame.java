@@ -32,9 +32,9 @@ public class EnuFrame {
      * x,y,z are all set to zero.
      */
     public EnuFrame () {
-    	x = 0.0f;
-    	y = 0.0f;
-    	z = 0.0f;
+        x = 0.0f;
+        y = 0.0f;
+        z = 0.0f;
 
     }
 
@@ -45,24 +45,24 @@ public class EnuFrame {
      * @param ecefv representing an ecef vector.
      */
     public EnuFrame(double[] ecefv, LatLonPoint llpt) {
-    	double lat_ = (double)llpt.getLatitude();
-    	double lon_ = (double)llpt.getLongitude();
-    	
-    	double latitude = ProjMath.degToRad(lat_);
-    	double longitude = ProjMath.degToRad(lon_);
-    	
-    	double ecefVector[] = new double[3];
-    	double enuVector[] = new double[3];
-    	
-    	ecefVector[0] = ecefv[0];
-    	ecefVector[1] = ecefv[1];
-    	ecefVector[2] = ecefv[2];
-    	
-    	ecef2enu(ecefVector, latitude, longitude, enuVector);
-    	
-    	this.x = (float)enuVector[0];
-    	this.y = (float)enuVector[1];
-    	this.z = (float)enuVector[2];
+        double lat_ = (double)llpt.getLatitude();
+        double lon_ = (double)llpt.getLongitude();
+        
+        double latitude = ProjMath.degToRad(lat_);
+        double longitude = ProjMath.degToRad(lon_);
+        
+        double ecefVector[] = new double[3];
+        double enuVector[] = new double[3];
+        
+        ecefVector[0] = ecefv[0];
+        ecefVector[1] = ecefv[1];
+        ecefVector[2] = ecefv[2];
+        
+        ecef2enu(ecefVector, latitude, longitude, enuVector);
+        
+        this.x = (float)enuVector[0];
+        this.y = (float)enuVector[1];
+        this.z = (float)enuVector[2];
        
     }
     
@@ -74,21 +74,21 @@ public class EnuFrame {
      */
     public double[] toGeocentricFrame(LatLonPoint llpt) {
         double lat_ = (double)llpt.getLatitude();
-    	double lon_ = (double)llpt.getLongitude();
-    	
-    	double latitude = ProjMath.degToRad(lat_);
-    	double longitude = ProjMath.degToRad(lon_);
-    	
-    	double enuVector[] = new double[3];	
-    	double ecefVector[] = new double[3];
-    	
-    	enuVector[0] = this.x;
-    	enuVector[1] = this.y;
-    	enuVector[2] = this.z;
-    	
-    	enu2ecef(ecefVector, latitude, longitude, enuVector);
-    	
-    	return ecefVector;
+        double lon_ = (double)llpt.getLongitude();
+        
+        double latitude = ProjMath.degToRad(lat_);
+        double longitude = ProjMath.degToRad(lon_);
+        
+        double enuVector[] = new double[3];     
+        double ecefVector[] = new double[3];
+        
+        enuVector[0] = this.x;
+        enuVector[1] = this.y;
+        enuVector[2] = this.z;
+        
+        enu2ecef(ecefVector, latitude, longitude, enuVector);
+        
+        return ecefVector;
     }
 
     /**
@@ -120,11 +120,11 @@ public class EnuFrame {
         temp[2][2] = slat;
         
         for(int j=0; j<3; ++j) {
-	    enuVector[j] = 0.0;
-	    for(int i=0; i<3; i++ ){
-		enuVector[j] += temp[j][i] * ecefVector[i]; 
+            enuVector[j] = 0.0;
+            for(int i=0; i<3; i++ ){
+                enuVector[j] += temp[j][i] * ecefVector[i]; 
             }
-	}	    
+        }           
     }
 
     /**
@@ -156,14 +156,14 @@ public class EnuFrame {
         temp[2][2] = slat;
         
         for(int j=0; j<3; ++j) {
-	    ecefVector[j] = 0.0;
-	    for (int i=0; i<3; i++ ) {
-		ecefVector[j] += temp[j][i] * enuVector[i];
+            ecefVector[j] = 0.0;
+            for (int i=0; i<3; i++ ) {
+                ecefVector[j] += temp[j][i] * enuVector[i];
             }
-	}
-	
+        }
+        
     }
-	 
+         
     /**
      * Set x.
      * @param pX in meters.
@@ -234,7 +234,7 @@ public class EnuFrame {
      */
     public void toDirectionVector(double degrees, double latitude, double longitude, double ecefVector[]) {
    
-    	
+        
         double radians = Math.toRadians(degrees) - 360;
         double east = Math.sin(radians);
         double north = Math.cos(radians);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PolyUndefinedState.java,v $
 // $RCSfile: PolyUndefinedState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import com.bbn.openmap.util.Debug;
 public class PolyUndefinedState extends GraphicUndefinedState {
 
     public PolyUndefinedState(EditableOMPoly eomp) {
-	super(eomp);
+        super(eomp);
     }
 
     int initX;
@@ -46,23 +46,23 @@ public class PolyUndefinedState extends GraphicUndefinedState {
      * set the mode to poly edit.  
      */
     public boolean mousePressed(MouseEvent e){ 
-	if (Debug.debugging("eomg")) {
-	    Debug.output("PolyStateMachine|undefined state|mousePressed = " + 
-			 graphic.getGraphic().getRenderType());
-	}
-	
-	// Need to set these up for the polygon
-	if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
-	    graphic.getStateMachine().setOffsetNeeded(true);
-	    Debug.message("eoml", "PolyStateMachine|undefined state| *offset needed*");
-	}
+        if (Debug.debugging("eomg")) {
+            Debug.output("PolyStateMachine|undefined state|mousePressed = " + 
+                         graphic.getGraphic().getRenderType());
+        }
+        
+        // Need to set these up for the polygon
+        if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
+            graphic.getStateMachine().setOffsetNeeded(true);
+            Debug.message("eoml", "PolyStateMachine|undefined state| *offset needed*");
+        }
 
-	initX = e.getX();
-	initY = e.getY();
+        initX = e.getX();
+        initY = e.getY();
 
-	((EditableOMPoly)graphic).addPoint(initX, initY);
-	
-	return getMapMouseListenerResponse();
+        ((EditableOMPoly)graphic).addPoint(initX, initY);
+        
+        return getMapMouseListenerResponse();
     }
 
     /**
@@ -72,31 +72,31 @@ public class PolyUndefinedState extends GraphicUndefinedState {
      * and go to edit mode.
      */
     public boolean mouseReleased(MouseEvent e) {
-	Debug.message("eomg", "GraphicStateMachine|undefined state|mouseReleased");
+        Debug.message("eomg", "GraphicStateMachine|undefined state|mouseReleased");
 
-	((EditableOMPoly)graphic).addMovingPoint(e.getX(), e.getY());
-	((PolyStateMachine)graphic.getStateMachine()).setAddPoint();
+        ((EditableOMPoly)graphic).addMovingPoint(e.getX(), e.getY());
+        ((PolyStateMachine)graphic.getStateMachine()).setAddPoint();
 
-	graphic.redraw(e);
-	return false;
+        graphic.redraw(e);
+        return false;
     }
 
     public boolean mouseDragged(MouseEvent e) {
-	Debug.message("eomgdetail", 
-		      "PolyStateMachine|undefined state|mouseDragged");
+        Debug.message("eomgdetail", 
+                      "PolyStateMachine|undefined state|mouseDragged");
 
-	// Set another point if the mouse was dragged a little
-	// before releasing.  Assume that the motion can be a click
-	// and mouseMove, or a press and mouseDrag.  Either way, we
-	// want the number of nodes to be the right one.
-	if ((Math.abs(e.getX() - initX) > 2) ||
-	    (Math.abs(e.getY() - initY) > 2)) {
+        // Set another point if the mouse was dragged a little
+        // before releasing.  Assume that the motion can be a click
+        // and mouseMove, or a press and mouseDrag.  Either way, we
+        // want the number of nodes to be the right one.
+        if ((Math.abs(e.getX() - initX) > 2) ||
+            (Math.abs(e.getY() - initY) > 2)) {
 
-	    ((EditableOMPoly)graphic).addMovingPoint(e.getX(), e.getY());
-	    ((PolyStateMachine)graphic.getStateMachine()).setAddPoint();
-	}
+            ((EditableOMPoly)graphic).addMovingPoint(e.getX(), e.getY());
+            ((PolyStateMachine)graphic.getStateMachine()).setAddPoint();
+        }
 
-	graphic.redraw(e);
-	return false;
+        graphic.redraw(e);
+        return false;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkRectangle.java,v $
 // $RCSfile: LinkRectangle.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,11 +50,11 @@ public class LinkRectangle implements LinkGraphicConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public static void write(float lt1, float ln1, 
-			     float lt2, float ln2, 
-			     int lType, LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException {
-	LinkRectangle.write (lt1, ln1, lt2, ln2, lType, -1, properties, dos);
+                             float lt2, float ln2, 
+                             int lType, LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException {
+        LinkRectangle.write (lt1, ln1, lt2, ln2, lType, -1, properties, dos);
     }
 
     /**
@@ -72,23 +72,23 @@ public class LinkRectangle implements LinkGraphicConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public static void write(float lt1, float ln1, 
-			     float lt2, float ln2, 
-			     int lType, int nsegs, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException {
-	
-	dos.write(Link.RECTANGLE_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_RECTANGLE);
-	dos.writeInt(RENDERTYPE_LATLON);
-	dos.writeInt(lType);
-	dos.writeFloat(lt1);
-	dos.writeFloat(ln1);
-	dos.writeFloat(lt2);
-	dos.writeFloat(ln2);
-	
-	dos.writeInt(nsegs);
-	properties.write(dos);
+                             float lt2, float ln2, 
+                             int lType, int nsegs, 
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException {
+        
+        dos.write(Link.RECTANGLE_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_RECTANGLE);
+        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeInt(lType);
+        dos.writeFloat(lt1);
+        dos.writeFloat(ln1);
+        dos.writeFloat(lt2);
+        dos.writeFloat(ln2);
+        
+        dos.writeInt(nsegs);
+        properties.write(dos);
     }
 
     /**
@@ -108,18 +108,18 @@ public class LinkRectangle implements LinkGraphicConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public static void write(int px1, int py1, int px2, int py2, 
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException { 
-	
-	dos.write(Link.RECTANGLE_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_RECTANGLE);
-	dos.writeInt(RENDERTYPE_XY);
-	dos.writeInt(px1);
-	dos.writeInt(py1);
-	dos.writeInt(px2);
-	dos.writeInt(py2);
-	properties.write(dos);
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException { 
+        
+        dos.write(Link.RECTANGLE_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_RECTANGLE);
+        dos.writeInt(RENDERTYPE_XY);
+        dos.writeInt(px1);
+        dos.writeInt(py1);
+        dos.writeInt(px2);
+        dos.writeInt(py2);
+        properties.write(dos);
     }
 
     /**
@@ -142,52 +142,52 @@ public class LinkRectangle implements LinkGraphicConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public static void write(float lt1, float ln1, 
-			     int px1, int py1, int px2, int py2, 
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException { 
+                             int px1, int py1, int px2, int py2, 
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException { 
 
-	dos.write(Link.RECTANGLE_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_RECTANGLE);
-	dos.writeInt(RENDERTYPE_OFFSET);
-	dos.writeFloat(lt1);
-	dos.writeFloat(ln1);
-	dos.writeInt(px1);
-	dos.writeInt(py1);
-	dos.writeInt(px2);
-	dos.writeInt(py2);
-	properties.write(dos);
+        dos.write(Link.RECTANGLE_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_RECTANGLE);
+        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeFloat(lt1);
+        dos.writeFloat(ln1);
+        dos.writeInt(px1);
+        dos.writeInt(py1);
+        dos.writeInt(px2);
+        dos.writeInt(py2);
+        properties.write(dos);
     }
 
     /**
      * Write an OMRect to the link.
      */
     public static void write(OMRect rect, Link link, LinkProperties props) 
-	throws IOException {
+        throws IOException {
 
-	switch (rect.getRenderType()) {
-	case OMRect.RENDERTYPE_LATLON:
-	    LinkRectangle.write(rect.getNorthLat(),
-				rect.getWestLon(),
-				rect.getSouthLat(),
-				rect.getEastLon(), 
-				rect.getLineType(), props, link.dos);
-	    break;
-	case OMRect.RENDERTYPE_XY:
-	    LinkRectangle.write(rect.getLeft(), rect.getTop(),
-				rect.getRight(), rect.getBottom(), 
-				props, link.dos);
-	    break;
-	case OMRect.RENDERTYPE_OFFSET:
-	    LinkRectangle.write(rect.getNorthLat(), 
-				rect.getWestLon(),
-				rect.getLeft(), rect.getTop(),
-				rect.getRight(), rect.getBottom(),
-				props, link.dos);
-	    break;
-	default:
-	    Debug.error("LinkRectangle.write: rect rendertype unknown.");
-	}
+        switch (rect.getRenderType()) {
+        case OMRect.RENDERTYPE_LATLON:
+            LinkRectangle.write(rect.getNorthLat(),
+                                rect.getWestLon(),
+                                rect.getSouthLat(),
+                                rect.getEastLon(), 
+                                rect.getLineType(), props, link.dos);
+            break;
+        case OMRect.RENDERTYPE_XY:
+            LinkRectangle.write(rect.getLeft(), rect.getTop(),
+                                rect.getRight(), rect.getBottom(), 
+                                props, link.dos);
+            break;
+        case OMRect.RENDERTYPE_OFFSET:
+            LinkRectangle.write(rect.getNorthLat(), 
+                                rect.getWestLon(),
+                                rect.getLeft(), rect.getTop(),
+                                rect.getRight(), rect.getBottom(),
+                                props, link.dos);
+            break;
+        default:
+            Debug.error("LinkRectangle.write: rect rendertype unknown.");
+        }
     }
 
     /** 
@@ -200,53 +200,53 @@ public class LinkRectangle implements LinkGraphicConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.omGraphics.OMRect 
      */
     public static OMRect read(DataInputStream dis)
-	throws IOException {
+        throws IOException {
 
-	OMRect rect = null;
-	int x1, y1, x2, y2;
-	float lt1, ln1, lt2, ln2;
+        OMRect rect = null;
+        int x1, y1, x2, y2;
+        float lt1, ln1, lt2, ln2;
 
-	int renderType = dis.readInt();
-	
-	switch (renderType) {
-	case RENDERTYPE_LATLON:
-	    int lineType = dis.readInt();
-	    lt1 = dis.readFloat();
-	    ln1 = dis.readFloat();
-	    lt2 = dis.readFloat();
-	    ln2 = dis.readFloat();
-	    int nsegs = dis.readInt();
-	    
-	    rect = new OMRect(lt1, ln1, lt2, ln2, lineType, nsegs);
-	    break;
-	case RENDERTYPE_XY:
-	    x1 = dis.readInt();
-	    y1 = dis.readInt();
-	    x2 = dis.readInt();
-	    y2 = dis.readInt();
-	    
-	    rect = new OMRect(x1, y1, x2, y2);
-	    break;
-	case RENDERTYPE_OFFSET:
-	    lt1 = dis.readFloat();
-	    ln1 = dis.readFloat();
-	    
-	    x1 = dis.readInt();
-	    y1 = dis.readInt();
-	    x2 = dis.readInt();
-	    y2 = dis.readInt();
-	    
-	    rect = new OMRect(lt1, ln1, x1, y1, x2, y2);
-	    break;
-	default:
-	}
+        int renderType = dis.readInt();
+        
+        switch (renderType) {
+        case RENDERTYPE_LATLON:
+            int lineType = dis.readInt();
+            lt1 = dis.readFloat();
+            ln1 = dis.readFloat();
+            lt2 = dis.readFloat();
+            ln2 = dis.readFloat();
+            int nsegs = dis.readInt();
+            
+            rect = new OMRect(lt1, ln1, lt2, ln2, lineType, nsegs);
+            break;
+        case RENDERTYPE_XY:
+            x1 = dis.readInt();
+            y1 = dis.readInt();
+            x2 = dis.readInt();
+            y2 = dis.readInt();
+            
+            rect = new OMRect(x1, y1, x2, y2);
+            break;
+        case RENDERTYPE_OFFSET:
+            lt1 = dis.readFloat();
+            ln1 = dis.readFloat();
+            
+            x1 = dis.readInt();
+            y1 = dis.readInt();
+            x2 = dis.readInt();
+            y2 = dis.readInt();
+            
+            rect = new OMRect(lt1, ln1, x1, y1, x2, y2);
+            break;
+        default:
+        }
 
-	LinkProperties properties = new LinkProperties(dis);
-	if (rect != null) {
-	    properties.setProperties(rect);
-	}
-	
-	return rect;
+        LinkProperties properties = new LinkProperties(dis);
+        if (rect != null) {
+            properties.setProperties(rect);
+        }
+        
+        return rect;
     }
 
 }

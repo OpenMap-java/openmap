@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseAdapter.java,v $
 // $RCSfile: MapMouseAdapter.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,7 +38,7 @@ public class MapMouseAdapter implements MapMouseListener {
      * interested in.
      */
     public String[] getMouseModeServiceList(){
-	return null;
+        return null;
     }
 
     // Mouse Listener events
@@ -50,7 +50,7 @@ public class MapMouseAdapter implements MapMouseListener {
      * @return false
      */
     public boolean mousePressed(MouseEvent e) { 
-	return false; // did not handle the event
+        return false; // did not handle the event
     }
 
     /**
@@ -59,7 +59,7 @@ public class MapMouseAdapter implements MapMouseListener {
      * @return false
      */
     public boolean mouseReleased(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -68,7 +68,7 @@ public class MapMouseAdapter implements MapMouseListener {
      * @return false
      */
     public boolean mouseClicked(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -95,7 +95,7 @@ public class MapMouseAdapter implements MapMouseListener {
      * @return false
      */
     public boolean mouseDragged(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -105,7 +105,7 @@ public class MapMouseAdapter implements MapMouseListener {
      * @return false
      */
     public boolean mouseMoved(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**

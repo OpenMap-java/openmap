@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/HorizontalGrabPoint.java,v $
 // $RCSfile: HorizontalGrabPoint.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,7 +29,7 @@ package com.bbn.openmap.omGraphics;
 public class HorizontalGrabPoint extends GrabPoint {
 
     public HorizontalGrabPoint(int x, int y) {
-	super(x, y);
+        super(x, y);
     }
 
     /**
@@ -37,7 +37,7 @@ public class HorizontalGrabPoint extends GrabPoint {
      * HorizontalGrabPoint.  
      */
     public void set(int x, int y) {
-	setX(x);
+        setX(x);
     }
 
     /**
@@ -49,11 +49,11 @@ public class HorizontalGrabPoint extends GrabPoint {
      * ignored.
      */
     public void set(int x, int y, boolean override) {
-	if (override) {
-	    super.set(x, y);
-	} else {
-	    setX(x);
-	}
+        if (override) {
+            super.set(x, y);
+        } else {
+            setX(x);
+        }
     }
 
     /**

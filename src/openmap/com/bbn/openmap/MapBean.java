@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/01/24 03:31:35 $
+// $Revision: 1.9 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -684,13 +684,13 @@ public class MapBean extends JComponent
 
         // If the new layer is in the queue to have removed() called
         // on it take it off the queue, and don't add it to the
-	// added() queue (it doesn't know that it was removed, yet).
-	// Otherwise, add it to the queue to have added() called on
-	// it.
- 	if (!removedLayers.removeElement(e.getChild())) {
- 	    addedLayers.addElement(e.getChild());
-	}
-	changeLayers(e);
+        // added() queue (it doesn't know that it was removed, yet).
+        // Otherwise, add it to the queue to have added() called on
+        // it.
+        if (!removedLayers.removeElement(e.getChild())) {
+            addedLayers.addElement(e.getChild());
+        }
+        changeLayers(e);
     }
 
     /**
@@ -707,11 +707,11 @@ public class MapBean extends JComponent
      * @see com.bbn.openmap.MapBean#purgeAndNotifyRemovedLayers
      */
     public void componentRemoved(ContainerEvent e) {
-	// Blindly cast.  addImpl has already checked to be
-	// sure the child is a Layer.
-	removeProjectionListener((Layer)e.getChild());
-	removedLayers.addElement(e.getChild());
-	changeLayers(e);
+        // Blindly cast.  addImpl has already checked to be
+        // sure the child is a Layer.
+        removeProjectionListener((Layer)e.getChild());
+        removedLayers.addElement(e.getChild());
+        changeLayers(e);
     }
 
     /**
@@ -725,23 +725,23 @@ public class MapBean extends JComponent
         // Container Changes can be disabled to speed adding/removing
         // multiple layers
         if (!doContainerChange) {
-	    return;
-	}
-	Component[] comps = this.getComponents();
-	int ncomponents = comps.length;
-	Layer[] newLayers = new Layer[ncomponents];
-	System.arraycopy(comps, 0, newLayers, 0, ncomponents);
-	if (Debug.debugging("mapbean"))
-	    debugmsg("changeLayers() - firing change");
-	firePropertyChange(LayersProperty, currentLayers, newLayers);
+            return;
+        }
+        Component[] comps = this.getComponents();
+        int ncomponents = comps.length;
+        Layer[] newLayers = new Layer[ncomponents];
+        System.arraycopy(comps, 0, newLayers, 0, ncomponents);
+        if (Debug.debugging("mapbean"))
+            debugmsg("changeLayers() - firing change");
+        firePropertyChange(LayersProperty, currentLayers, newLayers);
 
-	// Tell the new layers that they have been added
-	for (int i=0; i<addedLayers.size(); i++) {
-	    ((Layer)addedLayers.elementAt(i)).added(this);
-	}
-	addedLayers.removeAllElements();
+        // Tell the new layers that they have been added
+        for (int i=0; i<addedLayers.size(); i++) {
+            ((Layer)addedLayers.elementAt(i)).added(this);
+        }
+        addedLayers.removeAllElements();
 
-	currentLayers = newLayers;
+        currentLayers = newLayers;
 
     }
 
@@ -755,10 +755,10 @@ public class MapBean extends JComponent
      * @param e ProjectionEvent
      */
     public void projectionChanged(ProjectionEvent e) {
-	Projection newProj = e.getProjection();
-	if (! projection.equals(newProj)) {
-	    setProjection(newProj);
-	}
+        Projection newProj = e.getProjection();
+        if (! projection.equals(newProj)) {
+            setProjection(newProj);
+        }
     }
 
     /**
@@ -766,8 +766,8 @@ public class MapBean extends JComponent
      * @param newCursor Cursor
      */
     public void setCursor(Cursor newCursor){
-	firePropertyChange(CursorProperty, this.getCursor(), newCursor);
-	super.setCursor(newCursor);
+        firePropertyChange(CursorProperty, this.getCursor(), newCursor);
+        super.setCursor(newCursor);
     }
 
     /**
@@ -776,21 +776,21 @@ public class MapBean extends JComponent
      * with the initial version of the Layer and Cursor properties. 
      */
     public void addPropertyChangeListener(PropertyChangeListener pcl){
-	super.addPropertyChangeListener(pcl);
-	pcl.propertyChange(new PropertyChangeEvent(this, LayersProperty, 
-						   currentLayers, currentLayers));
-	pcl.propertyChange(new PropertyChangeEvent(this, CursorProperty, 
-						   this.getCursor(), this.getCursor()));
-	pcl.propertyChange(new PropertyChangeEvent(this, BackgroundProperty,
-						   this.getBckgrnd(), 
-						   this.getBckgrnd()));
+        super.addPropertyChangeListener(pcl);
+        pcl.propertyChange(new PropertyChangeEvent(this, LayersProperty, 
+                                                   currentLayers, currentLayers));
+        pcl.propertyChange(new PropertyChangeEvent(this, CursorProperty, 
+                                                   this.getCursor(), this.getCursor()));
+        pcl.propertyChange(new PropertyChangeEvent(this, BackgroundProperty,
+                                                   this.getBckgrnd(), 
+                                                   this.getBckgrnd()));
     }
 
     protected final void debugmsg(String msg) {
-	Debug.output(this.toString() + 
-		     (DEBUG_TIMESTAMP?(" [" + System.currentTimeMillis() + "]"):"") +
-		     (DEBUG_THREAD?(" [" + Thread.currentThread() + "]"):"") +
-		     ": " + msg);
+        Debug.output(this.toString() + 
+                     (DEBUG_TIMESTAMP?(" [" + System.currentTimeMillis() + "]"):"") +
+                     (DEBUG_THREAD?(" [" + Thread.currentThread() + "]"):"") +
+                     ": " + msg);
     }
 
     /**
@@ -799,12 +799,12 @@ public class MapBean extends JComponent
      * border is painted.
      */
     public void paint(Graphics g) {
-	if (getComponentCount() == 0 && projection != null) {
-	    projection.drawBackground((Graphics2D)g, getBckgrnd());
-	    paintBorder(g);
-	} else {
-	    super.paint(g);
-	}
+        if (getComponentCount() == 0 && projection != null) {
+            projection.drawBackground((Graphics2D)g, getBckgrnd());
+            paintBorder(g);
+        } else {
+            super.paint(g);
+        }
     }
 
     /**
@@ -812,9 +812,9 @@ public class MapBean extends JComponent
      * are notified and the border is painted over the children.
      */
     public void paintChildren(Graphics g) {
-	paintChildren(g, null);
+        paintChildren(g, null);
     }
-	
+        
     /**
      * Same as paintChildren, but allows you to set a clipping area
      * to paint.  Be careful with this, because if the clipping area
@@ -823,27 +823,27 @@ public class MapBean extends JComponent
      */
     public void paintChildren(Graphics g, Rectangle clip) {
 
-	g = getMapBeanRepaintPolicy().modifyGraphicsForPainting(g);
+        g = getMapBeanRepaintPolicy().modifyGraphicsForPainting(g);
 
-	if (clip != null) {
-	    g.setClip(clip);
-	} else {
-	    // Had to do this to make the DrawingTool happy, or
-	    // anything else swing-like that wanted to be around or on
-	    // top of the MapBean.
-  	    g.setClip(0, 0, getWidth(), getHeight());
-	}
+        if (clip != null) {
+            g.setClip(clip);
+        } else {
+            // Had to do this to make the DrawingTool happy, or
+            // anything else swing-like that wanted to be around or on
+            // top of the MapBean.
+            g.setClip(0, 0, getWidth(), getHeight());
+        }
 
-	projection.drawBackground((Graphics2D)g, getBckgrnd());
-	super.paintChildren(g);
+        projection.drawBackground((Graphics2D)g, getBckgrnd());
+        super.paintChildren(g);
 
-	// Take care of the PaintListeners...
-	if (painters != null) {
-	    painters.paint(g);
-	}
+        // Take care of the PaintListeners...
+        if (painters != null) {
+            painters.paint(g);
+        }
 
-	// border gets overwritten accidentally, so redraw it now    
-	paintBorder(g);
+        // border gets overwritten accidentally, so redraw it now    
+        paintBorder(g);
     }
 
     /**
@@ -853,12 +853,12 @@ public class MapBean extends JComponent
      * around.
      */
     public void paintChildrenWithBorder(Graphics g, boolean drawBorder) {
-	projection.drawBackground((Graphics2D)g, getBckgrnd());
-	if (drawBorder) {
-	    paintChildren(g);
-	} else {
-	    super.paintChildren(g);
-	}
+        projection.drawBackground((Graphics2D)g, getBckgrnd());
+        if (drawBorder) {
+            paintChildren(g);
+        } else {
+            super.paintChildren(g);
+        }
     }
 
     /**
@@ -866,10 +866,10 @@ public class MapBean extends JComponent
      * @param l PaintListener
      */
     public synchronized void addPaintListener(PaintListener l) {
-	if (painters == null) {
-	    painters = new PaintListenerSupport(this);
-	}
-	painters.addPaintListener(l);
+        if (painters == null) {
+            painters = new PaintListenerSupport(this);
+        }
+        painters.addPaintListener(l);
     }
 
     /**
@@ -877,16 +877,16 @@ public class MapBean extends JComponent
      * @param l PaintListener
      */
     public synchronized void removePaintListener(PaintListener l) {
-	if (painters == null) {
-	    return;
-	}
-	painters.removePaintListener(l);
+        if (painters == null) {
+            return;
+        }
+        painters.removePaintListener(l);
 
-	// Should we get rid of the support if there are no painters?
-	// The support will get created when a listener is added.
-	if (painters.size() == 0) {
-	    painters = null;
-	}
+        // Should we get rid of the support if there are no painters?
+        // The support will get created when a listener is added.
+        if (painters.size() == 0) {
+            painters = null;
+        }
     }
 
     //------------------------------------------------------------
@@ -901,81 +901,81 @@ public class MapBean extends JComponent
      */
     public void setLayers(LayerEvent evt) {
         Layer[] layers = evt.getLayers();
-	int type = evt.getType();
+        int type = evt.getType();
 
-	if (type == LayerEvent.ALL) {
-	    // Don't care about these at all...
-	    return;
-	}
+        if (type == LayerEvent.ALL) {
+            // Don't care about these at all...
+            return;
+        }
 
-	// @HACK is this cool?:
-	if (layers == null) {
-	    System.err.println("MapBean.setLayers(): layers is null!");
-	    return;
-	}
+        // @HACK is this cool?:
+        if (layers == null) {
+            System.err.println("MapBean.setLayers(): layers is null!");
+            return;
+        }
 
-	boolean oldChange = getDoContainerChange();
-	setDoContainerChange(false);
+        boolean oldChange = getDoContainerChange();
+        setDoContainerChange(false);
 
-	// use LayerEvent.REPLACE when you want to remove all current layers
-	// add a new set
-	if (type==LayerEvent.REPLACE) {
-	    if (Debug.debugging("mapbean")) {
-		debugmsg("Replacing all layers");
-	    }
-  	    removeAll();
-	    
-	    for (int i=0; i<layers.length; i++) {
-		// @HACK is this cool?:
-		if (layers[i] == null) {
-		    System.err.println("MapBean.setLayers(): layer " + 
-				       i + " is null");
-		    continue;
-		}
+        // use LayerEvent.REPLACE when you want to remove all current layers
+        // add a new set
+        if (type==LayerEvent.REPLACE) {
+            if (Debug.debugging("mapbean")) {
+                debugmsg("Replacing all layers");
+            }
+            removeAll();
+            
+            for (int i=0; i<layers.length; i++) {
+                // @HACK is this cool?:
+                if (layers[i] == null) {
+                    System.err.println("MapBean.setLayers(): layer " + 
+                                       i + " is null");
+                    continue;
+                }
 
-		if (Debug.debugging("mapbean")) {
-		    debugmsg("Adding layer[" +i+"]= " +layers[i].getName());
-		}
-		add(layers[i]);
-		layers[i].setVisible(true);
-	    }
+                if (Debug.debugging("mapbean")) {
+                    debugmsg("Adding layer[" +i+"]= " +layers[i].getName());
+                }
+                add(layers[i]);
+                layers[i].setVisible(true);
+            }
 
-	}
+        }
 
-	// use LayerEvent.ADD when adding and/or reshuffling layers
-	else if (type == LayerEvent.ADD) {
-	    if (Debug.debugging("mapbean")) {
-		debugmsg("Adding new layers");
-	    }
-	    for (int i=0; i<layers.length; i++) {
-		if (Debug.debugging("mapbean")) {
-		    debugmsg("Adding layer[" +i+"]= " +layers[i].getName());
-		}
-		add(layers[i]);
-		layers[i].setVisible(true);
-	    }
-	}
-	
-	// use LayerEvent.REMOVE when you want to delete layers from the map
-	else if (type == LayerEvent.REMOVE) {
-	    if (Debug.debugging("mapbean")) {
-		debugmsg("Removing layers");
-	    }
-	    for (int i=0; i<layers.length; i++) {
-		if (Debug.debugging("mapbean")) {
-		    debugmsg("Removing layer[" +i+"]= " +layers[i].getName());
-		}
-		remove(layers[i]);
-	    }
-	}
+        // use LayerEvent.ADD when adding and/or reshuffling layers
+        else if (type == LayerEvent.ADD) {
+            if (Debug.debugging("mapbean")) {
+                debugmsg("Adding new layers");
+            }
+            for (int i=0; i<layers.length; i++) {
+                if (Debug.debugging("mapbean")) {
+                    debugmsg("Adding layer[" +i+"]= " +layers[i].getName());
+                }
+                add(layers[i]);
+                layers[i].setVisible(true);
+            }
+        }
+        
+        // use LayerEvent.REMOVE when you want to delete layers from the map
+        else if (type == LayerEvent.REMOVE) {
+            if (Debug.debugging("mapbean")) {
+                debugmsg("Removing layers");
+            }
+            for (int i=0; i<layers.length; i++) {
+                if (Debug.debugging("mapbean")) {
+                    debugmsg("Removing layer[" +i+"]= " +layers[i].getName());
+                }
+                remove(layers[i]);
+            }
+        }
 
-	if (!layerRemovalDelayed) {
-	    purgeAndNotifyRemovedLayers();
-	}
+        if (!layerRemovalDelayed) {
+            purgeAndNotifyRemovedLayers();
+        }
 
-	setDoContainerChange(oldChange);
-	repaint();
-	revalidate();
+        setDoContainerChange(oldChange);
+        repaint();
+        revalidate();
     }
 
     /**
@@ -986,8 +986,8 @@ public class MapBean extends JComponent
      * the Swing tree.
      */
     public void repaint(Layer layer) {
-// 	Debug.output(layer.getName() + " - wants a repaint()");
-	getMapBeanRepaintPolicy().repaint(layer);
+//      Debug.output(layer.getName() + " - wants a repaint()");
+        getMapBeanRepaintPolicy().repaint(layer);
     }
 
     /**
@@ -995,7 +995,7 @@ public class MapBean extends JComponent
      * can be used to pace/filter layer repaint() requests.
      */
     public void setMapBeanRepaintPolicy(MapBeanRepaintPolicy mbrp) {
-	repaintPolicy = mbrp;
+        repaintPolicy = mbrp;
     }
     
     /**
@@ -1005,10 +1005,10 @@ public class MapBean extends JComponent
      * created, which simply forwards all requests.
      */
     public MapBeanRepaintPolicy getMapBeanRepaintPolicy() {
-	if (repaintPolicy == null) {
-	    repaintPolicy = new StandardMapBeanRepaintPolicy(this);
-	}
-	return repaintPolicy;
+        if (repaintPolicy == null) {
+            repaintPolicy = new StandardMapBeanRepaintPolicy(this);
+        }
+        return repaintPolicy;
     }
 
     /**
@@ -1018,7 +1018,7 @@ public class MapBean extends JComponent
      * Allocates new LatLonPoint with coordinates.
      */
     public LatLonPoint getCoordinates(MouseEvent event) {
-	return getCoordinates(event, null);
+        return getCoordinates(event, null);
     }
 
     /**
@@ -1028,16 +1028,16 @@ public class MapBean extends JComponent
      * on memory allocation by sending in the LatLonPoint to fill.
      */
     public LatLonPoint getCoordinates(MouseEvent event, LatLonPoint llp) {
-	Projection proj = getProjection();
-	if (proj == null || event == null) {
-	    return null;
-	}
+        Projection proj = getProjection();
+        if (proj == null || event == null) {
+            return null;
+        }
 
-	if (llp == null) {
-	    return proj.inverse(event.getX(), event.getY());
-	} else {
-	    return proj.inverse(event.getX(), event.getY(), llp);
-	}
+        if (llp == null) {
+            return proj.inverse(event.getX(), event.getY());
+        } else {
+            return proj.inverse(event.getX(), event.getY(), llp);
+        }
     }
 
     /**
@@ -1049,7 +1049,7 @@ public class MapBean extends JComponent
      * MapBean, always false.
      */
     public boolean isBuffered() {
-	return false;
+        return false;
     }
 
     /**
@@ -1076,14 +1076,14 @@ public class MapBean extends JComponent
      * layer is simply being toggled on/off for different map views.
      */
     public void setLayerRemovalDelayed(boolean set) {
-	layerRemovalDelayed = set;
+        layerRemovalDelayed = set;
     }
 
     /**
      * Return the flag for delayed layer removal.
      */
     public boolean isLayerRemovalDelayed() {
-	return layerRemovalDelayed;
+        return layerRemovalDelayed;
     }
 
     /**
@@ -1091,24 +1091,24 @@ public class MapBean extends JComponent
      * autoPalette variable turned on, show their palettes.
      */
     public void showLayerPalettes() {
-	Component[] comps = this.getComponents();
-	for (int i = 0; i < comps.length; i++) {
-	    // they have to be layers
-	    if (((Layer)comps[i]).autoPalette) {
-		((Layer)comps[i]).showPalette();
-	    }
-	}
+        Component[] comps = this.getComponents();
+        for (int i = 0; i < comps.length; i++) {
+            // they have to be layers
+            if (((Layer)comps[i]).autoPalette) {
+                ((Layer)comps[i]).showPalette();
+            }
+        }
     }
 
     /**
      * Turn off all layer palettes.
      */
     public void hideLayerPalettes() {
-	Component[] comps = this.getComponents();
-	for (int i = 0; i < comps.length; i++) {
-	    // they have to be layers
-	    ((Layer)comps[i]).hidePalette();
-	}
+        Component[] comps = this.getComponents();
+        for (int i = 0; i < comps.length; i++) {
+            // they have to be layers
+            ((Layer)comps[i]).hidePalette();
+        }
     }
 
 }

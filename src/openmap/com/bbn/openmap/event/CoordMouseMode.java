@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CoordMouseMode.java,v $
 // $RCSfile: CoordMouseMode.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/14 20:16:09 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,7 +59,7 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
      * depending if one of the listeners used it or not.
      */
     public CoordMouseMode(String modeID, boolean shouldConsumeEvents) {
-	super(modeID, shouldConsumeEvents);
+        super(modeID, shouldConsumeEvents);
     }
 
     /**
@@ -68,14 +68,14 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
      * values.  
      */
     public void setInfoDelegator(InformationDelegator id) {
-	infoDelegator = id;
+        infoDelegator = id;
     }
 
     /**
      * Return the information delegator.
      */
     public InformationDelegator getInfoDelegator() {
-	return infoDelegator;
+        return infoDelegator;
     }
 
     /**
@@ -84,8 +84,8 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
      * @param e MouseEvent to be handled
      */
     public void mouseMoved(MouseEvent e) {
-	fireMouseLocation(e);
-	super.mouseMoved(e);
+        fireMouseLocation(e);
+        super.mouseMoved(e);
     }
 
     /**
@@ -94,8 +94,8 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
      * @param e mouse event.
      */
     public void mouseDragged(MouseEvent e) {
-	fireMouseLocation(e);
-	super.mouseDragged(e);
+        fireMouseLocation(e);
+        super.mouseDragged(e);
     }
 
     /**
@@ -103,13 +103,13 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
      * that might have been made to the info line.
      */
     public void setActive(boolean active) {
-	if (Debug.debugging("mousemode")) {
-	    Debug.output("CoordMouseMode(" + getPrettyName() + 
-			 "): made active (" + active + ")");
-	}
-	if (!active && infoDelegator != null) {
-	    infoDelegator.requestInfoLine(new InfoDisplayEvent(this, "", InformationDelegator.COORDINATE_INFO_LINE));
-	}
+        if (Debug.debugging("mousemode")) {
+            Debug.output("CoordMouseMode(" + getPrettyName() + 
+                         "): made active (" + active + ")");
+        }
+        if (!active && infoDelegator != null) {
+            infoDelegator.requestInfoLine(new InfoDisplayEvent(this, "", InformationDelegator.COORDINATE_INFO_LINE));
+        }
     }
 
     /**
@@ -117,23 +117,23 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
      * InformationDelegator.
      */
     public void fireMouseLocation(MouseEvent e) {
-	int x = e.getX(); 
-	int y = e.getY();
-	LatLonPoint llp = null;
-	Debug.message("mousemodedetail", "CoordMouseMode: firing mouse location");
-	
-	if (infoDelegator != null) {
-	    if (e.getSource() instanceof MapBean) {
-		llp = ((MapBean)e.getSource()).getProjection().inverse(x, y);
-	    }	
-	    String infoLine;
-	    infoLine = createCoordinateInformationLine(x, y, llp);
-	    
-	    // setup the info event
-	    InfoDisplayEvent info = new InfoDisplayEvent(this, infoLine, InformationDelegator.COORDINATE_INFO_LINE);
-	    // ask the infoDelegator to display the info
-	    infoDelegator.requestInfoLine(info);
-	}
+        int x = e.getX(); 
+        int y = e.getY();
+        LatLonPoint llp = null;
+        Debug.message("mousemodedetail", "CoordMouseMode: firing mouse location");
+        
+        if (infoDelegator != null) {
+            if (e.getSource() instanceof MapBean) {
+                llp = ((MapBean)e.getSource()).getProjection().inverse(x, y);
+            }   
+            String infoLine;
+            infoLine = createCoordinateInformationLine(x, y, llp);
+            
+            // setup the info event
+            InfoDisplayEvent info = new InfoDisplayEvent(this, infoLine, InformationDelegator.COORDINATE_INFO_LINE);
+            // ask the infoDelegator to display the info
+            infoDelegator.requestInfoLine(info);
+        }
     }
 
     /**
@@ -145,14 +145,14 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
      * reflected here.
      */
     protected String createCoordinateInformationLine(int x, int y, LatLonPoint llp) {
-	if (llp != null) {
-	    return "Lat, Lon (" + 
-		df.format(llp.getLatitude()) +
-		", " + df.format(llp.getLongitude())  + 
-		") - x, y (" + x + "," + y + ")";
-	} else {
-	    return "x, y (" + x + "," + y + ")";
-	}
+        if (llp != null) {
+            return "Lat, Lon (" + 
+                df.format(llp.getLatitude()) +
+                ", " + df.format(llp.getLongitude())  + 
+                ") - x, y (" + x + "," + y + ")";
+        } else {
+            return "x, y (" + x + "," + y + ")";
+        }
     }
 
     /**
@@ -166,10 +166,10 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
      * @param someObj an object being added to the BeanContext.
      */
     public void findAndInit(Object someObj) {
-	if (someObj instanceof InformationDelegator) {
-	    Debug.message("mousemode", "NavMouseMode: found InformationDelegator");
-	    setInfoDelegator((InformationDelegator)someObj);
-	}
+        if (someObj instanceof InformationDelegator) {
+            Debug.message("mousemode", "NavMouseMode: found InformationDelegator");
+            setInfoDelegator((InformationDelegator)someObj);
+        }
     }
 
     /** 
@@ -181,11 +181,11 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
      * @param someObj an object being removed from the BeanContext.
      */
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof InformationDelegator) {
-	    if (getInfoDelegator() == (InformationDelegator) someObj) {
-		setInfoDelegator(null);
-	    }
-	}
+        if (someObj instanceof InformationDelegator) {
+            if (getInfoDelegator() == (InformationDelegator) someObj) {
+                setInfoDelegator(null);
+            }
+        }
     }
 }
 

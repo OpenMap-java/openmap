@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/SlopeGeneratorLoader.java,v $
 // $RCSfile: SlopeGeneratorLoader.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/01/24 03:48:43 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -93,13 +93,13 @@ public class SlopeGeneratorLoader extends GeneratorLoader {
         contrastSlide.setPaintTicks(true);
         contrastSlide.setSnapToTicks(true);
         contrastSlide.addChangeListener(new ChangeListener() {
-		public void stateChanged(ChangeEvent ce) {
-		    JSlider slider = (JSlider) ce.getSource();
-		    if (slider.getValueIsAdjusting()) {
-			setContrast(slider.getValue());
-		    }
-		}
-	    });
+                public void stateChanged(ChangeEvent ce) {
+                    JSlider slider = (JSlider) ce.getSource();
+                    if (slider.getValueIsAdjusting()) {
+                        setContrast(slider.getValue());
+                    }
+                }
+            });
         contrastPanel.add(contrastSlide);
         panel.add(contrastPanel);
 
@@ -130,8 +130,8 @@ public class SlopeGeneratorLoader extends GeneratorLoader {
     }
 
     public void addPropertyChangeListener(PropertyChangeListener pcl) {
-	super.addPropertyChangeListener(CONTRAST_PROPERTY, pcl);
-	super.addPropertyChangeListener(COLORS_PROPERTY, pcl);
+        super.addPropertyChangeListener(CONTRAST_PROPERTY, pcl);
+        super.addPropertyChangeListener(COLORS_PROPERTY, pcl);
     }
 
 }

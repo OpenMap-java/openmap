@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapReader.java,v $
 // $RCSfile: NetMapReader.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,7 +25,7 @@ package com.bbn.openmap.graphicLoader.netmap;
 
 import java.awt.*;
 import java.net.*;
-import java.util.*;	
+import java.util.*;     
 import java.io.*;
 import java.applet.*;
 
@@ -90,9 +90,9 @@ public class NetMapReader extends Thread implements NetMapConstants {
      * server.
      */
     public NetMapReader(String host, String port, NetMapConnector connector) 
-	throws IOException {
+        throws IOException {
 
-	this(host, port, connector, null);
+        this(host, port, connector, null);
     }
 
     /**
@@ -102,22 +102,22 @@ public class NetMapReader extends Thread implements NetMapConstants {
      * view list and disconnect.
      */
     public NetMapReader(String host, String port, NetMapConnector connector, String view) 
-	throws IOException {
+        throws IOException {
 
-	netmapConn = connector;
+        netmapConn = connector;
 
-	if (view != null) {
-	    setView(view);
-	}
+        if (view != null) {
+            setView(view);
+        }
 
-	DEBUG = Debug.debugging("netmap");
-	DEBUG_VERBOSE = Debug.debugging("netmap_verbose");
+        DEBUG = Debug.debugging("netmap");
+        DEBUG_VERBOSE = Debug.debugging("netmap_verbose");
 
-	try {
-	    s = connect(host, port);
-	} catch(IOException e) {
-	    throw e;
-	}
+        try {
+            s = connect(host, port);
+        } catch(IOException e) {
+            throw e;
+        }
     }
 
     /**
@@ -125,7 +125,7 @@ public class NetMapReader extends Thread implements NetMapConstants {
      * via reader.start().
      */
     public void setView(String view) {
-	this.viewName = view;
+        this.viewName = view;
     }
 
     /**
@@ -133,36 +133,36 @@ public class NetMapReader extends Thread implements NetMapConstants {
      * and port.
      */
     private Socket connect(String host, String portString)
-	throws IOException {
+        throws IOException {
 
-	int port = 0;
-	Socket sock = null;
+        int port = 0;
+        Socket sock = null;
 
-	boolean DEBUG = Debug.debugging("netmap");
+        boolean DEBUG = Debug.debugging("netmap");
 
-	try {
-	    port = Integer.parseInt(portString, 10);
-	} catch (NumberFormatException e) {
-	    if (DEBUG) Debug.output("Illegal name " + host + ":" + portString);
-	    throw new IOException("Illegal port: " + portString);
-	}
+        try {
+            port = Integer.parseInt(portString, 10);
+        } catch (NumberFormatException e) {
+            if (DEBUG) Debug.output("Illegal name " + host + ":" + portString);
+            throw new IOException("Illegal port: " + portString);
+        }
 
-	if (DEBUG) Debug.output("Connecting to server " + host + ":" + port);
+        if (DEBUG) Debug.output("Connecting to server " + host + ":" + port);
 
-	try {
-	    sock = new Socket(host, port);
-	} catch (IOException e) {
-	    if (sock != null)
-		sock.close();
+        try {
+            sock = new Socket(host, port);
+        } catch (IOException e) {
+            if (sock != null)
+                sock.close();
 
-	    if (DEBUG) {
-		Debug.output("Can't connect to " + host + ":" + port + "\n   " + e);
-	    }
+            if (DEBUG) {
+                Debug.output("Can't connect to " + host + ":" + port + "\n   " + e);
+            }
 
-	    throw e;
-	}
+            throw e;
+        }
 
-	return sock;
+        return sock;
     }
 
     /**
@@ -171,69 +171,69 @@ public class NetMapReader extends Thread implements NetMapConstants {
      * after this query.
      */
     public ChoiceList getViewList(String host, String port) {
-	BufferedReader	in = null;
-	PrintWriter	out = null;
-	ChoiceList	viewList = null;
-	Socket		sock = null;
+        BufferedReader  in = null;
+        PrintWriter     out = null;
+        ChoiceList      viewList = null;
+        Socket          sock = null;
 
-	boolean DEBUG = Debug.debugging("netmap");
-	
-	try {
-	    sock = connect(host, port);
+        boolean DEBUG = Debug.debugging("netmap");
+        
+        try {
+            sock = connect(host, port);
 
-	    in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-	    out = new PrintWriter(sock.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            out = new PrintWriter(sock.getOutputStream(), true);
 
-	    // Now load the views from the server
-	    out.println(JMAP_VIEW_CMD);
-	} catch (IOException e) {
-	    Debug.error("NetMapReader: " + e);
-	    return null;
-	}
+            // Now load the views from the server
+            out.println(JMAP_VIEW_CMD);
+        } catch (IOException e) {
+            Debug.error("NetMapReader: " + e);
+            return null;
+        }
 
-	viewList = new ChoiceList();
+        viewList = new ChoiceList();
 
-	try {
-	    String line = null;
+        try {
+            String line = null;
 
-	    while ((line = in.readLine()) != null) {
-		line = line.trim();
+            while ((line = in.readLine()) != null) {
+                line = line.trim();
 
-		int labelStart = line.indexOf("\'");
-		int labelEnd = line.lastIndexOf("\'");
+                int labelStart = line.indexOf("\'");
+                int labelEnd = line.lastIndexOf("\'");
 
-		String viewLabel = null;
-		String viewLine = null;
+                String viewLabel = null;
+                String viewLine = null;
 
-		if (DEBUG) Debug.output("View definition: " + line);
+                if (DEBUG) Debug.output("View definition: " + line);
 
-		if (labelStart < 0) {
-		    viewLine = line;
-		    viewLabel = line;
+                if (labelStart < 0) {
+                    viewLine = line;
+                    viewLabel = line;
 
-		} else {
+                } else {
 
-		    viewLine = line.substring(0, labelStart) + " " +
-			line.substring(labelEnd + 1);
+                    viewLine = line.substring(0, labelStart) + " " +
+                        line.substring(labelEnd + 1);
 
-		    viewLabel =	line.substring((labelStart + 1), labelEnd);
-		}
+                    viewLabel = line.substring((labelStart + 1), labelEnd);
+                }
 
-		viewList.add(viewLabel.trim(), viewLine.trim());
-	    }
-	} catch (IOException e) {
-	    Debug.error("NetMapReader: Input error: " + e);
+                viewList.add(viewLabel.trim(), viewLine.trim());
+            }
+        } catch (IOException e) {
+            Debug.error("NetMapReader: Input error: " + e);
 
-	    viewList.removeAllElements();
-	    viewList = null;
-	}
+            viewList.removeAllElements();
+            viewList = null;
+        }
 
-	try {
-	    sock.close();
-	    netmapConn.connectionDown();
-	} catch (IOException e) {}
+        try {
+            sock.close();
+            netmapConn.connectionDown();
+        } catch (IOException e) {}
 
-	return viewList;
+        return viewList;
     }
 
     /**
@@ -241,8 +241,8 @@ public class NetMapReader extends Thread implements NetMapConstants {
      * when it has the opportunity to.
      */
     public void shutdown() {
-	this.shutdown = true;
-	return;
+        this.shutdown = true;
+        return;
     }
 
     /**
@@ -253,81 +253,81 @@ public class NetMapReader extends Thread implements NetMapConstants {
      * describing events received.
      */
     public void run() {
-	BufferedReader tdin = null;
-	PrintWriter tdout = null;
+        BufferedReader tdin = null;
+        PrintWriter tdout = null;
 
-	if (viewName == null) {
-	    Debug.error("NetMapReader not given a view name to request from the NETMAP server.");
-	    return;
-	}
+        if (viewName == null) {
+            Debug.error("NetMapReader not given a view name to request from the NETMAP server.");
+            return;
+        }
 
-	while (!this.shutdown) {
-	    if (DEBUG) Debug.output("NetMapReader attemping connection");
+        while (!this.shutdown) {
+            if (DEBUG) Debug.output("NetMapReader attemping connection");
 
-	    try {
-		tdin =
-		    new BufferedReader(new InputStreamReader(s.getInputStream()));
-		tdout =
-		    new PrintWriter(s.getOutputStream(), true);
+            try {
+                tdin =
+                    new BufferedReader(new InputStreamReader(s.getInputStream()));
+                tdout =
+                    new PrintWriter(s.getOutputStream(), true);
 
-		if (DEBUG) Debug.output("Loading view: " + viewName);
-		tdout.println("jmap '" + viewName + "' 768");
+                if (DEBUG) Debug.output("Loading view: " + viewName);
+                tdout.println("jmap '" + viewName + "' 768");
 
-		s.setSoTimeout(500);
-	    } catch (InterruptedIOException eConnectInterrupted) {
-		continue;
-	    } catch (IOException eConnect)  {
-		Debug.error("NetMapReader: " + eConnect.getMessage() + 
-			    "; NetMapReader sleeping");
+                s.setSoTimeout(500);
+            } catch (InterruptedIOException eConnectInterrupted) {
+                continue;
+            } catch (IOException eConnect)  {
+                Debug.error("NetMapReader: " + eConnect.getMessage() + 
+                            "; NetMapReader sleeping");
 
-		try {
-		    Thread.sleep(40000);
-		}
-		catch(Exception eSleep) {}
+                try {
+                    Thread.sleep(40000);
+                }
+                catch(Exception eSleep) {}
 
-		continue;
-	    }
+                continue;
+            }
 
-	    if (netmapConn == null) {
-		continue;
-	    }
+            if (netmapConn == null) {
+                continue;
+            }
 
-	    netmapConn.connectionUp();
+            netmapConn.connectionUp();
 
-	    while (!this.shutdown) {
-		try {
-		    String line = null;
+            while (!this.shutdown) {
+                try {
+                    String line = null;
 
-		    if ((line = tdin.readLine()) == null)
-			break;
+                    if ((line = tdin.readLine()) == null)
+                        break;
 
-		    if (DEBUG_VERBOSE) Debug.output("  read: " + line);
-		    Properties eventProps = procline(line);
-		    if (DEBUG_VERBOSE) Debug.output("  processed...");
-		    if (eventProps.size() > 0) {
-			netmapConn.distributeEvent(eventProps);
-			if (DEBUG_VERBOSE) Debug.output("  distributed...");
-		    } else {
-			if (DEBUG_VERBOSE) Debug.output("  ignored...");
-		    }
-		} catch (InterruptedIOException eReadInterrupted) {
-		    continue;
-		} catch (Exception e) {
-		    Debug.error("NetMapReader exception: " + e.getMessage() + 
-				"; in NetMapReader run. ");
+                    if (DEBUG_VERBOSE) Debug.output("  read: " + line);
+                    Properties eventProps = procline(line);
+                    if (DEBUG_VERBOSE) Debug.output("  processed...");
+                    if (eventProps.size() > 0) {
+                        netmapConn.distributeEvent(eventProps);
+                        if (DEBUG_VERBOSE) Debug.output("  distributed...");
+                    } else {
+                        if (DEBUG_VERBOSE) Debug.output("  ignored...");
+                    }
+                } catch (InterruptedIOException eReadInterrupted) {
+                    continue;
+                } catch (Exception e) {
+                    Debug.error("NetMapReader exception: " + e.getMessage() + 
+                                "; in NetMapReader run. ");
 
-		    // Which is better?
-// 		    break;
-		    continue;
-		}
+                    // Which is better?
+//                  break;
+                    continue;
+                }
 
-	    }
+            }
 
-	    try {
-		s.close();
-		netmapConn.connectionDown();
-	    } catch (Exception eShutdown) {}
-	}
+            try {
+                s.close();
+                netmapConn.connectionDown();
+            } catch (Exception eShutdown) {}
+        }
     }
 
     /**
@@ -339,116 +339,116 @@ public class NetMapReader extends Thread implements NetMapConstants {
     /** Process a line from NetMap input stream. */
     protected Properties procline(String cmdline) {
 
-	Vector v = tokenize(cmdline);
+        Vector v = tokenize(cmdline);
 
-	// Right now, nargs[] gets set in tokenize() with values
-	// gleamed off Doubles in v.
+        // Right now, nargs[] gets set in tokenize() with values
+        // gleamed off Doubles in v.
 
-	if (DEBUG_VERBOSE) Debug.output("  parsed: " + v.toString());
+        if (DEBUG_VERBOSE) Debug.output("  parsed: " + v.toString());
 
-	JIcon jicon=null;
-	Properties eventProps = new Properties();
+        JIcon jicon=null;
+        Properties eventProps = new Properties();
 
-	String cmd = v.firstElement().toString();
-  	int shape = nargs[4];
+        String cmd = v.firstElement().toString();
+        int shape = nargs[4];
 
-	if (cmd.equals(NODE_OBJECT)) {
-	    eventProps.put(COMMAND_FIELD, NODE_OBJECT);
- 	    eventProps.put(INDEX_FIELD, Integer.toString(nargs[1]));
- 	    eventProps.put(SHAPE_FIELD, Integer.toString(nargs[4]));
+        if (cmd.equals(NODE_OBJECT)) {
+            eventProps.put(COMMAND_FIELD, NODE_OBJECT);
+            eventProps.put(INDEX_FIELD, Integer.toString(nargs[1]));
+            eventProps.put(SHAPE_FIELD, Integer.toString(nargs[4]));
 
-	    if (v.elementAt(4) instanceof String) {
-		String icon = (String)v.elementAt(4);
+            if (v.elementAt(4) instanceof String) {
+                String icon = (String)v.elementAt(4);
 
-		eventProps.put(SHAPE_FIELD, "11");
-		eventProps.put(ICON_FIELD, icon);
+                eventProps.put(SHAPE_FIELD, "11");
+                eventProps.put(ICON_FIELD, icon);
 
-		if (DEBUG) Debug.output("NetMapReader: jimage  " + icon);
-	    }
+                if (DEBUG) Debug.output("NetMapReader: jimage  " + icon);
+            }
 
-	    if (shape == NODE_DELETE) { // Delete
+            if (shape == NODE_DELETE) { // Delete
 
-		eventProps.put(SHAPE_FIELD, NODE_DELETE_STRING);
+                eventProps.put(SHAPE_FIELD, NODE_DELETE_STRING);
 
-	    } else {
+            } else {
 
-		if (shape == NODE_MOVE) {  // move
+                if (shape == NODE_MOVE) {  // move
 
-		    // nobj 13 342 432 0 lat=42.3876343 lon=-71.1457977 elev=0.00 1038000904
-		    // cmd, index, posx, posy, node_move, lat, lon, elevation, time
+                    // nobj 13 342 432 0 lat=42.3876343 lon=-71.1457977 elev=0.00 1038000904
+                    // cmd, index, posx, posy, node_move, lat, lon, elevation, time
 
-		    eventProps.put(SHAPE_FIELD, NODE_MOVE_STRING);
-  		    eventProps.put(TIME_FIELD, Integer.toString(nargs[8]));
+                    eventProps.put(SHAPE_FIELD, NODE_MOVE_STRING);
+                    eventProps.put(TIME_FIELD, Integer.toString(nargs[8]));
 
-		} else {
+                } else {
 
-		    // nobj 1  13 12   50 10 10   1 5 '11' 0 'NODE_11_' lat=40.0295830 lon=-74.3184204 ip=10.0.0.11
-		    // cmd, index, posx, posy, icon, width, height, status (color), menu, label, joffset, name, lat, lon
+                    // nobj 1  13 12   50 10 10   1 5 '11' 0 'NODE_11_' lat=40.0295830 lon=-74.3184204 ip=10.0.0.11
+                    // cmd, index, posx, posy, icon, width, height, status (color), menu, label, joffset, name, lat, lon
 
-		    // Define a new entry if "shape" is anything else...
-		    eventProps.put(WIDTH_FIELD, Integer.toString(nargs[5]));
-		    eventProps.put(HEIGHT_FIELD, Integer.toString(nargs[6]));
-		    eventProps.put(STATUS_FIELD, Integer.toString(nargs[7]));
-		    eventProps.put(MENU_FIELD, Integer.toString(nargs[8]));
-		    eventProps.put(LABEL_FIELD, (String)v.elementAt(9));
-		    eventProps.put(NAME_FIELD, (String)v.elementAt(11));
-		    eventProps.put(JOFFSET_FIELD, Integer.toString(nargs[10]));
-		}
-		
-		eventProps.put(POSX_FIELD, Integer.toString(nargs[2]));
-		eventProps.put(POSY_FIELD, Integer.toString(nargs[3]));
+                    // Define a new entry if "shape" is anything else...
+                    eventProps.put(WIDTH_FIELD, Integer.toString(nargs[5]));
+                    eventProps.put(HEIGHT_FIELD, Integer.toString(nargs[6]));
+                    eventProps.put(STATUS_FIELD, Integer.toString(nargs[7]));
+                    eventProps.put(MENU_FIELD, Integer.toString(nargs[8]));
+                    eventProps.put(LABEL_FIELD, (String)v.elementAt(9));
+                    eventProps.put(NAME_FIELD, (String)v.elementAt(11));
+                    eventProps.put(JOFFSET_FIELD, Integer.toString(nargs[10]));
+                }
+                
+                eventProps.put(POSX_FIELD, Integer.toString(nargs[2]));
+                eventProps.put(POSY_FIELD, Integer.toString(nargs[3]));
 
-		String elev = null;
-		if ((elev = getVal("elev=", cmdline)) != null) {
-		    eventProps.put(ELEVATION_FIELD, elev);
-		}
+                String elev = null;
+                if ((elev = getVal("elev=", cmdline)) != null) {
+                    eventProps.put(ELEVATION_FIELD, elev);
+                }
 
-		String geo = null;
+                String geo = null;
 
-		if ((geo = getVal("lat=", cmdline)) != null) {
-		    eventProps.put(LAT_FIELD, geo);
-		}
+                if ((geo = getVal("lat=", cmdline)) != null) {
+                    eventProps.put(LAT_FIELD, geo);
+                }
 
-		if ((geo = getVal("lon=", cmdline)) != null) {
-		    eventProps.put(LON_FIELD, geo);
-		}
+                if ((geo = getVal("lon=", cmdline)) != null) {
+                    eventProps.put(LON_FIELD, geo);
+                }
 
-		if ((geo = getVal("ip=", cmdline)) != null) {
-		    eventProps.put(IP_FIELD, geo);
-		}
+                if ((geo = getVal("ip=", cmdline)) != null) {
+                    eventProps.put(IP_FIELD, geo);
+                }
 
-	    }
+            }
 
-	} else if (cmd.equals(NODE_OBJECT_STATUS)) {
+        } else if (cmd.equals(NODE_OBJECT_STATUS)) {
 
-	    eventProps.put(COMMAND_FIELD, NODE_OBJECT_STATUS);
-	    eventProps.put(INDEX_FIELD, Integer.toString(nargs[1]));
-	    eventProps.put(STATUS_FIELD, Integer.toString(nargs[2]));
+            eventProps.put(COMMAND_FIELD, NODE_OBJECT_STATUS);
+            eventProps.put(INDEX_FIELD, Integer.toString(nargs[1]));
+            eventProps.put(STATUS_FIELD, Integer.toString(nargs[2]));
 
-	} else if (cmd.equals(LINK_OBJECT_STATUS)) {
+        } else if (cmd.equals(LINK_OBJECT_STATUS)) {
 
-	    eventProps.put(COMMAND_FIELD, LINK_OBJECT_STATUS);
-	    eventProps.put(INDEX_FIELD, Integer.toString(nargs[1]));
-	    eventProps.put(STATUS_FIELD, Integer.toString(nargs[2]));
+            eventProps.put(COMMAND_FIELD, LINK_OBJECT_STATUS);
+            eventProps.put(INDEX_FIELD, Integer.toString(nargs[1]));
+            eventProps.put(STATUS_FIELD, Integer.toString(nargs[2]));
 
-	} else if (cmd.equals(LINK_OBJECT)) {
+        } else if (cmd.equals(LINK_OBJECT)) {
 
-	    eventProps.put(COMMAND_FIELD, LINK_OBJECT);
-	    eventProps.put(INDEX_FIELD, Integer.toString(nargs[1]));
-	    eventProps.put(SHAPE_FIELD, Integer.toString(nargs[2]));
+            eventProps.put(COMMAND_FIELD, LINK_OBJECT);
+            eventProps.put(INDEX_FIELD, Integer.toString(nargs[1]));
+            eventProps.put(SHAPE_FIELD, Integer.toString(nargs[2]));
 
-	    if (shape != -1) {
-		eventProps.put(STATUS_FIELD, Integer.toString(nargs[5]));
-		eventProps.put(LINK_NODE1_FIELD, Integer.toString(nargs[3]));
-		eventProps.put(LINK_NODE2_FIELD, Integer.toString(nargs[4]));
-	    }
-	} else if (cmd.equals(REFRESH)) {
-	    eventProps.put(COMMAND_FIELD, REFRESH);
-	} else if (cmd.equals(UPDATE)) {
-	    eventProps.put(COMMAND_FIELD, UPDATE);
-	}
+            if (shape != -1) {
+                eventProps.put(STATUS_FIELD, Integer.toString(nargs[5]));
+                eventProps.put(LINK_NODE1_FIELD, Integer.toString(nargs[3]));
+                eventProps.put(LINK_NODE2_FIELD, Integer.toString(nargs[4]));
+            }
+        } else if (cmd.equals(REFRESH)) {
+            eventProps.put(COMMAND_FIELD, REFRESH);
+        } else if (cmd.equals(UPDATE)) {
+            eventProps.put(COMMAND_FIELD, UPDATE);
+        }
 
-	return eventProps;
+        return eventProps;
     }
 
     /**
@@ -459,24 +459,24 @@ public class NetMapReader extends Thread implements NetMapConstants {
      * within procline().
      */
     protected Vector tokenize(String line) {
-	Object ob;
+        Object ob;
 
-	Vector v = new Vector(12, 10);
+        Vector v = new Vector(12, 10);
 
-	unitInit(new StringReader(line));
+        unitInit(new StringReader(line));
 
-	int cnt = 0;
-	while ((ob = unit()) != EOF) {
-	    v.addElement(ob);
+        int cnt = 0;
+        while ((ob = unit()) != EOF) {
+            v.addElement(ob);
 
-	    if (ob instanceof Double)
-		nargs[ cnt ]= ((Number)ob).intValue();
-	    else
-		nargs[ cnt ] = 0;
+            if (ob instanceof Double)
+                nargs[ cnt ]= ((Number)ob).intValue();
+            else
+                nargs[ cnt ] = 0;
 
-	    cnt++;
-	}
-	return v;
+            cnt++;
+        }
+        return v;
     }
 
 
@@ -484,15 +484,15 @@ public class NetMapReader extends Thread implements NetMapConstants {
      * Initialize the StringTokenizer.
      */
     protected void unitInit(StringReader rdr) {
-	st = new StreamTokenizer(rdr); 
+        st = new StreamTokenizer(rdr); 
 
-	st.commentChar('%');
-	st.slashSlashComments(true);
-	st.slashStarComments(true);
+        st.commentChar('%');
+        st.slashSlashComments(true);
+        st.slashStarComments(true);
 
-	st.wordChars('/', '/');  // disable default special handling
-	st.wordChars('=', '=');  // disable default special handling
-	st.wordChars(':', ':');  // disable default special handling
+        st.wordChars('/', '/');  // disable default special handling
+        st.wordChars('=', '=');  // disable default special handling
+        st.wordChars(':', ':');  // disable default special handling
     }
 
     /**
@@ -500,138 +500,138 @@ public class NetMapReader extends Thread implements NetMapConstants {
      * semantic functionality to interpret EOF and parenthesis.
      */
     protected Object unit() {
-	Object p = next(); 
-	if (p == EOF)
-	    return EOF;
+        Object p = next(); 
+        if (p == EOF)
+            return EOF;
 
-	if (p == LP) {
-	    Object r;
-	    Vector l = new Vector(2, 4);
+        if (p == LP) {
+            Object r;
+            Vector l = new Vector(2, 4);
 
-	    while (true) {
-		r = unit();
+            while (true) {
+                r = unit();
 
-		if (r==RP)
-		    return l;
+                if (r==RP)
+                    return l;
 
-		if (r == EOF)
-		    return EOF;
+                if (r == EOF)
+                    return EOF;
 
-		l.addElement(r);
-	    }
-	}
+                l.addElement(r);
+            }
+        }
 
-	return p;
+        return p;
     }
 
     /**
      * Break the next token into an Object.
      */
     protected Object next() {
-	int i = 0;
-	char[] c;
+        int i = 0;
+        char[] c;
 
-	try {
-	    i = st.nextToken(); 
-	} catch (IOException e) {
-	    Debug.error("NetMapReader: " + e.toString() + " in toktest\n");
-	}
+        try {
+            i = st.nextToken(); 
+        } catch (IOException e) {
+            Debug.error("NetMapReader: " + e.toString() + " in toktest\n");
+        }
 
-	if ((i == st.TT_EOF) || (i == 0))
-	    return EOF;
+        if ((i == st.TT_EOF) || (i == 0))
+            return EOF;
 
-	if (i == st.TT_WORD)
-	    return new Symbol(st.sval, 1);
+        if (i == st.TT_WORD)
+            return new Symbol(st.sval, 1);
 
-	if ((i == '\'') || (i == '\"'))
-	    return st.sval;
+        if ((i == '\'') || (i == '\"'))
+            return st.sval;
 
-	if (i == st.TT_NUMBER)
-	    return new Double(st.nval);
+        if (i == st.TT_NUMBER)
+            return new Double(st.nval);
 
-	if ((i == '(') || (i == '[') || (i == '{'))
-	    return LP;
+        if ((i == '(') || (i == '[') || (i == '{'))
+            return LP;
 
-	if ((i == ')') || (i == ']') || (i == '}'))
-	    return RP;
+        if ((i == ')') || (i == ']') || (i == '}'))
+            return RP;
 
-	c = new char[ 1 ];
-	c[ 0 ] = (char)i;
+        c = new char[ 1 ];
+        c[ 0 ] = (char)i;
 
-	return new Symbol(new String(c), 2);
+        return new Symbol(new String(c), 2);
     }
 
     protected String getVal(String marker, String line) {
-	int		sTok = 0;
-	int		eTok = 0;
+        int             sTok = 0;
+        int             eTok = 0;
 
-	String		ret = null;
+        String          ret = null;
 
 
-	if ((sTok = line.toLowerCase().indexOf(marker)) < 0)
-	    return null;
+        if ((sTok = line.toLowerCase().indexOf(marker)) < 0)
+            return null;
 
-	if (((eTok = line.indexOf(" ", sTok)) < 0) &&
-	    ((eTok = line.indexOf("\t", sTok)) < 0)) {
-	    eTok = line.length();
-	}
+        if (((eTok = line.indexOf(" ", sTok)) < 0) &&
+            ((eTok = line.indexOf("\t", sTok)) < 0)) {
+            eTok = line.length();
+        }
 
-	return (line.substring(sTok + marker.length(), eTok));
+        return (line.substring(sTok + marker.length(), eTok));
     }
 
     // All this stuff below may be used later for more JMAP integration...
 
 //     jicon jget(String name) {
-// 	jicon x = (jicon)jicons.get(name);
+//      jicon x = (jicon)jicons.get(name);
 
-// 	if (x == null) {
-// 	    x = new jicon(name);
-// 	    jicons.put(name, x);
+//      if (x == null) {
+//          x = new jicon(name);
+//          jicons.put(name, x);
 
-// 	    x.icon = can.loadImage("images/"+name);
+//          x.icon = can.loadImage("images/"+name);
 
-// 	    if (jmap.on && jmap.dbgmode)
-// 		System.err.println("new jicon  " + name + "  " + x.icon);
-// 	}
+//          if (jmap.on && jmap.dbgmode)
+//              System.err.println("new jicon  " + name + "  " + x.icon);
+//      }
 
-// 	return x;
+//      return x;
 //     }
 
     /**
      * Got a response from our cexec request
      */
 //     private void cexec(String a) {
-// 	f.status("exec " + a);  // show message in status line
+//      f.status("exec " + a);  // show message in status line
 
-// 	try {
-// 	    Runtime.getRuntime().exec(a);
-// 	} catch(IOException err) {
-// 	    if (jmap.on)
-// 		System.err.println(err.toString());
-// 	}
+//      try {
+//          Runtime.getRuntime().exec(a);
+//      } catch(IOException err) {
+//          if (jmap.on)
+//              System.err.println(err.toString());
+//      }
 //     }
 
     /**
      * Got a response from our cshow request
      */
 //     public void cshow(String url) {
-// 	// show message in status line
-// 	f.status("show " + url);
+//      // show message in status line
+//      f.status("show " + url);
 
-// 	try {
-// 	    AppletContext apcon = jmap.getAppletContext();
+//      try {
+//          AppletContext apcon = jmap.getAppletContext();
 
 
-// 	    if (url.substring(0, 2).equals("r ")) {  // relative
-// 		apcon.showDocument(new URL(jmap.getDocumentBase(),
-// 					   url.substring(2)));
-// 	    }
-// 	    else
-// 		apcon.showDocument(new URL(url));
-// 	} catch (java.net.MalformedURLException err) {
-// 	    if (jmap.on)
-// 		System.err.println(err.toString());
-// 	}
+//          if (url.substring(0, 2).equals("r ")) {  // relative
+//              apcon.showDocument(new URL(jmap.getDocumentBase(),
+//                                         url.substring(2)));
+//          }
+//          else
+//              apcon.showDocument(new URL(url));
+//      } catch (java.net.MalformedURLException err) {
+//          if (jmap.on)
+//              System.err.println(err.toString());
+//      }
 //     }
 
     /**
@@ -640,58 +640,58 @@ public class NetMapReader extends Thread implements NetMapConstants {
      * MCMD 'pingf $NAME'))
      */
 //     private void jmenu(String line) {
-// 	PopupMenu tmenuh;
-// 	int type = nargs[ 1 ];
+//      PopupMenu tmenuh;
+//      int type = nargs[ 1 ];
 
-// 	if (jmap.on && jmap.dbgmode)
-// 	    System.err.println("Got jmenu type " + type);
+//      if (jmap.on && jmap.dbgmode)
+//          System.err.println("Got jmenu type " + type);
 
-// 	Vector l;
-// 	Vector r = new Vector(4, 4);
+//      Vector l;
+//      Vector r = new Vector(4, 4);
 
 
-// 	if (f.pmenu[ type ] == null) {  // if not already saved
-// 	    // create menu; store it in our global array
-// 	    l = (Vector)v.elementAt(3);
+//      if (f.pmenu[ type ] == null) {  // if not already saved
+//          // create menu; store it in our global array
+//          l = (Vector)v.elementAt(3);
 
-// 	    tmenuh = new PopupMenu(v.elementAt(2).toString());
-// 	    popupButtons(tmenuh, l, r);
+//          tmenuh = new PopupMenu(v.elementAt(2).toString());
+//          popupButtons(tmenuh, l, r);
 
-// 	    f.pmenu[ type ] = tmenuh;
-// 	    f.pmenuV[ type ] = r;
+//          f.pmenu[ type ] = tmenuh;
+//          f.pmenuV[ type ] = r;
 
-// 	    can.add(tmenuh);
-// 	}
-// 	if (f.tmenutypeDesired == type) {  // if still desired
-// 	    // install menu in ourjmap window
-// 	    f.tmenu = f.pmenu[ type ];
-// 	    f.tmenutype = type;
-// 	    f.tmenutypeDesired = 0;
-// 	    f.tmenu.show(can, f.tmenux, f.tmenuy);
-// 	}
+//          can.add(tmenuh);
+//      }
+//      if (f.tmenutypeDesired == type) {  // if still desired
+//          // install menu in ourjmap window
+//          f.tmenu = f.pmenu[ type ];
+//          f.tmenutype = type;
+//          f.tmenutypeDesired = 0;
+//          f.tmenu.show(can, f.tmenux, f.tmenuy);
+//      }
 //     }
 
 //     private void jpulldowns(String line) {
-// 	if (pulldowns)
-// 	    return;  // already have pulldowns; skip this
-// 	pulldowns = true;
+//      if (pulldowns)
+//          return;  // already have pulldowns; skip this
+//      pulldowns = true;
 
-// 	Menu tmenuh;
-// 	int type = nargs[1 ];
-// 	Vector l;
-// 	Vector r= new Vector(4, 4);
+//      Menu tmenuh;
+//      int type = nargs[1 ];
+//      Vector l;
+//      Vector r= new Vector(4, 4);
 
-// 	Vector g = (Vector)v.elementAt(1);
+//      Vector g = (Vector)v.elementAt(1);
 
-// 	Enumeration e = g.elements();
-// 	while (e.hasMoreElements()) {
-// 	    tmenuh = new Menu(e.nextElement().toString());
-// 	    l = (Vector)e.nextElement();
-// 	    popupButtons(tmenuh, l, r);
-// 	    f.mb.add(tmenuh);
-// 	}
+//      Enumeration e = g.elements();
+//      while (e.hasMoreElements()) {
+//          tmenuh = new Menu(e.nextElement().toString());
+//          l = (Vector)e.nextElement();
+//          popupButtons(tmenuh, l, r);
+//          f.mb.add(tmenuh);
+//      }
 
-// 	f.pulldownV = r;   // save action data for menu operations
+//      f.pulldownV = r;   // save action data for menu operations
 //     }
 
     /**
@@ -699,54 +699,54 @@ public class NetMapReader extends Thread implements NetMapConstants {
      * result lookup list to correlate MenuItem with details
      */
 //     private void popupButtons(Menu menu, Vector l, Vector r) {
-// 	Object ob, ob2;
-// 	int i;
-// 	Vector m;
-// 	Menu submenu;
-// 	MenuItem mi;
+//      Object ob, ob2;
+//      int i;
+//      Vector m;
+//      Menu submenu;
+//      MenuItem mi;
 
-// 	for (i = 0; i < l.size(); i++) {
-// 	    m = (Vector)l.elementAt(i);
-// 	    ob = m.elementAt(0);
-// 	    ob2 = m.elementAt(1);
+//      for (i = 0; i < l.size(); i++) {
+//          m = (Vector)l.elementAt(i);
+//          ob = m.elementAt(0);
+//          ob2 = m.elementAt(1);
 
-// 	    if (ob2 instanceof Symbol) {
-// 		mi = new MenuItem((String)ob);
+//          if (ob2 instanceof Symbol) {
+//              mi = new MenuItem((String)ob);
 
-// 		m.setElementAt(mi, 0);
-// 		// replace first element with MenuItem
-// 		menu.add(mi);
-// 		// save for use by jmapFrame event handler
-// 		r.addElement(m);
-// 	    }
-// 	    else if (ob2 instanceof Vector) {
-// 		submenu = new Menu((String)ob);
-// 		menu.add(submenu);
-// 		m.removeElementAt(0);
-// 		popupButtons(submenu, m, r);
-// 	    }
-// 	    else if (jmap.on && jmap.dbgmode)
-// 		System.err.println("Invalid menu item " + m);
-// 	}
+//              m.setElementAt(mi, 0);
+//              // replace first element with MenuItem
+//              menu.add(mi);
+//              // save for use by jmapFrame event handler
+//              r.addElement(m);
+//          }
+//          else if (ob2 instanceof Vector) {
+//              submenu = new Menu((String)ob);
+//              menu.add(submenu);
+//              m.removeElementAt(0);
+//              popupButtons(submenu, m, r);
+//          }
+//          else if (jmap.on && jmap.dbgmode)
+//              System.err.println("Invalid menu item " + m);
+//      }
 
-// 	menu.addActionListener(f);
+//      menu.addActionListener(f);
 //     }
 
 //     // got a response from our mcmd request
 //     private void mcmd(String a) {
-// 	// f.status(a);  // show message in status line
+//      // f.status(a);  // show message in status line
 
-// 	if ((v.size() > 4) &&
-// 	    (v.elementAt(1).toString().equals("host"))) {
+//      if ((v.size() > 4) &&
+//          (v.elementAt(1).toString().equals("host"))) {
 
-// 	    String b = v.elementAt(5).toString();
-// 	    /*
-// 	      if (b.equals("Up"))
-// 	      new jmapSoundPlayer(f.jmap, "up.au");
-// 	      else if (b.equals("not"))
-// 	      new jmapSoundPlayer(f.jmap, "noanswer.au");
-// 	    */
-// 	}
+//          String b = v.elementAt(5).toString();
+//          /*
+//            if (b.equals("Up"))
+//            new jmapSoundPlayer(f.jmap, "up.au");
+//            else if (b.equals("not"))
+//            new jmapSoundPlayer(f.jmap, "noanswer.au");
+//          */
+//      }
 //     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeMOOTWCategory.java,v $
 // $RCSfile: CodeMOOTWCategory.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,7 +36,7 @@ import java.util.List;
 public class CodeMOOTWCategory extends CodePosition {
 
     public CodeMOOTWCategory() {
-	super("MOOTW Categories", 3, 3);
+        super("MOOTW Categories", 3, 3);
     }
 
 }

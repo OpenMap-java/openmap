@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/ChoiceList.java,v $
 // $RCSfile: ChoiceList.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,46 +28,46 @@ import java.util.Vector;
 public class ChoiceList extends Vector {
 
     public ChoiceList() {
-	super();
+        super();
     }
 
     public void add(String label, Object value) {
-	ChoiceItem it = null;
+        ChoiceItem it = null;
 
-	if ((it = this.get(label)) != null) {
-	    it.set(value);
-	    return;
-	}
+        if ((it = this.get(label)) != null) {
+            it.set(value);
+            return;
+        }
 
-	it = new ChoiceItem(label, value);
-	super.addElement((Object)it);
+        it = new ChoiceItem(label, value);
+        super.addElement((Object)it);
     }
 
     public String labelAt(int index) {
-	if (index >= this.size()) {
-	    return null;
-	}
+        if (index >= this.size()) {
+            return null;
+        }
 
-	return (((ChoiceItem)super.elementAt(index)).label());
+        return (((ChoiceItem)super.elementAt(index)).label());
     }
 
     public Object valueAt(int index) {
-	if (index >= this.size()) {
-	    return null;
-	}
+        if (index >= this.size()) {
+            return null;
+        }
 
-	return (((ChoiceItem)super.elementAt(index)).value());
+        return (((ChoiceItem)super.elementAt(index)).value());
     }
 
     public ChoiceItem get(String label) {
-	for (int i = 0; i < this.size(); i++) {
-	    ChoiceItem item = (ChoiceItem)super.elementAt(i);
+        for (int i = 0; i < this.size(); i++) {
+            ChoiceItem item = (ChoiceItem)super.elementAt(i);
 
-	    if (item.label().equals(label)) {
-		return item;
-	    }
-	}
+            if (item.label().equals(label)) {
+                return item;
+            }
+        }
 
-	return null;
+        return null;
     }
 }

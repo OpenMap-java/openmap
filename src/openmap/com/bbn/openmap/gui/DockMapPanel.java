@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/DockMapPanel.java,v $
 // $RCSfile: DockMapPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/09 20:20:32 $
-// $Author: blubin $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -61,7 +61,7 @@ public class DockMapPanel extends BasicMapPanel implements DockPanel {
      * components for the MapPanel.
      */
     public DockMapPanel() {
-	this(false);
+        this(false);
     }
 
     /**
@@ -71,7 +71,7 @@ public class DockMapPanel extends BasicMapPanel implements DockPanel {
      * programmer will call <code>create()</code>
      */
     public DockMapPanel(boolean delayCreation) {
-	this(null, delayCreation);
+        this(null, delayCreation);
     }
 
     /**
@@ -80,7 +80,7 @@ public class DockMapPanel extends BasicMapPanel implements DockPanel {
      * PropertyHandler is null, a new one will be created.
      */
     public DockMapPanel(PropertyHandler propertyHandler) {
-	this(propertyHandler, false);
+        this(propertyHandler, false);
     }
 
     /**
@@ -92,168 +92,168 @@ public class DockMapPanel extends BasicMapPanel implements DockPanel {
      * programmer will call <code>create()</code>
      */
     public DockMapPanel(PropertyHandler propertyHandler, 
-			 boolean delayCreation) {
-	super(propertyHandler, delayCreation);
+                         boolean delayCreation) {
+        super(propertyHandler, delayCreation);
     }
 
     //From BasicMapPanel:
     /////////////////////
 
     protected final LayoutManager createLayoutManager() {
-	return new BorderLayout();
+        return new BorderLayout();
     }
 
     protected final void addMapBeanToPanel(MapBean map) {
-	setBackgroundComponent(map);
+        setBackgroundComponent(map);
     }
 
     protected void createComponents() {
-	dockPanel = new BasicDockPanel();
-	super.add(dockPanel, BorderLayout.CENTER);
-	super.createComponents();
+        dockPanel = new BasicDockPanel();
+        super.add(dockPanel, BorderLayout.CENTER);
+        super.createComponents();
     }
 
     /**
      * Add a child to the MapPanel.
      */
     protected void addMapPanelChild(MapPanelChild mpc) {
-	//For now, just dock it somewhere... really we need to
-	//determine constraints for it some how (maybe by asking it for them?
-	//mps.getPreferredLocation()
-	//Debug.output("Adding MapPanelChild: " + mpc);
-	dockPanel.add((JComponent)mpc);
-	dockPanel.dockSomewhere((JComponent)mpc);
+        //For now, just dock it somewhere... really we need to
+        //determine constraints for it some how (maybe by asking it for them?
+        //mps.getPreferredLocation()
+        //Debug.output("Adding MapPanelChild: " + mpc);
+        dockPanel.add((JComponent)mpc);
+        dockPanel.dockSomewhere((JComponent)mpc);
     }
 
     //From DockablePanel:
     /////////////////////
 
     public JComponent getBackgroundComponent() {
-	return dockPanel.getBackgroundComponent();
+        return dockPanel.getBackgroundComponent();
     }
 
     public void setBackgroundComponent(JComponent back) {
-	dockPanel.setBackgroundComponent(back);
+        dockPanel.setBackgroundComponent(back);
     }
 
     public void setConstraint(JComponent child, DockConstraint c) {
-	dockPanel.setConstraint(child, c);
+        dockPanel.setConstraint(child, c);
     }
 
     public DockConstraint getConstraint(JComponent child) {
-	return dockPanel.getConstraint(child);
+        return dockPanel.getConstraint(child);
     }
 
     public void removeConstraint(JComponent child) {
-	dockPanel.removeConstraint(child);
+        dockPanel.removeConstraint(child);
     }
 
     public void setPreferredHeight(JComponent child, int i) {
-	dockPanel.setPreferredHeight(child, i);
+        dockPanel.setPreferredHeight(child, i);
     }
 
     public void setPreferredWidth(JComponent child, int i) {
-	dockPanel.setPreferredWidth(child, i);
+        dockPanel.setPreferredWidth(child, i);
     }
 
     public void setCanOcclude(JComponent child, boolean b) {
-	dockPanel.setCanOcclude(child, b);
+        dockPanel.setCanOcclude(child, b);
     }
 
     public void setCanTransparent(JComponent child, boolean b) {
-	dockPanel.setCanTransparent(child, b);
+        dockPanel.setCanTransparent(child, b);
     }
 
     public void setCanResize(JComponent child, boolean b) {
-	dockPanel.setCanResize(child, b);
+        dockPanel.setCanResize(child, b);
     }
 
     public void setCanTab(JComponent child, boolean b) {
-	dockPanel.setCanTab(child, b);
+        dockPanel.setCanTab(child, b);
     }
 
     public void setTabName(JComponent child, String tabName) {
-	dockPanel.setTabName(child, tabName);
+        dockPanel.setTabName(child, tabName);
     }
 
     public void setCanExternalFrame(JComponent child, boolean b) {
-	dockPanel.setCanExternalFrame(child, b);
+        dockPanel.setCanExternalFrame(child, b);
     }
 
     public void setCanInternalFrame(JComponent child, boolean b) {
-	dockPanel.setCanInternalFrame(child, b);
+        dockPanel.setCanInternalFrame(child, b);
     }
 
     public void setCanClose(JComponent child, boolean b) {
-	dockPanel.setCanClose(child, b);
+        dockPanel.setCanClose(child, b);
     }
 
     public void setCanDockNorth(JComponent child, boolean b) {
-	dockPanel.setCanDockNorth(child, b);
+        dockPanel.setCanDockNorth(child, b);
     }
 
     public void setCanDockSouth(JComponent child, boolean b) {
-	dockPanel.setCanDockSouth(child, b);
+        dockPanel.setCanDockSouth(child, b);
     }
 
     public void setCanDockEast(JComponent child, boolean b) {
-	dockPanel.setCanDockEast(child, b);
+        dockPanel.setCanDockEast(child, b);
     }
 
     public void setCanDockWest(JComponent child, boolean b) {
-	dockPanel.setCanDockWest(child, b);
+        dockPanel.setCanDockWest(child, b);
     }
 
     public void dockNorth(JComponent child) {
-	dockPanel.dockNorth(child);
+        dockPanel.dockNorth(child);
     }
 
     public void dockNorth(JComponent child, int idx) {
-	dockPanel.dockNorth(child, idx);
+        dockPanel.dockNorth(child, idx);
     }
 
     public void dockSouth(JComponent child) {
-	dockPanel.dockSouth(child);
+        dockPanel.dockSouth(child);
     }
 
     public void dockSouth(JComponent child, int idx) {
-	dockPanel.dockSouth(child, idx);
+        dockPanel.dockSouth(child, idx);
     }
    
     public void dockEast(JComponent child) {
-	dockPanel.dockEast(child);
+        dockPanel.dockEast(child);
     }
 
     public void dockEast(JComponent child, int idx) {
-	dockPanel.dockEast(child, idx);
+        dockPanel.dockEast(child, idx);
     }
 
     public void dockWest(JComponent child) {
-	dockPanel.dockWest(child);
+        dockPanel.dockWest(child);
     }
 
     public void dockWest(JComponent child, int idx) {
-	dockPanel.dockWest(child, idx);
+        dockPanel.dockWest(child, idx);
     }
 
     public void dockSomewhere(JComponent child) {
-	dockPanel.dockSomewhere(child);
+        dockPanel.dockSomewhere(child);
     }
 
     public void dock(JComponent outter, JComponent inner) {
-	dockPanel.dock(outter, inner);
+        dockPanel.dock(outter, inner);
     }
 
     public void dock(JComponent outter, JComponent inner, int idx) {
-	dockPanel.dock(outter, inner, idx);
+        dockPanel.dock(outter, inner, idx);
     }
 
     public void internalFrame(JComponent child) {
-	dockPanel.internalFrame(child);
+        dockPanel.internalFrame(child);
     }
 
     public void externalFrame(JComponent child) {
-	dockPanel.externalFrame(child);
+        dockPanel.externalFrame(child);
     }
 
     //Overwrite from Component:
@@ -263,27 +263,27 @@ public class DockMapPanel extends BasicMapPanel implements DockPanel {
      * We need to handle adding the component specially.
      */
     public Component add(Component comp) {
-	return dockPanel.add(comp);
+        return dockPanel.add(comp);
     }
 
     /** 
      * We need to handle adding the component specially.
      */
     public void add(Component comp, Object constraints) {
-	dockPanel.add(comp, constraints);
+        dockPanel.add(comp, constraints);
     }
 
     /** 
      * We need to handle removing the component specially.
      */
     public void remove(Component comp) {
-	dockPanel.remove(comp);
+        dockPanel.remove(comp);
     }
 
     /** 
      * We need to handle removing all components specially.
      */
     public void removeAll() {
-	dockPanel.removeAll();
+        dockPanel.removeAll();
     }
 }

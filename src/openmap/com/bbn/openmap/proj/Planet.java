@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Planet.java,v $
 // $RCSfile: Planet.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/21 18:49:51 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,20 +42,20 @@ public class Planet {
     final public static transient float wgs84_earthPolarRadiusMeters = 6356752.3142f;
     final public static transient float wgs84_earthEquatorialRadiusMeters = 6378137.0f;
     final public static transient float wgs84_earthFlat =
-	1 - (wgs84_earthPolarRadiusMeters/wgs84_earthEquatorialRadiusMeters);// 1 - (minor/major) = 1/298.257
+        1 - (wgs84_earthPolarRadiusMeters/wgs84_earthEquatorialRadiusMeters);// 1 - (minor/major) = 1/298.257
     final public static transient float wgs84_earthEccen =
-	(float)Math.sqrt(2*wgs84_earthFlat - (wgs84_earthFlat*wgs84_earthFlat));// sqrt(2*f - f^2) = 0.081819221f
+        (float)Math.sqrt(2*wgs84_earthFlat - (wgs84_earthFlat*wgs84_earthFlat));// sqrt(2*f - f^2) = 0.081819221f
 
     final public static transient float wgs84_earthEquatorialCircumferenceMeters =
-	MoreMath.TWO_PI*wgs84_earthEquatorialRadiusMeters;
+        MoreMath.TWO_PI*wgs84_earthEquatorialRadiusMeters;
     final public static transient float wgs84_earthEquatorialCircumferenceKM =
-	wgs84_earthEquatorialCircumferenceMeters/1000f;
+        wgs84_earthEquatorialCircumferenceMeters/1000f;
     final public static transient float wgs84_earthEquatorialCircumferenceMiles =
-	wgs84_earthEquatorialCircumferenceKM*0.62137119f;//HACK use UNIX units?
+        wgs84_earthEquatorialCircumferenceKM*0.62137119f;//HACK use UNIX units?
     final public static transient float wgs84_earthEquatorialCircumferenceNMiles =
- 	21600.0f; // 60.0f * 360.0f; // sixty nm per degree
-// 	wgs84_earthEquatorialCircumferenceKM*0.5389892f; // calculated, same as line above.
-//   	wgs84_earthEquatorialCircumferenceKM*0.5399568f;//HACK use UNIX units? << This was wrong.
+        21600.0f; // 60.0f * 360.0f; // sixty nm per degree
+//      wgs84_earthEquatorialCircumferenceKM*0.5389892f; // calculated, same as line above.
+//      wgs84_earthEquatorialCircumferenceKM*0.5399568f;//HACK use UNIX units? << This was wrong.
 
     // Mars
     final public static transient float marsEquatorialRadius = 3393400.0f;// meters
@@ -67,8 +67,8 @@ public class Planet {
     final public static transient float international1974_earthPolarRadiusMeters = 6356911.946f;
     final public static transient float international1974_earthEquatorialRadiusMeters = 6378388f;
     final public static transient float international1974_earthFlat =
-	1 - (international1974_earthPolarRadiusMeters/
-		international1974_earthEquatorialRadiusMeters);// 1 - (minor/major) = 1/297
+        1 - (international1974_earthPolarRadiusMeters/
+                international1974_earthEquatorialRadiusMeters);// 1 - (minor/major) = 1/297
 
 
     // Extra scale constant for better viewing of maps (do not use this to

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MoreMath.java,v $
 // $RCSfile: MoreMath.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:47:43 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:05 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -27,8 +27,8 @@ package com.bbn.openmap;
  * MoreMath provides functions that are not part of the standard Math class.
  * <p> <pre>
  * Functions:
- *	asinh(float x) - hyperbolic arcsine
- *	sinh(float x) - hyperbolic sine
+ *      asinh(float x) - hyperbolic arcsine
+ *      sinh(float x) - hyperbolic sine
  *
  * Need to Implement:
  * Function                Definition                              
@@ -73,7 +73,7 @@ public class MoreMath {
      * @return boolean
      */
     final public static boolean approximately_equal(double a, double b, double epsilon) {
-	return (Math.abs(a-b) <= epsilon);
+        return (Math.abs(a-b) <= epsilon);
     }
 
     /**
@@ -86,7 +86,7 @@ public class MoreMath {
      * @return boolean
      */
     final public static boolean approximately_equal(float a, float b, float epsilon) {
-	return (Math.abs(a-b) <= epsilon);
+        return (Math.abs(a-b) <= epsilon);
     }
 
     /**
@@ -97,7 +97,7 @@ public class MoreMath {
      * @return float asinh(x)
      */
     public static final float asinh(float x) {
-	return (float)Math.log(x + Math.sqrt(x * x + 1));
+        return (float)Math.log(x + Math.sqrt(x * x + 1));
     }
 
     /**
@@ -108,7 +108,7 @@ public class MoreMath {
      * @return double asinh(x)
      */
     public static final double asinh(double x) {
-	return(double)Math.log(x + Math.sqrt(x * x + 1));
+        return(double)Math.log(x + Math.sqrt(x * x + 1));
     }
 
     /**
@@ -119,7 +119,7 @@ public class MoreMath {
      * @return float sinh(x)
      */
     public static final float sinh(float x) {
-	return (float)(Math.pow(Math.E,x) - Math.pow(Math.E,-x)) / 2.0f;
+        return (float)(Math.pow(Math.E,x) - Math.pow(Math.E,-x)) / 2.0f;
     }
 
     /**
@@ -130,7 +130,7 @@ public class MoreMath {
      * @return double sinh(x)
      */
     public static final double sinh(double x) {
-	return (double)(Math.pow(Math.E,x) - Math.pow(Math.E,-x)) / 2.0d;
+        return (double)(Math.pow(Math.E,x) - Math.pow(Math.E,-x)) / 2.0d;
     }
 
     // HACK - are there functions that already exist?
@@ -140,7 +140,7 @@ public class MoreMath {
      * @return int sign -1, 1
      */
     public static final int sign(short x) {
-	return (x < 0) ? -1 : 1;
+        return (x < 0) ? -1 : 1;
     }
 
     /**
@@ -149,7 +149,7 @@ public class MoreMath {
      * @return int sign -1, 1
      */
     public static final int sign(int x) {
-	return (x < 0) ? -1 : 1;
+        return (x < 0) ? -1 : 1;
     }
 
     /**
@@ -158,7 +158,7 @@ public class MoreMath {
      * @return int sign -1, 1
      */
     public static final int sign(long x) {
-	return (x < 0) ? -1 : 1;
+        return (x < 0) ? -1 : 1;
     }
 
     /**
@@ -167,7 +167,7 @@ public class MoreMath {
      * @return int sign -1, 1
      */
     public static final int sign(float x) {
-	return (x < 0f) ? -1 : 1;
+        return (x < 0f) ? -1 : 1;
     }
 
     /**
@@ -176,7 +176,7 @@ public class MoreMath {
      * @return int sign -1, 1
      */
     public static final int sign(double x) {
-	return (x < 0d) ? -1 : 1;
+        return (x < 0d) ? -1 : 1;
     }
 
     /**
@@ -185,7 +185,7 @@ public class MoreMath {
      * @return boolean
      */
     public static final boolean odd(short x) {
-	return !even(x);
+        return !even(x);
     }
 
     /**
@@ -194,7 +194,7 @@ public class MoreMath {
      * @return boolean
      */
     public static final boolean odd(int x) {
-	return !even(x);
+        return !even(x);
     }
 
     /**
@@ -203,7 +203,7 @@ public class MoreMath {
      * @return boolean
      */
     public static final boolean odd(long x) {
-	return !even(x);
+        return !even(x);
     }
 
     /**
@@ -212,7 +212,7 @@ public class MoreMath {
      * @return boolean
      */
     public static final boolean even(short x) {
-	return ((x & 0x1) == 0);
+        return ((x & 0x1) == 0);
     }
 
     /**
@@ -221,7 +221,7 @@ public class MoreMath {
      * @return boolean
      */
     public static final boolean even(int x) {
-	return ((x & 0x1) == 0);
+        return ((x & 0x1) == 0);
     }
 
     /**
@@ -230,7 +230,7 @@ public class MoreMath {
      * @return boolean
      */
     public static final boolean even(long x) {
-	return ((x & 0x1) == 0);
+        return ((x & 0x1) == 0);
     }
 
     /**
@@ -240,7 +240,7 @@ public class MoreMath {
      * @return int (0 &lt;= b &lt;= 255)
      */
     public static final int signedToInt(byte b) {
-	return ((int)b & 0xff);
+        return ((int)b & 0xff);
     }
 
     /**
@@ -250,7 +250,7 @@ public class MoreMath {
      * @return int (0 &lt;= b &lt;= 65535)
      */
     public static final int signedToInt(short w) {
-	return ((int)w & 0xffff);
+        return ((int)w & 0xffff);
     }
 
     /**
@@ -260,7 +260,7 @@ public class MoreMath {
      * @return long (0 &lt;= x &lt;= 4294967295)
      */
     public static final long signedToLong(int x) {
-	return ((long)x & 0xFFFFFFFFL);
+        return ((long)x & 0xFFFFFFFFL);
     }
 
     /**
@@ -270,7 +270,7 @@ public class MoreMath {
      * @return int (0 &lt;= w &lt;= 255)
      */
     public static final int wordToByte(int w) {
-	return w>>8;
+        return w>>8;
     }
 
     /**
@@ -280,8 +280,8 @@ public class MoreMath {
      * @return short
      */
     public static final short BuildShortBE(byte bytevec[], int offset) {
-	return (short)(((int)(bytevec[0+offset]) << 8) |
-		       (signedToInt(bytevec[1+offset])));
+        return (short)(((int)(bytevec[0+offset]) << 8) |
+                       (signedToInt(bytevec[1+offset])));
     }
 
     /**
@@ -291,8 +291,8 @@ public class MoreMath {
      * @return short
      */
     public static final short BuildShortLE(byte bytevec[], int offset) {
-	return (short)(((int)(bytevec[1+offset]) << 8) |
-		       (signedToInt(bytevec[0+offset])));
+        return (short)(((int)(bytevec[1+offset]) << 8) |
+                       (signedToInt(bytevec[0+offset])));
     }
 
     /**
@@ -303,12 +303,12 @@ public class MoreMath {
      * @return short
      */
     public static final short BuildShort(byte bytevec[], int offset,
-					 boolean MSBFirst) {
-	if (MSBFirst) {
-	    return(BuildShortBE(bytevec, offset));
-	} else {
-	    return(BuildShortLE(bytevec, offset));
-	}
+                                         boolean MSBFirst) {
+        if (MSBFirst) {
+            return(BuildShortBE(bytevec, offset));
+        } else {
+            return(BuildShortLE(bytevec, offset));
+        }
     }
 
     /**
@@ -319,7 +319,7 @@ public class MoreMath {
      */
 
     public static final short BuildShortBE(byte bytevec[], boolean MSBFirst) {
-	return BuildShortBE(bytevec, 0);
+        return BuildShortBE(bytevec, 0);
     }
 
     /**
@@ -329,7 +329,7 @@ public class MoreMath {
      * @return short
      */
     public static final short BuildShortLE(byte bytevec[], boolean MSBFirst) {
-	return BuildShortLE(bytevec, 0);
+        return BuildShortLE(bytevec, 0);
     }
 
     /**
@@ -339,7 +339,7 @@ public class MoreMath {
      * @return short
      */
     public static final short BuildShort(byte bytevec[], boolean MSBFirst) {
-	return BuildShort(bytevec, 0, MSBFirst);
+        return BuildShort(bytevec, 0, MSBFirst);
     }
 
     /**
@@ -349,10 +349,10 @@ public class MoreMath {
      * @return int
      */
     public static final int BuildIntegerBE(byte bytevec[], int offset) {
-	return(((int)(bytevec[0+offset]) << 24) |
-	       (signedToInt(bytevec[1+offset]) << 16) |
-	       (signedToInt(bytevec[2+offset]) << 8) |
-	       (signedToInt(bytevec[3+offset])));
+        return(((int)(bytevec[0+offset]) << 24) |
+               (signedToInt(bytevec[1+offset]) << 16) |
+               (signedToInt(bytevec[2+offset]) << 8) |
+               (signedToInt(bytevec[3+offset])));
     }
 
     /**
@@ -362,10 +362,10 @@ public class MoreMath {
      * @return int
      */
     public static final int BuildIntegerLE(byte bytevec[], int offset) {
-	return(((int)(bytevec[3+offset]) << 24) |
-	       (signedToInt(bytevec[2+offset]) << 16) |
-	       (signedToInt(bytevec[1+offset]) << 8) |
-	       (signedToInt(bytevec[0+offset])));
+        return(((int)(bytevec[3+offset]) << 24) |
+               (signedToInt(bytevec[2+offset]) << 16) |
+               (signedToInt(bytevec[1+offset]) << 8) |
+               (signedToInt(bytevec[0+offset])));
     }       
 
     /**
@@ -376,11 +376,11 @@ public class MoreMath {
      * @return int
      */
     public static final int BuildInteger(byte bytevec[], int offset,
-					 boolean MSBFirst) {
-	if (MSBFirst)
-	    return BuildIntegerBE(bytevec, offset);
-	else
-	    return BuildIntegerLE(bytevec, offset);
+                                         boolean MSBFirst) {
+        if (MSBFirst)
+            return BuildIntegerBE(bytevec, offset);
+        else
+            return BuildIntegerLE(bytevec, offset);
     }
 
     /**
@@ -389,7 +389,7 @@ public class MoreMath {
      * @return int
      */
     public static final int BuildIntegerBE(byte bytevec[]) {
-	return BuildIntegerBE(bytevec, 0);
+        return BuildIntegerBE(bytevec, 0);
     }
 
     /**
@@ -398,7 +398,7 @@ public class MoreMath {
      * @return int
      */
     public static final int BuildIntegerLE(byte bytevec[]) {
-	return BuildIntegerLE(bytevec, 0);
+        return BuildIntegerLE(bytevec, 0);
     }
 
     /**
@@ -408,10 +408,10 @@ public class MoreMath {
      * @return int
      */
     public static final int BuildInteger(byte bytevec[], boolean MSBFirst) {
-	if (MSBFirst)
-	    return BuildIntegerBE(bytevec, 0);
-	else
-	    return BuildIntegerLE(bytevec, 0);
+        if (MSBFirst)
+            return BuildIntegerBE(bytevec, 0);
+        else
+            return BuildIntegerLE(bytevec, 0);
     }
  
     /**
@@ -421,14 +421,14 @@ public class MoreMath {
      * @return long
      */
     public static final long BuildLongBE(byte bytevec[], int offset) {
-	    return(((long)signedToInt(bytevec[0+offset]) << 56) |
-		   ((long)signedToInt(bytevec[1+offset]) << 48) |
-		   ((long)signedToInt(bytevec[2+offset]) << 40) |
-		   ((long)signedToInt(bytevec[3+offset]) << 32) |
-		   ((long)signedToInt(bytevec[4+offset]) << 24) |
-		   ((long)signedToInt(bytevec[5+offset]) << 16) |
-		   ((long)signedToInt(bytevec[6+offset]) << 8)  | 
-		   ((long)signedToInt(bytevec[7+offset])));
+            return(((long)signedToInt(bytevec[0+offset]) << 56) |
+                   ((long)signedToInt(bytevec[1+offset]) << 48) |
+                   ((long)signedToInt(bytevec[2+offset]) << 40) |
+                   ((long)signedToInt(bytevec[3+offset]) << 32) |
+                   ((long)signedToInt(bytevec[4+offset]) << 24) |
+                   ((long)signedToInt(bytevec[5+offset]) << 16) |
+                   ((long)signedToInt(bytevec[6+offset]) << 8)  | 
+                   ((long)signedToInt(bytevec[7+offset])));
     }
  
     /**
@@ -438,14 +438,14 @@ public class MoreMath {
      * @return long
      */
     public static final long BuildLongLE(byte bytevec[], int offset) {
-	    return(((long)signedToInt(bytevec[7+offset]) << 56) | 
-		   ((long)signedToInt(bytevec[6+offset]) << 48) |
-		   ((long)signedToInt(bytevec[5+offset]) << 40) | 
-		   ((long)signedToInt(bytevec[4+offset]) << 32) |
-		   ((long)signedToInt(bytevec[3+offset]) << 24) |
-		   ((long)signedToInt(bytevec[2+offset]) << 16) |
-		   ((long)signedToInt(bytevec[1+offset]) << 8)  | 
-		   ((long)signedToInt(bytevec[0+offset])));
+            return(((long)signedToInt(bytevec[7+offset]) << 56) | 
+                   ((long)signedToInt(bytevec[6+offset]) << 48) |
+                   ((long)signedToInt(bytevec[5+offset]) << 40) | 
+                   ((long)signedToInt(bytevec[4+offset]) << 32) |
+                   ((long)signedToInt(bytevec[3+offset]) << 24) |
+                   ((long)signedToInt(bytevec[2+offset]) << 16) |
+                   ((long)signedToInt(bytevec[1+offset]) << 8)  | 
+                   ((long)signedToInt(bytevec[0+offset])));
     }
  
     /**
@@ -456,11 +456,11 @@ public class MoreMath {
      * @return long
      */
     public static final long BuildLong(byte bytevec[], int offset,
-				       boolean MSBFirst) {
-	if (MSBFirst)
-	    return BuildLongBE(bytevec, offset);
-	else
-	    return BuildLongLE(bytevec, offset);
+                                       boolean MSBFirst) {
+        if (MSBFirst)
+            return BuildLongBE(bytevec, offset);
+        else
+            return BuildLongLE(bytevec, offset);
     }
 
     /**
@@ -469,7 +469,7 @@ public class MoreMath {
      * @return long
      */
     public static final long BuildLongBE(byte bytevec[]) {
-	return BuildLongBE(bytevec, 0);
+        return BuildLongBE(bytevec, 0);
     }
  
     /**
@@ -478,7 +478,7 @@ public class MoreMath {
      * @return long
      */
     public static final long BuildLongLE(byte bytevec[]) {
-	return BuildLongLE(bytevec, 0);
+        return BuildLongLE(bytevec, 0);
     }
 
     /**
@@ -488,26 +488,26 @@ public class MoreMath {
      * @return long
      */
     public static final long BuildLong(byte bytevec[], boolean MSBFirst) {
-	if (MSBFirst)
-	    return BuildLongBE(bytevec, 0);
-	else
-	    return BuildLongLE(bytevec, 0);
+        if (MSBFirst)
+            return BuildLongBE(bytevec, 0);
+        else
+            return BuildLongLE(bytevec, 0);
     }
 
     /*
     public static final void main(String[] args) {
-	byte[] b = new byte[4];
-	b[0] = (byte)0xff;
-	b[1] = (byte)0x7f;
-	com.bbn.openmap.util.Debug.output("32767="+BuildShortLE(b, 0));
-	b[0] = (byte)0x7f;
-	b[1] = (byte)0xff;
-	com.bbn.openmap.util.Debug.output("32767="+BuildShortBE(b, 0));
-	b[1] = (byte)0xff;
-	b[2] = (byte)0xff;
-	b[3] = (byte)0xff;
-	com.bbn.openmap.util.Debug.output("2147483647="+BuildIntegerBE(b, 0));
-	com.bbn.openmap.util.Debug.output("maxuint="+signedToLong(0xffffffff));
+        byte[] b = new byte[4];
+        b[0] = (byte)0xff;
+        b[1] = (byte)0x7f;
+        com.bbn.openmap.util.Debug.output("32767="+BuildShortLE(b, 0));
+        b[0] = (byte)0x7f;
+        b[1] = (byte)0xff;
+        com.bbn.openmap.util.Debug.output("32767="+BuildShortBE(b, 0));
+        b[1] = (byte)0xff;
+        b[2] = (byte)0xff;
+        b[3] = (byte)0xff;
+        com.bbn.openmap.util.Debug.output("2147483647="+BuildIntegerBE(b, 0));
+        com.bbn.openmap.util.Debug.output("maxuint="+signedToLong(0xffffffff));
     }
     */
 }

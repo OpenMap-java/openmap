@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServerUtils.java,v $
 // $RCSfile: ImageServerUtils.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/11/14 20:23:32 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,41 +44,41 @@ public class ImageServerUtils implements ImageServerConstants {
      * the ImageServerConstants interface. 
      */
     public static Proj createOMProjection(Properties props, 
-					  Projection defaultProj) {
+                                          Projection defaultProj) {
 
-	float scale = PropUtils.floatFromProperties(props, SCALE, 
-						     defaultProj.getScale());
-	int height = PropUtils.intFromProperties(props, HEIGHT, 
-						  defaultProj.getHeight());
-	int width = PropUtils.intFromProperties(props, WIDTH, 
-						 defaultProj.getWidth());
-	com.bbn.openmap.LatLonPoint llp = defaultProj.getCenter();
-	float longitude = PropUtils.floatFromProperties(props,  LON, 
-							 llp.getLongitude());
-	float latitude = PropUtils.floatFromProperties(props, LAT, 
-							llp.getLatitude());
-	String projType = props.getProperty(PROJTYPE);
-	int projID;
-	if (projType == null) {
-	    projID = defaultProj.getProjectionType();
-	} else {
-	    projID = ProjectionFactory.getProjType(projType);
-	}
+        float scale = PropUtils.floatFromProperties(props, SCALE, 
+                                                     defaultProj.getScale());
+        int height = PropUtils.intFromProperties(props, HEIGHT, 
+                                                  defaultProj.getHeight());
+        int width = PropUtils.intFromProperties(props, WIDTH, 
+                                                 defaultProj.getWidth());
+        com.bbn.openmap.LatLonPoint llp = defaultProj.getCenter();
+        float longitude = PropUtils.floatFromProperties(props,  LON, 
+                                                         llp.getLongitude());
+        float latitude = PropUtils.floatFromProperties(props, LAT, 
+                                                        llp.getLatitude());
+        String projType = props.getProperty(PROJTYPE);
+        int projID;
+        if (projType == null) {
+            projID = defaultProj.getProjectionType();
+        } else {
+            projID = ProjectionFactory.getProjType(projType);
+        }
 
-	if (Debug.debugging("imageserver")) {
-	    Debug.output("ImageServerUtils.createOMProjection: projection of type " + 
-			 projType + 
-			 ", with HEIGHT = " + height + 
-			 ", WIDTH = " + width + 
-			 ", lat = " + latitude + 
-			 ", lon = " + longitude);
-	}
+        if (Debug.debugging("imageserver")) {
+            Debug.output("ImageServerUtils.createOMProjection: projection of type " + 
+                         projType + 
+                         ", with HEIGHT = " + height + 
+                         ", WIDTH = " + width + 
+                         ", lat = " + latitude + 
+                         ", lon = " + longitude);
+        }
 
-	Proj proj = (Proj) ProjectionFactory.makeProjection(
-	    projID, latitude, longitude, scale, width, height);
-	
+        Proj proj = (Proj) ProjectionFactory.makeProjection(
+            projID, latitude, longitude, scale, width, height);
+        
 
-	return (Proj) proj;
+        return (Proj) proj;
     }
 
     /**
@@ -87,26 +87,26 @@ public class ImageServerUtils implements ImageServerConstants {
      * @return Color object for background.
      */
     public static Color getBackground(Properties props) {
-	boolean transparent = 
-	    PropUtils.booleanFromProperties(props, TRANSPARENT, false);
+        boolean transparent = 
+            PropUtils.booleanFromProperties(props, TRANSPARENT, false);
 
-	Color backgroundColor = 
-	    PropUtils.parseColorFromProperties(props, BGCOLOR, "FFFFFF");
+        Color backgroundColor = 
+            PropUtils.parseColorFromProperties(props, BGCOLOR, "FFFFFF");
 
-	if (transparent) {
-	    backgroundColor = 
-		new Color(backgroundColor.getRed(),
-			  backgroundColor.getGreen(),
-			  backgroundColor.getBlue(),
-			  0x00);
-	}
+        if (transparent) {
+            backgroundColor = 
+                new Color(backgroundColor.getRed(),
+                          backgroundColor.getGreen(),
+                          backgroundColor.getBlue(),
+                          0x00);
+        }
 
-	if (Debug.debugging("imageserver")) {
-	    Debug.output("ImageServerUtils.createOMProjection: projection color: " + 
-			 Integer.toHexString(backgroundColor.getRGB()) + 
-			 ", transparent(" + transparent + ")");
-	}
+        if (Debug.debugging("imageserver")) {
+            Debug.output("ImageServerUtils.createOMProjection: projection color: " + 
+                         Integer.toHexString(backgroundColor.getRGB()) + 
+                         ", transparent(" + transparent + ")");
+        }
 
-	return backgroundColor;
+        return backgroundColor;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMDistance.java,v $
 // $RCSfile: OMDistance.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/14 20:50:27 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,7 +53,7 @@ public class OMDistance extends OMPoly {
      */
     public OMDistance() {
         super();
-	setRenderType(RENDERTYPE_LATLON);
+        setRenderType(RENDERTYPE_LATLON);
     }
 
     /**
@@ -77,7 +77,7 @@ public class OMDistance extends OMPoly {
      * @param lType line type, from a list defined in OMGraphic.
      */
     public OMDistance(float[] llPoints, int units, int lType, Length distanceUnits) {
-	this(llPoints, units, lType, -1, distanceUnits);
+        this(llPoints, units, lType, -1, distanceUnits);
     }
 
     /**
@@ -104,60 +104,60 @@ public class OMDistance extends OMPoly {
      * 1, this value is generated internally)
      */
     public OMDistance(float[] llPoints, int units, int lType, int nsegs, Length distanceUnits) {
-	super(llPoints, units, lType, nsegs);
-	setDistUnits(distanceUnits);
+        super(llPoints, units, lType, nsegs);
+        setDistUnits(distanceUnits);
     }
 
     /**
      * Set the Length object used to represent distances.
      */
     public void setDistUnits(Length distanceUnits) {
-	distUnits = distanceUnits;
+        distUnits = distanceUnits;
     }
 
     /**
      * Get the Length object used to represent distances.
      */
     public Length getDistUnits() {
-	return distUnits;
+        return distUnits;
     }
 
     public void setLocation(float[] llPoints, int units) {
-	this.units = OMGraphic.RADIANS;
-	if (units == OMGraphic.DECIMAL_DEGREES) {
-	    ProjMath.arrayDegToRad(llPoints);
-	}
-	rawllpts = llPoints;
-	setNeedToRegenerate(true);
-	setRenderType(RENDERTYPE_LATLON);
+        this.units = OMGraphic.RADIANS;
+        if (units == OMGraphic.DECIMAL_DEGREES) {
+            ProjMath.arrayDegToRad(llPoints);
+        }
+        rawllpts = llPoints;
+        setNeedToRegenerate(true);
+        setRenderType(RENDERTYPE_LATLON);
     }
 
     public void createLabels() {
-	labels.clear();
-	points.clear();
+        labels.clear();
+        points.clear();
 
-	if (rawllpts == null) {
-	    return;
-	}
-	if (rawllpts.length < 4) {
-	    return;
-	}
+        if (rawllpts == null) {
+            return;
+        }
+        if (rawllpts.length < 4) {
+            return;
+        }
 
-	Geo lastGeo = Geo.createGeo(rawllpts[0], rawllpts[1]);
-	points.add(new OMPoint(ProjMath.radToDeg(rawllpts[0]), ProjMath.radToDeg(rawllpts[1]), 1));
+        Geo lastGeo = Geo.createGeo(rawllpts[0], rawllpts[1]);
+        points.add(new OMPoint(ProjMath.radToDeg(rawllpts[0]), ProjMath.radToDeg(rawllpts[1]), 1));
 
-	int l = 0;
-	float cumulativeDist = 0f;
-	for (int p = 2 ; p< rawllpts.length; p +=2) {
-	    Geo curGeo = Geo.createGeo(rawllpts[p], rawllpts[p+1]);
-	    
-	    float dist = getDist(lastGeo, curGeo);
-	    cumulativeDist += dist;
+        int l = 0;
+        float cumulativeDist = 0f;
+        for (int p = 2 ; p< rawllpts.length; p +=2) {
+            Geo curGeo = Geo.createGeo(rawllpts[p], rawllpts[p+1]);
+            
+            float dist = getDist(lastGeo, curGeo);
+            cumulativeDist += dist;
 
-	    labels.add(createLabel(lastGeo, curGeo, dist, cumulativeDist, distUnits));
-	    points.add(new OMPoint(ProjMath.radToDeg(rawllpts[p]), ProjMath.radToDeg(rawllpts[p+1]), 1));
-	    lastGeo = curGeo;
-	}
+            labels.add(createLabel(lastGeo, curGeo, dist, cumulativeDist, distUnits));
+            points.add(new OMPoint(ProjMath.radToDeg(rawllpts[p]), ProjMath.radToDeg(rawllpts[p+1]), 1));
+            lastGeo = curGeo;
+        }
     }
 
     /** 
@@ -166,34 +166,34 @@ public class OMDistance extends OMPoly {
      * cumulative distance is specified.
      */
     public OMText createLabel(Geo g1, Geo g2,
-			      float dist, float cumulativeDist,
-			      Length distanceUnits) {
-	Geo mid;
-	switch (getLineType()) {
-	case LINETYPE_STRAIGHT:
-	    float lat = (float)(g1.getLatitude() + g2.getLatitude()) / 2f;
-	    float lon = (float)(g1.getLongitude() + g2.getLongitude()) / 2f;
-	    mid = new Geo(lat, lon);
-	    break;
-	case LINETYPE_RHUMB:
-	    System.err.println("Rhumb distance calculation not implemented.");
-	case LINETYPE_GREATCIRCLE:
-	case LINETYPE_UNKNOWN:
-	default:	
-	    mid = g1.midPoint(g2);
-	}
-	
-// 	String text = ((int)dist) + " (" + ((int)cumulativeDist) + ")";
+                              float dist, float cumulativeDist,
+                              Length distanceUnits) {
+        Geo mid;
+        switch (getLineType()) {
+        case LINETYPE_STRAIGHT:
+            float lat = (float)(g1.getLatitude() + g2.getLatitude()) / 2f;
+            float lon = (float)(g1.getLongitude() + g2.getLongitude()) / 2f;
+            mid = new Geo(lat, lon);
+            break;
+        case LINETYPE_RHUMB:
+            System.err.println("Rhumb distance calculation not implemented.");
+        case LINETYPE_GREATCIRCLE:
+        case LINETYPE_UNKNOWN:
+        default:        
+            mid = g1.midPoint(g2);
+        }
+        
+//      String text = ((int)dist) + " (" + ((int)cumulativeDist) + ")";
 
-	String text = (df.format(distanceUnits.fromRadians(dist))) + " (" + 
-	    (df.format(distanceUnits.fromRadians(cumulativeDist))) + ") " +
-	    distanceUnits.getAbbr();
-	OMText omtext = new OMText((float)mid.getLatitude(), 
-				   (float)mid.getLongitude(),
-				   text,
-				   OMText.JUSTIFY_LEFT);
-// 	omtext.setLinePaint(new Color(200, 200, 255));
-	return omtext;
+        String text = (df.format(distanceUnits.fromRadians(dist))) + " (" + 
+            (df.format(distanceUnits.fromRadians(cumulativeDist))) + ") " +
+            distanceUnits.getAbbr();
+        OMText omtext = new OMText((float)mid.getLatitude(), 
+                                   (float)mid.getLongitude(),
+                                   text,
+                                   OMText.JUSTIFY_LEFT);
+//      omtext.setLinePaint(new Color(200, 200, 255));
+        return omtext;
     }
 
     /**
@@ -201,19 +201,19 @@ public class OMDistance extends OMPoly {
      * The returned value is in radians.
      */
     public float getDist(Geo g1, Geo g2) {
-	switch (getLineType()) {
-	case LINETYPE_STRAIGHT:
-	    float lonDist = ProjMath.lonDistance((float)g2.getLongitude(),
-						 (float)g1.getLongitude());
-	    float latDist = (float)g2.getLatitude() - (float)g1.getLatitude();
-	    return (float)Math.sqrt(lonDist*lonDist + latDist*latDist);
-	case LINETYPE_RHUMB:
-	    Debug.error("Rhumb distance calculation not implemented.");
-	case LINETYPE_GREATCIRCLE:
-	case LINETYPE_UNKNOWN:
-	default:
-	    return (float)g1.distance(g2);
-	}
+        switch (getLineType()) {
+        case LINETYPE_STRAIGHT:
+            float lonDist = ProjMath.lonDistance((float)g2.getLongitude(),
+                                                 (float)g1.getLongitude());
+            float latDist = (float)g2.getLatitude() - (float)g1.getLatitude();
+            return (float)Math.sqrt(lonDist*lonDist + latDist*latDist);
+        case LINETYPE_RHUMB:
+            Debug.error("Rhumb distance calculation not implemented.");
+        case LINETYPE_GREATCIRCLE:
+        case LINETYPE_UNKNOWN:
+        default:
+            return (float)g1.distance(g2);
+        }
     }
 
     /**
@@ -223,11 +223,11 @@ public class OMDistance extends OMPoly {
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-	boolean ret = super.generate(proj);
-	createLabels();
-	labels.generate(proj);
-	points.generate(proj);
-	return ret;
+        boolean ret = super.generate(proj);
+        createLabels();
+        labels.generate(proj);
+        points.generate(proj);
+        return ret;
     }
 
     /**
@@ -243,24 +243,24 @@ public class OMDistance extends OMPoly {
      * @param g java.awt.Graphics to paint the poly onto.
      */
     public void render(Graphics g) {
-	super.render(g);
+        super.render(g);
 
-	if (!paintOnlyPoly) {
-	    labels.setLinePaint(getLinePaint());
-	    if (isMatted()) {
-		labels.setFillPaint(getMattingPaint());
-	    }
+        if (!paintOnlyPoly) {
+            labels.setLinePaint(getLinePaint());
+            if (isMatted()) {
+                labels.setFillPaint(getMattingPaint());
+            }
 
-	    points.setLinePaint(getLinePaint());
-	    points.setFillPaint(getLinePaint());
+            points.setLinePaint(getLinePaint());
+            points.setFillPaint(getLinePaint());
 
-	    labels.render(g);
-	    points.render(g);
-	}
+            labels.render(g);
+            points.render(g);
+        }
     }
 
     private void writeObject(java.io.ObjectOutputStream stream) 
-	throws java.io.IOException {
+        throws java.io.IOException {
         stream.defaultWriteObject();
         stream.writeObject(distUnits.getAbbr());
      }

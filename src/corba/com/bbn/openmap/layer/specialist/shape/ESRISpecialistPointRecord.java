@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/shape/ESRISpecialistPointRecord.java,v $
 // $RCSfile: ESRISpecialistPointRecord.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,7 +46,7 @@ public class ESRISpecialistPointRecord extends ESRIPointRecord
      * @param y the y coordinate
      */
     public ESRISpecialistPointRecord(double x, double y) {
-	super(x, y);
+        super(x, y);
     }
 
     /**
@@ -56,7 +56,7 @@ public class ESRISpecialistPointRecord extends ESRIPointRecord
      * @param off the offset into the buffer where the data starts
      */
     public ESRISpecialistPointRecord(byte b[], int off) throws IOException {
-	super(b, off);
+        super(b, off);
     }
 
     /**
@@ -67,12 +67,12 @@ public class ESRISpecialistPointRecord extends ESRIPointRecord
      * @param fillColor the fill color to use.
      */
     public void writeGraphics(Vector list, SColor lineColor, SColor fillColor)
-	throws IOException {
-	SRect sr = new SRect(new LLPoint((float)y, (float)x), 
-			     (short) -1, (short) -1, (short)1, (short) 1);
+        throws IOException {
+        SRect sr = new SRect(new LLPoint((float)y, (float)x), 
+                             (short) -1, (short) -1, (short)1, (short) 1);
 
-	sr.color(lineColor);
-	sr.fillColor(fillColor);
-	list.addElement(sr);
+        sr.color(lineColor);
+        sr.fillColor(fillColor);
+        list.addElement(sr);
     }
 }

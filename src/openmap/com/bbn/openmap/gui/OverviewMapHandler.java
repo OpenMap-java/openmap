@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OverviewMapHandler.java,v $
 // $RCSfile: OverviewMapHandler.java,v $
-// $Revision: 1.10 $
-// $Date: 2003/12/29 17:20:02 $
-// $Author: wjeuerle $
+// $Revision: 1.11 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -176,15 +176,15 @@ public class OverviewMapHandler extends OMToolComponent
      * Default constructor.  make sure init(someProperties) is
      * called before you attempt to use this object */
     public OverviewMapHandler() {
-	super();
-	setKey(defaultKey);
-	setLayout(new BorderLayout());
-	createOverviewMap();
+        super();
+        setKey(defaultKey);
+        setLayout(new BorderLayout());
+        createOverviewMap();
 
-	// Set up a default...
-	projection = createStartingProjection(null);
-	addComponentListener(this);
-	setWindowSupport(new WindowSupport(this, "Overview Map"));
+        // Set up a default...
+        projection = createStartingProjection(null);
+        addComponentListener(this);
+        setWindowSupport(new WindowSupport(this, "Overview Map"));
     }
     
     /**
@@ -192,7 +192,7 @@ public class OverviewMapHandler extends OMToolComponent
      * @param props properties object.
      */
     public OverviewMapHandler(Properties props) throws Exception {
-	this(null, props);
+        this(null, props);
     }
 
     /**
@@ -203,10 +203,10 @@ public class OverviewMapHandler extends OMToolComponent
      * @param props properties object.  
      */
     public OverviewMapHandler(String prefix, Properties props) 
-	throws Exception {
+        throws Exception {
 
-	this();
-	setProperties(prefix,props);
+        this();
+        setProperties(prefix,props);
     }
 
     /**
@@ -219,9 +219,9 @@ public class OverviewMapHandler extends OMToolComponent
      * @param props properties object.
      */
     public OverviewMapHandler(MapBean srcMap, String prefix, Properties props)
-	throws Exception {        
-	this(prefix, props);
-	setSourceMap(srcMap);
+        throws Exception {        
+        this(prefix, props);
+        setSourceMap(srcMap);
     }
      
     /**
@@ -229,10 +229,10 @@ public class OverviewMapHandler extends OMToolComponent
      * copyright message at the same time.  
      */
     protected void createOverviewMap() {
-	// We don't need another copyright message, right?
-	MapBean.suppressCopyright = true;
-	map = new BufferedMapBean();
-	this.add(map, BorderLayout.CENTER);
+        // We don't need another copyright message, right?
+        MapBean.suppressCopyright = true;
+        map = new BufferedMapBean();
+        this.add(map, BorderLayout.CENTER);
     }
 
     /**
@@ -240,7 +240,7 @@ public class OverviewMapHandler extends OMToolComponent
      * @deprecated use setProperties(props).
      */
     public void init(Properties props) throws Exception {
-	setProperties(null, props);
+        setProperties(null, props);
     }
 
     /**
@@ -254,7 +254,7 @@ public class OverviewMapHandler extends OMToolComponent
      * @deprecated use setProperties(prefix, props).
      */
     public void init(String prefix, Properties props) throws Exception {
-	setProperties(prefix, props);
+        setProperties(prefix, props);
     }
     
     /**
@@ -274,58 +274,58 @@ public class OverviewMapHandler extends OMToolComponent
      * @param props the <code>Properties</code> object
      */
     public void setProperties(String prefix, java.util.Properties props) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	Vector overviewLayers;
+        Vector overviewLayers;
 
-	overviewLayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix + OverviewMapHandlerLayerProperty));
-	
-	if (overviewLayers.size() == 0) {
-	    Debug.message("overview", "OverviewMapHandler:  created without layers!");
-	}
+        overviewLayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix + OverviewMapHandlerLayerProperty));
+        
+        if (overviewLayers.size() == 0) {
+            Debug.message("overview", "OverviewMapHandler:  created without layers!");
+        }
 
-	scaleFactor = PropUtils.floatFromProperties(props, prefix + ScaleFactorProperty, defaultScaleFactor);
-	minScale = PropUtils.floatFromProperties(props, prefix + MinScaleProperty, defaultMinScale);
-	backgroundSlave = PropUtils.booleanFromProperties(props, prefix + BackgroundSlaveProperty, backgroundSlave);
+        scaleFactor = PropUtils.floatFromProperties(props, prefix + ScaleFactorProperty, defaultScaleFactor);
+        minScale = PropUtils.floatFromProperties(props, prefix + MinScaleProperty, defaultMinScale);
+        backgroundSlave = PropUtils.booleanFromProperties(props, prefix + BackgroundSlaveProperty, backgroundSlave);
 
-	setControlSourceMap(PropUtils.booleanFromProperties(props, prefix + ControlSourceMapProperty, controlSourceMap));
-	
-	String statusLayerName = props.getProperty(prefix + StatusLayerProperty + ".class");
-	if (statusLayerName != null) {
-	    statusLayer = (Layer)ComponentFactory.create(statusLayerName, prefix + StatusLayerProperty, props);
-	    if (statusLayer == null) {
-		Debug.error("OverviewMapHandler.setProperties: status layer not set.");
-	    }
-	} else {
-	    statusLayer = new OverviewMapAreaLayer();
-	}
+        setControlSourceMap(PropUtils.booleanFromProperties(props, prefix + ControlSourceMapProperty, controlSourceMap));
+        
+        String statusLayerName = props.getProperty(prefix + StatusLayerProperty + ".class");
+        if (statusLayerName != null) {
+            statusLayer = (Layer)ComponentFactory.create(statusLayerName, prefix + StatusLayerProperty, props);
+            if (statusLayer == null) {
+                Debug.error("OverviewMapHandler.setProperties: status layer not set.");
+            }
+        } else {
+            statusLayer = new OverviewMapAreaLayer();
+        }
 
-	statusLayer.setProperties(prefix, props);
-			
-	projection = createStartingProjection(props.getProperty(prefix + ProjectionTypeProperty));
+        statusLayer.setProperties(prefix, props);
+                        
+        projection = createStartingProjection(props.getProperty(prefix + ProjectionTypeProperty));
 
-	setLayers(LayerHandler.getLayers(overviewLayers, overviewLayers, props));
+        setLayers(LayerHandler.getLayers(overviewLayers, overviewLayers, props));
     }
 
     private Proj createStartingProjection(String projName) {
 
-	if (projName == null) {
-	    projName = Mercator.MercatorName;
-	}
+        if (projName == null) {
+            projName = Mercator.MercatorName;
+        }
 
-	int projType = ProjectionFactory.getProjType(projName);
-	
-	//  The scale, lat/lon and size shouldn't matter, because the
-	//  size will get reset when it is added to a component, and
-	//  the projection will change when it is added to a MapBean
-	//  as a projection listener.p
-	return (Proj) ProjectionFactory.makeProjection(projType,
-	    Environment.getFloat(Environment.Latitude, 0f),
-	    Environment.getFloat(Environment.Longitude, 0f),
-	    Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY)*scaleFactor, 
-	    INITIAL_WIDTH, INITIAL_HEIGHT);
+        int projType = ProjectionFactory.getProjType(projName);
+        
+        //  The scale, lat/lon and size shouldn't matter, because the
+        //  size will get reset when it is added to a component, and
+        //  the projection will change when it is added to a MapBean
+        //  as a projection listener.p
+        return (Proj) ProjectionFactory.makeProjection(projType,
+            Environment.getFloat(Environment.Latitude, 0f),
+            Environment.getFloat(Environment.Longitude, 0f),
+            Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY)*scaleFactor, 
+            INITIAL_WIDTH, INITIAL_HEIGHT);
     }
 
     /**
@@ -344,38 +344,38 @@ public class OverviewMapHandler extends OMToolComponent
      * PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	// Build marker list
-	StringBuffer layerList = new StringBuffer();
-	Component[] comps = map.getComponents();
-	int ncomponents = comps.length;
-	for (int i = 0; i < ncomponents; i++) {
-	    Layer layer = (Layer)comps[i];
-	    if (layer != statusLayer) { // Take care of the statusLayer later.
-		layerList.append(" " + layer.getPropertyPrefix());
-		layer.getProperties(props);
-	    }
-	}
-	props.put(prefix +  OverviewMapHandlerLayerProperty, layerList.toString());
+        // Build marker list
+        StringBuffer layerList = new StringBuffer();
+        Component[] comps = map.getComponents();
+        int ncomponents = comps.length;
+        for (int i = 0; i < ncomponents; i++) {
+            Layer layer = (Layer)comps[i];
+            if (layer != statusLayer) { // Take care of the statusLayer later.
+                layerList.append(" " + layer.getPropertyPrefix());
+                layer.getProperties(props);
+            }
+        }
+        props.put(prefix +  OverviewMapHandlerLayerProperty, layerList.toString());
 
-	props.put(prefix + ScaleFactorProperty, Float.toString(scaleFactor));
-	props.put(prefix + ProjectionTypeProperty, map.getProjection().getName());
-	props.put(prefix + MinScaleProperty, Float.toString(minScale));
-	props.put(prefix + BackgroundSlaveProperty, new Boolean(backgroundSlave).toString());
+        props.put(prefix + ScaleFactorProperty, Float.toString(scaleFactor));
+        props.put(prefix + ProjectionTypeProperty, map.getProjection().getName());
+        props.put(prefix + MinScaleProperty, Float.toString(minScale));
+        props.put(prefix + BackgroundSlaveProperty, new Boolean(backgroundSlave).toString());
 
-	if (statusLayer != null) {
-	    props.put(prefix + StatusLayerProperty, statusLayer.getClass().getName());
-	    statusLayer.getProperties(props);
-	}
-	
-	props.put(prefix + ControlSourceMapProperty, new Boolean(controlSourceMap).toString());
+        if (statusLayer != null) {
+            props.put(prefix + StatusLayerProperty, statusLayer.getClass().getName());
+            statusLayer.getProperties(props);
+        }
+        
+        props.put(prefix + ControlSourceMapProperty, new Boolean(controlSourceMap).toString());
 
-	return props;
+        return props;
     }
 
     /**
@@ -397,25 +397,25 @@ public class OverviewMapHandler extends OMToolComponent
      * PropertyConsumer. 
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
+        if (list == null) {
+            list = new Properties();
+        }
 
-	list.put(OverviewMapHandlerLayerProperty, "Space separated list of marker names of layers to use as background on the overview map.");
-	list.put(ScaleFactorProperty, "Multiplier reflecting the difference between the scale of the overview map and the source map (default is 20.0).");
-	list.put(ProjectionTypeProperty, "Projection name to use for overview map (Default is mercator).");
-	list.put(MinScaleProperty, "Minimum scale of overview map (Default is 500,000.0).");
-	list.put(StatusLayerProperty, "Class name of layer to use as the active layer on the overview map, receiving mouse events (Default is com.bbn.openmap.layer.OverviewMapAreaLayer).");
-	list.put(ControlSourceMapProperty, "Flag to have the source map controlled by gestures on the overview map (true/false, default is true).");
-	list.put(ControlSourceMapProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
-	list.put(BackgroundSlaveProperty, "Flag to have the map mimic any changes made to the source map's background (true/false, default is true).");
-	list.put(BackgroundSlaveProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
+        list.put(OverviewMapHandlerLayerProperty, "Space separated list of marker names of layers to use as background on the overview map.");
+        list.put(ScaleFactorProperty, "Multiplier reflecting the difference between the scale of the overview map and the source map (default is 20.0).");
+        list.put(ProjectionTypeProperty, "Projection name to use for overview map (Default is mercator).");
+        list.put(MinScaleProperty, "Minimum scale of overview map (Default is 500,000.0).");
+        list.put(StatusLayerProperty, "Class name of layer to use as the active layer on the overview map, receiving mouse events (Default is com.bbn.openmap.layer.OverviewMapAreaLayer).");
+        list.put(ControlSourceMapProperty, "Flag to have the source map controlled by gestures on the overview map (true/false, default is true).");
+        list.put(ControlSourceMapProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
+        list.put(BackgroundSlaveProperty, "Flag to have the map mimic any changes made to the source map's background (true/false, default is true).");
+        list.put(BackgroundSlaveProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
 
-	statusLayer.getPropertyInfo(list);
+        statusLayer.getPropertyInfo(list);
 
-	return list;
+        return list;
     }
 
     /**
@@ -428,39 +428,39 @@ public class OverviewMapHandler extends OMToolComponent
      * @param srcMap srcMap.
      */
     public void setSourceMap(MapBean srcMap) {
-	if (sourceMap != null) {
-	    removeControlledMap(sourceMap);
-	    sourceMap.removeProjectionListener(this);
-	    sourceMap.removePropertyChangeListener(this);
-	}
-	
-	// Add the sourceMap to a set of listeners that wish to be
-	// controlled by this OverviewMapHandler
-	if (srcMap != null) {
-	    if (controlSourceMap == true) { 
-		addControlledMap(srcMap);
-	    }
+        if (sourceMap != null) {
+            removeControlledMap(sourceMap);
+            sourceMap.removeProjectionListener(this);
+            sourceMap.removePropertyChangeListener(this);
+        }
+        
+        // Add the sourceMap to a set of listeners that wish to be
+        // controlled by this OverviewMapHandler
+        if (srcMap != null) {
+            if (controlSourceMap == true) { 
+                addControlledMap(srcMap);
+            }
 
-	    // Check and see if the overview map window is up.  If it
-	    // is, we should add the overview map as a projection
-	    // listener to it.  Note: overview map windows went away
-	    // due to window support, but not sure how it affected
-	    // this statement.  Keeping commented code here for
-	    // reference in case behavior is weird.  Seems to be
-	    // working as expected, though. DFD
-// 	    if ((overviewWindowFrame != null && overviewWindowFrame.isShowing()) ||
-// 		(overviewWindow != null && overviewWindow.isShowing()) ||
-	    
-	    // Turns out non-tool overview maps weren't becoming
-	    // projection change listeners...
-	    if (!getUseAsTool() && isVisible()) {
-		srcMap.addProjectionListener(this);
-	    }
+            // Check and see if the overview map window is up.  If it
+            // is, we should add the overview map as a projection
+            // listener to it.  Note: overview map windows went away
+            // due to window support, but not sure how it affected
+            // this statement.  Keeping commented code here for
+            // reference in case behavior is weird.  Seems to be
+            // working as expected, though. DFD
+//          if ((overviewWindowFrame != null && overviewWindowFrame.isShowing()) ||
+//              (overviewWindow != null && overviewWindow.isShowing()) ||
+            
+            // Turns out non-tool overview maps weren't becoming
+            // projection change listeners...
+            if (!getUseAsTool() && isVisible()) {
+                srcMap.addProjectionListener(this);
+            }
 
-	    srcMap.addPropertyChangeListener(this);
-	}
+            srcMap.addPropertyChangeListener(this);
+        }
 
-	sourceMap = srcMap;
+        sourceMap = srcMap;
     }
     
     /**
@@ -487,7 +487,7 @@ public class OverviewMapHandler extends OMToolComponent
      * @param set true to enable mimicing.
      */
     public void setBackgroundSlave(boolean set) {
-	backgroundSlave = set;
+        backgroundSlave = set;
     }
     
     /**
@@ -495,7 +495,7 @@ public class OverviewMapHandler extends OMToolComponent
      * map's background.
      */
     public boolean getBackgroundSlave() {
-	return backgroundSlave;
+        return backgroundSlave;
     }
 
     /**
@@ -509,19 +509,19 @@ public class OverviewMapHandler extends OMToolComponent
      * @param value
      */
     public void setControlSourceMap(boolean value) {
-	if (sourceMap != null) {
-	    if (value == true && controlSourceMap == false) {
-		addControlledMap(sourceMap);
-	    }
-	    if (value == false && controlSourceMap == true) {
-		removeControlledMap(sourceMap);
-	    }
-	} 
-	controlSourceMap = value;
+        if (sourceMap != null) {
+            if (value == true && controlSourceMap == false) {
+                addControlledMap(sourceMap);
+            }
+            if (value == false && controlSourceMap == true) {
+                removeControlledMap(sourceMap);
+            }
+        } 
+        controlSourceMap = value;
     }
 
     public boolean getControlSourceMap() {
-	return controlSourceMap;
+        return controlSourceMap;
     }
 
     /** 
@@ -529,11 +529,11 @@ public class OverviewMapHandler extends OMToolComponent
      * automatically added on top.
      */
     public void setLayers(Layer[] layers) {
-	map.setLayers(new LayerEvent(this, LayerEvent.REPLACE, new Layer[0]));
-	if (statusLayer != null) {
-	    map.add(statusLayer);
-	}
-	map.setLayers(new LayerEvent(this, LayerEvent.ADD, layers));
+        map.setLayers(new LayerEvent(this, LayerEvent.REPLACE, new Layer[0]));
+        if (statusLayer != null) {
+            map.add(statusLayer);
+        }
+        map.setLayers(new LayerEvent(this, LayerEvent.ADD, layers));
     }
     
     /**
@@ -543,30 +543,30 @@ public class OverviewMapHandler extends OMToolComponent
      * @param projEvent the projection event from the source MapBean.
      */
     public void projectionChanged(ProjectionEvent projEvent) {
-	if (sourceMap == null) {
-	    sourceMap = (MapBean)projEvent.getSource();
-	    map.setBckgrnd(sourceMap.getBckgrnd());
-	}
+        if (sourceMap == null) {
+            sourceMap = (MapBean)projEvent.getSource();
+            map.setBckgrnd(sourceMap.getBckgrnd());
+        }
 
-	Projection proj = projEvent.getProjection();
-	if (proj == null) {
-	    return;
-	}
+        Projection proj = projEvent.getProjection();
+        if (proj == null) {
+            return;
+        }
 
-	if (statusLayer != null && 
-	    statusLayer instanceof OverviewMapStatusListener) {
-	    ((OverviewMapStatusListener)statusLayer).setSourceMapProjection(proj);
-	}
-	float newScale = proj.getScale()*scaleFactor;
-	if (newScale < minScale) {
-	    newScale = minScale;
-	}
+        if (statusLayer != null && 
+            statusLayer instanceof OverviewMapStatusListener) {
+            ((OverviewMapStatusListener)statusLayer).setSourceMapProjection(proj);
+        }
+        float newScale = proj.getScale()*scaleFactor;
+        if (newScale < minScale) {
+            newScale = minScale;
+        }
 
-	if (projection != null) {
-	    projection.setScale(newScale);
-	    projection.setCenter(proj.getCenter());
-	    map.setProjection(projection);
-	}
+        if (projection != null) {
+            projection.setScale(newScale);
+            projection.setCenter(proj.getCenter());
+            map.setProjection(projection);
+        }
     }
 
     /**
@@ -575,19 +575,19 @@ public class OverviewMapHandler extends OMToolComponent
      * layer and wire it up yourself.
      */
     public void setMouseMode(MapMouseMode ammm) {
-	// If we're removing a mouse mode, disconnect it from the map.
-	if (ammm == null) {
-	    deactivateMouseMode();
-	}
-	mmm = ammm;
-	activateMouseMode();
+        // If we're removing a mouse mode, disconnect it from the map.
+        if (ammm == null) {
+            deactivateMouseMode();
+        }
+        mmm = ammm;
+        activateMouseMode();
     }
 
     /**
      * Get the MapMouseMode used for the overview map.
      */
     public MapMouseMode getMouseMode() {
-	return mmm;
+        return mmm;
     }
 
     /**
@@ -595,23 +595,23 @@ public class OverviewMapHandler extends OMToolComponent
      * mouse mode is null, the default is created.  
      */
     public void activateMouseMode() {
-	if (mmm == null) {
-	    mmm = new DefaultOverviewMouseMode(this);
-	}
-	if (map != null) {
-	    map.addMouseListener(mmm);
-	    map.addMouseMotionListener(mmm);
-	}
+        if (mmm == null) {
+            mmm = new DefaultOverviewMouseMode(this);
+        }
+        if (map != null) {
+            map.addMouseListener(mmm);
+            map.addMouseMotionListener(mmm);
+        }
     }
 
     /**
      * Disconnects the mouse mode from the overview map.
      */
     public void deactivateMouseMode() {
-	if (mmm != null) {
-	    map.removeMouseListener(mmm);
-	    map.removeMouseMotionListener(mmm);
-	}
+        if (mmm != null) {
+            map.removeMouseListener(mmm);
+            map.removeMouseMotionListener(mmm);
+        }
     }
 
     /**
@@ -625,16 +625,16 @@ public class OverviewMapHandler extends OMToolComponent
      * @param l MapBean. 
      */
     public void addControlledMap(MapBean l) {
-	if (l != null) {
-	    if (listener == null) {
-		listener = new ControlledMapSupport(map);
-		// If nobody has been listening don't draw anything.
-		// Since someone is now being controlled, we'll do the
-		// drawing.
-		activateMouseMode();
-	    }
-	    listener.addProjectionListener(l);
-	}
+        if (l != null) {
+            if (listener == null) {
+                listener = new ControlledMapSupport(map);
+                // If nobody has been listening don't draw anything.
+                // Since someone is now being controlled, we'll do the
+                // drawing.
+                activateMouseMode();
+            }
+            listener.addProjectionListener(l);
+        }
     }
 
     /**
@@ -643,13 +643,13 @@ public class OverviewMapHandler extends OMToolComponent
      * @param l a MapBean.
      */
     public void removeControlledMap(MapBean l) {
-	if (listener != null) {
-	    listener.removeProjectionListener(l);
-	    
-	    if (listener.size() == 0) {
-		deactivateMouseMode();
-	    }
-	}
+        if (listener != null) {
+            listener.removeProjectionListener(l);
+            
+            if (listener.size() == 0) {
+                deactivateMouseMode();
+            }
+        }
     }
 
     /** 
@@ -658,19 +658,19 @@ public class OverviewMapHandler extends OMToolComponent
      * @return overview MapBean.
      */
     public MapBean getMap() {
-	return map;
+        return map;
     }
 
     /**
      * Set the overview MapBean.
      */
     public void setMap(MapBean map) {
-	if (map != null) {
-	    // get rid of any other MapBean that may have been added to the JPanel.
-	    this.remove(map);
-	}
-	this.map = map;
-	this.add(map, BorderLayout.CENTER);
+        if (map != null) {
+            // get rid of any other MapBean that may have been added to the JPanel.
+            this.remove(map);
+        }
+        this.map = map;
+        this.add(map, BorderLayout.CENTER);
     }
 
     /**
@@ -678,7 +678,7 @@ public class OverviewMapHandler extends OMToolComponent
      * map.  
      */
     public ControlledMapSupport getControlledMapListeners() {
-	return listener;
+        return listener;
     }
 
     /**
@@ -686,7 +686,7 @@ public class OverviewMapHandler extends OMToolComponent
      * map.  
      */
     public void setControlledMapListeners(ControlledMapSupport list) {
-	listener = list;
+        listener = list;
     }
 
     /**
@@ -694,7 +694,7 @@ public class OverviewMapHandler extends OMToolComponent
      * layers, and maintained separately from other layers.  
      */
     public Layer getStatusLayer() {
-	return statusLayer;
+        return statusLayer;
     }
 
     /**
@@ -705,7 +705,7 @@ public class OverviewMapHandler extends OMToolComponent
      * representing what's going on the source map.
      */
     public void setStatusLayer(Layer layer) {
-	statusLayer = layer;
+        statusLayer = layer;
     }
 
     /**
@@ -716,14 +716,14 @@ public class OverviewMapHandler extends OMToolComponent
      * @param setting scale factor 
      */
     public void setScaleFactor(float setting) {
-	scaleFactor = setting;
+        scaleFactor = setting;
     }
 
     /**
      * Get the scale factor used for the overview MapBean.
      */
     public float getScaleFactor() {
-	return scaleFactor;
+        return scaleFactor;
     }
 
     /** 
@@ -732,14 +732,14 @@ public class OverviewMapHandler extends OMToolComponent
      * projection event is received.
      */
     public void setProjection(Proj proj) {
-	projection = proj;
+        projection = proj;
     }
 
     /**
      * Get the current projection of the overview MapBean. 
      */
     public Proj getProjection() {
-	return projection;
+        return projection;
     }
 
     /**
@@ -749,13 +749,13 @@ public class OverviewMapHandler extends OMToolComponent
      * @param setting the scale setting - 1:setting
      */
     public void setMinScale(float setting) {
-	if (setting > 0) {
-	    minScale = setting;
-	}
+        if (setting > 0) {
+            minScale = setting;
+        }
     }
 
     public float getMinScale() {
-	return minScale;
+        return minScale;
     }
 
     /**
@@ -763,9 +763,9 @@ public class OverviewMapHandler extends OMToolComponent
      * be the component that contains the OverviewMapHandler.  
      */
     public void componentShown(ComponentEvent e) {
-	if (sourceMap != null) {
-	    sourceMap.addProjectionListener(this);
-	}
+        if (sourceMap != null) {
+            sourceMap.addProjectionListener(this);
+        }
     }
 
     /**
@@ -773,9 +773,9 @@ public class OverviewMapHandler extends OMToolComponent
      * be the component that contains the OverviewMapHandler.  
      */
     public void componentHidden(ComponentEvent e) {
-	if (sourceMap != null) {
-	    sourceMap.removeProjectionListener(this);
-	}
+        if (sourceMap != null) {
+            sourceMap.removeProjectionListener(this);
+        }
     }
 
     public void componentResized(ComponentEvent e) {}
@@ -789,50 +789,50 @@ public class OverviewMapHandler extends OMToolComponent
      * actionPerformed is called.
      */
     public ActionListener getOverviewFrameActionListener() {     
-	return new ActionListener() {
-		public void actionPerformed(ActionEvent evt) {
-		    WindowSupport ws = getWindowSupport();
+        return new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                    WindowSupport ws = getWindowSupport();
 
-		    int w = INITIAL_WIDTH;
-		    int h = INITIAL_HEIGHT;
-		    Dimension dim = ws.getComponentSize();
-		    if (map != null && dim != null) {
-			w = (int)dim.getWidth();
-			h = (int)dim.getHeight();
-		    }
+                    int w = INITIAL_WIDTH;
+                    int h = INITIAL_HEIGHT;
+                    Dimension dim = ws.getComponentSize();
+                    if (map != null && dim != null) {
+                        w = (int)dim.getWidth();
+                        h = (int)dim.getHeight();
+                    }
 
-		    int x = 10;
-		    int y = 10;
-	    
-		    Point loc = ws.getComponentLocation();
-		    if (loc != null) {
-			x = (int) loc.getX();
-			y = (int) loc.getY();
-		    }
+                    int x = 10;
+                    int y = 10;
+            
+                    Point loc = ws.getComponentLocation();
+                    if (loc != null) {
+                        x = (int) loc.getX();
+                        y = (int) loc.getY();
+                    }
 
-		    MapHandler mh = (MapHandler) getBeanContext();
-		    Frame frame = null;
-		    if (mh != null) {
-			frame = (Frame)mh.get(java.awt.Frame.class);
-		    }
+                    MapHandler mh = (MapHandler) getBeanContext();
+                    Frame frame = null;
+                    if (mh != null) {
+                        frame = (Frame)mh.get(java.awt.Frame.class);
+                    }
 
-		    ws.displayInWindow(frame, x, y, w, h);
-		}
-	    };
+                    ws.displayInWindow(frame, x, y, w, h);
+                }
+            };
     }
 
     /** Tool interface method. */
     public Container getFace() {
-	JButton b = null;
-	if (getUseAsTool()) {
-	    URL url = getClass().getResource("overview.gif");
-	    b = new JButton(new ImageIcon(url, frameTitle));
-	    b.setToolTipText(frameTitle);
-	    b.setMargin(new Insets(0,0,0,0));
-	    b.addActionListener(getOverviewFrameActionListener());
-	    b.setBorderPainted(false);
-	}
-	return b;
+        JButton b = null;
+        if (getUseAsTool()) {
+            URL url = getClass().getResource("overview.gif");
+            b = new JButton(new ImageIcon(url, frameTitle));
+            b.setToolTipText(frameTitle);
+            b.setMargin(new Insets(0,0,0,0));
+            b.addActionListener(getOverviewFrameActionListener());
+            b.setBorderPainted(false);
+        }
+        return b;
     }
 
     /**
@@ -848,21 +848,21 @@ public class OverviewMapHandler extends OMToolComponent
      * @param someObj the object being added to the BeanContext
      */
     public void findAndInit(Object someObj) {
-	if (someObj instanceof com.bbn.openmap.MapBean) {	      
-	    Debug.message("overview","OverviewMapHandler found a MapBean object");
-	    setSourceMap((MapBean)someObj);
-	}
+        if (someObj instanceof com.bbn.openmap.MapBean) {             
+            Debug.message("overview","OverviewMapHandler found a MapBean object");
+            setSourceMap((MapBean)someObj);
+        }
     }
 
     /**
      */
     public void findAndUndo(Object someObj) {      
-	if (someObj instanceof MapBean) {
-	    if (getSourceMap() == (MapBean) someObj) {
-		Debug.message("overview", "OverviewMapHandler: removing source MapBean");
-		setSourceMap(null);
-	    }
-	}
+        if (someObj instanceof MapBean) {
+            if (getSourceMap() == (MapBean) someObj) {
+                Debug.message("overview", "OverviewMapHandler: removing source MapBean");
+                setSourceMap(null);
+            }
+        }
     }
     
     /**
@@ -870,41 +870,41 @@ public class OverviewMapHandler extends OMToolComponent
      * MapBeans that care to be listening. 
      */
     public class ControlledMapSupport extends ProjectionSupport {
-	
- 	/**
-	 * Construct a ControlledMapSupport.
-	 */
-	public ControlledMapSupport() {
-	    super();
-	}
-	
-	/**
-	 * Construct a ControlledMapSupport.
-	 * @param aSource source Object
-	 */
-	public ControlledMapSupport(Object aSource) {
-	    super(aSource);
-	}
+        
+        /**
+         * Construct a ControlledMapSupport.
+         */
+        public ControlledMapSupport() {
+            super();
+        }
+        
+        /**
+         * Construct a ControlledMapSupport.
+         * @param aSource source Object
+         */
+        public ControlledMapSupport(Object aSource) {
+            super(aSource);
+        }
 
-	/**
-	 * Set the center coordinates on all registered listeners.
-	 * @param llp the new centerpoint
-	 */
-	public void setCenter(LatLonPoint llp) {
-	    for (Iterator it = iterator(); it.hasNext();) {
-		((MapBean)it.next()).setCenter(llp);
-	    }
-	}
+        /**
+         * Set the center coordinates on all registered listeners.
+         * @param llp the new centerpoint
+         */
+        public void setCenter(LatLonPoint llp) {
+            for (Iterator it = iterator(); it.hasNext();) {
+                ((MapBean)it.next()).setCenter(llp);
+            }
+        }
 
-	/**
-	 * Set the scale on all registered listeners.
-	 * @param scale the new scale
-	 */
-	public void setScale(float scale) {
-	    for (Iterator it = iterator(); it.hasNext();) {
-		((MapBean)it.next()).setScale(scale);
-	    }
-	}
+        /**
+         * Set the scale on all registered listeners.
+         * @param scale the new scale
+         */
+        public void setScale(float scale) {
+            for (Iterator it = iterator(); it.hasNext();) {
+                ((MapBean)it.next()).setScale(scale);
+            }
+        }
     }
 
     /**
@@ -912,9 +912,9 @@ public class OverviewMapHandler extends OMToolComponent
      * background changes.  Act on if necessary.
      */
     public void propertyChange(PropertyChangeEvent pce) {
-	if (pce.getPropertyName() == MapBean.BackgroundProperty && 
-	    backgroundSlave) {
-	    map.setBckgrnd((Paint)pce.getNewValue());
-	}
+        if (pce.getPropertyName() == MapBean.BackgroundProperty && 
+            backgroundSlave) {
+            map.setBckgrnd((Paint)pce.getNewValue());
+        }
     }
 }

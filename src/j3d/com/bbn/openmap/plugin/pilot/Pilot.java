@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/Pilot.java,v $
 // $RCSfile: Pilot.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -49,31 +49,31 @@ public class Pilot extends OMPoint
     protected float height = 0;// meters.
 
     public Pilot(float lat, float lon, int radius, boolean isOval) {
-	super(lat, lon, radius);
-	setOval(isOval);
+        super(lat, lon, radius);
+        setOval(isOval);
     }
 
     /** Really has no meaning, other than to set the color. */
     public void resetConnected() {
-	setFillPaint(DISCONNECTED_COLOR);
+        setFillPaint(DISCONNECTED_COLOR);
     }
     
     /** Really has no meaning, other than to set the color. */
     public void connected(boolean connected) {
-	if (connected) {
-	    setFillPaint(CONNECTED_COLOR);
-	}
+        if (connected) {
+            setFillPaint(CONNECTED_COLOR);
+        }
     }
 
     /**
      * A little method that will cause the location to move around a little.
      */
     protected void moveRandomly(float factor) {
-	double hor = Math.random() - .5;
-	double vert = Math.random() - .5;
+        double hor = Math.random() - .5;
+        double vert = Math.random() - .5;
 
-	setLat(getLat() + (float)vert/factor);
-	setLon(getLon() + (float)hor/factor);
+        setLat(getLat() + (float)vert/factor);
+        setLon(getLon() + (float)hor/factor);
     }
 
     /**
@@ -81,53 +81,53 @@ public class Pilot extends OMPoint
      * to a different location.
      */
     public void move(float factor) {
-	if (!stationary) {
-	    moveRandomly(factor);
-	}
+        if (!stationary) {
+            moveRandomly(factor);
+        }
     }
 
     public void move(int distance, Length units, float Az) {
-	LatLonPoint newLocation = GreatCircle.spherical_between(
-	    ProjMath.degToRad(getLat()),
-	    ProjMath.degToRad(getLon()),
-	    units.toRadians(distance), Az);
+        LatLonPoint newLocation = GreatCircle.spherical_between(
+            ProjMath.degToRad(getLat()),
+            ProjMath.degToRad(getLon()),
+            units.toRadians(distance), Az);
 
-	setLat(newLocation.getLatitude());
-	setLon(newLocation.getLongitude());
+        setLat(newLocation.getLatitude());
+        setLon(newLocation.getLongitude());
     }
 
     public void setStationary(boolean set) {
-	stationary = set;
-	if (movementButton != null) {
-	    movementButton.setSelected(set);
-	}
+        stationary = set;
+        if (movementButton != null) {
+            movementButton.setSelected(set);
+        }
     }
 
     public boolean getStationary() {
-	return stationary;
+        return stationary;
     }
 
     public void setName(String set) {
-	name = set;
+        name = set;
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setHeight(float h) {
-	height = h;
-	if (heightField != null) {
-	    heightField.setText(Float.toString(h));
-	}
-	if (Debug.debugging("pilotloader")) {
-	    Debug.output("Pilot: " + getName() + 
-			 " setting height to : " + h);
-	}
+        height = h;
+        if (heightField != null) {
+            heightField.setText(Float.toString(h));
+        }
+        if (Debug.debugging("pilotloader")) {
+            Debug.output("Pilot: " + getName() + 
+                         " setting height to : " + h);
+        }
     }
 
     public float getHeight() {
-	return height;
+        return height;
     }
 
     protected transient java.awt.Container palette = null;
@@ -138,65 +138,65 @@ public class Pilot extends OMPoint
      * JInternalFrame over a JFrame if necessary.
      */
     public void showPalette() {
-	if (Environment.getBoolean(Environment.UseInternalFrames)){
+        if (Environment.getBoolean(Environment.UseInternalFrames)){
 
-	    final JLayeredPane desktop = 
-		Environment.getInternalFrameDesktop();
+            final JLayeredPane desktop = 
+                Environment.getInternalFrameDesktop();
 
-	    // get the window
-	    palette = PaletteHelper.getPaletteInternalWindow(
-		getGUI(),
-		getName(),
-		new InternalFrameAdapter() {
-			public void internalFrameClosed(InternalFrameEvent e) {
-			    if (desktop != null) {
-				desktop.remove((JInternalFrame)palette);
-				desktop.repaint();
-			    }
-			    palette = null;
-//  			    firePaletteEvent(false);
-			};
-		    });
-	    // add the window to the desktop
-	    if (desktop != null) {
-		desktop.add(palette);
-		palette.setVisible(true);
-	    }
-	} else {
-	    if (palette == null) {
-		palette = PaletteHelper.getPaletteWindow(
-		    getGUI(), 
-		    getName(),
-		    new ComponentAdapter(){  
-			    public void componentHidden(ComponentEvent e){
-//  				firePaletteEvent(false);
-			    };
-			} );
-	    }
-	    palette.setVisible(true);
-	    ((JFrame)palette).setState(java.awt.Frame.NORMAL);
-	}
+            // get the window
+            palette = PaletteHelper.getPaletteInternalWindow(
+                getGUI(),
+                getName(),
+                new InternalFrameAdapter() {
+                        public void internalFrameClosed(InternalFrameEvent e) {
+                            if (desktop != null) {
+                                desktop.remove((JInternalFrame)palette);
+                                desktop.repaint();
+                            }
+                            palette = null;
+//                          firePaletteEvent(false);
+                        };
+                    });
+            // add the window to the desktop
+            if (desktop != null) {
+                desktop.add(palette);
+                palette.setVisible(true);
+            }
+        } else {
+            if (palette == null) {
+                palette = PaletteHelper.getPaletteWindow(
+                    getGUI(), 
+                    getName(),
+                    new ComponentAdapter(){  
+                            public void componentHidden(ComponentEvent e){
+//                              firePaletteEvent(false);
+                            };
+                        } );
+            }
+            palette.setVisible(true);
+            ((JFrame)palette).setState(java.awt.Frame.NORMAL);
+        }
     }
     
     /**
      * Hide the Pilot's palette.
      */
     public void hidePalette() {
-	if (palette == null) {
-	    return;
-	}
+        if (palette == null) {
+            return;
+        }
 
-	if (Environment.getBoolean(Environment.UseInternalFrames)){
-	    // close the palette
-	    try { 
-		((JInternalFrame)palette).setClosed(true); 
-	    } catch (java.beans.PropertyVetoException evt) {
-		com.bbn.openmap.util.Assert.assertExp(
-		    false, "Pilot.hidePalette(): internal error!");
-	    }
-	} else {
-	    palette.setVisible(false);
-	}
+        if (Environment.getBoolean(Environment.UseInternalFrames)){
+            // close the palette
+            try { 
+                ((JInternalFrame)palette).setClosed(true); 
+            } catch (java.beans.PropertyVetoException evt) {
+                com.bbn.openmap.util.Assert.assertExp(
+                    false, "Pilot.hidePalette(): internal error!");
+            }
+        } else {
+            palette.setVisible(false);
+        }
     }
 
     JCheckBox movementButton = null;
@@ -210,58 +210,58 @@ public class Pilot extends OMPoint
      * @return java.awt.Component or null
      */
     public java.awt.Component getGUI() {
-	JPanel panel = new JPanel(new GridLayout(0, 1));
+        JPanel panel = new JPanel(new GridLayout(0, 1));
 
-	// Only want to do this once...
-	if (movementButton == null) {
-	    movementButton = new JCheckBox("Stationary", getStationary());
-	    movementButton.addActionListener(this);
-	    movementButton.setActionCommand(MoveCmd);
-	}
+        // Only want to do this once...
+        if (movementButton == null) {
+            movementButton = new JCheckBox("Stationary", getStationary());
+            movementButton.addActionListener(this);
+            movementButton.setActionCommand(MoveCmd);
+        }
 
-	panel.add(movementButton);
+        panel.add(movementButton);
 
-	JPanel heightPanel = new JPanel(new GridLayout(0, 3));
+        JPanel heightPanel = new JPanel(new GridLayout(0, 3));
 
-	heightPanel.add(new JLabel("Object height: "));
-	if (heightField == null) {
-	    heightField = new JTextField(Float.toString(height), 10);
-	    heightField.setHorizontalAlignment(JTextField.RIGHT);
-	    heightField.addActionListener(this);
-	    heightField.addFocusListener(this);
-	}
-	heightPanel.add(heightField);
-	heightPanel.add(new JLabel(" meters"));
-	
-	panel.add(heightPanel);
+        heightPanel.add(new JLabel("Object height: "));
+        if (heightField == null) {
+            heightField = new JTextField(Float.toString(height), 10);
+            heightField.setHorizontalAlignment(JTextField.RIGHT);
+            heightField.addActionListener(this);
+            heightField.addFocusListener(this);
+        }
+        heightPanel.add(heightField);
+        heightPanel.add(new JLabel(" meters"));
+        
+        panel.add(heightPanel);
 
 
-	return panel;
+        return panel;
     }
 
     public final static String MoveCmd = "MoveCommand";
 
     public void actionPerformed(java.awt.event.ActionEvent ae){
-	String cmd = ae.getActionCommand();
-	if (cmd == MoveCmd) {
-	    JCheckBox check = (JCheckBox)ae.getSource();
-	    setStationary(check.isSelected());
-	} else {
-	    try {
-		setHeight(Float.parseFloat(cmd));
-	    } catch (NumberFormatException nfe) {
-		setHeight(getHeight());
-	    }
-	}
+        String cmd = ae.getActionCommand();
+        if (cmd == MoveCmd) {
+            JCheckBox check = (JCheckBox)ae.getSource();
+            setStationary(check.isSelected());
+        } else {
+            try {
+                setHeight(Float.parseFloat(cmd));
+            } catch (NumberFormatException nfe) {
+                setHeight(getHeight());
+            }
+        }
     }
 
     public void focusGained(FocusEvent e) {}
     public void focusLost(FocusEvent e) {
-	try {
-	    setHeight(Float.parseFloat(((JTextField)(e.getSource())).getText()));
-	} catch (NumberFormatException nfe) {
-	    setHeight(0);
-	}
+        try {
+            setHeight(Float.parseFloat(((JTextField)(e.getSource())).getText()));
+        } catch (NumberFormatException nfe) {
+            setHeight(0);
+        }
     }
 
 }

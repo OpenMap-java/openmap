@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileStateMachine.java,v $
 // $RCSfile: ProfileStateMachine.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,26 +37,26 @@ class ProfileStateMachine extends StateMachine {
     public static final int TOOL_VIEW = 3;
 
     public ProfileStateMachine(ProfileGenerator generator){
-	pg = generator;
-	State[] profileStates = init();
-	setStates(profileStates);
+        pg = generator;
+        State[] profileStates = init();
+        setStates(profileStates);
 
-	// set reset state
-	setResetState(TOOL_DO_NOTHING);
-	reset();
-	setMapMouseListenerResponses(true);
+        // set reset state
+        setResetState(TOOL_DO_NOTHING);
+        reset();
+        setMapMouseListenerResponses(true);
     }
 
 
     protected State[] init(){
-	State[] pStates = new State[4];
+        State[] pStates = new State[4];
 
-	pStates[TOOL_DO_NOTHING] = new ProfileDoNothingState(pg);
-	pStates[TOOL_DRAW] = new ProfileDrawState(pg);
-	pStates[TOOL_DEFINED] = new ProfileDefinedState(pg);
-	pStates[TOOL_VIEW] = new ProfileViewState(pg);
+        pStates[TOOL_DO_NOTHING] = new ProfileDoNothingState(pg);
+        pStates[TOOL_DRAW] = new ProfileDrawState(pg);
+        pStates[TOOL_DEFINED] = new ProfileDefinedState(pg);
+        pStates[TOOL_VIEW] = new ProfileViewState(pg);
 
-	return pStates;
+        return pStates;
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/ControlPanelToggleMenuItem.java,v $
 // $RCSfile: ControlPanelToggleMenuItem.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/04 14:34:26 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,53 +42,53 @@ public class ControlPanelToggleMenuItem extends JMenuItem
     protected final static String displayLabel = "Display Control Panel";
 
     public ControlPanelToggleMenuItem() {
-	// assume that the control panel isn't there.  
-	// Won't be visible if it isn't.
-	super(hideLabel);
-	init(null);
+        // assume that the control panel isn't there.  
+        // Won't be visible if it isn't.
+        super(hideLabel);
+        init(null);
     }
 
     public ControlPanelToggleMenuItem(OMControlPanel cp) {
-	super(cp.isVisible()?hideLabel:displayLabel);
-	init(cp);
+        super(cp.isVisible()?hideLabel:displayLabel);
+        init(cp);
     }
 
     public void init(OMControlPanel cp) {
-	setControlPanel(cp);
-	addActionListener(this);
+        setControlPanel(cp);
+        addActionListener(this);
     }
 
     public void setControlPanel(OMControlPanel cp) {
-	controlPanel = cp;
-	this.setVisible(controlPanel != null);
+        controlPanel = cp;
+        this.setVisible(controlPanel != null);
     }
 
     public OMControlPanel getControlPanel() {
-	return controlPanel;
+        return controlPanel;
     }
 
     public boolean forControlPanel(OMControlPanel cp) {
-	return (cp == controlPanel);
+        return (cp == controlPanel);
     }
 
     public void actionPerformed(ActionEvent ae) {
-	if (controlPanel != null) {
-	    boolean selected = controlPanel.isVisible();
-	    controlPanel.setVisible(!selected);
-	    setText(selected?displayLabel:hideLabel);
-	}
+        if (controlPanel != null) {
+            boolean selected = controlPanel.isVisible();
+            controlPanel.setVisible(!selected);
+            setText(selected?displayLabel:hideLabel);
+        }
     }
 
     public void findAndInit(Object someObj) {
-	if (someObj instanceof OMControlPanel) {
-	    setControlPanel((OMControlPanel)someObj);
-	}
+        if (someObj instanceof OMControlPanel) {
+            setControlPanel((OMControlPanel)someObj);
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof OMControlPanel &&
-	    getControlPanel() == (OMControlPanel)someObj) {
-	    setControlPanel(null);
-	}
+        if (someObj instanceof OMControlPanel &&
+            getControlPanel() == (OMControlPanel)someObj) {
+            setControlPanel(null);
+        }
     }
 }

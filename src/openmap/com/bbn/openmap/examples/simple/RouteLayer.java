@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/simple/RouteLayer.java,v $
 // $RCSfile: RouteLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,8 +54,8 @@ public class RouteLayer extends Layer {
      * the canned list of routes.
      */
     public RouteLayer() {
-	omgraphics = new OMGraphicList();
-	createGraphics(omgraphics);
+        omgraphics = new OMGraphicList();
+        createGraphics(omgraphics);
     }
 
     /**
@@ -70,12 +70,12 @@ public class RouteLayer extends Layer {
      * @return An OMLine with the given properties
      */
     public OMLine createLine(float lat1, float lon1,
-			     float lat2, float lon2,
-			     Color color) {
-	OMLine line = new OMLine(lat1, lon1, lat2, lon2,
-				 OMGraphic.LINETYPE_GREATCIRCLE);
-	line.setLinePaint(color);
-	return line;
+                             float lat2, float lon2,
+                             Color color) {
+        OMLine line = new OMLine(lat1, lon1, lat2, lon2,
+                                 OMGraphic.LINETYPE_GREATCIRCLE);
+        line.setLinePaint(color);
+        return line;
     }
 
     /**
@@ -87,16 +87,16 @@ public class RouteLayer extends Layer {
      */
     public OMGraphicList createGraphics(OMGraphicList graphics) {
 
-	graphics.clear();
+        graphics.clear();
 
-	graphics.addOMGraphic(createLine(42.0f, -71.0f, 35.5f, -120.5f,
-					 Color.red));
-	graphics.addOMGraphic(createLine(28.0f, -81.0f, 47.0f, -122.0f,
-					 Color.green));
-	graphics.addOMGraphic(createLine(22.6f, -101.0f, 44.0f, -70.0f,
-					 Color.blue));
+        graphics.addOMGraphic(createLine(42.0f, -71.0f, 35.5f, -120.5f,
+                                         Color.red));
+        graphics.addOMGraphic(createLine(28.0f, -81.0f, 47.0f, -122.0f,
+                                         Color.green));
+        graphics.addOMGraphic(createLine(22.6f, -101.0f, 44.0f, -70.0f,
+                                         Color.blue));
 
-	return graphics;
+        return graphics;
     }
 
     //----------------------------------------------------------------------
@@ -110,7 +110,7 @@ public class RouteLayer extends Layer {
      * done.
      */
     public void paint(java.awt.Graphics g) {
-	omgraphics.render(g);
+        omgraphics.render(g);
     }
 
     //----------------------------------------------------------------------
@@ -126,7 +126,7 @@ public class RouteLayer extends Layer {
      * @param e the projection event
      */
     public void projectionChanged(ProjectionEvent e) {
-	omgraphics.project(e.getProjection(), true);
-	repaint();
+        omgraphics.project(e.getProjection(), true);
+        repaint();
     }
 }

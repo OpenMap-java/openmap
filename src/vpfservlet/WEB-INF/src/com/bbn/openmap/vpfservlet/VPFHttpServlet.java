@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/VPFHttpServlet.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -36,12 +36,12 @@ public abstract class VPFHttpServlet extends HttpServlet {
      * A do-nothing constructor - init does all the work.
      */
     public VPFHttpServlet() {
-	super();
+        super();
     }
 
     public void init(ServletConfig config) throws ServletException {
-	super.init(config);
-	contextInfo = ContextInfo.getContextInfo(config.getServletContext());
+        super.init(config);
+        contextInfo = ContextInfo.getContextInfo(config.getServletContext());
     }
 
     /**
@@ -53,18 +53,18 @@ public abstract class VPFHttpServlet extends HttpServlet {
      * @see HttpServletResponse#sendError
      */
     public static boolean pathOkay(String rootpath, String pathInfo,
-				   HttpServletResponse response) 
-	throws IOException {
-	if (rootpath == null) {
-	    response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-			       pathInfo + " (invalid path)");
-	    return false;
-	} else if (!new File(rootpath).canRead()) {
-	    response.sendError(HttpServletResponse.SC_NOT_FOUND,
-			       rootpath.toString() + " not found");
-	    return false;
-	}
-	return true;
+                                   HttpServletResponse response) 
+        throws IOException {
+        if (rootpath == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                               pathInfo + " (invalid path)");
+            return false;
+        } else if (!new File(rootpath).canRead()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,
+                               rootpath.toString() + " not found");
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -72,8 +72,8 @@ public abstract class VPFHttpServlet extends HttpServlet {
      * @return the stylesheet HTML
      */
     public String getStylesheetHTML(HttpServletRequest request) {
-	return("<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"" +
-	    request.getContextPath() + "/stylesheet.css\" TITLE=\"Style\">");
+        return("<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"" +
+            request.getContextPath() + "/stylesheet.css\" TITLE=\"Style\">");
     }
 
     /**
@@ -83,7 +83,7 @@ public abstract class VPFHttpServlet extends HttpServlet {
      * @return a table cell containing a URL
      */
     public TableHeaderElement THE(String text, String url) {
-	return new TableHeaderElement(buildHREF(url, text));
+        return new TableHeaderElement(buildHREF(url, text));
     }
 
     /**
@@ -94,8 +94,8 @@ public abstract class VPFHttpServlet extends HttpServlet {
      * @return a table cell containing a URL
      */
     public TableHeaderElement THE(String text, String url,
-				  HttpServletResponse response) {
-	return new TableHeaderElement(buildHREF(response, url, text));
+                                  HttpServletResponse response) {
+        return new TableHeaderElement(buildHREF(response, url, text));
     }
 
     /**
@@ -105,7 +105,7 @@ public abstract class VPFHttpServlet extends HttpServlet {
      * @return a string containing an HTML HREF
      */
     public static String buildHREF(String url, String tag) {
-	return "<A HREF=\""+url+"\">" + tag + "</A>";
+        return "<A HREF=\""+url+"\">" + tag + "</A>";
     }
 
     /**
@@ -116,8 +116,8 @@ public abstract class VPFHttpServlet extends HttpServlet {
      * @return a string containing an HTML HREF
      */
     public static String buildHREF(HttpServletResponse response, 
-				   String url, String tag) {
-	return buildHREF(response.encodeURL(url), tag);
+                                   String url, String tag) {
+        return buildHREF(response.encodeURL(url), tag);
     }
 
     /**
@@ -131,9 +131,9 @@ public abstract class VPFHttpServlet extends HttpServlet {
      * @return a string HREF
      */
     public static String fileURL(HttpServletRequest request,
-				 HttpServletResponse response,
-				 String pathname, String filename) {
-	return toURL(request, response, "/UnknownType", pathname, filename);
+                                 HttpServletResponse response,
+                                 String pathname, String filename) {
+        return toURL(request, response, "/UnknownType", pathname, filename);
     }
 
     /**
@@ -146,49 +146,49 @@ public abstract class VPFHttpServlet extends HttpServlet {
      * @return a string HREF
      */
     public static String toURL(HttpServletRequest request,
-			       HttpServletResponse response,
-			       String servletName,
-			       String pathname, String filename) {
-	String value;
-	if (filename == null) {
-	    value = "---";
-	} else {
-	    String url = request.getContextPath() + servletName + pathname +
-		filename;
-	    value = "<A HREF=\""+ response.encodeURL(url) +"\">" +
-		filename + "</A>\r\n";
-	    
-	}
-	return value;
+                               HttpServletResponse response,
+                               String servletName,
+                               String pathname, String filename) {
+        String value;
+        if (filename == null) {
+            value = "---";
+        } else {
+            String url = request.getContextPath() + servletName + pathname +
+                filename;
+            value = "<A HREF=\""+ response.encodeURL(url) +"\">" +
+                filename + "</A>\r\n";
+            
+        }
+        return value;
     }
 
     public static final String ROOT_PATHDIR = VPFHttpServlet.class.getName() + ".rootPathDir";
     public static final String ROOT_PATH = VPFHttpServlet.class.getName() + ".rootPath";
 
     public static void setRootDir(HttpServletRequest request, String path) {
-	request.setAttribute(ROOT_PATHDIR, path);
+        request.setAttribute(ROOT_PATHDIR, path);
     }
 
     public static String getRootDir(HttpServletRequest request) {
-	return (String)request.getAttribute(ROOT_PATHDIR);
+        return (String)request.getAttribute(ROOT_PATHDIR);
     }
 
     public static void setPathInfo(HttpServletRequest request, String path) {
-	request.setAttribute(ROOT_PATH, path);
+        request.setAttribute(ROOT_PATH, path);
     }
 
     public static String getPathInfo(HttpServletRequest request) {
-	return (String)request.getAttribute(ROOT_PATH);
+        return (String)request.getAttribute(ROOT_PATH);
     }
 
     protected static String setPathInfo(HttpServletRequest request) {
-	String pathInfo = request.getPathInfo();
-	setPathInfo(request, pathInfo);
-	if (pathInfo != null) {
-	    int index = pathInfo.lastIndexOf('/');
-	    String subpath = pathInfo.substring(0, index + 1);
-	    setRootDir(request, subpath);
-	}
-	return pathInfo;
+        String pathInfo = request.getPathInfo();
+        setPathInfo(request, pathInfo);
+        if (pathInfo != null) {
+            int index = pathInfo.lastIndexOf('/');
+            String subpath = pathInfo.substring(0, index + 1);
+            setRootDir(request, subpath);
+        }
+        return pathInfo;
     }
 }

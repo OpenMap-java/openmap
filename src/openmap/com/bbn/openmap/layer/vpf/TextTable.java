@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/TextTable.java,v $
-// $Revision: 1.2 $ $Date: 2003/12/30 17:06:54 $ $Author: wjeuerle $
+// $Revision: 1.3 $ $Date: 2004/01/26 18:18:12 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -40,16 +40,16 @@ public class TextTable extends PrimitiveTable {
      * @exception FormatException if something goes wrong reading the text
      */
     public TextTable(CoverageTable cov,
-		     TileDirectory tile) throws FormatException {
-	super(cov, tile, "txt");
-	if ((coordColumn = whatColumn("shape_line")) == -1) {
-	    throw new FormatException("texttable couldn't get "
-				      + "shape_line column");
-	} 
-	if ((textColumn = whatColumn("string")) == -1) {
-	    throw new FormatException("texttable couldn't get "
-				      + "string column"); 
-	}
+                     TileDirectory tile) throws FormatException {
+        super(cov, tile, "txt");
+        if ((coordColumn = whatColumn("shape_line")) == -1) {
+            throw new FormatException("texttable couldn't get "
+                                      + "shape_line column");
+        } 
+        if ((textColumn = whatColumn("string")) == -1) {
+            throw new FormatException("texttable couldn't get "
+                                      + "string column"); 
+        }
     }
 
     /**
@@ -64,30 +64,30 @@ public class TextTable extends PrimitiveTable {
      * @see VPFGraphicWarehouse#createText
      */
     public void drawTile(VPFGraphicWarehouse warehouse,
-			 float dpplat, float dpplon,
-			 LatLonPoint ll1, LatLonPoint ll2) {
+                         float dpplat, float dpplon,
+                         LatLonPoint ll1, LatLonPoint ll2) {
 
-	float ll1lat = ll1.getLatitude();
-	float ll1lon = ll1.getLongitude();
-	float ll2lat = ll2.getLatitude();
-	float ll2lon = ll2.getLongitude();
+        float ll1lat = ll1.getLatitude();
+        float ll1lon = ll1.getLongitude();
+        float ll2lat = ll2.getLatitude();
+        float ll2lon = ll2.getLongitude();
 
-	try {
-	    for (List text = new ArrayList(); parseRow(text); ) {
-		String textval = (String)text.get(textColumn);
-		CoordFloatString coords = (CoordFloatString)text.get(coordColumn);
-		float lat = coords.getYasFloat(0);
-		float lon = coords.getXasFloat(0);
+        try {
+            for (List text = new ArrayList(); parseRow(text); ) {
+                String textval = (String)text.get(textColumn);
+                CoordFloatString coords = (CoordFloatString)text.get(coordColumn);
+                float lat = coords.getYasFloat(0);
+                float lon = coords.getXasFloat(0);
 
-		if ((lat > ll2lat) && (lat < ll1lat) &&
-		    (lon > ll1lon) && (lon < ll2lon)) {
-		    warehouse.createText(covtable, this, text,
-					 lat, lon, textval);
-		}
-	    }
-	} catch (FormatException f) {
-	    System.out.println("Exception: " + f.getClass() + " " + f.getMessage());
-	}
+                if ((lat > ll2lat) && (lat < ll1lat) &&
+                    (lon > ll1lon) && (lon < ll2lon)) {
+                    warehouse.createText(covtable, this, text,
+                                         lat, lon, textval);
+                }
+            }
+        } catch (FormatException f) {
+            System.out.println("Exception: " + f.getClass() + " " + f.getMessage());
+        }
     }
 
     /**
@@ -104,28 +104,28 @@ public class TextTable extends PrimitiveTable {
      * @see VPFGraphicWarehouse#createText 
      */
     public void drawFeature(VPFFeatureWarehouse warehouse,
-			    float dpplat, float dpplon,
-			    LatLonPoint ll1, LatLonPoint ll2,
-			    List text, String featureType) {
+                            float dpplat, float dpplon,
+                            LatLonPoint ll1, LatLonPoint ll2,
+                            List text, String featureType) {
 
-	if (warehouse == null) {
-	    return;
-	}
+        if (warehouse == null) {
+            return;
+        }
 
-	float ll1lat = ll1.getLatitude();
-	float ll1lon = ll1.getLongitude();
-	float ll2lat = ll2.getLatitude();
-	float ll2lon = ll2.getLongitude();
+        float ll1lat = ll1.getLatitude();
+        float ll1lon = ll1.getLongitude();
+        float ll2lat = ll2.getLatitude();
+        float ll2lon = ll2.getLongitude();
 
-	String textval = (String)text.get(textColumn);
-	CoordFloatString coords = (CoordFloatString)text.get(coordColumn);
+        String textval = (String)text.get(textColumn);
+        CoordFloatString coords = (CoordFloatString)text.get(coordColumn);
 
-	float lat = coords.getYasFloat(0);
-	float lon = coords.getXasFloat(0);
-	if ((lat > ll2lat) && (lat < ll1lat) &&
-	    (lon > ll1lon) && (lon < ll2lon)) {
-	    warehouse.createText(covtable, this, text,
-				 lat, lon, textval, featureType);
-	}
+        float lat = coords.getYasFloat(0);
+        float lon = coords.getXasFloat(0);
+        if ((lat > ll2lat) && (lat < ll1lat) &&
+            (lon > ll1lon) && (lon < ll2lon)) {
+            warehouse.createText(covtable, this, text,
+                                 lat, lon, textval, featureType);
+        }
     }
 }

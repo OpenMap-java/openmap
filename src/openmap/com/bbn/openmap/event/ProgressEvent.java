@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProgressEvent.java,v $
 // $RCSfile: ProgressEvent.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:47:45 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:06 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -53,12 +53,12 @@ public class ProgressEvent extends java.util.EventObject {
      * @param currentValue the current value
      */
     public ProgressEvent(Object source, int type, String taskDescription, 
-			 float finishValue, float currentValue) {
-	super(source);
-	this.finishedValue = finishValue;
-	this.currentValue = currentValue;
-	this.taskDescription = taskDescription;
-	this.type = type;
+                         float finishValue, float currentValue) {
+        super(source);
+        this.finishedValue = finishValue;
+        this.currentValue = currentValue;
+        this.taskDescription = taskDescription;
+        this.type = type;
     }
 
     /**
@@ -66,21 +66,21 @@ public class ProgressEvent extends java.util.EventObject {
      * @return finished.
      */
     public float getFinishedValue() {
-	return finishedValue;
+        return finishedValue;
     }
 
     /**
      * Get the current value representing progress.
      */
     public float getCurrentValue() {
-	return currentValue;
+        return currentValue;
     }
 
     /**
      * Get a string describing what the task is.
      */
     public String getTaskDescription() {
-	return taskDescription;
+        return taskDescription;
     }
 
     /** 
@@ -88,16 +88,16 @@ public class ProgressEvent extends java.util.EventObject {
      * finished value has been provided.
      */
     public int getPercentComplete() {
-	if (finishedValue != 0) {
-	    int ret = (int) (currentValue/finishedValue * 100f);
-//  	    com.bbn.openmap.util.Debug.output("pe.percentComplete: " + currentValue + "/" + finishedValue + " = " + ret);
-	    return ret;
-	} else {
-	    return -1;
-	}
+        if (finishedValue != 0) {
+            int ret = (int) (currentValue/finishedValue * 100f);
+//          com.bbn.openmap.util.Debug.output("pe.percentComplete: " + currentValue + "/" + finishedValue + " = " + ret);
+            return ret;
+        } else {
+            return -1;
+        }
     }
 
     public int getType() {
-	return type;
+        return type;
     }
 }

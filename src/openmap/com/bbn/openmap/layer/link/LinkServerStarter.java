@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkServerStarter.java,v $
 // $RCSfile: LinkServerStarter.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,22 +46,22 @@ public class LinkServerStarter {
 
     /** Starts the LinkServerStarter listening to the default port. */
     public LinkServerStarter(){
-	serverPort = DEFAULT_PORT;
+        serverPort = DEFAULT_PORT;
     }
 
     /** Starts the LinkServerStarter listening to the specified port. */
     public LinkServerStarter(int port){
-	serverPort = port;
+        serverPort = port;
     }
 
     /** Set the port to listen for a connection request. */
     public void setPort(int port){
-	serverPort = port;
+        serverPort = port;
     }
 
     /** Get the port that is being listened to. */
     public int getPort(){
-	return serverPort;
+        return serverPort;
     }
 
     /**
@@ -70,21 +70,21 @@ public class LinkServerStarter {
      * the client. 
      */
     public void run(){
-	try {
-	    ServerSocket serverSocket = new ServerSocket(serverPort);
-	    Socket socket;
-	    System.out.println("LinkServerStarter: running on port " + serverPort);
+        try {
+            ServerSocket serverSocket = new ServerSocket(serverPort);
+            Socket socket;
+            System.out.println("LinkServerStarter: running on port " + serverPort);
 
-	    while (true){
-		socket = serverSocket.accept();
-		System.out.println("LinkServer: fielding connection");
-		((Thread)startNewServer(socket)).start();
-	    }
+            while (true){
+                socket = serverSocket.accept();
+                System.out.println("LinkServer: fielding connection");
+                ((Thread)startNewServer(socket)).start();
+            }
 
-	} catch (java.io.IOException ioe){
-	    System.err.println("LinkServer: IOException while running:");
-	    System.err.println(ioe);
-	}
+        } catch (java.io.IOException ioe){
+            System.err.println("LinkServer: IOException while running:");
+            System.err.println(ioe);
+        }
     }
 
     /**
@@ -107,33 +107,33 @@ public class LinkServerStarter {
      */
     public static void main(String[] argv){
 
-	int pnumber = -1;
+        int pnumber = -1;
 
-	com.bbn.openmap.util.Debug.init();
+        com.bbn.openmap.util.Debug.init();
 
-	for (int i = 0; i < argv.length; i++){
-	    if (argv[i].equals("-port") && argv.length > i+1){
-		try {
-		    pnumber = Integer.parseInt(argv[i+1]);
-		    break;
-		} catch (NumberFormatException e) {
-		    pnumber = -1;
-		}
-	    }
-	}
+        for (int i = 0; i < argv.length; i++){
+            if (argv[i].equals("-port") && argv.length > i+1){
+                try {
+                    pnumber = Integer.parseInt(argv[i+1]);
+                    break;
+                } catch (NumberFormatException e) {
+                    pnumber = -1;
+                }
+            }
+        }
 
-	if (pnumber < 0) {
-	    System.out.println("Need to start the server with a port number.");
-	    System.out.println("Usage: java com.bbn.openmap.layer.link.LinkServerStarter -port <port number>");
-	    System.exit(0);
-	}
+        if (pnumber < 0) {
+            System.out.println("Need to start the server with a port number.");
+            System.out.println("Usage: java com.bbn.openmap.layer.link.LinkServerStarter -port <port number>");
+            System.exit(0);
+        }
 
-	System.out.println("LinkServerStarter: Starting up on port " + 
-			   pnumber + ".");
-	LinkServerStarter serverStarter = new LinkServerStarter(pnumber);
-	while (true){
-	    serverStarter.run();
-	}
+        System.out.println("LinkServerStarter: Starting up on port " + 
+                           pnumber + ".");
+        LinkServerStarter serverStarter = new LinkServerStarter(pnumber);
+        while (true){
+            serverStarter.run();
+        }
     }
 
 }

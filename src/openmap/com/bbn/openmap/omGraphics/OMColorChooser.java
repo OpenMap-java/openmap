@@ -13,8 +13,8 @@
 // **********************************************************************
 // 
 // $RCSfile: OMColorChooser.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,19 +47,19 @@ public class OMColorChooser {
      */
     public static Color showDialog(Component component,
                                    String title, 
-				   Color startingColor) {
-	Color initColor = startingColor != null ? startingColor : Color.white;
+                                   Color startingColor) {
+        Color initColor = startingColor != null ? startingColor : Color.white;
 
-	final JColorChooser jcc = new JColorChooser(initColor);
-	ColorTracker ok = new ColorTracker(jcc);
+        final JColorChooser jcc = new JColorChooser(initColor);
+        ColorTracker ok = new ColorTracker(jcc);
 
-	jcc.setPreviewPanel(ok.getTransparancyAdjustment(initColor.getAlpha()));
-	jcc.getSelectionModel().addChangeListener(ok);
-	JDialog colorDialog = JColorChooser.createDialog(component, title,
-							 true, jcc,
-							 ok, null);
-	colorDialog.show();
-	return ok.getColor();
+        jcc.setPreviewPanel(ok.getTransparancyAdjustment(initColor.getAlpha()));
+        jcc.getSelectionModel().addChangeListener(ok);
+        JDialog colorDialog = JColorChooser.createDialog(component, title,
+                                                         true, jcc,
+                                                         ok, null);
+        colorDialog.show();
+        return ok.getColor();
     }
 }
 
@@ -77,34 +77,34 @@ class ColorTracker
     int transparency;
     
     public ColorTracker(JColorChooser c) {
-	chooser = c;
-	preview = new ColorRect(chooser.getColor());
+        chooser = c;
+        preview = new ColorRect(chooser.getColor());
     }
 
     /** 
      * ActionListener interface.  Sets the color from the JColorChooser.
      */
     public void actionPerformed(ActionEvent e) {
-	color = chooser.getColor();
-	setPreviewColor(color);
+        color = chooser.getColor();
+        setPreviewColor(color);
     }
     
     /** 
      * ChangeListener interface. Called when the color changes
      */
     public void stateChanged(ChangeEvent e) {
-	if(!(e.getSource() instanceof ColorSelectionModel)) return;
+        if(!(e.getSource() instanceof ColorSelectionModel)) return;
 
-	setPreviewColor(((ColorSelectionModel) e.getSource()).getSelectedColor());
+        setPreviewColor(((ColorSelectionModel) e.getSource()).getSelectedColor());
     }
     
     /**
      * sets the preview color
      */
     public void setPreviewColor(Color c) {
-	c = new Color(c.getRed(), c.getGreen(), c.getBlue(), transparency);
-	preview.setColor(c);
-	preview.repaint();
+        c = new Color(c.getRed(), c.getGreen(), c.getBlue(), transparency);
+        preview.setColor(c);
+        preview.repaint();
     }
 
     /**
@@ -112,13 +112,13 @@ class ColorTracker
      * value based on the transparency slider.
      */
     public Color getColor() {
-	if (color != null) {
-	    color =  new Color(color.getRed(),
-			       color.getGreen(),
-			       color.getBlue(),
-			       transparency);
-	}
-	return color;
+        if (color != null) {
+            color =  new Color(color.getRed(),
+                               color.getGreen(),
+                               color.getBlue(),
+                               transparency);
+        }
+        return color;
     }
 
     /**
@@ -129,40 +129,40 @@ class ColorTracker
      * @return JComponent to adjust the transparency value.
      */
     public JComponent getTransparancyAdjustment(int initialValue) {
-	transparency = initialValue;
-	// This sets initial transparency effect in preview...
-	setPreviewColor(preview.getColor());
-	JPanel slidePanel = new JPanel();
-	Box slideBox = Box.createHorizontalBox();
+        transparency = initialValue;
+        // This sets initial transparency effect in preview...
+        setPreviewColor(preview.getColor());
+        JPanel slidePanel = new JPanel();
+        Box slideBox = Box.createHorizontalBox();
     
-	JSlider opaqueSlide = new JSlider(
-	    JSlider.HORIZONTAL, 0/*min*/, 255/*max*/, 
-	    initialValue/*inital*/);
-	java.util.Hashtable dict = new java.util.Hashtable();
-	dict.put(new Integer(50), new JLabel("clear"));
-	dict.put(new Integer(200), new JLabel("opaque"));
-	opaqueSlide.setLabelTable(dict);
-	opaqueSlide.setPaintLabels(true);
-	opaqueSlide.setMajorTickSpacing(50);
-	opaqueSlide.setPaintTicks(true);
-	opaqueSlide.addChangeListener(new ChangeListener(){
-		public void stateChanged(ChangeEvent ce){
-		    JSlider slider = (JSlider) ce.getSource();
-		    if (slider.getValueIsAdjusting()){
-			transparency = slider.getValue();
-		    }
-		    // This sets transparency in preview...
-		    setPreviewColor(preview.getColor());
-		}
-	    });
-	
-	preview.setPreferredSize(new Dimension(100, slideBox.getHeight()));
-	slideBox.add(preview);
-	slideBox.add(Box.createGlue());
-	slideBox.add(opaqueSlide);
-	slideBox.add(Box.createGlue());
-	slidePanel.add(slideBox);
-	return slidePanel;
+        JSlider opaqueSlide = new JSlider(
+            JSlider.HORIZONTAL, 0/*min*/, 255/*max*/, 
+            initialValue/*inital*/);
+        java.util.Hashtable dict = new java.util.Hashtable();
+        dict.put(new Integer(50), new JLabel("clear"));
+        dict.put(new Integer(200), new JLabel("opaque"));
+        opaqueSlide.setLabelTable(dict);
+        opaqueSlide.setPaintLabels(true);
+        opaqueSlide.setMajorTickSpacing(50);
+        opaqueSlide.setPaintTicks(true);
+        opaqueSlide.addChangeListener(new ChangeListener(){
+                public void stateChanged(ChangeEvent ce){
+                    JSlider slider = (JSlider) ce.getSource();
+                    if (slider.getValueIsAdjusting()){
+                        transparency = slider.getValue();
+                    }
+                    // This sets transparency in preview...
+                    setPreviewColor(preview.getColor());
+                }
+            });
+        
+        preview.setPreferredSize(new Dimension(100, slideBox.getHeight()));
+        slideBox.add(preview);
+        slideBox.add(Box.createGlue());
+        slideBox.add(opaqueSlide);
+        slideBox.add(Box.createGlue());
+        slidePanel.add(slideBox);
+        return slidePanel;
     }
 }
 
@@ -174,8 +174,8 @@ class ColorRect extends JPanel {
      * constructor
      */
     public ColorRect(Color _c) {
-	setBackground(Color.white);
-	c = _c;
+        setBackground(Color.white);
+        c = _c;
     }
 
     /**
@@ -183,23 +183,23 @@ class ColorRect extends JPanel {
      * @param c color to paint
      */
     public void setColor(Color _c) {
-	c = _c;
+        c = _c;
     }
 
     /**
      * get the color
      */
     public Color getColor() {
-	return c;
+        return c;
     }
 
     /**
      * paints this panel
      */
     public void paint(Graphics g) {
-	super.paint(g);
+        super.paint(g);
 
-	g.setColor(c);
-	((Graphics2D)g).fill(g.getClip());
+        g.setColor(c);
+        ((Graphics2D)g).fill(g.getClip());
     }
 }

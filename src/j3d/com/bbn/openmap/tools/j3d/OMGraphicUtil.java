@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OMGraphicUtil.java,v $
 // $RCSfile: OMGraphicUtil.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/17 00:38:02 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -163,9 +163,9 @@ public class OMGraphicUtil {
             DEBUG = true;
         }
 
-// 	if (grid.getGenerator() == null && grid.getFillColor() == OMColor.clear) {
-// 	    return createWireFrame(grid, baselineHeight, projection);
-// 	}
+//      if (grid.getGenerator() == null && grid.getFillColor() == OMColor.clear) {
+//          return createWireFrame(grid, baselineHeight, projection);
+//      }
 
         Color fColor = grid.getFillColor();
         Color lColor = grid.getLineColor();
@@ -206,7 +206,7 @@ public class OMGraphicUtil {
 
         GridData gridData = grid.getData();
 
-	if (!(gridData instanceof GridData.Int)) {
+        if (!(gridData instanceof GridData.Int)) {
             // Need to fix this to work with all GridData types!
             Debug.error("OMGrid.interpValueAt only works for integer data.");
         }
@@ -232,7 +232,7 @@ public class OMGraphicUtil {
             if (DEBUG) {
                 Debug.output("Creating strip " + j);
             }
-	    // I think the '-' should be '+'... (changed, DFD)
+            // I think the '-' should be '+'... (changed, DFD)
             float lat1 = anchorLL.getLatitude() + ((float)j * vRes);
             float lat2 = anchorLL.getLatitude() + (((float)j + 1f) * vRes);
 
@@ -284,7 +284,7 @@ public class OMGraphicUtil {
                 gridStrip.setColor(pointer++, color);
                 gridStrip.setColor(pointer++, color);
                 // else
-//  		pointer += 2;
+//              pointer += 2;
             }
         }
 
@@ -400,9 +400,9 @@ public class OMGraphicUtil {
                     data[dataIndex++] = pntz;
                     data[dataIndex++] = pnty;
 
-// 		data[dataIndex++] = pntx;
-// 		data[dataIndex++] = pnty;
-// 		data[dataIndex++] = pntz;
+//              data[dataIndex++] = pntx;
+//              data[dataIndex++] = pnty;
+//              data[dataIndex++] = pntz;
 
                     stripCount[0]++;
 

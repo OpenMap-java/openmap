@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFLayer.java,v $
 // $RCSfile: MIFLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/29 21:12:08 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -57,7 +57,7 @@ public class MIFLayer extends OMGraphicHandlerLayer {
     MIFLoader mifl = null;
 
     public MIFLayer() {
-	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
 
     /**
@@ -73,7 +73,7 @@ public class MIFLayer extends OMGraphicHandlerLayer {
      * of filled which is much faster.
      *  */
     public void setAccuracy(boolean accurate) {
-	this.accurate=accurate;
+        this.accurate=accurate;
     }
 
     /**
@@ -84,18 +84,18 @@ public class MIFLayer extends OMGraphicHandlerLayer {
      * is the MIF file that we will decode.  
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String mifFileName = props.getProperty(prefix + MIF_FileProperty);
-	try{
-	    BufferedReader bfr = new BufferedReader(new FileReader(mifFileName));
-	    mifl = new MIFLoader(bfr,accurate);
-	} catch(IOException ioe) {
-	    Debug.error("MIFLayer: didn't find file " + mifFileName); 
-	    return;
-	}
+        String mifFileName = props.getProperty(prefix + MIF_FileProperty);
+        try{
+            BufferedReader bfr = new BufferedReader(new FileReader(mifFileName));
+            mifl = new MIFLoader(bfr,accurate);
+        } catch(IOException ioe) {
+            Debug.error("MIFLayer: didn't find file " + mifFileName); 
+            return;
+        }
     }
 
     /**
@@ -103,10 +103,10 @@ public class MIFLayer extends OMGraphicHandlerLayer {
      * the list otherwise.
      */
     public OMGraphicList prepare() {
-	if (mifl != null && !mifl.isLoaded()) {
-	    setList(mifl.getList());
-	}
+        if (mifl != null && !mifl.isLoaded()) {
+            setList(mifl.getList());
+        }
 
-	return super.prepare();
+        return super.prepare();
     }
 }

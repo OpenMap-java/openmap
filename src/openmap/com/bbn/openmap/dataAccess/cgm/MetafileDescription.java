@@ -23,15 +23,15 @@ package com.bbn.openmap.dataAccess.cgm;
 import java.io.*;
 
 public class MetafileDescription extends Command
-{	String S;
+{       String S;
 
-	public MetafileDescription (int ec, int eid, int l, DataInputStream in)
-		throws IOException
-	{	super(ec,eid,l,in);
-		S=makeString();
-	}
-	
-	public String toString ()
-	{	return "Metafile Description: "+S;
-	}
+        public MetafileDescription (int ec, int eid, int l, DataInputStream in)
+                throws IOException
+        {       super(ec,eid,l,in);
+                S=makeString();
+        }
+        
+        public String toString ()
+        {       return "Metafile Description: "+S;
+        }
 }

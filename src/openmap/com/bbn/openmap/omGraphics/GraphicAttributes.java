@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/GraphicAttributes.java,v $
 // $RCSfile: GraphicAttributes.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/29 17:20:04 $
-// $Author: wjeuerle $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:12 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -79,7 +79,7 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * fill paint and pattern, sold black edge line of width 1.  
      */
     public GraphicAttributes() {
-	super();
+        super();
     }
 
     /**
@@ -88,7 +88,7 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * @param props the Properties to look in.  
      */
     public GraphicAttributes(Properties props) {
-	super(props);
+        super(props);
     }
 
     /**
@@ -99,7 +99,7 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * @param props the Properties to look in.  
      */
     public GraphicAttributes(String prefix, Properties props) {
-	super(prefix, props);
+        super(prefix, props);
     }
 
     /**
@@ -107,7 +107,7 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * may modify, get your own copy.
      */
     public static GraphicAttributes getGADefaultClone() {
-	return (GraphicAttributes) DEFAULT.clone();
+        return (GraphicAttributes) DEFAULT.clone();
     }
 
     /**
@@ -115,50 +115,50 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      */
     public void setProperties(String prefix, Properties props) {
 
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	String realPrefix;
+        String realPrefix;
 
-	if (props == null) {
-	    return;
-	}
+        if (props == null) {
+            return;
+        }
 
-	if (prefix != null) {
-	    realPrefix = prefix + ".";
-	} else {
-	    realPrefix = "";
-	}
-	
-	//  Set up the Graphic attributes.
-	lineType =
-	    LayerUtils.intFromProperties(
-		props, realPrefix + lineTypeProperty,
-  		LINETYPE_UNKNOWN);
-	
-	renderType =
-	    LayerUtils.intFromProperties(
-		props, realPrefix + renderTypeProperty,
-		RENDERTYPE_UNKNOWN);
+        if (prefix != null) {
+            realPrefix = prefix + ".";
+        } else {
+            realPrefix = "";
+        }
+        
+        //  Set up the Graphic attributes.
+        lineType =
+            LayerUtils.intFromProperties(
+                props, realPrefix + lineTypeProperty,
+                LINETYPE_UNKNOWN);
+        
+        renderType =
+            LayerUtils.intFromProperties(
+                props, realPrefix + renderTypeProperty,
+                RENDERTYPE_UNKNOWN);
     }
 
     public Object clone() {
-	GraphicAttributes clone = new GraphicAttributes();
-	setTo(clone);
-	return clone;
+        GraphicAttributes clone = new GraphicAttributes();
+        setTo(clone);
+        return clone;
     }
 
     public void setTo(GraphicAttributes clone) {
-	super.setTo(clone);
-	clone.renderType = renderType;
-	clone.lineType = lineType;
-	clone.enableLineTypeChoice = enableLineTypeChoice;
+        super.setTo(clone);
+        clone.renderType = renderType;
+        clone.lineType = lineType;
+        clone.enableLineTypeChoice = enableLineTypeChoice;
     }
 
     /**
      * Get the lineType.
      */
     public int getLineType() {
-	return lineType;
+        return lineType;
     }
 
     /**
@@ -166,26 +166,26 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * rhumb, it's set to unknown.  
      */
     public void setLineType(int lt) {
-	int oldLineType = lineType;
+        int oldLineType = lineType;
 
-	if (lt == LINETYPE_STRAIGHT ||
-	    lt == LINETYPE_GREATCIRCLE ||
-	    lt == LINETYPE_RHUMB) {
-	    lineType = lt;
-	} else {
-	    lineType = LINETYPE_UNKNOWN;
-	}
+        if (lt == LINETYPE_STRAIGHT ||
+            lt == LINETYPE_GREATCIRCLE ||
+            lt == LINETYPE_RHUMB) {
+            lineType = lt;
+        } else {
+            lineType = LINETYPE_UNKNOWN;
+        }
 
-	propertyChangeSupport.firePropertyChange("lineType", 
-						 oldLineType, 
-						 lineType);
+        propertyChangeSupport.firePropertyChange("lineType", 
+                                                 oldLineType, 
+                                                 lineType);
     }
 
     /**
      * Get the renderType.
      */
     public int getRenderType() {
-	return renderType;
+        return renderType;
     }
 
     /**
@@ -193,20 +193,20 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * offset, it's set to unknown.
      */
     public void setRenderType(int rt) {
-	int oldRenderType = renderType;
+        int oldRenderType = renderType;
 
-	if (rt == RENDERTYPE_XY ||
-	    rt == RENDERTYPE_LATLON ||
-	    rt == RENDERTYPE_OFFSET) {
-	    renderType = rt;
+        if (rt == RENDERTYPE_XY ||
+            rt == RENDERTYPE_LATLON ||
+            rt == RENDERTYPE_OFFSET) {
+            renderType = rt;
 
-	} else {
-	    renderType = RENDERTYPE_UNKNOWN;
-	}
+        } else {
+            renderType = RENDERTYPE_UNKNOWN;
+        }
 
-	propertyChangeSupport.firePropertyChange("renderType", 
-						 oldRenderType, 
-						 renderType);
+        propertyChangeSupport.firePropertyChange("renderType", 
+                                                 oldRenderType, 
+                                                 renderType);
     }
 
     /**
@@ -214,10 +214,10 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * settings of an OMGraphic.  
      */
     public void setFrom(OMGraphic graphic) {
-	super.setFrom(graphic);
-	lineType = graphic.getLineType();
-	renderType = graphic.getRenderType();
-	enableLineTypeChoice = graphic.hasLineTypeChoice();
+        super.setFrom(graphic);
+        lineType = graphic.getLineType();
+        renderType = graphic.getRenderType();
+        enableLineTypeChoice = graphic.hasLineTypeChoice();
     }
 
     /**
@@ -227,9 +227,9 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * @param graphic OMGraphic.  
      */
     public void setTo(OMGraphic graphic) {
-	super.setTo(graphic);
-	graphic.setLineType(lineType);
-	graphic.setRenderType(renderType);
+        super.setTo(graphic);
+        graphic.setLineType(lineType);
+        graphic.setRenderType(renderType);
     }
 
     /**
@@ -239,49 +239,49 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * examples of shapes that disable linetype choice.
      */
     public void setEnableLineTypeChoice(boolean value) {
-	enableLineTypeChoice = value;
+        enableLineTypeChoice = value;
     }
 
     public boolean getEnableLineTypeChoice() {
-	return enableLineTypeChoice;
+        return enableLineTypeChoice;
     }
 
     public JMenu getLineTypeMenu() {
-	JMenu lineTypeMenu = null;
+        JMenu lineTypeMenu = null;
 
-	if (renderType == RENDERTYPE_LATLON && enableLineTypeChoice) {
-	    lineTypeMenu = new JMenu("Line Type");
+        if (renderType == RENDERTYPE_LATLON && enableLineTypeChoice) {
+            lineTypeMenu = new JMenu("Line Type");
 
-	    ActionListener listener = new ActionListener() {
-		    public void actionPerformed(ActionEvent ae) {
-			String command  = ae.getActionCommand();
-			try {
-			    setLineType(Integer.parseInt(command));
-			} catch (NumberFormatException e) {}
-		    }
-		};
+            ActionListener listener = new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        String command  = ae.getActionCommand();
+                        try {
+                            setLineType(Integer.parseInt(command));
+                        } catch (NumberFormatException e) {}
+                    }
+                };
 
-	    ButtonGroup group = new ButtonGroup(); 
-	    JRadioButtonMenuItem button = 
-		new JRadioButtonMenuItem("Great Circle", lineType == LineType.GreatCircle);
-	    button.setActionCommand(String.valueOf(LineType.GreatCircle));
-	    group.add(button);
-	    button.addActionListener(listener);
-	    lineTypeMenu.add(button);
-	
-	    button = new JRadioButtonMenuItem("Rhumb", lineType == LineType.Rhumb);
-	    button.setActionCommand(String.valueOf(LineType.Rhumb));
-	    group.add(button);
-	    button.addActionListener(listener);
-	    lineTypeMenu.add(button);
+            ButtonGroup group = new ButtonGroup(); 
+            JRadioButtonMenuItem button = 
+                new JRadioButtonMenuItem("Great Circle", lineType == LineType.GreatCircle);
+            button.setActionCommand(String.valueOf(LineType.GreatCircle));
+            group.add(button);
+            button.addActionListener(listener);
+            lineTypeMenu.add(button);
+        
+            button = new JRadioButtonMenuItem("Rhumb", lineType == LineType.Rhumb);
+            button.setActionCommand(String.valueOf(LineType.Rhumb));
+            group.add(button);
+            button.addActionListener(listener);
+            lineTypeMenu.add(button);
 
-	    button = new JRadioButtonMenuItem("Straight", lineType == LineType.Straight);
-	    button.setActionCommand(String.valueOf(LineType.Straight));
-	    group.add(button);
-	    button.addActionListener(listener);
-	    lineTypeMenu.add(button);
-	}
-	return lineTypeMenu;
+            button = new JRadioButtonMenuItem("Straight", lineType == LineType.Straight);
+            button.setActionCommand(String.valueOf(LineType.Straight));
+            group.add(button);
+            button.addActionListener(listener);
+            lineTypeMenu.add(button);
+        }
+        return lineTypeMenu;
     }
 
 }

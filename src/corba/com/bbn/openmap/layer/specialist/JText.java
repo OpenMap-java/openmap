@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JText.java,v $
 // $RCSfile: JText.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,17 +39,17 @@ public class JText extends OMText implements Serializable, JObjectHolder {
      * Construct a JText object.
      */
     public JText(EText etext) {
-	super();
-	JGraphic.fillOMGraphicParams(this, etext.egraphic);
+        super();
+        JGraphic.fillOMGraphicParams(this, etext.egraphic);
 
-	setX(etext.p1.x);
-	setY(etext.p1.y);
-	setLat(etext.ll1.lat);
-	setLon(etext.ll1.lon);
-	setData(etext.data);
-	if (!etext.font.equals(""))
-	    setFont(rebuildFont(etext.font));
-	setJustify(etext.justify);
+        setX(etext.p1.x);
+        setY(etext.p1.y);
+        setLat(etext.ll1.lat);
+        setLon(etext.ll1.lon);
+        setData(etext.data);
+        if (!etext.font.equals(""))
+            setFont(rebuildFont(etext.font));
+        setJustify(etext.justify);
     }
 
     public void setObject(com.bbn.openmap.CSpecialist.EComp aObject) {
@@ -61,44 +61,44 @@ public class JText extends OMText implements Serializable, JObjectHolder {
     }
 
     public void update(com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
-	JGraphic.update((JObjectHolder)this, update);
+        JGraphic.update((JObjectHolder)this, update);
     }
 
     public void update(
-	   com.bbn.openmap.CSpecialist.TextPackage.TF_update update) {
-        	// do the updates, but don't rerender just yet
+           com.bbn.openmap.CSpecialist.TextPackage.TF_update update) {
+                // do the updates, but don't rerender just yet
 
-	switch (update.discriminator().value()) {
-	      // set fixed point
-	  case com.bbn.openmap.CSpecialist.TextPackage.settableFields._TF_ll1:
-	      LLPoint ll = update.ll1();
-	      setLat(ll.lat);
-	      setLon(ll.lon);
-	      break;
+        switch (update.discriminator().value()) {
+              // set fixed point
+          case com.bbn.openmap.CSpecialist.TextPackage.settableFields._TF_ll1:
+              LLPoint ll = update.ll1();
+              setLat(ll.lat);
+              setLon(ll.lon);
+              break;
 
-	  case com.bbn.openmap.CSpecialist.TextPackage.settableFields._TF_p1:
-	      XYPoint pt = update.p1();
-	      setX(pt.x);
-	      setY(pt.y);
-	      break;
+          case com.bbn.openmap.CSpecialist.TextPackage.settableFields._TF_p1:
+              XYPoint pt = update.p1();
+              setX(pt.x);
+              setY(pt.y);
+              break;
 
-	  case com.bbn.openmap.CSpecialist.TextPackage.settableFields._TF_data:
-	      setData(update.data());
-	      break;
+          case com.bbn.openmap.CSpecialist.TextPackage.settableFields._TF_data:
+              setData(update.data());
+              break;
 
-	  case com.bbn.openmap.CSpecialist.TextPackage.settableFields._TF_font:
-	      setFont(rebuildFont(update.font()));
-	      break;
+          case com.bbn.openmap.CSpecialist.TextPackage.settableFields._TF_font:
+              setFont(rebuildFont(update.font()));
+              break;
 
-	  case com.bbn.openmap.CSpecialist.TextPackage.settableFields._TF_justify:
-	      setJustify(update.justify());
-	      break;
+          case com.bbn.openmap.CSpecialist.TextPackage.settableFields._TF_justify:
+              setJustify(update.justify());
+              break;
 
-	  default:
-	      System.err.println(
-		  "JText.update: invalid text update");
-	      needToRegenerate = false;
-	      break;
-	}
+          default:
+              System.err.println(
+                  "JText.update: invalid text update");
+              needToRegenerate = false;
+              break;
+        }
     }
 }

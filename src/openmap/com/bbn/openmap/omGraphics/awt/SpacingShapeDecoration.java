@@ -16,14 +16,14 @@ public class SpacingShapeDecoration extends AbstractShapeDecoration {
      * @param length
      */
     public SpacingShapeDecoration(float length) {
-	super(length, 0.0f, LEFT);
+        super(length, 0.0f, LEFT);
     }
 
     /**
      * @see fr.free.lepicier.awt.ShapeDecoration#draw(Graphics, Point2D[], boolean)
      */
     public void draw(Graphics g, Point2D[] points, boolean complete) {
-	// nothing to do, it's space !
+        // nothing to do, it's space !
     }
 }
 

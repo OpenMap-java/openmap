@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageHelper.java,v $
 // $RCSfile: ImageHelper.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,48 +40,48 @@ public class ImageHelper {
      */
     public static int[] grabPixels(PixelGrabber pg) {
 
-	// Get only the pixels you need.
-	// Use a pixel grabber to get the right pixels.
-	try {
-	    pg.startGrabbing();
-	    
-	    boolean grabbed = pg.grabPixels();
+        // Get only the pixels you need.
+        // Use a pixel grabber to get the right pixels.
+        try {
+            pg.startGrabbing();
+            
+            boolean grabbed = pg.grabPixels();
 
-	    if (!grabbed) {
-		Debug.error("ImageHelper.grabPixels(): Error in loading image");
-		return null;
-	    }
+            if (!grabbed) {
+                Debug.error("ImageHelper.grabPixels(): Error in loading image");
+                return null;
+            }
 
-	    int framebitCount = 0;
-	    while (true) {
-		int status = pg.getStatus();
-		
-		if (Debug.debugging("image")) {
-		    Debug.output("ImageHelper.grabPixels(): status = " + 
-				 status);
-		}
-		
-		if ((status & ImageObserver.ALLBITS) != 0) {
-		    break;
-		}
-		if ((status & ImageObserver.FRAMEBITS) != 0) {
-		    // Give some cycles to be sure - some times it seems
-		    // to not really be ready,
-		    if (framebitCount < 20) {
-			framebitCount++;
-		    }
-		    break;
-		}
-		if ((status & ImageObserver.ERROR) != 0) {
-		    Debug.error("ImageHelper.grabPixels(): Error in loading image");
-		    return null;
-		}
-		Thread.sleep(100);
-	    }
-	    return (int[])pg.getPixels();
-	    
-	} catch (InterruptedException ie) {
-	    return null;
-	}
+            int framebitCount = 0;
+            while (true) {
+                int status = pg.getStatus();
+                
+                if (Debug.debugging("image")) {
+                    Debug.output("ImageHelper.grabPixels(): status = " + 
+                                 status);
+                }
+                
+                if ((status & ImageObserver.ALLBITS) != 0) {
+                    break;
+                }
+                if ((status & ImageObserver.FRAMEBITS) != 0) {
+                    // Give some cycles to be sure - some times it seems
+                    // to not really be ready,
+                    if (framebitCount < 20) {
+                        framebitCount++;
+                    }
+                    break;
+                }
+                if ((status & ImageObserver.ERROR) != 0) {
+                    Debug.error("ImageHelper.grabPixels(): Error in loading image");
+                    return null;
+                }
+                Thread.sleep(100);
+            }
+            return (int[])pg.getPixels();
+            
+        } catch (InterruptedException ie) {
+            return null;
+        }
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolReferenceLibrary.java,v $
 // $RCSfile: SymbolReferenceLibrary.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/18 23:37:49 $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,58 +44,58 @@ public class SymbolReferenceLibrary {
     protected CodeOptions symbolAttributes;
 
     public SymbolReferenceLibrary() {
-	Properties props = getProperties("hierarchy.properties");
-	if (props != null) {
-	    initialize(props);
-	}
+        Properties props = getProperties("hierarchy.properties");
+        if (props != null) {
+            initialize(props);
+        }
     }
 
     public SymbolReferenceLibrary(Properties props) {
-	initialize(props);
+        initialize(props);
     }
 
     public Properties getProperties(String propertiesResource) {
-	try {
-	    URL url = PropUtils.getResourceOrFileOrURL(SymbolReferenceLibrary.class, 
-						       propertiesResource);
-	    Properties props = new Properties();
-	    props.load(url.openStream());
-	    return props;
-	} catch (java.net.MalformedURLException murle) {
-	    Debug.output("SymbolReferenceLibrary has malformed path to " + propertiesResource);
-	} catch (java.io.IOException ioe) {
-	    Debug.output("SymbolReferenceLibrary I/O exception reading " + propertiesResource);
-	}
-	return null;
+        try {
+            URL url = PropUtils.getResourceOrFileOrURL(SymbolReferenceLibrary.class, 
+                                                       propertiesResource);
+            Properties props = new Properties();
+            props.load(url.openStream());
+            return props;
+        } catch (java.net.MalformedURLException murle) {
+            Debug.output("SymbolReferenceLibrary has malformed path to " + propertiesResource);
+        } catch (java.io.IOException ioe) {
+            Debug.output("SymbolReferenceLibrary I/O exception reading " + propertiesResource);
+        }
+        return null;
     }
 
     protected void initialize(Properties props) {
-	if (props == null) {
-	    // Get the hierarchy.properties file as a local resource
-	    // and load that.
-	}
+        if (props == null) {
+            // Get the hierarchy.properties file as a local resource
+            // and load that.
+        }
 
-	if (Debug.debugging("symbology")) {
-	    Debug.output("SRL: loading");
-	}
+        if (Debug.debugging("symbology")) {
+            Debug.output("SRL: loading");
+        }
 
-	Properties positionProperties = getProperties("positions.properties");
-	if (positionProperties != null) {
-	    positionTree = new CodePositionTree(positionProperties);
-	    head = positionTree.parseHierarchy("MIL-STD-2525B Symbology", props);
-	}
+        Properties positionProperties = getProperties("positions.properties");
+        if (positionProperties != null) {
+            positionTree = new CodePositionTree(positionProperties);
+            head = positionTree.parseHierarchy("MIL-STD-2525B Symbology", props);
+        }
 
-	if (Debug.debugging("symbology")) {
-	    Debug.output("SRL: initialized");
-	}
+        if (Debug.debugging("symbology")) {
+            Debug.output("SRL: initialized");
+        }
 
     }
 
     public CodeOptions getCodeOptions() {
-	if (positionTree != null) {
-	    return positionTree.getCodeOptions(null);
-	}
-	return null;
+        if (positionTree != null) {
+            return positionTree.getCodeOptions(null);
+        }
+        return null;
     }
 
     /**
@@ -105,21 +105,21 @@ public class SymbolReferenceLibrary {
      * @param co Current settings that may be in use.
      */
     public CodeOptions getCodeOptions(SymbolPart sp, CodeOptions co) {
-	return null;
+        return null;
     }
 
     /**
      * Return an image given a SymbolCode and dimension.
      */
     public ImageIcon getIcon(String symbolCode, Dimension di) {
-	return null;
+        return null;
     }
 
     /**
      * Return an image for a particular SymbolPart, its options and dimensions.
      */
     public ImageIcon getIcon(SymbolPart sp, CodeOptions co, Dimension di) {
-	return null;
+        return null;
     }
 
     /**
@@ -127,7 +127,7 @@ public class SymbolReferenceLibrary {
      * SymbolPart with CodeOptions.
      */
     public String getSymbolCode(SymbolPart sp, CodeOptions co) {
-	return null;
+        return null;
     }
 
     /**
@@ -136,7 +136,7 @@ public class SymbolReferenceLibrary {
      * MIL-STD-2525 tree.
      */
     public SymbolPart getHead() {
-	return head;
+        return head;
     }
 
     /**
@@ -144,18 +144,18 @@ public class SymbolReferenceLibrary {
      * their names and their relation to each other.
      */
     public String getDescription() {
-	String description = null;
-	if (head != null) {
-	    description = head.getDescription();
-	}
-	return description;
+        String description = null;
+        if (head != null) {
+            description = head.getDescription();
+        }
+        return description;
     }
 
     public static void main(String[] argv) {
-	Debug.init();
-	SymbolReferenceLibrary srl = new SymbolReferenceLibrary();
-	if (Debug.debugging("symbology")) {
-	    Debug.output(srl.getDescription());
-	}
+        Debug.init();
+        SymbolReferenceLibrary srl = new SymbolReferenceLibrary();
+        if (Debug.debugging("symbology")) {
+            Debug.output(srl.getDescription());
+        }
     }
 }

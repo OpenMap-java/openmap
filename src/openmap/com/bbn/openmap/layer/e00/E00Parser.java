@@ -48,20 +48,20 @@ public class E00Parser {
     OMGraphic LabMarker;
     Color defaultcolor = Color.blue;
     static Color[] defaultColors = {Color.black, Color.blue, Color.cyan, Color.darkGray,
-				    Color.gray, Color.green, Color.lightGray, Color.magenta, Color.orange,
-				    Color.pink, Color.red, Color.white, Color.yellow
+                                    Color.gray, Color.green, Color.lightGray, Color.magenta, Color.orange,
+                                    Color.pink, Color.red, Color.white, Color.yellow
     };
 
     static E00Record infoRecord = new E00Record(
-	new int[]{0, 30, 34, 38, 42, 46, 56},
-	new int[]{20, 20, 50, 50, 50, 50},
-	null
-	);
+        new int[]{0, 30, 34, 38, 42, 46, 56},
+        new int[]{20, 20, 50, 50, 50, 50},
+        null
+        );
     static E00Record itemRecord = new E00Record(
-	new int[]{0, 14, 19, 21, 26, 28, 32, 34, 37, 39, 43, 47, 49, 69},
-	new int[]{20, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50},
-	null
-	);
+        new int[]{0, 14, 19, 21, 26, 28, 32, 34, 37, 39, 43, 47, 49, 69},
+        new int[]{20, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50},
+        null
+        );
 
 
     /**
@@ -72,8 +72,8 @@ public class E00Parser {
      * @since
      */
     public E00Parser(String mdname) throws IOException {
-	isr = new BufferedReader(new FileReader(mdname));
-	setPrefix(mdname);
+        isr = new BufferedReader(new FileReader(mdname));
+        setPrefix(mdname);
     }
 
 
@@ -85,8 +85,8 @@ public class E00Parser {
      * @since
      */
     public E00Parser(File f) throws IOException {
-	isr = new BufferedReader(new FileReader(f));
-	setPrefix(f.getName());
+        isr = new BufferedReader(new FileReader(f));
+        setPrefix(f.getName());
     }
 
 
@@ -97,11 +97,11 @@ public class E00Parser {
      * @since
      */
     public void setPrefix(String S) {
-	int n = S.indexOf('.');
-	if (n == -1)
-	    prefix = S.toUpperCase();
-	else
-	    prefix = S.substring(0, n).toUpperCase();
+        int n = S.indexOf('.');
+        if (n == -1)
+            prefix = S.toUpperCase();
+        else
+            prefix = S.substring(0, n).toUpperCase();
     }
 
 
@@ -119,17 +119,17 @@ public class E00Parser {
      * @since
      */
     public void setPaints(Paint[] ArcColors, Paint[] LabColors, 
-			  Paint tx7Color, Paint SelectTX7Color, 
-			  Paint SelectLabColor, Paint SelectArcColor,
-			  Paint LabTextColor) {
+                          Paint tx7Color, Paint SelectTX7Color, 
+                          Paint SelectLabColor, Paint SelectArcColor,
+                          Paint LabTextColor) {
 
-	this.ArcColors = (ArcColors == null) ? defaultColors : ArcColors;
-	this.LabColors = (LabColors == null) ? defaultColors : LabColors;
-	this.tx7Color = tx7Color;
-	this.SelectTX7Color = SelectTX7Color;
-	this.SelectLabColor = SelectLabColor;
-	this.SelectArcColor = SelectArcColor;
-	this.LabTextColor = LabTextColor;
+        this.ArcColors = (ArcColors == null) ? defaultColors : ArcColors;
+        this.LabColors = (LabColors == null) ? defaultColors : LabColors;
+        this.tx7Color = tx7Color;
+        this.SelectTX7Color = SelectTX7Color;
+        this.SelectLabColor = SelectLabColor;
+        this.SelectArcColor = SelectArcColor;
+        this.LabTextColor = LabTextColor;
     }
 
 
@@ -141,8 +141,8 @@ public class E00Parser {
      * @since
      */
     public void setFonts(Font labFont, Font tx7Font) {
-	this.labFont = labFont;
-	this.tx7Font = tx7Font;
+        this.labFont = labFont;
+        this.tx7Font = tx7Font;
     }
 
 
@@ -153,7 +153,7 @@ public class E00Parser {
      * @since
      */
     public void setLabMarker(OMGraphic marker) {
-	LabMarker = marker;
+        LabMarker = marker;
     }
 
 
@@ -165,51 +165,51 @@ public class E00Parser {
      * @since
      */
     public OMGraphicList getOMGraphics() throws IOException {
-	OMGraphicList WV = new OMGraphicList();
-	isr.readLine();
-	while (true) {
-	    String S = isr.readLine();
-	    if (S == null)
-		break;
-	    //System.out.println("E00 "+S);
-	    if (S.startsWith("ARC"))
-		readARC();
-	    else if (S.startsWith("LAB"))
-		readLAB();
-	    else if (S.startsWith("IFO"))
-		readIFO();
-	    else if (S.startsWith("LOG"))
-		readLOG();
-	    else if (S.startsWith("PRJ"))
-		readPRJ();
-	    else if (S.startsWith("CNT"))
-		readCNT();
-	    else if (S.startsWith("PAL"))
-		readPAL();
-	    else if (S.startsWith("SIN"))
-		readSIN();
-	    else if (S.startsWith("TOL"))
-		readTOL();
-	    else if (S.startsWith("TX7"))
-		readTX7();
-	    else if (S.startsWith("EOS"))
-		break;
-	    //System.out.println("E00 "+S+" fin");
-	}
+        OMGraphicList WV = new OMGraphicList();
+        isr.readLine();
+        while (true) {
+            String S = isr.readLine();
+            if (S == null)
+                break;
+            //System.out.println("E00 "+S);
+            if (S.startsWith("ARC"))
+                readARC();
+            else if (S.startsWith("LAB"))
+                readLAB();
+            else if (S.startsWith("IFO"))
+                readIFO();
+            else if (S.startsWith("LOG"))
+                readLOG();
+            else if (S.startsWith("PRJ"))
+                readPRJ();
+            else if (S.startsWith("CNT"))
+                readCNT();
+            else if (S.startsWith("PAL"))
+                readPAL();
+            else if (S.startsWith("SIN"))
+                readSIN();
+            else if (S.startsWith("TOL"))
+                readTOL();
+            else if (S.startsWith("TX7"))
+                readTX7();
+            else if (S.startsWith("EOS"))
+                break;
+            //System.out.println("E00 "+S+" fin");
+        }
 
-	if (arcs != null) {
-	    arcs.setAppObject("ARCS");
-	    WV.add(arcs);
-	}
-	if (labs != null) {
-	    labs.setAppObject("LABS");
-	    WV.add(labs);
-	}
-	if (tx7 != null) {
-	    tx7.setAppObject("TX7");
-	    WV.add(tx7);
-	}
-	return WV;
+        if (arcs != null) {
+            arcs.setAppObject("ARCS");
+            WV.add(arcs);
+        }
+        if (labs != null) {
+            labs.setAppObject("LABS");
+            WV.add(labs);
+        }
+        if (tx7 != null) {
+            tx7.setAppObject("TX7");
+            WV.add(tx7);
+        }
+        return WV;
     }
 
 
@@ -220,7 +220,7 @@ public class E00Parser {
      * @since
      */
     public OMGraphic getLabMarker() {
-	return LabMarker;
+        return LabMarker;
     }
 
 
@@ -234,9 +234,9 @@ public class E00Parser {
      * @since
      */
     void parseString(String S, int[] I, int l) {
-	int i = 0;
-	for (int j = 0; i < I.length && j < S.length(); j += l)
-	    I[i++] = Integer.parseInt(S.substring(j, j + l).trim());
+        int i = 0;
+        for (int j = 0; i < I.length && j < S.length(); j += l)
+            I[i++] = Integer.parseInt(S.substring(j, j + l).trim());
     }
 
 
@@ -249,9 +249,9 @@ public class E00Parser {
      * @since
      */
     void parseString(String S, float[] F) {
-	int i = 0;
-	for (int j = 0; i < F.length && j < S.length(); j += 14)
-	    F[i++] = Float.parseFloat(S.substring(j, j + 14).trim());
+        int i = 0;
+        for (int j = 0; i < F.length && j < S.length(); j += 14)
+            F[i++] = Float.parseFloat(S.substring(j, j + 14).trim());
 
     }
 
@@ -263,13 +263,13 @@ public class E00Parser {
      * @since
      */
     void readSIN() throws IOException {
-	while (true) {
-	    String S = isr.readLine();
-	    if (S == null)
-		return;
-	    if (S.startsWith("EOX"))
-		return;
-	}
+        while (true) {
+            String S = isr.readLine();
+            if (S == null)
+                return;
+            if (S.startsWith("EOX"))
+                return;
+        }
     }
 
 
@@ -280,18 +280,18 @@ public class E00Parser {
      * @since
      */
     void readCNT() throws IOException {
-	int[] header = new int[1];
-	while (true) {
-	    String S = isr.readLine();
-	    if (S == null)
-		break;
-	    parseString(S, header, 10);
-	    int n = header[0];
-	    if (n == -1)
-		break;
-	    for (int i = 0; i < n; i++)
-		isr.readLine();
-	}
+        int[] header = new int[1];
+        while (true) {
+            String S = isr.readLine();
+            if (S == null)
+                break;
+            parseString(S, header, 10);
+            int n = header[0];
+            if (n == -1)
+                break;
+            for (int i = 0; i < n; i++)
+                isr.readLine();
+        }
     }
 
 
@@ -302,15 +302,15 @@ public class E00Parser {
      * @since
      */
     void readTOL() throws IOException {
-	int[] header = new int[1];
-	while (true) {
-	    String S = isr.readLine();
-	    if (S == null)
-		break;
-	    parseString(S, header, 10);
-	    if (header[0] == -1)
-		break;
-	}
+        int[] header = new int[1];
+        while (true) {
+            String S = isr.readLine();
+            if (S == null)
+                break;
+            parseString(S, header, 10);
+            if (header[0] == -1)
+                break;
+        }
     }
 
 
@@ -321,18 +321,18 @@ public class E00Parser {
      * @since
      */
     void readPAL() throws IOException {
-	int[] header = new int[1];
-	while (true) {
-	    String S = isr.readLine();
-	    if (S == null)
-		break;
-	    parseString(S, header, 10);
-	    int n = header[0];
-	    if (n == -1)
-		break;
-	    for (int i = 0; i < n; i += 2)
-		isr.readLine();
-	}
+        int[] header = new int[1];
+        while (true) {
+            String S = isr.readLine();
+            if (S == null)
+                break;
+            parseString(S, header, 10);
+            int n = header[0];
+            if (n == -1)
+                break;
+            for (int i = 0; i < n; i += 2)
+                isr.readLine();
+        }
     }
 
 
@@ -343,53 +343,53 @@ public class E00Parser {
      * @since
      */
     void readTX7() throws IOException {
-	Debug.message("e00", "E00: read TX7");
-	tx7 = new OMGraphicList();
-	int[] header = new int[8];
-	float[] coords = new float[2];
-	isr.readLine();
-	while (true) {
-	    String S = isr.readLine();
-	    if (S == null)
-		break;
-	    parseString(S, header, 10);
-	    if (header[0] == -1)
-		break;
-	    int n = header[2];
-	    for (int i = 0; i < 8; i++)
-		isr.readLine();
-	    float[] llpoints = new float[2 * n];
-	    int k = 0;
-	    for (int j = 0; j < n; j++) {
-		S = isr.readLine();
-		if (S == null)
-		    return;
-		parseString(S, coords);
-		llpoints[k++] = coords[1];
-		llpoints[k++] = coords[0];
-	    }
-	    S = isr.readLine();
-	    /*
-	     *  OMPoly P = new OMPoly(llpoints,
-	     *  OMGraphic.DECIMAL_DEGREES,
-	     *  OMGraphic.LINETYPE_STRAIGHT);
-	     *  / llpoints is so transformed to radians
-	     *  P.setLinePaint(Color.red);
-	     *  tx7.add(P);
-	     *  BasicLocation bl = new BasicLocation(coords[1], coords[0], S, null);
-	     *  bl.setShowLocation(true);
-	     *  bl.setShowName(true);
-	     *  tx7.add(bl);
-	     */
-	    TX7 t = new TX7(llpoints, S, false, tx7Font);
-	    // decimal degrees
-	    if (tx7Color != null)
-		t.setLinePaint(tx7Color);
-	    if (SelectTX7Color != null)
-		t.setSelectPaint(SelectTX7Color);
+        Debug.message("e00", "E00: read TX7");
+        tx7 = new OMGraphicList();
+        int[] header = new int[8];
+        float[] coords = new float[2];
+        isr.readLine();
+        while (true) {
+            String S = isr.readLine();
+            if (S == null)
+                break;
+            parseString(S, header, 10);
+            if (header[0] == -1)
+                break;
+            int n = header[2];
+            for (int i = 0; i < 8; i++)
+                isr.readLine();
+            float[] llpoints = new float[2 * n];
+            int k = 0;
+            for (int j = 0; j < n; j++) {
+                S = isr.readLine();
+                if (S == null)
+                    return;
+                parseString(S, coords);
+                llpoints[k++] = coords[1];
+                llpoints[k++] = coords[0];
+            }
+            S = isr.readLine();
+            /*
+             *  OMPoly P = new OMPoly(llpoints,
+             *  OMGraphic.DECIMAL_DEGREES,
+             *  OMGraphic.LINETYPE_STRAIGHT);
+             *  / llpoints is so transformed to radians
+             *  P.setLinePaint(Color.red);
+             *  tx7.add(P);
+             *  BasicLocation bl = new BasicLocation(coords[1], coords[0], S, null);
+             *  bl.setShowLocation(true);
+             *  bl.setShowName(true);
+             *  tx7.add(bl);
+             */
+            TX7 t = new TX7(llpoints, S, false, tx7Font);
+            // decimal degrees
+            if (tx7Color != null)
+                t.setLinePaint(tx7Color);
+            if (SelectTX7Color != null)
+                t.setSelectPaint(SelectTX7Color);
 
-	    tx7.add(t);
-	}
+            tx7.add(t);
+        }
     }
 
 
@@ -400,13 +400,13 @@ public class E00Parser {
      * @since
      */
     void readLOG() throws IOException {
-	while (true) {
-	    String S = isr.readLine();
-	    if (S == null)
-		return;
-	    if (S.startsWith("EOL"))
-		return;
-	}
+        while (true) {
+            String S = isr.readLine();
+            if (S == null)
+                return;
+            if (S.startsWith("EOL"))
+                return;
+        }
     }
 
 
@@ -417,13 +417,13 @@ public class E00Parser {
      * @since
      */
     void readPRJ() throws IOException {
-	while (true) {
-	    String S = isr.readLine();
-	    if (S == null)
-		return;
-	    if (S.startsWith("EOP"))
-		return;
-	}
+        while (true) {
+            String S = isr.readLine();
+            if (S == null)
+                return;
+            if (S.startsWith("EOP"))
+                return;
+        }
     }
 
 
@@ -434,30 +434,30 @@ public class E00Parser {
      * @since
      */
     void readLAB() throws IOException {
-	Debug.message("e00", "E00: read LAB");
-	labs = new OMGraphicList();
-	float[] coords = new float[2];
-	int[] header = new int[1];
-	while (true) {
-	    String S = isr.readLine();
-	    if (S == null)
-		break;
-	    parseString(S, header, 10);
-	    int id = header[0];
-	    if (id == -1)
-		break;
-	    S = isr.readLine();
-	    if (S == null)
-		break;
-	    parseString(S, coords);
-	    //System.out.println("E00: point n° "+header[0]);
-	    BasicLocation bl = new BasicLocation(coords[1], coords[0],
-						 "", LabMarker);
-	    setLocationColor(bl, 0);
-	    bl.setShowLocation(true);
-	    labs.add(bl);
-	    bl.setAppObject(new E00Data(id));
-	}
+        Debug.message("e00", "E00: read LAB");
+        labs = new OMGraphicList();
+        float[] coords = new float[2];
+        int[] header = new int[1];
+        while (true) {
+            String S = isr.readLine();
+            if (S == null)
+                break;
+            parseString(S, header, 10);
+            int id = header[0];
+            if (id == -1)
+                break;
+            S = isr.readLine();
+            if (S == null)
+                break;
+            parseString(S, coords);
+            //System.out.println("E00: point n° "+header[0]);
+            BasicLocation bl = new BasicLocation(coords[1], coords[0],
+                                                 "", LabMarker);
+            setLocationColor(bl, 0);
+            bl.setShowLocation(true);
+            labs.add(bl);
+            bl.setAppObject(new E00Data(id));
+        }
     }
 
 
@@ -468,46 +468,46 @@ public class E00Parser {
      * @since
      */
     void readARC() throws IOException {
-	Debug.message("e00", "E00: read ARC");
-	arcs = new OMGraphicList();
-	int narc = 1;
-	int[] header = new int[7];
-	float[] coords = new float[4];
-	while (true) {
-	    String S = isr.readLine();
-	    if (S == null)
-		return;
-	    //System.out.println("E00: F "+S);
-	    parseString(S, header, 10);
-	    if (header[0] == -1)
-		break;
-	    int n = header[6];
-	    //System.out.println("E00: arc n° "+header[0]+" "+n );
-	    float[] llpoints = new float[2 * n];
-	    int k = 0;
-	    for (int j = 0; j < n; j++) {
-		S = isr.readLine();
-		if (S == null)
-		    return;
-		parseString(S, coords);
-		llpoints[k++] = coords[1];
-		llpoints[k++] = coords[0];
-		if (++j >= n)
-		    break;
-		llpoints[k++] = coords[3];
-		llpoints[k++] = coords[2];
-	    }
-	    //System.out.print("f ");
-	    //System.out.println(" # "+narc++ +" nb:"+npoint);
-	    OMPoly P = new OMPoly(llpoints, OMGraphic.DECIMAL_DEGREES,
-				  OMGraphic.LINETYPE_STRAIGHT);
-	    P.setLinePaint(getArcPaint(0));
-	    if (SelectArcColor != null)
-		P.setSelectPaint(SelectArcColor);
+        Debug.message("e00", "E00: read ARC");
+        arcs = new OMGraphicList();
+        int narc = 1;
+        int[] header = new int[7];
+        float[] coords = new float[4];
+        while (true) {
+            String S = isr.readLine();
+            if (S == null)
+                return;
+            //System.out.println("E00: F "+S);
+            parseString(S, header, 10);
+            if (header[0] == -1)
+                break;
+            int n = header[6];
+            //System.out.println("E00: arc n° "+header[0]+" "+n );
+            float[] llpoints = new float[2 * n];
+            int k = 0;
+            for (int j = 0; j < n; j++) {
+                S = isr.readLine();
+                if (S == null)
+                    return;
+                parseString(S, coords);
+                llpoints[k++] = coords[1];
+                llpoints[k++] = coords[0];
+                if (++j >= n)
+                    break;
+                llpoints[k++] = coords[3];
+                llpoints[k++] = coords[2];
+            }
+            //System.out.print("f ");
+            //System.out.println(" # "+narc++ +" nb:"+npoint);
+            OMPoly P = new OMPoly(llpoints, OMGraphic.DECIMAL_DEGREES,
+                                  OMGraphic.LINETYPE_STRAIGHT);
+            P.setLinePaint(getArcPaint(0));
+            if (SelectArcColor != null)
+                P.setSelectPaint(SelectArcColor);
 
-	    arcs.add(P);
-	    P.setAppObject(new E00Data(narc++));
-	}
+            arcs.add(P);
+            P.setAppObject(new E00Data(narc++));
+        }
     }
 
 
@@ -518,24 +518,24 @@ public class E00Parser {
      * @since
      */
     void readAAT() throws IOException {
-	String S;
-	String C = prefix + ".AAT";
-	do {
-	    S = isr.readLine();
-	    if (S == null)
-		return;
-	} while (!S.startsWith(C));
-	int n = Integer.parseInt(S.substring(46).trim());
-	Debug.message("e00", "E00: read " + C + " " + n + " points");
-	for (int i = 0; i < 9; i++)
-	    isr.readLine();
-	int[] I = new int[2];
-	for (int i = 0; i < n; i++) {
-	    isr.readLine();
-	    S = isr.readLine();
-	    parseString(S, I, 2);
-	    arcs.getOMGraphicAt(i).setLinePaint(getArcPaint(I[0]));
-	}
+        String S;
+        String C = prefix + ".AAT";
+        do {
+            S = isr.readLine();
+            if (S == null)
+                return;
+        } while (!S.startsWith(C));
+        int n = Integer.parseInt(S.substring(46).trim());
+        Debug.message("e00", "E00: read " + C + " " + n + " points");
+        for (int i = 0; i < 9; i++)
+            isr.readLine();
+        int[] I = new int[2];
+        for (int i = 0; i < n; i++) {
+            isr.readLine();
+            S = isr.readLine();
+            parseString(S, I, 2);
+            arcs.getOMGraphicAt(i).setLinePaint(getArcPaint(I[0]));
+        }
     }
 
 
@@ -546,35 +546,35 @@ public class E00Parser {
      * @since
      */
     void readPAT() throws IOException {
-	String S;
-	String C = prefix + ".PAT";
-	do {
-	    S = isr.readLine();
-	    if (S == null)
-		return;
-	} while (!S.startsWith(C));
-	int n = Integer.parseInt(S.substring(46).trim());
-	Debug.message("e00", "E00: read " + C + " " + n + " points");
-	for (int i = 0; i < 7; i++)
-	    isr.readLine();
-	int[] I = new int[1];
-	for (int i = 0; i < n; i++) {
-	    S = isr.readLine();
-	    if (S == null)
-		break;
-	    String name = S.substring(50);
-	    //System.out.print(i+" "+S);
-	    S = isr.readLine();
-	    //System.out.println(" "+S);
-	    parseString(S, I, 14);
-	    BasicLocation bl = (BasicLocation) labs.getOMGraphicAt(i);
-	    if (S.length() != 0)
-		bl.setName(name);
-	    else
-		bl.setLabel(null);
-	    setLocationColor(bl, I[0]);
-	    bl.setShowLocation(true);
-	}
+        String S;
+        String C = prefix + ".PAT";
+        do {
+            S = isr.readLine();
+            if (S == null)
+                return;
+        } while (!S.startsWith(C));
+        int n = Integer.parseInt(S.substring(46).trim());
+        Debug.message("e00", "E00: read " + C + " " + n + " points");
+        for (int i = 0; i < 7; i++)
+            isr.readLine();
+        int[] I = new int[1];
+        for (int i = 0; i < n; i++) {
+            S = isr.readLine();
+            if (S == null)
+                break;
+            String name = S.substring(50);
+            //System.out.print(i+" "+S);
+            S = isr.readLine();
+            //System.out.println(" "+S);
+            parseString(S, I, 14);
+            BasicLocation bl = (BasicLocation) labs.getOMGraphicAt(i);
+            if (S.length() != 0)
+                bl.setName(name);
+            else
+                bl.setLabel(null);
+            setLocationColor(bl, I[0]);
+            bl.setShowLocation(true);
+        }
     }
 
 
@@ -585,30 +585,30 @@ public class E00Parser {
      * @since
      */
     void readIFO() throws IOException {
-	while (true) {
-	    infoRecord.read(isr);
-	    String info = infoRecord.getStringField(0).trim();
-	    if (info.startsWith("EOI"))
-		break;
-	    int n = infoRecord.getIntField(5);
-	    E00Record r = getRecord();
-	    if (!info.startsWith(prefix))
-		readANY(r, n);
-	    else {
-		String suffix = info.substring(prefix.length() + 1);
-		if (suffix.equals("PAT"))
-		    readPAT(r, n);
-		else if (suffix.equals("AAT"))
-		    readAAT(r, n);
-		else if (suffix.equals("BND"))
-		    readANY(r, n);
-		else if (suffix.equals("TIC"))
-		    readANY(r, n);
-		else
-		    readANY(r, n);
-	    }
-	    Debug.message("e00", "E00: " + info + "  " + n);
-	}
+        while (true) {
+            infoRecord.read(isr);
+            String info = infoRecord.getStringField(0).trim();
+            if (info.startsWith("EOI"))
+                break;
+            int n = infoRecord.getIntField(5);
+            E00Record r = getRecord();
+            if (!info.startsWith(prefix))
+                readANY(r, n);
+            else {
+                String suffix = info.substring(prefix.length() + 1);
+                if (suffix.equals("PAT"))
+                    readPAT(r, n);
+                else if (suffix.equals("AAT"))
+                    readAAT(r, n);
+                else if (suffix.equals("BND"))
+                    readANY(r, n);
+                else if (suffix.equals("TIC"))
+                    readANY(r, n);
+                else
+                    readANY(r, n);
+            }
+            Debug.message("e00", "E00: " + info + "  " + n);
+        }
     }
 
 
@@ -621,8 +621,8 @@ public class E00Parser {
      * @since
      */
     void readANY(E00Record r, int n) throws IOException {
-	for (int i = 0; i < n; i++)
-	    r.read(isr);
+        for (int i = 0; i < n; i++)
+            r.read(isr);
     }
 
 
@@ -637,37 +637,37 @@ public class E00Parser {
      * @since
      */
     void readPAT(E00Record r, int n) throws IOException {
-	int itype = r.getItemIndex(prefix.substring(0, 2) + "PTTYPE");
-	int ival = r.getItemIndex(prefix.substring(0, 2) + "PTVAL");
-	int ival2 = r.getItemIndex(prefix.substring(0, 2) + "PYTYPE");
-	int iname = r.getItemIndex(prefix.substring(0, 2) + "PTNAME");
-	int iflag = r.getItemIndex(prefix.substring(0, 2) + "PTFLAG");
-	//System.out.println(itype+" "+iname+" "+iflag);
-	for (int i = 0; i < n; i++) {
-	    r.read(isr);
-	    BasicLocation bl = (BasicLocation) labs.getOMGraphicAt(i);
-	    String S = r.getStringField(iname).trim();
-	    if (bl == null)
-		continue;
-	    if (S.length() != 0) {
-		Debug.message("e00", S);
-		bl.setName(S);
-		bl.setShowName(true);
-	    }
-	    else
-		bl.setLabel(null);
-	    E00Data d = (E00Data) bl.getAppObject();
-	    if (itype != -1)
-		d.type = r.getIntField(itype);
-	    if (ival != -1)
-		d.valeur = r.getIntField(ival);
-	    if (ival2 != -1)
-		d.valeur2 = r.getIntField(ival2);
-	    else
-		d.valeur2 = d.valeur;
-	    if (itype >= 0)
-		setLocationColor(bl, r.getIntField(itype));
-	}
+        int itype = r.getItemIndex(prefix.substring(0, 2) + "PTTYPE");
+        int ival = r.getItemIndex(prefix.substring(0, 2) + "PTVAL");
+        int ival2 = r.getItemIndex(prefix.substring(0, 2) + "PYTYPE");
+        int iname = r.getItemIndex(prefix.substring(0, 2) + "PTNAME");
+        int iflag = r.getItemIndex(prefix.substring(0, 2) + "PTFLAG");
+        //System.out.println(itype+" "+iname+" "+iflag);
+        for (int i = 0; i < n; i++) {
+            r.read(isr);
+            BasicLocation bl = (BasicLocation) labs.getOMGraphicAt(i);
+            String S = r.getStringField(iname).trim();
+            if (bl == null)
+                continue;
+            if (S.length() != 0) {
+                Debug.message("e00", S);
+                bl.setName(S);
+                bl.setShowName(true);
+            }
+            else
+                bl.setLabel(null);
+            E00Data d = (E00Data) bl.getAppObject();
+            if (itype != -1)
+                d.type = r.getIntField(itype);
+            if (ival != -1)
+                d.valeur = r.getIntField(ival);
+            if (ival2 != -1)
+                d.valeur2 = r.getIntField(ival2);
+            else
+                d.valeur2 = d.valeur;
+            if (itype >= 0)
+                setLocationColor(bl, r.getIntField(itype));
+        }
     }
 
 
@@ -682,35 +682,35 @@ public class E00Parser {
      * @since
      */
     void readAAT(E00Record r, int n) throws IOException {
-	OMGraphic og;
-	int k = 0;
-	int type = Integer.MIN_VALUE;
-	int val = Integer.MIN_VALUE;
-	int itype = r.getItemIndex(prefix.substring(0, 2) + "LNTYPE");
-	int ival = r.getItemIndex(prefix.substring(0, 2) + "LNVAL");
-	int iID = r.getItemIndex(prefix.substring(0, 2) + "NET-ID");
-	int ID = -1;
-	for (int i = 0; i < n; i++) {
-	    r.read(isr);
-	    if ((itype == -1) && (ival == -1))
-		continue;
-	    og = arcs.getOMGraphicAt(i);
-	    if (itype != -1) {
-		type = r.getIntField(itype);
-		og.setLinePaint(getArcPaint(type));
-	    }
-	    if (ival != -1)
-		val = r.getIntField(ival);
+        OMGraphic og;
+        int k = 0;
+        int type = Integer.MIN_VALUE;
+        int val = Integer.MIN_VALUE;
+        int itype = r.getItemIndex(prefix.substring(0, 2) + "LNTYPE");
+        int ival = r.getItemIndex(prefix.substring(0, 2) + "LNVAL");
+        int iID = r.getItemIndex(prefix.substring(0, 2) + "NET-ID");
+        int ID = -1;
+        for (int i = 0; i < n; i++) {
+            r.read(isr);
+            if ((itype == -1) && (ival == -1))
+                continue;
+            og = arcs.getOMGraphicAt(i);
+            if (itype != -1) {
+                type = r.getIntField(itype);
+                og.setLinePaint(getArcPaint(type));
+            }
+            if (ival != -1)
+                val = r.getIntField(ival);
 
-	    if (iID != -1)
-		ID = r.getIntField(iID);
+            if (iID != -1)
+                ID = r.getIntField(iID);
 
-	    E00Data data = (E00Data) og.getAppObject();
-	    data.type = type;
-	    data.valeur = val;
-	    data.valeur2 = val;
-	    data.ID = ID;
-	}
+            E00Data data = (E00Data) og.getAppObject();
+            data.type = type;
+            data.valeur = val;
+            data.valeur2 = val;
+            data.ID = ID;
+        }
     }
 
 
@@ -722,21 +722,21 @@ public class E00Parser {
      * @since
      */
     private void setLocationColor(BasicLocation bl, int t) {
-	if (bl == null)
-	    return;
-	Paint c = getLabPaint(t);
-	OMText label = bl.getLabel();
-	if (label != null) {
-	    if (LabTextColor != null)
-		label.setLinePaint(LabTextColor);
-	    else
-		label.setLinePaint(c);
-	    if (labFont != null)
-		label.setFont(labFont);
-	}
-	bl.setLocationPaint(c);
-	if (SelectLabColor != null)
-	    bl.setSelectPaint(SelectLabColor);
+        if (bl == null)
+            return;
+        Paint c = getLabPaint(t);
+        OMText label = bl.getLabel();
+        if (label != null) {
+            if (LabTextColor != null)
+                label.setLinePaint(LabTextColor);
+            else
+                label.setLinePaint(c);
+            if (labFont != null)
+                label.setFont(labFont);
+        }
+        bl.setLocationPaint(c);
+        if (SelectLabColor != null)
+            bl.setSelectPaint(SelectLabColor);
     }
 
 
@@ -748,11 +748,11 @@ public class E00Parser {
      * @since
      */
     private Paint getArcPaint(int i) {
-	if (i >= ArcColors.length)
-	    i = ArcColors.length - 1;
-	if (i < 0)
-	    i = 0;
-	return ArcColors[i];
+        if (i >= ArcColors.length)
+            i = ArcColors.length - 1;
+        if (i < 0)
+            i = 0;
+        return ArcColors[i];
     }
 
 
@@ -764,11 +764,11 @@ public class E00Parser {
      * @since
      */
     private Paint getLabPaint(int i) {
-	if (i >= LabColors.length)
-	    i = LabColors.length - 1;
-	if (i < 0)
-	    i = 0;
-	return LabColors[i];
+        if (i >= LabColors.length)
+            i = LabColors.length - 1;
+        if (i < 0)
+            i = 0;
+        return LabColors[i];
     }
 
 
@@ -780,30 +780,30 @@ public class E00Parser {
      * @since
      */
     private E00Record getRecord() throws IOException {
-	int itemNumber = infoRecord.getIntField(2);
-	int positions[] = new int[itemNumber + 1];
-	int types[] = new int[itemNumber];
-	String[] names = new String[itemNumber];
-	for (int i = 0; i < itemNumber; i++) {
-	    itemRecord.read(isr);
-	    types[i] = itemRecord.getIntField(7);
-	    names[i] = itemRecord.getStringField(0).trim();
-	    int p = positions[i];
-	    switch (types[i]) {
-	    case 20:
-		positions[i + 1] = p + itemRecord.getIntField(5);
-		break;
-	    case 30:
-		positions[i + 1] = p + itemRecord.getIntField(5);
-		break;
-	    case 50:
-		positions[i + 1] = p + 11;
-		break;
-	    case 60:
-		positions[i + 1] = p + 14;
-	    }
-	}
-	return new E00Record(positions, types, names);
+        int itemNumber = infoRecord.getIntField(2);
+        int positions[] = new int[itemNumber + 1];
+        int types[] = new int[itemNumber];
+        String[] names = new String[itemNumber];
+        for (int i = 0; i < itemNumber; i++) {
+            itemRecord.read(isr);
+            types[i] = itemRecord.getIntField(7);
+            names[i] = itemRecord.getStringField(0).trim();
+            int p = positions[i];
+            switch (types[i]) {
+            case 20:
+                positions[i + 1] = p + itemRecord.getIntField(5);
+                break;
+            case 30:
+                positions[i + 1] = p + itemRecord.getIntField(5);
+                break;
+            case 50:
+                positions[i + 1] = p + 11;
+                break;
+            case 60:
+                positions[i + 1] = p + 14;
+            }
+        }
+        return new E00Record(positions, types, names);
     }
 
 
@@ -819,176 +819,176 @@ public class E00Parser {
      * @created    16 décembre 2002
      */
     static class E00Record {
-	String[] itemName;
-	int n;
-	int[] fieldType, fieldPosition;
-	private String[] stringField;
-	private float[] floatField;
-	private int[] intField;
+        String[] itemName;
+        int n;
+        int[] fieldType, fieldPosition;
+        private String[] stringField;
+        private float[] floatField;
+        private int[] intField;
 
 
-	/**
-	 *Constructor for the E00Record object
-	 *
-	 * @param  positions  Description of Parameter
-	 * @param  types      Description of Parameter
-	 * @param  names      Description of Parameter
-	 * @since
-	 */
-	E00Record(int[] positions, int[] types, String[] names) {
-	    fieldType = types;
-	    fieldPosition = positions;
-	    itemName = names;
-	    n = positions.length - 1;
-	    if (types.length < n) {
-		n = types.length;
-		System.err.println("E00Record err 1");
-	    }
-	    stringField = new String[n];
-	    floatField = new float[n];
-	    intField = new int[n];
-	    //print();
-	}
+        /**
+         *Constructor for the E00Record object
+         *
+         * @param  positions  Description of Parameter
+         * @param  types      Description of Parameter
+         * @param  names      Description of Parameter
+         * @since
+         */
+        E00Record(int[] positions, int[] types, String[] names) {
+            fieldType = types;
+            fieldPosition = positions;
+            itemName = names;
+            n = positions.length - 1;
+            if (types.length < n) {
+                n = types.length;
+                System.err.println("E00Record err 1");
+            }
+            stringField = new String[n];
+            floatField = new float[n];
+            intField = new int[n];
+            //print();
+        }
 
 
-	/**
-	 *  delivers the int in fth position
-	 *
-	 * @param  f  the position
-	 * @return    The int value
-	 * @since
-	 */
-	int getIntField(int f) {
-	    if (f < 0)
-		return Integer.MIN_VALUE;
-	    return intField[f];
-	}
+        /**
+         *  delivers the int in fth position
+         *
+         * @param  f  the position
+         * @return    The int value
+         * @since
+         */
+        int getIntField(int f) {
+            if (f < 0)
+                return Integer.MIN_VALUE;
+            return intField[f];
+        }
 
 
-	/**
-	 *  delivers the float  in fth position
-	 *
-	 * @param  f  the position
-	 * @return    The float value
-	 * @since
-	 */
-	float getFloatField(int f) {
-	    if (f < 0)
-		return Float.MIN_VALUE;
-	    return floatField[f];
-	}
+        /**
+         *  delivers the float  in fth position
+         *
+         * @param  f  the position
+         * @return    The float value
+         * @since
+         */
+        float getFloatField(int f) {
+            if (f < 0)
+                return Float.MIN_VALUE;
+            return floatField[f];
+        }
 
 
-	/**
-	 *  delivers the String in fth position
-	 *
-	 * @param  f  the position
-	 * @return    The String
-	 * @since
-	 */
+        /**
+         *  delivers the String in fth position
+         *
+         * @param  f  the position
+         * @return    The String
+         * @since
+         */
 
-	String getStringField(int f) {
-	    if (f < 0)
-		return "";
-	    return stringField[f];
-	}
-
-
-	/**
-	 *  Gets the ItemIndex attribute of the E00Record object
-	 *
-	 * @param  S  the name of item
-	 * @return    the index of item
-	 * @since
-	 */
-	int getItemIndex(String S) {
-	    if (itemName == null)
-		return -1;
-	    for (int i = 0; i < itemName.length; i++)
-		if (itemName[i].equals(S))
-		    return i;
-	    return -1;
-	}
+        String getStringField(int f) {
+            if (f < 0)
+                return "";
+            return stringField[f];
+        }
 
 
-	/**
-	 *  read a record according with the structure described in thi E00record
-	 *
-	 * @param  isr              reader where to read data
-	 * @exception  IOException
-	 * @since
-	 */
-	void read(BufferedReader isr) throws IOException {
-	    String Line = isr.readLine();
-	    int delta = 0;
-	    for (int i = 0; i < n; i++) {
-		int n1 = fieldPosition[i] - delta;
-		int n2 = fieldPosition[i + 1] - delta;
-		if (n1 > 80) {
-		    delta += 80;
-		    n1 -= 80;
-		    n2 -= 80;
-		    Line = isr.readLine();
-		}
-		String S;
-		if (n1 >= Line.length())
-		    S = "";
-		else if (n2 < Line.length())
-		    S = Line.substring(n1, n2);
-		else
-		    S = Line.substring(n1);
-		if (n2 > 80) {
-		    delta += 80;
-		    n2 -= 80;
-		    Line = isr.readLine();
-		    if (n2 < Line.length())
-			S += Line.substring(0, n2);
-		    else {
-			S = Line;
-			Debug.message("e00", "??" + S);
-		    }
-		}
-		try {
-		    switch (fieldType[i]) {
-		    case 20:
-			stringField[i] = S;
-			break;
-		    case 30:
-		    case 50:
-			intField[i] = Integer.parseInt(S.trim());
-			break;
-		    case 60:
-			floatField[i] = Float.parseFloat(S.trim());
-		    }
-		} catch (NumberFormatException e) {
-		    if (!Line.startsWith("EOI")) {
-			Debug.message("e00", "E00:parserr " + i + " " + fieldPosition[i] + " " +
-				      fieldPosition[i + 1] + " " + S);
-			Debug.message("e00", ">" + Line);
-		    }
-		}
-	    }
-
-	}
+        /**
+         *  Gets the ItemIndex attribute of the E00Record object
+         *
+         * @param  S  the name of item
+         * @return    the index of item
+         * @since
+         */
+        int getItemIndex(String S) {
+            if (itemName == null)
+                return -1;
+            for (int i = 0; i < itemName.length; i++)
+                if (itemName[i].equals(S))
+                    return i;
+            return -1;
+        }
 
 
-	/**
-	 *  Print the record structure
-	 *
-	 * @since
-	 */
-	void print() {
-	    System.out.print("Record ");
-	    for (int i = 0; i < n + 1; i++)
-		System.out.print(fieldPosition[i] + " ");
+        /**
+         *  read a record according with the structure described in thi E00record
+         *
+         * @param  isr              reader where to read data
+         * @exception  IOException
+         * @since
+         */
+        void read(BufferedReader isr) throws IOException {
+            String Line = isr.readLine();
+            int delta = 0;
+            for (int i = 0; i < n; i++) {
+                int n1 = fieldPosition[i] - delta;
+                int n2 = fieldPosition[i + 1] - delta;
+                if (n1 > 80) {
+                    delta += 80;
+                    n1 -= 80;
+                    n2 -= 80;
+                    Line = isr.readLine();
+                }
+                String S;
+                if (n1 >= Line.length())
+                    S = "";
+                else if (n2 < Line.length())
+                    S = Line.substring(n1, n2);
+                else
+                    S = Line.substring(n1);
+                if (n2 > 80) {
+                    delta += 80;
+                    n2 -= 80;
+                    Line = isr.readLine();
+                    if (n2 < Line.length())
+                        S += Line.substring(0, n2);
+                    else {
+                        S = Line;
+                        Debug.message("e00", "??" + S);
+                    }
+                }
+                try {
+                    switch (fieldType[i]) {
+                    case 20:
+                        stringField[i] = S;
+                        break;
+                    case 30:
+                    case 50:
+                        intField[i] = Integer.parseInt(S.trim());
+                        break;
+                    case 60:
+                        floatField[i] = Float.parseFloat(S.trim());
+                    }
+                } catch (NumberFormatException e) {
+                    if (!Line.startsWith("EOI")) {
+                        Debug.message("e00", "E00:parserr " + i + " " + fieldPosition[i] + " " +
+                                      fieldPosition[i + 1] + " " + S);
+                        Debug.message("e00", ">" + Line);
+                    }
+                }
+            }
 
-	    System.out.println();
-	    System.out.print("       ");
-	    for (int i = 0; i < n; i++)
-		System.out.print(fieldType[i] + " ");
+        }
 
-	    System.out.println();
-	}
+
+        /**
+         *  Print the record structure
+         *
+         * @since
+         */
+        void print() {
+            System.out.print("Record ");
+            for (int i = 0; i < n + 1; i++)
+                System.out.print(fieldPosition[i] + " ");
+
+            System.out.println();
+            System.out.print("       ");
+            for (int i = 0; i < n; i++)
+                System.out.print(fieldType[i] + " ");
+
+            System.out.println();
+        }
     }
 }
 

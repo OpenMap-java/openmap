@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/SoloMapComponentReplacePolicy.java,v $
 // $RCSfile: SoloMapComponentReplacePolicy.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:47:43 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:05 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -37,32 +37,32 @@ public class SoloMapComponentReplacePolicy implements SoloMapComponentPolicy {
      * will have removed the previous duplicate from the MapHandler.
      */
     public boolean canAdd(BeanContextSupport bc, Object obj) 
-	throws MultipleSoloMapComponentException {
+        throws MultipleSoloMapComponentException {
 
-	if (obj == null) {
-	    return false;
-	}
+        if (obj == null) {
+            return false;
+        }
 
-	// At first we just added the new item, but we should remove
-	// the previous one, too.
-	if (obj instanceof SoloMapComponent) {
-	    Class firstClass = obj.getClass();
-	    for (Iterator it = bc.iterator(); it.hasNext(); ) {
-		Object someObj = it.next();
-		if (someObj instanceof SoloMapComponent) {
-		    Class secondClass = someObj.getClass();
+        // At first we just added the new item, but we should remove
+        // the previous one, too.
+        if (obj instanceof SoloMapComponent) {
+            Class firstClass = obj.getClass();
+            for (Iterator it = bc.iterator(); it.hasNext(); ) {
+                Object someObj = it.next();
+                if (someObj instanceof SoloMapComponent) {
+                    Class secondClass = someObj.getClass();
 
-		    if (firstClass == secondClass ||
-			firstClass.isAssignableFrom(secondClass) || 
-			secondClass.isAssignableFrom(firstClass)) {
-			
-			bc.remove(someObj);
-			break;
-		    }
-		}
-	    }
-	}
+                    if (firstClass == secondClass ||
+                        firstClass.isAssignableFrom(secondClass) || 
+                        secondClass.isAssignableFrom(firstClass)) {
+                        
+                        bc.remove(someObj);
+                        break;
+                    }
+                }
+            }
+        }
 
-	return true;
+        return true;
     }
 }

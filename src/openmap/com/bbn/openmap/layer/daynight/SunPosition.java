@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/daynight/SunPosition.java,v $
 // $RCSfile: SunPosition.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:25 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -117,15 +117,15 @@ public class SunPosition {
      * through perigee.  
      */
     public static double eccentricAnomaly(double M){
-	double delta;
-	double E = M;
-	while (true) {
-	    delta = E - (ECCENTRICITY*Math.sin(E)) - M;
+        double delta;
+        double E = M;
+        while (true) {
+            delta = E - (ECCENTRICITY*Math.sin(E)) - M;
 
-	    if (Math.abs(delta) <= 1E-10) break;
-	    E -= (delta / (1.0 - (ECCENTRICITY*Math.cos(E))));
-	}
-	return E;
+            if (Math.abs(delta) <= 1E-10) break;
+            E -= (delta / (1.0 - (ECCENTRICITY*Math.cos(E))));
+        }
+        return E;
     }
 
     /**
@@ -135,14 +135,14 @@ public class SunPosition {
      * @param daysSinceEpoch number of days since 1990 January epoch.
      */
     protected static double sunMeanAnomaly(double daysSinceEpoch){
-	
-	double N = ORBIT_RADS_PER_DAY * daysSinceEpoch;
-	N = N%MoreMath.TWO_PI;
-	if (N < 0) N += MoreMath.TWO_PI;
-	
-	double M0 = N + epsilon_g - omega_bar_g;
-	if (M0 < 0) M0 += MoreMath.TWO_PI;
-	return M0;
+        
+        double N = ORBIT_RADS_PER_DAY * daysSinceEpoch;
+        N = N%MoreMath.TWO_PI;
+        if (N < 0) N += MoreMath.TWO_PI;
+        
+        double M0 = N + epsilon_g - omega_bar_g;
+        if (M0 < 0) M0 += MoreMath.TWO_PI;
+        return M0;
     }
     
     /**
@@ -153,12 +153,12 @@ public class SunPosition {
      * relative to the 1990 epoch.
      */
     protected static double sunEclipticLongitude(double M0){
-	double E = eccentricAnomaly(M0);
-	double v = 2 * Math.atan(Math.sqrt((1+ECCENTRICITY)/(1-ECCENTRICITY)) * 
-				 Math.tan(E/2.0));
-	double ret = v + omega_bar_g;
-	ret = adjustWithin2PI(ret);
-	return ret;
+        double E = eccentricAnomaly(M0);
+        double v = 2 * Math.atan(Math.sqrt((1+ECCENTRICITY)/(1-ECCENTRICITY)) * 
+                                 Math.tan(E/2.0));
+        double ret = v + omega_bar_g;
+        ret = adjustWithin2PI(ret);
+        return ret;
     }
 
 
@@ -170,12 +170,12 @@ public class SunPosition {
      * @param beta ecliptic latitude
      */
     protected static double eclipticToEquatorialAscension(double lambda, 
-							  double beta){
-	double sin_e = Math.sin(MEAN_OBLIQUITY_OF_EPOCH);
-	double cos_e = Math.cos(MEAN_OBLIQUITY_OF_EPOCH);
-	
-	return Math.atan2(Math.sin(lambda)*cos_e - Math.tan(beta)*sin_e, 
-			  Math.cos(lambda));
+                                                          double beta){
+        double sin_e = Math.sin(MEAN_OBLIQUITY_OF_EPOCH);
+        double cos_e = Math.cos(MEAN_OBLIQUITY_OF_EPOCH);
+        
+        return Math.atan2(Math.sin(lambda)*cos_e - Math.tan(beta)*sin_e, 
+                          Math.cos(lambda));
     }
 
     /**
@@ -186,11 +186,11 @@ public class SunPosition {
      * @param beta ecliptic latitude
      */
     protected static double eclipticToEquatorialDeclination(double lambda, 
-							    double beta){
-	double sin_e = Math.sin(MEAN_OBLIQUITY_OF_EPOCH);
-	double cos_e = Math.cos(MEAN_OBLIQUITY_OF_EPOCH);
-	
-	return Math.asin(Math.sin(beta)*cos_e + Math.cos(beta)*sin_e*Math.sin(lambda));
+                                                            double beta){
+        double sin_e = Math.sin(MEAN_OBLIQUITY_OF_EPOCH);
+        double cos_e = Math.cos(MEAN_OBLIQUITY_OF_EPOCH);
+        
+        return Math.asin(Math.sin(beta)*cos_e + Math.cos(beta)*sin_e*Math.sin(lambda));
     }
 
     /** 
@@ -201,28 +201,28 @@ public class SunPosition {
      * @return julian date of request.  
      */
     public static double calculateJulianDate(GregorianCalendar cal){
-	int year = cal.get(Calendar.YEAR);
-	int month = cal.get(Calendar.MONTH);
-	int day = cal.get(Calendar.DAY_OF_MONTH);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
 
-	// Algorithm expects that the January is = 1, which is
-	// different from the Java representation
-	month++;
+        // Algorithm expects that the January is = 1, which is
+        // different from the Java representation
+        month++;
 
-	if ((month == 1) || (month == 2))
-	{
-	    year -= 1;
-	    month += 12;
-	}
-	
-	int A = year / 100;
-	int B = (int)(2 - A + (A / 4));
-	int C = (int)(365.25 * (float)year);
-	int D = (int)(30.6001 * (float)(month + 1));
-	
-	double julianDate = (double)(B + C + D + day) + 1720994.5;
+        if ((month == 1) || (month == 2))
+        {
+            year -= 1;
+            month += 12;
+        }
+        
+        int A = year / 100;
+        int B = (int)(2 - A + (A / 4));
+        int C = (int)(365.25 * (float)year);
+        int D = (int)(30.6001 * (float)(month + 1));
+        
+        double julianDate = (double)(B + C + D + day) + 1720994.5;
 
-	return julianDate;
+        return julianDate;
     }
 
 
@@ -235,28 +235,28 @@ public class SunPosition {
      * @return GST relative to unix epoch.
      */
     public static double greenwichSiderealTime(double julianDate, 
-					       GregorianCalendar time){
+                                               GregorianCalendar time){
 
-	double T  = (julianDate - 2451545.0) / 36525.0;
-	double T0 =  6.697374558 + (T * (2400.051336 + (T + 2.5862E-5)));
-	
-	T0 = T0%24.0;
-	if (T0 < 0){
-	    T0 += 24;
-	}
+        double T  = (julianDate - 2451545.0) / 36525.0;
+        double T0 =  6.697374558 + (T * (2400.051336 + (T + 2.5862E-5)));
+        
+        T0 = T0%24.0;
+        if (T0 < 0){
+            T0 += 24;
+        }
 
-	double UT = time.get(Calendar.HOUR_OF_DAY) + 
-	    (time.get(Calendar.MINUTE) + 
-	     time.get(Calendar.SECOND) / 60.0) / 60.0;
+        double UT = time.get(Calendar.HOUR_OF_DAY) + 
+            (time.get(Calendar.MINUTE) + 
+             time.get(Calendar.SECOND) / 60.0) / 60.0;
 
-	T0 += UT * 1.002737909;
+        T0 += UT * 1.002737909;
 
-	T0 = T0%24.0;
-	if (T0 < 0){
-	    T0 += 24.0;
-	}
+        T0 = T0%24.0;
+        if (T0 < 0){
+            T0 += 24.0;
+        }
 
-	return T0;
+        return T0;
     }
 
     /**
@@ -269,33 +269,33 @@ public class SunPosition {
      */
     public static LatLonPoint sunPosition(long mssue){
 
-	// Set the date and clock, based on the millisecond count:
-	GregorianCalendar cal = new GregorianCalendar();
-	cal.setTime(new Date(mssue));
+        // Set the date and clock, based on the millisecond count:
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(new Date(mssue));
 
-	double julianDate = calculateJulianDate(cal);
+        double julianDate = calculateJulianDate(cal);
 
-	// Need to correct time to GMT
-	long gmtOffset = cal.get(Calendar.ZONE_OFFSET);
-	// thanks to Erhard...
-	long dstOffset = cal.get(Calendar.DST_OFFSET);            // ins. 12.04.99
- 	cal.setTime(new Date(mssue - (gmtOffset + dstOffset)));  // rep. 12.04.99
+        // Need to correct time to GMT
+        long gmtOffset = cal.get(Calendar.ZONE_OFFSET);
+        // thanks to Erhard...
+        long dstOffset = cal.get(Calendar.DST_OFFSET);            // ins. 12.04.99
+        cal.setTime(new Date(mssue - (gmtOffset + dstOffset)));  // rep. 12.04.99
 
-	double numDaysSinceEpoch = ((mssue/1000)-EPOCH_TIME_SECS)/(24.0f*3600.0f);
+        double numDaysSinceEpoch = ((mssue/1000)-EPOCH_TIME_SECS)/(24.0f*3600.0f);
 
-	// M0 - mean anomaly of the sun
-	double M0 = sunMeanAnomaly(numDaysSinceEpoch);
-	// lambda
-	double sunLongitude = sunEclipticLongitude(M0); 
-	// alpha
-	double sunAscension = eclipticToEquatorialAscension(sunLongitude, 0.0);
-	// delta
-	double sunDeclination = eclipticToEquatorialDeclination(sunLongitude, 0.0);
+        // M0 - mean anomaly of the sun
+        double M0 = sunMeanAnomaly(numDaysSinceEpoch);
+        // lambda
+        double sunLongitude = sunEclipticLongitude(M0); 
+        // alpha
+        double sunAscension = eclipticToEquatorialAscension(sunLongitude, 0.0);
+        // delta
+        double sunDeclination = eclipticToEquatorialDeclination(sunLongitude, 0.0);
 
-	double tmpAscension = sunAscension - 
-	    (MoreMath.TWO_PI/24)*greenwichSiderealTime(julianDate, cal);
+        double tmpAscension = sunAscension - 
+            (MoreMath.TWO_PI/24)*greenwichSiderealTime(julianDate, cal);
 
-	return new LatLonPoint((float)(sunDeclination), (float)(tmpAscension), true);
+        return new LatLonPoint((float)(sunDeclination), (float)(tmpAscension), true);
     }
 
     /**
@@ -310,72 +310,72 @@ public class SunPosition {
      */
     public static LatLonPoint moonPosition(long mssue){
 
-	// Set the date and clock, based on the millisecond count:
-	GregorianCalendar cal = new GregorianCalendar();
-	cal.setTime(new Date(mssue));
+        // Set the date and clock, based on the millisecond count:
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(new Date(mssue));
 
-	double julianDate = calculateJulianDate(cal);
+        double julianDate = calculateJulianDate(cal);
 
-	// Need to correct time to GMT
-	long gmtOffset = cal.get(Calendar.ZONE_OFFSET);
-	cal.setTime(new Date(mssue - gmtOffset));
+        // Need to correct time to GMT
+        long gmtOffset = cal.get(Calendar.ZONE_OFFSET);
+        cal.setTime(new Date(mssue - gmtOffset));
 
-	// Step 1,2
-	double numDaysSinceEpoch = ((mssue/1000)-EPOCH_TIME_SECS)/(24.0f*3600.0f);
-	// Step 3
-	// M0 - mean anomaly of the sun
-	double M0 = sunMeanAnomaly(numDaysSinceEpoch);
-	// lambda
-	double sunLongitude = sunEclipticLongitude(M0);
-	// Step 4
-	double el = (13.1763966 * numDaysSinceEpoch * Math.PI/180) + el0;
-	el = adjustWithin2PI(el);
-	// Step 5
-	double Mm = el - (.1114041 * numDaysSinceEpoch * Math.PI/180) - P0;
-	Mm = adjustWithin2PI(Mm);
-	// Step 6
-	double N = N0 - (.0529539 * numDaysSinceEpoch * Math.PI/180);
-	N = adjustWithin2PI(N);
-	// Step 7
-	double C = el - sunLongitude;
-	double Ev = 1.2739 * Math.sin(2*C - Mm);
-	// Step 8
-	double Ae = .1858 * Math.sin(M0);
-	double A3 = .37 * Math.sin(M0);
-	// Step 9
-	double Mmp = Mm + Ev - Ae - A3;
-	// Step 10
-	double Ec = 6.2886 * Math.sin(Mmp);
-	// Step 11
-	double A4 = 0.214 * Math.sin(2*Mmp);
-	// Step 12
-	double elp = el + Ev + Ec - Ae + A4;
-	// Step 13
-	double V = .6583 * Math.sin(2 * (elp - sunLongitude));
-	// Step 14
-	double elpp = elp + V;
-	// Step 15
-	double Np = N - (.16 * Math.sin(M0));
-	// Step 16
-	double y = Math.sin(elpp - Np) * Math.cos(eye);
-	// Step 17
-	double x = Math.cos(elpp - Np);
-	// Step 18
-	double amb = Math.atan2(y, x);
-	// Step 19
-	double lambda_m = amb + Np;
-	// Step 20
-	double beta_m = Math.asin(Math.sin(elpp - Np) * Math.sin(eye));
-	// Step 21	
-	// alpha
-	double moonAscension = eclipticToEquatorialAscension(lambda_m, beta_m);
-	// delta
-	double moonDeclination = eclipticToEquatorialDeclination(lambda_m, beta_m);
+        // Step 1,2
+        double numDaysSinceEpoch = ((mssue/1000)-EPOCH_TIME_SECS)/(24.0f*3600.0f);
+        // Step 3
+        // M0 - mean anomaly of the sun
+        double M0 = sunMeanAnomaly(numDaysSinceEpoch);
+        // lambda
+        double sunLongitude = sunEclipticLongitude(M0);
+        // Step 4
+        double el = (13.1763966 * numDaysSinceEpoch * Math.PI/180) + el0;
+        el = adjustWithin2PI(el);
+        // Step 5
+        double Mm = el - (.1114041 * numDaysSinceEpoch * Math.PI/180) - P0;
+        Mm = adjustWithin2PI(Mm);
+        // Step 6
+        double N = N0 - (.0529539 * numDaysSinceEpoch * Math.PI/180);
+        N = adjustWithin2PI(N);
+        // Step 7
+        double C = el - sunLongitude;
+        double Ev = 1.2739 * Math.sin(2*C - Mm);
+        // Step 8
+        double Ae = .1858 * Math.sin(M0);
+        double A3 = .37 * Math.sin(M0);
+        // Step 9
+        double Mmp = Mm + Ev - Ae - A3;
+        // Step 10
+        double Ec = 6.2886 * Math.sin(Mmp);
+        // Step 11
+        double A4 = 0.214 * Math.sin(2*Mmp);
+        // Step 12
+        double elp = el + Ev + Ec - Ae + A4;
+        // Step 13
+        double V = .6583 * Math.sin(2 * (elp - sunLongitude));
+        // Step 14
+        double elpp = elp + V;
+        // Step 15
+        double Np = N - (.16 * Math.sin(M0));
+        // Step 16
+        double y = Math.sin(elpp - Np) * Math.cos(eye);
+        // Step 17
+        double x = Math.cos(elpp - Np);
+        // Step 18
+        double amb = Math.atan2(y, x);
+        // Step 19
+        double lambda_m = amb + Np;
+        // Step 20
+        double beta_m = Math.asin(Math.sin(elpp - Np) * Math.sin(eye));
+        // Step 21      
+        // alpha
+        double moonAscension = eclipticToEquatorialAscension(lambda_m, beta_m);
+        // delta
+        double moonDeclination = eclipticToEquatorialDeclination(lambda_m, beta_m);
 
-	double tmpAscension = moonAscension - 
-	    (MoreMath.TWO_PI/24)*greenwichSiderealTime(julianDate, cal);
+        double tmpAscension = moonAscension - 
+            (MoreMath.TWO_PI/24)*greenwichSiderealTime(julianDate, cal);
 
-	return new LatLonPoint((float)(moonDeclination), (float)(tmpAscension), true);
+        return new LatLonPoint((float)(moonDeclination), (float)(tmpAscension), true);
     }
 
     /**
@@ -385,21 +385,21 @@ public class SunPosition {
      * @param num The number to be modified, if needed.  
      */
     protected static double adjustWithin2PI(double num){
-	if (num < 0){
-	    do num += MoreMath.TWO_PI;
-	    while (num < 0);
-	}
-	else if (num > MoreMath.TWO_PI){
-	    do num -= MoreMath.TWO_PI;
-	    while (num > MoreMath.TWO_PI);
-	}
-	return num;
+        if (num < 0){
+            do num += MoreMath.TWO_PI;
+            while (num < 0);
+        }
+        else if (num > MoreMath.TWO_PI){
+            do num -= MoreMath.TWO_PI;
+            while (num > MoreMath.TWO_PI);
+        }
+        return num;
     }
 
     public static void main(String[] arg){
-	System.out.println("Sun is over " + 
-			   SunPosition.sunPosition(System.currentTimeMillis()));
-	System.out.println("Moon is over " + 
-			   SunPosition.moonPosition(System.currentTimeMillis()));
+        System.out.println("Sun is over " + 
+                           SunPosition.sunPosition(System.currentTimeMillis()));
+        System.out.println("Moon is over " + 
+                           SunPosition.moonPosition(System.currentTimeMillis()));
     }
 }

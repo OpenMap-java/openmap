@@ -14,7 +14,7 @@ public class ComponentDragGestureListener implements DragGestureListener {
     private DefaultDnDCatcher dndCatcher;
 
     /**
-     * 	Note that DefaultDnDCatcher is a DragSourceListener itself, 
+     *  Note that DefaultDnDCatcher is a DragSourceListener itself, 
      *  so dndCatcher and dsl can be the same object.
      */
 

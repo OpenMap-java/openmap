@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NullMouseMode.java,v $
 // $RCSfile: NullMouseMode.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,7 +44,7 @@ public class NullMouseMode extends AbstractMouseMode {
      * consume events parameter to true. 
      */
     public NullMouseMode() {
-	this(modeID, true);
+        this(modeID, true);
     }
 
     /**
@@ -54,7 +54,7 @@ public class NullMouseMode extends AbstractMouseMode {
      * @param consumeEvents the consume mode.
      */
     public NullMouseMode(String id, boolean consumeEvents) {
-	super(id, consumeEvents);
+        super(id, consumeEvents);
     }
 
     /**

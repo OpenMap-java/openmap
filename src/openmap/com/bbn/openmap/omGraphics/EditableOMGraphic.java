@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMGraphic.java,v $
 // $RCSfile: EditableOMGraphic.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/12/23 20:46:43 $
-// $Author: wjeuerle $
+// $Revision: 1.9 $
+// $Date: 2004/01/26 18:18:12 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -102,8 +102,8 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     protected boolean DEBUG_DETAIL = false;
 
     protected EditableOMGraphic() {
-	DEBUG = Debug.debugging("eomg");
-	DEBUG_DETAIL = Debug.debugging("eomgdetail");
+        DEBUG = Debug.debugging("eomg");
+        DEBUG_DETAIL = Debug.debugging("eomgdetail");
     }
 
     /**
@@ -113,14 +113,14 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * @see com.bbn.openmap.layer.util.stateMachine.StateMachine
      */
     public void setStateMachine(EOMGStateMachine sm) {
-	stateMachine = sm;
+        stateMachine = sm;
     }
 
     /**
      * Get the state machine for this EditableOMGraphic.
      */
     public EOMGStateMachine getStateMachine() {
-	return stateMachine;
+        return stateMachine;
     }
 
     /**
@@ -129,7 +129,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * MouseDelegator.
      */
     public void setMouseModeServiceList(String[] list) {
-	mouseModeServiceList = list;
+        mouseModeServiceList = list;
     }
 
     /**
@@ -138,7 +138,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * MouseDelegator.
      */
     public String[] getMouseModeServiceList() {
-	return mouseModeServiceList;
+        return mouseModeServiceList;
     }
 
     /**
@@ -147,19 +147,19 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * @param set true if the GUI should be shown.
      */
     public void setShowGUI(boolean set) {
-	showGUI = set;
-	OMGraphic graphic = getGraphic();
-	if (graphic != null) {
-	    graphic.setShowEditablePalette(set);
-	}
+        showGUI = set;
+        OMGraphic graphic = getGraphic();
+        if (graphic != null) {
+            graphic.setShowEditablePalette(set);
+        }
     }
 
     public boolean getShowGUI() {
-	if (getGraphic() != null) {
-	    return getGraphic().getShowEditablePalette();
-	} else {
-	    return showGUI;
-	}
+        if (getGraphic() != null) {
+            return getGraphic().getShowEditablePalette();
+        } else {
+            return showGUI;
+        }
     }
 
     /**
@@ -167,7 +167,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * than just by its grab points.  Used internally.
      */
     public void setCanGrabGraphic(boolean set) {
-	canGrabGraphic = set;
+        canGrabGraphic = set;
     }
 
     /**
@@ -175,7 +175,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * than just by its grab points.
      */
     public boolean getCanGrabGraphic() {
-	return canGrabGraphic;
+        return canGrabGraphic;
     }
 
     /**
@@ -208,7 +208,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * modifications.  If the graphic is being created, start over.
      */
     public void reset() {
-	Debug.output("EditableOMGraphic.reset(): not yet supported");
+        Debug.output("EditableOMGraphic.reset(): not yet supported");
     }
 
     /**
@@ -226,15 +226,15 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * that fit into the resident array.  
      */
     public boolean setGrabPoints(GrabPoint[] points) {
-	if (points == null || gPoints == null) {
-	    return false;
-	}
+        if (points == null || gPoints == null) {
+            return false;
+        }
 
-	for (int i = 0; i < points.length && i < gPoints.length; i++) {
-	    gPoints[i] = points[i];
-	}
+        for (int i = 0; i < points.length && i < gPoints.length; i++) {
+            gPoints[i] = points[i];
+        }
 
-	return (points.length == gPoints.length);
+        return (points.length == gPoints.length);
     }
 
     /**
@@ -242,14 +242,14 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * graphic.
      */
     public void setActionMask(int mask) {
-	actionMask = mask;
+        actionMask = mask;
     }
 
     /**
      * Get the OMAction mask for this graphic.
      */
     public int getActionMask() {
-	return actionMask;
+        return actionMask;
     }
 
     /**
@@ -266,7 +266,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * modifications are done, so that the OMGraphic is modified.
      */
     public GrabPoint[] getGrabPoints() {
-	return gPoints;
+        return gPoints;
     }
 
     /**
@@ -282,14 +282,14 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * everything goes OK, then true is returned.  
      */
     public boolean setGrabPoint(GrabPoint gb, int index) {
-	if (gPoints != null && gb != null && 
-	    index >= 0 && index < gPoints.length) {
+        if (gPoints != null && gb != null && 
+            index >= 0 && index < gPoints.length) {
 
-	    gPoints[index] = gb;
-	    return true;
-	} else {
-	    return false;
-	}
+            gPoints[index] = gb;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -299,11 +299,11 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * index is outside the range of the array, null is returned.
      */
     public GrabPoint getGrabPoint(int index) {
-	if (gPoints != null && index >= 0 && index < gPoints.length) {
-	    return gPoints[index];
-	} else {
-	    return null;
-	}
+        if (gPoints != null && index >= 0 && index < gPoints.length) {
+            return gPoints[index];
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -327,7 +327,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * result of a mouseDragged event, or other selection.
      */
     public void setMovingPoint(GrabPoint gp) {
-	movingPoint = gp;
+        movingPoint = gp;
     }
 
     /**
@@ -335,7 +335,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * there isn't one.  
      */
     public GrabPoint getMovingPoint() {
-	return movingPoint;
+        return movingPoint;
     }
 
     /**
@@ -346,17 +346,17 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * to let the user know it's active.
      */
     public void handleInitialMouseEvent(MouseEvent e) {
-	getStateMachine().setEdit();
-	if (e != null) {
-	    GrabPoint gp = getMovingPoint(e);
-	    if (gp == null) {
-		move(e);
-	    } else {
-		getStateMachine().setSelected();
-	    }
-	} else {
-	    getStateMachine().setSelected();
-	}
+        getStateMachine().setEdit();
+        if (e != null) {
+            GrabPoint gp = getMovingPoint(e);
+            if (gp == null) {
+                move(e);
+            } else {
+                getStateMachine().setSelected();
+            }
+        } else {
+            getStateMachine().setSelected();
+        }
     }
 
     /**
@@ -375,7 +375,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * none are.
      */
     public GrabPoint getMovingPoint(MouseEvent e) {
-	return _getMovingPoint(e);
+        return _getMovingPoint(e);
     }
 
     /**
@@ -386,23 +386,23 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * @see #getMovingPoint(MouseEvent)
      */
     public GrabPoint _getMovingPoint(MouseEvent e) {
-	movingPoint = null;
+        movingPoint = null;
 
-	GrabPoint[] gb = getGrabPoints();
-	int x = e.getX();
-	int y = e.getY();
+        GrabPoint[] gb = getGrabPoints();
+        int x = e.getX();
+        int y = e.getY();
 
-	for (int i = gb.length - 1; i >=0; i--) {
-	    if (gb[i] != null && gb[i].distance(x, y) == 0) {
-		setMovingPoint(gb[i]);
-		// in case the points are on top of each other, the
-		// last point in the array will take precidence.
-		return gb[i];
-	    }
-	}
+        for (int i = gb.length - 1; i >=0; i--) {
+            if (gb[i] != null && gb[i].distance(x, y) == 0) {
+                setMovingPoint(gb[i]);
+                // in case the points are on top of each other, the
+                // last point in the array will take precidence.
+                return gb[i];
+            }
+        }
 
-	setMovingPoint(null);
-	return null;
+        setMovingPoint(null);
+        return null;
     }
 
     /**
@@ -417,26 +417,26 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * Clean the surface all the painting is taking place over.
      */
     public void cleanMap(MouseEvent e) {
-	Object obj = e.getSource();
-	if (!(obj instanceof MapBean)) {
-	    return;
-	}
+        Object obj = e.getSource();
+        if (!(obj instanceof MapBean)) {
+            return;
+        }
 
-	// Could call repaint(), but I think we should paint in this
-	// thread...
-	MapBean map = (MapBean)obj;
-	// Gets the buffer cleaned out.
-	map.setBufferDirty(true);
-  	map.paintChildren(map.getGraphics());
+        // Could call repaint(), but I think we should paint in this
+        // thread...
+        MapBean map = (MapBean)obj;
+        // Gets the buffer cleaned out.
+        map.setBufferDirty(true);
+        map.paintChildren(map.getGraphics());
     }
 
     /** Same as redraw(e, false) */
     public void redraw(MouseEvent e) {
-	redraw(e, false);
+        redraw(e, false);
     }
 
     public void redraw(MouseEvent e, boolean firmPaint) {
-	redraw(e, firmPaint, true);
+        redraw(e, firmPaint, true);
     }
 
     /**
@@ -460,74 +460,74 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * that are moving.  
      */
     public void redraw(MouseEvent e, boolean firmPaint, boolean drawXOR) {
-	if (DEBUG) {
-	    Debug.output("EditableOMGraphic.redraw(" + 
-			 (firmPaint?"firmPaint)":")"));
-	}
+        if (DEBUG) {
+            Debug.output("EditableOMGraphic.redraw(" + 
+                         (firmPaint?"firmPaint)":")"));
+        }
 
-	if (e == null) {
-	    if (lastMouseEvent == null) {
-		return;
-	    }
-	    e = lastMouseEvent;
-	}
+        if (e == null) {
+            if (lastMouseEvent == null) {
+                return;
+            }
+            e = lastMouseEvent;
+        }
 
-	Object obj = e.getSource();
-	if (!(obj instanceof MapBean)) {
-	    return;
-	}
-	    
-	MapBean map = (MapBean)obj;
-	Graphics g = map.getGraphics();
+        Object obj = e.getSource();
+        if (!(obj instanceof MapBean)) {
+            return;
+        }
+            
+        MapBean map = (MapBean)obj;
+        Graphics g = map.getGraphics();
 
-	OMGraphic graphic = getGraphic();
+        OMGraphic graphic = getGraphic();
 
-	if (firmPaint) {
-	    // So, with a firm paint, we want to clean the screen.  If
-	    // the map is being buffered, we need to clean out the
-	    // buffer, which is why we set the Request paint to true,
-	    // to get the image rebuilt.  Otherwise, a copy of the
-	    // graphic remains.
-	    map.setBufferDirty(true);
-	    graphic.generate(getProjection());
-	    map.repaint();
-	} else {
-	    // If we get here, we are painting a moving object, so we
-	    // only want to do the outline to make it as fast as
-	    // possible.
-	    holder.setFrom(graphic);
-	    DrawingAttributes.DEFAULT.setTo(graphic);
+        if (firmPaint) {
+            // So, with a firm paint, we want to clean the screen.  If
+            // the map is being buffered, we need to clean out the
+            // buffer, which is why we set the Request paint to true,
+            // to get the image rebuilt.  Otherwise, a copy of the
+            // graphic remains.
+            map.setBufferDirty(true);
+            graphic.generate(getProjection());
+            map.repaint();
+        } else {
+            // If we get here, we are painting a moving object, so we
+            // only want to do the outline to make it as fast as
+            // possible.
+            holder.setFrom(graphic);
+            DrawingAttributes.DEFAULT.setTo(graphic);
 
-	    modifyOMGraphicForEditRender();
-	    graphic.regenerate(getProjection());
+            modifyOMGraphicForEditRender();
+            graphic.regenerate(getProjection());
 
-	    if (drawXOR) {
-		g.setXORMode(Color.lightGray);
-		g.setColor((Color)graphic.getDisplayPaint());
+            if (drawXOR) {
+                g.setXORMode(Color.lightGray);
+                g.setColor((Color)graphic.getDisplayPaint());
 
-		render(g);
-	    }
+                render(g);
+            }
 
-	    GrabPoint gp = getMovingPoint();
-	    if (gp != null) {
-		gp.set(e.getX(), e.getY());
-		if (gp instanceof OffsetGrabPoint) {
-		    ((OffsetGrabPoint)gp).moveOffsets();
-		}
-		setGrabPoints();
-	    }
-	}
+            GrabPoint gp = getMovingPoint();
+            if (gp != null) {
+                gp.set(e.getX(), e.getY());
+                if (gp instanceof OffsetGrabPoint) {
+                    ((OffsetGrabPoint)gp).moveOffsets();
+                }
+                setGrabPoints();
+            }
+        }
 
-	if (!firmPaint) {
-	    generate(getProjection());
-	    render(g);
-	    holder.setTo(graphic);
-	}
+        if (!firmPaint) {
+            generate(getProjection());
+            render(g);
+            holder.setTo(graphic);
+        }
 
-	resetOMGraphicAfterEditRender();
-	g.dispose();
+        resetOMGraphicAfterEditRender();
+        g.dispose();
 
-	lastMouseEvent = e;
+        lastMouseEvent = e;
     }
 
     protected MouseEvent lastMouseEvent;
@@ -554,18 +554,18 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     protected void resetOMGraphicAfterEditRender() {}
 
     public void repaint() {
-	if (lastMouseEvent != null) {
-	    redraw(lastMouseEvent, true);
-	}
+        if (lastMouseEvent != null) {
+            redraw(lastMouseEvent, true);
+        }
     }
 
     public void finalize() {
-	if (getGraphic() != null) {
-	    getGraphic().setVisible(true);
-	}
-	if (Debug.debugging("gc")) {
-	    Debug.output("EditableOMGraphic gone.");
-	}
+        if (getGraphic() != null) {
+            getGraphic().setVisible(true);
+        }
+        if (Debug.debugging("gc")) {
+            Debug.output("EditableOMGraphic gone.");
+        }
     }
 
     /**
@@ -587,7 +587,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     public abstract void regenerate(Projection proj);
 
     public void repaintRender(Graphics g) {
-	render(g);
+        render(g);
     }
 
     /**
@@ -598,17 +598,17 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * Set the current projection.
      */
     public void setProjection(Projection proj) {
-	projection = proj;
-	// This is important.  In the EditableOMGraphics, the
-	// GrabPoints are set when regenerate is called.
-	regenerate(proj);
+        projection = proj;
+        // This is important.  In the EditableOMGraphics, the
+        // GrabPoints are set when regenerate is called.
+        regenerate(proj);
     }
 
     /**
      * Get the current projection.
      */
     public Projection getProjection() {
-	return projection;
+        return projection;
     }
 
     // Mouse Listener events
@@ -617,25 +617,25 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     /**
      */
     public boolean mousePressed(MouseEvent e) {
-	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mousePressed()");
-	if (!mouseOnMap) return false;
-	return stateMachine.getState().mousePressed(e);
+        if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mousePressed()");
+        if (!mouseOnMap) return false;
+        return stateMachine.getState().mousePressed(e);
     }
  
     /**
      */
     public boolean mouseReleased(MouseEvent e) {
-	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseReleased()");
-	if (!mouseOnMap) return false;
-	return stateMachine.getState().mouseReleased(e);
+        if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseReleased()");
+        if (!mouseOnMap) return false;
+        return stateMachine.getState().mouseReleased(e);
     }
 
     /**
      */
     public boolean mouseClicked(MouseEvent e) {
-	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseClicked()");
-	if (!mouseOnMap) return false;
-	return stateMachine.getState().mouseClicked(e);
+        if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseClicked()");
+        if (!mouseOnMap) return false;
+        return stateMachine.getState().mouseClicked(e);
     }
  
     boolean mouseOnMap = true;
@@ -643,17 +643,17 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     /**
      */
     public void mouseEntered(MouseEvent e) {
-	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseEntered()");
-	mouseOnMap = true;
-	stateMachine.getState().mouseEntered(e);
+        if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseEntered()");
+        mouseOnMap = true;
+        stateMachine.getState().mouseEntered(e);
     }
  
     /**
      */
     public void mouseExited(MouseEvent e) {
-	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseExited()");
-	mouseOnMap = false;
-	stateMachine.getState().mouseExited(e);
+        if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseExited()");
+        mouseOnMap = false;
+        stateMachine.getState().mouseExited(e);
     }
 
     // Mouse Motion Listener events
@@ -662,25 +662,25 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     /**
      */
     public boolean mouseDragged(MouseEvent e) {
-	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseDragged()");
-	if (!mouseOnMap) return false;
-	return stateMachine.getState().mouseDragged(e);
+        if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseDragged()");
+        if (!mouseOnMap) return false;
+        return stateMachine.getState().mouseDragged(e);
     }
 
     /**
      */
     public boolean mouseMoved(MouseEvent e) {
-	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseMoved()");
-	if (!mouseOnMap) return false;
-	return stateMachine.getState().mouseMoved(e);
+        if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseMoved()");
+        if (!mouseOnMap) return false;
+        return stateMachine.getState().mouseMoved(e);
     }
 
     /**
      */
     public void mouseMoved() {
-	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseMoved()");
-	if (!mouseOnMap) return;
-	stateMachine.getState().mouseMoved();
+        if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseMoved()");
+        if (!mouseOnMap) return;
+        stateMachine.getState().mouseMoved();
     }
 
     /**
@@ -688,10 +688,10 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * @param l EOMGListener
      */
     public synchronized void addEOMGListener(EOMGListener l) {
-	if (listeners == null) {
-	    listeners = new EOMGListenerSupport(this);
-	}
-	listeners.addEOMGListener(l);
+        if (listeners == null) {
+            listeners = new EOMGListenerSupport(this);
+        }
+        listeners.addEOMGListener(l);
     }
 
     /**
@@ -699,10 +699,10 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * @param l EOMGListener
      */
     public synchronized void removeEOMGListener(EOMGListener l) {
-	if (listeners == null) {
-	    return;
-	}
-	listeners.removeEOMGListener(l);
+        if (listeners == null) {
+            return;
+        }
+        listeners.removeEOMGListener(l);
     }
 
     /**
@@ -711,9 +711,9 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * or not, so that GUIs can be directed.
      */
     public void fireEvent(EOMGEvent event) {
-	if (listeners != null) {
-  	    listeners.fireEvent(event);
-	}
+        if (listeners != null) {
+            listeners.fireEvent(event);
+        }
     }
 
     /**
@@ -724,7 +724,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * @param message an instruction/error to be displayed to the user.
      */
     public void fireEvent(Cursor cursor, String message) {
-	fireEvent(cursor, message, null);
+        fireEvent(cursor, message, null);
     }
 
     /**
@@ -734,11 +734,11 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * @param mouseEvent where that caused the EOMGEvent.  May be null.
      */
     public void fireEvent(Cursor cursor, String message, MouseEvent mouseEvent) {
-	if (listeners != null) {
-	    EditableOMGraphic theSource = listeners.getEOMG();
-	    EOMGEvent event = new EOMGEvent(theSource, cursor, message, mouseEvent);
-	    fireEvent(event);
-	}
+        if (listeners != null) {
+            EditableOMGraphic theSource = listeners.getEOMG();
+            EOMGEvent event = new EOMGEvent(theSource, cursor, message, mouseEvent);
+            fireEvent(event);
+        }
     }
 
     /**
@@ -746,7 +746,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * displayed.
      */
     public void fireEvent() {
-	fireEvent(null, null);
+        fireEvent(null, null);
     }
 
     /**
@@ -762,7 +762,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * the GraphicAttribute GUI.
      */
     public Component getGUI() {
-	return getGUI(null);
+        return getGUI(null);
     } 
 
     /**
@@ -779,10 +779,10 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * @return Component to use to control parameters for this EOMG.
      */
     public Component getGUI(GraphicAttributes graphicAttributes) {
-	if (graphicAttributes != null) {
-	    graphicAttributes.setLineMenuAdditions(null);
-	    return graphicAttributes.getGUI();
-	}
-	return null;
+        if (graphicAttributes != null) {
+            graphicAttributes.setLineMenuAdditions(null);
+            return graphicAttributes.getGUI();
+        }
+        return null;
     }
 }

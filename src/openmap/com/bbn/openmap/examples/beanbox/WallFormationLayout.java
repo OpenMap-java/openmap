@@ -1,14 +1,14 @@
 /* **********************************************************************
  * 
  *    Use, duplication, or disclosure by the Government is subject to
- * 	     restricted rights as set forth in the DFARS.
+ *           restricted rights as set forth in the DFARS.
  *  
- * 			   BBNT Solutions LLC
- * 			       A Part of 
+ *                         BBNT Solutions LLC
+ *                             A Part of 
  *                  Verizon      
- * 			    10 Moulton Street
- * 			   Cambridge, MA 02138
- * 			    (617) 873-3000
+ *                          10 Moulton Street
+ *                         Cambridge, MA 02138
+ *                          (617) 873-3000
  *
  *    Copyright (C) 2002 by BBNT Solutions, LLC
  *                 All Rights Reserved.
@@ -102,14 +102,14 @@ extends BeanLayoutManager {
       LatLonPoint cornerllp1 = GreatCircle.spherical_between (
                                  midllp.radlat_, midllp.radlon_, 
                                  Length.NM.toRadians(spanNM / 2),
-	                             angle1Rad);
+                                     angle1Rad);
       llps[0] = cornerllp1;
 
       for (int i = 1; i < contents.size(); i++)
         llps[i] = GreatCircle.spherical_between (
                     cornerllp1.radlat_, cornerllp1.radlon_, 
-	                Length.NM.toRadians(separationInNM) * i, 
-	                angle2Rad);
+                        Length.NM.toRadians(separationInNM) * i, 
+                        angle2Rad);
     }
 
     for (int i = 0; i < contents.size(); i++) {
@@ -124,7 +124,7 @@ extends BeanLayoutManager {
       obj.setLatitude(llps[i].getLatitude());
       obj.setLongitude(llps[i].getLongitude());
 
-	  obj.setBearingInDeg(bearingInDeg);
+          obj.setBearingInDeg(bearingInDeg);
 
     }
 

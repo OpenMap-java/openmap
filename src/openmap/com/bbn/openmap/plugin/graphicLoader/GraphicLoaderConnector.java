@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/GraphicLoaderConnector.java,v $
 // $RCSfile: GraphicLoaderConnector.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/06/26 00:53:47 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -68,11 +68,11 @@ public class GraphicLoaderConnector extends OMComponent {
      * map.
      */
     public void setNewLayerIndex(int i) {
-	newLayerIndex = i;
+        newLayerIndex = i;
     }
 
     public int getNewLayerIndex() {
-	return newLayerIndex;
+        return newLayerIndex;
     }
 
     /**
@@ -80,11 +80,11 @@ public class GraphicLoaderConnector extends OMComponent {
      * they are added to the map.
      */
     public void setNewLayerVisible(boolean set) {
-	newLayerVisible = set;
+        newLayerVisible = set;
     }
 
     public boolean setNewLayerVisible() {
-	return newLayerVisible;
+        return newLayerVisible;
     }
 
     /**
@@ -92,21 +92,21 @@ public class GraphicLoaderConnector extends OMComponent {
      * containing the new GraphicLoaderPlugIns.
      */
     public void setLayerHandler(LayerHandler lh) {
-	layerHandler = lh;
-	if (orphanGraphicLoaderPlugIns != null) {
-	    if (Debug.debugging("glc")) {
-		Debug.output("GraphicLoaderConnector: have LayerHandler, adding PlugInLayers from orphaned GraphicLoaders");
-	    }
-	    Iterator it = orphanGraphicLoaderPlugIns.iterator();
-	    while (it.hasNext()) {
-		layerHandler.addLayer((PlugInLayer)it.next(), newLayerIndex);
-	    }
-	    orphanGraphicLoaderPlugIns = null;
-	}
+        layerHandler = lh;
+        if (orphanGraphicLoaderPlugIns != null) {
+            if (Debug.debugging("glc")) {
+                Debug.output("GraphicLoaderConnector: have LayerHandler, adding PlugInLayers from orphaned GraphicLoaders");
+            }
+            Iterator it = orphanGraphicLoaderPlugIns.iterator();
+            while (it.hasNext()) {
+                layerHandler.addLayer((PlugInLayer)it.next(), newLayerIndex);
+            }
+            orphanGraphicLoaderPlugIns = null;
+        }
     }
 
     public LayerHandler getLayerHandler() {
-	return layerHandler;
+        return layerHandler;
     }
 
     /**
@@ -114,9 +114,9 @@ public class GraphicLoaderConnector extends OMComponent {
      * inside it.  If it doesn't call hookUpGraphicLoaderWithLayer();
      */
     public void checkGraphicLoader(GraphicLoader gl) {
-	if (gl.getReceiver() == null) {
-	    hookUpGraphicLoaderWithLayer(gl);
-	}
+        if (gl.getReceiver() == null) {
+            hookUpGraphicLoaderWithLayer(gl);
+        }
     }
 
     /**
@@ -126,84 +126,84 @@ public class GraphicLoaderConnector extends OMComponent {
      * to get set on the map.
      */
     public void hookUpGraphicLoaderWithLayer(GraphicLoader gl) {
-	if (gl != null) {
-	    GraphicLoaderPlugIn glpi = new GraphicLoaderPlugIn();
-	    gl.setReceiver(glpi);
-	    glpi.setGraphicLoader(gl);
-	    LayerHandler lh = getLayerHandler();
-	    PlugInLayer pl = new PlugInLayer();
-	    pl.setPlugIn(glpi);
-	    pl.setName(gl.getName());
-	    pl.setVisible(newLayerVisible);
-	    if (lh != null) {
-		lh.addLayer(pl, newLayerIndex);
-	    } else {
-		// If we haven't seen the LayerHandler yet, add the 
-		// PlugInLayer to a list that we can use later when
-		// the LayerHandler is found.
-		if (orphanGraphicLoaderPlugIns == null) {
-		    orphanGraphicLoaderPlugIns = new LinkedList();
-		}
-		orphanGraphicLoaderPlugIns.add(pl);
-	    }
-	}
+        if (gl != null) {
+            GraphicLoaderPlugIn glpi = new GraphicLoaderPlugIn();
+            gl.setReceiver(glpi);
+            glpi.setGraphicLoader(gl);
+            LayerHandler lh = getLayerHandler();
+            PlugInLayer pl = new PlugInLayer();
+            pl.setPlugIn(glpi);
+            pl.setName(gl.getName());
+            pl.setVisible(newLayerVisible);
+            if (lh != null) {
+                lh.addLayer(pl, newLayerIndex);
+            } else {
+                // If we haven't seen the LayerHandler yet, add the 
+                // PlugInLayer to a list that we can use later when
+                // the LayerHandler is found.
+                if (orphanGraphicLoaderPlugIns == null) {
+                    orphanGraphicLoaderPlugIns = new LinkedList();
+                }
+                orphanGraphicLoaderPlugIns.add(pl);
+            }
+        }
     }
 
     /**
      * Find GraphicLoaders and LayerHandler in the MapHandler.
      */
     public void findAndInit(Object obj) {
-	if (obj instanceof GraphicLoader) {
-	    checkGraphicLoader((GraphicLoader)obj);
-	}
+        if (obj instanceof GraphicLoader) {
+            checkGraphicLoader((GraphicLoader)obj);
+        }
 
-	if (obj instanceof LayerHandler) {
-	    Debug.message("graphicLoader","GraphicLoaderConnector found a LayerHandler.");
-	    setLayerHandler((LayerHandler)obj);
-	}
+        if (obj instanceof LayerHandler) {
+            Debug.message("graphicLoader","GraphicLoaderConnector found a LayerHandler.");
+            setLayerHandler((LayerHandler)obj);
+        }
     }
 
     public void findAndUndo(Object obj) {
-	if (obj instanceof LayerHandler) {
-	    Debug.message("graphicLoader","GraphicLoaderConnector removing a LayerHandler.");
-	    LayerHandler lh = getLayerHandler();
-	    if (lh != null && lh == (LayerHandler)obj) {
-		setLayerHandler(null);
-	    }
-	}
+        if (obj instanceof LayerHandler) {
+            Debug.message("graphicLoader","GraphicLoaderConnector removing a LayerHandler.");
+            LayerHandler lh = getLayerHandler();
+            if (lh != null && lh == (LayerHandler)obj) {
+                setLayerHandler(null);
+            }
+        }
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	newLayerIndex = LayerUtils.intFromProperties(props, prefix + NewLayerIndexProperty, newLayerIndex);
-	
-	newLayerVisible = LayerUtils.booleanFromProperties(props, prefix + NewLayerVisibleProperty, newLayerVisible);
-	    
+        newLayerIndex = LayerUtils.intFromProperties(props, prefix + NewLayerIndexProperty, newLayerIndex);
+        
+        newLayerVisible = LayerUtils.booleanFromProperties(props, prefix + NewLayerVisibleProperty, newLayerVisible);
+            
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	props.put(prefix + NewLayerIndexProperty, Integer.toString(newLayerIndex));
-	props.put(prefix + NewLayerVisibleProperty, new Boolean(newLayerVisible).toString());
-	return props;
+        props.put(prefix + NewLayerIndexProperty, Integer.toString(newLayerIndex));
+        props.put(prefix + NewLayerVisibleProperty, new Boolean(newLayerVisible).toString());
+        return props;
     }
 
     public Properties getPropertyInfo(Properties list) {
-	list = super.getPropertyInfo(list);
+        list = super.getPropertyInfo(list);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	list.put(NewLayerIndexProperty, "The new layer index, where it should be added to the map. (0 on top)");
-	list.put(NewLayerVisibleProperty, "Whether a new layer should initially be visible");
-	list.put(NewLayerVisibleProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(NewLayerIndexProperty, "The new layer index, where it should be added to the map. (0 on top)");
+        list.put(NewLayerVisibleProperty, "Whether a new layer should initially be visible");
+        list.put(NewLayerVisibleProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-	return list;
+        return list;
     }
 }

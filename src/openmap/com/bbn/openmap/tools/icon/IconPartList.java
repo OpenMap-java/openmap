@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconPartList.java,v $
 // $RCSfile: IconPartList.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/26 17:34:12 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -49,33 +49,33 @@ public class IconPartList implements IconPart {
     public IconPartList() {}
 
     protected List getList() {
-	if (parts == null) {
-	    parts = new LinkedList();
-	}
-	return parts;
+        if (parts == null) {
+            parts = new LinkedList();
+        }
+        return parts;
     }
 
     public Iterator iterator() {
-	return parts.iterator();
+        return parts.iterator();
     }
 
     /**
      * First in drawn on bottom.  Last in on top.
      */
     public void add(IconPart part) {
-	getList().add(part);
+        getList().add(part);
     }
 
     public boolean remove(IconPart part) {
-	return getList().remove(part);
+        return getList().remove(part);
     }
 
     public void clear() {
-	getList().clear();
+        getList().clear();
     }
 
     public void render(Graphics g, int width, int height) {
-	render(g, width, height, null);
+        render(g, width, height, null);
     }
 
     /**
@@ -84,50 +84,50 @@ public class IconPartList implements IconPart {
      * drawing attributes if they want/should.  May be null.
      */
     public void render(Graphics g, int width, int height, 
-		       DrawingAttributes appDA) {
+                       DrawingAttributes appDA) {
 
-	// Handle clip area in Graphics, first
-	Shape clip = getClip();
-	if (clip != null) {
-	    g.setClip(clip);
-	}
+        // Handle clip area in Graphics, first
+        Shape clip = getClip();
+        if (clip != null) {
+            g.setClip(clip);
+        }
 
-	DrawingAttributes da = getRenderingAttributes();
-	DrawingAttributes tmpDA = null;
-	
-	Iterator it = iterator();
-	while (it.hasNext()) {
-	    IconPart part = (IconPart) it.next();
+        DrawingAttributes da = getRenderingAttributes();
+        DrawingAttributes tmpDA = null;
+        
+        Iterator it = iterator();
+        while (it.hasNext()) {
+            IconPart part = (IconPart) it.next();
 
-	    if (da != null) {
-		tmpDA = part.getRenderingAttributes();
-		part.setRenderingAttributes(da);
-	    }
+            if (da != null) {
+                tmpDA = part.getRenderingAttributes();
+                part.setRenderingAttributes(da);
+            }
 
-	    Graphics2D g2 = (Graphics2D)g.create();
-	    part.render(g2, width, height);
-	    g2.dispose();
+            Graphics2D g2 = (Graphics2D)g.create();
+            part.render(g2, width, height);
+            g2.dispose();
 
-	    if (da != null) {
-		part.setRenderingAttributes(tmpDA);
-		tmpDA = null;
-	    }
-	}
+            if (da != null) {
+                part.setRenderingAttributes(tmpDA);
+                tmpDA = null;
+            }
+        }
     }
 
     public void setClip(Shape clipArea) {
-	clip = clipArea;
+        clip = clipArea;
     }
 
     public Shape getClip() {
-	return clip;
+        return clip;
     }
 
     public void setGeometry(Shape shape) {
-	// dump the list, create a generic IconPart to hold the shape.
-	List list = getList();
-	list.clear();
-	list.add(new BasicIconPart(shape));
+        // dump the list, create a generic IconPart to hold the shape.
+        List list = getList();
+        list.clear();
+        list.add(new BasicIconPart(shape));
     }
 
     /**
@@ -138,45 +138,45 @@ public class IconPartList implements IconPart {
      * (disconnected) and their clipping areas will be ignored.
      */
     public Shape getGeometry() {
-	GeneralPath geometry = null;
-	Iterator it = iterator();
-	while (it.hasNext()) {
-	    IconPart part = (IconPart) it.next();
+        GeneralPath geometry = null;
+        Iterator it = iterator();
+        while (it.hasNext()) {
+            IconPart part = (IconPart) it.next();
 
-	    Shape shp = part.getGeometry();
+            Shape shp = part.getGeometry();
 
-	    if (shp == null) {
-		continue;
-	    }
+            if (shp == null) {
+                continue;
+            }
 
-	    if (geometry == null) {
-		geometry = new GeneralPath(shp);
-	    } else {
-		geometry.append(shp, false);
-	    }
-	}
-	return geometry;
+            if (geometry == null) {
+                geometry = new GeneralPath(shp);
+            } else {
+                geometry.append(shp, false);
+            }
+        }
+        return geometry;
     }
 
     public void setRenderingAttributes(DrawingAttributes da) {
-	renderingAttributes = da;
+        renderingAttributes = da;
     }
 
     public DrawingAttributes getRenderingAttributes() {
-	return renderingAttributes;
+        return renderingAttributes;
     }
 
     public Object clone() {
-	IconPartList clone = new IconPartList();
-	Iterator it = iterator();
-	while (it.hasNext()) {
-	    IconPart ip = (IconPart)it.next();
-	    clone.add((IconPart)ip.clone());
-	}
+        IconPartList clone = new IconPartList();
+        Iterator it = iterator();
+        while (it.hasNext()) {
+            IconPart ip = (IconPart)it.next();
+            clone.add((IconPart)ip.clone());
+        }
 
-	clone.setRenderingAttributes(getRenderingAttributes());
-	clone.setClip(getClip());
-	return clone;
+        clone.setRenderingAttributes(getRenderingAttributes());
+        clone.setClip(getClip());
+        return clone;
     }
 
 }

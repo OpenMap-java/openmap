@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/labeled/LabeledOMPoly.java,v $
 // $RCSfile: LabeledOMPoly.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/18 02:43:22 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     protected int index = 0;
 
     public LabeledOMPoly() {
-	super();
+        super();
     }
 
     /**
@@ -49,7 +49,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float[], int, int)
      */
     public LabeledOMPoly(float[] llPoints, int units, int lType) {
-	super(llPoints, units, lType);
+        super(llPoints, units, lType);
     }
 
     /**
@@ -57,7 +57,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float[], int, int, int)
      */
     public LabeledOMPoly(float[] llPoints, int units, int lType, int nsegs) {
-	super(llPoints, units, lType, nsegs);
+        super(llPoints, units, lType, nsegs);
     }
 
     /**
@@ -65,7 +65,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(int[])
      */
     public LabeledOMPoly(int[] xypoints) {
-	super(xypoints);
+        super(xypoints);
     }
 
     /**
@@ -73,7 +73,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(int[], int[])
      */
     public LabeledOMPoly(int[] xPoints, int[] yPoints) {
-	super(xPoints, yPoints);
+        super(xPoints, yPoints);
     }
 
     /**
@@ -81,8 +81,8 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float, float, int[], int)
      */
     public LabeledOMPoly(float latPoint, float lonPoint, 
-			 int[] xypoints, int cMode) {
-	super(latPoint, lonPoint, xypoints, cMode);
+                         int[] xypoints, int cMode) {
+        super(latPoint, lonPoint, xypoints, cMode);
     }
 
     /**
@@ -90,44 +90,44 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float, float, int[], int[], int)
      */
     public LabeledOMPoly(float latPoint, float lonPoint, 
-			 int[] xPoints, int[] yPoints, 
-			 int cMode) {
-	super(latPoint, lonPoint, xPoints, yPoints, cMode);
+                         int[] xPoints, int[] yPoints, 
+                         int cMode) {
+        super(latPoint, lonPoint, xPoints, yPoints, cMode);
     }
 
     /**
      * Set the String for the label.
      */
     public void setText(String label) {
-	getLabel().setData(label);
+        getLabel().setData(label);
     }
 
     /**
      * Get the String for the label.
      */
     public String getText() {
-	return getLabel().getData();
+        return getLabel().getData();
     }
 
     protected OMText getLabel() {
-	if (label == null) {
-	    label = new OMText(-1, -1, "", OMText.JUSTIFY_LEFT);
-	}
-	return label;
+        if (label == null) {
+            label = new OMText(-1, -1, "", OMText.JUSTIFY_LEFT);
+        }
+        return label;
     }
 
     /**
      * Set the Font for the label.
      */
     public void setFont(Font f) {
-	getLabel().setFont(f);
+        getLabel().setFont(f);
     }
 
     /**
      * Get the Font for the label.
      */
     public Font getFont() {
-	return getLabel().getFont();
+        return getLabel().getFont();
     }
 
     /**
@@ -137,7 +137,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_RIGHT
      */
     public void setJustify(int just) {
-	getLabel().setJustify(just);
+        getLabel().setJustify(just);
     }
 
     /**
@@ -147,7 +147,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_RIGHT
      */
     public int getJustify() {
-	return getLabel().getJustify();
+        return getLabel().getJustify();
     }
 
     /**
@@ -155,11 +155,11 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * String that would put it in the middle of the OMGraphic.
      */
     public void setLocateAtCenter(boolean set) {
-	locateAtCenter = set;
-	if (set) {
-	    setJustify(OMText.JUSTIFY_CENTER);
-	    getLabel().setFMHeight(OMText.ASCENT);
-	}
+        locateAtCenter = set;
+        if (set) {
+            setJustify(OMText.JUSTIFY_CENTER);
+            getLabel().setFMHeight(OMText.ASCENT);
+        }
     }
 
     /**
@@ -167,7 +167,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * the center of the OMGraphic.
      */
     public boolean isLocateAtCenter() {
-	return locateAtCenter;
+        return locateAtCenter;
     }
 
     /**
@@ -176,22 +176,22 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * http://astronomy.swin.edu.au/~pbourke/geometry/polyarea
      */
     protected double calculateProjectedArea() {
-	int j = 0;
-	double area = 0.0;
-	int[] xpts = xpoints[0];
-	int[] ypts = ypoints[0];
-	int npoints = xpts.length;
+        int j = 0;
+        double area = 0.0;
+        int[] xpts = xpoints[0];
+        int[] ypts = ypoints[0];
+        int npoints = xpts.length;
 
-	for (int i=0; i<npoints; ++i) {
-	    j = (i + 1) % npoints;
-	    area += xpts[i] * ypts[j];
-	    area -= ypts[i] * xpts[j];
-	}
+        for (int i=0; i<npoints; ++i) {
+            j = (i + 1) % npoints;
+            area += xpts[i] * ypts[j];
+            area -= ypts[i] * xpts[j];
+        }
 
-	return area / 2.0;
+        return area / 2.0;
 
-// 	area = area / 2.0;
-// 	return (area < 0.0 ? -area : area);
+//      area = area / 2.0;
+//      return (area < 0.0 ? -area : area);
     }
 
   
@@ -201,49 +201,49 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * http://astronomy.swin.edu.au/~pbourke/geometry/polyarea
      */
     public Point getCenter() {
-	// if the OMPoly isn't generated, then you can't calculate it.
-	// We're working in x/y space here, so it looks right.
-	if (getNeedToRegenerate()) {
-	    return null;
-	}
+        // if the OMPoly isn't generated, then you can't calculate it.
+        // We're working in x/y space here, so it looks right.
+        if (getNeedToRegenerate()) {
+            return null;
+        }
 
-	float cx = 0.0f;
-	float cy = 0.0f;
-	float A = (float)calculateProjectedArea();
-	int j = 0;
-	float factor = 0;
+        float cx = 0.0f;
+        float cy = 0.0f;
+        float A = (float)calculateProjectedArea();
+        int j = 0;
+        float factor = 0;
 
-	int[] xpts = xpoints[0];
-	int[] ypts = ypoints[0];
-	int npoints = xpts.length;
+        int[] xpts = xpoints[0];
+        int[] ypts = ypoints[0];
+        int npoints = xpts.length;
 
-	for (int i=0; i<npoints; ++i) {
-	    j = (i + 1) % npoints;
+        for (int i=0; i<npoints; ++i) {
+            j = (i + 1) % npoints;
       
-	    factor = xpts[i] * ypts[j] - xpts[j] * ypts[i];
-	    cx += (xpts[i] + xpts[j]) * factor;
-	    cy += (ypts[i] + ypts[j]) * factor;
-	}
+            factor = xpts[i] * ypts[j] - xpts[j] * ypts[i];
+            cx += (xpts[i] + xpts[j]) * factor;
+            cy += (ypts[i] + ypts[j]) * factor;
+        }
     
-	A = A * 6.0f;
-	factor = 1/A;
+        A = A * 6.0f;
+        factor = 1/A;
     
-	// bbenyo: take the absolute value cause I was getting negative values
-	//         for polys with all positive vertices
-// 	cx = Math.abs(cx * factor);
-// 	cy = Math.abs(cy * factor);
+        // bbenyo: take the absolute value cause I was getting negative values
+        //         for polys with all positive vertices
+//      cx = Math.abs(cx * factor);
+//      cy = Math.abs(cy * factor);
 
-	// DFD and RS - let the area calculation return negative
-	// values, and don't do this absolute value calculation.
-	// Negative values get returned when the points are
-	// counterclockwise, indicating holes.  We may want labels
-	// offscreen however, and the abs pushes them onscreen.
+        // DFD and RS - let the area calculation return negative
+        // values, and don't do this absolute value calculation.
+        // Negative values get returned when the points are
+        // counterclockwise, indicating holes.  We may want labels
+        // offscreen however, and the abs pushes them onscreen.
 
-	cx *= factor;
-	cy *= factor;
+        cx *= factor;
+        cy *= factor;
 
-	Point center = new Point(Math.round(cx), Math.round(cy));
-	return center;
+        Point center = new Point(Math.round(cx), Math.round(cy));
+        return center;
     }
 
     /**
@@ -252,7 +252,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * point differs between OMGraphic types.
      */
     public void setIndex(int index) {
-	this.index = index;
+        this.index = index;
     }
 
     /**
@@ -261,7 +261,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * to OMGraphic type.  
      */
     public int getIndex() {
-	return index;
+        return index;
     }
 
     /**
@@ -271,17 +271,17 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * Point.y is the vertical offset.
      */
     public void setOffset(Point p) {
-	offset = p;
+        offset = p;
     }
 
     /**
      * Get the x, y pixel offsets set for the rendering of the point.
      */
     public Point getOffset() {
-	if (offset == null) {
-	    offset = new Point();
-	}
-	return offset;
+        if (offset == null) {
+            offset = new Point();
+        }
+        return offset;
     }
 
     /**
@@ -310,10 +310,10 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * paint, too.
      */
     public void setLinePaint(Paint paint) {
-	super.setLinePaint(paint);
-	if (matchPolyPaint) {
-	    getLabel().setLinePaint(paint);
-	}
+        super.setLinePaint(paint);
+        if (matchPolyPaint) {
+            getLabel().setLinePaint(paint);
+        }
     }
 
     /**
@@ -323,10 +323,10 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * @param paint the Paint object for the text
      */
     public void setTextPaint(Paint paint) {
-	if (paint != null) {
-	    matchPolyPaint = false;
-	    getLabel().setLinePaint(paint);
-	}
+        if (paint != null) {
+            matchPolyPaint = false;
+            getLabel().setLinePaint(paint);
+        }
     }
 
     /**
@@ -338,87 +338,87 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * Calculate where the text point ought to go.
      */
     protected Point getTextPoint(Projection proj) {
-	int i;
-	int avgx = 0;
-	int avgy = 0;	    
+        int i;
+        int avgx = 0;
+        int avgy = 0;       
 
-	// Assuming that the rendertype is not unknown...
-	if (renderType == RENDERTYPE_LATLON) {
-	    int numPoints = rawllpts.length/2;
-	    if (rawllpts.length < 2) {
-		// off screen...
-		handyPoint.setLocation(-10, -10);
-		return handyPoint;
-	    }
-	    if (locateAtCenter) {
-		handyPoint = getCenter();
+        // Assuming that the rendertype is not unknown...
+        if (renderType == RENDERTYPE_LATLON) {
+            int numPoints = rawllpts.length/2;
+            if (rawllpts.length < 2) {
+                // off screen...
+                handyPoint.setLocation(-10, -10);
+                return handyPoint;
+            }
+            if (locateAtCenter) {
+                handyPoint = getCenter();
 
-		// New getCenter algorithm works better.
-// 		for (i = 0; i < rawllpts.length; i+=2) {
-// 		    proj.forward(rawllpts[i], rawllpts[i+1], 
-// 				 handyPoint, true);
-		    
-// 		    avgy += handyPoint.getY();
-// 		    avgx += handyPoint.getX();
-// 		}
-// 		avgy = avgy/numPoints;
-// 		avgx = avgx/numPoints;
-// 		handyPoint.setLocation(avgx, avgy);
-	    } else {
-		if (index < 0) index = 0;
-		if (index > numPoints) index = numPoints - 1;
-		proj.forward(rawllpts[2*index], rawllpts[2*index+1],
-			     handyPoint, true);
-	    }
-	} else {
-	    int[][] x = xpoints;
-	    int[][] y = ypoints;
+                // New getCenter algorithm works better.
+//              for (i = 0; i < rawllpts.length; i+=2) {
+//                  proj.forward(rawllpts[i], rawllpts[i+1], 
+//                               handyPoint, true);
+                    
+//                  avgy += handyPoint.getY();
+//                  avgx += handyPoint.getX();
+//              }
+//              avgy = avgy/numPoints;
+//              avgx = avgx/numPoints;
+//              handyPoint.setLocation(avgx, avgy);
+            } else {
+                if (index < 0) index = 0;
+                if (index > numPoints) index = numPoints - 1;
+                proj.forward(rawllpts[2*index], rawllpts[2*index+1],
+                             handyPoint, true);
+            }
+        } else {
+            int[][] x = xpoints;
+            int[][] y = ypoints;
 
-	    if (x[0].length < 2) {
-		// off screen...
-		handyPoint.setLocation(-10, -10);
-		return handyPoint;
-	    }
+            if (x[0].length < 2) {
+                // off screen...
+                handyPoint.setLocation(-10, -10);
+                return handyPoint;
+            }
 
-	    if (locateAtCenter) {
-		handyPoint = getCenter();
+            if (locateAtCenter) {
+                handyPoint = getCenter();
 
-		// New getCenter algorithm works better.
-// 		for (i = 0; i < x[0].length; i++) {
-// 		    avgx += x[0][i];
-// 		    avgy += y[0][i];
-// 		}
-// 		handyPoint.setLocation(avgx/x[0].length, avgy/x[0].length);
-	    } else {
-		if (index < 0) index = 0;
-		if (index >= x[0].length) index = x[0].length - 1;
-		handyPoint.setLocation(x[0][index], y[0][index]);
-	    }
-	}
-	return handyPoint;
+                // New getCenter algorithm works better.
+//              for (i = 0; i < x[0].length; i++) {
+//                  avgx += x[0][i];
+//                  avgy += y[0][i];
+//              }
+//              handyPoint.setLocation(avgx/x[0].length, avgy/x[0].length);
+            } else {
+                if (index < 0) index = 0;
+                if (index >= x[0].length) index = x[0].length - 1;
+                handyPoint.setLocation(x[0][index], y[0][index]);
+            }
+        }
+        return handyPoint;
     }
     
 
     public boolean generate(Projection proj) {
-	boolean ret = super.generate(proj);
+        boolean ret = super.generate(proj);
 
-	Point p = getTextPoint(proj);
+        Point p = getTextPoint(proj);
 
-	if (p != null) {
-	    label.setX((int)(p.getX() + getOffset().getX()));
-	    label.setY((int)(p.getY() + getOffset().getY()));
+        if (p != null) {
+            label.setX((int)(p.getX() + getOffset().getX()));
+            label.setY((int)(p.getY() + getOffset().getY()));
 
-	    if (Debug.debugging("labeled")) {
-		Debug.output("Setting label(" + label.getData() + ") to " + p);
-	    }
+            if (Debug.debugging("labeled")) {
+                Debug.output("Setting label(" + label.getData() + ") to " + p);
+            }
 
-	    label.generate(proj);
-	}
-	return ret;
+            label.generate(proj);
+        }
+        return ret;
     }
 
     public void render(java.awt.Graphics g) {
-	super.render(g);
-	label.render(g);
+        super.render(g);
+        label.render(g);
     }
 }

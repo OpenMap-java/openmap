@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIMultiPointRecord.java,v $
 // $RCSfile: ESRIMultiPointRecord.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,7 +39,7 @@ import com.bbn.openmap.util.Debug;
  *
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/26 18:18:11 $
  */
 public class ESRIMultiPointRecord extends ESRIRecord {
 
@@ -62,7 +62,7 @@ public class ESRIMultiPointRecord extends ESRIRecord {
      * @param drawingAttributes Attributes for rendering.
      */
     public void addOMGraphics(OMGraphicList list,
-			      DrawingAttributes drawingAttributes) {
+                              DrawingAttributes drawingAttributes) {
 
     }
 
@@ -71,7 +71,7 @@ public class ESRIMultiPointRecord extends ESRIRecord {
      * @param list the graphics list
      */
     public OMGeometry addOMGeometry(OMGeometryList list){
-	return null;
+        return null;
     }
 
     /**
@@ -80,7 +80,7 @@ public class ESRIMultiPointRecord extends ESRIRecord {
      * @return a bounding box
      */
     public ESRIBoundingBox getBoundingBox() {
-	return null;
+        return null;
     }
 
     /**
@@ -90,7 +90,7 @@ public class ESRIMultiPointRecord extends ESRIRecord {
      * @return the shape type as an int
      */
     public int getShapeType() {
-	return SHAPE_TYPE_MULTIPOINT;
+        return SHAPE_TYPE_MULTIPOINT;
     }
 
     /**
@@ -99,8 +99,8 @@ public class ESRIMultiPointRecord extends ESRIRecord {
      * @return number of bytes equal to the size of this record's data
      */
     public int getRecordLength() {
-	Debug.output("HACK: ESIRMultiPointRecord.getRecordLength: NYI");
-	return 0;
+        Debug.output("HACK: ESIRMultiPointRecord.getRecordLength: NYI");
+        return 0;
     }
 
     /**
@@ -111,6 +111,6 @@ public class ESRIMultiPointRecord extends ESRIRecord {
      * @return the number of bytes written
      */
     public int write(byte[] b, int off) {
- 	return 0;
+        return 0;
     }
 }

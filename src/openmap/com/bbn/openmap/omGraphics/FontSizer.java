@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/FontSizer.java,v $
 // $RCSfile: FontSizer.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/11/14 20:50:27 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,8 +52,8 @@ public class FontSizer {
      * @param maxPointSize the minimum point size to use for the scaled font.
      */
     public FontSizer(Font font, float baseScale, int pointSizeRatio, int minPointSize, int maxPointSize) {
-	this(baseScale, pointSizeRatio, minPointSize, maxPointSize);
-	this.font = font;
+        this(baseScale, pointSizeRatio, minPointSize, maxPointSize);
+        this.font = font;
     }
 
     /**
@@ -66,40 +66,40 @@ public class FontSizer {
      * @param maxPointSize the minimum point size to use for the scaled font.
     */
     public FontSizer(float baseScale, int pointSizeRatio, int minPointSize, int maxPointSize) {
-	this.baseScale = baseScale;
-	this.pointSizeRatio = pointSizeRatio;
-	this.minPointSize = minPointSize;
-	this.maxPointSize = maxPointSize;
+        this.baseScale = baseScale;
+        this.pointSizeRatio = pointSizeRatio;
+        this.minPointSize = minPointSize;
+        this.maxPointSize = maxPointSize;
     }
 
     /**
      * Set the base font.
      */
     public void setFont(Font font) {
-	this.font = font;
+        this.font = font;
     }
 
     /**
      * Get a font sized for the scale, given the restrictions.
      */
     public Font getFont(float scale) {
-	curScale = scale;
-	return getScaledFont();
+        curScale = scale;
+        return getScaledFont();
     }
 
     public Font getScaledFont() {
-	if (baseScale < 0 || curScale < 0) {
-	    return font;
-	} else {
-	    return font;
-	}
+        if (baseScale < 0 || curScale < 0) {
+            return font;
+        } else {
+            return font;
+        }
     }
 
     /**
      * Get the base font.
      */
     public Font getFont() {
-	return font;
+        return font;
     }
 
 }

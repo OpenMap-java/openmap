@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/ESRILinkPointRecord.java,v $
 // $RCSfile: ESRILinkPointRecord.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:28 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -35,7 +35,7 @@ import com.bbn.openmap.layer.link.*;
  *
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.2 $ $Date: 2003/12/23 20:43:28 $
+ * @version $Revision: 1.3 $ $Date: 2004/01/26 18:18:09 $
  */
 public class ESRILinkPointRecord extends ESRIPointRecord implements ESRILinkRecord{
 
@@ -46,7 +46,7 @@ public class ESRILinkPointRecord extends ESRIPointRecord implements ESRILinkReco
      * @param y the y coordinate
      */
     public ESRILinkPointRecord(double x, double y) {
-	super(x, y);
+        super(x, y);
     }
 
     /**
@@ -56,7 +56,7 @@ public class ESRILinkPointRecord extends ESRIPointRecord implements ESRILinkReco
      * @param off the offset into the buffer where the data starts
      */
     public ESRILinkPointRecord(byte b[], int off) throws IOException {
-	super(b, off);
+        super(b, off);
     }
 
     /**
@@ -66,8 +66,8 @@ public class ESRILinkPointRecord extends ESRIPointRecord implements ESRILinkReco
      * @param properties the semantic description of how the point should be drawn.
      */
     public void writeLinkGraphics(LinkGraphicList lgl,
-				  LinkProperties properties)
-	throws IOException {
-	lgl.addRectangle((float)y, (float)x, -1, -1, 1, 1, properties);
+                                  LinkProperties properties)
+        throws IOException {
+        lgl.addRectangle((float)y, (float)x, -1, -1, 1, 1, properties);
     }
 }

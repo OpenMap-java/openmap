@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/I18n.java,v $
 // $RCSfile: I18n.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/18 14:50:20 $
-// $Author: blubin $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:05 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -148,7 +148,7 @@ public interface I18n {
      * @param defaultString what to use if the resource can't be found.
      */
     public String get(Object requestor,
-		      String field, String defaultString);
+                      String field, String defaultString);
 
     /** 
      * Get the string associated with the given object/field/type.
@@ -162,8 +162,8 @@ public interface I18n {
      * @param defaultString what to use if the resource can't be found.
      */
     public String get(Object requestor,
-		      String field, int type,
-		      String defaultString);
+                      String field, int type,
+                      String defaultString);
 
     /** 
      * Get the string associated with the given class/field 
@@ -176,7 +176,7 @@ public interface I18n {
      * @param defaultString what to use if the resource can't be found.
      */
     public String get(Class requestor,
-		      String field, String defaultString);
+                      String field, String defaultString);
 
     /** 
      * Get the string associated with the given class/field/type.
@@ -190,8 +190,8 @@ public interface I18n {
      * @param defaultString what to use if the resource can't be found.
      */
     public String get(Class requestor,
-		      String field, int type,
-		      String defaultString);
+                      String field, int type,
+                      String defaultString);
 
     //Methods making it easier to use MessageFormat:
     ////////////////////////////////////////////////
@@ -201,84 +201,84 @@ public interface I18n {
      * @see java.text.MessageFormat
      */
     public String get(Object requestor, String field,
-		      String defaultString, Object param1);
+                      String defaultString, Object param1);
 
     /**
      * Method to get a parameterized String, as if by MessageFormat.
      * @see java.text.MessageFormat
      */
     public String get(Object requestor, String field, int type, 
-		      String defaultString, Object param1);
+                      String defaultString, Object param1);
 
     /**
      * Method to get a parameterized String, as if by MessageFormat.
      * @see java.text.MessageFormat
      */
     public String get(Class requestor, String field,
-		      String defaultString, Object param1);
+                      String defaultString, Object param1);
 
     /**
      * Method to get a parameterized String, as if by MessageFormat.
      * @see java.text.MessageFormat
      */
     public String get(Class requestor, String field, int type, 
-		      String defaultString, Object param1);
+                      String defaultString, Object param1);
 
     /**
      * Method to get a parameterized String, as if by MessageFormat.
      * @see java.text.MessageFormat
      */
     public String get(Object requestor, String field,
-		      String defaultString, Object param1, Object param2);
+                      String defaultString, Object param1, Object param2);
 
     /**
      * Method to get a parameterized String, as if by MessageFormat.
      * @see java.text.MessageFormat
      */
     public String get(Object requestor, String field, int type, 
-		      String defaultString, Object param1, Object param2);
+                      String defaultString, Object param1, Object param2);
 
     /**
      * Method to get a parameterized String, as if by MessageFormat.
      * @see java.text.MessageFormat
      */
     public String get(Class requestor, String field,
-		      String defaultString, Object param1, Object param2);
+                      String defaultString, Object param1, Object param2);
 
     /**
      * Method to get a parameterized String, as if by MessageFormat.
      * @see java.text.MessageFormat
      */
     public String get(Class requestor, String field, int type, 
-		      String defaultString, Object param1, Object param2);
+                      String defaultString, Object param1, Object param2);
 
     /**
      * Method to get a parameterized String, as if by MessageFormat.
      * @see java.text.MessageFormat
      */
     public String get(Object requestor, String field,
-		      String defaultString, Object[] params);
+                      String defaultString, Object[] params);
 
     /**
      * Method to get a parameterized String, as if by MessageFormat.
      * @see java.text.MessageFormat
      */
     public String get(Object requestor, String field, int type, 
-		      String defaultString, Object[] params);
+                      String defaultString, Object[] params);
 
     /**
      * Method to get a parameterized String, as if by MessageFormat.
      * @see java.text.MessageFormat
      */
     public String get(Class requestor, String field,
-		      String defaultString, Object[] params);
+                      String defaultString, Object[] params);
 
     /**
      * Method to get a parameterized String, as if by MessageFormat.
      * @see java.text.MessageFormat
      */
     public String get(Class requestor, String field, int type, 
-		      String defaultString, Object[] params);
+                      String defaultString, Object[] params);
 
     //Methods fill setting the textual properties of common Swing components:
     /////////////////////////////////////////////////////////////////////////

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/util/ArcCalc.java,v $
 // $RCSfile: ArcCalc.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/05/14 17:13:01 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -85,19 +85,19 @@ public class ArcCalc {
      * @param putArcUp arc peak above points.  
      */
     public ArcCalc(double aa, boolean putArcUp) {
-	arcAngle = aa;
-	arcUp = putArcUp;
+        arcAngle = aa;
+        arcUp = putArcUp;
 
-	// If it's negative, flip it over...
-	if (aa < 0) {
-	    arcAngle *= -1.0;
-	    arcUp = !arcUp;
-	}
+        // If it's negative, flip it over...
+        if (aa < 0) {
+            arcAngle *= -1.0;
+            arcUp = !arcUp;
+        }
 
-	if (arcAngle > Math.PI) {
-	    arcAngle = Math.PI;
-	}
-	generated = false;
+        if (arcAngle > Math.PI) {
+            arcAngle = Math.PI;
+        }
+        generated = false;
     }
 
     /**
@@ -106,7 +106,7 @@ public class ArcCalc {
      * @return arc angle in radians.  
      */
     public double getArcAngle() {
-	return arcAngle;
+        return arcAngle;
     }
 
     /**
@@ -115,7 +115,7 @@ public class ArcCalc {
      * goes between the two points.
      */
     public boolean isArcUp() {
-	return arcUp;
+        return arcUp;
     }
 
     /**
@@ -127,238 +127,238 @@ public class ArcCalc {
      */
     public void generate (int x1, int y1, int x2, int y2) {
 
-	// The algorithm.
-	//
-	// Draw a straight line between the points, and figure out the
-	// center point between them on the line.  Then, on another
-	// line that is perpendicular to the first line, figure out
-	// where the point is that will act as a center of a circle.
-	// That circle needs to pass through both points, and the
-	// radius is such that the arc angle of the circle between the
-	// points is the same as the arcAngle set for the ArcCalc.
-	// Then, the arc needs to be generated.  This is done by
-	// looking at the circle, and figuring out the angle (from 0
-	// to 2PI) that the line from the center to point 1, and then
-	// the center to point 2.  This gives us the angular extents
-	// of the arc.  Then we need to figure out the angle
-	// increments needed to get good coordinates for the arc.
-	// Then, starting at the low arc angle, we increment it to get
-	// the coordinates for the arced line, a given radius away
-	// from the circle center, between the arc angle extents.
+        // The algorithm.
+        //
+        // Draw a straight line between the points, and figure out the
+        // center point between them on the line.  Then, on another
+        // line that is perpendicular to the first line, figure out
+        // where the point is that will act as a center of a circle.
+        // That circle needs to pass through both points, and the
+        // radius is such that the arc angle of the circle between the
+        // points is the same as the arcAngle set for the ArcCalc.
+        // Then, the arc needs to be generated.  This is done by
+        // looking at the circle, and figuring out the angle (from 0
+        // to 2PI) that the line from the center to point 1, and then
+        // the center to point 2.  This gives us the angular extents
+        // of the arc.  Then we need to figure out the angle
+        // increments needed to get good coordinates for the arc.
+        // Then, starting at the low arc angle, we increment it to get
+        // the coordinates for the arced line, a given radius away
+        // from the circle center, between the arc angle extents.
 
-	if (Debug.debugging("arc")) {
-	    Debug.output("ArcCalc.generateArc: creating supplimental graphics list");
-	    arcGraphics = new OMGraphicList();
-	}
+        if (Debug.debugging("arc")) {
+            Debug.output("ArcCalc.generateArc: creating supplimental graphics list");
+            arcGraphics = new OMGraphicList();
+        }
 
-	// pixel distance between points.
-	distance = Math.sqrt(Math.pow(Math.abs(y2-y1), 2.0) +
-			     Math.pow(Math.abs(x2-x1), 2.0));
-	// slope of straight line between points.
-	straightLineSlope =Math.atan((double)(y2 - y1)/(double)(x2 - x1));
+        // pixel distance between points.
+        distance = Math.sqrt(Math.pow(Math.abs(y2-y1), 2.0) +
+                             Math.pow(Math.abs(x2-x1), 2.0));
+        // slope of straight line between points.
+        straightLineSlope =Math.atan((double)(y2 - y1)/(double)(x2 - x1));
 
-	// slope of line that the arc focus will reside on.
-	inverseSlope = straightLineSlope - (Math.PI/2.0);
+        // slope of line that the arc focus will reside on.
+        inverseSlope = straightLineSlope - (Math.PI/2.0);
 
-	if (Debug.debugging("arc")) {
-	    Debug.output("ArcCalc.generate: Slope is " + 
-			 (straightLineSlope * 180.0/Math.PI) + 
-			 " degrees, distance = " + distance + " pixels.");
-	}
+        if (Debug.debugging("arc")) {
+            Debug.output("ArcCalc.generate: Slope is " + 
+                         (straightLineSlope * 180.0/Math.PI) + 
+                         " degrees, distance = " + distance + " pixels.");
+        }
 
-	// centerX/Y is the midpoint between the two points.
-	midPoint.x = x1 + ((x2 - x1)/2);
-	midPoint.y = y1 + ((y2 - y1)/2);
+        // centerX/Y is the midpoint between the two points.
+        midPoint.x = x1 + ((x2 - x1)/2);
+        midPoint.y = y1 + ((y2 - y1)/2);
 
-	if (Debug.debugging("arc")) {
-	    Debug.output("ArcCalc.generate: Center point for (" + 
-			 x1 + ", " + y1 + ") to (" +
-			 x2 + ", " + y2 + ") is (" + 
-			 midPoint.x + ", " + midPoint.y + ")");
-	}
+        if (Debug.debugging("arc")) {
+            Debug.output("ArcCalc.generate: Center point for (" + 
+                         x1 + ", " + y1 + ") to (" +
+                         x2 + ", " + y2 + ") is (" + 
+                         midPoint.x + ", " + midPoint.y + ")");
+        }
 
-	double arccos = Math.cos(arcAngle);
-	if (arccos != 1.0) {
-	    arcRadius = distance / Math.sqrt(2.0 * (1.0 - Math.cos(arcAngle)));
-	} else {
-	    arcRadius = distance / Math.sqrt(2.0);
-	}
+        double arccos = Math.cos(arcAngle);
+        if (arccos != 1.0) {
+            arcRadius = distance / Math.sqrt(2.0 * (1.0 - Math.cos(arcAngle)));
+        } else {
+            arcRadius = distance / Math.sqrt(2.0);
+        }
 
-	if (Debug.debugging("arc")) {
-	    Debug.output("ArcCalc.generate: radius of arc = " + arcRadius);
-	}
+        if (Debug.debugging("arc")) {
+            Debug.output("ArcCalc.generate: radius of arc = " + arcRadius);
+        }
 
-  	 // R' is the distance down the inverse negative slope of the
-  	 // line that the focus of the arc is located.
+         // R' is the distance down the inverse negative slope of the
+         // line that the focus of the arc is located.
 
-	// x is the distance along the right leg of the arc that is
-	// left over after Rcos(arcAngle) is subtracted from it, in
-	// order to derive the angle of the straight line between the
-	// two points.
+        // x is the distance along the right leg of the arc that is
+        // left over after Rcos(arcAngle) is subtracted from it, in
+        // order to derive the angle of the straight line between the
+        // two points.
 
-	double x = arcRadius - arcRadius * Math.cos(arcAngle);
+        double x = arcRadius - arcRadius * Math.cos(arcAngle);
 
-	double rPrime = (distance / 2.0) * 
-	    (Math.sqrt(1.0 - Math.pow(x/distance, 2.0))) /
-	    Math.sin(arcAngle/2.0);
+        double rPrime = (distance / 2.0) * 
+            (Math.sqrt(1.0 - Math.pow(x/distance, 2.0))) /
+            Math.sin(arcAngle/2.0);
 
-	if (Debug.debugging("arc")) {
-	    Debug.output("ArcCalc.generate: rPrime = " + rPrime);
-	}
-	
-	int direction = 1;
-	if (arcUp) direction = -1;
+        if (Debug.debugging("arc")) {
+            Debug.output("ArcCalc.generate: rPrime = " + rPrime);
+        }
+        
+        int direction = 1;
+        if (arcUp) direction = -1;
 
-	// arcCenter.x and arcCenter.y are the coordinates of the focus of the Arc.
-	arcCenter.x = midPoint.x + 
-	    (direction * (int)(rPrime * Math.cos(inverseSlope)));
-	arcCenter.y = midPoint.y + 
-	    (direction * (int)(rPrime * Math.sin(inverseSlope)));
+        // arcCenter.x and arcCenter.y are the coordinates of the focus of the Arc.
+        arcCenter.x = midPoint.x + 
+            (direction * (int)(rPrime * Math.cos(inverseSlope)));
+        arcCenter.y = midPoint.y + 
+            (direction * (int)(rPrime * Math.sin(inverseSlope)));
 
-	if (Debug.debugging("arc")) {
+        if (Debug.debugging("arc")) {
 
-	    double dist1 = Math.sqrt(Math.pow((double)(arcCenter.x - x1), 2.0) +
-				     Math.pow((double)(arcCenter.y - y1), 2.0));
-	    double dist2 = Math.sqrt(Math.pow((double)(arcCenter.x - x2), 2.0) +
-				     Math.pow((double)(arcCenter.y - y2), 2.0));
+            double dist1 = Math.sqrt(Math.pow((double)(arcCenter.x - x1), 2.0) +
+                                     Math.pow((double)(arcCenter.y - y1), 2.0));
+            double dist2 = Math.sqrt(Math.pow((double)(arcCenter.x - x2), 2.0) +
+                                     Math.pow((double)(arcCenter.y - y2), 2.0));
 
-	    Debug.output("ArcCalc.generate: Center focus for arc is (" + 
-			 arcCenter.x + ", " + arcCenter.y + 
-			 ") along slope line of " +
-			  (inverseSlope*180.0/Math.PI) + " degrees).");
-	    Debug.output("ArcCalc.generate: Distance to point 1 from arc focus = " + 
-			 dist1 + 
-			 "\n                    Distance to point 2 from arc focus = " + 
-			 dist2);
+            Debug.output("ArcCalc.generate: Center focus for arc is (" + 
+                         arcCenter.x + ", " + arcCenter.y + 
+                         ") along slope line of " +
+                          (inverseSlope*180.0/Math.PI) + " degrees).");
+            Debug.output("ArcCalc.generate: Distance to point 1 from arc focus = " + 
+                         dist1 + 
+                         "\n                    Distance to point 2 from arc focus = " + 
+                         dist2);
 
-	    //  Let's hightlight the end points.
-	    OMRect point1 = new OMRect(x1-1, y1-1, x1+1, y1+1);
-	    OMRect point2 = new OMRect(x2-1, y2-1, x2+1, y2+1);
-	    OMRect arcPoint = new OMRect(arcCenter.x-1, arcCenter.y-1, 
-					 arcCenter.x+1, arcCenter.y+1);
+            //  Let's hightlight the end points.
+            OMRect point1 = new OMRect(x1-1, y1-1, x1+1, y1+1);
+            OMRect point2 = new OMRect(x2-1, y2-1, x2+1, y2+1);
+            OMRect arcPoint = new OMRect(arcCenter.x-1, arcCenter.y-1, 
+                                         arcCenter.x+1, arcCenter.y+1);
 
-	    point1.setLinePaint(OMColor.red);
-	    point2.setLinePaint(OMColor.red);
-	    arcPoint.setLinePaint(OMColor.blue);
-	    arcGraphics.add(point1);
-	    arcGraphics.add(point2);
-	    arcGraphics.add(arcPoint);
+            point1.setLinePaint(OMColor.red);
+            point2.setLinePaint(OMColor.red);
+            arcPoint.setLinePaint(OMColor.blue);
+            arcGraphics.add(point1);
+            arcGraphics.add(point2);
+            arcGraphics.add(arcPoint);
 
-	    OMLine line1 = new OMLine(x1, y1, x2, y2);
-	    OMLine line2 = new OMLine(midPoint.x, midPoint.y, 
-				      arcCenter.x, arcCenter.y);
-	    arcGraphics.add(line1);
-	    arcGraphics.add(line2);
-	}
+            OMLine line1 = new OMLine(x1, y1, x2, y2);
+            OMLine line2 = new OMLine(midPoint.x, midPoint.y, 
+                                      arcCenter.x, arcCenter.y);
+            arcGraphics.add(line1);
+            arcGraphics.add(line2);
+        }
 
-	int realCount = 0;
+        int realCount = 0;
 
-	//  Figure out the arc extents for each endpoint.  I think
-	//  it's easier to keep track of the angles if they are always
-	//  positive, and we always go from smaller to larger.
-	startSlope = getRealAngle(arcCenter.x, arcCenter.y, x1, y1);
-	endSlope = getRealAngle(arcCenter.x, arcCenter.y, x2, y2);
+        //  Figure out the arc extents for each endpoint.  I think
+        //  it's easier to keep track of the angles if they are always
+        //  positive, and we always go from smaller to larger.
+        startSlope = getRealAngle(arcCenter.x, arcCenter.y, x1, y1);
+        endSlope = getRealAngle(arcCenter.x, arcCenter.y, x2, y2);
 
-	double smallSlope, largeSlope;
-	double angleIncrement;
-	
-	smallSlope = (startSlope>endSlope)?endSlope:startSlope;
-	largeSlope = (smallSlope==startSlope)?endSlope:startSlope;
+        double smallSlope, largeSlope;
+        double angleIncrement;
+        
+        smallSlope = (startSlope>endSlope)?endSlope:startSlope;
+        largeSlope = (smallSlope==startSlope)?endSlope:startSlope;
 
-	// Have to make sure we take the smaller arc around the
-	// circle.
-	while (Math.abs(smallSlope - largeSlope) > Math.PI) {
-	    if (Math.abs(largeSlope - smallSlope - Math.PI) < .001) {
-		// Catch 180 degree angles that are close enough...
-		break;
-	    }
+        // Have to make sure we take the smaller arc around the
+        // circle.
+        while (Math.abs(smallSlope - largeSlope) > Math.PI) {
+            if (Math.abs(largeSlope - smallSlope - Math.PI) < .001) {
+                // Catch 180 degree angles that are close enough...
+                break;
+            }
 
-	    Debug.message("arc", "ArcCalc.generate: Modifying the starting slope.");
-	    double tmpSlope = smallSlope + MoreMath.TWO_PI;
-	    smallSlope = largeSlope;
-	    largeSlope = tmpSlope;
-	}
+            Debug.message("arc", "ArcCalc.generate: Modifying the starting slope.");
+            double tmpSlope = smallSlope + MoreMath.TWO_PI;
+            smallSlope = largeSlope;
+            largeSlope = tmpSlope;
+        }
 
-	//  Experienced some trouble with vertical and horizonal half
-	//  circles.  This took care of that.
-	if (arcAngle == Math.PI && arcUp) {
-	    Debug.message("arc", "ArcCalc.generate: Modifying 180 angle points.");
-	    double tmpSlope = smallSlope + MoreMath.TWO_PI;
-	    smallSlope = largeSlope;
-	    largeSlope = tmpSlope;
-	}
+        //  Experienced some trouble with vertical and horizonal half
+        //  circles.  This took care of that.
+        if (arcAngle == Math.PI && arcUp) {
+            Debug.message("arc", "ArcCalc.generate: Modifying 180 angle points.");
+            double tmpSlope = smallSlope + MoreMath.TWO_PI;
+            smallSlope = largeSlope;
+            largeSlope = tmpSlope;
+        }
 
-	// Figure out the angle increment for grabbing coordinates -
-	// use the larger dimension of the arc end point differences.
-	if (Math.abs(y2 -y1) < Math.abs(x2 - x1)) {
-	    angleIncrement = Math.PI / Math.abs(x2 - x1);
-	} else {
-	    angleIncrement = Math.PI / Math.abs(y2 - y1);
-	}
+        // Figure out the angle increment for grabbing coordinates -
+        // use the larger dimension of the arc end point differences.
+        if (Math.abs(y2 -y1) < Math.abs(x2 - x1)) {
+            angleIncrement = Math.PI / Math.abs(x2 - x1);
+        } else {
+            angleIncrement = Math.PI / Math.abs(y2 - y1);
+        }
 
-	int numPoints = (int)(Math.abs(smallSlope - largeSlope)/angleIncrement + 2);
-	int[] xPoints = new int[numPoints];
-	int[] yPoints = new int[numPoints];
-	
-	if (Debug.debugging("arc")) {
-	    Debug.output("ArcCalc.generate: angle to x1, y1 is " + 
-			 startSlope + " (" +
-			 (startSlope * 180.0/Math.PI) + 
-			 " degrees), angle to x2, y2 is " + endSlope + " (" +
-			 (endSlope * 180.0/Math.PI) + " degrees)");
+        int numPoints = (int)(Math.abs(smallSlope - largeSlope)/angleIncrement + 2);
+        int[] xPoints = new int[numPoints];
+        int[] yPoints = new int[numPoints];
+        
+        if (Debug.debugging("arc")) {
+            Debug.output("ArcCalc.generate: angle to x1, y1 is " + 
+                         startSlope + " (" +
+                         (startSlope * 180.0/Math.PI) + 
+                         " degrees), angle to x2, y2 is " + endSlope + " (" +
+                         (endSlope * 180.0/Math.PI) + " degrees)");
 
-	    Debug.output("ArcCalc.generate: Starting angle is " + 
-			 smallSlope + "(" +
-			 (smallSlope * 180.0/Math.PI) + 
-			 " degrees), end angle is " + largeSlope + " (" +
-			 (largeSlope * 180.0/Math.PI) +
-			 " degrees), incrementing by " + angleIncrement + " (" +
-			 (angleIncrement * 180.0/Math.PI) + " degrees)");
-	}
+            Debug.output("ArcCalc.generate: Starting angle is " + 
+                         smallSlope + "(" +
+                         (smallSlope * 180.0/Math.PI) + 
+                         " degrees), end angle is " + largeSlope + " (" +
+                         (largeSlope * 180.0/Math.PI) +
+                         " degrees), incrementing by " + angleIncrement + " (" +
+                         (angleIncrement * 180.0/Math.PI) + " degrees)");
+        }
 
-	reversed = false;
-	// Get the coordinates of the arc from the arc extents.
-    	while (smallSlope < largeSlope && realCount < numPoints) {
-	    
-	    xPoints[realCount] = arcCenter.x + 
-		(int)(arcRadius * Math.cos(smallSlope));
-	    yPoints[realCount] = arcCenter.y + 
-		(int)(arcRadius * Math.sin(smallSlope));
+        reversed = false;
+        // Get the coordinates of the arc from the arc extents.
+        while (smallSlope < largeSlope && realCount < numPoints) {
+            
+            xPoints[realCount] = arcCenter.x + 
+                (int)(arcRadius * Math.cos(smallSlope));
+            yPoints[realCount] = arcCenter.y + 
+                (int)(arcRadius * Math.sin(smallSlope));
 
-	    if (realCount == 0 && xPoints[realCount] == x2) {
-		Debug.message("arc", "ArcCalc: line reversed");
-		reversed = true;
-	    }
+            if (realCount == 0 && xPoints[realCount] == x2) {
+                Debug.message("arc", "ArcCalc: line reversed");
+                reversed = true;
+            }
 
-	    if (Debug.debugging("arc") && realCount == 0) {
-		OMLine startLine = new OMLine(arcCenter.x, arcCenter.y,
-					      xPoints[0], yPoints[0]);
-		startLine.setLinePaint(OMColor.white);
-		arcGraphics.add(startLine);
-	    } else if (Debug.debugging("arcdetail")) {
-		Debug.output("  angle " + smallSlope + " (" +
-			     smallSlope * 180/Math.PI + " degrees)  = " 
-			     + xPoints[realCount] + 
-			     ", " + yPoints[realCount]);
-	    }
-	    
-	    if (Math.abs(largeSlope - smallSlope - (arcAngle/2.0)) < angleIncrement) {
-		// Found the halfway point, mark it...
-		peakPoint.x = xPoints[realCount];
-		peakPoint.y = yPoints[realCount];
-		Debug.message("arc", "ArcCalc: Found a midpoint.");
-	    }
+            if (Debug.debugging("arc") && realCount == 0) {
+                OMLine startLine = new OMLine(arcCenter.x, arcCenter.y,
+                                              xPoints[0], yPoints[0]);
+                startLine.setLinePaint(OMColor.white);
+                arcGraphics.add(startLine);
+            } else if (Debug.debugging("arcdetail")) {
+                Debug.output("  angle " + smallSlope + " (" +
+                             smallSlope * 180/Math.PI + " degrees)  = " 
+                             + xPoints[realCount] + 
+                             ", " + yPoints[realCount]);
+            }
+            
+            if (Math.abs(largeSlope - smallSlope - (arcAngle/2.0)) < angleIncrement) {
+                // Found the halfway point, mark it...
+                peakPoint.x = xPoints[realCount];
+                peakPoint.y = yPoints[realCount];
+                Debug.message("arc", "ArcCalc: Found a midpoint.");
+            }
 
-	    smallSlope += angleIncrement;
-	    realCount++;
-	}
+            smallSlope += angleIncrement;
+            realCount++;
+        }
 
-	//  Give the coordinates to the OMLine.	
-	xpoints = new int[realCount];
-	ypoints = new int[realCount];
+        //  Give the coordinates to the OMLine. 
+        xpoints = new int[realCount];
+        ypoints = new int[realCount];
 
-	System.arraycopy(xPoints, 0, xpoints, 0, realCount);
-	System.arraycopy(yPoints, 0, ypoints, 0, realCount);
+        System.arraycopy(xPoints, 0, xpoints, 0, realCount);
+        System.arraycopy(yPoints, 0, ypoints, 0, realCount);
     }
 
     /**
@@ -368,52 +368,52 @@ public class ArcCalc {
      * angle is from point 1 to point 2.  
      */
     protected double getRealAngle(int x1, int y1, int x2, int y2) {
-	double angle = 0;
+        double angle = 0;
 
-	double horDiff = (double)(x2 - x1);
-	double vertDiff = (double)(y2 - y1);
+        double horDiff = (double)(x2 - x1);
+        double vertDiff = (double)(y2 - y1);
 
-	//  If there is no horizontal difference, then it's pointing
-	//  up or down.
-	if (horDiff == 0) {
-	    if (vertDiff > 0) {
-		angle = MoreMath.HALF_PI;
-	    } else if (vertDiff < 0) {
-		angle = - MoreMath.HALF_PI;
-	    }
-	} else {
-	    angle = Math.atan(vertDiff/horDiff);
+        //  If there is no horizontal difference, then it's pointing
+        //  up or down.
+        if (horDiff == 0) {
+            if (vertDiff > 0) {
+                angle = MoreMath.HALF_PI;
+            } else if (vertDiff < 0) {
+                angle = - MoreMath.HALF_PI;
+            }
+        } else {
+            angle = Math.atan(vertDiff/horDiff);
 
-	    // It's pointed in the wrong direction... fix it here.
-	    if (horDiff < 0) {
-		angle += Math.PI;
-	    }
-	}
+            // It's pointed in the wrong direction... fix it here.
+            if (horDiff < 0) {
+                angle += Math.PI;
+            }
+        }
 
-	// Either way, I think we want to make the angle positive.
-	while (angle < 0) {
-	    angle += MoreMath.TWO_PI;
-	}
-	return angle;
+        // Either way, I think we want to make the angle positive.
+        while (angle < 0) {
+            angle += MoreMath.TWO_PI;
+        }
+        return angle;
     }
 
     public int[] getXPoints() {
-	return xpoints;
+        return xpoints;
     }
 
     public int[] getYPoints() {
-	return ypoints;
+        return ypoints;
     }
 
     public OMGraphicList getArcGraphics() {
-	if (arcGraphics == null) {
-	    return new OMGraphicList();
-	} else {
-	    return arcGraphics;
-	}
+        if (arcGraphics == null) {
+            return new OMGraphicList();
+        } else {
+            return arcGraphics;
+        }
     }
 
     public boolean getReversed() {
-	return reversed;
+        return reversed;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFFeatureWarehouse.java,v $
 // $RCSfile: VPFFeatureWarehouse.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,39 +34,39 @@ public interface VPFFeatureWarehouse extends VPFWarehouse {
      *
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
-			   List facevec,
-			   LatLonPoint ll1,
-			   LatLonPoint ll2,
-			   float dpplat,
-			   float dpplon,
-			   String featureType);
+                           List facevec,
+                           LatLonPoint ll1,
+                           LatLonPoint ll2,
+                           float dpplat,
+                           float dpplon,
+                           String featureType);
 
     /**
      *
      */
     public void createEdge(CoverageTable c, EdgeTable edgetable,
-			   List edgevec,
-			   LatLonPoint ll1,
-			   LatLonPoint ll2,
-			   float dpplat,
-			   float dpplon,
-			   CoordFloatString coords,
-			   String featureType);
+                           List edgevec,
+                           LatLonPoint ll1,
+                           LatLonPoint ll2,
+                           float dpplat,
+                           float dpplon,
+                           CoordFloatString coords,
+                           String featureType);
 
     /**
      *
      */
     public void createText(CoverageTable c, TextTable texttable,
-			   List textvec,
-			   float latitude,
-			   float longitude,
-			   String text,
-			   String featureType);
+                           List textvec,
+                           float latitude,
+                           float longitude,
+                           String text,
+                           String featureType);
 
     /**
      * Method called by the VPF reader code to construct a node feature.
      */
     public void createNode(CoverageTable c, NodeTable t, List nodeprim,
-			   float latitude, float longitude,
-			   boolean isEntityNode, String featureType);
+                           float latitude, float longitude,
+                           boolean isEntityNode, String featureType);
 }

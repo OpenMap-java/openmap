@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/12/29 17:20:02 $
-// $Author: wjeuerle $
+// $Revision: 1.9 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -237,10 +237,10 @@ public class LayersPanel extends OMToolComponent
      * Construct the LayersPanel.
      */
     public LayersPanel() {
-	super();
-	setKey(defaultKey);
-	setLayout(new BorderLayout());
-	setWindowSupport(new WindowSupport(this, "Layers"));
+        super();
+        setKey(defaultKey);
+        setLayout(new BorderLayout());
+        setWindowSupport(new WindowSupport(this, "Layers"));
     }
 
     /**
@@ -249,8 +249,8 @@ public class LayersPanel extends OMToolComponent
      * @param lHandler the LayerHandler controlling the layers.
      */
     public LayersPanel(LayerHandler lHandler) {
-	this();
-	setLayerHandler(lHandler);
+        this();
+        setLayerHandler(lHandler);
     }
 
     /** 
@@ -272,16 +272,16 @@ public class LayersPanel extends OMToolComponent
      * layers.  
      */
     public void setLayerHandler(LayerHandler lh) {
-	if (layerHandler != null) {
-	    layerHandler.removeLayerListener(this);
-	}
-	layerHandler = lh;
-	if (layerHandler != null) {
-	    layerHandler.addLayerListener(this);
-	} else {
-	    setLayers(new Layer[0]);
-	}
-	updateLayerPanes(layerHandler);
+        if (layerHandler != null) {
+            layerHandler.removeLayerListener(this);
+        }
+        layerHandler = lh;
+        if (layerHandler != null) {
+            layerHandler.addLayerListener(this);
+        } else {
+            setLayers(new Layer[0]);
+        }
+        updateLayerPanes(layerHandler);
     }
 
     /** 
@@ -290,7 +290,7 @@ public class LayersPanel extends OMToolComponent
      * @return LayerHandler.
      */
     public LayerHandler getLayerHandler() {
-	return layerHandler;
+        return layerHandler;
     }
 
     /**
@@ -298,10 +298,10 @@ public class LayersPanel extends OMToolComponent
      * @param layerHandler The LayerHandler controlling the layers
      */
     protected void updateLayerPanes(LayerHandler layerHandler) {
-	Iterator it = getPanes().iterator();
-	while (it.hasNext()) {
-	    ((LayerPane)it.next()).setLayerHandler(layerHandler);
-	}
+        Iterator it = getPanes().iterator();
+        while (it.hasNext()) {
+            ((LayerPane)it.next()).setLayerHandler(layerHandler);
+        }
     }
 
     /**
@@ -314,12 +314,12 @@ public class LayersPanel extends OMToolComponent
      */
     public void setLayers(LayerEvent evt) {
         Layer[] layers = evt.getLayers();
-	int type = evt.getType();
+        int type = evt.getType();
 
-	if (type==LayerEvent.ALL) {
-	    Debug.message("layerspanel", "LayersPanel received layers update");
-	    setLayers(layers);
-	}
+        if (type==LayerEvent.ALL) {
+            Debug.message("layerspanel", "LayersPanel received layers update");
+            setLayers(layers);
+        }
     }
 
     /** 
@@ -329,18 +329,18 @@ public class LayersPanel extends OMToolComponent
      * @return String The key for this tool.  
      */
     public Container getFace() {
-	JButton layerButton = null;
+        JButton layerButton = null;
 
-	if (getUseAsTool()) {
-	    layerButton = new JButton(new ImageIcon(OMToolSet.class.getResource("layers.gif"), "Layer Controls"));
-	    layerButton.setBorderPainted(false);
-	    layerButton.setToolTipText("Layer Controls");
-	    layerButton.setMargin(new Insets(0,0,0,0));
-	    layerButton.addActionListener(getActionListener());
-	}
+        if (getUseAsTool()) {
+            layerButton = new JButton(new ImageIcon(OMToolSet.class.getResource("layers.gif"), "Layer Controls"));
+            layerButton.setBorderPainted(false);
+            layerButton.setToolTipText("Layer Controls");
+            layerButton.setMargin(new Insets(0,0,0,0));
+            layerButton.addActionListener(getActionListener());
+        }
 
-	return layerButton;
-    }	
+        return layerButton;
+    }   
     
     /** 
      * Get the ActionListener that triggers the LayersPanel.  Useful
@@ -350,36 +350,36 @@ public class LayersPanel extends OMToolComponent
      * @return ActionListener
      */
     public ActionListener getActionListener() {
-	return new ActionListener() {
-		public void actionPerformed(ActionEvent evt) {
-		    WindowSupport ws = getWindowSupport();
-		    int w = 328;
-		    int h = 300;
-	    
-		    Dimension dim = ws.getComponentSize();
-		    if (dim != null) {
-			w = (int)dim.getWidth();
-			h = (int)dim.getHeight();
-		    }
+        return new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                    WindowSupport ws = getWindowSupport();
+                    int w = 328;
+                    int h = 300;
+            
+                    Dimension dim = ws.getComponentSize();
+                    if (dim != null) {
+                        w = (int)dim.getWidth();
+                        h = (int)dim.getHeight();
+                    }
 
-		    int x = 10;
-		    int y = 10;
-	    
-		    Point loc = ws.getComponentLocation();
-		    if (loc != null) {
-			x = (int) loc.getX();
-			y = (int) loc.getY();
-		    }
+                    int x = 10;
+                    int y = 10;
+            
+                    Point loc = ws.getComponentLocation();
+                    if (loc != null) {
+                        x = (int) loc.getX();
+                        y = (int) loc.getY();
+                    }
 
-		    MapHandler mh = (MapHandler) getBeanContext();
-		    Frame frame = null;
-		    if (mh != null) {
-			frame = (Frame)mh.get(java.awt.Frame.class);
-		    }
+                    MapHandler mh = (MapHandler) getBeanContext();
+                    Frame frame = null;
+                    if (mh != null) {
+                        frame = (Frame)mh.get(java.awt.Frame.class);
+                    }
 
-		    ws.displayInWindow(frame, x, y, w, h);
-		}
-	    };
+                    ws.displayInWindow(frame, x, y, w, h);
+                }
+            };
     }
 
     /**
@@ -392,72 +392,72 @@ public class LayersPanel extends OMToolComponent
      * @param inLayers the array of layers.  
      */
     public void setLayers(Layer[] inLayers) {
-	Layer[] layers = inLayers;
+        Layer[] layers = inLayers;
 
-	if (inLayers == null) {
-	    layers = new Layer[0];
-	}
+        if (inLayers == null) {
+            layers = new Layer[0];
+        }
 
-	if (Debug.debugging("layerspanel")) {
-	    Debug.output("LayersPanel.setLayers() with " + 
-			 layers.length + " layers.");
-	}
+        if (Debug.debugging("layerspanel")) {
+            Debug.output("LayersPanel.setLayers() with " + 
+                         layers.length + " layers.");
+        }
 
-	LinkedList panes = getPanes();
-	int separatorOffset = 0;
-	if (backgroundLayerSeparator != null &&
-	    panes.contains(backgroundLayerSeparator)) {
-	    separatorOffset = 1;
-	}
+        LinkedList panes = getPanes();
+        int separatorOffset = 0;
+        if (backgroundLayerSeparator != null &&
+            panes.contains(backgroundLayerSeparator)) {
+            separatorOffset = 1;
+        }
 
-	if (panes.size() - separatorOffset != layers.length) {
-	    // if the panel hasn't been created yet, or if someone has
-	    // changed the layers on us, rebuild the panel.
-	    createPanel(layers);
-	    return;
-	}
+        if (panes.size() - separatorOffset != layers.length) {
+            // if the panel hasn't been created yet, or if someone has
+            // changed the layers on us, rebuild the panel.
+            createPanel(layers);
+            return;
+        }
 
-	int i = 0;
-	Iterator it = panes.iterator();
-	while (it.hasNext() && i < layers.length) {
-	    LayerPane pane = (LayerPane)it.next();
+        int i = 0;
+        Iterator it = panes.iterator();
+        while (it.hasNext() && i < layers.length) {
+            LayerPane pane = (LayerPane)it.next();
 
-	    if (pane == backgroundLayerSeparator) {
-		continue;
-	    }
+            if (pane == backgroundLayerSeparator) {
+                continue;
+            }
 
-	    if (pane.getLayer() != layers[i]) {
-		// If the layer order sways at all, then we start over
-		// and rebuild the panel
-		createPanel(layers);
-		return;
-	    } else {
-		pane.updateLayerLabel();
-	    }
+            if (pane.getLayer() != layers[i]) {
+                // If the layer order sways at all, then we start over
+                // and rebuild the panel
+                createPanel(layers);
+                return;
+            } else {
+                pane.updateLayerLabel();
+            }
 
-	    // Do this just in case someone has changed something
-	    // somewhere else...
-	    pane.setLayerOn(layers[i].isVisible());
-	    i++;
-	}
+            // Do this just in case someone has changed something
+            // somewhere else...
+            pane.setLayerOn(layers[i].isVisible());
+            i++;
+        }
 
-	// One last check for a mismatch...
-	if (it.hasNext() || i < layers.length) {
-	    createPanel(layers);
-	}
-	//  If we get here, it means that what we had is what we
-	//  wanted.
+        // One last check for a mismatch...
+        if (it.hasNext() || i < layers.length) {
+            createPanel(layers);
+        }
+        //  If we get here, it means that what we had is what we
+        //  wanted.
     }
 
     protected LinkedList getPanes() {
-	if (panes == null) {
-	    panes = new LinkedList();
-	}
-	return panes;
+        if (panes == null) {
+            panes = new LinkedList();
+        }
+        return panes;
     }
 
     protected void setPanes(LinkedList lpa) {
-	panes = lpa;
+        panes = lpa;
     }
 
     /**
@@ -469,105 +469,105 @@ public class LayersPanel extends OMToolComponent
      * that can be added to the map.
      */
     public void createPanel(Layer[] inLayers) {
-	Debug.message("layerspanel", "LayersPanel.createPanel()");
+        Debug.message("layerspanel", "LayersPanel.createPanel()");
 
-	if (scrollPane != null) {
-	    remove(scrollPane);
-	}
-
-	Layer[] layers = inLayers;
-	if (layers == null) {
-	    layers = new Layer[0];
-	}
-
-	if (panesPanel == null) {
-	    panesPanel = new JPanel();
-	    panesPanel.setLayout(new BoxLayout(panesPanel, BoxLayout.Y_AXIS));
-	    panesPanel.setAlignmentX(LEFT_ALIGNMENT);
-	    panesPanel.setAlignmentY(BOTTOM_ALIGNMENT);
-	} else {
-	    ((BoxLayout)panesPanel.getLayout()).invalidateLayout(panesPanel);
-	    panesPanel.removeAll();
-	}
-
- 	if (bg == null) {
-	    bg = new ButtonGroup();
-	}
-
-	LinkedList panes = new LinkedList();
-	LinkedList backgroundPanes = new LinkedList();
-
-	// populate the arrays of CheckBoxes and strings used to fill
-	// the JPanel for the panes
-	for (int i = 0; i < layers.length; i++) {
-	    Layer layer = layers[i];
-	    if (layer == null) {
-		Debug.output("LayersPanel caught null layer, " + i +
-			     " out of " + layers.length);
-		continue;
-	    }
-
-	    LayerPane lpane = (LayerPane)paneLookUp.get(layer);
-
-	    if (lpane == null) {
-		if (Debug.debugging("layercontrol")) {
-		    Debug.output("LayersPanel: Creating LayerPane for " + 
-				 layer.getName());
-		}
-		lpane = createLayerPaneForLayer(layer, layerHandler, bg);
-		lpane.addPropertyChangeListener(LayerSelectedCmd, this);
-		lpane.addPropertyChangeListener(LayerDeselectedCmd, this);
-		paneLookUp.put(layer, lpane);
-	    } else {
-		// In case this has been modified elsewhere...
-		lpane.setLayerOn(layer.isVisible());
-	    }
-
-	    if (layer.getAddAsBackground() &&
-		backgroundLayerSeparator != null) {
-		backgroundPanes.add(lpane);
-	    } else {
-		panes.add(lpane);
-		panesPanel.add(lpane);
-	    }
+        if (scrollPane != null) {
+            remove(scrollPane);
         }
 
-	if (backgroundPanes.size() != 0) {
-	    if (Debug.debugging("layerspanel")) {
-		Debug.output("Adding BackgroundLayerSeparator");
-	    }
-	    panes.add(backgroundLayerSeparator);
-	    panesPanel.add(backgroundLayerSeparator);
-	    panes.addAll(backgroundPanes);
+        Layer[] layers = inLayers;
+        if (layers == null) {
+            layers = new Layer[0];
+        }
 
-	    Iterator it = backgroundPanes.iterator();
-	    while (it.hasNext()) {
-		panesPanel.add((LayerPane)it.next());
-	    }
+        if (panesPanel == null) {
+            panesPanel = new JPanel();
+            panesPanel.setLayout(new BoxLayout(panesPanel, BoxLayout.Y_AXIS));
+            panesPanel.setAlignmentX(LEFT_ALIGNMENT);
+            panesPanel.setAlignmentY(BOTTOM_ALIGNMENT);
+        } else {
+            ((BoxLayout)panesPanel.getLayout()).invalidateLayout(panesPanel);
+            panesPanel.removeAll();
+        }
 
-	} else if (backgroundLayerSeparator != null) {
-	    if (Debug.debugging("layerspanel")) {
-		Debug.output("No layers are background layers, adding separator");
-	    }
-	    panes.add(backgroundLayerSeparator);
-	    panesPanel.add(backgroundLayerSeparator);
-	}
-	
-	setPanes(panes);
+        if (bg == null) {
+            bg = new ButtonGroup();
+        }
 
-	if (scrollPane != null) {
-	    remove(scrollPane);
-	    scrollPane.removeAll();
-	    scrollPane = null;
-	}
+        LinkedList panes = new LinkedList();
+        LinkedList backgroundPanes = new LinkedList();
 
-	scrollPane = new JScrollPane(
-	    panesPanel, 
-	    ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-	    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        // populate the arrays of CheckBoxes and strings used to fill
+        // the JPanel for the panes
+        for (int i = 0; i < layers.length; i++) {
+            Layer layer = layers[i];
+            if (layer == null) {
+                Debug.output("LayersPanel caught null layer, " + i +
+                             " out of " + layers.length);
+                continue;
+            }
 
-	add(scrollPane, BorderLayout.CENTER);
-	revalidate();
+            LayerPane lpane = (LayerPane)paneLookUp.get(layer);
+
+            if (lpane == null) {
+                if (Debug.debugging("layercontrol")) {
+                    Debug.output("LayersPanel: Creating LayerPane for " + 
+                                 layer.getName());
+                }
+                lpane = createLayerPaneForLayer(layer, layerHandler, bg);
+                lpane.addPropertyChangeListener(LayerSelectedCmd, this);
+                lpane.addPropertyChangeListener(LayerDeselectedCmd, this);
+                paneLookUp.put(layer, lpane);
+            } else {
+                // In case this has been modified elsewhere...
+                lpane.setLayerOn(layer.isVisible());
+            }
+
+            if (layer.getAddAsBackground() &&
+                backgroundLayerSeparator != null) {
+                backgroundPanes.add(lpane);
+            } else {
+                panes.add(lpane);
+                panesPanel.add(lpane);
+            }
+        }
+
+        if (backgroundPanes.size() != 0) {
+            if (Debug.debugging("layerspanel")) {
+                Debug.output("Adding BackgroundLayerSeparator");
+            }
+            panes.add(backgroundLayerSeparator);
+            panesPanel.add(backgroundLayerSeparator);
+            panes.addAll(backgroundPanes);
+
+            Iterator it = backgroundPanes.iterator();
+            while (it.hasNext()) {
+                panesPanel.add((LayerPane)it.next());
+            }
+
+        } else if (backgroundLayerSeparator != null) {
+            if (Debug.debugging("layerspanel")) {
+                Debug.output("No layers are background layers, adding separator");
+            }
+            panes.add(backgroundLayerSeparator);
+            panesPanel.add(backgroundLayerSeparator);
+        }
+        
+        setPanes(panes);
+
+        if (scrollPane != null) {
+            remove(scrollPane);
+            scrollPane.removeAll();
+            scrollPane = null;
+        }
+
+        scrollPane = new JScrollPane(
+            panesPanel, 
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        add(scrollPane, BorderLayout.CENTER);
+        revalidate();
     }
 
     /**
@@ -576,34 +576,34 @@ public class LayersPanel extends OMToolComponent
      * that fits your GUI.
      */
     protected LayerPane createLayerPaneForLayer(Layer layer, 
-						LayerHandler layerHandler,
-						ButtonGroup bg) {
-	if (showStatus) {
-	    return new LayerStatusPane(layer, layerHandler, bg);
-	} else {
-	    return new LayerPane(layer, layerHandler, bg);
-	}
+                                                LayerHandler layerHandler,
+                                                ButtonGroup bg) {
+        if (showStatus) {
+            return new LayerStatusPane(layer, layerHandler, bg);
+        } else {
+            return new LayerPane(layer, layerHandler, bg);
+        }
     }
 
     public void deletePanes(LinkedList dpanes) {
-	Debug.message("layerspanel", "LayersPanel.deletePanes()");
-	if (dpanes != null) {
-	    paneLookUp.clear();
-	    Iterator it = dpanes.iterator();
-	    while (it.hasNext()) {
-		LayerPane pane = (LayerPane)it.next();
-		if (pane != null && pane != backgroundLayerSeparator) {
-		    pane.removePropertyChangeListener(this);
-		    pane.cleanup(bg);
-		}
-	    }
-	}
+        Debug.message("layerspanel", "LayersPanel.deletePanes()");
+        if (dpanes != null) {
+            paneLookUp.clear();
+            Iterator it = dpanes.iterator();
+            while (it.hasNext()) {
+                LayerPane pane = (LayerPane)it.next();
+                if (pane != null && pane != backgroundLayerSeparator) {
+                    pane.removePropertyChangeListener(this);
+                    pane.cleanup(bg);
+                }
+            }
+        }
 
-	// Shouldn't call this, but it's the only thing
-	// that seems to make it work...
-	if (Debug.debugging("helpgc")) {
-	    System.gc();
-	}
+        // Shouldn't call this, but it's the only thing
+        // that seems to make it work...
+        if (Debug.debugging("helpgc")) {
+            System.gc();
+        }
     }
 
     /**
@@ -613,18 +613,18 @@ public class LayersPanel extends OMToolComponent
      * BorderLayout with the list in the center spot.
      */
     protected void createControlButtons() {
-	controls = new LayerControlButtonPanel(this);
+        controls = new LayerControlButtonPanel(this);
     }
 
     public void setControls(LayerControlButtonPanel lpb) {
-	controls = lpb;
-	if (lpb != null) {
-	    lpb.setLayersPanel(this);
-	}
+        controls = lpb;
+        if (lpb != null) {
+            lpb.setLayersPanel(this);
+        }
     }
 
     public LayerControlButtonPanel getControls() {
-	return controls;
+        return controls;
     }
 
     /**
@@ -635,31 +635,31 @@ public class LayersPanel extends OMToolComponent
      * @param e ActionEvent 
      */
     public void actionPerformed(java.awt.event.ActionEvent e) {
-	String command = e.getActionCommand();
-	if (Debug.debugging("layerspanel")) {
-	    Debug.output("LayersPanel.actionPerformed(): " + command);
-	}
+        String command = e.getActionCommand();
+        if (Debug.debugging("layerspanel")) {
+            Debug.output("LayersPanel.actionPerformed(): " + command);
+        }
 
-	try {
-	    LayerPane pane = findSelectedPane();
-	    if (pane != null) {
-		moveLayer(pane, command);
-	    }
-	} catch (NullPointerException npe) {
-	} catch (ArrayIndexOutOfBoundsException aioobe) {
-	}
+        try {
+            LayerPane pane = findSelectedPane();
+            if (pane != null) {
+                moveLayer(pane, command);
+            }
+        } catch (NullPointerException npe) {
+        } catch (ArrayIndexOutOfBoundsException aioobe) {
+        }
     }
 
     /**
      * Change a layer's position.
      */
     public void moveLayer(Layer layer, String command) {
-	if (Debug.debugging("layercontrol")) {
-	    Debug.output("LayersPanel.moveLayer(): " + command +
-			 " for " + layer.getName());
-	}
+        if (Debug.debugging("layercontrol")) {
+            Debug.output("LayersPanel.moveLayer(): " + command +
+                         " for " + layer.getName());
+        }
 
-	moveLayer((LayerPane)paneLookUp.get(layer), command);
+        moveLayer((LayerPane)paneLookUp.get(layer), command);
     }
 
 
@@ -669,97 +669,97 @@ public class LayersPanel extends OMToolComponent
      */
     protected void moveLayer(LayerPane lp, String command) {
 
-	if (lp == null) {
+        if (lp == null) {
 
-	    if (Debug.debugging("layercontrol")) {
-		Debug.output("LayersPanel.moveLayer(): LayerPane not represented on list");
-	    }
+            if (Debug.debugging("layercontrol")) {
+                Debug.output("LayersPanel.moveLayer(): LayerPane not represented on list");
+            }
 
-	    if (command == LayerRemoveCmd) {
-		// OK, here's a hidden trick. If no layers are selected
-		// and the minus sign is clicked, then this is called.
-		System.gc();
-	    }
-	    return;
-	}
+            if (command == LayerRemoveCmd) {
+                // OK, here's a hidden trick. If no layers are selected
+                // and the minus sign is clicked, then this is called.
+                System.gc();
+            }
+            return;
+        }
 
-	LinkedList panes = getPanes();
-	int row = panes.indexOf(lp);
+        LinkedList panes = getPanes();
+        int row = panes.indexOf(lp);
 
-	boolean boundary = false;
-	int bls_row = -1;
-	if (backgroundLayerSeparator != null) {
-	    bls_row = panes.indexOf(backgroundLayerSeparator);
-	    boundary = bufferedBoundary;
-	}
+        boolean boundary = false;
+        int bls_row = -1;
+        if (backgroundLayerSeparator != null) {
+            bls_row = panes.indexOf(backgroundLayerSeparator);
+            boundary = bufferedBoundary;
+        }
 
-	if (command.equals(LayerTopCmd)) {
-	    // Move layer selected layer to top
-	    panes.remove(lp);
-	    if (boundary && bls_row > 0 && row > bls_row + 1) {
-		// If the backgroundLayerSeparator is more than one 
-		// above it, move to just below it on the first top
-		// command.
-		panes.add(bls_row + 1, lp);
-	    } else {
-		panes.addFirst(lp);
-	    }
+        if (command.equals(LayerTopCmd)) {
+            // Move layer selected layer to top
+            panes.remove(lp);
+            if (boundary && bls_row > 0 && row > bls_row + 1) {
+                // If the backgroundLayerSeparator is more than one 
+                // above it, move to just below it on the first top
+                // command.
+                panes.add(bls_row + 1, lp);
+            } else {
+                panes.addFirst(lp);
+            }
 
-	    rejiggerMapLayers();
-	} else if (command.equals(LayerBottomCmd)) {
-	    // Move layer selected layer to bottom
-	    panes.remove(lp);
+            rejiggerMapLayers();
+        } else if (command.equals(LayerBottomCmd)) {
+            // Move layer selected layer to bottom
+            panes.remove(lp);
 
-	    if (boundary && bls_row > 0 && row < bls_row - 1) {
-		// If the backgroundLayerSeparator is more than one 
-		// below it, move to just above it on the first top
-		// command.
-		panes.add(bls_row - 1, lp);
-	    } else {
-		panes.addLast(lp);
-	    }
+            if (boundary && bls_row > 0 && row < bls_row - 1) {
+                // If the backgroundLayerSeparator is more than one 
+                // below it, move to just above it on the first top
+                // command.
+                panes.add(bls_row - 1, lp);
+            } else {
+                panes.addLast(lp);
+            }
 
-	    rejiggerMapLayers();
-	} else if (command.equals(LayerUpCmd)) {
-	    // Move layer selected layer up one
-	    if (row <= 0) return;
-	    panes.remove(row);
-	    panes.add(row - 1, lp);
-	    rejiggerMapLayers();
-	} else if (command.equals(LayerDownCmd)) {
-	    // Move layer selected layer up one
-	    if (row < 0 || row == panes.size() - 1) return;
-	    panes.remove(row);
-	    panes.add(row + 1, lp);
-	    rejiggerMapLayers();
-	} else if (command.equals(LayerRemoveCmd)) {
+            rejiggerMapLayers();
+        } else if (command.equals(LayerUpCmd)) {
+            // Move layer selected layer up one
+            if (row <= 0) return;
+            panes.remove(row);
+            panes.add(row - 1, lp);
+            rejiggerMapLayers();
+        } else if (command.equals(LayerDownCmd)) {
+            // Move layer selected layer up one
+            if (row < 0 || row == panes.size() - 1) return;
+            panes.remove(row);
+            panes.add(row + 1, lp);
+            rejiggerMapLayers();
+        } else if (command.equals(LayerRemoveCmd)) {
 
-	    if (layerHandler == null) {
-		return;
-	    }
+            if (layerHandler == null) {
+                return;
+            }
 
-	    // This order is somewhat important.  lp.getLayer() will 
-	    // be null after lp.cleanup.  lp.setSelected() will cause
-	    // a series of property change notifications.
-	    lp.setSelected(false);
-	    lp.getLayer().setPaletteVisible(false);
-	    paneLookUp.remove(lp.getLayer());
-	    layerHandler.removeLayer(lp.getLayer());
-	    lp.cleanup(bg);
+            // This order is somewhat important.  lp.getLayer() will 
+            // be null after lp.cleanup.  lp.setSelected() will cause
+            // a series of property change notifications.
+            lp.setSelected(false);
+            lp.getLayer().setPaletteVisible(false);
+            paneLookUp.remove(lp.getLayer());
+            layerHandler.removeLayer(lp.getLayer());
+            lp.cleanup(bg);
 
-	    // Shouldn't call this, but it's the only thing
-	    // that seems to make it work...
-	    if (Debug.debugging("helpgc")) {
-		System.gc();
-	    }
-	    
-	    return;
+            // Shouldn't call this, but it's the only thing
+            // that seems to make it work...
+            if (Debug.debugging("helpgc")) {
+                System.gc();
+            }
+            
+            return;
 
-	} else if (command.equals(LayerAddCmd)) {
-	    if (layerAddPanel != null) {
-		layerAddPanel.showPanel();
-	    }
-	}
+        } else if (command.equals(LayerAddCmd)) {
+            if (layerAddPanel != null) {
+                layerAddPanel.showPanel();
+            }
+        }
     }
 
     /**
@@ -767,14 +767,14 @@ public class LayersPanel extends OMToolComponent
      * Will return null if there isn't a selected pane.
      */
     protected LayerPane findSelectedPane() {
-	Iterator it = getPanes().iterator();
-	while (it.hasNext()) {
-	    LayerPane pane = (LayerPane)it.next();
-	    if (pane.isSelected()) {
-		return pane;
-	    }
-	}
-	return null;
+        Iterator it = getPanes().iterator();
+        while (it.hasNext()) {
+            LayerPane pane = (LayerPane)it.next();
+            if (pane.isSelected()) {
+                return pane;
+            }
+        }
+        return null;
     }
 
    /**
@@ -782,70 +782,70 @@ public class LayersPanel extends OMToolComponent
      * LayerHandler.setLayers().
      */
     protected void rejiggerMapLayers() {
-	Debug.message("layerspanel", "LayersPanel.rejiggerMapLayers()");
+        Debug.message("layerspanel", "LayersPanel.rejiggerMapLayers()");
 
-	if (layerHandler == null) {
-	    // Why bother doing anything??
-	    return;
-	}
+        if (layerHandler == null) {
+            // Why bother doing anything??
+            return;
+        }
 
-	int selectedRow = -1;
+        int selectedRow = -1;
 
-	panesPanel.removeAll();
+        panesPanel.removeAll();
 
-	LinkedList panes = getPanes();
-	LinkedList layerList = new LinkedList();
+        LinkedList panes = getPanes();
+        LinkedList layerList = new LinkedList();
 
-	int bufferIndex = Integer.MAX_VALUE;
+        int bufferIndex = Integer.MAX_VALUE;
 
-	int i = 0; // track layer index
-	Iterator it = panes.iterator();
-	while (it.hasNext()) {
+        int i = 0; // track layer index
+        Iterator it = panes.iterator();
+        while (it.hasNext()) {
 
-	    LayerPane pane = (LayerPane)it.next();
+            LayerPane pane = (LayerPane)it.next();
 
-	    if (pane == backgroundLayerSeparator) {
-		panesPanel.add(backgroundLayerSeparator);
-		bufferIndex = i++;
-		continue;
-	    }
+            if (pane == backgroundLayerSeparator) {
+                panesPanel.add(backgroundLayerSeparator);
+                bufferIndex = i++;
+                continue;
+            }
 
-	    Layer layer = pane.getLayer();
-	    layer.setAddAsBackground(i > bufferIndex);
-	    panesPanel.add(pane);
-	    layerList.add(layer);
+            Layer layer = pane.getLayer();
+            layer.setAddAsBackground(i > bufferIndex);
+            panesPanel.add(pane);
+            layerList.add(layer);
 
-	    if (pane.isSelected()) {
-		selectedRow = i;
-	    }
-	    i++;
-	}
+            if (pane.isSelected()) {
+                selectedRow = i;
+            }
+            i++;
+        }
 
-	scrollPane.revalidate();
-	
-	// Scroll up or down as necessary to keep selected row viewable
-	if (selectedRow >= 0) {
-	    int spheight = scrollPane.getHeight();
-	    JScrollBar sb = scrollPane.getVerticalScrollBar();
-	    int sv = sb.getValue();
-	    int paneheight = ((LayerPane)panes.get(selectedRow)).getHeight();
-	    int rowvalue = selectedRow*paneheight;
-	    // Don't reset scrollBar unless the selected row
-	    // is not in the viewable range
-	    if (!((rowvalue > sv) && (rowvalue < spheight+sv))) {
-		sb.setValue(rowvalue);
-	    }
-	}
+        scrollPane.revalidate();
+        
+        // Scroll up or down as necessary to keep selected row viewable
+        if (selectedRow >= 0) {
+            int spheight = scrollPane.getHeight();
+            JScrollBar sb = scrollPane.getVerticalScrollBar();
+            int sv = sb.getValue();
+            int paneheight = ((LayerPane)panes.get(selectedRow)).getHeight();
+            int rowvalue = selectedRow*paneheight;
+            // Don't reset scrollBar unless the selected row
+            // is not in the viewable range
+            if (!((rowvalue > sv) && (rowvalue < spheight+sv))) {
+                sb.setValue(rowvalue);
+            }
+        }
 
-	Object[] layerArray = layerList.toArray();
-	int length = layerArray.length;
-	Layer[] newLayers = new Layer[length];
+        Object[] layerArray = layerList.toArray();
+        int length = layerArray.length;
+        Layer[] newLayers = new Layer[length];
 
-	for (int j = 0; j < length; j++) {
-	    newLayers[j] = (Layer)layerArray[j];
-	}
+        for (int j = 0; j < length; j++) {
+            newLayers[j] = (Layer)layerArray[j];
+        }
 
-	layerHandler.setLayers(newLayers);
+        layerHandler.setLayers(newLayers);
     }
 
     /** 
@@ -853,41 +853,41 @@ public class LayersPanel extends OMToolComponent
      * LayerPanes to check with their layers to update their labels. 
      */
     public synchronized void updateLayerLabels() {
-	Iterator it = getPanes().iterator();
-	while (it.hasNext()) {
-	    ((LayerPane)it.next()).updateLayerLabel();
-	}
+        Iterator it = getPanes().iterator();
+        while (it.hasNext()) {
+            ((LayerPane)it.next()).updateLayerLabel();
+        }
     }
 
     public void propertyChange(PropertyChangeEvent pce) {
-	String command = pce.getPropertyName();
-	Object obj = pce.getNewValue();
+        String command = pce.getPropertyName();
+        Object obj = pce.getNewValue();
 
-	if (Debug.debugging("layercontrol")) {
-	    Debug.output("LayersPanel receiving PropertyChangeEvent " + 
-			 command + ", " + pce.toString());
-	}
+        if (Debug.debugging("layercontrol")) {
+            Debug.output("LayersPanel receiving PropertyChangeEvent " + 
+                         command + ", " + pce.toString());
+        }
 
-	if ((command == LayerSelectedCmd ||
-	     command == LayerDeselectedCmd) && 
-	    obj instanceof Layer) {
+        if ((command == LayerSelectedCmd ||
+             command == LayerDeselectedCmd) && 
+            obj instanceof Layer) {
 
-	    if (Debug.debugging("layercontrol")) {
-		Debug.output("LayersPanel: layer panel notification that layer is selected: " + ((Layer)obj).getName());
-	    }
-	    firePropertyChange(command, null, ((Layer)obj));
+            if (Debug.debugging("layercontrol")) {
+                Debug.output("LayersPanel: layer panel notification that layer is selected: " + ((Layer)obj).getName());
+            }
+            firePropertyChange(command, null, ((Layer)obj));
 
-	} else if ((command == LayersPanel.LayerTopCmd ||
-		    command == LayersPanel.LayerBottomCmd ||
-		    command == LayersPanel.LayerUpCmd ||
-		    command == LayersPanel.LayerDownCmd ||
-		    command == LayersPanel.LayerRemoveCmd) && 
-		   obj instanceof Layer) {
-	    if (Debug.debugging("layercontrol")) {
-		Debug.output("LayersPanel: layer panel notification that layer should be raised: " + ((Layer)obj).getName());
-	    }
-	    moveLayer((Layer)obj, command);
-	}
+        } else if ((command == LayersPanel.LayerTopCmd ||
+                    command == LayersPanel.LayerBottomCmd ||
+                    command == LayersPanel.LayerUpCmd ||
+                    command == LayersPanel.LayerDownCmd ||
+                    command == LayersPanel.LayerRemoveCmd) && 
+                   obj instanceof Layer) {
+            if (Debug.debugging("layercontrol")) {
+                Debug.output("LayersPanel: layer panel notification that layer should be raised: " + ((Layer)obj).getName());
+            }
+            moveLayer((Layer)obj, command);
+        }
     }
     
     /**
@@ -901,24 +901,24 @@ public class LayersPanel extends OMToolComponent
      * @param someObj the object being added to the BeanContext
      */
     public void findAndInit(Object someObj) {
-	if (someObj instanceof LayerHandler) {
-	    // do the initializing that need to be done here
-	    Debug.message("layerspanel","LayersPanel found a LayerHandler");
-	    setLayerHandler((LayerHandler)someObj);
-	}
+        if (someObj instanceof LayerHandler) {
+            // do the initializing that need to be done here
+            Debug.message("layerspanel","LayersPanel found a LayerHandler");
+            setLayerHandler((LayerHandler)someObj);
+        }
 
-	if (someObj instanceof BufferedLayerMapBean) {
-	    if (Debug.debugging("layerspanel")) {
-		Debug.output("LayersPanel found BufferedLayerMapBean, creating separator panel");
-	    }
-	    backgroundLayerSeparator = LayerPane.getBackgroundLayerSeparator(" --- Background Layers --- ");
-	}
+        if (someObj instanceof BufferedLayerMapBean) {
+            if (Debug.debugging("layerspanel")) {
+                Debug.output("LayersPanel found BufferedLayerMapBean, creating separator panel");
+            }
+            backgroundLayerSeparator = LayerPane.getBackgroundLayerSeparator(" --- Background Layers --- ");
+        }
 
-	// Don't want to forward ourselves on to controls, supposedly
-	// they already know.
-	if (controls instanceof LightMapHandlerChild && someObj != this) {
-	    ((LightMapHandlerChild)controls).findAndInit(someObj);
-	}
+        // Don't want to forward ourselves on to controls, supposedly
+        // they already know.
+        if (controls instanceof LightMapHandlerChild && someObj != this) {
+            ((LightMapHandlerChild)controls).findAndInit(someObj);
+        }
     }
 
     /** 
@@ -930,71 +930,71 @@ public class LayersPanel extends OMToolComponent
      * @param someObj the object being removed from the BeanContext
      */
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof LayerHandler) {
-	    // do the initializing that need to be done here
-	    Debug.message("layerspanel","LayersPanel removing LayerHandler");
-	    if (getLayerHandler() == (LayerHandler) someObj) {
-		setLayerHandler(null);
-	    }
-	}
+        if (someObj instanceof LayerHandler) {
+            // do the initializing that need to be done here
+            Debug.message("layerspanel","LayersPanel removing LayerHandler");
+            if (getLayerHandler() == (LayerHandler) someObj) {
+                setLayerHandler(null);
+            }
+        }
 
-	// Don't want to forward ourselves on to controls, supposedly
-	// they already know.
-	if (controls instanceof LightMapHandlerChild && someObj != this) {
-	    ((LightMapHandlerChild)controls).findAndUndo(someObj);
-	}
+        // Don't want to forward ourselves on to controls, supposedly
+        // they already know.
+        if (controls instanceof LightMapHandlerChild && someObj != this) {
+            ((LightMapHandlerChild)controls).findAndUndo(someObj);
+        }
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        super.setProperties(prefix, props);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String controlString = 
-	    props.getProperty(prefix + ControlButtonsProperty);
+        String controlString = 
+            props.getProperty(prefix + ControlButtonsProperty);
 
-	if (controlString != NO_CONTROLS) {
-	    if (controlString == null) {
-		createControlButtons();
-	    } else {
-		Object obj = ComponentFactory.create(
-		    controlString, prefix + ControlButtonsProperty, props);
-		
-		if (obj instanceof LayerControlButtonPanel) {
-		    setControls((LayerControlButtonPanel)obj);
-		}
-	    }
-	}
+        if (controlString != NO_CONTROLS) {
+            if (controlString == null) {
+                createControlButtons();
+            } else {
+                Object obj = ComponentFactory.create(
+                    controlString, prefix + ControlButtonsProperty, props);
+                
+                if (obj instanceof LayerControlButtonPanel) {
+                    setControls((LayerControlButtonPanel)obj);
+                }
+            }
+        }
 
-	bufferedBoundary = LayerUtils.booleanFromProperties(props, prefix + BufferedBoundaryProperty, bufferedBoundary);
-	showStatus = LayerUtils.booleanFromProperties(props, prefix + ShowStatusProperty, showStatus);
+        bufferedBoundary = LayerUtils.booleanFromProperties(props, prefix + BufferedBoundaryProperty, bufferedBoundary);
+        showStatus = LayerUtils.booleanFromProperties(props, prefix + ShowStatusProperty, showStatus);
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	LayerControlButtonPanel controls = getControls();
-	if (controls != null) {
-	    props.put(prefix + ControlButtonsProperty, controls.getClass().getName());
-	    controls.getProperties(props);
-	}
-	props.put(prefix + BufferedBoundaryProperty, new Boolean(bufferedBoundary).toString());
-	props.put(prefix + ShowStatusProperty, new Boolean(showStatus).toString());
-	return props;
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        LayerControlButtonPanel controls = getControls();
+        if (controls != null) {
+            props.put(prefix + ControlButtonsProperty, controls.getClass().getName());
+            controls.getProperties(props);
+        }
+        props.put(prefix + BufferedBoundaryProperty, new Boolean(bufferedBoundary).toString());
+        props.put(prefix + ShowStatusProperty, new Boolean(showStatus).toString());
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
-	props.put(ControlButtonsProperty, "Class to use for layer control buttons (Optional)");
-	LayerControlButtonPanel controls = getControls();
-	if (controls != null) {
-	    controls.getPropertyInfo(props);
-	}
-	props.put(BufferedBoundaryProperty, "Force layer movement to respect background layer boundary.");
-	props.put(BufferedBoundaryProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	props.put(ShowStatusProperty, "Use Layer Panes that show layer status.");
-	props.put(ShowStatusProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	return props;
+        props = super.getPropertyInfo(props);
+        props.put(ControlButtonsProperty, "Class to use for layer control buttons (Optional)");
+        LayerControlButtonPanel controls = getControls();
+        if (controls != null) {
+            controls.getPropertyInfo(props);
+        }
+        props.put(BufferedBoundaryProperty, "Force layer movement to respect background layer boundary.");
+        props.put(BufferedBoundaryProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(ShowStatusProperty, "Use Layer Panes that show layer status.");
+        props.put(ShowStatusProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        return props;
     }
 }
 

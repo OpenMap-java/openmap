@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/SelectionSupport.java,v $
 // $RCSfile: SelectionSupport.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:46:44 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -37,7 +37,7 @@ public class SelectionSupport {
     private Object source;
 
     public SelectionSupport(Object src) {
-	source = src;
+        source = src;
     }
 
     /**
@@ -46,10 +46,10 @@ public class SelectionSupport {
      * @param listener  The SelectionListener to be added
      */
     public synchronized void addSelectionListener(SelectionListener listener) {
-	if (listeners == null) {
-	    listeners = new Vector();
-	}
-	listeners.addElement(listener);
+        if (listeners == null) {
+            listeners = new Vector();
+        }
+        listeners.addElement(listener);
     }
 
     /**
@@ -58,18 +58,18 @@ public class SelectionSupport {
      * @param listener  The SelectionListener to be removed
      */
     public synchronized void removeSelectionListener(SelectionListener listener) {
-	if (listeners != null) {
-	    listeners.removeElement(listener);
-	}
+        if (listeners != null) {
+            listeners.removeElement(listener);
+        }
     }
 
     /**
      * Remove all listeners from the list.
      */
     public synchronized void clearSelectionListeners() {
-	if (listeners != null) {
-	    listeners.clear();
-	}
+        if (listeners != null) {
+            listeners.clear();
+        }
     }
 
     /**
@@ -81,20 +81,20 @@ public class SelectionSupport {
      */
     public void fireSelection(OMGraphic omg, DrawingToolRequestor dtr, boolean isSelected) {
 
-	Vector targets;
-	synchronized (this) {
-	    if (listeners == null) {
-	    	return;
-	    }
-	    targets = (java.util.Vector) listeners.clone();
-	}
+        Vector targets;
+        synchronized (this) {
+            if (listeners == null) {
+                return;
+            }
+            targets = (java.util.Vector) listeners.clone();
+        }
 
         SelectionEvent evt = new SelectionEvent(source, omg, dtr, isSelected);
 
-	for (int i = 0; i < targets.size(); i++) {
-	    SelectionListener target = (SelectionListener)targets.elementAt(i);
-	    target.selectionNotification(evt);
-	}
+        for (int i = 0; i < targets.size(); i++) {
+            SelectionListener target = (SelectionListener)targets.elementAt(i);
+            target.selectionNotification(evt);
+        }
     }
 
 }

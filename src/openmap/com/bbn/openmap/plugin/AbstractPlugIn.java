@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/AbstractPlugIn.java,v $
 // $RCSfile: AbstractPlugIn.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/23 20:47:48 $
-// $Author: wjeuerle $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:13 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -70,7 +70,7 @@ public abstract class AbstractPlugIn
     public AbstractPlugIn() {}
 
     public AbstractPlugIn(Component comp) {
-	setComponent(comp);
+        setComponent(comp);
     }
 
     /**
@@ -78,11 +78,11 @@ public abstract class AbstractPlugIn
      * layer, set its pretty name as well.
      */
     public void setName(String name) {
-	this.name = name;
-	Component comp = getComponent();
-	if (comp != null) {
-	    comp.setName(name);
-	}
+        this.name = name;
+        Component comp = getComponent();
+        if (comp != null) {
+            comp.setName(name);
+        }
     }
 
     /**
@@ -90,32 +90,32 @@ public abstract class AbstractPlugIn
      * name of the parent component if it's set.
      */
     public String getName() {
-	Component comp = getComponent();
-	if (comp != null) {
-	    name = comp.getName();
-	}
-	return name;
+        Component comp = getComponent();
+        if (comp != null) {
+            name = comp.getName();
+        }
+        return name;
     }
 
     /** 
      * Set the component that this PlugIn uses as a grip to the map.  
      */
     public void setComponent(Component comp) {
-	this.component = comp;
+        this.component = comp;
     }
 
     /**
      * Get the component that this plugin uses as a grip to the map.
      */
     public Component getComponent() {
-	return component;
+        return component;
     }
 
     /**
      * Call repaint on the parent component.
      */
     public void repaint() {
-	component.repaint();
+        component.repaint();
     }
 
     /**
@@ -123,9 +123,9 @@ public abstract class AbstractPlugIn
      * calls doPrepare() on it if it is.
      */
     public void doPrepare() {
-	if (component instanceof PlugInLayer) {
-	    ((PlugInLayer)component).doPrepare();
-	}
+        if (component instanceof PlugInLayer) {
+            ((PlugInLayer)component).doPrepare();
+        }
     }
 
     /**
@@ -138,14 +138,14 @@ public abstract class AbstractPlugIn
      * @param mml MapMouseListener.
      */
     public void setMapMouseListener(MapMouseListener mml) {
-	this.mml = mml;
+        this.mml = mml;
     }
 
     /** 
      * Returns the MapMouseListener that the plugin thinks should be used.
      */
     public MapMouseListener getMapMouseListener() {
-	return mml;
+        return mml;
     }
     
     /**
@@ -165,15 +165,15 @@ public abstract class AbstractPlugIn
     /** 
      */
     public Component getGUI() {
-	return null;
+        return null;
     }
 
     public void setAddToBeanContext(boolean value) {
-	addToBeanContext = value;
+        addToBeanContext = value;
     }
 
     public boolean getAddToBeanContext() {
-	return addToBeanContext;
+        return addToBeanContext;
     }
 
     //////  PropertyConsumer Interface Methods
@@ -188,7 +188,7 @@ public abstract class AbstractPlugIn
      * configuration.
      */
     public void setProperties(Properties setList) {
-	setProperties(null, setList);
+        setProperties(null, setList);
     }
 
     /**
@@ -208,12 +208,12 @@ public abstract class AbstractPlugIn
      * configuration.  
      */
     public void setProperties(String prefix, Properties setList) {
-	setPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
 
-	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	name = setList.getProperty(realPrefix + Layer.PrettyNameProperty);
-	setAddToBeanContext(LayerUtils.booleanFromProperties(setList, realPrefix + Layer.AddToBeanContextProperty, addToBeanContext));
+        name = setList.getProperty(realPrefix + Layer.PrettyNameProperty);
+        setAddToBeanContext(LayerUtils.booleanFromProperties(setList, realPrefix + Layer.AddToBeanContextProperty, addToBeanContext));
     }
 
     /**
@@ -232,14 +232,14 @@ public abstract class AbstractPlugIn
      * PropertyConsumer.
      */
     public Properties getProperties(Properties getList) {
-	if (getList == null) {
-	    getList = new Properties();
-	}
+        if (getList == null) {
+            getList = new Properties();
+        }
 
-	String realPrefix = PropUtils.getScopedPropertyPrefix(this);
-	getList.put(realPrefix + Layer.AddToBeanContextProperty, 
-		    new Boolean(addToBeanContext).toString());
-	return getList;
+        String realPrefix = PropUtils.getScopedPropertyPrefix(this);
+        getList.put(realPrefix + Layer.AddToBeanContextProperty, 
+                    new Boolean(addToBeanContext).toString());
+        return getList;
     }
 
     /**
@@ -260,13 +260,13 @@ public abstract class AbstractPlugIn
      * PropertyConsumer.  
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
-	list.put(Layer.AddToBeanContextProperty, "Flag to give the PlugIn access to all of the other application components.");
-	list.put(Layer.AddToBeanContextProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        if (list == null) {
+            list = new Properties();
+        }
+        list.put(Layer.AddToBeanContextProperty, "Flag to give the PlugIn access to all of the other application components.");
+        list.put(Layer.AddToBeanContextProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-	return list;
+        return list;
     }
 
     /**
@@ -277,7 +277,7 @@ public abstract class AbstractPlugIn
      * @param prefix the prefix String.  
      */
     public void setPropertyPrefix(String prefix) {
-	this.prefix = prefix;
+        this.prefix = prefix;
     }
 
     /**
@@ -287,7 +287,7 @@ public abstract class AbstractPlugIn
      * @return the property prefix for the plugin
      */
     public String getPropertyPrefix() {
-	return prefix;
+        return prefix;
     }
 
     /////////  MapMouseListener interface methods
@@ -301,9 +301,9 @@ public abstract class AbstractPlugIn
      * receiving events in "select" mode:
      * <code>
      * <pre>
-     *	return new String[] {
-     *	    SelectMouseMode.modeID
-     *	};
+     *  return new String[] {
+     *      SelectMouseMode.modeID
+     *  };
      * </pre>
      * <code>
      * @return String[] of modeID's
@@ -312,7 +312,7 @@ public abstract class AbstractPlugIn
      * @see com.bbn.openmap.event.NullMouseMode#modeID
      */
     public String[] getMouseModeServiceList() {
-	return new String[] {SelectMouseMode.modeID};
+        return new String[] {SelectMouseMode.modeID};
     }
 
     // Mouse Listener events
@@ -324,7 +324,7 @@ public abstract class AbstractPlugIn
      * @return true if the listener was able to process the event.
      */
     public boolean mousePressed(MouseEvent e) {
-	return false;
+        return false;
     }
  
     /**
@@ -333,7 +333,7 @@ public abstract class AbstractPlugIn
      * @return true if the listener was able to process the event.
      */
     public boolean mouseReleased(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -361,7 +361,7 @@ public abstract class AbstractPlugIn
      * @return true if the listener was able to process the event.
      */
     public boolean mouseClicked(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -388,7 +388,7 @@ public abstract class AbstractPlugIn
      * @return true if the listener was able to process the event.
      */
     public boolean mouseDragged(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -398,7 +398,7 @@ public abstract class AbstractPlugIn
      * @return true if the listener was able to process the event.
      */
     public boolean mouseMoved(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**

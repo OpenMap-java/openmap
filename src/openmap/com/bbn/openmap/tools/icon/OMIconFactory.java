@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/OMIconFactory.java,v $
 // $RCSfile: OMIconFactory.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/26 17:48:55 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,7 +42,7 @@ public class OMIconFactory {
      * the rendering into its image.
      */
     public static ImageIcon createImageIcon(int width, int height) {
-	return createImageIcon(width, height, BufferedImage.TYPE_INT_ARGB);
+        return createImageIcon(width, height, BufferedImage.TYPE_INT_ARGB);
     }
 
     /**
@@ -52,7 +52,7 @@ public class OMIconFactory {
      * image.
      */
     public static ImageIcon createImageIcon(int width, int height, int imageType) {
-	return new ImageIcon(new BufferedImage(width, height, imageType));
+        return new ImageIcon(new BufferedImage(width, height, imageType));
     }
 
     /**
@@ -61,7 +61,7 @@ public class OMIconFactory {
      * drawing with default DrawingAttributes.
      */
     public static ImageIcon getIcon(int width, int height, IconPart geometry) {
-	return getIcon(width, height, geometry, null);
+        return getIcon(width, height, geometry, null);
     }
 
     /**
@@ -71,12 +71,12 @@ public class OMIconFactory {
      * IconPart geometries.
      */
     public static ImageIcon getIcon(int width, int height, IconPart geometry, 
-				    DrawingAttributes appDA) {
-	ImageIcon icon = createImageIcon(width, height);
-	Graphics2D g = (Graphics2D) icon.getImage().getGraphics();
-	g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                                    DrawingAttributes appDA) {
+        ImageIcon icon = createImageIcon(width, height);
+        Graphics2D g = (Graphics2D) icon.getImage().getGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-	geometry.render(g, width, height, appDA);
-	return icon;
+        geometry.render(g, width, height, appDA);
+        return icon;
     }
 }

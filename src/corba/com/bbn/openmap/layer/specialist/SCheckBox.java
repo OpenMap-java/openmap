@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SCheckBox.java,v $
 // $RCSfile: SCheckBox.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 02:00:34 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,7 @@ public class SCheckBox extends _CheckBoxStub {
 
     public SCheckBox(String label, CheckButton[] buttons) {
         label_ = label;
-	buttons_ = buttons;
+        buttons_ = buttons;
     }
     public void label(java.lang.String label) {
         label_ = label;
@@ -56,12 +56,12 @@ public class SCheckBox extends _CheckBoxStub {
         return buttons_;
     }
     public void selected(java.lang.String box_label,
-			 com.bbn.openmap.CSpecialist.CheckButton button,
-			 java.lang.String uniqueID) {
+                         com.bbn.openmap.CSpecialist.CheckButton button,
+                         java.lang.String uniqueID) {
 //      System.out.println("CheckBox: New button selected.");
-//  	System.out.println(" in box: " + box_label);
-//  	System.out.println(" unique ID: " + uniqueID);
-//  	System.out.println(" button: " + button.button_label);
+//      System.out.println(" in box: " + box_label);
+//      System.out.println(" unique ID: " + uniqueID);
+//      System.out.println(" button: " + button.button_label);
     }
 
   /** The <b>widget</b> function should be used to get the object
@@ -70,8 +70,8 @@ public class SCheckBox extends _CheckBoxStub {
    */
     public UWidget widget() {
         UWidget uw = new UWidget();
-	uw.cb(this);
-	return uw;
+        uw.cb(this);
+        return uw;
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/plotLayer/ScatterGraph.java,v $
 // $RCSfile: ScatterGraph.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,92 +65,92 @@ public class ScatterGraph {
     private int frame_xoffset_, frame_yoffset_;
 
     private  static final byte[] datapoint_bits_ = {
-	(byte)0x0e, (byte)0x1f, (byte)0x1b, (byte)0x1f, (byte)0x0e};
+        (byte)0x0e, (byte)0x1f, (byte)0x1b, (byte)0x1f, (byte)0x0e};
     
     
     private void  initialize(int height, int width, 
-			int xoffset, int yoffset,
-			Vector sites, 
-			float minyear, float maxyear, 
-			float mintemp, float maxtemp)
+                        int xoffset, int yoffset,
+                        Vector sites, 
+                        float minyear, float maxyear, 
+                        float mintemp, float maxtemp)
     {
-    	plot_graphics_ = new OMGraphicList();
-	plot_points_ = new OMGraphicList();
-	plot_background_ = new OMGraphicList();
+        plot_graphics_ = new OMGraphicList();
+        plot_points_ = new OMGraphicList();
+        plot_background_ = new OMGraphicList();
 
-	plot_graphics_.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
-	plot_points_.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
-	plot_background_.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
+        plot_graphics_.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
+        plot_points_.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
+        plot_background_.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
 
-	frame_xoffset_ = xoffset;
-	frame_yoffset_ = yoffset;
-	
-	max_year_ = maxyear;
-	min_year_ = minyear;
+        frame_xoffset_ = xoffset;
+        frame_yoffset_ = yoffset;
+        
+        max_year_ = maxyear;
+        min_year_ = minyear;
 
-	max_temp_ = maxtemp;
-	min_temp_ = mintemp;
-	
-	resizeGraph(frame_x, frame_y, height, width);
-	setDataPoints(sites);
-	resetScale();
-	
-	plotData();
+        max_temp_ = maxtemp;
+        min_temp_ = mintemp;
+        
+        resizeGraph(frame_x, frame_y, height, width);
+        setDataPoints(sites);
+        resetScale();
+        
+        plotData();
     }
 
     /**
      * Set up the size of the graph, and scale all the axes correctly.
      */
     public ScatterGraph(int height, int width, Vector sites, 
-			float minyear, float maxyear, 
-			float mintemp, float maxtemp)
+                        float minyear, float maxyear, 
+                        float mintemp, float maxtemp)
     {
-	initialize(height, width, 0,0,
-		   sites,
-		   minyear, maxyear,
-		   mintemp, maxtemp);
+        initialize(height, width, 0,0,
+                   sites,
+                   minyear, maxyear,
+                   mintemp, maxtemp);
     }
 
     
     public ScatterGraph(int height, int width, 
-			int xoffset, int yoffset,
-			Vector sites, 
-			float minyear, float maxyear, 
-			float mintemp, float maxtemp)
+                        int xoffset, int yoffset,
+                        Vector sites, 
+                        float minyear, float maxyear, 
+                        float mintemp, float maxtemp)
     {
-	initialize(height, width, 
-		   xoffset, yoffset,
-		   sites,
-		   minyear, maxyear,
-		   mintemp, maxtemp);
+        initialize(height, width, 
+                   xoffset, yoffset,
+                   sites,
+                   minyear, maxyear,
+                   mintemp, maxtemp);
     }
 
 
     
     public void resize(int x, int y, int newwidth, int newheight)
     {
-	plot_graphics_.clear();
-	plot_points_.clear();
-	plot_background_.clear();
+        plot_graphics_.clear();
+        plot_points_.clear();
+        plot_background_.clear();
 
-	resizeGraph(x, y, newheight, newwidth);
-	axes_displayed_ = false;
- 	// replot everything on the graph
-	plotData();
+        resizeGraph(x, y, newheight, newwidth);
+        axes_displayed_ = false;
+        // replot everything on the graph
+        plotData();
    }
 
 
     // If the window changes size, we need to resize the graph, and replot.
     private void resizeGraph(int x, int y, int height, int width){
-	// Setup the sizes.
-	frame_x = x;
-	frame_y = y;
-	frame_width_  = width;
-	frame_height_ = height;
-	plot_width_  = frame_width_  - 2 * border_width_;
-	plot_height_ = frame_height_ - 2 * border_width_;
-	
-	resetScale();
+        // Setup the sizes.
+        frame_x = x;
+        frame_y = y;
+        frame_width_  = width;
+        frame_height_ = height;
+        plot_width_  = frame_width_  - 2 * border_width_;
+        plot_height_ = frame_height_ - 2 * border_width_;
+        
+        resetScale();
     }
 
 
@@ -164,22 +164,22 @@ public class ScatterGraph {
      * @param maxtemp highest temperature
      */
     private void setScale(float minyear, float maxyear, 
-			  float mintemp, float maxtemp)
+                          float mintemp, float maxtemp)
     {
-	min_year_ = minyear;
-	max_year_ = maxyear;
-	min_temp_ = mintemp;
-	max_temp_ = maxtemp;
-	
-	temp_scale_ = ((float)plot_height_ / (maxtemp - mintemp));
-	year_scale_ = ((float)plot_width_  / (maxyear - minyear));
+        min_year_ = minyear;
+        max_year_ = maxyear;
+        min_temp_ = mintemp;
+        max_temp_ = maxtemp;
+        
+        temp_scale_ = ((float)plot_height_ / (maxtemp - mintemp));
+        year_scale_ = ((float)plot_width_  / (maxyear - minyear));
     }
 
     
     private void resetScale()
     {
-	setScale(min_year_, max_year_,
-		 min_temp_, max_temp_);
+        setScale(min_year_, max_year_,
+                 min_temp_, max_temp_);
     }
 
     /**
@@ -188,12 +188,12 @@ public class ScatterGraph {
      * @param sites the sites
      */
     public void setDataPoints(Vector sites){
-	if (sites != null){
-	    sites_displayed_ = sites;
-	}
-	else {
-	    sites_displayed_ = new Vector();
-	}
+        if (sites != null){
+            sites_displayed_ = sites;
+        }
+        else {
+            sites_displayed_ = new Vector();
+        }
     }
       
 
@@ -209,22 +209,22 @@ public class ScatterGraph {
      */
     private int findPointOnScale(float value, float scale, float offset)
     {
-	float newvalue = (value - offset) * scale;
-	return (int)newvalue;
+        float newvalue = (value - offset) * scale;
+        return (int)newvalue;
     }
    
     // gets the Y coordinate of the plot
     private int findTempPoint(float value)
     {
-	return frame_y + frame_height_ - 
-	    (border_width_ + findPointOnScale(value, temp_scale_, min_temp_));
+        return frame_y + frame_height_ - 
+            (border_width_ + findPointOnScale(value, temp_scale_, min_temp_));
     }
 
     // gets the Y coordinate of the plot
     private int findYearPoint(float value)
     {
-	return frame_x + border_width_ + 
-	    findPointOnScale(value, year_scale_, min_year_);
+        return frame_x + border_width_ + 
+            findPointOnScale(value, year_scale_, min_year_);
     }
    
 
@@ -241,181 +241,181 @@ public class ScatterGraph {
      */
 
     private OMLine createPlotLine (int x1, int y1, 
-				   int x2, int y2,
-				   Paint color) {
-	OMLine line = new OMLine(x1, y1, x2, y2);
-	line.setLinePaint(color);
-	line.setSelectPaint(Color.white);
-	return line;
+                                   int x2, int y2,
+                                   Paint color) {
+        OMLine line = new OMLine(x1, y1, x2, y2);
+        line.setLinePaint(color);
+        line.setSelectPaint(Color.white);
+        return line;
     }
 
     private OMLine createGraphLine(float year1, float temp1,
-				   float year2, float temp2) {
-	int x1 = findYearPoint(year1);
-	int y1 = findTempPoint(temp1);
+                                   float year2, float temp2) {
+        int x1 = findYearPoint(year1);
+        int y1 = findTempPoint(temp1);
 
-	int x2 = findYearPoint(year2);
-	int y2 = findTempPoint(temp2);
-	
-	OMLine line = createPlotLine(x1,y1,x2,y2, plot_color_);
-	line.setLinePaint(plot_color_);
-	line.setSelectPaint(select_color_);
-	return line;	
+        int x2 = findYearPoint(year2);
+        int y2 = findTempPoint(temp2);
+        
+        OMLine line = createPlotLine(x1,y1,x2,y2, plot_color_);
+        line.setLinePaint(plot_color_);
+        line.setSelectPaint(select_color_);
+        return line;    
     }
 
 
     private OMText createLabel(String text, int x, int y,
-			       Paint color, int justification) {
-	Font default_font = new Font("TimesRoman", Font.PLAIN, 10);
-	OMText label = new OMText(x,y,text,default_font, justification);
+                               Paint color, int justification) {
+        Font default_font = new Font("TimesRoman", Font.PLAIN, 10);
+        OMText label = new OMText(x,y,text,default_font, justification);
 
-	label.setLinePaint(color);
-	label.setSelectPaint(Color.white);
-	return label;
+        label.setLinePaint(color);
+        label.setSelectPaint(Color.white);
+        return label;
     }
 
     private OMText createLabel(String text, int x, int y) {
-	return createLabel(text,x,y,plot_color_, OMText.JUSTIFY_LEFT);
+        return createLabel(text,x,y,plot_color_, OMText.JUSTIFY_LEFT);
     }
 
     private Date GetDateFromFloat(float fdate) {
-	long mseconds = (long)((fdate - 1970) 
-			      * 365.25		// days per year
-			      * 24		// hours per day
-			      * 60		// minutes per hour
-			      * 60		// seconds per minute
-			      * 1000 );		// milliseconds per second
+        long mseconds = (long)((fdate - 1970) 
+                              * 365.25          // days per year
+                              * 24              // hours per day
+                              * 60              // minutes per hour
+                              * 60              // seconds per minute
+                              * 1000 );         // milliseconds per second
 
-	Date date = new Date(mseconds);
-	return date;
+        Date date = new Date(mseconds);
+        return date;
     }
 
     private String GetStringDateFromFloat(float fdate) {
-	Date date = GetDateFromFloat(fdate);
-	StringBuffer buff = new StringBuffer();
-	
-	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm MM/dd/yyyy");
-	String datestring = sdf.format(date);
-	return datestring;
+        Date date = GetDateFromFloat(fdate);
+        StringBuffer buff = new StringBuffer();
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm MM/dd/yyyy");
+        String datestring = sdf.format(date);
+        return datestring;
     }
 
     /**
      * Draw the axes of the Graph, and label them where appropriate
      */
     private void drawGraphAxes() {
-	
-//	System.out.println("Plotting Axes");
-	
-	int top = frame_y + border_width_;
-	int bottom = frame_y + frame_height_ - border_width_;
-	int left = frame_x + border_width_;
-	int right = frame_x + frame_width_ - border_width_;
-	
-	String min_year_string = GetStringDateFromFloat(min_year_);
-	String max_year_string = GetStringDateFromFloat(max_year_);
+        
+//      System.out.println("Plotting Axes");
+        
+        int top = frame_y + border_width_;
+        int bottom = frame_y + frame_height_ - border_width_;
+        int left = frame_x + border_width_;
+        int right = frame_x + frame_width_ - border_width_;
+        
+        String min_year_string = GetStringDateFromFloat(min_year_);
+        String max_year_string = GetStringDateFromFloat(max_year_);
 
-	OMLine year_axis = createPlotLine(left, bottom,
-					  right, bottom,
-					  plot_color_);
-	
-	OMLine temp_axis = createPlotLine(left, top,
-					  left, bottom,
-					  plot_color_);
+        OMLine year_axis = createPlotLine(left, bottom,
+                                          right, bottom,
+                                          plot_color_);
+        
+        OMLine temp_axis = createPlotLine(left, top,
+                                          left, bottom,
+                                          plot_color_);
       
-	OMText year_min_label = createLabel(min_year_string + " ",
-					    left, bottom + 10);
-	
-	OMText year_max_label = createLabel(max_year_string + " ", 
-					    right - 30, bottom + 10);
-	
-	OMText temp_min_label = createLabel(min_temp_ + " ", 
-					    left, bottom,
-					    plot_color_, OMText.JUSTIFY_RIGHT);
+        OMText year_min_label = createLabel(min_year_string + " ",
+                                            left, bottom + 10);
+        
+        OMText year_max_label = createLabel(max_year_string + " ", 
+                                            right - 30, bottom + 10);
+        
+        OMText temp_min_label = createLabel(min_temp_ + " ", 
+                                            left, bottom,
+                                            plot_color_, OMText.JUSTIFY_RIGHT);
 
-	OMText temp_max_label = createLabel(max_temp_ + " ", 
-					    left, top,
-					    plot_color_, OMText.JUSTIFY_RIGHT);
+        OMText temp_max_label = createLabel(max_temp_ + " ", 
+                                            left, top,
+                                            plot_color_, OMText.JUSTIFY_RIGHT);
 
-	OMText temp_axis_label = createLabel ("Temp",
-					      left, frame_y + (frame_height_ / 2),
-					      plot_color_, OMText.JUSTIFY_RIGHT);
-	OMText year_axis_label = createLabel ("Year",
-					      frame_x + (frame_width_ / 2), bottom + 15);
+        OMText temp_axis_label = createLabel ("Temp",
+                                              left, frame_y + (frame_height_ / 2),
+                                              plot_color_, OMText.JUSTIFY_RIGHT);
+        OMText year_axis_label = createLabel ("Year",
+                                              frame_x + (frame_width_ / 2), bottom + 15);
 
-	
-	// The background that the plot is drawn on. 
-	OMRect background = new OMRect(frame_x, frame_y, frame_x + frame_width_, frame_y + frame_height_);
-	
-	background.setFillPaint(graph_bg_color);
-	background.setLinePaint(graph_bg_color);
-	
-	year_axis.setAppObject(this);
-	temp_axis.setAppObject(this);
+        
+        // The background that the plot is drawn on. 
+        OMRect background = new OMRect(frame_x, frame_y, frame_x + frame_width_, frame_y + frame_height_);
+        
+        background.setFillPaint(graph_bg_color);
+        background.setLinePaint(graph_bg_color);
+        
+        year_axis.setAppObject(this);
+        temp_axis.setAppObject(this);
 
-	plot_background_.addOMGraphic(background);
+        plot_background_.addOMGraphic(background);
 
-	plot_background_.addOMGraphic(year_axis);
-	plot_background_.addOMGraphic(temp_axis);
-	plot_background_.addOMGraphic(temp_axis_label);
-	plot_background_.addOMGraphic(year_axis_label);
+        plot_background_.addOMGraphic(year_axis);
+        plot_background_.addOMGraphic(temp_axis);
+        plot_background_.addOMGraphic(temp_axis_label);
+        plot_background_.addOMGraphic(year_axis_label);
 
-	plot_background_.addOMGraphic(year_min_label);
-	plot_background_.addOMGraphic(year_max_label);
-	plot_background_.addOMGraphic(temp_min_label);
-	plot_background_.addOMGraphic(temp_max_label);
+        plot_background_.addOMGraphic(year_min_label);
+        plot_background_.addOMGraphic(year_max_label);
+        plot_background_.addOMGraphic(temp_min_label);
+        plot_background_.addOMGraphic(temp_max_label);
 
-	// add the result to the plot
-	plot_graphics_.addOMGraphic(plot_background_);
+        // add the result to the plot
+        plot_graphics_.addOMGraphic(plot_background_);
 
-	axes_displayed_ = true;
+        axes_displayed_ = true;
     }
    
 
     public OMGraphicList getPlotGraphics(){ return plot_graphics_; }
 
     private OMGraphic plotPoint(float year, float temp) {
-	int x = findYearPoint(year);
-	int y = findTempPoint(temp);
+        int x = findYearPoint(year);
+        int y = findTempPoint(temp);
 
-	String yearstring = GetStringDateFromFloat(year);
+        String yearstring = GetStringDateFromFloat(year);
 
-	String name = "Time: " +  yearstring 
-	    + ", Temperature: " + temp + "C (" +
-	    (int)((9.0/5.0) * temp + 32) + "F)"  ;
+        String name = "Time: " +  yearstring 
+            + ", Temperature: " + temp + "C (" +
+            (int)((9.0/5.0) * temp + 32) + "F)"  ;
 
-	OMGraphic graphic = new OMCircle(x,y,2,2);
-	graphic.setLinePaint(plot_color_);
-	graphic.setFillPaint(plot_color_);
-	graphic.setSelectPaint(select_color_);
-	graphic.setAppObject(name);
-	
-	return graphic;
+        OMGraphic graphic = new OMCircle(x,y,2,2);
+        graphic.setLinePaint(plot_color_);
+        graphic.setFillPaint(plot_color_);
+        graphic.setSelectPaint(select_color_);
+        graphic.setAppObject(name);
+        
+        return graphic;
     }
-	
+        
 
     private Enumeration sortEnumerationOfFloats(Enumeration enum) {
-	Vector vec = new Vector();
-	while (enum.hasMoreElements()){
-	    vec.addElement(enum.nextElement());
-	}
-	
-	Float [] result = new Float[vec.size()];
-	vec.copyInto(result);
-	Vector resultvec = new Vector(vec.size());
-	
-	for (int i = 0; i < vec.size(); i++){
-	    for (int j = i + 1; j < vec.size(); j++){
-		if (result[i].floatValue() > result[j].floatValue()){
-		    Float t = result[i];
-		    result[i] = result[j];
-		    result[j] = t;
-		}
-	    }
-	    // We now know that i contains the smallest element 
-	    // in the remaining vector.
-	    resultvec.addElement(result[i]);
-	}
-	return resultvec.elements();
+        Vector vec = new Vector();
+        while (enum.hasMoreElements()){
+            vec.addElement(enum.nextElement());
+        }
+        
+        Float [] result = new Float[vec.size()];
+        vec.copyInto(result);
+        Vector resultvec = new Vector(vec.size());
+        
+        for (int i = 0; i < vec.size(); i++){
+            for (int j = i + 1; j < vec.size(); j++){
+                if (result[i].floatValue() > result[j].floatValue()){
+                    Float t = result[i];
+                    result[i] = result[j];
+                    result[j] = t;
+                }
+            }
+            // We now know that i contains the smallest element 
+            // in the remaining vector.
+            resultvec.addElement(result[i]);
+        }
+        return resultvec.elements();
     }
 
 
@@ -424,60 +424,60 @@ public class ScatterGraph {
      */
     public void plotData() 
     {
-	Debug.message("basic", "ScatterGraph.plotData()");
-	Enumeration all_sites = sites_displayed_.elements();
-	int num_elements = 0;
-	int num_sites = 0;
-	
-	plot_points_.clear();
-	
-	// Do the Axes:
-	if ( ! axes_displayed_ ){
-	    drawGraphAxes();
-	}
-	
-	while ( all_sites.hasMoreElements() ){
-	    GLOBESite site = (GLOBESite)all_sites.nextElement();
-	    Enumeration years = sortEnumerationOfFloats(site.getAllYears());
+        Debug.message("basic", "ScatterGraph.plotData()");
+        Enumeration all_sites = sites_displayed_.elements();
+        int num_elements = 0;
+        int num_sites = 0;
+        
+        plot_points_.clear();
+        
+        // Do the Axes:
+        if ( ! axes_displayed_ ){
+            drawGraphAxes();
+        }
+        
+        while ( all_sites.hasMoreElements() ){
+            GLOBESite site = (GLOBESite)all_sites.nextElement();
+            Enumeration years = sortEnumerationOfFloats(site.getAllYears());
 
-	    float last_year = Float.NaN;
-	    float last_temp = Float.NaN;
+            float last_year = Float.NaN;
+            float last_temp = Float.NaN;
 
-	    num_sites++;
+            num_sites++;
 
-	    while ( years.hasMoreElements() ){
-		float year = ((Float)years.nextElement()).floatValue();
-		float temp = site.getValueForYear(year);
-		OMGraphic point = plotPoint(year, temp);
-		
-		plot_points_.addOMGraphic(point);
-		
-		if ( ! Float.isNaN(last_year) ){
-		    // Connect all the rest with a line.
-		    OMGraphic line = createGraphLine(last_year, last_temp, year, temp);
-		    plot_points_.addOMGraphic(line);
-		}
+            while ( years.hasMoreElements() ){
+                float year = ((Float)years.nextElement()).floatValue();
+                float temp = site.getValueForYear(year);
+                OMGraphic point = plotPoint(year, temp);
+                
+                plot_points_.addOMGraphic(point);
+                
+                if ( ! Float.isNaN(last_year) ){
+                    // Connect all the rest with a line.
+                    OMGraphic line = createGraphLine(last_year, last_temp, year, temp);
+                    plot_points_.addOMGraphic(line);
+                }
 
-		// remember the last point we looked at.
-		last_year = year;
-		last_temp = temp;
+                // remember the last point we looked at.
+                last_year = year;
+                last_temp = temp;
 
-		// plot a data point
-		num_elements++;
-	    }
-	}
-	plot_graphics_.addOMGraphic(plot_points_);
+                // plot a data point
+                num_elements++;
+            }
+        }
+        plot_graphics_.addOMGraphic(plot_points_);
 
-//       	System.out.println("Data plotted: " + 
-//			   num_sites + " sites, " +
-//			   num_elements + " datapoints");
+//              System.out.println("Data plotted: " + 
+//                         num_sites + " sites, " +
+//                         num_elements + " datapoints");
 
     }
 
     public OMGraphic selectPoint(int x, int y, float range){
-	OMGraphic selection;
-	selection = plot_points_.selectClosest(x,y,range);
-	return selection;
+        OMGraphic selection;
+        selection = plot_points_.selectClosest(x,y,range);
+        return selection;
     }
    
 }

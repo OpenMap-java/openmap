@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/TestServerStarter.java,v $
 // $RCSfile: TestServerStarter.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,7 @@ public class TestServerStarter extends LinkServerStarter{
 
     /** Starts the LinkServerStarter listening to the specified port. */
     public TestServerStarter(int port){
-	super(port);
+        super(port);
     }
 
     /**
@@ -50,7 +50,7 @@ public class TestServerStarter extends LinkServerStarter{
      * @param socket socket to use to communicate to the client.
      */
     public Thread startNewServer(Socket socket){
-	return(new TestLinkServer(socket));
+        return(new TestLinkServer(socket));
     }
 
     /** 
@@ -59,31 +59,31 @@ public class TestServerStarter extends LinkServerStarter{
      * arguments, LinkServerFactory, etc.
      */
     public static void main(String[] argv){
-	int pnumber = -1;
+        int pnumber = -1;
 
-	for (int i = 0; i < argv.length; i++){
-	    if (argv[i].equals("-port") && argv.length > i+1){
-		try {
-		    pnumber = Integer.parseInt(argv[i+1]);
-		    break;
-		} catch (NumberFormatException e) {
-		    pnumber = -1;
-		}
-	    }
-	}
+        for (int i = 0; i < argv.length; i++){
+            if (argv[i].equals("-port") && argv.length > i+1){
+                try {
+                    pnumber = Integer.parseInt(argv[i+1]);
+                    break;
+                } catch (NumberFormatException e) {
+                    pnumber = -1;
+                }
+            }
+        }
 
-	if (pnumber < 0) {
-	    System.out.println("Need to start the server with a port number.");
-	    System.out.println("Usage: java com.bbn.openmap.layer.link.TestServerStarter -port <port number>");
-	    System.exit(0);
-	}
+        if (pnumber < 0) {
+            System.out.println("Need to start the server with a port number.");
+            System.out.println("Usage: java com.bbn.openmap.layer.link.TestServerStarter -port <port number>");
+            System.exit(0);
+        }
 
-	System.out.println("TestServerStarter: Starting up on port " + 
-			   pnumber + ".");
+        System.out.println("TestServerStarter: Starting up on port " + 
+                           pnumber + ".");
 
-	TestServerStarter serverStarter = new TestServerStarter(pnumber);
-	while (true){
-	    serverStarter.run();
-	}
+        TestServerStarter serverStarter = new TestServerStarter(pnumber);
+        while (true){
+            serverStarter.run();
+        }
     }
 }

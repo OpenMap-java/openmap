@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/GraphicLoaderPlugIn.java,v $
 // $RCSfile: GraphicLoaderPlugIn.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/09/22 23:29:18 $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -87,14 +87,14 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
     protected Object lock = new Object();
 
     public GraphicLoaderPlugIn() {
-	super();
+        super();
     }
 
     /**
      * @param comp the PlugInLayer to work with.
      */
     public GraphicLoaderPlugIn(Component comp) {
-	super(comp);
+        super(comp);
     }
 
     /**
@@ -106,27 +106,27 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * coords, height, width.
      */
     public OMGraphicList getRectangle(Projection p) {
-	// Used to control the doPrepare() call in setList().
-	synchronized (lock) {
-	    inGetRectangle = true;
-	}
+        // Used to control the doPrepare() call in setList().
+        synchronized (lock) {
+            inGetRectangle = true;
+        }
 
-	if (loader != null) {
-	    loader.setProjection(p);
-	}
+        if (loader != null) {
+            loader.setProjection(p);
+        }
 
-	OMGraphicList list = (OMGraphicList) super.getList();
-	list.generate(p);
+        OMGraphicList list = (OMGraphicList) super.getList();
+        list.generate(p);
 
-	if (Debug.debugging("graphicloader")) {
-	    Debug.output("GraphicLoaderPlugIn returning list of " + 
-			 list.size() + " objects.");
-	}
+        if (Debug.debugging("graphicloader")) {
+            Debug.output("GraphicLoaderPlugIn returning list of " + 
+                         list.size() + " objects.");
+        }
 
-	// Used to control the doPrepare() call in setList().
-	synchronized (lock) {
-	    inGetRectangle = false;
-	}
+        // Used to control the doPrepare() call in setList().
+        synchronized (lock) {
+            inGetRectangle = false;
+        }
 
         return list;
     }
@@ -142,25 +142,25 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * projection has changed.
      */
     public synchronized void setList(OMGraphicList graphics) {
-	super.setList(graphics);
+        super.setList(graphics);
 
-	synchronized (lock) {
-	    if (!inGetRectangle) {
-		// Should be OK, launching a separate thread to
-		// come back into getRectangle.  We only want to call
-		// doPrepare() if setList is being called in a thread
-		// from something else controlling the GraphicLoader,
-		// like a timer or something.
-		doPrepare();
-	    }
-	}
+        synchronized (lock) {
+            if (!inGetRectangle) {
+                // Should be OK, launching a separate thread to
+                // come back into getRectangle.  We only want to call
+                // doPrepare() if setList is being called in a thread
+                // from something else controlling the GraphicLoader,
+                // like a timer or something.
+                doPrepare();
+            }
+        }
     }
 
     /** OMGraphicHandler method. */
     public synchronized boolean doAction(OMGraphic graphic, OMAction action) {
-	boolean ret = super.doAction(graphic, action);
-	doPrepare();
-	return ret;
+        boolean ret = super.doAction(graphic, action);
+        doPrepare();
+        return ret;
     }
 
     /**
@@ -168,27 +168,27 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * a MapMouseListener, it will be used as such for this PlugIn.
      */
     public void setGraphicLoader(GraphicLoader gl) {
-	loader = gl;
-	if (gl instanceof MapMouseListener) {
-	    setMapMouseListener((MapMouseListener)gl);
-	} else {
-	    setMapMouseListener(this);
-	}
+        loader = gl;
+        if (gl instanceof MapMouseListener) {
+            setMapMouseListener((MapMouseListener)gl);
+        } else {
+            setMapMouseListener(this);
+        }
 
-	if (needToAddGraphicLoaderToMapHandler && 
-	    getBeanContext() != null && 
-	    loader != null) {
+        if (needToAddGraphicLoaderToMapHandler && 
+            getBeanContext() != null && 
+            loader != null) {
 
-	    getBeanContext().add(loader);
-	    needToAddGraphicLoaderToMapHandler = false;
-	}
+            getBeanContext().add(loader);
+            needToAddGraphicLoaderToMapHandler = false;
+        }
     }
 
     /**
      * Get the GraphicLoader loader.
      */
     public GraphicLoader getGraphicLoader() {
-	return loader;
+        return loader;
     }
 
     /**
@@ -196,12 +196,12 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * be added to the GraphicLoaderPlugIn, to the MapHandler.
      */
     public void setAddGraphicLoaderToMapHandler(boolean val) {
-	addGraphicLoaderToMapHandler = val;
-	needToAddGraphicLoaderToMapHandler = val;
+        addGraphicLoaderToMapHandler = val;
+        needToAddGraphicLoaderToMapHandler = val;
     }
 
     public boolean getAddGraphicLoaderToMapHandler() {
-	return addGraphicLoaderToMapHandler;
+        return addGraphicLoaderToMapHandler;
     }
 
     /**
@@ -211,13 +211,13 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * objects currently contained in the BeanContext.  
      */
     public void setBeanContext(BeanContext in_bc) 
-	throws PropertyVetoException {
-	super.setBeanContext(in_bc);
+        throws PropertyVetoException {
+        super.setBeanContext(in_bc);
 
-	if (in_bc != null && needToAddGraphicLoaderToMapHandler && getGraphicLoader() != null) {
-	    in_bc.add(getGraphicLoader());
-	    needToAddGraphicLoaderToMapHandler = false;
-	}
+        if (in_bc != null && needToAddGraphicLoaderToMapHandler && getGraphicLoader() != null) {
+            in_bc.add(getGraphicLoader());
+            needToAddGraphicLoaderToMapHandler = false;
+        }
     }
 
     /**
@@ -225,19 +225,19 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * @see com.bbn.openmap.PropertyConsumer
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
-	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        super.setProperties(prefix, props);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String glString = props.getProperty(realPrefix + GraphicLoaderProperty);
-	addGraphicLoaderToMapHandler = LayerUtils.booleanFromProperties(props, realPrefix + AddGraphicLoaderToMapHandlerProperty, addGraphicLoaderToMapHandler);
+        String glString = props.getProperty(realPrefix + GraphicLoaderProperty);
+        addGraphicLoaderToMapHandler = LayerUtils.booleanFromProperties(props, realPrefix + AddGraphicLoaderToMapHandlerProperty, addGraphicLoaderToMapHandler);
 
-	if (glString != null) {
-	    GraphicLoader gl = (GraphicLoader) ComponentFactory.create(glString, prefix, props);
-	    if (gl != null) {
-		needToAddGraphicLoaderToMapHandler = addGraphicLoaderToMapHandler;
-		setGraphicLoader(gl);
-	    }
-	}
+        if (glString != null) {
+            GraphicLoader gl = (GraphicLoader) ComponentFactory.create(glString, prefix, props);
+            if (gl != null) {
+                needToAddGraphicLoaderToMapHandler = addGraphicLoaderToMapHandler;
+                setGraphicLoader(gl);
+            }
+        }
     }
 
     /**
@@ -245,17 +245,17 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * @see com.bbn.openmap.PropertyConsumer
      */
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
-	GraphicLoader gl = getGraphicLoader();
+        props = super.getProperties(props);
+        GraphicLoader gl = getGraphicLoader();
 
-	if (gl != null) {
-	    String prefix = PropUtils.getScopedPropertyPrefix(this);
-	    props.setProperty(prefix + GraphicLoaderProperty, gl.getClass().getName());
-	    if (gl instanceof PropertyConsumer) {
-		((PropertyConsumer)gl).getProperties(props);
-	    }
-	}
-	return props;
+        if (gl != null) {
+            String prefix = PropUtils.getScopedPropertyPrefix(this);
+            props.setProperty(prefix + GraphicLoaderProperty, gl.getClass().getName());
+            if (gl instanceof PropertyConsumer) {
+                ((PropertyConsumer)gl).getProperties(props);
+            }
+        }
+        return props;
     }
 
     /**
@@ -263,15 +263,15 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * @see com.bbn.openmap.PropertyConsumer
      */
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
-	props.setProperty(GraphicLoaderProperty, "Classname of GraphicLoader");
+        props = super.getPropertyInfo(props);
+        props.setProperty(GraphicLoaderProperty, "Classname of GraphicLoader");
 
-	GraphicLoader gl = getGraphicLoader();
-	if (gl != null && gl instanceof PropertyConsumer) {
-	    ((PropertyConsumer)gl).getPropertyInfo(props);
-	}
+        GraphicLoader gl = getGraphicLoader();
+        if (gl != null && gl instanceof PropertyConsumer) {
+            ((PropertyConsumer)gl).getPropertyInfo(props);
+        }
 
-	return props;
+        return props;
     }
 
     /**
@@ -279,10 +279,10 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * GraphicLoader.  
      */
     public Component getGUI() {
-	if (loader != null) {
-	    return loader.getGUI();
-	} else {
-	    return null;
-	}
+        if (loader != null) {
+            return loader.getGUI();
+        } else {
+            return null;
+        }
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode.java,v $
 // $RCSfile: NavMouseMode.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/08 21:29:17 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -66,7 +66,7 @@ public class NavMouseMode extends CoordMouseMode {
      * true, and the cursor to the crosshair. 
      */
     public NavMouseMode() {
-	this(true);
+        this(true);
     }
 
     /**
@@ -79,9 +79,9 @@ public class NavMouseMode extends CoordMouseMode {
      * @param shouldConsumeEvents the mode setting.
      */
     public NavMouseMode(boolean shouldConsumeEvents) {
-	super(modeID, shouldConsumeEvents);
-	// override the default cursor
-	setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
+        super(modeID, shouldConsumeEvents);
+        // override the default cursor
+        setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
     }
 
     /**
@@ -91,18 +91,18 @@ public class NavMouseMode extends CoordMouseMode {
      * @param e MouseEvent to be handled
      */
     public void mousePressed(MouseEvent e) {
-	if (Debug.debugging("mousemode")) {
-	    Debug.output(getID()+"|NavMouseMode.mousePressed()");
- 	}
-	e.getComponent().requestFocus();
+        if (Debug.debugging("mousemode")) {
+            Debug.output(getID()+"|NavMouseMode.mousePressed()");
+        }
+        e.getComponent().requestFocus();
 
-	if (! mouseSupport.fireMapMousePressed(e) && 
-	    e.getSource() instanceof MapBean) {
-	    // set the new first point
-	    point1 = e.getPoint();
-	    // ensure the second point isn't set.
-	    point2 = null;
-	}
+        if (! mouseSupport.fireMapMousePressed(e) && 
+            e.getSource() instanceof MapBean) {
+            // set the new first point
+            point1 = e.getPoint();
+            // ensure the second point isn't set.
+            point2 = null;
+        }
     }
 
     /**
@@ -116,90 +116,90 @@ public class NavMouseMode extends CoordMouseMode {
      * @param e MouseEvent to be handled
      */
     public void mouseReleased(MouseEvent e) {
-	if (Debug.debugging("mousemode")) {
-	    Debug.output(getID()+"|NavMouseMode.mouseReleased()");
- 	}
-	Object obj = e.getSource();
+        if (Debug.debugging("mousemode")) {
+            Debug.output(getID()+"|NavMouseMode.mouseReleased()");
+        }
+        Object obj = e.getSource();
 
-	mouseSupport.fireMapMouseReleased(e);	
+        mouseSupport.fireMapMouseReleased(e);   
 
-	if (!(obj instanceof MapBean) || 
-	    !autoZoom || point1 == null) return;
+        if (!(obj instanceof MapBean) || 
+            !autoZoom || point1 == null) return;
 
-	MapBean map = (MapBean)obj;
-	Projection projection = map.getProjection();
-	Proj p = (Proj)projection;
+        MapBean map = (MapBean)obj;
+        Projection projection = map.getProjection();
+        Proj p = (Proj)projection;
 
-	synchronized (this) {
-	    point2 = e.getPoint();
-	    int dx = Math.abs(point2.x -point1.x);
-	    int dy = Math.abs(point2.y -point1.y);
+        synchronized (this) {
+            point2 = e.getPoint();
+            int dx = Math.abs(point2.x -point1.x);
+            int dy = Math.abs(point2.y -point1.y);
 
-	    // Don't bother redrawing if the rectangle is too small
-	    if ((dx < 5) || (dy < 5)) {
-		// clean up the rectangle, since point2 has the old value.
-		paintRectangle(map, point1, point2); 
+            // Don't bother redrawing if the rectangle is too small
+            if ((dx < 5) || (dy < 5)) {
+                // clean up the rectangle, since point2 has the old value.
+                paintRectangle(map, point1, point2); 
 
-		// If rectangle is too small in both x and y then
-		// recenter the map
-		if ((dx < 5) && (dy < 5)) {
-		    LatLonPoint llp = projection.inverse(e.getPoint());
+                // If rectangle is too small in both x and y then
+                // recenter the map
+                if ((dx < 5) && (dy < 5)) {
+                    LatLonPoint llp = projection.inverse(e.getPoint());
 
-		    boolean shift = e.isShiftDown();
-		    boolean control = e.isControlDown();
-		    boolean notLeftButton = (e.getModifiers() & InputEvent.BUTTON1_MASK) == 0;
-		    if (control) {
-			if (shift) {
-			    p.setScale(p.getScale() * 2.0f);
-			} else {
-			    p.setScale(p.getScale() / 2.0f);
-			}
-		    }
+                    boolean shift = e.isShiftDown();
+                    boolean control = e.isControlDown();
+                    boolean notLeftButton = (e.getModifiers() & InputEvent.BUTTON1_MASK) == 0;
+                    if (control) {
+                        if (shift) {
+                            p.setScale(p.getScale() * 2.0f);
+                        } else {
+                            p.setScale(p.getScale() / 2.0f);
+                        }
+                    }
 
-		    // reset the points here so the point doesn't get
-		    // rendered on the repaint.
-		    point1 = null;
-		    point2 = null;
+                    // reset the points here so the point doesn't get
+                    // rendered on the repaint.
+                    point1 = null;
+                    point2 = null;
 
-		    p.setCenter(llp);
-		    map.setProjection(p);
-		}
-		return;
-	    }
+                    p.setCenter(llp);
+                    map.setProjection(p);
+                }
+                return;
+            }
 
-	    // Figure out the new scale
-	    float newScale = 
-		com.bbn.openmap.proj.ProjMath.getScale(point1,
-						       point2,
-						       projection);
+            // Figure out the new scale
+            float newScale = 
+                com.bbn.openmap.proj.ProjMath.getScale(point1,
+                                                       point2,
+                                                       projection);
 
-	    // Figure out the center of the rectangle
-	    int centerx = Math.min(point1.x, point2.x) + dx/2;
-	    int centery = Math.min(point1.y, point2.y) + dy/2;
-	    com.bbn.openmap.LatLonPoint center = projection.inverse(centerx, 
-								    centery);
+            // Figure out the center of the rectangle
+            int centerx = Math.min(point1.x, point2.x) + dx/2;
+            int centery = Math.min(point1.y, point2.y) + dy/2;
+            com.bbn.openmap.LatLonPoint center = projection.inverse(centerx, 
+                                                                    centery);
 
-	    // Fire events on main map to change view to match rect1
-	    // 	  Debug.output("point1: " +point1);
-	    // 	  Debug.output("point2: " +point2);
-	    //        Debug.output("Centerx: " +centerx + 
-	    //             " Centery: " + centery);
-	    //		Debug.output("New Scale: " + newScale);
-	    //		Debug.output("New Center: " +center);
+            // Fire events on main map to change view to match rect1
+            //    Debug.output("point1: " +point1);
+            //    Debug.output("point2: " +point2);
+            //        Debug.output("Centerx: " +centerx + 
+            //             " Centery: " + centery);
+            //          Debug.output("New Scale: " + newScale);
+            //          Debug.output("New Center: " +center);
 
-	    // Set the parameters of the projection and then set
-	    // the projection of the map.  This way we save having
-	    // the MapBean fire two ProjectionEvents.
-	    p.setScale(newScale);
-	    p.setCenter(center);
+            // Set the parameters of the projection and then set
+            // the projection of the map.  This way we save having
+            // the MapBean fire two ProjectionEvents.
+            p.setScale(newScale);
+            p.setCenter(center);
 
-	    // reset the points here so the point doesn't get rendered
-	    // on the repaint.
-	    point1 = null;
-	    point2 = null;
+            // reset the points here so the point doesn't get rendered
+            // on the repaint.
+            point1 = null;
+            point2 = null;
 
-	    map.setProjection(p);
-	}
+            map.setProjection(p);
+        }
     }
 
     /**
@@ -209,11 +209,11 @@ public class NavMouseMode extends CoordMouseMode {
      * @param e MouseEvent to be handled
      */
     public void mouseEntered(MouseEvent e) {
-	if (Debug.debugging("mousemodedetail")) {
-	    Debug.output(getID()+"|NavMouseMode.mouseEntered()");
- 	}
-	super.mouseEntered(e);
-	autoZoom = true;
+        if (Debug.debugging("mousemodedetail")) {
+            Debug.output(getID()+"|NavMouseMode.mouseEntered()");
+        }
+        super.mouseEntered(e);
+        autoZoom = true;
     }
 
     /**
@@ -226,23 +226,23 @@ public class NavMouseMode extends CoordMouseMode {
      * @param e MouseEvent to be handled
      */
     public void mouseExited(MouseEvent e) {
-	if (Debug.debugging("mousemodedetail")) {
-	    Debug.output(getID()+"|NavMouseMode.mouseExited()");
- 	}
+        if (Debug.debugging("mousemodedetail")) {
+            Debug.output(getID()+"|NavMouseMode.mouseExited()");
+        }
 
-	super.mouseExited(e);
+        super.mouseExited(e);
 
-	if (e.getSource() instanceof MapBean) {
-	    // don't zoom in, because the mouse is off the window.
-	    autoZoom = false;
-	    // clean up the last box drawn
-	    paintRectangle((MapBean)e.getSource(), point1, point2);
-	    // set the second point to null so that a new box will be
-	    // drawn if the mouse comes back, and the box will use the old
-	    // starting point, if the mouse button is still down.
-	    point2 = null;
+        if (e.getSource() instanceof MapBean) {
+            // don't zoom in, because the mouse is off the window.
+            autoZoom = false;
+            // clean up the last box drawn
+            paintRectangle((MapBean)e.getSource(), point1, point2);
+            // set the second point to null so that a new box will be
+            // drawn if the mouse comes back, and the box will use the old
+            // starting point, if the mouse button is still down.
+            point2 = null;
 
-	}
+        }
     }
 
     // Mouse Motion Listener events
@@ -256,23 +256,23 @@ public class NavMouseMode extends CoordMouseMode {
      * @param e MouseEvent to be handled
      */
     public void mouseDragged(MouseEvent e) {
-	if (Debug.debugging("mousemodedetail")) {
-	    Debug.output(getID()+"|NavMouseMode.mouseDragged()");
- 	}
-	
-	super.mouseDragged(e);
+        if (Debug.debugging("mousemodedetail")) {
+            Debug.output(getID()+"|NavMouseMode.mouseDragged()");
+        }
+        
+        super.mouseDragged(e);
 
-	if (e.getSource() instanceof MapBean) {
-	    if (!autoZoom) return;
+        if (e.getSource() instanceof MapBean) {
+            if (!autoZoom) return;
 
-	    // clean up the old rectangle, since point2 has the old value.
-	    paintRectangle((MapBean)e.getSource(), point1, point2);	
-	    // paint new rectangle
-//  	    point2 = e.getPoint();
-	    point2 = getRatioPoint((MapBean)e.getSource(), 
-				   point1, e.getPoint());
-	    paintRectangle((MapBean)e.getSource(), point1, point2);
-	}
+            // clean up the old rectangle, since point2 has the old value.
+            paintRectangle((MapBean)e.getSource(), point1, point2);     
+            // paint new rectangle
+//          point2 = e.getPoint();
+            point2 = getRatioPoint((MapBean)e.getSource(), 
+                                   point1, e.getPoint());
+            paintRectangle((MapBean)e.getSource(), point1, point2);
+        }
     }
 
     /**
@@ -282,26 +282,26 @@ public class NavMouseMode extends CoordMouseMode {
      * doesn't, provide a point that does.
      */
     protected Point getRatioPoint(MapBean map, Point pt1, Point pt2) {
-	Projection proj = map.getProjection();
-	float mapRatio = (float)proj.getHeight()/(float)proj.getWidth();
+        Projection proj = map.getProjection();
+        float mapRatio = (float)proj.getHeight()/(float)proj.getWidth();
 
-	float boxHeight = (float)(pt1.y - pt2.y);
-	float boxWidth = (float)(pt1.x - pt2.x);
-	float boxRatio = Math.abs(boxHeight/boxWidth);
-	int isNegative = -1;
-	if (boxRatio > mapRatio) {
-	    // box is too tall, adjust boxHeight
-	    if (boxHeight < 0) isNegative = 1;
-	    boxHeight = Math.abs(mapRatio*boxWidth);
-	    pt2.y = pt1.y + (isNegative*(int)boxHeight);
+        float boxHeight = (float)(pt1.y - pt2.y);
+        float boxWidth = (float)(pt1.x - pt2.x);
+        float boxRatio = Math.abs(boxHeight/boxWidth);
+        int isNegative = -1;
+        if (boxRatio > mapRatio) {
+            // box is too tall, adjust boxHeight
+            if (boxHeight < 0) isNegative = 1;
+            boxHeight = Math.abs(mapRatio*boxWidth);
+            pt2.y = pt1.y + (isNegative*(int)boxHeight);
 
-	} else if (boxRatio < mapRatio) {
-	    // box is too wide, adjust boxWidth
-	    if (boxWidth < 0) isNegative = 1;
-	    boxWidth = Math.abs(boxHeight/mapRatio);
-	    pt2.x = pt1.x + (isNegative*(int)boxWidth);
-	}
-	return pt2;
+        } else if (boxRatio < mapRatio) {
+            // box is too wide, adjust boxWidth
+            if (boxWidth < 0) isNegative = 1;
+            boxWidth = Math.abs(boxHeight/mapRatio);
+            pt2.x = pt1.x + (isNegative*(int)boxWidth);
+        }
+        return pt2;
     }
 
     /**
@@ -314,9 +314,9 @@ public class NavMouseMode extends CoordMouseMode {
      * @param pt2 the opposite corner of the box.
      */
     protected void paintRectangle(MapBean map, Point pt1, Point pt2) {
-	if (map != null) {
-	    paintRectangle(map.getGraphics(), pt1, pt2);
-	}
+        if (map != null) {
+            paintRectangle(map.getGraphics(), pt1, pt2);
+        }
     }
 
     /**
@@ -329,24 +329,24 @@ public class NavMouseMode extends CoordMouseMode {
      * @param pt2 the opposite corner of the box.
      */
     protected void paintRectangle(Graphics g, Point pt1, Point pt2) {
-	g.setXORMode(java.awt.Color.lightGray);
-	g.setColor(java.awt.Color.darkGray);
+        g.setXORMode(java.awt.Color.lightGray);
+        g.setColor(java.awt.Color.darkGray);
 
-	if (pt1 != null && pt2 != null) {
-	    int width = Math.abs(pt2.x - pt1.x);
-	    int height = Math.abs(pt2.y - pt1.y);
+        if (pt1 != null && pt2 != null) {
+            int width = Math.abs(pt2.x - pt1.x);
+            int height = Math.abs(pt2.y - pt1.y);
 
-	    if (width == 0) width++;
-	    if (height == 0) height++;
+            if (width == 0) width++;
+            if (height == 0) height++;
 
-	    g.drawRect(pt1.x < pt2.x ? pt1.x : pt2.x, 
-		       pt1.y < pt2.y ? pt1.y : pt2.y, 
-		       width, height);
-	    g.drawRect(pt1.x < pt2.x ? pt1.x + (pt2.x - pt1.x)/2 - 1 : 
-		       pt2.x + (pt1.x - pt2.x)/2 - 1, 
-		       pt1.y < pt2.y ? pt1.y + (pt2.y - pt1.y)/2 - 1 : 
-		       pt2.y + (pt1.y - pt2.y)/2 - 1, 2, 2);
-	}
+            g.drawRect(pt1.x < pt2.x ? pt1.x : pt2.x, 
+                       pt1.y < pt2.y ? pt1.y : pt2.y, 
+                       width, height);
+            g.drawRect(pt1.x < pt2.x ? pt1.x + (pt2.x - pt1.x)/2 - 1 : 
+                       pt2.x + (pt1.x - pt2.x)/2 - 1, 
+                       pt1.y < pt2.y ? pt1.y + (pt2.y - pt1.y)/2 - 1 : 
+                       pt2.y + (pt1.y - pt2.y)/2 - 1, 2, 2);
+        }
     }
 
     /**
@@ -354,8 +354,8 @@ public class NavMouseMode extends CoordMouseMode {
      * know when to update itself on the map. PaintListener interface.
      */
     public void listenerPaint(java.awt.Graphics g) {
-	// will be properly rejected of point1, point2 == null
-	paintRectangle(g, point1, point2);
+        // will be properly rejected of point1, point2 == null
+        paintRectangle(g, point1, point2);
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationPopupMenu.java,v $
 // $RCSfile: LocationPopupMenu.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,7 +59,7 @@ public class LocationPopupMenu extends JPopupMenu {
      * @param location the location to place the menu at
      */
     public void setLoc(Location location){
-	loc = location;
+        loc = location;
     }
 
     /**
@@ -67,7 +67,7 @@ public class LocationPopupMenu extends JPopupMenu {
      * @param aMap the map the menu is for
      */
     public void setMap(MapBean aMap){
-	map = aMap;
+        map = aMap;
     }
     
     /**
@@ -75,7 +75,7 @@ public class LocationPopupMenu extends JPopupMenu {
      * @param anEvt the event for the menu
      */
     public void setEvent(MouseEvent anEvt){
-	event = anEvt;
+        event = anEvt;
     }
 
     /**
@@ -83,7 +83,7 @@ public class LocationPopupMenu extends JPopupMenu {
      * @return the location
      */
     public Location getLoc(){
-	return loc;
+        return loc;
     }
 
     /**
@@ -91,7 +91,7 @@ public class LocationPopupMenu extends JPopupMenu {
      * @return the event
      */
     public MouseEvent getEvent(){
-	return event;
+        return event;
     }
     
     /**
@@ -99,7 +99,7 @@ public class LocationPopupMenu extends JPopupMenu {
      * @return the menu
      */
     public MapBean getMap(){
-	return map;
+        return map;
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGrid.java,v $
 // $RCSfile: LinkGrid.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/17 00:26:41 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,30 +60,30 @@ public class LinkGrid implements LinkGraphicConstants {
      * @throws IOException 
      */
     public static void write(float lt, float ln, int rows, int columns, 
-			     float orientation, float vResolution, float hResolution,
-			     int major, int[] data, 
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException {
-	
-	dos.write(Link.GRID_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_GRID);
-	dos.writeInt(RENDERTYPE_LATLON);
-	dos.writeFloat(lt);
-	dos.writeFloat(ln);
-	dos.writeInt(rows);
-	dos.writeInt(columns);
-	dos.writeFloat(orientation);
-	dos.writeFloat(vResolution);
-	dos.writeFloat(hResolution);
-	dos.writeInt(major);
+                             float orientation, float vResolution, float hResolution,
+                             int major, int[] data, 
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException {
+        
+        dos.write(Link.GRID_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_GRID);
+        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeFloat(lt);
+        dos.writeFloat(ln);
+        dos.writeInt(rows);
+        dos.writeInt(columns);
+        dos.writeFloat(orientation);
+        dos.writeFloat(vResolution);
+        dos.writeFloat(hResolution);
+        dos.writeInt(major);
 
-	dos.writeInt(data.length); 
-	for (int i = 0; i < data.length; i++) {
-	    dos.writeInt(data[i]);
-	}
+        dos.writeInt(data.length); 
+        for (int i = 0; i < data.length; i++) {
+            dos.writeInt(data[i]);
+        }
 
-	properties.write(dos);
+        properties.write(dos);
     }
   
     /**
@@ -105,31 +105,31 @@ public class LinkGrid implements LinkGraphicConstants {
      * @throws IOException
      */
     public static void write(int x1, int y1, int rows, int columns, 
-			     float orientation, float vResolution, float hResolution,
-			     int major, int[] data, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException {
+                             float orientation, float vResolution, float hResolution,
+                             int major, int[] data, 
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.GRID_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_GRID);
-	dos.writeInt(RENDERTYPE_XY);
-	dos.writeInt(x1);
-	dos.writeInt(y1);
+        dos.write(Link.GRID_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_GRID);
+        dos.writeInt(RENDERTYPE_XY);
+        dos.writeInt(x1);
+        dos.writeInt(y1);
 
-	dos.writeInt(rows);
-	dos.writeInt(columns);
-	dos.writeFloat(orientation);
-	dos.writeFloat(vResolution);
-	dos.writeFloat(hResolution);
-	dos.writeInt(major);
+        dos.writeInt(rows);
+        dos.writeInt(columns);
+        dos.writeFloat(orientation);
+        dos.writeFloat(vResolution);
+        dos.writeFloat(hResolution);
+        dos.writeInt(major);
 
-	dos.writeInt(data.length); 
-	for (int i = 0; i < data.length; i++) {
-	    dos.writeInt(data[i]);
-	}
-	
-	properties.write(dos);
+        dos.writeInt(data.length); 
+        for (int i = 0; i < data.length; i++) {
+            dos.writeInt(data[i]);
+        }
+        
+        properties.write(dos);
     }
 
     /**
@@ -153,82 +153,82 @@ public class LinkGrid implements LinkGraphicConstants {
      * @throws IOException
      */
     public static void write(float lt, float ln, int offset_x1, int offset_y1,
-			     int rows, int columns, 
-			     float orientation, float vResolution, float hResolution,
-			     int major, int[] data, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException {
+                             int rows, int columns, 
+                             float orientation, float vResolution, float hResolution,
+                             int major, int[] data, 
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.GRID_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_GRID);
-	dos.writeInt(RENDERTYPE_OFFSET);
-	dos.writeFloat(lt);
-	dos.writeFloat(ln);
-	dos.writeInt(offset_x1);
-	dos.writeInt(offset_y1);
+        dos.write(Link.GRID_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_GRID);
+        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeFloat(lt);
+        dos.writeFloat(ln);
+        dos.writeInt(offset_x1);
+        dos.writeInt(offset_y1);
 
-	dos.writeInt(rows);
-	dos.writeInt(columns);
-	dos.writeFloat(orientation);
-	dos.writeFloat(vResolution);
-	dos.writeFloat(hResolution);
-	dos.writeInt(major);
+        dos.writeInt(rows);
+        dos.writeInt(columns);
+        dos.writeFloat(orientation);
+        dos.writeFloat(vResolution);
+        dos.writeFloat(hResolution);
+        dos.writeInt(major);
 
-	dos.writeInt(data.length); 
-	for (int i = 0; i < data.length; i++) {
-	    dos.writeInt(data[i]);
-	}
+        dos.writeInt(data.length); 
+        for (int i = 0; i < data.length; i++) {
+            dos.writeInt(data[i]);
+        }
 
-	properties.write(dos);
+        properties.write(dos);
     }
 
     public static void write(OMGrid grid, Link link, LinkProperties props) 
-	throws IOException {
+        throws IOException {
 
-	int major = grid.getMajor()?LinkGraphicConstants.ROW_MAJOR:LinkGraphicConstants.COLUMN_MAJOR;
+        int major = grid.getMajor()?LinkGraphicConstants.ROW_MAJOR:LinkGraphicConstants.COLUMN_MAJOR;
 
-	int rows = grid.getRows();
-	int columns = grid.getColumns();
+        int rows = grid.getRows();
+        int columns = grid.getColumns();
 
-	GridData gd = grid.getData();
+        GridData gd = grid.getData();
 
-	if (!(gd instanceof GridData.Int)) {
-	    Debug.output("LinkGrid requires OMGrid containing integer data.");
-	    return;
-	}
+        if (!(gd instanceof GridData.Int)) {
+            Debug.output("LinkGrid requires OMGrid containing integer data.");
+            return;
+        }
 
-	int [][] d = ((GridData.Int)gd).getData();
-	int[] data = new int[rows*columns];
-	for (int i = 0; i < d.length; i++) {
-	    for (int j = 0; j < d[0].length; j++) {
-		data[(i * d[0].length) + j] = d[i][j];
-	    }
-	}
+        int [][] d = ((GridData.Int)gd).getData();
+        int[] data = new int[rows*columns];
+        for (int i = 0; i < d.length; i++) {
+            for (int j = 0; j < d[0].length; j++) {
+                data[(i * d[0].length) + j] = d[i][j];
+            }
+        }
 
-	switch (grid.getRenderType()) {
-	case OMGrid.RENDERTYPE_LATLON:
-	    LinkGrid.write(grid.getLatitude(), grid.getLongitude(),
-			   rows, columns, grid.getOrientation(),
-			   grid.getVerticalResolution(), grid.getHorizontalResolution(),
-			   major, data, props, link.dos);
-	    break;
-	case OMGrid.RENDERTYPE_XY:
-	    LinkGrid.write((int)grid.getPoint().getX(), (int)grid.getPoint().getY(),
-			   rows, columns, grid.getOrientation(),
-			   grid.getVerticalResolution(), grid.getHorizontalResolution(),
-			   major, data, props, link.dos);
-	    break;
-	case OMGrid.RENDERTYPE_OFFSET:
-	    LinkGrid.write(grid.getLatitude(), grid.getLongitude(),
-			   (int)grid.getPoint().getX(), (int)grid.getPoint().getY(),
-			   rows, columns, grid.getOrientation(),
-			   grid.getVerticalResolution(), grid.getHorizontalResolution(),
-			   major, data, props, link.dos);
-	    break;
-	default:
-	    Debug.error("LinkGrid.write: grid rendertype unknown.");
-	}
+        switch (grid.getRenderType()) {
+        case OMGrid.RENDERTYPE_LATLON:
+            LinkGrid.write(grid.getLatitude(), grid.getLongitude(),
+                           rows, columns, grid.getOrientation(),
+                           grid.getVerticalResolution(), grid.getHorizontalResolution(),
+                           major, data, props, link.dos);
+            break;
+        case OMGrid.RENDERTYPE_XY:
+            LinkGrid.write((int)grid.getPoint().getX(), (int)grid.getPoint().getY(),
+                           rows, columns, grid.getOrientation(),
+                           grid.getVerticalResolution(), grid.getHorizontalResolution(),
+                           major, data, props, link.dos);
+            break;
+        case OMGrid.RENDERTYPE_OFFSET:
+            LinkGrid.write(grid.getLatitude(), grid.getLongitude(),
+                           (int)grid.getPoint().getX(), (int)grid.getPoint().getY(),
+                           rows, columns, grid.getOrientation(),
+                           grid.getVerticalResolution(), grid.getHorizontalResolution(),
+                           major, data, props, link.dos);
+            break;
+        default:
+            Debug.error("LinkGrid.write: grid rendertype unknown.");
+        }
     }
 
     /** 
@@ -240,103 +240,103 @@ public class LinkGrid implements LinkGraphicConstants {
      * @see com.bbn.openmap.omGraphics.OMGrid
      */
     public static OMGrid read(DataInputStream dis)
-	throws IOException {
+        throws IOException {
 
-	Debug.message("linkdetail", "LinkGrid: reading from link.");
+        Debug.message("linkdetail", "LinkGrid: reading from link.");
 
-	OMGrid grid = null;
-	float lat = 0;
-	float lon = 0;
-	int x = 0;
-	int y = 0;
+        OMGrid grid = null;
+        float lat = 0;
+        float lon = 0;
+        int x = 0;
+        int y = 0;
 
-	int renderType = dis.readInt();
-	
-	switch (renderType) {
-	case RENDERTYPE_OFFSET:
-	    lat = dis.readFloat();
-	    lon = dis.readFloat();
-	    Debug.message("linkdetail", "LinkGrid: Offset Lat/Lon = " + 
-			  lat + "/" + lon + " with");
-	    // Fall through...		
-	case RENDERTYPE_XY:
-	    x = dis.readInt();
-	    y = dis.readInt();
-	    Debug.message("linkdetail", "LinkGrid: x/y = " + 
-			  x + "/" + y);
-	    break;
-	case RENDERTYPE_LATLON:
-	default:
-	    lat = dis.readFloat();
-	    lon = dis.readFloat();
-	    Debug.message("linkdetail", "LinkGrid: Lat/Lon = " + 
-			  lat + "/" + lon);
-	}
-	
-	int rows = dis.readInt();
-	int columns = dis.readInt();
-	float orientation = dis.readFloat();
-	float vResolution = dis.readFloat();
-	float hResolution = dis.readFloat();
-	int major = dis.readInt();
+        int renderType = dis.readInt();
+        
+        switch (renderType) {
+        case RENDERTYPE_OFFSET:
+            lat = dis.readFloat();
+            lon = dis.readFloat();
+            Debug.message("linkdetail", "LinkGrid: Offset Lat/Lon = " + 
+                          lat + "/" + lon + " with");
+            // Fall through...          
+        case RENDERTYPE_XY:
+            x = dis.readInt();
+            y = dis.readInt();
+            Debug.message("linkdetail", "LinkGrid: x/y = " + 
+                          x + "/" + y);
+            break;
+        case RENDERTYPE_LATLON:
+        default:
+            lat = dis.readFloat();
+            lon = dis.readFloat();
+            Debug.message("linkdetail", "LinkGrid: Lat/Lon = " + 
+                          lat + "/" + lon);
+        }
+        
+        int rows = dis.readInt();
+        int columns = dis.readInt();
+        float orientation = dis.readFloat();
+        float vResolution = dis.readFloat();
+        float hResolution = dis.readFloat();
+        int major = dis.readInt();
 
-	int length = dis.readInt();
-	
-	Debug.message("linkdetail", "LinkGrid details: rows = " + rows + 
-		      ", columns = " + columns + ", orientation = " + orientation +
-		      ", vertical resolution = " + vResolution + 
-		      ", horizontal resolution = " + hResolution + 
-		      ", major dimension = " + 
-		      (major == LinkGraphicConstants.COLUMN_MAJOR?"COLUMN_MAJOR":"ROW_MAJOR") +
-		      ", with number of points = " + length);
+        int length = dis.readInt();
+        
+        Debug.message("linkdetail", "LinkGrid details: rows = " + rows + 
+                      ", columns = " + columns + ", orientation = " + orientation +
+                      ", vertical resolution = " + vResolution + 
+                      ", horizontal resolution = " + hResolution + 
+                      ", major dimension = " + 
+                      (major == LinkGraphicConstants.COLUMN_MAJOR?"COLUMN_MAJOR":"ROW_MAJOR") +
+                      ", with number of points = " + length);
 
-	int[][] data;
-	if (major == LinkGraphicConstants.COLUMN_MAJOR) {
-	    data = new int[columns][rows];
-	} else {
-	    data = new int[rows][columns];
-	}
+        int[][] data;
+        if (major == LinkGraphicConstants.COLUMN_MAJOR) {
+            data = new int[columns][rows];
+        } else {
+            data = new int[rows][columns];
+        }
 
-	for (int i = 0; i < data.length; i++) {
-	    for (int j = 0; j < data[0].length; j++) {
-		data[i][j] = dis.readInt();
-// 		    Debug.message("linkdetail", "LinkGrid reading " + 
-// 				  (rows*i + j) + " " +
-// 				  (major != LinkGraphicConstants.COLUMN_MAJOR?"column":"row")+ 
-// 				  " " + j + " = " + Integer.toHexString(data[i][j]) + 
-// 				  " (" + data[i][j] + ")");
-	    }
-// 	    Debug.message("linkdetail", "LinkGrid reading " + 
-// 			  (major == LinkGraphicConstants.COLUMN_MAJOR?"column":"row")+ 
-// 			  " " + i);
-	}
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[0].length; j++) {
+                data[i][j] = dis.readInt();
+//                  Debug.message("linkdetail", "LinkGrid reading " + 
+//                                (rows*i + j) + " " +
+//                                (major != LinkGraphicConstants.COLUMN_MAJOR?"column":"row")+ 
+//                                " " + j + " = " + Integer.toHexString(data[i][j]) + 
+//                                " (" + data[i][j] + ")");
+            }
+//          Debug.message("linkdetail", "LinkGrid reading " + 
+//                        (major == LinkGraphicConstants.COLUMN_MAJOR?"column":"row")+ 
+//                        " " + i);
+        }
 
-	Debug.message("linkdetail", "LinkGrid read all the data.");
+        Debug.message("linkdetail", "LinkGrid read all the data.");
 
-	switch (renderType) {
-	case RENDERTYPE_OFFSET:
-	    grid = new OMGrid(lat, lon, x, y, vResolution, hResolution, data);
-	    break;
-	case RENDERTYPE_XY:
-	    grid = new OMGrid(x, y, vResolution, hResolution, data);
-	    break;
-	case RENDERTYPE_LATLON:
-	default:
-	    grid = new OMGrid(lat, lon, vResolution, hResolution, data);
-	}
+        switch (renderType) {
+        case RENDERTYPE_OFFSET:
+            grid = new OMGrid(lat, lon, x, y, vResolution, hResolution, data);
+            break;
+        case RENDERTYPE_XY:
+            grid = new OMGrid(x, y, vResolution, hResolution, data);
+            break;
+        case RENDERTYPE_LATLON:
+        default:
+            grid = new OMGrid(lat, lon, vResolution, hResolution, data);
+        }
 
-	Debug.message("linkdetail", "LinkGrid created OMGrid.");
+        Debug.message("linkdetail", "LinkGrid created OMGrid.");
 
-	LinkProperties properties = new LinkProperties(dis);
+        LinkProperties properties = new LinkProperties(dis);
 
-	if (grid != null) {
-	    grid.setMajor(major == LinkGraphicConstants.COLUMN_MAJOR?true:false);
-	    grid.setOrientation(orientation);
-	    grid.setAppObject(properties);
-	}
+        if (grid != null) {
+            grid.setMajor(major == LinkGraphicConstants.COLUMN_MAJOR?true:false);
+            grid.setOrientation(orientation);
+            grid.setAppObject(properties);
+        }
 
-	Debug.message("linkdetail", "LinkGrid done.");
+        Debug.message("linkdetail", "LinkGrid done.");
 
-	return grid;
+        return grid;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JRect.java,v $
 // $RCSfile: JRect.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,17 +39,17 @@ public class JRect extends OMRect implements Serializable, JObjectHolder {
 
     /** Constructor.*/
     public JRect(ERectangle erect) {
-	super();
-	JGraphic.fillOMGraphicParams(this, erect.egraphic);
-	
-	x1 = erect.p1.x;
-	y1 = erect.p1.y;
-	x2 = erect.p2.x;
-	y2 = erect.p2.y;
-	lat1 = erect.ll1.lat;
-	lon1 = erect.ll1.lon;
-	lat2 = erect.ll2.lat;
-	lon2 = erect.ll2.lon;
+        super();
+        JGraphic.fillOMGraphicParams(this, erect.egraphic);
+        
+        x1 = erect.p1.x;
+        y1 = erect.p1.y;
+        x2 = erect.p2.x;
+        y2 = erect.p2.y;
+        lat1 = erect.ll1.lat;
+        lon1 = erect.ll1.lon;
+        lat2 = erect.ll2.lat;
+        lon2 = erect.ll2.lon;
     }
 
     public void setObject(com.bbn.openmap.CSpecialist.EComp aObject) {
@@ -61,47 +61,47 @@ public class JRect extends OMRect implements Serializable, JObjectHolder {
     }
 
     public void update(com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
-	JGraphic.update((JObjectHolder)this, update);
+        JGraphic.update((JObjectHolder)this, update);
     }
 
     public void update(
-	   com.bbn.openmap.CSpecialist.RectanglePackage.RF_update update) {
-        	// do the updates, but don't rerender just yet
+           com.bbn.openmap.CSpecialist.RectanglePackage.RF_update update) {
+                // do the updates, but don't rerender just yet
 
-	switch (update.discriminator().value()) {
-	    // set fixed point
-	case com.bbn.openmap.CSpecialist.RectanglePackage.settableFields._RF_ll1:
-	    LLPoint ll1 = update.ll1();
-	    lat1 = ll1.lat;
-	    lon1 = ll1.lon;
-	    setNeedToRegenerate(true);
-	    break;
+        switch (update.discriminator().value()) {
+            // set fixed point
+        case com.bbn.openmap.CSpecialist.RectanglePackage.settableFields._RF_ll1:
+            LLPoint ll1 = update.ll1();
+            lat1 = ll1.lat;
+            lon1 = ll1.lon;
+            setNeedToRegenerate(true);
+            break;
 
-	case com.bbn.openmap.CSpecialist.RectanglePackage.settableFields._RF_p1:
-	    XYPoint pt1 = update.p1();
-	    x1 = pt1.x;
-	    y1 = pt1.y;
-	    if (renderType != RENDERTYPE_LATLON) setNeedToRegenerate(true);
-	    break;
-	    
-	case com.bbn.openmap.CSpecialist.RectanglePackage.settableFields._RF_ll2:
-	    LLPoint ll2 = update.ll2();
-	    lat2 = ll2.lat;
-	    lon2 = ll2.lon;
-	    if (renderType == RENDERTYPE_LATLON) setNeedToRegenerate(true);
-	    break;
-	    
-	case com.bbn.openmap.CSpecialist.RectanglePackage.settableFields._RF_p2:
-	    XYPoint pt2 = update.p2();
-	    x2 = pt2.x;
-	    y2 = pt2.y;
-	    if (renderType != RENDERTYPE_LATLON) setNeedToRegenerate(true);
-	    break;
-	    
-	default:
-	    System.err.println(
-		"JRect.update: invalid rect update");
-	    break;
-	}
+        case com.bbn.openmap.CSpecialist.RectanglePackage.settableFields._RF_p1:
+            XYPoint pt1 = update.p1();
+            x1 = pt1.x;
+            y1 = pt1.y;
+            if (renderType != RENDERTYPE_LATLON) setNeedToRegenerate(true);
+            break;
+            
+        case com.bbn.openmap.CSpecialist.RectanglePackage.settableFields._RF_ll2:
+            LLPoint ll2 = update.ll2();
+            lat2 = ll2.lat;
+            lon2 = ll2.lon;
+            if (renderType == RENDERTYPE_LATLON) setNeedToRegenerate(true);
+            break;
+            
+        case com.bbn.openmap.CSpecialist.RectanglePackage.settableFields._RF_p2:
+            XYPoint pt2 = update.p2();
+            x2 = pt2.x;
+            y2 = pt2.y;
+            if (renderType != RENDERTYPE_LATLON) setNeedToRegenerate(true);
+            break;
+            
+        default:
+            System.err.println(
+                "JRect.update: invalid rect update");
+            break;
+        }
     }
 }

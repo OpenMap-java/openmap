@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/EOMGEvent.java,v $
 // $RCSfile: EOMGEvent.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/03 22:18:41 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,70 +82,70 @@ public class EOMGEvent {
      * Create an Event.
      */
     public EOMGEvent(EditableOMGraphic source, Cursor cursor, 
-		     String message, MouseEvent me) {
-	this.source = source;
-	this.cursor = cursor;
-	this.message = message;
-	this.mouseEvent = me;
+                     String message, MouseEvent me) {
+        this.source = source;
+        this.cursor = cursor;
+        this.message = message;
+        this.mouseEvent = me;
     }
 
     /**
      * Deactivation event.
      */
     public EOMGEvent() {
-	this.source = null;
-	this.cursor = null;
-	this.message = null;
-	this.mouseEvent = null;
+        this.source = null;
+        this.cursor = null;
+        this.message = null;
+        this.mouseEvent = null;
     }
 
     public void setSource(EditableOMGraphic eomg) {
-	source = eomg;
+        source = eomg;
     }
 
     public EditableOMGraphic getSource() {
-	return source;
+        return source;
     }
 
     public void setCursor(Cursor cur) {
-	cursor = cur;
+        cursor = cur;
     }
 
     public Cursor getCursor() {
-	return cursor;
+        return cursor;
     }
 
     public void setMessage(String message) {
-	this.message = message;
+        this.message = message;
     }
 
     public String getMessage() {
-	return message;
+        return message;
     }
 
     public void setMouseEvent(MouseEvent me) {
-	mouseEvent = me;
+        mouseEvent = me;
     }
 
     /**
      * @return the MouseEvent that started the EOMG changing.  May be null!
      */
     public MouseEvent getMouseEvent() {
-	return mouseEvent;
+        return mouseEvent;
     }
 
     public boolean shouldShowGUI() {
-	if (mouseEvent != null) {
-	    return  	    
-		(mouseEvent.isControlDown() || 
-		 (mouseEvent.getModifiers() & InputEvent.BUTTON3_MASK) > 0);
-	}
-	return false;
+        if (mouseEvent != null) {
+            return          
+                (mouseEvent.isControlDown() || 
+                 (mouseEvent.getModifiers() & InputEvent.BUTTON3_MASK) > 0);
+        }
+        return false;
     }
 
     public boolean shouldDeactivate() {
-	return 	this.source == null && this.cursor == null &&
-	    this.message == null && this.mouseEvent == null;
+        return  this.source == null && this.cursor == null &&
+            this.message == null && this.mouseEvent == null;
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/CacheLayer.java,v $
 // $RCSfile: CacheLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -84,19 +84,19 @@ public class CacheLayer extends Layer
      * Read a cache of OMGraphics
      */
     public void readGraphics()
-	throws java.io.IOException {
+        throws java.io.IOException {
 
-	if (Debug.debugging("cachelayer")) {
-	    Debug.output("Reading cached graphics");
-	}
-	
-	if (omgraphics == null) {
-	    omgraphics = new OMGraphicList();
-	}
-	
-	if (cacheURL != null) {
-	    omgraphics.readGraphics(cacheURL);
-	}
+        if (Debug.debugging("cachelayer")) {
+            Debug.output("Reading cached graphics");
+        }
+        
+        if (omgraphics == null) {
+            omgraphics = new OMGraphicList();
+        }
+        
+        if (cacheURL != null) {
+            omgraphics.readGraphics(cacheURL);
+        }
     }
     
     /**
@@ -105,32 +105,32 @@ public class CacheLayer extends Layer
      * @param props the <code>Properties</code> holding settings for this layer
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String cacheFile = props.getProperty(prefix + CacheFileProperty);
+        String cacheFile = props.getProperty(prefix + CacheFileProperty);
 
-	try {
-	    if (cacheFile != null) {
-		if (Debug.debugging("cachelayer")) {
-		    Debug.output("Getting cachefile: " + cacheFile);
-		}
-		
-		// First find the resource, if not, then try as a file-URL... b
-		cacheURL = LayerUtils.getResourceOrFileOrURL(this, cacheFile);
+        try {
+            if (cacheFile != null) {
+                if (Debug.debugging("cachelayer")) {
+                    Debug.output("Getting cachefile: " + cacheFile);
+                }
+                
+                // First find the resource, if not, then try as a file-URL... b
+                cacheURL = LayerUtils.getResourceOrFileOrURL(this, cacheFile);
 
-		if (cacheURL != null) {
-		    readGraphics();
-		}
-	    }
-	} catch (java.net.MalformedURLException mue) {
-	    mue.printStackTrace();
-	} catch (IOException ioe) {
-	    ioe.printStackTrace();
-	} catch (NullPointerException e) {
-	    e.printStackTrace();
-	}
+                if (cacheURL != null) {
+                    readGraphics();
+                }
+            }
+        } catch (java.net.MalformedURLException mue) {
+            mue.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     //----------------------------------------------------------------------
@@ -144,7 +144,7 @@ public class CacheLayer extends Layer
      * done.
      */
     public void paint(java.awt.Graphics g) {
-	omgraphics.render(g);
+        omgraphics.render(g);
     }
    
     //----------------------------------------------------------------------
@@ -159,8 +159,8 @@ public class CacheLayer extends Layer
      * @param e the projection event
      */
     public void projectionChanged(ProjectionEvent e) {
-	omgraphics.project(e.getProjection(), true);
-	repaint();
+        omgraphics.project(e.getProjection(), true);
+        repaint();
     }
 
     //----------------------------------------------------------------------
@@ -172,21 +172,21 @@ public class CacheLayer extends Layer
      */
     public Component getGUI() {
 
-	JButton rereadFilesButton = new JButton("ReRead OMGraphics");
-	rereadFilesButton.setActionCommand(READ_DATA_COMMAND);
-	rereadFilesButton.addActionListener(this);
-	
-	JLabel fileLabel = new JLabel("Read from: ");
-	JTextField pathText = new JTextField(cacheURL.toString());
+        JButton rereadFilesButton = new JButton("ReRead OMGraphics");
+        rereadFilesButton.setActionCommand(READ_DATA_COMMAND);
+        rereadFilesButton.addActionListener(this);
+        
+        JLabel fileLabel = new JLabel("Read from: ");
+        JTextField pathText = new JTextField(cacheURL.toString());
 
-	Box filebox = Box.createHorizontalBox();
-	filebox.add(fileLabel);
-	filebox.add(pathText);
+        Box filebox = Box.createHorizontalBox();
+        filebox.add(fileLabel);
+        filebox.add(pathText);
 
-	Box box = Box.createVerticalBox();
-	box.add(rereadFilesButton);
-	box.add(filebox);
-	return box;
+        Box box = Box.createVerticalBox();
+        box.add(rereadFilesButton);
+        box.add(filebox);
+        return box;
     }
 
     //----------------------------------------------------------------------
@@ -198,18 +198,18 @@ public class CacheLayer extends Layer
      * actions.
      */
     public void actionPerformed(java.awt.event.ActionEvent e) {
-	String cmd = e.getActionCommand();
-	if (cmd == READ_DATA_COMMAND) {
-	    Debug.message("cachelayer", "CacheLayer: Reading serialized graphics");
-	    try { 
-		readGraphics();
-	    } catch (java.io.IOException exc) {
-		exc.printStackTrace();
-	    }
-	} else 	{
-	    Debug.error("Unknown action command \"" + cmd +
-			"\" in SaveShapeLayer.actionPerformed().");
-	}
+        String cmd = e.getActionCommand();
+        if (cmd == READ_DATA_COMMAND) {
+            Debug.message("cachelayer", "CacheLayer: Reading serialized graphics");
+            try { 
+                readGraphics();
+            } catch (java.io.IOException exc) {
+                exc.printStackTrace();
+            }
+        } else  {
+            Debug.error("Unknown action command \"" + cmd +
+                        "\" in SaveShapeLayer.actionPerformed().");
+        }
     }
 
     //----------------------------------------------------------------------
@@ -228,8 +228,8 @@ public class CacheLayer extends Layer
      * @see com.bbn.openmap.MouseDelegator
      */
     public String[] getMouseModeServiceList() {
-	String[] ret = {SelectMouseMode.modeID};
-	return ret;
+        String[] ret = {SelectMouseMode.modeID};
+        return ret;
     }
 
     /**
@@ -241,7 +241,7 @@ public class CacheLayer extends Layer
      * @see #getMouseModeServiceList
      */
     public boolean mousePressed(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -253,7 +253,7 @@ public class CacheLayer extends Layer
      * @see #getMouseModeServiceList
      */
     public boolean mouseReleased(MouseEvent e) {
-	return false;
+        return false;
     }
   
     /**
@@ -265,26 +265,26 @@ public class CacheLayer extends Layer
      * @see #getMouseModeServiceList
      */
     public boolean mouseClicked(MouseEvent e) {
-	if (selectedGraphic != null) {
-	    switch (e.getClickCount()) {
-	    case 1:  
-		if (Debug.debugging("cachelayer")) {
-		    Debug.output("CacheLayer: Show Info: " + 
-				 selectedGraphic.getAppObject());
-		}
-		break;
-	    case 2:
-		if (Debug.debugging("cachelayer")) {
-		    Debug.output("CacheLayer: Request URL: " + selectedGraphic);
-		}
-		break;
-	    default:
-		break;
-	    }
-	    return true;
-	} else {
-	    return false;
-	}
+        if (selectedGraphic != null) {
+            switch (e.getClickCount()) {
+            case 1:  
+                if (Debug.debugging("cachelayer")) {
+                    Debug.output("CacheLayer: Show Info: " + 
+                                 selectedGraphic.getAppObject());
+                }
+                break;
+            case 2:
+                if (Debug.debugging("cachelayer")) {
+                    Debug.output("CacheLayer: Request URL: " + selectedGraphic);
+                }
+                break;
+            default:
+                break;
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -316,7 +316,7 @@ public class CacheLayer extends Layer
      * @see #getMouseModeServiceList
      */
     public boolean mouseDragged(MouseEvent e) {
-	return false;
+        return false;
     }
 
     private Color oldFillColor = java.awt.Color.yellow;
@@ -334,23 +334,23 @@ public class CacheLayer extends Layer
      * @see #getMouseModeServiceList
      */
     public boolean mouseMoved(MouseEvent e) {
-	OMGraphic newSelectedGraphic = 
-	    omgraphics.selectClosest(e.getX(), e.getY(), 2.0f);
+        OMGraphic newSelectedGraphic = 
+            omgraphics.selectClosest(e.getX(), e.getY(), 2.0f);
 
-	if (newSelectedGraphic != selectedGraphic) {
-	    if (selectedGraphic != null)
-		selectedGraphic.setFillPaint(oldFillColor);
+        if (newSelectedGraphic != selectedGraphic) {
+            if (selectedGraphic != null)
+                selectedGraphic.setFillPaint(oldFillColor);
 
-	    selectedGraphic = newSelectedGraphic;
-	    if (newSelectedGraphic != null) {
-		oldFillColor = newSelectedGraphic.getFillColor();
-		newSelectedGraphic.setFillPaint(Color.white);
-		fireRequestInfoLine(newSelectedGraphic.getAppObject().toString());
-	    }
-	    repaint();
-	}
+            selectedGraphic = newSelectedGraphic;
+            if (newSelectedGraphic != null) {
+                oldFillColor = newSelectedGraphic.getFillColor();
+                newSelectedGraphic.setFillPaint(Color.white);
+                fireRequestInfoLine(newSelectedGraphic.getAppObject().toString());
+            }
+            repaint();
+        }
 
-	return true;
+        return true;
     }
     
     /** Called whenever the mouse is moved on this layer and one of
@@ -360,8 +360,8 @@ public class CacheLayer extends Layer
      *
      * @see #getMouseModeServiceList */
     public void mouseMoved() {
-	omgraphics.deselectAll();
-	repaint();
+        omgraphics.deselectAll();
+        repaint();
     }
     
     /**
@@ -375,6 +375,6 @@ public class CacheLayer extends Layer
      *         <code>MapMouseEvent</code>s
      */
     public MapMouseListener getMapMouseListener() {
-	return this;
+        return this;
     }
 }

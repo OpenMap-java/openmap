@@ -1,14 +1,14 @@
 /* **********************************************************************
  * 
  *    Use, duplication, or disclosure by the Government is subject to
- * 	     restricted rights as set forth in the DFARS.
+ *           restricted rights as set forth in the DFARS.
  *  
- * 			   BBNT Solutions LLC
- * 			       A Part of 
+ *                         BBNT Solutions LLC
+ *                             A Part of 
  *                  Verizon      
- * 			    10 Moulton Street
- * 			   Cambridge, MA 02138
- * 			    (617) 873-3000
+ *                          10 Moulton Street
+ *                         Cambridge, MA 02138
+ *                          (617) 873-3000
  *
  *    Copyright (C) 2002 by BBNT Solutions, LLC
  *                 All Rights Reserved.
@@ -49,29 +49,29 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
     private static SimpleBeanBox thisBeanBox = null;
 
     public SimpleBeanBox(SimpleBeanLayer l) {
-	super();
-	layer = l;
-	thisBeanBox = this;
+        super();
+        layer = l;
+        thisBeanBox = this;
     }
 
     public static SimpleBeanBox getBeanBox() {
-	return thisBeanBox;
+        return thisBeanBox;
     }
 
     public String[] getMouseModeServiceList() {
-	return new String[] {SelectMouseMode.modeID};
+        return new String[] {SelectMouseMode.modeID};
     }
 
     public boolean mousePressed(MouseEvent evt) {
-	return true;
+        return true;
     }
   
     public boolean mouseReleased(MouseEvent evt) {
-	return true;
+        return true;
     }
   
     public boolean mouseClicked(MouseEvent evt) {
-	return true;
+        return true;
     }
 
     public void mouseEntered(MouseEvent evt) {
@@ -81,11 +81,11 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
     }
   
     public boolean mouseDragged(MouseEvent evt) {
-	return true;
+        return true;
     }
 
     public boolean mouseMoved(MouseEvent evt) {
-	return true;
+        return true;
     }
 
     public void mouseMoved() {
@@ -98,14 +98,14 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      * if bean is not of type SimpleBeanObject */
     public void addBean(Object bean) {
 
-	//System.out.println("Enter> SimpleBeanBox.addBean");
+        //System.out.println("Enter> SimpleBeanBox.addBean");
 
-	if (!(bean instanceof SimpleBeanObject))
-	    throw new IllegalArgumentException ("not instanceof SimpleBeanObject");
+        if (!(bean instanceof SimpleBeanObject))
+            throw new IllegalArgumentException ("not instanceof SimpleBeanObject");
 
-	layer.addObject((SimpleBeanObject)bean);
+        layer.addObject((SimpleBeanObject)bean);
 
-	//System.out.println("Exit> SimpleBeanBox.addBean");
+        //System.out.println("Exit> SimpleBeanBox.addBean");
 
     }
 
@@ -117,14 +117,14 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      * if bean is not of type SimpleBeanObject */
     public void removeBean(Object bean) {
 
-	//System.out.println("Enter> SimpleBeanBox.removeBean");
+        //System.out.println("Enter> SimpleBeanBox.removeBean");
 
-	if (!(bean instanceof SimpleBeanObject))
-	    throw new IllegalArgumentException ("not instanceof SimpleBeanObject");
+        if (!(bean instanceof SimpleBeanObject))
+            throw new IllegalArgumentException ("not instanceof SimpleBeanObject");
 
-	layer.removeObject(((SimpleBeanObject)bean).getId());
+        layer.removeObject(((SimpleBeanObject)bean).getId());
 
-	//System.out.println("Exit> SimpleBeanBox.removeBean");
+        //System.out.println("Exit> SimpleBeanBox.removeBean");
 
     }
 
@@ -135,13 +135,13 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
 
     public boolean containsBean(Object bean) {
 
-	//System.out.println("Called> SimpleBeanBox.containsBean");
+        //System.out.println("Called> SimpleBeanBox.containsBean");
 
-	if (!(bean instanceof SimpleBeanObject))
-	    throw new IllegalArgumentException("not instanceof SimpleBeanObject " +
-					       bean);
+        if (!(bean instanceof SimpleBeanObject))
+            throw new IllegalArgumentException("not instanceof SimpleBeanObject " +
+                                               bean);
 
-	return (layer.getObject(((SimpleBeanObject)bean).getId()) != null);
+        return (layer.getObject(((SimpleBeanObject)bean).getId()) != null);
     }
 
     /** Sets the image associated with the bean using the image present
@@ -153,25 +153,25 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      * @throws an IllegalArgumentException
      * if bean is not of type SimpleBeanObject */ 
     public void setBeanProperties(Object bean, BeanInfo beanInfo, 
-				  Point location) {
+                                  Point location) {
 
-	//System.out.println("Enter> SimpleBeanBox.setBeanProperties");
+        //System.out.println("Enter> SimpleBeanBox.setBeanProperties");
 
-	if (!(bean instanceof SimpleBeanObject))
-	    throw new IllegalArgumentException("not instanceof SimpleBeanObject " +
-					       bean);
+        if (!(bean instanceof SimpleBeanObject))
+            throw new IllegalArgumentException("not instanceof SimpleBeanObject " +
+                                               bean);
 
-	SimpleBeanObject obj = (SimpleBeanObject)bean;
+        SimpleBeanObject obj = (SimpleBeanObject)bean;
 
-	Image img = beanInfo.getIcon(BeanInfo.ICON_COLOR_32x32);
-	obj.setGraphicImage(img);
+        Image img = beanInfo.getIcon(BeanInfo.ICON_COLOR_32x32);
+        obj.setGraphicImage(img);
 
-	LatLonPoint llp = layer.getProjection().inverse(location.x, location.y);
+        LatLonPoint llp = layer.getProjection().inverse(location.x, location.y);
 
-	obj.setLatitude(llp.getLatitude());
-	obj.setLongitude(llp.getLongitude());
+        obj.setLatitude(llp.getLatitude());
+        obj.setLongitude(llp.getLongitude());
 
-	//System.out.println("Exit> SimpleBeanBox.setBeanProperties");
+        //System.out.println("Exit> SimpleBeanBox.setBeanProperties");
     }
 
     /** gets a Vector of beans that implement the 
@@ -179,21 +179,21 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      * @return a possibly empty vector of container beans. */
     Vector getAllContainers() {
 
-	Vector containers = new Vector();
-	Vector list = layer.getObjects();
+        Vector containers = new Vector();
+        Vector list = layer.getObjects();
 
-	if ((list == null) || (list.size() == 0))
-	    return containers;
+        if ((list == null) || (list.size() == 0))
+            return containers;
 
-	for (int i = 0; i < list.size(); i++)
-	{
-	    Object obj = list.get(i);
+        for (int i = 0; i < list.size(); i++)
+        {
+            Object obj = list.get(i);
 
-	    if (obj instanceof BeanContainer)
-		containers.add(obj);
-	}
+            if (obj instanceof BeanContainer)
+                containers.add(obj);
+        }
 
-	return containers; 
+        return containers; 
     }
 
     /** 
@@ -204,19 +204,19 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      */
     public BeanContainer findEnclosingContainer(Object bean) {
 
-	//System.out.println("Called> SimpleBeanBox.findEnclosingContainer");
+        //System.out.println("Called> SimpleBeanBox.findEnclosingContainer");
 
-	if (!(bean instanceof SimpleBeanObject))
-	    throw new IllegalArgumentException("not instanceof SimpleBeanObject " +
-					       bean);
+        if (!(bean instanceof SimpleBeanObject))
+            throw new IllegalArgumentException("not instanceof SimpleBeanObject " +
+                                               bean);
 
-	SimpleBeanObject obj = (SimpleBeanObject)bean;
+        SimpleBeanObject obj = (SimpleBeanObject)bean;
 
-	float objLat = obj.getLatitude();
-	float objLon = obj.getLongitude();
-	LatLonPoint llp = new LatLonPoint(objLat, objLon);
+        float objLat = obj.getLatitude();
+        float objLon = obj.getLongitude();
+        LatLonPoint llp = new LatLonPoint(objLat, objLon);
 
-	return findEnclosingContainer(llp);
+        return findEnclosingContainer(llp);
     }
 
     /** 
@@ -225,17 +225,17 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      */ 
     public SimpleBeanContainer findEnclosingContainer(LatLonPoint llp) {
 
-	Vector containers = getAllContainers();
+        Vector containers = getAllContainers();
 
-	for (int i = 0; i < containers.size(); i++)
-	{
-	    SimpleBeanContainer container = (SimpleBeanContainer)containers.get(i);
+        for (int i = 0; i < containers.size(); i++)
+        {
+            SimpleBeanContainer container = (SimpleBeanContainer)containers.get(i);
 
-	    if (encloses(container, llp))
-		return container;
-	}
+            if (encloses(container, llp))
+                return container;
+        }
 
-	return null;
+        return null;
     }
 
     /** 
@@ -245,20 +245,20 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      */ 
     boolean encloses(SimpleBeanContainer container, LatLonPoint llp) {
 
-	float topLat = container.getTopLatitude();
-	float leftLon = container.getLeftLongitude();
-	float botLat = container.getBottomLatitude();
-	float rightLon = container.getRightLongitude();
-	float lat = llp.getLatitude();
-	float lon = llp.getLongitude();
+        float topLat = container.getTopLatitude();
+        float leftLon = container.getLeftLongitude();
+        float botLat = container.getBottomLatitude();
+        float rightLon = container.getRightLongitude();
+        float lat = llp.getLatitude();
+        float lon = llp.getLongitude();
 
-	if ((lon > rightLon) || (lon < leftLon))
-	    return false;
+        if ((lon > rightLon) || (lon < leftLon))
+            return false;
 
-	if ((lat > topLat) || (lat < botLat))
-	    return false;
+        if ((lat > topLat) || (lat < botLat))
+            return false;
 
-	return true;
+        return true;
     }
 
     /**
@@ -269,12 +269,12 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      * Returns null if none is found.
      */
     BeanContainer findContainerBean(Point pointOnMap) {
-	if (layer != null && layer.getProjection() != null) {
-	    LatLonPoint llp = layer.getProjection().inverse(pointOnMap.x, pointOnMap.y);
-	    return findEnclosingContainer(llp);
-	} else {
-	    return null;
-	}
+        if (layer != null && layer.getProjection() != null) {
+            LatLonPoint llp = layer.getProjection().inverse(pointOnMap.x, pointOnMap.y);
+            return findEnclosingContainer(llp);
+        } else {
+            return null;
+        }
     }
 
     /** returns a bean that does NOT implement
@@ -283,33 +283,33 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      * Returns null if no such object is found. */
     SimpleBeanObject findNonContainerBean(Point pointOnMap) {
 
-	Vector list = layer.getObjects();
+        Vector list = layer.getObjects();
 
-	double minSep = Double.MAX_VALUE;
-	SimpleBeanObject closest = null;
+        double minSep = Double.MAX_VALUE;
+        SimpleBeanObject closest = null;
 
-	for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
 
-	    Object o = list.get(i);
+            Object o = list.get(i);
  
-	    SimpleBeanObject obj = (SimpleBeanObject)o;
+            SimpleBeanObject obj = (SimpleBeanObject)o;
 
-	    if (obj instanceof SimpleBeanContainer)
-		continue;
+            if (obj instanceof SimpleBeanContainer)
+                continue;
 
-	    Point p2 = layer.getProjection().forward
-		(new LatLonPoint(obj.getLatitude(), obj.getLongitude()));
+            Point p2 = layer.getProjection().forward
+                (new LatLonPoint(obj.getLatitude(), obj.getLongitude()));
 
-	    double sep = almostEquals(pointOnMap, p2, 20);
+            double sep = almostEquals(pointOnMap, p2, 20);
 
-	    if (sep < minSep)
-	    {
-		minSep = sep;
-		closest = obj;
-	    }
-	}
+            if (sep < minSep)
+            {
+                minSep = sep;
+                closest = obj;
+            }
+        }
 
-	return closest;
+        return closest;
     }
 
     /** return bean at specified location giving preference to non-container
@@ -317,19 +317,19 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      * to be close enough to the specified location, a null is returned. */
     public Object getBeanAtLocation(Point pointOnMap) {
 
-	//System.out.println("Called> SimpleBeanBox.getBeanAtLocation");
+        //System.out.println("Called> SimpleBeanBox.getBeanAtLocation");
 
-	SimpleBeanObject obj = findNonContainerBean(pointOnMap);
+        SimpleBeanObject obj = findNonContainerBean(pointOnMap);
 
-	if (obj != null)
-	    return obj;
+        if (obj != null)
+            return obj;
 
-	BeanContainer container = findContainerBean(pointOnMap);
+        BeanContainer container = findContainerBean(pointOnMap);
 
-	if (container != null)
-	    return container;
+        if (container != null)
+            return container;
 
-	return null;
+        return null;
     }
 
     /** returns the straight line seperation in pixels between the specified
@@ -338,14 +338,14 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
 
     double almostEquals(Point p1, Point p2, double tol) {
 
-	int sepX = p1.x - p2.x;
-	int sepY = p1.y - p2.y;
-	double sep = Math.sqrt(sepX * sepX + sepY * sepY);
+        int sepX = p1.x - p2.x;
+        int sepY = p1.y - p2.y;
+        double sep = Math.sqrt(sepX * sepX + sepY * sepY);
 
-	if (sep <= tol)
-	    return sep;
-	else
-	    return Double.MAX_VALUE;
+        if (sep <= tol)
+            return sep;
+        else
+            return Double.MAX_VALUE;
     }
 
     /** relocates the specified bean to the new location. This method is called
@@ -354,53 +354,53 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      * @throws IllegalArgumentException is specified bean is not of type
      * SimpleBeanObject. */
     public void relocateBean(Object bean, BeanInfo beanInfo, 
-			      Point newLocation) {
+                              Point newLocation) {
 
-	//System.out.println("Enter> SimpleBeanBox.relocateBean");
+        //System.out.println("Enter> SimpleBeanBox.relocateBean");
 
-	if (!(bean instanceof SimpleBeanObject))
-	    throw new IllegalArgumentException("not instanceof SimpleBeanObject " +
-					       bean);
+        if (!(bean instanceof SimpleBeanObject))
+            throw new IllegalArgumentException("not instanceof SimpleBeanObject " +
+                                               bean);
 
-	SimpleBeanObject obj = (SimpleBeanObject)bean;
+        SimpleBeanObject obj = (SimpleBeanObject)bean;
 
-	LatLonPoint llp =  layer.getProjection().
-	    inverse(newLocation.x, newLocation.y);
+        LatLonPoint llp =  layer.getProjection().
+            inverse(newLocation.x, newLocation.y);
 
-	relocateSimpleBeanObject(obj, llp);
+        relocateSimpleBeanObject(obj, llp);
 
-	layer.updateGraphics();
+        layer.updateGraphics();
 
-	//System.out.println("Exit> SimpleBeanBox.relocateBean");
+        //System.out.println("Exit> SimpleBeanBox.relocateBean");
     }
 
     /** relocates the specified SimpleBeanObject to the new location. */
     void relocateSimpleBeanObject(SimpleBeanObject obj, LatLonPoint newllp) {
 
-	SimpleBeanContainer oldContainer = null;
+        SimpleBeanContainer oldContainer = null;
 
-	// no support yet for containers within containers because
-	// of unresolved issues regarding partially over-lapping
-	// containers.
-	if (!(obj instanceof SimpleBeanContainer))
-	    oldContainer = (SimpleBeanContainer)findEnclosingContainer(obj);
+        // no support yet for containers within containers because
+        // of unresolved issues regarding partially over-lapping
+        // containers.
+        if (!(obj instanceof SimpleBeanContainer))
+            oldContainer = (SimpleBeanContainer)findEnclosingContainer(obj);
 
-	if (oldContainer != null)
-	    oldContainer.remove(obj);
+        if (oldContainer != null)
+            oldContainer.remove(obj);
 
-	obj.setLatitude (newllp.getLatitude());
-	obj.setLongitude (newllp.getLongitude());
+        obj.setLatitude (newllp.getLatitude());
+        obj.setLongitude (newllp.getLongitude());
 
-	if (obj instanceof SimpleBeanContainer)
-	    ((SimpleBeanContainer)obj).validate();
+        if (obj instanceof SimpleBeanContainer)
+            ((SimpleBeanContainer)obj).validate();
 
-	SimpleBeanContainer newContainer = null;
+        SimpleBeanContainer newContainer = null;
 
-	if (!(obj instanceof SimpleBeanContainer))
-	    newContainer = (SimpleBeanContainer)findEnclosingContainer(obj);
+        if (!(obj instanceof SimpleBeanContainer))
+            newContainer = (SimpleBeanContainer)findEnclosingContainer(obj);
 
-	if (newContainer != null)
-	    newContainer.add(obj);
+        if (newContainer != null)
+            newContainer.add(obj);
 
     }
 
@@ -409,17 +409,17 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      * the user closes the property sheet. */
     public void beanChanged(Object bean, String changedPropertyName) {
 
-	//System.out.println("Enter> SimpleBeanBox.beanChanged");
+        //System.out.println("Enter> SimpleBeanBox.beanChanged");
 
-	if (!(bean instanceof SimpleBeanObject))
-	    throw new IllegalArgumentException("not instanceof SimpleBeanObject " +
-					       bean);
+        if (!(bean instanceof SimpleBeanObject))
+            throw new IllegalArgumentException("not instanceof SimpleBeanObject " +
+                                               bean);
 
-	SimpleBeanObject obj = (SimpleBeanObject)bean;
+        SimpleBeanObject obj = (SimpleBeanObject)bean;
 
-	layer.updateObject(obj);
+        layer.updateObject(obj);
 
-	//System.out.println("Exit> SimpleBeanBox.beanChanged");
+        //System.out.println("Exit> SimpleBeanBox.beanChanged");
 
     }
 
@@ -427,20 +427,20 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      * bean is dragged on the map. */
     protected Image getDragImage(Object bean) {
 
-	//System.out.println("Called> SimpleBeanBox.getDragImage");
+        //System.out.println("Called> SimpleBeanBox.getDragImage");
 
-	if (!(bean instanceof SimpleBeanObject))
-	    throw new IllegalArgumentException("not instanceof SimpleBeanObject " +
-					       bean);
+        if (!(bean instanceof SimpleBeanObject))
+            throw new IllegalArgumentException("not instanceof SimpleBeanObject " +
+                                               bean);
 
-	SimpleBeanObject obj = (SimpleBeanObject)bean;
+        SimpleBeanObject obj = (SimpleBeanObject)bean;
 
-	OMGraphic graphic = layer.getGraphic(obj.getId());
+        OMGraphic graphic = layer.getGraphic(obj.getId());
     
-	if (graphic instanceof OMRasterObject) {
-	    return ((OMRasterObject)graphic).getImage();
-	} else
-	    return super.getDragImage(bean);
+        if (graphic instanceof OMRasterObject) {
+            return ((OMRasterObject)graphic).getImage();
+        } else
+            return super.getDragImage(bean);
 
     }
 

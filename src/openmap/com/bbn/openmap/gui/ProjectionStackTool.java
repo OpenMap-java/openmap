@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ProjectionStackTool.java,v $
 // $RCSfile: ProjectionStackTool.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,12 +67,12 @@ public class ProjectionStackTool extends OMToolComponent
     ImageIcon dimForwardIcon;
 
     public ProjectionStackTool() {
-	super();
-	setKey("projectionstacktool");
-	resetButtons(!dimBackButton, !dimForwardButton);
-	add(backButton);
-	add(forwardButton);
-//  	add(clearButton);
+        super();
+        setKey("projectionstacktool");
+        resetButtons(!dimBackButton, !dimForwardButton);
+        add(backButton);
+        add(forwardButton);
+//      add(clearButton);
     }
 
     /**
@@ -82,16 +82,16 @@ public class ProjectionStackTool extends OMToolComponent
      * this when you can addProjectionStackTrigger on it.
      */
     public void addActionListener(ActionListener al) {
-	if (backButton != null && forwardButton != null) {
-	    backButton.addActionListener(al);
-	    forwardButton.addActionListener(al);
-//  	    clearButton.addActionListener(al);
-	} else {
-	    if (listeners == null) {
-		listeners = new Vector();
-	    }
-	    listeners.add(al);
-	}
+        if (backButton != null && forwardButton != null) {
+            backButton.addActionListener(al);
+            forwardButton.addActionListener(al);
+//          clearButton.addActionListener(al);
+        } else {
+            if (listeners == null) {
+                listeners = new Vector();
+            }
+            listeners.add(al);
+        }
     }
 
     /**
@@ -102,13 +102,13 @@ public class ProjectionStackTool extends OMToolComponent
      * removeProjectionStackTrigger on it.
      */
     public void removeActionListener(ActionListener al) {
-	if (backButton != null && forwardButton != null) {
-	    backButton.removeActionListener(al);
-	    forwardButton.removeActionListener(al);
-//  	    clearButton.removeActionListener(al);
-	} else if (listeners != null) {
-	    listeners.remove(al);
-	}
+        if (backButton != null && forwardButton != null) {
+            backButton.removeActionListener(al);
+            forwardButton.removeActionListener(al);
+//          clearButton.removeActionListener(al);
+        } else if (listeners != null) {
+            listeners.remove(al);
+        }
     }
 
     /**
@@ -123,119 +123,119 @@ public class ProjectionStackTool extends OMToolComponent
      * is being used. 
      */
     public void updateProjectionStackStatus(boolean containsBackProjections,
-					    boolean containsForwardProjections) {
-	dimBackButton = !containsBackProjections;
-	dimForwardButton = !containsForwardProjections;
-	resetButtons(containsBackProjections, containsForwardProjections);
+                                            boolean containsForwardProjections) {
+        dimBackButton = !containsBackProjections;
+        dimForwardButton = !containsForwardProjections;
+        resetButtons(containsBackProjections, containsForwardProjections);
     }
 
     public void resetButtons(boolean enableBackButton, 
-			     boolean enableForwardButton) {
-	
-	java.net.URL url;
-	JButton b;
+                             boolean enableForwardButton) {
+        
+        java.net.URL url;
+        JButton b;
 
-	if (backIcon == null) {
-	    url = getClass().getResource(backName);
-	    backIcon = new ImageIcon(url);
-	}
+        if (backIcon == null) {
+            url = getClass().getResource(backName);
+            backIcon = new ImageIcon(url);
+        }
 
-	if (dimBackIcon == null) {
-	    url = getClass().getResource(dimBackName);
-	    dimBackIcon = new ImageIcon(url);
-	}
+        if (dimBackIcon == null) {
+            url = getClass().getResource(dimBackName);
+            dimBackIcon = new ImageIcon(url);
+        }
 
-	if (forwardIcon == null) {
-	    url = getClass().getResource(forwardName);
-	    forwardIcon = new ImageIcon(url);
-	}
+        if (forwardIcon == null) {
+            url = getClass().getResource(forwardName);
+            forwardIcon = new ImageIcon(url);
+        }
 
-	if (dimForwardIcon == null) {
-	    url = getClass().getResource(dimForwardName);
-	    dimForwardIcon = new ImageIcon(url);
-	}
+        if (dimForwardIcon == null) {
+            url = getClass().getResource(dimForwardName);
+            dimForwardIcon = new ImageIcon(url);
+        }
 
-	ImageIcon active;
-	String toolTip;
-	int size;
+        ImageIcon active;
+        String toolTip;
+        int size;
 
-	if (enableBackButton) {
-	    active = backIcon;
-	    toolTip = backTip;
-	} else {
-	    active = dimBackIcon;
-	    toolTip = backTip + disabled;
-	}
+        if (enableBackButton) {
+            active = backIcon;
+            toolTip = backTip;
+        } else {
+            active = dimBackIcon;
+            toolTip = backTip + disabled;
+        }
 
-	if (backButton == null) {
-	    backButton = new JButton(active);
-	    backButton.setMargin(new Insets(0,0,0,0));
-	    backButton.setBorderPainted(false);
-	    backButton.setActionCommand(ProjectionStack.BackProjCmd);
-	    if (listeners != null) {
-		size = listeners.size();
-		for (int i = 0; i < size; i++) {
-		    backButton.addActionListener((ActionListener)listeners.elementAt(i));
-		}
-	    }
+        if (backButton == null) {
+            backButton = new JButton(active);
+            backButton.setMargin(new Insets(0,0,0,0));
+            backButton.setBorderPainted(false);
+            backButton.setActionCommand(ProjectionStack.BackProjCmd);
+            if (listeners != null) {
+                size = listeners.size();
+                for (int i = 0; i < size; i++) {
+                    backButton.addActionListener((ActionListener)listeners.elementAt(i));
+                }
+            }
 
-	} else {
-	    backButton.setIcon(active);
-	}
-	backButton.setToolTipText(toolTip);
+        } else {
+            backButton.setIcon(active);
+        }
+        backButton.setToolTipText(toolTip);
 
-	if (enableForwardButton) {
-	    active = forwardIcon;
-	    toolTip = forwardTip;
-	} else {
-	    active = dimForwardIcon;
-	    toolTip = forwardTip + disabled;
-	}
+        if (enableForwardButton) {
+            active = forwardIcon;
+            toolTip = forwardTip;
+        } else {
+            active = dimForwardIcon;
+            toolTip = forwardTip + disabled;
+        }
 
-	if (forwardButton == null) {
-	    forwardButton = new JButton(active);
-	    forwardButton.setMargin(new Insets(0,0,0,0));
-	    forwardButton.setBorderPainted(false);
-	    forwardButton.setActionCommand(ProjectionStack.ForwardProjCmd);
+        if (forwardButton == null) {
+            forwardButton = new JButton(active);
+            forwardButton.setMargin(new Insets(0,0,0,0));
+            forwardButton.setBorderPainted(false);
+            forwardButton.setActionCommand(ProjectionStack.ForwardProjCmd);
 
-	    if (listeners != null) {
-		size = listeners.size();
-		for (int i = 0; i < size; i++) {
-		    forwardButton.addActionListener((ActionListener)listeners.elementAt(i));
-		}
-	    }
-	} else {
-	    forwardButton.setIcon(active);
-	}
-	forwardButton.setToolTipText(toolTip);
+            if (listeners != null) {
+                size = listeners.size();
+                for (int i = 0; i < size; i++) {
+                    forwardButton.addActionListener((ActionListener)listeners.elementAt(i));
+                }
+            }
+        } else {
+            forwardButton.setIcon(active);
+        }
+        forwardButton.setToolTipText(toolTip);
 
-//  	if (clearButton == null) {
-//  	    clearButton = new JButton("Clear Stack");
-//  	    clearButton.setMargin(new Insets(0,0,0,0));
-//  	    clearButton.setBorderPainted(false);
-//  	    clearButton.setActionCommand(ProjectionStack.ClearStacksCmd);
+//      if (clearButton == null) {
+//          clearButton = new JButton("Clear Stack");
+//          clearButton.setMargin(new Insets(0,0,0,0));
+//          clearButton.setBorderPainted(false);
+//          clearButton.setActionCommand(ProjectionStack.ClearStacksCmd);
 
-//  	    if (listeners != null) {
-//  		size = listeners.size();
-//  		for (int i = 0; i < size; i++) {
-//  		    clearButton.addActionListener((ActionListener)listeners.elementAt(i));
-//  		}
-//  	    }
-//  	}
+//          if (listeners != null) {
+//              size = listeners.size();
+//              for (int i = 0; i < size; i++) {
+//                  clearButton.addActionListener((ActionListener)listeners.elementAt(i));
+//              }
+//          }
+//      }
     }
     
     public void findAndInit(Object someObj) {
-	if (someObj instanceof ProjectionStack) {
-	    Debug.message("projectionstacktrigger","ProjectionStackTrigger adding a ProjectionStack");
-	    ((ProjectionStack)someObj).addProjectionStackTrigger(this);
-	}
+        if (someObj instanceof ProjectionStack) {
+            Debug.message("projectionstacktrigger","ProjectionStackTrigger adding a ProjectionStack");
+            ((ProjectionStack)someObj).addProjectionStackTrigger(this);
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof ProjectionStack) {
-	    Debug.message("projectionstacktrigger","ProjectionStackTrigger removing a ProjectionStack");
-	    ((ProjectionStack)someObj).removeProjectionStackTrigger(this);
-	}
+        if (someObj instanceof ProjectionStack) {
+            Debug.message("projectionstacktrigger","ProjectionStackTrigger removing a ProjectionStack");
+            ((ProjectionStack)someObj).removeProjectionStackTrigger(this);
+        }
     }
 }
 

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/HttpServer.java,v $
 // $RCSfile: HttpServer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:32 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:11 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -66,7 +66,7 @@ public class HttpServer extends Thread {
      * @see java.net.ServerSocket
      */
     public HttpServer(int port) throws IOException {
-	this(port, false);
+        this(port, false);
     }
 
     /**
@@ -79,12 +79,12 @@ public class HttpServer extends Thread {
      * @see java.net.ServerSocket
      */
     public HttpServer(int port, boolean asDaemon)
-	throws IOException
+        throws IOException
     {
         this.port = port;
-	listeners = new Vector();
-	listen_socket = new ServerSocket(port);
-	this.setDaemon(asDaemon);
+        listeners = new Vector();
+        listen_socket = new ServerSocket(port);
+        this.setDaemon(asDaemon);
         this.start();
     }
 
@@ -95,7 +95,7 @@ public class HttpServer extends Thread {
      * @see java.net.ServerSocket
      */
     public HttpServer() throws IOException {
-	this(DEFAULT_PORT);
+        this(DEFAULT_PORT);
     }
 
     /**
@@ -114,8 +114,8 @@ public class HttpServer extends Thread {
                 HttpConnection c = new HttpConnection(client_socket, this);
             }
         } catch (IOException e) { 
-	    System.err.println("Exception while listening for connections");
-	    e.printStackTrace();
+            System.err.println("Exception while listening for connections");
+            e.printStackTrace();
         }
     }
     
@@ -125,7 +125,7 @@ public class HttpServer extends Thread {
      * @return the server's port
      */
     public int getPort() {
-	return listen_socket.getLocalPort();
+        return listen_socket.getLocalPort();
     }
 
     /**
@@ -139,22 +139,22 @@ public class HttpServer extends Thread {
      * @see HttpRequestEvent 
      */
     public HttpRequestEvent fireHttpRequestEvent(String request, OutputStream output)
-	throws IOException {
+        throws IOException {
 
-	HttpRequestEvent event = new HttpRequestEvent(this, request, output);
+        HttpRequestEvent event = new HttpRequestEvent(this, request, output);
 
-	HttpRequestListener listener;
-	// Make a copy of the list and fire the events using that copy.
-	// This means that listeners can be added or removed from the
-	// original list in response to this event.
-	Vector list = (Vector) listeners.clone();
-	Enumeration e = list.elements();
-	while (e.hasMoreElements()) {
-	    listener = (HttpRequestListener)e.nextElement();
-	    listener.httpRequest(event);
-	}
+        HttpRequestListener listener;
+        // Make a copy of the list and fire the events using that copy.
+        // This means that listeners can be added or removed from the
+        // original list in response to this event.
+        Vector list = (Vector) listeners.clone();
+        Enumeration e = list.elements();
+        while (e.hasMoreElements()) {
+            listener = (HttpRequestListener)e.nextElement();
+            listener.httpRequest(event);
+        }
 
-	return event;
+        return event;
     }
 
     /**
@@ -169,7 +169,7 @@ public class HttpServer extends Thread {
      * @see HttpRequestListener 
      */
     public void addHttpRequestListener(HttpRequestListener l) {
-	listeners.addElement(l);
+        listeners.addElement(l);
     }
 
     /**
@@ -179,7 +179,7 @@ public class HttpServer extends Thread {
      * @see HttpRequestListener
      */
     public void removeHttpRequestListener(HttpRequestListener l) {
-	listeners.removeElement(l);
+        listeners.removeElement(l);
     }
 
     /**
@@ -203,23 +203,23 @@ public class HttpServer extends Thread {
         int port = 0;
         if (args.length == 1) {
             try { 
-		port = Integer.parseInt(args[0]);  
-	    } catch (NumberFormatException e) {
-		port = 0; 
-	    }
+                port = Integer.parseInt(args[0]);  
+            } catch (NumberFormatException e) {
+                port = 0; 
+            }
         }
 
-	try {
-	    HttpServer server = new HttpServer(port);
-	    server.addHttpRequestListener(new SeparatorListener());
-	    server.addHttpRequestListener(new SieveListener());
-	    server.addHttpRequestListener(new SeparatorListener());
-	    server.addHttpRequestListener(new ReverseListener());
-	    server.addHttpRequestListener(new SeparatorListener());
-	    System.out.println("Server listening on port " + server.getPort());
-	} catch (IOException e) {
-	    System.err.println("Unable to start http server:");
-	    e.printStackTrace();
-	}
+        try {
+            HttpServer server = new HttpServer(port);
+            server.addHttpRequestListener(new SeparatorListener());
+            server.addHttpRequestListener(new SieveListener());
+            server.addHttpRequestListener(new SeparatorListener());
+            server.addHttpRequestListener(new ReverseListener());
+            server.addHttpRequestListener(new SeparatorListener());
+            System.out.println("Server listening on port " + server.getPort());
+        } catch (IOException e) {
+            System.err.println("Unable to start http server:");
+            e.printStackTrace();
+        }
     }
 }

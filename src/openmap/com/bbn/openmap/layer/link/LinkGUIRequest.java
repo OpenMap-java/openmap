@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGUIRequest.java,v $
 // $RCSfile: LinkGUIRequest.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,7 +43,7 @@ public class LinkGUIRequest {
     }
 
     public String getType(){
-	return Link.GUI_REQUEST_HEADER;
+        return Link.GUI_REQUEST_HEADER;
     }
 
     /** 
@@ -54,24 +54,24 @@ public class LinkGUIRequest {
      * @return either Link.END_TOTAL or Link.END_SECTION. 
      */
     public String getLinkStatus(){
-	return linkStatus;
+        return linkStatus;
     }
 
     public static void write(String[] args,
-			     Link link) 
-	throws IOException {
-	
-	// Do a check to make sure the arguments are set in key
-	// value pairs.  If there is a leftover arg, leave it off.
-	int normedNumArgs = (args.length/2)*2;
-	link.dos.writeFloat(version);
-	link.dos.writeInt(normedNumArgs);
-	for (int i = 0; i < normedNumArgs; i++){
-	    link.dos.writeInt(args[i].length());
-	    link.dos.writeChars(args[i]);
-	}
-	
-	link.end(Link.END_TOTAL);
+                             Link link) 
+        throws IOException {
+        
+        // Do a check to make sure the arguments are set in key
+        // value pairs.  If there is a leftover arg, leave it off.
+        int normedNumArgs = (args.length/2)*2;
+        link.dos.writeFloat(version);
+        link.dos.writeInt(normedNumArgs);
+        for (int i = 0; i < normedNumArgs; i++){
+            link.dos.writeInt(args[i].length());
+            link.dos.writeChars(args[i]);
+        }
+        
+        link.end(Link.END_TOTAL);
     }
 
     /**
@@ -82,7 +82,7 @@ public class LinkGUIRequest {
      * @return Link.END_TOTAL or Link.END_SECTION 
      */
     public String read(Link link) throws IOException {
-	return link.readDelimiter(false);
+        return link.readDelimiter(false);
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/test/TestLayer.java,v $
 // $RCSfile: TestLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/20 02:43:50 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,14 +76,14 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
 
     // colors
     protected final static transient String[] colorNames = new String[] {
-	"white", "lightGray", "gray", "darkGray", "black",
-	"red", "pink", "orange", "yellow", "green", "magenta",
-	"cyan", "blue", "clear"
+        "white", "lightGray", "gray", "darkGray", "black",
+        "red", "pink", "orange", "yellow", "green", "magenta",
+        "cyan", "blue", "clear"
     };
     protected final static transient Color[] colors = new Color[] {
-	Color.white, Color.lightGray, Color.gray, Color.darkGray, Color.black,
-	Color.red, Color.pink, Color.orange, Color.yellow, Color.green, Color.magenta,
-	Color.cyan, Color.blue, OMGraphic.clear
+        Color.white, Color.lightGray, Color.gray, Color.darkGray, Color.black,
+        Color.red, Color.pink, Color.orange, Color.yellow, Color.green, Color.magenta,
+        Color.cyan, Color.blue, OMGraphic.clear
     };
     protected final static transient int NCOLORS = colors.length;
 
@@ -118,202 +118,202 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @param properties the properties set in the properties file.
      */
     public void setProperties(String prefix, java.util.Properties properties) {
-	super.setProperties(prefix, properties);
+        super.setProperties(prefix, properties);
 
-	line.visible = Boolean.valueOf(properties.getProperty(
-		    prefix + LineVisibleProperty, "true")).booleanValue();
+        line.visible = Boolean.valueOf(properties.getProperty(
+                    prefix + LineVisibleProperty, "true")).booleanValue();
 
-	circle.visible = Boolean.valueOf(properties.getProperty(
-		    prefix + CircVisibleProperty, "true")).booleanValue();
+        circle.visible = Boolean.valueOf(properties.getProperty(
+                    prefix + CircVisibleProperty, "true")).booleanValue();
 
-	rect.visible = Boolean.valueOf(properties.getProperty(
-		    prefix + RectVisibleProperty, "true")).booleanValue();
+        rect.visible = Boolean.valueOf(properties.getProperty(
+                    prefix + RectVisibleProperty, "true")).booleanValue();
 
-	text.visible = Boolean.valueOf(properties.getProperty(
-		    prefix + TextVisibleProperty, "true")).booleanValue();
+        text.visible = Boolean.valueOf(properties.getProperty(
+                    prefix + TextVisibleProperty, "true")).booleanValue();
 
-	poly.visible = Boolean.valueOf(properties.getProperty(
-		    prefix + PolyVisibleProperty, "true")).booleanValue();
+        poly.visible = Boolean.valueOf(properties.getProperty(
+                    prefix + PolyVisibleProperty, "true")).booleanValue();
 
-	String verts = properties.getProperty(prefix + PolyVertsProperty);
-	if (verts != null) {
-	    poly.setVertices(verts);
-	}
+        String verts = properties.getProperty(prefix + PolyVertsProperty);
+        if (verts != null) {
+            poly.setVertices(verts);
+        }
     }
 
     public OMGraphicList prepare() {
-	if (getList() == null) {
-	    setList(generateGraphics());
-	}
-	return super.prepare();
+        if (getList() == null) {
+            setList(generateGraphics());
+        }
+        return super.prepare();
     }
 
     /**
      * Create and project the graphics.
      */
     protected OMGraphicList generateGraphics() {
-	OMGraphicList graphics = new OMGraphicList();
+        OMGraphicList graphics = new OMGraphicList();
 
-	// create OMLine from internal line representation
-	switch (line.rt) {
-	    case OMGraphic.RENDERTYPE_LATLON:
-		omline = new OMLine(
-			line.llpts[0], line.llpts[1],
-			line.llpts[2], line.llpts[3],
-			line.type, line.nsegs);
-		break;
-	    case OMGraphic.RENDERTYPE_XY:
-		omline = new OMLine(
-			line.xypts[0], line.xypts[1],
-			line.xypts[2], line.xypts[3]
-			);
-		break;
-	    case OMGraphic.RENDERTYPE_OFFSET:
-		omline = new OMLine(
-			line.llpts[0], line.llpts[1],
-			line.xypts[0], line.xypts[1],
-			line.xypts[2], line.xypts[3]
-			);
-		break;
-	    default:
-		System.err.println("ARRRR!");
-		break;
-	}
-	if (line.arrowhead) {
-	    omline.addArrowHead(line.arrowtype);
-	}
+        // create OMLine from internal line representation
+        switch (line.rt) {
+            case OMGraphic.RENDERTYPE_LATLON:
+                omline = new OMLine(
+                        line.llpts[0], line.llpts[1],
+                        line.llpts[2], line.llpts[3],
+                        line.type, line.nsegs);
+                break;
+            case OMGraphic.RENDERTYPE_XY:
+                omline = new OMLine(
+                        line.xypts[0], line.xypts[1],
+                        line.xypts[2], line.xypts[3]
+                        );
+                break;
+            case OMGraphic.RENDERTYPE_OFFSET:
+                omline = new OMLine(
+                        line.llpts[0], line.llpts[1],
+                        line.xypts[0], line.xypts[1],
+                        line.xypts[2], line.xypts[3]
+                        );
+                break;
+            default:
+                System.err.println("ARRRR!");
+                break;
+        }
+        if (line.arrowhead) {
+            omline.addArrowHead(line.arrowtype);
+        }
 
-	// create OMCircle from internal circle representation
-	switch (circle.rt) {
-	    case OMGraphic.RENDERTYPE_LATLON:
-		omcircle = new OMCircle(
-			circle.llpts[0], circle.llpts[1], circle.radius,
-			Length.KM, circle.nsegs);
-		omcircle.setPolarCorrection(true);
-		break;
-	    case OMGraphic.RENDERTYPE_XY:
-		omcircle = new OMCircle(
-			circle.xypts[0], circle.xypts[1],
-			circle.width, circle.height);
-		break;
-	    case OMGraphic.RENDERTYPE_OFFSET:
-		omcircle = new OMCircle(
-			circle.llpts[0], circle.llpts[1],
-			circle.xypts[0], circle.xypts[1],
-			circle.width, circle.height);
-		break;
-	    default:
-		System.err.println("ARRRR!");
-		break;
-	}
+        // create OMCircle from internal circle representation
+        switch (circle.rt) {
+            case OMGraphic.RENDERTYPE_LATLON:
+                omcircle = new OMCircle(
+                        circle.llpts[0], circle.llpts[1], circle.radius,
+                        Length.KM, circle.nsegs);
+                omcircle.setPolarCorrection(true);
+                break;
+            case OMGraphic.RENDERTYPE_XY:
+                omcircle = new OMCircle(
+                        circle.xypts[0], circle.xypts[1],
+                        circle.width, circle.height);
+                break;
+            case OMGraphic.RENDERTYPE_OFFSET:
+                omcircle = new OMCircle(
+                        circle.llpts[0], circle.llpts[1],
+                        circle.xypts[0], circle.xypts[1],
+                        circle.width, circle.height);
+                break;
+            default:
+                System.err.println("ARRRR!");
+                break;
+        }
 
-	// create OMRect from internal rect representation
-	switch (rect.rt) {
-	    case OMGraphic.RENDERTYPE_LATLON:
-		omrect = new OMRect(
-			rect.llpts[0], rect.llpts[1],
-			rect.llpts[2], rect.llpts[3],
-			rect.type, rect.nsegs);
-		break;
-	    case OMGraphic.RENDERTYPE_XY:
-		omrect = new OMRect(
-			rect.xypts[0], rect.xypts[1],
-			rect.xypts[2], rect.xypts[3]
-			);
-		break;
-	    case OMGraphic.RENDERTYPE_OFFSET:
-		omrect = new OMRect(
-			rect.llpts[0], rect.llpts[1],
-			rect.xypts[0], rect.xypts[1],
-			rect.xypts[2], rect.xypts[3]
-			);
-		break;
-	    default:
-		System.err.println("ARRRR!");
-		break;
-	}
+        // create OMRect from internal rect representation
+        switch (rect.rt) {
+            case OMGraphic.RENDERTYPE_LATLON:
+                omrect = new OMRect(
+                        rect.llpts[0], rect.llpts[1],
+                        rect.llpts[2], rect.llpts[3],
+                        rect.type, rect.nsegs);
+                break;
+            case OMGraphic.RENDERTYPE_XY:
+                omrect = new OMRect(
+                        rect.xypts[0], rect.xypts[1],
+                        rect.xypts[2], rect.xypts[3]
+                        );
+                break;
+            case OMGraphic.RENDERTYPE_OFFSET:
+                omrect = new OMRect(
+                        rect.llpts[0], rect.llpts[1],
+                        rect.xypts[0], rect.xypts[1],
+                        rect.xypts[2], rect.xypts[3]
+                        );
+                break;
+            default:
+                System.err.println("ARRRR!");
+                break;
+        }
 
-	// create OMText from internal text representation
-	switch (text.rt) {
-	    case OMGraphic.RENDERTYPE_LATLON:
-		omtext = new OMText(
-			text.llpts[0], text.llpts[1],
-			text.data,
-			Font.decode(text.font),
-			text.just
-			);
-		break;
-	    case OMGraphic.RENDERTYPE_XY:
-		omtext = new OMText(
-			text.xypts[0], text.xypts[1],
-			text.data,
-			Font.decode(text.font),
-			text.just
-			);
-		break;
-	    case OMGraphic.RENDERTYPE_OFFSET:
-		omtext = new OMText(
-			text.llpts[0], text.llpts[1],
-			text.xypts[0], text.xypts[1],
-			text.data,
-			Font.decode(text.font),
-			text.just
-			);
-		break;
-	    default:
-		System.err.println("ARRRR!");
-		break;
-	}
+        // create OMText from internal text representation
+        switch (text.rt) {
+            case OMGraphic.RENDERTYPE_LATLON:
+                omtext = new OMText(
+                        text.llpts[0], text.llpts[1],
+                        text.data,
+                        Font.decode(text.font),
+                        text.just
+                        );
+                break;
+            case OMGraphic.RENDERTYPE_XY:
+                omtext = new OMText(
+                        text.xypts[0], text.xypts[1],
+                        text.data,
+                        Font.decode(text.font),
+                        text.just
+                        );
+                break;
+            case OMGraphic.RENDERTYPE_OFFSET:
+                omtext = new OMText(
+                        text.llpts[0], text.llpts[1],
+                        text.xypts[0], text.xypts[1],
+                        text.data,
+                        Font.decode(text.font),
+                        text.just
+                        );
+                break;
+            default:
+                System.err.println("ARRRR!");
+                break;
+        }
 
-	// create OMPoly from internal poly representation
-	switch (poly.rt) {
-	    case OMGraphic.RENDERTYPE_LATLON:
-		int len = poly.llpts.length;
-		float[] llpts = new float[len];
-		System.arraycopy(poly.llpts, 0, llpts, 0, len);
-		ompoly = new OMPoly(
-			llpts, OMPoly.DECIMAL_DEGREES,
-			poly.type, poly.nsegs);
-		break;
-	    case OMGraphic.RENDERTYPE_XY:
-		ompoly = new OMPoly(poly.xypts);
-		break;
-	    case OMGraphic.RENDERTYPE_OFFSET:
-		ompoly = new OMPoly(
-			poly.lat, poly.lon,
-			poly.xypts, poly.cMode);
-		break;
-	    default:
-		System.err.println("ARRRR!");
-		break;
-	}
+        // create OMPoly from internal poly representation
+        switch (poly.rt) {
+            case OMGraphic.RENDERTYPE_LATLON:
+                int len = poly.llpts.length;
+                float[] llpts = new float[len];
+                System.arraycopy(poly.llpts, 0, llpts, 0, len);
+                ompoly = new OMPoly(
+                        llpts, OMPoly.DECIMAL_DEGREES,
+                        poly.type, poly.nsegs);
+                break;
+            case OMGraphic.RENDERTYPE_XY:
+                ompoly = new OMPoly(poly.xypts);
+                break;
+            case OMGraphic.RENDERTYPE_OFFSET:
+                ompoly = new OMPoly(
+                        poly.lat, poly.lon,
+                        poly.xypts, poly.cMode);
+                break;
+            default:
+                System.err.println("ARRRR!");
+                break;
+        }
 
-	// generic
-	omline.setVisible(line.visible);
-	omline.setLinePaint(colors[line.lineColor]);
-	omcircle.setVisible(circle.visible);
-	omcircle.setLinePaint(colors[circle.lineColor]);
-	omrect.setVisible(rect.visible);
-	omrect.setLinePaint(colors[rect.lineColor]);
-	ompoly.setVisible(poly.visible);
-	ompoly.setLinePaint(colors[poly.lineColor]);
-	omtext.setVisible(text.visible);
-	omtext.setLinePaint(colors[text.lineColor]);
-	if (circle.isFilled)
-	    omcircle.setFillPaint(colors[circle.fillColor]);
-	if (rect.isFilled)
-	    omrect.setFillPaint(colors[rect.fillColor]);
-	if (poly.isFilled)
-	    ompoly.setFillPaint(colors[poly.fillColor]);
+        // generic
+        omline.setVisible(line.visible);
+        omline.setLinePaint(colors[line.lineColor]);
+        omcircle.setVisible(circle.visible);
+        omcircle.setLinePaint(colors[circle.lineColor]);
+        omrect.setVisible(rect.visible);
+        omrect.setLinePaint(colors[rect.lineColor]);
+        ompoly.setVisible(poly.visible);
+        ompoly.setLinePaint(colors[poly.lineColor]);
+        omtext.setVisible(text.visible);
+        omtext.setLinePaint(colors[text.lineColor]);
+        if (circle.isFilled)
+            omcircle.setFillPaint(colors[circle.fillColor]);
+        if (rect.isFilled)
+            omrect.setFillPaint(colors[rect.fillColor]);
+        if (poly.isFilled)
+            ompoly.setFillPaint(colors[poly.fillColor]);
 
-	graphics.add(omline);
-	graphics.add(omcircle);
-	graphics.add(omrect);
-	graphics.add(omtext);
-	graphics.add(ompoly);
-	graphics.generate(getProjection());
+        graphics.add(omline);
+        graphics.add(omcircle);
+        graphics.add(omrect);
+        graphics.add(omtext);
+        graphics.add(ompoly);
+        graphics.generate(getProjection());
 
-	return graphics;
+        return graphics;
     }
 
     /**
@@ -322,98 +322,98 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @return Component or null
      */
     public Component getGUI() {
-	if (gui == null) {
-	    JPanel pal;
+        if (gui == null) {
+            JPanel pal;
 
-	    gui = PaletteHelper.createPaletteJPanel("Test");
-	    GridBagLayout gridbag = new GridBagLayout();
-	    GridBagConstraints constraints = new GridBagConstraints();
-	    gui.setLayout(gridbag);
-	    constraints.fill = GridBagConstraints.HORIZONTAL; // fill horizontally
-	    constraints.gridwidth = GridBagConstraints.REMAINDER; //another row
-	    constraints.anchor = GridBagConstraints.EAST; // tack to the left edge
-//	    constraints.weightx = 0.0;
+            gui = PaletteHelper.createPaletteJPanel("Test");
+            GridBagLayout gridbag = new GridBagLayout();
+            GridBagConstraints constraints = new GridBagConstraints();
+            gui.setLayout(gridbag);
+            constraints.fill = GridBagConstraints.HORIZONTAL; // fill horizontally
+            constraints.gridwidth = GridBagConstraints.REMAINDER; //another row
+            constraints.anchor = GridBagConstraints.EAST; // tack to the left edge
+//          constraints.weightx = 0.0;
 
-	    ActionListener al = new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    int index = Integer.parseInt(
-			    e.getActionCommand(), 10);
-		    switch (index) {
-			case 0:
-			    line.visible = !line.visible;
-			    omline.setVisible(line.visible);
-			    repaint();
-			    break;
-			case 1:
-			    circle.visible = !circle.visible;
-			    omcircle.setVisible(circle.visible);
-			    repaint();
-			    break;
-			case 2:
-			    rect.visible = !rect.visible;
-			    omrect.setVisible(rect.visible);
-			    repaint();
-			    break;
-			case 3:
-			    text.visible = !text.visible;
-			    omtext.setVisible(text.visible);
-			    repaint();
-			    break;
-			case 4:
-			    poly.visible = !poly.visible;
-			    ompoly.setVisible(poly.visible);
-			    repaint();
-			    break;
-			default:
-			    System.out.println(
-				    "TestLayer: Unimplemented...");
-		    }
-		}
-	    };
-	    pal = PaletteHelper.createCheckbox(
-		"Graphics",
-		new String[] {
-		    "Line", "Circle", "Rect", "Text", "Poly"
-		},
-		new boolean[] {
-		    line.visible,
-		    circle.visible,
-		    rect.visible,
-		    text.visible,
-		    poly.visible
-		},
-		al
-	    );
-	    gridbag.setConstraints(pal, constraints);
-	    gui.add(pal);
+            ActionListener al = new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    int index = Integer.parseInt(
+                            e.getActionCommand(), 10);
+                    switch (index) {
+                        case 0:
+                            line.visible = !line.visible;
+                            omline.setVisible(line.visible);
+                            repaint();
+                            break;
+                        case 1:
+                            circle.visible = !circle.visible;
+                            omcircle.setVisible(circle.visible);
+                            repaint();
+                            break;
+                        case 2:
+                            rect.visible = !rect.visible;
+                            omrect.setVisible(rect.visible);
+                            repaint();
+                            break;
+                        case 3:
+                            text.visible = !text.visible;
+                            omtext.setVisible(text.visible);
+                            repaint();
+                            break;
+                        case 4:
+                            poly.visible = !poly.visible;
+                            ompoly.setVisible(poly.visible);
+                            repaint();
+                            break;
+                        default:
+                            System.out.println(
+                                    "TestLayer: Unimplemented...");
+                    }
+                }
+            };
+            pal = PaletteHelper.createCheckbox(
+                "Graphics",
+                new String[] {
+                    "Line", "Circle", "Rect", "Text", "Poly"
+                },
+                new boolean[] {
+                    line.visible,
+                    circle.visible,
+                    rect.visible,
+                    text.visible,
+                    poly.visible
+                },
+                al
+            );
+            gridbag.setConstraints(pal, constraints);
+            gui.add(pal);
 
 
-	    // line controls
-	    pal = getGraphicPalette(line, "Line");
-	    gridbag.setConstraints(pal, constraints);
-	    gui.add(pal);
+            // line controls
+            pal = getGraphicPalette(line, "Line");
+            gridbag.setConstraints(pal, constraints);
+            gui.add(pal);
 
-	    // circle controls
-	    pal = getGraphicPalette(circle, "Circle");
-	    gridbag.setConstraints(pal, constraints);
-	    gui.add(pal);
+            // circle controls
+            pal = getGraphicPalette(circle, "Circle");
+            gridbag.setConstraints(pal, constraints);
+            gui.add(pal);
 
-	    // rect controls
-	    pal = getGraphicPalette(rect, "Rect");
-	    gridbag.setConstraints(pal, constraints);
-	    gui.add(pal);
+            // rect controls
+            pal = getGraphicPalette(rect, "Rect");
+            gridbag.setConstraints(pal, constraints);
+            gui.add(pal);
 
-	    // text controls
-	    pal = getGraphicPalette(text, "Text");
-	    gridbag.setConstraints(pal, constraints);
-	    gui.add(pal);
+            // text controls
+            pal = getGraphicPalette(text, "Text");
+            gridbag.setConstraints(pal, constraints);
+            gui.add(pal);
 
-	    // poly controls
-	    pal = getGraphicPalette(poly, "Poly");
-	    gridbag.setConstraints(pal, constraints);
-	    gui.add(pal);
-	}
-	return gui;
+            // poly controls
+            pal = getGraphicPalette(poly, "Poly");
+            gridbag.setConstraints(pal, constraints);
+            gui.add(pal);
+        }
+        return gui;
     }
 
 
@@ -424,56 +424,56 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @return JPanel sub-palette
      */
     protected JPanel getGraphicPalette(final GraphicBase obj, final String title) {
-	JPanel pal;
-	final JComboBox jcb;
-	final JFrame jframe;
-	final JRootPane main;
-	final JPanel parent;
-	
-	parent = PaletteHelper.createVerticalPanel(title);
-	jframe = new JFrame();
-	main = jframe.getRootPane();
+        JPanel pal;
+        final JComboBox jcb;
+        final JFrame jframe;
+        final JRootPane main;
+        final JPanel parent;
+        
+        parent = PaletteHelper.createVerticalPanel(title);
+        jframe = new JFrame();
+        main = jframe.getRootPane();
 
-	// different controls for different render types
-	jcb = new JComboBox();
-	jcb.addItem("LatLon");// indices correspond to LineType.java
-	jcb.addItem("XY");
-	jcb.addItem("Offset");
-	jcb.setSelectedIndex(obj.rt-1);
-	jcb.addActionListener(new ActionListener() {
-	    public void actionPerformed(ActionEvent e) {
-		obj.setRender(jcb);
-		switch (obj.rt) {
-		    case OMGraphic.RENDERTYPE_LATLON:
-			jframe.setTitle(title+" - LatLon");
-			main.getContentPane().removeAll();
-			main.getContentPane().add(obj.getGUI());
-			jframe.pack();
-			jframe.setVisible(true);
-			break;
-		    case OMGraphic.RENDERTYPE_XY:
-			jframe.setTitle(title+" - XY");
-			main.getContentPane().removeAll();
-			main.getContentPane().add(obj.getGUI());
-			jframe.pack();
-			jframe.setVisible(true);
-			break;
-		    case OMGraphic.RENDERTYPE_OFFSET:
-			jframe.setTitle(title+" - XY Offset");
-			main.getContentPane().removeAll();
-			main.getContentPane().add(obj.getGUI());
-			jframe.pack();
-			jframe.setVisible(true);
-			break;
-		    default:
-			System.err.println("ARRRR!");
-			break;
-		}
-	    }
-	});
-	parent.add(jcb);
+        // different controls for different render types
+        jcb = new JComboBox();
+        jcb.addItem("LatLon");// indices correspond to LineType.java
+        jcb.addItem("XY");
+        jcb.addItem("Offset");
+        jcb.setSelectedIndex(obj.rt-1);
+        jcb.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                obj.setRender(jcb);
+                switch (obj.rt) {
+                    case OMGraphic.RENDERTYPE_LATLON:
+                        jframe.setTitle(title+" - LatLon");
+                        main.getContentPane().removeAll();
+                        main.getContentPane().add(obj.getGUI());
+                        jframe.pack();
+                        jframe.setVisible(true);
+                        break;
+                    case OMGraphic.RENDERTYPE_XY:
+                        jframe.setTitle(title+" - XY");
+                        main.getContentPane().removeAll();
+                        main.getContentPane().add(obj.getGUI());
+                        jframe.pack();
+                        jframe.setVisible(true);
+                        break;
+                    case OMGraphic.RENDERTYPE_OFFSET:
+                        jframe.setTitle(title+" - XY Offset");
+                        main.getContentPane().removeAll();
+                        main.getContentPane().add(obj.getGUI());
+                        jframe.pack();
+                        jframe.setVisible(true);
+                        break;
+                    default:
+                        System.err.println("ARRRR!");
+                        break;
+                }
+            }
+        });
+        parent.add(jcb);
 
-	return parent;
+        return parent;
     }
 
 
@@ -485,7 +485,7 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @return MapMouseListener this
      */
     public MapMouseListener getMapMouseListener() {
-	return this;
+        return this;
     }
 
 
@@ -498,9 +498,9 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * receiving events in "select" mode.
      * <code>
      * <pre>
-     *	return new String[1] {
-     *	    SelectMouseMode.modeID
-     *	};
+     *  return new String[1] {
+     *      SelectMouseMode.modeID
+     *  };
      * </pre>
      * <code>
      * @see NavMouseMode#modeID
@@ -508,9 +508,9 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @see NullMouseMode#modeID
      */
     public String[] getMouseModeServiceList() {
-	return new String[] {
-	    SelectMouseMode.modeID
-	};
+        return new String[] {
+            SelectMouseMode.modeID
+        };
     }
 
     /**
@@ -519,10 +519,10 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @return true if the listener was able to process the event.
      */
     public boolean mousePressed(MouseEvent e) {
-	if (Debug.debugging("TestLayer")) {
-	    System.out.println("TestLayer.mousePressed()");
-	}
-	return true;
+        if (Debug.debugging("TestLayer")) {
+            System.out.println("TestLayer.mousePressed()");
+        }
+        return true;
     }
   
     /**
@@ -531,10 +531,10 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @return true if the listener was able to process the event.
      */
     public boolean mouseReleased(MouseEvent e) {
-	if (Debug.debugging("TestLayer")) {
-	    System.out.println("TestLayer.mouseReleased()");
-	}
-	return true;
+        if (Debug.debugging("TestLayer")) {
+            System.out.println("TestLayer.mouseReleased()");
+        }
+        return true;
     }
    
     /**
@@ -548,10 +548,10 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @return true if the listener was able to process the event.
      */
     public boolean mouseClicked(MouseEvent e) {
-	if (Debug.debugging("TestLayer")) {
-	    System.out.println("TestLayer.mouseClicked()");
-	}
-	return true;
+        if (Debug.debugging("TestLayer")) {
+            System.out.println("TestLayer.mouseClicked()");
+        }
+        return true;
     }
 
     /**
@@ -559,9 +559,9 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @param e MouseListener MouseEvent to handle.
      */
     public void mouseEntered(MouseEvent e) {
-	if (Debug.debugging("TestLayer")) {
-	    System.out.println("TestLayer.mouseEntered()");
-	}
+        if (Debug.debugging("TestLayer")) {
+            System.out.println("TestLayer.mouseEntered()");
+        }
     }
   
     /**
@@ -569,9 +569,9 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @param e MouseListener MouseEvent to handle.
      */
     public void mouseExited(MouseEvent e) {
-	if (Debug.debugging("TestLayer")) {
-	    System.out.println("TestLayer.mouseExited()");
-	}
+        if (Debug.debugging("TestLayer")) {
+            System.out.println("TestLayer.mouseExited()");
+        }
     }
     
     // Mouse Motion Listener events
@@ -586,10 +586,10 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @return true if the listener was able to process the event.
      */
     public boolean mouseDragged(MouseEvent e) {
-	if (Debug.debugging("TestLayer")) {
-	    System.out.println("TestLayer.mouseDragged()");
-	}
-	return true;
+        if (Debug.debugging("TestLayer")) {
+            System.out.println("TestLayer.mouseDragged()");
+        }
+        return true;
     }
 
     /**
@@ -599,10 +599,10 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @return true if the listener was able to process the event.
      */
     public boolean mouseMoved(MouseEvent e) {
-	if (Debug.debugging("TestLayer")) {
-	    System.out.println("TestLayer.mouseMoved()");
-	}
-	return true;
+        if (Debug.debugging("TestLayer")) {
+            System.out.println("TestLayer.mouseMoved()");
+        }
+        return true;
     }
 
     /**
@@ -614,9 +614,9 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * response.
      */
     public void mouseMoved() {
-	if (Debug.debugging("TestLayer")) {
-	    System.out.println("TestLayer.mouseMoved()[alt]");
-	}
+        if (Debug.debugging("TestLayer")) {
+            System.out.println("TestLayer.mouseMoved()[alt]");
+        }
     }
 
 
@@ -626,647 +626,647 @@ public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * The GUI code is implemented here.
      */
     protected abstract class GraphicBase {
-	// ll data
-	protected float[] llpts = new float[4];
-	protected float radius = 4000f;
-	protected int type = OMGraphic.LINETYPE_GREATCIRCLE;
-	protected int nsegs = 360;
+        // ll data
+        protected float[] llpts = new float[4];
+        protected float radius = 4000f;
+        protected int type = OMGraphic.LINETYPE_GREATCIRCLE;
+        protected int nsegs = 360;
 
-	// xy data
-	protected int[] xypts = new int[4];
-	protected int width, height;
+        // xy data
+        protected int[] xypts = new int[4];
+        protected int width, height;
 
-	// generic
-	protected int lineColor = NCOLORS-2;
-	protected int fillColor = NCOLORS-1;
-	protected boolean visible = true;
-	protected boolean isFilled = false;
-	protected int rt = OMGraphic.RENDERTYPE_LATLON;
+        // generic
+        protected int lineColor = NCOLORS-2;
+        protected int fillColor = NCOLORS-1;
+        protected boolean visible = true;
+        protected boolean isFilled = false;
+        protected int rt = OMGraphic.RENDERTYPE_LATLON;
 
-	// GUI code
-	protected abstract JPanel getGUI();
-	protected void setXYCoordinate(JTextField jtf, int i) {
-	    try {
-		xypts[i] = Integer.parseInt(jtf.getText().trim());
-	    } catch (NumberFormatException ex) { return; }
-	}
-	protected void setLLCoordinate(JTextField jtf, int i) {
-	    try {
-		llpts[i] = Float.valueOf(
-			jtf.getText().trim()).floatValue();
-	    } catch (NumberFormatException ex) { return; }
-	}
-	protected void setType(JComboBox jcb) {
-	    type = jcb.getSelectedIndex()+1;
-	    setList(generateGraphics());
-	    repaint();
-	}
-	protected void setRender(JComboBox jcb) {
-	    rt = jcb.getSelectedIndex()+1;
-	    setList(generateGraphics());
-	    repaint();
-	}
-	protected void setSegs(JTextField jtf) {
-	    try {
-		nsegs = Integer.parseInt(jtf.getText().trim());
-	    } catch (NumberFormatException ex) { return; }
-	}
-	protected void makeFillCheckBox(JComponent parent) {
-	    JPanel pal = PaletteHelper.createCheckbox(
-		null,
-		new String[] {
-		    "Filled"
-		},
-		new boolean[] {
-		    isFilled
-		},
-		new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-			isFilled = !isFilled;
-			setList(generateGraphics());
-			repaint();
-		    }
-		}
-	    );
-	    parent.add(pal);
-	}
-	protected void makeColorBox(JComponent parent, String title, final boolean isFill) {
-	    JPanel pal = PaletteHelper.createVerticalPanel(title);
-	    final JComboBox jcb = new JComboBox();
-	    for (int i=0; i<NCOLORS; i++) {
-		jcb.addItem(colorNames[i]);
-	    }
-	    jcb.setSelectedIndex(isFill ? fillColor : lineColor);
-	    jcb.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    if (isFill)
-			fillColor = jcb.getSelectedIndex();
-		    else
-			lineColor = jcb.getSelectedIndex();
-		    setList(generateGraphics());
-		    repaint();
-		}
-	    });
-	    pal.add(jcb);
-	    parent.add(pal);
-	}
-	// get an OK button which refreshes the display.
-	protected JButton getOKButton() {
-	    // add reset button
-	    JButton jb = new JButton("OK");
-	    jb.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    setList(generateGraphics());
-		    repaint();
-		}
-	    });
-	    return jb;
-	}
+        // GUI code
+        protected abstract JPanel getGUI();
+        protected void setXYCoordinate(JTextField jtf, int i) {
+            try {
+                xypts[i] = Integer.parseInt(jtf.getText().trim());
+            } catch (NumberFormatException ex) { return; }
+        }
+        protected void setLLCoordinate(JTextField jtf, int i) {
+            try {
+                llpts[i] = Float.valueOf(
+                        jtf.getText().trim()).floatValue();
+            } catch (NumberFormatException ex) { return; }
+        }
+        protected void setType(JComboBox jcb) {
+            type = jcb.getSelectedIndex()+1;
+            setList(generateGraphics());
+            repaint();
+        }
+        protected void setRender(JComboBox jcb) {
+            rt = jcb.getSelectedIndex()+1;
+            setList(generateGraphics());
+            repaint();
+        }
+        protected void setSegs(JTextField jtf) {
+            try {
+                nsegs = Integer.parseInt(jtf.getText().trim());
+            } catch (NumberFormatException ex) { return; }
+        }
+        protected void makeFillCheckBox(JComponent parent) {
+            JPanel pal = PaletteHelper.createCheckbox(
+                null,
+                new String[] {
+                    "Filled"
+                },
+                new boolean[] {
+                    isFilled
+                },
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        isFilled = !isFilled;
+                        setList(generateGraphics());
+                        repaint();
+                    }
+                }
+            );
+            parent.add(pal);
+        }
+        protected void makeColorBox(JComponent parent, String title, final boolean isFill) {
+            JPanel pal = PaletteHelper.createVerticalPanel(title);
+            final JComboBox jcb = new JComboBox();
+            for (int i=0; i<NCOLORS; i++) {
+                jcb.addItem(colorNames[i]);
+            }
+            jcb.setSelectedIndex(isFill ? fillColor : lineColor);
+            jcb.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    if (isFill)
+                        fillColor = jcb.getSelectedIndex();
+                    else
+                        lineColor = jcb.getSelectedIndex();
+                    setList(generateGraphics());
+                    repaint();
+                }
+            });
+            pal.add(jcb);
+            parent.add(pal);
+        }
+        // get an OK button which refreshes the display.
+        protected JButton getOKButton() {
+            // add reset button
+            JButton jb = new JButton("OK");
+            jb.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    setList(generateGraphics());
+                    repaint();
+                }
+            });
+            return jb;
+        }
     }
 
     protected class Line extends GraphicBase {
 
-	protected int arrowtype = -1;
-	protected boolean arrowhead = false;
+        protected int arrowtype = -1;
+        protected boolean arrowhead = false;
 
-	public Line () {
-	    llpts[0] = 45f; llpts[1] = -90f;
-	    llpts[2] = 0f; llpts[3] = -180f;
-	    xypts[0] = 45; xypts[1] = 90;
-	    xypts[2] = 0; xypts[3] = 180;
-	    lineColor = 5;
-	}
-
-
-	// makes arrow head selection
-	protected void makeArrowHeadGUI (JComponent parent) {
-	    JPanel pal;
-	    pal = PaletteHelper.createVerticalPanel(null);
-	    final JComboBox jcb = new JComboBox();
-	    jcb.addItem("None");
-	    jcb.addItem("Arrow Forward");
-	    jcb.addItem("Arrow Back");
-	    jcb.addItem("Arrow Both");
-	    jcb.setSelectedIndex(arrowtype+1);
-	    jcb.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    switch (jcb.getSelectedIndex()) {
-			case 0:
-			    System.out.println("TestLayer: no arrows");
-			    omline.addArrowHead(false);
-			    arrowhead = false;
-			    arrowtype = -1;
-			    break;
-			case 1:
-			    System.out.println("TestLayer: arrows forward");
-			    arrowhead = true;
-			    arrowtype = 
-				OMArrowHead.ARROWHEAD_DIRECTION_FORWARD;
-			    break;
-			case 2:
-			    System.out.println("TestLayer: arrows backward");
-			    arrowhead = true;
-			    arrowtype = 
-				OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD;
-			    break;
-			case 3:
-			    System.out.println("TestLayer: arrows both");
-			    arrowhead = true;
-			    arrowtype = 
-				OMArrowHead.ARROWHEAD_DIRECTION_BOTH;
-			    break;
-		    }
-		    setList(generateGraphics());
-		    repaint();
-		}
-	    });
-	    pal.add(jcb);
-	    parent.add(pal);
-	}
+        public Line () {
+            llpts[0] = 45f; llpts[1] = -90f;
+            llpts[2] = 0f; llpts[3] = -180f;
+            xypts[0] = 45; xypts[1] = 90;
+            xypts[2] = 0; xypts[3] = 180;
+            lineColor = 5;
+        }
 
 
-	public JPanel getGUI () {
-	    // request focus
-	    requestFocus();
+        // makes arrow head selection
+        protected void makeArrowHeadGUI (JComponent parent) {
+            JPanel pal;
+            pal = PaletteHelper.createVerticalPanel(null);
+            final JComboBox jcb = new JComboBox();
+            jcb.addItem("None");
+            jcb.addItem("Arrow Forward");
+            jcb.addItem("Arrow Back");
+            jcb.addItem("Arrow Both");
+            jcb.setSelectedIndex(arrowtype+1);
+            jcb.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    switch (jcb.getSelectedIndex()) {
+                        case 0:
+                            System.out.println("TestLayer: no arrows");
+                            omline.addArrowHead(false);
+                            arrowhead = false;
+                            arrowtype = -1;
+                            break;
+                        case 1:
+                            System.out.println("TestLayer: arrows forward");
+                            arrowhead = true;
+                            arrowtype = 
+                                OMArrowHead.ARROWHEAD_DIRECTION_FORWARD;
+                            break;
+                        case 2:
+                            System.out.println("TestLayer: arrows backward");
+                            arrowhead = true;
+                            arrowtype = 
+                                OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD;
+                            break;
+                        case 3:
+                            System.out.println("TestLayer: arrows both");
+                            arrowhead = true;
+                            arrowtype = 
+                                OMArrowHead.ARROWHEAD_DIRECTION_BOTH;
+                            break;
+                    }
+                    setList(generateGraphics());
+                    repaint();
+                }
+            });
+            pal.add(jcb);
+            parent.add(pal);
+        }
 
-	    JTextField tf;
-	    JPanel pal;
-	    final JPanel pop;
-	    pop = PaletteHelper.createVerticalPanel(null);
 
-	    // add arrowheads
-	    if (!(this instanceof Rect))
-		makeArrowHeadGUI(pop);
+        public JPanel getGUI () {
+            // request focus
+            requestFocus();
 
-	    if (rt == OMGraphic.RENDERTYPE_LATLON) {
-		pal = PaletteHelper.createVerticalPanel(null);
-		JComboBox jcb = new JComboBox();
-		jcb.addItem("Straight");// indices correspond to LineType.java
-		jcb.addItem("Rhumb");
-		jcb.addItem("Great Circle");
-		jcb.setSelectedIndex(type-1);
-		jcb.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-			setType((JComboBox)e.getSource());
-		    }
-		});
-		pal.add(jcb);
-		pop.add(pal);
-		tf = PaletteHelper.createTextEntry("nsegs", ""+nsegs, pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setSegs((JTextField)e.getSource());
-		    }
-		});
-	    }
-	    if (rt != OMGraphic.RENDERTYPE_XY) {
-		tf = PaletteHelper.createTextEntry("lat1", ""+llpts[0], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setLLCoordinate((JTextField)e.getSource(), 0);
-		    }
-		});
-		tf = PaletteHelper.createTextEntry("lon1", ""+llpts[1], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setLLCoordinate((JTextField)e.getSource(), 1);
-		    }
-		});
-	    }
+            JTextField tf;
+            JPanel pal;
+            final JPanel pop;
+            pop = PaletteHelper.createVerticalPanel(null);
 
-	    if (rt == OMGraphic.RENDERTYPE_LATLON) {
-		tf = PaletteHelper.createTextEntry("lat2", ""+llpts[2], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setLLCoordinate((JTextField)e.getSource(), 2);
-		    }
-		});
-		tf = PaletteHelper.createTextEntry("lon2", ""+llpts[3], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setLLCoordinate((JTextField)e.getSource(), 3);
-		    }
-		});
-	    } else {
-		tf = PaletteHelper.createTextEntry("x1", ""+xypts[0], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setXYCoordinate((JTextField)e.getSource(), 0);
-		    }
-		});
-		tf = PaletteHelper.createTextEntry("y1", ""+xypts[1], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setXYCoordinate((JTextField)e.getSource(), 1);
-		    }
-		});
-		tf = PaletteHelper.createTextEntry("x2", ""+xypts[2], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setXYCoordinate((JTextField)e.getSource(), 2);
-		    }
-		});
-		tf = PaletteHelper.createTextEntry("y2", ""+xypts[3], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setXYCoordinate((JTextField)e.getSource(), 3);
-		    }
-		});
-	    }
+            // add arrowheads
+            if (!(this instanceof Rect))
+                makeArrowHeadGUI(pop);
 
-	    // line color
-	    makeColorBox(pop, "line", false);
+            if (rt == OMGraphic.RENDERTYPE_LATLON) {
+                pal = PaletteHelper.createVerticalPanel(null);
+                JComboBox jcb = new JComboBox();
+                jcb.addItem("Straight");// indices correspond to LineType.java
+                jcb.addItem("Rhumb");
+                jcb.addItem("Great Circle");
+                jcb.setSelectedIndex(type-1);
+                jcb.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        setType((JComboBox)e.getSource());
+                    }
+                });
+                pal.add(jcb);
+                pop.add(pal);
+                tf = PaletteHelper.createTextEntry("nsegs", ""+nsegs, pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setSegs((JTextField)e.getSource());
+                    }
+                });
+            }
+            if (rt != OMGraphic.RENDERTYPE_XY) {
+                tf = PaletteHelper.createTextEntry("lat1", ""+llpts[0], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setLLCoordinate((JTextField)e.getSource(), 0);
+                    }
+                });
+                tf = PaletteHelper.createTextEntry("lon1", ""+llpts[1], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setLLCoordinate((JTextField)e.getSource(), 1);
+                    }
+                });
+            }
 
-	    // fill color
-	    if (this instanceof Rect)
-		makeColorBox(pop, "fill", true);
+            if (rt == OMGraphic.RENDERTYPE_LATLON) {
+                tf = PaletteHelper.createTextEntry("lat2", ""+llpts[2], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setLLCoordinate((JTextField)e.getSource(), 2);
+                    }
+                });
+                tf = PaletteHelper.createTextEntry("lon2", ""+llpts[3], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setLLCoordinate((JTextField)e.getSource(), 3);
+                    }
+                });
+            } else {
+                tf = PaletteHelper.createTextEntry("x1", ""+xypts[0], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setXYCoordinate((JTextField)e.getSource(), 0);
+                    }
+                });
+                tf = PaletteHelper.createTextEntry("y1", ""+xypts[1], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setXYCoordinate((JTextField)e.getSource(), 1);
+                    }
+                });
+                tf = PaletteHelper.createTextEntry("x2", ""+xypts[2], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setXYCoordinate((JTextField)e.getSource(), 2);
+                    }
+                });
+                tf = PaletteHelper.createTextEntry("y2", ""+xypts[3], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setXYCoordinate((JTextField)e.getSource(), 3);
+                    }
+                });
+            }
 
-	    // filled?
-	    if (this instanceof Rect)
-		makeFillCheckBox(pop);
+            // line color
+            makeColorBox(pop, "line", false);
 
-	    // add ok button
-	    pop.add(getOKButton());
+            // fill color
+            if (this instanceof Rect)
+                makeColorBox(pop, "fill", true);
 
-	    return pop;
-	}
+            // filled?
+            if (this instanceof Rect)
+                makeFillCheckBox(pop);
+
+            // add ok button
+            pop.add(getOKButton());
+
+            return pop;
+        }
     }
 
     protected class Rect extends Line {
-	public Rect() {
-	    llpts[0] = -80f; llpts[1] = 0f;
-	    llpts[2] = 10f; llpts[3] = 45f;
-	    xypts[0] = 250; xypts[1] = 100;
-	    xypts[2] = 150; xypts[3] = 380;
-	    lineColor = 0;
-	    fillColor = 9;
-	    type = OMGraphic.LINETYPE_RHUMB;
-	}
+        public Rect() {
+            llpts[0] = -80f; llpts[1] = 0f;
+            llpts[2] = 10f; llpts[3] = 45f;
+            xypts[0] = 250; xypts[1] = 100;
+            xypts[2] = 150; xypts[3] = 380;
+            lineColor = 0;
+            fillColor = 9;
+            type = OMGraphic.LINETYPE_RHUMB;
+        }
     }
 
     protected class Circle extends GraphicBase {
 
-	public Circle () {
-	    xypts[0] = 10; xypts[1] = 20;
-	    width=10;
-	    height=20;
-	    fillColor=0;
-	}
+        public Circle () {
+            xypts[0] = 10; xypts[1] = 20;
+            width=10;
+            height=20;
+            fillColor=0;
+        }
 
-	public JPanel getGUI() {
-	    // request focus
-	    requestFocus();
+        public JPanel getGUI() {
+            // request focus
+            requestFocus();
 
-	    final JPanel pop;
-	    JPanel pal;
-	    JTextField tf;
-	    pop = PaletteHelper.createVerticalPanel(null);
+            final JPanel pop;
+            JPanel pal;
+            JTextField tf;
+            pop = PaletteHelper.createVerticalPanel(null);
 
-	    if (rt != OMGraphic.RENDERTYPE_XY) {
-		tf = PaletteHelper.createTextEntry("lat", ""+llpts[0], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setLLCoordinate((JTextField)e.getSource(), 0);
-		    }
-		});
-		tf = PaletteHelper.createTextEntry("lon", ""+llpts[1], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setLLCoordinate((JTextField)e.getSource(), 1);
-		    }
-		});
-	    } else {
-		tf = PaletteHelper.createTextEntry("x", ""+xypts[0], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setXYCoordinate((JTextField)e.getSource(), 0);
-		    }
-		});
-		tf = PaletteHelper.createTextEntry("y", ""+xypts[1], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setXYCoordinate((JTextField)e.getSource(), 1);
-		    }
-		});
-	    }
+            if (rt != OMGraphic.RENDERTYPE_XY) {
+                tf = PaletteHelper.createTextEntry("lat", ""+llpts[0], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setLLCoordinate((JTextField)e.getSource(), 0);
+                    }
+                });
+                tf = PaletteHelper.createTextEntry("lon", ""+llpts[1], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setLLCoordinate((JTextField)e.getSource(), 1);
+                    }
+                });
+            } else {
+                tf = PaletteHelper.createTextEntry("x", ""+xypts[0], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setXYCoordinate((JTextField)e.getSource(), 0);
+                    }
+                });
+                tf = PaletteHelper.createTextEntry("y", ""+xypts[1], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setXYCoordinate((JTextField)e.getSource(), 1);
+                    }
+                });
+            }
 
-	    if (rt == OMGraphic.RENDERTYPE_OFFSET) {
-		tf = PaletteHelper.createTextEntry("off_x", ""+xypts[0], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setXYCoordinate((JTextField)e.getSource(), 0);
-		    }
-		});
-		tf = PaletteHelper.createTextEntry("off_y", ""+xypts[1], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setXYCoordinate((JTextField)e.getSource(), 1);
-		    }
-		});
-	    } else if (rt == OMGraphic.RENDERTYPE_LATLON) {
-		tf = PaletteHelper.createTextEntry("R (km)", ""+radius, pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			JTextField jtf = (JTextField)e.getSource();
-			float f = radius;
-			try {
-			    f = Float.valueOf(jtf.getText().trim()).floatValue();
-			} catch (NumberFormatException ex) { return; }
-			radius = f;
-			System.out.println("TestLayer: radius="+radius);
-		    }
-		});
-		tf = PaletteHelper.createTextEntry("nverts", ""+nsegs, pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setSegs((JTextField)e.getSource());
-		    }
-		});
-	    }
+            if (rt == OMGraphic.RENDERTYPE_OFFSET) {
+                tf = PaletteHelper.createTextEntry("off_x", ""+xypts[0], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setXYCoordinate((JTextField)e.getSource(), 0);
+                    }
+                });
+                tf = PaletteHelper.createTextEntry("off_y", ""+xypts[1], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setXYCoordinate((JTextField)e.getSource(), 1);
+                    }
+                });
+            } else if (rt == OMGraphic.RENDERTYPE_LATLON) {
+                tf = PaletteHelper.createTextEntry("R (km)", ""+radius, pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        JTextField jtf = (JTextField)e.getSource();
+                        float f = radius;
+                        try {
+                            f = Float.valueOf(jtf.getText().trim()).floatValue();
+                        } catch (NumberFormatException ex) { return; }
+                        radius = f;
+                        System.out.println("TestLayer: radius="+radius);
+                    }
+                });
+                tf = PaletteHelper.createTextEntry("nverts", ""+nsegs, pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setSegs((JTextField)e.getSource());
+                    }
+                });
+            }
 
-	    if (rt != OMGraphic.RENDERTYPE_LATLON) {
-		tf = PaletteHelper.createTextEntry("width", ""+width, pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			JTextField jtf = (JTextField)e.getSource();
-			try {
-			    width = Integer.parseInt(jtf.getText().trim());
-			} catch (NumberFormatException ex) { return; }
-		    }
-		});
-		tf = PaletteHelper.createTextEntry("height", ""+height, pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			JTextField jtf = (JTextField)e.getSource();
-			try {
-			    height = Integer.parseInt(jtf.getText().trim());
-			} catch (NumberFormatException ex) { return; }
-		    }
-		});
-	    }
+            if (rt != OMGraphic.RENDERTYPE_LATLON) {
+                tf = PaletteHelper.createTextEntry("width", ""+width, pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        JTextField jtf = (JTextField)e.getSource();
+                        try {
+                            width = Integer.parseInt(jtf.getText().trim());
+                        } catch (NumberFormatException ex) { return; }
+                    }
+                });
+                tf = PaletteHelper.createTextEntry("height", ""+height, pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        JTextField jtf = (JTextField)e.getSource();
+                        try {
+                            height = Integer.parseInt(jtf.getText().trim());
+                        } catch (NumberFormatException ex) { return; }
+                    }
+                });
+            }
 
-	    // line color
-	    makeColorBox(pop, "line", false);
+            // line color
+            makeColorBox(pop, "line", false);
 
-	    // fill color
-	    makeColorBox(pop, "fill", true);
+            // fill color
+            makeColorBox(pop, "fill", true);
 
-	    // filled?
-	    makeFillCheckBox(pop);
+            // filled?
+            makeFillCheckBox(pop);
 
-	    // add ok button
-	    pop.add(getOKButton());
+            // add ok button
+            pop.add(getOKButton());
 
-	    return pop;
-	}
+            return pop;
+        }
     }
 
     protected class Poly extends GraphicBase {
 
-	protected float lat=0f;
-	protected float lon=0f;
-	protected int cMode=OMPoly.COORDMODE_ORIGIN;
+        protected float lat=0f;
+        protected float lon=0f;
+        protected int cMode=OMPoly.COORDMODE_ORIGIN;
 
-	public Poly() {
-	    llpts = new float[8];
-	    xypts = new int[6];
-	    llpts[0] = 10f; llpts[1] = -20f;
-	    llpts[2] = 45f; llpts[3] = -70f;
-	    llpts[4] = 0f;  llpts[5] = -90f;
-	    llpts[6] = -15f;llpts[7] = -40f;
-	    xypts[0] = 145; xypts[1] = 190;
-	    xypts[2] = 160; xypts[3] = 210;
-	    xypts[2] = 135; xypts[3] = 215;
-	    lineColor = 4;
-	    fillColor = 9;
-	    type = OMGraphic.LINETYPE_GREATCIRCLE;
-	}
+        public Poly() {
+            llpts = new float[8];
+            xypts = new int[6];
+            llpts[0] = 10f; llpts[1] = -20f;
+            llpts[2] = 45f; llpts[3] = -70f;
+            llpts[4] = 0f;  llpts[5] = -90f;
+            llpts[6] = -15f;llpts[7] = -40f;
+            xypts[0] = 145; xypts[1] = 190;
+            xypts[2] = 160; xypts[3] = 210;
+            xypts[2] = 135; xypts[3] = 215;
+            lineColor = 4;
+            fillColor = 9;
+            type = OMGraphic.LINETYPE_GREATCIRCLE;
+        }
 
-	// set latlon vertices
-	protected void setVertices(String verts) {
-	    try {
-		String str;
-		StringTokenizer tok = new StringTokenizer(verts, "\n\r");
+        // set latlon vertices
+        protected void setVertices(String verts) {
+            try {
+                String str;
+                StringTokenizer tok = new StringTokenizer(verts, "\n\r");
 
-		// clean out comments
-		verts = "";
-		while (tok.hasMoreTokens()) {
-		    str = tok.nextToken().trim();
-		    if (str.charAt(0) != '#') {
-			verts = verts + str + " ";
-		    }
-		}
+                // clean out comments
+                verts = "";
+                while (tok.hasMoreTokens()) {
+                    str = tok.nextToken().trim();
+                    if (str.charAt(0) != '#') {
+                        verts = verts + str + " ";
+                    }
+                }
 
-		// extract vertices
-		tok = new StringTokenizer(verts);
-		int size = tok.countTokens();
-		System.out.println("ll size="+size);
-		llpts = new float[size];
-		for (int i=0; i<size; i+=2) {
-		    str = tok.nextToken();
-		    System.out.print("lat="+str);
-		    llpts[i] = Float.valueOf(str).floatValue();
-		    str = tok.nextToken();
-		    System.out.println(" lon="+str);
-		    llpts[i+1] = Float.valueOf(str).floatValue();
-		}
-	    } catch (NumberFormatException ex) { return; }
-	}
+                // extract vertices
+                tok = new StringTokenizer(verts);
+                int size = tok.countTokens();
+                System.out.println("ll size="+size);
+                llpts = new float[size];
+                for (int i=0; i<size; i+=2) {
+                    str = tok.nextToken();
+                    System.out.print("lat="+str);
+                    llpts[i] = Float.valueOf(str).floatValue();
+                    str = tok.nextToken();
+                    System.out.println(" lon="+str);
+                    llpts[i+1] = Float.valueOf(str).floatValue();
+                }
+            } catch (NumberFormatException ex) { return; }
+        }
 
-	protected void setXY(JTextArea jta) {
-	    try {
-		if (false)
-		    throw new NumberFormatException("foo");
-	    } catch (NumberFormatException ex) { return; }
-	}
+        protected void setXY(JTextArea jta) {
+            try {
+                if (false)
+                    throw new NumberFormatException("foo");
+            } catch (NumberFormatException ex) { return; }
+        }
 
-	protected void setLL(JTextArea jta) {
-	    setVertices(jta.getText().trim());
-	}
+        protected void setLL(JTextArea jta) {
+            setVertices(jta.getText().trim());
+        }
 
-	protected void setLLCoordinate(JTextField jtf, int i) {
-	    try {
-		if (i==0)
-		    lat = Float.valueOf(
-			    jtf.getText().trim()).floatValue();
-		else
-		    lon = Float.valueOf(
-			    jtf.getText().trim()).floatValue();
-	    } catch (NumberFormatException ex) { return; }
-	}
+        protected void setLLCoordinate(JTextField jtf, int i) {
+            try {
+                if (i==0)
+                    lat = Float.valueOf(
+                            jtf.getText().trim()).floatValue();
+                else
+                    lon = Float.valueOf(
+                            jtf.getText().trim()).floatValue();
+            } catch (NumberFormatException ex) { return; }
+        }
 
-	public JPanel getGUI() {
-	    // request focus
-	    requestFocus();
+        public JPanel getGUI() {
+            // request focus
+            requestFocus();
 
-	    final JPanel pop;
-	    JPanel pal;
-	    JTextField tf;
-	    JTextArea ta;
-	    pop = PaletteHelper.createVerticalPanel(null);
+            final JPanel pop;
+            JPanel pal;
+            JTextField tf;
+            JTextArea ta;
+            pop = PaletteHelper.createVerticalPanel(null);
 
-	    if (rt == OMGraphic.RENDERTYPE_LATLON) {
-		pal = PaletteHelper.createVerticalPanel(null);
-		JComboBox jcb = new JComboBox();
-		jcb.addItem("Straight");// indices correspond to LineType.java
-		jcb.addItem("Rhumb");
-		jcb.addItem("Great Circle");
-		jcb.setSelectedIndex(type-1);
-		jcb.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-			setType((JComboBox)e.getSource());
-		    }
-		});
-		pal.add(jcb);
-		pop.add(pal);
-		tf = PaletteHelper.createTextEntry("nsegs", ""+nsegs, pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setSegs((JTextField)e.getSource());
-		    }
-		});
-		String entry="";
-		for (int i=0; i<llpts.length; i+=2) {
-		    entry = entry + llpts[i] + " " + llpts[i+1] + "\n";
-		}
-		ta = PaletteHelper.createTextArea("llpts", entry, pop, 5, 8);
-		ta.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setLL((JTextArea)e.getSource());
-		    }
-		});
-	    } else {
-		if (rt == OMGraphic.RENDERTYPE_OFFSET) {
-		    tf = PaletteHelper.createTextEntry("lat", ""+llpts[0], pop);
-		    tf.addFocusListener(new FocusAdapter() {
-			public void focusLost(FocusEvent e) {
-			    setLLCoordinate((JTextField)e.getSource(), 0);
-			}
-		    });
-		    tf = PaletteHelper.createTextEntry("lon", ""+llpts[1], pop);
-		    tf.addFocusListener(new FocusAdapter() {
-			public void focusLost(FocusEvent e) {
-			    setLLCoordinate((JTextField)e.getSource(), 1);
-			}
-		    });
-		}
-		String entry="";
-		for (int i=0; i<xypts.length; i+=2) {
-		    entry = entry + xypts[i] + " " + xypts[i+1] + "\n";
-		}
-		ta = PaletteHelper.createTextArea("xypts", entry, pop, 0, 0);
-		ta.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setXY((JTextArea)e.getSource());
-		    }
-		});
-	    }
+            if (rt == OMGraphic.RENDERTYPE_LATLON) {
+                pal = PaletteHelper.createVerticalPanel(null);
+                JComboBox jcb = new JComboBox();
+                jcb.addItem("Straight");// indices correspond to LineType.java
+                jcb.addItem("Rhumb");
+                jcb.addItem("Great Circle");
+                jcb.setSelectedIndex(type-1);
+                jcb.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        setType((JComboBox)e.getSource());
+                    }
+                });
+                pal.add(jcb);
+                pop.add(pal);
+                tf = PaletteHelper.createTextEntry("nsegs", ""+nsegs, pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setSegs((JTextField)e.getSource());
+                    }
+                });
+                String entry="";
+                for (int i=0; i<llpts.length; i+=2) {
+                    entry = entry + llpts[i] + " " + llpts[i+1] + "\n";
+                }
+                ta = PaletteHelper.createTextArea("llpts", entry, pop, 5, 8);
+                ta.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setLL((JTextArea)e.getSource());
+                    }
+                });
+            } else {
+                if (rt == OMGraphic.RENDERTYPE_OFFSET) {
+                    tf = PaletteHelper.createTextEntry("lat", ""+llpts[0], pop);
+                    tf.addFocusListener(new FocusAdapter() {
+                        public void focusLost(FocusEvent e) {
+                            setLLCoordinate((JTextField)e.getSource(), 0);
+                        }
+                    });
+                    tf = PaletteHelper.createTextEntry("lon", ""+llpts[1], pop);
+                    tf.addFocusListener(new FocusAdapter() {
+                        public void focusLost(FocusEvent e) {
+                            setLLCoordinate((JTextField)e.getSource(), 1);
+                        }
+                    });
+                }
+                String entry="";
+                for (int i=0; i<xypts.length; i+=2) {
+                    entry = entry + xypts[i] + " " + xypts[i+1] + "\n";
+                }
+                ta = PaletteHelper.createTextArea("xypts", entry, pop, 0, 0);
+                ta.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setXY((JTextArea)e.getSource());
+                    }
+                });
+            }
 
-	    // line color
-	    makeColorBox(pop, "line", false);
+            // line color
+            makeColorBox(pop, "line", false);
 
-	    // fill color
-	    makeColorBox(pop, "fill", true);
+            // fill color
+            makeColorBox(pop, "fill", true);
 
-	    // filled?
-	    makeFillCheckBox(pop);
+            // filled?
+            makeFillCheckBox(pop);
 
-	    // add ok button
-	    pop.add(getOKButton());
+            // add ok button
+            pop.add(getOKButton());
 
-	    return pop;
-	}
+            return pop;
+        }
     }
 
     protected class Text extends GraphicBase {
-	protected String data;
-	protected String font = "SansSerif-Bold-18";
-	protected int just = OMText.JUSTIFY_CENTER;
+        protected String data;
+        protected String font = "SansSerif-Bold-18";
+        protected int just = OMText.JUSTIFY_CENTER;
 
-	public Text() {
-	    llpts[0] = 42.35f; llpts[1] = -70.5f;
-	    xypts[0] = 20; xypts[1] = 10;
-	    lineColor = 10;
-	    data = "Boston";
-	}
+        public Text() {
+            llpts[0] = 42.35f; llpts[1] = -70.5f;
+            xypts[0] = 20; xypts[1] = 10;
+            lineColor = 10;
+            data = "Boston";
+        }
 
-	public JPanel getGUI() {
-	    // request focus
-	    requestFocus();
+        public JPanel getGUI() {
+            // request focus
+            requestFocus();
 
-	    final JPanel pop;
-	    JPanel pal;
-	    JTextField tf;
-	    final JComboBox jcb;
-	    pop = PaletteHelper.createVerticalPanel(null);
+            final JPanel pop;
+            JPanel pal;
+            JTextField tf;
+            final JComboBox jcb;
+            pop = PaletteHelper.createVerticalPanel(null);
 
-	    tf = PaletteHelper.createTextEntry("text", data, pop);
-	    tf.addFocusListener(new FocusAdapter() {
-		public void focusLost(FocusEvent e) {
-		    data = ((JTextField)(e.getSource())).getText().trim();
-		}
-	    });
+            tf = PaletteHelper.createTextEntry("text", data, pop);
+            tf.addFocusListener(new FocusAdapter() {
+                public void focusLost(FocusEvent e) {
+                    data = ((JTextField)(e.getSource())).getText().trim();
+                }
+            });
 
-	    tf = PaletteHelper.createTextEntry("font", font, pop);
-	    tf.addFocusListener(new FocusAdapter() {
-		public void focusLost(FocusEvent e) {
-		    font = ((JTextField)(e.getSource())).getText().trim();
-		}
-	    });
+            tf = PaletteHelper.createTextEntry("font", font, pop);
+            tf.addFocusListener(new FocusAdapter() {
+                public void focusLost(FocusEvent e) {
+                    font = ((JTextField)(e.getSource())).getText().trim();
+                }
+            });
 
-	    pal = PaletteHelper.createVerticalPanel(null);
-	    jcb = new JComboBox();
-	    jcb.addItem("right");// indices correspond to values in OMText
-	    jcb.addItem("center");
-	    jcb.addItem("left");
-	    jcb.setSelectedIndex(just);
-	    jcb.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    just = jcb.getSelectedIndex();
-		    setList(generateGraphics());
-		    repaint();
-		}
-	    });
-	    pal.add(jcb);
-	    pop.add(pal);
+            pal = PaletteHelper.createVerticalPanel(null);
+            jcb = new JComboBox();
+            jcb.addItem("right");// indices correspond to values in OMText
+            jcb.addItem("center");
+            jcb.addItem("left");
+            jcb.setSelectedIndex(just);
+            jcb.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    just = jcb.getSelectedIndex();
+                    setList(generateGraphics());
+                    repaint();
+                }
+            });
+            pal.add(jcb);
+            pop.add(pal);
 
-	    if (rt != OMGraphic.RENDERTYPE_XY) {
-		tf = PaletteHelper.createTextEntry("lat", ""+llpts[0], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setLLCoordinate((JTextField)e.getSource(), 0);
-		    }
-		});
-		tf = PaletteHelper.createTextEntry("lon", ""+llpts[1], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setLLCoordinate((JTextField)e.getSource(), 1);
-		    }
-		});
-	    }
+            if (rt != OMGraphic.RENDERTYPE_XY) {
+                tf = PaletteHelper.createTextEntry("lat", ""+llpts[0], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setLLCoordinate((JTextField)e.getSource(), 0);
+                    }
+                });
+                tf = PaletteHelper.createTextEntry("lon", ""+llpts[1], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setLLCoordinate((JTextField)e.getSource(), 1);
+                    }
+                });
+            }
 
-	    if (rt != OMGraphic.RENDERTYPE_LATLON) {
-		tf = PaletteHelper.createTextEntry("off_x", ""+xypts[0], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setXYCoordinate((JTextField)e.getSource(), 0);
-		    }
-		});
-		tf = PaletteHelper.createTextEntry("off_y", ""+xypts[1], pop);
-		tf.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			setXYCoordinate((JTextField)e.getSource(), 1);
-		    }
-		});
-	    }
+            if (rt != OMGraphic.RENDERTYPE_LATLON) {
+                tf = PaletteHelper.createTextEntry("off_x", ""+xypts[0], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setXYCoordinate((JTextField)e.getSource(), 0);
+                    }
+                });
+                tf = PaletteHelper.createTextEntry("off_y", ""+xypts[1], pop);
+                tf.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        setXYCoordinate((JTextField)e.getSource(), 1);
+                    }
+                });
+            }
 
-	    // line color
-	    makeColorBox(pop, "text", false);
+            // line color
+            makeColorBox(pop, "text", false);
 
-	    // add ok button
-	    pop.add(getOKButton());
+            // add ok button
+            pop.add(getOKButton());
 
-	    return pop;
-	}
+            return pop;
+        }
     }
 }

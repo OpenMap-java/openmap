@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPoint.java,v $
 // $RCSfile: ESRIPoint.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,7 +30,7 @@ import java.text.NumberFormat;
  *
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/26 18:18:11 $
  */
 public class ESRIPoint {
 
@@ -39,8 +39,8 @@ public class ESRIPoint {
 
     /** Static initializer for <code>format</code> */
     static {
-	format.setMaximumFractionDigits(6);
-	format.setMinimumFractionDigits(6);
+        format.setMaximumFractionDigits(6);
+        format.setMinimumFractionDigits(6);
     }
 
     /** The X coordinate. */
@@ -59,8 +59,8 @@ public class ESRIPoint {
      * @param _y the y coordinate
      */
     public ESRIPoint(double _x, double _y) {
-	x = _x;
-	y = _y;
+        x = _x;
+        y = _y;
     }
 
     /**
@@ -83,14 +83,14 @@ public class ESRIPoint {
      * @return a string representing this point
      */
     public String toString() {
-	return "ESRIPoint[" + format.format(x) + "," + format.format(y) + "]";
+        return "ESRIPoint[" + format.format(x) + "," + format.format(y) + "]";
     }
 
     /**
      * 
      */
 //     public int binaryStoreSize() {
-// 	return 28;		// Constant for Point records
+//      return 28;              // Constant for Point records
 //     }
 
     /**
@@ -100,8 +100,8 @@ public class ESRIPoint {
      * @param off the offset into the buffer
      */
     public ESRIPoint(byte b[], int off) {
-	x = ShapeUtils.readLEDouble(b, off);
-	y = ShapeUtils.readLEDouble(b, off + 8);
+        x = ShapeUtils.readLEDouble(b, off);
+        y = ShapeUtils.readLEDouble(b, off + 8);
     }
 
     /**
@@ -112,9 +112,9 @@ public class ESRIPoint {
      * @return then number of bytes written
      */
     public int write(byte[] b, int off) {
-	int nBytes = ShapeUtils.writeLEDouble(b, off, x);
-	nBytes += ShapeUtils.writeLEDouble(b, off + nBytes, y);
-	return nBytes;
+        int nBytes = ShapeUtils.writeLEDouble(b, off, x);
+        nBytes += ShapeUtils.writeLEDouble(b, off + nBytes, y);
+        return nBytes;
     }
 
     /**
@@ -124,10 +124,10 @@ public class ESRIPoint {
      * @return true if equal, false otherwise
      */
     public boolean equals(Object obj) {
-	if (obj instanceof ESRIPoint) {
-	    ESRIPoint pt= (ESRIPoint) obj;
-	    return (x == pt.x && y == pt.y);
-	}
-	return false;
+        if (obj instanceof ESRIPoint) {
+            ESRIPoint pt= (ESRIPoint) obj;
+            return (x == pt.x && y == pt.y);
+        }
+        return false;
     }
 }

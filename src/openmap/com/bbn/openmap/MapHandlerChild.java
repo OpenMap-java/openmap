@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapHandlerChild.java,v $
 // $RCSfile: MapHandlerChild.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/04 14:41:14 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -93,9 +93,9 @@ public class MapHandlerChild
      * Find the ones you need, and hook yourself up.
      */
     public void findAndInit(Iterator it) {
-	while (it.hasNext()) {
-	    findAndInit(it.next());
-	}
+        while (it.hasNext()) {
+            findAndInit(it.next());
+        }
     }
 
     /**
@@ -111,7 +111,7 @@ public class MapHandlerChild
      * is added to the BeanContext of this object.  
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
-	findAndInit(bcme.iterator());      
+        findAndInit(bcme.iterator());      
     }
     
     /**
@@ -123,10 +123,10 @@ public class MapHandlerChild
      * in those methods.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-	Iterator it = bcme.iterator();
-	while (it.hasNext()) {
-	    findAndUndo(it.next());
-	}
+        Iterator it = bcme.iterator();
+        while (it.hasNext()) {
+            findAndUndo(it.next());
+        }
     }
 
     /**
@@ -139,7 +139,7 @@ public class MapHandlerChild
 
     /** Method for BeanContextChild interface. */
     public BeanContext getBeanContext() {
-	return beanContextChildSupport.getBeanContext();
+        return beanContextChildSupport.getBeanContext();
     }
   
     /**
@@ -149,13 +149,13 @@ public class MapHandlerChild
      * objects currently contained in the BeanContext.  
      */
     public void setBeanContext(BeanContext in_bc) 
-	throws PropertyVetoException {
+        throws PropertyVetoException {
 
-	if (in_bc != null) {
-	    in_bc.addBeanContextMembershipListener(this);
-	    beanContextChildSupport.setBeanContext(in_bc);
-	    findAndInit(in_bc.iterator());
-	}
+        if (in_bc != null) {
+            in_bc.addBeanContextMembershipListener(this);
+            beanContextChildSupport.setBeanContext(in_bc);
+            findAndInit(in_bc.iterator());
+        }
     }
   
     /**
@@ -165,8 +165,8 @@ public class MapHandlerChild
      * java.awt.Component.
      */
     public void addPropertyChangeListener(String propertyName,
-					  PropertyChangeListener in_pcl) {
-	beanContextChildSupport.addPropertyChangeListener(propertyName, in_pcl);
+                                          PropertyChangeListener in_pcl) {
+        beanContextChildSupport.addPropertyChangeListener(propertyName, in_pcl);
     }
 
     /**
@@ -176,8 +176,8 @@ public class MapHandlerChild
      * java.awt.Component.
      */
     public void removePropertyChangeListener(String propertyName, 
-					     PropertyChangeListener in_pcl) {
-	beanContextChildSupport.removePropertyChangeListener(propertyName, in_pcl);
+                                             PropertyChangeListener in_pcl) {
+        beanContextChildSupport.removePropertyChangeListener(propertyName, in_pcl);
     }
   
     /**
@@ -187,8 +187,8 @@ public class MapHandlerChild
      * property change.
      */
     public void addVetoableChangeListener(String propertyName,
-					  VetoableChangeListener in_vcl) {
-	beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
+                                          VetoableChangeListener in_vcl) {
+        beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
     }
   
     /**
@@ -197,8 +197,8 @@ public class MapHandlerChild
      * property.  The listener has the power to veto property changes.
      */
     public void removeVetoableChangeListener(String propertyName, 
-					     VetoableChangeListener in_vcl) {
-	beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
+                                             VetoableChangeListener in_vcl) {
+        beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
     }
 
     /**
@@ -208,9 +208,9 @@ public class MapHandlerChild
      * java.awt.Component.
      */
     public void firePropertyChange(String name, 
-				   Object oldValue, 
-				   Object newValue) {
-	beanContextChildSupport.firePropertyChange(name, oldValue, newValue);
+                                   Object oldValue, 
+                                   Object newValue) {
+        beanContextChildSupport.firePropertyChange(name, oldValue, newValue);
     }
 
     /**
@@ -231,9 +231,9 @@ public class MapHandlerChild
      * change to be rolled back.
      */
     public void fireVetoableChange(String name, 
-				   Object oldValue, 
-				   Object newValue) 
-	throws PropertyVetoException {
-	beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
+                                   Object oldValue, 
+                                   Object newValue) 
+        throws PropertyVetoException {
+        beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
     }
 }

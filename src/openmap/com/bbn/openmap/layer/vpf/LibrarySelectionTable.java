@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibrarySelectionTable.java,v $
-// $Revision: 1.7 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
+// $Revision: 1.8 $ $Date: 2004/01/26 18:18:12 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -75,7 +75,7 @@ public class LibrarySelectionTable {
      * handle the file.
      */
     public LibrarySelectionTable(String vpfpath) throws FormatException {
-	addDataPath(vpfpath);
+        addDataPath(vpfpath);
     }
   
     /**
@@ -88,8 +88,8 @@ public class LibrarySelectionTable {
      */
     public LibrarySelectionTable(String vpfpaths[]) throws FormatException {
         for (int i = 0; i < vpfpaths.length; i++) {
- 	    addDataPath(vpfpaths[i]);
-	}
+            addDataPath(vpfpaths[i]);
+        }
     }
 
     /**
@@ -99,14 +99,14 @@ public class LibrarySelectionTable {
      * is 1:31000000, no map data will be returned.
      */
     public void setCutoffScale(int scale) {
-	BROWSE_CUTOFF = scale;
+        BROWSE_CUTOFF = scale;
     }
 
     /**
      * Get the cutoff scale where data will be retrieved.
      */
     public int getCutoffScale() {
-	return BROWSE_CUTOFF;
+        return BROWSE_CUTOFF;
     }
 
     /**
@@ -121,72 +121,72 @@ public class LibrarySelectionTable {
      * handle the file.
      */
     public void addDataPath(String vpfpath) throws FormatException {
-	if (Debug.debugging("vpf")) {
-	    Debug.output("LST.addDataPath(" + vpfpath + ")");
-	}
-	// Figure out how files names should be constructed...
-	boolean addSlash = true;
+        if (Debug.debugging("vpf")) {
+            Debug.output("LST.addDataPath(" + vpfpath + ")");
+        }
+        // Figure out how files names should be constructed...
+        boolean addSlash = true;
 
-// 	if (vpfpath.endsWith(File.separator)) {
-	if (vpfpath.endsWith("/") || vpfpath.endsWith(File.separator)) {
-	    addSlash = false;
-	}
+//      if (vpfpath.endsWith(File.separator)) {
+        if (vpfpath.endsWith("/") || vpfpath.endsWith(File.separator)) {
+            addSlash = false;
+        }
 
-	String latf = vpfpath + (addSlash?"/":"") + "lat";
-	String dhtf = vpfpath + (addSlash?"/":"") + "dht";
+        String latf = vpfpath + (addSlash?"/":"") + "lat";
+        String dhtf = vpfpath + (addSlash?"/":"") + "dht";
 
-	if (!BinaryFile.exists(latf)) {
-	    latf = latf + ".";
-	    dhtf = dhtf + ".";
-	}
+        if (!BinaryFile.exists(latf)) {
+            latf = latf + ".";
+            dhtf = dhtf + ".";
+        }
 
-	DcwRecordFile latrf = new DcwRecordFile(latf);
-	DcwRecordFile dhtrf = new DcwRecordFile(dhtf);
+        DcwRecordFile latrf = new DcwRecordFile(latf);
+        DcwRecordFile dhtrf = new DcwRecordFile(dhtf);
 
-	List databaseVec = dhtrf.parseRow();
-	int dcol = dhtrf.whatColumn("database_name");
-	if (dcol != -1) {
-	    databaseName = (String)databaseVec.get(dcol);
-	}
-	dcol = dhtrf.whatColumn("database_desc");
-	if (dcol != -1) {
-	    databaseDesc = (String)databaseVec.get(dcol);
-	}
-	dhtrf.close();
-	dhtrf = null;
-	
-	int latcols[] = latrf.lookupSchema(LATColumns, true,
-					   LATschematype,
-					   LATschemalength, false);
+        List databaseVec = dhtrf.parseRow();
+        int dcol = dhtrf.whatColumn("database_name");
+        if (dcol != -1) {
+            databaseName = (String)databaseVec.get(dcol);
+        }
+        dcol = dhtrf.whatColumn("database_desc");
+        if (dcol != -1) {
+            databaseDesc = (String)databaseVec.get(dcol);
+        }
+        dhtrf.close();
+        dhtrf = null;
+        
+        int latcols[] = latrf.lookupSchema(LATColumns, true,
+                                           LATschematype,
+                                           LATschemalength, false);
 
-	Debug.message("vpf", "lst.adp: looked up schema");
-	for (List l = new ArrayList(latrf.getColumnCount());
-	     latrf.parseRow(l); ) {
-	    String lname = ((String)l.get(latcols[0])).toLowerCase();
-	    float br[] = new float[] {
-		((Float)l.get(latcols[1])).floatValue(),
-		((Float)l.get(latcols[2])).floatValue(),
-		((Float)l.get(latcols[3])).floatValue(),
-		((Float)l.get(latcols[4])).floatValue()};
-	    try {
-	        CoverageAttributeTable table = new CoverageAttributeTable(vpfpath, lname);
-		CATs.put(lname, table);
-		boundrec.put(lname, br);
-		if (Debug.debugging("vpf")) {
-  		    Debug.output(lname + " "  + br[0] + " " + br[1] + " "
-				 + br[2] + " " + br[3]);
-		}
-	    } catch (FormatException fe) {
-		if (Debug.debugging("vpf")){
-		    Debug.output("*****\nVPFLayer.LST: Couldn't create CoverageAttributeTable for " + vpfpath + " " + lname + " " + fe.getMessage() + "\n--- Not a problem if you have multiple paths, and " + lname + " is included in another path ---\n*****");
-		    fe.printStackTrace();
-		} else {
-		    Debug.output("VPFLayer.LST: CAT discrepancy (run with -Ddebug.vpf for more details)");
-		}
-	    }
-	}
-	latrf.close();
-	latrf=null;
+        Debug.message("vpf", "lst.adp: looked up schema");
+        for (List l = new ArrayList(latrf.getColumnCount());
+             latrf.parseRow(l); ) {
+            String lname = ((String)l.get(latcols[0])).toLowerCase();
+            float br[] = new float[] {
+                ((Float)l.get(latcols[1])).floatValue(),
+                ((Float)l.get(latcols[2])).floatValue(),
+                ((Float)l.get(latcols[3])).floatValue(),
+                ((Float)l.get(latcols[4])).floatValue()};
+            try {
+                CoverageAttributeTable table = new CoverageAttributeTable(vpfpath, lname);
+                CATs.put(lname, table);
+                boundrec.put(lname, br);
+                if (Debug.debugging("vpf")) {
+                    Debug.output(lname + " "  + br[0] + " " + br[1] + " "
+                                 + br[2] + " " + br[3]);
+                }
+            } catch (FormatException fe) {
+                if (Debug.debugging("vpf")){
+                    Debug.output("*****\nVPFLayer.LST: Couldn't create CoverageAttributeTable for " + vpfpath + " " + lname + " " + fe.getMessage() + "\n--- Not a problem if you have multiple paths, and " + lname + " is included in another path ---\n*****");
+                    fe.printStackTrace();
+                } else {
+                    Debug.output("VPFLayer.LST: CAT discrepancy (run with -Ddebug.vpf for more details)");
+                }
+            }
+        }
+        latrf.close();
+        latrf=null;
     }
     
     /**
@@ -223,7 +223,7 @@ public class LibrarySelectionTable {
      *   the library
      */
     public CoverageAttributeTable getCAT(String library)
-	throws FormatException {
+        throws FormatException {
         return (CoverageAttributeTable)CATs.get(library);
     }
 
@@ -232,174 +232,174 @@ public class LibrarySelectionTable {
      *
      */
     public void drawTile(int scale, int screenwidth, int screenheight,
-			 String covname, VPFGraphicWarehouse warehouse,
-			 LatLonPoint ll1, LatLonPoint ll2) {
+                         String covname, VPFGraphicWarehouse warehouse,
+                         LatLonPoint ll1, LatLonPoint ll2) {
 
-	if (Debug.debugging("vpf")) {
-	    Debug.output("Library selection table coverage: " + covname);
-	    Debug.output("Library selection table - edges: " +
-			 warehouse.drawEdgeFeatures());
-	    Debug.output("Library selection table - text: " +
-			 warehouse.drawTextFeatures());
-	    Debug.output("Library selection table - areas: " +
-			 warehouse.drawAreaFeatures());
-	    Debug.output("Warehouse: " + warehouse);
-	    Debug.output("Warehouse: cutoff scale " + BROWSE_CUTOFF);
-	}
+        if (Debug.debugging("vpf")) {
+            Debug.output("Library selection table coverage: " + covname);
+            Debug.output("Library selection table - edges: " +
+                         warehouse.drawEdgeFeatures());
+            Debug.output("Library selection table - text: " +
+                         warehouse.drawTextFeatures());
+            Debug.output("Library selection table - areas: " +
+                         warehouse.drawAreaFeatures());
+            Debug.output("Warehouse: " + warehouse);
+            Debug.output("Warehouse: cutoff scale " + BROWSE_CUTOFF);
+        }
 
-	// handle Dateline
-	if ((scale < BROWSE_CUTOFF) && (ll1.getLongitude() > ll2.getLongitude())) {
-	    drawTile(scale, screenwidth, screenheight, covname, warehouse, ll1, new LatLonPoint(ll2.getLatitude(), 180f-.00001f)/*180-epsilon*/);
-	    drawTile(scale, screenwidth, screenheight, covname, warehouse,
-		     new LatLonPoint(ll1.getLatitude(), -180f), ll2);
-	    return;
-	}
+        // handle Dateline
+        if ((scale < BROWSE_CUTOFF) && (ll1.getLongitude() > ll2.getLongitude())) {
+            drawTile(scale, screenwidth, screenheight, covname, warehouse, ll1, new LatLonPoint(ll2.getLatitude(), 180f-.00001f)/*180-epsilon*/);
+            drawTile(scale, screenwidth, screenheight, covname, warehouse,
+                     new LatLonPoint(ll1.getLatitude(), -180f), ll2);
+            return;
+        }
 
-	if (Debug.debugging("vpf")) {
-	    Debug.output("LST.drawTile() with scale of " + scale);
-	}
+        if (Debug.debugging("vpf")) {
+            Debug.output("LST.drawTile() with scale of " + scale);
+        }
 
-	float dpplat = Math.abs((ll1.getLatitude() - ll2.getLatitude()) 
-				/ screenheight);
-	float dpplon = Math.abs((ll1.getLongitude() - ll2.getLongitude()) 
-				/ screenwidth);
-	
-	int inArea = 0;
-	CoverageTable redrawUntiled = null;
-	String useLibrary = warehouse.getUseLibrary();
+        float dpplat = Math.abs((ll1.getLatitude() - ll2.getLatitude()) 
+                                / screenheight);
+        float dpplon = Math.abs((ll1.getLongitude() - ll2.getLongitude()) 
+                                / screenwidth);
+        
+        int inArea = 0;
+        CoverageTable redrawUntiled = null;
+        String useLibrary = warehouse.getUseLibrary();
 
-	for (Iterator i = CATs.values().iterator(); i.hasNext();) {
+        for (Iterator i = CATs.values().iterator(); i.hasNext();) {
 
-	    CoverageAttributeTable cat = (CoverageAttributeTable)i.next();
-	    if (Debug.debugging("vpf")) {
-		Debug.output("LST: checking library: " + cat.getLibraryName());
-	    }
+            CoverageAttributeTable cat = (CoverageAttributeTable)i.next();
+            if (Debug.debugging("vpf")) {
+                Debug.output("LST: checking library: " + cat.getLibraryName());
+            }
 
-	    if (useLibrary != null && !useLibrary.equalsIgnoreCase(cat.getLibraryName())) {
-		continue;
-	    }
+            if (useLibrary != null && !useLibrary.equalsIgnoreCase(cat.getLibraryName())) {
+                continue;
+            }
 
-	    warehouse.resetForCAT();
+            warehouse.resetForCAT();
 
-	    List tiles = cat.tilesInRegion(ll1.getLatitude(),
-					   ll2.getLatitude(),
-					   ll2.getLongitude(),
-					   ll1.getLongitude());
+            List tiles = cat.tilesInRegion(ll1.getLatitude(),
+                                           ll2.getLatitude(),
+                                           ll2.getLongitude(),
+                                           ll1.getLongitude());
 
-	    if (tiles == null) {
-		redrawUntiled = cat.getCoverageTable(covname);
-	    } else if (cat.isTiledData()  && (scale < BROWSE_CUTOFF)) {
+            if (tiles == null) {
+                redrawUntiled = cat.getCoverageTable(covname);
+            } else if (cat.isTiledData()  && (scale < BROWSE_CUTOFF)) {
 
-  		if (!tiles.isEmpty()) {
-		    CoverageTable c = cat.getCoverageTable(covname);
-		    if (c == null) {
-			if (Debug.debugging("vpf")) {
-			    Debug.output("|LST.drawTile(): Couldn't get coverage table for " + covname + " " + cat.getLibraryName());
-			}
-			continue;
-		    }
+                if (!tiles.isEmpty()) {
+                    CoverageTable c = cat.getCoverageTable(covname);
+                    if (c == null) {
+                        if (Debug.debugging("vpf")) {
+                            Debug.output("|LST.drawTile(): Couldn't get coverage table for " + covname + " " + cat.getLibraryName());
+                        }
+                        continue;
+                    }
 
-		    if (Debug.debugging("vpf")) {
-			Debug.output("Using coverage table for "
-				     + covname + " " + cat.getLibraryName());
-		    }
+                    if (Debug.debugging("vpf")) {
+                        Debug.output("Using coverage table for "
+                                     + covname + " " + cat.getLibraryName());
+                    }
 
-		    inArea++;
-		    for (Iterator tile = tiles.iterator(); tile.hasNext(); ) {
-			c.drawTile((TileDirectory)tile.next(), warehouse,
-				   ll1, ll2, dpplat, dpplon);
-		    }
-  		}
-	    }
-	}
-	if ((redrawUntiled != null) && (inArea == 0)) {
-	    if (Debug.debugging("vpf")) {
-		Debug.output("LST drawing untiled browse data");
-	    }
-	    redrawUntiled.drawTile(new TileDirectory(), warehouse, ll1, ll2,
-				   dpplat, dpplon);
-	}
+                    inArea++;
+                    for (Iterator tile = tiles.iterator(); tile.hasNext(); ) {
+                        c.drawTile((TileDirectory)tile.next(), warehouse,
+                                   ll1, ll2, dpplat, dpplon);
+                    }
+                }
+            }
+        }
+        if ((redrawUntiled != null) && (inArea == 0)) {
+            if (Debug.debugging("vpf")) {
+                Debug.output("LST drawing untiled browse data");
+            }
+            redrawUntiled.drawTile(new TileDirectory(), warehouse, ll1, ll2,
+                                   dpplat, dpplon);
+        }
     }
 
     /**
      *
      */
     public void drawFeatures(int scale, int screenwidth, int screenheight,
-			     String covname, VPFFeatureWarehouse warehouse,
-			     LatLonPoint ll1, LatLonPoint ll2) {
-	
-	if (Debug.debugging("vpf")) {
-	    Debug.output("LST.drawFeatures(): Coverage name: " + 
-			 covname);
-	    Debug.output("Library selection table - edges: " +
-			 warehouse.drawEdgeFeatures());
-	    Debug.output("Library selection table - text: " +
-			 warehouse.drawTextFeatures());
-	    Debug.output("Library selection table - areas: " +
-			 warehouse.drawAreaFeatures());
-	    Debug.output("Warehouse: " + warehouse);
-	}
-	
-	// handle Dateline
-	if ((scale < BROWSE_CUTOFF) && (ll1.getLongitude() > ll2.getLongitude())) {
-	    drawFeatures(scale, screenwidth, screenheight, covname, warehouse,
-			 ll1,
-			 new LatLonPoint(ll2.getLatitude(), 180f-.00001f)//180-epsilon
-			 );
-	    drawFeatures(scale, screenwidth, screenheight, covname, warehouse,
-			 new LatLonPoint(ll1.getLatitude(), -180f), ll2);
-	    return;
-	}
-	
-	if (Debug.debugging("vpf")) {
-	    Debug.output("LST.drawFeatures() with scale of " + scale);
-	}
+                             String covname, VPFFeatureWarehouse warehouse,
+                             LatLonPoint ll1, LatLonPoint ll2) {
+        
+        if (Debug.debugging("vpf")) {
+            Debug.output("LST.drawFeatures(): Coverage name: " + 
+                         covname);
+            Debug.output("Library selection table - edges: " +
+                         warehouse.drawEdgeFeatures());
+            Debug.output("Library selection table - text: " +
+                         warehouse.drawTextFeatures());
+            Debug.output("Library selection table - areas: " +
+                         warehouse.drawAreaFeatures());
+            Debug.output("Warehouse: " + warehouse);
+        }
+        
+        // handle Dateline
+        if ((scale < BROWSE_CUTOFF) && (ll1.getLongitude() > ll2.getLongitude())) {
+            drawFeatures(scale, screenwidth, screenheight, covname, warehouse,
+                         ll1,
+                         new LatLonPoint(ll2.getLatitude(), 180f-.00001f)//180-epsilon
+                         );
+            drawFeatures(scale, screenwidth, screenheight, covname, warehouse,
+                         new LatLonPoint(ll1.getLatitude(), -180f), ll2);
+            return;
+        }
+        
+        if (Debug.debugging("vpf")) {
+            Debug.output("LST.drawFeatures() with scale of " + scale);
+        }
 
-	float dpplat = Math.abs((ll1.getLatitude() - ll2.getLatitude()) 
-				/ screenheight);
-	float dpplon = Math.abs((ll1.getLongitude() - ll2.getLongitude()) 
-				/ screenwidth);
-	
-	int inArea = 0;
-	CoverageTable redrawUntiled = null;
-	String useLibrary = warehouse.getUseLibrary();
+        float dpplat = Math.abs((ll1.getLatitude() - ll2.getLatitude()) 
+                                / screenheight);
+        float dpplon = Math.abs((ll1.getLongitude() - ll2.getLongitude()) 
+                                / screenwidth);
+        
+        int inArea = 0;
+        CoverageTable redrawUntiled = null;
+        String useLibrary = warehouse.getUseLibrary();
 
-	for (Iterator i = CATs.values().iterator(); i.hasNext();) {
-	    CoverageAttributeTable cat = (CoverageAttributeTable)i.next();
+        for (Iterator i = CATs.values().iterator(); i.hasNext();) {
+            CoverageAttributeTable cat = (CoverageAttributeTable)i.next();
 
-	    if (useLibrary != null && !useLibrary.equalsIgnoreCase(cat.getLibraryName())) {
-		continue;
-	    }
+            if (useLibrary != null && !useLibrary.equalsIgnoreCase(cat.getLibraryName())) {
+                continue;
+            }
 
-	    if (scale < BROWSE_CUTOFF) {
+            if (scale < BROWSE_CUTOFF) {
 
-		CoverageTable c = cat.getCoverageTable(covname);
-		if (c == null) {
-		    if (Debug.debugging("vpf")) {
-			Debug.output("LST.getFeatures(): Couldn't get coverage table for " +
-				     covname + " " + cat.getLibraryName());
-		    }
-		    continue;
-		}
+                CoverageTable c = cat.getCoverageTable(covname);
+                if (c == null) {
+                    if (Debug.debugging("vpf")) {
+                        Debug.output("LST.getFeatures(): Couldn't get coverage table for " +
+                                     covname + " " + cat.getLibraryName());
+                    }
+                    continue;
+                }
 
-		if (Debug.debugging("vpf")) {
-		    Debug.output("Using coverage table for " + covname + " " 
-				 + cat.getLibraryName());
-		}
+                if (Debug.debugging("vpf")) {
+                    Debug.output("Using coverage table for " + covname + " " 
+                                 + cat.getLibraryName());
+                }
 
-		c.drawFeatures(warehouse, ll1, ll2, dpplat, dpplon);
-		inArea++;
-	    } else {
-		// Set up to draw browse coverage, or untiled coverage
-		if (Debug.debugging("vpf")) {
-		    Debug.output("LST.drawTile(): Scale too small (probably) or no tiles in region.");
-		}		
-		redrawUntiled = cat.getCoverageTable(covname);
-	    }
-	}
-	if ((redrawUntiled != null) && (inArea == 0)) {
-	    redrawUntiled.drawFeatures(warehouse, ll1, ll2, dpplat, dpplon);
-	}
+                c.drawFeatures(warehouse, ll1, ll2, dpplat, dpplon);
+                inArea++;
+            } else {
+                // Set up to draw browse coverage, or untiled coverage
+                if (Debug.debugging("vpf")) {
+                    Debug.output("LST.drawTile(): Scale too small (probably) or no tiles in region.");
+                }               
+                redrawUntiled = cat.getCoverageTable(covname);
+            }
+        }
+        if ((redrawUntiled != null) && (inArea == 0)) {
+            redrawUntiled.drawFeatures(warehouse, ll1, ll2, dpplat, dpplon);
+        }
     }
   
     /**
@@ -410,42 +410,42 @@ public class LibrarySelectionTable {
      * @param coverageOrFeatureType string ID for coverage or Feature type.
      */
     public String getDescription(String coverageOrFeatureType) 
-	throws FormatException {
-	boolean DEBUG = Debug.debugging("vpf.lst");
+        throws FormatException {
+        boolean DEBUG = Debug.debugging("vpf.lst");
 
- 	if (DEBUG) 
-	    Debug.output("LST.getDescription: " + coverageOrFeatureType);
+        if (DEBUG) 
+            Debug.output("LST.getDescription: " + coverageOrFeatureType);
 
-	String[] libraries = getLibraryNames();
-	for (int i = 0; i < libraries.length; i++) {
-	    CoverageAttributeTable cat = getCAT(libraries[i]);
-	    if (cat == null) {
-		continue;
-	    }
-	    String[] coverages = cat.getCoverageNames();
-	    for (int j = 0; j < coverages.length; j++) {
-		String covname = coverages[j];
-		if (coverageOrFeatureType.equalsIgnoreCase(covname)) {
- 		    if (DEBUG) Debug.output("** Matches coverage " + covname);
-		    return cat.getCoverageDescription(covname);
-		} else {
- 		    if (DEBUG) Debug.output("   Checking in coverage table " + covname);
-		    CoverageTable ct = cat.getCoverageTable(covname);
-		    Hashtable info = ct.getFeatureTypeInfo();
-		    for (Enumeration enum = info.elements(); enum.hasMoreElements();) {
-			CoverageTable.FeatureClassRec fcr = (CoverageTable.FeatureClassRec)enum.nextElement();
-			String name = fcr.feature_class;
-			if (coverageOrFeatureType.equalsIgnoreCase(name)) {
- 			    if (DEBUG) Debug.output("** Found feature " + name);
-			    return fcr.description;
-			}
- 			if (DEBUG) Debug.output("   checked " + name);
-		    }
-		}
-	    }
-	}
-	if (DEBUG) Debug.output("-- No matches found.");
-	return null;
+        String[] libraries = getLibraryNames();
+        for (int i = 0; i < libraries.length; i++) {
+            CoverageAttributeTable cat = getCAT(libraries[i]);
+            if (cat == null) {
+                continue;
+            }
+            String[] coverages = cat.getCoverageNames();
+            for (int j = 0; j < coverages.length; j++) {
+                String covname = coverages[j];
+                if (coverageOrFeatureType.equalsIgnoreCase(covname)) {
+                    if (DEBUG) Debug.output("** Matches coverage " + covname);
+                    return cat.getCoverageDescription(covname);
+                } else {
+                    if (DEBUG) Debug.output("   Checking in coverage table " + covname);
+                    CoverageTable ct = cat.getCoverageTable(covname);
+                    Hashtable info = ct.getFeatureTypeInfo();
+                    for (Enumeration enum = info.elements(); enum.hasMoreElements();) {
+                        CoverageTable.FeatureClassRec fcr = (CoverageTable.FeatureClassRec)enum.nextElement();
+                        String name = fcr.feature_class;
+                        if (coverageOrFeatureType.equalsIgnoreCase(name)) {
+                            if (DEBUG) Debug.output("** Found feature " + name);
+                            return fcr.description;
+                        }
+                        if (DEBUG) Debug.output("   checked " + name);
+                    }
+                }
+            }
+        }
+        if (DEBUG) Debug.output("-- No matches found.");
+        return null;
     }
 
     /**
@@ -455,31 +455,31 @@ public class LibrarySelectionTable {
      * @param args command line arguments args[0] is a path to the VPF root
      */
     public static void main (String[] args) {
-	Debug.init();
-	Debug.put("vpf");
+        Debug.init();
+        Debug.put("vpf");
         String dcwbase = null;
         if (args.length > 0) {
-	    dcwbase = args[0];
-	} else {
-	    System.out.println("Need a path to the VPF lat. file");
-	}
+            dcwbase = args[0];
+        } else {
+            System.out.println("Need a path to the VPF lat. file");
+        }
 
-	try {
-	    LibrarySelectionTable lst = new LibrarySelectionTable(dcwbase);
-	    System.out.println("Database Name " + lst.getDatabaseName());
-	    
-	    String liblist[] = lst.getLibraryNames();
-	    for (int j = 0; j < liblist.length; j++) {
-		System.out.println("Library " + liblist[j]);
-		lst.getCAT(liblist[j]);
-	    }
-	} catch (FormatException f) { 
-	    System.err.println("*****************************************"); 
-	    System.err.println("*---------------------------------------*"); 
-	    System.err.println("Format error in dealing with LST");
-	    System.err.println(f.getMessage()); 
-	    System.err.println("*---------------------------------------*"); 
-	    System.err.println("*****************************************"); 
-	} 
+        try {
+            LibrarySelectionTable lst = new LibrarySelectionTable(dcwbase);
+            System.out.println("Database Name " + lst.getDatabaseName());
+            
+            String liblist[] = lst.getLibraryNames();
+            for (int j = 0; j < liblist.length; j++) {
+                System.out.println("Library " + liblist[j]);
+                lst.getCAT(liblist[j]);
+            }
+        } catch (FormatException f) { 
+            System.err.println("*****************************************"); 
+            System.err.println("*---------------------------------------*"); 
+            System.err.println("Format error in dealing with LST");
+            System.err.println(f.getMessage()); 
+            System.err.println("*---------------------------------------*"); 
+            System.err.println("*****************************************"); 
+        } 
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/16 22:54:31 $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -203,8 +203,8 @@ public abstract class OMRasterObject extends OMGraphic
      * none. 
      */
     public OMRasterObject () {
-	super(RENDERTYPE_UNKNOWN, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	DEBUG = Debug.debugging("omraster");
+        super(RENDERTYPE_UNKNOWN, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        DEBUG = Debug.debugging("omraster");
     }
 
     /**
@@ -217,8 +217,8 @@ public abstract class OMRasterObject extends OMGraphic
      * @param dcType declutter type 
      */
     public OMRasterObject(int rType, int lType, int dcType) {
-	super(rType, lType, dcType);
-	DEBUG = Debug.debugging("omraster");
+        super(rType, lType, dcType);
+        DEBUG = Debug.debugging("omraster");
     }
 
     /**
@@ -231,7 +231,7 @@ public abstract class OMRasterObject extends OMGraphic
      * COLORMODEL_IMAGEICON.  
      */
     protected void setColorModel(int cm) {
-	colorModel = cm;
+        colorModel = cm;
     }
 
     /**
@@ -241,7 +241,7 @@ public abstract class OMRasterObject extends OMGraphic
      * COLORMODEL_IMAGEICON.
      */
     public int getColorModel() {
-	return colorModel;
+        return colorModel;
     }
 
     /**
@@ -266,7 +266,7 @@ public abstract class OMRasterObject extends OMGraphic
      */
     public void setRotationAngle(double angle) {
         this.rotationAngle = angle;
-	setNeedToRegenerate(true);
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -295,7 +295,7 @@ public abstract class OMRasterObject extends OMGraphic
      * direction, and half the image in the vertical direction.
      */
     protected void rotate(Graphics2D g) {
-	((Graphics2D)g).rotate(rotationAngle, point1.x+width/2, point1.y+height/2);
+        ((Graphics2D)g).rotate(rotationAngle, point1.x+width/2, point1.y+height/2);
     }
 
     /**
@@ -304,52 +304,52 @@ public abstract class OMRasterObject extends OMGraphic
      * @param g java.awt.Graphics to draw the image on.
      */
     public void render(Graphics g) {
-	if (getNeedToRegenerate() || getNeedToReposition() || !isVisible()) {
-	    if (DEBUG) Debug.output("OMRasterObject.render(): need to regenerate or not visible!");
-	    return;
-	}
+        if (getNeedToRegenerate() || getNeedToReposition() || !isVisible()) {
+            if (DEBUG) Debug.output("OMRasterObject.render(): need to regenerate or not visible!");
+            return;
+        }
 
         //copy the graphic, so our transform doesn't cascade to others...
         g = g.create();
 
-	// Just a little check to find out if someone is rushing
-	// things.  If a Image isn't fully loaded, the getWidth will
-	// return -1.  This is just a courtesy notification in case
-	// someone isn't seeing their image, and don't know why.
-	if (colorModel == COLORMODEL_IMAGEICON && (getWidth() == -1)) {
-	    Debug.error("OMRasterObject.render: Attempting to draw a Image that is not ready! Image probably wasn't available.");
-	}
+        // Just a little check to find out if someone is rushing
+        // things.  If a Image isn't fully loaded, the getWidth will
+        // return -1.  This is just a courtesy notification in case
+        // someone isn't seeing their image, and don't know why.
+        if (colorModel == COLORMODEL_IMAGEICON && (getWidth() == -1)) {
+            Debug.error("OMRasterObject.render: Attempting to draw a Image that is not ready! Image probably wasn't available.");
+        }
 
-	if (g instanceof Graphics2D && rotationAngle != DEFAULT_ROTATIONANGLE) {
-	    //rotate about our image center point
-	    rotate((Graphics2D)g);
-	}
+        if (g instanceof Graphics2D && rotationAngle != DEFAULT_ROTATIONANGLE) {
+            //rotate about our image center point
+            rotate((Graphics2D)g);
+        }
 
-	if (bitmap != null) {
+        if (bitmap != null) {
 
-	    if (isSelected() || 
-		Debug.debugging("rasterobjects")) {
+            if (isSelected() || 
+                Debug.debugging("rasterobjects")) {
 
-		super.render(g);
-	    }
+                super.render(g);
+            }
 
-	    if (DEBUG) {
-		Debug.output("OMRasterObject.render() | drawing " + 
-			     width + "x" + height + " image at " + 
-			     point1.x + ", " + point1.y);
-	    }
-	    if (g instanceof Graphics2D && bitmap instanceof RenderedImage) {
-		// Affine translation for placement...
-		((Graphics2D)g).drawRenderedImage((BufferedImage)bitmap, 
-		        new AffineTransform(1f, 0f, 0f, 1f, point1.x, point1.y));
-		// Undo the affine translation for future graphics??
-		((Graphics2D)g).translate(-point1.x, -point1.y);
-	    } else {
-		g.drawImage(bitmap, point1.x, point1.y, this);
-	    }
-	} else {
-	    if (DEBUG) Debug.output("OMRasterObject.render: ignoring null bitmap");
-	}
+            if (DEBUG) {
+                Debug.output("OMRasterObject.render() | drawing " + 
+                             width + "x" + height + " image at " + 
+                             point1.x + ", " + point1.y);
+            }
+            if (g instanceof Graphics2D && bitmap instanceof RenderedImage) {
+                // Affine translation for placement...
+                ((Graphics2D)g).drawRenderedImage((BufferedImage)bitmap, 
+                        new AffineTransform(1f, 0f, 0f, 1f, point1.x, point1.y));
+                // Undo the affine translation for future graphics??
+                ((Graphics2D)g).translate(-point1.x, -point1.y);
+            } else {
+                g.drawImage(bitmap, point1.x, point1.y, this);
+            }
+        } else {
+            if (DEBUG) Debug.output("OMRasterObject.render: ignoring null bitmap");
+        }
 
     }
 
@@ -358,19 +358,19 @@ public abstract class OMRasterObject extends OMGraphic
      */
     public void setShape() {
 
-	// generate shape that is a boundary of the generated image.
-	// We'll make it a GeneralPath rectangle.
-	int w = width;
-	int h = height;
-	
-	if (imageFilter != null) {
-	    w = filteredWidth;
-	    h = filteredHeight;
-	}
-	
-	shape = createBoxShape(point1.x, point1.y, w, h);
+        // generate shape that is a boundary of the generated image.
+        // We'll make it a GeneralPath rectangle.
+        int w = width;
+        int h = height;
+        
+        if (imageFilter != null) {
+            w = filteredWidth;
+            h = filteredHeight;
+        }
+        
+        shape = createBoxShape(point1.x, point1.y, w, h);
     }
-	
+        
     /**
      * Since the image doesn't necessarily need to be regenerated
      * when it is merely moved, raster objects have this function,
@@ -383,68 +383,68 @@ public abstract class OMRasterObject extends OMGraphic
      */
     protected boolean position(Projection proj) {
 
-	if (proj == null) {
-	    Debug.error("OMRasterObject: null projection in position!");
-	    return false;
-	}
+        if (proj == null) {
+            Debug.error("OMRasterObject: null projection in position!");
+            return false;
+        }
 
-	projWidth = proj.getWidth();
-	projHeight = proj.getHeight();
+        projWidth = proj.getWidth();
+        projHeight = proj.getHeight();
 
-	switch (renderType) {
+        switch (renderType) {
 
-	  case RENDERTYPE_LATLON:
-	      if (!proj.isPlotable(lat, lon)) {
-		  if (DEBUG) {
-		      Debug.error("OMRasterObject: point is not plotable!");
-		  }
-		  setNeedToReposition(true);//so we don't render it!
-		  return false;
-	      }
-	      point1 = proj.forward(lat, lon);
-	      break;
-	  case RENDERTYPE_XY:
-	      point1 = new Point(x, y);
-	      break;
-	  case RENDERTYPE_OFFSET:
-	      if (!proj.isPlotable(lat, lon)) {
-		  if (DEBUG) {
-		      Debug.error("OMRasterObject: point is not plotable!");
-		  }
-		  setNeedToReposition(true);//so we don't render it!
-		  return false;
-	      }
-	      point1 = proj.forward(lat, lon);
-	      point1.x += x;
-	      point1.y += y;
-	      break;
-	  case RENDERTYPE_UNKNOWN:
-	      Debug.output("OMRasterObject.position(): ignoring unknown rendertype, wingin' it");
-	      if (lat == 0 && lon == 0) {
-		  if (x == 0 && y == 0) {
-		      Debug.output("OMRasterObject.position(): Not enough info in object to place it reasonably.");
-		      point1 = new Point(-width, -height);
-		      point2 = new Point(0,0);
-		      return false;
-		  } else {
-		      point1 = new Point(x, y);
-		  }
+          case RENDERTYPE_LATLON:
+              if (!proj.isPlotable(lat, lon)) {
+                  if (DEBUG) {
+                      Debug.error("OMRasterObject: point is not plotable!");
+                  }
+                  setNeedToReposition(true);//so we don't render it!
+                  return false;
+              }
+              point1 = proj.forward(lat, lon);
+              break;
+          case RENDERTYPE_XY:
+              point1 = new Point(x, y);
+              break;
+          case RENDERTYPE_OFFSET:
+              if (!proj.isPlotable(lat, lon)) {
+                  if (DEBUG) {
+                      Debug.error("OMRasterObject: point is not plotable!");
+                  }
+                  setNeedToReposition(true);//so we don't render it!
+                  return false;
+              }
+              point1 = proj.forward(lat, lon);
+              point1.x += x;
+              point1.y += y;
+              break;
+          case RENDERTYPE_UNKNOWN:
+              Debug.output("OMRasterObject.position(): ignoring unknown rendertype, wingin' it");
+              if (lat == 0 && lon == 0) {
+                  if (x == 0 && y == 0) {
+                      Debug.output("OMRasterObject.position(): Not enough info in object to place it reasonably.");
+                      point1 = new Point(-width, -height);
+                      point2 = new Point(0,0);
+                      return false;
+                  } else {
+                      point1 = new Point(x, y);
+                  }
 
-	      } else {
-		  if (!proj.isPlotable(lat, lon)) {
-		      Debug.error("OMRasterObject: point is not plotable!");
-		      return false;
-		  }
-		  point1 = proj.forward(lat, lon);
-	      }
-	      break;
-	}
+              } else {
+                  if (!proj.isPlotable(lat, lon)) {
+                      Debug.error("OMRasterObject: point is not plotable!");
+                      return false;
+                  }
+                  point1 = proj.forward(lat, lon);
+              }
+              break;
+        }
 
-	point2 = new Point(0,0);
-	point2.x = point1.x + width;
-	point2.y = point1.y + height;
-	setNeedToReposition(false);
-	return true;
+        point2 = new Point(0,0);
+        point2.x = point1.x + width;
+        point2.y = point1.y + height;
+        setNeedToReposition(false);
+        return true;
     }
 
     /**
@@ -454,23 +454,23 @@ public abstract class OMRasterObject extends OMGraphic
      * @param ii the image icon to use.
      */
     public void setImage(Image ii) {
-	if (ii == null) {
-	    Debug.error("OMRasterObject.setImage(): image is null!");
-	    return;
-	}
-	colorModel = COLORMODEL_IMAGEICON;
-	bitmap = ii;
-	// Make sure the image is ready to draw. If not, this method
-	// will be called again by the ImageObserver method
-	// imageUpdate.  Set the height and width anyway.  If they are
-	// -1, you know the image isn't ready - another way to find
-	// out.
-	width = bitmap.getWidth(this);
-	height = bitmap.getHeight(this);
+        if (ii == null) {
+            Debug.error("OMRasterObject.setImage(): image is null!");
+            return;
+        }
+        colorModel = COLORMODEL_IMAGEICON;
+        bitmap = ii;
+        // Make sure the image is ready to draw. If not, this method
+        // will be called again by the ImageObserver method
+        // imageUpdate.  Set the height and width anyway.  If they are
+        // -1, you know the image isn't ready - another way to find
+        // out.
+        width = bitmap.getWidth(this);
+        height = bitmap.getHeight(this);
 
-	if (!(ii instanceof RenderedImage)) {
-	    Toolkit.getDefaultToolkit().prepareImage(bitmap, -1, -1, this);
-	}
+        if (!(ii instanceof RenderedImage)) {
+            Toolkit.getDefaultToolkit().prepareImage(bitmap, -1, -1, this);
+        }
     }
 
     /**
@@ -479,7 +479,7 @@ public abstract class OMRasterObject extends OMGraphic
      * @return the Image created by computePixels and generate().
      */
     public Image getImage() {
-	return bitmap;
+        return bitmap;
     }
     
     /**
@@ -488,7 +488,7 @@ public abstract class OMRasterObject extends OMGraphic
      * shape.
      */
     public boolean shouldRenderFill() {
-	return true;
+        return true;
     }
 
     /**
@@ -500,12 +500,12 @@ public abstract class OMRasterObject extends OMGraphic
      */
     public void setPixels(int[] values) {
         if (values.length != (height*width))
-	    Debug.error("OMRasterObject: new pixel[] size (" +
-			+ values.length +") doesn't" +
-			" match [height*width (" + 
-			height*width + ")]");
+            Debug.error("OMRasterObject: new pixel[] size (" +
+                        + values.length +") doesn't" +
+                        " match [height*width (" + 
+                        height*width + ")]");
         pixels = values;
-	setNeedToRegenerate(true);
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -526,8 +526,8 @@ public abstract class OMRasterObject extends OMGraphic
      */
     public void setX(int value) {
         if (x == value) return;
-	x = value;
-	setNeedToReposition(true);
+        x = value;
+        setNeedToReposition(true);
     }
 
     /**
@@ -547,8 +547,8 @@ public abstract class OMRasterObject extends OMGraphic
      */
     public void setY(int value) {
         if (y == value) return;
-	y = value;
-	setNeedToReposition(true);
+        y = value;
+        setNeedToReposition(true);
     }
 
     /**
@@ -566,7 +566,7 @@ public abstract class OMRasterObject extends OMGraphic
      * @return Point, null if not projected yet.
      */
     public Point getMapLocation() {
-	return point1;
+        return point1;
     }
 
     /**
@@ -577,8 +577,8 @@ public abstract class OMRasterObject extends OMGraphic
      */
     public void setLat(float value) {
         if (lat == value) return;
-	lat = value;
-	setNeedToReposition(true);
+        lat = value;
+        setNeedToReposition(true);
     }
 
     /**
@@ -598,8 +598,8 @@ public abstract class OMRasterObject extends OMGraphic
      */
     public void setLon(float value) {
         if (lon == value) return;
-	lon = value;
-	setNeedToReposition(true);
+        lon = value;
+        setNeedToReposition(true);
     }
 
     /**
@@ -618,8 +618,8 @@ public abstract class OMRasterObject extends OMGraphic
      */
     public void setHeight(int value) {
         if (height == value) return;
-	setNeedToRegenerate(true);
-	height = value;
+        setNeedToRegenerate(true);
+        height = value;
     }
 
     /**
@@ -647,8 +647,8 @@ public abstract class OMRasterObject extends OMGraphic
      */
     public void setWidth(int value) {
         if (width == value) return;
-	setNeedToRegenerate(true);
-	width = value;
+        setNeedToRegenerate(true);
+        width = value;
     }
 
     /**
@@ -677,8 +677,8 @@ public abstract class OMRasterObject extends OMGraphic
      * @param values byte values 
      */
     public void setBits(byte[] values) {
-	setNeedToRegenerate(true);
-	bits = values;
+        setNeedToRegenerate(true);
+        bits = values;
     }
 
     /**
@@ -698,11 +698,11 @@ public abstract class OMRasterObject extends OMGraphic
      * @param filter Image filter to apply to contructed raster.
      */
     public void setImageFilter(ImageFilter filter) {
-	imageFilter = filter;
-	filteredWidth = width;
-	filteredHeight = height;
+        imageFilter = filter;
+        filteredWidth = width;
+        filteredHeight = height;
 
-	setNeedToRegenerate(true);
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -711,7 +711,7 @@ public abstract class OMRasterObject extends OMGraphic
      * @return imagefilter, null if one wasn't set.
      */
     public ImageFilter getImageFilter() {
-	return imageFilter;
+        return imageFilter;
     }
 
     /**
@@ -725,12 +725,12 @@ public abstract class OMRasterObject extends OMGraphic
      * scaling algorithm to use. 
      */
     public void scaleTo(int w, int h, int algorithmType) {
-	filteredWidth = w;
-	filteredHeight = h;
+        filteredWidth = w;
+        filteredHeight = h;
 
-	imageFilter = new TrimScaleFilter(filteredWidth, filteredHeight, 
-					  algorithmType);
-	setNeedToRegenerate(true);
+        imageFilter = new TrimScaleFilter(filteredWidth, filteredHeight, 
+                                          algorithmType);
+        setNeedToRegenerate(true);
     }
 
     /** 
@@ -743,36 +743,36 @@ public abstract class OMRasterObject extends OMGraphic
      */
     protected Image filterImage() {
 
-	// Can we do a little clipping here??  If it's been projected, maybe.
+        // Can we do a little clipping here??  If it's been projected, maybe.
 
-	//  See if the frame is getting blown up, probably by at
-	// least a certain margin, so we know that there will be time
-	// savings as well as memory savings.
+        //  See if the frame is getting blown up, probably by at
+        // least a certain margin, so we know that there will be time
+        // savings as well as memory savings.
 
-	if (imageFilter instanceof TrimScaleFilter) {
-	    TrimScaleFilter tf = (TrimScaleFilter)imageFilter;
-	    Image img = tf.trimExcessPixels();
-	    
-	    if (img != null) {
-		bitmap = img;
-		imageFilter = tf.getFilterWithChanges();
-		// we can play around with point1, since that is where the
-		// image is getting laid out.  If point1.x or point1.y < 0, we
-		// can set it to zero.  Assumes that the image has already
-		// been positioned.
-		if (point1.x < 0) point1.x = 0;
-		if (point1.y < 0) point1.y = 0;
-		
-		if (DEBUG) Debug.output("OMRasterObject: newly located at " + point1);
-	    } else if (DEBUG) {
-		Debug.output("OMRasterObject: not being trimmed due to projection");
-	    }
-	}
+        if (imageFilter instanceof TrimScaleFilter) {
+            TrimScaleFilter tf = (TrimScaleFilter)imageFilter;
+            Image img = tf.trimExcessPixels();
+            
+            if (img != null) {
+                bitmap = img;
+                imageFilter = tf.getFilterWithChanges();
+                // we can play around with point1, since that is where the
+                // image is getting laid out.  If point1.x or point1.y < 0, we
+                // can set it to zero.  Assumes that the image has already
+                // been positioned.
+                if (point1.x < 0) point1.x = 0;
+                if (point1.y < 0) point1.y = 0;
+                
+                if (DEBUG) Debug.output("OMRasterObject: newly located at " + point1);
+            } else if (DEBUG) {
+                Debug.output("OMRasterObject: not being trimmed due to projection");
+            }
+        }
 
-	ImageProducer prod = new FilteredImageSource(bitmap.getSource(), imageFilter);
-	if (Toolkit.getDefaultToolkit() != null)
-	    return Toolkit.getDefaultToolkit().createImage(prod);
-	else return bitmap;
+        ImageProducer prod = new FilteredImageSource(bitmap.getSource(), imageFilter);
+        if (Toolkit.getDefaultToolkit() != null)
+            return Toolkit.getDefaultToolkit().createImage(prod);
+        else return bitmap;
     }
 
     /**
@@ -782,15 +782,15 @@ public abstract class OMRasterObject extends OMGraphic
      * Don't call this method!  
      */
     public boolean imageUpdate(Image img, int infoflags,
-			       int x, int y, int width, int height) {
+                               int x, int y, int width, int height) {
 
-	if ((infoflags&ImageObserver.ALLBITS) != 0) {
-	    if (colorModel == COLORMODEL_IMAGEICON) {
-		setImage(img);
-	    }
-	    return false;// all set
-	}
-	return true;// need more info
+        if ((infoflags&ImageObserver.ALLBITS) != 0) {
+            if (colorModel == COLORMODEL_IMAGEICON) {
+                setImage(img);
+            }
+            return false;// all set
+        }
+        return true;// need more info
     }
 
     /**
@@ -801,137 +801,137 @@ public abstract class OMRasterObject extends OMGraphic
      * not a stand-alone filter class.
      */
     protected class TrimScaleFilter extends AreaAveragingScaleFilter {
-	ImageFilter actualFilter = null;
-	int algorithmType;
+        ImageFilter actualFilter = null;
+        int algorithmType;
 
-	/**
-	 * Constructs an TrimScaleFilter that scales the pixels from
-	 * its source Image as specified by the width and height parameters.
-	 * @param width the target width to scale the image
-	 * @param height the target height to scale the image
-	 */
-	public TrimScaleFilter(int width, int height) {
-	    super(width, height);
-	    algorithmType = FAST_SCALING;
-	}
+        /**
+         * Constructs an TrimScaleFilter that scales the pixels from
+         * its source Image as specified by the width and height parameters.
+         * @param width the target width to scale the image
+         * @param height the target height to scale the image
+         */
+        public TrimScaleFilter(int width, int height) {
+            super(width, height);
+            algorithmType = FAST_SCALING;
+        }
 
-	/**
-	 * Constructs an AreaAveragingScaleFilter that scales the pixels from
-	 * its source Image as specified by the width and height parameters.
-	 * @param width the target width to scale the image
-	 * @param height the target height to scale the image
-	 * @param algorithmType FAST_SCALING or SMOOTH_SCALING - FAST
-	 * is much faster!  
-	 */
-	protected TrimScaleFilter(int width, int height, int algorithmType) {
-	    super(width, height);
-	    this.algorithmType = algorithmType;	    	
-	}
+        /**
+         * Constructs an AreaAveragingScaleFilter that scales the pixels from
+         * its source Image as specified by the width and height parameters.
+         * @param width the target width to scale the image
+         * @param height the target height to scale the image
+         * @param algorithmType FAST_SCALING or SMOOTH_SCALING - FAST
+         * is much faster!  
+         */
+        protected TrimScaleFilter(int width, int height, int algorithmType) {
+            super(width, height);
+            this.algorithmType = algorithmType;         
+        }
 
-	/**
-	 * Detect if the data is being delivered with the necessary
-	 * hints to allow the averaging algorithm to do its work.  If
-	 * the algorithmType is set to FAST, I manipulate the hints to
-	 * force the filter to act like a ReplicateScaleFilter.
-	 * @see ImageConsumer#setHints 
-	 */
-	public void setHints(int hints) {
-	    int passthrough = hints;
-	    if (algorithmType == FAST_SCALING) {
-		/// XOR
-		passthrough = hints ^ ImageConsumer.TOPDOWNLEFTRIGHT;
-	    }
-	    super.setHints(passthrough);
-	}
+        /**
+         * Detect if the data is being delivered with the necessary
+         * hints to allow the averaging algorithm to do its work.  If
+         * the algorithmType is set to FAST, I manipulate the hints to
+         * force the filter to act like a ReplicateScaleFilter.
+         * @see ImageConsumer#setHints 
+         */
+        public void setHints(int hints) {
+            int passthrough = hints;
+            if (algorithmType == FAST_SCALING) {
+                /// XOR
+                passthrough = hints ^ ImageConsumer.TOPDOWNLEFTRIGHT;
+            }
+            super.setHints(passthrough);
+        }
 
-	/**
-	 * The filter must change if the requested image size changes
-	 * because of clipping.  Get the good filter here, after
-	 * calling trimExcessPixels().
-	 */
-	protected ImageFilter getFilterWithChanges() {
-	    if (actualFilter == null) {
-		return this;
-	    }
-	    return actualFilter;
-	}
+        /**
+         * The filter must change if the requested image size changes
+         * because of clipping.  Get the good filter here, after
+         * calling trimExcessPixels().
+         */
+        protected ImageFilter getFilterWithChanges() {
+            if (actualFilter == null) {
+                return this;
+            }
+            return actualFilter;
+        }
 
-	/**
-	 * Get a trimmed-down image to expand to the map, that
-	 * contains all the pixels that will be visible after
-	 * expansion.  Returns null if the image should be used as is,
-	 * and the filter as well. 
-	 */	
-	protected Image trimExcessPixels() {
+        /**
+         * Get a trimmed-down image to expand to the map, that
+         * contains all the pixels that will be visible after
+         * expansion.  Returns null if the image should be used as is,
+         * and the filter as well. 
+         */     
+        protected Image trimExcessPixels() {
 
-	    if (filteredWidth <= width && filteredHeight <= height) {
-		if (DEBUG) Debug.output("TrimScaleFilter.trimExcessPixels(): image not enlarged, using entire image.");
-		return null;
-	    }
-	    
-	    if (DEBUG) Debug.output("TrimScaleFilter.trimExcessPixels(): clipping enlarged image.");
+            if (filteredWidth <= width && filteredHeight <= height) {
+                if (DEBUG) Debug.output("TrimScaleFilter.trimExcessPixels(): image not enlarged, using entire image.");
+                return null;
+            }
+            
+            if (DEBUG) Debug.output("TrimScaleFilter.trimExcessPixels(): clipping enlarged image.");
 
-	    //  Figure out the pixels of the old image being used in
-	    // the new image.  Figure out the proj location of the upper
-	    // left pixel of the new image.  We want to subsitute this
-	    // proj location for the projection location already
-	    // calculated.  This should get overwritten later for any
-	    // projection changes.
-	    float widthScale = (float)filteredWidth/(float)width;
-	    float heightScale = (float)filteredHeight/(float)height;
+            //  Figure out the pixels of the old image being used in
+            // the new image.  Figure out the proj location of the upper
+            // left pixel of the new image.  We want to subsitute this
+            // proj location for the projection location already
+            // calculated.  This should get overwritten later for any
+            // projection changes.
+            float widthScale = (float)filteredWidth/(float)width;
+            float heightScale = (float)filteredHeight/(float)height;
 
-	    int startXPixelInSource = point1.x < 0?(int)((-1.0*point1.x)/widthScale):0;
-	    int startYPixelInSource = point1.y < 0?(int)((-1*point1.y)/heightScale):0;
-	    Point scaledDim = new Point((int)(point1.x + (width*widthScale)),
-					(int)(point1.y +(height*heightScale)));
-	    int endXPixelInSource = (scaledDim.x > projWidth?
-		(int)((projWidth - point1.x)/widthScale)+1:width);
-	    int endYPixelInSource = scaledDim.y > projHeight?
-		(int)((projHeight - point1.y)/heightScale)+1:height;
+            int startXPixelInSource = point1.x < 0?(int)((-1.0*point1.x)/widthScale):0;
+            int startYPixelInSource = point1.y < 0?(int)((-1*point1.y)/heightScale):0;
+            Point scaledDim = new Point((int)(point1.x + (width*widthScale)),
+                                        (int)(point1.y +(height*heightScale)));
+            int endXPixelInSource = (scaledDim.x > projWidth?
+                (int)((projWidth - point1.x)/widthScale)+1:width);
+            int endYPixelInSource = scaledDim.y > projHeight?
+                (int)((projHeight - point1.y)/heightScale)+1:height;
 
-	    if (DEBUG) {
-		Debug.output("TrimScaleFilter.trimExcessPixels(): image contributes " + 
-			     startXPixelInSource + ", " + startYPixelInSource + " to " +
-			     endXPixelInSource + ", " + endYPixelInSource);
-	    }
+            if (DEBUG) {
+                Debug.output("TrimScaleFilter.trimExcessPixels(): image contributes " + 
+                             startXPixelInSource + ", " + startYPixelInSource + " to " +
+                             endXPixelInSource + ", " + endYPixelInSource);
+            }
 
-	    // Create a buffered image out of the old image, clipping
-	    // out the unused pixels.
-	    
-	    if (DEBUG) {
-		Debug.output("TrimScaleFilter.trimExcessPixels(): " + 
-			     " new dimensions of scaled image " +
-			     (int)((endXPixelInSource - startXPixelInSource) * widthScale)
-			     + ", " +
-			     (int)((endYPixelInSource - startYPixelInSource) * heightScale));
-	    }
+            // Create a buffered image out of the old image, clipping
+            // out the unused pixels.
+            
+            if (DEBUG) {
+                Debug.output("TrimScaleFilter.trimExcessPixels(): " + 
+                             " new dimensions of scaled image " +
+                             (int)((endXPixelInSource - startXPixelInSource) * widthScale)
+                             + ", " +
+                             (int)((endYPixelInSource - startYPixelInSource) * heightScale));
+            }
 
-	    // Get only the pixels you need.
-	    // Use a pixel grabber to get the right pixels.
-	    PixelGrabber pg = new PixelGrabber(bitmap, 
-					       startXPixelInSource, startYPixelInSource,
-					       endXPixelInSource - startXPixelInSource,
-					       endYPixelInSource - startYPixelInSource, 
-					       true);
-	    int[] pix = ImageHelper.grabPixels(pg);
-	    if (pix == null) {
-		return null;
-	    }
+            // Get only the pixels you need.
+            // Use a pixel grabber to get the right pixels.
+            PixelGrabber pg = new PixelGrabber(bitmap, 
+                                               startXPixelInSource, startYPixelInSource,
+                                               endXPixelInSource - startXPixelInSource,
+                                               endYPixelInSource - startYPixelInSource, 
+                                               true);
+            int[] pix = ImageHelper.grabPixels(pg);
+            if (pix == null) {
+                return null;
+            }
 
- 	    // Set the filter to the demisnsions.  Need to remember to ask for this!!!
-	    actualFilter = new TrimScaleFilter(
-		(int)((endXPixelInSource - startXPixelInSource) * widthScale), 
-		(int)((endYPixelInSource - startYPixelInSource) * heightScale), 
-		algorithmType);
-	    
-	    // create the new bitmap, which holds the image that gets drawn
-	    Toolkit tk = Toolkit.getDefaultToolkit();
-	    Image image = tk.createImage(
-		new MemoryImageSource(endXPixelInSource - startXPixelInSource,
-				      endYPixelInSource - startYPixelInSource, 
-				      pix, 0, endXPixelInSource - startXPixelInSource));
-	    return image;
-	}
+            // Set the filter to the demisnsions.  Need to remember to ask for this!!!
+            actualFilter = new TrimScaleFilter(
+                (int)((endXPixelInSource - startXPixelInSource) * widthScale), 
+                (int)((endYPixelInSource - startYPixelInSource) * heightScale), 
+                algorithmType);
+            
+            // create the new bitmap, which holds the image that gets drawn
+            Toolkit tk = Toolkit.getDefaultToolkit();
+            Image image = tk.createImage(
+                new MemoryImageSource(endXPixelInSource - startXPixelInSource,
+                                      endYPixelInSource - startYPixelInSource, 
+                                      pix, 0, endXPixelInSource - startXPixelInSource));
+            return image;
+        }
     }
 
    /**
@@ -983,6 +983,6 @@ public abstract class OMRasterObject extends OMGraphic
     }
 
     protected boolean hasLineTypeChoice() {
-	return false;
+        return false;
     }
 }

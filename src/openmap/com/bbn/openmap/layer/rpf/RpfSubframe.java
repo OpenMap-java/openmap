@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfSubframe.java,v $
 // $RCSfile: RpfSubframe.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:30 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:10 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -72,68 +72,68 @@ public class RpfSubframe {
     public int opaqueness;
 
     public RpfSubframe() {
-	this(OMRasterObject.COLORMODEL_DIRECT);
+        this(OMRasterObject.COLORMODEL_DIRECT);
     }
 
     public RpfSubframe(int colormodel) throws java.lang.OutOfMemoryError {
-	init(colormodel);
+        init(colormodel);
     }
 
     protected void init(int colormodel) {
-	// if nothing's changing, don't bother.
-	if (image != null && colorModel == colormodel) {
-	    return;
-	}
+        // if nothing's changing, don't bother.
+        if (image != null && colorModel == colormodel) {
+            return;
+        }
 
-	colorModel = colormodel;
+        colorModel = colormodel;
 
-	if (colorModel == OMRasterObject.COLORMODEL_DIRECT) {
-	    // have to set the location and pixels later.
-	    image = new OMScalingRaster(0f, 0f, 0f, 0f,
-					PIXEL_EDGE_SIZE, PIXEL_EDGE_SIZE, 
-					new int[PIXEL_EDGE_SIZE*PIXEL_EDGE_SIZE]);
-	}
-	// Have to set the location, colortable, pixel indexes later
-	else {	
-	    image = new OMScalingRaster(0f, 0f, 0f, 0f,
-					PIXEL_EDGE_SIZE, PIXEL_EDGE_SIZE, 
-					(byte[]) null, (Color[]) null, opaqueness);
-	}
-	information = new OMText(0f, 0f, 10, 20, "***", new java.awt.Font("Helvetica", java.awt.Font.PLAIN, 10), OMText.JUSTIFY_LEFT);
-	information.setLinePaint(Color.red);
-	rectangle = new OMRect(0f, 0f, 0f, 0f, OMGraphic.LINETYPE_STRAIGHT);
-	rectangle.setLinePaint(Color.red);
-	rectangle.setLineType(OMGraphic.LINETYPE_STRAIGHT);
+        if (colorModel == OMRasterObject.COLORMODEL_DIRECT) {
+            // have to set the location and pixels later.
+            image = new OMScalingRaster(0f, 0f, 0f, 0f,
+                                        PIXEL_EDGE_SIZE, PIXEL_EDGE_SIZE, 
+                                        new int[PIXEL_EDGE_SIZE*PIXEL_EDGE_SIZE]);
+        }
+        // Have to set the location, colortable, pixel indexes later
+        else {  
+            image = new OMScalingRaster(0f, 0f, 0f, 0f,
+                                        PIXEL_EDGE_SIZE, PIXEL_EDGE_SIZE, 
+                                        (byte[]) null, (Color[]) null, opaqueness);
+        }
+        information = new OMText(0f, 0f, 10, 20, "***", new java.awt.Font("Helvetica", java.awt.Font.PLAIN, 10), OMText.JUSTIFY_LEFT);
+        information.setLinePaint(Color.red);
+        rectangle = new OMRect(0f, 0f, 0f, 0f, OMGraphic.LINETYPE_STRAIGHT);
+        rectangle.setLinePaint(Color.red);
+        rectangle.setLineType(OMGraphic.LINETYPE_STRAIGHT);
     }
 
     public int getColorModel() { 
-	return colorModel;
+        return colorModel;
     }
 
     public void setColorModel(int colorModel) {
-	init(colorModel);
+        init(colorModel);
     }
 
     public void setScalingTo(int width, int height) {
-	if (width == PIXEL_EDGE_SIZE && height == PIXEL_EDGE_SIZE) {
-	    // Not needed due to OMScalingRaster.
-//  	    image.setImageFilter(null);
-	    information.setData(data);
-	} else {
+        if (width == PIXEL_EDGE_SIZE && height == PIXEL_EDGE_SIZE) {
+            // Not needed due to OMScalingRaster.
+//          image.setImageFilter(null);
+            information.setData(data);
+        } else {
 
-	    // HACK the +1 seems to cover up well for some projection
-	    // inadequacies....
+            // HACK the +1 seems to cover up well for some projection
+            // inadequacies....
 
-	    // Not needed due to OMScalingRaster.
-//  	    image.scaleTo(width+1, height+1, OMRasterObject.FAST_SCALING);
+            // Not needed due to OMScalingRaster.
+//          image.scaleTo(width+1, height+1, OMRasterObject.FAST_SCALING);
 
-	    if (width > PIXEL_EDGE_SIZE && height > PIXEL_EDGE_SIZE) {
-		information.setData(data);
-	    } else {
-		information.setData("");
-	    }
-	}
-	rectangle.setLocation(image.getLat(), image.getLon(), 0, 0, width, height);
+            if (width > PIXEL_EDGE_SIZE && height > PIXEL_EDGE_SIZE) {
+                information.setData(data);
+            } else {
+                information.setData("");
+            }
+        }
+        rectangle.setLocation(image.getLat(), image.getLon(), 0, 0, width, height);
     }
     
     /**
@@ -144,13 +144,13 @@ public class RpfSubframe {
      * lower right coordinates.  
      */
     public void setLocation(float lat, float lon) {
-	image.setLat(lat);
-	image.setLon(lon);
-	information.setLat(lat);
-	information.setLon(lon);
-	rectangle.setLocation(lat, lon, 0, 0, 
-			      rectangle.getRight(), 
-			      rectangle.getBottom());
+        image.setLat(lat);
+        image.setLon(lon);
+        information.setLat(lat);
+        information.setLon(lon);
+        rectangle.setLocation(lat, lon, 0, 0, 
+                              rectangle.getRight(), 
+                              rectangle.getBottom());
     }
 
     /**
@@ -161,13 +161,13 @@ public class RpfSubframe {
      * @param elon longitude of lower right point, in decimal degrees. 
      */
     public void setLocation(float ulat, float wlon, float llat, float elon) {
-	image.setULLat(ulat);
-	image.setULLon(wlon);
-	image.setLRLat(llat);
-	image.setLRLon(elon);
-	information.setLat(ulat);
-	information.setLon(wlon);
-	rectangle.setLocation(ulat, wlon, llat, elon, OMGraphic.LINETYPE_STRAIGHT);
+        image.setULLat(ulat);
+        image.setULLon(wlon);
+        image.setLRLat(llat);
+        image.setLRLon(elon);
+        information.setLat(ulat);
+        information.setLon(wlon);
+        rectangle.setLocation(ulat, wlon, llat, elon, OMGraphic.LINETYPE_STRAIGHT);
     }
 
     /**
@@ -176,7 +176,7 @@ public class RpfSubframe {
      * methods directly. 
      */
     public void setAttributeText(String text) {
-	data = text;
+        data = text;
     }
 
     /**
@@ -184,11 +184,11 @@ public class RpfSubframe {
      * attribute information about the subframe.  
      */
     public String getAttributeText() {
-	return data;
+        return data;
     }
 
 //      public void finalize() {
-//  	Debug.message("gc", "  RpfSubframe: getting GC'd");
+//      Debug.message("gc", "  RpfSubframe: getting GC'd");
 //      }
 
 }

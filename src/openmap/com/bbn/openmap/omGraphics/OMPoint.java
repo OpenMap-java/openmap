@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoint.java,v $
 // $RCSfile: OMPoint.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/03 00:53:03 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -75,16 +75,16 @@ public class OMPoint extends OMGraphic implements Serializable {
      * Create an OMPoint at a lat/lon position, with the default radius.
      */
     public OMPoint(float lat, float lon) {
-	this(lat, lon, DEFAULT_RADIUS);
+        this(lat, lon, DEFAULT_RADIUS);
     } 
 
     /**
      * Create an OMPoint at a lat/lon position, with the specified radius.
      */
     public OMPoint(float lat, float lon, int radius) {
-	setRenderType(RENDERTYPE_LATLON);
-	set(lat, lon);
-	this.radius = radius;
+        setRenderType(RENDERTYPE_LATLON);
+        set(lat, lon);
+        this.radius = radius;
     }
 
     /**
@@ -92,7 +92,7 @@ public class OMPoint extends OMGraphic implements Serializable {
      * offset, with the default radius.  
      */
     public OMPoint(float lat, float lon, int offsetx, int offsety) {
-	this(lat, lon, offsetx, offsety, DEFAULT_RADIUS);
+        this(lat, lon, offsetx, offsety, DEFAULT_RADIUS);
     }
 
     /**
@@ -100,9 +100,9 @@ public class OMPoint extends OMGraphic implements Serializable {
      * offset, with the specified radius.  
      */
     public OMPoint(float lat, float lon, int offsetx, int offsety, int radius) {
-	setRenderType(RENDERTYPE_OFFSET);
-	set(lat, lon, offsetx, offsety);
-	this.radius = radius;
+        setRenderType(RENDERTYPE_OFFSET);
+        set(lat, lon, offsetx, offsety);
+        this.radius = radius;
     }
 
     /**
@@ -110,7 +110,7 @@ public class OMPoint extends OMGraphic implements Serializable {
      * with edge size DEFAULT_RADIUS * 2 + 1.
      */
     public OMPoint(int x, int y) {
-	this(x, y, DEFAULT_RADIUS);
+        this(x, y, DEFAULT_RADIUS);
     }
 
     /**
@@ -118,22 +118,22 @@ public class OMPoint extends OMGraphic implements Serializable {
      * with edge size radius * 2 + 1.
      */
     public OMPoint(int x, int y, int radius) {
-	setRenderType(RENDERTYPE_XY);
-	set(x, y);
-	this.radius = radius;
+        setRenderType(RENDERTYPE_XY);
+        set(x, y);
+        this.radius = radius;
     }
 
     /** For lat/lon rendertype points, to move the point location. */
     public void set(float lat, float lon) {
-	setLat(lat);
-	setLon(lon);
+        setLat(lat);
+        setLon(lon);
     }
 
     /** For offset rendertype points, to move the point location. */
     public void set(float lat, float lon, int offsetx, int offsety) {
-	setLat(lat);
-	setLon(lon);;
-	set(offsetx, offsety);
+        setLat(lat);
+        setLon(lon);;
+        set(offsetx, offsety);
     }
 
     /**
@@ -141,57 +141,57 @@ public class OMPoint extends OMGraphic implements Serializable {
      * location. This method does not call setX() and setY().
      */
     public void set(int x, int y) {
-	// You have to set these directly, or you can mess up the grab
-	// points by using set methods - VerticalGrabPoints and
-	// HorizontalGrabPoints disable some methods.  This method is
-	// used to override them, for initialization purposes.
-	this.x = x;
-	this.y = y;
-	setNeedToRegenerate(true);
+        // You have to set these directly, or you can mess up the grab
+        // points by using set methods - VerticalGrabPoints and
+        // HorizontalGrabPoints disable some methods.  This method is
+        // used to override them, for initialization purposes.
+        this.x = x;
+        this.y = y;
+        setNeedToRegenerate(true);
     }
 
     /** Set the latitude of the point, in decimal degrees. */
     public void setLat(float lat) {
-	this.lat1 = lat;
-	setNeedToRegenerate(true);
+        this.lat1 = lat;
+        setNeedToRegenerate(true);
     }
 
     /** Get the latitude of the point, in decimal degrees.  */
     public float getLat() {
-	return lat1;
+        return lat1;
     }
 
     /** Set the longitude of the point, in decimal degrees. */
     public void setLon(float lon) {
-	this.lon1 = lon;
-	setNeedToRegenerate(true);
+        this.lon1 = lon;
+        setNeedToRegenerate(true);
     }
 
     /** Get the longitude of the point, in decimal degrees. */
     public float getLon() {
-	return lon1;
+        return lon1;
     }
 
     /** For screen x/y rendertype points. */
     public void setX(int x) {
-	this.x = x;
-	setNeedToRegenerate(true);
+        this.x = x;
+        setNeedToRegenerate(true);
     }
 
     /** For screen x/y rendertype points. */
     public int getX() {
-	return x;
+        return x;
     }
 
     /** For screen x/y rendertype points. */
     public void setY(int y) {
-	this.y = y;
-	setNeedToRegenerate(true);
+        this.y = y;
+        setNeedToRegenerate(true);
     }
 
     /** For screen x/y rendertype points. */
     public int getY() {
-	return y;
+        return y;
     }
 
     /**
@@ -199,15 +199,15 @@ public class OMPoint extends OMGraphic implements Serializable {
      * marking rectangle will be radius * 2 + 1. 
      */
     public void setRadius(int radius) {
-	this.radius = radius;
-	setNeedToRegenerate(true);
+        this.radius = radius;
+        setNeedToRegenerate(true);
     }
 
     /**
      * Get the radius for the point,
      */
     public int getRadius() {
-	return radius;
+        return radius;
     }
 
     /**
@@ -215,17 +215,17 @@ public class OMPoint extends OMGraphic implements Serializable {
      * @param set true for circles.
      */
     public void setOval(boolean set) {
-	if (oval != set) {
-	    setNeedToRegenerate(true);
-	    oval = set;
-	}
+        if (oval != set) {
+            setNeedToRegenerate(true);
+            oval = set;
+        }
     } 
 
     /**
      * Get whether little circles should be marking the point. 
      */
     public boolean isOval() {
-	return oval;
+        return oval;
     }
 
     /**
@@ -236,61 +236,61 @@ public class OMPoint extends OMGraphic implements Serializable {
      */
     public boolean generate(Projection proj) {
 
-	if (proj == null) {
-	    Debug.message("omgraphic", "OMPoint: null projection in generate!");
-	    return false;
-	}
+        if (proj == null) {
+            Debug.message("omgraphic", "OMPoint: null projection in generate!");
+            return false;
+        }
 
-	// reset the internals
-	int x1 = 0;
-	int x2 = 0;
-	int y1 = 0;
-	int y2 = 0;
+        // reset the internals
+        int x1 = 0;
+        int x2 = 0;
+        int y1 = 0;
+        int y2 = 0;
 
-	switch (renderType) {
-	case RENDERTYPE_XY:
-	    x1 = x - radius; 
-	    y1 = y - radius;
-	    x2 = x + radius; 
-	    y2 = y + radius;
-	    break;
-	case RENDERTYPE_OFFSET:
-	case RENDERTYPE_LATLON:
-	    if (!proj.isPlotable(lat1, lon1)) {
-		setNeedToRegenerate(true);//HMMM not the best flag
-		return false;
-	    }
-	    Point p1 = proj.forward(lat1, lon1);
+        switch (renderType) {
+        case RENDERTYPE_XY:
+            x1 = x - radius; 
+            y1 = y - radius;
+            x2 = x + radius; 
+            y2 = y + radius;
+            break;
+        case RENDERTYPE_OFFSET:
+        case RENDERTYPE_LATLON:
+            if (!proj.isPlotable(lat1, lon1)) {
+                setNeedToRegenerate(true);//HMMM not the best flag
+                return false;
+            }
+            Point p1 = proj.forward(lat1, lon1);
 
-	    x1 = p1.x + x - radius;
-	    y1 = p1.y + y - radius;
-	    x2 = p1.x + x + radius;
-	    y2 = p1.y + y + radius;
-	    break;
-	case RENDERTYPE_UNKNOWN:
-	    System.err.println("OMPoint.generate(): invalid RenderType");
-	    return false;
-	}
+            x1 = p1.x + x - radius;
+            y1 = p1.y + y - radius;
+            x2 = p1.x + x + radius;
+            y2 = p1.y + y + radius;
+            break;
+        case RENDERTYPE_UNKNOWN:
+            System.err.println("OMPoint.generate(): invalid RenderType");
+            return false;
+        }
 
-	if (oval) {
-	    shape = new GeneralPath(
-		new Ellipse2D.Float((float)Math.min(x2, x1),
-				    (float)Math.min(y2, y1),
-				    (float)Math.abs(x2 - x1), 
-				    (float)Math.abs(y2 - y1)));
-	} else {
-	    shape = createBoxShape((int)Math.min(x2, x1),
-				   (int)Math.min(y2, y1),
-				   (int)Math.abs(x2 - x1), 
-				   (int)Math.abs(y2 - y1));
-	}
+        if (oval) {
+            shape = new GeneralPath(
+                new Ellipse2D.Float((float)Math.min(x2, x1),
+                                    (float)Math.min(y2, y1),
+                                    (float)Math.abs(x2 - x1), 
+                                    (float)Math.abs(y2 - y1)));
+        } else {
+            shape = createBoxShape((int)Math.min(x2, x1),
+                                   (int)Math.min(y2, y1),
+                                   (int)Math.abs(x2 - x1), 
+                                   (int)Math.abs(y2 - y1));
+        }
 
-	setNeedToRegenerate(false);
-	return true;
+        setNeedToRegenerate(false);
+        return true;
     }
 
     protected boolean hasLineTypeChoice() {
-	return false;
+        return false;
     }
 
 }

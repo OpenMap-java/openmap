@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGeometry.java,v $
 // $RCSfile: OMGeometry.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/07/15 23:59:37 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -176,7 +176,7 @@ public interface OMGeometry {
      * @param g Graphics2D context to render into.  
      */
     public void fill(Graphics g);
-	    
+            
     /**
      * Paint the graphic, as an outlined shape. <P>
      *

@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwColumnInfo.java,v $
-// $Revision: 1.3 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
+// $Revision: 1.4 $ $Date: 2004/01/26 18:18:11 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -85,99 +85,99 @@ public class DcwColumnInfo {
      */
     public DcwColumnInfo(BinaryFile inputFile) 
         throws EOFException, FormatException {
-	char delim  = inputFile.readChar();
-	if (delim == ';')
-	    throw new EOFException();
+        char delim  = inputFile.readChar();
+        if (delim == ';')
+            throw new EOFException();
 
-	StringBuffer buildstring = new StringBuffer();
-	do {
-	  buildstring.append(Character.toLowerCase(delim));
-	} while ((delim = inputFile.readChar()) != '=');
-	columnName = buildstring.toString().intern();
+        StringBuffer buildstring = new StringBuffer();
+        do {
+          buildstring.append(Character.toLowerCase(delim));
+        } while ((delim = inputFile.readChar()) != '=');
+        columnName = buildstring.toString().intern();
 
-	fieldType = inputFile.readChar();
-	
-	delim = inputFile.readChar();
-	if (delim != ',') { //only legal delimiter
-	    if (delim != ' ') { //one DCW file uses this instead
-	        throw new com.bbn.openmap.io.InvalidCharException("Illegal delimiter character", delim);
-	    }
-	}
+        fieldType = inputFile.readChar();
+        
+        delim = inputFile.readChar();
+        if (delim != ',') { //only legal delimiter
+            if (delim != ' ') { //one DCW file uses this instead
+                throw new com.bbn.openmap.io.InvalidCharException("Illegal delimiter character", delim);
+            }
+        }
 
-	buildstring = new StringBuffer();
-	while ((delim = inputFile.readChar()) != ',') {
- 	    // field length occasionally has trailing whitespace...
-	    if (!Character.isWhitespace(delim)) {
-		buildstring.append(delim); //assumes not like "1  4"
-	    }
-	}
-	String nEls = buildstring.toString();
-	numberOfElements = (nEls.equals("*")) ? -1 : Integer.parseInt(nEls);
+        buildstring = new StringBuffer();
+        while ((delim = inputFile.readChar()) != ',') {
+            // field length occasionally has trailing whitespace...
+            if (!Character.isWhitespace(delim)) {
+                buildstring.append(delim); //assumes not like "1  4"
+            }
+        }
+        String nEls = buildstring.toString();
+        numberOfElements = (nEls.equals("*")) ? -1 : Integer.parseInt(nEls);
     
-	// Sanity check the column schema... a few VPF primitives are not
-	// allowed to show up in arrays.  complain about that now...
-	if (numberOfElements != 1) {
-	    switch (fieldType) {
-	    case VPF_COLUMN_FLOAT: 
-	    case VPF_COLUMN_DOUBLE: 
-	    case VPF_COLUMN_SHORT: 
-	    case VPF_COLUMN_INT: 
-	    case VPF_COLUMN_DATE: 
-	    case VPF_COLUMN_NULL: 
-	    case VPF_COLUMN_TRIPLET: 
-	        throw new FormatException("Illegal array type: " + fieldType + "for column " + columnName);
-	    default:
-	        //legal
-	        break;
-	    }
-	}
+        // Sanity check the column schema... a few VPF primitives are not
+        // allowed to show up in arrays.  complain about that now...
+        if (numberOfElements != 1) {
+            switch (fieldType) {
+            case VPF_COLUMN_FLOAT: 
+            case VPF_COLUMN_DOUBLE: 
+            case VPF_COLUMN_SHORT: 
+            case VPF_COLUMN_INT: 
+            case VPF_COLUMN_DATE: 
+            case VPF_COLUMN_NULL: 
+            case VPF_COLUMN_TRIPLET: 
+                throw new FormatException("Illegal array type: " + fieldType + "for column " + columnName);
+            default:
+                //legal
+                break;
+            }
+        }
 
-	String tmpkeyType = readColumnText(inputFile);
-	if (tmpkeyType == null) {
-	    throw new FormatException("keyType is required column info");
-	}
-	tmpkeyType = tmpkeyType.trim();
-	if (tmpkeyType.length() == 1) {
-	    keyType = tmpkeyType.charAt(0);
-	} else {
-	    throw new FormatException("keyType is supposed to be 1 character");
-	}
-	columnDescription = readColumnText(inputFile);
-	if (columnDescription == null) {
-	    return;
-	}
+        String tmpkeyType = readColumnText(inputFile);
+        if (tmpkeyType == null) {
+            throw new FormatException("keyType is required column info");
+        }
+        tmpkeyType = tmpkeyType.trim();
+        if (tmpkeyType.length() == 1) {
+            keyType = tmpkeyType.charAt(0);
+        } else {
+            throw new FormatException("keyType is supposed to be 1 character");
+        }
+        columnDescription = readColumnText(inputFile);
+        if (columnDescription == null) {
+            return;
+        }
 
-	valueDescriptionTable = readColumnTextLowerCase(inputFile);
-	if (valueDescriptionTable == null) {
-	    return;
-	}
-	if (valueDescriptionTable.equals("-")) {
-	    valueDescriptionTable = null;
-	} else {
-	    valueDescriptionTable=valueDescriptionTable.intern();
-	}
+        valueDescriptionTable = readColumnTextLowerCase(inputFile);
+        if (valueDescriptionTable == null) {
+            return;
+        }
+        if (valueDescriptionTable.equals("-")) {
+            valueDescriptionTable = null;
+        } else {
+            valueDescriptionTable=valueDescriptionTable.intern();
+        }
 
-	thematicIndexName = readColumnTextLowerCase(inputFile);
-	if (thematicIndexName == null) {
-	    return;
-	}
-	if (thematicIndexName.equals("-")) {
-	    thematicIndexName = null;
-	} else {
-	    thematicIndexName = thematicIndexName.intern();
-	}
+        thematicIndexName = readColumnTextLowerCase(inputFile);
+        if (thematicIndexName == null) {
+            return;
+        }
+        if (thematicIndexName.equals("-")) {
+            thematicIndexName = null;
+        } else {
+            thematicIndexName = thematicIndexName.intern();
+        }
 
-	narrativeTable = readColumnTextLowerCase(inputFile);
-	if (narrativeTable == null) {
-	    return;
-	}
-	if (narrativeTable.equals("-")) {
-	    narrativeTable = null;
-	} else {
-	    narrativeTable = narrativeTable.intern();
-	}
+        narrativeTable = readColumnTextLowerCase(inputFile);
+        if (narrativeTable == null) {
+            return;
+        }
+        if (narrativeTable.equals("-")) {
+            narrativeTable = null;
+        } else {
+            narrativeTable = narrativeTable.intern();
+        }
 
-	inputFile.assertChar(':');
+        inputFile.assertChar(':');
     }
 
     /**
@@ -192,25 +192,25 @@ public class DcwColumnInfo {
      */
     private String readColumnText(BinaryFile inputFile)
         throws FormatException {
-	StringBuffer buildretval = new StringBuffer();
-	boolean skipnext = false;
-	char tmp;
-	try {
-	    while ((tmp = inputFile.readChar()) != ',') {
-	        if ((tmp == ':') && !skipnext) {
-		    return null;
-		}
-		if (tmp == '\\') {
-		    skipnext = true;
-		} else {
-		    skipnext = false;
-		    buildretval.append(tmp);
-		}
-	    }
-	} catch (EOFException e) {
-	    //allowable
-	}
-	return buildretval.toString();
+        StringBuffer buildretval = new StringBuffer();
+        boolean skipnext = false;
+        char tmp;
+        try {
+            while ((tmp = inputFile.readChar()) != ',') {
+                if ((tmp == ':') && !skipnext) {
+                    return null;
+                }
+                if (tmp == '\\') {
+                    skipnext = true;
+                } else {
+                    skipnext = false;
+                    buildretval.append(tmp);
+                }
+            }
+        } catch (EOFException e) {
+            //allowable
+        }
+        return buildretval.toString();
     }
 
 
@@ -227,25 +227,25 @@ public class DcwColumnInfo {
      */
     private String readColumnTextLowerCase(BinaryFile inputFile)
         throws FormatException {
-	StringBuffer buildretval = new StringBuffer();
-	boolean skipnext = false;
-	char tmp;
-	try {
-	    while ((tmp = inputFile.readChar()) != ',') {
-	        if ((tmp == ':') && !skipnext) {
-		    return null;
-		}
-		if (tmp == '\\') {
-		    skipnext = true;
-		} else {
-		    skipnext = false;
-		    buildretval.append(Character.toLowerCase(tmp));
-		}
-	    }
-	} catch (EOFException e) {
-	    //allowable
-	}
-	return buildretval.toString();
+        StringBuffer buildretval = new StringBuffer();
+        boolean skipnext = false;
+        char tmp;
+        try {
+            while ((tmp = inputFile.readChar()) != ',') {
+                if ((tmp == ':') && !skipnext) {
+                    return null;
+                }
+                if (tmp == '\\') {
+                    skipnext = true;
+                } else {
+                    skipnext = false;
+                    buildretval.append(Character.toLowerCase(tmp));
+                }
+            }
+        } catch (EOFException e) {
+            //allowable
+        }
+        return buildretval.toString();
     }
 
     /**
@@ -261,15 +261,15 @@ public class DcwColumnInfo {
      * type/length
      */
     public void assertSchema(char type, int length,
-			     boolean strictlength) throws FormatException {
-	if ((type != fieldType) && 
-	    !((type == 'i') && ((fieldType == VPF_COLUMN_INT) || (fieldType == VPF_COLUMN_SHORT)))) {
-	    throw new FormatException("AssertSchema failed on fieldType!");
-	}
-	if ((strictlength && (length != numberOfElements)) ||
-	    (!strictlength && (length != -1) && (length != numberOfElements))) {
-	    throw new FormatException("AssertSchema failed on length!");
-	}
+                             boolean strictlength) throws FormatException {
+        if ((type != fieldType) && 
+            !((type == 'i') && ((fieldType == VPF_COLUMN_INT) || (fieldType == VPF_COLUMN_SHORT)))) {
+            throw new FormatException("AssertSchema failed on fieldType!");
+        }
+        if ((strictlength && (length != numberOfElements)) ||
+            (!strictlength && (length != -1) && (length != numberOfElements))) {
+            throw new FormatException("AssertSchema failed on length!");
+        }
     }
   
     /** the number of bytes a field of this type takes in the input file
@@ -279,42 +279,42 @@ public class DcwColumnInfo {
      */
     public int fieldLength() throws FormatException {
         if (numberOfElements == -1) {
-	    return -1;
-	}
+            return -1;
+        }
     
-	switch (fieldType) {
-	case VPF_COLUMN_TEXT:
-	case VPF_COLUMN_TEXTL1:
-	case VPF_COLUMN_TEXTL3:
-	case VPF_COLUMN_TEXTL2: //various text string types
-	    return numberOfElements;
-	case VPF_COLUMN_FLOAT: //floats
-	    return 4;
-	case VPF_COLUMN_DOUBLE: //doubles
-	    return 8;
-	case VPF_COLUMN_SHORT: //shorts
-	    return 2;
-	case VPF_COLUMN_INT: //ints
-	    return 4;
-	case VPF_COLUMN_FLOAT_2COORD: //2-coord floats
-	    return numberOfElements * 8;
-	case VPF_COLUMN_DOUBLE_2COORD: //2-coord doubles
-	    return numberOfElements * 16;
-	case VPF_COLUMN_FLOAT_3COORD: //3-coord floats
-	    return numberOfElements * 12;
-	case VPF_COLUMN_DOUBLE_3COORD: //3-coord doubles
-	    return numberOfElements * 24;
-	case VPF_COLUMN_DATE: //dates
-	    return 20;
-	case VPF_COLUMN_NULL: //nulls
-	    return 0;
-	case VPF_COLUMN_TRIPLET: //cross-tile identifiers
-	    return -1; //variable length
-	default: {
-		throw new FormatException("Unknown field type: " + fieldType);
-	    }
-	}
-	//unreached
+        switch (fieldType) {
+        case VPF_COLUMN_TEXT:
+        case VPF_COLUMN_TEXTL1:
+        case VPF_COLUMN_TEXTL3:
+        case VPF_COLUMN_TEXTL2: //various text string types
+            return numberOfElements;
+        case VPF_COLUMN_FLOAT: //floats
+            return 4;
+        case VPF_COLUMN_DOUBLE: //doubles
+            return 8;
+        case VPF_COLUMN_SHORT: //shorts
+            return 2;
+        case VPF_COLUMN_INT: //ints
+            return 4;
+        case VPF_COLUMN_FLOAT_2COORD: //2-coord floats
+            return numberOfElements * 8;
+        case VPF_COLUMN_DOUBLE_2COORD: //2-coord doubles
+            return numberOfElements * 16;
+        case VPF_COLUMN_FLOAT_3COORD: //3-coord floats
+            return numberOfElements * 12;
+        case VPF_COLUMN_DOUBLE_3COORD: //3-coord doubles
+            return numberOfElements * 24;
+        case VPF_COLUMN_DATE: //dates
+            return 20;
+        case VPF_COLUMN_NULL: //nulls
+            return 0;
+        case VPF_COLUMN_TRIPLET: //cross-tile identifiers
+            return -1; //variable length
+        default: {
+                throw new FormatException("Unknown field type: " + fieldType);
+            }
+        }
+        //unreached
     }
 
     /**
@@ -323,7 +323,7 @@ public class DcwColumnInfo {
      * @return the name of the column
      */
     public String getColumnName() {
-	return columnName;
+        return columnName;
     }
     /**
      * get the VPF datatype of the column
@@ -331,7 +331,7 @@ public class DcwColumnInfo {
      * @return the VPF datatype
      */
     public char getFieldType() {
-	return fieldType;
+        return fieldType;
     }
     /**
      * get the number of elements
@@ -339,7 +339,7 @@ public class DcwColumnInfo {
      * @return the number of elements
      */
     public int getNumberOfElements() {
-	return numberOfElements;
+        return numberOfElements;
     }
     /**
      * get the VPF key type (one of VPF_COLUMN_PRIMARY_KEY,
@@ -348,7 +348,7 @@ public class DcwColumnInfo {
      * @return the vpf key type
      */
     public char getKeyType() {
-	return keyType;
+        return keyType;
     }
     /**
      * Return <code>true</code> if this column is a primary key. For
@@ -360,7 +360,7 @@ public class DcwColumnInfo {
      * @see #isNonKey()
      */
     public boolean isPrimaryKey() {
-	return (keyType == VPF_COLUMN_PRIMARY_KEY);
+        return (keyType == VPF_COLUMN_PRIMARY_KEY);
     }
     /**
      * Return <code>true</code> if this column is a foreign key.  For
@@ -371,7 +371,7 @@ public class DcwColumnInfo {
      * @see #isPrimaryKey()
      * @see #isNonKey() */
     public boolean isForeignKey() {
-	return (keyType == VPF_COLUMN_FOREIGN_KEY);
+        return (keyType == VPF_COLUMN_FOREIGN_KEY);
     }
     /**
      * Return <code>true</code> if this column is not a key column. For any
@@ -382,7 +382,7 @@ public class DcwColumnInfo {
      * @see #isForeignKey()
      * @see #isPrimaryKey() */
     public boolean isNonKey() {
-	return (keyType == VPF_COLUMN_NON_KEY);
+        return (keyType == VPF_COLUMN_NON_KEY);
     }
 
     /**
@@ -391,7 +391,7 @@ public class DcwColumnInfo {
      * @return the column description (possibly <code>null</code>)
      */
     public String getColumnDescription() {
-	return columnDescription;
+        return columnDescription;
     }
     /**
      * Get the name of the value description table
@@ -401,7 +401,7 @@ public class DcwColumnInfo {
      * @see #getVDT()
      */
     public String getValueDescriptionTable() {
-	return valueDescriptionTable;
+        return valueDescriptionTable;
     }
     /**
      * Get the name of the value description table
@@ -411,7 +411,7 @@ public class DcwColumnInfo {
      * @see #getValueDescriptionTable()
      */
     public String getVDT() {
-	return valueDescriptionTable;
+        return valueDescriptionTable;
     }
     /**
      * get the name of the thematic index
@@ -419,7 +419,7 @@ public class DcwColumnInfo {
      * @return the thematic index name (possibly <code>null</code>)
      */
     public String getThematicIndexName() {
-	return thematicIndexName;
+        return thematicIndexName;
     }
     /**
      * get the name of the narrative table
@@ -427,7 +427,7 @@ public class DcwColumnInfo {
      * @return the name of the narrative table (possibly <code>null</code>)
      */
     public String getNarrativeTable() {
-	return narrativeTable;
+        return narrativeTable;
     }
 
     /**
@@ -442,104 +442,104 @@ public class DcwColumnInfo {
      */
     public Object parseField(BinaryFile inputFile)
         throws EOFException, FormatException {
-	// See table 56, p 79 of MIL-STD-600006 (1992 VPF Standard)
-	// See table 10, p 51 of MIL-STD-2407 (1996 VPF Standard supercedes 600006)
-	boolean haveElements = (numberOfElements != -1);
-	int numels = numberOfElements;
+        // See table 56, p 79 of MIL-STD-600006 (1992 VPF Standard)
+        // See table 10, p 51 of MIL-STD-2407 (1996 VPF Standard supercedes 600006)
+        boolean haveElements = (numberOfElements != -1);
+        int numels = numberOfElements;
 
-	switch (fieldType) {
-	case VPF_COLUMN_TEXT: {
-	    if (!haveElements) {//Variable length string
-		numels = inputFile.readInteger();
-	    }
-	    if (numels == 0) {
-		return "";
-	    }
-	    String s = inputFile.readFixedLengthString(numels);
-	    if (haveElements) {//Fixed Length Strings loose trailing whitespace
-		s = s.trim();
-	    }
-	    return s;
-	}
-	case VPF_COLUMN_TEXTL1: {
-	    if (!haveElements) {//Variable length string
-		numels = inputFile.readInteger();
-	    }
-	    if (numels == 0) {
-		return "";
-	    }
-	    byte[] str = inputFile.readBytes(numels, false);
-	    try {
-	      String s = new String(str, "ISO8859_1");
-	      if (haveElements) {//Fixed Length Strings loose trailing whitespace
-		s = s.trim();
-	      }
-	      return s;
-	    } catch (java.io.UnsupportedEncodingException uee) {
-	      return str;
-	    }
-	}
-	case VPF_COLUMN_TEXTL2:
-	case VPF_COLUMN_TEXTL3: {
-	    if (!haveElements) {//Variable length string
-		numels = inputFile.readInteger();
-	    }
-	    if (numels == 0) {
-		return new byte[0];
-	    }
-	    return inputFile.readBytes(numels, false);
-	}
-	case VPF_COLUMN_FLOAT: {
-	    return new Float(inputFile.readFloat());
-	}
-	case VPF_COLUMN_DOUBLE: {
-	    return new Double(inputFile.readDouble());
-	}
-	case VPF_COLUMN_SHORT: {
-	    return new Short(inputFile.readShort());
-	}
-	case VPF_COLUMN_INT: {
-	    return new Integer(inputFile.readInteger());
-	}
-	case VPF_COLUMN_FLOAT_2COORD: { //2-coord floats
-	    if (!haveElements) {
-		numels = inputFile.readInteger();
-	    }
-	    return new CoordFloatString(numels, 2, inputFile);
-	}
-	case VPF_COLUMN_DOUBLE_2COORD: { //2-coord doubles
-	    if (!haveElements) {
-		numels = inputFile.readInteger();
-	    }
-	    return new CoordDoubleString(numels, 2, inputFile);
-	}
-	case VPF_COLUMN_FLOAT_3COORD: { //3-coord floats
-	    if (!haveElements) {
-		numels = inputFile.readInteger();
-	    }
-	    return new CoordFloatString(numels, 3, inputFile);
-	}
-	case VPF_COLUMN_DOUBLE_3COORD: { //3-coord doubles
-	    if (!haveElements) {
-		numels = inputFile.readInteger();
-	    }
-	    return new CoordDoubleString(numels, 3, inputFile);
-	}
-	case VPF_COLUMN_DATE: {
-	    inputFile.readBytes(20, false);
-	    return "[skipped date]";
-	}
-	case VPF_COLUMN_NULL: {
-	    return "[Null Field Type]";
-	}
-	case VPF_COLUMN_TRIPLET: {
-	    return new DcwCrossTileID(inputFile);
-	}
-	default: {
-	    throw new FormatException("Unknown field type: " + fieldType);
-	}
-	}
-	//unreached
+        switch (fieldType) {
+        case VPF_COLUMN_TEXT: {
+            if (!haveElements) {//Variable length string
+                numels = inputFile.readInteger();
+            }
+            if (numels == 0) {
+                return "";
+            }
+            String s = inputFile.readFixedLengthString(numels);
+            if (haveElements) {//Fixed Length Strings loose trailing whitespace
+                s = s.trim();
+            }
+            return s;
+        }
+        case VPF_COLUMN_TEXTL1: {
+            if (!haveElements) {//Variable length string
+                numels = inputFile.readInteger();
+            }
+            if (numels == 0) {
+                return "";
+            }
+            byte[] str = inputFile.readBytes(numels, false);
+            try {
+              String s = new String(str, "ISO8859_1");
+              if (haveElements) {//Fixed Length Strings loose trailing whitespace
+                s = s.trim();
+              }
+              return s;
+            } catch (java.io.UnsupportedEncodingException uee) {
+              return str;
+            }
+        }
+        case VPF_COLUMN_TEXTL2:
+        case VPF_COLUMN_TEXTL3: {
+            if (!haveElements) {//Variable length string
+                numels = inputFile.readInteger();
+            }
+            if (numels == 0) {
+                return new byte[0];
+            }
+            return inputFile.readBytes(numels, false);
+        }
+        case VPF_COLUMN_FLOAT: {
+            return new Float(inputFile.readFloat());
+        }
+        case VPF_COLUMN_DOUBLE: {
+            return new Double(inputFile.readDouble());
+        }
+        case VPF_COLUMN_SHORT: {
+            return new Short(inputFile.readShort());
+        }
+        case VPF_COLUMN_INT: {
+            return new Integer(inputFile.readInteger());
+        }
+        case VPF_COLUMN_FLOAT_2COORD: { //2-coord floats
+            if (!haveElements) {
+                numels = inputFile.readInteger();
+            }
+            return new CoordFloatString(numels, 2, inputFile);
+        }
+        case VPF_COLUMN_DOUBLE_2COORD: { //2-coord doubles
+            if (!haveElements) {
+                numels = inputFile.readInteger();
+            }
+            return new CoordDoubleString(numels, 2, inputFile);
+        }
+        case VPF_COLUMN_FLOAT_3COORD: { //3-coord floats
+            if (!haveElements) {
+                numels = inputFile.readInteger();
+            }
+            return new CoordFloatString(numels, 3, inputFile);
+        }
+        case VPF_COLUMN_DOUBLE_3COORD: { //3-coord doubles
+            if (!haveElements) {
+                numels = inputFile.readInteger();
+            }
+            return new CoordDoubleString(numels, 3, inputFile);
+        }
+        case VPF_COLUMN_DATE: {
+            inputFile.readBytes(20, false);
+            return "[skipped date]";
+        }
+        case VPF_COLUMN_NULL: {
+            return "[Null Field Type]";
+        }
+        case VPF_COLUMN_TRIPLET: {
+            return new DcwCrossTileID(inputFile);
+        }
+        default: {
+            throw new FormatException("Unknown field type: " + fieldType);
+        }
+        }
+        //unreached
     }
 
     /**
@@ -548,12 +548,12 @@ public class DcwColumnInfo {
      * @return a nice little string
      */
     public String toString() {
-	StringBuffer output = new StringBuffer();
-	output.append(columnName + " " + fieldType + " ");
-	output.append(numberOfElements).append(" ");
-	output.append(keyType).append(" ");
-	output.append(columnDescription + " " + valueDescriptionTable + " ");
-	output.append(thematicIndexName + " " + narrativeTable);
-	return output.toString();
+        StringBuffer output = new StringBuffer();
+        output.append(columnName + " " + fieldType + " ");
+        output.append(numberOfElements).append(" ");
+        output.append(keyType).append(" ");
+        output.append(columnDescription + " " + valueDescriptionTable + " ");
+        output.append(thematicIndexName + " " + narrativeTable);
+        return output.toString();
     }
 }

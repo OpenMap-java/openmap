@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/Attic/AcmeJPEGFormatter.java,v $
 // $RCSfile: AcmeJPEGFormatter.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,43 +43,43 @@ public class AcmeJPEGFormatter extends AbstractImageFormatter {
     protected int imageQuality;
 
     public AcmeJPEGFormatter() {
-	imageQuality = DEFAULT_IMAGE_QUALITY;
+        imageQuality = DEFAULT_IMAGE_QUALITY;
     }
 
     public ImageFormatter makeClone() {
-	AcmeJPEGFormatter formatter =  new AcmeJPEGFormatter();
-	formatter.setImageQuality(getImageQuality());
-	return formatter;
+        AcmeJPEGFormatter formatter =  new AcmeJPEGFormatter();
+        formatter.setImageQuality(getImageQuality());
+        return formatter;
     }
 
     public void setProperties(String prefix, Properties props) {
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	imageQuality = LayerUtils.intFromProperties(props, prefix + QualityProperty, imageQuality);
+        imageQuality = LayerUtils.intFromProperties(props, prefix + QualityProperty, imageQuality);
 
-	if (Debug.debugging("image")){
-	    Debug.output("AcmeJPEGFormatter setting image quality to: " +
-			 imageQuality);
-	}
+        if (Debug.debugging("image")){
+            Debug.output("AcmeJPEGFormatter setting image quality to: " +
+                         imageQuality);
+        }
     }
 
     public int getImageQuality() {
-	return imageQuality;
+        return imageQuality;
     }
 
     /** For this formatter, image quality is a number in the 1-100 range. */
     public void setImageQuality(int quality) {
-	imageQuality = quality;
+        imageQuality = quality;
     }
 
     public byte[] formatImage(BufferedImage bi) {
-	try{
-	    return AcmeJPEGHelper.encodeJPEG(bi, imageQuality);
-	} catch (java.io.IOException ioe) {
-	    Debug.error("AcmeJPEGFormatter caught IOException formatting image!");
-	    return new byte[0];
-	}
+        try{
+            return AcmeJPEGHelper.encodeJPEG(bi, imageQuality);
+        } catch (java.io.IOException ioe) {
+            Debug.error("AcmeJPEGFormatter caught IOException formatting image!");
+            return new byte[0];
+        }
     }
 
     /**
@@ -88,7 +88,7 @@ public class AcmeJPEGFormatter extends AbstractImageFormatter {
      * Some are listed in the WMTConstants interface file.
      */
     public String getFormatLabel() {
-	return WMTConstants.IMAGEFORMAT_JPEG;
+        return WMTConstants.IMAGEFORMAT_JPEG;
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolylineList.java,v $
 // $RCSfile: EsriPolylineList.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/01 12:39:02 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,50 +42,50 @@ public class EsriPolylineList extends EsriGraphicList {
      * @param shape the non-null OMGraphic to add 
      */
     public void add(OMGraphic shape) {
-	try {
+        try {
 
-	    if (shape instanceof OMPoly) {
-		shape = EsriPolyline.convert((OMPoly)shape);
-	    } else if (shape instanceof OMLine) {
-		shape = EsriPolyline.convert(EsriPolylineList.convert((OMLine)shape));
-	    }
+            if (shape instanceof OMPoly) {
+                shape = EsriPolyline.convert((OMPoly)shape);
+            } else if (shape instanceof OMLine) {
+                shape = EsriPolyline.convert(EsriPolylineList.convert((OMLine)shape));
+            }
 
-	    if (shape instanceof OMGraphicList) {
-		OMGraphicList list = (OMGraphicList)shape;
-		EsriGraphic graphic = (EsriGraphic)list.getOMGraphicAt(0);
-		
-		if (graphic instanceof EsriPolyline ||
-		    graphic instanceof EsriPolylineList) {
-		    graphics.add(shape);
-		    addExtents(((EsriGraphicList)shape).getExtents());
-		} else if (graphic instanceof OMGraphic) {
-		    // Try recursively...
-		    add((OMGraphic)graphic);
-		} else {
-		    Debug.message("esri", "EsriPolylineList.add()- graphic list isn't EsriPolylineList, can't add.");
-		}
-	    } else if (shape instanceof EsriPolyline) {
-		graphics.add(shape);
-		addExtents(((EsriPolyline)shape).getExtents());
-	    } else {
-		Debug.message("esri", "EsriPolylineList.add()- graphic isn't EsriPolyline, can't add.");
-	    }
-	} catch (ClassCastException cce) {
-	}
+            if (shape instanceof OMGraphicList) {
+                OMGraphicList list = (OMGraphicList)shape;
+                EsriGraphic graphic = (EsriGraphic)list.getOMGraphicAt(0);
+                
+                if (graphic instanceof EsriPolyline ||
+                    graphic instanceof EsriPolylineList) {
+                    graphics.add(shape);
+                    addExtents(((EsriGraphicList)shape).getExtents());
+                } else if (graphic instanceof OMGraphic) {
+                    // Try recursively...
+                    add((OMGraphic)graphic);
+                } else {
+                    Debug.message("esri", "EsriPolylineList.add()- graphic list isn't EsriPolylineList, can't add.");
+                }
+            } else if (shape instanceof EsriPolyline) {
+                graphics.add(shape);
+                addExtents(((EsriPolyline)shape).getExtents());
+            } else {
+                Debug.message("esri", "EsriPolylineList.add()- graphic isn't EsriPolyline, can't add.");
+            }
+        } catch (ClassCastException cce) {
+        }
     }
 
     /**
      * Get the list type in ESRI type number form - 3.
      */
     public int getType() {
-	return SHAPE_TYPE_POLYLINE;
+        return SHAPE_TYPE_POLYLINE;
     }
 
     /**
      * Construct an EsriPolylineList.
      */
     public EsriPolylineList() {
-	super();
+        super();
     }
     
     /**
@@ -94,7 +94,7 @@ public class EsriPolylineList extends EsriGraphicList {
      * @param initialCapacity the initial capacity of the list 
      */
     public EsriPolylineList(int initialCapacity) {
-	super(initialCapacity);
+        super(initialCapacity);
     }
 
     /**
@@ -106,30 +106,30 @@ public class EsriPolylineList extends EsriGraphicList {
      * @deprecated - capacityIncrement doesn't do anything.
      */
     public EsriPolylineList(int initialCapacity, int capacityIncrement) {
-	super(initialCapacity);
+        super(initialCapacity);
     }
 
     public static OMPoly convert(OMLine omLine) {
-	if (omLine.getRenderType() == OMGraphic.RENDERTYPE_LATLON) {
-	    OMPoly poly = new OMPoly(omLine.getLL(), 
-				     omLine.DECIMAL_DEGREES, 
-				     omLine.getLineType());
-	    poly.setAppObject(omLine.getAppObject());
-	    DrawingAttributes da = new DrawingAttributes();
-	    da.setFrom(omLine);
-	    da.setTo(poly);
-	    return poly;
-	} else return null;
+        if (omLine.getRenderType() == OMGraphic.RENDERTYPE_LATLON) {
+            OMPoly poly = new OMPoly(omLine.getLL(), 
+                                     omLine.DECIMAL_DEGREES, 
+                                     omLine.getLineType());
+            poly.setAppObject(omLine.getAppObject());
+            DrawingAttributes da = new DrawingAttributes();
+            da.setFrom(omLine);
+            da.setTo(poly);
+            return poly;
+        } else return null;
     }
 
     public EsriGraphic shallowCopy() {
-	EsriPolylineList ret = new EsriPolylineList(size());
-	ret.setAppObject(getAppObject());
-	for (Iterator iter = iterator(); iter.hasNext(); ) {
-	    EsriGraphic g = (EsriGraphic)iter.next();
-	    ret.add((OMGraphic)g.shallowCopy());
-	}
-	return ret;
+        EsriPolylineList ret = new EsriPolylineList(size());
+        ret.setAppObject(getAppObject());
+        for (Iterator iter = iterator(); iter.hasNext(); ) {
+            EsriGraphic g = (EsriGraphic)iter.next();
+            ret.add((OMGraphic)g.shallowCopy());
+        }
+        return ret;
     }
 }
 

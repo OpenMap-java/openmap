@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/hello/HelloWorld.java,v $
 // $RCSfile: HelloWorld.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,7 +65,7 @@ public class HelloWorld extends JFrame {
      * will use the default properties.
      */
     public HelloWorld() throws MultipleSoloMapComponentException {
-	this(new Properties());
+        this(new Properties());
     }
 
     /**
@@ -75,86 +75,86 @@ public class HelloWorld extends JFrame {
      * @param props The override properties
      */
     public HelloWorld(Properties props) 
-	throws MultipleSoloMapComponentException {
+        throws MultipleSoloMapComponentException {
 
-	// Initialize the parent class (JFrame)
-	super("HelloWorld Example");
+        // Initialize the parent class (JFrame)
+        super("HelloWorld Example");
 
-	// Use a Border layout manager
-	getContentPane().setLayout(new BorderLayout());
+        // Use a Border layout manager
+        getContentPane().setLayout(new BorderLayout());
 
-	// Call quit when the window's close box is clicked.
-	addWindowListener(new WindowAdapter() {
-	    public void windowClosing(WindowEvent e) {
-		quit();
-	    }});
+        // Call quit when the window's close box is clicked.
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                quit();
+            }});
 
-	System.out.println("Creating MapHandler");
-	// Create the BeanContext, known as the MapHandler.
-	MapHandler mapHandler = new MapHandler();
-	System.out.println("Creating MapBean");
-	// Create a MapBean, and add it to the MapHandler.
-	MapBean map = new MapBean();
+        System.out.println("Creating MapHandler");
+        // Create the BeanContext, known as the MapHandler.
+        MapHandler mapHandler = new MapHandler();
+        System.out.println("Creating MapBean");
+        // Create a MapBean, and add it to the MapHandler.
+        MapBean map = new MapBean();
 
-	// Set the map's center property...
-	map.setCenter(new LatLonPoint(43.0f, -95.0f));
-	// and scale
-	map.setScale(80000000f);
+        // Set the map's center property...
+        map.setCenter(new LatLonPoint(43.0f, -95.0f));
+        // and scale
+        map.setScale(80000000f);
 
-	mapHandler.add(map);
-	// Add the map to the JFrame
-	getContentPane().add(map, BorderLayout.CENTER);
+        mapHandler.add(map);
+        // Add the map to the JFrame
+        getContentPane().add(map, BorderLayout.CENTER);
 
 
-	System.out.println("Adding MouseEvent support...");
-	// Add Mouse handling objects.  The MouseDelegator manages the
-	// MouseModes, controlling which one receives events from the
-	// MapBean.  The active MouseMode sends events to the layers
-	// that want to receive events from it.  The MouseDelegator
-	// will find the MapBean in the MapHandler, and hook itself up
-	// to it.
-	mapHandler.add(new MouseDelegator());
+        System.out.println("Adding MouseEvent support...");
+        // Add Mouse handling objects.  The MouseDelegator manages the
+        // MouseModes, controlling which one receives events from the
+        // MapBean.  The active MouseMode sends events to the layers
+        // that want to receive events from it.  The MouseDelegator
+        // will find the MapBean in the MapHandler, and hook itself up
+        // to it.
+        mapHandler.add(new MouseDelegator());
 
-	// Add MouseMode.  The MouseDelegator will find it via the
-	// MapHandler.
+        // Add MouseMode.  The MouseDelegator will find it via the
+        // MapHandler.
 
-	//  Adding NavMouseMode first makes it active.
-	mapHandler.add(new NavMouseMode()); 
+        //  Adding NavMouseMode first makes it active.
+        mapHandler.add(new NavMouseMode()); 
 
-	System.out.println("Creating ToolPanel...");
-	// Add the standard panning and zoom GUI to the JFrame.
-	// Create the tool...
-	mapHandler.add(new OMToolSet());
-	// Create the ToolPanel.  It will find the OMToolSet in the
-	// MapHandler.
-	ToolPanel toolPanel = new ToolPanel();
-	mapHandler.add(toolPanel);
-	
-	// Add the ToolPanel to the right place in this JFrame.
-	getContentPane().add(toolPanel, BorderLayout.NORTH);
+        System.out.println("Creating ToolPanel...");
+        // Add the standard panning and zoom GUI to the JFrame.
+        // Create the tool...
+        mapHandler.add(new OMToolSet());
+        // Create the ToolPanel.  It will find the OMToolSet in the
+        // MapHandler.
+        ToolPanel toolPanel = new ToolPanel();
+        mapHandler.add(toolPanel);
+        
+        // Add the ToolPanel to the right place in this JFrame.
+        getContentPane().add(toolPanel, BorderLayout.NORTH);
 
-	
-	System.out.println("Creating Layers...");
-	Layer[] layers = getLayers(props);
+        
+        System.out.println("Creating Layers...");
+        Layer[] layers = getLayers(props);
 
-	// Use the LayerHandler to manage all layers, whether they are
-	// on the map or not.  You can add a layer to the map by
-	// setting layer.setVisible(true).
-	LayerHandler layerHandler = new LayerHandler();
-	for (int i = 0; i < layers.length; i++) {
-	    layers[i].setVisible(true);
-	    layerHandler.addLayer(layers[i]);
-	}
+        // Use the LayerHandler to manage all layers, whether they are
+        // on the map or not.  You can add a layer to the map by
+        // setting layer.setVisible(true).
+        LayerHandler layerHandler = new LayerHandler();
+        for (int i = 0; i < layers.length; i++) {
+            layers[i].setVisible(true);
+            layerHandler.addLayer(layers[i]);
+        }
 
-	mapHandler.add(layerHandler);
-	System.out.println("Done creating...");
+        mapHandler.add(layerHandler);
+        System.out.println("Done creating...");
     }
 
     /**
      * Exits the application.
      */
     protected void quit() {
-	System.exit(0);
+        System.exit(0);
     }
 
     /**
@@ -164,24 +164,24 @@ public class HelloWorld extends JFrame {
      * @param args command line arguments -- ignored
      */
     public static void main(String[] args) {
-	Properties helloProps = new Properties();
+        Properties helloProps = new Properties();
 
-	loadResource(helloResources, helloProps);
-	try {
-	    HelloWorld hello =  new HelloWorld(helloProps);
-	    hello.setSize(700, 500);
-	    hello.setVisible(true);
-	} catch (MultipleSoloMapComponentException msmce) {
-	    // The MapHandler is only allowed to have one of certain
-	    // items.  These items implement the SoloMapComponent
-	    // interface.  The MapHandler can have a policy that
-	    // determines what to do when duplicate instances of the
-	    // same type of object are added - replace or ignore.
+        loadResource(helloResources, helloProps);
+        try {
+            HelloWorld hello =  new HelloWorld(helloProps);
+            hello.setSize(700, 500);
+            hello.setVisible(true);
+        } catch (MultipleSoloMapComponentException msmce) {
+            // The MapHandler is only allowed to have one of certain
+            // items.  These items implement the SoloMapComponent
+            // interface.  The MapHandler can have a policy that
+            // determines what to do when duplicate instances of the
+            // same type of object are added - replace or ignore.
 
-	    // In this example, this will never happen, since we are
-	    // controlling that one MapBean, LayerHandler,
-	    // MouseDelegator, etc is being added to the MapHandler.
-	}
+            // In this example, this will never happen, since we are
+            // controlling that one MapBean, LayerHandler,
+            // MouseDelegator, etc is being added to the MapHandler.
+        }
     }
 
     /**
@@ -192,19 +192,19 @@ public class HelloWorld extends JFrame {
      * method in case we use more than one resource file again.
      */
     private static void loadResource(String resources, Properties props) {
-	InputStream in = HelloWorld.class.getResourceAsStream(resources);
-	if (props == null) {
-	    System.err.println("Unable to locate resources: " + resources);
-	    System.err.println("Using default resources.");
-	} else {
-	    try {
-		props.load(in);
-	    } catch (java.io.IOException e) {
-		System.err.println("Caught IOException loading resources: " +
-				   resources);
-		System.err.println("Using default resources.");
-	    }
-	}
+        InputStream in = HelloWorld.class.getResourceAsStream(resources);
+        if (props == null) {
+            System.err.println("Unable to locate resources: " + resources);
+            System.err.println("Using default resources.");
+        } else {
+            try {
+                props.load(in);
+            } catch (java.io.IOException e) {
+                System.err.println("Caught IOException loading resources: " +
+                                   resources);
+                System.err.println("Using default resources.");
+            }
+        }
     }
 
     /**
@@ -219,75 +219,75 @@ public class HelloWorld extends JFrame {
      */
     private Layer[] getLayers(Properties p) {
 
-	// Get the contents of the hello.layers property, which is a
-	// space-separated list of marker names...
-	String layersValue = p.getProperty(layersProperty);
+        // Get the contents of the hello.layers property, which is a
+        // space-separated list of marker names...
+        String layersValue = p.getProperty(layersProperty);
 
-	// Didn't find it if it's null.
-	if (layersValue == null) {
-	    System.err.println("No property \"" + layersProperty
-			       + "\" found in application properties.");
-	    return null;
-	}
-	// OK, parse the list
-	StringTokenizer tokens = new StringTokenizer(layersValue, " ");
-	Vector layerNames = new Vector();
-	while (tokens.hasMoreTokens()) {
-	    layerNames.addElement(tokens.nextToken());
-	}
-	int nLayerNames = layerNames.size();
-	Vector layers = new Vector(nLayerNames);
+        // Didn't find it if it's null.
+        if (layersValue == null) {
+            System.err.println("No property \"" + layersProperty
+                               + "\" found in application properties.");
+            return null;
+        }
+        // OK, parse the list
+        StringTokenizer tokens = new StringTokenizer(layersValue, " ");
+        Vector layerNames = new Vector();
+        while (tokens.hasMoreTokens()) {
+            layerNames.addElement(tokens.nextToken());
+        }
+        int nLayerNames = layerNames.size();
+        Vector layers = new Vector(nLayerNames);
 
-	// For each layer marker name, find that layer's properties.
-	// The marker name is used to scope those properties that
-	// apply to a particular layer.  If you parse the layers'
-	// properties from a file, you can add/remove layers from the
-	// application without re-compiling.  You could hard-code all
-	// the properties being set if you'd rather...
+        // For each layer marker name, find that layer's properties.
+        // The marker name is used to scope those properties that
+        // apply to a particular layer.  If you parse the layers'
+        // properties from a file, you can add/remove layers from the
+        // application without re-compiling.  You could hard-code all
+        // the properties being set if you'd rather...
 
-	for (int i = 0; i < nLayerNames; i++) {
-	    String layerName = (String)layerNames.elementAt(i);
+        for (int i = 0; i < nLayerNames; i++) {
+            String layerName = (String)layerNames.elementAt(i);
 
-	    // Find the .class property to know what kind of layer to create.
-	    String classProperty = layerName + ".class";
-	    String className = p.getProperty(classProperty);
-	    if (className == null) {
-		// Skip it if you don't find it.
-		System.err.println("Failed to locate property \""
-				   + classProperty + "\"");
-		System.err.println("Skipping layer \"" + layerName + "\"");
-		continue;
-	    }
-	    try {
-		// Create it if you do...
-		Object obj = java.beans.Beans.instantiate(null, className);
-		if (obj instanceof Layer) {
-		    Layer l = (Layer) obj;
-		    // All layers have a setProperties method, and
-		    // should intialize themselves with proper
-		    // settings here.  If a property is not set, a
-		    // default should be used, or a big, graceful
-		    // complaint should be issued.
-		    l.setProperties(layerName, p);
-		    layers.addElement(l);
-		}
-	    } catch (java.lang.ClassNotFoundException e) {
-		System.err.println("Layer class not found: \""
-				   + className + "\"");
-		System.err.println("Skipping layer \"" + layerName + "\"");
-	    } catch (java.io.IOException e) {
-		System.err.println("IO Exception instantiating class \""
-				   + className + "\"");
-		System.err.println("Skipping layer \"" + layerName + "\"");
-	    }
-	}
-	int nLayers = layers.size();
-	if (nLayers == 0) {
-	    return null;
-	} else {
-	    Layer[] value = new Layer[nLayers];
-	    layers.copyInto(value);
-	    return value;
-	}
+            // Find the .class property to know what kind of layer to create.
+            String classProperty = layerName + ".class";
+            String className = p.getProperty(classProperty);
+            if (className == null) {
+                // Skip it if you don't find it.
+                System.err.println("Failed to locate property \""
+                                   + classProperty + "\"");
+                System.err.println("Skipping layer \"" + layerName + "\"");
+                continue;
+            }
+            try {
+                // Create it if you do...
+                Object obj = java.beans.Beans.instantiate(null, className);
+                if (obj instanceof Layer) {
+                    Layer l = (Layer) obj;
+                    // All layers have a setProperties method, and
+                    // should intialize themselves with proper
+                    // settings here.  If a property is not set, a
+                    // default should be used, or a big, graceful
+                    // complaint should be issued.
+                    l.setProperties(layerName, p);
+                    layers.addElement(l);
+                }
+            } catch (java.lang.ClassNotFoundException e) {
+                System.err.println("Layer class not found: \""
+                                   + className + "\"");
+                System.err.println("Skipping layer \"" + layerName + "\"");
+            } catch (java.io.IOException e) {
+                System.err.println("IO Exception instantiating class \""
+                                   + className + "\"");
+                System.err.println("Skipping layer \"" + layerName + "\"");
+            }
+        }
+        int nLayers = layers.size();
+        if (nLayers == 0) {
+            return null;
+        } else {
+            Layer[] value = new Layer[nLayers];
+            layers.copyInto(value);
+            return value;
+        }
     }
 }

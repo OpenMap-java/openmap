@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/TableSubsetRecordIterator.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -27,9 +27,9 @@ public class TableSubsetRecordIterator implements Iterator {
     final List l;
     private int current = 0;
     public TableSubsetRecordIterator(int vals[], DcwRecordFile drf, List l) {
-	this.vals = vals;
-	this.drf = drf;
-	this.l = l;
+        this.vals = vals;
+        this.drf = drf;
+        this.l = l;
     }
     /**
      * Constructor
@@ -37,24 +37,24 @@ public class TableSubsetRecordIterator implements Iterator {
      * @param vals the row numbers to be returned
      */
     public TableSubsetRecordIterator(int vals[], DcwRecordFile drf) {
-	this(vals, drf, new ArrayList(drf.getColumnCount()));
+        this(vals, drf, new ArrayList(drf.getColumnCount()));
     }
     public boolean hasNext() {
-	return (current < vals.length);
+        return (current < vals.length);
     }
     public Object next() {
-	boolean gotit;
-	try {
-	    gotit = drf.getRow(l, vals[current++]);
-	} catch (FormatException fe) {
-	    System.out.println("fe: " + fe);
-	    gotit = false;
-	}
-	return gotit ? l : null;
+        boolean gotit;
+        try {
+            gotit = drf.getRow(l, vals[current++]);
+        } catch (FormatException fe) {
+            System.out.println("fe: " + fe);
+            gotit = false;
+        }
+        return gotit ? l : null;
     }
     public void remove() {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 }
 
-	
+        

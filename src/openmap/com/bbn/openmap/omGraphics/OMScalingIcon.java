@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingIcon.java,v $
 // $RCSfile: OMScalingIcon.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -68,12 +68,12 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * @see #setPixel 
      */
     public OMScalingIcon(float centerLat, float centerLon, int offsetX, int offsetY,
-			 int w, int h, int[] pix, float baseScale) {
+                         int w, int h, int[] pix, float baseScale) {
 
-	super(centerLat, centerLon, 0f, 0f, w, h, pix);
-	setX(offsetX);
-	setY(offsetY);
-	this.baseScale = baseScale;
+        super(centerLat, centerLon, 0f, 0f, w, h, pix);
+        setX(offsetX);
+        setY(offsetY);
+        this.baseScale = baseScale;
     }
   
     ////////////////////////////////////// IMAGEICON
@@ -89,9 +89,9 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * @param baseScale the scale where the icon will be show regular size.
      */
     public OMScalingIcon(float centerLat, float centerLon, 
-			 int offsetX, int offsetY,
-			 ImageIcon ii, float baseScale) {
-	this(centerLat, centerLon, offsetX, offsetY, ii.getImage(), baseScale);
+                         int offsetX, int offsetY,
+                         ImageIcon ii, float baseScale) {
+        this(centerLat, centerLon, offsetX, offsetY, ii.getImage(), baseScale);
     }
 
     /**
@@ -105,18 +105,18 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * @param baseScale the scale where the icon will be show regular size.
      */
     public OMScalingIcon(float centerLat, float centerLon,
-			 int offsetX, int offsetY,
-			 Image ii, float baseScale) {
-	super();
-	setRenderType(OMGraphic.RENDERTYPE_LATLON);
-	setColorModel(COLORMODEL_IMAGEICON);
+                         int offsetX, int offsetY,
+                         Image ii, float baseScale) {
+        super();
+        setRenderType(OMGraphic.RENDERTYPE_LATLON);
+        setColorModel(COLORMODEL_IMAGEICON);
 
-	lat = centerLat;
-	lon = centerLon;
-	setImage(ii);
-	setX(offsetX);
-	setY(offsetY);
-	this.baseScale = baseScale;
+        lat = centerLat;
+        lon = centerLon;
+        setImage(ii);
+        setX(offsetX);
+        setY(offsetY);
+        this.baseScale = baseScale;
     }
   
     ////////////////////////////////////// BYTE PIXELS with COLORTABLE
@@ -138,16 +138,16 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * @see #setPixel 
      */
     public OMScalingIcon(float centerLat, float centerLon,
-			 int offsetX, int offsetY,
-			 int w, int h, 
-			 byte[] bytes,
-			 Color[] colorTable,
-			 int trans, float baseScale) {
+                         int offsetX, int offsetY,
+                         int w, int h, 
+                         byte[] bytes,
+                         Color[] colorTable,
+                         int trans, float baseScale) {
 
-	super(centerLat, centerLon, 0f, 0f, w, h, bytes, colorTable, trans);
-	setX(offsetX);
-	setY(offsetY);
-	this.baseScale = baseScale;
+        super(centerLat, centerLon, 0f, 0f, w, h, bytes, colorTable, trans);
+        setX(offsetX);
+        setY(offsetY);
+        this.baseScale = baseScale;
     }
 
     /**
@@ -162,81 +162,81 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      */
     protected boolean position(Projection proj) {
 
-	if (proj == null) {
-	    Debug.error("OMScalingIcon: null projection in position!");
-	    return false;
-	}
-	
-	float shrinkScale = proj.getScale();
+        if (proj == null) {
+            Debug.error("OMScalingIcon: null projection in position!");
+            return false;
+        }
+        
+        float shrinkScale = proj.getScale();
 
-	if (shrinkScale > maxScale) {
-	    shrinkScale = maxScale;
-	}
-	if (shrinkScale < minScale) {
-	    shrinkScale = minScale;
-	}
-	
-	float scaleFactor = baseScale/shrinkScale;
+        if (shrinkScale > maxScale) {
+            shrinkScale = maxScale;
+        }
+        if (shrinkScale < minScale) {
+            shrinkScale = minScale;
+        }
+        
+        float scaleFactor = baseScale/shrinkScale;
 
-	point1 = proj.forward(lat, lon);
-	point2 = proj.forward(lat, lon);
+        point1 = proj.forward(lat, lon);
+        point2 = proj.forward(lat, lon);
 
-	point1.setLocation((int)(point1.getX() + (scaleFactor * (getX() - sourceImage.getWidth()/2))),
-			  (int)(point1.getY() + (scaleFactor * (getY() - sourceImage.getHeight()/2))));
+        point1.setLocation((int)(point1.getX() + (scaleFactor * (getX() - sourceImage.getWidth()/2))),
+                          (int)(point1.getY() + (scaleFactor * (getY() - sourceImage.getHeight()/2))));
 
-	point2.setLocation((int)(point2.getX() + (scaleFactor * (getX() + sourceImage.getWidth()/2))),
-			   (int)(point2.getY() + (scaleFactor * (getY() + sourceImage.getHeight()/2))));
+        point2.setLocation((int)(point2.getX() + (scaleFactor * (getX() + sourceImage.getWidth()/2))),
+                           (int)(point2.getY() + (scaleFactor * (getY() + sourceImage.getHeight()/2))));
 
-	setNeedToReposition(false);
-	return true;
+        setNeedToReposition(false);
+        return true;
     }
 
     public boolean isOnMap(Projection proj) {
-	generate(proj); // Should only generate if needed...
+        generate(proj); // Should only generate if needed...
 
-	Shape shape = getShape();
-	if (shape == null) {
-	    return false;
-	}
+        Shape shape = getShape();
+        if (shape == null) {
+            return false;
+        }
 
-	Point p1 = proj.forward(proj.getUpperLeft());
-	Point p2 = proj.forward(proj.getLowerRight());
-	int h = (int)(p2.getY() - p1.getY());
-	int w = (int)(p2.getX() - p1.getX());
+        Point p1 = proj.forward(proj.getUpperLeft());
+        Point p2 = proj.forward(proj.getLowerRight());
+        int h = (int)(p2.getY() - p1.getY());
+        int w = (int)(p2.getX() - p1.getX());
 
-	Rectangle mapRect = new Rectangle((int)p1.getX(), (int)p1.getY(), w, h);
-	
-	return mapRect.intersects(shape.getBounds());
+        Rectangle mapRect = new Rectangle((int)p1.getX(), (int)p1.getY(), w, h);
+        
+        return mapRect.intersects(shape.getBounds());
     }
 
     public void setBaseScale(float bs) {
-	baseScale = bs;
+        baseScale = bs;
     }
 
     public float getBaseScale() {
-	return baseScale;
+        return baseScale;
     }
 
     /**
      * Set the scale that limits how big an icon will grow.
      */
     public void setMaxScale(float ms) {
-	maxScale = ms;
+        maxScale = ms;
     }
 
     public float getMaxScale() {
-	return maxScale;
+        return maxScale;
     }
 
     /**
      * Set the scale that limits how small an icon will shrink.
      */
     public void setMinScale(float ms) {
-	minScale = ms;
+        minScale = ms;
     }
 
     public float getMinScale() {
-	return minScale;
+        return minScale;
     }
 
     

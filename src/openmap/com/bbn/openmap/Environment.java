@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Environment.java,v $
 // $RCSfile: Environment.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/08 23:56:30 $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -202,7 +202,7 @@ public class Environment extends Properties {
      */
     public static void init(Properties sysProps) {
         if (env != null) {
-	    //  	    Debug.output("Reinitializing Environment!");
+            //              Debug.output("Reinitializing Environment!");
             // overwrite properties
             env.installProps(sysProps);
             return;
@@ -318,8 +318,8 @@ public class Environment extends Properties {
                 String key = pinfo[i][0];
                 String value = applet.getParameter(key);
                 Debug.message("env",
-			      "Applet Parameter " + key +
-			      " has value " + value);
+                              "Applet Parameter " + key +
+                              " has value " + value);
                 props.put(key, value);
             } catch (NullPointerException e) {
             }
@@ -357,12 +357,12 @@ public class Environment extends Properties {
         // might not want to ship around this value on a network because it
         // details some interesting tidbits about the running application.
         p.put(UniqueID, "_" +
-	      Environment.get("user.name") + "_" +
-	      Environment.get(Version) + "_" +
-	      Environment.get("os.arch") + "_" +
-	      Environment.get("os.name") + "_" +
-	      ((addr != null) ? addr.getHostName() : "nohost") + "_" +
-	      timestamp() + "_");
+              Environment.get("user.name") + "_" +
+              Environment.get(Version) + "_" +
+              Environment.get("os.arch") + "_" +
+              Environment.get("os.name") + "_" +
+              ((addr != null) ? addr.getHostName() : "nohost") + "_" +
+              timestamp() + "_");
 
         // determine window system (for HACKing around Java-under-XWindows
         // polygon wraparound bug.
@@ -376,7 +376,7 @@ public class Environment extends Properties {
         }
 
         if (osname.equalsIgnoreCase("solaris")
-	    || osname.equalsIgnoreCase("SunOS")) {
+            || osname.equalsIgnoreCase("SunOS")) {
             isXWindows = true;
             doingXWindowsWorkaround = true;
             Debug.message("env", "Environment: is X Windows!");
@@ -397,19 +397,19 @@ public class Environment extends Properties {
         } else if (osname.equalsIgnoreCase("Mac OS X")) {
             isXWindows = true;
             doingXWindowsWorkaround = true;
-	    // 	    isXWindows = false;
-	    // 	    doingXWindowsWorkaround = false;
+            //      isXWindows = false;
+            //      doingXWindowsWorkaround = false;
             com.bbn.openmap.omGraphics.DrawingAttributes.alwaysSetTextToBlack = true;
             Debug.message("env", "Environment: Excellent! Mac OS X!");
         } else {
             System.err.println("Environment.initRuntimeProperties(): " +
-			       "running on unknown/untested OS: " + osname);
+                               "running on unknown/untested OS: " + osname);
         }
 
         // should have initialized user properties already
         if (Environment.get(OpenMapPrefix + ".noXWindowsWorkaround") != null) {
             Debug.message("env", "Environment.initRuntimeProperties(): " +
-			  "not working around XWindows clipping bug.");
+                          "not working around XWindows clipping bug.");
             doingXWindowsWorkaround = false;
         }
     }
@@ -469,8 +469,8 @@ public class Environment extends Properties {
         if (env == null) {
             if (Debug.debugging("env")) {
                 System.err.println("Environment.get(" +
-				   key + ", " + defaultValue +
-				   ") called with null environment");
+                                   key + ", " + defaultValue +
+                                   ") called with null environment");
             }
             return defaultValue;
         } else {
@@ -490,8 +490,8 @@ public class Environment extends Properties {
         if (env == null) {
             if (Debug.debugging("env")) {
                 System.err.println("Can't Environment.put(" +
-				   key + ", " + value +
-				   ") - no environment yet.");
+                                   key + ", " + value +
+                                   ") - no environment yet.");
             }
             return null;
         } else {
@@ -697,12 +697,12 @@ public class Environment extends Properties {
     public static String timestamp() {
         Calendar calendar = Calendar.getInstance();
         return "" +
-	    calendar.get(Calendar.YEAR) +
-	    calendar.get(Calendar.MONTH) +
-	    calendar.get(Calendar.DAY_OF_MONTH) +
-	    calendar.get(Calendar.HOUR) +
-	    calendar.get(Calendar.MINUTE) +
-	    calendar.get(Calendar.SECOND);
+            calendar.get(Calendar.YEAR) +
+            calendar.get(Calendar.MONTH) +
+            calendar.get(Calendar.DAY_OF_MONTH) +
+            calendar.get(Calendar.HOUR) +
+            calendar.get(Calendar.MINUTE) +
+            calendar.get(Calendar.SECOND);
     }
 
     /**
@@ -739,7 +739,7 @@ public class Environment extends Properties {
         try {
             String classPath = System.getProperty("java.class.path");
             StringTokenizer st = new StringTokenizer(classPath,
-						     File.pathSeparator);
+                                                     File.pathSeparator);
 
             while (st.hasMoreTokens()) {
                 String path = st.nextToken();

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolPartTree.java,v $
 // $RCSfile: SymbolPartTree.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,7 +30,7 @@ package com.bbn.openmap.tools.symbology.milStd2525;
 public class SymbolPartTree extends SymbolPart {
 
     public SymbolPartTree(String name) {
-	prettyName = name;
+        prettyName = name;
     }
 
     /**
@@ -38,6 +38,6 @@ public class SymbolPartTree extends SymbolPart {
      * including the 15 digit code and the pretty name.
      */
     public String toString() {
-	return "[" + prettyName + "] Symbol Set";
+        return "[" + prettyName + "] Symbol Set";
     }
 }

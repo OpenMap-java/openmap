@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCacheManager.java,v $
 // $RCSfile: DTEDCacheManager.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:25 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:08 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -83,9 +83,9 @@ public class DTEDCacheManager {
      * of colors. 
      */
     public DTEDCacheManager() {
-	this(null, 
-	     DTEDFrameColorTable.DTED_COLORS, 
-	     DTEDFrameColorTable.DEFAULT_OPAQUENESS);
+        this(null, 
+             DTEDFrameColorTable.DTED_COLORS, 
+             DTEDFrameColorTable.DEFAULT_OPAQUENESS);
     }
     
     /** 
@@ -95,9 +95,9 @@ public class DTEDCacheManager {
      * @param DTEDPaths pathnames to the DTED directories. 
      */
     public DTEDCacheManager(String[] DTEDPaths) {
-	this(DTEDPaths, 
-	     DTEDFrameColorTable.DTED_COLORS, 
-	     DTEDFrameColorTable.DEFAULT_OPAQUENESS);
+        this(DTEDPaths, 
+             DTEDFrameColorTable.DTED_COLORS, 
+             DTEDFrameColorTable.DEFAULT_OPAQUENESS);
     }
 
     /** 
@@ -110,9 +110,9 @@ public class DTEDCacheManager {
      * @param opaque the opaqueness of the dted images, 0 - 255 (0 is clear)
      */
     public DTEDCacheManager(String[] DTEDPaths, int num_colors, int opaque) {
-	dtedDirPaths = DTEDPaths;
-	numColors = num_colors;
-	opaqueness = opaque;
+        dtedDirPaths = DTEDPaths;
+        numColors = num_colors;
+        opaqueness = opaque;
     }
 
     /** 
@@ -126,11 +126,11 @@ public class DTEDCacheManager {
      * @param opaque the opaqueness of the dted images, 0 - 255 (0 is clear)
      */
     public DTEDCacheManager(String[] DTEDPaths, String[] DTED2Paths, 
-			    int num_colors, int opaque) {
-	dtedDirPaths = DTEDPaths;
-	dted2DirPaths = DTED2Paths;
-	numColors = num_colors;
-	opaqueness = opaque;
+                            int num_colors, int opaque) {
+        dtedDirPaths = DTEDPaths;
+        dted2DirPaths = DTED2Paths;
+        numColors = num_colors;
+        opaqueness = opaque;
     }
         
     /** 
@@ -139,7 +139,7 @@ public class DTEDCacheManager {
      * @param paths DTED Level 0 and 1 directory paths.
      */
     public void setDtedDirPaths(String[] paths) {
-	dtedDirPaths = paths;
+        dtedDirPaths = paths;
     }
 
     /** 
@@ -149,8 +149,8 @@ public class DTEDCacheManager {
      * @param paths2 DTED Level 2 directory paths.
      */
     public void setDtedDirPaths(String[] paths, String[] paths2) {
-	dtedDirPaths = paths;
-	dted2DirPaths = paths2;
+        dtedDirPaths = paths;
+        dted2DirPaths = paths2;
     }
 
     /**
@@ -159,7 +159,7 @@ public class DTEDCacheManager {
      * the projection. 
      */
     public void setCacheSize(int size) {
-	cacheSize = size;
+        cacheSize = size;
     }
 
     /**
@@ -168,7 +168,7 @@ public class DTEDCacheManager {
      * the projection. 
      */
     public int getCacheSize() {
-	return cacheSize;
+        return cacheSize;
     }
 
     /** 
@@ -178,24 +178,24 @@ public class DTEDCacheManager {
      * @param lon longitude of point in decimal degrees.
      */
     public int getElevation(float lat, float lon) {
-	if (caches[0] == null) {
-	    caches[0] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths, 
-					     numColors, opaqueness);
-	    caches[0].setSubframeInfo(subframeInfo);
-	}
-	return caches[0].getElevation(lat, lon);
+        if (caches[0] == null) {
+            caches[0] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths, 
+                                             numColors, opaqueness);
+            caches[0].setSubframeInfo(subframeInfo);
+        }
+        return caches[0].getElevation(lat, lon);
     }
 
     public void setSubframeInfo(DTEDFrameSubframeInfo dfsi) {
-	subframeInfo = dfsi;
-	for (int i = 0; i < MAX_NUM_BOXES; i++) {
-	    if (caches[i] != null)
-		caches[i].setSubframeInfo(dfsi);
-	}
+        subframeInfo = dfsi;
+        for (int i = 0; i < MAX_NUM_BOXES; i++) {
+            if (caches[i] != null)
+                caches[i].setSubframeInfo(dfsi);
+        }
     }
     
     public DTEDFrameSubframeInfo getSubframeInfo() {
-	return subframeInfo;
+        return subframeInfo;
     }
     
     /** 
@@ -208,146 +208,146 @@ public class DTEDCacheManager {
      * @return List of rasters to display.
      */
     public OMGraphicList getRectangle(EqualArc proj) {
-	
-	float[] lat = new float[3];
-	float[] lon = new float[3];
+        
+        float[] lat = new float[3];
+        float[] lon = new float[3];
 
-	// This next bit of mumbo jumbo is to handle the equator and
-	// dateline: Worst case, crossing both, treat each area
-	// separately, so it is the same as handling four requests for
-	// data - above and below the equator, and left and right of
-	// the dateline.  Normal case, there is only one box.  Two
-	// boxes if crossing only one of the boundaries.
-	
-	
-	int xa = 2;
-	int ya = 2;
-	int lat_minus = 2;
-	int lon_minus = 2;
-	// Set up checks for equator and dateline
-	LatLonPoint ll1 = proj.getUpperLeft();
-	LatLonPoint ll2 = proj.getLowerRight();
-	
-	lat[0] = ll1.getLatitude();
-	lon[0] = ll1.getLongitude();
-	lat[1] = ll2.getLatitude();
-	lon[1] = ll2.getLongitude();
-	lat[2] = ll2.getLatitude();
-	lon[2] = ll2.getLongitude();
-	
-	if (lon[0] > 0 && lon[2] < 0) {
-	    lon[1] = -179.999f;  // put a little breather on the dateline
-	    lon_minus = 1;
-	}
-	if (lat[0] > 0 && lat[2] < 0) {
-	    lat[1] = -0.0001f;  // put a little breather on the equator
-	    lat_minus = 1;
-	}
-	
-	if (Debug.debugging("dteddetail")) {
-	    Debug.output("For :");
-	    Debug.output("lat[0] " + lat[0]);
-	    Debug.output("lon[0] " + lon[0]);
-	    Debug.output("lat[1] " + lat[1]);
-	    Debug.output("lon[1] " + lon[1]);
-	    Debug.output("lat[2] " + lat[2]);
-	    Debug.output("lon[2] " + lon[2]);
-	    Debug.output("lat_minus = " + lat_minus);
-	    Debug.output("lon_minus = " + lon_minus);
-	}
-	
-	/*  Look at all the paths if needed.  Worst case, there are four
-	    boxes on the screen.  Best case, there is one.  The things that
-	    create boxes and dictates how large they are are the equator and
-	    the dateline.  When the screen straddles one or both of these
-	    lat/lon lines, lon_minus and lat_minus get adjusted, causing two
-	    or four different calls to the tochandler to get the data
-	    above/below the equator, and left/right of the dateline. Plus,
-	    each path gets checked until the required boxes are filled. */
-	
-	
-	if (caches[0] == null) {
-	    caches[0] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths,
-					     numColors, opaqueness, cacheSize);
-	    caches[0].setSubframeInfo(subframeInfo);
-	}
-	    
-	caches[0].setProjection(proj, lat[ya-lat_minus],lon[xa-lon_minus],
-				lat[ya], lon[xa]);
-	
-	// Dateline split
-	if (lon_minus == 1) {
-	    if (caches[1] == null) {
-		caches[1] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths,
-						 numColors, opaqueness, cacheSize);
-		caches[1].setSubframeInfo(subframeInfo);
-	    }
+        // This next bit of mumbo jumbo is to handle the equator and
+        // dateline: Worst case, crossing both, treat each area
+        // separately, so it is the same as handling four requests for
+        // data - above and below the equator, and left and right of
+        // the dateline.  Normal case, there is only one box.  Two
+        // boxes if crossing only one of the boundaries.
+        
+        
+        int xa = 2;
+        int ya = 2;
+        int lat_minus = 2;
+        int lon_minus = 2;
+        // Set up checks for equator and dateline
+        LatLonPoint ll1 = proj.getUpperLeft();
+        LatLonPoint ll2 = proj.getLowerRight();
+        
+        lat[0] = ll1.getLatitude();
+        lon[0] = ll1.getLongitude();
+        lat[1] = ll2.getLatitude();
+        lon[1] = ll2.getLongitude();
+        lat[2] = ll2.getLatitude();
+        lon[2] = ll2.getLongitude();
+        
+        if (lon[0] > 0 && lon[2] < 0) {
+            lon[1] = -179.999f;  // put a little breather on the dateline
+            lon_minus = 1;
+        }
+        if (lat[0] > 0 && lat[2] < 0) {
+            lat[1] = -0.0001f;  // put a little breather on the equator
+            lat_minus = 1;
+        }
+        
+        if (Debug.debugging("dteddetail")) {
+            Debug.output("For :");
+            Debug.output("lat[0] " + lat[0]);
+            Debug.output("lon[0] " + lon[0]);
+            Debug.output("lat[1] " + lat[1]);
+            Debug.output("lon[1] " + lon[1]);
+            Debug.output("lat[2] " + lat[2]);
+            Debug.output("lon[2] " + lon[2]);
+            Debug.output("lat_minus = " + lat_minus);
+            Debug.output("lon_minus = " + lon_minus);
+        }
+        
+        /*  Look at all the paths if needed.  Worst case, there are four
+            boxes on the screen.  Best case, there is one.  The things that
+            create boxes and dictates how large they are are the equator and
+            the dateline.  When the screen straddles one or both of these
+            lat/lon lines, lon_minus and lat_minus get adjusted, causing two
+            or four different calls to the tochandler to get the data
+            above/below the equator, and left/right of the dateline. Plus,
+            each path gets checked until the required boxes are filled. */
+        
+        
+        if (caches[0] == null) {
+            caches[0] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths,
+                                             numColors, opaqueness, cacheSize);
+            caches[0].setSubframeInfo(subframeInfo);
+        }
+            
+        caches[0].setProjection(proj, lat[ya-lat_minus],lon[xa-lon_minus],
+                                lat[ya], lon[xa]);
+        
+        // Dateline split
+        if (lon_minus == 1) {
+            if (caches[1] == null) {
+                caches[1] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths,
+                                                 numColors, opaqueness, cacheSize);
+                caches[1].setSubframeInfo(subframeInfo);
+            }
 
-	    caches[1].setProjection(proj, lat[ya-lat_minus],
-				    lon[0], lat[ya],
-				    -1f*lon[1]); // -1 to make it 180
-	}
-	else caches[1] = null;
+            caches[1].setProjection(proj, lat[ya-lat_minus],
+                                    lon[0], lat[ya],
+                                    -1f*lon[1]); // -1 to make it 180
+        }
+        else caches[1] = null;
 
-	// Equator Split
-	if (lat_minus == 1) {
-	    if (caches[2] == null) {
-		caches[2] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths,
-						 numColors, opaqueness, cacheSize);
-		caches[2].setSubframeInfo(subframeInfo);
-	    }
-	    
-	    caches[2].setProjection(proj, lat[0], lon[xa-lon_minus],
-				    -1f*lat[1], // flip breather
-				    lon[xa]);
-	}
-	else caches[2] = null;
+        // Equator Split
+        if (lat_minus == 1) {
+            if (caches[2] == null) {
+                caches[2] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths,
+                                                 numColors, opaqueness, cacheSize);
+                caches[2].setSubframeInfo(subframeInfo);
+            }
+            
+            caches[2].setProjection(proj, lat[0], lon[xa-lon_minus],
+                                    -1f*lat[1], // flip breather
+                                    lon[xa]);
+        }
+        else caches[2] = null;
 
-	// Both!!
-	if (lon_minus == 1 && lat_minus == 1) {
-	    if (caches[3] == null) {
-		caches[3] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths,
-						 numColors, opaqueness, cacheSize);
-		caches[3].setSubframeInfo(subframeInfo);
-	    }
-		
-	    caches[3].setProjection(proj, lat[0], lon[0],
-					 -1f*lat[1],//  flip breather
-					 -1f*lon[1]);// -1 to make it 180, not -180
-	}
-	else caches[3] = null;
+        // Both!!
+        if (lon_minus == 1 && lat_minus == 1) {
+            if (caches[3] == null) {
+                caches[3] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths,
+                                                 numColors, opaqueness, cacheSize);
+                caches[3].setSubframeInfo(subframeInfo);
+            }
+                
+            caches[3].setProjection(proj, lat[0], lon[0],
+                                         -1f*lat[1],//  flip breather
+                                         -1f*lon[1]);// -1 to make it 180, not -180
+        }
+        else caches[3] = null;
 
-	OMGraphicList graphics = new OMGraphicList();
+        OMGraphicList graphics = new OMGraphicList();
 
-	if (Debug.debugging("dted")) 
-	    Debug.output("--- DTEDCacheManager: getting images: ---");
+        if (Debug.debugging("dted")) 
+            Debug.output("--- DTEDCacheManager: getting images: ---");
 
-	for (int nbox = 0; nbox < MAX_NUM_BOXES; nbox++) {
-	    if (caches[nbox] != null) {
-		OMRaster image = caches[nbox].getNextImage();
-		while(image != null) {
-		    graphics.add(image);
-		    image = caches[nbox].getNextImage();
-		}
-	    }
-	}
-	return graphics;
+        for (int nbox = 0; nbox < MAX_NUM_BOXES; nbox++) {
+            if (caches[nbox] != null) {
+                OMRaster image = caches[nbox].getNextImage();
+                while(image != null) {
+                    graphics.add(image);
+                    image = caches[nbox].getNextImage();
+                }
+            }
+        }
+        return graphics;
     }
 
     public void setNumColors(int numberOfColors) {
-	numColors = numberOfColors;
+        numColors = numberOfColors;
     }
 
     public int getNumColors() {
-	return numColors;
+        return numColors;
     }
 
     public void setOpaqueness(int setting) {
-	opaqueness = setting;
+        opaqueness = setting;
     }
 
     public int getOpaqueness() {
-	return opaqueness;
+        return opaqueness;
     }
 }
 

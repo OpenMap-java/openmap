@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/FileMenu.java,v $
 // $RCSfile: FileMenu.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 02:36:21 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,20 +51,20 @@ public class FileMenu extends AbstractOpenMapMenu {
      * Exit) 
      */
     public FileMenu() {
-	super();
-	setText(defaultText);
-	setMnemonic(defaultMnemonic);
+        super();
+        setText(defaultText);
+        setMnemonic(defaultMnemonic);
 
-	add(new AboutMenuItem());
-	
-	if (!Environment.isApplet()) {
-	    add(new JSeparator());
-	    add(new SavePropertiesMenuItem());
-	    add(new LoadPropertiesMenuItem());
-	    add(new JSeparator());
-	    add(new SaveAsMenu());
-	    add(new JSeparator());
-	    add(new QuitMenuItem());
-	}
+        add(new AboutMenuItem());
+        
+        if (!Environment.isApplet()) {
+            add(new JSeparator());
+            add(new SavePropertiesMenuItem());
+            add(new LoadPropertiesMenuItem());
+            add(new JSeparator());
+            add(new SaveAsMenu());
+            add(new JSeparator());
+            add(new QuitMenuItem());
+        }
     } 
 }

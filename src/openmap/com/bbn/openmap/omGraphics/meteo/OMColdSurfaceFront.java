@@ -28,7 +28,7 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
      * Constructor.
      */
     public OMColdSurfaceFront() {
-	super();
+        super();
     }
 
     /**
@@ -38,7 +38,7 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
      * @param lType
      */
     public OMColdSurfaceFront(float[] llPoints, int units, int lType) {
-	super(llPoints, units, lType);
+        super(llPoints, units, lType);
     }
 
     /**
@@ -49,11 +49,11 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
      * @param nsegs
      */
     public OMColdSurfaceFront(
-	float[] llPoints,
-	int units,
-	int lType,
-	int nsegs) {
-	super(llPoints, units, lType, nsegs);
+        float[] llPoints,
+        int units,
+        int lType,
+        int nsegs) {
+        super(llPoints, units, lType, nsegs);
     }
 
     /**
@@ -61,7 +61,7 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
      * @param xypoints
      */
     public OMColdSurfaceFront(int[] xypoints) {
-	super(xypoints);
+        super(xypoints);
     }
 
     /**
@@ -70,7 +70,7 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
      * @param yPoints
      */
     public OMColdSurfaceFront(int[] xPoints, int[] yPoints) {
-	super(xPoints, yPoints);
+        super(xPoints, yPoints);
     }
 
     /**
@@ -81,11 +81,11 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
      * @param cMode
      */
     public OMColdSurfaceFront(
-	float latPoint,
-	float lonPoint,
-	int[] xypoints,
-	int cMode) {
-	super(latPoint, lonPoint, xypoints, cMode);
+        float latPoint,
+        float lonPoint,
+        int[] xypoints,
+        int cMode) {
+        super(latPoint, lonPoint, xypoints, cMode);
     }
 
     /**
@@ -97,25 +97,25 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
      * @param cMode
      */
     public OMColdSurfaceFront(
-	float latPoint,
-	float lonPoint,
-	int[] xPoints,
-	int[] yPoints,
-	int cMode) {
-	super(latPoint, lonPoint, xPoints, yPoints, cMode);
+        float latPoint,
+        float lonPoint,
+        int[] xPoints,
+        int[] yPoints,
+        int cMode) {
+        super(latPoint, lonPoint, xPoints, yPoints, cMode);
     }
 
     /**
      * @see com.bbn.openmap.omGraphics.OMDecoratedSpline#initDecorations()
      */
     protected void initDecorations() {
-	getDecorator().addDecoration(
-	    new LineShapeDecoration(SPACING, ColdFrontShapeDecoration.COLOR));
-	getDecorator().addDecoration(
-	    new ColdFrontShapeDecoration(
-		LENGTH,
-		WIDTH,
-		ColdFrontShapeDecoration.LEFT));
+        getDecorator().addDecoration(
+            new LineShapeDecoration(SPACING, ColdFrontShapeDecoration.COLOR));
+        getDecorator().addDecoration(
+            new ColdFrontShapeDecoration(
+                LENGTH,
+                WIDTH,
+                ColdFrontShapeDecoration.LEFT));
     }
 
 }

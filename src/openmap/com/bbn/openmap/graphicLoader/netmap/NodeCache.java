@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NodeCache.java,v $
 // $RCSfile: NodeCache.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,77 +35,77 @@ public class NodeCache {
     private Hashtable nodeTable = null;
 
     NodeCache() {
-	nodeTable = new Hashtable();
+        nodeTable = new Hashtable();
     }
 
 
     NodeCache(int initialCapacity) {
-	nodeTable = new Hashtable(initialCapacity);
+        nodeTable = new Hashtable(initialCapacity);
     }
 
 
     public void flush() {
-	for (Enumeration list = elements(); list.hasMoreElements();)
-	    delete((Node)list.nextElement());
+        for (Enumeration list = elements(); list.hasMoreElements();)
+            delete((Node)list.nextElement());
     }
 
 
     public Enumeration elements() {
-	return nodeTable.elements();
+        return nodeTable.elements();
     }
 
 
     public Node add(String label, int index, int shape, int menu, int color) {
-	Node node = null;
+        Node node = null;
 
-	if ((node = get(label)) != null)
-	    return node;
+        if ((node = get(label)) != null)
+            return node;
 
-	node = new Node(label, index, shape, menu, color);
-	nodeTable.put(label, (Object)node);
+        node = new Node(label, index, shape, menu, color);
+        nodeTable.put(label, (Object)node);
 
-	return node;
+        return node;
     }
 
 
     public Node get(int index) {
-	Enumeration list = nodeTable.elements();
+        Enumeration list = nodeTable.elements();
 
-	if (list == null) return null;
-	while (list.hasMoreElements()) {
-	    Node node = (Node)list.nextElement();
+        if (list == null) return null;
+        while (list.hasMoreElements()) {
+            Node node = (Node)list.nextElement();
 
-	    if (node.getIndex() == index) {
-		return(node);
-	    }
-	}
+            if (node.getIndex() == index) {
+                return(node);
+            }
+        }
 
-	return null;
+        return null;
     }
 
 
     public Node get(String label) {
-	return (Node)nodeTable.get((Object)label);
+        return (Node)nodeTable.get((Object)label);
     }
 
 
     public void del(String label) {
-	delete(get(label));
+        delete(get(label));
     }
 
     public void del(int index) {
-	delete(get(index));
+        delete(get(index));
     }
 
     public void del(Node node) {
-	delete(node);
+        delete(node);
     }
 
     // Delete a node from the internal cache
     //
     private void delete(Node node) {
-	if (node == null) return;
+        if (node == null) return;
 
-	nodeTable.remove(node.getLabel());
+        nodeTable.remove(node.getLabel());
     }
 }

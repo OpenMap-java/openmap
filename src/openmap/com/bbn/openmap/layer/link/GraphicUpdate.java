@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/GraphicUpdate.java,v $
 // $RCSfile: GraphicUpdate.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,19 +42,19 @@ public class GraphicUpdate implements LinkPropertiesConstants {
     public OMGraphic graphic = null;
     /** Constructor for modify-type actions. */
     public GraphicUpdate(int graphicAction, String gid){
-	action = graphicAction;
-	id = gid;
+        action = graphicAction;
+        id = gid;
     }
     /** Constructor for update-type actions. */
     public GraphicUpdate(int graphicAction, OMGraphic omg){
-	action = graphicAction;
-	if (omg != null) {
-	    Object obj = omg.getAppObject();
-	    if (obj != null && obj instanceof LinkProperties) {
-		id = ((LinkProperties) obj).getProperty(LPC_GRAPHICID);
-	    }
-	}
-	graphic = omg;
+        action = graphicAction;
+        if (omg != null) {
+            Object obj = omg.getAppObject();
+            if (obj != null && obj instanceof LinkProperties) {
+                id = ((LinkProperties) obj).getProperty(LPC_GRAPHICID);
+            }
+        }
+        graphic = omg;
     }
 }
 

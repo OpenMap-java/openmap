@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMCircle.java,v $
 // $RCSfile: OMCircle.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/03 00:53:03 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -70,8 +70,8 @@ public class OMCircle extends OMArc implements Serializable {
      * @param h vertical diameter of circle/ellipse, pixels
      */
     public OMCircle(float latPoint, float lonPoint,
-		    int w, int h) {
-	this(latPoint, lonPoint, 0, 0, w, h);
+                    int w, int h) {
+        this(latPoint, lonPoint, 0, 0, w, h);
     }
 
     /**
@@ -101,8 +101,8 @@ public class OMCircle extends OMArc implements Serializable {
      * @param h vertical diameter of circle/ellipse, pixels.
      */
     public OMCircle(float latPoint, float lonPoint,
-		    int offset_x1, int offset_y1, 
-		    int w, int h) { 
+                    int offset_x1, int offset_y1, 
+                    int w, int h) { 
         super(latPoint, lonPoint, offset_x1, offset_y1, w, h, 0f, 360f);
     }
 
@@ -116,7 +116,7 @@ public class OMCircle extends OMArc implements Serializable {
      * internally).  
      */
     public OMCircle(float latPoint, float lonPoint, float radius) {
-	this(latPoint, lonPoint, radius, Length.DECIMAL_DEGREE, -1);
+        this(latPoint, lonPoint, radius, Length.DECIMAL_DEGREE, -1);
     }
 
     /**
@@ -129,8 +129,8 @@ public class OMCircle extends OMArc implements Serializable {
      * @param units com.bbn.openmap.proj.Length object.
      */
     public OMCircle(float latPoint, float lonPoint, 
-		    float radius, Length units) {
-	this(latPoint, lonPoint, radius, units, -1);
+                    float radius, Length units) {
+        this(latPoint, lonPoint, radius, units, -1);
     }
 
     /**
@@ -145,8 +145,8 @@ public class OMCircle extends OMArc implements Serializable {
      * is generated internally)
      */
     public OMCircle(float latPoint, float lonPoint, 
-		    float radius, Length units, int nverts) {
-	this(new LatLonPoint(latPoint, lonPoint), radius, units, nverts);
+                    float radius, Length units, int nverts) {
+        this(new LatLonPoint(latPoint, lonPoint), radius, units, nverts);
     }
 
     /**
@@ -161,8 +161,8 @@ public class OMCircle extends OMArc implements Serializable {
      * is generated internally) 
      */
     public OMCircle(LatLonPoint center, float radius, 
-		    Length units, int nverts) {
-	super(center, radius, units, nverts, 0f, 360f);
+                    Length units, int nverts) {
+        super(center, radius, units, nverts, 0f, 360f);
     }
 
     /**
@@ -172,7 +172,7 @@ public class OMCircle extends OMArc implements Serializable {
      * polar correction code needs to be run.
      */
     protected boolean shouldCenterBeInShape() {
-	return true;
+        return true;
     }
 
     /**
@@ -181,8 +181,8 @@ public class OMCircle extends OMArc implements Serializable {
      * calculated position information and make a call to Ellipse2D.Float.
      */
     protected Shape createArcShape(float x, float y, 
-				   float fwidth, float fheight) {
-	return new Ellipse2D.Float(x, y, fwidth, fheight);
+                                   float fwidth, float fheight) {
+        return new Ellipse2D.Float(x, y, fwidth, fheight);
     }
 
     /**
@@ -191,12 +191,12 @@ public class OMCircle extends OMArc implements Serializable {
      * position information and make a call to Projection.forwardCircle.
      */
     protected ArrayList getCoordLists(Projection proj, LatLonPoint center,
-				      float radius, int nverts) {
-	return proj.forwardCircle(center, /*radians*/true, 
-				  radius, nverts, !isClear(fillPaint));
+                                      float radius, int nverts) {
+        return proj.forwardCircle(center, /*radians*/true, 
+                                  radius, nverts, !isClear(fillPaint));
     }
 
     protected boolean hasLineTypeChoice() {
-	return false;
+        return false;
     }
 }

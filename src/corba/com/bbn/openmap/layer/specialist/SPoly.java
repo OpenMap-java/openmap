@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SPoly.java,v $
 // $RCSfile: SPoly.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -79,9 +79,9 @@ public class SPoly extends SGraphic /*used to be _PolyImplBase*/ {
     // Need several constructors
     public SPoly() {
       super(GraphicType.GT_Poly, 
-	    RenderType.RT_Unknown, 
-	    LineType.LT_Unknown, 
-	    DeclutterType.DC_None);
+            RenderType.RT_Unknown, 
+            LineType.LT_Unknown, 
+            DeclutterType.DC_None);
       ll1_ =  new LLPoint(0f, 0f);
       xypoints_ = new XYPoint[0];
       llpoints_ = new LLPoint[0];
@@ -89,37 +89,37 @@ public class SPoly extends SGraphic /*used to be _PolyImplBase*/ {
     }
 
     public SPoly(LLPoint[] llpoints, LineType lType) {
-	super(GraphicType.GT_Poly, 
-	      RenderType.RT_LatLon, 
-	      lType, DeclutterType.DC_None);
+        super(GraphicType.GT_Poly, 
+              RenderType.RT_LatLon, 
+              lType, DeclutterType.DC_None);
         ll1_ =  new LLPoint(0f, 0f);
-	llpoints_ = llpoints;
-	xypoints_ = new XYPoint[0];
-	cMode_ = CoordMode.CModeOrigin;
+        llpoints_ = llpoints;
+        xypoints_ = new XYPoint[0];
+        cMode_ = CoordMode.CModeOrigin;
     }
 
     public SPoly(XYPoint[] xypoints, CoordMode cMode) {
-	super(GraphicType.GT_Poly, 
-	      RenderType.RT_XY, 
-	      LineType.LT_Unknown,
-	      DeclutterType.DC_None);
+        super(GraphicType.GT_Poly, 
+              RenderType.RT_XY, 
+              LineType.LT_Unknown,
+              DeclutterType.DC_None);
         ll1_ =  new LLPoint(0f, 0f);
-	llpoints_ = new LLPoint[0];
-	xypoints_ = xypoints;
-	cMode_ = cMode;
+        llpoints_ = new LLPoint[0];
+        xypoints_ = xypoints;
+        cMode_ = cMode;
     }
 
     public SPoly(LLPoint ll1, 
-		 XYPoint[] xypoints, 
-		 CoordMode cMode) {
-	super(GraphicType.GT_Poly, 
-	      RenderType.RT_Offset, 
-	      LineType.LT_Unknown, 
-	      DeclutterType.DC_None);
+                 XYPoint[] xypoints, 
+                 CoordMode cMode) {
+        super(GraphicType.GT_Poly, 
+              RenderType.RT_Offset, 
+              LineType.LT_Unknown, 
+              DeclutterType.DC_None);
         ll1_ = ll1;
-	llpoints_ = new LLPoint[0];
-	xypoints_ = xypoints;
-	cMode_ = cMode;
+        llpoints_ = new LLPoint[0];
+        xypoints_ = xypoints;
+        cMode_ = cMode;
     }
 
     // The SPoly methods
@@ -153,42 +153,42 @@ public class SPoly extends SGraphic /*used to be _PolyImplBase*/ {
 
     public UGraphic ufill() {
         UGraphic ugraphic = new UGraphic();
-	ugraphic.epoly(fill());
-	return ugraphic;
+        ugraphic.epoly(fill());
+        return ugraphic;
     }
 
     //  Update methods as a result of gesture impulses...
     public void changeLl1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
-	PF_update gupdate = new PF_update();
-	gupdate.ll1(ll1);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.pf_update(gupdate);
-	addGraphicChange(ug);
+        PF_update gupdate = new PF_update();
+        gupdate.ll1(ll1);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.pf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeCMode(CoordMode cmode) {
         cMode_ = cmode;
-	PF_update gupdate = new PF_update();
-	gupdate.cMode(cmode);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.pf_update(gupdate);
-	addGraphicChange(ug);
+        PF_update gupdate = new PF_update();
+        gupdate.cMode(cmode);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.pf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeXypoints(XYPoint[] xypoints) {
         xypoints_ = xypoints;
-	PF_update gupdate = new PF_update();
-	gupdate.xypoints(xypoints);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.pf_update(gupdate);
-	addGraphicChange(ug);
+        PF_update gupdate = new PF_update();
+        gupdate.xypoints(xypoints);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.pf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeLlpoints(LLPoint[] llpoints) {
         llpoints_ = llpoints;
-	PF_update gupdate = new PF_update();
-	gupdate.llpoints(llpoints);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.pf_update(gupdate);
-	addGraphicChange(ug);
+        PF_update gupdate = new PF_update();
+        gupdate.llpoints(llpoints);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.pf_update(gupdate);
+        addGraphicChange(ug);
     }
 }
 

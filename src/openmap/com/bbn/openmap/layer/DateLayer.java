@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DateLayer.java,v $
 // $RCSfile: DateLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/20 02:43:49 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -83,7 +83,7 @@ public class DateLayer extends LabelLayer
     // Dateformat default is similar to IETF standard date syntax:
     // "Sat, 12 Aug 1995 13:30:00 GMT", except for the local timezone.
     protected DateFormat dateFormat = 
-	new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
+        new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
 
 
     /**
@@ -92,15 +92,15 @@ public class DateLayer extends LabelLayer
      * @param props the <code>Properties</code> object
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String dateFormatString = props.getProperty(
-		prefix+dateFormatProperty, 
-		((SimpleDateFormat)dateFormat).toPattern());
+        String dateFormatString = props.getProperty(
+                prefix+dateFormatProperty, 
+                ((SimpleDateFormat)dateFormat).toPattern());
 
-	dateFormat = new SimpleDateFormat(dateFormatString);
+        dateFormat = new SimpleDateFormat(dateFormatString);
 
     }
 
@@ -111,8 +111,8 @@ public class DateLayer extends LabelLayer
      * @return String
      */
     public String getCurrentTimeString() {
-	Calendar cal = Calendar.getInstance(TimeZone.getDefault());
-	return " " + dateFormat.format(cal.getTime()) + " ";
+        Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+        return " " + dateFormat.format(cal.getTime()) + " ";
     }
 
 
@@ -121,7 +121,7 @@ public class DateLayer extends LabelLayer
      * @param df DateFormat
      */
     protected void setDateFormat(DateFormat df) {
-	dateFormat = df;
+        dateFormat = df;
     }
 
 
@@ -130,7 +130,7 @@ public class DateLayer extends LabelLayer
      * @return DateFormat
      */
     protected DateFormat getDateFormat() {
-	return dateFormat;
+        return dateFormat;
     }
 
 
@@ -139,12 +139,12 @@ public class DateLayer extends LabelLayer
      * @param g the Graphics context for painting
      */
     public void paint(Graphics g) {
-	String data = getCurrentTimeString();
-	if (Debug.debugging("datelayer")) {
-	    System.out.println("DateLayer.paint(): "+data);
-	}
-	labelText = data;
-	super.paint(g);
+        String data = getCurrentTimeString();
+        if (Debug.debugging("datelayer")) {
+            System.out.println("DateLayer.paint(): "+data);
+        }
+        labelText = data;
+        super.paint(g);
     }
 
     /**
@@ -160,6 +160,6 @@ public class DateLayer extends LabelLayer
      * @return int milliseconds of sleep interval
      */
     public int getSleepHint() {
-	return 1000;//update every second
+        return 1000;//update every second
     }
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/ShxInputStream.java,v $
 // $RCSfile: ShxInputStream.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 22:55:22 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:06 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -44,8 +44,8 @@ public class ShxInputStream {
      * Chains an input stream with a Little EndianInputStream
      */
     public ShxInputStream(InputStream is) {
-	BufferedInputStream bis = new BufferedInputStream(is);
-	_leis = new LittleEndianInputStream(bis);
+        BufferedInputStream bis = new BufferedInputStream(is);
+        _leis = new LittleEndianInputStream(bis);
     }
     
     /**
@@ -57,32 +57,32 @@ public class ShxInputStream {
      * open method of classes which extend AbstractSupport.  
      */
     public int[][] getIndex() {
-	int[][] indexData = null;
-	try {
-	    int fileCode, fileLength, contentLength, Offset, numShapes;
-	    fileCode = _leis.readInt();
-	    _leis.skipBytes(20);
-	    fileLength = _leis.readInt();
-	    numShapes = (fileLength - 50) / 4;
-	    indexData = new int[2][numShapes];
-	    _leis.skipBytes(4);
-	    byte[] intBytes = new byte[4];
-	    _type = _leis.readLEInt();
-	    _leis.skip(64);
-	    for (int i = 0; i <= numShapes - 1; i++) {
-		indexData[0][i] = _leis.readInt();
-		indexData[1][i] = _leis.readInt();
-	    }
-	}
-	catch (IOException e) {
-	    e.printStackTrace();
-	    return null;
-	}
-	return indexData;
+        int[][] indexData = null;
+        try {
+            int fileCode, fileLength, contentLength, Offset, numShapes;
+            fileCode = _leis.readInt();
+            _leis.skipBytes(20);
+            fileLength = _leis.readInt();
+            numShapes = (fileLength - 50) / 4;
+            indexData = new int[2][numShapes];
+            _leis.skipBytes(4);
+            byte[] intBytes = new byte[4];
+            _type = _leis.readLEInt();
+            _leis.skip(64);
+            for (int i = 0; i <= numShapes - 1; i++) {
+                indexData[0][i] = _leis.readInt();
+                indexData[1][i] = _leis.readInt();
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return indexData;
     }
     
     public void close() throws IOException{
-	_leis.close();
+        _leis.close();
     }
 }
 

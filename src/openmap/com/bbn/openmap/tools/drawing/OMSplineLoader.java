@@ -20,25 +20,25 @@ public class OMSplineLoader extends AbstractToolLoader
     implements EditToolLoader {
 
     protected String graphicClassName =
-	"com.bbn.openmap.omGraphics.OMSpline";
+        "com.bbn.openmap.omGraphics.OMSpline";
     protected String labeledClassName =
-	"com.bbn.openmap.omGraphics.labeled.LabeledOMSpline";
+        "com.bbn.openmap.omGraphics.labeled.LabeledOMSpline";
 
     public OMSplineLoader() {
-	init();
+        init();
     }
 
     public void init() {
-	EditClassWrapper ecw =
-	    new EditClassWrapper(
-		graphicClassName,
-		"com.bbn.openmap.omGraphics.EditableOMSpline",
-		"editablespline.gif",
-		"Splines");
-	addEditClassWrapper(ecw);
+        EditClassWrapper ecw =
+            new EditClassWrapper(
+                graphicClassName,
+                "com.bbn.openmap.omGraphics.EditableOMSpline",
+                "editablespline.gif",
+                "Splines");
+        addEditClassWrapper(ecw);
 
-	// A class wrapper isn't added here for the LabeledOMSpline
-	// because currently they are only created programmatically.
+        // A class wrapper isn't added here for the LabeledOMSpline
+        // because currently they are only created programmatically.
     }
 
     /**
@@ -48,15 +48,15 @@ public class OMSplineLoader extends AbstractToolLoader
      * like spline type and rendertype.
      */
     public EditableOMGraphic getEditableGraphic(
-	String classname,
-	GraphicAttributes ga) {
-	if (classname.intern() == graphicClassName) {
-	    return new EditableOMSpline(ga);
-	}
-	if (classname.intern() == labeledClassName) {
-	    return new EditableLabeledOMSpline(ga);
-	}
-	return null;
+        String classname,
+        GraphicAttributes ga) {
+        if (classname.intern() == graphicClassName) {
+            return new EditableOMSpline(ga);
+        }
+        if (classname.intern() == labeledClassName) {
+            return new EditableLabeledOMSpline(ga);
+        }
+        return null;
     }
 
     /**
@@ -64,9 +64,9 @@ public class OMSplineLoader extends AbstractToolLoader
      * EditableOMGraphic for it.
      */
     public EditableOMGraphic getEditableGraphic(OMGraphic graphic) {
-	if (graphic instanceof OMSpline) {
-	    return new EditableOMSpline((OMSpline) graphic);
-	}
-	return null;
+        if (graphic instanceof OMSpline) {
+            return new EditableOMSpline((OMSpline) graphic);
+        }
+        return null;
     }
 }

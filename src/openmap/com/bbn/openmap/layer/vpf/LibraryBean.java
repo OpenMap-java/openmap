@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibraryBean.java,v $
 // $RCSfile: LibraryBean.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:33 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:12 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -76,36 +76,36 @@ public class LibraryBean implements PropertyConsumer, Serializable {
     }
 
     public void setProperties(Properties setList) {
-	setProperties(getPropertyPrefix(), setList);
+        setProperties(getPropertyPrefix(), setList);
     }
 
     public void setProperties(String prefix, Properties setList) {
-	setPropertyPrefix(prefix);
-	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	paths = LayerUtils.initPathsFromProperties(setList,
-						   realPrefix + pathProperty);
+        paths = LayerUtils.initPathsFromProperties(setList,
+                                                   realPrefix + pathProperty);
 
-	String beanName = setList.getProperty(realPrefix + nameProperty);
-	this.beanName = (beanName == null) ? prefix : beanName;
-	    
-	if (Debug.debugging("vpf")) {
-	    Debug.output("LibraryBean.setProperties(): " + prefix + " " +
-		     this.beanName + " initialized");
-	}
-	try {
-	    if (paths == null) {
-		Debug.output("VPF LibraryBean: path not set - expected " +
-			     realPrefix + pathProperty + " property");
-	    } else {
-		lst = new LibrarySelectionTable(paths);
-	    }
-	} catch (com.bbn.openmap.io.FormatException f) {
- 	    Debug.output(f.getMessage());
-	} catch (NullPointerException npe) {
-	    Debug.output("LibraryBean.setProperties:" + prefix +
-			 ": path name not valid");
-	}
+        String beanName = setList.getProperty(realPrefix + nameProperty);
+        this.beanName = (beanName == null) ? prefix : beanName;
+            
+        if (Debug.debugging("vpf")) {
+            Debug.output("LibraryBean.setProperties(): " + prefix + " " +
+                     this.beanName + " initialized");
+        }
+        try {
+            if (paths == null) {
+                Debug.output("VPF LibraryBean: path not set - expected " +
+                             realPrefix + pathProperty + " property");
+            } else {
+                lst = new LibrarySelectionTable(paths);
+            }
+        } catch (com.bbn.openmap.io.FormatException f) {
+            Debug.output(f.getMessage());
+        } catch (NullPointerException npe) {
+            Debug.output("LibraryBean.setProperties:" + prefix +
+                         ": path name not valid");
+        }
     }
     
     /**
@@ -113,15 +113,15 @@ public class LibraryBean implements PropertyConsumer, Serializable {
      * then return that, otherwise return the property prefix.
      */
     public String getName() {
-	return beanName;
+        return beanName;
     }
 
     public Properties getProperties(Properties getList) {
-	return new Properties();
+        return new Properties();
     }
 
     public Properties getPropertyInfo(Properties list) {
-	return new Properties();
+        return new Properties();
     }
 
     /**
@@ -132,7 +132,7 @@ public class LibraryBean implements PropertyConsumer, Serializable {
      * @param prefix the prefix String.  
      */
     public void setPropertyPrefix(String prefix) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
     }
 
     /**
@@ -142,7 +142,7 @@ public class LibraryBean implements PropertyConsumer, Serializable {
      * @return the property prefix
      */
     public String getPropertyPrefix() {
-	return propertyPrefix;
+        return propertyPrefix;
     }
 
     /**
@@ -150,6 +150,6 @@ public class LibraryBean implements PropertyConsumer, Serializable {
      * @return an LST, null if the object didn't construct properly
      */
     public LibrarySelectionTable getLibrarySelectionTable() {
-	return lst;
+        return lst;
     }
 }

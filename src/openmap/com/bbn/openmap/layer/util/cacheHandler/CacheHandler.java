@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/cacheHandler/CacheHandler.java,v $
 // $RCSfile: CacheHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/24 03:43:32 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,44 +35,44 @@ public abstract class CacheHandler {
      * Standard default constructor
      */
     public CacheHandler() {
-	initCache(DEFAULT_MAX_CACHE_SIZE);
+        initCache(DEFAULT_MAX_CACHE_SIZE);
     }
 
     /**
      * Constructor used when you know the limits
      */
     public CacheHandler(int max_size) {
-	initCache(max_size);
+        initCache(max_size);
     }
 
     /**
      * Set the size, reset the logical clock
      */
     private void initCache(int max_size) {
-	if (objs != null && objs.length == max_size) {
-	    clear();
-	} else {
-	    objs = new CacheObject[max_size];
-	}
-	logicalClock = 0;
+        if (objs != null && objs.length == max_size) {
+            clear();
+        } else {
+            objs = new CacheObject[max_size];
+        }
+        logicalClock = 0;
     }
     
     /** 
      * Remove all the objects from the cache.
      */
     public void clear() {
-	if (objs != null) {
-	    for (int i = 0; i < objs.length; i++) {
-		objs[i] = null;
-	    }
-	}
+        if (objs != null) {
+            for (int i = 0; i < objs.length; i++) {
+                objs[i] = null;
+            }
+        }
     }
 
     /**
      * Need to clear memory, get gc moving, and ready for new objects 
      */
     public void resetCache() {
-	initCache(objs.length);
+        initCache(objs.length);
     }
 
     /**
@@ -82,28 +82,28 @@ public abstract class CacheHandler {
      * @param max_size the capacity of the Hashtable.
      */
     public void resetCache(int max_size) {
-	initCache(max_size);
+        initCache(max_size);
     }
 
     /**
      * Get the current size of the cache.
      */
     public int getCacheSize() {
-	return objs.length;
+        return objs.length;
     }
 
     /**
      * The main call to retrieve something from the cache
      */
     public Object get(String key) {
-	CacheObject ret = searchCache(key);
-	if (ret != null) return ret.obj;
+        CacheObject ret = searchCache(key);
+        if (ret != null) return ret.obj;
 
-	ret = load(key);
-	if (ret == null) return null;
+        ret = load(key);
+        if (ret == null) return null;
 
-	replaceLeastUsed(ret);
-	return ret.obj;
+        replaceLeastUsed(ret);
+        return ret.obj;
     }
 
     /**
@@ -119,17 +119,17 @@ public abstract class CacheHandler {
      * search is case insensitive.
      */
     protected CacheObject searchCache(String key) {
-	for (int i = 0; i < objs.length; i++) {
-	    CacheObject co = objs[i];
-	    if (co == null) {
-		// Since we load 0 -> length - 1, if we get a null
-		// one, the rest are null, too.
-		break;
-	    } else if (co.id.equalsIgnoreCase(key)) {
-		return co;
-	    }
-	}
-	return null;
+        for (int i = 0; i < objs.length; i++) {
+            CacheObject co = objs[i];
+            if (co == null) {
+                // Since we load 0 -> length - 1, if we get a null
+                // one, the rest are null, too.
+                break;
+            } else if (co.id.equalsIgnoreCase(key)) {
+                return co;
+            }
+        }
+        return null;
     }
 
     /** 
@@ -138,65 +138,65 @@ public abstract class CacheHandler {
      */
     protected void replaceLeastUsed(CacheObject newObj) {
 
-	// If the cache has room...
-	int i;
-	for (i = objs.length - 1; i >= 0; i--) {
-	    if (objs[i] == null) {
-		// Somewhere in a partially filled cache, keep looking
-		// for the last taken place...
-		if (i == 0) {
-		    // there is nothing in the cache.
-		    objs[0] = newObj;
-		    if (Debug.debugging("cache")) {
-			Debug.output("CacheHandler: was empty - added " + newObj.id);
-		    }
+        // If the cache has room...
+        int i;
+        for (i = objs.length - 1; i >= 0; i--) {
+            if (objs[i] == null) {
+                // Somewhere in a partially filled cache, keep looking
+                // for the last taken place...
+                if (i == 0) {
+                    // there is nothing in the cache.
+                    objs[0] = newObj;
+                    if (Debug.debugging("cache")) {
+                        Debug.output("CacheHandler: was empty - added " + newObj.id);
+                    }
 
-		    return;
-		} else {
-		    continue;
-		}
-	    } else if (i == objs.length - 1) {
-		// We're at the end, and there is no empty space -
-		// we'll need to look at the LRU clock.
-		break;
-	    } else {
-		// We are at the index of the last taken spot, and the
-		// next place is available.
-		objs[i+1] = newObj;
-		if (Debug.debugging("cache")) {
-		    Debug.output("CacheHandler: had room - added " + newObj.id + 
-				 " to the " + i + " spot.");
-		}
-		return;
-	    }
-	}
+                    return;
+                } else {
+                    continue;
+                }
+            } else if (i == objs.length - 1) {
+                // We're at the end, and there is no empty space -
+                // we'll need to look at the LRU clock.
+                break;
+            } else {
+                // We are at the index of the last taken spot, and the
+                // next place is available.
+                objs[i+1] = newObj;
+                if (Debug.debugging("cache")) {
+                    Debug.output("CacheHandler: had room - added " + newObj.id + 
+                                 " to the " + i + " spot.");
+                }
+                return;
+            }
+        }
 
-	// If we get here, we need to replace something in the cache.
+        // If we get here, we need to replace something in the cache.
 
-	int minClock = logicalClock + 1;
-	int LUIndex = -1;
+        int minClock = logicalClock + 1;
+        int LUIndex = -1;
 
-	for (i = objs.length - 1; i >=0; i--) {
-	    if (objs[i].older(minClock)) {
-		LUIndex = i;
-		minClock = objs[i].cachedTime;
-	    }
-	}
+        for (i = objs.length - 1; i >=0; i--) {
+            if (objs[i].older(minClock)) {
+                LUIndex = i;
+                minClock = objs[i].cachedTime;
+            }
+        }
 
-	if (LUIndex != -1) {
-	    if (Debug.debugging("cache")) {
-		Debug.output("CacheHandler: Tossing " + objs[LUIndex].id + 
-			     " from cache to add " + newObj.id);
-	    }
-	    objs[LUIndex] = newObj;
-	    newObj.cachedTime = logicalClock++;
-	}
+        if (LUIndex != -1) {
+            if (Debug.debugging("cache")) {
+                Debug.output("CacheHandler: Tossing " + objs[LUIndex].id + 
+                             " from cache to add " + newObj.id);
+            }
+            objs[LUIndex] = newObj;
+            newObj.cachedTime = logicalClock++;
+        }
     }
 
     /**
      * Return a ListIterator of the cache objects.
      */
     public java.util.ListIterator listIterator() {
-	return java.util.Arrays.asList(objs).listIterator();
+        return java.util.Arrays.asList(objs).listIterator();
     }
 }

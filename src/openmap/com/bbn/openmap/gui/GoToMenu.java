@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/11/18 14:51:44 $
-// $Author: blubin $
+// $Revision: 1.9 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -120,141 +120,141 @@ public class GoToMenu extends AbstractOpenMapMenu {
     protected boolean addDataViews = true;
 
     public GoToMenu() {
-	super();
-	I18n i18n = Environment.getI18n();
-	setText(i18n.get(this, "goto", defaultText));
-	setMnemonic(i18n.get
-		    (this, "goto", i18n.MNEMONIC, defaultMnemonic).charAt(0));
+        super();
+        I18n i18n = Environment.getI18n();
+        setText(i18n.get(this, "goto", defaultText));
+        setMnemonic(i18n.get
+                    (this, "goto", i18n.MNEMONIC, defaultMnemonic).charAt(0));
 
-	dataBoundsMenu = new OMBasicMenu("Go Over Data");
-	add(new AddNewViewButton("Add Saved View..."));
-	add(dataBoundsMenu);
-	add(new JSeparator());
+        dataBoundsMenu = new OMBasicMenu("Go Over Data");
+        add(new AddNewViewButton("Add Saved View..."));
+        add(dataBoundsMenu);
+        add(new JSeparator());
     }
   
     public void findAndUndo(Object someObj) {
-	super.findAndUndo(someObj);
-	if (someObj instanceof MapBean) {
-	    // do the initializing that need to be done here
-	    if (getMap() == (MapBean)someObj) {
-		setMap(null);
-	    }
-	}
+        super.findAndUndo(someObj);
+        if (someObj instanceof MapBean) {
+            // do the initializing that need to be done here
+            if (getMap() == (MapBean)someObj) {
+                setMap(null);
+            }
+        }
 
-	if (someObj instanceof DataBoundsProvider) {
-	    removeDataBoundsProvider((DataBoundsProvider)someObj);
-	}
+        if (someObj instanceof DataBoundsProvider) {
+            removeDataBoundsProvider((DataBoundsProvider)someObj);
+        }
     }
 
     public void findAndInit(Object someObj) {
-	super.findAndInit(someObj);
-	if (someObj instanceof MapBean) {
-	    // do the initializing that need to be done here
-	    setMap((MapBean)someObj);
-	}
+        super.findAndInit(someObj);
+        if (someObj instanceof MapBean) {
+            // do the initializing that need to be done here
+            setMap((MapBean)someObj);
+        }
 
-	if (someObj instanceof DataBoundsProvider) {
-	    addDataBoundsProvider((DataBoundsProvider)someObj);
-	}
+        if (someObj instanceof DataBoundsProvider) {
+            addDataBoundsProvider((DataBoundsProvider)someObj);
+        }
     }
 
     /** Set the map to control. */
     public void setMap(MapBean mb) {
-	map = mb;
+        map = mb;
     }
 
     public MapBean getMap() {
-	return map;
+        return map;
     }
 
     /** PropertyConsumer interface method. */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	addDefaults = LayerUtils.booleanFromProperties(props, prefix + AddDefaultListProperty, addDefaults);
+        addDefaults = LayerUtils.booleanFromProperties(props, prefix + AddDefaultListProperty, addDefaults);
 
-	addDataViews = LayerUtils.booleanFromProperties(props, prefix + AddDataViewsProperty, addDataViews);
-	
-	dataBoundsMenu.setVisible(addDataViews);
+        addDataViews = LayerUtils.booleanFromProperties(props, prefix + AddDataViewsProperty, addDataViews);
+        
+        dataBoundsMenu.setVisible(addDataViews);
 
-	if (addDefaults) {
-	    addDefaultLocations();
-	    add(new JSeparator());
-	}
+        if (addDefaults) {
+            addDefaultLocations();
+            add(new JSeparator());
+        }
 
-	String locationList = props.getProperty(prefix + ViewListProperty);
+        String locationList = props.getProperty(prefix + ViewListProperty);
 
-	if (locationList != null) {
-	    Vector views = PropUtils.parseSpacedMarkers(locationList);
-	    Enumeration things = views.elements();
-	    while (things.hasMoreElements()) {
-		String viewPrefix = (String)things.nextElement();
-		addLocationItem(viewPrefix, props);
-	    }
-	}
+        if (locationList != null) {
+            Vector views = PropUtils.parseSpacedMarkers(locationList);
+            Enumeration things = views.elements();
+            while (things.hasMoreElements()) {
+                String viewPrefix = (String)things.nextElement();
+                addLocationItem(viewPrefix, props);
+            }
+        }
     }
 
     /** PropertyConsumer interface method. */
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	props.put(prefix + AddDefaultListProperty, new Boolean(addDefaults).toString());
-	props.put(prefix + AddDataViewsProperty, new Boolean(addDataViews).toString());
+        props.put(prefix + AddDefaultListProperty, new Boolean(addDefaults).toString());
+        props.put(prefix + AddDataViewsProperty, new Boolean(addDataViews).toString());
 
-	StringBuffer viewList = new StringBuffer();
+        StringBuffer viewList = new StringBuffer();
 
-	Enumeration cv = customViews.elements();
-	while (cv.hasMoreElements()) {
-	    GoToButton gtb = (GoToButton)cv.nextElement();
+        Enumeration cv = customViews.elements();
+        while (cv.hasMoreElements()) {
+            GoToButton gtb = (GoToButton)cv.nextElement();
 
-	    String sanitizedName = gtb.getText().replace(' ','_');
-	    viewList.append(" " + sanitizedName);
+            String sanitizedName = gtb.getText().replace(' ','_');
+            viewList.append(" " + sanitizedName);
 
-	    sanitizedName = PropUtils.getScopedPropertyPrefix(sanitizedName);
+            sanitizedName = PropUtils.getScopedPropertyPrefix(sanitizedName);
 
-	    props.put(sanitizedName + NameProperty, gtb.getText());
-	    props.put(sanitizedName + LatProperty,
-		      new Float(gtb.latitude).toString());
-	    props.put(sanitizedName + LonProperty,
-		      new Float(gtb.longitude).toString());
-	    props.put(sanitizedName + ScaleProperty,
-		      new Float(gtb.scale).toString());
-	    props.put(sanitizedName + ProjectionTypeProperty,
-		      gtb.projectionID);
+            props.put(sanitizedName + NameProperty, gtb.getText());
+            props.put(sanitizedName + LatProperty,
+                      new Float(gtb.latitude).toString());
+            props.put(sanitizedName + LonProperty,
+                      new Float(gtb.longitude).toString());
+            props.put(sanitizedName + ScaleProperty,
+                      new Float(gtb.scale).toString());
+            props.put(sanitizedName + ProjectionTypeProperty,
+                      gtb.projectionID);
 
-	}
+        }
 
-	props.put(prefix + ViewListProperty, viewList.toString());
+        props.put(prefix + ViewListProperty, viewList.toString());
 
-	return props;
+        return props;
     }
     
     /** PropertyConsumer interface method. */
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
+        props = super.getPropertyInfo(props);
 
-	props.put(ViewListProperty, "Space-separated marker list of different views");
-	props.put(AddDefaultListProperty, "Flag to add default views (true/false).");
-	props.put(AddDefaultListProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	props.put(AddDataViewsProperty, "Flag to add views from some data components.");
-	props.put(AddDataViewsProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	props.put(NameProperty, "The formal name of the view for the user.");
-	props.put(LatProperty, "The latitude of the center of the view.");
-	props.put(LonProperty, "The longitude of the center of the view.");
-	props.put(ScaleProperty, "The scale of the view.");
-	props.put(ProjectionTypeProperty, "The projection name of the view");
+        props.put(ViewListProperty, "Space-separated marker list of different views");
+        props.put(AddDefaultListProperty, "Flag to add default views (true/false).");
+        props.put(AddDefaultListProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(AddDataViewsProperty, "Flag to add views from some data components.");
+        props.put(AddDataViewsProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(NameProperty, "The formal name of the view for the user.");
+        props.put(LatProperty, "The latitude of the center of the view.");
+        props.put(LonProperty, "The longitude of the center of the view.");
+        props.put(ScaleProperty, "The scale of the view.");
+        props.put(ProjectionTypeProperty, "The projection name of the view");
 
-	return props;
+        return props;
     }
 
     /** Add the default views to the menu. */
     public void addDefaultLocations() {
-	add(new GoToButton("World", 0, 0, Float.MAX_VALUE, 
-			   Mercator.MercatorName));
+        add(new GoToButton("World", 0, 0, Float.MAX_VALUE, 
+                           Mercator.MercatorName));
     }
 
     Vector customViews = new Vector();
@@ -263,49 +263,49 @@ public class GoToMenu extends AbstractOpenMapMenu {
      * Parse and add the view from properties.
      */
     public void addLocationItem(String prefix, Properties props) {
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String locationName = props.getProperty(prefix + NameProperty);
-	String latString = props.getProperty(prefix + LatProperty);
-	String lonString = props.getProperty(prefix + LonProperty);
-	String scaleString = props.getProperty(prefix + ScaleProperty);
-	String projID = props.getProperty(prefix + ProjectionTypeProperty);
+        String locationName = props.getProperty(prefix + NameProperty);
+        String latString = props.getProperty(prefix + LatProperty);
+        String lonString = props.getProperty(prefix + LonProperty);
+        String scaleString = props.getProperty(prefix + ScaleProperty);
+        String projID = props.getProperty(prefix + ProjectionTypeProperty);
 
-	if (Debug.debugging("goto")) {
-	    Debug.output("GoToMenu: adding view - " + locationName + ", " +
-			 latString + ", " + lonString  + ", " +
-			 scaleString + ", " + projID);
-	}
+        if (Debug.debugging("goto")) {
+            Debug.output("GoToMenu: adding view - " + locationName + ", " +
+                         latString + ", " + lonString  + ", " +
+                         scaleString + ", " + projID);
+        }
 
-	try {
+        try {
 
-	    float lat = new Float(latString).floatValue();
-	    float lon = new Float(lonString).floatValue();
-	    float scale = new Float(scaleString).floatValue();
-	    GoToButton gtb = new GoToButton(locationName, lat, lon, scale, projID);
-	    customViews.add(gtb);
-	    add(gtb);
+            float lat = new Float(latString).floatValue();
+            float lon = new Float(lonString).floatValue();
+            float scale = new Float(scaleString).floatValue();
+            GoToButton gtb = new GoToButton(locationName, lat, lon, scale, projID);
+            customViews.add(gtb);
+            add(gtb);
 
-	} catch (NumberFormatException nfe) {
-	    return;
-   	} catch (Exception e) {
-	    return;
-	}
+        } catch (NumberFormatException nfe) {
+            return;
+        } catch (Exception e) {
+            return;
+        }
     }
 
     public void addDataBoundsProvider(DataBoundsProvider provider) {
-	DataBoundsViewMenuItem dbvmi = new DataBoundsViewMenuItem(provider);
-	dataBoundsProviders.put(provider, dbvmi);
-	dbvmi.findAndInit(getBeanContext());
-	dataBoundsMenu.add(dbvmi);
+        DataBoundsViewMenuItem dbvmi = new DataBoundsViewMenuItem(provider);
+        dataBoundsProviders.put(provider, dbvmi);
+        dbvmi.findAndInit(getBeanContext());
+        dataBoundsMenu.add(dbvmi);
     }
 
     public void removeDataBoundsProvider(DataBoundsProvider provider) {
-	JMenuItem item = 
-	    (DataBoundsViewMenuItem)dataBoundsProviders.get(provider);
-	if (item != null) {
-	    dataBoundsMenu.remove(item);
-	}
+        JMenuItem item = 
+            (DataBoundsViewMenuItem)dataBoundsProviders.get(provider);
+        if (item != null) {
+            dataBoundsMenu.remove(item);
+        }
     }
 
     /**
@@ -313,9 +313,9 @@ public class GoToMenu extends AbstractOpenMapMenu {
      * view.
      */
     public void addView(GoToButton newOne) {
-	customViews.add(newOne);
-	add(newOne);
-	revalidate();
+        customViews.add(newOne);
+        add(newOne);
+        revalidate();
     }
 
     final GoToMenu parent = this;
@@ -326,141 +326,141 @@ public class GoToMenu extends AbstractOpenMapMenu {
      * projection of the map.
      */
     public class AddNewViewButton extends JMenuItem
-	implements ActionListener {
+        implements ActionListener {
 
-	public AddNewViewButton(String title) {
-	    super(title);
-	    this.addActionListener(this);
-	}
+        public AddNewViewButton(String title) {
+            super(title);
+            this.addActionListener(this);
+        }
 
-	public void actionPerformed(ActionEvent ae) {
-	    if (map != null) {
-		Projection proj = map.getProjection();
-		LatLonPoint llp = proj.getCenter();
-		GoToButton gtb = new GoToButton(llp.getLatitude(),
-						llp.getLongitude(),
-						proj.getScale(),
-						proj.getName());
-	    }
-	}
+        public void actionPerformed(ActionEvent ae) {
+            if (map != null) {
+                Projection proj = map.getProjection();
+                LatLonPoint llp = proj.getCenter();
+                GoToButton gtb = new GoToButton(llp.getLatitude(),
+                                                llp.getLongitude(),
+                                                proj.getScale(),
+                                                proj.getName());
+            }
+        }
     }
 
     /**
      * This button contains the trigger for a saved view.
      */
     public class GoToButton extends JMenuItem 
-	implements ActionListener {
+        implements ActionListener {
 
-	public float latitude;
-	public float longitude;
-	public float scale;
-	public String projectionID;
+        public float latitude;
+        public float longitude;
+        public float scale;
+        public String projectionID;
 
-	GoToMenu menu;
+        GoToMenu menu;
 
-	public GoToButton(String title,
-			  float lat, float lon, float s, String projID) {
-	    super(title);
-	    init(lat, lon, s, projID);
-	}
+        public GoToButton(String title,
+                          float lat, float lon, float s, String projID) {
+            super(title);
+            init(lat, lon, s, projID);
+        }
 
-	public GoToButton(float lat, float lon, float s, String projID) {
-	    init(lat, lon, s, projID);
-	    NameFetcher nf = new NameFetcher(this);
-	    nf.show();
-	}
+        public GoToButton(float lat, float lon, float s, String projID) {
+            init(lat, lon, s, projID);
+            NameFetcher nf = new NameFetcher(this);
+            nf.show();
+        }
 
-	public void init(float lat, float lon, float s, String projID) {
-	    latitude = lat;
-	    longitude = lon;
-	    scale = s;
-	    projectionID = projID;
-	    this.addActionListener(this);
-	}
-	
-	public void setNameAndAdd(String name) {
-	    this.setText(name);
-	    parent.addView(this);
-	}
-	
-	public void actionPerformed(ActionEvent ae) {
-	    if (map != null) {
-		Projection oldProj = map.getProjection();
+        public void init(float lat, float lon, float s, String projID) {
+            latitude = lat;
+            longitude = lon;
+            scale = s;
+            projectionID = projID;
+            this.addActionListener(this);
+        }
+        
+        public void setNameAndAdd(String name) {
+            this.setText(name);
+            parent.addView(this);
+        }
+        
+        public void actionPerformed(ActionEvent ae) {
+            if (map != null) {
+                Projection oldProj = map.getProjection();
 
-		int projType = ProjectionFactory.getProjType(projectionID);
+                int projType = ProjectionFactory.getProjType(projectionID);
 
-		Projection newProj = ProjectionFactory.makeProjection(
-		    projType, latitude, longitude,
-		    scale, oldProj.getWidth(), oldProj.getHeight());
+                Projection newProj = ProjectionFactory.makeProjection(
+                    projType, latitude, longitude,
+                    scale, oldProj.getWidth(), oldProj.getHeight());
 
-		map.setProjection(newProj);
-	    }
-	}
+                map.setProjection(newProj);
+            }
+        }
     }
 
     /** 
      * Brings up a GUI to name a new view.
      */
     public class NameFetcher extends JDialog
-	implements ActionListener {
+        implements ActionListener {
 
-	JTextField nameField;
-	JLabel label;
-	JButton closebutton, applybutton;
-	GoToButton notifyThis;
+        JTextField nameField;
+        JLabel label;
+        JButton closebutton, applybutton;
+        GoToButton notifyThis;
 
-	public NameFetcher(GoToButton buttonToName) {
+        public NameFetcher(GoToButton buttonToName) {
 
-	    notifyThis = buttonToName;
+            notifyThis = buttonToName;
 
-	    JPanel palette = new JPanel();
-	    palette.setLayout(new BoxLayout(palette, BoxLayout.Y_AXIS));
+            JPanel palette = new JPanel();
+            palette.setLayout(new BoxLayout(palette, BoxLayout.Y_AXIS));
 
-	    JPanel namePanel = new JPanel();
-	    namePanel.setLayout(new FlowLayout());
+            JPanel namePanel = new JPanel();
+            namePanel.setLayout(new FlowLayout());
 
-	    label = new JLabel("Name of View: ");
-	    nameField = new JTextField("", 20);
+            label = new JLabel("Name of View: ");
+            nameField = new JTextField("", 20);
 
-	    namePanel.add(label);
-	    namePanel.add(nameField);
+            namePanel.add(label);
+            namePanel.add(nameField);
 
-	    palette.add(namePanel);
+            palette.add(namePanel);
 
-	    JPanel buttonPanel = new JPanel();
-	    GridBagLayout gridbag = new GridBagLayout();
-	    GridBagConstraints c = new GridBagConstraints();
+            JPanel buttonPanel = new JPanel();
+            GridBagLayout gridbag = new GridBagLayout();
+            GridBagConstraints c = new GridBagConstraints();
 
-	    buttonPanel.setLayout(gridbag);
+            buttonPanel.setLayout(gridbag);
 
-	    applybutton = new JButton("Add View");
-	    applybutton.addActionListener(this);
-	    gridbag.setConstraints(applybutton, c);
+            applybutton = new JButton("Add View");
+            applybutton.addActionListener(this);
+            gridbag.setConstraints(applybutton, c);
 
-	    closebutton = new JButton("Close");
-	    closebutton.addActionListener(this);
-	    c.gridx = GridBagConstraints.RELATIVE;
-	    gridbag.setConstraints(closebutton, c);
+            closebutton = new JButton("Close");
+            closebutton.addActionListener(this);
+            c.gridx = GridBagConstraints.RELATIVE;
+            gridbag.setConstraints(closebutton, c);
 
-	    buttonPanel.add(applybutton);
-	    buttonPanel.add(closebutton);
+            buttonPanel.add(applybutton);
+            buttonPanel.add(closebutton);
 
-	    palette.add(buttonPanel);
-	    
-	    this.getContentPane().add(palette);
-	    this.pack();
-	}
-	
-	public void actionPerformed(ActionEvent event) {
-	    if (event.getSource() == applybutton) {
-		String newName = nameField.getText();
-		if (newName != null && !(newName.equals(""))) {
-		    notifyThis.setNameAndAdd(newName);
-		}
-		this.setVisible(false);
-	    } else {
-		this.setVisible(false);
-	    }
-	}
+            palette.add(buttonPanel);
+            
+            this.getContentPane().add(palette);
+            this.pack();
+        }
+        
+        public void actionPerformed(ActionEvent event) {
+            if (event.getSource() == applybutton) {
+                String newName = nameField.getText();
+                if (newName != null && !(newName.equals(""))) {
+                    notifyThis.setNameAndAdd(newName);
+                }
+                this.setVisible(false);
+            } else {
+                this.setVisible(false);
+            }
+        }
     }
 }

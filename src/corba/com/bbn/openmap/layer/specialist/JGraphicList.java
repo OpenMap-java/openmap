@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JGraphicList.java,v $
 // $RCSfile: JGraphicList.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,7 +38,7 @@ public class JGraphicList extends OMGraphicList {
      * Construct an OMGraphicList.
      */
     public JGraphicList() {
-	super();
+        super();
     };
     
     /**
@@ -46,7 +46,7 @@ public class JGraphicList extends OMGraphicList {
      * @param initialCapacity the initial capacity of the list 
      */
     public JGraphicList(int initialCapacity) {
-	super (initialCapacity, 0);
+        super (initialCapacity, 0);
     };
 
     /**
@@ -60,18 +60,18 @@ public class JGraphicList extends OMGraphicList {
     };
 
     public OMGraphic getOMGraphicWithId(String gID) {
-	java.util.Iterator targets = iterator();
-	while (targets.hasNext()) {
-	    OMGraphic graphic = (OMGraphic)targets.next();
-	    if (graphic instanceof JObjectHolder) {
-		com.bbn.openmap.CSpecialist.EComp ecomp = 
-		    ((JObjectHolder)graphic).getObject();
-		if (ecomp.cID.equals(gID)) {
-		    return graphic;
-		}
-	    }
-	}
-	return null;
+        java.util.Iterator targets = iterator();
+        while (targets.hasNext()) {
+            OMGraphic graphic = (OMGraphic)targets.next();
+            if (graphic instanceof JObjectHolder) {
+                com.bbn.openmap.CSpecialist.EComp ecomp = 
+                    ((JObjectHolder)graphic).getObject();
+                if (ecomp.cID.equals(gID)) {
+                    return graphic;
+                }
+            }
+        }
+        return null;
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/TileDirectory.java,v $
 // $RCSfile: TileDirectory.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,19 +47,19 @@ public class TileDirectory {
      * @param tileID our tile identifier
      */
     public TileDirectory(String path, int tileID,
-			 float n, float s, float e, float w) {
-	StringBuffer strbuf = new StringBuffer(path.toLowerCase());
-//  	strbuf.append(File.separator);
-	strbuf.append("/"); // in Java land with the BinaryFile.
-	tilename = strbuf.toString().intern();
-	this.tileID = tileID;
-	if (e < w) {
-	    e += 360.0;
-	}
-	westlon = w;
-	eastlon = e;
-	northlat = n;
-	southlat = s;
+                         float n, float s, float e, float w) {
+        StringBuffer strbuf = new StringBuffer(path.toLowerCase());
+//      strbuf.append(File.separator);
+        strbuf.append("/"); // in Java land with the BinaryFile.
+        tilename = strbuf.toString().intern();
+        this.tileID = tileID;
+        if (e < w) {
+            e += 360.0;
+        }
+        westlon = w;
+        eastlon = e;
+        northlat = n;
+        southlat = s;
     }
   
     /**
@@ -68,9 +68,9 @@ public class TileDirectory {
      * @see #inRegion(float, float, float, float)
      */
     public TileDirectory() {
-	tilename = "";
-	this.tileID = -1;
-	westlon = eastlon = northlat = southlat = Float.NaN;
+        tilename = "";
+        this.tileID = -1;
+        westlon = eastlon = northlat = southlat = Float.NaN;
     }
 
     /**
@@ -78,7 +78,7 @@ public class TileDirectory {
      * @return a string path
      */
     public String getPath() {
-	return tilename;
+        return tilename;
     }
 
     /**
@@ -86,7 +86,7 @@ public class TileDirectory {
      * @return the tile id (-1 for untiled coverage)
      */
     public int getTileID() {
-	return tileID;
+        return tileID;
     }
     
     /**
@@ -94,7 +94,7 @@ public class TileDirectory {
      * @return a string usable as a directory path component
      */
     public String toString() {
-	return(tilename);
+        return(tilename);
     }
 
     /**
@@ -106,16 +106,16 @@ public class TileDirectory {
      * @param w the western boundary
      */
     public boolean inRegion(float n, float s, float e, float w) {
-	// take care of the easy case first...
-	if ((s > northlat) || (n < southlat)) {
-	    return false;
-	}
-	if (e < w) {
-	    e += 360.0f;
-	}
-	if ((w > eastlon) || (e < westlon)) {
-	    return false;
-	}
-	return true;
+        // take care of the easy case first...
+        if ((s > northlat) || (n < southlat)) {
+            return false;
+        }
+        if (e < w) {
+            e += 360.0f;
+        }
+        if ((w > eastlon) || (e < westlon)) {
+            return false;
+        }
+        return true;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMAreaList.java,v $
 // $RCSfile: OMAreaList.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/08/28 22:09:16 $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,8 +53,8 @@ public class OMAreaList extends OMGeometryList
      * Construct an OMAreaList.
      */
     public OMAreaList() {
-	super(10);
-	init();
+        super(10);
+        init();
     };
     
     /**
@@ -64,8 +64,8 @@ public class OMAreaList extends OMGeometryList
      * @param initialCapacity the initial capacity of the list 
      */
     public OMAreaList(int initialCapacity) {
-	super(initialCapacity);
-	init();
+        super(initialCapacity);
+        init();
     };
 
     /**
@@ -76,8 +76,8 @@ public class OMAreaList extends OMGeometryList
      * @param list List of vector OMGeometries.
      */
     public OMAreaList(java.util.List list) {
-	super(list);
-	init();
+        super(list);
+        init();
     }
 
     /**
@@ -86,8 +86,8 @@ public class OMAreaList extends OMGeometryList
      * first used order.
      */
     protected void init() {
-	setVague(true);
-	setTraverseMode(LAST_ADDED_ON_TOP);
+        setVague(true);
+        setTraverseMode(LAST_ADDED_ON_TOP);
     }
 
     /**
@@ -100,10 +100,10 @@ public class OMAreaList extends OMGeometryList
      * considered a polygon.
      */
     public synchronized void generate(Projection p, boolean forceProjectAll) {
-	super.generate(p, forceProjectAll);
-	if (shape != null) {
-	    shape.closePath();
-	}
+        super.generate(p, forceProjectAll);
+        if (shape != null) {
+            shape.closePath();
+        }
     }
 
     /**
@@ -113,25 +113,25 @@ public class OMAreaList extends OMGeometryList
      * big polygon.
      */
     protected void updateShape(OMGeometry geometry, Projection p, 
-			       boolean forceProject) {
-	if (forceProject) {
-	    geometry.generate(p);
-	} else {
-	    geometry.regenerate(p);
-	}
-		    
-	if (geometry.isVisible()) {
-	    GeneralPath gp = (GeneralPath)geometry.getShape();
+                               boolean forceProject) {
+        if (forceProject) {
+            geometry.generate(p);
+        } else {
+            geometry.regenerate(p);
+        }
+                    
+        if (geometry.isVisible()) {
+            GeneralPath gp = (GeneralPath)geometry.getShape();
 
-	    if (gp == null) {
-		return;
-	    }
+            if (gp == null) {
+                return;
+            }
 
-	    shape = appendShapeEdge(shape, gp);
-	    // save memory by deleting the shape in each part, since
-	    // they are each contributing to the whole.
-	    geometry.setShape((GeneralPath)null);
-	}
+            shape = appendShapeEdge(shape, gp);
+            // save memory by deleting the shape in each part, since
+            // they are each contributing to the whole.
+            geometry.setShape((GeneralPath)null);
+        }
     }
 
     /**
@@ -147,23 +147,23 @@ public class OMAreaList extends OMGeometryList
      */
     protected synchronized OMDist _findClosest(int x, int y, float limit, boolean resetSelect) {
 
-  	OMDist omd = new OMDist();
-	float currentDistance = Float.MAX_VALUE;
+        OMDist omd = new OMDist();
+        float currentDistance = Float.MAX_VALUE;
 
-	// cannot select a graphic which isn't visible
-	if (!isVisible()) {
-	    omd.omg = null;
-	} else {
-	    if (resetSelect) deselect();
-	    currentDistance = _distance(x, y);
-	}
+        // cannot select a graphic which isn't visible
+        if (!isVisible()) {
+            omd.omg = null;
+        } else {
+            if (resetSelect) deselect();
+            currentDistance = _distance(x, y);
+        }
 
-	if (currentDistance < limit) {
-	    omd.omg = this;
-	    omd.d = currentDistance;
-	}
+        if (currentDistance < limit) {
+            omd.omg = this;
+            omd.d = currentDistance;
+        }
 
-	return omd;
+        return omd;
     }
 
 }

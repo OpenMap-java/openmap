@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicConstants.java,v $
 // $RCSfile: OMGraphicConstants.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/07/28 20:07:40 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -103,7 +103,7 @@ public interface OMGraphicConstants {
 
     /** A transparent color.*/
     public final static Color clear =
-	com.bbn.openmap.util.ColorFactory.createColor(0, true);
+        com.bbn.openmap.util.ColorFactory.createColor(0, true);
 
     /** A Basic Stroke. */
     public final static java.awt.Stroke BASIC_STROKE = new java.awt.BasicStroke();

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/plotLayer/PlotLayer.java,v $
 // $RCSfile: PlotLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/20 02:43:50 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -93,21 +93,21 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * Construct the PlotLayer.
      */
     public PlotLayer() {
-	// precalculate for boxy
-	boxy = true;
+        // precalculate for boxy
+        boxy = true;
 
-	getDataSource();
-	graph = new ScatterGraph(678,790, null, 
-				 temperature_data.overall_min_year_, 
-				 temperature_data.overall_max_year_,
-				 temperature_data.overall_min_temp_, 
-				 temperature_data.overall_max_temp_);
-	setList(plotDataSources());
+        getDataSource();
+        graph = new ScatterGraph(678,790, null, 
+                                 temperature_data.overall_min_year_, 
+                                 temperature_data.overall_max_year_,
+                                 temperature_data.overall_min_temp_, 
+                                 temperature_data.overall_max_temp_);
+        setList(plotDataSources());
     }
 
     public OMGraphicList prepare() {
-	graph.resize(plotX, plotY, plotWidth, plotHeight);
-	return super.prepare();
+        graph.resize(plotX, plotY, plotWidth, plotHeight);
+        return super.prepare();
     }
 
     /**
@@ -117,116 +117,116 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
      */
     private GLOBETempData getDataSource() {
 
-	if (temperature_data != null) {
-	    return temperature_data;
-	}
+        if (temperature_data != null) {
+            return temperature_data;
+        }
 
-	// load the data from the CLASSPATH
-	Vector dirs = Environment.getClasspathDirs();
-	FileInputStream is = null;
-	int nDirs = dirs.size();
-	if (nDirs > 0) {
-	    for (int i=0; i<nDirs; i++) {
-		String dir = (String) dirs.elementAt(i);
-		File datafile = new File(dir, datasource);
-		if (datafile.isFile()) {
-		    try {
-			is = new FileInputStream(datafile);
-//  			System.out.println("datafile="+datafile);
-			break;
-		    } catch (java.io.IOException e) {
-			e.printStackTrace();
-		    }
-		}
-	    }
-	    if (is == null) {
-		System.err.println(
-			"Unable to load datafile \"" + datasource +
-			"\" from CLASSPATH");
-	    }
-	} else {
-	    System.err.println("No directories in CLASSPATH!");
-	    System.err.println(
-		    "Unable to load datafile \"" + datasource +
-		    "\" from CLASSPATH");
-	}
-	if (is == null)
-	    return null;
+        // load the data from the CLASSPATH
+        Vector dirs = Environment.getClasspathDirs();
+        FileInputStream is = null;
+        int nDirs = dirs.size();
+        if (nDirs > 0) {
+            for (int i=0; i<nDirs; i++) {
+                String dir = (String) dirs.elementAt(i);
+                File datafile = new File(dir, datasource);
+                if (datafile.isFile()) {
+                    try {
+                        is = new FileInputStream(datafile);
+//                      System.out.println("datafile="+datafile);
+                        break;
+                    } catch (java.io.IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            if (is == null) {
+                System.err.println(
+                        "Unable to load datafile \"" + datasource +
+                        "\" from CLASSPATH");
+            }
+        } else {
+            System.err.println("No directories in CLASSPATH!");
+            System.err.println(
+                    "Unable to load datafile \"" + datasource +
+                    "\" from CLASSPATH");
+        }
+        if (is == null)
+            return null;
 
-	// Parse the data
-	try {
-	    temperature_data = new GLOBETempData();
-	    temperature_data.loadData(is);
-	}
-	catch (IOException e) {
-	    System.err.println(e);
-	}
-	return temperature_data;
+        // Parse the data
+        try {
+            temperature_data = new GLOBETempData();
+            temperature_data.loadData(is);
+        }
+        catch (IOException e) {
+            System.err.println(e);
+        }
+        return temperature_data;
     }
 
     /** Put the data points on the map. */
     private OMGraphicList plotDataSources() {
-	Debug.message("basic", "PlotLayer.plotDataSources()");
-	int num_graphics = 0;
-	
-	OMGraphicList graphics = new OMGraphicList();
-	graphics.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
-	graphics.clear();
+        Debug.message("basic", "PlotLayer.plotDataSources()");
+        int num_graphics = 0;
+        
+        OMGraphicList graphics = new OMGraphicList();
+        graphics.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
+        graphics.clear();
       
-	Enumeration site_enum = temperature_data.getAllSites();
-	while (site_enum.hasMoreElements()) 
-	    {
-		GLOBESite site = (GLOBESite)site_enum.nextElement();
-		//Debug.message("basic", "Plotlayer adds " + site.getName());
-		graphics.addOMGraphic(site.getGraphic());
-		num_graphics++;
-	    }
-	
-	Debug.message("basic",
-		      "Plotlayer found " + num_graphics + " distinct sites");
+        Enumeration site_enum = temperature_data.getAllSites();
+        while (site_enum.hasMoreElements()) 
+            {
+                GLOBESite site = (GLOBESite)site_enum.nextElement();
+                //Debug.message("basic", "Plotlayer adds " + site.getName());
+                graphics.addOMGraphic(site.getGraphic());
+                num_graphics++;
+            }
+        
+        Debug.message("basic",
+                      "Plotlayer found " + num_graphics + " distinct sites");
 
-	// Find the sites that are visible on the map. 
-	return graphics;
+        // Find the sites that are visible on the map. 
+        return graphics;
     }
 
     /** Build and display the plot. */
     private OMGraphic generatePlot() {
-//  	System.out.println("Generating Plot ");
-	if (graph != null) {
-	    graph.setDataPoints(selectedGraphics);
-	    graph.plotData();
-	    return graph.getPlotGraphics();
-	}
-	return null;
+//      System.out.println("Generating Plot ");
+        if (graph != null) {
+            graph.setDataPoints(selectedGraphics);
+            graph.plotData();
+            return graph.getPlotGraphics();
+        }
+        return null;
     }
 
     private void showPlot() {
-	show_plot_ = true;
+        show_plot_ = true;
 
-	OMGraphic plot = generatePlot();
-	OMGraphicList list = getList();
+        OMGraphic plot = generatePlot();
+        OMGraphicList list = getList();
 
-	if (plot != null) {
-//  	    System.out.println("Making plot visible..");
-	    list.addOMGraphic(plot);
-	}
-	// generate the graphics for rendering.
-	list.generate(getProjection(), false);
-	repaint();
+        if (plot != null) {
+//          System.out.println("Making plot visible..");
+            list.addOMGraphic(plot);
+        }
+        // generate the graphics for rendering.
+        list.generate(getProjection(), false);
+        repaint();
     }
 
     private void hidePlot() {
-//  	System.out.println("Making plot IN-visible..");
-	show_plot_ = false;
-	if (graph != null) {
-	    OMGraphic plot = graph.getPlotGraphics();
-	    OMGraphicList list = getList();
+//      System.out.println("Making plot IN-visible..");
+        show_plot_ = false;
+        if (graph != null) {
+            OMGraphic plot = graph.getPlotGraphics();
+            OMGraphicList list = getList();
 
-	    if (list != null && plot != null) {
-		list.remove(plot);
-	    }
-	}
-	repaint();
+            if (list != null && plot != null) {
+                list.remove(plot);
+            }
+        }
+        repaint();
     }
     
     /**
@@ -234,35 +234,35 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * we are drawing.
      */
     private void addSelectionToPlotList() {
-	if (selectedGraphic != null) {
-	    // Change the color of the clicked ones
-	    selectedGraphic.setLinePaint(Color.blue);
-	    
-	    if (selectedGraphics == null) {
-		selectedGraphics = new Vector();
-	    }
-	    
-	    Object app_obj = selectedGraphic.getAppObject();
-	    
-	    if (app_obj instanceof GLOBESite) {
-		GLOBESite site = (GLOBESite)app_obj;
-		if ( ! selectedGraphics.contains(app_obj) ) {
-		    Debug.message("basic", "Adding to plot list...");
-		    selectedGraphics.addElement(site);
-		    selectedGraphic.setFillPaint(Color.yellow);
-		}
-		else {
-		    Debug.message("basic", "Removing from plot list...");
-		    selectedGraphics.removeElement(site);
-		    selectedGraphic.setFillPaint(Color.red);
-		    selectedGraphic.setLinePaint(Color.red);
-		}
-		    
-	    }
-	} 
-	else {
-	    Debug.message("basic", "Nothing to add to plot list!");
-	}
+        if (selectedGraphic != null) {
+            // Change the color of the clicked ones
+            selectedGraphic.setLinePaint(Color.blue);
+            
+            if (selectedGraphics == null) {
+                selectedGraphics = new Vector();
+            }
+            
+            Object app_obj = selectedGraphic.getAppObject();
+            
+            if (app_obj instanceof GLOBESite) {
+                GLOBESite site = (GLOBESite)app_obj;
+                if ( ! selectedGraphics.contains(app_obj) ) {
+                    Debug.message("basic", "Adding to plot list...");
+                    selectedGraphics.addElement(site);
+                    selectedGraphic.setFillPaint(Color.yellow);
+                }
+                else {
+                    Debug.message("basic", "Removing from plot list...");
+                    selectedGraphics.removeElement(site);
+                    selectedGraphic.setFillPaint(Color.red);
+                    selectedGraphic.setLinePaint(Color.red);
+                }
+                    
+            }
+        } 
+        else {
+            Debug.message("basic", "Nothing to add to plot list!");
+        }
     }
   
   
@@ -277,34 +277,34 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
      *         <code>MapMouseEvent</code>s
      */
     public MapMouseListener getMapMouseListener() {
-	return this;
+        return this;
     }
     
     
     public Component getGUI() {
-	if (pal == null) {
-	    ActionListener al = new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    int index = Integer.parseInt(e.getActionCommand(), 10);
-		    switch (index) {
-		    case 0:
-			if ( show_plot_ )
-			    hidePlot();
-			else
-			    showPlot();
-			break;
-		    default:
-			throw new RuntimeException("argh!");
-		    }
-		}
-	    };
-	    pal = PaletteHelper.
-		createCheckbox("Plot Control", 
-			       new String[] {"Show Temperature Plot"},
-			       new boolean[] {show_plot_}, 
-			       al);
-	}
-	return pal;
+        if (pal == null) {
+            ActionListener al = new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    int index = Integer.parseInt(e.getActionCommand(), 10);
+                    switch (index) {
+                    case 0:
+                        if ( show_plot_ )
+                            hidePlot();
+                        else
+                            showPlot();
+                        break;
+                    default:
+                        throw new RuntimeException("argh!");
+                    }
+                }
+            };
+            pal = PaletteHelper.
+                createCheckbox("Plot Control", 
+                               new String[] {"Show Temperature Plot"},
+                               new boolean[] {show_plot_}, 
+                               al);
+        }
+        return pal;
     }
 
 
@@ -324,9 +324,9 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @see com.bbn.openmap.MouseDelegator
      */
     public String[] getMouseModeServiceList () {
-	return new String[] {
-	    SelectMouseMode.modeID
-	};
+        return new String[] {
+            SelectMouseMode.modeID
+        };
     }
 
     //graphic position variables when moving the plot graphic
@@ -343,19 +343,19 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @see #getMouseModeServiceList
      */
     public boolean mousePressed(MouseEvent e) {
-	if ( show_plot_ && graph != null ) {
-	    int x = e.getX();
-	    int y = e.getY();
-	    if ((x >= plotX) && (x <= plotX+plotWidth) && 
-		(y >= plotY) && (y <= plotY+plotWidth)) {
+        if ( show_plot_ && graph != null ) {
+            int x = e.getX();
+            int y = e.getY();
+            if ((x >= plotX) && (x <= plotX+plotWidth) && 
+                (y >= plotY) && (y <= plotY+plotWidth)) {
 
-		grabbed_plot_graphics_ = true;
-		// grab the location
-		prevX = x;
-		prevY = y;
-	    }
-	}
-	return false;
+                grabbed_plot_graphics_ = true;
+                // grab the location
+                prevX = x;
+                prevY = y;
+            }
+        }
+        return false;
     }
  
 
@@ -369,8 +369,8 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @see #getMouseModeServiceList
      */
     public boolean mouseReleased(MouseEvent e) {
-	grabbed_plot_graphics_ = false;
-	return false;
+        grabbed_plot_graphics_ = false;
+        return false;
     }
 
     /**
@@ -382,30 +382,30 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @see #getMouseModeServiceList
      */
     public boolean mouseClicked(MouseEvent e) {
-//  	System.out.println("XY: " + e.getX() + " " + e.getY() );
-	if (selectedGraphic != null && !show_plot_ ) {
-	    switch (e.getClickCount()) {
-	    case 1:  
-		/** One click adds the site to our list of sites
-		 *  to plot.
-		 */
-		addSelectionToPlotList();
-		generatePlot();
-		repaint();
-		break;
-	    case 2:
-		/** Double click means generate the plot. 
-		 */ 
-//  		System.out.println("Saw DoubleClick!");
-		repaint();
-		break;
-	    default:
-		break;
-	    }
-	    return true;
-	} else {
-	    return false;
-	}
+//      System.out.println("XY: " + e.getX() + " " + e.getY() );
+        if (selectedGraphic != null && !show_plot_ ) {
+            switch (e.getClickCount()) {
+            case 1:  
+                /** One click adds the site to our list of sites
+                 *  to plot.
+                 */
+                addSelectionToPlotList();
+                generatePlot();
+                repaint();
+                break;
+            case 2:
+                /** Double click means generate the plot. 
+                 */ 
+//              System.out.println("Saw DoubleClick!");
+                repaint();
+                break;
+            default:
+                break;
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -437,24 +437,24 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @see #getMouseModeServiceList
      */
     public boolean mouseDragged(MouseEvent e) {
-	if (grabbed_plot_graphics_) {
-	    int x = e.getX();
-	    int y = e.getY();
-	    int dx = x-prevX;
-	    int dy = y-prevY;
+        if (grabbed_plot_graphics_) {
+            int x = e.getX();
+            int y = e.getY();
+            int dx = x-prevX;
+            int dy = y-prevY;
 
-	    plotX += dx;
-	    plotY += dy;
-	    prevX = x;
-	    prevY = y;
+            plotX += dx;
+            plotY += dy;
+            prevX = x;
+            prevY = y;
 
-	    graph.resize(plotX, plotY, plotWidth, plotHeight);
-	    OMGraphicList plotGraphics = graph.getPlotGraphics();
-	    //regenerate the plot graphics
-	    plotGraphics.generate(getProjection(), true);
-	    repaint();
-	}
-	return false;
+            graph.resize(plotX, plotY, plotWidth, plotHeight);
+            OMGraphicList plotGraphics = graph.getPlotGraphics();
+            //regenerate the plot graphics
+            plotGraphics.generate(getProjection(), true);
+            repaint();
+        }
+        return false;
     }
 
 
@@ -472,55 +472,55 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * @see #getMouseModeServiceList
      */
     public boolean mouseMoved(MouseEvent e) {
-	OMGraphic newSelectedGraphic;
+        OMGraphic newSelectedGraphic;
 
-	if ( show_plot_ && graph != null ) {
-	    
-	    newSelectedGraphic = graph.selectPoint(e.getX(), e.getY(), 4.0f);
-	    
-	    if (newSelectedGraphic != null) {
-		String infostring = (String)(newSelectedGraphic.getAppObject());
-		if (infostring != null) {
-		    fireRequestInfoLine(infostring);		
-		}
-	    } else {
-		fireRequestInfoLine("");
-	    }
-	    
-	} else {
-	    newSelectedGraphic = 
-		getList().selectClosest(e.getX(), e.getY(), 4.0f);
-	
-	    if (newSelectedGraphic != null &&
-		(selectedGraphic == null ||
-		 newSelectedGraphic != selectedGraphic)) {
+        if ( show_plot_ && graph != null ) {
+            
+            newSelectedGraphic = graph.selectPoint(e.getX(), e.getY(), 4.0f);
+            
+            if (newSelectedGraphic != null) {
+                String infostring = (String)(newSelectedGraphic.getAppObject());
+                if (infostring != null) {
+                    fireRequestInfoLine(infostring);            
+                }
+            } else {
+                fireRequestInfoLine("");
+            }
+            
+        } else {
+            newSelectedGraphic = 
+                getList().selectClosest(e.getX(), e.getY(), 4.0f);
+        
+            if (newSelectedGraphic != null &&
+                (selectedGraphic == null ||
+                 newSelectedGraphic != selectedGraphic)) {
 
-		Debug.message("basic", "Making selection...");
+                Debug.message("basic", "Making selection...");
 
-		selectedGraphic = newSelectedGraphic;
-		//selectedGraphic.setLineColor(Color.yellow);
-		selectedGraphic.regenerate(getProjection());
-		    
-		// display site info on map
-		GLOBESite site = (GLOBESite)(newSelectedGraphic.getAppObject());
-		if (site != null) {
-		    fireRequestInfoLine(site.getInfo());		
-		}
+                selectedGraphic = newSelectedGraphic;
+                //selectedGraphic.setLineColor(Color.yellow);
+                selectedGraphic.regenerate(getProjection());
+                    
+                // display site info on map
+                GLOBESite site = (GLOBESite)(newSelectedGraphic.getAppObject());
+                if (site != null) {
+                    fireRequestInfoLine(site.getInfo());                
+                }
 
-		repaint();
-	    } else if (selectedGraphic != null &&
-		       newSelectedGraphic == null) { 
+                repaint();
+            } else if (selectedGraphic != null &&
+                       newSelectedGraphic == null) { 
 
-		// revert color of un-moused object.
-		Debug.message("basic", "Clearing selection...");
-		//selectedGraphic.setLineColor(Color.red);
-		selectedGraphic.regenerate(getProjection());
-		fireRequestInfoLine("");
-		selectedGraphic = null;
-		repaint();
-	    }  
-	}
-	return true;
+                // revert color of un-moused object.
+                Debug.message("basic", "Clearing selection...");
+                //selectedGraphic.setLineColor(Color.red);
+                selectedGraphic.regenerate(getProjection());
+                fireRequestInfoLine("");
+                selectedGraphic = null;
+                repaint();
+            }  
+        }
+        return true;
     }
     
     /** Called whenever the mouse is moved on this layer and one of
@@ -530,8 +530,8 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
      *
      * @see #getMouseModeServiceList */
     public void mouseMoved() {
-	getList().deselectAll();
-	repaint();
+        getList().deselectAll();
+        repaint();
     }
 
 
@@ -541,6 +541,6 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * this layer
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
     }
 }

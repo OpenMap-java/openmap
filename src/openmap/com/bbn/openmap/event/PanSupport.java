@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/PanSupport.java,v $
 // $RCSfile: PanSupport.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:47:45 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:06 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -38,7 +38,7 @@ public class PanSupport extends ListenerSupport {
      * @param sourceBean The bean to be given as the source for any events.
      */
     public PanSupport(Object sourceBean) {
-	super(sourceBean);
+        super(sourceBean);
     }
 
     /**
@@ -46,7 +46,7 @@ public class PanSupport extends ListenerSupport {
      * @param listener The PanListener to be added
      */
     public void addPanListener(PanListener listener) {
-	addListener(listener);
+        addListener(listener);
     }
 
     /**
@@ -54,7 +54,7 @@ public class PanSupport extends ListenerSupport {
      * @param listener The PanListener to be removed
      */
     public void removePanListener(PanListener listener) {
-	removeListener(listener);
+        removeListener(listener);
     }
 
     /**
@@ -64,7 +64,7 @@ public class PanSupport extends ListenerSupport {
      * @deprecated use firePan(azimuth)
      */
     public void firePan(int direction) {
-	firePan(direction, 1f);
+        firePan(direction, 1f);
     }
 
     /**
@@ -77,18 +77,18 @@ public class PanSupport extends ListenerSupport {
      */
     public void firePan(int direction, float amount) {
 
-	if (direction < PanEvent.PAN_FIRST || direction > PanEvent.PAN_LAST) {
-	    throw new IllegalArgumentException("Bad value, " + direction +
-					       " for direction in " +
-					       "PanSupport.firePan()");
-	}
+        if (direction < PanEvent.PAN_FIRST || direction > PanEvent.PAN_LAST) {
+            throw new IllegalArgumentException("Bad value, " + direction +
+                                               " for direction in " +
+                                               "PanSupport.firePan()");
+        }
 
-	float az = PanEvent.dir2Az(direction);
-	firePan(az);
+        float az = PanEvent.dir2Az(direction);
+        firePan(az);
     }
 
     public void firePan(float Az) {
-	firePan(Az, Float.NaN);
+        firePan(Az, Float.NaN);
     }
 
     /**
@@ -98,15 +98,15 @@ public class PanSupport extends ListenerSupport {
      * @param c arc distance in decimal degrees.
      */
     public synchronized void firePan(float az, float c) {
-	Iterator it = iterator();
+        Iterator it = iterator();
 
-	if (size() == 0) return;
+        if (size() == 0) return;
 
         PanEvent evt = new PanEvent(source, az, c);
 
-	while (it.hasNext()) {
-	    ((PanListener) it.next()).pan(evt);
-	}
+        while (it.hasNext()) {
+            ((PanListener) it.next()).pan(evt);
+        }
     }
 }
 

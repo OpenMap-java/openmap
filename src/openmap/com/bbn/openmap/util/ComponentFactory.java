@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ComponentFactory.java,v $
 // $RCSfile: ComponentFactory.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/09/25 18:53:26 $
+// $Revision: 1.9 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,7 +67,7 @@ public class ComponentFactory {
      * @return Vector containing the new Objects.
      */
     public static Vector create(Vector markerNames, Properties properties) {
-	return create(markerNames, properties, null);
+        return create(markerNames, properties, null);
     }
 
     /**
@@ -86,8 +86,8 @@ public class ComponentFactory {
      * @return Vector containing the new Objects.
      */
     public static Vector create(Vector markerNames, Properties properties,
-				ProgressSupport progressSupport) {
-	return create(markerNames, properties, progressSupport, false);
+                                ProgressSupport progressSupport) {
+        return create(markerNames, properties, progressSupport, false);
     }
 
     /**
@@ -115,57 +115,57 @@ public class ComponentFactory {
      * with which objects.
      */
     public static Vector create(Vector markerNames, Properties properties,
-				ProgressSupport progressSupport, 
-				boolean matchInOutVectorSize) {
+                                ProgressSupport progressSupport, 
+                                boolean matchInOutVectorSize) {
 
-	int size = markerNames.size();
-	Vector vector = new Vector(size);
+        int size = markerNames.size();
+        Vector vector = new Vector(size);
 
-	if (progressSupport != null) {
-	    progressSupport.fireUpdate(ProgressEvent.UPDATE,
-				       "Creating Components", 100, 0);
-	}
+        if (progressSupport != null) {
+            progressSupport.fireUpdate(ProgressEvent.UPDATE,
+                                       "Creating Components", 100, 0);
+        }
 
-	for (int i = 0; i < size; i++) {
-	    String componentName = (String) markerNames.elementAt(i);
-	    String classProperty = componentName + ClassNameProperty;
-	    String className = properties.getProperty(classProperty);
+        for (int i = 0; i < size; i++) {
+            String componentName = (String) markerNames.elementAt(i);
+            String classProperty = componentName + ClassNameProperty;
+            String className = properties.getProperty(classProperty);
 
-	    if (className == null) {
-		Debug.error("ComponentFactory.create: Failed to locate property \"" + componentName + "\" with class \"" + classProperty + "\"\n  Skipping component \"" + componentName + "\"");
-		if (matchInOutVectorSize) {
-		    vector.add(componentName);
-		}
-		continue;
-	    }
+            if (className == null) {
+                Debug.error("ComponentFactory.create: Failed to locate property \"" + componentName + "\" with class \"" + classProperty + "\"\n  Skipping component \"" + componentName + "\"");
+                if (matchInOutVectorSize) {
+                    vector.add(componentName);
+                }
+                continue;
+            }
  
-	    if (progressSupport != null) {
-		progressSupport.fireUpdate(ProgressEvent.UPDATE,
-					   "Creating Components", size, i);
-	    }
+            if (progressSupport != null) {
+                progressSupport.fireUpdate(ProgressEvent.UPDATE,
+                                           "Creating Components", size, i);
+            }
 
-	    Object component = create(className, componentName, properties);
+            Object component = create(className, componentName, properties);
 
-	    if (component != null) {
-		vector.add(component);
-		if (Debug.debugging("componentfactory")) {
-		    Debug.output("ComponentFactory: [" + className + "(" + i + ")] created");
-		}
-	    } else {
-		if (matchInOutVectorSize) {
-		    vector.add(componentName);
-		}
-		Debug.output("ComponentFactory: [" + componentName + " : " +
-			     className + "(" + i + ")] NOT created. -- " +
-			     "Set 'componentfactory' debug flag for details.");
-	    }
-	}
+            if (component != null) {
+                vector.add(component);
+                if (Debug.debugging("componentfactory")) {
+                    Debug.output("ComponentFactory: [" + className + "(" + i + ")] created");
+                }
+            } else {
+                if (matchInOutVectorSize) {
+                    vector.add(componentName);
+                }
+                Debug.output("ComponentFactory: [" + componentName + " : " +
+                             className + "(" + i + ")] NOT created. -- " +
+                             "Set 'componentfactory' debug flag for details.");
+            }
+        }
 
-	if (progressSupport != null) {
-	    progressSupport.fireUpdate(ProgressEvent.UPDATE,
-				       "Configuring...", size, size);
-	}
-	return vector;
+        if (progressSupport != null) {
+            progressSupport.fireUpdate(ProgressEvent.UPDATE,
+                                       "Configuring...", size, size);
+        }
+        return vector;
     }
 
     /**
@@ -175,7 +175,7 @@ public class ComponentFactory {
      * @return object if all goes well, null if not.
      */
     public static Object create(String className) {
-	return create(className, (Object[])null, null, null);
+        return create(className, (Object[])null, null, null);
     }
 
     /**
@@ -187,7 +187,7 @@ public class ComponentFactory {
      * @return object if all goes well, null if not.
      */
     public static Object create(String className, Properties properties) {
-	return create(className, (Object[])null, null, properties);
+        return create(className, (Object[])null, null, properties);
     }
 
     /**
@@ -201,10 +201,10 @@ public class ComponentFactory {
      * the object is a PropertyConsumer.  
      */
     public static Object create(String className,
-				String prefix, 
-				Properties properties) {
+                                String prefix, 
+                                Properties properties) {
 
-	return create(className, (Object[])null, prefix, properties);
+        return create(className, (Object[])null, prefix, properties);
     }
 
     /**
@@ -217,8 +217,8 @@ public class ComponentFactory {
      * @return object if all goes well, null if anything bad happens.
      */
     public static Object create(String className,
-				Object[] constructorArgs) {
-	return create(className, constructorArgs, null, null, null);
+                                Object[] constructorArgs) {
+        return create(className, constructorArgs, null, null, null);
     }
 
     /**
@@ -234,9 +234,9 @@ public class ComponentFactory {
      * @return object if all goes well, null if anything bad happens.
      */
     public static Object create(String className,
-				Object[] constructorArgs,
-				Class[] argClasses) {
-	return create(className, constructorArgs, argClasses, null, null);
+                                Object[] constructorArgs,
+                                Class[] argClasses) {
+        return create(className, constructorArgs, argClasses, null, null);
     }
 
     /**
@@ -253,10 +253,10 @@ public class ComponentFactory {
      * @return object if all goes well, null if anything bad happens.
      */
     public static Object create(String className,
-				Object[] constructorArgs,
-				String prefix, 
-				Properties properties) {
-	return create(className, constructorArgs, null, prefix, properties);
+                                Object[] constructorArgs,
+                                String prefix, 
+                                Properties properties) {
+        return create(className, constructorArgs, null, prefix, properties);
     }
 
     /**
@@ -276,207 +276,207 @@ public class ComponentFactory {
      * @return object if all goes well, null if anything bad happens.
      */
     public static Object create(String className,
-				Object[] constructorArgs,
-				Class[] argClasses,
-				String prefix, 
-				Properties properties) {
+                                Object[] constructorArgs,
+                                Class[] argClasses,
+                                String prefix, 
+                                Properties properties) {
 
-	String errorMessage = null;
-	boolean DEBUG = false;
-	try {
-	    
-	    if (Debug.debugging("componentfactorydetail")) {
-		DEBUG = true;
-		Debug.output("ComponentFactory.create: " + className);
-	    }
+        String errorMessage = null;
+        boolean DEBUG = false;
+        try {
+            
+            if (Debug.debugging("componentfactorydetail")) {
+                DEBUG = true;
+                Debug.output("ComponentFactory.create: " + className);
+            }
 
-	    Class newObjClass = Class.forName(className);
-	    if (DEBUG) Debug.output(" - got class for " + className);
+            Class newObjClass = Class.forName(className);
+            if (DEBUG) Debug.output(" - got class for " + className);
 
-	    if (argClasses == null) {
-		if (constructorArgs != null && 
-		    constructorArgs.length > 0) {
+            if (argClasses == null) {
+                if (constructorArgs != null && 
+                    constructorArgs.length > 0) {
 
-		    argClasses = new Class[constructorArgs.length];
-		    for (int i = 0; i < argClasses.length; i++) {
-			argClasses[i] = constructorArgs[i].getClass();
-		    }
-		} else {
-		    // If empty, make null
-		    constructorArgs = null;
-		}
-	    }
+                    argClasses = new Class[constructorArgs.length];
+                    for (int i = 0; i < argClasses.length; i++) {
+                        argClasses[i] = constructorArgs[i].getClass();
+                    }
+                } else {
+                    // If empty, make null
+                    constructorArgs = null;
+                }
+            }
 
-	    if (DEBUG) {
-		StringBuffer sb = new StringBuffer();
-		if (constructorArgs == null) {
-		    sb.append("null");
-		} else {
-		    for (int i = 0; i < constructorArgs.length; i++) {
-			sb.append(constructorArgs[i].getClass().getName());
-			if (i < constructorArgs.length - 1) sb.append(", ");
-		    }
-		}
-		Debug.output(" - created class arguments [" + sb.toString() + "]");
-	    }
+            if (DEBUG) {
+                StringBuffer sb = new StringBuffer();
+                if (constructorArgs == null) {
+                    sb.append("null");
+                } else {
+                    for (int i = 0; i < constructorArgs.length; i++) {
+                        sb.append(constructorArgs[i].getClass().getName());
+                        if (i < constructorArgs.length - 1) sb.append(", ");
+                    }
+                }
+                Debug.output(" - created class arguments [" + sb.toString() + "]");
+            }
 
-	    Constructor constructor = null;
-	    Object obj = null;
+            Constructor constructor = null;
+            Object obj = null;
 
-	    try {
-		constructor = newObjClass.getConstructor(argClasses);
+            try {
+                constructor = newObjClass.getConstructor(argClasses);
 
-		if (DEBUG) Debug.output(" - got constructor");
+                if (DEBUG) Debug.output(" - got constructor");
 
-		// Create component
-		obj = constructor.newInstance(constructorArgs);
-		if (DEBUG) Debug.output(" - got object");
+                // Create component
+                obj = constructor.newInstance(constructorArgs);
+                if (DEBUG) Debug.output(" - got object");
 
-	    } catch (NoSuchMethodException nsmei) {
-		// The argClasses may have subclasses of what the desired 
-		// constructor needs, so we need to check explicitly.
-		obj = createWithSubclassConstructorArgs(newObjClass, argClasses, constructorArgs);
-		if (DEBUG && obj != null) Debug.output(" - got object on try #2");
-	    }
+            } catch (NoSuchMethodException nsmei) {
+                // The argClasses may have subclasses of what the desired 
+                // constructor needs, so we need to check explicitly.
+                obj = createWithSubclassConstructorArgs(newObjClass, argClasses, constructorArgs);
+                if (DEBUG && obj != null) Debug.output(" - got object on try #2");
+            }
 
-	    if (obj instanceof PropertyConsumer && properties != null) {
-		if (DEBUG) {
-		    Debug.output("  setting properties with prefix \"" + prefix + "\"");
-		}
-		((PropertyConsumer)obj).setProperties(prefix, properties);
-		if (DEBUG) Debug.output(" - set properties");
-	    }
-	    return obj;
-	    
-	} catch (NoSuchMethodException nsme) {
-	    errorMessage = "NoSuchMethodException: " + nsme.getMessage();
-	} catch (InstantiationException ie) {
-	    errorMessage = "InstantiationException: " + ie.getMessage() + " - Might be trying to create an abstract class";
-	} catch (IllegalAccessException iae) {
-	    if (DEBUG) iae.printStackTrace();
-	    errorMessage = "IllegalAccessException: " + iae.getMessage();
-	} catch (IllegalArgumentException iae2) {
-	    if (DEBUG) iae2.printStackTrace();
-	    errorMessage = "IllegalArgumentException: " + iae2.getMessage();
-	} catch (InvocationTargetException ite) {
-	    if (DEBUG) ite.printStackTrace();
-	    errorMessage = "InvocationTargetException: " + ite.getMessage();
-	} catch (ClassNotFoundException cnfe) {
-	    errorMessage = "ClassNotFoundException: " + cnfe.getMessage();
-	}
+            if (obj instanceof PropertyConsumer && properties != null) {
+                if (DEBUG) {
+                    Debug.output("  setting properties with prefix \"" + prefix + "\"");
+                }
+                ((PropertyConsumer)obj).setProperties(prefix, properties);
+                if (DEBUG) Debug.output(" - set properties");
+            }
+            return obj;
+            
+        } catch (NoSuchMethodException nsme) {
+            errorMessage = "NoSuchMethodException: " + nsme.getMessage();
+        } catch (InstantiationException ie) {
+            errorMessage = "InstantiationException: " + ie.getMessage() + " - Might be trying to create an abstract class";
+        } catch (IllegalAccessException iae) {
+            if (DEBUG) iae.printStackTrace();
+            errorMessage = "IllegalAccessException: " + iae.getMessage();
+        } catch (IllegalArgumentException iae2) {
+            if (DEBUG) iae2.printStackTrace();
+            errorMessage = "IllegalArgumentException: " + iae2.getMessage();
+        } catch (InvocationTargetException ite) {
+            if (DEBUG) ite.printStackTrace();
+            errorMessage = "InvocationTargetException: " + ite.getMessage();
+        } catch (ClassNotFoundException cnfe) {
+            errorMessage = "ClassNotFoundException: " + cnfe.getMessage();
+        }
 
-	if (Debug.debugging("componentfactory")) {
-	    Debug.error("ComponentFactory.create: Failed to create \"" + className + 
-			(prefix != null?"\" using component marker name \"" + prefix + "\"":"") + 
-			" - error message: " + errorMessage);
-	}
+        if (Debug.debugging("componentfactory")) {
+            Debug.error("ComponentFactory.create: Failed to create \"" + className + 
+                        (prefix != null?"\" using component marker name \"" + prefix + "\"":"") + 
+                        " - error message: " + errorMessage);
+        }
 
-	return null;
+        return null;
     }
 
     protected static Object createWithSubclassConstructorArgs(Class newObjClass, 
-							      Class[] argClasses, 
-							      Object[] constructorArgs) 
-	throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+                                                              Class[] argClasses, 
+                                                              Object[] constructorArgs) 
+        throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-	boolean DEBUG = Debug.debugging("componentfactorydetail");
+        boolean DEBUG = Debug.debugging("componentfactorydetail");
 
-	int numArgClasses = 0;
+        int numArgClasses = 0;
 
-	if (argClasses != null) {
-	    numArgClasses = argClasses.length;
-	}
+        if (argClasses != null) {
+            numArgClasses = argClasses.length;
+        }
 
-	Constructor[] constructors = newObjClass.getConstructors();
-	int numConstructors = constructors.length;
+        Constructor[] constructors = newObjClass.getConstructors();
+        int numConstructors = constructors.length;
 
-	if (DEBUG) {
-	    Debug.output(" - searching " + numConstructors +
-			 " possible constructor" + 
-			 (numConstructors==1?"":"s"));
-	}
+        if (DEBUG) {
+            Debug.output(" - searching " + numConstructors +
+                         " possible constructor" + 
+                         (numConstructors==1?"":"s"));
+        }
 
-	for (int i = 0; i < numConstructors; i++) {
-	    Constructor constructor = constructors[i];
+        for (int i = 0; i < numConstructors; i++) {
+            Constructor constructor = constructors[i];
 
-	    Class[] arguments = constructor.getParameterTypes();
-	    int numArgs = arguments.length;
+            Class[] arguments = constructor.getParameterTypes();
+            int numArgs = arguments.length;
 
-	    // First, check the number of arguments for a match
-	    if (numArgs != numArgClasses) {
-		if (DEBUG) {
-		    Debug.output(" - constructor " + i + " with " + numArgs +
-				 " arguments not a match");
-		}
+            // First, check the number of arguments for a match
+            if (numArgs != numArgClasses) {
+                if (DEBUG) {
+                    Debug.output(" - constructor " + i + " with " + numArgs +
+                                 " arguments not a match");
+                }
 
-		continue;  // Nope, not it.
-	    }
+                continue;  // Nope, not it.
+            }
 
-	    // OK, empty constructor desired, punch...
-	    if (numArgs == 0) {
-		if (DEBUG) {
-		    Debug.output(" - constructor " + i + 
-				 " with no arguments is a match");
-		}
-		return constructor;
-	    }
+            // OK, empty constructor desired, punch...
+            if (numArgs == 0) {
+                if (DEBUG) {
+                    Debug.output(" - constructor " + i + 
+                                 " with no arguments is a match");
+                }
+                return constructor;
+            }
 
-	    // Check to see if the argument classes of the Constructor are 
-	    // assignable to the desired argClasses being sought.
-	    boolean good = false;
-	    for (int j = 0; j < numArgs; j++) {
-		if (arguments[j] == argClasses[j]) {
-		    if (DEBUG) {
-			Debug.output(" - direct arg class match, arg " + j);
-		    }
-		    good = true; // Maintain true...
-		} else if (arguments[j].isAssignableFrom(argClasses[j])) {
+            // Check to see if the argument classes of the Constructor are 
+            // assignable to the desired argClasses being sought.
+            boolean good = false;
+            for (int j = 0; j < numArgs; j++) {
+                if (arguments[j] == argClasses[j]) {
+                    if (DEBUG) {
+                        Debug.output(" - direct arg class match, arg " + j);
+                    }
+                    good = true; // Maintain true...
+                } else if (arguments[j].isAssignableFrom(argClasses[j])) {
 
-		    //  Doesn't work quite yet.  May have to check for
-		    //  super-super class,etc, and we still get an
-		    //  IllegalArgumentException due to argument type
-		    //  mismatch.
+                    //  Doesn't work quite yet.  May have to check for
+                    //  super-super class,etc, and we still get an
+                    //  IllegalArgumentException due to argument type
+                    //  mismatch.
 
-		    // Is this even necessary?  Don't think so...
-		    argClasses[j] = argClasses[j].getSuperclass();
-		    if (DEBUG) {
-			Debug.output(" - superclass arg class match, arg " + 
-				     j + " reassigning to " + 
-				     argClasses[j].toString());
-		    }
-		    good = true; // Maintain true...
-// 		} else if (constructorArgs[j] instanceof Number) {
-// 		    if (DEBUG) {
-// 			Debug.output(" - Number type match, arg " + j);
-// 		    }
-// 		    good = true; // Maintain true...
+                    // Is this even necessary?  Don't think so...
+                    argClasses[j] = argClasses[j].getSuperclass();
+                    if (DEBUG) {
+                        Debug.output(" - superclass arg class match, arg " + 
+                                     j + " reassigning to " + 
+                                     argClasses[j].toString());
+                    }
+                    good = true; // Maintain true...
+//              } else if (constructorArgs[j] instanceof Number) {
+//                  if (DEBUG) {
+//                      Debug.output(" - Number type match, arg " + j);
+//                  }
+//                  good = true; // Maintain true...
 
-		} else {
-		    if (DEBUG) {
-			Debug.output(" - arg class mismatch on arg " + j + 
-				     ", bailing (" + 
-				     arguments[j].getName() + 
-				     " vs. " + 
-				     argClasses[j].getName() + ")");
-		    }
-		    good = false; // Punch with false
-		    break;
-		}
-	    }
+                } else {
+                    if (DEBUG) {
+                        Debug.output(" - arg class mismatch on arg " + j + 
+                                     ", bailing (" + 
+                                     arguments[j].getName() + 
+                                     " vs. " + 
+                                     argClasses[j].getName() + ")");
+                    }
+                    good = false; // Punch with false
+                    break;
+                }
+            }
 
-	    if (good) {
-		if (DEBUG) {
-		    Debug.debugging(" - creating object");
-		}
-		Object obj = constructor.newInstance(constructorArgs);
-		if (DEBUG) {
-		    Debug.debugging(" - created object");
-		}
-		return obj;
-	    }
-	}
+            if (good) {
+                if (DEBUG) {
+                    Debug.debugging(" - creating object");
+                }
+                Object obj = constructor.newInstance(constructorArgs);
+                if (DEBUG) {
+                    Debug.debugging(" - created object");
+                }
+                return obj;
+            }
+        }
 
-	return null;
+        return null;
     }
 
 

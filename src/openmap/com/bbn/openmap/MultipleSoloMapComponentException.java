@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MultipleSoloMapComponentException.java,v $
 // $RCSfile: MultipleSoloMapComponentException.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/05 15:38:21 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,7 +33,7 @@ public class MultipleSoloMapComponentException extends RuntimeException {
      * Constuct an exception without a reason.
      */
     public MultipleSoloMapComponentException() {
-	super();
+        super();
     }
 
     /**
@@ -41,7 +41,7 @@ public class MultipleSoloMapComponentException extends RuntimeException {
      * @param s the reason for the exception
      */
     public MultipleSoloMapComponentException(String s) {
-	super(s);
+        super(s);
     }
 
     /**
@@ -51,6 +51,6 @@ public class MultipleSoloMapComponentException extends RuntimeException {
      * @param c2 the class that already exists in the BeanContext
      */
     public MultipleSoloMapComponentException(Class c1, Class c2) {
-	super("Class " + c1 + " conflicts with Class " + c2);
+        super("Class " + c1 + " conflicts with Class " + c2);
     }
 }

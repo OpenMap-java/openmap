@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/SunJPEGFormatter.java,v $
 // $RCSfile: SunJPEGFormatter.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 03:09:30 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,34 +38,34 @@ public class SunJPEGFormatter extends AbstractImageFormatter {
     public SunJPEGFormatter(){}
 
     public void setProperties(String prefix, Properties props) {
-	imageQuality = LayerUtils.floatFromProperties(props, (prefix == null?"":prefix) + QualityProperty, imageQuality);
-	if (Debug.debugging("image")) {
-	    Debug.output("SunJPEGFormatter setting image quality to: " + imageQuality);
-	}
+        imageQuality = LayerUtils.floatFromProperties(props, (prefix == null?"":prefix) + QualityProperty, imageQuality);
+        if (Debug.debugging("image")) {
+            Debug.output("SunJPEGFormatter setting image quality to: " + imageQuality);
+        }
     }
 
     public ImageFormatter makeClone() {
-	SunJPEGFormatter formatter =  new SunJPEGFormatter();
-	formatter.setImageQuality(getImageQuality());
-	return formatter;
+        SunJPEGFormatter formatter =  new SunJPEGFormatter();
+        formatter.setImageQuality(getImageQuality());
+        return formatter;
     }
 
     public float getImageQuality() {
-	return imageQuality;
+        return imageQuality;
     }
 
     /** For this formatter, image quality is a number in the 0-1 range. */
     public void setImageQuality(float quality) {
-	imageQuality = quality;
+        imageQuality = quality;
     }
 
     public byte[] formatImage(BufferedImage bi) {
-	try {
-	    return JPEGHelper.encodeJPEG(bi, imageQuality);
-	} catch (java.io.IOException ioe) {
-	    Debug.error("SunJPEGFormatter caught IOException formatting image!");
-	    return new byte[0];
-	}
+        try {
+            return JPEGHelper.encodeJPEG(bi, imageQuality);
+        } catch (java.io.IOException ioe) {
+            Debug.error("SunJPEGFormatter caught IOException formatting image!");
+            return new byte[0];
+        }
     }
 
     /**
@@ -74,6 +74,6 @@ public class SunJPEGFormatter extends AbstractImageFormatter {
      * Some are listed in the WMTConstants interface file.
      */
     public String getFormatLabel() {
-	return WMTConstants.IMAGEFORMAT_JPEG;
+        return WMTConstants.IMAGEFORMAT_JPEG;
     }
 }

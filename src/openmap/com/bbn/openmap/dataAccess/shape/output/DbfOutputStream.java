@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/24 02:57:55 $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,8 +44,8 @@ public class DbfOutputStream {
      * Creates a DbfOutputStream
      */
     public DbfOutputStream(OutputStream os) {
-	BufferedOutputStream bos = new BufferedOutputStream(os);
-	_leos = new LittleEndianOutputStream(bos);
+        BufferedOutputStream bos = new BufferedOutputStream(os);
+        _leos = new LittleEndianOutputStream(bos);
     }
 
     /**
@@ -53,15 +53,15 @@ public class DbfOutputStream {
      * @param model the tablemodel to write
      */
     public void writeModel(DbfTableModel model) throws IOException {
-	int rowCount = model.getRowCount();
-	short headerLength = calcHeaderLength(model);
-	short recordLength = calcRecordLength(model);
+        int rowCount = model.getRowCount();
+        short headerLength = calcHeaderLength(model);
+        short recordLength = calcRecordLength(model);
       
-	writeHeader(rowCount, headerLength, recordLength);
-	writeFieldDescriptors(model);
-	writeRecords(model);
+        writeHeader(rowCount, headerLength, recordLength);
+        writeFieldDescriptors(model);
+        writeRecords(model);
       
-	close();
+        close();
     }
 
     /**
@@ -70,14 +70,14 @@ public class DbfOutputStream {
      * @return The length of a record
      */
     public short calcRecordLength(DbfTableModel model) {
-	int length = 0;
-	int columnCount = model.getColumnCount();
-	for(int i=0; i<=columnCount-1; i++) {
-	    length += model.getLength(i);
-	}
-	length += 1;
-	Integer integer = new Integer(length);
-	return integer.shortValue();
+        int length = 0;
+        int columnCount = model.getColumnCount();
+        for(int i=0; i<=columnCount-1; i++) {
+            length += model.getLength(i);
+        }
+        length += 1;
+        Integer integer = new Integer(length);
+        return integer.shortValue();
     }
 
     /**
@@ -86,12 +86,12 @@ public class DbfOutputStream {
      * @return The header length
      */
     public short calcHeaderLength(DbfTableModel model) {
-	int length = 0;
-	length += model.getColumnCount() * 32;  //32 bytest for each record
-	length += 32;                         //32 bytes for the record
-	length += 1;                          //1 byte for header terminator
-	Integer integer = new Integer(length);
-	return integer.shortValue();
+        int length = 0;
+        length += model.getColumnCount() * 32;  //32 bytest for each record
+        length += 32;                         //32 bytes for the record
+        length += 1;                          //1 byte for header terminator
+        Integer integer = new Integer(length);
+        return integer.shortValue();
     }
 
     /**
@@ -102,33 +102,33 @@ public class DbfOutputStream {
      */
     private void writeHeader(int rowCount, short headerLength, short recordLength) throws IOException {
 
-	_leos.writeByte(3);                               //byte 0
-	_leos.writeByte(96);												      //Byte 1  - Year
-	_leos.writeByte(4); 												      //Byte 2  - Month
-	_leos.writeByte(30); 												      //Byte 3  - Day
-	_leos.writeLEInt(rowCount);						            //Byte 4   Number of records in the table
-	_leos.writeLEShort(headerLength);                 //byte 8   Number of bytes in the header
-	_leos.writeLEShort(recordLength);	                //byte 10  Number of bytes in the record
-	_leos.writeByte(0);														    //Byte 12
-	_leos.writeByte(0);                               //Byte 13
-	_leos.writeByte(0);                               //Byte 14
-	_leos.writeByte(0);                               //Byte 15
-	_leos.writeByte(0);                               //Byte 16
-	_leos.writeByte(0);                               //Byte 17
-	_leos.writeByte(0);                               //Byte 18
-	_leos.writeByte(0);                               //Byte 19
-	_leos.writeByte(0);                               //Byte 20
-	_leos.writeByte(0);                               //Byte 21
-	_leos.writeByte(0);                               //Byte 22
-	_leos.writeByte(0);                               //Byte 23
-	_leos.writeByte(0);                               //Byte 24
-	_leos.writeByte(0);                               //Byte 25
-	_leos.writeByte(0);                               //Byte 26
-	_leos.writeByte(0);                               //Byte 27
-	_leos.writeByte(0);                               //Byte 28
-	_leos.writeByte(0);                               //Byte 29
-	_leos.writeByte(0);                               //Byte 30
-	_leos.writeByte(0);                               //Byte 31
+        _leos.writeByte(3);                               //byte 0
+        _leos.writeByte(96);                                                                                                  //Byte 1  - Year
+        _leos.writeByte(4);                                                                                                   //Byte 2  - Month
+        _leos.writeByte(30);                                                                                                  //Byte 3  - Day
+        _leos.writeLEInt(rowCount);                                                         //Byte 4   Number of records in the table
+        _leos.writeLEShort(headerLength);                 //byte 8   Number of bytes in the header
+        _leos.writeLEShort(recordLength);                       //byte 10  Number of bytes in the record
+        _leos.writeByte(0);                                                                                                                 //Byte 12
+        _leos.writeByte(0);                               //Byte 13
+        _leos.writeByte(0);                               //Byte 14
+        _leos.writeByte(0);                               //Byte 15
+        _leos.writeByte(0);                               //Byte 16
+        _leos.writeByte(0);                               //Byte 17
+        _leos.writeByte(0);                               //Byte 18
+        _leos.writeByte(0);                               //Byte 19
+        _leos.writeByte(0);                               //Byte 20
+        _leos.writeByte(0);                               //Byte 21
+        _leos.writeByte(0);                               //Byte 22
+        _leos.writeByte(0);                               //Byte 23
+        _leos.writeByte(0);                               //Byte 24
+        _leos.writeByte(0);                               //Byte 25
+        _leos.writeByte(0);                               //Byte 26
+        _leos.writeByte(0);                               //Byte 27
+        _leos.writeByte(0);                               //Byte 28
+        _leos.writeByte(0);                               //Byte 29
+        _leos.writeByte(0);                               //Byte 30
+        _leos.writeByte(0);                               //Byte 31
     }
 
     /**
@@ -137,15 +137,15 @@ public class DbfOutputStream {
      * @param model The DbfTableModel
      */
     private void writeFieldDescriptors(DbfTableModel model) throws IOException{
-	int columnCount = model.getColumnCount();
-	for(int i = 0; i<=columnCount-1; i++) {
-	    String name = model.getColumnName(i);
-	    int length = model.getLength(i);
-	    byte decimalCount = model.getDecimalCount(i);
-	    byte type = model.getType(i);
-	    writeFieldDescriptor(name, type, length, decimalCount);
-	}
-	_leos.writeByte(13);
+        int columnCount = model.getColumnCount();
+        for(int i = 0; i<=columnCount-1; i++) {
+            String name = model.getColumnName(i);
+            int length = model.getLength(i);
+            byte decimalCount = model.getDecimalCount(i);
+            byte type = model.getType(i);
+            writeFieldDescriptor(name, type, length, decimalCount);
+        }
+        _leos.writeByte(13);
     }
 
     /**
@@ -156,39 +156,39 @@ public class DbfOutputStream {
      * @param decimalPlaces The number of decimal places for each field
      */
     private void writeFieldDescriptor(String name,  byte type, int length, byte decimalPlaces) throws IOException {
-	_leos.writeString(name, 11);                      //Byte 0-10
-	_leos.writeByte(type);                            //Byte 11
-	_leos.writeByte(0);                               //Byte 12      Field data address(0)
-	_leos.writeByte(0);                               //Byte 13      Field data address(1)
-	_leos.writeByte(0);                               //Byte 14      Field data address(2)
-	_leos.writeByte(0);                               //Byte 15      Field data address(3)
-	_leos.writeByte(length);                          //Byte 16      Field length in bytes
-	_leos.writeByte(decimalPlaces);                   //Byte 17      Field decimal places
-	_leos.writeByte(0);                               //Byte 18      Reserved for dBASE III PLUS on a LAN(0)
-	_leos.writeByte(0);                               //Byte 19      Reserved for dBASE III PLUS on a LAN(1)
-	_leos.writeByte(0);                               //Byte 20      Work area 1D
-	_leos.writeByte(0);                               //Byte 21      Reserved for dBASE III PLUS on a LAN(0)
-	_leos.writeByte(0);                               //Byte 22      Reserved for dBASE III PLUS on a LAN(1)
-	_leos.writeByte(0);                               //Byte 23      SET FIELDS Flag
-	_leos.writeByte(0);                               //Byte 24      Reserved Bytes(0)     #24
-	_leos.writeByte(0);                               //Byte 25      Reserved Bytes(0)     #25
-	_leos.writeByte(0);                               //Byte 26      Reserved Bytes(0)     #26
-	_leos.writeByte(0);                               //Byte 27      Reserved Bytes(0)     #27
-	_leos.writeByte(0);                               //Byte 28      Reserved Bytes(0)     #28
-	_leos.writeByte(0);                               //Byte 29      Reserved Bytes(0)     #29
-	_leos.writeByte(0);                               //Byte 30      Reserved Bytes(0)     #30
-	_leos.writeByte(0);                               //Byte 31      Reserved Bytes(0)     #31
+        _leos.writeString(name, 11);                      //Byte 0-10
+        _leos.writeByte(type);                            //Byte 11
+        _leos.writeByte(0);                               //Byte 12      Field data address(0)
+        _leos.writeByte(0);                               //Byte 13      Field data address(1)
+        _leos.writeByte(0);                               //Byte 14      Field data address(2)
+        _leos.writeByte(0);                               //Byte 15      Field data address(3)
+        _leos.writeByte(length);                          //Byte 16      Field length in bytes
+        _leos.writeByte(decimalPlaces);                   //Byte 17      Field decimal places
+        _leos.writeByte(0);                               //Byte 18      Reserved for dBASE III PLUS on a LAN(0)
+        _leos.writeByte(0);                               //Byte 19      Reserved for dBASE III PLUS on a LAN(1)
+        _leos.writeByte(0);                               //Byte 20      Work area 1D
+        _leos.writeByte(0);                               //Byte 21      Reserved for dBASE III PLUS on a LAN(0)
+        _leos.writeByte(0);                               //Byte 22      Reserved for dBASE III PLUS on a LAN(1)
+        _leos.writeByte(0);                               //Byte 23      SET FIELDS Flag
+        _leos.writeByte(0);                               //Byte 24      Reserved Bytes(0)     #24
+        _leos.writeByte(0);                               //Byte 25      Reserved Bytes(0)     #25
+        _leos.writeByte(0);                               //Byte 26      Reserved Bytes(0)     #26
+        _leos.writeByte(0);                               //Byte 27      Reserved Bytes(0)     #27
+        _leos.writeByte(0);                               //Byte 28      Reserved Bytes(0)     #28
+        _leos.writeByte(0);                               //Byte 29      Reserved Bytes(0)     #29
+        _leos.writeByte(0);                               //Byte 30      Reserved Bytes(0)     #30
+        _leos.writeByte(0);                               //Byte 31      Reserved Bytes(0)     #31
     }
 
     public void writeRecords(DbfTableModel model) throws IOException {
-	int rowCount = model.getRowCount();
-	int columnCount = model.getColumnCount();
-	for (int r=0; r<=rowCount-1; r++) {
-	    _leos.writeByte(32);
-	    for (int c=0; c<=columnCount-1; c++) {
-		byte type = model.getType(c);
-		String value = null;
-		if (type == DbfTableModel.TYPE_NUMERIC) {
+        int rowCount = model.getRowCount();
+        int columnCount = model.getColumnCount();
+        for (int r=0; r<=rowCount-1; r++) {
+            _leos.writeByte(32);
+            for (int c=0; c<=columnCount-1; c++) {
+                byte type = model.getType(c);
+                String value = null;
+                if (type == DbfTableModel.TYPE_NUMERIC) {
                     Object obj = model.getValueAt(r, c);
                     if (obj instanceof Double) {
                         Double d = (Double)model.getValueAt(r, c);
@@ -196,19 +196,19 @@ public class DbfOutputStream {
                     } else {
                         value = "";
                     }
-		} else {
-		    value = (String)model.getValueAt(r,c);
-		}
-		int length = model.getLength(c);
-		_leos.writeString(value, length);
-	    }
-	}
+                } else {
+                    value = (String)model.getValueAt(r,c);
+                }
+                int length = model.getLength(c);
+                _leos.writeString(value, length);
+            }
+        }
     }
 
     public void close() throws IOException{
-	_leos.writeByte(26);
-	_leos.flush();
-	_leos.close();
+        _leos.writeByte(26);
+        _leos.flush();
+        _leos.close();
     }
 }
 

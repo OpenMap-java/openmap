@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCacheManager.java,v $
 // $RCSfile: RpfCacheManager.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:29 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:10 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -99,7 +99,7 @@ public class RpfCacheManager implements Serializable {
      * @param fp the object supplying the data. 
      */
     public RpfCacheManager(RpfFrameProvider fp) {
-	this(fp, new RpfViewAttributes());
+        this(fp, new RpfViewAttributes());
     }
 
     /** 
@@ -110,7 +110,7 @@ public class RpfCacheManager implements Serializable {
      * @param rva the view attributes for the images.
      */
     public RpfCacheManager(RpfFrameProvider rfp, RpfViewAttributes rva) {
-	this(rfp, rva, RpfCacheHandler.SUBFRAME_CACHE_SIZE, SMALL_CACHE_SIZE);
+        this(rfp, rva, RpfCacheHandler.SUBFRAME_CACHE_SIZE, SMALL_CACHE_SIZE);
     }
 
     /** 
@@ -123,27 +123,27 @@ public class RpfCacheManager implements Serializable {
      * @param auxSubframeCacheSize the number of subframes held in the aux caches.
      */
     public RpfCacheManager(RpfFrameProvider rfp, RpfViewAttributes rva, 
-			   int mainCacheSize, int auxSubframeCacheSize) {
-	frameProvider = rfp;
-	viewAttributes = rva;
-	caches[0] = new RpfCacheHandler(rfp, rva, mainCacheSize);
-	graphics = new RpfMaps(rva);
-	auxCacheSize = auxSubframeCacheSize;
+                           int mainCacheSize, int auxSubframeCacheSize) {
+        frameProvider = rfp;
+        viewAttributes = rva;
+        caches[0] = new RpfCacheHandler(rfp, rva, mainCacheSize);
+        graphics = new RpfMaps(rva);
+        auxCacheSize = auxSubframeCacheSize;
     }
 
 //      public void finalize() {
-//  	Debug.message("gc", "RpfCacheManager: getting GC'd");
+//      Debug.message("gc", "RpfCacheManager: getting GC'd");
 //      }
 
     /**
      * Reset the caches in the RpfCacheHandlers.
      */
     public void clearCaches() {
-	for (int i = 0; i < caches.length; i++) {
-	    if (caches[i] != null) {
-		caches[i].clearCache();
-	    }
-	}
+        for (int i = 0; i < caches.length; i++) {
+            if (caches[i] != null) {
+                caches[i].clearCache();
+            }
+        }
     }
 
     /**
@@ -152,12 +152,12 @@ public class RpfCacheManager implements Serializable {
      * @param rva the RpfViewAttributes used for the layer.  
      */
     public void setViewAttributes(RpfViewAttributes rva) {
-	viewAttributes = rva;	
-	for (int i = 0; i < caches.length; i++) {
-	    if (caches[i] != null) {
-		caches[i].setViewAttributes(viewAttributes);
-	    }
-	}
+        viewAttributes = rva;   
+        for (int i = 0; i < caches.length; i++) {
+            if (caches[i] != null) {
+                caches[i].setViewAttributes(viewAttributes);
+            }
+        }
     }
 
     /** 
@@ -165,7 +165,7 @@ public class RpfCacheManager implements Serializable {
      * @return RpfViewAttributes.
      */
     public RpfViewAttributes getViewAttributes() {
-	return viewAttributes;
+        return viewAttributes;
     }
 
     /**
@@ -175,20 +175,20 @@ public class RpfCacheManager implements Serializable {
      * @param fp the frame provider.  
      */
     public void setFrameProvider(RpfFrameProvider fp) {
-	frameProvider = fp;
+        frameProvider = fp;
 
-	for (int i = 0; i < caches.length; i++) {
-	    if (caches[i] != null) {
-		caches[i].setFrameProvider(fp);
-	    }
-	}
+        for (int i = 0; i < caches.length; i++) {
+            if (caches[i] != null) {
+                caches[i].setFrameProvider(fp);
+            }
+        }
     }
 
     /**
      * Return RpfFrameProvider used by the layer.
      */
     public RpfFrameProvider getFrameProvider() {
-	return frameProvider;
+        return frameProvider;
     }
 
     /**
@@ -200,7 +200,7 @@ public class RpfCacheManager implements Serializable {
      * @return Vector of RpfCoverageBoxes.
      */
     public java.util.Vector getCoverageBoxes() {
-	return caches[0].getCoverageBoxes();
+        return caches[0].getCoverageBoxes();
     }
 
     /**
@@ -215,141 +215,141 @@ public class RpfCacheManager implements Serializable {
      * @param proj the projection of the screen.
      */
     public OMGraphicList getRectangle(Projection proj) {
-	
-	float[] lat = new float[3];
-	float[] lon = new float[3];
-	    
-	// This should be checked by the caller.
- 	if (!(proj instanceof CADRG)) {
-	    if (viewAttributes.requireProjection) {
-		return new OMGraphicList();
-	    } else {
-		viewAttributes.proj = new CADRG(proj.getCenter(), proj.getScale(),
-						proj.getWidth(), proj.getHeight());
-	    }
-	} else {
-	    viewAttributes.proj = (CADRG)proj;
-	}
-	
-	// Need to update the view attributes of the frame provider if
-	// it is remote.
-	if (frameProvider != null && frameProvider.needViewAttributeUpdates()) {
-	    frameProvider.setViewAttributes(viewAttributes);
-	}
+        
+        float[] lat = new float[3];
+        float[] lon = new float[3];
+            
+        // This should be checked by the caller.
+        if (!(proj instanceof CADRG)) {
+            if (viewAttributes.requireProjection) {
+                return new OMGraphicList();
+            } else {
+                viewAttributes.proj = new CADRG(proj.getCenter(), proj.getScale(),
+                                                proj.getWidth(), proj.getHeight());
+            }
+        } else {
+            viewAttributes.proj = (CADRG)proj;
+        }
+        
+        // Need to update the view attributes of the frame provider if
+        // it is remote.
+        if (frameProvider != null && frameProvider.needViewAttributeUpdates()) {
+            frameProvider.setViewAttributes(viewAttributes);
+        }
 
-	// Hand off coordinates and scale to RpfCacheHandler.
-	// Then the RpfCacheHandler will figure out the frames to load
-	// and add to the display list.
-	
-	// This next bit of mumbo jumbo is to handle the equator and
-	// dateline: Worst case, crossing both, treat each area
-	// separately, so it is the same as handling four requests for
-	// data - above and below the equator, and left and right of
-	// the dateline.  Normal case, there is only one box.  Two
-	// boxes if crossing only one of the boundaries.
-	
-	int xa = 2;
-	int ya = 2;
-	int lat_minus = 2;
-	int lon_minus = 2;
-	// Set up checks for equator and dateline
-	LatLonPoint ll1 = proj.getUpperLeft();
-	LatLonPoint ll2 = proj.getLowerRight();
-	
-	lat[0] = ll1.getLatitude();
-	lon[0] = ll1.getLongitude();
-	lat[1] = ll2.getLatitude();
-	lon[1] = ll2.getLongitude();
-	lat[2] = ll2.getLatitude();
-	lon[2] = ll2.getLongitude();
-	
-	if (lon[0] > 0 && lon[2] < 0) {
-	    lon[1] = -179.999f;  // put a little breather on the dateline
-	    lon_minus = 1;
-	}
-	if (lat[0] > 0 && lat[2] < 0) {
-	    lat[1] = -0.0001f;  // put a little breather on the equator
-	    lat_minus = 1;
-	}
-	
-	if (Debug.debugging("rpf")) {
-	    Debug.output("RpfCacheManager - for:");
-	    Debug.output("\tlat[0] " + lat[0]);
-	    Debug.output("\tlon[0] " + lon[0]);
-	    Debug.output("\tlat[1] " + lat[1]);
-	    Debug.output("\tlon[1] " + lon[1]);
-	    Debug.output("\tlat[2] " + lat[2]);
-	    Debug.output("\tlon[2] " + lon[2]);
-	    Debug.output("\tlat_minus = " + lat_minus);
-	    Debug.output("\tlon_minus = " + lon_minus);
-	}
-	
-	/* Worst case, there are four boxes on the screen.  Best case,
-	   there is one.  The things that create boxes and dictates
-	   how large they are are the equator and the dateline.  When
-	   the screen straddles one or both of these lat/lon lines,
-	   lon_minus and lat_minus get adjusted, causing two or four
-	   different calls to the tochandler to get the data
-	   above/below the equator, and left/right of the
-	   dateline. Plus, each path gets checked until the required
-	   boxes are filled. */
+        // Hand off coordinates and scale to RpfCacheHandler.
+        // Then the RpfCacheHandler will figure out the frames to load
+        // and add to the display list.
+        
+        // This next bit of mumbo jumbo is to handle the equator and
+        // dateline: Worst case, crossing both, treat each area
+        // separately, so it is the same as handling four requests for
+        // data - above and below the equator, and left and right of
+        // the dateline.  Normal case, there is only one box.  Two
+        // boxes if crossing only one of the boundaries.
+        
+        int xa = 2;
+        int ya = 2;
+        int lat_minus = 2;
+        int lon_minus = 2;
+        // Set up checks for equator and dateline
+        LatLonPoint ll1 = proj.getUpperLeft();
+        LatLonPoint ll2 = proj.getLowerRight();
+        
+        lat[0] = ll1.getLatitude();
+        lon[0] = ll1.getLongitude();
+        lat[1] = ll2.getLatitude();
+        lon[1] = ll2.getLongitude();
+        lat[2] = ll2.getLatitude();
+        lon[2] = ll2.getLongitude();
+        
+        if (lon[0] > 0 && lon[2] < 0) {
+            lon[1] = -179.999f;  // put a little breather on the dateline
+            lon_minus = 1;
+        }
+        if (lat[0] > 0 && lat[2] < 0) {
+            lat[1] = -0.0001f;  // put a little breather on the equator
+            lat_minus = 1;
+        }
+        
+        if (Debug.debugging("rpf")) {
+            Debug.output("RpfCacheManager - for:");
+            Debug.output("\tlat[0] " + lat[0]);
+            Debug.output("\tlon[0] " + lon[0]);
+            Debug.output("\tlat[1] " + lat[1]);
+            Debug.output("\tlon[1] " + lon[1]);
+            Debug.output("\tlat[2] " + lat[2]);
+            Debug.output("\tlon[2] " + lon[2]);
+            Debug.output("\tlat_minus = " + lat_minus);
+            Debug.output("\tlon_minus = " + lon_minus);
+        }
+        
+        /* Worst case, there are four boxes on the screen.  Best case,
+           there is one.  The things that create boxes and dictates
+           how large they are are the equator and the dateline.  When
+           the screen straddles one or both of these lat/lon lines,
+           lon_minus and lat_minus get adjusted, causing two or four
+           different calls to the tochandler to get the data
+           above/below the equator, and left/right of the
+           dateline. Plus, each path gets checked until the required
+           boxes are filled. */
 
-	// Normal (maybe)  box[0] gets filled every time - bottom right box.
-	caches[0].setCache(lat[ya-lat_minus], lon[xa-lon_minus],
-			   lat[ya], lon[xa], viewAttributes.proj);
+        // Normal (maybe)  box[0] gets filled every time - bottom right box.
+        caches[0].setCache(lat[ya-lat_minus], lon[xa-lon_minus],
+                           lat[ya], lon[xa], viewAttributes.proj);
 
-	if (Debug.debugging("rpf")) 
-	    Debug.output("RpfCacheManager: main (1) cache used.");
+        if (Debug.debugging("rpf")) 
+            Debug.output("RpfCacheManager: main (1) cache used.");
 
-	// Dateline split
-	if(lon_minus == 1) {
-	    if (caches[1] == null) {
-		caches[1] = new RpfCacheHandler(frameProvider, viewAttributes, 
-						auxCacheSize);
-	    }
-	    caches[1].setCache(lat[ya-lat_minus], lon[0], lat[ya],
-			       -1f*lon[1], viewAttributes.proj); // -1 to make it 180
+        // Dateline split
+        if(lon_minus == 1) {
+            if (caches[1] == null) {
+                caches[1] = new RpfCacheHandler(frameProvider, viewAttributes, 
+                                                auxCacheSize);
+            }
+            caches[1].setCache(lat[ya-lat_minus], lon[0], lat[ya],
+                               -1f*lon[1], viewAttributes.proj); // -1 to make it 180
 
-	    if (Debug.debugging("rpf")) 
-		Debug.output("-- second cache used");
-	} else {
-	    caches[1] = null;
-	}
+            if (Debug.debugging("rpf")) 
+                Debug.output("-- second cache used");
+        } else {
+            caches[1] = null;
+        }
 
-	// Equator Split
-	if(lat_minus == 1) {
-	    if (caches[2] == null) {
-		caches[2] = new RpfCacheHandler(frameProvider, viewAttributes, 
-						auxCacheSize);
-	    }
-	    caches[2].setCache(lat[0], lon[xa-lon_minus],
-			       -1f*lat[1], // flip breather
-			       lon[xa], viewAttributes.proj);
+        // Equator Split
+        if(lat_minus == 1) {
+            if (caches[2] == null) {
+                caches[2] = new RpfCacheHandler(frameProvider, viewAttributes, 
+                                                auxCacheSize);
+            }
+            caches[2].setCache(lat[0], lon[xa-lon_minus],
+                               -1f*lat[1], // flip breather
+                               lon[xa], viewAttributes.proj);
 
-	    if (Debug.debugging("rpf")) 
-		Debug.output("-- third cache used");
-	} else {
-	    caches[2] = null;
-	}
+            if (Debug.debugging("rpf")) 
+                Debug.output("-- third cache used");
+        } else {
+            caches[2] = null;
+        }
 
-	// Both!!
-	if(lon_minus == 1 && lat_minus == 1) {
-	    if (caches[3] == null) {
-		caches[3] = new RpfCacheHandler(frameProvider, viewAttributes, 
-						auxCacheSize);
-	    }
-	    caches[3].setCache(lat[0], lon[0], -1f*lat[1],//  flip breather
-			       -1f*lon[1], viewAttributes.proj);// -1 to make it 180, not -180
+        // Both!!
+        if(lon_minus == 1 && lat_minus == 1) {
+            if (caches[3] == null) {
+                caches[3] = new RpfCacheHandler(frameProvider, viewAttributes, 
+                                                auxCacheSize);
+            }
+            caches[3].setCache(lat[0], lon[0], -1f*lat[1],//  flip breather
+                               -1f*lon[1], viewAttributes.proj);// -1 to make it 180, not -180
 
-	    if (Debug.debugging("rpf"))
-		Debug.output("-- fourth cache used");
-	} else {
-	    caches[3] = null;
-	}
-	
-	OMGraphicList gl = new OMGraphicList();
-	gl.add(getSubframes());
-	return gl;
+            if (Debug.debugging("rpf"))
+                Debug.output("-- fourth cache used");
+        } else {
+            caches[3] = null;
+        }
+        
+        OMGraphicList gl = new OMGraphicList();
+        gl.add(getSubframes());
+        return gl;
     }
     
     /** 
@@ -358,106 +358,106 @@ public class RpfCacheManager implements Serializable {
      */
     protected OMGraphic getSubframes() {
 
-//  	graphics = new RpfMaps(viewAttributes);
-	graphics.clear();
-	
-	if (Debug.debugging("rpf")) {
-	    Debug.output("RpfCacheManager: show maps: " +
-			 viewAttributes.showMaps + ", showInfo: " + 
-			 viewAttributes.showInfo);
-	}
+//      graphics = new RpfMaps(viewAttributes);
+        graphics.clear();
+        
+        if (Debug.debugging("rpf")) {
+            Debug.output("RpfCacheManager: show maps: " +
+                         viewAttributes.showMaps + ", showInfo: " + 
+                         viewAttributes.showInfo);
+        }
 
-	if (!(viewAttributes.showMaps || viewAttributes.showInfo)) {
-	    return graphics;
-	}
+        if (!(viewAttributes.showMaps || viewAttributes.showInfo)) {
+            return graphics;
+        }
 
-	for (int nbox = 0; nbox < MAX_NUM_BOXES; nbox++) {
-	    if (caches[nbox] != null && caches[nbox].getGoodData()) {
+        for (int nbox = 0; nbox < MAX_NUM_BOXES; nbox++) {
+            if (caches[nbox] != null && caches[nbox].getGoodData()) {
 
-		int subframeRunningCount = 0;
+                int subframeRunningCount = 0;
 
-		for (int subx = caches[nbox].start.x; subx <= caches[nbox].end.x; subx++) {
-		    for (int suby = caches[nbox].start.y; suby <= caches[nbox].end.y; suby++) {
-			
-			///////
-			RpfSubframe subframe = caches[nbox].getCached(subx, suby, 
-								      subframeRunningCount);
-			///////
-			
-			if (subframe == null) {	
-			    if (Debug.debugging("rpf")) {
-				Debug.output("RpfCacheManager: checking other TOCs for subframe.");
-			    }
-			    subframe = caches[nbox].getSubframeFromOtherTOC(subx, suby, subframeRunningCount);
-			}
+                for (int subx = caches[nbox].start.x; subx <= caches[nbox].end.x; subx++) {
+                    for (int suby = caches[nbox].start.y; suby <= caches[nbox].end.y; suby++) {
+                        
+                        ///////
+                        RpfSubframe subframe = caches[nbox].getCached(subx, suby, 
+                                                                      subframeRunningCount);
+                        ///////
+                        
+                        if (subframe == null) { 
+                            if (Debug.debugging("rpf")) {
+                                Debug.output("RpfCacheManager: checking other TOCs for subframe.");
+                            }
+                            subframe = caches[nbox].getSubframeFromOtherTOC(subx, suby, subframeRunningCount);
+                        }
 
-			if (subframe != null) {
-			    graphics.addInfo(subframe.information);
-			    graphics.addInfo(subframe.rectangle);
-			    graphics.addMap(subframe.image);
-			    
-			    if (Debug.debugging("rpf")) 
-				Debug.output("RpfCacheManager: Adding subframe " +
-					     subx + ", " + suby);
-			}
-			else{
-			    if (Debug.debugging("rpf")) 
-				Debug.output("RpfCacheManager: subframe " +
-					     subx + ", " + suby + " empty");
-			}
-			subframeRunningCount++;
-		    }
-		}
-	    }
-	}
+                        if (subframe != null) {
+                            graphics.addInfo(subframe.information);
+                            graphics.addInfo(subframe.rectangle);
+                            graphics.addMap(subframe.image);
+                            
+                            if (Debug.debugging("rpf")) 
+                                Debug.output("RpfCacheManager: Adding subframe " +
+                                             subx + ", " + suby);
+                        }
+                        else{
+                            if (Debug.debugging("rpf")) 
+                                Debug.output("RpfCacheManager: subframe " +
+                                             subx + ", " + suby + " empty");
+                        }
+                        subframeRunningCount++;
+                    }
+                }
+            }
+        }
 
-	if (Debug.debugging("rpf")) {
-	    Debug.output("RpfCacheManager: done.");
-	}
+        if (Debug.debugging("rpf")) {
+            Debug.output("RpfCacheManager: done.");
+        }
 
-	return graphics;
+        return graphics;
     }
 
     public class RpfMaps extends OMGraphic {
-	public RpfViewAttributes atts;
-	public OMGraphicList maps = new OMGraphicList();
-	public OMGraphicList infos = new OMGraphicList();
+        public RpfViewAttributes atts;
+        public OMGraphicList maps = new OMGraphicList();
+        public OMGraphicList infos = new OMGraphicList();
 
-	public RpfMaps(RpfViewAttributes rva) {
-	    atts = rva;
-	}
+        public RpfMaps(RpfViewAttributes rva) {
+            atts = rva;
+        }
 
-	public void clear() {
-	    maps.clear();
-	    infos.clear();
-	}
+        public void clear() {
+            maps.clear();
+            infos.clear();
+        }
 
-	public void addMap(OMGraphic graphic) {
-	    maps.add(graphic);
-	}
+        public void addMap(OMGraphic graphic) {
+            maps.add(graphic);
+        }
 
-	public void addInfo(OMGraphic graphic) {
-	    infos.add(graphic);
-	}
+        public void addInfo(OMGraphic graphic) {
+            infos.add(graphic);
+        }
 
-	public boolean generate(Projection proj) {
-	    maps.generate(proj);
-	    infos.generate(proj);
-	    return true;
-	}
+        public boolean generate(Projection proj) {
+            maps.generate(proj);
+            infos.generate(proj);
+            return true;
+        }
 
-	public void render(java.awt.Graphics g) {
-	    if (atts.showMaps) {
-		maps.render(g);
-	    }
-	    if (atts.showInfo) {
-		infos.render(g);
-	    }
-	}
-	
-	public float distance(int x, int y) {
-	    return Float.MAX_VALUE;
-	}
+        public void render(java.awt.Graphics g) {
+            if (atts.showMaps) {
+                maps.render(g);
+            }
+            if (atts.showInfo) {
+                infos.render(g);
+            }
+        }
+        
+        public float distance(int x, int y) {
+            return Float.MAX_VALUE;
+        }
    }
 
 }

@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/ApplyIterator.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -31,19 +31,19 @@ public class ApplyIterator implements Iterator {
      * @parm apply the Applyable object to use in next(), may not be null
      */
     public ApplyIterator(Iterator iter, Applyable apply) {
-	wrapped = iter;
-	applier = apply;
+        wrapped = iter;
+        applier = apply;
     }
 
     public boolean hasNext() {
-	return wrapped.hasNext();
+        return wrapped.hasNext();
     }
 
     public Object next() {
-	return applier.apply(wrapped.next());
+        return applier.apply(wrapped.next());
     }
     public void remove() {
-	wrapped.remove();
+        wrapped.remove();
     }
 }
 

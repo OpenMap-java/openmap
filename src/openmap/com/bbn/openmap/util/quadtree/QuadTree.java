@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/quadtree/QuadTree.java,v $
 // $RCSfile: QuadTree.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,21 +40,21 @@ public class QuadTree implements DataOrganizer, Serializable {
     protected QuadTreeNode top;
 
     public QuadTree(){
-	this(90.0f, -180.0f, -90.0f, 180.0f, 20, QuadTreeNode.NO_MIN_SIZE);
+        this(90.0f, -180.0f, -90.0f, 180.0f, 20, QuadTreeNode.NO_MIN_SIZE);
     }
 
     public QuadTree(float north, float west, float south, float east, int maxItems){
-	this(north, west, south, east, maxItems, QuadTreeNode.NO_MIN_SIZE);
+        this(north, west, south, east, maxItems, QuadTreeNode.NO_MIN_SIZE);
     }
 
     public QuadTree(int up, int left, int down, int right, int maxItems){
-	this((float) up, (float) left, (float) down, (float) right, 
-	     maxItems, QuadTreeNode.DEFAULT_MIN_SIZE);
+        this((float) up, (float) left, (float) down, (float) right, 
+             maxItems, QuadTreeNode.DEFAULT_MIN_SIZE);
     }
 
     public QuadTree(float north, float west, float south, float east, 
-		    int maxItems, float minSize){
-	top = new QuadTreeNode(north, west, south, east, maxItems, minSize);
+                    int maxItems, float minSize){
+        top = new QuadTreeNode(north, west, south, east, maxItems, minSize);
     }
 
     /** 
@@ -65,7 +65,7 @@ public class QuadTree implements DataOrganizer, Serializable {
      * @return true if the insertion worked.
      */
     public boolean put(float lat, float lon, Object obj){
-	return top.put(lat, lon, obj);
+        return top.put(lat, lon, obj);
     }
 
     /** 
@@ -76,12 +76,12 @@ public class QuadTree implements DataOrganizer, Serializable {
      * @return the object removed, null if the object not found.
      */
     public Object remove(float lat, float lon, Object obj){
-	return top.remove(lat, lon, obj);
+        return top.remove(lat, lon, obj);
     }
 
     /** Clear the tree. */
     public void clear(){
-	top.clear();
+        top.clear();
     }
 
     /** 
@@ -92,7 +92,7 @@ public class QuadTree implements DataOrganizer, Serializable {
      * @return the object that was found.
      */
     public Object get(float lat, float lon){
-	return top.get(lat, lon);
+        return top.get(lat, lon);
     }
 
     /** 
@@ -105,7 +105,7 @@ public class QuadTree implements DataOrganizer, Serializable {
      * the maximum distance.
      */
     public Object get(float lat, float lon, double withinDistance){
-	return top.get(lat, lon, withinDistance);
+        return top.get(lat, lon, withinDistance);
     }
 
     /** 
@@ -118,7 +118,7 @@ public class QuadTree implements DataOrganizer, Serializable {
      * @return Vector of objects.
      */
     public Vector get(float north, float west, float south, float east){
-	return get(north, west, south, east, new Vector());
+        return get(north, west, south, east, new Vector());
     }
 
     /** 
@@ -133,20 +133,20 @@ public class QuadTree implements DataOrganizer, Serializable {
      * @return Vector of objects.  
      */
     public Vector get(float north, float west, float south, float east, 
-		      Vector vector){
+                      Vector vector){
 
-	if (vector == null){
-	    vector = new Vector();
-	}
-	// crossing the dateline, right??  Or at least containing the
-	// entire earth.  Might be trouble for VERY LARGE scales.  The
-	// last check is for micro-errors that happen to lon points
-	// where there might be a smudge overlap for very small
-	// scales.
-	if (west > east || (Math.abs(west - east) < .001)){
-	    return top.get(north, west, south, 180, 
-			   top.get(north, -180, south, east, vector));
-	}
-	else return top.get(north, west, south, east, vector);
+        if (vector == null){
+            vector = new Vector();
+        }
+        // crossing the dateline, right??  Or at least containing the
+        // entire earth.  Might be trouble for VERY LARGE scales.  The
+        // last check is for micro-errors that happen to lon points
+        // where there might be a smudge overlap for very small
+        // scales.
+        if (west > east || (Math.abs(west - east) < .001)){
+            return top.get(north, west, south, 180, 
+                           top.get(north, -180, south, east, vector));
+        }
+        else return top.get(north, west, south, east, vector);
     }
 }

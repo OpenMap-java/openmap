@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/vpf/LineComp.java,v $
 // $RCSfile: LineComp.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,7 @@ public class LineComp extends SComp {
      * @param value the respone we kick back on a gesture 
      */
     LineComp(String value) {
-	response = (value == null)?"Graticule Line":value;
+        response = (value == null)?"Graticule Line":value;
     }
 
     /**
@@ -49,10 +49,10 @@ public class LineComp extends SComp {
      * string 
      */
     public ActionUnion[] sendGesture(MouseEvent gesture, String uniqueID) {
-	ActionUnion ret[] = new ActionUnion[1];
-	ret[0] = new ActionUnion();
-	ret[0].itext(response);
-	
-	return ret;
+        ActionUnion ret[] = new ActionUnion[1];
+        ret[0] = new ActionUnion();
+        ret[0].itext(response);
+        
+        return ret;
     }
 }

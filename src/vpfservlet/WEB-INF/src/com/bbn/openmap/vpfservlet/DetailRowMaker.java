@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/DetailRowMaker.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -37,104 +37,104 @@ public class DetailRowMaker extends PlainRowMaker {
      * for
      */
     public DetailRowMaker(DcwRecordFile drf, String[] markupCols) {
-	File pfile = new File(drf.getTableFile()).getParentFile();
-	String tableName = drf.getTableName();
-	intvdt = loadIntVDT(pfile, tableName);
-	charvdt = loadCharVDT(pfile, tableName);
-	DcwColumnInfo dc[] = drf.getColumnInfo();
-	if (markupCols == null) {
-	    dcia = dc;
-	} else {
-	    dcia = new DcwColumnInfo[dc.length];
-	    for (int i = 0 ; i < markupCols.length; i++) {
-	        int col = drf.whatColumn(markupCols[i]);
-		if (col != -1) {
-		    dcia[col] = dc[col];
-		}
-	    }
-	}
+        File pfile = new File(drf.getTableFile()).getParentFile();
+        String tableName = drf.getTableName();
+        intvdt = loadIntVDT(pfile, tableName);
+        charvdt = loadCharVDT(pfile, tableName);
+        DcwColumnInfo dc[] = drf.getColumnInfo();
+        if (markupCols == null) {
+            dcia = dc;
+        } else {
+            dcia = new DcwColumnInfo[dc.length];
+            for (int i = 0 ; i < markupCols.length; i++) {
+                int col = drf.whatColumn(markupCols[i]);
+                if (col != -1) {
+                    dcia[col] = dc[col];
+                }
+            }
+        }
     }
     
     public void addToRow(TableRowElement row, List l) {
-	int i = 0;
-	for (Iterator vals = l.listIterator(); vals.hasNext(); ) {
-	    Object rval = vals.next();
-	    String vdt = (dcia[i] != null) ? dcia[i].getVDT() : null;
-	    if (vdt == null) {
-		row.addElement(rval.toString());
-	    } else if (Constants.intVDTTableName.equals(vdt) &&
-		       (rval instanceof Number)) {
-		int val = ((Number)rval).intValue();
-		CoverageIntVdt civ = new CoverageIntVdt(dcia[i].getColumnName(),val);
-		String lval = (String)intvdt.get(civ);
-		row.addElement((lval==null)?("["+val+"]"):lval);	
-	    } else if (Constants.charVDTTableName.equals(vdt) &&
-		       (rval instanceof String)) {
-		String val = (String)rval;
-		CoverageCharVdt civ = new CoverageCharVdt(dcia[i].getColumnName(),val);
-		String lval = (String)charvdt.get(civ);
-		row.addElement((lval==null)?("["+val+"]"):lval);
-	    } else {
-		row.addElement("Table Data Error!");
-	    }
-	    i++;
-	}
+        int i = 0;
+        for (Iterator vals = l.listIterator(); vals.hasNext(); ) {
+            Object rval = vals.next();
+            String vdt = (dcia[i] != null) ? dcia[i].getVDT() : null;
+            if (vdt == null) {
+                row.addElement(rval.toString());
+            } else if (Constants.intVDTTableName.equals(vdt) &&
+                       (rval instanceof Number)) {
+                int val = ((Number)rval).intValue();
+                CoverageIntVdt civ = new CoverageIntVdt(dcia[i].getColumnName(),val);
+                String lval = (String)intvdt.get(civ);
+                row.addElement((lval==null)?("["+val+"]"):lval);        
+            } else if (Constants.charVDTTableName.equals(vdt) &&
+                       (rval instanceof String)) {
+                String val = (String)rval;
+                CoverageCharVdt civ = new CoverageCharVdt(dcia[i].getColumnName(),val);
+                String lval = (String)charvdt.get(civ);
+                row.addElement((lval==null)?("["+val+"]"):lval);
+            } else {
+                row.addElement("Table Data Error!");
+            }
+            i++;
+        }
     }
 
     private HashMap loadIntVDT(File path, String tableName) {
-	HashMap hm = new HashMap();
-	try {
-	    File vdt = new File(path, Constants.intVDTTableName);
-	    if (vdt.canRead()) {
-		DcwRecordFile intvdt = new DcwRecordFile(vdt.toString());
-		int intcols[] = intvdt.lookupSchema(CoverageTable.VDTColumnNames,
-		    true, CoverageTable.intVDTschematype,
-		    CoverageTable.intVDTschemalength, false);
+        HashMap hm = new HashMap();
+        try {
+            File vdt = new File(path, Constants.intVDTTableName);
+            if (vdt.canRead()) {
+                DcwRecordFile intvdt = new DcwRecordFile(vdt.toString());
+                int intcols[] = intvdt.lookupSchema(CoverageTable.VDTColumnNames,
+                    true, CoverageTable.intVDTschematype,
+                    CoverageTable.intVDTschemalength, false);
 
-		List al = new ArrayList(intvdt.getColumnCount());
-		while (intvdt.parseRow(al)) {
- 		    String tab = (String)al.get(intcols[0]);
-		    if (!tableName.equalsIgnoreCase(tab)) {
-			continue;
-		    }
-		    String attr = (String)al.get(intcols[1]);
-		    int val = ((Number)al.get(intcols[2])).intValue();
-		    String desc = ((String)al.get(intcols[3])).intern();
-		    hm.put(new CoverageIntVdt(attr, val), desc);
-		}
-		intvdt.close();
-	    }
-	} catch (FormatException f) {
-	}
-	return hm;
+                List al = new ArrayList(intvdt.getColumnCount());
+                while (intvdt.parseRow(al)) {
+                    String tab = (String)al.get(intcols[0]);
+                    if (!tableName.equalsIgnoreCase(tab)) {
+                        continue;
+                    }
+                    String attr = (String)al.get(intcols[1]);
+                    int val = ((Number)al.get(intcols[2])).intValue();
+                    String desc = ((String)al.get(intcols[3])).intern();
+                    hm.put(new CoverageIntVdt(attr, val), desc);
+                }
+                intvdt.close();
+            }
+        } catch (FormatException f) {
+        }
+        return hm;
     }
     
     private HashMap loadCharVDT(File path, String tableName) {
-	HashMap hm = new HashMap();
-	try {
-	    File vdt = new File(path, Constants.charVDTTableName);
-	    if (vdt.canRead()) {
-		DcwRecordFile charvdt = new DcwRecordFile(vdt.toString());
-		int charcols[] = charvdt.lookupSchema(CoverageTable.VDTColumnNames,
-		    true, CoverageTable.charVDTschematype,
-		    CoverageTable.charVDTschemalength, false);
+        HashMap hm = new HashMap();
+        try {
+            File vdt = new File(path, Constants.charVDTTableName);
+            if (vdt.canRead()) {
+                DcwRecordFile charvdt = new DcwRecordFile(vdt.toString());
+                int charcols[] = charvdt.lookupSchema(CoverageTable.VDTColumnNames,
+                    true, CoverageTable.charVDTschematype,
+                    CoverageTable.charVDTschemalength, false);
 
-		ArrayList al = new ArrayList(charvdt.getColumnCount());
-		while (charvdt.parseRow(al)) {
- 		    String tab = (String)al.get(charcols[0]);
-		    if (!tableName.equalsIgnoreCase(tab)) {
-			continue;
-		    }
-		    String attr = (String)al.get(charcols[1]);
-		    String val = (String)al.get(charcols[2]);
-		    String desc = ((String)al.get(charcols[3])).intern();
-		    hm.put(new CoverageCharVdt(attr, val), desc);
-		}
-		charvdt.close();
-	    }
-	} catch (FormatException f) {
-	}
-	return hm;
+                ArrayList al = new ArrayList(charvdt.getColumnCount());
+                while (charvdt.parseRow(al)) {
+                    String tab = (String)al.get(charcols[0]);
+                    if (!tableName.equalsIgnoreCase(tab)) {
+                        continue;
+                    }
+                    String attr = (String)al.get(charcols[1]);
+                    String val = (String)al.get(charcols[2]);
+                    String desc = ((String)al.get(charcols[3])).intern();
+                    hm.put(new CoverageCharVdt(attr, val), desc);
+                }
+                charvdt.close();
+            }
+        } catch (FormatException f) {
+        }
+        return hm;
     }
 }
 
@@ -154,8 +154,8 @@ class CoverageIntVdt {
      * @param a the value for the attribute member
      * @param v the value for the value member */
     public CoverageIntVdt(String a, int v) {
-	attribute = a.toLowerCase().intern();
-	value = v;
+        attribute = a.toLowerCase().intern();
+        value = v;
     }
 
     /**
@@ -164,14 +164,14 @@ class CoverageIntVdt {
      * members are equal.
      */
     public boolean equals(Object o) {
-	if (o instanceof CoverageIntVdt) {
-	    CoverageIntVdt civ = (CoverageIntVdt)o;
-	    //we can use == rather than String.equals(String) since
-	    //attribute is interned.
-	    return((attribute == civ.attribute) && (value == civ.value));
-	} else {
-	    return false;
-	}
+        if (o instanceof CoverageIntVdt) {
+            CoverageIntVdt civ = (CoverageIntVdt)o;
+            //we can use == rather than String.equals(String) since
+            //attribute is interned.
+            return((attribute == civ.attribute) && (value == civ.value));
+        } else {
+            return false;
+        }
     }
     
     /**
@@ -179,7 +179,7 @@ class CoverageIntVdt {
      * values, rather than our (base class) object identity.
      **/
     public int hashCode() {
-	return(attribute.hashCode() ^ value);
+        return(attribute.hashCode() ^ value);
     }
 }
 
@@ -199,8 +199,8 @@ class CoverageCharVdt {
      * @param v the value for the value member
      */
     public CoverageCharVdt(String a, String v) {
-	attribute = a.toLowerCase().intern();
-	value = v.intern();
+        attribute = a.toLowerCase().intern();
+        value = v.intern();
     }
 
     /**
@@ -210,13 +210,13 @@ class CoverageCharVdt {
      */
     public boolean equals(Object o) {
         if (o instanceof CoverageCharVdt) {
-	    CoverageCharVdt civ = (CoverageCharVdt)o;
-	    //we can use == rather than String.equals(String) since
-	    //attribute, and value are interned.
-	    return((attribute == civ.attribute) && (value == civ.value));
-	} else {
-	    return false;
-	}
+            CoverageCharVdt civ = (CoverageCharVdt)o;
+            //we can use == rather than String.equals(String) since
+            //attribute, and value are interned.
+            return((attribute == civ.attribute) && (value == civ.value));
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -224,6 +224,6 @@ class CoverageCharVdt {
      * values, rather than our (base class) object identity.
      */
     public int hashCode() {
-	return(attribute.hashCode() ^ value.hashCode());
+        return(attribute.hashCode() ^ value.hashCode());
     }
 }

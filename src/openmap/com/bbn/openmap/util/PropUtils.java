@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v $
 // $RCSfile: PropUtils.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 20:44:37 $
-// $Author: wjeuerle $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:15 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -53,7 +53,7 @@ public class PropUtils {
      * @return Vector of marker names.  
      */
     public static Vector parseSpacedMarkers(String markerList) {
-	return parseMarkers(markerList, " ");
+        return parseMarkers(markerList, " ");
     } 
 
     /**
@@ -66,28 +66,28 @@ public class PropUtils {
      * @return Vector of marker names.  
      */
     public static Vector parseMarkers(String markerList, String delim) {
-	Vector vector = null;
+        Vector vector = null;
 
-	if (markerList == null) {
-	    Debug.message("propertiesdetail", "PropUtils: marker list null!");
-	    return new Vector(0);
-	}
+        if (markerList == null) {
+            Debug.message("propertiesdetail", "PropUtils: marker list null!");
+            return new Vector(0);
+        }
 
-	if (Debug.debugging("propertiesdetail")) {
-	    Debug.output("PropertyHandler: parsing marker list |" +
-			 markerList + "|");
-	}
+        if (Debug.debugging("propertiesdetail")) {
+            Debug.output("PropertyHandler: parsing marker list |" +
+                         markerList + "|");
+        }
 
-	// First, get rid of the quotation marks;
-	markerList = markerList.replace('\"', '\0');
-	// Next, tokenize the space delimited string
-	StringTokenizer tokens = new StringTokenizer(markerList, delim);
-	vector = new Vector(tokens.countTokens());
-	while (tokens.hasMoreTokens()) {
-	    String name = tokens.nextToken().trim();
-	    vector.addElement(name);
-	}
-	return vector;
+        // First, get rid of the quotation marks;
+        markerList = markerList.replace('\"', '\0');
+        // Next, tokenize the space delimited string
+        StringTokenizer tokens = new StringTokenizer(markerList, delim);
+        vector = new Vector(tokens.countTokens());
+        while (tokens.hasMoreTokens()) {
+            String name = tokens.nextToken().trim();
+            vector.addElement(name);
+        }
+        return vector;
     }
 
     /** Borrowed from Properites.java */
@@ -113,8 +113,8 @@ public class PropUtils {
      * @throws PropertyStringFormatException if a key doesn't have a value.
      */
     public static Properties parsePropertyList(String list) 
-	throws PropertyStringFormatException {
-	return parsePropertyList(list, propertySeparators, keyValueSeparators);
+        throws PropertyStringFormatException {
+        return parsePropertyList(list, propertySeparators, keyValueSeparators);
     }
 
     /**
@@ -132,25 +132,25 @@ public class PropUtils {
      * @throws PropertyStringFormatException if a key doesn't have a value.
      */
     public static Properties parsePropertyList(
-	String list, String propertySeparators, String keyValueSeparators) 
-	throws PropertyStringFormatException {
+        String list, String propertySeparators, String keyValueSeparators) 
+        throws PropertyStringFormatException {
 
-	Properties props = new Properties();
+        Properties props = new Properties();
 
-	Vector keyValuePairs = parseMarkers(list, propertySeparators);
-	for (int i = 0; i < keyValuePairs.size(); i++) {
-	    // Next, tokenize the space delimited string
-	    StringTokenizer tokens = new StringTokenizer((String)keyValuePairs.elementAt(i), keyValueSeparators);
+        Vector keyValuePairs = parseMarkers(list, propertySeparators);
+        for (int i = 0; i < keyValuePairs.size(); i++) {
+            // Next, tokenize the space delimited string
+            StringTokenizer tokens = new StringTokenizer((String)keyValuePairs.elementAt(i), keyValueSeparators);
 
-	    try {
-		String key = tokens.nextToken().trim();
-		String value = tokens.nextToken().trim();
-		props.put(key, value);
-	    } catch (NoSuchElementException nsee) {
-  		throw new PropertyStringFormatException(list);
-	    }
-	}
-	return props;
+            try {
+                String key = tokens.nextToken().trim();
+                String value = tokens.nextToken().trim();
+                props.put(key, value);
+            } catch (NoSuchElementException nsee) {
+                throw new PropertyStringFormatException(list);
+            }
+        }
+        return props;
     }
 
     /**
@@ -159,12 +159,12 @@ public class PropUtils {
      * @param to the destination Properties object.
      */
     public static void copyProperties(Properties from, Properties to) {
-	Enumeration keys = from.keys();
-	
-	while (keys.hasMoreElements()) {
-	    String key = (String)keys.nextElement();
-	    to.put(key, from.getProperty(key) );
-	}
+        Enumeration keys = from.keys();
+        
+        while (keys.hasMoreElements()) {
+            String key = (String)keys.nextElement();
+            to.put(key, from.getProperty(key) );
+        }
     }
 
     /**
@@ -179,29 +179,29 @@ public class PropUtils {
      * @return true if the properties file exists and was loaded.
      */
     public static boolean loadProperties(Properties props, 
-					 String dir, String file) {
-	File propsFile = new File(dir, file);
+                                         String dir, String file) {
+        File propsFile = new File(dir, file);
 
-	try {
-	    InputStream propsStream = new FileInputStream(propsFile);
-	    props.load(propsStream);
-	    if (Debug.debugging("properties")) {
-		Debug.output("PropUtils: Found " + propsFile);
-	    }
-	    return true;
+        try {
+            InputStream propsStream = new FileInputStream(propsFile);
+            props.load(propsStream);
+            if (Debug.debugging("properties")) {
+                Debug.output("PropUtils: Found " + propsFile);
+            }
+            return true;
 
-	} catch (java.io.FileNotFoundException e) {
-	    if (Debug.debugging("properties")) {
-		Debug.output("PropUtils: File not found -  \"" +
-			     propsFile + "\"");
-	    }
-	} catch (java.io.IOException e) {
-	    Debug.error("PropUtils: Caught IO Exception reading \""
-			+ propsFile + "\"");
-	    e.printStackTrace();
-	} catch (java.security.AccessControlException ace) {
-	}
-	return false;
+        } catch (java.io.FileNotFoundException e) {
+            if (Debug.debugging("properties")) {
+                Debug.output("PropUtils: File not found -  \"" +
+                             propsFile + "\"");
+            }
+        } catch (java.io.IOException e) {
+            Debug.error("PropUtils: Caught IO Exception reading \""
+                        + propsFile + "\"");
+            e.printStackTrace();
+        } catch (java.security.AccessControlException ace) {
+        }
+        return false;
     }
 
     /**
@@ -213,16 +213,16 @@ public class PropUtils {
      * @return true if the properties file exists and was loaded.
      */
     public static boolean loadProperties(Properties properties,
-					 InputStream propsIn) {	
-	try {
-	    properties.load(propsIn);
-	    return true;
-	} catch (java.io.IOException e) {
-	    if (Debug.debugging("properties")) {
-		Debug.error("PropUtils: Caught IOException loading properties from InputStream.");
-	    }
-	    return false;
-	}
+                                         InputStream propsIn) { 
+        try {
+            properties.load(propsIn);
+            return true;
+        } catch (java.io.IOException e) {
+            if (Debug.debugging("properties")) {
+                Debug.error("PropUtils: Caught IOException loading properties from InputStream.");
+            }
+            return false;
+        }
     }
 
     /**
@@ -232,23 +232,23 @@ public class PropUtils {
      * @return properties object with selected file contents.  
      */
     public static Properties promptUserForProperties() {
-	JFileChooser fileChooser = new JFileChooser();
-	int retvalue = fileChooser.showOpenDialog(null);
-	Properties props = new Properties();
-	if (retvalue != JFileChooser.APPROVE_OPTION) {
-	    return props;
-	}
-	try {
-	    FileInputStream inputStream = 
-		new FileInputStream(fileChooser.getSelectedFile());
-	    props.load(inputStream);
-	    return props;
-	} catch (Exception ioe) {
-	    System.err.println("PropUtils.promptUserForProperties: Exception reading properties file.");
-	    System.err.println(ioe.getMessage());
-	    ioe.printStackTrace();
-	    return props;
-	}
+        JFileChooser fileChooser = new JFileChooser();
+        int retvalue = fileChooser.showOpenDialog(null);
+        Properties props = new Properties();
+        if (retvalue != JFileChooser.APPROVE_OPTION) {
+            return props;
+        }
+        try {
+            FileInputStream inputStream = 
+                new FileInputStream(fileChooser.getSelectedFile());
+            props.load(inputStream);
+            return props;
+        } catch (Exception ioe) {
+            System.err.println("PropUtils.promptUserForProperties: Exception reading properties file.");
+            System.err.println(ioe.getMessage());
+            ioe.printStackTrace();
+            return props;
+        }
     }
 
     /**
@@ -260,7 +260,7 @@ public class PropUtils {
      * based on what the prefix is.
      */
     public static String getScopedPropertyPrefix(com.bbn.openmap.PropertyConsumer pc) {
-	return getScopedPropertyPrefix(pc.getPropertyPrefix());
+        return getScopedPropertyPrefix(pc.getPropertyPrefix());
     }
 
     /**
@@ -271,13 +271,13 @@ public class PropUtils {
      * should be good for prepending to other properties.
      */
     public static String getScopedPropertyPrefix(String pre) {
-	if (pre == null) {
-	    return "";
-	} else if (pre.endsWith(".")) {
-	    return pre;
-	} else {
-	    return pre + ".";
-	}
+        if (pre == null) {
+            return "";
+        } else if (pre.endsWith(".")) {
+            return pre;
+        } else {
+            return pre + ".";
+        }
     }
 
     /**
@@ -287,10 +287,10 @@ public class PropUtils {
      * what was passed in.
      */
     public static String unnull(String prop) {
-	if (prop == null) {
-	    return "";
-	}
-	return prop;
+        if (prop == null) {
+            return "";
+        }
+        return prop;
     }
 
     /**  
@@ -303,8 +303,8 @@ public class PropUtils {
      * @return Array of strings representing paths.
      */
     public static String[] initPathsFromProperties(Properties p, 
-						   String propName) {
-	return stringArrayFromProperties(p, propName, ";");
+                                                   String propName) {
+        return stringArrayFromProperties(p, propName, ";");
     }
 
     /** 
@@ -319,19 +319,19 @@ public class PropUtils {
      * @return integer value associated with the property.
      */
     public static int intFromProperties(Properties p, 
-					String propName,
-					int defaultValue) {
-	int ret = defaultValue;
-	String intString = p.getProperty(propName);
+                                        String propName,
+                                        int defaultValue) {
+        int ret = defaultValue;
+        String intString = p.getProperty(propName);
 
-	if (intString != null) {
-	    try {
-		ret = Integer.parseInt(intString);
-	    } catch (NumberFormatException e) {
-		ret = defaultValue;
-	    }
-	}
-	return ret;
+        if (intString != null) {
+            try {
+                ret = Integer.parseInt(intString);
+            } catch (NumberFormatException e) {
+                ret = defaultValue;
+            }
+        }
+        return ret;
     }
 
     /** 
@@ -346,19 +346,19 @@ public class PropUtils {
      * @return float value associated with the property.
      */
     public static float floatFromProperties(Properties p, 
-					    String propName,
-					    float defaultValue) {
-	float ret = defaultValue;
-	String floatString = p.getProperty(propName);
+                                            String propName,
+                                            float defaultValue) {
+        float ret = defaultValue;
+        String floatString = p.getProperty(propName);
 
-	if (floatString != null) {
-	    try {
-		ret = Float.valueOf(floatString).floatValue();
-	    } catch (NumberFormatException e) {
-		ret = defaultValue;
-	    }
-	}
-	return ret;
+        if (floatString != null) {
+            try {
+                ret = Float.valueOf(floatString).floatValue();
+            } catch (NumberFormatException e) {
+                ret = defaultValue;
+            }
+        }
+        return ret;
     }
 
     /** 
@@ -373,15 +373,15 @@ public class PropUtils {
      * @return boolean value associated with the property.
      */
     public static boolean booleanFromProperties(Properties p, 
-						String propName,
-						boolean defaultValue) {
-	boolean ret = defaultValue;
-	String booleanString = p.getProperty(propName);
-	if (booleanString != null) {
-	    ret = booleanString.toLowerCase().equals("true");
-	}
-	
-	return ret;
+                                                String propName,
+                                                boolean defaultValue) {
+        boolean ret = defaultValue;
+        String booleanString = p.getProperty(propName);
+        if (booleanString != null) {
+            ret = booleanString.toLowerCase().equals("true");
+        }
+        
+        return ret;
     }
 
     /**
@@ -394,23 +394,23 @@ public class PropUtils {
      * of the class named in the property.
      */
     public static Object objectFromProperties(Properties p, 
-					      String propName) {
+                                              String propName) {
 
-	Object ret = null;
-	String objectName = p.getProperty(propName);
-	if (objectName != null) {
-	    try {
-		ret = Class.forName(objectName).newInstance();// Works for applet!
-		//ret = java.beans.Beans.instantiate(null, objectName);
-	    } catch (java.lang.InstantiationException e) {
-		ret = null;
-	    } catch (java.lang.IllegalAccessException e) {
-		ret = null;
-	    } catch (java.lang.ClassNotFoundException e) {
-		ret = null;
-	    }
-	}
-	return ret;
+        Object ret = null;
+        String objectName = p.getProperty(propName);
+        if (objectName != null) {
+            try {
+                ret = Class.forName(objectName).newInstance();// Works for applet!
+                //ret = java.beans.Beans.instantiate(null, objectName);
+            } catch (java.lang.InstantiationException e) {
+                ret = null;
+            } catch (java.lang.IllegalAccessException e) {
+                ret = null;
+            } catch (java.lang.ClassNotFoundException e) {
+                ret = null;
+            }
+        }
+        return ret;
     }
 
     /**  
@@ -424,28 +424,28 @@ public class PropUtils {
      * @return Array of strings between the tokens.
      */
     public static String[] stringArrayFromProperties(Properties p, 
-						     String propName, 
-						     String tok) {
+                                                     String propName, 
+                                                     String tok) {
 
-	String[] ret = null;
-	String raw = p.getProperty(propName);
+        String[] ret = null;
+        String raw = p.getProperty(propName);
 
-	if (raw != null) {
+        if (raw != null) {
 
-	    try {
-		StringTokenizer token = new StringTokenizer(raw, tok);
-		int numPaths = token.countTokens();
-		
-		ret = new String[numPaths];
-		for (int i = 0; i < numPaths; i++) {
-		    ret[i] = token.nextToken();
-		}		    
-		return ret;
-	    } catch (java.util.NoSuchElementException e) {
-		e.printStackTrace();
-	    }
-	}
-	return ret;
+            try {
+                StringTokenizer token = new StringTokenizer(raw, tok);
+                int numPaths = token.countTokens();
+                
+                ret = new String[numPaths];
+                for (int i = 0; i < numPaths; i++) {
+                    ret[i] = token.nextToken();
+                }                   
+                return ret;
+            } catch (java.util.NoSuchElementException e) {
+                e.printStackTrace();
+            }
+        }
+        return ret;
     }
 
     /**
@@ -460,19 +460,19 @@ public class PropUtils {
      */
 
     public static double doubleFromProperties(Properties p,
-					      String propName,
-					      double defaultValue) {
-	double ret = defaultValue;
-	String doubleString = p.getProperty(propName);
+                                              String propName,
+                                              double defaultValue) {
+        double ret = defaultValue;
+        String doubleString = p.getProperty(propName);
     
-	if (doubleString != null) {
-	    try {
-		ret = Double.valueOf(doubleString).doubleValue();
-	    } catch (NumberFormatException e) {
-		ret = defaultValue;
-	    }
-	}
-	return ret;
+        if (doubleString != null) {
+            try {
+                ret = Double.valueOf(doubleString).doubleValue();
+            } catch (NumberFormatException e) {
+                ret = defaultValue;
+            }
+        }
+        return ret;
     }
       
     /** 
@@ -488,10 +488,10 @@ public class PropUtils {
      * @see ColorFactory#parseColorFromProperties(Properties, String, String, boolean)
      */
     public static Color parseColorFromProperties(
-	Properties p, String propName, String dfault)
-	throws NumberFormatException {
+        Properties p, String propName, String dfault)
+        throws NumberFormatException {
 
-	return ColorFactory.parseColorFromProperties(p, propName, dfault, false);
+        return ColorFactory.parseColorFromProperties(p, propName, dfault, false);
     }
     
     /** 
@@ -508,10 +508,10 @@ public class PropUtils {
      * String, boolean) 
      */
     public static Paint parseColorFromProperties(
-	Properties p, String propName, Paint dfault)
-	throws NumberFormatException {
+        Properties p, String propName, Paint dfault)
+        throws NumberFormatException {
 
-	return ColorFactory.parseColorFromProperties(p, propName, dfault);
+        return ColorFactory.parseColorFromProperties(p, propName, dfault);
     }
 
     /**
@@ -532,9 +532,9 @@ public class PropUtils {
      * @see ColorFactory#parseColor(String, boolean)
      */
     public static Color parseColor(String colorString)
-	throws NumberFormatException {
+        throws NumberFormatException {
 
-	return ColorFactory.parseColor(colorString, false);
+        return ColorFactory.parseColor(colorString, false);
     }
 
     /**
@@ -547,16 +547,16 @@ public class PropUtils {
      */
     public static String[] getPropertiesAsStringArray(Properties props) {
 
-	int size = props.size();
-	String[] ret = new String[size*2]; // key and value
-	int count = 0;
-	Enumeration things = props.propertyNames();
-	while (things.hasMoreElements()) {
-	    ret[count] = (String)things.nextElement();
-	    ret[count+1] = (String)props.getProperty(ret[count]);
-	    count+=2;
-	}
-	return ret;
+        int size = props.size();
+        String[] ret = new String[size*2]; // key and value
+        int count = 0;
+        Enumeration things = props.propertyNames();
+        while (things.hasMoreElements()) {
+            ret[count] = (String)things.nextElement();
+            ret[count+1] = (String)props.getProperty(ret[count]);
+            count+=2;
+        }
+        return ret;
     }
 
     /** 
@@ -567,8 +567,8 @@ public class PropUtils {
      * @return URL
      */
     public static URL getResourceOrFileOrURL(String name)
-	throws java.net.MalformedURLException {
-	return getResourceOrFileOrURL(null, name);
+        throws java.net.MalformedURLException {
+        return getResourceOrFileOrURL(null, name);
     }
 
     /** 
@@ -580,9 +580,9 @@ public class PropUtils {
      * @return URL
      */
     public static URL getResourceOrFileOrURL(Object askingClass, String name)
-	throws java.net.MalformedURLException {
-	  
-	return getResourceOrFileOrURL(askingClass.getClass(), name);
+        throws java.net.MalformedURLException {
+          
+        return getResourceOrFileOrURL(askingClass.getClass(), name);
     }
 
     /** 
@@ -594,81 +594,81 @@ public class PropUtils {
      * @return URL
      */
     public static URL getResourceOrFileOrURL(Class askingClass, String name)
-	throws java.net.MalformedURLException {
+        throws java.net.MalformedURLException {
 
-	boolean DEBUG = Debug.debugging("proputils");
+        boolean DEBUG = Debug.debugging("proputils");
 
-	if (name == null) {
-	    if (DEBUG) Debug.output("PropUtils.getROFOU(): null file name");
-  	    return null;
-	}
+        if (name == null) {
+            if (DEBUG) Debug.output("PropUtils.getROFOU(): null file name");
+            return null;
+        }
 
-	URL retval = null;
-	if (DEBUG) Debug.output("PropUtils.getROFOU(): looking for " + name);
+        URL retval = null;
+        if (DEBUG) Debug.output("PropUtils.getROFOU(): looking for " + name);
 
-	if (askingClass != null) {
-	    // First see if we have a resource by that name
-	    if (DEBUG) Debug.output("PropUtils.getROFOU(): checking as resource");
+        if (askingClass != null) {
+            // First see if we have a resource by that name
+            if (DEBUG) Debug.output("PropUtils.getROFOU(): checking as resource");
 
-	    retval = askingClass.getResource(name);
-	}
-	if (retval == null) {
-	    // Check the general classpath...
-	    if (DEBUG) Debug.output("PropUtils.getROFOU(): checking in general classpath");
-	    retval = Thread.currentThread().getContextClassLoader().getResource(name);
-	}
-	if (retval == null && !Environment.isApplet()) {
-	    // Check the classpath plus the share directory, which may
-	    // be in the openmap.jar file or in the development
-	    // environment.
-	    if (DEBUG) Debug.output("PropUtils.getROFOU(): checking with ClassLoader");
-	    retval = ClassLoader.getSystemResource("share/" + name);
-	}
+            retval = askingClass.getResource(name);
+        }
+        if (retval == null) {
+            // Check the general classpath...
+            if (DEBUG) Debug.output("PropUtils.getROFOU(): checking in general classpath");
+            retval = Thread.currentThread().getContextClassLoader().getResource(name);
+        }
+        if (retval == null && !Environment.isApplet()) {
+            // Check the classpath plus the share directory, which may
+            // be in the openmap.jar file or in the development
+            // environment.
+            if (DEBUG) Debug.output("PropUtils.getROFOU(): checking with ClassLoader");
+            retval = ClassLoader.getSystemResource("share/" + name);
+        }
 
-	if (retval == null && Environment.isApplet()) {
-	    if (DEBUG) Debug.output("PropUtils.getROFOU(): checking with URLClassLoader");
-	    URL[] cba = new URL[1];
-	    cba[0] =  Environment.getApplet().getCodeBase();
-	    URLClassLoader ucl = URLClassLoader.newInstance(cba);
-  	    retval = ucl.getResource(name);
-	}
+        if (retval == null && Environment.isApplet()) {
+            if (DEBUG) Debug.output("PropUtils.getROFOU(): checking with URLClassLoader");
+            URL[] cba = new URL[1];
+            cba[0] =  Environment.getApplet().getCodeBase();
+            URLClassLoader ucl = URLClassLoader.newInstance(cba);
+            retval = ucl.getResource(name);
+        }
 
-	// If there was no resource by that name available
-	if (retval == null) {
-	    if (DEBUG) Debug.output("PropUtils.getROFOU(): not found as resource");
+        // If there was no resource by that name available
+        if (retval == null) {
+            if (DEBUG) Debug.output("PropUtils.getROFOU(): not found as resource");
 
-	    try {
-		java.io.File file = new java.io.File(name);
-		if (file.exists()) {
-		    retval = file.toURL();
-		    if (DEBUG) Debug.output("PropUtils.getROFOU(): found as file :)");
-		} else {
-		    // Otherwise treat it as a raw URL.
-		    if (DEBUG) Debug.output("PropUtils.getROFOU(): Not a file, checking as URL");
-		    retval = new URL(name);
-		    java.io.InputStream is = retval.openStream();
-		    is.close();
-		    if (DEBUG) Debug.output("PropUtils.getROFOU(): OK as URL :)");
-		}
-	    } catch (java.io.IOException ioe) {
-		retval = null;
-	    } catch (java.security.AccessControlException ace) {
-		Debug.error("PropUtils: AccessControlException trying to access " + name);
-		retval = null;
-	    } catch (Exception e) {
-		Debug.error("PropUtils: caught exception " + e.getMessage());
-		retval = null;
-	    }
-	}
+            try {
+                java.io.File file = new java.io.File(name);
+                if (file.exists()) {
+                    retval = file.toURL();
+                    if (DEBUG) Debug.output("PropUtils.getROFOU(): found as file :)");
+                } else {
+                    // Otherwise treat it as a raw URL.
+                    if (DEBUG) Debug.output("PropUtils.getROFOU(): Not a file, checking as URL");
+                    retval = new URL(name);
+                    java.io.InputStream is = retval.openStream();
+                    is.close();
+                    if (DEBUG) Debug.output("PropUtils.getROFOU(): OK as URL :)");
+                }
+            } catch (java.io.IOException ioe) {
+                retval = null;
+            } catch (java.security.AccessControlException ace) {
+                Debug.error("PropUtils: AccessControlException trying to access " + name);
+                retval = null;
+            } catch (Exception e) {
+                Debug.error("PropUtils: caught exception " + e.getMessage());
+                retval = null;
+            }
+        }
 
-	if (DEBUG) {
-	    if (retval != null) {
-		Debug.output("Resource "+ name + "=" + retval.toString());
-	    } else {
-		Debug.output("Resource " + name + " can't be found..." );
-	    }
-	}
+        if (DEBUG) {
+            if (retval != null) {
+                Debug.output("Resource "+ name + "=" + retval.toString());
+            } else {
+                Debug.output("Resource " + name + " can't be found..." );
+            }
+        }
 
-	return retval;
+        return retval;
     }
 }

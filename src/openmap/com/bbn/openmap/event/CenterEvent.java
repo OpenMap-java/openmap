@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CenterEvent.java,v $
 // $RCSfile: CenterEvent.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,9 +39,9 @@ public class CenterEvent extends java.util.EventObject {
      * @param lon float longitude in decimal degrees
      */
     public CenterEvent (Object source, float lat, float lon) {
-	super(source);
-	latitude = lat;
-	longitude = lon;
+        super(source);
+        latitude = lat;
+        longitude = lon;
     }
 
     /**
@@ -49,7 +49,7 @@ public class CenterEvent extends java.util.EventObject {
      * @return float latitude in decimal degrees
      */
     public float getLatitude() {
-	return latitude;
+        return latitude;
     }
 
     /**
@@ -57,6 +57,6 @@ public class CenterEvent extends java.util.EventObject {
      * @return float latitude in decimal degrees
      */
     public float getLongitude() {
-	return longitude;
+        return longitude;
     }
 }

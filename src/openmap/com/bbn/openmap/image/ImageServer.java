@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServer.java,v $
 // $RCSfile: ImageServer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/14 20:23:32 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -139,7 +139,7 @@ public class ImageServer
      * file.  So, all the layers get set up here...
      */
     public ImageServer(Properties props) {
-	setProperties(props);
+        setProperties(props);
     }
 
     /**
@@ -151,7 +151,7 @@ public class ImageServer
      * ImageMaster does this.
      */
     public ImageServer(String prefix, Properties props) {
-	this(prefix, props, null);
+        this(prefix, props, null);
     }
 
     /**
@@ -161,8 +161,8 @@ public class ImageServer
      * layers that may already be instantiated.
      */
     public ImageServer(String prefix, Properties props, 
-		       Hashtable instantiatedLayers) {
-	setProperties(prefix, props, instantiatedLayers);
+                       Hashtable instantiatedLayers) {
+        setProperties(prefix, props, instantiatedLayers);
     }
 
     /**
@@ -174,22 +174,22 @@ public class ImageServer
      * format.  
      */
     public ImageServer(Layer[] layers, ImageFormatter formatter) {
-	this.layers = layers;
-	this.formatter = formatter;
+        this.layers = layers;
+        this.formatter = formatter;
     }
 
     /**
      * Set whether anti-aliasing is used when creating the image.
      */
     public void setDoAntiAliasing(boolean set) {
-	doAntiAliasing = set;
+        doAntiAliasing = set;
     }
 
     /**
      * Find out whether anti-aliasing is used when creating the image.
      */
     public boolean getDoAntiAliasing() {
-	return doAntiAliasing;
+        return doAntiAliasing;
     }
 
     /**
@@ -200,11 +200,11 @@ public class ImageServer
      * method call.
      */
     public synchronized void setLayers(Layer[] newLayers) {
-	if (newLayers == null) {
-	    layers = new Layer[0];
-	} else {
-	    layers = newLayers;
-	}
+        if (newLayers == null) {
+            layers = new Layer[0];
+        } else {
+            layers = newLayers;
+        }
     }
 
     /**
@@ -212,7 +212,7 @@ public class ImageServer
      * @return Layer[]
      */
     public synchronized Layer[] getLayers() {
-	return layers;
+        return layers;
     }
 
     /**
@@ -226,7 +226,7 @@ public class ImageServer
      * @return a byte[] representing the formatted image.
      */
     public byte[] createImage(Projection proj) {
-	return createImage(proj, -1, -1, 0xFFFFFFFF);
+        return createImage(proj, -1, -1, 0xFFFFFFFF);
     }
 
     /**
@@ -244,7 +244,7 @@ public class ImageServer
      * @return a byte[] representing the formatted image.
      */
     public byte[] createImage(Projection proj, int scaledWidth, int scaledHeight) {
-	return createImage(proj, scaledWidth, scaledHeight, 0xFFFFFFFF);
+        return createImage(proj, scaledWidth, scaledHeight, 0xFFFFFFFF);
     }
   
     /**
@@ -265,48 +265,48 @@ public class ImageServer
      * @return a byte[] representing the formatted image.  
      */
     public byte[] createImage(Projection proj, int scaledWidth, int scaledHeight, 
-			      Vector showLayers) {
+                              Vector showLayers) {
       
-	Debug.message("imageserver", "ImageServer: using the new ProjectionPainter interface!  createImage with layer string array. ");
+        Debug.message("imageserver", "ImageServer: using the new ProjectionPainter interface!  createImage with layer string array. ");
 
-	if (formatter == null) {
-	    Debug.error("ImageServer.createImage: no formatter set! Can't create image.");
-	    return new byte[0];
-	}
+        if (formatter == null) {
+            Debug.error("ImageServer.createImage: no formatter set! Can't create image.");
+            return new byte[0];
+        }
 
-	ImageFormatter imageFormatter = formatter.makeClone();
-	java.awt.Graphics graphics = createGraphics(imageFormatter,
-						    proj.getWidth(),
-						    proj.getHeight());
+        ImageFormatter imageFormatter = formatter.makeClone();
+        java.awt.Graphics graphics = createGraphics(imageFormatter,
+                                                    proj.getWidth(),
+                                                    proj.getHeight());
 
-	if (graphics == null) {
-	    return new byte[0];
-	}
+        if (graphics == null) {
+            return new byte[0];
+        }
       
-	((Proj)proj).drawBackground((Graphics2D)graphics, background);
-	int size = showLayers.size();
+        ((Proj)proj).drawBackground((Graphics2D)graphics, background);
+        int size = showLayers.size();
 
-	if (showLayers != null) {
-	    for (int j=size-1; j >= 0; j--) {      	
-		for (int i = layers.length - 1; i >= 0; i--) {
-		    String layerName = (String)showLayers.elementAt(j);
-		    Layer layer = layers[i];
-		    if (layerName.equals(layer.getPropertyPrefix())) {
-			layer.renderDataForProjection(proj, graphics);
-			if (Debug.debugging("imageserver")) {
-			    Debug.output("ImageServer: image request adding layer graphics from : " + layer.getName());
-			}
-		    }			    
-		}
-	    }
-	} else if (Debug.debugging("imageserver")) {
-	    Debug.output("ImageServer: no layers available for image");
-	}
+        if (showLayers != null) {
+            for (int j=size-1; j >= 0; j--) {           
+                for (int i = layers.length - 1; i >= 0; i--) {
+                    String layerName = (String)showLayers.elementAt(j);
+                    Layer layer = layers[i];
+                    if (layerName.equals(layer.getPropertyPrefix())) {
+                        layer.renderDataForProjection(proj, graphics);
+                        if (Debug.debugging("imageserver")) {
+                            Debug.output("ImageServer: image request adding layer graphics from : " + layer.getName());
+                        }
+                    }                       
+                }
+            }
+        } else if (Debug.debugging("imageserver")) {
+            Debug.output("ImageServer: no layers available for image");
+        }
 
-	byte[] formattedImage = getFormattedImage(imageFormatter,
-						  scaledWidth, scaledHeight);
-	graphics.dispose();
-	return formattedImage;
+        byte[] formattedImage = getFormattedImage(imageFormatter,
+                                                  scaledWidth, scaledHeight);
+        graphics.dispose();
+        return formattedImage;
     }
 
     /**
@@ -314,13 +314,13 @@ public class ImageServer
      * the visibility settings of the layers.
      */
     public int calculateVisibleLayerMask() {
-	int ret = 0; // Initialize all the layer bits to zero.
-	for (int i = layers.length - 1; i >= 0; i--) {
-	    if (layers[i].isVisible()) {
-		ret = ret | (0x00000001 << i);
-	    }
-	}
-	return ret;
+        int ret = 0; // Initialize all the layer bits to zero.
+        for (int i = layers.length - 1; i >= 0; i--) {
+            if (layers[i].isVisible()) {
+                ret = ret | (0x00000001 << i);
+            }
+        }
+        return ret;
     }
 
     /**
@@ -343,53 +343,53 @@ public class ImageServer
      * @return a byte[] representing the formatted image.  
      */
     public byte[] createImage(Projection proj, 
-			      int scaledWidth, int scaledHeight,
-			      int includedLayerMask) {
+                              int scaledWidth, int scaledHeight,
+                              int includedLayerMask) {
 
-	Debug.message("imageserver", "ImageServer: using the new ProjectionPainter interface!  createImage with layer mask.");
+        Debug.message("imageserver", "ImageServer: using the new ProjectionPainter interface!  createImage with layer mask.");
 
-	if (formatter == null) {
-	    Debug.error("ImageServer.createImage: no formatter set! Can't create image.");
-	    return new byte[0];
-	}
+        if (formatter == null) {
+            Debug.error("ImageServer.createImage: no formatter set! Can't create image.");
+            return new byte[0];
+        }
 
-	ImageFormatter imageFormatter = formatter.makeClone();
+        ImageFormatter imageFormatter = formatter.makeClone();
 
-	Graphics graphics = createGraphics(imageFormatter, 
-					   proj.getWidth(),
-					   proj.getHeight());
+        Graphics graphics = createGraphics(imageFormatter, 
+                                           proj.getWidth(),
+                                           proj.getHeight());
 
-	if (graphics == null) {
-	    return new byte[0];
-	}
+        if (graphics == null) {
+            return new byte[0];
+        }
 
-	((Proj)proj).drawBackground((Graphics2D)graphics, background);
+        ((Proj)proj).drawBackground((Graphics2D)graphics, background);
 
-	if (Debug.debugging("imageserver")) {
-	    Debug.output("ImageServer: considering " + layers.length + " for image...");
-	}
+        if (Debug.debugging("imageserver")) {
+            Debug.output("ImageServer: considering " + layers.length + " for image...");
+        }
 
-	for (int i = layers.length - 1; i >= 0; i--) {
-	    
-	    if ((includedLayerMask & (0x00000001 << i)) != 0) {
-		if (Debug.debugging("imageserver")) {
-		    Debug.output("ImageServer: image request adding layer graphics from : "
-				 + layers[i].getName());
-		}
+        for (int i = layers.length - 1; i >= 0; i--) {
+            
+            if ((includedLayerMask & (0x00000001 << i)) != 0) {
+                if (Debug.debugging("imageserver")) {
+                    Debug.output("ImageServer: image request adding layer graphics from : "
+                                 + layers[i].getName());
+                }
 
-		layers[i].renderDataForProjection(proj, graphics);
-	    } else {
-		if (Debug.debugging("imageserver")) {
-		    Debug.output("ImageServer: skipping layer graphics from : "
-				 + layers[i].getName());
-		}
-	    }
-	}
-	
-	byte[] formattedImage = getFormattedImage(imageFormatter,
-						  scaledWidth, scaledHeight);
-	graphics.dispose();
-	return formattedImage;
+                layers[i].renderDataForProjection(proj, graphics);
+            } else {
+                if (Debug.debugging("imageserver")) {
+                    Debug.output("ImageServer: skipping layer graphics from : "
+                                 + layers[i].getName());
+                }
+            }
+        }
+        
+        byte[] formattedImage = getFormattedImage(imageFormatter,
+                                                  scaledWidth, scaledHeight);
+        graphics.dispose();
+        return formattedImage;
     }
 
     /**
@@ -401,35 +401,35 @@ public class ImageServer
      * @param height the pixel height of the image.
      */
     protected Graphics createGraphics(ImageFormatter formatter, 
-				      int width, int height) {
+                                      int width, int height) {
 
- 	java.awt.Graphics graphics = null;
+        java.awt.Graphics graphics = null;
       
-	if (formatter != null) {
-	    graphics = formatter.getGraphics(width, height);
-	} else {
-	    Debug.error("ImageServer.createGraphics: Formatter is null, returning null graphics.");
-	    return null;
-	}
+        if (formatter != null) {
+            graphics = formatter.getGraphics(width, height);
+        } else {
+            Debug.error("ImageServer.createGraphics: Formatter is null, returning null graphics.");
+            return null;
+        }
       
-	if (graphics == null) {
-	    Debug.error("ImageServer.createGraphics: NOT able to create Graphics!");
-	    return null;
-	}
+        if (graphics == null) {
+            Debug.error("ImageServer.createGraphics: NOT able to create Graphics!");
+            return null;
+        }
       
-	if (Debug.debugging("imageserver")) {
-	    Debug.output("ImageServer.createGraphics: graphics is cool");
-	}
+        if (Debug.debugging("imageserver")) {
+            Debug.output("ImageServer.createGraphics: graphics is cool");
+        }
       
-	if (doAntiAliasing && graphics instanceof java.awt.Graphics2D) {
-	    java.awt.Graphics2D g2d = (java.awt.Graphics2D) graphics;
-	    g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				 RenderingHints.VALUE_ANTIALIAS_ON);
-	}
+        if (doAntiAliasing && graphics instanceof java.awt.Graphics2D) {
+            java.awt.Graphics2D g2d = (java.awt.Graphics2D) graphics;
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                 RenderingHints.VALUE_ANTIALIAS_ON);
+        }
       
-	return graphics;
+        return graphics;
     }
 
     /**
@@ -438,31 +438,31 @@ public class ImageServer
      * scaledHeight are greater than 0.
      */
     protected byte[] getFormattedImage(ImageFormatter formatter, 
-				       int scaledWidth, int scaledHeight) {
+                                       int scaledWidth, int scaledHeight) {
 
-	if (Debug.debugging("imageserver")) {
-	    Debug.output("ImageServer: ready to create formatted image.");
-	}
-	byte[] formattedImage = null;
+        if (Debug.debugging("imageserver")) {
+            Debug.output("ImageServer: ready to create formatted image.");
+        }
+        byte[] formattedImage = null;
 
-	// Now, scale the image, if needed...
-	if (scaledWidth > 0 && scaledHeight > 0) {
-	    
-	    formattedImage = 
-		formatter.getScaledImageBytes(scaledWidth, scaledHeight);
-	
-	} else {
-	    Debug.message("imageserver", "ImageServer: using full scale image (unscaled).");
-	    formattedImage = formatter.getImageBytes();
-	}
-      	return formattedImage;
+        // Now, scale the image, if needed...
+        if (scaledWidth > 0 && scaledHeight > 0) {
+            
+            formattedImage = 
+                formatter.getScaledImageBytes(scaledWidth, scaledHeight);
+        
+        } else {
+            Debug.message("imageserver", "ImageServer: using full scale image (unscaled).");
+            formattedImage = formatter.getImageBytes();
+        }
+        return formattedImage;
     }
 
     /**
      * Set the layers and image type in the properties.
      */
     public void setProperties(Properties props) {
-	setProperties((String) null, props);
+        setProperties((String) null, props);
     }
 
     /**
@@ -470,7 +470,7 @@ public class ImageServer
      * properties might have a prefix in the file.  
      */
     public void setProperties(String prefix, Properties props) {
-	setProperties(prefix, props, (Hashtable) null);
+        setProperties(prefix, props, (Hashtable) null);
     }
 
     /**
@@ -478,37 +478,37 @@ public class ImageServer
      * properties might have a prefix in the file.  
      */
     public void setProperties(String prefix, Properties props, 
-			      Hashtable instantiatedLayers) {
-	setPropertyPrefix(prefix);
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+                              Hashtable instantiatedLayers) {
+        setPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	layers = getLayers(props, instantiatedLayers);
-	formatter = getFormatters(props);
-	doAntiAliasing = PropUtils.booleanFromProperties(props, prefix+AntiAliasingProperty, false);
+        layers = getLayers(props, instantiatedLayers);
+        formatter = getFormatters(props);
+        doAntiAliasing = PropUtils.booleanFromProperties(props, prefix+AntiAliasingProperty, false);
     }
 
     /**
      * Part of the PropertyConsumer interface.  Doesn't do anything yet.
      */
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
-	return props;
+        if (props == null) {
+            props = new Properties();
+        }
+        return props;
     }
 
     /**
      * Part of the PropertyConsumer interface.
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
+        if (list == null) {
+            list = new Properties();
+        }
 
-	list.put(ImageServerLayersProperty, "A list of marker names (space-separated) for layer definitions");
-	list.put(ImageFormattersProperty, "A list of marker names (space-separated) for ImageFormatter definitions");
-	list.put(AntiAliasingProperty, "Whether to use anti-aliasing for the image");
-	return list;
+        list.put(ImageServerLayersProperty, "A list of marker names (space-separated) for layer definitions");
+        list.put(ImageFormattersProperty, "A list of marker names (space-separated) for ImageFormatter definitions");
+        list.put(AntiAliasingProperty, "Whether to use anti-aliasing for the image");
+        return list;
     }
 
     /**
@@ -517,7 +517,7 @@ public class ImageServer
      * setProperties method.
      */
     public void setPropertyPrefix(String prefix) {
-	propertiesPrefix = prefix;
+        propertiesPrefix = prefix;
     }
 
     /**
@@ -526,7 +526,7 @@ public class ImageServer
      * setProperties method.
      */
     public String getPropertyPrefix() {
-	return propertiesPrefix;
+        return propertiesPrefix;
     }
 
     /** 
@@ -537,26 +537,26 @@ public class ImageServer
      * @return layer[]     
      */
     protected synchronized Layer[] getMaskedLayers(int layerMask) {
-	if (layerMask == 0xFFFFFFFF) {
-	    //  They all want to be there
-	    Debug.message("imageserver",
-			  "ImageServer: image request adding all layers.");
-	    return layers;
-	} else {
-	    //  Use the vector as a growable array, and add the layers
-	    //  to it that the mask says should be there.
-	    Vector layerVector = new Vector(layers.length);
-	    for (int i = 0; i < layers.length; i++) {
-		if ((layerMask & (0x00000001 << i)) != 0) {
-		    layerVector.add(layers[i]);
-		    if (Debug.debugging("imageserver")) {
-			Debug.output("ImageServer: image request adding layer: " + layers[i].getName());
-		    }
-		}
-	    }
-	    Layer[] imageLayers = new Layer[layerVector.size()];
-	    return (Layer[])layerVector.toArray(imageLayers);
-	}
+        if (layerMask == 0xFFFFFFFF) {
+            //  They all want to be there
+            Debug.message("imageserver",
+                          "ImageServer: image request adding all layers.");
+            return layers;
+        } else {
+            //  Use the vector as a growable array, and add the layers
+            //  to it that the mask says should be there.
+            Vector layerVector = new Vector(layers.length);
+            for (int i = 0; i < layers.length; i++) {
+                if ((layerMask & (0x00000001 << i)) != 0) {
+                    layerVector.add(layers[i]);
+                    if (Debug.debugging("imageserver")) {
+                        Debug.output("ImageServer: image request adding layer: " + layers[i].getName());
+                    }
+                }
+            }
+            Layer[] imageLayers = new Layer[layerVector.size()];
+            return (Layer[])layerVector.toArray(imageLayers);
+        }
     }
 
     /**
@@ -564,14 +564,14 @@ public class ImageServer
      * @return ImageFormatter.
      */
     public synchronized ImageFormatter getFormatter() {
-	return formatter;
+        return formatter;
     }
 
     /**
      * Set the ImageFormatter to be used for ImageCreation.
      */
     public synchronized void setFormatter(ImageFormatter f) {
-	formatter = f;
+        formatter = f;
     }
 
     /**
@@ -583,15 +583,15 @@ public class ImageServer
      * if no formatter found.
      */
     public synchronized boolean setFormatter(String formatterLabel) {
-	ImageFormatter tmpFormatter = 
-	    (ImageFormatter)imageFormatters.get(formatterLabel.intern());
+        ImageFormatter tmpFormatter = 
+            (ImageFormatter)imageFormatters.get(formatterLabel.intern());
 
-	if (tmpFormatter != null) {
-	    setFormatter(tmpFormatter);
-	    return true;
-	} else {
-	    return false;
-	}
+        if (tmpFormatter != null) {
+            setFormatter(tmpFormatter);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -601,7 +601,7 @@ public class ImageServer
      * @return Hashtable of ImageFormatters.
      */
     public synchronized Hashtable getFormatters() {
-	return imageFormatters;
+        return imageFormatters;
     }
 
     /**
@@ -613,9 +613,9 @@ public class ImageServer
      * use for a default.
      */
     public synchronized void setFormatters(Hashtable iFormatters,
-					   String defaultFormatterKey) {
-	imageFormatters = iFormatters;
-	formatter = (ImageFormatter)imageFormatters.get(defaultFormatterKey.intern());
+                                           String defaultFormatterKey) {
+        imageFormatters = iFormatters;
+        formatter = (ImageFormatter)imageFormatters.get(defaultFormatterKey.intern());
     }
 
     /**
@@ -624,45 +624,45 @@ public class ImageServer
      * @return default formatter.
      */
     protected ImageFormatter getFormatters(Properties p) {
-	String formatterString, formattersString;
-	ImageFormatter iFormatter = null;
+        String formatterString, formattersString;
+        ImageFormatter iFormatter = null;
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	formattersString = p.getProperty(prefix + ImageFormattersProperty);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        formattersString = p.getProperty(prefix + ImageFormattersProperty);
 
-	// First, look at the formatters string to get a marker list
-	// of available formatters.
-	if (formattersString != null) {
-	    Vector markerNames = PropUtils.parseSpacedMarkers(formattersString);
-	    Vector formatters = ComponentFactory.create(markerNames, p);
+        // First, look at the formatters string to get a marker list
+        // of available formatters.
+        if (formattersString != null) {
+            Vector markerNames = PropUtils.parseSpacedMarkers(formattersString);
+            Vector formatters = ComponentFactory.create(markerNames, p);
 
-	    int size = formatters.size();
+            int size = formatters.size();
 
-	    if (imageFormatters == null) {
-		imageFormatters = new Hashtable(size);
-	    }
+            if (imageFormatters == null) {
+                imageFormatters = new Hashtable(size);
+            }
 
-	    for (int i = 0; i < size; i++) {
-		ImageFormatter formatter = (ImageFormatter) formatters.get(i);
-		imageFormatters.put(formatter.getFormatLabel(), formatter);
+            for (int i = 0; i < size; i++) {
+                ImageFormatter formatter = (ImageFormatter) formatters.get(i);
+                imageFormatters.put(formatter.getFormatLabel(), formatter);
 
-		if (i == 0) {
-		    iFormatter = formatter;
-		}
-	    }
+                if (i == 0) {
+                    iFormatter = formatter;
+                }
+            }
 
-	} else {
-	    Debug.message("imageserver", "ImageServer.getFormatters: no formatters specified");
-	}
+        } else {
+            Debug.message("imageserver", "ImageServer.getFormatters: no formatters specified");
+        }
 
-	return iFormatter;
+        return iFormatter;
     }
 
     /**
      * Create an array of Layers from a properties object.
      */
     protected Layer[] getLayers(Properties p) {
-	return getLayers(p, (Hashtable)null);
+        return getLayers(p, (Hashtable)null);
     }
 
     /**
@@ -679,9 +679,9 @@ public class ImageServer
      */
     protected Layer[] getLayers(Properties p, Hashtable instantiatedLayers) {
 
-	String layersValue;
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	layersValue = p.getProperty(prefix + ImageServerLayersProperty);
+        String layersValue;
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        layersValue = p.getProperty(prefix + ImageServerLayersProperty);
         
         if (layersValue == null) {
             // get openmap.layers value
@@ -693,86 +693,86 @@ public class ImageServer
             }
         }
 
-	Vector layerNames = PropUtils.parseSpacedMarkers(layersValue);
+        Vector layerNames = PropUtils.parseSpacedMarkers(layersValue);
 
-	if (Debug.debugging("imageserver")) {
-	    Debug.output("OpenMap.getLayers(): "+ layerNames);
-	}
+        if (Debug.debugging("imageserver")) {
+            Debug.output("OpenMap.getLayers(): "+ layerNames);
+        }
 
-	int nLayerNames = layerNames.size();
-	Vector layers = new Vector(nLayerNames);
+        int nLayerNames = layerNames.size();
+        Vector layers = new Vector(nLayerNames);
 
-	for (int i = 0; i < nLayerNames; i++) {
-	    String layerName = (String)layerNames.elementAt(i);
+        for (int i = 0; i < nLayerNames; i++) {
+            String layerName = (String)layerNames.elementAt(i);
 
-	    // Check to see if some other ImageServer has used this
-	    // layer, and reuse it.
-	    if (instantiatedLayers != null) {
-		Layer iLayer = (Layer) instantiatedLayers.get(layerName);
-		if (iLayer != null) {
+            // Check to see if some other ImageServer has used this
+            // layer, and reuse it.
+            if (instantiatedLayers != null) {
+                Layer iLayer = (Layer) instantiatedLayers.get(layerName);
+                if (iLayer != null) {
 
-		    // We might want to consider adding this:
-// 		    iLayer.setProperties(layerName, p);
+                    // We might want to consider adding this:
+//                  iLayer.setProperties(layerName, p);
 
-		    layers.add(iLayer);
-		    if (Debug.debugging("imageserver")) {
-			Debug.output("ImageServer: adding instantiated layer /"
-				     + layerName + "/");
-		    }
-		    continue;
-		}
-	    }
+                    layers.add(iLayer);
+                    if (Debug.debugging("imageserver")) {
+                        Debug.output("ImageServer: adding instantiated layer /"
+                                     + layerName + "/");
+                    }
+                    continue;
+                }
+            }
 
-	    // Brand new layer, so instantiate it.
-	    String classProperty = layerName + ".class";
-	    String className = p.getProperty(classProperty);
-	    if (className == null) {
-		Debug.error("Failed to locate property \""
-			    + classProperty + "\"");
-		Debug.error("Skipping layer \"" + layerName + "\"");
-		continue;
-	    }
+            // Brand new layer, so instantiate it.
+            String classProperty = layerName + ".class";
+            String className = p.getProperty(classProperty);
+            if (className == null) {
+                Debug.error("Failed to locate property \""
+                            + classProperty + "\"");
+                Debug.error("Skipping layer \"" + layerName + "\"");
+                continue;
+            }
 
-	    Object obj = ComponentFactory.create(className, layerName, p);
-	    if (obj instanceof Layer || obj instanceof PlugIn) {
-		Layer l = null;
+            Object obj = ComponentFactory.create(className, layerName, p);
+            if (obj instanceof Layer || obj instanceof PlugIn) {
+                Layer l = null;
 
-		if (obj instanceof PlugIn) {
-		    PlugIn pi = (PlugIn) obj;
-		    PlugInLayer pil = new PlugInLayer();
-		    pil.setPlugIn(pi);
-		    pil.setName(p.getProperty(PropUtils.getScopedPropertyPrefix(pi) + Layer.PrettyNameProperty));
-		    l = pil;
-		} else {
-		    l = (Layer) obj;
-		}
+                if (obj instanceof PlugIn) {
+                    PlugIn pi = (PlugIn) obj;
+                    PlugInLayer pil = new PlugInLayer();
+                    pil.setPlugIn(pi);
+                    pil.setName(p.getProperty(PropUtils.getScopedPropertyPrefix(pi) + Layer.PrettyNameProperty));
+                    l = pil;
+                } else {
+                    l = (Layer) obj;
+                }
 
-		layers.addElement(l);
+                layers.addElement(l);
 
-		if (instantiatedLayers != null) {
-		    instantiatedLayers.put(layerName, l);
-		    if (Debug.debugging("imageserver")) {
-			Debug.output("ImageServer: Saving /" + layerName +
-				     "/ to instantiated layers hashtable.");
-		    }
-		}
-	    }
-	}
+                if (instantiatedLayers != null) {
+                    instantiatedLayers.put(layerName, l);
+                    if (Debug.debugging("imageserver")) {
+                        Debug.output("ImageServer: Saving /" + layerName +
+                                     "/ to instantiated layers hashtable.");
+                    }
+                }
+            }
+        }
 
-	int nLayers = layers.size();
-	if (nLayers == 0) {
-	    return new Layer[0];
-	} else {
-	    Layer[] value = new Layer[nLayers];
-	    layers.copyInto(value);
-	    return value;
-	}
+        int nLayers = layers.size();
+        if (nLayers == 0) {
+            return new Layer[0];
+        } else {
+            Layer[] value = new Layer[nLayers];
+            layers.copyInto(value);
+            return value;
+        }
     }
 
 //      protected void finalize() {
-//  	if (Debug.debugging("gc")) {
-//  	    Debug.output("ImageServer: GC'd.");
-//  	}
+//      if (Debug.debugging("gc")) {
+//          Debug.output("ImageServer: GC'd.");
+//      }
 //      }
 
     /**
@@ -804,70 +804,70 @@ public class ImageServer
      * chosen appendix attached.
      */
     public static String createImageFile(String prefix, 
-					 Properties props, 
-					 Projection proj,
-					 String outputPath) 
+                                         Properties props, 
+                                         Projection proj,
+                                         String outputPath) 
 
-	throws MalformedURLException, IOException {
+        throws MalformedURLException, IOException {
 
-	String appendix = "";
-	
-	ImageServer is = new ImageServer(props);
+        String appendix = "";
+        
+        ImageServer is = new ImageServer(props);
 
-	ImageFormatter formatter = is.getFormatter();
-	if (formatter == null) {
-	    is.setFormatter(new SunJPEGFormatter());
-	    appendix = ".jpg";
-	} else {
-	    String fileType = formatter.getFormatLabel();
-	    if (fileType.equals(WMTConstants.IMAGEFORMAT_JPEG)) {
-		appendix = ".jpg";
-	    } else {
-		appendix = "." + fileType.toLowerCase();
-	    }
-	}
-	
-	Color background = MapBean.DEFAULT_BACKGROUND_COLOR;
-	background = (Color)PropUtils.parseColorFromProperties(
-	    props, Environment.BackgroundColor, background);
-	    
-	is.setBackground(background);
+        ImageFormatter formatter = is.getFormatter();
+        if (formatter == null) {
+            is.setFormatter(new SunJPEGFormatter());
+            appendix = ".jpg";
+        } else {
+            String fileType = formatter.getFormatLabel();
+            if (fileType.equals(WMTConstants.IMAGEFORMAT_JPEG)) {
+                appendix = ".jpg";
+            } else {
+                appendix = "." + fileType.toLowerCase();
+            }
+        }
+        
+        Color background = MapBean.DEFAULT_BACKGROUND_COLOR;
+        background = (Color)PropUtils.parseColorFromProperties(
+            props, Environment.BackgroundColor, background);
+            
+        is.setBackground(background);
 
-	// Initialize the map projection, scale, center with
-	// user prefs or defaults
-	if (proj == null) {
-	    String projName = props.getProperty(Environment.Projection);
-	    if (projName == null) {
-		projName = Mercator.MercatorName;
-	    }
-	    int projType = ProjectionFactory.getProjType(projName);
-	    
-	    proj = ProjectionFactory.makeProjection(
-		projType,
-		PropUtils.floatFromProperties(props, Environment.Latitude, 0f),
-		PropUtils.floatFromProperties(props, Environment.Longitude, 0f),
-		PropUtils.floatFromProperties(props, Environment.Scale,
-					       MapBean.DEFAULT_SCALE),
-		PropUtils.intFromProperties(props, Environment.Width,
-					     MapBean.DEFAULT_WIDTH),
-		PropUtils.intFromProperties(props, Environment.Height,
-					     MapBean.DEFAULT_HEIGHT));
-	}
-	
-	if (Debug.debugging("imageserver")) {
-	    Debug.output("ImageServer: creating image with projection " + 
-			 proj);
-	}
-	
-	byte[] imageBytes = is.createImage(proj);
-	String finalOutputPath = outputPath + appendix;
-	FileOutputStream fos = new FileOutputStream(finalOutputPath);
+        // Initialize the map projection, scale, center with
+        // user prefs or defaults
+        if (proj == null) {
+            String projName = props.getProperty(Environment.Projection);
+            if (projName == null) {
+                projName = Mercator.MercatorName;
+            }
+            int projType = ProjectionFactory.getProjType(projName);
+            
+            proj = ProjectionFactory.makeProjection(
+                projType,
+                PropUtils.floatFromProperties(props, Environment.Latitude, 0f),
+                PropUtils.floatFromProperties(props, Environment.Longitude, 0f),
+                PropUtils.floatFromProperties(props, Environment.Scale,
+                                               MapBean.DEFAULT_SCALE),
+                PropUtils.intFromProperties(props, Environment.Width,
+                                             MapBean.DEFAULT_WIDTH),
+                PropUtils.intFromProperties(props, Environment.Height,
+                                             MapBean.DEFAULT_HEIGHT));
+        }
+        
+        if (Debug.debugging("imageserver")) {
+            Debug.output("ImageServer: creating image with projection " + 
+                         proj);
+        }
+        
+        byte[] imageBytes = is.createImage(proj);
+        String finalOutputPath = outputPath + appendix;
+        FileOutputStream fos = new FileOutputStream(finalOutputPath);
 
-	fos.write(imageBytes);
-	fos.flush();
-	fos.close();
+        fos.write(imageBytes);
+        fos.flush();
+        fos.close();
 
-	return finalOutputPath;
+        return finalOutputPath;
     }
 
     /**
@@ -879,14 +879,14 @@ public class ImageServer
      * Set the Paint to use for image backgrounds.
      */
     public void setBackground(Paint bg) {
-	background = bg;
+        background = bg;
     }
 
     /**
      * Get the Paint to use for image backgrounds.
      */
     public Paint getBackground() {
-	return background;
+        return background;
     }
 
     /**
@@ -902,59 +902,59 @@ public class ImageServer
      */
     public final static void main(String[] argv) {
 
-	Debug.init();
-	Debug.put("imageserver");
-	Debug.put("image");
+        Debug.init();
+        Debug.put("imageserver");
+        Debug.put("image");
 
-	com.bbn.openmap.util.ArgParser ap = new 
-	    com.bbn.openmap.util.ArgParser("ImageServer");
+        com.bbn.openmap.util.ArgParser ap = new 
+            com.bbn.openmap.util.ArgParser("ImageServer");
 
-	ap.add("properties", "The properties file to use for the image.", 1);
-	ap.add("file", "The output image file, without appendix (default is 'image').", 1);
+        ap.add("properties", "The properties file to use for the image.", 1);
+        ap.add("file", "The output image file, without appendix (default is 'image').", 1);
 
-	if (!ap.parse(argv)) {
-	    ap.printUsage();
-	    System.exit(0);
-	}
+        if (!ap.parse(argv)) {
+            ap.printUsage();
+            System.exit(0);
+        }
 
-	String imagefile = "image";
-	String arg[];
+        String imagefile = "image";
+        String arg[];
 
-	arg = ap.getArgValues("file");
-	if (arg != null) {
-	    imagefile = arg[0];
-	}
+        arg = ap.getArgValues("file");
+        if (arg != null) {
+            imagefile = arg[0];
+        }
 
-	Properties props = null;
-	arg = ap.getArgValues("properties");
-	if (arg != null) {
-	    String ps = arg[0];
-	    try {
+        Properties props = null;
+        arg = ap.getArgValues("properties");
+        if (arg != null) {
+            String ps = arg[0];
+            try {
 
-		URL url = PropUtils.getResourceOrFileOrURL(null, ps);
-		InputStream inputStream = url.openStream();
+                URL url = PropUtils.getResourceOrFileOrURL(null, ps);
+                InputStream inputStream = url.openStream();
 
-		props = new Properties();
-		props.load(inputStream);
+                props = new Properties();
+                props.load(inputStream);
 
-		Projection proj = null;
+                Projection proj = null;
 
-		String finalOutputPath = ImageServer.createImageFile(null, props, proj, imagefile);
+                String finalOutputPath = ImageServer.createImageFile(null, props, proj, imagefile);
 
-		if (Debug.debugging("imageserver")) {
-		    Debug.output("Writing image file to: " + finalOutputPath);
-		}
+                if (Debug.debugging("imageserver")) {
+                    Debug.output("Writing image file to: " + finalOutputPath);
+                }
 
 
-	    } catch (MalformedURLException murle) {
-		Debug.error("ImageServer can't find properties file: " +
-			    arg[0]);
-	    } catch (IOException ioe) {
-		Debug.error("ImageServer can't write output image: IOException");
-	    }
-	}
+            } catch (MalformedURLException murle) {
+                Debug.error("ImageServer can't find properties file: " +
+                            arg[0]);
+            } catch (IOException ioe) {
+                Debug.error("ImageServer can't write output image: IOException");
+            }
+        }
 
-	System.exit(0);
+        System.exit(0);
     }
 }
 

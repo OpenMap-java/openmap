@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileDefinedState.java,v $
 // $RCSfile: ProfileDefinedState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,33 +34,33 @@ class ProfileDefinedState extends State{
     protected ProfileGenerator profileTool;
 
     public ProfileDefinedState(ProfileGenerator tool){
-	profileTool = tool;
+        profileTool = tool;
     }
 
     public boolean mousePressed(MouseEvent e){ 
-	profileTool.reset();
-	return true;
+        profileTool.reset();
+        return true;
     }
 
     public boolean mouseReleased(MouseEvent e){ 
-	profileTool.reset();
-	return true;
+        profileTool.reset();
+        return true;
     }
 
     public boolean mouseClicked(MouseEvent e){
-	profileTool.reset();
-	return true;
+        profileTool.reset();
+        return true;
     }
 
     public void actionPerformed(ActionEvent e){
-	String ac = e.getActionCommand();
-	if (ac.equalsIgnoreCase(TerrainLayer.createCommand)){
-	    profileTool.layer.fireStatusUpdate(LayerStatusEvent.START_WORKING);
-	    profileTool.createProfileImage();
-	    profileTool.stateMachine.setState(ProfileStateMachine.TOOL_VIEW);
-	    profileTool.layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-	}
-	else profileTool.reset();
+        String ac = e.getActionCommand();
+        if (ac.equalsIgnoreCase(TerrainLayer.createCommand)){
+            profileTool.layer.fireStatusUpdate(LayerStatusEvent.START_WORKING);
+            profileTool.createProfileImage();
+            profileTool.stateMachine.setState(ProfileStateMachine.TOOL_VIEW);
+            profileTool.layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+        }
+        else profileTool.reset();
 
     }
 }

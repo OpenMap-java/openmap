@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigatePanel.java,v $
 // $RCSfile: NavigatePanel.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/23 20:47:46 $
-// $Author: wjeuerle $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -90,74 +90,74 @@ public class NavigatePanel extends OMToolComponent
      * Construct the NavigationPanel.
      */
     public NavigatePanel() {
-	super();
-	setKey(defaultKey);
-	panDelegate = new PanSupport(this);
-	centerDelegate = new CenterSupport(this);
+        super();
+        setKey(defaultKey);
+        panDelegate = new PanSupport(this);
+        centerDelegate = new CenterSupport(this);
 
-	JPanel panel = new JPanel();
-	GridBagLayout internalGridbag = new GridBagLayout();
-	GridBagConstraints c2 = new GridBagConstraints();
-	panel.setLayout(internalGridbag);
+        JPanel panel = new JPanel();
+        GridBagLayout internalGridbag = new GridBagLayout();
+        GridBagConstraints c2 = new GridBagConstraints();
+        panel.setLayout(internalGridbag);
 
-	// begin top row
-	nwButton = getButton(nwName, "Pan Northwest", panNWCmd);
-	c2.gridx = 0;
-	c2.gridy = 0;
-	internalGridbag.setConstraints(nwButton, c2);
-	panel.add(nwButton);
+        // begin top row
+        nwButton = getButton(nwName, "Pan Northwest", panNWCmd);
+        c2.gridx = 0;
+        c2.gridy = 0;
+        internalGridbag.setConstraints(nwButton, c2);
+        panel.add(nwButton);
 
-	nButton = getButton(nName, "Pan North", panNCmd);
-	c2.gridx = 1;
-	c2.gridy = 0;
-	internalGridbag.setConstraints(nButton, c2);
-	panel.add(nButton);
+        nButton = getButton(nName, "Pan North", panNCmd);
+        c2.gridx = 1;
+        c2.gridy = 0;
+        internalGridbag.setConstraints(nButton, c2);
+        panel.add(nButton);
 
-	neButton = getButton(neName, "Pan Northeast", panNECmd);
-	c2.gridx = 2;
-	c2.gridy = 0;
-	internalGridbag.setConstraints(neButton, c2);
-	panel.add(neButton);
+        neButton = getButton(neName, "Pan Northeast", panNECmd);
+        c2.gridx = 2;
+        c2.gridy = 0;
+        internalGridbag.setConstraints(neButton, c2);
+        panel.add(neButton);
 
-	// begin middle row
-	wButton = getButton(wName, "Pan West", panWCmd);
-	c2.gridx = 0;
-	c2.gridy = 1;
-	internalGridbag.setConstraints(wButton, c2);
-	panel.add(wButton);
+        // begin middle row
+        wButton = getButton(wName, "Pan West", panWCmd);
+        c2.gridx = 0;
+        c2.gridy = 1;
+        internalGridbag.setConstraints(wButton, c2);
+        panel.add(wButton);
 
-	cButton = getButton(cName, "Center Map at Starting Coords", centerCmd);
-	c2.gridx = 1;
-	c2.gridy = 1;
-	internalGridbag.setConstraints(cButton, c2);
-	panel.add(cButton);
+        cButton = getButton(cName, "Center Map at Starting Coords", centerCmd);
+        c2.gridx = 1;
+        c2.gridy = 1;
+        internalGridbag.setConstraints(cButton, c2);
+        panel.add(cButton);
 
-	eButton = getButton(eName, "Pan East", panECmd);
-	c2.gridx = 2;
-	c2.gridy = 1;
-	internalGridbag.setConstraints(eButton, c2);
-	panel.add(eButton);
+        eButton = getButton(eName, "Pan East", panECmd);
+        c2.gridx = 2;
+        c2.gridy = 1;
+        internalGridbag.setConstraints(eButton, c2);
+        panel.add(eButton);
 
-	// begin bottom row
-	swButton = getButton(swName, "Pan Southwest", panSWCmd);
-	c2.gridx = 0;
-	c2.gridy = 2;
-	internalGridbag.setConstraints(swButton, c2);
-	panel.add(swButton);
+        // begin bottom row
+        swButton = getButton(swName, "Pan Southwest", panSWCmd);
+        c2.gridx = 0;
+        c2.gridy = 2;
+        internalGridbag.setConstraints(swButton, c2);
+        panel.add(swButton);
 
-	sButton = getButton(sName, "Pan South", panSCmd);
-	c2.gridx = 1;
-	c2.gridy = 2;
-	internalGridbag.setConstraints(sButton, c2);
-	panel.add(sButton);
+        sButton = getButton(sName, "Pan South", panSCmd);
+        c2.gridx = 1;
+        c2.gridy = 2;
+        internalGridbag.setConstraints(sButton, c2);
+        panel.add(sButton);
 
-	seButton = getButton(seName, "Pan Southeast", panSECmd);
-	c2.gridx = 2;
-	c2.gridy = 2;
-	internalGridbag.setConstraints(seButton, c2);
-	panel.add(seButton);
+        seButton = getButton(seName, "Pan Southeast", panSECmd);
+        c2.gridx = 2;
+        c2.gridy = 2;
+        internalGridbag.setConstraints(seButton, c2);
+        panel.add(seButton);
 
-	add(panel);
+        add(panel);
     }
 
     /**
@@ -169,18 +169,18 @@ public class NavigatePanel extends OMToolComponent
      *
      */
     protected JButton getButton(String name, String info, String command) {
-	URL url = NavigatePanel.class.getResource(name);
-	ImageIcon icon = new ImageIcon(url, info);
-	JButton b = new JButton(icon);
-	b.setPreferredSize(new Dimension(icon.getIconWidth(), 
-					 icon.getIconHeight()));
-	b.setToolTipText(info);
-	b.setMargin(new Insets(0,0,0,0));
+        URL url = NavigatePanel.class.getResource(name);
+        ImageIcon icon = new ImageIcon(url, info);
+        JButton b = new JButton(icon);
+        b.setPreferredSize(new Dimension(icon.getIconWidth(), 
+                                         icon.getIconHeight()));
+        b.setToolTipText(info);
+        b.setMargin(new Insets(0,0,0,0));
         b.setActionCommand(command);
-	b.addActionListener(this);
-	b.setBorderPainted(Debug.debugging("layout"));
-	b.setOpaque(false);
-	return b;
+        b.addActionListener(this);
+        b.setBorderPainted(Debug.debugging("layout"));
+        b.setOpaque(false);
+        return b;
     }
 
     /**
@@ -188,7 +188,7 @@ public class NavigatePanel extends OMToolComponent
      * @param listener CenterListener
      */
     public synchronized void addCenterListener(CenterListener listener) {
-	centerDelegate.addCenterListener(listener);
+        centerDelegate.addCenterListener(listener);
     }
 
     /**
@@ -196,7 +196,7 @@ public class NavigatePanel extends OMToolComponent
      * @param listener CenterListener
      */
     public synchronized void removeCenterListener(CenterListener listener) {
-	centerDelegate.removeCenterListener(listener);
+        centerDelegate.removeCenterListener(listener);
     }
 
     /**
@@ -204,7 +204,7 @@ public class NavigatePanel extends OMToolComponent
      * @param listener PanListener
      */
     public synchronized void addPanListener(PanListener listener) {
-	panDelegate.addPanListener(listener);
+        panDelegate.addPanListener(listener);
     }
 
     /**
@@ -212,14 +212,14 @@ public class NavigatePanel extends OMToolComponent
      * @param listener PanListener
      */
     public synchronized void removePanListener(PanListener listener) {
-	panDelegate.removePanListener(listener);
+        panDelegate.removePanListener(listener);
     }
 
     /**
      * Fire a CenterEvent.
      */
     protected synchronized void fireCenterEvent(float lat, float lon) {
-	centerDelegate.fireCenter(lat, lon);
+        centerDelegate.fireCenter(lat, lon);
     }
 
     /**
@@ -227,7 +227,7 @@ public class NavigatePanel extends OMToolComponent
      * @param az azimuth east of north
      */
     protected synchronized void firePanEvent(float az) {
-	panDelegate.firePan(az);
+        panDelegate.firePan(az);
     }
 
     /**
@@ -238,7 +238,7 @@ public class NavigatePanel extends OMToolComponent
      * @return float panFactor (0.0 &lt;= panFactor &lt;= 1.0)
      */
     public float getPanFactor() {
-	return panFactor;
+        return panFactor;
     }
 
     /**
@@ -249,11 +249,11 @@ public class NavigatePanel extends OMToolComponent
      * @param panFactor (0.0 &lt;= panFactor &lt;= 1.0)
      */
     public void setPanFactor(float panFactor) {
-	if ((panFactor < 0f) || (panFactor > 1f)) {
-	    throw new IllegalArgumentException(
-		    "should be: (0.0 <= panFactor <= 1.0)");
-	}
-	this.panFactor = panFactor;
+        if ((panFactor < 0f) || (panFactor > 1f)) {
+            throw new IllegalArgumentException(
+                    "should be: (0.0 <= panFactor <= 1.0)");
+        }
+        this.panFactor = panFactor;
     }
 
     /**
@@ -265,9 +265,9 @@ public class NavigatePanel extends OMToolComponent
      * @param passedLon float the center longitude (in degrees) 
      */
     public void setDefaultCenter(float passedLat, float passedLon) {
-	useDefaultCenter = true;
-	defaultCenterLat = passedLat;
-	defaultCenterLon = passedLon;
+        useDefaultCenter = true;
+        defaultCenterLat = passedLat;
+        defaultCenterLon = passedLon;
     }
 
     /**
@@ -276,40 +276,40 @@ public class NavigatePanel extends OMToolComponent
      */
     public void actionPerformed(java.awt.event.ActionEvent e) {
 
-	String command = e.getActionCommand();
+        String command = e.getActionCommand();
 
-	Debug.message("navpanel", "NavigatePanel.actionPerformed(): " +
-		      command);
-	if (command.equals(panNWCmd)) {
-	    firePanEvent(-45f);
-	} else if (command.equals(panNCmd)) {
-	    firePanEvent(0f);
-	} else if (command.equals(panNECmd)) {
-	    firePanEvent(45f);
-	} else if (command.equals(panECmd)) {
-	    firePanEvent(90f);
-	} else if (command.equals(panSECmd)) {
-	    firePanEvent(135f);
-	} else if (command.equals(panSCmd)) {
-	    firePanEvent(180f);
-	} else if (command.equals(panSWCmd)) {
-	    firePanEvent(-135f);
-	} else if (command.equals(panWCmd)) {
-	    firePanEvent(-90f);
-	} else if (command.equals(centerCmd)) {
-	    // go back to the center point
+        Debug.message("navpanel", "NavigatePanel.actionPerformed(): " +
+                      command);
+        if (command.equals(panNWCmd)) {
+            firePanEvent(-45f);
+        } else if (command.equals(panNCmd)) {
+            firePanEvent(0f);
+        } else if (command.equals(panNECmd)) {
+            firePanEvent(45f);
+        } else if (command.equals(panECmd)) {
+            firePanEvent(90f);
+        } else if (command.equals(panSECmd)) {
+            firePanEvent(135f);
+        } else if (command.equals(panSCmd)) {
+            firePanEvent(180f);
+        } else if (command.equals(panSWCmd)) {
+            firePanEvent(-135f);
+        } else if (command.equals(panWCmd)) {
+            firePanEvent(-90f);
+        } else if (command.equals(centerCmd)) {
+            // go back to the center point
 
-	    float lat;
-	    float lon;
-	    if (useDefaultCenter) {
-		lat = defaultCenterLat;
-		lon = defaultCenterLon;
-	    } else {
-		lat = Environment.getFloat(Environment.Latitude, 0f);
-		lon = Environment.getFloat(Environment.Longitude, 0f);
-	    }
-	    fireCenterEvent(lat, lon);
-	}
+            float lat;
+            float lon;
+            if (useDefaultCenter) {
+                lat = defaultCenterLat;
+                lon = defaultCenterLon;
+            } else {
+                lat = Environment.getFloat(Environment.Latitude, 0f);
+                lon = Environment.getFloat(Environment.Longitude, 0f);
+            }
+            fireCenterEvent(lat, lon);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -318,21 +318,21 @@ public class NavigatePanel extends OMToolComponent
     ///////////////////////////////////////////////////////////////////////////
 
     public void findAndInit(Object obj) {
-	if (obj instanceof PanListener) {
-	    addPanListener((PanListener)obj);
-	}
-	if (obj instanceof CenterListener) {
-	    addCenterListener((CenterListener)obj);
-	}
+        if (obj instanceof PanListener) {
+            addPanListener((PanListener)obj);
+        }
+        if (obj instanceof CenterListener) {
+            addCenterListener((CenterListener)obj);
+        }
     }
 
     public void findAndUndo(Object obj) {
-	if (obj instanceof PanListener) {
-	    removePanListener((PanListener)obj);
-	}
-	if (obj instanceof CenterListener) {
-	    removeCenterListener((CenterListener)obj);
-	}
+        if (obj instanceof PanListener) {
+            removePanListener((PanListener)obj);
+        }
+        if (obj instanceof CenterListener) {
+            removeCenterListener((CenterListener)obj);
+        }
     }
 
 }

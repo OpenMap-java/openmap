@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMControlPanel.java,v $
 // $RCSfile: OMControlPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:21:42 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,132 +53,132 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
 
     public OMControlPanel() {
 
-	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-	JPanel navBox = new JPanel();
-	navBox.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
-	navBox.setLayout(new BorderLayout());
+        JPanel navBox = new JPanel();
+        navBox.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        navBox.setLayout(new BorderLayout());
 
-	OverviewMapHandler overviewMap = new OverviewMapHandler();
-	overviewMap.setUseAsTool(false);
-	overviewMap.setPreferredSize(new Dimension(100, 100));
-	overviewMap.setBorder(BorderFactory.createRaisedBevelBorder());
-	overviewMap.setPropertyPrefix("OverviewMapHandler");
-	children.add(overviewMap);
+        OverviewMapHandler overviewMap = new OverviewMapHandler();
+        overviewMap.setUseAsTool(false);
+        overviewMap.setPreferredSize(new Dimension(100, 100));
+        overviewMap.setBorder(BorderFactory.createRaisedBevelBorder());
+        overviewMap.setPropertyPrefix("OverviewMapHandler");
+        children.add(overviewMap);
 
-	NavigatePanel navPanel = new NavigatePanel();
-	navPanel.setPropertyPrefix("NavigatePanel");
-	ZoomPanel zoomPanel = new ZoomPanel();
-	zoomPanel.setPropertyPrefix("ZoomPanel");
-	ProjectionStackTool projStack = new ProjectionStackTool();
-	projStack.setPropertyPrefix("ProjectionStackTool");
-	ScaleTextPanel scalePanel = new ScaleTextPanel();
-	scalePanel.setPropertyPrefix("ScaleTextPanel");
-	scalePanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        NavigatePanel navPanel = new NavigatePanel();
+        navPanel.setPropertyPrefix("NavigatePanel");
+        ZoomPanel zoomPanel = new ZoomPanel();
+        zoomPanel.setPropertyPrefix("ZoomPanel");
+        ProjectionStackTool projStack = new ProjectionStackTool();
+        projStack.setPropertyPrefix("ProjectionStackTool");
+        ScaleTextPanel scalePanel = new ScaleTextPanel();
+        scalePanel.setPropertyPrefix("ScaleTextPanel");
+        scalePanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
-	JPanel navBoxRN = new JPanel();
-	children.add(navPanel);
-	navBoxRN.add(navPanel);
-	navBoxRN.add(Box.createHorizontalGlue());
-	children.add(zoomPanel);
-	navBoxRN.add(zoomPanel);
+        JPanel navBoxRN = new JPanel();
+        children.add(navPanel);
+        navBoxRN.add(navPanel);
+        navBoxRN.add(Box.createHorizontalGlue());
+        children.add(zoomPanel);
+        navBoxRN.add(zoomPanel);
 
-	JPanel navBoxRS = new JPanel();
-	navBoxRS.setLayout(new BorderLayout());
-	children.add(projStack);
-	children.add(scalePanel);
-	navBoxRS.add(projStack, BorderLayout.NORTH);
-	navBoxRS.add(scalePanel, BorderLayout.SOUTH);
+        JPanel navBoxRS = new JPanel();
+        navBoxRS.setLayout(new BorderLayout());
+        children.add(projStack);
+        children.add(scalePanel);
+        navBoxRS.add(projStack, BorderLayout.NORTH);
+        navBoxRS.add(scalePanel, BorderLayout.SOUTH);
 
-	JPanel navBoxR = new JPanel();
-	navBoxR.setLayout(new BorderLayout());
-	navBoxR.add(navBoxRN, BorderLayout.NORTH);
-	navBoxR.add(navBoxRS, BorderLayout.SOUTH);
+        JPanel navBoxR = new JPanel();
+        navBoxR.setLayout(new BorderLayout());
+        navBoxR.add(navBoxRN, BorderLayout.NORTH);
+        navBoxR.add(navBoxRS, BorderLayout.SOUTH);
 
-	navBox.add(overviewMap, BorderLayout.CENTER);
-	navBox.add(navBoxR, BorderLayout.EAST);
+        navBox.add(overviewMap, BorderLayout.CENTER);
+        navBox.add(navBoxR, BorderLayout.EAST);
 
-	add(navBox);
+        add(navBox);
 
-	LayersPanel layersPanel = new LayersPanel();
-	layersPanel.setPropertyPrefix("LayersPanel");
-	layersPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-	children.add(layersPanel);
-	add(layersPanel);
-	validate();
+        LayersPanel layersPanel = new LayersPanel();
+        layersPanel.setPropertyPrefix("LayersPanel");
+        layersPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+        children.add(layersPanel);
+        add(layersPanel);
+        validate();
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
-	String pl = props.getProperty(prefix + PreferredLocationProperty);
-	if (pl != null) {
-	    setPreferredLocation(pl);
-	}
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String pl = props.getProperty(prefix + PreferredLocationProperty);
+        if (pl != null) {
+            setPreferredLocation(pl);
+        }
 
-	Iterator it = children.iterator();
-	while (it.hasNext()) {
-	    Object obj = it.next();
-	    if (obj instanceof PropertyConsumer) {
-		// Each property prefix will be set with the marker
-		// name for the OMControlPanel plus the class name
-		// already set as property prefix in the constructor.
-		String newPrefix = prefix + ((PropertyConsumer)obj).getPropertyPrefix();
-		((PropertyConsumer)obj).setProperties(newPrefix, props);
-	    }
-	}
+        Iterator it = children.iterator();
+        while (it.hasNext()) {
+            Object obj = it.next();
+            if (obj instanceof PropertyConsumer) {
+                // Each property prefix will be set with the marker
+                // name for the OMControlPanel plus the class name
+                // already set as property prefix in the constructor.
+                String newPrefix = prefix + ((PropertyConsumer)obj).getPropertyPrefix();
+                ((PropertyConsumer)obj).setProperties(newPrefix, props);
+            }
+        }
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	props.put(PropUtils.getScopedPropertyPrefix(this) + 
-		  PreferredLocationProperty, getPreferredLocation());
+        props.put(PropUtils.getScopedPropertyPrefix(this) + 
+                  PreferredLocationProperty, getPreferredLocation());
 
-	Iterator it = children.iterator();
-	while (it.hasNext()) {
-	    Object obj = it.next();
-	    if (obj instanceof PropertyConsumer) {
-		((PropertyConsumer)obj).getProperties(props);
-	    }
-	}
-	return props;
+        Iterator it = children.iterator();
+        while (it.hasNext()) {
+            Object obj = it.next();
+            if (obj instanceof PropertyConsumer) {
+                ((PropertyConsumer)obj).getProperties(props);
+            }
+        }
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
+        props = super.getPropertyInfo(props);
 
-	props.put(PreferredLocationProperty, "The preferred BorderLayout direction to place this component.");
+        props.put(PreferredLocationProperty, "The preferred BorderLayout direction to place this component.");
 
-	Iterator it = children.iterator();
-	while (it.hasNext()) {
-	    Object obj = it.next();
-	    if (obj instanceof PropertyConsumer) {
-		((PropertyConsumer)obj).getPropertyInfo(props);
-	    }
-	}
-	return props;
+        Iterator it = children.iterator();
+        while (it.hasNext()) {
+            Object obj = it.next();
+            if (obj instanceof PropertyConsumer) {
+                ((PropertyConsumer)obj).getPropertyInfo(props);
+            }
+        }
+        return props;
     }
 
     public void findAndInit(Object someObj) {
-	Iterator it = children.iterator();
-	while (it.hasNext()) {
-	    Object obj = it.next();
-	    if (obj instanceof LightMapHandlerChild) {
-		((LightMapHandlerChild)obj).findAndInit(someObj);
-	    }
-	}
+        Iterator it = children.iterator();
+        while (it.hasNext()) {
+            Object obj = it.next();
+            if (obj instanceof LightMapHandlerChild) {
+                ((LightMapHandlerChild)obj).findAndInit(someObj);
+            }
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	Iterator it = children.iterator();
-	while (it.hasNext()) {
-	    Object obj = it.next();
-	    if (obj instanceof LightMapHandlerChild) {
-		((LightMapHandlerChild)obj).findAndUndo(someObj);
-	    }
-	}
+        Iterator it = children.iterator();
+        while (it.hasNext()) {
+            Object obj = it.next();
+            if (obj instanceof LightMapHandlerChild) {
+                ((LightMapHandlerChild)obj).findAndUndo(someObj);
+            }
+        }
     }
 
 
@@ -191,13 +191,13 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
      * MapPanelChild method.
      */
     public void setPreferredLocation(String value) {
-	preferredLocation = value;
+        preferredLocation = value;
     }
 
     /** 
      * MapPanelChild method. 
      */
     public String getPreferredLocation() {
-	return preferredLocation;
+        return preferredLocation;
     }
 }

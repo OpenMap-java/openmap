@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/PrimitiveTable.java,v $
 // $RCSfile: PrimitiveTable.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,33 +50,33 @@ public abstract class PrimitiveTable extends DcwRecordFile {
      * @exception FormatException if something goes wrong opening the file
      */
     public PrimitiveTable(CoverageTable cov, TileDirectory tile,
-			  String tablename) throws FormatException{
-	super(cov.getDataPath() + tile.getPath() + tablename +
-	      (cov.appendDot ? "." : ""));
-	this.idColumn = whatColumn(Constants.ID);
-	this.covtable = cov;
-	this.tile = tile;
+                          String tablename) throws FormatException{
+        super(cov.getDataPath() + tile.getPath() + tablename +
+              (cov.appendDot ? "." : ""));
+        this.idColumn = whatColumn(Constants.ID);
+        this.covtable = cov;
+        this.tile = tile;
     }
 
     /**
      * Get the coverage table that we are working on.
      */
     public CoverageTable getCoverageTable() {
-	return covtable;
+        return covtable;
     }
 
     /**
      * Gets the id column value for the row.
      */
     public int getID(List l) {
-	return ((Number)l.get(idColumn)).intValue();
+        return ((Number)l.get(idColumn)).intValue();
     }
 
     /**
      * Gets the tile we are for.
      */
     public TileDirectory getTileDirectory() {
-	return tile;
+        return tile;
     }
     /**
      * Parse the records for this tile, calling warehouse.createXXXX
@@ -91,8 +91,8 @@ public abstract class PrimitiveTable extends DcwRecordFile {
      * @see VPFGraphicWarehouse
      */
     abstract public void drawTile(VPFGraphicWarehouse warehouse,
-			float dpplat, float dpplon,
-			LatLonPoint ll1, LatLonPoint ll2);
+                        float dpplat, float dpplon,
+                        LatLonPoint ll1, LatLonPoint ll2);
 
     /**
      * Use the warehouse to create a graphic from a feature in the AreaTable.
@@ -108,7 +108,7 @@ public abstract class PrimitiveTable extends DcwRecordFile {
      * @see VPFGraphicWarehouse#createEdge
      */
     abstract public void drawFeature(VPFFeatureWarehouse warehouse,
-			float dpplat, float dpplon,
-			LatLonPoint ll1, LatLonPoint ll2,
-			List area, String featureType);
+                        float dpplat, float dpplon,
+                        LatLonPoint ll1, LatLonPoint ll2,
+                        List area, String featureType);
 }

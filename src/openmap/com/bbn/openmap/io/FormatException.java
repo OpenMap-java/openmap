@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/FormatException.java,v $
 // $RCSfile: FormatException.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:44:22 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -38,8 +38,8 @@ public class FormatException extends Exception {
      * Construct a FormatException without a detail message.
      */
     public FormatException() {
-	super();
-	rootCause = null;
+        super();
+        rootCause = null;
     }
     /**
      * Construct a FormatException with a detail message.
@@ -47,8 +47,8 @@ public class FormatException extends Exception {
      * @param s the detail message
      */
     public FormatException(String s) {
-	super(s);
-	rootCause = null;
+        super(s);
+        rootCause = null;
     }
     /**
      * Construct a FormatException with a detail message and root cause.
@@ -57,8 +57,8 @@ public class FormatException extends Exception {
      * @param rootCause the root cause (not null)
      */
     public FormatException(String s, Throwable rootCause) {
-	super(s + ": " + rootCause.getLocalizedMessage());
-	this.rootCause = rootCause;
+        super(s + ": " + rootCause.getLocalizedMessage());
+        this.rootCause = rootCause;
     }
 
     /**
@@ -67,7 +67,7 @@ public class FormatException extends Exception {
      * @return the root exception, or null if there isn't one
      */
     public Throwable getRootCause() {
-	return rootCause;
+        return rootCause;
     }
 
     /**
@@ -75,11 +75,11 @@ public class FormatException extends Exception {
      * to System.err.
      */
     public void printStackTrace() {
-	super.printStackTrace();
-	if (rootCause != null) {
-	    System.err.println("With Root Cause:");
-	    rootCause.printStackTrace();
-	}
+        super.printStackTrace();
+        if (rootCause != null) {
+            System.err.println("With Root Cause:");
+            rootCause.printStackTrace();
+        }
     }
 
     /**
@@ -89,11 +89,11 @@ public class FormatException extends Exception {
      * @param ps the stream to print to
      */
     public void printStackTrace(PrintStream ps) {
-	super.printStackTrace(ps);
-	if (rootCause != null) {
-	    ps.println("With Root Cause:");
-	    rootCause.printStackTrace(ps);
-	}
+        super.printStackTrace(ps);
+        if (rootCause != null) {
+            ps.println("With Root Cause:");
+            rootCause.printStackTrace(ps);
+        }
     }
 
     /**
@@ -103,10 +103,10 @@ public class FormatException extends Exception {
      * @param pw the writer to print to
      */
     public void printStackTrace(PrintWriter pw) {
-	super.printStackTrace(pw);
-	if (rootCause != null) {
-	    pw.println("With Root Cause:");
-	    rootCause.printStackTrace(pw);
-	}
+        super.printStackTrace(pw);
+        if (rootCause != null) {
+            pw.println("With Root Cause:");
+            rootCause.printStackTrace(pw);
+        }
     }
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/ScenarioGraphicLoader.java,v $
 // $RCSfile: ScenarioGraphicLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:47:45 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -210,7 +210,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * HH:mm:ss z), except for the local timezone.
      */
     protected SimpleDateFormat timeFormat = 
-	new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
+        new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
 
     /**
      * The TimerIntervalFormat controls how the pace can be specified
@@ -218,7 +218,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * the timerIntervalFormat property to set it to something else.
      */
     protected SimpleDateFormat timerIntervalFormat = 
-	new SimpleDateFormat(DefaultTimerIntervalFormat);
+        new SimpleDateFormat(DefaultTimerIntervalFormat);
 
     protected String timerPaceBaselineString = DefaultPaceBaselineString;
 
@@ -249,9 +249,9 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
     protected TimeSliderSupport timeSliderSupport;
 
     public ScenarioGraphicLoader() {
-	drawingAttributes = new DrawingAttributes();
-	dataBounds = new DataBounds();
-	setUpdateInterval(500); // Default 1/2 second.
+        drawingAttributes = new DrawingAttributes();
+        dataBounds = new DataBounds();
+        setUpdateInterval(500); // Default 1/2 second.
     }
 
     /**
@@ -259,97 +259,97 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * modifies the OMGraphics and updates the map.
      */
     public synchronized void manageGraphics() {
-	Projection p = getProjection();
-	OMGraphicHandler receiver = getReceiver();
-	boolean DEBUG = Debug.debugging("scenario");
-	if (receiver != null && p != null) {
-	    if (scenarioGraphics == null) {
-		scenarioGraphics = createData();
+        Projection p = getProjection();
+        OMGraphicHandler receiver = getReceiver();
+        boolean DEBUG = Debug.debugging("scenario");
+        if (receiver != null && p != null) {
+            if (scenarioGraphics == null) {
+                scenarioGraphics = createData();
 
-		// Update limits
-		if (timeSliderSupport != null) {
-		    timeSliderSupport.setStartTime(startTime);
-		    timeSliderSupport.setEndTime(endTime);
-		}
-	    }
+                // Update limits
+                if (timeSliderSupport != null) {
+                    timeSliderSupport.setStartTime(startTime);
+                    timeSliderSupport.setEndTime(endTime);
+                }
+            }
 
-	    if (mode == TOTAL_SCENARIO_MODE) {
-		if (DEBUG) {
-		    Debug.output("ScenarioGraphicLoader (" + getName() + 
-				 ") generating total scenario ");
-		}
-		scenarioGraphics.generateTotalScenario(p);
-	    } else {
-		long currentTime = getTime();
-		if (DEBUG) {
-		    Debug.output("ScenarioGraphicLoader (" + getName() + 
-				 ") snapshot at " + currentTime);
-		}
-		scenarioGraphics.generateSnapshot(p, currentTime);
-	    }
-	    if (DEBUG) {
-		Debug.output("ScenarioGraphicLoader (" + getName() + 
-			     ") setting list of " + 
-			     scenarioGraphics.size() + " scenario graphics");
-	    }
-	    receiver.setList(scenarioGraphics);
-	} else {
-	    Debug.output("ScenarioGraphicLoader (" + getName() + 
-			 ") doesn't have a connection to the map.");
-	}
+            if (mode == TOTAL_SCENARIO_MODE) {
+                if (DEBUG) {
+                    Debug.output("ScenarioGraphicLoader (" + getName() + 
+                                 ") generating total scenario ");
+                }
+                scenarioGraphics.generateTotalScenario(p);
+            } else {
+                long currentTime = getTime();
+                if (DEBUG) {
+                    Debug.output("ScenarioGraphicLoader (" + getName() + 
+                                 ") snapshot at " + currentTime);
+                }
+                scenarioGraphics.generateSnapshot(p, currentTime);
+            }
+            if (DEBUG) {
+                Debug.output("ScenarioGraphicLoader (" + getName() + 
+                             ") setting list of " + 
+                             scenarioGraphics.size() + " scenario graphics");
+            }
+            receiver.setList(scenarioGraphics);
+        } else {
+            Debug.output("ScenarioGraphicLoader (" + getName() + 
+                         ") doesn't have a connection to the map.");
+        }
     }
 
     // RealTimeHandler methods.
 
     public void setPace(int pace) {
-	timeIncrement = pace;
+        timeIncrement = pace;
     }
 
     public int getPace() {
-	return timeIncrement;
+        return timeIncrement;
     }
 
     public long getTime() {
-	return time;
+        return time;
     }
 
     public void setTime(long t) {
-	time = t;
+        time = t;
 
-	if (timeDate != null && timeLabel != null) {
-	    timeDate.setTime(time);
-	    timeLabel.setText(timeFormat.format(timeDate));
-	}
+        if (timeDate != null && timeLabel != null) {
+            timeDate.setTime(time);
+            timeLabel.setText(timeFormat.format(timeDate));
+        }
 
-	if (timeSliderSupport != null) {
-	    timeSliderSupport.update(time);
-	}
+        if (timeSliderSupport != null) {
+            timeSliderSupport.update(time);
+        }
 
-	// If the time has been set to be somewhere within the boundaries 
-	// of time, make sure we're showing the current location of
-	// everything.
-	if (time > startTime && time < endTime) {
-	    mode = SNAPSHOT_SCENARIO_MODE;
-	}
+        // If the time has been set to be somewhere within the boundaries 
+        // of time, make sure we're showing the current location of
+        // everything.
+        if (time > startTime && time < endTime) {
+            mode = SNAPSHOT_SCENARIO_MODE;
+        }
 
-	manageGraphics();
+        manageGraphics();
     }
 
     public void startClock() {
-	if (!timer.isRunning()) {
-	    pcs.firePropertyChange(TIMER_RUNNING_STATUS, TIMER_STOPPED, (getClockDirection() > 0?TIMER_FORWARD:TIMER_BACKWARD));
-	}
-	if (Debug.debugging("scenario")) {
-	    Debug.output("ScenarioGraphicLoader " + getName() + ": Starting clock");
-	}
-	timer.restart();
+        if (!timer.isRunning()) {
+            pcs.firePropertyChange(TIMER_RUNNING_STATUS, TIMER_STOPPED, (getClockDirection() > 0?TIMER_FORWARD:TIMER_BACKWARD));
+        }
+        if (Debug.debugging("scenario")) {
+            Debug.output("ScenarioGraphicLoader " + getName() + ": Starting clock");
+        }
+        timer.restart();
     }
 
     public void stopClock() {
-	if (timer.isRunning()) {
-	    pcs.firePropertyChange(TIMER_RUNNING_STATUS, (getClockDirection() > 0?TIMER_FORWARD:TIMER_BACKWARD), TIMER_STOPPED);
-	    timer.stop();
-	}
+        if (timer.isRunning()) {
+            pcs.firePropertyChange(TIMER_RUNNING_STATUS, (getClockDirection() > 0?TIMER_FORWARD:TIMER_BACKWARD), TIMER_STOPPED);
+            timer.stop();
+        }
     }
 
     /**
@@ -358,21 +358,21 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * direction is negative, clock runs backward.
      */
     public void setClockDirection(int direction) {
-	String oldDirection = clockDirection > 0?TIMER_FORWARD:TIMER_BACKWARD;
-	
-	if (direction >= 0) {
-	    clockDirection = 1;
-	} else {
-	    clockDirection = -1;
-	}
+        String oldDirection = clockDirection > 0?TIMER_FORWARD:TIMER_BACKWARD;
+        
+        if (direction >= 0) {
+            clockDirection = 1;
+        } else {
+            clockDirection = -1;
+        }
 
-	String newDirection = clockDirection > 0?TIMER_FORWARD:TIMER_BACKWARD;
+        String newDirection = clockDirection > 0?TIMER_FORWARD:TIMER_BACKWARD;
 
-	if (timer.isRunning()) {
-	    if (oldDirection != newDirection) {
-		pcs.firePropertyChange(TIMER_RUNNING_STATUS, oldDirection, newDirection);
-	    }
-	}
+        if (timer.isRunning()) {
+            if (oldDirection != newDirection) {
+                pcs.firePropertyChange(TIMER_RUNNING_STATUS, oldDirection, newDirection);
+            }
+        }
     }
 
     /**
@@ -381,7 +381,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * direction is negative, clock runs backward.
      */
     public int getClockDirection() {
-	return clockDirection;
+        return clockDirection;
     }
 
     /**
@@ -397,7 +397,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * @param amount to change the current time by, in milliseconds.
      */
     protected void changeTimeBy(long amount) {
-	changeTimeBy(amount, timeWrap);
+        changeTimeBy(amount, timeWrap);
     }
 
     /**
@@ -414,56 +414,56 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      */
     protected void changeTimeBy(long amount, boolean wrapAroundTimeLimits) {
 
-	long oldTime = getTime();
-	long newTime;
+        long oldTime = getTime();
+        long newTime;
 
-	if (oldTime > endTime || oldTime < startTime) {
-	    if (wrapAroundTimeLimits) {
-		if (amount >= 0) {
-		    newTime = startTime + amount;
-		} else {
-		    newTime = endTime + amount;
-		}
-	    } else {
-		if (amount >= 0) {
-		    newTime = startTime;
-		} else {
-		    newTime = endTime;
-		}
+        if (oldTime > endTime || oldTime < startTime) {
+            if (wrapAroundTimeLimits) {
+                if (amount >= 0) {
+                    newTime = startTime + amount;
+                } else {
+                    newTime = endTime + amount;
+                }
+            } else {
+                if (amount >= 0) {
+                    newTime = startTime;
+                } else {
+                    newTime = endTime;
+                }
 
-		if (timer.isRunning()) {
- 		    mode = TOTAL_SCENARIO_MODE;
-		    stopClock();
-		    setTime(newTime);
-		    return;
-		}
-	    }
-	} else {
-	    newTime = oldTime + amount;
-	}
+                if (timer.isRunning()) {
+                    mode = TOTAL_SCENARIO_MODE;
+                    stopClock();
+                    setTime(newTime);
+                    return;
+                }
+            }
+        } else {
+            newTime = oldTime + amount;
+        }
 
-	if (Debug.debugging("scenario")) {
-	    Debug.output("ScenarioGraphicLoader (" + getName() + 
-			 ") changing time by [" +
-			 amount + "] to (" + newTime + ")");
-	}
+        if (Debug.debugging("scenario")) {
+            Debug.output("ScenarioGraphicLoader (" + getName() + 
+                         ") changing time by [" +
+                         amount + "] to (" + newTime + ")");
+        }
 
-  	mode = SNAPSHOT_SCENARIO_MODE;
-	setTime(newTime);
+        mode = SNAPSHOT_SCENARIO_MODE;
+        setTime(newTime);
     }
 
     /**
      * Move the clock forward one clock interval.
      */
     public void stepForward() {
-	changeTimeBy(timeIncrement, true);
+        changeTimeBy(timeIncrement, true);
     }
     
     /**
      * Move the clock back one clock interval.
      */
     public void stepBackward() {
-	changeTimeBy(-timeIncrement, true);
+        changeTimeBy(-timeIncrement, true);
     }
 
     /**
@@ -472,159 +472,159 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * command should be filled in.
      */
     public void actionPerformed(ActionEvent ae) {
-	// Will check to see if any GUI commands trigger this 
-	// method, otherwise, it should just change the time.
- 	String cmd = ae.getActionCommand();
-	if (cmd == SCENARIO_MODE_CMD) {
-	    timeWrap = ((JToggleButton)ae.getSource()).isSelected();
-	} else {
-	    changeTimeBy(timeIncrement * clockDirection);
-	}
+        // Will check to see if any GUI commands trigger this 
+        // method, otherwise, it should just change the time.
+        String cmd = ae.getActionCommand();
+        if (cmd == SCENARIO_MODE_CMD) {
+            timeWrap = ((JToggleButton)ae.getSource()).isSelected();
+        } else {
+            changeTimeBy(timeIncrement * clockDirection);
+        }
     }
 
     /**
      * Read the data files and construct the ScenarioPoints.
      */
     public synchronized ScenarioGraphicList createData() {
-	ScenarioGraphicList list = new ScenarioGraphicList();
-	Hashtable library = new Hashtable();
-	// Create location data
-	if (locationFile != null &&
-	    nameIndex != -1) {
-	    Debug.message("scenario", "Reading location file...");
-	    try {
-		CSVFile locations = new CSVFile(locationFile);
-		locations.loadData();
-		Iterator records = locations.iterator();
-		while (records.hasNext()) {
-		    String name = null;
-		    String icon = null;
-		    Vector record = (Vector) records.next();
-		    name = (String)record.elementAt(nameIndex);
+        ScenarioGraphicList list = new ScenarioGraphicList();
+        Hashtable library = new Hashtable();
+        // Create location data
+        if (locationFile != null &&
+            nameIndex != -1) {
+            Debug.message("scenario", "Reading location file...");
+            try {
+                CSVFile locations = new CSVFile(locationFile);
+                locations.loadData();
+                Iterator records = locations.iterator();
+                while (records.hasNext()) {
+                    String name = null;
+                    String icon = null;
+                    Vector record = (Vector) records.next();
+                    name = (String)record.elementAt(nameIndex);
 
-		    if (iconIndex != -1) {
-			icon = (String)record.elementAt(iconIndex);
-		    }
+                    if (iconIndex != -1) {
+                        icon = (String)record.elementAt(iconIndex);
+                    }
 
-		    if (name != null) {
-			ScenarioPoint location = new ScenarioPoint(name, icon);
-			location.setShowName(showNames);
-			drawingAttributes.setTo(location);
-			library.put(name.intern(), location);
-			list.add(location);
-		    } else {
-			Debug.error("ScenaroGraphicLoader: no name to use to create location: " + name);
-		    }
-		}
-	    } catch (MalformedURLException murle) {
-		Debug.error("ScenarioGraphicLoader: problem with location file: " + 
-			    locationFile);
-		return list;
-	    } catch (ArrayIndexOutOfBoundsException aioobe) {
-		Debug.error("ScenarioGraphicLoader: problem parsing location file: " + locationFile);
-	    } catch (NullPointerException npe) {
-		Debug.error("ScenarioGraphicLoader (" + getName() + ") null pointer exception, most likely a problem finding the organization data file");
-	    }
-	} else {
-	    Debug.error("ScenarioGraphicLoader(" + getName() + 
-			"): Location file (" + 
-			locationFile + ") not configured.");
-	    return list;
-	}
+                    if (name != null) {
+                        ScenarioPoint location = new ScenarioPoint(name, icon);
+                        location.setShowName(showNames);
+                        drawingAttributes.setTo(location);
+                        library.put(name.intern(), location);
+                        list.add(location);
+                    } else {
+                        Debug.error("ScenaroGraphicLoader: no name to use to create location: " + name);
+                    }
+                }
+            } catch (MalformedURLException murle) {
+                Debug.error("ScenarioGraphicLoader: problem with location file: " + 
+                            locationFile);
+                return list;
+            } catch (ArrayIndexOutOfBoundsException aioobe) {
+                Debug.error("ScenarioGraphicLoader: problem parsing location file: " + locationFile);
+            } catch (NullPointerException npe) {
+                Debug.error("ScenarioGraphicLoader (" + getName() + ") null pointer exception, most likely a problem finding the organization data file");
+            }
+        } else {
+            Debug.error("ScenarioGraphicLoader(" + getName() + 
+                        "): Location file (" + 
+                        locationFile + ") not configured.");
+            return list;
+        }
 
-	// OK, got the locations built up, need to fill up the scenario
-	// Create location data
-	if (activityFile != null &&
-	    activityNameIndex != -1 &&
-	    latIndex != -1 && lonIndex != -1 && timeIndex != -1) {
-	    Debug.message("scenario", "Reading activity file...");
-	    try {
-		CSVFile activities = new CSVFile(activityFile);
-		activities.loadData(); // numbers as strings == false
-		Iterator records = activities.iterator();
-		while (records.hasNext()) {
-		    String name = null;
-		    float lat;
-		    float lon;
-		    long time;
+        // OK, got the locations built up, need to fill up the scenario
+        // Create location data
+        if (activityFile != null &&
+            activityNameIndex != -1 &&
+            latIndex != -1 && lonIndex != -1 && timeIndex != -1) {
+            Debug.message("scenario", "Reading activity file...");
+            try {
+                CSVFile activities = new CSVFile(activityFile);
+                activities.loadData(); // numbers as strings == false
+                Iterator records = activities.iterator();
+                while (records.hasNext()) {
+                    String name = null;
+                    float lat;
+                    float lon;
+                    long time;
 
-		    Vector record = (Vector) records.next();
-		    name = record.elementAt(activityNameIndex).toString().intern();
+                    Vector record = (Vector) records.next();
+                    name = record.elementAt(activityNameIndex).toString().intern();
 
-		    try {
-			lat = ((Double)record.elementAt(latIndex)).floatValue();
-			lon = ((Double)record.elementAt(lonIndex)).floatValue();
+                    try {
+                        lat = ((Double)record.elementAt(latIndex)).floatValue();
+                        lon = ((Double)record.elementAt(lonIndex)).floatValue();
 
-			// parse time from string, ending up with
-			// milliseconds from time epoch.
-			String timeString = (String)record.elementAt(timeIndex);
-			timeDate = timeFormat.parse(timeString);
-			time = timeDate.getTime();
+                        // parse time from string, ending up with
+                        // milliseconds from time epoch.
+                        String timeString = (String)record.elementAt(timeIndex);
+                        timeDate = timeFormat.parse(timeString);
+                        time = timeDate.getTime();
 
-			if (time < startTime) {
-			    startTime = time;
-			}
+                        if (time < startTime) {
+                            startTime = time;
+                        }
 
-			if (time > endTime) {
-			    endTime = time;
-			}
+                        if (time > endTime) {
+                            endTime = time;
+                        }
 
-			dataBounds.add((double)lon, (double)lat);
+                        dataBounds.add((double)lon, (double)lat);
 
-			if (name != null) {
-			    ScenarioPoint point = (ScenarioPoint)library.get(name);
-			    if (point != null) {
-				TimeStamp ts = new TimeStamp(lat, lon, time);
-				point.addTimeStamp(ts);
-			    } else {
-				Debug.error("SenaroGraphicLoader: ScenarioPoint not found for " + name + ", entry: " + record);
-			    }
-			} else {
-			    Debug.error("SenaroGraphicLoader: no name to use to create activity point: " + name);
-			}
+                        if (name != null) {
+                            ScenarioPoint point = (ScenarioPoint)library.get(name);
+                            if (point != null) {
+                                TimeStamp ts = new TimeStamp(lat, lon, time);
+                                point.addTimeStamp(ts);
+                            } else {
+                                Debug.error("SenaroGraphicLoader: ScenarioPoint not found for " + name + ", entry: " + record);
+                            }
+                        } else {
+                            Debug.error("SenaroGraphicLoader: no name to use to create activity point: " + name);
+                        }
 
-		    } catch (ClassCastException cce) {
+                    } catch (ClassCastException cce) {
 
-			Object obj0 = record.elementAt(activityNameIndex);
-			Object obj1 = record.elementAt(latIndex);
-			Object obj2 = record.elementAt(lonIndex);
-			Object obj3 = record.elementAt(timeIndex);
+                        Object obj0 = record.elementAt(activityNameIndex);
+                        Object obj1 = record.elementAt(latIndex);
+                        Object obj2 = record.elementAt(lonIndex);
+                        Object obj3 = record.elementAt(timeIndex);
 
-			Debug.error(
-			    "ScenarioGraphicLoader(" + getName() + 
-			    ") has problem with indexes in activity file for " + 
-			    obj0 +  " (" + obj0.getClass().getName() + ")" +
-			    ":\n\tlat index = " + latIndex + 
-			    ", value = " + obj1 +  " (" + obj1.getClass().getName() + 
-			    ")\n\t lon index = " + lonIndex + 
-			    ", value = " + obj2 + " (" + obj2.getClass().getName() + 
-			    ")\n\t time index = " + timeIndex + 
-			    ", value = " + obj3 + " (" + obj3.getClass().getName() + 
-			    ")");
-		    } catch (ParseException pe) {
-			Debug.output("ScenarioGraphicLoader(" + getName() +
-				     ") has problem with time format. " + 
-				     pe.getMessage());
-		    }
-		}
-	    } catch (MalformedURLException murle) {
-		Debug.error("ScenarioGraphicLoader: problem with activity file: " + 
-			    activityFile);
-		return list;
-	    } catch (NullPointerException npe) {
-		Debug.error("ScenarioGraphicLoader (" + getName() + ") null pointer exception, most likely a problem finding the activites data file");
-	    }
-	} else {
-	    Debug.error("ScenarioGraphicLoader(" + getName() + "): Activity file (" + 
-			activityFile + ") not configured.");
-	    return list;
-	}
+                        Debug.error(
+                            "ScenarioGraphicLoader(" + getName() + 
+                            ") has problem with indexes in activity file for " + 
+                            obj0 +  " (" + obj0.getClass().getName() + ")" +
+                            ":\n\tlat index = " + latIndex + 
+                            ", value = " + obj1 +  " (" + obj1.getClass().getName() + 
+                            ")\n\t lon index = " + lonIndex + 
+                            ", value = " + obj2 + " (" + obj2.getClass().getName() + 
+                            ")\n\t time index = " + timeIndex + 
+                            ", value = " + obj3 + " (" + obj3.getClass().getName() + 
+                            ")");
+                    } catch (ParseException pe) {
+                        Debug.output("ScenarioGraphicLoader(" + getName() +
+                                     ") has problem with time format. " + 
+                                     pe.getMessage());
+                    }
+                }
+            } catch (MalformedURLException murle) {
+                Debug.error("ScenarioGraphicLoader: problem with activity file: " + 
+                            activityFile);
+                return list;
+            } catch (NullPointerException npe) {
+                Debug.error("ScenarioGraphicLoader (" + getName() + ") null pointer exception, most likely a problem finding the activites data file");
+            }
+        } else {
+            Debug.error("ScenarioGraphicLoader(" + getName() + "): Activity file (" + 
+                        activityFile + ") not configured.");
+            return list;
+        }
 
-	this.time = startTime;
+        this.time = startTime;
 
-	Debug.message("scenario", "Reading files OK");
+        Debug.message("scenario", "Reading files OK");
 
-	return list;
+        return list;
     }
 
     /** 
@@ -635,102 +635,102 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * @param properties the properties set in the properties file.  
      */
     public void setProperties(String prefix, Properties properties) {
-	super.setProperties(prefix, properties);
+        super.setProperties(prefix, properties);
 
-	drawingAttributes.setProperties(prefix, properties);
+        drawingAttributes.setProperties(prefix, properties);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	locationFile = properties.getProperty(
-	    prefix + LocationFileProperty);
-	iconIndex = LayerUtils.intFromProperties(
-	    properties, prefix + IconIndexProperty, -1);
-	nameIndex = LayerUtils.intFromProperties(
-	    properties, prefix + NameIndexProperty, -1);
-	activityNameIndex = LayerUtils.intFromProperties(
-	    properties, prefix + ActivityNameIndexProperty, -1);
-	activityFile = properties.getProperty(
-	    prefix + ActivityFileProperty);
-	latIndex = LayerUtils.intFromProperties(
-	    properties, prefix + LatIndexProperty, -1);
-	lonIndex = LayerUtils.intFromProperties(
-	    properties, prefix + LonIndexProperty, -1);
-	timeIndex = LayerUtils.intFromProperties(
-	    properties, prefix + TimeIndexProperty, -1);
-	eastIsNeg = LayerUtils.booleanFromProperties(
-	    properties, prefix + EastIsNegProperty, eastIsNeg);
-	showNames = LayerUtils.booleanFromProperties(
-	    properties, prefix + ShowNamesProperty, showNames);
-	defaultIconURL = properties.getProperty(
-	    prefix + DefaultIconURLProperty);
-	locationHeader = LayerUtils.booleanFromProperties(
-	    properties, prefix + LocationHeaderProperty, false);
-	activityHeader = LayerUtils.booleanFromProperties(
-	    properties, prefix + ActivityHeaderProperty, false);
+        locationFile = properties.getProperty(
+            prefix + LocationFileProperty);
+        iconIndex = LayerUtils.intFromProperties(
+            properties, prefix + IconIndexProperty, -1);
+        nameIndex = LayerUtils.intFromProperties(
+            properties, prefix + NameIndexProperty, -1);
+        activityNameIndex = LayerUtils.intFromProperties(
+            properties, prefix + ActivityNameIndexProperty, -1);
+        activityFile = properties.getProperty(
+            prefix + ActivityFileProperty);
+        latIndex = LayerUtils.intFromProperties(
+            properties, prefix + LatIndexProperty, -1);
+        lonIndex = LayerUtils.intFromProperties(
+            properties, prefix + LonIndexProperty, -1);
+        timeIndex = LayerUtils.intFromProperties(
+            properties, prefix + TimeIndexProperty, -1);
+        eastIsNeg = LayerUtils.booleanFromProperties(
+            properties, prefix + EastIsNegProperty, eastIsNeg);
+        showNames = LayerUtils.booleanFromProperties(
+            properties, prefix + ShowNamesProperty, showNames);
+        defaultIconURL = properties.getProperty(
+            prefix + DefaultIconURLProperty);
+        locationHeader = LayerUtils.booleanFromProperties(
+            properties, prefix + LocationHeaderProperty, false);
+        activityHeader = LayerUtils.booleanFromProperties(
+            properties, prefix + ActivityHeaderProperty, false);
 
-	String timeFormatString = properties.getProperty(
-		prefix+TimeFormatProperty, 
-		((SimpleDateFormat)timeFormat).toPattern());
+        String timeFormatString = properties.getProperty(
+                prefix+TimeFormatProperty, 
+                ((SimpleDateFormat)timeFormat).toPattern());
 
-	timeFormat = new SimpleDateFormat(timeFormatString);
+        timeFormat = new SimpleDateFormat(timeFormatString);
 
-	String timerIntervalFormatString = properties.getProperty(
-	    prefix+TimerIntervalFormatProperty, 
-	    ((SimpleDateFormat)timerIntervalFormat).toPattern());
-	
-	timerPaceBaselineString = properties.getProperty(
-	    prefix+TimerPaceBaselineProperty, 
-	    timerPaceBaselineString);
+        String timerIntervalFormatString = properties.getProperty(
+            prefix+TimerIntervalFormatProperty, 
+            ((SimpleDateFormat)timerIntervalFormat).toPattern());
+        
+        timerPaceBaselineString = properties.getProperty(
+            prefix+TimerPaceBaselineProperty, 
+            timerPaceBaselineString);
 
-	timerIntervalFormat = new SimpleDateFormat(timerIntervalFormatString);
+        timerIntervalFormat = new SimpleDateFormat(timerIntervalFormatString);
 
-	if (Debug.debugging("scenario")) {
-	    Debug.output("ScenarioGraphicLoader timer rate pace pattern: " + 
-			 timerIntervalFormatString);
-	}
+        if (Debug.debugging("scenario")) {
+            Debug.output("ScenarioGraphicLoader timer rate pace pattern: " + 
+                         timerIntervalFormatString);
+        }
 
-	String timerRatesString = properties.getProperty(prefix + TimerRatesProperty);
-	timerRates = new LinkedList();
-	if (timerRatesString != null) {
-	    if (Debug.debugging("scenario")) {
-		Debug.output("ScenarioGraphicLoader reading timer rates: " + 
-			     timerRatesString);
-	    }
-	    Vector rates = PropUtils.parseSpacedMarkers(timerRatesString);
-	    Iterator it = rates.iterator();
-	    while(it.hasNext()) {
-		String ratePrefix = (String)it.next();
-		TimerRateHolder trh = new TimerRateHolder(timerIntervalFormat, timerPaceBaselineString);
-		trh.setProperties(prefix + ratePrefix, properties);
-		if (trh.valid) {
-		    timerRates.add(trh);
-		    if (Debug.debugging("scenario")) {
-			Debug.output("ScenarioGraphicLoader adding " + trh);
-		    }
-		} else {
-		    if (Debug.debugging("scenario")) {
-			Debug.output("ScenarioGraphicLoader NOT adding " + ratePrefix);
-		    }
-		}
-	    }
-	} else {
-	    if (Debug.debugging("scenario")) {
-		Debug.output("ScenarioGraphicLoader has no timer rate information");
-	    }
-	}
-	
-	if (Debug.debugging("scenario")) {
-	    Debug.output("ScenarioGraphicLoader indexes:" +
-			 "\n\tlocation file: " + locationFile +
-			 "\n\tlocation file has header: " +  locationHeader +
-			 "\n\tnameIndex = " + nameIndex + 
-			 "\n\ticonIndex = " + iconIndex + 
-			 "\n\tactivity file: " + activityFile +
-			 "\n\tactivity file has header: " +  activityHeader +
-			 "\n\tlatIndex = " + latIndex + 
-			 "\n\tlonIndex = " + lonIndex + 
-			 "\n\ttimeIndex = " + timeIndex);
-	}
+        String timerRatesString = properties.getProperty(prefix + TimerRatesProperty);
+        timerRates = new LinkedList();
+        if (timerRatesString != null) {
+            if (Debug.debugging("scenario")) {
+                Debug.output("ScenarioGraphicLoader reading timer rates: " + 
+                             timerRatesString);
+            }
+            Vector rates = PropUtils.parseSpacedMarkers(timerRatesString);
+            Iterator it = rates.iterator();
+            while(it.hasNext()) {
+                String ratePrefix = (String)it.next();
+                TimerRateHolder trh = new TimerRateHolder(timerIntervalFormat, timerPaceBaselineString);
+                trh.setProperties(prefix + ratePrefix, properties);
+                if (trh.valid) {
+                    timerRates.add(trh);
+                    if (Debug.debugging("scenario")) {
+                        Debug.output("ScenarioGraphicLoader adding " + trh);
+                    }
+                } else {
+                    if (Debug.debugging("scenario")) {
+                        Debug.output("ScenarioGraphicLoader NOT adding " + ratePrefix);
+                    }
+                }
+            }
+        } else {
+            if (Debug.debugging("scenario")) {
+                Debug.output("ScenarioGraphicLoader has no timer rate information");
+            }
+        }
+        
+        if (Debug.debugging("scenario")) {
+            Debug.output("ScenarioGraphicLoader indexes:" +
+                         "\n\tlocation file: " + locationFile +
+                         "\n\tlocation file has header: " +  locationHeader +
+                         "\n\tnameIndex = " + nameIndex + 
+                         "\n\ticonIndex = " + iconIndex + 
+                         "\n\tactivity file: " + activityFile +
+                         "\n\tactivity file has header: " +  activityHeader +
+                         "\n\tlatIndex = " + latIndex + 
+                         "\n\tlonIndex = " + lonIndex + 
+                         "\n\ttimeIndex = " + timeIndex);
+        }
     }
 
     /**
@@ -748,32 +748,32 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * PropertyConsumer.  
      */
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	props.put(prefix + LocationFileProperty, PropUtils.unnull(locationFile));
-	props.put(prefix + LocationHeaderProperty, new Boolean(locationHeader).toString());
-	props.put(prefix + NameIndexProperty, 
-		  (nameIndex != -1?Integer.toString(nameIndex):""));
+        props.put(prefix + LocationFileProperty, PropUtils.unnull(locationFile));
+        props.put(prefix + LocationHeaderProperty, new Boolean(locationHeader).toString());
+        props.put(prefix + NameIndexProperty, 
+                  (nameIndex != -1?Integer.toString(nameIndex):""));
 
-	props.put(prefix + ActivityFileProperty, PropUtils.unnull(activityFile));
-	props.put(prefix + ActivityHeaderProperty, new Boolean(activityHeader).toString());
-	props.put(prefix + ActivityNameIndexProperty, 
-		  (activityNameIndex != -1?Integer.toString(activityNameIndex):""));
-	props.put(prefix + EastIsNegProperty, new Boolean(eastIsNeg).toString());
-	props.put(prefix + ShowNamesProperty, new Boolean(showNames).toString());
-	props.put(prefix + LatIndexProperty, 
-		  (latIndex != -1?Integer.toString(latIndex):""));
-	props.put(prefix + LonIndexProperty, 
-		  (lonIndex != -1?Integer.toString(lonIndex):""));
-	props.put(prefix + TimeIndexProperty, 
-		  (timeIndex != -1?Integer.toString(timeIndex):""));
-	props.put(prefix + IconIndexProperty, 
-		  (iconIndex != -1?Integer.toString(iconIndex):""));
-	props.put(prefix + DefaultIconURLProperty, PropUtils.unnull(defaultIconURL));
-	drawingAttributes.getProperties(props);
-	return props;
+        props.put(prefix + ActivityFileProperty, PropUtils.unnull(activityFile));
+        props.put(prefix + ActivityHeaderProperty, new Boolean(activityHeader).toString());
+        props.put(prefix + ActivityNameIndexProperty, 
+                  (activityNameIndex != -1?Integer.toString(activityNameIndex):""));
+        props.put(prefix + EastIsNegProperty, new Boolean(eastIsNeg).toString());
+        props.put(prefix + ShowNamesProperty, new Boolean(showNames).toString());
+        props.put(prefix + LatIndexProperty, 
+                  (latIndex != -1?Integer.toString(latIndex):""));
+        props.put(prefix + LonIndexProperty, 
+                  (lonIndex != -1?Integer.toString(lonIndex):""));
+        props.put(prefix + TimeIndexProperty, 
+                  (timeIndex != -1?Integer.toString(timeIndex):""));
+        props.put(prefix + IconIndexProperty, 
+                  (iconIndex != -1?Integer.toString(iconIndex):""));
+        props.put(prefix + DefaultIconURLProperty, PropUtils.unnull(defaultIconURL));
+        drawingAttributes.getProperties(props);
+        return props;
     }
 
     /**
@@ -797,33 +797,33 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * PropertyConsumer.  
      */
     public Properties getPropertyInfo(Properties list) {
-	list = super.getPropertyInfo(list);
+        list = super.getPropertyInfo(list);
 
-	list.put(LocationFileProperty, "URL of file containing location information.");
-	list .put(LocationFileProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-	list.put(LocationHeaderProperty, "Location file has a header row to be ignored.");
-	list.put(LocationHeaderProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	list.put(ActivityFileProperty, "URL of file containing scenario activity information.");
-	list .put(ActivityFileProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-	list.put(ActivityHeaderProperty, "Activity file has a header row to be ignored.");
-	list.put(ActivityHeaderProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	list.put(EastIsNegProperty, "Flag to note that negative latitude are over the eastern hemisphere.");
-	list.put(EastIsNegProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	list.put(ShowNamesProperty, "Flag to note that locations should display their names.");
-	list.put(ShowNamesProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	list.put(NameIndexProperty, "The column index, in the location file, of the location label text.");
+        list.put(LocationFileProperty, "URL of file containing location information.");
+        list .put(LocationFileProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        list.put(LocationHeaderProperty, "Location file has a header row to be ignored.");
+        list.put(LocationHeaderProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(ActivityFileProperty, "URL of file containing scenario activity information.");
+        list .put(ActivityFileProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        list.put(ActivityHeaderProperty, "Activity file has a header row to be ignored.");
+        list.put(ActivityHeaderProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(EastIsNegProperty, "Flag to note that negative latitude are over the eastern hemisphere.");
+        list.put(EastIsNegProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(ShowNamesProperty, "Flag to note that locations should display their names.");
+        list.put(ShowNamesProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(NameIndexProperty, "The column index, in the location file, of the location label text.");
 
-	list.put(ActivityNameIndexProperty, "The column index, in the activity file, of the location label text.");
+        list.put(ActivityNameIndexProperty, "The column index, in the activity file, of the location label text.");
 
-	list.put(LatIndexProperty, "The column index, in the activity file, of the latitudes.");
-	list.put(LonIndexProperty, "The column index, in the activity file, of the longitudes.");
-	list.put(TimeIndexProperty, "The column index, in the activity file, of the time of the activity.");
-	list.put(IconIndexProperty, "The column index, in the location file, of the icon for locations (optional).");
-	list.put(DefaultIconURLProperty, "The URL of an image file to use as a default for the location markers (optional).");
+        list.put(LatIndexProperty, "The column index, in the activity file, of the latitudes.");
+        list.put(LonIndexProperty, "The column index, in the activity file, of the longitudes.");
+        list.put(TimeIndexProperty, "The column index, in the activity file, of the time of the activity.");
+        list.put(IconIndexProperty, "The column index, in the location file, of the icon for locations (optional).");
+        list.put(DefaultIconURLProperty, "The URL of an image file to use as a default for the location markers (optional).");
 
-	drawingAttributes.getPropertyInfo(list);
+        drawingAttributes.getPropertyInfo(list);
 
-	return list;
+        return list;
     }
 
 //     /** 
@@ -833,68 +833,68 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
 //      * @return String The key for this tool.
 //      */
 //     public Container getFace() {
-// 	JToolBar jtb = new JToolBar();
-// 	jtb.setFloatable(false);
+//      JToolBar jtb = new JToolBar();
+//      jtb.setFloatable(false);
 
-// // 	TimerToggleButton ttb = new TimerToggleButton(this);
-// // 	ttb.setToolTipText("Start/Stop Scenario Timer");
-// // 	jtb.add(ttb);
-// // 	pcs.addPropertyChangeListener(TIMER_RUNNING_STATUS, ttb);
+// //   TimerToggleButton ttb = new TimerToggleButton(this);
+// //   ttb.setToolTipText("Start/Stop Scenario Timer");
+// //   jtb.add(ttb);
+// //   pcs.addPropertyChangeListener(TIMER_RUNNING_STATUS, ttb);
 
-// 	try {
-// 	    URL url = PropUtils.getResourceOrFileOrURL(this, snapshotIconName);
-// 	    ImageIcon snapshotIcon = new ImageIcon(url);
+//      try {
+//          URL url = PropUtils.getResourceOrFileOrURL(this, snapshotIconName);
+//          ImageIcon snapshotIcon = new ImageIcon(url);
 
-// 	    url = PropUtils.getResourceOrFileOrURL(this, totalScenarioIconName);
-// 	    ImageIcon totalScenarioIcon = new ImageIcon(url);
+//          url = PropUtils.getResourceOrFileOrURL(this, totalScenarioIconName);
+//          ImageIcon totalScenarioIcon = new ImageIcon(url);
 
-// 	    timeWrapToggle = new JToggleButton(totalScenarioIcon, timeWrap);
-// 	    timeWrapToggle.setSelectedIcon(snapshotIcon);
-// 	    timeWrapToggle.setActionCommand(SCENARIO_MODE_CMD);
-// 	    timeWrapToggle.addActionListener(this);
-// 	    timeWrapToggle.setToolTipText("Wrap Scenario Time Scale");
-// 	    jtb.add(timeWrapToggle);
+//          timeWrapToggle = new JToggleButton(totalScenarioIcon, timeWrap);
+//          timeWrapToggle.setSelectedIcon(snapshotIcon);
+//          timeWrapToggle.setActionCommand(SCENARIO_MODE_CMD);
+//          timeWrapToggle.addActionListener(this);
+//          timeWrapToggle.setToolTipText("Wrap Scenario Time Scale");
+//          jtb.add(timeWrapToggle);
 
-// 	} catch (MalformedURLException murle) {
-// 	    Debug.error("ScenarioGraphicLoader " + getName() + ":" + murle.getMessage());
-// 	} catch (NullPointerException npe) {
-// 	    Debug.error("ScenarioGraphicLoader " + getName() + ":" + npe.getMessage());
-// 	}
+//      } catch (MalformedURLException murle) {
+//          Debug.error("ScenarioGraphicLoader " + getName() + ":" + murle.getMessage());
+//      } catch (NullPointerException npe) {
+//          Debug.error("ScenarioGraphicLoader " + getName() + ":" + npe.getMessage());
+//      }
 
-// 	timerControl = new TimerControlButtonPanel(this);
-// 	jtb.add(timerControl);
-// 	pcs.addPropertyChangeListener(TIMER_RUNNING_STATUS, timerControl);
+//      timerControl = new TimerControlButtonPanel(this);
+//      jtb.add(timerControl);
+//      pcs.addPropertyChangeListener(TIMER_RUNNING_STATUS, timerControl);
 
-// 	String runningStatus = timer.isRunning()?(getClockDirection() > 0?TIMER_FORWARD:TIMER_BACKWARD):TIMER_STOPPED;
-// 	pcs.firePropertyChange(TIMER_RUNNING_STATUS, null,
-// 			       runningStatus);
+//      String runningStatus = timer.isRunning()?(getClockDirection() > 0?TIMER_FORWARD:TIMER_BACKWARD):TIMER_STOPPED;
+//      pcs.firePropertyChange(TIMER_RUNNING_STATUS, null,
+//                             runningStatus);
 
-// 	timerRateControl = new TimerRateComboBox(this);
-// 	timerRateControl.setToolTipText("Change clock rate for Scenario");
+//      timerRateControl = new TimerRateComboBox(this);
+//      timerRateControl.setToolTipText("Change clock rate for Scenario");
 
-// 	Iterator it = timerRates.iterator();
-// 	while (it.hasNext()) {
-// 	    TimerRateHolder trh = (TimerRateHolder)it.next();
-// 	    timerRateControl.add(trh.label, trh.clock, trh.pace);
-// 	}
+//      Iterator it = timerRates.iterator();
+//      while (it.hasNext()) {
+//          TimerRateHolder trh = (TimerRateHolder)it.next();
+//          timerRateControl.add(trh.label, trh.clock, trh.pace);
+//      }
 
-// 	int si = timerRates.size()/2;
-// 	if (si > 0) {
-// 	    timerRateControl.setSelectedIndex(si);
-// 	}
+//      int si = timerRates.size()/2;
+//      if (si > 0) {
+//          timerRateControl.setSelectedIndex(si);
+//      }
 
-// 	jtb.add(timerRateControl);
+//      jtb.add(timerRateControl);
 
-// 	timeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 0);
-// 	timeSliderSupport = new TimeSliderSupport(timeSlider, this, startTime, endTime);
-// 	jtb.add(timeSlider);
+//      timeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 0);
+//      timeSliderSupport = new TimeSliderSupport(timeSlider, this, startTime, endTime);
+//      jtb.add(timeSlider);
 
-// 	timeLabel = new JLabel();
-// 	java.awt.Font defaultFont = timeLabel.getFont();
-// 	timeLabel.setFont(new java.awt.Font(defaultFont.getName(), defaultFont.getStyle(), 9));
-// 	jtb.add(timeLabel);
+//      timeLabel = new JLabel();
+//      java.awt.Font defaultFont = timeLabel.getFont();
+//      timeLabel.setFont(new java.awt.Font(defaultFont.getName(), defaultFont.getStyle(), 9));
+//      jtb.add(timeLabel);
 
-// 	return jtb;
+//      return jtb;
 //     }
 
     /** 
@@ -904,78 +904,78 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * @return String The key for this tool.
      */
     public Container getFace() {
-	JPanel jtb = new JPanel();
+        JPanel jtb = new JPanel();
 
-	Box bigBox = Box.createHorizontalBox();
-	Box rightBox = Box.createVerticalBox();
-	Box leftBox = Box.createVerticalBox();
-	Box innerBox = Box.createHorizontalBox();
+        Box bigBox = Box.createHorizontalBox();
+        Box rightBox = Box.createVerticalBox();
+        Box leftBox = Box.createVerticalBox();
+        Box innerBox = Box.createHorizontalBox();
 
-	try {
-	    URL url = PropUtils.getResourceOrFileOrURL(this, snapshotIconName);
-	    ImageIcon snapshotIcon = new ImageIcon(url);
+        try {
+            URL url = PropUtils.getResourceOrFileOrURL(this, snapshotIconName);
+            ImageIcon snapshotIcon = new ImageIcon(url);
 
-	    url = PropUtils.getResourceOrFileOrURL(this, totalScenarioIconName);
-	    ImageIcon totalScenarioIcon = new ImageIcon(url);
+            url = PropUtils.getResourceOrFileOrURL(this, totalScenarioIconName);
+            ImageIcon totalScenarioIcon = new ImageIcon(url);
 
-	    timeWrapToggle = new JToggleButton(totalScenarioIcon, timeWrap);
-	    timeWrapToggle.setSelectedIcon(snapshotIcon);
-	    timeWrapToggle.setActionCommand(SCENARIO_MODE_CMD);
-	    timeWrapToggle.addActionListener(this);
-	    timeWrapToggle.setToolTipText("Wrap Scenario Time Scale");
-// 	    jtb.add(timeWrapToggle);
-	    innerBox.add(timeWrapToggle);
+            timeWrapToggle = new JToggleButton(totalScenarioIcon, timeWrap);
+            timeWrapToggle.setSelectedIcon(snapshotIcon);
+            timeWrapToggle.setActionCommand(SCENARIO_MODE_CMD);
+            timeWrapToggle.addActionListener(this);
+            timeWrapToggle.setToolTipText("Wrap Scenario Time Scale");
+//          jtb.add(timeWrapToggle);
+            innerBox.add(timeWrapToggle);
 
-	} catch (MalformedURLException murle) {
-	    Debug.error("ScenarioGraphicLoader " + getName() + ":" + murle.getMessage());
-	} catch (NullPointerException npe) {
-	    Debug.error("ScenarioGraphicLoader " + getName() + ":" + npe.getMessage());
-	}
+        } catch (MalformedURLException murle) {
+            Debug.error("ScenarioGraphicLoader " + getName() + ":" + murle.getMessage());
+        } catch (NullPointerException npe) {
+            Debug.error("ScenarioGraphicLoader " + getName() + ":" + npe.getMessage());
+        }
 
-	timerControl = new TimerControlButtonPanel(this);
-// 	jtb.add(timerControl);
-	innerBox.add(timerControl);
-	rightBox.add(innerBox);
+        timerControl = new TimerControlButtonPanel(this);
+//      jtb.add(timerControl);
+        innerBox.add(timerControl);
+        rightBox.add(innerBox);
 
-	pcs.addPropertyChangeListener(TIMER_RUNNING_STATUS, timerControl);
+        pcs.addPropertyChangeListener(TIMER_RUNNING_STATUS, timerControl);
 
-	String runningStatus = timer.isRunning()?(getClockDirection() > 0?TIMER_FORWARD:TIMER_BACKWARD):TIMER_STOPPED;
-	pcs.firePropertyChange(TIMER_RUNNING_STATUS, null,
-			       runningStatus);
+        String runningStatus = timer.isRunning()?(getClockDirection() > 0?TIMER_FORWARD:TIMER_BACKWARD):TIMER_STOPPED;
+        pcs.firePropertyChange(TIMER_RUNNING_STATUS, null,
+                               runningStatus);
 
-	timerRateControl = new TimerRateComboBox(this);
-	timerRateControl.setToolTipText("Change clock rate for Scenario");
+        timerRateControl = new TimerRateComboBox(this);
+        timerRateControl.setToolTipText("Change clock rate for Scenario");
 
-	Iterator it = timerRates.iterator();
-	while (it.hasNext()) {
-	    TimerRateHolder trh = (TimerRateHolder)it.next();
-	    timerRateControl.add(trh.label, trh.clock, trh.pace);
-	}
+        Iterator it = timerRates.iterator();
+        while (it.hasNext()) {
+            TimerRateHolder trh = (TimerRateHolder)it.next();
+            timerRateControl.add(trh.label, trh.clock, trh.pace);
+        }
 
-	int si = timerRates.size()/2;
-	if (si > 0) {
-	    timerRateControl.setSelectedIndex(si);
-	}
+        int si = timerRates.size()/2;
+        if (si > 0) {
+            timerRateControl.setSelectedIndex(si);
+        }
 
-// 	jtb.add(timerRateControl);
-	rightBox.add(timerRateControl);
+//      jtb.add(timerRateControl);
+        rightBox.add(timerRateControl);
 
-	timeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 0);
-	timeSliderSupport = new TimeSliderSupport(timeSlider, this, startTime, endTime);
-// 	jtb.add(timeSlider);
- 	leftBox.add(timeSlider);
+        timeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 0);
+        timeSliderSupport = new TimeSliderSupport(timeSlider, this, startTime, endTime);
+//      jtb.add(timeSlider);
+        leftBox.add(timeSlider);
 
-	timeLabel = new JLabel(" ", SwingConstants.CENTER);
-	java.awt.Font defaultFont = timeLabel.getFont();
-	timeLabel.setFont(new java.awt.Font(defaultFont.getName(), defaultFont.getStyle(), 10));
-// 	jtb.add(timeLabel);
- 	leftBox.add(timeLabel);
+        timeLabel = new JLabel(" ", SwingConstants.CENTER);
+        java.awt.Font defaultFont = timeLabel.getFont();
+        timeLabel.setFont(new java.awt.Font(defaultFont.getName(), defaultFont.getStyle(), 10));
+//      jtb.add(timeLabel);
+        leftBox.add(timeLabel);
 
-	bigBox.add(leftBox);
-	bigBox.add(rightBox);
-	jtb.add(bigBox);
+        bigBox.add(leftBox);
+        bigBox.add(rightBox);
+        jtb.add(bigBox);
 
-	return jtb;
+        return jtb;
     }
 
     /** 
@@ -984,7 +984,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * @return String The key for this tool.
      **/
     public String getKey() {
-	return getName();
+        return getName();
     }
     
     /** 
@@ -993,14 +993,14 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * @param aKey The key for this tool.
      */
     public void setKey(String aKey) {
-	setName(aKey);
+        setName(aKey);
     }
 
     /**
      * DataBoundsProvider method.
      */
     public DataBounds getDataBounds() {
-	return dataBounds;
+        return dataBounds;
     }
 
     public void componentResized(ComponentEvent ce) {}
@@ -1015,37 +1015,37 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * if it should draw its entire scenario path.
      */
     public class ScenarioGraphicList extends OMGraphicList {
-	public ScenarioGraphicList() {
-	    super();
-	}
-	
-	public void generateTotalScenario(Projection p) {
-	    synchronized (graphics) {
-		Iterator it = iterator();
-		while (it.hasNext()) {
-		    OMGraphic graphic = (OMGraphic) it.next();
-		    if (graphic instanceof ScenarioGraphic) {
-			((ScenarioGraphic)graphic).generateTotalScenario(p);
-		    } else {
-			graphic.generate(p);
-		    }
-		}
-	    }
-	}
+        public ScenarioGraphicList() {
+            super();
+        }
+        
+        public void generateTotalScenario(Projection p) {
+            synchronized (graphics) {
+                Iterator it = iterator();
+                while (it.hasNext()) {
+                    OMGraphic graphic = (OMGraphic) it.next();
+                    if (graphic instanceof ScenarioGraphic) {
+                        ((ScenarioGraphic)graphic).generateTotalScenario(p);
+                    } else {
+                        graphic.generate(p);
+                    }
+                }
+            }
+        }
 
-	public void generateSnapshot(Projection p, long time) {
-	    synchronized (graphics) {
-		Iterator it = iterator();
-		while (it.hasNext()) {
-		    OMGraphic graphic = (OMGraphic) it.next();
-		    if (graphic instanceof ScenarioGraphic) {
-			((ScenarioGraphic)graphic).generateSnapshot(p, time);
-		    } else {
-			graphic.generate(p);
-		    }
-		}
-	    }
-	}
+        public void generateSnapshot(Projection p, long time) {
+            synchronized (graphics) {
+                Iterator it = iterator();
+                while (it.hasNext()) {
+                    OMGraphic graphic = (OMGraphic) it.next();
+                    if (graphic instanceof ScenarioGraphic) {
+                        ((ScenarioGraphic)graphic).generateSnapshot(p, time);
+                    } else {
+                        graphic.generate(p);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -1053,71 +1053,71 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
      * real-time changes and scenario-time changes.
      */
     public class TimerRateHolder implements PropertyConsumer {
-	String label;
-	int clock;
-	int pace;
-	SimpleDateFormat paceFormat;
-	String paceZero;
-	boolean valid = false;
-	String propPrefix;
+        String label;
+        int clock;
+        int pace;
+        SimpleDateFormat paceFormat;
+        String paceZero;
+        boolean valid = false;
+        String propPrefix;
 
-	/**
-	 * Create a TimerRateHolder with a date format, and a baseline
-	 * time.  The default baseline time is "00:00:00", so if you
-	 * need to change that, use this constructor.  The pace for
-	 * this TimerRateHolder should be a relative amount of time,
-	 * and that relativity, taking into account the locale offset
-	 * to GMT, is given by the baseline time.  The baseline time
-	 * should match the format given.
-	 */
-	public TimerRateHolder(SimpleDateFormat simpleDateFormat, String dpz) {
-	    paceFormat = simpleDateFormat;
-	    paceZero = dpz;
-	}
+        /**
+         * Create a TimerRateHolder with a date format, and a baseline
+         * time.  The default baseline time is "00:00:00", so if you
+         * need to change that, use this constructor.  The pace for
+         * this TimerRateHolder should be a relative amount of time,
+         * and that relativity, taking into account the locale offset
+         * to GMT, is given by the baseline time.  The baseline time
+         * should match the format given.
+         */
+        public TimerRateHolder(SimpleDateFormat simpleDateFormat, String dpz) {
+            paceFormat = simpleDateFormat;
+            paceZero = dpz;
+        }
 
-	public String toString() {
-	    return "ScenarioGraphicLoader.TimerRateHolder [" + label +
-		", clock:" + clock + ", pace:" + pace + "] (" + valid + ")";
-	}
+        public String toString() {
+            return "ScenarioGraphicLoader.TimerRateHolder [" + label +
+                ", clock:" + clock + ", pace:" + pace + "] (" + valid + ")";
+        }
 
-	public void setProperties(Properties props) {
-	    setProperties(null, props);
-	}
+        public void setProperties(Properties props) {
+            setProperties(null, props);
+        }
 
-	public void setProperties(String prefix, Properties props) {
+        public void setProperties(String prefix, Properties props) {
 
-	    propPrefix = prefix;
-	    prefix = PropUtils.getScopedPropertyPrefix(prefix);
+            propPrefix = prefix;
+            prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	    try {
-		label = props.getProperty(prefix + Layer.PrettyNameProperty);
-		clock = PropUtils.intFromProperties(props, prefix + ClockIntervalProperty, -1);
-		String paceString = props.getProperty(prefix + PaceProperty);
-		pace = (int) (paceFormat.parse(paceString).getTime() - paceFormat.parse(paceZero).getTime());
-		valid = true;
+            try {
+                label = props.getProperty(prefix + Layer.PrettyNameProperty);
+                clock = PropUtils.intFromProperties(props, prefix + ClockIntervalProperty, -1);
+                String paceString = props.getProperty(prefix + PaceProperty);
+                pace = (int) (paceFormat.parse(paceString).getTime() - paceFormat.parse(paceZero).getTime());
+                valid = true;
 
-	    } catch (NullPointerException npe) {
-		Debug.error("TimerRateHolder caught NPE: " + npe.getMessage());
-	    } catch (ParseException pe) {
-		Debug.error("TimerRateHolder parse exception: " + pe.getMessage());
-	    }
-	}
+            } catch (NullPointerException npe) {
+                Debug.error("TimerRateHolder caught NPE: " + npe.getMessage());
+            } catch (ParseException pe) {
+                Debug.error("TimerRateHolder parse exception: " + pe.getMessage());
+            }
+        }
 
-	public Properties getProperties(Properties props) {
-	    return props;
-	}
+        public Properties getProperties(Properties props) {
+            return props;
+        }
 
-	public Properties getPropertyInfo(Properties props) {
-	    return props;
-	}
+        public Properties getPropertyInfo(Properties props) {
+            return props;
+        }
 
-	public String getPropertyPrefix() {
-	    return propPrefix;
-	}
+        public String getPropertyPrefix() {
+            return propPrefix;
+        }
 
-	public void setPropertyPrefix(String p) {
-	    propPrefix = p;
-	}
+        public void setPropertyPrefix(String p) {
+            propPrefix = p;
+        }
     }
     
 }

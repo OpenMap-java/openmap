@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SRect.java,v $
 // $RCSfile: SRect.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -71,48 +71,48 @@ public class SRect extends SGraphic /* used to be _RectangleImplBase*/ {
   
     // Need several constructors
     public SRect() {
-	super(GraphicType.GT_Rectangle, 
-	      RenderType.RT_Unknown, 
-	      LineType.LT_Unknown, 
-	      DeclutterType.DC_None);
+        super(GraphicType.GT_Rectangle, 
+              RenderType.RT_Unknown, 
+              LineType.LT_Unknown, 
+              DeclutterType.DC_None);
         ll1_ =  new LLPoint(0f, 0f);
         p1_ = new XYPoint((short)0, (short)0);
-	ll2_ =  new LLPoint(0f, 0f);
-	p2_ = new XYPoint((short)0, (short)0);
+        ll2_ =  new LLPoint(0f, 0f);
+        p2_ = new XYPoint((short)0, (short)0);
     }
 
     public SRect(LLPoint ll1, LLPoint ll2, LineType lType) {
-	super(GraphicType.GT_Rectangle, 
-	      RenderType.RT_LatLon, 
-	      lType, 
-	      DeclutterType.DC_None);
+        super(GraphicType.GT_Rectangle, 
+              RenderType.RT_LatLon, 
+              lType, 
+              DeclutterType.DC_None);
         ll1_ = ll1;
-	ll2_ = ll2;
-	p1_ = new XYPoint((short)0, (short)0);
-	p2_ = new XYPoint((short)0, (short)0);
+        ll2_ = ll2;
+        p1_ = new XYPoint((short)0, (short)0);
+        p2_ = new XYPoint((short)0, (short)0);
     }
   
     public SRect(short x1, short y1, short x2, short y2) { 
-	super(GraphicType.GT_Rectangle, 
-	      RenderType.RT_XY, 
-	      LineType.LT_Unknown, 
-	      DeclutterType.DC_None);
+        super(GraphicType.GT_Rectangle, 
+              RenderType.RT_XY, 
+              LineType.LT_Unknown, 
+              DeclutterType.DC_None);
         ll1_ = new LLPoint(0f, 0f);
-	ll2_ = new LLPoint(0f, 0f);
-	p1_ = new XYPoint(x1, y1);
-	p2_ = new XYPoint(x2, y2);
+        ll2_ = new LLPoint(0f, 0f);
+        p1_ = new XYPoint(x1, y1);
+        p2_ = new XYPoint(x2, y2);
     }
 
     public SRect(LLPoint ll1, 
-		 short x1, short y1, short x2, short y2) { 
-	super(GraphicType.GT_Rectangle, 
-	      RenderType.RT_Offset, 
-	      LineType.LT_Unknown, 
-	      DeclutterType.DC_None);
+                 short x1, short y1, short x2, short y2) { 
+        super(GraphicType.GT_Rectangle, 
+              RenderType.RT_Offset, 
+              LineType.LT_Unknown, 
+              DeclutterType.DC_None);
         ll1_ = ll1;
-	ll2_ = new LLPoint(0f, 0f);
-	p1_ = new XYPoint(x1, y1);
-	p2_ = new XYPoint(x2, y2);
+        ll2_ = new LLPoint(0f, 0f);
+        p1_ = new XYPoint(x1, y1);
+        p2_ = new XYPoint(x2, y2);
     }
   
     // The SRect methods
@@ -146,41 +146,41 @@ public class SRect extends SGraphic /* used to be _RectangleImplBase*/ {
 
     public UGraphic ufill() {
         UGraphic ugraphic = new UGraphic();
-	ugraphic.erect(fill());
-	return ugraphic;
+        ugraphic.erect(fill());
+        return ugraphic;
     }
 
     //  Update methods as a result of gesture impulses...
     public void changeLl1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
-	RF_update gupdate = new RF_update();
-	gupdate.ll1(ll1);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rf_update(gupdate);
-	addGraphicChange(ug);
+        RF_update gupdate = new RF_update();
+        gupdate.ll1(ll1);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeLl2(com.bbn.openmap.CSpecialist.LLPoint ll2) {
         ll2_ = ll2;
-	RF_update gupdate = new RF_update();
-	gupdate.ll2(ll2);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rf_update(gupdate);
-	addGraphicChange(ug);
+        RF_update gupdate = new RF_update();
+        gupdate.ll2(ll2);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeP1(com.bbn.openmap.CSpecialist.XYPoint p1) {
         p1_ = p1;
-	RF_update gupdate = new RF_update();
-	gupdate.p1(p1);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rf_update(gupdate);
-	addGraphicChange(ug);
+        RF_update gupdate = new RF_update();
+        gupdate.p1(p1);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeP2(com.bbn.openmap.CSpecialist.XYPoint p2) {
         p2_ = p2;
-	RF_update gupdate = new RF_update();
-	gupdate.p2(p2);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rf_update(gupdate);
-	addGraphicChange(ug);
+        RF_update gupdate = new RF_update();
+        gupdate.p2(p2);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rf_update(gupdate);
+        addGraphicChange(ug);
     }
 }

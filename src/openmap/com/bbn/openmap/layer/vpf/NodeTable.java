@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/NodeTable.java,v $
-// $Revision: 1.3 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
+// $Revision: 1.4 $ $Date: 2004/01/26 18:18:12 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -44,16 +44,16 @@ public class NodeTable extends PrimitiveTable {
      * @exception FormatException if something goes wrong reading the text
      */
     public NodeTable(CoverageTable cov, TileDirectory tile,
-		     boolean isEntityNode) throws FormatException {
-	super(cov, tile,
-	      isEntityNode ? Constants.endTableName : Constants.cndTableName);
-	this.isEntityNode = isEntityNode;
-	if ((coordColumn = whatColumn(Constants.ND_COORDINATE)) == -1) {
-	    throw new FormatException("nodetable couldn't get "
-				      + Constants.ND_COORDINATE + " column");
-	} 
-	firstEdgeColumn = whatColumn(Constants.ND_FIRSTEDGE);
-	containingFaceColumn = whatColumn(Constants.ND_CONTAININGFACE);
+                     boolean isEntityNode) throws FormatException {
+        super(cov, tile,
+              isEntityNode ? Constants.endTableName : Constants.cndTableName);
+        this.isEntityNode = isEntityNode;
+        if ((coordColumn = whatColumn(Constants.ND_COORDINATE)) == -1) {
+            throw new FormatException("nodetable couldn't get "
+                                      + Constants.ND_COORDINATE + " column");
+        } 
+        firstEdgeColumn = whatColumn(Constants.ND_FIRSTEDGE);
+        containingFaceColumn = whatColumn(Constants.ND_CONTAININGFACE);
     }
 
     /**
@@ -61,7 +61,7 @@ public class NodeTable extends PrimitiveTable {
      * indicating the column doesn't exist.
      */
     public int getFirstEdgeColumn() {
-	return firstEdgeColumn;
+        return firstEdgeColumn;
     }
 
     /**
@@ -69,7 +69,7 @@ public class NodeTable extends PrimitiveTable {
      * indicating the column doesn't exist.
      */
     public int getContainingFaceColumn() {
-	return containingFaceColumn;
+        return containingFaceColumn;
     }
 
     /**
@@ -84,29 +84,29 @@ public class NodeTable extends PrimitiveTable {
      * @see VPFGraphicWarehouse#createNode
      */
     public void drawTile(VPFGraphicWarehouse warehouse,
-			 float dpplat, float dpplon,
-			 LatLonPoint ll1, LatLonPoint ll2) {
+                         float dpplat, float dpplon,
+                         LatLonPoint ll1, LatLonPoint ll2) {
 
-	float ll1lat = ll1.getLatitude();
-	float ll1lon = ll1.getLongitude();
-	float ll2lat = ll2.getLatitude();
-	float ll2lon = ll2.getLongitude();
+        float ll1lat = ll1.getLatitude();
+        float ll1lon = ll1.getLongitude();
+        float ll2lat = ll2.getLatitude();
+        float ll2lon = ll2.getLongitude();
 
-	try {
-	    for (List node = new ArrayList(); parseRow(node); ) {
-		CoordFloatString coords = (CoordFloatString)node.get(coordColumn);
-		float lat = coords.getYasFloat(0);
-		float lon = coords.getXasFloat(0);
-		if ((lat > ll2lat) && (lat < ll1lat) &&
-		    (lon > ll1lon) && (lon < ll2lon)) {
+        try {
+            for (List node = new ArrayList(); parseRow(node); ) {
+                CoordFloatString coords = (CoordFloatString)node.get(coordColumn);
+                float lat = coords.getYasFloat(0);
+                float lon = coords.getXasFloat(0);
+                if ((lat > ll2lat) && (lat < ll1lat) &&
+                    (lon > ll1lon) && (lon < ll2lon)) {
 
-		    warehouse.createNode(covtable, this, node,
-					 lat, lon, isEntityNode);
-		}
-	    }
-	} catch (FormatException f) {
-	    System.out.println("Exception: " + f.getClass() + " " + f.getMessage());
-	}
+                    warehouse.createNode(covtable, this, node,
+                                         lat, lon, isEntityNode);
+                }
+            }
+        } catch (FormatException f) {
+            System.out.println("Exception: " + f.getClass() + " " + f.getMessage());
+        }
     }
 
     /**
@@ -123,26 +123,26 @@ public class NodeTable extends PrimitiveTable {
      * @see VPFGraphicWarehouse#createNode
      */
     public void drawFeature(VPFFeatureWarehouse warehouse,
-			    float dpplat, float dpplon,
-			    LatLonPoint ll1, LatLonPoint ll2,
-			    List node, String featureType) {
+                            float dpplat, float dpplon,
+                            LatLonPoint ll1, LatLonPoint ll2,
+                            List node, String featureType) {
 
-	if (warehouse == null) {
-	    return;
-	}
+        if (warehouse == null) {
+            return;
+        }
 
-	float ll1lat = ll1.getLatitude();
-	float ll1lon = ll1.getLongitude();
-	float ll2lat = ll2.getLatitude();
-	float ll2lon = ll2.getLongitude();
+        float ll1lat = ll1.getLatitude();
+        float ll1lon = ll1.getLongitude();
+        float ll2lat = ll2.getLatitude();
+        float ll2lon = ll2.getLongitude();
 
-	CoordFloatString coords = (CoordFloatString)node.get(coordColumn);
-	float lat = coords.getYasFloat(0);
-	float lon = coords.getXasFloat(0);
-	if ((lat > ll2lat) && (lat < ll1lat) &&
-	    (lon > ll1lon) && (lon < ll2lon)) {
-	    warehouse.createNode(covtable, this, node, lat, lon,
-				 isEntityNode, featureType);
-	}
+        CoordFloatString coords = (CoordFloatString)node.get(coordColumn);
+        float lat = coords.getYasFloat(0);
+        float lon = coords.getXasFloat(0);
+        if ((lat > ll2lat) && (lat < ll1lat) &&
+            (lon > ll1lon) && (lon < ll2lon)) {
+            warehouse.createNode(covtable, this, node, lat, lon,
+                                 isEntityNode, featureType);
+        }
     }
 }

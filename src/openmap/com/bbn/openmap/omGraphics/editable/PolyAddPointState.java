@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PolyAddPointState.java,v $
 // $RCSfile: PolyAddPointState.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/26 17:40:07 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,49 +35,49 @@ public class PolyAddPointState extends State {
     protected EditableOMGraphic graphic;
 
     public PolyAddPointState(EditableOMPoly eomg) {
-	graphic = eomg;
+        graphic = eomg;
     }
 
     /**
      */
     public boolean mouseReleased(MouseEvent e) {
-	Debug.message("eomg", "PointStateMachine|add point state|mouseReleased");
+        Debug.message("eomg", "PointStateMachine|add point state|mouseReleased");
 
-	if (e.getClickCount() > 1) {
-	    ((EditableOMPoly)graphic).evaluateEnclosed();
-	    if ((graphic.getStateMachine()).isOffsetNeeded() == true) {
-		graphic.getStateMachine().setOffset();
-		graphic.getStateMachine().setOffsetNeeded(false);
-	    } else {
-		graphic.getStateMachine().setSelected();
-	    }
+        if (e.getClickCount() > 1) {
+            ((EditableOMPoly)graphic).evaluateEnclosed();
+            if ((graphic.getStateMachine()).isOffsetNeeded() == true) {
+                graphic.getStateMachine().setOffset();
+                graphic.getStateMachine().setOffsetNeeded(false);
+            } else {
+                graphic.getStateMachine().setSelected();
+            }
 
-	    graphic.redraw(e, true);
-	    return false;
-	}
+            graphic.redraw(e, true);
+            return false;
+        }
 
-	// If we are in this state, the moving point should be set to
-	// the new point, which actually hasn't been placed yet.  So,
-	// we need to check the click count.  If it is 1, then we need
-	// to set the point, and create a new one and stay in this
-	// state.  If it is more than 1, we need to set the point,
-	// then change state to the selected state because we are done
-	// drawing the poly.
-	((EditableOMPoly)graphic).addMovingPoint(e.getX(), e.getY());
+        // If we are in this state, the moving point should be set to
+        // the new point, which actually hasn't been placed yet.  So,
+        // we need to check the click count.  If it is 1, then we need
+        // to set the point, and create a new one and stay in this
+        // state.  If it is more than 1, we need to set the point,
+        // then change state to the selected state because we are done
+        // drawing the poly.
+        ((EditableOMPoly)graphic).addMovingPoint(e.getX(), e.getY());
 
-	return false;
+        return false;
     }
 
     public boolean mouseMoved(MouseEvent e) {
-	Debug.message("eomgdetail", "PolyStateMachine|add point state|mouseMoved");
-	graphic.redraw(e);
-	return false;
+        Debug.message("eomgdetail", "PolyStateMachine|add point state|mouseMoved");
+        graphic.redraw(e);
+        return false;
     }
 
     public boolean mouseDragged(MouseEvent e) {
-	Debug.message("eomgdetail", "PolyStateMachine|add point state|mouseDragged");
-	graphic.redraw(e);
-	return false;
+        Debug.message("eomgdetail", "PolyStateMachine|add point state|mouseDragged");
+        graphic.redraw(e);
+        return false;
     }
 }
 

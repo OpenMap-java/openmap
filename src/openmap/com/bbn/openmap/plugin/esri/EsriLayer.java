@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriLayer.java,v $
 // $RCSfile: EsriLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/23 22:55:27 $
-// $Author: wjeuerle $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:14 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -124,7 +124,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
     protected String shp;
 
     protected DrawingAttributes drawingAttributes = 
-	DrawingAttributes.getDefaultClone();
+        DrawingAttributes.getDefaultClone();
     
     /**
      * Creates an EsriLayer that will be configured through the
@@ -139,22 +139,22 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * @param columnCount The number of columns in the dbf model
      */
     public EsriLayer(String name, int type, int columnCount) throws Exception {
-	setName(name);
+        setName(name);
 
-	switch (type) {
-	case SHAPE_TYPE_POINT:
-	    setList(new EsriPointList());
-	    break;
-	case SHAPE_TYPE_POLYGON:
-	    setList(new EsriPolygonList());
-	    break;
-	case SHAPE_TYPE_POLYLINE:
-	    setList(new EsriPolylineList());
-	    break;
-	default:
-	}
+        switch (type) {
+        case SHAPE_TYPE_POINT:
+            setList(new EsriPointList());
+            break;
+        case SHAPE_TYPE_POLYGON:
+            setList(new EsriPolygonList());
+            break;
+        case SHAPE_TYPE_POLYLINE:
+            setList(new EsriPolylineList());
+            break;
+        default:
+        }
 
-	_model = new DbfTableModel(columnCount);
+        _model = new DbfTableModel(columnCount);
     }
     
     /**
@@ -166,11 +166,11 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * @param shx The url referencing the shx extension file 
      */
     public EsriLayer(String name, String dbf, String shp, String shx, DrawingAttributes da) 
-	throws MalformedURLException {
-	this(name, 
-	     PropUtils.getResourceOrFileOrURL(dbf), 
-	     PropUtils.getResourceOrFileOrURL(shp),
-	     PropUtils.getResourceOrFileOrURL(shx), da);
+        throws MalformedURLException {
+        this(name, 
+             PropUtils.getResourceOrFileOrURL(dbf), 
+             PropUtils.getResourceOrFileOrURL(shp),
+             PropUtils.getResourceOrFileOrURL(shx), da);
     }
 
     /**
@@ -182,7 +182,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * @param shx The url referencing the shx extension file 
      */
     public EsriLayer(String name, URL dbf, URL shp, URL shx) {
-	this(name, dbf, shp, shx, DrawingAttributes.getDefaultClone());
+        this(name, dbf, shp, shx, DrawingAttributes.getDefaultClone());
     }
 
     /**
@@ -195,10 +195,10 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * @param da DrawingAttributes to use to render the layer contents.
      */
     public EsriLayer(String name, URL dbf, URL shp, URL shx, DrawingAttributes da) {
-	setName(name);
-	drawingAttributes = da;
-	setModel(DbfTableModel.getDbfTableModel(dbf));
-	setList(EsriGraphicList.getEsriGraphicList(shp, shx, drawingAttributes, getModel()));
+        setName(name);
+        drawingAttributes = da;
+        setModel(DbfTableModel.getDbfTableModel(dbf));
+        setList(EsriGraphicList.getEsriGraphicList(shp, shx, drawingAttributes, getModel()));
     }
         
     /**
@@ -207,14 +207,14 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * @param record A record to add to the DbfTableModel
      */
     public void addRecord(OMGraphic graphic, ArrayList record) {
-	OMGraphicList _list = getList();
-	if (_list != null) {
-	    _list.add(graphic);
-	}
+        OMGraphicList _list = getList();
+        if (_list != null) {
+            _list.add(graphic);
+        }
 
-	if (_model != null) {
-	    _model.addRecord(record);
-	}
+        if (_model != null) {
+            _model.addRecord(record);
+        }
     }
     
     /**
@@ -222,7 +222,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * @return The EsriGraphicList for this layer
      */
     public EsriGraphicList getEsriGraphicList() {
-	return (EsriGraphicList) getList();
+        return (EsriGraphicList) getList();
     }
     
     /**
@@ -230,7 +230,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * @return The associated table model for this layer
      */
     public DbfTableModel getModel() {
-	return _model;
+        return _model;
     }
     
     /**
@@ -240,11 +240,11 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * Esri's shape file format specification 
      */
     public int getType() {
-	EsriGraphicList egl = getEsriGraphicList();
-	if (egl != null) {
-	    return egl.getType();
-	}
-	return -1;
+        EsriGraphicList egl = getEsriGraphicList();
+        if (egl != null) {
+            return egl.getType();
+        }
+        return -1;
     }
     
     /**
@@ -252,7 +252,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * @param query A SQL like string to filter the DbfTableModel
      */
     public void query(String query) {
-	//to be implemented
+        //to be implemented
     }
     
     /**
@@ -260,7 +260,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * @param model The DbfModel to set for this layer
      */
     public void setModel(DbfTableModel model) {
-	_model = model;
+        _model = model;
     }
     
     /**
@@ -269,35 +269,35 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * @param properties the <code>Properties</code> object
      */
     public void setProperties(String prefix, Properties properties) {
-	super.setProperties(prefix, properties);
+        super.setProperties(prefix, properties);
 
-	drawingAttributes.setProperties(prefix, properties);
+        drawingAttributes.setProperties(prefix, properties);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	shp = properties.getProperty(prefix + PARAM_SHP);
-	shx = properties.getProperty(prefix + PARAM_SHX);
-	dbf = properties.getProperty(prefix + PARAM_DBF);
+        shp = properties.getProperty(prefix + PARAM_SHP);
+        shx = properties.getProperty(prefix + PARAM_SHX);
+        dbf = properties.getProperty(prefix + PARAM_DBF);
 
-	if (shp != null) {
-	    if ((shx == null || shx.equals(""))) {
-		shx = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_SHX;
-	    }
+        if (shp != null) {
+            if ((shx == null || shx.equals(""))) {
+                shx = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_SHX;
+            }
 
-	    if ((dbf == null || dbf.equals(""))) {
-		dbf = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_DBF;
-	    }
+            if ((dbf == null || dbf.equals(""))) {
+                dbf = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_DBF;
+            }
 
-	    try {
-		setModel(DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(dbf)));
-		setList(EsriGraphicList.getEsriGraphicList(PropUtils.getResourceOrFileOrURL(shp),
-							   PropUtils.getResourceOrFileOrURL(shx), 
-							   drawingAttributes, getModel()));
-	    } catch(Exception exception) {
-		Debug.error("EsriLayer("+ getName() + ") exception reading Shape files:\n " +
-			    exception.getMessage());
-	    }
-	}
+            try {
+                setModel(DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(dbf)));
+                setList(EsriGraphicList.getEsriGraphicList(PropUtils.getResourceOrFileOrURL(shp),
+                                                           PropUtils.getResourceOrFileOrURL(shx), 
+                                                           drawingAttributes, getModel()));
+            } catch(Exception exception) {
+                Debug.error("EsriLayer("+ getName() + ") exception reading Shape files:\n " +
+                            exception.getMessage());
+            }
+        }
     }
 
     /**
@@ -306,18 +306,18 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * @return the <code>Properties</code> object
      */
     public Properties getProperties(Properties properties) {
-	properties = super.getProperties(properties);
+        properties = super.getProperties(properties);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	properties.setProperty(prefix + PARAM_DBF, PropUtils.unnull(dbf));
-	properties.setProperty(prefix + PARAM_SHX, PropUtils.unnull(shx));
-	properties.setProperty(prefix + PARAM_SHP, PropUtils.unnull(shp));
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        properties.setProperty(prefix + PARAM_DBF, PropUtils.unnull(dbf));
+        properties.setProperty(prefix + PARAM_SHX, PropUtils.unnull(shx));
+        properties.setProperty(prefix + PARAM_SHP, PropUtils.unnull(shp));
 
-	// Need to make sure they line up.
-	drawingAttributes.setPropertyPrefix(getPropertyPrefix());
-	drawingAttributes.getProperties(properties);
+        // Need to make sure they line up.
+        drawingAttributes.setPropertyPrefix(getPropertyPrefix());
+        drawingAttributes.getProperties(properties);
 
-	return properties;
+        return properties;
     }
 
     /**
@@ -337,23 +337,23 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
-	list = super.getPropertyInfo(list);
+        list = super.getPropertyInfo(list);
 
-	list.put(PARAM_DBF, "Location URL of the dbf file.");
-	list.put(PARAM_DBF + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-	list.put(PARAM_SHX, "Location URL of the shx file.");
-	list.put(PARAM_SHX + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-	list.put(PARAM_SHP, "Location URL of the shp file.");
-	list.put(PARAM_SHP + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        list.put(PARAM_DBF, "Location URL of the dbf file.");
+        list.put(PARAM_DBF + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        list.put(PARAM_SHX, "Location URL of the shx file.");
+        list.put(PARAM_SHX + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        list.put(PARAM_SHP, "Location URL of the shp file.");
+        list.put(PARAM_SHP + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-	drawingAttributes.getPropertyInfo(list);
+        drawingAttributes.getPropertyInfo(list);
 
-	list.put(initPropertiesProperty, PARAM_SHP + " " + PARAM_SHX + " " + PARAM_DBF + " " + drawingAttributes.getInitPropertiesOrder());
+        list.put(initPropertiesProperty, PARAM_SHP + " " + PARAM_SHX + " " + PARAM_DBF + " " + drawingAttributes.getInitPropertiesOrder());
 
-	return list;
+        return list;
     }
 
 }

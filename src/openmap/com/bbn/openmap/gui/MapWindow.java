@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MapWindow.java,v $
 // $RCSfile: MapWindow.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,80 +55,80 @@ public class MapWindow extends JFrame {
     protected MapBean map;
 
     public MapWindow() {
-	super();
+        super();
     }
 
     public MapWindow(String windowTitle) {
-	super(windowTitle);
-	try {
-	    map = new BufferedMapBean();
-	    mapHandler.add(new MouseDelegator());
-	    mapHandler.add(new LayerHandler());
-	    mapHandler.add(map);
-	    getContentPane().add(map, BorderLayout.CENTER);
-	} catch (MultipleSoloMapComponentException msmce) {
-	}
+        super(windowTitle);
+        try {
+            map = new BufferedMapBean();
+            mapHandler.add(new MouseDelegator());
+            mapHandler.add(new LayerHandler());
+            mapHandler.add(map);
+            getContentPane().add(map, BorderLayout.CENTER);
+        } catch (MultipleSoloMapComponentException msmce) {
+        }
     }
 
     /** Add an object to the internal MapHandler. */
     public void addTo(Object obj) throws MultipleSoloMapComponentException {
-	mapHandler.add(obj);
+        mapHandler.add(obj);
     }
 
     /** Remove an object from the internal MapHandler. */
     public void removeFrom(Object obj) {
-	mapHandler.remove(obj);
+        mapHandler.remove(obj);
     }
 
     /** Get the MapHandler. */
     public MapHandler getMapHandler() {
-	return mapHandler;
+        return mapHandler;
     }
 
     /** Get the map. */
     public MapBean getMap() {
-	return map;
+        return map;
     }
 
     public void setProjection(Projection proj) {
-	map.setProjection(proj);
+        map.setProjection(proj);
     }
 
     public Projection getProjection() {
-	return map.getProjection();
+        return map.getProjection();
     }
 
     public static void main(String[] argv) {
-	Environment.init();
-	Debug.init();
+        Environment.init();
+        Debug.init();
 
-	MapBean.suppressCopyright = true;
-	MapWindow mw = new MapWindow("OpenMap's MapWindow");
+        MapBean.suppressCopyright = true;
+        MapWindow mw = new MapWindow("OpenMap's MapWindow");
 
-	mw.setSize(500, 500);
-	
-	try {
-	    mw.addTo(new com.bbn.openmap.layer.shape.ShapeLayer("share/data/shape/dcwpo-browse.shp"));
-	    mw.addTo(new com.bbn.openmap.event.NavMouseMode2());
-	    mw.addTo(new com.bbn.openmap.gui.ToolPanel());
-	    mw.addTo(new com.bbn.openmap.gui.OMToolSet());
-
-
-	    // If you want to add a ToolPanel, or an
-	    // InformationDelegator, or anything that needs to know
-	    // about the layout of the MapWindow frame, then you have
-	    // to do the layout management yourself.  For example:
-
-//  	    ToolPanel toolPanel = new ToolPanel();
-//  	    toolPanel.setFloatable(false);
-//  	    mw.getContentPane().add(toolPanel, BorderLayout.NORTH);
+        mw.setSize(500, 500);
+        
+        try {
+            mw.addTo(new com.bbn.openmap.layer.shape.ShapeLayer("share/data/shape/dcwpo-browse.shp"));
+            mw.addTo(new com.bbn.openmap.event.NavMouseMode2());
+            mw.addTo(new com.bbn.openmap.gui.ToolPanel());
+            mw.addTo(new com.bbn.openmap.gui.OMToolSet());
 
 
-	} catch (MultipleSoloMapComponentException memce) {
+            // If you want to add a ToolPanel, or an
+            // InformationDelegator, or anything that needs to know
+            // about the layout of the MapWindow frame, then you have
+            // to do the layout management yourself.  For example:
 
-	}
+//          ToolPanel toolPanel = new ToolPanel();
+//          toolPanel.setFloatable(false);
+//          mw.getContentPane().add(toolPanel, BorderLayout.NORTH);
 
-	mw.setVisible(true);
+
+        } catch (MultipleSoloMapComponentException memce) {
+
+        }
+
+        mw.setVisible(true);
     }
 
 }

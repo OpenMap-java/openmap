@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/Tokenizer.java,v $
 // $RCSfile: Tokenizer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,40 +32,40 @@ public class Tokenizer extends java.io.PushbackReader{
     int lineCount = 0;
   
     public Tokenizer(java.io.Reader in){
-	super(in, 2);
-	this.b = new StringBuffer(80); }
+        super(in, 2);
+        this.b = new StringBuffer(80); }
     
     // KRA 25Oct98: class Match requires access to NEWLINE and EOF, YOW!
     static Object NEWLINE = new Object() {
-	public String toString() { 
-	    return "<newline>"; 
-	}
+        public String toString() { 
+            return "<newline>"; 
+        }
     };
     
     static Object EOF = new Object() {
-	public String toString() {return "<EOF>"; 
-	}
+        public String toString() {return "<EOF>"; 
+        }
     };
     
     public boolean isNewline(Object o) { return o == NEWLINE; }
     public boolean isEOF(Object o) { return o == EOF; }
     public boolean isAny(int c) { return c != -1; }
     public boolean isAlpha(int c) {
-	return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'; }
+        return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'; }
     public boolean isDigit(int c) { return c >= '0' && c <= '9'; }
     public boolean isAlphanumeric(int c) {return isAlpha(c) || isDigit(c); }
     
     public void bpush(int c) {
-	this.b.append((char) c); }	// Yow!
+        this.b.append((char) c); }      // Yow!
     
     public String bclear() {
-	// YOW! Carefully copy string so it won't have 80 charaters under it.
-	String result = this.b.toString();
-	this.b.setLength(0); 
-	int L = result.length();
-	char[] chars = new char[L];
-	result.getChars(0, L, chars, 0);
-	return new String(chars); 
+        // YOW! Carefully copy string so it won't have 80 charaters under it.
+        String result = this.b.toString();
+        this.b.setLength(0); 
+        int L = result.length();
+        char[] chars = new char[L];
+        result.getChars(0, L, chars, 0);
+        return new String(chars); 
     }
     
     /** 
@@ -73,37 +73,37 @@ public class Tokenizer extends java.io.PushbackReader{
      * line breaks to '\n'.  Thank you Bill Gates! 
      */
     public int next() {
-	int c;
-	try { 
-	    c = this.read(); 
-	    if (c == '\r') {
-		int c1 = this.read();
-		if (c1 == '\n'){
-		    c = '\n'; 
-		} else {
-		    this.unread(c1);
-		    c = '\n'; 
-		}
-	    } 
-	    if (c == '\n') this.lineCount = this.lineCount + 1;
-	    //_ System.out.print((char) c + "_");
-	    return c;
-	} catch (java.io.IOException e) {
-	    throw new HandleError(e); 
-	}
+        int c;
+        try { 
+            c = this.read(); 
+            if (c == '\r') {
+                int c1 = this.read();
+                if (c1 == '\n'){
+                    c = '\n'; 
+                } else {
+                    this.unread(c1);
+                    c = '\n'; 
+                }
+            } 
+            if (c == '\n') this.lineCount = this.lineCount + 1;
+            //_ System.out.print((char) c + "_");
+            return c;
+        } catch (java.io.IOException e) {
+            throw new HandleError(e); 
+        }
     }
     
     public void putback(int c) {
-//  	System.out.println("putback: '" + (char) c + "'");
-	try {
-	    if (c != -1) this.unread(c);
-	} catch (java.io.IOException e) {
-	    throw new HandleError(e);
-	}
+//      System.out.println("putback: '" + (char) c + "'");
+        try {
+            if (c != -1) this.unread(c);
+        } catch (java.io.IOException e) {
+            throw new HandleError(e);
+        }
     }
     
     public Object error(String s) {
-	throw new HandleError("at line " + this.lineCount + ": " + s); 
+        throw new HandleError("at line " + this.lineCount + ": " + s); 
     }
     
 }

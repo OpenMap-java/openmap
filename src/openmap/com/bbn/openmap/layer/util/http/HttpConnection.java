@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/HttpConnection.java,v $
 // $RCSfile: HttpConnection.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:31 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:11 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -63,16 +63,16 @@ public class HttpConnection extends Thread {
      */
     public HttpConnection(Socket client_socket, HttpServer server) {
         client = client_socket;
-	this.server = server;
-	InputStreamReader isr;
-	OutputStreamWriter osr;
-	
+        this.server = server;
+        InputStreamReader isr;
+        OutputStreamWriter osr;
+        
         try { 
-	    isr = new InputStreamReader(client.getInputStream());
-	    in = new BufferedReader(isr);
-	    out = client.getOutputStream();
-	    //  	    osr = new OutputStreamWriter(client.getOutputStream());
-	    //  	    out = new BufferedWriter(osr);
+            isr = new InputStreamReader(client.getInputStream());
+            in = new BufferedReader(isr);
+            out = client.getOutputStream();
+            //              osr = new OutputStreamWriter(client.getOutputStream());
+            //              out = new BufferedWriter(osr);
         }
         catch (IOException e) {
             try { close(); } catch (IOException e2) { ; }
@@ -83,7 +83,7 @@ public class HttpConnection extends Thread {
     }
 
     public static String[] getAllContentTypes() {
-	return new String[] {CONTENT_JPEG, CONTENT_GIF, CONTENT_HTML, CONTENT_MOV, CONTENT_PLAIN, CONTENT_XML, CONTENT_PPM};
+        return new String[] {CONTENT_JPEG, CONTENT_GIF, CONTENT_HTML, CONTENT_MOV, CONTENT_PLAIN, CONTENT_XML, CONTENT_PPM};
     }
 
     /**
@@ -94,21 +94,21 @@ public class HttpConnection extends Thread {
         String line;
         StringBuffer revline;
         int len;
-	
+        
         try {
             while (isConnectionOpen) {
                 // read in a line
                 line = in.readLine();
                 if (line == null) break;
-		processLine(line);
+                processLine(line);
             }
         } catch (IOException e) { 
-	} finally { 
-	    try {
-		close();
-	    } catch (IOException e2) {}
-	}
-	Debug.message("httpconnection","Connection closed. Exiting thread");
+        } finally { 
+            try {
+                close();
+            } catch (IOException e2) {}
+        }
+        Debug.message("httpconnection","Connection closed. Exiting thread");
     }
 
     /**
@@ -118,109 +118,109 @@ public class HttpConnection extends Thread {
      * @param line one line of an HTTP request
      */
     protected void processLine(String line) throws IOException {
-	if (Debug.debugging("httpconnection")) {
-	    Debug.output("HttpConnection | processLine -- Processing command " + line);
-	}
+        if (Debug.debugging("httpconnection")) {
+            Debug.output("HttpConnection | processLine -- Processing command " + line);
+        }
 
-	if (line.startsWith("GET")) {
-	    processGetCommand(line);
-	} else if (line.startsWith("POST")) {
-	    Debug.message("httpconnection","handling POST");
-	    handlePost();
-	}
+        if (line.startsWith("GET")) {
+            processGetCommand(line);
+        } else if (line.startsWith("POST")) {
+            Debug.message("httpconnection","handling POST");
+            handlePost();
+        }
     }
 
     protected void handlePost() throws IOException {
-	Debug.message("httpconnection","HttpConnection | handlePost");
-	String line;
-	int nEnvarVariables=0;
-	int contentLength=0;
+        Debug.message("httpconnection","HttpConnection | handlePost");
+        String line;
+        int nEnvarVariables=0;
+        int contentLength=0;
         try {
             while (isConnectionOpen) {
                 // read in a line
                 line = in.readLine();
-		Debug.message("httpconnection", line);
+                Debug.message("httpconnection", line);
 
                 if (line == null) break;
-	
-		String lineupp = line.toUpperCase();
-		if(lineupp.startsWith("CONTENT-LENGTH")) {
-		    contentLength = readContentLength(line);
-		    Debug.message("httpconnection", 
-				  "HttpConnection -- Contentlength = " +
-				  contentLength);
-		}
-		
-		if (line.equals("")) {
-		    readContent(contentLength);
-		}
+        
+                String lineupp = line.toUpperCase();
+                if(lineupp.startsWith("CONTENT-LENGTH")) {
+                    contentLength = readContentLength(line);
+                    Debug.message("httpconnection", 
+                                  "HttpConnection -- Contentlength = " +
+                                  contentLength);
+                }
+                
+                if (line.equals("")) {
+                    readContent(contentLength);
+                }
             }
         } catch (IOException e) { 
-	} finally { 
-	    try {
-		close();
-	    } catch (IOException e2) {}
-	}
+        } finally { 
+            try {
+                close();
+            } catch (IOException e2) {}
+        }
     }
 
     protected int readContentLength(String line) {
-	// Find the content length and read it
-	StringTokenizer tokenizer = new StringTokenizer(line,":");
-	// this is first token "Content-length"
-	tokenizer.nextToken();
-	// Actual length after ':' "Content-length: xxx"
-	String strLength = tokenizer.nextToken(); 
-	int length = Integer.parseInt(strLength.trim());
-	return length;
+        // Find the content length and read it
+        StringTokenizer tokenizer = new StringTokenizer(line,":");
+        // this is first token "Content-length"
+        tokenizer.nextToken();
+        // Actual length after ':' "Content-length: xxx"
+        String strLength = tokenizer.nextToken(); 
+        int length = Integer.parseInt(strLength.trim());
+        return length;
     }
 
     // check if it is an environment key - value pair
     // ASSUME actual content won't have ':'
     protected boolean isEnvarLine(String line) {
-	if (line.indexOf(":") != -1) {
-	    return true;
-	}
-	return false;
+        if (line.indexOf(":") != -1) {
+            return true;
+        }
+        return false;
     }
 
     protected void readContent(int length) throws IOException{
     
-	char[] c_content = new char[length];
-	int nread=0;
-	try {
-	    while(nread < length) {	
-		nread += in.read(c_content, nread, length);
-		Debug.message("httpconnection","Length of content read " + nread);
-	    }
-	} catch(java.io.IOException ioe) {
-	    Debug.error("HttpConnection | readContent -- Exception while reading content(key-values from POST) " + ioe.getMessage());      
-	}
+        char[] c_content = new char[length];
+        int nread=0;
+        try {
+            while(nread < length) {     
+                nread += in.read(c_content, nread, length);
+                Debug.message("httpconnection","Length of content read " + nread);
+            }
+        } catch(java.io.IOException ioe) {
+            Debug.error("HttpConnection | readContent -- Exception while reading content(key-values from POST) " + ioe.getMessage());      
+        }
       
-	String content = new String(c_content);
-	content = content.trim();
+        String content = new String(c_content);
+        content = content.trim();
 
-	if (Debug.debugging("httpconnection")) {
-	    Debug.output("HttpConection showing Content :-- " + content);
-	}
+        if (Debug.debugging("httpconnection")) {
+            Debug.output("HttpConection showing Content :-- " + content);
+        }
 
-	//processGetCommand(content);
+        //processGetCommand(content);
 
-	HttpRequestEvent event = server.fireHttpRequestEvent(content, out);
+        HttpRequestEvent event = server.fireHttpRequestEvent(content, out);
 
-	// Check to see if the Writer in the Event was used.  If it
-	// was, then the listeners contributed concatenated text, and
-	// the result needs to be retrieved and sent back.
-	if (event.isWriterUsed()) {
-	    Writer writer = event.getWriter();
-	    String result = writer.toString();
-	    writeHttpResponse(out, null, result);
-	} 
+        // Check to see if the Writer in the Event was used.  If it
+        // was, then the listeners contributed concatenated text, and
+        // the result needs to be retrieved and sent back.
+        if (event.isWriterUsed()) {
+            Writer writer = event.getWriter();
+            String result = writer.toString();
+            writeHttpResponse(out, null, result);
+        } 
 
-	// else - assume that the binary response listeners took care
-	// of writing things back on their own,
+        // else - assume that the binary response listeners took care
+        // of writing things back on their own,
 
-	out.flush();
-	close();
+        out.flush();
+        close();
     }
 
     /**
@@ -231,62 +231,62 @@ public class HttpConnection extends Thread {
      * @param cmd a "GET" HTTP command
      */
     protected void processGetCommand(String cmd) throws IOException {
-	// Command looks like: "GET /thisURL HTTP/1.0"
-	String location = cmd.substring(4); // remove the "GET "
-	int locationEnd = location.indexOf(" "); // end at first space
-	location = location.substring(0, locationEnd);
-	
-	// Figure out what type of file to figure Content-type
-	// string contents
-	String contentType;
-	if (location.endsWith(".gif") || 
-	    location.endsWith(".GIF")) {
-	    
-	    contentType = CONTENT_GIF;
-	    
-	} else if (location.endsWith(".htm") || 
-		   location.endsWith(".html") || 
-		   location.endsWith(".HTM") || 
-		   location.endsWith(".HTML")) {
-	    
-	    contentType = CONTENT_HTML;
-	    
-	} else if (location.endsWith(".jpg") || 
-		   location.endsWith(".JPG") || 
-		   location.endsWith(".jpeg") || 
-		   location.endsWith(".JPEG")) {
-	    
-	    contentType = CONTENT_JPEG;
-	    
-	} else if (location.endsWith(".mov") || 
-		   location.endsWith(".MOV")) {
-	    
-	    contentType = CONTENT_MOV;
-	    
-	} else if (location.indexOf('?') != -1) {
+        // Command looks like: "GET /thisURL HTTP/1.0"
+        String location = cmd.substring(4); // remove the "GET "
+        int locationEnd = location.indexOf(" "); // end at first space
+        location = location.substring(0, locationEnd);
+        
+        // Figure out what type of file to figure Content-type
+        // string contents
+        String contentType;
+        if (location.endsWith(".gif") || 
+            location.endsWith(".GIF")) {
+            
+            contentType = CONTENT_GIF;
+            
+        } else if (location.endsWith(".htm") || 
+                   location.endsWith(".html") || 
+                   location.endsWith(".HTM") || 
+                   location.endsWith(".HTML")) {
+            
+            contentType = CONTENT_HTML;
+            
+        } else if (location.endsWith(".jpg") || 
+                   location.endsWith(".JPG") || 
+                   location.endsWith(".jpeg") || 
+                   location.endsWith(".JPEG")) {
+            
+            contentType = CONTENT_JPEG;
+            
+        } else if (location.endsWith(".mov") || 
+                   location.endsWith(".MOV")) {
+            
+            contentType = CONTENT_MOV;
+            
+        } else if (location.indexOf('?') != -1) {
 
-	    contentType = null;
+            contentType = null;
 
-	} else {
-	    contentType = CONTENT_PLAIN;
-	}
-	
-	HttpRequestEvent event = server.fireHttpRequestEvent(location, out);
+        } else {
+            contentType = CONTENT_PLAIN;
+        }
+        
+        HttpRequestEvent event = server.fireHttpRequestEvent(location, out);
 
-	// Check to see if the Writer in the Event was used.  If it
-	// was, then the listeners contributed concatenated text, and
-	// the result needs to be retrieved and sent back.
-	if (event.isWriterUsed()) {
-	    Writer writer = event.getWriter();
-	    String result = writer.toString();
-	    writeHttpResponse(out, contentType, result);
-	} 
+        // Check to see if the Writer in the Event was used.  If it
+        // was, then the listeners contributed concatenated text, and
+        // the result needs to be retrieved and sent back.
+        if (event.isWriterUsed()) {
+            Writer writer = event.getWriter();
+            String result = writer.toString();
+            writeHttpResponse(out, contentType, result);
+        } 
 
-	// else - assume that the binary response listeners took care
-	// of writing things back on their own,
+        // else - assume that the binary response listeners took care
+        // of writing things back on their own,
 
-	out.flush();
-	close();
+        out.flush();
+        close();
     }
 
     /**
@@ -299,14 +299,14 @@ public class HttpConnection extends Thread {
      * @param contentLength the byte length of your response.  
      */
     public static void writeHttpResponseHeader(Writer out,
-					       String contentType,
-					       int contentLength) 
-	throws IOException {
+                                               String contentType,
+                                               int contentLength) 
+        throws IOException {
 
-	out.write("HTTP/1.0 200 \n"); // return status
-	out.write("Content-type: " + contentType + "\n"); // important!
-	out.write("Content-Length: " + contentLength + "\n");	// important!
-	out.write("\n");
+        out.write("HTTP/1.0 200 \n"); // return status
+        out.write("Content-type: " + contentType + "\n"); // important!
+        out.write("Content-Length: " + contentLength + "\n");   // important!
+        out.write("\n");
     }
 
     /**
@@ -317,14 +317,14 @@ public class HttpConnection extends Thread {
      * @param response the string containing the response. 
      */
     public static void writeHttpResponse(OutputStream out, 
-					 String contentType,
-					 String response) 
-	throws IOException {
+                                         String contentType,
+                                         String response) 
+        throws IOException {
 
-	OutputStreamWriter osw = new OutputStreamWriter(out);
-	writeHttpResponseHeader(osw, contentType, response.length());
-	osw.write(response);
-	osw.flush();
+        OutputStreamWriter osw = new OutputStreamWriter(out);
+        writeHttpResponseHeader(osw, contentType, response.length());
+        osw.write(response);
+        osw.flush();
     }
 
     /**
@@ -335,22 +335,22 @@ public class HttpConnection extends Thread {
      * @param response the byte array containing the response. 
      */
     public static void writeHttpResponse(OutputStream out, 
-					 String contentType,
-					 byte[] response) 
-	throws IOException {
-	OutputStreamWriter osw = new OutputStreamWriter(out);
-	writeHttpResponseHeader(osw, contentType, response.length);	
-	osw.flush();
-	out.write(response, 0, response.length);
-	osw.flush();
+                                         String contentType,
+                                         byte[] response) 
+        throws IOException {
+        OutputStreamWriter osw = new OutputStreamWriter(out);
+        writeHttpResponseHeader(osw, contentType, response.length);     
+        osw.flush();
+        out.write(response, 0, response.length);
+        osw.flush();
     }
 
     /**
      * Close the socket connection that we have opened
      */
     public void close() throws IOException {
-	client.close();
-	isConnectionOpen = false;
+        client.close();
+        isConnectionOpen = false;
     }
 }
 

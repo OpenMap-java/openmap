@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/db/DBLocationHandler.java,v $
 // $RCSfile: DBLocationHandler.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 22:55:24 $
-// $Author: wjeuerle $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:10 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -87,7 +87,7 @@ import com.bbn.openmap.util.quadtree.QuadTree;
  */
 public class DBLocationHandler extends AbstractLocationHandler
     implements LocationHandler, ActionListener {
-        	        
+                        
     /** The storage mechanism for the locations. */
     protected QuadTree quadtree = null;
     
@@ -97,7 +97,7 @@ public class DBLocationHandler extends AbstractLocationHandler
        is being used including username and password.
        Alternately, username and password can be specified by in properties file as
        jdbc.user=USERNAME
-       jdbc.password=PASSWORD    	    	    	
+       jdbc.password=PASSWORD                           
     */
     /** String that would be used for making a connection to Database */
     protected String jdbcString = null;
@@ -142,24 +142,24 @@ public class DBLocationHandler extends AbstractLocationHandler
      * @param properties the properties set in the properties file.  
      */
     public void setProperties(String prefix, Properties properties) {
-	super.setProperties(prefix, properties);
+        super.setProperties(prefix, properties);
 
-	prefix = getPropertyPrefix();
-	if (prefix != null) {
-	    prefix = prefix + ".";
-	} else {
-	    prefix = "";
-	}
+        prefix = getPropertyPrefix();
+        if (prefix != null) {
+            prefix = prefix + ".";
+        } else {
+            prefix = "";
+        }
 
-	props = properties; // Save it now. We would need it in future
-	
-	jdbcString = properties.getProperty(prefix + jdbcStringProperty);
-	jdbcDriver = properties.getProperty(prefix + jdbcDriverProperty);
-	userName = properties.getProperty(prefix + userNameProperty);
-	userPassword = properties.getProperty(prefix + userPasswordProperty);
+        props = properties; // Save it now. We would need it in future
+        
+        jdbcString = properties.getProperty(prefix + jdbcStringProperty);
+        jdbcDriver = properties.getProperty(prefix + jdbcDriverProperty);
+        userName = properties.getProperty(prefix + userNameProperty);
+        userPassword = properties.getProperty(prefix + userPasswordProperty);
 
-	locationQueryString = 
-	    properties.getProperty(prefix + locationQueryStringProperty);
+        locationQueryString = 
+            properties.getProperty(prefix + locationQueryStringProperty);
     }
     
     /**
@@ -177,29 +177,29 @@ public class DBLocationHandler extends AbstractLocationHandler
      * PropertyConsumer.  
      */
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = getPropertyPrefix();
-	if (prefix != null) {
-	    prefix = prefix + ".";
-	} else {
-	    prefix = "";
-	}
+        String prefix = getPropertyPrefix();
+        if (prefix != null) {
+            prefix = prefix + ".";
+        } else {
+            prefix = "";
+        }
 
-	props.put(prefix + "class", this.getClass().getName());
-	props.put(prefix + jdbcStringProperty, PropUtils.unnull(jdbcString));
-	props.put(prefix + jdbcDriverProperty, PropUtils.unnull(jdbcDriver));
-	props.put(prefix + userNameProperty, PropUtils.unnull(userName));
-	props.put(prefix + userPasswordProperty, PropUtils.unnull(userPassword));
-	props.put(prefix + locationQueryStringProperty, PropUtils.unnull(locationQueryString));
+        props.put(prefix + "class", this.getClass().getName());
+        props.put(prefix + jdbcStringProperty, PropUtils.unnull(jdbcString));
+        props.put(prefix + jdbcDriverProperty, PropUtils.unnull(jdbcDriver));
+        props.put(prefix + userNameProperty, PropUtils.unnull(userName));
+        props.put(prefix + userPasswordProperty, PropUtils.unnull(userPassword));
+        props.put(prefix + locationQueryStringProperty, PropUtils.unnull(locationQueryString));
 
-	// Put the properties in here for the RawDataRecordSet, which
-	// gets images that can be used for the locations.
-	props.put(prefix + RawDataRecordSet.tableNameProperty, PropUtils.unnull(props.getProperty(prefix + RawDataRecordSet.tableNameProperty)));
-	props.put(prefix + RawDataRecordSet.rawDataColumnNameProperty, PropUtils.unnull(props.getProperty(prefix + RawDataRecordSet.rawDataColumnNameProperty)));
-	props.put(prefix + RawDataRecordSet.rawDataKeyColumnNameProperty, PropUtils.unnull(props.getProperty(prefix + RawDataRecordSet.rawDataKeyColumnNameProperty)));
+        // Put the properties in here for the RawDataRecordSet, which
+        // gets images that can be used for the locations.
+        props.put(prefix + RawDataRecordSet.tableNameProperty, PropUtils.unnull(props.getProperty(prefix + RawDataRecordSet.tableNameProperty)));
+        props.put(prefix + RawDataRecordSet.rawDataColumnNameProperty, PropUtils.unnull(props.getProperty(prefix + RawDataRecordSet.rawDataColumnNameProperty)));
+        props.put(prefix + RawDataRecordSet.rawDataKeyColumnNameProperty, PropUtils.unnull(props.getProperty(prefix + RawDataRecordSet.rawDataKeyColumnNameProperty)));
 
-	return props;
+        return props;
     }
 
     /**
@@ -223,24 +223,24 @@ public class DBLocationHandler extends AbstractLocationHandler
      * PropertyConsumer.  
      */
     public Properties getPropertyInfo(Properties list) {
-	list = super.getPropertyInfo(list);
-	
-	list.put("class" + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
-	list.put(jdbcStringProperty, "JDBC login string");
-	list.put(jdbcDriverProperty, "JDBC driver class name");
-	list.put(userNameProperty, "User name");
-	list.put(userPasswordProperty, "User password");
-	list.put(locationQueryStringProperty, "Select statement that the data object needs.");
+        list = super.getPropertyInfo(list);
+        
+        list.put("class" + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
+        list.put(jdbcStringProperty, "JDBC login string");
+        list.put(jdbcDriverProperty, "JDBC driver class name");
+        list.put(userNameProperty, "User name");
+        list.put(userPasswordProperty, "User password");
+        list.put(locationQueryStringProperty, "Select statement that the data object needs.");
 
-	list.put(RawDataRecordSet.tableNameProperty, "The name of the table in the database that holds the images.");
-	list.put(RawDataRecordSet.rawDataColumnNameProperty, "The name of the column in the table in the database that holds the name (key) of the image.");
-	list.put(RawDataRecordSet.rawDataKeyColumnNameProperty, "The name of the column in the table in the database that holds the raw image bytes.");
+        list.put(RawDataRecordSet.tableNameProperty, "The name of the table in the database that holds the images.");
+        list.put(RawDataRecordSet.rawDataColumnNameProperty, "The name of the column in the table in the database that holds the name (key) of the image.");
+        list.put(RawDataRecordSet.rawDataKeyColumnNameProperty, "The name of the column in the table in the database that holds the raw image bytes.");
 
-	return list;
+        return list;
     }
 
     public void reloadData() {
-	quadtree = createData();
+        quadtree = createData();
     }
     
     /**
@@ -248,95 +248,95 @@ public class DBLocationHandler extends AbstractLocationHandler
      * Locations.
      */
     protected QuadTree createData() {
-	
-	QuadTree qt = new QuadTree(90.0f, -180.0f, -90.0f, 180.0f, 100, 50f);
-	ByteRasterLocation loc;
-	byte bytearr[];
+        
+        QuadTree qt = new QuadTree(90.0f, -180.0f, -90.0f, 180.0f, 100, 50f);
+        ByteRasterLocation loc;
+        byte bytearr[];
 
-	if (locationQueryString == null) {
-	    return qt;
-	}
+        if (locationQueryString == null) {
+            return qt;
+        }
 
-	// Code for reading from DB and pushing it into QuadTree.	
-	try {	    
-	    if(jdbcDriver != null) {
-		Class.forName(getJdbcDriver());
-	    }
+        // Code for reading from DB and pushing it into QuadTree.       
+        try {       
+            if(jdbcDriver != null) {
+                Class.forName(getJdbcDriver());
+            }
 
-	    Connection connection =		
-		DriverManager.getConnection (getJdbcString(),
-					     getUserName(),
-					     getUserPassword());
+            Connection connection =             
+                DriverManager.getConnection (getJdbcString(),
+                                             getUserName(),
+                                             getUserPassword());
 
-	    RawDataRecordSet gifdataRS = 
-		new RawDataRecordSet(connection, getPropertyPrefix(), props);
+            RawDataRecordSet gifdataRS = 
+                new RawDataRecordSet(connection, getPropertyPrefix(), props);
 
-	    RecordSet locationdataRS = 
-		new RecordSet(connection, locationQueryString);
+            RecordSet locationdataRS = 
+                new RecordSet(connection, locationQueryString);
 
-	    while(locationdataRS.next()) {	
+            while(locationdataRS.next()) {      
 
-		LocationData ld = new LocationData(locationdataRS);
+                LocationData ld = new LocationData(locationdataRS);
 
-		if (Debug.debugging("location")) {
-		    Debug.output("DBLocationHandler:  location information:\n" + ld);
-		}
+                if (Debug.debugging("location")) {
+                    Debug.output("DBLocationHandler:  location information:\n" + ld);
+                }
 
-		bytearr = gifdataRS.getRawData(ld.getGraphicName());
-		
-		float lat = ld.getLatitude();
-		float lon = ld.getLongitude();
+                bytearr = gifdataRS.getRawData(ld.getGraphicName());
+                
+                float lat = ld.getLatitude();
+                float lon = ld.getLongitude();
 
-		loc = new ByteRasterLocation(lat, lon,
-					     ld.getCityName(), bytearr);
+                loc = new ByteRasterLocation(lat, lon,
+                                             ld.getCityName(), bytearr);
 
-		loc.setLocationHandler(this);
+                loc.setLocationHandler(this);
 
-		// let the layer handler default set these initially...
-		loc.setShowName(isShowNames());
-		loc.setShowLocation(isShowLocations());
+                // let the layer handler default set these initially...
+                loc.setShowName(isShowNames());
+                loc.setShowLocation(isShowLocations());
 
-		loc.setLocationPaint(getLocationColor());
-		loc.getLabel().setLinePaint(getNameColor());
-		loc.setDetails(ld.getCityName() + " is at lat: " + lat
-			       + ", lon: " + lon);
-		
- 		qt.put(lat, lon, loc);
-					
-	    }
-			
-	    locationdataRS.close();	
-	    connection.close();
+                loc.setLocationPaint(getLocationColor());
+                loc.getLabel().setLinePaint(getNameColor());
+                loc.setDetails(ld.getCityName() + " is at lat: " + lat
+                               + ", lon: " + lon);
+                
+                qt.put(lat, lon, loc);
+                                        
+            }
+                        
+            locationdataRS.close();     
+            connection.close();
 
-	} catch(SQLException sqlE) {
-	    Debug.error("DBLocationHandler:SQL Exception: " + sqlE.getMessage());
-	    sqlE.printStackTrace();
-	} catch(ClassNotFoundException cnfE) {
-	    Debug.error("DBLocationHandler: Class not found Exception: " + cnfE);
-	}
+        } catch(SQLException sqlE) {
+            Debug.error("DBLocationHandler:SQL Exception: " + sqlE.getMessage());
+            sqlE.printStackTrace();
+        } catch(ClassNotFoundException cnfE) {
+            Debug.error("DBLocationHandler: Class not found Exception: " + cnfE);
+        }
 
-	return qt;
+        return qt;
     }
     
-    public String getJdbcString() {	
-	return jdbcString;
+    public String getJdbcString() {     
+        return jdbcString;
     }
     
     
-    public String getJdbcDriver() {	
-	return jdbcDriver;
+    public String getJdbcDriver() {     
+        return jdbcDriver;
     }
     
-    public String getUserName() {	
-	return userName;
+    public String getUserName() {       
+        return userName;
     }
     
-    public String getUserPassword() {	
-	return userPassword;
+    public String getUserPassword() {   
+        return userPassword;
     }
     
     public Properties getLocationProperties() {
-	return props;
+        return props;
     }    
 
     /**
@@ -350,34 +350,34 @@ public class DBLocationHandler extends AbstractLocationHandler
      *
      */
     public Vector get(float nwLat, float nwLon, float seLat, float seLon, 
-		      Vector graphicList) {
-	
-	// IF the quadtree has not been set up yet, do it!
-	if (quadtree == null) {
-	    Debug.output("DBLocationHandler: Figuring out the locations and names! (This is a one-time operation!)");
-	    quadtree = createData();
-	}
+                      Vector graphicList) {
+        
+        // IF the quadtree has not been set up yet, do it!
+        if (quadtree == null) {
+            Debug.output("DBLocationHandler: Figuring out the locations and names! (This is a one-time operation!)");
+            quadtree = createData();
+        }
 
-	if (quadtree != null) {
-	    if (Debug.debugging("location")) {
-		Debug.output("DBLocationHandler|DBLocationHandler.get() ul.lon = "
-			     + nwLon + " lr.lon = " + seLon +
-			     " delta = " + (seLon - nwLon)); 
-	    }
+        if (quadtree != null) {
+            if (Debug.debugging("location")) {
+                Debug.output("DBLocationHandler|DBLocationHandler.get() ul.lon = "
+                             + nwLon + " lr.lon = " + seLon +
+                             " delta = " + (seLon - nwLon)); 
+            }
 
-	    quadtree.get(nwLat, nwLon, seLat, seLon, graphicList);
-	}
-	return graphicList;
+            quadtree.get(nwLat, nwLon, seLat, seLon, graphicList);
+        }
+        return graphicList;
     }
 
     public void fillLocationPopUpMenu (LocationPopupMenu locMenu) {
 
-	LocationCBMenuItem lcbi = new LocationCBMenuItem(LocationHandler.showname, 
-							 locMenu, 
-							 getLayer());
-	lcbi.setState(locMenu.getLoc().isShowName());
-	locMenu.add(lcbi);
-	locMenu.add(new LocationMenuItem(showdetails, locMenu, getLayer()));
+        LocationCBMenuItem lcbi = new LocationCBMenuItem(LocationHandler.showname, 
+                                                         locMenu, 
+                                                         getLayer());
+        lcbi.setState(locMenu.getLoc().isShowName());
+        locMenu.add(lcbi);
+        locMenu.add(new LocationMenuItem(showdetails, locMenu, getLayer()));
     }
 
     /** Box used for constructing the palette widgets */
@@ -390,28 +390,28 @@ public class DBLocationHandler extends AbstractLocationHandler
      * @return Component object representing the palette widgets.
      */
     public Component getGUI() {
-	if (box == null) {
-	    JCheckBox showDBLocationCheck, showNameCheck;
-	    JButton rereadFilesButton;
-	    
-	    showDBLocationCheck = new JCheckBox("Show Locations", isShowLocations());
-	    showDBLocationCheck.setActionCommand(showLocationsCommand);
-	    showDBLocationCheck.addActionListener(this);
-	    
-	    showNameCheck = new JCheckBox("Show Location Names", isShowNames());
-	    showNameCheck.setActionCommand(showNamesCommand);
-	    showNameCheck.addActionListener(this);
-	    
-	    rereadFilesButton = new JButton("Reload Data From Source");
-	    rereadFilesButton.setActionCommand(readDataCommand);
-	    rereadFilesButton.addActionListener(this);
-	    
-	    box = Box.createVerticalBox();
-	    box.add(showDBLocationCheck);
-	    box.add(showNameCheck);
-	    box.add(rereadFilesButton);
-	}
-	return box;
+        if (box == null) {
+            JCheckBox showDBLocationCheck, showNameCheck;
+            JButton rereadFilesButton;
+            
+            showDBLocationCheck = new JCheckBox("Show Locations", isShowLocations());
+            showDBLocationCheck.setActionCommand(showLocationsCommand);
+            showDBLocationCheck.addActionListener(this);
+            
+            showNameCheck = new JCheckBox("Show Location Names", isShowNames());
+            showNameCheck.setActionCommand(showNamesCommand);
+            showNameCheck.addActionListener(this);
+            
+            rereadFilesButton = new JButton("Reload Data From Source");
+            rereadFilesButton.setActionCommand(readDataCommand);
+            rereadFilesButton.addActionListener(this);
+            
+            box = Box.createVerticalBox();
+            box.add(showDBLocationCheck);
+            box.add(showNameCheck);
+            box.add(rereadFilesButton);
+        }
+        return box;
     }
 
     //----------------------------------------------------------------------
@@ -423,31 +423,31 @@ public class DBLocationHandler extends AbstractLocationHandler
      * actions.
      */
     public void actionPerformed(ActionEvent e) {
-	String cmd = e.getActionCommand();
-	if (cmd == showLocationsCommand) {		
-	    JCheckBox locationCheck = (JCheckBox)e.getSource();
-	    setShowLocations(locationCheck.isSelected());
-	    if(Debug.debugging("location")) {
-	    	Debug.output("DBLocationHandler::actionPerformed showLocations is "
-			     + isShowLocations());
-	    }
-	    getLayer().repaint();
-	} else if (cmd == showNamesCommand) {
-	    JCheckBox namesCheck = (JCheckBox)e.getSource();
-	    setShowNames(namesCheck.isSelected());
-	    if(Debug.debugging("location")) {
-	    	Debug.output("DBLocationHandler::actionPerformed showNames is "
-			     + isShowNames());
-	    }
-	    getLayer().repaint();
-	} else if (cmd == readDataCommand) {
-	    Debug.output("DBLocationHandler: Re-reading Locations file");
-	    quadtree = null;
-	    getLayer().doPrepare();
-	} else 	{
-	    Debug.error("DBLocationHandler: Unknown action command \"" + cmd +
-			"\" in actionPerformed().");
-	}
+        String cmd = e.getActionCommand();
+        if (cmd == showLocationsCommand) {              
+            JCheckBox locationCheck = (JCheckBox)e.getSource();
+            setShowLocations(locationCheck.isSelected());
+            if(Debug.debugging("location")) {
+                Debug.output("DBLocationHandler::actionPerformed showLocations is "
+                             + isShowLocations());
+            }
+            getLayer().repaint();
+        } else if (cmd == showNamesCommand) {
+            JCheckBox namesCheck = (JCheckBox)e.getSource();
+            setShowNames(namesCheck.isSelected());
+            if(Debug.debugging("location")) {
+                Debug.output("DBLocationHandler::actionPerformed showNames is "
+                             + isShowNames());
+            }
+            getLayer().repaint();
+        } else if (cmd == readDataCommand) {
+            Debug.output("DBLocationHandler: Re-reading Locations file");
+            quadtree = null;
+            getLayer().doPrepare();
+        } else  {
+            Debug.error("DBLocationHandler: Unknown action command \"" + cmd +
+                        "\" in actionPerformed().");
+        }
     }
 
 }

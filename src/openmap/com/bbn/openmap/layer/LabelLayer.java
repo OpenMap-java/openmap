@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/LabelLayer.java,v $
 // $RCSfile: LabelLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/11/14 20:29:38 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -109,9 +109,9 @@ public class LabelLayer extends OMGraphicHandlerLayer
      * Construct the LabelLayer.
      */
     public LabelLayer() {
-	text = new OMText(0, 0, "uninitialized", font, OMText.JUSTIFY_RIGHT);
-	text.setLinePaint(fgColor);
- 	text.setFillPaint(bgColor);
+        text = new OMText(0, 0, "uninitialized", font, OMText.JUSTIFY_RIGHT);
+        text.setLinePaint(fgColor);
+        text.setFillPaint(bgColor);
     }
 
     /**
@@ -120,67 +120,67 @@ public class LabelLayer extends OMGraphicHandlerLayer
      * @param props the <code>Properties</code> object
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	prefix = com.bbn.openmap.util.PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = com.bbn.openmap.util.PropUtils.getScopedPropertyPrefix(prefix);
 
-	fontString = props.getProperty(prefix+fontProperty, fontString);
+        fontString = props.getProperty(prefix+fontProperty, fontString);
 
-	fgColor = ColorFactory.parseColorFromProperties(
-	    props, prefix+fgColorProperty, Integer.toString(fgColorValue));
+        fgColor = ColorFactory.parseColorFromProperties(
+            props, prefix+fgColorProperty, Integer.toString(fgColorValue));
 
-	bgColor = ColorFactory.parseColorFromProperties(
-	    props, prefix+bgColorProperty, Integer.toString(bgColorValue));
+        bgColor = ColorFactory.parseColorFromProperties(
+            props, prefix+bgColorProperty, Integer.toString(bgColorValue));
 
-	geometryString = props.getProperty(prefix+geometryProperty, geometryString);
-	parseGeometryString();
+        geometryString = props.getProperty(prefix+geometryProperty, geometryString);
+        parseGeometryString();
 
-	labelText = props.getProperty(
-	    prefix+labelProperty, labelText);
+        labelText = props.getProperty(
+            prefix+labelProperty, labelText);
 
-	// reset the property values
-	font = Font.decode(fontString);
-	text.setFont(font);
-	text.setLinePaint(fgColor);
-	text.setFillPaint(bgColor);
+        // reset the property values
+        font = Font.decode(fontString);
+        text.setFont(font);
+        text.setLinePaint(fgColor);
+        text.setFillPaint(bgColor);
     }
 
     /** Parse X-like geometry string. */
     protected void parseGeometryString() {
-	int i=0;
-	byte[] bytes = geometryString.getBytes();
-	xgrav = new String(bytes, 0, 1);
-	for (i=2; i<bytes.length; i++) {
-	    if ((bytes[i] == '-') || (bytes[i] == '+'))
-		break;
-	}
-	if (i == bytes.length)
-	    return;
-	ygrav = (bytes[i] == '-') ? "-" : "+";
-	xpos = Integer.parseInt(new String(bytes, 1, i-1));
-	++i;
-	ypos = Integer.parseInt(new String(bytes, i, bytes.length-i));
+        int i=0;
+        byte[] bytes = geometryString.getBytes();
+        xgrav = new String(bytes, 0, 1);
+        for (i=2; i<bytes.length; i++) {
+            if ((bytes[i] == '-') || (bytes[i] == '+'))
+                break;
+        }
+        if (i == bytes.length)
+            return;
+        ygrav = (bytes[i] == '-') ? "-" : "+";
+        xpos = Integer.parseInt(new String(bytes, 1, i-1));
+        ++i;
+        ypos = Integer.parseInt(new String(bytes, i, bytes.length-i));
     }
     
     
     /** Position the text graphic */
     protected void positionText(int w, int h) {
-	int xoff, yoff, justify;
-	if (xgrav.equals("+")) {
-	    xoff = xpos;
-	    justify = OMText.JUSTIFY_LEFT;
-	} else {
-	    xoff = w - xpos;
-	    justify = OMText.JUSTIFY_RIGHT;
-	}
-	if (ygrav.equals("+")) {
-	    yoff = ypos;
-	} else {
-	    yoff = h - ypos;
-	}
-	text.setX(xoff);
-	text.setY(yoff);
-	text.setJustify(justify);
+        int xoff, yoff, justify;
+        if (xgrav.equals("+")) {
+            xoff = xpos;
+            justify = OMText.JUSTIFY_LEFT;
+        } else {
+            xoff = w - xpos;
+            justify = OMText.JUSTIFY_RIGHT;
+        }
+        if (ygrav.equals("+")) {
+            yoff = ypos;
+        } else {
+            yoff = h - ypos;
+        }
+        text.setX(xoff);
+        text.setY(yoff);
+        text.setJustify(justify);
     }
     
     
@@ -189,7 +189,7 @@ public class LabelLayer extends OMGraphicHandlerLayer
      * @param s String
      */
     public void setLabelText(String s) {
-	labelText = s;
+        labelText = s;
     }
 
 
@@ -198,7 +198,7 @@ public class LabelLayer extends OMGraphicHandlerLayer
      * @return String
      */
     public String getLabelText() {
-	return labelText;
+        return labelText;
     }
 
     /**
@@ -206,20 +206,20 @@ public class LabelLayer extends OMGraphicHandlerLayer
      * @param g the Graphics context for painting
      */
     public void paint(Graphics g) {
-	Projection p = getProjection();
+        Projection p = getProjection();
 
-	if (p == null) return;
+        if (p == null) return;
 
-	if (Debug.debugging("labellayer")) {
-	    System.out.println("labelLayer.paint(): "+labelText);
-	}
+        if (Debug.debugging("labellayer")) {
+            System.out.println("labelLayer.paint(): "+labelText);
+        }
 
-	positionText(p.getWidth(), p.getHeight());
-	text.setData(labelText);
-	text.generate(p);//to get bounds
-	
-	// render graphics
-	text.render(g);
+        positionText(p.getWidth(), p.getHeight());
+        text.setData(labelText);
+        text.generate(p);//to get bounds
+        
+        // render graphics
+        text.render(g);
     }
     
     //----------------------------------------------------------------------
@@ -231,12 +231,12 @@ public class LabelLayer extends OMGraphicHandlerLayer
      * @param e ActionEvent
      */
     public void actionPerformed(ActionEvent e) {
-	super.actionPerformed(e);
-	if (Debug.debugging("labellayer")) {
-	    System.out.println("LabelLayer.actionPerformed()");
-	}
+        super.actionPerformed(e);
+        if (Debug.debugging("labellayer")) {
+            System.out.println("LabelLayer.actionPerformed()");
+        }
 
-	repaint();
+        repaint();
     }
     
     //----------------------------------------------------------------------
@@ -249,7 +249,7 @@ public class LabelLayer extends OMGraphicHandlerLayer
      * @return MapMouseListener this
      */
     public MapMouseListener getMapMouseListener() {
-	return this;
+        return this;
     }
 
     /**
@@ -258,9 +258,9 @@ public class LabelLayer extends OMGraphicHandlerLayer
      * @return String[] { SelectMouseMode.modeID }
      */
     public String[] getMouseModeServiceList() {
-	return new String[] {
-	    SelectMouseMode.modeID
-	};
+        return new String[] {
+            SelectMouseMode.modeID
+        };
     }
 
     // Mouse Listener events
@@ -272,15 +272,15 @@ public class LabelLayer extends OMGraphicHandlerLayer
      * @return false
      */
     public boolean mousePressed(MouseEvent e) { 
-	int x = e.getX();
-	int y = e.getY();
-	if (text.distance(x, y) <= 0f) {
-	    dragging = true;
-	    dragX = x;
-	    dragY = y;
-	    return true;
-	}
-	return false; // did not handle the event
+        int x = e.getX();
+        int y = e.getY();
+        if (text.distance(x, y) <= 0f) {
+            dragging = true;
+            dragX = x;
+            dragY = y;
+            return true;
+        }
+        return false; // did not handle the event
     }
 
     /**
@@ -289,8 +289,8 @@ public class LabelLayer extends OMGraphicHandlerLayer
      * @return false
      */
     public boolean mouseReleased(MouseEvent e) {
-	dragging = false;
-	return false;
+        dragging = false;
+        return false;
     }
 
     /**
@@ -299,7 +299,7 @@ public class LabelLayer extends OMGraphicHandlerLayer
      * @return false
      */
     public boolean mouseClicked(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -324,33 +324,33 @@ public class LabelLayer extends OMGraphicHandlerLayer
      * @return false
      */
     public boolean mouseDragged(MouseEvent e) {
-	Projection proj = getProjection();
-	int w = proj.getWidth();
-	int h = proj.getHeight();
-	int x = e.getX();
-	int y = e.getY();
+        Projection proj = getProjection();
+        int w = proj.getWidth();
+        int h = proj.getHeight();
+        int x = e.getX();
+        int y = e.getY();
 
-	// limit coordinates
-	if (x < 0) x = 0;
-	if (y < 0) y = 0;
-	if (x > w) x = w;
-	if (y > h) y = h;
+        // limit coordinates
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+        if (x > w) x = w;
+        if (y > h) y = h;
 
-	// calculate deltas
-	int dx = x-dragX;
-	int dy = y-dragY;
+        // calculate deltas
+        int dx = x-dragX;
+        int dy = y-dragY;
 
-	if (dragging) {
-	    // reset dragging parms
-	    dragX = x;
-	    dragY = y;
-	    // reset graphics positions
-	    text.setX(text.getX()+dx);
-	    text.setY(text.getY()+dy);
-	    repaint();
-	    return true;
-	}
-	return false;
+        if (dragging) {
+            // reset dragging parms
+            dragX = x;
+            dragY = y;
+            // reset graphics positions
+            text.setX(text.getX()+dx);
+            text.setY(text.getY()+dy);
+            repaint();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -360,7 +360,7 @@ public class LabelLayer extends OMGraphicHandlerLayer
      * @return false
      */
     public boolean mouseMoved(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/InfoDisplayEvent.java,v $
 // $RCSfile: InfoDisplayEvent.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/21 20:24:35 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,7 +50,7 @@ public class InfoDisplayEvent extends java.util.EventObject {
      * @param source Object
      */
     public InfoDisplayEvent(Object source) {
-	this (source, null);
+        this (source, null);
     }
 
     /**
@@ -59,8 +59,8 @@ public class InfoDisplayEvent extends java.util.EventObject {
      * @param info String information
      */
     public InfoDisplayEvent(Object source, String info) {
-	super(source);
-	information = info;
+        super(source);
+        information = info;
     }
 
     /**
@@ -83,10 +83,10 @@ public class InfoDisplayEvent extends java.util.EventObject {
      * @return Layer or null
      */
     public Layer getLayer() {
-	Object obj = getSource();
-	return (obj instanceof Layer)
-	    ? (Layer)obj
-	    : null;
+        Object obj = getSource();
+        return (obj instanceof Layer)
+            ? (Layer)obj
+            : null;
     }
 
     /**
@@ -94,7 +94,7 @@ public class InfoDisplayEvent extends java.util.EventObject {
      * @return String information
      */
     public String getInformation() {
-	return information;
+        return information;
     }
 
     /**
@@ -102,7 +102,7 @@ public class InfoDisplayEvent extends java.util.EventObject {
      * @param info String
      */
     public void setInformation(String info) {
-	information = info;
+        information = info;
     }
 
     /**
@@ -110,7 +110,7 @@ public class InfoDisplayEvent extends java.util.EventObject {
      * be displayed.
      */
     public int getPreferredLocation() {
-	return preferredLocation;
+        return preferredLocation;
     }
 
     /**
@@ -118,6 +118,6 @@ public class InfoDisplayEvent extends java.util.EventObject {
      * be displayed.
      */
     public void setPreferredLocation(int pl) {
-	preferredLocation = pl;
+        preferredLocation = pl;
     }
 }

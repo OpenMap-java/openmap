@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicHandler.java,v $
 // $RCSfile: OMGraphicHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,7 +64,7 @@ public interface OMGraphicHandler {
      * Shape.  
      */
     public OMGraphicList filter(Shape shapeBoundary, 
-				boolean getInsideBoundary);
+                                boolean getInsideBoundary);
 
     /**
      * Returns true if the OMGraphicHandler can handle SQL statements

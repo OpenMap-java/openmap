@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/SinkGraphic.java,v $
 // $RCSfile: SinkGraphic.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -49,9 +49,9 @@ public class SinkGraphic extends OMGraphic {
      * @return SinkGraphic shared instance
      */
     public final static SinkGraphic getSharedInstance () {
-	if (sharedInstance == null)
-	    sharedInstance = new SinkGraphic();
-	return sharedInstance;
+        if (sharedInstance == null)
+            sharedInstance = new SinkGraphic();
+        return sharedInstance;
     }
 
 
@@ -68,7 +68,7 @@ public class SinkGraphic extends OMGraphic {
      * @return false
      */
     public boolean isVisible () {
-	return false;
+        return false;
     }
 
 
@@ -78,7 +78,7 @@ public class SinkGraphic extends OMGraphic {
      * @return true
      */
     public boolean generate (Projection proj) {
-	return true;
+        return true;
     }
 
 
@@ -97,6 +97,6 @@ public class SinkGraphic extends OMGraphic {
      * @return Float.POSITIVE_INFINITY
      */
     public float distance (int x, int y) {
-	return Float.POSITIVE_INFINITY;
+        return Float.POSITIVE_INFINITY;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/STextBox.java,v $
 // $RCSfile: STextBox.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 02:00:34 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,7 +43,7 @@ public class STextBox extends _TextBoxStub {
 
     public STextBox(String label, String text) {
         label_ = label;
-	text_ = text;
+        text_ = text;
     }
     public void label(java.lang.String label) {
         label_ = label;
@@ -52,18 +52,18 @@ public class STextBox extends _TextBoxStub {
         return label_;
     }
     public void contents(String text) {
-	text_ = text;
+        text_ = text;
     }
     public String contents() {
         return text_;
     }
     public void pressed(java.lang.String box_label,
-			java.lang.String text,
-			java.lang.String uniqueID) {
+                        java.lang.String text,
+                        java.lang.String uniqueID) {
 //      System.out.println("TextBox:");
-// 	System.out.println(" in box: " + box_label);
-// 	System.out.println(" unique ID: " + uniqueID);
-// 	System.out.println(" New contents of text box: " + text);
+//      System.out.println(" in box: " + box_label);
+//      System.out.println(" unique ID: " + uniqueID);
+//      System.out.println(" New contents of text box: " + text);
         text_ = text;
     }
 
@@ -73,8 +73,8 @@ public class STextBox extends _TextBoxStub {
      */
     public UWidget widget() {
         UWidget uw = new UWidget();
-	uw.tb(this);
-	return uw;
+        uw.tb(this);
+        return uw;
     }
 }
 

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/12/23 20:46:44 $
-// $Author: wjeuerle $
+// $Revision: 1.10 $
+// $Date: 2004/01/26 18:18:13 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -205,9 +205,9 @@ public class OMText extends OMGraphic implements Serializable {
      */
     public OMText() {
         super(RENDERTYPE_UNKNOWN, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	point = new Point(0,0);
-	setData("");
-	f = DEFAULT_FONT;
+        point = new Point(0,0);
+        setData("");
+        f = DEFAULT_FONT;
     }
 
     /**
@@ -219,7 +219,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @param just the justification of the string
      */
     public OMText(float lt, float ln, String stuff, int just) {
-	this(lt, ln, stuff, DEFAULT_FONT, just);
+        this(lt, ln, stuff, DEFAULT_FONT, just);
     }
 
     /**
@@ -231,15 +231,15 @@ public class OMText extends OMGraphic implements Serializable {
      * @param just the justification of the string
      */
     public OMText(float lt, float ln, String stuff, 
-		  Font font, int just) {
+                  Font font, int just) {
 
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
-	lat = lt;
-	lon = ln;
-	setData(stuff);
-	f = font;
-	justify = just;
+        lat = lt;
+        lon = ln;
+        setData(stuff);
+        f = font;
+        justify = just;
     }
   
     /**
@@ -251,7 +251,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @param just the justification of the string
      */
     public OMText(int px1, int py1, String stuff, int just) { 
-	this(px1, py1, stuff, DEFAULT_FONT, just);
+        this(px1, py1, stuff, DEFAULT_FONT, just);
     }
   
     /**
@@ -263,12 +263,12 @@ public class OMText extends OMGraphic implements Serializable {
      * @param just the justification of the string
      */
     public OMText(int px1, int py1, 
-		  String stuff, Font font, int just) { 
+                  String stuff, Font font, int just) { 
         super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	point = new Point(px1, py1);
-	setData(stuff);
-	f = font;
-	justify = just;
+        point = new Point(px1, py1);
+        setData(stuff);
+        f = font;
+        justify = just;
     }
 
     /**
@@ -282,9 +282,9 @@ public class OMText extends OMGraphic implements Serializable {
      * @param just the justification of the string
      */
     public OMText(float lt, float ln, 
-		  int offX, int offY, 
-		  String aString, int just) { 
-	this(lt, ln, offX, offY, aString, DEFAULT_FONT, just);
+                  int offX, int offY, 
+                  String aString, int just) { 
+        this(lt, ln, offX, offY, aString, DEFAULT_FONT, just);
     }
 
     /**
@@ -298,16 +298,16 @@ public class OMText extends OMGraphic implements Serializable {
      * @param just the justification of the string
      */
     public OMText(float lt, float ln, 
-		  int offX, int offY, 
-		  String aString, Font font, 
-		  int just) { 
+                  int offX, int offY, 
+                  String aString, Font font, 
+                  int just) { 
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	lat = lt;
-	lon = ln;
-	point = new Point(offX, offY);
-	setData(aString);
-	f = font;
-	justify = just;
+        lat = lt;
+        lon = ln;
+        point = new Point(offX, offY);
+        setData(aString);
+        f = font;
+        justify = just;
     }
 
     /**
@@ -317,10 +317,10 @@ public class OMText extends OMGraphic implements Serializable {
      * @return the font of the object.
      */
     public Font getFont() {
-	if (f == null) {
-	    f = DEFAULT_FONT;
-	}
-	return f;
+        if (f == null) {
+            f = DEFAULT_FONT;
+        }
+        return f;
     }
     
     /**
@@ -339,24 +339,24 @@ public class OMText extends OMGraphic implements Serializable {
      * @see #polyBounds
      */
     public void setFont(Font aFont) {
-	if (fontSizer != null) {
-	    fontSizer.setFont(aFont);
-	    setScaledFont(fontSizer.getScaledFont());
-	} else {
-	    setScaledFont(aFont);
-	}
+        if (fontSizer != null) {
+            fontSizer.setFont(aFont);
+            setScaledFont(fontSizer.getScaledFont());
+        } else {
+            setScaledFont(aFont);
+        }
     }
 
     /**
      * Sets the scaled font, which is the one that is used for rendering.
      */
     protected void setScaledFont(Font aFont) {
-	f = aFont;
+        f = aFont;
 
-	// now flush the cached information about the old font
-	fm = null;		// flush existing metrics.
-	widths = null;		// flush existing width table.
-	polyBounds = null;	// flush existing bounds.
+        // now flush the cached information about the old font
+        fm = null;              // flush existing metrics.
+        widths = null;          // flush existing width table.
+        polyBounds = null;      // flush existing bounds.
     }
 
     /**
@@ -364,9 +364,9 @@ public class OMText extends OMGraphic implements Serializable {
      * proper value for the given scale.
      */
     public void setFont(float scale) {
-	if (fontSizer != null) {
-	    setScaledFont(fontSizer.getFont(scale));
-	}
+        if (fontSizer != null) {
+            setScaledFont(fontSizer.getFont(scale));
+        }
     }
 
     /**
@@ -375,13 +375,13 @@ public class OMText extends OMGraphic implements Serializable {
      * constant regardless of projection scale.
      */
     public void setFontSizer(FontSizer fs) {
-	Font bf = getFont();
-	if (fontSizer != null) {
-	    bf = fontSizer.getFont();
-	}
+        Font bf = getFont();
+        if (fontSizer != null) {
+            bf = fontSizer.getFont();
+        }
 
-	fontSizer = fs;
-	setFont(bf);
+        fontSizer = fs;
+        setFont(bf);
     }
 
     /**
@@ -390,7 +390,7 @@ public class OMText extends OMGraphic implements Serializable {
      * constant regardless of projection scale.
      */
     public FontSizer getFontSizer() {
-	return fontSizer;
+        return fontSizer;
     }
 
     /**
@@ -400,11 +400,11 @@ public class OMText extends OMGraphic implements Serializable {
      * left of the window.
      */
     public int getX() {
-	if (point != null) {
-	    return point.x;
-	} else {
-	    return 0;
-	}
+        if (point != null) {
+            return point.x;
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -414,12 +414,12 @@ public class OMText extends OMGraphic implements Serializable {
      * the string.
      */
     public void setX(int newX) {
-	if (point == null && getRenderType() == RENDERTYPE_LATLON) {
-	    point = new Point();
-	    setRenderType(RENDERTYPE_OFFSET);
-	}
-	point.x = newX;
-	setNeedToRegenerate(true);
+        if (point == null && getRenderType() == RENDERTYPE_LATLON) {
+            point = new Point();
+            setRenderType(RENDERTYPE_OFFSET);
+        }
+        point.x = newX;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -429,11 +429,11 @@ public class OMText extends OMGraphic implements Serializable {
      * of the window.
      */
     public int getY() {
-	if (point != null) {
-	    return point.y;
-	} else {
-	    return 0;
-	}
+        if (point != null) {
+            return point.y;
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -443,12 +443,12 @@ public class OMText extends OMGraphic implements Serializable {
      * the string.
      */
     public void setY(int newY) {
-	if (point == null && getRenderType() == RENDERTYPE_LATLON) {
-	    point = new Point();
-	    setRenderType(RENDERTYPE_OFFSET);
-	}
-	point.y = newY;
-	setNeedToRegenerate(true);
+        if (point == null && getRenderType() == RENDERTYPE_LATLON) {
+            point = new Point();
+            setRenderType(RENDERTYPE_OFFSET);
+        }
+        point.y = newY;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -458,7 +458,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @return the latitude, in decimal degrees.
      */
     public float getLat() {
-	return lat;
+        return lat;
     }
  
     /**
@@ -468,8 +468,8 @@ public class OMText extends OMGraphic implements Serializable {
      * @param l latitude for new location, in decimal degrees.
      */
     public void setLat(float l) {
-	lat = l;
-	setNeedToRegenerate(true);
+        lat = l;
+        setNeedToRegenerate(true);
     }
     
     /**
@@ -478,7 +478,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @return the longitude location of the string, in decimal degrees.
      */
     public float getLon() {
-	return lon;
+        return lon;
     }
 
     /**
@@ -487,8 +487,8 @@ public class OMText extends OMGraphic implements Serializable {
      * @param l the longitude location for the string, in decimal degrees.
      */
     public void setLon(float l) {
-	lon = l;
-	setNeedToRegenerate(true);
+        lon = l;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -499,7 +499,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @return Point on the map where the text has been projected to go.
      */
     public Point getMapLocation() {
-	return pt;
+        return pt;
     }
 
     /**
@@ -510,8 +510,8 @@ public class OMText extends OMGraphic implements Serializable {
      * @param point the point on the map where the text being placed.  
      */
     public void setMapLocation(Point point) {
-	pt = point;
-	polyBounds = null;
+        pt = point;
+        polyBounds = null;
     }
 
     /**
@@ -520,7 +520,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @return the string
      */
     public java.lang.String getData() {
-	return data;
+        return data;
     }
 
     /**
@@ -537,12 +537,12 @@ public class OMText extends OMGraphic implements Serializable {
      * @see #polyBounds
      */
     public synchronized void setData(java.lang.String d) {
-	data = d;
+        data = d;
 
-	// now flush the cached information about the old text
-	parsedData = null;	// flush existing parsed line table.
-	widths = null;		// flush existing width table.
-	polyBounds = null;	// flush existing bounds.
+        // now flush the cached information about the old text
+        parsedData = null;      // flush existing parsed line table.
+        widths = null;          // flush existing width table.
+        polyBounds = null;      // flush existing bounds.
     }
 
     /**
@@ -551,7 +551,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @return one of JUSTIFY_LEFT, JUSTIFY_CENTER, JUSTIFY_RIGHT
      */
     public int getJustify() {
-	return justify;
+        return justify;
     }
 
     /**
@@ -563,10 +563,10 @@ public class OMText extends OMGraphic implements Serializable {
      * @see #polyBounds
      */
     public void setJustify(int j) {
-	justify = j;
+        justify = j;
 
-	// now flush cached information
-	polyBounds = null;	// flush existing bounds.
+        // now flush cached information
+        polyBounds = null;      // flush existing bounds.
     }
 
     /**
@@ -575,7 +575,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @return one of BASELINE_BOTTOM, BASELINE_MIDDLE or BASELINE_TOP.
      */
     public int getBaseline() {
-	return baseline;
+        return baseline;
     }
 
     /**
@@ -587,10 +587,10 @@ public class OMText extends OMGraphic implements Serializable {
      * @see #polyBounds
      */
     public void setBaseline(int b) {
-	baseline = b;
+        baseline = b;
 
-	// now flush cached information
-	polyBounds = null;	// flush existing bounds.
+        // now flush cached information
+        polyBounds = null;      // flush existing bounds.
     }
 
     /**
@@ -600,7 +600,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @return true if bounds are shown, false if hidden.
      */
     public boolean getShowBounds() {
-	return isMatted();
+        return isMatted();
     }
 
     /**
@@ -612,7 +612,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @see #setFillColor
      */
     public void setShowBounds(boolean show) {
-	setMatted(show);
+        setMatted(show);
     }
 
     /**
@@ -622,7 +622,7 @@ public class OMText extends OMGraphic implements Serializable {
      * retangular instead of closely following text.
      */
     public void setUseMaxWidthForBounds(boolean value) {
-	useMaxWidthForBounds = value;	
+        useMaxWidthForBounds = value;   
     }
 
     /**
@@ -632,7 +632,7 @@ public class OMText extends OMGraphic implements Serializable {
      * retangular instead of closely following text.
      */
     public boolean getUseMaxWidthForBounds() {
-	return useMaxWidthForBounds;
+        return useMaxWidthForBounds;
     }
 
     /**
@@ -640,10 +640,10 @@ public class OMText extends OMGraphic implements Serializable {
      * @return Polygon or null if bounds not calculated yet
      */
     public Polygon getPolyBounds() {
-	if (polyBounds == null) {
-	    computeBounds();
-	}
-	return polyBounds;
+        if (polyBounds == null) {
+            computeBounds();
+        }
+        return polyBounds;
     }
 
     /** 
@@ -652,7 +652,7 @@ public class OMText extends OMGraphic implements Serializable {
      * stated above.  
      */
     public void setFMHeight(int fmh) {
-	fmHeight = fmh;
+        fmHeight = fmh;
     }
 
     /**
@@ -661,7 +661,7 @@ public class OMText extends OMGraphic implements Serializable {
      * stated above.  
      */
     public int getFMHeight() {
-	return fmHeight;
+        return fmHeight;
     }
 
     /**
@@ -673,7 +673,7 @@ public class OMText extends OMGraphic implements Serializable {
      */
     public void setTheta(double theta) {
         setRotationAngle(theta);
-	setNeedToRegenerate(true);
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -695,7 +695,7 @@ public class OMText extends OMGraphic implements Serializable {
      */
     public void setRotationAngle(double angle) {
         this.rotationAngle = angle;
-	setNeedToRegenerate(true);
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -720,65 +720,65 @@ public class OMText extends OMGraphic implements Serializable {
      * @see #pt
      */
     public synchronized boolean generate(Projection proj) {
-	// HACK synchronized because of various race conditions that need to
-	// be sorted out.
+        // HACK synchronized because of various race conditions that need to
+        // be sorted out.
 
-	if (proj == null) {
-	    Debug.message("omgraphic", "OMText: null projection in generate!");
-	    return false;
-	}
+        if (proj == null) {
+            Debug.message("omgraphic", "OMText: null projection in generate!");
+            return false;
+        }
 
-	// flush the cached information about the bounding box.
-	polyBounds = null;
+        // flush the cached information about the bounding box.
+        polyBounds = null;
 
-	// Although it most definately has bounds, OMText is considered a
-	// point object by the projection code.  We need to check to make
-	// sure the point is plot-able: if not then don't display it.  This
-	// might occur, for instance, if we're using the Orthographic and the
-	// point is on the other side of the world.
-	switch (renderType) {
-	case RENDERTYPE_XY:
-	    pt = point;
-	    break;
-	case RENDERTYPE_OFFSET:
-	    if (!proj.isPlotable(lat, lon)) {
-		if (Debug.debugging("omGraphics"))
-		    System.err.println(
-			"OMText.generate(): offset point is not plotable!");
-		setNeedToRegenerate(true);//so we don't render it!
-		return false;
-	    }
-	    pt = proj.forward(lat, lon);
-	    pt.translate(point.x, point.y);
-	    break;
-	case RENDERTYPE_LATLON:
-	    if (!proj.isPlotable(lat, lon)) {
-		if (Debug.debugging("omGraphics"))
-		    System.err.println(
-			"OMText.generate(): llpoint is not plotable!");
-		setNeedToRegenerate(true);//so we don't render it!
-		return false;
-	    }
-	    pt = proj.forward(lat, lon);
-	    break;
-	case RENDERTYPE_UNKNOWN:
-	    System.err.println(
-		"OMText.render.generate(): invalid RenderType");
-	    return false;
-	}
+        // Although it most definately has bounds, OMText is considered a
+        // point object by the projection code.  We need to check to make
+        // sure the point is plot-able: if not then don't display it.  This
+        // might occur, for instance, if we're using the Orthographic and the
+        // point is on the other side of the world.
+        switch (renderType) {
+        case RENDERTYPE_XY:
+            pt = point;
+            break;
+        case RENDERTYPE_OFFSET:
+            if (!proj.isPlotable(lat, lon)) {
+                if (Debug.debugging("omGraphics"))
+                    System.err.println(
+                        "OMText.generate(): offset point is not plotable!");
+                setNeedToRegenerate(true);//so we don't render it!
+                return false;
+            }
+            pt = proj.forward(lat, lon);
+            pt.translate(point.x, point.y);
+            break;
+        case RENDERTYPE_LATLON:
+            if (!proj.isPlotable(lat, lon)) {
+                if (Debug.debugging("omGraphics"))
+                    System.err.println(
+                        "OMText.generate(): llpoint is not plotable!");
+                setNeedToRegenerate(true);//so we don't render it!
+                return false;
+            }
+            pt = proj.forward(lat, lon);
+            break;
+        case RENDERTYPE_UNKNOWN:
+            System.err.println(
+                "OMText.render.generate(): invalid RenderType");
+            return false;
+        }
 
-	setFont(proj.getScale());
+        setFont(proj.getScale());
 
-	// Compliance with Shape additions to OMGeometry/OMGraphic.
-	// If font metrics are set, we can take care of this now.  If
-	// this is the first time this OMText is drawn, then we have
-	// to put this off until render.  There will be a
-	// one-projection lag for font metrics to catch up with any
-	// change.
-	computeBounds();
+        // Compliance with Shape additions to OMGeometry/OMGraphic.
+        // If font metrics are set, we can take care of this now.  If
+        // this is the first time this OMText is drawn, then we have
+        // to put this off until render.  There will be a
+        // one-projection lag for font metrics to catch up with any
+        // change.
+        computeBounds();
 
-	setNeedToRegenerate(false);
-	return true;
+        setNeedToRegenerate(false);
+        return true;
     }
 
     protected Projection hackProj = null;
@@ -792,26 +792,26 @@ public class OMText extends OMGraphic implements Serializable {
      */
     public static Font rebuildFont(String fontString) {
         if (fontString.equals("") )
-	    return DEFAULT_FONT;
+            return DEFAULT_FONT;
         int fontStyle = Font.PLAIN;
-	int fontSize = 12;
+        int fontSize = 12;
         // Taking the X Font-type string and converting the
         // essential parts to a java Font object.
 
         int start = fontString.indexOf("-", 1)+1;  //skipping first field
-	int end = fontString.indexOf("-", start+1);
-	String name = fontString.substring(start, end);
-	//System.out.println("rebuildFont: Name is " + name);
-	if (fontString.indexOf("-bold-") >= 0) fontStyle = Font.BOLD;
-	if (fontString.indexOf("-i-") >= 0) fontStyle += Font.ITALIC;
-	//System.out.println("rebuildFont: Style is " + fontStyle);
-	start = fontString.indexOf("--") + 2;
-	end = fontString.indexOf("-", start+1);
-	String tmpFontSize = fontString.substring(start, end);
-	if (tmpFontSize.indexOf("*") < 0) 
-	    fontSize = Integer.parseInt(tmpFontSize);
-	//System.out.println("rebuildFont: Size is " + fontSize);	
-	return new Font(name, fontStyle, fontSize);
+        int end = fontString.indexOf("-", start+1);
+        String name = fontString.substring(start, end);
+        //System.out.println("rebuildFont: Name is " + name);
+        if (fontString.indexOf("-bold-") >= 0) fontStyle = Font.BOLD;
+        if (fontString.indexOf("-i-") >= 0) fontStyle += Font.ITALIC;
+        //System.out.println("rebuildFont: Style is " + fontStyle);
+        start = fontString.indexOf("--") + 2;
+        end = fontString.indexOf("-", start+1);
+        String tmpFontSize = fontString.substring(start, end);
+        if (tmpFontSize.indexOf("*") < 0) 
+            fontSize = Integer.parseInt(tmpFontSize);
+        //System.out.println("rebuildFont: Size is " + fontSize);       
+        return new Font(name, fontStyle, fontSize);
     }
 
     /** 
@@ -827,34 +827,34 @@ public class OMText extends OMGraphic implements Serializable {
      * @return the font as a string.
      */
     public static String fontToXFont(java.awt.Font font) {
-	//-foundry(who made it)
-	StringBuffer ret = new StringBuffer("-*");
-	//-font family(name)
-	ret.append("-"+font.getName());
-	//-weight(bold, medium)
-	if(font.isBold()) ret.append("-bold");
-	else ret.append("-normal");
-	//-slant(o,i)
-	if(font.isItalic()) ret.append("-i");
-	else ret.append("-o");
-	//-set width(normal, condensed, narrow, double width)
-	ret.append("-normal");
-	//--pixels(height)
-	ret.append("--"+ font.getSize());
-	//-points(in tenths of a point, related to screen)
-	ret.append("-*");
-	//-horizontal resolution in dpi
-	ret.append("-*");
-	//-vertical resolution in dpi
-	ret.append("-*");
-	//-spacing(m-monospace or p-proportional)
-	ret.append("-*");
-	//-average width(of each letter, in tenths of a pixel)
-	ret.append("-*");
-	//-character set(like an ISO designation.
-	ret.append("-*");
-	// System.out.println("SText.fontString: " + ret);
-	return ret.toString();
+        //-foundry(who made it)
+        StringBuffer ret = new StringBuffer("-*");
+        //-font family(name)
+        ret.append("-"+font.getName());
+        //-weight(bold, medium)
+        if(font.isBold()) ret.append("-bold");
+        else ret.append("-normal");
+        //-slant(o,i)
+        if(font.isItalic()) ret.append("-i");
+        else ret.append("-o");
+        //-set width(normal, condensed, narrow, double width)
+        ret.append("-normal");
+        //--pixels(height)
+        ret.append("--"+ font.getSize());
+        //-points(in tenths of a point, related to screen)
+        ret.append("-*");
+        //-horizontal resolution in dpi
+        ret.append("-*");
+        //-vertical resolution in dpi
+        ret.append("-*");
+        //-spacing(m-monospace or p-proportional)
+        ret.append("-*");
+        //-average width(of each letter, in tenths of a pixel)
+        ret.append("-*");
+        //-character set(like an ISO designation.
+        ret.append("-*");
+        // System.out.println("SText.fontString: " + ret);
+        return ret.toString();
     }
 
     /**
@@ -865,16 +865,16 @@ public class OMText extends OMGraphic implements Serializable {
      * @return the number of occurences
      */
     protected int countChar(String str, int ch) {
-	int fromIndex = 0;
-	int count = 0;
+        int fromIndex = 0;
+        int count = 0;
 
-	while ((fromIndex = str.indexOf(ch, fromIndex)) != -1) {
-	    count++;
-	    fromIndex++;	// increment past current index
-				// so we don't pick up the same
-				// instance again.
-	}
-	return count;
+        while ((fromIndex = str.indexOf(ch, fromIndex)) != -1) {
+            count++;
+            fromIndex++;        // increment past current index
+                                // so we don't pick up the same
+                                // instance again.
+        }
+        return count;
     }
 
     /**
@@ -884,29 +884,29 @@ public class OMText extends OMGraphic implements Serializable {
      * @see #parsedData
      */
     protected void parseData() {
-	if (parsedData == null) {
+        if (parsedData == null) {
 
-	    if (data == null) data = "";
+            if (data == null) data = "";
 
-	    int nLines = countChar(data, '\n') + 1;
-	    if (nLines <= 1) {
-		parsedData = new String[1];
-		parsedData[0] = data;
-	    } else {
-		int i = 0;
-		int fromIndex = 0;
-		int toIndex = 0;
-		parsedData = new String[nLines];
+            int nLines = countChar(data, '\n') + 1;
+            if (nLines <= 1) {
+                parsedData = new String[1];
+                parsedData[0] = data;
+            } else {
+                int i = 0;
+                int fromIndex = 0;
+                int toIndex = 0;
+                parsedData = new String[nLines];
 
-		while ( (toIndex = data.indexOf('\n', fromIndex)) != -1) {
-		    parsedData[i] = data.substring(fromIndex, toIndex);
-		    fromIndex = toIndex+1;
-		    i++;
-		}
-		parsedData[nLines - 1] = data.substring(fromIndex,
-							data.length());
-	    }
-	}
+                while ( (toIndex = data.indexOf('\n', fromIndex)) != -1) {
+                    parsedData[i] = data.substring(fromIndex, toIndex);
+                    fromIndex = toIndex+1;
+                    i++;
+                }
+                parsedData[nLines - 1] = data.substring(fromIndex,
+                                                        data.length());
+            }
+        }
     }
 
     /**
@@ -918,13 +918,13 @@ public class OMText extends OMGraphic implements Serializable {
      * @see #widths
      */
     protected void computeStringWidths(FontMetrics fm) {
-	if (widths == null && fm != null) {
-	    int nLines = parsedData.length;
-	    widths = new int[nLines];
-	    for (int i=0; i<nLines; i++) {
-		widths[i] = fm.stringWidth(parsedData[i]);
-	    }
-	}
+        if (widths == null && fm != null) {
+            int nLines = parsedData.length;
+            widths = new int[nLines];
+            for (int i=0; i<nLines; i++) {
+                widths[i] = fm.stringWidth(parsedData[i]);
+            }
+        }
     }
 
     /** 
@@ -937,13 +937,13 @@ public class OMText extends OMGraphic implements Serializable {
      * @param g the java.awt.Graphics to put the string on.  
      */
     public synchronized void prepareForRender(Graphics g) {
-	parseData();
-	g.setFont(getFont());
-	
-	if (fm == null)	{
-	    fm = g.getFontMetrics();
-	}
-	computeBounds();		
+        parseData();
+        g.setFont(getFont());
+        
+        if (fm == null) {
+            fm = g.getFontMetrics();
+        }
+        computeBounds();                
     }
 
     /**
@@ -960,112 +960,112 @@ public class OMText extends OMGraphic implements Serializable {
         // others...
         g = g.create();
 
-	if (getNeedToRegenerate() || pt == null || !isVisible()) return;
-	
-	g.setFont(getFont());
-	setGraphicsForEdge(g);
+        if (getNeedToRegenerate() || pt == null || !isVisible()) return;
+        
+        g.setFont(getFont());
+        setGraphicsForEdge(g);
 
-	if (fm == null) {
-	    fm = g.getFontMetrics();
-	}
+        if (fm == null) {
+            fm = g.getFontMetrics();
+        }
 
-	computeBounds();
+        computeBounds();
 
-	// to use later to unset the transform, if used.
-	double rx = 0.0;
-	double ry = 0.0;
-	double rw = 0.0;
-	double rh = 0.0;
-	double woffset = 0.0;
+        // to use later to unset the transform, if used.
+        double rx = 0.0;
+        double ry = 0.0;
+        double rw = 0.0;
+        double rh = 0.0;
+        double woffset = 0.0;
 
-	if (g instanceof Graphics2D && 
-	    rotationAngle != DEFAULT_ROTATIONANGLE) {
+        if (g instanceof Graphics2D && 
+            rotationAngle != DEFAULT_ROTATIONANGLE) {
 
-	    Rectangle rect = polyBounds.getBounds();
+            Rectangle rect = polyBounds.getBounds();
 
-	    rx = rect.getX();
-	    ry = rect.getY();
-	    rw = rect.getWidth();
-	    rh = rect.getHeight();
-	    woffset = 0.0;
-	    
-	    switch  (justify) {
-	    case JUSTIFY_LEFT:
-		// woffset = 0.0;
-		break;
-	    case JUSTIFY_CENTER:
-		woffset = rw / 2;
-		break;
-	    case JUSTIFY_RIGHT:
-		woffset = rw;
-	    }
-	    //rotate about our text anchor point
-	    ((Graphics2D)g).rotate(rotationAngle, rx+woffset, pt.y);
-	}
+            rx = rect.getX();
+            ry = rect.getY();
+            rw = rect.getWidth();
+            rh = rect.getHeight();
+            woffset = 0.0;
+            
+            switch  (justify) {
+            case JUSTIFY_LEFT:
+                // woffset = 0.0;
+                break;
+            case JUSTIFY_CENTER:
+                woffset = rw / 2;
+                break;
+            case JUSTIFY_RIGHT:
+                woffset = rw;
+            }
+            //rotate about our text anchor point
+            ((Graphics2D)g).rotate(rotationAngle, rx+woffset, pt.y);
+        }
 
-	if (shouldRenderFill()) {
-	    setGraphicsForFill(g);
-	    fill(g);
-	    
-	    if (textureMask != null && textureMask != fillPaint) {
-		setGraphicsColor(g, textureMask);
-		fill(g);
-	    }
-	}
+        if (shouldRenderFill()) {
+            setGraphicsForFill(g);
+            fill(g);
+            
+            if (textureMask != null && textureMask != fillPaint) {
+                setGraphicsColor(g, textureMask);
+                fill(g);
+            }
+        }
 
-	if (isSelected()) {
-	    setGraphicsColor(g, getSelectPaint());
-	    draw(g);
-	} else if (isMatted()) {
-	    setGraphicsColor(g, getMattingPaint());
-	    draw(g);
-	}
+        if (isSelected()) {
+            setGraphicsColor(g, getSelectPaint());
+            draw(g);
+        } else if (isMatted()) {
+            setGraphicsColor(g, getMattingPaint());
+            draw(g);
+        }
 
-	setGraphicsForEdge(g);
+        setGraphicsForEdge(g);
 
-	int height;
-	if (fmHeight == HEIGHT) {
-	    height = fm.getHeight();
-	} else if (fmHeight == ASCENT_LEADING) {
-	    height = fm.getHeight() - fm.getDescent();
-	} else if (fmHeight == ASCENT_DESCENT) {
-	    height = fm.getAscent() + fm.getDescent();
-	} else {
-	    height = fm.getAscent();
-	}
+        int height;
+        if (fmHeight == HEIGHT) {
+            height = fm.getHeight();
+        } else if (fmHeight == ASCENT_LEADING) {
+            height = fm.getHeight() - fm.getDescent();
+        } else if (fmHeight == ASCENT_DESCENT) {
+            height = fm.getAscent() + fm.getDescent();
+        } else {
+            height = fm.getAscent();
+        }
 
-	int baselineLocation = pt.y; // baseline == BASELINE_BOTTOM, normal.
+        int baselineLocation = pt.y; // baseline == BASELINE_BOTTOM, normal.
 
-	if (baseline == BASELINE_MIDDLE) {
-	    baselineLocation += (fm.getAscent() - fm.getDescent())/2;
-	} else if (baseline == BASELINE_TOP) {
-	    baselineLocation += (fm.getAscent() - fm.getDescent());
-	}
+        if (baseline == BASELINE_MIDDLE) {
+            baselineLocation += (fm.getAscent() - fm.getDescent())/2;
+        } else if (baseline == BASELINE_TOP) {
+            baselineLocation += (fm.getAscent() - fm.getDescent());
+        }
 
-	switch (justify) {
-	case JUSTIFY_LEFT:
-	    // Easy case, just draw them.
-	    for (int i=0; i<parsedData.length; i++) {
-		g.drawString(parsedData[i], pt.x, baselineLocation + (height*i));
-	    }
-	    break;
-	case JUSTIFY_CENTER:
-	    computeStringWidths(fm);
-	    for (int i=0; i<parsedData.length; i++) {
-		g.drawString(parsedData[i],
-			     pt.x - (widths[i]/2),
-			     baselineLocation + (height*i));
-	    }
-	    break;
-	case JUSTIFY_RIGHT:
-	    computeStringWidths(fm);
-	    for (int i=0; i<parsedData.length; i++) {
-		g.drawString(parsedData[i],
-			     pt.x - widths[i],
-			     baselineLocation + (height*i));
-	    }
-	    break;
-	}
+        switch (justify) {
+        case JUSTIFY_LEFT:
+            // Easy case, just draw them.
+            for (int i=0; i<parsedData.length; i++) {
+                g.drawString(parsedData[i], pt.x, baselineLocation + (height*i));
+            }
+            break;
+        case JUSTIFY_CENTER:
+            computeStringWidths(fm);
+            for (int i=0; i<parsedData.length; i++) {
+                g.drawString(parsedData[i],
+                             pt.x - (widths[i]/2),
+                             baselineLocation + (height*i));
+            }
+            break;
+        case JUSTIFY_RIGHT:
+            computeStringWidths(fm);
+            for (int i=0; i<parsedData.length; i++) {
+                g.drawString(parsedData[i],
+                             pt.x - widths[i],
+                             baselineLocation + (height*i));
+            }
+            break;
+        }
     }
 
     /**
@@ -1075,108 +1075,108 @@ public class OMText extends OMGraphic implements Serializable {
      * @see #polyBounds
      */
     protected void computeBounds() {
-	if (parsedData == null) {
-	    parseData();
-	}
+        if (parsedData == null) {
+            parseData();
+        }
 
-	if (polyBounds == null && pt != null && fm != null) {
+        if (polyBounds == null && pt != null && fm != null) {
 
-	    // 	    System.out.println("\tcomputing poly bounds");
+            //      System.out.println("\tcomputing poly bounds");
 
-	    int xoffset = 0;
-	    int i;
-	    
- 	    int height;
-	    int descent;
-	    if (fmHeight == HEIGHT) {
-		height = fm.getHeight();
-		descent = fm.getDescent();
-	    } else if (fmHeight == ASCENT_DESCENT) {
-		height = fm.getAscent();
-		descent = fm.getDescent();
-	    } else if (fmHeight == ASCENT_LEADING) {
-		height = fm.getHeight() - fm.getDescent();
-		descent = 0;
-	    } else {
-		height = fm.getAscent();
-		descent = 0;
-	    }
+            int xoffset = 0;
+            int i;
+            
+            int height;
+            int descent;
+            if (fmHeight == HEIGHT) {
+                height = fm.getHeight();
+                descent = fm.getDescent();
+            } else if (fmHeight == ASCENT_DESCENT) {
+                height = fm.getAscent();
+                descent = fm.getDescent();
+            } else if (fmHeight == ASCENT_LEADING) {
+                height = fm.getHeight() - fm.getDescent();
+                descent = 0;
+            } else {
+                height = fm.getAscent();
+                descent = 0;
+            }
 
-	    int nLines = parsedData.length;
-	    polyBounds = new Polygon();
+            int nLines = parsedData.length;
+            polyBounds = new Polygon();
 
-	    computeStringWidths(fm);
+            computeStringWidths(fm);
 
-	    int baselineOffset = 0; // baseline == BASELINE_BOTTOM, normal.
+            int baselineOffset = 0; // baseline == BASELINE_BOTTOM, normal.
 
-	    if (baseline == BASELINE_MIDDLE) {
-		baselineOffset = descent/2;
-	    } else if (baseline == BASELINE_TOP) {
-		baselineOffset = descent;
-	    }
+            if (baseline == BASELINE_MIDDLE) {
+                baselineOffset = descent/2;
+            } else if (baseline == BASELINE_TOP) {
+                baselineOffset = descent;
+            }
 
-	    // or, baselineOffset = height - (baseline * height /2);
-	    // But that depends on the actual values of the BASELINE
-	    // values, which doesn't seem safe.
+            // or, baselineOffset = height - (baseline * height /2);
+            // But that depends on the actual values of the BASELINE
+            // values, which doesn't seem safe.
 
-	    /* pt.y is bottom of first line, currenty is initialized
-	       to top of first line, minus any offset introduced by
-	       baseline adjustments. */
-	    int currenty = pt.y + descent - height - baselineOffset;
+            /* pt.y is bottom of first line, currenty is initialized
+               to top of first line, minus any offset introduced by
+               baseline adjustments. */
+            int currenty = pt.y + descent - height - baselineOffset;
 
-	    // First, all the line endpoints.
-	    for (i=0; i<nLines; i++) {
+            // First, all the line endpoints.
+            for (i=0; i<nLines; i++) {
 
-		switch (justify) {
-		case JUSTIFY_LEFT:
-		    xoffset = widths[i];
-		    break;
-		case JUSTIFY_CENTER:
-		    xoffset = widths[i]/2;
-		    break;
-		case JUSTIFY_RIGHT:
-		    xoffset = 0;
-		    break;
-		}
+                switch (justify) {
+                case JUSTIFY_LEFT:
+                    xoffset = widths[i];
+                    break;
+                case JUSTIFY_CENTER:
+                    xoffset = widths[i]/2;
+                    break;
+                case JUSTIFY_RIGHT:
+                    xoffset = 0;
+                    break;
+                }
 
-		// top of line
-		polyBounds.addPoint(pt.x + xoffset, currenty);
-		currenty += height;
-		// bottom of line
-		polyBounds.addPoint(pt.x + xoffset, currenty);
-	    }
+                // top of line
+                polyBounds.addPoint(pt.x + xoffset, currenty);
+                currenty += height;
+                // bottom of line
+                polyBounds.addPoint(pt.x + xoffset, currenty);
+            }
 
-	    // Next, all line startpoints (the left side)
-	    for (i=nLines-1; i >= 0; i--) {
-		switch (justify) {
-		case JUSTIFY_LEFT:
-		    xoffset = 0;
-		    break;
-		case JUSTIFY_CENTER:
-		    xoffset = -widths[i]/2;
-		    break;
-		case JUSTIFY_RIGHT:
-		    xoffset = -widths[i];
-		    break;
-		}
-		polyBounds.addPoint(pt.x + xoffset, currenty);
-		currenty -= height;
-		polyBounds.addPoint(pt.x + xoffset, currenty);
-	    }
+            // Next, all line startpoints (the left side)
+            for (i=nLines-1; i >= 0; i--) {
+                switch (justify) {
+                case JUSTIFY_LEFT:
+                    xoffset = 0;
+                    break;
+                case JUSTIFY_CENTER:
+                    xoffset = -widths[i]/2;
+                    break;
+                case JUSTIFY_RIGHT:
+                    xoffset = -widths[i];
+                    break;
+                }
+                polyBounds.addPoint(pt.x + xoffset, currenty);
+                currenty -= height;
+                polyBounds.addPoint(pt.x + xoffset, currenty);
+            }
 
-	    if (polyBounds != null) {
-		if (useMaxWidthForBounds) {
-		    shape = new GeneralPath(polyBounds.getBounds());
-		} else {
-		    shape = new GeneralPath(polyBounds);
-		}
-	    }
+            if (polyBounds != null) {
+                if (useMaxWidthForBounds) {
+                    shape = new GeneralPath(polyBounds.getBounds());
+                } else {
+                    shape = new GeneralPath(polyBounds);
+                }
+            }
 
-	} else {
-	    if (Debug.debugging("omtext")) {
-		Debug.output("OMText.computeBounds() didn't compute because polybounds = " + polyBounds + " or  pt = " + pt + " or fm = " + fm + ", (only polybounds should be null)");
-	    }
-	}
+        } else {
+            if (Debug.debugging("omtext")) {
+                Debug.output("OMText.computeBounds() didn't compute because polybounds = " + polyBounds + " or  pt = " + pt + " or fm = " + fm + ", (only polybounds should be null)");
+            }
+        }
     }
 
     /**
@@ -1193,11 +1193,11 @@ public class OMText extends OMGraphic implements Serializable {
      * (ungenerated).
      */
     public float distance(int x, int y) {
-	return _distance(x, y);
+        return _distance(x, y);
     }
 
     protected boolean hasLineTypeChoice() {
-	return false;
+        return false;
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/Attic/ContourLineGenerator.java,v $
 // $RCSfile: ContourLineGenerator.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/17 00:22:34 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,80 +48,80 @@ public class ContourLineGenerator extends ElevationMBandGenerator {
      */
     public OMGraphic generate(OMGrid grid, Projection proj) {
 
-	Debug.message("grid", 
-		      "ContourLineGenerator: generating OMRaster from grid");
+        Debug.message("grid", 
+                      "ContourLineGenerator: generating OMRaster from grid");
 
-	OMRaster raster  = new OMRaster(grid.point1.x, grid.point1.y, 
-					grid.width, grid.height,
-					new int[grid.width*grid.height]);
+        OMRaster raster  = new OMRaster(grid.point1.x, grid.point1.y, 
+                                        grid.width, grid.height,
+                                        new int[grid.width*grid.height]);
 
-	if (grid.height == 0 || grid.width == 0) {
-	    Debug.message("grid", 
-			  "ContourLineGenerator: grid height/width ZERO!");
-	    return raster;
-	}
+        if (grid.height == 0 || grid.width == 0) {
+            Debug.message("grid", 
+                          "ContourLineGenerator: grid height/width ZERO!");
+            return raster;
+        }
 
-	GridData gd = grid.getData();
-	if (!(gd instanceof GridData.Int)) {
-	    Debug.message("grid", "SimpleColorGenerator: grid doesn't contain integer data.");
-	    return SinkGraphic.getSharedInstance();
-	}
+        GridData gd = grid.getData();
+        if (!(gd instanceof GridData.Int)) {
+            Debug.message("grid", "SimpleColorGenerator: grid doesn't contain integer data.");
+            return SinkGraphic.getSharedInstance();
+        }
 
-	int rows = grid.getRows();
-	int columns = grid.getColumns();
-	int[][] data = ((GridData.Int)gd).getData();
-	boolean major = grid.getMajor();
+        int rows = grid.getRows();
+        int columns = grid.getColumns();
+        int[][] data = ((GridData.Int)gd).getData();
+        boolean major = grid.getMajor();
 
-	/** lat and lon_intervals are grid point/pixel.. */
-	double y_interval = (double)rows/(double)grid.height;
-	double x_interval = (double)columns/(double)grid.width;
+        /** lat and lon_intervals are grid point/pixel.. */
+        double y_interval = (double)rows/(double)grid.height;
+        double x_interval = (double)columns/(double)grid.width;
 
-	Debug.message("grid", 
-		      "ContourLineGenerator: y_point_interval = " + y_interval + 
-		      ", x_point_interval = " + x_interval);
+        Debug.message("grid", 
+                      "ContourLineGenerator: y_point_interval = " + y_interval + 
+                      ", x_point_interval = " + x_interval);
 
-	/** Right now, if the rendertype of the grid is
+        /** Right now, if the rendertype of the grid is
             RENDERTYPE_LATLON, we limit rendering to the CADRG
             projection. */
-	
-	int post_x, post_y, value;
+        
+        int post_x, post_y, value;
 
-	int [][] values = new int[grid.width][grid.height];
+        int [][] values = new int[grid.width][grid.height];
 
-	/** Do this pixel by pixel. */
-	for (int x = 0; x < grid.width; x++) {
-	    for (int y = 0; y < grid.height; y++) {
+        /** Do this pixel by pixel. */
+        for (int x = 0; x < grid.width; x++) {
+            for (int y = 0; y < grid.height; y++) {
 
-		post_x = (int)Math.round(x_interval * (double)x);
-		if (grid.getRenderType()== OMGraphic.RENDERTYPE_LATLON) {
-		    post_y = (int)Math.round(y_interval * (grid.height - 1 - (double)y));
-		} else {
-		    post_y = (int)Math.round(y_interval * (double)y);
-		}
+                post_x = (int)Math.round(x_interval * (double)x);
+                if (grid.getRenderType()== OMGraphic.RENDERTYPE_LATLON) {
+                    post_y = (int)Math.round(y_interval * (grid.height - 1 - (double)y));
+                } else {
+                    post_y = (int)Math.round(y_interval * (double)y);
+                }
 
-		if (major == OMGrid.COLUMN_MAJOR) {
-		    if (post_x >= columns) post_x = columns - 1;
-		    if (post_y >= rows) post_y = rows - 1;
+                if (major == OMGrid.COLUMN_MAJOR) {
+                    if (post_x >= columns) post_x = columns - 1;
+                    if (post_y >= rows) post_y = rows - 1;
 
-		    value = calibratePointValue(data[post_x][post_y]);
+                    value = calibratePointValue(data[post_x][post_y]);
 
-		} else {
-		    if (post_y >= columns) post_y = columns - 1;
-		    if (post_x >= rows) post_x = rows - 1;
-		    
-		    value = calibratePointValue(data[post_y][post_x]);
-		}
-		
-		values[x][y] = value;
+                } else {
+                    if (post_y >= columns) post_y = columns - 1;
+                    if (post_x >= rows) post_x = rows - 1;
+                    
+                    value = calibratePointValue(data[post_y][post_x]);
+                }
+                
+                values[x][y] = value;
 
-		if (value !=0)
-		    raster.setPixel(x, y, checkData(values, x, y));
-		else raster.setPixel(x, y, backColor);
-	    }
-	}
-	raster.generate(proj);
+                if (value !=0)
+                    raster.setPixel(x, y, checkData(values, x, y));
+                else raster.setPixel(x, y, backColor);
+            }
+        }
+        raster.generate(proj);
 
-	return raster;
+        return raster;
     }
 
     /** 
@@ -134,33 +134,33 @@ public class ContourLineGenerator extends ElevationMBandGenerator {
      * @return the ARGB to color the pixel.  
      */
     public int calibratePointValue(int source) {
-	return super.calibratePointValue((int)((float)source*3.2f));
+        return super.calibratePointValue((int)((float)source*3.2f));
     }
 
     protected int checkData(int[][] pastValues, int x, int y) {
-	int ret = backColor;
-	int checkx, checky, check;
+        int ret = backColor;
+        int checkx, checky, check;
 
-	for (int offx = -1; offx < 1; offx++) {
-	    for (int offy = -1; offy < 1; offy++) {
-		if (offx != 0 && offy != 0) {
+        for (int offx = -1; offx < 1; offx++) {
+            for (int offy = -1; offy < 1; offy++) {
+                if (offx != 0 && offy != 0) {
 
-		    checkx = x + offx;
-		    checky = y + offy;
+                    checkx = x + offx;
+                    checky = y + offy;
 
-		    if (!(checkx < 0 || checky < 0)) {
+                    if (!(checkx < 0 || checky < 0)) {
 
-			check = pastValues[checkx][checky];
+                        check = pastValues[checkx][checky];
 
-			if (check != 0 && check != pastValues[x][y]) {
-			    ret = lineColor;
-			    return ret;
-			}
-		    }
-		}		
-	    }
-	}
-	return ret;
+                        if (check != 0 && check != pastValues[x][y]) {
+                            ret = lineColor;
+                            return ret;
+                        }
+                    }
+                }               
+            }
+        }
+        return ret;
     }
 
     /** 
@@ -169,7 +169,7 @@ public class ContourLineGenerator extends ElevationMBandGenerator {
      * LATLON rendertype grids.  So return true for everything.
      */
     public boolean needGenerateToRender() {
-	return true;
+        return true;
     }
 }
 

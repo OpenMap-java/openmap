@@ -29,93 +29,93 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
      * Default constructor.
      */
     public LabeledOMSpline() {
-	super();
+        super();
     }
 
     /**
      * Create an LabeledOMSpline from a list of float lat/lon pairs.
      */
     public LabeledOMSpline(float[] llPoints, int units, int lType) {
-	super(llPoints, units, lType);
+        super(llPoints, units, lType);
     }
 
     /**
      * Create an LabeledOMSpline from a list of float lat/lon pairs.
      */
     public LabeledOMSpline(float[] llPoints, int units, int lType, int nsegs) {
-	super(llPoints, units, lType, nsegs);
+        super(llPoints, units, lType, nsegs);
     }
 
     /**
      * Create an LabeledOMSpline from a list of xy pairs.
      */
     public LabeledOMSpline(int[] xypoints) {
-	super(xypoints);
+        super(xypoints);
     }
 
     /**
      * Create an x/y LabeledOMSpline.
      */
     public LabeledOMSpline(int[] xPoints, int[] yPoints) {
-	super(xPoints, yPoints);
+        super(xPoints, yPoints);
     }
 
     /**
      * Create an x/y LabeledOMSpline at an offset from lat/lon.
      */
     public LabeledOMSpline(
-	float latPoint,
-	float lonPoint,
-	int[] xypoints,
-	int cMode) {
-	super(latPoint, lonPoint, xypoints, cMode);
+        float latPoint,
+        float lonPoint,
+        int[] xypoints,
+        int cMode) {
+        super(latPoint, lonPoint, xypoints, cMode);
     }
 
     /**
      * Create an x/y LabeledOMSpline at an offset from lat/lon.
      */
     public LabeledOMSpline(
-	float latPoint,
-	float lonPoint,
-	int[] xPoints,
-	int[] yPoints,
-	int cMode) {
-	super(latPoint, lonPoint, xPoints, yPoints, cMode);
+        float latPoint,
+        float lonPoint,
+        int[] xPoints,
+        int[] yPoints,
+        int cMode) {
+        super(latPoint, lonPoint, xPoints, yPoints, cMode);
     }
 
     /**
      * Set the String for the label.
      */
     public void setText(String label) {
-	getLabel().setData(label);
+        getLabel().setData(label);
     }
 
     /**
      * Get the String for the label.
      */
     public String getText() {
-	return getLabel().getData();
+        return getLabel().getData();
     }
 
     protected OMText getLabel() {
-	if (label == null) {
-	    label = new OMText(-1, -1, "", OMText.JUSTIFY_LEFT);
-	}
-	return label;
+        if (label == null) {
+            label = new OMText(-1, -1, "", OMText.JUSTIFY_LEFT);
+        }
+        return label;
     }
 
     /**
      * Set the Font for the label.
      */
     public void setFont(Font f) {
-	getLabel().setFont(f);
+        getLabel().setFont(f);
     }
 
     /**
      * Get the Font for the label.
      */
     public Font getFont() {
-	return getLabel().getFont();
+        return getLabel().getFont();
     }
 
     /**
@@ -125,7 +125,7 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_RIGHT
      */
     public void setJustify(int just) {
-	getLabel().setJustify(just);
+        getLabel().setJustify(just);
     }
 
     /**
@@ -135,7 +135,7 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_RIGHT
      */
     public int getJustify() {
-	return getLabel().getJustify();
+        return getLabel().getJustify();
     }
 
     /**
@@ -143,11 +143,11 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
      * String that would put it in the middle of the OMGraphic.
      */
     public void setLocateAtCenter(boolean set) {
-	locateAtCenter = set;
-	if (set) {
-	    setJustify(OMText.JUSTIFY_CENTER);
-	    getLabel().setFMHeight(OMText.ASCENT);
-	}
+        locateAtCenter = set;
+        if (set) {
+            setJustify(OMText.JUSTIFY_CENTER);
+            getLabel().setFMHeight(OMText.ASCENT);
+        }
     }
 
     /**
@@ -155,14 +155,14 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
      * the center of the OMGraphic.
      */
     public boolean isLocateAtCenter() {
-	return locateAtCenter;
+        return locateAtCenter;
     }
 
     /**
      * Get the calculated center where the label string is drawn.
      */
     public Point getCenter() {
-	return new Point();
+        return new Point();
     }
 
     /**
@@ -171,7 +171,7 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
      * point differs between OMGraphic types.
      */
     public void setIndex(int index) {
-	this.index = index;
+        this.index = index;
     }
 
     /**
@@ -180,7 +180,7 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
      * to OMGraphic type.  
      */
     public int getIndex() {
-	return index;
+        return index;
     }
 
     /**
@@ -190,17 +190,17 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
      * Point.y is the vertical offset.
      */
     public void setOffset(Point p) {
-	offset = p;
+        offset = p;
     }
 
     /**
      * Get the x, y pixel offsets set for the rendering of the point.
      */
     public Point getOffset() {
-	if (offset == null) {
-	    offset = new Point();
-	}
-	return offset;
+        if (offset == null) {
+            offset = new Point();
+        }
+        return offset;
     }
 
     /**
@@ -229,10 +229,10 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
      * paint, too.
      */
     public void setLinePaint(Paint paint) {
-	super.setLinePaint(paint);
-	if (matchPolyPaint) {
-	    getLabel().setLinePaint(paint);
-	}
+        super.setLinePaint(paint);
+        if (matchPolyPaint) {
+            getLabel().setLinePaint(paint);
+        }
     }
 
     /**
@@ -242,88 +242,88 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
      * @param paint the Paint object for the text
      */
     public void setTextPaint(Paint paint) {
-	if (paint != null) {
-	    matchPolyPaint = false;
-	    getLabel().setLinePaint(paint);
-	}
+        if (paint != null) {
+            matchPolyPaint = false;
+            getLabel().setLinePaint(paint);
+        }
     }
 
     Point handyPoint = new Point();
     
     protected Point getTextPoint(Projection proj) {
-	int i;
-	int avgx = 0;
-	int avgy = 0;	    
+        int i;
+        int avgx = 0;
+        int avgy = 0;       
 
-	// Assuming that the rendertype is not unknown...
-	if (renderType == RENDERTYPE_LATLON) {
-	    int numPoints = rawllpts.length/2;
-	    if (rawllpts.length < 2) {
-		// off screen...
-		handyPoint.setLocation(-10, -10);
-		return handyPoint;
-	    }
-	    if (locateAtCenter) {
-		for (i = 0; i < rawllpts.length; i+=2) {
-		    proj.forward(rawllpts[i], rawllpts[i+1], 
-				 handyPoint, true);
-		    
-		    avgy += handyPoint.getY();
-		    avgx += handyPoint.getX();
-		}
-		avgy = avgy/numPoints;
-		avgx = avgx/numPoints;
-		handyPoint.setLocation(avgx, avgy);
-	    } else {
-		if (index < 0) index = 0;
-		if (index > numPoints) index = numPoints - 1;
-		proj.forward(rawllpts[2*index], rawllpts[2*index+1],
-			     handyPoint, true);
-	    }
-	} else {
-	    int[][] x = xpoints;
-	    int[][] y = ypoints;
+        // Assuming that the rendertype is not unknown...
+        if (renderType == RENDERTYPE_LATLON) {
+            int numPoints = rawllpts.length/2;
+            if (rawllpts.length < 2) {
+                // off screen...
+                handyPoint.setLocation(-10, -10);
+                return handyPoint;
+            }
+            if (locateAtCenter) {
+                for (i = 0; i < rawllpts.length; i+=2) {
+                    proj.forward(rawllpts[i], rawllpts[i+1], 
+                                 handyPoint, true);
+                    
+                    avgy += handyPoint.getY();
+                    avgx += handyPoint.getX();
+                }
+                avgy = avgy/numPoints;
+                avgx = avgx/numPoints;
+                handyPoint.setLocation(avgx, avgy);
+            } else {
+                if (index < 0) index = 0;
+                if (index > numPoints) index = numPoints - 1;
+                proj.forward(rawllpts[2*index], rawllpts[2*index+1],
+                             handyPoint, true);
+            }
+        } else {
+            int[][] x = xpoints;
+            int[][] y = ypoints;
 
-	    if (x[0].length < 2) {
-		// off screen...
-		handyPoint.setLocation(-10, -10);
-		return handyPoint;
-	    }
+            if (x[0].length < 2) {
+                // off screen...
+                handyPoint.setLocation(-10, -10);
+                return handyPoint;
+            }
 
-	    if (locateAtCenter) {
-		for (i = 0; i < x[0].length; i++) {
-		    avgx += x[0][i];
-		    avgy += y[0][i];
-		}
-		handyPoint.setLocation(avgx/x[0].length, avgy/x[0].length);
-	    } else {
-		if (index < 0) index = 0;
-		if (index >= x[0].length) index = x[0].length - 1;
-		handyPoint.setLocation(x[0][index], y[0][index]);
-	    }
-	}
-	return handyPoint;
+            if (locateAtCenter) {
+                for (i = 0; i < x[0].length; i++) {
+                    avgx += x[0][i];
+                    avgy += y[0][i];
+                }
+                handyPoint.setLocation(avgx/x[0].length, avgy/x[0].length);
+            } else {
+                if (index < 0) index = 0;
+                if (index >= x[0].length) index = x[0].length - 1;
+                handyPoint.setLocation(x[0][index], y[0][index]);
+            }
+        }
+        return handyPoint;
     }
     
 
     public boolean generate(Projection proj) {
-	boolean ret = super.generate(proj);
+        boolean ret = super.generate(proj);
 
-	Point p = getTextPoint(proj);
-	label.setX((int)(p.getX() + getOffset().getX()));
-	label.setY((int)(p.getY() + getOffset().getY()));
+        Point p = getTextPoint(proj);
+        label.setX((int)(p.getX() + getOffset().getX()));
+        label.setY((int)(p.getY() + getOffset().getY()));
 
-	if (Debug.debugging("labeled")) {
-	    Debug.output("Setting label(" + label.getData() + ") to " + p);
-	}
+        if (Debug.debugging("labeled")) {
+            Debug.output("Setting label(" + label.getData() + ") to " + p);
+        }
 
-	label.generate(proj);
-	return ret;
+        label.generate(proj);
+        return ret;
     }
 
     public void render(java.awt.Graphics g) {
-	super.render(g);
-	label.render(g);
+        super.render(g);
+        label.render(g);
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/crew/Crew.java,v $
 // $RCSfile: Crew.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/05/14 17:27:23 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,7 +67,7 @@ public class Crew extends JFrame {
      * will use the default properties.
      */
     public Crew() throws MultipleSoloMapComponentException {
-	this(new Properties());
+        this(new Properties());
     }
 
     /**
@@ -77,76 +77,76 @@ public class Crew extends JFrame {
      * @param props The override properties
      */
     public Crew(Properties props) 
-	throws MultipleSoloMapComponentException {
+        throws MultipleSoloMapComponentException {
 
-	// Initialize the parent class (JFrame)
-	super("Crew Example");
+        // Initialize the parent class (JFrame)
+        super("Crew Example");
 
-	// Use a Border layout manager
-	getContentPane().setLayout(new BorderLayout());
+        // Use a Border layout manager
+        getContentPane().setLayout(new BorderLayout());
 
-	// Call quit when the window's close box is clicked.
-	addWindowListener(new WindowAdapter() {
-	    public void windowClosing(WindowEvent e) {
-		quit();
-	    }});
+        // Call quit when the window's close box is clicked.
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                quit();
+            }});
 
-	// Store the given properties for later use.
-	properties = props;
+        // Store the given properties for later use.
+        properties = props;
 
-	// Create the MapHandler, which allows all the components to
-	// find each other if they are added to it.
-	MapHandler mapHandler = new MapHandler();
-	// Create the MapBean.
-	MapBean map = new MapBean();
-	// Set the map's center property
-	map.setCenter(new LatLonPoint(43.0f, -95.0f));
-	// Add the MapBean to the MapHandler.
-	mapHandler.add(map);
+        // Create the MapHandler, which allows all the components to
+        // find each other if they are added to it.
+        MapHandler mapHandler = new MapHandler();
+        // Create the MapBean.
+        MapBean map = new MapBean();
+        // Set the map's center property
+        map.setCenter(new LatLonPoint(43.0f, -95.0f));
+        // Add the MapBean to the MapHandler.
+        mapHandler.add(map);
 
-	// Add the map to the JFrame
-	getContentPane().add(map, BorderLayout.CENTER);
+        // Add the map to the JFrame
+        getContentPane().add(map, BorderLayout.CENTER);
 
-	// Create a mouse delegator to handle mouse events on the map
-	mapHandler.add(new MouseDelegator());
-	// Create and add the MouseMode that the RouteLayer wants
-	// events from.  The MouseDelegator asks all layers which
-	// MouseMode they listen to, and hooks them up.  When that
-	// MouseMode is active, events flow to the top layer, then
-	// down to lower layers if the event is not consumed along the
-	// way.
-	mapHandler.add(new SelectMouseMode());
+        // Create a mouse delegator to handle mouse events on the map
+        mapHandler.add(new MouseDelegator());
+        // Create and add the MouseMode that the RouteLayer wants
+        // events from.  The MouseDelegator asks all layers which
+        // MouseMode they listen to, and hooks them up.  When that
+        // MouseMode is active, events flow to the top layer, then
+        // down to lower layers if the event is not consumed along the
+        // way.
+        mapHandler.add(new SelectMouseMode());
 
-	// Add a LayerHandler, which manages all layers, on or off.
-	mapHandler.add(new LayerHandler());
+        // Add a LayerHandler, which manages all layers, on or off.
+        mapHandler.add(new LayerHandler());
 
-	// Create and add a Route Layer.  The LayerHandler will find
-	// it via the LayerHandler, and then the LayerHandler will add
-	// it to the map because layer.isVisible() == true;
-	Layer layer = createRouteLayer();
-	if (layer != null) {
-	    layer.setName("Routes");
-	    mapHandler.add(layer);
-	}
+        // Create and add a Route Layer.  The LayerHandler will find
+        // it via the LayerHandler, and then the LayerHandler will add
+        // it to the map because layer.isVisible() == true;
+        Layer layer = createRouteLayer();
+        if (layer != null) {
+            layer.setName("Routes");
+            mapHandler.add(layer);
+        }
 
-	// Create and add a Political Background
-	layer = createPoliticalLayer();
-	if (layer != null) mapHandler.add(layer);
+        // Create and add a Political Background
+        layer = createPoliticalLayer();
+        if (layer != null) mapHandler.add(layer);
 
-	// Add some navigation tools.  The ToolPanel will find the
-	// OMToolSet (a Tool) in the MapHandler.
-	ToolPanel toolPanel = new ToolPanel();
-	mapHandler.add(toolPanel);
-	mapHandler.add(new OMToolSet());
-	// Add the ToolPanel to the JFrame.
-	getContentPane().add(toolPanel, BorderLayout.NORTH);
+        // Add some navigation tools.  The ToolPanel will find the
+        // OMToolSet (a Tool) in the MapHandler.
+        ToolPanel toolPanel = new ToolPanel();
+        mapHandler.add(toolPanel);
+        mapHandler.add(new OMToolSet());
+        // Add the ToolPanel to the JFrame.
+        getContentPane().add(toolPanel, BorderLayout.NORTH);
 
-	// Oh, for fun, lets add a GUI to control the layers.  A
-	// button to launch it will get added to the ToolPanel.
-	mapHandler.add(new LayersPanel());
+        // Oh, for fun, lets add a GUI to control the layers.  A
+        // button to launch it will get added to the ToolPanel.
+        mapHandler.add(new LayersPanel());
 
-	// You can add other components from the com.bbn.openmap.gui
-	// package...
+        // You can add other components from the com.bbn.openmap.gui
+        // package...
     }
 
     /**
@@ -161,22 +161,22 @@ public class Crew extends JFrame {
      * @return the political layer, or null if an error occurred
      */
     protected Layer createPoliticalLayer() {
-	Boolean showPolitical;
+        Boolean showPolitical;
 
-	// You can add a showPolitical=false property to the
-	// Crew.properties file to make this layer not be added to the
-	// application.
-	showPolitical =
-	    new Boolean(properties.getProperty("showPolitical", "true"));
+        // You can add a showPolitical=false property to the
+        // Crew.properties file to make this layer not be added to the
+        // application.
+        showPolitical =
+            new Boolean(properties.getProperty("showPolitical", "true"));
 
-	if (! showPolitical.booleanValue()) {
-	    return null;
-	}
-	
-	ShapeLayer politicalLayer = new ShapeLayer();
-	politicalLayer.setProperties("political", properties);
+        if (! showPolitical.booleanValue()) {
+            return null;
+        }
+        
+        ShapeLayer politicalLayer = new ShapeLayer();
+        politicalLayer.setProperties("political", properties);
 
-	return politicalLayer;
+        return politicalLayer;
     }
 
     /**
@@ -187,14 +187,14 @@ public class Crew extends JFrame {
      * @see RouteLayer
      */
     protected Layer createRouteLayer() {
-	return new RouteLayer();
+        return new RouteLayer();
     }
 
     /**
      * Exits the application.
      */
     protected void quit() {
-	System.exit(0);
+        System.exit(0);
     }
 
     /**
@@ -204,38 +204,38 @@ public class Crew extends JFrame {
      * @param args command line arguments -- ignored
      */
     public static void main(String[] args) {
-	Crew crew;
-	Properties crewProps = new Properties();
-	InputStream propsIn = Crew.class.getResourceAsStream(crewResources);
+        Crew crew;
+        Properties crewProps = new Properties();
+        InputStream propsIn = Crew.class.getResourceAsStream(crewResources);
 
-	if (propsIn == null) {
-	    System.err.println("Unable to locate resources: " + crewResources);
-	    System.err.println("Using default resources.");
-	} else {
-	    try {
-		crewProps.load(propsIn);
-	    } catch (java.io.IOException e) {
-		System.err.println("Caught IOException loading resources: " +
-				   crewResources);
-		System.err.println("Using default resources.");
-	    }
-	}
+        if (propsIn == null) {
+            System.err.println("Unable to locate resources: " + crewResources);
+            System.err.println("Using default resources.");
+        } else {
+            try {
+                crewProps.load(propsIn);
+            } catch (java.io.IOException e) {
+                System.err.println("Caught IOException loading resources: " +
+                                   crewResources);
+                System.err.println("Using default resources.");
+            }
+        }
 
-	try {
-	    crew = new Crew(crewProps);
-	    crew.setSize(700, 500);
-	    crew.pack();
-	    crew.setVisible(true);
-	} catch (MultipleSoloMapComponentException msmce) {
-	    // The MapHandler is only allowed to have one of certain
-	    // items.  These items implement the SoloMapComponent
-	    // interface.  The MapHandler can have a policy that
-	    // determines what to do when duplicate instances of the
-	    // same type of object are added - replace or ignore.
+        try {
+            crew = new Crew(crewProps);
+            crew.setSize(700, 500);
+            crew.pack();
+            crew.setVisible(true);
+        } catch (MultipleSoloMapComponentException msmce) {
+            // The MapHandler is only allowed to have one of certain
+            // items.  These items implement the SoloMapComponent
+            // interface.  The MapHandler can have a policy that
+            // determines what to do when duplicate instances of the
+            // same type of object are added - replace or ignore.
 
-	    // In this example, this will never happen, since we are
-	    // controlling that one MapBean, LayerHandler,
-	    // MouseDelegator, etc is being added to the MapHandler.
-	}
+            // In this example, this will never happen, since we are
+            // controlling that one MapBean, LayerHandler,
+            // MouseDelegator, etc is being added to the MapHandler.
+        }
     }
 }

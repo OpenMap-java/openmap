@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/daynight/DayNightLayer.java,v $
 // $RCSfile: DayNightLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/29 17:20:03 $
-// $Author: wjeuerle $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:08 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -170,85 +170,85 @@ public class DayNightLayer extends OMGraphicHandlerLayer
      * @param properties the properties set in the properties file.  
      */
     public void setProperties(String prefix, java.util.Properties properties) {
-	super.setProperties(prefix, properties);
+        super.setProperties(prefix, properties);
 
-	String termFadeString = properties.getProperty(prefix + TermFadeProperty);
-	String currentTimeString = properties.getProperty(prefix + CurrentTimeProperty);
-	String overlayTimeString = properties.getProperty(prefix + OverlayTimeProperty);
-	String updateIntervalString = properties.getProperty(prefix + 
-							     UpdateIntervalProperty);
-	
-	if (currentTimeString != null)
-	    currentTime = Boolean.valueOf(currentTimeString).booleanValue();
-	
+        String termFadeString = properties.getProperty(prefix + TermFadeProperty);
+        String currentTimeString = properties.getProperty(prefix + CurrentTimeProperty);
+        String overlayTimeString = properties.getProperty(prefix + OverlayTimeProperty);
+        String updateIntervalString = properties.getProperty(prefix + 
+                                                             UpdateIntervalProperty);
+        
+        if (currentTimeString != null)
+            currentTime = Boolean.valueOf(currentTimeString).booleanValue();
+        
 
-	// If something stupid gets passed in here, just us the current time...
-	try {
-	    if (overlayTimeString != null)
-		overlayTime = Long.valueOf(overlayTimeString).longValue();
-	    if (overlayTime <= 0){
-		currentTime = true;
-	    }
-	} catch (NumberFormatException e) {
-	    System.err.println("DayNightLayer: Unable to parse " + 
-			       OverlayTimeProperty +
-			       " = " + overlayTimeString);
-	    currentTime = true;
-	}
+        // If something stupid gets passed in here, just us the current time...
+        try {
+            if (overlayTimeString != null)
+                overlayTime = Long.valueOf(overlayTimeString).longValue();
+            if (overlayTime <= 0){
+                currentTime = true;
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("DayNightLayer: Unable to parse " + 
+                               OverlayTimeProperty +
+                               " = " + overlayTimeString);
+            currentTime = true;
+        }
 
-	try {
-	    if (updateIntervalString != null)
-		updateInterval = Integer.valueOf(updateIntervalString).intValue();
-	    if (updateInterval <= 0){
-		updateInterval = DO_NOT_UPDATE;
-		System.err.println("DayNightLayer: Not updating display.");
-	    } else {
-		timer = new Timer(updateInterval, this);
-	    }
-	} catch (NumberFormatException e) {
-	    System.err.println("DayNightLayer: Unable to parse " + 
-			       UpdateIntervalProperty +
-			       " = " + updateIntervalString);
-	    updateInterval = DO_NOT_UPDATE;
-	}
+        try {
+            if (updateIntervalString != null)
+                updateInterval = Integer.valueOf(updateIntervalString).intValue();
+            if (updateInterval <= 0){
+                updateInterval = DO_NOT_UPDATE;
+                System.err.println("DayNightLayer: Not updating display.");
+            } else {
+                timer = new Timer(updateInterval, this);
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("DayNightLayer: Unable to parse " + 
+                               UpdateIntervalProperty +
+                               " = " + updateIntervalString);
+            updateInterval = DO_NOT_UPDATE;
+        }
 
-	try {
-	    if (termFadeString != null)
-		termFade = Float.valueOf(termFadeString).floatValue();
-	    else termFade = DEFAULT_TERM_FADE;
+        try {
+            if (termFadeString != null)
+                termFade = Float.valueOf(termFadeString).floatValue();
+            else termFade = DEFAULT_TERM_FADE;
 
-	    if (termFade < 0 || termFade >= .5){
-		System.err.println("DayNightLayer: termFade funky value ignored.");
-		termFade = DEFAULT_TERM_FADE;
-	    }
-	} catch (NumberFormatException e) {
-	    System.err.println("DayNightLayer: Unable to parse " + 
-			       TermFadeProperty +
-			       " = " + termFadeString);
-	    termFade = DEFAULT_TERM_FADE;
-	}
+            if (termFade < 0 || termFade >= .5){
+                System.err.println("DayNightLayer: termFade funky value ignored.");
+                termFade = DEFAULT_TERM_FADE;
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("DayNightLayer: Unable to parse " + 
+                               TermFadeProperty +
+                               " = " + termFadeString);
+            termFade = DEFAULT_TERM_FADE;
+        }
 
-	daytimeColor = ColorFactory.parseColorFromProperties(
-	    properties,
-	    prefix + DaytimeColorProperty,
-	    defaultDaytimeColorString, true);
+        daytimeColor = ColorFactory.parseColorFromProperties(
+            properties,
+            prefix + DaytimeColorProperty,
+            defaultDaytimeColorString, true);
 
-	nighttimeColor = ColorFactory.parseColorFromProperties(
-	    properties,
-	    prefix + NighttimeColorProperty,
-	    defaultNighttimeColorString, true);
+        nighttimeColor = ColorFactory.parseColorFromProperties(
+            properties,
+            prefix + NighttimeColorProperty,
+            defaultNighttimeColorString, true);
 
-	doPolyTerminator = Boolean.valueOf(properties.getProperty(
-		    prefix + DoPolyTerminatorProperty, ""+doPolyTerminator)).booleanValue();
+        doPolyTerminator = Boolean.valueOf(properties.getProperty(
+                    prefix + DoPolyTerminatorProperty, ""+doPolyTerminator)).booleanValue();
 
-	try {
-	    terminatorVerts = Integer.parseInt(
-		    properties.getProperty(
-			prefix+TerminatorVertsProperty, ""+terminatorVerts));
-	} catch (NumberFormatException e) {
-	    System.err.println("DayNightLayer: Unable to parse " + 
-			       TerminatorVertsProperty);
-	}
+        try {
+            terminatorVerts = Integer.parseInt(
+                    properties.getProperty(
+                        prefix+TerminatorVertsProperty, ""+terminatorVerts));
+        } catch (NumberFormatException e) {
+            System.err.println("DayNightLayer: Unable to parse " + 
+                               TerminatorVertsProperty);
+        }
     }
 
     /**
@@ -256,11 +256,11 @@ public class DayNightLayer extends OMGraphicHandlerLayer
      * @param ae action event from the timer.
      */
     public void actionPerformed(java.awt.event.ActionEvent ae){
-	super.actionPerformed(ae);
-	if (Debug.debugging("daynight")) {
-	    Debug.output(getName()+"| updating image via timer...");
-	}
-	doPrepare();
+        super.actionPerformed(ae);
+        if (Debug.debugging("daynight")) {
+            Debug.output(getName()+"| updating image via timer...");
+        }
+        doPrepare();
     }
 
     /**
@@ -279,97 +279,97 @@ public class DayNightLayer extends OMGraphicHandlerLayer
      */
     protected OMGraphic createImage(Projection projection) {
 
-	if (currentTime) overlayTime = System.currentTimeMillis();
+        if (currentTime) overlayTime = System.currentTimeMillis();
 
-	if (Debug.debugging("daynight")) {
-	    Debug.output("DayNightLayer: Calculating sun position at time " +
-			 Long.toString(overlayTime));
-	}
+        if (Debug.debugging("daynight")) {
+            Debug.output("DayNightLayer: Calculating sun position at time " +
+                         Long.toString(overlayTime));
+        }
 
-	LatLonPoint brightPoint = SunPosition.sunPosition(overlayTime);
+        LatLonPoint brightPoint = SunPosition.sunPosition(overlayTime);
 
         Debug.message("daynight", "DayNightLayer: Calculated sun position");
 
-	// Do a fast and relatively inexpensive calculation of the
-	// terminator.  NOTE: for non-cylindrical projections we don't
-	// create a full-hemisphere circle so that we don't get
-	// flip-rendering problem...
-	if (doPolyTerminator) {
+        // Do a fast and relatively inexpensive calculation of the
+        // terminator.  NOTE: for non-cylindrical projections we don't
+        // create a full-hemisphere circle so that we don't get
+        // flip-rendering problem...
+        if (doPolyTerminator) {
             Debug.message("daynight", "DayNightLayer:  Creating polygon terminator");
-	    LatLonPoint darkPoint = GreatCircle.spherical_between(
-		    brightPoint.radlat_,
-		    brightPoint.radlon_,
-		    (float)Math.PI,
-		    (float)Math.PI/4f);
-	    OMCircle circle = new OMCircle(
-		    darkPoint,
-		    (projection instanceof Cylindrical) ? 90f : 89.0f,//HACK
-		    Length.DECIMAL_DEGREE, terminatorVerts);
-	    circle.setPolarCorrection(true);
-	    circle.setFillPaint(nighttimeColor);
-	    circle.setLinePaint(nighttimeColor);
-	    circle.generate(projection);
+            LatLonPoint darkPoint = GreatCircle.spherical_between(
+                    brightPoint.radlat_,
+                    brightPoint.radlon_,
+                    (float)Math.PI,
+                    (float)Math.PI/4f);
+            OMCircle circle = new OMCircle(
+                    darkPoint,
+                    (projection instanceof Cylindrical) ? 90f : 89.0f,//HACK
+                    Length.DECIMAL_DEGREE, terminatorVerts);
+            circle.setPolarCorrection(true);
+            circle.setFillPaint(nighttimeColor);
+            circle.setLinePaint(nighttimeColor);
+            circle.generate(projection);
             Debug.message("daynight", "DayNightLayer: Done creating polygon terminator");
-	    return circle;
-	}
+            return circle;
+        }
 
-	int width = projection.getWidth();
-	int height = projection.getHeight();
-	int[] pixels = new int[width*height];
+        int width = projection.getWidth();
+        int height = projection.getHeight();
+        int[] pixels = new int[width*height];
 
-	OMRaster ret = new OMRaster((int)0, (int)0, width, height, pixels);
+        OMRaster ret = new OMRaster((int)0, (int)0, width, height, pixels);
 
 
 
-	float lat, lon;
+        float lat, lon;
 
-	Debug.message("daynight", getName()+
-		      "|createImage: Center of bright spot lat= " + 
-		      brightPoint.getLatitude() + 
-		      ", lon= " + brightPoint.getLongitude());
+        Debug.message("daynight", getName()+
+                      "|createImage: Center of bright spot lat= " + 
+                      brightPoint.getLatitude() + 
+                      ", lon= " + brightPoint.getLongitude());
 
-	// Light is clear and/or white	
-	int light = daytimeColor.getRGB();
+        // Light is clear and/or white  
+        int light = daytimeColor.getRGB();
 
-	// Allocate the memory here for the testPoint
-	LatLonPoint testPoint = new LatLonPoint(0f, 0f);
-	// great circle distance between the bright point and each pixel.
-	float distance; 
+        // Allocate the memory here for the testPoint
+        LatLonPoint testPoint = new LatLonPoint(0f, 0f);
+        // great circle distance between the bright point and each pixel.
+        float distance; 
 
-	//  Set the darkeness value
-	int dark = nighttimeColor.getRGB();// ARGB
-	int darkness = dark >>> 24;// darkness alpha
-	int value;
+        //  Set the darkeness value
+        int dark = nighttimeColor.getRGB();// ARGB
+        int darkness = dark >>> 24;// darkness alpha
+        int value;
 
-	// Calculate the fae limits around the terminator
-	float upperFadeLimit =  (float)(MoreMath.HALF_PI*(1.0+termFade));
-	float lowerFadeLimit =  (float)(MoreMath.HALF_PI*(1.0-termFade));
-	int fadeColorValue = 0x00FFFFFF & (dark); // RGB
+        // Calculate the fae limits around the terminator
+        float upperFadeLimit =  (float)(MoreMath.HALF_PI*(1.0+termFade));
+        float lowerFadeLimit =  (float)(MoreMath.HALF_PI*(1.0-termFade));
+        int fadeColorValue = 0x00FFFFFF & (dark); // RGB
 
-	for (int i = 0; i < width; i++){
-	    for (int j = 0; j < height; j++){
+        for (int i = 0; i < width; i++){
+            for (int j = 0; j < height; j++){
 
-		testPoint = projection.inverse(i, j, testPoint);
-		distance = GreatCircle.spherical_distance(brightPoint.radlat_, 
-							  brightPoint.radlon_,
-							  testPoint.radlat_, 
-							  testPoint.radlon_);
+                testPoint = projection.inverse(i, j, testPoint);
+                distance = GreatCircle.spherical_distance(brightPoint.radlat_, 
+                                                          brightPoint.radlon_,
+                                                          testPoint.radlat_, 
+                                                          testPoint.radlon_);
 
-		if (distance > upperFadeLimit) {
-		    pixels[j*width+i] = dark;
-		} else if (distance > lowerFadeLimit){
-		    value = (int)(darkness * (1 - ((upperFadeLimit - distance)/
-						   (upperFadeLimit - lowerFadeLimit))));
-		    value <<= 24;
-		    pixels[j*width+i] = fadeColorValue | value;
-		} else {
-		    pixels[j*width+i] = light;
-		}
-	    }
-	}
+                if (distance > upperFadeLimit) {
+                    pixels[j*width+i] = dark;
+                } else if (distance > lowerFadeLimit){
+                    value = (int)(darkness * (1 - ((upperFadeLimit - distance)/
+                                                   (upperFadeLimit - lowerFadeLimit))));
+                    value <<= 24;
+                    pixels[j*width+i] = fadeColorValue | value;
+                } else {
+                    pixels[j*width+i] = light;
+                }
+            }
+        }
 
-	ret.generate(projection);
- 	return ret;
+        ret.generate(projection);
+        return ret;
     }
 
     /**
@@ -384,41 +384,41 @@ public class DayNightLayer extends OMGraphicHandlerLayer
      */
     public OMGraphicList prepare() {
 
-	OMGraphicList list = getList();
-	if (list == null) {
-	    list = new OMGraphicList();
-	} else {
-	    list.clear();
-	}
+        OMGraphicList list = getList();
+        if (list == null) {
+            list = new OMGraphicList();
+        } else {
+            list.clear();
+        }
 
-	if (isCancelled()) {
-	    Debug.message("daynight", getName()+
-			  "|DayNightLayer.prepare(): aborted.");
-	    return null;
-	}
+        if (isCancelled()) {
+            Debug.message("daynight", getName()+
+                          "|DayNightLayer.prepare(): aborted.");
+            return null;
+        }
 
-	Debug.message("basic", getName()+"|DayNightLayer.prepare(): doing it");
+        Debug.message("basic", getName()+"|DayNightLayer.prepare(): doing it");
 
-	OMGraphic ras = createImage(getProjection());
-	if (timer != null) timer.restart();
-	list.add(ras);
+        OMGraphic ras = createImage(getProjection());
+        if (timer != null) timer.restart();
+        list.add(ras);
 
-	return list;
+        return list;
     }
 
     /**
      * Get the time of the overlay.
      */
     public long getOverlayTime() {
-	return overlayTime;
+        return overlayTime;
     }
 
     /**
      * Set the time for the overlay.
      */
     public void setOverlayTime(long ot) {
-	overlayTime = ot;
-	currentTime = false;
+        overlayTime = ot;
+        currentTime = false;
         doPrepare();
     }
 
@@ -427,7 +427,7 @@ public class DayNightLayer extends OMGraphicHandlerLayer
      * the image is created.
      */
     public boolean getCurrentTime() {
-	return currentTime;
+        return currentTime;
     }
 
     /**
@@ -437,7 +437,7 @@ public class DayNightLayer extends OMGraphicHandlerLayer
      * false.  It actually is, if you manually set the overlay time.
      */
     public void setCurrentTime(boolean ct) {
-	currentTime = ct;
+        currentTime = ct;
     }
 
     /**
@@ -445,7 +445,7 @@ public class DayNightLayer extends OMGraphicHandlerLayer
      * a timer is not set.
      */
     public Timer getTimer() {
-	return timer;
+        return timer;
     }
 
     /**
@@ -453,7 +453,7 @@ public class DayNightLayer extends OMGraphicHandlerLayer
      * you can set the timer to do that.  Set it to null to disable it.
      */
     public void setTimer(Timer t) {
-	timer = t;
+        timer = t;
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SBitmap.java,v $
 // $RCSfile: SBitmap.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,7 +55,7 @@ public class SBitmap extends SGraphic /* used to be _BitmapImplBase*/ {
   /** Create empty, add parameters later. */
     public SBitmap() {
       super(GraphicType.GT_Bitmap, RenderType.RT_Unknown, 
-	     LineType.LT_Unknown, DeclutterType.DC_None);
+             LineType.LT_Unknown, DeclutterType.DC_None);
       p1_ = new XYPoint((short)0, (short)0);
       ll1_ = new LLPoint(0f, 0f);
       width_ = 0;
@@ -68,54 +68,54 @@ public class SBitmap extends SGraphic /* used to be _BitmapImplBase*/ {
 
   /** Lat/lon placement. */
     public SBitmap(LLPoint ll1, 
-		   short width, short height, 
-		   byte[] bits, 
-		   short x_hot, short y_hot) {
+                   short width, short height, 
+                   byte[] bits, 
+                   short x_hot, short y_hot) {
         super(GraphicType.GT_Bitmap, RenderType.RT_LatLon, 
-	      LineType.LT_Unknown, DeclutterType.DC_None);
+              LineType.LT_Unknown, DeclutterType.DC_None);
         p1_ = new XYPoint((short)0, (short)0);
-	ll1_ = ll1;
-	width_ = width;
-	height_ = height;
-	x_hot_ = x_hot;
-	y_hot_ = y_hot;
-	bits_ = bits;
-	bmref_ = null;
+        ll1_ = ll1;
+        width_ = width;
+        height_ = height;
+        x_hot_ = x_hot;
+        y_hot_ = y_hot;
+        bits_ = bits;
+        bmref_ = null;
     }
 
   /** X/Y screen placement.*/
     public SBitmap(short x1, short y1,
-		   short width, short height,
-		   byte[] bits, 
-		   short x_hot, short y_hot) {
+                   short width, short height,
+                   byte[] bits, 
+                   short x_hot, short y_hot) {
         super(GraphicType.GT_Bitmap, RenderType.RT_XY, 
-	      LineType.LT_Unknown, DeclutterType.DC_None);
+              LineType.LT_Unknown, DeclutterType.DC_None);
         p1_ = new XYPoint(x1, y1);
-	ll1_ = new LLPoint(0f, 0f);
-	width_ = width;
-	height_ = height;
-	x_hot_ = x_hot;
-	y_hot_ = y_hot;
-	bits_ = bits;
-	bmref_ = null;
+        ll1_ = new LLPoint(0f, 0f);
+        width_ = width;
+        height_ = height;
+        x_hot_ = x_hot;
+        y_hot_ = y_hot;
+        bits_ = bits;
+        bmref_ = null;
     }
 
   /** Lat/lon with a X/Y offset placement.*/
     public SBitmap(LLPoint ll1,
-		   short offset_x1, short offset_y1,
-		   short width, short height,
-		   byte[] bits,
-		   short x_hot, short y_hot) {
+                   short offset_x1, short offset_y1,
+                   short width, short height,
+                   byte[] bits,
+                   short x_hot, short y_hot) {
         super(GraphicType.GT_Bitmap, RenderType.RT_Offset, 
-	      LineType.LT_Unknown, DeclutterType.DC_None);
+              LineType.LT_Unknown, DeclutterType.DC_None);
         p1_ = new XYPoint(offset_x1, offset_y1);
-	ll1_ = ll1;
-	width_ = width;
-	height_ = height;
-	x_hot_ = x_hot;
-	y_hot_ = y_hot;
-	bits_ = bits;
-	bmref_ = null;
+        ll1_ = ll1;
+        width_ = width;
+        height_ = height;
+        x_hot_ = x_hot;
+        y_hot_ = y_hot;
+        bits_ = bits;
+        bmref_ = null;
     }
 
     public void p1(com.bbn.openmap.CSpecialist.XYPoint p1) {
@@ -170,91 +170,91 @@ public class SBitmap extends SGraphic /* used to be _BitmapImplBase*/ {
     public EBitmap fill() {
         String BMref;
         if(bmref_ == null) BMref = new EStipple(null, 
-						(short)0, (short)0, 
-						new byte[0]).toString();
-	else BMref = 
-	       new EStipple(null,
-			    bmref_.width(), 
-			    bmref_.height(), 
-			    bmref_.data()).toString();
+                                                (short)0, (short)0, 
+                                                new byte[0]).toString();
+        else BMref = 
+               new EStipple(null,
+                            bmref_.width(), 
+                            bmref_.height(), 
+                            bmref_.data()).toString();
 
         return new EBitmap(eg,
-			   p1_, ll1_,
-			   width_, height_,
-			   x_hot_, y_hot_,
-			   bits_, BMref);
+                           p1_, ll1_,
+                           width_, height_,
+                           x_hot_, y_hot_,
+                           bits_, BMref);
     }
 
     public UGraphic ufill() {
         UGraphic ugraphic = new UGraphic();
-	ugraphic.ebit(fill());
-	return ugraphic;
+        ugraphic.ebit(fill());
+        return ugraphic;
     }
 
     //  Update methods as a result of gesture impulses...
     public void changeP1(com.bbn.openmap.CSpecialist.XYPoint p1) {
         p1_ = p1;
-	BF_update gupdate = new BF_update();
-	gupdate.p1(p1);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.bf_update(gupdate);
-	addGraphicChange(ug);
+        BF_update gupdate = new BF_update();
+        gupdate.p1(p1);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.bf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeLl1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
-	BF_update gupdate = new BF_update();
-	gupdate.ll1(ll1);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.bf_update(gupdate);
-	addGraphicChange(ug);
+        BF_update gupdate = new BF_update();
+        gupdate.ll1(ll1);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.bf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeWidth(short width) {
         width_ = width;
-	BF_update gupdate = new BF_update();
-	gupdate.width(width);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.bf_update(gupdate);
-	addGraphicChange(ug);
+        BF_update gupdate = new BF_update();
+        gupdate.width(width);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.bf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeHeight(short height) {
         height_ = height;
-	BF_update gupdate = new BF_update();
-	gupdate.height(height);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.bf_update(gupdate);
-	addGraphicChange(ug);
+        BF_update gupdate = new BF_update();
+        gupdate.height(height);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.bf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeX_hot(short x_hot) {
         x_hot_ = x_hot;
-	BF_update gupdate = new BF_update();
-	gupdate.x_hot(x_hot);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.bf_update(gupdate);
-	addGraphicChange(ug);
+        BF_update gupdate = new BF_update();
+        gupdate.x_hot(x_hot);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.bf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeY_hot(short y_hot) {
         y_hot_ = y_hot;
-	BF_update gupdate = new BF_update();
-	gupdate.y_hot(y_hot);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.bf_update(gupdate);
-	addGraphicChange(ug);
+        BF_update gupdate = new BF_update();
+        gupdate.y_hot(y_hot);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.bf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeBits(byte[] bits) {
         bits_ = bits;
-	BF_update gupdate = new BF_update();
-	gupdate.bits(bits);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.bf_update(gupdate);
-	addGraphicChange(ug);
+        BF_update gupdate = new BF_update();
+        gupdate.bits(bits);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.bf_update(gupdate);
+        addGraphicChange(ug);
     }
 //     public void changeBmref(SStipple bmref) {
 //      bmref_ = bmref;
-// 	BF_update gupdate = new BF_update();
-// 	gupdate.bmref(bmref);
-// 	UpdateGraphic ug = new UpdateGraphic();
-// 	ug.bf_update(gupdate);
-// 	addGraphicChange(ug);
+//      BF_update gupdate = new BF_update();
+//      gupdate.bmref(bmref);
+//      UpdateGraphic ug = new UpdateGraphic();
+//      ug.bf_update(gupdate);
+//      addGraphicChange(ug);
 //     }
 
 }

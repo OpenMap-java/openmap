@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolSet.java,v $
 // $RCSfile: OMToolSet.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/12/23 20:47:46 $
-// $Author: wjeuerle $
+// $Revision: 1.8 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -79,22 +79,22 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * Create the OMToolSet.
      */
     public OMToolSet() {
-	super();
-	Debug.message("omtoolset", "OMToolSet()");
+        super();
+        Debug.message("omtoolset", "OMToolSet()");
 
-	setLayout(new FlowLayout(FlowLayout.LEFT));
+        setLayout(new FlowLayout(FlowLayout.LEFT));
 
-	navPanel = new NavigatePanel();
+        navPanel = new NavigatePanel();
 
-	zoomPanel = new ZoomPanel();
+        zoomPanel = new ZoomPanel();
 
-	scaleField = new ScaleTextPanel();
+        scaleField = new ScaleTextPanel();
 
-	add(navPanel);
-	add(zoomPanel);
-	add(scaleField);
+        add(navPanel);
+        add(zoomPanel);
+        add(scaleField);
 
-	createFace();
+        createFace();
     }
     
     /** 
@@ -104,7 +104,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * @return String The key for this tool.  
      */
     public Container getFace() {
-	return this;
+        return this;
     }
 
     /**
@@ -112,9 +112,9 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * boolean settings.
      */
     protected void createFace() {
-	zoomPanel.setVisible(addZoom);
-	navPanel.setVisible(addPan);
-	scaleField.setVisible(addScale);
+        zoomPanel.setVisible(addZoom);
+        navPanel.setVisible(addPan);
+        scaleField.setVisible(addScale);
     }
 
     /** 
@@ -123,7 +123,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * @return String The key for this tool.
      */
     public String getKey() {
-	return key;
+        return key;
     }
     
     /** 
@@ -132,7 +132,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * @param aKey The key for this tool.
      */
     public void setKey(String aKey) {
-	key = aKey;
+        key = aKey;
     }
 
     /**
@@ -140,7 +140,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * @return the ZoomPanel
      */
     public ZoomPanel getZoomPanel() {
-	return zoomPanel;
+        return zoomPanel;
     }
 
     /**
@@ -148,7 +148,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * @return the NaviationPanel (directional rosette)
      */
     public NavigatePanel getNavigatePanel() {
-	return navPanel;
+        return navPanel;
     }
 
     /**
@@ -156,7 +156,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * @return ScaleTextPanel that is rigged to set the scale for the map.
      */
     public ScaleTextPanel getScaleField() {
-	return scaleField;
+        return scaleField;
     }
 
     /**
@@ -166,9 +166,9 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * @param aMapBean a map object.
      */
     public void setupListeners(MapBean aMapBean) {
-	if (aMapBean != null) {
-	    findAndInit(aMapBean);
-	}
+        if (aMapBean != null) {
+            findAndInit(aMapBean);
+        }
     }
 
     /**
@@ -177,9 +177,9 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * @param aMapBean a map object.
      */
     public void removeFromAllListeners(MapBean aMapBean) {
-	if (aMapBean != null) {
-	    findAndUndo(aMapBean);
-	}
+        if (aMapBean != null) {
+            findAndUndo(aMapBean);
+        }
     }
 
     /**
@@ -190,14 +190,14 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * @param al ActionListener
      */
     public void addButton(String name, String info, ActionListener al) {
-	try {
-	    URL url = LayerUtils.getResourceOrFileOrURL(null, name);
-	    if (url != null) {
-		addButton(url, info, al);
-	    }
-	} catch (MalformedURLException murle) {
-	    Debug.error("OMToolSet.addButton: can't create button for " + info);
-	}
+        try {
+            URL url = LayerUtils.getResourceOrFileOrURL(null, name);
+            if (url != null) {
+                addButton(url, info, al);
+            }
+        } catch (MalformedURLException murle) {
+            Debug.error("OMToolSet.addButton: can't create button for " + info);
+        }
     }
 
     /**
@@ -219,18 +219,18 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * MapHandlerChild method.
      */
     public void findAndInit(Object someObj) {
-	navPanel.findAndInit(someObj);
-	zoomPanel.findAndInit(someObj);
-	scaleField.findAndInit(someObj);
+        navPanel.findAndInit(someObj);
+        zoomPanel.findAndInit(someObj);
+        scaleField.findAndInit(someObj);
     }
 
     /**
      * MapHandlerChild method.
      */
     public void findAndUndo(Object someObj) {
-	navPanel.findAndUndo(someObj);
-	zoomPanel.findAndUndo(someObj);
-	scaleField.findAndUndo(someObj);
+        navPanel.findAndUndo(someObj);
+        zoomPanel.findAndUndo(someObj);
+        scaleField.findAndUndo(someObj);
     }
 
     /**
@@ -250,22 +250,22 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * configuration.  
      */
     public void setProperties(String prefix, Properties setList) {
-	setPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
 
-	// Important for ToolPanel that controls what it is listening
-	// for, instead of grabbing any Tool.  The prefix will be used
-	// as a discriminator.
-	if (prefix != null) {
-	    setKey(prefix);
-	}
+        // Important for ToolPanel that controls what it is listening
+        // for, instead of grabbing any Tool.  The prefix will be used
+        // as a discriminator.
+        if (prefix != null) {
+            setKey(prefix);
+        }
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	addZoom = LayerUtils.booleanFromProperties(setList, prefix + AddZoomProperty, addZoom);
-	addPan = LayerUtils.booleanFromProperties(setList, prefix + AddPanProperty, addPan);
-	addScale = LayerUtils.booleanFromProperties(setList, prefix + AddScaleProperty, addScale);
+        addZoom = LayerUtils.booleanFromProperties(setList, prefix + AddZoomProperty, addZoom);
+        addPan = LayerUtils.booleanFromProperties(setList, prefix + AddPanProperty, addPan);
+        addScale = LayerUtils.booleanFromProperties(setList, prefix + AddScaleProperty, addScale);
 
-	createFace();
+        createFace();
     }
 
     /**
@@ -284,16 +284,16 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * PropertyConsumer.
      */
     public Properties getProperties(Properties getList) {
-	if (getList == null) {
-	    getList = new Properties();
-	}
+        if (getList == null) {
+            getList = new Properties();
+        }
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	getList.put(prefix + AddZoomProperty,  new Boolean(addZoom).toString());
-	getList.put(prefix + AddPanProperty,  new Boolean(addPan).toString());
-	getList.put(prefix + AddScaleProperty,  new Boolean(addScale).toString());
-	return getList;
+        getList.put(prefix + AddZoomProperty,  new Boolean(addZoom).toString());
+        getList.put(prefix + AddPanProperty,  new Boolean(addPan).toString());
+        getList.put(prefix + AddScaleProperty,  new Boolean(addScale).toString());
+        return getList;
     }
 
     /**
@@ -314,20 +314,20 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * PropertyConsumer.  
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
+        if (list == null) {
+            list = new Properties();
+        }
 
-	list.put(AddZoomProperty,  "Flag to add the Zoom buttons");
-	list.put(AddZoomProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	list.put(AddPanProperty,  "Flag to add the Pan buttons");
-	list.put(AddPanProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	list.put(AddScaleProperty,  "Flag to add the scale field");
-	list.put(AddScaleProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(AddZoomProperty,  "Flag to add the Zoom buttons");
+        list.put(AddZoomProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(AddPanProperty,  "Flag to add the Pan buttons");
+        list.put(AddPanProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(AddScaleProperty,  "Flag to add the scale field");
+        list.put(AddScaleProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-	return list;
+        return list;
     }
 }

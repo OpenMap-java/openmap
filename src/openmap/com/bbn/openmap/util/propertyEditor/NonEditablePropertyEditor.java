@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/NonEditablePropertyEditor.java,v $
 // $RCSfile: NonEditablePropertyEditor.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/19 20:41:54 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,14 +40,14 @@ public class NonEditablePropertyEditor extends PropertyEditorSupport {
     public NonEditablePropertyEditor() {}
 
     //
-    //	PropertyEditor interface
+    //  PropertyEditor interface
     //
     
     /** PropertyEditor interface.
      *  @return true 
      */
     public boolean supportsCustomEditor() {
-	return true;
+        return true;
     }
     
     /**
@@ -55,26 +55,26 @@ public class NonEditablePropertyEditor extends PropertyEditorSupport {
      * @return JButton button
      */
     public Component getCustomEditor() {
-	if (label == null) {
-	    label = new JLabel();
-	}
-	return label;
+        if (label == null) {
+            label = new JLabel();
+        }
+        return label;
     }
     
     /** Implement PropertyEditor interface. */
     public void setValue(Object someObj) {
-	if(someObj instanceof String) {
-	    label.setText((String)someObj);
-	}
+        if(someObj instanceof String) {
+            label.setText((String)someObj);
+        }
     }
     
     /** Implement PropertyEditor interface. */
     public String getAsText() {
-	return label.getText();
+        return label.getText();
     }
     
     //
-    //	ActionListener interface
+    //  ActionListener interface
     //
     
     public void actionPerformed(ActionEvent e) {

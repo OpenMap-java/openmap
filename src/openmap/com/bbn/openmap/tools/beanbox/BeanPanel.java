@@ -1,14 +1,14 @@
 /* **********************************************************************
  * 
  *    Use, duplication, or disclosure by the Government is subject to
- * 	     restricted rights as set forth in the DFARS.
+ *           restricted rights as set forth in the DFARS.
  *  
- * 			   BBNT Solutions LLC
- * 			       A Part of 
+ *                         BBNT Solutions LLC
+ *                             A Part of 
  *                  Verizon      
- * 			    10 Moulton Street
- * 			   Cambridge, MA 02138
- * 			    (617) 873-3000
+ *                          10 Moulton Street
+ *                         Cambridge, MA 02138
+ *                          (617) 873-3000
  *
  *    Copyright (C) 2002 by BBNT Solutions, LLC
  *                 All Rights Reserved.
@@ -103,8 +103,8 @@ public class BeanPanel extends OMToolComponent implements Serializable {
     public static ImageIcon defaultBeanIcon;
 
     static {
-	augmentBeanInfoSearchPath();
-	setDefaultIcon();
+        augmentBeanInfoSearchPath();
+        setDefaultIcon();
     }
 
 
@@ -141,21 +141,21 @@ public class BeanPanel extends OMToolComponent implements Serializable {
      * to create a standalone BeanPanel. 
      */
     public BeanPanel() {
-	super();
-	setKey(defaultKey);
+        super();
+        setKey(defaultKey);
 
-	beanPaths = new Vector();
-	toolbarTabInfo = new HashMap();
-	toolbarTabOrder = new Vector();
+        beanPaths = new Vector();
+        toolbarTabInfo = new HashMap();
+        toolbarTabOrder = new Vector();
 
-	tabbedPane = new JTabbedPane();
+        tabbedPane = new JTabbedPane();
 
-	dragSource = new DragSource();
-	ComponentDragSourceListener tdsl = new ComponentDragSourceListener();
-	dragSource.createDefaultDragGestureRecognizer(tabbedPane, 
-						      DnDConstants.ACTION_MOVE, new ComponentDragGestureListener(tdsl));
+        dragSource = new DragSource();
+        ComponentDragSourceListener tdsl = new ComponentDragSourceListener();
+        dragSource.createDefaultDragGestureRecognizer(tabbedPane, 
+                                                      DnDConstants.ACTION_MOVE, new ComponentDragGestureListener(tdsl));
 
-	if (Debug.debugging("beanpanel")) Debug.output("Created Bean Panel");
+        if (Debug.debugging("beanpanel")) Debug.output("Created Bean Panel");
     }
 
 
@@ -166,14 +166,14 @@ public class BeanPanel extends OMToolComponent implements Serializable {
      */
     public BeanPanel(Properties props) {
 
-	this();
+        this();
 
-	if (props == null)
-	    throw new IllegalArgumentException("null props");
+        if (props == null)
+            throw new IllegalArgumentException("null props");
 
-	this.loadBeanPanelProperties(props);
+        this.loadBeanPanelProperties(props);
 
-	this.initGui();
+        this.initGui();
 
     }
 
@@ -185,38 +185,38 @@ public class BeanPanel extends OMToolComponent implements Serializable {
      * on the OpenMap ToolPanel.  
      */
     public Container getFace() {
-	if (Debug.debugging("beanpanel")) Debug.output("Enter> BP::getFace");  
+        if (Debug.debugging("beanpanel")) Debug.output("Enter> BP::getFace");  
   
-	JButton button = null;
+        JButton button = null;
 
-	if (defaultBeanIcon == null) {
-	    if (Debug.debugging("beanpanel")) Debug.output("Enter> null defaultBeanIcon!");  
-	    button = new JButton("Bean Box");
-	} else
-	    button = new JButton(defaultBeanIcon);
+        if (defaultBeanIcon == null) {
+            if (Debug.debugging("beanpanel")) Debug.output("Enter> null defaultBeanIcon!");  
+            button = new JButton("Bean Box");
+        } else
+            button = new JButton(defaultBeanIcon);
 
-	button.setBorderPainted(false);
-	button.setToolTipText("Bean Box");
-	button.setMargin(new Insets(0,0,0,0));
-	button.addActionListener(new ActionListener() {
-		public void actionPerformed (ActionEvent evt) {
-		    showBeanPanel(true);
-		}
-	    });
+        button.setBorderPainted(false);
+        button.setToolTipText("Bean Box");
+        button.setMargin(new Insets(0,0,0,0));
+        button.addActionListener(new ActionListener() {
+                public void actionPerformed (ActionEvent evt) {
+                    showBeanPanel(true);
+                }
+            });
 
-	if (Debug.debugging("beanpanel")) Debug.output("Exit> BP::getFace");
+        if (Debug.debugging("beanpanel")) Debug.output("Exit> BP::getFace");
 
-	button.setVisible(getUseAsTool());
-	return button;
+        button.setVisible(getUseAsTool());
+        return button;
     }  
   
     /** 
      * Called when things are removed from the MapHandler.
      */
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof LayerHandler) {
-	    // do the initializing that need to be done here
-	}
+        if (someObj instanceof LayerHandler) {
+            // do the initializing that need to be done here
+        }
     }
 
     /**
@@ -231,45 +231,45 @@ public class BeanPanel extends OMToolComponent implements Serializable {
      * one is found, otherwise null.
      */
     public static synchronized BeanInfo findBeanInfo(String beanClassName) {
-	//System.out.println("Finding beanInfo for " + beanClassName);
-	String[] beanInfoPaths = Introspector.getBeanInfoSearchPath();
-	String infoClassName = beanClassName + "BeanInfo";
-	Class infoClass = null;
+        //System.out.println("Finding beanInfo for " + beanClassName);
+        String[] beanInfoPaths = Introspector.getBeanInfoSearchPath();
+        String infoClassName = beanClassName + "BeanInfo";
+        Class infoClass = null;
 
-	try {
-	    infoClass = Class.forName(infoClassName);
-	    //System.out.println("returning " + infoClass);
-	    return (BeanInfo)infoClass.newInstance();
-	} catch (Exception ex) {
-	    //System.out.println ("Unable to find BeanInfo class for " + infoClassName); 
-	}
+        try {
+            infoClass = Class.forName(infoClassName);
+            //System.out.println("returning " + infoClass);
+            return (BeanInfo)infoClass.newInstance();
+        } catch (Exception ex) {
+            //System.out.println ("Unable to find BeanInfo class for " + infoClassName); 
+        }
   
-	for (int i=0; i < beanInfoPaths.length; i++) {
-	    //System.out.println ("Looking in " + beanInfoPaths[i]); 
-	    int index = beanClassName.lastIndexOf(".");
-	    String classNameWithDot = beanClassName.substring(index);
-	    infoClassName =  beanInfoPaths[i] + classNameWithDot + "BeanInfo";
-	    try {
-		infoClass = Class.forName(infoClassName);
-		break;
-	    } catch (ClassNotFoundException ex) {
-		//System.out.println ("Unable to find BeanInfo class for " + infoClassName); 
-	    }
-	}
+        for (int i=0; i < beanInfoPaths.length; i++) {
+            //System.out.println ("Looking in " + beanInfoPaths[i]); 
+            int index = beanClassName.lastIndexOf(".");
+            String classNameWithDot = beanClassName.substring(index);
+            infoClassName =  beanInfoPaths[i] + classNameWithDot + "BeanInfo";
+            try {
+                infoClass = Class.forName(infoClassName);
+                break;
+            } catch (ClassNotFoundException ex) {
+                //System.out.println ("Unable to find BeanInfo class for " + infoClassName); 
+            }
+        }
 
-	Object retval = null;
+        Object retval = null;
 
-	if (infoClass != null) {
-	    try {
-		retval = infoClass.newInstance();
-	    } catch (Exception ex) {
-		//System.out.println("Unable to instantiate " + infoClassName);
-	    }
-	}
+        if (infoClass != null) {
+            try {
+                retval = infoClass.newInstance();
+            } catch (Exception ex) {
+                //System.out.println("Unable to instantiate " + infoClassName);
+            }
+        }
 
-	//System.out.println("returning " + infoClass);
+        //System.out.println("returning " + infoClass);
 
-	return (BeanInfo)retval;
+        return (BeanInfo)retval;
     }
 
     /**
@@ -283,15 +283,15 @@ public class BeanPanel extends OMToolComponent implements Serializable {
      * @param someObj the object being added to the BeanContext.  
      */
     public void findAndInit(Object someObj) {
-	if(someObj instanceof LayerHandler) {
-	    // do the initializing that need to be done here
-	}
-	if(someObj instanceof PropertyHandler) {
-	    // do the initializing that need to be done here
-	    //if (Debug.debugging("beanbox"))
-	    Properties props = ((PropertyHandler)someObj).getProperties();
-	    loadBeanPanelProperties(props);
-	}
+        if(someObj instanceof LayerHandler) {
+            // do the initializing that need to be done here
+        }
+        if(someObj instanceof PropertyHandler) {
+            // do the initializing that need to be done here
+            //if (Debug.debugging("beanbox"))
+            Properties props = ((PropertyHandler)someObj).getProperties();
+            loadBeanPanelProperties(props);
+        }
     }
 
     /**
@@ -301,510 +301,510 @@ public class BeanPanel extends OMToolComponent implements Serializable {
      */
     private void loadBeans() {
 
-	Vector jarNames = getJarNames();	
-	for (int i = 0; i < jarNames.size(); i++) {
-	    String jarFileName = (String)jarNames.elementAt(i);
-	    try {
-		JarLoader.loadJarDoOnBean(jarFileName, helper);
-	    } catch (Throwable th) {
-		System.out.println("BP::loadBeans: jar load failed: " + jarFileName);
-		th.printStackTrace();
-	    }
-	}
+        Vector jarNames = getJarNames();        
+        for (int i = 0; i < jarNames.size(); i++) {
+            String jarFileName = (String)jarNames.elementAt(i);
+            try {
+                JarLoader.loadJarDoOnBean(jarFileName, helper);
+            } catch (Throwable th) {
+                System.out.println("BP::loadBeans: jar load failed: " + jarFileName);
+                th.printStackTrace();
+            }
+        }
     }
 
     private Vector getJarNames() {
-	Vector result = new Vector();
+        Vector result = new Vector();
 
-	if (beanPaths == null || beanPaths.size() == 0)
-	    return result;
+        if (beanPaths == null || beanPaths.size() == 0)
+            return result;
 
-	for (int i = 0; i < beanPaths.size(); i++) {
-	    String path = (String)beanPaths.get(i);
-	    File dir = new File(path);
+        for (int i = 0; i < beanPaths.size(); i++) {
+            String path = (String)beanPaths.get(i);
+            File dir = new File(path);
 
-	    if (!dir.isDirectory()) {
-		System.out.println("BP::getJarNames: " + dir + " is not a directory!");
-		continue;
-	    }
+            if (!dir.isDirectory()) {
+                System.out.println("BP::getJarNames: " + dir + " is not a directory!");
+                continue;
+            }
 
-	    String names[] = dir.list(new FileExtension(".jar"));
+            String names[] = dir.list(new FileExtension(".jar"));
 
-	    for (int j = 0; j < names.length; j++)
-		result.add(dir.getPath() + File.separatorChar + names[j]);
-	}
+            for (int j = 0; j < names.length; j++)
+                result.add(dir.getPath() + File.separatorChar + names[j]);
+        }
 
-	return result;
+        return result;
     }
 
     private JList createTab(Vector beanClassNames) {
-	final JList list = new JList();
+        final JList list = new JList();
 
-	if (beanClassNames == null || beanClassNames.size() == 0)
-	    return list;
+        if (beanClassNames == null || beanClassNames.size() == 0)
+            return list;
 
-	Vector labels = new Vector();
+        Vector labels = new Vector();
 
-	for (int i = 0; i < beanClassNames.size(); i++) {
-	    String beanClassName = (String)beanClassNames.get(i);
-	    int index = beanNames.indexOf(beanClassName);
+        for (int i = 0; i < beanClassNames.size(); i++) {
+            String beanClassName = (String)beanClassNames.get(i);
+            int index = beanNames.indexOf(beanClassName);
 
-	    if (index < 0) {
-		System.out.println
-		    ("BP::createTab: could not locate beanClass="+beanClassName);
-		continue;
-	    }
+            if (index < 0) {
+                System.out.println
+                    ("BP::createTab: could not locate beanClass="+beanClassName);
+                continue;
+            }
 
-	    String label = (String)beanLabels.get(index);
-	    labels.add(label);
-	}
+            String label = (String)beanLabels.get(index);
+            labels.add(label);
+        }
 
-	list.setListData(labels);
-	list.setCellRenderer(new MyCellRenderer());
+        list.setListData(labels);
+        list.setCellRenderer(new MyCellRenderer());
 
-	MouseEventForwarder forwarder = new MouseEventForwarder();
-	list.addMouseListener(forwarder);
-	list.addMouseMotionListener(forwarder);
+        MouseEventForwarder forwarder = new MouseEventForwarder();
+        list.addMouseListener(forwarder);
+        list.addMouseMotionListener(forwarder);
 
-	return list;
+        return list;
     }
 
     private synchronized void showBeanPanel(boolean isVisible) {
     
-	if (beanFrame != null) {
-	    beanFrame.setVisible(isVisible);
-	    if (isVisible)
-		beanFrame.toFront();
-	    return;
-	}
+        if (beanFrame != null) {
+            beanFrame.setVisible(isVisible);
+            if (isVisible)
+                beanFrame.toFront();
+            return;
+        }
 
-	if (!isVisible)
-	    return;
+        if (!isVisible)
+            return;
 
-	initGui();
-	beanFrame = new JFrame("Bean Box");
-	beanFrame.getContentPane().setLayout(new BoxLayout(beanFrame.getContentPane(),
-							   BoxLayout.Y_AXIS));
-	beanFrame.getContentPane().add(this);
+        initGui();
+        beanFrame = new JFrame("Bean Box");
+        beanFrame.getContentPane().setLayout(new BoxLayout(beanFrame.getContentPane(),
+                                                           BoxLayout.Y_AXIS));
+        beanFrame.getContentPane().add(this);
 
-	beanFrame.addWindowListener(new WindowAdapter() {
-		public void windowClosing(WindowEvent evt) {
-		    beanFrame.setVisible(false);
-		}
-	    });
+        beanFrame.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent evt) {
+                    beanFrame.setVisible(false);
+                }
+            });
 
-	beanFrame.pack();
-	beanFrame.setVisible(true);
+        beanFrame.pack();
+        beanFrame.setVisible(true);
     }
 
     private synchronized void initGui() {
 
-	loadBeans();
+        loadBeans();
 
-	this.setLayout(new BorderLayout());
+        this.setLayout(new BorderLayout());
 
-	if (toolbarTabOrder != null && toolbarTabOrder.size() > 0) {
-	    MouseEventForwarder forwarder = new MouseEventForwarder();
-	    tabbedPane.addMouseListener(forwarder);
-	    tabbedPane.addMouseMotionListener(forwarder);
+        if (toolbarTabOrder != null && toolbarTabOrder.size() > 0) {
+            MouseEventForwarder forwarder = new MouseEventForwarder();
+            tabbedPane.addMouseListener(forwarder);
+            tabbedPane.addMouseMotionListener(forwarder);
 
-	    for (int i = 0; i < toolbarTabOrder.size(); i++) {
-		String tabName = (String)toolbarTabOrder.get(i);
-		Vector beanClassNames = (Vector)toolbarTabInfo.get(tabName);
-		JList listTab = createTab(beanClassNames);
-		tabbedPane.addTab(tabName, listTab);
-	    }
+            for (int i = 0; i < toolbarTabOrder.size(); i++) {
+                String tabName = (String)toolbarTabOrder.get(i);
+                Vector beanClassNames = (Vector)toolbarTabInfo.get(tabName);
+                JList listTab = createTab(beanClassNames);
+                tabbedPane.addTab(tabName, listTab);
+            }
 
-	    JScrollPane sPane = new JScrollPane(tabbedPane);
+            JScrollPane sPane = new JScrollPane(tabbedPane);
     
-	    add(sPane, BorderLayout.CENTER);
-	}
+            add(sPane, BorderLayout.CENTER);
+        }
 
-	setPreferredSize(new Dimension(400, 250));
-	setMinimumSize(new Dimension(400, 250));
+        setPreferredSize(new Dimension(400, 250));
+        setMinimumSize(new Dimension(400, 250));
 
     }
 
     private synchronized void loadBeanPanelProperties(Properties props) {
 
-	loadBeanPaths(props);
+        loadBeanPaths(props);
 
-	loadToolBarTabInfo(props);
+        loadToolBarTabInfo(props);
     }
 
     private void loadBeanPaths(Properties props) {
-	if (Debug.debugging("beanpanel")) Debug.output("Enter> BP::loadBeanPaths");
-	String beanPathsStr = props.getProperty("beanpanel.beans.path");
+        if (Debug.debugging("beanpanel")) Debug.output("Enter> BP::loadBeanPaths");
+        String beanPathsStr = props.getProperty("beanpanel.beans.path");
 
-	if ((beanPathsStr != null) && 
-	    ((beanPathsStr = beanPathsStr.trim()).length() != 0)) {
-	    StringTokenizer st = new StringTokenizer(beanPathsStr, " ");
+        if ((beanPathsStr != null) && 
+            ((beanPathsStr = beanPathsStr.trim()).length() != 0)) {
+            StringTokenizer st = new StringTokenizer(beanPathsStr, " ");
 
-	    while (st.hasMoreTokens())
-		beanPaths.add(st.nextToken());
-	}
+            while (st.hasMoreTokens())
+                beanPaths.add(st.nextToken());
+        }
 
-	if (Debug.debugging("beanpanel")) Debug.output("beanPaths="+beanPaths);
-	if (Debug.debugging("beanpanel")) Debug.output("Exit> BP::loadBeanPaths");
+        if (Debug.debugging("beanpanel")) Debug.output("beanPaths="+beanPaths);
+        if (Debug.debugging("beanpanel")) Debug.output("Exit> BP::loadBeanPaths");
     }
 
     private void loadToolBarTabInfo(Properties props) {
-	if (Debug.debugging("beanpanel")) Debug.output("Enter> BP::loadToolBarTabInfo");
+        if (Debug.debugging("beanpanel")) Debug.output("Enter> BP::loadToolBarTabInfo");
 
-	String tabsStr = props.getProperty("beanpanel.tabs");
+        String tabsStr = props.getProperty("beanpanel.tabs");
 
-	if ((tabsStr != null) && 
-	    ((tabsStr = tabsStr.trim()).length() != 0)) {
-	    StringTokenizer st = new StringTokenizer(tabsStr, " ");
+        if ((tabsStr != null) && 
+            ((tabsStr = tabsStr.trim()).length() != 0)) {
+            StringTokenizer st = new StringTokenizer(tabsStr, " ");
 
-	    while (st.hasMoreTokens()) {
-		String tab = st.nextToken();
-		String tabName = props.getProperty("beanpanel." + tab + ".name");
-		String beanClassesStr = props.getProperty
-		    ("beanpanel." + tab + ".beans");
+            while (st.hasMoreTokens()) {
+                String tab = st.nextToken();
+                String tabName = props.getProperty("beanpanel." + tab + ".name");
+                String beanClassesStr = props.getProperty
+                    ("beanpanel." + tab + ".beans");
 
-		if ((beanClassesStr != null) &&
-		    ((beanClassesStr = beanClassesStr.trim()).length() > 0)) {
-		    StringTokenizer st2 = new StringTokenizer
-			(beanClassesStr, " ");
-		    Vector beanClassNames = new Vector();
+                if ((beanClassesStr != null) &&
+                    ((beanClassesStr = beanClassesStr.trim()).length() > 0)) {
+                    StringTokenizer st2 = new StringTokenizer
+                        (beanClassesStr, " ");
+                    Vector beanClassNames = new Vector();
 
-		    while (st2.hasMoreTokens())
-			beanClassNames.add(st2.nextToken());
+                    while (st2.hasMoreTokens())
+                        beanClassNames.add(st2.nextToken());
 
-		    toolbarTabInfo.put(tabName, beanClassNames);
-		    toolbarTabOrder.add(tabName);
-		}
-	    }
-	}
+                    toolbarTabInfo.put(tabName, beanClassNames);
+                    toolbarTabOrder.add(tabName);
+                }
+            }
+        }
   
-	if (Debug.debugging("beanpanel")) Debug.output("toolbarTabInfo="+toolbarTabInfo);
-	if (Debug.debugging("beanpanel")) Debug.output("toolbarTabOrder="+toolbarTabOrder);
-	if (Debug.debugging("beanpanel")) Debug.output("Exit> BP::loadToolBarTabInfo");
+        if (Debug.debugging("beanpanel")) Debug.output("toolbarTabInfo="+toolbarTabInfo);
+        if (Debug.debugging("beanpanel")) Debug.output("toolbarTabOrder="+toolbarTabOrder);
+        if (Debug.debugging("beanpanel")) Debug.output("Exit> BP::loadToolBarTabInfo");
     }
 
     private void setDragCursor(int index) {
-	ImageIcon icon = (ImageIcon)beanIcons.get(index);
-	Point offset = new Point(0, 0);
-	Image img = icon.getImage();
+        ImageIcon icon = (ImageIcon)beanIcons.get(index);
+        Point offset = new Point(0, 0);
+        Image img = icon.getImage();
 
-	customCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-	    img , offset, "");
+        customCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+            img , offset, "");
     }
 
 
     private class BeanHelper implements DoOnBean {
 
-	public void action(JarInfo ji, BeanInfo bi, Class beanClass, String beanName) {
+        public void action(JarInfo ji, BeanInfo bi, Class beanClass, String beanName) {
 
-	    if (Debug.debugging("beanpanel")) Debug.output("Enter> ACTION: "+beanName);
+            if (Debug.debugging("beanpanel")) Debug.output("Enter> ACTION: "+beanName);
 
-	    if (Debug.debugging("beanpanel")) Debug.output("ACTION: "+beanName);
-	    if (Debug.debugging("beanpanel")) Debug.output("bi: "+bi);
-	    if (Debug.debugging("beanpanel")) Debug.output("bi.getClass(): "
-							   + bi.getClass());
+            if (Debug.debugging("beanpanel")) Debug.output("ACTION: "+beanName);
+            if (Debug.debugging("beanpanel")) Debug.output("bi: "+bi);
+            if (Debug.debugging("beanpanel")) Debug.output("bi.getClass(): "
+                                                           + bi.getClass());
       
-	    String label;
-	    ImageIcon icon = null;
+            String label;
+            ImageIcon icon = null;
     
-	    if (beanName.equals(beanClass.getName())) {
-		if (Debug.debugging("beanpanel")) Debug.output("beanName="+beanName);
-		BeanDescriptor bd = bi.getBeanDescriptor();
-		if (bd != null)
-		    label = bd.getDisplayName();
-		else {
-		    int index = beanName.lastIndexOf(".");
-		    if (index >= 0 && index < beanName.length()-1)
-			label = beanName.substring(index+1, beanName.length());
-		    else
-			label = beanName;
-		}
-		if (Debug.debugging("beanpanel")) Debug.output("label="+label);
-		Image img = bi.getIcon(BeanInfo.ICON_COLOR_32x32);
-		if (Debug.debugging("beanpanel")) Debug.output("img="+img);
+            if (beanName.equals(beanClass.getName())) {
+                if (Debug.debugging("beanpanel")) Debug.output("beanName="+beanName);
+                BeanDescriptor bd = bi.getBeanDescriptor();
+                if (bd != null)
+                    label = bd.getDisplayName();
+                else {
+                    int index = beanName.lastIndexOf(".");
+                    if (index >= 0 && index < beanName.length()-1)
+                        label = beanName.substring(index+1, beanName.length());
+                    else
+                        label = beanName;
+                }
+                if (Debug.debugging("beanpanel")) Debug.output("label="+label);
+                Image img = bi.getIcon(BeanInfo.ICON_COLOR_32x32);
+                if (Debug.debugging("beanpanel")) Debug.output("img="+img);
 
-		if (img == null) {
-		    URL url = this.getClass().getResource("bluebean.gif");
-		    icon = new ImageIcon(url);
-		} else
-		    icon = new ImageIcon(img);
-	    }
-	    else {
-		label = beanName;
-		int ix = beanName.lastIndexOf('.');
+                if (img == null) {
+                    URL url = this.getClass().getResource("bluebean.gif");
+                    icon = new ImageIcon(url);
+                } else
+                    icon = new ImageIcon(img);
+            }
+            else {
+                label = beanName;
+                int ix = beanName.lastIndexOf('.');
 
-		if (ix >= 0)
-		    label = beanName.substring(ix+1);
-	    }
+                if (ix >= 0)
+                    label = beanName.substring(ix+1);
+            }
 
-	    beanLabels.addElement(label);
-	    beanNames.addElement(beanClass.getName());
-	    beanIcons.addElement(icon);
-	    beanJars.addElement(ji);
-	    beanInfos.addElement(bi);
+            beanLabels.addElement(label);
+            beanNames.addElement(beanClass.getName());
+            beanIcons.addElement(icon);
+            beanJars.addElement(ji);
+            beanInfos.addElement(bi);
 
-	    if (Debug.debugging("beanpanel")) Debug.output("Exit> ACTION: "+beanName);
-	}
+            if (Debug.debugging("beanpanel")) Debug.output("Exit> ACTION: "+beanName);
+        }
 
-	public void error(String message, Exception e) {
-	    if (Debug.debugging("beanpanel")) Debug.output("BP::BeanHelper:error " + message);
-	    e.printStackTrace();
-	}
+        public void error(String message, Exception e) {
+            if (Debug.debugging("beanpanel")) Debug.output("BP::BeanHelper:error " + message);
+            e.printStackTrace();
+        }
 
-	public void error(String message) {
-	    if (Debug.debugging("beanpanel")) Debug.output("BP::BeanHelper:error " + message);
-	}
+        public void error(String message) {
+            if (Debug.debugging("beanpanel")) Debug.output("BP::BeanHelper:error " + message);
+        }
     }
 
 
 
     private class MyCellRenderer implements ListCellRenderer {
 
-	public Component getListCellRendererComponent
-	(JList list,
-	 Object value,            // value to display
-	 int index,               // cell index
-	 boolean isSelected,      // is the cell selected
-	 boolean cellHasFocus)    // the list and the cell have the focus 
-	    {
-		String s = value.toString();
+        public Component getListCellRendererComponent
+        (JList list,
+         Object value,            // value to display
+         int index,               // cell index
+         boolean isSelected,      // is the cell selected
+         boolean cellHasFocus)    // the list and the cell have the focus 
+            {
+                String s = value.toString();
 
-		JLabel label = new JLabel(s);
-		label.setHorizontalAlignment(JLabel.LEFT);
-		int i = beanLabels.indexOf(s);
-		ImageIcon icon = (ImageIcon)beanIcons.get(i);
-		label.setIcon(icon);
+                JLabel label = new JLabel(s);
+                label.setHorizontalAlignment(JLabel.LEFT);
+                int i = beanLabels.indexOf(s);
+                ImageIcon icon = (ImageIcon)beanIcons.get(i);
+                label.setIcon(icon);
 
-		if (isSelected) {
-		    label.setBackground(list.getSelectionBackground());
-		    label.setForeground(list.getSelectionForeground());
-		} else {
-		    label.setBackground(list.getBackground());
-		    label.setForeground(list.getForeground());
-		}
+                if (isSelected) {
+                    label.setBackground(list.getSelectionBackground());
+                    label.setForeground(list.getSelectionForeground());
+                } else {
+                    label.setBackground(list.getBackground());
+                    label.setForeground(list.getForeground());
+                }
 
-		label.setEnabled(list.isEnabled());
-		label.setFont(list.getFont());
-		label.setOpaque(true);
-		return label;
-	    }
+                label.setEnabled(list.isEnabled());
+                label.setFont(list.getFont());
+                label.setOpaque(true);
+                return label;
+            }
     }
 
 
     /* DnD Listeners */
 
     private class ComponentDragSourceListener implements DragSourceListener {
-	public void dragDropEnd(DragSourceDropEvent dsde) {
-	    if (Debug.debugging("beanpanel")) Debug.output("dragDropEnd (drag)");
-	}
+        public void dragDropEnd(DragSourceDropEvent dsde) {
+            if (Debug.debugging("beanpanel")) Debug.output("dragDropEnd (drag)");
+        }
     
-	public void dragEnter(DragSourceDragEvent dsde) {
-	    if (Debug.debugging("beanpanel")) Debug.output("dragEnter (drag)");
-	    int action = dsde.getDropAction();
-	    if (action == DnDConstants.ACTION_MOVE) {
-		dsde.getDragSourceContext().setCursor(customCursor);
-	    } else {
-		dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyNoDrop);
-	    }
-	}
+        public void dragEnter(DragSourceDragEvent dsde) {
+            if (Debug.debugging("beanpanel")) Debug.output("dragEnter (drag)");
+            int action = dsde.getDropAction();
+            if (action == DnDConstants.ACTION_MOVE) {
+                dsde.getDragSourceContext().setCursor(customCursor);
+            } else {
+                dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyNoDrop);
+            }
+        }
 
-	public void dragOver(DragSourceDragEvent dsde) {
-	    if (Debug.debugging("beanpanel")) Debug.output("dragOver (drag)");
-	    int action = dsde.getDropAction();
-	    if (action == DnDConstants.ACTION_MOVE) {
-		dsde.getDragSourceContext().setCursor(customCursor);
-	    } else {
-		dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyNoDrop);
-	    }
-	}
+        public void dragOver(DragSourceDragEvent dsde) {
+            if (Debug.debugging("beanpanel")) Debug.output("dragOver (drag)");
+            int action = dsde.getDropAction();
+            if (action == DnDConstants.ACTION_MOVE) {
+                dsde.getDragSourceContext().setCursor(customCursor);
+            } else {
+                dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyNoDrop);
+            }
+        }
     
-	public void dropActionChanged(DragSourceDragEvent dsde) {
-	    if (Debug.debugging("beanpanel")) Debug.output("dropActionChanged (drag)");
-	    int action = dsde.getDropAction();
-	    if (action == DnDConstants.ACTION_MOVE) {
-		dsde.getDragSourceContext().setCursor(customCursor);
-	    } else {
-		dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyNoDrop);
-	    }
-	}
+        public void dropActionChanged(DragSourceDragEvent dsde) {
+            if (Debug.debugging("beanpanel")) Debug.output("dropActionChanged (drag)");
+            int action = dsde.getDropAction();
+            if (action == DnDConstants.ACTION_MOVE) {
+                dsde.getDragSourceContext().setCursor(customCursor);
+            } else {
+                dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyNoDrop);
+            }
+        }
     
-	public void dragExit(DragSourceEvent dse) {
-	    if (Debug.debugging("beanpanel")) Debug.output("dragExit (drag)");
-	    dse.getDragSourceContext().setCursor(DragSource.DefaultCopyNoDrop);
-	}
+        public void dragExit(DragSourceEvent dse) {
+            if (Debug.debugging("beanpanel")) Debug.output("dragExit (drag)");
+            dse.getDragSourceContext().setCursor(DragSource.DefaultCopyNoDrop);
+        }
     }
 
     private class ComponentDragGestureListener implements DragGestureListener {
-	ComponentDragSourceListener tdsl;
-	public ComponentDragGestureListener(ComponentDragSourceListener tdsl) {
-	    this.tdsl = tdsl;
-	}
+        ComponentDragSourceListener tdsl;
+        public ComponentDragGestureListener(ComponentDragSourceListener tdsl) {
+            this.tdsl = tdsl;
+        }
 
-	public void dragGestureRecognized(DragGestureEvent dge) {
-	    if (Debug.debugging("beanpanel")) Debug.output("dragGestureRecognized");
-	    JList list = (JList)tabbedPane.getComponentAt(
-		tabbedPane.getSelectedIndex());
-	    String label = null;
-	    label = (String)list.getSelectedValue();
-	    if (label != null) {
-		int index = beanLabels.indexOf(label);
-		if (index == -1) {
-		    System.out.println("ERROR> BP::dragGestureRecognized: " + 
-				       "no beanlabel found for label="+label);
-		    return;
-		}
+        public void dragGestureRecognized(DragGestureEvent dge) {
+            if (Debug.debugging("beanpanel")) Debug.output("dragGestureRecognized");
+            JList list = (JList)tabbedPane.getComponentAt(
+                tabbedPane.getSelectedIndex());
+            String label = null;
+            label = (String)list.getSelectedValue();
+            if (label != null) {
+                int index = beanLabels.indexOf(label);
+                if (index == -1) {
+                    System.out.println("ERROR> BP::dragGestureRecognized: " + 
+                                       "no beanlabel found for label="+label);
+                    return;
+                }
         
-		JarInfo ji = (JarInfo) beanJars.get(index);
-		String beanName = (String)beanNames.get(index);
+                JarInfo ji = (JarInfo) beanJars.get(index);
+                String beanName = (String)beanNames.get(index);
 
-		Object bean = null;
-		try {
-		    bean = Beans.instantiate(null, beanName);
-		    if (Debug.debugging("beanpanel")) Debug.output("Instantiated bean: " + bean);
-		    setDragCursor(index);
+                Object bean = null;
+                try {
+                    bean = Beans.instantiate(null, beanName);
+                    if (Debug.debugging("beanpanel")) Debug.output("Instantiated bean: " + bean);
+                    setDragCursor(index);
 
-		} catch (Exception ex) {
-		    System.out.println("ERROR> BP::dragGestureRecognized: " + 
-				       " error instantiating bean");
-		    ex.printStackTrace();
-		    return;
-		}
+                } catch (Exception ex) {
+                    System.out.println("ERROR> BP::dragGestureRecognized: " + 
+                                       " error instantiating bean");
+                    ex.printStackTrace();
+                    return;
+                }
 
-		BeanInfo bi = (BeanInfo)beanInfos.get(index);
+                BeanInfo bi = (BeanInfo)beanInfos.get(index);
 
-		Vector beanTransferData = new Vector();
-		beanTransferData.add(bean);
-		beanTransferData.add(bi);
-		beanTransferData.add(new Boolean(false));
-		dragSource.startDrag(dge, customCursor, 
-				     new DefaultTransferableObject(beanTransferData), tdsl);
+                Vector beanTransferData = new Vector();
+                beanTransferData.add(bean);
+                beanTransferData.add(bi);
+                beanTransferData.add(new Boolean(false));
+                dragSource.startDrag(dge, customCursor, 
+                                     new DefaultTransferableObject(beanTransferData), tdsl);
 
-		revalidate();
-		repaint();
-	    }
-	}
+                revalidate();
+                repaint();
+            }
+        }
     }
 
     private class MouseEventForwarder extends MouseInputAdapter {
 
-	public void mousePressed(MouseEvent e) {
-	    Component comp = (Component)e.getSource();
-	    Container parent = comp.getParent();
-	    if (parent != null) {
-		Point newPoint = SwingUtilities.convertPoint(comp, e.getPoint(), parent);
-		e.translatePoint(newPoint.x - e.getX(), newPoint.y - e.getY());
-		MouseEvent me = new MouseEvent(parent, e.getID(), e.getWhen(), 
-					       e.getModifiers(), e.getX(), e.getY(), e.getClickCount(), 
-					       e.isPopupTrigger());
-		parent.dispatchEvent(me);
-	    }
-	}
+        public void mousePressed(MouseEvent e) {
+            Component comp = (Component)e.getSource();
+            Container parent = comp.getParent();
+            if (parent != null) {
+                Point newPoint = SwingUtilities.convertPoint(comp, e.getPoint(), parent);
+                e.translatePoint(newPoint.x - e.getX(), newPoint.y - e.getY());
+                MouseEvent me = new MouseEvent(parent, e.getID(), e.getWhen(), 
+                                               e.getModifiers(), e.getX(), e.getY(), e.getClickCount(), 
+                                               e.isPopupTrigger());
+                parent.dispatchEvent(me);
+            }
+        }
 
-	public void mouseReleased(MouseEvent e) {
-	    Component comp = (Component)e.getSource();
-	    Container parent = comp.getParent();
-	    if (parent != null) {
-		Point newPoint = SwingUtilities.convertPoint(comp, e.getPoint(), parent);
-		e.translatePoint(newPoint.x - e.getX(), newPoint.y - e.getY());                
-		MouseEvent me = new MouseEvent(parent, e.getID(), e.getWhen(), 
-					       e.getModifiers(), e.getX(), e.getY(), e.getClickCount(), 
-					       e.isPopupTrigger());
-		parent.dispatchEvent(me);
-	    }
-	}
+        public void mouseReleased(MouseEvent e) {
+            Component comp = (Component)e.getSource();
+            Container parent = comp.getParent();
+            if (parent != null) {
+                Point newPoint = SwingUtilities.convertPoint(comp, e.getPoint(), parent);
+                e.translatePoint(newPoint.x - e.getX(), newPoint.y - e.getY());                
+                MouseEvent me = new MouseEvent(parent, e.getID(), e.getWhen(), 
+                                               e.getModifiers(), e.getX(), e.getY(), e.getClickCount(), 
+                                               e.isPopupTrigger());
+                parent.dispatchEvent(me);
+            }
+        }
 
-	public void mouseDragged(MouseEvent e) {
-	    Component comp = (Component)e.getSource();
-	    Container parent = comp.getParent();
-	    if (parent != null) {
-		Point newPoint = SwingUtilities.convertPoint(comp, e.getPoint(), parent);
-		e.translatePoint(newPoint.x - e.getX(), newPoint.y - e.getY());
-		MouseEvent me = new MouseEvent(parent, e.getID(), e.getWhen(), 
-					       e.getModifiers(), e.getX(), e.getY(), e.getClickCount(), 
-					       e.isPopupTrigger());
-		parent.dispatchEvent(me);
-	    }
-	}
+        public void mouseDragged(MouseEvent e) {
+            Component comp = (Component)e.getSource();
+            Container parent = comp.getParent();
+            if (parent != null) {
+                Point newPoint = SwingUtilities.convertPoint(comp, e.getPoint(), parent);
+                e.translatePoint(newPoint.x - e.getX(), newPoint.y - e.getY());
+                MouseEvent me = new MouseEvent(parent, e.getID(), e.getWhen(), 
+                                               e.getModifiers(), e.getX(), e.getY(), e.getClickCount(), 
+                                               e.isPopupTrigger());
+                parent.dispatchEvent(me);
+            }
+        }
     }
 
     private static void setDefaultIcon() {
-	if (BeanPanel.defaultBeanIcon == null) {
-	    URL url = BeanPanel.class.getResource("bluebean.gif");
-	    if (url != null)
-		BeanPanel.defaultBeanIcon = new ImageIcon(url);
-	}
+        if (BeanPanel.defaultBeanIcon == null) {
+            URL url = BeanPanel.class.getResource("bluebean.gif");
+            if (url != null)
+                BeanPanel.defaultBeanIcon = new ImageIcon(url);
+        }
     }
 
     private static void augmentBeanInfoSearchPath() {
 
-	if (Debug.debugging("beanpanel")) Debug.output(
-	    "Enter> augmentBeanInfoSearchPath") ;
+        if (Debug.debugging("beanpanel")) Debug.output(
+            "Enter> augmentBeanInfoSearchPath") ;
 
-	String beanInfoPath = System.getProperty("bean.infos.path");
+        String beanInfoPath = System.getProperty("bean.infos.path");
 
-	if (Debug.debugging("beanpanel")) Debug.output("beanInfoPath="+beanInfoPath);
+        if (Debug.debugging("beanpanel")) Debug.output("beanInfoPath="+beanInfoPath);
 
-	if (beanInfoPath == null || (beanInfoPath=beanInfoPath.trim()).length() == 0)
-	    return;
+        if (beanInfoPath == null || (beanInfoPath=beanInfoPath.trim()).length() == 0)
+            return;
 
-	String[] oldPath = java.beans.Introspector.getBeanInfoSearchPath();
+        String[] oldPath = java.beans.Introspector.getBeanInfoSearchPath();
 
-	Vector newPath = new Vector();
+        Vector newPath = new Vector();
 
-	if (oldPath != null && oldPath.length > 0)
-	    newPath.addAll(Arrays.asList(oldPath));
+        if (oldPath != null && oldPath.length > 0)
+            newPath.addAll(Arrays.asList(oldPath));
 
-	if (Debug.debugging("beanpanel")) Debug.output("oldPath="+newPath) ;
+        if (Debug.debugging("beanpanel")) Debug.output("oldPath="+newPath) ;
 
-	StringTokenizer st = new StringTokenizer(beanInfoPath, ", ");
+        StringTokenizer st = new StringTokenizer(beanInfoPath, ", ");
 
-	while (st.hasMoreTokens()) {
-	    String path = st.nextToken();
+        while (st.hasMoreTokens()) {
+            String path = st.nextToken();
 
-	    if (newPath.contains(path))
-		continue;
+            if (newPath.contains(path))
+                continue;
 
-	    newPath.add(path);
-	}
+            newPath.add(path);
+        }
 
 
-	java.beans.Introspector.setBeanInfoSearchPath(
-	    (String[])newPath.toArray(new String[0]));
+        java.beans.Introspector.setBeanInfoSearchPath(
+            (String[])newPath.toArray(new String[0]));
 
-	if (Debug.debugging("beanpanel")) Debug.output(
-	    "UPDATED> beanInfo search path to: " + newPath) ;
+        if (Debug.debugging("beanpanel")) Debug.output(
+            "UPDATED> beanInfo search path to: " + newPath) ;
 
-	if (Debug.debugging("beanpanel")) Debug.output(
-	    "Exit> augmentBeanInfoSearchPath") ;
+        if (Debug.debugging("beanpanel")) Debug.output(
+            "Exit> augmentBeanInfoSearchPath") ;
     }
 
     public static void main(String[] args) {
 
-	Properties props = new Properties();
-	props.setProperty("beanpanel.beans.path", "");
-	props.setProperty("beanpanel.tabs", "tab1 tab2 tab3");
-	props.setProperty("beanpanel.tab1.name", "Generic");
-	props.setProperty("beanpanel.tab1.beans", "com.bbn.openmap.examples.beanbox.SimpleBeanObject");
-	props.setProperty("beanpanel.tab2.name", "Container");
-	props.setProperty("beanpanel.tab2.beans", "com.bbn.openmap.examples.beanbox.SimpleBeanContainer");
-	props.setProperty("beanpanel.tab3.name", "Military");
-	props.setProperty("beanpanel.tab3.beans", "com.bbn.openmap.examples.beanbox.Fighter");
+        Properties props = new Properties();
+        props.setProperty("beanpanel.beans.path", "");
+        props.setProperty("beanpanel.tabs", "tab1 tab2 tab3");
+        props.setProperty("beanpanel.tab1.name", "Generic");
+        props.setProperty("beanpanel.tab1.beans", "com.bbn.openmap.examples.beanbox.SimpleBeanObject");
+        props.setProperty("beanpanel.tab2.name", "Container");
+        props.setProperty("beanpanel.tab2.beans", "com.bbn.openmap.examples.beanbox.SimpleBeanContainer");
+        props.setProperty("beanpanel.tab3.name", "Military");
+        props.setProperty("beanpanel.tab3.beans", "com.bbn.openmap.examples.beanbox.Fighter");
 
-	BeanPanel bp = new BeanPanel(props);
-	JFrame beanFrame = new JFrame("Bean Box");
-	beanFrame.getContentPane().add(bp);
-	beanFrame.pack();
-	beanFrame.setVisible(true);
+        BeanPanel bp = new BeanPanel(props);
+        JFrame beanFrame = new JFrame("Bean Box");
+        beanFrame.getContentPane().add(bp);
+        beanFrame.pack();
+        beanFrame.setVisible(true);
 
-	try {
-	    Thread.sleep(2000);
-	    beanFrame.setVisible(false);
-	    Thread.sleep(2000);
-	    beanFrame.setVisible(true);
-	}
-	catch (InterruptedException e) {
-	    e.printStackTrace();
-	}
+        try {
+            Thread.sleep(2000);
+            beanFrame.setVisible(false);
+            Thread.sleep(2000);
+            beanFrame.setVisible(true);
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
 

@@ -23,15 +23,15 @@ package com.bbn.openmap.dataAccess.cgm;
 import java.io.*;
 
 public class BeginMetafile extends Command
-{	String S;
+{       String S;
 
-	public BeginMetafile (int ec, int eid, int l, DataInputStream in)
-		throws IOException
-	{	super(ec,eid,l,in);
-		S=makeString();
-	}
-	
-	public String toString ()
-	{	return "Begin Metafile "+S;
-	}
+        public BeginMetafile (int ec, int eid, int l, DataInputStream in)
+                throws IOException
+        {       super(ec,eid,l,in);
+                S=makeString();
+        }
+        
+        public String toString ()
+        {       return "Begin Metafile "+S;
+        }
 }

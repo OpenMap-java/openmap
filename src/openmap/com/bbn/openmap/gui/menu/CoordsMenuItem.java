@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/CoordsMenuItem.java,v $
 // $RCSfile: CoordsMenuItem.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/03 00:46:14 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,41 +50,41 @@ public class CoordsMenuItem extends MapHandlerMenuItem
     protected CombinedCoordPanel ccp;
 
     public CoordsMenuItem() {
-	super("Coordinates...");
-	addActionListener(this);
-	ccp = new CombinedCoordPanel(this);
+        super("Coordinates...");
+        addActionListener(this);
+        ccp = new CombinedCoordPanel(this);
     }
 
     public void actionPerformed(ActionEvent ae) {
-	if (ae.getActionCommand() == CombinedCoordPanel.CloseCmd &&
-	    ws != null) {
-	    ws.killWindow();
-	} else {
-	    if (ws == null) {
-		ws = new WindowSupport(ccp, "Go To Coordinates...");
-	    } 
+        if (ae.getActionCommand() == CombinedCoordPanel.CloseCmd &&
+            ws != null) {
+            ws.killWindow();
+        } else {
+            if (ws == null) {
+                ws = new WindowSupport(ccp, "Go To Coordinates...");
+            } 
 
-	    MapHandler mh = getMapHandler();
-	    Frame frame = null;
-	    if (mh != null) {
-		frame = (Frame)mh.get(java.awt.Frame.class);
-	    }
+            MapHandler mh = getMapHandler();
+            Frame frame = null;
+            if (mh != null) {
+                frame = (Frame)mh.get(java.awt.Frame.class);
+            }
 
-	    ws.displayInWindow(frame);
-	}
+            ws.displayInWindow(frame);
+        }
     }
 
     public void findAndInit(Object someObj) {
-	if (someObj instanceof MapHandler) {
-	    setMapHandler((MapHandler)someObj);
-	}
-	ccp.findAndInit(someObj);
+        if (someObj instanceof MapHandler) {
+            setMapHandler((MapHandler)someObj);
+        }
+        ccp.findAndInit(someObj);
     }
 
     public void findAndUndo(Object someObj) {
-	if (someObj == getMapHandler()) {
-	    setMapHandler(null);
-	}
-	ccp.findAndUndo(someObj);
+        if (someObj == getMapHandler()) {
+            setMapHandler(null);
+        }
+        ccp.findAndUndo(someObj);
     }
 }

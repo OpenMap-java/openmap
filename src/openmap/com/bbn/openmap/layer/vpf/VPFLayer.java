@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/12/23 20:43:33 $
-// $Author: wjeuerle $
+// $Revision: 1.9 $
+// $Date: 2004/01/26 18:18:12 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -187,8 +187,8 @@ public class VPFLayer extends OMGraphicHandlerLayer
      *  Construct a VPF layer.
      */
     public VPFLayer() {
-	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
-	setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+        setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
     }
 
     /**
@@ -196,8 +196,8 @@ public class VPFLayer extends OMGraphicHandlerLayer
      * @param name the name of the layer.
      */
     public VPFLayer(String name) {
-	this();
-	setName(name);
+        this();
+        setName(name);
     }
 
     /**
@@ -215,59 +215,59 @@ public class VPFLayer extends OMGraphicHandlerLayer
      * @see #featureTypesProperty
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
-	setAddToBeanContext(true);
+        super.setProperties(prefix, props);
+        setAddToBeanContext(true);
 
-	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	cutoffScale = PropUtils.intFromProperties(props, realPrefix + cutoffScaleProperty, cutoffScale);
+        cutoffScale = PropUtils.intFromProperties(props, realPrefix + cutoffScaleProperty, cutoffScale);
 
-	libraryBeanName = props.getProperty(realPrefix + libraryProperty, libraryBeanName);
+        libraryBeanName = props.getProperty(realPrefix + libraryProperty, libraryBeanName);
 
-	libraryName = props.getProperty(realPrefix + LibraryNameProperty, libraryName);
+        libraryName = props.getProperty(realPrefix + LibraryNameProperty, libraryName);
 
-	String path[] = 
-	    PropUtils.initPathsFromProperties(props, realPrefix + pathProperty);
+        String path[] = 
+            PropUtils.initPathsFromProperties(props, realPrefix + pathProperty);
 
-	if (path != null && path.length != 0) {
-	    setPath(path);
-	}
+        if (path != null && path.length != 0) {
+            setPath(path);
+        }
         String defaultProperty = 
-	    props.getProperty(realPrefix + defaultLayerProperty);
+            props.getProperty(realPrefix + defaultLayerProperty);
 
-	if (defaultProperty != null) {
-	    prefix = defaultProperty;
-	    props = getDefaultProperties();
-	}
+        if (defaultProperty != null) {
+            prefix = defaultProperty;
+            props = getDefaultProperties();
+        }
 
-	//need to save these so we can call setProperties on the warehouse,
-	//which we probably can't construct yet
-	this.prefix = prefix;
-	this.props = props;
+        //need to save these so we can call setProperties on the warehouse,
+        //which we probably can't construct yet
+        this.prefix = prefix;
+        this.props = props;
 
-	String coverage = props.getProperty(realPrefix + coverageTypeProperty);
-	if (coverage != null) {
-	    setDataTypes(coverage);
-	}
+        String coverage = props.getProperty(realPrefix + coverageTypeProperty);
+        if (coverage != null) {
+            setDataTypes(coverage);
+        }
 
-	searchByFeatures = PropUtils.booleanFromProperties(props, realPrefix + searchByFeatureProperty, searchByFeatures);
+        searchByFeatures = PropUtils.booleanFromProperties(props, realPrefix + searchByFeatureProperty, searchByFeatures);
 
-	checkWarehouse(searchByFeatures);
-	if (warehouse != null) {
-	    warehouse.setProperties(prefix, props);
-	    warehouse.setUseLibrary(libraryName);
+        checkWarehouse(searchByFeatures);
+        if (warehouse != null) {
+            warehouse.setProperties(prefix, props);
+            warehouse.setUseLibrary(libraryName);
 
-	    box = null;
-	    resetPalette();
-	}
+            box = null;
+            resetPalette();
+        }
 
-	try {
-	    //force lst and warehosue to re-init with current properties
+        try {
+            //force lst and warehosue to re-init with current properties
 
-	    // LST now set when paths are set.
-	} catch (IllegalArgumentException iae){
-	    Debug.error("VPFLayer.setProperties: Illegal Argument Exception.\n\nPerhaps a file not found.  Check to make sure that the paths to the VPF data directories are the parents of \"lat\" or \"lat.\" files. \n\n" + iae);
-	}
+            // LST now set when paths are set.
+        } catch (IllegalArgumentException iae){
+            Debug.error("VPFLayer.setProperties: Illegal Argument Exception.\n\nPerhaps a file not found.  Check to make sure that the paths to the VPF data directories are the parents of \"lat\" or \"lat.\" files. \n\n" + iae);
+        }
     }
 
     /** Where we store our default properties once we've loaded them. */
@@ -278,46 +278,46 @@ public class VPFLayer extends OMGraphicHandlerLayer
      */
     public static Properties getDefaultProperties() {
         if (defaultProps == null) {
-  	    try {
-	        InputStream in = VPFLayer.class.getResourceAsStream("defaultVPFlayers.properties");
-		//use a temporary so other threads won't see an
-		//empty properties file
-		Properties tmp = new Properties();
-		if (in != null) {
-		    tmp.load(in);
-		    in.close();
-		} else {
-		    Debug.error("VPFLayer: can't load default properties file");
-		    //just use an empty properties file
-		}
-		defaultProps = tmp;
-	    } catch (IOException io) {
-	        Debug.error("VPFLayer: can't load default properties: "
-			     + io);
-		defaultProps = new Properties();
-	    }
-	}
-	return defaultProps;
+            try {
+                InputStream in = VPFLayer.class.getResourceAsStream("defaultVPFlayers.properties");
+                //use a temporary so other threads won't see an
+                //empty properties file
+                Properties tmp = new Properties();
+                if (in != null) {
+                    tmp.load(in);
+                    in.close();
+                } else {
+                    Debug.error("VPFLayer: can't load default properties file");
+                    //just use an empty properties file
+                }
+                defaultProps = tmp;
+            } catch (IOException io) {
+                Debug.error("VPFLayer: can't load default properties: "
+                             + io);
+                defaultProps = new Properties();
+            }
+        }
+        return defaultProps;
     }
 
     /**
      * Set the data path to a single place.
      */
     public void setPath(String newPath) {
-	if (Debug.debugging("vpf")) {
-	    Debug.output("VPFLayer setting paths to " + newPath);
-	}
-	setPath(new String[]{newPath});
+        if (Debug.debugging("vpf")) {
+            Debug.output("VPFLayer setting paths to " + newPath);
+        }
+        setPath(new String[]{newPath});
     }
 
     /**
      * Set the data path to multiple places.
      */
     public void setPath(String[] newPaths) {
-	dataPaths = newPaths;
+        dataPaths = newPaths;
 
-	lst = null;
-	initLST();
+        lst = null;
+        initLST();
     }
 
     /**
@@ -325,7 +325,7 @@ public class VPFLayer extends OMGraphicHandlerLayer
      * @return the list of paths.  Don't modify the array!
      */
     public String[] getPath() {
-	return dataPaths;
+        return dataPaths;
     }
 
     /**
@@ -333,7 +333,7 @@ public class VPFLayer extends OMGraphicHandlerLayer
      * @param dataTypes the coveragetype to display.
      */
     public void setDataTypes(String dataTypes) {
-	coverageType = dataTypes;
+        coverageType = dataTypes;
     }
 
     /**
@@ -341,154 +341,154 @@ public class VPFLayer extends OMGraphicHandlerLayer
      * @return the current coverage type.
      */
     public String getDataTypes() {
-	return coverageType;
+        return coverageType;
     }
 
     /**
      * Enable/Disable the display of areas.
      */
     public void setAreasEnabled(boolean value) {
-	warehouse.setAreaFeatures(value);
+        warehouse.setAreaFeatures(value);
     }
 
     /**
      * Find out if areas are enabled.
      */
     public boolean getAreasEnabled() {
-	return warehouse.drawAreaFeatures();
+        return warehouse.drawAreaFeatures();
     }
 
     /**
      * Enable/Disable the display of edges.
      */
     public void setEdgesEnabled(boolean value) {
-	warehouse.setEdgeFeatures(value);
+        warehouse.setEdgeFeatures(value);
     }
 
     /**
      * Find out if edges are enabled.
      */
     public boolean getEdgesEnabled() {
-	return warehouse.drawEdgeFeatures();
+        return warehouse.drawEdgeFeatures();
     }
 
     /**
      * Enable/Disable the display of entity points.
      */
     public void setEPointsEnabled(boolean value) {
-	warehouse.setEPointFeatures(value);
+        warehouse.setEPointFeatures(value);
     }
 
     /**
      * Find out if entity points are enabled.
      */
     public boolean getEPointsEnabled() {
-	return warehouse.drawEPointFeatures();
+        return warehouse.drawEPointFeatures();
     }
 
     /**
      * Enable/Disable the display of connected points.
      */
     public void setCPointsEnabled(boolean value) {
-	warehouse.setCPointFeatures(value);
+        warehouse.setCPointFeatures(value);
     }
 
     /**
      * Find out if connected points are enabled.
      */
     public boolean getCPointsEnabled() {
-	return warehouse.drawCPointFeatures();
+        return warehouse.drawCPointFeatures();
     }
 
     /**
      * Enable/Disable the display of text.
      */
     public void setTextEnabled(boolean value) {
-	warehouse.setTextFeatures(value);
+        warehouse.setTextFeatures(value);
     }
 
     /**
      * Find out if text is enabled.
      */
     public boolean getTextEnabled() {
-	return warehouse.drawTextFeatures();
+        return warehouse.drawTextFeatures();
     }
 
     /**
      * Get the DrawingAttributes used for the coverage type.
      */
     public DrawingAttributes getDrawingAttributes(){
-	return warehouse.getDrawingAttributes();
+        return warehouse.getDrawingAttributes();
     }
 
     /**
      * Set the drawing attributes for the coverage type.
      */
     public void setDrawingAttributes(DrawingAttributes da){
-	warehouse.setDrawingAttributes(da);
+        warehouse.setDrawingAttributes(da);
     }
 
     /**
      * initialize the library selection table.
      */
     protected void initLST() {
-	if (Debug.debugging("vpf")) {
-	    Debug.output("VPFLayer.initLST()");
-	}
+        if (Debug.debugging("vpf")) {
+            Debug.output("VPFLayer.initLST()");
+        }
 
-	try {
- 	    if (lst == null) {
-		if (libraryBeanName != null) {
-		    LibraryBean libraryBean = null;
-		    Collection beanContext = getBeanContext();
-		    if (beanContext == null) {
-			//no bean context yet
-			return;
-		    }
-		    for (Iterator i = beanContext.iterator(); i.hasNext(); ) {
-			Object obj = i.next();
-			if (obj instanceof LibraryBean) {
-			    LibraryBean lb = (LibraryBean)obj;
-			    if (libraryBeanName.equals(lb.getName())) {
-				libraryBean = lb;
-				break;
-			    }
-			}
-		    }
-		    if (libraryBean != null) {
-			lst = libraryBean.getLibrarySelectionTable();
-			if (Debug.debugging("vpf")) {
-			    Debug.output("VPFLayer.initLST(libraryBean)");
-			}
-		    } else {
-			Debug.output("VPFLayer.init: Couldn't find libraryBean " + libraryBeanName + " to read VPF data");
-		    }
-		} else {
-		    if (dataPaths == null) {
-			Debug.output("VPFLayer|"+getName()+ ": path not set");
-		    } else {
-			if (Debug.debugging("vpf")) {
-			    Debug.output("VPFLayer.initLST(dataPaths)");
-			}
-			lst = new LibrarySelectionTable(dataPaths);
-			lst.setCutoffScale(cutoffScale);
-		    }
-		}
-	    }
-	} catch (com.bbn.openmap.io.FormatException f) {
- 	    throw new java.lang.IllegalArgumentException(f.getMessage());
-//  	} catch (NullPointerException npe) {
-//  	    throw new java.lang.IllegalArgumentException("VPFLayer|" + getName() +
-//  							 ": path name not valid");
-	}
+        try {
+            if (lst == null) {
+                if (libraryBeanName != null) {
+                    LibraryBean libraryBean = null;
+                    Collection beanContext = getBeanContext();
+                    if (beanContext == null) {
+                        //no bean context yet
+                        return;
+                    }
+                    for (Iterator i = beanContext.iterator(); i.hasNext(); ) {
+                        Object obj = i.next();
+                        if (obj instanceof LibraryBean) {
+                            LibraryBean lb = (LibraryBean)obj;
+                            if (libraryBeanName.equals(lb.getName())) {
+                                libraryBean = lb;
+                                break;
+                            }
+                        }
+                    }
+                    if (libraryBean != null) {
+                        lst = libraryBean.getLibrarySelectionTable();
+                        if (Debug.debugging("vpf")) {
+                            Debug.output("VPFLayer.initLST(libraryBean)");
+                        }
+                    } else {
+                        Debug.output("VPFLayer.init: Couldn't find libraryBean " + libraryBeanName + " to read VPF data");
+                    }
+                } else {
+                    if (dataPaths == null) {
+                        Debug.output("VPFLayer|"+getName()+ ": path not set");
+                    } else {
+                        if (Debug.debugging("vpf")) {
+                            Debug.output("VPFLayer.initLST(dataPaths)");
+                        }
+                        lst = new LibrarySelectionTable(dataPaths);
+                        lst.setCutoffScale(cutoffScale);
+                    }
+                }
+            }
+        } catch (com.bbn.openmap.io.FormatException f) {
+            throw new java.lang.IllegalArgumentException(f.getMessage());
+//      } catch (NullPointerException npe) {
+//          throw new java.lang.IllegalArgumentException("VPFLayer|" + getName() +
+//                                                       ": path name not valid");
+        }
     }      
 
     public void setWarehouse(LayerGraphicWarehouseSupport wh) {
-	warehouse = wh;
+        warehouse = wh;
     }
 
     public LayerGraphicWarehouseSupport getWarehouse() {
-	return warehouse;
+        return warehouse;
     }
 
     /**
@@ -496,23 +496,23 @@ public class VPFLayer extends OMGraphicHandlerLayer
      * called, the properties will beed to be reset on it.
      */
     public void checkWarehouse(boolean sbf) {
-	if (warehouse == null) {
-	    if (Debug.debugging("vpf")) {
-		Debug.output("VPFLayer.getWarehouse: creating warehouse");
-	    }
-	    if (lst != null && lst.getDatabaseName() != null &&
-		lst.getDatabaseName().equals("DCW")) {
-		warehouse = new VPFLayerDCWWarehouse();
-	    } else if (sbf) {
-		warehouse = new VPFFeatureGraphicWarehouse();
-	    } else {
-		warehouse = new VPFLayerGraphicWarehouse();
-	    }
-	} else if ((sbf && warehouse instanceof VPFLayerGraphicWarehouse) ||
-		   (!sbf && warehouse instanceof VPFFeatureGraphicWarehouse)) {
-	    warehouse = null;
-	    checkWarehouse(sbf);
-	}
+        if (warehouse == null) {
+            if (Debug.debugging("vpf")) {
+                Debug.output("VPFLayer.getWarehouse: creating warehouse");
+            }
+            if (lst != null && lst.getDatabaseName() != null &&
+                lst.getDatabaseName().equals("DCW")) {
+                warehouse = new VPFLayerDCWWarehouse();
+            } else if (sbf) {
+                warehouse = new VPFFeatureGraphicWarehouse();
+            } else {
+                warehouse = new VPFLayerGraphicWarehouse();
+            }
+        } else if ((sbf && warehouse instanceof VPFLayerGraphicWarehouse) ||
+                   (!sbf && warehouse instanceof VPFFeatureGraphicWarehouse)) {
+            warehouse = null;
+            checkWarehouse(sbf);
+        }
     }
 
     /**
@@ -523,7 +523,7 @@ public class VPFLayer extends OMGraphicHandlerLayer
      * @deprecated use doPrepare() instead of computeLayer();
      */
     public void computeLayer() {
-	doPrepare();
+        doPrepare();
     }
 
     /**
@@ -532,7 +532,7 @@ public class VPFLayer extends OMGraphicHandlerLayer
      * @deprecated use prepare() instead of getRectangle();
      */
     public OMGraphicList getRectangle() {
-	return prepare();
+        return prepare();
     }
 
     /**
@@ -541,104 +541,104 @@ public class VPFLayer extends OMGraphicHandlerLayer
      */
     public OMGraphicList prepare() {
         if (lst == null) {
-	    try {
-		initLST();
-	    } catch (IllegalArgumentException iae){
-		Debug.error("VPFLayer.getRectangle: Illegal Argument Exception.\n\nPerhaps a file not found.  Check to make sure that the paths to the VPF data directories are the parents of \"lat\" or \"lat.\" files. \n\n" + iae);
-		return null;
-	    }
-	}
-	if (warehouse == null) {
-	    StringBuffer dpb = new StringBuffer();
-	    if (dataPaths != null) {
-		for (int num = 0; num < dataPaths.length; num++) {
-		    if (num > 0) {
-			dpb.append(":");
-		    }
-		    dpb.append(dataPaths[num]);
-		}
-	    }
+            try {
+                initLST();
+            } catch (IllegalArgumentException iae){
+                Debug.error("VPFLayer.getRectangle: Illegal Argument Exception.\n\nPerhaps a file not found.  Check to make sure that the paths to the VPF data directories are the parents of \"lat\" or \"lat.\" files. \n\n" + iae);
+                return null;
+            }
+        }
+        if (warehouse == null) {
+            StringBuffer dpb = new StringBuffer();
+            if (dataPaths != null) {
+                for (int num = 0; num < dataPaths.length; num++) {
+                    if (num > 0) {
+                        dpb.append(":");
+                    }
+                    dpb.append(dataPaths[num]);
+                }
+            }
 
-	    Debug.error("VPFLayer.getRectangle:  Data path probably wasn't set correctly (" + 
-			dpb.toString() + ").  The warehouse not initialized.");
-	    return null;
-	}
+            Debug.error("VPFLayer.getRectangle:  Data path probably wasn't set correctly (" + 
+                        dpb.toString() + ").  The warehouse not initialized.");
+            return null;
+        }
 
-	Projection p = getProjection();
+        Projection p = getProjection();
 
-	if (p == null) {
-	    Debug.error("VPFLayer.getRectangle() called without a projection set in the layer. Make sure a projection is set in the layer before calling getRectangle.");
-	    return new OMGraphicList();
-	}
+        if (p == null) {
+            Debug.error("VPFLayer.getRectangle() called without a projection set in the layer. Make sure a projection is set in the layer before calling getRectangle.");
+            return new OMGraphicList();
+        }
 
-	LatLonPoint upperleft = p.getUpperLeft();
-	LatLonPoint lowerright = p.getLowerRight();
-	if (Debug.debugging("vpfdetail")){
-	    Debug.output("VPFLayer.getRectangle: " + 
-			 coverageType /* + " " + dynamicArgs*/);
-	}
+        LatLonPoint upperleft = p.getUpperLeft();
+        LatLonPoint lowerright = p.getLowerRight();
+        if (Debug.debugging("vpfdetail")){
+            Debug.output("VPFLayer.getRectangle: " + 
+                         coverageType /* + " " + dynamicArgs*/);
+        }
 
-	warehouse.clear();
+        warehouse.clear();
 
-// 	int edgecount[] = new int[] { 0 , 0 };
-// 	int textcount[] = new int[] { 0 , 0 };
-// 	int areacount[] = new int[] { 0 , 0 };
+//      int edgecount[] = new int[] { 0 , 0 };
+//      int textcount[] = new int[] { 0 , 0 };
+//      int areacount[] = new int[] { 0 , 0 };
 
-	// Check both dynamic args and palette values when
-	// deciding what to draw.
- 	if (Debug.debugging("vpf")) {
-	    Debug.output("VPFLayer.getRectangle(): "
-			 + "calling draw with boundaries: "
-			 + upperleft + " " + lowerright);
-	}
-	long start = System.currentTimeMillis();
+        // Check both dynamic args and palette values when
+        // deciding what to draw.
+        if (Debug.debugging("vpf")) {
+            Debug.output("VPFLayer.getRectangle(): "
+                         + "calling draw with boundaries: "
+                         + upperleft + " " + lowerright);
+        }
+        long start = System.currentTimeMillis();
 
-	StringTokenizer t = new StringTokenizer(coverageType);
-	while (t.hasMoreTokens()) {
-	    String currentCoverage = t.nextToken();
-	    if (searchByFeatures) {
-		lst.drawFeatures((int)p.getScale(),
-				 p.getWidth(),
-				 p.getHeight(),
-				 currentCoverage, 
-				 (VPFFeatureWarehouse) warehouse, 
-				 upperleft, lowerright);
-	    } else {
-		lst.drawTile((int)p.getScale(),
-			     p.getWidth(),
-			     p.getHeight(),
- 			     currentCoverage, 
-			     warehouse, upperleft, lowerright);
-	    }
-	}
-	long stop = System.currentTimeMillis();
+        StringTokenizer t = new StringTokenizer(coverageType);
+        while (t.hasMoreTokens()) {
+            String currentCoverage = t.nextToken();
+            if (searchByFeatures) {
+                lst.drawFeatures((int)p.getScale(),
+                                 p.getWidth(),
+                                 p.getHeight(),
+                                 currentCoverage, 
+                                 (VPFFeatureWarehouse) warehouse, 
+                                 upperleft, lowerright);
+            } else {
+                lst.drawTile((int)p.getScale(),
+                             p.getWidth(),
+                             p.getHeight(),
+                             currentCoverage, 
+                             warehouse, upperleft, lowerright);
+            }
+        }
+        long stop = System.currentTimeMillis();
 
-//   	if (Debug.debugging("vpfdetail")) {
-//  	    Debug.output("Returned " + edgecount[0] +
-//  			 " polys with " + edgecount[1] + " points\n" +
-//  			 "Returned " + textcount[0] +
-//  			 " texts with " + textcount[1] + " points\n" +
-//  			 "Returned " + areacount[0] +
-//  			 " areas with " + areacount[1] + " points");
-//  	}
+//      if (Debug.debugging("vpfdetail")) {
+//          Debug.output("Returned " + edgecount[0] +
+//                       " polys with " + edgecount[1] + " points\n" +
+//                       "Returned " + textcount[0] +
+//                       " texts with " + textcount[1] + " points\n" +
+//                       "Returned " + areacount[0] +
+//                       " areas with " + areacount[1] + " points");
+//      }
 
- 	if (Debug.debugging("vpf")) {
-	    Debug.output("VPFLayer.getRectangle(): read time: " +
-			 ((stop-start)/1000d) + " seconds");
-	}
+        if (Debug.debugging("vpf")) {
+            Debug.output("VPFLayer.getRectangle(): read time: " +
+                         ((stop-start)/1000d) + " seconds");
+        }
 
-	OMGraphicList omglist = warehouse.getGraphics();
+        OMGraphicList omglist = warehouse.getGraphics();
 
-	// Don't forget to project.
-	start = System.currentTimeMillis();
-	omglist.project(p);
-	stop = System.currentTimeMillis();
+        // Don't forget to project.
+        start = System.currentTimeMillis();
+        omglist.project(p);
+        stop = System.currentTimeMillis();
 
- 	if (Debug.debugging("vpf")) {
-	    Debug.output("VPFLayer.getRectangle(): proj time: "
-			 + ((stop-start)/1000d) + " seconds");
-	}
-	return omglist;
+        if (Debug.debugging("vpf")) {
+            Debug.output("VPFLayer.getRectangle(): proj time: "
+                         + ((stop-start)/1000d) + " seconds");
+        }
+        return omglist;
     }
 
     private transient JPanel box;
@@ -649,129 +649,129 @@ public class VPFLayer extends OMGraphicHandlerLayer
      */
     public Component getGUI() {
 
-	if (lst == null) {
-	    try {
-		initLST();
-	    } catch (IllegalArgumentException iie) {
-		Debug.error(iie.getMessage());
-	    }
-	}
+        if (lst == null) {
+            try {
+                initLST();
+            } catch (IllegalArgumentException iie) {
+                Debug.error(iie.getMessage());
+            }
+        }
 
-	if (warehouse == null) {
-	    return (new javax.swing.JLabel("VPF Layer data not loaded properly."));
-	}
+        if (warehouse == null) {
+            return (new javax.swing.JLabel("VPF Layer data not loaded properly."));
+        }
 
-	if (box == null) {
+        if (box == null) {
 
-	    box = new JPanel();
-	    box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-  	    box.setAlignmentX(Component.LEFT_ALIGNMENT);
+            box = new JPanel();
+            box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+            box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-	    JPanel stuff = new JPanel();
+            JPanel stuff = new JPanel();
 
-	    JPanel pal = null;
-	    ActionListener al = new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    int index = Integer.parseInt(
-			e.getActionCommand(), 10);
-		    switch (index) {
-		    case 0:
-			warehouse.setEdgeFeatures(!warehouse.drawEdgeFeatures());
-			break;
-		    case 1:
-			warehouse.setTextFeatures(!warehouse.drawTextFeatures());
-			break;
-		    case 2:
-			warehouse.setAreaFeatures(!warehouse.drawAreaFeatures());
-			break;
-		    case 3:
-			warehouse.setEPointFeatures(!warehouse.drawEPointFeatures());
-			break;
-		    case 4:
-			warehouse.setCPointFeatures(!warehouse.drawCPointFeatures());
-			break;
-		    default:
-			throw new RuntimeException("argh!");
-		    }
-		}
-	    };
+            JPanel pal = null;
+            ActionListener al = new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    int index = Integer.parseInt(
+                        e.getActionCommand(), 10);
+                    switch (index) {
+                    case 0:
+                        warehouse.setEdgeFeatures(!warehouse.drawEdgeFeatures());
+                        break;
+                    case 1:
+                        warehouse.setTextFeatures(!warehouse.drawTextFeatures());
+                        break;
+                    case 2:
+                        warehouse.setAreaFeatures(!warehouse.drawAreaFeatures());
+                        break;
+                    case 3:
+                        warehouse.setEPointFeatures(!warehouse.drawEPointFeatures());
+                        break;
+                    case 4:
+                        warehouse.setCPointFeatures(!warehouse.drawCPointFeatures());
+                        break;
+                    default:
+                        throw new RuntimeException("argh!");
+                    }
+                }
+            };
 
-	    pal = PaletteHelper.createCheckbox(
-		"Show:",
-		new String[] {
-		    VPFUtil.Edges,
-		    VPFUtil.Text,
-		    VPFUtil.Area,
-		    VPFUtil.EPoint,
-		    VPFUtil.CPoint
-		},
-		new boolean[] {
-		    warehouse.drawEdgeFeatures(),
-		    warehouse.drawTextFeatures(),
-		    warehouse.drawAreaFeatures(),
-		    warehouse.drawEPointFeatures(),
-		    warehouse.drawCPointFeatures()
-		},
-		al
-	    );
+            pal = PaletteHelper.createCheckbox(
+                "Show:",
+                new String[] {
+                    VPFUtil.Edges,
+                    VPFUtil.Text,
+                    VPFUtil.Area,
+                    VPFUtil.EPoint,
+                    VPFUtil.CPoint
+                },
+                new boolean[] {
+                    warehouse.drawEdgeFeatures(),
+                    warehouse.drawTextFeatures(),
+                    warehouse.drawAreaFeatures(),
+                    warehouse.drawEPointFeatures(),
+                    warehouse.drawCPointFeatures()
+                },
+                al
+            );
 
-	    stuff.add(pal);
-	    
-	    if (lst != null) {
-		Component warehouseGUI = warehouse.getGUI(lst);
-		if (warehouseGUI != null) {
-		    stuff.add(warehouseGUI);
-		}
-	    }
-	    box.add(stuff);
+            stuff.add(pal);
+            
+            if (lst != null) {
+                Component warehouseGUI = warehouse.getGUI(lst);
+                if (warehouseGUI != null) {
+                    stuff.add(warehouseGUI);
+                }
+            }
+            box.add(stuff);
 
-	    JPanel pal2 = new JPanel();
-	    JButton config = new JButton("Configure Layer");
-	    config.setActionCommand(ConfigCmd);
-	    config.addActionListener(this);
-	    pal2.add(config);
+            JPanel pal2 = new JPanel();
+            JButton config = new JButton("Configure Layer");
+            config.setActionCommand(ConfigCmd);
+            config.addActionListener(this);
+            pal2.add(config);
 
-	    JButton redraw = new JButton("Redraw Layer");
-	    redraw.setActionCommand(RedrawCmd);
-	    redraw.addActionListener(this);
-	    pal2.add(redraw);
-	    box.add(pal2);
-	}
-	return box;
+            JButton redraw = new JButton("Redraw Layer");
+            redraw.setActionCommand(RedrawCmd);
+            redraw.addActionListener(this);
+            pal2.add(redraw);
+            box.add(pal2);
+        }
+        return box;
     }
     
     public final static String ConfigCmd = "CONFIGURE";
     protected WindowSupport configWindowSupport = null;
 
     public void actionPerformed(ActionEvent e) {
-	String cmd = e.getActionCommand();
-	if (cmd == RedrawCmd) {
-	    setList(null);
-	    doPrepare();
-	} else if (cmd == ConfigCmd) {
-	    if (configWindowSupport == null) {
-		configWindowSupport = new WindowSupport(new VPFConfig(this), "Configure " + getName() + " Features");
-	    } else {
-		configWindowSupport.setTitle(getName());
-	    }
-	    configWindowSupport.displayInWindow();
-	} else {
-	    super.actionPerformed(e);
-	}
+        String cmd = e.getActionCommand();
+        if (cmd == RedrawCmd) {
+            setList(null);
+            doPrepare();
+        } else if (cmd == ConfigCmd) {
+            if (configWindowSupport == null) {
+                configWindowSupport = new WindowSupport(new VPFConfig(this), "Configure " + getName() + " Features");
+            } else {
+                configWindowSupport.setTitle(getName());
+            }
+            configWindowSupport.displayInWindow();
+        } else {
+            super.actionPerformed(e);
+        }
     }
 
     protected void setConfigSettings(String prefix, Properties props) {
-	lst = null;
-	setProperties(prefix, props);
-	if (isVisible()) {
-	    doPrepare();
-	}
+        lst = null;
+        setProperties(prefix, props);
+        if (isVisible()) {
+            doPrepare();
+        }
 
-	if (configWindowSupport != null) {
-	    configWindowSupport.setTitle(getName());
-// 	    configWindowSupport.killWindow();
-// 	    configWindowSupport = null;
-	}
+        if (configWindowSupport != null) {
+            configWindowSupport.setTitle(getName());
+//          configWindowSupport.killWindow();
+//          configWindowSupport = null;
+        }
     }
 
 

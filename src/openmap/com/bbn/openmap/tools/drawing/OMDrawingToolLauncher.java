@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
-// $Revision: 1.12 $ $Date: 2003/12/29 17:20:06 $ $Author: wjeuerle $
+// $Revision: 1.13 $ $Date: 2004/01/26 18:18:15 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -63,102 +63,102 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
     public static final String defaultKey = "omdrawingtoollauncher";
 
     public OMDrawingToolLauncher() {
-	super();
-	setWindowSupport(new WindowSupport(this, "Drawing Tool Launcher"));
-	setKey(defaultKey);
-	defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_LATLON);
-	defaultGraphicAttributes.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
-	resetGUI();
+        super();
+        setWindowSupport(new WindowSupport(this, "Drawing Tool Launcher"));
+        setKey(defaultKey);
+        defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_LATLON);
+        defaultGraphicAttributes.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
+        resetGUI();
     }
 
     /**
      * Set the DrawingTool for this launcher.
      */
     public void setDrawingTool(DrawingTool dt) {
-	if (drawingTool != null && drawingTool instanceof OMDrawingTool) {
-	    ((OMDrawingTool)drawingTool).removePropertyChangeListener(this);
-	}
+        if (drawingTool != null && drawingTool instanceof OMDrawingTool) {
+            ((OMDrawingTool)drawingTool).removePropertyChangeListener(this);
+        }
 
-	drawingTool = dt;
+        drawingTool = dt;
 
-	if (drawingTool != null && drawingTool instanceof OMDrawingTool) {
-	    ((OMDrawingTool)drawingTool).addPropertyChangeListener(this);
-	}
+        if (drawingTool != null && drawingTool instanceof OMDrawingTool) {
+            ((OMDrawingTool)drawingTool).addPropertyChangeListener(this);
+        }
     }
 
     public DrawingTool getDrawingTool() {
-	return drawingTool;
+        return drawingTool;
     }
 
     public void actionPerformed(ActionEvent ae) {
-    	String command = ae.getActionCommand().intern();
-	
-	Debug.message("drawingtool", 
-		      "DrawingToolLauncher.actionPerformed(): " + command);
+        String command = ae.getActionCommand().intern();
+        
+        Debug.message("drawingtool", 
+                      "DrawingToolLauncher.actionPerformed(): " + command);
 
-	Object source = ae.getSource();
+        Object source = ae.getSource();
 
-	//  This is important.  We need to set the current projection
-	//  before setting the projection in the MapBean.  That way,
-	//  the projectionChanged method actions won't get fired
-	if (command == CreateCmd) {
-	    // Get the active EditToolLoader
-	    DrawingTool dt = getDrawingTool();
+        //  This is important.  We need to set the current projection
+        //  before setting the projection in the MapBean.  That way,
+        //  the projectionChanged method actions won't get fired
+        if (command == CreateCmd) {
+            // Get the active EditToolLoader
+            DrawingTool dt = getDrawingTool();
 
-	    if (dt instanceof OMDrawingTool) {
-		OMDrawingTool omdt = (OMDrawingTool) dt;
+            if (dt instanceof OMDrawingTool) {
+                OMDrawingTool omdt = (OMDrawingTool) dt;
 
-		if (omdt.isActivated()) {
-		    omdt.deactivate();
-		}
-	    }
+                if (omdt.isActivated()) {
+                    omdt.deactivate();
+                }
+            }
 
-	    if (dt != null && currentCreation != null && 
-		currentRequestor != null) {
-		// Copy the default GraphicAttributes into another copy...
-		GraphicAttributes ga = (GraphicAttributes)defaultGraphicAttributes.clone();
-		
-		// fire it up!
-		dt.setBehaviorMask(OMDrawingTool.DEFAULT_BEHAVIOR_MASK);
-		dt.create(currentCreation, ga, currentRequestor);
-	    } else {
+            if (dt != null && currentCreation != null && 
+                currentRequestor != null) {
+                // Copy the default GraphicAttributes into another copy...
+                GraphicAttributes ga = (GraphicAttributes)defaultGraphicAttributes.clone();
+                
+                // fire it up!
+                dt.setBehaviorMask(OMDrawingTool.DEFAULT_BEHAVIOR_MASK);
+                dt.create(currentCreation, ga, currentRequestor);
+            } else {
 
-		StringBuffer sb = new StringBuffer();
-		StringBuffer em = new StringBuffer();
+                StringBuffer sb = new StringBuffer();
+                StringBuffer em = new StringBuffer();
 
-		if (dt == null) {
-		    sb.append("   No drawing tool is available!\n");
-		    em.append("   No drawing tool is available!\n");
-		} else {
-		    sb.append("   Drawing tool OK.\n");
-		}
+                if (dt == null) {
+                    sb.append("   No drawing tool is available!\n");
+                    em.append("   No drawing tool is available!\n");
+                } else {
+                    sb.append("   Drawing tool OK.\n");
+                }
 
-		if (currentCreation == null) {
-		    sb.append("   No valid choice of graphic to create.\n");
-		    em.append("   No valid choice of graphic to create.\n");
-		} else {
-		    sb.append("   Graphic choice OK.\n");
-		}
+                if (currentCreation == null) {
+                    sb.append("   No valid choice of graphic to create.\n");
+                    em.append("   No valid choice of graphic to create.\n");
+                } else {
+                    sb.append("   Graphic choice OK.\n");
+                }
 
-		if (currentRequestor == null) {
-		    sb.append("   No valid receiver for the created graphic.\n");
-		    em.append("   No valid receiver for the created graphic.\n");
-		} else {
-		    sb.append("   Graphic receiver OK.\n");
-		}
+                if (currentRequestor == null) {
+                    sb.append("   No valid receiver for the created graphic.\n");
+                    em.append("   No valid receiver for the created graphic.\n");
+                } else {
+                    sb.append("   Graphic receiver OK.\n");
+                }
 
-		Debug.output("OMDrawingToolLauncher: Something is not set:\n" +
-			     sb.toString());
+                Debug.output("OMDrawingToolLauncher: Something is not set:\n" +
+                             sb.toString());
 
-		MapHandler mapHandler = (MapHandler)getBeanContext();
-		if (mapHandler != null) {
-		    InformationDelegator id = (InformationDelegator)mapHandler.get("com.bbn.openmap.InformationDelegator");
-		    if (id != null) {
-			id.displayMessage("Problem", "Problem creating new graphic:\n" + em.toString());
-		    }
-		}
-	    }
-	}
+                MapHandler mapHandler = (MapHandler)getBeanContext();
+                if (mapHandler != null) {
+                    InformationDelegator id = (InformationDelegator)mapHandler.get("com.bbn.openmap.InformationDelegator");
+                    if (id != null) {
+                        id.displayMessage("Problem", "Problem creating new graphic:\n" + em.toString());
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -167,205 +167,205 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * will eventually be called.
      */
     public void setRequestor(String aName) {
-	if (requestors != null) {
-	    requestors.setSelectedItem(aName);
-	}
+        if (requestors != null) {
+            requestors.setSelectedItem(aName);
+        }
     }
 
     /**
      *  Build the stuff that goes in the launcher.
      */
     public void resetGUI() {
-	removeAll();
-	
-	JPanel palette = new JPanel();
-	palette.setLayout(new BoxLayout(palette, BoxLayout.Y_AXIS));
-	palette.setAlignmentX(Component.CENTER_ALIGNMENT); // LEFT
-	palette.setAlignmentY(Component.CENTER_ALIGNMENT); // BOTTOM
+        removeAll();
+        
+        JPanel palette = new JPanel();
+        palette.setLayout(new BoxLayout(palette, BoxLayout.Y_AXIS));
+        palette.setAlignmentX(Component.CENTER_ALIGNMENT); // LEFT
+        palette.setAlignmentY(Component.CENTER_ALIGNMENT); // BOTTOM
 
-	String[] requestorNames = new String[drawingToolRequestors.size()];
+        String[] requestorNames = new String[drawingToolRequestors.size()];
 
-	if (Debug.debugging("omdtl")) {
-	    Debug.output("Have " + requestorNames.length + " REQUESTORS");
-	}
+        if (Debug.debugging("omdtl")) {
+            Debug.output("Have " + requestorNames.length + " REQUESTORS");
+        }
 
-	for (int i = 0; i < requestorNames.length; i++) {
-	    requestorNames[i] = ((DrawingToolRequestor)drawingToolRequestors.elementAt(i)).getName();
-	    if (requestorNames[i] == null) {
-		Debug.output("OMDrawingToolLauncher has a requestor that is unnamed.  Please assign a name to the requestor");
-		requestorNames[i] = "-- Unnamed --";
-	    }
-	    if (Debug.debugging("omdtl")) {
-		Debug.output("Adding REQUESTOR " + requestorNames[i] + " to menu");
-	    }
-	}
+        for (int i = 0; i < requestorNames.length; i++) {
+            requestorNames[i] = ((DrawingToolRequestor)drawingToolRequestors.elementAt(i)).getName();
+            if (requestorNames[i] == null) {
+                Debug.output("OMDrawingToolLauncher has a requestor that is unnamed.  Please assign a name to the requestor");
+                requestorNames[i] = "-- Unnamed --";
+            }
+            if (Debug.debugging("omdtl")) {
+                Debug.output("Adding REQUESTOR " + requestorNames[i] + " to menu");
+            }
+        }
 
-	Object oldChoice = null;
-	if (requestors != null) {
-	    oldChoice = requestors.getSelectedItem();
-	}
+        Object oldChoice = null;
+        if (requestors != null) {
+            oldChoice = requestors.getSelectedItem();
+        }
 
-	requestors = new JComboBox(requestorNames);
-	requestors.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    JComboBox jcb = (JComboBox) e.getSource();
-		    String currentChoice = (String)jcb.getSelectedItem();
-		    setCurrentRequestor(currentChoice);
-		}
-	    });
-	
-  	if (requestorNames.length > 0) {
-	    if (oldChoice == null) {
-		requestors.setSelectedIndex(0);
-	    } else {
-		requestors.setSelectedItem(oldChoice);
-	    }
-	}
+        requestors = new JComboBox(requestorNames);
+        requestors.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JComboBox jcb = (JComboBox) e.getSource();
+                    String currentChoice = (String)jcb.getSelectedItem();
+                    setCurrentRequestor(currentChoice);
+                }
+            });
+        
+        if (requestorNames.length > 0) {
+            if (oldChoice == null) {
+                requestors.setSelectedIndex(0);
+            } else {
+                requestors.setSelectedItem(oldChoice);
+            }
+        }
 
-	JPanel panel = PaletteHelper.createPaletteJPanel("Send To:");
-	panel.add(requestors);
-	palette.add(panel);
-	    
-	if (Debug.debugging("omdtl")) {
-	    Debug.output("Figuring out tools, using names");
-	}
-	
-	panel = PaletteHelper.createPaletteJPanel("Graphic Type:");
-	panel.add(getToolWidgets(useTextEditToolTitles));
-	palette.add(panel);
+        JPanel panel = PaletteHelper.createPaletteJPanel("Send To:");
+        panel.add(requestors);
+        palette.add(panel);
+            
+        if (Debug.debugging("omdtl")) {
+            Debug.output("Figuring out tools, using names");
+        }
+        
+        panel = PaletteHelper.createPaletteJPanel("Graphic Type:");
+        panel.add(getToolWidgets(useTextEditToolTitles));
+        palette.add(panel);
 
-	String[] renderTypes = new String[3];
-	
-	renderTypes[OMGraphic.RENDERTYPE_LATLON - 1] = rtc[0];
-	renderTypes[OMGraphic.RENDERTYPE_XY - 1] = rtc[1];
-	renderTypes[OMGraphic.RENDERTYPE_OFFSET - 1] = rtc[2];
-	
-	JComboBox renderTypeList = new JComboBox(renderTypes);
-	renderTypeList.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    JComboBox jcb = (JComboBox) e.getSource();
-		    String currentChoice = (String)jcb.getSelectedItem();
-		    if (currentChoice == rtc[2]) {
-			defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_OFFSET);
-		    } else if (currentChoice == rtc[1]) {
-			defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_XY);
-		    } else {
-			defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_LATLON);
-		    }		    
-		}
-	    });
+        String[] renderTypes = new String[3];
+        
+        renderTypes[OMGraphic.RENDERTYPE_LATLON - 1] = rtc[0];
+        renderTypes[OMGraphic.RENDERTYPE_XY - 1] = rtc[1];
+        renderTypes[OMGraphic.RENDERTYPE_OFFSET - 1] = rtc[2];
+        
+        JComboBox renderTypeList = new JComboBox(renderTypes);
+        renderTypeList.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JComboBox jcb = (JComboBox) e.getSource();
+                    String currentChoice = (String)jcb.getSelectedItem();
+                    if (currentChoice == rtc[2]) {
+                        defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_OFFSET);
+                    } else if (currentChoice == rtc[1]) {
+                        defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_XY);
+                    } else {
+                        defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_LATLON);
+                    }               
+                }
+            });
 
-	renderTypeList.setSelectedIndex(defaultGraphicAttributes.getRenderType() - 1);
-	
-	panel = PaletteHelper.createVerticalPanel("Graphic Attributes:");
-	panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        renderTypeList.setSelectedIndex(defaultGraphicAttributes.getRenderType() - 1);
+        
+        panel = PaletteHelper.createVerticalPanel("Graphic Attributes:");
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-	JPanel panel2 = PaletteHelper.createVerticalPanel("Rendering Type:");
-	panel2.add(renderTypeList);
-	JPanel panel3 = PaletteHelper.createVerticalPanel("Line Types and Colors:");
-	panel3.add(defaultGraphicAttributes.getGUI());
-	panel.add(panel2);
-	panel.add(panel3);
-	palette.add(panel);
+        JPanel panel2 = PaletteHelper.createVerticalPanel("Rendering Type:");
+        panel2.add(renderTypeList);
+        JPanel panel3 = PaletteHelper.createVerticalPanel("Line Types and Colors:");
+        panel3.add(defaultGraphicAttributes.getGUI());
+        panel.add(panel2);
+        panel.add(panel3);
+        palette.add(panel);
 
-	JButton createButton = new JButton("Create Graphic");
-	createButton.setActionCommand(CreateCmd);
-	createButton.addActionListener(this);
+        JButton createButton = new JButton("Create Graphic");
+        createButton.setActionCommand(CreateCmd);
+        createButton.addActionListener(this);
 
-	JPanel dismissBox = new JPanel();
-	JButton dismiss = new JButton("Close");
-	dismissBox.setLayout(new BoxLayout(dismissBox, BoxLayout.X_AXIS));
-	dismissBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-	dismissBox.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-	dismissBox.add(createButton);
-	dismissBox.add(dismiss);
+        JPanel dismissBox = new JPanel();
+        JButton dismiss = new JButton("Close");
+        dismissBox.setLayout(new BoxLayout(dismissBox, BoxLayout.X_AXIS));
+        dismissBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        dismissBox.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+        dismissBox.add(createButton);
+        dismissBox.add(dismiss);
 
-	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-	setAlignmentX(Component.CENTER_ALIGNMENT);
-	setAlignmentY(Component.BOTTOM_ALIGNMENT);
-	add(palette);
-	add(dismissBox);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setAlignmentX(Component.CENTER_ALIGNMENT);
+        setAlignmentY(Component.BOTTOM_ALIGNMENT);
+        add(palette);
+        add(dismissBox);
 
-	dismiss.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    getWindowSupport().killWindow();
-		}
-	    });
+        dismiss.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    getWindowSupport().killWindow();
+                }
+            });
     }
 
-    protected JComponent getToolWidgets(boolean useText) {	
+    protected JComponent getToolWidgets(boolean useText) {      
 
-	// Set editables with all the pretty names.
-	Vector editables = new Vector();
-	Iterator graphicNames = loaders.keySet().iterator();
-	while (graphicNames.hasNext()) {
-	    String graphicName = (String) graphicNames.next();
-	    editables.add(graphicName);
-	}
+        // Set editables with all the pretty names.
+        Vector editables = new Vector();
+        Iterator graphicNames = loaders.keySet().iterator();
+        while (graphicNames.hasNext()) {
+            String graphicName = (String) graphicNames.next();
+            editables.add(graphicName);
+        }
 
-	if (useText) {
-	    return createToolOptionMenu(editables);
-	} else {
-	    return createToolButtonPanel(editables);
-	}
+        if (useText) {
+            return createToolOptionMenu(editables);
+        } else {
+            return createToolButtonPanel(editables);
+        }
     }
 
     private JComboBox createToolOptionMenu(Vector editables) {
-	String[] toolNames = new String[editables.size()];
-	for (int i = 0; i < toolNames.length; i++) {
-	    toolNames[i] = (String)editables.elementAt(i);
-	    if (Debug.debugging("omdtl")) {
-		Debug.output("Adding TOOL " + toolNames[i] + " to menu");
-	    }
-	}
-	    
-	JComboBox tools = new JComboBox(toolNames);
-	tools.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    JComboBox jcb = (JComboBox) e.getSource();
-		    String currentChoice = (String)jcb.getSelectedItem();
-		    setCurrentCreation(currentChoice);
-		}
-	    });
-	    
-	if (toolNames.length > 0) {
-	    tools.setSelectedIndex(0);
-	}
-	    
-	return tools;
+        String[] toolNames = new String[editables.size()];
+        for (int i = 0; i < toolNames.length; i++) {
+            toolNames[i] = (String)editables.elementAt(i);
+            if (Debug.debugging("omdtl")) {
+                Debug.output("Adding TOOL " + toolNames[i] + " to menu");
+            }
+        }
+            
+        JComboBox tools = new JComboBox(toolNames);
+        tools.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JComboBox jcb = (JComboBox) e.getSource();
+                    String currentChoice = (String)jcb.getSelectedItem();
+                    setCurrentCreation(currentChoice);
+                }
+            });
+            
+        if (toolNames.length > 0) {
+            tools.setSelectedIndex(0);
+        }
+            
+        return tools;
     }
 
     private JToolBar createToolButtonPanel(Vector editables) {
-	// Otherwise, create a set of buttons.
-	JToggleButton btn;
-	JToolBar iconBar = new JToolBar();
-	iconBar.setFloatable(false);
+        // Otherwise, create a set of buttons.
+        JToggleButton btn;
+        JToolBar iconBar = new JToolBar();
+        iconBar.setFloatable(false);
 
-	ButtonGroup bg = new ButtonGroup();
+        ButtonGroup bg = new ButtonGroup();
 
-	for (int i = 0; i < editables.size(); i++) {
-	    String pName = (String)editables.elementAt(i);
-	    EditToolLoader etl = (EditToolLoader)loaders.get(pName);
-	    ImageIcon icon = etl.getIcon(getEditableClassName(pName));
-	    btn = new JToggleButton(icon, i==0);
-	    btn.setToolTipText(pName);
-	    btn.setActionCommand(pName);
-	    btn.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent ae) {
-			setCurrentCreation(ae.getActionCommand());
-		    }
-		});
-	    bg.add(btn);
+        for (int i = 0; i < editables.size(); i++) {
+            String pName = (String)editables.elementAt(i);
+            EditToolLoader etl = (EditToolLoader)loaders.get(pName);
+            ImageIcon icon = etl.getIcon(getEditableClassName(pName));
+            btn = new JToggleButton(icon, i==0);
+            btn.setToolTipText(pName);
+            btn.setActionCommand(pName);
+            btn.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        setCurrentCreation(ae.getActionCommand());
+                    }
+                });
+            bg.add(btn);
 
-	    iconBar.add(btn);
+            iconBar.add(btn);
 
-	    // Just set one as active, the first one.
-	    if (i == 0) {
-		setCurrentCreation(pName);
-	    }
-	}
+            // Just set one as active, the first one.
+            if (i == 0) {
+                setCurrentCreation(pName);
+            }
+        }
 
-	return iconBar;
+        return iconBar;
     }
 
     /**
@@ -375,16 +375,16 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * @param name GUI pretty name of requestor.
      */
     public void setCurrentRequestor(String name) {
-	Enumeration objs = drawingToolRequestors.elements();
-	while (objs.hasMoreElements()) {
-	    DrawingToolRequestor dtr = 
-		(DrawingToolRequestor) objs.nextElement();
-	    if (name.equals(dtr.getName())) {
-		currentRequestor = dtr;
-		return;
-	    }
-	}
-	currentRequestor = null;
+        Enumeration objs = drawingToolRequestors.elements();
+        while (objs.hasMoreElements()) {
+            DrawingToolRequestor dtr = 
+                (DrawingToolRequestor) objs.nextElement();
+            if (name.equals(dtr.getName())) {
+                currentRequestor = dtr;
+                return;
+            }
+        }
+        currentRequestor = null;
     }
 
     /**
@@ -394,7 +394,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * the EditToolLoaders.
      */
     public void setCurrentCreation(String name) {
-	currentCreation = getEditableClassName(name);
+        currentCreation = getEditableClassName(name);
     }
 
     /**
@@ -404,17 +404,17 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * created, from one of the EditToolLoaders.
      */
     public String getEditableClassName(String prettyName) {
-	Iterator objs = getLoaders();
-	while (objs.hasNext()) {
-	    EditToolLoader etl = (EditToolLoader) objs.next();
-	    String[] ec = etl.getEditableClasses();
-	    for (int i = 0; i < ec.length; i++) {
-		if (prettyName.equals(etl.getPrettyName(ec[i]))) {
-		    return ec[i];
-		}
-	    }
-	}
-	return null;
+        Iterator objs = getLoaders();
+        while (objs.hasNext()) {
+            EditToolLoader etl = (EditToolLoader) objs.next();
+            String[] ec = etl.getEditableClasses();
+            for (int i = 0; i < ec.length; i++) {
+                if (prettyName.equals(etl.getPrettyName(ec[i]))) {
+                    return ec[i];
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -427,17 +427,17 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * @param someObj the object being added to the BeanContext
      */
     public void findAndInit(Object someObj) {
-	if (someObj instanceof OMDrawingTool){
-	    Debug.message("omdtl","OMDrawingToolLauncher found a DrawingTool.");
-	    setDrawingTool((DrawingTool)someObj);
-	}
-	if (someObj instanceof DrawingToolRequestor) {
-	    if (Debug.debugging("omdtl")) {
-		Debug.output("OMDrawingToolLauncher found a DrawingToolRequestor - " + ((DrawingToolRequestor)someObj).getName());
-	    }
-	    drawingToolRequestors.add(someObj);
-	    resetGUI();
-	}
+        if (someObj instanceof OMDrawingTool){
+            Debug.message("omdtl","OMDrawingToolLauncher found a DrawingTool.");
+            setDrawingTool((DrawingTool)someObj);
+        }
+        if (someObj instanceof DrawingToolRequestor) {
+            if (Debug.debugging("omdtl")) {
+                Debug.output("OMDrawingToolLauncher found a DrawingToolRequestor - " + ((DrawingToolRequestor)someObj).getName());
+            }
+            drawingToolRequestors.add(someObj);
+            resetGUI();
+        }
     }
 
     /**
@@ -449,21 +449,21 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * in those methods.
      */
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof OMDrawingTool){
-	    Debug.message("omdtl","OMDrawingToolLauncher found a DrawingTool.");
-	    OMDrawingTool dt = (OMDrawingTool) someObj;
-	    if (dt == getDrawingTool()) {
-		setDrawingTool(null);
-		dt.removePropertyChangeListener(this);
-	    }
-	}
-	if (someObj instanceof DrawingToolRequestor) {
-	    if (Debug.debugging("omdtl")) {
-		Debug.output("OMDrawingToolLauncher removing a DrawingToolRequestor - " + ((DrawingToolRequestor)someObj).getName());
-	    }
-	    drawingToolRequestors.remove(someObj);
-	    resetGUI();
-	}
+        if (someObj instanceof OMDrawingTool){
+            Debug.message("omdtl","OMDrawingToolLauncher found a DrawingTool.");
+            OMDrawingTool dt = (OMDrawingTool) someObj;
+            if (dt == getDrawingTool()) {
+                setDrawingTool(null);
+                dt.removePropertyChangeListener(this);
+            }
+        }
+        if (someObj instanceof DrawingToolRequestor) {
+            if (Debug.debugging("omdtl")) {
+                Debug.output("OMDrawingToolLauncher removing a DrawingToolRequestor - " + ((DrawingToolRequestor)someObj).getName());
+            }
+            drawingToolRequestors.remove(someObj);
+            resetGUI();
+        }
     }
 
     /** 
@@ -473,16 +473,16 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * @return String The key for this tool.  
      */
     public Container getFace() {
-	JToolBar jtb = null;
-	if (getUseAsTool()) {
-	    jtb = new com.bbn.openmap.gui.GridBagToolBar();
-	    JButton drawingToolButton = new JButton(new ImageIcon(OMDrawingToolLauncher.class.getResource("Drawing.gif"), "Drawing Tool Launcher"));
-	    drawingToolButton.setToolTipText("Drawing Tool Launcher");
-	    drawingToolButton.addActionListener(getActionListener());
-	    jtb.add(drawingToolButton);
-	}
-	return jtb;
-    }	
+        JToolBar jtb = null;
+        if (getUseAsTool()) {
+            jtb = new com.bbn.openmap.gui.GridBagToolBar();
+            JButton drawingToolButton = new JButton(new ImageIcon(OMDrawingToolLauncher.class.getResource("Drawing.gif"), "Drawing Tool Launcher"));
+            drawingToolButton.setToolTipText("Drawing Tool Launcher");
+            drawingToolButton.addActionListener(getActionListener());
+            jtb.add(drawingToolButton);
+        }
+        return jtb;
+    }   
 
     /** 
      * Get the ActionListener that triggers the LauncherPanel.  Useful
@@ -492,72 +492,72 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * @return ActionListener
      */
     public ActionListener getActionListener() {
-	return new ActionListener() {
-		public void actionPerformed(ActionEvent evt) {
-		    // -1 will get size from pack();
-		    int w = -1;
-		    int h = -1;
-		    int x = 10;
-		    int y = 10;
-	    
-		    Point loc = getWindowSupport().getComponentLocation();
-		    if (loc != null) {
-			x = (int) loc.getX();
-			y = (int) loc.getY();
-		    }
+        return new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                    // -1 will get size from pack();
+                    int w = -1;
+                    int h = -1;
+                    int x = 10;
+                    int y = 10;
+            
+                    Point loc = getWindowSupport().getComponentLocation();
+                    if (loc != null) {
+                        x = (int) loc.getX();
+                        y = (int) loc.getY();
+                    }
 
-		    MapHandler mh = (MapHandler) getBeanContext();
-		    Frame frame = null;
-		    if (mh != null) {
-			frame = (Frame)mh.get(java.awt.Frame.class);
-		    }
+                    MapHandler mh = (MapHandler) getBeanContext();
+                    Frame frame = null;
+                    if (mh != null) {
+                        frame = (Frame)mh.get(java.awt.Frame.class);
+                    }
 
-		    getWindowSupport().displayInWindow(frame, x, y, w, h);
-		}
-	    };
+                    getWindowSupport().displayInWindow(frame, x, y, w, h);
+                }
+            };
     }
 
     /**
      * Get the attributes that initalize the graphic.
      */
     public GraphicAttributes getDefaultGraphicAttributes() {
-	return defaultGraphicAttributes;
+        return defaultGraphicAttributes;
     }
 
     /**
      * Set the attributes that initalize the graphic.
      */
     public void setDefaultGraphicAttributes(GraphicAttributes ga) {
-	defaultGraphicAttributes = ga;
+        defaultGraphicAttributes = ga;
     }
 
     public void setLoaders(Iterator iterator) {
-	loaders.clear();
-	while (iterator.hasNext()) {
-	    addLoader((EditToolLoader)iterator.next());
-	}
+        loaders.clear();
+        while (iterator.hasNext()) {
+            addLoader((EditToolLoader)iterator.next());
+        }
     }
 
     public Iterator getLoaders() {
-	return loaders.values().iterator();
+        return loaders.values().iterator();
     }
 
     public void addLoader(EditToolLoader etl) {
-	if (etl != null) {
-	    String[] classNames = etl.getEditableClasses();
-	    for (int i = 0; i < classNames.length; i++) {
-		loaders.put(etl.getPrettyName(classNames[i]), etl);
-	    }
-	}
+        if (etl != null) {
+            String[] classNames = etl.getEditableClasses();
+            for (int i = 0; i < classNames.length; i++) {
+                loaders.put(etl.getPrettyName(classNames[i]), etl);
+            }
+        }
     }
 
     public void removeLoader(EditToolLoader etl) {
-	if (etl != null) {
-	    String[] classNames = etl.getEditableClasses();
-	    for (int i = 0; i < classNames.length; i++) {
-		loaders.remove(etl.getPrettyName(classNames[i]));
-	    }
-	}
+        if (etl != null) {
+            String[] classNames = etl.getEditableClasses();
+            for (int i = 0; i < classNames.length; i++) {
+                loaders.remove(etl.getPrettyName(classNames[i]));
+            }
+        }
     }
 
     /**
@@ -565,9 +565,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * OMDrawingTool's list of loaders that may or may not change.
      */
     public void propertyChange(PropertyChangeEvent pce) {
-	if (pce.getPropertyName() == OMDrawingTool.LoadersProperty) {
-	    setLoaders(((Hashtable)pce.getNewValue()).values().iterator());
-	    resetGUI();
-	}
+        if (pce.getPropertyName() == OMDrawingTool.LoadersProperty) {
+            setLoaders(((Hashtable)pce.getNewValue()).values().iterator());
+            resetGUI();
+        }
     }
 }

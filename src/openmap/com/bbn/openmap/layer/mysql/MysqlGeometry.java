@@ -40,7 +40,7 @@ public class MysqlGeometry {
      * @return String
      */
     public String getType() {
-	return type;
+        return type;
     }
 
     /**
@@ -48,7 +48,7 @@ public class MysqlGeometry {
      * @param type The type to set
      */
     public void setType(String type) {
-	this.type = type;
+        this.type = type;
     }
 
 }

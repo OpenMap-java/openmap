@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/StandardDTEDNameTranslator.java,v $
 // $RCSfile: StandardDTEDNameTranslator.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/24 02:56:11 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,7 +63,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      * @param level the DTED level (0, 1, 2).
      */
     public StandardDTEDNameTranslator(String dtedDir, double lat, double lon, int level) {
-	set(dtedDir, lat, lon, level);
+        set(dtedDir, lat, lon, level);
     }
 
     /**
@@ -75,7 +75,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      * @param level the DTED level (0, 1, 2).
      */
     public StandardDTEDNameTranslator(double lat, double lon, int level) {
-	set(null, lat, lon, level);
+        set(null, lat, lon, level);
     }
 
     /**
@@ -83,7 +83,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      * @param filePath a path to a dted frame file.
      */
     public void set(String filePath) throws FormatException {
-	evaluate(filePath);
+        evaluate(filePath);
     }
 
     /**
@@ -96,8 +96,8 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      * @param level the DTED level (0, 1, 2).
      */
     public void set(String dtedDir, double lat, double lon, int level) {
-	setDTEDDir(dtedDir);
-	filename = evaluate(lat, lon, level);
+        setDTEDDir(dtedDir);
+        filename = evaluate(lat, lon, level);
     }
 
     /**
@@ -109,7 +109,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      * @param level the DTED level (0, 1, 2).
      */
     public void set(double lat, double lon, int level) {
-	set(getDTEDDir(), lat, lon, level);
+        set(getDTEDDir(), lat, lon, level);
     }
 
     /**
@@ -117,14 +117,14 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      * @param lat the desired latitude, in decimal degrees.
      */
     public void setLat(double latitude) {
-	filename = evaluate(latitude, getLon(), getLevel());
+        filename = evaluate(latitude, getLon(), getLevel());
     }
     
     /**
      * Get the latitude.
      */
     public double getLat() {
-	return lat;
+        return lat;
     }
 
     /**
@@ -132,14 +132,14 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      * @param lat the desired longitude, in decimal degrees.
      */
     public void setLon(double longitude) {
-	filename = evaluate(getLat(), longitude, getLevel());
+        filename = evaluate(getLat(), longitude, getLevel());
     }
 
     /**
      * Get the longitude.
      */
     public double getLon() {
-	return lon;
+        return lon;
     }
 
     /**
@@ -147,14 +147,14 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      * @param level the DTED level (0, 1, 2).
      */
     public void setLevel(int level) {
-	filename = evaluate(getLat(), getLon(), level);
+        filename = evaluate(getLat(), getLon(), level);
     }
 
     /**
      * Get the DTED level set in the translator.
      */
     public int getLevel() {
-	return level;
+        return level;
     }
 
     /**
@@ -163,7 +163,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      * file.
      */
     public String getSubDirs() {
-	return subDirs;
+        return subDirs;
     }
 
     /**
@@ -178,7 +178,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      * internal settings.
      */
     public String getName() {
-	return dtedDir + "/" + filename;
+        return dtedDir + "/" + filename;
     }
 
     /**
@@ -186,35 +186,35 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      * file.
      */
     public void setName(String fileName) throws FormatException {
-	evaluate(fileName);
+        evaluate(fileName);
     }
 
     /**
      * Set the top-level DTED directory.
      */
     public void setDTEDDir(String dtedDirectory) {
-	if (dtedDirectory == null) {
-	    dtedDir = "";
-	}
-	dtedDir = dtedDirectory;
+        if (dtedDirectory == null) {
+            dtedDir = "";
+        }
+        dtedDir = dtedDirectory;
     }
 
     /**
      * Get the path to the top-level DTED directory.
      */
     public String getDTEDDir() {
-	return dtedDir;
+        return dtedDir;
     }
 
     /**
      * Update all the other settings based on these.
      */
     protected String evaluate(double lat, double lon, int level) {
-	this.lat = Math.floor(lat);
-	this.lon = Math.floor(lon);
-	this.level = level;
-	return DTEDFrameUtil.lonToFileString((float)lon) + "/" +
-	    DTEDFrameUtil.latToFileString((float)lat, level);
+        this.lat = Math.floor(lat);
+        this.lon = Math.floor(lon);
+        this.level = level;
+        return DTEDFrameUtil.lonToFileString((float)lon) + "/" +
+            DTEDFrameUtil.latToFileString((float)lat, level);
     }
 
     /**
@@ -222,95 +222,95 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      */
     protected void evaluate(String filePath) throws FormatException {
 
-	try {
-	    int latSlash = filePath.lastIndexOf("/");
-	    if (latSlash > 1) {
-		if (DEBUG) {
-		    Debug.output("Have lat index of " + latSlash);
-		}
-		String lonSearch = filePath.substring(0, latSlash);
-		
-		if (DEBUG) {
-		    Debug.output("Searching for lon index in " + lonSearch);
-		}
-		int lonSlash = lonSearch.lastIndexOf("/");
-		if (lonSlash > 1) {
-		    filename = filePath.substring(latSlash + 1);
-		    String latString = filename.toUpperCase();
+        try {
+            int latSlash = filePath.lastIndexOf("/");
+            if (latSlash > 1) {
+                if (DEBUG) {
+                    Debug.output("Have lat index of " + latSlash);
+                }
+                String lonSearch = filePath.substring(0, latSlash);
+                
+                if (DEBUG) {
+                    Debug.output("Searching for lon index in " + lonSearch);
+                }
+                int lonSlash = lonSearch.lastIndexOf("/");
+                if (lonSlash > 1) {
+                    filename = filePath.substring(latSlash + 1);
+                    String latString = filename.toUpperCase();
 
-		    if (DEBUG) {
-			Debug.output("have lat " + latString);
-		    }
+                    if (DEBUG) {
+                        Debug.output("have lat " + latString);
+                    }
 
-		    int dotIndex = latString.indexOf(".");
-		    if (dotIndex > 0) {
+                    int dotIndex = latString.indexOf(".");
+                    if (dotIndex > 0) {
 
-			lat = Double.parseDouble(latString.substring(1, dotIndex));
-			if (latString.charAt(0) == 'S') {
-			    lat *= -1;
-			}
+                        lat = Double.parseDouble(latString.substring(1, dotIndex));
+                        if (latString.charAt(0) == 'S') {
+                            lat *= -1;
+                        }
 
-			subDirs = filePath.substring(lonSlash + 1, latSlash);
-			String dd = filePath.substring(0, lonSlash + 1);
-			if (dd.length() > 0) {
-			    dtedDir = dd;
-			}
+                        subDirs = filePath.substring(lonSlash + 1, latSlash);
+                        String dd = filePath.substring(0, lonSlash + 1);
+                        if (dd.length() > 0) {
+                            dtedDir = dd;
+                        }
 
-			String lonString = subDirs.toUpperCase();
+                        String lonString = subDirs.toUpperCase();
 
-			if (DEBUG) {
-			    Debug.output("have lon " + lonString);
-			}
+                        if (DEBUG) {
+                            Debug.output("have lon " + lonString);
+                        }
 
-			lon = Double.parseDouble(lonString.substring(1));
-			if (lonString.charAt(0) == 'W') {
-			    lon *= -1;
-			}
+                        lon = Double.parseDouble(lonString.substring(1));
+                        if (lonString.charAt(0) == 'W') {
+                            lon *= -1;
+                        }
 
-			level = (int) Integer.parseInt(filePath.substring(filePath.length() - 1));
-			if (DEBUG) {
-			    Debug.output("have level " + level);
-			}
-			return;
-		    }
-		}
-	    }
-	} catch (NumberFormatException nfe) {
+                        level = (int) Integer.parseInt(filePath.substring(filePath.length() - 1));
+                        if (DEBUG) {
+                            Debug.output("have level " + level);
+                        }
+                        return;
+                    }
+                }
+            }
+        } catch (NumberFormatException nfe) {
 
-	}
+        }
 
-	throw new FormatException("StandardDTEDNameTranslator couldn't convert " + filePath + 
-				  " to valid parameters");
+        throw new FormatException("StandardDTEDNameTranslator couldn't convert " + filePath + 
+                                  " to valid parameters");
     }
 
     public String toString() {
-	StringBuffer sb = new StringBuffer();
-	sb.append("For file: " + filename + "\n");
-	sb.append("  lat = " + lat + "\n");
-	sb.append("  lon = " + lon + "\n");
-	sb.append("  level = " + level + "\n");
-	String dd = getDTEDDir();
-	if (dd.length() > 0) {
-	    dd += "/";
-	}
-	sb.append("  path = " + dd + getSubDirs() + "/" + getName() + "\n");
-	return sb.toString();
+        StringBuffer sb = new StringBuffer();
+        sb.append("For file: " + filename + "\n");
+        sb.append("  lat = " + lat + "\n");
+        sb.append("  lon = " + lon + "\n");
+        sb.append("  level = " + level + "\n");
+        String dd = getDTEDDir();
+        if (dd.length() > 0) {
+            dd += "/";
+        }
+        sb.append("  path = " + dd + getSubDirs() + "/" + getName() + "\n");
+        return sb.toString();
     }
 
     public static void main(String[] argv) {
-	Debug.init();
-	if (argv.length == 0) {
-	    Debug.output("Usage:  StandardDTEDNameTranslator <dted file path>");
-	    System.exit(0);
-	}
+        Debug.init();
+        if (argv.length == 0) {
+            Debug.output("Usage:  StandardDTEDNameTranslator <dted file path>");
+            System.exit(0);
+        }
 
-	StandardDTEDNameTranslator sdnt = new StandardDTEDNameTranslator();
-	try {
-	    sdnt.set(argv[0]);
-	    Debug.output(sdnt.toString());
-	} catch (FormatException fe) {
-	    Debug.output(fe.getMessage());
-	}
+        StandardDTEDNameTranslator sdnt = new StandardDTEDNameTranslator();
+        try {
+            sdnt.set(argv[0]);
+            Debug.output(sdnt.toString());
+        } catch (FormatException fe) {
+            Debug.output(fe.getMessage());
+        }
     }
 
 }

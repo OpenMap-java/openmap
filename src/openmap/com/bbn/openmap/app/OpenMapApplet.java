@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMapApplet.java,v $
 // $RCSfile: OpenMapApplet.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 20:47:44 $
-// $Author: wjeuerle $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:05 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -66,16 +66,16 @@ public class OpenMapApplet extends JApplet
     // pinfo used to have these parameters, too, but that doesn't 
     // seem right to include visibroker arguments in the generic
     // applet parameter info.
-// 	{"ORBdisableLocator", "boolean", "disable Visiborker Gatekeeper"},
-// 	{"ORBgatekeeperIOR", "boolean", "URL to gatekeeper IOR."},
+//      {"ORBdisableLocator", "boolean", "disable Visiborker Gatekeeper"},
+//      {"ORBgatekeeperIOR", "boolean", "URL to gatekeeper IOR."},
 
     protected final String pinfo[][] = {
-	{Environment.Latitude, "float", "Starting center latitude"},
-	{Environment.Longitude, "float", "Starting center longitude"},
-	{Environment.Scale, "float", "Starting Scale"},
-	{Environment.Projection, "String", "Default projection type"},
- 	{"debug.basic", "none", "enable basic debugging"},
-	{Environment.HelpURL, "String", "URL location of OpenMap help pages"}
+        {Environment.Latitude, "float", "Starting center latitude"},
+        {Environment.Longitude, "float", "Starting center longitude"},
+        {Environment.Scale, "float", "Starting Scale"},
+        {Environment.Projection, "String", "Default projection type"},
+        {"debug.basic", "none", "enable basic debugging"},
+        {Environment.HelpURL, "String", "URL location of OpenMap help pages"}
     };
 
     /**
@@ -86,7 +86,7 @@ public class OpenMapApplet extends JApplet
      * @since   JDK1.0
      */
     public String getAppletInfo() {
-	return MapBean.getCopyrightMessage();
+        return MapBean.getCopyrightMessage();
     }
 
     /**
@@ -98,9 +98,9 @@ public class OpenMapApplet extends JApplet
      * description. For example:
      * <p><blockquote><pre>
      * String pinfo[][] = {
-     *	 {"fps",    "1-10",    "frames per second"},
-     *	 {"repeat", "boolean", "repeat image loop"},
-     *	 {"imgs",   "url",     "images directory"}
+     *   {"fps",    "1-10",    "frames per second"},
+     *   {"repeat", "boolean", "repeat image loop"},
+     *   {"imgs",   "url",     "images directory"}
      * };
      * </pre></blockquote>
      * <p>
@@ -109,7 +109,7 @@ public class OpenMapApplet extends JApplet
      * @since   JDK1.0
      */
     public String[][] getParameterInfo() {
-	return pinfo;
+        return pinfo;
     }
 
     /**
@@ -128,38 +128,38 @@ public class OpenMapApplet extends JApplet
      */
     public void init() {
         // Initialize as an applet
-	Environment.init(this);
-	Debug.init(this,
-		   new String[] {"debug.basic",
-				 "debug.cspec",
-				 "debug.layer",
-				 "debug.mapbean",
-				 "debug.plugin"
-		   });
+        Environment.init(this);
+        Debug.init(this,
+                   new String[] {"debug.basic",
+                                 "debug.cspec",
+                                 "debug.layer",
+                                 "debug.mapbean",
+                                 "debug.plugin"
+                   });
 
-	String propValue = getParameter(PropertiesProperty);
-	PropertyHandler propHandler = null;
+        String propValue = getParameter(PropertiesProperty);
+        PropertyHandler propHandler = null;
 
-	try {
-	    if (propValue != null) {
-		propHandler = new PropertyHandler(propValue);
-		if (Debug.debugging("app")) {
-		    Debug.output("OpenMapApplet: Using properties from " + propValue);
-		}
-	    }
-	} catch (MalformedURLException murle) {
-	    Debug.error("OpenMap: property file specified: " + propValue + " doesn't exist, searching for default openmap.properties file...");
-	} catch (IOException ioe) {
-	    Debug.error("OpenMap: There is a problem using the property file specified: " + propValue + ", searching for default openmap.properties file...");
-	}
+        try {
+            if (propValue != null) {
+                propHandler = new PropertyHandler(propValue);
+                if (Debug.debugging("app")) {
+                    Debug.output("OpenMapApplet: Using properties from " + propValue);
+                }
+            }
+        } catch (MalformedURLException murle) {
+            Debug.error("OpenMap: property file specified: " + propValue + " doesn't exist, searching for default openmap.properties file...");
+        } catch (IOException ioe) {
+            Debug.error("OpenMap: There is a problem using the property file specified: " + propValue + ", searching for default openmap.properties file...");
+        }
 
-	if (propHandler == null) {
-	    propHandler = new PropertyHandler();
-	}
+        if (propHandler == null) {
+            propHandler = new PropertyHandler();
+        }
 
-	MapPanel mapPanel = new BasicMapPanel(propHandler);
-	mapPanel.getMapHandler().add(this);
-	Debug.message("app", "OpenMapApplet.init()");
+        MapPanel mapPanel = new BasicMapPanel(propHandler);
+        mapPanel.getMapHandler().add(this);
+        Debug.message("app", "OpenMapApplet.init()");
     }
 
     /**
@@ -175,8 +175,8 @@ public class OpenMapApplet extends JApplet
      * @since   JDK1.0
      */
     public void start() {
-	Debug.message("app", "OpenMapApplet.start()");
-	super.start();
+        Debug.message("app", "OpenMapApplet.start()");
+        super.start();
     }
 
     /**
@@ -191,8 +191,8 @@ public class OpenMapApplet extends JApplet
      * @since   JDK1.0
      */
     public void stop() {
-	Debug.message("app", "OpenMapApplet.stop()");
-	super.stop();
+        Debug.message("app", "OpenMapApplet.stop()");
+        super.stop();
     }
 
     /**
@@ -208,8 +208,8 @@ public class OpenMapApplet extends JApplet
      * @since   JDK1.0
      */
     public void destroy() {
-	Debug.message("app", "OpenMapApplet.destroy()");
-	super.destroy();
+        Debug.message("app", "OpenMapApplet.destroy()");
+        super.destroy();
     }
 
     /**
@@ -217,32 +217,32 @@ public class OpenMapApplet extends JApplet
      * find components in the MapHandler.
      */
     public void findAndInit(Iterator it) {
-	Object someObj;
-	while (it.hasNext()) {
-	    findAndInit(it.next());
-	}
+        Object someObj;
+        while (it.hasNext()) {
+            findAndInit(it.next());
+        }
     }
 
     /**
      * Called when an object is added to the MapHandler.
      */
     public void findAndInit(Object someObj) {
-	if (someObj instanceof MapPanel && someObj instanceof Container) {
-	    getContentPane().add((Container)someObj);
+        if (someObj instanceof MapPanel && someObj instanceof Container) {
+            getContentPane().add((Container)someObj);
 
-	    JMenuBar jmb = ((MapPanel)someObj).getMapMenuBar();
-	    if (jmb != null) {
-		Debug.message("basic", "OpenMapApplet: Got MenuBar from MapPanel");
-		getRootPane().setJMenuBar(jmb);
-	    }
+            JMenuBar jmb = ((MapPanel)someObj).getMapMenuBar();
+            if (jmb != null) {
+                Debug.message("basic", "OpenMapApplet: Got MenuBar from MapPanel");
+                getRootPane().setJMenuBar(jmb);
+            }
 
-	    invalidate();
-	}
+            invalidate();
+        }
 
-	if (someObj instanceof JMenuBar) {
-	    getRootPane().setJMenuBar((JMenuBar)someObj);
-	    invalidate();
-	}
+        if (someObj instanceof JMenuBar) {
+            getRootPane().setJMenuBar((JMenuBar)someObj);
+            invalidate();
+        }
     }
     
     /**
@@ -253,7 +253,7 @@ public class OpenMapApplet extends JApplet
      * new objects.  
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
-	findAndInit(bcme.iterator());      
+        findAndInit(bcme.iterator());      
     }
 
     /**
@@ -266,38 +266,38 @@ public class OpenMapApplet extends JApplet
      * through the removed objects.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-	Object someObj;
-	Iterator it = bcme.iterator();
-	while (it.hasNext()) {
-	    findAndUndo(it.next());
-	}
+        Object someObj;
+        Iterator it = bcme.iterator();
+        while (it.hasNext()) {
+            findAndUndo(it.next());
+        }
     }
 
     /**
      * Called when an object is removed from the MapHandler.
      */
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof MapPanel && someObj instanceof Container) {		
-	    Debug.message("basic", "OpenMapApplet: MapPanel is being removed from applet");
-	    getContentPane().remove((Container)someObj);
+        if (someObj instanceof MapPanel && someObj instanceof Container) {              
+            Debug.message("basic", "OpenMapApplet: MapPanel is being removed from applet");
+            getContentPane().remove((Container)someObj);
 
-	    if (getJMenuBar() == ((MapPanel)someObj).getMapMenuBar()) {
-		Debug.message("basic", "OpenMapApplet: MenuPanel's MenuBar is being removed");
-		setJMenuBar(null);
-	    }
-	}
-	    
-	if (someObj instanceof JMenuBar) {
-	    if (getJMenuBar() == (JMenuBar) someObj) {
-		Debug.message("basic", "OpenMapApplet: MenuBar is being removed from applet");
-		setJMenuBar(null);
-	    }
-	}
+            if (getJMenuBar() == ((MapPanel)someObj).getMapMenuBar()) {
+                Debug.message("basic", "OpenMapApplet: MenuPanel's MenuBar is being removed");
+                setJMenuBar(null);
+            }
+        }
+            
+        if (someObj instanceof JMenuBar) {
+            if (getJMenuBar() == (JMenuBar) someObj) {
+                Debug.message("basic", "OpenMapApplet: MenuBar is being removed from applet");
+                setJMenuBar(null);
+            }
+        }
     }
 
     /** Method for BeanContextChild interface. */
-    public BeanContext getBeanContext()	{
-	return beanContextChildSupport.getBeanContext();
+    public BeanContext getBeanContext() {
+        return beanContextChildSupport.getBeanContext();
     }
     
     /** Method for BeanContextChild interface. 
@@ -305,25 +305,25 @@ public class OpenMapApplet extends JApplet
      * @param in_bc The context to which this object is being added
      */
     public void setBeanContext(BeanContext in_bc) 
-	throws PropertyVetoException {
-	if (in_bc != null) {
-	    in_bc.addBeanContextMembershipListener(this);
-	    beanContextChildSupport.setBeanContext(in_bc);
-	    findAndInit(in_bc.iterator());
-	}
+        throws PropertyVetoException {
+        if (in_bc != null) {
+            in_bc.addBeanContextMembershipListener(this);
+            beanContextChildSupport.setBeanContext(in_bc);
+            findAndInit(in_bc.iterator());
+        }
     }
     
     /** Method for BeanContextChild interface. */
     public void addVetoableChangeListener(String propertyName,
-					  VetoableChangeListener in_vcl) {
-	beanContextChildSupport.addVetoableChangeListener(propertyName,
-							  in_vcl);
+                                          VetoableChangeListener in_vcl) {
+        beanContextChildSupport.addVetoableChangeListener(propertyName,
+                                                          in_vcl);
     }
   
     /** Method for BeanContextChild interface. */
     public void removeVetoableChangeListener(String propertyName, 
-					     VetoableChangeListener in_vcl) {
-	beanContextChildSupport.removeVetoableChangeListener(propertyName,
-							     in_vcl);
+                                             VetoableChangeListener in_vcl) {
+        beanContextChildSupport.removeVetoableChangeListener(propertyName,
+                                                             in_vcl);
     }
 }

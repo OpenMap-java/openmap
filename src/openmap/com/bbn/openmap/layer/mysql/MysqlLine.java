@@ -30,8 +30,8 @@ public class MysqlLine extends MysqlGeometry {
     private double[] coordinateArray;
 
     public MysqlLine() {
-	super();
-	this.setType(this.LINESTRINGTYPE);
+        super();
+        this.setType(this.LINESTRINGTYPE);
     }
 
     /**
@@ -39,7 +39,7 @@ public class MysqlLine extends MysqlGeometry {
      * @return double[]
      */
     public double[] getCoordinateArray() {
-	return coordinateArray;
+        return coordinateArray;
     }
 
     /**
@@ -47,7 +47,7 @@ public class MysqlLine extends MysqlGeometry {
      * @param coordinateArray The coordinateArray to set
      */
     public void setCoordinateArray(double[] coordinateArray) {
-	this.coordinateArray = coordinateArray;
+        this.coordinateArray = coordinateArray;
     }
 
 }

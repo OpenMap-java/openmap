@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIBoundingBox.java,v $
 // $RCSfile: ESRIBoundingBox.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,7 +37,7 @@ package com.bbn.openmap.layer.shape;
  *
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/26 18:18:11 $
  */
 public class ESRIBoundingBox {
 
@@ -60,7 +60,7 @@ public class ESRIBoundingBox {
      * @param point the point to enclose
      */
     public ESRIBoundingBox(ESRIPoint point) {
-	this(point.x, point.y);
+        this(point.x, point.y);
     }
 
     /**
@@ -71,7 +71,7 @@ public class ESRIBoundingBox {
      * @param y the y coordinate
      */
     public ESRIBoundingBox(double x, double y) {
-	addPoint(x, y);
+        addPoint(x, y);
     }
 
     /**
@@ -83,8 +83,8 @@ public class ESRIBoundingBox {
      * @param _max another point to enclose
      */
     public ESRIBoundingBox(ESRIPoint _min, ESRIPoint _max) {
-	addPoint(_min);
-	addPoint(_max);
+        addPoint(_min);
+        addPoint(_max);
     }
 
     /**
@@ -94,8 +94,8 @@ public class ESRIBoundingBox {
      * @param bb a bounding box to be enclosed
      */
     public void addBounds(ESRIBoundingBox bb) {
-	addPoint(bb.min);
-	addPoint(bb.max);
+        addPoint(bb.min);
+        addPoint(bb.max);
     }
 
     /**
@@ -105,9 +105,9 @@ public class ESRIBoundingBox {
      * @param points a set of points to enclose
      */
     public void addPoints(ESRIPoint[] points) {
-	for (int j = 0; j < points.length; j++) {
-	    addPoint(points[j]);
-	}
+        for (int j = 0; j < points.length; j++) {
+            addPoint(points[j]);
+        }
     }
 
     /**
@@ -117,26 +117,26 @@ public class ESRIBoundingBox {
      * @param point a point to enclose
      */
     public void addPoint(ESRIPoint point) {
-	addPoint(point.x, point.y);
+        addPoint(point.x, point.y);
     }
 
     /**
      *
      */
     public void addPoint(double x, double y) {
-	if (min == null) {
-	    min = new ESRIPoint(x, y);
-	    max = new ESRIPoint(x, y);
-	} else {
-	    if (min.x > x)
-		min.x = x;
-	    if (min.y > y)
-		min.y = y;
-	    if (max.x < x)
-		max.x = x;
-	    if (max.y < y)
-		max.y = y;
-	}
+        if (min == null) {
+            min = new ESRIPoint(x, y);
+            max = new ESRIPoint(x, y);
+        } else {
+            if (min.x > x)
+                min.x = x;
+            if (min.y > y)
+                min.y = y;
+            if (max.x < x)
+                max.x = x;
+            if (max.y < y)
+                max.y = y;
+        }
     }
 
     /**
@@ -149,10 +149,10 @@ public class ESRIBoundingBox {
      *         <code>false</code> otherwise.
      */
     public boolean equals(Object obj) {
-	if (obj instanceof ESRIBoundingBox) {
-	    ESRIBoundingBox bb = (ESRIBoundingBox) obj;
-	    return (min.equals(bb.min) && max.equals(bb.max));
-	}
-	return false;
+        if (obj instanceof ESRIBoundingBox) {
+            ESRIBoundingBox bb = (ESRIBoundingBox) obj;
+            return (min.equals(bb.min) && max.equals(bb.max));
+        }
+        return false;
     }
 }

@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/FITRowMaker.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -57,19 +57,19 @@ public class FITRowMaker extends PlainRowMaker {
      * @throws FormatException some error was encountered
      */
     public FITRowMaker(DcwRecordFile drf) throws FormatException {
-	String tableName = drf.getTableName().substring(0, 3);
-	dirPath = new File(drf.getTableFile()).getParentFile();
+        String tableName = drf.getTableName().substring(0, 3);
+        dirPath = new File(drf.getTableFile()).getParentFile();
 
-	featureTableExt = getExtensionForTable(tableName);
+        featureTableExt = getExtensionForTable(tableName);
 
-	primIdColumn = drf.whatColumn("prim_id");
-	tileIdColumn = drf.whatColumn("tile_id");
-	fcIdColumn = drf.whatColumn("fc_id");
-	featureIdColumn = drf.whatColumn("feature_id");
+        primIdColumn = drf.whatColumn("prim_id");
+        tileIdColumn = drf.whatColumn("tile_id");
+        fcIdColumn = drf.whatColumn("fc_id");
+        featureIdColumn = drf.whatColumn("feature_id");
 
-	tiler = new TileHolder(dirPath, tableName, (tileIdColumn != -1));
-	featureNames = getFeatureNames(dirPath);
-	featureTables = new DcwRecordFile[featureNames.length];
+        tiler = new TileHolder(dirPath, tableName, (tileIdColumn != -1));
+        featureNames = getFeatureNames(dirPath);
+        featureTables = new DcwRecordFile[featureNames.length];
     }
 
     /**
@@ -79,84 +79,84 @@ public class FITRowMaker extends PlainRowMaker {
      * @throws FormatException the feature table couldn't be created
      */
     public DcwRecordFile getFeatureTable(int fcId) throws FormatException {
-	fcId -= 1;  //array is 0-based, table ids are 1-based
-	DcwRecordFile retval = featureTables[fcId];
-	if (retval == null) {
-	    retval = new DcwRecordFile(dirPath + File.separator +
-				       featureNames[fcId].toLowerCase() + featureTableExt);
-	    featureTables[fcId] = retval;
-	}
-	return retval;
+        fcId -= 1;  //array is 0-based, table ids are 1-based
+        DcwRecordFile retval = featureTables[fcId];
+        if (retval == null) {
+            retval = new DcwRecordFile(dirPath + File.separator +
+                                       featureNames[fcId].toLowerCase() + featureTableExt);
+            featureTables[fcId] = retval;
+        }
+        return retval;
     }
 
     public void addToRow(TableRowElement row, List l) {
-	int primId = VPFUtil.objectToInt(l.get(primIdColumn));
-	int tileId = (tileIdColumn == -1) ? -1
-	    : VPFUtil.objectToInt(l.get(tileIdColumn));
-	int fcId = VPFUtil.objectToInt(l.get(fcIdColumn));
-	int featureId = VPFUtil.objectToInt(l.get(featureIdColumn));
-	int id = VPFUtil.objectToInt(l.get(0));
-	row.addElement("" + id + " (" + tileId + "," + primId + ") (" +
-		       fcId + ", " + featureId + ")");
-	try {
-	    tiler.getRow(tileId, primId, primRow);
-	    DcwRecordFile featureTable = getFeatureTable(fcId);
-	    featureTable.getRow(featureRow, featureId);
-	    for (Iterator i = primRow.iterator(); i.hasNext(); ) {
-		row.addElement(new TableDataElement("CLASS=JoinColumn",
-						    i.next().toString()));
-	    }
-	    for (Iterator i = featureRow.iterator(); i.hasNext(); ) {
-		row.addElement(new TableDataElement("CLASS=Join2Column",
-						    i.next().toString()));
-	    }
-	} catch (FormatException fe) {
-	    row.addElement(fe.toString());
-	}
+        int primId = VPFUtil.objectToInt(l.get(primIdColumn));
+        int tileId = (tileIdColumn == -1) ? -1
+            : VPFUtil.objectToInt(l.get(tileIdColumn));
+        int fcId = VPFUtil.objectToInt(l.get(fcIdColumn));
+        int featureId = VPFUtil.objectToInt(l.get(featureIdColumn));
+        int id = VPFUtil.objectToInt(l.get(0));
+        row.addElement("" + id + " (" + tileId + "," + primId + ") (" +
+                       fcId + ", " + featureId + ")");
+        try {
+            tiler.getRow(tileId, primId, primRow);
+            DcwRecordFile featureTable = getFeatureTable(fcId);
+            featureTable.getRow(featureRow, featureId);
+            for (Iterator i = primRow.iterator(); i.hasNext(); ) {
+                row.addElement(new TableDataElement("CLASS=JoinColumn",
+                                                    i.next().toString()));
+            }
+            for (Iterator i = featureRow.iterator(); i.hasNext(); ) {
+                row.addElement(new TableDataElement("CLASS=Join2Column",
+                                                    i.next().toString()));
+            }
+        } catch (FormatException fe) {
+            row.addElement(fe.toString());
+        }
     }
 
     public String[] getFeatureNames(File dirPath) throws FormatException {
-	File fcafile = new File(dirPath, "fca");
-	if (!fcafile.canRead()) {
-	    fcafile = new File(dirPath, "fca.");
-	}
-	DcwRecordFile fca = new DcwRecordFile(fcafile.toString());
-	List l = new ArrayList(fca.getColumnCount());
-	int fclassColumn = fca.whatColumn("fclass");
-	List fclassnames = new ArrayList();
-	while (fca.parseRow(l)) {
-	    fclassnames.add(l.get(fclassColumn));
-	}
-	fca.close();
-	String retval[] = new String[fclassnames.size()];
-	fclassnames.toArray(retval);
-	return retval;
+        File fcafile = new File(dirPath, "fca");
+        if (!fcafile.canRead()) {
+            fcafile = new File(dirPath, "fca.");
+        }
+        DcwRecordFile fca = new DcwRecordFile(fcafile.toString());
+        List l = new ArrayList(fca.getColumnCount());
+        int fclassColumn = fca.whatColumn("fclass");
+        List fclassnames = new ArrayList();
+        while (fca.parseRow(l)) {
+            fclassnames.add(l.get(fclassColumn));
+        }
+        fca.close();
+        String retval[] = new String[fclassnames.size()];
+        fclassnames.toArray(retval);
+        return retval;
     }
 
     public static String getExtensionForTable(String tablename) {
-	
-	if (tablename.equals("fac")) {
-	    return ".aft";
-	} else if (tablename.equals("cnd")) {
-	    return ".pft";
-	} else if (tablename.equals("end")) {
-	    return ".pft";
-	} else if (tablename.equals("txt")) {
-	    return ".tft";
-	} else if (tablename.equals("edg")) {
-	    return ".lft";
-	}
-	return null;
+        
+        if (tablename.equals("fac")) {
+            return ".aft";
+        } else if (tablename.equals("cnd")) {
+            return ".pft";
+        } else if (tablename.equals("end")) {
+            return ".pft";
+        } else if (tablename.equals("txt")) {
+            return ".tft";
+        } else if (tablename.equals("edg")) {
+            return ".lft";
+        }
+        return null;
     }
 
     public void close() {
-	tiler.close();
-	for (int i = 0; i < featureTables.length; i++) {
-	    DcwRecordFile drf = featureTables[i];
-	    if (drf != null) {
-		drf.close();
-	    }
-	}
+        tiler.close();
+        for (int i = 0; i < featureTables.length; i++) {
+            DcwRecordFile drf = featureTables[i];
+            if (drf != null) {
+                drf.close();
+            }
+        }
     }
 }
 

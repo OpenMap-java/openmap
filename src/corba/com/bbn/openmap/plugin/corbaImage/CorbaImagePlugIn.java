@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/plugin/corbaImage/CorbaImagePlugIn.java,v $
 // $RCSfile: CorbaImagePlugIn.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 01:53:36 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -110,60 +110,60 @@ public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConst
      */
     public String createQueryString(Projection p) {
 
-	if (queryHeader == null) {
-	    return null;
-	}
+        if (queryHeader == null) {
+            return null;
+        }
 
         String bbox = "undefined";
-	String height = "undefined";
-	String width = "undefined";
+        String height = "undefined";
+        String width = "undefined";
 
-	StringBuffer buf = new StringBuffer(queryHeader);
-	buf.append(REQUEST + "=" + MAP + "&");
+        StringBuffer buf = new StringBuffer(queryHeader);
+        buf.append(REQUEST + "=" + MAP + "&");
 
-	if (p != null) {
-	    buf.append(PROJTYPE + "=" + p.getName() + "&" +
-		       SCALE + "=" + p.getScale() + "&" +
-		       LAT + "=" + p.getCenter().getLatitude() + "&" +
-		       LON + "=" + p.getCenter().getLongitude() + "&" +
-		       HEIGHT + "=" + p.getHeight() + "&" +
-		       WIDTH + "=" + p.getWidth());
-	} else {
-	    buf.append(PROJTYPE + "=name_undefined&" +
-		       SCALE + "=scale_undefined&" +
-		       LAT + "=center_lat_undefined&" +
-		       LON + "=center_lon_undefined&" +
-		       HEIGHT + "=height_undefined&" +
-		       WIDTH + "=width_undefined");
-	}
+        if (p != null) {
+            buf.append(PROJTYPE + "=" + p.getName() + "&" +
+                       SCALE + "=" + p.getScale() + "&" +
+                       LAT + "=" + p.getCenter().getLatitude() + "&" +
+                       LON + "=" + p.getCenter().getLongitude() + "&" +
+                       HEIGHT + "=" + p.getHeight() + "&" +
+                       WIDTH + "=" + p.getWidth());
+        } else {
+            buf.append(PROJTYPE + "=name_undefined&" +
+                       SCALE + "=scale_undefined&" +
+                       LAT + "=center_lat_undefined&" +
+                       LON + "=center_lon_undefined&" +
+                       HEIGHT + "=height_undefined&" +
+                       WIDTH + "=width_undefined");
+        }
 
-	if (imageFormat != null) {
-	    buf.append("&" + FORMAT + "=" + imageFormat);
-	}
+        if (imageFormat != null) {
+            buf.append("&" + FORMAT + "=" + imageFormat);
+        }
 
-	if (transparent) {
-	    buf.append("&" + TRANSPARENT + "=true");
-	}
+        if (transparent) {
+            buf.append("&" + TRANSPARENT + "=true");
+        }
 
-	if (backgroundColor != null) {
-	    buf.append("&" + BGCOLOR + "=" + backgroundColor);
-	}
+        if (backgroundColor != null) {
+            buf.append("&" + BGCOLOR + "=" + backgroundColor);
+        }
 
-	String layers = getLayerMarkers();
-	if (layers != null) {
-	    buf.append("&" + layers);
-	}
+        String layers = getLayerMarkers();
+        if (layers != null) {
+            buf.append("&" + layers);
+        }
 
-	return buf.toString();
+        return buf.toString();
     }
 
     public String getServerName() {
-	return queryHeader;
+        return queryHeader;
     }
 
     public String getLayerMarkers() {
-	// Not implemented - should be a list that can be set by the user.
-	return null;
+        // Not implemented - should be a list that can be set by the user.
+        return null;
     }
 
     /**
@@ -176,8 +176,8 @@ public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConst
      */
     public OMGraphicList getRectangle(Projection p) {
         OMGraphicList list = new OMGraphicList();
-	
-	currentProjection = p;
+        
+        currentProjection = p;
 
         String urlString = createQueryString(p);
 
@@ -189,27 +189,27 @@ public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConst
             return list;
         }
 
-	Server serv = getServer();
-	if (serv == null) return null;
-	byte[] imageData;
+        Server serv = getServer();
+        if (serv == null) return null;
+        byte[] imageData;
 
-	Debug.message("cis", "CorbaImagePlugIn: requesting image data from server...");
+        Debug.message("cis", "CorbaImagePlugIn: requesting image data from server...");
 
-	try {
-	    imageData = serv.getImage(urlString);
+        try {
+            imageData = serv.getImage(urlString);
 
-	    if (Debug.debugging("cis")){
-		Debug.output("CorbaImagePlugIn: got image data length " + 
-			     imageData.length);
-	    }
-	    ImageIcon ii = new ImageIcon(imageData);
-	    OMRaster image = new OMRaster((int)0, (int)0, ii);
-	    list.add(image);
+            if (Debug.debugging("cis")){
+                Debug.output("CorbaImagePlugIn: got image data length " + 
+                             imageData.length);
+            }
+            ImageIcon ii = new ImageIcon(imageData);
+            OMRaster image = new OMRaster((int)0, (int)0, ii);
+            list.add(image);
 
-	} catch (org.omg.CORBA.SystemException e){
-	    handleCORBAError(e);
-	    server = null;
-	}
+        } catch (org.omg.CORBA.SystemException e){
+            handleCORBAError(e);
+            server = null;
+        }
 
         list.generate(p);
         return list;
@@ -219,84 +219,84 @@ public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConst
      * PropertyConsumer method.
      */
     public void setProperties(String prefix, Properties setList) {
-	super.setProperties(prefix, setList);
+        super.setProperties(prefix, setList);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
-	
-	imageFormat = setList.getProperty(prefix + ImageFormatProperty);
-	transparent =  LayerUtils.booleanFromProperties(setList, prefix + TransparentProperty, false);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        
+        imageFormat = setList.getProperty(prefix + ImageFormatProperty);
+        transparent =  LayerUtils.booleanFromProperties(setList, prefix + TransparentProperty, false);
 
-	backgroundColor = setList.getProperty(prefix + BackgroundColorProperty);
+        backgroundColor = setList.getProperty(prefix + BackgroundColorProperty);
 
-	String url = setList.getProperty(prefix + iorUrlProperty);
-	if (url != null) {
-	    try {
-		iorURL = LayerUtils.getResourceOrFileOrURL(url);
-	    } catch (MalformedURLException e) {
-		throw new IllegalArgumentException("\"" + url + "\""
-						   + " is malformed.");
-	    }
-	}
+        String url = setList.getProperty(prefix + iorUrlProperty);
+        if (url != null) {
+            try {
+                iorURL = LayerUtils.getResourceOrFileOrURL(url);
+            } catch (MalformedURLException e) {
+                throw new IllegalArgumentException("\"" + url + "\""
+                                                   + " is malformed.");
+            }
+        }
 
-	naming = setList.getProperty(prefix + namingProperty);
-	Debug.message("cis", "CorbaImagePlugIn.setProperties(): naming = " + naming);
+        naming = setList.getProperty(prefix + namingProperty);
+        Debug.message("cis", "CorbaImagePlugIn.setProperties(): naming = " + naming);
 
-	queryHeader = "";
+        queryHeader = "";
 
-	if (Debug.debugging("plugin")){
-	    Debug.output("CorbaImagePlugIn: set up with header \"" + queryHeader + "\"");
-	}
+        if (Debug.debugging("plugin")){
+            Debug.output("CorbaImagePlugIn: set up with header \"" + queryHeader + "\"");
+        }
     }
 
     /**
      * PropertyConsumer method.
      */
     public Properties getProperties(Properties getList) {
-	getList = super.getProperties(getList);
+        getList = super.getProperties(getList);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	String iorString = null;
-	if (iorURL != null) {
-	    iorString = iorURL.toString();
-	}
-	getList.put(prefix + iorUrlProperty, PropUtils.unnull(iorString));
-	getList.put(prefix + namingProperty, PropUtils.unnull(naming));
-	getList.put(prefix + ImageFormatProperty, PropUtils.unnull(imageFormat));
-	getList.put(prefix + TransparentProperty, new Boolean(transparent).toString());
-	getList.put(prefix + BackgroundColorProperty, PropUtils.unnull(backgroundColor));
-	return getList;
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String iorString = null;
+        if (iorURL != null) {
+            iorString = iorURL.toString();
+        }
+        getList.put(prefix + iorUrlProperty, PropUtils.unnull(iorString));
+        getList.put(prefix + namingProperty, PropUtils.unnull(naming));
+        getList.put(prefix + ImageFormatProperty, PropUtils.unnull(imageFormat));
+        getList.put(prefix + TransparentProperty, new Boolean(transparent).toString());
+        getList.put(prefix + BackgroundColorProperty, PropUtils.unnull(backgroundColor));
+        return getList;
     }    
 
     /**
      * PropertyConsumer method.
      */
     public Properties getPropertyInfo(Properties list) {
-	list = super.getPropertyInfo(list);
-	list.put(iorUrlProperty, "The URL of the ior file for the server.");
-	list.put(namingProperty, "The Naming Services Name of the server.");
-	list.put(ImageFormatProperty, "Image format (JPEG|GIF|PPM|PNG)");
-	list.put(TransparentProperty, "Whether the background should be transparent");
-	list.put(TransparentProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list = super.getPropertyInfo(list);
+        list.put(iorUrlProperty, "The URL of the ior file for the server.");
+        list.put(namingProperty, "The Naming Services Name of the server.");
+        list.put(ImageFormatProperty, "Image format (JPEG|GIF|PPM|PNG)");
+        list.put(TransparentProperty, "Whether the background should be transparent");
+        list.put(TransparentProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-	list.put(BackgroundColorProperty, "Background color for image.");
-	list.put(BackgroundColorProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-	return list;
+        list.put(BackgroundColorProperty, "Background color for image.");
+        list.put(BackgroundColorProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        return list;
     }
 
     /**
      * Set the name used for the CORBA naming service.
      */
     public void setNaming(String CORBAName){
-	naming = CORBAName;
+        naming = CORBAName;
     }
 
     /**
      * Get the name used for the CORBA naming service.
      */
     public String getNaming(){
-	return naming;
+        return naming;
     }
 
     /**
@@ -304,14 +304,14 @@ public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConst
      * where it is located.  
      */
     public void setIorURL(URL iorurl){
-	iorURL = iorurl;
+        iorURL = iorurl;
     }
 
     /**
      * Get the URL for the ior.
      */
     public URL getIorURL(){
-	return iorURL;
+        return iorURL;
     }
 
     ////////////////  Corba management
@@ -323,68 +323,68 @@ public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConst
      *
      */
     public Server getServer () {
-	if (server == null)
-	    initServer();
-	return server;
+        if (server == null)
+            initServer();
+        return server;
     }
 
     /**
      * bind to the server.
      */
     private void initServer() {
-	String ior = null;
-	org.omg.CORBA.Object object = null;
+        String ior = null;
+        org.omg.CORBA.Object object = null;
 
-	com.bbn.openmap.util.corba.CORBASupport cs = 
-	    new com.bbn.openmap.util.corba.CORBASupport();
+        com.bbn.openmap.util.corba.CORBASupport cs = 
+            new com.bbn.openmap.util.corba.CORBASupport();
 
-	try {
-	    object = cs.readIOR(iorURL);
-	    server = ServerHelper.narrow(object);
-	} catch (IOException ioe) {
-	    if (Debug.debugging("cis")) {
-		Debug.output(getName() + "(CIS).initServer() IO Exception with ior: " + iorURL);
-	    }
-	    server = null;
-	    return;
-	}
+        try {
+            object = cs.readIOR(iorURL);
+            server = ServerHelper.narrow(object);
+        } catch (IOException ioe) {
+            if (Debug.debugging("cis")) {
+                Debug.output(getName() + "(CIS).initServer() IO Exception with ior: " + iorURL);
+            }
+            server = null;
+            return;
+        }
 
-	if (server == null) {
-	    object = cs.resolveName(naming);
-	    
-	    if (object != null) {
-		server = ServerHelper.narrow(object);
-		if (Debug.debugging("cis")) {
-		    Debug.output("Have a CorbaImageServer:" );
-		    Debug.output("*** Server: is a " + 
-				 server.getClass().getName() + "\n" + 
-				 server);
-		}
-	    } 
-	}
+        if (server == null) {
+            object = cs.resolveName(naming);
+            
+            if (object != null) {
+                server = ServerHelper.narrow(object);
+                if (Debug.debugging("cis")) {
+                    Debug.output("Have a CorbaImageServer:" );
+                    Debug.output("*** Server: is a " + 
+                                 server.getClass().getName() + "\n" + 
+                                 server);
+                }
+            } 
+        }
 
-	if (Debug.debugging("cis")) {
-	    if (server == null) {
-		Debug.error("CIS.initServer: null server!\n  IOR=" + ior + "\n  Name = " + naming);
-	    } else {
-		Debug.output("CIS: server is golden.");
-	    }
-	}
+        if (Debug.debugging("cis")) {
+            if (server == null) {
+                Debug.error("CIS.initServer: null server!\n  IOR=" + ior + "\n  Name = " + naming);
+            } else {
+                Debug.output("CIS: server is golden.");
+            }
+        }
     }
     
     protected void handleCORBAError(org.omg.CORBA.SystemException e){
-	// don't freak out if we were only interrupted...
-	if (e.toString().indexOf("InterruptedIOException") != -1) {
-	    Debug.error("CorbaImagePlugIn server communication interrupted!");
-	} else {
-	    Debug.error("CorbaImagePlugIn caught CORBA exception: " + e + "\n" +
-			"CorbaImagePlugIn Exception class: " + 
-			e.getClass().getName() + "\nSpecific Message: " +
-			e.getMessage());
-	    e.printStackTrace();
-	}
+        // don't freak out if we were only interrupted...
+        if (e.toString().indexOf("InterruptedIOException") != -1) {
+            Debug.error("CorbaImagePlugIn server communication interrupted!");
+        } else {
+            Debug.error("CorbaImagePlugIn caught CORBA exception: " + e + "\n" +
+                        "CorbaImagePlugIn Exception class: " + 
+                        e.getClass().getName() + "\nSpecific Message: " +
+                        e.getMessage());
+            e.printStackTrace();
+        }
 
-	server = null;// dontcha just love CORBA? reinit later
+        server = null;// dontcha just love CORBA? reinit later
     }
 
 }

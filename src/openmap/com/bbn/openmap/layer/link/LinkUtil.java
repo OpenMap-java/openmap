@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkUtil.java,v $
 // $RCSfile: LinkUtil.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,32 +34,32 @@ public class LinkUtil {
      * @param length the number of characters to be read.. 
      */
     protected static String readString(DataInput dis, int length)
-	throws IOException, ArrayIndexOutOfBoundsException {
-	String ret = null;
-	char[] chars = new char[length];
+        throws IOException, ArrayIndexOutOfBoundsException {
+        String ret = null;
+        char[] chars = new char[length];
 
-	for (int i = 0; i < length; i++){
-	    chars[i] = dis.readChar();
-	}
-	ret = new String(chars);
-	return ret;
+        for (int i = 0; i < length; i++){
+            chars[i] = dis.readChar();
+        }
+        ret = new String(chars);
+        return ret;
     }
 
     /** Provided as a readability convenience. */
     public static int setMask(int value, int mask){
-	return (value | mask);
+        return (value | mask);
     }
 
     /** Provided as a readability convenience. */
     public static int unsetMask(int value, int mask){
-	return (value & ~mask);
+        return (value & ~mask);
     }
 
     /** Provided as a readability convenience. */
     public static boolean isMask(int value, int mask){
-	if ((value & mask) == 0){
-	    return false;
-	}
-	return true;
+        if ((value & mask) == 0){
+            return false;
+        }
+        return true;
     }
 }

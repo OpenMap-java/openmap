@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRangeRings.java,v $
 // $RCSfile: OMRangeRings.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:28:00 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -81,8 +81,8 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * internally).  
      */
     public OMRangeRings(float latPoint, float lonPoint, float radius) {
-	this(new LatLonPoint(latPoint, lonPoint), radius, 
-	     Length.DECIMAL_DEGREE, -1);
+        this(new LatLonPoint(latPoint, lonPoint), radius, 
+             Length.DECIMAL_DEGREE, -1);
     }
 
     /**
@@ -95,8 +95,8 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * @param units com.bbn.openmap.proj.Length object.
      */
     public OMRangeRings(float latPoint, float lonPoint, 
-			float radius, Length units) {
-	this(new LatLonPoint(latPoint, lonPoint), radius, units, -1);
+                        float radius, Length units) {
+        this(new LatLonPoint(latPoint, lonPoint), radius, units, -1);
     }
 
     /**
@@ -111,8 +111,8 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * is generated internally)
      */
     public OMRangeRings(float latPoint, float lonPoint, 
-			float radius, Length units, int nverts) {
-	this(new LatLonPoint(latPoint, lonPoint), radius, units, nverts);
+                        float radius, Length units, int nverts) {
+        this(new LatLonPoint(latPoint, lonPoint), radius, units, nverts);
     }
 
     /**
@@ -127,15 +127,15 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * value is generated internally) 
      */
     public OMRangeRings(LatLonPoint center, float radius, 
-			Length units, int nverts) {
-	super(center, radius, units, nverts);
-	centerPoint = createCenterPoint();
-	form.setMaximumFractionDigits(2);
+                        Length units, int nverts) {
+        super(center, radius, units, nverts);
+        centerPoint = createCenterPoint();
+        form.setMaximumFractionDigits(2);
     }
 
     protected OMPoint createCenterPoint() {
-	return new OMPoint((float)center.getLatitude(), 
-			   (float)center.getLongitude());
+        return new OMPoint((float)center.getLatitude(), 
+                           (float)center.getLongitude());
     }
 
     /**
@@ -146,21 +146,21 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * placed.
      */
     public void setInterval(int interval) {
-	this.interval = interval;
-	setNeedToRegenerate(true);
+        this.interval = interval;
+        setNeedToRegenerate(true);
     }
 
     /** Convenience method to set both at one time. */
     public void setInterval(int interval, Length units) {
-	setInterval(interval);
-	setIntervalUnits(units);
+        setInterval(interval);
+        setIntervalUnits(units);
     }
 
     /**
      * Get the interval number.
      */
     public int getInterval() {
-	return interval;
+        return interval;
     }
 
     /**
@@ -170,26 +170,26 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * the units of the interval where the range rings are drawn.
      */
     public void setIntervalUnits(Length units) {
-	intervalUnits = units;
-	setNeedToRegenerate(true);
+        intervalUnits = units;
+        setNeedToRegenerate(true);
     }
 
     /**
      * Get the interval units.
      */
     public Length getIntervalUnits() {
-	return intervalUnits;
+        return intervalUnits;
     }
 
     /**
      * Flag for whether the rings should be labeled.
      */
     public void setDrawLabels(boolean dl) {
-	drawLabels = dl;
+        drawLabels = dl;
     }
 
     public boolean getDrawLabels() {
-	return drawLabels;
+        return drawLabels;
     }
 
     /** 
@@ -197,18 +197,18 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * will be used.  This only applies to the labels with units. 
      */
     public void setFormat(java.text.NumberFormat nf) {
-	if (nf != null) {
-	    form = nf;
-	} else {
-	    form = DEFAULT_FORMAT;
-	}
+        if (nf != null) {
+            form = nf;
+        } else {
+            form = DEFAULT_FORMAT;
+        }
     }
 
     /**
      * Get the format used for the labeling of unit rings.
      */
     public java.text.NumberFormat getFormat() {
-	return form;
+        return form;
     }
 
     /**
@@ -235,7 +235,7 @@ public class OMRangeRings extends OMCircle implements Serializable {
      */
     public void setRadius(float radius, Length units) {
         this.radius = units.toRadians(radius);
-	setNeedToRegenerate(true);
+        setNeedToRegenerate(true);
     }
 
     /** 
@@ -243,38 +243,38 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * proper inner circles. 
      */
     public OMCircle[] createCircles() {
-	OMCircle[] circles;
-	OMText[] t;
-	int i;
-	float rad;
-	String value;	
-	if (intervalUnits == null) {
-	    int noUnitInterval = interval - 1;
-	    circles = new OMCircle[noUnitInterval];
-	    t = new OMText[noUnitInterval];
+        OMCircle[] circles;
+        OMText[] t;
+        int i;
+        float rad;
+        String value;   
+        if (intervalUnits == null) {
+            int noUnitInterval = interval - 1;
+            circles = new OMCircle[noUnitInterval];
+            t = new OMText[noUnitInterval];
 
-	    for (i = 0; i < noUnitInterval; i++) {
-		rad = (float)((i + 1) * radius/(noUnitInterval + 1));
-		circles[i] = new OMCircle(center, rad, Length.RADIAN, -1);
-		value = ((i+1) + "/"+ (noUnitInterval+1));
-		t[i] = new OMText(center.getLatitude() + Length.DECIMAL_DEGREE.fromRadians(rad), center.getLongitude(), value, OMText.JUSTIFY_CENTER);
-	   } 
-	} else {
-	    float realDistanceInterval = intervalUnits.toRadians(interval);
-	    int number = (int)(radius/realDistanceInterval);
-	    circles = new OMCircle[number];
-	    t = new OMText[number + 1];
-	    for (i = 0; i < number; i++) {
-		rad = (float)((i+1)*realDistanceInterval);
-		circles[i] = new OMCircle(center, rad, Length.RADIAN, -1);
-		value = (form.format((double)intervalUnits.fromRadians(rad)) + " " + intervalUnits.getAbbr());
-		t[i] = new OMText(center.getLatitude() + Length.DECIMAL_DEGREE.fromRadians(rad), center.getLongitude(), value, OMText.JUSTIFY_CENTER);
-	    }
-	    value = (form.format((double)intervalUnits.fromRadians(radius)) + " " + intervalUnits.getAbbr());
-	    t[i] = new OMText(center.getLatitude() + Length.DECIMAL_DEGREE.fromRadians(radius), center.getLongitude(), value, OMText.JUSTIFY_CENTER);
-	}
-	labels = t;
-	return circles;
+            for (i = 0; i < noUnitInterval; i++) {
+                rad = (float)((i + 1) * radius/(noUnitInterval + 1));
+                circles[i] = new OMCircle(center, rad, Length.RADIAN, -1);
+                value = ((i+1) + "/"+ (noUnitInterval+1));
+                t[i] = new OMText(center.getLatitude() + Length.DECIMAL_DEGREE.fromRadians(rad), center.getLongitude(), value, OMText.JUSTIFY_CENTER);
+           } 
+        } else {
+            float realDistanceInterval = intervalUnits.toRadians(interval);
+            int number = (int)(radius/realDistanceInterval);
+            circles = new OMCircle[number];
+            t = new OMText[number + 1];
+            for (i = 0; i < number; i++) {
+                rad = (float)((i+1)*realDistanceInterval);
+                circles[i] = new OMCircle(center, rad, Length.RADIAN, -1);
+                value = (form.format((double)intervalUnits.fromRadians(rad)) + " " + intervalUnits.getAbbr());
+                t[i] = new OMText(center.getLatitude() + Length.DECIMAL_DEGREE.fromRadians(rad), center.getLongitude(), value, OMText.JUSTIFY_CENTER);
+            }
+            value = (form.format((double)intervalUnits.fromRadians(radius)) + " " + intervalUnits.getAbbr());
+            t[i] = new OMText(center.getLatitude() + Length.DECIMAL_DEGREE.fromRadians(radius), center.getLongitude(), value, OMText.JUSTIFY_CENTER);
+        }
+        labels = t;
+        return circles;
     }
 
     /**
@@ -284,28 +284,28 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-	if (getNeedToRegenerate() == true) {
-	    subCircles = createCircles();
-	}
+        if (getNeedToRegenerate() == true) {
+            subCircles = createCircles();
+        }
 
-	centerPoint = createCenterPoint();
-	centerPoint.generate(proj);
+        centerPoint = createCenterPoint();
+        centerPoint.generate(proj);
 
-	setRenderType(RENDERTYPE_LATLON); // Can't be anything else.
-	int i;	
-	if (subCircles != null) {
-	    for (i = 0; i < subCircles.length; i++) {
-		subCircles[i].generate(proj);
-		labels[i].generate(proj);
-	    }
+        setRenderType(RENDERTYPE_LATLON); // Can't be anything else.
+        int i;  
+        if (subCircles != null) {
+            for (i = 0; i < subCircles.length; i++) {
+                subCircles[i].generate(proj);
+                labels[i].generate(proj);
+            }
 
-	    // do the one for the outer ring if there are units.
-	    if (labels.length > i) {
-		labels[i].generate(proj);
-	    }
-	}
+            // do the one for the outer ring if there are units.
+            if (labels.length > i) {
+                labels[i].generate(proj);
+            }
+        }
 
-	return super.generate(proj);
+        return super.generate(proj);
     }
 
     /**
@@ -314,33 +314,33 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * @param g Graphics context to render into
      */
     public void render(Graphics g) {
-	super.render(g);
-	drawingAttributes.setFrom(this);
+        super.render(g);
+        drawingAttributes.setFrom(this);
 
-	if (subCircles != null) {
-	    // Draw from the larger to the smaller, so the lines of
-	    // the smaller circles will appear on top of the bigger
-	    // ones.
-	    for (int i = subCircles.length - 1; i >= 0; i--) {
-		drawingAttributes.setTo(subCircles[i]);
-		drawingAttributes.setTo(labels[i]);
-		labels[i].setLinePaint(drawingAttributes.getLinePaint());
-		subCircles[i].render(g);
-		if (drawLabels) {
-		    labels[i].render(g);
-		}
-	    }
-	    // do the one for the outer ring if there are units.
-	    if (labels.length > subCircles.length && drawLabels) {
-		drawingAttributes.setTo(labels[subCircles.length]);
-		labels[subCircles.length].setLinePaint(drawingAttributes.getLinePaint());
-		labels[subCircles.length].render(g);
-	    }
-	}
-	if (centerPoint != null) {
-	    drawingAttributes.setTo(centerPoint);
-	    centerPoint.render(g);
-	}
+        if (subCircles != null) {
+            // Draw from the larger to the smaller, so the lines of
+            // the smaller circles will appear on top of the bigger
+            // ones.
+            for (int i = subCircles.length - 1; i >= 0; i--) {
+                drawingAttributes.setTo(subCircles[i]);
+                drawingAttributes.setTo(labels[i]);
+                labels[i].setLinePaint(drawingAttributes.getLinePaint());
+                subCircles[i].render(g);
+                if (drawLabels) {
+                    labels[i].render(g);
+                }
+            }
+            // do the one for the outer ring if there are units.
+            if (labels.length > subCircles.length && drawLabels) {
+                drawingAttributes.setTo(labels[subCircles.length]);
+                labels[subCircles.length].setLinePaint(drawingAttributes.getLinePaint());
+                labels[subCircles.length].render(g);
+            }
+        }
+        if (centerPoint != null) {
+            drawingAttributes.setTo(centerPoint);
+            centerPoint.render(g);
+        }
     }
 
     /**
@@ -351,26 +351,26 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * @return float distance from circle to the point
      */
     public float distance(int x, int y) {
-	float dist = normalizeDistanceForLineWidth(super.distance(x, y));
+        float dist = normalizeDistanceForLineWidth(super.distance(x, y));
 
-	// Not sure whether the inner circles should be queried for
-	// distance measurements.
-	float tmpDist;
-//  	if (dist != 0 && subCircles != null) {
-//  	    for (int i = 0; i < subCircles.length; i++) {
-//  		tmpDist = subCircles[i].distance(x, y);
-//  		if (tmpDist == 0) return tmpDist;
-		
-//  		if (tmpDist < dist) {
-//  		    dist = tmpDist;
-//  		}
-//  	    }
-//  	}
-	tmpDist = centerPoint.distance(x, y);
-	if (tmpDist < dist) {
-	    dist = tmpDist;
-	}
+        // Not sure whether the inner circles should be queried for
+        // distance measurements.
+        float tmpDist;
+//      if (dist != 0 && subCircles != null) {
+//          for (int i = 0; i < subCircles.length; i++) {
+//              tmpDist = subCircles[i].distance(x, y);
+//              if (tmpDist == 0) return tmpDist;
+                
+//              if (tmpDist < dist) {
+//                  dist = tmpDist;
+//              }
+//          }
+//      }
+        tmpDist = centerPoint.distance(x, y);
+        if (tmpDist < dist) {
+            dist = tmpDist;
+        }
 
-	return dist;
+        return dist;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/RenderingHintsRenderPolicy.java,v $
 // $RCSfile: RenderingHintsRenderPolicy.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/09/04 18:15:21 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,13 +82,13 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
      * The layer needs to be set at some point before use.
      */
     public RenderingHintsRenderPolicy() {
-	super();
-	setRenderingHints(new RenderingHints(null));
+        super();
+        setRenderingHints(new RenderingHints(null));
     }
     
     public RenderingHintsRenderPolicy(OMGraphicHandlerLayer layer) {
-	super(layer);
-	setRenderingHints(new RenderingHints(null));
+        super(layer);
+        setRenderingHints(new RenderingHints(null));
     }
 
     /**
@@ -97,7 +97,7 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
      * object.
      */
     public void setRenderingHints(RenderingHints rh) {
-	renderingHints = rh;
+        renderingHints = rh;
     }
 
     /**
@@ -105,7 +105,7 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
      * May be null (default).
      */
     public RenderingHints getRenderingHints() {
-	return renderingHints;
+        return renderingHints;
     }
 
     /**
@@ -114,79 +114,79 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
      * method so the changes won't affect other layers.
      */
     public void paint(Graphics g) {
-	g = g.create(); // Make a copy to use just for this layer.
-	setRenderingHints(g);
-	super.paint(g);
+        g = g.create(); // Make a copy to use just for this layer.
+        setRenderingHints(g);
+        super.paint(g);
     }
 
     public void setRenderingHints(Graphics g) {
-	if (renderingHints != null && g instanceof Graphics2D) {
- 	    ((Graphics2D)g).setRenderingHints(renderingHints);
-	}
+        if (renderingHints != null && g instanceof Graphics2D) {
+            ((Graphics2D)g).setRenderingHints(renderingHints);
+        }
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        super.setProperties(prefix, props);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String renderingHintsString = 
-	    props.getProperty(prefix + RenderingHintsProperty);
+        String renderingHintsString = 
+            props.getProperty(prefix + RenderingHintsProperty);
 
-	if (DEBUG) {
-	    Debug.output("RHRP: decoding rendering hints: " + renderingHintsString);
-	}
+        if (DEBUG) {
+            Debug.output("RHRP: decoding rendering hints: " + renderingHintsString);
+        }
 
-	Vector renderingHintsVector = 
-	    PropUtils.parseSpacedMarkers(renderingHintsString);
+        Vector renderingHintsVector = 
+            PropUtils.parseSpacedMarkers(renderingHintsString);
 
-	if (renderingHintsVector != null) {
-	    Iterator it = renderingHintsVector.iterator();
-	    while (it.hasNext()) {
-		String renderingHintKeyString = (String)it.next();
-		if (renderingHintKeyString != null) {
-		    String renderingHintValueString = 
-			props.getProperty(prefix + renderingHintKeyString);
+        if (renderingHintsVector != null) {
+            Iterator it = renderingHintsVector.iterator();
+            while (it.hasNext()) {
+                String renderingHintKeyString = (String)it.next();
+                if (renderingHintKeyString != null) {
+                    String renderingHintValueString = 
+                        props.getProperty(prefix + renderingHintKeyString);
 
-		    if (renderingHintValueString != null) {
-			Object key = null;
-			Object value = null;
+                    if (renderingHintValueString != null) {
+                        Object key = null;
+                        Object value = null;
 
-			try {
-			    key = RenderingHints.class.getField(renderingHintKeyString).get(null);
-			    value = RenderingHints.class.getField(renderingHintValueString).get(null);
-			} catch (NoSuchFieldException nsfe) {
-			} catch (IllegalAccessException iae) {
-			}
+                        try {
+                            key = RenderingHints.class.getField(renderingHintKeyString).get(null);
+                            value = RenderingHints.class.getField(renderingHintValueString).get(null);
+                        } catch (NoSuchFieldException nsfe) {
+                        } catch (IllegalAccessException iae) {
+                        }
 
-			if (key != null && value != null) {
-			    if (renderingHints == null) {
-				renderingHints = new RenderingHints(null);
-			    }
-			    renderingHints.put(key, value);
-			    if (DEBUG) {
-				Debug.output("RHRP+++ adding " + renderingHintKeyString + " | " + renderingHintValueString);
-			    }
-			} else {
-			    if (DEBUG) {
-				Debug.output("RHRP--- NOT adding " + renderingHintKeyString + " (" + key + ") | " + renderingHintValueString + " (" + value + ")");
-			    }
-			}
-		    } else if (DEBUG) {
-			Debug.output("RHRP--- NOT adding " + renderingHintKeyString);
-		    }
-		}
-	    }
-	}
+                        if (key != null && value != null) {
+                            if (renderingHints == null) {
+                                renderingHints = new RenderingHints(null);
+                            }
+                            renderingHints.put(key, value);
+                            if (DEBUG) {
+                                Debug.output("RHRP+++ adding " + renderingHintKeyString + " | " + renderingHintValueString);
+                            }
+                        } else {
+                            if (DEBUG) {
+                                Debug.output("RHRP--- NOT adding " + renderingHintKeyString + " (" + key + ") | " + renderingHintValueString + " (" + value + ")");
+                            }
+                        }
+                    } else if (DEBUG) {
+                        Debug.output("RHRP--- NOT adding " + renderingHintKeyString);
+                    }
+                }
+            }
+        }
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
-	return props;
+        props = super.getProperties(props);
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
-	return props;
+        props = super.getPropertyInfo(props);
+        return props;
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/MapBeanPrinter.java,v $
 // $RCSfile: MapBeanPrinter.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/10/23 21:14:25 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,63 +40,63 @@ public class MapBeanPrinter implements Printable {
     private Dimension MapSize;
 
     public static void printMap(MapBean mapBean) {
-	new MapBeanPrinter(mapBean).print();
+        new MapBeanPrinter(mapBean).print();
     }
 
     public MapBeanPrinter(MapBean mapBean) {
-	MapSize = mapBean.getSize();
-	MapBeanToBePrinted = mapBean;
+        MapSize = mapBean.getSize();
+        MapBeanToBePrinted = mapBean;
     }
 
     public void print() {
-	PrinterJob printJob = PrinterJob.getPrinterJob();
-	printJob.setPrintable(this);
-	if (printJob.printDialog())
-	    try {
-		printJob.print();
-	    } catch(PrinterException pe) {
-		System.out.println("Error printing: " + pe);
-	    }
+        PrinterJob printJob = PrinterJob.getPrinterJob();
+        printJob.setPrintable(this);
+        if (printJob.printDialog())
+            try {
+                printJob.print();
+            } catch(PrinterException pe) {
+                System.out.println("Error printing: " + pe);
+            }
     }
 
     public int print(Graphics g, PageFormat pageFormat, int pageIndex) {
-	if (pageIndex > 0) {
-	    return(NO_SUCH_PAGE);
-	} else {
+        if (pageIndex > 0) {
+            return(NO_SUCH_PAGE);
+        } else {
 
-	    // Compute size of component to print
-	    double frameHeight = MapSize.height;
-	    double frameWidth = MapSize.width;
+            // Compute size of component to print
+            double frameHeight = MapSize.height;
+            double frameWidth = MapSize.width;
 
-	    // Compute size of paper
-	    double pageHeight = pageFormat.getImageableHeight();
-	    double pageWidth = pageFormat.getImageableWidth();
+            // Compute size of paper
+            double pageHeight = pageFormat.getImageableHeight();
+            double pageWidth = pageFormat.getImageableWidth();
 
-	    // Compute x and y scales
-	    double xScale = pageWidth / frameWidth;
-	    double yScale = pageHeight / frameHeight;
+            // Compute x and y scales
+            double xScale = pageWidth / frameWidth;
+            double yScale = pageHeight / frameHeight;
 
-	    // Retain smallest scale
-	    double scale = xScale;
-	    if (yScale < xScale) scale = yScale;
+            // Retain smallest scale
+            double scale = xScale;
+            if (yScale < xScale) scale = yScale;
 
-	    /* Scale and position the graphic Remark : I had to remove
-	       1 from getImageable() values in order to remove an ugly
-	       border that appears on the left and top of the printed
-	       map. bug in the JDK?
-	    */
-	    Graphics2D g2d = (Graphics2D)g;
-	    g2d.translate(pageFormat.getImageableX() -1.0, 
-			  pageFormat.getImageableY()-1.0);
-	    g2d.scale(scale, scale);
+            /* Scale and position the graphic Remark : I had to remove
+               1 from getImageable() values in order to remove an ugly
+               border that appears on the left and top of the printed
+               map. bug in the JDK?
+            */
+            Graphics2D g2d = (Graphics2D)g;
+            g2d.translate(pageFormat.getImageableX() -1.0, 
+                          pageFormat.getImageableY()-1.0);
+            g2d.scale(scale, scale);
 
-	    // Do the work now ...
-	    disableDoubleBuffering(MapBeanToBePrinted);
-	    MapBeanToBePrinted.paint(g2d);
-	    enableDoubleBuffering(MapBeanToBePrinted);
+            // Do the work now ...
+            disableDoubleBuffering(MapBeanToBePrinted);
+            MapBeanToBePrinted.paint(g2d);
+            enableDoubleBuffering(MapBeanToBePrinted);
 
-	    return(PAGE_EXISTS);
-	}
+            return(PAGE_EXISTS);
+        }
     }
 
     /** 
@@ -105,13 +105,13 @@ public class MapBeanPrinter implements Printable {
      * So this turns if off globally.
      */
     public static void disableDoubleBuffering(Component c) {
-	RepaintManager currentManager = RepaintManager.currentManager(c);
-	currentManager.setDoubleBufferingEnabled(false);
+        RepaintManager currentManager = RepaintManager.currentManager(c);
+        currentManager.setDoubleBufferingEnabled(false);
     }
 
     /** Re-enables double buffering globally. */
     public static void enableDoubleBuffering(Component c) {
-	RepaintManager currentManager = RepaintManager.currentManager(c);
-	currentManager.setDoubleBufferingEnabled(true);
+        RepaintManager currentManager = RepaintManager.currentManager(c);
+        currentManager.setDoubleBufferingEnabled(true);
     }
 }

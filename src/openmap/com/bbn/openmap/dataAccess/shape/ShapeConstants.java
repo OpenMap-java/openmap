@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/ShapeConstants.java,v $
 // $RCSfile: ShapeConstants.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:47:44 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:06 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -36,13 +36,13 @@ public interface ShapeConstants {
     public static final int SHAPE_FILE_RECORD_HEADER_LENGTH = 8;
 
     /** The indicator for a null shape type, value of 0 */
-    public static final int SHAPE_TYPE_NULL	  = 0;
+    public static final int SHAPE_TYPE_NULL       = 0;
 
     /** The indicator for a point shape type, value of 1. */
-    public static final int SHAPE_TYPE_POINT	  = 1;
+    public static final int SHAPE_TYPE_POINT      = 1;
 
     /** The indicator for an arc (polyline) shape type, value of 3. */
-    public static final int SHAPE_TYPE_ARC	  = 3;
+    public static final int SHAPE_TYPE_ARC        = 3;
 
     /**
      * The indicator for a polyline (arc) shape type, value of 3.
@@ -50,10 +50,10 @@ public interface ShapeConstants {
      * type as of their July 1998 Shapefile Technical Description
      * paper.  Maybe they should rename Arc/Info as Polyline/Info?...
      */
-    public static final int SHAPE_TYPE_POLYLINE	  = 3;
+    public static final int SHAPE_TYPE_POLYLINE   = 3;
 
     /** The indicator for a polygon shape type, value of 5. */
-    public static final int SHAPE_TYPE_POLYGON	  = 5;
+    public static final int SHAPE_TYPE_POLYGON    = 5;
 
     /** The indicator for a multipoint shape type, value of 8. */
     public static final int SHAPE_TYPE_MULTIPOINT = 8;

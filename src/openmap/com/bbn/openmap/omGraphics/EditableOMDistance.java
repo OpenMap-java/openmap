@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMDistance.java,v $
 // $RCSfile: EditableOMDistance.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/23 22:55:25 $
-// $Author: wjeuerle $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:12 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -57,7 +57,7 @@ public class EditableOMDistance extends EditableOMPoly {
      * the poly off of the gestures.  
      */
     public EditableOMDistance() {
-	super();
+        super();
     }
 
     /**
@@ -65,7 +65,7 @@ public class EditableOMDistance extends EditableOMPoly {
      * parameters in the GraphicAttributes object.
      */
     public EditableOMDistance(GraphicAttributes ga) {
-	super(ga);
+        super(ga);
     }
 
     /**
@@ -75,7 +75,7 @@ public class EditableOMDistance extends EditableOMPoly {
      * @param omp OMDistance that should be edited.
      */
     public EditableOMDistance(OMDistance omp) {
-	super(omp);
+        super(omp);
     }
 
     /**
@@ -83,46 +83,46 @@ public class EditableOMDistance extends EditableOMPoly {
      * GraphicAttributes describe the type of poly to create. 
      */
     public void createGraphic(GraphicAttributes ga) {
-	init();
-	stateMachine.setUndefined();
-	int renderType = OMGraphic.RENDERTYPE_LATLON;
-	int lineType = OMGraphic.LINETYPE_GREATCIRCLE;
+        init();
+        stateMachine.setUndefined();
+        int renderType = OMGraphic.RENDERTYPE_LATLON;
+        int lineType = OMGraphic.LINETYPE_GREATCIRCLE;
 
-	if (ga != null) {
-	    renderType = ga.getRenderType();
-	    lineType = ga.getLineType();
-	}
+        if (ga != null) {
+            renderType = ga.getRenderType();
+            lineType = ga.getLineType();
+        }
 
-	if (Debug.debugging("eomg")) {
-	    Debug.output("EditableOMDistance.createGraphic(): rendertype = " +
-			 renderType);
-	}
+        if (Debug.debugging("eomg")) {
+            Debug.output("EditableOMDistance.createGraphic(): rendertype = " +
+                         renderType);
+        }
 
-	if (lineType == OMGraphic.LINETYPE_UNKNOWN) {
-	    lineType = OMGraphic.LINETYPE_GREATCIRCLE;
-	    ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
-	}
+        if (lineType == OMGraphic.LINETYPE_UNKNOWN) {
+            lineType = OMGraphic.LINETYPE_GREATCIRCLE;
+            ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
+        }
 
-	this.poly = (OMDistance)createGraphic(renderType, lineType);
+        this.poly = (OMDistance)createGraphic(renderType, lineType);
 
-	if (ga != null) {
-	    ga.setRenderType(poly.getRenderType());
-	    ga.setTo(poly);
-	}
+        if (ga != null) {
+            ga.setRenderType(poly.getRenderType());
+            ga.setTo(poly);
+        }
     }
 
     /**
      *  Extendable method to create specific subclasses of OMDistances.
      */
     public OMGraphic createGraphic(int renderType, int lineType) {
-	OMGraphic g = null;
-	switch (renderType) {
-	case (OMGraphic.RENDERTYPE_OFFSET):
-	    System.err.println("Offset type not supported for OMDistance");
-	}
-	g = new OMDistance(new float[0], OMGraphic.RADIANS, lineType, Length.NM);
-	((OMDistance)g).setDoShapes(true);
-	return g;
+        OMGraphic g = null;
+        switch (renderType) {
+        case (OMGraphic.RENDERTYPE_OFFSET):
+            System.err.println("Offset type not supported for OMDistance");
+        }
+        g = new OMDistance(new float[0], OMGraphic.RADIANS, lineType, Length.NM);
+        ((OMDistance)g).setDoShapes(true);
+        return g;
     }
 
     /**
@@ -135,7 +135,7 @@ public class EditableOMDistance extends EditableOMPoly {
      * DrawingAttributes.DEFAULT (black line, clear fill).
      */
     protected void modifyOMGraphicForEditRender() {
-	((OMDistance)getGraphic()).paintOnlyPoly = true;
+        ((OMDistance)getGraphic()).paintOnlyPoly = true;
     }
 
     /**
@@ -147,7 +147,7 @@ public class EditableOMDistance extends EditableOMPoly {
      * the quick paint.
      */
     protected void resetOMGraphicAfterEditRender() {
-	((OMDistance)getGraphic()).paintOnlyPoly = false;
+        ((OMDistance)getGraphic()).paintOnlyPoly = false;
     }
 }
 

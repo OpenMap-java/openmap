@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigateMenu.java,v $
 // $RCSfile: NavigateMenu.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/11/18 14:51:44 $
-// $Author: blubin $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -65,38 +65,38 @@ public class NavigateMenu extends AbstractOpenMapMenu
      * choice menu, and the zoom menus. 
      */
     public NavigateMenu() {
-	super();
-	I18n i18n = Environment.getI18n();
-	setText(i18n.get(this, "navigate",defaultText));
-	setMnemonic
-	    (i18n.get
-	     (this, "navigate", i18n.MNEMONIC, defaultMnemonic).charAt(0));
-	add(new CoordsMenuItem());
+        super();
+        I18n i18n = Environment.getI18n();
+        setText(i18n.get(this, "navigate",defaultText));
+        setMnemonic
+            (i18n.get
+             (this, "navigate", i18n.MNEMONIC, defaultMnemonic).charAt(0));
+        add(new CoordsMenuItem());
     
-	JMenuItem mi;
-	JMenu submenu = (JMenu)add(new JMenu(
-	    i18n.get(this, "zoomIn", "Zoom In")));
+        JMenuItem mi;
+        JMenu submenu = (JMenu)add(new JMenu(
+            i18n.get(this, "zoomIn", "Zoom In")));
         mi = (JMenuItem) submenu.add(new JMenuItem(
-	    i18n.get(this, "zoomIn2X", "2X")));
-	mi.setActionCommand(zoomIn2Cmd);
-	mi.addActionListener(this);
+            i18n.get(this, "zoomIn2X", "2X")));
+        mi.setActionCommand(zoomIn2Cmd);
+        mi.addActionListener(this);
         mi = (JMenuItem) submenu.add(new JMenuItem(
-	    i18n.get(this, "zoomIn4X", "4X")));
-	mi.setActionCommand(zoomIn4Cmd);
-	mi.addActionListener(this);
+            i18n.get(this, "zoomIn4X", "4X")));
+        mi.setActionCommand(zoomIn4Cmd);
+        mi.addActionListener(this);
 
         submenu = (JMenu) add(new JMenu(
-	    i18n.get(this, "zoomOut", "Zoom Out")));
+            i18n.get(this, "zoomOut", "Zoom Out")));
         mi = (JMenuItem) submenu.add(new JMenuItem(
-	    i18n.get(this, "zoomOut2X", "2X")));
-	mi.setActionCommand(zoomOut2Cmd);
-	mi.addActionListener(this);
+            i18n.get(this, "zoomOut2X", "2X")));
+        mi.setActionCommand(zoomOut2Cmd);
+        mi.addActionListener(this);
         mi = (JMenuItem) submenu.add(new JMenuItem(
-	    i18n.get(this, "zoomOut4X", "4X")));
-	mi.setActionCommand(zoomOut4Cmd);
-	mi.addActionListener(this);
+            i18n.get(this, "zoomOut4X", "4X")));
+        mi.setActionCommand(zoomOut4Cmd);
+        mi.addActionListener(this);
 
-	add(new ProjectionMenu());
+        add(new ProjectionMenu());
     }    
 
     /**
@@ -104,19 +104,19 @@ public class NavigateMenu extends AbstractOpenMapMenu
      * the MenuItems.
      */
     public void actionPerformed(ActionEvent ae) {
-    	String command = ae.getActionCommand();
+        String command = ae.getActionCommand();
 
-	Debug.message("NavigateMenu", "MenuPanel.actionPerformed(): " + command);
+        Debug.message("NavigateMenu", "MenuPanel.actionPerformed(): " + command);
 
-	if (command.equals(zoomIn2Cmd)) {
-	    fireZoom(ZoomEvent.RELATIVE, 0.5f);
-	} else if (command.equals(zoomIn4Cmd)) {
-	    fireZoom(ZoomEvent.RELATIVE, 0.25f);
-	} else if (command.equals(zoomOut2Cmd)) {
-	    fireZoom(ZoomEvent.RELATIVE, 2.0f);
-	} else if (command.equals(zoomOut4Cmd)) {
-	    fireZoom(ZoomEvent.RELATIVE, 4.0f);
-	} 	
+        if (command.equals(zoomIn2Cmd)) {
+            fireZoom(ZoomEvent.RELATIVE, 0.5f);
+        } else if (command.equals(zoomIn4Cmd)) {
+            fireZoom(ZoomEvent.RELATIVE, 0.25f);
+        } else if (command.equals(zoomOut2Cmd)) {
+            fireZoom(ZoomEvent.RELATIVE, 2.0f);
+        } else if (command.equals(zoomOut4Cmd)) {
+            fireZoom(ZoomEvent.RELATIVE, 4.0f);
+        }       
     }
 
     /*----------------------------------------------------------------------
@@ -128,7 +128,7 @@ public class NavigateMenu extends AbstractOpenMapMenu
      *
      */
     public synchronized void addZoomListener(ZoomListener l) {
-	zoomSupport.addZoomListener(l);
+        zoomSupport.addZoomListener(l);
     }
 
   
@@ -136,28 +136,28 @@ public class NavigateMenu extends AbstractOpenMapMenu
      *
      */
     public synchronized void removeZoomListener(ZoomListener l) {
-	zoomSupport.removeZoomListener(l);
+        zoomSupport.removeZoomListener(l);
     }
 
     /**
      *
      */
     public void fireZoom(int zoomType, float amount) {
-	zoomSupport.fireZoom(zoomType, amount);
+        zoomSupport.fireZoom(zoomType, amount);
     }
    
     public void findAndInit(Object someObj) {
-	super.findAndInit(someObj);
-	if(someObj instanceof MapBean) {
-	    addZoomListener((MapBean)someObj);
-	}
+        super.findAndInit(someObj);
+        if(someObj instanceof MapBean) {
+            addZoomListener((MapBean)someObj);
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	super.findAndUndo(someObj);
-	if(someObj instanceof MapBean) {
-	    removeZoomListener((MapBean)someObj);
-	}
+        super.findAndUndo(someObj);
+        if(someObj instanceof MapBean) {
+            removeZoomListener((MapBean)someObj);
+        }
     }
 
 }

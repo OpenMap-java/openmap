@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/RunQueue.java,v $
 // $RCSfile: RunQueue.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,15 +43,15 @@ public class RunQueue extends java.lang.Thread {
     /** default constructor.  priority and daemon status inherited from
      * the calling thread.  This thread is NOT started */
     public RunQueue() {
-	this(null); //call constructor with ThreadGroup arg
+        this(null); //call constructor with ThreadGroup arg
     }
 
     /** construct this thread in a particular ThreadGroup
      * @param tg the ThreadGroup to be in. <code>null</code> means the current
      *    ThreadGroup */
     public RunQueue(ThreadGroup tg) {
-	super((tg!=null)?tg:Thread.currentThread().getThreadGroup(),
-	      nextThreadName());
+        super((tg!=null)?tg:Thread.currentThread().getThreadGroup(),
+              nextThreadName());
     }
 
     /** construct a thread in the default ThreadGroup with a few options set
@@ -62,7 +62,7 @@ public class RunQueue extends java.lang.Thread {
      * @see java.lang.Thread#start()
      */
     public RunQueue(boolean isDaemon, int priority, boolean autoStart) {
-	this(null, isDaemon, priority, autoStart);
+        this(null, isDaemon, priority, autoStart);
     }
 
     /** construct a thread in the default ThreadGroup with a few options set
@@ -74,12 +74,12 @@ public class RunQueue extends java.lang.Thread {
      * @see java.lang.Thread#start()
      */
     public RunQueue(ThreadGroup tg, boolean isDaemon, int priority, boolean autoStart) {
-	super(tg, nextThreadName());
-	setDaemon(isDaemon);
-	setPriority(priority);
-	if (autoStart) {
-	    start();
-	}
+        super(tg, nextThreadName());
+        setDaemon(isDaemon);
+        setPriority(priority);
+        if (autoStart) {
+            start();
+        }
     }
 
     /** start going.  This function locks the queue, dequeues and item,
@@ -87,41 +87,41 @@ public class RunQueue extends java.lang.Thread {
      * if no object was on the queue, it waits on the queue.  this function
      * never exits. */
     public void run() {
-	while (true) {
-	    Runnable r = null;
-	    synchronized (queue) {  //lock the queue
-		while (queue.isEmpty()) {
- 		    try {
-			queue.wait(); //wait for an enqueue to happen
- 		    } catch (java.lang.InterruptedException e) {
- 			e.printStackTrace();
- 		    }
-		}
-		r = (Runnable)queue.remove(queue.size() - 1);
+        while (true) {
+            Runnable r = null;
+            synchronized (queue) {  //lock the queue
+                while (queue.isEmpty()) {
+                    try {
+                        queue.wait(); //wait for an enqueue to happen
+                    } catch (java.lang.InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                r = (Runnable)queue.remove(queue.size() - 1);
 
-	    }
-	    try {
-		r.run();
-	    } catch (Exception e) {
-		//Since this happens asynchronously to the thread who enqueued
-		//the object, there isn't a whole lot we can do...
-		e.printStackTrace();
-	    }
-	}
+            }
+            try {
+                r.run();
+            } catch (Exception e) {
+                //Since this happens asynchronously to the thread who enqueued
+                //the object, there isn't a whole lot we can do...
+                e.printStackTrace();
+            }
+        }
     }
 
     /** Add an object to the queue of threads to run
      * @param r the object to add */
     public void enqueue(TerminatingRunnable r) {
-	synchronized (queue) {
-	    queue.add(r);
-	    queue.notifyAll(); //notify the running thread that the queue
-	    // has stuff in it now
-	}
+        synchronized (queue) {
+            queue.add(r);
+            queue.notifyAll(); //notify the running thread that the queue
+            // has stuff in it now
+        }
     }
     
     /** if we use threadgroups, we need names.  So here's where we make them */
     private static synchronized String nextThreadName() {
-	return("RunQueueThread-" + tcount++);
+        return("RunQueueThread-" + tcount++);
     }
 }

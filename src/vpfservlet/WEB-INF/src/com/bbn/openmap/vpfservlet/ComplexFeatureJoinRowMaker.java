@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/ComplexFeatureJoinRowMaker.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -39,71 +39,71 @@ public class ComplexFeatureJoinRowMaker extends PlainRowMaker {
      * @throws FormatException some error was encountered
      */
     public ComplexFeatureJoinRowMaker(DcwRecordFile drf) throws FormatException {
-	featureTables = getTables(drf);
+        featureTables = getTables(drf);
     }
 
     public void addToRow(TableRowElement row, List l) {
-	try {
-	    boolean color1 = false;
-	    int i = 0;
-	    for (Iterator li = l.iterator(); li.hasNext(); ) {
-		Object o = li.next();
-		DcwRecordFile featureTable = featureTables[i++];
-		if ((featureTable != null) &&
-		    featureTable.getRow(featureRow, VPFUtil.objectToInt(o))) {
-		    color1 = !color1;
-		    for (Iterator fi = featureRow.iterator(); fi.hasNext(); ) {
-			row.addElement(new TableDataElement(color1 ? "CLASS=JoinColumn" : "CLASS=Join2Column",
-							    fi.next().toString()));
-		    }
-		} else {
-		    row.addElement(o.toString());
-		}
-	    }
-	} catch (FormatException fe) {
-	    row.addElement(fe.toString());
-	}
+        try {
+            boolean color1 = false;
+            int i = 0;
+            for (Iterator li = l.iterator(); li.hasNext(); ) {
+                Object o = li.next();
+                DcwRecordFile featureTable = featureTables[i++];
+                if ((featureTable != null) &&
+                    featureTable.getRow(featureRow, VPFUtil.objectToInt(o))) {
+                    color1 = !color1;
+                    for (Iterator fi = featureRow.iterator(); fi.hasNext(); ) {
+                        row.addElement(new TableDataElement(color1 ? "CLASS=JoinColumn" : "CLASS=Join2Column",
+                                                            fi.next().toString()));
+                    }
+                } else {
+                    row.addElement(o.toString());
+                }
+            }
+        } catch (FormatException fe) {
+            row.addElement(fe.toString());
+        }
     }
 
     public DcwRecordFile[] getTables(DcwRecordFile drf) throws FormatException {
-	DcwRecordFile[] retval = new DcwRecordFile[drf.getColumnCount()];
-	File dirPath = new File(drf.getTableFile()).getParentFile();
-	File fcsfile = new File(dirPath, "fcs");
-	if (!fcsfile.canRead()) {
-	    fcsfile = new File(dirPath, "fcs.");
-	}
-	DcwRecordFile fcs = new DcwRecordFile(fcsfile.toString());
-	List l = new ArrayList(fcs.getColumnCount());
-	String tableName = drf.getTableName();
+        DcwRecordFile[] retval = new DcwRecordFile[drf.getColumnCount()];
+        File dirPath = new File(drf.getTableFile()).getParentFile();
+        File fcsfile = new File(dirPath, "fcs");
+        if (!fcsfile.canRead()) {
+            fcsfile = new File(dirPath, "fcs.");
+        }
+        DcwRecordFile fcs = new DcwRecordFile(fcsfile.toString());
+        List l = new ArrayList(fcs.getColumnCount());
+        String tableName = drf.getTableName();
 
-	int table1Column = fcs.whatColumn("table1");
-	int table1_keyColumn = fcs.whatColumn("table1_key");
-	int table2Column = fcs.whatColumn("table2");
-	int table2_keyColumn = fcs.whatColumn("table2_key");
+        int table1Column = fcs.whatColumn("table1");
+        int table1_keyColumn = fcs.whatColumn("table1_key");
+        int table2Column = fcs.whatColumn("table2");
+        int table2_keyColumn = fcs.whatColumn("table2_key");
 
-	while (fcs.parseRow(l)) {
-	    String table1 = (String)l.get(table1Column);
-	    String table1_key = (String)l.get(table1_keyColumn);
-	    String table2 = (String)l.get(table2Column);
-	    String table2_key = (String)l.get(table2_keyColumn);
-	    if (table1.equalsIgnoreCase(tableName) &&
-		table2_key.equalsIgnoreCase("id")) {
-		int indexCol = drf.whatColumn(table1_key);
-		retval[indexCol] = new DcwRecordFile(dirPath + File.separator + table2);
-	    }
-	}
+        while (fcs.parseRow(l)) {
+            String table1 = (String)l.get(table1Column);
+            String table1_key = (String)l.get(table1_keyColumn);
+            String table2 = (String)l.get(table2Column);
+            String table2_key = (String)l.get(table2_keyColumn);
+            if (table1.equalsIgnoreCase(tableName) &&
+                table2_key.equalsIgnoreCase("id")) {
+                int indexCol = drf.whatColumn(table1_key);
+                retval[indexCol] = new DcwRecordFile(dirPath + File.separator + table2);
+            }
+        }
 
-	fcs.close();
-	return retval;
+        fcs.close();
+        return retval;
     }
 
     public void close() {
-	for (int i = 0; i < featureTables.length; i++) {
-	    DcwRecordFile drf = featureTables[i];
-	    if (drf != null) {
-		drf.close();
-	    }
-	}
+        for (int i = 0; i < featureTables.length; i++) {
+            DcwRecordFile drf = featureTables[i];
+            if (drf != null) {
+                drf.close();
+            }
+        }
     }
 }
 

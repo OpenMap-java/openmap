@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/PoliticalArea.java,v $
 // $RCSfile: PoliticalArea.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,7 +55,7 @@ public class PoliticalArea {
     protected DrawingAttributes drawingAttributes = DrawingAttributes.getDefaultClone();
 
     public PoliticalArea(String identifier) {
-	this(null, identifier);
+        this(null, identifier);
     }
 
     /** 
@@ -63,18 +63,18 @@ public class PoliticalArea {
      * used as a key by the AreaHandler.  
      */
     public PoliticalArea(String name, String identifier) {
-	this.id = identifier;
-	this.name = name;
-	geometry = new OMGeometryList();
+        this.id = identifier;
+        this.name = name;
+        geometry = new OMGeometryList();
     }
 
     public void setDrawingAttributes(DrawingAttributes da) {
-	drawingAttributes = da;
-	da.setTo(geometry);
+        drawingAttributes = da;
+        da.setTo(geometry);
     }
 
     public DrawingAttributes getDrawingAttributes() {
-	return drawingAttributes;
+        return drawingAttributes;
     }
     
     /**
@@ -82,8 +82,8 @@ public class PoliticalArea {
      * @param c java.awt.Paint
      */
     public void setFillPaint(Paint c) {
-	drawingAttributes.setFillPaint(c);
-	drawingAttributes.setTo(geometry);
+        drawingAttributes.setFillPaint(c);
+        drawingAttributes.setTo(geometry);
     }
 
     /**
@@ -93,7 +93,7 @@ public class PoliticalArea {
      * @return Paint if set, null if it wasn't. 
      */
     public Paint getFillPaint() {
-	return drawingAttributes.getFillPaint();
+        return drawingAttributes.getFillPaint();
     }
 
     /** 
@@ -105,22 +105,22 @@ public class PoliticalArea {
      * @param fillPatternURL url of image file to use as fill.  
      */
     public void setFillPattern(URL fillPatternURL) {
-	// This is kind of tricky.  Look at the list, find out which
-	// members are OMGraphic2D objects, and set the Paint for
-	// those graphics.
+        // This is kind of tricky.  Look at the list, find out which
+        // members are OMGraphic2D objects, and set the Paint for
+        // those graphics.
 
-	TexturePaint texture = null;
-	try {
-	    
-	    if (fillPatternURL != null) {
-		BufferedImage bi = BufferedImageHelper.getBufferedImage(fillPatternURL, 0, 0, -1, -1);
-		texture = new TexturePaint(bi, new Rectangle(0,0, bi.getWidth(), bi.getHeight()));
-	    }
-	} catch (InterruptedException ie) {
-	    Debug.error("PoliticalArea.setFillPattern(): error getting texture image - \n" + ie);
-	}
+        TexturePaint texture = null;
+        try {
+            
+            if (fillPatternURL != null) {
+                BufferedImage bi = BufferedImageHelper.getBufferedImage(fillPatternURL, 0, 0, -1, -1);
+                texture = new TexturePaint(bi, new Rectangle(0,0, bi.getWidth(), bi.getHeight()));
+            }
+        } catch (InterruptedException ie) {
+            Debug.error("PoliticalArea.setFillPattern(): error getting texture image - \n" + ie);
+        }
 
-	setFillPattern(texture);
+        setFillPattern(texture);
     }
 
 
@@ -133,8 +133,8 @@ public class PoliticalArea {
      * @param texture TexturePaint object to use as fill.  
      */
     public void setFillPattern(TexturePaint texture) {
-	drawingAttributes.setFillPaint(texture);
-	drawingAttributes.setTo(geometry);
+        drawingAttributes.setFillPaint(texture);
+        drawingAttributes.setTo(geometry);
     }
 
     /**
@@ -144,7 +144,7 @@ public class PoliticalArea {
      * @return TexturePaint if set, null if it wasn't. 
      */
     public TexturePaint getFillPattern() {
-	return drawingAttributes.getFillPattern();
+        return drawingAttributes.getFillPattern();
     }
 
      /**
@@ -152,8 +152,8 @@ public class PoliticalArea {
      * @param c java.awt.Paint
      */
     public void setLinePaint(Paint c) {
-	drawingAttributes.setLinePaint(c);
-	drawingAttributes.setTo(geometry);
+        drawingAttributes.setLinePaint(c);
+        drawingAttributes.setTo(geometry);
     }
 
     /**
@@ -163,7 +163,7 @@ public class PoliticalArea {
      * @return Paint if set, null if it wasn't. 
      */
     public Paint getLinePaint() {
-	return drawingAttributes.getLinePaint();
+        return drawingAttributes.getLinePaint();
     }
 
     /**
@@ -171,8 +171,8 @@ public class PoliticalArea {
      * @param c java.awt.Paint
      */
     public void setSelectPaint(Paint c) {
-	drawingAttributes.setSelectPaint(c);
-	drawingAttributes.setTo(geometry);
+        drawingAttributes.setSelectPaint(c);
+        drawingAttributes.setTo(geometry);
     }
 
     /**
@@ -182,7 +182,7 @@ public class PoliticalArea {
      * @return Paint if set, null if it wasn't. 
      */
     public Paint getSelectPaint() {
-	return drawingAttributes.getSelectPaint();
+        return drawingAttributes.getSelectPaint();
     }
 
     /**
@@ -198,15 +198,15 @@ public class PoliticalArea {
      * @param v  Value to assign to geometry.
      */
     public void setGeometry(OMGeometryList v) {
-	this.geometry = v;
-	drawingAttributes.setTo(v);
+        this.geometry = v;
+        drawingAttributes.setTo(v);
     }
     
     /** 
      * Add a new omgraphic to the list of graphics in this area
      */ 
-    public void addGraphic(OMGraphic g) {	
-	this.geometry.add((OMGeometry)g);
-	drawingAttributes.setTo(g);
+    public void addGraphic(OMGraphic g) {       
+        this.geometry.add((OMGeometry)g);
+        drawingAttributes.setTo(g);
     }    
 }

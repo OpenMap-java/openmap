@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeScheme.java,v $
 // $RCSfile: CodeScheme.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/12/23 20:47:50 $
-// $Author: wjeuerle $
+// $Revision: 1.8 $
+// $Date: 2004/01/26 18:18:15 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -72,7 +72,7 @@ public class CodeScheme extends CodePosition {
     public final static String HierarchyCodeAdditionProperty = "hierarchyCodeAddition";
 
     public CodeScheme() {
-	super("Scheme", 1, 1);
+        super("Scheme", 1, 1);
     }
 
     /**
@@ -81,37 +81,37 @@ public class CodeScheme extends CodePosition {
      * base symbol code for the scheme and the hierarchy addition.
      */
     public CodePosition addPositionChoice(int index, String entry,
-					  String prefix, Properties props) {
-	
-	CodeScheme cs = (CodeScheme)super.addPositionChoice(index, entry, prefix, props);
-	prefix = PropUtils.getScopedPropertyPrefix(prefix) + entry + ".";
+                                          String prefix, Properties props) {
+        
+        CodeScheme cs = (CodeScheme)super.addPositionChoice(index, entry, prefix, props);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix) + entry + ".";
 
-	String next = props.getProperty(prefix + NextProperty);
+        String next = props.getProperty(prefix + NextProperty);
 
-	if (next != null) {
-	    String nextClassName = props.getProperty(next + ".class");
-	    if (nextClassName != null) {
-		CodePosition cp = (CodePosition)ComponentFactory.create(nextClassName);
-		if (DEBUG) {
-		    Debug.output("CodeScheme created next class(" + 
-				 next + "), " + nextClassName);
-		}
-		if (cp != null) {
-		    cs.nextPosition = cp;
-		    cp.parsePositions(next, props);
-		}
-	    } else {
-		if (DEBUG) {
-		    Debug.output("CodeScheme couldn't create next class(" + 
-				 next + "), " + nextClassName);
-		}
-	    }
-	}
+        if (next != null) {
+            String nextClassName = props.getProperty(next + ".class");
+            if (nextClassName != null) {
+                CodePosition cp = (CodePosition)ComponentFactory.create(nextClassName);
+                if (DEBUG) {
+                    Debug.output("CodeScheme created next class(" + 
+                                 next + "), " + nextClassName);
+                }
+                if (cp != null) {
+                    cs.nextPosition = cp;
+                    cp.parsePositions(next, props);
+                }
+            } else {
+                if (DEBUG) {
+                    Debug.output("CodeScheme couldn't create next class(" + 
+                                 next + "), " + nextClassName);
+                }
+            }
+        }
 
-	cs.defaultSymbolCode = props.getProperty(prefix + DefaultSymbolCodeProperty);
-	cs.hierarchyAddition = props.getProperty(prefix + HierarchyCodeAdditionProperty, "");
-	// Don't need to add to choices, already done in super class method.
-	return cs;
+        cs.defaultSymbolCode = props.getProperty(prefix + DefaultSymbolCodeProperty);
+        cs.hierarchyAddition = props.getProperty(prefix + HierarchyCodeAdditionProperty, "");
+        // Don't need to add to choices, already done in super class method.
+        return cs;
     }
 
     /**
@@ -122,16 +122,16 @@ public class CodeScheme extends CodePosition {
      * @param parent the SymbolPart parent that the new SymbolPart tree falls under.
      */
     public SymbolPart parseHierarchy(Properties props, SymbolPart parent) {
-	String hCode = getHierarchyNumber() + hierarchyAddition;
-	String entry = props.getProperty(hCode);
-	SymbolPart sp = null;
+        String hCode = getHierarchyNumber() + hierarchyAddition;
+        String entry = props.getProperty(hCode);
+        SymbolPart sp = null;
 
-	if (entry != null) {
-	    sp = new SymbolPart(this, entry, props, parent);
-	    parseHierarchy(hCode, props, sp);
-	}
+        if (entry != null) {
+            sp = new SymbolPart(this, entry, props, parent);
+            parseHierarchy(hCode, props, sp);
+        }
 
-	return sp;
+        return sp;
     }
 
     /**
@@ -144,61 +144,61 @@ public class CodeScheme extends CodePosition {
      * @param parent the SymbolPart parent that the new SymbolPart tree falls under.
      */
     public void parseHierarchy(String hCode, Properties props, SymbolPart parent) {
-	
- 	List codePositionList = null;
+        
+        List codePositionList = null;
 
-	if (nextPosition != null) {
-	    codePositionList = nextPosition.getPositionChoices();
-	}
+        if (nextPosition != null) {
+            codePositionList = nextPosition.getPositionChoices();
+        }
 
-	if (codePositionList == null || codePositionList.size() == 0) {
-	    Debug.output(prettyName + ".parseHierarchy(): codePositionList.size = 0");
-	    return;
-	}
+        if (codePositionList == null || codePositionList.size() == 0) {
+            Debug.output(prettyName + ".parseHierarchy(): codePositionList.size = 0");
+            return;
+        }
 
-	List parentList = null;
+        List parentList = null;
 
-	for (Iterator it = codePositionList.iterator(); it.hasNext();) {
-	    CodePosition cp = (CodePosition)it.next();
-	    String newHCode = hCode + "." + cp.getHierarchyNumber();
-	    if (DEBUG) {
-		Debug.output("CodeScheme.parse: " + 
-			     newHCode + " with " + 
-			     cp.getPrettyName());
-	    }
+        for (Iterator it = codePositionList.iterator(); it.hasNext();) {
+            CodePosition cp = (CodePosition)it.next();
+            String newHCode = hCode + "." + cp.getHierarchyNumber();
+            if (DEBUG) {
+                Debug.output("CodeScheme.parse: " + 
+                             newHCode + " with " + 
+                             cp.getPrettyName());
+            }
 
-	    String entry = props.getProperty(newHCode);
-	    if (entry != null) {
-		SymbolPart sp = new SymbolPart(cp, entry, props, parent);
+            String entry = props.getProperty(newHCode);
+            if (entry != null) {
+                SymbolPart sp = new SymbolPart(cp, entry, props, parent);
 
-		if (parentList == null) {
-		    parentList = parent.getSubs();
-		    if (parentList == null) {
-			parentList = new ArrayList();
-			parent.setSubs(parentList);
-		    }
-		}
+                if (parentList == null) {
+                    parentList = parent.getSubs();
+                    if (parentList == null) {
+                        parentList = new ArrayList();
+                        parent.setSubs(parentList);
+                    }
+                }
 
-		if (DEBUG) {
-		    Debug.output("CodeScheme.parse: adding " + sp.getPrettyName() + " to " + parent.getPrettyName());
-		}
+                if (DEBUG) {
+                    Debug.output("CodeScheme.parse: adding " + sp.getPrettyName() + " to " + parent.getPrettyName());
+                }
 
-		parentList.add(sp);
+                parentList.add(sp);
 
-		if (DEBUG) {
-		    Debug.output("CodeScheme.parse: handling " + 
-				 cp.getPrettyName() + 
-				 " children for " + sp.getPrettyName());
-		}
+                if (DEBUG) {
+                    Debug.output("CodeScheme.parse: handling " + 
+                                 cp.getPrettyName() + 
+                                 " children for " + sp.getPrettyName());
+                }
 
-		cp.parseHierarchy(newHCode, props, sp);
-	    
-	    } else {
-		if (DEBUG) {
-		    Debug.output("CodeScheme.parse: no entry found for " + newHCode);
-		}
-	    }
-	}
+                cp.parseHierarchy(newHCode, props, sp);
+            
+            } else {
+                if (DEBUG) {
+                    Debug.output("CodeScheme.parse: no entry found for " + newHCode);
+                }
+            }
+        }
     }
 
     /**
@@ -208,7 +208,7 @@ public class CodeScheme extends CodePosition {
      * parameters written on top of it.
      */
     public StringBuffer getDefaultSymbolCode() {
-	return new StringBuffer(defaultSymbolCode);
+        return new StringBuffer(defaultSymbolCode);
     }
 
     /**
@@ -230,14 +230,14 @@ public class CodeScheme extends CodePosition {
      * Set the code options for this scheme.
      */
     public void setCodeOptions(CodeOptions co) {
-	options = co;
+        options = co;
     }
 
     /**
      * Get the code options set for this scheme.
      */
     public CodeOptions getCodeOptions() {
-	return options;
+        return options;
     }
 
     /**
@@ -249,12 +249,12 @@ public class CodeScheme extends CodePosition {
      * by a CodePosition object without choices.
      */
     public CodeOptions getCodeOptions(SymbolPart sp) {
-	// Check with the symbol part first to see of there are any
-	// options for the particular positions established and
-	// limiting for the particular symbol, and then subsitute
-	// defaults for any other positions.
-	
+        // Check with the symbol part first to see of there are any
+        // options for the particular positions established and
+        // limiting for the particular symbol, and then subsitute
+        // defaults for any other positions.
+        
 
-	return options;
+        return options;
     }
 }

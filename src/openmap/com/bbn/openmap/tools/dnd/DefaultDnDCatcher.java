@@ -59,7 +59,7 @@ public class DefaultDnDCatcher
     protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
 
     /**
-    	 * Hashtable for keeping references to potential drop targets
+         * Hashtable for keeping references to potential drop targets
      */
     protected Hashtable layers = new Hashtable();
 
@@ -428,7 +428,7 @@ public class DefaultDnDCatcher
     /**
      * This method gets called when a bound property is changed.
      * @param evt A PropertyChangeEvent object describing the event source 
-     *   	and the property that has changed.
+     *          and the property that has changed.
      */
     public void propertyChange(java.beans.PropertyChangeEvent evt) {
     }
@@ -520,12 +520,12 @@ public class DefaultDnDCatcher
     public void startDragAction(DragGestureEvent dge, DragSourceListener dsl) {
 
         // create a Transferable object here.
-	 
+         
         // Create a location object that can be dropped on a layer.
 
-	// dragSource.startDrag(dge, getCursor(DragSource.DefaultMoveDrop), new DefaultTransferableObject(new BasicLocation()), dsl);
+        // dragSource.startDrag(dge, getCursor(DragSource.DefaultMoveDrop), new DefaultTransferableObject(new BasicLocation()), dsl);
 
-	// SinkGraphic is a singleton object used as sample. No action on a layer will be done at drop.
+        // SinkGraphic is a singleton object used as sample. No action on a layer will be done at drop.
         dragSource.startDrag(dge, getCursor(DragSource.DefaultMoveDrop), new DefaultTransferableObject(SinkGraphic.getSharedInstance()), dsl);
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SListBox.java,v $
 // $RCSfile: SListBox.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 02:00:34 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,8 +44,8 @@ public class SListBox extends _ListBoxStub {
 
     public SListBox(String label, String[] contents, String selected_item) {
         label_ = label;
-	contents_ = contents;
-	currently_selected_item_ = selected_item;
+        contents_ = contents;
+        currently_selected_item_ = selected_item;
     }
     public void label(java.lang.String label) {
         label_ = label;
@@ -60,19 +60,19 @@ public class SListBox extends _ListBoxStub {
         return currently_selected_item_;
     }
     public void contents(String[] contents) {
-	contents_ = contents;
+        contents_ = contents;
     }
     public String[] contents() {
         return contents_;
     }
     public void selected(java.lang.String box_label,
-			 java.lang.String selected_item,
-			 java.lang.String uniqueID) {
+                         java.lang.String selected_item,
+                         java.lang.String uniqueID) {
 //      System.out.println("ListBox:");
-// 	System.out.println(" in box: " + box_label);
-// 	System.out.println(" unique ID: " + uniqueID);
-// 	System.out.println(" Selected item: " + selected_item);
-	currently_selected_item_ = selected_item;
+//      System.out.println(" in box: " + box_label);
+//      System.out.println(" unique ID: " + uniqueID);
+//      System.out.println(" Selected item: " + selected_item);
+        currently_selected_item_ = selected_item;
     }
   /** The <b>widget</b> function should be used to get the object
    * needed for the <b>addPalette</b> specialist function, which adds
@@ -80,8 +80,8 @@ public class SListBox extends _ListBoxStub {
    */
     public UWidget widget() {
         UWidget uw = new UWidget();
-	uw.lb(this);
-	return uw;
+        uw.lb(this);
+        return uw;
     }
 }
 

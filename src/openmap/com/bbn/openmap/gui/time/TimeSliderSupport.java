@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimeSliderSupport.java,v $
 // $RCSfile: TimeSliderSupport.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:20:42 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,18 +37,18 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
     protected long endTime;
 
     public TimeSliderSupport(JSlider slider, RealTimeHandler rth, 
-			     long startingTime, long endingTime) {
-	timeSlider = slider;
-	rtHandler = rth;
-	startTime = startingTime;
-	endTime = endingTime;
+                             long startingTime, long endingTime) {
+        timeSlider = slider;
+        rtHandler = rth;
+        startTime = startingTime;
+        endTime = endingTime;
 
-	if (Debug.debugging("timedetail")) {
-	    Debug.output("TimeSliderSupport: initialized to:" + startTime +
-			 ", " + endTime);
-	}
+        if (Debug.debugging("timedetail")) {
+            Debug.output("TimeSliderSupport: initialized to:" + startTime +
+                         ", " + endTime);
+        }
 
-	timeSlider.addChangeListener(this);
+        timeSlider.addChangeListener(this);
     }
 
     /**
@@ -57,24 +57,24 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
      * slider marker if the difference is greater than one.
      */
     public void update(long time) {
-	if (timeSlider != null) {
-	    int minimum = timeSlider.getMinimum();
-	    int maximum = timeSlider.getMaximum();
-	    if (time <= startTime) {
-		timeSlider.setValue(minimum);
-	    } else if (time >= endTime) {
-		timeSlider.setValue(maximum);
-	    } else {
-		double val = 
-		    ((double)(time - startTime)/(double)(endTime - startTime)) * (maximum-minimum);
-		if (Math.abs(val - timeSlider.getValue()) > 1) {
-		    if (Debug.debugging("timedetail")) {
-			Debug.output("TimeSliderSupport: Setting time slider to : " + val);
-		    }
-		    timeSlider.setValue((int)val);
-		}
-	    }
-	}
+        if (timeSlider != null) {
+            int minimum = timeSlider.getMinimum();
+            int maximum = timeSlider.getMaximum();
+            if (time <= startTime) {
+                timeSlider.setValue(minimum);
+            } else if (time >= endTime) {
+                timeSlider.setValue(maximum);
+            } else {
+                double val = 
+                    ((double)(time - startTime)/(double)(endTime - startTime)) * (maximum-minimum);
+                if (Math.abs(val - timeSlider.getValue()) > 1) {
+                    if (Debug.debugging("timedetail")) {
+                        Debug.output("TimeSliderSupport: Setting time slider to : " + val);
+                    }
+                    timeSlider.setValue((int)val);
+                }
+            }
+        }
     }
 
     /**
@@ -82,9 +82,9 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
      * based on the current setting on the slider.
      */
     public void stateChanged(ChangeEvent ce) {
-	if (ce.getSource() == timeSlider) {
-	    rtHandler.setTime(getTime());
-	}
+        if (ce.getSource() == timeSlider) {
+            rtHandler.setTime(getTime());
+        }
     }
 
     /**
@@ -93,47 +93,47 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
      * object.
      */
     protected long getTime() {
-	int maximum = timeSlider.getMaximum();
-	int minimum = timeSlider.getMinimum();
-	int value = timeSlider.getValue();
+        int maximum = timeSlider.getMaximum();
+        int minimum = timeSlider.getMinimum();
+        int value = timeSlider.getValue();
 
-	try {
-	    return (startTime + (long)((endTime - startTime) * value/(maximum - minimum)));
-	} catch (ArithmeticException ae) {
-	    Debug.error(ae.getMessage());
-	    return startTime;
-	}
+        try {
+            return (startTime + (long)((endTime - startTime) * value/(maximum - minimum)));
+        } catch (ArithmeticException ae) {
+            Debug.error(ae.getMessage());
+            return startTime;
+        }
     }
 
     public void setTimeSlider(JSlider jslider) {
-	timeSlider = jslider;
+        timeSlider = jslider;
     }
 
     public JSlider setTimeSlider() {
-	return timeSlider;
+        return timeSlider;
     }
 
     public void setHandler(RealTimeHandler rth) {
-	rtHandler = rth;
+        rtHandler = rth;
     }
 
     public RealTimeHandler getHandler() {
-	return rtHandler;
+        return rtHandler;
     }
 
     public void setStartTime(long time) {
-	startTime = time;
+        startTime = time;
     }
 
     public long getStartTime() {
-	return startTime;
+        return startTime;
     }
 
     public void setEndTime(long time) {
-	endTime = time;
+        endTime = time;
     }
 
     public long getEndTime() {
-	return endTime;
+        return endTime;
     }
 }

@@ -23,14 +23,14 @@ package com.bbn.openmap.dataAccess.cgm;
 import java.io.*;
 
 public class BeginPictureBody extends Command
-{	String S;
+{       String S;
 
-	public BeginPictureBody (int ec, int eid, int l, DataInputStream in)
-		throws IOException
-	{	super(ec,eid,l,in);
-	}
-	
-	public String toString ()
-	{	return "Begin Picture Body";
-	}
+        public BeginPictureBody (int ec, int eid, int l, DataInputStream in)
+                throws IOException
+        {       super(ec,eid,l,in);
+        }
+        
+        public String toString ()
+        {       return "Begin Picture Body";
+        }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/vpf/VPFSpecialistGraphicWarehouse.java,v $
 // $RCSfile: VPFSpecialistGraphicWarehouse.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,43 +82,43 @@ public class VPFSpecialistGraphicWarehouse extends GraphicWarehouseSupport {
      * @param props the properties file to look it
      */
     public void setProperties(String prefix, java.util.Properties props) {
-	
-	String forceFeatureTypes = props.getProperty(prefix + ".draw");
+        
+        String forceFeatureTypes = props.getProperty(prefix + ".draw");
 
-	areaFeatures = props.getProperty(prefix + ".area");
-	if (areaFeatures == null) {
-	    areaSkipFeatures = new int[0];
-	} else {
-	    areaSkipFeatures = null;
-	    if (forceFeatureTypes != null) {
-		setAreaFeatures(drawAreaFeatures() || 
-				(forceFeatureTypes.indexOf("area") != -1));
-	    }
-	}
-	  
-	textFeatures = props.getProperty(prefix + ".text");
-	if (textFeatures == null) {
-	    textSkipFeatures = new int[0];
-	} else {
-	    textSkipFeatures = null;
-	    if (forceFeatureTypes != null) {
-		setTextFeatures(drawTextFeatures() || 
-				(forceFeatureTypes.indexOf("text") != -1));
-	    }
-	}
+        areaFeatures = props.getProperty(prefix + ".area");
+        if (areaFeatures == null) {
+            areaSkipFeatures = new int[0];
+        } else {
+            areaSkipFeatures = null;
+            if (forceFeatureTypes != null) {
+                setAreaFeatures(drawAreaFeatures() || 
+                                (forceFeatureTypes.indexOf("area") != -1));
+            }
+        }
+          
+        textFeatures = props.getProperty(prefix + ".text");
+        if (textFeatures == null) {
+            textSkipFeatures = new int[0];
+        } else {
+            textSkipFeatures = null;
+            if (forceFeatureTypes != null) {
+                setTextFeatures(drawTextFeatures() || 
+                                (forceFeatureTypes.indexOf("text") != -1));
+            }
+        }
 
-	edgeFeatures = props.getProperty(prefix + ".edge");
-	if (edgeFeatures == null) {
-	    edgeSkipFeatures = new int[0];
-	} else {
-	    edgeSkipFeatures = null;
-	    if (forceFeatureTypes != null) {
-		setEdgeFeatures(drawEdgeFeatures() || 
-				(forceFeatureTypes.indexOf("edge") != -1));
-	    }
-	}
+        edgeFeatures = props.getProperty(prefix + ".edge");
+        if (edgeFeatures == null) {
+            edgeSkipFeatures = new int[0];
+        } else {
+            edgeSkipFeatures = null;
+            if (forceFeatureTypes != null) {
+                setEdgeFeatures(drawEdgeFeatures() || 
+                                (forceFeatureTypes.indexOf("edge") != -1));
+            }
+        }
 
-	drawAtt.init(prefix, props);
+        drawAtt.init(prefix, props);
     }
 
     /**
@@ -130,28 +130,28 @@ public class VPFSpecialistGraphicWarehouse extends GraphicWarehouseSupport {
      */
 
     protected int[] getSkipArray(String featureString, DcwRecordFile table,
-				 String colAppend) {
+                                 String colAppend) {
         List tmpvec = new ArrayList();
-	if (featureString != null) {
-	    StringTokenizer t = new StringTokenizer(featureString);
-	    while (t.hasMoreTokens()) {
-		String colname = t.nextToken();
+        if (featureString != null) {
+            StringTokenizer t = new StringTokenizer(featureString);
+            while (t.hasMoreTokens()) {
+                String colname = t.nextToken();
 
-		if (colAppend != null) {
-		    colname += colAppend;
-		}
-		int colnum = table.whatColumn(colname);
-		if (colnum != -1) {
-		    tmpvec.add(new Integer(colnum));
-		}
-	    }
-	}
+                if (colAppend != null) {
+                    colname += colAppend;
+                }
+                int colnum = table.whatColumn(colname);
+                if (colnum != -1) {
+                    tmpvec.add(new Integer(colnum));
+                }
+            }
+        }
 
-	int []retval = new int[tmpvec.size()];
-	for (int i = 0; i < retval.length; i++) {
-	    retval[i] = ((Integer)tmpvec.get(i)).intValue();
-	}
-	return retval;
+        int []retval = new int[tmpvec.size()];
+        for (int i = 0; i < retval.length; i++) {
+            retval[i] = ((Integer)tmpvec.get(i)).intValue();
+        }
+        return retval;
     }
 
     /**
@@ -163,204 +163,204 @@ public class VPFSpecialistGraphicWarehouse extends GraphicWarehouseSupport {
     protected boolean createFeature(List primvec, int[] skipArray) {
         //length==0  --> user wants everything
         if (skipArray.length == 0) {
-	    return true;
-	}
-	for (int i = 0; i < skipArray.length; i++) {
-	    int val = VPFUtil.objectToInt(primvec.get(skipArray[i]));
-	    if (val != Integer.MIN_VALUE) {
-	        return true;
-	    }
-	}
-	return false;
+            return true;
+        }
+        for (int i = 0; i < skipArray.length; i++) {
+            int val = VPFUtil.objectToInt(primvec.get(skipArray[i]));
+            if (val != Integer.MIN_VALUE) {
+                return true;
+            }
+        }
+        return false;
     }
 
     final transient static java.awt.Color aaronscolor =
       new java.awt.Color(0xBDDE83);
-							
+                                                        
     /**
      *
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
-			   List facevec,
-			   LatLonPoint ll1,
-			   LatLonPoint ll2,
-			   float dpplat,
-			   float dpplon)
+                           List facevec,
+                           LatLonPoint ll1,
+                           LatLonPoint ll2,
+                           float dpplat,
+                           float dpplon)
     {
         if (areaSkipFeatures == null) {
-	    areaSkipFeatures = getSkipArray(areaFeatures, areatable,
-					    ".aft_id");
-	}
+            areaSkipFeatures = getSkipArray(areaFeatures, areatable,
+                                            ".aft_id");
+        }
 
-	if (!createFeature(facevec, areaSkipFeatures)) {
-	    return;
-	}
-	  
-	List ipts = new ArrayList();
+        if (!createFeature(facevec, areaSkipFeatures)) {
+            return;
+        }
+          
+        List ipts = new ArrayList();
 
-// 	final MutableInt areatype = new MutableInt(-1);
-// 	String descript = covtable.getAreaDescription(facevec, areatype);
-	
-// 	if (areatype.value == 0) {//topology artifact
-// 	    return;
-// 	}
-	
-// 	if (areatype.value == 2) {
-// // 	    if (Debug.debugging("vpf")) {
-// // 	        Debug.output("Skipping open ocean: " + descript);
-// // 	    }
-// 	    return;
-// 	}
+//      final MutableInt areatype = new MutableInt(-1);
+//      String descript = covtable.getAreaDescription(facevec, areatype);
+        
+//      if (areatype.value == 0) {//topology artifact
+//          return;
+//      }
+        
+//      if (areatype.value == 2) {
+// //       if (Debug.debugging("vpf")) {
+// //           Debug.output("Skipping open ocean: " + descript);
+// //       }
+//          return;
+//      }
 
-	int totalSize = 0;
+        int totalSize = 0;
         try {
-	    totalSize = areatable.computeEdgePoints(facevec, ipts);
-	} catch (FormatException f) {
-//  	    Debug.output("FormatException in computeEdgePoints: " + f);
-	    return;
-	}
-	if (totalSize == 0) {
-	    return;
-	}
-	    
-	SPoly py = createAreaSPoly(ipts, totalSize, ll1, ll2, dpplat, dpplon);
-	if (py == null) {
-	    return;
-	}
+            totalSize = areatable.computeEdgePoints(facevec, ipts);
+        } catch (FormatException f) {
+//          Debug.output("FormatException in computeEdgePoints: " + f);
+            return;
+        }
+        if (totalSize == 0) {
+            return;
+        }
+            
+        SPoly py = createAreaSPoly(ipts, totalSize, ll1, ll2, dpplat, dpplon);
+        if (py == null) {
+            return;
+        }
 
-// 	if (areatype.value == -1) {
-// 	    areatype.value = 0;
-// 	}
+//      if (areatype.value == -1) {
+//          areatype.value = 0;
+//      }
 
-	java.awt.Color fc = (java.awt.Color)drawAtt.getFillPaint();
-	if (fc == null) {
-	    fc = java.awt.Color.black;
-	}
+        java.awt.Color fc = (java.awt.Color)drawAtt.getFillPaint();
+        if (fc == null) {
+            fc = java.awt.Color.black;
+        }
 
-	py.color(ns(fc));
-  	py.fillColor(ns(fc));
+        py.color(ns(fc));
+        py.fillColor(ns(fc));
 
-//    	py.fillColor(getSColor(areatype.value));
+//      py.fillColor(getSColor(areatype.value));
 
-// 	py.object(new LineComp(descript));
-	graphics.addSGraphic(py);
+//      py.object(new LineComp(descript));
+        graphics.addSGraphic(py);
     }
 
     /**
      *
      */
     public void createEdge(CoverageTable covtable, EdgeTable edgetable,
-			   List edgevec,
-			   LatLonPoint ll1,
-			   LatLonPoint ll2,
-			   float dpplat,
-			   float dpplon,
-			   CoordFloatString coords)
+                           List edgevec,
+                           LatLonPoint ll1,
+                           LatLonPoint ll2,
+                           float dpplat,
+                           float dpplon,
+                           CoordFloatString coords)
     {
         if (edgeSkipFeatures == null) {
-	    edgeSkipFeatures = getSkipArray(edgeFeatures, edgetable,
-					    ".lft_id");
-	}
+            edgeSkipFeatures = getSkipArray(edgeFeatures, edgetable,
+                                            ".lft_id");
+        }
 
-	// HACK remove crufty dateline.  This HACK may require
-	// additional hackage in FeatureClassInfo.java  In particular,
-	// you may need to initialize the class during construction.
-	/*
-	FeatureClassInfo[] lineinfo = c.lineinfo;
-	int len = lineinfo.length;
-	for (int i=0; i<len; i++) {
-	    String ftname = lineinfo[i].getTableName();
-	    ftname.trim();
-	    if (ftname.equals("polbndl.lft")) {
-		int col = edgetable.whatColumn("polbndl.lft_id");
-		int row = ((Integer)edgevec.elementAt(col)).intValue();
-		if (row == Integer.MIN_VALUE)
-		    continue;
-		Vector fvec=null;
-		try {
-		    fvec = lineinfo[i].getRow(row);
-		} catch (FormatException f) {
-		    f.printStackTrace();
-		    continue;
-		}
-		String str = (String)fvec.elementAt(lineinfo[i].whatColumn("f_code"));
-		str.trim();
-		if (str.equals("FA110")) {
-		    System.out.println("ignoring dateline");
-		    return;
-		}
-	    }
-	}
-	*/
+        // HACK remove crufty dateline.  This HACK may require
+        // additional hackage in FeatureClassInfo.java  In particular,
+        // you may need to initialize the class during construction.
+        /*
+        FeatureClassInfo[] lineinfo = c.lineinfo;
+        int len = lineinfo.length;
+        for (int i=0; i<len; i++) {
+            String ftname = lineinfo[i].getTableName();
+            ftname.trim();
+            if (ftname.equals("polbndl.lft")) {
+                int col = edgetable.whatColumn("polbndl.lft_id");
+                int row = ((Integer)edgevec.elementAt(col)).intValue();
+                if (row == Integer.MIN_VALUE)
+                    continue;
+                Vector fvec=null;
+                try {
+                    fvec = lineinfo[i].getRow(row);
+                } catch (FormatException f) {
+                    f.printStackTrace();
+                    continue;
+                }
+                String str = (String)fvec.elementAt(lineinfo[i].whatColumn("f_code"));
+                str.trim();
+                if (str.equals("FA110")) {
+                    System.out.println("ignoring dateline");
+                    return;
+                }
+            }
+        }
+        */
 
-	if (!createFeature(edgevec, edgeSkipFeatures)) {
-	    return;
-	}
-	
-// 	MutableInt lineType = new MutableInt(-1);
-// 	String desc = covtable.getLineDescription(edgevec, lineType);
+        if (!createFeature(edgevec, edgeSkipFeatures)) {
+            return;
+        }
+        
+//      MutableInt lineType = new MutableInt(-1);
+//      String desc = covtable.getLineDescription(edgevec, lineType);
 
-	SPoly py = createEdgeSPoly(coords, ll1, ll2, dpplat, dpplon);
-	if (py == null) {
-	    return;
-	}
+        SPoly py = createEdgeSPoly(coords, ll1, ll2, dpplat, dpplon);
+        if (py == null) {
+            return;
+        }
 
-// 	py.object(new LineComp(desc));
+//      py.object(new LineComp(desc));
 
-	java.awt.Color lc = (java.awt.Color)drawAtt.getLinePaint();
-	if (lc == null) lc = java.awt.Color.black;
+        java.awt.Color lc = (java.awt.Color)drawAtt.getLinePaint();
+        if (lc == null) lc = java.awt.Color.black;
 
-  	py.color(ns(lc));
-	py.lineWidth((short)((java.awt.BasicStroke)drawAtt.getStroke()).getLineWidth());
+        py.color(ns(lc));
+        py.lineWidth((short)((java.awt.BasicStroke)drawAtt.getStroke()).getLineWidth());
 
-//  	if (lineType.value < 0) {
-//  	    py.color(new SColor((short)30000,(short)30000,(short)0));
-//  	} else {
-//  	    py.color(edgeColors[lineType.value % 5]);
-//  	}
+//      if (lineType.value < 0) {
+//          py.color(new SColor((short)30000,(short)30000,(short)0));
+//      } else {
+//          py.color(edgeColors[lineType.value % 5]);
+//      }
 
-	graphics.addSGraphic(py);
+        graphics.addSGraphic(py);
     }
     /**
      *
      */
     public void createText(CoverageTable covtable, TextTable texttable,
-			   List textvec,
-			   float latitude,
-			   float longitude,
-			   String text)
+                           List textvec,
+                           float latitude,
+                           float longitude,
+                           String text)
     {
         if (textSkipFeatures == null) {
-	    textSkipFeatures = getSkipArray(textFeatures, texttable,
-					    ".tft_id");
-	}
-	    
-	if (!createFeature(textvec, textSkipFeatures)) {
-	    return;
-	}
-	
+            textSkipFeatures = getSkipArray(textFeatures, texttable,
+                                            ".tft_id");
+        }
+            
+        if (!createFeature(textvec, textSkipFeatures)) {
+            return;
+        }
+        
 
-// 	MutableInt textType = new MutableInt(-1);
-// 	String desc = covtable.getTextDescription(textvec, textType);
+//      MutableInt textType = new MutableInt(-1);
+//      String desc = covtable.getTextDescription(textvec, textType);
 
-	SText py = createTextSText(text, latitude, longitude);
-	if (py == null) {
-	    return;
-	}
-// 	py.object(new LineComp(desc));
+        SText py = createTextSText(text, latitude, longitude);
+        if (py == null) {
+            return;
+        }
+//      py.object(new LineComp(desc));
 
-	java.awt.Color tc = (java.awt.Color)drawAtt.getLinePaint();
-	if (tc == null) tc = java.awt.Color.black;
+        java.awt.Color tc = (java.awt.Color)drawAtt.getLinePaint();
+        if (tc == null) tc = java.awt.Color.black;
 
-  	py.color(ns(tc));
+        py.color(ns(tc));
 
-//  	if (textType.value < 0) {
-//  	    py.color(textColors[5]);
-//  	} else {
-//  	    py.color(textColors[textType.value % 5]);
-//  	}
+//      if (textType.value < 0) {
+//          py.color(textColors[5]);
+//      } else {
+//          py.color(textColors[textType.value % 5]);
+//      }
 
-	graphics.addSGraphic(py);
+        graphics.addSGraphic(py);
     }
 
     /**
@@ -374,8 +374,8 @@ public class VPFSpecialistGraphicWarehouse extends GraphicWarehouseSupport {
      *   if we are reading connected nodes
      */
     public void createNode(CoverageTable c, NodeTable t, List nodeprim,
-			   float latitude, float longitude,
-			   boolean isEntityNode) {
+                           float latitude, float longitude,
+                           boolean isEntityNode) {
 
     }
 }

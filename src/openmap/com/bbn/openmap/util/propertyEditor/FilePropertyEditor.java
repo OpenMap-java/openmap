@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/FilePropertyEditor.java,v $
 // $RCSfile: FilePropertyEditor.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/19 20:41:54 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,28 +41,28 @@ public class FilePropertyEditor extends PropertyEditorSupport
 
     /** Create FilePropertyEditor.  */
     public FilePropertyEditor() {
-	button = new JButton("Select file...");
+        button = new JButton("Select file...");
     }
 
     //
-    //	PropertyEditor interface
+    //  PropertyEditor interface
     //
     
     /** PropertyEditor interface.
      *  @return true 
      */
     public boolean supportsCustomEditor() {
-	return true;
+        return true;
     }
     
     public void actionPerformed(ActionEvent e) {
-	JFileChooser chooser = getFileChooser();
-	int returnVal = chooser.showDialog((Component)null, "Select");
-	if (returnVal==JFileChooser.APPROVE_OPTION) {
-	    String newFilename = chooser.getSelectedFile().getAbsolutePath();
-	    button.setText(newFilename);
-	    firePropertyChange();
-	}
+        JFileChooser chooser = getFileChooser();
+        int returnVal = chooser.showDialog((Component)null, "Select");
+        if (returnVal==JFileChooser.APPROVE_OPTION) {
+            String newFilename = chooser.getSelectedFile().getAbsolutePath();
+            button.setText(newFilename);
+            firePropertyChange();
+        }
     }
 
     /**
@@ -70,38 +70,38 @@ public class FilePropertyEditor extends PropertyEditorSupport
      * @return JButton button
      */
     public Component getCustomEditor() {
-	button.addActionListener(this);
-	return button;
+        button.addActionListener(this);
+        return button;
     }
 
     public JFileChooser getFileChooser() {
-	return new JFileChooser(getLastLocation());
+        return new JFileChooser(getLastLocation());
     }
     
     /** Implement PropertyEditor interface. */
     public void setValue(Object someObj) {
-	if(someObj instanceof String) {
-	    button.setText((String)someObj);
-	}
+        if(someObj instanceof String) {
+            button.setText((String)someObj);
+        }
     }
     
     /** Implement PropertyEditor interface. */
     public String getAsText() {
-	return button.getText();
+        return button.getText();
     }
     
     public String getLastLocation() {
-	String currentLocation = getAsText();
-	char sepChar = '/'; // Java path separator
-	int lastSepIndex = currentLocation.lastIndexOf(sepChar);
-//  	System.out.println(currentLocation + ", index of " + sepChar + " is at " + lastSepIndex);
-	if (currentLocation.equals("") || lastSepIndex == -1) {
-	    currentLocation = null;
-	} else {
-	    String substring = currentLocation.substring(0, lastSepIndex);
-//  	    System.out.println(substring);
-	    currentLocation = substring;
-	}
-	return currentLocation;
+        String currentLocation = getAsText();
+        char sepChar = '/'; // Java path separator
+        int lastSepIndex = currentLocation.lastIndexOf(sepChar);
+//      System.out.println(currentLocation + ", index of " + sepChar + " is at " + lastSepIndex);
+        if (currentLocation.equals("") || lastSepIndex == -1) {
+            currentLocation = null;
+        } else {
+            String substring = currentLocation.substring(0, lastSepIndex);
+//          System.out.println(substring);
+            currentLocation = substring;
+        }
+        return currentLocation;
     }
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkText.java,v $
 // $RCSfile: LinkText.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:27 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -53,21 +53,21 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
      * @throws IOException.
      */
     public static void write(float latPoint, float lonPoint,
-			     String stuff, String font, int just, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException {
-	
-	dos.write(Link.TEXT_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_TEXT);
-	dos.writeInt(RENDERTYPE_LATLON);
-	dos.writeFloat(latPoint);
-	dos.writeFloat(lonPoint);
-	dos.writeInt(just);
+                             String stuff, String font, int just, 
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException {
+        
+        dos.write(Link.TEXT_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_TEXT);
+        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeFloat(latPoint);
+        dos.writeFloat(lonPoint);
+        dos.writeInt(just);
 
-	properties.setProperty(LPC_LINKTEXTSTRING, stuff);
-	properties.setProperty(LPC_LINKTEXTFONT, font);
-	properties.write(dos);
+        properties.setProperty(LPC_LINKTEXTSTRING, stuff);
+        properties.setProperty(LPC_LINKTEXTFONT, font);
+        properties.write(dos);
     }
 
     /**
@@ -83,19 +83,19 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
      * @throws IOException.
      */
     public static void write(int x1, int y1, String stuff, String font, int just, 
-			     LinkProperties properties, DataOutputStream dos)
-	throws IOException {
+                             LinkProperties properties, DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.TEXT_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_TEXT);
-	dos.writeInt(RENDERTYPE_XY);
-	dos.writeInt(x1);
-	dos.writeInt(y1);
-	dos.writeInt(just);
+        dos.write(Link.TEXT_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_TEXT);
+        dos.writeInt(RENDERTYPE_XY);
+        dos.writeInt(x1);
+        dos.writeInt(y1);
+        dos.writeInt(just);
 
-	properties.setProperty(LPC_LINKTEXTSTRING, stuff);
-	properties.setProperty(LPC_LINKTEXTFONT, font);
-	properties.write(dos);
+        properties.setProperty(LPC_LINKTEXTSTRING, stuff);
+        properties.setProperty(LPC_LINKTEXTFONT, font);
+        properties.write(dos);
     }
 
     /**
@@ -115,110 +115,110 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
      * @throws IOException.
      */
     public static void write(float latPoint, float lonPoint,
-			     int offset_x1, int offset_y1, 
-			     String stuff, String font, int just, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException {
+                             int offset_x1, int offset_y1, 
+                             String stuff, String font, int just, 
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.TEXT_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_TEXT);
-	dos.writeInt(RENDERTYPE_OFFSET);
-	dos.writeFloat(latPoint);
-	dos.writeFloat(lonPoint);
-	dos.writeInt(offset_x1);
-	dos.writeInt(offset_y1);
+        dos.write(Link.TEXT_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_TEXT);
+        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeFloat(latPoint);
+        dos.writeFloat(lonPoint);
+        dos.writeInt(offset_x1);
+        dos.writeInt(offset_y1);
 
-	properties.setProperty(LPC_LINKTEXTSTRING, stuff);
-	properties.setProperty(LPC_LINKTEXTFONT, font);
-	properties.write(dos);
+        properties.setProperty(LPC_LINKTEXTSTRING, stuff);
+        properties.setProperty(LPC_LINKTEXTFONT, font);
+        properties.write(dos);
     }
 
     /**
      * Write a text to the link.
      */
     public static void write(OMText text, Link link, LinkProperties props) 
-	throws IOException {
+        throws IOException {
 
-	switch (text.getRenderType()) {
-	case OMText.RENDERTYPE_LATLON:
-	    write(text.getLat(), text.getLon(), text.getData(), 
-		  OMText.fontToXFont(text.getFont()), text.getJustify(),
-		  props, link.dos);
-	    break;
-	case OMText.RENDERTYPE_XY:
-	    write(text.getX(), text.getY(), text.getData(), 
-		  OMText.fontToXFont(text.getFont()), text.getJustify(),
-		  props, link.dos);
-	    break;
-	case OMText.RENDERTYPE_OFFSET:
-	    write(text.getLat(), text.getLon(), text.getX(), text.getY(),
-		  text.getData(), OMText.fontToXFont(text.getFont()), 
-		  text.getJustify(), props, link.dos);
-	    break;
-	default:
-	    Debug.error("LinkText.write: text rendertype unknown.");
-	}
+        switch (text.getRenderType()) {
+        case OMText.RENDERTYPE_LATLON:
+            write(text.getLat(), text.getLon(), text.getData(), 
+                  OMText.fontToXFont(text.getFont()), text.getJustify(),
+                  props, link.dos);
+            break;
+        case OMText.RENDERTYPE_XY:
+            write(text.getX(), text.getY(), text.getData(), 
+                  OMText.fontToXFont(text.getFont()), text.getJustify(),
+                  props, link.dos);
+            break;
+        case OMText.RENDERTYPE_OFFSET:
+            write(text.getLat(), text.getLon(), text.getX(), text.getY(),
+                  text.getData(), OMText.fontToXFont(text.getFont()), 
+                  text.getJustify(), props, link.dos);
+            break;
+        default:
+            Debug.error("LinkText.write: text rendertype unknown.");
+        }
     }
 
     public static OMText read(DataInputStream dis)
-	throws IOException {
+        throws IOException {
 
-	OMText text = null;
-	float lat = 0;
-	float lon = 0;
-	int x = 0;
-	int y = 0; 
-	int i = 0;
-	int just = 0;
-	int length;
-	String string, font;
+        OMText text = null;
+        float lat = 0;
+        float lon = 0;
+        int x = 0;
+        int y = 0; 
+        int i = 0;
+        int just = 0;
+        int length;
+        String string, font;
 
-	int renderType = dis.readInt();
-	
-	switch (renderType) {
-	case RENDERTYPE_OFFSET:
-	    lat = dis.readFloat();
-	    lon = dis.readFloat();	    
-	case RENDERTYPE_XY:
-	    x = dis.readInt();
-	    y = dis.readInt();	   
-	    break;
-	case RENDERTYPE_LATLON:
-	default:
-	    lat = dis.readFloat();
-	    lon = dis.readFloat();	    
-	}
-	
-	just = dis.readInt();
-	
-	LinkProperties properties = new LinkProperties(dis);
+        int renderType = dis.readInt();
+        
+        switch (renderType) {
+        case RENDERTYPE_OFFSET:
+            lat = dis.readFloat();
+            lon = dis.readFloat();          
+        case RENDERTYPE_XY:
+            x = dis.readInt();
+            y = dis.readInt();     
+            break;
+        case RENDERTYPE_LATLON:
+        default:
+            lat = dis.readFloat();
+            lon = dis.readFloat();          
+        }
+        
+        just = dis.readInt();
+        
+        LinkProperties properties = new LinkProperties(dis);
 
-	string = properties.getProperty(LPC_LINKTEXTSTRING);
-	font = properties.getProperty(LPC_LINKTEXTFONT);
-	
-	if (string == null) string = "";
-	if (font == null) font = DEFAULT_FONT;
-	
-	switch (renderType) {
-	case RENDERTYPE_OFFSET:
-	    text = new OMText(lat, lon, x, y, string, OMText.rebuildFont(font), just);
-	    break;
-	case RENDERTYPE_XY:
-	    text = new OMText(x, y, string, OMText.rebuildFont(font), just);
-	    break;
-	case RENDERTYPE_LATLON:
-	default:
-	    text = new OMText(lat, lon, string, OMText.rebuildFont(font), just);
-	}
-	
-	if (text != null) {
-	    properties.setProperties(text);
-	    text.setBaseline(PropUtils.intFromProperties(properties, LPC_LINKTEXTBASELINE, BASELINE_BOTTOM));
-	    text.setRotationAngle((double) ProjMath.degToRad(PropUtils.floatFromProperties(properties, LPC_LINKROTATION, 0.0f)));
-	}
+        string = properties.getProperty(LPC_LINKTEXTSTRING);
+        font = properties.getProperty(LPC_LINKTEXTFONT);
+        
+        if (string == null) string = "";
+        if (font == null) font = DEFAULT_FONT;
+        
+        switch (renderType) {
+        case RENDERTYPE_OFFSET:
+            text = new OMText(lat, lon, x, y, string, OMText.rebuildFont(font), just);
+            break;
+        case RENDERTYPE_XY:
+            text = new OMText(x, y, string, OMText.rebuildFont(font), just);
+            break;
+        case RENDERTYPE_LATLON:
+        default:
+            text = new OMText(lat, lon, string, OMText.rebuildFont(font), just);
+        }
+        
+        if (text != null) {
+            properties.setProperties(text);
+            text.setBaseline(PropUtils.intFromProperties(properties, LPC_LINKTEXTBASELINE, BASELINE_BOTTOM));
+            text.setRotationAngle((double) ProjMath.degToRad(PropUtils.floatFromProperties(properties, LPC_LINKROTATION, 0.0f)));
+        }
 
-	return text;
+        return text;
     }
 
 

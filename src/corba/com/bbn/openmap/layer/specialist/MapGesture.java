@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/MapGesture.java,v $
 // $RCSfile: MapGesture.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -79,46 +79,46 @@ public class MapGesture {
     public int event_type = -1;
 
     // incoming gesture information (sent from specialist)
-    public int[] actionType = null;	// matches CSpecialist.ActionType
+    public int[] actionType = null;     // matches CSpecialist.ActionType
     public String text = null;
     public String info = null;
     public String url = null;
 
 
     public short getMode() {
-	return mode;
+        return mode;
     }
     public void setMode(short m) {
-	mode = Raw;//HACK
+        mode = Raw;//HACK
     }
 
     public void setProjection(Projection proj) {
-	projection = proj;
+        projection = proj;
     }
 
     public Projection getProjection() {
-	return projection;
+        return projection;
     }
 
     public MapGesture() {
     }
 
     public void setMouseEvent(MouseEvent me, int eventType, boolean MouseDown) {
-	if (me != null) {
-	    point = me.getPoint();
-	    shift = me.isShiftDown();
-	    control = me.isControlDown();
-	    meta = me.isMetaDown();
-	    alt = me.isAltDown();
+        if (me != null) {
+            point = me.getPoint();
+            shift = me.isShiftDown();
+            control = me.isControlDown();
+            meta = me.isMetaDown();
+            alt = me.isAltDown();
 
-	    if (projection != null) 
-		llpoint = projection.inverse(point);
-	    else 
-		llpoint = new LatLonPoint(0f, 0f);
-	}
+            if (projection != null) 
+                llpoint = projection.inverse(point);
+            else 
+                llpoint = new LatLonPoint(0f, 0f);
+        }
 
-	press = MouseDown;
-	event_type = eventType;
+        press = MouseDown;
+        event_type = eventType;
     }
 
     /** determineGesture() - determines what type of cooked mode

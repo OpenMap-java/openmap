@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDLocator.java,v $
 // $RCSfile: DTEDLocator.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/13 01:21:06 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,11 +54,11 @@ public class DTEDLocator extends Wanderer implements WandererCallback {
      * directory later.
      */
     public DTEDLocator() {
-	super();
-	if (Debug.debugging("dted")) {
-	    DEBUG = true;
-	}
-	setCallback(this);
+        super();
+        if (Debug.debugging("dted")) {
+            DEBUG = true;
+        }
+        setCallback(this);
     }
 
     /**
@@ -66,7 +66,7 @@ public class DTEDLocator extends Wanderer implements WandererCallback {
      * specificed.
      */
     public DTEDLocator(String directory) {
-	this(new File(directory));
+        this(new File(directory));
     }
 
     /**
@@ -74,35 +74,35 @@ public class DTEDLocator extends Wanderer implements WandererCallback {
      * specificed.
      */
     public DTEDLocator(File dtedDir) {
-	this();
-	handleEntry(dtedDir);
+        this();
+        handleEntry(dtedDir);
     }
 
     /**
      * Initialize the holding arrays.
      */
     protected void initFileHolder() {
-	files = new File[numLevels][180][360]; // level,lat, lon
+        files = new File[numLevels][180][360]; // level,lat, lon
     }
 
     /**
      * Does nothing, nothing is done for directories.
      */
     public void handleDirectory(File directory) {
-	if (DEBUG) {
-	    Debug.output("DTEDLocator: skipping: " + directory.getAbsolutePath());
-	}
-	// Do nothing to directories
+        if (DEBUG) {
+            Debug.output("DTEDLocator: skipping: " + directory.getAbsolutePath());
+        }
+        // Do nothing to directories
     }
 
     /**
      * When a file is found, add it.
      */
     public void handleFile(File file) {
-	if (DEBUG) {
-	    Debug.output("DTEDLocator: searching finds: " + file.getAbsolutePath());
-	}
-	filenames.add(file);
+        if (DEBUG) {
+            Debug.output("DTEDLocator: searching finds: " + file.getAbsolutePath());
+        }
+        filenames.add(file);
     }
 
     /**
@@ -110,11 +110,11 @@ public class DTEDLocator extends Wanderer implements WandererCallback {
      * DTED file covers based on its name.
      */
     public DTEDNameTranslator getTranslator() {
-	if (translator == null) {
-	    translator = new StandardDTEDNameTranslator();
-	}
+        if (translator == null) {
+            translator = new StandardDTEDNameTranslator();
+        }
 
-	return translator;
+        return translator;
     }
 
     /**
@@ -122,7 +122,7 @@ public class DTEDLocator extends Wanderer implements WandererCallback {
      * DTED file covers based on its name.
      */
     public void setTranslator(DTEDNameTranslator dnt) {
-	translator = dnt;
+        translator = dnt;
     }
 
     /**
@@ -130,53 +130,53 @@ public class DTEDLocator extends Wanderer implements WandererCallback {
      * in the 3D array.
      */
     public void organize() {
-	if (DEBUG) {
-	    Debug.output("DTEDLocator: organizing frames...");
-	}
-	initFileHolder();
-	Iterator it = filenames.iterator();
-	DTEDNameTranslator dnt = getTranslator();
-	
-	while (it.hasNext()) {
-	    File file = (File) it.next();
-	    String filename = file.getAbsolutePath();
-	    try {
-		dnt.set(filename);
-		
-		int l = dnt.getLevel();
-		int lt = (int)(dnt.getLat() + 90);
-		int ln = (int)(dnt.getLon() + 180);
+        if (DEBUG) {
+            Debug.output("DTEDLocator: organizing frames...");
+        }
+        initFileHolder();
+        Iterator it = filenames.iterator();
+        DTEDNameTranslator dnt = getTranslator();
+        
+        while (it.hasNext()) {
+            File file = (File) it.next();
+            String filename = file.getAbsolutePath();
+            try {
+                dnt.set(filename);
+                
+                int l = dnt.getLevel();
+                int lt = (int)(dnt.getLat() + 90);
+                int ln = (int)(dnt.getLon() + 180);
 
-		if (DEBUG) {
-		    Debug.output("  placing " + filename + " at files[" + l +
-				 "][" + lt + "][" + ln + "]");
-		}
+                if (DEBUG) {
+                    Debug.output("  placing " + filename + " at files[" + l +
+                                 "][" + lt + "][" + ln + "]");
+                }
 
-		files[l][lt][ln] = file;
+                files[l][lt][ln] = file;
 
-	    } catch (FormatException fe) {
-		continue;
-	    } catch (ArrayIndexOutOfBoundsException aioobe) {
-		continue;
-	    }
-	}
+            } catch (FormatException fe) {
+                continue;
+            } catch (ArrayIndexOutOfBoundsException aioobe) {
+                continue;
+            }
+        }
     }
 
     /**
      * Get the File object for a latitude, longitude and level.
      */
     public File get(float lat, float lon, int level) {
-	// Need to offset lat/lon to indexes.
+        // Need to offset lat/lon to indexes.
 
-	try {
-	    return files[level][(int)(lat + 90)][(int)(lon + 180)];
-	} catch (NullPointerException npe) {
-	    organize();
-	    return get(lat, lon, level);
-	} catch (ArrayIndexOutOfBoundsException aioobe) {
-	    
-	}
-	return null;
+        try {
+            return files[level][(int)(lat + 90)][(int)(lon + 180)];
+        } catch (NullPointerException npe) {
+            organize();
+            return get(lat, lon, level);
+        } catch (ArrayIndexOutOfBoundsException aioobe) {
+            
+        }
+        return null;
     }
 
     /**
@@ -187,21 +187,21 @@ public class DTEDLocator extends Wanderer implements WandererCallback {
      * usage statement.  
      */
     public static void main(String[] argv) {
-	Debug.init();
-	boolean toUpper = true;
+        Debug.init();
+        boolean toUpper = true;
 
-	ArgParser ap = new ArgParser("DTEDLocator");
+        ArgParser ap = new ArgParser("DTEDLocator");
 
-	if (argv.length == 0) {
-	    ap.bail("", true);
-	}
+        if (argv.length == 0) {
+            ap.bail("", true);
+        }
 
-	DTEDLocator locator = new DTEDLocator();
+        DTEDLocator locator = new DTEDLocator();
 
-	// Assume that the arguments are paths to directories or
-	// files.
-	for (int i = 0; i < argv.length; i++) {
-	    locator.handleEntry(new File(argv[i]));
-	}
+        // Assume that the arguments are paths to directories or
+        // files.
+        for (int i = 0; i < argv.length; i++) {
+            locator.handleEntry(new File(argv[i]));
+        }
     }
 }

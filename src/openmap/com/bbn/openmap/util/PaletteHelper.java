@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PaletteHelper.java,v $
 // $RCSfile: PaletteHelper.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,20 +59,20 @@ public class PaletteHelper {
      * @see javax.swing.JCheckBox
      */
     public static JPanel createCheckbox(String boxlabel,
-					String[] buttons,
-					boolean[] checked,
-					ActionListener al) {
+                                        String[] buttons,
+                                        boolean[] checked,
+                                        ActionListener al) {
 
-	JPanel jp = createPaletteJPanel(boxlabel);
-	for (int j = 0; j < buttons.length; j++) {
-	    JCheckBox jcb = new JCheckBox(buttons[j]);
-	    jcb.setActionCommand(Integer.toString(j));//index of checked
-	    if (al != null)
-		jcb.addActionListener(al);
-	    jcb.setSelected(checked[j]);
-	    jp.add(jcb);
-	}
-	return jp;
+        JPanel jp = createPaletteJPanel(boxlabel);
+        for (int j = 0; j < buttons.length; j++) {
+            JCheckBox jcb = new JCheckBox(buttons[j]);
+            jcb.setActionCommand(Integer.toString(j));//index of checked
+            if (al != null)
+                jcb.addActionListener(al);
+            jcb.setSelected(checked[j]);
+            jp.add(jcb);
+        }
+        return jp;
     }
 
     /**
@@ -89,29 +89,29 @@ public class PaletteHelper {
      * @see javax.swing.ButtonGroup
      */
     public static JPanel createRadiobox(String boxlabel,
-					String[] buttons,
-					int initiallySelected,
-					ActionListener al) {
+                                        String[] buttons,
+                                        int initiallySelected,
+                                        ActionListener al) {
 
-	JPanel jp = createPaletteJPanel(boxlabel);
+        JPanel jp = createPaletteJPanel(boxlabel);
 
-	ButtonGroup buttongroup = new ButtonGroup();
+        ButtonGroup buttongroup = new ButtonGroup();
 
-	for (int j = 0; j < buttons.length; j++) {
-	    JRadioButton jrb = new JRadioButton(buttons[j]);
-	    jrb.setActionCommand(""+j);//index in list
-	    jp.add(jrb);
-	    buttongroup.add(jrb); 
-	    if (al != null) {
-		jrb.addActionListener(al);
-	    }
-	    if (j == initiallySelected) {
-		jrb.setSelected(true);
-	    } else {
-		jrb.setSelected(false);
-	    }
-	}
-	return jp;
+        for (int j = 0; j < buttons.length; j++) {
+            JRadioButton jrb = new JRadioButton(buttons[j]);
+            jrb.setActionCommand(""+j);//index in list
+            jp.add(jrb);
+            buttongroup.add(jrb); 
+            if (al != null) {
+                jrb.addActionListener(al);
+            }
+            if (j == initiallySelected) {
+                jrb.setSelected(true);
+            } else {
+                jrb.setSelected(false);
+            }
+        }
+        return jp;
     }
 
     /**
@@ -121,18 +121,18 @@ public class PaletteHelper {
      * @return the panel that got created
      */
     public static JPanel createHorizontalPanel(String title) {
-	JPanel panel = new JPanel();
-	//	panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-	panel.setLayout(new GridLayout(1, 0));
-	if (title != null) {
-	    panel.setBorder(
-		BorderFactory.createTitledBorder(
-		    BorderFactory.createEtchedBorder(), title));
-	} else {
-	    panel.setBorder(
-		BorderFactory.createEtchedBorder());
-	}
-	return panel;
+        JPanel panel = new JPanel();
+        //      panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setLayout(new GridLayout(1, 0));
+        if (title != null) {
+            panel.setBorder(
+                BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(), title));
+        } else {
+            panel.setBorder(
+                BorderFactory.createEtchedBorder());
+        }
+        return panel;
     }
 
     /**
@@ -142,18 +142,18 @@ public class PaletteHelper {
      * @return the panel that got created
      */
     public static JPanel createVerticalPanel(String title) {
-	JPanel panel = new JPanel();
-	//	panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-	panel.setLayout(new GridLayout(0, 1));
-	if (title != null) {
-	    panel.setBorder(
-		BorderFactory.createTitledBorder(
-		    BorderFactory.createEtchedBorder(), title));
-	} else {
-	    panel.setBorder(
-		BorderFactory.createEtchedBorder());
-	}
-	return panel;
+        JPanel panel = new JPanel();
+        //      panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setLayout(new GridLayout(0, 1));
+        if (title != null) {
+            panel.setBorder(
+                BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(), title));
+        } else {
+            panel.setBorder(
+                BorderFactory.createEtchedBorder());
+        }
+        return panel;
     }
 
     /**
@@ -163,19 +163,19 @@ public class PaletteHelper {
      * @return the panel that got created
      */
     public static JPanel createPaletteJPanel(String title) {
-	JPanel panel = new JPanel();
+        JPanel panel = new JPanel();
 
-	if (title != null) {
-	    panel.setBorder(
-		BorderFactory.createTitledBorder(
-		    BorderFactory.createEtchedBorder(), title));
-	} else {
-	    panel.setBorder(
-		BorderFactory.createEtchedBorder());
-	}
+        if (title != null) {
+            panel.setBorder(
+                BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(), title));
+        } else {
+            panel.setBorder(
+                BorderFactory.createEtchedBorder());
+        }
 
-	panel.setLayout(new GridLayout(0, 1));
-	return panel;
+        panel.setLayout(new GridLayout(0, 1));
+        return panel;
     }
 
     /**
@@ -187,17 +187,17 @@ public class PaletteHelper {
      * @return the text field
      */
     public static JTextField createTextEntry(String title,
-					     String entry,
-					     JComponent parent) {
+                                             String entry,
+                                             JComponent parent) {
 
-	JPanel pal = PaletteHelper.createHorizontalPanel(null);
-	JLabel label = new JLabel(title);
-	label.setHorizontalTextPosition(label.RIGHT);
-	JTextField tf = new JTextField(entry);
-	label.setLabelFor(tf);
-	pal.add(label); pal.add(tf);
-	parent.add(pal);
-	return tf;
+        JPanel pal = PaletteHelper.createHorizontalPanel(null);
+        JLabel label = new JLabel(title);
+        label.setHorizontalTextPosition(label.RIGHT);
+        JTextField tf = new JTextField(entry);
+        label.setLabelFor(tf);
+        pal.add(label); pal.add(tf);
+        parent.add(pal);
+        return tf;
     }
 
     /**
@@ -211,17 +211,17 @@ public class PaletteHelper {
      * @return the text area
      */
     public static JTextArea createTextArea(String title, String entry, 
-					   JComponent parent, 
-					   int rows, int cols) {
-	JPanel pal = PaletteHelper.createHorizontalPanel(null);
-	JLabel label = new JLabel(title);
-	label.setHorizontalTextPosition(label.RIGHT);
-	JTextArea ta = new JTextArea(entry, rows, cols);
-	JScrollPane jsp = new JScrollPane(ta);
-	label.setLabelFor(jsp);
-	pal.add(label); pal.add(jsp);
-	parent.add(pal);
-	return ta;
+                                           JComponent parent, 
+                                           int rows, int cols) {
+        JPanel pal = PaletteHelper.createHorizontalPanel(null);
+        JLabel label = new JLabel(title);
+        label.setHorizontalTextPosition(label.RIGHT);
+        JTextArea ta = new JTextArea(entry, rows, cols);
+        JScrollPane jsp = new JScrollPane(ta);
+        label.setLabelFor(jsp);
+        pal.add(label); pal.add(jsp);
+        parent.add(pal);
+        return ta;
     }
 
     /**
@@ -232,9 +232,9 @@ public class PaletteHelper {
      * @return the frame that the palette is in
      */
     public static JInternalFrame getPaletteInternalWindow(Layer layer, 
-							  InternalFrameListener ifl) {
-	return getPaletteInternalWindow(layer.getGUI(),
-					layer.getName() + " Palette", ifl);
+                                                          InternalFrameListener ifl) {
+        return getPaletteInternalWindow(layer.getGUI(),
+                                        layer.getName() + " Palette", ifl);
     }
     
     /**
@@ -245,34 +245,34 @@ public class PaletteHelper {
      * @return the frame that the palette is in
      */
     public static JFrame getPaletteWindow(Layer layer,
-					  ComponentListener cl) {
-	Component layerGUI = getLayerGUIComponent(layer);
+                                          ComponentListener cl) {
+        Component layerGUI = getLayerGUIComponent(layer);
 
-	JPanel dismissBox = new JPanel();
-	dismissBox.setLayout(new BoxLayout(dismissBox, BoxLayout.X_AXIS));
-	dismissBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-	dismissBox.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-	dismissBox.add(Box.createHorizontalGlue());
-	JButton dismiss = new JButton("Close");
-	dismissBox.add(dismiss);
-	dismissBox.add(Box.createHorizontalGlue());
+        JPanel dismissBox = new JPanel();
+        dismissBox.setLayout(new BoxLayout(dismissBox, BoxLayout.X_AXIS));
+        dismissBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        dismissBox.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+        dismissBox.add(Box.createHorizontalGlue());
+        JButton dismiss = new JButton("Close");
+        dismissBox.add(dismiss);
+        dismissBox.add(Box.createHorizontalGlue());
 
-	JPanel pane = new JPanel();
-	pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-	pane.setAlignmentX(Component.CENTER_ALIGNMENT);
-	pane.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-	pane.add(layerGUI);
-	pane.add(dismissBox);
+        JPanel pane = new JPanel();
+        pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+        pane.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pane.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+        pane.add(layerGUI);
+        pane.add(dismissBox);
 
-	final JFrame frame = 
-	    getPaletteWindow(pane, layer.getName() + " Palette", cl);
+        final JFrame frame = 
+            getPaletteWindow(pane, layer.getName() + " Palette", cl);
 
-	dismiss.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    frame.hide();
-		}
-	    });
-	return frame;
+        dismiss.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    frame.hide();
+                }
+            });
+        return frame;
     }
 
     /**
@@ -282,19 +282,19 @@ public class PaletteHelper {
      * @return the Component that represents the GUI for the layer.
      */
     public static Component getLayerGUIComponent(Layer layer) {
-	
-	Component pal = layer.getGUI();
-	if (pal == null) {
-	    pal = new JLabel("No Palette");
-	}
+        
+        Component pal = layer.getGUI();
+        if (pal == null) {
+            pal = new JLabel("No Palette");
+        }
 
-	JPanel p = new JPanel();
-	p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-	p.setAlignmentX(Component.LEFT_ALIGNMENT);
-	p.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-	p.add(pal);
+        JPanel p = new JPanel();
+        p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+        p.setAlignmentX(Component.LEFT_ALIGNMENT);
+        p.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+        p.add(pal);
 
-	return p;
+        return p;
     }
 
     /**
@@ -305,39 +305,39 @@ public class PaletteHelper {
      * @return the frame that the palette is in
      */
     public static JInternalFrame getPaletteInternalWindow(Component gui, 
-							  String windowName,
-							  InternalFrameListener ifl) {
-	
-	JInternalFrame paletteWindow;
+                                                          String windowName,
+                                                          InternalFrameListener ifl) {
+        
+        JInternalFrame paletteWindow;
 
-	// create the palette's scroll pane
-	JScrollPane scrollPane = new JScrollPane(
-	    gui,
-	    ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-	    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-	scrollPane.setAlignmentY(Component.TOP_ALIGNMENT);
-	
-	
-	// create the palette internal window
-	paletteWindow = new JInternalFrame(
-	    windowName,
-	    true,		//resizable
-	    true,		//closable
-	    false,		//maximizable
-	    true		//iconifiable
-	    );
+        // create the palette's scroll pane
+        JScrollPane scrollPane = new JScrollPane(
+            gui,
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+        scrollPane.setAlignmentY(Component.TOP_ALIGNMENT);
+        
+        
+        // create the palette internal window
+        paletteWindow = new JInternalFrame(
+            windowName,
+            true,               //resizable
+            true,               //closable
+            false,              //maximizable
+            true                //iconifiable
+            );
 
-	// add a window listener that destroys the palette when
-	// the window is closed
-	paletteWindow.addInternalFrameListener(ifl);
-	paletteWindow.getContentPane().add(scrollPane);
-	paletteWindow.setOpaque(true);
+        // add a window listener that destroys the palette when
+        // the window is closed
+        paletteWindow.addInternalFrameListener(ifl);
+        paletteWindow.getContentPane().add(scrollPane);
+        paletteWindow.setOpaque(true);
 
-	//layout all the components
-	paletteWindow.pack();
-	
-	return paletteWindow;
+        //layout all the components
+        paletteWindow.pack();
+        
+        return paletteWindow;
     }
     
     /**
@@ -348,24 +348,24 @@ public class PaletteHelper {
      * @return the frame that the palette is in
      */
     public static JFrame getPaletteWindow(Component gui, 
-					  String windowName,
-					  ComponentListener cl) {
-	
-	JScrollPane scrollPane = new JScrollPane(
-	    gui,
-	    ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-	    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-	scrollPane.setAlignmentY(Component.TOP_ALIGNMENT);
+                                          String windowName,
+                                          ComponentListener cl) {
+        
+        JScrollPane scrollPane = new JScrollPane(
+            gui,
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+        scrollPane.setAlignmentY(Component.TOP_ALIGNMENT);
 
-	// create the palette internal window
-	JFrame paletteWindow = new JFrame(windowName);
-	
-	paletteWindow.addComponentListener(cl);
-  	paletteWindow.getContentPane().add(scrollPane);
-	//layout all the components
-	paletteWindow.pack();
-	return paletteWindow;
+        // create the palette internal window
+        JFrame paletteWindow = new JFrame(windowName);
+        
+        paletteWindow.addComponentListener(cl);
+        paletteWindow.getContentPane().add(scrollPane);
+        //layout all the components
+        paletteWindow.pack();
+        return paletteWindow;
     }
 
     /**
@@ -376,19 +376,19 @@ public class PaletteHelper {
      * @return the frame that the palette is in
      */
     public static JFrame getNoScrollPaletteWindow(Component gui, 
-						  String windowName,
-						  ComponentListener cl) {
-	
-	JPanel pane = new JPanel();
-	pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-	pane.setAlignmentX(Component.CENTER_ALIGNMENT);
-	pane.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-	pane.add(gui);
-	JFrame paletteWindow = new JFrame(windowName);
-	paletteWindow.addComponentListener(cl);
-	paletteWindow.getContentPane().add(pane);
-	paletteWindow.pack();
+                                                  String windowName,
+                                                  ComponentListener cl) {
+        
+        JPanel pane = new JPanel();
+        pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+        pane.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pane.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+        pane.add(gui);
+        JFrame paletteWindow = new JFrame(windowName);
+        paletteWindow.addComponentListener(cl);
+        paletteWindow.getContentPane().add(pane);
+        paletteWindow.pack();
 
-	return paletteWindow;
+        return paletteWindow;
     }
 }

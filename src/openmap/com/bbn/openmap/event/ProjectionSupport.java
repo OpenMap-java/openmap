@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProjectionSupport.java,v $
 // $RCSfile: ProjectionSupport.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/08 21:29:17 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,7 +40,7 @@ public class ProjectionSupport extends ListenerSupport {
      * Construct a ProjectionSupport.
      */
     public ProjectionSupport() {
-	this(null);
+        this(null);
     }
 
     /**
@@ -48,7 +48,7 @@ public class ProjectionSupport extends ListenerSupport {
      * @param aSource source Object
      */
     public ProjectionSupport(Object aSource) {
-	super(aSource);
+        super(aSource);
     }
 
     /**
@@ -56,7 +56,7 @@ public class ProjectionSupport extends ListenerSupport {
      * @param l ProjectionListener
      */
     public void addProjectionListener(ProjectionListener l) {
-	addListener(l);
+        addListener(l);
     }
 
 
@@ -65,7 +65,7 @@ public class ProjectionSupport extends ListenerSupport {
      * @param l ProjectionListener
      */
     public void removeProjectionListener(ProjectionListener l) {
-	removeListener(l);
+        removeListener(l);
     }
 
     /**
@@ -73,20 +73,20 @@ public class ProjectionSupport extends ListenerSupport {
      * @param proj Projection
      */
     public void fireProjectionChanged(Projection proj) {
-	ProjectionListener target;
+        ProjectionListener target;
 
-	if (size() == 0) return;
+        if (size() == 0) return;
 
-	ProjectionEvent evt = new ProjectionEvent(getSource(), proj);
+        ProjectionEvent evt = new ProjectionEvent(getSource(), proj);
 
-	Iterator it = iterator();
-	while (it.hasNext()) {
-	    target = (ProjectionListener)it.next();
-	    if (Debug.debugging("mapbean")) {
-		Debug.output("ProjectionSupport.fireProjectionChanged(): " +
-			     "target is: " + target);
-	    }
-	    target.projectionChanged(evt);
-	}
+        Iterator it = iterator();
+        while (it.hasNext()) {
+            target = (ProjectionListener)it.next();
+            if (Debug.debugging("mapbean")) {
+                Debug.output("ProjectionSupport.fireProjectionChanged(): " +
+                             "target is: " + target);
+            }
+            target.projectionChanged(evt);
+        }
     }
 }

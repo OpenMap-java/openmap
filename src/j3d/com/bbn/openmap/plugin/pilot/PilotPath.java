@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/PilotPath.java,v $
 // $RCSfile: PilotPath.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,9 +65,9 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
     public PilotPath(OMPoly path, int radius, boolean isOval) {
         super(0f, 0f, radius, isOval);
         setPoly(path);
-	DEBUG = Debug.debugging("pilot");
+        DEBUG = Debug.debugging("pilot");
 
-	setHeight(10.3f);
+        setHeight(10.3f);
     }
 
     /**
@@ -162,7 +162,7 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
                 loopingTimes++;
                 if (loopingTimes > 1) {
                     if (DEBUG)
-			Debug.output("PilotPath looping on itself, setting to stationary");
+                        Debug.output("PilotPath looping on itself, setting to stationary");
                     setStationary(true);
                     return;
                 }
@@ -202,26 +202,26 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
 
         if (DEBUG) Debug.output("moveAlong: azimuth = " + azimuth);
 
-	if (viewProjection == null) {
-	    return;
-	}
+        if (viewProjection == null) {
+            return;
+        }
 
         Point newLoc = viewProjection.forward(newPoint);
 
-	if (DEBUG) Debug.output(newLoc.toString() + ", compared with lastX, lastY: " +
-				lastX + ", " + lastY + ", scaleFactor= " + scaleFactor);
+        if (DEBUG) Debug.output(newLoc.toString() + ", compared with lastX, lastY: " +
+                                lastX + ", " + lastY + ", scaleFactor= " + scaleFactor);
 
         double centerXOffset =(double)(newLoc.getX()) * scaleFactor;
         double centerYOffset =(double)(newLoc.getY()) * scaleFactor;
 
         Vector3d translate = new Vector3d();
 
-	// 0f can be changed to account for any height change.
+        // 0f can be changed to account for any height change.
         translate.set(centerXOffset - lastX, 0, centerYOffset - lastY);
         lastX = centerXOffset;
         lastY = centerYOffset;
 
-	if (DEBUG) Debug.output("PP moving: " + translate);
+        if (DEBUG) Debug.output("PP moving: " + translate);
 
 //         translateTransform.set(scaleFactor, translate);
 
@@ -233,13 +233,13 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
 
 //         cameraTransformGroup.setTransform(translateTransform);
 
-	if (platformBehavior != null) {
+        if (platformBehavior != null) {
 
-	    platformBehavior.doMove(translate);
-	    if (lastAzimuth != azimuth) {
-		platformBehavior.doLookY(lastAzimuth - azimuth);
-		lastAzimuth = azimuth;
-	    }
+            platformBehavior.doMove(translate);
+            if (lastAzimuth != azimuth) {
+                platformBehavior.doLookY(lastAzimuth - azimuth);
+                lastAzimuth = azimuth;
+            }
         }
     }
 
@@ -303,16 +303,16 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
         cameraTransformGroup = ctg;
 
         platformBehavior = new OMKeyBehavior(cameraTransformGroup, viewProjection, 
-					     locateWorld(projection, scaleFactor));
-	// Trying to look down a little, didn't work.  Should have, though.
-// 	platformBehavior.doLookX(com.bbn.openmap.MoreMath.HALF_PI/2f);
+                                             locateWorld(projection, scaleFactor));
+        // Trying to look down a little, didn't work.  Should have, though.
+//      platformBehavior.doLookX(com.bbn.openmap.MoreMath.HALF_PI/2f);
         return platformBehavior;
     }
 
     /**
      */
     public Vector3d locateWorld(Projection projection, 
-				float scaleFactor) {
+                                float scaleFactor) {
 
         // Set the view parameters.
         this.viewProjection = projection;
@@ -336,8 +336,8 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
             double centerYOffset = pilotPoint.getY() * scaleFactor;
 
             if (DEBUG) Debug.output("OM3DViewer with projection " + projection +
-				    ", setting center of scene to " + centerXOffset +
-				    ", " + centerYOffset);
+                                    ", setting center of scene to " + centerXOffset +
+                                    ", " + centerYOffset);
 
             translate.set(centerXOffset, (double)height, centerYOffset);
             lastX = centerXOffset;
@@ -346,7 +346,7 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
             translate.set(0, (double) height, 0);
         }
 
-	return translate;
+        return translate;
     }
 
     /** Needed for J3D world. */
@@ -392,8 +392,8 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
             heightField.addFocusListener(this);
         }
         heightPanel.add(heightField);
-	// There aren't any units to this yet - we need a good
-	// translation between meters and the j3d world elevations.
+        // There aren't any units to this yet - we need a good
+        // translation between meters and the j3d world elevations.
         heightPanel.add(new JLabel(" "));
         panel.add(heightPanel);
 
@@ -412,7 +412,7 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
         String cmd = ae.getActionCommand();
         if (cmd == Launch3DCmd) {
             launch3D();
-	}
+        }
     }
 
 }

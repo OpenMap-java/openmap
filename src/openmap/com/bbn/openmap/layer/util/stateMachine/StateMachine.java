@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/stateMachine/StateMachine.java,v $
 // $RCSfile: StateMachine.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,21 +46,21 @@ public class StateMachine {
      * @param s array of states.
      * */
     public StateMachine(State[] s){
-	for (int i = 0; i < s.length; i++)
-	    states.addElement(s[i]);
+        for (int i = 0; i < s.length; i++)
+            states.addElement(s[i]);
     }
 
     /** Sets the current state to the reset state. */
     public void reset(){
-	currentState = resetState;
+        currentState = resetState;
     }
 
     /** Set the states to the new array.
      * @param s array of states.
      * */
     public void setStates(State[] s){
-	for (int i = 0; i < s.length; i++)
-	    states.addElement(s[i]);
+        for (int i = 0; i < s.length; i++)
+            states.addElement(s[i]);
     }
 
     /** Set the current state to the given state.  If the state is not
@@ -69,9 +69,9 @@ public class StateMachine {
      * @param state the state to set to the current one.
      * */
     public void setState(State state){
-	if (!states.contains(state))
-	    states.addElement(state);
-	currentState = state;
+        if (!states.contains(state))
+            states.addElement(state);
+        currentState = state;
     }
 
     /** Set the current state to the state residing in the vector at
@@ -80,29 +80,29 @@ public class StateMachine {
      * @param stateIndex the index of the current state.
      * */
     public void setState(int stateIndex){
-	try {
-	    currentState = (State) states.elementAt(stateIndex);
-	} catch (ArrayIndexOutOfBoundsException e){
-	    reset();
-	    System.err.println("StateMachine: out of bounds exception caught!");
-	}
+        try {
+            currentState = (State) states.elementAt(stateIndex);
+        } catch (ArrayIndexOutOfBoundsException e){
+            reset();
+            System.err.println("StateMachine: out of bounds exception caught!");
+        }
     }
 
     /** Return the current State. */
     public State getState(){
-	return currentState;
+        return currentState;
     }
 
     /** Return the state at the given index. If the index is larger
      * that the number of states, null is returned.
      * */
     public State getState(int stateIndex){
-	try{
-	    return (State) states.elementAt(stateIndex);
-	} catch (ArrayIndexOutOfBoundsException e){
-	    System.err.println("StateMachine: out of bounds exception caught!");
-	    return null;
-	}
+        try{
+            return (State) states.elementAt(stateIndex);
+        } catch (ArrayIndexOutOfBoundsException e){
+            System.err.println("StateMachine: out of bounds exception caught!");
+            return null;
+        }
     }
 
     /** Set the state to be gone to if the state machine is reset.  If
@@ -110,9 +110,9 @@ public class StateMachine {
      * be added to the end of the state vector.
      * */
     public void setResetState(State state){
-	if (!states.contains(state))
-	    states.addElement(state);
-	resetState = state;
+        if (!states.contains(state))
+            states.addElement(state);
+        resetState = state;
     }
 
     /** Set the reset state to be used by the state machine.  If a bad
@@ -120,27 +120,27 @@ public class StateMachine {
      * made the reset state.
      * */
     public void setResetState(int stateIndex){
-	try{
-	    resetState = (State) states.elementAt(stateIndex);
-	} catch (ArrayIndexOutOfBoundsException e){
-	    System.err.println("StateMachine: out of bounds exception caught!");
-	    if (states.size() > 1) 
-		resetState = (State) states.elementAt(0);
-	}
+        try{
+            resetState = (State) states.elementAt(stateIndex);
+        } catch (ArrayIndexOutOfBoundsException e){
+            System.err.println("StateMachine: out of bounds exception caught!");
+            if (states.size() > 1) 
+                resetState = (State) states.elementAt(0);
+        }
     }
 
     /** Return the reset state. */
     public State getResetState(){
-	return resetState;
+        return resetState;
     }
 
     /** Set the MapMouseListenerResponse for all the states. */
     public void setMapMouseListenerResponses(boolean value){
-	Enumeration sItems = states.elements();
-	while (sItems.hasMoreElements()){
-	    State state = (State)sItems.nextElement();
-	    state.setMapMouseListenerResponse(value);
-	}
+        Enumeration sItems = states.elements();
+        while (sItems.hasMoreElements()){
+            State state = (State)sItems.nextElement();
+            state.setMapMouseListenerResponse(value);
+        }
     }
 }
 

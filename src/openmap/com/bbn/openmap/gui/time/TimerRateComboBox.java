@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimerRateComboBox.java,v $
 // $RCSfile: TimerRateComboBox.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/05/06 23:06:46 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -49,96 +49,96 @@ public class TimerRateComboBox extends JComboBox
     protected RealTimeHandler timeHandler;
 
     public TimerRateComboBox(RealTimeHandler rth) {
-	super();
-	addActionListener(this);
-	setTimeHandler(rth);
+        super();
+        addActionListener(this);
+        setTimeHandler(rth);
     }
 
     /**
      * Only TimerRateHolders can be added.
      */
     public void addItem(Object obj) {
-	if (obj instanceof TimerRateHolder) {
-	    super.addItem(obj);
-	} else {
-	    Debug.error("TimerRateComboBox: Only TimerRateHolders can be added");
-	}
+        if (obj instanceof TimerRateHolder) {
+            super.addItem(obj);
+        } else {
+            Debug.error("TimerRateComboBox: Only TimerRateHolders can be added");
+        }
     }
 
     /**
      * The preferred way to add choices, since it creates the TimerRateHolder for you.
      */
     public void add(String string, int interval, int pace) {
-	super.addItem(new TimerRateHolder(string, interval, pace));
+        super.addItem(new TimerRateHolder(string, interval, pace));
     }
 
     public void setTimeHandler(RealTimeHandler rth) {
-	timeHandler = rth;
+        timeHandler = rth;
     }
 
     public RealTimeHandler getTimeHandler() {
-	return timeHandler;
+        return timeHandler;
     }
 
     /**
      * When a choice is made, the TimerRateComboBox updates the RealTimeHandler.
      */
     public void actionPerformed(ActionEvent ae) {
-	Object obj = ae.getSource();
+        Object obj = ae.getSource();
 
-	if (obj == this) {
-	    TimerRateHolder trh = (TimerRateHolder)getSelectedItem();
-	    trh.modifyTimer(getTimeHandler());
-	}
+        if (obj == this) {
+            TimerRateHolder trh = (TimerRateHolder)getSelectedItem();
+            trh.modifyTimer(getTimeHandler());
+        }
     }
 
     ///// Property Consumer Interface Methods
 
     public void setProperties(Properties props) {
-	setProperties(null, props);
+        setProperties(null, props);
     }
 
     public void setProperties(String prefix, Properties props) {
-	setPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
     }
 
     public Properties getProperties(Properties props) {
-	return props;
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	return props;
+        return props;
     }
 
     protected String propPrefix = null;
 
     public String getPropertyPrefix() {
-	return propPrefix;
+        return propPrefix;
     }
 
     public void setPropertyPrefix(String prefix) {
-	propPrefix = prefix;
+        propPrefix = prefix;
     }
 
     public class TimerRateHolder {
 
-	protected String title;
-	protected int timerInterval;
-	protected int pace;
+        protected String title;
+        protected int timerInterval;
+        protected int pace;
 
-	public TimerRateHolder(String t, int ti, int p) {
-	    title = t;
-	    timerInterval = ti;
- 	    pace = p;
-	}
+        public TimerRateHolder(String t, int ti, int p) {
+            title = t;
+            timerInterval = ti;
+            pace = p;
+        }
 
-	public void modifyTimer(RealTimeHandler rth) {
-	    rth.setPace(pace);
-	    rth.setUpdateInterval(timerInterval);
-	}
+        public void modifyTimer(RealTimeHandler rth) {
+            rth.setPace(pace);
+            rth.setUpdateInterval(timerInterval);
+        }
 
-	public String toString() {
-	    return title;
-	}
+        public String toString() {
+            return title;
+        }
     }
 }

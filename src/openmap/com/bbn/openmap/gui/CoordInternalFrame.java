@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/CoordInternalFrame.java,v $
 // $RCSfile: CoordInternalFrame.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 20:47:46 $
-// $Author: wjeuerle $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -52,13 +52,13 @@ public class CoordInternalFrame extends JInternalFrame
      * button to do anything.
      */
     public CoordInternalFrame() {
-	super(CoordDialog.DEFAULT_TITLE,
-	      true,		//resizable
-	      false,		//closable  - weird bug, won't close the second time
-	      false,		//maximizable
-	      true		//iconifiable
-	      );
-	setup();
+        super(CoordDialog.DEFAULT_TITLE,
+              true,             //resizable
+              false,            //closable  - weird bug, won't close the second time
+              false,            //maximizable
+              true              //iconifiable
+              );
+        setup();
     }
 
     /**
@@ -66,9 +66,9 @@ public class CoordInternalFrame extends JInternalFrame
      * and Apply and Close buttons
      */
     protected void setup() {
-	ccp = new CombinedCoordPanel(this);
-	getContentPane().add(ccp);
- 	setOpaque(true);
+        ccp = new CombinedCoordPanel(this);
+        getContentPane().add(ccp);
+        setOpaque(true);
      }
 
     /**
@@ -78,7 +78,7 @@ public class CoordInternalFrame extends JInternalFrame
      * @param listener  The CenterListener to be added
      */
     public void addCenterListener(CenterListener listener) {
-	ccp.addCenterListener(listener);
+        ccp.addCenterListener(listener);
     }
 
     /**
@@ -87,13 +87,13 @@ public class CoordInternalFrame extends JInternalFrame
      * @param listener  The CenterListener to be removed
      */
     public void removeCenterListener(CenterListener listener) {
-	ccp.removeCenterListener(listener);
+        ccp.removeCenterListener(listener);
     }
 
     public void actionPerformed(java.awt.event.ActionEvent e) {
-	if (e.getActionCommand() == CombinedCoordPanel.CloseCmd) {
-	    setVisible(false);
-	}
+        if (e.getActionCommand() == CombinedCoordPanel.CloseCmd) {
+            setVisible(false);
+        }
     }
 
     /**
@@ -101,7 +101,7 @@ public class CoordInternalFrame extends JInternalFrame
      * objects to the CombinedCoordPanel.
      */
     public void findAndInit(Object someObj) {
-	ccp.findAndInit(someObj);
+        ccp.findAndInit(someObj);
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/Attic/LineChoice.java,v $
 // $RCSfile: LineChoice.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,13 +54,13 @@ public class LineChoice {
      * @param toolTip to use for the icon.
      */
     public LineChoice(String imageResourceName, 
-		      BasicStroke stroke, 
-		      String toolTip) {
+                      BasicStroke stroke, 
+                      String toolTip) {
 
-	URL url = this.getClass().getResource(imageResourceName);
-	icon = new ImageIcon(url, toolTip);
+        URL url = this.getClass().getResource(imageResourceName);
+        icon = new ImageIcon(url, toolTip);
 
-	this.stroke = stroke;
+        this.stroke = stroke;
     }
 
     /**
@@ -72,13 +72,13 @@ public class LineChoice {
      * @param toolTip to use for the icon.  
      */
     public LineChoice(BasicStroke stroke, 
-		      String toolTip) {
+                      String toolTip) {
 
-	icon = createIcon(stroke, 
-			  DEFAULT_ICON_WIDTH, 
-			  DEFAULT_ICON_HEIGHT, 
-			  true);
-	this.stroke = stroke;
+        icon = createIcon(stroke, 
+                          DEFAULT_ICON_WIDTH, 
+                          DEFAULT_ICON_HEIGHT, 
+                          true);
+        this.stroke = stroke;
     }
 
     /**
@@ -91,31 +91,31 @@ public class LineChoice {
      * @param height the height of the icon.
      */
     public LineChoice(BasicStroke stroke, int width, int height,
-		      boolean horizontalOrientation,
-		      String toolTip) {
+                      boolean horizontalOrientation,
+                      String toolTip) {
 
-	icon = createIcon(stroke, width, height, horizontalOrientation);
-	this.stroke = stroke;
+        icon = createIcon(stroke, width, height, horizontalOrientation);
+        this.stroke = stroke;
     }
 
     /** Get the stroke for this LineChoice. */
     public BasicStroke getStroke() {
-	return stroke;
+        return stroke;
     }
 
     /** Set the stroke for this LineChoice. */
     public void setStroke(BasicStroke stroke) {
-	this.stroke = stroke;
+        this.stroke = stroke;
     }
 
     /** Get the ImageIcon for this LineChoice. */
     public ImageIcon getIcon() {
-	return icon;
+        return icon;
     }
 
     /** Set the ImageIcon for this LineChoice. */
     public void setIcon(ImageIcon iicon) {
-	icon = iicon;
+        icon = iicon;
     }
 
     /** 
@@ -128,28 +128,28 @@ public class LineChoice {
      * horizontally, else draw it vertically. 
      */
     public static ImageIcon createIcon(BasicStroke stroke, 
-				       int width, int height, 
-				       boolean horizontalOrientation) {
+                                       int width, int height, 
+                                       boolean horizontalOrientation) {
 
-	BufferedImage bigImage = 
-	    new BufferedImage(width, height,
-			      BufferedImage.TYPE_INT_ARGB);
-	GraphicsEnvironment ge = 
-	    GraphicsEnvironment.getLocalGraphicsEnvironment();
-	Graphics2D g = ge.createGraphics(bigImage);
+        BufferedImage bigImage = 
+            new BufferedImage(width, height,
+                              BufferedImage.TYPE_INT_ARGB);
+        GraphicsEnvironment ge = 
+            GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Graphics2D g = ge.createGraphics(bigImage);
 
-	g.setBackground(OMColor.clear);
-	g.setPaint(OMColor.clear);
-	g.fillRect(0, 0, width, height);
-	g.setStroke(stroke);
-	g.setPaint(Color.black);
-	if (horizontalOrientation) {
-	    g.drawLine(0, height/2, width, height/2);
-	} else {
-	    g.drawLine(width/2, 0, width/2, height);
-	}
+        g.setBackground(OMColor.clear);
+        g.setPaint(OMColor.clear);
+        g.fillRect(0, 0, width, height);
+        g.setStroke(stroke);
+        g.setPaint(Color.black);
+        if (horizontalOrientation) {
+            g.drawLine(0, height/2, width, height/2);
+        } else {
+            g.drawLine(width/2, 0, width/2, height);
+        }
 
-	return new ImageIcon(bigImage);
+        return new ImageIcon(bigImage);
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/LayerUtils.java,v $
 // $RCSfile: LayerUtils.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/05/06 23:33:29 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -56,8 +56,8 @@ public class LayerUtils {
      * @return Array of strings representing paths.
      */
     public static String[] initPathsFromProperties(Properties p, 
-						   String propName) {
-	return PropUtils.initPathsFromProperties(p, propName);
+                                                   String propName) {
+        return PropUtils.initPathsFromProperties(p, propName);
     }
 
     /** 
@@ -72,9 +72,9 @@ public class LayerUtils {
      * @return integer value associated with the property.
      */
     public static int intFromProperties(Properties p, 
-					String propName,
-					int defaultValue) {
-	return PropUtils.intFromProperties(p, propName, defaultValue);
+                                        String propName,
+                                        int defaultValue) {
+        return PropUtils.intFromProperties(p, propName, defaultValue);
     }
 
     /** 
@@ -89,9 +89,9 @@ public class LayerUtils {
      * @return float value associated with the property.
      */
     public static float floatFromProperties(Properties p, 
-					    String propName,
-					    float defaultValue) {
-	return PropUtils.floatFromProperties(p, propName, defaultValue);
+                                            String propName,
+                                            float defaultValue) {
+        return PropUtils.floatFromProperties(p, propName, defaultValue);
     }
 
     /** 
@@ -106,9 +106,9 @@ public class LayerUtils {
      * @return boolean value associated with the property.
      */
     public static boolean booleanFromProperties(Properties p, 
-						String propName,
-						boolean defaultValue) {
-	return PropUtils.booleanFromProperties(p, propName, defaultValue);
+                                                String propName,
+                                                boolean defaultValue) {
+        return PropUtils.booleanFromProperties(p, propName, defaultValue);
     }
 
     /**
@@ -121,8 +121,8 @@ public class LayerUtils {
      * of the class named in the property.
      */
     public static Object objectFromProperties(Properties p, 
-					      String propName) {
-	return PropUtils.objectFromProperties(p, propName);
+                                              String propName) {
+        return PropUtils.objectFromProperties(p, propName);
     }
 
     /**  
@@ -136,9 +136,9 @@ public class LayerUtils {
      * @return Array of strings between the tokens.
      */
     public static String[] stringArrayFromProperties(Properties p, 
-						     String propName, 
-						     String tok) {
-	return PropUtils.stringArrayFromProperties(p, propName, tok);
+                                                     String propName, 
+                                                     String tok) {
+        return PropUtils.stringArrayFromProperties(p, propName, tok);
     }
 
     /**
@@ -153,9 +153,9 @@ public class LayerUtils {
      */
 
     public static double doubleFromProperties(Properties p,
-					      String propName,
-					      double defaultValue) {
-	return PropUtils.doubleFromProperties(p, propName, defaultValue);
+                                              String propName,
+                                              double defaultValue) {
+        return PropUtils.doubleFromProperties(p, propName, defaultValue);
     }
       
     /** 
@@ -171,12 +171,12 @@ public class LayerUtils {
      * @see ColorFactory#parseColorFromProperties(Properties, String, String, boolean)
      */
     public static Color parseColorFromProperties(Properties p, 
-						 String propName, 
-						 String dfault)
-	throws NumberFormatException
-	{
-	    return ColorFactory.parseColorFromProperties(p, propName, dfault, false);
-	}
+                                                 String propName, 
+                                                 String dfault)
+        throws NumberFormatException
+        {
+            return ColorFactory.parseColorFromProperties(p, propName, dfault, false);
+        }
 
     /** 
      * Take a string from a properties file, representing the 24bit
@@ -192,12 +192,12 @@ public class LayerUtils {
      * String, boolean) 
      */
     public static Paint parseColorFromProperties(Properties p, 
-						 String propName, 
-						 Paint dfault)
-	throws NumberFormatException
-	{
-	    return ColorFactory.parseColorFromProperties(p, propName, dfault);
-	}
+                                                 String propName, 
+                                                 Paint dfault)
+        throws NumberFormatException
+        {
+            return ColorFactory.parseColorFromProperties(p, propName, dfault);
+        }
 
     /**
      * Convert a string representing a 24/32bit hex color value into a
@@ -217,10 +217,10 @@ public class LayerUtils {
      * @see ColorFactory#parseColor(String, boolean)
      */
     public static Color parseColor(String colorString)
-	throws NumberFormatException
-	{
-	    return ColorFactory.parseColor(colorString, false);
-	}
+        throws NumberFormatException
+        {
+            return ColorFactory.parseColor(colorString, false);
+        }
 
     /**
      * Converts a properties object to an array of Strings.  The
@@ -232,7 +232,7 @@ public class LayerUtils {
      */
     public static String[] getPropertiesAsStringArray(Properties props) {
 
-	return PropUtils.getPropertiesAsStringArray(props);
+        return PropUtils.getPropertiesAsStringArray(props);
     }
 
     /** 
@@ -243,8 +243,8 @@ public class LayerUtils {
      * @return URL
      */
     public static URL getResourceOrFileOrURL(String name)
-	throws java.net.MalformedURLException {
-	return PropUtils.getResourceOrFileOrURL(null, name);
+        throws java.net.MalformedURLException {
+        return PropUtils.getResourceOrFileOrURL(null, name);
     }
 
     /** 
@@ -256,8 +256,8 @@ public class LayerUtils {
      * @return URL
      */
     public static URL getResourceOrFileOrURL(Object askingClass, String name)
-	throws java.net.MalformedURLException {
-	return PropUtils.getResourceOrFileOrURL(askingClass.getClass(), name);
+        throws java.net.MalformedURLException {
+        return PropUtils.getResourceOrFileOrURL(askingClass.getClass(), name);
     }
 
     /** 
@@ -269,7 +269,7 @@ public class LayerUtils {
      * @return URL
      */
     public static URL getResourceOrFileOrURL(Class askingClass, String name)
-	throws java.net.MalformedURLException {
-	return PropUtils.getResourceOrFileOrURL(askingClass, name);
+        throws java.net.MalformedURLException {
+        return PropUtils.getResourceOrFileOrURL(askingClass, name);
     }
 }

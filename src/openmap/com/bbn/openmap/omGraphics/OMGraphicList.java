@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.11 $
-// $Date: 2003/12/23 20:46:44 $
-// $Author: wjeuerle $
+// $Revision: 1.12 $
+// $Date: 2004/01/26 18:18:12 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -118,7 +118,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * Construct an OMGraphicList.
      */
     public OMGraphicList() {
-	this(10);
+        this(10);
     };
     
     /**
@@ -127,7 +127,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param initialCapacity the initial capacity of the list 
      */
     public OMGraphicList(int initialCapacity) {
-	graphics = new ArrayList(initialCapacity);
+        graphics = new ArrayList(initialCapacity);
     };
 
     /**
@@ -150,7 +150,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param list List of OMGraphics.
      */
     public OMGraphicList(java.util.List list) {
-	graphics = list;
+        graphics = list;
     }
 
     /**
@@ -158,7 +158,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * list.  This is really a debugging method.
      */
     public String getDescription() {
-	return getDescription(0);
+        return getDescription(0);
     }
 
     /**
@@ -168,28 +168,28 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @return String that represents the structure of the OMGraphicList.
      */
     public String getDescription(int level) {
-	StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer();
 
-	if (level > 0) {
-	    sb.append("|--> ");
-	}
+        if (level > 0) {
+            sb.append("|--> ");
+        }
 
-	sb.append("OMGraphicList with " + size() + 
-		  " OMGraphic" + (size() == 1?"\n":"s\n"));
+        sb.append("OMGraphicList with " + size() + 
+                  " OMGraphic" + (size() == 1?"\n":"s\n"));
 
-	synchronized (this) {
-	    StringBuffer sb1 = new StringBuffer();
+        synchronized (this) {
+            StringBuffer sb1 = new StringBuffer();
 
-	    for (int i = 0; i < level; i++) {
-		sb1.append("     ");
-	    }
-	    String spacer = sb1.toString();
-	
-	    for (Iterator it = iterator();it.hasNext();) {
-		sb.append(spacer + ((OMGraphic)it.next()).getDescription(level+1) + "\n");
-	    }
-	}
-	return sb.toString();
+            for (int i = 0; i < level; i++) {
+                sb1.append("     ");
+            }
+            String spacer = sb1.toString();
+        
+            for (Iterator it = iterator();it.hasNext();) {
+                sb.append(spacer + ((OMGraphic)it.next()).getDescription(level+1) + "\n");
+            }
+        }
+        return sb.toString();
     }
 
     /**
@@ -197,7 +197,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * to a query, or itself.
      */
     public void setVague(boolean value) {
-	vague = value;
+        vague = value;
     }
 
     /**
@@ -205,7 +205,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * to a query, or itself.
      */
     public boolean isVague() {
-	return vague;
+        return vague;
     }
     
     /**
@@ -216,22 +216,22 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @exception IllegalArgumentException if OMGraphic is null
      */
     public void addOMGraphic(OMGraphic g) {
-	_add(g);
+        _add(g);
     }
 
     /**
      * Add an OMGraphic to the list.
      */
     public void add(OMGraphic g) {
-	_add(g);
+        _add(g);
     }
 
     /**
      * Add an OMGeometry to the list.
      */
     protected synchronized void _add(OMGeometry g) {
-	checkForDuplicate(g);
-	graphics.add(g);
+        checkForDuplicate(g);
+        graphics.add(g);
     }
 
     /**
@@ -242,7 +242,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param mode traversal mode
      */
     public void setTraverseMode(int mode) {
-	traverseMode = mode;
+        traverseMode = mode;
     }
 
     /**
@@ -253,14 +253,14 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @return int traversal mode
      */
     public int getTraverseMode() {
-	return traverseMode;
+        return traverseMode;
     }
 
     /**
      * Remove all elements from the graphic list.
      */
     public synchronized void clear() {
-	graphics.clear();
+        graphics.clear();
     }
 
     /**
@@ -269,7 +269,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @return boolean true if the list is empty, false if not
      */
     public synchronized boolean isEmpty() {
-	return graphics.isEmpty();
+        return graphics.isEmpty();
     }
 
     /**
@@ -278,7 +278,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @return int the number of graphics on the list.
      */
     public synchronized int size() {
-	return graphics.size();
+        return graphics.size();
     }
 
     /**
@@ -290,7 +290,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     public synchronized void setOMGraphicAt(OMGraphic graphic, int index) {
-	graphics.set(index, graphic);
+        graphics.set(index, graphic);
     }
 
     /**
@@ -303,7 +303,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * this.size()</code>
      */
     public OMGraphic getOMGraphicAt(int location) {
-	return (OMGraphic) _getAt(location);
+        return (OMGraphic) _getAt(location);
     } 
 
     /**
@@ -316,11 +316,11 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * this.size()</code>
      */
     protected synchronized OMGeometry _getAt(int location) {
-	if (location < 0 || location >= graphics.size()) {
-	    return null;
-	}
+        if (location < 0 || location >= graphics.size()) {
+            return null;
+        }
 
-	return (OMGeometry)graphics.get(location);
+        return (OMGeometry)graphics.get(location);
     }
 
     /**
@@ -332,7 +332,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     protected synchronized void _setAt(OMGeometry graphic, int index) {
-	graphics.set(index, graphic);
+        graphics.set(index, graphic);
     }
 
     /**
@@ -346,7 +346,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @see OMGeometry#getAppObject
      */
     public OMGraphic getOMGraphicWithAppObject(Object appObj) {
-	return (OMGraphic) _getWithAppObject(appObj);
+        return (OMGraphic) _getWithAppObject(appObj);
     }
 
     /**
@@ -365,30 +365,30 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @see OMGeometry#getAppObject
      */
     protected synchronized OMGeometry _getWithAppObject(Object appObj) {
-	for (Iterator it = graphics.iterator(); it.hasNext();) {
-	    OMGeometry graphic = (OMGeometry) it.next();
-	    Object tObj = graphic.getAppObject();
+        for (Iterator it = graphics.iterator(); it.hasNext();) {
+            OMGeometry graphic = (OMGeometry) it.next();
+            Object tObj = graphic.getAppObject();
 
-	    if ((appObj == tObj) || (appObj.equals(tObj))) {
-		return (OMGeometry)graphic;
-	    }
+            if ((appObj == tObj) || (appObj.equals(tObj))) {
+                return (OMGeometry)graphic;
+            }
 
-	    // For this object, if it is an OMGraphicList and is 
-	    // not vague, check its OMGraphics for their app
-	    // objects, too.
-	    if (graphic instanceof OMGraphicList && 
-		!((OMGraphicList)graphic).isVague()) {
+            // For this object, if it is an OMGraphicList and is 
+            // not vague, check its OMGraphics for their app
+            // objects, too.
+            if (graphic instanceof OMGraphicList && 
+                !((OMGraphicList)graphic).isVague()) {
 
-		OMGraphicList omgl = (OMGraphicList)graphic;
-		OMGeometry tGeom = omgl.getOMGraphicWithAppObject(appObj);
-	    
-		if (tGeom != null) {
-		    return tGeom;
-		}
-	    }
-	}
+                OMGraphicList omgl = (OMGraphicList)graphic;
+                OMGeometry tGeom = omgl.getOMGraphicWithAppObject(appObj);
+            
+                if (tGeom != null) {
+                    return tGeom;
+                }
+            }
+        }
 
-	return null;
+        return null;
     }
 
     /**
@@ -397,7 +397,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param location the location of the OMGraphic to remove.
      */
     public void removeOMGraphicAt(int location) {
-	_remove(location);
+        _remove(location);
     }
 
     /**
@@ -417,7 +417,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @return true if graphic was on the list, false if otherwise.
      */
     protected synchronized Object _remove(int location) {
-	return graphics.remove(location);
+        return graphics.remove(location);
     }
 
     /**
@@ -429,20 +429,20 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @return true if geometry was on the list, false if otherwise.
      */
     protected synchronized boolean _remove(OMGeometry geometry) {
-	boolean found = false;
+        boolean found = false;
 
-	found = graphics.remove(geometry);
+        found = graphics.remove(geometry);
 
-	if (!found && !isVague()) {
-	    for (Iterator it = graphics.iterator(); it.hasNext();) {
-		OMGraphic graphic = (OMGraphic)it.next();
-		if (graphic instanceof OMGraphicList) {
-		    found = ((OMGraphicList)graphic)._remove(geometry);
-		}
-	    }
-	}
+        if (!found && !isVague()) {
+            for (Iterator it = graphics.iterator(); it.hasNext();) {
+                OMGraphic graphic = (OMGraphic)it.next();
+                if (graphic instanceof OMGraphicList) {
+                    found = ((OMGraphicList)graphic)._remove(geometry);
+                }
+            }
+        }
 
-	return found;
+        return found;
     }
 
     /**
@@ -453,7 +453,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * is not found.  
      */
     public int indexOf(OMGraphic graphic) {
-	return _indexOf(graphic);
+        return _indexOf(graphic);
     }
 
     /**
@@ -464,7 +464,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * is not found.  
      */
     protected synchronized int _indexOf(OMGeometry geometry) {
-	return graphics.indexOf(geometry);
+        return graphics.indexOf(geometry);
     }
 
     /**
@@ -477,7 +477,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     public void insertOMGraphicAt(OMGraphic graphic, int location) {
-	_insert(graphic, location);
+        _insert(graphic, location);
     }
 
     /**
@@ -490,7 +490,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     protected synchronized void _insert(OMGeometry geometry, int location) {
-	graphics.add(location, geometry);
+        graphics.add(location, geometry);
     }
 
     /** 
@@ -506,11 +506,11 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @see #moveIndexedOneToBack(int)
      */
     public void moveIndexedOneToTop(int location) {
-	if (traverseMode == FIRST_ADDED_ON_TOP) {
-	    moveIndexedOneToFront(location);
-	} else {
-	    moveIndexedOneToBack(location);
-	}
+        if (traverseMode == FIRST_ADDED_ON_TOP) {
+            moveIndexedOneToFront(location);
+        } else {
+            moveIndexedOneToBack(location);
+        }
     }
 
     /** 
@@ -523,11 +523,11 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param location the index location of the graphic to move.  
      */
     public void moveIndexedToTop(int location) {
-	if (traverseMode == FIRST_ADDED_ON_TOP) {
-	    moveIndexedToFirst(location);
-	} else {
-	    moveIndexedToLast(location);
-	}
+        if (traverseMode == FIRST_ADDED_ON_TOP) {
+            moveIndexedToFirst(location);
+        } else {
+            moveIndexedToLast(location);
+        }
     }
 
     /** 
@@ -543,12 +543,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @see #moveIndexedOneToBack(int)
      */
     public void moveIndexedOneToBottom(int location) {
-	OMGeometry tmpGraphic = _getAt(location);
-	if (traverseMode == FIRST_ADDED_ON_TOP) {
-	    moveIndexedOneToBack(location);
-	} else {
-	    moveIndexedOneToFront(location);
-	}
+        OMGeometry tmpGraphic = _getAt(location);
+        if (traverseMode == FIRST_ADDED_ON_TOP) {
+            moveIndexedOneToBack(location);
+        } else {
+            moveIndexedOneToFront(location);
+        }
     }
 
     /** 
@@ -561,12 +561,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param location the index location of the graphic to move.  
      */
     public void moveIndexedToBottom(int location) {
-	OMGeometry tmpGraphic = _getAt(location);
-	if (traverseMode == FIRST_ADDED_ON_TOP) {
-	    moveIndexedToLast(location);
-	} else {
-	    moveIndexedToFirst(location);
-	}
+        OMGeometry tmpGraphic = _getAt(location);
+        if (traverseMode == FIRST_ADDED_ON_TOP) {
+            moveIndexedToLast(location);
+        } else {
+            moveIndexedToFirst(location);
+        }
     }
 
     /** 
@@ -580,14 +580,14 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @see #moveIndexedToTop(int)
      */
     public void moveIndexedToFirst(int location) {
-	int listSize = size();
-	if (location > 0 && location < listSize) {
-	    OMGeometry tmpGraphic = _getAt(location);
-	    for (int i = location; i > 0; i--) {
-		_setAt(_getAt(i-1), i);
-	    }
-	    _setAt(tmpGraphic, 0);
-	}
+        int listSize = size();
+        if (location > 0 && location < listSize) {
+            OMGeometry tmpGraphic = _getAt(location);
+            for (int i = location; i > 0; i--) {
+                _setAt(_getAt(i-1), i);
+            }
+            _setAt(tmpGraphic, 0);
+        }
     }
 
     /** 
@@ -599,12 +599,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param location the index of the graphic to move. 
      */
     public void moveIndexedOneToFront(int location) {
-	int listSize = size();
-	if (location > 0 && location < listSize) {
-	    OMGeometry tmpGraphic = _getAt(location);
-	    _setAt(_getAt(location-1), location);
-	    _setAt(tmpGraphic, location-1);
-	}
+        int listSize = size();
+        if (location > 0 && location < listSize) {
+            OMGeometry tmpGraphic = _getAt(location);
+            _setAt(_getAt(location-1), location);
+            _setAt(tmpGraphic, location-1);
+        }
     }
 
     /** 
@@ -618,14 +618,14 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @see #moveIndexedToTop(int)
      */
     public void moveIndexedToLast(int location) {
-	int listSize = size();
-	if (location < listSize - 1 && location >= 0) {
-	    OMGeometry tmpGraphic = _getAt(location);
-	    for (int i = location; i < listSize - 1; i++) {
-		_setAt(_getAt(i+1), i);
-	    }
-	    _setAt(tmpGraphic, listSize - 1);
-	}
+        int listSize = size();
+        if (location < listSize - 1 && location >= 0) {
+            OMGeometry tmpGraphic = _getAt(location);
+            for (int i = location; i < listSize - 1; i++) {
+                _setAt(_getAt(i+1), i);
+            }
+            _setAt(tmpGraphic, listSize - 1);
+        }
     }
 
     /** 
@@ -637,12 +637,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param location the index of the graphic to move. 
      */
     public void moveIndexedOneToBack(int location) {
-	int listSize = size();
-	if (location < listSize - 1 && location >= 0) {
-	    OMGeometry tmpGraphic = _getAt(location);
-	    _setAt(_getAt(location+1), location);
-	    _setAt(tmpGraphic, location+1);
-	}
+        int listSize = size();
+        if (location < listSize - 1 && location >= 0) {
+            OMGeometry tmpGraphic = _getAt(location);
+            _setAt(_getAt(location+1), location);
+            _setAt(tmpGraphic, location+1);
+        }
     }
 
     /** 
@@ -651,12 +651,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param stroke the stroke object to use.
      */
     public void setStroke(java.awt.Stroke stroke) {
-	super.setStroke(stroke);
-	synchronized (this) {
-	    for (Iterator it = graphics.iterator(); it.hasNext();) {
-		((OMGraphic)it.next()).setStroke(stroke);
-	    }
-	}
+        super.setStroke(stroke);
+        synchronized (this) {
+            for (Iterator it = graphics.iterator(); it.hasNext();) {
+                ((OMGraphic)it.next()).setStroke(stroke);
+            }
+        }
     }
     
     /**
@@ -665,12 +665,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param paint java.awt.Paint
      */
     public void setFillPaint(Paint paint) {
-	super.setFillPaint(paint);
-	synchronized (this) {
-	    for (Iterator it = graphics.iterator(); it.hasNext();) {
-		((OMGraphic)it.next()).setFillPaint(paint);
-	    }
-	}
+        super.setFillPaint(paint);
+        synchronized (this) {
+            for (Iterator it = graphics.iterator(); it.hasNext();) {
+                ((OMGraphic)it.next()).setFillPaint(paint);
+            }
+        }
     }
 
     /**
@@ -683,12 +683,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * influencing appearance.
      */
     public void setTextureMask(TexturePaint texture) {
-	super.setTextureMask(texture);
-	synchronized (this) {
-	    for (Iterator it = graphics.iterator(); it.hasNext();) {
-		((OMGraphic)it.next()).setTextureMask(texture);
-	    }
-	}
+        super.setTextureMask(texture);
+        synchronized (this) {
+            for (Iterator it = graphics.iterator(); it.hasNext();) {
+                ((OMGraphic)it.next()).setTextureMask(texture);
+            }
+        }
     }
 
     /**
@@ -697,12 +697,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param paint java.awt.Paint
      */
     public void setLinePaint(Paint paint) {
-	super.setLinePaint(paint);
-	synchronized (this) {
-	    for (Iterator it = graphics.iterator(); it.hasNext();) {
-		((OMGraphic)it.next()).setLinePaint(paint);
-	    }
-	}
+        super.setLinePaint(paint);
+        synchronized (this) {
+            for (Iterator it = graphics.iterator(); it.hasNext();) {
+                ((OMGraphic)it.next()).setLinePaint(paint);
+            }
+        }
     }
 
     /**
@@ -711,12 +711,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param paint java.awt.Paint
      */
     public void setSelectPaint(Paint paint) {
-	super.setSelectPaint(paint);
-	synchronized (this) {
-	    for (Iterator it = graphics.iterator(); it.hasNext();) {
-		((OMGraphic)it.next()).setSelectPaint(paint);
-	    }
-	}
+        super.setSelectPaint(paint);
+        synchronized (this) {
+            for (Iterator it = graphics.iterator(); it.hasNext();) {
+                ((OMGraphic)it.next()).setSelectPaint(paint);
+            }
+        }
     }
 
     /**
@@ -725,24 +725,24 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param paint java.awt.Paint
      */
     public void setMattingPaint(Paint paint) {
-	super.setMattingPaint(paint);
-	synchronized (this) {
-	    for (Iterator it = graphics.iterator(); it.hasNext();) {
-		((OMGraphic)it.next()).setMattingPaint(paint);
-	    }
-	}
+        super.setMattingPaint(paint);
+        synchronized (this) {
+            for (Iterator it = graphics.iterator(); it.hasNext();) {
+                ((OMGraphic)it.next()).setMattingPaint(paint);
+            }
+        }
     }
 
     /**
      * Set the matting flag for all the objects on the list.
      */
     public void setMatted(boolean value) {
-	super.setMatted(value);
-	synchronized (this) {
-	    for (Iterator it = graphics.iterator(); it.hasNext();) {
-		    ((OMGraphic)it.next()).setMatted(value);
-	    }
-	}
+        super.setMatted(value);
+        synchronized (this) {
+            for (Iterator it = graphics.iterator(); it.hasNext();) {
+                    ((OMGraphic)it.next()).setMatted(value);
+            }
+        }
     }
 
     /**
@@ -757,7 +757,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @see #generate(Projection, boolean)
      */
     public void project(Projection p) {
-	generate(p, false);
+        generate(p, false);
     }
 
     /**
@@ -771,7 +771,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @see #generate(Projection, boolean)
      */
     public void project(Projection p, boolean forceProjectAll) {
-	generate(p, forceProjectAll);
+        generate(p, forceProjectAll);
     }
 
     /**
@@ -783,8 +783,8 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @see #generate(Projection, boolean)
      */
     public boolean generate(Projection p) {
-	generate(p, true);
-	return true;
+        generate(p, true);
+        return true;
     }
 
     /**
@@ -800,18 +800,18 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @see OMGraphic#regenerate
      */
     public synchronized void generate(Projection p, boolean forceProjectAll) {
-	Iterator iterator = iterator();
-	// Check forceProjectAll outside the loop for slight
-	// performance improvement.
-	if (forceProjectAll) {
-	    while (iterator.hasNext()) {
-		((OMGraphic) iterator.next()).generate(p);
-	    }
-	} else {
-	    while (iterator.hasNext()) {
-		((OMGraphic) iterator.next()).regenerate(p);
-	    }
-	}
+        Iterator iterator = iterator();
+        // Check forceProjectAll outside the loop for slight
+        // performance improvement.
+        if (forceProjectAll) {
+            while (iterator.hasNext()) {
+                ((OMGraphic) iterator.next()).generate(p);
+            }
+        } else {
+            while (iterator.hasNext()) {
+                ((OMGraphic) iterator.next()).regenerate(p);
+            }
+        }
     }
 
     /**
@@ -824,28 +824,28 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param gr the AWT Graphics context
      */
     public synchronized void render(Graphics gr) {
-	OMGraphic graphic;
-	ListIterator iterator;
+        OMGraphic graphic;
+        ListIterator iterator;
 
-	if (traverseMode == FIRST_ADDED_ON_TOP) {
-	    iterator = graphics.listIterator(graphics.size());
-	    while (iterator.hasPrevious()) {
-		graphic = (OMGraphic) iterator.previous();
-		if (shouldProcess(graphic)) {
-		    graphic.render(gr);
-		}
-	    }
+        if (traverseMode == FIRST_ADDED_ON_TOP) {
+            iterator = graphics.listIterator(graphics.size());
+            while (iterator.hasPrevious()) {
+                graphic = (OMGraphic) iterator.previous();
+                if (shouldProcess(graphic)) {
+                    graphic.render(gr);
+                }
+            }
 
-	} else {
-	    iterator = graphics.listIterator();
+        } else {
+            iterator = graphics.listIterator();
 
-	    while (iterator.hasNext()) {
-		graphic = (OMGraphic) iterator.next();
-		if (shouldProcess(graphic)) {
-		    graphic.render(gr);
-		}
-	    }
-	}
+            while (iterator.hasNext()) {
+                graphic = (OMGraphic) iterator.next();
+                if (shouldProcess(graphic)) {
+                    graphic.render(gr);
+                }
+            }
+        }
     }
 
     /**
@@ -860,32 +860,32 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param gr the AWT Graphics context 
      */
     public synchronized void renderAllAsSelected(Graphics gr) {
-	OMGraphic graphic;
-	ListIterator iterator;
+        OMGraphic graphic;
+        ListIterator iterator;
 
-	if (traverseMode == FIRST_ADDED_ON_TOP) {
-	    iterator = graphics.listIterator(graphics.size());
-	    while (iterator.hasPrevious()) {
-		graphic = (OMGraphic) iterator.previous();
-		if (shouldProcess(graphic)) {
-		    graphic.select();
-		    graphic.render(gr);
-		    graphic.deselect();
-		}
-	    }
+        if (traverseMode == FIRST_ADDED_ON_TOP) {
+            iterator = graphics.listIterator(graphics.size());
+            while (iterator.hasPrevious()) {
+                graphic = (OMGraphic) iterator.previous();
+                if (shouldProcess(graphic)) {
+                    graphic.select();
+                    graphic.render(gr);
+                    graphic.deselect();
+                }
+            }
 
-	} else {
-	    iterator = graphics.listIterator();
+        } else {
+            iterator = graphics.listIterator();
 
-	    while (iterator.hasNext()) {
-		graphic = (OMGraphic) iterator.next();
-		if (shouldProcess(graphic)) {
-		    graphic.select();
-		    graphic.render(gr);
-		    graphic.deselect();
-		}
-	    }
-	}
+            while (iterator.hasNext()) {
+                graphic = (OMGraphic) iterator.next();
+                if (shouldProcess(graphic)) {
+                    graphic.select();
+                    graphic.render(gr);
+                    graphic.deselect();
+                }
+            }
+        }
     }
 
     /**
@@ -904,7 +904,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * return true.
      */
     protected boolean shouldProcess(OMGeometry omg) {
-	return processAllGeometries || omg.isVisible();
+        return processAllGeometries || omg.isVisible();
     }
 
     /**
@@ -912,7 +912,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * always process geometries.
      */
     public void setProcessAllGeometries(boolean set) {
-	processAllGeometries = set;
+        processAllGeometries = set;
     }
 
     /**
@@ -920,7 +920,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * shouldProcess method to always process geometries.
      */
     public boolean getProcessAllGeometries() {
-	return processAllGeometries;
+        return processAllGeometries;
     }
 
     /**
@@ -932,21 +932,21 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @see #findClosest(int, int, float)
      */
     public float distance(int x, int y) {
-	return _findClosest(x, y, Float.MAX_VALUE, false).d;
+        return _findClosest(x, y, Float.MAX_VALUE, false).d;
     }
 
     /**
      * RetVal for closest object/distance calculations.
      */
     protected static class OMDist {
-	public OMGeometry omg = null;
-	public float d = Float.POSITIVE_INFINITY;
-	public int index = NONE;  // unknown
+        public OMGeometry omg = null;
+        public float d = Float.POSITIVE_INFINITY;
+        public int index = NONE;  // unknown
 
-	public String toString() {
-	    return "OMDist: omg=" + (omg==null?"null":omg.getClass().getName()) + ", d=" + d +
-		", index=" + index;
-	}
+        public String toString() {
+            return "OMDist: omg=" + (omg==null?"null":omg.getClass().getName()) + ", d=" + d +
+                ", index=" + index;
+        }
     }
 
     /**
@@ -962,53 +962,53 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @return OMDist
      */
     protected synchronized OMDist _findClosest(int x, int y, float limit, boolean resetSelect) {
-  	OMDist omd = new OMDist();
-	OMDist tomd;
-	ListIterator iterator;
-	int i;
+        OMDist omd = new OMDist();
+        OMDist tomd;
+        ListIterator iterator;
+        int i;
 
-	if (size() != 0) {
-	    if (traverseMode == FIRST_ADDED_ON_TOP) {
-		i = 0;
-		iterator = graphics.listIterator();
-		while (iterator.hasNext()) {
-		    tomd = findClosestTest(omd, i, (OMGeometry) iterator.next(), 
-					   x, y, limit, resetSelect);
-		    if (tomd == null) continue;
-		    omd = tomd;  // for style
-		    if (omd.d == 0) break;
-		    i++;
-		}
-	    } else {
-		i = graphics.size();
-		iterator = graphics.listIterator(i);
-		while (iterator.hasPrevious()) {
-		    tomd = findClosestTest(omd, i, (OMGeometry) iterator.previous(), 
-					   x, y, limit, resetSelect);
-		    if (tomd == null) continue;
-		    omd = tomd;  // for style
-		    if (omd.d == 0) break;
-		    i--;
-		}
-	    }
-	}
+        if (size() != 0) {
+            if (traverseMode == FIRST_ADDED_ON_TOP) {
+                i = 0;
+                iterator = graphics.listIterator();
+                while (iterator.hasNext()) {
+                    tomd = findClosestTest(omd, i, (OMGeometry) iterator.next(), 
+                                           x, y, limit, resetSelect);
+                    if (tomd == null) continue;
+                    omd = tomd;  // for style
+                    if (omd.d == 0) break;
+                    i++;
+                }
+            } else {
+                i = graphics.size();
+                iterator = graphics.listIterator(i);
+                while (iterator.hasPrevious()) {
+                    tomd = findClosestTest(omd, i, (OMGeometry) iterator.previous(), 
+                                           x, y, limit, resetSelect);
+                    if (tomd == null) continue;
+                    omd = tomd;  // for style
+                    if (omd.d == 0) break;
+                    i--;
+                }
+            }
+        }
 
-	if (Debug.debugging("omgraphics")) {
-	    int size = size();
-	    if (omd.omg != null && isVague()) {
-		omd.omg = this;
-		Debug.output(this.getClass().getName() + "(" + size + 
-			     ") detecting hit and vagueness, returning " + omd);
-	    } else if (omd.omg != null && !isVague()) {
-		Debug.output(this.getClass().getName() + "(" + size + 
-			     ") detecting hit, no vagueness, returning contained "  + omd);
-	    } else {
-		Debug.output(this.getClass().getName() + "(" + size + 
-			     ") omd.omg " + (omd.omg == null?"== null":"!= null"));
-	    }
-	}
+        if (Debug.debugging("omgraphics")) {
+            int size = size();
+            if (omd.omg != null && isVague()) {
+                omd.omg = this;
+                Debug.output(this.getClass().getName() + "(" + size + 
+                             ") detecting hit and vagueness, returning " + omd);
+            } else if (omd.omg != null && !isVague()) {
+                Debug.output(this.getClass().getName() + "(" + size + 
+                             ") detecting hit, no vagueness, returning contained "  + omd);
+            } else {
+                Debug.output(this.getClass().getName() + "(" + size + 
+                             ") omd.omg " + (omd.omg == null?"== null":"!= null"));
+            }
+        }
 
-	return omd;
+        return omd;
     }
 
 
@@ -1031,44 +1031,44 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * could be Infinity.
      */
     protected synchronized OMDist findClosestTest(OMDist current, int index, OMGeometry graphic, 
-						  int x, int y, float limit, boolean resetSelect) {
+                                                  int x, int y, float limit, boolean resetSelect) {
 
-	if (current == null) {
-	    current = new OMDist();
-	}
+        if (current == null) {
+            current = new OMDist();
+        }
 
-	OMGraphicList omgl;
-	float currentDistance = Float.MAX_VALUE;
+        OMGraphicList omgl;
+        float currentDistance = Float.MAX_VALUE;
 
-	// cannot select a graphic which isn't visible
-	if (!shouldProcess(graphic)) {
-	    return null;
-	}
+        // cannot select a graphic which isn't visible
+        if (!shouldProcess(graphic)) {
+            return null;
+        }
 
-	if (graphic instanceof OMGraphicList) {
-	    omgl = (OMGraphicList)graphic; 
-	    OMDist dist = omgl._findClosest(x, y, limit, resetSelect);
-	    if (dist.omg != null) {
-		currentDistance = dist.d;
-		graphic = dist.omg;
-	    }
-	} else {
-	    if (resetSelect) graphic.deselect();
-	    currentDistance = graphic.distance(x, y);
-	}
+        if (graphic instanceof OMGraphicList) {
+            omgl = (OMGraphicList)graphic; 
+            OMDist dist = omgl._findClosest(x, y, limit, resetSelect);
+            if (dist.omg != null) {
+                currentDistance = dist.d;
+                graphic = dist.omg;
+            }
+        } else {
+            if (resetSelect) graphic.deselect();
+            currentDistance = graphic.distance(x, y);
+        }
 
-	if (currentDistance < limit && 
-	    currentDistance < current.d) {
-	    if (!isVague()) {
-		current.omg = graphic;
-	    } else {
-		current.omg = this;
-	    }
-	    current.index = index;
-	    current.d = currentDistance;
-	}
+        if (currentDistance < limit && 
+            currentDistance < current.d) {
+            if (!isVague()) {
+                current.omg = graphic;
+            } else {
+                current.omg = this;
+            }
+            current.index = index;
+            current.d = currentDistance;
+        }
 
-	return current;
+        return current;
     }
 
     /**
@@ -1088,7 +1088,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * null if not found.
      */
     public OMGraphic findClosest(int x, int y, float limit) {
-	return (OMGraphic) _findClosest(x, y, limit, false).omg;
+        return (OMGraphic) _findClosest(x, y, limit, false).omg;
     }
 
     /**
@@ -1126,7 +1126,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * OMGeometryList.NONE if not found.
      */
     public int findIndexOfClosest(int x, int y, float limit) {
-	return _findClosest(x, y, limit, false).index;
+        return _findClosest(x, y, limit, false).index;
     }
 
     /**
@@ -1152,7 +1152,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * Calls _findClosest(x, y, limit, false);
      */
     protected OMDist _findClosest(int x, int y, float limit) {
-	return _findClosest(x, y, limit, false);
+        return _findClosest(x, y, limit, false);
     }
 
     /**
@@ -1192,7 +1192,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * list is set to be vague.
      */
     public OMGraphic selectClosest(int x, int y, float limit) {
-	return (OMGraphic)_selectClosest(x, y, limit);
+        return (OMGraphic)_selectClosest(x, y, limit);
     }
 
     /**
@@ -1215,49 +1215,49 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * list is set to be vague.
      */
     protected synchronized OMGeometry _selectClosest(int x, int y, float limit) {
-	OMDist omd = null;
-	OMDist tomd;
-	ListIterator iterator;
+        OMDist omd = null;
+        OMDist tomd;
+        ListIterator iterator;
         OMGeometry ret = null;
-	OMGeometry current;
-	OMGraphicList omgl;
+        OMGeometry current;
+        OMGraphicList omgl;
 
-	// Handle vagueness.
-	if (isVague()) {
-	    omd = _findClosest(x, y, limit, true);
-	    if (omd != null) {
-		selectAll();
-		return this;
-	    }
-	}
+        // Handle vagueness.
+        if (isVague()) {
+            omd = _findClosest(x, y, limit, true);
+            if (omd != null) {
+                selectAll();
+                return this;
+            }
+        }
 
-	if (size() != 0) {
-	    if (traverseMode == FIRST_ADDED_ON_TOP) {
-		iterator = graphics.listIterator();
-		while (iterator.hasNext()) {
-		    tomd = selectClosestTest(omd, 0, (OMGeometry) iterator.next(), 
-					     x, y, limit);
-		    if (tomd == null) continue;
-		    omd = tomd;  // for style
-		    if (omd.d == 0) break;
-		}
-	    } else {
-		iterator = graphics.listIterator(graphics.size());
-		while (iterator.hasPrevious()) {
-		    tomd = selectClosestTest(omd, 0, (OMGeometry) iterator.previous(), 
-					     x, y, limit);
-		    if (tomd == null) continue;
-		    omd = tomd;  // for style
-		    if (omd.d == 0) break;
-		}
-	    }
-	}
+        if (size() != 0) {
+            if (traverseMode == FIRST_ADDED_ON_TOP) {
+                iterator = graphics.listIterator();
+                while (iterator.hasNext()) {
+                    tomd = selectClosestTest(omd, 0, (OMGeometry) iterator.next(), 
+                                             x, y, limit);
+                    if (tomd == null) continue;
+                    omd = tomd;  // for style
+                    if (omd.d == 0) break;
+                }
+            } else {
+                iterator = graphics.listIterator(graphics.size());
+                while (iterator.hasPrevious()) {
+                    tomd = selectClosestTest(omd, 0, (OMGeometry) iterator.previous(), 
+                                             x, y, limit);
+                    if (tomd == null) continue;
+                    omd = tomd;  // for style
+                    if (omd.d == 0) break;
+                }
+            }
+        }
 
-	if (omd != null) {
-	    ret = omd.omg;
-	}
+        if (omd != null) {
+            ret = omd.omg;
+        }
 
-	return ret;
+        return ret;
     }
 
     /**
@@ -1274,25 +1274,25 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * vague and one of its children meet the criteria.
      */
     protected OMDist selectClosestTest(OMDist current, int index, OMGeometry graphic, 
-				       int x, int y, float limit) {
-	if (current == null) {
-	    current = new OMDist();
-	}
+                                       int x, int y, float limit) {
+        if (current == null) {
+            current = new OMDist();
+        }
 
-	OMGeometry oldGraphic = current.omg;
-	OMDist ret = findClosestTest(current, index, graphic, x, y, limit, true);
+        OMGeometry oldGraphic = current.omg;
+        OMDist ret = findClosestTest(current, index, graphic, x, y, limit, true);
 
-	// Test for the OMDist still holding the same OMGraphicList, 
-	// which will be the case if this list is vague.  The distance
-	// will be updated, though.
-	if (ret != null && oldGraphic != ret.omg) {
-	    if (oldGraphic != null) {
-		oldGraphic.deselect();
-	    }
-	    ret.omg.select();
-	}
+        // Test for the OMDist still holding the same OMGraphicList, 
+        // which will be the case if this list is vague.  The distance
+        // will be updated, though.
+        if (ret != null && oldGraphic != ret.omg) {
+            if (oldGraphic != null) {
+                oldGraphic.deselect();
+            }
+            ret.omg.select();
+        }
 
-	return ret;
+        return ret;
     }
 
     /**
@@ -1302,8 +1302,8 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * correctly.
      */
     public void select() {
-	selectAll();
-	super.select();
+        selectAll();
+        super.select();
     }
 
     /**
@@ -1316,7 +1316,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @return the graphic that contains the pixel, NONE (null) if none are found.
      */
     public OMGraphic getOMGraphicThatContains(int x, int y) {
-	return (OMGraphic)_getContains(x, y);
+        return (OMGraphic)_getContains(x, y);
     }
 
     /**
@@ -1334,65 +1334,65 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      */
     protected synchronized OMGeometry _getContains(int x, int y) {
 
-	ListIterator iterator;
+        ListIterator iterator;
         OMGeometry graphic, ret = null;
-	OMGraphicList tomgl = null;
+        OMGraphicList tomgl = null;
 
-	if (size() != 0) {
-	    if (traverseMode == FIRST_ADDED_ON_TOP) {
-		iterator = graphics.listIterator();
-		while (iterator.hasNext()) {
-		    graphic = (OMGraphic) iterator.next();
+        if (size() != 0) {
+            if (traverseMode == FIRST_ADDED_ON_TOP) {
+                iterator = graphics.listIterator();
+                while (iterator.hasNext()) {
+                    graphic = (OMGraphic) iterator.next();
 
-		    // cannot select a graphic which isn't visible
-		    if (!shouldProcess(graphic))
-			continue;
+                    // cannot select a graphic which isn't visible
+                    if (!shouldProcess(graphic))
+                        continue;
 
-		    if (graphic instanceof OMGraphicList) {
-			tomgl = (OMGraphicList)graphic;
-			ret = tomgl._getContains(x, y);
-			if (ret != null) {
-			    if (tomgl.isVague()) {
-				ret = graphic;
-			    }
-			    break;
-			}
-		    } else if (graphic.contains(x, y)) {
-			ret = graphic;
-			break;
-		    }
-		}
-	    } else {
-		iterator = graphics.listIterator(graphics.size());
-		while (iterator.hasPrevious()) {
-		    graphic = (OMGraphic) iterator.previous();
+                    if (graphic instanceof OMGraphicList) {
+                        tomgl = (OMGraphicList)graphic;
+                        ret = tomgl._getContains(x, y);
+                        if (ret != null) {
+                            if (tomgl.isVague()) {
+                                ret = graphic;
+                            }
+                            break;
+                        }
+                    } else if (graphic.contains(x, y)) {
+                        ret = graphic;
+                        break;
+                    }
+                }
+            } else {
+                iterator = graphics.listIterator(graphics.size());
+                while (iterator.hasPrevious()) {
+                    graphic = (OMGraphic) iterator.previous();
 
-		    // cannot select a graphic which isn't visible
-		    if (!shouldProcess(graphic))
-			continue;
+                    // cannot select a graphic which isn't visible
+                    if (!shouldProcess(graphic))
+                        continue;
 
-		    if (graphic instanceof OMGraphicList) {
-			tomgl = (OMGraphicList)graphic;
-			ret = tomgl._getContains(x, y);
-			if (ret != null) {
-			    if (tomgl.isVague()) {
-				ret = graphic;
-			    }
-			    break;
-			}
-		    } else if (graphic.contains(x, y)) {
-			ret = graphic;
-			break;
-		    }
-		}
-	    }
-	}
+                    if (graphic instanceof OMGraphicList) {
+                        tomgl = (OMGraphicList)graphic;
+                        ret = tomgl._getContains(x, y);
+                        if (ret != null) {
+                            if (tomgl.isVague()) {
+                                ret = graphic;
+                            }
+                            break;
+                        }
+                    } else if (graphic.contains(x, y)) {
+                        ret = graphic;
+                        break;
+                    }
+                }
+            }
+        }
 
-	if (ret != null && this.isVague()) {
-	    ret = this;
-	}
+        if (ret != null && this.isVague()) {
+            ret = this;
+        }
 
-	return ret;
+        return ret;
     }
 
     /**
@@ -1402,26 +1402,26 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * correctly.
      */
     public void deselect() {
-	deselectAll();
-	super.deselect();
+        deselectAll();
+        super.deselect();
     }
 
     /**
      * Deselects all the items on the graphic list.
      */
     public synchronized void deselectAll() {
-	for (Iterator it = iterator(); it.hasNext();) {
-	    ((OMGeometry)it.next()).deselect();
-	}
+        for (Iterator it = iterator(); it.hasNext();) {
+            ((OMGeometry)it.next()).deselect();
+        }
     }
 
     /**
      * Selects all the items on the graphic list.
      */
     public synchronized void selectAll() {
-	for (Iterator it = iterator(); it.hasNext();) {
-	    ((OMGeometry)it.next()).select();
-	}
+        for (Iterator it = iterator(); it.hasNext();) {
+            ((OMGeometry)it.next()).select();
+        }
     }
 
     /**
@@ -1431,7 +1431,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * an action to take on the list (deselectAll).  
      */
     public void doAction(OMGraphic graphic, OMAction action) {
-	_doAction((OMGeometry)graphic, action);
+        _doAction((OMGeometry)graphic, action);
     }
 
     /**
@@ -1442,72 +1442,72 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      */
     protected void _doAction(OMGeometry graphic, OMAction action) {
 
-	Debug.message("omgl", "OMGraphicList.doAction()");
+        Debug.message("omgl", "OMGraphicList.doAction()");
 
-	if (graphic == null) {
-	    return;
-	}
+        if (graphic == null) {
+            return;
+        }
 
-	int i = _indexOf(graphic);
+        int i = _indexOf(graphic);
 
-	boolean alreadyOnList = (i != -1);
+        boolean alreadyOnList = (i != -1);
 
-	if (action == null || action.getValue() == 0 && !alreadyOnList) {
-	    Debug.message("omgl", "OMGraphicList.doAction: adding graphic with null action");
-	    _add(graphic);
-	    return;
-	}
+        if (action == null || action.getValue() == 0 && !alreadyOnList) {
+            Debug.message("omgl", "OMGraphicList.doAction: adding graphic with null action");
+            _add(graphic);
+            return;
+        }
 
-	if (action.isMask(ADD_GRAPHIC_MASK) ||
-	    action.isMask(UPDATE_GRAPHIC_MASK) && !alreadyOnList) {
-	    Debug.message("omgl", "OMGraphicList.doAction: adding graphic");
-	    _add(graphic);
-	}
+        if (action.isMask(ADD_GRAPHIC_MASK) ||
+            action.isMask(UPDATE_GRAPHIC_MASK) && !alreadyOnList) {
+            Debug.message("omgl", "OMGraphicList.doAction: adding graphic");
+            _add(graphic);
+        }
 
-	if (action.isMask(DELETE_GRAPHIC_MASK)) {
-	    Debug.message("omgl", "OMGraphicList.doAction: removing graphic");
-	    _remove(graphic);
-	}
-	
-	if (action.isMask(RAISE_GRAPHIC_MASK)) {
-	    Debug.message("omgl", "OMGraphicList.doAction: raising graphic");
-	    moveIndexedOneToTop(i);
-	}
+        if (action.isMask(DELETE_GRAPHIC_MASK)) {
+            Debug.message("omgl", "OMGraphicList.doAction: removing graphic");
+            _remove(graphic);
+        }
+        
+        if (action.isMask(RAISE_GRAPHIC_MASK)) {
+            Debug.message("omgl", "OMGraphicList.doAction: raising graphic");
+            moveIndexedOneToTop(i);
+        }
 
-	if (action.isMask(RAISE_TO_TOP_GRAPHIC_MASK)) {
-	    Debug.message("omgl", "OMGraphicList.doAction: raising graphic to top");
-	    moveIndexedToTop(i);
-	}
+        if (action.isMask(RAISE_TO_TOP_GRAPHIC_MASK)) {
+            Debug.message("omgl", "OMGraphicList.doAction: raising graphic to top");
+            moveIndexedToTop(i);
+        }
 
-	if (action.isMask(LOWER_GRAPHIC_MASK)) {
-	    Debug.message("omgl", "OMGraphicList.doAction: lowering graphic");
-	    moveIndexedOneToBottom(i);
-	}
+        if (action.isMask(LOWER_GRAPHIC_MASK)) {
+            Debug.message("omgl", "OMGraphicList.doAction: lowering graphic");
+            moveIndexedOneToBottom(i);
+        }
 
-	if (action.isMask(LOWER_TO_BOTTOM_GRAPHIC_MASK)) {
-	    Debug.message("omgl", "OMGraphicList.doAction: lowering graphic to bottom");
-	    moveIndexedOneToBottom(i);
-	}
+        if (action.isMask(LOWER_TO_BOTTOM_GRAPHIC_MASK)) {
+            Debug.message("omgl", "OMGraphicList.doAction: lowering graphic to bottom");
+            moveIndexedOneToBottom(i);
+        }
 
-	if (action.isMask(DESELECTALL_GRAPHIC_MASK)) {
-	    Debug.message("omgl", "OMGraphicList.doAction: deselecting all graphics.");
-	    deselectAll();
-	}
+        if (action.isMask(DESELECTALL_GRAPHIC_MASK)) {
+            Debug.message("omgl", "OMGraphicList.doAction: deselecting all graphics.");
+            deselectAll();
+        }
 
-	if (action.isMask(SELECT_GRAPHIC_MASK)) {
-	    Debug.message("omgl", "OMGraphicList.doAction: selecting graphic");
-	    graphic.select();
-	}
+        if (action.isMask(SELECT_GRAPHIC_MASK)) {
+            Debug.message("omgl", "OMGraphicList.doAction: selecting graphic");
+            graphic.select();
+        }
 
-	if (action.isMask(DESELECT_GRAPHIC_MASK)) {
-	    Debug.message("omgl", "OMGraphicList.doAction: deselecting graphic");
-	    graphic.deselect();
-	}
+        if (action.isMask(DESELECT_GRAPHIC_MASK)) {
+            Debug.message("omgl", "OMGraphicList.doAction: deselecting graphic");
+            graphic.deselect();
+        }
 
-	if (action.isMask(SORT_GRAPHICS_MASK)) {
-	    Debug.message("omgl", "OMGraphicList.doAction: sorting the list");
-	    sort();
-	}
+        if (action.isMask(SORT_GRAPHICS_MASK)) {
+            Debug.message("omgl", "OMGraphicList.doAction: sorting the list");
+            sort();
+        }
     }
 
     /**
@@ -1520,9 +1520,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param visible boolean
      */
     public synchronized void setVisible(boolean visible) {
-	for (Iterator it = iterator(); it.hasNext();) {
-	    ((OMGeometry) it.next()).setVisible(visible);
-	}
+        for (Iterator it = iterator(); it.hasNext();) {
+            ((OMGeometry) it.next()).setVisible(visible);
+        }
     }
 
     /**
@@ -1532,12 +1532,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @return boolean 
      */
     public synchronized boolean isVisible() {
-	for (Iterator it = iterator(); it.hasNext();) {
-	    if (((OMGeometry) it.next()).isVisible()) {
-		return true;
-	    }
-	}
-	return false;
+        for (Iterator it = iterator(); it.hasNext();) {
+            if (((OMGeometry) it.next()).isVisible()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1546,7 +1546,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * removed.  
      */
     public void setAllowDuplicates(boolean set) {
-	allowDuplicates = set;
+        allowDuplicates = set;
     }
 
     /**
@@ -1555,7 +1555,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * removed.  
      */
     public boolean getAllowDuplicates() {
-	return allowDuplicates;
+        return allowDuplicates;
     }
 
     /**
@@ -1567,33 +1567,33 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * synchronized on the graphics list.
      */
     protected synchronized void checkForDuplicate(OMGeometry g) {
-	if (!allowDuplicates) {
-	    // Why check first, just remove it if it's found?!
-// 	    if (graphics.contains(g)) {
-		graphics.remove(g);
-// 	    }
-	}
+        if (!allowDuplicates) {
+            // Why check first, just remove it if it's found?!
+//          if (graphics.contains(g)) {
+                graphics.remove(g);
+//          }
+        }
     }
 
     /**
      * Checks if an OMGeometry is on this list.  Checks sublists, too.
      */
     public synchronized boolean contains(OMGeometry g) {
-	boolean ret = false;
-	if (g != null) {
-	    for (Iterator it = iterator(); it.hasNext();) {
-		OMGeometry itg = (OMGeometry)it.next();
-		if (g == itg || 
-		    (itg instanceof OMGraphicList &&
-		     ((OMGraphicList)itg).contains(g))) {
+        boolean ret = false;
+        if (g != null) {
+            for (Iterator it = iterator(); it.hasNext();) {
+                OMGeometry itg = (OMGeometry)it.next();
+                if (g == itg || 
+                    (itg instanceof OMGraphicList &&
+                     ((OMGraphicList)itg).contains(g))) {
 
-		    ret = true;
-		    break;
-		}
-	    }
-	}
+                    ret = true;
+                    break;
+                }
+            }
+        }
 
-	return ret;
+        return ret;
     }
 
     /** 
@@ -1609,17 +1609,17 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * time a projection is handed to the list.
      */
     public synchronized void setGridGenerator(OMGridGenerator generator, 
-					      Projection proj) {
-	OMGraphic graphic;
-	for (Iterator it = iterator(); it.hasNext();) {
-	    graphic = (OMGraphic)it.next();
-	    if (graphic instanceof OMGrid) {
-		((OMGrid)graphic).setGenerator(generator);
-		if (proj != null) {
-		    graphic.generate(proj);
-		}
-	    }
-	}
+                                              Projection proj) {
+        OMGraphic graphic;
+        for (Iterator it = iterator(); it.hasNext();) {
+            graphic = (OMGraphic)it.next();
+            if (graphic instanceof OMGrid) {
+                ((OMGrid)graphic).setGenerator(generator);
+                if (proj != null) {
+                    graphic.generate(proj);
+                }
+            }
+        }
     }
 
     /**
@@ -1639,16 +1639,16 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @return a reference of the graphics List.
      */
     public synchronized java.util.List getTargets() {
-	if (graphics == null) {
-	    // make sure that the graphics vector is not null,
-	    // since all of the internal methods rely on it.
-	    graphics = new ArrayList();
-	}
+        if (graphics == null) {
+            // make sure that the graphics vector is not null,
+            // since all of the internal methods rely on it.
+            graphics = new ArrayList();
+        }
 
-//	synchronized (this) {
-//	    return (java.util.List) graphics.clone();
-//	}
-	return graphics;
+//      synchronized (this) {
+//          return (java.util.List) graphics.clone();
+//      }
+        return graphics;
     }
 
     /**
@@ -1658,14 +1658,14 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * non-OMGraphics on the list.
      */
     public synchronized void setTargets(java.util.List list) {
-	graphics = list;
+        graphics = list;
     }
 
     /**
      * Get an Iterator containing the OMGeometrys.
      */
     public synchronized Iterator iterator() {
-	return graphics.iterator();
+        return graphics.iterator();
     }
 
     /** 
@@ -1674,28 +1674,28 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param cacheURL URL of serialized graphic list.
      */
     public void readGraphics(URL cacheURL)
-	throws java.io.IOException {
-	
-	try {
-	    ObjectInputStream objstream = 
-		new ObjectInputStream(cacheURL.openStream());
-	    
-	    if (Debug.debugging("omgraphics")) {
-		Debug.output("OMGeomtryList: Opened " + cacheURL.toString() );
-	    }
+        throws java.io.IOException {
+        
+        try {
+            ObjectInputStream objstream = 
+                new ObjectInputStream(cacheURL.openStream());
+            
+            if (Debug.debugging("omgraphics")) {
+                Debug.output("OMGeomtryList: Opened " + cacheURL.toString() );
+            }
 
-	    readGraphics(objstream);
-	    objstream.close();
+            readGraphics(objstream);
+            objstream.close();
 
-	    if (Debug.debugging("omgraphics")) {
-		Debug.output("OMGeometryList: closed " + cacheURL.toString() );
-	    }
-	    
-	} catch (ArrayIndexOutOfBoundsException aioobe) {
- 	    throw new com.bbn.openmap.util.HandleError(aioobe);
- 	} catch (ClassCastException cce) {
- 	    cce.printStackTrace();
- 	}
+            if (Debug.debugging("omgraphics")) {
+                Debug.output("OMGeometryList: closed " + cacheURL.toString() );
+            }
+            
+        } catch (ArrayIndexOutOfBoundsException aioobe) {
+            throw new com.bbn.openmap.util.HandleError(aioobe);
+        } catch (ClassCastException cce) {
+            cce.printStackTrace();
+        }
     }
 
     /** 
@@ -1704,21 +1704,21 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param objstream ObjectInputStream of graphic list.
      */
     public synchronized void readGraphics(ObjectInputStream objstream) throws IOException {
-	
-	Debug.message("omgraphics", "OMGraphicList: Reading cached graphics");
-	
-	try { 
-	    while (true) {
-		try {
-		    OMGraphic omg = (OMGraphic)objstream.readObject();
-		    this.add(omg);
-		} catch (ClassNotFoundException e) {
-		    e.printStackTrace();
-		} catch (OptionalDataException ode) {
-		    ode.printStackTrace();
-		}
-	    }
-	} catch (EOFException e) {}
+        
+        Debug.message("omgraphics", "OMGraphicList: Reading cached graphics");
+        
+        try { 
+            while (true) {
+                try {
+                    OMGraphic omg = (OMGraphic)objstream.readObject();
+                    this.add(omg);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (OptionalDataException ode) {
+                    ode.printStackTrace();
+                }
+            }
+        } catch (EOFException e) {}
     }
     
     /**
@@ -1726,12 +1726,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param graphicsSaveFile
      */
     public void writeGraphics(String graphicsSaveFile) 
-	throws IOException {
-	
-	FileOutputStream ostream = new FileOutputStream(graphicsSaveFile);
-	ObjectOutputStream objectstream = new ObjectOutputStream(ostream);
-	writeGraphics(objectstream);
-	objectstream.close();
+        throws IOException {
+        
+        FileOutputStream ostream = new FileOutputStream(graphicsSaveFile);
+        ObjectOutputStream objectstream = new ObjectOutputStream(ostream);
+        writeGraphics(objectstream);
+        objectstream.close();
     }
 
     /**
@@ -1739,20 +1739,20 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param objectstream ObjectOutputStream
      */
     public synchronized void writeGraphics(ObjectOutputStream objectstream) 
-	throws IOException {
+        throws IOException {
 
-	synchronized (graphics) {
-	    for (Iterator it = iterator(); it.hasNext();) {
-		OMGeometry g = (OMGeometry)it.next();
-		try {
-		    objectstream.writeObject(g);
-		} catch ( IOException e ) {
-		    Debug.error("OMGeometryList: Couldn't write object " + g +
-				"\nOMGeometryList: Reason: " + e.toString());
-		}
-	    }
-	}
-	objectstream.close();
+        synchronized (graphics) {
+            for (Iterator it = iterator(); it.hasNext();) {
+                OMGeometry g = (OMGeometry)it.next();
+                try {
+                    objectstream.writeObject(g);
+                } catch ( IOException e ) {
+                    Debug.error("OMGeometryList: Couldn't write object " + g +
+                                "\nOMGeometryList: Reason: " + e.toString());
+                }
+            }
+        }
+        objectstream.close();
     }
 
     /**
@@ -1767,11 +1767,11 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * one.  Returns null if it isn't.
      */
     protected OMGraphic objectToOMGraphic(Object obj) {
-	if (obj instanceof OMGraphic) {
-	    return (OMGraphic)obj;
-	} else {
-	    return null;
-	}
+        if (obj instanceof OMGraphic) {
+            return (OMGraphic)obj;
+        } else {
+            return null;
+        }
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.15 $
-// $Date: 2003/11/14 20:29:38 $
+// $Revision: 1.16 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -205,15 +205,15 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * are contained within the Shape provided.
      */
     public OMGraphicList filter(Shape withinThisShape) {
-	return filter.filter(withinThisShape);
+        return filter.filter(withinThisShape);
     }
 
     /**
      * @see OMGraphicHandler#filter(Shape, boolean).
      */
     public OMGraphicList filter(Shape shapeBoundary, 
-				boolean getInsideBoundary) {
-	return filter.filter(shapeBoundary, getInsideBoundary);
+                                boolean getInsideBoundary) {
+        return filter.filter(shapeBoundary, getInsideBoundary);
     }
 
     /**
@@ -221,7 +221,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * @see OMGraphicHandler#supportsSQL().
      */
     public boolean supportsSQL() {
-	return filter.supportsSQL();
+        return filter.supportsSQL();
     }
 
     /**
@@ -229,7 +229,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * that fit the query.
      */
     public OMGraphicList filter(String SQLQuery) {
-	return filter.filter(SQLQuery);
+        return filter.filter(SQLQuery);
     }
 
     /**
@@ -237,21 +237,21 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * contained in the layer.
      */
     public boolean doAction(OMGraphic graphic, OMAction action) {
-	return filter.doAction(graphic, action);
+        return filter.doAction(graphic, action);
     }
 
     /**
      * Get the OMGraphicList held by the layer.  May be null.
      */
     public OMGraphicList getList() {
-	return filter.getList();
+        return filter.getList();
     }
 
     /**
      * Indicates if the OMGraphicHandler can have its OMGraphicList set.
      */
     public boolean canSetList() {
-	return filter.canSetList();
+        return filter.canSetList();
     }
 
     /**
@@ -259,14 +259,14 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * canSetGraphicList == true.
      */
     public void setList(OMGraphicList omgl) {
-	filter.setList(omgl);
+        filter.setList(omgl);
     }
     
     /**
      * Remove all filters, and reset all graphics to be visible.
      */
     public void resetFiltering() {
-	filter.resetFiltering();
+        filter.resetFiltering();
     }
 
     /**
@@ -274,7 +274,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * more/less capable FilterSupport in place.
      */
     public void setFilter(FilterSupport fs) {
-	filter = fs;
+        filter = fs;
     }
 
     /**
@@ -282,7 +282,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * OMGraphicHandler methods.
      */
     public FilterSupport getFilter() {
-	return filter;
+        return filter;
     }
 
     /**
@@ -318,12 +318,12 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * @see com.bbn.openmap.layer.policy.ListResetPCPolicy
      */
     public void projectionChanged(ProjectionEvent pe) {    
-	if (Debug.debugging("layer")) {
-	    Debug.output("OMGraphicHandlerLayer " + getName() + 
-			 " projection changed, calling " + 
-			 getProjectionChangePolicy().getClass().getName());
-	}
-	getProjectionChangePolicy().projectionChanged(pe);
+        if (Debug.debugging("layer")) {
+            Debug.output("OMGraphicHandlerLayer " + getName() + 
+                         " projection changed, calling " + 
+                         getProjectionChangePolicy().getClass().getName());
+        }
+        getProjectionChangePolicy().projectionChanged(pe);
     }
 
     /**
@@ -331,10 +331,10 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * reacts and gathers OMGraphics for a projection change.
      */
     public ProjectionChangePolicy getProjectionChangePolicy() {
-	if (projectionChangePolicy == null) {
-	    projectionChangePolicy = new StandardPCPolicy(this);
-	}
-	return projectionChangePolicy;
+        if (projectionChangePolicy == null) {
+            projectionChangePolicy = new StandardPCPolicy(this);
+        }
+        return projectionChangePolicy;
     }
 
     /**
@@ -342,9 +342,9 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * reacts and gathers OMGraphics for a projection change.
      */
     public void setProjectionChangePolicy(ProjectionChangePolicy pcp) {
-	projectionChangePolicy = pcp;
-	// Just to make sure, 
-	pcp.setLayer(this);
+        projectionChangePolicy = pcp;
+        // Just to make sure, 
+        pcp.setLayer(this);
     }
 
     /**
@@ -352,10 +352,10 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * rendered.
      */
     public RenderPolicy getRenderPolicy() {
-	if (renderPolicy == null) {
-	    renderPolicy = new StandardRenderPolicy(this);
-	}
-	return renderPolicy;
+        if (renderPolicy == null) {
+            renderPolicy = new StandardRenderPolicy(this);
+        }
+        return renderPolicy;
     }
 
     /**
@@ -363,27 +363,27 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * rendered.
      */
     public void setRenderPolicy(RenderPolicy rp) {
-	renderPolicy = rp;
-	// Just to make sure, 
-	rp.setLayer(this);
+        renderPolicy = rp;
+        // Just to make sure, 
+        rp.setLayer(this);
     }
 
     public void interrupt() {
-	try {
-	    if (layerWorker != null) {
-		layerWorker.interrupt();
-	    }
-	} catch (SecurityException se) {
-	    Debug.output(getName() + " layer caught a SecurityException when something tried to stop work on the worker thread");
-	}
+        try {
+            if (layerWorker != null) {
+                layerWorker.interrupt();
+            }
+        } catch (SecurityException se) {
+            Debug.output(getName() + " layer caught a SecurityException when something tried to stop work on the worker thread");
+        }
     }
 
     protected void setLayerWorker(SwingWorker worker) {
-	layerWorker = worker;
+        layerWorker = worker;
     }
 
     protected SwingWorker getLayerWorker() {
-	return layerWorker;
+        return layerWorker;
     }
 
     /**
@@ -402,15 +402,15 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * @param g java.awt.Graphics to draw into.  
      */
     public synchronized void renderDataForProjection(Projection proj, Graphics g) {
-	if (proj == null) {
-	    Debug.error("Layer(" + getName() + 
-			").renderDataForProjection: null projection!");
-	    return;
-	} else if (!proj.equals(getProjection())) {
-	    setProjection(proj.makeClone());
-	    setList(prepare());
-	}
-	paint(g);
+        if (proj == null) {
+            Debug.error("Layer(" + getName() + 
+                        ").renderDataForProjection: null projection!");
+            return;
+        } else if (!proj.equals(getProjection())) {
+            setProjection(proj.makeClone());
+            setList(prepare());
+        }
+        paint(g);
     }
 
     /**
@@ -418,7 +418,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * @param g java.awt.Graphics object to render OMGraphics into.
      */
     public void paint(Graphics g) {
-	getRenderPolicy().paint(g);
+        getRenderPolicy().paint(g);
     }
 
     /**
@@ -434,26 +434,26 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * repaint() on this layer.
      */
     public synchronized void doPrepare() {
-	// If there isn't a worker thread working on a projection
-	// changed or other doPrepare call, then create a thread that
-	// will do the real work. If there is a thread working on
-	// this, then set the cancelled flag in the layer.
-	if (layerWorker == null) {
-	    layerWorker = new LayerWorker();
-	    layerWorker.execute();
-	} else {
-	    if (Debug.debugging("layer")) {
-		Debug.output(getName() + " layer already working in prepare(), cancelling");
-	    }
-	    setCancelled(true);
-	}
+        // If there isn't a worker thread working on a projection
+        // changed or other doPrepare call, then create a thread that
+        // will do the real work. If there is a thread working on
+        // this, then set the cancelled flag in the layer.
+        if (layerWorker == null) {
+            layerWorker = new LayerWorker();
+            layerWorker.execute();
+        } else {
+            if (Debug.debugging("layer")) {
+                Debug.output(getName() + " layer already working in prepare(), cancelling");
+            }
+            setCancelled(true);
+        }
     }
 
     /**
      * A check to see if the SwingWorker is doing something.
      */
     public boolean isWorking() {
-	return layerWorker != null;
+        return layerWorker != null;
     }
 
     /**
@@ -467,16 +467,16 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * SwingWorker calls prepare, it will call repaint().
      */
     public OMGraphicList prepare() {
-	OMGraphicList currentList = getList();
-	Projection proj = getProjection(); 
+        OMGraphicList currentList = getList();
+        Projection proj = getProjection(); 
 
-	// if the layer hasn't been added to the MapBean 
-	// the projection could be null.
-	if (currentList != null && proj != null) {
-	    currentList.generate(proj);
-	}
+        // if the layer hasn't been added to the MapBean 
+        // the projection could be null.
+        if (currentList != null && proj != null) {
+            currentList.generate(proj);
+        }
 
-	return currentList;
+        return currentList;
     }
 
     /**
@@ -492,15 +492,15 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * swing worker quits when it is safe. 
      */
     public synchronized void setCancelled(boolean set) {
-	if (set) {
-	    interrupt();// if the layerWorker is busy, stop it.
-	}
-	cancelled = set;
+        if (set) {
+            interrupt();// if the layerWorker is busy, stop it.
+        }
+        cancelled = set;
     }
 
     /** Check to see if the cancelled flag has been set. */
     public synchronized boolean isCancelled() {
-	return cancelled;
+        return cancelled;
     }
 
     /** 
@@ -511,16 +511,16 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * @param worker the worker that has the graphics.
      */
     protected synchronized void workerComplete(LayerWorker worker) {
-	if (!isCancelled()) {
-	    layerWorker = null;
-	    getProjectionChangePolicy().workerComplete((OMGraphicList)worker.get());
-	    repaint();
-	}
-	else{
-	    setCancelled(false);
-	    layerWorker = new LayerWorker();
-	    layerWorker.execute();
-	}
+        if (!isCancelled()) {
+            layerWorker = null;
+            getProjectionChangePolicy().workerComplete((OMGraphicList)worker.get());
+            repaint();
+        }
+        else{
+            setCancelled(false);
+            layerWorker = new LayerWorker();
+            layerWorker.execute();
+        }
     }
 
     /**
@@ -528,56 +528,56 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * do the work to create OMGraphics, we use this worker thread to do it.
      */
     class LayerWorker extends SwingWorker {
-	/** Constructor used to create a worker thread. */
-	public LayerWorker() {
-	    super();
-	}
+        /** Constructor used to create a worker thread. */
+        public LayerWorker() {
+            super();
+        }
 
-	/**
-	 * Compute the value to be returned by the <code>get</code>
-	 * method. 
-	 */
-	public Object construct() {
-	    Debug.message("layer", getName()+"|LayerWorker.construct()");
-	    fireStatusUpdate(LayerStatusEvent.START_WORKING);
-	    String msg;
+        /**
+         * Compute the value to be returned by the <code>get</code>
+         * method. 
+         */
+        public Object construct() {
+            Debug.message("layer", getName()+"|LayerWorker.construct()");
+            fireStatusUpdate(LayerStatusEvent.START_WORKING);
+            String msg;
 
-	    try {
+            try {
 
-		long start = System.currentTimeMillis();
-		OMGraphicList list = getRenderPolicy().prepare();
-		long stop = System.currentTimeMillis();
-		if (Debug.debugging("layer")) {
-		    Debug.output(getName() + "|LayerWorker.construct(): fetched "+
-				 (list == null?"null list ":(list.size() + " graphics ")) +
-				 "in " + (double)((stop-start)/1000d) + " seconds");
-		}
-		return list;
+                long start = System.currentTimeMillis();
+                OMGraphicList list = getRenderPolicy().prepare();
+                long stop = System.currentTimeMillis();
+                if (Debug.debugging("layer")) {
+                    Debug.output(getName() + "|LayerWorker.construct(): fetched "+
+                                 (list == null?"null list ":(list.size() + " graphics ")) +
+                                 "in " + (double)((stop-start)/1000d) + " seconds");
+                }
+                return list;
 
-	    } catch (OutOfMemoryError e) {
-		msg = getName() +  "|LayerWorker.construct(): " + e;
-		Debug.error(msg);
-		e.printStackTrace();
-	    } catch (Exception e) {
-		msg = getName() + "|LayerWorker.construct(): " + e;
-		Debug.error(msg);
-		e.printStackTrace();
-	    }
+            } catch (OutOfMemoryError e) {
+                msg = getName() +  "|LayerWorker.construct(): " + e;
+                Debug.error(msg);
+                e.printStackTrace();
+            } catch (Exception e) {
+                msg = getName() + "|LayerWorker.construct(): " + e;
+                Debug.error(msg);
+                e.printStackTrace();
+            }
 
-	    fireRequestMessage(new InfoDisplayEvent(this, msg));
-	    fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-	    return null;
-	}
+            fireRequestMessage(new InfoDisplayEvent(this, msg));
+            fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+            return null;
+        }
 
-	/**
-	 * Called on the event dispatching thread (not on the worker
-	 * thread) after the <code>construct</code> method has
-	 * returned. 
-	 */
-	public void finished() {
-	    workerComplete(this);
-	    fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-	}
+        /**
+         * Called on the event dispatching thread (not on the worker
+         * thread) after the <code>construct</code> method has
+         * returned. 
+         */
+        public void finished() {
+            workerComplete(this);
+            fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+        }
     }
 
     /**
@@ -587,91 +587,91 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * @param props the <code>Properties</code> object
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	// Check to see if the layer wants to set its own projection
-	// change policy.
-	String pcpString = props.getProperty(realPrefix + ProjectionChangePolicyProperty);
-	String policyPrefix;
-	if (pcpString != null) {
-	    policyPrefix = realPrefix + pcpString;
-	    String pcpClass = props.getProperty(policyPrefix + ".class");
-	    if (pcpClass == null) {
-		Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for PropertyChangePolicy, but " + policyPrefix + ".class property is undefined.");
-	    } else {
-		Object obj = ComponentFactory.create(pcpClass, policyPrefix, props);
-		if (obj != null) {
+        // Check to see if the layer wants to set its own projection
+        // change policy.
+        String pcpString = props.getProperty(realPrefix + ProjectionChangePolicyProperty);
+        String policyPrefix;
+        if (pcpString != null) {
+            policyPrefix = realPrefix + pcpString;
+            String pcpClass = props.getProperty(policyPrefix + ".class");
+            if (pcpClass == null) {
+                Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for PropertyChangePolicy, but " + policyPrefix + ".class property is undefined.");
+            } else {
+                Object obj = ComponentFactory.create(pcpClass, policyPrefix, props);
+                if (obj != null) {
 
-		    if (Debug.debugging("layer")) {
-			Debug.output("Layer " + getName() + " setting ProjectionChangePolicy [" + 
-				     obj.getClass().getName() + "]");
-		    }
+                    if (Debug.debugging("layer")) {
+                        Debug.output("Layer " + getName() + " setting ProjectionChangePolicy [" + 
+                                     obj.getClass().getName() + "]");
+                    }
 
-		    try {
-			setProjectionChangePolicy((ProjectionChangePolicy)obj);
-		    } catch (ClassCastException cce) {
-			Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for ProjectionChangePolicy, but " + policyPrefix + ".class property (" + pcpClass + ") does not define a valid ProjectionChangePolicy. A " + obj.getClass().getName() + " was created instead.");
-		    }
+                    try {
+                        setProjectionChangePolicy((ProjectionChangePolicy)obj);
+                    } catch (ClassCastException cce) {
+                        Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for ProjectionChangePolicy, but " + policyPrefix + ".class property (" + pcpClass + ") does not define a valid ProjectionChangePolicy. A " + obj.getClass().getName() + " was created instead.");
+                    }
 
-		} else {
-		    Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for PropertyChangePolicy, but " + policyPrefix + ".class property does not define a valid PropertyChangePolicy.");
-		}
-	    }
-	} else if (Debug.debugging("layer")) {
-	    Debug.output("Layer " + getName() + 
-			 " using default ProjectionChangePolicy [" + 
-			 getProjectionChangePolicy().getClass().getName() + "]");
-	}
+                } else {
+                    Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for PropertyChangePolicy, but " + policyPrefix + ".class property does not define a valid PropertyChangePolicy.");
+                }
+            }
+        } else if (Debug.debugging("layer")) {
+            Debug.output("Layer " + getName() + 
+                         " using default ProjectionChangePolicy [" + 
+                         getProjectionChangePolicy().getClass().getName() + "]");
+        }
 
-	// Check to see if the layer want to set its own rendering policy.
-	String rpString = props.getProperty(realPrefix + RenderPolicyProperty);
-	if (rpString != null) {
-	    policyPrefix = realPrefix + rpString;
-	    String rpClass = props.getProperty(policyPrefix + ".class");
-	    if (rpClass == null) {
-		Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property is undefined.");
-	    } else {
+        // Check to see if the layer want to set its own rendering policy.
+        String rpString = props.getProperty(realPrefix + RenderPolicyProperty);
+        if (rpString != null) {
+            policyPrefix = realPrefix + rpString;
+            String rpClass = props.getProperty(policyPrefix + ".class");
+            if (rpClass == null) {
+                Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property is undefined.");
+            } else {
 
-		Object rpObj = ComponentFactory.create(rpClass, policyPrefix, props);
+                Object rpObj = ComponentFactory.create(rpClass, policyPrefix, props);
 
-		if (rpObj != null) {
-		    if (Debug.debugging("layer")) {
-			Debug.output("Layer " + getName() + " setting RenderPolicy [" + 
-				     rpObj.getClass().getName() + "]");
-		    }
+                if (rpObj != null) {
+                    if (Debug.debugging("layer")) {
+                        Debug.output("Layer " + getName() + " setting RenderPolicy [" + 
+                                     rpObj.getClass().getName() + "]");
+                    }
 
-		    try {
-			setRenderPolicy((RenderPolicy)rpObj);
-		    } catch (ClassCastException cce) {
-			Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property (" + rpClass + ") does not define a valid RenderPolicy. A " + rpObj.getClass().getName() + " was created instead.");
-		    }
-		} else {
-		    Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property (" + rpClass + ") isn't being created.");
-		}
-	    }
+                    try {
+                        setRenderPolicy((RenderPolicy)rpObj);
+                    } catch (ClassCastException cce) {
+                        Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property (" + rpClass + ") does not define a valid RenderPolicy. A " + rpObj.getClass().getName() + " was created instead.");
+                    }
+                } else {
+                    Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property (" + rpClass + ") isn't being created.");
+                }
+            }
 
-	} else if (Debug.debugging("layer")) {
-	    Debug.output("Layer " + getName() + " using default RenderPolicy [" + 
-			 getRenderPolicy().getClass().getName() + "]");
-	}
+        } else if (Debug.debugging("layer")) {
+            Debug.output("Layer " + getName() + " using default RenderPolicy [" + 
+                         getRenderPolicy().getClass().getName() + "]");
+        }
 
-	String mmString = props.getProperty(realPrefix + MouseModesProperty);
-	if (mmString != null) {
-	    Vector mmv = PropUtils.parseSpacedMarkers(mmString);
-	    if (mmv.size() > 0) {
-		String[] mm = new String[mmv.size()];
-		Iterator it = mmv.iterator();
-		int i = 0;
-		while (it.hasNext()) {
-		    mm[i] = (String)it.next();
-		}
-		setMouseModeIDsForEvents(mm);
-	    }
-	}
+        String mmString = props.getProperty(realPrefix + MouseModesProperty);
+        if (mmString != null) {
+            Vector mmv = PropUtils.parseSpacedMarkers(mmString);
+            if (mmv.size() > 0) {
+                String[] mm = new String[mmv.size()];
+                Iterator it = mmv.iterator();
+                int i = 0;
+                while (it.hasNext()) {
+                    mm[i] = (String)it.next();
+                }
+                setMouseModeIDsForEvents(mm);
+            }
+        }
 
-	consumeEvents = PropUtils.booleanFromProperties(props, realPrefix + ConsumeEventsProperty, consumeEvents);
+        consumeEvents = PropUtils.booleanFromProperties(props, realPrefix + ConsumeEventsProperty, consumeEvents);
 
     }
 
@@ -681,70 +681,70 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * this OMGraphicHandler layer.
      */
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	String policyPrefix = null;
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String policyPrefix = null;
 
-	////// ProjectionChangePolicy
+        ////// ProjectionChangePolicy
 
-	ProjectionChangePolicy pcp = getProjectionChangePolicy();
-	if (pcp instanceof PropertyConsumer) {
-	    policyPrefix = ((PropertyConsumer)pcp).getPropertyPrefix();
-	    ((PropertyConsumer)pcp).getProperties(props);
-	}
+        ProjectionChangePolicy pcp = getProjectionChangePolicy();
+        if (pcp instanceof PropertyConsumer) {
+            policyPrefix = ((PropertyConsumer)pcp).getPropertyPrefix();
+            ((PropertyConsumer)pcp).getProperties(props);
+        }
 
-	if (policyPrefix == null) {
-	    policyPrefix = prefix + "pcp";
-	}
+        if (policyPrefix == null) {
+            policyPrefix = prefix + "pcp";
+        }
 
-	//Whoops, need to make sure pcp is valid but removing the
-	//OMGHL prefix from the front of the policy prefix (if
-	//applicable). Same for RenderPolicy
+        //Whoops, need to make sure pcp is valid but removing the
+        //OMGHL prefix from the front of the policy prefix (if
+        //applicable). Same for RenderPolicy
 
-	props.put(prefix + ProjectionChangePolicyProperty, 
-		  policyPrefix.substring(prefix.length()));
-	// This has to come after the above line, or the above
-	// property will have a trailing period.
-	policyPrefix = PropUtils.getScopedPropertyPrefix(policyPrefix);
-	props.put(policyPrefix + "class", pcp.getClass().getName());
+        props.put(prefix + ProjectionChangePolicyProperty, 
+                  policyPrefix.substring(prefix.length()));
+        // This has to come after the above line, or the above
+        // property will have a trailing period.
+        policyPrefix = PropUtils.getScopedPropertyPrefix(policyPrefix);
+        props.put(policyPrefix + "class", pcp.getClass().getName());
 
-	RenderPolicy rp = getRenderPolicy();
-	if (rp instanceof PropertyConsumer) {
-	    policyPrefix = ((PropertyConsumer)rp).getPropertyPrefix();
-	    ((PropertyConsumer)rp).getProperties(props);
-	}
+        RenderPolicy rp = getRenderPolicy();
+        if (rp instanceof PropertyConsumer) {
+            policyPrefix = ((PropertyConsumer)rp).getPropertyPrefix();
+            ((PropertyConsumer)rp).getProperties(props);
+        }
 
-	///// RenderPolicy
+        ///// RenderPolicy
 
-	if (policyPrefix == null) {
-	    policyPrefix = prefix + "rp";
-	}
+        if (policyPrefix == null) {
+            policyPrefix = prefix + "rp";
+        }
 
-	props.put(prefix + RenderPolicyProperty,
-		  policyPrefix.substring(prefix.length()));
-	// This has to come after the above line, or the above
-	// property will have a trailing period.
-	policyPrefix = PropUtils.getScopedPropertyPrefix(policyPrefix);
-	props.put(policyPrefix + "class", rp.getClass().getName());
+        props.put(prefix + RenderPolicyProperty,
+                  policyPrefix.substring(prefix.length()));
+        // This has to come after the above line, or the above
+        // property will have a trailing period.
+        policyPrefix = PropUtils.getScopedPropertyPrefix(policyPrefix);
+        props.put(policyPrefix + "class", rp.getClass().getName());
 
-	props.put(prefix + ConsumeEventsProperty, new Boolean(consumeEvents).toString());
+        props.put(prefix + ConsumeEventsProperty, new Boolean(consumeEvents).toString());
 
-	String[] mm = getMouseModeIDsForEvents();
-	if (mm != null && mm.length > 0) {
-	    StringBuffer sb = new StringBuffer();
-	    for (int i = 0; i < mm.length; i++) {
-		// Don't need any MouseModes that have been scoped to
-		// the pretty name, those are automatically generated.
-		if (mm[i].equals(getName())) {
-		    continue;
-		}
-		sb.append(mm[i] + " ");
-	    }
-	    props.put(prefix + MouseModesProperty, sb.toString());
-	}
+        String[] mm = getMouseModeIDsForEvents();
+        if (mm != null && mm.length > 0) {
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < mm.length; i++) {
+                // Don't need any MouseModes that have been scoped to
+                // the pretty name, those are automatically generated.
+                if (mm[i].equals(getName())) {
+                    continue;
+                }
+                sb.append(mm[i] + " ");
+            }
+            props.put(prefix + MouseModesProperty, sb.toString());
+        }
 
-	return props;
+        return props;
     }
 
     /**
@@ -753,57 +753,57 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * this OMGraphicHandler layer.
      */
     public Properties getPropertyInfo(Properties list) {
-	list = super.getPropertyInfo(list);
+        list = super.getPropertyInfo(list);
 
-	String policyPrefix = null;
+        String policyPrefix = null;
 
-	ProjectionChangePolicy pcp = getProjectionChangePolicy();
-	if (pcp instanceof PropertyConsumer) {
-	    policyPrefix = ((PropertyConsumer)pcp).getPropertyPrefix();
-	    if (policyPrefix != null) {
-		int index = policyPrefix.indexOf(".");
-		if (index != -1) {
-		    policyPrefix = policyPrefix.substring(index + 1);
-		}
+        ProjectionChangePolicy pcp = getProjectionChangePolicy();
+        if (pcp instanceof PropertyConsumer) {
+            policyPrefix = ((PropertyConsumer)pcp).getPropertyPrefix();
+            if (policyPrefix != null) {
+                int index = policyPrefix.indexOf(".");
+                if (index != -1) {
+                    policyPrefix = policyPrefix.substring(index + 1);
+                }
 
-		((PropertyConsumer)pcp).getPropertyInfo(list);
-	    }
-	}
+                ((PropertyConsumer)pcp).getPropertyInfo(list);
+            }
+        }
 
-	if (policyPrefix == null) {
-	    policyPrefix = "pcp";
-	}
-	
-	list.put(policyPrefix + ".class", "Class name of ProjectionChangePolicy (optional)");
+        if (policyPrefix == null) {
+            policyPrefix = "pcp";
+        }
+        
+        list.put(policyPrefix + ".class", "Class name of ProjectionChangePolicy (optional)");
 
-	RenderPolicy rp = getRenderPolicy();
-	if (rp instanceof PropertyConsumer) {
-	    policyPrefix = ((PropertyConsumer)rp).getPropertyPrefix();
+        RenderPolicy rp = getRenderPolicy();
+        if (rp instanceof PropertyConsumer) {
+            policyPrefix = ((PropertyConsumer)rp).getPropertyPrefix();
 
-	    if (policyPrefix != null) {
-		int index = policyPrefix.indexOf(".");
-		if (index != -1) {
-		    policyPrefix = policyPrefix.substring(index + 1);
-		}
-	    }
+            if (policyPrefix != null) {
+                int index = policyPrefix.indexOf(".");
+                if (index != -1) {
+                    policyPrefix = policyPrefix.substring(index + 1);
+                }
+            }
 
-	    ((PropertyConsumer)rp).getPropertyInfo(list);
-	} else {
-	}
+            ((PropertyConsumer)rp).getPropertyInfo(list);
+        } else {
+        }
 
-	if (policyPrefix == null) {
-	    policyPrefix = "rp";
-	}
-	
-	list.put(policyPrefix + ".class", "Class name of RenderPolicy (optional)");
+        if (policyPrefix == null) {
+            policyPrefix = "rp";
+        }
+        
+        list.put(policyPrefix + ".class", "Class name of RenderPolicy (optional)");
 
-	list.put(ConsumeEventsProperty, "Flag that tells the layer to consume MouseEvents, or let others use them as well.");
-	list.put(ConsumeEventsProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+        list.put(ConsumeEventsProperty, "Flag that tells the layer to consume MouseEvents, or let others use them as well.");
+        list.put(ConsumeEventsProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
 
-	list.put(MouseModesProperty, "Space-separated list of MouseMode IDs to receive events from.");
+        list.put(MouseModesProperty, "Space-separated list of MouseMode IDs to receive events from.");
 
-	return list;
+        return list;
     }
 
     /**
@@ -818,13 +818,13 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * thereby calling GestureResponsePolicy methods on this layer.
      */
     public void setMouseEventInterpreter(MapMouseInterpreter mmi) {
-	if (mmi instanceof StandardMapMouseInterpreter) {
-	    String[] modeList = getMouseModeIDsForEvents();
-	    ((StandardMapMouseInterpreter)mmi).setMouseModeServiceList(modeList);
-	    ((StandardMapMouseInterpreter)mmi).setConsumeEvents(getConsumeEvents());
-	}
-	mmi.setGRP(this);
-	mouseEventInterpreter = mmi;
+        if (mmi instanceof StandardMapMouseInterpreter) {
+            String[] modeList = getMouseModeIDsForEvents();
+            ((StandardMapMouseInterpreter)mmi).setMouseModeServiceList(modeList);
+            ((StandardMapMouseInterpreter)mmi).setConsumeEvents(getConsumeEvents());
+        }
+        mmi.setGRP(this);
+        mouseEventInterpreter = mmi;
     }
 
     /**
@@ -837,34 +837,34 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * has been set as the interpreter, which could be null.
      */
     public MapMouseInterpreter getMouseEventInterpreter() {
-	if (getMouseModeIDsForEvents() != null && mouseEventInterpreter == null) {
-	    setMouseEventInterpreter(new StandardMapMouseInterpreter(this));
-	}
-	return mouseEventInterpreter;
+        if (getMouseModeIDsForEvents() != null && mouseEventInterpreter == null) {
+            setMouseEventInterpreter(new StandardMapMouseInterpreter(this));
+        }
+        return mouseEventInterpreter;
     }
 
     /**
      * Query asked from the MouseDelegator for interest in receiving MapMouseEvents.
      */
     public synchronized MapMouseListener getMapMouseListener() {
-	MapMouseListener mml = getMouseEventInterpreter();
+        MapMouseListener mml = getMouseEventInterpreter();
 
-	if (mml != null) {
-	    if (Debug.debugging("layer")) {
+        if (mml != null) {
+            if (Debug.debugging("layer")) {
 
-		String[] modes = mml.getMouseModeServiceList();
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < modes.length; i++) {
-		    sb.append(modes[i] + ", ");
-		}
+                String[] modes = mml.getMouseModeServiceList();
+                StringBuffer sb = new StringBuffer();
+                for (int i = 0; i < modes.length; i++) {
+                    sb.append(modes[i] + ", ");
+                }
 
-		Debug.output("Layer " + getName() + " returning " + 
-			     mml.getClass().getName() + 
-			     " as map mouse listener that listens to: " + sb.toString());
-	    }
-	}
+                Debug.output("Layer " + getName() + " returning " + 
+                             mml.getClass().getName() + 
+                             " as map mouse listener that listens to: " + sb.toString());
+            }
+        }
 
-	return mml;
+        return mml;
     }
 
     /**
@@ -877,11 +877,11 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * occuring.
      */
     public void setConsumeEvents(boolean consume) {
-	consumeEvents = consume;
+        consumeEvents = consume;
     }
 
     public boolean getConsumeEvents() {
-	return consumeEvents;
+        return consumeEvents;
     }
 
     /**
@@ -894,7 +894,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * space-separated list of mode IDs.
      */
     public String[] getMouseModeIDsForEvents() {
-	return mouseModeIDs;
+        return mouseModeIDs;
     }
 
     /**
@@ -903,16 +903,16 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      */
     public void setMouseModeIDsForEvents(String[] mm) {
 
-	if (Debug.debugging("layer")) {
-	    StringBuffer sb = new StringBuffer();
-	    for (int i = 0; i < mm.length;i++) {
-		sb.append(mm[i] + " ");
-	    }
+        if (Debug.debugging("layer")) {
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < mm.length;i++) {
+                sb.append(mm[i] + " ");
+            }
 
-	    Debug.output("For layer " + getName() + ", setting mouse modes to " + sb.toString());
-	}
+            Debug.output("For layer " + getName() + ", setting mouse modes to " + sb.toString());
+        }
 
-	mouseModeIDs = mm;
+        mouseModeIDs = mm;
     }
 
     /**
@@ -925,7 +925,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * (depends on the MapMouseInterpetor).
      */
     public boolean isHighlightable(OMGraphic omg) {
-	return true;
+        return true;
     }
 
     /**
@@ -936,7 +936,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * does in select.
      */
     public boolean isSelectable(OMGraphic omg) {
-	return false;
+        return false;
     }
 
     /**
@@ -948,7 +948,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * Retrieve the list of currently selected OMGraphics.
      */
     public OMGraphicList getSelected() {
-	return selectedList;
+        return selectedList;
     }
 
     ////// Reactions
@@ -957,90 +957,90 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * Fleeting change of appearance for mouse movements over an OMGraphic. 
      */
     public void highlight(OMGraphic omg) {
-	omg.select();
-	omg.generate(getProjection());
-	repaint();
+        omg.select();
+        omg.generate(getProjection());
+        repaint();
     }
 
     /**
      * Notification to set OMGraphic to normal appearance.
      */
     public void unhighlight(OMGraphic omg) {
-	omg.deselect();
-	omg.generate(getProjection());
-	repaint();
+        omg.deselect();
+        omg.generate(getProjection());
+        repaint();
     }
 
     /**
      * Designate a list of OMGraphics as selected.
      */
     public void select(OMGraphicList list) {
-	if (list != null) {
-	    Iterator it = list.iterator();
-	    while (it.hasNext()) {
-		if (selectedList == null) {
-		    selectedList = new OMGraphicList();
-		}
+        if (list != null) {
+            Iterator it = list.iterator();
+            while (it.hasNext()) {
+                if (selectedList == null) {
+                    selectedList = new OMGraphicList();
+                }
 
-		OMGraphic omg = (OMGraphic)it.next();
-		if (omg instanceof OMGraphicList && !((OMGraphicList)omg).isVague()) {
-		    select((OMGraphicList)omg);
-		} else {
-		    selectedList.add(omg);
-		}
-	    }
-	}
+                OMGraphic omg = (OMGraphic)it.next();
+                if (omg instanceof OMGraphicList && !((OMGraphicList)omg).isVague()) {
+                    select((OMGraphicList)omg);
+                } else {
+                    selectedList.add(omg);
+                }
+            }
+        }
     }
 
     /**
      * Designate a list of OMGraphics as deselected.
      */
     public void deselect(OMGraphicList list) {
-	if (list != null) {
-	    Iterator it = list.iterator();
-	    while (it.hasNext() && selectedList != null) {
-		OMGraphic omg = (OMGraphic)it.next();
-		if (omg instanceof OMGraphicList && !((OMGraphicList)omg).isVague()) {
-		    deselect((OMGraphicList)omg);
-		} else {
-		    selectedList.remove(omg);
-		}
-	    }
-	}
+        if (list != null) {
+            Iterator it = list.iterator();
+            while (it.hasNext() && selectedList != null) {
+                OMGraphic omg = (OMGraphic)it.next();
+                if (omg instanceof OMGraphicList && !((OMGraphicList)omg).isVague()) {
+                    deselect((OMGraphicList)omg);
+                } else {
+                    selectedList.remove(omg);
+                }
+            }
+        }
     }
 
     /**
      * Remove OMGraphics from the layer.
      */
     public OMGraphicList cut(OMGraphicList omgl) {
-	OMGraphicList list = getList();
-	if (list != null && omgl != null) {
-	    Iterator it = omgl.iterator();
-	    while (it.hasNext()) {
-		list.remove((OMGraphic)it.next());
-	    }
-	}
-	return omgl;
+        OMGraphicList list = getList();
+        if (list != null && omgl != null) {
+            Iterator it = omgl.iterator();
+            while (it.hasNext()) {
+                list.remove((OMGraphic)it.next());
+            }
+        }
+        return omgl;
     }
 
     /***
      * Return a copy of an OMGraphic. Not implemented yet.
      */
     public OMGraphicList copy(OMGraphicList omgl) {
-	return null;
+        return null;
     }
 
     /**
      * Add OMGraphics to the Layer.
      */
     public void paste(OMGraphicList omgl) {
-	OMGraphicList list = getList();
-	if (list != null && omgl != null) {
-	    Iterator it = omgl.iterator();
-	    while (it.hasNext()) {
-		list.add((OMGraphic)it.next());
-	    }
-	}
+        OMGraphicList list = getList();
+        if (list != null && omgl != null) {
+            Iterator it = omgl.iterator();
+            while (it.hasNext()) {
+                list.add((OMGraphic)it.next());
+            }
+        }
     }
 
     /**
@@ -1050,7 +1050,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * displayed.
      */
     public String getInfoText(OMGraphic omg) {
-	return null;
+        return null;
     }
 
     /**
@@ -1058,7 +1058,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * Return null if nothing should be shown.
      */
     public String getToolTipTextFor(OMGraphic omg) {
-	return null;
+        return null;
     }
 
     /**
@@ -1070,7 +1070,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * no input required.
      */
     public List getItemsForMapMenu() {
-	return null;
+        return null;
     }
 
     /**
@@ -1081,7 +1081,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * Return null or empty list if there are no options.
      */
     public List getItemsForOMGraphicMenu(OMGraphic omg) {
-	return null;
+        return null;
     }
 
 }

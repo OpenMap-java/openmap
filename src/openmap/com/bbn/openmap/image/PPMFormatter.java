@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/PPMFormatter.java,v $
 // $RCSfile: PPMFormatter.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -49,94 +49,94 @@ public class PPMFormatter extends AbstractImageFormatter {
     public PPMFormatter() {}
 
     public void setProperties(String prefix, Properties props) {
-	rawbits = LayerUtils.booleanFromProperties(props,
-						   (prefix == null?"":prefix) + RawBitsProperty,
-						   true);
+        rawbits = LayerUtils.booleanFromProperties(props,
+                                                   (prefix == null?"":prefix) + RawBitsProperty,
+                                                   true);
     }
 
     public ImageFormatter makeClone() {
-	PPMFormatter formatter = new PPMFormatter();
-	formatter.rawbits = rawbits;
-	return formatter;
+        PPMFormatter formatter = new PPMFormatter();
+        formatter.rawbits = rawbits;
+        return formatter;
     }
 
     public boolean getRawbits() {
-	return rawbits;
+        return rawbits;
     }
 
     public void setRawbits(boolean rb) {
-	rawbits = rb;
+        rawbits = rb;
     }
 
     public byte[] formatImage(BufferedImage bi) {
 
-	int height = bi.getHeight();
-	int width = bi.getWidth();
-	
-	int[] data =  new int[width*height];
-	bi.getRGB(0, 0, width, height, data, 0, width);
+        int height = bi.getHeight();
+        int width = bi.getWidth();
+        
+        int[] data =  new int[width*height];
+        bi.getRGB(0, 0, width, height, data, 0, width);
 
-	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	DataOutputStream dos = new DataOutputStream(baos);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(baos);
 
-	try{
-	    int pixel, count, i, lastCount;
-	    if (!rawbits) {
-		dos.writeBytes(regularMagicNumber);
-		dos.writeBytes(" " + width);
-		dos.writeBytes(" " + height);
-		dos.writeBytes(" " + MAX_COLOR_VALUE + "\n");
-		count = 0; // Keep lines less that 70 characters long
+        try{
+            int pixel, count, i, lastCount;
+            if (!rawbits) {
+                dos.writeBytes(regularMagicNumber);
+                dos.writeBytes(" " + width);
+                dos.writeBytes(" " + height);
+                dos.writeBytes(" " + MAX_COLOR_VALUE + "\n");
+                count = 0; // Keep lines less that 70 characters long
 
-		// Keep track of the number of characters added per pass
-		lastCount = 0; 
+                // Keep track of the number of characters added per pass
+                lastCount = 0; 
 
-		Debug.output("PPMFormatter: Header is " + dos.size() + " bytes");
-		Debug.output("PPMFormatter: Height = " + height);
-		Debug.output("PPMFormatter: Width = " + width);
-		Debug.output("PPMFormatter: data length = " + data.length);
+                Debug.output("PPMFormatter: Header is " + dos.size() + " bytes");
+                Debug.output("PPMFormatter: Height = " + height);
+                Debug.output("PPMFormatter: Width = " + width);
+                Debug.output("PPMFormatter: data length = " + data.length);
 
-		for (i = 0; i < data.length; i++) {
+                for (i = 0; i < data.length; i++) {
 
-		    pixel = data[i];
-		    int r = (pixel >>> 16) & 0x000000FF;
-		    int g = (pixel >>> 8) & 0x000000FF;
-		    int b = (pixel) & 0x000000FF;
+                    pixel = data[i];
+                    int r = (pixel >>> 16) & 0x000000FF;
+                    int g = (pixel >>> 8) & 0x000000FF;
+                    int b = (pixel) & 0x000000FF;
 
-		    dos.writeBytes(" " + r);
-		    dos.writeBytes(" " + g);
-		    dos.writeBytes(" " + b);
-		    if (count > 57) {
-			dos.writeBytes("\n");
-			count = 0;
-		    } else {
-			count+=dos.size() - lastCount;
-		    }
-		    lastCount = dos.size();
-		}
-		Debug.output("PPMFormatter: after data, size is " + dos.size());
+                    dos.writeBytes(" " + r);
+                    dos.writeBytes(" " + g);
+                    dos.writeBytes(" " + b);
+                    if (count > 57) {
+                        dos.writeBytes("\n");
+                        count = 0;
+                    } else {
+                        count+=dos.size() - lastCount;
+                    }
+                    lastCount = dos.size();
+                }
+                Debug.output("PPMFormatter: after data, size is " + dos.size());
 
-	    } else {
-		dos.writeBytes(rawbitsMagicNumber);
-		dos.writeBytes(" " + width);
-		dos.writeBytes(" " + height);
-		dos.writeBytes(" " + MAX_COLOR_VALUE + "\n");
-		for (i = 0; i < data.length; i++) {
-		    pixel = data[i];
-		    dos.writeByte(pixel >>> 16);
-		    dos.writeByte(pixel >>> 8);
-		    dos.writeByte(pixel);
-		}
-	    }
+            } else {
+                dos.writeBytes(rawbitsMagicNumber);
+                dos.writeBytes(" " + width);
+                dos.writeBytes(" " + height);
+                dos.writeBytes(" " + MAX_COLOR_VALUE + "\n");
+                for (i = 0; i < data.length; i++) {
+                    pixel = data[i];
+                    dos.writeByte(pixel >>> 16);
+                    dos.writeByte(pixel >>> 8);
+                    dos.writeByte(pixel);
+                }
+            }
 
-	    
+            
 
-	    return baos.toByteArray();
+            return baos.toByteArray();
 
-	} catch (java.io.IOException ioe) {
-	    System.err.println("PPMFormatter caught IOException formatting image!");
-	    return new byte[0];
-	}
+        } catch (java.io.IOException ioe) {
+            System.err.println("PPMFormatter caught IOException formatting image!");
+            return new byte[0];
+        }
     }
 
     /**
@@ -145,6 +145,6 @@ public class PPMFormatter extends AbstractImageFormatter {
      * Some are listed in the WMTConstants interface file.
      */
     public String getFormatLabel() {
-	return WMTConstants.IMAGEFORMAT_PPM;
+        return WMTConstants.IMAGEFORMAT_PPM;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/ReverseListener.java,v $
 // $RCSfile: ReverseListener.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,13 +41,13 @@ public class ReverseListener implements HttpRequestListener {
      * Reverse the input and send it back to the client.
      */
     public void httpRequest(HttpRequestEvent e) throws IOException {
-	// reverse the input
-	int len = e.getRequest().length();
-	StringBuffer revline = new StringBuffer(len);
-	for(int i = len-1; i >= 0; i--) 
-	    revline.insert(len-1-i, e.getRequest().charAt(i));
+        // reverse the input
+        int len = e.getRequest().length();
+        StringBuffer revline = new StringBuffer(len);
+        for(int i = len-1; i >= 0; i--) 
+            revline.insert(len-1-i, e.getRequest().charAt(i));
 
-	// and write out the reversed request
-	e.getWriter().write(revline.toString());
+        // and write out the reversed request
+        e.getWriter().write(revline.toString());
     }
 }

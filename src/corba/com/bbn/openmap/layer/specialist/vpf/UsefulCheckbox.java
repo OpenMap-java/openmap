@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/vpf/UsefulCheckbox.java,v $
 // $RCSfile: UsefulCheckbox.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,16 +36,16 @@ import com.bbn.openmap.CSpecialist.*;
 public class UsefulCheckbox extends SCheckBox {
 
     public UsefulCheckbox(String label, CheckButton[] buttons) {
-	super(label, buttons);
+        super(label, buttons);
     }
 
     public void selected(java.lang.String box_label,
-			 com.bbn.openmap.CSpecialist.CheckButton button,
-			 java.lang.String uniqueID) {
+                         com.bbn.openmap.CSpecialist.CheckButton button,
+                         java.lang.String uniqueID) {
 
-	for (int i=0; i < buttons_.length; i++) {
-	    if (buttons_[i].button_label.compareTo(button.button_label) == 0)
-		buttons_[i].checked = !buttons_[i].checked;
-	}
+        for (int i=0; i < buttons_.length; i++) {
+            if (buttons_[i].button_label.compareTo(button.button_label) == 0)
+                buttons_[i].checked = !buttons_[i].checked;
+        }
     }
 }

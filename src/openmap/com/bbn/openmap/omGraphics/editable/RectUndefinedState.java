@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/RectUndefinedState.java,v $
 // $RCSfile: RectUndefinedState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import com.bbn.openmap.util.Debug;
 public class RectUndefinedState extends GraphicUndefinedState {
 
     public RectUndefinedState(EditableOMRect eomr) {
-	super(eomr);
+        super(eomr);
     }
 
     /**
@@ -43,22 +43,22 @@ public class RectUndefinedState extends GraphicUndefinedState {
      * set the mode to rect edit.  
      */
     public boolean mousePressed(MouseEvent e){ 
-	Debug.message("eomg", "RectStateMachine|undefined state|mousePressed = " + 
-		      graphic.getGraphic().getRenderType());
-	
-	graphic.getGrabPoint(EditableOMRect.NW_POINT_INDEX).set(e.getX(), e.getY());
-	GrabPoint gb;
-	gb = graphic.getGrabPoint(EditableOMRect.SE_POINT_INDEX);
-	gb.set(e.getX(), e.getY());
-	graphic.setMovingPoint(gb);
+        Debug.message("eomg", "RectStateMachine|undefined state|mousePressed = " + 
+                      graphic.getGraphic().getRenderType());
+        
+        graphic.getGrabPoint(EditableOMRect.NW_POINT_INDEX).set(e.getX(), e.getY());
+        GrabPoint gb;
+        gb = graphic.getGrabPoint(EditableOMRect.SE_POINT_INDEX);
+        gb.set(e.getX(), e.getY());
+        graphic.setMovingPoint(gb);
 
-	if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
-//  	    graphic.getGrabPoint(EditableOMRect.OFFSET_POINT_INDEX).set(e.getX(), e.getY());
-	    graphic.getStateMachine().setOffsetNeeded(true);
-	    Debug.message("eomg", "RectStateMachine|undefined state| *offset needed*");
-	}
-	graphic.getStateMachine().setEdit();
-	return getMapMouseListenerResponse();
+        if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
+//          graphic.getGrabPoint(EditableOMRect.OFFSET_POINT_INDEX).set(e.getX(), e.getY());
+            graphic.getStateMachine().setOffsetNeeded(true);
+            Debug.message("eomg", "RectStateMachine|undefined state| *offset needed*");
+        }
+        graphic.getStateMachine().setEdit();
+        return getMapMouseListenerResponse();
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/OMBasicMenu.java,v $
 // $RCSfile: OMBasicMenu.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/21 22:41:32 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,10 +32,10 @@ import com.bbn.openmap.gui.AbstractOpenMapMenu;
 public class OMBasicMenu extends AbstractOpenMapMenu {
 
     public OMBasicMenu() {
-	super();
+        super();
     }
 
     public OMBasicMenu(String title) {
-	super(title);
+        super(title);
     }
 }

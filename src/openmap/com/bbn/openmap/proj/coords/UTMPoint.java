@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UTMPoint.java,v $
 // $RCSfile: UTMPoint.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 22:55:27 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:14 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -66,26 +66,26 @@ public class UTMPoint {
      * @param zone_number The zone of the coordinate.
      */
     public UTMPoint(float northing, float easting, 
-		    int zone_number, char zone_letter) {
-	this.northing=northing; 
-	this.easting=easting; 
-	this.zone_number=zone_number; 
-	this.zone_letter=zone_letter;
+                    int zone_number, char zone_letter) {
+        this.northing=northing; 
+        this.easting=easting; 
+        this.zone_number=zone_number; 
+        this.zone_letter=zone_letter;
     }
 
     /**
      * Contructs a new UTMPoint instance from values in another UTMPoint.
      */
     public UTMPoint(UTMPoint point) {
-	this(point.northing, point.easting, 
-	     point.zone_number, point.zone_letter);
+        this(point.northing, point.easting, 
+             point.zone_number, point.zone_letter);
     }
 
     /**
      * Contruct a UTMPoint from a LatLonPoint, assuming a WGS_84 ellipsoid.
      */
     public UTMPoint(LatLonPoint llpoint) {
-	this(llpoint, Ellipsoid.WGS_84);
+        this(llpoint, Ellipsoid.WGS_84);
     }
 
     /**
@@ -93,8 +93,8 @@ public class UTMPoint {
      * ellipsoid.  
      */
     public UTMPoint(LatLonPoint llpoint, Ellipsoid ellip) {
-	this();
-	LLtoUTM(llpoint, ellip, this);
+        this();
+        LLtoUTM(llpoint, ellip, this);
     }
 
     /**
@@ -102,7 +102,7 @@ public class UTMPoint {
      * ellisoid.
      */
     public LatLonPoint toLatLonPoint() {
-	return UTMtoLL(this, Ellipsoid.WGS_84, new LatLonPoint());
+        return UTMtoLL(this, Ellipsoid.WGS_84, new LatLonPoint());
     }
 
     /**
@@ -110,7 +110,7 @@ public class UTMPoint {
      * ellipsoid.
      */
     public LatLonPoint toLatLonPoint(Ellipsoid ellip) {
-	return UTMtoLL(this, ellip, new LatLonPoint());
+        return UTMtoLL(this, ellip, new LatLonPoint());
     }
 
     /**
@@ -118,7 +118,7 @@ public class UTMPoint {
      * UTMPoint, and use the given ellipsoid.  
      */
     public LatLonPoint toLatLonPoint(Ellipsoid ellip, LatLonPoint llpoint) {
-	return UTMtoLL(this, ellip, llpoint);
+        return UTMtoLL(this, ellip, llpoint);
     }
 
     /**
@@ -126,8 +126,8 @@ public class UTMPoint {
      * @return String representation
      */
     public String toString () {
-	return "UTMPoint[northing=" + northing + ", easting=" + 
-	    easting + ", zone_number="+zone_number+", zone_letter="+zone_letter+"]";
+        return "UTMPoint[northing=" + northing + ", easting=" + 
+            easting + ", zone_number="+zone_number+", zone_letter="+zone_letter+"]";
     }
 
     /**
@@ -135,7 +135,7 @@ public class UTMPoint {
      * @return UTMPoint, or null if something bad happened.
      */
     public static UTMPoint LLtoUTM(LatLonPoint llpoint) {
-	return LLtoUTM(llpoint, Ellipsoid.WGS_84, new UTMPoint());
+        return LLtoUTM(llpoint, Ellipsoid.WGS_84, new UTMPoint());
     }
 
     /**
@@ -148,7 +148,7 @@ public class UTMPoint {
      * successful conversion.
      */
     public static UTMPoint LLtoUTM(LatLonPoint llpoint, UTMPoint utmpoint) {
-	return LLtoUTM(llpoint, Ellipsoid.WGS_84, utmpoint);
+        return LLtoUTM(llpoint, Ellipsoid.WGS_84, utmpoint);
     }
 
     /**
@@ -163,78 +163,78 @@ public class UTMPoint {
      * in a UTMPoint, it will be returned as well if successful.
      */
     public static UTMPoint LLtoUTM(LatLonPoint llpoint, Ellipsoid ellip, UTMPoint utmpoint) {
-	
-	double Lat=llpoint.getLatitude(); 
-	double Long=llpoint.getLongitude();
-	double a = ellip.radius;
-	double eccSquared = ellip.eccsq;
-	double k0 = 0.9996;
-	
-	double LongOrigin;
-	double eccPrimeSquared;
-	double N, T, C, A, M;
-	
-	//Make sure the longitude is between -180.00 .. 179.9
-	double LongTemp = (Long+180)-((int)((Long+180)/360))*360-180; // -180.00 .. 179.9;
+        
+        double Lat=llpoint.getLatitude(); 
+        double Long=llpoint.getLongitude();
+        double a = ellip.radius;
+        double eccSquared = ellip.eccsq;
+        double k0 = 0.9996;
+        
+        double LongOrigin;
+        double eccPrimeSquared;
+        double N, T, C, A, M;
+        
+        //Make sure the longitude is between -180.00 .. 179.9
+        double LongTemp = (Long+180)-((int)((Long+180)/360))*360-180; // -180.00 .. 179.9;
 
-	double LatRad = llpoint.radlat_;
-	double LongRad = llpoint.radlon_;
-	double LongOriginRad;
-	int    ZoneNumber;
-	
-	ZoneNumber = (int)((LongTemp + 180)/6) + 1;
-	
-	if ( Lat >= 56.0f && Lat < 64.0f && 
-	     LongTemp >= 3.0f && LongTemp < 12.0f ) {
-	    ZoneNumber = 32;
-	}
-	
-	// Special zones for Svalbard
-	if( Lat >= 72.0f && Lat < 84.0f ) {
-	    if(LongTemp >= 0.0f  && LongTemp <  9.0f ) ZoneNumber = 31;
-	    else if( LongTemp >= 9.0f  && LongTemp < 21.0f ) ZoneNumber = 33;
-	    else if( LongTemp >= 21.0f && LongTemp < 33.0f ) ZoneNumber = 35;
-	    else if( LongTemp >= 33.0f && LongTemp < 42.0f ) ZoneNumber = 37;
-	}
-	LongOrigin = (ZoneNumber - 1)*6 - 180 + 3;  //+3 puts origin in middle of zone
-	LongOriginRad = ProjMath.degToRad(LongOrigin);
-	
-	eccPrimeSquared = (eccSquared)/(1-eccSquared);
-	
-	N = a/Math.sqrt(1-eccSquared*Math.sin(LatRad)*Math.sin(LatRad));
-	T = Math.tan(LatRad)*Math.tan(LatRad);
-	C = eccPrimeSquared*Math.cos(LatRad)*Math.cos(LatRad);
-	A = Math.cos(LatRad)*(LongRad-LongOriginRad);
-	
-	M = a*((1 - eccSquared/4 - 3*eccSquared*eccSquared/64 -
-		5*eccSquared*eccSquared*eccSquared/256)*LatRad - 
-	       (3*eccSquared/8 + 3*eccSquared*eccSquared/32 + 
-		45*eccSquared*eccSquared*eccSquared/1024)*Math.sin(2*LatRad) +
-	       (15*eccSquared*eccSquared/256 + 
-		45*eccSquared*eccSquared*eccSquared/1024)*Math.sin(4*LatRad) - 
-	       (35*eccSquared*eccSquared*eccSquared/3072)*Math.sin(6*LatRad));
-	
-	float UTMEasting = 
-	    (float)(k0*N*(A+(1-T+C)*A*A*A/6.0d + 
-			  (5-18*T+T*T+72*C-58*eccPrimeSquared)*A*A*A*A*A/120.0d) + 500000.0d);
-	
-	float UTMNorthing = 
-	    (float)(k0*(M+N*Math.tan(LatRad)*
-			(A*A/2+(5-T+9*C+4*C*C)*A*A*A*A/24.0d
-			 + (61-58*T+T*T+600*C-330*eccPrimeSquared)*A*A*A*A*A*A/720.0d)));
-	if(Lat < 0.0f) {
-	    UTMNorthing += 10000000.0f; //10000000 meter offset for southern hemisphere
-	}
-	
-	if (utmpoint != null) {
-	    utmpoint.northing = UTMNorthing;
-	    utmpoint.easting = UTMEasting;
-	    utmpoint.zone_number = ZoneNumber;
-	    utmpoint.zone_letter = UTMLetterDesignator(Lat);
-	    return utmpoint;
-	} else {
-	    return new UTMPoint(UTMNorthing, UTMEasting, ZoneNumber, UTMLetterDesignator(Lat));
-	}
+        double LatRad = llpoint.radlat_;
+        double LongRad = llpoint.radlon_;
+        double LongOriginRad;
+        int    ZoneNumber;
+        
+        ZoneNumber = (int)((LongTemp + 180)/6) + 1;
+        
+        if ( Lat >= 56.0f && Lat < 64.0f && 
+             LongTemp >= 3.0f && LongTemp < 12.0f ) {
+            ZoneNumber = 32;
+        }
+        
+        // Special zones for Svalbard
+        if( Lat >= 72.0f && Lat < 84.0f ) {
+            if(LongTemp >= 0.0f  && LongTemp <  9.0f ) ZoneNumber = 31;
+            else if( LongTemp >= 9.0f  && LongTemp < 21.0f ) ZoneNumber = 33;
+            else if( LongTemp >= 21.0f && LongTemp < 33.0f ) ZoneNumber = 35;
+            else if( LongTemp >= 33.0f && LongTemp < 42.0f ) ZoneNumber = 37;
+        }
+        LongOrigin = (ZoneNumber - 1)*6 - 180 + 3;  //+3 puts origin in middle of zone
+        LongOriginRad = ProjMath.degToRad(LongOrigin);
+        
+        eccPrimeSquared = (eccSquared)/(1-eccSquared);
+        
+        N = a/Math.sqrt(1-eccSquared*Math.sin(LatRad)*Math.sin(LatRad));
+        T = Math.tan(LatRad)*Math.tan(LatRad);
+        C = eccPrimeSquared*Math.cos(LatRad)*Math.cos(LatRad);
+        A = Math.cos(LatRad)*(LongRad-LongOriginRad);
+        
+        M = a*((1 - eccSquared/4 - 3*eccSquared*eccSquared/64 -
+                5*eccSquared*eccSquared*eccSquared/256)*LatRad - 
+               (3*eccSquared/8 + 3*eccSquared*eccSquared/32 + 
+                45*eccSquared*eccSquared*eccSquared/1024)*Math.sin(2*LatRad) +
+               (15*eccSquared*eccSquared/256 + 
+                45*eccSquared*eccSquared*eccSquared/1024)*Math.sin(4*LatRad) - 
+               (35*eccSquared*eccSquared*eccSquared/3072)*Math.sin(6*LatRad));
+        
+        float UTMEasting = 
+            (float)(k0*N*(A+(1-T+C)*A*A*A/6.0d + 
+                          (5-18*T+T*T+72*C-58*eccPrimeSquared)*A*A*A*A*A/120.0d) + 500000.0d);
+        
+        float UTMNorthing = 
+            (float)(k0*(M+N*Math.tan(LatRad)*
+                        (A*A/2+(5-T+9*C+4*C*C)*A*A*A*A/24.0d
+                         + (61-58*T+T*T+600*C-330*eccPrimeSquared)*A*A*A*A*A*A/720.0d)));
+        if(Lat < 0.0f) {
+            UTMNorthing += 10000000.0f; //10000000 meter offset for southern hemisphere
+        }
+        
+        if (utmpoint != null) {
+            utmpoint.northing = UTMNorthing;
+            utmpoint.easting = UTMEasting;
+            utmpoint.zone_number = ZoneNumber;
+            utmpoint.zone_letter = UTMLetterDesignator(Lat);
+            return utmpoint;
+        } else {
+            return new UTMPoint(UTMNorthing, UTMEasting, ZoneNumber, UTMLetterDesignator(Lat));
+        }
     }
 
     /**
@@ -288,10 +288,10 @@ public class UTMPoint {
      * in a LatLonPoint, it will be returned as well, if successful.
      */
     public static LatLonPoint UTMtoLL(UTMPoint utm_point, Ellipsoid ellip, 
-				      LatLonPoint llpoint) {
-	return UTMtoLL(ellip, utm_point.northing, utm_point.easting, 
-		       utm_point.zone_number, utm_point.zone_letter, 
-		       llpoint);
+                                      LatLonPoint llpoint) {
+        return UTMtoLL(ellip, utm_point.northing, utm_point.easting, 
+                       utm_point.zone_number, utm_point.zone_letter, 
+                       llpoint);
     }
 
     /**
@@ -313,45 +313,45 @@ public class UTMPoint {
      * in a LatLonPoint, it will be returned as well, if successful.
      */
     public static LatLonPoint UTMtoLL(Ellipsoid ellip,
-				      float UTMNorthing,
-				      float UTMEasting,
-				      String UTMZone,
-				      LatLonPoint llpoint) {
-	
-	//without the zone we can't calculate the Lat and Long
-	if (UTMZone==null || UTMZone.equals("")) {
-	    return null;
-	}
+                                      float UTMNorthing,
+                                      float UTMEasting,
+                                      String UTMZone,
+                                      LatLonPoint llpoint) {
+        
+        //without the zone we can't calculate the Lat and Long
+        if (UTMZone==null || UTMZone.equals("")) {
+            return null;
+        }
 
-	int ZoneNumber=1;
-	char ZoneLetter='N'; //northern hemisphere by default if no character is found
-	
-	//Break out the Zone number and zone letter from the UTMZone
-	//string We assume the string is a valid zone with a number
-	//followed by a zone letter If there is no Letter we assume
-	//that it's the Northern hemisphere
-	int ln=UTMZone.length()-1;
-	if (ln > 0) { 
-	    //If it's Zero then there is only one character and it must be the Zone number
-	    ZoneLetter = UTMZone.charAt(ln);
-	    if(!Character.isLetter(ZoneLetter)) {
-		//No letter so assume it's missing & default to 'N'
-		ZoneLetter='N';
-		ln++;
-	    }
-	}
+        int ZoneNumber=1;
+        char ZoneLetter='N'; //northern hemisphere by default if no character is found
+        
+        //Break out the Zone number and zone letter from the UTMZone
+        //string We assume the string is a valid zone with a number
+        //followed by a zone letter If there is no Letter we assume
+        //that it's the Northern hemisphere
+        int ln=UTMZone.length()-1;
+        if (ln > 0) { 
+            //If it's Zero then there is only one character and it must be the Zone number
+            ZoneLetter = UTMZone.charAt(ln);
+            if(!Character.isLetter(ZoneLetter)) {
+                //No letter so assume it's missing & default to 'N'
+                ZoneLetter='N';
+                ln++;
+            }
+        }
 
-	//convert the number but catch the exception if it's not valid
-	try{
-	    ZoneNumber = Integer.parseInt(UTMZone.substring(0,ln));
-	} catch (NumberFormatException nfe) {
-	    return null;
-	}
-	
-	return UTMtoLL(ellip,
-		       UTMNorthing, UTMEasting,
-		       ZoneNumber, ZoneLetter, 
-		       llpoint);
+        //convert the number but catch the exception if it's not valid
+        try{
+            ZoneNumber = Integer.parseInt(UTMZone.substring(0,ln));
+        } catch (NumberFormatException nfe) {
+            return null;
+        }
+        
+        return UTMtoLL(ellip,
+                       UTMNorthing, UTMEasting,
+                       ZoneNumber, ZoneLetter, 
+                       llpoint);
     }
 
     /**
@@ -374,12 +374,12 @@ public class UTMPoint {
      * in a LatLonPoint, it will be returned as well, if successful.
      */
     public static LatLonPoint UTMtoLL(Ellipsoid ellip,
-				      float UTMNorthing, float UTMEasting,
-				      int ZoneNumber, boolean isnorthern, 
-				      LatLonPoint llpoint) {
+                                      float UTMNorthing, float UTMEasting,
+                                      int ZoneNumber, boolean isnorthern, 
+                                      LatLonPoint llpoint) {
 
-	return UTMtoLL(ellip, UTMNorthing, UTMEasting, ZoneNumber, 
-		       (isnorthern)? 'N' : 'M', llpoint);
+        return UTMtoLL(ellip, UTMNorthing, UTMEasting, ZoneNumber, 
+                       (isnorthern)? 'N' : 'M', llpoint);
     }
 
     /**
@@ -401,73 +401,73 @@ public class UTMPoint {
      * in a LatLonPoint, it will be returned as well, if successful.
      */
     public static LatLonPoint UTMtoLL(Ellipsoid ellip, 
-				      float UTMNorthing, float UTMEasting,
-				      int ZoneNumber, char ZoneLetter, 
-				      LatLonPoint llpoint) {
-	
-	//check the ZoneNummber is valid
-	if (ZoneNumber<0 || ZoneNumber>60) {
-	    return null;
-	}
+                                      float UTMNorthing, float UTMEasting,
+                                      int ZoneNumber, char ZoneLetter, 
+                                      LatLonPoint llpoint) {
+        
+        //check the ZoneNummber is valid
+        if (ZoneNumber<0 || ZoneNumber>60) {
+            return null;
+        }
 
-	double k0 = 0.9996;
-	double a = ellip.radius;
-	double eccSquared = ellip.eccsq;
-	double eccPrimeSquared;
-	double e1 = (1-Math.sqrt(1-eccSquared))/(1+Math.sqrt(1-eccSquared));
-	double N1, T1, C1, R1, D, M;
-	double LongOrigin;
-	double mu, phi1, phi1Rad;
-	double x, y;
-	int NorthernHemisphere; //1 for northern hemispher, 0 for southern
-	
-	x = UTMEasting - 500000.0d; //remove 500,000 meter offset for longitude
-	y = UTMNorthing;
-	
-	//We must know somehow if we are in the Northern or Southern
-	//hemisphere, this is the only time we use the letter So even
-	//if the Zone letter isn't exactly correct it should indicate
-	//the hemisphere correctly
-	if(ZoneLetter >= 'N') {
-	    NorthernHemisphere = 1;//point is in northern hemisphere
-	} else {
-	    NorthernHemisphere = 0;//point is in southern hemisphere
-	    y -= 10000000.0d;//remove 10,000,000 meter offset used for southern hemisphere
-	}
-	
-	//There are 60 zones with zone 1 being at West -180 to -174
-	LongOrigin = (ZoneNumber - 1)*6 - 180 + 3;  //+3 puts origin in middle of zone
-	
-	eccPrimeSquared = (eccSquared)/(1-eccSquared);
-	
-	M = y / k0;
-	mu = M/(a*(1-eccSquared/4-3*eccSquared*eccSquared/64-5*eccSquared*eccSquared*eccSquared/256));
-	
-	phi1Rad = mu + (3*e1/2-27*e1*e1*e1/32)*Math.sin(2*mu) + 
-	    (21*e1*e1/16-55*e1*e1*e1*e1/32)*Math.sin(4*mu)+(151*e1*e1*e1/96)*Math.sin(6*mu);
-	phi1 = ProjMath.radToDeg(phi1Rad);
-	
-	N1 = a/Math.sqrt(1-eccSquared*Math.sin(phi1Rad)*Math.sin(phi1Rad));
-	T1 = Math.tan(phi1Rad)*Math.tan(phi1Rad);
-	C1 = eccPrimeSquared*Math.cos(phi1Rad)*Math.cos(phi1Rad);
-	R1 = a*(1-eccSquared)/Math.pow(1-eccSquared*Math.sin(phi1Rad)*Math.sin(phi1Rad), 1.5);
-	D = x/(N1*k0);
-	
-	double Lat = phi1Rad - (N1*Math.tan(phi1Rad)/R1)*
-	    (D*D/2-(5+3*T1+10*C1-4*C1*C1-9*eccPrimeSquared)*D*D*D*D/24
-	     +(61+90*T1+298*C1+45*T1*T1-252*eccPrimeSquared-3*C1*C1)*D*D*D*D*D*D/720);
-	Lat = ProjMath.radToDeg(Lat);
-	
-	double Long = (D-(1+2*T1+C1)*D*D*D/6+(5-2*C1+28*T1-3*C1*C1+8*eccPrimeSquared+24*T1*T1)
-		       *D*D*D*D*D/120)/Math.cos(phi1Rad);
-	Long = LongOrigin + ProjMath.radToDeg(Long);
+        double k0 = 0.9996;
+        double a = ellip.radius;
+        double eccSquared = ellip.eccsq;
+        double eccPrimeSquared;
+        double e1 = (1-Math.sqrt(1-eccSquared))/(1+Math.sqrt(1-eccSquared));
+        double N1, T1, C1, R1, D, M;
+        double LongOrigin;
+        double mu, phi1, phi1Rad;
+        double x, y;
+        int NorthernHemisphere; //1 for northern hemispher, 0 for southern
+        
+        x = UTMEasting - 500000.0d; //remove 500,000 meter offset for longitude
+        y = UTMNorthing;
+        
+        //We must know somehow if we are in the Northern or Southern
+        //hemisphere, this is the only time we use the letter So even
+        //if the Zone letter isn't exactly correct it should indicate
+        //the hemisphere correctly
+        if(ZoneLetter >= 'N') {
+            NorthernHemisphere = 1;//point is in northern hemisphere
+        } else {
+            NorthernHemisphere = 0;//point is in southern hemisphere
+            y -= 10000000.0d;//remove 10,000,000 meter offset used for southern hemisphere
+        }
+        
+        //There are 60 zones with zone 1 being at West -180 to -174
+        LongOrigin = (ZoneNumber - 1)*6 - 180 + 3;  //+3 puts origin in middle of zone
+        
+        eccPrimeSquared = (eccSquared)/(1-eccSquared);
+        
+        M = y / k0;
+        mu = M/(a*(1-eccSquared/4-3*eccSquared*eccSquared/64-5*eccSquared*eccSquared*eccSquared/256));
+        
+        phi1Rad = mu + (3*e1/2-27*e1*e1*e1/32)*Math.sin(2*mu) + 
+            (21*e1*e1/16-55*e1*e1*e1*e1/32)*Math.sin(4*mu)+(151*e1*e1*e1/96)*Math.sin(6*mu);
+        phi1 = ProjMath.radToDeg(phi1Rad);
+        
+        N1 = a/Math.sqrt(1-eccSquared*Math.sin(phi1Rad)*Math.sin(phi1Rad));
+        T1 = Math.tan(phi1Rad)*Math.tan(phi1Rad);
+        C1 = eccPrimeSquared*Math.cos(phi1Rad)*Math.cos(phi1Rad);
+        R1 = a*(1-eccSquared)/Math.pow(1-eccSquared*Math.sin(phi1Rad)*Math.sin(phi1Rad), 1.5);
+        D = x/(N1*k0);
+        
+        double Lat = phi1Rad - (N1*Math.tan(phi1Rad)/R1)*
+            (D*D/2-(5+3*T1+10*C1-4*C1*C1-9*eccPrimeSquared)*D*D*D*D/24
+             +(61+90*T1+298*C1+45*T1*T1-252*eccPrimeSquared-3*C1*C1)*D*D*D*D*D*D/720);
+        Lat = ProjMath.radToDeg(Lat);
+        
+        double Long = (D-(1+2*T1+C1)*D*D*D/6+(5-2*C1+28*T1-3*C1*C1+8*eccPrimeSquared+24*T1*T1)
+                       *D*D*D*D*D/120)/Math.cos(phi1Rad);
+        Long = LongOrigin + ProjMath.radToDeg(Long);
 
-	if (llpoint != null) {
-	    llpoint.setLatLon((float)Lat,(float)Long);
-	    return llpoint;
-	} else {
-	    return new LatLonPoint((float)Lat,(float)Long);
-	}
+        if (llpoint != null) {
+            llpoint.setLatLon((float)Lat,(float)Long);
+            return llpoint;
+        } else {
+            return new LatLonPoint((float)Lat,(float)Long);
+        }
    }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeMETOCCategory.java,v $
 // $RCSfile: CodeMETOCCategory.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,6 +36,6 @@ import java.util.List;
 public class CodeMETOCCategory extends CodePosition {
 
     public CodeMETOCCategory() {
-	super("METOC Catetory", 2, 2);
+        super("METOC Catetory", 2, 2);
     }
 }

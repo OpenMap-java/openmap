@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/RectStateMachine.java,v $
 // $RCSfile: RectStateMachine.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,18 +37,18 @@ import com.bbn.openmap.util.Debug;
 public class RectStateMachine extends EOMGStateMachine {
 
     public RectStateMachine(EditableOMRect rect){
-	super(rect);
+        super(rect);
     }
 
     protected State[] init(){
-	State[] states = super.init();
-	Debug.message("eomc", "RectStateMachine.init()");
+        State[] states = super.init();
+        Debug.message("eomc", "RectStateMachine.init()");
 
-	//  These are the only two states that need something special
-	//  to happen.
-	states[GRAPHIC_UNDEFINED] = new RectUndefinedState((EditableOMRect)graphic);
-	states[GRAPHIC_SELECTED] = new RectSelectedState((EditableOMRect)graphic);
-	states[GRAPHIC_SETOFFSET] = new RectSetOffsetState((EditableOMRect)graphic);
-	return states;
+        //  These are the only two states that need something special
+        //  to happen.
+        states[GRAPHIC_UNDEFINED] = new RectUndefinedState((EditableOMRect)graphic);
+        states[GRAPHIC_SELECTED] = new RectSelectedState((EditableOMRect)graphic);
+        states[GRAPHIC_SETOFFSET] = new RectSetOffsetState((EditableOMRect)graphic);
+        return states;
     }
 }

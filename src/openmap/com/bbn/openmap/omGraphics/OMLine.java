@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMLine.java,v $
 // $RCSfile: OMLine.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/23 20:46:44 $
-// $Author: wjeuerle $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:12 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -121,7 +121,7 @@ public class OMLine extends OMGraphic implements Serializable {
 
     /** Generic constructor, attributes need to filled later. */
     public OMLine () {
-	super(RENDERTYPE_UNKNOWN, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        super(RENDERTYPE_UNKNOWN, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
     }
 
     /**
@@ -135,8 +135,8 @@ public class OMLine extends OMGraphic implements Serializable {
      * LINETYPE_GREATCIRCLE or LINETYPE_RHUMB.
      */
     public OMLine(float lat_1, float lon_1, float lat_2, float lon_2, 
-		  int lineType)	{
-	this (lat_1, lon_1, lat_2, lon_2, lineType, -1);
+                  int lineType) {
+        this (lat_1, lon_1, lat_2, lon_2, lineType, -1);
     }
 
     /**
@@ -153,14 +153,14 @@ public class OMLine extends OMGraphic implements Serializable {
      * 1, this value is generated internally)
      */
     public OMLine(float lat_1, float lon_1, float lat_2, float lon_2, 
-		  int lineType, int nsegs) {
-	super(RENDERTYPE_LATLON, lineType, DECLUTTERTYPE_NONE);
-	latlons = new float[4];
-	latlons[0] = lat_1;
-	latlons[2] = lat_2;
-	latlons[1] = lon_1;
-	latlons[3] = lon_2;
-	this.nsegs = nsegs;
+                  int lineType, int nsegs) {
+        super(RENDERTYPE_LATLON, lineType, DECLUTTERTYPE_NONE);
+        latlons = new float[4];
+        latlons[0] = lat_1;
+        latlons[2] = lat_2;
+        latlons[1] = lon_1;
+        latlons[3] = lon_2;
+        this.nsegs = nsegs;
     }
 
     /**
@@ -175,13 +175,13 @@ public class OMLine extends OMGraphic implements Serializable {
      * the top of the window.
      */
     public OMLine(int x1, int y1, 
-		  int x2, int y2) {
-	super(RENDERTYPE_XY, LINETYPE_STRAIGHT, DECLUTTERTYPE_NONE);
-	pts = new int[4];
-	pts[0] = x1;
-	pts[1] = y1;
-	pts[2] = x2;
-	pts[3] = y2;	
+                  int x2, int y2) {
+        super(RENDERTYPE_XY, LINETYPE_STRAIGHT, DECLUTTERTYPE_NONE);
+        pts = new int[4];
+        pts[0] = x1;
+        pts[1] = y1;
+        pts[2] = x2;
+        pts[3] = y2;    
     }
 
     /**
@@ -204,18 +204,18 @@ public class OMLine extends OMGraphic implements Serializable {
      * the latitude point.
      */
     public OMLine(float lat_1, float lon_1, 
-		  int x1, int y1, 
-		  int x2, int y2) {
+                  int x1, int y1, 
+                  int x2, int y2) {
 
-	super(RENDERTYPE_OFFSET, LINETYPE_STRAIGHT, DECLUTTERTYPE_NONE);
-	latlons = new float[4];
-	pts = new int[4];
+        super(RENDERTYPE_OFFSET, LINETYPE_STRAIGHT, DECLUTTERTYPE_NONE);
+        latlons = new float[4];
+        pts = new int[4];
         latlons[0] = lat_1;
         latlons[1] = lon_1;
-	pts[0] = x1;
-	pts[1] = y1;
-	pts[2] = x2;
-	pts[3] = y2;
+        pts[0] = x1;
+        pts[1] = y1;
+        pts[2] = x2;
+        pts[3] = y2;
     }
 
     /**
@@ -227,8 +227,8 @@ public class OMLine extends OMGraphic implements Serializable {
      * @param lls array of floats - lat1, lon1, lat2, lon2 
      */
     public void setLL(float[] lls) {
-	latlons = lls;
-	setNeedToRegenerate(true);
+        latlons = lls;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -240,7 +240,7 @@ public class OMLine extends OMGraphic implements Serializable {
      * @return the lat lon array, and all are decimal degrees.
      */
     public float[] getLL() {
-	return latlons;
+        return latlons;
     }
 
     /**
@@ -251,8 +251,8 @@ public class OMLine extends OMGraphic implements Serializable {
      * @param xys array of ints for the points - x1, y1, x2, y2
      */
     public void setPts(int[] xys) {
-	pts = xys;
-	setNeedToRegenerate(true);
+        pts = xys;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -273,7 +273,7 @@ public class OMLine extends OMGraphic implements Serializable {
      * @return true if polyline false if not
      */
     public boolean isPolyline() {
-	return isPolyline;
+        return isPolyline;
     }
 
     /**
@@ -283,7 +283,7 @@ public class OMLine extends OMGraphic implements Serializable {
      * @param nsegs number of segment points
      */
     public void setNumSegs(int nsegs) {
-	this.nsegs = nsegs;
+        this.nsegs = nsegs;
     }
 
     /**
@@ -293,7 +293,7 @@ public class OMLine extends OMGraphic implements Serializable {
      * @return int number of segment points
      */
     public int getNumSegs() {
-	return nsegs;
+        return nsegs;
     }
 
     /**
@@ -303,11 +303,11 @@ public class OMLine extends OMGraphic implements Serializable {
      */
     public void addArrowHead(boolean value) {
         doArrowHead = value;
-	if (doArrowHead) {
-	    addArrowHead(OMArrowHead.ARROWHEAD_DIRECTION_FORWARD, 100);
-	} else {
-	    arrowhead = null;
-	}
+        if (doArrowHead) {
+            addArrowHead(OMArrowHead.ARROWHEAD_DIRECTION_FORWARD, 100);
+        } else {
+            arrowhead = null;
+        }
     }
 
     /**
@@ -318,7 +318,7 @@ public class OMLine extends OMGraphic implements Serializable {
      * @param directionType which way to point the arrow head.
      */
     public void addArrowHead(int directionType) {
-	addArrowHead(directionType, 100);
+        addArrowHead(directionType, 100);
     }
 
     /**
@@ -331,7 +331,7 @@ public class OMLine extends OMGraphic implements Serializable {
      * the starting point, 100 for the end.
      */
     public void addArrowHead(int directionType, int location) {
-	addArrowHead(directionType, location, wingTip, wingLength); 
+        addArrowHead(directionType, location, wingTip, wingLength); 
     }
 
     /**
@@ -348,36 +348,36 @@ public class OMLine extends OMGraphic implements Serializable {
      * tip of the line to the base of the arrowhead. (Default is 20)
      */
     public void addArrowHead(int directionType, int location, int tipWidth, int arrowLength) {
-	doArrowHead = true;
+        doArrowHead = true;
 
-	arrowDirectionType = directionType;
+        arrowDirectionType = directionType;
 
-	if (location < 1) arrowLocation = 1;
-	else if (location > 100) arrowLocation = 100;
-	else arrowLocation = location;
+        if (location < 1) arrowLocation = 1;
+        else if (location > 100) arrowLocation = 100;
+        else arrowLocation = location;
 
-	wingTip = tipWidth;
-	wingLength = arrowLength;
+        wingTip = tipWidth;
+        wingLength = arrowLength;
 
-	if (wingTip <= 0 || wingLength <= 0) {
-	    Debug.error("OMLine.addArrowHead: Bad parameters in for arrowhead width: " +
-			tipWidth + ", or arrowhead length: " + arrowLength);
-	    doArrowHead = false;
-	}
+        if (wingTip <= 0 || wingLength <= 0) {
+            Debug.error("OMLine.addArrowHead: Bad parameters in for arrowhead width: " +
+                        tipWidth + ", or arrowhead length: " + arrowLength);
+            doArrowHead = false;
+        }
     }
 
     /**
      * Arrowhead function, to find out the wing tip width.
      */
     public int getWingTip() {
-	return wingTip;
+        return wingTip;
     }
 
     /**
      * Arrowhead function, to find out the arrowhead length.
      */
     public int getWingLength() {
-	return wingLength;
+        return wingLength;
     }
 
     /**
@@ -385,7 +385,7 @@ public class OMLine extends OMGraphic implements Serializable {
      * line.  
      */
     public void setArc(ArcCalc ac) {
-	arc = ac;
+        arc = ac;
     }
 
     /**
@@ -394,7 +394,7 @@ public class OMLine extends OMGraphic implements Serializable {
      * @return arc angle in radians.  
      */
     public ArcCalc getArc() {
-	return arc;
+        return arc;
     }
 
     /**
@@ -402,123 +402,123 @@ public class OMLine extends OMGraphic implements Serializable {
      * @param proj Projection
      * @return true if generate was successful */
     public boolean generate(Projection proj) {
-	shape = null;
+        shape = null;
 
-	if (proj == null) {
-	    Debug.message("omgraphic", "OMLine: null projection in generate!");
-	    return false;
-	}
+        if (proj == null) {
+            Debug.message("omgraphic", "OMLine: null projection in generate!");
+            return false;
+        }
 
-	// reset the internals
-	isPolyline = false;
+        // reset the internals
+        isPolyline = false;
 
-	switch (renderType) {
-	case RENDERTYPE_XY:
-	    if (arc != null) {
-		xpoints = new int[1][];
-		ypoints = new int[1][];
-		arc.generate(pts[0], pts[1],
-			     pts[2], pts[3]);
-		xpoints[0] = arc.getXPoints();
-		ypoints[0] = arc.getYPoints();
-	    } else {
-		xpoints = new int[1][2];
-		ypoints = new int[1][2];
+        switch (renderType) {
+        case RENDERTYPE_XY:
+            if (arc != null) {
+                xpoints = new int[1][];
+                ypoints = new int[1][];
+                arc.generate(pts[0], pts[1],
+                             pts[2], pts[3]);
+                xpoints[0] = arc.getXPoints();
+                ypoints[0] = arc.getYPoints();
+            } else {
+                xpoints = new int[1][2];
+                ypoints = new int[1][2];
 
-		if (pts == null) return false;
+                if (pts == null) return false;
 
-		xpoints[0][0] = pts[0];
-		ypoints[0][0] = pts[1];
-		xpoints[0][1] = pts[2];
-		ypoints[0][1] = pts[3];
-	    }
-	    shape = createShape(xpoints[0], ypoints[0], false);
-	    break;
-	case RENDERTYPE_OFFSET:
-	    if (!proj.isPlotable(latlons[0], latlons[1])) {
-		setNeedToRegenerate(true);//HMMM not the best flag
-		return false;
-	    }
-	    Point p1 = proj.forward(latlons[0], latlons[1]);
-	    if (arc != null) {
-		xpoints = new int[1][];
-		ypoints = new int[1][];
-		arc.generate(p1.x + pts[0], p1.y + pts[1],
-			     p1.x + pts[2], p1.y + pts[3]);
+                xpoints[0][0] = pts[0];
+                ypoints[0][0] = pts[1];
+                xpoints[0][1] = pts[2];
+                ypoints[0][1] = pts[3];
+            }
+            shape = createShape(xpoints[0], ypoints[0], false);
+            break;
+        case RENDERTYPE_OFFSET:
+            if (!proj.isPlotable(latlons[0], latlons[1])) {
+                setNeedToRegenerate(true);//HMMM not the best flag
+                return false;
+            }
+            Point p1 = proj.forward(latlons[0], latlons[1]);
+            if (arc != null) {
+                xpoints = new int[1][];
+                ypoints = new int[1][];
+                arc.generate(p1.x + pts[0], p1.y + pts[1],
+                             p1.x + pts[2], p1.y + pts[3]);
 
-		xpoints[0] = arc.getXPoints();
-		ypoints[0] = arc.getYPoints();
-	    } else {
-		xpoints = new int[1][2];
-		ypoints = new int[1][2];
-		  
-		xpoints[0][0] = p1.x + pts[0];
-		ypoints[0][0] = p1.y + pts[1];
-		xpoints[0][1] = p1.x + pts[2];
-		ypoints[0][1] = p1.y + pts[3];
-	    }
-	    shape = createShape(xpoints[0], ypoints[0], false);
-	    break;
-	case RENDERTYPE_LATLON:
-	    if (arc != null) {
-		p1 = proj.forward(latlons[0], latlons[1]);
-		Point p2 = proj.forward(latlons[2], latlons[3]);
-		xpoints = new int[1][];
-		ypoints = new int[1][];
-		arc.generate(p1.x, p1.y, p2.x, p2.y);
+                xpoints[0] = arc.getXPoints();
+                ypoints[0] = arc.getYPoints();
+            } else {
+                xpoints = new int[1][2];
+                ypoints = new int[1][2];
+                  
+                xpoints[0][0] = p1.x + pts[0];
+                ypoints[0][0] = p1.y + pts[1];
+                xpoints[0][1] = p1.x + pts[2];
+                ypoints[0][1] = p1.y + pts[3];
+            }
+            shape = createShape(xpoints[0], ypoints[0], false);
+            break;
+        case RENDERTYPE_LATLON:
+            if (arc != null) {
+                p1 = proj.forward(latlons[0], latlons[1]);
+                Point p2 = proj.forward(latlons[2], latlons[3]);
+                xpoints = new int[1][];
+                ypoints = new int[1][];
+                arc.generate(p1.x, p1.y, p2.x, p2.y);
 
-		xpoints[0] = arc.getXPoints();
-		ypoints[0] = arc.getYPoints();
+                xpoints[0] = arc.getXPoints();
+                ypoints[0] = arc.getYPoints();
 
-		shape = createShape(xpoints[0], ypoints[0], false);
+                shape = createShape(xpoints[0], ypoints[0], false);
 
-		isPolyline = true;
-		
-	    } else {
-		ArrayList lines =
-		    proj.forwardLine(
-			new LatLonPoint(latlons[0], latlons[1]), 
-			new LatLonPoint(latlons[2], latlons[3]), 
-			lineType, nsegs);
-		int size = lines.size();
+                isPolyline = true;
+                
+            } else {
+                ArrayList lines =
+                    proj.forwardLine(
+                        new LatLonPoint(latlons[0], latlons[1]), 
+                        new LatLonPoint(latlons[2], latlons[3]), 
+                        lineType, nsegs);
+                int size = lines.size();
 
-		xpoints = new int[(int)(size/2)][0];
-		ypoints = new int[xpoints.length][0];
-		  
-		for (int i=0, j=0; i<size; i+=2, j++) {
-		    int[] xps = (int[])lines.get(i);
-		    int[] yps = (int[])lines.get(i+1);
+                xpoints = new int[(int)(size/2)][0];
+                ypoints = new int[xpoints.length][0];
+                  
+                for (int i=0, j=0; i<size; i+=2, j++) {
+                    int[] xps = (int[])lines.get(i);
+                    int[] yps = (int[])lines.get(i+1);
 
-		    xpoints[j] = xps;
-		    ypoints[j] = yps;
+                    xpoints[j] = xps;
+                    ypoints[j] = yps;
 
-		    GeneralPath gp = createShape(xps, yps, false);
-		    if (shape == null) {
-			shape = gp;
-		    } else {
-			((GeneralPath)shape).append(gp, false);
-		    }
-		}
-		isPolyline = (lineType != LINETYPE_STRAIGHT);
-	    }
-	    break;
-	case RENDERTYPE_UNKNOWN:
-	    System.err.println("OMLine.generate: invalid RenderType");
-	    return false;
-	}
+                    GeneralPath gp = createShape(xps, yps, false);
+                    if (shape == null) {
+                        shape = gp;
+                    } else {
+                        ((GeneralPath)shape).append(gp, false);
+                    }
+                }
+                isPolyline = (lineType != LINETYPE_STRAIGHT);
+            }
+            break;
+        case RENDERTYPE_UNKNOWN:
+            System.err.println("OMLine.generate: invalid RenderType");
+            return false;
+        }
 
-	if (doArrowHead) {
- 	    arrowhead = createArrowHeads();
-	}
+        if (doArrowHead) {
+            arrowhead = createArrowHeads();
+        }
 
-	if (Debug.debugging("arc") && arc != null) {
-	    OMGraphicList arcGraphics = arc.getArcGraphics();
-	    Debug.output("OMLine generating arcGraphics. " + arcGraphics);
-	    arcGraphics.generate(proj);
-	}
+        if (Debug.debugging("arc") && arc != null) {
+            OMGraphicList arcGraphics = arc.getArcGraphics();
+            Debug.output("OMLine generating arcGraphics. " + arcGraphics);
+            arcGraphics.generate(proj);
+        }
 
-	setNeedToRegenerate(false);
-	return true;
+        setNeedToRegenerate(false);
+        return true;
     }
 
     GeneralPath arrowhead = null;
@@ -530,8 +530,8 @@ public class OMLine extends OMGraphic implements Serializable {
      * different arrowhead variables set in the OMLine.
      */
     public GeneralPath createArrowHeads() {
-	return OMArrowHead.createArrowHeads(arrowDirectionType, arrowLocation, this, 
-					    wingTip, wingLength);
+        return OMArrowHead.createArrowHeads(arrowDirectionType, arrowLocation, this, 
+                                            wingTip, wingLength);
     }
 
     /**
@@ -541,34 +541,34 @@ public class OMLine extends OMGraphic implements Serializable {
      */
     public void render(Graphics g) {
 
-	if (!isRenderable()) {
-	    return;
-	}
+        if (!isRenderable()) {
+            return;
+        }
 
-	// Just to draw the matting for the arrowhead.  The matting
-	// for the rest of the line will be taken care of in
-	// super.render().
-	if (arrowhead != null && isMatted() && 
-	    g instanceof Graphics2D && stroke instanceof BasicStroke) {
-	    ((Graphics2D)g).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
-	    setGraphicsColor(g, Color.black);
-	    ((Graphics2D)g).draw(arrowhead);
-	}
+        // Just to draw the matting for the arrowhead.  The matting
+        // for the rest of the line will be taken care of in
+        // super.render().
+        if (arrowhead != null && isMatted() && 
+            g instanceof Graphics2D && stroke instanceof BasicStroke) {
+            ((Graphics2D)g).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
+            setGraphicsColor(g, Color.black);
+            ((Graphics2D)g).draw(arrowhead);
+        }
 
-	super.render(g);
+        super.render(g);
 
-	if (arrowhead != null) {
-	    setGraphicsForEdge(g);
-	    ((Graphics2D)g).fill(arrowhead);
-	}
+        if (arrowhead != null) {
+            setGraphicsForEdge(g);
+            ((Graphics2D)g).fill(arrowhead);
+        }
 
-	if (Debug.debugging("arc") && arc != null) {
-	    OMGraphicList arcGraphics = arc.getArcGraphics();
-	    Debug.output("OMLine rendering " +  
-			 arcGraphics.size() + 
-			 " arcGraphics.");
-	    arcGraphics.render(g);
-	}
+        if (Debug.debugging("arc") && arc != null) {
+            OMGraphicList arcGraphics = arc.getArcGraphics();
+            Debug.output("OMLine rendering " +  
+                         arcGraphics.size() + 
+                         " arcGraphics.");
+            arcGraphics.render(g);
+        }
 
     }
 
@@ -578,7 +578,7 @@ public class OMLine extends OMGraphic implements Serializable {
      * distance() and contains() methods.
      */
     public boolean shouldRenderFill() {
-	return false;
+        return false;
     }
 
     /**
@@ -591,11 +591,11 @@ public class OMLine extends OMGraphic implements Serializable {
      * the point is on the line.
      */
     public boolean contains(int x, int y) {
-	if (shouldRenderFill()) {
-	    return super.contains(x, y);
-	} else {
- 	    return (distance(x, y) == 0);
-	}
+        if (shouldRenderFill()) {
+            return super.contains(x, y);
+        } else {
+            return (distance(x, y) == 0);
+        }
     }
 
 }

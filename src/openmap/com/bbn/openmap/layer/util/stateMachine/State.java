@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/stateMachine/State.java,v $
 // $RCSfile: State.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,14 +60,14 @@ public abstract class State
      * events.
      * */
     public void setMapMouseListenerResponse(boolean value){
-	mapMouseListenerResponse = value;
+        mapMouseListenerResponse = value;
     }
 
     /** Get the value of the default response to MapMouseListener
      * methods.
      * */
     public boolean getMapMouseListenerResponse(){
-	return mapMouseListenerResponse;
+        return mapMouseListenerResponse;
     }
 
     /// ActionListener interface
@@ -100,26 +100,26 @@ public abstract class State
 
     /// MapMouseListener
     public String[] getMouseModeServiceList(){
-	return null;
+        return null;
     }
     public boolean mousePressed(MouseEvent e){ 
-	return mapMouseListenerResponse;
+        return mapMouseListenerResponse;
     }
     public boolean mouseReleased(MouseEvent e){
-	return mapMouseListenerResponse;
+        return mapMouseListenerResponse;
     }
     public boolean mouseClicked(MouseEvent e){
-	return mapMouseListenerResponse;
+        return mapMouseListenerResponse;
     }
     public void mouseEntered(MouseEvent e){
     }
     public void mouseExited(MouseEvent e){
     }
     public boolean mouseDragged(MouseEvent e){
-	return mapMouseListenerResponse;
+        return mapMouseListenerResponse;
     }
     public boolean mouseMoved(MouseEvent e){
-	return mapMouseListenerResponse;
+        return mapMouseListenerResponse;
     }
     public void mouseMoved(){}
 

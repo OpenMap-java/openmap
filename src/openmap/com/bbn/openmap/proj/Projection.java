@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Projection.java,v $
 // $RCSfile: Projection.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:57 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:14 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -399,7 +399,7 @@ public interface Projection extends java.io.Serializable {
      * @return ArrayList
      */
     public ArrayList forwardRect(LatLonPoint ll1, LatLonPoint ll2, 
-				 int ltype, int nsegs, boolean isFilled);
+                                 int ltype, int nsegs, boolean isFilled);
 
     /**
      * Forward project a LatLon Arc.
@@ -422,9 +422,9 @@ public interface Projection extends java.io.Serializable {
      * @see #forwardPoly
      */
     public ArrayList forwardArc(LatLonPoint c, boolean radians,
-				float radius, int nverts,
-				float start, float extent,
-				int arcType);
+                                float radius, int nverts,
+                                float start, float extent,
+                                int arcType);
 
     /**
      * Forward project a LatLon Circle.
@@ -439,7 +439,7 @@ public interface Projection extends java.io.Serializable {
      * @see #forwardPoly
      */
     public ArrayList forwardCircle(LatLonPoint c, boolean radians, 
-				   float radius, int nverts, boolean isFilled);
+                                   float radius, int nverts, boolean isFilled);
 
     /**
      * Forward projects a raster.
@@ -471,8 +471,8 @@ public interface Projection extends java.io.Serializable {
      * visible.
      */
     public boolean forwardRaw(float[] rawllpts, int rawoff,
-			      int[] xcoords, int[] ycoords, boolean[] visible,
-			      int copyoff, int copylen);
+                              int[] xcoords, int[] ycoords, boolean[] visible,
+                              int copyoff, int copylen);
 
     /**
      * Clone the projection.

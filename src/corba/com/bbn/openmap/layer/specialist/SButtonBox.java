@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SButtonBox.java,v $
 // $RCSfile: SButtonBox.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 02:00:34 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,7 +44,7 @@ public class SButtonBox extends _ButtonBoxStub {
 
     public SButtonBox(String label, String[] buttons) {
         label_ = label;
-	buttons_ = buttons;
+        buttons_ = buttons;
     }
     public void label(java.lang.String label) {
         label_ = label;
@@ -59,12 +59,12 @@ public class SButtonBox extends _ButtonBoxStub {
         return buttons_;
     }
     public void pressed(java.lang.String box_label,
-			 java.lang.String selected_button,
-			 java.lang.String uniqueID) {
+                         java.lang.String selected_button,
+                         java.lang.String uniqueID) {
 //      System.out.println("ButtonBox: Button pressed:");
-// 	System.out.println(" in box: " + box_label);
-// 	System.out.println(" unique ID: " + uniqueID);
-// 	System.out.println(" Button Name: " + selected_button);
+//      System.out.println(" in box: " + box_label);
+//      System.out.println(" unique ID: " + uniqueID);
+//      System.out.println(" Button Name: " + selected_button);
     }
 
   /** The <b>widget</b> function should be used to get the object
@@ -73,8 +73,8 @@ public class SButtonBox extends _ButtonBoxStub {
    */
     public UWidget widget() {
         UWidget uw = new UWidget();
-	uw.bb(this);
-	return uw;
+        uw.bb(this);
+        return uw;
     }
 }
 

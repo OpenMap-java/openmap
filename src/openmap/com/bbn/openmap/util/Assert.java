@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/Assert.java,v $
 // $RCSfile: Assert.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:44:37 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -40,13 +40,13 @@ package com.bbn.openmap.util;
  *     for many uses of these assertions when Assert.enabled is set to false.
  *     However, if the condition in the assertion may have side effects, the
  *     condition code cannot be optimized away. For example, in the assertion
- * 	<code>Assert.assertExp(size() <= maxSize, "Maximum size exceeded");</code>
+ *      <code>Assert.assertExp(size() <= maxSize, "Maximum size exceeded");</code>
  *     the call to size() cannot be optimized away unless the compiler can
  *     see that the call has no side effects. C and C++ use the preprocessor
  *     to guarantee that assertions will never cause overhead in production
  *     code. Without a preprocessor, it seems the best we can do in Java is
  *     to write
- *	<code>Assert.assertExp(Assert.enabled && size() <= maxSize, "Too big");</code>
+ *      <code>Assert.assertExp(Assert.enabled && size() <= maxSize, "Too big");</code>
  *     In this case, when Assert.enabled is false, the method call can always
  *     be optimized away, even if it has side effects.
  * </pre>
@@ -54,7 +54,7 @@ package com.bbn.openmap.util;
  *
  * @author Peter Van Der Linden
  * @author Maintained by: Tom Mitchell (tmitchell@bbn.com)
- * @version $Revision: 1.2 $, $Date: 2003/12/23 20:44:37 $ 
+ * @version $Revision: 1.3 $, $Date: 2004/01/26 18:18:15 $ 
  */
 public final class Assert {
 
@@ -78,8 +78,8 @@ public final class Assert {
      * @exception AssertionException if expression is false
      */
     public static final void assertExp(boolean b, String s) {
-	if (enabled && !b)
-	    throw new AssertionException(s);
+        if (enabled && !b)
+            throw new AssertionException(s);
     }
 
 
@@ -91,6 +91,6 @@ public final class Assert {
      * @exception AssertionException if expression is false
      */
     public static final void assertExp(boolean b) {
-	assertExp(b, "");
+        assertExp(b, "");
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/shape/ESRISpecialistRecord.java,v $
 // $RCSfile: ESRISpecialistRecord.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,5 +46,5 @@ public interface ESRISpecialistRecord {
      * @param fillColor the fill color to use.
      */
     public void writeGraphics(Vector list, SColor lineColor, SColor fillColor)
-	throws IOException;
+        throws IOException;
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkManager.java,v $
 // $RCSfile: LinkManager.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 20:43:27 $
-// $Author: wjeuerle $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -48,16 +48,16 @@ public class LinkManager {
 
     /** Constructor. */
     public LinkManager(String host, int port) {
-	this.host = host;
-	this.port = port;
+        this.host = host;
+        this.port = port;
     }
 
     public void setObeyCommandToExit(boolean value) {
-	obeyCommandToExit = value;
+        obeyCommandToExit = value;
     }
 
     public boolean getObeyCommandToExit() {
-	return obeyCommandToExit;
+        return obeyCommandToExit;
     }
 
     /**
@@ -77,43 +77,43 @@ public class LinkManager {
      */
     public ClientLink getLink(boolean waitForLock) throws java.io.IOException {
 
-	// NOTE: This should be the only place that the link
-	// object gets assigned.  Otherwise, the layer can end up
-	// using two different links via different threads.
-	if (link == null) {
-	    synchronized (this) {
-		if (link == null) {
-		    link = getLink();
-		    link.setObeyCommandToExit(obeyCommandToExit);
-		}
-	    }
-	} 
+        // NOTE: This should be the only place that the link
+        // object gets assigned.  Otherwise, the layer can end up
+        // using two different links via different threads.
+        if (link == null) {
+            synchronized (this) {
+                if (link == null) {
+                    link = getLink();
+                    link.setObeyCommandToExit(obeyCommandToExit);
+                }
+            }
+        } 
 
-	try {
-	    while (!link.setLocked(true)) {
-		
-		// This handles the case where we don't want to wait
-		// for the link to become available.
-		if (!waitForLock) {
-		    return null;
-		}
-		
-		// We will wait here for the link to not be in use.
-		// Catch a link == null in case the link was shut down
-		// in finLink() from another thread.  IF we didn't
-		// catch the lock, we stay in the loop.
-		try {
-		    Thread.sleep(300);
-		} catch (java.lang.InterruptedException ie) {}
-	    }
-	} catch (NullPointerException npe) {
-	    // since probably means link is null, so just return null
-	    // in case some other thread tries to do something
-	    // tricky..
-	    return null;
-	}
+        try {
+            while (!link.setLocked(true)) {
+                
+                // This handles the case where we don't want to wait
+                // for the link to become available.
+                if (!waitForLock) {
+                    return null;
+                }
+                
+                // We will wait here for the link to not be in use.
+                // Catch a link == null in case the link was shut down
+                // in finLink() from another thread.  IF we didn't
+                // catch the lock, we stay in the loop.
+                try {
+                    Thread.sleep(300);
+                } catch (java.lang.InterruptedException ie) {}
+            }
+        } catch (NullPointerException npe) {
+            // since probably means link is null, so just return null
+            // in case some other thread tries to do something
+            // tricky..
+            return null;
+        }
     
-	return link;
+        return link;
     }
     
     /**
@@ -125,19 +125,19 @@ public class LinkManager {
      */
     protected ClientLink getLink(LinkListener ll) throws java.io.IOException {
 
-	// NOTE: This should be the only place that the link
-	// object gets assigned.  Otherwise, the layer can end up
-	// using two different links via different threads.
-	if (link == null) {
-	    synchronized (this) {
-		if (link == null) {
-		    link = getLink();
-		    link.setObeyCommandToExit(obeyCommandToExit);
-		}
-	    }
-	} 
+        // NOTE: This should be the only place that the link
+        // object gets assigned.  Otherwise, the layer can end up
+        // using two different links via different threads.
+        if (link == null) {
+            synchronized (this) {
+                if (link == null) {
+                    link = getLink();
+                    link.setObeyCommandToExit(obeyCommandToExit);
+                }
+            }
+        } 
 
-	return link;
+        return link;
     }
     
     /**
@@ -147,21 +147,21 @@ public class LinkManager {
      */
     protected ClientLink getLink() throws java.io.IOException {
 
-	ClientLink tmplink = null;
-	try {
-	    if (Debug.debugging("link")) {
-		Debug.output("LinkManager.getLink(): establishing link to " + host + " on port " + port);
-	    }
-	    Socket socket = new Socket(host, port);
-	    tmplink = new ClientLink(socket);
-	} catch (java.net.UnknownHostException uhe) {
-	    Debug.error("LinkLayer: error trying to contact host:" + host);
-	    tmplink = null;
-	    throw new java.io.IOException("No Contact with host:" + host + 
-					  " on port:"+ port);
-	}
+        ClientLink tmplink = null;
+        try {
+            if (Debug.debugging("link")) {
+                Debug.output("LinkManager.getLink(): establishing link to " + host + " on port " + port);
+            }
+            Socket socket = new Socket(host, port);
+            tmplink = new ClientLink(socket);
+        } catch (java.net.UnknownHostException uhe) {
+            Debug.error("LinkLayer: error trying to contact host:" + host);
+            tmplink = null;
+            throw new java.io.IOException("No Contact with host:" + host + 
+                                          " on port:"+ port);
+        }
 
-	return tmplink;
+        return tmplink;
     }
 
     /**
@@ -171,28 +171,28 @@ public class LinkManager {
      *  it.
      */
     public void finLink() throws IOException {
-	if (link.isCloseLink()) {
-	    Debug.message("link", "LinkManager.finLink: closing Link");
-	    link.close();
-	    link = null;
-	} else {
-	    Debug.message("link", "LinkManager.finLink: releasing lock on Link");
-	    link.setLocked(false);
-	}
+        if (link.isCloseLink()) {
+            Debug.message("link", "LinkManager.finLink: closing Link");
+            link.close();
+            link = null;
+        } else {
+            Debug.message("link", "LinkManager.finLink: releasing lock on Link");
+            link.setLocked(false);
+        }
     }
 
     /** 
      * Set the link to null.
      */
     public void resetLink() {
-	if (link != null) {
-	    try {
-		link.cleanUp();
-		link.close();
-	    } catch (IOException ioe) {
-		// Nice try...
-	    }
-	}
-	link = null;
+        if (link != null) {
+            try {
+                link.cleanUp();
+                link.close();
+            } catch (IOException ioe) {
+                // Nice try...
+            }
+        }
+        link = null;
     }
 }

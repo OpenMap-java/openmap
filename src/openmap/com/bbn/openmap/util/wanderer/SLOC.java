@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/SLOC.java,v $
 // $RCSfile: SLOC.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,12 +40,12 @@ public class SLOC implements WandererCallback {
     boolean DETAIL = false;
 
     public void setSLOC(int num) {
-	sloc = num;
-	DETAIL = Debug.debugging("sloc");
+        sloc = num;
+        DETAIL = Debug.debugging("sloc");
     }
 
     public int getSLOC() {
-	return sloc;
+        return sloc;
     }
 
     // do nothing on directories
@@ -53,38 +53,38 @@ public class SLOC implements WandererCallback {
 
     // count the ; and } in each file.
     public void handleFile(File file) {
-	if (!file.getName().endsWith(".java")) {
-	    return;
-	}
+        if (!file.getName().endsWith(".java")) {
+            return;
+        }
 
-	if (DETAIL)
-	    Debug.output("Counting code in " + file.getName());
-	
-	int count = 0;
+        if (DETAIL)
+            Debug.output("Counting code in " + file.getName());
+        
+        int count = 0;
 
-	try {
-	    BinaryBufferedFile bbf = new BinaryBufferedFile(file);
+        try {
+            BinaryBufferedFile bbf = new BinaryBufferedFile(file);
 
-	    try {
-		while (true) {
-		    char c = bbf.readChar();
-		    if (c == ';' || c == '}') {
-			count++;
-		    }
-		}
-	    } catch (EOFException eofe) {
-	    } catch (FormatException fe) {
-	    }
-	    bbf.close();
+            try {
+                while (true) {
+                    char c = bbf.readChar();
+                    if (c == ';' || c == '}') {
+                        count++;
+                    }
+                }
+            } catch (EOFException eofe) {
+            } catch (FormatException fe) {
+            }
+            bbf.close();
 
 
-	    if (DETAIL)
-		Debug.output(file.getName() + " has " + count + " LOC");
+            if (DETAIL)
+                Debug.output(file.getName() + " has " + count + " LOC");
 
-	    sloc += count;
+            sloc += count;
 
-	} catch (IOException ioe) {
-	}
+        } catch (IOException ioe) {
+        }
     }
 
     /**
@@ -94,34 +94,34 @@ public class SLOC implements WandererCallback {
      * usage statement.  
      */
     public static void main(String[] argv) {
-	Debug.init();
+        Debug.init();
 
-	ArgParser ap = new ArgParser("SLOC");
+        ArgParser ap = new ArgParser("SLOC");
 
-	if (argv.length == 0) {
-	    ap.bail("", true);
-	}
+        if (argv.length == 0) {
+            ap.bail("", true);
+        }
 
-	ap.parse(argv);
+        ap.parse(argv);
 
-	String[] dirs = argv;
+        String[] dirs = argv;
 
-	SLOC sloc = new SLOC();
-	Wanderer wanderer = new Wanderer(sloc);
+        SLOC sloc = new SLOC();
+        Wanderer wanderer = new Wanderer(sloc);
 
-	int runningTotal = 0;
+        int runningTotal = 0;
 
-	// Assume that the arguments are paths to directories or
-	// files.
-	for (int i = 0; i < dirs.length; i++) {
-	    sloc.setSLOC(0);
-	    wanderer.handleEntry(new File(dirs[i]));
-	    Debug.output("Source Lines of Code in " + dirs[i] + " = " + sloc.getSLOC());
-	    runningTotal += sloc.getSLOC();
-	}
+        // Assume that the arguments are paths to directories or
+        // files.
+        for (int i = 0; i < dirs.length; i++) {
+            sloc.setSLOC(0);
+            wanderer.handleEntry(new File(dirs[i]));
+            Debug.output("Source Lines of Code in " + dirs[i] + " = " + sloc.getSLOC());
+            runningTotal += sloc.getSLOC();
+        }
 
-	if (dirs.length > 1) {
-	    Debug.output("Total Source Lines of Code in all directories = " + runningTotal);	
-	}
+        if (dirs.length > 1) {
+            Debug.output("Total Source Lines of Code in all directories = " + runningTotal);    
+        }
     }
 }

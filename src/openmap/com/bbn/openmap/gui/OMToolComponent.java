@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolComponent.java,v $
 // $RCSfile: OMToolComponent.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 20:47:46 $
-// $Author: wjeuerle $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -76,8 +76,8 @@ public abstract class OMToolComponent extends OMComponentPanel
     protected GridBagConstraints c;
 
     public OMToolComponent() {
-	super();
-	setLayout(createLayout());
+        super();
+        setLayout(createLayout());
     }
 
     /**
@@ -85,9 +85,9 @@ public abstract class OMToolComponent extends OMComponentPanel
      * GridBagLayout.  Set the layout on this class in this method.
      */
     protected LayoutManager createLayout() {
-	gridbag = new GridBagLayout();
-	c = getGridBagConstraints();
-	return gridbag;
+        gridbag = new GridBagLayout();
+        c = getGridBagConstraints();
+        return gridbag;
     }
 
     /**
@@ -98,17 +98,17 @@ public abstract class OMToolComponent extends OMComponentPanel
      * like inset settings, etc.
      */
     protected GridBagConstraints getGridBagConstraints() {
-	GridBagConstraints constraints = new GridBagConstraints();
-	constraints.insets = new Insets(0, 2, 0, 2);
-	return constraints;
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(0, 2, 0, 2);
+        return constraints;
     }
 
     /**
      * Overridden add method that takes care of GridBagLayout constraints.
      */
     public Component add(Component component) {
-	gridbag.setConstraints(component, c);
-	return super.add(component);
+        gridbag.setConstraints(component, c);
+        return super.add(component);
     }
 
     /** 
@@ -118,11 +118,11 @@ public abstract class OMToolComponent extends OMComponentPanel
      * @return The container GUI for this tool, may be null.
      */
     public Container getFace() {
-	if (getUseAsTool()) {
-	    return this;
-	} else {
-	    return null;
-	}
+        if (getUseAsTool()) {
+            return this;
+        } else {
+            return null;
+        }
     }
 
     /** 
@@ -131,7 +131,7 @@ public abstract class OMToolComponent extends OMComponentPanel
      * @return String The key for this tool.
      **/
     public String getKey() {
-	return key;
+        return key;
     }
     
     /** 
@@ -140,7 +140,7 @@ public abstract class OMToolComponent extends OMComponentPanel
      * @param aKey The key for this tool.
      */
     public void setKey(String aKey) {
-	key = aKey;
+        key = aKey;
     }
     
     /**
@@ -149,7 +149,7 @@ public abstract class OMToolComponent extends OMComponentPanel
      * or make its face invisible if this is set to false.
      */
     public void setUseAsTool(boolean value) {
-	useAsTool = value;
+        useAsTool = value;
     }
 
     /**
@@ -157,37 +157,37 @@ public abstract class OMToolComponent extends OMComponentPanel
      * interface should be used as well.
      */
     public boolean getUseAsTool() {
-	return useAsTool;
+        return useAsTool;
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	// Important for ToolPanel that controls what it is listening
-	// for, instead of grabbing any Tool.  The prefix will be used
-	// as a discriminator.
-	if (prefix != null) {
-	    setKey(prefix);
-	}
+        // Important for ToolPanel that controls what it is listening
+        // for, instead of grabbing any Tool.  The prefix will be used
+        // as a discriminator.
+        if (prefix != null) {
+            setKey(prefix);
+        }
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
-	setUseAsTool(PropUtils.booleanFromProperties(
-			 props, prefix + UseAsToolProperty, getUseAsTool()));
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        setUseAsTool(PropUtils.booleanFromProperties(
+                         props, prefix + UseAsToolProperty, getUseAsTool()));
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	props.put(prefix + UseAsToolProperty, new Boolean(useAsTool).toString());
-	return props;
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        props.put(prefix + UseAsToolProperty, new Boolean(useAsTool).toString());
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
-	props.put(UseAsToolProperty, "Whether this component should contribute to the Tool Panel");
-	props.put(UseAsToolProperty + ScopedEditorProperty, 
-		  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	return props;
+        props = super.getPropertyInfo(props);
+        props.put(UseAsToolProperty, "Whether this component should contribute to the Tool Panel");
+        props.put(UseAsToolProperty + ScopedEditorProperty, 
+                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        return props;
     }
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LayerHandler.java,v $
 // $RCSfile: LayerHandler.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/23 20:47:43 $
-// $Author: wjeuerle $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:05 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -132,7 +132,7 @@ public class LayerHandler extends OMComponent
      * @param props properties as defined in an openmap.properties file.
      */
     public LayerHandler(Properties props) {
-	init(null, props);
+        init(null, props);
     }
 
     /**
@@ -144,14 +144,14 @@ public class LayerHandler extends OMComponent
      * @param props properties as defined in an openmap.propertites file.  
      */
     public LayerHandler(String prefix, Properties props) {
-	init(prefix, props);
+        init(prefix, props);
     }
 
     /**
      * Start the LayerHandler with configured layers.
      */
     public LayerHandler(Layer[] layers) {
-	init(layers);
+        init(layers);
     }
 
     /**
@@ -165,7 +165,7 @@ public class LayerHandler extends OMComponent
      * setProperties do what you want.
      */
     public void setProperties(String prefix, Properties props) {
-	init(Environment.OpenMapPrefix, props);
+        init(Environment.OpenMapPrefix, props);
     }
 
     /**
@@ -178,7 +178,7 @@ public class LayerHandler extends OMComponent
      * file.
      */
     public void init(String prefix, Properties props) {
-	init(getLayers(prefix, props));
+        init(getLayers(prefix, props));
     }
 
     /**
@@ -187,7 +187,7 @@ public class LayerHandler extends OMComponent
      * @param url a url for a properties file.
      */
     public void init(java.net.URL url) {
-	init(null, url);
+        init(null, url);
     }
 
     /**
@@ -198,16 +198,16 @@ public class LayerHandler extends OMComponent
      * @param url a url for a properties file.  
      */
     public void init(String prefix, java.net.URL url) {
-	try {
-	    java.io.InputStream in = url.openStream();
-	    Properties props = new Properties();
-	    props.load(in);
-	    init(getLayers(prefix, props));
-	} catch (java.net.MalformedURLException murle) {
-	    Debug.error("LayerHandler.init(URL): " + url + " is not a valid URL");
-	} catch (java.io.IOException e) {
-	    Debug.error("LayerHandler.init(URL): Caught an IOException");
-	}
+        try {
+            java.io.InputStream in = url.openStream();
+            Properties props = new Properties();
+            props.load(in);
+            init(getLayers(prefix, props));
+        } catch (java.net.MalformedURLException murle) {
+            Debug.error("LayerHandler.init(URL): " + url + " is not a valid URL");
+        } catch (java.io.IOException e) {
+            Debug.error("LayerHandler.init(URL): Caught an IOException");
+        }
     }
 
     /**
@@ -218,15 +218,15 @@ public class LayerHandler extends OMComponent
      * @param layers the initial array of layers. 
      */
     public void init(Layer[] layers) {
-	setLayers(layers);
+        setLayers(layers);
     }
 
     public void setPropertyHandler(PropertyHandler ph) {
-	propertyHandler = ph;
+        propertyHandler = ph;
     }
 
     public PropertyHandler getPropertyHandler() {
-	return propertyHandler;
+        return propertyHandler;
     }
 
     /**
@@ -241,7 +241,7 @@ public class LayerHandler extends OMComponent
      * @return Layer[] of layers created from the properties.  
      */
     protected Layer[] getLayers(Properties p) {
-	return getLayers(null, p);
+        return getLayers(null, p);
     }
 
     /**
@@ -258,38 +258,38 @@ public class LayerHandler extends OMComponent
      * @return Layer[]
      */
     protected Layer[] getLayers(String prefix, Properties p) {
-	Debug.message("layerhandler", 
-		      "LayerHandler: Getting new layers from properties...");
+        Debug.message("layerhandler", 
+                      "LayerHandler: Getting new layers from properties...");
 
-	// First, load the layer marker names into a vector for later use
- 	Vector startuplayers;
-	Vector layersValue;
+        // First, load the layer marker names into a vector for later use
+        Vector startuplayers;
+        Vector layersValue;
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	startuplayers = PropUtils.parseSpacedMarkers(p.getProperty(prefix + startUpLayersProperty));
-	layersValue = PropUtils.parseSpacedMarkers(p.getProperty(prefix + layersProperty));
+        startuplayers = PropUtils.parseSpacedMarkers(p.getProperty(prefix + startUpLayersProperty));
+        layersValue = PropUtils.parseSpacedMarkers(p.getProperty(prefix + layersProperty));
 
-	if (startuplayers.isEmpty()) {
-	    Debug.message("layerhandler", "LayerHandler: No layers on startup list");	    
-	}
+        if (startuplayers.isEmpty()) {
+            Debug.message("layerhandler", "LayerHandler: No layers on startup list");       
+        }
 
-	if (layersValue.isEmpty()) {
-	    Debug.error("LayerHandler.getLayers(): No property \"" + layersProperty + "\" found in properties.");
-	    return new Layer[0];
-	} else {
-	    if (Debug.debugging("layerhandler")) {
-		Debug.output("LayerHandler: Layer markers found = " + layersValue);
-	    }
-	}
-	
-	Layer[] layers = getLayers(layersValue, startuplayers, p);
+        if (layersValue.isEmpty()) {
+            Debug.error("LayerHandler.getLayers(): No property \"" + layersProperty + "\" found in properties.");
+            return new Layer[0];
+        } else {
+            if (Debug.debugging("layerhandler")) {
+                Debug.output("LayerHandler: Layer markers found = " + layersValue);
+            }
+        }
+        
+        Layer[] layers = getLayers(layersValue, startuplayers, p);
 
-	// You don't want to do this, it sets up a cycle...
-//    	addLayersToBeanContext(layers);
-//  	loadLayers(null);
+        // You don't want to do this, it sets up a cycle...
+//      addLayersToBeanContext(layers);
+//      loadLayers(null);
 
-	return layers;
+        return layers;
     }
 
     /**
@@ -309,60 +309,60 @@ public class LayerHandler extends OMComponent
      * @return Layer[] 
      */
     public static Layer[] getLayers(Vector layerList, 
-				    Vector visibleLayerList, 
-				    Properties p) {
+                                    Vector visibleLayerList, 
+                                    Properties p) {
 
-	int nLayerNames = layerList.size();
-	Vector layers = new Vector(nLayerNames);
+        int nLayerNames = layerList.size();
+        Vector layers = new Vector(nLayerNames);
 
-	for (int i = 0; i < nLayerNames; i++) {
-	    String layerName = (String)layerList.elementAt(i);
-	    String classProperty = layerName + ".class";
-	    String className = p.getProperty(classProperty);
-	    if (className == null) {
-		Debug.error("LayerHandler.getLayers(): Failed to locate property \"" + classProperty + "\"\n  Skipping layer \"" + layerName + "\"");
-		continue;
-	    }
+        for (int i = 0; i < nLayerNames; i++) {
+            String layerName = (String)layerList.elementAt(i);
+            String classProperty = layerName + ".class";
+            String className = p.getProperty(classProperty);
+            if (className == null) {
+                Debug.error("LayerHandler.getLayers(): Failed to locate property \"" + classProperty + "\"\n  Skipping layer \"" + layerName + "\"");
+                continue;
+            }
 
-	    Object obj = ComponentFactory.create(className, layerName, p);
-	    Layer l;
+            Object obj = ComponentFactory.create(className, layerName, p);
+            Layer l;
 
-	    if (obj instanceof Layer) {
-		l = (Layer) obj;
-	    } else if (obj instanceof PlugIn) {
+            if (obj instanceof Layer) {
+                l = (Layer) obj;
+            } else if (obj instanceof PlugIn) {
 
-		PlugInLayer pl = new PlugInLayer();
-		pl.setProperties(layerName, p);
-		pl.setPlugIn((PlugIn)obj);
-		l = pl;
-	    } else {
-		Debug.error("LayerHandler: Skipped \"" + layerName + "\" " +
-			    (obj==null?" - unable to create ":", type " + obj.getClass().getName() + " is not a layer or plugin"));
-		continue;
-	    }
-	    
-	    // Figure out of the layer is on the startup list,
-	    // and make it visible if it is...
-	    l.setVisible(visibleLayerList.contains(layerName));
-	    // The ComponentFactory does this now
-	    //  		l.setProperties(layerName, p);
-	    
-	    layers.addElement(l);
-	    
-	    if (Debug.debugging("layerhandler")) {
-		Debug.output("LayerHandler: layer " + l.getName() +
-			     (l.isVisible()?" is visible":" is not visible"));
-	    }
-	}
+                PlugInLayer pl = new PlugInLayer();
+                pl.setProperties(layerName, p);
+                pl.setPlugIn((PlugIn)obj);
+                l = pl;
+            } else {
+                Debug.error("LayerHandler: Skipped \"" + layerName + "\" " +
+                            (obj==null?" - unable to create ":", type " + obj.getClass().getName() + " is not a layer or plugin"));
+                continue;
+            }
+            
+            // Figure out of the layer is on the startup list,
+            // and make it visible if it is...
+            l.setVisible(visibleLayerList.contains(layerName));
+            // The ComponentFactory does this now
+            //                  l.setProperties(layerName, p);
+            
+            layers.addElement(l);
+            
+            if (Debug.debugging("layerhandler")) {
+                Debug.output("LayerHandler: layer " + l.getName() +
+                             (l.isVisible()?" is visible":" is not visible"));
+            }
+        }
 
-	int nLayers = layers.size();
-	if (nLayers == 0) {
-	    return new Layer[0];
-	} else {
-	    Layer[] value = new Layer[nLayers];
-	    layers.copyInto(value);
-	    return value;
-	}
+        int nLayers = layers.size();
+        if (nLayers == 0) {
+            return new Layer[0];
+        } else {
+            Layer[] value = new Layer[nLayers];
+            layers.copyInto(value);
+            return value;
+        }
     }
 
     /** 
@@ -375,13 +375,13 @@ public class LayerHandler extends OMComponent
      * components interested in providing layer controls.  
      */
     public void addLayerListener(LayerListener ll) {
-	Debug.message("layerhandler", "LayerHandler: adding layer listener");
-	listeners.addLayerListener(ll);
-	// Usually, the listeners are interested in one type of event
-	// or the other.  So fire both, and let the listener hash it
-	// out.
-	ll.setLayers(new LayerEvent(this, LayerEvent.ALL, allLayers));
-	ll.setLayers(new LayerEvent(this, LayerEvent.ADD, getMapLayers()));
+        Debug.message("layerhandler", "LayerHandler: adding layer listener");
+        listeners.addLayerListener(ll);
+        // Usually, the listeners are interested in one type of event
+        // or the other.  So fire both, and let the listener hash it
+        // out.
+        ll.setLayers(new LayerEvent(this, LayerEvent.ALL, allLayers));
+        ll.setLayers(new LayerEvent(this, LayerEvent.ADD, getMapLayers()));
     }
 
     /** 
@@ -391,9 +391,9 @@ public class LayerHandler extends OMComponent
      * components interested in providing layer controls.
      */
     public void removeLayerListener(LayerListener ll) {
-	if (listeners != null) {
-	    listeners.removeLayerListener(ll);
-	}
+        if (listeners != null) {
+            listeners.removeLayerListener(ll);
+        }
     }
 
     /** 
@@ -405,20 +405,20 @@ public class LayerHandler extends OMComponent
      * LayerHandler.  
      */
     public void setLayers(Layer[] layers) {
-	allLayers = layers;
+        allLayers = layers;
 
-	if (Debug.debugging("layerhandler")) {
-	    Debug.output("LayerHandler.setLayers: " + layers);
-	}
-	
-	if (listeners != null) {
-	    Debug.message("layerhandler","firing LayerEvent.ALL on LayerListeners");
-	    listeners.fireLayer(LayerEvent.ALL, allLayers);
-	    Debug.message("layerhandler","firing LayerEvent.REPLACE on LayerListeners");
-	    listeners.fireLayer(LayerEvent.REPLACE, getMapLayers());
-	} else {
-	    Debug.message("layerhandler","LayerListeners object is null");
-	}
+        if (Debug.debugging("layerhandler")) {
+            Debug.output("LayerHandler.setLayers: " + layers);
+        }
+        
+        if (listeners != null) {
+            Debug.message("layerhandler","firing LayerEvent.ALL on LayerListeners");
+            listeners.fireLayer(LayerEvent.ALL, allLayers);
+            Debug.message("layerhandler","firing LayerEvent.REPLACE on LayerListeners");
+            listeners.fireLayer(LayerEvent.REPLACE, getMapLayers());
+        } else {
+            Debug.message("layerhandler","LayerListeners object is null");
+        }
     }
 
     /**
@@ -428,7 +428,7 @@ public class LayerHandler extends OMComponent
      * the current set of visible layers.
      */
     public void setLayers() {
-	setLayers(allLayers);
+        setLayers(allLayers);
     }
 
     /**  
@@ -437,7 +437,7 @@ public class LayerHandler extends OMComponent
      * @deprecated Replaced by setLayers().
      */
     public void updateLayerLabels() {
-	setLayers(allLayers);
+        setLayers(allLayers);
     }
 
     /**
@@ -448,13 +448,13 @@ public class LayerHandler extends OMComponent
      * @return new Layer[] containing new layers.
      */
     public synchronized Layer[] getLayers() {
-	if (allLayers == null) {
-	    return new Layer[0];    
- 	} else {
-	    Layer[] layers = new Layer[allLayers.length];
-	    System.arraycopy(allLayers, 0, layers, 0, allLayers.length);
-	    return layers;
-	}
+        if (allLayers == null) {
+            return new Layer[0];    
+        } else {
+            Layer[] layers = new Layer[allLayers.length];
+            System.arraycopy(allLayers, 0, layers, 0, allLayers.length);
+            return layers;
+        }
     }
 
     /** 
@@ -463,30 +463,30 @@ public class LayerHandler extends OMComponent
      * @return an Layer[] of visible Layers. 
      */
     public Layer[] getMapLayers() {
-	Debug.message("layerhandler", "LayerHandler.getMapLayers()");
+        Debug.message("layerhandler", "LayerHandler.getMapLayers()");
 
-	int numEnabled = 0;
-	int cakeIndex = 0;
-	Layer[] cake = null;
-	Layer[] layers = getLayers();
-	
-	// First loop finds out how many visible layers there are,
-	// Second loop creates the layer cake of visible layers.
-	for (int j = 0; j < 2; j++) {
-	    for (int i = 0; i < layers.length; i++) {
-		if (layers[i] != null && layers[i].isVisible()) {
-		    if (j==0) {
-			numEnabled++;
-		    } else {
-			cake[cakeIndex++] = layers[i];
-		    }
-		}
-	    }
-	    if (j == 0) {
-		cake = new Layer[numEnabled];
-	    }
-	}
-	return cake;
+        int numEnabled = 0;
+        int cakeIndex = 0;
+        Layer[] cake = null;
+        Layer[] layers = getLayers();
+        
+        // First loop finds out how many visible layers there are,
+        // Second loop creates the layer cake of visible layers.
+        for (int j = 0; j < 2; j++) {
+            for (int i = 0; i < layers.length; i++) {
+                if (layers[i] != null && layers[i].isVisible()) {
+                    if (j==0) {
+                        numEnabled++;
+                    } else {
+                        cake[cakeIndex++] = layers[i];
+                    }
+                }
+            }
+            if (j == 0) {
+                cake = new Layer[numEnabled];
+            }
+        }
+        return cake;
     }
     
     /**
@@ -504,52 +504,52 @@ public class LayerHandler extends OMComponent
      * LayerHandler, false if not.
      */
     public boolean moveLayer(Layer layer, int toPosition) {
-	boolean found = false;
+        boolean found = false;
       
-	if (allLayers == null) {
-	    return false;
-	}
+        if (allLayers == null) {
+            return false;
+        }
      
-	int i = 0;
-	for (i = 0; i < allLayers.length; i++) {
-	    if (layer == allLayers[i]) {
-		found = true;
-		break;
-	    }
-	}
+        int i = 0;
+        for (i = 0; i < allLayers.length; i++) {
+            if (layer == allLayers[i]) {
+                found = true;
+                break;
+            }
+        }
      
-	if (found) {
-	    // i should be set to the index of the layer.
-	    int pos = toPosition;
-	
-	    if (pos < 0) {
-		pos = 0;
-	    } else if (pos >= allLayers.length) {
-		pos = allLayers.length - 1;
-	    }
-	
-	    if (pos == i) {
-		return true;
-	    }
-	
-	    Layer movedLayer = allLayers[i];
-	
-	    int direction;
-	    if (i > pos) {
-		direction = -1;
-	    } else {
-		direction = 1;
-	    }
-	
-	    while (i != pos) {
-		allLayers[i] = allLayers[i + direction];
-		i+=direction;
-	    }
-	    allLayers[pos] = movedLayer;
-	    setLayers(allLayers);
-	}
+        if (found) {
+            // i should be set to the index of the layer.
+            int pos = toPosition;
+        
+            if (pos < 0) {
+                pos = 0;
+            } else if (pos >= allLayers.length) {
+                pos = allLayers.length - 1;
+            }
+        
+            if (pos == i) {
+                return true;
+            }
+        
+            Layer movedLayer = allLayers[i];
+        
+            int direction;
+            if (i > pos) {
+                direction = -1;
+            } else {
+                direction = 1;
+            }
+        
+            while (i != pos) {
+                allLayers[i] = allLayers[i + direction];
+                i+=direction;
+            }
+            allLayers[pos] = movedLayer;
+            setLayers(allLayers);
+        }
       
-	return found;
+        return found;
     }
 
    /** 
@@ -559,19 +559,19 @@ public class LayerHandler extends OMComponent
      * @param layer the layer to add.  
      */
     public void addLayer(Layer layer) {
-	if (allLayers == null) {
-	    addLayer(layer, 0);
-	    return;
-	}
+        if (allLayers == null) {
+            addLayer(layer, 0);
+            return;
+        }
      
-	int i = 0;
-	for (i = 0; i < allLayers.length; i++) {
-	    if (layer == allLayers[i]) {
-		return;
-	    }
-	}
+        int i = 0;
+        for (i = 0; i < allLayers.length; i++) {
+            if (layer == allLayers[i]) {
+                return;
+            }
+        }
 
-	addLayer(layer, allLayers.length + 1);
+        addLayer(layer, allLayers.length + 1);
     }
 
     /** 
@@ -587,45 +587,45 @@ public class LayerHandler extends OMComponent
      * @param position the array index to place it.  
      */
     public void addLayer(Layer layer, int position) {
-	if (moveLayer(layer, position)) {
-	    return;
-	}
+        if (moveLayer(layer, position)) {
+            return;
+        }
       
-	if (allLayers == null) {
-	    allLayers = new Layer[0];
-	}
+        if (allLayers == null) {
+            allLayers = new Layer[0];
+        }
       
-	Layer[] newLayers = new Layer[allLayers.length +1];
+        Layer[] newLayers = new Layer[allLayers.length +1];
       
-	if (position >= allLayers.length) {
-	    // Put the new layer on the bottom
-	    System.arraycopy(allLayers, 0, newLayers, 0, allLayers.length);
-	    newLayers[allLayers.length] = layer;
-	} else if (position <= 0) {
-	    // Put the new layer on top
-	    System.arraycopy(allLayers, 0, newLayers, 1, allLayers.length);
-	    newLayers[0] = layer;
-	} else {
-	    newLayers[position] = layer;
-	    System.arraycopy(allLayers, 0, newLayers, 0, position);
-	    System.arraycopy(allLayers, position, newLayers, position + 1,
-			     allLayers.length - position);
-	}
+        if (position >= allLayers.length) {
+            // Put the new layer on the bottom
+            System.arraycopy(allLayers, 0, newLayers, 0, allLayers.length);
+            newLayers[allLayers.length] = layer;
+        } else if (position <= 0) {
+            // Put the new layer on top
+            System.arraycopy(allLayers, 0, newLayers, 1, allLayers.length);
+            newLayers[0] = layer;
+        } else {
+            newLayers[position] = layer;
+            System.arraycopy(allLayers, 0, newLayers, 0, position);
+            System.arraycopy(allLayers, position, newLayers, position + 1,
+                             allLayers.length - position);
+        }
 
-	if (propertyHandler != null) {
-	    String pre = layer.getPropertyPrefix();
-	    if (pre != null && pre != "") {
-		propertyHandler.addUsedPrefix(layer.getPropertyPrefix());
-	    }
-	}
+        if (propertyHandler != null) {
+            String pre = layer.getPropertyPrefix();
+            if (pre != null && pre != "") {
+                propertyHandler.addUsedPrefix(layer.getPropertyPrefix());
+            }
+        }
 
-	// Add the layer to the BeanContext, if it wants to be.	
-	BeanContext bc = getBeanContext();
-	if (bc != null && layer.getAddToBeanContext()) {
-	    bc.add(layer);
-	}
+        // Add the layer to the BeanContext, if it wants to be. 
+        BeanContext bc = getBeanContext();
+        if (bc != null && layer.getAddToBeanContext()) {
+            bc.add(layer);
+        }
       
-	setLayers(newLayers);
+        setLayers(newLayers);
     }
   
     /** 
@@ -640,9 +640,9 @@ public class LayerHandler extends OMComponent
      * @deprecated the layer will be turned on if its visibility is true.
      */
     public void addLayer(Layer layer, int position, 
-			 boolean addedLayerTurnedOn) {
-	layer.setVisible(addedLayerTurnedOn);
-	addLayer(layer, position);
+                         boolean addedLayerTurnedOn) {
+        layer.setVisible(addedLayerTurnedOn);
+        addLayer(layer, position);
     }
 
     /**
@@ -651,25 +651,25 @@ public class LayerHandler extends OMComponent
      * @param layer to remove.
      */
     public void removeLayer(Layer layer) {
-	if (layer != null && layer.isRemoveable()) {
-	    int index = -1;
-	    for (int i = 0; i < allLayers.length; i++) {
-		if (layer == allLayers[i]) {
-		    index = i;
-		    break;
-		}
-	    }
-	    // If the layer is actually there...
-	    if (index != -1) {
-		removeLayer(allLayers, index);
-	    }
-	} else {
-	    if (layer != null) {
-		Debug.error("LayerHandler: received command to remove " + layer.getName() +
-			    ", which has been designated as *NOT* removeable");
-		throw new com.bbn.openmap.util.HandleError("LayerHandler commanded to delete a layer (" + layer.getName() + ") that is not removeable");
-	    }
-	}
+        if (layer != null && layer.isRemoveable()) {
+            int index = -1;
+            for (int i = 0; i < allLayers.length; i++) {
+                if (layer == allLayers[i]) {
+                    index = i;
+                    break;
+                }
+            }
+            // If the layer is actually there...
+            if (index != -1) {
+                removeLayer(allLayers, index);
+            }
+        } else {
+            if (layer != null) {
+                Debug.error("LayerHandler: received command to remove " + layer.getName() +
+                            ", which has been designated as *NOT* removeable");
+                throw new com.bbn.openmap.util.HandleError("LayerHandler commanded to delete a layer (" + layer.getName() + ") that is not removeable");
+            }
+        }
     }
 
     /**
@@ -678,60 +678,60 @@ public class LayerHandler extends OMComponent
      * @param index of layer in the layer array.  Top-most is first.  
      */
     public void removeLayer(int index) {
-	if (index >=0 && index < allLayers.length) {
-	    removeLayer(allLayers, index);
-	}
+        if (index >=0 && index < allLayers.length) {
+            removeLayer(allLayers, index);
+        }
     }
 
     public boolean hasLayer(Layer l) {
-	Layer[] layers = allLayers;
-	for (int i = 0; i < layers.length; i++) {
-	    if (layers[i] == l) {
-		return true;
-	    }
-	}
-	return false;
+        Layer[] layers = allLayers;
+        for (int i = 0; i < layers.length; i++) {
+            if (layers[i] == l) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Remove all the layers (that are marked as removeable).
      */
     public void removeAll() {
-	BeanContext bc = getBeanContext();
-	Layer[] oldLayers = allLayers;
-	Vector nonRemoveableLayers = null;
+        BeanContext bc = getBeanContext();
+        Layer[] oldLayers = allLayers;
+        Vector nonRemoveableLayers = null;
 
-	for (int i = 0; i < oldLayers.length; i++) {
-	    Layer layer = oldLayers[i];
-	    if (layer.isRemoveable()) {
-		turnLayerOn(false, layer);
-		layer.clearListeners();
-		if (bc != null) {
-		    // Remove the layer from the BeanContext
-		    bc.remove(layer);
-		}
-		oldLayers[i] = null;
-	    } else {
-		if (nonRemoveableLayers == null) {
-		    nonRemoveableLayers = new Vector(oldLayers.length);
-		}
-		nonRemoveableLayers.add(layer);
-	    }
-	}
+        for (int i = 0; i < oldLayers.length; i++) {
+            Layer layer = oldLayers[i];
+            if (layer.isRemoveable()) {
+                turnLayerOn(false, layer);
+                layer.clearListeners();
+                if (bc != null) {
+                    // Remove the layer from the BeanContext
+                    bc.remove(layer);
+                }
+                oldLayers[i] = null;
+            } else {
+                if (nonRemoveableLayers == null) {
+                    nonRemoveableLayers = new Vector(oldLayers.length);
+                }
+                nonRemoveableLayers.add(layer);
+            }
+        }
 
-	if (nonRemoveableLayers != null) {
-	    allLayers = new Layer[nonRemoveableLayers.size()];
-	    allLayers = (Layer[])nonRemoveableLayers.toArray(allLayers);
-	} else {
-	    allLayers = new Layer[0];
-	}
+        if (nonRemoveableLayers != null) {
+            allLayers = new Layer[nonRemoveableLayers.size()];
+            allLayers = (Layer[])nonRemoveableLayers.toArray(allLayers);
+        } else {
+            allLayers = new Layer[0];
+        }
 
-	setLayers(allLayers);
+        setLayers(allLayers);
 
-	// I know this is bad but it seems to work, forcing the
-	// memory from old, deleted layers to be freed.  With such a
-	// drastic method call as removeAll, this should be OK.
-	System.gc();
+        // I know this is bad but it seems to work, forcing the
+        // memory from old, deleted layers to be freed.  With such a
+        // drastic method call as removeAll, this should be OK.
+        System.gc();
     }
 
     /** 
@@ -743,37 +743,37 @@ public class LayerHandler extends OMComponent
      * @param index the validated index of the layer to remove.  
      */
     protected void removeLayer(Layer[] currentLayers, int index) {
-	Layer rLayer = currentLayers[index];
+        Layer rLayer = currentLayers[index];
 
-	if (!rLayer.isRemoveable()) {
-	    Debug.error("LayerHandler: received command to remove " + rLayer.getName() +
-			", which has been designated as *NOT* removeable");
-	    return;
-	}
+        if (!rLayer.isRemoveable()) {
+            Debug.error("LayerHandler: received command to remove " + rLayer.getName() +
+                        ", which has been designated as *NOT* removeable");
+            return;
+        }
 
-	rLayer.setVisible(false);
+        rLayer.setVisible(false);
 
-	Layer[] newLayers = new Layer[currentLayers.length - 1];
-	System.arraycopy(currentLayers, 0, newLayers, 0, index);
-	System.arraycopy(currentLayers, index + 1, newLayers, index,
-			 currentLayers.length - index - 1);
+        Layer[] newLayers = new Layer[currentLayers.length - 1];
+        System.arraycopy(currentLayers, 0, newLayers, 0, index);
+        System.arraycopy(currentLayers, index + 1, newLayers, index,
+                         currentLayers.length - index - 1);
 
-	// Remove the layer to the BeanContext, if it wants to be.	
-	BeanContext bc = getBeanContext();
-	if (bc != null) {
-	    bc.remove(rLayer);
-	}
-	turnLayerOn(false, rLayer);
-	rLayer.clearListeners();
-	rLayer = null;
+        // Remove the layer to the BeanContext, if it wants to be.      
+        BeanContext bc = getBeanContext();
+        if (bc != null) {
+            bc.remove(rLayer);
+        }
+        turnLayerOn(false, rLayer);
+        rLayer.clearListeners();
+        rLayer = null;
 
-	// Shouldn't call this, but it's the only thing that seems to
-	// make it work...
-	if (Debug.debugging("helpgc")) {
-	    System.gc();
-	}
+        // Shouldn't call this, but it's the only thing that seems to
+        // make it work...
+        if (Debug.debugging("helpgc")) {
+            System.gc();
+        }
 
-	setLayers(newLayers);
+        setLayers(newLayers);
     }
 
     /**
@@ -787,15 +787,15 @@ public class LayerHandler extends OMComponent
      * something went wrong.
      */
     public boolean turnLayerOn(boolean setting, int index) {
-	try {
-	    turnLayerOn(setting, allLayers[index]);
-	    return true;
-	} catch (ArrayIndexOutOfBoundsException aoobe) {
-	    // Do nothing...
-	} catch (NullPointerException npe) {
-	    // Do nothing...
-	}
-	return false;
+        try {
+            turnLayerOn(setting, allLayers[index]);
+            return true;
+        } catch (ArrayIndexOutOfBoundsException aoobe) {
+            // Do nothing...
+        } catch (NullPointerException npe) {
+            // Do nothing...
+        }
+        return false;
     }
 
     /**
@@ -811,21 +811,21 @@ public class LayerHandler extends OMComponent
      * something went wrong.
      */
     public boolean turnLayerOn(boolean setting, Layer layer) {
-	
-	if ((setting && !layer.isVisible()) || 
-	    (!setting && layer.isVisible())) {
-	    if (Debug.debugging("layerhandler")) {
-		Debug.output("LayerHandler: turning " +
-			     layer.getName() + (setting?" on":" off"));
-	    }
-	    
-	    layer.setVisible(setting);
-	    if (listeners != null) {
-		listeners.fireLayer(LayerEvent.REPLACE, getMapLayers());
-	    }
-	    return true;
-	}	    
-  	return false;
+        
+        if ((setting && !layer.isVisible()) || 
+            (!setting && layer.isVisible())) {
+            if (Debug.debugging("layerhandler")) {
+                Debug.output("LayerHandler: turning " +
+                             layer.getName() + (setting?" on":" off"));
+            }
+            
+            layer.setVisible(setting);
+            if (listeners != null) {
+                listeners.fireLayer(LayerEvent.REPLACE, getMapLayers());
+            }
+            return true;
+        }           
+        return false;
     }
     
     /**
@@ -844,29 +844,29 @@ public class LayerHandler extends OMComponent
      * @param it Iterator with objects to look through.  
      */
     public void findAndInit(Iterator it) {
-	while(it.hasNext()) {
-	    Object someObj = it.next();
-	    if (someObj instanceof com.bbn.openmap.event.LayerListener) {
-		Debug.message("layerhandler","LayerHandler found a LayerListener.");	   
-		addLayerListener((LayerListener)someObj);	      
-	    }
+        while(it.hasNext()) {
+            Object someObj = it.next();
+            if (someObj instanceof com.bbn.openmap.event.LayerListener) {
+                Debug.message("layerhandler","LayerHandler found a LayerListener.");       
+                addLayerListener((LayerListener)someObj);             
+            }
 
-	    if (someObj instanceof Layer) {
-		if (Debug.debugging("layerhandler")) {
-		    Debug.output("LayerHandler found a Layer |" + 
-				 ((Layer)someObj).getName() + "|");
-		}
-		if (!hasLayer((Layer)someObj)) {
-		    addLayer((Layer)someObj);
-		}
-	    }
+            if (someObj instanceof Layer) {
+                if (Debug.debugging("layerhandler")) {
+                    Debug.output("LayerHandler found a Layer |" + 
+                                 ((Layer)someObj).getName() + "|");
+                }
+                if (!hasLayer((Layer)someObj)) {
+                    addLayer((Layer)someObj);
+                }
+            }
 
-	    if (someObj instanceof PropertyHandler) {
-		// Used to notify the PropertyHandler of used property
-		// prefix names.
-		setPropertyHandler((PropertyHandler)someObj);
-	    }
-	}
+            if (someObj instanceof PropertyHandler) {
+                // Used to notify the PropertyHandler of used property
+                // prefix names.
+                setPropertyHandler((PropertyHandler)someObj);
+            }
+        }
     }
 
     /**
@@ -878,23 +878,23 @@ public class LayerHandler extends OMComponent
      * objects.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-	Iterator it = bcme.iterator();
-	while(it.hasNext()) {
-	    Object someObj = it.next();
-	    if (someObj instanceof com.bbn.openmap.event.LayerListener) {      
-		Debug.message("layerhandler","LayerListener object is being removed");	  
-		removeLayerListener((LayerListener)someObj);	      
-	    }
+        Iterator it = bcme.iterator();
+        while(it.hasNext()) {
+            Object someObj = it.next();
+            if (someObj instanceof com.bbn.openmap.event.LayerListener) {      
+                Debug.message("layerhandler","LayerListener object is being removed");    
+                removeLayerListener((LayerListener)someObj);          
+            }
 
-	    if (someObj instanceof Layer) {
-		removeLayer((Layer)someObj);       
-	    }
+            if (someObj instanceof Layer) {
+                removeLayer((Layer)someObj);       
+            }
 
-	    if (someObj instanceof PropertyHandler &&
-		someObj == getPropertyHandler()) {
-		setPropertyHandler(null);
-	    }
-	}
+            if (someObj instanceof PropertyHandler &&
+                someObj == getPropertyHandler()) {
+                setPropertyHandler(null);
+            }
+        }
     }
 
     /**
@@ -905,16 +905,16 @@ public class LayerHandler extends OMComponent
      * @param layers layers to add, if they want to be.
      */
     public void addLayersToBeanContext(Layer[] layers) {
-	BeanContext bc = getBeanContext();
-	if (bc == null || layers == null) {
-	    return;
-	}
+        BeanContext bc = getBeanContext();
+        if (bc == null || layers == null) {
+            return;
+        }
 
-	for (int i = 0; i < layers.length; i++) {
-	    if (layers[i].getAddToBeanContext()) {
-		bc.add(layers[i]);
-	    }
-	}
+        for (int i = 0; i < layers.length; i++) {
+            if (layers[i].getAddToBeanContext()) {
+                bc.add(layers[i]);
+            }
+        }
     }
 
     /**
@@ -925,23 +925,23 @@ public class LayerHandler extends OMComponent
      * @param in_bc  BeanContext.  
      */
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
-	if (in_bc != null) {
-	    if (Debug.debugging("layerhandler")) {
-		Debug.output("LayerHandler.setBeanContext()");
-	    }
-	    in_bc.addBeanContextMembershipListener(this);
-	    beanContextChildSupport.setBeanContext(in_bc);
+        if (in_bc != null) {
+            if (Debug.debugging("layerhandler")) {
+                Debug.output("LayerHandler.setBeanContext()");
+            }
+            in_bc.addBeanContextMembershipListener(this);
+            beanContextChildSupport.setBeanContext(in_bc);
 
-	    // findAndInit should be called after the layers and
-	    // plugins are added to the MapHandler, so they can find
-	    // the components they need before they get added to the
-	    // map (if they are to be added at startup).
-	    addLayersToBeanContext(getLayers());
+            // findAndInit should be called after the layers and
+            // plugins are added to the MapHandler, so they can find
+            // the components they need before they get added to the
+            // map (if they are to be added at startup).
+            addLayersToBeanContext(getLayers());
 
-	    // Calling this here may (will) cause the MapBean to get
-	    // loaded with its initial layers, since it is a
-	    // LayerListener.
-	    findAndInit(in_bc.iterator());
-	}
+            // Calling this here may (will) cause the MapBean to get
+            // loaded with its initial layers, since it is a
+            // LayerListener.
+            findAndInit(in_bc.iterator());
+        }
     }
 }

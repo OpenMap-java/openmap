@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ArgParser.java,v $
 // $RCSfile: ArgParser.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,9 +54,9 @@ public class ArgParser {
      * @param pName the program name.
      */
     public ArgParser(String pName) {
-	programName = pName;
-	args = new Vector();
-	args.add(new HelpArg());
+        programName = pName;
+        args = new Vector();
+        args.add(new HelpArg());
     }
 
     /**
@@ -66,7 +66,7 @@ public class ArgParser {
      * @param argName the command line option
      * @param desc a help line description.  */
     public void add(String argName, String desc) {
-	add(argName, desc, 0);
+        add(argName, desc, 0);
     }
 
     /**
@@ -78,7 +78,7 @@ public class ArgParser {
      * parameters expected for this option. 
      */
     public void add(String argName, String desc, int expectedNumberOfArguments) {
-	add(argName, desc, expectedNumberOfArguments, false);
+        add(argName, desc, expectedNumberOfArguments, false);
     }
 
     /**
@@ -93,12 +93,12 @@ public class ArgParser {
      * negative number.  False by default.
      */
     public void add(String argName, String desc, int expectedNumberOfArguments, 
-		    boolean expectDashedArguments) {
-	Arg newArg = new Arg(argName, desc, expectedNumberOfArguments, expectDashedArguments);
-	args.add(newArg);
-	if (Debug.debugging("parse")) {
-	    Debug.output("ArgParser: adding " + argName);
-	}
+                    boolean expectDashedArguments) {
+        Arg newArg = new Arg(argName, desc, expectedNumberOfArguments, expectDashedArguments);
+        args.add(newArg);
+        if (Debug.debugging("parse")) {
+            Debug.output("ArgParser: adding " + argName);
+        }
     }
 
     /**
@@ -107,67 +107,67 @@ public class ArgParser {
      * @return true if everything goes well, false if not.  
      */
     public boolean parse(String[] argv) {
-	try {
-	    if (argv == null || argv.length == 0) {
-		return false;
-	    }
-	    for (int i = 0; i < argv.length; i++) {
-		boolean hit = false;
-		if (argv[i].charAt(0) == option) {
-		    String eval = argv[i].substring(1);
-		    for (int j = 0; j < args.size(); j++) {
-			Arg curArg = (Arg)args.elementAt(j);
-			if (curArg.is(eval, allowAbbr)) {
-			    if (Debug.debugging("parse")) {
-				Debug.output("ArgParser: arg " + curArg.name + 
-					     " reading values.");
-			    }
-			    if (!curArg.readArgs(argv, ++i)) {
-				// Something's wrong with the arguments.
-				bail("ArgParser: Unexpected arguments with option " + 
-				     curArg.name + ".", true);
-			    }
-			    hit = true;
-			    if (curArg.numExpectedValues != TO_END) {
-				i+=(curArg.numExpectedValues - 1);
-			    } else {
-				i = argv.length;
-			    }
-			}
-		    }
-		    if (hit == false) {
-			//option flagged, but option unknown.
-			bail(programName + ": unknown option " + argv[i], false);
-		    }
-		}
+        try {
+            if (argv == null || argv.length == 0) {
+                return false;
+            }
+            for (int i = 0; i < argv.length; i++) {
+                boolean hit = false;
+                if (argv[i].charAt(0) == option) {
+                    String eval = argv[i].substring(1);
+                    for (int j = 0; j < args.size(); j++) {
+                        Arg curArg = (Arg)args.elementAt(j);
+                        if (curArg.is(eval, allowAbbr)) {
+                            if (Debug.debugging("parse")) {
+                                Debug.output("ArgParser: arg " + curArg.name + 
+                                             " reading values.");
+                            }
+                            if (!curArg.readArgs(argv, ++i)) {
+                                // Something's wrong with the arguments.
+                                bail("ArgParser: Unexpected arguments with option " + 
+                                     curArg.name + ".", true);
+                            }
+                            hit = true;
+                            if (curArg.numExpectedValues != TO_END) {
+                                i+=(curArg.numExpectedValues - 1);
+                            } else {
+                                i = argv.length;
+                            }
+                        }
+                    }
+                    if (hit == false) {
+                        //option flagged, but option unknown.
+                        bail(programName + ": unknown option " + argv[i], false);
+                    }
+                }
 
-		if (hit == false) {
-		    if (i == 0) {
-			rest = argv;
-		    } else {
-			int diff = argv.length - i;
-			rest = new String[diff];
-			for (int k = 0; k < diff; k++) {
-			    rest[k] = argv[i + k];
-			    if (rest[k].charAt(0) == option) {
-				bail("ArgParser: Not expecting option in list of arguments.", true);
-			    }
-			}
-		    }
-		    if (Debug.debugging("parse")) {
-			Debug.output("ArgParser: adding " + rest.length + 
-				     " strings to the leftover list.");
-		    }
+                if (hit == false) {
+                    if (i == 0) {
+                        rest = argv;
+                    } else {
+                        int diff = argv.length - i;
+                        rest = new String[diff];
+                        for (int k = 0; k < diff; k++) {
+                            rest[k] = argv[i + k];
+                            if (rest[k].charAt(0) == option) {
+                                bail("ArgParser: Not expecting option in list of arguments.", true);
+                            }
+                        }
+                    }
+                    if (Debug.debugging("parse")) {
+                        Debug.output("ArgParser: adding " + rest.length + 
+                                     " strings to the leftover list.");
+                    }
 
-		    return true;
-		}
-	    }
-	} catch (ArrayIndexOutOfBoundsException aioobe) {
-	    bail("Expecting more arguments for option", true);
-	} catch (NegativeArraySizeException nase) {
-	    return false;
-	}
-	return true;
+                    return true;
+                }
+            }
+        } catch (ArrayIndexOutOfBoundsException aioobe) {
+            bail("Expecting more arguments for option", true);
+        } catch (NegativeArraySizeException nase) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -176,9 +176,9 @@ public class ArgParser {
      * @param printUsageStatement true to display a list of available options.
      */
     public void bail(String message, boolean printUsageStatement) {
-	Debug.output(message);
-	if (printUsageStatement) printUsage();
-	System.exit(0);
+        Debug.output(message);
+        if (printUsageStatement) printUsage();
+        System.exit(0);
     }
 
     /** 
@@ -186,7 +186,7 @@ public class ArgParser {
      * options.  
      */
     public void setAllowAbbr(boolean set) {
-	allowAbbr = set;
+        allowAbbr = set;
     }
 
     /** 
@@ -194,27 +194,27 @@ public class ArgParser {
      * of the options.  
      */
     public boolean getAllowAbbr() {
-	return allowAbbr;
+        return allowAbbr;
     }
 
     /**
      * Returns a Vector of Arg objects.
      */
     public Vector getArgs() {
-	return args;
+        return args;
     }
 
     /** 
      * Return a Arg object with a particular name.
      */
     public Arg getArg(String name) {
-	for (int i = 0; i < args.size(); i++) {
-	    ArgParser.Arg arg = (ArgParser.Arg)args.elementAt(i);
-	    if (name.equalsIgnoreCase(arg.name)) {
-		return arg;
-	    }
-	}
-	return null;
+        for (int i = 0; i < args.size(); i++) {
+            ArgParser.Arg arg = (ArgParser.Arg)args.elementAt(i);
+            if (name.equalsIgnoreCase(arg.name)) {
+                return arg;
+            }
+        }
+        return null;
     }
 
     /** 
@@ -225,15 +225,15 @@ public class ArgParser {
      * Strings.
      */
     public String[] getArgValues(String name) {
-	for (int i = 0; i < args.size(); i++) {
-	    ArgParser.Arg arg = (ArgParser.Arg)args.elementAt(i);
-	    if (name.equalsIgnoreCase(arg.name)) {
-		if (arg.flagged) {
-		    return arg.values;
-		}
-	    }
-	}
-	return null;
+        for (int i = 0; i < args.size(); i++) {
+            ArgParser.Arg arg = (ArgParser.Arg)args.elementAt(i);
+            if (name.equalsIgnoreCase(arg.name)) {
+                if (arg.flagged) {
+                    return arg.values;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -241,57 +241,57 @@ public class ArgParser {
      * options were parsed.  
      */
     public String[] getRest() {
-	return rest;
+        return rest;
     }
 
     /**
      * Print a list of options added to the parser.
      */
     public void printUsage() {
-	Debug.output(programName + " Arguments:");
-	for (int i = 0; i < args.size(); i++) {
-	    ArgParser.Arg arg = (ArgParser.Arg)args.elementAt(i);
-	    StringBuffer sb = new StringBuffer();
-	    sb.append("  -" + arg.name + "  \t" + arg.description);
-	    if (arg.numExpectedValues == TO_END) {
-		sb.append(" (Variable number of arguments expected)");
-	    } else if (arg.numExpectedValues==1) {
-		sb.append(" (1 argument expected)");
-	    } else {
-		sb.append(" (" + arg.numExpectedValues + " arguments expected)");
-	    }
-	    Debug.output(sb.toString());
-	}
+        Debug.output(programName + " Arguments:");
+        for (int i = 0; i < args.size(); i++) {
+            ArgParser.Arg arg = (ArgParser.Arg)args.elementAt(i);
+            StringBuffer sb = new StringBuffer();
+            sb.append("  -" + arg.name + "  \t" + arg.description);
+            if (arg.numExpectedValues == TO_END) {
+                sb.append(" (Variable number of arguments expected)");
+            } else if (arg.numExpectedValues==1) {
+                sb.append(" (1 argument expected)");
+            } else {
+                sb.append(" (" + arg.numExpectedValues + " arguments expected)");
+            }
+            Debug.output(sb.toString());
+        }
     }
 
     public static void main(String[] argv) {
-	Debug.init();
-	ArgParser ap = new ArgParser("ArgParser");
-	ap.add("class", "class name to test for");
-	ap.add("latlon", "lat/lon to use", 2);
-	ap.add("test", "testing");
+        Debug.init();
+        ArgParser ap = new ArgParser("ArgParser");
+        ap.add("class", "class name to test for");
+        ap.add("latlon", "lat/lon to use", 2);
+        ap.add("test", "testing");
 
-	if (!ap.parse(argv)) {
-	    ap.printUsage();
-	    System.exit(0);
-	}
+        if (!ap.parse(argv)) {
+            ap.printUsage();
+            System.exit(0);
+        }
 
-//  	int i;
-//  	Vector args = ap.getArgs();
-//  	for (i = 0; i < args.size(); i++) {
-//  	    ArgParser.Arg a = (ArgParser.Arg)args.elementAt(i);
-//  	    Debug.output(a.toString());
-//  	}
+//      int i;
+//      Vector args = ap.getArgs();
+//      for (i = 0; i < args.size(); i++) {
+//          ArgParser.Arg a = (ArgParser.Arg)args.elementAt(i);
+//          Debug.output(a.toString());
+//      }
 
-//  	String[] rest = ap.getRest();
-//  	Debug.output("Rest:");
-//  	for (i = 0; i < rest.length; i++) {
-//  	    Debug.output(rest[i]);
-//  	}
+//      String[] rest = ap.getRest();
+//      Debug.output("Rest:");
+//      for (i = 0; i < rest.length; i++) {
+//          Debug.output(rest[i]);
+//      }
 
-	if (ap.getArgValues("class") != null) {
-	    Debug.output("'class' option caught.");
-	}
+        if (ap.getArgValues("class") != null) {
+            Debug.output("'class' option caught.");
+        }
     }
 
     /** 
@@ -299,114 +299,114 @@ public class ArgParser {
      * for the ArgParser to use.  
      */
     public class Arg {
-	public String name;
-	public String description;
-	public int numExpectedValues;
-	public String[] values = null;
-	public char c;
-	public boolean flagged = false;
-	public boolean dashedArguments = false;
+        public String name;
+        public String description;
+        public int numExpectedValues;
+        public String[] values = null;
+        public char c;
+        public boolean flagged = false;
+        public boolean dashedArguments = false;
 
-	/**
-	 * Create an Arg with a name and help line description.
-	 */
-	public Arg(String aName, String desc) {
-	    this(aName, desc, 0);
-	}
+        /**
+         * Create an Arg with a name and help line description.
+         */
+        public Arg(String aName, String desc) {
+            this(aName, desc, 0);
+        }
 
-	/**
-	 * Create an Arg with a name and help line description, along
-	 * with a number of expected arguments to follow this option.
-	 */
-	public Arg(String aName, String desc, int expectedNumberOfArguments) {
-	    this(aName, desc, expectedNumberOfArguments, false);
-	}
+        /**
+         * Create an Arg with a name and help line description, along
+         * with a number of expected arguments to follow this option.
+         */
+        public Arg(String aName, String desc, int expectedNumberOfArguments) {
+            this(aName, desc, expectedNumberOfArguments, false);
+        }
 
-	/**
-	 * Create an Arg with a name and help line description, along
-	 * with a number of expected arguments to follow this option.
-	 * Has an argument to not check for arguments that may start
-	 * with dashes, in case one of the arguements may be a
-	 * negative number.
-	 */
-	public Arg(String aName, String desc, int expectedNumberOfArguments, 
-		   boolean expectDashedArguments) {
-	    name = aName;
-	    description = desc;
-	    numExpectedValues = expectedNumberOfArguments;
-	    c = name.charAt(0);
-	    dashedArguments = expectDashedArguments;
-	}
+        /**
+         * Create an Arg with a name and help line description, along
+         * with a number of expected arguments to follow this option.
+         * Has an argument to not check for arguments that may start
+         * with dashes, in case one of the arguements may be a
+         * negative number.
+         */
+        public Arg(String aName, String desc, int expectedNumberOfArguments, 
+                   boolean expectDashedArguments) {
+            name = aName;
+            description = desc;
+            numExpectedValues = expectedNumberOfArguments;
+            c = name.charAt(0);
+            dashedArguments = expectDashedArguments;
+        }
 
-	/**
-	 * Returns true if the atg string matches the name of the Arg,
-	 * or, if allowAbbr is true, returns true if the arg length is
-	 * one and it matches the first letter of the arg name.  
-	 */
-	public boolean is(String arg, boolean allowAbbr) {
-	    if (name.equalsIgnoreCase(arg)) {
-		return true;
-	    }
+        /**
+         * Returns true if the atg string matches the name of the Arg,
+         * or, if allowAbbr is true, returns true if the arg length is
+         * one and it matches the first letter of the arg name.  
+         */
+        public boolean is(String arg, boolean allowAbbr) {
+            if (name.equalsIgnoreCase(arg)) {
+                return true;
+            }
 
-	    if (allowAbbr && arg.length() == 1) {
-		if (arg.charAt(0) == c) {
-		    return true;
-		}
-	    }
-	    return false;
-	}
+            if (allowAbbr && arg.length() == 1) {
+                if (arg.charAt(0) == c) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
-	/**
-	 * Runs through the array of Strings, starting at the
-	 * argIndex, and creates the values array from it.  Uses the
-	 * expected number of arguments to tell when it's done.
-	 * Returns true if everything happens as expected.  
-	 * @param argv the entire array passed to the parser.
-	 * @param argIndex the index of the first option argument value.
-	 * @return true if what was read was what was expected.
-	 */
-	public boolean readArgs(String[] argv, int argIndex) 
-	    throws ArrayIndexOutOfBoundsException, 
-	    NegativeArraySizeException {
-	    
-	    if (numExpectedValues != TO_END) {
-		values = new String[numExpectedValues];
-	    } else {
-		values = new String[argv.length - argIndex];
-	    }
+        /**
+         * Runs through the array of Strings, starting at the
+         * argIndex, and creates the values array from it.  Uses the
+         * expected number of arguments to tell when it's done.
+         * Returns true if everything happens as expected.  
+         * @param argv the entire array passed to the parser.
+         * @param argIndex the index of the first option argument value.
+         * @return true if what was read was what was expected.
+         */
+        public boolean readArgs(String[] argv, int argIndex) 
+            throws ArrayIndexOutOfBoundsException, 
+            NegativeArraySizeException {
+            
+            if (numExpectedValues != TO_END) {
+                values = new String[numExpectedValues];
+            } else {
+                values = new String[argv.length - argIndex];
+            }
 
-	    for (int i = 0; i < values.length; i++) {
-		values[i] = argv[argIndex + i];
-		if (values[i].charAt(0) == option && !dashedArguments) {
-		    if (numExpectedValues != TO_END) {
-			Debug.output("ArgParser: Option " + name + 
-				     " expects " + numExpectedValues +
-				     (numExpectedValues==1?" argument.":" arguments."));
-			
-		    } else {
-			Debug.output("ArgParser: Option " + name + 
-				     " not expecting options after its values.");
-		    }
-		    return false; // Unexpected argument.
-		}
-	    }
-	    flagged = true;
-	    return true;
-	}
+            for (int i = 0; i < values.length; i++) {
+                values[i] = argv[argIndex + i];
+                if (values[i].charAt(0) == option && !dashedArguments) {
+                    if (numExpectedValues != TO_END) {
+                        Debug.output("ArgParser: Option " + name + 
+                                     " expects " + numExpectedValues +
+                                     (numExpectedValues==1?" argument.":" arguments."));
+                        
+                    } else {
+                        Debug.output("ArgParser: Option " + name + 
+                                     " not expecting options after its values.");
+                    }
+                    return false; // Unexpected argument.
+                }
+            }
+            flagged = true;
+            return true;
+        }
 
-	public String toString() {
-	    StringBuffer sb = new StringBuffer();
-	    sb.append("Arg: " + name + " expects " + numExpectedValues + 
-		      (numExpectedValues==1?" value.\n":" values.\n"));
-	    if (values != null) {
-		sb.append("Values: ");
-		for (int i = 0; i < values.length; i++) {
-		    sb.append("[" + values[i] + "]");
-		}
-		sb.append("\n");
-	    }
-	    return sb.toString();
-	}
+        public String toString() {
+            StringBuffer sb = new StringBuffer();
+            sb.append("Arg: " + name + " expects " + numExpectedValues + 
+                      (numExpectedValues==1?" value.\n":" values.\n"));
+            if (values != null) {
+                sb.append("Values: ");
+                for (int i = 0; i < values.length; i++) {
+                    sb.append("[" + values[i] + "]");
+                }
+                sb.append("\n");
+            }
+            return sb.toString();
+        }
     }
 
     /**
@@ -415,17 +415,17 @@ public class ArgParser {
      */
     public class HelpArg extends ArgParser.Arg {
 
-	public HelpArg() {
-	    super("help", "Print usage statement, with arguments.", 0);
-	}
+        public HelpArg() {
+            super("help", "Print usage statement, with arguments.", 0);
+        }
 
-	public boolean is(String arg, boolean allowAbbr) {
-	    boolean askingForHelp = super.is(arg, allowAbbr);
-	    if (askingForHelp) {
-		ArgParser.this.bail("", true);
-	    } 
-	    return false;
-	}
+        public boolean is(String arg, boolean allowAbbr) {
+            boolean askingForHelp = super.is(arg, allowAbbr);
+            if (askingForHelp) {
+                ArgParser.this.bail("", true);
+            } 
+            return false;
+        }
     }
 
 }

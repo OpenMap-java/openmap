@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionStackSupport.java,v $
 // $RCSfile: ProjectionStackSupport.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/29 17:20:05 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:14 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -47,13 +47,13 @@ public class ProjectionStackSupport implements java.io.Serializable {
      * @param pt ProjectionStackTrigger
      */
     public synchronized void add(ProjectionStackTrigger pt) {
-	if (triggers == null) {
-	    triggers = new ArrayList();
-	}
+        if (triggers == null) {
+            triggers = new ArrayList();
+        }
 
-	if (!triggers.contains(pt)) {
-	    triggers.add(pt);
-	}
+        if (!triggers.contains(pt)) {
+            triggers.add(pt);
+        }
     }
 
 
@@ -62,10 +62,10 @@ public class ProjectionStackSupport implements java.io.Serializable {
      * @param pt ProjectionStackTrigger
      */
     public synchronized void remove(ProjectionStackTrigger pt) {
-	if (triggers == null) {
-	    return;
-	}
-	triggers.remove(pt);
+        if (triggers == null) {
+            return;
+        }
+        triggers.remove(pt);
     }
 
     /**
@@ -73,15 +73,15 @@ public class ProjectionStackSupport implements java.io.Serializable {
      * @return Vector of triggers, null if none have been added.
      */
     public synchronized ArrayList getTriggers(){
-	if (triggers == null){
-	    return null;
-	}
+        if (triggers == null){
+            return null;
+        }
 
-	return (ArrayList) triggers.clone();
+        return (ArrayList) triggers.clone();
     }
 
     public int size() {
-	return triggers.size();
+        return triggers.size();
     }
 
 
@@ -94,26 +94,26 @@ public class ProjectionStackSupport implements java.io.Serializable {
      * is being used. 
      */
     public void fireStackStatus(boolean enableBackProjections,
-				boolean enableForwardProjections) {
+                                boolean enableForwardProjections) {
 
-	ProjectionStackTrigger target;
-	ArrayList targets = getTriggers();
+        ProjectionStackTrigger target;
+        ArrayList targets = getTriggers();
 
-	if (triggers == null) {
-	    return;
-	}
+        if (triggers == null) {
+            return;
+        }
 
-	Iterator iterator = targets.iterator();
+        Iterator iterator = targets.iterator();
 
-	while (iterator.hasNext()) {
-	    target = (ProjectionStackTrigger)iterator.next();
-	    if (Debug.debugging("projectionstack")) {
-		Debug.output("ProjectionStackSupport.fireStackStatus(): target is: " +
-			     target);
-	    }
+        while (iterator.hasNext()) {
+            target = (ProjectionStackTrigger)iterator.next();
+            if (Debug.debugging("projectionstack")) {
+                Debug.output("ProjectionStackSupport.fireStackStatus(): target is: " +
+                             target);
+            }
 
-	    target.updateProjectionStackStatus(enableBackProjections,
-					       enableForwardProjections);
-	}
+            target.updateProjectionStackStatus(enableBackProjections,
+                                               enableForwardProjections);
+        }
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SSlider.java,v $
 // $RCSfile: SSlider.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 02:00:34 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,14 +48,14 @@ public class SSlider extends _SliderStub {
     public SSlider() {}
 
     public SSlider(String label, 
-		   short start, short end, 
-		   short initial_value, 
-		   boolean vertical) {
+                   short start, short end, 
+                   short initial_value, 
+                   boolean vertical) {
         label_ = label;
-	start_ = start;
-	end_ = end;
-	current_value_ = initial_value;
-	vertical_ = vertical;
+        start_ = start;
+        end_ = end;
+        current_value_ = initial_value;
+        vertical_ = vertical;
     }
     public void label(java.lang.String label) {
         label_ = label;
@@ -89,14 +89,14 @@ public class SSlider extends _SliderStub {
         return vertical_;
     }
     public void set(java.lang.String label,
-		    short new_value,
-		    java.lang.String uniqueID) {
+                    short new_value,
+                    java.lang.String uniqueID) {
 //      System.out.println("Slider:");
-// 	System.out.println(" in: " + label);
-// 	System.out.println(" unique ID: " + uniqueID);
-// 	System.out.println(" New value of slider: " + new_value);
+//      System.out.println(" in: " + label);
+//      System.out.println(" unique ID: " + uniqueID);
+//      System.out.println(" New value of slider: " + new_value);
 
-	current_value_ = new_value;
+        current_value_ = new_value;
     }
   /** The <b>widget</b> function should be used to get the object
    * needed for the <b>addPalette</b> specialist function, which adds
@@ -104,8 +104,8 @@ public class SSlider extends _SliderStub {
    */
     public UWidget widget() {
         UWidget uw = new UWidget();
-	uw.slide(this);
-	return uw;
+        uw.slide(this);
+        return uw;
     }
 }
 

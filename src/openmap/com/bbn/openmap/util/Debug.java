@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/Debug.java,v $
 // $RCSfile: Debug.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:44:37 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:15 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -60,8 +60,8 @@ import java.util.Properties;
  * both applets and applications.
  *
  * @author Tom Mitchell (tmitchell@bbn.com)
- * @author $Author: wjeuerle $
- * @version $Revision: 1.3 $, $Date: 2003/12/23 20:44:37 $ 
+ * @author $Author: dietrick $
+ * @version $Revision: 1.4 $, $Date: 2004/01/26 18:18:15 $ 
  */
 public abstract class Debug {
 
@@ -134,15 +134,15 @@ public abstract class Debug {
      * something like this:
      * <p><pre><code>
      * String[] debugTokens = {
-     *  "debug.debug",		// com.bbn.openmap.Debug
-     *  "debug.openmap",	// com.bbn.openmap.client.OpenMap
-     *  "debug.mappanel",	// com.bbn.openmap.awt.MapPanel
-     *  "debug.awt",		// com.bbn.openmap.awt.*
-     *  "debug.map",		// com.bbn.openmap.Map
-     *  "debug.layer",		// com.bbn.openmap.Layer
-     *  "debug.proj",		// com.bbn.openmap.proj.*
-     *  "debug.spec",		// com.bbn.openmap.spec.*
-     *  "debug.env"		// com.bbn.openmap.Environment
+     *  "debug.debug",          // com.bbn.openmap.Debug
+     *  "debug.openmap",        // com.bbn.openmap.client.OpenMap
+     *  "debug.mappanel",       // com.bbn.openmap.awt.MapPanel
+     *  "debug.awt",            // com.bbn.openmap.awt.*
+     *  "debug.map",            // com.bbn.openmap.Map
+     *  "debug.layer",          // com.bbn.openmap.Layer
+     *  "debug.proj",           // com.bbn.openmap.proj.*
+     *  "debug.spec",           // com.bbn.openmap.spec.*
+     *  "debug.env"             // com.bbn.openmap.Environment
      *  };
      * </code></pre>
      * 
@@ -151,32 +151,32 @@ public abstract class Debug {
      *                   parameters list
      */
     public static void init(Applet applet, String[] parameters) {
-	if (applet == null) {
-	    // handle a SecurityException in case we are an applet
-	    // but no applet was passed as an argument.
-	    try {
-		init(System.getProperties());
-	    } catch (SecurityException e) {
-	    }
-	} else if (parameters != null) {
-	    try {
-		for (int i=0; i<parameters.length; i++) {
-		    String pname = parameters[i];
-		    if (pname.startsWith(debugTokenHeader) &&
-			(applet.getParameter(parameters[i]) != null)) {
-			String token = pname.substring(debugTokenHeader.length());
-			dbgTable.put(token, Boolean.TRUE);
-		    }
-		}
-		// look for special debug.all token!
-		if (applet.getParameter(debugTokenHeader + debugAllToken) != null) {
-		    dbgTable.put(debugAllToken, Boolean.TRUE);
-		}
-	    } catch (NullPointerException npe) {
-	    }
-	}
+        if (applet == null) {
+            // handle a SecurityException in case we are an applet
+            // but no applet was passed as an argument.
+            try {
+                init(System.getProperties());
+            } catch (SecurityException e) {
+            }
+        } else if (parameters != null) {
+            try {
+                for (int i=0; i<parameters.length; i++) {
+                    String pname = parameters[i];
+                    if (pname.startsWith(debugTokenHeader) &&
+                        (applet.getParameter(parameters[i]) != null)) {
+                        String token = pname.substring(debugTokenHeader.length());
+                        dbgTable.put(token, Boolean.TRUE);
+                    }
+                }
+                // look for special debug.all token!
+                if (applet.getParameter(debugTokenHeader + debugAllToken) != null) {
+                    dbgTable.put(debugAllToken, Boolean.TRUE);
+                }
+            } catch (NullPointerException npe) {
+            }
+        }
 
-	Debug.postInit();
+        Debug.postInit();
     }
 
     /**
@@ -187,36 +187,36 @@ public abstract class Debug {
      * @param p A properties list, usually System.getProperties()
      */
     public static void init(Properties p) {
-	Enumeration e = p.propertyNames();
-	while (e.hasMoreElements()) {
-	    String name = e.nextElement().toString();
-	    if (name.startsWith(debugTokenHeader)) {
-		String token = name.substring(debugTokenHeader.length());
-		dbgTable.put(token, Boolean.TRUE);
-	    }
-	}
-	Debug.postInit();
+        Enumeration e = p.propertyNames();
+        while (e.hasMoreElements()) {
+            String name = e.nextElement().toString();
+            if (name.startsWith(debugTokenHeader)) {
+                String token = name.substring(debugTokenHeader.length());
+                dbgTable.put(token, Boolean.TRUE);
+            }
+        }
+        Debug.postInit();
     }
 
     /**
      * Initialize debugging from the system properties.
      */
     public static void init() {
-	Properties p;
-	try {
-	    p = System.getProperties();
-	} catch (java.security.AccessControlException ace) {
-	    p = new Properties();
-	}
+        Properties p;
+        try {
+            p = System.getProperties();
+        } catch (java.security.AccessControlException ace) {
+            p = new Properties();
+        }
 
-	init(p);
+        init(p);
     }
 
     /**
      * Common inits, regardless of applet or application.
      */
     private static void postInit() {
-	debugAll = dbgTable.containsKey(debugAllToken);
+        debugAll = dbgTable.containsKey(debugAllToken);
     }
 
     /**
@@ -226,7 +226,7 @@ public abstract class Debug {
      * @return true if debugging is on, false otherwise.
      */
     public static boolean debugging(String token) {
-	return Debug.On && (debugAll || dbgTable.containsKey(token));
+        return Debug.On && (debugAll || dbgTable.containsKey(token));
     }
 
     /** 
@@ -235,7 +235,7 @@ public abstract class Debug {
      * @param dbgToken token name
      */
     public static void put(String dbgToken) {
-	dbgTable.put(dbgToken, Boolean.TRUE);
+        dbgTable.put(dbgToken, Boolean.TRUE);
     }
 
     /**
@@ -244,7 +244,7 @@ public abstract class Debug {
      * @param dbgToken token name
      */
     public static void remove(String dbgToken) {
-	dbgTable.remove(dbgToken);
+        dbgTable.remove(dbgToken);
     }
 
     /**
@@ -265,9 +265,9 @@ public abstract class Debug {
      * @param message a message to be printed
      */
     public static void message(String dbgToken, String message) {
-	if (Debug.On && Debug.debugging(dbgToken)) {
-	    Debug.output(message);
-	}
+        if (Debug.On && Debug.debugging(dbgToken)) {
+            Debug.output(message);
+        }
     }
 
     /**
@@ -276,7 +276,7 @@ public abstract class Debug {
      * @param out the desired debugging output stream
      */
     public static void setPrintStream(PrintStream out) {
-	Debug.out = out;
+        Debug.out = out;
     }
 
     /**
@@ -285,7 +285,7 @@ public abstract class Debug {
      * @return the current debugging output stream.
      */
     public static PrintStream getPrintStream() {
-	return out;
+        return out;
     }
 
     /**
@@ -298,18 +298,18 @@ public abstract class Debug {
      * provide output, in addition to logging the ouput.  
      */
     public static void directOutput(File file, boolean alsoToOutStream){
-	try {
-	    directOutput(new FileOutputStream(file),
-			 alsoToOutStream);
-	} catch (IOException ioe){
-	    // If something goes wrong, set the output to the
-	    // System.out only, and hope someone sees it.
-	    notifyOut = true;
-	    out = System.out;
-	    error("Debug: can't set up <" + file 
-		  + "> for log file! \n" + ioe);
-	    return;
-	}
+        try {
+            directOutput(new FileOutputStream(file),
+                         alsoToOutStream);
+        } catch (IOException ioe){
+            // If something goes wrong, set the output to the
+            // System.out only, and hope someone sees it.
+            notifyOut = true;
+            out = System.out;
+            error("Debug: can't set up <" + file 
+                  + "> for log file! \n" + ioe);
+            return;
+        }
     }
 
     /**
@@ -323,19 +323,19 @@ public abstract class Debug {
      * provide output, in addition to logging the ouput.  
      */
     public static void directOutput(String filename, boolean append,
-				    boolean alsoToOutStream){
-	try {
-	    directOutput(new FileOutputStream(filename, append),
-			 alsoToOutStream);
-	} catch (IOException ioe){
-	    // If something goes wrong, set the output to the
-	    // System.out only, and hope someone sees it.
-	    notifyOut = true;
-	    out = System.out;
-	    error("Debug: can't set up <" + filename 
-		  + "> for log file! \n" + ioe);
-	    return;
-	}
+                                    boolean alsoToOutStream){
+        try {
+            directOutput(new FileOutputStream(filename, append),
+                         alsoToOutStream);
+        } catch (IOException ioe){
+            // If something goes wrong, set the output to the
+            // System.out only, and hope someone sees it.
+            notifyOut = true;
+            out = System.out;
+            error("Debug: can't set up <" + filename 
+                  + "> for log file! \n" + ioe);
+            return;
+        }
     }
 
     /** 
@@ -347,9 +347,9 @@ public abstract class Debug {
      * provide output, in addition to logging the ouput.  
      */
     public static void directOutput(OutputStream os, 
-				    boolean alsoToOutStream){
-	outputLog = new DataOutputStream(os);
-	notifyOut = alsoToOutStream;
+                                    boolean alsoToOutStream){
+        outputLog = new DataOutputStream(os);
+        notifyOut = alsoToOutStream;
     }
 
     /**
@@ -358,7 +358,7 @@ public abstract class Debug {
      * @param err the desired error output stream
      */
     public static void setErrorStream(PrintStream err) {
-	Debug.err = err;
+        Debug.err = err;
     }
 
     /**
@@ -367,7 +367,7 @@ public abstract class Debug {
      * @return the current error output stream.
      */
     public static PrintStream getErrorStream() {
-	return err;
+        return err;
     }
 
     /**
@@ -379,8 +379,8 @@ public abstract class Debug {
      * provide output, in addition to logging the errors.  
      */
     public static void directErrors(File file,  boolean alsoToErrStream){
-	errorFile = file;
-	notifyErr = alsoToErrStream;
+        errorFile = file;
+        notifyErr = alsoToErrStream;
     }
 
     /**
@@ -394,10 +394,10 @@ public abstract class Debug {
      * provide output, in addition to logging the errors.  
      */
     public static void directErrors(String filename, boolean append,
-				    boolean alsoToErrStream){
+                                    boolean alsoToErrStream){
         errorAppend = append;
-	errorFile = new File(filename);
-	notifyErr = alsoToErrStream;
+        errorFile = new File(filename);
+        notifyErr = alsoToErrStream;
     }
 
     /**
@@ -409,9 +409,9 @@ public abstract class Debug {
      * provide output, in addition to logging the errors.  
      */
     public static void directErrors(OutputStream os, 
-				    boolean alsoToErrStream){
-	errorLog = new DataOutputStream(os);
-	notifyErr = alsoToErrStream;
+                                    boolean alsoToErrStream){
+        errorLog = new DataOutputStream(os);
+        notifyErr = alsoToErrStream;
     }
 
     /**
@@ -425,61 +425,61 @@ public abstract class Debug {
      */
     public static void error(String errorString){
 
-	try {
-	    if (errorLog == null){
-		// If no errors have happened yet, this will get run.
-		if (errorFile != null){
-		    FileOutputStream log = new FileOutputStream(errorFile.getPath(), errorAppend);
-		    errorLog = new DataOutputStream(log);
+        try {
+            if (errorLog == null){
+                // If no errors have happened yet, this will get run.
+                if (errorFile != null){
+                    FileOutputStream log = new FileOutputStream(errorFile.getPath(), errorAppend);
+                    errorLog = new DataOutputStream(log);
 
-		    // Lets make introductions into the error file,
-		    // shall we?
-		    errorLog.writeBytes("\n");
-		    errorLog.writeBytes(getMapBeanMessage());
-		    errorLog.writeBytes("\n");
-		    errorLog.writeBytes("ERROR log file - " + 
-					java.util.Calendar.getInstance().getTime());
-		    errorLog.writeBytes("\n");
-		    errorLog.writeBytes(ERROR_TAIL);
-		    errorLog.writeBytes(ERROR_TAIL);
-		    errorLog.writeBytes(ERROR_TAIL);
-		    errorLog.writeBytes("\n");
-		    /////////////////////
+                    // Lets make introductions into the error file,
+                    // shall we?
+                    errorLog.writeBytes("\n");
+                    errorLog.writeBytes(getMapBeanMessage());
+                    errorLog.writeBytes("\n");
+                    errorLog.writeBytes("ERROR log file - " + 
+                                        java.util.Calendar.getInstance().getTime());
+                    errorLog.writeBytes("\n");
+                    errorLog.writeBytes(ERROR_TAIL);
+                    errorLog.writeBytes(ERROR_TAIL);
+                    errorLog.writeBytes(ERROR_TAIL);
+                    errorLog.writeBytes("\n");
+                    /////////////////////
 
-		    errorLog.writeBytes(ERROR_HEADER);
-		    errorLog.writeBytes(errorString);
-		    errorLog.writeBytes("\n");
-		    errorLog.writeBytes(ERROR_TAIL);
-		    errorLog.writeBytes("\n");
-		}
-	    } else {
-		// With the log already set up, this should get run.
-		errorLog.writeBytes(ERROR_HEADER);
-		errorLog.writeBytes("\n");
-		errorLog.writeBytes(errorString);
-		errorLog.writeBytes("\n");
-		errorLog.writeBytes(ERROR_TAIL);		
-		errorLog.writeBytes("\n");
-	    }
-	} catch (IOException ioe){
-	    // If something goes wrong, set the output to the
-	    // System.err only, and hope someone sees it.
-	    errorFile = null;
-	    notifyErr = true;
-	    err = System.err;
-	    err.println(ERROR_HEADER);
-	    err.println("Debug: error writing <" + errorString + 
-			"> to log! \n" + ioe);
-	    err.println(ERROR_TAIL);
-	    return;
-	}
-	
-	// Write to the error stream if required.
-	if (notifyErr){
-	    err.println(ERROR_HEADER);
-	    err.println(errorString);
-	    err.println(ERROR_TAIL);
-	}
+                    errorLog.writeBytes(ERROR_HEADER);
+                    errorLog.writeBytes(errorString);
+                    errorLog.writeBytes("\n");
+                    errorLog.writeBytes(ERROR_TAIL);
+                    errorLog.writeBytes("\n");
+                }
+            } else {
+                // With the log already set up, this should get run.
+                errorLog.writeBytes(ERROR_HEADER);
+                errorLog.writeBytes("\n");
+                errorLog.writeBytes(errorString);
+                errorLog.writeBytes("\n");
+                errorLog.writeBytes(ERROR_TAIL);                
+                errorLog.writeBytes("\n");
+            }
+        } catch (IOException ioe){
+            // If something goes wrong, set the output to the
+            // System.err only, and hope someone sees it.
+            errorFile = null;
+            notifyErr = true;
+            err = System.err;
+            err.println(ERROR_HEADER);
+            err.println("Debug: error writing <" + errorString + 
+                        "> to log! \n" + ioe);
+            err.println(ERROR_TAIL);
+            return;
+        }
+        
+        // Write to the error stream if required.
+        if (notifyErr){
+            err.println(ERROR_HEADER);
+            err.println(errorString);
+            err.println(ERROR_TAIL);
+        }
     }
 
     /**
@@ -488,33 +488,33 @@ public abstract class Debug {
      * Debug is compiled.
      */
     public static String getMapBeanMessage() {
-	String message = "";
-	try {
-	    Class mbClass = Class.forName("com.bbn.openmap.MapBean");
-	    java.lang.reflect.Method crMessage = 
-		mbClass.getDeclaredMethod("getCopyrightMessage", null);
-	    message = (String)crMessage.invoke(mbClass, null);
-	} catch (java.lang.reflect.InvocationTargetException ite) {
-	    System.out.println(ite.getMessage());
-	} catch (IllegalArgumentException iae) {
-	    System.out.println(iae.getMessage());
-	} catch (IllegalAccessException iae2) {
-	    System.out.println(iae2.getMessage());
-	} catch (NoSuchMethodException nme) {
-	    System.out.println(nme.getMessage());
-	} catch (NullPointerException npe) {
-	    System.out.println(npe.getMessage());
-	} catch (SecurityException se) {
-	    System.out.println(se.getMessage());
-	} catch (ClassNotFoundException cnfe) {
-	    System.out.println(cnfe.getMessage());
-	}
-	return message;
+        String message = "";
+        try {
+            Class mbClass = Class.forName("com.bbn.openmap.MapBean");
+            java.lang.reflect.Method crMessage = 
+                mbClass.getDeclaredMethod("getCopyrightMessage", null);
+            message = (String)crMessage.invoke(mbClass, null);
+        } catch (java.lang.reflect.InvocationTargetException ite) {
+            System.out.println(ite.getMessage());
+        } catch (IllegalArgumentException iae) {
+            System.out.println(iae.getMessage());
+        } catch (IllegalAccessException iae2) {
+            System.out.println(iae2.getMessage());
+        } catch (NoSuchMethodException nme) {
+            System.out.println(nme.getMessage());
+        } catch (NullPointerException npe) {
+            System.out.println(npe.getMessage());
+        } catch (SecurityException se) {
+            System.out.println(se.getMessage());
+        } catch (ClassNotFoundException cnfe) {
+            System.out.println(cnfe.getMessage());
+        }
+        return message;
     }
 
     /** println to output. */
     public static void output() {
-	Debug.output("");
+        Debug.output("");
     }
 
     /**
@@ -525,25 +525,25 @@ public abstract class Debug {
      */
     public static void output(String outputString) {
 
-	try {
-	    if (outputLog != null){
-		outputLog.writeBytes(outputString);		
-		outputLog.writeBytes("\n");
-	    }
-	} catch (IOException ioe){
-	    // If something goes wrong, set the output to the
-	    // System.out only, and hope someone sees it.
-	    notifyOut = true;
-	    out = System.out;
-	    error("Debug: output writing <" + outputString 
-		  + "> to log! \n" + ioe);
-	    return;
-	}
-	
-	// Write to the output stream if required.
-	if (notifyOut){
-	    out.println(outputString);
-	}
+        try {
+            if (outputLog != null){
+                outputLog.writeBytes(outputString);             
+                outputLog.writeBytes("\n");
+            }
+        } catch (IOException ioe){
+            // If something goes wrong, set the output to the
+            // System.out only, and hope someone sees it.
+            notifyOut = true;
+            out = System.out;
+            error("Debug: output writing <" + outputString 
+                  + "> to log! \n" + ioe);
+            return;
+        }
+        
+        // Write to the output stream if required.
+        if (notifyOut){
+            out.println(outputString);
+        }
     }
 
     /**
@@ -557,15 +557,15 @@ public abstract class Debug {
      */
     public static void setLog(File file, boolean alsoToStreams){
 
-	try {
-	    FileOutputStream logStream = new FileOutputStream(file);
-	    setLog(logStream, alsoToStreams);
-	} catch (IOException ioe){
-	    // If something goes wrong, set the output to the
-	    // System streams only, and hope someone sees it.
-	    resetOutput();
-	    error("IOException trying to create a log file.\n" + ioe);
-	}
+        try {
+            FileOutputStream logStream = new FileOutputStream(file);
+            setLog(logStream, alsoToStreams);
+        } catch (IOException ioe){
+            // If something goes wrong, set the output to the
+            // System streams only, and hope someone sees it.
+            resetOutput();
+            error("IOException trying to create a log file.\n" + ioe);
+        }
     }
 
     /**
@@ -579,46 +579,46 @@ public abstract class Debug {
      * provide output, in addition to logging the output.  
      */
     public static void setLog(OutputStream logStream, boolean alsoToStreams){
-	DataOutputStream dos = new DataOutputStream(logStream);
-	outputLog = dos;
-	errorLog = dos;
-	// Wrap up loose ends - if something happens to the
-	// logStream, we'll just shut down logging, and force
-	// everything to the output streams.
-	errorFile = null;
-	notifyErr = alsoToStreams;
-	notifyOut = alsoToStreams;
+        DataOutputStream dos = new DataOutputStream(logStream);
+        outputLog = dos;
+        errorLog = dos;
+        // Wrap up loose ends - if something happens to the
+        // logStream, we'll just shut down logging, and force
+        // everything to the output streams.
+        errorFile = null;
+        notifyErr = alsoToStreams;
+        notifyOut = alsoToStreams;
     }
 
     /**
      * Reset the logging to the output.
      */
     public static void resetOutput(){
-	// If something goes wrong, set the output to the
-	// System streams only, and hope someone sees it.
-	notifyOut = true;
-	errorFile = null;
-	notifyErr = true;
-	err = System.err;
-	out = System.out;
+        // If something goes wrong, set the output to the
+        // System streams only, and hope someone sees it.
+        notifyOut = true;
+        errorFile = null;
+        notifyErr = true;
+        err = System.err;
+        out = System.out;
     }
 
     /**
      * Dummy function to illustrate usage of the debugging class.
      */
     public static void sampleUsage() {
-	if (Debug.On && Debug.debugging("debug")) {
-	    Debug.output("debug message");
-	} else {
-	    Debug.output("try again");
-	}
+        if (Debug.On && Debug.debugging("debug")) {
+            Debug.output("debug message");
+        } else {
+            Debug.output("try again");
+        }
     }
 
     /**
      * <code>main</code> routine used in unit testing.
      */
     public static void main(String args[]) {
-	Debug.init(System.getProperties());
-	Debug.sampleUsage();
+        Debug.init(System.getProperties());
+        Debug.sampleUsage();
     }
 }

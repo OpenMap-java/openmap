@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/OrientationPropertyEditor.java,v $
 // $RCSfile: OrientationPropertyEditor.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/19 20:41:54 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,10 +30,10 @@ public class OrientationPropertyEditor extends TrueFalsePropertyEditor {
     public final static String HORIZONTAL = "horizontal";
 
     public OrientationPropertyEditor() {
-	setUseAltCommandStrings(true);
-	trueButton = new JRadioButton("Vertical");
-	trueButton.setActionCommand(VERTICAL);
-	falseButton = new JRadioButton("Horizontal");
-	falseButton.setActionCommand(HORIZONTAL);
+        setUseAltCommandStrings(true);
+        trueButton = new JRadioButton("Vertical");
+        trueButton.setActionCommand(VERTICAL);
+        falseButton = new JRadioButton("Horizontal");
+        falseButton.setActionCommand(HORIZONTAL);
     }
 }

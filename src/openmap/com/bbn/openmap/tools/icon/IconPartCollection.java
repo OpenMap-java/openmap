@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconPartCollection.java,v $
 // $RCSfile: IconPartCollection.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/26 17:34:12 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,45 +43,45 @@ public class IconPartCollection extends IconPartCollectionEntry {
      * Create a collection with a name and description.
      */
     public IconPartCollection(String name, String description) {
-	setName(name);
-	setDescription(description);
+        setName(name);
+        setDescription(description);
     }
 
     /**
      * Add an entry to the collection.
      */
     public void add(IconPartCollectionEntry entry) {
-	if (entry != null) {
-	    String entryName = entry.getName();
-	    if (entryName != null) {
-		getEntryMap().put(entryName.intern(), entry);
-	    }
+        if (entry != null) {
+            String entryName = entry.getName();
+            if (entryName != null) {
+                getEntryMap().put(entryName.intern(), entry);
+            }
 
-	    if (entry instanceof IconPartCollection) {
-		getCollections().add(entry);
-	    }
-	}
+            if (entry instanceof IconPartCollection) {
+                getCollections().add(entry);
+            }
+        }
     }
 
     /**
      * Remove an entry from the collection.
      */
     public Object remove(IconPartCollectionEntry entry) {
-	return getEntryMap().remove(entry);
+        return getEntryMap().remove(entry);
     }
 
     /**
      * Clear the entries in the collection.
      */
     public void clear() {
-	getEntryMap().clear();
+        getEntryMap().clear();
     }
 
     /**
      * Get the set of names for the entries of this collection.
      */
     public Set keySet() {
-	return getEntryMap().keySet();
+        return getEntryMap().keySet();
     }
 
     /**
@@ -89,11 +89,11 @@ public class IconPartCollection extends IconPartCollectionEntry {
      * rendering attributes.  Calls get(name);
      */
     public IconPart get(String name, com.bbn.openmap.omGraphics.DrawingAttributes da) {
-	IconPart ip = get(name);
-	if (ip != null) {
-	    ip.setRenderingAttributes(da);
-	}
-	return ip;
+        IconPart ip = get(name);
+        if (ip != null) {
+            ip.setRenderingAttributes(da);
+        }
+        return ip;
     }
 
     /**
@@ -105,25 +105,25 @@ public class IconPartCollection extends IconPartCollectionEntry {
      * will be checked, too, and any hits will be returned.
      */
     public IconPart get(String name) {
-	Object entry = getEntryMap().get(name.intern());
-	IconPart part = null;
+        Object entry = getEntryMap().get(name.intern());
+        IconPart part = null;
 
-	if (entry != null) {
-	    part = (IconPart)((IconPart)((IconPartCollectionEntry)entry).getIconPart()).clone();
-	}
+        if (entry != null) {
+            part = (IconPart)((IconPart)((IconPartCollectionEntry)entry).getIconPart()).clone();
+        }
 
-	if (part == null) {
-	    Iterator it = collections.iterator();
-	    while (it.hasNext()) {
-		IconPartCollection ipc = (IconPartCollection)it.next();
-		part = ipc.get(name);
-		if (part != null) {
-		    break;
-		}
-	    }
-	}
+        if (part == null) {
+            Iterator it = collections.iterator();
+            while (it.hasNext()) {
+                IconPartCollection ipc = (IconPartCollection)it.next();
+                part = ipc.get(name);
+                if (part != null) {
+                    break;
+                }
+            }
+        }
 
-	return part;
+        return part;
     }
 
     /**
@@ -136,25 +136,25 @@ public class IconPartCollection extends IconPartCollectionEntry {
      * returned.
      */
     public String getDescription(String name) {
-	Object entry = getEntryMap().get(name.intern());
-	String desc = null;
+        Object entry = getEntryMap().get(name.intern());
+        String desc = null;
 
-	if (entry != null) {
-	    desc = ((IconPartCollectionEntry)entry).getDescription();
-	}
+        if (entry != null) {
+            desc = ((IconPartCollectionEntry)entry).getDescription();
+        }
 
-	if (desc == null) {
-	    Iterator it = collections.iterator();
-	    while (it.hasNext()) {
-		IconPartCollection ipc = (IconPartCollection)it.next();
-		desc = ipc.getDescription(name);
-		if (desc != null) {
-		    break;
-		}
-	    }
-	}
+        if (desc == null) {
+            Iterator it = collections.iterator();
+            while (it.hasNext()) {
+                IconPartCollection ipc = (IconPartCollection)it.next();
+                desc = ipc.getDescription(name);
+                if (desc != null) {
+                    break;
+                }
+            }
+        }
 
-	return desc;
+        return desc;
     }
 
     /**
@@ -163,19 +163,19 @@ public class IconPartCollection extends IconPartCollectionEntry {
      * entries into this collection.
      */
     public IconPart compose(List list) {
-	IconPartList ipl = new IconPartList();
+        IconPartList ipl = new IconPartList();
 
-	Iterator it = list.iterator();
-	while (it.hasNext()) {
-	    Object obj = it.next();
-	    if (obj instanceof String) {
-		IconPart part = get((String) obj);
-		if (part != null) {
-		    ipl.add(part);
-		}
-	    }
-	}
-	return ipl;
+        Iterator it = list.iterator();
+        while (it.hasNext()) {
+            Object obj = it.next();
+            if (obj instanceof String) {
+                IconPart part = get((String) obj);
+                if (part != null) {
+                    ipl.add(part);
+                }
+            }
+        }
+        return ipl;
     }
 
     /**
@@ -186,36 +186,36 @@ public class IconPartCollection extends IconPartCollectionEntry {
      * names.
      */
     public List composeDescription(List list) {
-	LinkedList ll = new LinkedList();
+        LinkedList ll = new LinkedList();
 
-	Iterator it = list.iterator();
-	while (it.hasNext()) {
-	    Object obj = it.next();
-	    if (obj instanceof String) {
-		String des = getDescription((String) obj);
-		if (des != null) {
-		    ll.add(des);
-		}
-	    }
-	}
-	return ll;
+        Iterator it = list.iterator();
+        while (it.hasNext()) {
+            Object obj = it.next();
+            if (obj instanceof String) {
+                String des = getDescription((String) obj);
+                if (des != null) {
+                    ll.add(des);
+                }
+            }
+        }
+        return ll;
     }
 
     /**
      * Set the entry Map.
      */
     protected void setEntryMap(Map map) {
-	entryMap = map;
+        entryMap = map;
     }
 
     /**
      * Get the entry Map.
      */
     protected Map getEntryMap() {
-	if (entryMap == null) {
-	    entryMap = new Hashtable();
-	}
-	return entryMap;
+        if (entryMap == null) {
+            entryMap = new Hashtable();
+        }
+        return entryMap;
     }
 
     /**
@@ -223,25 +223,25 @@ public class IconPartCollection extends IconPartCollectionEntry {
      * to this collection.
      */
     protected void setCollections(List list) {
-	collections = list;
+        collections = list;
     }
 
     /**
      * Get the List of IconPartCollections that have been added.
      */
     protected List getCollections() {
-	if (collections == null) {
-	    collections = new LinkedList();
-	}
-	return collections;
+        if (collections == null) {
+            collections = new LinkedList();
+        }
+        return collections;
     }
 
     public void setIconPart(IconPart part) {
-	this.part = part;
+        this.part = part;
     }
 
     public IconPart getIconPart() {
-	return part;
+        return part;
     }
 }
 

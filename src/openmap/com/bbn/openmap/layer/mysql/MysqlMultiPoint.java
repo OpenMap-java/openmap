@@ -28,18 +28,18 @@ package com.bbn.openmap.layer.mysql;
 public class MysqlMultiPoint extends MysqlMulti {
 
     public MysqlMultiPoint() {
-	super();
-	this.setType(this.MULTIPOINTTYPE);
+        super();
+        this.setType(this.MULTIPOINTTYPE);
     }
 
     public void addElement(MysqlGeometry l) {
-	if (l.getType().equals(l.POINTTYPE)) {
-	    super.elements.add((MysqlPoint) l);
-	}
+        if (l.getType().equals(l.POINTTYPE)) {
+            super.elements.add((MysqlPoint) l);
+        }
     }
 
     public MysqlGeometry getElementByIndex(int i) {
-	return (MysqlPoint) super.elements.elementAt(i);
+        return (MysqlPoint) super.elements.elementAt(i);
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFileSearch.java,v $
 // $RCSfile: RpfFileSearch.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/07/07 23:18:41 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,46 +42,46 @@ public class RpfFileSearch {
 
     /** Construct and go, starting with the given directory pathname. */
     public RpfFileSearch(String startingDir){
-	handleEntry(startingDir);
+        handleEntry(startingDir);
     }
 
     /** Search, starting with the given directory pathname. */
     public boolean handleEntry(String startingDir){
-	String sDir;
-	File startingFile = null;
+        String sDir;
+        File startingFile = null;
 
-	// This line, if included, wipes out files received from
-	// previous dirs.  Yikes!
-//  	files.clear();
+        // This line, if included, wipes out files received from
+        // previous dirs.  Yikes!
+//      files.clear();
 
-	if (startingDir != null){
-	    startingFile = new File(startingDir);
-	    if (!startingFile.exists()){
-		startingFile = null;
-		Debug.output("RpfFileSearch: " + startingDir + " doesn't exist.");
-		return false;
-	    }
-	}
+        if (startingDir != null){
+            startingFile = new File(startingDir);
+            if (!startingFile.exists()){
+                startingFile = null;
+                Debug.output("RpfFileSearch: " + startingDir + " doesn't exist.");
+                return false;
+            }
+        }
 
-	if (startingFile == null){
-	    return false;
-	}
+        if (startingFile == null){
+            return false;
+        }
 
-	boolean rpfDir = false;
-	String start = startingFile.getAbsolutePath();
-	if ((start.indexOf("RPF") != -1) ||
-  	    (start.indexOf("rpf") != -1)){
-	    rpfDir = true;
-	}
+        boolean rpfDir = false;
+        String start = startingFile.getAbsolutePath();
+        if ((start.indexOf("RPF") != -1) ||
+            (start.indexOf("rpf") != -1)){
+            rpfDir = true;
+        }
 
-	if (Debug.debugging("maketoc")){
-	    Debug.output("RpfFileSearch: Starting RPF file search from " + 
-			 startingDir + ", RPF directory " +
-			 (rpfDir?"found.":"not found."));
-	}
+        if (Debug.debugging("maketoc")){
+            Debug.output("RpfFileSearch: Starting RPF file search from " + 
+                         startingDir + ", RPF directory " +
+                         (rpfDir?"found.":"not found."));
+        }
 
-	handleEntry(startingFile, rpfDir);
-	return true;
+        handleEntry(startingFile, rpfDir);
+        return true;
     }
 
     /**
@@ -89,103 +89,103 @@ public class RpfFileSearch {
      *  directory is somewhere above the file in the file sytem. 
      */
     public void handleEntry(File file, boolean RPFDirFound){
-	try {
+        try {
 
-	    String[] filenames = file.list();
-	    boolean dirTest = false;
-	    boolean not14 = false;
+            String[] filenames = file.list();
+            boolean dirTest = false;
+            boolean not14 = false;
 
-	    try {
-		java.lang.reflect.Method method = 
-		    file.getClass().getDeclaredMethod("isDirectory", null);
-		Object obj = method.invoke(file, null);
-		if (obj instanceof Boolean) {
-		    dirTest = ((Boolean)obj).booleanValue();
-		}
-	    } catch (NoSuchMethodException nsme) {
-		not14 = true;
-	    } catch (SecurityException se) {
-		not14 = true;
-	    } catch (IllegalAccessException iae) {
-		not14 = true;
-	    } catch (IllegalArgumentException iae2) {
-		not14 = true;
-	    } catch (java.lang.reflect.InvocationTargetException ite) {
-		not14 = true;
-	    }
+            try {
+                java.lang.reflect.Method method = 
+                    file.getClass().getDeclaredMethod("isDirectory", null);
+                Object obj = method.invoke(file, null);
+                if (obj instanceof Boolean) {
+                    dirTest = ((Boolean)obj).booleanValue();
+                }
+            } catch (NoSuchMethodException nsme) {
+                not14 = true;
+            } catch (SecurityException se) {
+                not14 = true;
+            } catch (IllegalAccessException iae) {
+                not14 = true;
+            } catch (IllegalArgumentException iae2) {
+                not14 = true;
+            } catch (java.lang.reflect.InvocationTargetException ite) {
+                not14 = true;
+            }
 
-	    if (not14) {
-		dirTest = (filenames != null);
-	    }
+            if (not14) {
+                dirTest = (filenames != null);
+            }
 
-	    if (dirTest){
-		if (Debug.debugging("maketocdetail")) {
-		    Debug.output("RpfFileSearch.handleEntry(" + file + ", " +
-				 RPFDirFound + "), file is a directory");
-		}
-		File[] contents = new File[filenames.length]; // file.listFiles();
-		for (int i = 0; i < contents.length; i++) {
-		    contents[i] = new File(file, filenames[i]);
-		}
+            if (dirTest){
+                if (Debug.debugging("maketocdetail")) {
+                    Debug.output("RpfFileSearch.handleEntry(" + file + ", " +
+                                 RPFDirFound + "), file is a directory");
+                }
+                File[] contents = new File[filenames.length]; // file.listFiles();
+                for (int i = 0; i < contents.length; i++) {
+                    contents[i] = new File(file, filenames[i]);
+                }
 
-		for (int i = 0; i < contents.length; i++){
-		    boolean rpf = false;
-		    if (!RPFDirFound){
-			rpf = filenames[i].equalsIgnoreCase("RPF");
-		    }
-		    handleEntry(contents[i], RPFDirFound || rpf);
-		}
-	    } else {
-		if (Debug.debugging("maketocdetail")) {
-		    Debug.output("RpfFileSearch.handleEntry(" + file + ", " +
-				 RPFDirFound + "), adding to list...");
-		}
+                for (int i = 0; i < contents.length; i++){
+                    boolean rpf = false;
+                    if (!RPFDirFound){
+                        rpf = filenames[i].equalsIgnoreCase("RPF");
+                    }
+                    handleEntry(contents[i], RPFDirFound || rpf);
+                }
+            } else {
+                if (Debug.debugging("maketocdetail")) {
+                    Debug.output("RpfFileSearch.handleEntry(" + file + ", " +
+                                 RPFDirFound + "), adding to list...");
+                }
 
-		String parent = file.getParent();
-		if (RPFDirFound){
-		    if (parent != null){
-			files.add(file.getParent() + 
-				  File.separator + file.getName());
-		    } else {
-			files.add("." + File.separator + file.getName());
-		    }
-		}
-	    }
-	    
-	} catch (NullPointerException npe){
-	} catch (SecurityException se){
-	}
+                String parent = file.getParent();
+                if (RPFDirFound){
+                    if (parent != null){
+                        files.add(file.getParent() + 
+                                  File.separator + file.getName());
+                    } else {
+                        files.add("." + File.separator + file.getName());
+                    }
+                }
+            }
+            
+        } catch (NullPointerException npe){
+        } catch (SecurityException se){
+        }
     }
 
     /** 
      * Get the file list as a String[].
      */
     public String[] getFiles(){
-	String[] fs = new String[files.size()];
-	files.toArray(fs);
-	return fs;
+        String[] fs = new String[files.size()];
+        files.toArray(fs);
+        return fs;
     }
 
     public String toString(){
-	StringBuffer s = new StringBuffer();
-	s.append("RpfFileSearch:\n");
-	for (int i = 0; i < files.size(); i++){
-	    s.append("  file " + i + ": " + files.elementAt(i) + "\n");
-	}
-	return s.toString();
+        StringBuffer s = new StringBuffer();
+        s.append("RpfFileSearch:\n");
+        for (int i = 0; i < files.size(); i++){
+            s.append("  file " + i + ": " + files.elementAt(i) + "\n");
+        }
+        return s.toString();
     }
 
     public static void main(String[] argv){
 
-	Debug.init();
-	RpfFileSearch search = new RpfFileSearch();
+        Debug.init();
+        RpfFileSearch search = new RpfFileSearch();
 
-	// Assume that the arguments are paths to directories or
-	// files.
-	for (int i = 0; i < argv.length; i++){
-	    search.handleEntry(argv[i]);
-	}
+        // Assume that the arguments are paths to directories or
+        // files.
+        for (int i = 0; i < argv.length; i++){
+            search.handleEntry(argv[i]);
+        }
 
-	System.out.println(search);
+        System.out.println(search);
     }
 }

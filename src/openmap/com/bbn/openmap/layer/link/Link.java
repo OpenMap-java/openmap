@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/Link.java,v $
 // $RCSfile: Link.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/28 22:21:18 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -119,14 +119,14 @@ public class Link implements LinkConstants {
      * @throws IOException
      */
     public Link(Socket socket) throws IOException {
-	this.socket = socket;
-	InputStream is = socket.getInputStream();
-	BufferedInputStream bis = new BufferedInputStream(is);
-	this.dis = new DataInputStream(bis);
-	
-	OutputStream os = socket.getOutputStream();
-	BufferedOutputStream bos = new BufferedOutputStream(os);
-	this.dos = new LinkOutputStream(bos);
+        this.socket = socket;
+        InputStream is = socket.getInputStream();
+        BufferedInputStream bis = new BufferedInputStream(is);
+        this.dis = new DataInputStream(bis);
+        
+        OutputStream os = socket.getOutputStream();
+        BufferedOutputStream bos = new BufferedOutputStream(os);
+        this.dos = new LinkOutputStream(bos);
     }
 
     /**
@@ -153,7 +153,7 @@ public class Link implements LinkConstants {
      * @throws IOException
      */
     public void start(String messageHeader) throws IOException {
-	dos.write(messageHeader.getBytes());
+        dos.write(messageHeader.getBytes());
     }
 
     /**  
@@ -168,10 +168,10 @@ public class Link implements LinkConstants {
      * @throws IOException
      */
     public void end(String endType) throws IOException {
-	dos.write(endType.getBytes());
-	if (endType == END_TOTAL) {
-	    dos.flush();
-	}
+        dos.write(endType.getBytes());
+        if (endType == END_TOTAL) {
+            dos.flush();
+        }
     }
 
     /**
@@ -187,7 +187,7 @@ public class Link implements LinkConstants {
      * @throws IOException
      */
     public void readAndParse() throws IOException {
-	readAndParse(null, null);
+        readAndParse(null, null);
     }
 
     /**
@@ -199,8 +199,8 @@ public class Link implements LinkConstants {
      * @throws IOException
      */
     public void readAndParse(Projection proj, OMGridGenerator generator) 
-	throws IOException {
-	readAndParse(proj, generator, null);
+        throws IOException {
+        readAndParse(proj, generator, null);
     }
 
     /**
@@ -214,85 +214,85 @@ public class Link implements LinkConstants {
      * @throws IOException 
      */
     public void readAndParse(Projection proj, OMGridGenerator generator, Layer layer) 
-	throws IOException {
+        throws IOException {
 
-	// Reset everything //
+        // Reset everything //
 
-	// Keep this here, so if there is more than one graphics
-	// section, then all the graphics get added to one list.
-	LinkOMGraphicList graphics = new LinkOMGraphicList();
+        // Keep this here, so if there is more than one graphics
+        // section, then all the graphics get added to one list.
+        LinkOMGraphicList graphics = new LinkOMGraphicList();
 
-	graphicList = null;
-	mapRequest = null;
-	actionRequest = null;
-	actionList = null;
- 	guiRequest = null;
-	guiList = null;
-	closeLink = false;
+        graphicList = null;
+        mapRequest = null;
+        actionRequest = null;
+        actionList = null;
+        guiRequest = null;
+        guiList = null;
+        closeLink = false;
 
-	String delimiter = null;
-	
-	if (Debug.debugging("link")) {
-	    System.out.println("Link|readAndParse: listening to link:");
-	    System.out.println((proj == null?" without ":" with ") +
-			       "a projection and");
-	    System.out.println((layer == null?" without ":" with ") + "a layer");
-	}
+        String delimiter = null;
+        
+        if (Debug.debugging("link")) {
+            System.out.println("Link|readAndParse: listening to link:");
+            System.out.println((proj == null?" without ":" with ") +
+                               "a projection and");
+            System.out.println((layer == null?" without ":" with ") + "a layer");
+        }
 
-	while (true) {
-	    delimiter = readDelimiter(true);
-	    if (Debug.debugging("link")) {
-		System.out.println("Link:reading section: " + delimiter);
-	    }
-	    if (delimiter == GRAPHICS_HEADER) {
-		if (layer != null) {
-		    graphicList = new LinkGraphicList(this, graphics, layer.getProjection(), generator);
-		} else {
-		    graphicList = new LinkGraphicList(this, graphics, proj, generator);
-		}
-		delimiter = graphicList.getLinkStatus();
-	    } else if (delimiter == ACTIONS_HEADER) {
- 		actionList = new LinkActionList(this, layer, proj, generator);
- 		delimiter = actionList.getLinkStatus();
-	    } else if (delimiter == GUI_HEADER) {
-  		guiList = new LinkGUIList(this);
-		delimiter = guiList.getLinkStatus();
-	    } else if (delimiter == CLOSE_LINK_HEADER) {
-		closeLink = true;
-	    } else if (delimiter == SHUTDOWN_HEADER) {
-		Debug.message("link", "Link.received command to exit");
-		if (obeyCommandToExit) {
-		    System.exit(0);
-		}
-	    } else if (delimiter == HUH_HEADER) {
-		delimiter = readDelimiter(true);
-	    } else if (delimiter == MAP_REQUEST_HEADER) {
-		mapRequest = new LinkMapRequest(this);
-		delimiter = mapRequest.getLinkStatus();
-	    } else if (delimiter == ACTION_REQUEST_HEADER) {
-		actionRequest = new LinkActionRequest(this);
-		delimiter = actionRequest.getLinkStatus();
-	    } else if (delimiter == GUI_REQUEST_HEADER) {
-		guiRequest = new LinkGUIRequest(this);
-		delimiter = guiRequest.getLinkStatus();
+        while (true) {
+            delimiter = readDelimiter(true);
+            if (Debug.debugging("link")) {
+                System.out.println("Link:reading section: " + delimiter);
+            }
+            if (delimiter == GRAPHICS_HEADER) {
+                if (layer != null) {
+                    graphicList = new LinkGraphicList(this, graphics, layer.getProjection(), generator);
+                } else {
+                    graphicList = new LinkGraphicList(this, graphics, proj, generator);
+                }
+                delimiter = graphicList.getLinkStatus();
+            } else if (delimiter == ACTIONS_HEADER) {
+                actionList = new LinkActionList(this, layer, proj, generator);
+                delimiter = actionList.getLinkStatus();
+            } else if (delimiter == GUI_HEADER) {
+                guiList = new LinkGUIList(this);
+                delimiter = guiList.getLinkStatus();
+            } else if (delimiter == CLOSE_LINK_HEADER) {
+                closeLink = true;
+            } else if (delimiter == SHUTDOWN_HEADER) {
+                Debug.message("link", "Link.received command to exit");
+                if (obeyCommandToExit) {
+                    System.exit(0);
+                }
+            } else if (delimiter == HUH_HEADER) {
+                delimiter = readDelimiter(true);
+            } else if (delimiter == MAP_REQUEST_HEADER) {
+                mapRequest = new LinkMapRequest(this);
+                delimiter = mapRequest.getLinkStatus();
+            } else if (delimiter == ACTION_REQUEST_HEADER) {
+                actionRequest = new LinkActionRequest(this);
+                delimiter = actionRequest.getLinkStatus();
+            } else if (delimiter == GUI_REQUEST_HEADER) {
+                guiRequest = new LinkGUIRequest(this);
+                delimiter = guiRequest.getLinkStatus();
             } else if (delimiter == PING_REQUEST_HEADER){
                 start(PING_RESPONSE_HEADER);
                 end(END_TOTAL);
                 delimiter = readDelimiter(false);
-	    }
+            }
 
-	    if (delimiter == END_TOTAL) {
-		return;
-	    }
-	}
+            if (delimiter == END_TOTAL) {
+                return;
+            }
+        }
     }
 
     public void setObeyCommandToExit(boolean value) {
-	obeyCommandToExit = value;
+        obeyCommandToExit = value;
     }
 
     public boolean getAcceptCommandToExit() {
-	return obeyCommandToExit;
+        return obeyCommandToExit;
     }
 
     /**
@@ -302,7 +302,7 @@ public class Link implements LinkConstants {
      * @return LinkMapRequest containing the request.
      */
     public LinkMapRequest getMapRequest() {
-	return mapRequest;
+        return mapRequest;
     }
 
     /**
@@ -314,7 +314,7 @@ public class Link implements LinkConstants {
      * graphics were sent the list will be empty.
      */
     public LinkGraphicList getGraphicList() {
-	return graphicList;
+        return graphicList;
     }
 
     /**
@@ -324,7 +324,7 @@ public class Link implements LinkConstants {
      * @return LinkActionRequest containing the request.
      */
     public LinkActionRequest getActionRequest() {
-	return actionRequest;
+        return actionRequest;
     }
 
     /**
@@ -334,7 +334,7 @@ public class Link implements LinkConstants {
      * @return LinkActionList containing the information.
      */
     public LinkActionList getActionList() {
-	return actionList;
+        return actionList;
     }
 
     /**
@@ -344,7 +344,7 @@ public class Link implements LinkConstants {
      * @return LinkGUIRequest containing the request.
      */
     public LinkGUIRequest getGUIRequest() {
-	return guiRequest;
+        return guiRequest;
     }
 
     /**
@@ -354,7 +354,7 @@ public class Link implements LinkConstants {
      *
      */
     public LinkGUIList getGUIList() {
- 	return guiList;
+        return guiList;
     }
 
     /**
@@ -372,55 +372,55 @@ public class Link implements LinkConstants {
      * @throws ArrayIndexOutOfBoundsException
      */
     protected String readDelimiter(boolean returnString)
-	throws IOException, ArrayIndexOutOfBoundsException {
-	String ret = END_TOTAL;
+        throws IOException, ArrayIndexOutOfBoundsException {
+        String ret = END_TOTAL;
 
-	char END_TOTAL_CHAR = END_TOTAL.charAt(0);
-	char END_SECTION_CHAR = END_SECTION.charAt(0);
+        char END_TOTAL_CHAR = END_TOTAL.charAt(0);
+        char END_SECTION_CHAR = END_SECTION.charAt(0);
 
-	char c = (char)dis.readByte();
+        char c = (char)dis.readByte();
 
-	// NOTE: possibility of early exits here...
-	if (c == END_TOTAL_CHAR) {
-	    Debug.message("link","Link|readDelimiter: Found END_TOTAL");
-	    return END_TOTAL;
-	} else if (c == END_SECTION_CHAR) {
-	    Debug.message("link","Link|readDelimiter: Found END_SECTION");
-	    return END_SECTION;
-	} else if (c != '<') {
-	    if (Debug.debugging("link")) {
-		System.out.println("Link|readDelimiter: unexpected protocol data read '" + c + "'");
-	    }
-	    throw new IOException("readDelimiter: unexpected protocol data read.");
-	}
+        // NOTE: possibility of early exits here...
+        if (c == END_TOTAL_CHAR) {
+            Debug.message("link","Link|readDelimiter: Found END_TOTAL");
+            return END_TOTAL;
+        } else if (c == END_SECTION_CHAR) {
+            Debug.message("link","Link|readDelimiter: Found END_SECTION");
+            return END_SECTION;
+        } else if (c != '<') {
+            if (Debug.debugging("link")) {
+                System.out.println("Link|readDelimiter: unexpected protocol data read '" + c + "'");
+            }
+            throw new IOException("readDelimiter: unexpected protocol data read.");
+        }
 
-	// The byte read does indeed equal '<'
-	int charCount = 0;
-	
-	// c should == '<'
-	charArray[charCount++] = c;
-	// Get the rest of the header information
-	c = (char)dis.readByte();		
-	while (c != '>' && charCount < MAX_HEADER_LENGTH - 1) {
-	    charArray[charCount++] = c;
-	    c = (char)dis.readByte();
-	}
+        // The byte read does indeed equal '<'
+        int charCount = 0;
+        
+        // c should == '<'
+        charArray[charCount++] = c;
+        // Get the rest of the header information
+        c = (char)dis.readByte();               
+        while (c != '>' && charCount < MAX_HEADER_LENGTH - 1) {
+            charArray[charCount++] = c;
+            c = (char)dis.readByte();
+        }
 
-	// c should == '>' or uh-oh - too many characters between
-	// them.  Exit with a faulty return if this is the case.
-	if (c != '>') {
-	    throw new IOException("readDelimiter: header is too long.");
-	}
+        // c should == '>' or uh-oh - too many characters between
+        // them.  Exit with a faulty return if this is the case.
+        if (c != '>') {
+            throw new IOException("readDelimiter: header is too long.");
+        }
 
-	charArray[charCount++] = c;
+        charArray[charCount++] = c;
 
-	// OK, got it - return string
-	if (returnString) {
-	    ret = new String(charArray, 0, charCount).intern();
-	} else {
-	    ret = "";
-	}
-	return ret;
+        // OK, got it - return string
+        if (returnString) {
+            ret = new String(charArray, 0, charCount).intern();
+        } else {
+            ret = "";
+        }
+        return ret;
     }
     
     /** 
@@ -428,7 +428,7 @@ public class Link implements LinkConstants {
      * @return true if link in use and unavailable.
      */
     public boolean isLocked() {
-	return locked;
+        return locked;
     }
 
     /**
@@ -439,20 +439,20 @@ public class Link implements LinkConstants {
      * link should be released.
      */
     public synchronized boolean setLocked(boolean set) {
-	if (set == true) {
-	    if (locked == true) {
-		// The lock was NOT set for the caller - unsuccessful.
-		return false;
-	    } else {
-		locked =  true;
-		// The lock was set for the caller, successfully.
-		return true;
-	    }
-	} else {
-	    locked = set;
-	    // The state was set to false, successfully.
-	    return true;
-	}
+        if (set == true) {
+            if (locked == true) {
+                // The lock was NOT set for the caller - unsuccessful.
+                return false;
+            } else {
+                locked =  true;
+                // The lock was set for the caller, successfully.
+                return true;
+            }
+        } else {
+            locked = set;
+            // The state was set to false, successfully.
+            return true;
+        }
     }
 
     /**
@@ -462,14 +462,14 @@ public class Link implements LinkConstants {
      * each graphic type.  Not recommended for the faint of heart.
      */
     public DataOutput getDOS() {
-	return dos;
+        return dos;
     }
     
     /**
      * This method complements getDOS().
      */
     public DataInput getDIS() {
-	return dis;
+        return dis;
     }
 
     /**

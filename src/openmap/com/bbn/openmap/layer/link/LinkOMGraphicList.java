@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkOMGraphicList.java,v $
 // $RCSfile: LinkOMGraphicList.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 20:43:27 $
-// $Author: wjeuerle $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -52,7 +52,7 @@ public class LinkOMGraphicList extends OMGraphicList
      * Construct an OMGraphicList.
      */
     public LinkOMGraphicList() {
-	super (10);
+        super (10);
     };
     
     /**
@@ -60,15 +60,15 @@ public class LinkOMGraphicList extends OMGraphicList
      * @param initialCapacity the initial capacity of the list 
      */
     public LinkOMGraphicList(int initialCapacity) {
-	super (initialCapacity);
+        super (initialCapacity);
     };
 
     public void setProjection(Projection proj) {
-	currentProjection = proj;
+        currentProjection = proj;
     }
 
     public Projection getProjection() {
-	return currentProjection;
+        return currentProjection;
     }
 
     /**
@@ -78,7 +78,7 @@ public class LinkOMGraphicList extends OMGraphicList
      * just checks objects.
      */
     public boolean getNeedToRegenerate(Projection proj) {
-	return super.getNeedToRegenerate() || currentProjection != proj;
+        return super.getNeedToRegenerate() || currentProjection != proj;
     }
 
     /**
@@ -89,14 +89,14 @@ public class LinkOMGraphicList extends OMGraphicList
      * @exception IllegalArgumentException if OMGraphic is null
      */
     public synchronized void _add(OMGeometry g) {
-	super._add(g);
-	String id = ((LinkProperties) g.getAppObject()).getProperty(LPC_GRAPHICID);
-	if (Debug.debugging("linkdetail")) {
-	    Debug.output("LinkOMGraphicList: Adding graphic, id(" + id + ")");
-	}
-	if (id != null) {
-	    hash.put(id.intern(), g);
-	}
+        super._add(g);
+        String id = ((LinkProperties) g.getAppObject()).getProperty(LPC_GRAPHICID);
+        if (Debug.debugging("linkdetail")) {
+            Debug.output("LinkOMGraphicList: Adding graphic, id(" + id + ")");
+        }
+        if (id != null) {
+            hash.put(id.intern(), g);
+        }
     }
 
     /**
@@ -106,18 +106,18 @@ public class LinkOMGraphicList extends OMGraphicList
      * @return true if graphic was on the list, false if otherwise.
      */
     protected synchronized Object _remove(int location) {
-	Object ret = super._remove(location);
-	if (ret != null) {
-	    String id = ((LinkProperties) ((OMGeometry)ret).getAppObject()).getProperty(LPC_GRAPHICID);
-	    if (id != null) {
-		hash.remove(id.intern());
-		if (Debug.debugging("link")) {
-		    Debug.output("LinkOMGraphicList: Removing graphic " + id);
-		}
-	    }
-	}
+        Object ret = super._remove(location);
+        if (ret != null) {
+            String id = ((LinkProperties) ((OMGeometry)ret).getAppObject()).getProperty(LPC_GRAPHICID);
+            if (id != null) {
+                hash.remove(id.intern());
+                if (Debug.debugging("link")) {
+                    Debug.output("LinkOMGraphicList: Removing graphic " + id);
+                }
+            }
+        }
 
-	return ret;
+        return ret;
     }
 
     /**
@@ -129,15 +129,15 @@ public class LinkOMGraphicList extends OMGraphicList
      * @return true if geometry was on the list, false if otherwise.
      */
     protected synchronized boolean _remove(OMGeometry geometry) {
-	boolean ret = super._remove(geometry);
-	if (ret != false) {
-	    String id = ((LinkProperties)geometry.getAppObject()).getProperty(LPC_GRAPHICID);
-	    hash.remove(id.intern());
-	    if (Debug.debugging("link")) {
-		Debug.output("LinkOMGraphicList: Removing graphic " + id);
-	    }
-	}
-	return ret;
+        boolean ret = super._remove(geometry);
+        if (ret != false) {
+            String id = ((LinkProperties)geometry.getAppObject()).getProperty(LPC_GRAPHICID);
+            hash.remove(id.intern());
+            if (Debug.debugging("link")) {
+                Debug.output("LinkOMGraphicList: Removing graphic " + id);
+            }
+        }
+        return ret;
     }
 
     /**
@@ -152,27 +152,27 @@ public class LinkOMGraphicList extends OMGraphicList
      * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     public synchronized void setOMGraphicAt(OMGraphic graphic, int index) {
-	LinkProperties linkp = null;
+        LinkProperties linkp = null;
 
-	try {
-	    linkp = (LinkProperties)graphic.getAppObject();
+        try {
+            linkp = (LinkProperties)graphic.getAppObject();
 
-	    String id = null;
-	    if (linkp != null) {
-		id = linkp.getProperty(LPC_GRAPHICID);
-		if (Debug.debugging("link")) {
-		    Debug.output("LinkOMGraphicList.setOMGraphicAt(): Updating graphic " + id + " at " + index);
-		}
-		if (id != null) {
-		    hash.put(id.intern(), graphic);
-		}
-	    }
+            String id = null;
+            if (linkp != null) {
+                id = linkp.getProperty(LPC_GRAPHICID);
+                if (Debug.debugging("link")) {
+                    Debug.output("LinkOMGraphicList.setOMGraphicAt(): Updating graphic " + id + " at " + index);
+                }
+                if (id != null) {
+                    hash.put(id.intern(), graphic);
+                }
+            }
 
-	} catch (ClassCastException cce) {
-	    Debug.error("LinkOMGraphicList.setOMGraphicAt(): Updated graphic doesn't have id");
-	}
+        } catch (ClassCastException cce) {
+            Debug.error("LinkOMGraphicList.setOMGraphicAt(): Updated graphic doesn't have id");
+        }
 
-	super.setOMGraphicAt(graphic, index);
+        super.setOMGraphicAt(graphic, index);
     }
 
     /**
@@ -181,7 +181,7 @@ public class LinkOMGraphicList extends OMGraphicList
       * @return OMGraphic or null if not found
       */
      public OMGraphic getOMGraphicWithId(String gid) {
-	 return (OMGraphic) hash.get(gid.intern());
+         return (OMGraphic) hash.get(gid.intern());
      }
 
     /**
@@ -191,20 +191,20 @@ public class LinkOMGraphicList extends OMGraphicList
      * @return OMGraphic index or Link.UNKNOWN if not found
      */
     public int getOMGraphicIndexWithId(String gid) {
-	OMGraphic graphic = getOMGraphicWithId(gid);
-	if (graphic != null) {
-	    return super._indexOf(graphic);
-	} else {
-	    return Link.UNKNOWN;
-	}
+        OMGraphic graphic = getOMGraphicWithId(gid);
+        if (graphic != null) {
+            return super._indexOf(graphic);
+        } else {
+            return Link.UNKNOWN;
+        }
     }
 
     /**
      * Remove all elements from the graphic list.
      */
     public synchronized void clear() {
-	super.clear();
-	hash.clear();
+        super.clear();
+        hash.clear();
     }
 
     /**
@@ -217,39 +217,39 @@ public class LinkOMGraphicList extends OMGraphicList
      * @param gr the AWT Graphics context
      */
     public synchronized void render(Graphics gr) {
-	OMGraphic graphic;
-	ListIterator iterator;
+        OMGraphic graphic;
+        ListIterator iterator;
 
-	if (traverseMode == FIRST_ADDED_ON_TOP) {
-	    iterator = graphics.listIterator(graphics.size());
-	    while (iterator.hasPrevious()) {
-		graphic = (OMGraphic) iterator.previous();
-		if (graphic.isVisible()) {
-		    Object obj = graphic.getAppObject();
-		    if (Debug.debugging("linkdetail") &&
-			obj instanceof LinkProperties) {
-			String id = ((LinkProperties)obj).getProperty(LPC_GRAPHICID);
-			Debug.output("LinkOMGraphicList: Rendering graphic " + id);
-		    }
-		    graphic.render(gr);
-		}
-	    }
+        if (traverseMode == FIRST_ADDED_ON_TOP) {
+            iterator = graphics.listIterator(graphics.size());
+            while (iterator.hasPrevious()) {
+                graphic = (OMGraphic) iterator.previous();
+                if (graphic.isVisible()) {
+                    Object obj = graphic.getAppObject();
+                    if (Debug.debugging("linkdetail") &&
+                        obj instanceof LinkProperties) {
+                        String id = ((LinkProperties)obj).getProperty(LPC_GRAPHICID);
+                        Debug.output("LinkOMGraphicList: Rendering graphic " + id);
+                    }
+                    graphic.render(gr);
+                }
+            }
 
-	} else {
-	    iterator = graphics.listIterator();
+        } else {
+            iterator = graphics.listIterator();
 
-	    while (iterator.hasNext()) {
-		graphic = (OMGraphic) iterator.next();
-		if (graphic.isVisible()) {
-		    Object obj = graphic.getAppObject();
-		    if (Debug.debugging("linkdetail") &&
-			obj instanceof LinkProperties) {
-			String id = ((LinkProperties)obj).getProperty(LPC_GRAPHICID);
-			Debug.output("LinkOMGraphicList: Rendering graphic " + id);
-		    }
-		    graphic.render(gr);
-		}
-	    }
-	}
+            while (iterator.hasNext()) {
+                graphic = (OMGraphic) iterator.next();
+                if (graphic.isVisible()) {
+                    Object obj = graphic.getAppObject();
+                    if (Debug.debugging("linkdetail") &&
+                        obj instanceof LinkProperties) {
+                        String id = ((LinkProperties)obj).getProperty(LPC_GRAPHICID);
+                        Debug.output("LinkOMGraphicList: Rendering graphic " + id);
+                    }
+                    graphic.render(gr);
+                }
+            }
+        }
     }
 }

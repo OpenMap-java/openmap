@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardPCPolicy.java,v $
 // $RCSfile: StandardPCPolicy.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/04 18:15:21 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -58,45 +58,45 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
      * Don't pass in a null layer.
      */
     public StandardPCPolicy(OMGraphicHandlerLayer layer) {
-	this.layer = layer;
+        this.layer = layer;
     }
 
     public void setLayer(OMGraphicHandlerLayer l) {
-	layer = l;
+        layer = l;
     }
 
     public OMGraphicHandlerLayer getLayer() {
-	return layer;
+        return layer;
     }
 
     public void projectionChanged(ProjectionEvent pe) {
-	if (layer != null) {
-	    Projection proj = layer.setProjection(pe);
-	    // proj will be null if the projection hasn't changed, a 
-	    // signal that work does not need to be done.
-	    if (proj != null) {
-		// Some criteria can decide whether
-		// starting another thread is worth it...
-		if (shouldSpawnThreadForPrepare()) {
-		    if (Debug.debugging("layer")) {
-			Debug.output(getLayer().getName() + ": StandardPCPolicy projectionChanged with NEW projection, spawning thread to handle it.");
-		    }
-		    layer.doPrepare();
-		    return;
-		} else {
-		    if (Debug.debugging("layer")) {
-			Debug.output(getLayer().getName() + ": StandardPCPolicy projectionChanged with NEW projection, handling it within current thread.");
-		    }
-		    layer.prepare();
-		    layer.repaint();
-		}
-	    } else {
-		layer.repaint();
-	    }
-	    layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-	} else {
-	    Debug.error("StandardPCPolicy.projectionChanged(): NULL layer, can't do anything.");
-	}
+        if (layer != null) {
+            Projection proj = layer.setProjection(pe);
+            // proj will be null if the projection hasn't changed, a 
+            // signal that work does not need to be done.
+            if (proj != null) {
+                // Some criteria can decide whether
+                // starting another thread is worth it...
+                if (shouldSpawnThreadForPrepare()) {
+                    if (Debug.debugging("layer")) {
+                        Debug.output(getLayer().getName() + ": StandardPCPolicy projectionChanged with NEW projection, spawning thread to handle it.");
+                    }
+                    layer.doPrepare();
+                    return;
+                } else {
+                    if (Debug.debugging("layer")) {
+                        Debug.output(getLayer().getName() + ": StandardPCPolicy projectionChanged with NEW projection, handling it within current thread.");
+                    }
+                    layer.prepare();
+                    layer.repaint();
+                }
+            } else {
+                layer.repaint();
+            }
+            layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+        } else {
+            Debug.error("StandardPCPolicy.projectionChanged(): NULL layer, can't do anything.");
+        }
     }
 
     /**
@@ -109,9 +109,9 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
      * sources, might want nothing to happen.
      */
     public void workerComplete(OMGraphicList aList) {
-	if (layer != null) {
-	    layer.setList(aList);
-	}
+        if (layer != null) {
+            layer.setList(aList);
+        }
     }
 
     /**
@@ -122,15 +122,15 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
      * method so that different criteria may be considered.
      */
     protected boolean shouldSpawnThreadForPrepare() {
-	if (layer != null) {
-	    com.bbn.openmap.omGraphics.OMGraphicList list = layer.getList();
-	    if (list != null) {
-		return layer.getList().size() > graphicCutoff;
-	    }
-	}
-	// If we have to create a list, might as well assume that 
-	// is should be done in a new thread.
-	return true;
+        if (layer != null) {
+            com.bbn.openmap.omGraphics.OMGraphicList list = layer.getList();
+            if (list != null) {
+                return layer.getList().size() > graphicCutoff;
+            }
+        }
+        // If we have to create a list, might as well assume that 
+        // is should be done in a new thread.
+        return true;
     }
 
     /**
@@ -138,11 +138,11 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
      * a thread gets spawned to call generate() on them.
      */
     public void setGraphicCutoff(int number) {
-	graphicCutoff = number;
+        graphicCutoff = number;
     }
 
     public int getGraphicCutoff() {
-	return graphicCutoff;
+        return graphicCutoff;
     }
 
 }

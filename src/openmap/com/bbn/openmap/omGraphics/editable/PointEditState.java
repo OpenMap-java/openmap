@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PointEditState.java,v $
 // $RCSfile: PointEditState.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/08/19 23:18:10 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,13 +35,13 @@ import com.bbn.openmap.util.Debug;
 public class PointEditState extends GraphicEditState implements EOMGEditState {
 
     public PointEditState(EditableOMPoint eomp) {
-	super(eomp);
+        super(eomp);
     }
 
     public boolean mouseReleased(MouseEvent e) {
-	Debug.message("eomg", "PointStateMachine|edit state|mouseReleased");
-	graphic.setGrabPoints(); // Needed for OMPoints that are point and clicked for placement.
-	return super.mouseReleased(e);
+        Debug.message("eomg", "PointStateMachine|edit state|mouseReleased");
+        graphic.setGrabPoints(); // Needed for OMPoints that are point and clicked for placement.
+        return super.mouseReleased(e);
     }
 }
 

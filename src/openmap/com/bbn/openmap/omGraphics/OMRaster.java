@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRaster.java,v $
 // $RCSfile: OMRaster.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -128,19 +128,19 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @see #setPixel 
      */
     public OMRaster(float lt, float ln,
-		    int w, int h, 
-		    int[] pix) {
+                    int w, int h, 
+                    int[] pix) {
 
-	super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	setColorModel(COLORMODEL_DIRECT);
-	lat = lt;
-	lon = ln;
-	width = w;
-	height = h;
-	pixels = pix;
+        super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setColorModel(COLORMODEL_DIRECT);
+        lat = lt;
+        lon = ln;
+        width = w;
+        height = h;
+        pixels = pix;
 
-	if (pixels == null || pixels.length == 0)
-	    pixels = new int[height*width];
+        if (pixels == null || pixels.length == 0)
+            pixels = new int[height*width];
     }
   
     /**
@@ -154,19 +154,19 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @see #setPixel 
      */
     public OMRaster(int x1, int y1,
-		    int w, int h,
-		    int[] pix) {
+                    int w, int h,
+                    int[] pix) {
 
-	super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	setColorModel(COLORMODEL_DIRECT);
-	x = x1;
-	y = y1;
-	width = w;
-	height = h;
-	pixels = pix;
+        super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setColorModel(COLORMODEL_DIRECT);
+        x = x1;
+        y = y1;
+        width = w;
+        height = h;
+        pixels = pix;
 
-	if (pixels == null || pixels.length == 0)
-	    pixels = new int[height*width];
+        if (pixels == null || pixels.length == 0)
+            pixels = new int[height*width];
     }
 
     /**
@@ -183,23 +183,23 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @see #setPixel 
      */
     public OMRaster(float lt, float ln,
-		    int offset_x1, int offset_y1,
-		    int w, int h,
-		    int[] pix) {
+                    int offset_x1, int offset_y1,
+                    int w, int h,
+                    int[] pix) {
 
-	super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	setColorModel(COLORMODEL_DIRECT);
-	lat = lt;
-	lon = ln;
-	x = offset_x1;
-	y = offset_y1;
-	width = w;
-	height = h;
-	pixels = pix;
+        super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setColorModel(COLORMODEL_DIRECT);
+        lat = lt;
+        lon = ln;
+        x = offset_x1;
+        y = offset_y1;
+        width = w;
+        height = h;
+        pixels = pix;
 
-	if (pixels == null || pixels.length == 0) {
-	    pixels = new int[height*width];
-	}
+        if (pixels == null || pixels.length == 0) {
+            pixels = new int[height*width];
+        }
     }
 
 
@@ -213,7 +213,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param ii ImageIcon used for the image.
      */
     public OMRaster(float lt, float ln, ImageIcon ii) {
-	this (lt, ln, ii.getImage());
+        this (lt, ln, ii.getImage());
     }
 
     /**
@@ -224,11 +224,11 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param ii Image used for the image.
      */
     public OMRaster(float lt, float ln, Image ii) {
-	super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	setColorModel(COLORMODEL_IMAGEICON);
-	lat = lt;
-	lon = ln;
-	setImage(ii);
+        super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setColorModel(COLORMODEL_IMAGEICON);
+        lat = lt;
+        lon = ln;
+        setImage(ii);
     }
   
     /**
@@ -239,7 +239,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param ii ImageIcon used for the image.
      */
     public OMRaster(int x1, int y1, ImageIcon ii) {
-	this(x1, y1, ii.getImage());
+        this(x1, y1, ii.getImage());
     }
   
     /**
@@ -250,11 +250,11 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param ii Image used for the image.
      */
     public OMRaster(int x1, int y1, Image ii) {
-	super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	setColorModel(COLORMODEL_IMAGEICON);
-	x = x1;
-	y = y1;
-	setImage(ii);
+        super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setColorModel(COLORMODEL_IMAGEICON);
+        x = x1;
+        y = y1;
+        setImage(ii);
     }
 
     /**
@@ -267,9 +267,9 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param ii ImageIcon used for the image.
      */
     public OMRaster(float lt, float ln,
-		    int offset_x1, int offset_y1,
-		    ImageIcon ii) {
-	this(lt, ln, offset_x1, offset_y1, ii.getImage());
+                    int offset_x1, int offset_y1,
+                    ImageIcon ii) {
+        this(lt, ln, offset_x1, offset_y1, ii.getImage());
     }
 
     /**
@@ -287,16 +287,16 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param ii Image used for the image.
      */
     public OMRaster(float lt, float ln,
-		    int offset_x1, int offset_y1,
-		    Image ii) {
+                    int offset_x1, int offset_y1,
+                    Image ii) {
 
-	super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	setColorModel(COLORMODEL_IMAGEICON);
-	lat = lt;
-	lon = ln;
-	x = offset_x1;
-	y = offset_y1;
-	setImage(ii);
+        super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setColorModel(COLORMODEL_IMAGEICON);
+        lat = lt;
+        lon = ln;
+        x = offset_x1;
+        y = offset_y1;
+        setImage(ii);
     }
 
     ////////////////////////////////////// BYTE PIXELS with COLORTABLE
@@ -315,30 +315,30 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @see #setPixel 
      */
     public OMRaster(float lt, float ln,
-		    int w, int h, 
-		    byte[] bytes,
-		    Color[] colorTable,
-		    int trans) {
+                    int w, int h, 
+                    byte[] bytes,
+                    Color[] colorTable,
+                    int trans) {
 
-	super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	setColorModel(COLORMODEL_INDEXED);
-	lat = lt;
-	lon = ln;
-	width = w;
-	height = h;
-	bits = bytes;
-	transparent = trans;
-	if (colorTable != null) {
-	    setColors(colorTable);
-	}
+        super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setColorModel(COLORMODEL_INDEXED);
+        lat = lt;
+        lon = ln;
+        width = w;
+        height = h;
+        bits = bytes;
+        transparent = trans;
+        if (colorTable != null) {
+            setColors(colorTable);
+        }
 
-	if (bits != null && bits.length != 0) {
-	    if (colorTable != null && colors.length != 0) {
-		computePixels();
-	    }
-	} else {
-	    bits = new byte[height*width];
-	}
+        if (bits != null && bits.length != 0) {
+            if (colorTable != null && colors.length != 0) {
+                computePixels();
+            }
+        } else {
+            bits = new byte[height*width];
+        }
     }
   
     /**
@@ -355,30 +355,30 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @see #setPixel 
      */
     public OMRaster(int x1, int y1,
-		    int w, int h,
-		    byte[] bytes,
-		    Color[] colorTable,
-		    int trans) {
+                    int w, int h,
+                    byte[] bytes,
+                    Color[] colorTable,
+                    int trans) {
 
-	super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	setColorModel(COLORMODEL_INDEXED);
-	x = x1;
-	y = y1;
-	width = w;
-	height = h;
-	bits = bytes;
-	transparent = trans;
-	if (colorTable != null) {
-	    setColors(colorTable);
-	}
+        super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setColorModel(COLORMODEL_INDEXED);
+        x = x1;
+        y = y1;
+        width = w;
+        height = h;
+        bits = bytes;
+        transparent = trans;
+        if (colorTable != null) {
+            setColors(colorTable);
+        }
 
-	if (bits != null && bits.length != 0) {
-	    if (colorTable != null && colors.length != 0) {
-		computePixels();
-	    }
-	} else {
-	    bits = new byte[height*width];
-	}
+        if (bits != null && bits.length != 0) {
+            if (colorTable != null && colors.length != 0) {
+                computePixels();
+            }
+        } else {
+            bits = new byte[height*width];
+        }
     }
 
     /**
@@ -398,33 +398,33 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @see #setPixel
      */
     public OMRaster(float lt, float ln,
-		    int offset_x1, int offset_y1,
-		    int w, int h,
-		    byte[] bytes,
-		    Color[] colorTable,
-		    int trans) {
+                    int offset_x1, int offset_y1,
+                    int w, int h,
+                    byte[] bytes,
+                    Color[] colorTable,
+                    int trans) {
 
-	super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	setColorModel(COLORMODEL_INDEXED);
-	lat = lt;
-	lon = ln;
-	x = offset_x1;
-	y = offset_y1;
-	width = w;
-	height = h;
-	transparent = trans;
-	bits = bytes;
-	if (colorTable != null) {
-	    setColors(colorTable);
-	}
+        super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setColorModel(COLORMODEL_INDEXED);
+        lat = lt;
+        lon = ln;
+        x = offset_x1;
+        y = offset_y1;
+        width = w;
+        height = h;
+        transparent = trans;
+        bits = bytes;
+        if (colorTable != null) {
+            setColors(colorTable);
+        }
 
-	if (bits != null && bits.length != 0) {
-	    if (colorTable != null && colors.length != 0) {
-		computePixels();
-	    }
-	} else {
-	    bits = new byte[height*width];
-	}
+        if (bits != null && bits.length != 0) {
+            if (colorTable != null && colors.length != 0) {
+                computePixels();
+            }
+        } else {
+            bits = new byte[height*width];
+        }
     }
 
     //////////////////////////////////////////////////////
@@ -438,9 +438,9 @@ public class OMRaster extends OMRasterObject implements Serializable {
      */
     private boolean boundsSafe(int x, int y) {
         if ((y < 0) || (y >= height) || (x < 0) || (x >= width)) {
-	    return false;
-	}
-	return true;
+            return false;
+        }
+        return true;
     }
 
 
@@ -450,7 +450,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param img ImageIcon
      */
     public void setImageIcon(ImageIcon img) {
-	setImage(img.getImage());
+        setImage(img.getImage());
     }
 
     /**
@@ -464,11 +464,11 @@ public class OMRaster extends OMRasterObject implements Serializable {
     public boolean setPixel(int x, int y, int colorValue) {
 
         if (boundsSafe(x, y)) {
-	    pixels[(y*width)+x] = colorValue;
-	    setNeedToRegenerate(true);
-	    return true;
-	}
-	return false;  //fail
+            pixels[(y*width)+x] = colorValue;
+            setNeedToRegenerate(true);
+            return true;
+        }
+        return false;  //fail
     }
 
     /**
@@ -480,9 +480,9 @@ public class OMRaster extends OMRasterObject implements Serializable {
      */
     public int getPixel(int x, int y) {
         if (boundsSafe(x, y)) {
-	    return pixels[(y*width)+x];
-	}
-	return 0;  //fail - but also the ct[0] - hmmmmm.
+            return pixels[(y*width)+x];
+        }
+        return 0;  //fail - but also the ct[0] - hmmmmm.
     }
 
     /** 
@@ -496,11 +496,11 @@ public class OMRaster extends OMRasterObject implements Serializable {
      */
     public boolean setByte(int x, int y, byte ctIndex) {
         if (boundsSafe(x, y) && bits != null) {
-	    bits[(y*width)+x] = ctIndex;
-	    setNeedToRegenerate(true);
-	    return true;
-	}
-	return false;  //fail
+            bits[(y*width)+x] = ctIndex;
+            setNeedToRegenerate(true);
+            return true;
+        }
+        return false;  //fail
     }
 
     /**
@@ -513,9 +513,9 @@ public class OMRaster extends OMRasterObject implements Serializable {
      */
     public byte getByte(int x, int y) {
         if (boundsSafe(x, y) && bits != null) {
-	    return bits[(y*width)+x];
-	}
-	return 0;  //fail - but also the ct[0] - hmmmmm.
+            return bits[(y*width)+x];
+        }
+        return 0;  //fail - but also the ct[0] - hmmmmm.
     }
 
     /**
@@ -527,12 +527,12 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param values byte values containing bit pixel values.
      */
     public void setBits(byte[] values) {
-	super.setBits(values);
+        super.setBits(values);
         if ((values.length) != (height*width))
-	    Debug.output("OMBitmap: new byte[] size (" +
-			 + values.length +") doesn't" +
-			 " match [height*width (" + 
-			 height*width + ")]");
+            Debug.output("OMBitmap: new byte[] size (" +
+                         + values.length +") doesn't" +
+                         " match [height*width (" + 
+                         height*width + ")]");
     }
 
     /**
@@ -546,29 +546,29 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param value New value of the alpha value for the image.  
      */
     public void setTransparent(int value) {
-	value &= 0x000000ff;
+        value &= 0x000000ff;
         if (transparent == value) return;
-	transparent = value;
-	setNeedToRegenerate(true);
-	if (bits != null) {
-	    pixels = null;
-	    computePixels();
-	}
-	else{
-	    value <<= 24;//move to alpha position
-	    // direct color model, touch each pixel in the image
-	    for (int i = 0; i < pixels.length; i++) {
+        transparent = value;
+        setNeedToRegenerate(true);
+        if (bits != null) {
+            pixels = null;
+            computePixels();
+        }
+        else{
+            value <<= 24;//move to alpha position
+            // direct color model, touch each pixel in the image
+            for (int i = 0; i < pixels.length; i++) {
 
-		//  Do this if we want to support images that have
-		//  transparent pixels, and we want each pixel to have
-		//  the most transparent pixel.
-		//  		int pixAlpha = 0xFF000000 & pixels[i];
-		//  		pixAlpha = (pixAlpha < value)?pixAlpha:value;
-		//  		pixels[i] = (0x00ffffff & pixels[i]) | pixAlpha;
+                //  Do this if we want to support images that have
+                //  transparent pixels, and we want each pixel to have
+                //  the most transparent pixel.
+                //              int pixAlpha = 0xFF000000 & pixels[i];
+                //              pixAlpha = (pixAlpha < value)?pixAlpha:value;
+                //              pixels[i] = (0x00ffffff & pixels[i]) | pixAlpha;
 
-		pixels[i] = (0x00ffffff & pixels[i]) | value;
-	    }
-	}
+                pixels[i] = (0x00ffffff & pixels[i]) | value;
+            }
+        }
     }
 
     /**
@@ -589,12 +589,12 @@ public class OMRaster extends OMRasterObject implements Serializable {
      */
     public void setColors(int[] values) {
         if (colorModel != COLORMODEL_INDEXED) {
-	    Debug.output("OMRaster: Setting colors for final " + 
-			 "colortable when a colortable isn't needed!");
-	} else {
-	    colors = values;
-	    setNeedToRegenerate(true);
-	}
+            Debug.output("OMRaster: Setting colors for final " + 
+                         "colortable when a colortable isn't needed!");
+        } else {
+            colors = values;
+            setNeedToRegenerate(true);
+        }
     }
 
     /**
@@ -609,72 +609,72 @@ public class OMRaster extends OMRasterObject implements Serializable {
     public void setColors(Color[] values) {
 
         if (colorModel != COLORMODEL_INDEXED) {
-	    Debug.output("OMRaster: Setting colors for final colortable when a colortable isn't needed!");
-	    return;
+            Debug.output("OMRaster: Setting colors for final colortable when a colortable isn't needed!");
+            return;
 
-	} else if (values == null || values.length == 0) {
-	    colors = new int[0];
-	    Debug.output("OMRaster: What are you trying to do to me?!? The colortables gots to have values!");
-	    return;
+        } else if (values == null || values.length == 0) {
+            colors = new int[0];
+            Debug.output("OMRaster: What are you trying to do to me?!? The colortables gots to have values!");
+            return;
 
-	} else {
+        } else {
 
-	    if (values.length > 0) {
-		colors = new int[values.length];
-		boolean allTransparent = true;
-		int trans = (transparent << 24) & 0xff000000;
+            if (values.length > 0) {
+                colors = new int[values.length];
+                boolean allTransparent = true;
+                int trans = (transparent << 24) & 0xff000000;
 
-		// Turn the color table into a table using the
-		// default OMava color model.
-		for (int i=0; i<values.length; i++) {
+                // Turn the color table into a table using the
+                // default OMava color model.
+                for (int i=0; i<values.length; i++) {
 
-		    //  The transparent field can be set for the whole
-		    //  image, while the open part of the colortable entry
-		    //  structure is the transparent setting for that
-		    //  particular color.
-		    if (transparent < 255) {
-//			if (values[i] instanceof OMColor) {
-//			    OMColor tmp = (OMColor)values[i];
-//			    if (tmp.getAlpha() < transparent) continue;
-//			}
-//			// Alpha transparency (0 - 255)
-//			colors[i] = OMColor.setTransparentValue(values[i].getRGB(),
-//								transparent);
-			int argb = values[i].getRGB();
+                    //  The transparent field can be set for the whole
+                    //  image, while the open part of the colortable entry
+                    //  structure is the transparent setting for that
+                    //  particular color.
+                    if (transparent < 255) {
+//                      if (values[i] instanceof OMColor) {
+//                          OMColor tmp = (OMColor)values[i];
+//                          if (tmp.getAlpha() < transparent) continue;
+//                      }
+//                      // Alpha transparency (0 - 255)
+//                      colors[i] = OMColor.setTransparentValue(values[i].getRGB(),
+//                                                              transparent);
+                        int argb = values[i].getRGB();
 
-			// If the transparent value of the pixel is
-			// lower than the transparency value, keep
-			// that instead - don't make things more
-			// visible then they were.
-			if ((argb >>> 24) > transparent) {
-			    colors[i] = (0x00ffffff & argb) | trans;
-			} else {
-			    colors[i] = argb;
-			}
-		    }
-		    else {
-			colors[i] = values[i].getRGB();
-		    }
+                        // If the transparent value of the pixel is
+                        // lower than the transparency value, keep
+                        // that instead - don't make things more
+                        // visible then they were.
+                        if ((argb >>> 24) > transparent) {
+                            colors[i] = (0x00ffffff & argb) | trans;
+                        } else {
+                            colors[i] = argb;
+                        }
+                    }
+                    else {
+                        colors[i] = values[i].getRGB();
+                    }
 
-		    //  Just check if all the colors are transparent -
-		    //  this is a pain to figure out if you are
-		    //  getting colors from some server that doesn't
-		    //  know about alpha values.
-		    if (allTransparent && ((colors[i] >>> 24) != 0)) {
-			allTransparent = false;
-		    }
-		}
-		if (DEBUG && allTransparent) {
-		    Debug.output("OMRaster: **Whasamatta?** Image created with all transparent pixels!");
-		}
-	    }
+                    //  Just check if all the colors are transparent -
+                    //  this is a pain to figure out if you are
+                    //  getting colors from some server that doesn't
+                    //  know about alpha values.
+                    if (allTransparent && ((colors[i] >>> 24) != 0)) {
+                        allTransparent = false;
+                    }
+                }
+                if (DEBUG && allTransparent) {
+                    Debug.output("OMRaster: **Whasamatta?** Image created with all transparent pixels!");
+                }
+            }
 
-	    //This is wrong - we do need to force a computePixels, but in generate...
-	    // 	    computePixels();
-	    // This will do it....
-	    pixels = null;
-	    setNeedToRegenerate(true);
-	}
+            //This is wrong - we do need to force a computePixels, but in generate...
+            //      computePixels();
+            // This will do it....
+            pixels = null;
+            setNeedToRegenerate(true);
+        }
     }
 
     /**
@@ -702,52 +702,52 @@ public class OMRaster extends OMRasterObject implements Serializable {
      */
     protected boolean computePixels() {
 
-	if (DEBUG) Debug.output("OMRaster.compute pixels!");
+        if (DEBUG) Debug.output("OMRaster.compute pixels!");
 
         int i;
-	if (colorModel != COLORMODEL_INDEXED) {
-	    return true;
-	}
-	
-	if (colors == null || colors.length == 0) {
-	    Debug.error("OMRaster: attempting to compute pixels without color table!");
-	    return false;
-	}
+        if (colorModel != COLORMODEL_INDEXED) {
+            return true;
+        }
+        
+        if (colors == null || colors.length == 0) {
+            Debug.error("OMRaster: attempting to compute pixels without color table!");
+            return false;
+        }
 
-	int nPixels = width * height;
-	// 	Debug.output("Computing pixels for subframe size:" +
-	// 			   width + ", " + height);
-	pixels = new int[nPixels];
+        int nPixels = width * height;
+        //      Debug.output("Computing pixels for subframe size:" +
+        //                         width + ", " + height);
+        pixels = new int[nPixels];
 
-	// Now, using the new constructed color table, build a set of
-	// pixels.
-	int alpha = transparent<<24;
+        // Now, using the new constructed color table, build a set of
+        // pixels.
+        int alpha = transparent<<24;
 
-	for (i=0; i<nPixels; i++) {
+        for (i=0; i<nPixels; i++) {
 
-	    // make the alpha for this color the lessor of what the
-	    // colortable is, versus the transparent value
-	    //  	    int pixAlpha;
-	    // Ahh, too much work...
+            // make the alpha for this color the lessor of what the
+            // colortable is, versus the transparent value
+            //              int pixAlpha;
+            // Ahh, too much work...
 
-	    if (bits[i] < 0) {
-// 		Debug.output(
-// 		    "resetting color: " + (256 + bits[i]));
-//   		pixAlpha = 0xFF000000 & colors[MoreMath.signedToInt(bits[i])];
-//  		pixAlpha = (pixAlpha < alpha)?pixAlpha:alpha;
+            if (bits[i] < 0) {
+//              Debug.output(
+//                  "resetting color: " + (256 + bits[i]));
+//              pixAlpha = 0xFF000000 & colors[MoreMath.signedToInt(bits[i])];
+//              pixAlpha = (pixAlpha < alpha)?pixAlpha:alpha;
 
-		pixels[i] = alpha | (0x00FFFFFF & colors[MoreMath.signedToInt(bits[i])]);
-	    } else if (bits[i] < colors.length) {
-//  		pixAlpha = 0xFF000000 & colors[bits[i]];
-//  		pixAlpha = (pixAlpha < alpha)?pixAlpha:alpha;
-		pixels[i] =  alpha | (0x00FFFFFF & colors[bits[i]]);
-	    } else {
-		if (DEBUG) Debug.output("OMRaster:.computePixels() problem!: " +
-					bits[i]);
-		pixels[i] = clear.getRGB();
-	    }
-	}
-	return true;
+                pixels[i] = alpha | (0x00FFFFFF & colors[MoreMath.signedToInt(bits[i])]);
+            } else if (bits[i] < colors.length) {
+//              pixAlpha = 0xFF000000 & colors[bits[i]];
+//              pixAlpha = (pixAlpha < alpha)?pixAlpha:alpha;
+                pixels[i] =  alpha | (0x00FFFFFF & colors[bits[i]]);
+            } else {
+                if (DEBUG) Debug.output("OMRaster:.computePixels() problem!: " +
+                                        bits[i]);
+                pixels[i] = clear.getRGB();
+            }
+        }
+        return true;
     }
 
     /** 
@@ -763,54 +763,54 @@ public class OMRaster extends OMRasterObject implements Serializable {
      */
     public boolean generate(Projection proj) {
 
-	// Position sets the position for the OMRaster!!!!
-	if (!position(proj)) {
-	    if (DEBUG) {
-		Debug.error("OMRaster.generate(): positioning failed!");
-	    }
-	    return false;
-	}
+        // Position sets the position for the OMRaster!!!!
+        if (!position(proj)) {
+            if (DEBUG) {
+                Debug.error("OMRaster.generate(): positioning failed!");
+            }
+            return false;
+        }
 
-	// We used to just return here if the OMRaster didn't need to
-	// be regenerated, but that didn't create the shape properly.
+        // We used to just return here if the OMRaster didn't need to
+        // be regenerated, but that didn't create the shape properly.
 
-	if (getNeedToRegenerate()) {
+        if (getNeedToRegenerate()) {
 
-	    if (colorModel != COLORMODEL_IMAGEICON) {
+            if (colorModel != COLORMODEL_IMAGEICON) {
 
-		// This section is for the indexed color model rasters that
-		// need to resolve the colormap to the bit array indexs.
-		boolean allsWell = true;
-		// If pixels == null, then computePixels has not been called
-		if (pixels == null) {
-		    allsWell = false;
-		    if (bits != null) allsWell = computePixels();
-		    if (!allsWell) {
-			Debug.output("OMRaster: attempted to generate without pixels defined!");  
-			return false;
-		    }
-		    //  		Debug.output("OMRaster.generate: length(pixels) = " + 
-		    //  			     pixels.length);
-		}
+                // This section is for the indexed color model rasters that
+                // need to resolve the colormap to the bit array indexs.
+                boolean allsWell = true;
+                // If pixels == null, then computePixels has not been called
+                if (pixels == null) {
+                    allsWell = false;
+                    if (bits != null) allsWell = computePixels();
+                    if (!allsWell) {
+                        Debug.output("OMRaster: attempted to generate without pixels defined!");  
+                        return false;
+                    }
+                    //                  Debug.output("OMRaster.generate: length(pixels) = " + 
+                    //                               pixels.length);
+                }
 
 
-		bitmap = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		((BufferedImage)bitmap).setRGB(0, 0, width, height, pixels, 0, width);
-	    }
+                bitmap = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                ((BufferedImage)bitmap).setRGB(0, 0, width, height, pixels, 0, width);
+            }
 
-	    // REPLACING bitmap with the filtered version - keep a copy
-	    // yourself if you need the original!!! i.e. for
-	    // COLORMODEL_IMAGEICON
-	    if (imageFilter != null) {
-		bitmap = filterImage();
-	    }
-	}
+            // REPLACING bitmap with the filtered version - keep a copy
+            // yourself if you need the original!!! i.e. for
+            // COLORMODEL_IMAGEICON
+            if (imageFilter != null) {
+                bitmap = filterImage();
+            }
+        }
 
-	// generate shape that is a boundary of the generated image.
-	// We'll make it a GeneralPath rectangle.
-	setShape();
+        // generate shape that is a boundary of the generated image.
+        // We'll make it a GeneralPath rectangle.
+        setShape();
 
-	setNeedToRegenerate(false);
-	return true;
+        setNeedToRegenerate(false);
+        return true;
     }
 }

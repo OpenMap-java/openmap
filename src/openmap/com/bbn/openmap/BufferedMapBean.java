@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/BufferedMapBean.java,v $
 // $RCSfile: BufferedMapBean.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/24 03:31:35 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -190,7 +190,7 @@ public class BufferedMapBean extends MapBean {
      * @return boolean whether the layer buffer is dirty
      */
     public boolean isBufferDirty() {
-	return bufferDirty;
+        return bufferDirty;
     }
 
 }

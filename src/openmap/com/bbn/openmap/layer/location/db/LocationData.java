@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/db/LocationData.java,v $
 // $RCSfile: LocationData.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,7 +42,7 @@ public class LocationData {
     /** Connection object that will be used to retrieve data. */
     protected Connection connection;
 
-    /* variables that would hold current values of record set*/	
+    /* variables that would hold current values of record set*/ 
     protected String cityName, stateName, graphicName;
     protected float latitude, longitude;
     protected String queryString = null;
@@ -53,79 +53,79 @@ public class LocationData {
     public LocationData() {}
     
     public LocationData(Connection inConnection){
-	connection = inConnection;
+        connection = inConnection;
     }
     
     public LocationData (RecordSet drs) throws SQLException {
 
-	ResultSet rset = drs.getResultSet();
+        ResultSet rset = drs.getResultSet();
 
-	cityName = rset.getString(1);
-	stateName = rset.getString(2);
-	graphicName = rset.getString(3);
-	latitude = rset.getFloat(4);
-	longitude = rset.getFloat(5);
+        cityName = rset.getString(1);
+        stateName = rset.getString(2);
+        graphicName = rset.getString(3);
+        latitude = rset.getFloat(4);
+        longitude = rset.getFloat(5);
     }
     
-    public void close() throws SQLException {	
-	rset.close();
-	stmt.close();
+    public void close() throws SQLException {   
+        rset.close();
+        stmt.close();
     }
     
     public Connection getConnection(){
-	return connection;
+        return connection;
     }
     
     public void setConnection(Connection inConnection){
-	connection = inConnection;
+        connection = inConnection;
     }
     
     /** 
      * @return city name of current record 
      */
     public String getCityName(){
-	return cityName;
-    }	
+        return cityName;
+    }   
 
-    public String getStateName(){	
-	return stateName;
+    public String getStateName(){       
+        return stateName;
     }
     
     public String getGraphicName(){
-	return graphicName;
+        return graphicName;
     }
 
     public float getLatitude(){
-	return latitude;
+        return latitude;
     }
     
     public float getLongitude(){
-	return longitude;
+        return longitude;
     }
     
     public String getQueryString(){
-	return queryString;
+        return queryString;
     }
     
     public void setQueryString(String inQueryString){
-	queryString = inQueryString;
+        queryString = inQueryString;
     }
 
     public String toString(){
-	StringBuffer s = new StringBuffer();
-	s.append("Location Data values:\n");    
-	s.append(" City Name = " + cityName + "\n"); 
-	s.append(" State Name = " + stateName + "\n");
-	s.append(" Graphic = " + graphicName + "\n");
-	s.append(" Latitude = " + latitude + "\n");
-	s.append(" Longitude = " + longitude + "\n");
-	return s.toString();
+        StringBuffer s = new StringBuffer();
+        s.append("Location Data values:\n");    
+        s.append(" City Name = " + cityName + "\n"); 
+        s.append(" State Name = " + stateName + "\n");
+        s.append(" Graphic = " + graphicName + "\n");
+        s.append(" Latitude = " + latitude + "\n");
+        s.append(" Longitude = " + longitude + "\n");
+        return s.toString();
     }
 
     public static void main(String[] args){
-	System.out.println("\n*** LocationData looks for the following query: ***\n");
-	System.out.println(" select CITY (string), STATE (string), GRAPHIC (string, url or graphic name), LATITUDE (float), LONGITUDE (float) from LOCATION_TABLE (tablename where data is stored)\n");
-	System.out.println("Note: Column names and tablename should reflect whatever is stored in the database.  Data types should match what this class is expecting, in the order listed here.\n");
+        System.out.println("\n*** LocationData looks for the following query: ***\n");
+        System.out.println(" select CITY (string), STATE (string), GRAPHIC (string, url or graphic name), LATITUDE (float), LONGITUDE (float) from LOCATION_TABLE (tablename where data is stored)\n");
+        System.out.println("Note: Column names and tablename should reflect whatever is stored in the database.  Data types should match what this class is expecting, in the order listed here.\n");
     }
 
 }

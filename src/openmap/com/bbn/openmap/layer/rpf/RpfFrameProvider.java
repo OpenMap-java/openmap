@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrameProvider.java,v $
 // $RCSfile: RpfFrameProvider.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,8 +54,8 @@ public interface RpfFrameProvider {
      * for RpfSubframes.  
      */
     public Vector getCoverage(float ullat, float ullon,
-			      float lrlat, float lrlon, 
-			      CADRG p);
+                              float lrlat, float lrlon, 
+                              CADRG p);
     
     /**
      * Given a projection that describes a map or geographical area,
@@ -63,8 +63,8 @@ public interface RpfFrameProvider {
      * of data are available.
      */
     public Vector getCatalogCoverage(float ullat, float ullon,
-				     float lrlat, float lrlon,
-				     CADRG p, String chartSeries);
+                                     float lrlat, float lrlon,
+                                     CADRG p, String chartSeries);
 
     /**
      * Given an area and a two-letter chart series code, find the
@@ -74,8 +74,8 @@ public interface RpfFrameProvider {
      * @see #getCatalogCoverage(float, float, float, float, CADRG, String)
      */
     public float getCalculatedCoverage(float ullat, float ullon,
-				       float lrlat, float lrlon,
-				       CADRG p, String chartSeries);
+                                       float lrlat, float lrlon,
+                                       CADRG p, String chartSeries);
 
     /**
      * Given the indexes to a certain RpfTocEntry within a certain
@@ -98,7 +98,7 @@ public interface RpfFrameProvider {
 
 
     public RpfIndexedImageData getRawSubframeData(int tocNumber, int entryNumber, 
-						  int x, int y);
+                                                  int x, int y);
 
 
 
@@ -120,5 +120,5 @@ public interface RpfFrameProvider {
      * @return string.  
      */
     public String getSubframeAttributes(int tocNumber, int entryNumber, 
-					int x, int y);
+                                        int x, int y);
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Gnomonic.java,v $
 // $RCSfile: Gnomonic.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:56 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:14 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -54,9 +54,9 @@ public class Gnomonic extends Azimuth {
 
     public final static transient float epsilon = 0.0001f;
     public final static transient float HEMISPHERE_EDGE=
-	(float)((Math.PI/180d)*80d);//80degrees
+        (float)((Math.PI/180d)*80d);//80degrees
     public final static transient float hPrime =
-	1f/(float)Math.pow(Math.cos(HEMISPHERE_EDGE),2d);
+        1f/(float)Math.pow(Math.cos(HEMISPHERE_EDGE),2d);
 
 
     protected final static float NORTH_BOUNDARY = NORTH_POLE-epsilon;
@@ -72,10 +72,10 @@ public class Gnomonic extends Azimuth {
      *
      */
     public Gnomonic(
-	LatLonPoint center, float scale, int width, int height)
+        LatLonPoint center, float scale, int width, int height)
     {
-	super(center, scale, width, height, GnomonicType);
-	setMinScale(1000.0f);
+        super(center, scale, width, height, GnomonicType);
+        setMinScale(1000.0f);
     }
 
 
@@ -86,7 +86,7 @@ public class Gnomonic extends Azimuth {
      *
      */
     public String toString() {
-	return "Gnomonic[" + super.toString();
+        return "Gnomonic[" + super.toString();
     }
 
 
@@ -99,43 +99,43 @@ public class Gnomonic extends Azimuth {
      *
      */
     protected void computeParameters() {
-	Debug.message("proj", "Gnomonic.computeParameters()");
-	super.computeParameters();
+        Debug.message("proj", "Gnomonic.computeParameters()");
+        super.computeParameters();
 
-	// minscale is the minimum scale allowable (before integer wrapping
-	// can occur)
-	minscale = (float)Math.ceil((2*hPrime*planetPixelRadius)/(int)Integer.MAX_VALUE);
-	if (minscale < 1)
-	    minscale = 1;
-	if (scale < minscale)
-	    scale = minscale;
+        // minscale is the minimum scale allowable (before integer wrapping
+        // can occur)
+        minscale = (float)Math.ceil((2*hPrime*planetPixelRadius)/(int)Integer.MAX_VALUE);
+        if (minscale < 1)
+            minscale = 1;
+        if (scale < minscale)
+            scale = minscale;
 
-	// maxscale = scale at which a world hemisphere fits in the window
-	maxscale = (width < height)
-	    ? (float)(planetPixelRadius*2*hPrime)/(float)width
-	    : (float)(planetPixelRadius*2*hPrime)/(float)height;
-	if (maxscale < minscale) {
-	    maxscale = minscale;
-	}
-	if (scale > maxscale) {
-	    scale = maxscale;
-	}
-	scaled_radius = planetPixelRadius/scale;
+        // maxscale = scale at which a world hemisphere fits in the window
+        maxscale = (width < height)
+            ? (float)(planetPixelRadius*2*hPrime)/(float)width
+            : (float)(planetPixelRadius*2*hPrime)/(float)height;
+        if (maxscale < minscale) {
+            maxscale = minscale;
+        }
+        if (scale > maxscale) {
+            scale = maxscale;
+        }
+        scaled_radius = planetPixelRadius/scale;
 
-	// width of the world in pixels at current scale.  We see only
-	// one hemisphere.
-	world.x = (int)((planetPixelRadius*2*hPrime)/scale);
+        // width of the world in pixels at current scale.  We see only
+        // one hemisphere.
+        world.x = (int)((planetPixelRadius*2*hPrime)/scale);
 
-	// calculate cutoff scale for XWindows workaround
-	XSCALE_THRESHOLD = (int)((planetPixelRadius*2*hPrime)/64000);//fudge it a little bit
+        // calculate cutoff scale for XWindows workaround
+        XSCALE_THRESHOLD = (int)((planetPixelRadius*2*hPrime)/64000);//fudge it a little bit
 
-	// do some precomputation of stuff
-	cosCtrLat = (float)Math.cos(ctrLat);
-	sinCtrLat = (float)Math.sin(ctrLat);
-	
-	// compute the offsets
-	hy = height/2;
-	wx = width/2;
+        // do some precomputation of stuff
+        cosCtrLat = (float)Math.cos(ctrLat);
+        sinCtrLat = (float)Math.sin(ctrLat);
+        
+        // compute the offsets
+        hy = height/2;
+        wx = width/2;
     }
 
     /**
@@ -144,8 +144,8 @@ public class Gnomonic extends Azimuth {
      * @param paint java.awt.Paint to use for the background
      */
     public void drawBackground(Graphics2D g, java.awt.Paint paint) {
-	g.setPaint(paint);
-	g.fillRect(0, 0, getWidth(), getHeight());
+        g.setPaint(paint);
+        g.fillRect(0, 0, getWidth(), getHeight());
     }
 
     /**
@@ -159,12 +159,12 @@ public class Gnomonic extends Azimuth {
      *
      */
     public float normalize_latitude(float lat) {
-	if (lat > NORTH_BOUNDARY) {
-	    return NORTH_BOUNDARY;
-	} else if (lat < SOUTH_BOUNDARY) {
-	    return SOUTH_BOUNDARY;
-	}
-	return lat;
+        if (lat > NORTH_BOUNDARY) {
+            return NORTH_BOUNDARY;
+        } else if (lat < SOUTH_BOUNDARY) {
+            return SOUTH_BOUNDARY;
+        }
+        return lat;
     }
 
 
@@ -178,10 +178,10 @@ public class Gnomonic extends Azimuth {
      *
      */
     final public static float hemisphere_distance(
-	float phi1, float lambda0, float phi, float lambda)
+        float phi1, float lambda0, float phi, float lambda)
     {
-	return GreatCircle.spherical_distance(
-	    phi1, lambda0, phi, lambda)/*-epsilon*/;
+        return GreatCircle.spherical_distance(
+            phi1, lambda0, phi, lambda)/*-epsilon*/;
     }
 
 
@@ -195,10 +195,10 @@ public class Gnomonic extends Azimuth {
      *
      */
     final public static boolean hemisphere_clip(
-	float phi1, float lambda0, float phi, float lambda)
+        float phi1, float lambda0, float phi, float lambda)
     {
-	return (GreatCircle.spherical_distance(
-	    phi1, lambda0, phi, lambda)/*-epsilon*/ <= HEMISPHERE_EDGE);
+        return (GreatCircle.spherical_distance(
+            phi1, lambda0, phi, lambda)/*-epsilon*/ <= HEMISPHERE_EDGE);
     }
 
 
@@ -214,24 +214,24 @@ public class Gnomonic extends Azimuth {
      *
      */
     private Point edge_point(Point p, float current_azimuth) {
-	float c = HEMISPHERE_EDGE;
-	LatLonPoint tmpll = GreatCircle.spherical_between(
-		ctrLat, ctrLon, c/*-epsilon*/, current_azimuth);
-	float phi = tmpll.radlat_;
-	float lambda = tmpll.radlon_;
+        float c = HEMISPHERE_EDGE;
+        LatLonPoint tmpll = GreatCircle.spherical_between(
+                ctrLat, ctrLon, c/*-epsilon*/, current_azimuth);
+        float phi = tmpll.radlat_;
+        float lambda = tmpll.radlon_;
 
-	float kPrime = 1f/(float)Math.cos(c);
-	float cosPhi = (float)Math.cos(phi);
-	float sinPhi = (float)Math.sin(phi);
-	float lambdaMinusCtrLon = (float)(lambda-ctrLon);
-	float cosLambdaMinusCtrLon = (float)Math.cos(lambdaMinusCtrLon);
-	float sinLambdaMinusCtrLon = (float)Math.sin(lambdaMinusCtrLon);
+        float kPrime = 1f/(float)Math.cos(c);
+        float cosPhi = (float)Math.cos(phi);
+        float sinPhi = (float)Math.sin(phi);
+        float lambdaMinusCtrLon = (float)(lambda-ctrLon);
+        float cosLambdaMinusCtrLon = (float)Math.cos(lambdaMinusCtrLon);
+        float sinLambdaMinusCtrLon = (float)Math.sin(lambdaMinusCtrLon);
 
-	p.x = (int)(scaled_radius*kPrime*cosPhi*sinLambdaMinusCtrLon) + wx;
-	p.y = hy - (int)(scaled_radius*kPrime*
-		(cosCtrLat*sinPhi - sinCtrLat*cosPhi*cosLambdaMinusCtrLon));
+        p.x = (int)(scaled_radius*kPrime*cosPhi*sinLambdaMinusCtrLon) + wx;
+        p.y = hy - (int)(scaled_radius*kPrime*
+                (cosCtrLat*sinPhi - sinCtrLat*cosPhi*cosLambdaMinusCtrLon));
 
-	return p;
+        return p;
     }
 
 
@@ -244,9 +244,9 @@ public class Gnomonic extends Azimuth {
      * @return boolean
      */
     public boolean isPlotable(float lat, float lon) {
-	lat = normalize_latitude(ProjMath.degToRad(lat));
-	lon = wrap_longitude(ProjMath.degToRad(lon));
-	return hemisphere_clip(ctrLat, ctrLon, lat, lon);
+        lat = normalize_latitude(ProjMath.degToRad(lat));
+        lon = wrap_longitude(ProjMath.degToRad(lon));
+        return hemisphere_clip(ctrLat, ctrLon, lat, lon);
     }
 
 
@@ -261,32 +261,32 @@ public class Gnomonic extends Azimuth {
      * @return Point pt
      */
     protected Point _forward (
-	    float phi, float lambda, Point p, AzimuthVar azVar)
+            float phi, float lambda, Point p, AzimuthVar azVar)
     {
-	float c = hemisphere_distance(ctrLat, ctrLon, phi, lambda);
-	// normalize invalid point to the edge of the sphere
-	if (c > HEMISPHERE_EDGE) {
-	    float az =
-		GreatCircle.spherical_azimuth(ctrLat, ctrLon, phi, lambda);
-	    if (azVar != null) {
-		azVar.invalid_forward = true;	// set the invalid flag
-		azVar.current_azimuth = az;	// record azimuth of this point
-	    }
-	    return edge_point(p, az);
-	}
+        float c = hemisphere_distance(ctrLat, ctrLon, phi, lambda);
+        // normalize invalid point to the edge of the sphere
+        if (c > HEMISPHERE_EDGE) {
+            float az =
+                GreatCircle.spherical_azimuth(ctrLat, ctrLon, phi, lambda);
+            if (azVar != null) {
+                azVar.invalid_forward = true;   // set the invalid flag
+                azVar.current_azimuth = az;     // record azimuth of this point
+            }
+            return edge_point(p, az);
+        }
 
-	float kPrime = 1f/(float)Math.cos(c);
-	float cosPhi = (float)Math.cos(phi);
-	float sinPhi = (float)Math.sin(phi);
-	float lambdaMinusCtrLon = (float)(lambda-ctrLon);
-	float cosLambdaMinusCtrLon = (float)Math.cos(lambdaMinusCtrLon);
-	float sinLambdaMinusCtrLon = (float)Math.sin(lambdaMinusCtrLon);
+        float kPrime = 1f/(float)Math.cos(c);
+        float cosPhi = (float)Math.cos(phi);
+        float sinPhi = (float)Math.sin(phi);
+        float lambdaMinusCtrLon = (float)(lambda-ctrLon);
+        float cosLambdaMinusCtrLon = (float)Math.cos(lambdaMinusCtrLon);
+        float sinLambdaMinusCtrLon = (float)Math.sin(lambdaMinusCtrLon);
 
-	p.x = (int)(scaled_radius*kPrime*cosPhi*sinLambdaMinusCtrLon) + wx;
-	p.y = hy - (int)(scaled_radius*kPrime*
-		(cosCtrLat*sinPhi - sinCtrLat*cosPhi*cosLambdaMinusCtrLon));
+        p.x = (int)(scaled_radius*kPrime*cosPhi*sinLambdaMinusCtrLon) + wx;
+        p.y = hy - (int)(scaled_radius*kPrime*
+                (cosCtrLat*sinPhi - sinCtrLat*cosPhi*cosLambdaMinusCtrLon));
 
-	return p;
+        return p;
     }
 
 
@@ -300,54 +300,54 @@ public class Gnomonic extends Azimuth {
      *
      */
     public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
-	// convert from screen to world coordinates
-	x = x - wx;
-	y = hy - y;
+        // convert from screen to world coordinates
+        x = x - wx;
+        y = hy - y;
 
 
-// 	Debug.output("Gnomonic.inverse: x,y=" + x + "," + y);
+//      Debug.output("Gnomonic.inverse: x,y=" + x + "," + y);
 
-	float rho = (float)Math.sqrt(x*x + y*y);
-	if (rho == 0f) {
-	    Debug.message("proj", "Gnomonic.inverse: center!");
-	    llp.setLatLon(
-		    ProjMath.radToDeg(ctrLat),
-		    ProjMath.radToDeg(ctrLon));
-	    return llp;
-	}
+        float rho = (float)Math.sqrt(x*x + y*y);
+        if (rho == 0f) {
+            Debug.message("proj", "Gnomonic.inverse: center!");
+            llp.setLatLon(
+                    ProjMath.radToDeg(ctrLat),
+                    ProjMath.radToDeg(ctrLon));
+            return llp;
+        }
 
-	float c = (float)Math.atan2(rho, scaled_radius);
-	float cosC = (float)Math.cos(c);
-	float sinC = (float)Math.sin(c);
+        float c = (float)Math.atan2(rho, scaled_radius);
+        float cosC = (float)Math.cos(c);
+        float sinC = (float)Math.sin(c);
 
-	// calculate latitude 
-	float lat = (float)Math.asin(
-	    cosC * sinCtrLat + (y * sinC * (cosCtrLat/rho)));
+        // calculate latitude 
+        float lat = (float)Math.asin(
+            cosC * sinCtrLat + (y * sinC * (cosCtrLat/rho)));
 
 
-	// calculate longitude
-	float lon = ctrLon + (float)Math.atan2(
-		(x*sinC),
-		(rho*cosCtrLat*cosC - y*sinCtrLat*sinC));
-// 	Debug.output("Gnomonic.inverse: lat,lon=" +
-// 			   ProjMath.radToDeg(lat) + "," +
-// 			   ProjMath.radToDeg(lon));
+        // calculate longitude
+        float lon = ctrLon + (float)Math.atan2(
+                (x*sinC),
+                (rho*cosCtrLat*cosC - y*sinCtrLat*sinC));
+//      Debug.output("Gnomonic.inverse: lat,lon=" +
+//                         ProjMath.radToDeg(lat) + "," +
+//                         ProjMath.radToDeg(lon));
 
-	// check if point in outer space
-//	if (MoreMath.approximately_equal(lat, ctrLat) &&
-//	       MoreMath.approximately_equal(lon, ctrLon) &&
-//	       (Math.abs(x-(width/2))<2) &&
-//	       (Math.abs(y-(height/2))<2))
-	if (Float.isNaN(lat) || Float.isNaN(lon))
-	{
-//	    Debug.message("proj", "Gnomonic.inverse(): outer space!");
-	    lat = ctrLat;
-	    lon = ctrLon;
-	}
-	llp.setLatLon(
-		ProjMath.radToDeg(lat),
-		ProjMath.radToDeg(lon));
-	return llp;
+        // check if point in outer space
+//      if (MoreMath.approximately_equal(lat, ctrLat) &&
+//             MoreMath.approximately_equal(lon, ctrLon) &&
+//             (Math.abs(x-(width/2))<2) &&
+//             (Math.abs(y-(height/2))<2))
+        if (Float.isNaN(lat) || Float.isNaN(lon))
+        {
+//          Debug.message("proj", "Gnomonic.inverse(): outer space!");
+            lat = ctrLat;
+            lon = ctrLon;
+        }
+        llp.setLatLon(
+                ProjMath.radToDeg(lat),
+                ProjMath.radToDeg(lon));
+        return llp;
     }
 
 
@@ -359,7 +359,7 @@ public class Gnomonic extends Azimuth {
      *
      */
     public LatLonPoint inverse(Point pt, LatLonPoint llp) {
-	return inverse(pt.x, pt.y, llp);
+        return inverse(pt.x, pt.y, llp);
     }
 
 
@@ -368,9 +368,9 @@ public class Gnomonic extends Azimuth {
      * @return boolean
      */
     public boolean overEquator () {
-	LatLonPoint llN = inverse(width/2, 0, new LatLonPoint());
-	LatLonPoint llS = inverse(width/2, height, new LatLonPoint());
-	return MoreMath.sign(llN.radlat_) != MoreMath.sign(llS.radlat_);
+        LatLonPoint llN = inverse(width/2, 0, new LatLonPoint());
+        LatLonPoint llS = inverse(width/2, height, new LatLonPoint());
+        return MoreMath.sign(llN.radlat_) != MoreMath.sign(llS.radlat_);
     }
 
 
@@ -384,58 +384,58 @@ public class Gnomonic extends Azimuth {
      * @return LatLonPoint
      */
     public LatLonPoint getUpperLeft() {
-	LatLonPoint tmp = new LatLonPoint();
-	float lat, lon;
+        LatLonPoint tmp = new LatLonPoint();
+        float lat, lon;
 
-	// over north pole
-	if (overNorthPole()) {
-	    lat = NORTH_POLE;
-	    lon = -DATELINE;
-	}
+        // over north pole
+        if (overNorthPole()) {
+            lat = NORTH_POLE;
+            lon = -DATELINE;
+        }
 
-	// over south pole
-	else if (overSouthPole()) {
-	    lon = -DATELINE;
-	    if (overEquator()) {
-		// get top center for latitude
-		tmp = inverse(width/2, 0, tmp);
-		lat = tmp.radlat_;
-	    } else {
-		// get left top corner for latitude
-		tmp = inverse(0, 0, tmp);
-		lat = tmp.radlat_;
-	    }
-	}
+        // over south pole
+        else if (overSouthPole()) {
+            lon = -DATELINE;
+            if (overEquator()) {
+                // get top center for latitude
+                tmp = inverse(width/2, 0, tmp);
+                lat = tmp.radlat_;
+            } else {
+                // get left top corner for latitude
+                tmp = inverse(0, 0, tmp);
+                lat = tmp.radlat_;
+            }
+        }
 
-	// view in northern hemisphere
-	else if (ctrLat >= 0f) {
-	    // get left top corner for longitude
-	    tmp = inverse(0,0,tmp);
-	    lon = tmp.radlon_;
-	    // get top center for latitude
-	    tmp = inverse(width/2, 0, tmp);
-	    lat = tmp.radlat_;
-	}
+        // view in northern hemisphere
+        else if (ctrLat >= 0f) {
+            // get left top corner for longitude
+            tmp = inverse(0,0,tmp);
+            lon = tmp.radlon_;
+            // get top center for latitude
+            tmp = inverse(width/2, 0, tmp);
+            lat = tmp.radlat_;
+        }
 
-	// view in southern hemisphere
-	else {
-	    // get left bottom corner for longitude
-	    tmp = inverse(0, height, tmp);
-	    lon = tmp.radlon_;
+        // view in southern hemisphere
+        else {
+            // get left bottom corner for longitude
+            tmp = inverse(0, height, tmp);
+            lon = tmp.radlon_;
 
-	    if (overEquator()) {
-		// get top center (for latitude)
-		tmp = inverse(width/2, 0, tmp);
-		lat = tmp.radlat_;
-	    } else {
-		// get left top corner (for latitude)
-		tmp = inverse(0, 0, tmp);
-		lat = tmp.radlat_;
-	    }
-	}
-	tmp.setLatLon(lat, lon, true);
-//	Debug.output("ul="+tmp);
-	return tmp;
+            if (overEquator()) {
+                // get top center (for latitude)
+                tmp = inverse(width/2, 0, tmp);
+                lat = tmp.radlat_;
+            } else {
+                // get left top corner (for latitude)
+                tmp = inverse(0, 0, tmp);
+                lat = tmp.radlat_;
+            }
+        }
+        tmp.setLatLon(lat, lon, true);
+//      Debug.output("ul="+tmp);
+        return tmp;
     }
 
 
@@ -451,64 +451,64 @@ public class Gnomonic extends Azimuth {
      * @return LatLonPoint
      */
     public LatLonPoint getLowerRight() {
-	LatLonPoint tmp = new LatLonPoint();
-	float lat, lon;
+        LatLonPoint tmp = new LatLonPoint();
+        float lat, lon;
 
-	// over north pole
-	if (overNorthPole()) {
-	    lon = DATELINE;
-	    if (overEquator()) {
-		// get bottom center for latitude
-		tmp = inverse(width/2, height, tmp);
-		lat = tmp.radlat_;
-	    } else {
-		// get bottom right corner for latitude
-		tmp = inverse(width, height, tmp);
-		lat = tmp.radlat_;
-	    }
-	}
+        // over north pole
+        if (overNorthPole()) {
+            lon = DATELINE;
+            if (overEquator()) {
+                // get bottom center for latitude
+                tmp = inverse(width/2, height, tmp);
+                lat = tmp.radlat_;
+            } else {
+                // get bottom right corner for latitude
+                tmp = inverse(width, height, tmp);
+                lat = tmp.radlat_;
+            }
+        }
 
-	// over south pole
-	else if (overSouthPole()) {
-	    lat = SOUTH_POLE;
-	    lon = DATELINE;
-	}
+        // over south pole
+        else if (overSouthPole()) {
+            lat = SOUTH_POLE;
+            lon = DATELINE;
+        }
 
-	// view in northern hemisphere
-	else if (ctrLat >= 0f) {
-	    // get the right top corner for longitude
-	    tmp = inverse(width, 0, tmp);
-	    lon = tmp.radlon_;
+        // view in northern hemisphere
+        else if (ctrLat >= 0f) {
+            // get the right top corner for longitude
+            tmp = inverse(width, 0, tmp);
+            lon = tmp.radlon_;
 
-	    if (overEquator()) {
-		// get the bottom center (for latitude)
-		tmp = inverse(width/2, height, tmp);
-		lat = tmp.radlat_;
-	    } else {
-		// get the right bottom corner (for latitude)
-		tmp = inverse(width, height, tmp);
-		lat = tmp.radlat_;
-	    }
-	}
+            if (overEquator()) {
+                // get the bottom center (for latitude)
+                tmp = inverse(width/2, height, tmp);
+                lat = tmp.radlat_;
+            } else {
+                // get the right bottom corner (for latitude)
+                tmp = inverse(width, height, tmp);
+                lat = tmp.radlat_;
+            }
+        }
 
-	// view in southern hemisphere
-	else {
-	    // get the right bottom corner for longitude
-	    tmp = inverse(width,height,tmp);
-	    lon = tmp.radlon_;
-	    // get bottom center for latitude
-	    tmp = inverse(width/2, height, tmp);
-	    lat = tmp.radlat_;
-	}
-	tmp.setLatLon(lat, lon, true);
-//	Debug.output("lr="+tmp);
-	return tmp;
+        // view in southern hemisphere
+        else {
+            // get the right bottom corner for longitude
+            tmp = inverse(width,height,tmp);
+            lon = tmp.radlon_;
+            // get bottom center for latitude
+            tmp = inverse(width/2, height, tmp);
+            lat = tmp.radlat_;
+        }
+        tmp.setLatLon(lat, lon, true);
+//      Debug.output("lr="+tmp);
+        return tmp;
     }
 
     /**
      * Get the name string of the projection.
      */
     public String getName() {
-	return GnomonicName;
+        return GnomonicName;
     }
 }

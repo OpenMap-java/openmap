@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CenterSupport.java,v $
 // $RCSfile: CenterSupport.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:47:44 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:06 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -40,7 +40,7 @@ public class CenterSupport extends ListenerSupport {
      * @param sourceBean The bean to be given as the source for any events
      */
     public CenterSupport(Object sourceBean) {
-	super(sourceBean);
+        super(sourceBean);
     }
 
     /**
@@ -49,7 +49,7 @@ public class CenterSupport extends ListenerSupport {
      * @param listener  The CenterListener to be added
      */
     public synchronized void addCenterListener(CenterListener listener) {
-	addListener(listener);
+        addListener(listener);
     }
 
     /**
@@ -58,7 +58,7 @@ public class CenterSupport extends ListenerSupport {
      * @param listener  The CenterListener to be removed
      */
     public synchronized void removeCenterListener(CenterListener listener) {
-	removeListener(listener);
+        removeListener(listener);
     }
 
     /**
@@ -69,14 +69,14 @@ public class CenterSupport extends ListenerSupport {
      * @see CenterEvent
      */
     public synchronized void fireCenter(float latitude, float longitude) {
-	Iterator it = iterator();
-	if (size() == 0) return;
+        Iterator it = iterator();
+        if (size() == 0) return;
 
-	CenterEvent evt = new CenterEvent(source, latitude, longitude);
+        CenterEvent evt = new CenterEvent(source, latitude, longitude);
 
-	while (it.hasNext()) {
-	    ((CenterListener)it.next()).center(evt);
-	}
+        while (it.hasNext()) {
+            ((CenterListener)it.next()).center(evt);
+        }
     }
 }
 

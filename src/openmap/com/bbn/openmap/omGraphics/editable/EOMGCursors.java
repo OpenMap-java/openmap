@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/EOMGCursors.java,v $
 // $RCSfile: EOMGCursors.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,17 +53,17 @@ public class EOMGCursors {
     public EOMGCursors() {};
 
     public static Cursor create(String resource, Point hotspot, String name) {
-	Cursor cursor = DEFAULT;
-	try {
-	    
-	    URL url = (new EOMGCursors()).getClass().getResource(resource);
-	    ImageIcon image = new ImageIcon(url);
-	    cursor = 
-		Toolkit.getDefaultToolkit().createCustomCursor(image.getImage(), hotspot, name);
+        Cursor cursor = DEFAULT;
+        try {
+            
+            URL url = (new EOMGCursors()).getClass().getResource(resource);
+            ImageIcon image = new ImageIcon(url);
+            cursor = 
+                Toolkit.getDefaultToolkit().createCustomCursor(image.getImage(), hotspot, name);
 
-	} catch (IndexOutOfBoundsException ioobe) {
-	    Debug.error("LineStateMachine creating cursor:\n " + ioobe.getMessage());
-	}
-	return cursor;
+        } catch (IndexOutOfBoundsException ioobe) {
+            Debug.error("LineStateMachine creating cursor:\n " + ioobe.getMessage());
+        }
+        return cursor;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/MapHandlerMenuItem.java,v $
 // $RCSfile: MapHandlerMenuItem.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/06 02:31:29 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,29 +44,29 @@ public abstract class MapHandlerMenuItem extends JMenuItem
     protected MapHandler mapHandler = null;
 
     public MapHandlerMenuItem(String title) {
-	super(title);
+        super(title);
     }
 
     public void setMapHandler(BeanContext in_mapHandler) {
-	if (in_mapHandler instanceof MapHandler) {
-	    mapHandler = (MapHandler)in_mapHandler;
-	}
-	setEnabled(mapHandler != null);
+        if (in_mapHandler instanceof MapHandler) {
+            mapHandler = (MapHandler)in_mapHandler;
+        }
+        setEnabled(mapHandler != null);
     }
 
     public MapHandler getMapHandler() {
-	return mapHandler;
+        return mapHandler;
     }
 
     public void findAndInit(Object someObj) {
-	if (someObj instanceof MapHandler) {
-	    setMapHandler((MapHandler) someObj);
-	}
+        if (someObj instanceof MapHandler) {
+            setMapHandler((MapHandler) someObj);
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof MapHandler) {
-	    setMapHandler(null);
-	}
+        if (someObj instanceof MapHandler) {
+            setMapHandler(null);
+        }
     }
 }

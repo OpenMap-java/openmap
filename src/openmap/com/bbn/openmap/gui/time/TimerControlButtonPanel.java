@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimerControlButtonPanel.java,v $
 // $RCSfile: TimerControlButtonPanel.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/02 18:27:45 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -75,17 +75,17 @@ public class TimerControlButtonPanel extends OMComponentPanel
     public final static String PauseIconProperty = "pauseIcon";
 
     public TimerControlButtonPanel(RealTimeHandler rth) {
-	super();
-	setTimeHandler(rth);
-	initGUI();
+        super();
+        setTimeHandler(rth);
+        initGUI();
     }
 
     public void setTimeHandler(RealTimeHandler rth) {
-	timeHandler = rth;
+        timeHandler = rth;
     }
 
     public RealTimeHandler getTimeHandler() {
-	return timeHandler;
+        return timeHandler;
     }
 
     /**
@@ -94,57 +94,57 @@ public class TimerControlButtonPanel extends OMComponentPanel
      * stopped and inactive icons.
      */
     public void initGUI() {
-	removeAll();
-	try {
-	    URL url = PropUtils.getResourceOrFileOrURL(this, forwardIconURL);
-	    forwardIcon = new ImageIcon(url);
-	    
-	    url = PropUtils.getResourceOrFileOrURL(this, forwardStepIconURL);
-	    forwardStepIcon = new ImageIcon(url);
+        removeAll();
+        try {
+            URL url = PropUtils.getResourceOrFileOrURL(this, forwardIconURL);
+            forwardIcon = new ImageIcon(url);
+            
+            url = PropUtils.getResourceOrFileOrURL(this, forwardStepIconURL);
+            forwardStepIcon = new ImageIcon(url);
 
-	    url = PropUtils.getResourceOrFileOrURL(this, backwardIconURL);
-	    backwardIcon = new ImageIcon(url);
+            url = PropUtils.getResourceOrFileOrURL(this, backwardIconURL);
+            backwardIcon = new ImageIcon(url);
 
-	    url = PropUtils.getResourceOrFileOrURL(this, backwardStepIconURL);
-	    backwardStepIcon = new ImageIcon(url);
+            url = PropUtils.getResourceOrFileOrURL(this, backwardStepIconURL);
+            backwardStepIcon = new ImageIcon(url);
 
-	    url = PropUtils.getResourceOrFileOrURL(this, pauseIconURL);
-	    pauseIcon = new ImageIcon(url);
-	} catch (MalformedURLException murle) {
-	    Debug.error("TimerToggleButton: initGUI() bad icon.");
-	} catch (NullPointerException npe) {
-	    Debug.error("TimerToggleButton: initGUI() bad icon.");
-	    npe.printStackTrace();
-	}
+            url = PropUtils.getResourceOrFileOrURL(this, pauseIconURL);
+            pauseIcon = new ImageIcon(url);
+        } catch (MalformedURLException murle) {
+            Debug.error("TimerToggleButton: initGUI() bad icon.");
+        } catch (NullPointerException npe) {
+            Debug.error("TimerToggleButton: initGUI() bad icon.");
+            npe.printStackTrace();
+        }
 
-	JToolBar jtb = new JToolBar();
-	jtb.setFloatable(false);
+        JToolBar jtb = new JToolBar();
+        jtb.setFloatable(false);
 
-	backwardButton = new JButton(backwardIcon);
-	backwardButton.setToolTipText("Run Timer Backwards");
-	backwardButton.setActionCommand(TIMER_BACKWARD);
-	backwardButton.addActionListener(this);
-	jtb.add(backwardButton);
+        backwardButton = new JButton(backwardIcon);
+        backwardButton.setToolTipText("Run Timer Backwards");
+        backwardButton.setActionCommand(TIMER_BACKWARD);
+        backwardButton.addActionListener(this);
+        jtb.add(backwardButton);
 
-	JButton button = new JButton(backwardStepIcon);
-	button.setToolTipText("Step Timer Backward");
-	button.setActionCommand(TIMER_STEP_BACKWARD);
-	button.addActionListener(this);
-	jtb.add(button);
+        JButton button = new JButton(backwardStepIcon);
+        button.setToolTipText("Step Timer Backward");
+        button.setActionCommand(TIMER_STEP_BACKWARD);
+        button.addActionListener(this);
+        jtb.add(button);
 
-	button = new JButton(forwardStepIcon);
-	button.setToolTipText("Step Timer Forward");
-	button.setActionCommand(TIMER_STEP_FORWARD);
-	button.addActionListener(this);
-	jtb.add(button);
+        button = new JButton(forwardStepIcon);
+        button.setToolTipText("Step Timer Forward");
+        button.setActionCommand(TIMER_STEP_FORWARD);
+        button.addActionListener(this);
+        jtb.add(button);
 
-	forwardButton = new JButton(forwardIcon);
-	forwardButton.setToolTipText("Run Timer Forward");
-	forwardButton.setActionCommand(TIMER_FORWARD);
-	forwardButton.addActionListener(this);
-	jtb.add(forwardButton);
+        forwardButton = new JButton(forwardIcon);
+        forwardButton.setToolTipText("Run Timer Forward");
+        forwardButton.setActionCommand(TIMER_FORWARD);
+        forwardButton.addActionListener(this);
+        jtb.add(forwardButton);
 
-	add(jtb);
+        add(jtb);
     }
 
     /**
@@ -154,39 +154,39 @@ public class TimerControlButtonPanel extends OMComponentPanel
      * in the TimeConstants interface. It does ==, not equals().
      */
     public void propertyChange(PropertyChangeEvent pce) {
-	String propName = pce.getPropertyName();
-	Object obj = pce.getNewValue();
-	if (propName == TIMER_RUNNING_STATUS && obj instanceof String) {
-	    update((String)obj);
-	}
+        String propName = pce.getPropertyName();
+        Object obj = pce.getNewValue();
+        if (propName == TIMER_RUNNING_STATUS && obj instanceof String) {
+            update((String)obj);
+        }
     }
 
     protected void update(String newStatus) {
-	if (newStatus == TIMER_FORWARD) {
-	    if (Debug.debugging("timedetail")) {
-		Debug.output("TimerControlButtonPanel: TIMER_FORWARD");
-	    }
-	    backwardButton.setIcon(backwardIcon);
-	    backwardButton.setActionCommand(TIMER_BACKWARD);
-	    forwardButton.setIcon(pauseIcon);
-	    forwardButton.setActionCommand(TIMER_STOPPED);
-	} else if (newStatus == TIMER_BACKWARD) {
-	    if (Debug.debugging("timedetail")) {
-		Debug.output("TimerControlButtonPanel: TIMER_BACKWARD");
-	    }
-	    forwardButton.setIcon(forwardIcon);
-	    forwardButton.setActionCommand(TIMER_FORWARD);
-	    backwardButton.setIcon(pauseIcon);
-	    backwardButton.setActionCommand(TIMER_STOPPED);
-	} else if (newStatus == TIMER_STOPPED) {
-	    if (Debug.debugging("timedetail")) {
-		Debug.output("TimerControlButtonPanel: TIMER_STOPPED");
-	    }
-	    forwardButton.setIcon(forwardIcon);
-	    forwardButton.setActionCommand(TIMER_FORWARD);
-	    backwardButton.setIcon(backwardIcon);
-	    backwardButton.setActionCommand(TIMER_BACKWARD);
-	}
+        if (newStatus == TIMER_FORWARD) {
+            if (Debug.debugging("timedetail")) {
+                Debug.output("TimerControlButtonPanel: TIMER_FORWARD");
+            }
+            backwardButton.setIcon(backwardIcon);
+            backwardButton.setActionCommand(TIMER_BACKWARD);
+            forwardButton.setIcon(pauseIcon);
+            forwardButton.setActionCommand(TIMER_STOPPED);
+        } else if (newStatus == TIMER_BACKWARD) {
+            if (Debug.debugging("timedetail")) {
+                Debug.output("TimerControlButtonPanel: TIMER_BACKWARD");
+            }
+            forwardButton.setIcon(forwardIcon);
+            forwardButton.setActionCommand(TIMER_FORWARD);
+            backwardButton.setIcon(pauseIcon);
+            backwardButton.setActionCommand(TIMER_STOPPED);
+        } else if (newStatus == TIMER_STOPPED) {
+            if (Debug.debugging("timedetail")) {
+                Debug.output("TimerControlButtonPanel: TIMER_STOPPED");
+            }
+            forwardButton.setIcon(forwardIcon);
+            forwardButton.setActionCommand(TIMER_FORWARD);
+            backwardButton.setIcon(backwardIcon);
+            backwardButton.setActionCommand(TIMER_BACKWARD);
+        }
     }
 
     /**
@@ -195,19 +195,19 @@ public class TimerControlButtonPanel extends OMComponentPanel
      * listens to this button, to start and stop the given timer.
      */
     public void actionPerformed(ActionEvent ae) {
-	String cmd = ae.getActionCommand();
-	if (cmd == TIMER_FORWARD) {
-	    timeHandler.setClockDirection(1);
-	    timeHandler.startClock();
-	} else if (cmd == TIMER_BACKWARD) {
-	    timeHandler.setClockDirection(-1);
-	    timeHandler.startClock();
-	} else if (cmd == TIMER_STEP_BACKWARD) {
-	    timeHandler.stepBackward();
-	} else if (cmd == TIMER_STEP_FORWARD) {
-	    timeHandler.stepForward();
-	} else if (cmd == TIMER_STOPPED) {
-	    timeHandler.stopClock();
-	}
+        String cmd = ae.getActionCommand();
+        if (cmd == TIMER_FORWARD) {
+            timeHandler.setClockDirection(1);
+            timeHandler.startClock();
+        } else if (cmd == TIMER_BACKWARD) {
+            timeHandler.setClockDirection(-1);
+            timeHandler.startClock();
+        } else if (cmd == TIMER_STEP_BACKWARD) {
+            timeHandler.stepBackward();
+        } else if (cmd == TIMER_STEP_FORWARD) {
+            timeHandler.stepForward();
+        } else if (cmd == TIMER_STOPPED) {
+            timeHandler.stopClock();
+        }
     }
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriPlugIn.java,v $
 // $RCSfile: EsriPlugIn.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/12/23 22:55:27 $
-// $Author: wjeuerle $
+// $Revision: 1.8 $
+// $Date: 2004/01/26 18:18:14 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -200,7 +200,7 @@ public class EsriPlugIn extends AbstractPlugIn
      * <code>setProperties()</code> method
      */
     public EsriPlugIn() {
-	Debug.message("esri", "EsriPlugIn: default constructor");
+        Debug.message("esri", "EsriPlugIn: default constructor");
     }
     
     /**
@@ -211,24 +211,24 @@ public class EsriPlugIn extends AbstractPlugIn
      * @param columnCount The number of columns in the dbf model 
      */
     public EsriPlugIn(String name, int type, int columnCount) 
-	throws Exception {
+        throws Exception {
 
-	switch (type) {
-	case SHAPE_TYPE_POINT:
-	    _list = new EsriPointList();
-	    break;
-	case SHAPE_TYPE_POLYGON:
-	    _list = new EsriPolygonList();
-	    break;
-	case SHAPE_TYPE_POLYLINE:
-	    _list = new EsriPolylineList();
-	    break;
-	default:
-	    _list = null;
-	}
+        switch (type) {
+        case SHAPE_TYPE_POINT:
+            _list = new EsriPointList();
+            break;
+        case SHAPE_TYPE_POLYGON:
+            _list = new EsriPolygonList();
+            break;
+        case SHAPE_TYPE_POLYLINE:
+            _list = new EsriPolylineList();
+            break;
+        default:
+            _list = null;
+        }
 
-	_model = new DbfTableModel(columnCount);
-	this.name = name;
+        _model = new DbfTableModel(columnCount);
+        this.name = name;
     }
     
     /**
@@ -241,31 +241,31 @@ public class EsriPlugIn extends AbstractPlugIn
      */
     public EsriPlugIn(String name, URL dbf, URL shp, URL shx) {
 
-	this.dbf = dbf.toString();
-	this.shp = shp.toString();
-	this.shx = shx.toString();
+        this.dbf = dbf.toString();
+        this.shp = shp.toString();
+        this.shx = shx.toString();
 
-	_list = getGeometry(shp, shx);
-	_model = getDbfTableModel(dbf);
-	this.name = name;
+        _list = getGeometry(shp, shx);
+        _model = getDbfTableModel(dbf);
+        this.name = name;
     }
 
     /**
      * Set the drawing attributes for the graphics on the list.
      */
     public void setDrawingAttributes(DrawingAttributes da) {
-	drawingAttributes = da;
+        drawingAttributes = da;
 
-	if (_list != null) {
-	    drawingAttributes.setTo(_list);
-	}
+        if (_list != null) {
+            drawingAttributes.setTo(_list);
+        }
     }
 
     /**
      * Get the drawing attributes for the graphics on the list.
      */
     public DrawingAttributes getDrawingAttributes() {
-	return drawingAttributes;
+        return drawingAttributes;
     }
 
     /**
@@ -275,15 +275,15 @@ public class EsriPlugIn extends AbstractPlugIn
      * @param record A record to add to the DbfTableModel 
      */
     public void addRecord(OMGraphic graphic, ArrayList record) {
-	OMGraphicList list = getEsriGraphicList();
+        OMGraphicList list = getEsriGraphicList();
 
-	// If list == null, model will be too.
-	if (list != null) {
-	    list.add(graphic);
-	    _model.addRecord(record);
-	} else {
-	    Debug.error("EsriPlugIn.addRecord(): invalid data files!");
-	}
+        // If list == null, model will be too.
+        if (list != null) {
+            list.add(graphic);
+            _model.addRecord(record);
+        } else {
+            Debug.error("EsriPlugIn.addRecord(): invalid data files!");
+        }
     }
     
     /**
@@ -293,7 +293,7 @@ public class EsriPlugIn extends AbstractPlugIn
      * went badly.
      */
     private DbfTableModel getDbfTableModel(URL dbf) {
-	return DbfTableModel.getDbfTableModel(dbf);
+        return DbfTableModel.getDbfTableModel(dbf);
     }
     
     /**
@@ -301,73 +301,73 @@ public class EsriPlugIn extends AbstractPlugIn
      * @return The EsriGraphicList for this layer
      */
     public EsriGraphicList getEsriGraphicList() {
-	if (_list == null) {
-	    try {
-// 		_model = getDbfTableModel(new URL(dbf));
-// 		_list = getGeometry(new URL(shp), new URL(shx));
+        if (_list == null) {
+            try {
+//              _model = getDbfTableModel(new URL(dbf));
+//              _list = getGeometry(new URL(shp), new URL(shx));
 
-		// Changed so that shp, dbf and shx can be named as
-		// resource, a file path, or a URL.  Also, if the dbf
-		// and shx file are not provided, look for them next
-		// to the shape file. - DFD
+                // Changed so that shp, dbf and shx can be named as
+                // resource, a file path, or a URL.  Also, if the dbf
+                // and shx file are not provided, look for them next
+                // to the shape file. - DFD
 
-		if ((shx == null || shx.equals("")) && shp != null) {
-		    shx = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_SHX;
-		}
+                if ((shx == null || shx.equals("")) && shp != null) {
+                    shx = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_SHX;
+                }
 
-		if ((dbf == null || dbf.equals("")) && shp != null) {
-		    dbf = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_DBF;
-		}
+                if ((dbf == null || dbf.equals("")) && shp != null) {
+                    dbf = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_DBF;
+                }
 
-		_model = getDbfTableModel(LayerUtils.getResourceOrFileOrURL(null, dbf));
-		_list = getGeometry(LayerUtils.getResourceOrFileOrURL(null, shp), 
-				    LayerUtils.getResourceOrFileOrURL(null, shx));
+                _model = getDbfTableModel(LayerUtils.getResourceOrFileOrURL(null, dbf));
+                _list = getGeometry(LayerUtils.getResourceOrFileOrURL(null, shp), 
+                                    LayerUtils.getResourceOrFileOrURL(null, shx));
 
-		if (_model != null) {
-  		    DrawingAttributesUtility.setDrawingAttributes(_list, _model, getDrawingAttributes());
-		}
-	    } catch (MalformedURLException murle) {
-		Debug.error("EsriPlugIn|" + getName() + " Malformed URL Exception\n" + murle.getMessage());
-	    } catch (Exception exception) {
-		Debug.error("EsriPlugIn|" + getName() + " Exception\n" + exception.getMessage());
-		exception.printStackTrace();
-	    }
-	}
+                if (_model != null) {
+                    DrawingAttributesUtility.setDrawingAttributes(_list, _model, getDrawingAttributes());
+                }
+            } catch (MalformedURLException murle) {
+                Debug.error("EsriPlugIn|" + getName() + " Malformed URL Exception\n" + murle.getMessage());
+            } catch (Exception exception) {
+                Debug.error("EsriPlugIn|" + getName() + " Exception\n" + exception.getMessage());
+                exception.printStackTrace();
+            }
+        }
 
-	return _list;
+        return _list;
     }
 
     public static void main(String[] argv) {
-	if (argv.length == 0) {
-	    System.out.println("Give EsriPlugIn a path to a shape file, and it'll print out the graphics.");
-	    System.exit(0);
-	}
+        if (argv.length == 0) {
+            System.out.println("Give EsriPlugIn a path to a shape file, and it'll print out the graphics.");
+            System.exit(0);
+        }
 
-	Debug.init();
+        Debug.init();
 
-	EsriPlugIn epi = new EsriPlugIn();
-	Properties props = new Properties();
-	props.put(PARAM_SHP, argv[0]);
-	epi.setProperties(props);
-	
-	OMGraphicList list = epi.getEsriGraphicList();
+        EsriPlugIn epi = new EsriPlugIn();
+        Properties props = new Properties();
+        props.put(PARAM_SHP, argv[0]);
+        epi.setProperties(props);
+        
+        OMGraphicList list = epi.getEsriGraphicList();
 
-	String dbfFileName = argv[0].substring(0, argv[0].lastIndexOf('.') + 1)+ "dbf";
+        String dbfFileName = argv[0].substring(0, argv[0].lastIndexOf('.') + 1)+ "dbf";
 
-	try {
-	    list.setAppObject(epi.getDbfTableModel(LayerUtils.getResourceOrFileOrURL(epi, dbfFileName)));
-	    Debug.output("Set list in table");
+        try {
+            list.setAppObject(epi.getDbfTableModel(LayerUtils.getResourceOrFileOrURL(epi, dbfFileName)));
+            Debug.output("Set list in table");
 
-	} catch (Exception e) {
-	    Debug.error("Can't read .dbf file for .shp file: " + dbfFileName + "\n" + e.getMessage());
-	    System.exit(0);
-	}
-	
-	EsriShapeExport ese = new EsriShapeExport(list, null, "./ese");
-	Debug.output("Exporting...");
-	ese.export();
-	Debug.output("Done.");
-	System.exit(0);
+        } catch (Exception e) {
+            Debug.error("Can't read .dbf file for .shp file: " + dbfFileName + "\n" + e.getMessage());
+            System.exit(0);
+        }
+        
+        EsriShapeExport ese = new EsriShapeExport(list, null, "./ese");
+        Debug.output("Exporting...");
+        ese.export();
+        Debug.output("Done.");
+        System.exit(0);
     }
 
     /**
@@ -383,23 +383,23 @@ public class EsriPlugIn extends AbstractPlugIn
      * hasn't been given a projection.
      */
     public OMGraphicList getRectangle(Projection p) {
-	OMGraphicList list = getEsriGraphicList();
-	proj = p;
+        OMGraphicList list = getEsriGraphicList();
+        proj = p;
 
-	if (list != null) {
-	    list.generate(p);
+        if (list != null) {
+            list.generate(p);
 
-	    // Setting the list up so that if anything is "selected",
-	    // it will also be drawn on top of all the other
-	    // OMGraphics.  This maintains order while also making any
-	    // line edge changes more prominent.
-	    OMGraphicList parent = new OMGraphicList();
-	    parent.add(selectedGraphics);
-	    parent.add(list);
-	    list = parent;
-	}
+            // Setting the list up so that if anything is "selected",
+            // it will also be drawn on top of all the other
+            // OMGraphics.  This maintains order while also making any
+            // line edge changes more prominent.
+            OMGraphicList parent = new OMGraphicList();
+            parent.add(selectedGraphics);
+            parent.add(list);
+            list = parent;
+        }
 
-	return list;
+        return list;
     }
 
     /*
@@ -413,7 +413,7 @@ public class EsriPlugIn extends AbstractPlugIn
      * @return A new EsriGraphicList, null if something went badly.
      */
     public EsriGraphicList getGeometry(URL shp, URL shx) {
-	return EsriGraphicList.getEsriGraphicList(shp, shx, getDrawingAttributes(), null);
+        return EsriGraphicList.getEsriGraphicList(shp, shx, getDrawingAttributes(), null);
     }
     
     /**
@@ -421,7 +421,7 @@ public class EsriPlugIn extends AbstractPlugIn
      * @return The associated table model for this layer
      */
     public DbfTableModel getModel() {
-	return _model;
+        return _model;
     }
     
     /**
@@ -431,7 +431,7 @@ public class EsriPlugIn extends AbstractPlugIn
      * Esri's shape file format specification 
      */
     public int getType() {
-	return _type;
+        return _type;
     }
     
     /**
@@ -439,7 +439,7 @@ public class EsriPlugIn extends AbstractPlugIn
      * @param query A SQL like string to filter the DbfTableModel
      */
     public void query(String query) {
-	//to be implemented
+        //to be implemented
     }
     
     /**
@@ -447,9 +447,9 @@ public class EsriPlugIn extends AbstractPlugIn
      * @param model The DbfModel to set for this layer
      */
     public void setModel(DbfTableModel model) {
-	if (_model != null) {
-	    _model = model;
-	}
+        if (_model != null) {
+            _model = model;
+        }
     }
     
     /**
@@ -458,132 +458,132 @@ public class EsriPlugIn extends AbstractPlugIn
      * @param properties the <code>Properties</code> object
      */
     public void setProperties(String prefix, Properties properties) {
-	super.setProperties(prefix, properties);
-	
-	drawingAttributes.setProperties(prefix, properties);
+        super.setProperties(prefix, properties);
+        
+        drawingAttributes.setProperties(prefix, properties);
 
-	// This fixes a hole that was exposed when the PlugIn had the
-	// files set directly, and then had properties set for drawing
-	// attributes later.
-	if (_list != null) {
-	    if (_model != null) {
-		DrawingAttributesUtility.setDrawingAttributes(_list, _model, drawingAttributes);
-	    } else {
-		drawingAttributes.setTo(_list);
-	    }
-	}
+        // This fixes a hole that was exposed when the PlugIn had the
+        // files set directly, and then had properties set for drawing
+        // attributes later.
+        if (_list != null) {
+            if (_model != null) {
+                DrawingAttributesUtility.setDrawingAttributes(_list, _model, drawingAttributes);
+            } else {
+                drawingAttributes.setTo(_list);
+            }
+        }
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	shp = properties.getProperty(prefix + PARAM_SHP);
-	shx = properties.getProperty(prefix + PARAM_SHX);
-	dbf = properties.getProperty(prefix + PARAM_DBF);
+        shp = properties.getProperty(prefix + PARAM_SHP);
+        shx = properties.getProperty(prefix + PARAM_SHX);
+        dbf = properties.getProperty(prefix + PARAM_DBF);
 
-//  	try {
-//  	    setName("testing");
-//  	    _list = getGeometry(new URL(shp), new URL(shx));
-//  	    _model = getDbfTableModel(new URL(dbf));
-//  	} catch(Exception exception) {
-//  	    System.out.println(exception);
-//  	}
+//      try {
+//          setName("testing");
+//          _list = getGeometry(new URL(shp), new URL(shx));
+//          _model = getDbfTableModel(new URL(dbf));
+//      } catch(Exception exception) {
+//          System.out.println(exception);
+//      }
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	props.put(prefix + PARAM_SHP, PropUtils.unnull(shp));
-	props.put(prefix + PARAM_SHX, PropUtils.unnull(shx));
-	props.put(prefix + PARAM_DBF, PropUtils.unnull(dbf));
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        props.put(prefix + PARAM_SHP, PropUtils.unnull(shp));
+        props.put(prefix + PARAM_SHX, PropUtils.unnull(shx));
+        props.put(prefix + PARAM_DBF, PropUtils.unnull(dbf));
 
-	// Need to make sure they line up.
-	drawingAttributes.setPropertyPrefix(getPropertyPrefix());
-	drawingAttributes.getProperties(props);
-	return props;
+        // Need to make sure they line up.
+        drawingAttributes.setPropertyPrefix(getPropertyPrefix());
+        drawingAttributes.getProperties(props);
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
+        props = super.getPropertyInfo(props);
 
-	props.put(initPropertiesProperty, PARAM_SHP + " " + PARAM_DBF + " " + PARAM_SHX + drawingAttributes.getInitPropertiesOrder() + " " + Layer.AddToBeanContextProperty);
+        props.put(initPropertiesProperty, PARAM_SHP + " " + PARAM_DBF + " " + PARAM_SHX + drawingAttributes.getInitPropertiesOrder() + " " + Layer.AddToBeanContextProperty);
 
-	props.put(PARAM_SHP, "Location of a shape (.shp) file (path or URL)");
-	props.put(PARAM_SHX, "Location of a index file (.shx) for the shape file (path or URL, optional)");
-	props.put(PARAM_DBF, "Location of a database file (.dbf) for the shape file (path or URL, optional)");
-	props.put(PARAM_SHP + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.FDUPropertyEditor");
-	props.put(PARAM_DBF + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.FDUPropertyEditor");
-	props.put(PARAM_SHX + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.FDUPropertyEditor");
+        props.put(PARAM_SHP, "Location of a shape (.shp) file (path or URL)");
+        props.put(PARAM_SHX, "Location of a index file (.shx) for the shape file (path or URL, optional)");
+        props.put(PARAM_DBF, "Location of a database file (.dbf) for the shape file (path or URL, optional)");
+        props.put(PARAM_SHP + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.FDUPropertyEditor");
+        props.put(PARAM_DBF + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.FDUPropertyEditor");
+        props.put(PARAM_SHX + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.FDUPropertyEditor");
 
-	drawingAttributes.getPropertyInfo(props);
+        drawingAttributes.getPropertyInfo(props);
 
-	return props;
+        return props;
     }
 
     public Component getGUI() {
 
-	JPanel holder = new JPanel(new BorderLayout());
+        JPanel holder = new JPanel(new BorderLayout());
 
-	JPanel daGUI = (JPanel)drawingAttributes.getGUI();
-	holder.add(daGUI, BorderLayout.CENTER);
+        JPanel daGUI = (JPanel)drawingAttributes.getGUI();
+        holder.add(daGUI, BorderLayout.CENTER);
 
-	JPanel btnPanel = new JPanel(new GridLayout(3, 1));
+        JPanel btnPanel = new JPanel(new GridLayout(3, 1));
 
-	JButton redrawSelected = new JButton("Set Colors for Selected");
-	btnPanel.add(redrawSelected);
+        JButton redrawSelected = new JButton("Set Colors for Selected");
+        btnPanel.add(redrawSelected);
 
-	JButton redrawAll = new JButton("Set Colors For All");
-	btnPanel.add(redrawAll);
+        JButton redrawAll = new JButton("Set Colors For All");
+        btnPanel.add(redrawAll);
 
-	JButton tableTrigger = new JButton("Show Data Table");
-	btnPanel.add(tableTrigger);
+        JButton tableTrigger = new JButton("Show Data Table");
+        btnPanel.add(tableTrigger);
 
-	holder.add(btnPanel, BorderLayout.SOUTH);
+        holder.add(btnPanel, BorderLayout.SOUTH);
 
-	redrawSelected.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    if (!(graphicIndex < 0)) {
-			OMGraphic omg = getEsriGraphicList().getOMGraphicAt(graphicIndex);
-			repaintGraphics(omg);
-		    }
-		}
-	    });
+        redrawSelected.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    if (!(graphicIndex < 0)) {
+                        OMGraphic omg = getEsriGraphicList().getOMGraphicAt(graphicIndex);
+                        repaintGraphics(omg);
+                    }
+                }
+            });
 
-	redrawAll.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    repaintGraphics(getEsriGraphicList());
-		}
-	    });
+        redrawAll.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    repaintGraphics(getEsriGraphicList());
+                }
+            });
 
 
-	tableTrigger.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    showTable();
-		}
-	    });
-	return holder;
+        tableTrigger.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    showTable();
+                }
+            });
+        return holder;
     }
 
     /**
      * Sets the drawing attributes to those of a particular OMGraphic.
      */
     private void setDrawingAttributes(OMGraphic omg) {
-	if (drawingAttributes != null && omg != null) {
-	    drawingAttributes.setFrom(omg);
-	}
+        if (drawingAttributes != null && omg != null) {
+            drawingAttributes.setFrom(omg);
+        }
     }
 
     /**
      * Repaints the currently selected OMGraphic or the OMGraphicList
      * to the current DrawingAttributes
      *
-     * @param	omg		the OMGraphic to repaint
+     * @param   omg             the OMGraphic to repaint
      */
     private void repaintGraphics(OMGraphic omg) {
-	drawingAttributes.setTo(omg);
-	repaint();
+        drawingAttributes.setTo(omg);
+        repaint();
     }
 
     protected JTable table = null;
@@ -594,33 +594,33 @@ public class EsriPlugIn extends AbstractPlugIn
      */
     public JTable getTable() {
 
-	if (table == null) {
-	    lsm = new DefaultListSelectionModel();
-	    table = new JTable();
-	    table.setModel(getModel());
-	    table.setSelectionModel(lsm);
-	    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        if (table == null) {
+            lsm = new DefaultListSelectionModel();
+            table = new JTable();
+            table.setModel(getModel());
+            table.setSelectionModel(lsm);
+            table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-	    lsm.addListSelectionListener(new ListSelectionListener() {
-		    public void valueChanged(ListSelectionEvent e) {
-			//Ignore extra messages.
-			if (e.getValueIsAdjusting()) {
-			    return;
-			}
-			ListSelectionModel lsm2 = (ListSelectionModel)e.getSource();
-			if (lsm2.isSelectionEmpty()) {
-			    //no rows are selected
-			}
-			else {
-			    int index = lsm2.getMinSelectionIndex();
-			    selectGraphic(index);
-			    getComponent().repaint();
-			}
-		    }
-		});
-	}
+            lsm.addListSelectionListener(new ListSelectionListener() {
+                    public void valueChanged(ListSelectionEvent e) {
+                        //Ignore extra messages.
+                        if (e.getValueIsAdjusting()) {
+                            return;
+                        }
+                        ListSelectionModel lsm2 = (ListSelectionModel)e.getSource();
+                        if (lsm2.isSelectionEmpty()) {
+                            //no rows are selected
+                        }
+                        else {
+                            int index = lsm2.getMinSelectionIndex();
+                            selectGraphic(index);
+                            getComponent().repaint();
+                        }
+                    }
+                });
+        }
 
-	return table;
+        return table;
     }
 
     /**
@@ -628,102 +628,102 @@ public class EsriPlugIn extends AbstractPlugIn
      * @param index the index, from 0, of the graphic on the list.
      */
     public void selectGraphic(int index) {
-	EsriGraphicList list = getEsriGraphicList();
-	list.deselectAll();
-	// Clear out the selected graphics list
-	selectedGraphics.clear();
-	selectGraphic(list.getOMGraphicAt(index));
-	graphicIndex = index;
-	list.regenerate(proj);
+        EsriGraphicList list = getEsriGraphicList();
+        list.deselectAll();
+        // Clear out the selected graphics list
+        selectedGraphics.clear();
+        selectGraphic(list.getOMGraphicAt(index));
+        graphicIndex = index;
+        list.regenerate(proj);
     }
 
     /**
      * Mark the graphic as selected, and generate if necessary.
      */
     public void selectGraphic(OMGraphic graphic) {
-	if (graphic != null) {
-	    graphic.select();
-	    graphic.regenerate(proj);
-	    // Set the selected OMGraphic on the selected list.
-	    selectedGraphics.add(graphic);
-	}
+        if (graphic != null) {
+            graphic.select();
+            graphic.regenerate(proj);
+            // Set the selected OMGraphic on the selected list.
+            selectedGraphics.add(graphic);
+        }
     }
 
     /**
      * Given a graphic, highlight its entry in the table.
      */
     public void selectEntry(OMGraphic graphic) {
-//  	Object obj = graphic.getAppObject();
+//      Object obj = graphic.getAppObject();
 
-	if (lsm == null) {
-	    getTable();
-	}
+        if (lsm == null) {
+            getTable();
+        }
 
-	lsm.setSelectionInterval(graphicIndex, graphicIndex);
-	//scroll to the appropriate row in the table
-	getTable().scrollRectToVisible(getTable().getCellRect(graphicIndex, 0, true));
+        lsm.setSelectionInterval(graphicIndex, graphicIndex);
+        //scroll to the appropriate row in the table
+        getTable().scrollRectToVisible(getTable().getCellRect(graphicIndex, 0, true));
 
-//  	if (obj != null) {
-//  	    if (obj instanceof Integer) {
-//  		int index = ((Integer)obj).intValue();
-//  		lsm.setSelectionInterval(index-1, index-1);
-//  		getTable().scrollRectToVisible(getTable().getCellRect(index, 0, true));
-//  	    }
-//  	} else {
-//  	    lsm.clearSelection();
-//  	}
+//      if (obj != null) {
+//          if (obj instanceof Integer) {
+//              int index = ((Integer)obj).intValue();
+//              lsm.setSelectionInterval(index-1, index-1);
+//              getTable().scrollRectToVisible(getTable().getCellRect(index, 0, true));
+//          }
+//      } else {
+//          lsm.clearSelection();
+//      }
     }
     
     /**
      * Show the table in its own frame.
      */
     public void showTable() {
-	if (tableFrame == null) {
-	    String tableTitle = (this.name != null) ? this.name : "";
-	    tableFrame = new JFrame(tableTitle + " Shape Data Attributes");
+        if (tableFrame == null) {
+            String tableTitle = (this.name != null) ? this.name : "";
+            tableFrame = new JFrame(tableTitle + " Shape Data Attributes");
 
-	    JScrollPane pane = new JScrollPane(getTable(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            JScrollPane pane = new JScrollPane(getTable(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-	    tableFrame.getContentPane().add(pane, BorderLayout.CENTER);
+            tableFrame.getContentPane().add(pane, BorderLayout.CENTER);
 
-	    tableFrame.setSize(400, 300);
-	}
+            tableFrame.setSize(400, 300);
+        }
 
-	tableFrame.setVisible(true);
-	tableFrame.toFront();
+        tableFrame.setVisible(true);
+        tableFrame.toFront();
     }
 
     /**
      * Handle a mouse click on the map.
      */
     public boolean mouseClicked(MouseEvent e) {
-	EsriGraphicList list = getEsriGraphicList();
-	boolean ret = false;
-	graphicIndex = -1;
+        EsriGraphicList list = getEsriGraphicList();
+        boolean ret = false;
+        graphicIndex = -1;
 
-	if (list != null) {
-	    OMGraphic omg = list.selectClosest(e.getX(), e.getY(), 4);
-	    if (omg != null) {
-		// graphicIndex has to be set before selectEntry called.
-		graphicIndex = list.indexOf(omg);
-		selectEntry(omg);
+        if (list != null) {
+            OMGraphic omg = list.selectClosest(e.getX(), e.getY(), 4);
+            if (omg != null) {
+                // graphicIndex has to be set before selectEntry called.
+                graphicIndex = list.indexOf(omg);
+                selectEntry(omg);
 
-//  		Object obj = omg.getAppObject();
-//  		if (obj instanceof String) {
-//  		    if (component instanceof Layer) {
-//  			((Layer)component).fireRequestInfoLine((String) obj);
-//  		    }
-//  		}
+//              Object obj = omg.getAppObject();
+//              if (obj instanceof String) {
+//                  if (component instanceof Layer) {
+//                      ((Layer)component).fireRequestInfoLine((String) obj);
+//                  }
+//              }
 
-		ret = true;
-	    } else {
-		if (lsm == null) getTable();
-		lsm.clearSelection();
-		list.deselect();
-		repaint();
-	    }
-	}
-	return ret;
+                ret = true;
+            } else {
+                if (lsm == null) getTable();
+                lsm.clearSelection();
+                list.deselect();
+                repaint();
+            }
+        }
+        return ret;
     }
 
     protected Layer parentLayer = null;
@@ -732,59 +732,59 @@ public class EsriPlugIn extends AbstractPlugIn
      * Handle mouse moved events (Used for firing tool tip descriptions over graphics)
      */
     public boolean mouseMoved(MouseEvent e) {
-	EsriGraphicList list = getEsriGraphicList();
-	boolean ret = false;
-	if (list != null) {
-	    OMGraphic omg = list.findClosest(e.getX(), e.getY(), 4);
-	    if (omg != null) {
-		int index = list.indexOf(omg);
-		    
-		if (parentLayer == null) {
-		    Component comp = getComponent();
-		    if (comp != null && comp instanceof Layer) {
-			parentLayer = (Layer)comp;
-		    }
-		}
+        EsriGraphicList list = getEsriGraphicList();
+        boolean ret = false;
+        if (list != null) {
+            OMGraphic omg = list.findClosest(e.getX(), e.getY(), 4);
+            if (omg != null) {
+                int index = list.indexOf(omg);
+                    
+                if (parentLayer == null) {
+                    Component comp = getComponent();
+                    if (comp != null && comp instanceof Layer) {
+                        parentLayer = (Layer)comp;
+                    }
+                }
 
-		if (parentLayer != null) {
-		    parentLayer.fireRequestToolTip(e, getDescription(index));
-		}
+                if (parentLayer != null) {
+                    parentLayer.fireRequestToolTip(e, getDescription(index));
+                }
 
-		ret = true;
-	    } else if (parentLayer != null) {
-		parentLayer.fireHideToolTip(e);
-	    }
-	}
-	return ret;
+                ret = true;
+            } else if (parentLayer != null) {
+                parentLayer.fireHideToolTip(e);
+            }
+        }
+        return ret;
     }
 
     /**
      * Builds a description in HTML for a tool tip for the specified OMGraphic
      *
-     * @param	index	the index of the graphic in the table
+     * @param   index   the index of the graphic in the table
      */
     public String getDescription(int index) {
-	Vector v = new Vector();
-	String description = "";
+        Vector v = new Vector();
+        String description = "";
 
-	v.add("<HTML><BODY>");
-	for (int i = 0; i < getTable().getColumnCount(); i++) {
-	    try {
-		String column = getTable().getColumnName(i);
-		String value = (String)(getTable().getValueAt(index, i) + "");
-		v.add((i==0?"<b>":"<BR><b>") + column + ":</b> " + value);
-	    } catch (NullPointerException npe) { 
-	    } catch (IndexOutOfBoundsException obe) { 
-	    }
-	}
+        v.add("<HTML><BODY>");
+        for (int i = 0; i < getTable().getColumnCount(); i++) {
+            try {
+                String column = getTable().getColumnName(i);
+                String value = (String)(getTable().getValueAt(index, i) + "");
+                v.add((i==0?"<b>":"<BR><b>") + column + ":</b> " + value);
+            } catch (NullPointerException npe) { 
+            } catch (IndexOutOfBoundsException obe) { 
+            }
+        }
 
-	v.add("</BODY></HTML>");
+        v.add("</BODY></HTML>");
 
-	for (int i = 0; i < v.size(); i++) {
-	    description += (String)(v.elementAt(i));
-	}
+        for (int i = 0; i < v.size(); i++) {
+            description += (String)(v.elementAt(i));
+        }
 
-	return description;
+        return description;
     }
 
     protected JPanel daGUI = null;
@@ -796,19 +796,19 @@ public class EsriPlugIn extends AbstractPlugIn
      * DataBoundsInformer interface.
      */
     public DataBounds getDataBounds() {
-	DataBounds box = null;
-	if (_list == null) {
-	    _list = getEsriGraphicList();
-	}
+        DataBounds box = null;
+        if (_list == null) {
+            _list = getEsriGraphicList();
+        }
 
-	if (_list != null) {
-	    float[] extents = _list.getExtents();
-	    box = new DataBounds((double)extents[1],
-				 (double)extents[0],
-				 (double)extents[3],
-				 (double)extents[2]);
-	}
-	return box;
+        if (_list != null) {
+            float[] extents = _list.getExtents();
+            box = new DataBounds((double)extents[1],
+                                 (double)extents[0],
+                                 (double)extents[3],
+                                 (double)extents[2]);
+        }
+        return box;
     }
 }
 

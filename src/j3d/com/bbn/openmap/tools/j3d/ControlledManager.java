@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/ControlledManager.java,v $
 // $RCSfile: ControlledManager.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -62,12 +62,12 @@ public class ControlledManager extends MapContentManager {
     public ControlledManager(MapHandler mapHandler,
             NavBehaviorProvider cont,
             Background background, int contentMask) {
-	super();
+        super();
 
-// 	background.setCapability(Background.ALLOW_APPLICATION_BOUNDS_WRITE);
-// 	background.setCapability(Background.ALLOW_APPLICATION_BOUNDS_READ);
-// 	background.setCapability(Background.ALLOW_COLOR_READ);
-// 	background.setCapability(Background.ALLOW_COLOR_WRITE);
+//      background.setCapability(Background.ALLOW_APPLICATION_BOUNDS_WRITE);
+//      background.setCapability(Background.ALLOW_APPLICATION_BOUNDS_READ);
+//      background.setCapability(Background.ALLOW_COLOR_READ);
+//      background.setCapability(Background.ALLOW_COLOR_WRITE);
 
         setController(cont);
         this.setSceneBackground(background);
@@ -87,13 +87,13 @@ public class ControlledManager extends MapContentManager {
     }
 
     public Behavior getMotionBehavior(TransformGroup cameraTransform,
-				      Projection projection) {
+                                      Projection projection) {
 
-	Behavior behavior = null;
-	if (controller != null) {
-	    behavior = controller.setViewingPlatformBehavior(cameraTransform, projection, scaleFactor);
-	}
-	return behavior;
+        Behavior behavior = null;
+        if (controller != null) {
+            behavior = controller.setViewingPlatformBehavior(cameraTransform, projection, scaleFactor);
+        }
+        return behavior;
     }
 
     public static JFrame getFrame(String title, int width, int height,

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.22 $
-// $Date: 2003/12/29 17:20:06 $
-// $Author: wjeuerle $
+// $Revision: 1.23 $
+// $Date: 2004/01/26 18:18:15 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -125,7 +125,7 @@ public class OMDrawingTool extends OMToolComponent
      * parameters for the current graphic. 
      */
     protected GraphicAttributes graphicAttributes = 
-	GraphicAttributes.getGADefaultClone();
+        GraphicAttributes.getGADefaultClone();
 
     /** The current graphic being modified. */
     protected EditableOMGraphic currentEditable;
@@ -284,18 +284,18 @@ public class OMDrawingTool extends OMToolComponent
      * Create a OpenMap Drawing Tool.
      */
     public OMDrawingTool() {
-	super();
- 	setBorder(BorderFactory.createEmptyBorder());
-	DEBUG = Debug.debugging("drawingtool");
-	selectionSupport = new SelectionSupport(this);
-	setAttributes(new GraphicAttributes());
-	setMouseMode(createMouseMode());
+        super();
+        setBorder(BorderFactory.createEmptyBorder());
+        DEBUG = Debug.debugging("drawingtool");
+        selectionSupport = new SelectionSupport(this);
+        setAttributes(new GraphicAttributes());
+        setMouseMode(createMouseMode());
 
-	// Shouldn't assume that the drawing tool is a tool.  This can
-	// be set in the properties if it should be.  Otherwise, the
-	// default action is to appear on a right click called from
-	// the GUI.
-	setUseAsTool(false);
+        // Shouldn't assume that the drawing tool is a tool.  This can
+        // be set in the properties if it should be.  Otherwise, the
+        // default action is to appear on a right click called from
+        // the GUI.
+        setUseAsTool(false);
     }
 
     /**
@@ -304,7 +304,7 @@ public class OMDrawingTool extends OMToolComponent
      * by default.
      */
     protected OMDrawingToolMouseMode createMouseMode() {
-	return new OMDrawingToolMouseMode(this);
+        return new OMDrawingToolMouseMode(this);
     }
 
     /**
@@ -323,7 +323,7 @@ public class OMDrawingTool extends OMToolComponent
      * DrawingTool can't create it.  
      */
     public OMGraphic create(String classname, DrawingToolRequestor requestor) {
-	return create(classname, null, requestor);
+        return create(classname, null, requestor);
     }
 
     /**
@@ -344,8 +344,8 @@ public class OMDrawingTool extends OMToolComponent
      * DrawingTool can't create it.  
      */
     public OMGraphic create(String classname, GraphicAttributes ga, 
-			    DrawingToolRequestor requestor) {
-	return create(classname, ga, requestor, isMask(SHOW_GUI_BEHAVIOR_MASK));
+                            DrawingToolRequestor requestor) {
+        return create(classname, ga, requestor, isMask(SHOW_GUI_BEHAVIOR_MASK));
     }
 
     /**
@@ -370,39 +370,39 @@ public class OMDrawingTool extends OMToolComponent
      * DrawingTool can't create it.  
      */
     public OMGraphic create(String classname, GraphicAttributes ga, 
-			    DrawingToolRequestor requestor,
-			    boolean showGUI) {
+                            DrawingToolRequestor requestor,
+                            boolean showGUI) {
 
-	if (getCurrentEditable() != null) {
-	    if (DEBUG) {
-		Debug.output("OMDrawingTool.edit(): can't create " + classname + ", drawing tool busy with another graphic.");
-	    }
-	    return null;
-	}
+        if (getCurrentEditable() != null) {
+            if (DEBUG) {
+                Debug.output("OMDrawingTool.edit(): can't create " + classname + ", drawing tool busy with another graphic.");
+            }
+            return null;
+        }
 
-	if (DEBUG) {
-	    Debug.output("OMDrawingTool.create(" + classname + ")");
-	}
+        if (DEBUG) {
+            Debug.output("OMDrawingTool.create(" + classname + ")");
+        }
 
-	if (showGUI) {
-	    if (DEBUG) Debug.output("OMDrawingTool.create(): showing GUI per request");
-	    setMask(SHOW_GUI_BEHAVIOR_MASK);
-	} else {
-	    if (DEBUG) Debug.output("OMDrawingTool.create(): NOT showing GUI per request");
-	    unsetMask(SHOW_GUI_BEHAVIOR_MASK);
-	}
+        if (showGUI) {
+            if (DEBUG) Debug.output("OMDrawingTool.create(): showing GUI per request");
+            setMask(SHOW_GUI_BEHAVIOR_MASK);
+        } else {
+            if (DEBUG) Debug.output("OMDrawingTool.create(): NOT showing GUI per request");
+            unsetMask(SHOW_GUI_BEHAVIOR_MASK);
+        }
 
-	EditableOMGraphic eomg = getEditableGraphic(classname, ga);
+        EditableOMGraphic eomg = getEditableGraphic(classname, ga);
 
-	if (eomg == null) {
-	    return null;
-	}
+        if (eomg == null) {
+            return null;
+        }
 
-	setAttributes(ga);
-	eomg.setShowGUI(isMask(SHOW_GUI_BEHAVIOR_MASK));
-	eomg.setActionMask(OMGraphic.ADD_GRAPHIC_MASK);
+        setAttributes(ga);
+        eomg.setShowGUI(isMask(SHOW_GUI_BEHAVIOR_MASK));
+        eomg.setActionMask(OMGraphic.ADD_GRAPHIC_MASK);
 
-	return edit(eomg, requestor);
+        return edit(eomg, requestor);
     }
 
     /**
@@ -420,7 +420,7 @@ public class OMDrawingTool extends OMToolComponent
      * can't figure out what to use for the modifications. 
      */
     public OMGraphic edit(OMGraphic g, DrawingToolRequestor requestor) {
-	return edit(g, requestor, g.getShowEditablePalette());
+        return edit(g, requestor, g.getShowEditablePalette());
     }
 
     /** 
@@ -442,36 +442,36 @@ public class OMDrawingTool extends OMToolComponent
      * can't figure out what to use for the modifications.  
      */
     public OMGraphic edit(OMGraphic g, DrawingToolRequestor requestor,
-			  boolean showGUI) {
+                          boolean showGUI) {
 
-	if (getCurrentEditable() != null) {
-	    if (DEBUG) {
-		Debug.output("OMDrawingTool.edit(): can't edit " + 
-			     g.getClass().getName() + 
-			     ", drawing tool busy with another graphic.");
-	    }
-	    return null;
-	}
+        if (getCurrentEditable() != null) {
+            if (DEBUG) {
+                Debug.output("OMDrawingTool.edit(): can't edit " + 
+                             g.getClass().getName() + 
+                             ", drawing tool busy with another graphic.");
+            }
+            return null;
+        }
 
-	this.requestor = requestor;
+        this.requestor = requestor;
 
-	if (showGUI) {
-	    if (DEBUG) Debug.output("OMDrawingTool.edit(): showing GUI per request");
-	    setMask(SHOW_GUI_BEHAVIOR_MASK);
-	} else {
-	    if (DEBUG) Debug.output("OMDrawingTool.edit(): NOT showing GUI per request");
-	    unsetMask(SHOW_GUI_BEHAVIOR_MASK);
-	}
+        if (showGUI) {
+            if (DEBUG) Debug.output("OMDrawingTool.edit(): showing GUI per request");
+            setMask(SHOW_GUI_BEHAVIOR_MASK);
+        } else {
+            if (DEBUG) Debug.output("OMDrawingTool.edit(): NOT showing GUI per request");
+            unsetMask(SHOW_GUI_BEHAVIOR_MASK);
+        }
 
-	EditableOMGraphic eomg = getEditableGraphic(g);
+        EditableOMGraphic eomg = getEditableGraphic(g);
 
-	if (eomg != null) {
-	    eomg.setShowGUI(isMask(SHOW_GUI_BEHAVIOR_MASK));
-	    eomg.setActionMask(OMGraphic.UPDATE_GRAPHIC_MASK);
-	    return edit(eomg, requestor);
-	}
+        if (eomg != null) {
+            eomg.setShowGUI(isMask(SHOW_GUI_BEHAVIOR_MASK));
+            eomg.setActionMask(OMGraphic.UPDATE_GRAPHIC_MASK);
+            return edit(eomg, requestor);
+        }
 
-	return null;
+        return null;
     }
 
     /**
@@ -495,37 +495,37 @@ public class OMDrawingTool extends OMToolComponent
      */
     public OMGraphic edit(EditableOMGraphic eomg, DrawingToolRequestor requestor) {
 
-	if (setCurrentEditable(eomg)) {
+        if (setCurrentEditable(eomg)) {
 
-	    // resetGUI() for current EOMG doesn't need to be called
-	    // here, it's called later from activate
+            // resetGUI() for current EOMG doesn't need to be called
+            // here, it's called later from activate
 
-	    if (DEBUG) {
-		Debug.output("OMDrawingTool.edit success");
-	    }
+            if (DEBUG) {
+                Debug.output("OMDrawingTool.edit success");
+            }
 
-	    this.requestor = requestor;
+            this.requestor = requestor;
 
-	    if (currentEditable != null) {
-		graphicAttributes.setFrom(currentEditable.getGraphic());
-		activate();
+            if (currentEditable != null) {
+                graphicAttributes.setFrom(currentEditable.getGraphic());
+                activate();
 
-		// Check currentEditable in case activating caused
-		// something strange to happen, most likely with
-		// activating the MouseModes.
-		if (currentEditable != null) {
-		    return currentEditable.getGraphic();
-		}
-	    }
-	}
+                // Check currentEditable in case activating caused
+                // something strange to happen, most likely with
+                // activating the MouseModes.
+                if (currentEditable != null) {
+                    return currentEditable.getGraphic();
+                }
+            }
+        }
 
-	if (DEBUG) {
-	    Debug.output("OMDrawingTool.edit(): can't edit " + 
-			 eomg.getClass().getName() + 
-			 ", drawing tool busy with another graphic.");
-	}
+        if (DEBUG) {
+            Debug.output("OMDrawingTool.edit(): can't edit " + 
+                         eomg.getClass().getName() + 
+                         ", drawing tool busy with another graphic.");
+        }
 
-	return null;
+        return null;
     }
 
     /**
@@ -547,18 +547,18 @@ public class OMDrawingTool extends OMToolComponent
      * @return OMGraphic being modified.
      */
     public OMGraphic edit(OMGraphic g, DrawingToolRequestor requestor, 
-			  MouseEvent e) {
+                          MouseEvent e) {
 
-	OMGraphic ret = null;
+        OMGraphic ret = null;
 
-	if (getCurrentEditable() == null) {
-	    EditableOMGraphic eomg = getEditableGraphic(g);
-	    if (eomg != null) {
-		ret = edit(eomg, requestor, e);
-	    }
-	}
+        if (getCurrentEditable() == null) {
+            EditableOMGraphic eomg = getEditableGraphic(g);
+            if (eomg != null) {
+                ret = edit(eomg, requestor, e);
+            }
+        }
 
-	return ret;
+        return ret;
     }
 
     /**
@@ -577,21 +577,21 @@ public class OMDrawingTool extends OMToolComponent
      * EditableOMGraphic.  
      */
     public OMGraphic edit(EditableOMGraphic eomg, 
-			  DrawingToolRequestor requestor,
-			  MouseEvent e) {
-	
-	OMGraphic ret = null;
-	if (eomg != null) {
-	    eomg.setActionMask(OMGraphic.UPDATE_GRAPHIC_MASK);
+                          DrawingToolRequestor requestor,
+                          MouseEvent e) {
+        
+        OMGraphic ret = null;
+        if (eomg != null) {
+            eomg.setActionMask(OMGraphic.UPDATE_GRAPHIC_MASK);
 
-	    ret = edit(eomg, requestor);
+            ret = edit(eomg, requestor);
 
-	    if (ret != null) {
-		currentEditable.handleInitialMouseEvent(e);
-	    }
-	}
+            if (ret != null) {
+                currentEditable.handleInitialMouseEvent(e);
+            }
+        }
 
-	return ret;
+        return ret;
     }
 
     /**
@@ -599,31 +599,31 @@ public class OMDrawingTool extends OMToolComponent
      * EditableOMGraphicList being manipulated.
      */
     public boolean isEditing(OMGraphic omg) {
-	boolean ret = false;
-	EditableOMGraphic eomg = getCurrentEditable();
-	if (eomg != null && eomg.getGraphic() == omg || 
-	    (eomg instanceof EditableOMGraphicList &&
-	     ((OMGraphicList)((EditableOMGraphicList)eomg).getGraphic()).contains(omg))) {
-	    ret = true;
-	}
-	return ret;
+        boolean ret = false;
+        EditableOMGraphic eomg = getCurrentEditable();
+        if (eomg != null && eomg.getGraphic() == omg || 
+            (eomg instanceof EditableOMGraphicList &&
+             ((OMGraphicList)((EditableOMGraphicList)eomg).getGraphic()).contains(omg))) {
+            ret = true;
+        }
+        return ret;
     }
 
     public void deselect(OMGraphic omg) {
-	if (DEBUG) {
-	    Debug.output("OMDrawingTool.deselect()");
-	}
+        if (DEBUG) {
+            Debug.output("OMDrawingTool.deselect()");
+        }
 
-	if (getCurrentEditable() != null) {
-	    if (currentEditable.getGraphic() == omg) {
-		deactivate();
-	    } else {
-		if (currentEditable instanceof EditableOMGraphicList) {
-		    ((EditableOMGraphicList)currentEditable).remove(omg);
-		    canvas.repaint();
-		}
-	    }
-	}
+        if (getCurrentEditable() != null) {
+            if (currentEditable.getGraphic() == omg) {
+                deactivate();
+            } else {
+                if (currentEditable instanceof EditableOMGraphicList) {
+                    ((EditableOMGraphicList)currentEditable).remove(omg);
+                    canvas.repaint();
+                }
+            }
+        }
     }
 
     /**
@@ -631,94 +631,94 @@ public class OMDrawingTool extends OMToolComponent
      */
     public boolean select(OMGraphic omg, DrawingToolRequestor req, MouseEvent e) {
 
-	if (DEBUG) {
-	    Debug.output("OMDrawingTool.select()");
-	}
+        if (DEBUG) {
+            Debug.output("OMDrawingTool.select()");
+        }
 
-	OMGraphic ret = null;
-	boolean currentlyEditing = (getCurrentEditable() != null);
-	if (currentlyEditing) {
-	    boolean repaintCanvas = true;
-	    if (!(currentEditable instanceof EditableOMGraphicList)) {
-		if (DEBUG) {
-		    Debug.output("OMDrawingTool.select:  already working on OMGraphic, creating an EditableOMGraphicList for selection mode");
-		}
+        OMGraphic ret = null;
+        boolean currentlyEditing = (getCurrentEditable() != null);
+        if (currentlyEditing) {
+            boolean repaintCanvas = true;
+            if (!(currentEditable instanceof EditableOMGraphicList)) {
+                if (DEBUG) {
+                    Debug.output("OMDrawingTool.select:  already working on OMGraphic, creating an EditableOMGraphicList for selection mode");
+                }
 
-		EditableOMGraphicList eomgl = 
-		    new EditableOMGraphicList(new OMGraphicList());
-		eomgl.setProjection(getProjection());
-		DrawingToolRequestorList rl = new DrawingToolRequestorList();
-		// Add what's current to the requestor list
-		rl.add(currentEditable.getGraphic(), requestor);
-		// then add the current editable to the eomgl
-		eomgl.add(currentEditable);
-		currentEditable.removeEOMGListener(this);
+                EditableOMGraphicList eomgl = 
+                    new EditableOMGraphicList(new OMGraphicList());
+                eomgl.setProjection(getProjection());
+                DrawingToolRequestorList rl = new DrawingToolRequestorList();
+                // Add what's current to the requestor list
+                rl.add(currentEditable.getGraphic(), requestor);
+                // then add the current editable to the eomgl
+                eomgl.add(currentEditable);
+                currentEditable.removeEOMGListener(this);
 
-		// tell selectionlisteners to disregard the current thing.
-		setCurrentEditable(null);
-		// reset the requestor to the requestor list
-		requestor = rl;
-		// now reactivate with the eomgl
-		setCurrentEditable(eomgl);
+                // tell selectionlisteners to disregard the current thing.
+                setCurrentEditable(null);
+                // reset the requestor to the requestor list
+                requestor = rl;
+                // now reactivate with the eomgl
+                setCurrentEditable(eomgl);
 
-		if (DEBUG) {
-		    EditableOMGraphic ce = getCurrentEditable();
-		    Debug.output("OMDrawingTool: current editable is: " + 
-				 (ce == null?"null":ce.getClass().getName()));
-		}
-		// Activate the list to make sure the listeners are set up
-		// so the map gets repainted with the new EOMG in selected mode
-		activate(false);
+                if (DEBUG) {
+                    EditableOMGraphic ce = getCurrentEditable();
+                    Debug.output("OMDrawingTool: current editable is: " + 
+                                 (ce == null?"null":ce.getClass().getName()));
+                }
+                // Activate the list to make sure the listeners are set up
+                // so the map gets repainted with the new EOMG in selected mode
+                activate(false);
 
-		// Don't need to repaint if we call activate()
-		repaintCanvas = false;
-	    } else {
-		// We already have an EditableOMGraphicList, just add the new stuff to it.
+                // Don't need to repaint if we call activate()
+                repaintCanvas = false;
+            } else {
+                // We already have an EditableOMGraphicList, just add the new stuff to it.
 
-		if (DEBUG) {
-		    Debug.output("OMDrawingTool.select:  already working on EditableOMGraphicList");
-		}
-	    }
+                if (DEBUG) {
+                    Debug.output("OMDrawingTool.select:  already working on EditableOMGraphicList");
+                }
+            }
 
-	    // OK, even if we've just created the new EOMGL and added
-	    // a previous OMG to it, we still need to deal with the
-	    // OMG that has just been added into the method.
-	    EditableOMGraphic addedEditable = 
-		((EditableOMGraphicList)currentEditable).add(omg, this);
+            // OK, even if we've just created the new EOMGL and added
+            // a previous OMG to it, we still need to deal with the
+            // OMG that has just been added into the method.
+            EditableOMGraphic addedEditable = 
+                ((EditableOMGraphicList)currentEditable).add(omg, this);
 
-	    if (requestor instanceof DrawingToolRequestorList) {
-		((DrawingToolRequestorList)requestor).add(omg, req);
-	    } else {
-		Debug.error("OHHHH, THE HORRORS!");
-		Thread.dumpStack();
-	    }
+            if (requestor instanceof DrawingToolRequestorList) {
+                ((DrawingToolRequestorList)requestor).add(omg, req);
+            } else {
+                Debug.error("OHHHH, THE HORRORS!");
+                Thread.dumpStack();
+            }
 
-	    // OK, make the EditableOMGraphic list react to the new
-	    // mouse event, which will also set the state machine,
-	    // which will flow to the new EditableOMGraphic.
-	    ((EditableOMGraphicList)currentEditable).handleInitialMouseEvent(e);
+            // OK, make the EditableOMGraphic list react to the new
+            // mouse event, which will also set the state machine,
+            // which will flow to the new EditableOMGraphic.
+            ((EditableOMGraphicList)currentEditable).handleInitialMouseEvent(e);
 
-	    // Make sure the list is returned.
-	    ret = currentEditable.getGraphic();
+            // Make sure the list is returned.
+            ret = currentEditable.getGraphic();
 
-	    // Only need to call canvas.repaint() if activate isn't
-	    // called, and this is where that will happen.  This makes
-	    // the grab points show up on the new OMGraphic.
-	    if (repaintCanvas && canvas != null) {
-		canvas.repaint();
-	    }
-	} else {
-	    if (DEBUG) {
-		Debug.output("OMDrawingTool.select:  activating for: " + 
-			     omg.getClass().getName());
-	    }
+            // Only need to call canvas.repaint() if activate isn't
+            // called, and this is where that will happen.  This makes
+            // the grab points show up on the new OMGraphic.
+            if (repaintCanvas && canvas != null) {
+                canvas.repaint();
+            }
+        } else {
+            if (DEBUG) {
+                Debug.output("OMDrawingTool.select:  activating for: " + 
+                             omg.getClass().getName());
+            }
 
-	    // Since this is the first OMG in the tool at this point,
-	    // it's standard editing behavior....
-	    ret = edit(omg, req, e);
-	}
+            // Since this is the first OMG in the tool at this point,
+            // it's standard editing behavior....
+            ret = edit(omg, req, e);
+        }
 
-	return ret != null;
+        return ret != null;
     }
 
     /**
@@ -731,33 +731,33 @@ public class OMDrawingTool extends OMToolComponent
      */
     public EditableOMGraphic getEditableGraphic(String classname, GraphicAttributes ga) {
 
-	EditableOMGraphic eomg = null;
-	EditToolLoader loader = (EditToolLoader)loaders.get(classname);
-	if (loader == null) {
+        EditableOMGraphic eomg = null;
+        EditToolLoader loader = (EditToolLoader)loaders.get(classname);
+        if (loader == null) {
 
-	    if (DEBUG) {
-		Debug.output("OMDrawingTool.getEditableGraphic(" + classname + ") - rechecking loaders");
-	    }
+            if (DEBUG) {
+                Debug.output("OMDrawingTool.getEditableGraphic(" + classname + ") - rechecking loaders");
+            }
 
-	    // The loaders may be able to instantiate objects they
-	    // don't want in the GUI - check to see if they can..
-	    for (Iterator things = loaders.values().iterator(); things.hasNext();) {
-		EditToolLoader ldr = (EditToolLoader)things.next();
-		eomg = ldr.getEditableGraphic(classname, ga);
-		if (eomg != null) {
-		    break;
-		}
-	    }
+            // The loaders may be able to instantiate objects they
+            // don't want in the GUI - check to see if they can..
+            for (Iterator things = loaders.values().iterator(); things.hasNext();) {
+                EditToolLoader ldr = (EditToolLoader)things.next();
+                eomg = ldr.getEditableGraphic(classname, ga);
+                if (eomg != null) {
+                    break;
+                }
+            }
 
-	} else {
-	    eomg = loader.getEditableGraphic(classname, ga);
-	}
+        } else {
+            eomg = loader.getEditableGraphic(classname, ga);
+        }
 
-	if (eomg instanceof EditableOMGraphicList) {
-	    ((EditableOMGraphicList)eomg).init(this);
-	}
+        if (eomg instanceof EditableOMGraphicList) {
+            ((EditableOMGraphicList)eomg).init(this);
+        }
 
-	return eomg;
+        return eomg;
     }
 
     /**
@@ -769,60 +769,60 @@ public class OMDrawingTool extends OMToolComponent
      */
     public EditableOMGraphic getEditableGraphic(OMGraphic g) {
 
-	// This is what we need to do to handle an OMGraphicList
-	// handled for editing, but we still need to come up with a
-	// way to handle DrawingToolRequestors.
+        // This is what we need to do to handle an OMGraphicList
+        // handled for editing, but we still need to come up with a
+        // way to handle DrawingToolRequestors.
 
-// 	if (g instanceof OMGraphicList) {
-// 	    EditableOMGraphicList eomgl = 
-// 		new EditableOMGraphicList((OMGraphicList)g);
-// 	    eomgl.init(this);
-// 	    return eomgl;
-// 	}
+//      if (g instanceof OMGraphicList) {
+//          EditableOMGraphicList eomgl = 
+//              new EditableOMGraphicList((OMGraphicList)g);
+//          eomgl.init(this);
+//          return eomgl;
+//      }
 
-	Set keys = loaders.keySet();
-	Iterator iterator = keys.iterator();
-	while (iterator.hasNext()) {
-	    String key = (String)iterator.next();
-	    if (DEBUG) Debug.output("OMDrawingTool.getEditableGraphic(" + 
-				    g.getClass().getName() + 
-				    "): looking at (" + 
-				    key + ") loader.");
+        Set keys = loaders.keySet();
+        Iterator iterator = keys.iterator();
+        while (iterator.hasNext()) {
+            String key = (String)iterator.next();
+            if (DEBUG) Debug.output("OMDrawingTool.getEditableGraphic(" + 
+                                    g.getClass().getName() + 
+                                    "): looking at (" + 
+                                    key + ") loader.");
 
-	    try {
-		Class kc = Class.forName(key);
-		Class gc = g.getClass();
-		if (kc == gc || kc.isAssignableFrom(gc)) {
-		    EditToolLoader loader = (EditToolLoader)loaders.get(key);
-		    
-		    if (loader == null) {
-			return null;
-		    }
-		    
-		    // There is a reason why the generation of the
-		    // graphic is done here.  I think it has to do
-		    // with something with the creation of the
-		    // EditableOMGraphic and its display with the
-		    // GrabPoints.
-		    generateOMGraphic(g);
+            try {
+                Class kc = Class.forName(key);
+                Class gc = g.getClass();
+                if (kc == gc || kc.isAssignableFrom(gc)) {
+                    EditToolLoader loader = (EditToolLoader)loaders.get(key);
+                    
+                    if (loader == null) {
+                        return null;
+                    }
+                    
+                    // There is a reason why the generation of the
+                    // graphic is done here.  I think it has to do
+                    // with something with the creation of the
+                    // EditableOMGraphic and its display with the
+                    // GrabPoints.
+                    generateOMGraphic(g);
 
-		    EditableOMGraphic eomg = loader.getEditableGraphic(g);
+                    EditableOMGraphic eomg = loader.getEditableGraphic(g);
 
-		    if (DEBUG) Debug.output("OMDrawingTool.getEditableGraphic(" + 
-					    g.getClass().getName() + 
-					    "): found one.");
+                    if (DEBUG) Debug.output("OMDrawingTool.getEditableGraphic(" + 
+                                            g.getClass().getName() + 
+                                            "): found one.");
 
-		    return eomg;
-		}
-	    } catch (ClassNotFoundException cnfe) {
-		if (DEBUG) {
-		    Debug.output("OMDrawingTool.getEditableGraphic(" + 
-				 g.getClass().getName() + 
-				 ") comparision couldn't find class for " + key);
-		}
-	    }
-	}
-	return null;
+                    return eomg;
+                }
+            } catch (ClassNotFoundException cnfe) {
+                if (DEBUG) {
+                    Debug.output("OMDrawingTool.getEditableGraphic(" + 
+                                 g.getClass().getName() + 
+                                 ") comparision couldn't find class for " + key);
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -830,29 +830,29 @@ public class OMDrawingTool extends OMToolComponent
      * to be a low-cost check, with a minimal allocation of memory.
      */
     public boolean canEdit(Class omgc) {
-	Iterator iterator;
-	if (possibleEditableClasses == null) {
-	    Set keys = loaders.keySet();
-	    possibleEditableClasses = new Vector(keys.size());
-	    iterator = keys.iterator();
-	    while (iterator.hasNext()) {
-		String key = (String)iterator.next();
-		try {
-		    possibleEditableClasses.add(Class.forName(key));
-		} catch (ClassNotFoundException cnfe) {
-		    // Don't worry about this now...
-		}
-	    }
-	}
+        Iterator iterator;
+        if (possibleEditableClasses == null) {
+            Set keys = loaders.keySet();
+            possibleEditableClasses = new Vector(keys.size());
+            iterator = keys.iterator();
+            while (iterator.hasNext()) {
+                String key = (String)iterator.next();
+                try {
+                    possibleEditableClasses.add(Class.forName(key));
+                } catch (ClassNotFoundException cnfe) {
+                    // Don't worry about this now...
+                }
+            }
+        }
 
-	iterator = possibleEditableClasses.iterator();
-	while (iterator.hasNext()) {
-	    Class kc = (Class) iterator.next();
-	    if (kc == omgc || kc.isAssignableFrom(omgc)) {
-		return true;
-	    }
-	}
-	return false;
+        iterator = possibleEditableClasses.iterator();
+        while (iterator.hasNext()) {
+            Class kc = (Class) iterator.next();
+            if (kc == omgc || kc.isAssignableFrom(omgc)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -862,25 +862,25 @@ public class OMDrawingTool extends OMToolComponent
      */
     public synchronized boolean setCurrentEditable(EditableOMGraphic eomg) {
 
-	if (currentEditable == null || eomg == null) {
+        if (currentEditable == null || eomg == null) {
 
-	    if (selectionSupport != null) {
-		if (eomg == null && currentEditable != null) {
-		    // No longer being edited.
-		    selectionSupport.fireSelection(currentEditable.getGraphic(), requestor, false);
-		} else if (eomg != null) {
-		    // Starting to be edited.
-		    selectionSupport.fireSelection(eomg.getGraphic(), requestor, true);
-		} // else all is null, ignore...
-	    }
+            if (selectionSupport != null) {
+                if (eomg == null && currentEditable != null) {
+                    // No longer being edited.
+                    selectionSupport.fireSelection(currentEditable.getGraphic(), requestor, false);
+                } else if (eomg != null) {
+                    // Starting to be edited.
+                    selectionSupport.fireSelection(eomg.getGraphic(), requestor, true);
+                } // else all is null, ignore...
+            }
 
-	    currentEditable = eomg;
-	    if (currentEditable != null) {
-		return true;
-	    }	
-	}
+            currentEditable = eomg;
+            if (currentEditable != null) {
+                return true;
+            }   
+        }
 
-	return false;
+        return false;
     }
 
     /**
@@ -889,7 +889,7 @@ public class OMDrawingTool extends OMToolComponent
      * OMDrawingTool isn't actively editing something.
      */
     public EditableOMGraphic getCurrentEditable() {
-	return currentEditable;
+        return currentEditable;
     }
 
     /**
@@ -898,7 +898,7 @@ public class OMDrawingTool extends OMToolComponent
      * set this to null.
      */
     public void setMouseMode(OMDrawingToolMouseMode adtmm) {
-	dtmm = adtmm;
+        dtmm = adtmm;
     }
 
     /**
@@ -906,7 +906,7 @@ public class OMDrawingTool extends OMToolComponent
      * need a handle on the mouseMode to feed events to.
      */
     public OMDrawingToolMouseMode getMouseMode() {
-	return dtmm;
+        return dtmm;
     }
 
     /**
@@ -914,18 +914,18 @@ public class OMDrawingTool extends OMToolComponent
      * OMDrawingTool can use to create/modify OMGraphics.
      */
     public void addLoader(EditToolLoader loader) {
-	String[] classnames = loader.getEditableClasses();
+        String[] classnames = loader.getEditableClasses();
 
-	// Add the loader to the hashtable, with the classnames as
-	// keys.  Then, when we get a request for a classname, we do
-	// a lookup and get the proper loader for the key.
-	if (classnames != null) {
-	    for (int i = 0; i < classnames.length; i++) {
-		loaders.put(classnames[i].intern(), loader);
-	    }
-	    firePropertyChange(LoadersProperty, null, loaders);
-	    possibleEditableClasses = null;
-	}
+        // Add the loader to the hashtable, with the classnames as
+        // keys.  Then, when we get a request for a classname, we do
+        // a lookup and get the proper loader for the key.
+        if (classnames != null) {
+            for (int i = 0; i < classnames.length; i++) {
+                loaders.put(classnames[i].intern(), loader);
+            }
+            firePropertyChange(LoadersProperty, null, loaders);
+            possibleEditableClasses = null;
+        }
     }
 
     /**
@@ -933,10 +933,10 @@ public class OMDrawingTool extends OMToolComponent
      * list of edit tool loaders.
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-	if (listener != null) {
-	    super.addPropertyChangeListener(listener);
-	    listener.propertyChange(new PropertyChangeEvent(this, LoadersProperty, null, loaders));
-	}
+        if (listener != null) {
+            super.addPropertyChangeListener(listener);
+            listener.propertyChange(new PropertyChangeEvent(this, LoadersProperty, null, loaders));
+        }
     }
 
     /**
@@ -944,24 +944,24 @@ public class OMDrawingTool extends OMToolComponent
      * OMDrawingTool can use to create/modify OMGraphics.
      */
     public void removeLoader(EditToolLoader loader) {
-	String[] classnames = loader.getEditableClasses();
+        String[] classnames = loader.getEditableClasses();
 
-	// Remove the loader to the hashtable, with the classnames as
-	// keys. 
-	if (classnames != null) {
-	    for (int i = 0; i < classnames.length; i++) {
-		EditToolLoader etl = (EditToolLoader)loaders.get(classnames[i].intern());
-		if (etl == loader) {
-		    loaders.remove(classnames[i]);
-		} else {
-		    if (DEBUG) {
-			Debug.output("DrawingTool.removeLoader: loader to be removed isn't the current loader for " + classnames[i] + ", ignored.");
-		    }
-		}
-	    }
-	    firePropertyChange(LoadersProperty, null, loaders);
-	    possibleEditableClasses = null;
-	}
+        // Remove the loader to the hashtable, with the classnames as
+        // keys. 
+        if (classnames != null) {
+            for (int i = 0; i < classnames.length; i++) {
+                EditToolLoader etl = (EditToolLoader)loaders.get(classnames[i].intern());
+                if (etl == loader) {
+                    loaders.remove(classnames[i]);
+                } else {
+                    if (DEBUG) {
+                        Debug.output("DrawingTool.removeLoader: loader to be removed isn't the current loader for " + classnames[i] + ", ignored.");
+                    }
+                }
+            }
+            firePropertyChange(LoadersProperty, null, loaders);
+            possibleEditableClasses = null;
+        }
     }
 
     /**
@@ -969,29 +969,29 @@ public class OMDrawingTool extends OMToolComponent
      */
     public EditToolLoader[] getLoaders() {
 
-	Set keys = loaders.keySet();
-	EditToolLoader[] etls = new EditToolLoader[keys.size()];
-	
-	Iterator iterator = keys.iterator();
-	int count = 0;
-	while (iterator.hasNext()) {
-	    etls[count++] = (EditToolLoader)loaders.get(iterator.next());
-	}
-	return etls;
+        Set keys = loaders.keySet();
+        EditToolLoader[] etls = new EditToolLoader[keys.size()];
+        
+        Iterator iterator = keys.iterator();
+        int count = 0;
+        while (iterator.hasNext()) {
+            etls[count++] = (EditToolLoader)loaders.get(iterator.next());
+        }
+        return etls;
     }
 
     /**
      * Set the loaders that the OMDrawingTool has access to.
      */
     public void setLoaders(EditToolLoader[] etls) {
-	loaders.clear();
-	for (int i = 0; i < etls.length; i++) {
-	    addLoader(etls[i]);
-	}
+        loaders.clear();
+        for (int i = 0; i < etls.length; i++) {
+            addLoader(etls[i]);
+        }
     }
 
     public void resetGUIWhenDeactivated(boolean value) {
-	resetGUIWhenDeactivated = value;
+        resetGUIWhenDeactivated = value;
     }
 
     /**
@@ -1015,45 +1015,45 @@ public class OMDrawingTool extends OMToolComponent
      * @return this.
      */
     public Component getGUI() {
-	if (!resetGUIWhenDeactivated) return this;
+        if (!resetGUIWhenDeactivated) return this;
 
-	removeAll();
-	Component eomgc = null;
+        removeAll();
+        Component eomgc = null;
 
-	graphicAttributes.setLineMenuAdditions(null);
-	if (currentEditable != null) {
-	    // GUI specific to a particular EditableOMGraphic type.
-	    eomgc = currentEditable.getGUI(graphicAttributes);
-	    if (eomgc != null) {
-		add(eomgc);
-	    }
-	}
+        graphicAttributes.setLineMenuAdditions(null);
+        if (currentEditable != null) {
+            // GUI specific to a particular EditableOMGraphic type.
+            eomgc = currentEditable.getGUI(graphicAttributes);
+            if (eomgc != null) {
+                add(eomgc);
+            }
+        }
 
-	// Basic, generic GUI if eomgc wasn't set.
-	if (eomgc == null) {
-	    add(graphicAttributes.getGUI());
-	}
+        // Basic, generic GUI if eomgc wasn't set.
+        if (eomgc == null) {
+            add(graphicAttributes.getGUI());
+        }
 
-	revalidate();
+        revalidate();
 
-	return this;
+        return this;
     }
 
     public void setInformationDelegator(InformationDelegator id) {
-	informationDelegator = id;
+        informationDelegator = id;
     }
 
     public InformationDelegator getInformationDelegator() {
-	return informationDelegator;
+        return informationDelegator;
     }
 
     /**
      * Put the message in a display line that the OMDrawingTool is using.
      */
     public void setRemarks(String message) {
-	if (informationDelegator != null) {
-	    informationDelegator.displayInfoLine(message, InformationDelegator.MAP_OBJECT_INFO_LINE);
-	}
+        if (informationDelegator != null) {
+            informationDelegator.displayInfoLine(message, InformationDelegator.MAP_OBJECT_INFO_LINE);
+        }
     }
 
     /**
@@ -1061,7 +1061,7 @@ public class OMDrawingTool extends OMToolComponent
      * working on an OMGraphic.
      */
     public boolean isActivated() {
-	return activated;
+        return activated;
     }
 
     /**
@@ -1071,7 +1071,7 @@ public class OMDrawingTool extends OMToolComponent
      * methods.
      */
     protected synchronized void activate() {
-	activate(true);
+        activate(true);
     }
 
     /**
@@ -1085,56 +1085,56 @@ public class OMDrawingTool extends OMToolComponent
      * methods.
      */
     protected synchronized void activate(boolean completeHookup) {
-	activated = true;
+        activated = true;
 
-	if (DEBUG) Debug.output("OMDrawingTool: activate()");
-	if (currentEditable != null && graphicAttributes != null) {
-	    // For partial hookups, for select() we don't need this.
-	    if (completeHookup) {
-		graphicAttributes.setTo(currentEditable.getGraphic());
-		currentEditable.getGraphic().setVisible(false);
-	    }
-	    currentEditable.addEOMGListener(this);
-	}
+        if (DEBUG) Debug.output("OMDrawingTool: activate()");
+        if (currentEditable != null && graphicAttributes != null) {
+            // For partial hookups, for select() we don't need this.
+            if (completeHookup) {
+                graphicAttributes.setTo(currentEditable.getGraphic());
+                currentEditable.getGraphic().setVisible(false);
+            }
+            currentEditable.addEOMGListener(this);
+        }
 
-	if (!isMask(PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK) && completeHookup) {
-	    if (mouseDelegator != null) {
-		if (Debug.debugging("drawingtooldetail")) {
-		    Debug.output("OMDrawingTool.activate() mousemode connecting to MouseDelegator");
-		}
-		formerMouseMode = mouseDelegator.getActiveMouseMode();
-		mouseDelegator.setActiveMouseMode(dtmm);
+        if (!isMask(PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK) && completeHookup) {
+            if (mouseDelegator != null) {
+                if (Debug.debugging("drawingtooldetail")) {
+                    Debug.output("OMDrawingTool.activate() mousemode connecting to MouseDelegator");
+                }
+                formerMouseMode = mouseDelegator.getActiveMouseMode();
+                mouseDelegator.setActiveMouseMode(dtmm);
 
-	    } else if (canvas != null) {
-		// If a MouseDelegator is not being used, go directly to
-		// the MapBean.
-		if (Debug.debugging("drawingtooldetail")) {
-		    Debug.output("OMDrawingTool.activate() mousemode connecting directly to canvas");
-		}
-		canvas.addMouseListener(dtmm);
-		canvas.addMouseMotionListener(dtmm);
-	    } else {
-		Debug.error("Drawing Tool can't find a map to work with");
-	    }
-	}
+            } else if (canvas != null) {
+                // If a MouseDelegator is not being used, go directly to
+                // the MapBean.
+                if (Debug.debugging("drawingtooldetail")) {
+                    Debug.output("OMDrawingTool.activate() mousemode connecting directly to canvas");
+                }
+                canvas.addMouseListener(dtmm);
+                canvas.addMouseMotionListener(dtmm);
+            } else {
+                Debug.error("Drawing Tool can't find a map to work with");
+            }
+        }
 
-	// The Drawing tool is added as a projection listener so that
-	// it can properly update the current graphic if the map
-	// projection changes during graphic creation/edit.
+        // The Drawing tool is added as a projection listener so that
+        // it can properly update the current graphic if the map
+        // projection changes during graphic creation/edit.
 
-	if (canvas != null) {
-	    if (canvas instanceof MapBean && completeHookup) {
-  		((MapBean)canvas).addPaintListener(this);
-		((MapBean)canvas).addProjectionListener(this);
-	    }
-	    // Gets the graphic highlighted on the map, if needed.
-	    canvas.repaint();
-	}
+        if (canvas != null) {
+            if (canvas instanceof MapBean && completeHookup) {
+                ((MapBean)canvas).addPaintListener(this);
+                ((MapBean)canvas).addProjectionListener(this);
+            }
+            // Gets the graphic highlighted on the map, if needed.
+            canvas.repaint();
+        }
 
-	if (completeHookup) {
-	    // Show the gui.
-	    showPalette();
-	}
+        if (completeHookup) {
+            // Show the gui.
+            showPalette();
+        }
     }
 
     /**
@@ -1147,11 +1147,11 @@ public class OMDrawingTool extends OMToolComponent
      * knows if the graphic is being updated or created.
      */
     public void deactivate() {
-	int actionMask = 0;
-	if (currentEditable != null) {
-	    actionMask = currentEditable.getActionMask();
-	}
-	deactivate(actionMask);
+        int actionMask = 0;
+        if (currentEditable != null) {
+            actionMask = currentEditable.getActionMask();
+        }
+        deactivate(actionMask);
     }
 
     /**
@@ -1166,71 +1166,71 @@ public class OMDrawingTool extends OMToolComponent
      * @see com.bbn.openmap.omGraphics.OMGraphicConstants
      */
     public synchronized void deactivate(int actionToDoWithOMGraphic) {
-	if (DEBUG) {
-	    Debug.output("OMDrawingTool: deactivate(" + 
-			 (activated?"while active":"while inactive") + ")");
-	}
+        if (DEBUG) {
+            Debug.output("OMDrawingTool: deactivate(" + 
+                         (activated?"while active":"while inactive") + ")");
+        }
 
-	// Don't waste effort;
-	if (!activated) return;
+        // Don't waste effort;
+        if (!activated) return;
 
-	if (!isMask(PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK)) {
-	    if (mouseDelegator != null) {
-		mouseDelegator.setActiveMouseMode(formerMouseMode);
-		mouseDelegator.removeMouseMode(dtmm);
-	    } else if (canvas != null) {
-		// If a MouseDelegator is not being used, go directly to
-		// the canvas.
-		canvas.removeMouseListener(dtmm);
-		canvas.removeMouseMotionListener(dtmm);
-	    }
-	}
+        if (!isMask(PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK)) {
+            if (mouseDelegator != null) {
+                mouseDelegator.setActiveMouseMode(formerMouseMode);
+                mouseDelegator.removeMouseMode(dtmm);
+            } else if (canvas != null) {
+                // If a MouseDelegator is not being used, go directly to
+                // the canvas.
+                canvas.removeMouseListener(dtmm);
+                canvas.removeMouseMotionListener(dtmm);
+            }
+        }
 
-	if (canvas != null) {
-	    if (canvas instanceof MapBean) {
-		((MapBean)canvas).removeProjectionListener(this);
-  		((MapBean)canvas).removePaintListener(this);
-	    }
-	}
+        if (canvas != null) {
+            if (canvas instanceof MapBean) {
+                ((MapBean)canvas).removeProjectionListener(this);
+                ((MapBean)canvas).removePaintListener(this);
+            }
+        }
 
-	OMGraphic g = null;
+        OMGraphic g = null;
 
-	if (currentEditable != null) {
-	    if (!(currentEditable.getStateMachine().getState() instanceof com.bbn.openmap.omGraphics.editable.GraphicUndefinedState)) {
-		g = currentEditable.getGraphic();
-	    }
-	    currentEditable.removeEOMGListener(this);
-	}
+        if (currentEditable != null) {
+            if (!(currentEditable.getStateMachine().getState() instanceof com.bbn.openmap.omGraphics.editable.GraphicUndefinedState)) {
+                g = currentEditable.getGraphic();
+            }
+            currentEditable.removeEOMGListener(this);
+        }
 
-	//////////////////////////////////
-	// Clean up, then notify listener
+        //////////////////////////////////
+        // Clean up, then notify listener
 
-	setCurrentEditable(null);
-	// hide the gui while currentEditable is null, so it resets to
-	// the default.
-	hidePalette();
-	unsetMask(DEACTIVATE_ASAP_BEHAVIOR_MASK);
-	popup = null;
-	activated = false;
+        setCurrentEditable(null);
+        // hide the gui while currentEditable is null, so it resets to
+        // the default.
+        hidePalette();
+        unsetMask(DEACTIVATE_ASAP_BEHAVIOR_MASK);
+        popup = null;
+        activated = false;
 
-	// End cleanup
-	//////////////////////////////////
+        // End cleanup
+        //////////////////////////////////
 
-	if (g != null && requestor != null) {
-	    g.setVisible(true);
-	    OMAction action = new OMAction();
-	    action.setMask(actionToDoWithOMGraphic);
-	    generateOMGraphic(g);
-	    notifyListener(g, action);
-	}
+        if (g != null && requestor != null) {
+            g.setVisible(true);
+            OMAction action = new OMAction();
+            action.setMask(actionToDoWithOMGraphic);
+            generateOMGraphic(g);
+            notifyListener(g, action);
+        }
 
-	// By putting this here, it gives the listener the slight
-	// opportunity to not have the gui reset right away.  This
-	// opportunity gives an editor tool a smoother runtime when
-	// duplicate objects are being created one after another, and
-	// you don't want all the GUI reconfiguring to happen when it
-	// will just go back to the same thing in a second.
-	getGUI();
+        // By putting this here, it gives the listener the slight
+        // opportunity to not have the gui reset right away.  This
+        // opportunity gives an editor tool a smoother runtime when
+        // duplicate objects are being created one after another, and
+        // you don't want all the GUI reconfiguring to happen when it
+        // will just go back to the same thing in a second.
+        getGUI();
 
     }
 
@@ -1238,14 +1238,14 @@ public class OMDrawingTool extends OMToolComponent
      * If the projection is not null, generate the OMGraphic.
      */
     protected void generateOMGraphic(OMGraphic g) {
-	if (g != null && g.getNeedToRegenerate()) {
-	    Projection proj = getProjection();
-	    if (proj != null) {
-		g.generate(proj);
-	    } else if (DEBUG) {
-		Debug.output("OMDrawingTool: graphic needs generation: " + g.getNeedToRegenerate());
-	    }
-	}
+        if (g != null && g.getNeedToRegenerate()) {
+            Projection proj = getProjection();
+            if (proj != null) {
+                g.generate(proj);
+            } else if (DEBUG) {
+                Debug.output("OMDrawingTool: graphic needs generation: " + g.getNeedToRegenerate());
+            }
+        }
     }
 
     /**
@@ -1255,22 +1255,22 @@ public class OMDrawingTool extends OMToolComponent
      * the graphic.
      */
     public void notifyListener(OMGraphic graphic, OMAction action) {
-	if (requestor != null) {
-	    if (DEBUG) Debug.output("OMDrawingTool: notifying requestor, graphic with action");
-	    requestor.drawingComplete(graphic, action);
-	}
+        if (requestor != null) {
+            if (DEBUG) Debug.output("OMDrawingTool: notifying requestor, graphic with action");
+            requestor.drawingComplete(graphic, action);
+        }
 
-	// in case the requestor is a layer that is not visible
-	if (canvas != null) {
-	    canvas.repaint();
-	}
+        // in case the requestor is a layer that is not visible
+        if (canvas != null) {
+            canvas.repaint();
+        }
     }
 
     /**
      * ProjectionListener method.  Helps if the currentEditable is set.
      */
     public void projectionChanged(ProjectionEvent e) {
-	setProjection((Projection)e.getProjection().makeClone());
+        setProjection((Projection)e.getProjection().makeClone());
     }
 
     /**
@@ -1278,10 +1278,10 @@ public class OMDrawingTool extends OMToolComponent
      * is too.
      */
     public void setProjection(Projection proj) {
-	projection = proj;
-	if (currentEditable != null) {
-	    currentEditable.setProjection(projection);
-	}
+        projection = proj;
+        if (currentEditable != null) {
+            currentEditable.setProjection(projection);
+        }
     }
 
     /**
@@ -1291,10 +1291,10 @@ public class OMDrawingTool extends OMToolComponent
      * that doesn't work, it will finally return null.
      */
     public Projection getProjection() {
-	if (projection == null && canvas instanceof MapBean) {
-	    projection = ((MapBean)canvas).getProjection();
-	}
-	return projection;
+        if (projection == null && canvas instanceof MapBean) {
+            projection = ((MapBean)canvas).getProjection();
+        }
+        return projection;
     }
 
     /**
@@ -1302,21 +1302,21 @@ public class OMDrawingTool extends OMToolComponent
      * java.awt.Graphics parameters.
      */
     public void setAttributes(GraphicAttributes da) {
-	if (graphicAttributes != null) {
-	    graphicAttributes.getPropertyChangeSupport().removePropertyChangeListener(this);
-	}
+        if (graphicAttributes != null) {
+            graphicAttributes.getPropertyChangeSupport().removePropertyChangeListener(this);
+        }
 
-	if (da == null) {
-	    graphicAttributes = GraphicAttributes.DEFAULT;
-	} else {
-	    graphicAttributes = da;
-	}
+        if (da == null) {
+            graphicAttributes = GraphicAttributes.DEFAULT;
+        } else {
+            graphicAttributes = da;
+        }
 
-	graphicAttributes.getPropertyChangeSupport().addPropertyChangeListener(this);
+        graphicAttributes.getPropertyChangeSupport().addPropertyChangeListener(this);
 
-	if (currentEditable != null) {
-	    graphicAttributes.setTo(currentEditable.getGraphic());
-	}
+        if (currentEditable != null) {
+            graphicAttributes.setTo(currentEditable.getGraphic());
+        }
     }
 
     /**
@@ -1324,7 +1324,7 @@ public class OMDrawingTool extends OMToolComponent
      * graphic.
      */
     public GraphicAttributes getAttributes() {
-	return graphicAttributes;
+        return graphicAttributes;
     }
 
     /**
@@ -1334,43 +1334,43 @@ public class OMDrawingTool extends OMToolComponent
      * @param g the Graphics to draw into.
      */
     public void listenerPaint(Graphics g) {
-	// Call repaintRender here because if the graphic is in the
-	// middle of being moved, we'll draw it in the mouse event
-	// thread.  Otherwise, it gets set in the image for the
-	// background, which looks bad.
-	if (currentEditable != null) {
-	    // do g.create() to prevent Stroke remnants from affecting
-	    // the Border of the canvas.
-	    currentEditable.repaintRender(g.create());
-	}
+        // Call repaintRender here because if the graphic is in the
+        // middle of being moved, we'll draw it in the mouse event
+        // thread.  Otherwise, it gets set in the image for the
+        // background, which looks bad.
+        if (currentEditable != null) {
+            // do g.create() to prevent Stroke remnants from affecting
+            // the Border of the canvas.
+            currentEditable.repaintRender(g.create());
+        }
     }
 
     /**
      * Set the MouseDelegator used to receive mouse events.
      */
     public void setMouseDelegator(MouseDelegator md) {
-	mouseDelegator = md;
+        mouseDelegator = md;
     }
 
     /**
      * Get the MouseDelegator used to receive mouse events.
      */
     public MouseDelegator getMouseDelegator() {
-	return mouseDelegator;
+        return mouseDelegator;
     }
 
     public void setCursor(java.awt.Cursor cursor) {
-	if (canvas != null) {
-	    canvas.setCursor(cursor);
-	}
+        if (canvas != null) {
+            canvas.setCursor(cursor);
+        }
     }
 
     public java.awt.Cursor getCursor() {
-	if (canvas != null) {
-	    return canvas.getCursor();
-	} else {
-	    return null;
-	}
+        if (canvas != null) {
+            return canvas.getCursor();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -1380,14 +1380,14 @@ public class OMDrawingTool extends OMToolComponent
      * looks for MapBeans to use as canvases.
      */
     public void setCanvas(JComponent can) {
-	canvas = can;
+        canvas = can;
     }
 
     /**
      * Get the JComponent this thing is directing events for.
      */
     public JComponent getCanvas() {
-	return canvas;
+        return canvas;
     }
 
     /**
@@ -1396,7 +1396,7 @@ public class OMDrawingTool extends OMToolComponent
      * or make its face invisible if this is set to false.
      */
     public void setUseAsTool(boolean value) {
-	super.setUseAsTool(value);
+        super.setUseAsTool(value);
     }
 
     /**
@@ -1412,25 +1412,25 @@ public class OMDrawingTool extends OMToolComponent
      */
     public void findAndInit(Object someObj) {
 
-	if (someObj instanceof InformationDelegator) {
-	    if (DEBUG) Debug.output("DrawingTool: found InformationDelegator");
-	    if (dtmm != null) {
-		dtmm.setInfoDelegator((InformationDelegator)someObj);
-	    }
-	    setInformationDelegator((InformationDelegator)someObj);
-	}
-	if (someObj instanceof MouseDelegator) {
-	    if (DEBUG) Debug.output("DrawingTool: found MouseDelegator.");
-	    setMouseDelegator((MouseDelegator)someObj);
-	}
-	if (someObj instanceof MapBean) {
-	    if (DEBUG) Debug.output("DrawingTool: found MapBean.");
-	    setCanvas((JComponent)someObj);
-	}
-	if (someObj instanceof EditToolLoader) {
-	    if (DEBUG) Debug.output("DrawingTool: found EditToolLoader.");
-	    addLoader((EditToolLoader)someObj);		
-	}
+        if (someObj instanceof InformationDelegator) {
+            if (DEBUG) Debug.output("DrawingTool: found InformationDelegator");
+            if (dtmm != null) {
+                dtmm.setInfoDelegator((InformationDelegator)someObj);
+            }
+            setInformationDelegator((InformationDelegator)someObj);
+        }
+        if (someObj instanceof MouseDelegator) {
+            if (DEBUG) Debug.output("DrawingTool: found MouseDelegator.");
+            setMouseDelegator((MouseDelegator)someObj);
+        }
+        if (someObj instanceof MapBean) {
+            if (DEBUG) Debug.output("DrawingTool: found MapBean.");
+            setCanvas((JComponent)someObj);
+        }
+        if (someObj instanceof EditToolLoader) {
+            if (DEBUG) Debug.output("DrawingTool: found EditToolLoader.");
+            addLoader((EditToolLoader)someObj);         
+        }
     }
 
     /**
@@ -1440,21 +1440,21 @@ public class OMDrawingTool extends OMToolComponent
      * disconnect itseld from the object.
      */
     public void findAndUndo(Object someObj) {
-	if (someObj == getInformationDelegator()) {
-	    if (dtmm != null && dtmm.getInfoDelegator() == (InformationDelegator)someObj) {
-		dtmm.setInfoDelegator(null);
-	    }
-	    setInformationDelegator(null);
-	}
-	if (someObj == getMouseDelegator()) {
-	    setMouseDelegator(null);
-	}
-	if (someObj == getCanvas()) {
-	    setCanvas(null);
-	}
-	if (someObj instanceof EditToolLoader) {
-	    removeLoader((EditToolLoader)someObj);
-	}
+        if (someObj == getInformationDelegator()) {
+            if (dtmm != null && dtmm.getInfoDelegator() == (InformationDelegator)someObj) {
+                dtmm.setInfoDelegator(null);
+            }
+            setInformationDelegator(null);
+        }
+        if (someObj == getMouseDelegator()) {
+            setMouseDelegator(null);
+        }
+        if (someObj == getCanvas()) {
+            setCanvas(null);
+        }
+        if (someObj instanceof EditToolLoader) {
+            removeLoader((EditToolLoader)someObj);
+        }
     }
 
     ////////////////  end BeanContext stuff
@@ -1463,58 +1463,58 @@ public class OMDrawingTool extends OMToolComponent
      * Display the palette.
      */
     public void showPalette() {
-	Debug.message("drawingtool", "OMDrawingTool.showPalette()");
-	resetGUIWhenDeactivated = true;
-	getGUI(); // resets the gui.
+        Debug.message("drawingtool", "OMDrawingTool.showPalette()");
+        resetGUIWhenDeactivated = true;
+        getGUI(); // resets the gui.
 
-	// Should only be visible if the tool isn't being used as a
-	// tool, which means that it's being held by something else,
-	// or if it is a tool and the SHOW_GUI flag is set.
-	boolean shouldBeVisible = !getUseAsTool() ||
-	    (isMask(SHOW_GUI_BEHAVIOR_MASK) && getUseAsTool());
+        // Should only be visible if the tool isn't being used as a
+        // tool, which means that it's being held by something else,
+        // or if it is a tool and the SHOW_GUI flag is set.
+        boolean shouldBeVisible = !getUseAsTool() ||
+            (isMask(SHOW_GUI_BEHAVIOR_MASK) && getUseAsTool());
 
-	setVisible(shouldBeVisible);
+        setVisible(shouldBeVisible);
     }
     
     /**
      * Hide the OMDrawingTool palette.
      */
     public void hidePalette() {
-	Debug.message("drawingtool", "OMDrawingTool.hidePalette()");
+        Debug.message("drawingtool", "OMDrawingTool.hidePalette()");
 
-	setVisible(visibleWhenInactive);
+        setVisible(visibleWhenInactive);
 
-	WindowSupport ws = getWindowSupport();
-	if (ws != null) {
-	    ws.killWindow();
-	}
+        WindowSupport ws = getWindowSupport();
+        if (ws != null) {
+            ws.killWindow();
+        }
     }
 
     public void showInWindow() {
-	if (!getUseAsTool() && getWindowSupport() == null) {
-	    setWindowSupport(new WindowSupport(getGUI(), "Drawing Tool"));
-	}
+        if (!getUseAsTool() && getWindowSupport() == null) {
+            setWindowSupport(new WindowSupport(getGUI(), "Drawing Tool"));
+        }
 
-	WindowSupport ws = getWindowSupport();
+        WindowSupport ws = getWindowSupport();
 
-	if (ws != null && !getUseAsTool()) {
-	    MapHandler mh = (MapHandler) getBeanContext();
-	    Frame frame = null;
-	    int xoffset = 0;
-	    int yoffset = 0;
-	    if (mh != null) {
-		frame = (Frame)mh.get(java.awt.Frame.class);
-		if (frame != null) {
-		    xoffset = frame.getX();
-		    yoffset = frame.getY();
-		}
-	    }
+        if (ws != null && !getUseAsTool()) {
+            MapHandler mh = (MapHandler) getBeanContext();
+            Frame frame = null;
+            int xoffset = 0;
+            int yoffset = 0;
+            if (mh != null) {
+                frame = (Frame)mh.get(java.awt.Frame.class);
+                if (frame != null) {
+                    xoffset = frame.getX();
+                    yoffset = frame.getY();
+                }
+            }
 
-	    ws.displayInWindow(frame, windowx + xoffset, windowy + yoffset, -1, -1);
-	} else {
-	    Debug.output("OMDrawingTool.showPalette(): NOT showing palette, ws == null:" + 
-			 (ws == null) + ", used as tool:" + getUseAsTool());
-	}
+            ws.displayInWindow(frame, windowx + xoffset, windowy + yoffset, -1, -1);
+        } else {
+            Debug.output("OMDrawingTool.showPalette(): NOT showing palette, ws == null:" + 
+                         (ws == null) + ", used as tool:" + getUseAsTool());
+        }
     }
 
     /**
@@ -1524,7 +1524,7 @@ public class OMDrawingTool extends OMToolComponent
      * sure the tool acts the way you want.
      */
     public void setBehaviorMask(int mask) {
-	behaviorMask = mask;
+        behaviorMask = mask;
     }
 
     /**
@@ -1532,14 +1532,14 @@ public class OMDrawingTool extends OMToolComponent
      * different behaviors.
      */
     public int getBehaviorMask() {
-	return behaviorMask;
+        return behaviorMask;
     }
 
     /**
      * Set the behavior mask to the default.
      */
     public void resetBehaviorMask() {
-	behaviorMask = DEFAULT_BEHAVIOR_MASK;
+        behaviorMask = DEFAULT_BEHAVIOR_MASK;
     }
 
     /**
@@ -1548,8 +1548,8 @@ public class OMDrawingTool extends OMToolComponent
      * @return the changed integer value.
      */
     public int setMask(int mask) {
-	behaviorMask = OMAction.setMask(behaviorMask, mask);
-	return behaviorMask;
+        behaviorMask = OMAction.setMask(behaviorMask, mask);
+        return behaviorMask;
     }
 
     /** 
@@ -1558,8 +1558,8 @@ public class OMDrawingTool extends OMToolComponent
      * @return the changed integer value.
      */
     public int unsetMask(int mask) {
-	behaviorMask = OMAction.unsetMask(behaviorMask, mask);
-	return behaviorMask;
+        behaviorMask = OMAction.unsetMask(behaviorMask, mask);
+        return behaviorMask;
     }
 
     /** 
@@ -1568,7 +1568,7 @@ public class OMDrawingTool extends OMToolComponent
      * @return whether the value bit is set on the internal value.
      */
     public boolean isMask(int mask) {
-	return OMAction.isMask(behaviorMask, mask);
+        return OMAction.isMask(behaviorMask, mask);
     }
 
     /**
@@ -1577,19 +1577,19 @@ public class OMDrawingTool extends OMToolComponent
      * parameters.  
      */
     public void propertyChange(PropertyChangeEvent pce) {
-	Object source = pce.getSource();
-	if (source instanceof DrawingAttributes &&
-	    currentEditable != null) {
-	    graphicAttributes.setTo(currentEditable.getGraphic());
-	    
-	    if (projection != null) {
-		currentEditable.regenerate(projection);
-	    }
+        Object source = pce.getSource();
+        if (source instanceof DrawingAttributes &&
+            currentEditable != null) {
+            graphicAttributes.setTo(currentEditable.getGraphic());
+            
+            if (projection != null) {
+                currentEditable.regenerate(projection);
+            }
 
-	    if (canvas != null) {
-		canvas.repaint();
-	    }
-	}
+            if (canvas != null) {
+                canvas.repaint();
+            }
+        }
     }
 
     /**
@@ -1604,228 +1604,228 @@ public class OMDrawingTool extends OMToolComponent
      * EditableOMGraphic when something changes.
      */
     public void eomgChanged(EOMGEvent event) {
-	if (Debug.debugging("drawingtooldetail")) {
-	    Debug.output("OMDrawingTool.eomgChanged()");
-	}
+        if (Debug.debugging("drawingtooldetail")) {
+            Debug.output("OMDrawingTool.eomgChanged()");
+        }
 
-	Cursor cursor = event.getCursor();
-	if (cursor != null) {
-	    setCursor(cursor);
-	}
+        Cursor cursor = event.getCursor();
+        if (cursor != null) {
+            setCursor(cursor);
+        }
 
-	// We might have used the InformationDelgator to put the comments
-	// in the info line, but that can't work, because we are
-	// already putting the lat/lon info on the info line.
+        // We might have used the InformationDelgator to put the comments
+        // in the info line, but that can't work, because we are
+        // already putting the lat/lon info on the info line.
 
-	// Updated, 4.6 - now that the InformationDelegator has new
-	// places for coordinate information and map object
-	// information, we can sent the info there, and it looks OK.
+        // Updated, 4.6 - now that the InformationDelegator has new
+        // places for coordinate information and map object
+        // information, we can sent the info there, and it looks OK.
 
-	String message = event.getMessage();
-	if (message != null && !message.equals(lastRemarks)) {
-	    lastRemarks = message;
-	    setRemarks(message);
-	}
+        String message = event.getMessage();
+        if (message != null && !message.equals(lastRemarks)) {
+            lastRemarks = message;
+            setRemarks(message);
+        }
 
-	if (event.shouldShowGUI() && isMask(ALT_POPUP_BEHAVIOR_MASK)) {
-	    if (DEBUG) Debug.output("OMDrawingTool.eomgChanged(): try for menu.");
-	    MouseEvent me = event.getMouseEvent();
+        if (event.shouldShowGUI() && isMask(ALT_POPUP_BEHAVIOR_MASK)) {
+            if (DEBUG) Debug.output("OMDrawingTool.eomgChanged(): try for menu.");
+            MouseEvent me = event.getMouseEvent();
 
-	    // While we're here, get a good place for the window in
-	    // case we need to put it up later.
-	    if (currentEditable != null) {
+            // While we're here, get a good place for the window in
+            // case we need to put it up later.
+            if (currentEditable != null) {
 
-		currentEditable.getStateMachine().setSelected();
-		currentEditable.redraw(me, true);
+                currentEditable.getStateMachine().setSelected();
+                currentEditable.redraw(me, true);
 
-		Shape ces = currentEditable.getGraphic().getShape();
-		if (ces != null) {
-		    Rectangle rect = ces.getBounds();
-		    windowx = (int)rect.getX();
-		    windowy = (int)rect.getY() - 50;
-		}
-	    }
+                Shape ces = currentEditable.getGraphic().getShape();
+                if (ces != null) {
+                    Rectangle rect = ces.getBounds();
+                    windowx = (int)rect.getX();
+                    windowy = (int)rect.getY() - 50;
+                }
+            }
 
-	    /**
-	     * Let's see if we should bring up pop-up menu
-	     * with all sorts of lovely options - if the right
-	     * mouse key was pressed, or if the ctrl key was
-	     * pressed with the mouse button being released,
-	     * display the option menu.  Otherwise, just get
-	     * ready to end. 
-	     */
-	    doPopup(me.getX(), me.getY(), null);
-	} else if (event.shouldDeactivate()) {
-	    if (DEBUG) {
-		Debug.output("OMDrawingTool.eomgChanged(): omdt being told to deactivate");
-	    }
+            /**
+             * Let's see if we should bring up pop-up menu
+             * with all sorts of lovely options - if the right
+             * mouse key was pressed, or if the ctrl key was
+             * pressed with the mouse button being released,
+             * display the option menu.  Otherwise, just get
+             * ready to end. 
+             */
+            doPopup(me.getX(), me.getY(), null);
+        } else if (event.shouldDeactivate()) {
+            if (DEBUG) {
+                Debug.output("OMDrawingTool.eomgChanged(): omdt being told to deactivate");
+            }
 
-	    if (isMask(USE_POPUP_BEHAVIOR_MASK) &&
-		!getUseAsTool()) {
-		EditableOMGraphic eomg = getCurrentEditable();
-		if (eomg != null) {
-		    java.awt.Shape shape = eomg.getGraphic().getShape();
-		    Rectangle rect = shape.getBounds();
-		    
-		    Vector vec = new Vector();
-		    vec.add(new JSeparator());
+            if (isMask(USE_POPUP_BEHAVIOR_MASK) &&
+                !getUseAsTool()) {
+                EditableOMGraphic eomg = getCurrentEditable();
+                if (eomg != null) {
+                    java.awt.Shape shape = eomg.getGraphic().getShape();
+                    Rectangle rect = shape.getBounds();
+                    
+                    Vector vec = new Vector();
+                    vec.add(new JSeparator());
 
-		    JMenuItem done = new JMenuItem("Done");
-		    done.addActionListener(new ActionListener() {
-			    public void actionPerformed(ActionEvent ae) {
-				deactivate();
-			    }
-			});
-		    vec.add(done);
+                    JMenuItem done = new JMenuItem("Done");
+                    done.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent ae) {
+                                deactivate();
+                            }
+                        });
+                    vec.add(done);
 
-		    if (!doPopup((int)(rect.getX() + rect.getWidth()), 
-				 (int)(rect.getY() + rect.getHeight()), vec)) {
-			deactivate();
-		    }
-		}
-	    } else {
-		deactivate();
-	    }
-	}
+                    if (!doPopup((int)(rect.getX() + rect.getWidth()), 
+                                 (int)(rect.getY() + rect.getHeight()), vec)) {
+                        deactivate();
+                    }
+                }
+            } else {
+                deactivate();
+            }
+        }
     }
 
     protected boolean doPopup(int x, int y, java.util.List additionalOptions) {
-	if (additionalOptions != null && 
-	    additionalOptions.size() > 0) {
-	    popup = null;
-	}
+        if (additionalOptions != null && 
+            additionalOptions.size() > 0) {
+            popup = null;
+        }
 
-	boolean showPopup = (popup != null);
+        boolean showPopup = (popup != null);
 
-	if (popup == null && !getUseAsTool()) {
-	    popup = createPopupMenu();
+        if (popup == null && !getUseAsTool()) {
+            popup = createPopupMenu();
 
-	    if (additionalOptions != null && 
-		additionalOptions.size() > 0 &&
-		popup != null) {
-		for (Iterator it = additionalOptions.iterator(); it.hasNext();) {
-		    Object obj = it.next();
-		    if (obj instanceof JMenuItem) {
-			popup.add((JMenuItem)obj);
-		    }
-		}
-	    }
+            if (additionalOptions != null && 
+                additionalOptions.size() > 0 &&
+                popup != null) {
+                for (Iterator it = additionalOptions.iterator(); it.hasNext();) {
+                    Object obj = it.next();
+                    if (obj instanceof JMenuItem) {
+                        popup.add((JMenuItem)obj);
+                    }
+                }
+            }
 
-	    showPopup = (popup != null);
-	}
+            showPopup = (popup != null);
+        }
 
-	if (showPopup) {
+        if (showPopup) {
 
-	    JComponent map = null;
-	    if (mouseDelegator != null) {
-		map = mouseDelegator.getMap();
-	    } else if (canvas != null) {
-		// If a MouseDelegator is not being used, go
-		// directly to the MapBean.
-		map = canvas;
-	    }
-		    
-	    if (map != null && x >= 0 && y >= 0) {
-		popup.show(map, x, y);
-	    } else {
-		Debug.error("OMDrawingTool: no " +
-			    (map == null?"/component":"/") +
-			    ((x < 0 || y < 0)?"location/":"/") + 
-			    " to show popup on!");
-	    }
-	    return true;
-	}
+            JComponent map = null;
+            if (mouseDelegator != null) {
+                map = mouseDelegator.getMap();
+            } else if (canvas != null) {
+                // If a MouseDelegator is not being used, go
+                // directly to the MapBean.
+                map = canvas;
+            }
+                    
+            if (map != null && x >= 0 && y >= 0) {
+                popup.show(map, x, y);
+            } else {
+                Debug.error("OMDrawingTool: no " +
+                            (map == null?"/component":"/") +
+                            ((x < 0 || y < 0)?"location/":"/") + 
+                            " to show popup on!");
+            }
+            return true;
+        }
 
-	return false;
+        return false;
     }
 
     public JPopupMenu createPopupMenu() {
 
-	JPopupMenu pum = new JPopupMenu();
-	JMenuItem delete = new JMenuItem("Delete");
-	delete.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    OMAction action = new OMAction();
-		    action.setMask(OMGraphic.DELETE_GRAPHIC_MASK);
-		    EditableOMGraphic eomg = getCurrentEditable();
-		    if (eomg != null) {
-			OMGraphic g = eomg.getGraphic();
-			if (g != null) {
-			    notifyListener(g, action);
-			}
-		    }
-		    setCurrentEditable(null);
-		    deactivate();
-		}
-	    });
+        JPopupMenu pum = new JPopupMenu();
+        JMenuItem delete = new JMenuItem("Delete");
+        delete.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    OMAction action = new OMAction();
+                    action.setMask(OMGraphic.DELETE_GRAPHIC_MASK);
+                    EditableOMGraphic eomg = getCurrentEditable();
+                    if (eomg != null) {
+                        OMGraphic g = eomg.getGraphic();
+                        if (g != null) {
+                            notifyListener(g, action);
+                        }
+                    }
+                    setCurrentEditable(null);
+                    deactivate();
+                }
+            });
 
-	JMenuItem gui = new JMenuItem("Change Appearance");
-	gui.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    EditableOMGraphic eomg = getCurrentEditable();
-		    if (eomg != null) {
-			boolean previous = eomg.getShowGUI();
-			eomg.setShowGUI(true);
-			setVisible(true);
-			if (!getUseAsTool()) {
-			    showInWindow();
-			}
-			eomg.setShowGUI(previous);
-			eomg.getStateMachine().setSelected();
-		    }
-		}
-	    });
+        JMenuItem gui = new JMenuItem("Change Appearance");
+        gui.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    EditableOMGraphic eomg = getCurrentEditable();
+                    if (eomg != null) {
+                        boolean previous = eomg.getShowGUI();
+                        eomg.setShowGUI(true);
+                        setVisible(true);
+                        if (!getUseAsTool()) {
+                            showInWindow();
+                        }
+                        eomg.setShowGUI(previous);
+                        eomg.getStateMachine().setSelected();
+                    }
+                }
+            });
 
-// 	JMenuItem reset = new JMenuItem("Undo Changes");
-// 	reset.setEnabled(false);
-// 	reset.addActionListener(new ActionListener() {
-// 		public void actionPerformed(ActionEvent ae) {
-// 		    if (currentEditable != null) {
-// 			currentEditable.reset();
-// 		    }
-// 		}
-// 	    });
+//      JMenuItem reset = new JMenuItem("Undo Changes");
+//      reset.setEnabled(false);
+//      reset.addActionListener(new ActionListener() {
+//              public void actionPerformed(ActionEvent ae) {
+//                  if (currentEditable != null) {
+//                      currentEditable.reset();
+//                  }
+//              }
+//          });
 
- 	if (isMask(SHOW_GUI_BEHAVIOR_MASK | GUI_VIA_POPUP_BEHAVIOR_MASK) && 
-	    !getUseAsTool()) {
-	    pum.add(gui);
- 	} else {
-	    Debug.output("Not adding Change Appearance to popup: guiViaPopup(" +
-			 isMask(SHOW_GUI_BEHAVIOR_MASK) + ") isTool(" +
-			 getUseAsTool() + ")");
-	}
+        if (isMask(SHOW_GUI_BEHAVIOR_MASK | GUI_VIA_POPUP_BEHAVIOR_MASK) && 
+            !getUseAsTool()) {
+            pum.add(gui);
+        } else {
+            Debug.output("Not adding Change Appearance to popup: guiViaPopup(" +
+                         isMask(SHOW_GUI_BEHAVIOR_MASK) + ") isTool(" +
+                         getUseAsTool() + ")");
+        }
 
-//  	pum.add(reset);
-	pum.add(delete);
+//      pum.add(reset);
+        pum.add(delete);
 
-	return pum;
+        return pum;
     }
 
     //////////// SelectionListener support
     public void addSelectionListener(SelectionListener list) {
-	if (selectionSupport != null) selectionSupport.addSelectionListener(list);
+        if (selectionSupport != null) selectionSupport.addSelectionListener(list);
     }
 
     public void removeSelectionListener(SelectionListener list) {
-	if (selectionSupport != null) selectionSupport.removeSelectionListener(list);
+        if (selectionSupport != null) selectionSupport.removeSelectionListener(list);
     }
 
     public void clearSelectionListeners() {
-	if (selectionSupport != null) selectionSupport.clearSelectionListeners();
+        if (selectionSupport != null) selectionSupport.clearSelectionListeners();
     }
     //////////// SelectionListener support ends
 
     public static void main(String[] args) {
-	OMDrawingTool omdt = new OMDrawingTool();
-	omdt.showPalette();
+        OMDrawingTool omdt = new OMDrawingTool();
+        omdt.showPalette();
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
-	visibleWhenInactive = PropUtils.booleanFromProperties(props, prefix + VisibleWhenInactiveProperty, visibleWhenInactive);
-	getGUI();
-	setVisible(visibleWhenInactive);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        visibleWhenInactive = PropUtils.booleanFromProperties(props, prefix + VisibleWhenInactiveProperty, visibleWhenInactive);
+        getGUI();
+        setVisible(visibleWhenInactive);
     }
 }

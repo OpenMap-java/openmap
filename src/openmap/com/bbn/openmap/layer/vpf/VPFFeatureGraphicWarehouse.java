@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFFeatureGraphicWarehouse.java,v $
 // $RCSfile: VPFFeatureGraphicWarehouse.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -62,7 +62,7 @@ public class VPFFeatureGraphicWarehouse
      */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
-	createFeatureDrawingAttributes(prefix, props, getFeatures());
+        createFeatureDrawingAttributes(prefix, props, getFeatures());
     }
 
     /**
@@ -81,28 +81,28 @@ public class VPFFeatureGraphicWarehouse
      * vmapRoads.roadl.lineColor.
      */
     public void createFeatureDrawingAttributes(String prefix, 
-					       Properties props, 
-					       List features) {
+                                               Properties props, 
+                                               List features) {
 
-	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	featureDrawingAttributes = new Hashtable();
-	if (drawingAttributes != null) {
-	    featureDrawingAttributes.put(DEFAULT, drawingAttributes);
-	} else {
-	    drawingAttributes = DrawingAttributes.getDefaultClone();
-	}
+        featureDrawingAttributes = new Hashtable();
+        if (drawingAttributes != null) {
+            featureDrawingAttributes.put(DEFAULT, drawingAttributes);
+        } else {
+            drawingAttributes = DrawingAttributes.getDefaultClone();
+        }
 
-	for(Iterator fiter = features.iterator(); fiter.hasNext();) {
-	    String feature = ((String)fiter.next()).intern();
-	    DrawingAttributes da = (DrawingAttributes)drawingAttributes.clone();
-	    da.setProperties(realPrefix + feature, props);
-	    // If they are equal, don't save a copy.
-	    if (da.equals(drawingAttributes)) {
-		da = drawingAttributes;
-	    }
-	    featureDrawingAttributes.put(feature, da);
-	}
+        for(Iterator fiter = features.iterator(); fiter.hasNext();) {
+            String feature = ((String)fiter.next()).intern();
+            DrawingAttributes da = (DrawingAttributes)drawingAttributes.clone();
+            da.setProperties(realPrefix + feature, props);
+            // If they are equal, don't save a copy.
+            if (da.equals(drawingAttributes)) {
+                da = drawingAttributes;
+            }
+            featureDrawingAttributes.put(feature, da);
+        }
     }
 
     /**
@@ -112,7 +112,7 @@ public class VPFFeatureGraphicWarehouse
      * that feature.
      */
     public void setFeatureDrawingAttributes(Hashtable attributes) {
-	featureDrawingAttributes = attributes;
+        featureDrawingAttributes = attributes;
     }
 
     /**
@@ -120,7 +120,7 @@ public class VPFFeatureGraphicWarehouse
      * lookup.
      */
     public Hashtable getFeatureDrawingAttributes() {
-	return featureDrawingAttributes;
+        return featureDrawingAttributes;
     }
 
     /**
@@ -132,28 +132,28 @@ public class VPFFeatureGraphicWarehouse
      * about the data, if needed.  
      */
     public Component getGUI(LibrarySelectionTable lst) {
-	JTabbedPane jtp = new JTabbedPane();
+        JTabbedPane jtp = new JTabbedPane();
 
-	jtp.addTab(DEFAULT, null, drawingAttributes.getGUI(), "General Attributes");
-	List features = getFeatures();
-	int size = features.size();
-	for (int i = 0; i < size; i++) {
-	    String currentFeature = (String) features.get(i);
-	    DrawingAttributes da = getAttributesForFeature(currentFeature);
-	    if (da != null && !da.equals(drawingAttributes)) {
-		String desc = null;
-		try {
-		    desc = lst.getDescription(currentFeature);
-		} catch (FormatException fe){}
+        jtp.addTab(DEFAULT, null, drawingAttributes.getGUI(), "General Attributes");
+        List features = getFeatures();
+        int size = features.size();
+        for (int i = 0; i < size; i++) {
+            String currentFeature = (String) features.get(i);
+            DrawingAttributes da = getAttributesForFeature(currentFeature);
+            if (da != null && !da.equals(drawingAttributes)) {
+                String desc = null;
+                try {
+                    desc = lst.getDescription(currentFeature);
+                } catch (FormatException fe){}
 
-		if (desc == null) {
-		    desc = "Feature Description Unavailable";
-		}
+                if (desc == null) {
+                    desc = "Feature Description Unavailable";
+                }
 
-		jtp.addTab(currentFeature, null, da.getGUI(), desc);
-	    }
-	}
-	return jtp;
+                jtp.addTab(currentFeature, null, da.getGUI(), desc);
+            }
+        }
+        return jtp;
     }
 
     /**
@@ -161,107 +161,107 @@ public class VPFFeatureGraphicWarehouse
      * feature.  Should be very unlikely to get a null value back.
      */
     public DrawingAttributes getAttributesForFeature(String featureType) {
-	DrawingAttributes ret;
+        DrawingAttributes ret;
 
-	if (featureDrawingAttributes != null) {
-	    ret = (DrawingAttributes)featureDrawingAttributes.get(featureType);
-	    if (ret == null) {
-		ret = drawingAttributes;
-	    }
-	} else {
-	    ret = drawingAttributes;
-	}
-	return ret;
+        if (featureDrawingAttributes != null) {
+            ret = (DrawingAttributes)featureDrawingAttributes.get(featureType);
+            if (ret == null) {
+                ret = drawingAttributes;
+            }
+        } else {
+            ret = drawingAttributes;
+        }
+        return ret;
     }
 
     /**
      *
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
-			   List facevec,
-			   LatLonPoint ll1,
-			   LatLonPoint ll2,
-			   float dpplat,
-			   float dpplon,
-			   String featureType)
+                           List facevec,
+                           LatLonPoint ll1,
+                           LatLonPoint ll2,
+                           float dpplat,
+                           float dpplon,
+                           String featureType)
     {
 
-	List ipts = new ArrayList();
+        List ipts = new ArrayList();
 
-	int totalSize = 0;
+        int totalSize = 0;
         try {
-	    totalSize = areatable.computeEdgePoints(facevec, ipts);
-	} catch (FormatException f) {
- 	    Debug.output("FormatException in computeEdgePoints: " + f);
-	    return;
-	}
-	if (totalSize == 0) {
-	    return;
-	}
+            totalSize = areatable.computeEdgePoints(facevec, ipts);
+        } catch (FormatException f) {
+            Debug.output("FormatException in computeEdgePoints: " + f);
+            return;
+        }
+        if (totalSize == 0) {
+            return;
+        }
 
-	OMPoly py = createAreaOMPoly(ipts, totalSize, ll1, ll2, 
-				     dpplat, dpplon,
-				     covtable.doAntarcticaWorkaround);
+        OMPoly py = createAreaOMPoly(ipts, totalSize, ll1, ll2, 
+                                     dpplat, dpplon,
+                                     covtable.doAntarcticaWorkaround);
 
-	getAttributesForFeature(featureType).setTo(py);
-//  	drawingAttributes.setTo(py);
+        getAttributesForFeature(featureType).setTo(py);
+//      drawingAttributes.setTo(py);
 
-	// HACK to get tile boundaries to not show up for areas.
-	py.setLinePaint(py.getFillPaint());
-	py.setSelectPaint(py.getFillPaint());
+        // HACK to get tile boundaries to not show up for areas.
+        py.setLinePaint(py.getFillPaint());
+        py.setSelectPaint(py.getFillPaint());
 
-	graphics.add(py);
+        graphics.add(py);
     }
 
     /**
      *
      */
     public void createEdge(CoverageTable c, EdgeTable edgetable,
-			   List edgevec,
-			   LatLonPoint ll1,
-			   LatLonPoint ll2,
-			   float dpplat,
-			   float dpplon,
-			   CoordFloatString coords,
-			   String featureType)
+                           List edgevec,
+                           LatLonPoint ll1,
+                           LatLonPoint ll2,
+                           float dpplat,
+                           float dpplon,
+                           CoordFloatString coords,
+                           String featureType)
     {
 
-	OMPoly py = createEdgeOMPoly(coords, ll1, ll2, dpplat, dpplon);
-	getAttributesForFeature(featureType).setTo(py);
-//  	drawingAttributes.setTo(py);
-	py.setIsPolygon(false);
-	graphics.add(py);
+        OMPoly py = createEdgeOMPoly(coords, ll1, ll2, dpplat, dpplon);
+        getAttributesForFeature(featureType).setTo(py);
+//      drawingAttributes.setTo(py);
+        py.setIsPolygon(false);
+        graphics.add(py);
     }
 
     /**
      *
      */
     public void createText(CoverageTable c, TextTable texttable,
-			   List textvec,
-			   float latitude,
-			   float longitude,
-			   String text,
-			   String featureType)
+                           List textvec,
+                           float latitude,
+                           float longitude,
+                           String text,
+                           String featureType)
     {
 
-	OMText txt = createOMText(text, latitude, longitude);
-	getAttributesForFeature(featureType).setTo(txt);
-//  	drawingAttributes.setTo(txt);
-	graphics.add(txt);
+        OMText txt = createOMText(text, latitude, longitude);
+        getAttributesForFeature(featureType).setTo(txt);
+//      drawingAttributes.setTo(txt);
+        graphics.add(txt);
     }
 
     /**
      * Method called by the VPF reader code to construct a node feature.
      */
     public void createNode(CoverageTable c, NodeTable t, List nodeprim,
-			   float latitude, float longitude,
-			   boolean isEntityNode, String featureType) {
-	OMPoint pt = createOMPoint(latitude, longitude);
-	getAttributesForFeature(featureType).setTo(pt);
-	graphics.add(pt);
+                           float latitude, float longitude,
+                           boolean isEntityNode, String featureType) {
+        OMPoint pt = createOMPoint(latitude, longitude);
+        getAttributesForFeature(featureType).setTo(pt);
+        graphics.add(pt);
     }
 
     public static void main(String argv[]) {
-	new VPFFeatureGraphicWarehouse();
+        new VPFFeatureGraphicWarehouse();
     }
 }

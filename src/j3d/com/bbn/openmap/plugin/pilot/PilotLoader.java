@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/PilotLoader.java,v $
 // $RCSfile: PilotLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/07/24 13:37:03 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,118 +55,118 @@ public class PilotLoader extends MMLGraphicLoader
     HashMap points = new HashMap();
 
     public PilotLoader() {
-	super();
+        super();
     }
 
     public PilotLoader(OMGraphicHandler receiver) {
-	this();
+        this();
 
-	this.receiver = receiver;
-//  	getTimer().start();
-//  	Debug.message("pilotLoader", "PilotLoader starting timer");
+        this.receiver = receiver;
+//      getTimer().start();
+//      Debug.message("pilotLoader", "PilotLoader starting timer");
     }
 
     public void manageGraphics() {
-	OMGraphicList list = new OMGraphicList();
+        OMGraphicList list = new OMGraphicList();
 
-	Iterator it = points.values().iterator();
-	Pilot mp;
+        Iterator it = points.values().iterator();
+        Pilot mp;
 
-	while (it.hasNext()) {
-	    mp = (Pilot)it.next();
-	    mp.move(40f);
-	    mp.resetConnected();
-	    list.add(mp);
-	}
+        while (it.hasNext()) {
+            mp = (Pilot)it.next();
+            mp.move(40f);
+            mp.resetConnected();
+            list.add(mp);
+        }
 
-	if (receiver != null) {
-	    Debug.message("pilotloader", "PilotLoader.manageGraphics: Updating graphics.");
-	    receiver.setList(list);
-	} else {
-	    Debug.message("pilotloader", "PilotLoader.manageGraphics: no receiver to notify.");
-	}
+        if (receiver != null) {
+            Debug.message("pilotloader", "PilotLoader.manageGraphics: Updating graphics.");
+            receiver.setList(list);
+        } else {
+            Debug.message("pilotloader", "PilotLoader.manageGraphics: no receiver to notify.");
+        }
     }
 
     public void actionPerformed(java.awt.event.ActionEvent ae){
-	String cmd = ae.getActionCommand();
-	if (cmd == TimerCmd) {
-	    JCheckBox check = (JCheckBox)ae.getSource();
-	    if (check.isSelected()) {
-		timer.restart();
-	    } else {
-		timer.stop();
-	    }
-	} else if (cmd == AddNodeCmd) {
-	    if (dt != null) {
-		GraphicAttributes ga = new GraphicAttributes();
-		ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
-		OMPoint pt = (OMPoint) dt.create("com.bbn.openmap.omGraphics.OMPoint", ga, this, false);
-		if (pt != null) {
-		    getTimer().stop();
-		    pt.setRadius(5);
-		    pt.setOval(true);
-		    pt.setFillPaint(Color.red);
-		    addNodeButton.setEnabled(false);
-		    addPathButton.setEnabled(false);
-		}
-	    }
-	} else if (cmd == AddPathCmd) {
-	    if (dt != null) {
-		GraphicAttributes ga = new GraphicAttributes();
-		ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
-		ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
-		OMPoly poly = (OMPoly) dt.create("com.bbn.openmap.omGraphics.OMPoly", ga, this, true);
-		if (poly != null) {
-		    getTimer().stop();
-		    BasicStrokeEditor bse = new BasicStrokeEditor();
-		    bse.setDash(new float[] {5, 5});
-		    ga.setStroke(bse.getBasicStroke());
-		    ga.setLinePaint(Color.yellow);
+        String cmd = ae.getActionCommand();
+        if (cmd == TimerCmd) {
+            JCheckBox check = (JCheckBox)ae.getSource();
+            if (check.isSelected()) {
+                timer.restart();
+            } else {
+                timer.stop();
+            }
+        } else if (cmd == AddNodeCmd) {
+            if (dt != null) {
+                GraphicAttributes ga = new GraphicAttributes();
+                ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
+                OMPoint pt = (OMPoint) dt.create("com.bbn.openmap.omGraphics.OMPoint", ga, this, false);
+                if (pt != null) {
+                    getTimer().stop();
+                    pt.setRadius(5);
+                    pt.setOval(true);
+                    pt.setFillPaint(Color.red);
+                    addNodeButton.setEnabled(false);
+                    addPathButton.setEnabled(false);
+                }
+            }
+        } else if (cmd == AddPathCmd) {
+            if (dt != null) {
+                GraphicAttributes ga = new GraphicAttributes();
+                ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
+                ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
+                OMPoly poly = (OMPoly) dt.create("com.bbn.openmap.omGraphics.OMPoly", ga, this, true);
+                if (poly != null) {
+                    getTimer().stop();
+                    BasicStrokeEditor bse = new BasicStrokeEditor();
+                    bse.setDash(new float[] {5, 5});
+                    ga.setStroke(bse.getBasicStroke());
+                    ga.setLinePaint(Color.yellow);
 
-// 		    addNodeButton.setEnabled(false);
-		    addPathButton.setEnabled(false);
-		}
-	    }
-	}
-	
-	manageGraphics();
+//                  addNodeButton.setEnabled(false);
+                    addPathButton.setEnabled(false);
+                }
+            }
+        }
+        
+        manageGraphics();
     }
 
     /**
      * MapHandlerChild methods modified to look for the OMDrawingTool.
      */
     public void findAndInit(Object obj) {
-	if (obj instanceof OMDrawingTool) {
-	    Debug.message("graphicloader", "LOSGraphicLoader: found OMDrawingTool");
-	    setDrawingTool((OMDrawingTool)obj);
-	}
+        if (obj instanceof OMDrawingTool) {
+            Debug.message("graphicloader", "LOSGraphicLoader: found OMDrawingTool");
+            setDrawingTool((OMDrawingTool)obj);
+        }
     }
 
     /**
      * MapHandlerChild methods modified to look for the OMDrawingTool.
      */
     public void findAndUndo(Object obj) {
-	if (obj instanceof OMDrawingTool) {
-	    Debug.message("graphicloader", "LOSGraphicLoader: removing OMDrawingTool");
-	    OMDrawingTool odt = getDrawingTool();
-	    if (odt == obj) {
-		setDrawingTool(null);
-	    }
-	}
+        if (obj instanceof OMDrawingTool) {
+            Debug.message("graphicloader", "LOSGraphicLoader: removing OMDrawingTool");
+            OMDrawingTool odt = getDrawingTool();
+            if (odt == obj) {
+                setDrawingTool(null);
+            }
+        }
     }
 
     public void setDrawingTool(OMDrawingTool drawingTool) {
-	dt = drawingTool;
-	if (addNodeButton != null) {
-	    addNodeButton.setEnabled(drawingTool != null);
-	}
-	if (addPathButton != null) {
-	    addPathButton.setEnabled(drawingTool != null);
-	}
+        dt = drawingTool;
+        if (addNodeButton != null) {
+            addNodeButton.setEnabled(drawingTool != null);
+        }
+        if (addPathButton != null) {
+            addPathButton.setEnabled(drawingTool != null);
+        }
     }
 
     public OMDrawingTool getDrawingTool() {
-	return dt;
+        return dt;
     }
 
     /**
@@ -175,15 +175,15 @@ public class PilotLoader extends MMLGraphicLoader
     protected int updateInterval = 3000;
 
     public void setUpdateInterval(int delay) {
-	updateInterval = delay;
-	if (timer != null) {
-	    timer.setDelay(updateInterval);
-	    timer.restart();
-	}
+        updateInterval = delay;
+        if (timer != null) {
+            timer.setDelay(updateInterval);
+            timer.restart();
+        }
     }
 
     public int getUpdateInterval() {
-	return updateInterval;
+        return updateInterval;
     }
 
     JCheckBox timerButton = null;
@@ -191,42 +191,42 @@ public class PilotLoader extends MMLGraphicLoader
     JButton addPathButton = null;
 
     public Component getGUI() {
-	JPanel panel = new JPanel(new GridLayout(0, 1));
+        JPanel panel = new JPanel(new GridLayout(0, 1));
 
-// 	if (addNodeButton == null) {
-// 	    addNodeButton = new JButton("Add Node...");
-// 	    addNodeButton.addActionListener(this);
-// 	    addNodeButton.setActionCommand(AddNodeCmd);
-// 	}
+//      if (addNodeButton == null) {
+//          addNodeButton = new JButton("Add Node...");
+//          addNodeButton.addActionListener(this);
+//          addNodeButton.setActionCommand(AddNodeCmd);
+//      }
 
-// 	addNodeButton.setEnabled(getDrawingTool() != null);
+//      addNodeButton.setEnabled(getDrawingTool() != null);
 
-	if (addPathButton == null) {
-	    addPathButton = new JButton("Add Path for Pilot");
-	    addPathButton.addActionListener(this);
-	    addPathButton.setActionCommand(AddPathCmd);
-	}
+        if (addPathButton == null) {
+            addPathButton = new JButton("Add Path for Pilot");
+            addPathButton.addActionListener(this);
+            addPathButton.setActionCommand(AddPathCmd);
+        }
 
-	if (getDrawingTool() == null) {
-	    addPathButton.setEnabled(false);
-	    addPathButton.setToolTipText("Drawing Tool not connected, can't create Pilot path.");
-	} else {
-	    addPathButton.setToolTipText("Click to use Drawing Tool to create Pilot path.");
-	}
+        if (getDrawingTool() == null) {
+            addPathButton.setEnabled(false);
+            addPathButton.setToolTipText("Drawing Tool not connected, can't create Pilot path.");
+        } else {
+            addPathButton.setToolTipText("Click to use Drawing Tool to create Pilot path.");
+        }
 
-// 	panel.add(addNodeButton);
-	panel.add(addPathButton);
+//      panel.add(addNodeButton);
+        panel.add(addPathButton);
 
-	// Only want to do this once...
-	if (timerButton == null) {
-	    timerButton = new JCheckBox("Run Timer", getTimer().isRunning());
-	    timerButton.addActionListener(this);
-	    timerButton.setActionCommand(TimerCmd);
-	}
+        // Only want to do this once...
+        if (timerButton == null) {
+            timerButton = new JCheckBox("Run Timer", getTimer().isRunning());
+            timerButton.addActionListener(this);
+            timerButton.setActionCommand(TimerCmd);
+        }
 
-	panel.add(timerButton);
+        panel.add(timerButton);
 
-	return panel;
+        return panel;
     }
 
     public static int pointCount = 1;
@@ -236,33 +236,33 @@ public class PilotLoader extends MMLGraphicLoader
      * graphic, arrives.
      */
     public void drawingComplete(OMGraphic omg, OMAction action) {
-	if (timerButton.isSelected()) {
-	    timer.restart();
-	}
+        if (timerButton.isSelected()) {
+            timer.restart();
+        }
 
-	if (omg instanceof OMPoint) {
+        if (omg instanceof OMPoint) {
 
-	    OMPoint p = (OMPoint) omg;
-	    
-	    Pilot mp = new Pilot(p.getLat(), p.getLon(), p.getRadius(), true);
-	    mp.setName("Added Node " + (pointCount++));
-	    mp.setStationary(true);
-	    mp.showPalette();
-	    points.put(mp.getName(), mp);
-	    manageGraphics();
-	} else if (omg instanceof OMPoly) {
-	    OMPoly poly = (OMPoly) omg;
-	    PilotPath pmp = new PilotPath(poly, 5, true);
-	    pmp.setName("Added Node " + (pointCount++));
-	    pmp.setStationary(true);
-	    pmp.showPalette();
-	    points.put(pmp.getName(), pmp);
-	    pmp.setMapHandler((MapHandler)getBeanContext());
-	    manageGraphics();
-	}
+            OMPoint p = (OMPoint) omg;
+            
+            Pilot mp = new Pilot(p.getLat(), p.getLon(), p.getRadius(), true);
+            mp.setName("Added Node " + (pointCount++));
+            mp.setStationary(true);
+            mp.showPalette();
+            points.put(mp.getName(), mp);
+            manageGraphics();
+        } else if (omg instanceof OMPoly) {
+            OMPoly poly = (OMPoly) omg;
+            PilotPath pmp = new PilotPath(poly, 5, true);
+            pmp.setName("Added Node " + (pointCount++));
+            pmp.setStationary(true);
+            pmp.showPalette();
+            points.put(pmp.getName(), pmp);
+            pmp.setMapHandler((MapHandler)getBeanContext());
+            manageGraphics();
+        }
 
-// 	addNodeButton.setEnabled(true);
-	addPathButton.setEnabled(true);
+//      addNodeButton.setEnabled(true);
+        addPathButton.setEnabled(true);
     }
 
     /**
@@ -271,6 +271,6 @@ public class PilotLoader extends MMLGraphicLoader
      * pretty name, suitable to let a user know what it is.
      */
     public String getName() {
-	return "";
+        return "";
     }
 }

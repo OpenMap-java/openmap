@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/HintsMapBeanRepaintPolicy.java,v $
 // $RCSfile: HintsMapBeanRepaintPolicy.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/09/04 18:12:50 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,21 +41,21 @@ public class HintsMapBeanRepaintPolicy extends StandardMapBeanRepaintPolicy impl
     protected RenderingHintsRenderPolicy hints;
 
     public HintsMapBeanRepaintPolicy() {
-	super();
-	setHints(new RenderingHintsRenderPolicy());
+        super();
+        setHints(new RenderingHintsRenderPolicy());
     }
 
     public HintsMapBeanRepaintPolicy(MapBean mb) {
-	super(mb);
-	setHints(new RenderingHintsRenderPolicy());
+        super(mb);
+        setHints(new RenderingHintsRenderPolicy());
     }
 
     public void setHints(RenderingHintsRenderPolicy rhrp) {
-	hints = rhrp;
+        hints = rhrp;
     }
 
     public RenderingHintsRenderPolicy getHints() {
-	return hints;
+        return hints;
     }
 
     /**
@@ -66,39 +66,39 @@ public class HintsMapBeanRepaintPolicy extends StandardMapBeanRepaintPolicy impl
      * anti-aliasing configurations, etc.  No modifications are made.
      */
     public Graphics modifyGraphicsForPainting(Graphics graphics) {
-	if (hints != null) {
-	    hints.setRenderingHints(graphics);
-	}
-	return graphics;
+        if (hints != null) {
+            hints.setRenderingHints(graphics);
+        }
+        return graphics;
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
-	if (hints != null) {
-	    hints.setProperties(prefix, props);
-	}
+        super.setProperties(prefix, props);
+        if (hints != null) {
+            hints.setProperties(prefix, props);
+        }
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
-	if (hints != null) {
-	    props = hints.getProperties(props);
-	}
-	return props;
+        props = super.getProperties(props);
+        if (hints != null) {
+            props = hints.getProperties(props);
+        }
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
-	if (hints != null) {
-	    props = hints.getPropertyInfo(props);
-	}
-	return props;
+        props = super.getPropertyInfo(props);
+        if (hints != null) {
+            props = hints.getPropertyInfo(props);
+        }
+        return props;
     }
 
     public Object clone() {
-	HintsMapBeanRepaintPolicy bmbrp = new HintsMapBeanRepaintPolicy();
-	bmbrp.setHints(getHints());
-	return bmbrp;
+        HintsMapBeanRepaintPolicy bmbrp = new HintsMapBeanRepaintPolicy();
+        bmbrp.setHints(getHints());
+        return bmbrp;
     }
 }
 

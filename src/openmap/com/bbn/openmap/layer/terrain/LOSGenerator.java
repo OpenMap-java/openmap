@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/LOSGenerator.java,v $
 // $RCSfile: LOSGenerator.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/24 03:42:54 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -97,28 +97,28 @@ public class LOSGenerator implements TerrainTool {
     protected ProgressSupport progressSupport;
 
     class LOSWorker extends SwingWorker {
-	/** Constructor used to create a worker thread. */
-	public LOSWorker () {
-	}
+        /** Constructor used to create a worker thread. */
+        public LOSWorker () {
+        }
 
-	/** 
-	 * Compute the value to be returned by the <code>get</code> method. 
-	 */
-	public Object construct() {
-	    Debug.message("terrain", layer.getName()+"|LOSWorker.construct()");
-	    layer.fireStatusUpdate(LayerStatusEvent.START_WORKING);
-	    createLOSImage();
-	    return null;
-	}
+        /** 
+         * Compute the value to be returned by the <code>get</code> method. 
+         */
+        public Object construct() {
+            Debug.message("terrain", layer.getName()+"|LOSWorker.construct()");
+            layer.fireStatusUpdate(LayerStatusEvent.START_WORKING);
+            createLOSImage();
+            return null;
+        }
 
-	/**
-	 * Called on the event dispatching thread (not on the worker thread)
-	 * after the <code>construct</code> method has returned.
-	 */
-	public void finished() {
-	    layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-	    workerComplete();
-	}
+        /**
+         * Called on the event dispatching thread (not on the worker thread)
+         * after the <code>construct</code> method has returned.
+         */
+        public void finished() {
+            layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+            workerComplete();
+        }
     }
 
     /** Not the preferred way to create one of these.  It's full of defaults.
@@ -133,47 +133,47 @@ public class LOSGenerator implements TerrainTool {
      * data if needed.
      */
     public LOSGenerator(TerrainLayer tLayer) {
-	layer = tLayer;
+        layer = tLayer;
         init();
     }
 
     public synchronized OMGraphicList getGraphics() {
-	return graphics;
+        return graphics;
     }
 
     public State getState() {
-	return stateMachine.getState();
+        return stateMachine.getState();
     }
 
     public void init() {
-	progressSupport = new ProgressSupport(this);
-	addProgressListener(new ProgressListenerGauge("LOS Mask Creation"));
+        progressSupport = new ProgressSupport(this);
+        addProgressListener(new ProgressListenerGauge("LOS Mask Creation"));
 
-	// colortable
-	colortable = new int[3];
-	colortable[INVISIBLE] = new OMColor(0, 0, 0, 0).getRGB();
-	colortable[VISIBLE] = new OMColor(255, 0, 255, 0).getRGB();
-	colortable[MAYBEVISIBLE] = new OMColor(255, 255, 255, 0).getRGB();
+        // colortable
+        colortable = new int[3];
+        colortable[INVISIBLE] = new OMColor(0, 0, 0, 0).getRGB();
+        colortable[VISIBLE] = new OMColor(255, 0, 255, 0).getRGB();
+        colortable[MAYBEVISIBLE] = new OMColor(255, 255, 255, 0).getRGB();
 
-	stateMachine = new LOSStateMachine(this);
+        stateMachine = new LOSStateMachine(this);
 
-	// set the graphics
-	reset(true, true);
-	graphics.add(LOSimage);
-	graphics.add(LOScirc);
+        // set the graphics
+        reset(true, true);
+        graphics.add(LOSimage);
+        graphics.add(LOScirc);
 
     }
 
     public void doImage() {
-	// If there isn't a worker thread working on this already,
-	// create a thread that will do the real work. If there is
-	// a thread working on this, then set the cancelled flag
-	// in the layer.
-	if (currentWorker == null) {
-	    currentWorker = new LOSWorker();
-	    currentWorker.execute();
-	}
-	else setCancelled(true);
+        // If there isn't a worker thread working on this already,
+        // create a thread that will do the real work. If there is
+        // a thread working on this, then set the cancelled flag
+        // in the layer.
+        if (currentWorker == null) {
+            currentWorker = new LOSWorker();
+            currentWorker.execute();
+        }
+        else setCancelled(true);
     }
 
     /**
@@ -182,14 +182,14 @@ public class LOSGenerator implements TerrainTool {
      * "current" worker, then a new worker is created.
      */
     protected synchronized void workerComplete() {
-	if (!isCancelled()) {
-	    currentWorker = null;
-	    layer.repaint();
-	} else {
-	    setCancelled(false);
-	    currentWorker = new LOSWorker();
-	    currentWorker.execute();
-	}
+        if (!isCancelled()) {
+            currentWorker = null;
+            layer.repaint();
+        } else {
+            setCancelled(false);
+            currentWorker = new LOSWorker();
+            currentWorker.execute();
+        }
     }
 
     /** Used to set the cancelled flag in the layer.  The swing worker
@@ -198,12 +198,12 @@ public class LOSGenerator implements TerrainTool {
      * swing worker quits when it is safe. 
      * */
     public synchronized void setCancelled(boolean set) {
-	cancelled = set;
+        cancelled = set;
     }
 
     /** Check to see if the cancelled flag has been set. */
     public synchronized boolean isCancelled() {
-	return cancelled;
+        return cancelled;
     }
 
     /** 
@@ -219,21 +219,21 @@ public class LOSGenerator implements TerrainTool {
      * to be reset.  Sometimes you only want one to be moved.
      */
     public void reset(boolean circ, boolean image) {
-	graphics.clear();
-	if(image) {
-	    LOSimage = new OMRaster(LOSOffPagell.getLatitude(), 
-				    LOSOffPagell.getLongitude(),
-				    LOSOffPagep1.x, LOSOffPagep1.y, 
-				    1, 1, new int[1]);
-	}
-	if(circ) {
-	    LOScirc = new OMCircle(LOSOffPagell.getLatitude(), 
-				   LOSOffPagell.getLongitude(),
-				   1, 1);
-	    LOScirc.setLinePaint(toolColor);
-	}
-	layer.repaint();
-	stateMachine.reset();
+        graphics.clear();
+        if(image) {
+            LOSimage = new OMRaster(LOSOffPagell.getLatitude(), 
+                                    LOSOffPagell.getLongitude(),
+                                    LOSOffPagep1.x, LOSOffPagep1.y, 
+                                    1, 1, new int[1]);
+        }
+        if(circ) {
+            LOScirc = new OMCircle(LOSOffPagell.getLatitude(), 
+                                   LOSOffPagell.getLongitude(),
+                                   1, 1);
+            LOScirc.setLinePaint(toolColor);
+        }
+        layer.repaint();
+        stateMachine.reset();
     }
 
     /**
@@ -242,10 +242,10 @@ public class LOSGenerator implements TerrainTool {
      * (since they won't make sense.
      */
     public void setScreenParameters(Projection p) {
-	reset(true, true);
-	proj = p;
-	LOSprecision = AZIMUTH;
-	graphics.generate(proj);
+        reset(true, true);
+        proj = p;
+        LOSprecision = AZIMUTH;
+        graphics.generate(proj);
     }
 
     /**
@@ -262,91 +262,91 @@ public class LOSGenerator implements TerrainTool {
      */
     public synchronized void createLOSImage() {
         if (Debug.debugging("los")) {
-	    Debug.output("createLOSimage: Entered with diameter = " + LOSedge);
-	}
+            Debug.output("createLOSimage: Entered with diameter = " + LOSedge);
+        }
 
         if (layer == null || layer.frameCache == null) {
             Debug.error("LOSGenerator:  can't access the DTED data through the terrain layer.");
             return;
         }
 
-	int squareRadius = LOSedge/2 + 1;
-	int[] newPixels = new int[LOSedge*LOSedge];
-	float[] azimuthVals = new float[8*(squareRadius-1)];
-	// center point of raster
-	newPixels[((LOSedge/2)*LOSedge) + squareRadius] = MAYBEVISIBLE;
+        int squareRadius = LOSedge/2 + 1;
+        int[] newPixels = new int[LOSedge*LOSedge];
+        float[] azimuthVals = new float[8*(squareRadius-1)];
+        // center point of raster
+        newPixels[((LOSedge/2)*LOSedge) + squareRadius] = MAYBEVISIBLE;
 
-	if (Debug.debugging("los")) {
-	    Debug.output("createLOSimage: size of azimuth array = " + azimuthVals.length);
-	}
+        if (Debug.debugging("los")) {
+            Debug.output("createLOSimage: size of azimuth array = " + azimuthVals.length);
+        }
 
-	fireProgressUpdate(ProgressEvent.START,
-			   "Building LOS Image Mask...", 0, 100);
-	int x, y;
-	int numPixThisRound = 0;
-	boolean mark = false;
-	int markColor = colortable[INVISIBLE];
-	int range;
-	float pix_arc_interval = (float)(2*Math.PI/azimuthVals.length);
-	//  Do this in a spiral, around the center point.
-	for (int round=1; round < squareRadius; round++) {
-	    if (Debug.debugging("los")) {
-		Debug.output("createLOSimage: round " + round);
-	    }
-	    y = LOScenterP.y - round;
-	    x = LOScenterP.x - round; 
-	    
-	    if (round == 1) {
-		mark = true;
-		markColor = colortable[MAYBEVISIBLE];
-	    }
-	    
-	    else mark = false;
-	    
-	    if (LOSprecision == AZIMUTH) {  // As of now, this is the only option
-		range = ((LOSedge*4)-4)/(round*16); 
-	        for (; x < LOScenterP.x + round; x++) // top
-		    resolveImagePoint(x, y, newPixels, 
-				      azimuthVals, range, pix_arc_interval, 
-				      mark, markColor);
-		for (; y < LOScenterP.y + round; y++) // right
-		    resolveImagePoint(x, y, newPixels, 
-				      azimuthVals, range, pix_arc_interval, 
-				      mark, markColor);
-		for(; x > LOScenterP.x - round; x--)  // bottom
-		    resolveImagePoint(x, y, newPixels, 
-				      azimuthVals, range, pix_arc_interval, 
-				      mark, markColor);
-		for(; y > LOScenterP.y - round; y--) // left
-		    resolveImagePoint(x, y, newPixels, 
-				      azimuthVals, range, pix_arc_interval, 
-				      mark, markColor);
-	    }
+        fireProgressUpdate(ProgressEvent.START,
+                           "Building LOS Image Mask...", 0, 100);
+        int x, y;
+        int numPixThisRound = 0;
+        boolean mark = false;
+        int markColor = colortable[INVISIBLE];
+        int range;
+        float pix_arc_interval = (float)(2*Math.PI/azimuthVals.length);
+        //  Do this in a spiral, around the center point.
+        for (int round=1; round < squareRadius; round++) {
+            if (Debug.debugging("los")) {
+                Debug.output("createLOSimage: round " + round);
+            }
+            y = LOScenterP.y - round;
+            x = LOScenterP.x - round; 
+            
+            if (round == 1) {
+                mark = true;
+                markColor = colortable[MAYBEVISIBLE];
+            }
+            
+            else mark = false;
+            
+            if (LOSprecision == AZIMUTH) {  // As of now, this is the only option
+                range = ((LOSedge*4)-4)/(round*16); 
+                for (; x < LOScenterP.x + round; x++) // top
+                    resolveImagePoint(x, y, newPixels, 
+                                      azimuthVals, range, pix_arc_interval, 
+                                      mark, markColor);
+                for (; y < LOScenterP.y + round; y++) // right
+                    resolveImagePoint(x, y, newPixels, 
+                                      azimuthVals, range, pix_arc_interval, 
+                                      mark, markColor);
+                for(; x > LOScenterP.x - round; x--)  // bottom
+                    resolveImagePoint(x, y, newPixels, 
+                                      azimuthVals, range, pix_arc_interval, 
+                                      mark, markColor);
+                for(; y > LOScenterP.y - round; y--) // left
+                    resolveImagePoint(x, y, newPixels, 
+                                      azimuthVals, range, pix_arc_interval, 
+                                      mark, markColor);
+            }
 
-	    int whereWeAre = (int) (100f * ((float)round/(float)squareRadius));
-	    fireProgressUpdate(ProgressEvent.UPDATE,
-			       "Analyzing data...", 
-			       whereWeAre, 100);
-	    
-	}
-	
-	fireProgressUpdate(ProgressEvent.UPDATE,
-			   "Creating Mask", 100, 100);
+            int whereWeAre = (int) (100f * ((float)round/(float)squareRadius));
+            fireProgressUpdate(ProgressEvent.UPDATE,
+                               "Analyzing data...", 
+                               whereWeAre, 100);
+            
+        }
+        
+        fireProgressUpdate(ProgressEvent.UPDATE,
+                           "Creating Mask", 100, 100);
 
-	LOSimage = new OMRaster(LOScenterLLP.getLatitude(),
-				LOScenterLLP.getLongitude(), 
-				(-1-LOSedge/2), (-1-LOSedge/2),
-				LOSedge, LOSedge, newPixels);
-	LOSimage.generate(proj);
-	graphics.clear();
-	graphics.add(LOSimage);
+        LOSimage = new OMRaster(LOScenterLLP.getLatitude(),
+                                LOScenterLLP.getLongitude(), 
+                                (-1-LOSedge/2), (-1-LOSedge/2),
+                                LOSedge, LOSedge, newPixels);
+        LOSimage.generate(proj);
+        graphics.clear();
+        graphics.add(LOSimage);
 
-	fireProgressUpdate(ProgressEvent.DONE,
-			   "LOS mask complete", 100, 100);
+        fireProgressUpdate(ProgressEvent.DONE,
+                           "LOS mask complete", 100, 100);
 
-	if (Debug.debugging("los")) {
-	    Debug.output("createLOSimage: Done...");
-	}
+        if (Debug.debugging("los")) {
+            Debug.output("createLOSimage: Done...");
+        }
     }
 
     /**
@@ -355,78 +355,78 @@ public class LOSGenerator implements TerrainTool {
      * colored correctly. 
      */
     protected void resolveImagePoint(int x, int y, 
-				     int[] newPixels, 
-				     float[] azimuthVals, 
-				     int range, float pix_arc_interval,
-				     boolean mark, int colorForMark) {
-	
+                                     int[] newPixels, 
+                                     float[] azimuthVals, 
+                                     int range, float pix_arc_interval,
+                                     boolean mark, int colorForMark) {
+        
         int ox = LOScenterP.x - LOSedge/2;
-	int oy = LOScenterP.y - LOSedge/2;
-	int dist = TerrainLayer.numPixelsBetween(LOScenterP.x, 
-						 LOScenterP.y, 
-						 x, y);
-	if (dist > (LOSedge-1)/2) {
-	    mark = true;
-	    colorForMark = INVISIBLE;
-	}
-	if (dist == (LOSedge-1)/2) {
-	    mark = true;
-	    colorForMark = MAYBEVISIBLE;
-	}
-	
-	// This needs to be before the next two lines after this 
-	LatLonPoint cord = proj.inverse(x, y);
-	x -= ox;
-	y -= oy;
-	
-	if (Debug.debugging("losdetail")) {
-	    Debug.output("resolveImagePoint x = " + x + 
- 			 ", y = " + y);
-	}
-	
-	if (mark == true) {
-	    newPixels[x + y*LOSedge] = colorForMark;
-	    mark = false;
-	    return;
-	}
-	
-	float centerRadLat = LOScenterLLP.radlat_;
-	float centerRadLon = LOScenterLLP.radlon_;
-	
-	float arc_dist = GreatCircle.spherical_distance(centerRadLat, 
-							centerRadLon,
-							cord.radlat_, 
-							cord.radlon_);
-	
-	float slope = (float)calculateLOSslope(cord, arc_dist);
-	
-	float arc_angle = GreatCircle.spherical_azimuth(centerRadLat, 
-							centerRadLon,
-							cord.radlat_, 
-							cord.radlon_);
-	int index = Math.round(arc_angle/pix_arc_interval);
-	int maxIndex = (LOSedge*4) - 4; // 4 corners out for redundancy
-	if (index < 0) index = maxIndex + index;
-	else if (index >= maxIndex) index = index - maxIndex;
-	
-	if (Debug.debugging("losdetail")) {
-	    Debug.output(" angle = " + arc_angle + ", index/maxIndex = " + 
-			 index + "/" + maxIndex + ", slope = " + slope + 
-			 " compared to slope[index]=" + azimuthVals[index]);
-	}
-	int color = colortable[INVISIBLE];
-	if (azimuthVals[index] < slope) {
-	    for (int i=(index - range); i < index + range - 1; i++) {
-	        if (i < 0) azimuthVals[maxIndex + i] = slope;
-		else if (i >= maxIndex) azimuthVals[i - maxIndex] = slope;
-		else azimuthVals[i] = slope;
-	    }
-	    color = colortable[VISIBLE];
-	}
-	if (Debug.debugging("losdetail")) {
-	    Debug.output(" color = " + color);
-	}
-	newPixels[x + y*LOSedge] = color;
+        int oy = LOScenterP.y - LOSedge/2;
+        int dist = TerrainLayer.numPixelsBetween(LOScenterP.x, 
+                                                 LOScenterP.y, 
+                                                 x, y);
+        if (dist > (LOSedge-1)/2) {
+            mark = true;
+            colorForMark = INVISIBLE;
+        }
+        if (dist == (LOSedge-1)/2) {
+            mark = true;
+            colorForMark = MAYBEVISIBLE;
+        }
+        
+        // This needs to be before the next two lines after this 
+        LatLonPoint cord = proj.inverse(x, y);
+        x -= ox;
+        y -= oy;
+        
+        if (Debug.debugging("losdetail")) {
+            Debug.output("resolveImagePoint x = " + x + 
+                         ", y = " + y);
+        }
+        
+        if (mark == true) {
+            newPixels[x + y*LOSedge] = colorForMark;
+            mark = false;
+            return;
+        }
+        
+        float centerRadLat = LOScenterLLP.radlat_;
+        float centerRadLon = LOScenterLLP.radlon_;
+        
+        float arc_dist = GreatCircle.spherical_distance(centerRadLat, 
+                                                        centerRadLon,
+                                                        cord.radlat_, 
+                                                        cord.radlon_);
+        
+        float slope = (float)calculateLOSslope(cord, arc_dist);
+        
+        float arc_angle = GreatCircle.spherical_azimuth(centerRadLat, 
+                                                        centerRadLon,
+                                                        cord.radlat_, 
+                                                        cord.radlon_);
+        int index = Math.round(arc_angle/pix_arc_interval);
+        int maxIndex = (LOSedge*4) - 4; // 4 corners out for redundancy
+        if (index < 0) index = maxIndex + index;
+        else if (index >= maxIndex) index = index - maxIndex;
+        
+        if (Debug.debugging("losdetail")) {
+            Debug.output(" angle = " + arc_angle + ", index/maxIndex = " + 
+                         index + "/" + maxIndex + ", slope = " + slope + 
+                         " compared to slope[index]=" + azimuthVals[index]);
+        }
+        int color = colortable[INVISIBLE];
+        if (azimuthVals[index] < slope) {
+            for (int i=(index - range); i < index + range - 1; i++) {
+                if (i < 0) azimuthVals[maxIndex + i] = slope;
+                else if (i >= maxIndex) azimuthVals[i - maxIndex] = slope;
+                else azimuthVals[i] = slope;
+            }
+            color = colortable[VISIBLE];
+        }
+        if (Debug.debugging("losdetail")) {
+            Debug.output(" color = " + color);
+        }
+        newPixels[x + y*LOSedge] = color;
     }
 
     /** 
@@ -445,40 +445,40 @@ public class LOSGenerator implements TerrainTool {
 
         int xyheight = frameCache.getElevation(cord.getLatitude(), 
                                                cord.getLongitude());
-	double ret = 0;
-	double P = Math.sin(arc_dist)*
-	    (xyheight+Planet.wgs84_earthEquatorialRadiusMeters);
+        double ret = 0;
+        double P = Math.sin(arc_dist)*
+            (xyheight+Planet.wgs84_earthEquatorialRadiusMeters);
 
-	double xPrime = Math.cos(arc_dist)*
-	    (xyheight+Planet.wgs84_earthEquatorialRadiusMeters);
-	
-	double bottom;
-	double cutoff = 
-	    LOScenterHeight + Planet.wgs84_earthEquatorialRadiusMeters;
+        double xPrime = Math.cos(arc_dist)*
+            (xyheight+Planet.wgs84_earthEquatorialRadiusMeters);
+        
+        double bottom;
+        double cutoff = 
+            LOScenterHeight + Planet.wgs84_earthEquatorialRadiusMeters;
 
-	// Suggested changes, submitted by Mark Wigmore. Introduces
-	// use of doubles, and avoidance of PI/2 tan() calculations.
+        // Suggested changes, submitted by Mark Wigmore. Introduces
+        // use of doubles, and avoidance of PI/2 tan() calculations.
 
-	bottom = cutoff - xPrime;
-	ret = MoreMath.HALF_PI_D - Math.atan(bottom/P);
-	return ret;
+        bottom = cutoff - xPrime;
+        ret = MoreMath.HALF_PI_D - Math.atan(bottom/P);
+        return ret;
 
 
-	// Old way...
-//  	if (xPrime < cutoff) {
-//  	    bottom = cutoff - xPrime;
-//  	    ret = Math.atan(P/bottom);
+        // Old way...
+//      if (xPrime < cutoff) {
+//          bottom = cutoff - xPrime;
+//          ret = Math.atan(P/bottom);
 
-//  	} else if (xPrime == cutoff) {
-//  	    ret = MoreMath.HALF_PI_D;
+//      } else if (xPrime == cutoff) {
+//          ret = MoreMath.HALF_PI_D;
 
-//  	} else if (xPrime > cutoff) {
-//  	    double C = xPrime - cutoff;
-//  	    double gamma = Math.atan(P/C);
-//  	    ret = Math.PI - gamma;
-//  	}
+//      } else if (xPrime > cutoff) {
+//          double C = xPrime - cutoff;
+//          double gamma = Math.atan(P/C);
+//          ret = Math.PI - gamma;
+//      }
 
-//  	return ret;
+//      return ret;
     }
 
     /**
@@ -488,17 +488,17 @@ public class LOSGenerator implements TerrainTool {
      * @param event mouse event where the circle should be started.
      */
     public void setCenter(MouseEvent event) {
-	graphics.clear();
-	LOScenterP.x = event.getX();
-	LOScenterP.y = event.getY();
-	LOScenterLLP = proj.inverse(LOScenterP.x, LOScenterP.y);
-	LOScenterHeight = LOSobjectHeight + 
-	      layer.frameCache.getElevation(LOScenterLLP.getLatitude(),
-					    LOScenterLLP.getLongitude());
-	LOScirc.setLatLon(LOScenterLLP.getLatitude(), LOScenterLLP.getLongitude());
-	LOScirc.generate(proj);
+        graphics.clear();
+        LOScenterP.x = event.getX();
+        LOScenterP.y = event.getY();
+        LOScenterLLP = proj.inverse(LOScenterP.x, LOScenterP.y);
+        LOScenterHeight = LOSobjectHeight + 
+              layer.frameCache.getElevation(LOScenterLLP.getLatitude(),
+                                            LOScenterLLP.getLongitude());
+        LOScirc.setLatLon(LOScenterLLP.getLatitude(), LOScenterLLP.getLongitude());
+        LOScirc.generate(proj);
 
-	graphics.add(LOScirc);
+        graphics.add(LOScirc);
     }
 
     /**
@@ -507,17 +507,17 @@ public class LOSGenerator implements TerrainTool {
      * the circle.
      */
     public void addLOSEvent(MouseEvent event) {
-	graphics.clear();
+        graphics.clear();
         LOSedge = TerrainLayer.numPixelsBetween(LOScenterP.x, 
-						LOScenterP.y, 
-						event.getX(),
-						event.getY())*2 + 1;
-	
+                                                LOScenterP.y, 
+                                                event.getX(),
+                                                event.getY())*2 + 1;
+        
 
-	LOScirc.setWidth(LOSedge);
-	LOScirc.setHeight(LOSedge);
-	LOScirc.generate(proj);
-	graphics.add(LOScirc);
+        LOScirc.setWidth(LOSedge);
+        LOScirc.setHeight(LOSedge);
+        LOScirc.generate(proj);
+        graphics.add(LOScirc);
     }
 
     /**
@@ -527,30 +527,30 @@ public class LOSGenerator implements TerrainTool {
      * @param value height of the object in meters.
      */
     public void setLOSobjectHeight(int value) {
-	LOScenterHeight = LOScenterHeight - LOSobjectHeight; 
-	LOSobjectHeight = value;
-	LOScenterHeight = LOScenterHeight + LOSobjectHeight; 
+        LOScenterHeight = LOScenterHeight - LOSobjectHeight; 
+        LOSobjectHeight = value;
+        LOScenterHeight = LOScenterHeight + LOSobjectHeight; 
     }
 
     /**
      * Add a ProgressListener that will display build progress.
      */
     public void addProgressListener(ProgressListener list) {
-	progressSupport.addProgressListener(list);
+        progressSupport.addProgressListener(list);
     }
 
     /**
      * Remove a ProgressListener that displayed build progress.
      */
     public void removeProgressListener(ProgressListener list) {
-	progressSupport.removeProgressListener(list);
+        progressSupport.removeProgressListener(list);
     }
 
     /**
      * Clear all progress listeners.
      */
     public void clearProgressListeners() {
-	progressSupport.removeAll();
+        progressSupport.removeAll();
     }
 
     /**
@@ -559,9 +559,9 @@ public class LOSGenerator implements TerrainTool {
      * @param totalFrames the total number of frames. 
      */
     protected void fireProgressUpdate(int type, String task, 
-				      int frameNumber, 
-				      int totalFrames) {
-	progressSupport.fireUpdate(type, task, totalFrames, frameNumber);
+                                      int frameNumber, 
+                                      int totalFrames) {
+        progressSupport.fireUpdate(type, task, totalFrames, frameNumber);
     }
 
 }

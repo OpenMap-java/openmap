@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/PaintListenerSupport.java,v $
 // $RCSfile: PaintListenerSupport.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 20:47:45 $
-// $Author: wjeuerle $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:06 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -39,7 +39,7 @@ public class PaintListenerSupport extends ListenerSupport {
      * Construct a PaintListenerSupport.
      */
     public PaintListenerSupport() {
-	this(null);
+        this(null);
     }
 
     /**
@@ -47,7 +47,7 @@ public class PaintListenerSupport extends ListenerSupport {
      * @param source source Object
      */
     public PaintListenerSupport(Object source) {
-	super(source);
+        super(source);
     }
 
     /**
@@ -55,7 +55,7 @@ public class PaintListenerSupport extends ListenerSupport {
      * @param l PaintListener
      */
     public void addPaintListener(PaintListener l) {
-	addListener(l);
+        addListener(l);
     }
 
     /**
@@ -63,7 +63,7 @@ public class PaintListenerSupport extends ListenerSupport {
      * @param l PaintListener
      */
     public void removePaintListener(PaintListener l) {
-	removeListener(l);
+        removeListener(l);
     }
 
     /**
@@ -73,16 +73,16 @@ public class PaintListenerSupport extends ListenerSupport {
      */
     public void paint(Graphics graphics) {
 
-	if (size() == 0) return;
-	Iterator it = iterator();
+        if (size() == 0) return;
+        Iterator it = iterator();
 
-	while (it.hasNext()) {
-	    PaintListener target = (PaintListener)it.next();
-	    if (Debug.debugging("paint")) {
-		Debug.output("PaintListenerSupport.paint(): target is: " + 
-			     target);
-	    }
-	    target.listenerPaint(graphics);
-	}
+        while (it.hasNext()) {
+            PaintListener target = (PaintListener)it.next();
+            if (Debug.debugging("paint")) {
+                Debug.output("PaintListenerSupport.paint(): target is: " + 
+                             target);
+            }
+            target.listenerPaint(graphics);
+        }
     }
 }

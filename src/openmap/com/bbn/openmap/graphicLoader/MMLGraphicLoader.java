@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/MMLGraphicLoader.java,v $
 // $RCSfile: MMLGraphicLoader.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,11 +39,11 @@ public abstract class MMLGraphicLoader extends AbstractGraphicLoader
     implements MapMouseListener {
 
     public MMLGraphicLoader() {
-	super();
+        super();
     }
 
     public MMLGraphicLoader(OMGraphicHandler receiver) {
-	super(receiver);
+        super(receiver);
     }
 
     /////////  MapMouseListener interface methods
@@ -57,9 +57,9 @@ public abstract class MMLGraphicLoader extends AbstractGraphicLoader
      * receiving events in "select" mode:
      * <code>
      * <pre>
-     *	return new String[] {
-     *	    SelectMouseMode.modeID
-     *	};
+     *  return new String[] {
+     *      SelectMouseMode.modeID
+     *  };
      * </pre>
      * <code>
      * @return String[] of modeID's
@@ -68,7 +68,7 @@ public abstract class MMLGraphicLoader extends AbstractGraphicLoader
      * @see com.bbn.openmap.event.NullMouseMode#modeID
      */
     public String[] getMouseModeServiceList() {
-	return new String[] {SelectMouseMode.modeID};
+        return new String[] {SelectMouseMode.modeID};
     }
 
     // Mouse Listener events
@@ -80,7 +80,7 @@ public abstract class MMLGraphicLoader extends AbstractGraphicLoader
      * @return true if the listener was able to process the event.
      */
     public boolean mousePressed(MouseEvent e) {
-	return false;
+        return false;
     }
  
     /**
@@ -89,7 +89,7 @@ public abstract class MMLGraphicLoader extends AbstractGraphicLoader
      * @return true if the listener was able to process the event.
      */
     public boolean mouseReleased(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -117,7 +117,7 @@ public abstract class MMLGraphicLoader extends AbstractGraphicLoader
      * @return true if the listener was able to process the event.
      */
     public boolean mouseClicked(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -144,7 +144,7 @@ public abstract class MMLGraphicLoader extends AbstractGraphicLoader
      * @return true if the listener was able to process the event.
      */
     public boolean mouseDragged(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -154,7 +154,7 @@ public abstract class MMLGraphicLoader extends AbstractGraphicLoader
      * @return true if the listener was able to process the event.
      */
     public boolean mouseMoved(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**

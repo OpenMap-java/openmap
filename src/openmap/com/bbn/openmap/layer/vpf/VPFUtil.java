@@ -15,9 +15,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFUtil.java,v $
 // $RCSfile: VPFUtil.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/29 20:35:09 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:12 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -42,7 +42,7 @@ public class VPFUtil {
      * @deprecated use listToString(List) instead
      */
     public static final String vectorToString(List l) {
-	return listToString(l);
+        return listToString(l);
     }
 
     /**
@@ -51,11 +51,11 @@ public class VPFUtil {
      * @return the string version of the list
      */
     public static final String listToString(List l) {
-	StringBuffer row = new StringBuffer();
-	for (Iterator i = l.iterator(); i.hasNext();) {
-	    row.append(i.next().toString()).append(" ");
-	}
-	return(row.toString());
+        StringBuffer row = new StringBuffer();
+        for (Iterator i = l.iterator(); i.hasNext();) {
+            row.append(i.next().toString()).append(" ");
+        }
+        return(row.toString());
     }
     
     /**
@@ -65,19 +65,19 @@ public class VPFUtil {
      * @return the value contained in val
      */
     public static final int objectToInt(Object val) {
-	int v = Integer.MIN_VALUE;
-	if (val instanceof Integer) {
-	    v = ((Integer)val).intValue();
-	    if (v == Integer.MIN_VALUE+1) {
-		v = Integer.MIN_VALUE;
-	    }
-	} else if (val instanceof Short) {
-	    v = ((Short)val).shortValue();
-	    if (v == Short.MIN_VALUE+1) {
-		v = Integer.MIN_VALUE;
-	    }
-	}
-	return v;
+        int v = Integer.MIN_VALUE;
+        if (val instanceof Integer) {
+            v = ((Integer)val).intValue();
+            if (v == Integer.MIN_VALUE+1) {
+                v = Integer.MIN_VALUE;
+            }
+        } else if (val instanceof Short) {
+            v = ((Short)val).shortValue();
+            if (v == Short.MIN_VALUE+1) {
+                v = Integer.MIN_VALUE;
+            }
+        }
+        return v;
     }
 
     /** some strings */
@@ -95,17 +95,17 @@ public class VPFUtil {
      * of all dynamic arguments.
      */
     public static Hashtable parseDynamicArgs(String args) {
-	Hashtable dynArgs = new Hashtable();
-	if (args != null) {
-	    String lowerArgs = args.toLowerCase();
+        Hashtable dynArgs = new Hashtable();
+        if (args != null) {
+            String lowerArgs = args.toLowerCase();
 
-	    dynArgs.put(Edges, new Boolean(lowerArgs.indexOf(Edges) != -1));
-	    dynArgs.put(Text, new Boolean(lowerArgs.indexOf(Text) != -1));
-	    dynArgs.put(Area, new Boolean(lowerArgs.indexOf(Area) != -1));
-	    dynArgs.put(EPoint, new Boolean(lowerArgs.indexOf(EPoint) != -1));
-	    dynArgs.put(CPoint, new Boolean(lowerArgs.indexOf(CPoint) != -1));
-	}
-	return dynArgs;
+            dynArgs.put(Edges, new Boolean(lowerArgs.indexOf(Edges) != -1));
+            dynArgs.put(Text, new Boolean(lowerArgs.indexOf(Text) != -1));
+            dynArgs.put(Area, new Boolean(lowerArgs.indexOf(Area) != -1));
+            dynArgs.put(EPoint, new Boolean(lowerArgs.indexOf(EPoint) != -1));
+            dynArgs.put(CPoint, new Boolean(lowerArgs.indexOf(CPoint) != -1));
+        }
+        return dynArgs;
     }
 
     /**
@@ -115,14 +115,14 @@ public class VPFUtil {
      * @param arg the argument to return
      */
     public static boolean getHashedValueAsBoolean(Hashtable dynArgs,
-						  String arg) {
-	Object obj = dynArgs.get(arg);
-	if (obj == null) {
-	    return false;
-	} else if (obj instanceof Boolean) {
-	    return ((Boolean)obj).booleanValue();
-	} else {
-	    return false;
-	}
+                                                  String arg) {
+        Object obj = dynArgs.get(arg);
+        if (obj == null) {
+            return false;
+        } else if (obj instanceof Boolean) {
+            return ((Boolean)obj).booleanValue();
+        } else {
+            return false;
+        }
     }
 }

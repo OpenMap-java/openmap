@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/JPEGHelper.java,v $
 // $RCSfile: JPEGHelper.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,32 +51,32 @@ public class JPEGHelper {
      * @exception IOException an error occured in encoding the image
      */
     public static byte[] encodeJPEG(BufferedImage image, float quality)
-	throws IOException {
+        throws IOException {
 
-	ByteArrayOutputStream out = new ByteArrayOutputStream();
-	if (Debug.debugging("jpeghelper")){
-	    Debug.output("Got output stream..." + out);
-	}
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        if (Debug.debugging("jpeghelper")){
+            Debug.output("Got output stream..." + out);
+        }
 
-	JPEGEncodeParam param = JPEGCodec.getDefaultJPEGEncodeParam(image);
-	param.setQuality(quality, true);
-	if (Debug.debugging("jpeghelper")){
-	    Debug.output("Got encode params...");
-	}
+        JPEGEncodeParam param = JPEGCodec.getDefaultJPEGEncodeParam(image);
+        param.setQuality(quality, true);
+        if (Debug.debugging("jpeghelper")){
+            Debug.output("Got encode params...");
+        }
 
-	JPEGImageEncoder enc = JPEGCodec.createJPEGEncoder(out, param);
-	if (Debug.debugging("jpeghelper")){
-	    Debug.output("Got jpeg encoder...");
-	}
+        JPEGImageEncoder enc = JPEGCodec.createJPEGEncoder(out, param);
+        if (Debug.debugging("jpeghelper")){
+            Debug.output("Got jpeg encoder...");
+        }
 
-	enc.encode(image);
-	if (Debug.debugging("jpeghelper")){
-	    Debug.output("encoded?");
-	}
-	
-	return out.toByteArray();
+        enc.encode(image);
+        if (Debug.debugging("jpeghelper")){
+            Debug.output("encoded?");
+        }
+        
+        return out.toByteArray();
     }
-	
+        
     /** 
      * Return a byte array that contains the JPEG encoded image.
      * @param w the width of the image
@@ -86,11 +86,11 @@ public class JPEGHelper {
      * @exception IOException an error occured in encoding the image
      */
     public static byte[] encodeJPEG(int w, int h, int[] pixels, float quality)
-	throws IOException {
-	BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-	bi.setRGB(0, 0, w, h, pixels, 0, w);
-	pixels = null;
-	return encodeJPEG(bi, quality);
+        throws IOException {
+        BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        bi.setRGB(0, 0, w, h, pixels, 0, w);
+        pixels = null;
+        return encodeJPEG(bi, quality);
     }
 
     /**
@@ -99,58 +99,58 @@ public class JPEGHelper {
      * @param args url [width height]
      */
     public static void main(String args[]) throws Exception {
-	if (args.length == 0) {
-	    System.out.println("java jpeg url [width height]");
-	    System.exit(-1);
-	}
+        if (args.length == 0) {
+            System.out.println("java jpeg url [width height]");
+            System.exit(-1);
+        }
 
-	Debug.init();
+        Debug.init();
 
-	int uw = -1;
-	int uh = -1;
-	if (args.length > 1) {
-	    uw = Integer.parseInt(args[1]);
-	    uh = Integer.parseInt(args[2]);
-	}
-	 
-	String urlsource = args[0];
-	int lastslash = urlsource.lastIndexOf('/');
-	if (lastslash == -1) {
-	    lastslash = 0;
-	} else {
-	    lastslash++;
-	}
-	int lastdot = urlsource.lastIndexOf('.');
-	if (lastdot == -1) {
-	    lastdot = 0;
-	}
-	String filebase = urlsource.substring(lastslash, lastdot);
+        int uw = -1;
+        int uh = -1;
+        if (args.length > 1) {
+            uw = Integer.parseInt(args[1]);
+            uh = Integer.parseInt(args[2]);
+        }
+         
+        String urlsource = args[0];
+        int lastslash = urlsource.lastIndexOf('/');
+        if (lastslash == -1) {
+            lastslash = 0;
+        } else {
+            lastslash++;
+        }
+        int lastdot = urlsource.lastIndexOf('.');
+        if (lastdot == -1) {
+            lastdot = 0;
+        }
+        String filebase = urlsource.substring(lastslash, lastdot);
        
-	Debug.output("url=" + urlsource + " filebase=" + filebase);
+        Debug.output("url=" + urlsource + " filebase=" + filebase);
 
-	BufferedImage bi = BufferedImageHelper.getBufferedImage(new URL(urlsource), 0, 0, uw, uh);
-	if (bi == null) {
-	    Debug.error("JPEGHelper: Image load failed");
-	} else {
-	    PrintStream html = new PrintStream(new FileOutputStream(new File(filebase + ".html")));
-	
-	    html.println("Source url = " + urlsource + " <br>");
-	    html.println(" width = "+uw + " height=" + uh + 
-			 " pixels=" + uw*uh + " <hr>");
-	    for (int i = 0; i < 20; i++) {
-		File f = new File(filebase+((i<10)?"0":"")+i+".jpg");
-		float quality = 0.0499f * i;
-		byte data[] = encodeJPEG(bi, quality);
-		OutputStream writef = new FileOutputStream(f);
-		writef.write(data);
-		writef.close();
-		html.println("Image Quality Factor: " + quality + " <br>");
-		html.println("Image Size (bytes) : " + data.length + " <br>");
-		html.println("<img src=\"" + f.getName() + "\"> <hr>");
-	    }
-	
-	    html.close();
-	}
-	System.exit(-1); //awt stinks
+        BufferedImage bi = BufferedImageHelper.getBufferedImage(new URL(urlsource), 0, 0, uw, uh);
+        if (bi == null) {
+            Debug.error("JPEGHelper: Image load failed");
+        } else {
+            PrintStream html = new PrintStream(new FileOutputStream(new File(filebase + ".html")));
+        
+            html.println("Source url = " + urlsource + " <br>");
+            html.println(" width = "+uw + " height=" + uh + 
+                         " pixels=" + uw*uh + " <hr>");
+            for (int i = 0; i < 20; i++) {
+                File f = new File(filebase+((i<10)?"0":"")+i+".jpg");
+                float quality = 0.0499f * i;
+                byte data[] = encodeJPEG(bi, quality);
+                OutputStream writef = new FileOutputStream(f);
+                writef.write(data);
+                writef.close();
+                html.println("Image Quality Factor: " + quality + " <br>");
+                html.println("Image Size (bytes) : " + data.length + " <br>");
+                html.println("<img src=\"" + f.getName() + "\"> <hr>");
+            }
+        
+            html.close();
+        }
+        System.exit(-1); //awt stinks
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/CSVFile.java,v $
 // $RCSfile: CSVFile.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:22:42 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,14 +60,14 @@ public class CSVFile {
      * Don't do anything special, since all defaults are set already 
      */
     public CSVFile(String name) throws MalformedURLException {
-	infoUrl = LayerUtils.getResourceOrFileOrURL(null, name); 
+        infoUrl = LayerUtils.getResourceOrFileOrURL(null, name); 
     }
     
     /** 
      * Don't do anything special, since all defaults are set already 
      */
     public CSVFile(URL url) throws MalformedURLException {
-	infoUrl = url; 
+        infoUrl = url; 
     }
 
     /** 
@@ -75,7 +75,7 @@ public class CSVFile {
      * each column. 
      */
     public void setHeadersExist(boolean set) {
-	headersExist = set;
+        headersExist = set;
     }
     
     /** 
@@ -83,14 +83,14 @@ public class CSVFile {
      * each column. 
      */
     public boolean isHeadersExist() {
-	return headersExist;
+        return headersExist;
     }
 
     /**
      * Reads the numbers and stores them as Doubles.
      */
     public void loadData() {
-	loadData(false);
+        loadData(false);
     }
 
     /** 
@@ -98,73 +98,73 @@ public class CSVFile {
      * numbers in the files as strings.
      */
     public void loadData(boolean readNumbersAsStrings) {
-	BufferedReader streamReader = null;
-	Vector records = new Vector();
+        BufferedReader streamReader = null;
+        Vector records = new Vector();
 
-	try {
-	    Object token = null;
-	    boolean header_read = false;
+        try {
+            Object token = null;
+            boolean header_read = false;
 
-	    if (!headersExist) {
-		header_read = true;
-		headerRecord = new Vector();
-	    }
+            if (!headersExist) {
+                header_read = true;
+                headerRecord = new Vector();
+            }
 
-	    // This lets the property be specified as a file name
-	    // even if it's not specified as file:/<name> in
-	    // the properties file.
-	    URL csvURL = infoUrl;
-	    streamReader = new BufferedReader(new InputStreamReader(csvURL.openStream()));
-	    CSVTokenizer csvt = new CSVTokenizer(streamReader, readNumbersAsStrings);
-	    String name = null;
-	    String abbreviation = null;
-	    int count = 0;
-	    token = csvt.token();
-	    while (!csvt.isEOF(token)) {
-		count++;
+            // This lets the property be specified as a file name
+            // even if it's not specified as file:/<name> in
+            // the properties file.
+            URL csvURL = infoUrl;
+            streamReader = new BufferedReader(new InputStreamReader(csvURL.openStream()));
+            CSVTokenizer csvt = new CSVTokenizer(streamReader, readNumbersAsStrings);
+            String name = null;
+            String abbreviation = null;
+            int count = 0;
+            token = csvt.token();
+            while (!csvt.isEOF(token)) {
+                count++;
 
-		Vector rec_line = new Vector();
-		while (!csvt.isNewline(token)) {
-		    rec_line.addElement(token);
-		    token = csvt.token();
-		    if (csvt.isEOF(token)) break;
-		}
+                Vector rec_line = new Vector();
+                while (!csvt.isNewline(token)) {
+                    rec_line.addElement(token);
+                    token = csvt.token();
+                    if (csvt.isEOF(token)) break;
+                }
 
-		//  Don't add the header record, because we don't care
-		//  about it.
-		if (header_read) {
-		    records.addElement(rec_line);
-		} else if (headersExist) {
-		    headerRecord = rec_line;
-		    header_read = true;
-		}
-		
-		if (Debug.debugging("csv")) {
-		    Debug.output("CSVFile.read: " + rec_line);
-		}
+                //  Don't add the header record, because we don't care
+                //  about it.
+                if (header_read) {
+                    records.addElement(rec_line);
+                } else if (headersExist) {
+                    headerRecord = rec_line;
+                    header_read = true;
+                }
+                
+                if (Debug.debugging("csv")) {
+                    Debug.output("CSVFile.read: " + rec_line);
+                }
 
-		token = csvt.token();
-	    }
-	} catch (java.io.IOException ioe) {
-	    throw new com.bbn.openmap.util.HandleError(ioe);
-	} catch (ArrayIndexOutOfBoundsException aioobe) {
-	    throw new com.bbn.openmap.util.HandleError(aioobe);
-	}  catch (ClassCastException cce) {
-	    throw new com.bbn.openmap.util.HandleError(cce);
-	}  
-	
-	try {	      
-	    if (streamReader != null) {
-		streamReader.close();
-	    }
-	} catch(java.io.IOException ioe) {
-	    throw new com.bbn.openmap.util.HandleError(ioe);
-	}
-	infoRecords = records;
+                token = csvt.token();
+            }
+        } catch (java.io.IOException ioe) {
+            throw new com.bbn.openmap.util.HandleError(ioe);
+        } catch (ArrayIndexOutOfBoundsException aioobe) {
+            throw new com.bbn.openmap.util.HandleError(aioobe);
+        }  catch (ClassCastException cce) {
+            throw new com.bbn.openmap.util.HandleError(cce);
+        }  
+        
+        try {         
+            if (streamReader != null) {
+                streamReader.close();
+            }
+        } catch(java.io.IOException ioe) {
+            throw new com.bbn.openmap.util.HandleError(ioe);
+        }
+        infoRecords = records;
 
-	if (Debug.debugging("csv")) {
-	    Debug.output("CSVFile: read in " + infoRecords.size() + " records");
-	}
+        if (Debug.debugging("csv")) {
+            Debug.output("CSVFile: read in " + infoRecords.size() + " records");
+        }
     }
    
     /**
@@ -177,15 +177,15 @@ public class CSVFile {
      * @return Vector Vector of contents of record line.
      */
     public Vector getRecord(int recordnumber) {
-	Vector vector;
-	try { 
-	    vector = (Vector)infoRecords.elementAt(recordnumber);
-	} catch (ArrayIndexOutOfBoundsException e) {
-	    Debug.error(infoUrl.toString() + 
-			": Don't have information for shape record " + recordnumber);
-	    return null;
-	}
-	return vector;
+        Vector vector;
+        try { 
+            vector = (Vector)infoRecords.elementAt(recordnumber);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Debug.error(infoUrl.toString() + 
+                        ": Don't have information for shape record " + recordnumber);
+            return null;
+        }
+        return vector;
     }
 
     /**
@@ -194,6 +194,6 @@ public class CSVFile {
      * @return Iterator
      */
     public Iterator iterator() {
-	return infoRecords.iterator();
+        return infoRecords.iterator();
     }
 }

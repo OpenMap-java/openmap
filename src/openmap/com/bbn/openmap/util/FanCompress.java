@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/FanCompress.java,v $
 // $RCSfile: FanCompress.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,8 +41,8 @@ import com.bbn.openmap.MoreMath;
 public abstract class FanCompress {
 
     public static class FanPoint {
-	public double x;
-	public double y;
+        public double x;
+        public double y;
     }
 
     /**
@@ -50,83 +50,83 @@ public abstract class FanCompress {
      */
     public static class FloatCompress extends FanCompress {
 
-	private int read = 0;
-	private int write = 0;
-	protected float[] array;
-	protected float zero_eps=0.0001f;
+        private int read = 0;
+        private int write = 0;
+        protected float[] array;
+        protected float zero_eps=0.0001f;
 
-	/**
-	 * Construct a FanCompress object which deals in floats.
-	 * @param array float[] array of coordinate pairs.
-	 */
-	public FloatCompress (float[] array) {
-	    this.array = array;
-	}
+        /**
+         * Construct a FanCompress object which deals in floats.
+         * @param array float[] array of coordinate pairs.
+         */
+        public FloatCompress (float[] array) {
+            this.array = array;
+        }
 
-	/**
-	 * Get the next point.
-	 * @param p FanPoint
-	 * @return boolean false if no more points.
-	 */
-	public boolean next_point (FanPoint p) {
-	    if (read+1 < array.length) {
-		p.x = (double)array[read++];
-		p.y = (double)array[read++];
-		return true;
-	    } else {
-		return false;
-	    }
-	}
+        /**
+         * Get the next point.
+         * @param p FanPoint
+         * @return boolean false if no more points.
+         */
+        public boolean next_point (FanPoint p) {
+            if (read+1 < array.length) {
+                p.x = (double)array[read++];
+                p.y = (double)array[read++];
+                return true;
+            } else {
+                return false;
+            }
+        }
 
-	/**
-	 * Save coordinates.
-	 * This routine coalesces adjacent points which have the same
-	 * coordinates.
-	 * @param x coordinate
-	 * @param y coordinate
-	 */
-	public void save_point (double x, double y) {
-	    if (write+1 < read) {
-		// coalesce points
-		if ((write>1) &&
-			MoreMath.approximately_equal(
-			    (float)x, array[write-2], zero_eps) &&
-			MoreMath.approximately_equal(
-			    (float)y, array[write-1], zero_eps))
-		{
-		    return;
-		}
-		array[write++] = (float)x;
-		array[write++] = (float)y;
-	    } else {
-		System.err.println(
-			"FanCompress.FloatCompress.save_point(): "+
-			"ignoring extra...");
-	    }
-	}
+        /**
+         * Save coordinates.
+         * This routine coalesces adjacent points which have the same
+         * coordinates.
+         * @param x coordinate
+         * @param y coordinate
+         */
+        public void save_point (double x, double y) {
+            if (write+1 < read) {
+                // coalesce points
+                if ((write>1) &&
+                        MoreMath.approximately_equal(
+                            (float)x, array[write-2], zero_eps) &&
+                        MoreMath.approximately_equal(
+                            (float)y, array[write-1], zero_eps))
+                {
+                    return;
+                }
+                array[write++] = (float)x;
+                array[write++] = (float)y;
+            } else {
+                System.err.println(
+                        "FanCompress.FloatCompress.save_point(): "+
+                        "ignoring extra...");
+            }
+        }
 
-	/**
-	 * Save only unique coordinates.
-	 * If several points are the same, then coalesce them into one
-	 * point.
-	 * @param epsilon threshold used to determine uniqueness of
-	 * coordinates.
-	 */
-	public void set_coalesce_points (double epsilon) {
-	    zero_eps = (float)epsilon;
-	}
+        /**
+         * Save only unique coordinates.
+         * If several points are the same, then coalesce them into one
+         * point.
+         * @param epsilon threshold used to determine uniqueness of
+         * coordinates.
+         */
+        public void set_coalesce_points (double epsilon) {
+            zero_eps = (float)epsilon;
+        }
 
-	/**
-	 * Return a copy of the internal array.
-	 * Invoke this method after running
-	 * <code>fan_compress()</code> on this object.
-	 * @return float[]
-	 */
-	public float[] getArray () {
-	    float[] ret_val = new float[write];
-	    System.arraycopy(array, 0, ret_val, 0, write);
-	    return ret_val;
-	}
+        /**
+         * Return a copy of the internal array.
+         * Invoke this method after running
+         * <code>fan_compress()</code> on this object.
+         * @return float[]
+         */
+        public float[] getArray () {
+            float[] ret_val = new float[write];
+            System.arraycopy(array, 0, ret_val, 0, write);
+            return ret_val;
+        }
     }
 
 
@@ -164,132 +164,132 @@ public abstract class FanCompress {
      * @param epsilon double
      */
     public static final void fan_compress (FanCompress fan, double epsilon) {
-	double epsilon_squared;     /* epsilon * epsilon */
-	double p0x, p0y;		/* Start of segment. */
-	FanPoint p = new FanPoint();
-//	double px, py;		/* Current point x,y */
+        double epsilon_squared;     /* epsilon * epsilon */
+        double p0x, p0y;                /* Start of segment. */
+        FanPoint p = new FanPoint();
+//      double px, py;          /* Current point x,y */
 
-	epsilon_squared = epsilon * epsilon;
+        epsilon_squared = epsilon * epsilon;
 
-	if (!fan.next_point(p))	/* Get first point */
-	    return;
+        if (!fan.next_point(p)) /* Get first point */
+            return;
 
-	fan.save_point(p.x, p.y);		/* Save it. */
-	p0x = p.x;			/* p0 <- p. */
-	p0y = p.y;
+        fan.save_point(p.x, p.y);               /* Save it. */
+        p0x = p.x;                      /* p0 <- p. */
+        p0y = p.y;
 
-	while (true) {
-	    double distance;
-	    double pu;
-	    double ux, uy;
-	    double vx, vy;
-	    double f1, f2, f3;
-	    double xok, yok;
+        while (true) {
+            double distance;
+            double pu;
+            double ux, uy;
+            double vx, vy;
+            double f1, f2, f3;
+            double xok, yok;
 
-	    /* Find first point > epsilon from p0. */
-	    while (true) {
-		double dx;
-		double dy;
+            /* Find first point > epsilon from p0. */
+            while (true) {
+                double dx;
+                double dy;
 
-		dx = p.x - p0x;
-		dy = p.y - p0y;
+                dx = p.x - p0x;
+                dy = p.y - p0y;
 
-		distance = dx * dx + dy * dy;
+                distance = dx * dx + dy * dy;
 
-		if (distance > epsilon_squared)
-		    break;
+                if (distance > epsilon_squared)
+                    break;
 
-		if (!fan.next_point(p)) {
-//		    goto finish;
-		    fan.save_point(p.x, p.y);		/* Save last point. */
-		    return;
-		}
+                if (!fan.next_point(p)) {
+//                  goto finish;
+                    fan.save_point(p.x, p.y);           /* Save last point. */
+                    return;
+                }
 
-	    }
+            }
 
-	    distance = Math.sqrt(distance);
+            distance = Math.sqrt(distance);
 
-	    pu = distance;		/* U component of p. */
+            pu = distance;              /* U component of p. */
 
-	    ux = (p.x - p0x) / pu;	/* U unit vector. */
-	    uy = (p.y - p0y) / pu;
+            ux = (p.x - p0x) / pu;      /* U unit vector. */
+            uy = (p.y - p0y) / pu;
 
-	    vx = -uy;		/* V unit vector. */
-	    vy = ux;
+            vx = -uy;           /* V unit vector. */
+            vy = ux;
 
-	    f1 = pu;		/* Region. */
-	    f2 = epsilon / pu;
+            f1 = pu;            /* Region. */
+            f2 = epsilon / pu;
 
-	    f3 = -f2;
+            f3 = -f2;
 
-	    xok = p.x;	/* Last point we know is OK. */
-	    yok = p.y;
+            xok = p.x;  /* Last point we know is OK. */
+            yok = p.y;
 
-	    while (true) {
-		double dx, dy;
-		double /*pu,*/ pv;
-		boolean keep;
+            while (true) {
+                double dx, dy;
+                double /*pu,*/ pv;
+                boolean keep;
 
-		if (!fan.next_point(p)) {
-//		    goto finish;
-		    fan.save_point(p.x, p.y);		/* Save last point. */
-		    return;
-		}
+                if (!fan.next_point(p)) {
+//                  goto finish;
+                    fan.save_point(p.x, p.y);           /* Save last point. */
+                    return;
+                }
 
-		keep = true;
-		dx = p.x - p0x;
-		dy = p.y - p0y;
-		pu = ux * dx + uy * dy;
-		pv = vx * dx + vy * dy;
+                keep = true;
+                dx = p.x - p0x;
+                dy = p.y - p0y;
+                pu = ux * dx + uy * dy;
+                pv = vx * dx + vy * dy;
 
-		if (pu >= f1) {
-		    /* Still moving away from p0? */
-		    double slope;
+                if (pu >= f1) {
+                    /* Still moving away from p0? */
+                    double slope;
 
-		    slope = pv / pu;
+                    slope = pv / pu;
 
-		    if (slope <= f2 && slope >= f3) {
-			double temp;
+                    if (slope <= f2 && slope >= f3) {
+                        double temp;
 
-			/* Still in region? */
-			double dslope;
+                        /* Still in region? */
+                        double dslope;
 
-			dslope = epsilon/pu;
+                        dslope = epsilon/pu;
 
-			keep = false;
+                        keep = false;
 
-			f1 = pu;
-			/* Adjust region. */
-			temp = slope + dslope;
+                        f1 = pu;
+                        /* Adjust region. */
+                        temp = slope + dslope;
 
-			if (temp < f2)
-			    f2 = temp; /* Min. */
-			temp = slope - dslope;
+                        if (temp < f2)
+                            f2 = temp; /* Min. */
+                        temp = slope - dslope;
 
-			if (temp > f3)
-			    f3 = temp; /* Max. */
-		    }
-		}
+                        if (temp > f3)
+                            f3 = temp; /* Max. */
+                    }
+                }
 
-		if (keep) {
-		    fan.save_point(xok, yok);
+                if (keep) {
+                    fan.save_point(xok, yok);
 
-		    p0x = xok;	/* p0 <- pOK. */
-		    p0y = yok;
+                    p0x = xok;  /* p0 <- pOK. */
+                    p0y = yok;
 
-		    break;
-		} else {
-		    xok = p.x;
-		    yok = p.y;
-		}
-	    }
-	}
+                    break;
+                } else {
+                    xok = p.x;
+                    yok = p.y;
+                }
+            }
+        }
 
-//	System.out.println("should not reach here");
+//      System.out.println("should not reach here");
 
 //      finish:
-//	
-//	save_point(p.x, p.y);		/* Save last point. */
-//	       return;
+//      
+//      save_point(p.x, p.y);           /* Save last point. */
+//             return;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ScaleTextPanel.java,v $
 // $RCSfile: ScaleTextPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/23 21:01:16 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -66,44 +66,44 @@ public class ScaleTextPanel extends OMToolComponent
      * Create the ScaleTextPanel
      */
     public ScaleTextPanel() {
-	super();
-	setKey(defaultKey);
+        super();
+        setKey(defaultKey);
 
-	zoomDelegate = new ZoomSupport(this);
+        zoomDelegate = new ZoomSupport(this);
 
-	String entry = "";
-	String info = "Scale";
-	String command = setScaleCmd;
+        String entry = "";
+        String info = "Scale";
+        String command = setScaleCmd;
 
-	scaleField = new JTextField(entry, 10);
-	scaleField.setToolTipText(info);
-	scaleField.setMargin(new Insets(0,0,0,0));
+        scaleField = new JTextField(entry, 10);
+        scaleField.setToolTipText(info);
+        scaleField.setMargin(new Insets(0,0,0,0));
         scaleField.setActionCommand(command);
-	scaleField.addActionListener(this);
-	scaleField.setHorizontalAlignment(JTextField.RIGHT);
+        scaleField.addActionListener(this);
+        scaleField.setHorizontalAlignment(JTextField.RIGHT);
 
-	gridbag.setConstraints(scaleField, c);
+        gridbag.setConstraints(scaleField, c);
 
-	add(scaleField);
+        add(scaleField);
     }
     
     /**
      * Called to set the scale setting on the scale text object.
      */
     public synchronized void setProjection(Projection aProjection) {
-	projection = aProjection;
-	if (Debug.debugging("scaletextpanel")) {
-	    System.out.println("ScaleTextPanel.setProjection(): scale is " +
-			       projection.getScale() + " \"" +
-			       String.valueOf(projection.getScale()) + "\"");
-	}
+        projection = aProjection;
+        if (Debug.debugging("scaletextpanel")) {
+            System.out.println("ScaleTextPanel.setProjection(): scale is " +
+                               projection.getScale() + " \"" +
+                               String.valueOf(projection.getScale()) + "\"");
+        }
 
-	String oldScale = scaleField.getText();
-	String newScale = df.format(projection.getScale());
+        String oldScale = scaleField.getText();
+        String newScale = df.format(projection.getScale());
 
-	if (!oldScale.equals(newScale)) {
-	    scaleField.setText("1:" + newScale);
-	}
+        if (!oldScale.equals(newScale)) {
+            scaleField.setText("1:" + newScale);
+        }
     }
 
     /**
@@ -112,7 +112,7 @@ public class ScaleTextPanel extends OMToolComponent
      * @param listener  The ZoomListener to be added
      */
     public synchronized void addZoomListener(ZoomListener listener) {
-	zoomDelegate.addZoomListener(listener);
+        zoomDelegate.addZoomListener(listener);
     }
 
     /**
@@ -121,7 +121,7 @@ public class ScaleTextPanel extends OMToolComponent
      * @param listener  The ZoomListener to be removed
      */
     public synchronized void removeZoomListener(ZoomListener listener) {
-	zoomDelegate.removeZoomListener(listener);
+        zoomDelegate.removeZoomListener(listener);
     }
  
     /**
@@ -133,13 +133,13 @@ public class ScaleTextPanel extends OMToolComponent
      * @param aMap a map object.
      */
     public void setupListeners(MapBean aMap) {
-	if (aMap != null) {
-	    // Wire up the beans for event passing
-	    addZoomListener((ZoomListener)aMap);
-	    aMap.addProjectionListener(this);
-	    // set the scaleEntry
-	    scaleField.setText("1:" + String.valueOf(aMap.getScale()));
-	}
+        if (aMap != null) {
+            // Wire up the beans for event passing
+            addZoomListener((ZoomListener)aMap);
+            aMap.addProjectionListener(this);
+            // set the scaleEntry
+            scaleField.setText("1:" + String.valueOf(aMap.getScale()));
+        }
     }
 
     /**
@@ -148,13 +148,13 @@ public class ScaleTextPanel extends OMToolComponent
      * @param mapBean a map object.
      */
     public void removeFromAllListeners(MapBean mapBean) {
-	if (mapBean != null) {
-	    // Unwire the mapBean from these listeners
- 	    removeZoomListener((ZoomListener)mapBean);
-	    mapBean.removeProjectionListener(this);
-	    // set the scaleEntry to 0
-	    scaleField.setText("----"/*String.valueOf(0)*/);
-	}
+        if (mapBean != null) {
+            // Unwire the mapBean from these listeners
+            removeZoomListener((ZoomListener)mapBean);
+            mapBean.removeProjectionListener(this);
+            // set the scaleEntry to 0
+            scaleField.setText("----"/*String.valueOf(0)*/);
+        }
     }
 
     /**
@@ -162,7 +162,7 @@ public class ScaleTextPanel extends OMToolComponent
      * @return JTextField that is rigged to set the scale for the map.
      */
     public JTextField getScaleField() {
-	return scaleField;
+        return scaleField;
     }
 
     /**
@@ -170,68 +170,68 @@ public class ScaleTextPanel extends OMToolComponent
      * @param e ActionEvent
      */
     public void actionPerformed(java.awt.event.ActionEvent e) {
-	String command = e.getActionCommand();
+        String command = e.getActionCommand();
 
-	if (Debug.debugging("scaletextpanel")) {
-	    Debug.output("ScaleTextPanel.actionPerformed(): " + command);
-	}
+        if (Debug.debugging("scaletextpanel")) {
+            Debug.output("ScaleTextPanel.actionPerformed(): " + command);
+        }
 
-	if (command.equals(setScaleCmd)) {
-	    setScale(scaleField.getText());
-	}
+        if (command.equals(setScaleCmd)) {
+            setScale(scaleField.getText());
+        }
     }
 
     protected void fireScaleChange(float scale) {
-	if (Debug.debugging("scaletextpanel")) {
-	    Debug.output("ScaleTextPanel setting scale to " + scale);
-	}
-	zoomDelegate.fireZoom(ZoomEvent.ABSOLUTE, scale);
+        if (Debug.debugging("scaletextpanel")) {
+            Debug.output("ScaleTextPanel setting scale to " + scale);
+        }
+        zoomDelegate.fireZoom(ZoomEvent.ABSOLUTE, scale);
     }
 
     //set the scale of the map.
     private void setScale(String strscale) {
-	float scale;
+        float scale;
 
-	int colon = strscale.indexOf(':');
+        int colon = strscale.indexOf(':');
 
-	if (colon > -1) {
-	    strscale = strscale.substring(colon + 1);
-	}
+        if (colon > -1) {
+            strscale = strscale.substring(colon + 1);
+        }
 
-	try {
-	    if (strscale.toLowerCase().endsWith("m")) {
-		strscale = strscale.substring(0, strscale.length()-1);
-		scale = df.parse(strscale).floatValue() * 1000000f;
-		if (scale < 1f)
-		    System.err.println("ScaleTextPanel.applyScale(): problem");
-		else
-		    fireScaleChange(scale);
-	    }
-	    else if (strscale.toLowerCase().endsWith("k")) {
-		strscale = strscale.substring(0, strscale.length()-1);
-		scale = df.parse(strscale).floatValue() * 1000f;
-		if (scale < 1f)
-		    System.err.println("ScaleTextPanel.applyScale(): problem");
-		else
-		    fireScaleChange(scale);
-	    }
-	    else if (strscale.trim().equals("")) {
-		return;	// ignore empty string
-	    }
-	    else {
-	        scale = df.parse(strscale).floatValue();
-		if (scale < 1f)
-		    System.err.println("ScaleTextPanel.applyScale(): problem");
-		else
-		    fireScaleChange(scale);
-	    }
-	} catch (java.text.ParseException e) {
-	    System.err.println("ScaleTextPanel.setScale(): invalid scale: " +
-			       strscale);
-	} catch (NumberFormatException e) {
-	    System.err.println("ScaleTextPanel.setScale(): invalid scale: " +
-			       strscale);
-	}
+        try {
+            if (strscale.toLowerCase().endsWith("m")) {
+                strscale = strscale.substring(0, strscale.length()-1);
+                scale = df.parse(strscale).floatValue() * 1000000f;
+                if (scale < 1f)
+                    System.err.println("ScaleTextPanel.applyScale(): problem");
+                else
+                    fireScaleChange(scale);
+            }
+            else if (strscale.toLowerCase().endsWith("k")) {
+                strscale = strscale.substring(0, strscale.length()-1);
+                scale = df.parse(strscale).floatValue() * 1000f;
+                if (scale < 1f)
+                    System.err.println("ScaleTextPanel.applyScale(): problem");
+                else
+                    fireScaleChange(scale);
+            }
+            else if (strscale.trim().equals("")) {
+                return; // ignore empty string
+            }
+            else {
+                scale = df.parse(strscale).floatValue();
+                if (scale < 1f)
+                    System.err.println("ScaleTextPanel.applyScale(): problem");
+                else
+                    fireScaleChange(scale);
+            }
+        } catch (java.text.ParseException e) {
+            System.err.println("ScaleTextPanel.setScale(): invalid scale: " +
+                               strscale);
+        } catch (NumberFormatException e) {
+            System.err.println("ScaleTextPanel.setScale(): invalid scale: " +
+                               strscale);
+        }
     }
 
     //------------------------------------------------------------
@@ -243,25 +243,25 @@ public class ScaleTextPanel extends OMToolComponent
      * @param e ProjectionEvent
      */
     public void projectionChanged(ProjectionEvent e) {
-	if (Debug.debugging("scaletextpanel")) {
-	    System.out.println("ScaleTextPanel.projectionChanged()");
-	}
-	Projection newProj = e.getProjection();
-	if (projection == null ||  (! projection.equals(newProj))) {
-	    setProjection((Projection) newProj.makeClone());
-	}
+        if (Debug.debugging("scaletextpanel")) {
+            System.out.println("ScaleTextPanel.projectionChanged()");
+        }
+        Projection newProj = e.getProjection();
+        if (projection == null ||  (! projection.equals(newProj))) {
+            setProjection((Projection) newProj.makeClone());
+        }
     }
     
     public void findAndInit(Object someObj) {
-	if (someObj instanceof MapBean) {	      
-	    setupListeners((MapBean)someObj);
-	}
+        if (someObj instanceof MapBean) {             
+            setupListeners((MapBean)someObj);
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof MapBean) {
-	    removeFromAllListeners((MapBean)someObj);
-	}
+        if (someObj instanceof MapBean) {
+            removeFromAllListeners((MapBean)someObj);
+        }
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/VHTransform.java,v $
 // $RCSfile: VHTransform.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/24 20:14:14 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,22 +26,22 @@ package com.bbn.openmap.util;
 /* Cathleen Lancaster - 6 Hutcheson */
 
 /**
- *	The VH coordinate system is used by ATT to compute distance used
- *	in determining phone call costs.<P>
+ *      The VH coordinate system is used by ATT to compute distance used
+ *      in determining phone call costs.<P>
  *
- *	VH coordinates can be used to compute distance simply, see distance().<P>
- *	
- *	This code is based on C code provided by the authors mentioned below,
- *	as well as Lisp code by Larry Denenberg of BBN.<P>
- *	
- *	I have ported this code to Java, unified the forward and inverse
- *	transformations and added some comments.  
- *	I've left basic code and comments mostly intact.<P>
- *	
- *	The url's to the original emails are:<P>
- *	
- *	http://x11.dejanews.com/getdoc.xp?AN=177302113&CONTEXT=895858362.931528704&hitnum=1<BR>
- *	http://x11.dejanews.com/getdoc.xp?AN=223540739&CONTEXT=895858362.931528704&hitnum=5
+ *      VH coordinates can be used to compute distance simply, see distance().<P>
+ *      
+ *      This code is based on C code provided by the authors mentioned below,
+ *      as well as Lisp code by Larry Denenberg of BBN.<P>
+ *      
+ *      I have ported this code to Java, unified the forward and inverse
+ *      transformations and added some comments.  
+ *      I've left basic code and comments mostly intact.<P>
+ *      
+ *      The url's to the original emails are:<P>
+ *      
+ *      http://x11.dejanews.com/getdoc.xp?AN=177302113&CONTEXT=895858362.931528704&hitnum=1<BR>
+ *      http://x11.dejanews.com/getdoc.xp?AN=223540739&CONTEXT=895858362.931528704&hitnum=5
  */
 public class VHTransform {
     /* Polynomial constants */
@@ -78,10 +78,10 @@ public class VHTransform {
     public final static double ROTS = Math.sin(rot);
     
     public static double radians (double degrees) {
-	return degrees*Math.PI/180.0; }
+        return degrees*Math.PI/180.0; }
     
     public static double degrees (double radians) {
-	return radians*180.0/Math.PI; }
+        return radians*180.0/Math.PI; }
     
     /* orthogonal translation values */
     public static final double TRANSV = 6363.235;
@@ -106,12 +106,12 @@ public class VHTransform {
     
     /** Return the distance in miles between 2 VH pairs. **/
     public static double distance(double v1, double h1, double v2, double h2) {
-	double dv = v2 - v1;
-	double dh = h2 - h1;
-	// Was
-// 	return Math.sqrt(dv*dv + dh*dh)/10.0; 
-	// Now, thanks to Andrew Canfield
-	return Math.sqrt((dv*dv + dh*dh)/10.0); 
+        double dv = v2 - v1;
+        double dh = h2 - h1;
+        // Was
+//      return Math.sqrt(dv*dv + dh*dh)/10.0; 
+        // Now, thanks to Andrew Canfield
+        return Math.sqrt((dv*dv + dh*dh)/10.0); 
     }
         
     private double resultV   = 0.0;
@@ -195,39 +195,39 @@ public class VHTransform {
     
     /** lat and lon are in degrees, positive north and east. */
     public void toVH(double lat, double lon) {
-	
-	lat = radians(lat);
-	lon = radians(lon);
-	
-	/* Translate east by 52 degrees */
-	double lon1 = lon + radians(52.0);
-	
-	/* Convert latitude to geocentric latitude using Horner's rule */
-	double latsq = lat*lat;
-	double lat1 = lat*(K1 + (K2 + (K3 + (K4 + K5*latsq)*latsq)*latsq)*latsq);
-	
-	/* x, y, and z are the spherical coordinates corresponding to lat, lon. */
-	double cos_lat1 = Math.cos(lat1);
-	double x = cos_lat1*Math.sin(-lon1);
-	double y = cos_lat1*Math.cos(-lon1);
-	double z = Math.sin(lat1);
-	/* e and w are the cosine of the angular distance (radians) between our 
-	   point and the east and west centers. */
-	double e = EX*x + EY*y + EZ*z;  
-	double w = WX*x + WY*y + WZ*z;
-	e = e > 1.0 ? 1.0 : e;
-	w = w > 1.0 ? 1.0 : w;
-	e = M_PI_2 - Math.atan(e/Math.sqrt(1 - e*e));
-	w = M_PI_2 - Math.atan(w/Math.sqrt(1 - w*w));
-	/* e and w are now in radians. */
-	double ht = (e*e - w*w + .16)/.8;
-	double vt = Math.sqrt(Math.abs(e*e - ht*ht));
-	vt = (PX*x + PY*y + PZ*z) < 0 ? -vt : vt;
-	/* rotate and translate to get final v and h. */
-	double v = TRANSV +  K9*ht - K10*vt;
-	double h = TRANSH + K10*ht +  K9*vt;
-	this.resultV = v;
-	this.resultH = h;
+        
+        lat = radians(lat);
+        lon = radians(lon);
+        
+        /* Translate east by 52 degrees */
+        double lon1 = lon + radians(52.0);
+        
+        /* Convert latitude to geocentric latitude using Horner's rule */
+        double latsq = lat*lat;
+        double lat1 = lat*(K1 + (K2 + (K3 + (K4 + K5*latsq)*latsq)*latsq)*latsq);
+        
+        /* x, y, and z are the spherical coordinates corresponding to lat, lon. */
+        double cos_lat1 = Math.cos(lat1);
+        double x = cos_lat1*Math.sin(-lon1);
+        double y = cos_lat1*Math.cos(-lon1);
+        double z = Math.sin(lat1);
+        /* e and w are the cosine of the angular distance (radians) between our 
+           point and the east and west centers. */
+        double e = EX*x + EY*y + EZ*z;  
+        double w = WX*x + WY*y + WZ*z;
+        e = e > 1.0 ? 1.0 : e;
+        w = w > 1.0 ? 1.0 : w;
+        e = M_PI_2 - Math.atan(e/Math.sqrt(1 - e*e));
+        w = M_PI_2 - Math.atan(w/Math.sqrt(1 - w*w));
+        /* e and w are now in radians. */
+        double ht = (e*e - w*w + .16)/.8;
+        double vt = Math.sqrt(Math.abs(e*e - ht*ht));
+        vt = (PX*x + PY*y + PZ*z) < 0 ? -vt : vt;
+        /* rotate and translate to get final v and h. */
+        double v = TRANSV +  K9*ht - K10*vt;
+        double h = TRANSH + K10*ht +  K9*vt;
+        this.resultV = v;
+        this.resultH = h;
     }
     
     /*
@@ -313,85 +313,85 @@ public class VHTransform {
      *      ellipsoidal earth latitude, and add 52 degrees to the longitude.
      */
     public void toLatLon (double v0, double h0) {
-	/* GX = ExWz - EzWx; GY = EyWz - EzWy */
-	final double GX =       0.216507961908834992;
-	final double GY =      -0.134633014879368199;
-	/* A = (ExWz-EzWx)^2 + (EyWz-EzWy)^2 + (ExWy-EyWx)^2 */
-	final double A =        0.151646645621077297;
-	/* Q = ExWy-EyWx; Q2 = Q*Q */
-	final double Q =       -0.294355056616412800;
-	final double Q2=       0.0866448993556515751;
-	final double EPSILON = .0000001;
-	
-	double v = (double) v0;
-	double h = (double) h0;
-	
-	double t1 = (v - TRANSV) / RADIUS;
-	double t2 = (h - TRANSH) / RADIUS;
-	double vhat = ROTC*t2 - ROTS*t1;
-	double hhat = ROTS*t2 + ROTC*t1;
-	double e = Math.cos(Math.sqrt(vhat*vhat + hhat*hhat));
-	double w = Math.cos(Math.sqrt(vhat*vhat + (hhat-0.4)*(hhat-0.4)));
-	double fx = EY*w - WY*e;
-	double fy = EX*w - WX*e;
-	double b = fx*GX + fy*GY;
-	double c = fx*fx + fy*fy - Q2;
-	double disc = b*b - A*c;               /* discriminant */
-	double x, y, z, delta;
-	if (Math.abs(disc) < EPSILON) {
-// 	if (disc==0.0) {                /* It's right on the E-W axis */
-	    z = b/A;
-	    x = (GX*z - fx)/Q;
-	    y = (fy - GY*z)/Q;
-	} else {
-	    delta = Math.sqrt(disc);
-	    z = (b + delta)/A;
-	    x = (GX*z - fx)/Q;
-	    y = (fy - GY*z)/Q;
-	    if (vhat * (PX*x + PY*y + PZ*z) < 0) {  /* wrong direction */
-		z = (b - delta)/A;
-		x = (GX*z - fx)/Q;
-	    y = (fy - GY*z)/Q;
-	    }
-	}
-	double lat = Math.asin(z);
-	
-	/*
-	 *      Use polynomial approximation for inverse mapping
-	 *      (sphere to spheroid):
-	 */
-	final double[] bi = {
-	    1.00567724920722457,
-	    -0.00344230425560210245,
-	    0.000713971534527667990,
-	    -0.0000777240053499279217,
-	    0.00000673180367053244284,
-	    -0.000000742595338885741395,
-	    0.0000000905058919926194134
+        /* GX = ExWz - EzWx; GY = EyWz - EzWy */
+        final double GX =       0.216507961908834992;
+        final double GY =      -0.134633014879368199;
+        /* A = (ExWz-EzWx)^2 + (EyWz-EzWy)^2 + (ExWy-EyWx)^2 */
+        final double A =        0.151646645621077297;
+        /* Q = ExWy-EyWx; Q2 = Q*Q */
+        final double Q =       -0.294355056616412800;
+        final double Q2=       0.0866448993556515751;
+        final double EPSILON = .0000001;
+        
+        double v = (double) v0;
+        double h = (double) h0;
+        
+        double t1 = (v - TRANSV) / RADIUS;
+        double t2 = (h - TRANSH) / RADIUS;
+        double vhat = ROTC*t2 - ROTS*t1;
+        double hhat = ROTS*t2 + ROTC*t1;
+        double e = Math.cos(Math.sqrt(vhat*vhat + hhat*hhat));
+        double w = Math.cos(Math.sqrt(vhat*vhat + (hhat-0.4)*(hhat-0.4)));
+        double fx = EY*w - WY*e;
+        double fy = EX*w - WX*e;
+        double b = fx*GX + fy*GY;
+        double c = fx*fx + fy*fy - Q2;
+        double disc = b*b - A*c;               /* discriminant */
+        double x, y, z, delta;
+        if (Math.abs(disc) < EPSILON) {
+//      if (disc==0.0) {                /* It's right on the E-W axis */
+            z = b/A;
+            x = (GX*z - fx)/Q;
+            y = (fy - GY*z)/Q;
+        } else {
+            delta = Math.sqrt(disc);
+            z = (b + delta)/A;
+            x = (GX*z - fx)/Q;
+            y = (fy - GY*z)/Q;
+            if (vhat * (PX*x + PY*y + PZ*z) < 0) {  /* wrong direction */
+                z = (b - delta)/A;
+                x = (GX*z - fx)/Q;
+            y = (fy - GY*z)/Q;
+            }
+        }
+        double lat = Math.asin(z);
+        
+        /*
+         *      Use polynomial approximation for inverse mapping
+         *      (sphere to spheroid):
+         */
+        final double[] bi = {
+            1.00567724920722457,
+            -0.00344230425560210245,
+            0.000713971534527667990,
+            -0.0000777240053499279217,
+            0.00000673180367053244284,
+            -0.000000742595338885741395,
+            0.0000000905058919926194134
         };
-	double lat2 = lat*lat;
-	/* KRA: Didn't seem to work at first, so i unrolled it.
-	   double earthlat =  0.0;
-	   for (int i=6; i>=0; i--) {
-	   earthlat = (earthlat + bi[i]) * (i > 0? lat2 : lat);
-	   }
-	*/
-	
-	double earthlat = lat*(bi[0] + lat2*(bi[1] + lat2*(bi[2] + lat2*(bi[3] + lat2*(bi[4] + lat2*(bi[5] + lat2*(bi[6])))))));
-	earthlat = degrees(earthlat);
+        double lat2 = lat*lat;
+        /* KRA: Didn't seem to work at first, so i unrolled it.
+           double earthlat =  0.0;
+           for (int i=6; i>=0; i--) {
+           earthlat = (earthlat + bi[i]) * (i > 0? lat2 : lat);
+           }
+        */
+        
+        double earthlat = lat*(bi[0] + lat2*(bi[1] + lat2*(bi[2] + lat2*(bi[3] + lat2*(bi[4] + lat2*(bi[5] + lat2*(bi[6])))))));
+        earthlat = degrees(earthlat);
 
-	/*
-	 *      Adjust longitude by 52 degrees:
-	 */
-	double lon = degrees(Math.atan2(x, y));
-	double earthlon = lon + 52.0;
-	
-	this.resultLat = earthlat;
-	this.resultLon = - earthlon;
-	// Col. G. L. Sicherman.
+        /*
+         *      Adjust longitude by 52 degrees:
+         */
+        double lon = degrees(Math.atan2(x, y));
+        double earthlon = lon + 52.0;
+        
+        this.resultLat = earthlat;
+        this.resultLon = - earthlon;
+        // Col. G. L. Sicherman.
     }
     
     public void toLatLon (int v0, int h0) {
-	toLatLon((double)v0, (double)h0);
+        toLatLon((double)v0, (double)h0);
     }
 }

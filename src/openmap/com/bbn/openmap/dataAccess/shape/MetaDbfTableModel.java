@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/MetaDbfTableModel.java,v $
 // $RCSfile: MetaDbfTableModel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -62,24 +62,24 @@ public class MetaDbfTableModel extends DbfTableModel
      * @param source the DbfTableModel to be modified.
      */
     public MetaDbfTableModel(DbfTableModel source) {
-	super(4); // these are the number of columns for Metadata
-	init();
-	setWritable(true);
-	this.source = source;
+        super(4); // these are the number of columns for Metadata
+        init();
+        setWritable(true);
+        this.source = source;
 
-	int numColumnCount = source.getColumnCount();
+        int numColumnCount = source.getColumnCount();
 
-	originalColumnNumber = numColumnCount;
+        originalColumnNumber = numColumnCount;
 
-	for (int i = 0; i < numColumnCount; i++) {
-	    ArrayList record = new ArrayList();
-	    record.add(source.getColumnName(i));
-	    record.add(new Byte(source.getType(i)));
-	    record.add(new Integer(source.getLength(i)));
-	    record.add(new Integer(source.getDecimalCount(i)));
-	    addRecord(record);
-	    if (DEBUG) Debug.output("Adding record: " + record);
-	}
+        for (int i = 0; i < numColumnCount; i++) {
+            ArrayList record = new ArrayList();
+            record.add(source.getColumnName(i));
+            record.add(new Byte(source.getType(i)));
+            record.add(new Integer(source.getLength(i)));
+            record.add(new Integer(source.getDecimalCount(i)));
+            addRecord(record);
+            if (DEBUG) Debug.output("Adding record: " + record);
+        }
     }
 
     /**
@@ -87,25 +87,25 @@ public class MetaDbfTableModel extends DbfTableModel
      * the source header rows are listed.
      */
     protected void init() {
-	_names[META_RECORDNAME_COLUMN_NUMBER] = "Column Name";
-	_names[META_TYPE_COLUMN_NUMBER] = "Type of Data";
-	_names[META_LENGTH_COLUMN_NUMBER] = "Length of Field";
-	_names[META_PLACES_COLUMN_NUMBER] = "# of Decimal Places";
+        _names[META_RECORDNAME_COLUMN_NUMBER] = "Column Name";
+        _names[META_TYPE_COLUMN_NUMBER] = "Type of Data";
+        _names[META_LENGTH_COLUMN_NUMBER] = "Length of Field";
+        _names[META_PLACES_COLUMN_NUMBER] = "# of Decimal Places";
 
-	for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
 
-	    _lengths[i] = (byte)12;
-	    _decimalCounts[i] = (byte)0;
-	    
-	    byte type;
-	    if (i < 2) {
-		type = DBF_TYPE_CHARACTER.byteValue();
-	    } else {
-		type = DBF_TYPE_NUMERIC.byteValue();
-	    }
-	    
-	    _types[i] = type;
-	}
+            _lengths[i] = (byte)12;
+            _decimalCounts[i] = (byte)0;
+            
+            byte type;
+            if (i < 2) {
+                type = DBF_TYPE_CHARACTER.byteValue();
+            } else {
+                type = DBF_TYPE_NUMERIC.byteValue();
+            }
+            
+            _types[i] = type;
+        }
     }
 
     /**
@@ -114,19 +114,19 @@ public class MetaDbfTableModel extends DbfTableModel
      * edited.  
      */
     public ArrayList remove(int columnIndex) {
-	ArrayList ret = super.remove(columnIndex);
-	if (columnIndex < originalColumnNumber) {
-	    originalColumnNumber--;
-	}
-	return ret;
+        ArrayList ret = super.remove(columnIndex);
+        if (columnIndex < originalColumnNumber) {
+            originalColumnNumber--;
+        }
+        return ret;
     }
 
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-	if (columnIndex == 0 && rowIndex < originalColumnNumber) {
-	    return false;
-	} else {
-	    return writable;
-	}
+        if (columnIndex == 0 && rowIndex < originalColumnNumber) {
+            return false;
+        } else {
+            return writable;
+        }
     }
 
     /**
@@ -135,31 +135,31 @@ public class MetaDbfTableModel extends DbfTableModel
      */
     public void setValueAt(Object object, int row, int column) {
 
-	if (column == META_TYPE_COLUMN_NUMBER) {
-	    if (DBF_CHARACTER.equals(object) || 
-		DBF_TYPE_CHARACTER.equals(object)) {
-		object = DBF_TYPE_CHARACTER;
-	    } else if (DBF_DATE.equals(object) || 
-		       DBF_TYPE_DATE.equals(object)) {
-		object = DBF_TYPE_DATE;
-	    } else if (DBF_NUMERIC.equals(object) ||
-		       DBF_TYPE_NUMERIC.equals(object)) {
-		object = DBF_TYPE_NUMERIC;
-	    } else if (DBF_LOGICAL.equals(object) ||
-		       DBF_TYPE_LOGICAL.equals(object)) {
-		object = DBF_TYPE_LOGICAL;
-	    } else if (DBF_MEMO.equals(object) ||
-		       DBF_TYPE_MEMO.equals(object)) {
-		object = DBF_TYPE_MEMO;
-	    } else {
-		Debug.error("Rejected " + object + " as input. Use: \n    Character, Number, Date, Boolean, or Memo");
-		return;
-	    }
+        if (column == META_TYPE_COLUMN_NUMBER) {
+            if (DBF_CHARACTER.equals(object) || 
+                DBF_TYPE_CHARACTER.equals(object)) {
+                object = DBF_TYPE_CHARACTER;
+            } else if (DBF_DATE.equals(object) || 
+                       DBF_TYPE_DATE.equals(object)) {
+                object = DBF_TYPE_DATE;
+            } else if (DBF_NUMERIC.equals(object) ||
+                       DBF_TYPE_NUMERIC.equals(object)) {
+                object = DBF_TYPE_NUMERIC;
+            } else if (DBF_LOGICAL.equals(object) ||
+                       DBF_TYPE_LOGICAL.equals(object)) {
+                object = DBF_TYPE_LOGICAL;
+            } else if (DBF_MEMO.equals(object) ||
+                       DBF_TYPE_MEMO.equals(object)) {
+                object = DBF_TYPE_MEMO;
+            } else {
+                Debug.error("Rejected " + object + " as input. Use: \n    Character, Number, Date, Boolean, or Memo");
+                return;
+            }
 
-	    if (DEBUG) Debug.output("New value set to " + object);
-	}
+            if (DEBUG) Debug.output("New value set to " + object);
+        }
 
-	super.setValueAt(object, row, column);
+        super.setValueAt(object, row, column);
     }
 
     /**
@@ -167,23 +167,23 @@ public class MetaDbfTableModel extends DbfTableModel
      * @return Object A value for a specific column and row index
      */
     public Object getValueAt(int row, int column) {
-	Object cell = super.getValueAt(row, column);
+        Object cell = super.getValueAt(row, column);
 
-	if (column == META_TYPE_COLUMN_NUMBER) {
-	    if (DBF_TYPE_CHARACTER.equals(cell)) {
-		cell = DBF_CHARACTER;
-	    } else if (DBF_TYPE_DATE.equals(cell)) {
-		cell = DBF_DATE;
-	    } else if (DBF_TYPE_NUMERIC.equals(cell)) {
-		return DBF_NUMERIC;
-	    } else if (DBF_TYPE_LOGICAL.equals(cell)) {
-		cell = DBF_LOGICAL;
-	    } else if (DBF_TYPE_MEMO.equals(cell)) {
-		cell = DBF_MEMO;
-	    }
-	    // Else just keep it what it is.
-	}
-	return cell;
+        if (column == META_TYPE_COLUMN_NUMBER) {
+            if (DBF_TYPE_CHARACTER.equals(cell)) {
+                cell = DBF_CHARACTER;
+            } else if (DBF_TYPE_DATE.equals(cell)) {
+                cell = DBF_DATE;
+            } else if (DBF_TYPE_NUMERIC.equals(cell)) {
+                return DBF_NUMERIC;
+            } else if (DBF_TYPE_LOGICAL.equals(cell)) {
+                cell = DBF_LOGICAL;
+            } else if (DBF_TYPE_MEMO.equals(cell)) {
+                cell = DBF_MEMO;
+            }
+            // Else just keep it what it is.
+        }
+        return cell;
     }
 
     /**
@@ -192,82 +192,82 @@ public class MetaDbfTableModel extends DbfTableModel
      * be edited.
      */
     public void addBlankRecord() {
-	ArrayList record = new ArrayList();
-	record.add("New Column");
-	record.add(DBF_TYPE_CHARACTER);
-	record.add(new Integer(12));
-	record.add(new Integer(0));
-	addRecord(record);
-	if (DEBUG) Debug.output("Adding record: " + record);
+        ArrayList record = new ArrayList();
+        record.add("New Column");
+        record.add(DBF_TYPE_CHARACTER);
+        record.add(new Integer(12));
+        record.add(new Integer(0));
+        addRecord(record);
+        if (DEBUG) Debug.output("Adding record: " + record);
     }
 
     /**
      * Decide what to do when the window closes.
      */
     public void exitWindowClosed() {
-	if (source != null && source.dirty) {
-	    int check = JOptionPane.showConfirmDialog(null, "Do you want to save your changes?", "Confirm Close", JOptionPane.YES_NO_OPTION);
-	    if (check == JOptionPane.YES_OPTION) {
-		fireTableStructureChanged();
-	    } else {
-		source.cleanupChanges();
-	    }
-	}
+        if (source != null && source.dirty) {
+            int check = JOptionPane.showConfirmDialog(null, "Do you want to save your changes?", "Confirm Close", JOptionPane.YES_NO_OPTION);
+            if (check == JOptionPane.YES_OPTION) {
+                fireTableStructureChanged();
+            } else {
+                source.cleanupChanges();
+            }
+        }
 
-	super.exitWindowClosed();
+        super.exitWindowClosed();
     }
 
     public void showGUI(String filename) {
-	if (frame == null) {
-	    frame = new JFrame("Editing Attribute File Structure");
+        if (frame == null) {
+            frame = new JFrame("Editing Attribute File Structure");
 
-	    frame.getContentPane().add(getGUI(filename, MODIFY_ROW_MASK | DONE_MASK), BorderLayout.CENTER);
-	
-	    JButton saveButton = new JButton("Save Changes");
-	    saveButton.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent ae) {
-			int check = JOptionPane.showConfirmDialog(null, "Are you sure you want to modify the table format?", "Confirm Save", JOptionPane.OK_CANCEL_OPTION);
+            frame.getContentPane().add(getGUI(filename, MODIFY_ROW_MASK | DONE_MASK), BorderLayout.CENTER);
+        
+            JButton saveButton = new JButton("Save Changes");
+            saveButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        int check = JOptionPane.showConfirmDialog(null, "Are you sure you want to modify the table format?", "Confirm Save", JOptionPane.OK_CANCEL_OPTION);
 
-			if (check == JOptionPane.YES_OPTION) {
-			    fireTableStructureChanged();
-			}
-		    }
-		});
+                        if (check == JOptionPane.YES_OPTION) {
+                            fireTableStructureChanged();
+                        }
+                    }
+                });
 
-	    controlPanel.add(saveButton);
-	    frame.validate();
+            controlPanel.add(saveButton);
+            frame.validate();
 
-  	    frame.setSize(500, 300);
-	    frame.addWindowListener(new WindowAdapter() {
-		    public void windowClosing(WindowEvent e) {
-			// need a shutdown event to notify other gui beans and
-			// then exit.
-			exitWindowClosed();
-		    }
-		});
-	}
-	frame.setVisible(true);
+            frame.setSize(500, 300);
+            frame.addWindowListener(new WindowAdapter() {
+                    public void windowClosing(WindowEvent e) {
+                        // need a shutdown event to notify other gui beans and
+                        // then exit.
+                        exitWindowClosed();
+                    }
+                });
+        }
+        frame.setVisible(true);
     }
 
     public static void main(String[] args) {
-	Debug.init();
-	if (args.length < 1) {
-	    System.exit(0);
-	}
+        Debug.init();
+        if (args.length < 1) {
+            System.exit(0);
+        }
 
-	try {
+        try {
 
-	    URL dbf = new URL(args[0]);
-	    DbfInputStream dis = new DbfInputStream(dbf.openStream());
-	    DbfTableModel dtm = new DbfTableModel(dis);
+            URL dbf = new URL(args[0]);
+            DbfInputStream dis = new DbfInputStream(dbf.openStream());
+            DbfTableModel dtm = new DbfTableModel(dis);
 
-	    MetaDbfTableModel mdtm = new MetaDbfTableModel(dtm);
-	    mdtm.showGUI(args[0]);
-	    mdtm.exitOnClose = true;
+            MetaDbfTableModel mdtm = new MetaDbfTableModel(dtm);
+            mdtm.showGUI(args[0]);
+            mdtm.exitOnClose = true;
 
-	} catch (Exception e) {
-	    Debug.error(e.getMessage());
-	    e.printStackTrace();
-	}
+        } catch (Exception e) {
+            Debug.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

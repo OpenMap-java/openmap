@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/TextUndefinedState.java,v $
 // $RCSfile: TextUndefinedState.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:50:27 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,26 +31,26 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 public class TextUndefinedState extends GraphicUndefinedState {
 
     public TextUndefinedState(EditableOMText eomc) {
-	super(eomc);
+        super(eomc);
     }
 
     public boolean mousePressed(MouseEvent e) { 
-	
-	GrabPoint gb = graphic.getGrabPoint(EditableOMText.CENTER_POINT_INDEX);
-	gb.set(e.getX(), e.getY());
-	graphic.setMovingPoint(gb);
+        
+        GrabPoint gb = graphic.getGrabPoint(EditableOMText.CENTER_POINT_INDEX);
+        gb.set(e.getX(), e.getY());
+        graphic.setMovingPoint(gb);
 
-	if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
- 	    graphic.getGrabPoint(EditableOMText.OFFSET_POINT_INDEX).set(e.getX(), e.getY());
-	    graphic.getStateMachine().setOffsetNeeded(true);
-	}
+        if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
+            graphic.getGrabPoint(EditableOMText.OFFSET_POINT_INDEX).set(e.getX(), e.getY());
+            graphic.getStateMachine().setOffsetNeeded(true);
+        }
 
- 	graphic.getStateMachine().setEdit();
-	return getMapMouseListenerResponse();
+        graphic.getStateMachine().setEdit();
+        return getMapMouseListenerResponse();
     }
 
     public boolean mouseMoved(MouseEvent e) {
-	graphic.fireEvent(EOMGCursors.EDIT, "Click to define the text location.");
-	return false;
+        graphic.fireEvent(EOMGCursors.EDIT, "Click to define the text location.");
+        return false;
     }
 }

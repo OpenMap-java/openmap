@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIRecord.java,v $
 // $RCSfile: ESRIRecord.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import com.bbn.openmap.omGraphics.*;
  *
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/26 18:18:11 $
  */
 public abstract class ESRIRecord extends ShapeUtils {
 
@@ -49,8 +49,8 @@ public abstract class ESRIRecord extends ShapeUtils {
      * a record to be written to a shape file.
      */
     public ESRIRecord() {
-	recordNumber = 0;
-	contentLength = 0;
+        recordNumber = 0;
+        contentLength = 0;
     }
 
     /**
@@ -61,8 +61,8 @@ public abstract class ESRIRecord extends ShapeUtils {
      * @param off the offset
      */
     public ESRIRecord(byte b[], int off) {
-	recordNumber = readBEInt(b, off);
-	contentLength = readBEInt(b, off + 4);
+        recordNumber = readBEInt(b, off);
+        contentLength = readBEInt(b, off + 4);
     }
 
     /**
@@ -76,8 +76,8 @@ public abstract class ESRIRecord extends ShapeUtils {
      * the graphics.
      */
     public abstract void addOMGraphics(
-	OMGraphicList list,
-	DrawingAttributes drawingAttributes);
+        OMGraphicList list,
+        DrawingAttributes drawingAttributes);
 
     /**
      * Generates OMGeometry and adds them to the given list.  The list
@@ -116,7 +116,7 @@ public abstract class ESRIRecord extends ShapeUtils {
      * @return number of bytes equal to the size of this record
      */
     public int getBinaryStoreSize() {
-	return getRecordLength() + 8; // Costant for record headers
+        return getRecordLength() + 8; // Costant for record headers
     }
 
     /**
@@ -127,17 +127,17 @@ public abstract class ESRIRecord extends ShapeUtils {
      * @return the number of bytes written
      */
     public int write(byte[] b, int off) {
-	int nBytes = writeBEInt(b, off, recordNumber);
-	nBytes += writeBEInt(b, off + nBytes, (getRecordLength() / 2));
-	return nBytes;
+        int nBytes = writeBEInt(b, off, recordNumber);
+        nBytes += writeBEInt(b, off + nBytes, (getRecordLength() / 2));
+        return nBytes;
     }
 
 //     public ESRIArcRecord getArcShape() {
-// 	if (getShapeType() == SHAPE_TYPE_ARC) {
-// 	    return (ESRIArcRecord) this;
-// 	} else {
-// 	    return null;
-// 	}
+//      if (getShapeType() == SHAPE_TYPE_ARC) {
+//          return (ESRIArcRecord) this;
+//      } else {
+//          return null;
+//      }
 //     }
 
     /**
@@ -146,7 +146,7 @@ public abstract class ESRIRecord extends ShapeUtils {
      * @return the ordinal of this record in the file
      */
     public int getRecordNumber() {
-	return recordNumber;
+        return recordNumber;
     }
 
     /**
@@ -156,6 +156,6 @@ public abstract class ESRIRecord extends ShapeUtils {
      * @return the number of 16 bit words that this record takes up
      */
     public int getContentLength() {
-	return contentLength;
+        return contentLength;
     }
 }

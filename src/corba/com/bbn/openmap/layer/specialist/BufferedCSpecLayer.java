@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/BufferedCSpecLayer.java,v $
 // $RCSfile: BufferedCSpecLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 02:00:34 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,7 +77,7 @@ import com.bbn.openmap.util.SwingWorker;
 public class BufferedCSpecLayer extends CSpecLayer {
 
     private final static String[] debugTokens = {
-	"debug.cspec"
+        "debug.cspec"
     };
 
     // Cached graphics
@@ -88,7 +88,7 @@ public class BufferedCSpecLayer extends CSpecLayer {
      * layer to itself.
      * */
     public BufferedCSpecLayer() {
-	super();
+        super();
     }
 
 
@@ -100,113 +100,113 @@ public class BufferedCSpecLayer extends CSpecLayer {
      *
      */
     protected UGraphic[] getSpecGraphics(Projection p) {
-	CProjection cproj;
-	LLPoint ll1, ll2;
-	StringHolder dynamicArgsHolder;
-	Server spec = getSpecialist();
-	if (Debug.debugging("cspec")) {
-	    System.out.println(getName() + "|BufferedCSpecLayer.getSpecGraphics()");
-	}
+        CProjection cproj;
+        LLPoint ll1, ll2;
+        StringHolder dynamicArgsHolder;
+        Server spec = getSpecialist();
+        if (Debug.debugging("cspec")) {
+            System.out.println(getName() + "|BufferedCSpecLayer.getSpecGraphics()");
+        }
 
-	// If we have graphics, return them
-	if (graphics != null) {
-	    System.out.println("Returning cached graphics");
-	    return graphics;
-	}
+        // If we have graphics, return them
+        if (graphics != null) {
+            System.out.println("Returning cached graphics");
+            return graphics;
+        }
 
-	cproj = new CProjection ((short)(p.getProjectionType()),
-				 new LLPoint(p.getCenter().getLatitude(),
-					     p.getCenter().getLongitude()),
-				 (short)p.getHeight(),
-				 (short)p.getWidth(),
-				 (int)p.getScale());
+        cproj = new CProjection ((short)(p.getProjectionType()),
+                                 new LLPoint(p.getCenter().getLatitude(),
+                                             p.getCenter().getLongitude()),
+                                 (short)p.getHeight(),
+                                 (short)p.getWidth(),
+                                 (int)p.getScale());
 
-	// lat-lon "box", (depends on the projection)
-	LatLonPoint ul = p.getUpperLeft();
-	LatLonPoint lr = p.getLowerRight();
+        // lat-lon "box", (depends on the projection)
+        LatLonPoint ul = p.getUpperLeft();
+        LatLonPoint lr = p.getLowerRight();
 
-// 	ll1 = new LLPoint(ul.getLatitude(), ul.getLongitude());
-// 	ll2 = new LLPoint(lr.getLatitude(), lr.getLongitude());
-	// Adjust lat/lon for total global area
-	ll1 = new LLPoint(90.0f,-180.0f);
-	ll2 = new LLPoint(-90.0f,180.0f);
-	// check for cancellation
-	if (isCancelled()) {
-	    dirtybits |= PREMATURE_FINISH;
-	    if (Debug.debugging("cspec"))
-		System.out.println(getName() + "|BufferedCSpecLayer.getSpecGraphics(): aborted.");
-	    return null;
-	}
-	// check for null specialist
-	if (spec == null) {
-	    System.err.println(getName() + "|BufferedCSpecLayer.getSpecGraphics(): null specialist!");
-	    return null;
-	}
-	try {
-	    // Keep the gestures up-to-date
-	    mapGesture.setProjection(p);
+//      ll1 = new LLPoint(ul.getLatitude(), ul.getLongitude());
+//      ll2 = new LLPoint(lr.getLatitude(), lr.getLongitude());
+        // Adjust lat/lon for total global area
+        ll1 = new LLPoint(90.0f,-180.0f);
+        ll2 = new LLPoint(-90.0f,180.0f);
+        // check for cancellation
+        if (isCancelled()) {
+            dirtybits |= PREMATURE_FINISH;
+            if (Debug.debugging("cspec"))
+                System.out.println(getName() + "|BufferedCSpecLayer.getSpecGraphics(): aborted.");
+            return null;
+        }
+        // check for null specialist
+        if (spec == null) {
+            System.err.println(getName() + "|BufferedCSpecLayer.getSpecGraphics(): null specialist!");
+            return null;
+        }
+        try {
+            // Keep the gestures up-to-date
+            mapGesture.setProjection(p);
 
-	    // Static Args can't go out null....
-	    String staticArguments = getStaticArgs();
-	    if (staticArguments == null) {
-		staticArguments = "";
-		setStaticArgs(staticArguments);
-	    }
+            // Static Args can't go out null....
+            String staticArguments = getStaticArgs();
+            if (staticArguments == null) {
+                staticArguments = "";
+                setStaticArgs(staticArguments);
+            }
 
-	    // neither can dynamic args
-	    dynamicArgsHolder = new StringHolder(getArgs());
-	    if (dynamicArgsHolder.value == null) {
-		dynamicArgsHolder.value = "";
-	    }
+            // neither can dynamic args
+            dynamicArgsHolder = new StringHolder(getArgs());
+            if (dynamicArgsHolder.value == null) {
+                dynamicArgsHolder.value = "";
+            }
 
-	    // call getRectangle();
-	    if (Debug.debugging("cspec")) {
-		    System.out.println(getName() +
-			"|BufferedCSpecLayer.getSpecGraphics():" +
-			" calling getRectangle with projection: " + p +
-			" ul=" + ul + " lr=" + lr +
-			" staticArgs=\"" + staticArguments + "\"" +
-			" dynamicArgs=\"" + dynamicArgsHolder.value + "\"" +
-			" clientID=" + clientID); 
-	    }
-	    long start = System.currentTimeMillis();
-	    graphics = spec.getRectangle(cproj,
-					 ll1, ll2,
-					 staticArguments,
-					 dynamicArgsHolder,
-					 selectDist,
-					 wantAreaEvents,
-					 notifyOnChange,
-					 clientID);
-	    long stop = System.currentTimeMillis();
+            // call getRectangle();
+            if (Debug.debugging("cspec")) {
+                    System.out.println(getName() +
+                        "|BufferedCSpecLayer.getSpecGraphics():" +
+                        " calling getRectangle with projection: " + p +
+                        " ul=" + ul + " lr=" + lr +
+                        " staticArgs=\"" + staticArguments + "\"" +
+                        " dynamicArgs=\"" + dynamicArgsHolder.value + "\"" +
+                        " clientID=" + clientID); 
+            }
+            long start = System.currentTimeMillis();
+            graphics = spec.getRectangle(cproj,
+                                         ll1, ll2,
+                                         staticArguments,
+                                         dynamicArgsHolder,
+                                         selectDist,
+                                         wantAreaEvents,
+                                         notifyOnChange,
+                                         clientID);
+            long stop = System.currentTimeMillis();
 
-	    if (Debug.debugging("cspec")) {
-		System.out.println(getName()+"|BufferedCSpecLayer.getSpecGraphics(): got " +
-				   graphics.length + " graphics in " + ((stop-start)/1000d) +
-				   " seconds.");
-	    }
-	} catch (org.omg.CORBA.SystemException e) {
-	    dirtybits |= EXCEPTION;
-	    // don't freak out if we were only interrupted...
-	    if (e.toString().indexOf("InterruptedIOException") != -1) {
-		System.err.println(getName()+"|BufferedCSpecLayer.getSpecGraphics(): " +
-			"getRectangle() call interrupted!");
-	    } else {
-		System.err.println(getName()+"|BufferedCSpecLayer.getSpecGraphics(): " +
-				   "Caught CORBA exception: " + e);
-		System.err.println(getName()+"|BufferedCSpecLayer.getSpecGraphics(): " +
-				   "Exception class: " + e.getClass().getName());
-		e.printStackTrace();
-	    }
+            if (Debug.debugging("cspec")) {
+                System.out.println(getName()+"|BufferedCSpecLayer.getSpecGraphics(): got " +
+                                   graphics.length + " graphics in " + ((stop-start)/1000d) +
+                                   " seconds.");
+            }
+        } catch (org.omg.CORBA.SystemException e) {
+            dirtybits |= EXCEPTION;
+            // don't freak out if we were only interrupted...
+            if (e.toString().indexOf("InterruptedIOException") != -1) {
+                System.err.println(getName()+"|BufferedCSpecLayer.getSpecGraphics(): " +
+                        "getRectangle() call interrupted!");
+            } else {
+                System.err.println(getName()+"|BufferedCSpecLayer.getSpecGraphics(): " +
+                                   "Caught CORBA exception: " + e);
+                System.err.println(getName()+"|BufferedCSpecLayer.getSpecGraphics(): " +
+                                   "Exception class: " + e.getClass().getName());
+                e.printStackTrace();
+            }
 
-	    // dontcha just love CORBA? reinit later
-	    setSpecialist(null);
-	    if (showDialogs) {
-		postCORBAErrorMsg("CORBA Exception while getting graphics from\n" +
-				  getName() + " specialist:\n" + e.getClass().getName());
-	    }
-	}
-	return graphics;
+            // dontcha just love CORBA? reinit later
+            setSpecialist(null);
+            if (showDialogs) {
+                postCORBAErrorMsg("CORBA Exception while getting graphics from\n" +
+                                  getName() + " specialist:\n" + e.getClass().getName());
+            }
+        }
+        return graphics;
     }
 
 

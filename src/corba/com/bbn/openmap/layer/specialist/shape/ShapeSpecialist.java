@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/shape/ShapeSpecialist.java,v $
 // $RCSfile: ShapeSpecialist.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -83,7 +83,7 @@ public class ShapeSpecialist extends Specialist {
 
     final private static SColor nullColor = new SColor((short)0, (short)0, (short)0);
     final private static EStipple nullStipple = new EStipple(null, (short)0, 
-							     (short)0, new byte[0]);
+                                                             (short)0, new byte[0]);
     final private static EComp nullComp = new EComp(null, "");
     final private static XYPoint nullP1 = new XYPoint((short)0, (short)0);
     final private static XYPoint[] nullPA = new XYPoint[0];
@@ -92,7 +92,7 @@ public class ShapeSpecialist extends Specialist {
     /** default constructor is called when we're loading the class
         directly into OpenMap. Not used.*/
     public ShapeSpecialist() {
-	super("ShapeSpecialist", (short)2, false);
+        super("ShapeSpecialist", (short)2, false);
     }
 
     /**
@@ -102,8 +102,8 @@ public class ShapeSpecialist extends Specialist {
      * @param spatialIndexFile the created index file (.ssx) for this shp file.
      */
     public ShapeSpecialist(String shapeFile, String spatialIndexFile) {
-	super("ShapeSpecialist", (short)2, false);
-	init(shapeFile, spatialIndexFile);
+        super("ShapeSpecialist", (short)2, false);
+        init(shapeFile, spatialIndexFile);
     }
     
     /**
@@ -112,7 +112,7 @@ public class ShapeSpecialist extends Specialist {
      * @param spatialIndexFile the created index file (.ssx) for this shp file.
      */
     public void init(String shapeFile, String spatialIndexFile) {
-	spatialIndex = locateAndSetShapeData(shapeFile, spatialIndexFile);
+        spatialIndex = locateAndSetShapeData(shapeFile, spatialIndexFile);
     }
   
     /**
@@ -122,240 +122,240 @@ public class ShapeSpecialist extends Specialist {
      * @return OMGraphicList
      */
     protected Vector computeGraphics(com.bbn.openmap.CSpecialist.LLPoint ll1,
-				     com.bbn.openmap.CSpecialist.LLPoint ll2) {
+                                     com.bbn.openmap.CSpecialist.LLPoint ll2) {
 
-	if (spatialIndex == null) return new Vector();
+        if (spatialIndex == null) return new Vector();
 
-	Vector list = null;
+        Vector list = null;
 
-	// check for dateline anomaly on the screen.  we check for ll1.lon >=
-	// ll2.lon, but we need to be careful of the check for equality because
-	// of floating point arguments...
-	if ((ll1.lon > ll2.lon) ||
-	    MoreMath.approximately_equal(ll1.lon, ll2.lon, .001f)) {
+        // check for dateline anomaly on the screen.  we check for ll1.lon >=
+        // ll2.lon, but we need to be careful of the check for equality because
+        // of floating point arguments...
+        if ((ll1.lon > ll2.lon) ||
+            MoreMath.approximately_equal(ll1.lon, ll2.lon, .001f)) {
 
-	    if (Debug.debugging("shape")) {
-		Debug.output("Dateline is on screen");
-	    }
+            if (Debug.debugging("shape")) {
+                Debug.output("Dateline is on screen");
+            }
 
-	    double ymin = (double) Math.min(ll1.lat, ll2.lat);
-	    double ymax = (double) Math.max(ll1.lat, ll2.lat);
+            double ymin = (double) Math.min(ll1.lat, ll2.lat);
+            double ymax = (double) Math.max(ll1.lat, ll2.lat);
 
-	    try {
-		ESRIRecord records1[] = spatialIndex.locateRecords(
-		    ll1.lon, ymin, 180.0d, ymax);
-		ESRIRecord records2[] = spatialIndex.locateRecords(
-		    -180.0d, ymin, ll2.lon, ymax);
-		int nRecords1 = records1.length;
-		int nRecords2 = records2.length;
-		list = new Vector(nRecords1+nRecords2);
-		for (int i = 0; i < nRecords1; i++) {
-		    ((ESRISpecialistRecord)records1[i]).writeGraphics(list, lineColor, fillColor);
-		}
-		for (int i = 0; i < nRecords2; i++) {
-		    ((ESRISpecialistRecord)records2[i]).writeGraphics(list, lineColor, fillColor);
-		}
-	    } catch (java.io.IOException ex) {
-		ex.printStackTrace();
-	    } catch (com.bbn.openmap.io.FormatException fe) {
-		fe.printStackTrace();
-	    }
+            try {
+                ESRIRecord records1[] = spatialIndex.locateRecords(
+                    ll1.lon, ymin, 180.0d, ymax);
+                ESRIRecord records2[] = spatialIndex.locateRecords(
+                    -180.0d, ymin, ll2.lon, ymax);
+                int nRecords1 = records1.length;
+                int nRecords2 = records2.length;
+                list = new Vector(nRecords1+nRecords2);
+                for (int i = 0; i < nRecords1; i++) {
+                    ((ESRISpecialistRecord)records1[i]).writeGraphics(list, lineColor, fillColor);
+                }
+                for (int i = 0; i < nRecords2; i++) {
+                    ((ESRISpecialistRecord)records2[i]).writeGraphics(list, lineColor, fillColor);
+                }
+            } catch (java.io.IOException ex) {
+                ex.printStackTrace();
+            } catch (com.bbn.openmap.io.FormatException fe) {
+                fe.printStackTrace();
+            }
 
-	} else {
+        } else {
 
-	    double xmin = (double) Math.min(ll1.lon, ll2.lon);
-	    double xmax = (double) Math.max(ll1.lon, ll2.lon);
-	    double ymin = (double) Math.min(ll1.lat, ll2.lat);
-	    double ymax = (double) Math.max(ll1.lat, ll2.lat);
+            double xmin = (double) Math.min(ll1.lon, ll2.lon);
+            double xmax = (double) Math.max(ll1.lon, ll2.lon);
+            double ymin = (double) Math.min(ll1.lat, ll2.lat);
+            double ymax = (double) Math.max(ll1.lat, ll2.lat);
 
-	    try {
-		ESRIRecord records[] = spatialIndex.locateRecords(
-		    xmin, ymin, xmax, ymax);
-		int nRecords = records.length;
-		list = new Vector(nRecords);
-		for (int i = 0; i < nRecords; i++) {
-		    ((ESRISpecialistRecord)records[i]).writeGraphics(list, lineColor, fillColor);
-		}
-	    } catch (java.io.IOException ex) {
-		ex.printStackTrace();
-	    } catch (com.bbn.openmap.io.FormatException fe) {
-		fe.printStackTrace();
-	    }
-	}
+            try {
+                ESRIRecord records[] = spatialIndex.locateRecords(
+                    xmin, ymin, xmax, ymax);
+                int nRecords = records.length;
+                list = new Vector(nRecords);
+                for (int i = 0; i < nRecords; i++) {
+                    ((ESRISpecialistRecord)records[i]).writeGraphics(list, lineColor, fillColor);
+                }
+            } catch (java.io.IOException ex) {
+                ex.printStackTrace();
+            } catch (com.bbn.openmap.io.FormatException fe) {
+                fe.printStackTrace();
+            }
+        }
 
-	return list;
+        return list;
     }
 
     /**
      * The CSpecialist function.
      */
     public UGraphic[] fillRectangle(com.bbn.openmap.CSpecialist.CProjection p,
-				    com.bbn.openmap.CSpecialist.LLPoint ll1,
-				    com.bbn.openmap.CSpecialist.LLPoint ll2,
-				    java.lang.String staticArgs,
-				    org.omg.CORBA.StringHolder dynamicArgs,
-				    com.bbn.openmap.CSpecialist.GraphicChange notifyOnChange,
-				    String uniqueID) {
-// 	System.out.println("ShapeSpecialist.fillRectangle()");
-	try {
-	    Vector list = computeGraphics(ll1, ll2);
-	    int len = list.size();
-	    
-	    UGraphic[] ugraphics = new UGraphic[len];
-	    CTEntry[] ct;
-	    for (int i=0; i<len; i++) {
-		SGraphic sg = (SGraphic)list.elementAt(i);
-		ugraphics[i] = sg.ufill();
-	    }
+                                    com.bbn.openmap.CSpecialist.LLPoint ll1,
+                                    com.bbn.openmap.CSpecialist.LLPoint ll2,
+                                    java.lang.String staticArgs,
+                                    org.omg.CORBA.StringHolder dynamicArgs,
+                                    com.bbn.openmap.CSpecialist.GraphicChange notifyOnChange,
+                                    String uniqueID) {
+//      System.out.println("ShapeSpecialist.fillRectangle()");
+        try {
+            Vector list = computeGraphics(ll1, ll2);
+            int len = list.size();
+            
+            UGraphic[] ugraphics = new UGraphic[len];
+            CTEntry[] ct;
+            for (int i=0; i<len; i++) {
+                SGraphic sg = (SGraphic)list.elementAt(i);
+                ugraphics[i] = sg.ufill();
+            }
 
-// 	    System.out.println("ShapeSpecialist.fillRectangle(): got "+ugraphics.length+" graphics");
-	    return ugraphics;
-	} catch (Throwable t) {
-	    System.err.println("ShapeSpecialist.fillRectangle(): " + t);
-	    t.printStackTrace();
+//          System.out.println("ShapeSpecialist.fillRectangle(): got "+ugraphics.length+" graphics");
+            return ugraphics;
+        } catch (Throwable t) {
+            System.err.println("ShapeSpecialist.fillRectangle(): " + t);
+            t.printStackTrace();
 
-	    // Don't throw another one! Try to recover!
-// 	    throw new RuntimeException();
+            // Don't throw another one! Try to recover!
+//          throw new RuntimeException();
 
-	    return new UGraphic[0];
-	}
+            return new UGraphic[0];
+        }
     }
 
     protected SpecialistSpatialIndex locateAndSetShapeData(String shapeFileName,
-							   String spatialIndexFileName) {
-	File spatialIndexFile = new File(spatialIndexFileName);
-	SpatialIndex si = null;
+                                                           String spatialIndexFileName) {
+        File spatialIndexFile = new File(spatialIndexFileName);
+        SpatialIndex si = null;
 
-	if (spatialIndexFile.isAbsolute()) {
-// 	    System.out.println("Absolute!");
-	    try {
-		si = new SpecialistSpatialIndex(spatialIndexFileName, shapeFileName);
-	    } catch (java.io.IOException e) {
-		e.printStackTrace();
-	    }
-	} else {
-// 	    System.out.println("Relative!");
-	    Vector dirs = Environment.getClasspathDirs();
-	    int nDirs = dirs.size();
-	    if (nDirs > 0) {
-		for (int i = 0; i < nDirs; i++) {
-		    String dir = (String) dirs.elementAt(i);
-		    File sif = new File(dir, spatialIndexFileName);
-		    if (sif.isFile()) {
-			File sf = new File(dir, shapeFileName);
-			try {
-// 			    System.out.println(sif.toString());
-// 			    System.out.println(sf.toString());
-			    si = new SpecialistSpatialIndex(sif.toString(), sf.toString());
-			    break;
-			} catch (java.io.IOException e) {
-			    e.printStackTrace();
-			}
-		    }
-		}
-		if (si == null) {
-		    System.err.println("Unable to find file: "
-				       + shapeFileName);
-		    System.err.println("Unable to find file: "
-				       + spatialIndexFileName);
-		}
-	    } else {
-		System.err.println("No directories in CLASSPATH!");
-		System.err.println("Unable to locate file: "
-				   + shapeFileName);
-		System.err.println("Unable to locate file: "
-				   + spatialIndexFileName);
-	    }
-	}
-	return (SpecialistSpatialIndex)si;
+        if (spatialIndexFile.isAbsolute()) {
+//          System.out.println("Absolute!");
+            try {
+                si = new SpecialistSpatialIndex(spatialIndexFileName, shapeFileName);
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+//          System.out.println("Relative!");
+            Vector dirs = Environment.getClasspathDirs();
+            int nDirs = dirs.size();
+            if (nDirs > 0) {
+                for (int i = 0; i < nDirs; i++) {
+                    String dir = (String) dirs.elementAt(i);
+                    File sif = new File(dir, spatialIndexFileName);
+                    if (sif.isFile()) {
+                        File sf = new File(dir, shapeFileName);
+                        try {
+//                          System.out.println(sif.toString());
+//                          System.out.println(sf.toString());
+                            si = new SpecialistSpatialIndex(sif.toString(), sf.toString());
+                            break;
+                        } catch (java.io.IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                if (si == null) {
+                    System.err.println("Unable to find file: "
+                                       + shapeFileName);
+                    System.err.println("Unable to find file: "
+                                       + spatialIndexFileName);
+                }
+            } else {
+                System.err.println("No directories in CLASSPATH!");
+                System.err.println("Unable to locate file: "
+                                   + shapeFileName);
+                System.err.println("Unable to locate file: "
+                                   + spatialIndexFileName);
+            }
+        }
+        return (SpecialistSpatialIndex)si;
     }
 
     public void signOff(String uniqueID) {
-	System.out.println("ShapeSpecialist.signOff()");
+        System.out.println("ShapeSpecialist.signOff()");
     }
 
     public void receiveGesture(MouseEvent gesture, String uniqueID) {}
 
     public void makePalette(WidgetChange notifyOnChange,
-			    String staticArgs,
-			    org.omg.CORBA.StringHolder dynamicArgs,
-			    String uniqueID) {}
+                            String staticArgs,
+                            org.omg.CORBA.StringHolder dynamicArgs,
+                            String uniqueID) {}
 
     public void printHelp() {
-	System.err.println(
-		"usage: java [java/vbj args] <specialist class> [specialist args]");
-	System.err.println("");
-	System.err.println(
-		"	Java Args:");
-	System.err.println(
-		"	-mx<NUM>m		Set max Java heap in Megs");
-	System.err.println("");
-	System.err.println(
-		"	VBJ Args:");
-	System.err.println(
-		"	-DORBmbufSize=8388608	Define the VBJ buffer size");
-	System.err.println(
-		"	-DORBdebug		Enable VBJ debugging");
-	System.err.println("");
-	System.err.println(
-		"	Specialist Args:");
-	System.err.println(
-		"	-ior <iorfile>			IOR file");
-	System.err.println(
-		"	-properties \"<file> ...\"	Path to properties file");
+        System.err.println(
+                "usage: java [java/vbj args] <specialist class> [specialist args]");
+        System.err.println("");
+        System.err.println(
+                "       Java Args:");
+        System.err.println(
+                "       -mx<NUM>m               Set max Java heap in Megs");
+        System.err.println("");
+        System.err.println(
+                "       VBJ Args:");
+        System.err.println(
+                "       -DORBmbufSize=8388608   Define the VBJ buffer size");
+        System.err.println(
+                "       -DORBdebug              Enable VBJ debugging");
+        System.err.println("");
+        System.err.println(
+                "       Specialist Args:");
+        System.err.println(
+                "       -ior <iorfile>                  IOR file");
+        System.err.println(
+                "       -properties \"<file> ...\"      Path to properties file");
     }
 
     public void parseArgs(String[] args) {
-	Color lcolor = null;
-	Color fcolor = null;
+        Color lcolor = null;
+        Color fcolor = null;
 
-	for (int i = 0; i < args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
 
-	    if (args[i].equalsIgnoreCase("-properties") && (args.length > (i + 1))) {
-		properties = loadProps(args[i+1]);
+            if (args[i].equalsIgnoreCase("-properties") && (args.length > (i + 1))) {
+                properties = loadProps(args[i+1]);
 
-		lcolor = LayerUtils.parseColorFromProperties(properties, 
-							     lineColorProperty,
-							     "FF000000");
-		lineColor = new SColor((short) ((lcolor.getRed()) * 65535/255),
-				       (short) ((lcolor.getGreen()) * 65535/255),
-				       (short) ((lcolor.getBlue()) * 65535/255));
-		if (properties.getProperty(fillColorProperty) != null) {
+                lcolor = LayerUtils.parseColorFromProperties(properties, 
+                                                             lineColorProperty,
+                                                             "FF000000");
+                lineColor = new SColor((short) ((lcolor.getRed()) * 65535/255),
+                                       (short) ((lcolor.getGreen()) * 65535/255),
+                                       (short) ((lcolor.getBlue()) * 65535/255));
+                if (properties.getProperty(fillColorProperty) != null) {
 
-		    fcolor = LayerUtils.parseColorFromProperties(properties, 
-								 fillColorProperty,
-								 "FF000000");
-		    
-		    fillColor = new SColor((short) ((fcolor.getRed()) * 65535/255),
-					   (short) ((fcolor.getGreen()) * 65535/255),
-					   (short) ((fcolor.getBlue()) * 65535/255));
-		}
+                    fcolor = LayerUtils.parseColorFromProperties(properties, 
+                                                                 fillColorProperty,
+                                                                 "FF000000");
+                    
+                    fillColor = new SColor((short) ((fcolor.getRed()) * 65535/255),
+                                           (short) ((fcolor.getGreen()) * 65535/255),
+                                           (short) ((fcolor.getBlue()) * 65535/255));
+                }
 
-		String ssx = properties.getProperty(spatialIndexProperty);
-		String shp = properties.getProperty(shapeFileProperty);
+                String ssx = properties.getProperty(spatialIndexProperty);
+                String shp = properties.getProperty(shapeFileProperty);
 
-// 		System.out.println("Getting " + shp + " and " + ssx);
-		
-		init(shp, ssx);
-	    }
-	}
+//              System.out.println("Getting " + shp + " and " + ssx);
+                
+                init(shp, ssx);
+            }
+        }
 
-	if (properties == null) {
-	    System.out.println("Need properties file!");
-	    System.out.println("");
-	    System.out.println("#######################################");
-	    System.out.println("shapeFile=<path to shape file (.shp)>");
-	    System.out.println("spatialIndex=<path to spatial index file (.ssx)>");
-	    System.out.println("lineColor=<hex ARGB color> i.e. FF000000 for black");
-	    System.out.println("fillColor=<hex ARGB color> i.e. FF000000 for black>");
-	    System.out.println("#######################################");
-	    System.out.println("");
-	    printHelp();
-	    System.exit(0);
-	}
+        if (properties == null) {
+            System.out.println("Need properties file!");
+            System.out.println("");
+            System.out.println("#######################################");
+            System.out.println("shapeFile=<path to shape file (.shp)>");
+            System.out.println("spatialIndex=<path to spatial index file (.ssx)>");
+            System.out.println("lineColor=<hex ARGB color> i.e. FF000000 for black");
+            System.out.println("fillColor=<hex ARGB color> i.e. FF000000 for black>");
+            System.out.println("#######################################");
+            System.out.println("");
+            printHelp();
+            System.exit(0);
+        }
 
-	super.parseArgs(args);
-	System.out.println("Using colors -> lcolor = " + lcolor + ", fcolor = " + fcolor);
+        super.parseArgs(args);
+        System.out.println("Using colors -> lcolor = " + lcolor + ", fcolor = " + fcolor);
     }
 
     /**
@@ -368,30 +368,30 @@ public class ShapeSpecialist extends Specialist {
      * @return the loaded properties
      */
     public Properties loadProps(String file) {
-	java.io.File propsFile = new java.io.File(file);
-	Properties props = new Properties();
-	try {
-	    java.io.InputStream propsStream = new java.io.FileInputStream(propsFile);
-	    props.load(propsStream);
-	} catch (java.io.FileNotFoundException e) {
-	    System.err.println("ShapeSpecialist did not find properties file: \"" + 
-			       file + "\"");
-	    System.exit(1);
-	} catch (java.io.IOException e) {
-	    System.err.println("Caught IO Exception reading configuration file \""
-			       + propsFile + "\"");
-	    e.printStackTrace();
-	    System.exit(1);
-	}
-	return props;
+        java.io.File propsFile = new java.io.File(file);
+        Properties props = new Properties();
+        try {
+            java.io.InputStream propsStream = new java.io.FileInputStream(propsFile);
+            props.load(propsStream);
+        } catch (java.io.FileNotFoundException e) {
+            System.err.println("ShapeSpecialist did not find properties file: \"" + 
+                               file + "\"");
+            System.exit(1);
+        } catch (java.io.IOException e) {
+            System.err.println("Caught IO Exception reading configuration file \""
+                               + propsFile + "\"");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return props;
     }
 
     public static void main(String[] args) {
-	Debug.init(System.getProperties());
+        Debug.init(System.getProperties());
 
-	// Create the specialist server
-	ShapeSpecialist srv = new ShapeSpecialist();
-	srv.parseArgs(args);
-	srv.start(args);
+        // Create the specialist server
+        ShapeSpecialist srv = new ShapeSpecialist();
+        srv.parseArgs(args);
+        srv.start(args);
     }
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersMenu.java,v $
 // $RCSfile: LayersMenu.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/29 17:20:01 $
-// $Author: wjeuerle $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -95,14 +95,14 @@ public class LayersMenu extends AbstractOpenMapMenu
     protected transient String editLayersButtonTitle = defaultEditLayersButtonTitle;
     /** The menu item to add a layer to the map. */
     protected transient JMenuItem add = null;
-	/** The default add button title. */
+        /** The default add button title. */
     protected transient String addLayersButtonTitle = "Add Layers...";
     
     /**
      * Construct LayersMenu.
      */
     public LayersMenu() {
-	this (null);
+        this (null);
     }
 
     /**
@@ -110,7 +110,7 @@ public class LayersMenu extends AbstractOpenMapMenu
      * @param lHandler the handler for the layer
      */
     public LayersMenu(LayerHandler lHandler) {
-	this (lHandler, "Layers", LAYERS_ON_OFF);
+        this (lHandler, "Layers", LAYERS_ON_OFF);
     }
 
     /**
@@ -120,17 +120,17 @@ public class LayersMenu extends AbstractOpenMapMenu
      * @param menuType either LAYERS_ON_OFF, or PALETTES_ON_OFF
      */
     public LayersMenu(LayerHandler lHandler, String menuName, int menuType) {
-	super();
-	this.menuType = menuType;
-	setText(menuName);
-	setMnemonic('L');//HMMMM
+        super();
+        this.menuType = menuType;
+        setText(menuName);
+        setMnemonic('L');//HMMMM
 
-	layerHandler = lHandler;
+        layerHandler = lHandler;
 
-	// Layers will be turned on by something else initially.
-	if (layerHandler != null) {
-	    setLayers(layerHandler.getLayers());
-	}
+        // Layers will be turned on by something else initially.
+        if (layerHandler != null) {
+            setLayers(layerHandler.getLayers());
+        }
     }
 
     /** 
@@ -150,23 +150,23 @@ public class LayersMenu extends AbstractOpenMapMenu
      * @param lh the LayerHandler containing the layers.
      */
     public void setLayerHandler(LayerHandler lh) {
-	if (layerHandler != null) {
-	    layerHandler.removeLayerListener(this);
-	}
+        if (layerHandler != null) {
+            layerHandler.removeLayerListener(this);
+        }
 
-	layerHandler = lh;
-	if (layerHandler != null) {
-	    layerHandler.addLayerListener(this);
-	} else {
-	    setLayers(new Layer[0]);
-	}
+        layerHandler = lh;
+        if (layerHandler != null) {
+            layerHandler.addLayerListener(this);
+        } else {
+            setLayers(new Layer[0]);
+        }
     }
 
     /** 
      * Get the LayerHandler that the LayersPanel listens to.
      */
     public LayerHandler getLayerHandler() {
-	return layerHandler;
+        return layerHandler;
     }
 
     /**
@@ -174,7 +174,7 @@ public class LayersMenu extends AbstractOpenMapMenu
      * being used from the BeanContext.  
      */
     protected void setLayersPanel(LayersPanel lp) {
-	layersPanel = lp;
+        layersPanel = lp;
     }
 
     /**
@@ -182,21 +182,21 @@ public class LayersMenu extends AbstractOpenMapMenu
      * being used from the BeanContext.  
      */
     protected LayersPanel getLayersPanel() {
-	return layersPanel;
+        return layersPanel;
     }
 
     /**
      * Return the title of the menu option to call up LayersPanel.
      */
     public void setEditLayersButtonTitle(String buttonTitle) {
-	editLayersButtonTitle = buttonTitle;
+        editLayersButtonTitle = buttonTitle;
     }
 
     /**
      * Return the title of the menu option to call up LayersPanel.
      */
     public String getEditLayersButtonTitle() {
-	return editLayersButtonTitle;
+        return editLayersButtonTitle;
     }
 
     /**
@@ -204,23 +204,23 @@ public class LayersMenu extends AbstractOpenMapMenu
      * listener.  Assumes that it's already wired up.
      */
     public void setEdit(JMenuItem e) {
-	edit = e;
+        edit = e;
 
-	// This actually adds the edit button to the bottom of the
-	// LayerMenu when the menu is reconstructed.
-	if (getLayerHandler() != null) {
-	    setLayers(getLayerHandler().getLayers());
-	}
+        // This actually adds the edit button to the bottom of the
+        // LayerMenu when the menu is reconstructed.
+        if (getLayerHandler() != null) {
+            setLayers(getLayerHandler().getLayers());
+        }
     }
 
     /**
      * Set the add menu item. 
      */
     public void setAdd(JMenuItem a) {
-    	add = a;
-	if (getLayerHandler() != null) {
-	    setLayers(getLayerHandler().getLayers());
-	}
+        add = a;
+        if (getLayerHandler() != null) {
+            setLayers(getLayerHandler().getLayers());
+        }
     }
     
     /**
@@ -228,7 +228,7 @@ public class LayersMenu extends AbstractOpenMapMenu
      * listener.
      */
     public JMenuItem getEdit() {
-	return edit;
+        return edit;
     }
     
     /**
@@ -239,11 +239,11 @@ public class LayersMenu extends AbstractOpenMapMenu
      */
     public void setLayers(LayerEvent evt) {
         Layer[] layers = evt.getLayers();
-	int type = evt.getType();
-	
-	if (type==LayerEvent.ALL) {
-	    setLayers(layers);
-	}
+        int type = evt.getType();
+        
+        if (type==LayerEvent.ALL) {
+            setLayers(layers);
+        }
     }
     
     /**
@@ -251,29 +251,29 @@ public class LayersMenu extends AbstractOpenMapMenu
      * @param inLayers the array of layers.
      */
     public void setLayers(Layer[] inLayers) {
-	
-	removeAll();
+        
+        removeAll();
 
-	// Set everything up for the new layers
-	if (inLayers == null) {
-	    if(Debug.debugging("layersmenu")) {
-		Debug.error("LayersMenu.setLayers(): Layers are null.");
-	    }
-	} else {
-	    for (int i=0; i<inLayers.length; i++) {
-		LayerCheckBoxMenuItem cbs = 
-		    new LayerCheckBoxMenuItem(inLayers[i]);
-		add(cbs);
-	    }
-	}
+        // Set everything up for the new layers
+        if (inLayers == null) {
+            if(Debug.debugging("layersmenu")) {
+                Debug.error("LayersMenu.setLayers(): Layers are null.");
+            }
+        } else {
+            for (int i=0; i<inLayers.length; i++) {
+                LayerCheckBoxMenuItem cbs = 
+                    new LayerCheckBoxMenuItem(inLayers[i]);
+                add(cbs);
+            }
+        }
 
-	if (edit != null) {
-	    add(new JSeparator());
-	    add(edit);
-	}
-	if (add != null) {
-	    add(add);
-	}
+        if (edit != null) {
+            add(new JSeparator());
+            add(edit);
+        }
+        if (add != null) {
+            add(add);
+        }
     }
 
     /**
@@ -282,142 +282,142 @@ public class LayersMenu extends AbstractOpenMapMenu
      * themselves from their layers.  
      */
     public void removeAll() {
-	Component[] components = getMenuComponents();
+        Component[] components = getMenuComponents();
 
-	if (components.length > 0) {
-	    Debug.message("layersmenu", "LayersMenu.removeAll(): purging menu");
-	}
+        if (components.length > 0) {
+            Debug.message("layersmenu", "LayersMenu.removeAll(): purging menu");
+        }
 
-	for (int i = 0; i < components.length; i++) {
-	    if (components[i] instanceof LayerCheckBoxMenuItem) {
-		((LayerCheckBoxMenuItem)components[i]).cleanup();
-	    }
-	}
-	super.removeAll();
+        for (int i = 0; i < components.length; i++) {
+            if (components[i] instanceof LayerCheckBoxMenuItem) {
+                ((LayerCheckBoxMenuItem)components[i]).cleanup();
+            }
+        }
+        super.removeAll();
     }
 
     /**
      * Update the layer names.
      */
     public synchronized void updateLayerLabels() {
-	if (layerHandler != null) {
-	    setLayers(layerHandler.getLayers());
-	}
+        if (layerHandler != null) {
+            setLayers(layerHandler.getLayers());
+        }
     }
 
     /**
      * CheckBoxMenuItem that encapsulates a Layer.
      */
     class LayerCheckBoxMenuItem
-	extends JCheckBoxMenuItem
-	implements ActionListener, ComponentListener
+        extends JCheckBoxMenuItem
+        implements ActionListener, ComponentListener
     {
-	/** The layer that the button triggers. */
+        /** The layer that the button triggers. */
         Layer layer;
 
-	/**
-	 * Construct the menu item, connected to the given layer.
-	 */
+        /**
+         * Construct the menu item, connected to the given layer.
+         */
         LayerCheckBoxMenuItem(Layer aLayer) {
            if (aLayer == null) {
                throw new IllegalArgumentException("null Layer");
            }
            layer = aLayer;
            this.setText(layer.getName());
-	   setState(layer.isVisible());
+           setState(layer.isVisible());
 
            this.addActionListener(this);
-	   layer.addComponentListener(this);
-	}
+           layer.addComponentListener(this);
+        }
 
-	/** Get the layer for this checkbox. */      
+        /** Get the layer for this checkbox. */      
         public Layer getLayer() {
-	    return layer;
-	}
+            return layer;
+        }
 
-	/** Disconnect all the listeners from the layer, clean up
-	 *  other references. */
-	public void cleanup() {
-	    layer.removeComponentListener(this);
-	    this.removeActionListener(this);
-	    layer = null;
-	}
+        /** Disconnect all the listeners from the layer, clean up
+         *  other references. */
+        public void cleanup() {
+            layer.removeComponentListener(this);
+            this.removeActionListener(this);
+            layer = null;
+        }
 
-	/** If this widget is being used for bringing up palettes,
-	 *  bring up the layer's palette.*/
-	protected void showPalette() {
-	    layer.showPalette();
-	}
+        /** If this widget is being used for bringing up palettes,
+         *  bring up the layer's palette.*/
+        protected void showPalette() {
+            layer.showPalette();
+        }
 
 
-	/** If this widget is being used for bringing up palettes,
-	 *  hide the layer's palette.*/
-	protected void hidePalette() {
-	    layer.hidePalette();
-	}
+        /** If this widget is being used for bringing up palettes,
+         *  hide the layer's palette.*/
+        protected void hidePalette() {
+            layer.hidePalette();
+        }
 
-	/** This menu item listens to the status of its layer. */
-	public void componentResized(ComponentEvent e) {}
-	/** This menu item listens to the status of its layer. */
-	public void componentMoved(ComponentEvent e) {}
-	/** This menu item listens to the status of its layer.  If the
-	 *  layer becomes visible, it makes the check box enabled. */
-	public void componentShown(ComponentEvent e) {
-	    if (e.getComponent() == layer) {
-		if (getState() != true && menuType == LAYERS_ON_OFF) {
-		    setState(true);
-		    if (Debug.debugging("layersmenu")) {
-			Debug.output("layersmenu.LCBMI: layer " + 
-				     layer.getName() +
-				     " is now visible.");
-		    }
-		}
-	    } else if (e.getComponent() == layer.getPalette() &&
-		       menuType == PALETTES_ON_OFF) {
-		    setState(true);
-	    }
-	}
-	/** This menu item listens to the status of its layer.  If the
-	 *  layer becomes invisible, it disables the check box. */
-	public void componentHidden(ComponentEvent e) {
-	    if (e.getComponent() == layer) {
-		if (getState() != false && menuType == LAYERS_ON_OFF) {
-		    setState(false);
-		    if (Debug.debugging("layersmenu")) {
-			Debug.output("layersmenu.LCBMI: layer " + 
-				     layer.getName() +
-				     " is now hidden.");
-		    }
-		}
-	    } else if (e.getComponent() == layer.getPalette() && 
-		       menuType == PALETTES_ON_OFF) {
-		setState(false);
-	    }
-	}
+        /** This menu item listens to the status of its layer. */
+        public void componentResized(ComponentEvent e) {}
+        /** This menu item listens to the status of its layer. */
+        public void componentMoved(ComponentEvent e) {}
+        /** This menu item listens to the status of its layer.  If the
+         *  layer becomes visible, it makes the check box enabled. */
+        public void componentShown(ComponentEvent e) {
+            if (e.getComponent() == layer) {
+                if (getState() != true && menuType == LAYERS_ON_OFF) {
+                    setState(true);
+                    if (Debug.debugging("layersmenu")) {
+                        Debug.output("layersmenu.LCBMI: layer " + 
+                                     layer.getName() +
+                                     " is now visible.");
+                    }
+                }
+            } else if (e.getComponent() == layer.getPalette() &&
+                       menuType == PALETTES_ON_OFF) {
+                    setState(true);
+            }
+        }
+        /** This menu item listens to the status of its layer.  If the
+         *  layer becomes invisible, it disables the check box. */
+        public void componentHidden(ComponentEvent e) {
+            if (e.getComponent() == layer) {
+                if (getState() != false && menuType == LAYERS_ON_OFF) {
+                    setState(false);
+                    if (Debug.debugging("layersmenu")) {
+                        Debug.output("layersmenu.LCBMI: layer " + 
+                                     layer.getName() +
+                                     " is now hidden.");
+                    }
+                }
+            } else if (e.getComponent() == layer.getPalette() && 
+                       menuType == PALETTES_ON_OFF) {
+                setState(false);
+            }
+        }
 
-	/**
-	 * Triggered by the menu item check button. 
-	 * @param e ActionEvent fired by the button.
-	 */
+        /**
+         * Triggered by the menu item check button. 
+         * @param e ActionEvent fired by the button.
+         */
         public void actionPerformed(ActionEvent e) {
 
             if (!this.equals(e.getSource())) {
-	        Debug.error("Wiring is hopelessly wrong in LayersMenu");
-	    }
-	    switch (menuType) {
-		case LAYERS_ON_OFF:
-		    layerHandler.turnLayerOn(getState(), layer);
-		    break;
-		case PALETTES_ON_OFF:
-		    if (getState())
-			showPalette();
-		    else
-			hidePalette();
-		    break;
-		default:
-		    System.err.println("LayersMenu: unknown menuType!");
-	    }
-	}
+                Debug.error("Wiring is hopelessly wrong in LayersMenu");
+            }
+            switch (menuType) {
+                case LAYERS_ON_OFF:
+                    layerHandler.turnLayerOn(getState(), layer);
+                    break;
+                case PALETTES_ON_OFF:
+                    if (getState())
+                        showPalette();
+                    else
+                        hidePalette();
+                    break;
+                default:
+                    System.err.println("LayersMenu: unknown menuType!");
+            }
+        }
     }
 
     /**
@@ -428,24 +428,24 @@ public class LayersMenu extends AbstractOpenMapMenu
      * @param lp the LayersPanel to ask for an ActionListener from.  
      */
     public void setupEditLayersButton(LayersPanel lp) {
-	// initalize the Edit Layers... button.
-	JMenuItem button = new JMenuItem(editLayersButtonTitle);
-	button.setActionCommand("edit");
-	button.addActionListener(lp.getActionListener());
-	setEdit(button);
-	setLayersPanel(lp);
+        // initalize the Edit Layers... button.
+        JMenuItem button = new JMenuItem(editLayersButtonTitle);
+        button.setActionCommand("edit");
+        button.addActionListener(lp.getActionListener());
+        setEdit(button);
+        setLayersPanel(lp);
     }
 
     /** 
      * Constructs the menu item that will bring up the LayerAddPanel.
      */
     public void setupLayerAddButton(final LayerAddPanel menu) {
-	final LayerAddPanel lap = menu;
-    	JMenuItem button = new JMenuItem(addLayersButtonTitle);
-	button.setActionCommand("add");
-	button.addActionListener(lap);
-	setAdd(button);
-	add(button);
+        final LayerAddPanel lap = menu;
+        JMenuItem button = new JMenuItem(addLayersButtonTitle);
+        button.setActionCommand("add");
+        button.addActionListener(lap);
+        setAdd(button);
+        add(button);
     }
 
     /**
@@ -461,16 +461,16 @@ public class LayersMenu extends AbstractOpenMapMenu
      * BeanContextMembershipEvent.  
      */
     public void findAndInit(Object someObj) {
-	if (someObj instanceof LayerHandler) {
-	    // do the initializing that need to be done here
-	    Debug.message("bc","LayersMenu found a LayerHandler");
-	    setLayerHandler((LayerHandler)someObj);
-	} else if (someObj instanceof LayersPanel) {
-	    setupEditLayersButton((LayersPanel)someObj);
-	} else if (someObj instanceof LayerAddPanel) {
-	    // if a LayerAddPanel is present, do the necessary things
-	    setupLayerAddButton((LayerAddPanel)someObj);
-	}
+        if (someObj instanceof LayerHandler) {
+            // do the initializing that need to be done here
+            Debug.message("bc","LayersMenu found a LayerHandler");
+            setLayerHandler((LayerHandler)someObj);
+        } else if (someObj instanceof LayersPanel) {
+            setupEditLayersButton((LayersPanel)someObj);
+        } else if (someObj instanceof LayerAddPanel) {
+            // if a LayerAddPanel is present, do the necessary things
+            setupLayerAddButton((LayerAddPanel)someObj);
+        }
     }
 
     /**
@@ -483,41 +483,41 @@ public class LayersMenu extends AbstractOpenMapMenu
      * @param someObj the object being removed from the BeanContext
      */
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof LayerHandler) {
+        if (someObj instanceof LayerHandler) {
 
-	    LayerHandler lh = (LayerHandler)someObj;
-	    // Need to check to see if this layerhandler is the
-	    // same as the one we have !!!!
-	    if (lh != getLayerHandler()) {
-		Debug.message("bc", "LayersMenu asked to remove LayerHandler that is not the same as what is currently held - ignoring request.");
-		return;
-	    }
-		
-	    // do the initializing that need to be done here
-	    Debug.message("bc","LayersMenu.childrenRemoved: removing LayerHandler");
-	    setLayerHandler(null);
-	    setEdit(null);
-	}
-	if (someObj instanceof LayersPanel) {
-	    LayersPanel lp = (LayersPanel) someObj;
-	    // There's a problem here.  We can't tell if the
-	    // LayersPanel being removed is the owner of the
-	    // action listener used by the edit button.  If two
-	    // LayersPanels have been added to the BeanContext,
-	    // and we're now listening to the second one, then if
-	    // the first one is removed, we are forced here to
-	    // disconnect from the second and valid one.  Looks
-	    // like we need to maintain a handle on the
-	    // LayersPanel being triggered.
-	    if (lp != getLayersPanel()) {
-		Debug.message("bc", "LayersMenu asked to remove LayersPanel that is not the same as what is currently held - ignoring request.");
-		return;
-	    }
-	    // do the initializing that need to be done here
-	    Debug.message("bc","LayersMenu.childrenRemoved: removing LayersPanel");
-	    setLayersPanel(null);
-	    setEdit(null);
-	}
+            LayerHandler lh = (LayerHandler)someObj;
+            // Need to check to see if this layerhandler is the
+            // same as the one we have !!!!
+            if (lh != getLayerHandler()) {
+                Debug.message("bc", "LayersMenu asked to remove LayerHandler that is not the same as what is currently held - ignoring request.");
+                return;
+            }
+                
+            // do the initializing that need to be done here
+            Debug.message("bc","LayersMenu.childrenRemoved: removing LayerHandler");
+            setLayerHandler(null);
+            setEdit(null);
+        }
+        if (someObj instanceof LayersPanel) {
+            LayersPanel lp = (LayersPanel) someObj;
+            // There's a problem here.  We can't tell if the
+            // LayersPanel being removed is the owner of the
+            // action listener used by the edit button.  If two
+            // LayersPanels have been added to the BeanContext,
+            // and we're now listening to the second one, then if
+            // the first one is removed, we are forced here to
+            // disconnect from the second and valid one.  Looks
+            // like we need to maintain a handle on the
+            // LayersPanel being triggered.
+            if (lp != getLayersPanel()) {
+                Debug.message("bc", "LayersMenu asked to remove LayersPanel that is not the same as what is currently held - ignoring request.");
+                return;
+            }
+            // do the initializing that need to be done here
+            Debug.message("bc","LayersMenu.childrenRemoved: removing LayersPanel");
+            setLayersPanel(null);
+            setEdit(null);
+        }
     }
 
     /**
@@ -538,10 +538,10 @@ public class LayersMenu extends AbstractOpenMapMenu
      * change to be rolled back.
      */
     public void fireVetoableChange(String name, 
-				   Object oldValue, 
-				   Object newValue) 
-	throws PropertyVetoException {
-	super.fireVetoableChange(name, oldValue, newValue);
-	beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
+                                   Object oldValue, 
+                                   Object newValue) 
+        throws PropertyVetoException {
+        super.fireVetoableChange(name, oldValue, newValue);
+        beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/ClientLink.java,v $
 // $RCSfile: ClientLink.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,12 +44,12 @@ public class ClientLink extends Link {
 
     /** Constructor. */
     public ClientLink(Socket socket) throws IOException {
-	super(socket);
+        super(socket);
     }
 
     /** Close the socket of the link. */
     public void close() throws IOException {
-	socket.close();
+        socket.close();
     }
 
     /**
@@ -61,6 +61,6 @@ public class ClientLink extends Link {
      * @return true if the link should be shut down.
      */
     public boolean isCloseLink() {
-	return closeLink;
+        return closeLink;
     }
 }

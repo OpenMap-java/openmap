@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/InvalidCharException.java,v $
 // $RCSfile: InvalidCharException.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,8 +36,8 @@ public class InvalidCharException extends FormatException {
      * @param val the character encountered
      */
     public InvalidCharException(char val) {
-	super();
-	c = val;
+        super();
+        c = val;
     }
 
     /**
@@ -46,7 +46,7 @@ public class InvalidCharException extends FormatException {
      * @param val the character encountered
      */
     public InvalidCharException(String s, char val) {
-	super(s);
-	c = val;
+        super(s);
+        c = val;
     }
 }

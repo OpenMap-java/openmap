@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/TestWandererCallback.java,v $
 // $RCSfile: TestWandererCallback.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/13 01:19:09 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,12 +33,12 @@ import java.io.File;
 public class TestWandererCallback implements WandererCallback {
 
     public void handleDirectory(File directory) {
-	System.out.println("Directory - " + directory.getName() + 
-			   " has " + directory.list().length + " item(s)");
+        System.out.println("Directory - " + directory.getName() + 
+                           " has " + directory.list().length + " item(s)");
     }
  
     public void handleFile(File file) {
-	System.out.println("File - " + file.getName());
+        System.out.println("File - " + file.getName());
     }
 
 }

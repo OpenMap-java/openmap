@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MouseDelegator.java,v $
 // $RCSfile: MouseDelegator.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:14:11 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,12 +44,12 @@ import com.bbn.openmap.event.*;
  */
 public class MouseDelegator 
     implements PropertyChangeListener, java.io.Serializable, BeanContextChild, 
-	       BeanContextMembershipListener, SoloMapComponent {
+               BeanContextMembershipListener, SoloMapComponent {
     
     public final static transient String ActiveModeProperty =
-	"NewActiveMouseMode";
+        "NewActiveMouseMode";
     public final static transient String MouseModesProperty = 
-	"NewListOfMouseModes";
+        "NewListOfMouseModes";
 
     /**
      * The active MapMouseMode.
@@ -94,7 +94,7 @@ public class MouseDelegator
      * @param map MapBean
      */
     public MouseDelegator(MapBean map) {
-	setMap(map);
+        setMap(map);
     }
 
     /**
@@ -104,7 +104,7 @@ public class MouseDelegator
      * @see #setMap
      */
     public MouseDelegator() {
-	this(null);
+        this(null);
     }
 
     /**
@@ -113,16 +113,16 @@ public class MouseDelegator
      * @param mapbean MapBean
      */
     public void setMap(MapBean mapbean) {
-	if (map != null) {
-	    map.removePropertyChangeListener(this);
-	    setInactive(activeMouseMode);
-	}
+        if (map != null) {
+            map.removePropertyChangeListener(this);
+            setInactive(activeMouseMode);
+        }
 
-	map = mapbean;
-	if (map != null) {
-	    map.addPropertyChangeListener(this);
-	    setActive(activeMouseMode);
-	}
+        map = mapbean;
+        if (map != null) {
+            map.addPropertyChangeListener(this);
+            setActive(activeMouseMode);
+        }
     }
 
     /**
@@ -131,7 +131,7 @@ public class MouseDelegator
      * @return MapBean
      */
     public MapBean getMap() {
-	return map;
+        return map;
     }
 
     //----------------------------------------------------------------------
@@ -146,10 +146,10 @@ public class MouseDelegator
      * @return String ID of the active mouse mode.
      */
     public String getActiveMouseModeID() {
-	if (activeMouseMode != null)
-	    return activeMouseMode.getID();
-	else
-	    return null;
+        if (activeMouseMode != null)
+            return activeMouseMode.getID();
+        else
+            return null;
     }
 
     /**
@@ -162,26 +162,26 @@ public class MouseDelegator
      * @param MouseModeID the string ID of the mode to set active.
      */
     public void setActiveMouseModeWithID(String MouseModeID) {
-	if (MouseModeID == null) {
-	    Debug.error("MouseDelegator:setActiveMouseModeWithID() - null value");
-	    return;
-	}
+        if (MouseModeID == null) {
+            Debug.error("MouseDelegator:setActiveMouseModeWithID() - null value");
+            return;
+        }
 
-	MapMouseMode oldActive = activeMouseMode;
-	setInactive(activeMouseMode);
+        MapMouseMode oldActive = activeMouseMode;
+        setInactive(activeMouseMode);
 
-	for (int i = 0; i < mouseModes.size(); i++) {
-	    MapMouseMode med = (MapMouseMode)mouseModes.elementAt(i);
-	    if (MouseModeID.equals(med.getID())) {
-		setActive(med);
- 		if (Debug.debugging("mousemode")) {
-		    Debug.output("MouseDelegator.setActiveMouseModeWithID() setting new mode to mode " + i + " " + med.getID());
-		}
-		break;
-	    }
-	}
+        for (int i = 0; i < mouseModes.size(); i++) {
+            MapMouseMode med = (MapMouseMode)mouseModes.elementAt(i);
+            if (MouseModeID.equals(med.getID())) {
+                setActive(med);
+                if (Debug.debugging("mousemode")) {
+                    Debug.output("MouseDelegator.setActiveMouseModeWithID() setting new mode to mode " + i + " " + med.getID());
+                }
+                break;
+            }
+        }
 
-	firePropertyChange(ActiveModeProperty, oldActive, activeMouseMode);
+        firePropertyChange(ActiveModeProperty, oldActive, activeMouseMode);
     }
 
     /**
@@ -190,7 +190,7 @@ public class MouseDelegator
      * @return MapMouseMode the active mouse mode
      */
     public MapMouseMode getActiveMouseMode() {
- 	return activeMouseMode;
+        return activeMouseMode;
    }
 
     /**
@@ -202,29 +202,29 @@ public class MouseDelegator
      * @param aMed a MapMouseMode to make active.
      */
     public void setActiveMouseMode(MapMouseMode aMed) {
-	if (aMed == null) {
-	    Debug.error("MouseDelegator:setActiveMouseMode() - null value");
-	    return;
-	}
-	MapMouseMode oldActive = activeMouseMode;
-	boolean isAlreadyAMode = false;
+        if (aMed == null) {
+            Debug.error("MouseDelegator:setActiveMouseMode() - null value");
+            return;
+        }
+        MapMouseMode oldActive = activeMouseMode;
+        boolean isAlreadyAMode = false;
 
-	for (int i = 0; i < mouseModes.size(); i++) {
-	    MapMouseMode med = (MapMouseMode)mouseModes.elementAt(i);
-	    // Need to go through the modes, turn off the other active
-	    // mode, and turn on this one.
-	    if (aMed.getID().equals(med.getID())) {
-		isAlreadyAMode = true;
-	    }
-	}
+        for (int i = 0; i < mouseModes.size(); i++) {
+            MapMouseMode med = (MapMouseMode)mouseModes.elementAt(i);
+            // Need to go through the modes, turn off the other active
+            // mode, and turn on this one.
+            if (aMed.getID().equals(med.getID())) {
+                isAlreadyAMode = true;
+            }
+        }
 
-	if (!isAlreadyAMode) {
-	    addMouseMode(aMed);
-	}
+        if (!isAlreadyAMode) {
+            addMouseMode(aMed);
+        }
 
-	setActive(aMed);
+        setActive(aMed);
 
-	firePropertyChange(ActiveModeProperty, oldActive, activeMouseMode);
+        firePropertyChange(ActiveModeProperty, oldActive, activeMouseMode);
     }
 
     /**
@@ -234,14 +234,14 @@ public class MouseDelegator
      * @return an array of MapMouseModes.
      */
     public MapMouseMode[] getMouseModes() {
-	int nMouseModes = mouseModes.size();
-	if (nMouseModes == 0)
-	    return (new MapMouseMode[0]);
-	MapMouseMode[] result = new MapMouseMode[nMouseModes];
-	for (int i=0; i<nMouseModes; i++) {
-	    result[i] = (MapMouseMode)mouseModes.elementAt(i);
-	}
-	return result;
+        int nMouseModes = mouseModes.size();
+        if (nMouseModes == 0)
+            return (new MapMouseMode[0]);
+        MapMouseMode[] result = new MapMouseMode[nMouseModes];
+        for (int i=0; i<nMouseModes; i++) {
+            result[i] = (MapMouseMode)mouseModes.elementAt(i);
+        }
+        return result;
     }
 
     /**
@@ -256,18 +256,18 @@ public class MouseDelegator
      * @param activeIndex which mouse mode to make active
      */
     public void setMouseModes(MapMouseMode[] meds, int activeIndex) {
-	mouseModes.removeAllElements();
-	MapMouseMode oldActive = activeMouseMode;
-	for (int i = 0; i < meds.length; i++) {
-	    mouseModes.addElement(meds[i]);
+        mouseModes.removeAllElements();
+        MapMouseMode oldActive = activeMouseMode;
+        for (int i = 0; i < meds.length; i++) {
+            mouseModes.addElement(meds[i]);
 
-	    if (i == activeIndex) { // activate the right mode
-		setActive(meds[i]);
-	    }
-	}
+            if (i == activeIndex) { // activate the right mode
+                setActive(meds[i]);
+            }
+        }
 
-	firePropertyChange(MouseModesProperty,  null, mouseModes);
-	firePropertyChange(ActiveModeProperty, oldActive, activeMouseMode);
+        firePropertyChange(MouseModesProperty,  null, mouseModes);
+        firePropertyChange(ActiveModeProperty, oldActive, activeMouseMode);
     }
 
     /**
@@ -278,7 +278,7 @@ public class MouseDelegator
      * @param meds an array of MapMouseModes
      */
     public void setMouseModes(MapMouseMode[] meds) {
-	setMouseModes(meds, 0);
+        setMouseModes(meds, 0);
     }
 
     /**
@@ -289,21 +289,21 @@ public class MouseDelegator
      */
     public void addMouseMode(MapMouseMode med) {
 
-	if (med != null) {
-	    mouseModes.addElement(med);
-	    //  All of the MouseModes will think they are active, but
-	    //  the Delegator will only pass events to the one it
-	    //  thinks is...
-	    if (mouseModes.size() == 1) {
-		setActive(med);
-	    }
-	    
-	    if (currentLayers != null) {
-		setupMouseModeWithLayers(med, currentLayers);
-	    }
-	    
-	    firePropertyChange(MouseModesProperty, null, mouseModes);
-	}
+        if (med != null) {
+            mouseModes.addElement(med);
+            //  All of the MouseModes will think they are active, but
+            //  the Delegator will only pass events to the one it
+            //  thinks is...
+            if (mouseModes.size() == 1) {
+                setActive(med);
+            }
+            
+            if (currentLayers != null) {
+                setupMouseModeWithLayers(med, currentLayers);
+            }
+            
+            firePropertyChange(MouseModesProperty, null, mouseModes);
+        }
     }
 
     /**
@@ -312,26 +312,26 @@ public class MouseDelegator
      * @param med the MapMouseMode that should be removed.
      */
     public void removeMouseMode(MapMouseMode med) {
-	boolean needToAdjustActiveMode = false;
-	if (med.equals(activeMouseMode)) {
-	    needToAdjustActiveMode = true;
-	    setInactive(med);
-	}
+        boolean needToAdjustActiveMode = false;
+        if (med.equals(activeMouseMode)) {
+            needToAdjustActiveMode = true;
+            setInactive(med);
+        }
 
-	for (int i = 0; i < mouseModes.size(); i++) {
-	    if (med.equals(mouseModes.elementAt(i))) {
-		med.removeAllMapMouseListeners();
-		mouseModes.removeElementAt(i);
-	    }
-	    // Set the first mode to the active one, if deleting the
-	    // active one.
-	    else if (needToAdjustActiveMode) {
-		setActive(med);
-		needToAdjustActiveMode = false;
-	    }
-	}
+        for (int i = 0; i < mouseModes.size(); i++) {
+            if (med.equals(mouseModes.elementAt(i))) {
+                med.removeAllMapMouseListeners();
+                mouseModes.removeElementAt(i);
+            }
+            // Set the first mode to the active one, if deleting the
+            // active one.
+            else if (needToAdjustActiveMode) {
+                setActive(med);
+                needToAdjustActiveMode = false;
+            }
+        }
 
-	firePropertyChange(MouseModesProperty, null, mouseModes);
+        firePropertyChange(MouseModesProperty, null, mouseModes);
     }
 
     /**
@@ -341,13 +341,13 @@ public class MouseDelegator
      * @param id the ID of the MapMouseMode that should be removed
      */
     public void removeMouseMode(String id) {
-	for (int i = 0; i < mouseModes.size(); i++) {
-	    MapMouseMode med = (MapMouseMode)mouseModes.elementAt(i);
-	    if (id.equals(med.getID())) {
-		removeMouseMode(med);
-		break;
-	    }
-	}
+        for (int i = 0; i < mouseModes.size(); i++) {
+            MapMouseMode med = (MapMouseMode)mouseModes.elementAt(i);
+            if (id.equals(med.getID())) {
+                removeMouseMode(med);
+                break;
+            }
+        }
     }
 
     /**
@@ -357,12 +357,12 @@ public class MouseDelegator
      * (MouseEvents are ignored).
      */
     public void setDefaultMouseModes() {
-	MapMouseMode[] modes = new MapMouseMode[3];
-	modes[0] = new NavMouseMode(true);
-	modes[1] = new SelectMouseMode(true);
- 	modes[2] = new NullMouseMode();
-	
-	setMouseModes(modes);
+        MapMouseMode[] modes = new MapMouseMode[3];
+        modes[0] = new NavMouseMode(true);
+        modes[1] = new SelectMouseMode(true);
+        modes[2] = new NullMouseMode();
+        
+        setMouseModes(modes);
     }
 
     /**
@@ -371,15 +371,15 @@ public class MouseDelegator
      * @param evt PropertyChangeEvent
      */
     public void propertyChange(PropertyChangeEvent evt) {
-	String property = evt.getPropertyName();
-	if (property == MapBean.LayersProperty) {
-	    // make a safe copy of the layers that are part of the MapBean
-	    Layer[] layers = (Layer[]) evt.getNewValue();
-	    currentLayers = new Layer[layers.length];
-	    System.arraycopy(layers, 0, currentLayers, 0, layers.length); 
+        String property = evt.getPropertyName();
+        if (property == MapBean.LayersProperty) {
+            // make a safe copy of the layers that are part of the MapBean
+            Layer[] layers = (Layer[]) evt.getNewValue();
+            currentLayers = new Layer[layers.length];
+            System.arraycopy(layers, 0, currentLayers, 0, layers.length); 
 
-	    setupMouseModesWithLayers(currentLayers);
-	}
+            setupMouseModesWithLayers(currentLayers);
+        }
     }
 
 
@@ -388,12 +388,12 @@ public class MouseDelegator
      * list of layers to notify if it becomes active. 
      */
     public void setupMouseModesWithLayers(Layer[] layers) {
-	for (int j = 0; j < mouseModes.size(); j++) {
-	    // Clear out the old listeners first
-	    MapMouseMode mmm = 
-		(MapMouseMode) mouseModes.elementAt(j);
-	    setupMouseModeWithLayers(mmm, layers);
-	}
+        for (int j = 0; j < mouseModes.size(); j++) {
+            // Clear out the old listeners first
+            MapMouseMode mmm = 
+                (MapMouseMode) mouseModes.elementAt(j);
+            setupMouseModeWithLayers(mmm, layers);
+        }
     }
 
     /**
@@ -405,33 +405,33 @@ public class MouseDelegator
      * @param layers Layer[]
      */
     public void setupMouseModeWithLayers(MapMouseMode mmm, Layer[] layers) {
-	mmm.removeAllMapMouseListeners();
-	for (int i=0; i < layers.length; i++) {
-	    // Add the listeners from each layer to the mouse mode.
-	    MapMouseListener tempmml = null;
-	    
-	    if (layers[i] != null) {
-		tempmml = layers[i].getMapMouseListener();
-	    }
-	    
-	    if (tempmml == null) { continue; }
-	    String[] services = tempmml.getMouseModeServiceList();
-	    if (services != null) {
-		for (int k = 0; k < services.length; k++) {
-		    if (mmm.getID().equals(services[k])) {
-			mmm.addMapMouseListener(tempmml);
-			if (Debug.debugging("mousemode")) {
-			    Debug.output(
-				"MouseDelegator.setupMouseModeWithLayers():" +
-				" layer = " + layers[i].getName() +
-				" service = " + mmm.getID()
-				);
-			}
-			break;
-		    }
-		}
-	    }
-	}
+        mmm.removeAllMapMouseListeners();
+        for (int i=0; i < layers.length; i++) {
+            // Add the listeners from each layer to the mouse mode.
+            MapMouseListener tempmml = null;
+            
+            if (layers[i] != null) {
+                tempmml = layers[i].getMapMouseListener();
+            }
+            
+            if (tempmml == null) { continue; }
+            String[] services = tempmml.getMouseModeServiceList();
+            if (services != null) {
+                for (int k = 0; k < services.length; k++) {
+                    if (mmm.getID().equals(services[k])) {
+                        mmm.addMapMouseListener(tempmml);
+                        if (Debug.debugging("mousemode")) {
+                            Debug.output(
+                                "MouseDelegator.setupMouseModeWithLayers():" +
+                                " layer = " + layers[i].getName() +
+                                " service = " + mmm.getID()
+                                );
+                        }
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -441,25 +441,25 @@ public class MouseDelegator
      * @param mm MapMouseMode
      */
     public void setActive(MapMouseMode mm) {
-	if (activeMouseMode != null) {
-	    setInactive(activeMouseMode);
-	}
-	
-	activeMouseMode = mm;
-	
-	if (map != null && activeMouseMode != null) {
-	    if (Debug.debugging("mousemode")) {
-		Debug.output("MouseDelegator.setActive(): " + mm.getID());
-	    }
-	    map.addMouseListener(mm);
-	    map.addMouseMotionListener(mm);
-	    map.addPaintListener(mm);
-	    map.setCursor(activeMouseMode.getModeCursor());
-	    if (mm instanceof ProjectionListener) {
-		map.addProjectionListener((ProjectionListener)mm);
-	    }
-	    activeMouseMode.setActive(true);
-	}
+        if (activeMouseMode != null) {
+            setInactive(activeMouseMode);
+        }
+        
+        activeMouseMode = mm;
+        
+        if (map != null && activeMouseMode != null) {
+            if (Debug.debugging("mousemode")) {
+                Debug.output("MouseDelegator.setActive(): " + mm.getID());
+            }
+            map.addMouseListener(mm);
+            map.addMouseMotionListener(mm);
+            map.addPaintListener(mm);
+            map.setCursor(activeMouseMode.getModeCursor());
+            if (mm instanceof ProjectionListener) {
+                map.addProjectionListener((ProjectionListener)mm);
+            }
+            activeMouseMode.setActive(true);
+        }
     }
 
     /**
@@ -468,21 +468,21 @@ public class MouseDelegator
      * @param mm MapMouseMode.
      */
     public void setInactive(MapMouseMode mm) {
-	if (map != null) {
-	    map.removeMouseListener(mm);
-	    map.removeMouseMotionListener(mm);
-	    map.removePaintListener(mm);
-	    // should set map's cursor to some default value??
-	    if (mm instanceof ProjectionListener) {
-		map.removeProjectionListener((ProjectionListener)mm);
-	    }
-	}
-	if (activeMouseMode == mm) {
-	    activeMouseMode = null;
-	}
-	if (mm != null) {
-	    mm.setActive(false);
-	}
+        if (map != null) {
+            map.removeMouseListener(mm);
+            map.removeMouseMotionListener(mm);
+            map.removePaintListener(mm);
+            // should set map's cursor to some default value??
+            if (mm instanceof ProjectionListener) {
+                map.removeProjectionListener((ProjectionListener)mm);
+            }
+        }
+        if (activeMouseMode == mm) {
+            activeMouseMode = null;
+        }
+        if (mm != null) {
+            mm.setActive(false);
+        }
     }
 
     /**
@@ -498,10 +498,10 @@ public class MouseDelegator
      * BeanContext.
      */
     public void findAndInit(Iterator it) {
-	Object someObj;
-	while (it.hasNext()) {
-	    findAndInit(it.next());
-	}
+        Object someObj;
+        while (it.hasNext()) {
+            findAndInit(it.next());
+        }
     }
 
     /**
@@ -509,14 +509,14 @@ public class MouseDelegator
      * to see if it is needed.
      */
     public void findAndInit(Object someObj) {
-	if (someObj instanceof MapBean) {	      
-	    Debug.message("mousedelegator","MouseDelegator found a map.");
-	    setMap((MapBean)someObj);
-	}
-	if (someObj instanceof MapMouseMode){
-	    Debug.message("mousedelegator","MouseDelegator found a MapMouseMode.");
-	    addMouseMode((MapMouseMode)someObj);
-	}
+        if (someObj instanceof MapBean) {             
+            Debug.message("mousedelegator","MouseDelegator found a map.");
+            setMap((MapBean)someObj);
+        }
+        if (someObj instanceof MapMouseMode){
+            Debug.message("mousedelegator","MouseDelegator found a MapMouseMode.");
+            addMouseMode((MapMouseMode)someObj);
+        }
     }
 
     /** 
@@ -527,7 +527,7 @@ public class MouseDelegator
      * go through the new objects.
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
-	findAndInit(bcme.iterator());      
+        findAndInit(bcme.iterator());      
     }
 
     /** 
@@ -540,83 +540,83 @@ public class MouseDelegator
      * go through the removed objects.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-	Iterator it = bcme.iterator();
-	Object someObj;
-	while (it.hasNext()) {
-	    findAndUndo(it.next());
-	}
+        Iterator it = bcme.iterator();
+        Object someObj;
+        while (it.hasNext()) {
+            findAndUndo(it.next());
+        }
     }
 
     /**
      * Called by childrenRemoved.
      */
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof MapBean) {      
-	    if (getMap() == (MapBean)someObj) {
-		Debug.message("mousedelegator","MouseDelegator: removing the map.");
-		setMap(null);
-	    }
-	}
-	if (someObj instanceof MapMouseMode){
-	    Debug.message("mousedelegator","MouseDelegator: removing a MapMouseMode.");
-	    removeMouseMode((MapMouseMode)someObj);
-	}
+        if (someObj instanceof MapBean) {      
+            if (getMap() == (MapBean)someObj) {
+                Debug.message("mousedelegator","MouseDelegator: removing the map.");
+                setMap(null);
+            }
+        }
+        if (someObj instanceof MapMouseMode){
+            Debug.message("mousedelegator","MouseDelegator: removing a MapMouseMode.");
+            removeMouseMode((MapMouseMode)someObj);
+        }
     }
     
     /** Method for BeanContextChild interface. */
     public BeanContext getBeanContext() {
-	return beanContextChildSupport.getBeanContext();
+        return beanContextChildSupport.getBeanContext();
     }
   
     /** Method for BeanContextChild interface. */
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
-	if (in_bc != null) {
-	    in_bc.addBeanContextMembershipListener(this);
-	    beanContextChildSupport.setBeanContext(in_bc);
-	    findAndInit(in_bc.iterator());
-	}
+        if (in_bc != null) {
+            in_bc.addBeanContextMembershipListener(this);
+            beanContextChildSupport.setBeanContext(in_bc);
+            findAndInit(in_bc.iterator());
+        }
     }
     
     /** Method for BeanContextChild interface. */
     public void addPropertyChangeListener(String propertyName, 
-					  PropertyChangeListener in_pcl) {
-	pcSupport.addPropertyChangeListener(propertyName, in_pcl);
+                                          PropertyChangeListener in_pcl) {
+        pcSupport.addPropertyChangeListener(propertyName, in_pcl);
     }
 
     /** Method for BeanContextChild interface. */
     public void removePropertyChangeListener(String propertyName, 
-					     PropertyChangeListener in_pcl) {
-	pcSupport.removePropertyChangeListener(propertyName, in_pcl);
+                                             PropertyChangeListener in_pcl) {
+        pcSupport.removePropertyChangeListener(propertyName, in_pcl);
     }
     
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-	// This function is why we don't use the
-	// BeanContextChildSupport PropertyChangeSupport object.
-	pcSupport.addPropertyChangeListener(listener);
+        // This function is why we don't use the
+        // BeanContextChildSupport PropertyChangeSupport object.
+        pcSupport.addPropertyChangeListener(listener);
     }
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-	// This function is why we don't use the
-	// BeanContextChildSupport PropertyChangeSupport object.
-	pcSupport.removePropertyChangeListener(listener);
+        // This function is why we don't use the
+        // BeanContextChildSupport PropertyChangeSupport object.
+        pcSupport.removePropertyChangeListener(listener);
     }
 
     public void firePropertyChange(String property, Object oldObj, 
-				   Object newObj) {
+                                   Object newObj) {
 
-	pcSupport.firePropertyChange(property,oldObj,newObj);
+        pcSupport.firePropertyChange(property,oldObj,newObj);
     }
 
     /** Method for BeanContextChild interface. */
     public void addVetoableChangeListener(String propertyName, 
-					  VetoableChangeListener in_vcl) {
-	beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
+                                          VetoableChangeListener in_vcl) {
+        beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
     }
   
     /** Method for BeanContextChild interface. */
     public void removeVetoableChangeListener(String propertyName, 
-					     VetoableChangeListener in_vcl) {
-	beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
+                                             VetoableChangeListener in_vcl) {
+        beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
     }
 
     /**
@@ -637,10 +637,10 @@ public class MouseDelegator
      * change to be rolled back.
      */
     public void fireVetoableChange(String name, 
-				   Object oldValue, 
-				   Object newValue) 
-	throws PropertyVetoException {
-	beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
+                                   Object oldValue, 
+                                   Object newValue) 
+        throws PropertyVetoException {
+        beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
     }
 
 }

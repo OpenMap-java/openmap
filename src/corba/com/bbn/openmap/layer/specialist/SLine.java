@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SLine.java,v $
 // $RCSfile: SLine.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -61,49 +61,49 @@ public class SLine extends SGraphic /*used to be _LineImplBase*/ {
 
     // Need several constructors
     public SLine() {
-	super(GraphicType.GT_Line, 
-	      RenderType.RT_Unknown, 
-	      LineType.LT_Unknown, 
-	      DeclutterType.DC_None);
+        super(GraphicType.GT_Line, 
+              RenderType.RT_Unknown, 
+              LineType.LT_Unknown, 
+              DeclutterType.DC_None);
         ll1_ =  new LLPoint(0f, 0f);
-	ll2_ =  new LLPoint(0f, 0f);
-	p1_ = new XYPoint((short)0, (short)0);
-	p2_ = new XYPoint((short)0, (short)0);
+        ll2_ =  new LLPoint(0f, 0f);
+        p1_ = new XYPoint((short)0, (short)0);
+        p2_ = new XYPoint((short)0, (short)0);
     }
 
     public SLine(LLPoint ll1, LLPoint ll2, LineType lType) {
-	super(GraphicType.GT_Line, 
-	      RenderType.RT_LatLon, lType, 
-	      DeclutterType.DC_None);
+        super(GraphicType.GT_Line, 
+              RenderType.RT_LatLon, lType, 
+              DeclutterType.DC_None);
         ll1_ = ll1;
-	ll2_ = ll2;
-	p1_ = new XYPoint((short)0, (short)0);
-	p2_ = new XYPoint((short)0, (short)0);
+        ll2_ = ll2;
+        p1_ = new XYPoint((short)0, (short)0);
+        p2_ = new XYPoint((short)0, (short)0);
     }
 
     public SLine(short x1, short y1, 
-		 short x2, short y2) {
-	super(GraphicType.GT_Line, 
-	      RenderType.RT_XY, 
-	      LineType.LT_Unknown, 
-	      DeclutterType.DC_None);
+                 short x2, short y2) {
+        super(GraphicType.GT_Line, 
+              RenderType.RT_XY, 
+              LineType.LT_Unknown, 
+              DeclutterType.DC_None);
         ll1_ =  new LLPoint(0f, 0f);
-	ll2_ =  new LLPoint(0f, 0f);
-	p1_ = new XYPoint(x1, y1);
-	p2_ = new XYPoint(x2, y2);
+        ll2_ =  new LLPoint(0f, 0f);
+        p1_ = new XYPoint(x1, y1);
+        p2_ = new XYPoint(x2, y2);
     }
 
     public SLine(LLPoint ll1, 
-		 short x1, short y1, 
-		 short x2, short y2) {
-	super(GraphicType.GT_Line, 
-	      RenderType.RT_Offset, 
-	      LineType.LT_Unknown, 
-	      DeclutterType.DC_None);
+                 short x1, short y1, 
+                 short x2, short y2) {
+        super(GraphicType.GT_Line, 
+              RenderType.RT_Offset, 
+              LineType.LT_Unknown, 
+              DeclutterType.DC_None);
         ll1_ = ll1;
-	ll2_ =  new LLPoint(0f, 0f);
-	p1_ = new XYPoint(x1, y1);
-	p2_ = new XYPoint(x2, y2);
+        ll2_ =  new LLPoint(0f, 0f);
+        p1_ = new XYPoint(x1, y1);
+        p2_ = new XYPoint(x2, y2);
     }
 
     // The SLine methods
@@ -137,41 +137,41 @@ public class SLine extends SGraphic /*used to be _LineImplBase*/ {
 
     public UGraphic ufill() {
         UGraphic ugraphic = new UGraphic();
-	ugraphic.eline(fill());
-	return ugraphic;
+        ugraphic.eline(fill());
+        return ugraphic;
     }
 
     //  Update methods as a result of gesture impulses...
     public void changeLl1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
-	LF_update gupdate = new LF_update();
-	gupdate.ll1(ll1);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.lf_update(gupdate);
-	addGraphicChange(ug);
+        LF_update gupdate = new LF_update();
+        gupdate.ll1(ll1);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.lf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeLl2(com.bbn.openmap.CSpecialist.LLPoint ll2) {
         ll2_ = ll2;
-	LF_update gupdate = new LF_update();
-	gupdate.ll2(ll2);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.lf_update(gupdate);
-	addGraphicChange(ug);
+        LF_update gupdate = new LF_update();
+        gupdate.ll2(ll2);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.lf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeP1(com.bbn.openmap.CSpecialist.XYPoint p1) {
         p1_ = p1;
-	LF_update gupdate = new LF_update();
-	gupdate.p1(p1);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.lf_update(gupdate);
-	addGraphicChange(ug);
+        LF_update gupdate = new LF_update();
+        gupdate.p1(p1);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.lf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeP2(com.bbn.openmap.CSpecialist.XYPoint p2) {
         p2_ = p2;
-	LF_update gupdate = new LF_update();
-	gupdate.p2(p2);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.lf_update(gupdate);
-	addGraphicChange(ug);
+        LF_update gupdate = new LF_update();
+        gupdate.p2(p2);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.lf_update(gupdate);
+        addGraphicChange(ug);
     }
 }

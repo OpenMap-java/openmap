@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/08/28 22:09:16 $
+// $Revision: 1.8 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -98,10 +98,10 @@ public abstract class BasicGeometry
      * @param value the line type of the graphic.
      * */
     public void setLineType(int value) {
-	if (lineType == value) return;
-	setNeedToRegenerate(true); // flag dirty
-	
-	lineType = value;
+        if (lineType == value) return;
+        setNeedToRegenerate(true); // flag dirty
+        
+        lineType = value;
     }
 
     /**
@@ -131,9 +131,9 @@ public abstract class BasicGeometry
      */
     public void setNeedToRegenerate(boolean value) { 
         needToRegenerate = value;
-	if (value == true) {
-	    shape = null;
-	}
+        if (value == true) {
+            shape = null;
+        }
     }
 
     /**
@@ -155,7 +155,7 @@ public abstract class BasicGeometry
      * @param visible boolean
      */
     public void setVisible(boolean visible) {
-	this.visible = visible;
+        this.visible = visible;
     }
 
     /**
@@ -164,7 +164,7 @@ public abstract class BasicGeometry
      * @return boolean
      */
     public boolean isVisible() {
-	return visible;
+        return visible;
     }
 
     /**
@@ -188,7 +188,7 @@ public abstract class BasicGeometry
      * @param obj Object
      */
     public synchronized void setAppObject(Object obj) {
-	appObject = obj;
+        appObject = obj;
     }
 
     /**
@@ -197,7 +197,7 @@ public abstract class BasicGeometry
      * @return Object
      */
     public synchronized Object getAppObject() {
-	return appObject;
+        return appObject;
     }
 
 //////////////////////////////////////////////////////////////////////////
@@ -223,8 +223,8 @@ public abstract class BasicGeometry
      *
      */
     public boolean isRenderable() {
-	return (!getNeedToRegenerate() &&
-		isVisible() &&	shape != null);
+        return (!getNeedToRegenerate() &&
+                isVisible() &&  shape != null);
     }
 
     /**
@@ -245,11 +245,11 @@ public abstract class BasicGeometry
      * @param g Graphics2D context to render into.  
      */
     public void fill(Graphics g) {
-	if (isRenderable()) {
-	    ((Graphics2D)g).fill(shape);
-	}
+        if (isRenderable()) {
+            ((Graphics2D)g).fill(shape);
+        }
     }
-	    
+            
     /**
      * Paint the graphic, as an outlined shape. <P>
      *
@@ -268,9 +268,9 @@ public abstract class BasicGeometry
      * @param g Graphics2D context to render into.  
      */
     public void draw(Graphics g) {
-	if (isRenderable()) {
-	    ((Graphics2D)g).draw(shape);
-	}
+        if (isRenderable()) {
+            ((Graphics2D)g).draw(shape);
+        }
     }
 
     /**
@@ -284,60 +284,60 @@ public abstract class BasicGeometry
      * (ungenerated).
      */
     public float distanceToEdge(int x, int y) {
-	float temp, distance = Float.POSITIVE_INFINITY;
+        float temp, distance = Float.POSITIVE_INFINITY;
 
-	if (getNeedToRegenerate() || shape == null) {
-	    return distance;
-	}
+        if (getNeedToRegenerate() || shape == null) {
+            return distance;
+        }
 
-	PathIterator pi2 = shape.getPathIterator(null);
-	FlatteningPathIterator pi = new FlatteningPathIterator(pi2, .25);
-	double[] coords = new double[6];
-	int count = 0;
-	double startPntX = 0;
-	double startPntY = 0;
-	double endPntX = 0;
-	double endPntY = 0;
+        PathIterator pi2 = shape.getPathIterator(null);
+        FlatteningPathIterator pi = new FlatteningPathIterator(pi2, .25);
+        double[] coords = new double[6];
+        int count = 0;
+        double startPntX = 0;
+        double startPntY = 0;
+        double endPntX = 0;
+        double endPntY = 0;
 
-	while (!pi.isDone()) {
-	    int type = pi.currentSegment(coords);
-	    float dist;
+        while (!pi.isDone()) {
+            int type = pi.currentSegment(coords);
+            float dist;
 
-	    if (type == PathIterator.SEG_LINETO) {
-		startPntX = endPntX;
-		startPntY = endPntY;
-		endPntX = coords[0];
-		endPntY = coords[1];
+            if (type == PathIterator.SEG_LINETO) {
+                startPntX = endPntX;
+                startPntY = endPntY;
+                endPntX = coords[0];
+                endPntY = coords[1];
 
-		dist = (float) Line2D.ptSegDist(startPntX, startPntY, endPntX, endPntY, (double)x, (double)y);
+                dist = (float) Line2D.ptSegDist(startPntX, startPntY, endPntX, endPntY, (double)x, (double)y);
 
-		if (dist < distance) {
-		    distance = dist;
-		}
+                if (dist < distance) {
+                    distance = dist;
+                }
 
-		if (Debug.debugging("omgraphicdetail")) {
-		    Debug.output("Type: " + type + "(" + 
-				 (count++) + "), " + 
-				 startPntX + ", " + startPntY + ", " +
-				 endPntX + ", " + endPntY + ", " + 
-				 x + ", " + y + 
-				 ", distance: " + distance);
-		}
-		    
-	    } else {
+                if (Debug.debugging("omgraphicdetail")) {
+                    Debug.output("Type: " + type + "(" + 
+                                 (count++) + "), " + 
+                                 startPntX + ", " + startPntY + ", " +
+                                 endPntX + ", " + endPntY + ", " + 
+                                 x + ", " + y + 
+                                 ", distance: " + distance);
+                }
+                    
+            } else {
 
-		// This should be the first and last
-		// condition, SEG_MOVETO and SEG_CLOSE
-		startPntX = coords[0];
-		startPntY = coords[1];
-		endPntX = coords[0];
-		endPntY = coords[1];
-	    }
+                // This should be the first and last
+                // condition, SEG_MOVETO and SEG_CLOSE
+                startPntX = coords[0];
+                startPntY = coords[1];
+                endPntX = coords[0];
+                endPntY = coords[1];
+            }
 
-	    pi.next();
-	}
+            pi.next();
+        }
 
-	return distance;
+        return distance;
     }
 
     /**
@@ -361,7 +361,7 @@ public abstract class BasicGeometry
      * (ungenerated).
      */
     public float distance(int x, int y) {
-	return _distance(x, y);
+        return _distance(x, y);
     }
 
     /**
@@ -381,20 +381,20 @@ public abstract class BasicGeometry
      * (ungenerated).
      */
     protected float _distance(int x, int y) {
-	float temp, distance = Float.POSITIVE_INFINITY;
+        float temp, distance = Float.POSITIVE_INFINITY;
 
-	if (getNeedToRegenerate() || shape == null) {
-	    return distance;
-	}
+        if (getNeedToRegenerate() || shape == null) {
+            return distance;
+        }
 
-	if (shape.contains((double)x, (double)y)) {
-// 	    if (Debug.debugging("omgraphicdetail")) {
-// 		Debug.output(" contains " + x + ", " + y);
-// 	    }
-	    return 0f;
-	} else {
-	    return distanceToEdge(x, y);
-	}
+        if (shape.contains((double)x, (double)y)) {
+//          if (Debug.debugging("omgraphicdetail")) {
+//              Debug.output(" contains " + x + ", " + y);
+//          }
+            return 0f;
+        } else {
+            return distanceToEdge(x, y);
+        }
     }
 
     /** 
@@ -420,14 +420,14 @@ public abstract class BasicGeometry
      * hasn't been generated yet.  
      */
     public boolean contains(int x, int y) {
-	Shape shape = getShape();
-	boolean ret = false;
+        Shape shape = getShape();
+        boolean ret = false;
 
-	if (shape != null) {
-	    ret = shape.contains((double)x, (double)y);
-	}
+        if (shape != null) {
+            ret = shape.contains((double)x, (double)y);
+        }
 
-	return ret;
+        return ret;
     }
 
     /**
@@ -444,15 +444,15 @@ public abstract class BasicGeometry
      * @see #generate
      */
     public boolean regenerate(Projection proj) {
-	if (proj == null) {
-	    return false;
-	}
+        if (proj == null) {
+            return false;
+        }
 
-	if (getNeedToRegenerate()) {
-	    return generate(proj);
-	}
+        if (getNeedToRegenerate()) {
+            return generate(proj);
+        }
 
-	return false;
+        return false;
     }
 
     /**
@@ -471,7 +471,7 @@ public abstract class BasicGeometry
      * use Shape objects for its internal representation.
      */
     public GeneralPath getShape() {
-	return shape;
+        return shape;
     }
 
     /**
@@ -489,7 +489,7 @@ public abstract class BasicGeometry
      * clear out the object being held by the OMGeometry.
      */
     public void setShape(GeneralPath gp) {
-	shape = gp;
+        shape = gp;
     }
 
     /**
@@ -506,7 +506,7 @@ public abstract class BasicGeometry
      * @return The Shape object for the points.  
      */
     public static GeneralPath createShape(int xpoints[], int ypoints[], boolean isPolygon) {
-	return createShape(xpoints, ypoints, 0, xpoints.length, isPolygon);
+        return createShape(xpoints, ypoints, 0, xpoints.length, isPolygon);
     }
 
     /**
@@ -525,44 +525,44 @@ public abstract class BasicGeometry
      * @return The Shape object for the points.  
      */
     public static GeneralPath createShape(int xpoints[], int ypoints[], 
-					  int startIndex, int length, 
-					  boolean isPolygon) { 
-	// used to return a Shape
+                                          int startIndex, int length, 
+                                          boolean isPolygon) { 
+        // used to return a Shape
 
-	if (xpoints == null || ypoints == null) {
-	    return null;
-	}
+        if (xpoints == null || ypoints == null) {
+            return null;
+        }
 
-	if (startIndex < 0) {
-	    startIndex = 0;
-	}
+        if (startIndex < 0) {
+            startIndex = 0;
+        }
 
-	if (length > xpoints.length - startIndex) {
-	    // Do as much as you can...
-	    length = xpoints.length - startIndex - 1;
-	}
-	
-	GeneralPath path = new GeneralPath(GeneralPath.WIND_EVEN_ODD, length);
-	
-	if (length > startIndex) {
-	    path.moveTo(xpoints[startIndex], ypoints[startIndex]);
-	    for (int j = startIndex + 1; j < length; j++) {
-		path.lineTo(xpoints[j], ypoints[j]);
-	    }
-	
-	    if (isPolygon) {
-		path.closePath();
-	    }
-	}
-	
-	return path;
+        if (length > xpoints.length - startIndex) {
+            // Do as much as you can...
+            length = xpoints.length - startIndex - 1;
+        }
+        
+        GeneralPath path = new GeneralPath(GeneralPath.WIND_EVEN_ODD, length);
+        
+        if (length > startIndex) {
+            path.moveTo(xpoints[startIndex], ypoints[startIndex]);
+            for (int j = startIndex + 1; j < length; j++) {
+                path.lineTo(xpoints[j], ypoints[j]);
+            }
+        
+            if (isPolygon) {
+                path.closePath();
+            }
+        }
+        
+        return path;
     }
 
     /**
      * Utility method that iterates over a Shape object and prints out the points.
      */
     public static void describeShapeDetail(Shape shape) {
-	describeShapeDetail(shape, .25);
+        describeShapeDetail(shape, .25);
     }
 
     /**
@@ -572,20 +572,20 @@ public abstract class BasicGeometry
      * traversal.
      */
     public static void describeShapeDetail(Shape shape, double flattening) {
-	PathIterator pi2 = shape.getPathIterator(null);
-	FlatteningPathIterator pi = new FlatteningPathIterator(pi2, flattening);
-	double[] coords = new double[6];
-	int pointCount = 0;
+        PathIterator pi2 = shape.getPathIterator(null);
+        FlatteningPathIterator pi = new FlatteningPathIterator(pi2, flattening);
+        double[] coords = new double[6];
+        int pointCount = 0;
 
-	Debug.output(" -- start describeShapeDetail with flattening[" + flattening + "]");
-	while (!pi.isDone()) {
-	    int type = pi.currentSegment(coords);
-	    Debug.output(" Shape point [" + type + "] (" + (pointCount++) + ") " +  
-			 coords[0] + ", " + coords[1]);
-	    pi.next();
-	}
+        Debug.output(" -- start describeShapeDetail with flattening[" + flattening + "]");
+        while (!pi.isDone()) {
+            int type = pi.currentSegment(coords);
+            Debug.output(" Shape point [" + type + "] (" + (pointCount++) + ") " +  
+                         coords[0] + ", " + coords[1]);
+            pi.next();
+        }
 
-	Debug.output(" -- end (" + pointCount + ")");
+        Debug.output(" -- end (" + pointCount + ")");
     }
 
     /**
@@ -598,8 +598,8 @@ public abstract class BasicGeometry
      * @return toShape, with coordinates appended.
      */
     public static GeneralPath appendShapeEdge(GeneralPath toShape, 
-					      int xpoints[], int ypoints[]) { 
-	return appendShapeEdge(toShape, xpoints, ypoints, 0, xpoints.length);
+                                              int xpoints[], int ypoints[]) { 
+        return appendShapeEdge(toShape, xpoints, ypoints, 0, xpoints.length);
     }
 
     /**
@@ -614,9 +614,9 @@ public abstract class BasicGeometry
      * @return toShape, with coordinates appended.
      */
     public static GeneralPath appendShapeEdge(GeneralPath toShape, 
-					      int xpoints[], int ypoints[], 
-					      int startIndex, int length) { 
-	return appendShapeEdge(toShape, createShape(xpoints, ypoints, startIndex, length, false));
+                                              int xpoints[], int ypoints[], 
+                                              int startIndex, int length) { 
+        return appendShapeEdge(toShape, createShape(xpoints, ypoints, startIndex, length, false));
     }
 
     /**
@@ -630,49 +630,49 @@ public abstract class BasicGeometry
      * if toShape was null.
      */
     public static GeneralPath appendShapeEdge(GeneralPath toShape, 
-					      GeneralPath addShape) {
+                                              GeneralPath addShape) {
 
-	boolean DEBUG = Debug.debugging("arealist");
-	int pointCount = 0;
-	boolean firstPoint = false;
+        boolean DEBUG = Debug.debugging("arealist");
+        int pointCount = 0;
+        boolean firstPoint = false;
 
-	// If both null, return null.
-	if (addShape == null) {
-	    return toShape;
-	}
+        // If both null, return null.
+        if (addShape == null) {
+            return toShape;
+        }
 
-	if (toShape == null) {
-	    return addShape;
-	}
+        if (toShape == null) {
+            return addShape;
+        }
 
-	PathIterator pi2 = addShape.getPathIterator(null);
-	FlatteningPathIterator pi = new FlatteningPathIterator(pi2, .25);
-	double[] coords = new double[6];
+        PathIterator pi2 = addShape.getPathIterator(null);
+        FlatteningPathIterator pi = new FlatteningPathIterator(pi2, .25);
+        double[] coords = new double[6];
 
-	while (!pi.isDone()) {
-	    int type = pi.currentSegment(coords);
-	    if (firstPoint) {
-		if (DEBUG) {
-		    Debug.output("Creating new shape, first point " +
-				 (float)coords[0] + ", " + (float)coords[1]);
-		}
-		toShape.moveTo((float)coords[0], (float)coords[1]);
-		firstPoint = false;
-	    } else {
-		if (DEBUG) {
-		    Debug.output(" adding point [" + type + "] (" + (pointCount++) + ") " +  
-				 (float)coords[0] + ", " + (float)coords[1]);
-		}
-		toShape.lineTo((float)coords[0], (float)coords[1]);
-	    }
-	    pi.next();
-	}
+        while (!pi.isDone()) {
+            int type = pi.currentSegment(coords);
+            if (firstPoint) {
+                if (DEBUG) {
+                    Debug.output("Creating new shape, first point " +
+                                 (float)coords[0] + ", " + (float)coords[1]);
+                }
+                toShape.moveTo((float)coords[0], (float)coords[1]);
+                firstPoint = false;
+            } else {
+                if (DEBUG) {
+                    Debug.output(" adding point [" + type + "] (" + (pointCount++) + ") " +  
+                                 (float)coords[0] + ", " + (float)coords[1]);
+                }
+                toShape.lineTo((float)coords[0], (float)coords[1]);
+            }
+            pi.next();
+        }
 
-	if (DEBUG) {
-	    Debug.output(" -- end point (" + pointCount + ")");
-	}
+        if (DEBUG) {
+            Debug.output(" -- end point (" + pointCount + ")");
+        }
 
-	return toShape;
+        return toShape;
     }
 
 
@@ -680,18 +680,18 @@ public abstract class BasicGeometry
      * Create a general path from a point plus a height and width;
      */
     public static GeneralPath createBoxShape(int x, int y, int width, int height) {
-	int[] xs = new int[4];
-	int[] ys = new int[4];
+        int[] xs = new int[4];
+        int[] ys = new int[4];
 
-	xs[0] = x;
-	ys[0] = y;
-	xs[1] = x + width;
-	ys[1] = y;
-	xs[2] = x + width;
-	ys[2] = y + height;
-	xs[3] = x;
-	ys[3] = y + height;
+        xs[0] = x;
+        ys[0] = y;
+        xs[1] = x + width;
+        ys[1] = y;
+        xs[2] = x + width;
+        ys[2] = y + height;
+        xs[3] = x;
+        ys[3] = y + height;
 
-	return createShape(xs, ys, true);
+        return createShape(xs, ys, true);
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeBattleDimension.java,v $
 // $RCSfile: CodeBattleDimension.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,6 +38,6 @@ import java.util.Properties;
 public class CodeBattleDimension extends CodePosition {
 
     public CodeBattleDimension() {
-	super("Battle Dimension", 3, 3);
+        super("Battle Dimension", 3, 3);
     }
 }

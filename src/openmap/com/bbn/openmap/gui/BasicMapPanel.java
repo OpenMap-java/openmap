@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/BasicMapPanel.java,v $
 // $RCSfile: BasicMapPanel.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/11/14 20:21:42 $
+// $Revision: 1.10 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,7 +78,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * components for the MapPanel.
      */
     public BasicMapPanel() {
-	this(false);
+        this(false);
     }
 
     /**
@@ -88,7 +88,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * programmer will call <code>create()</code>
      */
     public BasicMapPanel(boolean delayCreation) {
-	this(null, delayCreation);
+        this(null, delayCreation);
     }
 
     /**
@@ -97,7 +97,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * PropertyHandler is null, a new one will be created.
      */
     public BasicMapPanel(PropertyHandler propertyHandler) {
-	this(propertyHandler, false);
+        this(propertyHandler, false);
     }
 
     /**
@@ -109,11 +109,11 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * programmer will call <code>create()</code>
      */
     public BasicMapPanel(PropertyHandler propertyHandler, 
-			 boolean delayCreation) {
-	setPropertyHandler(propertyHandler);
-	if (!delayCreation) {
-	    create();
-	}
+                         boolean delayCreation) {
+        setPropertyHandler(propertyHandler);
+        if (!delayCreation) {
+            create();
+        }
     }
 
     /**
@@ -123,8 +123,8 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * create components based on the contents of its properties.
      */
     public void create() {
-	setLayout(createLayoutManager());
-	createComponents();	
+        setLayout(createLayoutManager());
+        createComponents();     
     }
 
     /**
@@ -136,7 +136,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * method.
      */
     protected LayoutManager createLayoutManager() {
-	return new BorderLayout();
+        return new BorderLayout();
     }
 
     /**
@@ -144,7 +144,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * Defaults to BorderLayout.CENTER.
      */
     protected void addMapBeanToPanel(MapBean map) {
-	add(map, BorderLayout.CENTER);	
+        add(map, BorderLayout.CENTER);  
     }
 
     /**
@@ -157,16 +157,16 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * MapHandler in this MapPanel.
      */
     protected void createComponents() {
-	// Make this call first to load the properties into
-	// Environment, before the MapBean gets created.
-	PropertyHandler ph = getPropertyHandler();
-	// Make sure the MapBean is created and added to the
-	// MapHandler.
-	MapBean mb = getMapBean();
-	getMapHandler().add(this);
-	ph.createComponents(getMapHandler());
+        // Make this call first to load the properties into
+        // Environment, before the MapBean gets created.
+        PropertyHandler ph = getPropertyHandler();
+        // Make sure the MapBean is created and added to the
+        // MapHandler.
+        MapBean mb = getMapBean();
+        getMapHandler().add(this);
+        ph.createComponents(getMapHandler());
 
-	mb.setBckgrnd(Environment.getCustomBackgroundColor());
+        mb.setBckgrnd(Environment.getCustomBackgroundColor());
     }
 
     /**
@@ -177,10 +177,10 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * this method.
      */      
     public MapBean getMapBean() {
-	if (mapBean == null) {
-	    setMapBean(BasicMapPanel.createMapBean());
-	}
-	return mapBean;
+        if (mapBean == null) {
+            setMapBean(BasicMapPanel.createMapBean());
+        }
+        return mapBean;
     }
 
     /**
@@ -193,9 +193,9 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * (since the MapBean is a SoloMapComponent).
      */
     public void setMapBean(MapBean bean) {
-	mapBean = bean;
-	getMapHandler().add(mapBean);
-	addMapBeanToPanel(mapBean);
+        mapBean = bean;
+        getMapHandler().add(mapBean);
+        addMapBeanToPanel(mapBean);
     }
 
     /**
@@ -203,10 +203,10 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * the panel, creating it if it doesn't exist.
      */
     public PropertyHandler getPropertyHandler() {
-	if (propertyHandler == null) {
-	    setPropertyHandler(new PropertyHandler());
-	}
-	return propertyHandler;
+        if (propertyHandler == null) {
+            setPropertyHandler(new PropertyHandler());
+        }
+        return propertyHandler;
     }
 
     /**
@@ -216,10 +216,10 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * be created via a getMapHandler() call.
      */
     public void setPropertyHandler(PropertyHandler handler) {
-	propertyHandler = handler;
-	if (handler != null) {
-	    getMapHandler().add(handler);
-	}
+        propertyHandler = handler;
+        if (handler != null) {
+            getMapHandler().add(handler);
+        }
     }
 
     /**
@@ -227,10 +227,10 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * Creates a standard MapHandler if it hasn't been created yet.
      */      
     public MapHandler getMapHandler() {
-	if (mapHandler == null) {
-	    mapHandler = new MapHandler();
-	}
-	return mapHandler;
+        if (mapHandler == null) {
+            mapHandler = new MapHandler();
+        }
+        return mapHandler;
     }
 
     /**
@@ -238,11 +238,11 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * properties.
      */
     public JMenuBar getMapMenuBar() {
-	if (menuList != null) {
-	    return menuList.getMenuBar();
-	} else {
-	    return null;
-	}
+        if (menuList != null) {
+            return menuList.getMenuBar();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -250,11 +250,11 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * properties.
      */
     public JMenu getMapMenu() {
-	if (menuList != null) {
-	    return menuList.getMenu();
-	} else {
-	    return null;
-	}
+        if (menuList != null) {
+            return menuList.getMenu();
+        } else {
+            return null;
+        }
     }
 
     //Map Component Methods:
@@ -271,9 +271,9 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * is a reject policy.
      */
     public void addMapComponent(Object mapComponent) {
-	if (mapComponent != null) {
-	    getMapHandler().add(mapComponent);
-	}
+        if (mapComponent != null) {
+            getMapHandler().add(mapComponent);
+        }
     }
 
     /**
@@ -283,10 +283,10 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * @return true if the mapComponent was removed.
      */
     public boolean removeMapComponent(Object mapComponent) {
-	if (mapComponent != null) {
-	    return getMapHandler().remove(mapComponent);
-	}
-	return true;
+        if (mapComponent != null) {
+            return getMapHandler().remove(mapComponent);
+        }
+        return true;
     }
 
     /**
@@ -295,14 +295,14 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * in the MapHandler, you will get the first one found.
      */
     public Object getMapComponentByType(Class c) {
-	return getMapHandler().get(c);
+        return getMapHandler().get(c);
     }
 
     /**
      * Get all of the mapComponents that are of the given class type.
      **/
     public Collection getMapComponentsByType(Class c) {
-	return getMapHandler().getAll(c);
+        return getMapHandler().getAll(c);
     }
 
     /**
@@ -310,7 +310,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * prefix librarian in the MapHandler.
      **/
     public Object getMapComponent(String prefix) {
-	return getPropertyHandler().get(prefix);
+        return getPropertyHandler().get(prefix);
     }
 
     /**
@@ -318,26 +318,26 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * from them where they prefer to be placed, and adds them.
      */
     public void findAndInit(Object someObj) {
-	if (someObj instanceof MapPanelChild && someObj instanceof Component) {
-	    if (Debug.debugging("basic")) {
-		Debug.output("MapPanel: adding " + 
-			     someObj.getClass().getName());
-	    }
-	    MapPanelChild mpc = (MapPanelChild) someObj;
-	    addMapPanelChild(mpc);
-	    invalidate();
-	}
+        if (someObj instanceof MapPanelChild && someObj instanceof Component) {
+            if (Debug.debugging("basic")) {
+                Debug.output("MapPanel: adding " + 
+                             someObj.getClass().getName());
+            }
+            MapPanelChild mpc = (MapPanelChild) someObj;
+            addMapPanelChild(mpc);
+            invalidate();
+        }
 
-	if (someObj instanceof MenuList) {
-	    menuList = (MenuList)someObj;
-	}
+        if (someObj instanceof MenuList) {
+            menuList = (MenuList)someObj;
+        }
     }
 
     /**
      * Add a child to the MapPanel.
      */
     protected void addMapPanelChild(MapPanelChild mpc) {
-	add((Component)mpc, mpc.getPreferredLocation());
+        add((Component)mpc, mpc.getPreferredLocation());
     }
 
     /**
@@ -345,18 +345,18 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * them from iteself.
      */
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof MapPanelChild && someObj instanceof Component) {
-	    if (Debug.debugging("basic")) {
-		Debug.output("MapPanel: removing " + 
-			     someObj.getClass().getName());
-	    }
-	    remove((Component)someObj);
-	    invalidate();
-	}
+        if (someObj instanceof MapPanelChild && someObj instanceof Component) {
+            if (Debug.debugging("basic")) {
+                Debug.output("MapPanel: removing " + 
+                             someObj.getClass().getName());
+            }
+            remove((Component)someObj);
+            invalidate();
+        }
 
-	if (someObj instanceof MenuList && menuList == someObj) {
-	    menuList = null;
-	}
+        if (someObj instanceof MenuList && menuList == someObj) {
+            menuList = null;
+        }
     }
 
     //MapBean Methods:
@@ -368,24 +368,24 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * BevelBorder.LOWERED border for the MapBean.
      */
     public static MapBean createMapBean() {
-	int envWidth = Environment.getInteger(Environment.Width, 
-					      MapBean.DEFAULT_WIDTH);
-	int envHeight = Environment.getInteger(Environment.Height,
-					       MapBean.DEFAULT_HEIGHT);
-	// Initialize the map projection, scale, center
-	// with user prefs or defaults
-	Projection proj = ProjectionFactory.makeProjection(
-	    ProjectionFactory.getProjType(Environment.get(Environment.Projection, Mercator.MercatorName)),
-	    Environment.getFloat(Environment.Latitude, 0f),
-	    Environment.getFloat(Environment.Longitude, 0f),
-	    Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY),
-	    envWidth, envHeight);
+        int envWidth = Environment.getInteger(Environment.Width, 
+                                              MapBean.DEFAULT_WIDTH);
+        int envHeight = Environment.getInteger(Environment.Height,
+                                               MapBean.DEFAULT_HEIGHT);
+        // Initialize the map projection, scale, center
+        // with user prefs or defaults
+        Projection proj = ProjectionFactory.makeProjection(
+            ProjectionFactory.getProjType(Environment.get(Environment.Projection, Mercator.MercatorName)),
+            Environment.getFloat(Environment.Latitude, 0f),
+            Environment.getFloat(Environment.Longitude, 0f),
+            Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY),
+            envWidth, envHeight);
 
-	if (Debug.debugging("mappanel")) {
-	    Debug.output("MapPanel: creating MapBean with initial projection " + proj);
-	}
-	
-	return createMapBean(proj, new BevelBorder(BevelBorder.LOWERED));
+        if (Debug.debugging("mappanel")) {
+            Debug.output("MapPanel: creating MapBean with initial projection " + proj);
+        }
+        
+        return createMapBean(proj, new BevelBorder(BevelBorder.LOWERED));
     }
 
     /**
@@ -393,22 +393,22 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * and border to the values given.
      */
     public static MapBean createMapBean(Projection proj, Border border) {
- 	MapBean mapBeano = new BufferedLayerMapBean();
-	mapBeano.setBorder(border);
-	mapBeano.setProjection(proj);
-	mapBeano.setPreferredSize(new Dimension(proj.getWidth(), proj.getHeight()));
-	return mapBeano;
+        MapBean mapBeano = new BufferedLayerMapBean();
+        mapBeano.setBorder(border);
+        mapBeano.setProjection(proj);
+        mapBeano.setPreferredSize(new Dimension(proj.getWidth(), proj.getHeight()));
+        return mapBeano;
     }
 
 
     //Property Functions:
     /////////////////////
-	
+        
     /**
      * Get the current properties.
      */
     public Properties getProperties() {
-	return getPropertyHandler().getProperties();
+        return getPropertyHandler().getProperties();
     }
 
     /**
@@ -416,14 +416,14 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * @return true if a property was actually removed.
      */
     public boolean removeProperty(String property) {
-	return getPropertyHandler().removeProperty(property);
+        return getPropertyHandler().removeProperty(property);
     }
 
     /** 
      * Add (or overwrite) a property to the current properties
      */
     public void addProperty(String property, String value) {
-	getPropertyHandler().addProperty(property, value);
+        getPropertyHandler().addProperty(property, value);
     }
 
     /** 
@@ -433,7 +433,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * appended.
      */
     public void addProperties(URL urlToProperties) {
-	getPropertyHandler().addProperties(urlToProperties);
+        getPropertyHandler().addProperties(urlToProperties);
     }
 
     /** 
@@ -444,15 +444,15 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * @throws MalformedURLException if propFile doesn't resolve properly.
      */
     public void addProperties(String propFile) 
-	throws java.net.MalformedURLException {
-	getPropertyHandler().addProperties(propFile);
+        throws java.net.MalformedURLException {
+        getPropertyHandler().addProperties(propFile);
     }
 
     /**
      * remove a marker from a space delimated set of properties.
      */
     public void removeMarker(String property, String marker) {
-	getPropertyHandler().removeMarker(property, marker);
+        getPropertyHandler().removeMarker(property, marker);
     }
 
     /** 
@@ -462,34 +462,34 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * which will be appended.
      */
     public void addProperties(Properties p) {
-	getPropertyHandler().addProperties(p);
+        getPropertyHandler().addProperties(p);
     }
 
     /**
      * Append the given property into the current properties
      */
     public void appendProperty(String property, Properties src) {
-	getPropertyHandler().appendProperty(property, src);
+        getPropertyHandler().appendProperty(property, src);
     }
 
     /**
      * Append the given property into the current properties
      */
     public void appendProperty(String property, String value) {
-	getPropertyHandler().appendProperty(property, value);
+        getPropertyHandler().appendProperty(property, value);
     }
 
     /**
      * Prepend the given property into the current properties
      */
     public void prependProperty(String property, Properties src) {
-	getPropertyHandler().prependProperty(property, src);
+        getPropertyHandler().prependProperty(property, src);
     }
 
     /**
      * Prepend the given property into the current properties
      */
     public void prependProperty(String property, String value) {
-	getPropertyHandler().prependProperty(property, value);
+        getPropertyHandler().prependProperty(property, value);
     }
 }

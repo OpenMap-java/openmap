@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/BasicLocation.java,v $
 // $RCSfile: BasicLocation.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,8 +54,8 @@ public class BasicLocation extends Location {
      * @param locationMarker the OMGraphic to use for the location mark.  
      */
     public BasicLocation(float latitude, float longitude, String name, 
-			 OMGraphic locationMarker){
-	super(latitude, longitude, name, locationMarker);
+                         OMGraphic locationMarker){
+        super(latitude, longitude, name, locationMarker);
     }
     
     /**
@@ -69,8 +69,8 @@ public class BasicLocation extends Location {
      * @param locationMarker the OMGraphic to use for the location mark.  
      */
     public BasicLocation(int x, int y, String name, 
-			 OMGraphic locationMarker){
-	super(x, y, name, locationMarker);
+                         OMGraphic locationMarker){
+        super(x, y, name, locationMarker);
     }
 
     /**
@@ -86,9 +86,9 @@ public class BasicLocation extends Location {
      * @param locationMarker the OMGraphic to use for the location mark.
      */
     public BasicLocation(float latitude, float longitude,
-			 int xOffset, int yOffset, String name, 
-			 OMGraphic locationMarker){
-	super(latitude, longitude, xOffset, yOffset, name, locationMarker);
+                         int xOffset, int yOffset, String name, 
+                         OMGraphic locationMarker){
+        super(latitude, longitude, xOffset, yOffset, name, locationMarker);
     }
 
     /** 
@@ -96,11 +96,11 @@ public class BasicLocation extends Location {
      * marker, and a text object as the label, stored to the right.  
      */
     public void setGraphicLocations(float latitude, float longitude){
-	if (location instanceof OMRect){
-	    ((OMRect)location).setLocation(latitude, longitude, -1, -1, 1, 1);
-	}
-	label.setLat(latitude);
-	label.setLon(longitude);
+        if (location instanceof OMRect){
+            ((OMRect)location).setLocation(latitude, longitude, -1, -1, 1, 1);
+        }
+        label.setLat(latitude);
+        label.setLon(longitude);
     }
 
     /** 
@@ -108,11 +108,11 @@ public class BasicLocation extends Location {
      * marker, and a text object as the label, stored to the right.  
      */
     public void setGraphicLocations(int x, int y){
-	if (location instanceof OMRect){
-	    ((OMRect)location).setLocation(x-1, y-1, x+1, y+1);
-	}
-	label.setX(x);
-	label.setY(y);
+        if (location instanceof OMRect){
+            ((OMRect)location).setLocation(x-1, y-1, x+1, y+1);
+        }
+        label.setX(x);
+        label.setY(y);
     }
 
     /** 
@@ -120,16 +120,16 @@ public class BasicLocation extends Location {
      * marker, and a text object as the label, stored to the right.  
      */
     public void setGraphicLocations(float latitude, float longitude,
-					     int offsetX, int offsetY){
-	if (location instanceof OMRect){
-	    ((OMRect)location).setLocation(latitude, longitude, 
-					   offsetX-1, offsetY-1, 
-					   offsetX+1, offsetY+1);
-	}
+                                             int offsetX, int offsetY){
+        if (location instanceof OMRect){
+            ((OMRect)location).setLocation(latitude, longitude, 
+                                           offsetX-1, offsetY-1, 
+                                           offsetX+1, offsetY+1);
+        }
 
-	label.setLat(latitude);
-	label.setLon(longitude);
-	label.setX(offsetX);
-	label.setY(offsetY);
+        label.setLat(latitude);
+        label.setLon(longitude);
+        label.setX(offsetX);
+        label.setY(offsetY);
     }
 }

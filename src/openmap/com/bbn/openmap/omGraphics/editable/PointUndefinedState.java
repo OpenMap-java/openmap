@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PointUndefinedState.java,v $
 // $RCSfile: PointUndefinedState.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:50:27 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import com.bbn.openmap.util.Debug;
 public class PointUndefinedState extends GraphicUndefinedState {
 
     public PointUndefinedState(EditableOMPoint eomp) {
-	super(eomp);
+        super(eomp);
     }
 
     /**
@@ -43,25 +43,25 @@ public class PointUndefinedState extends GraphicUndefinedState {
      * set the mode to rect edit.  
      */
     public boolean mousePressed(MouseEvent e){ 
-	Debug.message("eomg", "PointStateMachine|undefined state|mousePressed = " + 
-		      graphic.getGraphic().getRenderType());
-	
-	GrabPoint gb = graphic.getGrabPoint(EditableOMPoint.CENTER_POINT_INDEX);
-	gb.set(e.getX(), e.getY());
-	graphic.setMovingPoint(gb);
+        Debug.message("eomg", "PointStateMachine|undefined state|mousePressed = " + 
+                      graphic.getGraphic().getRenderType());
+        
+        GrabPoint gb = graphic.getGrabPoint(EditableOMPoint.CENTER_POINT_INDEX);
+        gb.set(e.getX(), e.getY());
+        graphic.setMovingPoint(gb);
 
-	if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
- 	    graphic.getGrabPoint(EditableOMPoint.OFFSET_POINT_INDEX).set(e.getX(), e.getY());
-	    graphic.getStateMachine().setOffsetNeeded(true);
-	    Debug.message("eomg", "PointStateMachine|undefined state| *offset needed*");
-	}
+        if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
+            graphic.getGrabPoint(EditableOMPoint.OFFSET_POINT_INDEX).set(e.getX(), e.getY());
+            graphic.getStateMachine().setOffsetNeeded(true);
+            Debug.message("eomg", "PointStateMachine|undefined state| *offset needed*");
+        }
 
- 	graphic.getStateMachine().setEdit();
-	return getMapMouseListenerResponse();
+        graphic.getStateMachine().setEdit();
+        return getMapMouseListenerResponse();
     }
 
     public boolean mouseMoved(MouseEvent e) {
-	graphic.fireEvent(EOMGCursors.EDIT, "Click to define the point location.");
-	return false;
+        graphic.fireEvent(EOMGCursors.EDIT, "Click to define the point location.");
+        return false;
     }
 }

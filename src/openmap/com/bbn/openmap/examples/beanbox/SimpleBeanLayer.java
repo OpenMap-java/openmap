@@ -1,14 +1,14 @@
 /* **********************************************************************
  * 
  *    Use, duplication, or disclosure by the Government is subject to
- * 	     restricted rights as set forth in the DFARS.
+ *           restricted rights as set forth in the DFARS.
  *  
- * 			   BBNT Solutions LLC
- * 			       A Part of 
+ *                         BBNT Solutions LLC
+ *                             A Part of 
  *                  Verizon      
- * 			    10 Moulton Street
- * 			   Cambridge, MA 02138
- * 			    (617) 873-3000
+ *                          10 Moulton Street
+ *                         Cambridge, MA 02138
+ *                          (617) 873-3000
  *
  *    Copyright (C) 2002 by BBNT Solutions, LLC
  *                 All Rights Reserved.
@@ -171,8 +171,8 @@ public class SimpleBeanLayer
       ImageIcon icon = new ImageIcon(object.getGraphicImage());
       int width = icon.getIconWidth();
       int height = icon.getIconHeight();
-	  graphic = new OMRaster
-	    (object.getLatitude(), object.getLongitude(), 
+          graphic = new OMRaster
+            (object.getLatitude(), object.getLongitude(), 
          -width/2, -height/2, icon);
 
       ((OMRaster)graphic).
@@ -187,7 +187,7 @@ public class SimpleBeanLayer
       try
       {
 
-      	Class graphicClass = Class.forName(customGraphicClassName);
+        Class graphicClass = Class.forName(customGraphicClassName);
 
         Class parentClass = graphicClass;
         while (parentClass != null) {

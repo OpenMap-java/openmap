@@ -28,7 +28,7 @@ abstract public class MysqlMulti extends MysqlGeometry {
     protected Vector elements = new Vector();
 
     public int countElements() {
-	return elements.size();
+        return elements.size();
     }
 
     abstract public void addElement(MysqlGeometry mg);

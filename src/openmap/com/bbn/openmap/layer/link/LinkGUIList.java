@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGUIList.java,v $
 // $RCSfile: LinkGUIList.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,15 +52,15 @@ public class LinkGUIList {
 
     /** Write a gui section to the link. */
     public LinkGUIList(Link link) throws IOException {
-	this.link = link;
-	link.start(Link.GUI_HEADER);	
-	link.dos.writeFloat(version);
+        this.link = link;
+        link.start(Link.GUI_HEADER);    
+        link.dos.writeFloat(version);
     }
 
     /**
      */
     public JComponent getGUI(){
-	return widgets;
+        return widgets;
     }
 
     /** 
@@ -71,7 +71,7 @@ public class LinkGUIList {
      * @return either Link.END_TOTAL or Link.END_SECTION. 
      */
     public String getLinkStatus(){
-	return linkStatus;
+        return linkStatus;
     }
 
     /**  
@@ -86,7 +86,7 @@ public class LinkGUIList {
      * @throws IOException 
      */
     public void end(String endType) throws IOException {
-	link.end(endType);
+        link.end(endType);
     }
 
     /**
@@ -94,40 +94,40 @@ public class LinkGUIList {
      * @throws EOFException
      */
     protected String readWidgets()
-	throws IOException, EOFException {
+        throws IOException, EOFException {
 
-	JComponent widget;
-	long startTime = System.currentTimeMillis();
-	String header = null;
-	int widgetType;
-	boolean moreData = true;
+        JComponent widget;
+        long startTime = System.currentTimeMillis();
+        String header = null;
+        int widgetType;
+        boolean moreData = true;
 
-	float ver = link.dis.readFloat();
-	Debug.message("link", "LinkGUIList: reading graphics:");
+        float ver = link.dis.readFloat();
+        Debug.message("link", "LinkGUIList: reading graphics:");
 
-	while (true){
-	    widget = null;
-	    // Just consume the header, don't create a useless
-	    // string object.
-	    header = link.readDelimiter(false);
-	  
-	    if (header == Link.END_TOTAL || header == Link.END_SECTION){
-		
-		long endTime = System.currentTimeMillis();
-		Debug.message("link", "LinkGUIList: received bytes in "
-			      + (float)(endTime - startTime)/1000.0f + 
-			      " seconds");
-		
-		return header;
-	    }
-	    
-	    widgetType = link.dis.readInt();
-	    
-	    switch (widgetType){
+        while (true){
+            widget = null;
+            // Just consume the header, don't create a useless
+            // string object.
+            header = link.readDelimiter(false);
+          
+            if (header == Link.END_TOTAL || header == Link.END_SECTION){
+                
+                long endTime = System.currentTimeMillis();
+                Debug.message("link", "LinkGUIList: received bytes in "
+                              + (float)(endTime - startTime)/1000.0f + 
+                              " seconds");
+                
+                return header;
+            }
+            
+            widgetType = link.dis.readInt();
+            
+            switch (widgetType){
 
-	    default:
-		System.err.println("LinkGUIList: received unknown graphic type.");
-	    }
-	}
+            default:
+                System.err.println("LinkGUIList: received unknown graphic type.");
+            }
+        }
     }
 }

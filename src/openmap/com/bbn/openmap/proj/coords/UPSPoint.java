@@ -28,9 +28,9 @@ public class UPSPoint {
 
     /**  Constructor for the UPSPoint object */
     public UPSPoint() {
-	this.easting = 0;
-	this.northing = 0;
-	//southernHemisphere = false;
+        this.easting = 0;
+        this.northing = 0;
+        //southernHemisphere = false;
     }
 
     /**
@@ -40,9 +40,9 @@ public class UPSPoint {
      *@param  northing  northing
      */
     public UPSPoint(double easting, double northing) {
-	this.easting = easting;
-	this.northing = northing;
-	//southernHemisphere = southern;
+        this.easting = easting;
+        this.northing = northing;
+        //southernHemisphere = southern;
     }
 
     /**
@@ -52,7 +52,7 @@ public class UPSPoint {
      *@param  lon  longitude in decimal degrees
      */
     public void UPSPoint(double lat, double lon) {
-	this.toUPS(lat, lon);
+        this.toUPS(lat, lon);
     }
 
     /**
@@ -61,9 +61,9 @@ public class UPSPoint {
      *@param  llpt  LatLonPoint
      */
     public UPSPoint(LatLonPoint llpt) {
-	double lat = (double)llpt.getLatitude(); 
-	double lon = (double)llpt.getLongitude(); 
-	this.toUPS(lat, lon);
+        double lat = (double)llpt.getLatitude(); 
+        double lon = (double)llpt.getLongitude(); 
+        this.toUPS(lat, lon);
     }
 
     /**
@@ -73,39 +73,39 @@ public class UPSPoint {
      *@param  lon  longitude in decimal degrees
      */
     public void toUPS(double lat, double lon) {
-	double a = 0;
-	double t = 0;
-	double e = 0;
-	double es = 0;
-	double rho = 0;
-	double x;
-	double y;
-	final double k0 = 0.994;
+        double a = 0;
+        double t = 0;
+        double e = 0;
+        double es = 0;
+        double rho = 0;
+        double x;
+        double y;
+        final double k0 = 0.994;
 
-	double lambda = lon * Degree;
-	double phi = Math.abs(lat * Degree);
+        double lambda = lon * Degree;
+        double phi = Math.abs(lat * Degree);
         //double phi = (lat * Degree);
         
-	a = 6378137.0;
-	es = 0.00669438d;
+        a = 6378137.0;
+        es = 0.00669438d;
 
-	e = Math.sqrt(es);
-	t = Math.tan(Math.PI / 4.0 - phi / 2.0) / Math.pow((1.0 - e * Math.sin(phi)) / (1.0 + e * Math.sin(phi)), (e / 2.0));
-	rho = 2.0 * a * k0 * t / Math.sqrt(Math.pow(1.0 + e, 1.0 + e) * Math.pow(1.0 - e, 1.0 - e));
-	x = rho * Math.sin(lambda);
-	y = rho * Math.cos(lambda);
+        e = Math.sqrt(es);
+        t = Math.tan(Math.PI / 4.0 - phi / 2.0) / Math.pow((1.0 - e * Math.sin(phi)) / (1.0 + e * Math.sin(phi)), (e / 2.0));
+        rho = 2.0 * a * k0 * t / Math.sqrt(Math.pow(1.0 + e, 1.0 + e) * Math.pow(1.0 - e, 1.0 - e));
+        x = rho * Math.sin(lambda);
+        y = rho * Math.cos(lambda);
 
-	if (lat > 0.0) {
-	    // Northern hemisphere
-	    y = -(y);
-	    //southernHemisphere = false;
-	}
-	x += 2.0e6;
-	// Add in false easting and northing
-	y += 2.0e6;
+        if (lat > 0.0) {
+            // Northern hemisphere
+            y = -(y);
+            //southernHemisphere = false;
+        }
+        x += 2.0e6;
+        // Add in false easting and northing
+        y += 2.0e6;
 
-	easting = x;
-	northing = y;
+        easting = x;
+        northing = y;
     }
 
     /*
@@ -118,60 +118,60 @@ public class UPSPoint {
      *@return    returns a LatLonPoint
      */
     public LatLonPoint toLatLonPoint(boolean southernHemisphere) {
-	LatLonPoint llp = new LatLonPoint();
-	double lon = 0;
-	double lat = 0;
-	double a = 0;
-	double es = 0;
-	double e = 0;
-	double t = 0;
-	double rho = 0;
-	double x = easting;
-	double y = northing;
-	final double k0 = 0.994;
+        LatLonPoint llp = new LatLonPoint();
+        double lon = 0;
+        double lat = 0;
+        double a = 0;
+        double es = 0;
+        double e = 0;
+        double t = 0;
+        double rho = 0;
+        double x = easting;
+        double y = northing;
+        final double k0 = 0.994;
 
-	a = 6378137.0;
-	es = 0.00669438d;
+        a = 6378137.0;
+        es = 0.00669438d;
 
-	e = Math.sqrt(es);
+        e = Math.sqrt(es);
 
-	x -= 2.0e6;
-	// Remove false easting and northing
-	y -= 2.0e6;
+        x -= 2.0e6;
+        // Remove false easting and northing
+        y -= 2.0e6;
 
-	rho = Math.sqrt(x * x + y * y);
-	t = rho * Math.sqrt(Math.pow(1.0 + e, 1.0 + e) * Math.pow(1.0 - e, 1.0 - e)) / (2.0 * a * k0);
+        rho = Math.sqrt(x * x + y * y);
+        t = rho * Math.sqrt(Math.pow(1.0 + e, 1.0 + e) * Math.pow(1.0 - e, 1.0 - e)) / (2.0 * a * k0);
 
-	lat = calcPhi(e, t);
-	lat /= Degree;
+        lat = calcPhi(e, t);
+        lat /= Degree;
 
-	if (y != 0.0) {
-	    t = Math.atan(Math.abs(x / y));
-	} else {
-	    t = Math.PI / 2.0;
-	    if (x < 0.0) {
-		t = -t;
-	    }
-	}
+        if (y != 0.0) {
+            t = Math.atan(Math.abs(x / y));
+        } else {
+            t = Math.PI / 2.0;
+            if (x < 0.0) {
+                t = -t;
+            }
+        }
 
-	if (southernHemisphere == false) {
-	    y = -y;
-	} else {
-	    lat = -lat;
-	}
+        if (southernHemisphere == false) {
+            y = -y;
+        } else {
+            lat = -lat;
+        }
 
-	if (y < 0.0) {
-	    t = Math.PI - t;
-	}
+        if (y < 0.0) {
+            t = Math.PI - t;
+        }
 
-	if (x < 0.0) {
-	    t = -t;
-	}
+        if (x < 0.0) {
+            t = -t;
+        }
 
-	lon = t / Degree;
-	llp.setLatitude((float) lat);
-	llp.setLongitude((float) lon);
-	return llp;
+        lon = t / Degree;
+        llp.setLatitude((float) lat);
+        llp.setLongitude((float) lon);
+        return llp;
     }
 
     /*
@@ -184,7 +184,7 @@ public class UPSPoint {
      *@param  northing  The new northing value
      */
     public void setNorthing(double northing) {
-	this.northing = northing;
+        this.northing = northing;
     }
 
     /**
@@ -193,7 +193,7 @@ public class UPSPoint {
      *@param  easting  The new easting value
      */
     public void setEasting(double easting) {
-	this.easting = easting;
+        this.easting = easting;
     }
 
     /**
@@ -202,7 +202,7 @@ public class UPSPoint {
      *@return    The easting value
      */
     public double getNorthing() {
-	return northing;
+        return northing;
     }
 
     /**
@@ -211,7 +211,7 @@ public class UPSPoint {
      *@return    The easting value
      */
     public double getEasting() {
-	return easting;
+        return easting;
     }
 
     /**
@@ -220,7 +220,7 @@ public class UPSPoint {
      *@return    returns a string representation of the object
      */
     public String toString() {
-	return "Easting:" + easting + " Northing:" + northing;
+        return "Easting:" + easting + " Northing:" + northing;
     }
 
     /**
@@ -231,37 +231,37 @@ public class UPSPoint {
      *@return    phi
      */
     static double calcPhi(double e, double t) {
-	double phi = 0;
-	double old = Math.PI / 2.0 - 2.0 * Math.atan(t);
-	short maxIterations = 20;
+        double phi = 0;
+        double old = Math.PI / 2.0 - 2.0 * Math.atan(t);
+        short maxIterations = 20;
 
-	while ((Math.abs((phi - old) / phi) > 1.0e-8) && (maxIterations != 0)) {
-	    old = phi;
-	    phi = Math.PI / 2.0 - 2.0 * Math.atan(t * Math.pow((1.0 - e * Math.sin(phi)) / ((1.0 + e * Math.sin(phi))), (e / 2.0)));
-	    maxIterations--;
-	}
-	return phi;
+        while ((Math.abs((phi - old) / phi) > 1.0e-8) && (maxIterations != 0)) {
+            old = phi;
+            phi = Math.PI / 2.0 - 2.0 * Math.atan(t * Math.pow((1.0 - e * Math.sin(phi)) / ((1.0 + e * Math.sin(phi))), (e / 2.0)));
+            maxIterations--;
+        }
+        return phi;
     }
 
     /** 
      * Tested against the NIMA calculator
      */
     public static void main(String[] args) {
-	//TEST1 - NORTH & WEST 
-	LatLonPoint llpt1 = new LatLonPoint(87.00,-74.50);
-	System.out.println(llpt1.toString());
-	UPSPoint ups = new UPSPoint(llpt1);
-	System.out.println(ups.toString());
-	LatLonPoint llpt2 = ups.toLatLonPoint(false);
-	System.out.println(llpt2.toString());
-	//TEST2 - SOUTH & EAST
-	System.out.println("--------------------------------------------");
-	llpt1 = new LatLonPoint(-89.00,110.50);
-	System.out.println(llpt1.toString());
-	ups = new UPSPoint(llpt1);
-	System.out.println(ups.toString());
-	llpt2 = ups.toLatLonPoint(true);
-	System.out.println(llpt2.toString());
+        //TEST1 - NORTH & WEST 
+        LatLonPoint llpt1 = new LatLonPoint(87.00,-74.50);
+        System.out.println(llpt1.toString());
+        UPSPoint ups = new UPSPoint(llpt1);
+        System.out.println(ups.toString());
+        LatLonPoint llpt2 = ups.toLatLonPoint(false);
+        System.out.println(llpt2.toString());
+        //TEST2 - SOUTH & EAST
+        System.out.println("--------------------------------------------");
+        llpt1 = new LatLonPoint(-89.00,110.50);
+        System.out.println(llpt1.toString());
+        ups = new UPSPoint(llpt1);
+        System.out.println(ups.toString());
+        llpt2 = ups.toLatLonPoint(true);
+        System.out.println(llpt2.toString());
     }
 }
 

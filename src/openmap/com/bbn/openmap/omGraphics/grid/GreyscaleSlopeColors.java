@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/GreyscaleSlopeColors.java,v $
 // $RCSfile: GreyscaleSlopeColors.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/01/17 00:22:34 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -111,25 +111,25 @@ public class GreyscaleSlopeColors implements ElevationColors {
     }
 
     public int numColors() { 
-	return colors.length;
+        return colors.length;
     }
     
     public int[] createGreyscaleColors(int num_colors, int opaqueness) {
-	int[] tempColors = new int[num_colors];
-	if (num_colors == 0) {
-	    num_colors = NUM_ELEVATION_COLORS;
-	}
+        int[] tempColors = new int[num_colors];
+        if (num_colors == 0) {
+            num_colors = NUM_ELEVATION_COLORS;
+        }
 
-	int grey_interval = 256/num_colors;
-	
-	for (int i=0; i<num_colors; i++) {
-	    if (i==0) {
-		tempColors[i] = waterColor.getRGB();
-	    } else {
-		int color = (i*grey_interval) + (grey_interval/2);
-		tempColors[i] = new Color(color, color, color, opaqueness).getRGB();
-	    }
-	}
-	return tempColors;
+        int grey_interval = 256/num_colors;
+        
+        for (int i=0; i<num_colors; i++) {
+            if (i==0) {
+                tempColors[i] = waterColor.getRGB();
+            } else {
+                int color = (i*grey_interval) + (grey_interval/2);
+                tempColors[i] = new Color(color, color, color, opaqueness).getRGB();
+            }
+        }
+        return tempColors;
     }
 }

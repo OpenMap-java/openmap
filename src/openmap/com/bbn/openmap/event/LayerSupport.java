@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/LayerSupport.java,v $
 // $RCSfile: LayerSupport.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/08 21:29:17 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,8 +41,8 @@ public class LayerSupport extends ListenerSupport {
      * @param sourceBean  The bean to be given as the source for any events.
      */
     public LayerSupport(Object sourceBean) {
-	super(sourceBean);
-	Debug.message("layersupport","LayerSupport | LayerSupport");
+        super(sourceBean);
+        Debug.message("layersupport","LayerSupport | LayerSupport");
     }
 
     /**
@@ -51,7 +51,7 @@ public class LayerSupport extends ListenerSupport {
      * @param listener  The LayerListener to be added
      */
     public synchronized void addLayerListener(LayerListener listener) {
-	addListener(listener);
+        addListener(listener);
     }
 
     /**
@@ -60,7 +60,7 @@ public class LayerSupport extends ListenerSupport {
      * @param listener  The LayerListener to be removed
      */
     public synchronized void removeLayerListener(LayerListener listener) {
-	removeListener(listener);
+        removeListener(listener);
     }
 
     /**
@@ -71,19 +71,19 @@ public class LayerSupport extends ListenerSupport {
      * @see LayerEvent
      */
     public synchronized void fireLayer(int type, Layer[] layers) {
-	Debug.message("layersupport","LayerSupport | fireLayer");
+        Debug.message("layersupport","LayerSupport | fireLayer");
 
-	Iterator it = iterator();
-	if (Debug.debugging("layersupport")) {
-	    Debug.output("LayerSupport calling setLayers on " + 
-			 size() + " objects");
-	}
+        Iterator it = iterator();
+        if (Debug.debugging("layersupport")) {
+            Debug.output("LayerSupport calling setLayers on " + 
+                         size() + " objects");
+        }
 
-	if (size() == 0) return;
+        if (size() == 0) return;
 
-	LayerEvent evt = new LayerEvent(source, type, layers);
-	while (it.hasNext()) {
-	    ((LayerListener)it.next()).setLayers(evt);
-	}
+        LayerEvent evt = new LayerEvent(source, type, layers);
+        while (it.hasNext()) {
+            ((LayerListener)it.next()).setLayers(evt);
+        }
     }
 }

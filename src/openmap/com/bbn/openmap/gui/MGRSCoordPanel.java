@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MGRSCoordPanel.java,v $
 // $RCSfile: MGRSCoordPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 00:30:36 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,35 +47,35 @@ public class MGRSCoordPanel extends CoordPanel implements Serializable {
      *  Creates the panel.
      */
     public MGRSCoordPanel() {
-	super();
+        super();
     }
 
     /**
      *  Creates the panel.
      */
     public MGRSCoordPanel(CenterSupport support) {
-	super(support);
+        super(support);
     }
 
     /**
      *  Creates and adds the labels and entry fields for latitude and longitude
      */
     protected void makeWidgets() {
-	GridBagLayout gridbag = new GridBagLayout();
-	GridBagConstraints c = new GridBagConstraints();
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
 
-	setLayout(gridbag);
-	setBorder(new TitledBorder(new EtchedBorder(), "MGRS Coordinate"));
+        setLayout(gridbag);
+        setBorder(new TitledBorder(new EtchedBorder(), "MGRS Coordinate"));
 
-	JLabel mgrsLabel = new JLabel("MGRS: ");
-	c.gridx = 0;
-	gridbag.setConstraints(mgrsLabel, c);
-	add(mgrsLabel);
+        JLabel mgrsLabel = new JLabel("MGRS: ");
+        c.gridx = 0;
+        gridbag.setConstraints(mgrsLabel, c);
+        add(mgrsLabel);
 
-	mgrs = new JTextField(20);
-	c.gridx = 1;
-	gridbag.setConstraints(mgrs, c);
-	add(mgrs);
+        mgrs = new JTextField(20);
+        c.gridx = 1;
+        gridbag.setConstraints(mgrs, c);
+        add(mgrs);
     }
 
     /**
@@ -83,19 +83,19 @@ public class MGRSCoordPanel extends CoordPanel implements Serializable {
      */
     public LatLonPoint getLatLon() {
 
-	String mgrsString;
+        String mgrsString;
 
-	try {
-	    // Allow blank minutes and seconds fields to represent zero
-	    
-	    
-	    return new MGRSPoint(mgrs.getText()).toLatLonPoint();
+        try {
+            // Allow blank minutes and seconds fields to represent zero
+            
+            
+            return new MGRSPoint(mgrs.getText()).toLatLonPoint();
 
-	} catch (NumberFormatException except) {
-//  	    System.out.println(except.toString());
-	    clearTextBoxes();
-	}
-	return null;
+        } catch (NumberFormatException except) {
+//          System.out.println(except.toString());
+            clearTextBoxes();
+        }
+        return null;
     }
 
     /**
@@ -104,16 +104,16 @@ public class MGRSCoordPanel extends CoordPanel implements Serializable {
      *  should go in the boxes.
      */
      public void setLatLon(LatLonPoint llpoint) {
-	 if (llpoint == null) {
-	     clearTextBoxes();
-	     return;
-	 }
+         if (llpoint == null) {
+             clearTextBoxes();
+             return;
+         }
 
-	 MGRSPoint mgrsp = new MGRSPoint(llpoint);
-	 mgrs.setText(mgrsp.getMGRS());
+         MGRSPoint mgrsp = new MGRSPoint(llpoint);
+         mgrs.setText(mgrsp.getMGRS());
      }
 
     protected void clearTextBoxes() {
-	mgrs.setText("");
+        mgrs.setText("");
     }
 }

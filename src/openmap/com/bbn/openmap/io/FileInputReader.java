@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/FileInputReader.java,v $
 // $RCSfile: FileInputReader.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,10 +52,10 @@ public class FileInputReader implements InputReader {
      * @see java.io.RandomAccessFile 
      */
     public FileInputReader(File f) throws IOException {
-	if (Debug.debugging("binaryfile")) {
-	    Debug.output("FileInputReader created from " + f.getAbsolutePath());
-	}
-	init(f);
+        if (Debug.debugging("binaryfile")) {
+            Debug.output("FileInputReader created from " + f.getAbsolutePath());
+        }
+        init(f);
     }
 
     /**
@@ -69,17 +69,17 @@ public class FileInputReader implements InputReader {
      * @see java.io.RandomAccessFile 
      */
     public FileInputReader(String f) throws IOException {
-	if (Debug.debugging("binaryfile")) {
-	    Debug.output("FileInputReader created from " + f);
-	}
-	init(new File(f));
+        if (Debug.debugging("binaryfile")) {
+            Debug.output("FileInputReader created from " + f);
+        }
+        init(new File(f));
     }
 
     /**
      * Get the file name.
      */
     public String getName() {
-	return name;
+        return name;
     }
 
     /**
@@ -91,19 +91,19 @@ public class FileInputReader implements InputReader {
      * @throws IOException
      */
     protected void init(File f) throws IOException {
-	try {
-	    name = f.getName();
-	    inputFile = new RandomAccessFile(f, "r");
-	} catch (FileNotFoundException fnfe) {
-	    throw fnfe;
-	} catch (IOException i) {
-	    if (f.canRead()) {
-		BinaryFile.closeClosable();
-		inputFile = new RandomAccessFile(f, "r");
-	    } else {
-		throw i;
-	    }
-	}	
+        try {
+            name = f.getName();
+            inputFile = new RandomAccessFile(f, "r");
+        } catch (FileNotFoundException fnfe) {
+            throw fnfe;
+        } catch (IOException i) {
+            if (f.canRead()) {
+                BinaryFile.closeClosable();
+                inputFile = new RandomAccessFile(f, "r");
+            } else {
+                throw i;
+            }
+        }       
     }
 
     /**
@@ -111,7 +111,7 @@ public class FileInputReader implements InputReader {
      * it to get data!
      */
     public RandomAccessFile getInputFile() {
-	return inputFile;
+        return inputFile;
     }
 
     /**
@@ -123,7 +123,7 @@ public class FileInputReader implements InputReader {
      * in the underlying file
      */
     public long skipBytes(long n) throws IOException {
-	return inputFile.skipBytes((int)n);
+        return inputFile.skipBytes((int)n);
     }
 
     /**
@@ -134,7 +134,7 @@ public class FileInputReader implements InputReader {
      * the underlying file
      */
     public long getFilePointer() throws IOException {
-	return inputFile.getFilePointer();
+        return inputFile.getFilePointer();
     }
 
     /**
@@ -145,7 +145,7 @@ public class FileInputReader implements InputReader {
      * underlying file.
      */
     public void seek(long pos) throws IOException {
-	inputFile.seek(pos);
+        inputFile.seek(pos);
     }
 
     /**
@@ -156,7 +156,7 @@ public class FileInputReader implements InputReader {
      * underlying file.
      */
     public long length() throws IOException {
-	return inputFile.length();
+        return inputFile.length();
     }
 
     /**
@@ -166,7 +166,7 @@ public class FileInputReader implements InputReader {
      * @exception IOException Any IO errors encountered in accessing the file
      */
     public long available() throws IOException {
-	return(length() - getFilePointer());
+        return(length() - getFilePointer());
     }
 
     /** 
@@ -175,15 +175,15 @@ public class FileInputReader implements InputReader {
      * @exception IOException Any IO errors encountered in accessing the file
      */
     public void close() throws IOException {
-	if (Debug.debugging("binaryfile")) {
-	    Debug.output("FileInputReader.close()");
-	}
-	try {
-	    if (inputFile != null) inputFile.close();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
-	inputFile = null;
+        if (Debug.debugging("binaryfile")) {
+            Debug.output("FileInputReader.close()");
+        }
+        try {
+            if (inputFile != null) inputFile.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        inputFile = null;
     }
 
     /**
@@ -193,7 +193,7 @@ public class FileInputReader implements InputReader {
      * @exception IOException Any IO errors encountered in reading from the file
      */
     public int read() throws IOException {
-	return inputFile.read();
+        return inputFile.read();
     }
 
     /**
@@ -206,7 +206,7 @@ public class FileInputReader implements InputReader {
      * @exception IOException Any IO errors encountered in reading from the file
      */
     public int read(byte b[], int off, int len) throws IOException {
-	return inputFile.read(b, off, len);
+        return inputFile.read(b, off, len);
     }
 
     /** 
@@ -219,7 +219,7 @@ public class FileInputReader implements InputReader {
      * @see java.io.RandomAccessFile#read(byte[])
      */
     public int read(byte b[]) throws IOException {
-	return inputFile.read(b);
+        return inputFile.read(b);
     }
 
     /** 
@@ -235,36 +235,36 @@ public class FileInputReader implements InputReader {
      * was <code>false</code>, but NO bytes had been read.
      */
     public byte[] readBytes(int howmany, boolean allowless) 
-	throws EOFException, FormatException {
+        throws EOFException, FormatException {
 
-	byte foo[] = new byte[howmany];
-	int gotsofar = 0;
-	int err = 0;
-	try {
-	    while (gotsofar < howmany) {
-		err = inputFile.read(foo, gotsofar, howmany - gotsofar);
+        byte foo[] = new byte[howmany];
+        int gotsofar = 0;
+        int err = 0;
+        try {
+            while (gotsofar < howmany) {
+                err = inputFile.read(foo, gotsofar, howmany - gotsofar);
 
-		if (err == -1) {
-		    if (allowless) {
-			//return a smaller array, so the caller can tell how much
-			//they really got
-			byte retval[] = new byte[gotsofar];
-			System.arraycopy(foo, 0, retval, 0, gotsofar);
-			return retval;
-		    } else { //some kind of failure...
-			if (gotsofar > 0) {
-			    throw new FormatException("EOF while reading data");
-			} else {
-			    throw new EOFException();
-			}
-		    }
-		}
-		gotsofar += err;
-	    }
-	} catch (IOException i) {
-	    throw new FormatException("FileInputReader: readBytes IOException: " + i.getMessage());
-	}
-	return foo;
+                if (err == -1) {
+                    if (allowless) {
+                        //return a smaller array, so the caller can tell how much
+                        //they really got
+                        byte retval[] = new byte[gotsofar];
+                        System.arraycopy(foo, 0, retval, 0, gotsofar);
+                        return retval;
+                    } else { //some kind of failure...
+                        if (gotsofar > 0) {
+                            throw new FormatException("EOF while reading data");
+                        } else {
+                            throw new EOFException();
+                        }
+                    }
+                }
+                gotsofar += err;
+            }
+        } catch (IOException i) {
+            throw new FormatException("FileInputReader: readBytes IOException: " + i.getMessage());
+        }
+        return foo;
     }
 
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ListenerSupport.java,v $
 // $RCSfile: ListenerSupport.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:47:45 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:06 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -53,22 +53,22 @@ public class ListenerSupport implements java.io.Serializable {
      * @param sourceBean  The bean to be given as the source for any events.
      */
     public ListenerSupport(Object sourceBean) {
-	setSource(sourceBean);
-	Debug.message("listenersupport","ListenerSupport()");
+        setSource(sourceBean);
+        Debug.message("listenersupport","ListenerSupport()");
     }
 
     /**
      * Set the source of the events.
      */
     protected void setSource(Object src) {
-	source = src;
+        source = src;
     }
 
     /**
      * Get the source of the events.
      */
     protected Object getSource() {
-	return source;
+        return source;
     }
 
     /**
@@ -77,16 +77,16 @@ public class ListenerSupport implements java.io.Serializable {
      * @param listener The listener object to be added
      */
     public synchronized void addListener(Object listener) {
-	if (listeners == null) {
-	    listeners = new Vector();
-	}
+        if (listeners == null) {
+            listeners = new Vector();
+        }
 
-	if (!listeners.contains(listener)) {
-	    listeners.addElement(listener);
-	    if (Debug.debugging("listenersupport")) {
-		Debug.output("ListenerSupport | addListener " + listener.getClass() + " was added");
-	    }
-	}
+        if (!listeners.contains(listener)) {
+            listeners.addElement(listener);
+            if (Debug.debugging("listenersupport")) {
+                Debug.output("ListenerSupport | addListener " + listener.getClass() + " was added");
+            }
+        }
     }
 
     /**
@@ -95,18 +95,18 @@ public class ListenerSupport implements java.io.Serializable {
      * @param obj The Object to be removed
      */
     public synchronized void removeListener(Object obj) {
-	if (listeners != null) {
-	    listeners.removeElement(obj);
-	}
+        if (listeners != null) {
+            listeners.removeElement(obj);
+        }
     }
 
     /**
      * Clear the listener list.
      */
     public void removeAll() {
-	if (listeners != null) {
-	    listeners.clear();
-	}
+        if (listeners != null) {
+            listeners.clear();
+        }
     }
 
     /**
@@ -114,23 +114,23 @@ public class ListenerSupport implements java.io.Serializable {
      * is null, it will return an empty iterator.
      */
     public synchronized Iterator iterator() {
-	if (listeners != null) {
-	    return new ArrayList(listeners).iterator();
-	}
-	// Failsafe, return an empty iterator
-	return new ArrayList().iterator();
+        if (listeners != null) {
+            return new ArrayList(listeners).iterator();
+        }
+        // Failsafe, return an empty iterator
+        return new ArrayList().iterator();
     }
 
     /**
      * Return the number of listeners.
      */
     public int size() {
-	int size = 0;
-	if (listeners != null) {
-	    size = listeners.size();
-	}
+        int size = 0;
+        if (listeners != null) {
+            size = listeners.size();
+        }
 
-	return size;
+        return size;
     }
 
     /**
@@ -138,11 +138,11 @@ public class ListenerSupport implements java.io.Serializable {
      * @return List of listeners, null if none have been added.
      */
     public synchronized List getListeners() {
-	if (listeners == null) {
-	    return null;
-	}
+        if (listeners == null) {
+            return null;
+        }
 
-	return (List) listeners.clone();
+        return (List) listeners.clone();
     }
 
     /**
@@ -151,14 +151,14 @@ public class ListenerSupport implements java.io.Serializable {
     public void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
-	List v = getListeners();
-	if (v != null) {
-	    Iterator it = v.iterator();
-	    while (it.hasNext()) {
-	        Object obj = it.next();
-	        if (obj instanceof Serializable) {
-	            s.writeObject(obj);
-	        }
+        List v = getListeners();
+        if (v != null) {
+            Iterator it = v.iterator();
+            while (it.hasNext()) {
+                Object obj = it.next();
+                if (obj instanceof Serializable) {
+                    s.writeObject(obj);
+                }
             }
         }
         s.writeObject(null);
@@ -169,13 +169,13 @@ public class ListenerSupport implements java.io.Serializable {
      * Read the listeners from a stream.
      */
     public void readObject(ObjectInputStream s) 
-	throws ClassNotFoundException, IOException {
+        throws ClassNotFoundException, IOException {
 
         s.defaultReadObject();
       
         Object listenerOrNull;
         while (null != (listenerOrNull = s.readObject())) {
-	    addListener(listenerOrNull);
+            addListener(listenerOrNull);
         }
     }
 }

@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/MapContentManager.java,v $
 // $RCSfile: MapContentManager.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -49,7 +49,7 @@ import javax.vecmath.*;
 public class MapContentManager extends OM3DManager {
 
     protected MapContentManager() {
-	super.init();
+        super.init();
     }
 
     /**
@@ -118,8 +118,8 @@ public class MapContentManager extends OM3DManager {
             background.setApplicationBounds(bs);
 
             mapTransformGroup.addChild(background);
-	    
-	    createMapContent(mapTransformGroup, mapHandler, contentMask);
+            
+            createMapContent(mapTransformGroup, mapHandler, contentMask);
 
             // Lights up the whole world.  If this isn't added, the land is black
             AmbientLight ambientLight = new AmbientLight();
@@ -137,12 +137,12 @@ public class MapContentManager extends OM3DManager {
     }
 
     protected void createMapContent(TransformGroup mapTransformGroup, MapHandler mapHandler,
-				    int contentMask) {
-	if ((contentMask & CONTENT_MASK_OMGRAPHICHANDLERLAYERS) != 0) {
-	    mapTransformGroup.addChild(createLayerMapContent(mapHandler));
-	}
+                                    int contentMask) {
+        if ((contentMask & CONTENT_MASK_OMGRAPHICHANDLERLAYERS) != 0) {
+            mapTransformGroup.addChild(createLayerMapContent(mapHandler));
+        }
 
-	mapTransformGroup.addChild(createMapContent(mapHandler, contentMask));
+        mapTransformGroup.addChild(createMapContent(mapHandler, contentMask));
     }
 
 
@@ -178,15 +178,15 @@ public class MapContentManager extends OM3DManager {
      * @return                 The motionBehavior value
      */
     public Behavior getMotionBehavior(TransformGroup cameraTransform,
-				      Projection projection) {
+                                      Projection projection) {
 
         return new OMKeyBehavior(cameraTransform, projection);
     }
 
 
     public static JFrame getFrame(String title, int width, int height,
-				  MapHandler mapHandler,
-				  Background background, int contentMask) {
+                                  MapHandler mapHandler,
+                                  Background background, int contentMask) {
 
         JFrame frame = new JFrame(title);
         frame.setSize(width, height);

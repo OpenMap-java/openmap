@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageMaster.java,v $
 // $RCSfile: ImageMaster.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:47:47 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:08 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -88,21 +88,21 @@ public class ImageMaster {
 
     /** Create with properties. */
     public ImageMaster(Properties props) {
-	setProperties(props);
+        setProperties(props);
     }
 
     /** Create with properties file. */
     public ImageMaster(String propertiesFile) {
-	Properties props = new Properties();
-	loadProperties(props, propertiesFile);
-	setProperties(props);
+        Properties props = new Properties();
+        loadProperties(props, propertiesFile);
+        setProperties(props);
     }
 
     /** Create with properties file URL. */
     public ImageMaster(URL propertiesURL) {
-	Properties props = new Properties();
-	loadProperties(props, propertiesURL);
-	setProperties(props);
+        Properties props = new Properties();
+        loadProperties(props, propertiesURL);
+        setProperties(props);
     }
 
     /**
@@ -114,26 +114,26 @@ public class ImageMaster {
      * @return true if all's well.
      */
     protected boolean loadPropertiesFromResource(Properties props,
-						 String resourceName) {
+                                                 String resourceName) {
 
-	InputStream propsIn = getClass().getResourceAsStream(resourceName);
+        InputStream propsIn = getClass().getResourceAsStream(resourceName);
 
-	if (propsIn == null) {
-	    if (Debug.debugging("imagemaster")) {
-		Debug.error("Unable to locate resources: "
-			    + resourceName);
-	    }
-	    return false;
-	} else {
-	    try {
-		props.load(propsIn);
-		return true;
-	    } catch (java.io.IOException e) {
-		Debug.error("ImageMaster: Caught IOException loading resources: "
-			    + resourceName);
-		return false;
-	    }		
-	}
+        if (propsIn == null) {
+            if (Debug.debugging("imagemaster")) {
+                Debug.error("Unable to locate resources: "
+                            + resourceName);
+            }
+            return false;
+        } else {
+            try {
+                props.load(propsIn);
+                return true;
+            } catch (java.io.IOException e) {
+                Debug.error("ImageMaster: Caught IOException loading resources: "
+                            + resourceName);
+                return false;
+            }           
+        }
     }
 
     /**
@@ -145,15 +145,15 @@ public class ImageMaster {
      * @return true if all's well.
      */
     public boolean loadProperties(Properties props,  URL url) {
-	try {
-	    InputStream propsIn = url.openStream();
-	    props.load(propsIn);
-	    return true;
-	} catch (java.io.IOException e) {
-	    Debug.error("ImageMaster: Caught IOException loading resources: " + 
-			url);
-	    return false;
-	}		
+        try {
+            InputStream propsIn = url.openStream();
+            props.load(propsIn);
+            return true;
+        } catch (java.io.IOException e) {
+            Debug.error("ImageMaster: Caught IOException loading resources: " + 
+                        url);
+            return false;
+        }               
     }
 
     /**
@@ -166,28 +166,28 @@ public class ImageMaster {
      * @return true if all's well.
      */
     public boolean loadProperties(Properties props, String file) {
-	File propsFile = new File(file);
-	try {
-	    InputStream propsStream = new FileInputStream(propsFile);
-	    props.load(propsStream);
-	    return true;
-	} catch (java.io.FileNotFoundException e) {
-  	    Debug.error("ImageMaster.loadProperties(): Unable to read configuration file \"" +  propsFile + "\"");
-	} catch (java.io.IOException e) {
-	    Debug.error("ImageMaster.loadProperties(): Caught IO Exception reading configuration file \"" + propsFile + "\" \n" + e);
-	}
-	return false;
+        File propsFile = new File(file);
+        try {
+            InputStream propsStream = new FileInputStream(propsFile);
+            props.load(propsStream);
+            return true;
+        } catch (java.io.FileNotFoundException e) {
+            Debug.error("ImageMaster.loadProperties(): Unable to read configuration file \"" +  propsFile + "\"");
+        } catch (java.io.IOException e) {
+            Debug.error("ImageMaster.loadProperties(): Caught IO Exception reading configuration file \"" + propsFile + "\" \n" + e);
+        }
+        return false;
     }
 
     /** Set the properties for the ImageMaster, which also gets all
      *  the ImageMasterHelpers created. */
     public void setProperties(Properties properties) {
-	helpers = setImageServers(properties);
+        helpers = setImageServers(properties);
     }
 
     /** Start the ImageMaster to go through the ImageMasterHelpers. */
     public void run() {
-	doNext();
+        doNext();
     }
 
     /** 
@@ -197,13 +197,13 @@ public class ImageMaster {
      * nothing more to do. 
      */    
     protected void doNext() {
-	for (int i = 0; i < helpers.length; i++) {
-	    if (!helpers[i].complete) {
-		helpers[i].create();
-		return;
-	    }
-	}
-	System.exit(0);
+        for (int i = 0; i < helpers.length; i++) {
+            if (!helpers[i].complete) {
+                helpers[i].create();
+                return;
+            }
+        }
+        System.exit(0);
     }
 
     /**
@@ -216,77 +216,77 @@ public class ImageMaster {
      */
     public ImageMasterHelper[] setImageServers(Properties properties) {
 
-	String serversValue = properties.getProperty(ImageServersProperty);
+        String serversValue = properties.getProperty(ImageServersProperty);
 
-	if (Debug.debugging("imagemaster")) {
-	    Debug.output("ImageMaster.setImageServers(): servers = \"" + 
-			 serversValue + "\"");
-	}
-	
-	if (serversValue == null) {
-	    Debug.error("ImageMaster.setImageServers(): No property \"" + 
-			ImageServersProperty
-			+ "\" found in application properties.");
-	    return new ImageMasterHelper[0];
-	}
+        if (Debug.debugging("imagemaster")) {
+            Debug.output("ImageMaster.setImageServers(): servers = \"" + 
+                         serversValue + "\"");
+        }
+        
+        if (serversValue == null) {
+            Debug.error("ImageMaster.setImageServers(): No property \"" + 
+                        ImageServersProperty
+                        + "\" found in application properties.");
+            return new ImageMasterHelper[0];
+        }
 
-	// Divide up the names ...
-	StringTokenizer tokens = new StringTokenizer(serversValue, " ");
-	Vector serverNames = new Vector();
-	while(tokens.hasMoreTokens()) {
-	    serverNames.addElement(tokens.nextToken());
-	}
+        // Divide up the names ...
+        StringTokenizer tokens = new StringTokenizer(serversValue, " ");
+        Vector serverNames = new Vector();
+        while(tokens.hasMoreTokens()) {
+            serverNames.addElement(tokens.nextToken());
+        }
 
-	if (Debug.debugging("imagemaster")) {
-	    Debug.output("ImageMaster.setImageServers(): "+ 
-			 serverNames);
-	}
+        if (Debug.debugging("imagemaster")) {
+            Debug.output("ImageMaster.setImageServers(): "+ 
+                         serverNames);
+        }
 
-	int nServerNames = serverNames.size();
-	ImageMasterHelper[] masterHelpers = 
-	    new ImageMasterHelper[nServerNames];
+        int nServerNames = serverNames.size();
+        ImageMasterHelper[] masterHelpers = 
+            new ImageMasterHelper[nServerNames];
 
-	for (int i = 0; i < nServerNames; i++) {
-	    String serverName = (String)serverNames.elementAt(i);
-	    masterHelpers[i] = new ImageMasterHelper(serverName,
-						     properties, this);
+        for (int i = 0; i < nServerNames; i++) {
+            String serverName = (String)serverNames.elementAt(i);
+            masterHelpers[i] = new ImageMasterHelper(serverName,
+                                                     properties, this);
 
-	}
-	return masterHelpers;
+        }
+        return masterHelpers;
     }
 
     /** 
      * Start up and go.
      */
     public static void main(String[] args) {
-	Debug.init();
-	ImageMaster master = null;
-	for (int i = 0; i < args.length; i++) {
-	    if (args[i].equalsIgnoreCase("-file")) {
-		master = new ImageMaster(args[++i]);
-	    } else if (args[i].equalsIgnoreCase("-url")) {
-		String url = null;
-		try {
-		    url = args[++i];
-		    master = new ImageMaster(new URL(url));
-		} catch (MalformedURLException mue) {
-		    Debug.output("ImageMaster: Malformed URL: " + url);
-		    master = null;
-		}
-	    } else if (args[i].equalsIgnoreCase("-masterprops")) {
-		printMasterProps();
-	    } else if (args[i].equalsIgnoreCase("-serverprops")) {
-		printServerProps();
-	    } else if (args[i].equalsIgnoreCase("-h")) {
-		printHelp();
-	    }
-	}
-	
-	if (master != null) {
-	    master.run();
-	} else {
-	    printHelp();
-	}
+        Debug.init();
+        ImageMaster master = null;
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equalsIgnoreCase("-file")) {
+                master = new ImageMaster(args[++i]);
+            } else if (args[i].equalsIgnoreCase("-url")) {
+                String url = null;
+                try {
+                    url = args[++i];
+                    master = new ImageMaster(new URL(url));
+                } catch (MalformedURLException mue) {
+                    Debug.output("ImageMaster: Malformed URL: " + url);
+                    master = null;
+                }
+            } else if (args[i].equalsIgnoreCase("-masterprops")) {
+                printMasterProps();
+            } else if (args[i].equalsIgnoreCase("-serverprops")) {
+                printServerProps();
+            } else if (args[i].equalsIgnoreCase("-h")) {
+                printHelp();
+            }
+        }
+        
+        if (master != null) {
+            master.run();
+        } else {
+            printHelp();
+        }
     }
 
     /** 
@@ -294,52 +294,52 @@ public class ImageMaster {
      * command line needs of the ImageServer. 
      */
     public static void printHelp() {
-	Debug.output("");
-	Debug.output("usage: java com.bbn.openmap.image.ImageMaster [-file <properties file> || -url <properties file>] [-masterprops || -serverprops");
-	Debug.output("     -file requires a complete path to a ImageMaster properties file.");
-	Debug.output("     -url requires an URL to a ImageMaster properties file.");
-	Debug.output("     -masterprops prints out an example of a ImageMaster properties file.");
-	Debug.output("     -serverprops prints out an example of a ImageServer properties file.");
-	Debug.output("");
-	
-	System.exit(1);
+        Debug.output("");
+        Debug.output("usage: java com.bbn.openmap.image.ImageMaster [-file <properties file> || -url <properties file>] [-masterprops || -serverprops");
+        Debug.output("     -file requires a complete path to a ImageMaster properties file.");
+        Debug.output("     -url requires an URL to a ImageMaster properties file.");
+        Debug.output("     -masterprops prints out an example of a ImageMaster properties file.");
+        Debug.output("     -serverprops prints out an example of a ImageServer properties file.");
+        Debug.output("");
+        
+        System.exit(1);
     }
 
     /**
      * Prints an example of the ImageMaster properties file.
      */
     public static void printMasterProps() {
-	Debug.output("");
-	Debug.output("#################################################");
-	Debug.output("# Properties file for the ImageMaster");
-	Debug.output("# List of unique server nicknames (your choice).");
-	Debug.output("servers=<server1> <server2> <server3> <etc>");
-	Debug.output("");
-	Debug.output("# URL of server1 properties");
-	Debug.output("# If this is not included, it is assumed that ");
-	Debug.output("# the ImageServer properties reside in the ");
-	Debug.output("# ImageMaster properties file.");
-	Debug.output("server1.properties=http://<url to server1 properties>");
-	Debug.output("# Projection type of server1 image.");
-	Debug.output("server1.imageProjection=mercator");
-	Debug.output("# Center latitude of server1 image.");
-	Debug.output("server1.imageLatitude=40f");
-	Debug.output("# Center longitude of server1 image.");
-	Debug.output("server1.imageLongitude=-72f");
-	Debug.output("# Projection scale of server1 image.");
-	Debug.output("server1.imageScale=20000000");
-	Debug.output("# Pixel height of server1 image.");
-	Debug.output("server1.imageHeight=640");
-	Debug.output("# Pixel width of server1 image.");
-	Debug.output("server1.imageWidth=480");
-	Debug.output("# ARGB representation of the map background color (default is a saucy blue)");
-	Debug.output("server1.imageBackgroundColor=ffffffff");
-	Debug.output("# Complete path to server1 image output.");
-	Debug.output("server1.outputName=<path to output file>");
-	Debug.output("");
-	Debug.output("# Repeat for each server listed in the servers property");
-	Debug.output("#################################################");
-	Debug.output("");
+        Debug.output("");
+        Debug.output("#################################################");
+        Debug.output("# Properties file for the ImageMaster");
+        Debug.output("# List of unique server nicknames (your choice).");
+        Debug.output("servers=<server1> <server2> <server3> <etc>");
+        Debug.output("");
+        Debug.output("# URL of server1 properties");
+        Debug.output("# If this is not included, it is assumed that ");
+        Debug.output("# the ImageServer properties reside in the ");
+        Debug.output("# ImageMaster properties file.");
+        Debug.output("server1.properties=http://<url to server1 properties>");
+        Debug.output("# Projection type of server1 image.");
+        Debug.output("server1.imageProjection=mercator");
+        Debug.output("# Center latitude of server1 image.");
+        Debug.output("server1.imageLatitude=40f");
+        Debug.output("# Center longitude of server1 image.");
+        Debug.output("server1.imageLongitude=-72f");
+        Debug.output("# Projection scale of server1 image.");
+        Debug.output("server1.imageScale=20000000");
+        Debug.output("# Pixel height of server1 image.");
+        Debug.output("server1.imageHeight=640");
+        Debug.output("# Pixel width of server1 image.");
+        Debug.output("server1.imageWidth=480");
+        Debug.output("# ARGB representation of the map background color (default is a saucy blue)");
+        Debug.output("server1.imageBackgroundColor=ffffffff");
+        Debug.output("# Complete path to server1 image output.");
+        Debug.output("server1.outputName=<path to output file>");
+        Debug.output("");
+        Debug.output("# Repeat for each server listed in the servers property");
+        Debug.output("#################################################");
+        Debug.output("");
     }
 
     /**
@@ -347,22 +347,22 @@ public class ImageMaster {
      * ImageMaster properties file.
      */
     public static void printServerProps() {
-	Debug.output("");
-	Debug.output("#################################################");
-	Debug.output("# Properties for ImageServer");
-	Debug.output("# List of unique layer nicknames to use for the image (your choice).");
-	Debug.output("# server1 is the name specified in the ImageMaster properties.");
-	Debug.output("server1.imageServer.layers=<layer1> <layer2> <etc>");
-	Debug.output("# Classname of object to determine image format.");
-	Debug.output("server1.imageServer.formatter=<classname of ImageFormatter>");
-	Debug.output("");
-	Debug.output("layer1.class=<com.bbn.openmap.layer.ShapeLayer");
-	Debug.output("layer1.prettyName=ShapeLayer");
-	Debug.output("# Continue with layer specific properties.  See each layer's documentation or source for more details.");
-	Debug.output("");
-	Debug.output("# Continue for each layer listed in the imageServer.layers property.");
-	Debug.output("#################################################");
-	Debug.output("");
+        Debug.output("");
+        Debug.output("#################################################");
+        Debug.output("# Properties for ImageServer");
+        Debug.output("# List of unique layer nicknames to use for the image (your choice).");
+        Debug.output("# server1 is the name specified in the ImageMaster properties.");
+        Debug.output("server1.imageServer.layers=<layer1> <layer2> <etc>");
+        Debug.output("# Classname of object to determine image format.");
+        Debug.output("server1.imageServer.formatter=<classname of ImageFormatter>");
+        Debug.output("");
+        Debug.output("layer1.class=<com.bbn.openmap.layer.ShapeLayer");
+        Debug.output("layer1.prettyName=ShapeLayer");
+        Debug.output("# Continue with layer specific properties.  See each layer's documentation or source for more details.");
+        Debug.output("");
+        Debug.output("# Continue for each layer listed in the imageServer.layers property.");
+        Debug.output("#################################################");
+        Debug.output("");
     }
 
 
@@ -372,122 +372,122 @@ public class ImageMaster {
      * ready.
      */
     public class ImageMasterHelper implements ImageReceiver {
-	public ImageServer iServer;
-	public String outputFileName;
-	public boolean complete = false;
-	public ImageMaster iMaster;
-	public Proj proj;
-	public String outputLogFileName;
-	public String errorLogFileName;
-	public int scaleToWidth = -1;
-	public int scaleToHeight = -1;
-	
+        public ImageServer iServer;
+        public String outputFileName;
+        public boolean complete = false;
+        public ImageMaster iMaster;
+        public Proj proj;
+        public String outputLogFileName;
+        public String errorLogFileName;
+        public int scaleToWidth = -1;
+        public int scaleToHeight = -1;
+        
 
-	public ImageMasterHelper(String prefix, Properties props, 
-				 ImageMaster master) {
+        public ImageMasterHelper(String prefix, Properties props, 
+                                 ImageMaster master) {
 
-	    String propPrefix = prefix + ".";
+            String propPrefix = prefix + ".";
 
-	    float scale = PropUtils.floatFromProperties(props, propPrefix + ImageScaleProperty, 20000000f);
-	    int height = PropUtils.intFromProperties(props, propPrefix + ImageHeightProperty, 480);
-	    int width = PropUtils.intFromProperties(props, propPrefix + ImageWidthProperty, 640);
-	    float longitude = PropUtils.floatFromProperties(props,  propPrefix + ImageLongitudeProperty, -71f);
-	    float latitude = PropUtils.floatFromProperties(props, propPrefix + ImageLatitudeProperty, 42f);
-	    String projType = props.getProperty(propPrefix + ImageProjectionProperty);
-	    String uniquePropsURL = props.getProperty(propPrefix + ServerPropertiesProperty);
-	    scaleToWidth = PropUtils.intFromProperties(props, propPrefix + ScaleToWidthProperty, -1);
-	    scaleToHeight = PropUtils.intFromProperties(props, propPrefix + ScaleToHeightProperty, -1);
+            float scale = PropUtils.floatFromProperties(props, propPrefix + ImageScaleProperty, 20000000f);
+            int height = PropUtils.intFromProperties(props, propPrefix + ImageHeightProperty, 480);
+            int width = PropUtils.intFromProperties(props, propPrefix + ImageWidthProperty, 640);
+            float longitude = PropUtils.floatFromProperties(props,  propPrefix + ImageLongitudeProperty, -71f);
+            float latitude = PropUtils.floatFromProperties(props, propPrefix + ImageLatitudeProperty, 42f);
+            String projType = props.getProperty(propPrefix + ImageProjectionProperty);
+            String uniquePropsURL = props.getProperty(propPrefix + ServerPropertiesProperty);
+            scaleToWidth = PropUtils.intFromProperties(props, propPrefix + ScaleToWidthProperty, -1);
+            scaleToHeight = PropUtils.intFromProperties(props, propPrefix + ScaleToHeightProperty, -1);
 
-	    outputFileName = props.getProperty(propPrefix + ImageNameProperty);
-	    outputLogFileName = props.getProperty(propPrefix + OutputLogFileProperty);
-	    errorLogFileName = props.getProperty(propPrefix + ErrorLogFileProperty);
+            outputFileName = props.getProperty(propPrefix + ImageNameProperty);
+            outputLogFileName = props.getProperty(propPrefix + OutputLogFileProperty);
+            errorLogFileName = props.getProperty(propPrefix + ErrorLogFileProperty);
 
-	    if (outputLogFileName != null && errorLogFileName != null) {
-		if (outputLogFileName.equalsIgnoreCase(errorLogFileName)) {
-		    Debug.setLog(new File(outputFileName), true);
-		} else {
-		    Debug.directErrors(errorLogFileName, true, true);
-		    Debug.directOutput(new File(outputLogFileName), true);
-		}
-	    } else {
-		if (errorLogFileName != null) {
-		    Debug.directErrors(errorLogFileName, true, true);
-		}
-		if (outputLogFileName != null) {
-		    Debug.directOutput(new File(outputLogFileName), true);
-		}
-	    }
+            if (outputLogFileName != null && errorLogFileName != null) {
+                if (outputLogFileName.equalsIgnoreCase(errorLogFileName)) {
+                    Debug.setLog(new File(outputFileName), true);
+                } else {
+                    Debug.directErrors(errorLogFileName, true, true);
+                    Debug.directOutput(new File(outputLogFileName), true);
+                }
+            } else {
+                if (errorLogFileName != null) {
+                    Debug.directErrors(errorLogFileName, true, true);
+                }
+                if (outputLogFileName != null) {
+                    Debug.directOutput(new File(outputLogFileName), true);
+                }
+            }
 
-	    if (projType == null) {
-		projType = "mercator";
-	    }
+            if (projType == null) {
+                projType = "mercator";
+            }
 
-	    proj = (Proj)ProjectionFactory.makeProjection (ProjectionFactory.getProjType(projType), latitude, longitude, scale, width, height);
+            proj = (Proj)ProjectionFactory.makeProjection (ProjectionFactory.getProjType(projType), latitude, longitude, scale, width, height);
 
-	    // Set the background color of the map
-	    Color background = (Color)PropUtils.parseColorFromProperties(props, propPrefix + ImageBackgroundColorProperty, MapBean.DEFAULT_BACKGROUND_COLOR);
+            // Set the background color of the map
+            Color background = (Color)PropUtils.parseColorFromProperties(props, propPrefix + ImageBackgroundColorProperty, MapBean.DEFAULT_BACKGROUND_COLOR);
 
-	    iMaster = master;
+            iMaster = master;
 
-	    Properties uniqueProps;
-	    // if there isn't a unique properties file designated for
-	    // the imageerver layers, assume that the layer properties
-	    // reside in the ImageMaster properties file.
+            Properties uniqueProps;
+            // if there isn't a unique properties file designated for
+            // the imageerver layers, assume that the layer properties
+            // reside in the ImageMaster properties file.
 
-	    if (uniquePropsURL != null) {
-		uniqueProps = new Properties();
-		try {
-		    loadProperties(uniqueProps, new URL(uniquePropsURL));
-		} catch (MalformedURLException mue) {
-		    Debug.error("ImageMaster: Malformed URL for server properties: " + uniquePropsURL);
-		    uniqueProps = null;
-		}
-	    } else {
-		uniqueProps = props;
-	    }
+            if (uniquePropsURL != null) {
+                uniqueProps = new Properties();
+                try {
+                    loadProperties(uniqueProps, new URL(uniquePropsURL));
+                } catch (MalformedURLException mue) {
+                    Debug.error("ImageMaster: Malformed URL for server properties: " + uniquePropsURL);
+                    uniqueProps = null;
+                }
+            } else {
+                uniqueProps = props;
+            }
 
-	    if (uniqueProps != null && outputFileName != null) {
-		iServer = new ImageServer(propPrefix, uniqueProps, 
-					  instantiatedLayers);
-		iServer.setBackground(background);
-	    }
-	}
+            if (uniqueProps != null && outputFileName != null) {
+                iServer = new ImageServer(propPrefix, uniqueProps, 
+                                          instantiatedLayers);
+                iServer.setBackground(background);
+            }
+        }
 
-	/**
-	 * Start the ImageServer on it's creative journey.
-	 */
-	public void create() {
-	    receiveImageData(iServer.createImage(proj, scaleToWidth, scaleToHeight));
-	}
-	
-	/**
-	 * Receive the bytes from a image. ImageReceiver interface function.
-	 *
-	 * @param imageBytes the formatted image..
-	 */
-	public void receiveImageData(byte[] imageBytes) {
-	    writeDataFile(outputFileName, imageBytes);
-	    complete = true;
-	    iMaster.doNext();
-	}
-	
-	/** 
-	 * Write the image to a file.
-	 * 
-	 * @param fileName the file name to write the image into.
-	 * @param imageData the image data to put in the file.
-	 * */
-	public void writeDataFile(String fileName, byte[] imageData) {
-	    try {
-		Debug.message("imagemaster","ImageMasterHelper: Writing image file " + fileName);
-		
-		FileOutputStream binFile = new FileOutputStream(fileName);
-		binFile.write(imageData);
-		binFile.close();
-		
-	    } catch (IOException ioe) {
-		Debug.error("ImageMasterHelper: Error writing image file " + fileName);
-	    }
-	}
+        /**
+         * Start the ImageServer on it's creative journey.
+         */
+        public void create() {
+            receiveImageData(iServer.createImage(proj, scaleToWidth, scaleToHeight));
+        }
+        
+        /**
+         * Receive the bytes from a image. ImageReceiver interface function.
+         *
+         * @param imageBytes the formatted image..
+         */
+        public void receiveImageData(byte[] imageBytes) {
+            writeDataFile(outputFileName, imageBytes);
+            complete = true;
+            iMaster.doNext();
+        }
+        
+        /** 
+         * Write the image to a file.
+         * 
+         * @param fileName the file name to write the image into.
+         * @param imageData the image data to put in the file.
+         * */
+        public void writeDataFile(String fileName, byte[] imageData) {
+            try {
+                Debug.message("imagemaster","ImageMasterHelper: Writing image file " + fileName);
+                
+                FileOutputStream binFile = new FileOutputStream(fileName);
+                binFile.write(imageData);
+                binFile.close();
+                
+            } catch (IOException ioe) {
+                Debug.error("ImageMasterHelper: Error writing image file " + fileName);
+            }
+        }
     }
 }

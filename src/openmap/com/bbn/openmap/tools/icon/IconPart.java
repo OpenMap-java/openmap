@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconPart.java,v $
 // $RCSfile: IconPart.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/26 17:34:12 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -62,7 +62,7 @@ public interface IconPart extends Cloneable {
      * DrawingAttributes will be used.
      */
     public void render(Graphics g, int width, int height, 
-		       DrawingAttributes appDA);
+                       DrawingAttributes appDA);
 
     /**
      * Set a clip area for the IconPart to draw only certain parts of

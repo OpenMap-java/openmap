@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/12/23 20:46:44 $
-// $Author: wjeuerle $
+// $Revision: 1.9 $
+// $Date: 2004/01/26 18:18:12 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -190,7 +190,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @param lType line type, from a list defined in OMGraphic.
      */
     public OMPoly(float[] llPoints, int units, int lType) {
-	this (llPoints, units, lType, -1);
+        this (llPoints, units, lType, -1);
     }
 
     /**
@@ -218,8 +218,8 @@ public class OMPoly extends OMGraphic implements Serializable {
      */
     public OMPoly(float[] llPoints, int units, int lType, int nsegs) {
         super(RENDERTYPE_LATLON, lType, DECLUTTERTYPE_NONE);
-	setLocation(llPoints, units);
-	this.nsegs = nsegs;
+        setLocation(llPoints, units);
+        this.nsegs = nsegs;
     }
 
     /**
@@ -231,7 +231,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      */
     public OMPoly(int[] xypoints) {
         super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	setLocation(xypoints);
+        setLocation(xypoints);
     }
 
     /**
@@ -245,7 +245,7 @@ public class OMPoly extends OMGraphic implements Serializable {
     public OMPoly(int[] xPoints, int[] yPoints) {
         super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
-	setLocation(xPoints, yPoints);
+        setLocation(xPoints, yPoints);
     }
 
     /**
@@ -259,12 +259,12 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @param cMode offset coordinate mode
      */
     public OMPoly(float latPoint, float lonPoint, 
-		  int[] xypoints, int cMode) {
+                  int[] xypoints, int cMode) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
-	setLocation(latPoint, lonPoint,
-		    OMGraphic.DECIMAL_DEGREES, xypoints);
-	coordMode = cMode;
+        setLocation(latPoint, lonPoint,
+                    OMGraphic.DECIMAL_DEGREES, xypoints);
+        coordMode = cMode;
     }
 
     /**
@@ -279,13 +279,13 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @param cMode offset coordinate mode
      */
     public OMPoly(float latPoint, float lonPoint, 
-		  int[] xPoints, int[] yPoints, 
-		  int cMode) {
+                  int[] xPoints, int[] yPoints, 
+                  int cMode) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
-	setLocation(latPoint, lonPoint,
-		    OMGraphic.DECIMAL_DEGREES, xPoints, yPoints);
-	coordMode = cMode;
+        setLocation(latPoint, lonPoint,
+                    OMGraphic.DECIMAL_DEGREES, xPoints, yPoints);
+        coordMode = cMode;
     }
 
     /**
@@ -308,13 +308,13 @@ public class OMPoly extends OMGraphic implements Serializable {
      * or OMGraphic.DECIMAL_DEGREES
      */
     public void setLocation(float[] llPoints, int units) {
-	this.units = OMGraphic.RADIANS;
-	if (units == OMGraphic.DECIMAL_DEGREES) {
-	    ProjMath.arrayDegToRad(llPoints);
-	}
-	rawllpts = llPoints;
-	setNeedToRegenerate(true);
-	setRenderType(RENDERTYPE_LATLON);
+        this.units = OMGraphic.RADIANS;
+        if (units == OMGraphic.DECIMAL_DEGREES) {
+            ProjMath.arrayDegToRad(llPoints);
+        }
+        rawllpts = llPoints;
+        setNeedToRegenerate(true);
+        setRenderType(RENDERTYPE_LATLON);
     }
 
     /**
@@ -326,15 +326,15 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @param xypoints array of x/y points, arranged x, y, x, y, etc.
      */
     public void setLocation(int[] xypoints) {
-	int end = xypoints.length>>1;
-	xs = new int[end];
-	ys = new int[end];
-	for (int i=0, j=0; i < end; i++, j+=2) {
-	    xs[i] = xypoints[j];
-	    ys[i] = xypoints[j+1];
-	}
-	setNeedToRegenerate(true);
-	setRenderType(RENDERTYPE_XY);
+        int end = xypoints.length>>1;
+        xs = new int[end];
+        ys = new int[end];
+        for (int i=0, j=0; i < end; i++, j+=2) {
+            xs[i] = xypoints[j];
+            ys[i] = xypoints[j+1];
+        }
+        setNeedToRegenerate(true);
+        setRenderType(RENDERTYPE_XY);
     }
 
 
@@ -348,10 +348,10 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @param yPoints int[] of y coordinates
      */
     public void setLocation(int[] xPoints, int[] yPoints) {
-	xs = xPoints;
-	ys = yPoints;
-	setNeedToRegenerate(true);
-	setRenderType(RENDERTYPE_XY);
+        xs = xPoints;
+        ys = yPoints;
+        setNeedToRegenerate(true);
+        setRenderType(RENDERTYPE_XY);
     }
 
     /**
@@ -367,24 +367,24 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @param xypoints array of x/y points, arranged x, y, x, y, etc.
      */
     public void setLocation(float latPoint, float lonPoint, 
-			    int units, int[] xypoints) {
-	this.units = OMGraphic.RADIANS; 
-	if (units == OMGraphic.DECIMAL_DEGREES) {
-	    lat = ProjMath.degToRad(latPoint);
-	    lon = ProjMath.degToRad(lonPoint);
-	} else {
-	    lat = latPoint;
-	    lon = lonPoint;
-	}
-	int end = xypoints.length>>1;
-	xs = new int[end];
-	ys = new int[end];
-	for (int i=0, j=0; i < end; i++, j+=2) {
-	    xs[i] = xypoints[j];
-	    ys[i] = xypoints[j+1];
-	}
-	setNeedToRegenerate(true);
-	setRenderType(RENDERTYPE_OFFSET);
+                            int units, int[] xypoints) {
+        this.units = OMGraphic.RADIANS; 
+        if (units == OMGraphic.DECIMAL_DEGREES) {
+            lat = ProjMath.degToRad(latPoint);
+            lon = ProjMath.degToRad(lonPoint);
+        } else {
+            lat = latPoint;
+            lon = lonPoint;
+        }
+        int end = xypoints.length>>1;
+        xs = new int[end];
+        ys = new int[end];
+        for (int i=0, j=0; i < end; i++, j+=2) {
+            xs[i] = xypoints[j];
+            ys[i] = xypoints[j+1];
+        }
+        setNeedToRegenerate(true);
+        setRenderType(RENDERTYPE_OFFSET);
     }
 
     /**
@@ -401,19 +401,19 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @param yPoints int[] of y coordinates
      */
     public void setLocation(float latPoint, float lonPoint, 
-			    int units, int[] xPoints, int[] yPoints) {
-	this.units = OMGraphic.RADIANS; 
-	if (units == OMGraphic.DECIMAL_DEGREES) {
-	    lat = ProjMath.degToRad(latPoint);
-	    lon = ProjMath.degToRad(lonPoint);
-	} else {
-	    lat = latPoint;
-	    lon = lonPoint;
-	}
-	xs = xPoints;
-	ys = yPoints;
-	setNeedToRegenerate(true);
-	setRenderType(RENDERTYPE_OFFSET);
+                            int units, int[] xPoints, int[] yPoints) {
+        this.units = OMGraphic.RADIANS; 
+        if (units == OMGraphic.DECIMAL_DEGREES) {
+            lat = ProjMath.degToRad(latPoint);
+            lon = ProjMath.degToRad(lonPoint);
+        } else {
+            lat = latPoint;
+            lon = lonPoint;
+        }
+        xs = xPoints;
+        ys = yPoints;
+        setNeedToRegenerate(true);
+        setRenderType(RENDERTYPE_OFFSET);
     }
 
     /**
@@ -424,7 +424,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @return float[] rawllpts of lat, lon, lat, lon
      */
     public float[] getLatLonArray() {
-	return rawllpts;
+        return rawllpts;
     }
 
     /**
@@ -432,8 +432,8 @@ public class OMPoly extends OMGraphic implements Serializable {
      * RENDERTYPE_OFFSET Polygons.
      */
     public void setLat(float lat) {
-	this.lat = ProjMath.degToRad(lat);
-	setNeedToRegenerate(true);
+        this.lat = ProjMath.degToRad(lat);
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -441,7 +441,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * RENDERTYPE_OFFSET Polygons.
      */
     public float getLat() {
-	return ProjMath.radToDeg(lat);
+        return ProjMath.radToDeg(lat);
     }
 
     /**
@@ -449,8 +449,8 @@ public class OMPoly extends OMGraphic implements Serializable {
      * RENDERTYPE_OFFSET Polygons.
      */
     public void setLon(float lon) {
-	this.lon = ProjMath.degToRad(lon);
-	setNeedToRegenerate(true);
+        this.lon = ProjMath.degToRad(lon);
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -458,7 +458,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * RENDERTYPE_OFFSET Polygons.  
      */
     public float getLon() {
-	return ProjMath.radToDeg(lon);
+        return ProjMath.radToDeg(lon);
     }
 
     /**
@@ -466,8 +466,8 @@ public class OMPoly extends OMGraphic implements Serializable {
      * RENDERTYPE_XY polys.  
      */
     public void setXs(int[] x) {
-	xs = x;
-	setNeedToRegenerate(true);
+        xs = x;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -475,7 +475,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * RENDERTYPE_XY polys.  
      */
     public int[] getXs() {
-	return xs;
+        return xs;
     }
 
     /**
@@ -483,8 +483,8 @@ public class OMPoly extends OMGraphic implements Serializable {
      * RENDERTYPE_XY polys.  
      */
     public void setYs(int[] y) {
-	ys = y;
-	setNeedToRegenerate(true);
+        ys = y;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -492,7 +492,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * RENDERTYPE_XY polys.  
      */
     public int[] getYs() {
-	return ys;
+        return ys;
     }
 
     /**
@@ -503,8 +503,8 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @param paint value Color 
      */
     public void setFillPaint(Paint paint) {
-	super.setFillPaint(paint);
-	isPolygon = !isClear(paint);
+        super.setFillPaint(paint);
+        isPolygon = !isClear(paint);
     }
 
     /**
@@ -516,7 +516,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @return true if polygon false if polyline
      */
     public boolean isPolygon() {
-	return isPolygon;
+        return isPolygon;
     }
 
     /**
@@ -527,14 +527,14 @@ public class OMPoly extends OMGraphic implements Serializable {
      * true.  If this is set to be false, the fillPaint will be set to clear. 
      */
     public void setIsPolygon(boolean set) {
-	if (!set) {
-	    // This is important for the rendering, especially if the
-	    // shapes are being created and OMGraphic.render() will be
-	    // used.  The fillPaint being == OMColor.clear will
-	    // prevent the filled area from being drawn.
-	    fillPaint = OMColor.clear;
-	}
-	isPolygon = set;
+        if (!set) {
+            // This is important for the rendering, especially if the
+            // shapes are being created and OMGraphic.render() will be
+            // used.  The fillPaint being == OMColor.clear will
+            // prevent the filled area from being drawn.
+            fillPaint = OMColor.clear;
+        }
+        isPolygon = set;
     }
 
     /**
@@ -545,7 +545,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @param nsegs number of segment points
      */
     public void setNumSegs(int nsegs) {
-	this.nsegs = nsegs;
+        this.nsegs = nsegs;
     }
 
     /**
@@ -556,7 +556,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @return int number of segment points
      */
     public int getNumSegs() {
-	return nsegs;
+        return nsegs;
     }
 
     /**
@@ -565,7 +565,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @see #COORDMODE_PREVIOUS
      */
     public void setCoordMode(int coordMode) {
-	this.coordMode = coordMode;
+        this.coordMode = coordMode;
     }
 
     /**
@@ -574,16 +574,16 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @see #COORDMODE_PREVIOUS
      */
     public int getCoordMode() {
-	return coordMode;
+        return coordMode;
     }
 
 
     public void setDoShapes(boolean set) {
-	doShapes = set;
+        doShapes = set;
     }
 
     public boolean getDoShapes() {
-	return doShapes;
+        return doShapes;
     }
 
     /**
@@ -593,117 +593,117 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-	int i, j, npts;
-	shape = null;
+        int i, j, npts;
+        shape = null;
 
-	if (proj == null) {
-	    Debug.message("omgraphic", "OMPoly: null projection in generate!");
-	    return false;
-	}
+        if (proj == null) {
+            Debug.message("omgraphic", "OMPoly: null projection in generate!");
+            return false;
+        }
 
-	// answer the question now, saving calcuation for future
-	// calculations.  The set method forces the calculation for
-	// the query.
-	setNeedToRegenerate(true);
-	isGeometryClosed(); 
+        // answer the question now, saving calcuation for future
+        // calculations.  The set method forces the calculation for
+        // the query.
+        setNeedToRegenerate(true);
+        isGeometryClosed(); 
 
-	switch (renderType) {
+        switch (renderType) {
 
-	case RENDERTYPE_XY:
-	    if (xs == null) {
-		Debug.message("omgraphic", "OMPoly x/y rendertype null coordinates");
-		return false;
-	    }
+        case RENDERTYPE_XY:
+            if (xs == null) {
+                Debug.message("omgraphic", "OMPoly x/y rendertype null coordinates");
+                return false;
+            }
 
-	    // Need to keep these around for the LabeledOMPoly
-	    xpoints = new int[1][0]; xpoints[0] = xs;
-	    ypoints = new int[1][0]; ypoints[0] = ys;
+            // Need to keep these around for the LabeledOMPoly
+            xpoints = new int[1][0]; xpoints[0] = xs;
+            ypoints = new int[1][0]; ypoints[0] = ys;
 
-	    if (doShapes) {
-		setNeedToRegenerate(false);
-		createShape();
-	    }
-	    break;
+            if (doShapes) {
+                setNeedToRegenerate(false);
+                createShape();
+            }
+            break;
 
-	case RENDERTYPE_OFFSET:
-	    if (xs == null) {
-		Debug.message("omgraphic", "OMPoly offset rendertype null coordinates");
-		return false;
-	    }
+        case RENDERTYPE_OFFSET:
+            if (xs == null) {
+                Debug.message("omgraphic", "OMPoly offset rendertype null coordinates");
+                return false;
+            }
 
-	    npts = xs.length;
-	    int[] _x = new int[npts];
-	    int[] _y = new int[npts];
+            npts = xs.length;
+            int[] _x = new int[npts];
+            int[] _y = new int[npts];
 
-	    // forward project the radian point
-	    Point origin = proj.forward(
-		lat, lon, new Point(0,0), true);//radians
+            // forward project the radian point
+            Point origin = proj.forward(
+                lat, lon, new Point(0,0), true);//radians
 
-	    if (coordMode == COORDMODE_ORIGIN) {
-		for (i = 0; i < npts; i++) {
-		    _x[i] = xs[i] + origin.x;
-		    _y[i] = ys[i] + origin.y;
-		}
-	    } else { // CModePrevious offset deltas
-		_x[0] = xs[0] + origin.x;
-		_y[0] = ys[0] + origin.y;
+            if (coordMode == COORDMODE_ORIGIN) {
+                for (i = 0; i < npts; i++) {
+                    _x[i] = xs[i] + origin.x;
+                    _y[i] = ys[i] + origin.y;
+                }
+            } else { // CModePrevious offset deltas
+                _x[0] = xs[0] + origin.x;
+                _y[0] = ys[0] + origin.y;
 
-		for (i=1; i<npts; i++) {
-		    _x[i] = xs[i] + _x[i-1];
-		    _y[i] = ys[i] + _y[i-1];
-		}
-	    }
-	    // Need to keep these around for the LabeledOMPoly
-	    xpoints = new int[1][0]; xpoints[0] = _x;
-	    ypoints = new int[1][0]; ypoints[0] = _y;
+                for (i=1; i<npts; i++) {
+                    _x[i] = xs[i] + _x[i-1];
+                    _y[i] = ys[i] + _y[i-1];
+                }
+            }
+            // Need to keep these around for the LabeledOMPoly
+            xpoints = new int[1][0]; xpoints[0] = _x;
+            ypoints = new int[1][0]; ypoints[0] = _y;
 
-	    if (doShapes) {
-		setNeedToRegenerate(false);
-		createShape();
-	    }
-	    break;
+            if (doShapes) {
+                setNeedToRegenerate(false);
+                createShape();
+            }
+            break;
 
-	case RENDERTYPE_LATLON:
-	    ArrayList vector = null;
+        case RENDERTYPE_LATLON:
+            ArrayList vector = null;
 
-	    // polygon/polyline project the polygon/polyline.
-	    // Vertices should already be in radians.
-	    vector = proj.forwardPoly(rawllpts, lineType, nsegs, isPolygon);
-	    int size = vector.size();
+            // polygon/polyline project the polygon/polyline.
+            // Vertices should already be in radians.
+            vector = proj.forwardPoly(rawllpts, lineType, nsegs, isPolygon);
+            int size = vector.size();
 
-	    if (!doShapes) {
-		xpoints = new int[(int)(size/2)][0];
-		ypoints = new int[xpoints.length][0];
-	    }
+            if (!doShapes) {
+                xpoints = new int[(int)(size/2)][0];
+                ypoints = new int[xpoints.length][0];
+            }
 
-	    // We could call create shape, but this is more efficient.
+            // We could call create shape, but this is more efficient.
 
-	    for (i=0, j=0; i<size; i+=2, j++) {
-		if (doShapes) {
-		    GeneralPath gp = createShape((int[])vector.get(i), 
-						 (int[])vector.get(i+1),
-						 isPolygon);
+            for (i=0, j=0; i<size; i+=2, j++) {
+                if (doShapes) {
+                    GeneralPath gp = createShape((int[])vector.get(i), 
+                                                 (int[])vector.get(i+1),
+                                                 isPolygon);
 
-		    if (shape == null) {
-			shape = gp;
-		    } else {
-			((GeneralPath)shape).append(gp, false);
-		    }
-		} else {
-		    xpoints[j] = (int[])vector.get(i);
-		    ypoints[j] = (int[])vector.get(i+1);
-		}
-	    }
+                    if (shape == null) {
+                        shape = gp;
+                    } else {
+                        ((GeneralPath)shape).append(gp, false);
+                    }
+                } else {
+                    xpoints[j] = (int[])vector.get(i);
+                    ypoints[j] = (int[])vector.get(i+1);
+                }
+            }
 
-	    break;
+            break;
 
-	case RENDERTYPE_UNKNOWN:
-	    Debug.error("OMPoly.generate: invalid RenderType");
-	    return false;
-	}
+        case RENDERTYPE_UNKNOWN:
+            Debug.error("OMPoly.generate: invalid RenderType");
+            return false;
+        }
 
-	setNeedToRegenerate(false);
-	return true;
+        setNeedToRegenerate(false);
+        return true;
     }
 
     /**
@@ -711,7 +711,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * clear).
      */
     public boolean shouldRenderFill() {
-	return !isClear(getFillPaint()) && isPolygon();
+        return !isClear(getFillPaint()) && isPolygon();
     }
 
     /**
@@ -721,105 +721,105 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @param g java.awt.Graphics to paint the poly onto.
      */
     public void render(Graphics g) {
-	if (shape != null) {
-	    super.render(g);
-	    return;
-	}
+        if (shape != null) {
+            super.render(g);
+            return;
+        }
 
-	if (getNeedToRegenerate() || !isVisible()) return;
+        if (getNeedToRegenerate() || !isVisible()) return;
 
-	// safety: grab local reference of projected points
-	int[][] xpts = xpoints;
-	int[][] ypts = ypoints;
+        // safety: grab local reference of projected points
+        int[][] xpts = xpoints;
+        int[][] ypts = ypoints;
 
-	if (xpts == null || ypts == null) {
-	    // Shouldn't get here, but crazy EditableOMPoly events
-	    // sometimes cause this to happen.  Catch and wait to
-	    // paint later.
-	    setNeedToRegenerate(true);
-	    return;
-	}
+        if (xpts == null || ypts == null) {
+            // Shouldn't get here, but crazy EditableOMPoly events
+            // sometimes cause this to happen.  Catch and wait to
+            // paint later.
+            setNeedToRegenerate(true);
+            return;
+        }
 
-	int[] _x, _y;
-	int i;
-	int len = xpts.length;
+        int[] _x, _y;
+        int i;
+        int len = xpts.length;
 
-	Paint displayPaint = getDisplayPaint();
-	Paint fillPaint = getFillPaint();
-	boolean isFillClear = isClear(fillPaint);
-	boolean isLineClear = isClear(displayPaint);
+        Paint displayPaint = getDisplayPaint();
+        Paint fillPaint = getFillPaint();
+        boolean isFillClear = isClear(fillPaint);
+        boolean isLineClear = isClear(displayPaint);
 
-	Paint tm = getTextureMask();
-	
-	// If shapes are null, then we have to do things the old way.
-	try {
-	    for (i = 0; i < len; i++) {
-		_x = xpts[i];
-		_y = ypts[i];
-	    
-		if (_x == null || _y == null) {
-		    continue;
-		}
+        Paint tm = getTextureMask();
+        
+        // If shapes are null, then we have to do things the old way.
+        try {
+            for (i = 0; i < len; i++) {
+                _x = xpts[i];
+                _y = ypts[i];
+            
+                if (_x == null || _y == null) {
+                    continue;
+                }
 
-		// render polygon
-		if (isPolygon) {
-		
-		    // fill main polygon
-		
-		    if (!isFillClear) {
-			// set the interior coloring parameters
-			setGraphicsForFill(g);
-			g.fillPolygon(_x, _y, _x.length);
+                // render polygon
+                if (isPolygon) {
+                
+                    // fill main polygon
+                
+                    if (!isFillClear) {
+                        // set the interior coloring parameters
+                        setGraphicsForFill(g);
+                        g.fillPolygon(_x, _y, _x.length);
 
-			if (tm != null && tm != fillPaint) {
-			    setGraphicsColor(g, tm);
-			    g.fillPolygon(_x, _y, _x.length);
-			}
-		    }
-		    
-		    // only draw outline if different color or matted
-		    if (matted || !isLineClear || !edgeMatchesFill) {
+                        if (tm != null && tm != fillPaint) {
+                            setGraphicsColor(g, tm);
+                            g.fillPolygon(_x, _y, _x.length);
+                        }
+                    }
+                    
+                    // only draw outline if different color or matted
+                    if (matted || !isLineClear || !edgeMatchesFill) {
 
-			if (matted) {
-			    if (g instanceof Graphics2D && 
-				stroke instanceof BasicStroke) {
-				((Graphics2D)g).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
-				setGraphicsColor(g, mattingPaint);
-				g.drawPolyline(_x, _y, _x.length);
-			    }
-			}
+                        if (matted) {
+                            if (g instanceof Graphics2D && 
+                                stroke instanceof BasicStroke) {
+                                ((Graphics2D)g).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
+                                setGraphicsColor(g, mattingPaint);
+                                g.drawPolyline(_x, _y, _x.length);
+                            }
+                        }
 
-			setGraphicsForEdge(g);
-			// for some reason, this used to be drawPolygon
-			g.drawPolygon(_x, _y, _x.length);
-		    }
-		}
-		
-		// render polyline
-		else {
+                        setGraphicsForEdge(g);
+                        // for some reason, this used to be drawPolygon
+                        g.drawPolygon(_x, _y, _x.length);
+                    }
+                }
+                
+                // render polyline
+                else {
 
-		    if (matted) {
-			if (g instanceof Graphics2D && 
-			    stroke instanceof BasicStroke) {
-			    ((Graphics2D)g).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
-			    setGraphicsColor(g, mattingPaint);
-			    g.drawPolyline(_x, _y, _x.length);
-			}
-		    }
+                    if (matted) {
+                        if (g instanceof Graphics2D && 
+                            stroke instanceof BasicStroke) {
+                            ((Graphics2D)g).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
+                            setGraphicsColor(g, mattingPaint);
+                            g.drawPolyline(_x, _y, _x.length);
+                        }
+                    }
 
-		    // draw main outline
-		    setGraphicsForEdge(g);
-		    g.drawPolyline(_x, _y, _x.length);
-		}
-	    }
-	} catch (Exception e) {
-	    // Trying to catch any clipping problems from within a JRE
-	    Debug.output("OMPoly: caught Java rendering exception\n" + 
-			 e.getMessage());
-	    if (Debug.debugging("ompoly")) {
-		e.printStackTrace();
-	    }
-	}
+                    // draw main outline
+                    setGraphicsForEdge(g);
+                    g.drawPolyline(_x, _y, _x.length);
+                }
+            }
+        } catch (Exception e) {
+            // Trying to catch any clipping problems from within a JRE
+            Debug.output("OMPoly: caught Java rendering exception\n" + 
+                         e.getMessage());
+            if (Debug.debugging("ompoly")) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -831,38 +831,38 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @return the distance of the object to the location given.
      */
     public float distance(int x, int y) {
-	if (shape != null) {
-	    return super.distance(x, y);
-	}
+        if (shape != null) {
+            return super.distance(x, y);
+        }
 
-	// If shape is null, then we have to do things the old way.
+        // If shape is null, then we have to do things the old way.
 
-	float temp, distance = Float.POSITIVE_INFINITY;
+        float temp, distance = Float.POSITIVE_INFINITY;
 
-	if (getNeedToRegenerate()) {
-	    return distance;
-	}
+        if (getNeedToRegenerate()) {
+            return distance;
+        }
 
-	// safety: grab local reference of projected points
-	int[][] xpts = xpoints;
-	int[][] ypts = ypoints;
-	int[] _x, _y;
-	int len = xpts.length;
+        // safety: grab local reference of projected points
+        int[][] xpts = xpoints;
+        int[][] ypts = ypoints;
+        int[] _x, _y;
+        int len = xpts.length;
 
-	for (int i = 0; i < len; i++) {
-	    _x = xpts[i];
-	    _y = ypts[i];
+        for (int i = 0; i < len; i++) {
+            _x = xpts[i];
+            _y = ypts[i];
 
-	    // check if point inside polygon
-	    if (isPolygon && DrawUtil.inside_polygon(_x,_y,x,y))
-		return 0f;		// close as can be
+            // check if point inside polygon
+            if (isPolygon && DrawUtil.inside_polygon(_x,_y,x,y))
+                return 0f;              // close as can be
 
-	    // get the closest point
-	    temp = DrawUtil.closestPolyDistance(_x, _y, x, y, false);
-	    if (temp < distance) distance = temp;
-	}
+            // get the closest point
+            temp = DrawUtil.closestPolyDistance(_x, _y, x, y, false);
+            if (temp < distance) distance = temp;
+        }
 
-	return normalizeDistanceForLineWidth(distance);
+        return normalizeDistanceForLineWidth(distance);
     }
 
     /**
@@ -880,12 +880,12 @@ public class OMPoly extends OMGraphic implements Serializable {
      * objects for its internal representation.  
      */
     public GeneralPath getShape() {
-	if (shape == null) {
-	    // Since polygons have the option of not creating shape
-	    // objects, should create one if asked.
-	    createShape();
-	}
-	return shape;
+        if (shape == null) {
+            // Since polygons have the option of not creating shape
+            // objects, should create one if asked.
+            createShape();
+        }
+        return shape;
     }
 
 
@@ -896,32 +896,32 @@ public class OMPoly extends OMGraphic implements Serializable {
      */
     protected void createShape() {
 
-	if (getNeedToRegenerate()) {
-	    return;
-	}
+        if (getNeedToRegenerate()) {
+            return;
+        }
 
-	switch (renderType) {
+        switch (renderType) {
 
-	case RENDERTYPE_XY:
-	case RENDERTYPE_OFFSET:
-	    shape = createShape(xpoints[0], ypoints[0], isPolygon);
-	    break;
-	case RENDERTYPE_LATLON:
-	    int size = xpoints.length;
+        case RENDERTYPE_XY:
+        case RENDERTYPE_OFFSET:
+            shape = createShape(xpoints[0], ypoints[0], isPolygon);
+            break;
+        case RENDERTYPE_LATLON:
+            int size = xpoints.length;
 
-	    for (int i=0; i<size; i++) {
-		GeneralPath gp = createShape(xpoints[i], ypoints[i], isPolygon);
+            for (int i=0; i<size; i++) {
+                GeneralPath gp = createShape(xpoints[i], ypoints[i], isPolygon);
 
-		if (shape == null) {
-		    shape = gp;
-		} else {
-		    ((GeneralPath)shape).append(gp, false);
-		}
-	    }
-	    break;
+                if (shape == null) {
+                    shape = gp;
+                } else {
+                    ((GeneralPath)shape).append(gp, false);
+                }
+            }
+            break;
 
-	default:
-	}
+        default:
+        }
 
     }
 
@@ -932,29 +932,29 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @return boolean
      */
     protected boolean isGeometryClosed() {
-	geometryClosed = false;
-	switch (renderType) {
-	case RENDERTYPE_XY :
-	case RENDERTYPE_OFFSET :
-	    if (xs != null && xs.length > 2) {
-		geometryClosed = (xs[0] == xs[xs.length - 1] && 
-				  ys[0] == ys[ys.length - 1]);
-	    }
-	    break;
-	case RENDERTYPE_LATLON :
-	    if (rawllpts != null) {
-		int l = rawllpts.length;
-		if (l > 4) {
-		    geometryClosed = (Math.abs(rawllpts[0] - rawllpts[l - 2]) < 1e-5 && 
-				      Math.abs(rawllpts[1] - rawllpts[l - 1]) < 1e-5);
-		}
-	    }
-	    break;
-	case RENDERTYPE_UNKNOWN :
-	    Debug.error("OMPoly.generate: invalid RenderType");
-	    break;
-	}
+        geometryClosed = false;
+        switch (renderType) {
+        case RENDERTYPE_XY :
+        case RENDERTYPE_OFFSET :
+            if (xs != null && xs.length > 2) {
+                geometryClosed = (xs[0] == xs[xs.length - 1] && 
+                                  ys[0] == ys[ys.length - 1]);
+            }
+            break;
+        case RENDERTYPE_LATLON :
+            if (rawllpts != null) {
+                int l = rawllpts.length;
+                if (l > 4) {
+                    geometryClosed = (Math.abs(rawllpts[0] - rawllpts[l - 2]) < 1e-5 && 
+                                      Math.abs(rawllpts[1] - rawllpts[l - 1]) < 1e-5);
+                }
+            }
+            break;
+        case RENDERTYPE_UNKNOWN :
+            Debug.error("OMPoly.generate: invalid RenderType");
+            break;
+        }
 
-	return geometryClosed;
+        return geometryClosed;
     }
 }

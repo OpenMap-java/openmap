@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconPartCollectionEntry.java,v $
 // $RCSfile: IconPartCollectionEntry.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/26 17:48:55 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,33 +36,33 @@ public class IconPartCollectionEntry {
     protected IconPartCollectionEntry() {}
 
     public IconPartCollectionEntry(String name, String description, 
-				   IconPart part) {
-	this.name = name;
-	this.description = description;
-	this.part = part;
+                                   IconPart part) {
+        this.name = name;
+        this.description = description;
+        this.part = part;
     }
 
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setDescription(String description) {
-	this.description = description;
+        this.description = description;
     }
 
     public String getDescription() {
-	return description;
+        return description;
     }
 
     public void setIconPart(IconPart part) {
-	this.part = part;
+        this.part = part;
     }
 
     public IconPart getIconPart() {
-	return part;
+        return part;
     }
 }

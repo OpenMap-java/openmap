@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/Attic/DashedLineChoiceComboBox.java,v $
 // $RCSfile: DashedLineChoiceComboBox.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -57,34 +57,34 @@ public class DashedLineChoiceComboBox implements ActionListener {
      * @param da the DrawingAttribute to adjust when changes are made.
      */
     public JComboBox getComboBox(DrawingAttributes da) {
-	drawingAttributes = da;
+        drawingAttributes = da;
 
-	JPanel lineDashPanel = new JPanel();
+        JPanel lineDashPanel = new JPanel();
 
-	Object[] lineDashes = { ONE.getIcon(), 
-				TWO.getIcon(), 
-				THREE.getIcon(),
-				FOUR.getIcon(),
-				FIVE.getIcon() };
-	
-	JComboBox lineDashList = new JComboBox(lineDashes);
+        Object[] lineDashes = { ONE.getIcon(), 
+                                TWO.getIcon(), 
+                                THREE.getIcon(),
+                                FOUR.getIcon(),
+                                FIVE.getIcon() };
+        
+        JComboBox lineDashList = new JComboBox(lineDashes);
 
-	lineDashList.setToolTipText("Line Dash Pattern");
-	
-	int mWidth = 0;
-	int mHeight = 0;
-	
-	for (int i = 0; i < lineDashes.length; i++) {
-	    ImageIcon icon = (ImageIcon)lineDashes[i];
-	    if (icon.getIconWidth() > mWidth) mWidth = icon.getIconWidth();
-	    if (icon.getIconHeight() > mHeight) mHeight = icon.getIconHeight();
-	}
-	
-	lineDashList.setMaximumSize(new Dimension(mWidth + 2 /*border*/, mHeight));
-	lineDashList.setSelectedIndex(tryToDetermineStroke(da.getStroke()));
-	lineDashList.addActionListener(this);
+        lineDashList.setToolTipText("Line Dash Pattern");
+        
+        int mWidth = 0;
+        int mHeight = 0;
+        
+        for (int i = 0; i < lineDashes.length; i++) {
+            ImageIcon icon = (ImageIcon)lineDashes[i];
+            if (icon.getIconWidth() > mWidth) mWidth = icon.getIconWidth();
+            if (icon.getIconHeight() > mHeight) mHeight = icon.getIconHeight();
+        }
+        
+        lineDashList.setMaximumSize(new Dimension(mWidth + 2 /*border*/, mHeight));
+        lineDashList.setSelectedIndex(tryToDetermineStroke(da.getStroke()));
+        lineDashList.addActionListener(this);
 
-	return lineDashList;
+        return lineDashList;
     }
 
     /**
@@ -93,43 +93,43 @@ public class DashedLineChoiceComboBox implements ActionListener {
      * dash pattern with the current choices.
      */
     public static int tryToDetermineStroke(Stroke stroke) {
-	if (stroke == null || !(stroke instanceof BasicStroke)) {
-	    return 0;
-	}
-	BasicStroke bs = (BasicStroke) stroke;
+        if (stroke == null || !(stroke instanceof BasicStroke)) {
+            return 0;
+        }
+        BasicStroke bs = (BasicStroke) stroke;
 
-	float[] dashArray = bs.getDashArray();
+        float[] dashArray = bs.getDashArray();
 
-	int currentChoice = 0;
-	if (dashArray == null) {
-	    return currentChoice;
-	}
-	
-	float[] ta = TWO.getStroke().getDashArray();
-	if (ta.length == dashArray.length && 
-	    dashArray[0] == ta[0] && dashArray[1] == ta[1]) {
-	    return 1;
-	} 
+        int currentChoice = 0;
+        if (dashArray == null) {
+            return currentChoice;
+        }
+        
+        float[] ta = TWO.getStroke().getDashArray();
+        if (ta.length == dashArray.length && 
+            dashArray[0] == ta[0] && dashArray[1] == ta[1]) {
+            return 1;
+        } 
 
-	ta = THREE.getStroke().getDashArray();
-	if (ta.length == dashArray.length && 
-	    dashArray[0] == ta[0] && dashArray[1] == ta[1]) {
-	    return 2;
-	} 
+        ta = THREE.getStroke().getDashArray();
+        if (ta.length == dashArray.length && 
+            dashArray[0] == ta[0] && dashArray[1] == ta[1]) {
+            return 2;
+        } 
 
-	ta = FOUR.getStroke().getDashArray();
-	if (ta.length == dashArray.length && 
-	    dashArray[0] == ta[0] && dashArray[1] == ta[1]) {
-	    return 3;
-	} 
+        ta = FOUR.getStroke().getDashArray();
+        if (ta.length == dashArray.length && 
+            dashArray[0] == ta[0] && dashArray[1] == ta[1]) {
+            return 3;
+        } 
 
-	ta = FIVE.getStroke().getDashArray();
-	if (ta.length == dashArray.length && 
-	    dashArray[0] == ta[0] && dashArray[1] == ta[1]) {
-	    return 4;
-	} 
+        ta = FIVE.getStroke().getDashArray();
+        if (ta.length == dashArray.length && 
+            dashArray[0] == ta[0] && dashArray[1] == ta[1]) {
+            return 4;
+        } 
 
-	return currentChoice;
+        return currentChoice;
     }
     
     /**
@@ -137,50 +137,50 @@ public class DashedLineChoiceComboBox implements ActionListener {
      *  send the changes back to the DrawingAttributes object.
      */
     public void actionPerformed(ActionEvent e) {
-	if (drawingAttributes == null) {
-	    return;
-	}
+        if (drawingAttributes == null) {
+            return;
+        }
 
-	BasicStroke currentStroke = 
-	    (BasicStroke)drawingAttributes.getStroke();
+        BasicStroke currentStroke = 
+            (BasicStroke)drawingAttributes.getStroke();
 
-	if (currentStroke == null) {
-	    drawingAttributes.setStroke(new BasicStroke(1));
-	    return;
-	}
+        if (currentStroke == null) {
+            drawingAttributes.setStroke(new BasicStroke(1));
+            return;
+        }
 
-	float lineWidth = currentStroke.getLineWidth();
-	int cap =  currentStroke.getEndCap();
-	int join =  currentStroke.getLineJoin();
-	float miterLimit =  currentStroke.getMiterLimit();
+        float lineWidth = currentStroke.getLineWidth();
+        int cap =  currentStroke.getEndCap();
+        int join =  currentStroke.getLineJoin();
+        float miterLimit =  currentStroke.getMiterLimit();
 
-	float[] dash = ONE.getStroke().getDashArray();
-	float phase = ONE.getStroke().getDashPhase();
-	JComboBox jcb = (JComboBox) e.getSource();
-	int newView = jcb.getSelectedIndex();
-	switch(newView) {
-	case 1:
-	    dash = TWO.getStroke().getDashArray();
-	    phase = TWO.getStroke().getDashPhase();
-	    break;
-	case 2:
-	    dash = THREE.getStroke().getDashArray();
-	    phase = THREE.getStroke().getDashPhase();
-	    break;
-	case 3:
-	    dash = FOUR.getStroke().getDashArray();
-	    phase = FOUR.getStroke().getDashPhase();
-	    break;
-	case 4:
-	    dash = FIVE.getStroke().getDashArray();
-	    phase = FIVE.getStroke().getDashPhase();
-	    break;
-	default:
-	    dash = ONE.getStroke().getDashArray();
-	    phase = ONE.getStroke().getDashPhase();
-	}
+        float[] dash = ONE.getStroke().getDashArray();
+        float phase = ONE.getStroke().getDashPhase();
+        JComboBox jcb = (JComboBox) e.getSource();
+        int newView = jcb.getSelectedIndex();
+        switch(newView) {
+        case 1:
+            dash = TWO.getStroke().getDashArray();
+            phase = TWO.getStroke().getDashPhase();
+            break;
+        case 2:
+            dash = THREE.getStroke().getDashArray();
+            phase = THREE.getStroke().getDashPhase();
+            break;
+        case 3:
+            dash = FOUR.getStroke().getDashArray();
+            phase = FOUR.getStroke().getDashPhase();
+            break;
+        case 4:
+            dash = FIVE.getStroke().getDashArray();
+            phase = FIVE.getStroke().getDashPhase();
+            break;
+        default:
+            dash = ONE.getStroke().getDashArray();
+            phase = ONE.getStroke().getDashPhase();
+        }
 
-	drawingAttributes.setStroke(new BasicStroke(lineWidth, cap, join, miterLimit, dash, phase));
+        drawingAttributes.setStroke(new BasicStroke(lineWidth, cap, join, miterLimit, dash, phase));
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationLayer.java,v $
 // $RCSfile: LocationLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/11/20 17:50:24 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -136,43 +136,43 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * create images, we use this worker thread to do it.
      */
     class LocationWorker extends SwingWorker {
-	/** Constructor used to create a worker thread. */
-	public LocationWorker() {
-	    super();
-	}
+        /** Constructor used to create a worker thread. */
+        public LocationWorker() {
+            super();
+        }
 
-	/**
-	 * Compute the value to be returned by the <code>get</code>
-	 * method.  
-	 */
-	public Object construct() {
-	    if (Debug.debugging("location")) {
-		Debug.output(getName()+
-			     "|LocationWorker.construct()");
-	    }
-	    fireStatusUpdate(LayerStatusEvent.START_WORKING);
-	    try {
-		return prepare();
-	    } catch (OutOfMemoryError e) {
-		String msg = getName() + 
-		    "|LocationLayer.LocationWorker.construct(): " + e;
-		Debug.error(msg);
-		e.printStackTrace();
-		fireRequestMessage(new InfoDisplayEvent(this, msg));
-		fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-		return null;
-	    }
-	}
+        /**
+         * Compute the value to be returned by the <code>get</code>
+         * method.  
+         */
+        public Object construct() {
+            if (Debug.debugging("location")) {
+                Debug.output(getName()+
+                             "|LocationWorker.construct()");
+            }
+            fireStatusUpdate(LayerStatusEvent.START_WORKING);
+            try {
+                return prepare();
+            } catch (OutOfMemoryError e) {
+                String msg = getName() + 
+                    "|LocationLayer.LocationWorker.construct(): " + e;
+                Debug.error(msg);
+                e.printStackTrace();
+                fireRequestMessage(new InfoDisplayEvent(this, msg));
+                fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+                return null;
+            }
+        }
 
-	/**
-	 * Called on the event dispatching thread (not on the worker
-	 * thread) after the <code>construct</code> method has
-	 * returned.  
-	 */
-	public void finished() {
-	    workerComplete(this);
-	    fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-	}
+        /**
+         * Called on the event dispatching thread (not on the worker
+         * thread) after the <code>construct</code> method has
+         * returned.  
+         */
+        public void finished() {
+            workerComplete(this);
+            fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+        }
     }
 
     /** 
@@ -189,28 +189,28 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * @param properties the properties set in the properties file.  
      */
     public void setProperties(String prefix,
-			      Properties properties) {
-	super.setProperties(prefix, properties);
-	String realPrefix = "";
+                              Properties properties) {
+        super.setProperties(prefix, properties);
+        String realPrefix = "";
 
-	if (prefix != null) {
-	    realPrefix = prefix + ".";
-	}
+        if (prefix != null) {
+            realPrefix = prefix + ".";
+        }
 
-	
-	setLocationHandlers(realPrefix, properties);
-	declutterMatrix = (DeclutterMatrix) LayerUtils.objectFromProperties(properties, realPrefix + DeclutterMatrixClassProperty);
-	allowPartials = LayerUtils.booleanFromProperties(properties, realPrefix + AllowPartialsProperty, true);
+        
+        setLocationHandlers(realPrefix, properties);
+        declutterMatrix = (DeclutterMatrix) LayerUtils.objectFromProperties(properties, realPrefix + DeclutterMatrixClassProperty);
+        allowPartials = LayerUtils.booleanFromProperties(properties, realPrefix + AllowPartialsProperty, true);
 
-	if (declutterMatrix != null) {
-	    useDeclutterMatrix = LayerUtils.booleanFromProperties(properties, realPrefix + UseDeclutterMatrixProperty, useDeclutterMatrix);
-	    declutterMatrix.setAllowPartials(allowPartials);
-	    Debug.message("location", "LocationLayer: Found DeclutterMatrix to use");
-// 	    declutterMatrix.setXInterval(3);
-// 	    declutterMatrix.setYInterval(3);
-	} else {
-	    useDeclutterMatrix = false;
-	}
+        if (declutterMatrix != null) {
+            useDeclutterMatrix = LayerUtils.booleanFromProperties(properties, realPrefix + UseDeclutterMatrixProperty, useDeclutterMatrix);
+            declutterMatrix.setAllowPartials(allowPartials);
+            Debug.message("location", "LocationLayer: Found DeclutterMatrix to use");
+//          declutterMatrix.setXInterval(3);
+//          declutterMatrix.setYInterval(3);
+        } else {
+            useDeclutterMatrix = false;
+        }
     }
 
     /** 
@@ -219,7 +219,7 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * @param aList a vector of OMGraphics 
      */
     public synchronized void setGraphicList(Vector aList) {
-	omGraphics = aList;
+        omGraphics = aList;
     }
 
     /** 
@@ -228,23 +228,23 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * @return vector of OMGraphics.
      */
     public synchronized Vector getGraphicList() {
-	return omGraphics;
+        return omGraphics;
     }
 
     public void setDeclutterMatrix(DeclutterMatrix dm) {
-	declutterMatrix = dm;
+        declutterMatrix = dm;
     }
 
     public DeclutterMatrix getDeclutterMatrix() {
-	return declutterMatrix;
+        return declutterMatrix;
     }
 
     public void setUseDeclutterMatrix(boolean set) {
-	useDeclutterMatrix = set;
+        useDeclutterMatrix = set;
     }
 
     public boolean getUseDeclutterMatrix() {
-	return useDeclutterMatrix;
+        return useDeclutterMatrix;
     }
 
     /** 
@@ -254,16 +254,16 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * swing worker quits when it is safe. 
      */
     public synchronized void setCancelled(boolean set) {
-	cancelled = set;
+        cancelled = set;
     }
 
     /** Check to see if the cancelled flag has been set. */
     public synchronized boolean isCancelled() {
-	return cancelled;
+        return cancelled;
     }
 
     public synchronized MapMouseListener getMapMouseListener() {
-	return this;
+        return this;
     }
 
     /**
@@ -272,25 +272,25 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * should call doPrepare() after this call.
      */
     public void reloadData() {
-	if (dataHandlers != null) {
-	    for (int i = 0; i < dataHandlers.length; i++) {
-		dataHandlers[i].reloadData();
-	    }
-	}
+        if (dataHandlers != null) {
+            for (int i = 0; i < dataHandlers.length; i++) {
+                dataHandlers[i].reloadData();
+            }
+        }
     }
 
     /** 
      * Implementing the ProjectionPainter interface.
      */
     public synchronized void renderDataForProjection(Projection proj, java.awt.Graphics g) {
-	if (proj == null) {
-	    Debug.error("LocationLayer.renderDataForProjection: null projection!");
-	    return;
-	} else if (!proj.equals(getProjection())) {
-	    setProjection(proj.makeClone());
-	    setGraphicList(prepare());
-	}
-	paint(g);
+        if (proj == null) {
+            Debug.error("LocationLayer.renderDataForProjection: null projection!");
+            return;
+        } else if (!proj.equals(getProjection())) {
+            setProjection(proj.makeClone());
+            setGraphicList(prepare());
+        }
+        paint(g);
     }
 
     /** 
@@ -301,23 +301,23 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * @param e The projection event, most likely fired from a map bean.
      */
     public void projectionChanged(ProjectionEvent e) {
-	if (Debug.debugging("basic")) {
-	    Debug.output(getName()+"|LocationLayer.projectionChanged()");
-	}
-	
-	if (setProjection(e) == null) {
-	    // Nothing to do, already have it and have acted on it...
-	    repaint();
-	    return;
-	}
- 	setGraphicList(null);
-	
-	// If there isn't a worker thread working on this already,
-	// create a thread that will do the real work. If there is
-	// a thread working on this, then set the cancelled flag
-	// in the layer.		
-	
-	doPrepare();
+        if (Debug.debugging("basic")) {
+            Debug.output(getName()+"|LocationLayer.projectionChanged()");
+        }
+        
+        if (setProjection(e) == null) {
+            // Nothing to do, already have it and have acted on it...
+            repaint();
+            return;
+        }
+        setGraphicList(null);
+        
+        // If there isn't a worker thread working on this already,
+        // create a thread that will do the real work. If there is
+        // a thread working on this, then set the cancelled flag
+        // in the layer.                
+        
+        doPrepare();
     }
 
     /**  
@@ -328,16 +328,16 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * @param worker the worker that has the graphics.
      */
     protected synchronized void workerComplete(LocationWorker worker) {
-	if (!isCancelled()) {
-	    currentWorker = null;
-	    setGraphicList((Vector)worker.get());
-	    repaint();
-	}
-	else{
-	    setCancelled(false);
-	    currentWorker = new LocationWorker();
-	    currentWorker.execute();
-	}
+        if (!isCancelled()) {
+            currentWorker = null;
+            setGraphicList((Vector)worker.get());
+            repaint();
+        }
+        else{
+            setCancelled(false);
+            currentWorker = new LocationWorker();
+            currentWorker.execute();
+        }
     }
 
     /**
@@ -347,15 +347,15 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * itself automatically.
      */
     public void doPrepare() {
-	// If there isn't a worker thread working on a projection
-	// changed or other doPrepare call, then create a thread that
-	// will do the real work. If there is a thread working on
-	// this, then set the cancelled flag in the layer.
-	if (currentWorker == null) {
-	    currentWorker = new LocationWorker();
-	    currentWorker.execute();
-	}
-	else setCancelled(true);
+        // If there isn't a worker thread working on a projection
+        // changed or other doPrepare call, then create a thread that
+        // will do the real work. If there is a thread working on
+        // this, then set the cancelled flag in the layer.
+        if (currentWorker == null) {
+            currentWorker = new LocationWorker();
+            currentWorker.execute();
+        }
+        else setCancelled(true);
     }
 
     /**
@@ -369,98 +369,98 @@ public class LocationLayer extends Layer implements MapMouseListener {
      */
     public Vector prepare() {
 
-	if (isCancelled()) {
-	    if (Debug.debugging("location")) {
-		Debug.output(getName() + "|LocationLayer.prepare(): aborted.");
-	    }
-	    return null;
-	}
-	
-	Vector omGraphicList = new Vector();
-	Projection projection = getProjection();
-	if (projection == null) {
-	    if (Debug.debugging("location")) {
-		Debug.output(getName() + "|LocationLayer.prepare(): null projection, layer not ready.");
-	    }
-	    return omGraphicList;
-	}
+        if (isCancelled()) {
+            if (Debug.debugging("location")) {
+                Debug.output(getName() + "|LocationLayer.prepare(): aborted.");
+            }
+            return null;
+        }
+        
+        Vector omGraphicList = new Vector();
+        Projection projection = getProjection();
+        if (projection == null) {
+            if (Debug.debugging("location")) {
+                Debug.output(getName() + "|LocationLayer.prepare(): null projection, layer not ready.");
+            }
+            return omGraphicList;
+        }
 
-	if (Debug.debugging("location")) {
-	    Debug.output(getName()+"|LocationLayer.prepare(): doing it");
-	}
+        if (Debug.debugging("location")) {
+            Debug.output(getName()+"|LocationLayer.prepare(): doing it");
+        }
 
-	if (useDeclutterMatrix && declutterMatrix != null) {
-	    declutterMatrix.setWidth(projection.getWidth());
-	    declutterMatrix.setHeight(projection.getHeight());
-	    declutterMatrix.create();
-	}
-	
-	// Setting the OMGraphicsList for this layer.  Remember, the
-	// Vector is made up of OMGraphics, which are generated
-	// (projected) when the graphics are added to the list.  So,
-	// after this call, the list is ready for painting.
+        if (useDeclutterMatrix && declutterMatrix != null) {
+            declutterMatrix.setWidth(projection.getWidth());
+            declutterMatrix.setHeight(projection.getHeight());
+            declutterMatrix.create();
+        }
+        
+        // Setting the OMGraphicsList for this layer.  Remember, the
+        // Vector is made up of OMGraphics, which are generated
+        // (projected) when the graphics are added to the list.  So,
+        // after this call, the list is ready for painting.
 
-	// call getRectangle();
-	if (Debug.debugging("location")) {
-	    Debug.output(
-		getName()+"|LocationLayer.prepare(): " +
-		"calling prepare with projection: " + projection +
-		" ul = " + projection.getUpperLeft() + " lr = " + 
-		projection.getLowerRight()); 
-	}
+        // call getRectangle();
+        if (Debug.debugging("location")) {
+            Debug.output(
+                getName()+"|LocationLayer.prepare(): " +
+                "calling prepare with projection: " + projection +
+                " ul = " + projection.getUpperLeft() + " lr = " + 
+                projection.getLowerRight()); 
+        }
 
-	LatLonPoint ul = projection.getUpperLeft();
-	LatLonPoint lr = projection.getLowerRight();
+        LatLonPoint ul = projection.getUpperLeft();
+        LatLonPoint lr = projection.getLowerRight();
 
-	if (Debug.debugging("location")) {
-	    float delta = lr.getLongitude() - ul.getLongitude();
-	    Debug.output(getName()+ "|LocationLayer.prepare(): " +
-			       " ul.lon =" + ul.getLongitude() +
-			       " lr.lon = " + lr.getLongitude() +
-			       " delta = " + delta); 
-	}
-	if (dataHandlers != null) {
-	    for (int i = 0; i < dataHandlers.length; i++) {
-		((LocationHandler) dataHandlers[i]).get(ul.getLatitude(),
-							ul.getLongitude(),
-							lr.getLatitude(), 
-							lr.getLongitude(), 
-							omGraphicList);
-	    }
-	}
+        if (Debug.debugging("location")) {
+            float delta = lr.getLongitude() - ul.getLongitude();
+            Debug.output(getName()+ "|LocationLayer.prepare(): " +
+                               " ul.lon =" + ul.getLongitude() +
+                               " lr.lon = " + lr.getLongitude() +
+                               " delta = " + delta); 
+        }
+        if (dataHandlers != null) {
+            for (int i = 0; i < dataHandlers.length; i++) {
+                ((LocationHandler) dataHandlers[i]).get(ul.getLatitude(),
+                                                        ul.getLongitude(),
+                                                        lr.getLatitude(), 
+                                                        lr.getLongitude(), 
+                                                        omGraphicList);
+            }
+        }
 
-	/////////////////////
-	// safe quit
-	int size = 0;
-	if (omGraphicList != null) {
-	    size = omGraphicList.size();	
-	    if (Debug.debugging("basic")) {
-		Debug.output(getName()+
-			     "|LocationLayer.prepare(): finished with " + 
-			     size + " graphics");
-	    }
+        /////////////////////
+        // safe quit
+        int size = 0;
+        if (omGraphicList != null) {
+            size = omGraphicList.size();        
+            if (Debug.debugging("basic")) {
+                Debug.output(getName()+
+                             "|LocationLayer.prepare(): finished with " + 
+                             size + " graphics");
+            }
 
-	    // Don't forget to project them.  Since they are only
-	    // being recalled if the projection hase changed, then
-	    // we need to force a reprojection of all of them
-	    // because the screen position has changed.
-	    Enumeration things = omGraphicList.elements();
-	    while (things.hasMoreElements()) {
-		OMGraphic thingy = (OMGraphic)things.nextElement();
+            // Don't forget to project them.  Since they are only
+            // being recalled if the projection hase changed, then
+            // we need to force a reprojection of all of them
+            // because the screen position has changed.
+            Enumeration things = omGraphicList.elements();
+            while (things.hasMoreElements()) {
+                OMGraphic thingy = (OMGraphic)things.nextElement();
 
-		if (useDeclutterMatrix && thingy instanceof Location) {
-		    Location loc = (Location) thingy;
-		    loc.generate(projection, declutterMatrix);
-		} else {
-		    thingy.generate(projection);
-		}
-	    }
-	} else if (Debug.debugging("basic")) {
-	    Debug.output(getName()+
-			 "|LocationLayer.prepare(): finished with null graphics list");
-	}
-	
-	return omGraphicList;
+                if (useDeclutterMatrix && thingy instanceof Location) {
+                    Location loc = (Location) thingy;
+                    loc.generate(projection, declutterMatrix);
+                } else {
+                    thingy.generate(projection);
+                }
+            }
+        } else if (Debug.debugging("basic")) {
+            Debug.output(getName()+
+                         "|LocationLayer.prepare(): finished with null graphics list");
+        }
+        
+        return omGraphicList;
     }
 
     /**
@@ -468,47 +468,47 @@ public class LocationLayer extends Layer implements MapMouseListener {
      *
      * @param g the Graphics context for painting
      */
-    public void paint(java.awt.Graphics g) {	
-	if (Debug.debugging("location")) {
-	    Debug.output(getName()+"|LocationLayer.paint()");
-	}
-	Vector vlist = getGraphicList();
-	Object[] list = null;
+    public void paint(java.awt.Graphics g) {    
+        if (Debug.debugging("location")) {
+            Debug.output(getName()+"|LocationLayer.paint()");
+        }
+        Vector vlist = getGraphicList();
+        Object[] list = null;
 
-	if (vlist != null)
-	    list = vlist.toArray();
-	
-	if (list != null) {
-	    int i;
-	    OMGraphic loc;
-	    // Draw from the bottom up, so it matches the palette, and
-	    // the order in which the handlers were loaded - the first
-	    // in the list is on top.
+        if (vlist != null)
+            list = vlist.toArray();
+        
+        if (list != null) {
+            int i;
+            OMGraphic loc;
+            // Draw from the bottom up, so it matches the palette, and
+            // the order in which the handlers were loaded - the first
+            // in the list is on top.
 
-	    // We need to go through list twice.  The first time, draw
-	    // all the regular OMGraphics, and also draw all of the
-	    // graphics for the locations.  The second time through,
-	    // draw the labels.  This way, the labels won't be covered
-	    // up by graphics.
-	    for (int j = 0; j < 2; j++) {
-		for (i = list.length - 1; i >= 0; i--) {
-		    loc = (OMGraphic) list[i];
-		    if (j == 0) {
-			if (loc instanceof Location) {
-			    ((Location)loc).renderLocation(g);
-			} else {
-			    loc.render(g);
-			}
-		    } else if (loc instanceof Location) {
-			((Location)loc).renderName(g);
-		    }
-		}
-	    }
-	} else {
-	    if (Debug.debugging("location")) {
-		Debug.error(getName()+"|LocationLayer: paint(): Null list...");
-	    }
-	}
+            // We need to go through list twice.  The first time, draw
+            // all the regular OMGraphics, and also draw all of the
+            // graphics for the locations.  The second time through,
+            // draw the labels.  This way, the labels won't be covered
+            // up by graphics.
+            for (int j = 0; j < 2; j++) {
+                for (i = list.length - 1; i >= 0; i--) {
+                    loc = (OMGraphic) list[i];
+                    if (j == 0) {
+                        if (loc instanceof Location) {
+                            ((Location)loc).renderLocation(g);
+                        } else {
+                            loc.render(g);
+                        }
+                    } else if (loc instanceof Location) {
+                        ((Location)loc).renderName(g);
+                    }
+                }
+            }
+        } else {
+            if (Debug.debugging("location")) {
+                Debug.error(getName()+"|LocationLayer: paint(): Null list...");
+            }
+        }
     }
 
     /**
@@ -518,87 +518,87 @@ public class LocationLayer extends Layer implements MapMouseListener {
      */
     protected void setLocationHandlers(String prefix, Properties p) {
 
-	String handlersValue = p.getProperty(prefix + LocationHandlerListProperty);
+        String handlersValue = p.getProperty(prefix + LocationHandlerListProperty);
 
-	if (Debug.debugging("location")) {
-	    Debug.output(getName() + "| handlers = \"" + handlersValue + "\"");
-	}
+        if (Debug.debugging("location")) {
+            Debug.output(getName() + "| handlers = \"" + handlersValue + "\"");
+        }
 
-	if (handlersValue == null) {
-	    if (Debug.debugging("location")) {
-		Debug.output("No property \"" + prefix + LocationHandlerListProperty
-			     + "\" found in application properties.");
-	    }
-	    return;
-	}
+        if (handlersValue == null) {
+            if (Debug.debugging("location")) {
+                Debug.output("No property \"" + prefix + LocationHandlerListProperty
+                             + "\" found in application properties.");
+            }
+            return;
+        }
 
-	// Divide up the names ...
-	StringTokenizer tokens = new StringTokenizer(handlersValue, " ");
-	Vector handlerNames = new Vector();
-	while(tokens.hasMoreTokens()) {
-	    handlerNames.addElement(tokens.nextToken());
-	}
+        // Divide up the names ...
+        StringTokenizer tokens = new StringTokenizer(handlersValue, " ");
+        Vector handlerNames = new Vector();
+        while(tokens.hasMoreTokens()) {
+            handlerNames.addElement(tokens.nextToken());
+        }
 
-	if (Debug.debugging("location")) {
-	    Debug.output("OpenMap.getLocationHandlers(): "+ handlerNames);
-	}
+        if (Debug.debugging("location")) {
+            Debug.output("OpenMap.getLocationHandlers(): "+ handlerNames);
+        }
 
-	int nHandlerNames = handlerNames.size();
-	Vector handlers = new Vector(nHandlerNames);
-	Vector goodNames = new Vector(nHandlerNames);
-	for (int i = 0; i < nHandlerNames; i++) {
-	    String handlerName = (String)handlerNames.elementAt(i);
-	    String classProperty = handlerName + ".class";
-	    String className = p.getProperty(classProperty);
+        int nHandlerNames = handlerNames.size();
+        Vector handlers = new Vector(nHandlerNames);
+        Vector goodNames = new Vector(nHandlerNames);
+        for (int i = 0; i < nHandlerNames; i++) {
+            String handlerName = (String)handlerNames.elementAt(i);
+            String classProperty = handlerName + ".class";
+            String className = p.getProperty(classProperty);
 
-	    String nameProperty = handlerName + ".prettyName";
-	    String prettyName = p.getProperty(nameProperty);
+            String nameProperty = handlerName + ".prettyName";
+            String prettyName = p.getProperty(nameProperty);
 
-	    if (className == null) {
-		Debug.error("Failed to locate property \""
-			    + classProperty + "\"\nSkipping handler \"" + 
-			    handlerName + "\"");
-		continue;
-	    }
-	    try {
-		if (Debug.debugging("location")) {
-		    Debug.output(
-			"OpenMap.getHandlers():instantiating handler \""+
-			className+"\"");
-		}
+            if (className == null) {
+                Debug.error("Failed to locate property \""
+                            + classProperty + "\"\nSkipping handler \"" + 
+                            handlerName + "\"");
+                continue;
+            }
+            try {
+                if (Debug.debugging("location")) {
+                    Debug.output(
+                        "OpenMap.getHandlers():instantiating handler \""+
+                        className+"\"");
+                }
 
-		Object obj = Class.forName(className).newInstance();// Works for applet!
-		if (obj instanceof LocationHandler) {
-		    LocationHandler lh = (LocationHandler) obj;
-		    lh.setProperties(handlerName, p);
-		    lh.setLayer(this);
-		    handlers.addElement(lh);
-		    goodNames.addElement(prettyName!=null?prettyName:"");
-		}
-		if (false) throw new java.io.IOException();//fool javac compiler
-	    } catch (java.lang.ClassNotFoundException e) {
-		Debug.error("Handler class not found: \""
-			    + className + "\"\nSkipping handler \"" + 
-			    handlerName + "\"");
-	    } catch (java.io.IOException e) {
-		Debug.error("IO Exception instantiating class \""
-			    + className + "\"\nSkipping handler \"" + 
-			    handlerName + "\"");
-	    } catch (Exception e) {
-		Debug.error("Exception instantiating class \""
-			    + className + "\": " + e);
-	    }
-	}
+                Object obj = Class.forName(className).newInstance();// Works for applet!
+                if (obj instanceof LocationHandler) {
+                    LocationHandler lh = (LocationHandler) obj;
+                    lh.setProperties(handlerName, p);
+                    lh.setLayer(this);
+                    handlers.addElement(lh);
+                    goodNames.addElement(prettyName!=null?prettyName:"");
+                }
+                if (false) throw new java.io.IOException();//fool javac compiler
+            } catch (java.lang.ClassNotFoundException e) {
+                Debug.error("Handler class not found: \""
+                            + className + "\"\nSkipping handler \"" + 
+                            handlerName + "\"");
+            } catch (java.io.IOException e) {
+                Debug.error("IO Exception instantiating class \""
+                            + className + "\"\nSkipping handler \"" + 
+                            handlerName + "\"");
+            } catch (Exception e) {
+                Debug.error("Exception instantiating class \""
+                            + className + "\": " + e);
+            }
+        }
 
-	int nHandlers = handlers.size();
+        int nHandlers = handlers.size();
 
-	dataHandlers = new LocationHandler[nHandlers];
-	dataHandlerNames = new String[nHandlers];
+        dataHandlers = new LocationHandler[nHandlers];
+        dataHandlerNames = new String[nHandlers];
 
-	if (nHandlers != 0) {
-	    handlers.copyInto(dataHandlers);
-	    goodNames.copyInto(dataHandlerNames);
-	}
+        if (nHandlers != 0) {
+            handlers.copyInto(dataHandlers);
+            goodNames.copyInto(dataHandlerNames);
+        }
 
     }
 
@@ -606,11 +606,11 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * Let the LocationHandlers know that the layer has been removed.
      */
     public void removed(java.awt.Container cont) {
-	if (dataHandlers != null) {
-	    for (int i = 0; i < dataHandlers.length; i++) {
-		((LocationHandler) dataHandlers[i]).removed(cont);
-	    }
-	}
+        if (dataHandlers != null) {
+            for (int i = 0; i < dataHandlers.length; i++) {
+                ((LocationHandler) dataHandlers[i]).removed(cont);
+            }
+        }
     }
 
     /**
@@ -619,19 +619,19 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * @param handlers an array of LocationHandlers.
      */
     public void setLocationHandlers(LocationHandler[] handlers) {
-	dataHandlers = handlers;
-	// Need to set the layer on the handlers.
-	for (int i = 0; i < handlers.length; i++) {
-	    handlers[i].setLayer(this);
-	}
-	resetPalette();
+        dataHandlers = handlers;
+        // Need to set the layer on the handlers.
+        for (int i = 0; i < handlers.length; i++) {
+            handlers[i].setLayer(this);
+        }
+        resetPalette();
     }
 
     /**
      * Get the LocationHandlers for this layer.
      */
     public LocationHandler[] getLocationHandlers() {
-	return dataHandlers;
+        return dataHandlers;
     }
 
     /**
@@ -640,15 +640,15 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * @param handlerNames an array of Strings.
      */
     public void setLocationHandlerNames(String[] handlerNames) {
-	dataHandlerNames = handlerNames;
-	resetPalette();
+        dataHandlerNames = handlerNames;
+        resetPalette();
     }
 
     /**
      * Get the LocationHandlers for this layer.
      */
     public String[] getLocationHandlerNames() {
-	return dataHandlerNames;
+        return dataHandlerNames;
     }
 
     /**
@@ -656,8 +656,8 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * reset, to refresh the palette with the new information.
      */
     protected void resetPalette() {
-	box = null;
-	super.resetPalette();
+        box = null;
+        super.resetPalette();
     }
 
     //----------------------------------------------------------------------
@@ -673,47 +673,47 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * @return Component object representing the palette widgets.
      */
     public java.awt.Component getGUI() {
-	if (box == null) {
-	    box = Box.createVerticalBox();
-	    int nHandlers = 0;
-	    
-	    if (dataHandlers != null) {
-		nHandlers = dataHandlers.length;
-	    }
+        if (box == null) {
+            box = Box.createVerticalBox();
+            int nHandlers = 0;
+            
+            if (dataHandlers != null) {
+                nHandlers = dataHandlers.length;
+            }
 
-	    JPanel[] panels = new JPanel[nHandlers];
+            JPanel[] panels = new JPanel[nHandlers];
 
-	    for (int i = 0; i < nHandlers; i++) {
+            for (int i = 0; i < nHandlers; i++) {
 
-		String handlerName;
-		if (dataHandlerNames != null && i < dataHandlerNames.length) {
-		    handlerName = dataHandlerNames[i];
-		} else {
-		    handlerName = "";
-		}
+                String handlerName;
+                if (dataHandlerNames != null && i < dataHandlerNames.length) {
+                    handlerName = dataHandlerNames[i];
+                } else {
+                    handlerName = "";
+                }
 
-		panels[i] = PaletteHelper.createPaletteJPanel(handlerName);
-		panels[i].add(dataHandlers[i].getGUI());
-		box.add(panels[i]);
-	    }
+                panels[i] = PaletteHelper.createPaletteJPanel(handlerName);
+                panels[i].add(dataHandlers[i].getGUI());
+                box.add(panels[i]);
+            }
 
-	    if (declutterMatrix != null) {
-		JPanel dbp = new JPanel(new GridLayout(0, 1));
-		JCheckBox declutterButton = new JCheckBox("Declutter Names", useDeclutterMatrix);
-		declutterButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-			    JCheckBox jcb = (JCheckBox) ae.getSource();
-			    useDeclutterMatrix = jcb.isSelected();
-			    doPrepare();
-			}
-		    });
-		declutterButton.setToolTipText("<HTML><BODY>Move location names so they don't overlap.<br>This may take awhile if you are zoomed out.</BODY></HTML>");
+            if (declutterMatrix != null) {
+                JPanel dbp = new JPanel(new GridLayout(0, 1));
+                JCheckBox declutterButton = new JCheckBox("Declutter Names", useDeclutterMatrix);
+                declutterButton.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent ae) {
+                            JCheckBox jcb = (JCheckBox) ae.getSource();
+                            useDeclutterMatrix = jcb.isSelected();
+                            doPrepare();
+                        }
+                    });
+                declutterButton.setToolTipText("<HTML><BODY>Move location names so they don't overlap.<br>This may take awhile if you are zoomed out.</BODY></HTML>");
 
-		dbp.add(declutterButton);
-		box.add(dbp);
-	    }
-	}	
-	return box;
+                dbp.add(declutterButton);
+                box.add(dbp);
+            }
+        }       
+        return box;
     }
 
     //------------------------------------------------------------
@@ -722,122 +722,122 @@ public class LocationLayer extends Layer implements MapMouseListener {
 
     /** Given a mouse event, find the closest location on the screen. */
     public Location findClosestLocation(MouseEvent evt) {
-	Vector graphics = getGraphicList();
+        Vector graphics = getGraphicList();
         if (graphics != null) {
-	    int x = evt.getX();
-	    int y = evt.getY();
-	    float limit = 4.0f;
-	    Location ret = null;
-	    Location loc;
+            int x = evt.getX();
+            int y = evt.getY();
+            float limit = 4.0f;
+            Location ret = null;
+            Location loc;
 
-	    float closestDistance = Float.MAX_VALUE;
-	    float currentDistance;
-	    int i;
-	    int size = graphics.size();
+            float closestDistance = Float.MAX_VALUE;
+            float currentDistance;
+            int i;
+            int size = graphics.size();
 
-	    for (i = 0; i < size; i++) {
-		loc = (Location)graphics.elementAt(i);
-		currentDistance = loc.distance(x, y);
-		if (currentDistance < closestDistance) {
-		    ret = loc;
-		    closestDistance = currentDistance;
-		}
-	    }
-	    if (closestDistance <= limit) return ret;
-	} 
-	return null;
+            for (i = 0; i < size; i++) {
+                loc = (Location)graphics.elementAt(i);
+                currentDistance = loc.distance(x, y);
+                if (currentDistance < closestDistance) {
+                    ret = loc;
+                    closestDistance = currentDistance;
+                }
+            }
+            if (closestDistance <= limit) return ret;
+        } 
+        return null;
     }
 
     public String[] getMouseModeServiceList() {
-	String[] services = {SelectMouseMode.modeID};
-	return services;
+        String[] services = {SelectMouseMode.modeID};
+        return services;
     }
 
     protected void showMapPopup(MouseEvent evt, MapBean map) {
         if (backgroundMenu == null) {
-	    backgroundMenu = new LocationPopupMenu();
-	    backgroundMenu.add(new LocationMenuItem(recenter, backgroundMenu, this));
-	    backgroundMenu.add(new LocationMenuItem(cancel, backgroundMenu, this));
-	    backgroundMenu.setMap(map);
-	}
-	backgroundMenu.setEvent(evt);
-	backgroundMenu.show(this, evt.getX(), evt.getY());
+            backgroundMenu = new LocationPopupMenu();
+            backgroundMenu.add(new LocationMenuItem(recenter, backgroundMenu, this));
+            backgroundMenu.add(new LocationMenuItem(cancel, backgroundMenu, this));
+            backgroundMenu.setMap(map);
+        }
+        backgroundMenu.setEvent(evt);
+        backgroundMenu.show(this, evt.getX(), evt.getY());
     }
 
     protected void showLocationPopup(MouseEvent evt, Location loc, MapBean map) {
         if (locMenu == null) {
-	    locMenu = new LocationPopupMenu();
-	    locMenu.setMap(map);
-	}
-	locMenu.removeAll();
+            locMenu = new LocationPopupMenu();
+            locMenu.setMap(map);
+        }
+        locMenu.removeAll();
 
-	locMenu.setEvent(evt);
-	locMenu.setLoc(loc);
+        locMenu.setEvent(evt);
+        locMenu.setLoc(loc);
 
-	locMenu.add(new LocationMenuItem(LocationLayer.recenter, locMenu, this));
-	locMenu.add(new LocationMenuItem(LocationLayer.cancel, locMenu, this));
-	locMenu.addSeparator();
+        locMenu.add(new LocationMenuItem(LocationLayer.recenter, locMenu, this));
+        locMenu.add(new LocationMenuItem(LocationLayer.cancel, locMenu, this));
+        locMenu.addSeparator();
 
-	LocationHandler lh = loc.getLocationHandler();
-	if (lh != null) {
-	    lh.fillLocationPopUpMenu(locMenu);
-	}
+        LocationHandler lh = loc.getLocationHandler();
+        if (lh != null) {
+            lh.fillLocationPopUpMenu(locMenu);
+        }
 
-	locMenu.show(this, evt.getX(), evt.getY());
+        locMenu.show(this, evt.getX(), evt.getY());
     }
 
     public boolean mousePressed(MouseEvent evt) {
         if (!isVisible()) return false;
 
-	Location loc = findClosestLocation(evt);
-	if (map == null) {
-	    try{
-	        map = (MapBean) SwingUtilities.getAncestorOfClass(Class.forName("com.bbn.openmap.MapBean"), this);
-	    }
-	    catch (java.lang.ClassNotFoundException e) {
-	        Debug.error("LocationLayer: Whatza MapBean??");
-	    }
-	}
-	if (loc == null) {
-	    // user clicked on map
-	    Debug.message("location", "Clicked on background");
-	    showMapPopup(evt, map);
-	} else {
-	    // user clicked on rate center
-	    Debug.message("location", "Clicked on location");
-	    showLocationPopup(evt, loc, map);
-	}
+        Location loc = findClosestLocation(evt);
+        if (map == null) {
+            try{
+                map = (MapBean) SwingUtilities.getAncestorOfClass(Class.forName("com.bbn.openmap.MapBean"), this);
+            }
+            catch (java.lang.ClassNotFoundException e) {
+                Debug.error("LocationLayer: Whatza MapBean??");
+            }
+        }
+        if (loc == null) {
+            // user clicked on map
+            Debug.message("location", "Clicked on background");
+            showMapPopup(evt, map);
+        } else {
+            // user clicked on rate center
+            Debug.message("location", "Clicked on location");
+            showLocationPopup(evt, loc, map);
+        }
 
-	return true;
+        return true;
     }
   
     public boolean mouseReleased(MouseEvent e) { return false;}
     public boolean mouseClicked(MouseEvent evt) { return false;}
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
-    public boolean mouseDragged(MouseEvent e) {	return false;}
+    public boolean mouseDragged(MouseEvent e) { return false;}
 
     boolean setNameOnLine = false;
 
     public boolean mouseMoved(MouseEvent evt) {
         if (!isVisible()) return false;
 
-	Location loc = findClosestLocation(evt);
-	if (loc == null) {
-	    if (setNameOnLine) { // only do this once.
-		fireRequestInfoLine("");
-		setNameOnLine = false;
-	    }
-	    return false; //pass through!!
-	} else {
-	    fireRequestInfoLine(loc.getName());
-	    setNameOnLine = true;
-	    return true;
-	}
+        Location loc = findClosestLocation(evt);
+        if (loc == null) {
+            if (setNameOnLine) { // only do this once.
+                fireRequestInfoLine("");
+                setNameOnLine = false;
+            }
+            return false; //pass through!!
+        } else {
+            fireRequestInfoLine(loc.getName());
+            setNameOnLine = true;
+            return true;
+        }
     }
 
     public void mouseMoved() {
-// 	fireRequestInfoLine("");
+//      fireRequestInfoLine("");
     }
 
     /**
@@ -856,36 +856,36 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	props.put(prefix + UseDeclutterMatrixProperty, 
-		  new Boolean(useDeclutterMatrix).toString());
+        props.put(prefix + UseDeclutterMatrixProperty, 
+                  new Boolean(useDeclutterMatrix).toString());
 
-	if (declutterMatrix != null) {
-	    props.put(prefix + DeclutterMatrixClassProperty, 
-		      declutterMatrix.getClass().getName());
-	    props.put(prefix + AllowPartialsProperty, 
-		      new Boolean(declutterMatrix.isAllowPartials()).toString());
-	}
+        if (declutterMatrix != null) {
+            props.put(prefix + DeclutterMatrixClassProperty, 
+                      declutterMatrix.getClass().getName());
+            props.put(prefix + AllowPartialsProperty, 
+                      new Boolean(declutterMatrix.isAllowPartials()).toString());
+        }
 
-	StringBuffer handlerList = new StringBuffer();
+        StringBuffer handlerList = new StringBuffer();
 
-	// Need to hand this off to the location handlers, and build a
-	// list of marker names to use in the LocationLayer property list.
-	if (dataHandlers != null) {
-	    for (int i = 0; i < dataHandlers.length; i++) {
-		String pp = dataHandlers[i].getPropertyPrefix();
-		handlerList.append(" " + pp);
-		props.put(pp + ".prettyName", dataHandlerNames[i]);
-		dataHandlers[i].getProperties(props);
-	    }
-	}
+        // Need to hand this off to the location handlers, and build a
+        // list of marker names to use in the LocationLayer property list.
+        if (dataHandlers != null) {
+            for (int i = 0; i < dataHandlers.length; i++) {
+                String pp = dataHandlers[i].getPropertyPrefix();
+                handlerList.append(" " + pp);
+                props.put(pp + ".prettyName", dataHandlerNames[i]);
+                dataHandlers[i].getProperties(props);
+            }
+        }
 
-	props.put(prefix + LocationHandlerListProperty, handlerList.toString());
+        props.put(prefix + LocationHandlerListProperty, handlerList.toString());
 
-	return props;
+        return props;
     }
 
     /**
@@ -907,21 +907,21 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * PropertyConsumer. 
      */
     public Properties getPropertyInfo(Properties list) {
-	list = super.getPropertyInfo(list);
+        list = super.getPropertyInfo(list);
 
-	list.put(UseDeclutterMatrixProperty, "Flag for using the declutter matrix (true/false)");
-	list.put(DeclutterMatrixClassProperty,"Class name of the declutter matrix to use");
-	list.put(AllowPartialsProperty,"Flag to allow labels to run off the edge of the map (true/false)");
-	list.put(LocationHandlerListProperty, "Space-separated list of unique names to use to scope the LayerHandler property definitions");
+        list.put(UseDeclutterMatrixProperty, "Flag for using the declutter matrix (true/false)");
+        list.put(DeclutterMatrixClassProperty,"Class name of the declutter matrix to use");
+        list.put(AllowPartialsProperty,"Flag to allow labels to run off the edge of the map (true/false)");
+        list.put(LocationHandlerListProperty, "Space-separated list of unique names to use to scope the LayerHandler property definitions");
 
-	if (dataHandlers != null) {
-	    for (int i = 0; i < dataHandlers.length; i++) {
-		dataHandlers[i].getPropertyInfo(list);
-	    }
-	}
+        if (dataHandlers != null) {
+            for (int i = 0; i < dataHandlers.length; i++) {
+                dataHandlers[i].getPropertyInfo(list);
+            }
+        }
 
 
-	return list;
+        return list;
     }
 }
 

@@ -1,14 +1,14 @@
 /* **********************************************************************
  * 
  *    Use, duplication, or disclosure by the Government is subject to
- * 	     restricted rights as set forth in the DFARS.
+ *           restricted rights as set forth in the DFARS.
  *  
- * 			   BBNT Solutions LLC
- * 			       A Part of 
+ *                         BBNT Solutions LLC
+ *                             A Part of 
  *                  Verizon      
- * 			    10 Moulton Street
- * 			   Cambridge, MA 02138
- * 			    (617) 873-3000
+ *                          10 Moulton Street
+ *                         Cambridge, MA 02138
+ *                          (617) 873-3000
  *
  *    Copyright (C) 2002 by BBNT Solutions, LLC
  *                 All Rights Reserved.
@@ -43,12 +43,12 @@ public class PropertyCanvas extends Canvas implements MouseListener {
   public void mouseClicked(MouseEvent evt) {
     if (! ignoreClick) {
       try {
-	    ignoreClick = true;
-	    int x = frame.getLocation().x - 30;
-	    int y = frame.getLocation().y + 50;
-	    new PropertyDialog(frame, editor, x, y);
+            ignoreClick = true;
+            int x = frame.getLocation().x - 30;
+            int y = frame.getLocation().y + 50;
+            new PropertyDialog(frame, editor, x, y);
       } finally {
-	    ignoreClick = false;
+            ignoreClick = false;
       }
     }
   }

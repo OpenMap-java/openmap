@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/MultiDirectoryPropertyEditor.java,v $
 // $RCSfile: MultiDirectoryPropertyEditor.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/19 20:41:54 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,29 +45,29 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
 
     /** Create MultiDirectoryPropertyEditor.  */
     public MultiDirectoryPropertyEditor() {
-	button = new JButton("Add");
-	setPathSeparator(';');
+        button = new JButton("Add");
+        setPathSeparator(';');
     }
 
     /**
      * Set the character to use when appending paths.
      */
     public void setPathSeparator(char c) {
-	pathSeparator = c;
+        pathSeparator = c;
     }
 
     public char getPathSeparator() {
-	return pathSeparator;
+        return pathSeparator;
     }
 
     public void actionPerformed(ActionEvent e) {
-	JFileChooser chooser = getFileChooser();
-	int returnVal = chooser.showDialog((Component)null, "Select");
-	if (returnVal==JFileChooser.APPROVE_OPTION) {
-	    String newFilename = chooser.getSelectedFile().getAbsolutePath();
-	    append(newFilename);
-	    firePropertyChange();
-	}
+        JFileChooser chooser = getFileChooser();
+        int returnVal = chooser.showDialog((Component)null, "Select");
+        if (returnVal==JFileChooser.APPROVE_OPTION) {
+            String newFilename = chooser.getSelectedFile().getAbsolutePath();
+            append(newFilename);
+            firePropertyChange();
+        }
     }
 
     /**
@@ -75,24 +75,24 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
      * @return JButton button
      */
     public Component getCustomEditor() {
-	button.addActionListener(this);
+        button.addActionListener(this);
 
-	JPanel jp = new JPanel();
-	GridBagLayout gridbag = new GridBagLayout();
-	GridBagConstraints c = new GridBagConstraints();
-	jp.setLayout(gridbag);
+        JPanel jp = new JPanel();
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        jp.setLayout(gridbag);
 
-	c.weightx = 1f;
-	c.fill = GridBagConstraints.HORIZONTAL;
-	gridbag.setConstraints(textField, c);
-	jp.add(textField);
+        c.weightx = 1f;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        gridbag.setConstraints(textField, c);
+        jp.add(textField);
 
-	c.weightx = 0;
-	c.anchor = GridBagConstraints.EAST;
-	c.fill = GridBagConstraints.NONE;
-	gridbag.setConstraints(button, c);
-	jp.add(button);
-	return jp;
+        c.weightx = 0;
+        c.anchor = GridBagConstraints.EAST;
+        c.fill = GridBagConstraints.NONE;
+        gridbag.setConstraints(button, c);
+        jp.add(button);
+        return jp;
     }
 
     /**
@@ -101,10 +101,10 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
      * @return JFileChooser 
      */
     public JFileChooser getFileChooser() {
-	JFileChooser chooser = new JFileChooser();
-	chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-	chooser.setMultiSelectionEnabled(true);
-	return chooser;
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setMultiSelectionEnabled(true);
+        return chooser;
     }
 
     /**
@@ -112,23 +112,23 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
      * pathSeparator between paths.
      */
     public void append(String addPath) {
-	String currentPath = textField.getText();
-	if (currentPath.equals("")) {
-	    setValue(addPath);
-	} else {
-	    setValue(currentPath.concat(";" + addPath));
-	}
+        String currentPath = textField.getText();
+        if (currentPath.equals("")) {
+            setValue(addPath);
+        } else {
+            setValue(currentPath.concat(";" + addPath));
+        }
     }
 
     /** Sets String in JTextField. */
     public void setValue(Object string) {
-	if(!(string instanceof String))
-	    return;
-	textField.setText((String)string);
+        if(!(string instanceof String))
+            return;
+        textField.setText((String)string);
     }
 
     /** Returns String from JTextfield. */
     public String getAsText() {
-	return textField.getText();
+        return textField.getText();
     }
 }

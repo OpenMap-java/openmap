@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/SelectMouseMode.java,v $
 // $RCSfile: SelectMouseMode.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/08 21:29:17 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,12 +35,12 @@ import java.awt.event.*;
  * this:
  * <code><pre>
  *  public MapMouseListener getMapMouseListener() {
- *	return this;
+ *      return this;
  *  }
  *  public String[] getMouseModeServiceList() {
- *	return new String[] {
- *	    SelectMouseMode.modeID
- *	};
+ *      return new String[] {
+ *          SelectMouseMode.modeID
+ *      };
  *  }
  * </pre></code>
  * <p>
@@ -62,7 +62,7 @@ public class SelectMouseMode extends CoordMouseMode {
      * consume mode to true. 
      */
     public SelectMouseMode() {
-	this(true);
+        this(true);
     }
 
     /**
@@ -71,7 +71,7 @@ public class SelectMouseMode extends CoordMouseMode {
      * @param consumeEvents the consume mode setting.
      */
     public SelectMouseMode(boolean consumeEvents) {
-	this(modeID, consumeEvents);
+        this(modeID, consumeEvents);
     }
 
     /**
@@ -81,6 +81,6 @@ public class SelectMouseMode extends CoordMouseMode {
      * @param consumeEvents the consume mode setting.
      */
     public SelectMouseMode(String id, boolean consumeEvents) {
-	super(id, consumeEvents);
+        super(id, consumeEvents);
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/GeneratorTester.java,v $
 // $RCSfile: GeneratorTester.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/24 03:36:22 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,39 +51,39 @@ public class GeneratorTester implements ImageReceiver {
 
     public GeneratorTester(String[] args) {
 
-	props = System.getProperties();
-	Debug.init(props);
-	parseArgs(args);
-	try {
-	    URL propsURL = new URL(propertiesURLString);
-	    Environment.init(props);
-	    loadProperties(propsURL, props);
-	} catch (MalformedURLException mul) {
-	    System.out.println("GeneratorTester: Malformed URL");
-	    return;
-	}
+        props = System.getProperties();
+        Debug.init(props);
+        parseArgs(args);
+        try {
+            URL propsURL = new URL(propertiesURLString);
+            Environment.init(props);
+            loadProperties(propsURL, props);
+        } catch (MalformedURLException mul) {
+            System.out.println("GeneratorTester: Malformed URL");
+            return;
+        }
 
-	Projection proj = ProjectionFactory.makeProjection(CADRG.CADRGType,
-							   42.0f, -72.0f,
-							   5000000f, 
-							   500, 500);
+        Projection proj = ProjectionFactory.makeProjection(CADRG.CADRGType,
+                                                           42.0f, -72.0f,
+                                                           5000000f, 
+                                                           500, 500);
 
-	server = new ImageServer(props);
+        server = new ImageServer(props);
 
-//  	server.createImage(proj, this);
+//      server.createImage(proj, this);
     }
 
     public void receiveImageData(byte[] bytes) {
-	try {
-	    File f = new File(fileName);
-	    OutputStream writef = new FileOutputStream(f);
-	    writef.write(bytes);
-	    writef.close();
-	    System.out.println(fileName + " JPEG written.");
-	} catch (IOException ioe) {
-	    System.out.println("No JPEG written due to IOExeception.");
-	}
-	System.exit(0);
+        try {
+            File f = new File(fileName);
+            OutputStream writef = new FileOutputStream(f);
+            writef.write(bytes);
+            writef.close();
+            System.out.println(fileName + " JPEG written.");
+        } catch (IOException ioe) {
+            System.out.println("No JPEG written due to IOExeception.");
+        }
+        System.exit(0);
     }
 
     /**
@@ -91,7 +91,7 @@ public class GeneratorTester implements ImageReceiver {
      *
      */
     public static void main(String[] args) {
-	GeneratorTester gen = new GeneratorTester(args);
+        GeneratorTester gen = new GeneratorTester(args);
     }
 
     /**
@@ -102,31 +102,31 @@ public class GeneratorTester implements ImageReceiver {
      * @param url the resource to load
      */
     public boolean loadProperties(URL url, Properties props) {
-	try {
-	    InputStream propsIn = url.openStream();
-	    props.load(propsIn);
-	    return true;
-	} catch (java.io.IOException e) {
-	    return false;
-	}		
+        try {
+            InputStream propsIn = url.openStream();
+            props.load(propsIn);
+            return true;
+        } catch (java.io.IOException e) {
+            return false;
+        }               
     }
 
     /**
      */
     public void parseArgs(String[] args) {
-	for (int i = 0; i < args.length; i++) {
-	    if (args[i].equalsIgnoreCase("-url")) {
-		propertiesURLString = args[++i];
-	    } else if (args[i].equalsIgnoreCase("-outputFile")) {
-		fileName = args[++i];
-	    } else if (args[i].equalsIgnoreCase("-h")) {
-		printHelp();
-	    }
-	}
-	
-	if (propertiesURLString == null || fileName == null) {
-	    printHelp();
-	}
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equalsIgnoreCase("-url")) {
+                propertiesURLString = args[++i];
+            } else if (args[i].equalsIgnoreCase("-outputFile")) {
+                fileName = args[++i];
+            } else if (args[i].equalsIgnoreCase("-h")) {
+                printHelp();
+            }
+        }
+        
+        if (propertiesURLString == null || fileName == null) {
+            printHelp();
+        }
     }
 
     /** 
@@ -134,8 +134,8 @@ public class GeneratorTester implements ImageReceiver {
      * command line needs of the tester.
      */
     public void printHelp() {
-	System.err.println("usage: java GeneratorTester -url <URL for properties file> -outputFile <path to output file>");
-	System.exit(1);
+        System.err.println("usage: java GeneratorTester -url <URL for properties file> -outputFile <path to output file>");
+        System.exit(1);
     }
 
 

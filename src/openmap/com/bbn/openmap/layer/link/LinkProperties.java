@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkProperties.java,v $
 // $RCSfile: LinkProperties.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:27 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -54,7 +54,7 @@ public class LinkProperties extends Properties
     public static final LinkProperties EMPTY_PROPERTIES = new LinkProperties();
 
     public LinkProperties() {
-	super();
+        super();
     }
 
     /** 
@@ -63,8 +63,8 @@ public class LinkProperties extends Properties
      * @param valueString the value for the pair.
      */
     public LinkProperties(String keyString, String valueString) {
-	super();
-	setProperty(keyString, valueString);
+        super();
+        setProperty(keyString, valueString);
     }
 
     /** 
@@ -76,8 +76,8 @@ public class LinkProperties extends Properties
      * @throws IOException.
      */
     public LinkProperties(Link link) throws IOException {
-	super();
-	read(link.dis);
+        super();
+        read(link.dis);
     }
 
     /**  
@@ -87,7 +87,7 @@ public class LinkProperties extends Properties
      * @throws IOException. 
      */
     public LinkProperties(DataInput dis) throws IOException {
-	read(dis);
+        read(dis);
     }
 
     /**
@@ -106,7 +106,7 @@ public class LinkProperties extends Properties
      * @param link the link to write to.
      */
     public void write(Link link) throws IOException {
-	write(link.dos);
+        write(link.dos);
     }
 
     /** 
@@ -117,15 +117,15 @@ public class LinkProperties extends Properties
      */
     public void write(DataOutputStream dos) throws IOException {
 
-	dos.writeInt(size()*2);
-	for (Enumeration e = propertyNames() ; e.hasMoreElements() ;) {
-	    String key = (String) e.nextElement();
-	    String value = getProperty(key);
-	    dos.writeInt(key.length());
-	    dos.writeChars(key);
-	    dos.writeInt(value.length());
-	    dos.writeChars(value);
-	}
+        dos.writeInt(size()*2);
+        for (Enumeration e = propertyNames() ; e.hasMoreElements() ;) {
+            String key = (String) e.nextElement();
+            String value = getProperty(key);
+            dos.writeInt(key.length());
+            dos.writeChars(key);
+            dos.writeInt(value.length());
+            dos.writeChars(value);
+        }
     }
 
     /** 
@@ -137,22 +137,22 @@ public class LinkProperties extends Properties
      * @throws IOException. 
      */
     public void read(DataInput dis) throws IOException {
-	int i;
+        int i;
 
-	int numArgs = dis.readInt();
-	String[] argStrings = new String[numArgs];
-	
-	for (i = 0; i < numArgs; i+=2) {
-	    int argLength = dis.readInt();
-	    argStrings[i] = LinkUtil.readString(dis, argLength);
-	    argLength = dis.readInt();
-	    argStrings[i+1] = LinkUtil.readString(dis, argLength);
+        int numArgs = dis.readInt();
+        String[] argStrings = new String[numArgs];
+        
+        for (i = 0; i < numArgs; i+=2) {
+            int argLength = dis.readInt();
+            argStrings[i] = LinkUtil.readString(dis, argLength);
+            argLength = dis.readInt();
+            argStrings[i+1] = LinkUtil.readString(dis, argLength);
 
-	    put(argStrings[i], argStrings[i+1]);
-	}
-	if (Debug.debugging("linkdetail")) {
-	    System.out.println("LinkProperties | Read:  " + this);
-	}
+            put(argStrings[i], argStrings[i+1]);
+        }
+        if (Debug.debugging("linkdetail")) {
+            System.out.println("LinkProperties | Read:  " + this);
+        }
     }
 
     /**
@@ -165,101 +165,101 @@ public class LinkProperties extends Properties
      * LinkProperties in the AppObject of the OMGraphic.
      */
     public void setProperties(OMGraphic omg) {
-	if (omg == null) return;
+        if (omg == null) return;
 
-	omg.setLinePaint(getPaint(LPC_LINECOLOR, BLACK_COLOR_STRING));
-	omg.setFillPaint(getFillPaint());
-	omg.setSelectPaint(getPaint(LPC_HIGHLIGHTCOLOR, BLACK_COLOR_STRING));
-	omg.setStroke(getStroke());
-	omg.setAppObject(this);
+        omg.setLinePaint(getPaint(LPC_LINECOLOR, BLACK_COLOR_STRING));
+        omg.setFillPaint(getFillPaint());
+        omg.setSelectPaint(getPaint(LPC_HIGHLIGHTCOLOR, BLACK_COLOR_STRING));
+        omg.setStroke(getStroke());
+        omg.setAppObject(this);
     }
 
     public Stroke getStroke() {
-	int lineWidth = PropUtils.intFromProperties(this, LPC_LINEWIDTH, 1);
-	int cap = BasicStroke.CAP_SQUARE;
-	int join = BasicStroke.JOIN_MITER;
-	float miterLimit = 10f;
-	float dashPhase = 0f;
-	String strokeString = getProperty(LPC_LINESTYLE);
-	Stroke stroke = null;
-	float[] dash = null;
+        int lineWidth = PropUtils.intFromProperties(this, LPC_LINEWIDTH, 1);
+        int cap = BasicStroke.CAP_SQUARE;
+        int join = BasicStroke.JOIN_MITER;
+        float miterLimit = 10f;
+        float dashPhase = 0f;
+        String strokeString = getProperty(LPC_LINESTYLE);
+        Stroke stroke = null;
+        float[] dash = null;
 
-	if (strokeString != null) {
-	    if (strokeString.equalsIgnoreCase(LPC_LONG_DASH)) {
-		dash = new float[] {10f, 10f};
-	    } else if (strokeString.equalsIgnoreCase(LPC_DASH)) {
-		dash = new float[] {6f, 6f};
-	    } else if (strokeString.equalsIgnoreCase(LPC_DOT)) {
-		dash = new float[] {3f, 6f};
-	    } else if (strokeString.equalsIgnoreCase(LPC_DASH_DOT)) {
-		dash = new float[] {6f, 6f, 3f, 6f};
-	    } else if (strokeString.equalsIgnoreCase(LPC_DASH_DOT_DOT)) {
-		dash = new float[] {6f, 6f, 3f, 6f, 3f, 6f};
-	    }
+        if (strokeString != null) {
+            if (strokeString.equalsIgnoreCase(LPC_LONG_DASH)) {
+                dash = new float[] {10f, 10f};
+            } else if (strokeString.equalsIgnoreCase(LPC_DASH)) {
+                dash = new float[] {6f, 6f};
+            } else if (strokeString.equalsIgnoreCase(LPC_DOT)) {
+                dash = new float[] {3f, 6f};
+            } else if (strokeString.equalsIgnoreCase(LPC_DASH_DOT)) {
+                dash = new float[] {6f, 6f, 3f, 6f};
+            } else if (strokeString.equalsIgnoreCase(LPC_DASH_DOT_DOT)) {
+                dash = new float[] {6f, 6f, 3f, 6f, 3f, 6f};
+            }
 
-	    if (dash != null) {
-		stroke = new BasicStroke(lineWidth, cap, join, miterLimit, dash, dashPhase);
-	    }
-	}
+            if (dash != null) {
+                stroke = new BasicStroke(lineWidth, cap, join, miterLimit, dash, dashPhase);
+            }
+        }
 
-	if (stroke == null) {
-	    stroke = new BasicStroke(lineWidth);
-	}
+        if (stroke == null) {
+            stroke = new BasicStroke(lineWidth);
+        }
 
-	return stroke;
+        return stroke;
     }
 
     public Paint getPaint(String paintProperty, String defaultPaintString) {
-	return ColorFactory.parseColorFromProperties(this, paintProperty, defaultPaintString, true);
+        return ColorFactory.parseColorFromProperties(this, paintProperty, defaultPaintString, true);
     }
 
     public Paint getFillPaint() {
-	Paint fillPaint = getPaint(LPC_FILLCOLOR, CLEAR_COLOR_STRING);
+        Paint fillPaint = getPaint(LPC_FILLCOLOR, CLEAR_COLOR_STRING);
 
-	String pattern = getProperty(LPC_FILLPATTERN);
-	if (pattern == null || pattern.equalsIgnoreCase(LPC_SOLID_PATTERN)) {
-	    return fillPaint;
-	} else {
-	    BufferedImage bi = new BufferedImage(8,8, BufferedImage.TYPE_INT_ARGB);
-	    Graphics2D big = bi.createGraphics();
-	    big.setColor(new Color(0,true)); // clear
-	    big.fillRect(0,0,8,8);
-	    big.setPaint(fillPaint);
+        String pattern = getProperty(LPC_FILLPATTERN);
+        if (pattern == null || pattern.equalsIgnoreCase(LPC_SOLID_PATTERN)) {
+            return fillPaint;
+        } else {
+            BufferedImage bi = new BufferedImage(8,8, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D big = bi.createGraphics();
+            big.setColor(new Color(0,true)); // clear
+            big.fillRect(0,0,8,8);
+            big.setPaint(fillPaint);
 
-	    if (pattern.equalsIgnoreCase(LPC_HORIZONTAL_PATTERN)) {
-		big.draw(new Line2D.Double(0, 0, 7, 0));
-		big.draw(new Line2D.Double(0, 4, 7, 4));
-	    } else if (pattern.equalsIgnoreCase(LPC_VERTICAL_PATTERN)) {
-		big.draw(new Line2D.Double(0, 0, 0, 7));
-		big.draw(new Line2D.Double(4, 0, 4, 7));
-	    } else if (pattern.equalsIgnoreCase(LPC_CROSS_PATTERN)) {
-		big.draw(new Line2D.Double(0, 0, 7, 0));
-		big.draw(new Line2D.Double(0, 4, 7, 4));
-		big.draw(new Line2D.Double(0, 0, 0, 7));
-		big.draw(new Line2D.Double(4, 0, 4, 7));
-	    } else if (pattern.equalsIgnoreCase(LPC_DIAG_CROSS_PATTERN)) {
-		big.draw(new Line2D.Double(0, 0, 7, 7));
-		big.draw(new Line2D.Double(0, 4, 3, 7));
-		big.draw(new Line2D.Double(4, 0, 7, 3));
-		big.draw(new Line2D.Double(0, 7, 7, 0));
-		big.draw(new Line2D.Double(0, 3, 3, 0));
-		big.draw(new Line2D.Double(4, 7, 7, 4));
-	    } else if (pattern.equalsIgnoreCase(LPC_BACKWARD_DIAG_PATTERN)) {
-		big.draw(new Line2D.Double(0, 0, 7, 7));
-		big.draw(new Line2D.Double(0, 4, 3, 7));
-		big.draw(new Line2D.Double(4, 0, 7, 3));
-	    } else if (pattern.equalsIgnoreCase(LPC_FORWARD_DIAG_PATTERN)) {
-		big.draw(new Line2D.Double(0, 7, 7, 0));
-		big.draw(new Line2D.Double(0, 3, 3, 0));
-		big.draw(new Line2D.Double(4, 7, 7, 4));
-	    } else {
-		// default to solid
-		big.fillRect(0,0,8,8);
-	    }
+            if (pattern.equalsIgnoreCase(LPC_HORIZONTAL_PATTERN)) {
+                big.draw(new Line2D.Double(0, 0, 7, 0));
+                big.draw(new Line2D.Double(0, 4, 7, 4));
+            } else if (pattern.equalsIgnoreCase(LPC_VERTICAL_PATTERN)) {
+                big.draw(new Line2D.Double(0, 0, 0, 7));
+                big.draw(new Line2D.Double(4, 0, 4, 7));
+            } else if (pattern.equalsIgnoreCase(LPC_CROSS_PATTERN)) {
+                big.draw(new Line2D.Double(0, 0, 7, 0));
+                big.draw(new Line2D.Double(0, 4, 7, 4));
+                big.draw(new Line2D.Double(0, 0, 0, 7));
+                big.draw(new Line2D.Double(4, 0, 4, 7));
+            } else if (pattern.equalsIgnoreCase(LPC_DIAG_CROSS_PATTERN)) {
+                big.draw(new Line2D.Double(0, 0, 7, 7));
+                big.draw(new Line2D.Double(0, 4, 3, 7));
+                big.draw(new Line2D.Double(4, 0, 7, 3));
+                big.draw(new Line2D.Double(0, 7, 7, 0));
+                big.draw(new Line2D.Double(0, 3, 3, 0));
+                big.draw(new Line2D.Double(4, 7, 7, 4));
+            } else if (pattern.equalsIgnoreCase(LPC_BACKWARD_DIAG_PATTERN)) {
+                big.draw(new Line2D.Double(0, 0, 7, 7));
+                big.draw(new Line2D.Double(0, 4, 3, 7));
+                big.draw(new Line2D.Double(4, 0, 7, 3));
+            } else if (pattern.equalsIgnoreCase(LPC_FORWARD_DIAG_PATTERN)) {
+                big.draw(new Line2D.Double(0, 7, 7, 0));
+                big.draw(new Line2D.Double(0, 3, 3, 0));
+                big.draw(new Line2D.Double(4, 7, 7, 4));
+            } else {
+                // default to solid
+                big.fillRect(0,0,8,8);
+            }
 
-	    Rectangle r = new Rectangle(0, 0, 8, 8);
-	    return new TexturePaint(bi, r);
-	}
+            Rectangle r = new Rectangle(0, 0, 8, 8);
+            return new TexturePaint(bi, r);
+        }
     }
 }
 

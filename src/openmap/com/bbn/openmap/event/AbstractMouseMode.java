@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/AbstractMouseMode.java,v $
 // $RCSfile: AbstractMouseMode.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/08 21:29:17 $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -112,7 +112,7 @@ public class AbstractMouseMode extends OMComponent
      * Default constructor, allocates the mouse support object.
      */
     public AbstractMouseMode() {
-	this("Unnamed Mode", true);
+        this("Unnamed Mode", true);
     }
 
     /**
@@ -123,13 +123,13 @@ public class AbstractMouseMode extends OMComponent
      * event, if false, events are propagated to all MapMouseListeners
      */
     public AbstractMouseMode(String name, boolean shouldConsumeEvents) {
-	mouseSupport = new MapMouseSupport(this, shouldConsumeEvents);
-	ID = name;
+        mouseSupport = new MapMouseSupport(this, shouldConsumeEvents);
+        ID = name;
 
-	java.net.URL url = getClass().getResource(name + ".gif");
-	if (url != null) {
-	    guiIcon = new ImageIcon(url);
-	}
+        java.net.URL url = getClass().getResource(name + ".gif");
+        if (url != null) {
+            guiIcon = new ImageIcon(url);
+        }
     }
 
     /**
@@ -137,7 +137,7 @@ public class AbstractMouseMode extends OMComponent
      * @return String ID
      */
     public String getID() {
-	return ID;
+        return ID;
     }
 
     /**
@@ -145,11 +145,11 @@ public class AbstractMouseMode extends OMComponent
      * @param id string that identifies the delegate.
      */
     public void setID(String id) {
-	ID = id;
+        ID = id;
     }
 
     public void setPrettyName(String pn) {
-	prettyName = pn;
+        prettyName = pn;
     }
 
     /**
@@ -158,11 +158,11 @@ public class AbstractMouseMode extends OMComponent
      * mode ID.
      */
     public String getPrettyName() {
-	if (prettyName == null) {
-	    return ID;
-	} else {
-	    return prettyName;
-	}
+        if (prettyName == null) {
+            return ID;
+        } else {
+            return prettyName;
+        }
     }
 
     /**
@@ -172,7 +172,7 @@ public class AbstractMouseMode extends OMComponent
      * mouse mode is active.
      */
     public Cursor getModeCursor() {
-	return cursor;
+        return cursor;
     }
 
     /**
@@ -182,21 +182,21 @@ public class AbstractMouseMode extends OMComponent
      * when this mouse mode is active. 
      */
     public void setModeCursor(Cursor curs) {
-	cursor = curs;
+        cursor = curs;
     }
 
     /**
      * Gets the Icon to represent the Mouse Mode in a GUI.  May be null.
      */
     public Icon getGUIIcon() {
-	return guiIcon;
+        return guiIcon;
     }
 
     /**
      * Set the icon that should be used for this Mouse Mode in a GUI.
      */
     public void setGUIIcon(Icon icon) {
-	guiIcon = icon;
+        guiIcon = icon;
     }
     
     /**
@@ -207,7 +207,7 @@ public class AbstractMouseMode extends OMComponent
      * @param value true for limited distribution.
      */
     public void setConsumeEvents(boolean value) {
-	mouseSupport.setConsumeEvents(value);
+        mouseSupport.setConsumeEvents(value);
     }
 
     /**
@@ -216,7 +216,7 @@ public class AbstractMouseMode extends OMComponent
      * @return true if only one listner gets to act on an event.
      */
     public boolean isConsumeEvents() {
-	return mouseSupport.isConsumeEvents();
+        return mouseSupport.isConsumeEvents();
     }
 
     /**
@@ -226,7 +226,7 @@ public class AbstractMouseMode extends OMComponent
      * @param l the MapMouseListener to add.
      */
     public void addMapMouseListener(MapMouseListener l) {
-	mouseSupport.addMapMouseListener(l);
+        mouseSupport.addMapMouseListener(l);
     }
 
     /**
@@ -234,14 +234,14 @@ public class AbstractMouseMode extends OMComponent
      * @param l the MapMouseListener to remove.
      */
     public void removeMapMouseListener(MapMouseListener l) {
-	mouseSupport.removeMapMouseListener(l);
+        mouseSupport.removeMapMouseListener(l);
     }
 
     /**
      * Remove all MapMouseListeners from the mode.
      */
     public void removeAllMapMouseListeners() {
-	mouseSupport.removeAllMapMouseListeners();
+        mouseSupport.removeAllMapMouseListeners();
     }
 
     /**
@@ -250,7 +250,7 @@ public class AbstractMouseMode extends OMComponent
      * @param e MouseEvent
      */
     public void mouseClicked(MouseEvent e) { 
-	mouseSupport.fireMapMouseClicked(e);
+        mouseSupport.fireMapMouseClicked(e);
     }
 
     /**
@@ -261,8 +261,8 @@ public class AbstractMouseMode extends OMComponent
      * @param e MouseEvent
      */
     public void mousePressed(MouseEvent e) {
-	e.getComponent().requestFocus();
-	mouseSupport.fireMapMousePressed(e);
+        e.getComponent().requestFocus();
+        mouseSupport.fireMapMousePressed(e);
     }
 
     /**
@@ -271,7 +271,7 @@ public class AbstractMouseMode extends OMComponent
      * @param e MouseEvent
      */
     public void mouseReleased(MouseEvent e) {
-	mouseSupport.fireMapMouseReleased(e);
+        mouseSupport.fireMapMouseReleased(e);
     }
 
     /**
@@ -280,7 +280,7 @@ public class AbstractMouseMode extends OMComponent
      * @param e MouseEvent
      */
     public void mouseEntered(MouseEvent e) {
-	mouseSupport.fireMapMouseEntered(e);
+        mouseSupport.fireMapMouseEntered(e);
     }
 
     /**
@@ -289,7 +289,7 @@ public class AbstractMouseMode extends OMComponent
      * @param e MouseEvent
      */
     public void mouseExited(MouseEvent e) {
-	mouseSupport.fireMapMouseExited(e);
+        mouseSupport.fireMapMouseExited(e);
     }
 
     /**
@@ -298,7 +298,7 @@ public class AbstractMouseMode extends OMComponent
      * @param e MouseEvent
      */
     public void mouseDragged(MouseEvent e) {
-	mouseSupport.fireMapMouseDragged(e);
+        mouseSupport.fireMapMouseDragged(e);
     }
 
     /**
@@ -308,7 +308,7 @@ public class AbstractMouseMode extends OMComponent
      * @param e MouseEvent
      */
     public void mouseMoved(MouseEvent e) {
-	mouseSupport.fireMapMouseMoved(e);
+        mouseSupport.fireMapMouseMoved(e);
     }
 
     /**
@@ -325,7 +325,7 @@ public class AbstractMouseMode extends OMComponent
      * @param support The new MapMouseSupport instance
      */
     public void setMouseSupport(MapMouseSupport support) {
-	mouseSupport = support;
+        mouseSupport = support;
     }
 
     /**
@@ -333,7 +333,7 @@ public class AbstractMouseMode extends OMComponent
      * @return the MapMouseSupport used by the MouseMode.
      */
     public MapMouseSupport getMouseSupport() {
-	return mouseSupport;
+        return mouseSupport;
     }
 
     /**
@@ -342,7 +342,7 @@ public class AbstractMouseMode extends OMComponent
      * provided and controlled by another tool.  True by default.
      */
     public boolean isVisible() {
-	return visible;
+        return visible;
     }
 
     /**
@@ -351,7 +351,7 @@ public class AbstractMouseMode extends OMComponent
      * another tool.
      */
     public void setVisible(boolean value) {
-	visible = value;
+        visible = value;
     }
 
     /**
@@ -368,7 +368,7 @@ public class AbstractMouseMode extends OMComponent
      * listener.
      */
     public boolean actAsProxyFor(MapMouseMode mmm) {
-	return actAsProxyFor(mmm, 0);
+        return actAsProxyFor(mmm, 0);
     }
 
     /**
@@ -386,7 +386,7 @@ public class AbstractMouseMode extends OMComponent
      * listener.
      */
     public boolean actAsProxyFor(MapMouseMode mmm, int pdm) {
-	return mouseSupport.setProxyFor(mmm, pdm);
+        return mouseSupport.setProxyFor(mmm, pdm);
     }
 
     /**
@@ -394,14 +394,14 @@ public class AbstractMouseMode extends OMComponent
      * MapMouseMode.
      */
     public boolean isProxyFor(MapMouseMode mmm) {
-	return mouseSupport.isProxyFor(mmm);
+        return mouseSupport.isProxyFor(mmm);
     }
 
     /**
      * Release the proxy lock on the MapMouseMode.
      */
     public void releaseProxy() {
-	mouseSupport.releaseProxy();
+        mouseSupport.releaseProxy();
     }
 
     /**
@@ -410,7 +410,7 @@ public class AbstractMouseMode extends OMComponent
      * acting as a proxy.
      */
     public void setProxyDistributionMask(int mask) {
-	mouseSupport.setProxyDistributionMask(mask);
+        mouseSupport.setProxyDistributionMask(mask);
     }
 
     /**
@@ -419,42 +419,42 @@ public class AbstractMouseMode extends OMComponent
      * acting as a proxy.
      */
     public int getProxyDistributionMask() {
-	return mouseSupport.getProxyDistributionMask();
+        return mouseSupport.getProxyDistributionMask();
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String prettyNameString = props.getProperty(prefix + PrettyNameProperty);
-	if (prettyNameString != null) {
-	    setPrettyName(prettyNameString);
-	}
+        String prettyNameString = props.getProperty(prefix + PrettyNameProperty);
+        if (prettyNameString != null) {
+            setPrettyName(prettyNameString);
+        }
 
-	String idString = props.getProperty(prefix + IDProperty);
-	if (idString != null) {
-	    setID(idString);
-	}
+        String idString = props.getProperty(prefix + IDProperty);
+        if (idString != null) {
+            setID(idString);
+        }
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	if (prettyName != null) {
-	    props.put(prefix + PrettyNameProperty, prettyName);
-	}
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        if (prettyName != null) {
+            props.put(prefix + PrettyNameProperty, prettyName);
+        }
 
-	props.put(prefix + IDProperty, getID());
-	return props;
+        props.put(prefix + IDProperty, getID());
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
-	props.put(PrettyNameProperty, "Presentable name for Mouse Mode.");
-	props.put(IDProperty, "Internal ID for Mouse Mode, used by Layers.");
-	return props;
+        props = super.getPropertyInfo(props);
+        props.put(PrettyNameProperty, "Presentable name for Mouse Mode.");
+        props.put(IDProperty, "Internal ID for Mouse Mode, used by Layers.");
+        return props;
     }
 
     /**

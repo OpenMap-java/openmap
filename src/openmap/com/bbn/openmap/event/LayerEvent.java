@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/LayerEvent.java,v $
 // $RCSfile: LayerEvent.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,9 +45,9 @@ public class LayerEvent extends java.util.EventObject {
      * @param layers Layer[]
      */
     public LayerEvent(Object source, int type, Layer[] layers) {
-	super(source);
-	this.layers = layers;
-	this.type = type;
+        super(source);
+        this.layers = layers;
+        this.type = type;
     }
 
     /**
@@ -55,7 +55,7 @@ public class LayerEvent extends java.util.EventObject {
      * @return Layer[]
      */
     public Layer[] getLayers() {
-	return layers;
+        return layers;
     }
 
     /**
@@ -63,6 +63,6 @@ public class LayerEvent extends java.util.EventObject {
      * @return int type
      */
     public int getType() {
-	return type;
+        return type;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/shape/ESRISpecialistPolygonRecord.java,v $
 // $RCSfile: ESRISpecialistPolygonRecord.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,12 +40,12 @@ public class ESRISpecialistPolygonRecord extends ESRIPolygonRecord
     implements ESRISpecialistRecord {
 
     public ESRISpecialistPolygonRecord() {
-	super();
+        super();
     }
 
     public ESRISpecialistPolygonRecord(byte b[], int off)
-	throws IOException{
-	super(b, off);
+        throws IOException{
+        super(b, off);
     }
 
     /**
@@ -59,30 +59,30 @@ public class ESRISpecialistPolygonRecord extends ESRIPolygonRecord
      * @param fillColor the fill color to use.
      */
     public void writeGraphics (Vector list, SColor lineColor, SColor fillColor) 
-	throws IOException {
+        throws IOException {
 
-	int nPolys = polygons.length;
-	if (nPolys <= 0) return;
-	SPoly sp=null;
-	float[] pts;
-	LLPoint[] ll;
-	boolean ispolyg = isPolygon();
+        int nPolys = polygons.length;
+        if (nPolys <= 0) return;
+        SPoly sp=null;
+        float[] pts;
+        LLPoint[] ll;
+        boolean ispolyg = isPolygon();
 
-	for (int i=0; i<nPolys; i++) {
-	    // these points are already in RADIAN lat,lon order!...
-	    pts = ((ESRIPoly.ESRIFloatPoly)polygons[i]).getDecimalDegrees();
-	    ll = new LLPoint[pts.length/2];
+        for (int i=0; i<nPolys; i++) {
+            // these points are already in RADIAN lat,lon order!...
+            pts = ((ESRIPoly.ESRIFloatPoly)polygons[i]).getDecimalDegrees();
+            ll = new LLPoint[pts.length/2];
 
-	    for (int j = 0; j < ll.length; j++){
-		ll[j] = new LLPoint(pts[j*2], pts[(j*2)+1]);
-	    }
+            for (int j = 0; j < ll.length; j++){
+                ll[j] = new LLPoint(pts[j*2], pts[(j*2)+1]);
+            }
 
-	    sp = new SPoly(ll, LineType.LT_GreatCircle); 
-	    sp.color(lineColor);
-	    if (fillColor != null) {
-		sp.fillColor(fillColor);
-	    }
-	    list.addElement(sp);
-	}
+            sp = new SPoly(ll, LineType.LT_GreatCircle); 
+            sp.color(lineColor);
+            if (fillColor != null) {
+                sp.fillColor(fillColor);
+            }
+            list.addElement(sp);
+        }
     }
 }

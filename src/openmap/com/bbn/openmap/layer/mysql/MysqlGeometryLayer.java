@@ -138,7 +138,7 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
      * <b>geomColumn</b>
      */
     public static final String geomColumnProperty = "geomColumn";
-	
+        
     /** The point Symbol set by the Properties */
     protected String pointSymbol = "";
 
@@ -149,7 +149,7 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
     public static final String pointSymbolProperty = "pointSymbol";
 
     protected DrawingAttributes drawingAttributes = 
-	DrawingAttributes.getDefaultClone();
+        DrawingAttributes.getDefaultClone();
 
     /**
      * The properties and prefix are managed and decoded here.
@@ -158,95 +158,95 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
      * @param properties the properties set in the properties file.
      */
     public void setProperties(String prefix, Properties properties) {
-	super.setProperties(prefix, properties);
+        super.setProperties(prefix, properties);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	dbClass = properties.getProperty(prefix+dbClassProperty);
-	dbUrl = properties.getProperty(prefix+dbUrlProperty);
-	geomTable = properties.getProperty(prefix+geomTableProperty);
-	geomColumn = properties.getProperty(prefix+geomColumnProperty);
-	pointSymbol = properties.getProperty(prefix+pointSymbolProperty);
+        dbClass = properties.getProperty(prefix+dbClassProperty);
+        dbUrl = properties.getProperty(prefix+dbUrlProperty);
+        geomTable = properties.getProperty(prefix+geomTableProperty);
+        geomColumn = properties.getProperty(prefix+geomColumnProperty);
+        pointSymbol = properties.getProperty(prefix+pointSymbolProperty);
 
-	if (Debug.debugging("mysql")) {
-	    Debug.output("MysqlGeometryLayer (" + getName() + ") properties:");
-	    Debug.output("  " + dbClass);
-	    Debug.output("  " + dbUrl);
-	    Debug.output("  " + geomTable);
-	    Debug.output("  " + geomColumn);
-	}
+        if (Debug.debugging("mysql")) {
+            Debug.output("MysqlGeometryLayer (" + getName() + ") properties:");
+            Debug.output("  " + dbClass);
+            Debug.output("  " + dbUrl);
+            Debug.output("  " + geomTable);
+            Debug.output("  " + geomColumn);
+        }
 
-	drawingAttributes.setProperties(prefix, properties);
+        drawingAttributes.setProperties(prefix, properties);
     }
 
     public OMGraphicList prepare() {
 
-	Projection proj = getProjection();
+        Projection proj = getProjection();
 
-	if (proj == null) {
-	    Debug.output("MysqlGeometryLayer.prepare: null projection!");
-	    return null;
-	}
+        if (proj == null) {
+            Debug.output("MysqlGeometryLayer.prepare: null projection!");
+            return null;
+        }
 
-	OMGraphicList graphics = new OMGraphicList();
+        OMGraphicList graphics = new OMGraphicList();
 
-	try {
-        	
-	    Class.forName(dbClass).newInstance();
-	    try {
-		conn = DriverManager.getConnection(dbUrl);
-	    } catch (Exception ex) {
-		ex.printStackTrace();
-	    }
+        try {
+                
+            Class.forName(dbClass).newInstance();
+            try {
+                conn = DriverManager.getConnection(dbUrl);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
  
-	    stmt = conn.createStatement();
+            stmt = conn.createStatement();
         
-	    String q = "SELECT ID, AsText("+ geomColumn +") FROM "+ geomTable 
-		+ " WHERE MBRIntersects(GEO, GeomFromText('Polygon(( " 
-		+ getProjection().getUpperLeft().getLongitude()+" "
-		+ getProjection().getUpperLeft().getLatitude()+", "
-		+ getProjection().getUpperLeft().getLongitude()+" "
-		+ getProjection().getLowerRight().getLatitude()+", "
-		+ getProjection().getLowerRight().getLongitude()+" "
-		+ getProjection().getLowerRight().getLatitude()+", "
-		+ getProjection().getLowerRight().getLongitude()+" "
-		+ getProjection().getUpperLeft().getLatitude()+", "
-		+ getProjection().getUpperLeft().getLongitude()+" "
-		+ getProjection().getUpperLeft().getLatitude()    
-		+ "))'))" ;
+            String q = "SELECT ID, AsText("+ geomColumn +") FROM "+ geomTable 
+                + " WHERE MBRIntersects(GEO, GeomFromText('Polygon(( " 
+                + getProjection().getUpperLeft().getLongitude()+" "
+                + getProjection().getUpperLeft().getLatitude()+", "
+                + getProjection().getUpperLeft().getLongitude()+" "
+                + getProjection().getLowerRight().getLatitude()+", "
+                + getProjection().getLowerRight().getLongitude()+" "
+                + getProjection().getLowerRight().getLatitude()+", "
+                + getProjection().getLowerRight().getLongitude()+" "
+                + getProjection().getUpperLeft().getLatitude()+", "
+                + getProjection().getUpperLeft().getLongitude()+" "
+                + getProjection().getUpperLeft().getLatitude()    
+                + "))'))" ;
 
-	    if (Debug.debugging("mysql")) {
-		Debug.output("MysqlGeometryLayer query: " + q);
-	    }
+            if (Debug.debugging("mysql")) {
+                Debug.output("MysqlGeometryLayer query: " + q);
+            }
 
-	    stmt.executeQuery(q);
-	    rs = stmt.getResultSet();
-	    graphics.clear();
+            stmt.executeQuery(q);
+            rs = stmt.getResultSet();
+            graphics.clear();
      
-	    while (rs.next()) {   
+            while (rs.next()) {   
 
-		String result = rs.getString(2);
+                String result = rs.getString(2);
 
-		if (Debug.debugging("mysql")) {
-		    Debug.output("MysqlGeometryLayer result: " + result);
-		}
+                if (Debug.debugging("mysql")) {
+                    Debug.output("MysqlGeometryLayer result: " + result);
+                }
 
-		MysqlGeometry mg = MysqlWKTGeometryFactory.createGeometry(result); 
-		OMGraphic omg = createGraphic(mg);
-		omg.generate(proj);
-		graphics.add(omg);
-	    }
+                MysqlGeometry mg = MysqlWKTGeometryFactory.createGeometry(result); 
+                OMGraphic omg = createGraphic(mg);
+                omg.generate(proj);
+                graphics.add(omg);
+            }
 
-	    rs.close();
-	    conn.close();
+            rs.close();
+            conn.close();
 
-	} catch(SQLException sqlE) {
-		sqlE.printStackTrace();
-	} catch(Exception e) {
-	    e.printStackTrace();
-	}
+        } catch(SQLException sqlE) {
+                sqlE.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
 
-	return graphics;
+        return graphics;
     }
 
 
@@ -255,13 +255,13 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
      * @param myPoint
      */
     protected OMGraphic createPoint(MysqlPoint myPoint) {
-	ImageIcon actualPointSymbol = new ImageIcon(pointSymbol);
-	OMRaster ompoint = new OMRaster((float) myPoint.getNorthings(),
-					(float) myPoint.getEastings(), actualPointSymbol);        
+        ImageIcon actualPointSymbol = new ImageIcon(pointSymbol);
+        OMRaster ompoint = new OMRaster((float) myPoint.getNorthings(),
+                                        (float) myPoint.getEastings(), actualPointSymbol);        
 
-	drawingAttributes.setTo(ompoint);
+        drawingAttributes.setTo(ompoint);
 
-	return ompoint;
+        return ompoint;
     }
 
     /**
@@ -269,13 +269,13 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
      * @param myLine - Database object which will be rendered
      */
     protected OMGraphic createLine(MysqlLine myLine) {
-	         
-	OMPoly ompoly = new OMPoly(DoubleToFloat(myLine.getCoordinateArray()),
-				   OMGraphic.DECIMAL_DEGREES,
-				   OMGraphic.LINETYPE_STRAIGHT);  
+                 
+        OMPoly ompoly = new OMPoly(DoubleToFloat(myLine.getCoordinateArray()),
+                                   OMGraphic.DECIMAL_DEGREES,
+                                   OMGraphic.LINETYPE_STRAIGHT);  
 
-	drawingAttributes.setTo(ompoly);
-	return ompoly;
+        drawingAttributes.setTo(ompoly);
+        return ompoly;
     }
 
     /**
@@ -283,33 +283,33 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
      * @param myPoly - Database object which will be rendered
      */
     protected OMGraphic createPolygon(MysqlPolygon myPoly) {
-	Vector v = myPoly.getRings();
-	int size = v.size();
+        Vector v = myPoly.getRings();
+        int size = v.size();
 
-	OMGraphic ret = null;
-	OMPoly ompoly = null;
-	OMGraphicList subList = null;
+        OMGraphic ret = null;
+        OMPoly ompoly = null;
+        OMGraphicList subList = null;
 
-	if (size > 1) {
-	    subList = new OMGraphicList();
-	    ret = subList;
-	}
+        if (size > 1) {
+            subList = new OMGraphicList();
+            ret = subList;
+        }
 
-	for (int i = 0; i < size; i++) {	
-	    ompoly = new OMPoly(DoubleToFloat((double[]) v.elementAt(i)),
-				OMGraphic.DECIMAL_DEGREES,
-				OMGraphic.LINETYPE_STRAIGHT);
+        for (int i = 0; i < size; i++) {        
+            ompoly = new OMPoly(DoubleToFloat((double[]) v.elementAt(i)),
+                                OMGraphic.DECIMAL_DEGREES,
+                                OMGraphic.LINETYPE_STRAIGHT);
 
-	    drawingAttributes.setTo(ompoly);
+            drawingAttributes.setTo(ompoly);
 
-	    if (subList != null) {
-		subList.add(ompoly);
-	    } else {
-		ret = ompoly;
-	    }
-	}
+            if (subList != null) {
+                subList.add(ompoly);
+            } else {
+                ret = ompoly;
+            }
+        }
 
-	return ret;
+        return ret;
     }
 
     /**
@@ -317,49 +317,49 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
      * @param mg Database object which will be rendered
      */
     protected OMGraphic createGraphic(MysqlGeometry mg) {
-	OMGraphic ret = null;
+        OMGraphic ret = null;
 
-	if (mg != null)  {
-	    String type = mg.getType();
+        if (mg != null)  {
+            String type = mg.getType();
 
-	    if (type.equals(mg.POINTTYPE)) {
-		ret = createPoint((MysqlPoint) mg);        
-	    } else if (type.equals(mg.LINESTRINGTYPE)) {  
-		ret = createLine((MysqlLine) mg);
-	    } else if (type.equals(mg.POLYGONTTYPE)) {
-		ret = createPolygon((MysqlPolygon) mg);    
-	    } else if (type.equals(mg.MULTIPOINTTYPE) 
-		       || type.equals(mg.MULTILINESTRINGTYPE)
-		       || type.equals(mg.MULTIPOLYGONTYPE)
-		       || type.equals(mg.GEOMETRYCOLLECTIONTYPE)) {
+            if (type.equals(mg.POINTTYPE)) {
+                ret = createPoint((MysqlPoint) mg);        
+            } else if (type.equals(mg.LINESTRINGTYPE)) {  
+                ret = createLine((MysqlLine) mg);
+            } else if (type.equals(mg.POLYGONTTYPE)) {
+                ret = createPolygon((MysqlPolygon) mg);    
+            } else if (type.equals(mg.MULTIPOINTTYPE) 
+                       || type.equals(mg.MULTILINESTRINGTYPE)
+                       || type.equals(mg.MULTIPOLYGONTYPE)
+                       || type.equals(mg.GEOMETRYCOLLECTIONTYPE)) {
 
-		MysqlMulti multi = (MysqlMulti) mg;
-		OMGraphicList subList = new OMGraphicList();
-		for (int i=0;i<multi.countElements();i++) {
-		    OMGraphic subRet = null;
-		    if (type.equals(mg.MULTIPOINTTYPE)) {
-			subRet = createPoint((MysqlPoint) multi.getElementByIndex(i));
-		    } else if (type.equals(mg.MULTILINESTRINGTYPE)) {
-			subRet = createLine((MysqlLine) multi.getElementByIndex(i));
-		    } else if (type.equals(mg.MULTIPOLYGONTYPE)) {
-			subRet = createPolygon((MysqlPolygon) multi.getElementByIndex(i));
-		    } else if (type.equals(mg.GEOMETRYCOLLECTIONTYPE)) {
-			subRet = createGraphic((MysqlGeometry) multi.getElementByIndex(i));
-		    }
+                MysqlMulti multi = (MysqlMulti) mg;
+                OMGraphicList subList = new OMGraphicList();
+                for (int i=0;i<multi.countElements();i++) {
+                    OMGraphic subRet = null;
+                    if (type.equals(mg.MULTIPOINTTYPE)) {
+                        subRet = createPoint((MysqlPoint) multi.getElementByIndex(i));
+                    } else if (type.equals(mg.MULTILINESTRINGTYPE)) {
+                        subRet = createLine((MysqlLine) multi.getElementByIndex(i));
+                    } else if (type.equals(mg.MULTIPOLYGONTYPE)) {
+                        subRet = createPolygon((MysqlPolygon) multi.getElementByIndex(i));
+                    } else if (type.equals(mg.GEOMETRYCOLLECTIONTYPE)) {
+                        subRet = createGraphic((MysqlGeometry) multi.getElementByIndex(i));
+                    }
 
-		    if (subRet != null) {
-			subList.add(subRet);
-		    }
-		}
-		ret = subList;
-	    } else {
-		// Other types of geometry
-		if (Debug.debugging("mysql")) {
-		    Debug.output("MysqlGeometryLayer.createGeometry: Geometry type not supported");
-		}
-	    }
-	}
-	return ret;
+                    if (subRet != null) {
+                        subList.add(subRet);
+                    }
+                }
+                ret = subList;
+            } else {
+                // Other types of geometry
+                if (Debug.debugging("mysql")) {
+                    Debug.output("MysqlGeometryLayer.createGeometry: Geometry type not supported");
+                }
+            }
+        }
+        return ret;
     } 
 
     /**
@@ -372,11 +372,11 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
      * @return float[]
      */
     private float[] DoubleToFloat(double[] d) {
-	float[] f = new float[d.length];	
-	for (int i = 0; i < d.length; i++) {
-	    f[i] = (float) d[i];
-	}	
-	return f;
+        float[] f = new float[d.length];        
+        for (int i = 0; i < d.length; i++) {
+            f[i] = (float) d[i];
+        }       
+        return f;
     }
 
 }

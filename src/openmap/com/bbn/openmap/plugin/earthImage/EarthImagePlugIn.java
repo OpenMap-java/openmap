@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/earthImage/EarthImagePlugIn.java,v $
 // $RCSfile: EarthImagePlugIn.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,7 +76,7 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
     public EarthImagePlugIn() {}
 
     public EarthImagePlugIn(Component comp) {
-	super(comp);
+        super(comp);
     }
 
     /**
@@ -86,30 +86,30 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
      * to be displayed.
      */
     public OMGraphicList getRectangle(Projection p) {
-	OMGraphicList list = new OMGraphicList();
+        OMGraphicList list = new OMGraphicList();
 
-	// The first time through with a good bi, the it will be
-	// created later.  This routine will only be executed if the
-	// image icon is no good.
-	if (bi == null && it == null) {
-	    return list;
-	}
+        // The first time through with a good bi, the it will be
+        // created later.  This routine will only be executed if the
+        // image icon is no good.
+        if (bi == null && it == null) {
+            return list;
+        }
 
-	OMRaster ras = null;
+        OMRaster ras = null;
 
-	if (it == null) {
-	    it = new ImageTranslator(bi);
-	    bi = null;  // don't hold onto it.
-	}
+        if (it == null) {
+            it = new ImageTranslator(bi);
+            bi = null;  // don't hold onto it.
+        }
 
-	ras = it.getImage(p);
+        ras = it.getImage(p);
 
-	if (ras != null) {
-	    list.add(ras);
-	}
+        if (ras != null) {
+            list.add(ras);
+        }
 
-	list.generate(p);
-	return list;
+        list.generate(p);
+        return list;
     }
 
     /**
@@ -129,57 +129,57 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
      * configuration.  
      */
     public void setProperties(String prefix, Properties setList) {
-	super.setProperties(prefix, setList);
+        super.setProperties(prefix, setList);
 
-	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	imageString = setList.getProperty(realPrefix + ImageProperty);
+        imageString = setList.getProperty(realPrefix + ImageProperty);
 
-	if (imageString == null || imageString.equals("")) {
-	    Debug.error("EarthImagePlugIn needs an image.");
-	    Debug.output(setList.toString());
-	    return;
-	} else if (Debug.debugging("earthimage")) {
-	    Debug.output("EarthImagePlugIn:  fetching " + 
-			 realPrefix + ImageProperty +
-			 " : " + imageString);
-	}
-	try {
-	    URL url = LayerUtils.getResourceOrFileOrURL(this, imageString);
-	    bi = BufferedImageHelper.getBufferedImage(url, 0, 0, -1, -1);
-	    
-	    if (Debug.debugging("earthimage") && bi != null) {
-		Debug.output("EarthImagePlugIn: buffered image OK");
-	    }
-	} catch (MalformedURLException murle) {
-	    Debug.error("EarthImagePlugIn: image path is not good: " + 
-			imageString);
-	} catch (InterruptedException ie) {
-	    Debug.error("EarthImagePlugIn: problem reading image from path: " + 
-			imageString);
-	}
+        if (imageString == null || imageString.equals("")) {
+            Debug.error("EarthImagePlugIn needs an image.");
+            Debug.output(setList.toString());
+            return;
+        } else if (Debug.debugging("earthimage")) {
+            Debug.output("EarthImagePlugIn:  fetching " + 
+                         realPrefix + ImageProperty +
+                         " : " + imageString);
+        }
+        try {
+            URL url = LayerUtils.getResourceOrFileOrURL(this, imageString);
+            bi = BufferedImageHelper.getBufferedImage(url, 0, 0, -1, -1);
+            
+            if (Debug.debugging("earthimage") && bi != null) {
+                Debug.output("EarthImagePlugIn: buffered image OK");
+            }
+        } catch (MalformedURLException murle) {
+            Debug.error("EarthImagePlugIn: image path is not good: " + 
+                        imageString);
+        } catch (InterruptedException ie) {
+            Debug.error("EarthImagePlugIn: problem reading image from path: " + 
+                        imageString);
+        }
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	props.put(prefix + ImageProperty, 
-		  (imageString == null?"":imageString));
+        props.put(prefix + ImageProperty, 
+                  (imageString == null?"":imageString));
 
-	return props;
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
-	props.put(ImageProperty, "Path to image file (URL, resource or file)");
-	props.put(ImageProperty + ScopedEditorProperty, 
-		  "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        props = super.getPropertyInfo(props);
+        props.put(ImageProperty, "Path to image file (URL, resource or file)");
+        props.put(ImageProperty + ScopedEditorProperty, 
+                  "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-	props.put(initPropertiesProperty, ImageProperty);
+        props.put(initPropertiesProperty, ImageProperty);
 
-	return props;
+        return props;
     }
 
     /**
@@ -188,172 +188,172 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
      */
     public class ImageTranslator {
 
-	protected int[] pixels = null;
+        protected int[] pixels = null;
 
-	/** Image Icon width, */
-	public int iwidth;
-	/** Image Icon height, */
-	public int iheight;
-	/** Horizontal degrees/pixel in the source BufferedImage.  Assumed
-	 *  to be constant across the image. */
-	public float hor_dpp;
-	/** Vertical degrees/pixel in the source BufferedImage.  Assumed
-	 *  to be constant across the image. */
-	public float ver_dpp;
-	/** The vertical origin pixel location in the source image for
-	 *  the coordinate system origin (0 degrees latitude). */
-	public int verOrigin;
-	/** The horizontal origin pixel location in the source image for
-	 *  the coordinate system origin (0 degrees longitude). */
-	public int horOrigin;
+        /** Image Icon width, */
+        public int iwidth;
+        /** Image Icon height, */
+        public int iheight;
+        /** Horizontal degrees/pixel in the source BufferedImage.  Assumed
+         *  to be constant across the image. */
+        public float hor_dpp;
+        /** Vertical degrees/pixel in the source BufferedImage.  Assumed
+         *  to be constant across the image. */
+        public float ver_dpp;
+        /** The vertical origin pixel location in the source image for
+         *  the coordinate system origin (0 degrees latitude). */
+        public int verOrigin;
+        /** The horizontal origin pixel location in the source image for
+         *  the coordinate system origin (0 degrees longitude). */
+        public int horOrigin;
 
-	/**
-	 *  Create an image translator for an image assumed to be
-	 *  world wide coverage, with the top at 90 degrees, the
-	 *  bottom at -90, the left side at -180 and the right side at
-	 *  180.  Assumes the origin point is in the middle of the
-	 *  image.
-	 */
-	public ImageTranslator(BufferedImage bi) {
-	    if (bi != null) {
-		iwidth = bi.getWidth();
-		iheight = bi.getHeight();
+        /**
+         *  Create an image translator for an image assumed to be
+         *  world wide coverage, with the top at 90 degrees, the
+         *  bottom at -90, the left side at -180 and the right side at
+         *  180.  Assumes the origin point is in the middle of the
+         *  image.
+         */
+        public ImageTranslator(BufferedImage bi) {
+            if (bi != null) {
+                iwidth = bi.getWidth();
+                iheight = bi.getHeight();
 
-		verOrigin = iheight/2;
-		horOrigin = iwidth/2;
+                verOrigin = iheight/2;
+                horOrigin = iwidth/2;
 
-		hor_dpp = 360f/(float)iwidth;
-		ver_dpp = 180f/(float)iheight;
+                hor_dpp = 360f/(float)iwidth;
+                ver_dpp = 180f/(float)iheight;
 
-		if (Debug.debugging("earthimage")) {
-		    Debug.output("ImageTranslator: getting image pixels w:" + iwidth +
-				 ", h:" + iheight + 
-				 "\n     hor dpp:" + hor_dpp + 
-				 ", ver dpp:" + ver_dpp);
-		}
+                if (Debug.debugging("earthimage")) {
+                    Debug.output("ImageTranslator: getting image pixels w:" + iwidth +
+                                 ", h:" + iheight + 
+                                 "\n     hor dpp:" + hor_dpp + 
+                                 ", ver dpp:" + ver_dpp);
+                }
 
-		pixels = getPixels(bi, 0, 0, iwidth, iheight);
+                pixels = getPixels(bi, 0, 0, iwidth, iheight);
 
-		// See if this saves on memory.  Seems to.
-		bi = null;
-	    }
-	}
+                // See if this saves on memory.  Seems to.
+                bi = null;
+            }
+        }
 
-	/**
-	 * The pixels used in the OMRaster.
-	 */
-	int[] tmpPixels = new int[0];
+        /**
+         * The pixels used in the OMRaster.
+         */
+        int[] tmpPixels = new int[0];
 
-	/**
-	 * Given a projection, create an OMRaster that reflects the
-	 * image warped to that projection.
-	 */
-	public OMRaster getImage(Projection p) {
-	    if (pixels != null && p != null) {
-		int projHeight = p.getHeight();
-		int projWidth = p.getWidth();
+        /**
+         * Given a projection, create an OMRaster that reflects the
+         * image warped to that projection.
+         */
+        public OMRaster getImage(Projection p) {
+            if (pixels != null && p != null) {
+                int projHeight = p.getHeight();
+                int projWidth = p.getWidth();
 
-		// See if we can reuse the pixel array we have.
-		if (tmpPixels.length != projWidth * projHeight) {
-		    tmpPixels = new int[projWidth * projHeight];
-		}
+                // See if we can reuse the pixel array we have.
+                if (tmpPixels.length != projWidth * projHeight) {
+                    tmpPixels = new int[projWidth * projHeight];
+                }
 
-		///////////////////////////////////
-		// For Testing...
-//  		LatLonPoint ul = p.getUpperLeft();
-//  		LatLonPoint lr = p.getLowerRight();
+                ///////////////////////////////////
+                // For Testing...
+//              LatLonPoint ul = p.getUpperLeft();
+//              LatLonPoint lr = p.getLowerRight();
 
-//  		int ulhorIndex = horOrigin + (int)(ul.getLongitude()/hor_dpp);
-//  		int ulverIndex = verOrigin - (int)(ul.getLatitude()/ver_dpp);
-		
-//  		int lrhorIndex = horOrigin + (int)(lr.getLongitude()/hor_dpp);
-//  		int lrverIndex = verOrigin - (int)(lr.getLatitude()/ver_dpp);
-		
-//  		Debug.output("The image file will be referenced from:\n     " +
-//  			     ulhorIndex + ", " + ulverIndex + "\n     " +
-//  			     lrhorIndex + ", " + lrverIndex);
-		///////////////////////////////////
+//              int ulhorIndex = horOrigin + (int)(ul.getLongitude()/hor_dpp);
+//              int ulverIndex = verOrigin - (int)(ul.getLatitude()/ver_dpp);
+                
+//              int lrhorIndex = horOrigin + (int)(lr.getLongitude()/hor_dpp);
+//              int lrverIndex = verOrigin - (int)(lr.getLatitude()/ver_dpp);
+                
+//              Debug.output("The image file will be referenced from:\n     " +
+//                           ulhorIndex + ", " + ulverIndex + "\n     " +
+//                           lrhorIndex + ", " + lrverIndex);
+                ///////////////////////////////////
 
-		int imageHIndex;
-		int imageWIndex;
-		int clear = 0x00000000;
+                int imageHIndex;
+                int imageWIndex;
+                int clear = 0x00000000;
 
-		Point point = new Point();
-		Point ctp = new Point();
-		LatLonPoint llp = new LatLonPoint();
-		LatLonPoint center = p.getCenter();
+                Point point = new Point();
+                Point ctp = new Point();
+                LatLonPoint llp = new LatLonPoint();
+                LatLonPoint center = p.getCenter();
 
-		for (int i = 0; i < projWidth; i++) {
-		    for (int j = 0; j < projHeight; j++) {
-			p.inverse(i, j, llp);
+                for (int i = 0; i < projWidth; i++) {
+                    for (int j = 0; j < projHeight; j++) {
+                        p.inverse(i, j, llp);
 
-			// index into the OMRaster pixel array
-			int tmpIndex = i + (j*projWidth);
+                        // index into the OMRaster pixel array
+                        int tmpIndex = i + (j*projWidth);
 
-			// If the llp calculated isn't on the map,
-			// don't bother drawing it.  Could be a space
-			// point in Orthographic projection, for
-			// instance.
-			if (llp.equals(center)) {
-			    p.forward(llp, ctp);
-			    if (ctp.x != i || ctp.y != j) {
-				tmpPixels[tmpIndex] = clear;
-				continue;
-			    }
-			}
+                        // If the llp calculated isn't on the map,
+                        // don't bother drawing it.  Could be a space
+                        // point in Orthographic projection, for
+                        // instance.
+                        if (llp.equals(center)) {
+                            p.forward(llp, ctp);
+                            if (ctp.x != i || ctp.y != j) {
+                                tmpPixels[tmpIndex] = clear;
+                                continue;
+                            }
+                        }
 
-			// Find the corresponding pixel location in the source image.
-			int horIndex = horOrigin + (int)(llp.getLongitude()/hor_dpp);
-			int verIndex = verOrigin - (int)(llp.getLatitude()/ver_dpp);
+                        // Find the corresponding pixel location in the source image.
+                        int horIndex = horOrigin + (int)(llp.getLongitude()/hor_dpp);
+                        int verIndex = verOrigin - (int)(llp.getLatitude()/ver_dpp);
 
-			if (horIndex < 0 || horIndex >= iwidth ||
-			    verIndex < 0 || verIndex >= iheight) {
-			    // pixel not on the source image.  This
-			    // happens if the image doesn't cover the
-			    // entire earth.
-			    continue;
-			}
+                        if (horIndex < 0 || horIndex >= iwidth ||
+                            verIndex < 0 || verIndex >= iheight) {
+                            // pixel not on the source image.  This
+                            // happens if the image doesn't cover the
+                            // entire earth.
+                            continue;
+                        }
 
-			int imageIndex = horIndex + (verIndex * iwidth);
+                        int imageIndex = horIndex + (verIndex * iwidth);
 
-			if (imageIndex >= 0 && imageIndex < pixels.length) {
-			    tmpPixels[tmpIndex] = pixels[imageIndex];
-//  			} else {
-//  			    Debug.message("earthimage", "ImageTranslator: outside pixel range");
-			}
-		    }
-		}
+                        if (imageIndex >= 0 && imageIndex < pixels.length) {
+                            tmpPixels[tmpIndex] = pixels[imageIndex];
+//                      } else {
+//                          Debug.message("earthimage", "ImageTranslator: outside pixel range");
+                        }
+                    }
+                }
 
-		Debug.message("earthimage", "ImageTranslator: finished creating image");
-		return new OMRaster(0, 0, projWidth, projHeight, tmpPixels);
-	    } else {
-		Debug.message("earthimage", "ImageTranslator: problem creating image");
-	    }
+                Debug.message("earthimage", "ImageTranslator: finished creating image");
+                return new OMRaster(0, 0, projWidth, projHeight, tmpPixels);
+            } else {
+                Debug.message("earthimage", "ImageTranslator: problem creating image");
+            }
 
-	    // If you get here, something's not right.
-	    return null;
-	}
+            // If you get here, something's not right.
+            return null;
+        }
 
-	/**
-	 * Get the pixels from the BufferedImage.  If anything goes
-	 * wrong, returns a int[0].
-	 */
-	protected int[] getPixels(Image img, int x, int y, int w, int h) {
-	    int[] pixels = new int[w * h];
-	    PixelGrabber pg = new PixelGrabber(img, x, y, w, h, pixels, 0, w);
-	    try {
-		pg.grabPixels();
-	    } catch (InterruptedException e) {
-		Debug.error("ImageTranslator: interrupted waiting for pixels!");
-		return new int[0];
-	    }
+        /**
+         * Get the pixels from the BufferedImage.  If anything goes
+         * wrong, returns a int[0].
+         */
+        protected int[] getPixels(Image img, int x, int y, int w, int h) {
+            int[] pixels = new int[w * h];
+            PixelGrabber pg = new PixelGrabber(img, x, y, w, h, pixels, 0, w);
+            try {
+                pg.grabPixels();
+            } catch (InterruptedException e) {
+                Debug.error("ImageTranslator: interrupted waiting for pixels!");
+                return new int[0];
+            }
 
-	    if ((pg.getStatus() & ImageObserver.ABORT) != 0) {
-		System.err.println("ImageTranslator: image fetch aborted or errored");
-		return new int[0];
-	    }
+            if ((pg.getStatus() & ImageObserver.ABORT) != 0) {
+                System.err.println("ImageTranslator: image fetch aborted or errored");
+                return new int[0];
+            }
 
-	    return pixels;
-	}
+            return pixels;
+        }
     }
 }

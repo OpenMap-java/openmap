@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/html/WrapElement.java,v $
 // $RCSfile: WrapElement.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:31 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:11 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -39,7 +39,7 @@ public class WrapElement implements Element {
      * @param wrapString the html tag that gets wrapped around the element
      */
     public WrapElement(String wrapString) {
-	this(wrapString, null, null);
+        this(wrapString, null, null);
     }
     
     /** Construct a WrapElement with a wrapping string and element
@@ -47,7 +47,7 @@ public class WrapElement implements Element {
      * @param e the element that gets contained
      */
     public WrapElement(String wrapString, Element e) {
-	this(wrapString, null, e);
+        this(wrapString, null, e);
     }
 
     /** Construct a WrapElement with a wrapping string and params
@@ -55,7 +55,7 @@ public class WrapElement implements Element {
      * @param paramString the string that gets contained
      */
     public WrapElement(String wrapString, String paramString) {
-	this(wrapString, paramString, null);
+        this(wrapString, paramString, null);
     }
 
     /** Construct a WrapElement with a wrapping string, params and element
@@ -63,21 +63,21 @@ public class WrapElement implements Element {
      * @param e the element that gets contained
      */
     public WrapElement(String wrapString, String paramString, Element e) {
-	this.wrapString = wrapString;
-	this.paramString = paramString;
-	this.e = e;
+        this.wrapString = wrapString;
+        this.paramString = paramString;
+        this.e = e;
     }
     
     /** Writer for the Element attribute
      * @param e the new element value */
     public void setElement(Element e) {
-	this.e = e;
+        this.e = e;
     }
     
     /** Accessor for the element attribute
      @return the contained element */
     public Element getElement() {
-	return e;
+        return e;
     }
     
     /** convert representation to html and write it out
@@ -85,12 +85,12 @@ public class WrapElement implements Element {
      * @exception java.io.IOException an IO error occurred accessing out
      */
     public void generate (java.io.Writer out) throws java.io.IOException {
-	out.write("<"+wrapString);
-	if (paramString != null) {
-	    out.write(" " + paramString);
-	}
-	out.write(">");
-	e.generate(out);
-	out.write("</"+wrapString+">\r\n");
+        out.write("<"+wrapString);
+        if (paramString != null) {
+            out.write(" " + paramString);
+        }
+        out.write(">");
+        e.generate(out);
+        out.write("</"+wrapString+">\r\n");
     }
 }

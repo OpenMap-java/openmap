@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkCircle.java,v $
 // $RCSfile: LinkCircle.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,10 +51,10 @@ public class LinkCircle implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float latPoint, float lonPoint,
-			     int w, int h, 
-			     LinkProperties properties,
-			     DataOutputStream dos) throws IOException {
-	LinkCircle.write(latPoint, lonPoint, 0, 0, w, h, properties, dos);
+                             int w, int h, 
+                             LinkProperties properties,
+                             DataOutputStream dos) throws IOException {
+        LinkCircle.write(latPoint, lonPoint, 0, 0, w, h, properties, dos);
     }
 
     /**
@@ -69,18 +69,18 @@ public class LinkCircle implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(int x1, int y1, int w, int h, 
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException { 
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException { 
 
-	dos.write(Link.CIRCLE_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_CIRCLE);
-	dos.writeInt(RENDERTYPE_XY);
-	dos.writeInt(x1);
-	dos.writeInt(y1);
-	dos.writeInt(w);
-	dos.writeInt(h);
-	properties.write(dos);
+        dos.write(Link.CIRCLE_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_CIRCLE);
+        dos.writeInt(RENDERTYPE_XY);
+        dos.writeInt(x1);
+        dos.writeInt(y1);
+        dos.writeInt(w);
+        dos.writeInt(h);
+        properties.write(dos);
     }
 
     /**
@@ -99,22 +99,22 @@ public class LinkCircle implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float latPoint, float lonPoint,
-			     int offset_x1, int offset_y1, 
-			     int w, int h,
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException { 
-	
-	dos.write(Link.CIRCLE_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_CIRCLE);
-	dos.writeInt(RENDERTYPE_OFFSET);
-	dos.writeFloat(latPoint);
-	dos.writeFloat(lonPoint);
-	dos.writeInt(offset_x1);
-	dos.writeInt(offset_y1);
-	dos.writeInt(w);
-	dos.writeInt(h);
-	properties.write(dos);
+                             int offset_x1, int offset_y1, 
+                             int w, int h,
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException { 
+        
+        dos.write(Link.CIRCLE_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_CIRCLE);
+        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeFloat(latPoint);
+        dos.writeFloat(lonPoint);
+        dos.writeInt(offset_x1);
+        dos.writeInt(offset_y1);
+        dos.writeInt(w);
+        dos.writeInt(h);
+        properties.write(dos);
     }
 
     /**
@@ -129,10 +129,10 @@ public class LinkCircle implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException 
      */
     public static void write(float latPoint, float lonPoint, float radius, 
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException  {
-	LinkCircle.write(latPoint, lonPoint, radius, -1, -1, properties, dos);
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException  {
+        LinkCircle.write(latPoint, lonPoint, radius, -1, -1, properties, dos);
     }
 
     /**
@@ -149,11 +149,11 @@ public class LinkCircle implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float latPoint, float lonPoint, 
-			     float radius, int units, 
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException {
-	LinkCircle.write(latPoint, lonPoint, radius, units, -1, properties, dos);
+                             float radius, int units, 
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException {
+        LinkCircle.write(latPoint, lonPoint, radius, units, -1, properties, dos);
     }
 
     /**
@@ -173,47 +173,47 @@ public class LinkCircle implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float latPoint, float lonPoint, 
-			     float radius, int units, int nverts, 
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException {
-	// Write this out...
-	dos.write(Link.CIRCLE_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_CIRCLE);
-	dos.writeInt(RENDERTYPE_LATLON);
-	dos.writeFloat(latPoint);
-	dos.writeFloat(lonPoint);
-	dos.writeFloat(radius);
-	dos.writeInt(units);
-	dos.writeInt(nverts);
-	properties.write(dos);
+                             float radius, int units, int nverts, 
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException {
+        // Write this out...
+        dos.write(Link.CIRCLE_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_CIRCLE);
+        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeFloat(latPoint);
+        dos.writeFloat(lonPoint);
+        dos.writeFloat(radius);
+        dos.writeInt(units);
+        dos.writeInt(nverts);
+        properties.write(dos);
     }
 
     public static void write(OMCircle circle, Link link, LinkProperties props) 
-	throws IOException {
+        throws IOException {
 
-	LatLonPoint llp;
-	switch (circle.getRenderType()) {
-	case OMCircle.RENDERTYPE_LATLON:
-	    llp = circle.getLatLon();
-	    LinkCircle.write(llp.getLatitude(), llp.getLongitude(),
-			     circle.getRadius(), props, link.dos);
-	    break;
-	case OMCircle.RENDERTYPE_XY:
-	    LinkCircle.write(circle.getX(), circle.getY(),
-			     circle.getWidth(), circle.getHeight(),
-			     props, link.dos);
-	    break;
-	case OMCircle.RENDERTYPE_OFFSET:
-	    llp = circle.getLatLon();
-	    LinkCircle.write(llp.getLatitude(), llp.getLongitude(),
-			     circle.getOffX(), circle.getOffY(),
-			     circle.getWidth(), circle.getHeight(),
-			     props, link.dos);
-	    break;
-	default:
-	    Debug.error("LinkCircle.write: circle rendertype unknown.");
-	}
+        LatLonPoint llp;
+        switch (circle.getRenderType()) {
+        case OMCircle.RENDERTYPE_LATLON:
+            llp = circle.getLatLon();
+            LinkCircle.write(llp.getLatitude(), llp.getLongitude(),
+                             circle.getRadius(), props, link.dos);
+            break;
+        case OMCircle.RENDERTYPE_XY:
+            LinkCircle.write(circle.getX(), circle.getY(),
+                             circle.getWidth(), circle.getHeight(),
+                             props, link.dos);
+            break;
+        case OMCircle.RENDERTYPE_OFFSET:
+            llp = circle.getLatLon();
+            LinkCircle.write(llp.getLatitude(), llp.getLongitude(),
+                             circle.getOffX(), circle.getOffY(),
+                             circle.getWidth(), circle.getHeight(),
+                             props, link.dos);
+            break;
+        default:
+            Debug.error("LinkCircle.write: circle rendertype unknown.");
+        }
     }
 
     /**  
@@ -227,64 +227,64 @@ public class LinkCircle implements LinkGraphicConstants, LinkPropertiesConstants
      * @see com.bbn.openmap.omGraphics.OMCircle
      */
     public static OMCircle read(DataInputStream dis)
-	throws IOException {
+        throws IOException {
 
-	OMCircle circle = null;
-	float lat, lon, radius;
-	int x, y, w, h;
+        OMCircle circle = null;
+        float lat, lon, radius;
+        int x, y, w, h;
 
-	int renderType = dis.readInt();
-	
-	switch (renderType) {
-	case RENDERTYPE_LATLON:
-	    lat = dis.readFloat();
-	    lon = dis.readFloat();
-	    radius = dis.readFloat();
-	    int units = dis.readInt();
-	    int nverts = dis.readInt();
-	    
-	    Length unit = Length.DECIMAL_DEGREE;
+        int renderType = dis.readInt();
+        
+        switch (renderType) {
+        case RENDERTYPE_LATLON:
+            lat = dis.readFloat();
+            lon = dis.readFloat();
+            radius = dis.readFloat();
+            int units = dis.readInt();
+            int nverts = dis.readInt();
+            
+            Length unit = Length.DECIMAL_DEGREE;
 
-	    switch (units) {
-	    case 0: unit = Length.KM;
-		break;
-	    case 1: unit = Length.MILE;
-		break;
-	    case 2: unit = Length.NM;
-		break;
-	    default:
-	    }
+            switch (units) {
+            case 0: unit = Length.KM;
+                break;
+            case 1: unit = Length.MILE;
+                break;
+            case 2: unit = Length.NM;
+                break;
+            default:
+            }
 
-	    circle = new OMCircle(new LatLonPoint(lat, lon), 
-				  radius, unit, nverts);
-	    break;
-	case RENDERTYPE_XY:
-	    x = dis.readInt();
-	    y = dis.readInt();
-	    w = dis.readInt();
-	    h = dis.readInt();
-	    
-	    circle = new OMCircle(x, y, w, h);
-	    break;
-	case RENDERTYPE_OFFSET:
-	    lat = dis.readFloat();
-	    lon = dis.readFloat();
-	    x = dis.readInt();
-	    y = dis.readInt();
-	    w = dis.readInt();
-	    h = dis.readInt();
-	    
-	    circle = new OMCircle(lat, lon, x, y, w, h);
-	    break;
-	default:
-	}
+            circle = new OMCircle(new LatLonPoint(lat, lon), 
+                                  radius, unit, nverts);
+            break;
+        case RENDERTYPE_XY:
+            x = dis.readInt();
+            y = dis.readInt();
+            w = dis.readInt();
+            h = dis.readInt();
+            
+            circle = new OMCircle(x, y, w, h);
+            break;
+        case RENDERTYPE_OFFSET:
+            lat = dis.readFloat();
+            lon = dis.readFloat();
+            x = dis.readInt();
+            y = dis.readInt();
+            w = dis.readInt();
+            h = dis.readInt();
+            
+            circle = new OMCircle(lat, lon, x, y, w, h);
+            break;
+        default:
+        }
 
-	LinkProperties properties = new LinkProperties(dis);
-	if (circle != null) {
-	    properties.setProperties(circle);
-	}
+        LinkProperties properties = new LinkProperties(dis);
+        if (circle != null) {
+            properties.setProperties(circle);
+        }
 
-	return circle;
+        return circle;
     }
 
 

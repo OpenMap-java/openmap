@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrameCacheHandler.java,v $
 // $RCSfile: DTEDFrameCacheHandler.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/01/24 02:56:11 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -125,21 +125,21 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * The DTEDFrameCache must be set at some point.
      */
     protected DTEDFrameCacheHandler() {
-	this(null);
+        this(null);
     }
 
     /**
      * Create a handler for the DTEDFrameCache.
      */
     public DTEDFrameCacheHandler(DTEDFrameCache dfc) {
-	setFrameCache(dfc);
+        setFrameCache(dfc);
     }
 
     /**
      * Set the DTEDFrameCache.
      */
     public void setFrameCache(DTEDFrameCache dfc) {
-	frameCache = dfc;
+        frameCache = dfc;
     }
     
     /**
@@ -180,7 +180,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * of the loaders.
      */
     public void setActiveGeneratorLoader(String active) {
-	for (Iterator it = generatorLoaders.iterator(); it.hasNext();) {
+        for (Iterator it = generatorLoaders.iterator(); it.hasNext();) {
             GeneratorLoader gl = (GeneratorLoader)it.next();
             if (active.equals(gl.getPrettyName()) && 
                 gl != activeGeneratorLoader) {
@@ -216,7 +216,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
         String comboBoxItems[] = new String[numLoaders];
         int count = 0;
 
-	for (Iterator it = generatorLoaders.iterator(); it.hasNext();) {
+        for (Iterator it = generatorLoaders.iterator(); it.hasNext();) {
 
             GeneratorLoader gl = (GeneratorLoader)it.next();
             String prettyName = gl.getPrettyName();
@@ -228,7 +228,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
             }
 
             cards.add(glGui, prettyName);
-	}
+        }
 
         JComboBox cb = new JComboBox(comboBoxItems);
         cb.setEditable(false);
@@ -259,99 +259,99 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * @return List of rasters to display.
      */
     public OMGraphicList getRectangle(EqualArc proj) {
-	
-	float[] lat = new float[3];
-	float[] lon = new float[3];
+        
+        float[] lat = new float[3];
+        float[] lon = new float[3];
 
-	// This next bit of mumbo jumbo is to handle the equator and
-	// dateline: Worst case, crossing both, treat each area
-	// separately, so it is the same as handling four requests for
-	// data - above and below the equator, and left and right of
-	// the dateline.  Normal case, there is only one box.  Two
-	// boxes if crossing only one of the boundaries.
-	
-	
-	int xa = 2;
-	int ya = 2;
-	int lat_minus = 2;
-	int lon_minus = 2;
-	// Set up checks for equator and dateline
-	LatLonPoint ll1 = proj.getUpperLeft();
-	LatLonPoint ll2 = proj.getLowerRight();
-	
-	lat[0] = ll1.getLatitude();
-	lon[0] = ll1.getLongitude();
-	lat[1] = ll2.getLatitude();
-	lon[1] = ll2.getLongitude();
-	lat[2] = ll2.getLatitude();
-	lon[2] = ll2.getLongitude();
-	
-	if (lon[0] > 0 && lon[2] < 0) {
-	    lon[1] = -179.999f;  // put a little breather on the dateline
-	    lon_minus = 1;
-	}
-	if (lat[0] > 0 && lat[2] < 0) {
-	    lat[1] = -0.0001f;  // put a little breather on the equator
-	    lat_minus = 1;
-	}
-	
-	if (Debug.debugging("dteddetail")) {
-	    Debug.output("For :");
-	    Debug.output("lat[0] " + lat[0]);
-	    Debug.output("lon[0] " + lon[0]);
-	    Debug.output("lat[1] " + lat[1]);
-	    Debug.output("lon[1] " + lon[1]);
-	    Debug.output("lat[2] " + lat[2]);
-	    Debug.output("lon[2] " + lon[2]);
-	    Debug.output("lat_minus = " + lat_minus);
-	    Debug.output("lon_minus = " + lon_minus);
-	}
-	
-	/*  Look at all the paths if needed.  Worst case, there are four
-	    boxes on the screen.  Best case, there is one.  The things that
-	    create boxes and dictates how large they are are the equator and
-	    the dateline.  When the screen straddles one or both of these
-	    lat/lon lines, lon_minus and lat_minus get adjusted, causing two
-	    or four different calls to the tochandler to get the data
-	    above/below the equator, and left/right of the dateline. Plus,
-	    each path gets checked until the required boxes are filled. */
-	
-	if (Debug.debugging("dted")) {
-	    Debug.output("--- DTEDFrameCacheHandler: getting images: ---");
+        // This next bit of mumbo jumbo is to handle the equator and
+        // dateline: Worst case, crossing both, treat each area
+        // separately, so it is the same as handling four requests for
+        // data - above and below the equator, and left and right of
+        // the dateline.  Normal case, there is only one box.  Two
+        // boxes if crossing only one of the boundaries.
+        
+        
+        int xa = 2;
+        int ya = 2;
+        int lat_minus = 2;
+        int lon_minus = 2;
+        // Set up checks for equator and dateline
+        LatLonPoint ll1 = proj.getUpperLeft();
+        LatLonPoint ll2 = proj.getLowerRight();
+        
+        lat[0] = ll1.getLatitude();
+        lon[0] = ll1.getLongitude();
+        lat[1] = ll2.getLatitude();
+        lon[1] = ll2.getLongitude();
+        lat[2] = ll2.getLatitude();
+        lon[2] = ll2.getLongitude();
+        
+        if (lon[0] > 0 && lon[2] < 0) {
+            lon[1] = -179.999f;  // put a little breather on the dateline
+            lon_minus = 1;
+        }
+        if (lat[0] > 0 && lat[2] < 0) {
+            lat[1] = -0.0001f;  // put a little breather on the equator
+            lat_minus = 1;
+        }
+        
+        if (Debug.debugging("dteddetail")) {
+            Debug.output("For :");
+            Debug.output("lat[0] " + lat[0]);
+            Debug.output("lon[0] " + lon[0]);
+            Debug.output("lat[1] " + lat[1]);
+            Debug.output("lon[1] " + lon[1]);
+            Debug.output("lat[2] " + lat[2]);
+            Debug.output("lon[2] " + lon[2]);
+            Debug.output("lat_minus = " + lat_minus);
+            Debug.output("lon_minus = " + lon_minus);
+        }
+        
+        /*  Look at all the paths if needed.  Worst case, there are four
+            boxes on the screen.  Best case, there is one.  The things that
+            create boxes and dictates how large they are are the equator and
+            the dateline.  When the screen straddles one or both of these
+            lat/lon lines, lon_minus and lat_minus get adjusted, causing two
+            or four different calls to the tochandler to get the data
+            above/below the equator, and left/right of the dateline. Plus,
+            each path gets checked until the required boxes are filled. */
+        
+        if (Debug.debugging("dted")) {
+            Debug.output("--- DTEDFrameCacheHandler: getting images: ---");
         }
 
         setProjection(proj, lat[ya-lat_minus],lon[xa-lon_minus], lat[ya], lon[xa]);
 
         OMGraphicList list = loadListFromHandler(null);
 
-	// Dateline split
-	if (lon_minus == 1) {
+        // Dateline split
+        if (lon_minus == 1) {
             setProjection(proj, lat[ya-lat_minus], lon[0], lat[ya],
                           -1f*lon[1]); // -1 to make it 180
             list = loadListFromHandler(list);
-	}
+        }
 
-	// Equator Split
-	if (lat_minus == 1) {
+        // Equator Split
+        if (lat_minus == 1) {
             setProjection(proj, lat[0], lon[xa-lon_minus],
                           -1f*lat[1], // flip breather
                           lon[xa]);
             list = loadListFromHandler(list);
-	}
+        }
 
-	// Both!!
-	if (lon_minus == 1 && lat_minus == 1) {
+        // Both!!
+        if (lon_minus == 1 && lat_minus == 1) {
             setProjection(proj, lat[0], lon[0],
                           -1f*lat[1],//  flip breather
                           -1f*lon[1]);// -1 to make it 180, not -180
             list = loadListFromHandler(list);
-	}
-
-	if (Debug.debugging("dted")) {
-	    Debug.output("--- DTEDFrameCacheHandler: finished getting images ---");
         }
 
-	return list;
+        if (Debug.debugging("dted")) {
+            Debug.output("--- DTEDFrameCacheHandler: finished getting images ---");
+        }
+
+        return list;
     }
 
     /**
@@ -384,11 +384,11 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * @param proj the EqualArc projection of the screen.
      */
     public void setProjection(EqualArc proj) {
-	setProjection(proj, 
-		      proj.getUpperLeft().getLatitude(), 
-		      proj.getUpperLeft().getLongitude(), 
-		      proj.getLowerRight().getLatitude(), 
-		      proj.getLowerRight().getLongitude());
+        setProjection(proj, 
+                      proj.getUpperLeft().getLatitude(), 
+                      proj.getUpperLeft().getLongitude(), 
+                      proj.getLowerRight().getLatitude(), 
+                      proj.getLowerRight().getLongitude());
     }
 
 
@@ -410,25 +410,25 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * in decimal degrees.  
      */
     public void setProjection(EqualArc proj, 
-			      float lat1, float lon1, 
-			      float lat2, float lon2) {
-	
-	firstImageReturned = true;
+                              float lat1, float lon1, 
+                              float lat2, float lon2) {
+        
+        firstImageReturned = true;
 
-	// upper lat of top frame of the screen
-	// lower lat of bottom frame of the screen
-	// left lon of left frame of the screen
-	// upper lon of right frame of the screen
-	frameUp = Math.floor((double)lat1);
-	frameDown = Math.floor((double)lat2);
-	frameLeft = Math.floor((double)lon1);
-	frameRight = Math.ceil((double)lon2);
+        // upper lat of top frame of the screen
+        // lower lat of bottom frame of the screen
+        // left lon of left frame of the screen
+        // upper lon of right frame of the screen
+        frameUp = Math.floor((double)lat1);
+        frameDown = Math.floor((double)lat2);
+        frameLeft = Math.floor((double)lon1);
+        frameRight = Math.ceil((double)lon2);
 
-	if (Debug.debugging("dted"))
-	    Debug.output("frameUp = " + frameUp +
-			 ", frameDown = " + frameDown +
-			 ", frameLeft = " + frameLeft +
-			 ", frameRight = " + frameRight);
+        if (Debug.debugging("dted"))
+            Debug.output("frameUp = " + frameUp +
+                         ", frameDown = " + frameDown +
+                         ", frameLeft = " + frameLeft +
+                         ", frameRight = " + frameRight);
     }
 
     /**
@@ -444,18 +444,18 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * @return OMRaster image.
      */
     public OMGraphic getNextImage() {
-	
-	if (Debug.debugging("dted")) 
-	    Debug.output("--- DTEDFrameCacheHandler: getNextImage:");
+        
+        if (Debug.debugging("dted")) 
+            Debug.output("--- DTEDFrameCacheHandler: getNextImage:");
 
-	while (true) {
-	    
-	    if (firstImageReturned == true) {
-		frameLon = frameLeft; 
-		frameLat = frameDown;
-		newframe = true;
-		firstImageReturned = false;
-	    } else if (frameLon < frameRight) {
+        while (true) {
+            
+            if (firstImageReturned == true) {
+                frameLon = frameLeft; 
+                frameLat = frameDown;
+                newframe = true;
+                firstImageReturned = false;
+            } else if (frameLon < frameRight) {
                 // update statics to look for next frame
                 if (frameLat < frameUp) {
                     frameLat++;
@@ -466,20 +466,20 @@ public class DTEDFrameCacheHandler extends CacheHandler
                 newframe = true;
             } else {  // bounds exceeded, all done
                 return (OMGraphic) null;
-	    }
-	    
-	    if (newframe && frameLon < frameRight) {
-		if (Debug.debugging("dted")) {
-		    Debug.output(" gni: Getting new frame Lat = " +
-				 frameLat + " Lon = " + frameLon);
-		}
+            }
+            
+            if (newframe && frameLon < frameRight) {
+                if (Debug.debugging("dted")) {
+                    Debug.output(" gni: Getting new frame Lat = " +
+                                 frameLat + " Lon = " + frameLon);
+                }
 
                 
                 OMGraphic omg = get(frameLat, frameLon, dtedLevel); 
                 if (omg != null) {
                     return omg;
                 }
-	    }
+            }
         }
     }
     
@@ -499,8 +499,8 @@ public class DTEDFrameCacheHandler extends CacheHandler
 
         String key = new String(lat + ":" + lon + ":" + level);
 
-	CacheObject ret = searchCache(key);
-	if (ret != null) {
+        CacheObject ret = searchCache(key);
+        if (ret != null) {
             if (Debug.debugging("dted")) {
                 Debug.output("DTEDFrameCacheHandler.get():  retrieving frame from cache (" + 
                          lat + ":" + lon + ":" + level + ")");
@@ -508,17 +508,17 @@ public class DTEDFrameCacheHandler extends CacheHandler
             return (OMGraphic)ret.obj;
         }
 
-	ret = load(key, lat, lon, level);
-	if (ret == null) {
+        ret = load(key, lat, lon, level);
+        if (ret == null) {
             return null;
         }
 
-	replaceLeastUsed(ret);
+        replaceLeastUsed(ret);
         if (Debug.debugging("dted")) {
             Debug.output("DTEDFrameCacheHandler.get():  loading new frame into cache (" + 
                          lat + ":" + lon + ":" + level + ")");
         }
-	return (OMGraphic)ret.obj;
+        return (OMGraphic)ret.obj;
     }
 
     /**
@@ -556,13 +556,13 @@ public class DTEDFrameCacheHandler extends CacheHandler
      */
     private static class DTEDCacheObject extends CacheObject {
         /**
-	 * Construct a DTEDCacheObject, just calls superclass constructor
-	 * @param id passed to superclass
-	 * @param obj passed to superclass
-	 */
+         * Construct a DTEDCacheObject, just calls superclass constructor
+         * @param id passed to superclass
+         * @param obj passed to superclass
+         */
         public DTEDCacheObject(String id, OMGraphic omg) {
-	    super(id, omg);
-	}
+            super(id, omg);
+        }
     }
 
     ////// PropertyConsumer Interface Methods
@@ -578,7 +578,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * @param props the <code>Properties</code> object.
      */
     public void setProperties(java.util.Properties props) {
-	setProperties(getPropertyPrefix(), props);
+        setProperties(getPropertyPrefix(), props);
     }
 
     /**
@@ -587,9 +587,9 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * @param props the <code>Properties</code> object
      */
     public void setProperties(String prefix, java.util.Properties props) {
-	setPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
 
-  	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
         String generatorList = props.getProperty(realPrefix + GeneratorLoadersProperty);
         if (generatorList != null) {
             Vector generatorMarkers = PropUtils.parseSpacedMarkers(generatorList);
@@ -631,11 +631,11 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-  	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         StringBuffer sb = new StringBuffer();
         for (Iterator it = generatorLoaders.iterator();it.hasNext();) {
@@ -653,7 +653,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
 
         props.put(prefix + GeneratorLoadersProperty, sb.toString());
 
-	return props;
+        return props;
     }
 
     /**
@@ -675,12 +675,12 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * PropertyConsumer. 
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
+        if (list == null) {
+            list = new Properties();
+        }
         // Not sure how to set up an inspector to create child classes
         // yet.
-	return list;
+        return list;
     }
 
     /**
@@ -691,7 +691,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * @param prefix the prefix String.  
      */
     public void setPropertyPrefix(String prefix) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
     }
 
     /**
@@ -701,7 +701,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * @return the property prefix string
      */
     public String getPropertyPrefix() {
-	return propertyPrefix;
+        return propertyPrefix;
     }
 
     /**

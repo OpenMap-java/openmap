@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimerToggleButton.java,v $
 // $RCSfile: TimerToggleButton.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/06/02 18:27:45 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,18 +63,18 @@ public class TimerToggleButton extends JToggleButton
     public final static String LabelProperty = "label";
 
     public TimerToggleButton(RealTimeHandler rth) {
-	super();
-	addActionListener(this);
-	setTimeHandler(rth);
-	initIcons();
+        super();
+        addActionListener(this);
+        setTimeHandler(rth);
+        initIcons();
     }
 
     public void setTimeHandler(RealTimeHandler rth) {
-	timeHandler = rth;
+        timeHandler = rth;
     }
 
     public RealTimeHandler getTimeHandler() {
-	return timeHandler;
+        return timeHandler;
     }
 
     /**
@@ -83,38 +83,38 @@ public class TimerToggleButton extends JToggleButton
      * stopped and inactive icons.
      */
     public void initIcons() {
-	try {
-	    URL url = PropUtils.getResourceOrFileOrURL(this, runningIconURL);
-	    running = new ImageIcon(url);
-	    setPressedIcon(running);
-	    url = PropUtils.getResourceOrFileOrURL(this, stoppedIconURL);
-	    stopped = new ImageIcon(url);
-	    url = PropUtils.getResourceOrFileOrURL(this, inactiveIconURL);
-	    inactive = new ImageIcon(url);
-	    updateIcon(TIMER_INACTIVE);
-	} catch (MalformedURLException murle) {
-	    Debug.error("TimerToggleButton: initIcons() bad icon.");
-	} catch (NullPointerException npe) {
-	    Debug.error("TimerToggleButton: initIcons() bad icon.");
-	    npe.printStackTrace();
-	}
+        try {
+            URL url = PropUtils.getResourceOrFileOrURL(this, runningIconURL);
+            running = new ImageIcon(url);
+            setPressedIcon(running);
+            url = PropUtils.getResourceOrFileOrURL(this, stoppedIconURL);
+            stopped = new ImageIcon(url);
+            url = PropUtils.getResourceOrFileOrURL(this, inactiveIconURL);
+            inactive = new ImageIcon(url);
+            updateIcon(TIMER_INACTIVE);
+        } catch (MalformedURLException murle) {
+            Debug.error("TimerToggleButton: initIcons() bad icon.");
+        } catch (NullPointerException npe) {
+            Debug.error("TimerToggleButton: initIcons() bad icon.");
+            npe.printStackTrace();
+        }
     }
 
     /**
      * Set the appearance based on the timer's status.
      */
     protected void updateIcon(String status) {
-	if (status == TIMER_FORWARD) {
-	    setSelected(true);
-	    setIcon(running);
-	} else {
-	    setSelected(false);
-	    if (status == TIMER_STOPPED) {
-		setIcon(stopped);
-	    } else {
-		setIcon(inactive);
-	    }
-	}
+        if (status == TIMER_FORWARD) {
+            setSelected(true);
+            setIcon(running);
+        } else {
+            setSelected(false);
+            if (status == TIMER_STOPPED) {
+                setIcon(stopped);
+            } else {
+                setIcon(inactive);
+            }
+        }
     }
 
     /**
@@ -124,17 +124,17 @@ public class TimerToggleButton extends JToggleButton
      * in the TimeConstants interface. It does ==, not equals().
      */
     public void propertyChange(PropertyChangeEvent pce) {
-	String propName = pce.getPropertyName();
-	Object obj = pce.getNewValue();
-	if (propName == TIMER_RUNNING_STATUS) {
-	    if (obj == TIMER_STOPPED) {
-		updateIcon(TIMER_STOPPED);
-	    } else if (obj == TIMER_INACTIVE) {
-		updateIcon(TIMER_INACTIVE);
-	    } else if (obj == TIMER_FORWARD) {
-		updateIcon(TIMER_FORWARD);
-	    }
-	}
+        String propName = pce.getPropertyName();
+        Object obj = pce.getNewValue();
+        if (propName == TIMER_RUNNING_STATUS) {
+            if (obj == TIMER_STOPPED) {
+                updateIcon(TIMER_STOPPED);
+            } else if (obj == TIMER_INACTIVE) {
+                updateIcon(TIMER_INACTIVE);
+            } else if (obj == TIMER_FORWARD) {
+                updateIcon(TIMER_FORWARD);
+            }
+        }
     }
 
     /**
@@ -143,42 +143,42 @@ public class TimerToggleButton extends JToggleButton
      * listens to this button, to start and stop the given timer.
      */
     public void actionPerformed(ActionEvent ae) {
-	Object source = ae.getSource();
-	if (source == this) {
-	    if (isSelected()) {
-		timeHandler.startClock();
-	    } else {
-		timeHandler.stopClock();
-	    }
-	}
+        Object source = ae.getSource();
+        if (source == this) {
+            if (isSelected()) {
+                timeHandler.startClock();
+            } else {
+                timeHandler.stopClock();
+            }
+        }
     }
 
     ///// Property Consumer Interface Methods
 
     public void setProperties(Properties props) {
-	setProperties(null, props);
+        setProperties(null, props);
     }
 
     public void setProperties(String prefix, Properties props) {
-	setPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
     }
 
     public Properties getProperties(Properties props) {
-	return props;
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	return props;
+        return props;
     }
 
     protected String propPrefix = null;
 
     public String getPropertyPrefix() {
-	return propPrefix;
+        return propPrefix;
     }
 
     public void setPropertyPrefix(String prefix) {
-	propPrefix = prefix;
+        propPrefix = prefix;
     }
 
 }

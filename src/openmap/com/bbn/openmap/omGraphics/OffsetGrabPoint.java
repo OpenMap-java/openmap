@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OffsetGrabPoint.java,v $
 // $RCSfile: OffsetGrabPoint.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/11/14 20:50:27 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,7 +43,7 @@ public class OffsetGrabPoint extends GrabPoint {
      * @param y vertical pixel location from top side of window.
      */
     public OffsetGrabPoint(int x, int y) {
-	this(x, y, DEFAULT_RADIUS);
+        this(x, y, DEFAULT_RADIUS);
     }
 
     /** 
@@ -54,8 +54,8 @@ public class OffsetGrabPoint extends GrabPoint {
      * @param radius the pixel radius of the point.
      */
     public OffsetGrabPoint(int x, int y, int radius) {
-	super(x, y, radius);
-	offsetPoints = new Hashtable();
+        super(x, y, radius);
+        offsetPoints = new Hashtable();
     }
 
     /**
@@ -63,28 +63,28 @@ public class OffsetGrabPoint extends GrabPoint {
      */
     public GrabPoint addGrabPoint(GrabPoint gp) {
 
-	if (gp == null) {
-	    com.bbn.openmap.util.Debug.error("OffsetGrabPoint: adding null grab point!");
-	    return null;
-	}
+        if (gp == null) {
+            com.bbn.openmap.util.Debug.error("OffsetGrabPoint: adding null grab point!");
+            return null;
+        }
 
-	if (offsetPoints == null) {
-	    offsetPoints = new Hashtable();
-	}
-	return (GrabPoint)offsetPoints.put(gp, new Offset(gp));
+        if (offsetPoints == null) {
+            offsetPoints = new Hashtable();
+        }
+        return (GrabPoint)offsetPoints.put(gp, new Offset(gp));
     }
 
     /**
      * Remove a GrabPoint to the internal list.
      */
     public GrabPoint removeGrabPoint(GrabPoint rgp) {
-	if (offsetPoints != null) {
-	    Offset offset = (Offset)offsetPoints.remove(rgp);
-	    if (offset != null) {
-		return (GrabPoint)(offset).gp;
-	    }
-	} 
-	return null;
+        if (offsetPoints != null) {
+            Offset offset = (Offset)offsetPoints.remove(rgp);
+            if (offset != null) {
+                return (GrabPoint)(offset).gp;
+            }
+        } 
+        return null;
     }
  
     /**
@@ -92,7 +92,7 @@ public class OffsetGrabPoint extends GrabPoint {
      * not adjust the offsets.
      */
     public void set(int x, int y) {
-	super.set(x, y);
+        super.set(x, y);
     }
 
     /**
@@ -100,7 +100,7 @@ public class OffsetGrabPoint extends GrabPoint {
      * Does not adjust the offsets.  
      */
     public void setX(int x) {
-	super.setX(x);
+        super.setX(x);
     }
 
     /**
@@ -108,7 +108,7 @@ public class OffsetGrabPoint extends GrabPoint {
      * Does not adjust the offsets.  
      */
     public void setY(int y) {
-	super.setY(y);
+        super.setY(y);
     }
 
     /**
@@ -117,7 +117,7 @@ public class OffsetGrabPoint extends GrabPoint {
      * objects.  
      */
     public void set() {
-	updateOffsets();
+        updateOffsets();
     }
 
     /**
@@ -126,11 +126,11 @@ public class OffsetGrabPoint extends GrabPoint {
      * moved and you want to move all the GrabPoints in its list.
      */
     public void moveOffsets() {
-	java.util.Enumeration elements = offsetPoints.elements();
-	while (elements.hasMoreElements()) {
-	    Offset offset = (Offset)elements.nextElement();
-	    offset.move();
-	}
+        java.util.Enumeration elements = offsetPoints.elements();
+        while (elements.hasMoreElements()) {
+            Offset offset = (Offset)elements.nextElement();
+            offset.move();
+        }
     }
 
     /**
@@ -140,19 +140,19 @@ public class OffsetGrabPoint extends GrabPoint {
      * distances of all the GrabPoints in the internal list.
      */
     public void updateOffsets() {
-	java.util.Enumeration elements = offsetPoints.elements();
-	while (elements.hasMoreElements()) {
-	    Offset offset = (Offset)elements.nextElement();
-	    offset.update();
-	}
+        java.util.Enumeration elements = offsetPoints.elements();
+        while (elements.hasMoreElements()) {
+            Offset offset = (Offset)elements.nextElement();
+            offset.update();
+        }
     }
 
     public void clear() {
-	offsetPoints.clear();
+        offsetPoints.clear();
     }
     
     public void finalize() {
-	offsetPoints.clear();
+        offsetPoints.clear();
     }
 
     /**
@@ -160,54 +160,54 @@ public class OffsetGrabPoint extends GrabPoint {
      * pixel offset distance from the OffsetGrabPoint.
      */
     public class Offset {
-	public GrabPoint gp;
-	public int offsetX;
-	public int offsetY;
+        public GrabPoint gp;
+        public int offsetX;
+        public int offsetY;
 
-	public Offset(GrabPoint grabPoint) {
-	    gp = grabPoint;
-	    update();
-	}
+        public Offset(GrabPoint grabPoint) {
+            gp = grabPoint;
+            update();
+        }
 
-	/**
-	 * Update resets the pixel offsets from the OffsetGrabPoint,
-	 * to the current distances between the GrabPoint and the
-	 * OffsetGrabPoint.  
-	 */
-	public void update() {
-	    offsetX = gp.getX() - getX();
-	    offsetY = gp.getY() - getY();
- 	    if (gp instanceof OffsetGrabPoint) {
- 		((OffsetGrabPoint)gp).updateOffsets();
- 	    }
-	}
+        /**
+         * Update resets the pixel offsets from the OffsetGrabPoint,
+         * to the current distances between the GrabPoint and the
+         * OffsetGrabPoint.  
+         */
+        public void update() {
+            offsetX = gp.getX() - getX();
+            offsetY = gp.getY() - getY();
+            if (gp instanceof OffsetGrabPoint) {
+                ((OffsetGrabPoint)gp).updateOffsets();
+            }
+        }
 
-	/**
-	 * Move relocates the GrabPoint to the current position of the
-	 * OffsetGrabPoint plus the offset distances.
-	 */
-	public void move() {
-	    int newX = getX() + offsetX;
-	    int newY = getY() + offsetY;
+        /**
+         * Move relocates the GrabPoint to the current position of the
+         * OffsetGrabPoint plus the offset distances.
+         */
+        public void move() {
+            int newX = getX() + offsetX;
+            int newY = getY() + offsetY;
 
-	    if (gp instanceof HorizontalGrabPoint) {
-		((HorizontalGrabPoint)gp).set(newX, newY, true);
-	    } else if (gp instanceof VerticalGrabPoint) {
-		((VerticalGrabPoint)gp).set(newX, newY, true);
-	    } else {
-		gp.set(newX, newY);
-	    }
+            if (gp instanceof HorizontalGrabPoint) {
+                ((HorizontalGrabPoint)gp).set(newX, newY, true);
+            } else if (gp instanceof VerticalGrabPoint) {
+                ((VerticalGrabPoint)gp).set(newX, newY, true);
+            } else {
+                gp.set(newX, newY);
+            }
 
-// 	    if (Debug.debugging("eomg")) {
-// 		Debug.output("OffsetGrabPoint.offset moving GB to " +
-// 			     newX + ", " + newY);
-// 	    }
+//          if (Debug.debugging("eomg")) {
+//              Debug.output("OffsetGrabPoint.offset moving GB to " +
+//                           newX + ", " + newY);
+//          }
 
- 	    if (gp instanceof OffsetGrabPoint) {
- 		((OffsetGrabPoint)gp).moveOffsets();
- 	    }
+            if (gp instanceof OffsetGrabPoint) {
+                ((OffsetGrabPoint)gp).moveOffsets();
+            }
 
-	}
+        }
 
     }
 }

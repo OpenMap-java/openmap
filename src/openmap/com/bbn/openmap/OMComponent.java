@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/OMComponent.java,v $
 // $RCSfile: OMComponent.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/24 03:31:35 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,7 +46,7 @@ public class OMComponent extends MapHandlerChild implements PropertyConsumer {
      * @param props the <code>Properties</code> object.
      */
     public void setProperties(java.util.Properties props) {
-	setProperties(getPropertyPrefix(), props);
+        setProperties(getPropertyPrefix(), props);
     }
 
     /**
@@ -55,12 +55,12 @@ public class OMComponent extends MapHandlerChild implements PropertyConsumer {
      * @param props the <code>Properties</code> object
      */
     public void setProperties(String prefix, java.util.Properties props) {
-	setPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
 
-	// In a subclass, you can use this to get "" if the prefix 
-	// isn't defined, or "prefix." if it is.  Either way, you can
-	// then append the realPrefix with wild abandon...
-//  	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        // In a subclass, you can use this to get "" if the prefix 
+        // isn't defined, or "prefix." if it is.  Either way, you can
+        // then append the realPrefix with wild abandon...
+//      String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
     }
 
     /**
@@ -79,13 +79,13 @@ public class OMComponent extends MapHandlerChild implements PropertyConsumer {
      * PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-//  	String prefix = PropUtils.getScopedPropertyPrefix(this);
+//      String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	return props;
+        return props;
     }
 
     /**
@@ -107,10 +107,10 @@ public class OMComponent extends MapHandlerChild implements PropertyConsumer {
      * PropertyConsumer. 
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
-	return list;
+        if (list == null) {
+            list = new Properties();
+        }
+        return list;
     }
 
     /**
@@ -121,7 +121,7 @@ public class OMComponent extends MapHandlerChild implements PropertyConsumer {
      * @param prefix the prefix String.  
      */
     public void setPropertyPrefix(String prefix) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
     }
 
     /**
@@ -131,6 +131,6 @@ public class OMComponent extends MapHandlerChild implements PropertyConsumer {
      * @return the property prefix string
      */
     public String getPropertyPrefix() {
-	return propertyPrefix;
+        return propertyPrefix;
     }
 }

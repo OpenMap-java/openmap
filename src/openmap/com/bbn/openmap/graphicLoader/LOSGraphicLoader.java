@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/LOSGraphicLoader.java,v $
 // $RCSfile: LOSGraphicLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/24 03:35:15 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -56,183 +56,183 @@ public class LOSGraphicLoader extends MMLGraphicLoader
     HashMap points = new HashMap();
 
     public LOSGraphicLoader() {
-	super();
-	setName("LOS Demo");
+        super();
+        setName("LOS Demo");
     }
 
     public LOSGraphicLoader(OMGraphicHandler receiver) {
-	super();
-	setReceiver(receiver);
+        super();
+        setReceiver(receiver);
     }
 
     public LOSGraphicLoader(DTEDFrameCache dfc, OMGraphicHandler receiver) {
-	this(receiver);
+        this(receiver);
 
-	setDTEDFrameCache(dfc);
+        setDTEDFrameCache(dfc);
 
-//  	GLPoint mp1 = new GLPoint(42f, -72.5f, 5, true);
-//  	mp1.setName("First");
-//  	mp1.setHeight(100);
-//  	points.put(mp1.getName(), mp1);
+//      GLPoint mp1 = new GLPoint(42f, -72.5f, 5, true);
+//      mp1.setName("First");
+//      mp1.setHeight(100);
+//      points.put(mp1.getName(), mp1);
 
-//  	GLPoint mp2 = new GLPoint(42f, -72.5f, 5, true);
-//  	mp2.setName("Second");
-//  	mp2.setStationary(false);
-//  	points.put(mp2.getName(), mp2);
+//      GLPoint mp2 = new GLPoint(42f, -72.5f, 5, true);
+//      mp2.setName("Second");
+//      mp2.setStationary(false);
+//      points.put(mp2.getName(), mp2);
 
-//  	GLPoint mp3 = new GLPoint(42f, -72.5f, 5, true);
-//  	mp3.setName("Third");
-//  	mp3.setStationary(false);
-//  	points.put(mp3.getName(), mp3);
+//      GLPoint mp3 = new GLPoint(42f, -72.5f, 5, true);
+//      mp3.setName("Third");
+//      mp3.setStationary(false);
+//      points.put(mp3.getName(), mp3);
 
-	manageGraphics();
+        manageGraphics();
     }
 
     public void manageGraphics() {
-	OMGraphicList list = new OMGraphicList();
+        OMGraphicList list = new OMGraphicList();
 
-	Iterator it = points.values().iterator();
-	GLPoint mp;
+        Iterator it = points.values().iterator();
+        GLPoint mp;
 
-	while(it.hasNext()) {
-	    mp = (GLPoint)it.next();
-	    mp.move(40f);
-	    mp.resetConnected();
-	    list.add(mp);
-	}
+        while(it.hasNext()) {
+            mp = (GLPoint)it.next();
+            mp.move(40f);
+            mp.resetConnected();
+            list.add(mp);
+        }
 
-	it = points.keySet().iterator();
-	while(it.hasNext()) {
-	    String mpName = (String)it.next();
-	    mp = (GLPoint)points.get(mpName);
+        it = points.keySet().iterator();
+        while(it.hasNext()) {
+            String mpName = (String)it.next();
+            mp = (GLPoint)points.get(mpName);
 
-	    Iterator it2 = points.values().iterator();
-	    while(it2.hasNext()) {
-		GLPoint mp2 = (GLPoint)it2.next();
-		if (mp2 != mp) {
-		    isLOS(mp, mp2, list);
-		}
-	    }
-	}
+            Iterator it2 = points.values().iterator();
+            while(it2.hasNext()) {
+                GLPoint mp2 = (GLPoint)it2.next();
+                if (mp2 != mp) {
+                    isLOS(mp, mp2, list);
+                }
+            }
+        }
 
-	if (receiver != null) {
-	    Debug.message("graphicloader", "LOSGraphicLoader.manageGraphics: Updating graphics.");
-	    receiver.setList(list);
-	} else {
-	    Debug.message("graphicloader", "LOSGraphicLoader.manageGraphics: no receiver to notify.");
-	}
+        if (receiver != null) {
+            Debug.message("graphicloader", "LOSGraphicLoader.manageGraphics: Updating graphics.");
+            receiver.setList(list);
+        } else {
+            Debug.message("graphicloader", "LOSGraphicLoader.manageGraphics: no receiver to notify.");
+        }
 
     }
 
     public boolean isLOS(GLPoint pt1, GLPoint pt2, 
-			 OMGraphicList list) {
-	boolean ret = false;
-	if (los != null) {
-	    int numPoints = 2;
-	    if (proj != null) {
-		Point p1 = proj.forward(pt1.getLat(), pt1.getLon());
-		Point p2 = proj.forward(pt2.getLat(), pt2.getLon());
-		numPoints = (int)DrawUtil.distance(p1.x, p1.y, p2.x, p2.y)/2;
-	    }
+                         OMGraphicList list) {
+        boolean ret = false;
+        if (los != null) {
+            int numPoints = 2;
+            if (proj != null) {
+                Point p1 = proj.forward(pt1.getLat(), pt1.getLon());
+                Point p2 = proj.forward(pt2.getLat(), pt2.getLon());
+                numPoints = (int)DrawUtil.distance(p1.x, p1.y, p2.x, p2.y)/2;
+            }
 
-	    boolean isLOS = 
-		los.isLOS(new LatLonPoint(pt1.getLat(), pt1.getLon()), pt1.getHeight(), 
-			  new LatLonPoint(pt2.getLat(), pt2.getLon()), pt2.getHeight(), 
-			  numPoints);
+            boolean isLOS = 
+                los.isLOS(new LatLonPoint(pt1.getLat(), pt1.getLon()), pt1.getHeight(), 
+                          new LatLonPoint(pt2.getLat(), pt2.getLon()), pt2.getHeight(), 
+                          numPoints);
 
-  	    if (isLOS) {
-		OMLine line = new OMLine(pt1.getLat(), pt1.getLon(),
-					 pt2.getLat(), pt2.getLon(),
-					 OMGraphic.LINETYPE_GREATCIRCLE);
+            if (isLOS) {
+                OMLine line = new OMLine(pt1.getLat(), pt1.getLon(),
+                                         pt2.getLat(), pt2.getLon(),
+                                         OMGraphic.LINETYPE_GREATCIRCLE);
 
-		line.setLinePaint(GLPoint.CONNECTED_COLOR);
-		list.add(line);
+                line.setLinePaint(GLPoint.CONNECTED_COLOR);
+                list.add(line);
 
-		ret = isLOS;
-	    }
-	} else {
-	    Debug.message("graphicloader" , "LOSGraphicLoader doesn't have a LOSGenerator"); 
-	}
-	pt1.connected(ret);
-	pt2.connected(ret);
-	return ret;
+                ret = isLOS;
+            }
+        } else {
+            Debug.message("graphicloader" , "LOSGraphicLoader doesn't have a LOSGenerator"); 
+        }
+        pt1.connected(ret);
+        pt2.connected(ret);
+        return ret;
     }
 
     public void actionPerformed(java.awt.event.ActionEvent ae) {
-	String cmd = ae.getActionCommand();
-	if (cmd == TimerCmd) {
-	    JCheckBox check = (JCheckBox)ae.getSource();
-	    if (check.isSelected()) {
-		timer.restart();
-	    } else {
-		timer.stop();
-	    }
-	} else if (cmd == AddNodeCmd) {
-	    if (dt != null) {
-		GraphicAttributes ga = new GraphicAttributes();
-		ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
-		OMPoint pt = (OMPoint) dt.create("com.bbn.openmap.omGraphics.OMPoint", ga, this, false);
-		if (pt != null) {
-		    getTimer().stop();
-		    pt.setRadius(5);
-		    pt.setOval(true);
-		    pt.setFillPaint(Color.red);
-		    addNodeButton.setEnabled(false);
-		    addPathButton.setEnabled(false);
-		}
-	    }
-	} else if (cmd == AddPathCmd) {
-	    if (dt != null) {
-		GraphicAttributes ga = new GraphicAttributes();
-		ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
-		ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
-		OMPoly poly = (OMPoly) dt.create("com.bbn.openmap.omGraphics.OMPoly", ga, this, true);
-		if (poly != null) {
-		    getTimer().stop();
-		    BasicStrokeEditor bse = new BasicStrokeEditor();
-		    bse.setDash(new float[] {5, 5});
-		    ga.setStroke(bse.getBasicStroke());
-		    ga.setLinePaint(Color.yellow);
+        String cmd = ae.getActionCommand();
+        if (cmd == TimerCmd) {
+            JCheckBox check = (JCheckBox)ae.getSource();
+            if (check.isSelected()) {
+                timer.restart();
+            } else {
+                timer.stop();
+            }
+        } else if (cmd == AddNodeCmd) {
+            if (dt != null) {
+                GraphicAttributes ga = new GraphicAttributes();
+                ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
+                OMPoint pt = (OMPoint) dt.create("com.bbn.openmap.omGraphics.OMPoint", ga, this, false);
+                if (pt != null) {
+                    getTimer().stop();
+                    pt.setRadius(5);
+                    pt.setOval(true);
+                    pt.setFillPaint(Color.red);
+                    addNodeButton.setEnabled(false);
+                    addPathButton.setEnabled(false);
+                }
+            }
+        } else if (cmd == AddPathCmd) {
+            if (dt != null) {
+                GraphicAttributes ga = new GraphicAttributes();
+                ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
+                ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
+                OMPoly poly = (OMPoly) dt.create("com.bbn.openmap.omGraphics.OMPoly", ga, this, true);
+                if (poly != null) {
+                    getTimer().stop();
+                    BasicStrokeEditor bse = new BasicStrokeEditor();
+                    bse.setDash(new float[] {5, 5});
+                    ga.setStroke(bse.getBasicStroke());
+                    ga.setLinePaint(Color.yellow);
 
-		    addNodeButton.setEnabled(false);
-		    addPathButton.setEnabled(false);
-		}
-	    }
-	} else {
-	    manageGraphics();
-	}
+                    addNodeButton.setEnabled(false);
+                    addPathButton.setEnabled(false);
+                }
+            }
+        } else {
+            manageGraphics();
+        }
 
     }
 
     public void setDrawingTool(OMDrawingTool drawingTool) {
-	dt = drawingTool;
-	if (addNodeButton != null) {
-	    addNodeButton.setEnabled(drawingTool != null);
-	}
-	if (addPathButton != null) {
-	    addPathButton.setEnabled(drawingTool != null);
-	}
+        dt = drawingTool;
+        if (addNodeButton != null) {
+            addNodeButton.setEnabled(drawingTool != null);
+        }
+        if (addPathButton != null) {
+            addPathButton.setEnabled(drawingTool != null);
+        }
     }
 
     public OMDrawingTool getDrawingTool() {
-	return dt;
+        return dt;
     }
 
     public void setDTEDFrameCache(DTEDFrameCache cache) {
-	dfc = cache;
-	if (cache != null) {
-	    getTimer().start();
-	    Debug.message("graphicloader", "LOSGraphicLoader starting timer");
-	    if (los == null) {
-		los = new LOSGenerator(dfc);
-	    } else {
-		los.setDtedCache(dfc);
-	    }
-	}
+        dfc = cache;
+        if (cache != null) {
+            getTimer().start();
+            Debug.message("graphicloader", "LOSGraphicLoader starting timer");
+            if (los == null) {
+                los = new LOSGenerator(dfc);
+            } else {
+                los.setDtedCache(dfc);
+            }
+        }
     }
 
     public DTEDFrameCache getDTEDFrameCache() {
-	return dfc;
+        return dfc;
     }
 
     /**
@@ -245,37 +245,37 @@ public class LOSGraphicLoader extends MMLGraphicLoader
     JButton addPathButton = null;
 
     public Component getGUI() {
-	JPanel panel = new JPanel(new GridLayout(0, 1));
+        JPanel panel = new JPanel(new GridLayout(0, 1));
 
-	if (addNodeButton == null) {
-	    addNodeButton = new JButton("Add Node...");
-	    addNodeButton.addActionListener(this);
-	    addNodeButton.setActionCommand(AddNodeCmd);
-	}
+        if (addNodeButton == null) {
+            addNodeButton = new JButton("Add Node...");
+            addNodeButton.addActionListener(this);
+            addNodeButton.setActionCommand(AddNodeCmd);
+        }
 
-	addNodeButton.setEnabled(getDrawingTool() != null);
+        addNodeButton.setEnabled(getDrawingTool() != null);
 
-	if (addPathButton == null) {
-	    addPathButton = new JButton("Add Path for Node...");
-	    addPathButton.addActionListener(this);
-	    addPathButton.setActionCommand(AddPathCmd);
-	}
+        if (addPathButton == null) {
+            addPathButton = new JButton("Add Path for Node...");
+            addPathButton.addActionListener(this);
+            addPathButton.setActionCommand(AddPathCmd);
+        }
 
-	addPathButton.setEnabled(getDrawingTool() != null);
+        addPathButton.setEnabled(getDrawingTool() != null);
 
-	panel.add(addNodeButton);
-	panel.add(addPathButton);
+        panel.add(addNodeButton);
+        panel.add(addPathButton);
 
-	// Only want to do this once...
-	if (timerButton == null && getTimer() != null) {
-	    timerButton = new JCheckBox("Run Timer", getTimer().isRunning());
-	    timerButton.addActionListener(this);
-	    timerButton.setActionCommand(TimerCmd);
-	}
+        // Only want to do this once...
+        if (timerButton == null && getTimer() != null) {
+            timerButton = new JCheckBox("Run Timer", getTimer().isRunning());
+            timerButton.addActionListener(this);
+            timerButton.setActionCommand(TimerCmd);
+        }
 
-	panel.add(timerButton);
+        panel.add(timerButton);
 
-	return panel;
+        return panel;
     }
 
     public static int pointCount = 1;
@@ -285,31 +285,31 @@ public class LOSGraphicLoader extends MMLGraphicLoader
      * graphic, arrives.
      */
     public void drawingComplete(OMGraphic omg, OMAction action) {
-	if (timerButton.isSelected()) {
-	    timer.restart();
-	}
+        if (timerButton.isSelected()) {
+            timer.restart();
+        }
 
-	if (omg instanceof OMPoint) {
+        if (omg instanceof OMPoint) {
 
-	    OMPoint p = (OMPoint) omg;
-	    
-	    GLPoint mp = new GLPoint(p.getLat(), p.getLon(), p.getRadius(), true);
-	    mp.setName("Added Node " + (pointCount++));
-	    mp.setStationary(true);
-	    mp.showPalette();
-	    points.put(mp.getName(), mp);
-	    manageGraphics();
-	} else if (omg instanceof OMPoly) {
-	    OMPoly poly = (OMPoly) omg;
-	    PathGLPoint pmp = new PathGLPoint(poly, 5, true);
-	    pmp.setName("Added Node " + (pointCount++));
-	    pmp.showPalette();
-	    points.put(pmp.getName(), pmp);
-	    manageGraphics();
-	}
+            OMPoint p = (OMPoint) omg;
+            
+            GLPoint mp = new GLPoint(p.getLat(), p.getLon(), p.getRadius(), true);
+            mp.setName("Added Node " + (pointCount++));
+            mp.setStationary(true);
+            mp.showPalette();
+            points.put(mp.getName(), mp);
+            manageGraphics();
+        } else if (omg instanceof OMPoly) {
+            OMPoly poly = (OMPoly) omg;
+            PathGLPoint pmp = new PathGLPoint(poly, 5, true);
+            pmp.setName("Added Node " + (pointCount++));
+            pmp.showPalette();
+            points.put(pmp.getName(), pmp);
+            manageGraphics();
+        }
 
-	addNodeButton.setEnabled(true);
-	addPathButton.setEnabled(true);
+        addNodeButton.setEnabled(true);
+        addPathButton.setEnabled(true);
     }
 
     /**
@@ -317,14 +317,14 @@ public class LOSGraphicLoader extends MMLGraphicLoader
      * and OMDrawingTool.
      */
     public void findAndInit(Object obj) {
-	if (obj instanceof DTEDFrameCache) {
-	    Debug.message("graphicloader", "LOSGraphicLoader: found DTEDFrameCache");
-	    setDTEDFrameCache((DTEDFrameCache)obj);
-	}
-	if (obj instanceof OMDrawingTool) {
-	    Debug.message("graphicloader", "LOSGraphicLoader: found OMDrawingTool");
-	    setDrawingTool((OMDrawingTool)obj);
-	}
+        if (obj instanceof DTEDFrameCache) {
+            Debug.message("graphicloader", "LOSGraphicLoader: found DTEDFrameCache");
+            setDTEDFrameCache((DTEDFrameCache)obj);
+        }
+        if (obj instanceof OMDrawingTool) {
+            Debug.message("graphicloader", "LOSGraphicLoader: found OMDrawingTool");
+            setDrawingTool((OMDrawingTool)obj);
+        }
     }
 
     /**
@@ -332,20 +332,20 @@ public class LOSGraphicLoader extends MMLGraphicLoader
      * and OMDrawingTool.
      */
     public void findAndUndo(Object obj) {
-	if (obj instanceof DTEDFrameCache) {
-	    Debug.message("graphicloader", "LOSGraphicLoader: removing DTEDFrameCache");
-	    DTEDFrameCache dfc = getDTEDFrameCache();
-	    if (dfc == obj) {  // Check to see if they are the same object
-		setDTEDFrameCache(null);
-	    }
-	}
-	if (obj instanceof OMDrawingTool) {
-	    Debug.message("graphicloader", "LOSGraphicLoader: removing OMDrawingTool");
-	    OMDrawingTool odt = getDrawingTool();
-	    if (odt == obj) {
-		setDrawingTool(null);
-	    }
-	}
+        if (obj instanceof DTEDFrameCache) {
+            Debug.message("graphicloader", "LOSGraphicLoader: removing DTEDFrameCache");
+            DTEDFrameCache dfc = getDTEDFrameCache();
+            if (dfc == obj) {  // Check to see if they are the same object
+                setDTEDFrameCache(null);
+            }
+        }
+        if (obj instanceof OMDrawingTool) {
+            Debug.message("graphicloader", "LOSGraphicLoader: removing OMDrawingTool");
+            OMDrawingTool odt = getDrawingTool();
+            if (odt == obj) {
+                setDrawingTool(null);
+            }
+        }
     }
 
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkActionList.java,v $
 // $RCSfile: LinkActionList.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:26 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -79,10 +79,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public LinkActionList(Link link, LinkProperties properties) throws IOException {
-	this.link = link;
-	link.start(Link.ACTIONS_HEADER);
-	link.dos.writeFloat(version);
-	properties.write(link);
+        this.link = link;
+        link.start(Link.ACTIONS_HEADER);
+        link.dos.writeFloat(version);
+        properties.write(link);
     }
 
     /**
@@ -97,10 +97,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws EOFException
      */
     public LinkActionList(Link link, Layer layer, Projection proj, 
-			  OMGridGenerator generator)
-	throws IOException, EOFException {
-	this.link = link;
-	linkStatus = readGestureResponses(layer, proj, generator);
+                          OMGridGenerator generator)
+        throws IOException, EOFException {
+        this.link = link;
+        linkStatus = readGestureResponses(layer, proj, generator);
     }
 
     /** 
@@ -111,7 +111,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @return either Link.END_TOTAL or Link.END_SECTION. 
      */
     public String getLinkStatus() {
-	return linkStatus;
+        return linkStatus;
     }
 
     /**
@@ -122,7 +122,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @return properties 
      */
     public LinkProperties getProperties() {
-	return properties;
+        return properties;
     }
 
     /**
@@ -142,11 +142,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @return Vector of GraphicUpdate objects.
      */
     public Vector getGraphicUpdates() {
-	if (updates == null) {
-	    return emptyGraphicUpdates;
-	} else {
-	    return updates;
-	}
+        if (updates == null) {
+            return emptyGraphicUpdates;
+        } else {
+            return updates;
+        }
     }
 
     /**  
@@ -161,7 +161,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public void end(String endType) throws IOException {
-	link.end(endType);
+        link.end(endType);
     }
 
     /**
@@ -184,79 +184,79 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws EOFException
      */
     protected String readGestureResponses(Layer layer, Projection proj,
-					  OMGridGenerator generator)
-	throws IOException, EOFException {
+                                          OMGridGenerator generator)
+        throws IOException, EOFException {
 
- 	OMGraphic graphic;
-	long startTime = System.currentTimeMillis();
-	String header = null;
-	int gestureType;
-	boolean moreData = true;
+        OMGraphic graphic;
+        long startTime = System.currentTimeMillis();
+        String header = null;
+        int gestureType;
+        boolean moreData = true;
 
-	float ver = link.dis.readFloat();
+        float ver = link.dis.readFloat();
 
-	if (ver != version) {
-	    if (ver == .1) {// Big difference....
-		throw new IOException("LinkActionList: Versions do not match! DANGER!");
-	    } else {
-		Debug.message("link", "LinkActionList: Versions do not match");
-	    }
-	}
+        if (ver != version) {
+            if (ver == .1) {// Big difference....
+                throw new IOException("LinkActionList: Versions do not match! DANGER!");
+            } else {
+                Debug.message("link", "LinkActionList: Versions do not match");
+            }
+        }
 
-	properties = new LinkProperties(link);
+        properties = new LinkProperties(link);
 
-	Debug.message("link", "LinkActionList: reading actions:");
+        Debug.message("link", "LinkActionList: reading actions:");
 
-	while (true) {
-	    graphic = null;
-	    // Just consume the header, don't create a useless
-	    // string object.
-	    header = link.readDelimiter(false);
-	    
-	    if (header == Link.END_TOTAL || header == Link.END_SECTION) {
-		
-		long endTime = System.currentTimeMillis();
-		if (Debug.debugging("link")) {
-		    Debug.output("LinkActionList: received in " + 
-				 (float)(endTime - startTime)/1000.0f + 
-				 " seconds");
-		}
-		
-		return header;
-	    }
-	    
-	    gestureType = link.dis.readInt();
-	    int length;
-	    String data;
+        while (true) {
+            graphic = null;
+            // Just consume the header, don't create a useless
+            // string object.
+            header = link.readDelimiter(false);
+            
+            if (header == Link.END_TOTAL || header == Link.END_SECTION) {
+                
+                long endTime = System.currentTimeMillis();
+                if (Debug.debugging("link")) {
+                    Debug.output("LinkActionList: received in " + 
+                                 (float)(endTime - startTime)/1000.0f + 
+                                 " seconds");
+                }
+                
+                return header;
+            }
+            
+            gestureType = link.dis.readInt();
+            int length;
+            String data;
 
-	    switch (gestureType) {
-	    case ACTION_GRAPHICS:
-		int graphicAction = link.dis.readInt();
+            switch (gestureType) {
+            case ACTION_GRAPHICS:
+                int graphicAction = link.dis.readInt();
 
-		if (updates == null) {
-		    updates = new Vector();
-		}
+                if (updates == null) {
+                    updates = new Vector();
+                }
 
-		if (LinkUtil.isMask(graphicAction, UPDATE_ADD_GRAPHIC_MASK) ||
-		    LinkUtil.isMask(graphicAction, UPDATE_GRAPHIC_MASK)) {
-		    updates.addElement(readGraphic(graphicAction, proj, generator));
-		} else {
-		    LinkProperties props = new LinkProperties(link);
-		    updates.addElement(new GraphicUpdate(graphicAction, 
-							 props.getProperty(LPC_GRAPHICID)));
-		}
-		reacted = true;
-		break;
-	    case ACTION_GUI:
-		break;
-	    case ACTION_MAP:
-		mapUpdate = true;
+                if (LinkUtil.isMask(graphicAction, UPDATE_ADD_GRAPHIC_MASK) ||
+                    LinkUtil.isMask(graphicAction, UPDATE_GRAPHIC_MASK)) {
+                    updates.addElement(readGraphic(graphicAction, proj, generator));
+                } else {
+                    LinkProperties props = new LinkProperties(link);
+                    updates.addElement(new GraphicUpdate(graphicAction, 
+                                                         props.getProperty(LPC_GRAPHICID)));
+                }
+                reacted = true;
+                break;
+            case ACTION_GUI:
+                break;
+            case ACTION_MAP:
+                mapUpdate = true;
                 mapProperties = new LinkProperties(link);
-		break;
-	    default:
-		System.err.println("LinkActionList: received unknown gesture type.");
-	    }
-	}
+                break;
+            default:
+                System.err.println("LinkActionList: received unknown gesture type.");
+            }
+        }
     }
 
     /**
@@ -270,67 +270,67 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException.
      */
     protected GraphicUpdate readGraphic(int graphicAction, Projection proj, 
-					OMGridGenerator generator)
-	throws IOException {
+                                        OMGridGenerator generator)
+        throws IOException {
 
-	OMGraphic graphic = null;
-	String header = link.readDelimiter(false);
-	
-	// Sanity check
-	if (header == Link.END_TOTAL || header == Link.END_SECTION) {
-	    return null;
-	}
+        OMGraphic graphic = null;
+        String header = link.readDelimiter(false);
+        
+        // Sanity check
+        if (header == Link.END_TOTAL || header == Link.END_SECTION) {
+            return null;
+        }
 
-	int graphicType = link.dis.readInt();
-	    
-	switch (graphicType) {
-	case LinkGraphicList.GRAPHICTYPE_LINE:
-	    graphic = LinkLine.read(link.dis);
-	    break;
-	case LinkGraphicList.GRAPHICTYPE_POLY:
-	    graphic = LinkPoly.read(link.dis);
-	    break;
-	case LinkGraphicList.GRAPHICTYPE_RECTANGLE:
-	    graphic = LinkRectangle.read(link.dis);
- 	    break;
-	case LinkGraphicList.GRAPHICTYPE_POINT:
-	    graphic = LinkPoint.read(link.dis);
- 	    break;
-	case LinkGraphicList.GRAPHICTYPE_CIRCLE:
-	    graphic = LinkCircle.read(link.dis);
-	    break;
-	case LinkGraphicList.GRAPHICTYPE_RASTER:
-	    graphic = LinkRaster.read(link.dis);
-	    break;
-	case LinkGraphicList.GRAPHICTYPE_BITMAP:
-	    graphic = LinkBitmap.read(link.dis);
-	    break;
-	case LinkGraphicList.GRAPHICTYPE_TEXT:
-	    graphic = LinkText.read(link.dis);
-	    break;
-	case LinkGraphicList.GRAPHICTYPE_GRID:
-	    graphic = LinkGrid.read(link.dis);
-	    break;
-	case LinkGraphicList.GRAPHICTYPE_ARC:
-	    graphic = LinkArc.read(link.dis);
-	    break;
-	default:
-	    System.err.println("LinkActionList: received unknown graphic type.");
-	}
+        int graphicType = link.dis.readInt();
+            
+        switch (graphicType) {
+        case LinkGraphicList.GRAPHICTYPE_LINE:
+            graphic = LinkLine.read(link.dis);
+            break;
+        case LinkGraphicList.GRAPHICTYPE_POLY:
+            graphic = LinkPoly.read(link.dis);
+            break;
+        case LinkGraphicList.GRAPHICTYPE_RECTANGLE:
+            graphic = LinkRectangle.read(link.dis);
+            break;
+        case LinkGraphicList.GRAPHICTYPE_POINT:
+            graphic = LinkPoint.read(link.dis);
+            break;
+        case LinkGraphicList.GRAPHICTYPE_CIRCLE:
+            graphic = LinkCircle.read(link.dis);
+            break;
+        case LinkGraphicList.GRAPHICTYPE_RASTER:
+            graphic = LinkRaster.read(link.dis);
+            break;
+        case LinkGraphicList.GRAPHICTYPE_BITMAP:
+            graphic = LinkBitmap.read(link.dis);
+            break;
+        case LinkGraphicList.GRAPHICTYPE_TEXT:
+            graphic = LinkText.read(link.dis);
+            break;
+        case LinkGraphicList.GRAPHICTYPE_GRID:
+            graphic = LinkGrid.read(link.dis);
+            break;
+        case LinkGraphicList.GRAPHICTYPE_ARC:
+            graphic = LinkArc.read(link.dis);
+            break;
+        default:
+            System.err.println("LinkActionList: received unknown graphic type.");
+        }
 
-	if (graphic != null && proj != null) {
-	    if (graphic instanceof OMGrid) {
-		((OMGrid)graphic).setGenerator(generator);
-	    }
-	    graphic.generate(proj);
-	}
+        if (graphic != null && proj != null) {
+            if (graphic instanceof OMGrid) {
+                ((OMGrid)graphic).setGenerator(generator);
+            }
+            graphic.generate(proj);
+        }
 
-	return (new GraphicUpdate(graphicAction, graphic));
+        return (new GraphicUpdate(graphicAction, graphic));
     }
 
     /** Returns true if the gesture was consumed by the server. */
     public boolean consumedGesture() {
-	return reacted;
+        return reacted;
     }
 
     /** Returns true if a map update command was given. */
@@ -343,7 +343,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * Should be reset to false after the map projection has been updated.
      */
     public void setNeedMapUpdate(boolean value) {
-	mapUpdate = value;
+        mapUpdate = value;
     }
 
     /** 
@@ -353,10 +353,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException.  
      */
     public void deselectGraphics() throws IOException {
-	link.dos.write(Link.UPDATE_GRAPHICS.getBytes());
-	link.dos.writeInt(ACTION_GRAPHICS);
-	link.dos.writeInt(MODIFY_DESELECTALL_GRAPHIC_MASK);
-	LinkProperties.EMPTY_PROPERTIES.write(link.dos);  // Write empty
+        link.dos.write(Link.UPDATE_GRAPHICS.getBytes());
+        link.dos.writeInt(ACTION_GRAPHICS);
+        link.dos.writeInt(MODIFY_DESELECTALL_GRAPHIC_MASK);
+        LinkProperties.EMPTY_PROPERTIES.write(link.dos);  // Write empty
     }
 
     /** 
@@ -371,11 +371,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException 
      */
     public void modifyGraphic(int maskDescription, 
-			      LinkProperties props) throws IOException {
-	link.dos.write(Link.UPDATE_GRAPHICS.getBytes());
-	link.dos.writeInt(ACTION_GRAPHICS);
-	link.dos.writeInt(maskDescription);
-	props.write(link.dos);
+                              LinkProperties props) throws IOException {
+        link.dos.write(Link.UPDATE_GRAPHICS.getBytes());
+        link.dos.writeInt(ACTION_GRAPHICS);
+        link.dos.writeInt(maskDescription);
+        props.write(link.dos);
     }
 
     /** 
@@ -388,10 +388,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public void writeGraphicGestureHeader(int graphicUpdateMask)
-	throws IOException {
-	link.dos.write(Link.UPDATE_GRAPHICS.getBytes());
-	link.dos.writeInt(ACTION_GRAPHICS);
-	link.dos.writeInt(graphicUpdateMask);
+        throws IOException {
+        link.dos.write(Link.UPDATE_GRAPHICS.getBytes());
+        link.dos.writeInt(ACTION_GRAPHICS);
+        link.dos.writeInt(graphicUpdateMask);
     }
 
     /**
@@ -406,12 +406,12 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public void updateArc(float latPoint, float lonPoint,
-			  int w, int h, float s, float e,
-			  LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkArc.write(latPoint, lonPoint, 0, 0, w, h, s, e, 
-		      properties, link.dos);
+                          int w, int h, float s, float e,
+                          LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkArc.write(latPoint, lonPoint, 0, 0, w, h, s, e, 
+                      properties, link.dos);
     }
 
     /**
@@ -427,11 +427,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public void updateArc(int x1, int y1, int w, int h,
-			  float s, float e,
-			  LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkArc.write(x1, y1, w, h, s, e, properties, link.dos);
+                          float s, float e,
+                          LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkArc.write(x1, y1, w, h, s, e, properties, link.dos);
     }
 
     /**
@@ -451,12 +451,12 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public void updateArc(float latPoint, float lonPoint,
-			  int offset_x1, int offset_y1,
-			  int w, int h, float s, float e,
-			  LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkArc.write(latPoint, lonPoint, offset_x1, offset_y1, w, h, s, e, properties, link.dos);
+                          int offset_x1, int offset_y1,
+                          int w, int h, float s, float e,
+                          LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkArc.write(latPoint, lonPoint, offset_x1, offset_y1, w, h, s, e, properties, link.dos);
     }
 
     /**
@@ -472,11 +472,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public void updateArc(float latPoint, float lonPoint, float radius,
-			  float s, float e,
-			  LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkArc.write(latPoint, lonPoint, radius, -1, -1, s, e, properties, link.dos);
+                          float s, float e,
+                          LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkArc.write(latPoint, lonPoint, radius, -1, -1, s, e, properties, link.dos);
     }
 
     /**
@@ -494,12 +494,12 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public void updateArc(float latPoint, float lonPoint,
-			  float radius, int units,
-			  float s, float e,
-			  LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkArc.write(latPoint, lonPoint, radius, units, -1, s, e, properties, link.dos);
+                          float radius, int units,
+                          float s, float e,
+                          LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkArc.write(latPoint, lonPoint, radius, units, -1, s, e, properties, link.dos);
     }
 
     /**
@@ -520,12 +520,12 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public void updateArc(float latPoint, float lonPoint,
-			  float radius, int units, int nverts,
-			  float s, float e,
-			  LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkArc.write(latPoint, lonPoint, radius, units, nverts, s, e, properties, link.dos);
+                          float radius, int units, int nverts,
+                          float s, float e,
+                          LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkArc.write(latPoint, lonPoint, radius, units, nverts, s, e, properties, link.dos);
     }
 
 
@@ -542,10 +542,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkBitmap
      */
     public void updateBitmap(float lt, float ln, int w, int h, byte[] bytes, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkBitmap.write(lt, ln, w, h, bytes, properties, link.dos);
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkBitmap.write(lt, ln, w, h, bytes, properties, link.dos);
     }
 
     /**
@@ -561,10 +561,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkBitmap
      */
     public void updateBitmap(int x1, int y1, int w, int h, byte[] bytes, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkBitmap.write(x1, y1, w, h, bytes, properties, link.dos);
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkBitmap.write(x1, y1, w, h, bytes, properties, link.dos);
     }
 
     /** 
@@ -582,11 +582,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkBitmap
      */
     public void updateBitmap(float lt, float ln, int offset_x1, int offset_y1,
-			     int w, int h, byte[] bytes, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkBitmap.write(lt, ln, offset_x1, offset_y1, w, h, bytes, properties, link.dos);
+                             int w, int h, byte[] bytes, 
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkBitmap.write(lt, ln, offset_x1, offset_y1, w, h, bytes, properties, link.dos);
     }
 
     /** 
@@ -601,10 +601,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
     public void updateCircle(float latPoint, float lonPoint, int w, int h, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkCircle.write(latPoint, lonPoint, w, h, properties, link.dos);
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkCircle.write(latPoint, lonPoint, w, h, properties, link.dos);
     }
 
     /** 
@@ -619,10 +619,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
     public void updateCircle(int x1, int y1, int w, int h, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException { 
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkCircle.write(x1, y1, w, h, properties, link.dos);
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException { 
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkCircle.write(x1, y1, w, h, properties, link.dos);
     }
 
     /** 
@@ -639,12 +639,12 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
     public void updateCircle(float latPoint, float lonPoint, int offset_x1, int offset_y1, 
-			     int w, int h, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException { 
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkCircle.write(latPoint, lonPoint, offset_x1, offset_y1, 
-			 w, h, properties, link.dos);
+                             int w, int h, 
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException { 
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkCircle.write(latPoint, lonPoint, offset_x1, offset_y1, 
+                         w, h, properties, link.dos);
     }
 
     /** 
@@ -658,10 +658,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
     public void updateCircle(float latPoint, float lonPoint, float radius, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkCircle.write(latPoint, lonPoint, radius, -1, -1, properties, link.dos);
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkCircle.write(latPoint, lonPoint, radius, -1, -1, properties, link.dos);
     }
 
     /** 
@@ -676,10 +676,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
     public void updateCircle(float latPoint, float lonPoint, float radius, int units, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkCircle.write(latPoint, lonPoint, radius, units, -1, properties, link.dos);
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkCircle.write(latPoint, lonPoint, radius, units, -1, properties, link.dos);
     }
 
     /** 
@@ -697,11 +697,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkCircle 
      */
     public void updateCircle(float latPoint, float lonPoint, float radius, 
-			     int units, int nverts, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkCircle.write(latPoint, lonPoint, radius, units, nverts, properties, link.dos);
+                             int units, int nverts, 
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkCircle.write(latPoint, lonPoint, radius, units, nverts, properties, link.dos);
     }
 
     /**
@@ -724,15 +724,15 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException 
      */
     public void updateGrid(float lt, float ln, int rows, int columns, 
-			   float orientation, 
-			   float vResolution, float hResolution,
-			   int major, int[] data, 
-			   LinkProperties properties,
-			   int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkGrid.write(lt, ln, rows, columns, orientation, vResolution, hResolution,
-		       major, data, properties, link.dos);
+                           float orientation, 
+                           float vResolution, float hResolution,
+                           int major, int[] data, 
+                           LinkProperties properties,
+                           int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkGrid.write(lt, ln, rows, columns, orientation, vResolution, hResolution,
+                       major, data, properties, link.dos);
     }
     
     /**
@@ -755,15 +755,15 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public void updateGrid(int x1, int y1, int rows, int columns, 
-			   float orientation, 
-			   float vResolution, float hResolution,
-			   int major, int[] data, 
-			   LinkProperties properties, 
-			   int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkGrid.write(x1, y1, rows, columns, orientation, vResolution, hResolution, 
-		       major, data, properties, link.dos);
+                           float orientation, 
+                           float vResolution, float hResolution,
+                           int major, int[] data, 
+                           LinkProperties properties, 
+                           int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkGrid.write(x1, y1, rows, columns, orientation, vResolution, hResolution, 
+                       major, data, properties, link.dos);
     }
 
     /**
@@ -788,14 +788,14 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @throws IOException
      */
     public void updateGrid(float lt, float ln, int offset_x1, int offset_y1,
-			   int rows, int columns, 
-			   float orientation, float vResolution, float hResolution,
-			   int major, int[] data, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkGrid.write(lt, ln, offset_x1, offset_y1, rows, columns, orientation,
-		       vResolution, hResolution, major, data, properties, link.dos);
+                           int rows, int columns, 
+                           float orientation, float vResolution, float hResolution,
+                           int major, int[] data, 
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkGrid.write(lt, ln, offset_x1, offset_y1, rows, columns, orientation,
+                       vResolution, hResolution, major, data, properties, link.dos);
     }
 
 
@@ -812,10 +812,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkLine
      */
     public void updateLine(float lat_1, float lon_1, float lat_2, float lon_2, int lineType,
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkLine.write(lat_1, lon_1, lat_2, lon_2, lineType, properties, link.dos);
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkLine.write(lat_1, lon_1, lat_2, lon_2, lineType, properties, link.dos);
     }
 
     /** 
@@ -832,11 +832,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkLine
      */
     public void updateLine(float lat_1, float lon_1, float lat_2, float lon_2, 
-			   int lineType, int nsegs, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkLine.write(lat_1, lon_1, lat_2, lon_2, lineType, nsegs, properties, link.dos);
+                           int lineType, int nsegs, 
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkLine.write(lat_1, lon_1, lat_2, lon_2, lineType, nsegs, properties, link.dos);
     }
 
     /** 
@@ -851,10 +851,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkLine
      */
     public void updateLine(int x1, int y1, int x2, int y2, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkLine.write(x1, y1, x2, y2, properties, link.dos);
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkLine.write(x1, y1, x2, y2, properties, link.dos);
     }
 
     /** 
@@ -871,11 +871,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkLine
      */
     public void updateLine(float lat_1, float lon_1, 
-			   int x1, int y1, int x2, int y2, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkLine.write(lat_1, lon_1, x1, y1, x2, y2, properties, link.dos);
+                           int x1, int y1, int x2, int y2, 
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkLine.write(lat_1, lon_1, x1, y1, x2, y2, properties, link.dos);
     }
 
 
@@ -891,10 +891,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(float lt, float ln, ImageIcon ii,
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException, InterruptedException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(lt, ln, ii, properties, link.dos);
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException, InterruptedException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(lt, ln, ii, properties, link.dos);
     }
 
     /** 
@@ -909,10 +909,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(int x1, int y1, ImageIcon ii, LinkProperties properties, 
-			     int graphicUpdateMask)
-	throws IOException, InterruptedException  {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(x1, y1, ii, properties, link.dos);
+                             int graphicUpdateMask)
+        throws IOException, InterruptedException  {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(x1, y1, ii, properties, link.dos);
     }
 
     /** 
@@ -929,12 +929,12 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(float lt, float ln, int offset_x1, int offset_y1, ImageIcon ii,
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException, InterruptedException  {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(lt, ln, offset_x1, offset_y1, ii, 
-			 properties, link.dos);
-    }	
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException, InterruptedException  {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(lt, ln, offset_x1, offset_y1, ii, 
+                         properties, link.dos);
+    }   
 
     /** 
      * Write a bitmap in the response.
@@ -950,12 +950,12 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(float lt, float ln, Image image, 
-			     int image_width, int image_height,
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException, InterruptedException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(lt, ln, image, image_width, image_height, 
-			 properties, link.dos);
+                             int image_width, int image_height,
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException, InterruptedException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(lt, ln, image, image_width, image_height, 
+                         properties, link.dos);
     }
 
     /** 
@@ -972,12 +972,12 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(int x1, int y1, Image image, 
-			     int image_width, int image_height,
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException, InterruptedException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(x1, y1, image, image_width, image_height, 
-			 properties, link.dos);
+                             int image_width, int image_height,
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException, InterruptedException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(x1, y1, image, image_width, image_height, 
+                         properties, link.dos);
     }
     
     /** 
@@ -996,12 +996,12 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(float lt, float ln, int offset_x1, int offset_y1,
-			     Image image, int image_width, int image_height,
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException, InterruptedException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(lt, ln, offset_x1, offset_y1, image, 
-			 image_width, image_height, properties, link.dos);
+                             Image image, int image_width, int image_height,
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException, InterruptedException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(lt, ln, offset_x1, offset_y1, image, 
+                         image_width, image_height, properties, link.dos);
     }
 
     /** 
@@ -1017,10 +1017,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(float lt, float ln, int w, int h, int[] pix, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(lt, ln, w, h, pix, properties, link.dos);
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(lt, ln, w, h, pix, properties, link.dos);
     }
     
     /** 
@@ -1036,10 +1036,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(int x1, int y1, int w, int h, int[] pix, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(x1, y1, w, h, pix, properties, link.dos);
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(x1, y1, w, h, pix, properties, link.dos);
     }
 
     /** 
@@ -1057,11 +1057,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(float lt, float ln, int offset_x1, int offset_y1,
-			     int w, int h, int[] pix, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(lt, ln, offset_x1, offset_y1, w, h, pix, properties, link.dos);
+                             int w, int h, int[] pix, 
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(lt, ln, offset_x1, offset_y1, w, h, pix, properties, link.dos);
     }
 
     /** 
@@ -1075,10 +1075,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(float lt, float ln, String url,
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(lt, ln, url, properties, link.dos);
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(lt, ln, url, properties, link.dos);
     }
 
     /** 
@@ -1092,10 +1092,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(int x1, int y1, String url, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(x1, y1, url, properties, link.dos);
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(x1, y1, url, properties, link.dos);
     }
 
     /** 
@@ -1111,10 +1111,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(float lt, float ln, int offset_x1, int offset_y1, String url,
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(lt, ln, offset_x1, offset_y1, url, properties, link.dos);
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(lt, ln, offset_x1, offset_y1, url, properties, link.dos);
     }
 
     /** 
@@ -1132,11 +1132,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(float lt, float ln, int w, int h, 
-			     byte[] bytes, Color[] colorTable, int trans, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(lt, ln, w, h, bytes, colorTable, trans, properties, link.dos);
+                             byte[] bytes, Color[] colorTable, int trans, 
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(lt, ln, w, h, bytes, colorTable, trans, properties, link.dos);
     }
     
     /** 
@@ -1154,11 +1154,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(int x1, int y1, int w, int h,
-			     byte[] bytes, Color[] colorTable, int trans, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(x1, y1, w, h, bytes, colorTable, trans, properties, link.dos);
+                             byte[] bytes, Color[] colorTable, int trans, 
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(x1, y1, w, h, bytes, colorTable, trans, properties, link.dos);
     }
     
     /** 
@@ -1178,12 +1178,12 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(float lt, float ln, int offset_x1, int offset_y1,
-			     int w, int h, byte[] bytes, Color[] colorTable, int trans, 
-			     LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRaster.write(lt, ln, offset_x1, offset_y1, w,  h, bytes, 
-			 colorTable, trans, properties, link.dos);
+                             int w, int h, byte[] bytes, Color[] colorTable, int trans, 
+                             LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRaster.write(lt, ln, offset_x1, offset_y1, w,  h, bytes, 
+                         colorTable, trans, properties, link.dos);
     }
     
     /** 
@@ -1200,10 +1200,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRectangle
      */
     public void updateRectangle(float lt1, float ln1, float lt2, float ln2, int lType,
-				LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRectangle.write(lt1, ln1, lt2, ln2, lType, properties, link.dos);
+                                LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRectangle.write(lt1, ln1, lt2, ln2, lType, properties, link.dos);
     }
     
     /** 
@@ -1221,11 +1221,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRectangle 
      */
     public void updateRectangle(float lt1, float ln1, float lt2, float ln2, 
-				int lType, int nsegs,
-				LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRectangle.write(lt1, ln1, lt2, ln2, lType, nsegs, properties, link.dos);
+                                int lType, int nsegs,
+                                LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRectangle.write(lt1, ln1, lt2, ln2, lType, nsegs, properties, link.dos);
     }
     
     /** 
@@ -1240,10 +1240,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRectangle
      */
     public void updateRectangle(int x1, int y1, int x2, int y2, 
-				LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRectangle.write(x1, y1, x2, y2, properties, link.dos);
+                                LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRectangle.write(x1, y1, x2, y2, properties, link.dos);
     }
     
     /** 
@@ -1260,11 +1260,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRectangle
      */
     public void updateRectangle(float lt1, float ln1, 
-				int x1, int y1, int x2, int y2, 
-				LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkRectangle.write(lt1, ln1, x1, y1, x2, y2, properties, link.dos);
+                                int x1, int y1, int x2, int y2, 
+                                LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkRectangle.write(lt1, ln1, x1, y1, x2, y2, properties, link.dos);
     }
     
     /** 
@@ -1278,10 +1278,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkPoint
      */
     public void updatePoint(float lt1, float ln1, int radius,
-			    LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkPoint.write(lt1, ln1, radius, properties, link.dos);
+                            LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkPoint.write(lt1, ln1, radius, properties, link.dos);
     }
     
     /** 
@@ -1295,10 +1295,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkPoint
      */
     public void updatePoint(int x1, int y1, int radius,
-			    LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkPoint.write(x1, y1, radius, properties, link.dos);
+                            LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkPoint.write(x1, y1, radius, properties, link.dos);
     }
     
     /** 
@@ -1314,11 +1314,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkPoint
      */
     public void updatePoint(float lt1, float ln1, 
-			    int x1, int y1, int radius,
-			    LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkPoint.write(lt1, ln1, x1, y1, radius, properties, link.dos);
+                            int x1, int y1, int radius,
+                            LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkPoint.write(lt1, ln1, x1, y1, radius, properties, link.dos);
     }
     
     /** 
@@ -1332,10 +1332,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
     public void updatePoly(float[] llPoints, int units, int lType, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkPoly.write(llPoints, units, lType, properties, link.dos);
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkPoly.write(llPoints, units, lType, properties, link.dos);
     }
     
     /** 
@@ -1350,10 +1350,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
     public void updatePoly(float[] llpoints, int units, int lType, int nsegs, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkPoly.write(llpoints, units, lType, nsegs, properties, link.dos);
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkPoly.write(llpoints, units, lType, nsegs, properties, link.dos);
     }
     
     /** 
@@ -1365,10 +1365,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
     public void updatePoly(int[] xypoints, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkPoly.write(xypoints, properties, link.dos);
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkPoly.write(xypoints, properties, link.dos);
     }
     
     /** 
@@ -1381,10 +1381,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
     public void updatePoly(int[] xpoints, int[] ypoints, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException  {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkPoly.write(xpoints, ypoints, properties, link.dos);
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException  {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkPoly.write(xpoints, ypoints, properties, link.dos);
     }
     
     /** 
@@ -1401,10 +1401,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
     public void updatePoly(float latPoint, float lonPoint, int[] xypoints, int cMode, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException  {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkPoly.write(latPoint, lonPoint, xypoints, cMode, properties, link.dos);
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException  {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkPoly.write(latPoint, lonPoint, xypoints, cMode, properties, link.dos);
     }
     
     /** 
@@ -1422,11 +1422,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
     public void updatePoly(float latPoint, float lonPoint, 
-			   int[] xpoints, int[] ypoints, int cMode, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException  {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkPoly.write(latPoint, lonPoint, xpoints, ypoints, cMode, properties, link.dos);
+                           int[] xpoints, int[] ypoints, int cMode, 
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException  {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkPoly.write(latPoint, lonPoint, xpoints, ypoints, cMode, properties, link.dos);
     }
     
     /** 
@@ -1441,11 +1441,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkText
      */
     public void updateText(float latPoint, float lonPoint, String stuff, int justify,
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkText.write(latPoint, lonPoint, stuff, LinkText.DEFAULT_FONT, 
-		       justify, properties, link.dos);
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkText.write(latPoint, lonPoint, stuff, LinkText.DEFAULT_FONT, 
+                       justify, properties, link.dos);
     }
     
     /** 
@@ -1460,10 +1460,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkText
      */
     public void updateText(int x, int y, String stuff, int justify, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkText.write(x, y, stuff, LinkText.DEFAULT_FONT, justify, properties, link.dos);
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkText.write(x, y, stuff, LinkText.DEFAULT_FONT, justify, properties, link.dos);
     }
     
     /** 
@@ -1480,12 +1480,12 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkText
      */
     public void updateText(float latPoint, float lonPoint, int offset_x, int offset_y,
-			   String stuff, int justify, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkText.write(latPoint, lonPoint, offset_x, offset_y, 
-		       stuff, LinkText.DEFAULT_FONT, justify, properties, link.dos);
+                           String stuff, int justify, 
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkText.write(latPoint, lonPoint, offset_x, offset_y, 
+                       stuff, LinkText.DEFAULT_FONT, justify, properties, link.dos);
     }
     
     /** 
@@ -1501,11 +1501,11 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkText
      */
     public void updateText(float latPoint, float lonPoint, 
-			   String stuff, String font, int justify, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkText.write(latPoint, lonPoint, stuff, font, justify, properties, link.dos);
+                           String stuff, String font, int justify, 
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkText.write(latPoint, lonPoint, stuff, font, justify, properties, link.dos);
     }
     
     /** 
@@ -1521,10 +1521,10 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkText
      */
     public void updateText(int x, int y, String stuff, String font, int justify, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkText.write(x, y, stuff, font, justify, properties, link.dos);
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkText.write(x, y, stuff, font, justify, properties, link.dos);
     }
     
     /** 
@@ -1542,12 +1542,12 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkText
      */
     public void updateText(float latPoint, float lonPoint, int offset_x, int offset_y,
-			   String stuff, String font, int justify, 
-			   LinkProperties properties, int graphicUpdateMask)
-	throws IOException {
-	writeGraphicGestureHeader(graphicUpdateMask);
-	LinkText.write(latPoint, lonPoint, offset_x, offset_y, 
-		       stuff, font, justify, properties, link.dos);
+                           String stuff, String font, int justify, 
+                           LinkProperties properties, int graphicUpdateMask)
+        throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkText.write(latPoint, lonPoint, offset_x, offset_y, 
+                       stuff, font, justify, properties, link.dos);
     }
 
     /** 
@@ -1556,8 +1556,8 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkText
      */
     public void updateGraphic(OMGraphic omGraphic,
-			      int graphicUpdateMask)
-	throws IOException {
+                              int graphicUpdateMask)
+        throws IOException {
 
 
     }

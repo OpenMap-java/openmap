@@ -1,7 +1,7 @@
 /* **********************************************************************
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/wms/WMSPlugIn.java,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:49 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 18:18:14 $
  * $Author: dietrick $
  *
  * Code provided by Raj Singh from Syncline, rs@syncline.com
@@ -111,7 +111,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
      * Add new layers to the server request, using the default style.
      */
     public void addLayers(String[] ls) {
-	addLayers(ls, null);
+        addLayers(ls, null);
     }
 
     /**
@@ -119,25 +119,25 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
      */
     public void addLayers(String[] ls, String[] st) {
 
-	//DFD - do they have to be the same length?  How about we just
-	//use the styles we have for that number of layers, and let
-	//the defaults take over for the rest.
+        //DFD - do they have to be the same length?  How about we just
+        //use the styles we have for that number of layers, and let
+        //the defaults take over for the rest.
 
-//  	if (ls.length != st.length) {
-//  	    return null;
-//  	}
+//      if (ls.length != st.length) {
+//          return null;
+//      }
 
-	for (int j=0; j < ls.length; j++) {
-	    layers += ","+ls[j];
+        for (int j=0; j < ls.length; j++) {
+            layers += ","+ls[j];
 
-	    // Put some other checks in here instead of the length
-	    // check above.
-	    if (st == null || j >= st.length || st[j] == null) {
-		styles += ",";
-	    } else {
-		styles += "," + st[j];
-	    }
-	}
+            // Put some other checks in here instead of the length
+            // check above.
+            if (st == null || j >= st.length || st[j] == null) {
+                styles += ",";
+            } else {
+                styles += "," + st[j];
+            }
+        }
     }
 
     /**
@@ -151,17 +151,17 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         }
 
         String bbox = "undefined";
-	String height = "undefined";
-	String width = "undefined";
+        String height = "undefined";
+        String width = "undefined";
 
-	if (p != null) {
-	    bbox = Float.toString(p.getUpperLeft().getLongitude()) + "," +
+        if (p != null) {
+            bbox = Float.toString(p.getUpperLeft().getLongitude()) + "," +
             Float.toString(p.getLowerRight().getLatitude()) + "," +
             Float.toString(p.getLowerRight().getLongitude()) + "," +
             Float.toString(p.getUpperLeft().getLatitude());
-	    height = Integer.toString(p.getHeight());
-	    width = Integer.toString(p.getWidth());
-	}
+            height = Integer.toString(p.getHeight());
+            width = Integer.toString(p.getWidth());
+        }
 
         StringBuffer buf = new StringBuffer(queryHeader);
         buf.append("?" + "VERSION" + "=" + wmsVersion +
@@ -199,9 +199,9 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
             buf.append("&" + STYLES + "=" + styles);
         }
 
-	if (Debug.debugging("wms")) {
-	    Debug.output("query string: "+buf);
-	}
+        if (Debug.debugging("wms")) {
+            Debug.output("query string: "+buf);
+        }
 
         /*
          * Included to allow for one or more vendor specific parameters to be
@@ -227,7 +227,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
                 }
             }
         }
-	return buf.toString();
+        return buf.toString();
     }
 
     /**
@@ -248,7 +248,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
      * configuration.
      */
     public void setProperties(String prefix, Properties setList) {
-	super.setProperties(prefix, setList);
+        super.setProperties(prefix, setList);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         wmsServer = setList.getProperty(prefix + WMSServerProperty);
@@ -310,39 +310,39 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
     } //end setProperties
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         props.put(prefix + WMSServerProperty, PropUtils.unnull(wmsServer));
-	props.put(prefix + ImageFormatProperty, PropUtils.unnull(imageFormat));
-	props.put(prefix + TransparentProperty, PropUtils.unnull(transparent));
-	props.put(prefix + BackgroundColorProperty, PropUtils.unnull(backgroundColor));
-	props.put(prefix + WMSVersionProperty, PropUtils.unnull(wmsVersion));
-	props.put(prefix + LayersProperty, PropUtils.unnull(layers));
-	props.put(prefix + StylesProperty, PropUtils.unnull(styles));
-	props.put(prefix + VendorSpecificNamesProperty, PropUtils.unnull(vendorSpecificNames));
-	props.put(prefix + VendorSpecificValuesProperty, PropUtils.unnull(vendorSpecificValues));
-	return props;
+        props.put(prefix + ImageFormatProperty, PropUtils.unnull(imageFormat));
+        props.put(prefix + TransparentProperty, PropUtils.unnull(transparent));
+        props.put(prefix + BackgroundColorProperty, PropUtils.unnull(backgroundColor));
+        props.put(prefix + WMSVersionProperty, PropUtils.unnull(wmsVersion));
+        props.put(prefix + LayersProperty, PropUtils.unnull(layers));
+        props.put(prefix + StylesProperty, PropUtils.unnull(styles));
+        props.put(prefix + VendorSpecificNamesProperty, PropUtils.unnull(vendorSpecificNames));
+        props.put(prefix + VendorSpecificValuesProperty, PropUtils.unnull(vendorSpecificValues));
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
+        props = super.getPropertyInfo(props);
 
-	props.put(initPropertiesProperty, WMSServerProperty + " " + WMSVersionProperty + " " + LayersProperty + " " + StylesProperty + " " + VendorSpecificNamesProperty + " " + VendorSpecificValuesProperty + " " + ImageFormatProperty + " " + TransparentProperty + " " + BackgroundColorProperty);
+        props.put(initPropertiesProperty, WMSServerProperty + " " + WMSVersionProperty + " " + LayersProperty + " " + StylesProperty + " " + VendorSpecificNamesProperty + " " + VendorSpecificValuesProperty + " " + ImageFormatProperty + " " + TransparentProperty + " " + BackgroundColorProperty);
 
         props.put(WMSServerProperty, "URL to the server script that responds to WMS map requests");
-	props.put(ImageFormatProperty, "Image format (GIF, PNG, JPEG)");
-	props.put(TransparentProperty, "Flag to indicate that background of image should be tranparent");
-	props.put(TransparentProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	props.put(BackgroundColorProperty, "The Background color for the image");
-	props.put(BackgroundColorProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-	props.put(WMSVersionProperty, "The WMS specification version");
-	props.put(LayersProperty, "A list of layers to use in the query");
-	props.put(StylesProperty, "A list of layer styles to use inthe query");
-	props.put(VendorSpecificNamesProperty, "Vendor-specific capability names to use in the query");
-	props.put(VendorSpecificValuesProperty, "Vendor-specific capability values for the names");
-	return props;
+        props.put(ImageFormatProperty, "Image format (GIF, PNG, JPEG)");
+        props.put(TransparentProperty, "Flag to indicate that background of image should be tranparent");
+        props.put(TransparentProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(BackgroundColorProperty, "The Background color for the image");
+        props.put(BackgroundColorProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        props.put(WMSVersionProperty, "The WMS specification version");
+        props.put(LayersProperty, "A list of layers to use in the query");
+        props.put(StylesProperty, "A list of layer styles to use inthe query");
+        props.put(VendorSpecificNamesProperty, "Vendor-specific capability names to use in the query");
+        props.put(VendorSpecificValuesProperty, "Vendor-specific capability values for the names");
+        return props;
     }
 
     public String getImageFormat() {

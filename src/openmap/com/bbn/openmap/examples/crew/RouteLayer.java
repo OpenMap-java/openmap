@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/crew/RouteLayer.java,v $
 // $RCSfile: RouteLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -72,8 +72,8 @@ public class RouteLayer extends Layer implements MapMouseListener
      * the canned list of routes.
      */
     public RouteLayer() {
-	omgraphics = new OMGraphicList();
-	createGraphics(omgraphics);
+        omgraphics = new OMGraphicList();
+        createGraphics(omgraphics);
     }
 
 
@@ -91,11 +91,11 @@ public class RouteLayer extends Layer implements MapMouseListener
      * @return An OMLine with the given properties
      */
     public OMLine createLine(float lat1, float lng1, float lat2, float lng2,
-			     int lineType, Color color, Color selColor) {
-	OMLine line = new OMLine(lat1, lng1, lat2, lng2, lineType);
-	line.setLinePaint(color);
-	line.setSelectPaint(selColor);
-	return line;
+                             int lineType, Color color, Color selColor) {
+        OMLine line = new OMLine(lat1, lng1, lat2, lng2, lineType);
+        line.setLinePaint(color);
+        line.setSelectPaint(selColor);
+        return line;
     }
 
     /**
@@ -107,20 +107,20 @@ public class RouteLayer extends Layer implements MapMouseListener
      */
     public OMGraphicList createGraphics(OMGraphicList graphics) {
 
-	graphics.clear();
+        graphics.clear();
 
 
-	graphics.addOMGraphic(createLine(42.0f, -71.0f, 35.5f, -120.5f,
-					 OMGraphic.LINETYPE_GREATCIRCLE,
-					 Color.red, Color.yellow));
-	graphics.addOMGraphic(createLine(28.0f, -81.0f, 47.0f, -122.0f,
-					 OMGraphic.LINETYPE_GREATCIRCLE,
-					 Color.green, Color.yellow));
-	graphics.addOMGraphic(createLine(22.6f, -101.0f, 44.0f, -70.0f,
-					 OMGraphic.LINETYPE_GREATCIRCLE,
-					 Color.blue, Color.yellow));
+        graphics.addOMGraphic(createLine(42.0f, -71.0f, 35.5f, -120.5f,
+                                         OMGraphic.LINETYPE_GREATCIRCLE,
+                                         Color.red, Color.yellow));
+        graphics.addOMGraphic(createLine(28.0f, -81.0f, 47.0f, -122.0f,
+                                         OMGraphic.LINETYPE_GREATCIRCLE,
+                                         Color.green, Color.yellow));
+        graphics.addOMGraphic(createLine(22.6f, -101.0f, 44.0f, -70.0f,
+                                         OMGraphic.LINETYPE_GREATCIRCLE,
+                                         Color.blue, Color.yellow));
 
-	return graphics;
+        return graphics;
     }
     
 
@@ -139,7 +139,7 @@ public class RouteLayer extends Layer implements MapMouseListener
      * done.
      */
     public void paint(Graphics g) {
-	omgraphics.render(g);
+        omgraphics.render(g);
     }
 
 
@@ -155,7 +155,7 @@ public class RouteLayer extends Layer implements MapMouseListener
      *         <code>MapMouseEvent</code>s
      */
     public MapMouseListener getMapMouseListener(){
-	return this;
+        return this;
     }
     
 
@@ -183,9 +183,9 @@ public class RouteLayer extends Layer implements MapMouseListener
      * @param e the projection event
      */
     public void projectionChanged(ProjectionEvent e) {
-	projection =(Projection)e.getProjection().makeClone();
-	omgraphics.project(projection, true);
-	repaint();
+        projection =(Projection)e.getProjection().makeClone();
+        omgraphics.project(projection, true);
+        repaint();
     }
 
 
@@ -206,9 +206,9 @@ public class RouteLayer extends Layer implements MapMouseListener
      * @see com.bbn.openmap.MouseDelegator
      */
     public String[] getMouseModeServiceList() {
-	String[] ret = new String[1];
-	ret[0] = SelectMouseMode.modeID; // "Gestures"
-	return ret;
+        String[] ret = new String[1];
+        ret[0] = SelectMouseMode.modeID; // "Gestures"
+        return ret;
     }
 
 
@@ -222,7 +222,7 @@ public class RouteLayer extends Layer implements MapMouseListener
      * @see #getMouseModeServiceList
      */
     public boolean mousePressed(MouseEvent e) {
-	return false;
+        return false;
     }
   
 
@@ -236,7 +236,7 @@ public class RouteLayer extends Layer implements MapMouseListener
      * @see #getMouseModeServiceList
      */
     public boolean mouseReleased(MouseEvent e) {
-	return false;
+        return false;
     }
   
 
@@ -250,21 +250,21 @@ public class RouteLayer extends Layer implements MapMouseListener
      * @see #getMouseModeServiceList
      */
     public boolean mouseClicked(MouseEvent e) {
-	if (selectedGraphic != null) {
-	    switch (e.getClickCount()) {
-	    case 1:  
-		System.out.println("Show Info: " + selectedGraphic);
-		break;
-	    case 2:
-		System.out.println("Request URL: " + selectedGraphic);
-		break;
-	    default:
-		break;
-	    }
-	    return true;
-	} else {
-	    return false;
-	}
+        if (selectedGraphic != null) {
+            switch (e.getClickCount()) {
+            case 1:  
+                System.out.println("Show Info: " + selectedGraphic);
+                break;
+            case 2:
+                System.out.println("Request URL: " + selectedGraphic);
+                break;
+            default:
+                break;
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -302,7 +302,7 @@ public class RouteLayer extends Layer implements MapMouseListener
      * @see #getMouseModeServiceList
      */
     public boolean mouseDragged(MouseEvent e){
-	return false;
+        return false;
     }
 
 
@@ -320,14 +320,14 @@ public class RouteLayer extends Layer implements MapMouseListener
      * @see #getMouseModeServiceList
      */
     public boolean mouseMoved(MouseEvent e){
-	OMGraphic newSelectedGraphic = omgraphics.selectClosest(e.getX(),
-								e.getY(),
-								2.0f);
-	if (newSelectedGraphic != selectedGraphic) {
-	    selectedGraphic = newSelectedGraphic;
-	    repaint();
-	}
-	return true;
+        OMGraphic newSelectedGraphic = omgraphics.selectClosest(e.getX(),
+                                                                e.getY(),
+                                                                2.0f);
+        if (newSelectedGraphic != selectedGraphic) {
+            selectedGraphic = newSelectedGraphic;
+            repaint();
+        }
+        return true;
     }
     
     /** Called whenever the mouse is moved on this layer and one of
@@ -337,8 +337,8 @@ public class RouteLayer extends Layer implements MapMouseListener
      *
      * @see #getMouseModeServiceList */
     public void mouseMoved(){
-	omgraphics.deselectAll();
-	repaint();
+        omgraphics.deselectAll();
+        repaint();
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeSizeModifier.java,v $
 // $RCSfile: CodeSizeModifier.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,7 +33,7 @@ import com.bbn.openmap.util.PropUtils;
 public class CodeSizeModifier extends CodePosition {
 
     public CodeSizeModifier() {
-	super("Echelon/Size", 11, 12);
+        super("Echelon/Size", 11, 12);
     }
 
     /**
@@ -41,22 +41,22 @@ public class CodeSizeModifier extends CodePosition {
      * code in modifers.properties, and then the last one.
      */
     protected void parsePositions(String prefix, Properties props) {
-	String entry = null;
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
-	for (int index = 1; index > 0 && index < 15; index++) {
-	    entry = props.getProperty(prefix + Integer.toString(index));
-	    if (entry != null) {
-		addPositionChoice(index, entry, prefix, props);
-	    } else {
-		index = -1;
-	    }
-	}
+        String entry = null;
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        for (int index = 1; index > 0 && index < 15; index++) {
+            entry = props.getProperty(prefix + Integer.toString(index));
+            if (entry != null) {
+                addPositionChoice(index, entry, prefix, props);
+            } else {
+                index = -1;
+            }
+        }
 
-	// HACK I know that 'K-' is at 128 in the modifiers.properties file.
-	entry = props.getProperty(prefix + "128");
-	if (entry != null) {
-	    addPositionChoice(128, entry, prefix, props);
-	}
+        // HACK I know that 'K-' is at 128 in the modifiers.properties file.
+        entry = props.getProperty(prefix + "128");
+        if (entry != null) {
+            addPositionChoice(128, entry, prefix, props);
+        }
     }
 
 }

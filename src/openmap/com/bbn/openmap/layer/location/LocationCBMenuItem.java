@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationCBMenuItem.java,v $
 // $RCSfile: LocationCBMenuItem.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,43 +46,43 @@ public class LocationCBMenuItem extends JCheckBoxMenuItem
     }
     
     public LocationCBMenuItem(String text) {
-	super(text);
-	this.addActionListener(this);
+        super(text);
+        this.addActionListener(this);
     }
     
     public LocationCBMenuItem(String text, LocationPopupMenu aCLP, 
-				 LocationLayer aLayer) {
-	this(text);
-	setLocationPopupMenu(aCLP);
-	setLayer(aLayer);
+                                 LocationLayer aLayer) {
+        this(text);
+        setLocationPopupMenu(aCLP);
+        setLayer(aLayer);
     }
 
     public void setLocationPopupMenu(LocationPopupMenu aCLP){
-	clp = aCLP;
+        clp = aCLP;
     }
 
     public LocationPopupMenu getLocationPopupMenu(){
-	return clp;
+        return clp;
     }
 
     public void setLayer(LocationLayer aLayer){
-	layer = aLayer;
+        layer = aLayer;
     }
 
     public LocationLayer getLayer(){
-	return layer;
+        return layer;
     }
 
     public void actionPerformed(java.awt.event.ActionEvent e) {
-// 	    Debug.output("Action: " + e);
-	String command = e.getActionCommand();
+//          Debug.output("Action: " + e);
+        String command = e.getActionCommand();
 
-	if (layer != null && e.getSource().equals(this)){
-	    if (command.equals(LocationHandler.showname)){
-		JCheckBoxMenuItem btn = (JCheckBoxMenuItem)e.getSource();
-		clp.getLoc().setShowName(btn.getState());
-		layer.repaint();
-	    }
-	}
+        if (layer != null && e.getSource().equals(this)){
+            if (command.equals(LocationHandler.showname)){
+                JCheckBoxMenuItem btn = (JCheckBoxMenuItem)e.getSource();
+                clp.getLoc().setShowName(btn.getState());
+                layer.repaint();
+            }
+        }
     }
 }

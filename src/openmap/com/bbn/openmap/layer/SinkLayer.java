@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/SinkLayer.java,v $
 // $RCSfile: SinkLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,9 +42,9 @@ public class SinkLayer extends Layer {
      * @return SinkLayer shared instance
      */
     public final static SinkLayer getSharedInstance () {
-	if (sharedInstance == null)
-	    sharedInstance = new SinkLayer();
-	return sharedInstance;
+        if (sharedInstance == null)
+            sharedInstance = new SinkLayer();
+        return sharedInstance;
     }
 
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PolyDeleteNodeState.java,v $
 // $RCSfile: PolyDeleteNodeState.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/22 16:10:22 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,7 +36,7 @@ public class PolyDeleteNodeState extends State {
     protected EditableOMGraphic graphic;
 
     public PolyDeleteNodeState(EditableOMPoly eomg) {
-	graphic = eomg;
+        graphic = eomg;
     }
 
     /**
@@ -46,51 +46,51 @@ public class PolyDeleteNodeState extends State {
      * and go to edit mode.
      */
     public boolean mouseReleased(MouseEvent e) {
-	Debug.message("eomg", "GraphicStateMachine|delete node state|mouseReleased");
+        Debug.message("eomg", "GraphicStateMachine|delete node state|mouseReleased");
 
-	GrabPoint mp = graphic.getMovingPoint(e);
+        GrabPoint mp = graphic.getMovingPoint(e);
 
-	// If the graphic itself was clicked on, then just go to selected
-	// mode.
-	if (mp != null) {
-	    int index = ((EditableOMPoly)graphic).whichGrabPoint(mp);
-	    if (index != EditableOMPoly.OFFSET_POINT_INDEX) {
-		((EditableOMPoly)graphic).deletePoint(index);
-	    }
-	}
+        // If the graphic itself was clicked on, then just go to selected
+        // mode.
+        if (mp != null) {
+            int index = ((EditableOMPoly)graphic).whichGrabPoint(mp);
+            if (index != EditableOMPoly.OFFSET_POINT_INDEX) {
+                ((EditableOMPoly)graphic).deletePoint(index);
+            }
+        }
 
-	graphic.getStateMachine().setSelected();
-	graphic.redraw(e, true);
+        graphic.getStateMachine().setSelected();
+        graphic.redraw(e, true);
 
-	return false;
+        return false;
     }
 
     public boolean mouseMoved(MouseEvent e) {
-	Debug.message("eomgdetail", "PolyStateMachine|delete node state|mouseMoved");
-	GrabPoint mp = graphic.getMovingPoint(e);
+        Debug.message("eomgdetail", "PolyStateMachine|delete node state|mouseMoved");
+        GrabPoint mp = graphic.getMovingPoint(e);
 
-	if (mp != null) { // Only change the cursor over a node
-// 	if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
-	    graphic.fireEvent(EOMGCursors.EDIT, 
-			      "Click a node to delete it.");
-	} else {
-	    graphic.fireEvent(EOMGCursors.DEFAULT, 
-			      "Click a node to delete it.");
-	}
-	return false;
+        if (mp != null) { // Only change the cursor over a node
+//      if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
+            graphic.fireEvent(EOMGCursors.EDIT, 
+                              "Click a node to delete it.");
+        } else {
+            graphic.fireEvent(EOMGCursors.DEFAULT, 
+                              "Click a node to delete it.");
+        }
+        return false;
     }
 
     public boolean mouseDragged(MouseEvent e) {
-	Debug.message("eomgdetail", 
-		      "PolyStateMachine|delete node state|mouseDragged");
-	if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
-	    graphic.fireEvent(EOMGCursors.EDIT, 
-			      "Release over a node to delete it.");
-	} else {
-	    graphic.fireEvent(EOMGCursors.DEFAULT, 
-			      "Release over a node to delete it.");
-	}
-	return false;
+        Debug.message("eomgdetail", 
+                      "PolyStateMachine|delete node state|mouseDragged");
+        if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
+            graphic.fireEvent(EOMGCursors.EDIT, 
+                              "Release over a node to delete it.");
+        } else {
+            graphic.fireEvent(EOMGCursors.DEFAULT, 
+                              "Release over a node to delete it.");
+        }
+        return false;
     }
 }
 

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 22:55:27 $
-// $Author: wjeuerle $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:14 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -96,42 +96,42 @@ public class MGRSPoint extends UTMPoint {
      * fill the values in.  
      */
     public MGRSPoint() {
-	DEBUG = Debug.debugging("mgrs");
+        DEBUG = Debug.debugging("mgrs");
     }
 
     /**
      * Constructs a new MGRS instance from a MGRS String.
      */
     public MGRSPoint(String mgrsString) {
-	this();
-	setMGRS(mgrsString);
+        this();
+        setMGRS(mgrsString);
     }
 
     /**
      * Contructs a new MGRSPoint instance from values in another MGRSPoint.
      */
     public MGRSPoint(MGRSPoint point) {
-	this();
-	mgrs = point.mgrs;
-	northing = point.northing;
-	easting = point.easting;
-	zone_number = point.zone_number;
-	zone_letter = point.zone_letter;
-	accuracy = point.accuracy;
+        this();
+        mgrs = point.mgrs;
+        northing = point.northing;
+        easting = point.easting;
+        zone_number = point.zone_number;
+        zone_letter = point.zone_letter;
+        accuracy = point.accuracy;
     }
 
     /**
      * Create a MGRSPoint from UTM values;
      */
     public MGRSPoint(float northing, float easting, int zoneNumber, char zoneLetter) {
-	super(northing, easting, zoneNumber, zoneLetter);
+        super(northing, easting, zoneNumber, zoneLetter);
     }
 
     /**
      * Contruct a MGRSPoint from a LatLonPoint, assuming a WGS_84 ellipsoid.
      */
     public MGRSPoint(LatLonPoint llpoint) {
-	this(llpoint, Ellipsoid.WGS_84);
+        this(llpoint, Ellipsoid.WGS_84);
     }
 
     /**
@@ -139,8 +139,8 @@ public class MGRSPoint extends UTMPoint {
      * ellipsoid.  
      */
     public MGRSPoint(LatLonPoint llpoint, Ellipsoid ellip) {
-	this();
-	LLtoMGRS(llpoint, ellip, this);
+        this();
+        LLtoMGRS(llpoint, ellip, this);
     }
 
     /**
@@ -149,24 +149,24 @@ public class MGRSPoint extends UTMPoint {
      * translate it to lat/lon decimal degrees.
      */
     public void setMGRS(String mgrsString) {
-	try {
-	    mgrs = mgrsString.toUpperCase(); // Just to make sure.
-	    decode(mgrs);
-	} catch (StringIndexOutOfBoundsException sioobe) {
-	    throw new NumberFormatException("MGRSPoint has bad string: " + mgrsString);
-	} catch (NullPointerException npe) {
-	    // Blow off	    
-	}
+        try {
+            mgrs = mgrsString.toUpperCase(); // Just to make sure.
+            decode(mgrs);
+        } catch (StringIndexOutOfBoundsException sioobe) {
+            throw new NumberFormatException("MGRSPoint has bad string: " + mgrsString);
+        } catch (NullPointerException npe) {
+            // Blow off     
+        }
     }
 
     /**
      * Get the MGRS string value - the honkin' coordinate value.
      */
     public String getMGRS() {
-	if (mgrs == null) {
-	    resolve();
-	}
-	return mgrs;
+        if (mgrs == null) {
+            resolve();
+        }
+        return mgrs;
     }
 
     /**
@@ -174,7 +174,7 @@ public class MGRSPoint extends UTMPoint {
      * ellisoid.
      */
     public LatLonPoint toLatLonPoint() {
-	return toLatLonPoint(Ellipsoid.WGS_84, new LatLonPoint());
+        return toLatLonPoint(Ellipsoid.WGS_84, new LatLonPoint());
     }
 
     /**
@@ -182,7 +182,7 @@ public class MGRSPoint extends UTMPoint {
      * ellipsoid.
      */
     public LatLonPoint toLatLonPoint(Ellipsoid ellip) {
-	return toLatLonPoint(ellip, new LatLonPoint());
+        return toLatLonPoint(ellip, new LatLonPoint());
     }
 
     /**
@@ -190,7 +190,7 @@ public class MGRSPoint extends UTMPoint {
      * MGRSPoint, and use the given ellipsoid.  
      */
     public LatLonPoint toLatLonPoint(Ellipsoid ellip, LatLonPoint llpoint) {
-	return MGRStoLL(this, ellip, llpoint);
+        return MGRStoLL(this, ellip, llpoint);
     }
 
     /**
@@ -198,7 +198,7 @@ public class MGRSPoint extends UTMPoint {
      * @return String representation
      */
     public String toString() {
-	return "MGRSPoint[" + mgrs +"]";
+        return "MGRSPoint[" + mgrs +"]";
     }
 
     /**
@@ -211,7 +211,7 @@ public class MGRSPoint extends UTMPoint {
      * @return LatLonPoint with values converted from MGRS coordinate.
      */
     public static LatLonPoint MGRStoLL(MGRSPoint mgrsp, Ellipsoid ellip, LatLonPoint llp) {
-	return UTMtoLL(mgrsp, ellip, llp);
+        return UTMtoLL(mgrsp, ellip, llp);
     }
 
     /**
@@ -219,7 +219,7 @@ public class MGRSPoint extends UTMPoint {
      * @return MGRSPoint, or null if something bad happened.
      */
     public static MGRSPoint LLtoMGRS(LatLonPoint llpoint) {
-	return LLtoMGRS(llpoint, Ellipsoid.WGS_84, new MGRSPoint());
+        return LLtoMGRS(llpoint, Ellipsoid.WGS_84, new MGRSPoint());
     }
 
     /**
@@ -232,7 +232,7 @@ public class MGRSPoint extends UTMPoint {
      * successful conversion.
      */
     public static MGRSPoint LLtoMGRS(LatLonPoint llpoint, MGRSPoint mgrsp) {
-	return LLtoMGRS(llpoint, Ellipsoid.WGS_84, mgrsp);
+        return LLtoMGRS(llpoint, Ellipsoid.WGS_84, mgrsp);
     }
 
     /**
@@ -245,9 +245,9 @@ public class MGRSPoint extends UTMPoint {
      * @return MGRSPoint with values converted from lat/lon.
      */
     public static MGRSPoint LLtoMGRS(LatLonPoint llp, Ellipsoid ellip, MGRSPoint mgrsp) {
-	mgrsp = (MGRSPoint)LLtoUTM(llp, ellip, mgrsp);
-	mgrsp.resolve();
-	return mgrsp;
+        mgrsp = (MGRSPoint)LLtoUTM(llp, ellip, mgrsp);
+        mgrsp.resolve();
+        return mgrsp;
     }
 
     /**
@@ -256,138 +256,138 @@ public class MGRSPoint extends UTMPoint {
      * corrdinate.  From 5 (1 meter) to 1 (10,000 meter).
      */
     public void setAccuracy(int value) {
-	accuracy = value;
-	mgrs = null;
+        accuracy = value;
+        mgrs = null;
     }
 
     public int getAccuracy() {
-	return accuracy;
+        return accuracy;
     }
 
     /**
      * Set the UTM parameters from a MGRS string.
      */
     protected void decode(String mgrsString) 
-	throws NumberFormatException {
+        throws NumberFormatException {
 
-	if (mgrsString == null || mgrsString.length() == 0) {
-	    throw new NumberFormatException("MGRSPoint coverting from nothing");
-	}
+        if (mgrsString == null || mgrsString.length() == 0) {
+            throw new NumberFormatException("MGRSPoint coverting from nothing");
+        }
 
-	int length = mgrsString.length();
+        int length = mgrsString.length();
 
-	String hunK = null;
-	String seasting = null;
-	String snorthing = null;
+        String hunK = null;
+        String seasting = null;
+        String snorthing = null;
 
-	StringBuffer sb = new StringBuffer();
-	char testChar;
-	int i = 0;
+        StringBuffer sb = new StringBuffer();
+        char testChar;
+        int i = 0;
 
-	// get Zone number
-	while (!Character.isLetter(testChar = mgrsString.charAt(i))) {
-	    if (i > 2) {
-		throw new NumberFormatException("MGRSPoint bad conversion from: " + mgrsString);
-	    }
-	    sb.append(testChar);
-	    i++;
-	}
+        // get Zone number
+        while (!Character.isLetter(testChar = mgrsString.charAt(i))) {
+            if (i > 2) {
+                throw new NumberFormatException("MGRSPoint bad conversion from: " + mgrsString);
+            }
+            sb.append(testChar);
+            i++;
+        }
 
-	zone_number = Integer.parseInt(sb.toString());
+        zone_number = Integer.parseInt(sb.toString());
 
-	if (i == 0 || i+3 > length) {
-	    // A good MGRS string has to be 4-5 digits long, ##AAA/#AAA at least.
-	    throw new NumberFormatException("MGRSPoint bad conversion from: " + mgrsString);
-	}
+        if (i == 0 || i+3 > length) {
+            // A good MGRS string has to be 4-5 digits long, ##AAA/#AAA at least.
+            throw new NumberFormatException("MGRSPoint bad conversion from: " + mgrsString);
+        }
 
-	zone_letter = mgrsString.charAt(i++);
+        zone_letter = mgrsString.charAt(i++);
 
-	// Should we check the zone letter here?  Why not.
-	if (zone_letter <= 'A' ||
-	    zone_letter == 'B' ||
-	    zone_letter == 'Y' ||
-	    zone_letter >= 'Z' ||
-	    zone_letter == 'I' ||
-	    zone_letter == 'O') {
-	    throw new NumberFormatException("MGRSPoint zone letter " + 
-					    (char)zone_letter + " not handled: " + 
-					    mgrsString);
-	}
+        // Should we check the zone letter here?  Why not.
+        if (zone_letter <= 'A' ||
+            zone_letter == 'B' ||
+            zone_letter == 'Y' ||
+            zone_letter >= 'Z' ||
+            zone_letter == 'I' ||
+            zone_letter == 'O') {
+            throw new NumberFormatException("MGRSPoint zone letter " + 
+                                            (char)zone_letter + " not handled: " + 
+                                            mgrsString);
+        }
 
-	hunK = mgrsString.substring(i, i+=2);
+        hunK = mgrsString.substring(i, i+=2);
 
-	int set =  get100kSetForZone(zone_number);
+        int set =  get100kSetForZone(zone_number);
 
-	float east100k = getEastingFromChar(hunK.charAt(0), set);
-	float north100k = getNorthingFromChar(hunK.charAt(1), set);
+        float east100k = getEastingFromChar(hunK.charAt(0), set);
+        float north100k = getNorthingFromChar(hunK.charAt(1), set);
 
-	// We have a bug where the northing may be 2000000 too low.  How 
-	// do we know when to roll over?  Every 18 degrees. Q - 3, S -
-	// 5, U - 5, W - 8
+        // We have a bug where the northing may be 2000000 too low.  How 
+        // do we know when to roll over?  Every 18 degrees. Q - 3, S -
+        // 5, U - 5, W - 8
 
-	if ((zone_letter == 'Q' && north100k < 1700000) ||
-	    (zone_letter >= 'R')) {
-	    north100k += 2000000;
-	    if (DEBUG) Debug.output(" northing rolled over 18, adding 200k to " + north100k);
-	}
+        if ((zone_letter == 'Q' && north100k < 1700000) ||
+            (zone_letter >= 'R')) {
+            north100k += 2000000;
+            if (DEBUG) Debug.output(" northing rolled over 18, adding 200k to " + north100k);
+        }
 
-	if ((zone_letter == 'S' && north100k < 3000000) ||
-	    (zone_letter >= 'T')) {
-	    north100k += 2000000;
-	    if (DEBUG) Debug.output(" northing rolled over 36, adding 200k to " + north100k);
-	}
+        if ((zone_letter == 'S' && north100k < 3000000) ||
+            (zone_letter >= 'T')) {
+            north100k += 2000000;
+            if (DEBUG) Debug.output(" northing rolled over 36, adding 200k to " + north100k);
+        }
 
-	if ((zone_letter == 'U' && north100k < 5330000) ||
-	    (zone_letter >= 'V')) {
-	    north100k += 2000000;
-	    if (DEBUG) Debug.output(" northing rolled over 54, adding 200k to " + north100k);
-	}
+        if ((zone_letter == 'U' && north100k < 5330000) ||
+            (zone_letter >= 'V')) {
+            north100k += 2000000;
+            if (DEBUG) Debug.output(" northing rolled over 54, adding 200k to " + north100k);
+        }
 
-	if (zone_letter >= 'X') {
-	    north100k += 2000000;
-	    if (DEBUG) Debug.output(" northing rolled over 72, adding 200k to " + north100k);	    
-	    if (north100k > 9500000) {
-		// There's a tiny sliver of space that does this...
-		north100k -= 2000000;
-		if (DEBUG) Debug.output(" - rolling back to " + north100k);
-	    }
-	}
+        if (zone_letter >= 'X') {
+            north100k += 2000000;
+            if (DEBUG) Debug.output(" northing rolled over 72, adding 200k to " + north100k);       
+            if (north100k > 9500000) {
+                // There's a tiny sliver of space that does this...
+                north100k -= 2000000;
+                if (DEBUG) Debug.output(" - rolling back to " + north100k);
+            }
+        }
 
-	// calculate the char index for easting/northing separator
-	int remainder = length - i;
+        // calculate the char index for easting/northing separator
+        int remainder = length - i;
 
-	if (remainder%2 != 0) {
-	    throw new NumberFormatException("MGRSPoint has to have an even number \nof digits after the zone letter and two 100km letters - front \nhalf for easting meters, second half for \nnorthing meters" + mgrsString);
-	}
-	    
-	int sep = remainder / 2;
+        if (remainder%2 != 0) {
+            throw new NumberFormatException("MGRSPoint has to have an even number \nof digits after the zone letter and two 100km letters - front \nhalf for easting meters, second half for \nnorthing meters" + mgrsString);
+        }
+            
+        int sep = remainder / 2;
 
-	float sepEasting = 0f;
-	float sepNorthing = 0f;
+        float sepEasting = 0f;
+        float sepNorthing = 0f;
 
-	if (sep > 0) {
-	    if (DEBUG) Debug.output(" calculating e/n from " + mgrs.substring(i));
-	    float accuracyBonus = 100000f/(float)Math.pow(10, sep);
-	    if (DEBUG) Debug.output(" calculated accuracy bonus as  " + accuracyBonus);
-	    String sepEastingString = mgrsString.substring(i, i + sep);
-	    if (DEBUG) Debug.output(" parsed easting as " + sepEastingString);
-	    sepEasting = Float.parseFloat(sepEastingString) * accuracyBonus;
-	    String sepNorthingString = mgrsString.substring(i + sep);
-	    if (DEBUG) Debug.output(" parsed northing as " + sepNorthingString);
-	    sepNorthing = Float.parseFloat(sepNorthingString) * accuracyBonus;
-	}
-	
-	easting = sepEasting + east100k;
-	northing = sepNorthing + north100k;
+        if (sep > 0) {
+            if (DEBUG) Debug.output(" calculating e/n from " + mgrs.substring(i));
+            float accuracyBonus = 100000f/(float)Math.pow(10, sep);
+            if (DEBUG) Debug.output(" calculated accuracy bonus as  " + accuracyBonus);
+            String sepEastingString = mgrsString.substring(i, i + sep);
+            if (DEBUG) Debug.output(" parsed easting as " + sepEastingString);
+            sepEasting = Float.parseFloat(sepEastingString) * accuracyBonus;
+            String sepNorthingString = mgrsString.substring(i + sep);
+            if (DEBUG) Debug.output(" parsed northing as " + sepNorthingString);
+            sepNorthing = Float.parseFloat(sepNorthingString) * accuracyBonus;
+        }
+        
+        easting = sepEasting + east100k;
+        northing = sepNorthing + north100k;
 
-	if (DEBUG) {
-	    Debug.output("Decoded " + mgrsString + 
-			 " as zone number: " + zone_number + 
-			 ", zone letter: " + zone_letter + 
-			 ", easting: " + easting +
-			 ", northing: " + northing	+ 
-			 ", 100k: " + hunK);
-	}
+        if (DEBUG) {
+            Debug.output("Decoded " + mgrsString + 
+                         " as zone number: " + zone_number + 
+                         ", zone letter: " + zone_letter + 
+                         ", easting: " + easting +
+                         ", northing: " + northing      + 
+                         ", 100k: " + hunK);
+        }
     }
 
     /**
@@ -395,7 +395,7 @@ public class MGRSPoint extends UTMPoint {
      * using the accuracy set in the MGRSPoint.
      */
     protected void resolve() {
-	resolve(accuracy);
+        resolve(accuracy);
     }
 
     /**
@@ -405,53 +405,53 @@ public class MGRSPoint extends UTMPoint {
      * 10 meter, 3 - 100 meter, 2 - 1000 meter, 1 - 10,000 meter.
      */
     protected void resolve(int digitAccuracy) {
-	StringBuffer sb = 
-	    new StringBuffer(zone_number + "" + (char)zone_letter + 
-			     get100kID(easting, northing, zone_number));
-	StringBuffer seasting = new StringBuffer(Integer.toString((int)easting));
-	StringBuffer snorthing = new StringBuffer(Integer.toString((int)northing));
+        StringBuffer sb = 
+            new StringBuffer(zone_number + "" + (char)zone_letter + 
+                             get100kID(easting, northing, zone_number));
+        StringBuffer seasting = new StringBuffer(Integer.toString((int)easting));
+        StringBuffer snorthing = new StringBuffer(Integer.toString((int)northing));
 
-	if (DEBUG) {
-	    Debug.output(" Resolving MGRS from easting: " + seasting + " derived from " + easting + ", and northing: " + snorthing + " derived from " + northing);
-	}
-	
-	while (digitAccuracy > seasting.length()) {
-	    seasting.insert(0, '0');
-	}
+        if (DEBUG) {
+            Debug.output(" Resolving MGRS from easting: " + seasting + " derived from " + easting + ", and northing: " + snorthing + " derived from " + northing);
+        }
+        
+        while (digitAccuracy > seasting.length()) {
+            seasting.insert(0, '0');
+        }
 
-	// We have to be careful here, the 100k values shouldn't be 
-	// used for calculating stuff here.
+        // We have to be careful here, the 100k values shouldn't be 
+        // used for calculating stuff here.
 
-	while (digitAccuracy > snorthing.length()) {
-	    snorthing.insert(0, '0');
-	}
+        while (digitAccuracy > snorthing.length()) {
+            snorthing.insert(0, '0');
+        }
 
-	while (snorthing.length() > 6) {
-	    snorthing.deleteCharAt(0);
-	}
+        while (snorthing.length() > 6) {
+            snorthing.deleteCharAt(0);
+        }
 
-	if (DEBUG) {
-	    Debug.output(" -- modified easting: " + seasting + 
-			 " and northing: " + snorthing);
-	}
+        if (DEBUG) {
+            Debug.output(" -- modified easting: " + seasting + 
+                         " and northing: " + snorthing);
+        }
 
-	try {
-	    sb.append(seasting.substring(1, digitAccuracy + 1) + 
-		      snorthing.substring(1, digitAccuracy + 1));
-	
-	    mgrs = sb.toString();
-	} catch (IndexOutOfBoundsException ioobe) {
-	    mgrs = null;
-	}
+        try {
+            sb.append(seasting.substring(1, digitAccuracy + 1) + 
+                      snorthing.substring(1, digitAccuracy + 1));
+        
+            mgrs = sb.toString();
+        } catch (IndexOutOfBoundsException ioobe) {
+            mgrs = null;
+        }
     }
 
     /**
      * Given a UTM zone number, figure out the MGRS 100K set it is in.
      */
     protected int get100kSetForZone(int i) {
-	int set = i%NUM_100K_SETS;
-	if (set == 0) set = NUM_100K_SETS;
-	return set;
+        int set = i%NUM_100K_SETS;
+        if (set == 0) set = NUM_100K_SETS;
+        return set;
     }
 
     /**
@@ -461,7 +461,7 @@ public class MGRSPoint extends UTMPoint {
      * of each set box, as shown in an MGRS 100K box layout.
      */
     protected int[] getOriginColumnLetters() {
-	return originColumnLetters;
+        return originColumnLetters;
     }
 
     /**
@@ -471,7 +471,7 @@ public class MGRSPoint extends UTMPoint {
      * of each set box, as shown in an MGRS 100K box layout.
      */
     protected void setOriginColumnLetters(int[] letters) {
-	originColumnLetters = letters;
+        originColumnLetters = letters;
     }
 
     /**
@@ -481,7 +481,7 @@ public class MGRSPoint extends UTMPoint {
      * of each set box, as shown in an MGRS 100K box layout.
      */
     protected int[] getOriginRowLetters() {
-	return originRowLetters;
+        return originRowLetters;
     }
 
     /**
@@ -491,7 +491,7 @@ public class MGRSPoint extends UTMPoint {
      * of each set box, as shown in an MGRS 100K box layout.
      */
     protected void setOriginRowLetters(int[] letters) {
-	originRowLetters = letters;
+        originRowLetters = letters;
     }
 
     /**
@@ -499,10 +499,10 @@ public class MGRSPoint extends UTMPoint {
      * northing and zone number value.
      */
     protected String get100kID(float easting, float northing, int zone_number) {
-	int set = get100kSetForZone(zone_number);
-	int setColumn = ((int)easting/100000);
-	int setRow = ((int)northing/100000)%20;
-	return get100kID(setColumn, setRow, set);
+        int set = get100kSetForZone(zone_number);
+        int setColumn = ((int)easting/100000);
+        int setRow = ((int)northing/100000)%20;
+        return get100kID(setColumn, setRow, set);
     }
 
     /**
@@ -512,25 +512,25 @@ public class MGRSPoint extends UTMPoint {
      * easting value.
      */
     protected float getEastingFromChar(char e, int set) {
-	int baseCol[] = getOriginColumnLetters();
-	// colOrigin is the letter at the origin of the set for the column
-	int curCol = baseCol[set-1];
-	float eastingValue = 100000f;
+        int baseCol[] = getOriginColumnLetters();
+        // colOrigin is the letter at the origin of the set for the column
+        int curCol = baseCol[set-1];
+        float eastingValue = 100000f;
 
-	while (curCol != e) {
-	    curCol++;
-	    if (curCol == I) curCol++;
-	    if (curCol == O) curCol++;
-	    if (curCol > Z) curCol = A;
-	    eastingValue += 100000f;
-	}
+        while (curCol != e) {
+            curCol++;
+            if (curCol == I) curCol++;
+            if (curCol == O) curCol++;
+            if (curCol > Z) curCol = A;
+            eastingValue += 100000f;
+        }
 
-	if (DEBUG) {
-	    Debug.output("Easting value for " + (char)e + 
-			 " from set: " + set + ", col: " + curCol + 
-			 " is " + eastingValue);
-	}
-	return eastingValue;
+        if (DEBUG) {
+            Debug.output("Easting value for " + (char)e + 
+                         " from set: " + set + ", col: " + curCol + 
+                         " is " + eastingValue);
+        }
+        return eastingValue;
     }
     
     /**
@@ -550,26 +550,26 @@ public class MGRSPoint extends UTMPoint {
      * UTM zone number.
      */
     protected float getNorthingFromChar(char n, int set) {
-	int baseRow[] = getOriginRowLetters();
-	// rowOrigin is the letter at the origin of the set for the column
-	int curRow = baseRow[set-1];
-	float northingValue = 0f;
+        int baseRow[] = getOriginRowLetters();
+        // rowOrigin is the letter at the origin of the set for the column
+        int curRow = baseRow[set-1];
+        float northingValue = 0f;
 
-	while (curRow != n) {
-	    curRow++;
-	    if (curRow == I) curRow++;
-	    if (curRow == O) curRow++;
-	    if (curRow > V) curRow = A;
-	    northingValue += 100000f;
-	}
+        while (curRow != n) {
+            curRow++;
+            if (curRow == I) curRow++;
+            if (curRow == O) curRow++;
+            if (curRow > V) curRow = A;
+            northingValue += 100000f;
+        }
 
-	if (DEBUG) {
-	    Debug.output("Northing value for " + (char)n + 
-			 " from set: " + set + ", row: " + curRow + 
-			 " is " + northingValue);
-	}
+        if (DEBUG) {
+            Debug.output("Northing value for " + (char)n + 
+                         " from set: " + set + ", row: " + curRow + 
+                         " is " + northingValue);
+        }
 
-	return northingValue;
+        return northingValue;
     }
 
     /**
@@ -585,165 +585,165 @@ public class MGRSPoint extends UTMPoint {
      */
     protected String get100kID(int setColumn, int setRow, int set) {
 
-	if (DEBUG) {
-	    System.out.println("set (" + set + ") column = " + setColumn + ", row = " + setRow);
-	}
+        if (DEBUG) {
+            System.out.println("set (" + set + ") column = " + setColumn + ", row = " + setRow);
+        }
 
-	int baseCol[] = getOriginColumnLetters();
-	int baseRow[] = getOriginRowLetters();
+        int baseCol[] = getOriginColumnLetters();
+        int baseRow[] = getOriginRowLetters();
 
-	// colOrigin and rowOrigin are the letters at the origin of the set
-	int colOrigin = baseCol[set-1];
-	int rowOrigin = baseRow[set-1];
+        // colOrigin and rowOrigin are the letters at the origin of the set
+        int colOrigin = baseCol[set-1];
+        int rowOrigin = baseRow[set-1];
 
-	if (DEBUG) {
-	    System.out.println("starting at = " + (char)colOrigin + (char)rowOrigin);
-	}
+        if (DEBUG) {
+            System.out.println("starting at = " + (char)colOrigin + (char)rowOrigin);
+        }
 
-	// colInt and rowInt are the letters to build to return
-	int colInt = colOrigin + setColumn - 1;
-	int rowInt = rowOrigin + setRow;
-	boolean rollover = false;
+        // colInt and rowInt are the letters to build to return
+        int colInt = colOrigin + setColumn - 1;
+        int rowInt = rowOrigin + setRow;
+        boolean rollover = false;
 
-	if (colInt > Z) {
-	    colInt = colInt - Z + A - 1;
-	    rollover = true;
-	    if (DEBUG) System.out.println("rolling over col, new value: " + (char)colInt);
-	}
+        if (colInt > Z) {
+            colInt = colInt - Z + A - 1;
+            rollover = true;
+            if (DEBUG) System.out.println("rolling over col, new value: " + (char)colInt);
+        }
 
-	if (colInt == I || (colOrigin < I && colInt > I) || 
- 	    ((colInt > I || colOrigin < I) && rollover)) {
-	    colInt++;
-	    if (DEBUG) System.out.println("skipping I in col, new value: " + (char)colInt);
-	}
-	if (colInt == O || (colOrigin < O && colInt > O) || 
- 	    ((colInt > O || colOrigin < O) && rollover)) {
-	    colInt++;
-	    if (DEBUG) System.out.println("skipping O in col, new value: " + (char)colInt);
-	    if (colInt == I) {
-		colInt++;
-		if (DEBUG) System.out.println("  hit I, new value: " + (char)colInt);
-	    }
-	}
+        if (colInt == I || (colOrigin < I && colInt > I) || 
+            ((colInt > I || colOrigin < I) && rollover)) {
+            colInt++;
+            if (DEBUG) System.out.println("skipping I in col, new value: " + (char)colInt);
+        }
+        if (colInt == O || (colOrigin < O && colInt > O) || 
+            ((colInt > O || colOrigin < O) && rollover)) {
+            colInt++;
+            if (DEBUG) System.out.println("skipping O in col, new value: " + (char)colInt);
+            if (colInt == I) {
+                colInt++;
+                if (DEBUG) System.out.println("  hit I, new value: " + (char)colInt);
+            }
+        }
 
-	if (colInt > Z) {
-	    colInt = colInt - Z + A - 1;
-	    if (DEBUG) System.out.println("rolling(2) col, new value: " + (char)rowInt);
-	}
+        if (colInt > Z) {
+            colInt = colInt - Z + A - 1;
+            if (DEBUG) System.out.println("rolling(2) col, new value: " + (char)rowInt);
+        }
 
-	if (rowInt > V) {
-	    rowInt = rowInt - V + A - 1;
-	    rollover = true;
-	    if (DEBUG) System.out.println("rolling over row, new value: " + (char)rowInt);
-	} else {
-	    rollover = false;
-	}
+        if (rowInt > V) {
+            rowInt = rowInt - V + A - 1;
+            rollover = true;
+            if (DEBUG) System.out.println("rolling over row, new value: " + (char)rowInt);
+        } else {
+            rollover = false;
+        }
 
-	if (rowInt == I || (rowOrigin < I && rowInt > I) || 
- 	    ((rowInt > I || rowOrigin < I) && rollover)) {
-	    rowInt++;
-	    if (DEBUG) System.out.println("skipping I in row, new value: " + (char)rowInt);
-	}
+        if (rowInt == I || (rowOrigin < I && rowInt > I) || 
+            ((rowInt > I || rowOrigin < I) && rollover)) {
+            rowInt++;
+            if (DEBUG) System.out.println("skipping I in row, new value: " + (char)rowInt);
+        }
 
-	if (rowInt == O || (rowOrigin < O && rowInt > O) || 
- 	    ((rowInt > O || rowOrigin < O) && rollover)) {
-	    rowInt++;
-	    if (DEBUG) System.out.println("skipping O in row, new value: " + (char)rowInt);
-	    if (rowInt == I) {
-		rowInt++;
-		if (DEBUG) System.out.println("  hit I, new value: " + (char)rowInt);
-	    }
-	}
+        if (rowInt == O || (rowOrigin < O && rowInt > O) || 
+            ((rowInt > O || rowOrigin < O) && rollover)) {
+            rowInt++;
+            if (DEBUG) System.out.println("skipping O in row, new value: " + (char)rowInt);
+            if (rowInt == I) {
+                rowInt++;
+                if (DEBUG) System.out.println("  hit I, new value: " + (char)rowInt);
+            }
+        }
 
-	if (rowInt > V) {
-	    rowInt = rowInt - V + A - 1;
-	    if (DEBUG) System.out.println("rolling(2) row, new value: " + (char)rowInt);
-	}
+        if (rowInt > V) {
+            rowInt = rowInt - V + A - 1;
+            if (DEBUG) System.out.println("rolling(2) row, new value: " + (char)rowInt);
+        }
 
-	String twoLetter = (char)colInt + "" + (char)rowInt;
+        String twoLetter = (char)colInt + "" + (char)rowInt;
 
-	if (DEBUG) {
-	    System.out.println("ending at = " + twoLetter);
-	}
+        if (DEBUG) {
+            System.out.println("ending at = " + twoLetter);
+        }
 
-	return twoLetter;
+        return twoLetter;
     }
 
     /**
      * Testing method, used to print out the MGRS 100k two letter set tables.
      */
     protected void print100kSets() {
-	StringBuffer sb = null;
-	for (int set = 1; set <= 6; set++) {
-	    System.out.println("-------------\nFor 100K Set " + set + ":\n-------------\n");
-	    for (int i = 19; i >=0; i -= 1) {
-		sb = new StringBuffer((i*100000) + "\t| ");
+        StringBuffer sb = null;
+        for (int set = 1; set <= 6; set++) {
+            System.out.println("-------------\nFor 100K Set " + set + ":\n-------------\n");
+            for (int i = 19; i >=0; i -= 1) {
+                sb = new StringBuffer((i*100000) + "\t| ");
 
-		for (int j = 1; j <= 8; j++) {
- 		    sb.append(" " + get100kID(j, i, set));
-		}
+                for (int j = 1; j <= 8; j++) {
+                    sb.append(" " + get100kID(j, i, set));
+                }
 
-		sb.append(" |");
-		System.out.println(sb);
-	    }
-	}
+                sb.append(" |");
+                System.out.println(sb);
+            }
+        }
     }
 
     public static void main(String[] argv) {
-	Debug.init();
+        Debug.init();
 
-	ArgParser ap = new ArgParser("MGRSPoint");
-	ap.add("mgrs", "Print Latitude and Longitude for MGRS value", 1);
-	ap.add("latlon", "Print MGRS for Latitude and Longitude values", 2, true);
-	ap.add("sets", "Print the MGRS 100k table");
-	ap.add("altsets", "Print the MGRS 100k table for the Bessel ellipsoid");
+        ArgParser ap = new ArgParser("MGRSPoint");
+        ap.add("mgrs", "Print Latitude and Longitude for MGRS value", 1);
+        ap.add("latlon", "Print MGRS for Latitude and Longitude values", 2, true);
+        ap.add("sets", "Print the MGRS 100k table");
+        ap.add("altsets", "Print the MGRS 100k table for the Bessel ellipsoid");
 
-	if (!ap.parse(argv)) {
-	    ap.printUsage();
-	    System.exit(0);
-	}
+        if (!ap.parse(argv)) {
+            ap.printUsage();
+            System.exit(0);
+        }
 
-	String arg[];
-	arg = ap.getArgValues("sets");
-	if (arg != null) {
-	    new MGRSPoint().print100kSets();
-	}
-	
-	arg = ap.getArgValues("altsets");
-	if (arg != null) {
-	    MGRSPoint mgrsp = new MGRSPoint();
-	    mgrsp.setOriginColumnLetters(BESSEL_SET_ORIGIN_COLUMN_LETTERS);
-	    mgrsp.setOriginRowLetters(BESSEL_SET_ORIGIN_ROW_LETTERS);
-	    mgrsp.print100kSets();
-	}
-	
-	arg = ap.getArgValues("mgrs");
-	if (arg != null) {
-	    try {
-		MGRSPoint mgrsp = new MGRSPoint(arg[0]);
-		Debug.output(arg[0] + " is " + mgrsp.toLatLonPoint());	
-	    } catch (NumberFormatException nfe) {
-		Debug.error(nfe.getMessage());
-	    }
-	}
-	
-	arg = ap.getArgValues("latlon");
-	if (arg != null) {
-	    try {
+        String arg[];
+        arg = ap.getArgValues("sets");
+        if (arg != null) {
+            new MGRSPoint().print100kSets();
+        }
+        
+        arg = ap.getArgValues("altsets");
+        if (arg != null) {
+            MGRSPoint mgrsp = new MGRSPoint();
+            mgrsp.setOriginColumnLetters(BESSEL_SET_ORIGIN_COLUMN_LETTERS);
+            mgrsp.setOriginRowLetters(BESSEL_SET_ORIGIN_ROW_LETTERS);
+            mgrsp.print100kSets();
+        }
+        
+        arg = ap.getArgValues("mgrs");
+        if (arg != null) {
+            try {
+                MGRSPoint mgrsp = new MGRSPoint(arg[0]);
+                Debug.output(arg[0] + " is " + mgrsp.toLatLonPoint());  
+            } catch (NumberFormatException nfe) {
+                Debug.error(nfe.getMessage());
+            }
+        }
+        
+        arg = ap.getArgValues("latlon");
+        if (arg != null) {
+            try {
 
-		float lat = Float.parseFloat(arg[0]);
-		float lon = Float.parseFloat(arg[1]);
+                float lat = Float.parseFloat(arg[0]);
+                float lon = Float.parseFloat(arg[1]);
 
-		LatLonPoint llp = new LatLonPoint(lat, lon);
-		MGRSPoint mgrsp = LLtoMGRS(llp);
+                LatLonPoint llp = new LatLonPoint(lat, lon);
+                MGRSPoint mgrsp = LLtoMGRS(llp);
 
-		Debug.output(llp + " is " + mgrsp);
+                Debug.output(llp + " is " + mgrsp);
 
-	    } catch (NumberFormatException nfe) {
-		Debug.error("The numbers provided:  " + argv[0] + ", " +
-			    argv[1] + " aren't valid");
-	    }
-	}
+            } catch (NumberFormatException nfe) {
+                Debug.error("The numbers provided:  " + argv[0] + ", " +
+                            argv[1] + " aren't valid");
+            }
+        }
 
     }
 }

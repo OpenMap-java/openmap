@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/MapRequestHandler.java,v $
 // $RCSfile: MapRequestHandler.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/24 03:36:22 $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -99,36 +99,36 @@ public class MapRequestHandler extends ImageServer
     protected boolean useVisibility = false;
 
     public MapRequestHandler(Properties props) throws IOException {
-	this(null, props);
+        this(null, props);
     }
 
     public MapRequestHandler(String prefix, Properties props) throws IOException {
-	setProperties(prefix, props);
+        setProperties(prefix, props);
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	defaultProjection = initProjection(props);
+        defaultProjection = initProjection(props);
         defaultLayers = props.getProperty(prefix + DefaultLayersProperty);
 
-	if (defaultLayers == null) {
-	    defaultLayers = props.getProperty(defaultLayersProperty);
-	}
+        if (defaultLayers == null) {
+            defaultLayers = props.getProperty(defaultLayersProperty);
+        }
 
-	setUseVisibility(LayerUtils.booleanFromProperties(props, prefix + UseVisibilityProperty, getUseVisibility()));
+        setUseVisibility(LayerUtils.booleanFromProperties(props, prefix + UseVisibilityProperty, getUseVisibility()));
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
+        props = super.getPropertyInfo(props);
 
-	// Still have to do projection, and default layers.
+        // Still have to do projection, and default layers.
 
-	props.put(UseVisibilityProperty, "Flag to use layer visibility settings to determine default layers");
+        props.put(UseVisibilityProperty, "Flag to use layer visibility settings to determine default layers");
 
-	return props;
+        return props;
     }
 
     /**
@@ -136,11 +136,11 @@ public class MapRequestHandler extends ImageServer
      * default layers for the image.
      */
     public void setUseVisibility(boolean value) {
-	useVisibility = value;
+        useVisibility = value;
     }
 
     public boolean getUseVisibility() {
-	return useVisibility;
+        return useVisibility;
     }
 
     /**
@@ -153,25 +153,25 @@ public class MapRequestHandler extends ImageServer
      * projection are found.  
      */
     protected Projection initProjection(Properties props) {
-	String projName = Environment.get(Environment.Projection, 
-					  Mercator.MercatorName);
-	int projType = ProjectionFactory.getProjType(projName);
-	
-	Projection proj = 
-	    ProjectionFactory.makeProjection(
-		projType,
-		Environment.getFloat(Environment.Latitude, 0f),
-		Environment.getFloat(Environment.Longitude, 0f),
-		Environment.getFloat(Environment.Scale, 
-				     Float.POSITIVE_INFINITY),
-		Environment.getInteger(Environment.Width, 640),
-		Environment.getInteger(Environment.Height, 480));
+        String projName = Environment.get(Environment.Projection, 
+                                          Mercator.MercatorName);
+        int projType = ProjectionFactory.getProjType(projName);
+        
+        Projection proj = 
+            ProjectionFactory.makeProjection(
+                projType,
+                Environment.getFloat(Environment.Latitude, 0f),
+                Environment.getFloat(Environment.Longitude, 0f),
+                Environment.getFloat(Environment.Scale, 
+                                     Float.POSITIVE_INFINITY),
+                Environment.getInteger(Environment.Width, 640),
+                Environment.getInteger(Environment.Height, 480));
 
-	if (Debug.debugging("imageserver")) {
-	    Debug.output("MRH starting with default projection = " + 
-			 proj);
-	}
-	return proj;
+        if (Debug.debugging("imageserver")) {
+            Debug.output("MRH starting with default projection = " + 
+                         proj);
+        }
+        return proj;
     }
 
     /**
@@ -179,7 +179,7 @@ public class MapRequestHandler extends ImageServer
      * projection terms are missing from the request string.  
      */
     public void setDefaultProjection(Projection proj) {
-	defaultProjection = proj;
+        defaultProjection = proj;
     }
 
     /**
@@ -187,7 +187,7 @@ public class MapRequestHandler extends ImageServer
      * parameters are missing from request strings.  
      */
     public Projection getDefaultProjection() {
-	return defaultProjection;
+        return defaultProjection;
     }
 
     /**
@@ -197,11 +197,11 @@ public class MapRequestHandler extends ImageServer
      * (layer.getPropertyPrefix()).
      */
     public void setDefaultLayers(String dLayers) {
-	defaultLayers = dLayers;
+        defaultLayers = dLayers;
     }
 
     public String getDefaultLayers() {
-	return defaultLayers;
+        return defaultLayers;
     }
 
     /**
@@ -209,33 +209,33 @@ public class MapRequestHandler extends ImageServer
      * request, for the current configuration of the MapRequestHandler.
      */
     public String getAllLayerNames() {
-	Layer[] layers = getLayers();
-	StringBuffer sb = new StringBuffer();
-	for (int i = 0; i < layers.length; i++) {
-	    sb.append((i > 0?" ":"") + layers[i].getPropertyPrefix());
-	}
-	return sb.toString();
+        Layer[] layers = getLayers();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < layers.length; i++) {
+            sb.append((i > 0?" ":"") + layers[i].getPropertyPrefix());
+        }
+        return sb.toString();
     }
 
     protected Properties convertRequestToProps(String request)
- 	throws MapRequestFormatException {
-	try {
-	    // Convert any %XX to the real ASCII value.
-	    request = java.net.URLDecoder.decode(request);
+        throws MapRequestFormatException {
+        try {
+            // Convert any %XX to the real ASCII value.
+            request = java.net.URLDecoder.decode(request);
 
-	    Properties requestProperties = PropUtils.parsePropertyList(request);
+            Properties requestProperties = PropUtils.parsePropertyList(request);
 
-	    if (Debug.debugging("imageserver")) {
-		Debug.output("MRH: parsed request " + requestProperties);
-	    }
-	
-	    return  requestProperties;
-	} catch (PropertyStringFormatException psfe) {
-	    throw new MapRequestFormatException(psfe.getMessage());
-	} catch (Exception e) {
-	    throw new MapRequestFormatException(e.getMessage());
-	}
-    }	
+            if (Debug.debugging("imageserver")) {
+                Debug.output("MRH: parsed request " + requestProperties);
+            }
+        
+            return  requestProperties;
+        } catch (PropertyStringFormatException psfe) {
+            throw new MapRequestFormatException(psfe.getMessage());
+        } catch (Exception e) {
+            throw new MapRequestFormatException(e.getMessage());
+        }
+    }   
 
     /**
      * Given a general request, parse it and handle it.
@@ -244,25 +244,25 @@ public class MapRequestHandler extends ImageServer
      * @return a byte[] for the image.
      */
     public byte[] handleRequest(String request)
- 	throws IOException, MapRequestFormatException {
+        throws IOException, MapRequestFormatException {
 
-	Properties requestProperties = convertRequestToProps(request);
-	String requestType = requestProperties.getProperty(REQUEST);
+        Properties requestProperties = convertRequestToProps(request);
+        String requestType = requestProperties.getProperty(REQUEST);
 
-	if (requestType != null) {
-	    if (requestType.equalsIgnoreCase(MAP)) {
-		Debug.message("imageserver", "MRH: Map request...");
-		return handleMapRequest(requestProperties);
-// 	    } else if (requestType.equalsIgnoreCase(CAPABILITIES)) {
-// 		Debug.message("imageserver", "MRH: Capabilities request...");
-// 		handleCapabilitiesRequest(requestProperties, out);
-	    } else {
-		throw new MapRequestFormatException("Request type not handled: " +
-						    requestType);
-	    }
-	} else {
-	    throw new MapRequestFormatException("Request not understood: " + request);
-	}
+        if (requestType != null) {
+            if (requestType.equalsIgnoreCase(MAP)) {
+                Debug.message("imageserver", "MRH: Map request...");
+                return handleMapRequest(requestProperties);
+//          } else if (requestType.equalsIgnoreCase(CAPABILITIES)) {
+//              Debug.message("imageserver", "MRH: Capabilities request...");
+//              handleCapabilitiesRequest(requestProperties, out);
+            } else {
+                throw new MapRequestFormatException("Request type not handled: " +
+                                                    requestType);
+            }
+        } else {
+            throw new MapRequestFormatException("Request not understood: " + request);
+        }
     }
 
     /**
@@ -272,9 +272,9 @@ public class MapRequestHandler extends ImageServer
      * @param out OutputStream to reply on.
      */
     public void handleRequest(String request, OutputStream out) 
-	throws IOException, MapRequestFormatException {
+        throws IOException, MapRequestFormatException {
 
-	Properties requestProperties = convertRequestToProps(request);
+        Properties requestProperties = convertRequestToProps(request);
 
         String requestType = requestProperties.getProperty(REQUEST);
         if (requestType != null) {
@@ -309,63 +309,63 @@ public class MapRequestHandler extends ImageServer
      * @return byte[] of formatted image.
      */
     public byte[] handleMapRequest(Properties requestProperties)
-	throws IOException, MapRequestFormatException {
+        throws IOException, MapRequestFormatException {
 
-	Proj projection = ImageServerUtils.createOMProjection(requestProperties, defaultProjection);
+        Proj projection = ImageServerUtils.createOMProjection(requestProperties, defaultProjection);
 
-	setBackground(ImageServerUtils.getBackground(requestProperties));
+        setBackground(ImageServerUtils.getBackground(requestProperties));
 
-	boolean formatFound = false;
-	
-	String format = requestProperties.getProperty(FORMAT);
-	if (format != null) {
-	    formatFound = setFormatter(format.toUpperCase());
-	    formatFound = true;
-	    Debug.message("imageserver","Format requested " + format);
-	}
+        boolean formatFound = false;
+        
+        String format = requestProperties.getProperty(FORMAT);
+        if (format != null) {
+            formatFound = setFormatter(format.toUpperCase());
+            formatFound = true;
+            Debug.message("imageserver","Format requested " + format);
+        }
 
-	if (Debug.debugging("imageserver") && 
-	    (format == null || formatFound == false)) {
-	    Debug.output("MRH: no formatter defined, using default");
-	}
+        if (Debug.debugging("imageserver") && 
+            (format == null || formatFound == false)) {
+            Debug.output("MRH: no formatter defined, using default");
+        }
 
-	byte[] image;
+        byte[] image;
 
-	// We need to think about using the layer mask, parsing it
-	// intelligently, and not using it if it's a little freaky.
+        // We need to think about using the layer mask, parsing it
+        // intelligently, and not using it if it's a little freaky.
 
-//  	String strLayerMask = requestProperties.getProperty(LAYERMASK);
-//  	// default is to show all the layers server knows about.
-//  	int layerMask = 0xFFFFFFFF;
-//  	if (strLayerMask != null) {
-//  	    if (Debug.debugging("imageserver") {
-//  		Debug.output("MRH.handleMapRequest: LayerMask unsigned int is " +
-//  			     strLayerMask);
-//  	    }
-//  	    layerMask = Integer.parseInt(strLayerMask);
-//  	}
-	
-	String strLayers = requestProperties.getProperty(LAYERS);
+//      String strLayerMask = requestProperties.getProperty(LAYERMASK);
+//      // default is to show all the layers server knows about.
+//      int layerMask = 0xFFFFFFFF;
+//      if (strLayerMask != null) {
+//          if (Debug.debugging("imageserver") {
+//              Debug.output("MRH.handleMapRequest: LayerMask unsigned int is " +
+//                           strLayerMask);
+//          }
+//          layerMask = Integer.parseInt(strLayerMask);
+//      }
+        
+        String strLayers = requestProperties.getProperty(LAYERS);
 
-	// Pass any properties to the layers???  Maybe if another
-	// property is set, to bother with taking up the time to run
-	// through all of this...
+        // Pass any properties to the layers???  Maybe if another
+        // property is set, to bother with taking up the time to run
+        // through all of this...
 
-	if (strLayers != null) {
+        if (strLayers != null) {
 
-	    Vector layers = PropUtils.parseMarkers(strLayers, ",");
-	    if (Debug.debugging("imageserver")) {
-		Debug.output("MRH.handleMapRequest: requested layers >> " + layers);
-	    }
-	    image = createImage(projection, -1, -1, layers);
-	} else {
+            Vector layers = PropUtils.parseMarkers(strLayers, ",");
+            if (Debug.debugging("imageserver")) {
+                Debug.output("MRH.handleMapRequest: requested layers >> " + layers);
+            }
+            image = createImage(projection, -1, -1, layers);
+        } else {
             // if LAYERS property is not specified
-	    // Check default layers or if visibility should be used to determine default
+            // Check default layers or if visibility should be used to determine default
 
             if (getUseVisibility()) {
                 if (Debug.debugging("imageserver")) {
-		    Debug.output("MRH.handleMapRequest: Using visibility to determine layers");
-		}
+                    Debug.output("MRH.handleMapRequest: Using visibility to determine layers");
+                }
                 image = createImage(projection, -1, -1, calculateVisibleLayerMask());
             } else {
                 Vector layers = PropUtils.parseMarkers(defaultLayers, " ");
@@ -373,32 +373,32 @@ public class MapRequestHandler extends ImageServer
                     Debug.output("MRH.handleMapRequest: requested layers >> " + layers + " out of " + getAllLayerNames());
                 }
                 image = createImage(projection, -1, -1, layers);
-	    }
+            }
         }
-	return image;
+        return image;
     }
 
     /**
      * Handle a Map Request.
      */
     public void handleMapRequest(Properties requestProperties, OutputStream out)
-	throws IOException, MapRequestFormatException {
+        throws IOException, MapRequestFormatException {
 
-	byte[] image = handleMapRequest(requestProperties);
+        byte[] image = handleMapRequest(requestProperties);
 
-	if (Debug.debugging("imageserver")) {
-	    Debug.output("MRH: have completed image, size " + image.length);
-	}
+        if (Debug.debugging("imageserver")) {
+            Debug.output("MRH: have completed image, size " + image.length);
+        }
 
-	String contentType = getFormatterContentType(getFormatter());
+        String contentType = getFormatterContentType(getFormatter());
 
-	if (contentType == null) {
-	    contentType = HttpConnection.CONTENT_PLAIN;
-	}
+        if (contentType == null) {
+            contentType = HttpConnection.CONTENT_PLAIN;
+        }
 
-	Debug.message("imageserver", "MRH: have type = " + contentType);
+        Debug.message("imageserver", "MRH: have type = " + contentType);
 
-	HttpConnection.writeHttpResponse(out, contentType, image);
+        HttpConnection.writeHttpResponse(out, contentType, image);
     }
 
     /**
@@ -453,31 +453,31 @@ public class MapRequestHandler extends ImageServer
      * that matches it.  
      */
     public String getFormatterContentType(ImageFormatter formatter) {
-	String ret = null;
-	String label = formatter.getFormatLabel();
+        String ret = null;
+        String label = formatter.getFormatLabel();
 
-	String[] knownContentTypes = HttpConnection.getAllContentTypes();
+        String[] knownContentTypes = HttpConnection.getAllContentTypes();
 
-	for (int i = 0; i < knownContentTypes.length; i++) {
-	    if (knownContentTypes[i].indexOf(label.toLowerCase()) != -1) {
-		ret = knownContentTypes[i];
-		break;
-	    }
-	}
-	return ret;
+        for (int i = 0; i < knownContentTypes.length; i++) {
+            if (knownContentTypes[i].indexOf(label.toLowerCase()) != -1) {
+                ret = knownContentTypes[i];
+                break;
+            }
+        }
+        return ret;
     }
 
     /**
      * Handle a capabilities request.
      */
     public void handleCapabilitiesRequest(Properties requestProperties, 
-					  OutputStream out)
-	throws IOException, MapRequestFormatException {
+                                          OutputStream out)
+        throws IOException, MapRequestFormatException {
 
-	if (Debug.debugging("imageserver")) {
-	    Debug.output("MRH.handleCapabilitiesRequest: unimplemented");
-	}
+        if (Debug.debugging("imageserver")) {
+            Debug.output("MRH.handleCapabilitiesRequest: unimplemented");
+        }
 
-	throw new MapRequestFormatException("Capabilities request currently not handled");
+        throw new MapRequestFormatException("Capabilities request currently not handled");
     }
 }

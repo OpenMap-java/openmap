@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkBoundingPoly.java,v $
 // $RCSfile: LinkBoundingPoly.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:27 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -52,7 +52,7 @@ public class LinkBoundingPoly{
      * @param dis DataInputStream to read from.
      */
     public LinkBoundingPoly(DataInput dis) throws IOException {
-	read(dis);
+        read(dis);
     }
 
     /**  
@@ -62,7 +62,7 @@ public class LinkBoundingPoly{
      * @param poly a series of alternating x, y points describing a polygon.
      */
     public LinkBoundingPoly(float[] poly){
-	points = poly;
+        points = poly;
     }
 
     /**
@@ -74,23 +74,23 @@ public class LinkBoundingPoly{
      * @param maxY maximum Y value.
      */
     public LinkBoundingPoly(float minX, float minY, 
-			    float maxX, float maxY){
-	points = new float[10];
-	
-	Debug.message("link", "LinkBoundingPoly: Creating link bounding poly with " +
-		      minX + ", " + minY + 
-		      ", " + maxX + ", "+ maxY);
-	
-	points[0] = minY;
-	points[1] = minX;
-	points[2] = maxY;
-	points[3] = minX;
-	points[4] = maxY;
-	points[5] = maxX;
-	points[6] = minY;
-	points[7] = maxX;
-	points[8] = minY;
-	points[9] = minX;
+                            float maxX, float maxY){
+        points = new float[10];
+        
+        Debug.message("link", "LinkBoundingPoly: Creating link bounding poly with " +
+                      minX + ", " + minY + 
+                      ", " + maxX + ", "+ maxY);
+        
+        points[0] = minY;
+        points[1] = minX;
+        points[2] = maxY;
+        points[3] = minX;
+        points[4] = maxY;
+        points[5] = maxX;
+        points[6] = minY;
+        points[7] = maxX;
+        points[8] = minY;
+        points[9] = minX;
     }
 
     /** 
@@ -100,13 +100,13 @@ public class LinkBoundingPoly{
      * @param dos the DataOutput to write to. 
      */
     public void write(DataOutput dos) throws IOException {
-	// round down to a multiple of two.
-	int length = (points.length/2)*2;
-	
-	dos.writeInt(length);
-	for (int i = 0; i < length; i++){
-	    dos.writeFloat(points[i]);
-	}
+        // round down to a multiple of two.
+        int length = (points.length/2)*2;
+        
+        dos.writeInt(length);
+        for (int i = 0; i < length; i++){
+            dos.writeFloat(points[i]);
+        }
     }
 
     /**
@@ -116,31 +116,31 @@ public class LinkBoundingPoly{
      */
     public void read(DataInput dis) throws IOException {
 
-	Debug.message("link", "LinkBoundingPoly: read()");
+        Debug.message("link", "LinkBoundingPoly: read()");
 
-	int polyLength = dis.readInt();
-	points = new float[polyLength];
-	float x, y;
+        int polyLength = dis.readInt();
+        points = new float[polyLength];
+        float x, y;
 
-	for (int i = 0; i < points.length; i+=2){
-	    y = dis.readFloat();
-	    x = dis.readFloat();
+        for (int i = 0; i < points.length; i+=2){
+            y = dis.readFloat();
+            x = dis.readFloat();
 
-	    if (i == 0) {
-		minX = x;
-		minY = y;
-		maxX = x;
-		maxY = y;
-	    }
+            if (i == 0) {
+                minX = x;
+                minY = y;
+                maxX = x;
+                maxY = y;
+            }
 
-	    points[i] = y;
-	    points[i+1] = x;
+            points[i] = y;
+            points[i+1] = x;
 
-	    if (x < minX) minX = x;
-	    if (x > maxX) maxX = x;
-	    if (y < minY) minY = y;
-	    if (y > maxY) maxY = y;
-	}
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+        }
     }
 
     /** 
@@ -150,7 +150,7 @@ public class LinkBoundingPoly{
      * @return float[] of alternating x, y, points. 
      */
     public float[] getPoints(){
-	return points;
+        return points;
     }
 
     /**
@@ -161,22 +161,22 @@ public class LinkBoundingPoly{
      * @return LatLonPoints 
      */
     public LatLonPoint[] getLatLonPoints(){
-	LatLonPoint[] boundingPoly = new LatLonPoint[points.length/2];
-	float lat, lon;
-	for (int i = 0; i < points.length; i+=2){
-	    lat = points[i];
-	    lon = points[i+1];
-	    boundingPoly[i] = new LatLonPoint(lat, lon);
-	}
-	return boundingPoly;
+        LatLonPoint[] boundingPoly = new LatLonPoint[points.length/2];
+        float lat, lon;
+        for (int i = 0; i < points.length; i+=2){
+            lat = points[i];
+            lon = points[i+1];
+            boundingPoly[i] = new LatLonPoint(lat, lon);
+        }
+        return boundingPoly;
     }
 
     public String toString(){
-	StringBuffer s = new StringBuffer();
-	s.append("  LinkBoundingPoly has " + points.length/2 + " points.");
-	for (int i = 0; i < points.length; i+=2){
-	    s.append("\n    |Lat = " + points[i] + ", Lon = " + points[i+1] + "|");
-	}
-	return s.toString();
+        StringBuffer s = new StringBuffer();
+        s.append("  LinkBoundingPoly has " + points.length/2 + " points.");
+        for (int i = 0; i < points.length; i+=2){
+            s.append("\n    |Lat = " + points[i] + ", Lon = " + points[i+1] + "|");
+        }
+        return s.toString();
     }
 }

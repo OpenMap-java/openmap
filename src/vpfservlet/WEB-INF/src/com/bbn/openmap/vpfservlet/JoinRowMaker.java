@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/JoinRowMaker.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -36,42 +36,42 @@ public class JoinRowMaker extends PlainRowMaker {
     final TileHolder tiler;
     final TilingAdapter ta;
     public JoinRowMaker(DcwRecordFile table, String joinColumnName,
-			String tableName, boolean isTiled) throws FormatException {
-	theColumn = table.whatColumn(joinColumnName);
-	tileColumn = isTiled ? table.whatColumn(FeatureClassInfo.TILE_ID_COLUMN_NAME) : -1;
-	ta = table.getTilingAdapter(tileColumn, theColumn);
-	tiler = new TileHolder(new File(table.getTableFile()).getParentFile(),
-			       tableName, isTiled);
+                        String tableName, boolean isTiled) throws FormatException {
+        theColumn = table.whatColumn(joinColumnName);
+        tileColumn = isTiled ? table.whatColumn(FeatureClassInfo.TILE_ID_COLUMN_NAME) : -1;
+        ta = table.getTilingAdapter(tileColumn, theColumn);
+        tiler = new TileHolder(new File(table.getTableFile()).getParentFile(),
+                               tableName, isTiled);
     }
 
     public void addToRow(TableRowElement row, List l) {
-	int i = 0;
-	for (Iterator li = l.iterator(); li.hasNext(); ) {
-	    Object elt = li.next();
-	    if (i == theColumn) {
-		int whatrow = ta.getTilePrimId(l);
-		int tileId = ta.getTileId(l);
-		try {
-		    if (tiler.getRow(ta, l, jtrow)) {
-			for (Iterator it = jtrow.iterator(); it.hasNext(); ) {
-			    row.addElement(new TableDataElement("CLASS=JoinColumn",
-								it.next().toString()));
-			}
-		    } else {
-			row.addElement("Join failed! ["+elt+"]"+ "(" + tileId + "," + whatrow + ")");
-		    }
-		} catch (FormatException fe) {
-		    row.addElement(fe.toString() + "(" + tileId + "," + whatrow + ")");
-		}
-	    } else {
-		row.addElement(elt.toString());
-	    }
-	    i++;
-	}
+        int i = 0;
+        for (Iterator li = l.iterator(); li.hasNext(); ) {
+            Object elt = li.next();
+            if (i == theColumn) {
+                int whatrow = ta.getTilePrimId(l);
+                int tileId = ta.getTileId(l);
+                try {
+                    if (tiler.getRow(ta, l, jtrow)) {
+                        for (Iterator it = jtrow.iterator(); it.hasNext(); ) {
+                            row.addElement(new TableDataElement("CLASS=JoinColumn",
+                                                                it.next().toString()));
+                        }
+                    } else {
+                        row.addElement("Join failed! ["+elt+"]"+ "(" + tileId + "," + whatrow + ")");
+                    }
+                } catch (FormatException fe) {
+                    row.addElement(fe.toString() + "(" + tileId + "," + whatrow + ")");
+                }
+            } else {
+                row.addElement(elt.toString());
+            }
+            i++;
+        }
     }
 
     public void close() {
-	tiler.close();
+        tiler.close();
     }
 }
 

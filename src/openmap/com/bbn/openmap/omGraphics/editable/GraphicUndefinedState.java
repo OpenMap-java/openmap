@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicUndefinedState.java,v $
 // $RCSfile: GraphicUndefinedState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,7 +36,7 @@ public class GraphicUndefinedState extends State implements EOMGUndefinedState {
     protected EditableOMGraphic graphic;
 
     public GraphicUndefinedState(EditableOMGraphic eomg) {
-	graphic = eomg;
+        graphic = eomg;
     }
 
     /**
@@ -45,27 +45,27 @@ public class GraphicUndefinedState extends State implements EOMGUndefinedState {
      * set the mode to graphic edit.  
      */
     public boolean mousePressed(MouseEvent e){ 
-	if (Debug.debugging("eomg")) {
-	    Debug.output("GraphicStateMachine|undefined state|mousePressed = " + 
-			 graphic.getGraphic().getRenderType());
-	}
-	
-// 	graphic.getGrabPoint(EditableOMGraphic.STARTING_POINT_INDEX).set(e.getX(), e.getY());
-//  	graphic.getGrabPoint(EditableOMGraphic.ENDING_POINT_INDEX).set(e.getX(), e.getY());
-// 	graphic.setMovingPoint(graphic.getGrabPoint(EditableOMGraphic.ENDING_POINT_INDEX));
+        if (Debug.debugging("eomg")) {
+            Debug.output("GraphicStateMachine|undefined state|mousePressed = " + 
+                         graphic.getGraphic().getRenderType());
+        }
+        
+//      graphic.getGrabPoint(EditableOMGraphic.STARTING_POINT_INDEX).set(e.getX(), e.getY());
+//      graphic.getGrabPoint(EditableOMGraphic.ENDING_POINT_INDEX).set(e.getX(), e.getY());
+//      graphic.setMovingPoint(graphic.getGrabPoint(EditableOMGraphic.ENDING_POINT_INDEX));
 
-	if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
-	    graphic.getStateMachine().setOffsetNeeded(true);
-	    Debug.message("eomg", "GraphicStateMachine|undefined state| *offset needed*");
-	}
-	graphic.getStateMachine().setEdit();
-	return getMapMouseListenerResponse();
+        if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
+            graphic.getStateMachine().setOffsetNeeded(true);
+            Debug.message("eomg", "GraphicStateMachine|undefined state| *offset needed*");
+        }
+        graphic.getStateMachine().setEdit();
+        return getMapMouseListenerResponse();
     }
 
     public boolean mouseMoved(MouseEvent e) {
-	Debug.message("eomgdetail", "GraphicStateMachine|undefined state|mouseMoved");
-	graphic.fireEvent(EOMGCursors.EDIT, "Click and Drag to define graphic.");
-	return false;
+        Debug.message("eomgdetail", "GraphicStateMachine|undefined state|mouseMoved");
+        graphic.fireEvent(EOMGCursors.EDIT, "Click and Drag to define graphic.");
+        return false;
     }
 
 }

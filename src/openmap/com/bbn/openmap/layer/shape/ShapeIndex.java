@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeIndex.java,v $
 // $RCSfile: ShapeIndex.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:30 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:11 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -44,7 +44,7 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.2 $ $Date: 2003/12/23 20:43:30 $
+ * @version $Revision: 1.3 $ $Date: 2004/01/26 18:18:11 $
  * @see SpatialIndex
  */
 public class ShapeIndex extends ShapeUtils {
@@ -62,7 +62,7 @@ public class ShapeIndex extends ShapeUtils {
      * @exception IOException if something goes wrong opening the file
      */
     public ShapeIndex(String shxFilename) throws IOException {
-	shx = new RandomAccessFile(shxFilename, "r");
+        shx = new RandomAccessFile(shxFilename, "r");
     }
 
     /**
@@ -71,26 +71,26 @@ public class ShapeIndex extends ShapeUtils {
      * @exception IOException if something goes wrong reading the file
      */
     public void dumpIndex() throws IOException {
-	boolean atEOF = false;
-	byte ixRecord[] = new byte[SHAPE_INDEX_RECORD_LENGTH];
-	int recNum = 0;
-	int count = 0;
+        boolean atEOF = false;
+        byte ixRecord[] = new byte[SHAPE_INDEX_RECORD_LENGTH];
+        int recNum = 0;
+        int count = 0;
 
-	shx.seek(100);		// skip the file header
-	while (! atEOF) {
-	    int result = shx.read(ixRecord, 0, SHAPE_INDEX_RECORD_LENGTH);
-	    if (result == -1) {
-		atEOF = true;
-		Debug.output("Processed " + recNum + " records");
-	    } else {
-		recNum++;
-		int offset = readBEInt(ixRecord, 0);
-		int length = readBEInt(ixRecord, 4);
-		Debug.output("Record " + recNum + ": " +
-				   offset + ", " + length);
-	    }
-	}
-	    
+        shx.seek(100);          // skip the file header
+        while (! atEOF) {
+            int result = shx.read(ixRecord, 0, SHAPE_INDEX_RECORD_LENGTH);
+            if (result == -1) {
+                atEOF = true;
+                Debug.output("Processed " + recNum + " records");
+            } else {
+                recNum++;
+                int offset = readBEInt(ixRecord, 0);
+                int length = readBEInt(ixRecord, 4);
+                Debug.output("Record " + recNum + ": " +
+                                   offset + ", " + length);
+            }
+        }
+            
     }
 
     /**
@@ -104,8 +104,8 @@ public class ShapeIndex extends ShapeUtils {
      *            writing the file
      */
     public static void main (String args[]) throws IOException {
-	String name = args[0];
-	ShapeIndex si = new ShapeIndex(name);
-	si.dumpIndex();
+        String name = args[0];
+        ShapeIndex si = new ShapeIndex(name);
+        si.dumpIndex();
     }
 }

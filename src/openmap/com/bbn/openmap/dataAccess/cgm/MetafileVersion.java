@@ -23,15 +23,15 @@ package com.bbn.openmap.dataAccess.cgm;
 import java.io.*;
 
 public class MetafileVersion extends Command
-{	int X;
+{       int X;
 
-	public MetafileVersion (int ec, int eid, int l, DataInputStream in)
-		throws IOException
-	{	super(ec,eid,l,in);
-		X=makeInt(0);
-	}
-	
-	public String toString ()
-	{	return "Metafile Version "+X;
-	}
+        public MetafileVersion (int ec, int eid, int l, DataInputStream in)
+                throws IOException
+        {       super(ec,eid,l,in);
+                X=makeInt(0);
+        }
+        
+        public String toString ()
+        {       return "Metafile Version "+X;
+        }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/01/24 03:33:24 $
+// $Revision: 1.11 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,7 +64,7 @@ public class OpenMap {
      * file.
      */
     public OpenMap() {
-	this(null);
+        this(null);
     }
 
     /**
@@ -75,7 +75,7 @@ public class OpenMap {
      * PropertyHandler may be null.
      */
     public OpenMap(PropertyHandler propertyHandler) {
-	mapPanel = new BasicMapPanel(propertyHandler);
+        mapPanel = new BasicMapPanel(propertyHandler);
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -86,12 +86,12 @@ public class OpenMap {
     }
 
     public void showInFrame() {
-	OpenMapFrame omf = new OpenMapFrame();
-	setWindowListenerOnFrame(omf);
-	getMapHandler().add(omf);
+        OpenMapFrame omf = new OpenMapFrame();
+        setWindowListenerOnFrame(omf);
+        getMapHandler().add(omf);
 
         omf.show();
-	mapPanel.getMapBean().showLayerPalettes();
+        mapPanel.getMapBean().showLayerPalettes();
         Debug.message("basic", "OpenMap: READY");
     }
 
@@ -103,25 +103,25 @@ public class OpenMap {
      * the OpenMapFrame that does nothing or something else.
      */
     public void setWindowListenerOnFrame(OpenMapFrame omf) {
-	omf.addWindowListener(new WindowAdapter() {
-		public void windowClosing(WindowEvent e) {
-		    System.exit(0);
-		}
-	     });
+        omf.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    System.exit(0);
+                }
+             });
     }
 
     /**
      * Get the MapHandler used for the OpenMap object.
      */      
     public MapHandler getMapHandler() {
-	return mapPanel.getMapHandler();
+        return mapPanel.getMapHandler();
     }
 
     /**
      * Get the MapPanel, the container for the OpenMap components.
      */
     public MapPanel getMapPanel() {
-	return mapPanel;
+        return mapPanel;
     }
 
     /**
@@ -133,7 +133,7 @@ public class OpenMap {
      * @see #getMapHandler
      */
     public static OpenMap create() {
-	return new OpenMap(null);
+        return new OpenMap(null);
     }
 
     /**
@@ -145,25 +145,25 @@ public class OpenMap {
      * @see #getMapHandler
      */
     public static OpenMap create(String propertiesFile) {
-	Debug.init();
+        Debug.init();
 
-	PropertyHandler propertyHandler = null;
+        PropertyHandler propertyHandler = null;
 
-	if (propertiesFile != null) {
-	    try {
-		propertyHandler = new PropertyHandler(propertiesFile);
-	    } catch (MalformedURLException murle) {
-		Debug.error(murle.getMessage());
-		murle.printStackTrace();
-		propertyHandler = null;
-	    } catch (IOException ioe) {
-		Debug.error(ioe.getMessage());
-		ioe.printStackTrace();
-		propertyHandler = null;
-	    }
-	}
+        if (propertiesFile != null) {
+            try {
+                propertyHandler = new PropertyHandler(propertiesFile);
+            } catch (MalformedURLException murle) {
+                Debug.error(murle.getMessage());
+                murle.printStackTrace();
+                propertyHandler = null;
+            } catch (IOException ioe) {
+                Debug.error(ioe.getMessage());
+                ioe.printStackTrace();
+                propertyHandler = null;
+            }
+        }
 
-	return new OpenMap(propertyHandler);
+        return new OpenMap(propertyHandler);
     }
 
     /**
@@ -171,17 +171,17 @@ public class OpenMap {
      */
     static public void main(String args[]) {
 
-	ArgParser ap = new ArgParser("OpenMap");
-	String propArgs = null;
-	ap.add("properties","A resource, file path or URL to properties file\n Ex: http://myhost.com/xyz.props or file:/myhome/abc.pro\n See Java Documentation for java.net.URL class for more details",1);
+        ArgParser ap = new ArgParser("OpenMap");
+        String propArgs = null;
+        ap.add("properties","A resource, file path or URL to properties file\n Ex: http://myhost.com/xyz.props or file:/myhome/abc.pro\n See Java Documentation for java.net.URL class for more details",1);
 
-	ap.parse(args);
-	
-	String[] arg = ap.getArgValues("properties");
-	if (arg != null) {
-	    propArgs = arg[0];
-	}
+        ap.parse(args);
+        
+        String[] arg = ap.getArgValues("properties");
+        if (arg != null) {
+            propArgs = arg[0];
+        }
 
-	OpenMap.create(propArgs);
+        OpenMap.create(propArgs);
     }
 }

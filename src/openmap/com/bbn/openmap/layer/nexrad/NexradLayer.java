@@ -82,76 +82,76 @@ public class NexradLayer extends OMGraphicHandlerLayer {
      * @param props the <code>Properties</code> object
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
-	
-	plotColor = ColorFactory.parseColorFromProperties(
-	    props, prefix + plotColorProperty, "0000C8");
-	
+        super.setProperties(prefix, props);
+        
+        plotColor = ColorFactory.parseColorFromProperties(
+            props, prefix + plotColorProperty, "0000C8");
+        
         String tmpMaxRain = props.getProperty(prefix + maxRainProperty);
         if (tmpMaxRain != null) {
-	    try {
-		maxRain = Integer.valueOf(tmpMaxRain).intValue();
-	    } catch (NumberFormatException e) {
-		maxRain = 1000;
-	    }
+            try {
+                maxRain = Integer.valueOf(tmpMaxRain).intValue();
+            } catch (NumberFormatException e) {
+                maxRain = 1000;
+            }
         }
-	
+        
         String tmpMinRain = props.getProperty(prefix + minRainProperty);
         if (tmpMinRain != null) {
-	    try {
-		minRain = Integer.valueOf(tmpMinRain).intValue();
-	    } catch (NumberFormatException e) {
-		minRain = 0;
-	    }
+            try {
+                minRain = Integer.valueOf(tmpMinRain).intValue();
+            } catch (NumberFormatException e) {
+                minRain = 0;
+            }
         }
-	try {
-	    dataURL = new URL(props.getProperty(prefix + dataURLProperty));
-	    loadData(dataURL);
+        try {
+            dataURL = new URL(props.getProperty(prefix + dataURLProperty));
+            loadData(dataURL);
         } catch (java.net.MalformedURLException e) {
-	    dataURL = null;
+            dataURL = null;
         }
-	
-	legendFont = Font.decode(props.getProperty(prefix+fontProperty));
-	
+        
+        legendFont = Font.decode(props.getProperty(prefix+fontProperty));
+        
     }
     
     public void loadData(URL theDataStream) {
-	try {
-	    BufferedReader f = new BufferedReader(
-	     new InputStreamReader(theDataStream.openStream()));
-	    StringTokenizer tok = new StringTokenizer(f.readLine());
-	    int ulhrapx = (new Integer(tok.nextToken())).intValue();
-	    int ulhrapy = (new Integer(tok.nextToken())).intValue();
-	    int maxx = (new Integer(tok.nextToken())).intValue();
-	    int maxy = (new Integer(tok.nextToken())).intValue();
-	    int rain[][] = new int[maxx][maxy];
+        try {
+            BufferedReader f = new BufferedReader(
+             new InputStreamReader(theDataStream.openStream()));
+            StringTokenizer tok = new StringTokenizer(f.readLine());
+            int ulhrapx = (new Integer(tok.nextToken())).intValue();
+            int ulhrapy = (new Integer(tok.nextToken())).intValue();
+            int maxx = (new Integer(tok.nextToken())).intValue();
+            int maxy = (new Integer(tok.nextToken())).intValue();
+            int rain[][] = new int[maxx][maxy];
 
-	    if (Debug.debugging("nexrad")){
-		Debug.output("NexradLayer: Reading "+theDataStream+" "+
-			     maxx+" "+maxy);
-	    }
-	    for (int any = 0; any < maxy ; any++) {
-		tok = new StringTokenizer(f.readLine());
-		for (int anx = 0; anx < maxx ; anx++) {
-		    rain[anx][any] = (new Integer(tok.nextToken())).intValue();
-		}
-	    }
-	    f.close();
-	    if (Debug.debugging("nexrad")){
-		Debug.output("NexradLayer: Completed "+theDataStream+" "+
-			     maxx+" "+maxy);
-	    }
-	    setList(createGraphics(ulhrapx, ulhrapy, maxx, maxy, rain));
-	    // } catch (java.io.IOException oops) {
+            if (Debug.debugging("nexrad")){
+                Debug.output("NexradLayer: Reading "+theDataStream+" "+
+                             maxx+" "+maxy);
+            }
+            for (int any = 0; any < maxy ; any++) {
+                tok = new StringTokenizer(f.readLine());
+                for (int anx = 0; anx < maxx ; anx++) {
+                    rain[anx][any] = (new Integer(tok.nextToken())).intValue();
+                }
+            }
+            f.close();
+            if (Debug.debugging("nexrad")){
+                Debug.output("NexradLayer: Completed "+theDataStream+" "+
+                             maxx+" "+maxy);
+            }
+            setList(createGraphics(ulhrapx, ulhrapy, maxx, maxy, rain));
+            // } catch (java.io.IOException oops) {
         } catch (Exception oops) {
-	    Debug.error("NexradLayer.loadData: Failed to read "+theDataStream);
-	    oops.printStackTrace();
+            Debug.error("NexradLayer.loadData: Failed to read "+theDataStream);
+            oops.printStackTrace();
         } 
     }
     
     public OMGraphicList createGraphics(int ulhrapx, int ulhrapy,
-					int xcount, int ycount,
-					int rain[][]) {
+                                        int xcount, int ycount,
+                                        int rain[][]) {
 
         OMGraphicList graphics = new OMGraphicList();
 
@@ -159,35 +159,35 @@ public class NexradLayer extends OMGraphicHandlerLayer {
         float ur[] = {0,0};
         float ll[] = {0,0};
         float lr[] = {0,0};
-	
+        
         for (int x = 0; x < xcount ; x++) {
-	    ll = hrap2lonlat(ulhrapx+x,ulhrapy);
-	    lr = hrap2lonlat(ulhrapx+x+1,ulhrapy);
-	    for (int y = 0; y < ycount; y++) {
-		ul = ll;
-		ur = lr;
-		ll = hrap2lonlat(ulhrapx+x,ulhrapy+y+1);
-		lr = hrap2lonlat(ulhrapx+x+1,ulhrapy+y+1);
-		if (rain[x][y] > 0) {
-		    
-		    if (Debug.debugging("nexrad")){
-			Debug.output("NexradLayer: Rain "+rain[x][y]+
-				     " "+x+" "+y);
-		    }
+            ll = hrap2lonlat(ulhrapx+x,ulhrapy);
+            lr = hrap2lonlat(ulhrapx+x+1,ulhrapy);
+            for (int y = 0; y < ycount; y++) {
+                ul = ll;
+                ur = lr;
+                ll = hrap2lonlat(ulhrapx+x,ulhrapy+y+1);
+                lr = hrap2lonlat(ulhrapx+x+1,ulhrapy+y+1);
+                if (rain[x][y] > 0) {
+                    
+                    if (Debug.debugging("nexrad")){
+                        Debug.output("NexradLayer: Rain "+rain[x][y]+
+                                     " "+x+" "+y);
+                    }
 
-		    float polypoints[] = {ul[0],ul[1],
-					  ur[0],ur[1],
-					  lr[0],lr[1],
-					  ll[0],ll[1],
-					  ul[0],ul[1]};
-		    OMPoly poly = new OMPoly(polypoints,
-					     OMGraphic.DECIMAL_DEGREES,
-					     OMGraphic.LINETYPE_STRAIGHT);
-		    Color plotc = scaledColor(rain[x][y]);
-		    poly.setFillPaint(plotc);
-		    poly.setLinePaint(plotc);
-		    graphics.addOMGraphic(poly);
-		}
+                    float polypoints[] = {ul[0],ul[1],
+                                          ur[0],ur[1],
+                                          lr[0],lr[1],
+                                          ll[0],ll[1],
+                                          ul[0],ul[1]};
+                    OMPoly poly = new OMPoly(polypoints,
+                                             OMGraphic.DECIMAL_DEGREES,
+                                             OMGraphic.LINETYPE_STRAIGHT);
+                    Color plotc = scaledColor(rain[x][y]);
+                    poly.setFillPaint(plotc);
+                    poly.setLinePaint(plotc);
+                    graphics.addOMGraphic(poly);
+                }
            }
         }
         return graphics;
@@ -199,21 +199,21 @@ public class NexradLayer extends OMGraphicHandlerLayer {
      */
     public void paint(Graphics g) {
         super.paint(g);
-	plotScale(g);
+        plotScale(g);
     }
     
     public void plotScale(Graphics g) {
-	g.setColor(Color.red);
+        g.setColor(Color.red);
         int nameMin = 1;
-	Font tmpFont = g.getFont();
-	g.setFont(legendFont);
+        Font tmpFont = g.getFont();
+        g.setFont(legendFont);
         g.drawString(maxRain+" mm",30,30);
         g.drawString(nameMin+" mm",30, 450);
-	g.setFont(tmpFont);
-	int range = 430;
+        g.setFont(tmpFont);
+        int range = 430;
         for (int k = 0; k <= range; k += 5) {
-	    g.setColor(scaledColor(minRain + 
-				   (k * (maxRain - minRain) / range )));
+            g.setColor(scaledColor(minRain + 
+                                   (k * (maxRain - minRain) / range )));
             g.fillRect(10,450 - k,10,5);
         }
     }
@@ -225,34 +225,34 @@ public class NexradLayer extends OMGraphicHandlerLayer {
         alphaValue *= 10;
         alphaValue += 55;
         return (new Color(plotColor.getRed(),
-			  plotColor.getGreen(),
-			  plotColor.getBlue(),
-			  alphaValue));
+                          plotColor.getGreen(),
+                          plotColor.getBlue(),
+                          alphaValue));
     }
     
     public float[] hrap2lonlat(int xhrap, int yhrap) {
-	float mesh = 4762.5f;
-	float earthr = 6371200.0f;
-	float stlond = -105.0f;
-	float stlatd = 60.0f;
-	float x = (xhrap - 401.0f) * mesh;
-	float y = (yhrap - 1601.0f) * mesh;
-	float arg = (float) (Math.pow(Math.pow(x,2.0) + Math.pow(y,2.0), 0.5)/
-			     (earthr * (1+Math.sin(Math.toRadians(stlatd)))));
-	float latd = 90.0f - 2.0f * (float)Math.toDegrees(Math.atan(arg));
-	float ang = (float)Math.toDegrees(Math.atan2(y,x));
-	if (y > 0) {
-	    ang = 270.0f - stlond - ang;
-	} else {
-	    ang = -90.0f - stlond - ang;
-	}
-	float lond = 0f;
-	if (ang < 180) {
-	    lond = -1.0f * ang;
-	} else {
-	    lond = 360.0f - ang;
-	}
-	float res[] = {latd, lond};
-	return res;
+        float mesh = 4762.5f;
+        float earthr = 6371200.0f;
+        float stlond = -105.0f;
+        float stlatd = 60.0f;
+        float x = (xhrap - 401.0f) * mesh;
+        float y = (yhrap - 1601.0f) * mesh;
+        float arg = (float) (Math.pow(Math.pow(x,2.0) + Math.pow(y,2.0), 0.5)/
+                             (earthr * (1+Math.sin(Math.toRadians(stlatd)))));
+        float latd = 90.0f - 2.0f * (float)Math.toDegrees(Math.atan(arg));
+        float ang = (float)Math.toDegrees(Math.atan2(y,x));
+        if (y > 0) {
+            ang = 270.0f - stlond - ang;
+        } else {
+            ang = -90.0f - stlond - ang;
+        }
+        float lond = 0f;
+        if (ang < 180) {
+            lond = -1.0f * ang;
+        } else {
+            lond = 360.0f - ang;
+        }
+        float res[] = {latd, lond};
+        return res;
     }
 }

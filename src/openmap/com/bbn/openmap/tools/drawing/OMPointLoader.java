@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMPointLoader.java,v $
 // $RCSfile: OMPointLoader.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,16 +35,16 @@ public class OMPointLoader extends AbstractToolLoader
     protected String graphicClassName = "com.bbn.openmap.omGraphics.OMPoint";
 
     public OMPointLoader() {
-	init();
+        init();
     }
     
     public void init() {
-	EditClassWrapper ecw = 
-	    new EditClassWrapper(graphicClassName,
-				 "com.bbn.openmap.omGraphics.EditableOMPoint",
-				 "editablepoint.gif",
-				 "Point");
-	addEditClassWrapper(ecw);
+        EditClassWrapper ecw = 
+            new EditClassWrapper(graphicClassName,
+                                 "com.bbn.openmap.omGraphics.EditableOMPoint",
+                                 "editablepoint.gif",
+                                 "Point");
+        addEditClassWrapper(ecw);
     }
 
     /**
@@ -54,11 +54,11 @@ public class OMPointLoader extends AbstractToolLoader
      * like point type and rendertype.
      */
     public EditableOMGraphic getEditableGraphic(String classname, 
-						GraphicAttributes ga) {
-	if (classname.intern() == graphicClassName) {
-	    return new EditableOMPoint(ga);
-	}
-	return null;
+                                                GraphicAttributes ga) {
+        if (classname.intern() == graphicClassName) {
+            return new EditableOMPoint(ga);
+        }
+        return null;
     }
 
     /**
@@ -66,9 +66,9 @@ public class OMPointLoader extends AbstractToolLoader
      * EditableOMGraphic for it.
      */
     public EditableOMGraphic getEditableGraphic(OMGraphic graphic) {
-	if (graphic instanceof OMPoint) {
-	    return new EditableOMPoint((OMPoint)graphic);
-	}
-	return null;
+        if (graphic instanceof OMPoint) {
+            return new EditableOMPoint((OMPoint)graphic);
+        }
+        return null;
     }
 }

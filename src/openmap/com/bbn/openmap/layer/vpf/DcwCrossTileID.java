@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwCrossTileID.java,v $
 // $RCSfile: DcwCrossTileID.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,10 +55,10 @@ public class DcwCrossTileID {
      * @param nextTileKey primitive ID in nextTileID
      */
     public DcwCrossTileID(int currentTileKey, int nextTileID,
-			  int nextTileKey) {
-	this.currentTileKey = currentTileKey;
-	this.nextTileID = nextTileID;
-	this.nextTileKey = nextTileKey;
+                          int nextTileKey) {
+        this.currentTileKey = currentTileKey;
+        this.nextTileID = nextTileID;
+        this.nextTileKey = nextTileKey;
     }
 
     /**
@@ -69,25 +69,25 @@ public class DcwCrossTileID {
      * @exception EOFException EOF was encountered before reading any data
      */
     public DcwCrossTileID(BinaryFile in) 
-	throws FormatException, EOFException {
-	int format;
-	try {
-	    format = in.read();
-	} catch (IOException ioe) {
-	    throw new FormatException(ioe.getMessage());
-	}
-	if (format == -1) {
-	    throw new EOFException();
-	}
-					     
-	try {
-	    currentTileKey = readIntegerByKey(in, format >> 6);
-	    nextTileID = readIntegerByKey(in, format >> 4);
-	    nextTileKey = readIntegerByKey(in, format >> 2);
-	    int unusedDcwKey = readIntegerByKey(in, format);
-	} catch (EOFException e) {
-	    throw new FormatException("DcwCrossTileID: unexpected EOD " + e.getMessage());
-	}
+        throws FormatException, EOFException {
+        int format;
+        try {
+            format = in.read();
+        } catch (IOException ioe) {
+            throw new FormatException(ioe.getMessage());
+        }
+        if (format == -1) {
+            throw new EOFException();
+        }
+                                             
+        try {
+            currentTileKey = readIntegerByKey(in, format >> 6);
+            nextTileID = readIntegerByKey(in, format >> 4);
+            nextTileKey = readIntegerByKey(in, format >> 2);
+            int unusedDcwKey = readIntegerByKey(in, format);
+        } catch (EOFException e) {
+            throw new FormatException("DcwCrossTileID: unexpected EOD " + e.getMessage());
+        }
     }
 
     /**
@@ -100,28 +100,28 @@ public class DcwCrossTileID {
      * @exception EOFException hit end-of-file while reading data
      */
     private int readIntegerByKey(BinaryFile in, int key) 
-	throws FormatException, EOFException {
-	switch (key & 0x3) {
-	case 0:
-	    return -1;
-	case 1: {
-	    int byteval;
-	    try {
-		byteval = in.read();
-	    } catch (IOException ioe) {
-		throw new FormatException(ioe.getMessage());
-	    }
-	    if (byteval == -1) {
-		throw new EOFException();
-	    }
-	    return byteval;
-	}
-	case 2:
-	    return MoreMath.signedToInt(in.readShort());
-	case 3:
-	    return in.readInteger();
-	}
-	throw new FormatException("This can't happen");
+        throws FormatException, EOFException {
+        switch (key & 0x3) {
+        case 0:
+            return -1;
+        case 1: {
+            int byteval;
+            try {
+                byteval = in.read();
+            } catch (IOException ioe) {
+                throw new FormatException(ioe.getMessage());
+            }
+            if (byteval == -1) {
+                throw new EOFException();
+            }
+            return byteval;
+        }
+        case 2:
+            return MoreMath.signedToInt(in.readShort());
+        case 3:
+            return in.readInteger();
+        }
+        throw new FormatException("This can't happen");
     }
       
     /**
@@ -129,12 +129,12 @@ public class DcwCrossTileID {
      * @return a nice little string
      */
     public String toString() {
-	StringBuffer output = new StringBuffer();
-	output.append(currentTileKey).append("/");
-	if ((nextTileID != -1) && (nextTileKey != -1)) {
-	    output.append(nextTileID).append(",");
-	    output.append(nextTileKey);
-	}
-	return output.toString();
+        StringBuffer output = new StringBuffer();
+        output.append(currentTileKey).append("/");
+        if ((nextTileID != -1) && (nextTileKey != -1)) {
+            output.append(nextTileID).append(",");
+            output.append(nextTileKey);
+        }
+        return output.toString();
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SaveAsJpegMenuItem.java,v $
 // $RCSfile: SaveAsJpegMenuItem.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/06 02:31:29 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,6 +31,6 @@ import com.bbn.openmap.image.SunJPEGFormatter;
  */
 public class SaveAsJpegMenuItem extends SaveAsImageMenuItem {
     public SaveAsJpegMenuItem() {
-	super("JPEG", new SunJPEGFormatter());
+        super("JPEG", new SunJPEGFormatter());
     }
 }

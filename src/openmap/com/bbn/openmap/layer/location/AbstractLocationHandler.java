@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/AbstractLocationHandler.java,v $
-// $Revision: 1.5 $ $Date: 2003/12/23 22:55:24 $ $Author: wjeuerle $
+// $Revision: 1.6 $ $Date: 2004/01/26 18:18:09 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -41,7 +41,7 @@ import com.bbn.openmap.util.PropUtils;
  * locationhandler.override=true
  * </pre>
  * @see        com.bbn.openmap.layer.location.LocationHandler
- * @version    $Revision: 1.5 $ $Date: 2003/12/23 22:55:24 $
+ * @version    $Revision: 1.6 $ $Date: 2004/01/26 18:18:09 $
  * @author     Michael E. Los D530/23448
  */
 public abstract class AbstractLocationHandler implements LocationHandler {
@@ -78,13 +78,13 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     protected String propertyPrefix = null;
     
     protected AbstractLocationHandler() {
-	try {
-	    nameColor = ColorFactory.parseColor(defaultNameColorString, true);
-	    locationColor = ColorFactory.parseColor(defaultLocationColorString, true);
-	} catch (NumberFormatException nfe) {
-	    nameColor = Color.black;
-	    locationColor = Color.black;
-	}
+        try {
+            nameColor = ColorFactory.parseColor(defaultNameColorString, true);
+            locationColor = ColorFactory.parseColor(defaultLocationColorString, true);
+        } catch (NumberFormatException nfe) {
+            nameColor = Color.black;
+            locationColor = Color.black;
+        }
     }
 
 
@@ -109,26 +109,26 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * @param l a LocationLayer
      */
     public void setLayer(LocationLayer l) {
-	zLayer = l;
+        zLayer = l;
     }
     
     /** Get the layer the handler is serving. */
     public LocationLayer getLayer() {
-	return zLayer;
+        return zLayer;
     }
     
     /**
      * See if the handler is displaying labels at a global level.
      */
     public boolean isShowNames() {
-	return showNames;
+        return showNames;
     }
     
     /**
      * Set the handler to show/hide labels at a global level.
      */
     public void setShowNames(boolean set) {
-	showNames = set;
+        showNames = set;
     }
     
     /**
@@ -136,7 +136,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * level.
      */
     public boolean isShowLocations() {
-	return showLocations;
+        return showLocations;
     }
     
     /**
@@ -144,49 +144,49 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * level.
      */
     public void setShowLocations(boolean set) {
-	showLocations = set;
+        showLocations = set;
     }
 
     /**
      * Find out whether global settings should override local ones.
      */
     public boolean isForceGlobal() {
-	return forceGlobal;
+        return forceGlobal;
     }
 
     /**
      * Set whether global settings should override local ones.
      */
     public void setForceGlobal(boolean set) {
-	forceGlobal = set;
+        forceGlobal = set;
     }
 
     /**
      * Set the color used for the name label.
      */
     public void setNameColor(Color nColor) {
-	nameColor = nColor;
+        nameColor = nColor;
     }
 
     /**
      * Get the color used for the name label.
      */
     public Color getNameColor() {
-	return nameColor;
+        return nameColor;
     }
 
     /**
      * Set the color used for the location graphic.
      */
     public void setLocationColor(Color lColor) {
-	locationColor = lColor;
+        locationColor = lColor;
     }
 
     /**
      * Get the color used for the location graphic.
      */
     public Color getLocationColor() {
-	return locationColor;
+        return locationColor;
     }
     
     /**
@@ -197,10 +197,10 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * @return a JPanel with text, No Pallette
      */
     public java.awt.Component getGUI() {
-	// LocationLayer.java chokes if we return null
-	JPanel jp = new JPanel();
-	jp.add(new JLabel("No Palette"));
-	return jp;
+        // LocationLayer.java chokes if we return null
+        JPanel jp = new JPanel();
+        jp.add(new JLabel("No Palette"));
+        return jp;
     }
 
     /**
@@ -219,7 +219,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * @param props the <code>Properties</code> object.
      */
     public void setProperties(Properties props) {
-	setProperties(null, props);
+        setProperties(null, props);
     }
 
     /** 
@@ -234,17 +234,17 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      document
      * </UL> */
     public void setProperties(String prefix, Properties properties) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	showLocations = PropUtils.booleanFromProperties(properties, prefix + ShowLocationsProperty, showLocations);
-	
-	locationColor = PropUtils.parseColorFromProperties(properties, prefix + LocationColorProperty, defaultLocationColorString);
-	
-	showNames = PropUtils.booleanFromProperties(properties, prefix + ShowNamesProperty, showNames);	
-	nameColor = PropUtils.parseColorFromProperties(properties, prefix + NameColorProperty,	defaultNameColorString);
-	forceGlobal = PropUtils.booleanFromProperties(properties, prefix + ForceGlobalProperty, forceGlobal);
+        showLocations = PropUtils.booleanFromProperties(properties, prefix + ShowLocationsProperty, showLocations);
+        
+        locationColor = PropUtils.parseColorFromProperties(properties, prefix + LocationColorProperty, defaultLocationColorString);
+        
+        showNames = PropUtils.booleanFromProperties(properties, prefix + ShowNamesProperty, showNames); 
+        nameColor = PropUtils.parseColorFromProperties(properties, prefix + NameColorProperty,  defaultNameColorString);
+        forceGlobal = PropUtils.booleanFromProperties(properties, prefix + ForceGlobalProperty, forceGlobal);
 
     }
     
@@ -267,21 +267,21 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * PropertyConsumer.  
      */
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	props.put(prefix + ShowNamesProperty, new Boolean(showNames).toString());
-	props.put(prefix + NameColorProperty,
-		  Integer.toHexString(nameColor.getRGB()));
-	props.put(prefix + ShowLocationsProperty, new Boolean(showLocations).toString());
-	props.put(prefix + LocationColorProperty,
-		  Integer.toHexString(locationColor.getRGB()));
-	props.put(prefix + ForceGlobalProperty, new Boolean(forceGlobal).toString());
+        props.put(prefix + ShowNamesProperty, new Boolean(showNames).toString());
+        props.put(prefix + NameColorProperty,
+                  Integer.toHexString(nameColor.getRGB()));
+        props.put(prefix + ShowLocationsProperty, new Boolean(showLocations).toString());
+        props.put(prefix + LocationColorProperty,
+                  Integer.toHexString(locationColor.getRGB()));
+        props.put(prefix + ForceGlobalProperty, new Boolean(forceGlobal).toString());
 
-	return props;
+        return props;
     }
 
     /**
@@ -305,22 +305,22 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * PropertyConsumer.  
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
-	
-	list.put(ShowNamesProperty, "Display all the location name labels");
-	list.put(ShowNamesProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	list.put(NameColorProperty, "Color of name label");
-	list.put(NameColorProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-	list.put(ShowLocationsProperty, "Display all the location markers");
-	list.put(ShowLocationsProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	list.put(LocationColorProperty, "Color of location marker");
-	list.put(LocationColorProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-	list.put(ForceGlobalProperty, "Layer settings override map object settings");
-	list.put(ForceGlobalProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        if (list == null) {
+            list = new Properties();
+        }
+        
+        list.put(ShowNamesProperty, "Display all the location name labels");
+        list.put(ShowNamesProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(NameColorProperty, "Color of name label");
+        list.put(NameColorProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        list.put(ShowLocationsProperty, "Display all the location markers");
+        list.put(ShowLocationsProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(LocationColorProperty, "Color of location marker");
+        list.put(LocationColorProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        list.put(ForceGlobalProperty, "Layer settings override map object settings");
+        list.put(ForceGlobalProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-	return list;
+        return list;
     }
 
     /**
@@ -331,7 +331,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * @param prefix the prefix String.  
      */
     public void setPropertyPrefix(String prefix) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
     }
 
     /**
@@ -341,7 +341,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * @return the property prefix
      */
     public String getPropertyPrefix() {
-	return propertyPrefix;
+        return propertyPrefix;
     }
 
 }

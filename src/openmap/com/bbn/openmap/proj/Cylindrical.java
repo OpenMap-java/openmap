@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Cylindrical.java,v $
 // $RCSfile: Cylindrical.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/11/14 20:56:43 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,8 +42,8 @@ public abstract class Cylindrical extends Proj {
 
 
     // used for calculating wrapping of ArrayList graphics
-    protected Point world;			// world width in pixels.
-    protected int half_world;			// world.x / 2
+    protected Point world;                      // world width in pixels.
+    protected int half_world;                   // world.x / 2
 
 
     /**
@@ -57,9 +57,9 @@ public abstract class Cylindrical extends Proj {
      *
      */
     public Cylindrical(LatLonPoint center,
-	    float scale, int width, int height, int type)
+            float scale, int width, int height, int type)
     {
-	super(center, scale, width, height, type);
+        super(center, scale, width, height, type);
     }
 
 
@@ -70,7 +70,7 @@ public abstract class Cylindrical extends Proj {
      * @see Projection#getProjectionID
      */
     public String toString() {
-	return " world(" + world.x + "," + world.y + ")" + super.toString();
+        return " world(" + world.x + "," + world.y + ")" + super.toString();
     }
 
 
@@ -82,42 +82,42 @@ public abstract class Cylindrical extends Proj {
      * used in the forward() and inverse() calls.<p>
      */
     protected void computeParameters() {
-	planetPixelRadius = planetRadius * pixelsPerMeter;
-	planetPixelCircumference = MoreMath.TWO_PI*planetPixelRadius;
+        planetPixelRadius = planetRadius * pixelsPerMeter;
+        planetPixelCircumference = MoreMath.TWO_PI*planetPixelRadius;
 
-	// minscale is the minimum scale allowable (before integer wrapping
-	// can occur)
-	minscale = (float)Math.ceil(planetPixelCircumference/(int)Integer.MAX_VALUE);
-	if (minscale < 1)
-	    minscale = 1;
-	if (scale < minscale)
-	    scale = minscale;
+        // minscale is the minimum scale allowable (before integer wrapping
+        // can occur)
+        minscale = (float)Math.ceil(planetPixelCircumference/(int)Integer.MAX_VALUE);
+        if (minscale < 1)
+            minscale = 1;
+        if (scale < minscale)
+            scale = minscale;
 
-	// maxscale = scale at which world circumference fits in window
-	maxscale = (float) planetPixelCircumference/(float)width;
-	if (maxscale < minscale) {
-	    maxscale = minscale;
-	}
-	if (scale > maxscale) {
-	    scale = maxscale;
-	}
-	scaled_radius = planetPixelRadius/scale;
+        // maxscale = scale at which world circumference fits in window
+        maxscale = (float) planetPixelCircumference/(float)width;
+        if (maxscale < minscale) {
+            maxscale = minscale;
+        }
+        if (scale > maxscale) {
+            scale = maxscale;
+        }
+        scaled_radius = planetPixelRadius/scale;
 
-	if (world == null)
-	    world = new Point(0,0);
+        if (world == null)
+            world = new Point(0,0);
 
-	// width of the world in pixels at current scale
-	world.x = (int)(planetPixelCircumference/scale);
-	half_world = world.x/2;
+        // width of the world in pixels at current scale
+        world.x = (int)(planetPixelCircumference/scale);
+        half_world = world.x/2;
 
-	// calculate cutoff scale for XWindows workaround
-	XSCALE_THRESHOLD = (int)(planetPixelCircumference/64000);//fudge it a little bit
+        // calculate cutoff scale for XWindows workaround
+        XSCALE_THRESHOLD = (int)(planetPixelCircumference/64000);//fudge it a little bit
 
-	if (Debug.debugging("proj")) {
-	    Debug.output("Cylindrical.computeParameters(): " +
-		    "world.x = " + world.x + " half_world = " +
-		    half_world + " XSCALE_THRESHOLD = " + XSCALE_THRESHOLD);
-	}
+        if (Debug.debugging("proj")) {
+            Debug.output("Cylindrical.computeParameters(): " +
+                    "world.x = " + world.x + " half_world = " +
+                    half_world + " XSCALE_THRESHOLD = " + XSCALE_THRESHOLD);
+        }
     }
 
     /**
@@ -132,25 +132,25 @@ public abstract class Cylindrical extends Proj {
      * <code>-180 &lt;= Az &lt;= 180</code>
      */
     public void pan(float Az) {
-	if (MoreMath.approximately_equal(Math.abs(Az), 180f, 0.01f)) {
-	    setCenter(inverse(width/2,height));//south
-	} else if (MoreMath.approximately_equal(Az, -135f, 0.01f)) {
-	    setCenter(inverse(0,height));//southwest
-	} else if (MoreMath.approximately_equal(Az, -90f, 0.01f)) {
-	    setCenter(inverse(0,height/2));//west
-	} else if (MoreMath.approximately_equal(Az, -45f, 0.01f)) {
-	    setCenter(inverse(0,0));//northwest
-	} else if (MoreMath.approximately_equal(Az, 0f, 0.01f)) {
-	    setCenter(inverse(width/2,0));//north
-	} else if (MoreMath.approximately_equal(Az, 45f, 0.01f)) {
-	    setCenter(inverse(width,0));//northeast
-	} else if (MoreMath.approximately_equal(Az, 90f, 0.01f)) {
-	    setCenter(inverse(width,height/2));//east
-	} else if (MoreMath.approximately_equal(Az, 135f, 0.01f)) {
-	    setCenter(inverse(width,height));//southeast
-	} else {
-	    super.pan(Az);
-	}
+        if (MoreMath.approximately_equal(Math.abs(Az), 180f, 0.01f)) {
+            setCenter(inverse(width/2,height));//south
+        } else if (MoreMath.approximately_equal(Az, -135f, 0.01f)) {
+            setCenter(inverse(0,height));//southwest
+        } else if (MoreMath.approximately_equal(Az, -90f, 0.01f)) {
+            setCenter(inverse(0,height/2));//west
+        } else if (MoreMath.approximately_equal(Az, -45f, 0.01f)) {
+            setCenter(inverse(0,0));//northwest
+        } else if (MoreMath.approximately_equal(Az, 0f, 0.01f)) {
+            setCenter(inverse(width/2,0));//north
+        } else if (MoreMath.approximately_equal(Az, 45f, 0.01f)) {
+            setCenter(inverse(width,0));//northeast
+        } else if (MoreMath.approximately_equal(Az, 90f, 0.01f)) {
+            setCenter(inverse(width,height/2));//east
+        } else if (MoreMath.approximately_equal(Az, 135f, 0.01f)) {
+            setCenter(inverse(width,height));//southeast
+        } else {
+            super.pan(Az);
+        }
     }
 
     /**
@@ -164,7 +164,7 @@ public abstract class Cylindrical extends Proj {
      *
      */
     public LatLonPoint getUpperLeft() {
-	return inverse(0,0);
+        return inverse(0,0);
     }
 
 
@@ -179,7 +179,7 @@ public abstract class Cylindrical extends Proj {
      *
      */
     public LatLonPoint getLowerRight() {
-	return inverse(width, height);
+        return inverse(width, height);
     }
 
 
@@ -204,20 +204,20 @@ public abstract class Cylindrical extends Proj {
      * visible.
      */
     public boolean forwardRaw(
-	    float[] rawllpts, int rawoff,
-	    int[] xcoords, int[] ycoords, boolean[] visible,
-	    int copyoff, int copylen)
+            float[] rawllpts, int rawoff,
+            int[] xcoords, int[] ycoords, boolean[] visible,
+            int copyoff, int copylen)
     {
-	Point temp = new Point();
-	int end = copylen+copyoff;
-	for (int i=copyoff, j=rawoff; i<end; i++, j+=2) {
-	    forward(rawllpts[j], rawllpts[j+1], temp, true);
-	    xcoords[i] = temp.x;
-	    ycoords[i] = temp.y;
-	    visible[i] = true;//should always be visible in cylindrical family
-	}
-	// everything is visible
-	return true;
+        Point temp = new Point();
+        int end = copylen+copyoff;
+        for (int i=copyoff, j=rawoff; i<end; i++, j+=2) {
+            forward(rawllpts[j], rawllpts[j+1], temp, true);
+            xcoords[i] = temp.x;
+            ycoords[i] = temp.y;
+            visible[i] = true;//should always be visible in cylindrical family
+        }
+        // everything is visible
+        return true;
     }
 
 
@@ -251,111 +251,111 @@ public abstract class Cylindrical extends Proj {
      * @return ArrayList of x[], y[], x[], y[], ...  the projected poly
      */
     protected ArrayList _forwardPoly(
-	float[] rawllpts, int ltype, int nsegs, boolean isFilled)
+        float[] rawllpts, int ltype, int nsegs, boolean isFilled)
     {
-	int p, n, k, flag=0, min=0, max=0, xp, xadj=0;
+        int p, n, k, flag=0, min=0, max=0, xp, xadj=0;
 
-	// determine length of pairs list
-	int len = rawllpts.length>>1;	// len/2, chop off extra
-	if (len < 2)
-	    return new ArrayList(0);
+        // determine length of pairs list
+        int len = rawllpts.length>>1;   // len/2, chop off extra
+        if (len < 2)
+            return new ArrayList(0);
 
-	// handle complicated line in specific routines
-	if (isComplicatedLineType(ltype)) {
-	    return doPolyDispatch(rawllpts, ltype, nsegs, isFilled);
-	}
+        // handle complicated line in specific routines
+        if (isComplicatedLineType(ltype)) {
+            return doPolyDispatch(rawllpts, ltype, nsegs, isFilled);
+        }
 
-	// determine when to stop
-	Point temp = new Point(0,0);
-	int[] xs = new int[len];
-	int[] ys = new int[len];
+        // determine when to stop
+        Point temp = new Point(0,0);
+        int[] xs = new int[len];
+        int[] ys = new int[len];
 
-	// forward project the first point
-	forward(rawllpts[0], rawllpts[1], temp, true);
-	xp = temp.x;
-	xs[0] = temp.x;
-	ys[0] = temp.y;
-	// forward project the other points
-	for (n=1, k=2; n<len; n++, k+=2) {
-	    forward(rawllpts[k], rawllpts[k+1], temp, true);
-	    xs[n] = temp.x;
-	    ys[n] = temp.y;
-	    // segment crosses longitude along screen edge
-	    if (Math.abs(xp - xs[n]) >= half_world) {
-		flag += (xp < xs[n]) ? -1 : 1;//inc/dec the wrap count
-		min = (flag < min) ? flag : min;//left wrap count
-		max = (flag > max) ? flag : max;//right wrap count
-		xadj = flag * world.x;//adjustment to x coordinates
-//		Debug.output("flag=" + flag + " xadj=" + xadj);
-	    }
-	    xp = temp.x;//save previous unshifted x coordinate
-	    if (flag != 0) {
-		xs[n] += xadj;//adjust x coordinates
-	    }
-	}
-	min *= -1;//positive magnitude
+        // forward project the first point
+        forward(rawllpts[0], rawllpts[1], temp, true);
+        xp = temp.x;
+        xs[0] = temp.x;
+        ys[0] = temp.y;
+        // forward project the other points
+        for (n=1, k=2; n<len; n++, k+=2) {
+            forward(rawllpts[k], rawllpts[k+1], temp, true);
+            xs[n] = temp.x;
+            ys[n] = temp.y;
+            // segment crosses longitude along screen edge
+            if (Math.abs(xp - xs[n]) >= half_world) {
+                flag += (xp < xs[n]) ? -1 : 1;//inc/dec the wrap count
+                min = (flag < min) ? flag : min;//left wrap count
+                max = (flag > max) ? flag : max;//right wrap count
+                xadj = flag * world.x;//adjustment to x coordinates
+//              Debug.output("flag=" + flag + " xadj=" + xadj);
+            }
+            xp = temp.x;//save previous unshifted x coordinate
+            if (flag != 0) {
+                xs[n] += xadj;//adjust x coordinates
+            }
+        }
+        min *= -1;//positive magnitude
 
-	// now create the return list
-	ArrayList ret_val = null;
-	ret_val = new ArrayList(2 + 2*(max+min));
-	ret_val.add(xs);
-	ret_val.add(ys);
-	int[] altx=null;
+        // now create the return list
+        ArrayList ret_val = null;
+        ret_val = new ArrayList(2 + 2*(max+min));
+        ret_val.add(xs);
+        ret_val.add(ys);
+        int[] altx=null;
 
-	/*
-	if (Debug.debugging("proj")) {
-	    dumpPoly(rawllpts, xs, ys);
-	}
-	*/
+        /*
+        if (Debug.debugging("proj")) {
+            dumpPoly(rawllpts, xs, ys);
+        }
+        */
 
-	// add the extra left-wrap polys
-	for (int i=1; i<=min; i++) {
-	    altx = new int[xs.length];
-	    xadj = i*world.x;//shift opposite
-	    for (int j=0; j<altx.length; j++) {
-		altx[j] = xs[j] + xadj;
-	    }
-	    ret_val.add(altx);
-	    ret_val.add(ys);
-	    /*
-	    if (Debug.debugging("proj")) {
-		dumpPoly(rawllpts, altx, ys);
-	    }
-	    */
-	}
+        // add the extra left-wrap polys
+        for (int i=1; i<=min; i++) {
+            altx = new int[xs.length];
+            xadj = i*world.x;//shift opposite
+            for (int j=0; j<altx.length; j++) {
+                altx[j] = xs[j] + xadj;
+            }
+            ret_val.add(altx);
+            ret_val.add(ys);
+            /*
+            if (Debug.debugging("proj")) {
+                dumpPoly(rawllpts, altx, ys);
+            }
+            */
+        }
 
-	// add the extra right-wrap polys
-	for (int i=1; i<=max; i++) {
-	    altx = new int[xs.length];
-	    xadj = -i*world.x;//shift opposite
-	    for (int j=0; j<altx.length; j++) {
-		altx[j] = xs[j] + xadj;
-	    }
-	    ret_val.add(altx);
-	    ret_val.add(ys);
-	    /*
-	    if (Debug.debugging("proj")) {
-		dumpPoly(rawllpts, altx, ys);
-	    }
-	    */
-	}
+        // add the extra right-wrap polys
+        for (int i=1; i<=max; i++) {
+            altx = new int[xs.length];
+            xadj = -i*world.x;//shift opposite
+            for (int j=0; j<altx.length; j++) {
+                altx[j] = xs[j] + xadj;
+            }
+            ret_val.add(altx);
+            ret_val.add(ys);
+            /*
+            if (Debug.debugging("proj")) {
+                dumpPoly(rawllpts, altx, ys);
+            }
+            */
+        }
 
-	return ret_val;
+        return ret_val;
     }//_forwardPoly()
 
 
     // print out polygon
     private static final void dumpPoly(
-	    float[] rawllpts, int[] xs, int[] ys)
+            float[] rawllpts, int[] xs, int[] ys)
     {
-	Debug.output("poly:");
-	for (int i=0, j=0; j<xs.length; i+=2, j++) {
-	    System.out.print("["+
-		    ProjMath.radToDeg(rawllpts[i])+","+
-		    ProjMath.radToDeg(rawllpts[i+1])+"]=");
-	    Debug.output("("+xs[j]+","+ys[j]+")");
-	}
-	Debug.output("");
+        Debug.output("poly:");
+        for (int i=0, j=0; j<xs.length; i+=2, j++) {
+            System.out.print("["+
+                    ProjMath.radToDeg(rawllpts[i])+","+
+                    ProjMath.radToDeg(rawllpts[i+1])+"]=");
+            Debug.output("("+xs[j]+","+ys[j]+")");
+        }
+        Debug.output("");
     }
 
 
@@ -365,14 +365,14 @@ public abstract class Cylindrical extends Proj {
      * @param paint java.awt.Paint to use for the background
      */
     public void drawBackground(Graphics2D g, java.awt.Paint paint) {
-	g.setPaint(paint);
-	g.fillRect(0, 0, getWidth(), getHeight());
+        g.setPaint(paint);
+        g.fillRect(0, 0, getWidth(), getHeight());
     }
 
     /**
      * Get the name string of the projection.
      */
     public String getName() {
-	return "Cylindrical";
+        return "Cylindrical";
     }
 }

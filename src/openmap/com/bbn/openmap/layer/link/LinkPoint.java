@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkPoint.java,v $
 // $RCSfile: LinkPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -61,17 +61,17 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
      * @throws IOException
      */
     public static void write(float lt, float ln, int radius,
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException {
-	
-	dos.write(Link.POINT_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_POINT);
-	dos.writeInt(RENDERTYPE_LATLON);
-	dos.writeFloat(lt);
-	dos.writeFloat(ln);
-	dos.writeInt(radius);
-	properties.write(dos);
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException {
+        
+        dos.write(Link.POINT_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_POINT);
+        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeFloat(lt);
+        dos.writeFloat(ln);
+        dos.writeInt(radius);
+        properties.write(dos);
     }
 
     /**
@@ -86,17 +86,17 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
      * @throws IOException
      */
     public static void write(int px1, int py1, int radius,
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException { 
-	
-	dos.write(Link.POINT_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_POINT);
-	dos.writeInt(RENDERTYPE_XY);
-	dos.writeInt(px1);
-	dos.writeInt(py1);
-	dos.writeInt(radius);
-	properties.write(dos);
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException { 
+        
+        dos.write(Link.POINT_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_POINT);
+        dos.writeInt(RENDERTYPE_XY);
+        dos.writeInt(px1);
+        dos.writeInt(py1);
+        dos.writeInt(radius);
+        properties.write(dos);
     }
 
     /**
@@ -116,49 +116,49 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
      * @throws IOException
      */
     public static void write(float lt, float ln, 
-			     int px1, int py1, int radius, 
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException { 
+                             int px1, int py1, int radius, 
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException { 
 
-	dos.write(Link.POINT_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_POINT);
-	dos.writeInt(RENDERTYPE_OFFSET);
-	dos.writeFloat(lt);
-	dos.writeFloat(ln);
-	dos.writeInt(px1);
-	dos.writeInt(py1);
-	dos.writeInt(radius);
-	properties.write(dos);
+        dos.write(Link.POINT_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_POINT);
+        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeFloat(lt);
+        dos.writeFloat(ln);
+        dos.writeInt(px1);
+        dos.writeInt(py1);
+        dos.writeInt(radius);
+        properties.write(dos);
     }
 
     /**
      * Write an OMPoint to the Link.
      */
     public static void write(OMPoint point, Link link, LinkProperties props) 
-	throws IOException {
+        throws IOException {
 
-	props.setProperty(LinkPoint.LPC_POINT_OVAL, point.isOval()?"true":"false");
-	switch (point.getRenderType()) {
-	case OMPoint.RENDERTYPE_LATLON:
-	    LinkPoint.write(point.getLat(),
-			    point.getLon(),
-			    point.getRadius(),
-			    props, link.dos);
-	    break;
-	case OMPoint.RENDERTYPE_XY:
-	    LinkPoint.write(point.getX(), point.getY(), point.getRadius(),
-			    props, link.dos);
-	    break;
-	case OMPoint.RENDERTYPE_OFFSET:
-	    LinkPoint.write(point.getLat(), point.getLon(),
-			    point.getX(), point.getY(),
-			    point.getRadius(),
-			    props, link.dos);
-	    break;
-	default:
-	    Debug.error("LinkPoint.write: point rendertype unknown.");
-	}
+        props.setProperty(LinkPoint.LPC_POINT_OVAL, point.isOval()?"true":"false");
+        switch (point.getRenderType()) {
+        case OMPoint.RENDERTYPE_LATLON:
+            LinkPoint.write(point.getLat(),
+                            point.getLon(),
+                            point.getRadius(),
+                            props, link.dos);
+            break;
+        case OMPoint.RENDERTYPE_XY:
+            LinkPoint.write(point.getX(), point.getY(), point.getRadius(),
+                            props, link.dos);
+            break;
+        case OMPoint.RENDERTYPE_OFFSET:
+            LinkPoint.write(point.getLat(), point.getLon(),
+                            point.getX(), point.getY(),
+                            point.getRadius(),
+                            props, link.dos);
+            break;
+        default:
+            Debug.error("LinkPoint.write: point rendertype unknown.");
+        }
     }
 
     /** 
@@ -171,50 +171,50 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
      * @see com.bbn.openmap.omGraphics.OMPoint 
      */
     public static OMPoint read(DataInputStream dis)
-	throws IOException {
+        throws IOException {
 
-	OMPoint point = null;
-	int x1, y1, radius;
-	float lt, ln;
+        OMPoint point = null;
+        int x1, y1, radius;
+        float lt, ln;
 
-	int renderType = dis.readInt();
-	
-	switch (renderType) {
-	case RENDERTYPE_LATLON:
-	    lt = dis.readFloat();
-	    ln = dis.readFloat();
-	    radius = dis.readInt();
-	    
-	    point= new OMPoint(lt, ln, radius);
-	    break;
-	case RENDERTYPE_XY:
-	    x1 = dis.readInt();
-	    y1 = dis.readInt();
-	    radius = dis.readInt();
-	    
-	    point = new OMPoint(x1, y1, radius);
-	    break;
-	case RENDERTYPE_OFFSET:
-	    lt = dis.readFloat();
-	    ln = dis.readFloat();
-	    
-	    x1 = dis.readInt();
-	    y1 = dis.readInt();
-	    radius = dis.readInt();
-	    
-	    point = new OMPoint(lt, ln, x1, y1, radius);
-	    break;
-	default:
-	}
+        int renderType = dis.readInt();
+        
+        switch (renderType) {
+        case RENDERTYPE_LATLON:
+            lt = dis.readFloat();
+            ln = dis.readFloat();
+            radius = dis.readInt();
+            
+            point= new OMPoint(lt, ln, radius);
+            break;
+        case RENDERTYPE_XY:
+            x1 = dis.readInt();
+            y1 = dis.readInt();
+            radius = dis.readInt();
+            
+            point = new OMPoint(x1, y1, radius);
+            break;
+        case RENDERTYPE_OFFSET:
+            lt = dis.readFloat();
+            ln = dis.readFloat();
+            
+            x1 = dis.readInt();
+            y1 = dis.readInt();
+            radius = dis.readInt();
+            
+            point = new OMPoint(lt, ln, x1, y1, radius);
+            break;
+        default:
+        }
 
-	LinkProperties properties = new LinkProperties(dis);
-	if (point != null) {
-	    properties.setProperties(point);
-	    point.setOval(PropUtils.booleanFromProperties(
-			      properties, LPC_POINT_OVAL, OMPoint.DEFAULT_ISOVAL));
-	}
-	
-	return point;
+        LinkProperties properties = new LinkProperties(dis);
+        if (point != null) {
+            properties.setProperties(point);
+            point.setOval(PropUtils.booleanFromProperties(
+                              properties, LPC_POINT_OVAL, OMPoint.DEFAULT_ISOVAL));
+        }
+        
+        return point;
     }
 
 }

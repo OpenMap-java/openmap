@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapEvent.java,v $
 // $RCSfile: NetMapEvent.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,15 +39,15 @@ public class NetMapEvent {
     protected Object source;
 
     public NetMapEvent(Object source, Properties eventProps) {
-	this.source = source;
-	this.properties = eventProps;
+        this.source = source;
+        this.properties = eventProps;
     }
 
     public Properties getProperties() {
-	return properties;
+        return properties;
     }
 
     public Object getSource() {
-	return source;
+        return source;
     }
 }

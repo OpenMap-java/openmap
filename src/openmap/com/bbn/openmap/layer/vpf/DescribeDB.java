@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DescribeDB.java,v $
 // $RCSfile: DescribeDB.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,7 +60,7 @@ public class DescribeDB {
      */
     public static void print(String s1, String s2) {
         print(s1);
-	print(s2);
+        print(s2);
     }
     /**
      * Prints a string to System.out without a newline
@@ -76,24 +76,24 @@ public class DescribeDB {
      */
      public static void main(String[] args) throws FormatException {
          for (int argsi = 0; argsi < args.length; argsi++) {
-	     String rootpath = args[argsi];
- 	     LibrarySelectionTable lst = new LibrarySelectionTable(rootpath);
-	     println("Path to database: " + rootpath);
-	     println("Database Name: " + lst.getDatabaseName());
-	     println("Database Description: " + lst.getDatabaseDescription());
-	     String[] libraries = lst.getLibraryNames();
-	     print("Database Libraries: ");
-	     for (int i = 0; i < libraries.length; i++) {
-	         print(libraries[i], " ");
-	     }
-	     println("");
-	     println("");
-	     for (int i = 0; i < libraries.length; i++) {
-	         String prefix = libraries[i] + ":";
-		 printLibrary(prefix, lst.getCAT(libraries[i]));
-		 println("");
-	     }
-	 }
+             String rootpath = args[argsi];
+             LibrarySelectionTable lst = new LibrarySelectionTable(rootpath);
+             println("Path to database: " + rootpath);
+             println("Database Name: " + lst.getDatabaseName());
+             println("Database Description: " + lst.getDatabaseDescription());
+             String[] libraries = lst.getLibraryNames();
+             print("Database Libraries: ");
+             for (int i = 0; i < libraries.length; i++) {
+                 print(libraries[i], " ");
+             }
+             println("");
+             println("");
+             for (int i = 0; i < libraries.length; i++) {
+                 String prefix = libraries[i] + ":";
+                 printLibrary(prefix, lst.getCAT(libraries[i]));
+                 println("");
+             }
+         }
      }
   
     /**
@@ -103,21 +103,21 @@ public class DescribeDB {
      */
     public static void printLibrary(String prefix, CoverageAttributeTable cat){
         if (cat == null) {
-	    println(prefix, "Library doesn't exist");
-	    return;
-	}
-	println(prefix);
-	String[] coverages = cat.getCoverageNames();
-	println(prefix, "uses " + (cat.isTiledData() ? "tiled" : "untiled") + " data");
-	print(prefix, "Coverage names:");
-	for (int i = 0; i < coverages.length; i++) {
-	    print(coverages[i]);
-	    print(" ");
-	}
-	println("");
-	for (int i = 0; i < coverages.length; i++) {
-	  printCoverage(prefix + coverages[i] + ":", cat, coverages[i]);
-	}
+            println(prefix, "Library doesn't exist");
+            return;
+        }
+        println(prefix);
+        String[] coverages = cat.getCoverageNames();
+        println(prefix, "uses " + (cat.isTiledData() ? "tiled" : "untiled") + " data");
+        print(prefix, "Coverage names:");
+        for (int i = 0; i < coverages.length; i++) {
+            print(coverages[i]);
+            print(" ");
+        }
+        println("");
+        for (int i = 0; i < coverages.length; i++) {
+          printCoverage(prefix + coverages[i] + ":", cat, coverages[i]);
+        }
     }
   
     /**
@@ -128,37 +128,37 @@ public class DescribeDB {
      */
     public static void printCoverage(String prefix, CoverageAttributeTable cat, String covname){
         println(prefix, "Coverage Description: " + cat.getCoverageDescription(covname));
-	println(prefix, "Coverage Topology Level: " + cat.getCoverageTopologyLevel(covname));
-	CoverageTable ct = cat.getCoverageTable(covname);
-	print(prefix, "FeatureClassNames: ");
-	println("");
-	Hashtable info = ct.getFeatureTypeInfo();
-	for (Enumeration enum = info.elements(); enum.hasMoreElements();) {
-	    CoverageTable.FeatureClassRec fcr = (CoverageTable.FeatureClassRec)enum.nextElement();
+        println(prefix, "Coverage Topology Level: " + cat.getCoverageTopologyLevel(covname));
+        CoverageTable ct = cat.getCoverageTable(covname);
+        print(prefix, "FeatureClassNames: ");
+        println("");
+        Hashtable info = ct.getFeatureTypeInfo();
+        for (Enumeration enum = info.elements(); enum.hasMoreElements();) {
+            CoverageTable.FeatureClassRec fcr = (CoverageTable.FeatureClassRec)enum.nextElement();
 
-	    String tstring = "[unknown] ";
-	    if (fcr.type == CoverageTable.TEXT_FEATURETYPE) {
-		tstring = "[text feature] ";
-	    } else if (fcr.type == CoverageTable.EDGE_FEATURETYPE) {
-		tstring = "[edge feature] ";
-	    } else if (fcr.type == CoverageTable.AREA_FEATURETYPE) {
-		tstring = "[area feature] ";
-	    } else if (fcr.type == CoverageTable.UPOINT_FEATURETYPE) {
-		FeatureClassInfo fci = ct.getFeatureClassInfo(fcr.feature_class);
-		if (fci == null) {
-		    tstring = "[point feature] ";
-		} else if (fci.getFeatureType() == CoverageTable.EPOINT_FEATURETYPE) {
-		    tstring = "[entity point feature] ";
-		} else if (fci.getFeatureType() == CoverageTable.CPOINT_FEATURETYPE) {
-		    tstring = "[connected point feature] ";
-		} else {
-		    tstring = "[point feature] ";
-		}
-	    } else if (fcr.type == CoverageTable.COMPLEX_FEATURETYPE) {
-		tstring = "[complex feature] ";
-	    }
-	    println(prefix, fcr.feature_class + ": " + tstring +
-		    fcr.description);
-	}
+            String tstring = "[unknown] ";
+            if (fcr.type == CoverageTable.TEXT_FEATURETYPE) {
+                tstring = "[text feature] ";
+            } else if (fcr.type == CoverageTable.EDGE_FEATURETYPE) {
+                tstring = "[edge feature] ";
+            } else if (fcr.type == CoverageTable.AREA_FEATURETYPE) {
+                tstring = "[area feature] ";
+            } else if (fcr.type == CoverageTable.UPOINT_FEATURETYPE) {
+                FeatureClassInfo fci = ct.getFeatureClassInfo(fcr.feature_class);
+                if (fci == null) {
+                    tstring = "[point feature] ";
+                } else if (fci.getFeatureType() == CoverageTable.EPOINT_FEATURETYPE) {
+                    tstring = "[entity point feature] ";
+                } else if (fci.getFeatureType() == CoverageTable.CPOINT_FEATURETYPE) {
+                    tstring = "[connected point feature] ";
+                } else {
+                    tstring = "[point feature] ";
+                }
+            } else if (fcr.type == CoverageTable.COMPLEX_FEATURETYPE) {
+                tstring = "[complex feature] ";
+            }
+            println(prefix, fcr.feature_class + ": " + tstring +
+                    fcr.description);
+        }
     }
 }

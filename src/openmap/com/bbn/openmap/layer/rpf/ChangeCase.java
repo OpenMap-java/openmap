@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/ChangeCase.java,v $
 // $RCSfile: ChangeCase.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,55 +48,55 @@ public class ChangeCase {
      * case if false.  
      */
     public static void handleEntry(File file, boolean toUpper) {
-	try {
-	    String[] filenames = file.list();
+        try {
+            String[] filenames = file.list();
 
-	    if (filenames != null) {
-		File[] contents = new File[filenames.length]; // file.listFiles();
-		for (int i=0; i<contents.length; i++)
-		  contents[i] = new File(file.getAbsolutePath() + File.separator,
-					 filenames[i]);
+            if (filenames != null) {
+                File[] contents = new File[filenames.length]; // file.listFiles();
+                for (int i=0; i<contents.length; i++)
+                  contents[i] = new File(file.getAbsolutePath() + File.separator,
+                                         filenames[i]);
 
-		for (int i = 0; i < contents.length; i++) {
-		    handleEntry(contents[i], toUpper);
-		}
-	    }
+                for (int i = 0; i < contents.length; i++) {
+                    handleEntry(contents[i], toUpper);
+                }
+            }
 
-	    File newFile;
-	    String parent = file.getParent();
+            File newFile;
+            String parent = file.getParent();
 
-	    if (parent != null) {
-		if (toUpper) {
-		    newFile = new File(parent, file.getName().toUpperCase());
-		} else {
-		    newFile = new File(parent, file.getName().toLowerCase());
-		}
-	    } else {
-		if (toUpper) {
-		    newFile = new File(file.getName().toUpperCase());
-		} else {
-		    newFile = new File(file.getName().toLowerCase());
-		}
-	    }
+            if (parent != null) {
+                if (toUpper) {
+                    newFile = new File(parent, file.getName().toUpperCase());
+                } else {
+                    newFile = new File(parent, file.getName().toLowerCase());
+                }
+            } else {
+                if (toUpper) {
+                    newFile = new File(file.getName().toUpperCase());
+                } else {
+                    newFile = new File(file.getName().toLowerCase());
+                }
+            }
 
-	    if (file.renameTo(newFile)) {
-		System.out.println("Renamed " + 
-				   (file.getParent() == null?".":file.getParent()) + 
-				   File.separator + file.getName() + " to " + 
-				   (newFile.getParent() == null?".":newFile.getParent()) + 
-				   File.separator + newFile.getName());
-	    } else {
-		System.out.println("Renaming " + 
-				   (file.getParent() == null?".":file.getParent()) + 
-				   File.separator + file.getName() + " to " + 
-				   (newFile.getParent() == null?".":newFile.getParent()) + 
-				   File.separator + newFile.getName() + 
-				   " FAILED");
-	    }
+            if (file.renameTo(newFile)) {
+                System.out.println("Renamed " + 
+                                   (file.getParent() == null?".":file.getParent()) + 
+                                   File.separator + file.getName() + " to " + 
+                                   (newFile.getParent() == null?".":newFile.getParent()) + 
+                                   File.separator + newFile.getName());
+            } else {
+                System.out.println("Renaming " + 
+                                   (file.getParent() == null?".":file.getParent()) + 
+                                   File.separator + file.getName() + " to " + 
+                                   (newFile.getParent() == null?".":newFile.getParent()) + 
+                                   File.separator + newFile.getName() + 
+                                   " FAILED");
+            }
 
-	} catch (NullPointerException npe) {
-	} catch (SecurityException se) {
-	}
+        } catch (NullPointerException npe) {
+        } catch (SecurityException se) {
+        }
     }
 
     /**
@@ -106,37 +106,37 @@ public class ChangeCase {
      * usage statement.  
      */
     public static void main(String[] argv) {
-	Debug.init();
-	boolean toUpper = true;
+        Debug.init();
+        boolean toUpper = true;
 
-	ArgParser ap = new ArgParser("ChangeCase");
-	ap.add("upper", "Change file and directory names to UPPER CASE (default). <path> <path> ...", ArgParser.TO_END);
-	ap.add("lower", "Change file and directory names to lower case. <path> <path> ...", ArgParser.TO_END);
+        ArgParser ap = new ArgParser("ChangeCase");
+        ap.add("upper", "Change file and directory names to UPPER CASE (default). <path> <path> ...", ArgParser.TO_END);
+        ap.add("lower", "Change file and directory names to lower case. <path> <path> ...", ArgParser.TO_END);
 
-	if (argv.length == 0) {
-	    ap.bail("", true);
-	}
+        if (argv.length == 0) {
+            ap.bail("", true);
+        }
 
-	ap.parse(argv);
+        ap.parse(argv);
 
-	String[] dirs;
-	dirs = ap.getArgValues("lower");
-	if (dirs != null) {
-	    Debug.output("Converting to lower case names...");
-	    toUpper = false;
-	} else {
-	    dirs = ap.getArgValues("upper");
-	    // No arguments given, going to default.
-	    if (dirs == null) {
-		dirs = argv;
-	    }
-	    Debug.output("Converting to UPPER CASE names...");
-	}
+        String[] dirs;
+        dirs = ap.getArgValues("lower");
+        if (dirs != null) {
+            Debug.output("Converting to lower case names...");
+            toUpper = false;
+        } else {
+            dirs = ap.getArgValues("upper");
+            // No arguments given, going to default.
+            if (dirs == null) {
+                dirs = argv;
+            }
+            Debug.output("Converting to UPPER CASE names...");
+        }
 
-	// Assume that the arguments are paths to directories or
-	// files.
-	for (int i = 0; i < dirs.length; i++) {
-	    handleEntry(new File(dirs[i]), toUpper);
-	}
+        // Assume that the arguments are paths to directories or
+        // files.
+        for (int i = 0; i < dirs.length; i++) {
+            handleEntry(new File(dirs[i]), toUpper);
+        }
     }
 }

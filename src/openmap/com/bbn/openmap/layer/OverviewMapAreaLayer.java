@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OverviewMapAreaLayer.java,v $
 // $RCSfile: OverviewMapAreaLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/20 18:08:40 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,33 +60,33 @@ public class OverviewMapAreaLayer extends Layer
      * Listening to the overview MapBean.
      */
     public void projectionChanged(ProjectionEvent pEvent){
-	Projection proj = pEvent.getProjection();
-	
-	// HACK for big world problem...
-	if (rectangle == null){
-	    rectangle = new OMRect();
-	    boxAttributes.setTo(rectangle);
-	}
-	if (ul != null || lr != null){
-	    
-	    if (proj instanceof Cylindrical) {
-		Point ulp = proj.forward(ul);
-		Point lrp = proj.forward(lr);
-		rectangle.setLocation(ulp.x, ulp.y, lrp.x, lrp.y);
-		rectangle.setLineType(OMGraphic.LINETYPE_STRAIGHT);
-	    } else {
-		//  HACK Would be nice if we didn't run into the
-		//  big-world problem.
-		rectangle.setLocation(ul.getLatitude(),
-				      ul.getLongitude(),
-				      lr.getLatitude(),
-				      lr.getLongitude(),
-				      OMGraphic.LINETYPE_RHUMB);
-	    }
-	    rectangle.generate(proj);
-	}
-	
-	overviewScale = proj.getScale();
+        Projection proj = pEvent.getProjection();
+        
+        // HACK for big world problem...
+        if (rectangle == null){
+            rectangle = new OMRect();
+            boxAttributes.setTo(rectangle);
+        }
+        if (ul != null || lr != null){
+            
+            if (proj instanceof Cylindrical) {
+                Point ulp = proj.forward(ul);
+                Point lrp = proj.forward(lr);
+                rectangle.setLocation(ulp.x, ulp.y, lrp.x, lrp.y);
+                rectangle.setLineType(OMGraphic.LINETYPE_STRAIGHT);
+            } else {
+                //  HACK Would be nice if we didn't run into the
+                //  big-world problem.
+                rectangle.setLocation(ul.getLatitude(),
+                                      ul.getLongitude(),
+                                      lr.getLatitude(),
+                                      lr.getLongitude(),
+                                      OMGraphic.LINETYPE_RHUMB);
+            }
+            rectangle.generate(proj);
+        }
+        
+        overviewScale = proj.getScale();
     }
     
     /**
@@ -96,41 +96,41 @@ public class OverviewMapAreaLayer extends Layer
      * generated(). 
      */
     public void setSourceMapProjection(Projection proj){
-	ul = proj.getUpperLeft();
-	lr = proj.getLowerRight();
-	sourceScale = proj.getScale();
+        ul = proj.getUpperLeft();
+        lr = proj.getLowerRight();
+        sourceScale = proj.getScale();
     }
     
     /** 
      * Get the area rectangle.
      */
     public OMRect getOverviewMapArea(){
-	return rectangle;
+        return rectangle;
     }
     
     public void paint(Graphics g){
-	if (rectangle != null &&
-	    overviewScale > sourceScale) rectangle.render(g);
+        if (rectangle != null &&
+            overviewScale > sourceScale) rectangle.render(g);
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
-	boxAttributes.setProperties(prefix, props);
-	// Cause a rebuild if this is called after 
-	// the first projection change.
-	rectangle = null;
+        super.setProperties(prefix, props);
+        boxAttributes.setProperties(prefix, props);
+        // Cause a rebuild if this is called after 
+        // the first projection change.
+        rectangle = null;
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
-	boxAttributes.getProperties(props);
-	return props;
+        props = super.getProperties(props);
+        boxAttributes.getProperties(props);
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
-	boxAttributes.getPropertyInfo(props);
-	return props;
+        props = super.getPropertyInfo(props);
+        boxAttributes.getPropertyInfo(props);
+        return props;
     }
 
 }

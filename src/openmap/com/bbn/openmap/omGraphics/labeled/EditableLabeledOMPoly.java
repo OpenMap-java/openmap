@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/labeled/EditableLabeledOMPoly.java,v $
 // $RCSfile: EditableLabeledOMPoly.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:46:45 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -37,7 +37,7 @@ public class EditableLabeledOMPoly extends EditableOMPoly {
      * create the poly off of the gestures.  
      */
     public EditableLabeledOMPoly() {
-	createGraphic(null);
+        createGraphic(null);
     }
 
     /**
@@ -45,7 +45,7 @@ public class EditableLabeledOMPoly extends EditableOMPoly {
      * parameters in the GraphicAttributes object.
      */
     public EditableLabeledOMPoly(GraphicAttributes ga) {
-	createGraphic(ga);
+        createGraphic(ga);
     }
 
     /**
@@ -55,34 +55,34 @@ public class EditableLabeledOMPoly extends EditableOMPoly {
      * @param omp LabeledOMPoly that should be edited.  
      */
     public EditableLabeledOMPoly(LabeledOMPoly omp) {
-	setGraphic(omp);
+        setGraphic(omp);
     }
 
     /**
      *  Extendable method to create specific subclasses of OMPolys.
      */
     public OMGraphic createGraphic(int renderType, int lineType) {
-	OMGraphic g = null;
-	switch (renderType) {
-	case (OMGraphic.RENDERTYPE_LATLON):
-	    g = new LabeledOMPoly(new float[0], OMGraphic.RADIANS, lineType);
-	    break;
-	case (OMGraphic.RENDERTYPE_OFFSET):
-	    g = new LabeledOMPoly(90f, -180f, new int[0], OMPoly.COORDMODE_ORIGIN);
-	    break;
-	default:
-	    g = new LabeledOMPoly(new int[0]);
-	}
-	((LabeledOMPoly)g).setDoShapes(true);
-	return g;
+        OMGraphic g = null;
+        switch (renderType) {
+        case (OMGraphic.RENDERTYPE_LATLON):
+            g = new LabeledOMPoly(new float[0], OMGraphic.RADIANS, lineType);
+            break;
+        case (OMGraphic.RENDERTYPE_OFFSET):
+            g = new LabeledOMPoly(90f, -180f, new int[0], OMPoly.COORDMODE_ORIGIN);
+            break;
+        default:
+            g = new LabeledOMPoly(new int[0]);
+        }
+        ((LabeledOMPoly)g).setDoShapes(true);
+        return g;
     }
 
     public java.net.URL getImageURL(String imageName) {
-	try {
-	    return Class.forName("com.bbn.openmap.omGraphics.EditableOMPoly").getResource(imageName);
-	} catch (ClassNotFoundException cnfe) {
-	}
-	return null;
+        try {
+            return Class.forName("com.bbn.openmap.omGraphics.EditableOMPoly").getResource(imageName);
+        } catch (ClassNotFoundException cnfe) {
+        }
+        return null;
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/SieveListener.java,v $
 // $RCSfile: SieveListener.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,6 +40,6 @@ public class SieveListener implements HttpRequestListener {
      * Just write the request out to the client.
      */
     public void httpRequest (HttpRequestEvent e) throws IOException {
-	e.getWriter().write(e.getRequest());
+        e.getWriter().write(e.getRequest());
     }
 }

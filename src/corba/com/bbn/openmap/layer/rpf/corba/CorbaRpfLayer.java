@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/CorbaRpfLayer.java,v $
 // $RCSfile: CorbaRpfLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 22:24:17 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -83,24 +83,24 @@ public class CorbaRpfLayer extends RpfLayer {
      * paths. 
      */
     public CorbaRpfLayer() {
-	super();
-	setFrameProvider((RpfFrameProvider) new CRFPClient());
+        super();
+        setFrameProvider((RpfFrameProvider) new CRFPClient());
     }
 
     /**
      * Set all the RPF properties from a properties object.
      */
     public void setProperties(String prefix, java.util.Properties properties) {
-	super.setProperties(prefix, properties);
-	props = properties;
+        super.setProperties(prefix, properties);
+        props = properties;
 
-	((CRFPClient)frameProvider).setProperties(prefix, properties);
-	quickRedraw = LayerUtils.booleanFromProperties(properties, prefix + QuickRedrawProperty, false);
+        ((CRFPClient)frameProvider).setProperties(prefix, properties);
+        quickRedraw = LayerUtils.booleanFromProperties(properties, prefix + QuickRedrawProperty, false);
     }
 
     public void removed(java.awt.Container cont) {
-	super.removed(cont);
-	finalize();
+        super.removed(cont);
+        finalize();
     }
 
     /**
@@ -108,20 +108,20 @@ public class CorbaRpfLayer extends RpfLayer {
      */
     public void clearCache() {
 
-	if (this.cache != null) {
-	    // This is bad, and is changed from the RpfLayer.  Make
-	    // sure this never happens.
-// 	    this.cache.setViewAttributes(null);
-// 	    this.cache.setFrameProvider(null);
+        if (this.cache != null) {
+            // This is bad, and is changed from the RpfLayer.  Make
+            // sure this never happens.
+//          this.cache.setViewAttributes(null);
+//          this.cache.setFrameProvider(null);
 
-	    this.cache.clearCaches();
-	}
+            this.cache.clearCaches();
+        }
 
-	// This, too must never happen.
-	frameProvider = null;
+        // This, too must never happen.
+        frameProvider = null;
 
-	setGraphicList(null);
-	this.cache = null;
+        setGraphicList(null);
+        this.cache = null;
     }
 
     /**
@@ -129,10 +129,10 @@ public class CorbaRpfLayer extends RpfLayer {
      * server, so that it can free up it's cache for it.
      */
     public void finalize() {
-	// Check just in case, although this should never happen.
-	if (frameProvider != null) {
-	    ((CRFPClient)frameProvider).finalize();
-	}
+        // Check just in case, although this should never happen.
+        if (frameProvider != null) {
+            ((CRFPClient)frameProvider).finalize();
+        }
     }
     
     /**
@@ -142,20 +142,20 @@ public class CorbaRpfLayer extends RpfLayer {
      * RPF directories.  
      */
     public void setPaths(String[] pathsToRPFDirs) {
-	RpfFrameProvider frameProvider = getFrameProvider();
+        RpfFrameProvider frameProvider = getFrameProvider();
 
-	if (frameProvider != null) {
-	    return;
-	}
+        if (frameProvider != null) {
+            return;
+        }
 
-	setFrameProvider((RpfFrameProvider) new CRFPClient());
+        setFrameProvider((RpfFrameProvider) new CRFPClient());
 
-	if (props != null && frameProvider != null) {
-	    // Set default settings...
-	    ((CRFPClient)frameProvider).setProperties(getPropertyPrefix(), props);
-	}
-	
-	this.cache = null;
+        if (props != null && frameProvider != null) {
+            // Set default settings...
+            ((CRFPClient)frameProvider).setProperties(getPropertyPrefix(), props);
+        }
+        
+        this.cache = null;
     }
 
     /**
@@ -167,7 +167,7 @@ public class CorbaRpfLayer extends RpfLayer {
      * bean. 
      */
     public void projectionChanged(ProjectionEvent e) {
-	projectionChanged (e, false);
+        projectionChanged (e, false);
     }
 
     /**
@@ -179,15 +179,15 @@ public class CorbaRpfLayer extends RpfLayer {
      * @return OMGraphicList of images and text.
      */
     public OMGraphicList prepare() {
-	OMGraphicList oldList = getGraphicList();
-	if (oldList != null) {
-	    oldList.generate(getProjection());
-	    if (getCoverage() != null) {
-		getCoverage().generate(getProjection());
-	    }
-	    repaint();
-	}
-	return super.prepare();
+        OMGraphicList oldList = getGraphicList();
+        if (oldList != null) {
+            oldList.generate(getProjection());
+            if (getCoverage() != null) {
+                getCoverage().generate(getProjection());
+            }
+            repaint();
+        }
+        return super.prepare();
     }
 
     /** Provides the palette widgets to control the options of showing
@@ -195,107 +195,107 @@ public class CorbaRpfLayer extends RpfLayer {
      * @return Component object representing the palette widgets.
      * */
     public java.awt.Component getGUI() {
-	JCheckBox showMapsCheck, showInfoCheck, lockSeriesCheck;
+        JCheckBox showMapsCheck, showInfoCheck, lockSeriesCheck;
 
-	Box box = Box.createVerticalBox();
+        Box box = Box.createVerticalBox();
 
-	Box box1 = Box.createVerticalBox();
-	Box box2 = Box.createVerticalBox();
-	JPanel topbox = new JPanel();
+        Box box1 = Box.createVerticalBox();
+        Box box2 = Box.createVerticalBox();
+        JPanel topbox = new JPanel();
 
-	showMapsCheck = new JCheckBox("Show Images", viewAttributes.showMaps);
-	showMapsCheck.setActionCommand(showMapsCommand);
-	showMapsCheck.addActionListener(this);
+        showMapsCheck = new JCheckBox("Show Images", viewAttributes.showMaps);
+        showMapsCheck.setActionCommand(showMapsCommand);
+        showMapsCheck.addActionListener(this);
 
-	showInfoCheck = new JCheckBox("Show Attributes", viewAttributes.showInfo);
-	showInfoCheck.setActionCommand(showInfoCommand);
-	showInfoCheck.addActionListener(this);
+        showInfoCheck = new JCheckBox("Show Attributes", viewAttributes.showInfo);
+        showInfoCheck.setActionCommand(showInfoCommand);
+        showInfoCheck.addActionListener(this);
 
-	boolean locked = viewAttributes.chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)?false:true;
-	String lockedTitle = locked?
-	    (lockedButtonTitle + " - " + viewAttributes.chartSeries):
-	    unlockedButtonTitle;
+        boolean locked = viewAttributes.chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)?false:true;
+        String lockedTitle = locked?
+            (lockedButtonTitle + " - " + viewAttributes.chartSeries):
+            unlockedButtonTitle;
 
-	lockSeriesCheck = new JCheckBox(lockedTitle, locked);
-	lockSeriesCheck.setActionCommand(lockSeriesCommand);
-	lockSeriesCheck.addActionListener(this);
+        lockSeriesCheck = new JCheckBox(lockedTitle, locked);
+        lockSeriesCheck.setActionCommand(lockSeriesCommand);
+        lockSeriesCheck.addActionListener(this);
 
-	box1.add(showMapsCheck);
-	box1.add(showInfoCheck);
-	box1.add(lockSeriesCheck);
+        box1.add(showMapsCheck);
+        box1.add(showInfoCheck);
+        box1.add(lockSeriesCheck);
 
-	if (coverage != null) {
-	    JCheckBox showCoverageCheck = new JCheckBox("Show Coverage Tool", 
-							false);
-	    showCoverageCheck.setActionCommand(showCoverageCommand);
-	    showCoverageCheck.addActionListener(this);
-	    box1.add(showCoverageCheck);
-	}
+        if (coverage != null) {
+            JCheckBox showCoverageCheck = new JCheckBox("Show Coverage Tool", 
+                                                        false);
+            showCoverageCheck.setActionCommand(showCoverageCommand);
+            showCoverageCheck.addActionListener(this);
+            box1.add(showCoverageCheck);
+        }
 
-	topbox.add(box1);
-	topbox.add(box2);
-	box.add(topbox);
+        topbox.add(box1);
+        topbox.add(box2);
+        box.add(topbox);
 
-	JPanel opaquePanel = PaletteHelper.createPaletteJPanel("Map Opaqueness");
-	JSlider opaqueSlide = new JSlider(JSlider.HORIZONTAL, 0/*min*/, 255/*max*/,
-					  viewAttributes.opaqueness/*inital*/);
-	java.util.Hashtable dict = new java.util.Hashtable();
-	dict.put(new Integer(0), new JLabel("clear"));
-	dict.put(new Integer(255), new JLabel("opaque"));
-	opaqueSlide.setLabelTable(dict);
-	opaqueSlide.setPaintLabels(true);
-	opaqueSlide.setMajorTickSpacing(50);
-	opaqueSlide.setPaintTicks(true);
-	opaqueSlide.addChangeListener(new ChangeListener() {
-	    public void stateChanged(ChangeEvent ce) {
-		JSlider slider = (JSlider) ce.getSource();
-		if (!slider.getValueIsAdjusting()) {
-		    getViewAttributes().opaqueness = slider.getValue();
-		    // Notify the server...
-		    getFrameProvider().setViewAttributes(getViewAttributes());
-		    fireRequestInfoLine("RPF Opaqueness set to " + 
-					getViewAttributes().opaqueness + 
-					" for future requests.");
-		}
-	    }
-	});
-	opaquePanel.add(opaqueSlide);
-	box.add(opaquePanel);
+        JPanel opaquePanel = PaletteHelper.createPaletteJPanel("Map Opaqueness");
+        JSlider opaqueSlide = new JSlider(JSlider.HORIZONTAL, 0/*min*/, 255/*max*/,
+                                          viewAttributes.opaqueness/*inital*/);
+        java.util.Hashtable dict = new java.util.Hashtable();
+        dict.put(new Integer(0), new JLabel("clear"));
+        dict.put(new Integer(255), new JLabel("opaque"));
+        opaqueSlide.setLabelTable(dict);
+        opaqueSlide.setPaintLabels(true);
+        opaqueSlide.setMajorTickSpacing(50);
+        opaqueSlide.setPaintTicks(true);
+        opaqueSlide.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent ce) {
+                JSlider slider = (JSlider) ce.getSource();
+                if (!slider.getValueIsAdjusting()) {
+                    getViewAttributes().opaqueness = slider.getValue();
+                    // Notify the server...
+                    getFrameProvider().setViewAttributes(getViewAttributes());
+                    fireRequestInfoLine("RPF Opaqueness set to " + 
+                                        getViewAttributes().opaqueness + 
+                                        " for future requests.");
+                }
+            }
+        });
+        opaquePanel.add(opaqueSlide);
+        box.add(opaquePanel);
 
-	if (getViewAttributes().colorModel == 
-	    com.bbn.openmap.omGraphics.OMRasterObject.COLORMODEL_DIRECT) {
-	    
-	    JPanel qualityPanel = PaletteHelper.createPaletteJPanel("Image JPEG Quality/Time");
-	    JSlider qualitySlide = new JSlider(
-		JSlider.HORIZONTAL, 0/*min*/, 100/*max*/, 
-		(int)(((CRFPClient)frameProvider).jpegQuality * 100)/*inital*/);
-	    java.util.Hashtable dict2 = new java.util.Hashtable();
-	    dict2.put(new Integer(0), new JLabel("Less"));
-	    dict2.put(new Integer(100), new JLabel("More"));
-	    qualitySlide.setLabelTable(dict2);
-	    qualitySlide.setPaintLabels(true);
-	    qualitySlide.setMajorTickSpacing(20);
-	    qualitySlide.setPaintTicks(true);
-	    qualitySlide.addChangeListener(new ChangeListener() {
-		public void stateChanged(ChangeEvent ce) {
-		    JSlider slider = (JSlider) ce.getSource();
-		    if (!slider.getValueIsAdjusting()) {
-			((CRFPClient)getFrameProvider()).jpegQuality = (float)(slider.getValue())/100f;
-			fireRequestInfoLine("RPF Image JPEG Quality set to " + ((CRFPClient)getFrameProvider()).jpegQuality + " for future requests.");
-		    }
-		}
-	    });
-	    qualityPanel.add(qualitySlide);
-	    
-	    box.add(qualityPanel);
-	}
+        if (getViewAttributes().colorModel == 
+            com.bbn.openmap.omGraphics.OMRasterObject.COLORMODEL_DIRECT) {
+            
+            JPanel qualityPanel = PaletteHelper.createPaletteJPanel("Image JPEG Quality/Time");
+            JSlider qualitySlide = new JSlider(
+                JSlider.HORIZONTAL, 0/*min*/, 100/*max*/, 
+                (int)(((CRFPClient)frameProvider).jpegQuality * 100)/*inital*/);
+            java.util.Hashtable dict2 = new java.util.Hashtable();
+            dict2.put(new Integer(0), new JLabel("Less"));
+            dict2.put(new Integer(100), new JLabel("More"));
+            qualitySlide.setLabelTable(dict2);
+            qualitySlide.setPaintLabels(true);
+            qualitySlide.setMajorTickSpacing(20);
+            qualitySlide.setPaintTicks(true);
+            qualitySlide.addChangeListener(new ChangeListener() {
+                public void stateChanged(ChangeEvent ce) {
+                    JSlider slider = (JSlider) ce.getSource();
+                    if (!slider.getValueIsAdjusting()) {
+                        ((CRFPClient)getFrameProvider()).jpegQuality = (float)(slider.getValue())/100f;
+                        fireRequestInfoLine("RPF Image JPEG Quality set to " + ((CRFPClient)getFrameProvider()).jpegQuality + " for future requests.");
+                    }
+                }
+            });
+            qualityPanel.add(qualitySlide);
+            
+            box.add(qualityPanel);
+        }
 
-	JPanel subbox2 = new JPanel();
-	JButton redraw = new JButton("Redraw RPF Layer");
-	redraw.addActionListener(this);
-	subbox2.add(redraw);
-	box.add(subbox2);
+        JPanel subbox2 = new JPanel();
+        JButton redraw = new JButton("Redraw RPF Layer");
+        redraw.addActionListener(this);
+        subbox2.add(redraw);
+        box.add(subbox2);
 
-	return box;
+        return box;
     }
 }

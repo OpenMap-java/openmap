@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.10 $
-// $Date: 2003/12/23 20:43:27 $
-// $Author: wjeuerle $
+// $Revision: 1.11 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -160,18 +160,18 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * are set to their default values.
      */
     public LinkLayer() {
-	// We don't want to reset the OMGraphicsList automatically
-	// when the projection changes, now.  With ansynchronous
-	// behavior, the current list should be reprojected and the
-	// server notified, and the server will update itself if
-	// needed.
-	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this) {
-		// Modified so it doesn't reset the OMGraphicList when
-		// the SwingWorker thread returns.  The list has
-		// already been nulled out, will be reset when the
-		// asynchronous thread decides it is.
-		public void workerComplete(OMGraphicList list) {}
-	    });
+        // We don't want to reset the OMGraphicsList automatically
+        // when the projection changes, now.  With ansynchronous
+        // behavior, the current list should be reprojected and the
+        // server notified, and the server will update itself if
+        // needed.
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this) {
+                // Modified so it doesn't reset the OMGraphicList when
+                // the SwingWorker thread returns.  The list has
+                // already been nulled out, will be reset when the
+                // asynchronous thread decides it is.
+                public void workerComplete(OMGraphicList list) {}
+            });
     }
 
     /**
@@ -184,26 +184,26 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * parameters for the server.
      */
     public LinkLayer(String host, int port, String propertiesURL) {
-	this();
-	this.host = host;
-	this.port = port;
-	linkManager = new LinkManager(host, port);
+        this();
+        this.host = host;
+        this.port = port;
+        linkManager = new LinkManager(host, port);
 
-	args = new LinkProperties();
+        args = new LinkProperties();
 
-	if (propertiesURL != null) {
-	    try{
-		URL propertiesFile = new URL(propertiesURL);
-		args.load(propertiesFile.openStream());
-	    } catch (java.net.MalformedURLException mue) {
-		System.err.println("LinkLayer:  Properties URL isn't valid: " +
-				   propertiesURL);
-		System.err.println(mue);
-	    } catch (IOException ioe) {
-		System.err.println("LinkLayer: IOException reading properties file:");
-		System.err.println(ioe);
-	    }
-	}
+        if (propertiesURL != null) {
+            try{
+                URL propertiesFile = new URL(propertiesURL);
+                args.load(propertiesFile.openStream());
+            } catch (java.net.MalformedURLException mue) {
+                System.err.println("LinkLayer:  Properties URL isn't valid: " +
+                                   propertiesURL);
+                System.err.println(mue);
+            } catch (IOException ioe) {
+                System.err.println("LinkLayer: IOException reading properties file:");
+                System.err.println(ioe);
+            }
+        }
     }
 
     /**
@@ -212,14 +212,14 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * @param aList a list of OMGraphics
      */
     public synchronized void setGraphicList(LinkOMGraphicList aList) {
-	super.setList(aList);
+        super.setList(aList);
     }
 
     /**
      * Retrieves the current graphics list.
      */
     public synchronized LinkOMGraphicList getGraphicList() {
-	return (LinkOMGraphicList) getList();
+        return (LinkOMGraphicList) getList();
     }
 
     /** 
@@ -228,7 +228,7 @@ public class LinkLayer extends OMGraphicHandlerLayer
      *  link. 
      */
     public void removed(Container cont) {
-	linkManager.resetLink();
+        linkManager.resetLink();
     }
 
     /** 
@@ -239,7 +239,7 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * @see LinkActionRequest
      */
     public synchronized void setGestureDescriptor(int descriptor) {
-	gestureDescriptor = descriptor;
+        gestureDescriptor = descriptor;
     }
 
     /** 
@@ -250,7 +250,7 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * @see LinkActionRequest
      */
     public synchronized int getGestureDescriptor() {
-	return gestureDescriptor;
+        return gestureDescriptor;
     }
 
     /**
@@ -260,61 +260,61 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * @param properties the properties for the layer.
      */
     public void setProperties(String prefix, 
-			      Properties properties) {
+                              Properties properties) {
 
-	super.setProperties(prefix, properties);
+        super.setProperties(prefix, properties);
 
-	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String quietString = properties.getProperty(realPrefix + QuietProperty);
-	if (quietString != null && quietString.intern() == "true") {
-	    quiet = true;
-	}
+        String quietString = properties.getProperty(realPrefix + QuietProperty);
+        if (quietString != null && quietString.intern() == "true") {
+            quiet = true;
+        }
 
-	host = properties.getProperty(realPrefix + HostProperty);
+        host = properties.getProperty(realPrefix + HostProperty);
 
-	port = PropUtils.intFromProperties(properties, realPrefix + PortProperty,
-					   LinkServerStarter.DEFAULT_PORT);
+        port = PropUtils.intFromProperties(properties, realPrefix + PortProperty,
+                                           LinkServerStarter.DEFAULT_PORT);
 
-	linkManager = new LinkManager(host, port);
+        linkManager = new LinkManager(host, port);
 
-	linkManager.setObeyCommandToExit(PropUtils.booleanFromProperties(properties, realPrefix + ExitOnCommandProperty, false));
+        linkManager.setObeyCommandToExit(PropUtils.booleanFromProperties(properties, realPrefix + ExitOnCommandProperty, false));
 
-	String propertiesURL = properties.getProperty(realPrefix + ArgsProperty);
+        String propertiesURL = properties.getProperty(realPrefix + ArgsProperty);
 
-	args = new LinkProperties();  // Empty if not filled.
-	if (propertiesURL != null) {
-	    try{
-		URL propertiesFile = new URL(propertiesURL);
-		args.load(propertiesFile.openStream());
-	    } catch (java.net.MalformedURLException mue) {
-		System.err.println("LinkLayer:  Properties URL isn't valid: " +
-				   realPrefix + ArgsProperty);
-		System.err.println(mue);
-	    } catch (IOException ioe) {
-		System.err.println("LinkLayer: IOException reading properties file:");
-		System.err.println(ioe);
-	    }
-	}
+        args = new LinkProperties();  // Empty if not filled.
+        if (propertiesURL != null) {
+            try{
+                URL propertiesFile = new URL(propertiesURL);
+                args.load(propertiesFile.openStream());
+            } catch (java.net.MalformedURLException mue) {
+                System.err.println("LinkLayer:  Properties URL isn't valid: " +
+                                   realPrefix + ArgsProperty);
+                System.err.println(mue);
+            } catch (IOException ioe) {
+                System.err.println("LinkLayer: IOException reading properties file:");
+                System.err.println(ioe);
+            }
+        }
 
-	currentGenerator = (OMGridGenerator) PropUtils.objectFromProperties(properties, realPrefix + GridGeneratorProperty);
+        currentGenerator = (OMGridGenerator) PropUtils.objectFromProperties(properties, realPrefix + GridGeneratorProperty);
 
-	if (currentGenerator == null) {
-	    Debug.message("linkdetail", getName()+
-			  "|LinkLayer: no generator for grid objects.");
-	}
+        if (currentGenerator == null) {
+            Debug.message("linkdetail", getName()+
+                          "|LinkLayer: no generator for grid objects.");
+        }
 
-	distanceLimit = PropUtils.intFromProperties(properties, realPrefix + DistanceLimitProperty, distanceLimit);
+        distanceLimit = PropUtils.intFromProperties(properties, realPrefix + DistanceLimitProperty, distanceLimit);
 
-// 	listener = new LinkListener(linkManager, this, currentGenerator);
+//      listener = new LinkListener(linkManager, this, currentGenerator);
     }
 
     protected void setListener(LinkListener ll) {
-	listener = ll;
+        listener = ll;
     }
 
     protected LinkListener getListener() {
-	return listener;
+        return listener;
     }
 
     /**
@@ -329,122 +329,122 @@ public class LinkLayer extends OMGraphicHandlerLayer
      */
     public OMGraphicList prepare() {
 
-	OMGraphicList currentList = getList();
+        OMGraphicList currentList = getList();
 
-	if (listener == null) {
-	    listener = new LinkListener(linkManager, this, currentGenerator);
-	}
-	
-	if (listener != null && !listener.isListening()) {
-	    // Call LinkListener to launch SwingWorker to kick off a
-	    // thread for the listener.
-	    listener.startUp();
-	}
+        if (listener == null) {
+            listener = new LinkListener(linkManager, this, currentGenerator);
+        }
+        
+        if (listener != null && !listener.isListening()) {
+            // Call LinkListener to launch SwingWorker to kick off a
+            // thread for the listener.
+            listener.startUp();
+        }
 
-	if (Debug.debugging("link")) {
-	    Debug.output(getName() + "|LinkLayer.prepare(): Listener " + (listener == null?"is null,":"is OK,") + " listening (" + (listener == null?"nope":"" + listener.isListening()) + ")");
-	}
+        if (Debug.debugging("link")) {
+            Debug.output(getName() + "|LinkLayer.prepare(): Listener " + (listener == null?"is null,":"is OK,") + " listening (" + (listener == null?"nope":"" + listener.isListening()) + ")");
+        }
 
-	if (isCancelled()) {
-	    Debug.message("link", getName()+"|LinkLayer.prepare(): aborted.");
-	    return currentList;
-	}
+        if (isCancelled()) {
+            Debug.message("link", getName()+"|LinkLayer.prepare(): aborted.");
+            return currentList;
+        }
 
-	Projection projection = getProjection();
-	if (projection == null) {
-	    Debug.error("Link Layer needs to be added to the MapBean before it can get graphics!");
-	    return currentList;
-	} else if (currentList != null) {
-	    // If the list isn't empty, it isn't being cleared when a
-	    // new projection is received, as dictated by the policy
-	    // of the layer.  Should regenerate it here.  If it's
-	    // understood that a new list will be sent by the server,
-	    // then a different ProjectionChangePolicy should be used.
-	    currentList.generate(projection);
-	}
+        Projection projection = getProjection();
+        if (projection == null) {
+            Debug.error("Link Layer needs to be added to the MapBean before it can get graphics!");
+            return currentList;
+        } else if (currentList != null) {
+            // If the list isn't empty, it isn't being cleared when a
+            // new projection is received, as dictated by the policy
+            // of the layer.  Should regenerate it here.  If it's
+            // understood that a new list will be sent by the server,
+            // then a different ProjectionChangePolicy should be used.
+            currentList.generate(projection);
+        }
 
-	Debug.message("basic", getName()+"|LinkLayer.prepare(): doing it");
+        Debug.message("basic", getName()+"|LinkLayer.prepare(): doing it");
 
-	// Setting the OMGraphicsList for this layer.  Remember, the
-	// LinkOMGraphicList is made up of OMGraphics, which are generated
-	// (projected) when the graphics are added to the list.  So,
-	// after this call, the list is ready for painting.
+        // Setting the OMGraphicsList for this layer.  Remember, the
+        // LinkOMGraphicList is made up of OMGraphics, which are generated
+        // (projected) when the graphics are added to the list.  So,
+        // after this call, the list is ready for painting.
 
-	// call getRectangle();
-	if (Debug.debugging("link")) {
-	    System.out.println(
-		getName()+"|LinkLayer.prepare(): " +
-		"calling getRectangle " +
-		" with projection: " + projection +
-		" ul = " + projection.getUpperLeft() + 
-		" lr = " + projection.getLowerRight()); 
-	}
+        // call getRectangle();
+        if (Debug.debugging("link")) {
+            System.out.println(
+                getName()+"|LinkLayer.prepare(): " +
+                "calling getRectangle " +
+                " with projection: " + projection +
+                " ul = " + projection.getUpperLeft() + 
+                " lr = " + projection.getLowerRight()); 
+        }
 
-	// 	LinkOMGraphicList omGraphicList;
+        //      LinkOMGraphicList omGraphicList;
 
-	////////////// Call getRectangle for server....
-	try {
-	    // We do want the link object here... If another thread is
-	    // using the link, wait.
-	    ClientLink l = linkManager.getLink(true);
+        ////////////// Call getRectangle for server....
+        try {
+            // We do want the link object here... If another thread is
+            // using the link, wait.
+            ClientLink l = linkManager.getLink(true);
 
-	    if (l == null) {
-		System.err.println("LinkLayer: unable to get link in prepare().");
-		return currentList;
-	    }
+            if (l == null) {
+                System.err.println("LinkLayer: unable to get link in prepare().");
+                return currentList;
+            }
 
-	    synchronized(l) {
-		// 		omGraphicList = getGraphics(l, projection);
-		sendMapRequest(l, projection);
-	    }
+            synchronized(l) {
+                //              omGraphicList = getGraphics(l, projection);
+                sendMapRequest(l, projection);
+            }
 
- 	    linkManager.finLink();
+            linkManager.finLink();
 
-	} catch (UnknownHostException uhe) {
-	    System.err.println("LinkLayer: unknown host!");
-	    // 	    return currentList;
-	} catch (java.io.IOException ioe) {
-	    System.err.println("LinkLayer: IOException contacting server for map request!");
-	    System.err.println(ioe);
+        } catch (UnknownHostException uhe) {
+            System.err.println("LinkLayer: unknown host!");
+            //      return currentList;
+        } catch (java.io.IOException ioe) {
+            System.err.println("LinkLayer: IOException contacting server for map request!");
+            System.err.println(ioe);
 
-	    linkManager.resetLink();
+            linkManager.resetLink();
 
-	    if (!quiet) {
-		fireRequestMessage("Communication error between " + getName() + 
-				   " layer\nand Link Server: Host: " + host + 
-				   ", Port: " + port);
-	    }
+            if (!quiet) {
+                fireRequestMessage("Communication error between " + getName() + 
+                                   " layer\nand Link Server: Host: " + host + 
+                                   ", Port: " + port);
+            }
 
-	    System.err.println("LinkLayer: Communication error between " + getName() + 
-			       " layer\nand Link Server: Host: " + host + 
-			       ", Port: " + port);
-	    // 	    return currentList;
-	}
+            System.err.println("LinkLayer: Communication error between " + getName() + 
+                               " layer\nand Link Server: Host: " + host + 
+                               ", Port: " + port);
+            //      return currentList;
+        }
 
-	/////////////////////////////////////////////////////
-	// With asynchronous behavior, we don't listen to the reply
-	// now.  The LinkListener will handle setting the new
-	// OMGraphicList if one is needed as decided by the server.
+        /////////////////////////////////////////////////////
+        // With asynchronous behavior, we don't listen to the reply
+        // now.  The LinkListener will handle setting the new
+        // OMGraphicList if one is needed as decided by the server.
 
-	/////////////////////
-	// safe quit
-	// 	int size = 0;
-	// 	if (omGraphicList != null) {
-	// 	    size = omGraphicList.size();	
+        /////////////////////
+        // safe quit
+        //      int size = 0;
+        //      if (omGraphicList != null) {
+        //          size = omGraphicList.size();        
 
-	// 	    if (Debug.debugging("basic")) {
-	// 		System.out.println(getName()+
-	// 				   "|LinkLayer.prepare(): finished with "+
-	// 				   size+" graphics");
-	// 	    }
+        //          if (Debug.debugging("basic")) {
+        //              System.out.println(getName()+
+        //                                 "|LinkLayer.prepare(): finished with "+
+        //                                 size+" graphics");
+        //          }
 
-	// // 	    omGraphicList.project(projection);
-	// 	}
-	// 	else 
-	// 	    Debug.message("basic", getName()+
-	// 	      "|LinkLayer.prepare(): finished with null graphics list");
+        // //       omGraphicList.project(projection);
+        //      }
+        //      else 
+        //          Debug.message("basic", getName()+
+        //            "|LinkLayer.prepare(): finished with null graphics list");
 
-	return currentList;
+        return currentList;
     }
 
     /**
@@ -456,237 +456,237 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * @throws IOException
      */
     protected void sendMapRequest(ClientLink link, Projection proj) 
-	throws IOException {
+        throws IOException {
 
-	LatLonPoint ul = proj.getUpperLeft();
-	LatLonPoint lr = proj.getLowerRight();
-	float ulLat = ul.getLatitude();
-	float ulLon = ul.getLongitude();
-	float lrLat = lr.getLatitude();
-	float lrLon = lr.getLongitude();
+        LatLonPoint ul = proj.getUpperLeft();
+        LatLonPoint lr = proj.getLowerRight();
+        float ulLat = ul.getLatitude();
+        float ulLon = ul.getLongitude();
+        float lrLat = lr.getLatitude();
+        float lrLon = lr.getLongitude();
 
-	LinkBoundingPoly[] boundingPolys = null;
+        LinkBoundingPoly[] boundingPolys = null;
 
-	if ((ulLon > lrLon) || MoreMath.approximately_equal(ulLon, lrLon, .001f)) {
-	    Debug.message("link", "Dateline is on screen");
+        if ((ulLon > lrLon) || MoreMath.approximately_equal(ulLon, lrLon, .001f)) {
+            Debug.message("link", "Dateline is on screen");
 
-	    float ymin = (float) Math.min(ulLat, lrLat);
-	    float ymax = (float) Math.max(ulLat, lrLat);
+            float ymin = (float) Math.min(ulLat, lrLat);
+            float ymax = (float) Math.max(ulLat, lrLat);
 
-	    // xmin, ymin, xmax, ymax
-	    boundingPolys = new LinkBoundingPoly[2];
-	    boundingPolys[0] = new LinkBoundingPoly(ulLon, ymin, 180.0f, ymax);
-	    boundingPolys[1] = new LinkBoundingPoly(-180.0f, ymin, lrLon, ymax);
+            // xmin, ymin, xmax, ymax
+            boundingPolys = new LinkBoundingPoly[2];
+            boundingPolys[0] = new LinkBoundingPoly(ulLon, ymin, 180.0f, ymax);
+            boundingPolys[1] = new LinkBoundingPoly(-180.0f, ymin, lrLon, ymax);
 
-	} else {
-	    boundingPolys = new LinkBoundingPoly[1];
-	    boundingPolys[0] = new LinkBoundingPoly(ulLon, lrLat, lrLon, ulLat);
-	}
+        } else {
+            boundingPolys = new LinkBoundingPoly[1];
+            boundingPolys[0] = new LinkBoundingPoly(ulLon, lrLat, lrLon, ulLat);
+        }
 
-	LinkMapRequest.write(proj.getCenter().getLatitude(),
-			     proj.getCenter().getLongitude(),
-			     proj.getScale(), 
-			     proj.getHeight(), proj.getWidth(),
-			     boundingPolys, args, link);
+        LinkMapRequest.write(proj.getCenter().getLatitude(),
+                             proj.getCenter().getLongitude(),
+                             proj.getScale(), 
+                             proj.getHeight(), proj.getWidth(),
+                             boundingPolys, args, link);
 
-	/////////////////////////////////////////////////////
-	// With asynchronous behavior, we don't listen to the reply
-	// now.  The LinkListener will handle it.
+        /////////////////////////////////////////////////////
+        // With asynchronous behavior, we don't listen to the reply
+        // now.  The LinkListener will handle it.
 
-	// 	link.readAndParse(proj, currentGenerator);
-	
-	// 	// While we are here, check for any change in gesture query
-	// 	// requests.
-	// 	LinkActionRequest lar = link.getActionRequest();
-	// 	if (lar != null) {
-	// 	    setGestureDescriptor(lar.getDescriptor());
-	// 	}
+        //      link.readAndParse(proj, currentGenerator);
+        
+        //      // While we are here, check for any change in gesture query
+        //      // requests.
+        //      LinkActionRequest lar = link.getActionRequest();
+        //      if (lar != null) {
+        //          setGestureDescriptor(lar.getDescriptor());
+        //      }
 
-	// 	handleLinkGraphicList(link.getGraphicList());
-	/////////////////////////////////////////////////////
+        //      handleLinkGraphicList(link.getGraphicList());
+        /////////////////////////////////////////////////////
     }
 
     public void handleLinkGraphicList(LinkGraphicList lgl) {
-	Debug.message("link", "LinkLayer.handleLinkGraphicList()");
+        Debug.message("link", "LinkLayer.handleLinkGraphicList()");
 
-	if (lgl != null) {
-	    //Deal with all the messaging....
-	    handleMessages(lgl.getProperties());
-	    LinkOMGraphicList lomgl = lgl.getGraphics();
-	    setGraphicList(lomgl);
-	    // Do we need to regenerate?
-	    Projection proj = getProjection();
-	    if (lomgl.getNeedToRegenerate(proj)) {
-		// set to false in LinkGraphicList.readGraphics if the
-		// projection was there when the LinkGraphicList was
-		// created.  If it wasn't there, we need to try to
-		// project them before calling repaint().  Projection
-		// will be null if the layer hasn't been added to the
-		// map.
-		lomgl.generate(proj);
-	    }
+        if (lgl != null) {
+            //Deal with all the messaging....
+            handleMessages(lgl.getProperties());
+            LinkOMGraphicList lomgl = lgl.getGraphics();
+            setGraphicList(lomgl);
+            // Do we need to regenerate?
+            Projection proj = getProjection();
+            if (lomgl.getNeedToRegenerate(proj)) {
+                // set to false in LinkGraphicList.readGraphics if the
+                // projection was there when the LinkGraphicList was
+                // created.  If it wasn't there, we need to try to
+                // project them before calling repaint().  Projection
+                // will be null if the layer hasn't been added to the
+                // map.
+                lomgl.generate(proj);
+            }
 
-	    repaint();
-	}
+            repaint();
+        }
     }
 
     public void handleLinkActionList(LinkActionList lal) {
-	Debug.message("link", "LinkLayer.handleLinkActionList()");
+        Debug.message("link", "LinkLayer.handleLinkActionList()");
 
-	if (lal == null) {
-	    return;
-	}
+        if (lal == null) {
+            return;
+        }
 
-	handleMessages(lal.getProperties());
+        handleMessages(lal.getProperties());
 
-	// The only thing we need to do is handle any gesture
-	// changes...
-	Vector updates = lal.getGraphicUpdates();
-	Enumeration items = updates.elements();
-	boolean needRepaint = false;
-	LinkOMGraphicList graphics = getGraphicList();
+        // The only thing we need to do is handle any gesture
+        // changes...
+        Vector updates = lal.getGraphicUpdates();
+        Enumeration items = updates.elements();
+        boolean needRepaint = false;
+        LinkOMGraphicList graphics = getGraphicList();
 
-	Projection proj = getProjection();
+        Projection proj = getProjection();
 
-	if (graphics == null) {
-	    Debug.message("link", "LinkLayer.handleLinkActionList: null LinkOMGraphicList, making new one...");
-	    // Why ignore what the server has to say, set the new
-	    // OMGraphicList and react accordingly.
-	    graphics = new LinkOMGraphicList();
-	    setGraphicList(graphics);
-	}
+        if (graphics == null) {
+            Debug.message("link", "LinkLayer.handleLinkActionList: null LinkOMGraphicList, making new one...");
+            // Why ignore what the server has to say, set the new
+            // OMGraphicList and react accordingly.
+            graphics = new LinkOMGraphicList();
+            setGraphicList(graphics);
+        }
 
-	while (items.hasMoreElements()) {
-	    needRepaint = true; // We do!
-	    GraphicUpdate gu = (GraphicUpdate) items.nextElement();
+        while (items.hasMoreElements()) {
+            needRepaint = true; // We do!
+            GraphicUpdate gu = (GraphicUpdate) items.nextElement();
 
-	    // Take care of this first.....
-	    if (LinkUtil.isMask(gu.action, MODIFY_DESELECTALL_GRAPHIC_MASK)) {
-		Debug.message("link","LinkLayer.handleLinkActionList: deselecting all graphics");
-		graphics.deselectAll();
-	    }
+            // Take care of this first.....
+            if (LinkUtil.isMask(gu.action, MODIFY_DESELECTALL_GRAPHIC_MASK)) {
+                Debug.message("link","LinkLayer.handleLinkActionList: deselecting all graphics");
+                graphics.deselectAll();
+            }
 
-	    // Find the graphic that we are talking about - if the
-	    // ID is not "none", or if the id doesn't match the
-	    // gesGraphic LinkGraphicID, then look for the new
-	    // graphic.  Otherwise, assume that the gesGraphic is
-	    // the one that the action refers to.
+            // Find the graphic that we are talking about - if the
+            // ID is not "none", or if the id doesn't match the
+            // gesGraphic LinkGraphicID, then look for the new
+            // graphic.  Otherwise, assume that the gesGraphic is
+            // the one that the action refers to.
 
-	    // This code was moved from handleGesture to here, the
-	    // main difference being that in handleGesture any actual
-	    // OMGraphic that was gestured over was already known at
-	    // this point, and there was no sense looking for it if
-	    // you already had it.  Since we moved the code, and this
-	    // method is being called from a different thread, we
-	    // don't have that luxury - we have to look up the
-	    // OMGraphic again...
+            // This code was moved from handleGesture to here, the
+            // main difference being that in handleGesture any actual
+            // OMGraphic that was gestured over was already known at
+            // this point, and there was no sense looking for it if
+            // you already had it.  Since we moved the code, and this
+            // method is being called from a different thread, we
+            // don't have that luxury - we have to look up the
+            // OMGraphic again...
 
-	    if (gu == null) {
-		Debug.message("link", "LinkLayer.handleLinkActionList: null GraphicUpdate, skipping...");
-		continue;
-	    }
+            if (gu == null) {
+                Debug.message("link", "LinkLayer.handleLinkActionList: null GraphicUpdate, skipping...");
+                continue;
+            }
 
-	    OMGraphic gug = gu.graphic;
-	    OMGraphic reactionGraphic = null;
-	    int reactionGraphicIndex = Link.UNKNOWN;
+            OMGraphic gug = gu.graphic;
+            OMGraphic reactionGraphic = null;
+            int reactionGraphicIndex = Link.UNKNOWN;
 
             if (LinkUtil.isMask(gu.action, UPDATE_ADD_GRAPHIC_MASK)) {
-		if (Debug.debugging("link")) {
-		    Debug.output("LinkLayer.handleLinkActionList: adding graphic, id:" + gu.id);
-		}
-		if (gug != null) {
-		    gug.generate(proj);
-		    graphics.add(gug);
-		    reactionGraphic = gug;
-		} else {
-		    Debug.message("link", "LinkLayer.handleLinkActionList: trying to add null OMGraphic, id: " + gu.id);
-		}
-	    } else if (gu.id != null) {
-		reactionGraphicIndex = graphics.getOMGraphicIndexWithId(gu.id);
-		if (reactionGraphicIndex == Link.UNKNOWN) {
-		    // Must be an addition/new graphic
-		    if (LinkUtil.isMask(gu.action, UPDATE_ADD_GRAPHIC_MASK)) {
-			// If gu.graphic is null, this will throw an exception
-			if (Debug.debugging("link")) {
-			    Debug.output("LinkLayer.handleLinkActionList: adding graphic " + gu.id);
-			}
-			if (gug != null) {
-			    gug.generate(proj);
-			    graphics.add(gug);
-			    reactionGraphic = gug;
-			} else {
-			    Debug.message("link", "LinkLayer.handleLinkActionList: trying to add null OMGraphic, id: " + gu.id);
-			}
-		    } else {
-			gu.action = 0; // No action...
-			Debug.error("LinkLayer.handleLinkActionList: Gesture Response on an unknown graphic.");
-		    }
-		} else if (LinkUtil.isMask(gu.action, UPDATE_GRAPHIC_MASK)) {
-		    if (gug != null) {
-			gug.generate(proj);
-			reactionGraphic = gug;
-		    } else {
-			Debug.message("link", "LinkLayer.handleLinkActionList: trying to update null OMGraphic, id: " + gu.id);
-		    }
-		} else {
-		    reactionGraphic = graphics.getOMGraphicWithId(gu.id);
-		}
- 	    } else {
-		Debug.error("LinkLayer.handleLinkActionList:  null ID for graphic");	
-	    }
+                if (Debug.debugging("link")) {
+                    Debug.output("LinkLayer.handleLinkActionList: adding graphic, id:" + gu.id);
+                }
+                if (gug != null) {
+                    gug.generate(proj);
+                    graphics.add(gug);
+                    reactionGraphic = gug;
+                } else {
+                    Debug.message("link", "LinkLayer.handleLinkActionList: trying to add null OMGraphic, id: " + gu.id);
+                }
+            } else if (gu.id != null) {
+                reactionGraphicIndex = graphics.getOMGraphicIndexWithId(gu.id);
+                if (reactionGraphicIndex == Link.UNKNOWN) {
+                    // Must be an addition/new graphic
+                    if (LinkUtil.isMask(gu.action, UPDATE_ADD_GRAPHIC_MASK)) {
+                        // If gu.graphic is null, this will throw an exception
+                        if (Debug.debugging("link")) {
+                            Debug.output("LinkLayer.handleLinkActionList: adding graphic " + gu.id);
+                        }
+                        if (gug != null) {
+                            gug.generate(proj);
+                            graphics.add(gug);
+                            reactionGraphic = gug;
+                        } else {
+                            Debug.message("link", "LinkLayer.handleLinkActionList: trying to add null OMGraphic, id: " + gu.id);
+                        }
+                    } else {
+                        gu.action = 0; // No action...
+                        Debug.error("LinkLayer.handleLinkActionList: Gesture Response on an unknown graphic.");
+                    }
+                } else if (LinkUtil.isMask(gu.action, UPDATE_GRAPHIC_MASK)) {
+                    if (gug != null) {
+                        gug.generate(proj);
+                        reactionGraphic = gug;
+                    } else {
+                        Debug.message("link", "LinkLayer.handleLinkActionList: trying to update null OMGraphic, id: " + gu.id);
+                    }
+                } else {
+                    reactionGraphic = graphics.getOMGraphicWithId(gu.id);
+                }
+            } else {
+                Debug.error("LinkLayer.handleLinkActionList:  null ID for graphic");    
+            }
 
-	    // Now, perform the appropriate action on the graphic...
+            // Now, perform the appropriate action on the graphic...
 
-	    // Delete a graphic...  If you do this, nothing else
-	    // gets done on the graphic...
-	    if (LinkUtil.isMask(gu.action, MODIFY_DELETE_GRAPHIC_MASK)) {
-		Debug.message("link","LinkLayer: deleting graphic");
-		graphics.removeOMGraphicAt(reactionGraphicIndex);
-	    } else {
-		    
-		// For properties updating, or graphic replacement
-		if (LinkUtil.isMask(gu.action, UPDATE_GRAPHIC_MASK)) {
-		    Debug.message("link","LinkLayer: updating graphic");
-		    graphics.setOMGraphicAt(reactionGraphic, reactionGraphicIndex);
-		}
-		    
-		// For graphic selection and deselection
-		if (LinkUtil.isMask(gu.action, MODIFY_SELECT_GRAPHIC_MASK)) {
-		    Debug.message("link","LinkLayer: selecting graphic");
-		    reactionGraphic.select();
-		} else if (LinkUtil.isMask(gu.action, MODIFY_DESELECT_GRAPHIC_MASK)) {
-		    Debug.message("link","LinkLayer: deselecting graphic");
-		    reactionGraphic.deselect();
-		}
+            // Delete a graphic...  If you do this, nothing else
+            // gets done on the graphic...
+            if (LinkUtil.isMask(gu.action, MODIFY_DELETE_GRAPHIC_MASK)) {
+                Debug.message("link","LinkLayer: deleting graphic");
+                graphics.removeOMGraphicAt(reactionGraphicIndex);
+            } else {
+                    
+                // For properties updating, or graphic replacement
+                if (LinkUtil.isMask(gu.action, UPDATE_GRAPHIC_MASK)) {
+                    Debug.message("link","LinkLayer: updating graphic");
+                    graphics.setOMGraphicAt(reactionGraphic, reactionGraphicIndex);
+                }
+                    
+                // For graphic selection and deselection
+                if (LinkUtil.isMask(gu.action, MODIFY_SELECT_GRAPHIC_MASK)) {
+                    Debug.message("link","LinkLayer: selecting graphic");
+                    reactionGraphic.select();
+                } else if (LinkUtil.isMask(gu.action, MODIFY_DESELECT_GRAPHIC_MASK)) {
+                    Debug.message("link","LinkLayer: deselecting graphic");
+                    reactionGraphic.deselect();
+                }
 
-		// Now, raising or lowering the graphic...
-		if (LinkUtil.isMask(gu.action, MODIFY_RAISE_GRAPHIC_MASK)) {
-		    Debug.message("link","LinkLayer: raising graphic");
-		    graphics.moveIndexedToTop(reactionGraphicIndex);
-		} else if (LinkUtil.isMask(gu.action, MODIFY_LOWER_GRAPHIC_MASK)) {
-		    Debug.message("link","LinkLayer: lowering graphic");
-		    graphics.moveIndexedToBottom(reactionGraphicIndex);
-		}
+                // Now, raising or lowering the graphic...
+                if (LinkUtil.isMask(gu.action, MODIFY_RAISE_GRAPHIC_MASK)) {
+                    Debug.message("link","LinkLayer: raising graphic");
+                    graphics.moveIndexedToTop(reactionGraphicIndex);
+                } else if (LinkUtil.isMask(gu.action, MODIFY_LOWER_GRAPHIC_MASK)) {
+                    Debug.message("link","LinkLayer: lowering graphic");
+                    graphics.moveIndexedToBottom(reactionGraphicIndex);
+                }
 
-	    }  // else if not deleting it...
-	} // while
+            }  // else if not deleting it...
+        } // while
 
         if (lal.getNeedMapUpdate()) {
             updateMap(lal.getMapProperties());
-	    lal.setNeedMapUpdate(false);
-	    needRepaint = false;
-	}
+            lal.setNeedMapUpdate(false);
+            needRepaint = false;
+        }
 
-	if (needRepaint) {
-	    repaint();
-	}
+        if (needRepaint) {
+            repaint();
+        }
     }
 
     public void handleLinkActionRequest(LinkActionRequest lar) {
-	Debug.message("link", "LinkLayer.handleLinkActionRequest()");
-	if (lar != null) {
-	    setGestureDescriptor(lar.getDescriptor());
-	}
+        Debug.message("link", "LinkLayer.handleLinkActionRequest()");
+        if (lar != null) {
+            setGestureDescriptor(lar.getDescriptor());
+        }
     }
 
     /** 
@@ -697,18 +697,18 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * @param props LinkProperties containing messages. 
      */
     public void handleMessages(LinkProperties props) {
-	String value = props.getProperty(LPC_INFO);
-	if (value != null) fireRequestInfoLine(value);
-	
-	value = props.getProperty(LPC_URL);
-	if (value != null) {
-	    fireRequestURL(value);
-	} else {
-	    value = props.getProperty(LPC_HTML);
-	    if (value != null) fireRequestBrowserContent(value);
-	}
-	value = props.getProperty(LPC_MESSAGE);
-	if (value != null) fireRequestMessage(value);
+        String value = props.getProperty(LPC_INFO);
+        if (value != null) fireRequestInfoLine(value);
+        
+        value = props.getProperty(LPC_URL);
+        if (value != null) {
+            fireRequestURL(value);
+        } else {
+            value = props.getProperty(LPC_HTML);
+            if (value != null) fireRequestBrowserContent(value);
+        }
+        value = props.getProperty(LPC_MESSAGE);
+        if (value != null) fireRequestMessage(value);
     }
 
     //----------------------------------------------------------------------
@@ -716,65 +716,65 @@ public class LinkLayer extends OMGraphicHandlerLayer
     //----------------------------------------------------------------------
     /** Return the MapMouseListener for the layer. */
     public synchronized MapMouseListener getMapMouseListener() {
-	return this;
+        return this;
     }
 
     /** Return the strings identifying the Mouse Modes that the
      *  MapMouseListener wants to receive gestures from. */
     public String[] getMouseModeServiceList() {
-	String[] services = {SelectMouseMode.modeID};
-	return services;
+        String[] services = {SelectMouseMode.modeID};
+        return services;
     }
 
     public boolean mousePressed(MouseEvent e) {
-	if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_PRESSED_MASK)) {
-	    return handleGesture(MOUSE_PRESSED_MASK, e);
-	}
-	return false;
+        if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_PRESSED_MASK)) {
+            return handleGesture(MOUSE_PRESSED_MASK, e);
+        }
+        return false;
     }
     
     public boolean mouseReleased(MouseEvent e) {
-	if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_RELEASED_MASK)) {
-	    return handleGesture(MOUSE_RELEASED_MASK, e);
-	}
-	return false;
+        if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_RELEASED_MASK)) {
+            return handleGesture(MOUSE_RELEASED_MASK, e);
+        }
+        return false;
     }
     public boolean mouseClicked(MouseEvent e) {
-	if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_CLICKED_MASK)) {
-	    return handleGesture(MOUSE_CLICKED_MASK, e);
-	}
-	return false;
+        if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_CLICKED_MASK)) {
+            return handleGesture(MOUSE_CLICKED_MASK, e);
+        }
+        return false;
     }
     
     public void mouseEntered(MouseEvent e) {
-	if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_ENTERED_MASK)) {
-	    handleGesture(MOUSE_ENTERED_MASK, e);
-	}
+        if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_ENTERED_MASK)) {
+            handleGesture(MOUSE_ENTERED_MASK, e);
+        }
     }
     
     public void mouseExited(MouseEvent e) {
-	if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_EXITED_MASK)) {
-	    handleGesture(MOUSE_EXITED_MASK, e);
-	}
+        if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_EXITED_MASK)) {
+            handleGesture(MOUSE_EXITED_MASK, e);
+        }
     }
     
     public boolean mouseDragged(MouseEvent e) {
-	if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_DRAGGED_MASK)) {
-	    return handleGesture(MOUSE_DRAGGED_MASK, e);
-	}
-	return false;
+        if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_DRAGGED_MASK)) {
+            return handleGesture(MOUSE_DRAGGED_MASK, e);
+        }
+        return false;
     }
     public boolean mouseMoved(MouseEvent e) {
-	if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_MOVED_MASK)) {
-	    return handleGesture(MOUSE_MOVED_MASK, e);
-	}
-	return false;
+        if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_MOVED_MASK)) {
+            return handleGesture(MOUSE_MOVED_MASK, e);
+        }
+        return false;
     }
     
     public void mouseMoved() {
-	if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_MOVED_MASK)) {
-	    handleGesture(MOUSE_MOVED_MASK, null);
-	}
+        if (LinkUtil.isMask(getGestureDescriptor(), MOUSE_MOVED_MASK)) {
+            handleGesture(MOUSE_MOVED_MASK, null);
+        }
     }
 
     /**
@@ -793,56 +793,56 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * @return true if the server still needs to be told - per descriptor bit 11.
      */
     protected boolean graphicGestureReaction(OMGraphic graphic, 
-					     int descriptor, MouseEvent e) {
-	LinkProperties props = (LinkProperties) graphic.getAppObject();
+                                             int descriptor, MouseEvent e) {
+        LinkProperties props = (LinkProperties) graphic.getAppObject();
 
-	// Mouse clicked
-	boolean mc = LinkUtil.isMask(descriptor, MOUSE_CLICKED_MASK);
-	// Mouse released
-	boolean mr = LinkUtil.isMask(descriptor, MOUSE_RELEASED_MASK);
-	// Mouse moved
-	boolean mm = LinkUtil.isMask(descriptor, MOUSE_MOVED_MASK);
-	// server inform
-	boolean si = LinkUtil.isMask(getGestureDescriptor(), SERVER_NOTIFICATION_MASK);
+        // Mouse clicked
+        boolean mc = LinkUtil.isMask(descriptor, MOUSE_CLICKED_MASK);
+        // Mouse released
+        boolean mr = LinkUtil.isMask(descriptor, MOUSE_RELEASED_MASK);
+        // Mouse moved
+        boolean mm = LinkUtil.isMask(descriptor, MOUSE_MOVED_MASK);
+        // server inform
+        boolean si = LinkUtil.isMask(getGestureDescriptor(), SERVER_NOTIFICATION_MASK);
 
-	boolean ret = true;
+        boolean ret = true;
 
-	if (mr || mc) {
-	    String url = props.getProperty(LPC_URL);
-	    if (url != null) {
-		if (Debug.debugging("link")) {
-		    System.out.println("LinkLayer:graphicGestureReaction: displaying url: " + url);
-		}
-		fireRequestURL(url);
-		ret = si;
-	    } else {
-		String html = props.getProperty(LPC_HTML);
-		if (html != null) {
-		    fireRequestBrowserContent(html);
-		    ret = si;
-		}
-	    }
-	    
-	    // Just reuse url instead of declaring another string object
-	    url = props.getProperty(LPC_MESSAGE);
-	    if (url != null) {
-		fireRequestMessage(url);
-		ret = si;
-	    }
-	}
-	
-	if (mr || mm || mc) {
-	    String info = props.getProperty(LPC_INFO);
-	    if (info != null) {
-		if (Debug.debugging("link")) {
-		    System.out.println("LinkLayer:graphicGestureReaction: displaying info line: " + info);
-		}
-		fireRequestInfoLine(info);
-		ret = si;
-	    }
-	}
+        if (mr || mc) {
+            String url = props.getProperty(LPC_URL);
+            if (url != null) {
+                if (Debug.debugging("link")) {
+                    System.out.println("LinkLayer:graphicGestureReaction: displaying url: " + url);
+                }
+                fireRequestURL(url);
+                ret = si;
+            } else {
+                String html = props.getProperty(LPC_HTML);
+                if (html != null) {
+                    fireRequestBrowserContent(html);
+                    ret = si;
+                }
+            }
+            
+            // Just reuse url instead of declaring another string object
+            url = props.getProperty(LPC_MESSAGE);
+            if (url != null) {
+                fireRequestMessage(url);
+                ret = si;
+            }
+        }
+        
+        if (mr || mm || mc) {
+            String info = props.getProperty(LPC_INFO);
+            if (info != null) {
+                if (Debug.debugging("link")) {
+                    System.out.println("LinkLayer:graphicGestureReaction: displaying info line: " + info);
+                }
+                fireRequestInfoLine(info);
+                ret = si;
+            }
+        }
 
-	return ret;
+        return ret;
     }
 
     /** 
@@ -857,220 +857,220 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * @return true if the event was consumed. 
      */
     protected boolean handleGesture(int descriptor, MouseEvent e) {
-	Debug.message("link", "LinkLayer: handleGesture:");
-	// Set if we need to repaint
-	boolean needRepaint = false;	
+        Debug.message("link", "LinkLayer: handleGesture:");
+        // Set if we need to repaint
+        boolean needRepaint = false;    
 
-	try {
-	    LinkOMGraphicList graphics = getGraphicList(); // Get old list
+        try {
+            LinkOMGraphicList graphics = getGraphicList(); // Get old list
 
-	    if (graphics == null) {
-		// Nothing to search on - this condition occurs when
-		// the layer is already busy getting new graphics as a
-		// result of a changed projection.
-		Debug.message("link", "LinkLayer: null graphics list.");
-		return false;
-	    }
+            if (graphics == null) {
+                // Nothing to search on - this condition occurs when
+                // the layer is already busy getting new graphics as a
+                // result of a changed projection.
+                Debug.message("link", "LinkLayer: null graphics list.");
+                return false;
+            }
 
-	    if (e == null) {
-		graphics.deselectAll();
-		return false;
-	    }
+            if (e == null) {
+                graphics.deselectAll();
+                return false;
+            }
 
-	    // Find out if a graphic is closeby...
-	    int gesGraphicIndex = graphics.findIndexOfClosest(e.getX(), e.getY(), 
-							      distanceLimit);
+            // Find out if a graphic is closeby...
+            int gesGraphicIndex = graphics.findIndexOfClosest(e.getX(), e.getY(), 
+                                                              distanceLimit);
 
-	    // We need to do this to deselect everything else too.
-	    OMGraphic gesGraphic = graphics.selectClosest(e.getX(), e.getY(), 
-							  distanceLimit);
+            // We need to do this to deselect everything else too.
+            OMGraphic gesGraphic = graphics.selectClosest(e.getX(), e.getY(), 
+                                                          distanceLimit);
 
-	    String id = null;
+            String id = null;
 
-	    // If there was a graphic, set the mask to indicate that,
-	    // and keep track of the graphic and the list index of the
-	    // graphic for the response.  If a graphic modify command
-	    // comes back without an ID, then we'll assume the server
-	    // was refering to this graphic.
-	    if (gesGraphic != null) {
+            // If there was a graphic, set the mask to indicate that,
+            // and keep track of the graphic and the list index of the
+            // graphic for the response.  If a graphic modify command
+            // comes back without an ID, then we'll assume the server
+            // was refering to this graphic.
+            if (gesGraphic != null) {
 
-		boolean tellServer = graphicGestureReaction(gesGraphic, descriptor, e);
-		
-		if (!tellServer) {
-		    repaint();
-		    return true;
-		}
+                boolean tellServer = graphicGestureReaction(gesGraphic, descriptor, e);
+                
+                if (!tellServer) {
+                    repaint();
+                    return true;
+                }
 
-		// 		needRepaint = true;  // Why?  At this point, we should wait to see what the server wants us to do, we should only repaint if a graphic update comes back.
+                //              needRepaint = true;  // Why?  At this point, we should wait to see what the server wants us to do, we should only repaint if a graphic update comes back.
 
-		descriptor = LinkUtil.setMask(descriptor, GRAPHIC_ID_MASK);
-		id = ((LinkProperties) gesGraphic.getAppObject()).getProperty(LPC_GRAPHICID);
-	    } else {
-		// clear out info line
-		fireRequestInfoLine("");
-	    }
+                descriptor = LinkUtil.setMask(descriptor, GRAPHIC_ID_MASK);
+                id = ((LinkProperties) gesGraphic.getAppObject()).getProperty(LPC_GRAPHICID);
+            } else {
+                // clear out info line
+                fireRequestInfoLine("");
+            }
 
-	    // server inform
-	    if (!LinkUtil.isMask(getGestureDescriptor(), SERVER_NOTIFICATION_MASK)) {
-		return false;
-	    }
+            // server inform
+            if (!LinkUtil.isMask(getGestureDescriptor(), SERVER_NOTIFICATION_MASK)) {
+                return false;
+            }
 
-	    // Get the lat/lon point of the event
-	    LatLonPoint llpoint = getProjection().inverse(e.getX(), e.getY());
+            // Get the lat/lon point of the event
+            LatLonPoint llpoint = getProjection().inverse(e.getX(), e.getY());
 
-	    // Don't need these anymore, look below for explaination
-	    // for asynchronous operation.
-	    // 	    LinkActionList lal;
-	    // 	    LinkActionRequest lar;
+            // Don't need these anymore, look below for explaination
+            // for asynchronous operation.
+            //      LinkActionList lal;
+            //      LinkActionRequest lar;
 
-	    ClientLink l = linkManager.getLink(false);
-	    
-	    // We'll check this here because we don't want to wait if
-	    // it is not available - it could be used for another
-	    // graphics or gui fetch.
-	    if (l == null) {
-		Debug.message("link", "LinkLayer: unable to get link in handleGesture().");
-		return false;
-	    }
+            ClientLink l = linkManager.getLink(false);
+            
+            // We'll check this here because we don't want to wait if
+            // it is not available - it could be used for another
+            // graphics or gui fetch.
+            if (l == null) {
+                Debug.message("link", "LinkLayer: unable to get link in handleGesture().");
+                return false;
+            }
 
-	    // Using the link - carefully prevent others from using it too!
-	    synchronized (l) {
-		if (id != null) {
-		    args.setProperty(LPC_GRAPHICID, id);
-		}
+            // Using the link - carefully prevent others from using it too!
+            synchronized (l) {
+                if (id != null) {
+                    args.setProperty(LPC_GRAPHICID, id);
+                }
 
-		// Send the query
-		LinkActionRequest.write(descriptor, e, llpoint.getLatitude(), 
-					llpoint.getLongitude(), args, l);
+                // Send the query
+                LinkActionRequest.write(descriptor, e, llpoint.getLatitude(), 
+                                        llpoint.getLongitude(), args, l);
 
-		/////////////////////////////////////////////////////
-		// With asynchronous behavior, we don't listen to the reply
-		// now.  The LinkListener will handle it.
+                /////////////////////////////////////////////////////
+                // With asynchronous behavior, we don't listen to the reply
+                // now.  The LinkListener will handle it.
 
-		// 		// Read the response
-		// 		l.readAndParse(getProjection(), currentGenerator, this);
+                //              // Read the response
+                //              l.readAndParse(getProjection(), currentGenerator, this);
 
-		// 		lal = l.getActionList();
-		// 		lar = l.getActionRequest();
+                //              lal = l.getActionList();
+                //              lar = l.getActionRequest();
 
-		// 		if (id != null) {
-		// 		    args.remove(LPC_GRAPHICID);
-		// 		}
-		/////////////////////////////////////////////////////
+                //              if (id != null) {
+                //                  args.remove(LPC_GRAPHICID);
+                //              }
+                /////////////////////////////////////////////////////
 
-	    }
+            }
 
-	    linkManager.finLink();
-	    
-	    /////////////////////////////////////////////////////
-	    // With asynchronous behavior, we don't listen to the reply
-	    // now.  The LinkListener will handle it.
+            linkManager.finLink();
+            
+            /////////////////////////////////////////////////////
+            // With asynchronous behavior, we don't listen to the reply
+            // now.  The LinkListener will handle it.
 
-	    // 	    handleLinkActionRequest(lar);
-	    
-	    // 	    // If nothing else was returned concerning the gesture query
-	    // 	    if (lal == null) {
-	    // 		return false;
-	    // 	    }
+            //      handleLinkActionRequest(lar);
+            
+            //      // If nothing else was returned concerning the gesture query
+            //      if (lal == null) {
+            //          return false;
+            //      }
 
-	    // 	    handleLinkActionList(lal);
-	    // 	    return lal.consumedGesture();
+            //      handleLinkActionList(lal);
+            //      return lal.consumedGesture();
 
-	    /////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////
 
-	    // I don't know what to answer here, we really don't know
-	    // at this point.  There may be something we can do to set
-	    // up some lag circle to start returning true if we need
-	    // to, but if we're not listening in this thread, we just
-	    // don't know if the gesture is consumed here and we can't
-	    // hold up the event thread to find out.
-	    return false;
+            // I don't know what to answer here, we really don't know
+            // at this point.  There may be something we can do to set
+            // up some lag circle to start returning true if we need
+            // to, but if we're not listening in this thread, we just
+            // don't know if the gesture is consumed here and we can't
+            // hold up the event thread to find out.
+            return false;
 
-	} catch (IOException ioe) {
-	    System.err.println("LinkLayer: IOException contacting server during gesture handling!");
-	    System.err.println(ioe);
-	    linkManager.resetLink();
-	    return false;
-	}
+        } catch (IOException ioe) {
+            System.err.println("LinkLayer: IOException contacting server during gesture handling!");
+            System.err.println(ioe);
+            linkManager.resetLink();
+            return false;
+        }
     }
 
     // DrawingToolRequestor method
     public void drawingComplete(OMGraphic omg, OMAction action) {
-	////////////// send the new graphic, along with instructions
-	//on what to do with it, to the server.
-	String id = null; // unknown
+        ////////////// send the new graphic, along with instructions
+        //on what to do with it, to the server.
+        String id = null; // unknown
 
-	Object obj = omg.getAppObject();
-	LinkProperties lp = null;
-	if (obj != null && obj instanceof LinkProperties) {
-	    lp = (LinkProperties)obj;
-	    id = lp.getProperty(LPC_GRAPHICID);
-	}
+        Object obj = omg.getAppObject();
+        LinkProperties lp = null;
+        if (obj != null && obj instanceof LinkProperties) {
+            lp = (LinkProperties)obj;
+            id = lp.getProperty(LPC_GRAPHICID);
+        }
 
-	if (id == null) {
-	    // Doesn't look like it was a modified graphic already
-	    // recieved from the server, so we should tell the server
-	    // to add it to its list.
-	    action.setMask(OMAction.ADD_GRAPHIC_MASK);
-	}
+        if (id == null) {
+            // Doesn't look like it was a modified graphic already
+            // recieved from the server, so we should tell the server
+            // to add it to its list.
+            action.setMask(OMAction.ADD_GRAPHIC_MASK);
+        }
 
-	try {
-	    // We do want the link object here... If another thread is
-	    // using the link, wait.
-	    ClientLink l = linkManager.getLink(true);
+        try {
+            // We do want the link object here... If another thread is
+            // using the link, wait.
+            ClientLink l = linkManager.getLink(true);
 
-	    if (l == null) {
-		System.err.println("LinkLayer.drawingComplete: unable to get link.");
-		return;
-	    }
+            if (l == null) {
+                System.err.println("LinkLayer.drawingComplete: unable to get link.");
+                return;
+            }
 
-	    synchronized(l) {
-		LinkActionList lal = new LinkActionList(l, new LinkProperties());
+            synchronized(l) {
+                LinkActionList lal = new LinkActionList(l, new LinkProperties());
 
-		if (action.isMask(OMAction.ADD_GRAPHIC_MASK) || 
-		    action.isMask(OMAction.UPDATE_GRAPHIC_MASK)) {
-		    lal.writeGraphicGestureHeader(action.getValue());
-		    LinkGraphic.write(omg, l);
-		} else {
-		    // This shouldn't ever get called with a null lp
-		    // properties object.  If the object is new or
-		    // doesn't have an ID, the upper paragraph will
-		    // get called.
-		    lal.modifyGraphic(action.getValue(), lp);
-		}
-		lal.end(Link.END_TOTAL);
-	    }
+                if (action.isMask(OMAction.ADD_GRAPHIC_MASK) || 
+                    action.isMask(OMAction.UPDATE_GRAPHIC_MASK)) {
+                    lal.writeGraphicGestureHeader(action.getValue());
+                    LinkGraphic.write(omg, l);
+                } else {
+                    // This shouldn't ever get called with a null lp
+                    // properties object.  If the object is new or
+                    // doesn't have an ID, the upper paragraph will
+                    // get called.
+                    lal.modifyGraphic(action.getValue(), lp);
+                }
+                lal.end(Link.END_TOTAL);
+            }
 
-	    /////////////////////////////////////////////////////
-	    // With asynchronous behavior, we don't listen to the reply
-	    // now.  The LinkListener will handle it.
+            /////////////////////////////////////////////////////
+            // With asynchronous behavior, we don't listen to the reply
+            // now.  The LinkListener will handle it.
 
-	    // 	    l.readAndParse(getProjection(), currentGenerator);
-	    /////////////////////////////////////////////////////
+            //      l.readAndParse(getProjection(), currentGenerator);
+            /////////////////////////////////////////////////////
 
-	    linkManager.finLink();
+            linkManager.finLink();
 
-	} catch (UnknownHostException uhe) {
-	    Debug.error("LinkLayer: unknown host!");
-	    return;
-	} catch (java.io.IOException ioe) {
-	    Debug.error("LinkLayer: Communication error between " + getName() + 
-			" layer\nand Link Server: Host: " + host + 
-			", Port: " + port + 
-			"LinkLayer: IOException contacting server!\n" +
-			ioe.getMessage());
+        } catch (UnknownHostException uhe) {
+            Debug.error("LinkLayer: unknown host!");
+            return;
+        } catch (java.io.IOException ioe) {
+            Debug.error("LinkLayer: Communication error between " + getName() + 
+                        " layer\nand Link Server: Host: " + host + 
+                        ", Port: " + port + 
+                        "LinkLayer: IOException contacting server!\n" +
+                        ioe.getMessage());
 
 
-	    linkManager.resetLink();
+            linkManager.resetLink();
 
-	    if (!quiet) {
-		fireRequestMessage("Communication error between " + getName() + 
-				   " layer\nand Link Server: Host: " + host + 
-				   ", Port: " + port);
-	    }
+            if (!quiet) {
+                fireRequestMessage("Communication error between " + getName() + 
+                                   " layer\nand Link Server: Host: " + host + 
+                                   ", Port: " + port);
+            }
 
-	    return;
-	}
+            return;
+        }
     }
 
     /**
@@ -1081,18 +1081,18 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * @param limit the pixel limit to consider something "closest".
      */
     public void setDistanceLimit(int limit) {
-	if (limit < 0) {
-	    distanceLimit = 0;
-	} else {
-	    distanceLimit = limit;
-	}
+        if (limit < 0) {
+            distanceLimit = 0;
+        } else {
+            distanceLimit = limit;
+        }
     }
 
     /**
      * Get the search distance limit pixel distance for graphics searches.
      */
     public int getDistanceLimit() {
-	return distanceLimit;
+        return distanceLimit;
     }
 
     /**
@@ -1104,20 +1104,20 @@ public class LinkLayer extends OMGraphicHandlerLayer
 
         Proj projection = (Proj) getProjection();
         float latitude = 
-	    PropUtils.floatFromProperties(props, LPC_CENTER_LAT,
-					  projection.getCenter().getLatitude());
+            PropUtils.floatFromProperties(props, LPC_CENTER_LAT,
+                                          projection.getCenter().getLatitude());
         float longitude = 
-	    PropUtils.floatFromProperties(props, LPC_CENTER_LONG,
-					  projection.getCenter().getLongitude());
+            PropUtils.floatFromProperties(props, LPC_CENTER_LONG,
+                                          projection.getCenter().getLongitude());
         float scale = 
-	    PropUtils.floatFromProperties(props, LPC_SCALE, 
-					  projection.getScale());
+            PropUtils.floatFromProperties(props, LPC_SCALE, 
+                                          projection.getScale());
         int width = 
-	    PropUtils.intFromProperties(props, LPC_WIDTH, 
-					projection.getWidth());
+            PropUtils.intFromProperties(props, LPC_WIDTH, 
+                                        projection.getWidth());
         int height = 
-	    PropUtils.intFromProperties(props, LPC_HEIGHT, 
-					projection.getHeight());
+            PropUtils.intFromProperties(props, LPC_HEIGHT, 
+                                        projection.getHeight());
 
         String projType = props.getProperty(LPC_PROJECTION);
 
@@ -1128,24 +1128,24 @@ public class LinkLayer extends OMGraphicHandlerLayer
 
         if (latmin >= -90.f && latmax <= 90.f && lonmin >= -180.f &&
             lonmax <= 180.f && latmin <= latmax && lonmin <= lonmax) {
-	    // Calculate center point
-	    float dist = 
-		0.5f * GreatCircle.spherical_distance(ProjMath.degToRad(latmax),
-						      ProjMath.degToRad(lonmin),
-						      ProjMath.degToRad(latmin),
-						      ProjMath.degToRad(lonmax));
-	    float azimuth = 
-		GreatCircle.spherical_azimuth(ProjMath.degToRad(latmax),
-					      ProjMath.degToRad(lonmin),
-					      ProjMath.degToRad(latmin),
-					      ProjMath.degToRad(lonmax));
-	    LatLonPoint center = 
-		GreatCircle.spherical_between(ProjMath.degToRad(latmax), 
-					      ProjMath.degToRad(lonmin),
-					      dist,azimuth);
-	    latitude = center.getLatitude();
-	    longitude = center.getLongitude();
-	}
+            // Calculate center point
+            float dist = 
+                0.5f * GreatCircle.spherical_distance(ProjMath.degToRad(latmax),
+                                                      ProjMath.degToRad(lonmin),
+                                                      ProjMath.degToRad(latmin),
+                                                      ProjMath.degToRad(lonmax));
+            float azimuth = 
+                GreatCircle.spherical_azimuth(ProjMath.degToRad(latmax),
+                                              ProjMath.degToRad(lonmin),
+                                              ProjMath.degToRad(latmin),
+                                              ProjMath.degToRad(lonmax));
+            LatLonPoint center = 
+                GreatCircle.spherical_between(ProjMath.degToRad(latmax), 
+                                              ProjMath.degToRad(lonmin),
+                                              dist,azimuth);
+            latitude = center.getLatitude();
+            longitude = center.getLongitude();
+        }
 
         MapHandler mapHandler = (MapHandler) getBeanContext();
         if (mapHandler == null) {
@@ -1155,35 +1155,35 @@ public class LinkLayer extends OMGraphicHandlerLayer
             if (mapBean == null) {
                 Debug.message("link","Warning...mapBean = null");
             } else {
-		if (projType != null) {
-		    projection = (Proj)ProjectionFactory.makeProjection(ProjectionFactory.getProjType(projType), latitude, longitude, scale, width, height);
-		} else {
-		    projection = (Proj) mapBean.getProjection();
-		    projection.setCenter(latitude,longitude);
-		    projection.setScale(scale);
-		    projection.setWidth(width);
-		    projection.setHeight(height);
-		}
+                if (projType != null) {
+                    projection = (Proj)ProjectionFactory.makeProjection(ProjectionFactory.getProjType(projType), latitude, longitude, scale, width, height);
+                } else {
+                    projection = (Proj) mapBean.getProjection();
+                    projection.setCenter(latitude,longitude);
+                    projection.setScale(scale);
+                    projection.setWidth(width);
+                    projection.setHeight(height);
+                }
 
-		if (latmin >= -90.f && latmax <= 90.f && lonmin >= -180.f &&
-		    lonmax <= 180.f && latmin <= latmax && lonmin <= lonmax) {
-		    LatLonPoint upperLeft = new LatLonPoint(latmax, lonmin);
-		    LatLonPoint lowerRight = new LatLonPoint(latmin, lonmax);
-		    scale = ProjMath.getScale(upperLeft, lowerRight, projection);
-		    projection.setScale(scale);
-		    LatLonPoint ul = projection.getUpperLeft();
-		    LatLonPoint lr = projection.getLowerRight();
-		    float factor1 = (latmax-latmin) / (ul.getLatitude() - lr.getLatitude());
-		    float factor2 = (lonmax-lonmin) / (lr.getLongitude() - ul.getLongitude());
-		    if (factor2 > factor1)
-			factor1 = factor2;
-		    if (factor1 > 1.0) {
-			scale *= factor1;
-			projection.setScale(scale);
-		    }
-		}
+                if (latmin >= -90.f && latmax <= 90.f && lonmin >= -180.f &&
+                    lonmax <= 180.f && latmin <= latmax && lonmin <= lonmax) {
+                    LatLonPoint upperLeft = new LatLonPoint(latmax, lonmin);
+                    LatLonPoint lowerRight = new LatLonPoint(latmin, lonmax);
+                    scale = ProjMath.getScale(upperLeft, lowerRight, projection);
+                    projection.setScale(scale);
+                    LatLonPoint ul = projection.getUpperLeft();
+                    LatLonPoint lr = projection.getLowerRight();
+                    float factor1 = (latmax-latmin) / (ul.getLatitude() - lr.getLatitude());
+                    float factor2 = (lonmax-lonmin) / (lr.getLongitude() - ul.getLongitude());
+                    if (factor2 > factor1)
+                        factor1 = factor2;
+                    if (factor1 > 1.0) {
+                        scale *= factor1;
+                        projection.setScale(scale);
+                    }
+                }
 
-		mapBean.setProjection(projection);
+                mapBean.setProjection(projection);
             }
         }
     }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkActionRequest.java,v $
 // $RCSfile: LinkActionRequest.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:26 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -66,7 +66,7 @@ public class LinkActionRequest implements LinkActionConstants, LinkPropertiesCon
     protected static float version = Link.LINK_VERSION;
 
     public LinkActionRequest(Link link) throws IOException {
-	linkStatus = read(link);
+        linkStatus = read(link);
     }
 
     /**
@@ -84,16 +84,16 @@ public class LinkActionRequest implements LinkActionConstants, LinkPropertiesCon
      * END_SECTION if there are more sections following.  
      */
     public LinkActionRequest(Link link, int descriptor, String sectionEnder) 
-	throws IOException {
-	link.start(Link.ACTION_REQUEST_HEADER);
-	link.dos.writeFloat(version);
-	descriptor = LinkUtil.setMask(descriptor, CLIENT_NOTIFICATION_MASK);
-	link.dos.writeInt(descriptor);
-	link.end(sectionEnder);
+        throws IOException {
+        link.start(Link.ACTION_REQUEST_HEADER);
+        link.dos.writeFloat(version);
+        descriptor = LinkUtil.setMask(descriptor, CLIENT_NOTIFICATION_MASK);
+        link.dos.writeInt(descriptor);
+        link.end(sectionEnder);
     }
 
     public String getType(){
-	return Link.ACTION_REQUEST_HEADER;
+        return Link.ACTION_REQUEST_HEADER;
     }
 
     /** 
@@ -104,7 +104,7 @@ public class LinkActionRequest implements LinkActionConstants, LinkPropertiesCon
      * @return either Link.END_TOTAL or Link.END_SECTION. 
      */
     public String getLinkStatus(){
-	return linkStatus;
+        return linkStatus;
     }
 
     /**
@@ -118,28 +118,28 @@ public class LinkActionRequest implements LinkActionConstants, LinkPropertiesCon
      * @param link the link to write the gesture to.
      */
     public static void write(int descriptor, MouseEvent me, 
-			     float latPoint, float lonPoint, 
-			     LinkProperties props,
-			     Link link) 
-	throws IOException {
-	
-	if (props.getProperty(LPC_GRAPHICID) != null){
-	    descriptor = LinkUtil.setMask(descriptor, GRAPHIC_ID_MASK);
-	}
+                             float latPoint, float lonPoint, 
+                             LinkProperties props,
+                             Link link) 
+        throws IOException {
+        
+        if (props.getProperty(LPC_GRAPHICID) != null){
+            descriptor = LinkUtil.setMask(descriptor, GRAPHIC_ID_MASK);
+        }
 
-	link.start(Link.ACTION_REQUEST_HEADER);
-	link.dos.writeFloat(version);
-	link.dos.writeInt(descriptor);
-	link.dos.writeInt(me.getX());
-	link.dos.writeInt(me.getY());
-	link.dos.writeInt(me.getClickCount());
-	link.dos.writeInt(me.getModifiers());
-	link.dos.writeFloat(latPoint);
-	link.dos.writeFloat(lonPoint);
+        link.start(Link.ACTION_REQUEST_HEADER);
+        link.dos.writeFloat(version);
+        link.dos.writeInt(descriptor);
+        link.dos.writeInt(me.getX());
+        link.dos.writeInt(me.getY());
+        link.dos.writeInt(me.getClickCount());
+        link.dos.writeInt(me.getModifiers());
+        link.dos.writeFloat(latPoint);
+        link.dos.writeFloat(lonPoint);
 
-	props.write(link);
-	
-	link.end(Link.END_TOTAL);
+        props.write(link);
+        
+        link.end(Link.END_TOTAL);
     }
 
     /**
@@ -151,17 +151,17 @@ public class LinkActionRequest implements LinkActionConstants, LinkPropertiesCon
      * @param link the Link to write the gesture to.
      */
     public static void write(int descriptor, KeyEvent ke, 
-			     LinkProperties props, Link link) throws IOException {
+                             LinkProperties props, Link link) throws IOException {
 
-	link.start(Link.ACTION_REQUEST_HEADER);
-	link.dos.writeFloat(version);
-	link.dos.writeInt(descriptor);
-	link.dos.writeChar(ke.getKeyChar());
-	link.dos.writeInt(ke.getModifiers());
-	
-	props.write(link);
-	
-	link.end(Link.END_TOTAL);
+        link.start(Link.ACTION_REQUEST_HEADER);
+        link.dos.writeFloat(version);
+        link.dos.writeInt(descriptor);
+        link.dos.writeChar(ke.getKeyChar());
+        link.dos.writeInt(ke.getModifiers());
+        
+        props.write(link);
+        
+        link.end(Link.END_TOTAL);
     }
 
     /**
@@ -173,76 +173,76 @@ public class LinkActionRequest implements LinkActionConstants, LinkPropertiesCon
      */
     public String read(Link link) throws IOException {
 
-	float ver = link.dis.readFloat();
+        float ver = link.dis.readFloat();
 
-	if (ver != version){
-	    if (ver == .1){// Big differece....
-		throw new IOException("LinkActionRequest: Versions do not match! DANGER!");
-	    } else {
-		Debug.message("link", "LinkActionRequest: Versions do not match");
-	    }
-	}
+        if (ver != version){
+            if (ver == .1){// Big differece....
+                throw new IOException("LinkActionRequest: Versions do not match! DANGER!");
+            } else {
+                Debug.message("link", "LinkActionRequest: Versions do not match");
+            }
+        }
 
-	// the second thing we get is the descriptor
-	descriptor = link.dis.readInt();
-	if (isClientNotification()){
-	    // In case it is passed back later to the server - we
-	    // really don't need to know that it was a notification
-	    // mask after this, right??
-	    descriptor = LinkUtil.unsetMask(descriptor, CLIENT_NOTIFICATION_MASK);
-	    return link.readDelimiter(false);
-	} else if (isKeyEvent()){
-	    // key event
-	    key = link.dis.readChar();
-	    modifiers = link.dis.readInt();
-	} else {  
-	    // Mouse event
-	    x = link.dis.readInt();
-	    y = link.dis.readInt();
-	    clickCount = link.dis.readInt();
-	    modifiers = link.dis.readInt();
-	    lat = link.dis.readFloat();
-	    lon = link.dis.readFloat();
-	}
-	
-	properties = new LinkProperties(link);
+        // the second thing we get is the descriptor
+        descriptor = link.dis.readInt();
+        if (isClientNotification()){
+            // In case it is passed back later to the server - we
+            // really don't need to know that it was a notification
+            // mask after this, right??
+            descriptor = LinkUtil.unsetMask(descriptor, CLIENT_NOTIFICATION_MASK);
+            return link.readDelimiter(false);
+        } else if (isKeyEvent()){
+            // key event
+            key = link.dis.readChar();
+            modifiers = link.dis.readInt();
+        } else {  
+            // Mouse event
+            x = link.dis.readInt();
+            y = link.dis.readInt();
+            clickCount = link.dis.readInt();
+            modifiers = link.dis.readInt();
+            lat = link.dis.readFloat();
+            lon = link.dis.readFloat();
+        }
+        
+        properties = new LinkProperties(link);
 
-	if (LinkUtil.isMask(descriptor, GRAPHIC_ID_MASK)){
-	    id = properties.getProperty(LPC_GRAPHICID);
-	}
+        if (LinkUtil.isMask(descriptor, GRAPHIC_ID_MASK)){
+            id = properties.getProperty(LPC_GRAPHICID);
+        }
 
-	return link.readDelimiter(false);
+        return link.readDelimiter(false);
     }
 
     /** Get latitude of mouse gesture, in decimal degrees. */
     public float getLat(){
-	return lat;
+        return lat;
     }
 
     /** Get longitude of mouse gesture, in decimal degrees. */
     public float getLon(){
-	return lon;
+        return lon;
     }
 
     /** Get horizontal pixel location of mouse gesture, from left side
      *  of map. */
     public int getX(){
-	return x;
+        return x;
     }
 
     /** Get vertical pixel location of mouse gesture, from top of map. */
     public int getY(){
-	return y;
+        return y;
     }
 
     /** Get the keyboard key that was pressed from a key gesture. */
     public char getKey(){
-	return key;
+        return key;
     }
 
     /** Get the masked int that describes the gesture. */
     public int getDescriptor(){
-	return descriptor;
+        return descriptor;
     }
 
     /**
@@ -252,47 +252,47 @@ public class LinkActionRequest implements LinkActionConstants, LinkPropertiesCon
      *  affiliated graphic.  
      */
     public String getGraphicID(){
-	return id;
+        return id;
     }
 
     /** Get the masked int that describes any modifing keys pressed
      *  with the gesture. */
     public int getModifiers(){
-	return modifiers;
+        return modifiers;
     }
 
     /** Get the key-value args sent with the gesture. */
     public LinkProperties getProperties(){
-	return properties;
+        return properties;
     }
 
     /** Returns true if the query is to let the client know what
      *  gestures the server is interested in receiving. */
     protected boolean isClientNotification(){
-	return ((descriptor & CLIENT_NOTIFICATION_MASK)!= 0);
+        return ((descriptor & CLIENT_NOTIFICATION_MASK)!= 0);
     }
 
     /** Returns true if the query is represeting a key event. */
     protected boolean isKeyEvent(){
-	return ((descriptor & KEY_RELEASED_MASK) != 0) || 
-	    ((descriptor & KEY_PRESSED_MASK) != 0);
+        return ((descriptor & KEY_RELEASED_MASK) != 0) || 
+            ((descriptor & KEY_PRESSED_MASK) != 0);
     }
 
     public String toString(){
-	StringBuffer s = new StringBuffer();
-	s.append("LinkActionRequest:\n");
-	if (isKeyEvent()){
-	    s.append(" Key Event\n");
-	    s.append(" Key: " + key + "\n");
-	} else {
-	    s.append(" Mouse Event\n");
-	    s.append(" X: " + x + "\n");
-	    s.append(" Y: " + y + "\n");
-	    s.append(" Lat: " + lat + "\n");
-	    s.append(" Lon: " + lon + "\n");
-	}
-	s.append(" Modifiers: " + modifiers + "\n");
+        StringBuffer s = new StringBuffer();
+        s.append("LinkActionRequest:\n");
+        if (isKeyEvent()){
+            s.append(" Key Event\n");
+            s.append(" Key: " + key + "\n");
+        } else {
+            s.append(" Mouse Event\n");
+            s.append(" X: " + x + "\n");
+            s.append(" Y: " + y + "\n");
+            s.append(" Lat: " + lat + "\n");
+            s.append(" Lon: " + lon + "\n");
+        }
+        s.append(" Modifiers: " + modifiers + "\n");
 
-	return s.toString();
+        return s.toString();
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/AcmeGifFormatter.java,v $
 // $RCSfile: AcmeGifFormatter.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,16 +39,16 @@ public class AcmeGifFormatter extends AbstractImageFormatter {
     public void setProperties(String prefix, Properties props) {}
 
     public ImageFormatter makeClone() {
-	return new AcmeGifFormatter();
+        return new AcmeGifFormatter();
     }
 
     public byte[] formatImage(BufferedImage bi) {
-	try {
-	    return AcmeGifHelper.encodeGif(bi);
-	} catch (java.io.IOException ioe){
-	    Debug.error("AcmeGifFormatter caught IOException formatting image!\n  "+ ioe);
-	    return new byte[0];
-	}
+        try {
+            return AcmeGifHelper.encodeGif(bi);
+        } catch (java.io.IOException ioe){
+            Debug.error("AcmeGifFormatter caught IOException formatting image!\n  "+ ioe);
+            return new byte[0];
+        }
     }
 
     /**
@@ -57,7 +57,7 @@ public class AcmeGifFormatter extends AbstractImageFormatter {
      * Some are listed in the WMTConstants interface file.
      */
     public String getFormatLabel() {
-	return WMTConstants.IMAGEFORMAT_GIF;
+        return WMTConstants.IMAGEFORMAT_GIF;
     }
 
     /**
@@ -75,6 +75,6 @@ public class AcmeGifFormatter extends AbstractImageFormatter {
      * @see java.awt.image.BufferedImage 
      */
     public java.awt.Graphics getGraphics(int width, int height) {
-	return getGraphics(width, height, BufferedImage.TYPE_INT_ARGB);
+        return getGraphics(width, height, BufferedImage.TYPE_INT_ARGB);
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/InputReader.java,v $
 // $RCSfile: InputReader.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -138,6 +138,6 @@ public interface InputReader {
      * was <code>false</code>, but NO bytes had been read.
      */
     public byte[] readBytes(int howmany, boolean allowless) 
-	throws EOFException, FormatException;
+        throws EOFException, FormatException;
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/html/TableDataElement.java,v $
 // $RCSfile: TableDataElement.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,24 +29,24 @@ public class TableDataElement extends WrapElement implements TableCellElement {
     /** Construct a data cell with an element
      * @param e the element to put in the cell */
     public TableDataElement(Element e) {
-	super("td", e);
+        super("td", e);
     }
 
     /** Construct a data cell with a string
      * @param s the string to put in the cell */
     public TableDataElement(String s) {
-	super("td", new StringElement(s));
+        super("td", new StringElement(s));
     }
 
     /** Construct a data cell with an element
      * @param e the element to put in the cell */
     public TableDataElement(String paramString, Element e) {
-	super("td", paramString, e);
+        super("td", paramString, e);
     }
 
     /** Construct a data cell with a string
      * @param s the string to put in the cell */
     public TableDataElement(String paramString, String s) {
-	super("td", paramString, new StringElement(s));
+        super("td", paramString, new StringElement(s));
     }
 }

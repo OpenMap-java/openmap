@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCoverageLayer.java,v $
 // $RCSfile: DTEDCoverageLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -182,37 +182,37 @@ public class DTEDCoverageLayer extends Layer
      * create images, we use this worker thread to do it.
      */
     class DTEDCoverageWorker extends SwingWorker {
-	/** Constructor used to create a worker thread. */
-	public DTEDCoverageWorker () {
-	    super();
-	}
+        /** Constructor used to create a worker thread. */
+        public DTEDCoverageWorker () {
+            super();
+        }
 
-	/**  Compute the value to be returned by the <code>get</code>
-	 * method.  */
-	public Object construct() {
-	    Debug.message("dtedcov", getName()+
-			  "|DTEDCoverageWorker.construct()");
-	    fireStatusUpdate(LayerStatusEvent.START_WORKING);
-	    try {
-		return prepare();
-	    } catch (OutOfMemoryError e) {
-		String msg = getName() + 
-		    "|DTEDCoverageLayer.DTEDCoverageWorker.construct(): " + e;
-		Debug.error(msg);
-		e.printStackTrace();
-		fireRequestMessage(new InfoDisplayEvent(this, msg));
-		fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-		return null;
-	    }
-	}
+        /**  Compute the value to be returned by the <code>get</code>
+         * method.  */
+        public Object construct() {
+            Debug.message("dtedcov", getName()+
+                          "|DTEDCoverageWorker.construct()");
+            fireStatusUpdate(LayerStatusEvent.START_WORKING);
+            try {
+                return prepare();
+            } catch (OutOfMemoryError e) {
+                String msg = getName() + 
+                    "|DTEDCoverageLayer.DTEDCoverageWorker.construct(): " + e;
+                Debug.error(msg);
+                e.printStackTrace();
+                fireRequestMessage(new InfoDisplayEvent(this, msg));
+                fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+                return null;
+            }
+        }
 
-	/** Called on the event dispatching thread (not on the worker
-	 * thread) after the <code>construct</code> method has
-	 * returned.  */
-	public void finished() {
-	    workerComplete(this);
-	    fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-	}
+        /** Called on the event dispatching thread (not on the worker
+         * thread) after the <code>construct</code> method has
+         * returned.  */
+        public void finished() {
+            workerComplete(this);
+            fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+        }
     }
 
     /** The default constructor for the Layer.  All of the attributes
@@ -222,14 +222,14 @@ public class DTEDCoverageLayer extends Layer
 
     /** Method that sets all the variables to the default values. */
     protected void setDefaultValues(){
-	paths = null;
-	paths2 = null;
+        paths = null;
+        paths2 = null;
 
-	showDTEDLevel0 = true;
-	showDTEDLevel1 = true;
-	showDTEDLevel2 = true;
-	opaqueness = DTEDFrameColorTable.DEFAULT_OPAQUENESS;
-	fillRects = false;
+        showDTEDLevel0 = true;
+        showDTEDLevel1 = true;
+        showDTEDLevel2 = true;
+        opaqueness = DTEDFrameColorTable.DEFAULT_OPAQUENESS;
+        fillRects = false;
     }
 
     /**
@@ -240,48 +240,48 @@ public class DTEDCoverageLayer extends Layer
      */
     public void setProperties(String prefix, java.util.Properties properties) {
 
-	super.setProperties(prefix, properties);
-	setDefaultValues();
-		
-	paths = LayerUtils.initPathsFromProperties(properties,
-				 prefix + DTEDPathsProperty);
-	paths2 = LayerUtils.initPathsFromProperties(properties,
-				 prefix + DTED2PathsProperty);
+        super.setProperties(prefix, properties);
+        setDefaultValues();
+                
+        paths = LayerUtils.initPathsFromProperties(properties,
+                                 prefix + DTEDPathsProperty);
+        paths2 = LayerUtils.initPathsFromProperties(properties,
+                                 prefix + DTED2PathsProperty);
 
-	coverageFile = properties.getProperty(prefix + CoverageFileProperty);
-	coverageURL = properties.getProperty(prefix + CoverageURLProperty);
-	
-	fillRects = LayerUtils.booleanFromProperties(properties,
-				 prefix + FillProperty,
-				 false);
+        coverageFile = properties.getProperty(prefix + CoverageFileProperty);
+        coverageURL = properties.getProperty(prefix + CoverageURLProperty);
+        
+        fillRects = LayerUtils.booleanFromProperties(properties,
+                                 prefix + FillProperty,
+                                 false);
 
-	opaqueness = LayerUtils.intFromProperties(properties,
-				 prefix + OpaquenessProperty,
-				 DTEDFrameColorTable.DEFAULT_OPAQUENESS);
+        opaqueness = LayerUtils.intFromProperties(properties,
+                                 prefix + OpaquenessProperty,
+                                 DTEDFrameColorTable.DEFAULT_OPAQUENESS);
 
-	level0Color = LayerUtils.parseColorFromProperties(properties,
-				 prefix + Level0ColorProperty,
-				 DTEDCoverageManager.defaultLevel0ColorString);
+        level0Color = LayerUtils.parseColorFromProperties(properties,
+                                 prefix + Level0ColorProperty,
+                                 DTEDCoverageManager.defaultLevel0ColorString);
 
-	level1Color = LayerUtils.parseColorFromProperties(properties,
-				 prefix + Level1ColorProperty,
-				 DTEDCoverageManager.defaultLevel1ColorString);
+        level1Color = LayerUtils.parseColorFromProperties(properties,
+                                 prefix + Level1ColorProperty,
+                                 DTEDCoverageManager.defaultLevel1ColorString);
 
-	level2Color = LayerUtils.parseColorFromProperties(properties,
-				 prefix + Level2ColorProperty,
-				 DTEDCoverageManager.defaultLevel2ColorString);
+        level2Color = LayerUtils.parseColorFromProperties(properties,
+                                 prefix + Level2ColorProperty,
+                                 DTEDCoverageManager.defaultLevel2ColorString);
 
-	showDTEDLevel0 = LayerUtils.booleanFromProperties(properties,
-				 prefix + ShowLevel0Property,
-				 true);
-							  
-	showDTEDLevel1 = LayerUtils.booleanFromProperties(properties,
-				 prefix + ShowLevel1Property,
-				 true);
-							  
-	showDTEDLevel2 = LayerUtils.booleanFromProperties(properties,
-				 prefix + ShowLevel2Property,
-				 true);
+        showDTEDLevel0 = LayerUtils.booleanFromProperties(properties,
+                                 prefix + ShowLevel0Property,
+                                 true);
+                                                          
+        showDTEDLevel1 = LayerUtils.booleanFromProperties(properties,
+                                 prefix + ShowLevel1Property,
+                                 true);
+                                                          
+        showDTEDLevel2 = LayerUtils.booleanFromProperties(properties,
+                                 prefix + ShowLevel2Property,
+                                 true);
     }
 
     /**
@@ -290,12 +290,12 @@ public class DTEDCoverageLayer extends Layer
      * @param aList a list of OMGraphics 
      */
     public synchronized void setGraphicLists (OMGraphicList[] aList) {
-	omGraphics = aList;
+        omGraphics = aList;
     }
 
     /** Retrieves the current graphics lists.  */
     public synchronized OMGraphicList[] getGraphicLists () {
-	return omGraphics;
+        return omGraphics;
     }
 
     /**
@@ -305,26 +305,26 @@ public class DTEDCoverageLayer extends Layer
      * swing worker quits when it is safe. 
      */
     public synchronized void setCancelled(boolean set){
-	cancelled = set;
+        cancelled = set;
     }
 
     /** Check to see if the cancelled flag has been set. */
     public synchronized boolean isCancelled(){
-	return cancelled;
+        return cancelled;
     }
 
     /** 
      * Implementing the ProjectionPainter interface.
      */
     public synchronized void renderDataForProjection(Projection proj, java.awt.Graphics g){
-	if (proj == null){
-	    Debug.error("DTEDCoverageLayer.renderDataForProjection: null projection!");
-	    return;
-	} else if (!proj.equals(projection)){
-	    projection = proj.makeClone();
-	    setGraphicLists(prepare());
-	}
-	paint(g);
+        if (proj == null){
+            Debug.error("DTEDCoverageLayer.renderDataForProjection: null projection!");
+            return;
+        } else if (!proj.equals(projection)){
+            projection = proj.makeClone();
+            setGraphicLists(prepare());
+        }
+        paint(g);
     }
 
     /**
@@ -335,29 +335,29 @@ public class DTEDCoverageLayer extends Layer
      * @param e The projection event, most likely fired from a map bean.
      */
     public void projectionChanged (ProjectionEvent e) {
-	Debug.message("basic", getName()+
-		      "|DTEDCoverageLayer.projectionChanged()");
+        Debug.message("basic", getName()+
+                      "|DTEDCoverageLayer.projectionChanged()");
 
-	if (projection != null){
-	    if (projection.equals(e.getProjection()))
-		// Nothing to do, already have it and have acted on it...
-	      {
-		repaint();
-		return;
-	      }
-	}
- 	setGraphicLists(null);
+        if (projection != null){
+            if (projection.equals(e.getProjection()))
+                // Nothing to do, already have it and have acted on it...
+              {
+                repaint();
+                return;
+              }
+        }
+        setGraphicLists(null);
 
-	projection = (Projection)e.getProjection().makeClone();
-	// If there isn't a worker thread working on this already,
-	// create a thread that will do the real work. If there is
-	// a thread working on this, then set the cancelled flag
-	// in the layer.
-	if (currentWorker == null) {
-	    currentWorker = new DTEDCoverageWorker();
-	    currentWorker.execute();
-	}
-	else setCancelled(true);
+        projection = (Projection)e.getProjection().makeClone();
+        // If there isn't a worker thread working on this already,
+        // create a thread that will do the real work. If there is
+        // a thread working on this, then set the cancelled flag
+        // in the layer.
+        if (currentWorker == null) {
+            currentWorker = new DTEDCoverageWorker();
+            currentWorker.execute();
+        }
+        else setCancelled(true);
     }
 
     /**
@@ -368,16 +368,16 @@ public class DTEDCoverageLayer extends Layer
      * @param worker the worker that has the graphics.
      */
     protected synchronized void workerComplete (DTEDCoverageWorker worker) {
-	if (!isCancelled()) {
-	    currentWorker = null;
-	    setGraphicLists((OMGraphicList[])worker.get());
-	    repaint();
-	}
-	else{
-	    setCancelled(false);
-	    currentWorker = new DTEDCoverageWorker();
-	    currentWorker.execute();
-	}
+        if (!isCancelled()) {
+            currentWorker = null;
+            setGraphicLists((OMGraphicList[])worker.get());
+            repaint();
+        }
+        else{
+            setCancelled(false);
+            currentWorker = new DTEDCoverageWorker();
+            currentWorker.execute();
+        }
     }
 
     /**
@@ -391,61 +391,61 @@ public class DTEDCoverageLayer extends Layer
      */
     public OMGraphicList[] prepare () {
 
-	if (isCancelled()){
-	    Debug.message("dtedcov", getName()+
-			  "|DTEDCoverageLayer.prepare(): aborted.");
-	    return null;
-	}
+        if (isCancelled()){
+            Debug.message("dtedcov", getName()+
+                          "|DTEDCoverageLayer.prepare(): aborted.");
+            return null;
+        }
 
-	Debug.message("basic", getName()+
-		      "|DTEDCoverageLayer.prepare(): doing it");
+        Debug.message("basic", getName()+
+                      "|DTEDCoverageLayer.prepare(): doing it");
 
-	// Setting the OMGraphicsList for this layer.  Remember, the
-	// OMGraphicList is made up of OMGraphics, which are generated
-	// (projected) when the graphics are added to the list.  So,
-	// after this call, the list is ready for painting.
+        // Setting the OMGraphicsList for this layer.  Remember, the
+        // OMGraphicList is made up of OMGraphics, which are generated
+        // (projected) when the graphics are added to the list.  So,
+        // after this call, the list is ready for painting.
 
-	// call getRectangle();
-	if (Debug.debugging("dtedcov")) {
-	    Debug.output(getName()+"|DTEDCoverageLayer.prepare(): " +
-			 "calling prepare with projection: " + projection +
-			 " ul = " + projection.getUpperLeft() + " lr = " + 
-			 projection.getLowerRight()); 
-	}
+        // call getRectangle();
+        if (Debug.debugging("dtedcov")) {
+            Debug.output(getName()+"|DTEDCoverageLayer.prepare(): " +
+                         "calling prepare with projection: " + projection +
+                         " ul = " + projection.getUpperLeft() + " lr = " + 
+                         projection.getLowerRight()); 
+        }
 
-	// IF the coverage manager has not been set up yet, do it!
-	if (coverageManager == null){
-	    coverageManager = new DTEDCoverageManager(paths, paths2, 
-						      coverageURL, coverageFile);
-	    coverageManager.setPaint(level0Color, level1Color, level2Color, 
-				     opaqueness, fillRects);
-	}
+        // IF the coverage manager has not been set up yet, do it!
+        if (coverageManager == null){
+            coverageManager = new DTEDCoverageManager(paths, paths2, 
+                                                      coverageURL, coverageFile);
+            coverageManager.setPaint(level0Color, level1Color, level2Color, 
+                                     opaqueness, fillRects);
+        }
 
-	OMGraphicList[] omGraphicLists = coverageManager.getCoverageRects(projection);
+        OMGraphicList[] omGraphicLists = coverageManager.getCoverageRects(projection);
 
-	/////////////////////
-	// safe quit
-	int size = 0;
-	if (omGraphicLists != null){
-	    for (int j = 0; j < omGraphicLists.length; j++){
-		size = omGraphicLists[j].size();	
-		Debug.message("basic", getName()+
-			      "|DTEDCoverageLayer.prepare(): finished with "+
-			      size + " level " + j + " graphics");
-	    }
-	}
-	else 
-	    Debug.message("basic", getName()+
-	      "|DTEDCoverageLayer.prepare(): finished with null graphics list");
+        /////////////////////
+        // safe quit
+        int size = 0;
+        if (omGraphicLists != null){
+            for (int j = 0; j < omGraphicLists.length; j++){
+                size = omGraphicLists[j].size();        
+                Debug.message("basic", getName()+
+                              "|DTEDCoverageLayer.prepare(): finished with "+
+                              size + " level " + j + " graphics");
+            }
+        }
+        else 
+            Debug.message("basic", getName()+
+              "|DTEDCoverageLayer.prepare(): finished with null graphics list");
 
-	// Don't forget to project them.  Since they are only being
-	// recalled if the projection hase changed, then we need to
-	// force a reprojection of all of them because the screen
-	// position has changed.
-	for (int k = 0; k < omGraphicLists.length; k++)
-	    omGraphicLists[k].project(projection, true);
+        // Don't forget to project them.  Since they are only being
+        // recalled if the projection hase changed, then we need to
+        // force a reprojection of all of them because the screen
+        // position has changed.
+        for (int k = 0; k < omGraphicLists.length; k++)
+            omGraphicLists[k].project(projection, true);
 
-	return omGraphicLists;
+        return omGraphicLists;
     }
 
 
@@ -455,20 +455,20 @@ public class DTEDCoverageLayer extends Layer
      * @param g the Graphics context for painting
      */
     public void paint (java.awt.Graphics g) {
-	Debug.message("dtedcov", getName()+"|DTEDCoverageLayer.paint()");
+        Debug.message("dtedcov", getName()+"|DTEDCoverageLayer.paint()");
 
-	OMGraphicList[] tmpGraphics = getGraphicLists();
+        OMGraphicList[] tmpGraphics = getGraphicLists();
 
-	if (tmpGraphics != null) {
-	    for (int k = 0; k < tmpGraphics.length; k++){
-		if (k == 0 && showDTEDLevel0)
-		    tmpGraphics[k].render(g);
-		if (k == 1 && showDTEDLevel1)
-		    tmpGraphics[k].render(g);
-		if (k == 2 && showDTEDLevel2)
-		    tmpGraphics[k].render(g);
-	    }
-	}
+        if (tmpGraphics != null) {
+            for (int k = 0; k < tmpGraphics.length; k++){
+                if (k == 0 && showDTEDLevel0)
+                    tmpGraphics[k].render(g);
+                if (k == 1 && showDTEDLevel1)
+                    tmpGraphics[k].render(g);
+                if (k == 2 && showDTEDLevel2)
+                    tmpGraphics[k].render(g);
+            }
+        }
     }
 
     //----------------------------------------------------------------------
@@ -481,25 +481,25 @@ public class DTEDCoverageLayer extends Layer
      * @return Component object representing the palette widgets.
      */
     public java.awt.Component getGUI() {
-	JCheckBox showLevel0Check, showLevel1Check, showLevel2Check;
+        JCheckBox showLevel0Check, showLevel1Check, showLevel2Check;
 
-	showLevel0Check = new JCheckBox("Show Level 0 Coverage", showDTEDLevel0);
-	showLevel0Check.setActionCommand(showLevel0Command);
-	showLevel0Check.addActionListener(this);
+        showLevel0Check = new JCheckBox("Show Level 0 Coverage", showDTEDLevel0);
+        showLevel0Check.setActionCommand(showLevel0Command);
+        showLevel0Check.addActionListener(this);
 
-	showLevel1Check = new JCheckBox("Show Level 1 Coverage", showDTEDLevel1);
-	showLevel1Check.setActionCommand(showLevel1Command);
-	showLevel1Check.addActionListener(this);
-	
-	showLevel2Check = new JCheckBox("Show Level 2 Coverage", showDTEDLevel2);
-	showLevel2Check.setActionCommand(showLevel2Command);
-	showLevel2Check.addActionListener(this);
-	
-	Box box = Box.createVerticalBox();
-	box.add(showLevel0Check);
-	box.add(showLevel1Check);
-	box.add(showLevel2Check);
-	return box;
+        showLevel1Check = new JCheckBox("Show Level 1 Coverage", showDTEDLevel1);
+        showLevel1Check.setActionCommand(showLevel1Command);
+        showLevel1Check.addActionListener(this);
+        
+        showLevel2Check = new JCheckBox("Show Level 2 Coverage", showDTEDLevel2);
+        showLevel2Check.setActionCommand(showLevel2Command);
+        showLevel2Check.addActionListener(this);
+        
+        Box box = Box.createVerticalBox();
+        box.add(showLevel0Check);
+        box.add(showLevel1Check);
+        box.add(showLevel2Check);
+        return box;
     }
 
 
@@ -512,20 +512,20 @@ public class DTEDCoverageLayer extends Layer
      * actions.
      */
     public void actionPerformed (ActionEvent e) {
-	super.actionPerformed(e);
-	String cmd = e.getActionCommand();
-	if (cmd == showLevel0Command) {
-	    JCheckBox level0Check = (JCheckBox)e.getSource();
-	    showDTEDLevel0 = level0Check.isSelected();
-	    repaint();
-	} else if (cmd == showLevel1Command) {
-	    JCheckBox level1Check = (JCheckBox)e.getSource();
-	    showDTEDLevel1 = level1Check.isSelected();
-	    repaint();
-	} else if (cmd == showLevel2Command) {
-	    JCheckBox level2Check = (JCheckBox)e.getSource();
-	    showDTEDLevel2 = level2Check.isSelected();
-	    repaint();
-	}
+        super.actionPerformed(e);
+        String cmd = e.getActionCommand();
+        if (cmd == showLevel0Command) {
+            JCheckBox level0Check = (JCheckBox)e.getSource();
+            showDTEDLevel0 = level0Check.isSelected();
+            repaint();
+        } else if (cmd == showLevel1Command) {
+            JCheckBox level1Check = (JCheckBox)e.getSource();
+            showDTEDLevel1 = level1Check.isSelected();
+            repaint();
+        } else if (cmd == showLevel2Command) {
+            JCheckBox level2Check = (JCheckBox)e.getSource();
+            showDTEDLevel2 = level2Check.isSelected();
+            repaint();
+        }
     }
 }

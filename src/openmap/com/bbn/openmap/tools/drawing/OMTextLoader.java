@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMTextLoader.java,v $
 // $RCSfile: OMTextLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/23 21:17:21 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,16 +34,16 @@ public class OMTextLoader extends AbstractToolLoader implements EditToolLoader {
     protected String textClassName = "com.bbn.openmap.omGraphics.OMText";
 
     public OMTextLoader() {
-	init();
+        init();
     }
 
     public void init() {
-	EditClassWrapper ecw = 
-	    new EditClassWrapper(textClassName,
-				 "com.bbn.openmap.omGraphics.EditableOMText",
-				 "editabletext.gif",
-				 "Text");
-	addEditClassWrapper(ecw);
+        EditClassWrapper ecw = 
+            new EditClassWrapper(textClassName,
+                                 "com.bbn.openmap.omGraphics.EditableOMText",
+                                 "editabletext.gif",
+                                 "Text");
+        addEditClassWrapper(ecw);
 
     }
 
@@ -54,11 +54,11 @@ public class OMTextLoader extends AbstractToolLoader implements EditToolLoader {
      * like font and size.
      */
     public EditableOMGraphic getEditableGraphic(String classname, 
-						GraphicAttributes ga) {
-	if (classname.intern() == textClassName) {
-	    return new EditableOMText(ga);
-	}
-	return null;
+                                                GraphicAttributes ga) {
+        if (classname.intern() == textClassName) {
+            return new EditableOMText(ga);
+        }
+        return null;
     }
 
     /**
@@ -66,9 +66,9 @@ public class OMTextLoader extends AbstractToolLoader implements EditToolLoader {
      * EditableOMGraphic for it.
      */
     public EditableOMGraphic getEditableGraphic(OMGraphic graphic) {
-	if (graphic instanceof OMText) {
-	    return new EditableOMText((OMText)graphic);
-	}
-	return null;
+        if (graphic instanceof OMText) {
+            return new EditableOMText((OMText)graphic);
+        }
+        return null;
     }
 }

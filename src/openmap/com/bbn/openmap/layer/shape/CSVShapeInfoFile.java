@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/CSVShapeInfoFile.java,v $
 // $RCSfile: CSVShapeInfoFile.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,15 +52,15 @@ public class CSVShapeInfoFile extends CSVFile {
      * Don't do anything special, since all defaults are set already 
      */
     public CSVShapeInfoFile(String name) 
-	throws MalformedURLException {
-	super(name);
+        throws MalformedURLException {
+        super(name);
     }
     
     /** 
      * Don't do anything special, since all defaults are set already 
      */
     public CSVShapeInfoFile(URL url) 
-	throws MalformedURLException {
+        throws MalformedURLException {
         super(url);
     }
 
@@ -70,27 +70,27 @@ public class CSVShapeInfoFile extends CSVFile {
      * graphics stores the graphic in its object slot.
      */
     public void loadIntoGraphics(OMGraphicList list){
-	if (list != null && infoRecords != null){
-	    int numgraphics = list.size();
+        if (list != null && infoRecords != null){
+            int numgraphics = list.size();
 
-	    for (int i = 0 ; i < numgraphics ; i++) {
-		try {
-		    OMGraphic omg = list.getOMGraphicAt(i);
-		    Integer recnum = (Integer)(omg.getAppObject());
-		    // OFF BY ONE!!!  The shape record numbers
-		    // assigned to the records start with 1, while
-		    // everything else we do starts with 0...
-		    Object inforec = getRecord(recnum.intValue()-1);
-		    omg.setAppObject(inforec);
-		} catch (ClassCastException cce) {
-		    if (Debug.debugging("shape")){
-			cce.printStackTrace();
-		    }
-		} catch (NullPointerException npe){
-		    npe.printStackTrace();
-		}
-	    }
-	}
+            for (int i = 0 ; i < numgraphics ; i++) {
+                try {
+                    OMGraphic omg = list.getOMGraphicAt(i);
+                    Integer recnum = (Integer)(omg.getAppObject());
+                    // OFF BY ONE!!!  The shape record numbers
+                    // assigned to the records start with 1, while
+                    // everything else we do starts with 0...
+                    Object inforec = getRecord(recnum.intValue()-1);
+                    omg.setAppObject(inforec);
+                } catch (ClassCastException cce) {
+                    if (Debug.debugging("shape")){
+                        cce.printStackTrace();
+                    }
+                } catch (NullPointerException npe){
+                    npe.printStackTrace();
+                }
+            }
+        }
     }
 
 }

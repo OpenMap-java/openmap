@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwVariableLengthIndexFile.java,v $
 // $RCSfile: DcwVariableLengthIndexFile.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,8 +51,8 @@ public class DcwVariableLengthIndexFile {
      * read the file.
      */
     public DcwVariableLengthIndexFile(String filename, boolean msbfirst) 
-	throws FormatException, IOException {
-	this(new BinaryBufferedFile(filename), msbfirst);
+        throws FormatException, IOException {
+        this(new BinaryBufferedFile(filename), msbfirst);
     }
 
 
@@ -65,23 +65,23 @@ public class DcwVariableLengthIndexFile {
      */
     public DcwVariableLengthIndexFile(BinaryFile inputstream, boolean msbfirst) throws FormatException {
 
-	try {
-	    inputstream.byteOrder(msbfirst);
+        try {
+            inputstream.byteOrder(msbfirst);
 
-	    recordCount = inputstream.readInteger();
-	    int HeaderLength = inputstream.readInteger();
-	    offsettable = new int[recordCount * 2];
-	    inputstream.readIntegerArray(offsettable, 0, recordCount * 2);
-	    endOfFileOffset = offsettable[offsettable.length - 2] + 
-		offsettable[offsettable.length - 1];
-	    inputstream.close();
-//  	    com.bbn.openmap.util.Debug.output("VLI.init(): number of entries(" + recordCount + 
-//  					      ") HeaderLength(" + HeaderLength + ")");
+            recordCount = inputstream.readInteger();
+            int HeaderLength = inputstream.readInteger();
+            offsettable = new int[recordCount * 2];
+            inputstream.readIntegerArray(offsettable, 0, recordCount * 2);
+            endOfFileOffset = offsettable[offsettable.length - 2] + 
+                offsettable[offsettable.length - 1];
+            inputstream.close();
+//          com.bbn.openmap.util.Debug.output("VLI.init(): number of entries(" + recordCount + 
+//                                            ") HeaderLength(" + HeaderLength + ")");
 
-	} catch (IOException i) {
-	    throw new FormatException("IOException with " + inputstream.getName() + ": " +
-				      i.getMessage());
-	}
+        } catch (IOException i) {
+            throw new FormatException("IOException with " + inputstream.getName() + ": " +
+                                      i.getMessage());
+        }
     }
 
     /** 
@@ -91,8 +91,8 @@ public class DcwVariableLengthIndexFile {
      * @param recordNumber the record to retrieve the offset for
      */
     public int recordOffset(int recordNumber) {
-	return (recordCount < recordNumber) ? endOfFileOffset :
-	    offsettable[(recordNumber-1) * 2];
+        return (recordCount < recordNumber) ? endOfFileOffset :
+            offsettable[(recordNumber-1) * 2];
     }
 
     /** get the size of the record in the associated table file
@@ -100,13 +100,13 @@ public class DcwVariableLengthIndexFile {
      * returns a record size of 0.
      * @param recordNumber the record to retrieve the offset for */
     public int recordSize(int recordNumber) {
-	return (recordCount < recordNumber) ? 0 :
-	    offsettable[(recordNumber-1) * 2 + 1];
+        return (recordCount < recordNumber) ? 0 :
+            offsettable[(recordNumber-1) * 2 + 1];
     }
 
     /** get the number of records in the index file */
     public int getRecordCount() {
-	return recordCount;
+        return recordCount;
     }
 
     /** close the associated input file */

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfViewAttributes.java,v $
 // $RCSfile: RpfViewAttributes.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:30 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:11 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -86,20 +86,20 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
     public boolean autofetchAttributes;
 
     public RpfViewAttributes(){
-	setDefaults();
+        setDefaults();
     }
 
     public void setDefaults(){
-	numberOfColors = RpfColortable.CADRG_COLORS;
-	opaqueness = RpfColortable.DEFAULT_OPAQUENESS;
-	scaleImages = true;
-	imageScaleFactor = 4.0f;
-	colorModel = OMRasterObject.COLORMODEL_DIRECT;
-	chartSeries = ANY;
-	requireProjection = true;
-	showMaps = true;
-	showInfo = false;
-	autofetchAttributes = false;
+        numberOfColors = RpfColortable.CADRG_COLORS;
+        opaqueness = RpfColortable.DEFAULT_OPAQUENESS;
+        scaleImages = true;
+        imageScaleFactor = 4.0f;
+        colorModel = OMRasterObject.COLORMODEL_DIRECT;
+        chartSeries = ANY;
+        requireProjection = true;
+        showMaps = true;
+        showInfo = false;
+        autofetchAttributes = false;
     }
 
     // ========================================
@@ -114,38 +114,38 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
      * @param props the <code>Properties</code> object.
      */
     public void setProperties(java.util.Properties props) {
-	setProperties(null, props);
+        setProperties(null, props);
     }
 
     /**
      */
     public void setProperties(String prefix, java.util.Properties props) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	opaqueness = LayerUtils.intFromProperties(props, prefix + OpaquenessProperty, opaqueness);
-	
-	numberOfColors = LayerUtils.intFromProperties(props, prefix + NumColorsProperty, numberOfColors);
+        opaqueness = LayerUtils.intFromProperties(props, prefix + OpaquenessProperty, opaqueness);
+        
+        numberOfColors = LayerUtils.intFromProperties(props, prefix + NumColorsProperty, numberOfColors);
 
-	showMaps = LayerUtils.booleanFromProperties(props, prefix + ShowMapsProperty, showMaps);
+        showMaps = LayerUtils.booleanFromProperties(props, prefix + ShowMapsProperty, showMaps);
 
-	showInfo = LayerUtils.booleanFromProperties(props, prefix + ShowInfoProperty, showInfo);
+        showInfo = LayerUtils.booleanFromProperties(props, prefix + ShowInfoProperty, showInfo);
 
-	scaleImages = LayerUtils.booleanFromProperties(props, prefix + ScaleImagesProperty, scaleImages);
+        scaleImages = LayerUtils.booleanFromProperties(props, prefix + ScaleImagesProperty, scaleImages);
 
-	chartSeries = props.getProperty(prefix + ChartSeriesProperty);
+        chartSeries = props.getProperty(prefix + ChartSeriesProperty);
 
-	autofetchAttributes = LayerUtils.booleanFromProperties(props, prefix + AutoFetchAttributeProperty, autofetchAttributes);
+        autofetchAttributes = LayerUtils.booleanFromProperties(props, prefix + AutoFetchAttributeProperty, autofetchAttributes);
 
-	imageScaleFactor =  LayerUtils.floatFromProperties(props, prefix + ImageScaleFactorProperty, imageScaleFactor);
+        imageScaleFactor =  LayerUtils.floatFromProperties(props, prefix + ImageScaleFactorProperty, imageScaleFactor);
 
-	String colormodel = props.getProperty(prefix + ColormodelProperty);
-	if (colormodel != null && colormodel.equalsIgnoreCase("indexed")) {
-	    colorModel = OMRasterObject.COLORMODEL_INDEXED;
-	} else {
-	    colorModel = OMRasterObject.COLORMODEL_DIRECT;
-	}
+        String colormodel = props.getProperty(prefix + ColormodelProperty);
+        if (colormodel != null && colormodel.equalsIgnoreCase("indexed")) {
+            colorModel = OMRasterObject.COLORMODEL_INDEXED;
+        } else {
+            colorModel = OMRasterObject.COLORMODEL_DIRECT;
+        }
     }
 
     /**
@@ -164,26 +164,26 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
      * PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-	String prefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
+        String prefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
 
-	props.put(prefix + OpaquenessProperty, Integer.toString(opaqueness));
-	props.put(prefix + NumColorsProperty, Integer.toString(numberOfColors));
-	props.put(prefix + ShowMapsProperty, new Boolean(showMaps).toString());
-	props.put(prefix + ShowInfoProperty, new Boolean(showInfo).toString());
-	props.put(prefix + ScaleImagesProperty, new Boolean(scaleImages).toString());
-	props.put(prefix + ChartSeriesProperty, chartSeries);
-	props.put(prefix + AutoFetchAttributeProperty, new Boolean(autofetchAttributes).toString());
-	props.put(prefix + ImageScaleFactorProperty, Float.toString(imageScaleFactor));
+        props.put(prefix + OpaquenessProperty, Integer.toString(opaqueness));
+        props.put(prefix + NumColorsProperty, Integer.toString(numberOfColors));
+        props.put(prefix + ShowMapsProperty, new Boolean(showMaps).toString());
+        props.put(prefix + ShowInfoProperty, new Boolean(showInfo).toString());
+        props.put(prefix + ScaleImagesProperty, new Boolean(scaleImages).toString());
+        props.put(prefix + ChartSeriesProperty, chartSeries);
+        props.put(prefix + AutoFetchAttributeProperty, new Boolean(autofetchAttributes).toString());
+        props.put(prefix + ImageScaleFactorProperty, Float.toString(imageScaleFactor));
 
-	if (colorModel == OMRasterObject.COLORMODEL_INDEXED) {
-	    props.put(prefix + ColormodelProperty, "indexed");
-	}
+        if (colorModel == OMRasterObject.COLORMODEL_INDEXED) {
+            props.put(prefix + ColormodelProperty, "indexed");
+        }
 
-	return props;
+        return props;
     }
 
     /**
@@ -205,40 +205,40 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
      * PropertyConsumer. 
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
-	
-	list.put(OpaquenessProperty, "Integer representing opaqueness level (0-255, 0 is clear)");
-	list.put(NumColorsProperty, "Number of colors to use for the maps (16, 32, 216)");
-	list.put(ShowMapsProperty, "Flag to display maps");
-	list.put(ShowMapsProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+        if (list == null) {
+            list = new Properties();
+        }
+        
+        list.put(OpaquenessProperty, "Integer representing opaqueness level (0-255, 0 is clear)");
+        list.put(NumColorsProperty, "Number of colors to use for the maps (16, 32, 216)");
+        list.put(ShowMapsProperty, "Flag to display maps");
+        list.put(ShowMapsProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
 
-	list.put(ShowInfoProperty, "Flag to show data attributes");
-	list.put(ShowInfoProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+        list.put(ShowInfoProperty, "Flag to show data attributes");
+        list.put(ShowInfoProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
 
-	list.put(ScaleImagesProperty, "Flag to scale the images to fit the map scale.  If false, images appear when map scale fits the chart scale.");
-	list.put(ScaleImagesProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+        list.put(ScaleImagesProperty, "Flag to scale the images to fit the map scale.  If false, images appear when map scale fits the chart scale.");
+        list.put(ScaleImagesProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
 
-	list.put(ChartSeriesProperty, "The chart scale code to display.  ANY is default");
-	list.put(AutoFetchAttributeProperty, "Flag to tell the layer to automatically fetch the attribute data for the images");
-	list.put(AutoFetchAttributeProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+        list.put(ChartSeriesProperty, "The chart scale code to display.  ANY is default");
+        list.put(AutoFetchAttributeProperty, "Flag to tell the layer to automatically fetch the attribute data for the images");
+        list.put(AutoFetchAttributeProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
 
-	list.put(ImageScaleFactorProperty, "Multiplier to limit the scales that a given chart will be displayed for a map (4.0 is the default).");
-	list.put(ColormodelProperty, "If 'indexed', the images will be built using a colortable.  This is not the default.");
+        list.put(ImageScaleFactorProperty, "Multiplier to limit the scales that a given chart will be displayed for a map (4.0 is the default).");
+        list.put(ColormodelProperty, "If 'indexed', the images will be built using a colortable.  This is not the default.");
 
-	return list;
+        return list;
     }
 
     /**
      * Specify what order properties should be presented in an editor.
      */
     public String getInitPropertiesOrder() {
-	return " " + ShowMapsProperty + " " + ShowInfoProperty + " " + ScaleImagesProperty + " " + ImageScaleFactorProperty + " " + OpaquenessProperty + " " + NumColorsProperty + " " + ChartSeriesProperty + " " + AutoFetchAttributeProperty + " " + ColormodelProperty;
+        return " " + ShowMapsProperty + " " + ShowInfoProperty + " " + ScaleImagesProperty + " " + ImageScaleFactorProperty + " " + OpaquenessProperty + " " + NumColorsProperty + " " + ChartSeriesProperty + " " + AutoFetchAttributeProperty + " " + ColormodelProperty;
     }
 
     /**
@@ -249,7 +249,7 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
      * @param prefix the prefix String.  
      */
     public void setPropertyPrefix(String prefix) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
     }
 
     /**
@@ -259,6 +259,6 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
      * @return the property prefix
      */
     public String getPropertyPrefix() {
-	return propertyPrefix;
+        return propertyPrefix;
     }
 }

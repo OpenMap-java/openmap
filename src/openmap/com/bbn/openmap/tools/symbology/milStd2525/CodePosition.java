@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodePosition.java,v $
 // $RCSfile: CodePosition.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/12/18 23:37:49 $
+// $Revision: 1.8 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -90,14 +90,14 @@ public class CodePosition {
     protected List choices;
 
     public CodePosition() {
-	DEBUG = Debug.debugging("codeposition");
+        DEBUG = Debug.debugging("codeposition");
     };
 
     public CodePosition(String name, int start, int end) {
-	this();
-	startIndex = start - 1;
-	endIndex = end;
-	prettyName = name;
+        this();
+        startIndex = start - 1;
+        endIndex = end;
+        prettyName = name;
     }
 
     /**
@@ -106,7 +106,7 @@ public class CodePosition {
      * properties.
      */
     public List getPositionChoices() {
-	return choices;
+        return choices;
     }
 
     /**
@@ -116,16 +116,16 @@ public class CodePosition {
      * properties will probably suffice.
      */
     public CodePosition getFromChoices(int hierarchyNumber) {
-	List aList = getPositionChoices();
-	if (aList != null) {
-	    for (Iterator it = aList.iterator(); it.hasNext();) {
-		CodePosition cp = (CodePosition)it.next();
-		if (hierarchyNumber == cp.getHierarchyNumber()) {
-		    return cp;
-		}
-	    }
-	}
-	return null;
+        List aList = getPositionChoices();
+        if (aList != null) {
+            for (Iterator it = aList.iterator(); it.hasNext();) {
+                CodePosition cp = (CodePosition)it.next();
+                if (hierarchyNumber == cp.getHierarchyNumber()) {
+                    return cp;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -145,30 +145,30 @@ public class CodePosition {
      * @param props the position properties.
      */
     protected CodePosition addPositionChoice(int index, String entry, 
-					     String prefix, Properties props) {
-	String className = this.getClass().getName();
-	CodePosition cp = (CodePosition)ComponentFactory.create(className);
-	if (cp != null) {
-	    if (DEBUG) {
-		Debug.output("CodePosition:  created position (" + className + ")");
-	    }
+                                             String prefix, Properties props) {
+        String className = this.getClass().getName();
+        CodePosition cp = (CodePosition)ComponentFactory.create(className);
+        if (cp != null) {
+            if (DEBUG) {
+                Debug.output("CodePosition:  created position (" + className + ")");
+            }
 
-	    // Before prefix is modified
-	    cp.symbolPart = getSymbolPart(prefix + entry, prefix, props);
+            // Before prefix is modified
+            cp.symbolPart = getSymbolPart(prefix + entry, prefix, props);
 
-	    prefix = PropUtils.getScopedPropertyPrefix(prefix) + entry + ".";
+            prefix = PropUtils.getScopedPropertyPrefix(prefix) + entry + ".";
 
-	    // Might not mean anything for option-type positions
-	    cp.hierarchyNumber = index;
-	    cp.id = entry.charAt(0);  // ASSUMED
-	    cp.prettyName = props.getProperty(prefix + NameProperty);
-	    addPositionChoice(cp);
-	} else {
-	    if (DEBUG) {
-		Debug.output("CodePosition: couldn't create position (" + className + ")");
-	    }
-	}
-	return cp;
+            // Might not mean anything for option-type positions
+            cp.hierarchyNumber = index;
+            cp.id = entry.charAt(0);  // ASSUMED
+            cp.prettyName = props.getProperty(prefix + NameProperty);
+            addPositionChoice(cp);
+        } else {
+            if (DEBUG) {
+                Debug.output("CodePosition: couldn't create position (" + className + ")");
+            }
+        }
+        return cp;
     }
 
     /**
@@ -176,10 +176,10 @@ public class CodePosition {
      * if needed.
      */
     public void addPositionChoice(CodePosition cp) {
-	if (choices == null) {
-	    choices = new LinkedList();
-	}
-	choices.add(cp);
+        if (choices == null) {
+            choices = new LinkedList();
+        }
+        choices.add(cp);
     }
 
     /**
@@ -187,13 +187,13 @@ public class CodePosition {
      * options for what values are valid in this position.
      */
     protected void parsePositions(String prefix, Properties props) {
-	int index = 1;
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
-	String entry = props.getProperty(prefix + Integer.toString(index));
-	while (entry != null) {
-	    addPositionChoice(index, entry, prefix, props);
-	    entry = props.getProperty(prefix + Integer.toString(++index));
-	}
+        int index = 1;
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String entry = props.getProperty(prefix + Integer.toString(index));
+        while (entry != null) {
+            addPositionChoice(index, entry, prefix, props);
+            entry = props.getProperty(prefix + Integer.toString(++index));
+        }
     }
 
     /**
@@ -206,60 +206,60 @@ public class CodePosition {
      * @param props the position properties.
      */
     protected SymbolPart getSymbolPart(String entry, String prefix, Properties props) {
-	int offset = prefix.length();
-	return new SymbolPart(this, entry, props, null, offset, 
-			      offset + endIndex - startIndex, false);
+        int offset = prefix.length();
+        return new SymbolPart(this, entry, props, null, offset, 
+                              offset + endIndex - startIndex, false);
     }
 
     protected void parseHierarchy(String hCode, Properties props, SymbolPart parent) {
-	
-	List parentList = null;
-	int levelCounter = 1;
+        
+        List parentList = null;
+        int levelCounter = 1;
 
-	while (levelCounter > 0) {
+        while (levelCounter > 0) {
 
-	    String hierarchyCode = hCode + "." + levelCounter;
+            String hierarchyCode = hCode + "." + levelCounter;
 
-	    if (DEBUG) {
-		Debug.output("CodePosition.parse: " + hierarchyCode + 
-			     " with " + getPrettyName());
-	    }
+            if (DEBUG) {
+                Debug.output("CodePosition.parse: " + hierarchyCode + 
+                             " with " + getPrettyName());
+            }
 
-	    String entry = props.getProperty(hierarchyCode);
+            String entry = props.getProperty(hierarchyCode);
 
-	    if (entry != null) {
-		CodeFunctionID cp = new CodeFunctionID();
-		SymbolPart sp = new SymbolPart(cp, entry, props, parent);
+            if (entry != null) {
+                CodeFunctionID cp = new CodeFunctionID();
+                SymbolPart sp = new SymbolPart(cp, entry, props, parent);
 
-		if (parentList == null) {
-		    parentList = parent.getSubs();
-		    if (parentList == null) {
-			parentList = new LinkedList();
-			parent.setSubs(parentList);
-		    }
-		}
+                if (parentList == null) {
+                    parentList = parent.getSubs();
+                    if (parentList == null) {
+                        parentList = new LinkedList();
+                        parent.setSubs(parentList);
+                    }
+                }
 
-		if (DEBUG) {
-		    Debug.output("CodePosition.parse: adding " + 
-				 sp.getPrettyName() + 
-				 " to " + parent.getPrettyName());
-		}
+                if (DEBUG) {
+                    Debug.output("CodePosition.parse: adding " + 
+                                 sp.getPrettyName() + 
+                                 " to " + parent.getPrettyName());
+                }
 
-		parentList.add(sp);
+                parentList.add(sp);
 
-		if (DEBUG) {
-		    Debug.output("CodePosition.parse: looking for children of " + 
-				 sp.getPrettyName());
-		}
+                if (DEBUG) {
+                    Debug.output("CodePosition.parse: looking for children of " + 
+                                 sp.getPrettyName());
+                }
 
-		cp.parseHierarchy(hierarchyCode, props, sp);
+                cp.parseHierarchy(hierarchyCode, props, sp);
 
-		levelCounter++;
+                levelCounter++;
 
-	    } else {
-		levelCounter = -1; // Flag to punch out of loop
-	    }
-	}
+            } else {
+                levelCounter = -1; // Flag to punch out of loop
+            }
+        }
     }
 
     /**
@@ -268,28 +268,28 @@ public class CodePosition {
      * properties file to build the symbol tree.
      */
     public int getHierarchyNumber() {
-	return hierarchyNumber;
+        return hierarchyNumber;
     }
 
     /**
      * Return a string version of the hierarchy number.
      */
     public String getHierarchyNumberString() {
-	return Integer.toString(hierarchyNumber);
+        return Integer.toString(hierarchyNumber);
     }
 
     /**
      * Get the character, in the symbol code, that this position represents.
      */
     public char getID() {
-	return id;
+        return id;
     }
 
     /**
      * Get the pretty name that states what this position and character represents.
      */
     public String getPrettyName() {
-	return prettyName;
+        return prettyName;
     }
 
     /**
@@ -297,7 +297,7 @@ public class CodePosition {
      * represents.  This value is a java index value starting at 0.
      */
     public int getStartIndex() {
-	return startIndex;
+        return startIndex;
     }
 
     /**
@@ -305,7 +305,7 @@ public class CodePosition {
      * This value is a java index value starting at 0.
      */
     public int getEndIndex() {
-	return endIndex;
+        return endIndex;
     }
 
     /**
@@ -314,12 +314,12 @@ public class CodePosition {
      * properties.
      */
     public CodePosition getNextPosition() {
-	return nextPosition;
+        return nextPosition;
     }
 
     public String toString() {
-// 	return getPrettyName() + " [" + getID() + "] at " + 
-// 	    getStartIndex() + ", " + getEndIndex();
-	return getPrettyName();
+//      return getPrettyName() + " [" + getID() + "] at " + 
+//          getStartIndex() + ", " + getEndIndex();
+        return getPrettyName();
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/09/22 23:29:18 $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -119,106 +119,106 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     public final static String DistanceGridResolutionProperty = "distanceGridResolution";
 
     public UTMGridPlugIn() {
-	UTM_DEBUG = Debug.debugging("utmgrid");
-	UTM_DEBUG_VERBOSE = Debug.debugging("utmgrid_verbose");
+        UTM_DEBUG = Debug.debugging("utmgrid");
+        UTM_DEBUG_VERBOSE = Debug.debugging("utmgrid_verbose");
     }
 
     protected OMGeometryList createUTMZoneVerticalLines() {
 
-	OMGeometryList verticalList = new OMGeometryList();
-	float[] points = null;
+        OMGeometryList verticalList = new OMGeometryList();
+        float[] points = null;
 
-	for (int lon = -180; lon < 180; lon += 6) {
-	    if (lon == 6) {
-		points = new float[] {56f, lon, -80f, lon};
-	    } else if (lon > 6 && lon < 42) {
-		points = new float[] {72f, lon, -80f, lon};
-	    } else {
-		points = new float[] {84f, lon, -80f, lon};
-	    }
-	    verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
-	}
+        for (int lon = -180; lon < 180; lon += 6) {
+            if (lon == 6) {
+                points = new float[] {56f, lon, -80f, lon};
+            } else if (lon > 6 && lon < 42) {
+                points = new float[] {72f, lon, -80f, lon};
+            } else {
+                points = new float[] {84f, lon, -80f, lon};
+            }
+            verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
+        }
 
-	points = new float[] {72f, 6f, 64f, 6f};
-	verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
+        points = new float[] {72f, 6f, 64f, 6f};
+        verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
 
-	points = new float[] {64f, 3f, 56f, 3f};
-	verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
+        points = new float[] {64f, 3f, 56f, 3f};
+        verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
 
-	points = new float[] {84f, 9f, 72f, 9f};
-	verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
+        points = new float[] {84f, 9f, 72f, 9f};
+        verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
 
-	points = new float[] {84f, 21f, 72f, 21f};
-	verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
+        points = new float[] {84f, 21f, 72f, 21f};
+        verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
 
-	points = new float[] {84f, 33f, 72f, 33f};
-	verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
+        points = new float[] {84f, 33f, 72f, 33f};
+        verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
 
-	verticalList.setLinePaint(utmGridPaint);
-	
-	return verticalList;
+        verticalList.setLinePaint(utmGridPaint);
+        
+        return verticalList;
     }
 
     protected OMGeometryList createUTMZoneHorizontalLines() {
-	OMGeometryList horizontalList = new OMGeometryList();
-	float[] points = null;
+        OMGeometryList horizontalList = new OMGeometryList();
+        float[] points = null;
 
-	for (int lat = -80; lat <= 72; lat += 8) {
-	    points = new float[] {lat, -180f, lat, -90f, lat, 0f, lat, 90f, lat, 180f};
-	    horizontalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB));
-	}
+        for (int lat = -80; lat <= 72; lat += 8) {
+            points = new float[] {lat, -180f, lat, -90f, lat, 0f, lat, 90f, lat, 180f};
+            horizontalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB));
+        }
 
-	points = new float[] {84f, -180f, 84f, -90f, 84f, 0f, 84f, 90f, 84f, 180f};
-	horizontalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB));
+        points = new float[] {84f, -180f, 84f, -90f, 84f, 0f, 84f, 90f, 84f, 180f};
+        horizontalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB));
 
-	horizontalList.setLinePaint(utmGridPaint);
+        horizontalList.setLinePaint(utmGridPaint);
 
-	return horizontalList;
+        return horizontalList;
     }
 
     protected QuadTree createUTMZoneLabels() {
 
-	QuadTree labelTree = new QuadTree();
+        QuadTree labelTree = new QuadTree();
 
-	UTMPoint utm = new UTMPoint();
-	LatLonPoint llp = new LatLonPoint();
-	float latitude;
-	float longitude;
+        UTMPoint utm = new UTMPoint();
+        LatLonPoint llp = new LatLonPoint();
+        float latitude;
+        float longitude;
 
-	for (int lat = -80; lat <= 72; lat += 8) {
-	    for (int lon = -180; lon < 180; lon += 6) {
+        for (int lat = -80; lat <= 72; lat += 8) {
+            for (int lon = -180; lon < 180; lon += 6) {
 
-		latitude = (float) lat;
-		longitude = (float) lon;
+                latitude = (float) lat;
+                longitude = (float) lon;
 
-		if (lat == 56 && lon == 6) {
-		    longitude = 3f;
-		} else if (lat == 72 && (lon > 0 && lon < 42)) {
-		    continue;
-		}
-		llp.setLatLon(latitude, longitude);
-		addLabel(llp, UTMPoint.LLtoUTM(llp,utm), labelTree);
-	    }
-	}
+                if (lat == 56 && lon == 6) {
+                    longitude = 3f;
+                } else if (lat == 72 && (lon > 0 && lon < 42)) {
+                    continue;
+                }
+                llp.setLatLon(latitude, longitude);
+                addLabel(llp, UTMPoint.LLtoUTM(llp,utm), labelTree);
+            }
+        }
     
-	latitude = 72f;
-	llp.setLatLon(latitude, 9f);
-	addLabel(llp, UTMPoint.LLtoUTM(llp,utm), labelTree);
-	llp.setLongitude(21f);
-	addLabel(llp, UTMPoint.LLtoUTM(llp,utm), labelTree);
-	llp.setLongitude(33f);
-	addLabel(llp, UTMPoint.LLtoUTM(llp,utm), labelTree);
+        latitude = 72f;
+        llp.setLatLon(latitude, 9f);
+        addLabel(llp, UTMPoint.LLtoUTM(llp,utm), labelTree);
+        llp.setLongitude(21f);
+        addLabel(llp, UTMPoint.LLtoUTM(llp,utm), labelTree);
+        llp.setLongitude(33f);
+        addLabel(llp, UTMPoint.LLtoUTM(llp,utm), labelTree);
 
-	return labelTree;
+        return labelTree;
     }
 
     protected void addLabel(LatLonPoint llp, UTMPoint utm, QuadTree labelTree) {
-	float latitude = llp.getLatitude();
-	float longitude = llp.getLongitude();
-	labelTree.put(latitude, longitude, 
-		      new OMText(latitude, longitude, 2, -2, 
-				 utm.zone_number + "" + utm.zone_letter,
-				 OMText.JUSTIFY_LEFT));
+        float latitude = llp.getLatitude();
+        float longitude = llp.getLongitude();
+        labelTree.put(latitude, longitude, 
+                      new OMText(latitude, longitude, 2, -2, 
+                                 utm.zone_number + "" + utm.zone_letter,
+                                 OMText.JUSTIFY_LEFT));
     }
 
     /**
@@ -230,126 +230,126 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
      */
     protected OMGraphicList createEquiDistanceLines(UTMPoint utm, int gridLineInterval) {
 
-	OMGraphicList list = new OMGraphicList();
+        OMGraphicList list = new OMGraphicList();
 
-	// Used to calculate the endpoints of the horizontal lines.
-	UTMPoint utm1 = new UTMPoint(utm);
-	UTMPoint utm2 = new UTMPoint(utm);
-	LatLonPoint point1 = new LatLonPoint();
-	LatLonPoint point2 = new LatLonPoint();
+        // Used to calculate the endpoints of the horizontal lines.
+        UTMPoint utm1 = new UTMPoint(utm);
+        UTMPoint utm2 = new UTMPoint(utm);
+        LatLonPoint point1 = new LatLonPoint();
+        LatLonPoint point2 = new LatLonPoint();
 
-	// Used to calculate the pieces of the vertical lines.
-	UTMPoint utmp = new UTMPoint(utm);
-	LatLonPoint llp = new LatLonPoint();
+        // Used to calculate the pieces of the vertical lines.
+        UTMPoint utmp = new UTMPoint(utm);
+        LatLonPoint llp = new LatLonPoint();
 
-	int i;
-	OMLine line;
-	BasicGeometry poly;
+        int i;
+        OMLine line;
+        BasicGeometry poly;
 
-	float lat2;
- 	int endNorthing = (int) Math.floor(utm.northing/INTERVAL_100K) + 10;
- 	int startNorthing = (int) Math.floor(utm.northing/INTERVAL_100K) - 10;
+        float lat2;
+        int endNorthing = (int) Math.floor(utm.northing/INTERVAL_100K) + 10;
+        int startNorthing = (int) Math.floor(utm.northing/INTERVAL_100K) - 10;
 
-	int numVertLines = 9;
-	int numHorLines = endNorthing - startNorthing;
+        int numVertLines = 9;
+        int numHorLines = endNorthing - startNorthing;
 
-	float[][] vertPoints = new float[numVertLines][numHorLines * 2];
+        float[][] vertPoints = new float[numVertLines][numHorLines * 2];
 
-	if (UTM_DEBUG_VERBOSE) {
-	    Debug.output("Array is [" + vertPoints.length + "][" + vertPoints[0].length + "]");
-	}
+        if (UTM_DEBUG_VERBOSE) {
+            Debug.output("Array is [" + vertPoints.length + "][" + vertPoints[0].length + "]");
+        }
 
-	int coordCount = 0;
-	boolean doPolys = true;
+        int coordCount = 0;
+        boolean doPolys = true;
 
-	utm1.easting = INTERVAL_100K;
-	utm2.easting = 9 * INTERVAL_100K;
+        utm1.easting = INTERVAL_100K;
+        utm2.easting = 9 * INTERVAL_100K;
 
-	// Horizontal lines
-	for (i = startNorthing; i < endNorthing; i++) {
-	    utm1.northing = (float) i * gridLineInterval;
-	    utm2.northing = utm1.northing;
-	    utmp.northing = utm1.northing;
+        // Horizontal lines
+        for (i = startNorthing; i < endNorthing; i++) {
+            utm1.northing = (float) i * gridLineInterval;
+            utm2.northing = utm1.northing;
+            utmp.northing = utm1.northing;
 
-	    if (doPolys) {
-		for (int j = 0; j < numVertLines; j++) {
-		    utmp.easting = (float) (j+1) * gridLineInterval;
-		    llp = utmp.toLatLonPoint(Ellipsoid.WGS_84, llp);
+            if (doPolys) {
+                for (int j = 0; j < numVertLines; j++) {
+                    utmp.easting = (float) (j+1) * gridLineInterval;
+                    llp = utmp.toLatLonPoint(Ellipsoid.WGS_84, llp);
 
-		    vertPoints[j][coordCount] = llp.getLatitude();
-		    vertPoints[j][coordCount+1] = llp.getLongitude();
+                    vertPoints[j][coordCount] = llp.getLatitude();
+                    vertPoints[j][coordCount+1] = llp.getLongitude();
 
-		    if (UTM_DEBUG_VERBOSE) {
-			Debug.output("for vline " + j + ", point " + i +
-				     ", easting: " + utmp.easting + 
-				     ", northing: " + utmp.northing + 
-				     ", lat:" + vertPoints[j][coordCount] + 
-				     ", lon:" + vertPoints[j][coordCount+1] );
-		    }
-		}
-		coordCount+=2;
-	    }
+                    if (UTM_DEBUG_VERBOSE) {
+                        Debug.output("for vline " + j + ", point " + i +
+                                     ", easting: " + utmp.easting + 
+                                     ", northing: " + utmp.northing + 
+                                     ", lat:" + vertPoints[j][coordCount] + 
+                                     ", lon:" + vertPoints[j][coordCount+1] );
+                    }
+                }
+                coordCount+=2;
+            }
 
-	    point1 = utm1.toLatLonPoint(Ellipsoid.WGS_84, point1);
-	    point2 = utm2.toLatLonPoint(Ellipsoid.WGS_84, point2);
+            point1 = utm1.toLatLonPoint(Ellipsoid.WGS_84, point1);
+            point2 = utm2.toLatLonPoint(Ellipsoid.WGS_84, point2);
 
-	    lat2 = point1.getLatitude();
+            lat2 = point1.getLatitude();
 
-	    if (lat2 < 84f) {
-		line = new OMLine(point1.getLatitude(), point1.getLongitude(),
-				  point2.getLatitude(), point2.getLongitude(),
-				  OMGraphic.LINETYPE_GREATCIRCLE);
-		line.setLinePaint(distanceGridPaint);
-  		list.add(line);
-	    }
-	}
+            if (lat2 < 84f) {
+                line = new OMLine(point1.getLatitude(), point1.getLongitude(),
+                                  point2.getLatitude(), point2.getLongitude(),
+                                  OMGraphic.LINETYPE_GREATCIRCLE);
+                line.setLinePaint(distanceGridPaint);
+                list.add(line);
+            }
+        }
 
 
-	if (doPolys) {
-	    OMGeometryList polys = new OMGeometryList();
-	    for (i = 0; i < vertPoints.length; i++) {
-		if (UTM_DEBUG_VERBOSE) {
-		    for (int k = 0; k < vertPoints[i].length; k += 2) {
-			System.out.println(" for poly " + i + ": lat = " + 
-					   vertPoints[i][k] + ", lon = " +
-					   vertPoints[i][k+1]);
-		    }
-		}
-		poly = new PolylineGeometry.LL(vertPoints[i], OMGraphic.DECIMAL_DEGREES, 
-					       OMGraphic.LINETYPE_GREATCIRCLE);
-		polys.add(poly);
-	    } 
-	    polys.setLinePaint(distanceGridPaint);
-	    list.add(polys);
-	} else {
+        if (doPolys) {
+            OMGeometryList polys = new OMGeometryList();
+            for (i = 0; i < vertPoints.length; i++) {
+                if (UTM_DEBUG_VERBOSE) {
+                    for (int k = 0; k < vertPoints[i].length; k += 2) {
+                        System.out.println(" for poly " + i + ": lat = " + 
+                                           vertPoints[i][k] + ", lon = " +
+                                           vertPoints[i][k+1]);
+                    }
+                }
+                poly = new PolylineGeometry.LL(vertPoints[i], OMGraphic.DECIMAL_DEGREES, 
+                                               OMGraphic.LINETYPE_GREATCIRCLE);
+                polys.add(poly);
+            } 
+            polys.setLinePaint(distanceGridPaint);
+            list.add(polys);
+        } else {
 
-	    // This doesn't seem to calculate the right 
-	    // lines, although it looks like it should.
+            // This doesn't seem to calculate the right 
+            // lines, although it looks like it should.
 
-	    if (UTM_DEBUG) {
-		Debug.output("Doing vertical lines");
-	    }
+            if (UTM_DEBUG) {
+                Debug.output("Doing vertical lines");
+            }
 
-	    utm1.northing = startNorthing;
-	    utm2.northing = endNorthing;
+            utm1.northing = startNorthing;
+            utm2.northing = endNorthing;
 
-	    // Vertical lines
-	    for (i = 1; i <= 9; i++) {
-		utm1.easting = i * 100000f;
-		utm2.easting = i * 100000f;
+            // Vertical lines
+            for (i = 1; i <= 9; i++) {
+                utm1.easting = i * 100000f;
+                utm2.easting = i * 100000f;
 
-		point1 = utm1.toLatLonPoint(Ellipsoid.WGS_84, point1);
-		point2 = utm2.toLatLonPoint(Ellipsoid.WGS_84, point2);
+                point1 = utm1.toLatLonPoint(Ellipsoid.WGS_84, point1);
+                point2 = utm2.toLatLonPoint(Ellipsoid.WGS_84, point2);
 
-		line = new OMLine(point1.getLatitude(), point1.getLongitude(),
-				  point2.getLatitude(), point2.getLongitude(),
-				  OMGraphic.LINETYPE_GREATCIRCLE);
-		line.setLinePaint(distanceGridPaint);
-		list.add(line);
-	    }
-	}
+                line = new OMLine(point1.getLatitude(), point1.getLongitude(),
+                                  point2.getLatitude(), point2.getLongitude(),
+                                  OMGraphic.LINETYPE_GREATCIRCLE);
+                line.setLinePaint(distanceGridPaint);
+                list.add(line);
+            }
+        }
 
-	return list;
+        return list;
     }
 
     /**
@@ -366,8 +366,8 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
      * the llp to create.
      */
     protected OMGeometryList createMGRSRectangles(LatLonPoint llp, int accuracy, 
-						  int numRects) {
-	return createMGRSRectangles(llp, accuracy, numRects, Ellipsoid.WGS_84);
+                                                  int numRects) {
+        return createMGRSRectangles(llp, accuracy, numRects, Ellipsoid.WGS_84);
     }
 
     /**
@@ -385,31 +385,31 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
      * @param ellipsoid the ellipsoid to use.
      */
     protected OMGeometryList createMGRSRectangles(LatLonPoint llp, int accuracy, 
-						  int numRects, Ellipsoid ellipsoid) {
-	MGRSPoint mgrs = new MGRSPoint();
-	mgrs.setAccuracy(accuracy);
-	MGRSPoint.LLtoMGRS(llp, ellipsoid, mgrs);
+                                                  int numRects, Ellipsoid ellipsoid) {
+        MGRSPoint mgrs = new MGRSPoint();
+        mgrs.setAccuracy(accuracy);
+        MGRSPoint.LLtoMGRS(llp, ellipsoid, mgrs);
 
- 	mgrs = new MGRSPoint(mgrs.getMGRS());
-	mgrs.setAccuracy(accuracy);
+        mgrs = new MGRSPoint(mgrs.getMGRS());
+        mgrs.setAccuracy(accuracy);
 
-	float accuracyBonus = 100000f/(float)Math.pow(10, accuracy);
+        float accuracyBonus = 100000f/(float)Math.pow(10, accuracy);
 
-	OMGeometryList list = new OMGeometryList();
+        OMGeometryList list = new OMGeometryList();
 
-	for (float i = -numRects * accuracyBonus; i < numRects * accuracyBonus; i+= accuracyBonus) {
-	    for (float j = -numRects * accuracyBonus; j < numRects * accuracyBonus; j += accuracyBonus) {
-		if (Debug.debugging("utmdistancegrid")) {
-		    System.out.print(".");
-		}
-		list.add(createMGRSRectangle(mgrs, i, j, accuracyBonus, ellipsoid));
-	    }
-	    if (Debug.debugging("utmdistancegrid")) {
-		System.out.println("");
-	    }
-	}
+        for (float i = -numRects * accuracyBonus; i < numRects * accuracyBonus; i+= accuracyBonus) {
+            for (float j = -numRects * accuracyBonus; j < numRects * accuracyBonus; j += accuracyBonus) {
+                if (Debug.debugging("utmdistancegrid")) {
+                    System.out.print(".");
+                }
+                list.add(createMGRSRectangle(mgrs, i, j, accuracyBonus, ellipsoid));
+            }
+            if (Debug.debugging("utmdistancegrid")) {
+                System.out.println("");
+            }
+        }
 
-	return list;
+        return list;
     }
 
     /**
@@ -426,51 +426,51 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
      * @param ellipsoid Ellipsoid for coordinate translation.
      */
     protected OMGeometry createMGRSRectangle(MGRSPoint mgrsBasePoint, 
-					     float voffset, float hoffset, 
-					     float interval, Ellipsoid ellipsoid) {
+                                             float voffset, float hoffset, 
+                                             float interval, Ellipsoid ellipsoid) {
 
-	float[] llpoints = new float[10];
+        float[] llpoints = new float[10];
 
-	float easting = mgrsBasePoint.easting + hoffset;
-	float northing = mgrsBasePoint.northing + voffset;
-	int zone_number = mgrsBasePoint.zone_number;
-	char zone_letter = mgrsBasePoint.zone_letter;
+        float easting = mgrsBasePoint.easting + hoffset;
+        float northing = mgrsBasePoint.northing + voffset;
+        int zone_number = mgrsBasePoint.zone_number;
+        char zone_letter = mgrsBasePoint.zone_letter;
 
-	LatLonPoint llp1 = new LatLonPoint();
-	MGRSPoint.UTMtoLL(ellipsoid, northing, easting,
-			  zone_number, zone_letter, llp1);
-	llpoints[0] = llp1.getLatitude();
-	llpoints[1] = llp1.getLongitude();
-	llpoints[8] = llp1.getLatitude();
-	llpoints[9] = llp1.getLongitude();
+        LatLonPoint llp1 = new LatLonPoint();
+        MGRSPoint.UTMtoLL(ellipsoid, northing, easting,
+                          zone_number, zone_letter, llp1);
+        llpoints[0] = llp1.getLatitude();
+        llpoints[1] = llp1.getLongitude();
+        llpoints[8] = llp1.getLatitude();
+        llpoints[9] = llp1.getLongitude();
 
-	MGRSPoint.UTMtoLL(ellipsoid, northing, easting + interval,
-			  zone_number, zone_letter, llp1);
-	llpoints[2] = llp1.getLatitude();
-	llpoints[3] = llp1.getLongitude();
+        MGRSPoint.UTMtoLL(ellipsoid, northing, easting + interval,
+                          zone_number, zone_letter, llp1);
+        llpoints[2] = llp1.getLatitude();
+        llpoints[3] = llp1.getLongitude();
 
-	MGRSPoint.UTMtoLL(ellipsoid, northing + interval, easting + interval,
-			  zone_number, zone_letter, llp1);
-	llpoints[4] = llp1.getLatitude();
-	llpoints[5] = llp1.getLongitude();
+        MGRSPoint.UTMtoLL(ellipsoid, northing + interval, easting + interval,
+                          zone_number, zone_letter, llp1);
+        llpoints[4] = llp1.getLatitude();
+        llpoints[5] = llp1.getLongitude();
 
-	MGRSPoint.UTMtoLL(ellipsoid, northing + interval, easting,
-			  zone_number, zone_letter, llp1);
-	llpoints[6] = llp1.getLatitude();
-	llpoints[7] = llp1.getLongitude();
+        MGRSPoint.UTMtoLL(ellipsoid, northing + interval, easting,
+                          zone_number, zone_letter, llp1);
+        llpoints[6] = llp1.getLatitude();
+        llpoints[7] = llp1.getLongitude();
 
-	MGRSPoint mgrs = new MGRSPoint(northing, easting, zone_number, zone_letter);
-	mgrs.setAccuracy(mgrsBasePoint.getAccuracy());
-	MGRSPoint.MGRStoLL(mgrs, ellipsoid, llp1);
-	String mgrsString = mgrs.getMGRS();
+        MGRSPoint mgrs = new MGRSPoint(northing, easting, zone_number, zone_letter);
+        mgrs.setAccuracy(mgrsBasePoint.getAccuracy());
+        MGRSPoint.MGRStoLL(mgrs, ellipsoid, llp1);
+        String mgrsString = mgrs.getMGRS();
 
-	if (Debug.debugging("utmgriddetail")) 
-	    Debug.output(" - assigning " + mgrsString + " to poly with " +
-			 mgrs.getAccuracy());
+        if (Debug.debugging("utmgriddetail")) 
+            Debug.output(" - assigning " + mgrsString + " to poly with " +
+                         mgrs.getAccuracy());
 
-	PolygonGeometry poly = new PolygonGeometry.LL(llpoints, OMGraphic.DECIMAL_DEGREES, (interval <= 1000?OMGraphic.LINETYPE_STRAIGHT:OMGraphic.LINETYPE_GREATCIRCLE));
-	poly.setAppObject(mgrsString);
-	return poly;
+        PolygonGeometry poly = new PolygonGeometry.LL(llpoints, OMGraphic.DECIMAL_DEGREES, (interval <= 1000?OMGraphic.LINETYPE_STRAIGHT:OMGraphic.LINETYPE_GREATCIRCLE));
+        poly.setAppObject(mgrsString);
+        return poly;
     }
 
     /**
@@ -483,213 +483,213 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
      */
     public OMGraphicList getRectangle(Projection p) {
 
-	OMGraphicList list = getList();
+        OMGraphicList list = getList();
 
-	if (verticalList == null) {
-	    verticalList = createUTMZoneVerticalLines();
-	    horizontalList = createUTMZoneHorizontalLines();
-	    labelTree = createUTMZoneLabels();
-	}
+        if (verticalList == null) {
+            verticalList = createUTMZoneVerticalLines();
+            horizontalList = createUTMZoneHorizontalLines();
+            labelTree = createUTMZoneLabels();
+        }
 
-	list.clear();
+        list.clear();
 
-	if (showZones) {
-	    list.add(verticalList);
-	    list.add(horizontalList);
-	}
+        if (showZones) {
+            list.add(verticalList);
+            list.add(horizontalList);
+        }
 
-	LatLonPoint center = p.getCenter();
-	UTMPoint utm = new UTMPoint(center);
+        LatLonPoint center = p.getCenter();
+        UTMPoint utm = new UTMPoint(center);
 
-	if (show100kGrid) {
-	    Debug.message("utmgrid", "Creating 100k distance lines...");
+        if (show100kGrid) {
+            Debug.message("utmgrid", "Creating 100k distance lines...");
 
-	    OMGraphicList hunKLines = createEquiDistanceLines(utm, 100000);
-	    list.add(hunKLines);
-	}
+            OMGraphicList hunKLines = createEquiDistanceLines(utm, 100000);
+            list.add(hunKLines);
+        }
 
-	if (distanceGridResolution > 0) {
-	    Debug.message("utmgrid", "Creating distance lines...");
-
-
-	    float decisionAid = 100000f/(float)Math.pow(10, distanceGridResolution); 
-	    float dglc = 30f * decisionAid; // distance grid label cutoff
-// 	    Debug.output("Basing decision to display labels on " + dglc);
-
-	    int numberBasedForScale = (int)(p.getScale() / (2*decisionAid));
-	    if (numberBasedForScale > 10) {
-		numberBasedForScale = 10;
-	    }
-// 	    Debug.output(numberBasedForScale + "");
-
-	    OMGeometryList geoList = createMGRSRectangles(center, distanceGridResolution, numberBasedForScale);
+        if (distanceGridResolution > 0) {
+            Debug.message("utmgrid", "Creating distance lines...");
 
 
-	    if (showLabels && p.getScale() <= dglc) {
-		Debug.message("utmgrid", "Creating labels for distance lines ...");
+            float decisionAid = 100000f/(float)Math.pow(10, distanceGridResolution); 
+            float dglc = 30f * decisionAid; // distance grid label cutoff
+//          Debug.output("Basing decision to display labels on " + dglc);
 
-		OMGraphicList textList = new OMGraphicList();
-		LatLonPoint llp = new LatLonPoint();
-		Point point = new Point();
-		Iterator it = geoList.iterator();
-		while (it.hasNext()) {
-		    PolygonGeometry.LL pll = (PolygonGeometry.LL)it.next();
-		    String labelString = (String)(pll).getAppObject();
-		    if (labelString == null) {
-			continue;
-		    }
-		    float[] ll = pll.getLatLonArray();
-		    llp.setLatLon(ll[0], ll[1], true);
+            int numberBasedForScale = (int)(p.getScale() / (2*decisionAid));
+            if (numberBasedForScale > 10) {
+                numberBasedForScale = 10;
+            }
+//          Debug.output(numberBasedForScale + "");
 
-		    p.forward(llp, point);
+            OMGeometryList geoList = createMGRSRectangles(center, distanceGridResolution, numberBasedForScale);
 
-		    double x = point.getX();
-		    double y = point.getY();
-		    int buffer = 20;
 
-		    // Lame attempt of testing whether the label is on-screen
-		    if ((x > -buffer || x < p.getWidth() + buffer) &&
-			(y > -buffer || y < p.getHeight() + buffer)) {
+            if (showLabels && p.getScale() <= dglc) {
+                Debug.message("utmgrid", "Creating labels for distance lines ...");
 
-			OMText label = new OMText(llp.getLatitude(),
-						  llp.getLongitude(), 4, -4,
-						  labelString, OMText.JUSTIFY_LEFT);
-			label.setLinePaint(distanceGridPaint);
-			textList.add(label);
-		    }
-		}
-		list.add(textList);
-	    }
+                OMGraphicList textList = new OMGraphicList();
+                LatLonPoint llp = new LatLonPoint();
+                Point point = new Point();
+                Iterator it = geoList.iterator();
+                while (it.hasNext()) {
+                    PolygonGeometry.LL pll = (PolygonGeometry.LL)it.next();
+                    String labelString = (String)(pll).getAppObject();
+                    if (labelString == null) {
+                        continue;
+                    }
+                    float[] ll = pll.getLatLonArray();
+                    llp.setLatLon(ll[0], ll[1], true);
 
-	    geoList.setLinePaint(distanceGridPaint);
-	    list.add(geoList);
-	}
+                    p.forward(llp, point);
 
-	if (labelList != null) {
-	    labelList.clear();
-	} else {
-	    labelList = new OMGraphicList();
-	}
+                    double x = point.getX();
+                    double y = point.getY();
+                    int buffer = 20;
 
-	if (showLabels && p.getScale() <= labelCutoffScale) {
-	    Debug.message("utmgrid", "Creating labels for map...");
-	    LatLonPoint ul = p.getUpperLeft();
-	    LatLonPoint lr = p.getLowerRight();
+                    // Lame attempt of testing whether the label is on-screen
+                    if ((x > -buffer || x < p.getWidth() + buffer) &&
+                        (y > -buffer || y < p.getHeight() + buffer)) {
 
-	    Vector labels = labelTree.get(ul.getLatitude(), ul.getLongitude(),
-					  lr.getLatitude(), lr.getLongitude());
+                        OMText label = new OMText(llp.getLatitude(),
+                                                  llp.getLongitude(), 4, -4,
+                                                  labelString, OMText.JUSTIFY_LEFT);
+                        label.setLinePaint(distanceGridPaint);
+                        textList.add(label);
+                    }
+                }
+                list.add(textList);
+            }
 
-	    labelList.setTargets(labels);
-	    labelList.setLinePaint(getUTMGridPaint());
-	    list.add(labelList);
-	}
+            geoList.setLinePaint(distanceGridPaint);
+            list.add(geoList);
+        }
 
-	Debug.message("utmgrid", "Generating OMGraphics...");
-	list.generate(p);
-	Debug.message("utmgrid", "Done.");
+        if (labelList != null) {
+            labelList.clear();
+        } else {
+            labelList = new OMGraphicList();
+        }
+
+        if (showLabels && p.getScale() <= labelCutoffScale) {
+            Debug.message("utmgrid", "Creating labels for map...");
+            LatLonPoint ul = p.getUpperLeft();
+            LatLonPoint lr = p.getLowerRight();
+
+            Vector labels = labelTree.get(ul.getLatitude(), ul.getLongitude(),
+                                          lr.getLatitude(), lr.getLongitude());
+
+            labelList.setTargets(labels);
+            labelList.setLinePaint(getUTMGridPaint());
+            list.add(labelList);
+        }
+
+        Debug.message("utmgrid", "Generating OMGraphics...");
+        list.generate(p);
+        Debug.message("utmgrid", "Done.");
         return list;
     } //end getRectangle
 
 
     public Component getGUI() {
-	JPanel panel = new JPanel();
+        JPanel panel = new JPanel();
 
-	GridBagLayout gridbag = new GridBagLayout();
-	GridBagConstraints c = new GridBagConstraints();
-	panel.setLayout(gridbag);
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        panel.setLayout(gridbag);
 
-	JCheckBox setZonesButton = new JCheckBox("Show UTM Zone Grid", showZones);
-	setZonesButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    JCheckBox button = (JCheckBox)ae.getSource();
-		    showZones = button.isSelected();
-		    doPrepare();
-		}
-	    });
-	c.gridy = 0;
-	c.anchor = GridBagConstraints.WEST;
-	gridbag.setConstraints(setZonesButton, c);
-	panel.add(setZonesButton);
+        JCheckBox setZonesButton = new JCheckBox("Show UTM Zone Grid", showZones);
+        setZonesButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    JCheckBox button = (JCheckBox)ae.getSource();
+                    showZones = button.isSelected();
+                    doPrepare();
+                }
+            });
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(setZonesButton, c);
+        panel.add(setZonesButton);
 
-	JCheckBox set100kGridButton = new JCheckBox("Show 100Km Distance Grid", show100kGrid);	
-	set100kGridButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    JCheckBox button = (JCheckBox)ae.getSource();
-		    show100kGrid = button.isSelected();
-		    doPrepare();
-		}
-	    });
+        JCheckBox set100kGridButton = new JCheckBox("Show 100Km Distance Grid", show100kGrid);  
+        set100kGridButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    JCheckBox button = (JCheckBox)ae.getSource();
+                    show100kGrid = button.isSelected();
+                    doPrepare();
+                }
+            });
 
-	c.gridy = 1;
-	gridbag.setConstraints(set100kGridButton, c);
-	panel.add(set100kGridButton);
+        c.gridy = 1;
+        gridbag.setConstraints(set100kGridButton, c);
+        panel.add(set100kGridButton);
 
-	JCheckBox setLabelsButton = new JCheckBox("Show Zone Labels", showLabels);
-	setLabelsButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    JCheckBox button = (JCheckBox)ae.getSource();
-		    showLabels = button.isSelected();
-		    doPrepare();
-		}
-	    });	
-	c.gridy = 2;
-	gridbag.setConstraints(setLabelsButton, c);
-	panel.add(setLabelsButton);
+        JCheckBox setLabelsButton = new JCheckBox("Show Zone Labels", showLabels);
+        setLabelsButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    JCheckBox button = (JCheckBox)ae.getSource();
+                    showLabels = button.isSelected();
+                    doPrepare();
+                }
+            }); 
+        c.gridy = 2;
+        gridbag.setConstraints(setLabelsButton, c);
+        panel.add(setLabelsButton);
 
-	JPanel resPanel = PaletteHelper.createPaletteJPanel("Distance Grid Units");
-	String[] resStrings = {" No Grid ", " 10,000 meter   ", " 1000 meter ", " 100 meter ", " 10 meter ", " 1 meter "};
+        JPanel resPanel = PaletteHelper.createPaletteJPanel("Distance Grid Units");
+        String[] resStrings = {" No Grid ", " 10,000 meter   ", " 1000 meter ", " 100 meter ", " 10 meter ", " 1 meter "};
 
-	JComboBox resList = new JComboBox(resStrings);
-	resList.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    JComboBox jcb = (JComboBox) e.getSource();
-		    setDistanceGridResolution(jcb.getSelectedIndex());
-		    doPrepare();
-		}
-	    });
+        JComboBox resList = new JComboBox(resStrings);
+        resList.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JComboBox jcb = (JComboBox) e.getSource();
+                    setDistanceGridResolution(jcb.getSelectedIndex());
+                    doPrepare();
+                }
+            });
 
-	resPanel.add(resList);
+        resPanel.add(resList);
 
-	c.gridy = 3;
-	c.anchor = GridBagConstraints.CENTER;
-	gridbag.setConstraints(resPanel, c);
-	panel.add(resPanel);
+        c.gridy = 3;
+        c.anchor = GridBagConstraints.CENTER;
+        gridbag.setConstraints(resPanel, c);
+        panel.add(resPanel);
 
-	JButton utmGridColorButton = new JButton("Set UTM Grid Color");
-	utmGridColorButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    Color tmpPaint = getNewPaint((Component)ae.getSource(), 
-						 "Choose UTM Grid Color", 
-						 (Color)getUTMGridPaint());
-		    if (tmpPaint != null) {
-			setUTMGridPaint(tmpPaint);
-			doPrepare();
-		    }
-		}
-	    });
+        JButton utmGridColorButton = new JButton("Set UTM Grid Color");
+        utmGridColorButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    Color tmpPaint = getNewPaint((Component)ae.getSource(), 
+                                                 "Choose UTM Grid Color", 
+                                                 (Color)getUTMGridPaint());
+                    if (tmpPaint != null) {
+                        setUTMGridPaint(tmpPaint);
+                        doPrepare();
+                    }
+                }
+            });
 
-	c.gridy = 4;
-	gridbag.setConstraints(utmGridColorButton, c);
-	panel.add(utmGridColorButton);
+        c.gridy = 4;
+        gridbag.setConstraints(utmGridColorButton, c);
+        panel.add(utmGridColorButton);
 
-	JButton distGridColorButton = new JButton("Set Distance Grid Color");
-	distGridColorButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    Color tmpPaint = getNewPaint((Component)ae.getSource(), 
-						 "Choose Distance Grid Color", 
-						 (Color)getDistanceGridPaint());
-		    if (tmpPaint != null) {
-			setDistanceGridPaint(tmpPaint);
-			doPrepare();
-		    }
-		}
-	    });
-	
-	c.gridy = 5;
-	gridbag.setConstraints(distGridColorButton, c);
-	panel.add(distGridColorButton);
+        JButton distGridColorButton = new JButton("Set Distance Grid Color");
+        distGridColorButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    Color tmpPaint = getNewPaint((Component)ae.getSource(), 
+                                                 "Choose Distance Grid Color", 
+                                                 (Color)getDistanceGridPaint());
+                    if (tmpPaint != null) {
+                        setDistanceGridPaint(tmpPaint);
+                        doPrepare();
+                    }
+                }
+            });
+        
+        c.gridy = 5;
+        gridbag.setConstraints(distGridColorButton, c);
+        panel.add(distGridColorButton);
 
-	return panel;
+        return panel;
     }
 
     /**
@@ -706,13 +706,13 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
      * chooser can't be sequired.
      */
     protected Color getNewPaint(Component source, String title, 
-				Color startingColor) {
-	Color newPaint = null;
-	if (getLock()) {
-  	    newPaint = OMColorChooser.showDialog(source, title, startingColor);
-	    releaseLock();
-	}
-	return newPaint;
+                                Color startingColor) {
+        Color newPaint = null;
+        if (getLock()) {
+            newPaint = OMColorChooser.showDialog(source, title, startingColor);
+            releaseLock();
+        }
+        return newPaint;
     }
 
     /**
@@ -726,112 +726,112 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
      * the lock, false if you didn't.
      */
     protected synchronized boolean getLock() {
-	if (colorChooserLock == false) {
-	    colorChooserLock = true;
-	    return colorChooserLock;
-	} else {
-	    return false;
-	}
+        if (colorChooserLock == false) {
+            colorChooserLock = true;
+            return colorChooserLock;
+        } else {
+            return false;
+        }
     }
 
     /**
      * Release the lock on the JColorChooser.
      */
     protected synchronized void releaseLock() {
-	colorChooserLock = false;
+        colorChooserLock = false;
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        super.setProperties(prefix, props);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	showLabels = LayerUtils.booleanFromProperties(props, prefix + ShowLabelsProperty, showLabels);
-	showZones = LayerUtils.booleanFromProperties(props, prefix + ShowZonesProperty, showZones);
-	show100kGrid = LayerUtils.booleanFromProperties(props, prefix + Show100kGridProperty, show100kGrid);
-	labelCutoffScale = LayerUtils.floatFromProperties(props, prefix + LabelCutoffScaleProperty, labelCutoffScale);
-	utmGridPaint = LayerUtils.parseColorFromProperties(props, prefix + UTMGridColorProperty, utmGridPaint);
-	distanceGridPaint = LayerUtils.parseColorFromProperties(props, prefix + DistanceGridColorProperty, distanceGridPaint);
-	setDistanceGridResolution(LayerUtils.intFromProperties(props, prefix + DistanceGridResolutionProperty, distanceGridResolution));
+        showLabels = LayerUtils.booleanFromProperties(props, prefix + ShowLabelsProperty, showLabels);
+        showZones = LayerUtils.booleanFromProperties(props, prefix + ShowZonesProperty, showZones);
+        show100kGrid = LayerUtils.booleanFromProperties(props, prefix + Show100kGridProperty, show100kGrid);
+        labelCutoffScale = LayerUtils.floatFromProperties(props, prefix + LabelCutoffScaleProperty, labelCutoffScale);
+        utmGridPaint = LayerUtils.parseColorFromProperties(props, prefix + UTMGridColorProperty, utmGridPaint);
+        distanceGridPaint = LayerUtils.parseColorFromProperties(props, prefix + DistanceGridColorProperty, distanceGridPaint);
+        setDistanceGridResolution(LayerUtils.intFromProperties(props, prefix + DistanceGridResolutionProperty, distanceGridResolution));
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	props.put(prefix + ShowLabelsProperty, new Boolean(showLabels).toString());
-	props.put(prefix + ShowZonesProperty, new Boolean(showZones).toString());
-	props.put(prefix + LabelCutoffScaleProperty, Float.toString(labelCutoffScale));
-	props.put(prefix + Show100kGridProperty, new Boolean(show100kGrid).toString());
-	props.put(prefix + UTMGridColorProperty, Integer.toHexString(((Color)utmGridPaint).getRGB()));
-	props.put(prefix + DistanceGridColorProperty, Integer.toHexString(((Color)distanceGridPaint).getRGB()));
-	props.put(prefix + DistanceGridResolutionProperty, Integer.toString(distanceGridResolution));
-	return props;
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        props.put(prefix + ShowLabelsProperty, new Boolean(showLabels).toString());
+        props.put(prefix + ShowZonesProperty, new Boolean(showZones).toString());
+        props.put(prefix + LabelCutoffScaleProperty, Float.toString(labelCutoffScale));
+        props.put(prefix + Show100kGridProperty, new Boolean(show100kGrid).toString());
+        props.put(prefix + UTMGridColorProperty, Integer.toHexString(((Color)utmGridPaint).getRGB()));
+        props.put(prefix + DistanceGridColorProperty, Integer.toHexString(((Color)distanceGridPaint).getRGB()));
+        props.put(prefix + DistanceGridResolutionProperty, Integer.toString(distanceGridResolution));
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
+        props = super.getPropertyInfo(props);
 
-	props.put(ShowZonesProperty, "Show UTM Zone Grid Lines");
-	props.put(ShowZonesProperty + ScopedEditorProperty, 
-		  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(ShowZonesProperty, "Show UTM Zone Grid Lines");
+        props.put(ShowZonesProperty + ScopedEditorProperty, 
+                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-	props.put(UTMGridColorProperty, "Color for UTM Zone Grid lines.");
-	props.put(UTMGridColorProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        props.put(UTMGridColorProperty, "Color for UTM Zone Grid lines.");
+        props.put(UTMGridColorProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-	props.put(ShowLabelsProperty, "Show Labels for Grid Lines");
-	props.put(ShowLabelsProperty + ScopedEditorProperty, 
-		  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(ShowLabelsProperty, "Show Labels for Grid Lines");
+        props.put(ShowLabelsProperty + ScopedEditorProperty, 
+                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-	props.put(Show100kGridProperty, "Show 100Km Distance Grid Lines");
-	props.put(Show100kGridProperty + ScopedEditorProperty, 
-		  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(Show100kGridProperty, "Show 100Km Distance Grid Lines");
+        props.put(Show100kGridProperty + ScopedEditorProperty, 
+                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-	props.put(DistanceGridColorProperty, "Color for Equal-Distance Grid Lines.");
-	props.put(DistanceGridColorProperty + ScopedEditorProperty, 
-		  "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        props.put(DistanceGridColorProperty, "Color for Equal-Distance Grid Lines.");
+        props.put(DistanceGridColorProperty + ScopedEditorProperty, 
+                  "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-	props.put(DistanceGridResolutionProperty, "Meter Resolution for Distance Grid Lines (0-5)");
+        props.put(DistanceGridResolutionProperty, "Meter Resolution for Distance Grid Lines (0-5)");
 
-	props.put(initPropertiesProperty, ShowZonesProperty + " " + 
-		  UTMGridColorProperty + " " + 
-		  Show100kGridProperty + " " + 
-		  ShowLabelsProperty + " " + 
-		  DistanceGridResolutionProperty + " " + 
-		  DistanceGridColorProperty);
-	return props;
+        props.put(initPropertiesProperty, ShowZonesProperty + " " + 
+                  UTMGridColorProperty + " " + 
+                  Show100kGridProperty + " " + 
+                  ShowLabelsProperty + " " + 
+                  DistanceGridResolutionProperty + " " + 
+                  DistanceGridColorProperty);
+        return props;
     }
 
     public void setShowZones(boolean value) {
-	showZones = value;
+        showZones = value;
     }
 
     public boolean isShowZones() {
-	return showZones;
+        return showZones;
     }
 
     public void setShowLabels(boolean value) {
-	showLabels = value;
+        showLabels = value;
     }
 
     public boolean isShowLabels() {
-	return showLabels;
+        return showLabels;
     }
 
     public void setLabelCutoffScale(float value) {
-	labelCutoffScale = value;
+        labelCutoffScale = value;
     }
 
     public float getLabelCutoffScale() {
-	return labelCutoffScale;
+        return labelCutoffScale;
     }
 
     public void setShow100kGrid(boolean value) {
-	show100kGrid = value;
+        show100kGrid = value;
     }
 
     public boolean isShow100kGrid() {
-	return show100kGrid;
+        return show100kGrid;
     }
 
     /**
@@ -839,36 +839,36 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
      * where 1 = 10000 meter grid, 5 is 1 meter grid.
      */
     public void setDistanceGridResolution(int value) {
-	distanceGridResolution = value;
-	if (distanceGridResolution < 0 || 
-	    distanceGridResolution > MGRSPoint.ACCURACY_1_METER) {
-	    distanceGridResolution = 0;
-	}
+        distanceGridResolution = value;
+        if (distanceGridResolution < 0 || 
+            distanceGridResolution > MGRSPoint.ACCURACY_1_METER) {
+            distanceGridResolution = 0;
+        }
     }
 
     public int getDistanceGridResolution() {
-	return distanceGridResolution;
+        return distanceGridResolution;
     }
 
     public void setUTMGridPaint(Paint value) {
-	utmGridPaint = value;
+        utmGridPaint = value;
 
-	if (verticalList != null) {
-	    verticalList.setLinePaint(getUTMGridPaint());
-	    horizontalList.setLinePaint(getUTMGridPaint());
-	}
+        if (verticalList != null) {
+            verticalList.setLinePaint(getUTMGridPaint());
+            horizontalList.setLinePaint(getUTMGridPaint());
+        }
     }
 
     public Paint getUTMGridPaint() {
-	return utmGridPaint;
+        return utmGridPaint;
     }
 
     public void setDistanceGridPaint(Paint value) {
-	distanceGridPaint = value;
+        distanceGridPaint = value;
     }
 
     public Paint getDistanceGridPaint() {
-	return distanceGridPaint;
+        return distanceGridPaint;
 
     }
 }

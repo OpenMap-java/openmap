@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameUtil.java,v $
 // $RCSfile: DTEDFrameUtil.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -105,29 +105,29 @@ public class DTEDFrameUtil {
      */
     public static String latToFileString(float lat, int level){
         if (level > 1) {
-	    //crazy dted file names - levels 1 and higher are all named
-	    //.dt1 rather than .dt{level}
-	    level = 1;
-	}
+            //crazy dted file names - levels 1 and higher are all named
+            //.dt1 rather than .dt{level}
+            level = 1;
+        }
 
         String direction;
         if (lat >= 0){
-	    direction = "n";
-	    lat = (float)Math.floor(lat);
-	} else {
-	    direction = "s";
-	    lat = (float)Math.ceil(lat*-1);
-	}
+            direction = "n";
+            lat = (float)Math.floor(lat);
+        } else {
+            direction = "s";
+            lat = (float)Math.ceil(lat*-1);
+        }
 
-//	int ilat = new Float(lat).intValue();
-//	result = new String(direction + ilat + ".dt" + level);
+//      int ilat = new Float(lat).intValue();
+//      result = new String(direction + ilat + ".dt" + level);
 
-	// The two lines above wrongly manages lat < 10. It generates
-	// n5.dt0 instead of n05.dt0 - sokolov@system.ecology.su.se - 14
-	// April 1999
+        // The two lines above wrongly manages lat < 10. It generates
+        // n5.dt0 instead of n05.dt0 - sokolov@system.ecology.su.se - 14
+        // April 1999
 
-	java.text.DecimalFormat fd = new java.text.DecimalFormat("00"); 
-	String result = direction+fd.format(lat)+".dt"+level; 
+        java.text.DecimalFormat fd = new java.text.DecimalFormat("00"); 
+        String result = direction+fd.format(lat)+".dt"+level; 
 
         return result;
     }
@@ -141,26 +141,26 @@ public class DTEDFrameUtil {
      * @return part of the DTED directory path that longitude contributes to.
      */
     public static String lonToFileString(float lon){
-	String result, direction;
+        String result, direction;
         if (lon >= 0){
-	  direction = "e";
-	  lon = (float)Math.floor(lon);
-	}
+          direction = "e";
+          lon = (float)Math.floor(lon);
+        }
         else {
-	  direction = "w";
-	  lon = (float)Math.ceil(lon*-1);
-	}
-	
-//	int ilon = new Float(lon).intValue();
+          direction = "w";
+          lon = (float)Math.ceil(lon*-1);
+        }
+        
+//      int ilon = new Float(lon).intValue();
 //      if (ilon > 100) result = new String(direction + ilon);
-//	else result = new String(direction + "0" + ilon);
+//      else result = new String(direction + "0" + ilon);
 
-	// The three lines above wrongly manages lon < 10. It
-	// generates e05 instead of e005 - sokolov@system.ecology.su.se
-	// - 14 April 1999
+        // The three lines above wrongly manages lon < 10. It
+        // generates e05 instead of e005 - sokolov@system.ecology.su.se
+        // - 14 April 1999
 
-	java.text.DecimalFormat fd = new java.text.DecimalFormat("000"); 
-	result = direction+fd.format(lon);
+        java.text.DecimalFormat fd = new java.text.DecimalFormat("000"); 
+        result = direction+fd.format(lon);
 
         return result;
     }

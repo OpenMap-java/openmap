@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerStatusPane.java,v $
 // $RCSfile: LayerStatusPane.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:47:46 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -60,10 +60,10 @@ public class LayerStatusPane extends LayerPane
 
     // default initializations, extended from LayerPane...
     static {
-	URL working = LayerStatusPane.class.getResource("BulbWorking.gif");
-	layerWorking = new ImageIcon(working, "layer working");
-	URL done  = LayerStatusPane.class.getResource("BulbDone.gif");
-	layerDone = new ImageIcon(done, "layer displayed");
+        URL working = LayerStatusPane.class.getResource("BulbWorking.gif");
+        layerWorking = new ImageIcon(working, "layer working");
+        URL done  = LayerStatusPane.class.getResource("BulbDone.gif");
+        layerDone = new ImageIcon(done, "layer displayed");
     }
 
     /**
@@ -73,12 +73,12 @@ public class LayerStatusPane extends LayerPane
      *  about the Layers. 
      */
     public LayerStatusPane(Layer layer, LayerHandler layerHandler, ButtonGroup bg) {
-	super(layer, layerHandler, bg);
-	getLayer().addLayerStatusListener(this);
+        super(layer, layerHandler, bg);
+        getLayer().addLayerStatusListener(this);
     }
 
     protected LayerStatusPane(String title) {
-	super(title);
+        super(title);
     }
 
     /**
@@ -86,21 +86,21 @@ public class LayerStatusPane extends LayerPane
      * @param evt LayerStatusEvent
      */
     public void updateLayerStatus(LayerStatusEvent evt) {
-	switch (evt.getStatus()) {
-	case LayerStatusEvent.START_WORKING:
-	    onoffButton.setSelectedIcon(layerWorking);
-	    break;
-	case LayerStatusEvent.FINISH_WORKING:
-	    onoffButton.setSelectedIcon(layerDone);
-	    break;
-	}
+        switch (evt.getStatus()) {
+        case LayerStatusEvent.START_WORKING:
+            onoffButton.setSelectedIcon(layerWorking);
+            break;
+        case LayerStatusEvent.FINISH_WORKING:
+            onoffButton.setSelectedIcon(layerDone);
+            break;
+        }
     }
 
     public void cleanup() {
-	Layer l = getLayer();
-	if (l != null) {
-	    l.removeLayerStatusListener(this);
-	}
-	super.cleanup();
+        Layer l = getLayer();
+        if (l != null) {
+            l.removeLayerStatusListener(this);
+        }
+        super.cleanup();
     }
 }

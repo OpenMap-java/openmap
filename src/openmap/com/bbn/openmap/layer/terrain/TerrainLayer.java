@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/TerrainLayer.java,v $
 // $RCSfile: TerrainLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/24 03:42:54 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -119,8 +119,8 @@ public class TerrainLayer extends OMGraphicHandlerLayer
     /** Creates new tools. */
     public void init() {
         profileTool = new ProfileGenerator(this);
- 	LOSTool = new LOSGenerator(this);
-	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+        LOSTool = new LOSGenerator(this);
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
 
     /**
@@ -128,7 +128,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer
      * are not found, or are invalid.  Usually not a good idea.
      */
     protected void setDefaultValues() {
-	mode = PROFILE;
+        mode = PROFILE;
     }
 
     public void setFrameCache(DTEDFrameCache dfc) {
@@ -148,23 +148,23 @@ public class TerrainLayer extends OMGraphicHandlerLayer
      */
     public void setProperties(String prefix, java.util.Properties properties) {
 
-	super.setProperties(prefix, properties);
-	setDefaultValues();
-	try{
-	    
-	    String defaultModeString = properties.getProperty(prefix + defaultModeProperty);
-	    if (defaultModeString.equalsIgnoreCase("LOS"))
-		setMode(LOS);
-// 	    else if (defaultModeString.equalsIgnoreCase("PROFILE"))
-// 		defaultMode = PROFILE;
-	    else
-		setMode(PROFILE);
-	} catch (NullPointerException e) {
-	    System.err.println("TerrainLayer: Caught NullPointerException loading resources.");
-	    System.err.println("TerrainLayer: Using default resources.");
-	    setDefaultValues();
-	    setMode(mode);
-	}		
+        super.setProperties(prefix, properties);
+        setDefaultValues();
+        try{
+            
+            String defaultModeString = properties.getProperty(prefix + defaultModeProperty);
+            if (defaultModeString.equalsIgnoreCase("LOS"))
+                setMode(LOS);
+//          else if (defaultModeString.equalsIgnoreCase("PROFILE"))
+//              defaultMode = PROFILE;
+            else
+                setMode(PROFILE);
+        } catch (NullPointerException e) {
+            System.err.println("TerrainLayer: Caught NullPointerException loading resources.");
+            System.err.println("TerrainLayer: Using default resources.");
+            setDefaultValues();
+            setMode(mode);
+        }               
     }
     
     /**
@@ -178,30 +178,30 @@ public class TerrainLayer extends OMGraphicHandlerLayer
      */
     public OMGraphicList prepare() {
 
-	if (isCancelled()) {
-	    Debug.message("dted", getName()+"|TerrainLayer.prepare(): aborted.");
-	    return null;
-	}
+        if (isCancelled()) {
+            Debug.message("dted", getName()+"|TerrainLayer.prepare(): aborted.");
+            return null;
+        }
 
-	Projection projection = getProjection();
+        Projection projection = getProjection();
 
-	if (projection == null) {
-	    System.err.println("Terrain Layer needs to be added to the MapBean before it can be used!");
-	    return new OMGraphicList();
-	}
+        if (projection == null) {
+            System.err.println("Terrain Layer needs to be added to the MapBean before it can be used!");
+            return new OMGraphicList();
+        }
 
-	Debug.message("basic", getName()+"|TerrainLayer.prepare(): doing it");
+        Debug.message("basic", getName()+"|TerrainLayer.prepare(): doing it");
 
-	// Setting the OMGraphicsList for this layer.  Remember, the
-	// OMGraphicList is made up of OMGraphics, which are generated
-	// (projected) when the graphics are added to the list.  So,
-	// after this call, the list is ready for painting.
-	LatLonPoint ll2 = projection.getLowerRight();
-	LatLonPoint ll1 = projection.getUpperLeft();
+        // Setting the OMGraphicsList for this layer.  Remember, the
+        // OMGraphicList is made up of OMGraphics, which are generated
+        // (projected) when the graphics are added to the list.  So,
+        // after this call, the list is ready for painting.
+        LatLonPoint ll2 = projection.getLowerRight();
+        LatLonPoint ll1 = projection.getUpperLeft();
 
-	profileTool.setScreenParameters(projection);
- 	LOSTool.setScreenParameters(projection);
- 	return currentTool.getGraphics();
+        profileTool.setScreenParameters(projection);
+        LOSTool.setScreenParameters(projection);
+        return currentTool.getGraphics();
     }
 
 
@@ -217,96 +217,96 @@ public class TerrainLayer extends OMGraphicHandlerLayer
     /** Creates the interface palette. */
     public java.awt.Component getGUI() {
 
-	if (palette == null) {
-	    if (Debug.debugging("terrain"))
-		System.out.println("TerrainLayer: creating Terrain Palette.");
+        if (palette == null) {
+            if (Debug.debugging("terrain"))
+                System.out.println("TerrainLayer: creating Terrain Palette.");
 
- 	    palette = Box.createVerticalBox();
+            palette = Box.createVerticalBox();
 
-// 	    palette = new JPanel();
-//  	    palette.setLayout(new GridLayout(0, 1));
+//          palette = new JPanel();
+//          palette.setLayout(new GridLayout(0, 1));
 
-	    // The Terrain Level selector
-	    JPanel modePanel = PaletteHelper.createPaletteJPanel("Tool Mode");
-	    ButtonGroup modes = new ButtonGroup();
-	    
-	    ActionListener al = new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    String ac = e.getActionCommand();
-		    if (ac.equalsIgnoreCase(losCommand)) {
-			setMode(LOS);
-		    } else {
-			setMode(PROFILE);
-		    }
-		}
-	    };
+            // The Terrain Level selector
+            JPanel modePanel = PaletteHelper.createPaletteJPanel("Tool Mode");
+            ButtonGroup modes = new ButtonGroup();
+            
+            ActionListener al = new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String ac = e.getActionCommand();
+                    if (ac.equalsIgnoreCase(losCommand)) {
+                        setMode(LOS);
+                    } else {
+                        setMode(PROFILE);
+                    }
+                }
+            };
 
-	    JRadioButton profileModeButton = new JRadioButton("Profile");
-	    profileModeButton.addActionListener(al);
-	    profileModeButton.setActionCommand(profileCommand);
-	    JRadioButton losModeButton = new JRadioButton("LOS");
-	    losModeButton.addActionListener(al);
-	    losModeButton.setActionCommand(losCommand);
+            JRadioButton profileModeButton = new JRadioButton("Profile");
+            profileModeButton.addActionListener(al);
+            profileModeButton.setActionCommand(profileCommand);
+            JRadioButton losModeButton = new JRadioButton("LOS");
+            losModeButton.addActionListener(al);
+            losModeButton.setActionCommand(losCommand);
 
-	    modes.add(profileModeButton);
-	    modes.add(losModeButton);
+            modes.add(profileModeButton);
+            modes.add(losModeButton);
 
-	    switch(mode) {
-	    case LOS: losModeButton.setSelected(true); break;
-	    case PROFILE:
-	    default:
-		profileModeButton.setSelected(true);
-	    }
+            switch(mode) {
+            case LOS: losModeButton.setSelected(true); break;
+            case PROFILE:
+            default:
+                profileModeButton.setSelected(true);
+            }
 
-	    modePanel.add(profileModeButton);
-	    modePanel.add(losModeButton);
+            modePanel.add(profileModeButton);
+            modePanel.add(losModeButton);
 
-	    // The LOS Height Adjuster
-	    JPanel centerHeightPanel = PaletteHelper.createPaletteJPanel("LOS Center Object Height");
-	    JSlider centerHeightSlide = new JSlider(
-		JSlider.HORIZONTAL, 0/*min*/, 500/*max*/, 0/*inital*/);
-	    java.util.Hashtable dict = new java.util.Hashtable();
-	    dict.put(new Integer(0), new JLabel("0 ft"));
-	    dict.put(new Integer(500), new JLabel("500 ft"));
-	    centerHeightSlide.setLabelTable(dict);
-	    centerHeightSlide.setPaintLabels(true);
-	    centerHeightSlide.setMajorTickSpacing(50);
-	    centerHeightSlide.setPaintTicks(true);
-	    centerHeightSlide.setSnapToTicks(false);
-	    centerHeightSlide.addChangeListener(new ChangeListener() {
-		public void stateChanged(ChangeEvent ce) {
-		    JSlider slider = (JSlider) ce.getSource();
-		    if (slider.getValueIsAdjusting()) {
-		        fireRequestInfoLine("TerrainLayer - center height value = " + 
-					   slider.getValue());
- 			LOSTool.setLOSobjectHeight(slider.getValue());
-		    }
-		}
-	    });
-	    centerHeightPanel.add(centerHeightSlide);
+            // The LOS Height Adjuster
+            JPanel centerHeightPanel = PaletteHelper.createPaletteJPanel("LOS Center Object Height");
+            JSlider centerHeightSlide = new JSlider(
+                JSlider.HORIZONTAL, 0/*min*/, 500/*max*/, 0/*inital*/);
+            java.util.Hashtable dict = new java.util.Hashtable();
+            dict.put(new Integer(0), new JLabel("0 ft"));
+            dict.put(new Integer(500), new JLabel("500 ft"));
+            centerHeightSlide.setLabelTable(dict);
+            centerHeightSlide.setPaintLabels(true);
+            centerHeightSlide.setMajorTickSpacing(50);
+            centerHeightSlide.setPaintTicks(true);
+            centerHeightSlide.setSnapToTicks(false);
+            centerHeightSlide.addChangeListener(new ChangeListener() {
+                public void stateChanged(ChangeEvent ce) {
+                    JSlider slider = (JSlider) ce.getSource();
+                    if (slider.getValueIsAdjusting()) {
+                        fireRequestInfoLine("TerrainLayer - center height value = " + 
+                                           slider.getValue());
+                        LOSTool.setLOSobjectHeight(slider.getValue());
+                    }
+                }
+            });
+            centerHeightPanel.add(centerHeightSlide);
 
-	    JPanel profileControlPanel = PaletteHelper.createPaletteJPanel("Tool Commands");
-	    JButton clearButton = new JButton("Clear/Reset Tool");
-	    clearButton.setActionCommand(clearCommand);
-	    clearButton.addActionListener(this);
-	    JButton createButton = new JButton("Create");
-	    createButton.setActionCommand(createCommand);
-	    createButton.addActionListener(this);
+            JPanel profileControlPanel = PaletteHelper.createPaletteJPanel("Tool Commands");
+            JButton clearButton = new JButton("Clear/Reset Tool");
+            clearButton.setActionCommand(clearCommand);
+            clearButton.addActionListener(this);
+            JButton createButton = new JButton("Create");
+            createButton.setActionCommand(createCommand);
+            createButton.addActionListener(this);
 
-	    profileControlPanel.add(clearButton);
-	    profileControlPanel.add(createButton);
+            profileControlPanel.add(clearButton);
+            profileControlPanel.add(createButton);
 
-	    JButton redraw = new JButton("Redraw Terrain Layer");
-	    redraw.setActionCommand(RedrawCmd);
-	    redraw.addActionListener(this);
+            JButton redraw = new JButton("Redraw Terrain Layer");
+            redraw.setActionCommand(RedrawCmd);
+            redraw.addActionListener(this);
 
-	    palette.add(modePanel);
-	    palette.add(centerHeightPanel);
-	    palette.add(profileControlPanel);
-// 	    palette.add(redraw);
-	}
+            palette.add(modePanel);
+            palette.add(centerHeightPanel);
+            palette.add(profileControlPanel);
+//          palette.add(redraw);
+        }
 
-	return palette;
+        return palette;
     }
   
     //----------------------------------------------------------------------
@@ -318,13 +318,13 @@ public class TerrainLayer extends OMGraphicHandlerLayer
      * palette. 
      */
     public void actionPerformed(ActionEvent e) {
-	super.actionPerformed(e);
-	String ac = e.getActionCommand();
-	if (ac.equalsIgnoreCase(RedrawCmd)) {
-	    doPrepare();
-	} else {
-	    currentTool.getState().actionPerformed(e);
-	}
+        super.actionPerformed(e);
+        String ac = e.getActionCommand();
+        if (ac.equalsIgnoreCase(RedrawCmd)) {
+            doPrepare();
+        } else {
+            currentTool.getState().actionPerformed(e);
+        }
     }
 
     //----------------------------------------------------------------------
@@ -332,7 +332,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer
     //----------------------------------------------------------------------
 
     public synchronized MapMouseListener getMapMouseListener() {
-	return this;
+        return this;
     }
 
     /**
@@ -340,26 +340,26 @@ public class TerrainLayer extends OMGraphicHandlerLayer
      * receiving events from.  In this case, just the "Gestures" mode.
      */
     public String[] getMouseModeServiceList() {
-	String[] services = {SelectMouseMode.modeID};
-	return services;
+        String[] services = {SelectMouseMode.modeID};
+        return services;
     }
   
     public boolean mousePressed(MouseEvent e) {
         return currentTool.getState().mousePressed(e);
     }
     public boolean mouseReleased(MouseEvent e) {
-	return currentTool.getState().mouseReleased(e);
+        return currentTool.getState().mouseReleased(e);
     }
     public boolean mouseClicked(MouseEvent e) {
-	return currentTool.getState().mouseClicked(e);
+        return currentTool.getState().mouseClicked(e);
     }
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
     public boolean mouseDragged(MouseEvent e) {
-	return currentTool.getState().mouseDragged(e);
+        return currentTool.getState().mouseDragged(e);
     }
     public boolean mouseMoved(MouseEvent e) {
-	return false;
+        return false;
     }
     public void mouseMoved() {
     }
@@ -371,25 +371,25 @@ public class TerrainLayer extends OMGraphicHandlerLayer
      */
     public static int numPixelsBetween(int x1, int y1, int x2, int y2) {
         return (int) Math.sqrt(Math.pow((double)(x1 - x2), 2.0) +
-			       Math.pow((double)(y1 - y2), 2.0));
+                               Math.pow((double)(y1 - y2), 2.0));
     }
 
     /** Set the current tool to be used. */
     public void setMode(int m) {
         mode = m;
-	if (currentTool != null) currentTool.reset();
-	if (m == PROFILE) {
-	  currentTool = profileTool;
-// 	  System.out.println("Changing mode to PROFILE");
-	}
-	if (m == LOS) {
-	  currentTool = LOSTool;
-// 	  System.out.println("Changing mode to LOS");
-	}
-	if (currentTool != null) {
-	    currentTool.reset();
-	    setList(currentTool.getGraphics());
-	}
+        if (currentTool != null) currentTool.reset();
+        if (m == PROFILE) {
+          currentTool = profileTool;
+//        System.out.println("Changing mode to PROFILE");
+        }
+        if (m == LOS) {
+          currentTool = LOSTool;
+//        System.out.println("Changing mode to LOS");
+        }
+        if (currentTool != null) {
+            currentTool.reset();
+            setList(currentTool.getGraphics());
+        }
     }
 
     public int getMode() {

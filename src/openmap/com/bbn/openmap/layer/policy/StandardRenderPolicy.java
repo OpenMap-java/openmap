@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardRenderPolicy.java,v $
 // $RCSfile: StandardRenderPolicy.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/14 20:35:29 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,43 +43,43 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
     protected boolean DEBUG = false;
 
     public StandardRenderPolicy() {
-	DEBUG = Debug.debugging("layer") || Debug.debugging("policy");
+        DEBUG = Debug.debugging("layer") || Debug.debugging("policy");
     }
     
     /**
      * Don't pass in a null layer.
      */
     public StandardRenderPolicy(OMGraphicHandlerLayer layer) {
-	this();
-	setLayer(layer);
+        this();
+        setLayer(layer);
     }
 
     public void setLayer(OMGraphicHandlerLayer l) {
-	layer = l;
+        layer = l;
     }
 
     public OMGraphicHandlerLayer getLayer() {
-	return layer;
+        return layer;
     }
 
     public OMGraphicList prepare() {
-	if (layer != null) {
-	    return layer.prepare();
-	} else {
-	    return null;
-	}
+        if (layer != null) {
+            return layer.prepare();
+        } else {
+            return null;
+        }
     }
 
     public void paint(Graphics g) {
-	if (layer != null) {
-	    OMGraphicList list = layer.getList();
-	    if (list != null) {
-		list.render(g);
-	    } else if (DEBUG) {
-		Debug.output(layer.getName() + ".paint(): NULL list, skipping...");
-	    }
-	} else {
-	    Debug.error("RenderPolicy.paint():  NULL layer, skipping...");
-	}
+        if (layer != null) {
+            OMGraphicList list = layer.getList();
+            if (list != null) {
+                list.render(g);
+            } else if (DEBUG) {
+                Debug.output(layer.getName() + ".paint(): NULL list, skipping...");
+            }
+        } else {
+            Debug.error("RenderPolicy.paint():  NULL layer, skipping...");
+        }
     }
 }

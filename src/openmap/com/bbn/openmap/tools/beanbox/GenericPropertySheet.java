@@ -1,14 +1,14 @@
 /* **********************************************************************
  * 
  *    Use, duplication, or disclosure by the Government is subject to
- * 	     restricted rights as set forth in the DFARS.
+ *           restricted rights as set forth in the DFARS.
  *  
- * 			   BBNT Solutions LLC
- * 			       A Part of 
+ *                         BBNT Solutions LLC
+ *                             A Part of 
  *                  Verizon      
- * 			    10 Moulton Street
- * 			   Cambridge, MA 02138
- * 			    (617) 873-3000
+ *                          10 Moulton Street
+ *                         Cambridge, MA 02138
+ *                          (617) 873-3000
  *
  *    Copyright (C) 2002 by BBNT Solutions, LLC
  *                 All Rights Reserved.
@@ -80,7 +80,7 @@ extends JDialog implements PropertyChangeListener {
    * @param title the title of this propertysheet.
    */
   public GenericPropertySheet (boolean isModal, String title) {
-	super((JFrame)null, title, isModal);
+        super((JFrame)null, title, isModal);
   }
 
   /**
@@ -146,7 +146,7 @@ extends JDialog implements PropertyChangeListener {
    * window listener.
    */
   protected void init () {
-    setBackground(Color.lightGray);	
+    setBackground(Color.lightGray);     
     setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
     initTitle();
     initPanel();
@@ -175,16 +175,16 @@ extends JDialog implements PropertyChangeListener {
       Class beanClass = targetBean.getClass();
       try
       {
-	BeanInfo bi = Introspector.getBeanInfo(beanClass);
-	String label = bi.getBeanDescriptor().getDisplayName();
-	setTitle(label + " Properties");
+        BeanInfo bi = Introspector.getBeanInfo(beanClass);
+        String label = bi.getBeanDescriptor().getDisplayName();
+        setTitle(label + " Properties");
       }
       catch (Exception ex)
       {
-	System.err.println
-	  ("GenericPropertySheet: couldn't find BeanInfo for " + 
-	   beanClass);
-	ex.printStackTrace();
+        System.err.println
+          ("GenericPropertySheet: couldn't find BeanInfo for " + 
+           beanClass);
+        ex.printStackTrace();
       }
     }
   }
@@ -197,11 +197,11 @@ extends JDialog implements PropertyChangeListener {
    */
   protected void addWindowListener () {
     addWindowListener (new WindowAdapter () {
-	  public void windowClosing (WindowEvent evt) {
+          public void windowClosing (WindowEvent evt) {
         if (beanBox != null)
           beanBox.editComplete(targetBean);
-	    setVisible(false);
-	  }});
+            setVisible(false);
+          }});
   }
 
 
@@ -262,7 +262,7 @@ extends JDialog implements PropertyChangeListener {
       setTitle("Properties for " + label);
     } catch (Exception ex) {
       System.err.println
-	("GenericPropertySheet: couldn't find BeanInfo for " + beanClass);
+        ("GenericPropertySheet: couldn't find BeanInfo for " + beanClass);
       ex.printStackTrace();
     }
 
@@ -359,8 +359,8 @@ extends JPanel {
 
       // Don't display hidden or expert properties.
       if (properties[i].isHidden() || properties[i].isExpert()) {
-	    System.out.println("Ignoring hidden or expert property " + name);
-	    continue;
+            System.out.println("Ignoring hidden or expert property " + name);
+            continue;
       }
 
       Class type = properties[i].getPropertyType();
@@ -377,22 +377,22 @@ extends JPanel {
 
       try {
         Object args[] = { };
-	    Object value = getter.invoke(targetBean, args);
+            Object value = getter.invoke(targetBean, args);
         values[i] = value;
         PropertyEditor editor = null;
         Class pec = properties[i].getPropertyEditorClass();
 
-	    if (pec != null) {
-	      try {
-	        editor = (PropertyEditor)pec.newInstance();
-	      } catch (Exception ex) {
+            if (pec != null) {
+              try {
+                editor = (PropertyEditor)pec.newInstance();
+              } catch (Exception ex) {
            // Drop through.
            System.out.println("Cannot instanciate editor class: " + pec);
            System.out.println("Will try to find editor using " + 
                                "PropertyEditorManager");
           }
-	    }
-	    
+            }
+            
         if (editor == null)
           editor = PropertyEditorManager.findEditor(type);
         
@@ -400,56 +400,56 @@ extends JPanel {
 
         // If we can't edit this component, skip it.
         if (editor == null) {
-	      // If it's a user-defined property we give a warning.
-	      String getterClass = properties[i].getReadMethod().
-	      getDeclaringClass().getName();
+              // If it's a user-defined property we give a warning.
+              String getterClass = properties[i].getReadMethod().
+              getDeclaringClass().getName();
 
-	      if (getterClass.indexOf("java.") != 0)
-	        System.err.println
-	        ("Warning: Can't find public property editor for property \"" +
-	        name + "\".  Skipping.");
+              if (getterClass.indexOf("java.") != 0)
+                System.err.println
+                ("Warning: Can't find public property editor for property \"" +
+                name + "\".  Skipping.");
 
-	        continue;
+                continue;
         }
 
         //System.out.println("About to set value " + value);
         editor.setValue(value);
         editor.addPropertyChangeListener(_frame);
 
-	// Now figure out how to display it...
-	if (editor.isPaintable() && editor.supportsCustomEditor())
-	  view = new PropertyCanvas(_frame, editor);
-	else if (editor.getTags() != null)
-	  view = new PropertySelector(editor);
-	else if (editor.getAsText() != null)
-	{
-	  String init = editor.getAsText();
-	  view = new PropertyText(editor);
-	}
-	else
-	{
-	  System.err.println
-	    ("Warning: Property \"" + name +
-	     "\" has non-displayabale editor. Skipping.");
-	  continue;
-	}
+        // Now figure out how to display it...
+        if (editor.isPaintable() && editor.supportsCustomEditor())
+          view = new PropertyCanvas(_frame, editor);
+        else if (editor.getTags() != null)
+          view = new PropertySelector(editor);
+        else if (editor.getAsText() != null)
+        {
+          String init = editor.getAsText();
+          view = new PropertyText(editor);
+        }
+        else
+        {
+          System.err.println
+            ("Warning: Property \"" + name +
+             "\" has non-displayabale editor. Skipping.");
+          continue;
+        }
 
         if (editor instanceof GenericPropertyEditorInterface)
           ((GenericPropertyEditorInterface)editor).setTargetBean(targetBean);
       }
       catch (InvocationTargetException ex)
       {
-	System.err.println
-	  ("Skipping property " + name + " ; exception on target: " +
-	   ex.getTargetException());
-	ex.getTargetException().printStackTrace();
-	continue;
+        System.err.println
+          ("Skipping property " + name + " ; exception on target: " +
+           ex.getTargetException());
+        ex.getTargetException().printStackTrace();
+        continue;
       }
       catch (Exception ex)
       {
-	System.err.println("Skipping property " + name + "; exception: " + ex);
+        System.err.println("Skipping property " + name + "; exception: " + ex);
         ex.printStackTrace();
-	continue;
+        continue;
       }
 
       labels[i] = new JLabel(name, JLabel.LEFT);
@@ -470,7 +470,7 @@ extends JPanel {
     _frame.setNumEditorsToDisplay(numEditorsToDisplay);
     _frame.setFrameSize();
     processEvents = true;
-    setVisible(true);	
+    setVisible(true);   
 
     //System.out.println("Exit> PropertySheetPanel.setTarget()");
   } // end setTarget
@@ -502,57 +502,57 @@ extends JPanel {
 
       for (int i = 0 ; i < editors.length; i++)
         if (editors[i] == editor)
-	{
-	  PropertyDescriptor property = properties[i];
-	  Object value = editor.getValue();
+        {
+          PropertyDescriptor property = properties[i];
+          Object value = editor.getValue();
 
           // if value is the string "null", reset it to null
           if ((value != null) &&
-	      (value instanceof String) && 
+              (value instanceof String) && 
               ((String)value).trim().equalsIgnoreCase("null"))
             value = null;
 
-	  values[i] = value;
-	  Method setter = property.getWriteMethod();
+          values[i] = value;
+          Method setter = property.getWriteMethod();
 
-	  try
-	  {
-	    Object args[] = { value };
-	    args[0] = value;
-	    setter.invoke(targetBean, args);		        
-	  }
-	  catch (InvocationTargetException ex)
-	  {
-	    if (ex.getTargetException() instanceof PropertyVetoException)
-	    {
-	      //warning("Vetoed; reason is: " 
-	      //        + ex.getTargetException().getMessage());
-	      // temp dealock fix...I need to remove the deadlock.
-	      System.err.println
-		("WARNING: Vetoed; reason is: " +
-		 ex.getTargetException().getMessage());
-	    }
-	    else
-	      error
-		("InvocationTargetException while updating " +
-		 property.getName(),
-		 ex.getTargetException());
-	  }
-	  catch (Exception ex)
-	  {
-	    error
-	      ("Unexpected exception while updating " + property.getName(),
-	       ex);
+          try
+          {
+            Object args[] = { value };
+            args[0] = value;
+            setter.invoke(targetBean, args);                    
+          }
+          catch (InvocationTargetException ex)
+          {
+            if (ex.getTargetException() instanceof PropertyVetoException)
+            {
+              //warning("Vetoed; reason is: " 
+              //        + ex.getTargetException().getMessage());
+              // temp dealock fix...I need to remove the deadlock.
+              System.err.println
+                ("WARNING: Vetoed; reason is: " +
+                 ex.getTargetException().getMessage());
+            }
+            else
+              error
+                ("InvocationTargetException while updating " +
+                 property.getName(),
+                 ex.getTargetException());
+          }
+          catch (Exception ex)
+          {
+            error
+              ("Unexpected exception while updating " + property.getName(),
+               ex);
           }
             
           if ((views[i] != null) && (views[i] instanceof PropertyCanvas))
-	  {
+          {
             //System.out.println("repainting view");
-	    views[i].repaint();
+            views[i].repaint();
           }
 
-	  break;
-	}
+          break;
+        }
     }
 
     //System.out.println("updating other values...");
@@ -573,7 +573,7 @@ extends JPanel {
       catch (Exception ex)
       {
         //System.out.println("  setting o to null");
-	o = null;
+        o = null;
       }
 
       //System.out.println("  values[" + i + "]=" + values[i]);
@@ -585,7 +585,7 @@ extends JPanel {
         Object[] newVal = (Object[])o;
 
         if (newVal.length == oldVal.length)
-	{
+        {
           for (int j = 0; j < newVal.length; j++)
             if (! newVal[j].equals(oldVal[j]))
               break;
@@ -594,8 +594,8 @@ extends JPanel {
         }
       }
       else if ((o == values[i]) || ((o != null) && o.equals(values[i])))
-	// The property is equal to its old value.
-	continue;
+        // The property is equal to its old value.
+        continue;
 
       values[i] = o;
 
@@ -603,7 +603,7 @@ extends JPanel {
 
       // Make sure we have an editor for this property...
       if (editors[i] == null)
-	continue;
+        continue;
 
       //System.out.println("  calling setValue on editors["+i+"]="+editors[i]);
 
@@ -611,13 +611,13 @@ extends JPanel {
       editors[i].setValue(o);
 
       if (views[i] != null)
-	    views[i].repaint();
+            views[i].repaint();
     }
 
     // Make sure the target bean gets repainted.
     if (Beans.isInstanceOf(targetBean, Component.class))
       ((Component)(Beans.getInstanceOf(targetBean, Component.class))).repaint
-	();
+        ();
 
     //System.out.println("Exit-> PropertySheetPanel.wasModified");
   }

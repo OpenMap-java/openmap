@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/BasicIconPart.java,v $
 // $RCSfile: BasicIconPart.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/26 17:34:12 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,7 +67,7 @@ public class BasicIconPart implements IconPart {
      * Create a BasicIconPart with a java.awt.Shape object for a geometry.
      */
     public BasicIconPart(Shape shape) {
-	this(shape, null);
+        this(shape, null);
     }
 
     /**
@@ -76,13 +76,13 @@ public class BasicIconPart implements IconPart {
      * the geometry at rendertime.
      */
     public BasicIconPart(Shape shape, AffineTransform transform) {
-	geometry = shape;
+        geometry = shape;
 
-	if (transform == null) {
-	    transform = new AffineTransform();
-	}
+        if (transform == null) {
+            transform = new AffineTransform();
+        }
 
-	baseTransform = transform;
+        baseTransform = transform;
     }
 
     /**
@@ -93,7 +93,7 @@ public class BasicIconPart implements IconPart {
      * @return DrawingAttribute for this part.
      */
     protected DrawingAttributes getAttributesForRendering(DrawingAttributes da) {
-	return getRenderingAttributes();
+        return getRenderingAttributes();
     }
 
     /**
@@ -102,7 +102,7 @@ public class BasicIconPart implements IconPart {
      * @param height pixel height of icon, used to scale geometry.
      */
     public void render(Graphics g, int width, int height) {
-	render(g, width, height, null);
+        render(g, width, height, null);
     }
 
     /**
@@ -114,75 +114,75 @@ public class BasicIconPart implements IconPart {
      * drawing attributes if they want/should.  May be null.
      */
     public void render(Graphics g, int width, int height, 
-		       DrawingAttributes appDA) {
+                       DrawingAttributes appDA) {
 
-	AffineTransform transform = AffineTransform.getScaleInstance((double)width/100, (double)height/100);
-	transform.concatenate(baseTransform);
+        AffineTransform transform = AffineTransform.getScaleInstance((double)width/100, (double)height/100);
+        transform.concatenate(baseTransform);
 
-	// Handle clip area in Graphics, first
-	Shape clip = getClip();
-	if (clip != null) {
-	    g.setClip(new GeneralPath(clip).createTransformedShape(transform));
-	}
+        // Handle clip area in Graphics, first
+        Shape clip = getClip();
+        if (clip != null) {
+            g.setClip(new GeneralPath(clip).createTransformedShape(transform));
+        }
 
-	Shape shape = new GeneralPath(geometry).createTransformedShape(transform);
-	getAttributesForRendering(appDA).render((Graphics2D)g, shape, gradient);
+        Shape shape = new GeneralPath(geometry).createTransformedShape(transform);
+        getAttributesForRendering(appDA).render((Graphics2D)g, shape, gradient);
     }
 
     /**
      * Set whether colors should be replaced by GradientPaints.
      */
     public void setGradient(boolean value) {
-	gradient = value;
+        gradient = value;
     }
 
     /**
      * Get whether colors should be replaced by GradientPaints.
      */
     public boolean isGradient() {
-	return gradient;
+        return gradient;
     }
 
     public void setClip(Shape clipArea) {
-	clip = clipArea;
+        clip = clipArea;
     }
 
     public Shape getClip() {
-	return clip;
+        return clip;
     }
 
     public void setGeometry(Shape shape) {
-	geometry = shape;
+        geometry = shape;
     }
 
     public Shape getGeometry() {
-	return geometry;
+        return geometry;
     }
 
     public void setTransform(AffineTransform af) {
-	baseTransform = af;
+        baseTransform = af;
     }
 
     public AffineTransform getTransform() {
-	return baseTransform;
+        return baseTransform;
     }
 
     public void setRenderingAttributes(DrawingAttributes da) {
-	renderingAttributes = da;
+        renderingAttributes = da;
     }
 
     public DrawingAttributes getRenderingAttributes() {
-	if (renderingAttributes == null) {
-	    return DrawingAttributes.DEFAULT;
-	} else {
-	    return renderingAttributes;
-	}
+        if (renderingAttributes == null) {
+            return DrawingAttributes.DEFAULT;
+        } else {
+            return renderingAttributes;
+        }
     }
 
     public Object clone() {
-	BasicIconPart clone = new BasicIconPart(getGeometry(), getTransform());
-	clone.setRenderingAttributes(getRenderingAttributes());
-	clone.setClip(getClip());
-	return clone;
+        BasicIconPart clone = new BasicIconPart(getGeometry(), getTransform());
+        clone.setRenderingAttributes(getRenderingAttributes());
+        clone.setClip(getClip());
+        return clone;
     }
 }

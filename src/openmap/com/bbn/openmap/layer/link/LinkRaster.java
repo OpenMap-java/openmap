@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkRaster.java,v $
 // $RCSfile: LinkRaster.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,25 +60,25 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float lt, float ln,
-			     int w, int h, int[] pix, 
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException {
+                             int w, int h, int[] pix, 
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.RASTER_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_RASTER);
-	dos.writeInt(RENDERTYPE_LATLON);
-	dos.writeInt(COLORMODEL_DIRECT);
-	dos.writeFloat(lt);
-	dos.writeFloat(ln);
-	dos.writeInt(w);
-	dos.writeInt(h);
-	dos.writeInt(pix.length);
-	
-	for (int i = 0; i < pix.length; i++) {
-	    dos.writeInt(pix[i]);
-	}
-	properties.write(dos);
+        dos.write(Link.RASTER_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_RASTER);
+        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeInt(COLORMODEL_DIRECT);
+        dos.writeFloat(lt);
+        dos.writeFloat(ln);
+        dos.writeInt(w);
+        dos.writeInt(h);
+        dos.writeInt(pix.length);
+        
+        for (int i = 0; i < pix.length; i++) {
+            dos.writeInt(pix[i]);
+        }
+        properties.write(dos);
     }
   
     /**
@@ -96,26 +96,26 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(int x1, int y1,
-			     int w, int h,
-			     int[] pix, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException {
+                             int w, int h,
+                             int[] pix, 
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.RASTER_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_RASTER);
-	dos.writeInt(RENDERTYPE_XY);
-	dos.writeInt(COLORMODEL_DIRECT);
-	dos.writeInt(x1);
-	dos.writeInt(y1);
-	dos.writeInt(w);
-	dos.writeInt(h);
-	dos.writeInt(pix.length);
-	
-	for (int i = 0; i < pix.length; i++) {
-	    dos.writeInt(pix[i]);
-	}
-	properties.write(dos);
+        dos.write(Link.RASTER_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_RASTER);
+        dos.writeInt(RENDERTYPE_XY);
+        dos.writeInt(COLORMODEL_DIRECT);
+        dos.writeInt(x1);
+        dos.writeInt(y1);
+        dos.writeInt(w);
+        dos.writeInt(h);
+        dos.writeInt(pix.length);
+        
+        for (int i = 0; i < pix.length; i++) {
+            dos.writeInt(pix[i]);
+        }
+        properties.write(dos);
     }
 
     /**
@@ -136,29 +136,29 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float lt, float ln,
-			     int offset_x1, int offset_y1,
-			     int w, int h,
-			     int[] pix, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException {
+                             int offset_x1, int offset_y1,
+                             int w, int h,
+                             int[] pix, 
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.RASTER_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_RASTER);
-	dos.writeInt(RENDERTYPE_OFFSET);
-	dos.writeInt(COLORMODEL_DIRECT);
-	dos.writeFloat(lt);
-	dos.writeFloat(ln);
-	dos.writeInt(offset_x1);
-	dos.writeInt(offset_y1);
-	dos.writeInt(w);
-	dos.writeInt(h);
-	dos.writeInt(pix.length);
-	
-	for (int i = 0; i < pix.length; i++) {
-	    dos.writeInt(pix[i]);
-	}
-	properties.write(dos);
+        dos.write(Link.RASTER_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_RASTER);
+        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeInt(COLORMODEL_DIRECT);
+        dos.writeFloat(lt);
+        dos.writeFloat(ln);
+        dos.writeInt(offset_x1);
+        dos.writeInt(offset_y1);
+        dos.writeInt(w);
+        dos.writeInt(h);
+        dos.writeInt(pix.length);
+        
+        for (int i = 0; i < pix.length; i++) {
+            dos.writeInt(pix[i]);
+        }
+        properties.write(dos);
     }
 
    /**
@@ -176,20 +176,20 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float lt, float ln, Image image,
-			     int image_width, int image_height, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
+                             int image_width, int image_height, 
+                             LinkProperties properties, 
+                             DataOutputStream dos)
         throws IOException, InterruptedException {
 
-	int[] pixels = new int[image_width * image_height];
-		
-	PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0,
-						     image_width,image_height,
-						     pixels, 0, image_width);
-	pixelgrabber.grabPixels();
- 	
-	LinkRaster.write(lt, ln, image_width, image_height,
-			 pixels, properties, dos); 
+        int[] pixels = new int[image_width * image_height];
+                
+        PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0,
+                                                     image_width,image_height,
+                                                     pixels, 0, image_width);
+        pixelgrabber.grabPixels();
+        
+        LinkRaster.write(lt, ln, image_width, image_height,
+                         pixels, properties, dos); 
     }
 
     /**
@@ -207,19 +207,19 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(int x1, int y1, Image image, 
-			     int image_width, int image_height, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException, InterruptedException {
-	    int[] pixels = new int[image_width * image_height];
-	    
-	    PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0,
-							 image_width, image_height,
-							 pixels, 0, image_width);
-	    pixelgrabber.grabPixels();
-	    
-	    LinkRaster.write(x1, y1, image_width, image_height, 
-			     pixels, properties, dos); 
+                             int image_width, int image_height, 
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException, InterruptedException {
+            int[] pixels = new int[image_width * image_height];
+            
+            PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0,
+                                                         image_width, image_height,
+                                                         pixels, 0, image_width);
+            pixelgrabber.grabPixels();
+            
+            LinkRaster.write(x1, y1, image_width, image_height, 
+                             pixels, properties, dos); 
     }
     
     /**
@@ -239,20 +239,20 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float lt, float ln, int offset_x1, int offset_y1,
-			     Image image, int image_width, int image_height, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException, InterruptedException {
-	    int[] pixels = new int[image_width * image_height];
-	    
-	    PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0,
-							 image_width, image_height,
-							 pixels, 0, image_width);
-	    pixelgrabber.grabPixels();
- 	
-	    LinkRaster.write(lt, ln, offset_x1, offset_y1, 
-			     image_width, image_height, pixels, 
-			     properties, dos); 
+                             Image image, int image_width, int image_height, 
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException, InterruptedException {
+            int[] pixels = new int[image_width * image_height];
+            
+            PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0,
+                                                         image_width, image_height,
+                                                         pixels, 0, image_width);
+            pixelgrabber.grabPixels();
+        
+            LinkRaster.write(lt, ln, offset_x1, offset_y1, 
+                             image_width, image_height, pixels, 
+                             properties, dos); 
     }
     
     /**
@@ -268,17 +268,17 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float lt, float ln, ImageIcon ii, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException,InterruptedException {
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException,InterruptedException {
 
-	int image_width, image_height;
-	Image image;
-	
-	image_width = ii.getIconWidth();
-	image_height = ii.getIconHeight();
-	image = ii.getImage();
-	LinkRaster.write(lt, ln, image, image_width, image_height, properties, dos);	
+        int image_width, image_height;
+        Image image;
+        
+        image_width = ii.getIconWidth();
+        image_height = ii.getIconHeight();
+        image = ii.getImage();
+        LinkRaster.write(lt, ln, image, image_width, image_height, properties, dos);    
     }
 
     /**
@@ -294,19 +294,19 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(int x1, int y1, ImageIcon ii, 
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException, InterruptedException {
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException, InterruptedException {
 
 
-	int image_width, image_height;
-	Image image;
-	
-	image_width = ii.getIconWidth();
-	image_height = ii.getIconHeight();
-	image = ii.getImage();
-	LinkRaster.write(x1, y1, image, image_width, image_height,
-			 properties, dos);
+        int image_width, image_height;
+        Image image;
+        
+        image_width = ii.getIconWidth();
+        image_height = ii.getIconHeight();
+        image = ii.getImage();
+        LinkRaster.write(x1, y1, image, image_width, image_height,
+                         properties, dos);
     }
  
     /**
@@ -324,20 +324,20 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float lt, float ln,
-			     int offset_x1, int offset_y1,
-			     ImageIcon ii, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException, InterruptedException {
+                             int offset_x1, int offset_y1,
+                             ImageIcon ii, 
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException, InterruptedException {
 
-	int image_width, image_height;
-	Image image;
-	
-	image_width = ii.getIconWidth();
-	image_height = ii.getIconHeight();
-	image = ii.getImage();
-	LinkRaster.write(lt, ln, offset_x1, offset_y1, image, 
-			 image_width, image_height, properties, dos);
+        int image_width, image_height;
+        Image image;
+        
+        image_width = ii.getIconWidth();
+        image_height = ii.getIconHeight();
+        image = ii.getImage();
+        LinkRaster.write(lt, ln, offset_x1, offset_y1, image, 
+                         image_width, image_height, properties, dos);
 
     }
 
@@ -356,18 +356,18 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float lt, float ln, String url, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException {
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.RASTER_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_RASTER);
-	dos.writeInt(RENDERTYPE_LATLON);
-	dos.writeInt(COLORMODEL_URL);
-	dos.writeFloat(lt);
-	dos.writeFloat(ln);
-	properties.setProperty(LPC_LINKRASTERIMAGEURL, url);
-	properties.write(dos);
+        dos.write(Link.RASTER_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_RASTER);
+        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeInt(COLORMODEL_URL);
+        dos.writeFloat(lt);
+        dos.writeFloat(ln);
+        properties.setProperty(LPC_LINKRASTERIMAGEURL, url);
+        properties.write(dos);
     }
 
     /**
@@ -383,17 +383,17 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(int x1, int y1, String url, 
-			     LinkProperties properties, DataOutputStream dos)
-	throws IOException {
+                             LinkProperties properties, DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.RASTER_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_RASTER);
-	dos.writeInt(RENDERTYPE_XY);
-	dos.writeInt(COLORMODEL_URL);
-	dos.writeInt(x1);
-	dos.writeInt(y1);
-	properties.setProperty(LPC_LINKRASTERIMAGEURL, url);
-	properties.write(dos);
+        dos.write(Link.RASTER_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_RASTER);
+        dos.writeInt(RENDERTYPE_XY);
+        dos.writeInt(COLORMODEL_URL);
+        dos.writeInt(x1);
+        dos.writeInt(y1);
+        properties.setProperty(LPC_LINKRASTERIMAGEURL, url);
+        properties.write(dos);
     }
   
     /**
@@ -411,22 +411,22 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float lt, float ln,
-			     int offset_x1, int offset_y1,
-			     String url, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException {
+                             int offset_x1, int offset_y1,
+                             String url, 
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.RASTER_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_RASTER);
-	dos.writeInt(RENDERTYPE_OFFSET);
-	dos.writeInt(COLORMODEL_URL);
-	dos.writeFloat(lt);
-	dos.writeFloat(ln);
-	dos.writeInt(offset_x1);
-	dos.writeInt(offset_y1);
-	properties.setProperty(LPC_LINKRASTERIMAGEURL, url);
-	properties.write(dos);
+        dos.write(Link.RASTER_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_RASTER);
+        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeInt(COLORMODEL_URL);
+        dos.writeFloat(lt);
+        dos.writeFloat(ln);
+        dos.writeInt(offset_x1);
+        dos.writeInt(offset_y1);
+        properties.setProperty(LPC_LINKRASTERIMAGEURL, url);
+        properties.write(dos);
     }
 
     ////////////////////////////////////// BYTE PIXELS with COLORTABLE
@@ -449,31 +449,31 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float lt, float ln, int w, int h, 
-			     byte[] bytes, Color[] colorTable,
-			     int trans, 
-			     LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException {
+                             byte[] bytes, Color[] colorTable,
+                             int trans, 
+                             LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.RASTER_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_RASTER);
-	dos.writeInt(RENDERTYPE_LATLON);
-	dos.writeInt(COLORMODEL_INDEXED);
-	dos.writeFloat(lt);
-	dos.writeFloat(ln);
-	dos.writeInt(w);
-	dos.writeInt(h);
-	dos.writeInt(bytes.length);
-	dos.write(bytes,0,bytes.length);
-	dos.writeInt(colorTable.length);
-	
-	int i;
-	for (i = 0; i < colorTable.length; i++) {
-	    dos.writeInt(colorTable[i].getRGB());
-	}
-	dos.writeInt(trans);
-	
-	properties.write(dos);
+        dos.write(Link.RASTER_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_RASTER);
+        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeInt(COLORMODEL_INDEXED);
+        dos.writeFloat(lt);
+        dos.writeFloat(ln);
+        dos.writeInt(w);
+        dos.writeInt(h);
+        dos.writeInt(bytes.length);
+        dos.write(bytes,0,bytes.length);
+        dos.writeInt(colorTable.length);
+        
+        int i;
+        for (i = 0; i < colorTable.length; i++) {
+            dos.writeInt(colorTable[i].getRGB());
+        }
+        dos.writeInt(trans);
+        
+        properties.write(dos);
     }
   
     /**
@@ -494,30 +494,30 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(int x1, int y1, int w, int h,
-			     byte[] bytes, Color[] colorTable,
-			     int trans, LinkProperties properties, 
-			     DataOutputStream dos)
-	throws IOException {
+                             byte[] bytes, Color[] colorTable,
+                             int trans, LinkProperties properties, 
+                             DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.RASTER_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_RASTER);
-	dos.writeInt(RENDERTYPE_XY);
-	dos.writeInt(COLORMODEL_INDEXED);
-	dos.writeInt(x1);
-	dos.writeInt(y1);
-	dos.writeInt(w);
-	dos.writeInt(h);
-	dos.writeInt(bytes.length);
-	dos.write(bytes, 0, bytes.length);
-	dos.writeInt(colorTable.length);
-	
-	int i;
-	for (i = 0; i < colorTable.length; i++) {
-	    dos.writeInt(colorTable[i].getRGB());
-	}
-	dos.writeInt(trans);
-	
-	properties.write(dos);
+        dos.write(Link.RASTER_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_RASTER);
+        dos.writeInt(RENDERTYPE_XY);
+        dos.writeInt(COLORMODEL_INDEXED);
+        dos.writeInt(x1);
+        dos.writeInt(y1);
+        dos.writeInt(w);
+        dos.writeInt(h);
+        dos.writeInt(bytes.length);
+        dos.write(bytes, 0, bytes.length);
+        dos.writeInt(colorTable.length);
+        
+        int i;
+        for (i = 0; i < colorTable.length; i++) {
+            dos.writeInt(colorTable[i].getRGB());
+        }
+        dos.writeInt(trans);
+        
+        properties.write(dos);
     }
 
     /**
@@ -541,50 +541,50 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      * @throws IOException
      */
     public static void write(float lt, float ln,
-			     int offset_x1, int offset_y1,
-			     int w, int h, byte[] bytes,
-			     Color[] colorTable, int trans, 
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException {
+                             int offset_x1, int offset_y1,
+                             int w, int h, byte[] bytes,
+                             Color[] colorTable, int trans, 
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.RASTER_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_RASTER);
-	dos.writeInt(RENDERTYPE_OFFSET);
-	dos.writeInt(COLORMODEL_INDEXED);
-	dos.writeFloat(lt);
-	dos.writeFloat(ln);
-	dos.writeInt(offset_x1);
-	dos.writeInt(offset_y1);
-	dos.writeInt(w);
-	dos.writeInt(h);
-	dos.writeInt(bytes.length);
-	dos.write(bytes, 0, bytes.length);
-	dos.writeInt(colorTable.length);
-	
-	int i;
-	 
-	for (i = 0; i < colorTable.length; i++) {
-	    dos.writeInt(colorTable[i].getRGB());
-	}
-	dos.writeInt(trans);
-	
-	properties.write(dos);
+        dos.write(Link.RASTER_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_RASTER);
+        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeInt(COLORMODEL_INDEXED);
+        dos.writeFloat(lt);
+        dos.writeFloat(ln);
+        dos.writeInt(offset_x1);
+        dos.writeInt(offset_y1);
+        dos.writeInt(w);
+        dos.writeInt(h);
+        dos.writeInt(bytes.length);
+        dos.write(bytes, 0, bytes.length);
+        dos.writeInt(colorTable.length);
+        
+        int i;
+         
+        for (i = 0; i < colorTable.length; i++) {
+            dos.writeInt(colorTable[i].getRGB());
+        }
+        dos.writeInt(trans);
+        
+        properties.write(dos);
     }
 
     /**
      * Write a raster to the link.
      */
     public static void write(OMRaster raster, Link link, LinkProperties props) 
-	throws IOException {
+        throws IOException {
 
-	    switch (raster.getRenderType()) {
-	    case OMRaster.RENDERTYPE_LATLON:
-	    case OMRaster.RENDERTYPE_XY:
-	    case OMRaster.RENDERTYPE_OFFSET:
-	    default:
-		Debug.error("LinkRaster.write: raster not implemented.");
-	    }
+            switch (raster.getRenderType()) {
+            case OMRaster.RENDERTYPE_LATLON:
+            case OMRaster.RENDERTYPE_XY:
+            case OMRaster.RENDERTYPE_OFFSET:
+            default:
+                Debug.error("LinkRaster.write: raster not implemented.");
+            }
     }
 
     /** 
@@ -598,160 +598,160 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
      */
     public static OMRaster read(DataInputStream dis) throws IOException {
 
-	OMRaster raster = null;
-	float lat = 0;
-	float lon = 0;
-	int x = 0;
-	int y = 0;
-	int w = 0;
-	int h = 0;
-	int length, i;
-	String url;
+        OMRaster raster = null;
+        float lat = 0;
+        float lon = 0;
+        int x = 0;
+        int y = 0;
+        int w = 0;
+        int h = 0;
+        int length, i;
+        String url;
 
-	Debug.message("link", "LinkRaster | Reading Raster graphic");
+        Debug.message("link", "LinkRaster | Reading Raster graphic");
 
-	int renderType = dis.readInt();
-	int colorModel = dis.readInt();
+        int renderType = dis.readInt();
+        int colorModel = dis.readInt();
 
-	if (Debug.debugging("link")) {
-	    System.out.println("LinkRaster | Rendertype = " + 
-			       renderType + ", colorModel = " + colorModel);
-	}
-	
-	switch (renderType) {
-	case RENDERTYPE_OFFSET:
-	    lat = dis.readFloat();
-	    lon = dis.readFloat();
-	    // Fall through...		
-	case RENDERTYPE_XY:
-	    x = dis.readInt();
-	    y = dis.readInt();
-	    break;
-	case RENDERTYPE_LATLON:
-	default:
-	    lat = dis.readFloat();
-	    lon = dis.readFloat();
-	    if (Debug.debugging("link")) {
-		System.out.println("LinkRaster | Location: lat = " + 
-				   lat + ", lon = " + lon);
-	    }
-	}
-	
-	// Now act differently depending on the colormodel
-	if (colorModel != COLORMODEL_URL) {
+        if (Debug.debugging("link")) {
+            System.out.println("LinkRaster | Rendertype = " + 
+                               renderType + ", colorModel = " + colorModel);
+        }
+        
+        switch (renderType) {
+        case RENDERTYPE_OFFSET:
+            lat = dis.readFloat();
+            lon = dis.readFloat();
+            // Fall through...          
+        case RENDERTYPE_XY:
+            x = dis.readInt();
+            y = dis.readInt();
+            break;
+        case RENDERTYPE_LATLON:
+        default:
+            lat = dis.readFloat();
+            lon = dis.readFloat();
+            if (Debug.debugging("link")) {
+                System.out.println("LinkRaster | Location: lat = " + 
+                                   lat + ", lon = " + lon);
+            }
+        }
+        
+        // Now act differently depending on the colormodel
+        if (colorModel != COLORMODEL_URL) {
 
-	    w = dis.readInt();
-	    h = dis.readInt();
+            w = dis.readInt();
+            h = dis.readInt();
 
-	    if (Debug.debugging("link")) {
-		System.out.println("LinkRaster | Size: width = " + 
-				   w + ", height = " + h);
-	    }
+            if (Debug.debugging("link")) {
+                System.out.println("LinkRaster | Size: width = " + 
+                                   w + ", height = " + h);
+            }
 
-	    if (colorModel == COLORMODEL_INDEXED) {
-	        
-		length = dis.readInt();		
-		
-		byte[] bytes = new byte[length];
-		
-		if (Debug.debugging("link")) {
-		    System.out.println("LinkRaster | Reading " + 
-				       length + " bytes.");
-		}
-		dis.readFully(bytes);
+            if (colorModel == COLORMODEL_INDEXED) {
+                
+                length = dis.readInt();         
+                
+                byte[] bytes = new byte[length];
+                
+                if (Debug.debugging("link")) {
+                    System.out.println("LinkRaster | Reading " + 
+                                       length + " bytes.");
+                }
+                dis.readFully(bytes);
 
-		if (Debug.debugging("link")) {
-		    System.out.println("LinkRaster | read bytes.");
-		}
+                if (Debug.debugging("link")) {
+                    System.out.println("LinkRaster | read bytes.");
+                }
 
-		length = dis.readInt();
+                length = dis.readInt();
 
-		if (Debug.debugging("link")) {
-		    System.out.println("LinkRaster | " + 
-				       length + " Colors.");
-		}
+                if (Debug.debugging("link")) {
+                    System.out.println("LinkRaster | " + 
+                                       length + " Colors.");
+                }
 
-		Color[] colorTable = new Color[length];
-		for (i = 0; i < length; i++) {
-		    int colorvalue = dis.readInt();
-		    colorTable[i] = ColorFactory.createColor(colorvalue, true);
-		    if (Debug.debugging("linkdetail")) {
-			System.out.println( "LinkRaster | Color " + i + 
-					    " =  " + colorTable[i] + 
-					    " from " + 
-					    Integer.toHexString(colorvalue));
-		    }
-		}
+                Color[] colorTable = new Color[length];
+                for (i = 0; i < length; i++) {
+                    int colorvalue = dis.readInt();
+                    colorTable[i] = ColorFactory.createColor(colorvalue, true);
+                    if (Debug.debugging("linkdetail")) {
+                        System.out.println( "LinkRaster | Color " + i + 
+                                            " =  " + colorTable[i] + 
+                                            " from " + 
+                                            Integer.toHexString(colorvalue));
+                    }
+                }
 
-		int trans = dis.readInt();
-		if (Debug.debugging("link")) {
-		    System.out.println("LinkRaster | Transparency =  " + 
-				       trans);
-		}
+                int trans = dis.readInt();
+                if (Debug.debugging("link")) {
+                    System.out.println("LinkRaster | Transparency =  " + 
+                                       trans);
+                }
 
-		switch (renderType) {
-		case RENDERTYPE_OFFSET:
-		    raster = new OMRaster(lat, lon, x, y, 
-					  w, h, bytes, colorTable, trans);
-		    break;
-		case RENDERTYPE_XY:
-		    raster = new OMRaster(x, y, w, h, bytes, colorTable, trans);
-		    break;
-		case RENDERTYPE_LATLON:
-		default:
-		    raster = new OMRaster(lat, lon, w, h, bytes, colorTable, trans);
-		}
-		
-	    } else { // must be COLORMODEL_DIRECT
-		length = dis.readInt();
-		int[] pix = new int[length];
-		if (Debug.debugging("link")) {
-		    System.out.println("LinkRaster | Reading " + 
-				       length + " pixels.");
-		}
+                switch (renderType) {
+                case RENDERTYPE_OFFSET:
+                    raster = new OMRaster(lat, lon, x, y, 
+                                          w, h, bytes, colorTable, trans);
+                    break;
+                case RENDERTYPE_XY:
+                    raster = new OMRaster(x, y, w, h, bytes, colorTable, trans);
+                    break;
+                case RENDERTYPE_LATLON:
+                default:
+                    raster = new OMRaster(lat, lon, w, h, bytes, colorTable, trans);
+                }
+                
+            } else { // must be COLORMODEL_DIRECT
+                length = dis.readInt();
+                int[] pix = new int[length];
+                if (Debug.debugging("link")) {
+                    System.out.println("LinkRaster | Reading " + 
+                                       length + " pixels.");
+                }
 
-		for (i = 0; i < length; i++) {
-		    pix[i] = dis.readInt();
-		}
-		switch (renderType) {
-		case RENDERTYPE_OFFSET:
-		    raster = new OMRaster(lat, lon, x, y, w, h, pix);
-		    break;
-		case RENDERTYPE_XY:
-		    raster = new OMRaster(x, y, w, h, pix);
-		    break;
-		case RENDERTYPE_LATLON:
-		default:
-		    raster = new OMRaster(lat, lon, w, h, pix);
-		}
-	    }
-	}
-	
-	LinkProperties properties = new LinkProperties(dis);
+                for (i = 0; i < length; i++) {
+                    pix[i] = dis.readInt();
+                }
+                switch (renderType) {
+                case RENDERTYPE_OFFSET:
+                    raster = new OMRaster(lat, lon, x, y, w, h, pix);
+                    break;
+                case RENDERTYPE_XY:
+                    raster = new OMRaster(x, y, w, h, pix);
+                    break;
+                case RENDERTYPE_LATLON:
+                default:
+                    raster = new OMRaster(lat, lon, w, h, pix);
+                }
+            }
+        }
+        
+        LinkProperties properties = new LinkProperties(dis);
 
-	if (colorModel == COLORMODEL_URL) {
-	    url = properties.getProperty(LPC_LINKRASTERIMAGEURL);
+        if (colorModel == COLORMODEL_URL) {
+            url = properties.getProperty(LPC_LINKRASTERIMAGEURL);
 
-	    if (url != null) {
-		switch (renderType) {
-		case RENDERTYPE_OFFSET:
-		    raster = new OMRaster(lat, lon, x, y, new ImageIcon(url));
-		    break;
-		case RENDERTYPE_XY:
-		    raster = new OMRaster(x, y, new ImageIcon(url));
-		    break;
-		case RENDERTYPE_LATLON:
-		default:
-		    raster = new OMRaster(lat, lon, new ImageIcon(url));
-		}
-	    }
-	}
+            if (url != null) {
+                switch (renderType) {
+                case RENDERTYPE_OFFSET:
+                    raster = new OMRaster(lat, lon, x, y, new ImageIcon(url));
+                    break;
+                case RENDERTYPE_XY:
+                    raster = new OMRaster(x, y, new ImageIcon(url));
+                    break;
+                case RENDERTYPE_LATLON:
+                default:
+                    raster = new OMRaster(lat, lon, new ImageIcon(url));
+                }
+            }
+        }
 
-	if (raster != null) {
-	    raster.setAppObject(properties);
-	    raster.setRotationAngle((double) ProjMath.degToRad(PropUtils.floatFromProperties(properties, LPC_LINKROTATION, 0.0f)));
-	}
+        if (raster != null) {
+            raster.setAppObject(properties);
+            raster.setRotationAngle((double) ProjMath.degToRad(PropUtils.floatFromProperties(properties, LPC_LINKROTATION, 0.0f)));
+        }
 
-	return raster;
+        return raster;
     }
 }

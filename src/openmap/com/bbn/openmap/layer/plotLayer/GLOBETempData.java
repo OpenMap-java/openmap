@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/plotLayer/GLOBETempData.java,v $
 // $RCSfile: GLOBETempData.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,11 +40,11 @@ public class GLOBETempData extends GLOBEData {
     public float overall_max_temp_ = Float.NaN;
 
     public GLOBETempData(){
-	super();
+        super();
     }
 
     /* 
-	Data Format:
+        Data Format:
 
       Air Temperature:
       Field 1  = AT
@@ -73,58 +73,58 @@ public class GLOBETempData extends GLOBEData {
      */
     protected void parseDataFromStream(String line)
     {
-	StringTokenizer tokenizer = new StringTokenizer( line );
-	DecimalFormat dec_format = new DecimalFormat();
+        StringTokenizer tokenizer = new StringTokenizer( line );
+        DecimalFormat dec_format = new DecimalFormat();
 
-	try {
+        try {
 
-	    for (int i = 0; i < 2; i++) tokenizer.nextToken(); 
-	    int site_number = dec_format.parse(tokenizer.nextToken()).intValue();;
-	    
-	    for (int i = 0; i < 2; i++) tokenizer.nextToken(); 
-	    float time = dec_format.parse( tokenizer.nextToken() ).floatValue();
-	    
-	    float latitude = dec_format.parse(tokenizer.nextToken()).floatValue();
-	    float longitude = dec_format.parse(tokenizer.nextToken()).floatValue();
-	    
-	    tokenizer.nextToken();	// ignore Field 9
-	    
-	    float current_temp = 
-		dec_format.parse( tokenizer.nextToken() ).floatValue();
+            for (int i = 0; i < 2; i++) tokenizer.nextToken(); 
+            int site_number = dec_format.parse(tokenizer.nextToken()).intValue();;
+            
+            for (int i = 0; i < 2; i++) tokenizer.nextToken(); 
+            float time = dec_format.parse( tokenizer.nextToken() ).floatValue();
+            
+            float latitude = dec_format.parse(tokenizer.nextToken()).floatValue();
+            float longitude = dec_format.parse(tokenizer.nextToken()).floatValue();
+            
+            tokenizer.nextToken();      // ignore Field 9
+            
+            float current_temp = 
+                dec_format.parse( tokenizer.nextToken() ).floatValue();
 
-// 	    float max_temp = 
-// 		dec_format.parse( tokenizer.nextToken() ).floatValue();
-// 	    float min_temp = 
-// 		dec_format.parse( tokenizer.nextToken() ).floatValue();
+//          float max_temp = 
+//              dec_format.parse( tokenizer.nextToken() ).floatValue();
+//          float min_temp = 
+//              dec_format.parse( tokenizer.nextToken() ).floatValue();
 
-	    // Now process the data we just parsed.
-	    
-	    GLOBESite site = findSite(latitude, longitude);
+            // Now process the data we just parsed.
+            
+            GLOBESite site = findSite(latitude, longitude);
 
-	    if ( current_temp != NO_VALUE ) 
-		{ 
-		    site.addCurrentTemp(time, current_temp); 
-		    checkLimits(current_temp, time);
-		}
-// 	    if ( max_temp != NO_VALUE ) 
-// 		{ site.addMinTemp(time, max_temp); }
-// 	    if ( min_temp != NO_VALUE ) 
-// 		{ site.addMinTemp(time, min_temp); }
-	    
-// 	    System.out.println(" site: " + site_number
-// 			       + " time: " + time 
-// 			       + " lat: " + latitude
-// 			       + " lon: " + longitude
-// 			       + " t1-3: " + current_temp
-// 			       + " (" + max_temp
-// 			       + "," + min_temp + ")" );
-			       
-	}
-	catch (NoSuchElementException e) 
-	    {
-		System.err.println(e + ": " + e.getMessage());
-	    }
-	catch (ParseException e) { System.err.println(e); } 
+            if ( current_temp != NO_VALUE ) 
+                { 
+                    site.addCurrentTemp(time, current_temp); 
+                    checkLimits(current_temp, time);
+                }
+//          if ( max_temp != NO_VALUE ) 
+//              { site.addMinTemp(time, max_temp); }
+//          if ( min_temp != NO_VALUE ) 
+//              { site.addMinTemp(time, min_temp); }
+            
+//          System.out.println(" site: " + site_number
+//                             + " time: " + time 
+//                             + " lat: " + latitude
+//                             + " lon: " + longitude
+//                             + " t1-3: " + current_temp
+//                             + " (" + max_temp
+//                             + "," + min_temp + ")" );
+                               
+        }
+        catch (NoSuchElementException e) 
+            {
+                System.err.println(e + ": " + e.getMessage());
+            }
+        catch (ParseException e) { System.err.println(e); } 
     }
 
 
@@ -140,50 +140,50 @@ public class GLOBETempData extends GLOBEData {
 
     private void checkLimits(float temp, float year)
     {
-	if ( Float.isNaN(overall_max_temp_) || temp > overall_max_temp_)
-	    overall_max_temp_ = temp;
-	if (Float.isNaN(overall_min_temp_) || temp < overall_min_temp_)
-	    overall_min_temp_ = temp;
-	
-	if ( Float.isNaN(overall_max_year_) || year > overall_max_year_)
-	    overall_max_year_ = year;
-	if (Float.isNaN(overall_min_year_) || year < overall_min_year_)
-	    overall_min_year_ = year;
-    }	
+        if ( Float.isNaN(overall_max_temp_) || temp > overall_max_temp_)
+            overall_max_temp_ = temp;
+        if (Float.isNaN(overall_min_temp_) || temp < overall_min_temp_)
+            overall_min_temp_ = temp;
+        
+        if ( Float.isNaN(overall_max_year_) || year > overall_max_year_)
+            overall_max_year_ = year;
+        if (Float.isNaN(overall_min_year_) || year < overall_min_year_)
+            overall_min_year_ = year;
+    }   
 
 
     
     private GLOBESite findSite(float latitude, 
-			       float longitude)
+                               float longitude)
     {
-	GLOBESite site = new GLOBESite(latitude, longitude);
-	GLOBESite hashed_site = (GLOBESite)site_table.get(site.hash());
+        GLOBESite site = new GLOBESite(latitude, longitude);
+        GLOBESite hashed_site = (GLOBESite)site_table.get(site.hash());
 
-	if (hashed_site == null) {
-	    //	    System.out.println("hash_miss: " + latitude + " " + longitude);
-	    site_table.put(site.hash(), site);
-	    hashed_site = site;
-	}
-	return hashed_site;
+        if (hashed_site == null) {
+            //      System.out.println("hash_miss: " + latitude + " " + longitude);
+            site_table.put(site.hash(), site);
+            hashed_site = site;
+        }
+        return hashed_site;
     }
 
 
     public Enumeration getAllSites (){
-	return site_table.elements();
+        return site_table.elements();
     }
 
 
     /*
     public static void main (String argv[]) 
     {
-	try {
-	    System.out.println("Getting URL: " + temp_data_source_);
-	    GLOBETempData datafile = new GLOBETempData();
-	    datafile.loadData();
-	}
-	catch (IOException e) {
-	    System.err.println(e);
-	}
+        try {
+            System.out.println("Getting URL: " + temp_data_source_);
+            GLOBETempData datafile = new GLOBETempData();
+            datafile.loadData();
+        }
+        catch (IOException e) {
+            System.err.println(e);
+        }
     }
     */
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SavePropertiesMenuItem.java,v $
 // $RCSfile: SavePropertiesMenuItem.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 03:47:01 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,58 +45,58 @@ public class SavePropertiesMenuItem extends MapHandlerMenuItem
     implements ActionListener {
 
     public SavePropertiesMenuItem() {
-	super("Save Map Properties");
-	addActionListener(this);
+        super("Save Map Properties");
+        addActionListener(this);
     }
 
     public void actionPerformed(ActionEvent ae) {
-	//Collect properties
-	if (mapHandler == null) {
-	    if (Debug.debugging("menu")) {
-		Debug.error("SavePropertiesMenuItem: no Map Handler to use");
-	    }
-	    return;
-	}
+        //Collect properties
+        if (mapHandler == null) {
+            if (Debug.debugging("menu")) {
+                Debug.error("SavePropertiesMenuItem: no Map Handler to use");
+            }
+            return;
+        }
 
-	FileDialog fd = new FileDialog(new Frame(),
-				       "Saving the map as Properties file...",
-				       FileDialog.SAVE);
-	fd.show();
+        FileDialog fd = new FileDialog(new Frame(),
+                                       "Saving the map as Properties file...",
+                                       FileDialog.SAVE);
+        fd.show();
 
 
-	String fileName = fd.getFile();
-	String dirName = fd.getDirectory();
+        String fileName = fd.getFile();
+        String dirName = fd.getDirectory();
 
-	if (fileName == null) {
-	    Debug.message("savepropertiesmenuitem",
-			  "User did not select any file");
-	    return;
-	}
+        if (fileName == null) {
+            Debug.message("savepropertiesmenuitem",
+                          "User did not select any file");
+            return;
+        }
 
-	Debug.message("savepropertiesmenuitem",
-		      "User selected file " + dirName + File.separator +
-		      fileName);
+        Debug.message("savepropertiesmenuitem",
+                      "User selected file " + dirName + File.separator +
+                      fileName);
 
-	File file = new File(new File(dirName), fileName);
+        File file = new File(new File(dirName), fileName);
 
-	FileOutputStream fos;
-	PrintStream ps = null;
-	try {
-	    fos = new FileOutputStream(file);
-	} //catch (FileNotFoundException fnfe) {
+        FileOutputStream fos;
+        PrintStream ps = null;
+        try {
+            fos = new FileOutputStream(file);
+        } //catch (FileNotFoundException fnfe) {
         /*In JDK 1.2, the FileOutputStream(File) constructor throws a 
           IOException, but in JDK1.3 it throws FileNotFoundException.  
           So in 1.2 it is insufficient to catch FileNotFoundException, 
           you need to catch IOException.  But in 1.3, catching 
           FileNotFoundException is enough.*/
          catch (IOException fnfe) {
-	    System.err.println(fnfe.getMessage());
-	    return;
-	}
+            System.err.println(fnfe.getMessage());
+            return;
+        }
 
-	ps = new PrintStream(fos);
+        ps = new PrintStream(fos);
 
-	PropertyHandler.createOpenMapProperties(mapHandler, ps);
-      	ps.close();
+        PropertyHandler.createOpenMapProperties(mapHandler, ps);
+        ps.close();
     }
 }

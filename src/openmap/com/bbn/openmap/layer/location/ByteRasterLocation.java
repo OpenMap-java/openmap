@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/ByteRasterLocation.java,v $
 // $RCSfile: ByteRasterLocation.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:29 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -55,12 +55,12 @@ public class ByteRasterLocation extends Location {
      * binary contents of an image from a database query.
      */
     public ByteRasterLocation(float latitude, float longitude, 
-			     String name, byte bytearr[]){
-	super(latitude, longitude, name, getIconRaster(latitude, longitude, bytearr));
+                             String name, byte bytearr[]){
+        super(latitude, longitude, name, getIconRaster(latitude, longitude, bytearr));
 
-	if (location instanceof OMRaster){
-	    setHorizontalLabelBuffer((((OMRaster)location).getWidth()/2) + SPACING);
-	}
+        if (location instanceof OMRaster){
+            setHorizontalLabelBuffer((((OMRaster)location).getWidth()/2) + SPACING);
+        }
 
     }
     
@@ -77,12 +77,12 @@ public class ByteRasterLocation extends Location {
      * binary contents of an image from a database query.  
      */
     public ByteRasterLocation(int x, int y, String name,
-			     byte bytearr[]){
-	super(x, y, name, getIconRaster(x, y, bytearr));
+                             byte bytearr[]){
+        super(x, y, name, getIconRaster(x, y, bytearr));
 
-	if (location instanceof OMRaster){
-	    setHorizontalLabelBuffer((((OMRaster)location).getWidth()/2) + SPACING);
-	}
+        if (location instanceof OMRaster){
+            setHorizontalLabelBuffer((((OMRaster)location).getWidth()/2) + SPACING);
+        }
     }
 
     /**
@@ -100,14 +100,14 @@ public class ByteRasterLocation extends Location {
      * binary contents of an image from a database query. 
      */
     public ByteRasterLocation(float latitude, float longitude,
-			     int xOffset, int yOffset, String name, 
-			     byte bytearr[]){
-	super(latitude, longitude, xOffset, yOffset, name, 
-	      getIconRaster(latitude, longitude, xOffset, yOffset, bytearr));
+                             int xOffset, int yOffset, String name, 
+                             byte bytearr[]){
+        super(latitude, longitude, xOffset, yOffset, name, 
+              getIconRaster(latitude, longitude, xOffset, yOffset, bytearr));
 
-	if (location instanceof OMRaster){
-	    setHorizontalLabelBuffer((((OMRaster)location).getWidth()/2) + SPACING);
-	}
+        if (location instanceof OMRaster){
+            setHorizontalLabelBuffer((((OMRaster)location).getWidth()/2) + SPACING);
+        }
     }
 
     /**
@@ -121,12 +121,12 @@ public class ByteRasterLocation extends Location {
      */
     public static OMRaster getIconRaster(float lat, float lon, byte bytearr[]){
 
-	ImageIcon icon = getIconRaster(bytearr);
-	if (icon == null) return null;
+        ImageIcon icon = getIconRaster(bytearr);
+        if (icon == null) return null;
 
-	int offX = icon.getIconWidth() / 2;
-	int offY = icon.getIconHeight() / 2;
-	return new OMRaster(lat, lon, -offX, -offY, icon);
+        int offX = icon.getIconWidth() / 2;
+        int offY = icon.getIconHeight() / 2;
+        return new OMRaster(lat, lon, -offX, -offY, icon);
     }
 
     /**
@@ -141,12 +141,12 @@ public class ByteRasterLocation extends Location {
      * binary contents of an image from a database query.  
      */
     public static OMRaster getIconRaster(int x, int y, byte bytearr[]){
-	ImageIcon icon = getIconRaster(bytearr);
-	if (icon == null) return null;
+        ImageIcon icon = getIconRaster(bytearr);
+        if (icon == null) return null;
 
-	int offX = icon.getIconWidth() / 2;
-	int offY = icon.getIconHeight() / 2;
-	return new OMRaster(x-offX, y-offY, icon);
+        int offX = icon.getIconWidth() / 2;
+        int offY = icon.getIconHeight() / 2;
+        return new OMRaster(x-offX, y-offY, icon);
     }
 
     /**
@@ -164,23 +164,23 @@ public class ByteRasterLocation extends Location {
      * binary contents of an image from a database query.  
      */
     public static OMRaster getIconRaster(float lat, float lon, 
-					 int x, int y, byte bytearr[]){
-	ImageIcon icon = getIconRaster(bytearr);
-	if (icon == null) return null;
+                                         int x, int y, byte bytearr[]){
+        ImageIcon icon = getIconRaster(bytearr);
+        if (icon == null) return null;
 
-	int offX = icon.getIconWidth() / 2;
-	int offY = icon.getIconHeight() / 2;
-	return new OMRaster(lat, lon, x-offX, y-offY, icon);
+        int offX = icon.getIconWidth() / 2;
+        int offY = icon.getIconHeight() / 2;
+        return new OMRaster(lat, lon, x-offX, y-offY, icon);
     }
 
     /**
      * Create an ImageIcon from a byte array.  The byte array should
      * reflect the contents of a standard image file.
      */
-    public static ImageIcon getIconRaster(byte bytearr[]){	
-	if (bytearr == null) return null;
-	ImageIcon icon = new ImageIcon(bytearr);
-	return icon;
+    public static ImageIcon getIconRaster(byte bytearr[]){      
+        if (bytearr == null) return null;
+        ImageIcon icon = new ImageIcon(bytearr);
+        return icon;
     }
 
     /**
@@ -191,28 +191,28 @@ public class ByteRasterLocation extends Location {
      */
     protected void declutterLabel(DeclutterMatrix declutter, Projection proj){
 
-	super.declutterLabel(declutter, proj);
-	
-	if (isShowLocation()){
-	    // Take up space with the label
-	    if (location instanceof OMRasterObject){
-		Point lp = ((OMRasterObject)location).getMapLocation();
-		// This location is the upper left location of the
-		// declutter matrix.  The decutter matrix works from
-		// lower left to upper right.
-		if (lp != null){
-		    int locHeight = ((OMRasterObject)location).getHeight();
-		    int locWidth = ((OMRasterObject)location).getWidth();
-		    // Need to get this right for the DeclutterMatrix
-		    // space, but changing lp changes where the
-		    // location will appear - fix this later.
-		    lp.y += locHeight;
-		    declutter.setTaken(lp, locWidth, locHeight);
-		    // Reset it to the original projected location.
-		    lp.y -= locHeight;
-		}
-	    }
-	}
+        super.declutterLabel(declutter, proj);
+        
+        if (isShowLocation()){
+            // Take up space with the label
+            if (location instanceof OMRasterObject){
+                Point lp = ((OMRasterObject)location).getMapLocation();
+                // This location is the upper left location of the
+                // declutter matrix.  The decutter matrix works from
+                // lower left to upper right.
+                if (lp != null){
+                    int locHeight = ((OMRasterObject)location).getHeight();
+                    int locWidth = ((OMRasterObject)location).getWidth();
+                    // Need to get this right for the DeclutterMatrix
+                    // space, but changing lp changes where the
+                    // location will appear - fix this later.
+                    lp.y += locHeight;
+                    declutter.setTaken(lp, locWidth, locHeight);
+                    // Reset it to the original projected location.
+                    lp.y -= locHeight;
+                }
+            }
+        }
     }
 
     /**
@@ -220,16 +220,16 @@ public class ByteRasterLocation extends Location {
      * label.
      */
     public void setGraphicLocations(float latitude, float longitude){
-	if (location instanceof OMRaster){
-	    OMRaster ras = (OMRaster) location;
-	    ras.setLat(latitude);
-	    ras.setLon(longitude);
+        if (location instanceof OMRaster){
+            OMRaster ras = (OMRaster) location;
+            ras.setLat(latitude);
+            ras.setLon(longitude);
 
-	    label.setLat(latitude);
-	    label.setLon(longitude);
-	    setHorizontalLabelBuffer((ras.getWidth()/2) + SPACING);
+            label.setLat(latitude);
+            label.setLon(longitude);
+            setHorizontalLabelBuffer((ras.getWidth()/2) + SPACING);
 
-	}
+        }
     }
 
     /**
@@ -237,15 +237,15 @@ public class ByteRasterLocation extends Location {
      * label.
      */
     public void setGraphicLocations(int x, int y){
-	if (location instanceof OMRaster){
-	    OMRaster ras = (OMRaster) location;
-	    ras.setX(x);
-	    ras.setY(y);
+        if (location instanceof OMRaster){
+            OMRaster ras = (OMRaster) location;
+            ras.setX(x);
+            ras.setY(y);
 
-	    label.setX(x);
-	    label.setY(y);
-	    setHorizontalLabelBuffer((ras.getWidth()/2) + SPACING);
-	}
+            label.setX(x);
+            label.setY(y);
+            setHorizontalLabelBuffer((ras.getWidth()/2) + SPACING);
+        }
     }
 
     /**
@@ -253,19 +253,19 @@ public class ByteRasterLocation extends Location {
      * reposition the graphic and label. 
      */
     public void setGraphicLocations(float latitude, float longitude,
-				    int offsetX, int offsetY){
-	if (location instanceof OMRaster){
-	    OMRaster ras = (OMRaster) location;
-	    ras.setLat(latitude);
-	    ras.setLon(longitude);
-	    ras.setX(offsetX);
-	    ras.setY(offsetY);
+                                    int offsetX, int offsetY){
+        if (location instanceof OMRaster){
+            OMRaster ras = (OMRaster) location;
+            ras.setLat(latitude);
+            ras.setLon(longitude);
+            ras.setX(offsetX);
+            ras.setY(offsetY);
 
-	    label.setLat(latitude);
-	    label.setLon(longitude);
-	    label.setX(offsetX);
-	    label.setY(offsetY);
-	    setHorizontalLabelBuffer((ras.getWidth()/2) + SPACING);
-	}
+            label.setLat(latitude);
+            label.setLon(longitude);
+            label.setX(offsetX);
+            label.setY(offsetY);
+            setHorizontalLabelBuffer((ras.getWidth()/2) + SPACING);
+        }
     }
 }

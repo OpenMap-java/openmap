@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeCategory.java,v $
 // $RCSfile: CodeCategory.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,7 +35,7 @@ import java.util.List;
 public class CodeCategory extends CodePosition {
 
     public CodeCategory() {
-	super("Category", 3, 3);
+        super("Category", 3, 3);
     }
 
 }

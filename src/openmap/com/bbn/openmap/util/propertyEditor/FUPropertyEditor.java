@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/FUPropertyEditor.java,v $
 // $RCSfile: FUPropertyEditor.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,7 +38,7 @@ public class FUPropertyEditor extends FDUPropertyEditor {
     
     /** Create MultiDirectoryPropertyEditor.  */
     public FUPropertyEditor() {
-	super();
+        super();
     }
 
     /**
@@ -47,9 +47,9 @@ public class FUPropertyEditor extends FDUPropertyEditor {
      * @return JFileChooser 
      */
     public JFileChooser getFileChooser() {
-	JFileChooser chooser = new JFileChooser(getLastLocation());
-	chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-	chooser.setMultiSelectionEnabled(true);
-	return chooser;
+        JFileChooser chooser = new JFileChooser(getLastLocation());
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.setMultiSelectionEnabled(true);
+        return chooser;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/CircleStateMachine.java,v $
 // $RCSfile: CircleStateMachine.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,19 +37,19 @@ import com.bbn.openmap.util.Debug;
 public class CircleStateMachine extends EOMGStateMachine {
 
     public CircleStateMachine(EditableOMCircle circle){
-	super(circle);
+        super(circle);
     }
 
 
     protected State[] init(){
-	State[] states = super.init();
-	Debug.message("eomc", "CircleStateMachine.init()");
+        State[] states = super.init();
+        Debug.message("eomc", "CircleStateMachine.init()");
 
-	//  These are the only two states that need something special
-	//  to happen.
-	states[GRAPHIC_UNDEFINED] = new CircleUndefinedState((EditableOMCircle)graphic);
-	states[GRAPHIC_SELECTED] = new CircleSelectedState((EditableOMCircle)graphic);
-	states[GRAPHIC_SETOFFSET] = new CircleSetOffsetState((EditableOMCircle)graphic);
-	return states;
+        //  These are the only two states that need something special
+        //  to happen.
+        states[GRAPHIC_UNDEFINED] = new CircleUndefinedState((EditableOMCircle)graphic);
+        states[GRAPHIC_SELECTED] = new CircleSelectedState((EditableOMCircle)graphic);
+        states[GRAPHIC_SETOFFSET] = new CircleSetOffsetState((EditableOMCircle)graphic);
+        return states;
     }
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/AbstractOpenMapMenu.java,v $
 // $RCSfile: AbstractOpenMapMenu.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 20:47:45 $
-// $Author: wjeuerle $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -110,42 +110,42 @@ abstract public class AbstractOpenMapMenu extends JMenu
     protected Hashtable itemsProperties = null;
 
     public AbstractOpenMapMenu() {
-	super();        
+        super();        
     }
 
     public AbstractOpenMapMenu(String title) {
-	super(title);
+        super(title);
     }
    
     /** Method for BeanContextChild interface. */
     public BeanContext getBeanContext() {
-	return beanContextChildSupport.getBeanContext();
+        return beanContextChildSupport.getBeanContext();
     }
   
     /** Method for BeanContextChild interface. */
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
-	beanContextChildSupport.setBeanContext(in_bc);
-	if (in_bc == null) {
-	    return;
-	}
-	in_bc.addBeanContextMembershipListener(this);
+        beanContextChildSupport.setBeanContext(in_bc);
+        if (in_bc == null) {
+            return;
+        }
+        in_bc.addBeanContextMembershipListener(this);
 
-	// let MenuItems find it if they want to look for 
-	// it there, or if they want to add themselves.  Not sure what
-	// the ConcurrentModificationException ramifications will be,
-	// though.
-	findAndInit((Object)in_bc);
-	findAndInit(in_bc.iterator());
+        // let MenuItems find it if they want to look for 
+        // it there, or if they want to add themselves.  Not sure what
+        // the ConcurrentModificationException ramifications will be,
+        // though.
+        findAndInit((Object)in_bc);
+        findAndInit(in_bc.iterator());
     }
  
     /** Method for BeanContextMembership interface. */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
-	findAndInit(bcme.iterator());
+        findAndInit(bcme.iterator());
     }
   
     /** Method for BeanContextMembership interface. */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-	findAndUndo(bcme.iterator());
+        findAndUndo(bcme.iterator());
     }
   
     /**
@@ -154,9 +154,9 @@ abstract public class AbstractOpenMapMenu extends JMenu
      * be given the opportunity to use the object, too.
      */
     public void findAndUnInit(Iterator it) {
-	while (it.hasNext()) {
-	    findAndUndo(it.next());
-	}
+        while (it.hasNext()) {
+            findAndUndo(it.next());
+        }
     }
 
     /**
@@ -164,14 +164,14 @@ abstract public class AbstractOpenMapMenu extends JMenu
      * Called to let menu objects disconnect from it.
      */
     public void findAndUndo(Object someObj) {
- 	Component menuItems[] = getMenuComponents();
+        Component menuItems[] = getMenuComponents();
 
- 	for (int i=0; i< menuItems.length;i++) {
-	    Component item = menuItems[i];
-	    if (item instanceof LightMapHandlerChild) {
-		((LightMapHandlerChild)item).findAndUndo(someObj);
-	    }
-	}
+        for (int i=0; i< menuItems.length;i++) {
+            Component item = menuItems[i];
+            if (item instanceof LightMapHandlerChild) {
+                ((LightMapHandlerChild)item).findAndUndo(someObj);
+            }
+        }
     }
   
     /**
@@ -180,9 +180,9 @@ abstract public class AbstractOpenMapMenu extends JMenu
      * be given the opportunity to use the object, too.
      */
     public void findAndInit(Iterator it) {
-	while (it.hasNext()) {
-	    findAndInit(it.next());
-	}
+        while (it.hasNext()) {
+            findAndInit(it.next());
+        }
     }
 
     /**
@@ -190,26 +190,26 @@ abstract public class AbstractOpenMapMenu extends JMenu
      * Called to let menu objects connect to it.
      */
     public void findAndInit(Object someObj) {
- 	Component menuItems[] = getMenuComponents();
+        Component menuItems[] = getMenuComponents();
 
- 	for (int i=0; i< menuItems.length;i++) {
-	    Component item = menuItems[i];
-	    if (item instanceof LightMapHandlerChild) {
-		((LightMapHandlerChild)item).findAndInit(someObj);
-	    }
-	}
+        for (int i=0; i< menuItems.length;i++) {
+            Component item = menuItems[i];
+            if (item instanceof LightMapHandlerChild) {
+                ((LightMapHandlerChild)item).findAndInit(someObj);
+            }
+        }
     }
   
     /** Method for BeanContextChild interface. */
     public void addVetoableChangeListener(String propertyName,
-					  VetoableChangeListener in_vcl) {
-	beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
+                                          VetoableChangeListener in_vcl) {
+        beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
     }
   
     /** Method for BeanContextChild interface. */
     public void removeVetoableChangeListener(String propertyName, 
-					     VetoableChangeListener in_vcl){
-	beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
+                                             VetoableChangeListener in_vcl){
+        beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
     }
 
     /**
@@ -217,7 +217,7 @@ abstract public class AbstractOpenMapMenu extends JMenu
      * Menu hasn't been added to the MapHandler.
      */
     public MapHandler getMapHandler() {
-	return (MapHandler)beanContextChildSupport.getBeanContext();
+        return (MapHandler)beanContextChildSupport.getBeanContext();
     }
 
     /**
@@ -225,7 +225,7 @@ abstract public class AbstractOpenMapMenu extends JMenu
      * @param props the <code>Properties</code> object.
      */
     public void setProperties(java.util.Properties props) {
-	setProperties(getPropertyPrefix(), props);
+        setProperties(getPropertyPrefix(), props);
     }
 
     /**
@@ -234,65 +234,65 @@ abstract public class AbstractOpenMapMenu extends JMenu
      * @param props the <code>Properties</code> object
      */
     public void setProperties(String prefix, java.util.Properties props) {
-	setPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
 
-  	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String prettyName = props.getProperty(realPrefix + PrettyNameProperty);
-	if (prettyName != null) {
-	    setText(prettyName);
-	}
+        String prettyName = props.getProperty(realPrefix + PrettyNameProperty);
+        if (prettyName != null) {
+            setText(prettyName);
+        }
 
-	String mnemonicString = props.getProperty(realPrefix + MnemonicProperty);
-	if (mnemonicString != null) {
-	    setMnemonic((int) mnemonicString.charAt(0));
-	}
+        String mnemonicString = props.getProperty(realPrefix + MnemonicProperty);
+        if (mnemonicString != null) {
+            setMnemonic((int) mnemonicString.charAt(0));
+        }
 
-	itemsPropertyContents = props.getProperty(realPrefix + ItemsProperty);
-	Vector menuItems = PropUtils.parseSpacedMarkers(itemsPropertyContents);
+        itemsPropertyContents = props.getProperty(realPrefix + ItemsProperty);
+        Vector menuItems = PropUtils.parseSpacedMarkers(itemsPropertyContents);
 
-	if (!menuItems.isEmpty()) {
+        if (!menuItems.isEmpty()) {
 
-	    int nMenuItems = menuItems.size();
+            int nMenuItems = menuItems.size();
 
-	    if (Debug.debugging("menu")) {
-		Debug.output("Menu " + getText() + " created with " + nMenuItems + " item" + 
-			     (nMenuItems==1?"":"s") + " in properties");
-	    }
+            if (Debug.debugging("menu")) {
+                Debug.output("Menu " + getText() + " created with " + nMenuItems + " item" + 
+                             (nMenuItems==1?"":"s") + " in properties");
+            }
 
-	    for (int i = 0; i < nMenuItems; i++) {
-		String itemPrefix = (String)menuItems.elementAt(i);
-		if (itemPrefix.equals(SeparatorProperty)) {
-		    add(new JSeparator());
-		    continue;
-		}
+            for (int i = 0; i < nMenuItems; i++) {
+                String itemPrefix = (String)menuItems.elementAt(i);
+                if (itemPrefix.equals(SeparatorProperty)) {
+                    add(new JSeparator());
+                    continue;
+                }
 
-		String classProperty = itemPrefix + ".class";
-		String className = props.getProperty(classProperty);
-		if (className == null) {
-		    Debug.error("Menu " + getText() + ".setProperties(): Failed to locate property \"" + classProperty + "\"\n  Skipping menu item \"" + itemPrefix + "\"");
-		    continue;
-		}
+                String classProperty = itemPrefix + ".class";
+                String className = props.getProperty(classProperty);
+                if (className == null) {
+                    Debug.error("Menu " + getText() + ".setProperties(): Failed to locate property \"" + classProperty + "\"\n  Skipping menu item \"" + itemPrefix + "\"");
+                    continue;
+                }
 
-		if (itemsProperties == null) {
-		    itemsProperties = new Properties();
-		}
+                if (itemsProperties == null) {
+                    itemsProperties = new Properties();
+                }
 
-		itemsProperties.put(classProperty, className);
+                itemsProperties.put(classProperty, className);
 
-		Object obj = ComponentFactory.create(className, itemPrefix, props);
-		if (obj instanceof Component) {
-		    add((Component)obj);
-		} else if (obj instanceof JMenuItem) {
-		    add((JMenuItem)obj);
-		}
-	    }
-	} else {
-	    if (Debug.debugging("menu")) {
-		Debug.output("Menu " + getText() + " created without items in properties");
-	    }
-	}
-	
+                Object obj = ComponentFactory.create(className, itemPrefix, props);
+                if (obj instanceof Component) {
+                    add((Component)obj);
+                } else if (obj instanceof JMenuItem) {
+                    add((JMenuItem)obj);
+                }
+            }
+        } else {
+            if (Debug.debugging("menu")) {
+                Debug.output("Menu " + getText() + " created without items in properties");
+            }
+        }
+        
     }
 
     /**
@@ -311,24 +311,24 @@ abstract public class AbstractOpenMapMenu extends JMenu
      * PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-  	String prefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
+        String prefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
 
-	props.put(prefix + PrettyNameProperty, getText());
-	props.put(prefix + MnemonicProperty, "" + ((char)getMnemonic()));
+        props.put(prefix + PrettyNameProperty, getText());
+        props.put(prefix + MnemonicProperty, "" + ((char)getMnemonic()));
 
-	if (itemsPropertyContents != null) {
-	    props.put(prefix + ItemsProperty, itemsPropertyContents);
-	}
+        if (itemsPropertyContents != null) {
+            props.put(prefix + ItemsProperty, itemsPropertyContents);
+        }
 
-	if (itemsProperties != null) {
-	    props.putAll(itemsProperties);
-	}
+        if (itemsProperties != null) {
+            props.putAll(itemsProperties);
+        }
 
-	return props;
+        return props;
     }
 
     /**
@@ -350,10 +350,10 @@ abstract public class AbstractOpenMapMenu extends JMenu
      * PropertyConsumer. 
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
-	return list;
+        if (list == null) {
+            list = new Properties();
+        }
+        return list;
     }
 
     /**
@@ -364,7 +364,7 @@ abstract public class AbstractOpenMapMenu extends JMenu
      * @param prefix the prefix String.  
      */
     public void setPropertyPrefix(String prefix) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
     }
 
     /**
@@ -374,6 +374,6 @@ abstract public class AbstractOpenMapMenu extends JMenu
      * @return the property prefix for the menu
      */
     public String getPropertyPrefix() {
-	return propertyPrefix;
+        return propertyPrefix;
     }
 }

@@ -26,18 +26,18 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
 
     /** Create FilePropertyEditor.  */
     public ColorPropertyEditor() {
-	button = new JButton(title);
+        button = new JButton(title);
     }
 
     //
-    //	PropertyEditor interface
+    //  PropertyEditor interface
     //
     
     /** PropertyEditor interface.
      *  @return true 
      */
     public boolean supportsCustomEditor() {
-	return true;
+        return true;
     }
     
     /**
@@ -45,48 +45,48 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
      * @return JButton button
      */
     public Component getCustomEditor() {
-	button.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
+        button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
 
-		    Color startingColor;
-		    try {
-			startingColor = ColorFactory.parseColor(getAsText(), true);
-		    } catch (NumberFormatException nfe) {
-			startingColor = OMColor.clear;
-		    }
+                    Color startingColor;
+                    try {
+                        startingColor = ColorFactory.parseColor(getAsText(), true);
+                    } catch (NumberFormatException nfe) {
+                        startingColor = OMColor.clear;
+                    }
 
-		    Color color = OMColorChooser.showDialog(button, title, startingColor);
+                    Color color = OMColorChooser.showDialog(button, title, startingColor);
 
-		    ColorPropertyEditor.this.setValue(color);
-		}
-	    });
+                    ColorPropertyEditor.this.setValue(color);
+                }
+            });
 
-	JPanel panel = new JPanel();
-	GridBagLayout gridbag = new GridBagLayout();
-	GridBagConstraints c = new GridBagConstraints();
-	panel.setLayout(gridbag);
-	gridbag.setConstraints(button, c);
-	panel.add(button);
+        JPanel panel = new JPanel();
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        panel.setLayout(gridbag);
+        gridbag.setConstraints(button, c);
+        panel.add(button);
 
-	return panel;
+        return panel;
     }
 
     /** Implement PropertyEditor interface. */
     public void setValue(Object someObj) {
-	if (someObj instanceof String) {
-	    button.setText((String)someObj);
-	} else if (someObj instanceof Color) {
-	    button.setText(Integer.toHexString(((Color)someObj).getRGB()));
-	}
+        if (someObj instanceof String) {
+            button.setText((String)someObj);
+        } else if (someObj instanceof Color) {
+            button.setText(Integer.toHexString(((Color)someObj).getRGB()));
+        }
     }
     
     /** Implement PropertyEditor interface. */
     public String getAsText() {
-	return button.getText();
+        return button.getText();
     }
     
     //
-    //	ActionListener interface
+    //  ActionListener interface
     //
     
     /** Implement ActionListener interface. */

@@ -29,21 +29,21 @@ import java.util.Vector;
 public class MysqlMultiLineString extends MysqlMulti {
 
     public MysqlMultiLineString() {
-	super();
-	this.setType(this.MULTILINESTRINGTYPE);
+        super();
+        this.setType(this.MULTILINESTRINGTYPE);
     }
 
     /**
      * @see com.bbn.openmap.layer.mysql.MysqlMulti#addElement(MysqlGeometry)
      */
     public void addElement(MysqlGeometry l) {
-	if (l.getType().equals(l.LINESTRINGTYPE)) {
-	    super.elements.add((MysqlLine) l);
-	}
+        if (l.getType().equals(l.LINESTRINGTYPE)) {
+            super.elements.add((MysqlLine) l);
+        }
     }
 
     public MysqlGeometry getElementByIndex(int i) {
-	return (MysqlLine) super.elements.elementAt(i);
+        return (MysqlLine) super.elements.elementAt(i);
     }
 
 }

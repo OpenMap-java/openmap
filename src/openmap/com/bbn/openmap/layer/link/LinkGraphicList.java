@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGraphicList.java,v $
 // $RCSfile: LinkGraphicList.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 20:43:27 $
-// $Author: wjeuerle $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -67,10 +67,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
 
     /** Write a graphics section to the link. */
     public LinkGraphicList(Link link, LinkProperties properties) throws IOException {
-	this.link = link;
-	link.start(Link.GRAPHICS_HEADER);
-	link.dos.writeFloat(version);
-	properties.write(link);
+        this.link = link;
+        link.start(Link.GRAPHICS_HEADER);
+        link.dos.writeFloat(version);
+        properties.write(link);
     }
 
     /**
@@ -82,8 +82,8 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws EOFException
      */
     public LinkGraphicList(Link link, LinkOMGraphicList graphicList)
-	throws IOException, EOFException {
-	this(link, graphicList, (Projection)null, (OMGridGenerator)null);
+        throws IOException, EOFException {
+        this(link, graphicList, (Projection)null, (OMGridGenerator)null);
     }
 
     /**
@@ -99,16 +99,16 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws EOFException
      */
     public LinkGraphicList(Link link, LinkOMGraphicList graphicList, 
-			   Projection proj, OMGridGenerator generator)
-	throws IOException, EOFException {
-	this.link = link;
-	graphics = graphicList;
+                           Projection proj, OMGridGenerator generator)
+        throws IOException, EOFException {
+        this.link = link;
+        graphics = graphicList;
 
-	if (graphics == null) {
-	    graphics = new LinkOMGraphicList();
-	}
+        if (graphics == null) {
+            graphics = new LinkOMGraphicList();
+        }
 
-	linkStatus = readGraphics(graphics, proj, generator);
+        linkStatus = readGraphics(graphics, proj, generator);
     }
 
     /**
@@ -120,7 +120,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * link.  If no graphics were sent the list will be empty. 
      */
     public LinkOMGraphicList getGraphics() {
-	return graphics;
+        return graphics;
     }
 
     /** 
@@ -131,7 +131,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @return either Link.END_TOTAL or Link.END_SECTION. 
      */
     public String getLinkStatus() {
-	return linkStatus;
+        return linkStatus;
     }
 
     /**
@@ -142,7 +142,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @return properties 
      */
     public LinkProperties getProperties() {
-	return properties;
+        return properties;
     }
 
     /**  
@@ -157,7 +157,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException 
      */
     public void end(String endType) throws IOException {
-	link.end(endType);
+        link.end(endType);
     }
 
     /**
@@ -176,96 +176,96 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws EOFException
      */
     protected String readGraphics(LinkOMGraphicList graphics, Projection proj,
-				  OMGridGenerator generator)
-	throws IOException, EOFException {
+                                  OMGridGenerator generator)
+        throws IOException, EOFException {
 
-	OMGraphic graphic;
-	long startTime = System.currentTimeMillis();
-	String header = null;
-	int graphicType;
-	boolean moreData = true;
+        OMGraphic graphic;
+        long startTime = System.currentTimeMillis();
+        String header = null;
+        int graphicType;
+        boolean moreData = true;
 
-	// This is important, it's checked by the LinkLayer to see if
-	// it needs to generate the LinkOMGraphicList to see if the
-	// contents need to be generated.
-	graphics.setNeedToRegenerate(proj == null);
+        // This is important, it's checked by the LinkLayer to see if
+        // it needs to generate the LinkOMGraphicList to see if the
+        // contents need to be generated.
+        graphics.setNeedToRegenerate(proj == null);
 
-	// doing nothing with the version number.
-	float ver = link.dis.readFloat();
+        // doing nothing with the version number.
+        float ver = link.dis.readFloat();
 
-	if (ver != version) {
-	    if (ver == .1) {// Big difference....
-		throw new IOException("LinkGraphicList: Versions do not match! DANGER!");
-	    } else {
-		Debug.message("link", "LinkGraphicList: Versions do not match.");
-	    }
-	}
+        if (ver != version) {
+            if (ver == .1) {// Big difference....
+                throw new IOException("LinkGraphicList: Versions do not match! DANGER!");
+            } else {
+                Debug.message("link", "LinkGraphicList: Versions do not match.");
+            }
+        }
 
-	properties = new LinkProperties(link);
+        properties = new LinkProperties(link);
 
-	Debug.message("link", "LinkGraphicList: reading graphics:");
+        Debug.message("link", "LinkGraphicList: reading graphics:");
 
-	while (true) {
-	    graphic = null;
-	    // Just consume the header, don't create a useless
-	    // string object.
-	    header = link.readDelimiter(false);
-	  
-	    if (header == Link.END_TOTAL || header == Link.END_SECTION) {
-		
-		long endTime = System.currentTimeMillis();
-		Debug.message("link", "LinkGraphicList: received " +
-			      graphics.size()  + " graphics in " +
-			      (float)(endTime - startTime)/1000.0f + 
-			      " seconds");
-		
-		return header;
-	    }
-	    
-	    graphicType = link.dis.readInt();
-	    
-	    switch (graphicType) {
-	    case GRAPHICTYPE_LINE:
-		graphic = LinkLine.read(link.dis);
-		break;
-	    case GRAPHICTYPE_POLY:
-		graphic = LinkPoly.read(link.dis);
-		break;
-	    case GRAPHICTYPE_RECTANGLE:
-		graphic = LinkRectangle.read(link.dis);
-		break;
-	    case GRAPHICTYPE_POINT:
-		graphic = LinkPoint.read(link.dis);
-		break;
-	    case GRAPHICTYPE_CIRCLE:
-		graphic = LinkCircle.read(link.dis);
-		break;
-	    case GRAPHICTYPE_RASTER:
-		graphic = LinkRaster.read(link.dis);
-		break;
-	    case GRAPHICTYPE_BITMAP:
-		graphic = LinkBitmap.read(link.dis);
-		break;
-	    case GRAPHICTYPE_TEXT:
-		graphic = LinkText.read(link.dis);
-		break;
-	    case GRAPHICTYPE_GRID:
-		graphic = LinkGrid.read(link.dis);
-		break;
-	    default:
-		throw new IOException("LinkGraphicList: received unknown graphic type.");
-	    }
+        while (true) {
+            graphic = null;
+            // Just consume the header, don't create a useless
+            // string object.
+            header = link.readDelimiter(false);
+          
+            if (header == Link.END_TOTAL || header == Link.END_SECTION) {
+                
+                long endTime = System.currentTimeMillis();
+                Debug.message("link", "LinkGraphicList: received " +
+                              graphics.size()  + " graphics in " +
+                              (float)(endTime - startTime)/1000.0f + 
+                              " seconds");
+                
+                return header;
+            }
+            
+            graphicType = link.dis.readInt();
+            
+            switch (graphicType) {
+            case GRAPHICTYPE_LINE:
+                graphic = LinkLine.read(link.dis);
+                break;
+            case GRAPHICTYPE_POLY:
+                graphic = LinkPoly.read(link.dis);
+                break;
+            case GRAPHICTYPE_RECTANGLE:
+                graphic = LinkRectangle.read(link.dis);
+                break;
+            case GRAPHICTYPE_POINT:
+                graphic = LinkPoint.read(link.dis);
+                break;
+            case GRAPHICTYPE_CIRCLE:
+                graphic = LinkCircle.read(link.dis);
+                break;
+            case GRAPHICTYPE_RASTER:
+                graphic = LinkRaster.read(link.dis);
+                break;
+            case GRAPHICTYPE_BITMAP:
+                graphic = LinkBitmap.read(link.dis);
+                break;
+            case GRAPHICTYPE_TEXT:
+                graphic = LinkText.read(link.dis);
+                break;
+            case GRAPHICTYPE_GRID:
+                graphic = LinkGrid.read(link.dis);
+                break;
+            default:
+                throw new IOException("LinkGraphicList: received unknown graphic type.");
+            }
 
-	    if (graphic != null) {
-		if (graphic instanceof OMGrid) {
-		    ((OMGrid)graphic).setGenerator(generator);
-		}
-		if (proj != null) {
-		    graphic.generate(proj);
-		}
-		graphics.add(graphic);
-	    }
-	}
+            if (graphic != null) {
+                if (graphic instanceof OMGrid) {
+                    ((OMGrid)graphic).setGenerator(generator);
+                }
+                if (proj != null) {
+                    graphic.generate(proj);
+                }
+                graphics.add(graphic);
+            }
+        }
     }
 
     /**
@@ -280,10 +280,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException
      */
     public void addArc(float latPoint, float lonPoint,
-		       int w, int h, float s, float e,
-		       LinkProperties properties) throws IOException {
-	LinkArc.write(latPoint, lonPoint, 0, 0, w, h, s, e, 
-		      properties, link.dos);
+                       int w, int h, float s, float e,
+                       LinkProperties properties) throws IOException {
+        LinkArc.write(latPoint, lonPoint, 0, 0, w, h, s, e, 
+                      properties, link.dos);
     }
 
     /**
@@ -299,10 +299,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException
      */
     public void addArc(int x1, int y1, int w, int h,
-		       float s, float e,
-		       LinkProperties properties)
-	throws IOException {
-	LinkArc.write(x1, y1, w, h, s, e, properties, link.dos);
+                       float s, float e,
+                       LinkProperties properties)
+        throws IOException {
+        LinkArc.write(x1, y1, w, h, s, e, properties, link.dos);
     }
 
     /**
@@ -322,11 +322,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException
      */
     public void addArc(float latPoint, float lonPoint,
-		       int offset_x1, int offset_y1,
-		       int w, int h, float s, float e,
-		       LinkProperties properties)
-	throws IOException {
-	LinkArc.write(latPoint, lonPoint, offset_x1, offset_y1, w, h, s, e, properties, link.dos);
+                       int offset_x1, int offset_y1,
+                       int w, int h, float s, float e,
+                       LinkProperties properties)
+        throws IOException {
+        LinkArc.write(latPoint, lonPoint, offset_x1, offset_y1, w, h, s, e, properties, link.dos);
     }
 
     /**
@@ -342,10 +342,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException
      */
     public void addArc(float latPoint, float lonPoint, float radius,
-		       float s, float e,
-		       LinkProperties properties)
-	throws IOException {
-	LinkArc.write(latPoint, lonPoint, radius, -1, -1, s, e, properties, link.dos);
+                       float s, float e,
+                       LinkProperties properties)
+        throws IOException {
+        LinkArc.write(latPoint, lonPoint, radius, -1, -1, s, e, properties, link.dos);
     }
 
     /**
@@ -363,11 +363,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException
      */
     public void addArc(float latPoint, float lonPoint,
-		       float radius, int units,
-		       float s, float e,
-		       LinkProperties properties)
-	throws IOException {
-	LinkArc.write(latPoint, lonPoint, radius, units, -1, s, e, properties, link.dos);
+                       float radius, int units,
+                       float s, float e,
+                       LinkProperties properties)
+        throws IOException {
+        LinkArc.write(latPoint, lonPoint, radius, units, -1, s, e, properties, link.dos);
     }
 
     /**
@@ -388,11 +388,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException
      */
     public void addArc(float latPoint, float lonPoint,
-		       float radius, int units, int nverts,
-		       float s, float e,
-		       LinkProperties properties)
-	throws IOException {
-	LinkArc.write(latPoint, lonPoint, radius, units, nverts, s, e, properties, link.dos);
+                       float radius, int units, int nverts,
+                       float s, float e,
+                       LinkProperties properties)
+        throws IOException {
+        LinkArc.write(latPoint, lonPoint, radius, units, nverts, s, e, properties, link.dos);
     }
 
 
@@ -408,9 +408,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkBitmap
      */
     public void addBitmap(float lt, float ln, int w, int h, byte[] bytes, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkBitmap.write(lt, ln, w, h, bytes, properties, link.dos);
+                          LinkProperties properties)
+        throws IOException {
+        LinkBitmap.write(lt, ln, w, h, bytes, properties, link.dos);
     }
 
     /** 
@@ -425,9 +425,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkBitmap
      */
     public void addBitmap(int x1, int y1, int w, int h, byte[] bytes, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkBitmap.write(x1, y1, w, h, bytes, properties, link.dos);
+                          LinkProperties properties)
+        throws IOException {
+        LinkBitmap.write(x1, y1, w, h, bytes, properties, link.dos);
     }
 
     /** 
@@ -444,11 +444,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkBitmap
      */
     public void addBitmap(float lt, float ln, int offset_x1, int offset_y1,
-			  int w, int h, byte[] bytes, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkBitmap.write(lt, ln, offset_x1, offset_y1, w, h, 
-			 bytes, properties, link.dos);
+                          int w, int h, byte[] bytes, 
+                          LinkProperties properties)
+        throws IOException {
+        LinkBitmap.write(lt, ln, offset_x1, offset_y1, w, h, 
+                         bytes, properties, link.dos);
     }
 
     /** 
@@ -462,9 +462,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
     public void addCircle(float latPoint, float lonPoint, int w, int h, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkCircle.write(latPoint, lonPoint, w, h, properties, link.dos);
+                          LinkProperties properties)
+        throws IOException {
+        LinkCircle.write(latPoint, lonPoint, w, h, properties, link.dos);
     }
 
     /** 
@@ -478,9 +478,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
     public void addCircle(int x1, int y1, int w, int h, 
-			  LinkProperties properties)
-	throws IOException { 
-	LinkCircle.write(x1, y1, w, h, properties, link.dos);
+                          LinkProperties properties)
+        throws IOException { 
+        LinkCircle.write(x1, y1, w, h, properties, link.dos);
     }
 
     /** 
@@ -496,11 +496,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
     public void addCircle(float latPoint, float lonPoint, 
-			  int offset_x1, int offset_y1, int w, int h, 
-			  LinkProperties properties)
-	throws IOException { 
-	LinkCircle.write(latPoint, lonPoint, offset_x1, offset_y1, 
-			 w, h, properties, link.dos);
+                          int offset_x1, int offset_y1, int w, int h, 
+                          LinkProperties properties)
+        throws IOException { 
+        LinkCircle.write(latPoint, lonPoint, offset_x1, offset_y1, 
+                         w, h, properties, link.dos);
     }
 
     /** 
@@ -513,10 +513,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
     public void addCircle(float latPoint, float lonPoint, float radius, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkCircle.write(latPoint, lonPoint, radius, 
-			 -1, -1, properties, link.dos);
+                          LinkProperties properties)
+        throws IOException {
+        LinkCircle.write(latPoint, lonPoint, radius, 
+                         -1, -1, properties, link.dos);
     }
 
     /** 
@@ -530,10 +530,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
     public void addCircle(float latPoint, float lonPoint, float radius, int units, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkCircle.write(latPoint, lonPoint, radius, units, 
-			 -1, properties, link.dos);
+                          LinkProperties properties)
+        throws IOException {
+        LinkCircle.write(latPoint, lonPoint, radius, units, 
+                         -1, properties, link.dos);
     }
 
     /** 
@@ -550,11 +550,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkCircle 
      */
     public void addCircle(float latPoint, float lonPoint, float radius, 
-			  int units, int nverts, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkCircle.write(latPoint, lonPoint, radius, units, nverts,
-			 properties, link.dos);
+                          int units, int nverts, 
+                          LinkProperties properties)
+        throws IOException {
+        LinkCircle.write(latPoint, lonPoint, radius, units, nverts,
+                         properties, link.dos);
     }
 
 
@@ -576,13 +576,13 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException 
      */
     public void addGrid(float lt, float ln, int rows, int columns, 
-			float orientation, float vResolution, float hResolution,
-			int major, int[] data, 
-			LinkProperties properties)
-	throws IOException {
-	LinkGrid.write(lt, ln, rows, columns, 
-		       orientation, vResolution, hResolution,
-		       major, data, properties, link.dos);
+                        float orientation, float vResolution, float hResolution,
+                        int major, int[] data, 
+                        LinkProperties properties)
+        throws IOException {
+        LinkGrid.write(lt, ln, rows, columns, 
+                       orientation, vResolution, hResolution,
+                       major, data, properties, link.dos);
     }
   
     /**
@@ -603,13 +603,13 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException
      */
     public void addGrid(int x1, int y1, int rows, int columns, 
-			float orientation, float vResolution, float hResolution,
-			int major, int[] data, 
-			LinkProperties properties)
-	throws IOException {
-	LinkGrid.write(x1, y1, rows, columns, 
-		       orientation, vResolution, hResolution,
-		       major, data, properties, link.dos);
+                        float orientation, float vResolution, float hResolution,
+                        int major, int[] data, 
+                        LinkProperties properties)
+        throws IOException {
+        LinkGrid.write(x1, y1, rows, columns, 
+                       orientation, vResolution, hResolution,
+                       major, data, properties, link.dos);
     }
 
     /**
@@ -632,14 +632,14 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException
      */
     public void addGrid(float lt, float ln, int offset_x1, int offset_y1,
-			int rows, int columns, 
-			float orientation, float vResolution, float hResolution,
-			int major, int[] data, 
-			LinkProperties properties)
-	throws IOException {
-	LinkGrid.write(lt, ln, offset_x1, offset_y1, rows, columns, 
-		       orientation, vResolution, hResolution,
-		       major, data, properties, link.dos);
+                        int rows, int columns, 
+                        float orientation, float vResolution, float hResolution,
+                        int major, int[] data, 
+                        LinkProperties properties)
+        throws IOException {
+        LinkGrid.write(lt, ln, offset_x1, offset_y1, rows, columns, 
+                       orientation, vResolution, hResolution,
+                       major, data, properties, link.dos);
     }
 
     /** 
@@ -654,9 +654,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkLine
      */
     public void addLine(float lat_1, float lon_1, float lat_2, float lon_2, 
-			int lineType, LinkProperties properties)
-	throws IOException {
-	LinkLine.write(lat_1, lon_1, lat_2, lon_2, lineType, properties, link.dos);
+                        int lineType, LinkProperties properties)
+        throws IOException {
+        LinkLine.write(lat_1, lon_1, lat_2, lon_2, lineType, properties, link.dos);
     }
 
     /** 
@@ -672,11 +672,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkLine
      */
     public void addLine(float lat_1, float lon_1, float lat_2, float lon_2, 
-			int lineType, int nsegs, 
-			LinkProperties properties)
-	throws IOException {
-	LinkLine.write(lat_1, lon_1, lat_2, lon_2, lineType, nsegs, 
-		       properties, link.dos);
+                        int lineType, int nsegs, 
+                        LinkProperties properties)
+        throws IOException {
+        LinkLine.write(lat_1, lon_1, lat_2, lon_2, lineType, nsegs, 
+                       properties, link.dos);
     }
 
     /** 
@@ -690,9 +690,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkLine
      */
     public void addLine(int x1, int y1, int x2, int y2, 
-			LinkProperties properties)
-	throws IOException {
-	LinkLine.write(x1, y1, x2, y2, properties, link.dos);
+                        LinkProperties properties)
+        throws IOException {
+        LinkLine.write(x1, y1, x2, y2, properties, link.dos);
     }
 
     /** 
@@ -708,10 +708,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkLine
      */
     public void addLine(float lat_1, float lon_1, 
-			int x1, int y1, int x2, int y2, 
-			LinkProperties properties)
-	throws IOException {
-	LinkLine.write(lat_1, lon_1, x1, y1, x2, y2, properties, link.dos);
+                        int x1, int y1, int x2, int y2, 
+                        LinkProperties properties)
+        throws IOException {
+        LinkLine.write(lat_1, lon_1, x1, y1, x2, y2, properties, link.dos);
     }
 
     /** 
@@ -725,9 +725,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(float lt, float ln, ImageIcon ii,
-			  LinkProperties properties)
-	throws IOException, InterruptedException {
-	LinkRaster.write(lt, ln, ii, properties, link.dos);
+                          LinkProperties properties)
+        throws IOException, InterruptedException {
+        LinkRaster.write(lt, ln, ii, properties, link.dos);
     }
     
     /** 
@@ -741,8 +741,8 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(int x1, int y1, ImageIcon ii, LinkProperties properties)
-	throws IOException, InterruptedException  {
-	LinkRaster.write(x1, y1, ii, properties, link.dos);
+        throws IOException, InterruptedException  {
+        LinkRaster.write(x1, y1, ii, properties, link.dos);
     }
     
     /** 
@@ -758,11 +758,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(float lt, float ln, int offset_x1, int offset_y1,
-			  ImageIcon ii, LinkProperties properties)
-	throws IOException, InterruptedException  {
-	LinkRaster.write(lt, ln, offset_x1, offset_y1, ii, 
-			 properties, link.dos);
-    }	
+                          ImageIcon ii, LinkProperties properties)
+        throws IOException, InterruptedException  {
+        LinkRaster.write(lt, ln, offset_x1, offset_y1, ii, 
+                         properties, link.dos);
+    }   
     
     /** 
      * Write a raster in the response.
@@ -777,11 +777,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(float lt, float ln, Image image, 
-			  int image_width, int image_height,
-			  LinkProperties properties)
-	throws IOException, InterruptedException {
-	LinkRaster.write(lt, ln, image, image_width, image_height, 
-			 properties, link.dos);
+                          int image_width, int image_height,
+                          LinkProperties properties)
+        throws IOException, InterruptedException {
+        LinkRaster.write(lt, ln, image, image_width, image_height, 
+                         properties, link.dos);
     }
     
     /** 
@@ -797,11 +797,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(int x1, int y1, Image image, 
-			  int image_width, int image_height,
-			  LinkProperties properties)
-	throws IOException, InterruptedException {
-	LinkRaster.write(x1, y1, image, image_width, image_height, 
-			 properties, link.dos);
+                          int image_width, int image_height,
+                          LinkProperties properties)
+        throws IOException, InterruptedException {
+        LinkRaster.write(x1, y1, image, image_width, image_height, 
+                         properties, link.dos);
     }
     
     /** 
@@ -819,11 +819,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(float lt, float ln, int offset_x1, int offset_y1,
-			  Image image, int image_width, int image_height,
-			  LinkProperties properties)
-	throws IOException, InterruptedException {
-	LinkRaster.write(lt, ln, offset_x1, offset_y1, image, 
-			 image_width, image_height, properties, link.dos);
+                          Image image, int image_width, int image_height,
+                          LinkProperties properties)
+        throws IOException, InterruptedException {
+        LinkRaster.write(lt, ln, offset_x1, offset_y1, image, 
+                         image_width, image_height, properties, link.dos);
     }
     
     /** 
@@ -838,9 +838,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(float lt, float ln, int w, int h, int[] pix, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkRaster.write(lt, ln, w, h, pix, properties, link.dos);
+                          LinkProperties properties)
+        throws IOException {
+        LinkRaster.write(lt, ln, w, h, pix, properties, link.dos);
     }
     
     /** 
@@ -855,9 +855,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(int x1, int y1, int w, int h, int[] pix, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkRaster.write(x1, y1, w, h, pix, properties, link.dos);
+                          LinkProperties properties)
+        throws IOException {
+        LinkRaster.write(x1, y1, w, h, pix, properties, link.dos);
     }
 
     /** 
@@ -874,11 +874,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(float lt, float ln, int offset_x1, int offset_y1,
-			  int w, int h, int[] pix, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkRaster.write(lt, ln, offset_x1, offset_y1, w, h, pix, 
-			 properties, link.dos);
+                          int w, int h, int[] pix, 
+                          LinkProperties properties)
+        throws IOException {
+        LinkRaster.write(lt, ln, offset_x1, offset_y1, w, h, pix, 
+                         properties, link.dos);
     }
 
     /** 
@@ -891,9 +891,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(float lt, float ln, String url,
-			  LinkProperties properties)
-	throws IOException {
-	LinkRaster.write(lt, ln, url, properties, link.dos);
+                          LinkProperties properties)
+        throws IOException {
+        LinkRaster.write(lt, ln, url, properties, link.dos);
     }
 
     /** 
@@ -906,9 +906,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(int x1, int y1, String url, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkRaster.write(x1, y1, url, properties, link.dos);
+                          LinkProperties properties)
+        throws IOException {
+        LinkRaster.write(x1, y1, url, properties, link.dos);
     }
 
     /** 
@@ -923,9 +923,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(float lt, float ln, int offset_x1, int offset_y1,
-			  String url, LinkProperties properties)
-	throws IOException {
-	LinkRaster.write(lt, ln, offset_x1, offset_y1, url, properties, link.dos);
+                          String url, LinkProperties properties)
+        throws IOException {
+        LinkRaster.write(lt, ln, offset_x1, offset_y1, url, properties, link.dos);
     }
 
     /** 
@@ -942,11 +942,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(float lt, float ln, int w, int h, 
-			  byte[] bytes, Color[] colorTable, int trans, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkRaster.write(lt, ln, w, h, bytes, colorTable, trans, 
-			 properties, link.dos);
+                          byte[] bytes, Color[] colorTable, int trans, 
+                          LinkProperties properties)
+        throws IOException {
+        LinkRaster.write(lt, ln, w, h, bytes, colorTable, trans, 
+                         properties, link.dos);
     }
 
     /** 
@@ -963,11 +963,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(int x1, int y1, int w, int h,
-			  byte[] bytes, Color[] colorTable, int trans, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkRaster.write(x1, y1, w, h, bytes, colorTable, trans, 
-			 properties, link.dos);
+                          byte[] bytes, Color[] colorTable, int trans, 
+                          LinkProperties properties)
+        throws IOException {
+        LinkRaster.write(x1, y1, w, h, bytes, colorTable, trans, 
+                         properties, link.dos);
     }
 
     /** 
@@ -986,11 +986,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void addRaster(float lt, float ln, int offset_x1, int offset_y1,
-			  int w, int h, byte[] bytes, Color[] colorTable, int trans, 
-			  LinkProperties properties)
-	throws IOException {
-	LinkRaster.write(lt, ln, offset_x1, offset_y1, w,  h, bytes, 
-			 colorTable, trans, properties, link.dos);
+                          int w, int h, byte[] bytes, Color[] colorTable, int trans, 
+                          LinkProperties properties)
+        throws IOException {
+        LinkRaster.write(lt, ln, offset_x1, offset_y1, w,  h, bytes, 
+                         colorTable, trans, properties, link.dos);
     }
 
     /** 
@@ -1004,9 +1004,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRectangle
      */
     public void addRectangle(float lt1, float ln1, float lt2, float ln2, int lType,
-			     LinkProperties properties)
-	throws IOException {
-	LinkRectangle.write(lt1, ln1, lt2, ln2, lType, properties, link.dos);
+                             LinkProperties properties)
+        throws IOException {
+        LinkRectangle.write(lt1, ln1, lt2, ln2, lType, properties, link.dos);
     }
     
     /** 
@@ -1023,10 +1023,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRectangle 
      */
     public void addRectangle(float lt1, float ln1, float lt2, float ln2, 
-			     int lType, int nsegs,
-			     LinkProperties properties)
-	throws IOException {
-	LinkRectangle.write(lt1, ln1, lt2, ln2, lType, nsegs, properties, link.dos);
+                             int lType, int nsegs,
+                             LinkProperties properties)
+        throws IOException {
+        LinkRectangle.write(lt1, ln1, lt2, ln2, lType, nsegs, properties, link.dos);
     }
 
     /** 
@@ -1040,9 +1040,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRectangle
      */
     public void addRectangle(int x1, int y1, int x2, int y2, 
-			     LinkProperties properties)
-	throws IOException {
-	LinkRectangle.write(x1, y1, x2, y2, properties, link.dos);
+                             LinkProperties properties)
+        throws IOException {
+        LinkRectangle.write(x1, y1, x2, y2, properties, link.dos);
     }
 
     /** 
@@ -1058,10 +1058,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRectangle
      */
     public void addRectangle(float lt1, float ln1, 
-			     int x1, int y1, int x2, int y2, 
-			     LinkProperties properties)
-	throws IOException {
-	LinkRectangle.write(lt1, ln1, x1, y1, x2, y2, properties, link.dos);
+                             int x1, int y1, int x2, int y2, 
+                             LinkProperties properties)
+        throws IOException {
+        LinkRectangle.write(lt1, ln1, x1, y1, x2, y2, properties, link.dos);
     }
 
     /** 
@@ -1074,9 +1074,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkPoint
      */
     public void addPoint(float lt1, float ln1, int radius,
-			 LinkProperties properties)
-	throws IOException {
-	LinkPoint.write(lt1, ln1, radius, properties, link.dos);
+                         LinkProperties properties)
+        throws IOException {
+        LinkPoint.write(lt1, ln1, radius, properties, link.dos);
     }
     
     /** 
@@ -1088,10 +1088,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoint
      */
-    public void addPoint(int x1, int y1, int radius,		       
-			 LinkProperties properties)
-	throws IOException {
-	LinkPoint.write(x1, y1, radius, properties, link.dos);
+    public void addPoint(int x1, int y1, int radius,                   
+                         LinkProperties properties)
+        throws IOException {
+        LinkPoint.write(x1, y1, radius, properties, link.dos);
     }
     
     /** 
@@ -1106,10 +1106,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkPoint
      */
     public void addPoint(float lt1, float ln1, 
-			 int x1, int y1, int radius,
-			 LinkProperties properties)
-	throws IOException {
-	LinkPoint.write(lt1, ln1, x1, y1, radius, properties, link.dos);
+                         int x1, int y1, int radius,
+                         LinkProperties properties)
+        throws IOException {
+        LinkPoint.write(lt1, ln1, x1, y1, radius, properties, link.dos);
     }
 
     /** 
@@ -1122,9 +1122,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
     public void addPoly(float[] llPoints, int units, int lType, 
-			LinkProperties properties)
-	throws IOException {
-	LinkPoly.write(llPoints, units, lType, properties, link.dos);
+                        LinkProperties properties)
+        throws IOException {
+        LinkPoly.write(llPoints, units, lType, properties, link.dos);
     }
 
     /** 
@@ -1138,9 +1138,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
     public void addPoly(float[] llpoints, int units, int lType, int nsegs, 
-			LinkProperties properties)
-	throws IOException {
-	LinkPoly.write(llpoints, units, lType, nsegs, properties, link.dos);
+                        LinkProperties properties)
+        throws IOException {
+        LinkPoly.write(llpoints, units, lType, nsegs, properties, link.dos);
     }
 
     /** 
@@ -1151,8 +1151,8 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
     public void addPoly(int[] xypoints, LinkProperties properties)
-	throws IOException {
-	LinkPoly.write(xypoints, properties, link.dos);
+        throws IOException {
+        LinkPoly.write(xypoints, properties, link.dos);
     }
 
     /** 
@@ -1164,9 +1164,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
     public void addPoly(int[] xpoints, int[] ypoints, 
-			LinkProperties properties)
-	throws IOException  {
-	LinkPoly.write(xpoints, ypoints, properties, link.dos);
+                        LinkProperties properties)
+        throws IOException  {
+        LinkPoly.write(xpoints, ypoints, properties, link.dos);
     }
 
     /** 
@@ -1182,9 +1182,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
     public void addPoly(float latPoint, float lonPoint, int[] xypoints, int cMode, 
-			LinkProperties properties)
-	throws IOException  {
-	LinkPoly.write(latPoint, lonPoint, xypoints, cMode, properties, link.dos);
+                        LinkProperties properties)
+        throws IOException  {
+        LinkPoly.write(latPoint, lonPoint, xypoints, cMode, properties, link.dos);
     }
 
     /** 
@@ -1201,10 +1201,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
     public void addPoly(float latPoint, float lonPoint, int[] xpoints, int[] ypoints, 
-			int cMode, LinkProperties properties)
-	throws IOException  {
-	LinkPoly.write(latPoint, lonPoint, xpoints, ypoints, cMode, 
-		       properties, link.dos);
+                        int cMode, LinkProperties properties)
+        throws IOException  {
+        LinkPoly.write(latPoint, lonPoint, xpoints, ypoints, cMode, 
+                       properties, link.dos);
     }
 
     /** 
@@ -1218,10 +1218,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkText
      */
     public void addText(float latPoint, float lonPoint, String stuff, 
-			int justify, LinkProperties properties)
-	throws IOException {
-	LinkText.write(latPoint, lonPoint, stuff, LinkText.DEFAULT_FONT, 
-		       justify, properties, link.dos);
+                        int justify, LinkProperties properties)
+        throws IOException {
+        LinkText.write(latPoint, lonPoint, stuff, LinkText.DEFAULT_FONT, 
+                       justify, properties, link.dos);
     }
 
     /** 
@@ -1235,10 +1235,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkText
      */
     public void addText(int x, int y, String stuff, int justify, 
-			LinkProperties properties)
-	throws IOException {
-	LinkText.write(x, y, stuff, LinkText.DEFAULT_FONT, justify, 
-		       properties, link.dos);
+                        LinkProperties properties)
+        throws IOException {
+        LinkText.write(x, y, stuff, LinkText.DEFAULT_FONT, justify, 
+                       properties, link.dos);
     }
 
     /** 
@@ -1254,11 +1254,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkText
      */
     public void addText(float latPoint, float lonPoint, 
-			int offset_x, int offset_y, String stuff, 
-			int justify, LinkProperties properties)
-	throws IOException {
-	LinkText.write(latPoint, lonPoint, offset_x, offset_y, 
-		       stuff, LinkText.DEFAULT_FONT, justify, properties, link.dos);
+                        int offset_x, int offset_y, String stuff, 
+                        int justify, LinkProperties properties)
+        throws IOException {
+        LinkText.write(latPoint, lonPoint, offset_x, offset_y, 
+                       stuff, LinkText.DEFAULT_FONT, justify, properties, link.dos);
     }
 
     /** 
@@ -1273,10 +1273,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkText
      */
     public void addText(float latPoint, float lonPoint, String stuff, String font, 
-			int justify, LinkProperties properties)
-	throws IOException {
-	LinkText.write(latPoint, lonPoint, stuff, font, justify, 
-		       properties, link.dos);
+                        int justify, LinkProperties properties)
+        throws IOException {
+        LinkText.write(latPoint, lonPoint, stuff, font, justify, 
+                       properties, link.dos);
     }
 
     /** 
@@ -1291,9 +1291,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkText
      */
     public void addText(int x, int y, String stuff, String font, int justify, 
-			LinkProperties properties)
-	throws IOException {
-	LinkText.write(x, y, stuff, font, justify, properties, link.dos);
+                        LinkProperties properties)
+        throws IOException {
+        LinkText.write(x, y, stuff, font, justify, properties, link.dos);
     }
 
     /** 
@@ -1310,11 +1310,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkText
      */
     public void addText(float latPoint, float lonPoint, int offset_x, int offset_y,
-			String stuff, String font, int justify, 
-			LinkProperties properties)
-	throws IOException {
-	LinkText.write(latPoint, lonPoint, offset_x, offset_y, 
-		       stuff, font, justify, properties, link.dos);
+                        String stuff, String font, int justify, 
+                        LinkProperties properties)
+        throws IOException {
+        LinkText.write(latPoint, lonPoint, offset_x, offset_y, 
+                       stuff, font, justify, properties, link.dos);
     }
 
 }

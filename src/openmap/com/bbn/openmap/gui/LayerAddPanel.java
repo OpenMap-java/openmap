@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerAddPanel.java,v $
 // $RCSfile: LayerAddPanel.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/11/14 20:21:42 $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -90,13 +90,13 @@ public class LayerAddPanel extends OMComponentPanel
      * Creates the LayerPanel.
      */
     public LayerAddPanel() {
-	super();
-	if (Debug.debugging("addable")) {
-	    Debug.output("LayerAddPanel()");
-	}
-	inspector = new Inspector();
-	inspector.addActionListener((ActionListener)this);
-	setWindowSupport(new WindowSupport(this, "Add Layer"));
+        super();
+        if (Debug.debugging("addable")) {
+            Debug.output("LayerAddPanel()");
+        }
+        inspector = new Inspector();
+        inspector.addActionListener((ActionListener)this);
+        setWindowSupport(new WindowSupport(this, "Add Layer"));
     }
     
     /** 
@@ -104,17 +104,17 @@ public class LayerAddPanel extends OMComponentPanel
      * @param l the LayerHandler controlling the layers.
      */
     public LayerAddPanel(PropertyHandler p, LayerHandler l) {
-	this();
-	propertyHandler = p;
-	layerHandler = l;
+        this();
+        propertyHandler = p;
+        layerHandler = l;
     }
     
     public void createLayerClasses(Layer[] layers) {
-	getLayerClasses().clear();
+        getLayerClasses().clear();
 
-	for (int i = 0; i < layers.length; i++) {
-	    addLayer(layers[i].getName(), layers[i].getClass().getName());
-	}
+        for (int i = 0; i < layers.length; i++) {
+            addLayer(layers[i].getName(), layers[i].getClass().getName());
+        }
     }
 
     /**
@@ -122,8 +122,8 @@ public class LayerAddPanel extends OMComponentPanel
      * given. 
      */
     public void createPanel(Layer[] layers) {
-	createLayerClasses(layers);
-	createPanel();
+        createLayerClasses(layers);
+        createPanel();
     }
 
     public final static String DefaultLayerName = "Layer Name";
@@ -135,66 +135,66 @@ public class LayerAddPanel extends OMComponentPanel
      * the layerTypes property.
      */
     public void createPanel() {
-	removeAll();
-	JButton configureButton = new JButton("Configure");
-	configureButton.addActionListener(this);
-	configureButton.setActionCommand(configureActionCommand);
+        removeAll();
+        JButton configureButton = new JButton("Configure");
+        configureButton.addActionListener(this);
+        configureButton.setActionCommand(configureActionCommand);
 
-	prefixTextField = new JTextField(DefaultLayerName, 12);
+        prefixTextField = new JTextField(DefaultLayerName, 12);
 
-	Object[] layerTypes = getLayerClasses().keySet().toArray();
+        Object[] layerTypes = getLayerClasses().keySet().toArray();
 
-	if (layerTypes.length == 0) {
-	    add(new JLabel("No Layers available for creation."));
-	} else {
-	    list = new JComboBox(layerTypes);
-	    add(list);
-	    add(prefixTextField);
-	    add(configureButton);
-	}
-	invalidate();
+        if (layerTypes.length == 0) {
+            add(new JLabel("No Layers available for creation."));
+        } else {
+            list = new JComboBox(layerTypes);
+            add(list);
+            add(prefixTextField);
+            add(configureButton);
+        }
+        invalidate();
     }
 
     public Hashtable getLayerClasses() {
-	if (layerClasses == null) {
-	    layerClasses = new Hashtable();
-	}
-	return layerClasses;
+        if (layerClasses == null) {
+            layerClasses = new Hashtable();
+        }
+        return layerClasses;
     }
 
     public void addLayer(String prettyName, String className) {
-	getLayerClasses().put(prettyName, className);
+        getLayerClasses().put(prettyName, className);
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
-	if (Debug.debugging("addable")) {
-	    Debug.output("LayerAddPanel.setProperties()");
-	}
-	getLayerTypes(props);
+        super.setProperties(prefix, props);
+        if (Debug.debugging("addable")) {
+            Debug.output("LayerAddPanel.setProperties()");
+        }
+        getLayerTypes(props);
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	int layerNumber = 1;
-	if (layerClasses != null) {
-	    StringBuffer layerList = new StringBuffer();
+        int layerNumber = 1;
+        if (layerClasses != null) {
+            StringBuffer layerList = new StringBuffer();
 
-	    Enumeration keys = layerClasses.keys();
-	    while (keys.hasMoreElements()) {
-		String prettyName = (String)keys.nextElement();
-		String className = (String)layerClasses.get(prettyName);
+            Enumeration keys = layerClasses.keys();
+            while (keys.hasMoreElements()) {
+                String prettyName = (String)keys.nextElement();
+                String className = (String)layerClasses.get(prettyName);
 
-		String markerName = "l" + (layerNumber++);
-		layerList.append(markerName + " ");
-		props.put(markerName + ".prettyName", prettyName);
-		props.put(markerName + ".class", className);
-	    }
-	    props.put(Environment.OpenMapPrefix+"."+layerTypes, layerList.toString());
-	}
+                String markerName = "l" + (layerNumber++);
+                layerList.append(markerName + " ");
+                props.put(markerName + ".prettyName", prettyName);
+                props.put(markerName + ".class", className);
+            }
+            props.put(Environment.OpenMapPrefix+"."+layerTypes, layerList.toString());
+        }
 
-	return props;
+        return props;
     }
     
     /** 
@@ -206,7 +206,7 @@ public class LayerAddPanel extends OMComponentPanel
      * values. Empty Hashtable if no layers are available.
      */
     protected Hashtable getLayerTypes() {
-	return getLayerTypes(null);
+        return getLayerTypes(null);
     }
 
     /** 
@@ -220,181 +220,181 @@ public class LayerAddPanel extends OMComponentPanel
      * values. Empty Hashtable if no layers are available.
      */
     protected Hashtable getLayerTypes(Properties props) {
-	Hashtable layerHash = getLayerClasses();
-	layerHash.clear();
+        Hashtable layerHash = getLayerClasses();
+        layerHash.clear();
 
-	if (props == null) {
-	    if (propertyHandler != null) {
-		props = propertyHandler.getProperties();
-	    } else {
-		return layerHash;
-	    }
-	}
+        if (props == null) {
+            if (propertyHandler != null) {
+                props = propertyHandler.getProperties();
+            } else {
+                return layerHash;
+            }
+        }
 
-	String prefix = Environment.OpenMapPrefix;
-	String addableList = props.getProperty(prefix+"."+layerTypes);
+        String prefix = Environment.OpenMapPrefix;
+        String addableList = props.getProperty(prefix+"."+layerTypes);
 
-	if (Debug.debugging("addable")) {
-	    Debug.output("LayerAddPanel: " + addableList);
-	}
+        if (Debug.debugging("addable")) {
+            Debug.output("LayerAddPanel: " + addableList);
+        }
 
-	Vector typeList = PropUtils.parseSpacedMarkers(addableList);
+        Vector typeList = PropUtils.parseSpacedMarkers(addableList);
 
-	if (typeList == null) {
-	    return layerHash;
-	}
+        if (typeList == null) {
+            return layerHash;
+        }
 
-	// debug info: available layers
-	int unNamedCount = 1;
-	for (int i=0; i<typeList.size(); ++i) {
-	    String className = props.getProperty(typeList.get(i)+".class");
-	    String prettyName = props.getProperty(typeList.get(i)+".prettyName");
+        // debug info: available layers
+        int unNamedCount = 1;
+        for (int i=0; i<typeList.size(); ++i) {
+            String className = props.getProperty(typeList.get(i)+".class");
+            String prettyName = props.getProperty(typeList.get(i)+".prettyName");
 
-	    if (prettyName == null) {
-		prettyName = "Layer " + (unNamedCount++);
-	    }
+            if (prettyName == null) {
+                prettyName = "Layer " + (unNamedCount++);
+            }
  
-	    if (className != null) {
-		if (Debug.debugging("addable")) {
-		    Debug.output("  adding "+ className + ", " + className);
-		}
-		layerHash.put(prettyName, className);
-	    }
-	}
-	return layerHash;
+            if (className != null) {
+                if (Debug.debugging("addable")) {
+                    Debug.output("  adding "+ className + ", " + className);
+                }
+                layerHash.put(prettyName, className);
+            }
+        }
+        return layerHash;
     }
     
     /**
      * Method associated with the ActionListener interface. 
      */
     public void actionPerformed(ActionEvent e) {
-	
-	if (e.getActionCommand()==configureActionCommand) {
-	    // instanciate a default instance of the chosen layer
-	    // and bring up the Inspector to configure it
-	    String prettyName = (String)list.getSelectedItem();
-	    String prefix = prefixTextField.getText().trim();
+        
+        if (e.getActionCommand()==configureActionCommand) {
+            // instanciate a default instance of the chosen layer
+            // and bring up the Inspector to configure it
+            String prettyName = (String)list.getSelectedItem();
+            String prefix = prefixTextField.getText().trim();
 
-	    if (prettyName == null) {
-		return;
-	    }
+            if (prettyName == null) {
+                return;
+            }
 
-	    String newClassName = (String)layerClasses.get(prettyName);
+            String newClassName = (String)layerClasses.get(prettyName);
 
-	    layer = ComponentFactory.create(newClassName);
+            layer = ComponentFactory.create(newClassName);
 
-	    if (layer instanceof PropertyConsumer) {
+            if (layer instanceof PropertyConsumer) {
 
-		if (layer instanceof PlugIn) {
-		    PlugInLayer pil = new PlugInLayer();
-		    pil.setPlugIn((PlugIn)layer);
-		    pil.setName(prefix);
-		    layer = pil;
-		}
+                if (layer instanceof PlugIn) {
+                    PlugInLayer pil = new PlugInLayer();
+                    pil.setPlugIn((PlugIn)layer);
+                    pil.setName(prefix);
+                    layer = pil;
+                }
 
-		if (layer instanceof Layer) {
-		    // Set the pretty name to what the user chose.
-		    ((Layer)layer).setName(prefix);
-		}
+                if (layer instanceof Layer) {
+                    // Set the pretty name to what the user chose.
+                    ((Layer)layer).setName(prefix);
+                }
 
-		// Set the prefix to a modified version of the pretty name.
-		prefix = propertyHandler.getUniquePrefix(prefix);
+                // Set the prefix to a modified version of the pretty name.
+                prefix = propertyHandler.getUniquePrefix(prefix);
 
-		((PropertyConsumer)layer).setPropertyPrefix(prefix);
+                ((PropertyConsumer)layer).setPropertyPrefix(prefix);
 
-		inspector.inspectPropertyConsumer((PropertyConsumer)layer);
+                inspector.inspectPropertyConsumer((PropertyConsumer)layer);
 
-	    }
-	} else if (e.getActionCommand() == inspector.doneCommand) {
-	    // the confirmation button of the Inspector panel was pressed
-	    // find the beancontext and add the layer at hand (var. layer)
-	    if (layer != null && layerHandler != null) {
-		if (layer instanceof Layer) {
-		    // Let's add it on top, so the user can find it
-		    // easier, instead of adding it to the bottom and
-		    // having it lost behind some other layers.
-		    layerHandler.addLayer((Layer)layer, 0);
-		} else if (layer instanceof PlugIn) {
-		    PlugInLayer pil = (PlugInLayer)((PlugIn)layer).getComponent();
-		    layerHandler.addLayer(pil, 0);
-		}
-		prefixTextField.setText(DefaultLayerName);
-	    } else if (layerHandler != null) {
-		JOptionPane.showMessageDialog(this, "Layer Handler not found.\nCan't find anything to add the layer to.");
-	    } else {
-		JOptionPane.showMessageDialog(this, "No Layer instantiated");
-	    }
-	} else if (e.getActionCommand() == inspector.cancelCommand) {
-	    if (layer != null && propertyHandler != null) {
-		propertyHandler.removeUsedPrefix(((PropertyConsumer)layer).getPropertyPrefix());
-	    }
-	} else {
-	    showPanel();	    
-	}
+            }
+        } else if (e.getActionCommand() == inspector.doneCommand) {
+            // the confirmation button of the Inspector panel was pressed
+            // find the beancontext and add the layer at hand (var. layer)
+            if (layer != null && layerHandler != null) {
+                if (layer instanceof Layer) {
+                    // Let's add it on top, so the user can find it
+                    // easier, instead of adding it to the bottom and
+                    // having it lost behind some other layers.
+                    layerHandler.addLayer((Layer)layer, 0);
+                } else if (layer instanceof PlugIn) {
+                    PlugInLayer pil = (PlugInLayer)((PlugIn)layer).getComponent();
+                    layerHandler.addLayer(pil, 0);
+                }
+                prefixTextField.setText(DefaultLayerName);
+            } else if (layerHandler != null) {
+                JOptionPane.showMessageDialog(this, "Layer Handler not found.\nCan't find anything to add the layer to.");
+            } else {
+                JOptionPane.showMessageDialog(this, "No Layer instantiated");
+            }
+        } else if (e.getActionCommand() == inspector.cancelCommand) {
+            if (layer != null && propertyHandler != null) {
+                propertyHandler.removeUsedPrefix(((PropertyConsumer)layer).getPropertyPrefix());
+            }
+        } else {
+            showPanel();            
+        }
     }
 
     public void showPanel() {
-	createPanel();
-	prefixTextField.setText(DefaultLayerName);
+        createPanel();
+        prefixTextField.setText(DefaultLayerName);
 
-	int x = 10;
-	int y = 10;
-	
-	WindowSupport ws = getWindowSupport();
+        int x = 10;
+        int y = 10;
+        
+        WindowSupport ws = getWindowSupport();
 
-	Point loc = ws.getComponentLocation();
-	if (loc != null) {
-	    x = (int) loc.getX();
-	    y = (int) loc.getY();
-	}
+        Point loc = ws.getComponentLocation();
+        if (loc != null) {
+            x = (int) loc.getX();
+            y = (int) loc.getY();
+        }
 
-	MapHandler mh = (MapHandler) getBeanContext();
-	Frame frame = null;
-	if (mh != null) {
-	    frame = (Frame)mh.get(java.awt.Frame.class);
-	}
-	
-	ws.displayInWindow(frame, x, y, -1, -1);
+        MapHandler mh = (MapHandler) getBeanContext();
+        Frame frame = null;
+        if (mh != null) {
+            frame = (Frame)mh.get(java.awt.Frame.class);
+        }
+        
+        ws.displayInWindow(frame, x, y, -1, -1);
     }
 
     /**
      * Looks for PropertyHandler and LayerHandler.
      */
     public void findAndInit(Object someObj) {
-	if (someObj instanceof PropertyHandler) {
-	    // do the initializing that need to be done here
-	    Debug.message("layerspanel","LayerAddPanel found a LayerHandler");
-	    propertyHandler = (PropertyHandler)someObj;
-	}
-	if (someObj instanceof LayerHandler) {
-	    layerHandler = (LayerHandler)someObj;
-	}
+        if (someObj instanceof PropertyHandler) {
+            // do the initializing that need to be done here
+            Debug.message("layerspanel","LayerAddPanel found a LayerHandler");
+            propertyHandler = (PropertyHandler)someObj;
+        }
+        if (someObj instanceof LayerHandler) {
+            layerHandler = (LayerHandler)someObj;
+        }
     }
     
     /** 
      * Disconnect from any objects that are removed from MapHandler.
      */
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof PropertyHandler &&
-	    propertyHandler == someObj) {
-	    // do the initializing that need to be done here
-	    Debug.message("addable","LayerAddPanel removing PropertyHandler");
-	    propertyHandler = null;
-	}
-	if (someObj instanceof LayerHandler && 
-	    someObj == layerHandler) {
-	    Debug.message("addable","LayerAddPanel removing LayerHandler");
-	    layerHandler = null;
-	}
+        if (someObj instanceof PropertyHandler &&
+            propertyHandler == someObj) {
+            // do the initializing that need to be done here
+            Debug.message("addable","LayerAddPanel removing PropertyHandler");
+            propertyHandler = null;
+        }
+        if (someObj instanceof LayerHandler && 
+            someObj == layerHandler) {
+            Debug.message("addable","LayerAddPanel removing LayerHandler");
+            layerHandler = null;
+        }
     }
     
     /** Test cases. */
     public static void main(String[] args) {
-	LayerAddPanel lap = new LayerAddPanel(new PropertyHandler(), null);
-	Layer[] layers = new Layer[1];
-	layers[0] = new com.bbn.openmap.layer.shape.ShapeLayer();
-	
-	lap.createPanel(layers);
+        LayerAddPanel lap = new LayerAddPanel(new PropertyHandler(), null);
+        Layer[] layers = new Layer[1];
+        layers[0] = new com.bbn.openmap.layer.shape.ShapeLayer();
+        
+        lap.createPanel(layers);
     }
 }
 

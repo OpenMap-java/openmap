@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MenuBar.java,v $
 // $RCSfile: MenuBar.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 02:36:21 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -56,48 +56,48 @@ public class MenuBar extends JMenuBar
      * @param it Iterator 
      */
     protected void findAndInit(Iterator it) {
-	Object someObj;
-	while (it.hasNext()) {
-	    findAndInit(it.next());
-	}
+        Object someObj;
+        while (it.hasNext()) {
+            findAndInit(it.next());
+        }
     }
 
     public void findAndInit(Object someObj) {
-	int menuCount = getMenuCount();
+        int menuCount = getMenuCount();
 
-	// Check for HelpMenu first.
-	if (someObj instanceof HelpMenu) {
-	    //setHelpMenu((JMenu)someObj);
-	    // We will use it when its implementation is available.
-	    // get the last menu and see if it is helpmenu
-	    if (menuCount > 0 && (getMenu(menuCount - 1) instanceof HelpMenu)) {
-		System.err.println("HelpMenu already exists in MenuBar..overriding it");
-	    }
-	    // make the help menu as the last menu
-	    if (Debug.debugging("menubar")) {
-		Debug.output("MenuBar: Adding help menu at " + getMenuCount());
-	    }
-	    add((JMenu)someObj,getMenuCount());
+        // Check for HelpMenu first.
+        if (someObj instanceof HelpMenu) {
+            //setHelpMenu((JMenu)someObj);
+            // We will use it when its implementation is available.
+            // get the last menu and see if it is helpmenu
+            if (menuCount > 0 && (getMenu(menuCount - 1) instanceof HelpMenu)) {
+                System.err.println("HelpMenu already exists in MenuBar..overriding it");
+            }
+            // make the help menu as the last menu
+            if (Debug.debugging("menubar")) {
+                Debug.output("MenuBar: Adding help menu at " + getMenuCount());
+            }
+            add((JMenu)someObj,getMenuCount());
 
-	} else if (someObj instanceof MenuBarMenu) {
-		
-	    if (Debug.debugging("menubar")) {
-		Debug.output("MenuBar: Adding Menu " + ((JMenu)someObj) + 
-			     "to index " + menuCount);
-	    }
+        } else if (someObj instanceof MenuBarMenu) {
+                
+            if (Debug.debugging("menubar")) {
+                Debug.output("MenuBar: Adding Menu " + ((JMenu)someObj) + 
+                             "to index " + menuCount);
+            }
 
-	    JMenu lastMenu = getLastMenu();
-	    if (lastMenu instanceof HelpMenu) {
-		remove(lastMenu);
-		add((JMenu)someObj, menuCount -1);
-		add(lastMenu, menuCount);
-		if (Debug.debugging("menubar")) {
-		    Debug.output("MenuBar: last menu is HelpMenu\n moving helpMenu to " + menuCount);
-		}
-	    } else {
-		add((JMenu)someObj, menuCount);
-	    }
-	}
+            JMenu lastMenu = getLastMenu();
+            if (lastMenu instanceof HelpMenu) {
+                remove(lastMenu);
+                add((JMenu)someObj, menuCount -1);
+                add(lastMenu, menuCount);
+                if (Debug.debugging("menubar")) {
+                    Debug.output("MenuBar: last menu is HelpMenu\n moving helpMenu to " + menuCount);
+                }
+            } else {
+                add((JMenu)someObj, menuCount);
+            }
+        }
     }
 
     /**
@@ -105,72 +105,72 @@ public class MenuBar extends JMenuBar
      * items, it returns null.
      */
     public JMenu getLastMenu() {
-	int menuCount = getMenuCount();
-	if (menuCount > 0) {
-	    return getMenu(menuCount - 1);
-	} else {
-	    return null;
-	} 
+        int menuCount = getMenuCount();
+        if (menuCount > 0) {
+            return getMenu(menuCount - 1);
+        } else {
+            return null;
+        } 
     }
 
     /** Method for BeanContextChild interface */
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {    
-	beanContextChildSupport.setBeanContext(in_bc);
-	if (in_bc!=null) {
-	    in_bc.addBeanContextMembershipListener(this);
-	    findAndInit(in_bc.iterator());
-	}
+        beanContextChildSupport.setBeanContext(in_bc);
+        if (in_bc!=null) {
+            in_bc.addBeanContextMembershipListener(this);
+            findAndInit(in_bc.iterator());
+        }
     }
   
     /** Method for BeanContextChild interface */
     public void addPropertyChangeListener(String propertyName,
-					  PropertyChangeListener in_pcl) {
-	beanContextChildSupport.addPropertyChangeListener(propertyName, in_pcl);
+                                          PropertyChangeListener in_pcl) {
+        beanContextChildSupport.addPropertyChangeListener(propertyName, in_pcl);
     }
   
     /** Method for BeanContextChild interface */
     public void removePropertyChangeListener(String propertyName, 
-					     PropertyChangeListener in_pcl) {
-	beanContextChildSupport.removePropertyChangeListener(propertyName, in_pcl);
+                                             PropertyChangeListener in_pcl) {
+        beanContextChildSupport.removePropertyChangeListener(propertyName, in_pcl);
     }
   
     /** Method for BeanContextChild interface */
     public void addVetoableChangeListener(String propertyName,
-					  VetoableChangeListener in_vcl) {
-	beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
+                                          VetoableChangeListener in_vcl) {
+        beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
     }
   
     /** Method for BeanContextChild interface */
     public void removeVetoableChangeListener(String propertyName, 
-					     VetoableChangeListener in_vcl){
-	beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
+                                             VetoableChangeListener in_vcl){
+        beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
     }
   
     /** Method for BeanContextChild interface */
     public BeanContext getBeanContext() {
-	return beanContextChildSupport.getBeanContext();
+        return beanContextChildSupport.getBeanContext();
     }
   
     /** Method for BeanContextMembership interface */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
-	Iterator it = bcme.iterator();
-	findAndInit(it);
+        Iterator it = bcme.iterator();
+        findAndInit(it);
     }
   
     /** Method for BeanContextMembership interface */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-	Iterator it = bcme.iterator();
-	while (it.hasNext()) {
-	    findAndUndo(it.next());
-	}
+        Iterator it = bcme.iterator();
+        while (it.hasNext()) {
+            findAndUndo(it.next());
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	// Check for HelpMenu first.
-	if (someObj instanceof HelpMenu) {
-	    setHelpMenu(null);
-	} else if (someObj instanceof MenuBarMenu) {
-	    remove((Component)someObj);
-	}	
+        // Check for HelpMenu first.
+        if (someObj instanceof HelpMenu) {
+            setHelpMenu(null);
+        } else if (someObj instanceof MenuBarMenu) {
+            remove((Component)someObj);
+        }       
     }
 }

@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OM3DViewerLauncher.java,v $
 // $RCSfile: OM3DViewerLauncher.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -159,7 +159,7 @@ public class OM3DViewerLauncher extends MapHandlerChild implements ActionListene
      * @see OM3DGraphicHandler
      */
     public void addGraphicsToScene(MapContent mapContent) {
-	curtain.addGraphicsToScene(mapContent);
+        curtain.addGraphicsToScene(mapContent);
     }
 
 }

@@ -14,8 +14,8 @@
  *
  *  $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/LayerMapContent.java,v $
  *  $RCSfile: LayerMapContent.java,v $
- *  $Revision: 1.2 $
- *  $Date: 2003/11/14 20:03:18 $
+ *  $Revision: 1.3 $
+ *  $Date: 2004/01/26 18:18:05 $
  *  $Author: dietrick $
  *
  *  **********************************************************************
@@ -132,7 +132,7 @@ public class LayerMapContent extends OrderedGroup {
         MapBean map = (MapBean)mh.get("com.bbn.openmap.MapBean");
         if (map != null) {
             Debug.message("3d", "LayerMapContent: putting down sea.");
-	    Color seaColor = map.getBackground();
+            Color seaColor = map.getBackground();
 
             Projection proj = map.getProjection();
 
@@ -142,7 +142,7 @@ public class LayerMapContent extends OrderedGroup {
             int height = proj.getHeight();
 
             java.awt.geom.GeneralPath background =
-// 		OMGraphic.createBoxShape(0, 0, width, height);
+//              OMGraphic.createBoxShape(0, 0, width, height);
                     OMGraphic.createBoxShape(-width, -height, width * 3, height * 3);
 
             addTo(bg, OMGraphicUtil.createShape3D(background, 0, seaColor, true));

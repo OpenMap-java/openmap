@@ -21,18 +21,18 @@ public class GridTester implements OM3DGraphicHandler {
                 new int[]{10, 51, 51, 51, 10},
                 new int[]{10, 10, 10, 10, 10}};
 
-// 	int[][] data = new int[][] {
-// 	    new int[] {10, 10, 10, 10, 10},
-// 	    new int[] {10, 20, 20, 20, 10},
-// 	    new int[] {10, 20, 30, 20, 10},
-// 	    new int[] {10, 20, 20, 20, 10},
-// 	    new int[] {10, 10, 10, 10, 10}};
+//      int[][] data = new int[][] {
+//          new int[] {10, 10, 10, 10, 10},
+//          new int[] {10, 20, 20, 20, 10},
+//          new int[] {10, 20, 30, 20, 10},
+//          new int[] {10, 20, 20, 20, 10},
+//          new int[] {10, 10, 10, 10, 10}};
 
         grid = new OMGrid(43f, -72f, .5f, .5f, data);
         grid.setLineColor(java.awt.Color.red);
         grid.setFillColor(OMColor.clear);
 
-// 	grid.setGenerator(new GridTesterGenerator());
+//      grid.setGenerator(new GridTesterGenerator());
     }
 
 

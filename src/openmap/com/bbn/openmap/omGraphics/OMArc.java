@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArc.java,v $
 // $RCSfile: OMArc.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/07/30 20:15:03 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -141,8 +141,8 @@ public class OMArc extends OMGraphic implements Serializable {
      * @param e angular extent of arc, decimal degrees
      */
     public OMArc(float latPoint, float lonPoint,
-		 int w, int h, float s, float e) {
-	this(latPoint, lonPoint, 0, 0, w, h, s, e);
+                 int w, int h, float s, float e) {
+        this(latPoint, lonPoint, 0, 0, w, h, s, e);
     }
 
     /**
@@ -159,13 +159,13 @@ public class OMArc extends OMGraphic implements Serializable {
      * direction, matching the java.awt.geom.Arc2D convention.
      */
     public OMArc(int x1, int y1,
-		 int w, int h, float s, float e) {
+                 int w, int h, float s, float e) {
         super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
-	this.x1 = x1;
-	this.y1 = y1;
-	width = w;
-	height = h;
+        this.x1 = x1;
+        this.y1 = y1;
+        width = w;
+        height = h;
         start = s;
         extent = e;
     }
@@ -188,15 +188,15 @@ public class OMArc extends OMGraphic implements Serializable {
      * direction, matching the java.awt.geom.Arc2D convention.
      */
     public OMArc(float latPoint, float lonPoint,
-		 int offset_x1, int offset_y1,
-		 int w, int h, float s, float e) {
+                 int offset_x1, int offset_y1,
+                 int w, int h, float s, float e) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
-	center = new LatLonPoint(latPoint, lonPoint);
-	off_x = offset_x1;
-	off_y = offset_y1;
-	width = w;
-	height = h;
+        center = new LatLonPoint(latPoint, lonPoint);
+        off_x = offset_x1;
+        off_y = offset_y1;
+        width = w;
+        height = h;
         start = s;
         extent = e;
     }
@@ -215,10 +215,10 @@ public class OMArc extends OMGraphic implements Serializable {
      * direction, matching the OpenMap convention in coordinate space.
      */
     public OMArc(float latPoint, float lonPoint,
-		 float radius, float s, float e) {
+                 float radius, float s, float e) {
 
-	this(new LatLonPoint(latPoint, lonPoint), radius,
-	     Length.DECIMAL_DEGREE, -1, s, e);
+        this(new LatLonPoint(latPoint, lonPoint), radius,
+             Length.DECIMAL_DEGREE, -1, s, e);
     }
 
     /**
@@ -235,8 +235,8 @@ public class OMArc extends OMGraphic implements Serializable {
      * direction, matching the OpenMap convention in coordinate space.
      */
     public OMArc(float latPoint, float lonPoint,
-		 float radius, Length units, float s, float e) {
-	this(new LatLonPoint(latPoint, lonPoint), radius, units, -1, s, e);
+                 float radius, Length units, float s, float e) {
+        this(new LatLonPoint(latPoint, lonPoint), radius, units, -1, s, e);
     }
 
     /**
@@ -255,8 +255,8 @@ public class OMArc extends OMGraphic implements Serializable {
      * direction, matching the OpenMap convention in coordinate space.
      */
     public OMArc(float latPoint, float lonPoint,
-		 float radius, Length units, int nverts, float s, float e) {
-	this(new LatLonPoint(latPoint, lonPoint), radius, units, nverts, s, e);
+                 float radius, Length units, int nverts, float s, float e) {
+        this(new LatLonPoint(latPoint, lonPoint), radius, units, nverts, s, e);
     }
 
     /**
@@ -275,12 +275,12 @@ public class OMArc extends OMGraphic implements Serializable {
      * direction, matching the OpenMap convention in coordinate space.
      */
     public OMArc(LatLonPoint center, float radius,
-		 Length units, int nverts, float s, float e) {
+                 Length units, int nverts, float s, float e) {
 
-	super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	this.radius = units.toRadians(radius);
-	this.center = center;
-	this.nverts = nverts;
+        super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        this.radius = units.toRadians(radius);
+        this.center = center;
+        this.nverts = nverts;
         this.start = s;
         this.extent = e;
     }
@@ -401,7 +401,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * @return int number of segment points
      */
     public int getNumVerts() {
-	return nverts;
+        return nverts;
     }
 
     /**
@@ -412,8 +412,8 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     public void setX(int value) {
         if (x1 == value) return;
-	x1 = value;
-	setNeedToRegenerate(true);
+        x1 = value;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -424,8 +424,8 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     public void setY(int value) {
         if (y1 == value) return;
-	y1 = value;
-	setNeedToRegenerate(true);
+        y1 = value;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -436,8 +436,8 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     public void setOffX(int value) {
         if (off_x == value) return;
-	off_x = value;
-	setNeedToRegenerate(true);
+        off_x = value;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -448,8 +448,8 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     public void setOffY(int value) {
         if (off_y == value) return;
-	off_y = value;
-	setNeedToRegenerate(true);
+        off_y = value;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -461,11 +461,11 @@ public class OMArc extends OMGraphic implements Serializable {
      * @param lon longitude in decimal degrees
      */
     public void setLatLon(float lat, float lon) {
-	LatLonPoint p = new LatLonPoint(lat, lon);
-	if (p.equals(center))
-	    return;
-	center = p;
-	setNeedToRegenerate(true);
+        LatLonPoint p = new LatLonPoint(lat, lon);
+        if (p.equals(center))
+            return;
+        center = p;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -480,7 +480,7 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     public void setRadius(float radius) {
         this.radius = Length.DECIMAL_DEGREE.toRadians(radius);
-	setNeedToRegenerate(true);
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -493,7 +493,7 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     public void setRadius(float radius, Length units) {
         this.radius = units.toRadians(radius);
-	setNeedToRegenerate(true);
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -505,8 +505,8 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     public void setWidth(int value) {
         if (width == value) return;
-	width = value;
-	setNeedToRegenerate(true);
+        width = value;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -518,8 +518,8 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     public void setHeight(int value) {
         if (height == value) return;
-	height = value;
-	setNeedToRegenerate(true);
+        height = value;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -558,7 +558,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * @param nverts number of segment points
      */
     public void setNumVerts(int nverts) {
-	this.nverts = nverts;
+        this.nverts = nverts;
     }
 
     /**
@@ -567,11 +567,11 @@ public class OMArc extends OMGraphic implements Serializable {
      * @see java.awt.geom.Arc2D
      */
     public void setArcType(int type) {
-	if (type == Arc2D.PIE || type == Arc2D.CHORD) {
-	    arcType = type;
-	} else {
-	    arcType = Arc2D.OPEN;
-	}
+        if (type == Arc2D.PIE || type == Arc2D.CHORD) {
+            arcType = type;
+        } else {
+            arcType = Arc2D.OPEN;
+        }
     }
 
     /**
@@ -579,7 +579,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * @see java.awt.geom.Arc2D
      */
     public int getArcType() {
-	return arcType;
+        return arcType;
     }
 
     /**
@@ -591,7 +591,7 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     public void setRotationAngle(double angle) {
         this.rotationAngle = angle;
-	setNeedToRegenerate(true);
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -604,11 +604,11 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     public void setNeedToRegenerate(boolean value) {
-	super.setNeedToRegenerate(value);
-	if (value) {
-	    polarShapeLine = null;
-	    correctFill = false;
-	}
+        super.setNeedToRegenerate(value);
+        if (value) {
+            polarShapeLine = null;
+            correctFill = false;
+        }
     }
 
     /**
@@ -618,7 +618,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * @see #setPolarCorrection
      */
     public boolean getPolarCorrection() {
-	return correctPolar;
+        return correctPolar;
     }
 
     /**
@@ -635,8 +635,8 @@ public class OMArc extends OMGraphic implements Serializable {
      * @see OMGraphic#setFillColor
      */
     public void setPolarCorrection(boolean value) {
-	correctPolar = value;
-	setNeedToRegenerate(true);
+        correctPolar = value;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -646,8 +646,8 @@ public class OMArc extends OMGraphic implements Serializable {
      * polar correction code needs to be run.
      */
     protected boolean shouldCenterBeInShape() {
-	// It won't be for CHORD or OPEN arcs
-	return arcType == Arc2D.PIE;
+        // It won't be for CHORD or OPEN arcs
+        return arcType == Arc2D.PIE;
     }
 
     /**
@@ -657,114 +657,114 @@ public class OMArc extends OMGraphic implements Serializable {
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-	shape = null;
-	polarShapeLine = null;
-	correctFill = false;
+        shape = null;
+        polarShapeLine = null;
+        correctFill = false;
 
-	if (proj == null) {
-	    Debug.message("omgraphic", "OMArc: null projection in generate!");
-	    return false;
-	}
+        if (proj == null) {
+            Debug.message("omgraphic", "OMArc: null projection in generate!");
+            return false;
+        }
 
-	GeneralPath gp, gp1, gp2;
-	PathIterator pi;
-	AffineTransform af = null;
+        GeneralPath gp, gp1, gp2;
+        PathIterator pi;
+        AffineTransform af = null;
 
-	switch (renderType) {
-	case RENDERTYPE_OFFSET:
-	    if (!proj.isPlotable(center)) {
-		setNeedToRegenerate(true);//HMMM not the best flag
-		return false;
-	    }
-	    Point p1 = proj.forward(center.radlat_,
-				    center.radlon_,
-				    new Point(), true);
-	    x1 = p1.x + off_x;
-	    y1 = p1.y + off_y;
+        switch (renderType) {
+        case RENDERTYPE_OFFSET:
+            if (!proj.isPlotable(center)) {
+                setNeedToRegenerate(true);//HMMM not the best flag
+                return false;
+            }
+            Point p1 = proj.forward(center.radlat_,
+                                    center.radlon_,
+                                    new Point(), true);
+            x1 = p1.x + off_x;
+            y1 = p1.y + off_y;
 
-	case RENDERTYPE_XY:
-	    float fwidth = (float)width;
-	    float fheight = (float)height;
-	    float transx = (float)x1;
-	    float transy = (float)y1;
-	    float x = transx - fwidth/2f;
-	    float y = transy - fheight/2f;
+        case RENDERTYPE_XY:
+            float fwidth = (float)width;
+            float fheight = (float)height;
+            float transx = (float)x1;
+            float transy = (float)y1;
+            float x = transx - fwidth/2f;
+            float y = transy - fheight/2f;
 
-	    Shape arcShape = createArcShape(x, y, fwidth, fheight);
+            Shape arcShape = createArcShape(x, y, fwidth, fheight);
 
-	    if (rotationAngle != DEFAULT_ROTATIONANGLE) {
-		af = new AffineTransform();
-		af.rotate(rotationAngle, transx, transy);
-	    }
-	    pi = arcShape.getPathIterator(af);
-	    gp = new GeneralPath();
-	    gp.append(pi, false);
-	    // In X/Y or Offset RenderType, there is only one shape.
-	    shape = gp;
+            if (rotationAngle != DEFAULT_ROTATIONANGLE) {
+                af = new AffineTransform();
+                af.rotate(rotationAngle, transx, transy);
+            }
+            pi = arcShape.getPathIterator(af);
+            gp = new GeneralPath();
+            gp.append(pi, false);
+            // In X/Y or Offset RenderType, there is only one shape.
+            shape = gp;
 
-	    break;
+            break;
 
-	case RENDERTYPE_LATLON:
-	    ArrayList coordLists = getCoordLists(proj, center, radius, nverts);
+        case RENDERTYPE_LATLON:
+            ArrayList coordLists = getCoordLists(proj, center, radius, nverts);
 
-	    Point p = proj.forward(center.radlat_,
-				   center.radlon_,
-				   new Point(), true);
-	    x1 = p.x;
-	    y1 = p.y;
+            Point p = proj.forward(center.radlat_,
+                                   center.radlon_,
+                                   new Point(), true);
+            x1 = p.x;
+            y1 = p.y;
 
-	    int size = coordLists.size();
-	    GeneralPath tempShape = null;
+            int size = coordLists.size();
+            GeneralPath tempShape = null;
 
-	    for (int i=0; i<size; i+=2) {
-		int[] xpoints = (int[])coordLists.get(i);
-		int[] ypoints = (int[])coordLists.get(i+1);
+            for (int i=0; i<size; i+=2) {
+                int[] xpoints = (int[])coordLists.get(i);
+                int[] ypoints = (int[])coordLists.get(i+1);
 
-		gp = createShape(xpoints, ypoints, 
-				 (arcType != Arc2D.OPEN || 
-				  (arcType == Arc2D.OPEN && !isClear(fillPaint))));
+                gp = createShape(xpoints, ypoints, 
+                                 (arcType != Arc2D.OPEN || 
+                                  (arcType == Arc2D.OPEN && !isClear(fillPaint))));
 
-		if (shape == null) {
-		    shape = gp;
-		} else {
-		    ((GeneralPath)shape).append(gp, false);
-		}
-
-		correctFill = proj instanceof Cylindrical &&
-		    ((shouldCenterBeInShape() && !shape.contains(x1, y1)) || correctPolar);
-
-		if (correctFill) {
-		    int[][] alts = doPolarFillCorrection(
-			xpoints, ypoints,
-			(center.radlat_ > 0f) ? -1 : proj.getWidth()+1);
-
-		    int gp2length = alts[0].length - 2;
-
-		    gp1 = createShape(alts[0], alts[1], true);
-		    gp2 = createShape(alts[0], alts[1], 0,
-				      gp2length, false);
-
-		    if (tempShape == null || polarShapeLine == null) {
-			tempShape = gp1;
-			polarShapeLine = gp2;
-		    } else {
-			tempShape.append(gp1, false);
-			polarShapeLine.append(gp2, false);
-		    }
+                if (shape == null) {
+                    shape = gp;
+                } else {
+                    ((GeneralPath)shape).append(gp, false);
                 }
-	    }
 
-	    if (tempShape != null) {
-		shape = tempShape;
-	    }
+                correctFill = proj instanceof Cylindrical &&
+                    ((shouldCenterBeInShape() && !shape.contains(x1, y1)) || correctPolar);
 
-	    break;
-	case RENDERTYPE_UNKNOWN:
-	    System.err.println("OMArc.generate(): invalid RenderType");
-	    return false;
-	}
-	setNeedToRegenerate(false);
-	return true;
+                if (correctFill) {
+                    int[][] alts = doPolarFillCorrection(
+                        xpoints, ypoints,
+                        (center.radlat_ > 0f) ? -1 : proj.getWidth()+1);
+
+                    int gp2length = alts[0].length - 2;
+
+                    gp1 = createShape(alts[0], alts[1], true);
+                    gp2 = createShape(alts[0], alts[1], 0,
+                                      gp2length, false);
+
+                    if (tempShape == null || polarShapeLine == null) {
+                        tempShape = gp1;
+                        polarShapeLine = gp2;
+                    } else {
+                        tempShape.append(gp1, false);
+                        polarShapeLine.append(gp2, false);
+                    }
+                }
+            }
+
+            if (tempShape != null) {
+                shape = tempShape;
+            }
+
+            break;
+        case RENDERTYPE_UNKNOWN:
+            System.err.println("OMArc.generate(): invalid RenderType");
+            return false;
+        }
+        setNeedToRegenerate(false);
+        return true;
     }
 
     /**
@@ -774,8 +774,8 @@ public class OMArc extends OMGraphic implements Serializable {
      * with start, extent and arcType information.
      */
     protected Shape createArcShape(float x, float y, 
-				   float fwidth, float fheight) {
-	return new Arc2D.Float(x, y, fwidth, fheight, start, extent, arcType);
+                                   float fwidth, float fheight) {
+        return new Arc2D.Float(x, y, fwidth, fheight, start, extent, arcType);
     }
 
     /**
@@ -785,11 +785,11 @@ public class OMArc extends OMGraphic implements Serializable {
      * with start, extent and arcType information.
      */
     protected ArrayList getCoordLists(Projection proj, LatLonPoint center,
-				      float radius, int nverts) {
+                                      float radius, int nverts) {
 
-	int at = (arcType == Arc2D.OPEN && !isClear(fillPaint)?Arc2D.CHORD:arcType);
-	return proj.forwardArc(center, /*radians*/true, radius, nverts, 
-			       ProjMath.degToRad(start), ProjMath.degToRad(extent), at);
+        int at = (arcType == Arc2D.OPEN && !isClear(fillPaint)?Arc2D.CHORD:arcType);
+        return proj.forwardArc(center, /*radians*/true, radius, nverts, 
+                               ProjMath.degToRad(start), ProjMath.degToRad(extent), at);
     }
 
     /**
@@ -801,7 +801,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * pole or the projection isn't Cylindrical).
      */
     public GeneralPath getPolarShapeLine() {
-	return polarShapeLine;
+        return polarShapeLine;
     }
 
     /**
@@ -811,23 +811,23 @@ public class OMArc extends OMGraphic implements Serializable {
      * the x points, the [1] is the y points.
      */
     private int[][] doPolarFillCorrection(int[] xpoints,
-					  int[] ypoints,
-					  int y1) {
-	int[][] ret = new int[2][];
+                                          int[] ypoints,
+                                          int y1) {
+        int[][] ret = new int[2][];
 
-	int len = xpoints.length;
-	int[] alt_xpts = new int[len + 2];
-	int[] alt_ypts = new int[len + 2];
-	System.arraycopy(xpoints, 0, alt_xpts, 0, len);
-	System.arraycopy(ypoints, 0, alt_ypts, 0, len);
-	alt_xpts[len] = alt_xpts[len-1];
-	alt_xpts[len+1] = alt_xpts[0];
-	alt_ypts[len] = y1;
-	alt_ypts[len+1] = alt_ypts[len];
+        int len = xpoints.length;
+        int[] alt_xpts = new int[len + 2];
+        int[] alt_ypts = new int[len + 2];
+        System.arraycopy(xpoints, 0, alt_xpts, 0, len);
+        System.arraycopy(ypoints, 0, alt_ypts, 0, len);
+        alt_xpts[len] = alt_xpts[len-1];
+        alt_xpts[len+1] = alt_xpts[0];
+        alt_ypts[len] = y1;
+        alt_ypts[len+1] = alt_ypts[len];
 
-	ret[0] = alt_xpts;
-	ret[1] = alt_ypts;
-	return ret;
+        ret[0] = alt_xpts;
+        ret[1] = alt_ypts;
+        return ret;
     }
 
     /**
@@ -837,32 +837,32 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     public void render(Graphics g) {
 
-	if (!isRenderable()) return;
+        if (!isRenderable()) return;
 
-	if (!correctFill) {
-	    // super will catch a null shape...
-	    super.render(g);
-	} else {
-	    // The polarShapeLine will be there only if a shape was generated.
-	    // This is getting kicked off because the arc is
-	    // encompassing a pole, so we need to handle it a little
-	    // differently.
-	    if (shouldRenderFill()) {
-		setGraphicsForFill(g);
-		fill(g);
-	    }
+        if (!correctFill) {
+            // super will catch a null shape...
+            super.render(g);
+        } else {
+            // The polarShapeLine will be there only if a shape was generated.
+            // This is getting kicked off because the arc is
+            // encompassing a pole, so we need to handle it a little
+            // differently.
+            if (shouldRenderFill()) {
+                setGraphicsForFill(g);
+                fill(g);
+            }
 
-	    // BUG There is still a bug apparent when, in a
-	    // cylindrical projection, and drawing a arc around the
-	    // south pole.  If the center of the arc is below any
-	    // part of the edge of the arc, with the left lower dip
-	    // of the arc on the screen, you get a line drawn from
-	    // the right dip to the left dip.  Not sure why.  It's an
-	    // unusual case, however.
-	    if (shouldRenderEdge()) {
-		setGraphicsForEdge(g);
-		((Graphics2D)g).draw(polarShapeLine);
-	    }
-	}
+            // BUG There is still a bug apparent when, in a
+            // cylindrical projection, and drawing a arc around the
+            // south pole.  If the center of the arc is below any
+            // part of the edge of the arc, with the left lower dip
+            // of the arc on the screen, you get a line drawn from
+            // the right dip to the left dip.  Not sure why.  It's an
+            // unusual case, however.
+            if (shouldRenderEdge()) {
+                setGraphicsForEdge(g);
+                ((Graphics2D)g).draw(polarShapeLine);
+            }
+        }
     }
 }

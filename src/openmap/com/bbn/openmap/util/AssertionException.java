@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/AssertionException.java,v $
 // $RCSfile: AssertionException.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,7 +26,7 @@ package com.bbn.openmap.util;
  * Signals that an assertion has failed.
  *
  * @author unascribed
- * @version $Revision: 1.1.1.1 $, $Date: 2003/02/14 21:35:49 $
+ * @version $Revision: 1.2 $, $Date: 2004/01/26 18:18:15 $
  * @see Assert
  */
 public class AssertionException extends RuntimeException {
@@ -35,7 +35,7 @@ public class AssertionException extends RuntimeException {
      * Constructs a default <code>AssertionException</code>.
      */
     public AssertionException () {
-	this("");
+        this("");
     }
 
     /**
@@ -45,6 +45,6 @@ public class AssertionException extends RuntimeException {
      * @param s the detail message
      */
     public AssertionException (String s) {
-	super(s);
+        super(s);
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/JarInputReader.java,v $
 // $RCSfile: JarInputReader.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/17 14:58:13 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,16 +46,16 @@ public class JarInputReader extends StreamInputReader {
      * the internal root of the jar file.  
      */
     public JarInputReader(String jarFilePath, String jarEntryName)
-	throws IOException {
+        throws IOException {
 
-	if (Debug.debugging("binaryfile")) {
-	    Debug.output("JarInputReader created for " + jarEntryName +
-			 " in " + jarFilePath);
-	}
-	this.jarFileName = jarFilePath;
-	this.jarEntryName = jarEntryName;
-	reopen();
-	name = jarFilePath + "!" + jarEntryName;
+        if (Debug.debugging("binaryfile")) {
+            Debug.output("JarInputReader created for " + jarEntryName +
+                         " in " + jarFilePath);
+        }
+        this.jarFileName = jarFilePath;
+        this.jarEntryName = jarEntryName;
+        reopen();
+        name = jarFilePath + "!" + jarEntryName;
     } 
 
     /**
@@ -63,19 +63,19 @@ public class JarInputReader extends StreamInputReader {
      * current connection and reopening it.  
      */
     public void reopen() throws IOException {
-	super.reopen();
+        super.reopen();
 
-	Debug.message("binaryfile", "JarInputReader: reopening jarFile " + jarFileName);
-	if (jarFile != null) jarFile.close();
-	jarFile = null;
+        Debug.message("binaryfile", "JarInputReader: reopening jarFile " + jarFileName);
+        if (jarFile != null) jarFile.close();
+        jarFile = null;
 
-	jarFile = new JarFile(URLDecoder.decode(jarFileName, "UTF-8"));
-	JarEntry entry = jarFile.getJarEntry(jarEntryName);
-	inputStream = jarFile.getInputStream(entry);
-	if (inputStream == null) {
-	    Debug.error("JarInputReader: Problem getting input stream for " + 
-			jarEntryName + " in " + jarFileName);
-	}
+        jarFile = new JarFile(URLDecoder.decode(jarFileName, "UTF-8"));
+        JarEntry entry = jarFile.getJarEntry(jarEntryName);
+        inputStream = jarFile.getInputStream(entry);
+        if (inputStream == null) {
+            Debug.error("JarInputReader: Problem getting input stream for " + 
+                        jarEntryName + " in " + jarFileName);
+        }
     }
 
     /** 
@@ -84,8 +84,8 @@ public class JarInputReader extends StreamInputReader {
      * @exception IOException Any IO errors encountered in accessing the file
      */
     public void close() throws IOException {
-	jarFile.close();
-	super.close();
+        jarFile.close();
+        super.close();
     }
 
 }

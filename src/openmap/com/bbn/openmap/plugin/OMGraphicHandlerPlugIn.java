@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/OMGraphicHandlerPlugIn.java,v $
 // $RCSfile: OMGraphicHandlerPlugIn.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 21:16:26 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -43,11 +43,11 @@ public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn
     protected FilterSupport filter = new FilterSupport();
     
     public OMGraphicHandlerPlugIn() {
-	super();
+        super();
     }
 
     public OMGraphicHandlerPlugIn(Component comp) {
-	super(comp);
+        super(comp);
     }
 
     /**
@@ -55,7 +55,7 @@ public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn
      * more/less capable FilterSupport in place.
      */
     public void setFilter(FilterSupport fs) {
-	filter = fs;
+        filter = fs;
     }
 
     /**
@@ -63,7 +63,7 @@ public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn
      * OMGraphicHandler methods.
      */
     public FilterSupport getFilter() {
-	return filter;
+        return filter;
     }
 
     /**
@@ -76,8 +76,8 @@ public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn
      */
     public OMGraphicList getRectangle(Projection p) {
 
-	OMGraphicList list = (OMGraphicList)getList();
-	list.generate(p);
+        OMGraphicList list = (OMGraphicList)getList();
+        list.generate(p);
         return list;
 
     } //end getRectangle
@@ -85,52 +85,52 @@ public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn
     // OMGraphicHandler methods, deferred to FilterSupport...
 
     public OMGraphicList filter(Shape withinThisShape) {
-	return filter.filter(withinThisShape);
+        return filter.filter(withinThisShape);
     }
 
     /**
      * @see OMGraphicHandler#filter(Shape, boolean).
      */
     public OMGraphicList filter(Shape shapeBoundary, 
-				 boolean getInsideBoundary) {
-	return filter.filter(shapeBoundary, getInsideBoundary);
+                                 boolean getInsideBoundary) {
+        return filter.filter(shapeBoundary, getInsideBoundary);
     }
 
     /**
      * @see OMGraphicHandler#supportsSQL().
      */
     public boolean supportsSQL() {
-	return filter.supportsSQL();
+        return filter.supportsSQL();
     }
 
     /**
      */
     public OMGraphicList filter(String SQLQuery) {
-	return filter.filter(SQLQuery);
+        return filter.filter(SQLQuery);
     }
 
     /**
      */
     public boolean doAction(OMGraphic graphic, OMAction action) {
-	return filter.doAction(graphic, action);
+        return filter.doAction(graphic, action);
     }
 
     /**
      */
     public OMGraphicList getList() {
-	OMGraphicList list = filter.getList();
-	if (list == null) {
-	    list = new OMGraphicList();
-	    filter.setList(list);
-	}
-	return list;
+        OMGraphicList list = filter.getList();
+        if (list == null) {
+            list = new OMGraphicList();
+            filter.setList(list);
+        }
+        return list;
     }
 
     /**
      * Indicates if the OMGraphicHandler can have its OMGraphicList set.
      */
     public boolean canSetList() {
-	return filter.canSetList();
+        return filter.canSetList();
     }
 
     /**
@@ -138,14 +138,14 @@ public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn
      * canSetGraphicList == true.
      */
     public void setList(OMGraphicList omgl) {
-	filter.setList(omgl);
+        filter.setList(omgl);
     }
     
     /**
      * Remove all filters, and reset all graphics to be visible.
      */
     public void resetFiltering() {
-	filter.resetFiltering();
+        filter.resetFiltering();
     }
 
 } //end OMGraphicHandlerPlugIn

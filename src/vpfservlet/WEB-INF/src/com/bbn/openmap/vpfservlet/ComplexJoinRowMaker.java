@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/ComplexJoinRowMaker.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -40,59 +40,59 @@ public class ComplexJoinRowMaker extends PlainRowMaker {
     final DcwRecordFile joinTable;
 
     public ComplexJoinRowMaker(DcwRecordFile table,
-			       String joinColumnName,
-			       String tableName, String tableKeyColumn,
-			       boolean isTiled) throws FormatException {
-	theColumn = table.whatColumn(joinColumnName);
-	tileColumn = table.whatColumn(FeatureClassInfo.TILE_ID_COLUMN_NAME);
-	if (isTiled) {
-	    throw new FormatException("can't complex join with tiling (yet)");
-	}
-	joinTable = new DcwRecordFile(new File(table.getTableFile()).getParentFile() + File.separator + tableName);
-	keyMap = getKeyMap(tableKeyColumn);
+                               String joinColumnName,
+                               String tableName, String tableKeyColumn,
+                               boolean isTiled) throws FormatException {
+        theColumn = table.whatColumn(joinColumnName);
+        tileColumn = table.whatColumn(FeatureClassInfo.TILE_ID_COLUMN_NAME);
+        if (isTiled) {
+            throw new FormatException("can't complex join with tiling (yet)");
+        }
+        joinTable = new DcwRecordFile(new File(table.getTableFile()).getParentFile() + File.separator + tableName);
+        keyMap = getKeyMap(tableKeyColumn);
     }
 
     HashMap getKeyMap(String keyColumn) throws FormatException {
-	int jcol = joinTable.whatColumn(keyColumn);
-	HashMap retmap = new HashMap();
-	while (joinTable.parseRow(jtrow)) {
-	    retmap.put(jtrow.get(jcol), jtrow.get(0));
-	}
-	return retmap;
+        int jcol = joinTable.whatColumn(keyColumn);
+        HashMap retmap = new HashMap();
+        while (joinTable.parseRow(jtrow)) {
+            retmap.put(jtrow.get(jcol), jtrow.get(0));
+        }
+        return retmap;
     }
 
     public void addToRow(TableRowElement row, List l) {
-	int i = 0;
-	for (Iterator li = l.iterator(); li.hasNext(); ) {
-	    Object elt = li.next();
-	    if (i == theColumn) {
-		Number wrow = (Number)keyMap.get(elt);
-		int tileId = (tileColumn == -1) ? -1
-		    : VPFUtil.objectToInt(l.get(tileColumn));
-		
-		try {
-		    if (wrow == null) {
-			row.addElement("["+elt+"]");
-		    } else if (joinTable.getRow(jtrow, wrow.intValue())) {
-			for (Iterator it = jtrow.iterator(); it.hasNext(); ) {
-			    row.addElement(new TableDataElement("CLASS=JoinColumn",
-								it.next().toString()));
-			}
-		    } else {
-			row.addElement("Join failed!");
-		    }
-		} catch (FormatException fe) {
-		    row.addElement(fe.toString());
-		}
-	    } else {
-		row.addElement(elt.toString());
-	    }
-	    i++;
-	}
+        int i = 0;
+        for (Iterator li = l.iterator(); li.hasNext(); ) {
+            Object elt = li.next();
+            if (i == theColumn) {
+                Number wrow = (Number)keyMap.get(elt);
+                int tileId = (tileColumn == -1) ? -1
+                    : VPFUtil.objectToInt(l.get(tileColumn));
+                
+                try {
+                    if (wrow == null) {
+                        row.addElement("["+elt+"]");
+                    } else if (joinTable.getRow(jtrow, wrow.intValue())) {
+                        for (Iterator it = jtrow.iterator(); it.hasNext(); ) {
+                            row.addElement(new TableDataElement("CLASS=JoinColumn",
+                                                                it.next().toString()));
+                        }
+                    } else {
+                        row.addElement("Join failed!");
+                    }
+                } catch (FormatException fe) {
+                    row.addElement(fe.toString());
+                }
+            } else {
+                row.addElement(elt.toString());
+            }
+            i++;
+        }
     }
 
     public void close() {
-	joinTable.close();
+        joinTable.close();
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayerMouseMode.java,v $
 // $RCSfile: EditorLayerMouseMode.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/22 23:50:45 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,7 +53,7 @@ public class EditorLayerMouseMode extends CoordMouseMode {
      * @param idToUse a uniqueID to use just for a particular layer.
      */
     public EditorLayerMouseMode(String idToUse) {
-	this(idToUse, true);
+        this(idToUse, true);
     }
 
     /**
@@ -63,26 +63,26 @@ public class EditorLayerMouseMode extends CoordMouseMode {
      * @param consumeEvents the consume mode setting.
      */
     public EditorLayerMouseMode(String idToUse, boolean consumeEvents) {
-	super(idToUse, consumeEvents);
-	modeID = idToUse;
-	setVisible(false);
+        super(idToUse, consumeEvents);
+        modeID = idToUse;
+        setVisible(false);
     }
     
     SelectMouseMode gestures = null;
 
     public void findAndInit(Object someObj) {
-	super.findAndInit(someObj);
-	if (someObj instanceof SelectMouseMode && 
-	    ((SelectMouseMode)someObj).getID() == SelectMouseMode.modeID) {
-	    gestures = (SelectMouseMode)someObj;
-	}
+        super.findAndInit(someObj);
+        if (someObj instanceof SelectMouseMode && 
+            ((SelectMouseMode)someObj).getID() == SelectMouseMode.modeID) {
+            gestures = (SelectMouseMode)someObj;
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	super.findAndInit(someObj);
-	if (someObj == gestures) {
-	    gestures = null;
-	}
+        super.findAndInit(someObj);
+        if (someObj == gestures) {
+            gestures = null;
+        }
     }
 
     /**
@@ -90,8 +90,8 @@ public class EditorLayerMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mouseClicked(MouseEvent e) {
-	mouseSupport.fireMapMouseClicked(e);
-	fireMouseLocation(e);
+        mouseSupport.fireMapMouseClicked(e);
+        fireMouseLocation(e);
     }
 
     /**
@@ -99,8 +99,8 @@ public class EditorLayerMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mousePressed(MouseEvent e) {
-	mouseSupport.fireMapMousePressed(e);
-	fireMouseLocation(e);
+        mouseSupport.fireMapMousePressed(e);
+        fireMouseLocation(e);
     }
 
     /**
@@ -108,8 +108,8 @@ public class EditorLayerMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mouseReleased(MouseEvent e) {
-	mouseSupport.fireMapMouseReleased(e);
-	fireMouseLocation(e);
+        mouseSupport.fireMapMouseReleased(e);
+        fireMouseLocation(e);
     }
 
     /**
@@ -117,7 +117,7 @@ public class EditorLayerMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mouseEntered(MouseEvent e) {
-	mouseSupport.fireMapMouseEntered(e);
+        mouseSupport.fireMapMouseEntered(e);
     }
 
     /**
@@ -125,7 +125,7 @@ public class EditorLayerMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mouseExited(MouseEvent e) {
-	mouseSupport.fireMapMouseExited(e);
+        mouseSupport.fireMapMouseExited(e);
     }
 
     /**
@@ -133,11 +133,11 @@ public class EditorLayerMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mouseDragged(MouseEvent e) {
-	if (gestures != null) {
-	    gestures.mouseDragged(e);
-	}
-	mouseSupport.fireMapMouseDragged(e);
-	fireMouseLocation(e);
+        if (gestures != null) {
+            gestures.mouseDragged(e);
+        }
+        mouseSupport.fireMapMouseDragged(e);
+        fireMouseLocation(e);
     }
 
     /**
@@ -145,10 +145,10 @@ public class EditorLayerMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mouseMoved(MouseEvent e) {
-	if (gestures != null) {
-	    gestures.mouseMoved(e);
-	}
-	mouseSupport.fireMapMouseMoved(e);
-	fireMouseLocation(e);
+        if (gestures != null) {
+            gestures.mouseMoved(e);
+        }
+        mouseSupport.fireMapMouseMoved(e);
+        fireMouseLocation(e);
     }
 }

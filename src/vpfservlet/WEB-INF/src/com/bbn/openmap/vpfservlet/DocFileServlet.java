@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/DocFileServlet.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -37,65 +37,65 @@ public class DocFileServlet extends VPFHttpServlet {
      * A do-nothing constructor - init does all the work.
      */
     public DocFileServlet() {
-	super();
+        super();
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, IOException {
+        throws ServletException, IOException {
 
-	String filePath = (String)request.getAttribute(DispatchServlet.ROOTPATH_FILENAME);
-	if (filePath == null) {
-	    String pathInfo = setPathInfo(request);
-	    filePath = contextInfo.resolvePath(pathInfo);
-	    if (!pathOkay(filePath, pathInfo, response)) {
-		return;
-	    }
-	}
+        String filePath = (String)request.getAttribute(DispatchServlet.ROOTPATH_FILENAME);
+        if (filePath == null) {
+            String pathInfo = setPathInfo(request);
+            filePath = contextInfo.resolvePath(pathInfo);
+            if (!pathOkay(filePath, pathInfo, response)) {
+                return;
+            }
+        }
 
-	DcwRecordFile docfile = null;
-	try {
-	    docfile = new DcwRecordFile(filePath);
-	} catch (FormatException fe) {
-	    response.sendError(HttpServletResponse.SC_NOT_FOUND,
-			       " docfile not found");
-	    return;
-	}
+        DcwRecordFile docfile = null;
+        try {
+            docfile = new DcwRecordFile(filePath);
+        } catch (FormatException fe) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,
+                               " docfile not found");
+            return;
+        }
 
-	response.setContentType("text/html");
-	PrintWriter out = response.getWriter();
-	out.println(HTML_DOCTYPE);
-	out.println(getStylesheetHTML(request));
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        out.println(HTML_DOCTYPE);
+        out.println(getStylesheetHTML(request));
 
-	String tableName = docfile.getTableName();
-	out.println("<HTML>");
-	String title = "VPF Documentation File " + tableName;
-	out.println("<HEAD><TITLE>" + title + "</TITLE></HEAD>");
-	out.println("<BODY><H1>" + title + "</H1>");
-	
-	try {
-	    docfile.lookupSchema(FieldColumns, true,
-				 FieldTypeSchema, FieldLengthSchema, false);
-	} catch (FormatException fe) {
-	    out.println("The documentation file appears to be invalid.");
-	    RequestDispatcher rd = request.getRequestDispatcher("/Schema");
-	    rd.include(request, response);
-	    out.println("</BODY></HTML>");
-	    docfile.close();
-	    return;
-	}
-	
-	ArrayList al = new ArrayList(FieldTypeSchema.length);
-	out.println("<pre>");
-	try {
-	    while (docfile.parseRow(al)) {
-		out.println("   " + al.get(1).toString());
-	    }
-	    out.println("</pre>");
-	} catch (FormatException fe) {
-	    out.println("/pre>");
-	    out.println("File Format Exception processing data: " + fe);
-	}
-	out.println("</BODY></HTML>");
-	docfile.close();
+        String tableName = docfile.getTableName();
+        out.println("<HTML>");
+        String title = "VPF Documentation File " + tableName;
+        out.println("<HEAD><TITLE>" + title + "</TITLE></HEAD>");
+        out.println("<BODY><H1>" + title + "</H1>");
+        
+        try {
+            docfile.lookupSchema(FieldColumns, true,
+                                 FieldTypeSchema, FieldLengthSchema, false);
+        } catch (FormatException fe) {
+            out.println("The documentation file appears to be invalid.");
+            RequestDispatcher rd = request.getRequestDispatcher("/Schema");
+            rd.include(request, response);
+            out.println("</BODY></HTML>");
+            docfile.close();
+            return;
+        }
+        
+        ArrayList al = new ArrayList(FieldTypeSchema.length);
+        out.println("<pre>");
+        try {
+            while (docfile.parseRow(al)) {
+                out.println("   " + al.get(1).toString());
+            }
+            out.println("</pre>");
+        } catch (FormatException fe) {
+            out.println("/pre>");
+            out.println("File Format Exception processing data: " + fe);
+        }
+        out.println("</BODY></HTML>");
+        docfile.close();
     }
 }

@@ -23,14 +23,14 @@ package com.bbn.openmap.dataAccess.cgm;
 import java.io.*;
 
 public class EndMetafile extends Command
-{	String S;
+{       String S;
 
-	public EndMetafile (int ec, int eid, int l, DataInputStream in)
-		throws IOException
-	{	super(ec,eid,l,in);
-	}
-	
-	public String toString ()
-	{	return "End Metafile";
-	}
+        public EndMetafile (int ec, int eid, int l, DataInputStream in)
+                throws IOException
+        {       super(ec,eid,l,in);
+        }
+        
+        public String toString ()
+        {       return "End Metafile";
+        }
 }

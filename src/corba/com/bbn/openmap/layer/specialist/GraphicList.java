@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/GraphicList.java,v $
 // $RCSfile: GraphicList.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,7 +47,7 @@ public class GraphicList implements com.bbn.openmap.util.GraphicList {
      * @param g the SGraphic to add 
      */
     public void addSGraphic(SGraphic g) {
-	graphics.addElement(g);
+        graphics.addElement(g);
     }
 
     /**
@@ -55,7 +55,7 @@ public class GraphicList implements com.bbn.openmap.util.GraphicList {
      * @param ug the UGraphic to add 
      */
     public void addUGraphic(UGraphic ug) {
-	graphics.addElement(ug);
+        graphics.addElement(ug);
     }
 
     /**
@@ -64,14 +64,14 @@ public class GraphicList implements com.bbn.openmap.util.GraphicList {
      * @see SGraphic#ufill() 
      */
     public void addUGraphic(SGraphic sg) {
-	graphics.addElement(sg.ufill());
+        graphics.addElement(sg.ufill());
     }
 
     /**
      * Remove all elements from the graphic list 
      */
     public void clear() {
-	graphics.removeAllElements();
+        graphics.removeAllElements();
     }
 
     /**
@@ -79,16 +79,16 @@ public class GraphicList implements com.bbn.openmap.util.GraphicList {
      * @return the packed graphic list 
      */
     public UGraphic[] packGraphics() {
-	UGraphic retval[] = new UGraphic[graphics.size()];
-	for (int i = 0; i < graphics.size(); i++) {
-	    Object o = graphics.elementAt(i);
-	    if (o instanceof SGraphic) {
-		retval[i] = ((SGraphic)o).ufill();
-	    } else {
-		retval[i] = (UGraphic)o;
-	    }
-	}
-	return retval;
+        UGraphic retval[] = new UGraphic[graphics.size()];
+        for (int i = 0; i < graphics.size(); i++) {
+            Object o = graphics.elementAt(i);
+            if (o instanceof SGraphic) {
+                retval[i] = ((SGraphic)o).ufill();
+            } else {
+                retval[i] = (UGraphic)o;
+            }
+        }
+        return retval;
     }
 
     /**
@@ -96,14 +96,14 @@ public class GraphicList implements com.bbn.openmap.util.GraphicList {
      * @return the packed graphic list 
      */
     public Comp[] getComps() {
-	int len = graphics.size();
-	Comp retval[] = new Comp[len];
-	for (int i = 0; i < len; i++) {
-	    Object o = graphics.elementAt(i);
-	    if (o instanceof SGraphic) {
-		retval[i] = ((SGraphic)o).object();
-	    }
-	}
-	return retval;
+        int len = graphics.size();
+        Comp retval[] = new Comp[len];
+        for (int i = 0; i < len; i++) {
+            Object o = graphics.elementAt(i);
+            if (o instanceof SGraphic) {
+                retval[i] = ((SGraphic)o).object();
+            }
+        }
+        return retval;
     }
 }

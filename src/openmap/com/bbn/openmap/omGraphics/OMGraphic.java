@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphic.java,v $
 // $RCSfile: OMGraphic.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/23 20:46:43 $
-// $Author: wjeuerle $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:12 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -188,11 +188,11 @@ public abstract class OMGraphic extends BasicGeometry
      * @return true if Paint is null or is a Color with a 0 alpha value.
      */
     public static boolean isClear(Paint paint) {
-	if (paint instanceof Color) {
-	    return ((((Color)paint).getRGB() & 0xff000000) == 0);
-	} else {
-	    return false;
-	}
+        if (paint instanceof Color) {
+            return ((((Color)paint).getRGB() & 0xff000000) == 0);
+        } else {
+            return false;
+        }
     }
 
   //////////////////////////////////////////////////////////  
@@ -212,9 +212,9 @@ public abstract class OMGraphic extends BasicGeometry
      * @param dcType declutter type 
      */
     protected OMGraphic(int rType, int lType, int dcType) {
-	setRenderType(rType);
-	setLineType(lType);
-	setDeclutterType(dcType);
+        setRenderType(rType);
+        setLineType(lType);
+        setDeclutterType(dcType);
     }
 
     /**
@@ -229,11 +229,11 @@ public abstract class OMGraphic extends BasicGeometry
      * @param sc select color 
      */
     public OMGraphic(int rType, int lType, int dcType,
-		     Color lc, Color fc, Color sc) {
-	this(rType, lType, dcType);
-	setLineColor(lc);
-	setSelectColor(sc);
-	setFillColor(fc);
+                     Color lc, Color fc, Color sc) {
+        this(rType, lType, dcType);
+        setLineColor(lc);
+        setSelectColor(sc);
+        setFillColor(fc);
     }
 
     /** 
@@ -245,10 +245,10 @@ public abstract class OMGraphic extends BasicGeometry
      * @param value the rendertype for the object.
      */
     public void setRenderType(int value) { 
-	if (renderType == value) return;
-	setNeedToRegenerate(true);		// flag dirty
+        if (renderType == value) return;
+        setNeedToRegenerate(true);              // flag dirty
 
-	renderType = value;
+        renderType = value;
     }
 
     /**
@@ -268,11 +268,11 @@ public abstract class OMGraphic extends BasicGeometry
      * notion of embedding.
      */
     public String getDescription(int level) {
-	if (level == 0) {
-	    return getDescription();
-	} else {
-	    return "|--> " + getDescription();
-	}
+        if (level == 0) {
+            return getDescription();
+        } else {
+            return "|--> " + getDescription();
+        }
     }
     
     /**
@@ -280,12 +280,12 @@ public abstract class OMGraphic extends BasicGeometry
      * OMGraphic.
      */
     public String getDescription() {
-	String cname = getClass().getName();
-	int lastPeriod = cname.lastIndexOf('.');
-	if (lastPeriod != -1) {
-	    cname = cname.substring(lastPeriod + 1);
-	}
-	return cname;
+        String cname = getClass().getName();
+        int lastPeriod = cname.lastIndexOf('.');
+        if (lastPeriod != -1) {
+            cname = cname.substring(lastPeriod + 1);
+        }
+        return cname;
     }
 
     /**
@@ -306,10 +306,10 @@ public abstract class OMGraphic extends BasicGeometry
      * @param value the declutter type value.  
      */
     public void setDeclutterType(int value) { 
-	if (declutterType == value) return;
-	setNeedToRegenerate(true);	// flag dirty
+        if (declutterType == value) return;
+        setNeedToRegenerate(true);      // flag dirty
 
-	declutterType = value;
+        declutterType = value;
     }
 
     /**
@@ -329,10 +329,10 @@ public abstract class OMGraphic extends BasicGeometry
      * @see #setGraphicsColor
      */
     public void setGraphicsForEdge(Graphics g) {
-	if (g instanceof Graphics2D) {
-	    ((Graphics2D)g).setStroke(getStroke());
-	} 
-	setGraphicsColor(g, getDisplayPaint());
+        if (g instanceof Graphics2D) {
+            ((Graphics2D)g).setStroke(getStroke());
+        } 
+        setGraphicsColor(g, getDisplayPaint());
     }
 
     /**
@@ -343,10 +343,10 @@ public abstract class OMGraphic extends BasicGeometry
      * @see #setGraphicsColor
      */
     public void setGraphicsForFill(Graphics g) {
-	if (g instanceof Graphics2D) {
-	    ((Graphics2D)g).setStroke(BASIC_STROKE);
-	} 
-	setGraphicsColor(g, getFillPaint());
+        if (g instanceof Graphics2D) {
+            ((Graphics2D)g).setStroke(BASIC_STROKE);
+        } 
+        setGraphicsColor(g, getFillPaint());
     }
 
     /**
@@ -358,11 +358,11 @@ public abstract class OMGraphic extends BasicGeometry
      * @param paint java.awt.Paint
      */
     public void setGraphicsColor(Graphics g, Paint paint) {
-	if (g instanceof Graphics2D) {
-	    ((Graphics2D)g).setPaint(paint);
-	} else if (paint instanceof Color) {
-	    g.setColor((Color)paint);
-	}
+        if (g instanceof Graphics2D) {
+            ((Graphics2D)g).setPaint(paint);
+        } else if (paint instanceof Color) {
+            g.setColor((Color)paint);
+        }
     }
 
     /**  
@@ -377,7 +377,7 @@ public abstract class OMGraphic extends BasicGeometry
      * the Java2D API.  
      */
     public void setLineColor(Color value) { 
-	setLinePaint(value);
+        setLinePaint(value);
     }
 
     /**
@@ -387,11 +387,11 @@ public abstract class OMGraphic extends BasicGeometry
      * Color.
      */
     public Color getLineColor() { 
-	if (linePaint instanceof Color) {
-	    return (Color) linePaint;
-	} else {
-	    return null;
-	}
+        if (linePaint instanceof Color) {
+            return (Color) linePaint;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -404,16 +404,16 @@ public abstract class OMGraphic extends BasicGeometry
      * @param paint the real line Paint 
      */
     public void setLinePaint(Paint paint) {
-	if (paint != null) {
-	    linePaint = paint;
-	} else {
-	    linePaint = Color.black;
-	}
+        if (paint != null) {
+            linePaint = paint;
+        } else {
+            linePaint = Color.black;
+        }
 
-	if (!selected) {
-	    displayPaint = linePaint;
-	}
-	setEdgeMatchesFill();
+        if (!selected) {
+            displayPaint = linePaint;
+        }
+        setEdgeMatchesFill();
     }
 
     /**
@@ -422,7 +422,7 @@ public abstract class OMGraphic extends BasicGeometry
      * @return Line Paint.
      */
     public Paint getLinePaint() {
-	return linePaint;
+        return linePaint;
     }
 
     /**
@@ -436,7 +436,7 @@ public abstract class OMGraphic extends BasicGeometry
      * the Java2D API.  
      */
     public void setSelectColor(Color value) {
-	setSelectPaint(value);
+        setSelectPaint(value);
     }
 
     /**
@@ -447,11 +447,11 @@ public abstract class OMGraphic extends BasicGeometry
      * select Paint is not a Color.
      */
     public Color getSelectColor() { 
-	if (selectPaint instanceof Color) {
-	    return (Color) selectPaint;
-	} else {
-	    return null;
-	}
+        if (selectPaint instanceof Color) {
+            return (Color) selectPaint;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -464,16 +464,16 @@ public abstract class OMGraphic extends BasicGeometry
      * @param paint the real select Paint 
      */
     public void setSelectPaint(Paint paint) {
-	if (paint != null) {
-	    selectPaint = paint;
-	} else {
-	    selectPaint = Color.black;
-	}
+        if (paint != null) {
+            selectPaint = paint;
+        } else {
+            selectPaint = Color.black;
+        }
 
-	if (selected) {
-	    displayPaint = selectPaint;
-	}
-	setEdgeMatchesFill();
+        if (selected) {
+            displayPaint = selectPaint;
+        }
+        setEdgeMatchesFill();
     }
 
     /**
@@ -482,7 +482,7 @@ public abstract class OMGraphic extends BasicGeometry
      * @return Select Paint.
      */
     public Paint getSelectPaint() {
-	return selectPaint;
+        return selectPaint;
     }
 
     /**
@@ -497,11 +497,11 @@ public abstract class OMGraphic extends BasicGeometry
      * Color, this method returns null.
      */
     public Color getDisplayColor() { 
-	if (displayPaint instanceof Color) {
-	    return (Color) displayPaint;
-	} else {
-	    return null;
-	}
+        if (displayPaint instanceof Color) {
+            return (Color) displayPaint;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -515,7 +515,7 @@ public abstract class OMGraphic extends BasicGeometry
      * in the present selected state.
      */
     public Paint getDisplayPaint() {
-	return displayPaint;
+        return displayPaint;
     }
 
     /**
@@ -523,9 +523,9 @@ public abstract class OMGraphic extends BasicGeometry
      * select color.  
      */
     public void select() {
-	selected = true;
-	displayPaint = getSelectPaint();
-	setEdgeMatchesFill();
+        selected = true;
+        displayPaint = getSelectPaint();
+        setEdgeMatchesFill();
     }
 
     /**
@@ -533,41 +533,41 @@ public abstract class OMGraphic extends BasicGeometry
      * line color.  
      */
     public void deselect() {
-	selected = false;
-	displayPaint = getLinePaint();
-	setEdgeMatchesFill();
+        selected = false;
+        displayPaint = getLinePaint();
+        setEdgeMatchesFill();
     }
 
     /**
      * Return whether the OMGraphic is selected.
      */
     public boolean isSelected() {
-	return selected;
+        return selected;
     }
 
     /**
      * Calls select() or deselect() depending on the boolean (select is true).
      */
     public void setSelected(boolean set) {
-	if (set) {
-	    select();
-	} else {
-	    deselect();
-	}
+        if (set) {
+            select();
+        } else {
+            deselect();
+        }
     }
 
     /**
      * Return whether the OMGraphic has matting around the edge.
      */
     public boolean isMatted() {
-	return matted;
+        return matted;
     }
 
     /**
      * Set whether the OMGraphic should have matting around the edge.
      */
     public void setMatted(boolean set) {
-	matted = set;
+        matted = set;
     }
 
     /**
@@ -578,7 +578,7 @@ public abstract class OMGraphic extends BasicGeometry
      * the Java2D API.  
      */
     public void setFillColor(Color value) { 
-	setFillPaint(value);
+        setFillPaint(value);
     }
 
     /**
@@ -588,11 +588,11 @@ public abstract class OMGraphic extends BasicGeometry
      * @return the color used for the background.
      */
     public Color getFillColor() { 
-	if (fillPaint instanceof Color) {
-	    return (Color) fillPaint;
-	} else {
-	    return null;
-	}
+        if (fillPaint instanceof Color) {
+            return (Color) fillPaint;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -602,19 +602,19 @@ public abstract class OMGraphic extends BasicGeometry
      * @param paint the Paint object. 
      */
     public void setFillPaint(Paint paint) {
-	if (paint != null) {
-	    fillPaint = paint;
-	    if (Debug.debugging("omGraphics")) {
-		Debug.output("OMGraphic.setFillPaint(): fillPaint= "
-			     + fillPaint);
-	    }
-	} else {
-	    fillPaint = clear;
-	    if (Debug.debugging("omGraphics")) {
-		Debug.output("OMGraphic.setFillPaint(): fillPaint is clear");
-	    }
-	}
-	setEdgeMatchesFill();
+        if (paint != null) {
+            fillPaint = paint;
+            if (Debug.debugging("omGraphics")) {
+                Debug.output("OMGraphic.setFillPaint(): fillPaint= "
+                             + fillPaint);
+            }
+        } else {
+            fillPaint = clear;
+            if (Debug.debugging("omGraphics")) {
+                Debug.output("OMGraphic.setFillPaint(): fillPaint is clear");
+            }
+        }
+        setEdgeMatchesFill();
     }
 
     /**
@@ -627,49 +627,49 @@ public abstract class OMGraphic extends BasicGeometry
      * appearance.
      */
     public void setTextureMask(TexturePaint texture) {
-	textureMask = texture;
+        textureMask = texture;
     }
 
     /**
      * Return the fill Paint for this graphic.
      */
     public Paint getFillPaint() {
-	return fillPaint;
+        return fillPaint;
     }
 
     /**
      * Return the texture mask Paint for this graphic.
      */
     public TexturePaint getTextureMask() {
-	return textureMask;
+        return textureMask;
     }
 
     protected void setEdgeMatchesFill() {
-	Paint paint = getDisplayPaint();
-	if (fillPaint instanceof Color && paint instanceof Color &&
-	    !isClear(fillPaint)) {
-	    edgeMatchesFill = ((Color)fillPaint).equals((Color)paint);
-	} else {
-	    edgeMatchesFill = false;
-	}
+        Paint paint = getDisplayPaint();
+        if (fillPaint instanceof Color && paint instanceof Color &&
+            !isClear(fillPaint)) {
+            edgeMatchesFill = ((Color)fillPaint).equals((Color)paint);
+        } else {
+            edgeMatchesFill = false;
+        }
     }
 
     public boolean getEdgeMatchesFill() {
-	return edgeMatchesFill;
+        return edgeMatchesFill;
     }
 
     /**
      * Set the Paint used for matting.
      */
     public void setMattingPaint(Paint mPaint) {
-	mattingPaint = mPaint;
+        mattingPaint = mPaint;
     }
 
     /**
      * Get the Paint used for matting.
      */
     public Paint getMattingPaint() {
-	return mattingPaint;
+        return mattingPaint;
     }
 
     /**
@@ -683,18 +683,18 @@ public abstract class OMGraphic extends BasicGeometry
      * @see java.awt.BasicStroke
      */
     public void setStroke(Stroke s) {
-	if (s != null) {
-	    stroke = s;
-	} else {
-	    stroke = new BasicStroke();
-	}
+        if (s != null) {
+            stroke = s;
+        } else {
+            stroke = new BasicStroke();
+        }
     }
 
     /**
      * Get the Stroke used for the graphic edge.
      */
     public Stroke getStroke() {
-	return stroke;
+        return stroke;
     }
 
     /**
@@ -702,7 +702,7 @@ public abstract class OMGraphic extends BasicGeometry
      * show it's palette. 
      */
     public void setShowEditablePalette(boolean set) {
-	showEditablePalette = set;
+        showEditablePalette = set;
     }
 
     /**
@@ -710,7 +710,7 @@ public abstract class OMGraphic extends BasicGeometry
      * show it's palette. 
      */
     public boolean getShowEditablePalette() {
-	return showEditablePalette;
+        return showEditablePalette;
     }
 
     /**
@@ -727,20 +727,20 @@ public abstract class OMGraphic extends BasicGeometry
      */
     public float normalizeDistanceForLineWidth(float distance) {
 
-	float lineWidth = 1;
+        float lineWidth = 1;
 
-	if (stroke instanceof BasicStroke) {
-	    lineWidth = ((BasicStroke)stroke).getLineWidth();
-	}
+        if (stroke instanceof BasicStroke) {
+            lineWidth = ((BasicStroke)stroke).getLineWidth();
+        }
 
-	if (lineWidth > 1) {
-	    // extra calculation for lineWidth
-	    distance -= lineWidth/2;
-	    if (distance < 0f) {
-		distance = 0f;
-	    }
-	}
-	return distance;
+        if (lineWidth > 1) {
+            // extra calculation for lineWidth
+            distance -= lineWidth/2;
+            if (distance < 0f) {
+                distance = 0f;
+            }
+        }
+        return distance;
     }
 
 //////////////////////////////////////////////////////////////////////////
@@ -779,30 +779,30 @@ public abstract class OMGraphic extends BasicGeometry
      */
     public void render(Graphics g) {
 
-	if (matted) {
-	    if (g instanceof Graphics2D && 
-		stroke instanceof BasicStroke) {
-		((Graphics2D)g).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
-		setGraphicsColor(g, mattingPaint);
-		draw(g);
-	    }
-	}
+        if (matted) {
+            if (g instanceof Graphics2D && 
+                stroke instanceof BasicStroke) {
+                ((Graphics2D)g).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
+                setGraphicsColor(g, mattingPaint);
+                draw(g);
+            }
+        }
 
 
-	if (shouldRenderFill()) {
-	    setGraphicsForFill(g);
-	    fill(g);
+        if (shouldRenderFill()) {
+            setGraphicsForFill(g);
+            fill(g);
 
-	    if (textureMask != null && textureMask != fillPaint) {
-		setGraphicsColor(g, textureMask);
-		fill(g);
-	    }
-	}
-	
-	if (shouldRenderEdge()) {
-	    setGraphicsForEdge(g);
-	    draw(g);
-	}
+            if (textureMask != null && textureMask != fillPaint) {
+                setGraphicsColor(g, textureMask);
+                fill(g);
+            }
+        }
+        
+        if (shouldRenderEdge()) {
+            setGraphicsForEdge(g);
+            draw(g);
+        }
     }
 
     /**
@@ -810,7 +810,7 @@ public abstract class OMGraphic extends BasicGeometry
      * clear).
      */
     public boolean shouldRenderFill() {
-	return !isClear(getFillPaint());
+        return !isClear(getFillPaint());
     }
 
     /**
@@ -818,10 +818,10 @@ public abstract class OMGraphic extends BasicGeometry
      * clear, or doesn't match the fill color).
      */
     public boolean shouldRenderEdge() {
-	// OK, so isClear on the displayPaitn could be inaccurate if
-	// another thread changes the display paint on the graphic
-	// before it actually gets rendered.
-	return !isClear(getDisplayPaint()) || !edgeMatchesFill;
+        // OK, so isClear on the displayPaitn could be inaccurate if
+        // another thread changes the display paint on the graphic
+        // before it actually gets rendered.
+        return !isClear(getDisplayPaint()) || !edgeMatchesFill;
     }
 
     /**
@@ -841,18 +841,18 @@ public abstract class OMGraphic extends BasicGeometry
      * (ungenerated).
      */
     public float distance(int x, int y) {
-	float distance = Float.POSITIVE_INFINITY;
-	if (shouldRenderFill()) {
-	    distance = super.distance(x, y);
-	} else {
-	    distance = super.distanceToEdge(x, y);
-	}
+        float distance = Float.POSITIVE_INFINITY;
+        if (shouldRenderFill()) {
+            distance = super.distance(x, y);
+        } else {
+            distance = super.distanceToEdge(x, y);
+        }
 
-	if (distance != Float.POSITIVE_INFINITY) {
-	    distance = normalizeDistanceForLineWidth(distance);
-	}
+        if (distance != Float.POSITIVE_INFINITY) {
+            distance = normalizeDistanceForLineWidth(distance);
+        }
 
-	return distance;
+        return distance;
     }
 
     /**
@@ -869,19 +869,19 @@ public abstract class OMGraphic extends BasicGeometry
      * @see #generate
      */
     public boolean regenerate(Projection proj) {
-	boolean ret = false;
+        boolean ret = false;
 
-	if (proj != null) {
+        if (proj != null) {
 
-	    ret = super.regenerate(proj);
+            ret = super.regenerate(proj);
 
-	    // handle extra case: OMRasterObject.getNeedToReposition()
-	    if (!ret && this instanceof OMRasterObject) {
-		ret = generate(proj);
-	    } 
-	}
+            // handle extra case: OMRasterObject.getNeedToReposition()
+            if (!ret && this instanceof OMRasterObject) {
+                ret = generate(proj);
+            } 
+        }
 
-	return ret;
+        return ret;
     }
 
     /**
@@ -889,6 +889,6 @@ public abstract class OMGraphic extends BasicGeometry
      * whether the line type choice can be changed.
      */
     protected boolean hasLineTypeChoice() {
-	return true;
+        return true;
     }
 }

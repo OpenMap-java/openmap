@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRect.java,v $
 // $RCSfile: EditableOMRect.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:28:00 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ public class EditableOMRect extends EditableOMGraphic {
      * the rect off of the gestures.  
      */
     public EditableOMRect() {
-	createGraphic(null);
+        createGraphic(null);
     }
 
     /**
@@ -77,7 +77,7 @@ public class EditableOMRect extends EditableOMGraphic {
      * parameters in the GraphicAttributes object.
      */
     public EditableOMRect(GraphicAttributes ga) {
-	createGraphic(ga);
+        createGraphic(ga);
     }
 
     /**
@@ -87,7 +87,7 @@ public class EditableOMRect extends EditableOMGraphic {
      * @param omc OMRect that should be edited.
      */
     public EditableOMRect(OMRect omc) {
-	setGraphic(omc);
+        setGraphic(omc);
     }
 
     /**
@@ -97,10 +97,10 @@ public class EditableOMRect extends EditableOMGraphic {
      * EditableOMRect.
      */
     public void init() {
-	Debug.message("eomg", "EditableOMRect.init()");
-	setCanGrabGraphic(false);
-	setStateMachine(new RectStateMachine(this));
- 	gPoints = new GrabPoint[6];
+        Debug.message("eomg", "EditableOMRect.init()");
+        setCanGrabGraphic(false);
+        setStateMachine(new RectStateMachine(this));
+        gPoints = new GrabPoint[6];
     }
 
     /**
@@ -110,14 +110,14 @@ public class EditableOMRect extends EditableOMGraphic {
      * map.  
      */
     public void setGraphic(OMGraphic graphic) {
-	init();
-	if (graphic instanceof OMRect) {
-	    rect = (OMRect)graphic;
-	    stateMachine.setSelected();
-	    setGrabPoints(rect);
-	} else {
-	    createGraphic(null);
-	}
+        init();
+        if (graphic instanceof OMRect) {
+            rect = (OMRect)graphic;
+            stateMachine.setSelected();
+            setGrabPoints(rect);
+        } else {
+            createGraphic(null);
+        }
     }
 
     /**
@@ -125,51 +125,51 @@ public class EditableOMRect extends EditableOMGraphic {
      * GraphicAttributes describe the type of rect to create. 
      */
     public void createGraphic(GraphicAttributes ga) {
-	init();
-	stateMachine.setUndefined();
-	int renderType = OMGraphic.RENDERTYPE_UNKNOWN;
-	int lineType = OMGraphic.LINETYPE_GREATCIRCLE;
+        init();
+        stateMachine.setUndefined();
+        int renderType = OMGraphic.RENDERTYPE_UNKNOWN;
+        int lineType = OMGraphic.LINETYPE_GREATCIRCLE;
 
-	if (ga != null) {
-	    renderType = ga.getRenderType();
-	    lineType = ga.getLineType();
-	}
+        if (ga != null) {
+            renderType = ga.getRenderType();
+            lineType = ga.getLineType();
+        }
 
-	if (Debug.debugging("eomg")) {
-	    Debug.output("EditableOMRect.createGraphic(): rendertype = " +
-			 renderType);
-	    Debug.output("EditableOMRect.createGraphic(): linetype = " +
-			 lineType);
-	}
+        if (Debug.debugging("eomg")) {
+            Debug.output("EditableOMRect.createGraphic(): rendertype = " +
+                         renderType);
+            Debug.output("EditableOMRect.createGraphic(): linetype = " +
+                         lineType);
+        }
 
-	switch (renderType) {
-	case (OMGraphic.RENDERTYPE_LATLON):
-	    if (lineType == OMGraphic.LINETYPE_UNKNOWN) {
-		lineType = OMGraphic.LINETYPE_GREATCIRCLE;
-		ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
-	    }
+        switch (renderType) {
+        case (OMGraphic.RENDERTYPE_LATLON):
+            if (lineType == OMGraphic.LINETYPE_UNKNOWN) {
+                lineType = OMGraphic.LINETYPE_GREATCIRCLE;
+                ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
+            }
 
-	    rect = new OMRect(90f, -180f, 90f, -180f, lineType);
-	    break;
-	case (OMGraphic.RENDERTYPE_OFFSET):
-	    rect = new OMRect(90f, -180f, -1, -1, 1, 1);
-	    break;
-	default:
-	    rect = new OMRect(-1, -1, -1, -1);
-	}
+            rect = new OMRect(90f, -180f, 90f, -180f, lineType);
+            break;
+        case (OMGraphic.RENDERTYPE_OFFSET):
+            rect = new OMRect(90f, -180f, -1, -1, 1, 1);
+            break;
+        default:
+            rect = new OMRect(-1, -1, -1, -1);
+        }
 
-	if (ga != null) {
-	    ga.setTo(rect);
-	}
+        if (ga != null) {
+            ga.setTo(rect);
+        }
 
-	assertGrabPoints();
+        assertGrabPoints();
     }
 
     /**
      * Get the OMGraphic being created/modified by the EditableOMRect.  
      */
     public OMGraphic getGraphic() {
-	return rect;
+        return rect;
     }
 
     /**
@@ -177,7 +177,7 @@ public class EditableOMRect extends EditableOMGraphic {
      * result of a mouseDragged event, or other selection process.
      */
     public void setMovingPoint(GrabPoint gp) {
-	super.setMovingPoint(gp);
+        super.setMovingPoint(gp);
     }
 
     float diffx;
@@ -185,9 +185,9 @@ public class EditableOMRect extends EditableOMGraphic {
 
     // Called from the state machine...
     public void initRectSize() {
-	diffx = Math.abs(rect.getEastLon() - rect.getWestLon())/2f;
-	diffy = Math.abs(rect.getNorthLat() - rect.getSouthLat())/2f;
-//  	Debug.output("initRectSize(): diffx:" + diffx + ", diffy:" + diffy);
+        diffx = Math.abs(rect.getEastLon() - rect.getWestLon())/2f;
+        diffy = Math.abs(rect.getNorthLat() - rect.getSouthLat())/2f;
+//      Debug.output("initRectSize(): diffx:" + diffx + ", diffy:" + diffy);
     }
 
     protected int lastRenderType = -1;
@@ -197,67 +197,67 @@ public class EditableOMRect extends EditableOMGraphic {
      * allocate them, and them assign them to the array. 
      */
     public void assertGrabPoints() {
-	int rt = getGraphic().getRenderType();
-	if (rt != lastRenderType) {
-	    clearGrabPoints();
-	    lastRenderType = rt;
-	}
+        int rt = getGraphic().getRenderType();
+        if (rt != lastRenderType) {
+            clearGrabPoints();
+            lastRenderType = rt;
+        }
 
-	if (gpnw == null) {
-	    gpnw = new GrabPoint(-1, -1);
-	    gPoints[NW_POINT_INDEX] = gpnw;
-//    	    gpnw.setFillPaint(Color.yellow);
-	}
-	if (gpne == null) {
-	    gpne = new GrabPoint(-1, -1);
-	    gPoints[NE_POINT_INDEX] = gpne;
-//    	    gpne.setFillPaint(Color.blue);
-	}
-	if (gpsw == null) {
-	    gpsw = new GrabPoint(-1, -1);
-	    gPoints[SW_POINT_INDEX] = gpsw;
-//    	    gpsw.setFillPaint(Color.green);
-	}
-	if (gpse == null) {
-	    gpse = new GrabPoint(-1, -1);
-	    gPoints[SE_POINT_INDEX] = gpse;
-//    	    gpse.setFillPaint(Color.orange);
-	}
+        if (gpnw == null) {
+            gpnw = new GrabPoint(-1, -1);
+            gPoints[NW_POINT_INDEX] = gpnw;
+//          gpnw.setFillPaint(Color.yellow);
+        }
+        if (gpne == null) {
+            gpne = new GrabPoint(-1, -1);
+            gPoints[NE_POINT_INDEX] = gpne;
+//          gpne.setFillPaint(Color.blue);
+        }
+        if (gpsw == null) {
+            gpsw = new GrabPoint(-1, -1);
+            gPoints[SW_POINT_INDEX] = gpsw;
+//          gpsw.setFillPaint(Color.green);
+        }
+        if (gpse == null) {
+            gpse = new GrabPoint(-1, -1);
+            gPoints[SE_POINT_INDEX] = gpse;
+//          gpse.setFillPaint(Color.orange);
+        }
 
-	if (gpc == null) {
-	    gpc = new OffsetGrabPoint(-1, -1);
-//    	    gpc.setFillPaint(Color.red);
-	    gPoints[CENTER_POINT_INDEX] = gpc;
-	    if (getGraphic().getRenderType() != OMGraphic.RENDERTYPE_LATLON) {
-		gpc.addGrabPoint(gpnw);
-		gpc.addGrabPoint(gpne);
-		gpc.addGrabPoint(gpsw);
-		gpc.addGrabPoint(gpse);
-	    }
-	}
+        if (gpc == null) {
+            gpc = new OffsetGrabPoint(-1, -1);
+//          gpc.setFillPaint(Color.red);
+            gPoints[CENTER_POINT_INDEX] = gpc;
+            if (getGraphic().getRenderType() != OMGraphic.RENDERTYPE_LATLON) {
+                gpc.addGrabPoint(gpnw);
+                gpc.addGrabPoint(gpne);
+                gpc.addGrabPoint(gpsw);
+                gpc.addGrabPoint(gpse);
+            }
+        }
 
-	if (gpo == null) {
-	    gpo = new OffsetGrabPoint(-1, -1);
-	    gPoints[OFFSET_POINT_INDEX] = gpo;
-	    gpo.addGrabPoint(gpc);
-	}
+        if (gpo == null) {
+            gpo = new OffsetGrabPoint(-1, -1);
+            gPoints[OFFSET_POINT_INDEX] = gpo;
+            gpo.addGrabPoint(gpc);
+        }
     }
 
     protected void clearGrabPoints() {
 
-	gpc = null;
-	gpnw = null;
-	gpne = null;
-	gpsw = null;
-	gpse = null;
-	gpo = null;
+        gpc = null;
+        gpnw = null;
+        gpne = null;
+        gpsw = null;
+        gpse = null;
+        gpo = null;
 
-	gPoints[CENTER_POINT_INDEX] = gpc;
-	gPoints[NW_POINT_INDEX] = gpnw;
-	gPoints[NE_POINT_INDEX] = gpne;
-	gPoints[SW_POINT_INDEX] = gpsw;
-	gPoints[SE_POINT_INDEX] = gpse;
-	gPoints[OFFSET_POINT_INDEX] = gpo;
+        gPoints[CENTER_POINT_INDEX] = gpc;
+        gPoints[NW_POINT_INDEX] = gpnw;
+        gPoints[NE_POINT_INDEX] = gpne;
+        gPoints[SW_POINT_INDEX] = gpsw;
+        gPoints[SE_POINT_INDEX] = gpse;
+        gPoints[OFFSET_POINT_INDEX] = gpo;
     }
 
     /**
@@ -266,114 +266,114 @@ public class EditableOMRect extends EditableOMGraphic {
      * grab points off the location of the graphic.
      */
     public void setGrabPoints(OMGraphic graphic) {
-	Debug.message("eomg", "EditableOMRect.setGrabPoints(graphic)");
-	if (!(graphic instanceof OMRect)) {
-	    return;
-	}
+        Debug.message("eomg", "EditableOMRect.setGrabPoints(graphic)");
+        if (!(graphic instanceof OMRect)) {
+            return;
+        }
 
-	assertGrabPoints();
+        assertGrabPoints();
 
-	OMRect rect = (OMRect) graphic;
-	boolean ntr = rect.getNeedToRegenerate();
-	int renderType = rect.getRenderType();
-	int lineType = rect.getLineType();
+        OMRect rect = (OMRect) graphic;
+        boolean ntr = rect.getNeedToRegenerate();
+        int renderType = rect.getRenderType();
+        int lineType = rect.getLineType();
 
-	int top = 0;
-	int bottom = 0;
-	int left = 0;
-	int right = 0;
-	LatLonPoint llp;
-	int latoffset = 0;
-	int lonoffset = 0;
+        int top = 0;
+        int bottom = 0;
+        int left = 0;
+        int right = 0;
+        LatLonPoint llp;
+        int latoffset = 0;
+        int lonoffset = 0;
 
-	boolean doStraight = true;
+        boolean doStraight = true;
 
-	if (ntr == false) {
+        if (ntr == false) {
 
-	    if (renderType == OMGraphic.RENDERTYPE_LATLON || 
-		renderType == OMGraphic.RENDERTYPE_OFFSET) {
-		
-		if (projection != null) {
-		    float wlon = rect.getWestLon();
-		    float nlat = rect.getNorthLat();
-		    float elon = rect.getEastLon();
-		    float slat = rect.getSouthLat();
+            if (renderType == OMGraphic.RENDERTYPE_LATLON || 
+                renderType == OMGraphic.RENDERTYPE_OFFSET) {
+                
+                if (projection != null) {
+                    float wlon = rect.getWestLon();
+                    float nlat = rect.getNorthLat();
+                    float elon = rect.getEastLon();
+                    float slat = rect.getSouthLat();
 
-		    llp = new LatLonPoint(nlat, wlon);
-		    java.awt.Point p = projection.forward(llp);
-		    if (renderType == OMGraphic.RENDERTYPE_LATLON) {
-    			doStraight = false;
-			top = (int)p.getY();
-			left = (int)p.getX();
-			gpnw.set((int)p.getX(), (int)p.getY());
+                    llp = new LatLonPoint(nlat, wlon);
+                    java.awt.Point p = projection.forward(llp);
+                    if (renderType == OMGraphic.RENDERTYPE_LATLON) {
+                        doStraight = false;
+                        top = (int)p.getY();
+                        left = (int)p.getX();
+                        gpnw.set((int)p.getX(), (int)p.getY());
 
-			p = projection.forward(slat, elon);
-			gpse.set((int)p.getX(), (int)p.getY());
+                        p = projection.forward(slat, elon);
+                        gpse.set((int)p.getX(), (int)p.getY());
 
-			p = projection.forward(nlat, elon);
-			gpne.set((int)p.getX(), (int)p.getY());
+                        p = projection.forward(nlat, elon);
+                        gpne.set((int)p.getX(), (int)p.getY());
 
-			p = projection.forward(slat, wlon);
-			gpsw.set((int)p.getX(), (int)p.getY());
+                        p = projection.forward(slat, wlon);
+                        gpsw.set((int)p.getX(), (int)p.getY());
 
-			p = projection.forward(nlat - (nlat - slat)/2f, 
-					       wlon + (elon - wlon)/2f);
-			gpc.set((int)p.getX(), (int)p.getY());
+                        p = projection.forward(nlat - (nlat - slat)/2f, 
+                                               wlon + (elon - wlon)/2f);
+                        gpc.set((int)p.getX(), (int)p.getY());
 
-		    } else {
-			latoffset = (int)p.getY();
-			lonoffset = (int)p.getX();
-			gpo.set(lonoffset, latoffset);
-		    }
-		}
-	    }
+                    } else {
+                        latoffset = (int)p.getY();
+                        lonoffset = (int)p.getX();
+                        gpo.set(lonoffset, latoffset);
+                    }
+                }
+            }
 
-		
-	    if (doStraight) {
+                
+            if (doStraight) {
 
-		Debug.message("eomg", "EditableOMRect: drawing straight line rectangle");
+                Debug.message("eomg", "EditableOMRect: drawing straight line rectangle");
 
-		top = rect.getTop() + latoffset;
-		bottom = rect.getBottom() + latoffset;
-		right = rect.getRight() + lonoffset;
-		left = rect.getLeft() + lonoffset;
+                top = rect.getTop() + latoffset;
+                bottom = rect.getBottom() + latoffset;
+                right = rect.getRight() + lonoffset;
+                left = rect.getLeft() + lonoffset;
 
-		// We have to do some fancy point wrangling to keep
-		// from messing up the next setGrabPoints().
-		if (movingPoint == gpc || movingPoint == gpo || 
-		    movingPoint == null) {
-		    gpne.set(right, top);
-		    gpnw.set(left, top);
-		    gpse.set(right, bottom);
-		    gpsw.set(left, bottom);
-		} else if (movingPoint == gpnw) {
-		    gpne.set(gpse.getX(), gpnw.getY());
-		    gpsw.set(gpnw.getX(), gpse.getY());
-		} else if (movingPoint == gpse) {
-		    gpne.set(gpse.getX(), gpnw.getY());
-		    gpsw.set(gpnw.getX(), gpse.getY());
-		} else if (movingPoint == gpsw) {
-		    gpnw.set(gpsw.getX(), gpne.getY());
-		    gpse.set(gpne.getX(), gpsw.getY());
-		} else if (movingPoint == gpne) {
-		    gpnw.set(gpsw.getX(), gpne.getY());
-		    gpse.set(gpne.getX(), gpsw.getY());
-		}
+                // We have to do some fancy point wrangling to keep
+                // from messing up the next setGrabPoints().
+                if (movingPoint == gpc || movingPoint == gpo || 
+                    movingPoint == null) {
+                    gpne.set(right, top);
+                    gpnw.set(left, top);
+                    gpse.set(right, bottom);
+                    gpsw.set(left, bottom);
+                } else if (movingPoint == gpnw) {
+                    gpne.set(gpse.getX(), gpnw.getY());
+                    gpsw.set(gpnw.getX(), gpse.getY());
+                } else if (movingPoint == gpse) {
+                    gpne.set(gpse.getX(), gpnw.getY());
+                    gpsw.set(gpnw.getX(), gpse.getY());
+                } else if (movingPoint == gpsw) {
+                    gpnw.set(gpsw.getX(), gpne.getY());
+                    gpse.set(gpne.getX(), gpsw.getY());
+                } else if (movingPoint == gpne) {
+                    gpnw.set(gpsw.getX(), gpne.getY());
+                    gpse.set(gpne.getX(), gpsw.getY());
+                }
 
-		int middlex = (right - left)/2;
-		int middley = (bottom - top)/2;
-		gpc.set(left + middlex, top + middley);
-		gpc.updateOffsets();
-//  		Debug.output("Center setting x: " + gpc.getX() + ", y:" + gpc.getY());
-	    } 
+                int middlex = (right - left)/2;
+                int middley = (bottom - top)/2;
+                gpc.set(left + middlex, top + middley);
+                gpc.updateOffsets();
+//              Debug.output("Center setting x: " + gpc.getX() + ", y:" + gpc.getY());
+            } 
 
-	    if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
-		gpo.updateOffsets();
-	    }
+            if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
+                gpo.updateOffsets();
+            }
 
-	} else {
-	    Debug.message("eomg", "EditableOMRect.setGrabPoints: graphic needs to be regenerated");
-	}
+        } else {
+            Debug.message("eomg", "EditableOMRect.setGrabPoints: graphic needs to be regenerated");
+        }
     }
 
     /**
@@ -383,117 +383,117 @@ public class EditableOMRect extends EditableOMGraphic {
      */
     public void setGrabPoints() {
 
-	int renderType = rect.getRenderType();
-	LatLonPoint llp1;
+        int renderType = rect.getRenderType();
+        LatLonPoint llp1;
 
-	Debug.message("eomg", "EditableOMRect.setGrabPoints()");
+        Debug.message("eomg", "EditableOMRect.setGrabPoints()");
 
-	// Do center point for lat/lon or offset rects
-	if (renderType == OMGraphic.RENDERTYPE_LATLON) {
+        // Do center point for lat/lon or offset rects
+        if (renderType == OMGraphic.RENDERTYPE_LATLON) {
 
-	    if (projection != null) {
+            if (projection != null) {
 
-		// Need to figure out which point was moved, and then
-		// set the upper left and lower right points
-		// accordingly.
-		if (movingPoint == gpne) {
-		    llp1 = projection.inverse(gpne.getX(), gpne.getY());
-		    rect.lat1 = llp1.getLatitude();
-		    rect.lon2 = llp1.getLongitude();
-		} else if (movingPoint == gpnw) {
-		    llp1 = projection.inverse(gpnw.getX(), gpnw.getY());
-		    rect.lat1 = llp1.getLatitude();
-		    rect.lon1 = llp1.getLongitude();
-		} else if (movingPoint == gpsw) {
-		    llp1 = projection.inverse(gpsw.getX(), gpsw.getY());
-		    rect.lat2 = llp1.getLatitude();
-		    rect.lon1 = llp1.getLongitude();
-		} else if (movingPoint == gpse) {
-		    llp1 = projection.inverse(gpse.getX(), gpse.getY());
-		    LatLonPoint llp2 = projection.inverse(gpnw.getX(), gpnw.getY());
-		    rect.lat1 = llp2.getLatitude();
-		    rect.lon1 = llp2.getLongitude();
-		    rect.lat2 = llp1.getLatitude();
-		    rect.lon2 = llp1.getLongitude();
-		} else {
-		    //movingPoint == gpc
-		    llp1 = projection.inverse(gpc.getX(), gpc.getY());
-		    rect.lat1 = llp1.getLatitude() + diffy;
-		    rect.lon1 = llp1.getLongitude() - diffx;
-		    rect.lat2 = llp1.getLatitude() - diffy;
-		    rect.lon2 = llp1.getLongitude() + diffx;
-		}
-		rect.setNeedToRegenerate(true);
-	    }
-	}
+                // Need to figure out which point was moved, and then
+                // set the upper left and lower right points
+                // accordingly.
+                if (movingPoint == gpne) {
+                    llp1 = projection.inverse(gpne.getX(), gpne.getY());
+                    rect.lat1 = llp1.getLatitude();
+                    rect.lon2 = llp1.getLongitude();
+                } else if (movingPoint == gpnw) {
+                    llp1 = projection.inverse(gpnw.getX(), gpnw.getY());
+                    rect.lat1 = llp1.getLatitude();
+                    rect.lon1 = llp1.getLongitude();
+                } else if (movingPoint == gpsw) {
+                    llp1 = projection.inverse(gpsw.getX(), gpsw.getY());
+                    rect.lat2 = llp1.getLatitude();
+                    rect.lon1 = llp1.getLongitude();
+                } else if (movingPoint == gpse) {
+                    llp1 = projection.inverse(gpse.getX(), gpse.getY());
+                    LatLonPoint llp2 = projection.inverse(gpnw.getX(), gpnw.getY());
+                    rect.lat1 = llp2.getLatitude();
+                    rect.lon1 = llp2.getLongitude();
+                    rect.lat2 = llp1.getLatitude();
+                    rect.lon2 = llp1.getLongitude();
+                } else {
+                    //movingPoint == gpc
+                    llp1 = projection.inverse(gpc.getX(), gpc.getY());
+                    rect.lat1 = llp1.getLatitude() + diffy;
+                    rect.lon1 = llp1.getLongitude() - diffx;
+                    rect.lat2 = llp1.getLatitude() - diffy;
+                    rect.lon2 = llp1.getLongitude() + diffx;
+                }
+                rect.setNeedToRegenerate(true);
+            }
+        }
 
-	boolean settingOffset = getStateMachine().getState() instanceof GraphicSetOffsetState && movingPoint == gpo;
+        boolean settingOffset = getStateMachine().getState() instanceof GraphicSetOffsetState && movingPoint == gpo;
 
-	// If the center point is moving, the offset distance changes
-	if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
+        // If the center point is moving, the offset distance changes
+        if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
-	    llp1 = projection.inverse(gpo.getX(), gpo.getY());
+            llp1 = projection.inverse(gpo.getX(), gpo.getY());
 
-	    rect.lat1=llp1.getLatitude();
-	    rect.lon1=llp1.getLongitude();
+            rect.lat1=llp1.getLatitude();
+            rect.lon1=llp1.getLongitude();
 
-	    if (settingOffset || movingPoint == gpc) {
-		int halfheight = (gpse.getY() - gpnw.getY())/2;
-		int halfwidth = (gpse.getX() - gpnw.getX())/2;
-		
-		// Don't call rect.setLocation because we only want to
-		// setNeedToRegenerate if !settingOffset.
-		rect.x1 = gpc.getX() - halfwidth - gpo.getX();
-		rect.y1 = gpc.getY() - halfheight - gpo.getY();
-		rect.x2 = gpc.getX() + halfwidth - gpo.getX();
-		rect.y2 = gpc.getY() + halfheight - gpo.getY();
-	    }
+            if (settingOffset || movingPoint == gpc) {
+                int halfheight = (gpse.getY() - gpnw.getY())/2;
+                int halfwidth = (gpse.getX() - gpnw.getX())/2;
+                
+                // Don't call rect.setLocation because we only want to
+                // setNeedToRegenerate if !settingOffset.
+                rect.x1 = gpc.getX() - halfwidth - gpo.getX();
+                rect.y1 = gpc.getY() - halfheight - gpo.getY();
+                rect.x2 = gpc.getX() + halfwidth - gpo.getX();
+                rect.y2 = gpc.getY() + halfheight - gpo.getY();
+            }
 
-	    if (!settingOffset) {
-		Debug.message("eomg", "EditableOMRect: updating offset rect");
-		if (movingPoint == gpnw || movingPoint == gpse) {
-		    rect.setLocation(gpnw.getX() - gpo.getX(),
-				     gpnw.getY() - gpo.getY(),
-				     gpse.getX() - gpo.getX(),
-				     gpse.getY() - gpo.getY());
-		} else if (movingPoint == gpne || movingPoint == gpsw) {
-		    rect.setLocation(rect.x1 = gpsw.getX() - gpo.getX(),
-				     gpne.getY() - gpo.getY(),
-				     gpne.getX() - gpo.getX(),
-				     gpsw.getY() - gpo.getY());
-		}
-		rect.setNeedToRegenerate(true);
-	    }
+            if (!settingOffset) {
+                Debug.message("eomg", "EditableOMRect: updating offset rect");
+                if (movingPoint == gpnw || movingPoint == gpse) {
+                    rect.setLocation(gpnw.getX() - gpo.getX(),
+                                     gpnw.getY() - gpo.getY(),
+                                     gpse.getX() - gpo.getX(),
+                                     gpse.getY() - gpo.getY());
+                } else if (movingPoint == gpne || movingPoint == gpsw) {
+                    rect.setLocation(rect.x1 = gpsw.getX() - gpo.getX(),
+                                     gpne.getY() - gpo.getY(),
+                                     gpne.getX() - gpo.getX(),
+                                     gpsw.getY() - gpo.getY());
+                }
+                rect.setNeedToRegenerate(true);
+            }
 
-	    // Set Location has reset the rendertype, but provides
-	    // the convenience of setting the max and min values
-	    // for us.
-	    rect.setRenderType(OMGraphic.RENDERTYPE_OFFSET);
-	}
+            // Set Location has reset the rendertype, but provides
+            // the convenience of setting the max and min values
+            // for us.
+            rect.setRenderType(OMGraphic.RENDERTYPE_OFFSET);
+        }
 
-	// Do the rect height and width for XY and OFFSET render types.
-	if (renderType == OMGraphic.RENDERTYPE_XY) {
-	    Debug.message("eomg", "EditableOMRect: updating x/y rect");
+        // Do the rect height and width for XY and OFFSET render types.
+        if (renderType == OMGraphic.RENDERTYPE_XY) {
+            Debug.message("eomg", "EditableOMRect: updating x/y rect");
 
-	    if (movingPoint == gpc) {
-		int halfheight = (gpse.getY() - gpnw.getY())/2;
-		int halfwidth = (gpse.getX() - gpnw.getX())/2;
-		rect.setLocation(gpc.getX() - halfwidth,
-				 gpc.getY() - halfheight,
-				 gpc.getX() + halfwidth, 
-				 gpc.getY() + halfheight);
-	    } else if (movingPoint == gpnw || movingPoint == gpse) {
-		rect.setLocation(gpnw.getX(), gpnw.getY(),
-				 gpse.getX(), gpse.getY());
-	    } else if (movingPoint == gpne || movingPoint == gpsw) {
-		rect.setLocation(gpsw.getX(), gpne.getY(), 
-				 gpne.getX(), gpsw.getY());
-	    }
-	}
+            if (movingPoint == gpc) {
+                int halfheight = (gpse.getY() - gpnw.getY())/2;
+                int halfwidth = (gpse.getX() - gpnw.getX())/2;
+                rect.setLocation(gpc.getX() - halfwidth,
+                                 gpc.getY() - halfheight,
+                                 gpc.getX() + halfwidth, 
+                                 gpc.getY() + halfheight);
+            } else if (movingPoint == gpnw || movingPoint == gpse) {
+                rect.setLocation(gpnw.getX(), gpnw.getY(),
+                                 gpse.getX(), gpse.getY());
+            } else if (movingPoint == gpne || movingPoint == gpsw) {
+                rect.setLocation(gpsw.getX(), gpne.getY(), 
+                                 gpne.getX(), gpsw.getY());
+            }
+        }
 
-	if (projection != null) {
-	    regenerate(projection);
-	}
+        if (projection != null) {
+            regenerate(projection);
+        }
     }
 
     /**
@@ -518,16 +518,16 @@ public class EditableOMRect extends EditableOMGraphic {
      * @return true 
      */
     public boolean generate(Projection proj) {
-	Debug.message("eomgdetail", "EditableOMRect.generate()");
-	if (rect != null) rect.generate(proj);
+        Debug.message("eomgdetail", "EditableOMRect.generate()");
+        if (rect != null) rect.generate(proj);
 
-	for (int i = 0; i < gPoints.length; i++) {
-	    GrabPoint gp = gPoints[i];
-	    if (gp != null) {
-		gp.generate(proj);
-	    }
-	}
-	return true;
+        for (int i = 0; i < gPoints.length; i++) {
+            GrabPoint gp = gPoints[i];
+            if (gp != null) {
+                gp.generate(proj);
+            }
+        }
+        return true;
     }
 
     /**
@@ -536,11 +536,11 @@ public class EditableOMRect extends EditableOMGraphic {
      * when the projection changes.
      */
     public void regenerate(Projection proj) {
-	Debug.message("eomg", "EditableOMRect.regenerate()");
-	if (rect != null) rect.regenerate(proj);
+        Debug.message("eomg", "EditableOMRect.regenerate()");
+        if (rect != null) rect.regenerate(proj);
 
-	setGrabPoints(rect);
-	generate(proj);
+        setGrabPoints(rect);
+        generate(proj);
     }
 
     /**
@@ -551,44 +551,44 @@ public class EditableOMRect extends EditableOMGraphic {
      * @param graphics java.awt.Graphics.
      */
     public void render(java.awt.Graphics graphics) {
-	Debug.message("eomgdetail", "EditableOMRect.render()");
+        Debug.message("eomgdetail", "EditableOMRect.render()");
 
-	State state = getStateMachine().getState();
+        State state = getStateMachine().getState();
 
-	if (rect != null) {
-	    rect.setVisible(true);
-	    rect.render(graphics);
-	    rect.setVisible(false);
-	} else {
-	    Debug.message("eomg", "EditableOMRect.render: null rect.");
-	}
-	
-	int renderType = rect.getRenderType();
+        if (rect != null) {
+            rect.setVisible(true);
+            rect.render(graphics);
+            rect.setVisible(false);
+        } else {
+            Debug.message("eomg", "EditableOMRect.render: null rect.");
+        }
+        
+        int renderType = rect.getRenderType();
 
-	if (state instanceof GraphicSelectedState ||
-	    state instanceof GraphicEditState) {
+        if (state instanceof GraphicSelectedState ||
+            state instanceof GraphicEditState) {
 
-	    for (int i = 0; i < gPoints.length; i++) {
+            for (int i = 0; i < gPoints.length; i++) {
 
-		GrabPoint gp = gPoints[i];
-		if (gp != null) {
-		    if ((i == OFFSET_POINT_INDEX &&
-			 renderType == OMGraphic.RENDERTYPE_OFFSET &&
-			 movingPoint == gpo) || 
-			
-			(state instanceof GraphicSelectedState && 
-			 ((i != OFFSET_POINT_INDEX && renderType != OMGraphic.RENDERTYPE_OFFSET) || 
-			  (renderType == OMGraphic.RENDERTYPE_OFFSET)))
-			
-			) {
+                GrabPoint gp = gPoints[i];
+                if (gp != null) {
+                    if ((i == OFFSET_POINT_INDEX &&
+                         renderType == OMGraphic.RENDERTYPE_OFFSET &&
+                         movingPoint == gpo) || 
+                        
+                        (state instanceof GraphicSelectedState && 
+                         ((i != OFFSET_POINT_INDEX && renderType != OMGraphic.RENDERTYPE_OFFSET) || 
+                          (renderType == OMGraphic.RENDERTYPE_OFFSET)))
+                        
+                        ) {
 
-			gp.setVisible(true);
-			gp.render(graphics);
-			gp.setVisible(false);
-		    }
-		}
-	    }
-	}
+                        gp.setVisible(true);
+                        gp.render(graphics);
+                        gp.setVisible(false);
+                    }
+                }
+            }
+        }
     }
 }
 

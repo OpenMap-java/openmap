@@ -37,7 +37,7 @@ public class WKTNode {
      * @return String
      */
     public String getGeoWKT() {
-	return geoWKT;
+        return geoWKT;
     }
 
     /**
@@ -45,7 +45,7 @@ public class WKTNode {
      * @return boolean
      */
     public boolean isLeaf() {
-	return leaf;
+        return leaf;
     }
 
     /**
@@ -54,7 +54,7 @@ public class WKTNode {
      */
 
     public WKTNode getParent() {
-	return parent;
+        return parent;
     }
 
     /**
@@ -62,7 +62,7 @@ public class WKTNode {
      * @return boolean
      */
     public boolean isRoot() {
-	return root;
+        return root;
     }
 
     /**
@@ -70,7 +70,7 @@ public class WKTNode {
      * @param c The geoWKT to set
      */
     public void adToGeoWKT(char[] c) {
-	this.geoWKT = geoWKT.concat(new String(c));
+        this.geoWKT = geoWKT.concat(new String(c));
     }
 
     /**
@@ -78,7 +78,7 @@ public class WKTNode {
      * @param leaf The leaf to set
      */
     public void setLeaf(boolean leaf) {
-	this.leaf = leaf;
+        this.leaf = leaf;
     }
 
     /**
@@ -86,7 +86,7 @@ public class WKTNode {
      * @param parent The parent to set
      */
     public void setParent(WKTNode parent) {
-	this.parent = parent;
+        this.parent = parent;
     }
 
     /**
@@ -94,20 +94,20 @@ public class WKTNode {
      * @param root The root to set
      */
     public void setRoot(boolean root) {
-	this.root = root;
+        this.root = root;
     }
 
     public int countChildren() {
-	return this.children.size();
+        return this.children.size();
     }
 
     public void adChild(WKTNode n) {
-	this.children.add(n);
-	n.setParent(this);
+        this.children.add(n);
+        n.setParent(this);
     }
 
     public WKTNode getChildByNumber(int i) {
-	return (WKTNode) this.children.elementAt(i);
+        return (WKTNode) this.children.elementAt(i);
     }
 }
 

@@ -6,8 +6,8 @@
  * **********************************************************************
  * 
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/SwingWorker.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/08/14 22:57:39 $
+ * $Revision: 1.4 $
+ * $Date: 2004/01/26 18:18:15 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -33,7 +33,7 @@ public abstract class SwingWorker {
      * @param sv object set as a result of the construct method
      * */
     public void setValue(Object sv) {
-	value = sv;
+        value = sv;
     }
 
     /** 
@@ -42,8 +42,8 @@ public abstract class SwingWorker {
      * @param t the thread.
      * */
     public void setThread(Thread t) {
-	thread = t;
-	if (thread != null) thread.start();
+        thread = t;
+        if (thread != null) thread.start();
     }
 
     /** 
@@ -103,16 +103,16 @@ public abstract class SwingWorker {
             public void run() {
                 synchronized(SwingWorker.this) {
 
-		    try {
-			value = construct();
-		    } catch (Exception e) {
-			e.printStackTrace(Debug.err);
-			value = null;
-		    }
+                    try {
+                        value = construct();
+                    } catch (Exception e) {
+                        e.printStackTrace(Debug.err);
+                        value = null;
+                    }
                     thread = null;
                 }
 
-		SwingUtilities.invokeLater(doFinished);
+                SwingUtilities.invokeLater(doFinished);
             }
         };
 

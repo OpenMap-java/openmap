@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MouseModeButtonPanel.java,v $
 // $RCSfile: MouseModeButtonPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:20:42 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,8 +54,8 @@ public class MouseModeButtonPanel extends MouseModePanel {
     public final static String defaultKey = "mousemodebuttonpanel";
 
     public MouseModeButtonPanel() {
-	super();
-	setKey(defaultKey);
+        super();
+        setKey(defaultKey);
     }
 
     /**
@@ -63,74 +63,74 @@ public class MouseModeButtonPanel extends MouseModePanel {
      * buttons from the mouse modes that are handled by the delegator.  
      */
     protected void setPanel(MouseDelegator md) {
-	if (toolBar != null) {
-	    remove(toolBar); //   remove it
-	}
+        if (toolBar != null) {
+            remove(toolBar); //   remove it
+        }
 
-	toolBar = new JToolBar(); // Create a new one
-	toolBar.setFloatable(floatable);
-	String activeMode = md.getActiveMouseModeID();
+        toolBar = new JToolBar(); // Create a new one
+        toolBar.setFloatable(floatable);
+        String activeMode = md.getActiveMouseModeID();
 
-	ButtonGroup bg = new ButtonGroup();
+        ButtonGroup bg = new ButtonGroup();
 
-	MapMouseMode[] modes = md.getMouseModes();
-	for (int i = 0; i < modes.length; i++) {
-	    String modeStr = modes[i].getID();
-	    boolean on = (modeStr == activeMode);
+        MapMouseMode[] modes = md.getMouseModes();
+        for (int i = 0; i < modes.length; i++) {
+            String modeStr = modes[i].getID();
+            boolean on = (modeStr == activeMode);
 
-	    JToggleButton btn;
-	    Icon icon = modes[i].getGUIIcon();
+            JToggleButton btn;
+            Icon icon = modes[i].getGUIIcon();
 
-	    if (icon != null) {
-		btn = new JToggleButton(icon, on);
-	    } else {
-		btn = new JToggleButton(modeStr, on);
-  	    }
+            if (icon != null) {
+                btn = new JToggleButton(icon, on);
+            } else {
+                btn = new JToggleButton(modeStr, on);
+            }
 
-	    if (on) {
-		enabledButton = btn;
-	    }
+            if (on) {
+                enabledButton = btn;
+            }
 
-	    buttonSet.put(modeStr, btn);
+            buttonSet.put(modeStr, btn);
 
-	    bg.add(btn);
-	    btn.setToolTipText(modes[i].getPrettyName());
-	    toolBar.add(btn);
-	    btn.setActionCommand(modeStr);
-	    btn.addActionListener(this);
+            bg.add(btn);
+            btn.setToolTipText(modes[i].getPrettyName());
+            toolBar.add(btn);
+            btn.setActionCommand(modeStr);
+            btn.addActionListener(this);
 
-	    btn.setVisible(modes[i].isVisible());
-	}
+            btn.setVisible(modes[i].isVisible());
+        }
 
-	this.add(toolBar);
-	this.revalidate();
-    }	// End of setPanel()
+        this.add(toolBar);
+        this.revalidate();
+    }   // End of setPanel()
 
     /**
      * actionPerformed - Handle the mouse clicks on the button(s)
      */
     public void actionPerformed(java.awt.event.ActionEvent e) {
-	
-	if (mouseDelegator == null) {
-	    return;
-	} else {
-	    mouseDelegator.setActiveMouseModeWithID(e.getActionCommand());
-	}	
+        
+        if (mouseDelegator == null) {
+            return;
+        } else {
+            mouseDelegator.setActiveMouseModeWithID(e.getActionCommand());
+        }       
     }
 
     /**
      * Set whether the MouseModeButtonPanel can be detached.
      */
     public void setFloatable(boolean floatable) {
-	this.floatable = floatable;
-	toolBar.setFloatable(floatable);
+        this.floatable = floatable;
+        toolBar.setFloatable(floatable);
     }
 
     /**
      * Get whether the MouseModeButtonPanel can be detached.
      */
     public boolean getFloatable() {
-	return toolBar.isFloatable();
+        return toolBar.isFloatable();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -140,18 +140,18 @@ public class MouseModeButtonPanel extends MouseModePanel {
      */
     public void propertyChange(PropertyChangeEvent evt) {
 
-	if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
-	    String mmID = ((MapMouseMode)evt.getNewValue()).getID();
+        if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
+            String mmID = ((MapMouseMode)evt.getNewValue()).getID();
 
-	    JToggleButton btn = (JToggleButton)buttonSet.get(mmID);
-	    if (btn != null) {
-		btn.setSelected(true);
-		enabledButton = btn;
-	    }
+            JToggleButton btn = (JToggleButton)buttonSet.get(mmID);
+            if (btn != null) {
+                btn.setSelected(true);
+                enabledButton = btn;
+            }
 
-	} else if (evt.getPropertyName() == MouseDelegator.MouseModesProperty) {
-	    toolBar.removeAll();
-	    setPanel(mouseDelegator);
-	}
+        } else if (evt.getPropertyName() == MouseDelegator.MouseModesProperty) {
+            toolBar.removeAll();
+            setPanel(mouseDelegator);
+        }
     } // End of propertyChange()
 } 

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/XBMFile.java,v $
 // $RCSfile: XBMFile.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:47:48 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -53,10 +53,10 @@ public class XBMFile {
 
     public XBMFile(File fileObj) {
         f = fileObj;
-	if(f.exists()) {
-	  readin();
-	}
-	else System.out.println("XBMFile: file not valid.");
+        if(f.exists()) {
+          readin();
+        }
+        else System.out.println("XBMFile: file not valid.");
     }
 
 
@@ -75,18 +75,18 @@ public class XBMFile {
       */
     public XBMFile(short w, short h, byte[] b) {
         width = w;
-	height = h;
-	paddedWidth = (int)Math.ceil((float)width/8.0)*8;
-	int dim = paddedWidth*height;
-	if(b.length != dim) {
-	  System.out.println("XBMFile: byte[] doesn't fit into dimensions");
-	  if(b.length > dim) bits = b;
-	  else{
-	    bits = new byte[paddedWidth*height];
-	    for (int i = 0; i < b.length; i++) bits[i] = b[i];
-	  }
-	}
-	else bits = b;
+        height = h;
+        paddedWidth = (int)Math.ceil((float)width/8.0)*8;
+        int dim = paddedWidth*height;
+        if(b.length != dim) {
+          System.out.println("XBMFile: byte[] doesn't fit into dimensions");
+          if(b.length > dim) bits = b;
+          else{
+            bits = new byte[paddedWidth*height];
+            for (int i = 0; i < b.length; i++) bits[i] = b[i];
+          }
+        }
+        else bits = b;
     }
 
     /**  readin() parses the file and sets the object variables.
@@ -94,31 +94,31 @@ public class XBMFile {
       */ 
     private void readin() {
       try{
-	byte[] fileStuff = new byte[(int)f.length()];
-	FileInputStream in = new FileInputStream(f);
-	in.read(fileStuff);
-	fileStuffString = new String(fileStuff);
-	int startWidth = fileStuffString.indexOf("width") + 6;
-	int endWidth = fileStuffString.indexOf("\n", startWidth);
-	int startHeight = fileStuffString.indexOf("height") + 7;
-	int endHeight = fileStuffString.indexOf("\n", startHeight);
-	int startBits = fileStuffString.indexOf("0x");
-	int endBits = fileStuffString.indexOf("};");
+        byte[] fileStuff = new byte[(int)f.length()];
+        FileInputStream in = new FileInputStream(f);
+        in.read(fileStuff);
+        fileStuffString = new String(fileStuff);
+        int startWidth = fileStuffString.indexOf("width") + 6;
+        int endWidth = fileStuffString.indexOf("\n", startWidth);
+        int startHeight = fileStuffString.indexOf("height") + 7;
+        int endHeight = fileStuffString.indexOf("\n", startHeight);
+        int startBits = fileStuffString.indexOf("0x");
+        int endBits = fileStuffString.indexOf("};");
 
-	width = 
-	  Short.parseShort(fileStuffString.substring(startWidth, endWidth));
-	height = 
-	  Short.parseShort(fileStuffString.substring(startHeight, endHeight));
+        width = 
+          Short.parseShort(fileStuffString.substring(startWidth, endWidth));
+        height = 
+          Short.parseShort(fileStuffString.substring(startHeight, endHeight));
 
-	paddedWidth = (int)Math.ceil((float)width/8.0)*8;
-	int num_bytes = paddedWidth*height;
-	pict_size = (int)height * (int)Math.ceil((float)width/8.0);
-	bits = new byte[num_bytes];
-	setBits(fileStuffString.substring(startBits, endBits));
+        paddedWidth = (int)Math.ceil((float)width/8.0)*8;
+        int num_bytes = paddedWidth*height;
+        pict_size = (int)height * (int)Math.ceil((float)width/8.0);
+        bits = new byte[num_bytes];
+        setBits(fileStuffString.substring(startBits, endBits));
 
       } 
       catch(IOException e3) {
-	System.out.println("XBMFile: Error reading file.");
+        System.out.println("XBMFile: Error reading file.");
       }
     }
 
@@ -131,17 +131,17 @@ public class XBMFile {
         // ASCII version of things
         // System.out.println(tmpString);
         int num_bytes = paddedWidth*height;
-	int i = 0;
-	int j = 0;
-	while(j < num_bytes) {
-	  i = (tmpString.indexOf("0x", i));
-	  int first = Character.digit(tmpString.charAt(i+2), 16)*0x10;
-	  int second = Character.digit(tmpString.charAt(i+3), 16);
+        int i = 0;
+        int j = 0;
+        while(j < num_bytes) {
+          i = (tmpString.indexOf("0x", i));
+          int first = Character.digit(tmpString.charAt(i+2), 16)*0x10;
+          int second = Character.digit(tmpString.charAt(i+3), 16);
 
-	  bits[j] = new Integer(first+second).byteValue();
-	  j++;
-	  i=i+4;
-	}
+          bits[j] = new Integer(first+second).byteValue();
+          j++;
+          i=i+4;
+        }
     }
 
     /**
@@ -149,11 +149,11 @@ public class XBMFile {
       */
     private int widthCheck(int widthTrak) {
         if(widthTrak > paddedWidth-2) {
-	    System.out.println();
-	    widthTrak = 0;
-	}
-	else widthTrak++;
-	return widthTrak;
+            System.out.println();
+            widthTrak = 0;
+        }
+        else widthTrak++;
+        return widthTrak;
     }
 
     /**  Prints the bitmap to stdout, using * and spaces
@@ -162,42 +162,42 @@ public class XBMFile {
     public void printout() {
 
       //      System.out.println("Width = " + width + " | Height = " + height 
-      //			 + " | Bit length = " + bits.length);
+      //                         + " | Bit length = " + bits.length);
       int widthTrak = -1;
       for (int i=0; i<pict_size;i++) {
-	  int val = new Byte(bits[i]).intValue();
+          int val = new Byte(bits[i]).intValue();
 
-	  widthTrak = widthCheck(widthTrak);
-	  if((val & 0x01)!=0) System.out.print((char)'*');
-	  else System.out.print((char)' ');
+          widthTrak = widthCheck(widthTrak);
+          if((val & 0x01)!=0) System.out.print((char)'*');
+          else System.out.print((char)' ');
 
-	  widthTrak = widthCheck(widthTrak);
-	  if((val & 0x02)!=0) System.out.print((char)'*');
-	  else System.out.print((char)' ');
+          widthTrak = widthCheck(widthTrak);
+          if((val & 0x02)!=0) System.out.print((char)'*');
+          else System.out.print((char)' ');
 
-	  widthTrak = widthCheck(widthTrak);
-	  if((val & 0x04)!=0) System.out.print((char)'*');
-	  else System.out.print((char)' ');
+          widthTrak = widthCheck(widthTrak);
+          if((val & 0x04)!=0) System.out.print((char)'*');
+          else System.out.print((char)' ');
 
-	  widthTrak = widthCheck(widthTrak);
-	  if((val & 0x08)!=0) System.out.print((char)'*');
-	  else System.out.print((char)' ');
+          widthTrak = widthCheck(widthTrak);
+          if((val & 0x08)!=0) System.out.print((char)'*');
+          else System.out.print((char)' ');
 
-	  widthTrak = widthCheck(widthTrak);
-	  if((val & 0x10)!=0) System.out.print((char)'*');
-	  else System.out.print((char)' ');
+          widthTrak = widthCheck(widthTrak);
+          if((val & 0x10)!=0) System.out.print((char)'*');
+          else System.out.print((char)' ');
 
-	  widthTrak = widthCheck(widthTrak);
-	  if((val & 0x20)!=0) System.out.print((char)'*');
-	  else System.out.print((char)' ');
+          widthTrak = widthCheck(widthTrak);
+          if((val & 0x20)!=0) System.out.print((char)'*');
+          else System.out.print((char)' ');
 
-	  widthTrak = widthCheck(widthTrak);
-	  if((val & 0x40)!=0) System.out.print((char)'*');
-	  else System.out.print((char)' ');
+          widthTrak = widthCheck(widthTrak);
+          if((val & 0x40)!=0) System.out.print((char)'*');
+          else System.out.print((char)' ');
 
-	  widthTrak = widthCheck(widthTrak);
-	  if((val & 0x80)!=0) System.out.print((char)'*');
-	  else System.out.print((char)' ');
+          widthTrak = widthCheck(widthTrak);
+          if((val & 0x80)!=0) System.out.print((char)'*');
+          else System.out.print((char)' ');
       }
       System.out.println("");
     }
@@ -216,7 +216,7 @@ public class XBMFile {
 
         System.out.println( "XBMFile: " + args[0]);
         XBMFile xbm = new XBMFile(args[0]);
-	xbm.printout();
+        xbm.printout();
     }
 }
 

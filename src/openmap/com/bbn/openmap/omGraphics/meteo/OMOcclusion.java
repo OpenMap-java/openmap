@@ -27,7 +27,7 @@ public class OMOcclusion extends OMDecoratedSpline {
      * Constructor for OMOcclusion.
      */
     public OMOcclusion() {
-	super();
+        super();
     }
 
     /**
@@ -37,7 +37,7 @@ public class OMOcclusion extends OMDecoratedSpline {
      * @param lType
      */
     public OMOcclusion(float[] llPoints, int units, int lType) {
-	super(llPoints, units, lType);
+        super(llPoints, units, lType);
     }
 
     /**
@@ -48,7 +48,7 @@ public class OMOcclusion extends OMDecoratedSpline {
      * @param nsegs
      */
     public OMOcclusion(float[] llPoints, int units, int lType, int nsegs) {
-	super(llPoints, units, lType, nsegs);
+        super(llPoints, units, lType, nsegs);
     }
 
     /**
@@ -56,7 +56,7 @@ public class OMOcclusion extends OMDecoratedSpline {
      * @param xypoints
      */
     public OMOcclusion(int[] xypoints) {
-	super(xypoints);
+        super(xypoints);
     }
 
     /**
@@ -65,7 +65,7 @@ public class OMOcclusion extends OMDecoratedSpline {
      * @param yPoints
      */
     public OMOcclusion(int[] xPoints, int[] yPoints) {
-	super(xPoints, yPoints);
+        super(xPoints, yPoints);
     }
 
     /**
@@ -76,11 +76,11 @@ public class OMOcclusion extends OMDecoratedSpline {
      * @param cMode
      */
     public OMOcclusion(
-	float latPoint,
-	float lonPoint,
-	int[] xypoints,
-	int cMode) {
-	super(latPoint, lonPoint, xypoints, cMode);
+        float latPoint,
+        float lonPoint,
+        int[] xypoints,
+        int cMode) {
+        super(latPoint, lonPoint, xypoints, cMode);
     }
 
     /**
@@ -92,33 +92,33 @@ public class OMOcclusion extends OMDecoratedSpline {
      * @param cMode
      */
     public OMOcclusion(
-	float latPoint,
-	float lonPoint,
-	int[] xPoints,
-	int[] yPoints,
-	int cMode) {
-	super(latPoint, lonPoint, xPoints, yPoints, cMode);
+        float latPoint,
+        float lonPoint,
+        int[] xPoints,
+        int[] yPoints,
+        int cMode) {
+        super(latPoint, lonPoint, xPoints, yPoints, cMode);
     }
 
     /**
      * @see fr.shom.jcirrus.openmap.omGraphics.OMDecoratedSpline#initDecorations()
      */
     protected void initDecorations() {
-	getDecorator().addDecoration(new LineShapeDecoration(SPACING, COLOR));
-	ColdFrontShapeDecoration cdec =
-	    new ColdFrontShapeDecoration(
-		LENGTH,
-		WIDTH * 2,
-		ColdFrontShapeDecoration.LEFT);
-	cdec.setPaint(COLOR);
-	getDecorator().addDecoration(cdec);
-	HotFrontShapeDecoration hdec =
-	    new HotFrontShapeDecoration(
-		LENGTH,
-		WIDTH,
-		ColdFrontShapeDecoration.LEFT);
-	hdec.setPaint(COLOR);
-	getDecorator().addDecoration(hdec);
+        getDecorator().addDecoration(new LineShapeDecoration(SPACING, COLOR));
+        ColdFrontShapeDecoration cdec =
+            new ColdFrontShapeDecoration(
+                LENGTH,
+                WIDTH * 2,
+                ColdFrontShapeDecoration.LEFT);
+        cdec.setPaint(COLOR);
+        getDecorator().addDecoration(cdec);
+        HotFrontShapeDecoration hdec =
+            new HotFrontShapeDecoration(
+                LENGTH,
+                WIDTH,
+                ColdFrontShapeDecoration.LEFT);
+        hdec.setPaint(COLOR);
+        getDecorator().addDecoration(hdec);
     }
 
 }

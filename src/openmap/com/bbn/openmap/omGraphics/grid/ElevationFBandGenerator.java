@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/Attic/ElevationFBandGenerator.java,v $
 // $RCSfile: ElevationFBandGenerator.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,7 +48,7 @@ public class ElevationFBandGenerator extends ElevationMBandGenerator {
      * @return the ARGB to color the pixel.  
      */
     public int calibratePointValue(int source){
-	return super.calibratePointValue((int)((float)source*3.2f));
+        return super.calibratePointValue((int)((float)source*3.2f));
     }
 }
 

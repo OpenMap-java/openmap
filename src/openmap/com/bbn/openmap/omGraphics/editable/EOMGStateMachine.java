@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/EOMGStateMachine.java,v $
 // $RCSfile: EOMGStateMachine.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,28 +59,28 @@ public class EOMGStateMachine extends StateMachine {
     public int NUMBER_STATES = DEFAULT_NUMBER_STATES;
 
     public EOMGStateMachine(EditableOMGraphic graphic){
-	this.graphic = graphic;
-	setStates(init());
+        this.graphic = graphic;
+        setStates(init());
 
-	// set reset state
-	setResetState(GRAPHIC_UNSELECTED);
-	reset();
-	setMapMouseListenerResponses(true);
+        // set reset state
+        setResetState(GRAPHIC_UNSELECTED);
+        reset();
+        setMapMouseListenerResponses(true);
 
-	Debug.message("eomg", "EOMGStateMachine created");
+        Debug.message("eomg", "EOMGStateMachine created");
     }
 
 
     protected State[] init(){
-	Debug.message("eomg", "EOMGStateMachine.init()");
-	State[] states = new State[NUMBER_STATES];
+        Debug.message("eomg", "EOMGStateMachine.init()");
+        State[] states = new State[NUMBER_STATES];
 
-	states[GRAPHIC_UNDEFINED] = new GraphicUndefinedState(graphic);
-	states[GRAPHIC_UNSELECTED] = new GraphicUnselectedState(graphic);
-	states[GRAPHIC_SELECTED] = new GraphicSelectedState(graphic);
-	states[GRAPHIC_EDIT] = new GraphicEditState(graphic);
-	states[GRAPHIC_SETOFFSET] = new GraphicSetOffsetState(graphic);
-	return states;
+        states[GRAPHIC_UNDEFINED] = new GraphicUndefinedState(graphic);
+        states[GRAPHIC_UNSELECTED] = new GraphicUnselectedState(graphic);
+        states[GRAPHIC_SELECTED] = new GraphicSelectedState(graphic);
+        states[GRAPHIC_EDIT] = new GraphicEditState(graphic);
+        states[GRAPHIC_SETOFFSET] = new GraphicSetOffsetState(graphic);
+        return states;
     }
 
 
@@ -88,7 +88,7 @@ public class EOMGStateMachine extends StateMachine {
      * Check to see if the graphic offset point needs to be defined.
      */
     public boolean isOffsetNeeded() {
-	return offsetNeeded;
+        return offsetNeeded;
     }
 
     /**
@@ -101,26 +101,26 @@ public class EOMGStateMachine extends StateMachine {
      * done only for offset graphics.
      */
     public void setOffsetNeeded(boolean set) {
-	offsetNeeded = set;
+        offsetNeeded = set;
     }
 
     public void setUndefined() {
-	setState(GRAPHIC_UNDEFINED);
+        setState(GRAPHIC_UNDEFINED);
     }
 
     public void setUnselected() {
-	setState(GRAPHIC_UNSELECTED);
+        setState(GRAPHIC_UNSELECTED);
     }
 
     public void setSelected() {
-	setState(GRAPHIC_SELECTED);
+        setState(GRAPHIC_SELECTED);
     }
 
     public void setEdit() {
-	setState(GRAPHIC_EDIT);
+        setState(GRAPHIC_EDIT);
     }
 
     public void setOffset() {
-	setState(GRAPHIC_SETOFFSET);
+        setState(GRAPHIC_SETOFFSET);
     }
 }

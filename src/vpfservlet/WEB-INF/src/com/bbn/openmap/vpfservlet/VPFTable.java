@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/VPFTable.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -31,20 +31,20 @@ public class VPFTable {
     }
 
     public void setFile(String file) {
-	try {
-	    if ((file == null) && (table != null)) {
-	        table.close();
-		table = null;
-	    }
-	    if (file != null) {
-	        table = new DcwRecordFile(file);
-	    }
-	} catch (FormatException fe) {
-	}
+        try {
+            if ((file == null) && (table != null)) {
+                table.close();
+                table = null;
+            }
+            if (file != null) {
+                table = new DcwRecordFile(file);
+            }
+        } catch (FormatException fe) {
+        }
     }
 
     public String getTablename() {
-	return (table == null) ? "default" : table.getTableName();
+        return (table == null) ? "default" : table.getTableName();
     }
 
     public String getDescription() {

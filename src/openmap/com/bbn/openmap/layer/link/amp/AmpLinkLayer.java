@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/amp/AmpLinkLayer.java,v $
 // $RCSfile: AmpLinkLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:28 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -85,7 +85,7 @@ public class AmpLinkLayer extends LinkLayer
      * parameters for the server.
      */
     public AmpLinkLayer(String host, int port, String propertiesURL) {
-	super(host, port, propertiesURL);
+        super(host, port, propertiesURL);
     }
 
     /**
@@ -95,9 +95,9 @@ public class AmpLinkLayer extends LinkLayer
      * @param properties the properties for the layer.
      */
     public void setProperties(String prefix, 
-			      java.util.Properties properties) {
-	super.setProperties(prefix, properties);
-	setAddToBeanContext(true);
+                              java.util.Properties properties) {
+        super.setProperties(prefix, properties);
+        setAddToBeanContext(true);
     }
 
     /**
@@ -111,11 +111,11 @@ public class AmpLinkLayer extends LinkLayer
      * @return a list of graphics.
      */
     public OMGraphicList prepare() {
-	Projection projection = getProjection();
-	if (projection != null) {
-	    extraGraphics.generate(projection);
-	}
-	return super.prepare();
+        Projection projection = getProjection();
+        if (projection != null) {
+            extraGraphics.generate(projection);
+        }
+        return super.prepare();
     }
 
     /**
@@ -124,15 +124,15 @@ public class AmpLinkLayer extends LinkLayer
      * @param g the Graphics context for painting
      */
     public void paint(java.awt.Graphics g) {
-	if (Debug.debugging("link")) {
-	    System.out.println(getName()+"|AmpLinkLayer.paint()");
-	}
+        if (Debug.debugging("link")) {
+            System.out.println(getName()+"|AmpLinkLayer.paint()");
+        }
 
-	if (extraGraphics != null) {
-	    extraGraphics.render(g);
-	}
+        if (extraGraphics != null) {
+            extraGraphics.render(g);
+        }
 
-	super.paint(g);
+        super.paint(g);
     }
 
     /**
@@ -141,118 +141,118 @@ public class AmpLinkLayer extends LinkLayer
      * drawing tool for modification if desired.
      */
     public boolean mouseClicked(MouseEvent e) {
-	Debug.message("link", "AmpLinkLayer mouseClicked");
-	LinkOMGraphicList graphics = getGraphicList(); // Get old list
-	OMGraphic gesGraphic = null;
+        Debug.message("link", "AmpLinkLayer mouseClicked");
+        LinkOMGraphicList graphics = getGraphicList(); // Get old list
+        OMGraphic gesGraphic = null;
 
-	gesGraphic = graphics.findClosest(e.getX(), e.getY(),
-					  distanceLimit);
-	if (gesGraphic == null ) {
-	    gesGraphic = extraGraphics.findClosest(e.getX(), e.getY(),
-						   distanceLimit);
-	}
+        gesGraphic = graphics.findClosest(e.getX(), e.getY(),
+                                          distanceLimit);
+        if (gesGraphic == null ) {
+            gesGraphic = extraGraphics.findClosest(e.getX(), e.getY(),
+                                                   distanceLimit);
+        }
 
-	if (gesGraphic != null && drawingTool != null) {
-	    DrawingTool dt = getDrawingTool();
-	    OMGraphic graphic = null;
-	    if (dt != null) {
-		graphic = dt.edit(gesGraphic, layer);
-	    }
-	    
-	    if (graphic != null) {
-		Debug.message("link", "AmpLinkLayer editing graphic");
-		return true;
-	    } else {
-		Debug.message("link", "AmpLinkLayer unable to edit graphic");
-	    }
-	}
-	return super.mouseClicked(e);
+        if (gesGraphic != null && drawingTool != null) {
+            DrawingTool dt = getDrawingTool();
+            OMGraphic graphic = null;
+            if (dt != null) {
+                graphic = dt.edit(gesGraphic, layer);
+            }
+            
+            if (graphic != null) {
+                Debug.message("link", "AmpLinkLayer editing graphic");
+                return true;
+            } else {
+                Debug.message("link", "AmpLinkLayer unable to edit graphic");
+            }
+        }
+        return super.mouseClicked(e);
     }
 
     protected final com.bbn.openmap.tools.drawing.DrawingToolRequestor layer = this;
     
     // DrawingToolRequestor method
     public void drawingComplete(OMGraphic omg, OMAction action) {
-	////////////// send the new graphic, along with instructions
-	//on what to do with it, to the server.
-	String id = null; // unknown
+        ////////////// send the new graphic, along with instructions
+        //on what to do with it, to the server.
+        String id = null; // unknown
 
-	Object obj = omg.getAppObject();
-	LinkProperties lp = null;
+        Object obj = omg.getAppObject();
+        LinkProperties lp = null;
 
-	if (obj != null && obj instanceof LinkProperties) {
-	    lp = (LinkProperties)obj;
-	    id = lp.getProperty(LPC_GRAPHICID);
-	    Debug.message("link", "AmpLinkLayer: received modified server graphic " + lp);
-	} else {
-	    Debug.message("link", "AmpLinkLayer: received new graphic from dt");
-	}
+        if (obj != null && obj instanceof LinkProperties) {
+            lp = (LinkProperties)obj;
+            id = lp.getProperty(LPC_GRAPHICID);
+            Debug.message("link", "AmpLinkLayer: received modified server graphic " + lp);
+        } else {
+            Debug.message("link", "AmpLinkLayer: received new graphic from dt");
+        }
 
-	if (id == null) {
-	    // Doesn't look like it was a modified graphic already
-	    // recieved from the server, so we should tell the server
-	    // to add it to its list.
-	    action.setMask(OMAction.ADD_GRAPHIC_MASK);
-	} else {
-	    action.setMask(OMAction.UPDATE_GRAPHIC_MASK);
-	}
+        if (id == null) {
+            // Doesn't look like it was a modified graphic already
+            // recieved from the server, so we should tell the server
+            // to add it to its list.
+            action.setMask(OMAction.ADD_GRAPHIC_MASK);
+        } else {
+            action.setMask(OMAction.UPDATE_GRAPHIC_MASK);
+        }
 
-	if (omg instanceof OMRangeRings) {
-	    extraGraphics.doAction(omg, action);
-	    repaint();
-	    return;
-	}
+        if (omg instanceof OMRangeRings) {
+            extraGraphics.doAction(omg, action);
+            repaint();
+            return;
+        }
 
-	try {
-	    // We do want the link object here... If another thread is
-	    // using the link, wait.
-	    ClientLink l = linkManager.getLink(true);
+        try {
+            // We do want the link object here... If another thread is
+            // using the link, wait.
+            ClientLink l = linkManager.getLink(true);
 
-	    if (l == null) {
-		System.err.println("LinkLayer.drawingComplete: unable to get link.");
-		return;
-	    }
+            if (l == null) {
+                System.err.println("LinkLayer.drawingComplete: unable to get link.");
+                return;
+            }
 
-	    synchronized(l) {
-		LinkActionList lal = new LinkActionList(l, new LinkProperties());
+            synchronized(l) {
+                LinkActionList lal = new LinkActionList(l, new LinkProperties());
 
-		if (action.isMask(OMAction.ADD_GRAPHIC_MASK) || 
-		    action.isMask(OMAction.UPDATE_GRAPHIC_MASK)) {
-		    lal.writeGraphicGestureHeader(action.getValue());
-		    LinkGraphic.write(omg, l);
-		} else {
-		    // This shouldn't ever get called with a null lp
-		    // properties object.  If the object is new or
-		    // doesn't have an ID, the upper paragraph will
-		    // get called.
-		    lal.modifyGraphic(action.getValue(), lp);
-		}
-		lal.end(Link.END_TOTAL);
-	    }
+                if (action.isMask(OMAction.ADD_GRAPHIC_MASK) || 
+                    action.isMask(OMAction.UPDATE_GRAPHIC_MASK)) {
+                    lal.writeGraphicGestureHeader(action.getValue());
+                    LinkGraphic.write(omg, l);
+                } else {
+                    // This shouldn't ever get called with a null lp
+                    // properties object.  If the object is new or
+                    // doesn't have an ID, the upper paragraph will
+                    // get called.
+                    lal.modifyGraphic(action.getValue(), lp);
+                }
+                lal.end(Link.END_TOTAL);
+            }
 
-	    l.readAndParse(getProjection(), currentGenerator);
-	    linkManager.finLink();
-	    
-	} catch (UnknownHostException uhe) {
-	    Debug.error("LinkLayer: unknown host!");
-	} catch (java.io.IOException ioe) {
-	    Debug.error("LinkLayer: Communication error between " + getName() + 
-			" layer\nand Link Server: Host: " + host + 
-			", Port: " + port + 
-			"LinkLayer: IOException contacting server!\n" +
-			ioe.getMessage());
+            l.readAndParse(getProjection(), currentGenerator);
+            linkManager.finLink();
+            
+        } catch (UnknownHostException uhe) {
+            Debug.error("LinkLayer: unknown host!");
+        } catch (java.io.IOException ioe) {
+            Debug.error("LinkLayer: Communication error between " + getName() + 
+                        " layer\nand Link Server: Host: " + host + 
+                        ", Port: " + port + 
+                        "LinkLayer: IOException contacting server!\n" +
+                        ioe.getMessage());
 
 
-	    linkManager.resetLink();
+            linkManager.resetLink();
 
-	    if (!quiet) {
-		fireRequestMessage("Communication error between " + getName() + 
-				   " layer\nand Link Server: Host: " + host + 
-				   ", Port: " + port);
-	    }
+            if (!quiet) {
+                fireRequestMessage("Communication error between " + getName() + 
+                                   " layer\nand Link Server: Host: " + host + 
+                                   ", Port: " + port);
+            }
 
-	}
-	doPrepare();
+        }
+        doPrepare();
     }
 
     /////////////////////////////////////////////////// 
@@ -268,52 +268,52 @@ public class AmpLinkLayer extends LinkLayer
      * @return String The key for this tool.
      */
     public Container getFace() {
-	if (gui == null) {
-	    gui = new JPanel();
+        if (gui == null) {
+            gui = new JPanel();
 
-	    rrButton = new JButton("RR");
-	    rrButton.setToolTipText("Create Range Ring");
-	    rrButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent event) {
-		    DrawingTool dt = getDrawingTool();
-		    GraphicAttributes ga = new GraphicAttributes();
-		    ga.setLinePaint(Color.yellow);
-		    if (dt != null) {
-  			OMRangeRings rr = (OMRangeRings) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRangeRings", ga, layer);
-			if (rr != null) {
-//  			    rr.setInterval(25, Length.MILE);
-			} else {
-			    Debug.error("AmpLinkLayer: Drawing tool can't create OMRangeRings");
-			} 
-		    } else {
-			Debug.output("AmpLinkLayer can't find a drawing tool");
-		    }
-		}
-	    });
+            rrButton = new JButton("RR");
+            rrButton.setToolTipText("Create Range Ring");
+            rrButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    DrawingTool dt = getDrawingTool();
+                    GraphicAttributes ga = new GraphicAttributes();
+                    ga.setLinePaint(Color.yellow);
+                    if (dt != null) {
+                        OMRangeRings rr = (OMRangeRings) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRangeRings", ga, layer);
+                        if (rr != null) {
+//                          rr.setInterval(25, Length.MILE);
+                        } else {
+                            Debug.error("AmpLinkLayer: Drawing tool can't create OMRangeRings");
+                        } 
+                    } else {
+                        Debug.output("AmpLinkLayer can't find a drawing tool");
+                    }
+                }
+            });
 
-	    eZone = new JButton("EZ");
-	    eZone.setToolTipText("Create Exclusion Zone");
-	    eZone.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent event) {
-		    DrawingTool dt = getDrawingTool();
-		    GraphicAttributes ga = new GraphicAttributes();
-		    ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
-		    ga.setLinePaint(Color.red);
-		    if (dt != null) {
-  			OMCircle circle = (OMCircle) getDrawingTool().create("com.bbn.openmap.omGraphics.OMCircle", ga, layer);
-			if (circle == null) {
-			    Debug.error("AmpLinkLayer: Drawing tool can't create Exclusion Zones");
-			} 
-		    } else {
-			Debug.output("AmpLinkLayer can't find a drawing tool");
-		    }
-		}
-	    });
+            eZone = new JButton("EZ");
+            eZone.setToolTipText("Create Exclusion Zone");
+            eZone.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    DrawingTool dt = getDrawingTool();
+                    GraphicAttributes ga = new GraphicAttributes();
+                    ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
+                    ga.setLinePaint(Color.red);
+                    if (dt != null) {
+                        OMCircle circle = (OMCircle) getDrawingTool().create("com.bbn.openmap.omGraphics.OMCircle", ga, layer);
+                        if (circle == null) {
+                            Debug.error("AmpLinkLayer: Drawing tool can't create Exclusion Zones");
+                        } 
+                    } else {
+                        Debug.output("AmpLinkLayer can't find a drawing tool");
+                    }
+                }
+            });
 
-	    gui.add(rrButton);
-	    gui.add(eZone);
-	}
-	return gui;
+            gui.add(rrButton);
+            gui.add(eZone);
+        }
+        return gui;
     }
     
     protected String key = "AMPControls";
@@ -324,7 +324,7 @@ public class AmpLinkLayer extends LinkLayer
      * @return String The key for this tool.
      **/
     public String getKey() {
-	return key;
+        return key;
     }
     
     /** 
@@ -333,29 +333,29 @@ public class AmpLinkLayer extends LinkLayer
      * @param aKey The key for this tool.
      */
     public void setKey(String aKey) {
-	key = aKey;
+        key = aKey;
     }
 
     public void findAndInit(Object someObj) {
-	if (someObj instanceof DrawingTool) {
-	    Debug.message("link", "AmpLinkLayer: found a drawing tool");
-	    setDrawingTool((DrawingTool)someObj);
-	}
+        if (someObj instanceof DrawingTool) {
+            Debug.message("link", "AmpLinkLayer: found a drawing tool");
+            setDrawingTool((DrawingTool)someObj);
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof DrawingTool) {
-	    if (getDrawingTool() == (DrawingTool)someObj) {
-		setDrawingTool(null);
-	    }
-	}
+        if (someObj instanceof DrawingTool) {
+            if (getDrawingTool() == (DrawingTool)someObj) {
+                setDrawingTool(null);
+            }
+        }
     }
 
     public void setDrawingTool(DrawingTool dt) {
-	drawingTool = dt;
+        drawingTool = dt;
     }
 
     public DrawingTool getDrawingTool() {
-	return drawingTool;
+        return drawingTool;
     }
 }

@@ -49,55 +49,55 @@ public class PpmEncoder extends ImageEncoder
     // @param img The image to encode.
     // @param out The stream to write the PPM to.
     public PpmEncoder( Image img, OutputStream out ) throws IOException
-	{
-	super( img, out );
-	}
+        {
+        super( img, out );
+        }
 
     /// Constructor.
     // @param prod The ImageProducer to encode.
     // @param out The stream to write the PPM to.
     public PpmEncoder( ImageProducer prod, OutputStream out ) throws IOException
-	{
-	super( prod, out );
-	}
+        {
+        super( prod, out );
+        }
 
 
     void encodeStart( int width, int height ) throws IOException
-	{
-	writeString( out, "P6\n" );
-	writeString( out, width + " " + height + "\n" );
-	writeString( out, "255\n" );
-	}
+        {
+        writeString( out, "P6\n" );
+        writeString( out, width + " " + height + "\n" );
+        writeString( out, "255\n" );
+        }
 
     static void writeString( OutputStream out, String str ) throws IOException
-	{
-	byte[] buf = str.getBytes();
-	out.write( buf );
-	}
+        {
+        byte[] buf = str.getBytes();
+        out.write( buf );
+        }
 
     void encodePixels(
-	int x, int y, int w, int h, int[] rgbPixels, int off, int scansize )
-	throws IOException
-	{
-	byte[] ppmPixels = new byte[w * 3];
-	for ( int row = 0; row < h; ++row )
-	    {
-	    int rowOff = off + row * scansize;
-	    for ( int col = 0; col < w; ++col )
-		{
-		int i = rowOff + col;
-		int j = col * 3;
-		ppmPixels[j    ] = (byte) ( ( rgbPixels[i] & 0xff0000 ) >> 16 );
-		ppmPixels[j + 1] = (byte) ( ( rgbPixels[i] & 0x00ff00 ) >> 8 );
-		ppmPixels[j + 2] = (byte) (   rgbPixels[i] & 0x0000ff );
-		}
-	    out.write( ppmPixels );
-	    }
-	}
+        int x, int y, int w, int h, int[] rgbPixels, int off, int scansize )
+        throws IOException
+        {
+        byte[] ppmPixels = new byte[w * 3];
+        for ( int row = 0; row < h; ++row )
+            {
+            int rowOff = off + row * scansize;
+            for ( int col = 0; col < w; ++col )
+                {
+                int i = rowOff + col;
+                int j = col * 3;
+                ppmPixels[j    ] = (byte) ( ( rgbPixels[i] & 0xff0000 ) >> 16 );
+                ppmPixels[j + 1] = (byte) ( ( rgbPixels[i] & 0x00ff00 ) >> 8 );
+                ppmPixels[j + 2] = (byte) (   rgbPixels[i] & 0x0000ff );
+                }
+            out.write( ppmPixels );
+            }
+        }
 
     void encodeDone() throws IOException
-	{
-	// Nothing.
-	}
+        {
+        // Nothing.
+        }
 
     }

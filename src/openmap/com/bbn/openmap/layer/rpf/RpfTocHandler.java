@@ -14,9 +14,9 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocHandler.java,v $
 // $RCSfile: RpfTocHandler.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/23 22:55:25 $
-// $Author: wjeuerle $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:11 $
+// $Author: dietrick $
 //
 // **********************************************************************
 
@@ -112,21 +112,21 @@ public class RpfTocHandler {
 
     // Added zone extents
     private static final int CADRG_zone_extents[] = {0, 32, 48, 56, 64,
-							     68, 72, 76, 80, 90};
+                                                             68, 72, 76, 80, 90};
 
     public RpfTocHandler() {
 
-	estimateDiskSpace = DEFAULT_FRAME_SPACE;
+        estimateDiskSpace = DEFAULT_FRAME_SPACE;
 
-	if (Debug.debugging("rpftoc")) {
-	    Debug.error("RpfTocHandler: No TOC parent directory name in constructor");
-	}
+        if (Debug.debugging("rpftoc")) {
+            Debug.error("RpfTocHandler: No TOC parent directory name in constructor");
+        }
     }
 
     /** Should be used in situations where it is certain that this is
      *  the only A.TOC in town. */
     public RpfTocHandler(String parentDir) {
-	this(parentDir, 0);
+        this(parentDir, 0);
     }
 
     /**
@@ -139,20 +139,20 @@ public class RpfTocHandler {
      * @param TOCNumber a unique number to identify this TOC for a RpfFrameProvider.
      */
     public RpfTocHandler(String parentDir, int TOCNumber) {
-	tocNumber = TOCNumber;
-	estimateDiskSpace = DEFAULT_FRAME_SPACE;
+        tocNumber = TOCNumber;
+        estimateDiskSpace = DEFAULT_FRAME_SPACE;
 
-	/* DKS. Open input "A.TOC" */
-	valid = loadFile(parentDir);
-	if (!valid) {
-	    Debug.error("RpfTocHandler: Invalid TOC File in " +
-			parentDir);
-	}
+        /* DKS. Open input "A.TOC" */
+        valid = loadFile(parentDir);
+        if (!valid) {
+            Debug.error("RpfTocHandler: Invalid TOC File in " +
+                        parentDir);
+        }
 
-	DEBUG_RPF = Debug.debugging("rpf");
-	DEBUG_RPFTOC = Debug.debugging("rpftoc");
-	DEBUG_RPFTOCDETAIL = Debug.debugging("rpftocdetail");
-	DEBUG_RPFTOCFRAMEDETAIL = Debug.debugging("rpftocframedetail");
+        DEBUG_RPF = Debug.debugging("rpf");
+        DEBUG_RPFTOC = Debug.debugging("rpftoc");
+        DEBUG_RPFTOCDETAIL = Debug.debugging("rpftocdetail");
+        DEBUG_RPFTOCFRAMEDETAIL = Debug.debugging("rpftocframedetail");
     }
 
     /**
@@ -165,29 +165,29 @@ public class RpfTocHandler {
      * @return File
      */
     public File getTocFile(String parentDir) {
-	/* DKS. Open input "A.TOC" */
-	File file = new File(parentDir + "/" + RPF_TOC_FILE_NAME);
-	if (!file.exists()) {
-	    file = new File(parentDir + "/" + LITTLE_RPF_TOC_FILE_NAME);
-	    if (!file.exists()) {
-// 		Debug.error("RpfTocHandler: getTocFile(): file in "+
-// 			     parentDir + " not found");
-		return null;
-	    }
-	}
+        /* DKS. Open input "A.TOC" */
+        File file = new File(parentDir + "/" + RPF_TOC_FILE_NAME);
+        if (!file.exists()) {
+            file = new File(parentDir + "/" + LITTLE_RPF_TOC_FILE_NAME);
+            if (!file.exists()) {
+//              Debug.error("RpfTocHandler: getTocFile(): file in "+
+//                           parentDir + " not found");
+                return null;
+            }
+        }
 
-	if (DEBUG_RPFTOCDETAIL) {
-	    Debug.output("RpfTocHandler: getTocFile(): TOC file is " + file);
-	}
+        if (DEBUG_RPFTOCDETAIL) {
+            Debug.output("RpfTocHandler: getTocFile(): TOC file is " + file);
+        }
 
-	return file;
+        return file;
     }
 
     /**
      * True if the A.TOC file is readable/present/good.
      */
     public boolean isValid() {
-	return valid;
+        return valid;
     }
 
     /**
@@ -198,394 +198,394 @@ public class RpfTocHandler {
      * information may not be available.
      */
     public boolean hasChanged() {
-//  	File tmpFile = getTocFile(dir);
-//  	if (tmpFile == null) {
-//  	    return valid;
-//  	}
-//  	if (tmpFile.lastModified() != currencyTime && valid) {
-//  	    valid = false;
-//  	    return true;
-//  	}
-	return false;
+//      File tmpFile = getTocFile(dir);
+//      if (tmpFile == null) {
+//          return valid;
+//      }
+//      if (tmpFile.lastModified() != currencyTime && valid) {
+//          valid = false;
+//          return true;
+//      }
+        return false;
     }
 
     /** Re-read the A.TOC file in the parent directory. */
     public boolean reload() {
-	return loadFile(dir);
+        return loadFile(dir);
     }
 
     /** Read the file and load its parameters into this object. */
     public boolean loadFile(String parentDir) {
 
-	boolean ret = true;
+        boolean ret = true;
 
-	String upperCaseVersion = parentDir + "/" + RPF_TOC_FILE_NAME;
-	String lowerCaseVersion = parentDir + "/" + LITTLE_RPF_TOC_FILE_NAME;
+        String upperCaseVersion = parentDir + "/" + RPF_TOC_FILE_NAME;
+        String lowerCaseVersion = parentDir + "/" + LITTLE_RPF_TOC_FILE_NAME;
 
-	try {
+        try {
 
-	    if (BinaryFile.exists(upperCaseVersion)) {
-		binFile = new BinaryBufferedFile(upperCaseVersion);
-	    } else if (BinaryFile.exists(lowerCaseVersion)) {
-		binFile = new BinaryBufferedFile(lowerCaseVersion);
-	    }
+            if (BinaryFile.exists(upperCaseVersion)) {
+                binFile = new BinaryBufferedFile(upperCaseVersion);
+            } else if (BinaryFile.exists(lowerCaseVersion)) {
+                binFile = new BinaryBufferedFile(lowerCaseVersion);
+            }
 
-	    if (binFile == null) return false;
+            if (binFile == null) return false;
 
-	    if (DEBUG_RPFTOC) {
-		Debug.output("RpfTocHandler: TOC file is in " + parentDir);
-	    }
+            if (DEBUG_RPFTOC) {
+                Debug.output("RpfTocHandler: TOC file is in " + parentDir);
+            }
 
-	    dir = parentDir + "/";
+            dir = parentDir + "/";
 
-	    // With the new BinaryFile, we can't get to this
-	    // info, because we aren't using File objects anymore.
-//  	    currencyTime = file.lastModified();
+            // With the new BinaryFile, we can't get to this
+            // info, because we aren't using File objects anymore.
+//          currencyTime = file.lastModified();
 
-	    if (!parseToc(binFile)) {
-		ret = false;
-		Debug.error("RpfTocHandler: loadFile(): error parsing A.TOC file!!");
-	    }
-	    binFile.close();
-	} catch (IOException e) {
-	    ret = false;
-	}
-	binFile = null;
-	return ret;
+            if (!parseToc(binFile)) {
+                ret = false;
+                Debug.error("RpfTocHandler: loadFile(): error parsing A.TOC file!!");
+            }
+            binFile.close();
+        } catch (IOException e) {
+            ret = false;
+        }
+        binFile = null;
+        return ret;
     }
 
     protected boolean parseToc(BinaryFile binFile) {
-	RpfTocEntry entry;
-	RpfFrameEntry frame;
-
-	int n, pathLength; // ushort
-	int i, j, k, currentPosition;
-	int boundaryId, frameRow, frameCol; // ushort
-	long numFrameIndexRecords; // uint # frame file index records
-
-	// DKS new
-	long pathOffset; // uint, offset of frame file pathname
-	int boundaryRecordLength; // ushort
-	int numPathnameRecords; //ushort
-	int indexRecordLength; //ushort, frame file index record length
-	int indexSubheaderLength = 9 ; //ushort, frame file index subheader length
-
-	long boundRectTableOffset; // uint, Bound. rect. table offset
-	long frameIndexTableOffset; // uint, Frame file index table offset
-
-	if (DEBUG_RPFTOC) {
-	    Debug.output("ENTER TOC parsing...");
-	}
-
-	boolean local = false;
-	if (binFile.getInputReader() instanceof FileInputReader) {
-	    local = true;
-	}
-
-	try {
-	    // binFile should be set to the beginning at this point
-	    binFile.seek(0);
-
-	    // Read header
-	    head = new RpfHeader();
-	    if (!head.read(binFile)) return false;
-
-	    if (DEBUG_RPFTOC) {
-		Debug.output("RpfTocHandler.parseToc: read header:\n" + head);
-	    }
-
-	    binFile.seek(head.locationSectionLocation);
-	    RpfFileSections rfs = new RpfFileSections(binFile);
-
-	    // Everything must be OK to reach here...
-	    // DKS.  fseek to start of location section: 48
-	    // DFD not necessarily 48!  New A.TOCs are different.
-	    RpfFileSections.RpfLocationRecord[] locations = rfs.getLocations(RpfFileSections.TOC_LOCATION_KEY);
-
-	    // Read boundary rectangles
-	    // Number of Boundary records
-	    // DKS: now phys_index, not index
-	    if (DEBUG_RPFTOCDETAIL) {
-		Debug.output("RpfTocHandler: parseToc(): fseek to Boundary section subheader: " + locations[0].componentLocation);
-	    }
-
-	    binFile.seek(locations[0].componentLocation);
-
-	    // NEW
-	    boundRectTableOffset = (long) binFile.readInteger();
-
-	    if (DEBUG_RPFTOCDETAIL) {
-		Debug.output("RpfTocHandler: parseToc(): BoundRectTableOffset: " + boundRectTableOffset);
-	    }
-
-	    n = (int) binFile.readShort();
-	    if (DEBUG_RPFTOCDETAIL) {
-		Debug.output("RpfTocHandler: parseToc(): # Boundary rect. recs: " + n);
-	    }
-
-	    numBoundaries = n;
-
-	    // DKS new
-	    // Boundary record length
-	    boundaryRecordLength = (int) binFile.readShort();
-
-	    if (DEBUG_RPFTOCDETAIL) {
-		Debug.output("RpfTocHandler: parseToc(): should be 132: "+
-			     boundaryRecordLength);
-	    }
-
-	    if (DEBUG_RPFTOCDETAIL) {
-		Debug.output("RpfTocHandler: parseToc(): fseek to Boundary Rectangle Table: " + locations[1].componentLocation);
-	    }
-	    binFile.seek(locations[1].componentLocation);
-
-	    entries = new RpfTocEntry[numBoundaries];
-
-	    // Read Boundary rectangle records
-	    for (i = 0; i < n; i++) {
-		if (DEBUG_RPFTOCDETAIL) {
-		    Debug.output("RpfTocHandler: parseToc(): read boundary rec#: " + i);
-		}
-
-		// All this stuff moved to RpfTocEntry.java - DFD 8/18/99
-		entries[i] = new RpfTocEntry(binFile, tocNumber, i);
-
-		if (DEBUG_RPFTOCDETAIL) {
-		    Debug.output("RpfTocHandler: parseToc(): entry " + i +
-				 " has scale " + entries[i].scale +
-				 ", type " +
-				 (entries[i].Cib?"CIB":"CADRG") +
-				 " in zone " + entries[i].zone);
-		    if (entries[i].Cib)
-			Debug.output("RpfTocHandler: parseToc(): entry noted as a Cib entry.");
-		}
-	    }
-
-	    if (DEBUG_RPFTOCDETAIL) {
-		Debug.output("RpfTocHandler: parseToc(): Read frame file index section subheader at loc: " + locations[2].componentLocation);
-	    }
-
-	    // Read # of frame file index records
-	    // Skip 1 byte security classification
-	    // locations[2] is loc of frame file index section subheader
-	    binFile.seek(locations[2].componentLocation +1);
-
-	    // NEW
-	    frameIndexTableOffset = (long) binFile.readInteger();
-	    numFrameIndexRecords = (long) binFile.readInteger();
-	    numPathnameRecords = (int) binFile.readShort();
-	    // indexRecordLength should now be 33, not 35
-	    indexRecordLength = (int) binFile.readShort();
-
-	    if (DEBUG_RPFTOCDETAIL) {
-		Debug.output("RpfTocHandler: parseToc(): frameIndexTableOffset: " + frameIndexTableOffset);
-		Debug.output("RpfTocHandler: parseToc(): # Frame file index recs: " + numFrameIndexRecords);
-		Debug.output("RpfTocHandler: parseToc(): # pathname records: " + numPathnameRecords);
-		Debug.output("RpfTocHandler: parseToc(): Index rec len(33): " + indexRecordLength);
-	    }
-
-	    // Read frame file index records
-	    for (i = 0; i < numFrameIndexRecords; i++)
-	    {
-		if (DEBUG_RPFTOCFRAMEDETAIL) {
-		    Debug.output("RpfTocHandler: parseToc(): Read frame file index rec #: " + i);
-		}
-
-		// Index_subhdr_len (9) instead of table_offset (11)
-		// indexRecordLength (33) instead of 35
-		// componentLocation, not index
-		// locations[3] is frame file index table subsection
-		binFile.seek(locations[3].componentLocation + indexRecordLength*i);
-
-		boundaryId = (int) binFile.readShort();
-
-		if (DEBUG_RPFTOCFRAMEDETAIL) {
-		    Debug.output("boundary id for frame: " + i + " is " + boundaryId);
-		}
-
-		// DKS NEW: changed from 1 to 0 to agree w/ spec.   -1 added also.
-		// if (boundaryId < 0 || boundaryId > numBoundaries - 1 )
-		if  (boundaryId > numBoundaries - 1) {
-		    Debug.output( "Bad boundary id in FF index record " + i);
-		    return false;
-		}
-		// DKS NEW: -1 removed to match spec
-		entry = entries[boundaryId];
-
-		frameRow = (int) binFile.readShort();
-		frameCol = (int) binFile.readShort();
-
-		// DKS.  switched from horizFrames to vertFrames
-		// DKS NEW: CHANGED FROM 1 to 0 to agree w/spec.   ALSO COL below
-		//    if (frameRow < 1 || frameRow > entry->vertFrames)
-		if (frameRow > entry.vertFrames - 1) {
-		    Debug.output(" Bad row number: " + frameRow +
-				 ", in FF index record " + i);
-		    Debug.output(" Min row num=0;  Max. row num:" +
-				 (entry.horizFrames-1));
-		    return false;
-		}
-
-		// DKS.  switched from vertFrames to horizFrames
-		if (frameCol > entry.horizFrames - 1) {
-		    Debug.output(" Bad col number in FF index record " + i);
-		    return false;
-		}
-
-		// DKS NEW: -1 removed on frameRow, col
-		// JRB
-		// frame = &entry->frames[frameRow][frameCol];
-
-		// [(entry->vertFrames - 1L)-frameRow] flips the array
-		// over, so that the frames can be referenced
-		// correctly from the top left, instead of the
-		// specification notation of bottom left.
-
-		frame = entry.frames[(entry.vertFrames - 1)-frameRow][frameCol];
-
-		if (frame.exists && DEBUG_RPFTOCDETAIL) {
-		    Debug.output( "FF " + i + " is a duplicate");
-		}
-
-		// DKS:  phys_loc deleted
-
-		// pathname offset
-		pathOffset = (long) binFile.readInteger();
-
-		// Save file position for later
-		currentPosition = (int) binFile.getFilePointer();
-
-		// Go to start of pathname record
-		// DKS. New pathOffset offset from start of frame file
-		// index section of TOC??
-		if (DEBUG_RPFTOCFRAMEDETAIL) {
-		    Debug.output("RpfTocHandler: parseToc(): locations[1].componentLocation: " + locations[1].componentLocation);
-		}
-		// DKS. Add pathoffset wrt frame file index table
-		// subsection (loc[3])
-		binFile.seek(locations[3].componentLocation + pathOffset);
-
-		pathLength = (int) binFile.readShort();
-		if (DEBUG_RPFTOCFRAMEDETAIL) {
-		    Debug.output("RpfTocHandler: parseToc(): pathLength:" +
-				 pathLength);
-		}
-
-		// 1st part of directory name is passed as arg:
-		// e.g. "../RPF2/"
-		frame.rpfdir = dir;
-		StringBuffer sBuf = new StringBuffer();
-
-		// read rest of directory name from toc
-		// DKS: skip 1st 2 chars: "./":
-		String pathTest = binFile.readFixedLengthString(2);
-		if (pathTest.equals("./")) {
-		    fullPathsInATOC = false;
-		} else {
-		    fullPathsInATOC = true;
-		}
-
-		if (!fullPathsInATOC) {
-		    // DKS: Make up for skipped 2 chars
-		    sBuf.append(binFile.readFixedLengthString(pathLength-2));
-		} else {
-		    sBuf.append(pathTest);
-		    sBuf.append(binFile.readFixedLengthString(pathLength-2));
-		}
-
-		// Add the trim because it looks like NIMA doesn't
-		// always get the pathLength correct...
-		frame.directory = sBuf.toString().trim();
-		if (DEBUG_RPFTOCFRAMEDETAIL) {
-		    Debug.output("RpfTocHandler: parseToc(): frame directory: " + frame.directory);
-		}
-
-		/* Go back to get filename tail */
-		binFile.seek(currentPosition);
-
-		frame.filename = binFile.readFixedLengthString(12);
-		if (DEBUG_RPFTOCFRAMEDETAIL) {
-		    Debug.output("RpfTocHandler: parseToc(): frame filename: " + frame.filename);
-		}
-
-		// Figure out the chart series ID
-		int dot = frame.filename.lastIndexOf('.');
-		// Interned so we can look it up in the catalog later...
-		entry.setInfo(frame.filename.substring(dot+1, dot+3).intern());
-
-		// We duplicate this below!!!
-//  		frame.framePath = new String(frame.rpfdir + frame.directory +
-//  					     "/" + frame.filename);
-
-		// DKS new DCHUM.  Fill in last digit v of vv version
-		// #. fffffvvp.JNz or ffffffvp.IMz for CIB boundaryId
-		// will equal frame file number: 1 boundary rect. per
-		// frame.
-
-// 		if (Dchum)
-// 		    entries[boundaryId].version = frame.filename.charAt(6);
-
-		// do diskspace calculations
-		String tempPath;
-
-		if (!fullPathsInATOC) {
-		    tempPath = frame.rpfdir + frame.directory + frame.filename;
-		} else {
-		    tempPath = frame.directory + frame.filename;
-		}
-
-		long diskspace = 288000;
-		boolean exists = true;
-		if (local) {
-		    exists = BinaryFile.exists(tempPath);
-		    // This may fail because of FTP and/or CDROM filename
-		    // shinanagins.  The A.TOC file should always think
-		    // that the filenames are uppercase.  They may get
-		    // copied as lowercase, so we'll check that here.  If
-		    // they are actually lowercase, we'll change it here
-		    // so that everything will work at runtime. - DFD 8/20/99
-
-		    // OK, with the advent of the new BinaryFile that
-		    // will let these files be read from a jar file or
-		    // from a URL, we have to assume that the files
-		    // are there, and deal with it if they are not.
-		}
-
-  		if (exists) {
-		    frame.diskspace = diskspace;
-		    frame.framePath = tempPath;
-		    frame.exists = true;
-		} else if (!fullPathsInATOC) {
-
-		    // This should only be an issue for local files.
-		    tempPath = frame.rpfdir + frame.directory.toLowerCase() +
-			frame.filename.toLowerCase();
-
-  		    if (BinaryFile.exists(tempPath)) {
-			frame.diskspace = diskspace;
-			frame.framePath = tempPath;
-			frame.exists = true;
-		    }
-		}
-
-		if (frame.framePath == null) {
-		    Debug.output("RpfTocHandler: Frame " + tempPath + " doesn't exist.  Please rebuild A.TOC file using MakeToc, or check read permissions for the file.");
-		}
-	    } /* for i = numFrameIndexRecords */
-
-	} catch (IOException ioe) {
-	    Debug.error("RpfTocHandler: IO ERROR parsing file!\n\t" + ioe);
-	    return false;
-	} catch (FormatException fe) {
-	    Debug.error("RpfTocHandler: Format ERROR parsing file!\n\t" + fe);
-	    return false;
-	}
-
-
-	if (DEBUG_RPFTOC) {
-	    Debug.output("LEAVE TOC parsing...");
-	}
-	return true;
+        RpfTocEntry entry;
+        RpfFrameEntry frame;
+
+        int n, pathLength; // ushort
+        int i, j, k, currentPosition;
+        int boundaryId, frameRow, frameCol; // ushort
+        long numFrameIndexRecords; // uint # frame file index records
+
+        // DKS new
+        long pathOffset; // uint, offset of frame file pathname
+        int boundaryRecordLength; // ushort
+        int numPathnameRecords; //ushort
+        int indexRecordLength; //ushort, frame file index record length
+        int indexSubheaderLength = 9 ; //ushort, frame file index subheader length
+
+        long boundRectTableOffset; // uint, Bound. rect. table offset
+        long frameIndexTableOffset; // uint, Frame file index table offset
+
+        if (DEBUG_RPFTOC) {
+            Debug.output("ENTER TOC parsing...");
+        }
+
+        boolean local = false;
+        if (binFile.getInputReader() instanceof FileInputReader) {
+            local = true;
+        }
+
+        try {
+            // binFile should be set to the beginning at this point
+            binFile.seek(0);
+
+            // Read header
+            head = new RpfHeader();
+            if (!head.read(binFile)) return false;
+
+            if (DEBUG_RPFTOC) {
+                Debug.output("RpfTocHandler.parseToc: read header:\n" + head);
+            }
+
+            binFile.seek(head.locationSectionLocation);
+            RpfFileSections rfs = new RpfFileSections(binFile);
+
+            // Everything must be OK to reach here...
+            // DKS.  fseek to start of location section: 48
+            // DFD not necessarily 48!  New A.TOCs are different.
+            RpfFileSections.RpfLocationRecord[] locations = rfs.getLocations(RpfFileSections.TOC_LOCATION_KEY);
+
+            // Read boundary rectangles
+            // Number of Boundary records
+            // DKS: now phys_index, not index
+            if (DEBUG_RPFTOCDETAIL) {
+                Debug.output("RpfTocHandler: parseToc(): fseek to Boundary section subheader: " + locations[0].componentLocation);
+            }
+
+            binFile.seek(locations[0].componentLocation);
+
+            // NEW
+            boundRectTableOffset = (long) binFile.readInteger();
+
+            if (DEBUG_RPFTOCDETAIL) {
+                Debug.output("RpfTocHandler: parseToc(): BoundRectTableOffset: " + boundRectTableOffset);
+            }
+
+            n = (int) binFile.readShort();
+            if (DEBUG_RPFTOCDETAIL) {
+                Debug.output("RpfTocHandler: parseToc(): # Boundary rect. recs: " + n);
+            }
+
+            numBoundaries = n;
+
+            // DKS new
+            // Boundary record length
+            boundaryRecordLength = (int) binFile.readShort();
+
+            if (DEBUG_RPFTOCDETAIL) {
+                Debug.output("RpfTocHandler: parseToc(): should be 132: "+
+                             boundaryRecordLength);
+            }
+
+            if (DEBUG_RPFTOCDETAIL) {
+                Debug.output("RpfTocHandler: parseToc(): fseek to Boundary Rectangle Table: " + locations[1].componentLocation);
+            }
+            binFile.seek(locations[1].componentLocation);
+
+            entries = new RpfTocEntry[numBoundaries];
+
+            // Read Boundary rectangle records
+            for (i = 0; i < n; i++) {
+                if (DEBUG_RPFTOCDETAIL) {
+                    Debug.output("RpfTocHandler: parseToc(): read boundary rec#: " + i);
+                }
+
+                // All this stuff moved to RpfTocEntry.java - DFD 8/18/99
+                entries[i] = new RpfTocEntry(binFile, tocNumber, i);
+
+                if (DEBUG_RPFTOCDETAIL) {
+                    Debug.output("RpfTocHandler: parseToc(): entry " + i +
+                                 " has scale " + entries[i].scale +
+                                 ", type " +
+                                 (entries[i].Cib?"CIB":"CADRG") +
+                                 " in zone " + entries[i].zone);
+                    if (entries[i].Cib)
+                        Debug.output("RpfTocHandler: parseToc(): entry noted as a Cib entry.");
+                }
+            }
+
+            if (DEBUG_RPFTOCDETAIL) {
+                Debug.output("RpfTocHandler: parseToc(): Read frame file index section subheader at loc: " + locations[2].componentLocation);
+            }
+
+            // Read # of frame file index records
+            // Skip 1 byte security classification
+            // locations[2] is loc of frame file index section subheader
+            binFile.seek(locations[2].componentLocation +1);
+
+            // NEW
+            frameIndexTableOffset = (long) binFile.readInteger();
+            numFrameIndexRecords = (long) binFile.readInteger();
+            numPathnameRecords = (int) binFile.readShort();
+            // indexRecordLength should now be 33, not 35
+            indexRecordLength = (int) binFile.readShort();
+
+            if (DEBUG_RPFTOCDETAIL) {
+                Debug.output("RpfTocHandler: parseToc(): frameIndexTableOffset: " + frameIndexTableOffset);
+                Debug.output("RpfTocHandler: parseToc(): # Frame file index recs: " + numFrameIndexRecords);
+                Debug.output("RpfTocHandler: parseToc(): # pathname records: " + numPathnameRecords);
+                Debug.output("RpfTocHandler: parseToc(): Index rec len(33): " + indexRecordLength);
+            }
+
+            // Read frame file index records
+            for (i = 0; i < numFrameIndexRecords; i++)
+            {
+                if (DEBUG_RPFTOCFRAMEDETAIL) {
+                    Debug.output("RpfTocHandler: parseToc(): Read frame file index rec #: " + i);
+                }
+
+                // Index_subhdr_len (9) instead of table_offset (11)
+                // indexRecordLength (33) instead of 35
+                // componentLocation, not index
+                // locations[3] is frame file index table subsection
+                binFile.seek(locations[3].componentLocation + indexRecordLength*i);
+
+                boundaryId = (int) binFile.readShort();
+
+                if (DEBUG_RPFTOCFRAMEDETAIL) {
+                    Debug.output("boundary id for frame: " + i + " is " + boundaryId);
+                }
+
+                // DKS NEW: changed from 1 to 0 to agree w/ spec.   -1 added also.
+                // if (boundaryId < 0 || boundaryId > numBoundaries - 1 )
+                if  (boundaryId > numBoundaries - 1) {
+                    Debug.output( "Bad boundary id in FF index record " + i);
+                    return false;
+                }
+                // DKS NEW: -1 removed to match spec
+                entry = entries[boundaryId];
+
+                frameRow = (int) binFile.readShort();
+                frameCol = (int) binFile.readShort();
+
+                // DKS.  switched from horizFrames to vertFrames
+                // DKS NEW: CHANGED FROM 1 to 0 to agree w/spec.   ALSO COL below
+                //    if (frameRow < 1 || frameRow > entry->vertFrames)
+                if (frameRow > entry.vertFrames - 1) {
+                    Debug.output(" Bad row number: " + frameRow +
+                                 ", in FF index record " + i);
+                    Debug.output(" Min row num=0;  Max. row num:" +
+                                 (entry.horizFrames-1));
+                    return false;
+                }
+
+                // DKS.  switched from vertFrames to horizFrames
+                if (frameCol > entry.horizFrames - 1) {
+                    Debug.output(" Bad col number in FF index record " + i);
+                    return false;
+                }
+
+                // DKS NEW: -1 removed on frameRow, col
+                // JRB
+                // frame = &entry->frames[frameRow][frameCol];
+
+                // [(entry->vertFrames - 1L)-frameRow] flips the array
+                // over, so that the frames can be referenced
+                // correctly from the top left, instead of the
+                // specification notation of bottom left.
+
+                frame = entry.frames[(entry.vertFrames - 1)-frameRow][frameCol];
+
+                if (frame.exists && DEBUG_RPFTOCDETAIL) {
+                    Debug.output( "FF " + i + " is a duplicate");
+                }
+
+                // DKS:  phys_loc deleted
+
+                // pathname offset
+                pathOffset = (long) binFile.readInteger();
+
+                // Save file position for later
+                currentPosition = (int) binFile.getFilePointer();
+
+                // Go to start of pathname record
+                // DKS. New pathOffset offset from start of frame file
+                // index section of TOC??
+                if (DEBUG_RPFTOCFRAMEDETAIL) {
+                    Debug.output("RpfTocHandler: parseToc(): locations[1].componentLocation: " + locations[1].componentLocation);
+                }
+                // DKS. Add pathoffset wrt frame file index table
+                // subsection (loc[3])
+                binFile.seek(locations[3].componentLocation + pathOffset);
+
+                pathLength = (int) binFile.readShort();
+                if (DEBUG_RPFTOCFRAMEDETAIL) {
+                    Debug.output("RpfTocHandler: parseToc(): pathLength:" +
+                                 pathLength);
+                }
+
+                // 1st part of directory name is passed as arg:
+                // e.g. "../RPF2/"
+                frame.rpfdir = dir;
+                StringBuffer sBuf = new StringBuffer();
+
+                // read rest of directory name from toc
+                // DKS: skip 1st 2 chars: "./":
+                String pathTest = binFile.readFixedLengthString(2);
+                if (pathTest.equals("./")) {
+                    fullPathsInATOC = false;
+                } else {
+                    fullPathsInATOC = true;
+                }
+
+                if (!fullPathsInATOC) {
+                    // DKS: Make up for skipped 2 chars
+                    sBuf.append(binFile.readFixedLengthString(pathLength-2));
+                } else {
+                    sBuf.append(pathTest);
+                    sBuf.append(binFile.readFixedLengthString(pathLength-2));
+                }
+
+                // Add the trim because it looks like NIMA doesn't
+                // always get the pathLength correct...
+                frame.directory = sBuf.toString().trim();
+                if (DEBUG_RPFTOCFRAMEDETAIL) {
+                    Debug.output("RpfTocHandler: parseToc(): frame directory: " + frame.directory);
+                }
+
+                /* Go back to get filename tail */
+                binFile.seek(currentPosition);
+
+                frame.filename = binFile.readFixedLengthString(12);
+                if (DEBUG_RPFTOCFRAMEDETAIL) {
+                    Debug.output("RpfTocHandler: parseToc(): frame filename: " + frame.filename);
+                }
+
+                // Figure out the chart series ID
+                int dot = frame.filename.lastIndexOf('.');
+                // Interned so we can look it up in the catalog later...
+                entry.setInfo(frame.filename.substring(dot+1, dot+3).intern());
+
+                // We duplicate this below!!!
+//              frame.framePath = new String(frame.rpfdir + frame.directory +
+//                                           "/" + frame.filename);
+
+                // DKS new DCHUM.  Fill in last digit v of vv version
+                // #. fffffvvp.JNz or ffffffvp.IMz for CIB boundaryId
+                // will equal frame file number: 1 boundary rect. per
+                // frame.
+
+//              if (Dchum)
+//                  entries[boundaryId].version = frame.filename.charAt(6);
+
+                // do diskspace calculations
+                String tempPath;
+
+                if (!fullPathsInATOC) {
+                    tempPath = frame.rpfdir + frame.directory + frame.filename;
+                } else {
+                    tempPath = frame.directory + frame.filename;
+                }
+
+                long diskspace = 288000;
+                boolean exists = true;
+                if (local) {
+                    exists = BinaryFile.exists(tempPath);
+                    // This may fail because of FTP and/or CDROM filename
+                    // shinanagins.  The A.TOC file should always think
+                    // that the filenames are uppercase.  They may get
+                    // copied as lowercase, so we'll check that here.  If
+                    // they are actually lowercase, we'll change it here
+                    // so that everything will work at runtime. - DFD 8/20/99
+
+                    // OK, with the advent of the new BinaryFile that
+                    // will let these files be read from a jar file or
+                    // from a URL, we have to assume that the files
+                    // are there, and deal with it if they are not.
+                }
+
+                if (exists) {
+                    frame.diskspace = diskspace;
+                    frame.framePath = tempPath;
+                    frame.exists = true;
+                } else if (!fullPathsInATOC) {
+
+                    // This should only be an issue for local files.
+                    tempPath = frame.rpfdir + frame.directory.toLowerCase() +
+                        frame.filename.toLowerCase();
+
+                    if (BinaryFile.exists(tempPath)) {
+                        frame.diskspace = diskspace;
+                        frame.framePath = tempPath;
+                        frame.exists = true;
+                    }
+                }
+
+                if (frame.framePath == null) {
+                    Debug.output("RpfTocHandler: Frame " + tempPath + " doesn't exist.  Please rebuild A.TOC file using MakeToc, or check read permissions for the file.");
+                }
+            } /* for i = numFrameIndexRecords */
+
+        } catch (IOException ioe) {
+            Debug.error("RpfTocHandler: IO ERROR parsing file!\n\t" + ioe);
+            return false;
+        } catch (FormatException fe) {
+            Debug.error("RpfTocHandler: Format ERROR parsing file!\n\t" + fe);
+            return false;
+        }
+
+
+        if (DEBUG_RPFTOC) {
+            Debug.output("LEAVE TOC parsing...");
+        }
+        return true;
     }
 
     /**
@@ -593,30 +593,30 @@ public class RpfTocHandler {
      * representation found in the A>TOC file.
      */
     public static String translateScaleToSeries(long scale) {
-	if (scale == 0)
-	    return "Various    ";
-	else if (scale == 50000L)
-	    return "1:50K      ";
-	else if (scale == 100000L)
-	    return "1:100K     ";
-	else if (scale == 200000L)
-	    return "1:200K     ";
-	else if (scale == 250000L)
-	    return "1:250K     ";
-	else if (scale == 500000L)
-	    return "1:500K     ";
-	else if (scale == 1000000L)
-	    return "1:1M       ";
-	else if (scale == 2000000L)
-	    return "1:2M       ";
-	else if (scale == 5000000L)
-	    return "1:5M       ";
-	else if (scale == 66666L)
-	    return "10M         ";
-	else if (scale == 33333L)
-	    return "5M          ";
-	else
-	    return (String) null;
+        if (scale == 0)
+            return "Various    ";
+        else if (scale == 50000L)
+            return "1:50K      ";
+        else if (scale == 100000L)
+            return "1:100K     ";
+        else if (scale == 200000L)
+            return "1:200K     ";
+        else if (scale == 250000L)
+            return "1:250K     ";
+        else if (scale == 500000L)
+            return "1:500K     ";
+        else if (scale == 1000000L)
+            return "1:1M       ";
+        else if (scale == 2000000L)
+            return "1:2M       ";
+        else if (scale == 5000000L)
+            return "1:5M       ";
+        else if (scale == 66666L)
+            return "10M         ";
+        else if (scale == 33333L)
+            return "5M          ";
+        else
+            return (String) null;
     }
 
     /**
@@ -625,94 +625,94 @@ public class RpfTocHandler {
      */
     public static long textScaleToLong(String textScale) {
 
-	Long resolution;
-	Long realValue;
-	int expLetter;  // location of m, M, K
-	int expLetterSmall;
-	int colon = textScale.indexOf(":");
-	boolean hasExpLetter = false;
+        Long resolution;
+        Long realValue;
+        int expLetter;  // location of m, M, K
+        int expLetterSmall;
+        int colon = textScale.indexOf(":");
+        boolean hasExpLetter = false;
 
-	try{
-	    if (colon == -1) {
-		// dealing with an imagery scale
-		expLetter = textScale.indexOf("m");
-		if (expLetter == -1) {
-		    expLetter = textScale.indexOf("M");
-		    if (expLetter == -1)
-			return -1; // ERROR
-		}
+        try{
+            if (colon == -1) {
+                // dealing with an imagery scale
+                expLetter = textScale.indexOf("m");
+                if (expLetter == -1) {
+                    expLetter = textScale.indexOf("M");
+                    if (expLetter == -1)
+                        return -1; // ERROR
+                }
 
-		resolution = new Long(textScale.substring(0, expLetter));
-		return (long) (resolution.longValue()/.000150);
-	    }
+                resolution = new Long(textScale.substring(0, expLetter));
+                return (long) (resolution.longValue()/.000150);
+            }
 
-	    // dealing with a map scale
-	    String expValue = "";
+            // dealing with a map scale
+            String expValue = "";
 
-	    resolution = new Long(textScale.substring(0, colon));
-	    expLetter = textScale.lastIndexOf('K');
-	    expLetterSmall = textScale.lastIndexOf('k');
+            resolution = new Long(textScale.substring(0, colon));
+            expLetter = textScale.lastIndexOf('K');
+            expLetterSmall = textScale.lastIndexOf('k');
 
-	    if (expLetter == -1 && expLetterSmall == -1) {
-		expLetter = textScale.lastIndexOf('M');
-		expLetterSmall = textScale.lastIndexOf('m');
+            if (expLetter == -1 && expLetterSmall == -1) {
+                expLetter = textScale.lastIndexOf('M');
+                expLetterSmall = textScale.lastIndexOf('m');
 
-		if (expLetter != -1 || expLetterSmall != -1) {
-		    expValue = "000000";
-		}
-	    } else {
-		expValue = "000";
-	    }
+                if (expLetter != -1 || expLetterSmall != -1) {
+                    expValue = "000000";
+                }
+            } else {
+                expValue = "000";
+            }
 
-	    StringBuffer buf;
-	    if (!expValue.equals("")) {
-		// make sure we have the right index variable
-		if (expLetter == -1) {
-		    expLetter = expLetterSmall;
-		}
-		buf = new StringBuffer(textScale.substring(colon+1, expLetter));
-		buf.append(expValue);
-	    } else {
-		buf = new StringBuffer(textScale.substring(colon+1));
-	    }
+            StringBuffer buf;
+            if (!expValue.equals("")) {
+                // make sure we have the right index variable
+                if (expLetter == -1) {
+                    expLetter = expLetterSmall;
+                }
+                buf = new StringBuffer(textScale.substring(colon+1, expLetter));
+                buf.append(expValue);
+            } else {
+                buf = new StringBuffer(textScale.substring(colon+1));
+            }
 
-	    String longString = buf.toString().trim();
-	    realValue = new Long(longString);
+            String longString = buf.toString().trim();
+            realValue = new Long(longString);
 
-	} catch (NumberFormatException nfe) {
-	    if (Debug.debugging("rpftoc")) {
-		Debug.output("textScaleToLong: Number Format Exception!!!!"
-			     + textScale);
-	    }
-	    return (long) RpfConstants.UK.scale;
-	} catch (StringIndexOutOfBoundsException sioobe) {
-	    if (Debug.debugging("rpftoc")) {
-		Debug.output("textScaleToLong: String index out of bounds:\n" +
-			     sioobe.getMessage());
-	    }
-	    return (long) RpfConstants.UK.scale;
-	}
+        } catch (NumberFormatException nfe) {
+            if (Debug.debugging("rpftoc")) {
+                Debug.output("textScaleToLong: Number Format Exception!!!!"
+                             + textScale);
+            }
+            return (long) RpfConstants.UK.scale;
+        } catch (StringIndexOutOfBoundsException sioobe) {
+            if (Debug.debugging("rpftoc")) {
+                Debug.output("textScaleToLong: String index out of bounds:\n" +
+                             sioobe.getMessage());
+            }
+            return (long) RpfConstants.UK.scale;
+        }
 
-	long ret = (realValue.longValue()/resolution.longValue());
+        long ret = (realValue.longValue()/resolution.longValue());
 
-	if (Debug.debugging("rpftoc")) {
-	    Debug.output("RpfTocHandler: textScaleToLong converted " +
-			 textScale + " to " + ret);
-	}
+        if (Debug.debugging("rpftoc")) {
+            Debug.output("RpfTocHandler: textScaleToLong converted " +
+                         textScale + " to " + ret);
+        }
 
-	return ret;
+        return ret;
 
     }
 
     protected int getASCIIZone(float ullat, int zone) {
-	int z = zone;
-	// Now convert it to ASCII to compare
-	if (ullat>0) z += 48;  // for ASCII compare next
-	else {
-	    z += 64;
-	    if (z == 73) z++;  // Can't be equal to I -> J
-	}
-	return z;
+        int z = zone;
+        // Now convert it to ASCII to compare
+        if (ullat>0) z += 48;  // for ASCII compare next
+        else {
+            z += 64;
+            if (z == 73) z++;  // Can't be equal to I -> J
+        }
+        return z;
     }
 
     /**
@@ -732,35 +732,35 @@ public class RpfTocHandler {
      * @return a Vector of applicable RpfCoverageBoxes.
      */
     public void getCatalogCoverage(float ullat, float ullon,
-				   float lrlat, float lrlon,
-				   CADRG proj,
-				   String chartSeriesCode,
-				   Vector coverages) {
-	if (!valid) return;
+                                   float lrlat, float lrlon,
+                                   CADRG proj,
+                                   String chartSeriesCode,
+                                   Vector coverages) {
+        if (!valid) return;
 
-	String chartSeries;
+        String chartSeries;
 
-	for (int i=0; i < numBoundaries; i++) {
+        for (int i=0; i < numBoundaries; i++) {
 
-	    // Try to get the boundary rectangle with the most
-	    // coverage, so reset the entry for this particular query.
-	    entries[i].coverage.reset();
+            // Try to get the boundary rectangle with the most
+            // coverage, so reset the entry for this particular query.
+            entries[i].coverage.reset();
 
-	    if (chartSeriesCode == null) {
-		chartSeries = RpfViewAttributes.ANY;
-	    } else {
-		chartSeries = chartSeriesCode;
-	    }
+            if (chartSeriesCode == null) {
+                chartSeries = RpfViewAttributes.ANY;
+            } else {
+                chartSeries = chartSeriesCode;
+            }
 
-	    if (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY) ||
-		chartSeries.equalsIgnoreCase(entries[i].info.seriesCode)) {
+            if (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY) ||
+                chartSeries.equalsIgnoreCase(entries[i].info.seriesCode)) {
 
-		if (entries[i].coverage.setPercentCoverage(ullat, ullon,
-							   lrlat, lrlon) > 0f) {
-		    coverages.addElement(entries[i].coverage);
-		}
-	    }
-	}
+                if (entries[i].coverage.setPercentCoverage(ullat, ullon,
+                                                           lrlat, lrlon) > 0f) {
+                    coverages.addElement(entries[i].coverage);
+                }
+            }
+        }
     }
 
     /**
@@ -794,121 +794,121 @@ public class RpfTocHandler {
      * @return a Vector of applicable RpfCoverageBoxes.
      */
     public List getBestCoverageEntry(float ullat, float ullon,
-				     float lrlat, float lrlon,
-				     CADRG proj,
-				     RpfViewAttributes viewAtts) {
-	if (!valid) return null;
+                                     float lrlat, float lrlon,
+                                     CADRG proj,
+                                     RpfViewAttributes viewAtts) {
+        if (!valid) return null;
 
-	List coverageEntries = new Vector();
-	int insideBoundaries = 0;
-	double scaleFactor = 0;
-	double lowerScaleFactorLimit = 1.0;
-	double upperScaleFactorLimit = 1.0;
+        List coverageEntries = new Vector();
+        int insideBoundaries = 0;
+        double scaleFactor = 0;
+        double lowerScaleFactorLimit = 1.0;
+        double upperScaleFactorLimit = 1.0;
 
-	// Good for a preliminary check.  It has to start at least as
-	// 4 to have one corner matching.
-	int prevBoundaryHits = 0;
+        // Good for a preliminary check.  It has to start at least as
+        // 4 to have one corner matching.
+        int prevBoundaryHits = 0;
 
-	if (viewAtts != null) {
-	    lowerScaleFactorLimit = (double)(1.0/viewAtts.imageScaleFactor);
-	    upperScaleFactorLimit = (double)viewAtts.imageScaleFactor;
-	}
+        if (viewAtts != null) {
+            lowerScaleFactorLimit = (double)(1.0/viewAtts.imageScaleFactor);
+            upperScaleFactorLimit = (double)viewAtts.imageScaleFactor;
+        }
 
-	int nscale = 0;
-	int scale = (int) proj.getScale();
+        int nscale = 0;
+        int scale = (int) proj.getScale();
 
-	RpfTocEntry bestEntry = null;
+        RpfTocEntry bestEntry = null;
 
-	if (DEBUG_RPFTOCDETAIL) {
-	    Debug.output("getBestCoverageEntry(): Checking for coverage");
-	    Debug.output("  nw_lat: " + ullat);
-	    Debug.output("  se_lat: " + lrlat);
-	    Debug.output("  nw_lon: " + ullon);
-	    Debug.output("  se_lon: " + lrlon);
-	}
+        if (DEBUG_RPFTOCDETAIL) {
+            Debug.output("getBestCoverageEntry(): Checking for coverage");
+            Debug.output("  nw_lat: " + ullat);
+            Debug.output("  se_lat: " + lrlat);
+            Debug.output("  nw_lon: " + ullon);
+            Debug.output("  se_lon: " + lrlon);
+        }
 
-	int zone = getASCIIZone(ullat, proj.getZone());
+        int zone = getASCIIZone(ullat, proj.getZone());
         char okZones[] = getOkZones(ullat,lrlat,(char)zone);
 
-	for (int i=0; i < numBoundaries; i++) {
+        for (int i=0; i < numBoundaries; i++) {
 
-	    if (DEBUG_RPFTOCDETAIL) {
-		Debug.output("********************");
-		Debug.output("  tochandler: Boundary #" + i);
-		Debug.output(entries[i].toString());
-	    }
+            if (DEBUG_RPFTOCDETAIL) {
+                Debug.output("********************");
+                Debug.output("  tochandler: Boundary #" + i);
+                Debug.output(entries[i].toString());
+            }
 
-	    // Try to get the boundary rectangle with the most
-	    // coverage, so reset the entry for this particular query.
-	    entries[i].coverage.reset();
+            // Try to get the boundary rectangle with the most
+            // coverage, so reset the entry for this particular query.
+            entries[i].coverage.reset();
 
-	    //  Find the scale of the boundary rectangle
-	    if (entries[i].info == null ||
-		entries[i].info.scale == RpfConstants.Various) {
+            //  Find the scale of the boundary rectangle
+            if (entries[i].info == null ||
+                entries[i].info.scale == RpfConstants.Various) {
 
-		nscale = (int) textScaleToLong(entries[i].scale);
-		entries[i].info = new RpfProductInfo();
+                nscale = (int) textScaleToLong(entries[i].scale);
+                entries[i].info = new RpfProductInfo();
 
-		// Reset the RpfProductInfo to the listed parameters
-		// in the A.TOC file.
-		entries[i].info.scale = (float) nscale;
-		entries[i].info.scaleString = entries[i].scale;
-		entries[i].coverage.scale = (float) nscale;
+                // Reset the RpfProductInfo to the listed parameters
+                // in the A.TOC file.
+                entries[i].info.scale = (float) nscale;
+                entries[i].info.scaleString = entries[i].scale;
+                entries[i].coverage.scale = (float) nscale;
 
-	    } else {
-		entries[i].coverage.scale = entries[i].info.scale;
-		nscale = (int) entries[i].info.scale;
-	    }
+            } else {
+                entries[i].coverage.scale = entries[i].info.scale;
+                nscale = (int) entries[i].info.scale;
+            }
 
-	    if (DEBUG_RPFTOCDETAIL) {
-		Debug.output("getBestCoverageEntry(): Query scale = " + scale +
-			     " vs. brect scale = " + nscale);
-	    }
+            if (DEBUG_RPFTOCDETAIL) {
+                Debug.output("getBestCoverageEntry(): Query scale = " + scale +
+                             " vs. brect scale = " + nscale);
+            }
 
-	    // if you want an exact match for scale...
-	    if (viewAtts != null && !viewAtts.scaleImages) {
-		if (scale == nscale) {
-		    scaleFactor = 1.0;
-		}
-		else scaleFactor = lowerScaleFactorLimit - 1.0;
-	    } else {
-		scaleFactor = (double)nscale/(double)scale;
-	    }
+            // if you want an exact match for scale...
+            if (viewAtts != null && !viewAtts.scaleImages) {
+                if (scale == nscale) {
+                    scaleFactor = 1.0;
+                }
+                else scaleFactor = lowerScaleFactorLimit - 1.0;
+            } else {
+                scaleFactor = (double)nscale/(double)scale;
+            }
 
-	    String chartSeries;
-	    if (viewAtts == null) {
-		chartSeries = RpfViewAttributes.ANY;
-	    } else {
-		chartSeries = viewAtts.chartSeries;
-	    }
+            String chartSeries;
+            if (viewAtts == null) {
+                chartSeries = RpfViewAttributes.ANY;
+            } else {
+                chartSeries = viewAtts.chartSeries;
+            }
 
-	    if (scaleFactor >= lowerScaleFactorLimit &&
-		scaleFactor <= upperScaleFactorLimit &&
-		(chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY) ||
-		 chartSeries.equalsIgnoreCase(entries[i].info.seriesCode))) {
+            if (scaleFactor >= lowerScaleFactorLimit &&
+                scaleFactor <= upperScaleFactorLimit &&
+                (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY) ||
+                 chartSeries.equalsIgnoreCase(entries[i].info.seriesCode))) {
 
-		if ( isOkZone(entries[i].zone,okZones) ) {
-		    // sets entries[i].coverage.boundaryHits
-		    int hits = entries[i].coverage.setBoundaryHits(ullat, ullon, lrlat, lrlon);
+                if ( isOkZone(entries[i].zone,okZones) ) {
+                    // sets entries[i].coverage.boundaryHits
+                    int hits = entries[i].coverage.setBoundaryHits(ullat, ullon, lrlat, lrlon);
 
-		    if (DEBUG_RPFTOCDETAIL) {
-			Debug.output("getBestCoverageEntry(): Boundary Hits = " +  hits);
-		    }
+                    if (DEBUG_RPFTOCDETAIL) {
+                        Debug.output("getBestCoverageEntry(): Boundary Hits = " +  hits);
+                    }
 
-		    if (bestEntry != null) {
+                    if (bestEntry != null) {
 
-			boolean betterScale = false;
+                        boolean betterScale = false;
 
-			float newScaleDiff = RpfFrameCacheHandler.scaleDifference(proj, entries[i].coverage);
-			float bestScaleDiff = RpfFrameCacheHandler.scaleDifference(proj, bestEntry.coverage);
+                        float newScaleDiff = RpfFrameCacheHandler.scaleDifference(proj, entries[i].coverage);
+                        float bestScaleDiff = RpfFrameCacheHandler.scaleDifference(proj, bestEntry.coverage);
 
-			if (newScaleDiff <= bestScaleDiff) {
-			    betterScale = true;
-			}
+                        if (newScaleDiff <= bestScaleDiff) {
+                            betterScale = true;
+                        }
 
-			if (betterScale &&
-			    (entries[i].coverage.setPercentCoverage(ullat, ullon, lrlat, lrlon) >= bestEntry.coverage.getPercentCoverage()) &&
-			    (hits >= prevBoundaryHits || hits >= 6)) {
+                        if (betterScale &&
+                            (entries[i].coverage.setPercentCoverage(ullat, ullon, lrlat, lrlon) >= bestEntry.coverage.getPercentCoverage()) &&
+                            (hits >= prevBoundaryHits || hits >= 6)) {
 
                            // Add to list if has any hits and is
                            // the best possible scale.  If new scale difference
@@ -919,14 +919,14 @@ public class RpfTocHandler {
                            coverageEntries.add(entries[i]);
 
 
-			    bestEntry = entries[i];
-			    prevBoundaryHits = hits;
+                            bestEntry = entries[i];
+                            prevBoundaryHits = hits;
 
-			    if (DEBUG_RPFTOC) {
-				Debug.output("getBestCoverageEntry(): Found a match in a BR with coverage of "+ entries[i].coverage.getPercentCoverage() + "%.");
-			    }
-			}
-			else if (betterScale &&
+                            if (DEBUG_RPFTOC) {
+                                Debug.output("getBestCoverageEntry(): Found a match in a BR with coverage of "+ entries[i].coverage.getPercentCoverage() + "%.");
+                            }
+                        }
+                        else if (betterScale &&
                            entries[i].coverage.getPercentCoverage() > 0f) {
 
                           if (newScaleDiff < bestScaleDiff) {
@@ -936,22 +936,22 @@ public class RpfTocHandler {
 
                        }
 
-		    } else if (hits > prevBoundaryHits &&
-			       (entries[i].coverage.setPercentCoverage(ullat, ullon, lrlat, lrlon) > 0f)) {
-			bestEntry = entries[i];
-			prevBoundaryHits = hits;
+                    } else if (hits > prevBoundaryHits &&
+                               (entries[i].coverage.setPercentCoverage(ullat, ullon, lrlat, lrlon) > 0f)) {
+                        bestEntry = entries[i];
+                        prevBoundaryHits = hits;
 
-			// Add to list of coverageEntries
+                        // Add to list of coverageEntries
                         coverageEntries.add(entries[i]);
 
-			if (DEBUG_RPFTOC) {
-			    Debug.output("getBestCoverageEntry(): Found a match in a BR with coverage of " + entries[i].coverage.getPercentCoverage() + "%.");
+                        if (DEBUG_RPFTOC) {
+                            Debug.output("getBestCoverageEntry(): Found a match in a BR with coverage of " + entries[i].coverage.getPercentCoverage() + "%.");
 
-			}
-		    }
-		}
-	    }
-	}
+                        }
+                    }
+                }
+            }
+        }
 
         if (DEBUG_RPFTOC) {
            if (bestEntry != null) {
@@ -967,9 +967,9 @@ public class RpfTocHandler {
            else {
               Debug.output("getBestCoverageEntry(): no box found");
            }
-	}
+        }
 
-	return coverageEntries;
+        return coverageEntries;
     }
 
     public static char[] getOkZones(float ullat, float lrlat, char zone) {
@@ -1095,28 +1095,28 @@ public class RpfTocHandler {
 
     /** Return the list of grouped frames. */
     public RpfTocEntry[] getEntries() {
-	return entries;
+        return entries;
     }
 
     public static void main(String[] args) {
-	if (args.length != 1) {
-	    Debug.output("Usage: java RpfTocHandler <path to RPF directory>");
-	    return;
-	}
+        if (args.length != 1) {
+            Debug.output("Usage: java RpfTocHandler <path to RPF directory>");
+            return;
+        }
 
-	Debug.init(System.getProperties());
+        Debug.init(System.getProperties());
 
-	RpfTocHandler toc = new RpfTocHandler();
-	if (!toc.loadFile(args[0]))
-	    Debug.output("RpfTocHandler: NOT read sucessfully!");
-	else {
-	    RpfTocEntry[] e = toc.getEntries();
-	    Debug.output("For A.TOC: " + args[0]);
-	    for (int i = 0; i < e.length; i++)
-		Debug.output(e[i].toString());
-	}
+        RpfTocHandler toc = new RpfTocHandler();
+        if (!toc.loadFile(args[0]))
+            Debug.output("RpfTocHandler: NOT read sucessfully!");
+        else {
+            RpfTocEntry[] e = toc.getEntries();
+            Debug.output("For A.TOC: " + args[0]);
+            for (int i = 0; i < e.length; i++)
+                Debug.output(e[i].toString());
+        }
 
-	System.exit(0);
+        System.exit(0);
     }
 
 }

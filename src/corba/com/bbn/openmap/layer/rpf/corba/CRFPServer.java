@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/CRFPServer.java,v $
 // $RCSfile: CRFPServer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 01:53:36 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -84,7 +84,7 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * Default Constructor.
      */
     public CRFPServer() {
-	this("Default");
+        this("Default");
     }
 
     /**
@@ -92,10 +92,10 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * @param name the identifying name for persistance.
      */
     public CRFPServer(String name) {
-	super();
-	caches = new Hashtable();
-	viewAttributeLists = new Hashtable();
-	timestamps = new Hashtable();
+        super();
+        caches = new Hashtable();
+        viewAttributeLists = new Hashtable();
+        timestamps = new Hashtable();
     }
 
     /**
@@ -105,39 +105,39 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * @param uniqueID a unique identifier. 
      */
     protected RpfFrameCacheHandler getCurrentCache(String uniqueID) {
-	RpfFrameCacheHandler cache = (RpfFrameCacheHandler) caches.get(uniqueID);
-	if (cache == null && tocs != null) {
-	    Debug.message("crfp", "CRFPServer: Creating cache for new client");
-	    cache = new RpfFrameCacheHandler(tocs);
-	    caches.put(uniqueID, cache);
-	}
+        RpfFrameCacheHandler cache = (RpfFrameCacheHandler) caches.get(uniqueID);
+        if (cache == null && tocs != null) {
+            Debug.message("crfp", "CRFPServer: Creating cache for new client");
+            cache = new RpfFrameCacheHandler(tocs);
+            caches.put(uniqueID, cache);
+        }
 
-	timestamps.put(uniqueID, new Long(System.currentTimeMillis()));
-	return cache;
+        timestamps.put(uniqueID, new Long(System.currentTimeMillis()));
+        return cache;
     }
 
     /**
      * Get rid of any cache that is older than the time window.
      */
     protected void cleanCache(long timeWindow) {
-	// OK, we need to get rid of one.
-	long currentTime = System.currentTimeMillis();
-	Enumeration keys = timestamps.keys();
+        // OK, we need to get rid of one.
+        long currentTime = System.currentTimeMillis();
+        Enumeration keys = timestamps.keys();
 
-	while (keys.hasMoreElements()) {
-	    Object tester = keys.nextElement();
-	    Long time = (Long) timestamps.get(tester);
+        while (keys.hasMoreElements()) {
+            Object tester = keys.nextElement();
+            Long time = (Long) timestamps.get(tester);
 
-	    if ((currentTime - time.longValue()) >= timeWindow) {
-		caches.remove(tester);
-		timestamps.remove(tester);
-		viewAttributeLists.remove(tester);
+            if ((currentTime - time.longValue()) >= timeWindow) {
+                caches.remove(tester);
+                timestamps.remove(tester);
+                viewAttributeLists.remove(tester);
 
-		if (Debug.debugging("crfp")) {
-		    Debug.output("Expired cache, removing, have " + caches.size() + " caches left.");
-		}
-	    }
-	}
+                if (Debug.debugging("crfp")) {
+                    Debug.output("Expired cache, removing, have " + caches.size() + " caches left.");
+                }
+            }
+        }
     }
 
     /** 
@@ -145,43 +145,43 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * removed from the cache, it is returned here.  
      */
     protected RpfCacheHandler sweepCaches() {
-	if (caches.size() < maxUsers) {
-	    return null;
-	}
+        if (caches.size() < maxUsers) {
+            return null;
+        }
 
-	// OK, we need to get rid of one.
-	long diff = Long.MAX_VALUE;
-	Enumeration keys = timestamps.keys();
-	Object getRid = null;
+        // OK, we need to get rid of one.
+        long diff = Long.MAX_VALUE;
+        Enumeration keys = timestamps.keys();
+        Object getRid = null;
 
-	while (keys.hasMoreElements()) {
-	    Object tester = keys.nextElement();
-	    Long time = (Long) timestamps.get(tester);
+        while (keys.hasMoreElements()) {
+            Object tester = keys.nextElement();
+            Long time = (Long) timestamps.get(tester);
 
-	    if (time.longValue() < diff) {
-		getRid = tester;
-		diff = time.longValue();
-	    }
-	}
-	boolean DEBUG = false;
-	if (getRid != null) {
-	    if (Debug.debugging("crfp")) {
-		DEBUG = true;
-	    }
-	    if (DEBUG) Debug.output("Removing cache for new user, was " + caches.size());
+            if (time.longValue() < diff) {
+                getRid = tester;
+                diff = time.longValue();
+            }
+        }
+        boolean DEBUG = false;
+        if (getRid != null) {
+            if (Debug.debugging("crfp")) {
+                DEBUG = true;
+            }
+            if (DEBUG) Debug.output("Removing cache for new user, was " + caches.size());
 
-	    caches.remove(getRid);
-	    timestamps.remove(getRid);
-	    viewAttributeLists.remove(getRid);
+            caches.remove(getRid);
+            timestamps.remove(getRid);
+            viewAttributeLists.remove(getRid);
 
-	    if (DEBUG) Debug.output("  now " + caches.size());
-	}
+            if (DEBUG) Debug.output("  now " + caches.size());
+        }
 
-	if (caches.size() >= maxUsers) {
-	    return sweepCaches();
-	} else {
-	    return (RpfCacheHandler)getRid;
-	}
+        if (caches.size() >= maxUsers) {
+            return sweepCaches();
+        } else {
+            return (RpfCacheHandler)getRid;
+        }
     }
 
     /**
@@ -191,13 +191,13 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * @param uniqueID a client-unique identifier.
      */
     protected RpfViewAttributes getCurrentViewAttributes(String uniqueID) {
-	RpfViewAttributes va = (RpfViewAttributes) viewAttributeLists.get(uniqueID);
-	if (va == null) {
-	    Debug.message("crfp", "CRFPServer: Creating attributes for new client");
-	    va = new RpfViewAttributes();
-	    viewAttributeLists.put(uniqueID, va);
-	}
-	return va;
+        RpfViewAttributes va = (RpfViewAttributes) viewAttributeLists.get(uniqueID);
+        if (va == null) {
+            Debug.message("crfp", "CRFPServer: Creating attributes for new client");
+            va = new RpfViewAttributes();
+            viewAttributeLists.put(uniqueID, va);
+        }
+        return va;
     }
 
     /**
@@ -208,17 +208,17 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      */
     public void setViewAttributes(CRFPViewAttributes va, String uniqueID) {
 
-	currentViewAttributes = getCurrentViewAttributes(uniqueID);
-	currentViewAttributes.numberOfColors = (int) va.numberOfColors;
-	currentViewAttributes.opaqueness = (int) va.opaqueness;
-	currentViewAttributes.scaleImages = va.scaleImages;
-	currentViewAttributes.imageScaleFactor = va.imageScaleFactor;
-	currentViewAttributes.chartSeries = va.chartSeries;
+        currentViewAttributes = getCurrentViewAttributes(uniqueID);
+        currentViewAttributes.numberOfColors = (int) va.numberOfColors;
+        currentViewAttributes.opaqueness = (int) va.opaqueness;
+        currentViewAttributes.scaleImages = va.scaleImages;
+        currentViewAttributes.imageScaleFactor = va.imageScaleFactor;
+        currentViewAttributes.chartSeries = va.chartSeries;
 
-	if (Debug.debugging("crfp")) {
-	    Debug.output("CRFPServer: Setting attributes for client:\n    " + 
-			 currentViewAttributes);
-	}
+        if (Debug.debugging("crfp")) {
+            Debug.output("CRFPServer: Setting attributes for client:\n    " + 
+                         currentViewAttributes);
+        }
    }
 
     /**
@@ -232,23 +232,23 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * @param uniqueID a client-unique identifier.
      */
     public CRFPCoverageBox[] getCoverage(float ullat, float ullon,
-					 float lrlat, float lrlon,
-					 CRFPCADRGProjection p,
-					 String uniqueID) {
+                                         float lrlat, float lrlon,
+                                         CRFPCADRGProjection p,
+                                         String uniqueID) {
 
-	Debug.message("crfp", "CRFPServer: Handling coverage request for client");
+        Debug.message("crfp", "CRFPServer: Handling coverage request for client");
 
-	currentCache = getCurrentCache(uniqueID);
-	currentViewAttributes = getCurrentViewAttributes(uniqueID);
-	currentCache.setViewAttributes(currentViewAttributes);
+        currentCache = getCurrentCache(uniqueID);
+        currentViewAttributes = getCurrentViewAttributes(uniqueID);
+        currentCache.setViewAttributes(currentViewAttributes);
 
-	LatLonPoint llpoint = new LatLonPoint(p.center.lat, p.center.lon);
-	CADRG proj = new CADRG(llpoint, p.scale, p.width, p.height);
+        LatLonPoint llpoint = new LatLonPoint(p.center.lat, p.center.lon);
+        CADRG proj = new CADRG(llpoint, p.scale, p.width, p.height);
 
-	Vector vector = currentCache.getCoverage(ullat, ullon, 
-						 lrlat, lrlon, proj);
+        Vector vector = currentCache.getCoverage(ullat, ullon, 
+                                                 lrlat, lrlon, proj);
 
-	return vectorToCRFPCoverageBoxes(vector);
+        return vectorToCRFPCoverageBoxes(vector);
     }
 
     /**
@@ -263,22 +263,22 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * @param uniqueID a client-unique identifier.  
      */
     public CRFPCoverageBox[] getCatalogCoverage(float ullat, float ullon,
-						float lrlat, float lrlon,
-						CRFPCADRGProjection p,
-						String chartSeriesCode,
-						String uniqueID) {
+                                                float lrlat, float lrlon,
+                                                CRFPCADRGProjection p,
+                                                String chartSeriesCode,
+                                                String uniqueID) {
 
-	Debug.message("crfp", "CRFPServer: handling catalog request for client");
-	currentCache = getCurrentCache(uniqueID);
-	currentViewAttributes = getCurrentViewAttributes(uniqueID);
-	currentCache.setViewAttributes(currentViewAttributes);
+        Debug.message("crfp", "CRFPServer: handling catalog request for client");
+        currentCache = getCurrentCache(uniqueID);
+        currentViewAttributes = getCurrentViewAttributes(uniqueID);
+        currentCache.setViewAttributes(currentViewAttributes);
 
-	LatLonPoint llpoint = new LatLonPoint(p.center.lat, p.center.lon);
-	CADRG proj = new CADRG(llpoint, p.scale, p.width, p.height);
-	Vector vector = currentCache.getCatalogCoverage(ullat, ullon, 
-							lrlat, lrlon,
-							proj, chartSeriesCode);
-	return vectorToCRFPCoverageBoxes(vector);
+        LatLonPoint llpoint = new LatLonPoint(p.center.lat, p.center.lon);
+        CADRG proj = new CADRG(llpoint, p.scale, p.width, p.height);
+        Vector vector = currentCache.getCatalogCoverage(ullat, ullon, 
+                                                        lrlat, lrlon,
+                                                        proj, chartSeriesCode);
+        return vectorToCRFPCoverageBoxes(vector);
     }
 
     /**
@@ -288,31 +288,31 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * @return array of CRFPCoverageBox.
      */
     protected CRFPCoverageBox[] vectorToCRFPCoverageBoxes(Vector vector) {
-	int size = vector.size();
-	CRFPCoverageBox[] rets = new CRFPCoverageBox[size];
-	
-	for (int i = 0; i < size; i++) {
-	    RpfCoverageBox box = (RpfCoverageBox) vector.elementAt(i);
-	    if (box != null) {
-		rets[i] = new CRFPCoverageBox((float) box.nw_lat,
-					      (float) box.nw_lon,
-					      (float) box.se_lat,
-					      (float) box.se_lon,
-					      box.subframeLatInterval,
-					      box.subframeLonInterval,
-					      box.chartCode,
-					      (short)box.zone,
-					      new XYPoint((short)box.startIndexes.x,
-							  (short)box.startIndexes.y),
-					      new XYPoint((short)box.endIndexes.x,
-							  (short)box.endIndexes.y),
-					      (short) box.tocNumber,
-					      (short)box.entryNumber,
-					      box.scale,
-					      box.percentCoverage);
-	    }
-	}
-	return rets;
+        int size = vector.size();
+        CRFPCoverageBox[] rets = new CRFPCoverageBox[size];
+        
+        for (int i = 0; i < size; i++) {
+            RpfCoverageBox box = (RpfCoverageBox) vector.elementAt(i);
+            if (box != null) {
+                rets[i] = new CRFPCoverageBox((float) box.nw_lat,
+                                              (float) box.nw_lon,
+                                              (float) box.se_lat,
+                                              (float) box.se_lon,
+                                              box.subframeLatInterval,
+                                              box.subframeLonInterval,
+                                              box.chartCode,
+                                              (short)box.zone,
+                                              new XYPoint((short)box.startIndexes.x,
+                                                          (short)box.startIndexes.y),
+                                              new XYPoint((short)box.endIndexes.x,
+                                                          (short)box.endIndexes.y),
+                                              (short) box.tocNumber,
+                                              (short)box.entryNumber,
+                                              box.scale,
+                                              box.percentCoverage);
+            }
+        }
+        return rets;
     }
 
     /**
@@ -330,76 +330,76 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * @return byte[] of jpeg image
      */
     public byte[] getSubframeData(short tocNumber, short entryNumber,
-				  short x, short y, float jpegQuality, 
-				  String uniqueID)
+                                  short x, short y, float jpegQuality, 
+                                  String uniqueID)
     {
 
-	Debug.message("crfpdetail", "CRFPServer: handling subframe request for client");
+        Debug.message("crfpdetail", "CRFPServer: handling subframe request for client");
 
-	try {
-	    currentCache = getCurrentCache(uniqueID);
+        try {
+            currentCache = getCurrentCache(uniqueID);
        
-	    int[] pixels =  currentCache.getSubframeData((int) tocNumber, 
-							 (int) entryNumber,
-							 (int) x, (int) y);
-	    if (pixels != null) {
-		byte[] compressed = null;
-		try {
-		    compressed = JPEGHelper.encodeJPEG(RpfSubframe.PIXEL_EDGE_SIZE, 
-						       RpfSubframe.PIXEL_EDGE_SIZE,
-						       pixels, jpegQuality);
-		} catch (Exception e) {
-		    Debug.error("CRFPServer: JPEG Compression error: " + e);
-		    compressed = new byte[0];
-		} 
-		if (Debug.debugging("crfpdetail")) {
-		    Debug.output("CRFPServer: subframe is " + compressed.length + " bytes");
-		}
-		return compressed;
-	    }
-	} catch (OutOfMemoryError oome) {
-	    handleMemoryShortage();
-	}
+            int[] pixels =  currentCache.getSubframeData((int) tocNumber, 
+                                                         (int) entryNumber,
+                                                         (int) x, (int) y);
+            if (pixels != null) {
+                byte[] compressed = null;
+                try {
+                    compressed = JPEGHelper.encodeJPEG(RpfSubframe.PIXEL_EDGE_SIZE, 
+                                                       RpfSubframe.PIXEL_EDGE_SIZE,
+                                                       pixels, jpegQuality);
+                } catch (Exception e) {
+                    Debug.error("CRFPServer: JPEG Compression error: " + e);
+                    compressed = new byte[0];
+                } 
+                if (Debug.debugging("crfpdetail")) {
+                    Debug.output("CRFPServer: subframe is " + compressed.length + " bytes");
+                }
+                return compressed;
+            }
+        } catch (OutOfMemoryError oome) {
+            handleMemoryShortage();
+        }
 
-	return new byte[0];
+        return new byte[0];
     }
 
     public RawImage getRawSubframeData(short tocNumber, short entryNumber,
-				       short x, short y,
-				       String uniqueID) {
-	
-	Debug.message("crfpdetail", "CRFPServer: handling raw subframe request for client");
+                                       short x, short y,
+                                       String uniqueID) {
+        
+        Debug.message("crfpdetail", "CRFPServer: handling raw subframe request for client");
 
-	RawImage ri = new RawImage();
-	RpfIndexedImageData riid = null;
+        RawImage ri = new RawImage();
+        RpfIndexedImageData riid = null;
 
-	try {
-	    currentCache = getCurrentCache(uniqueID);
-	    
-	    riid = currentCache.getRawSubframeData((int) tocNumber, 
-						   (int) entryNumber,
-						   (int) x, (int) y);
-	} catch (OutOfMemoryError oome) {
-	    handleMemoryShortage();
-	    riid = null;
-	}
+        try {
+            currentCache = getCurrentCache(uniqueID);
+            
+            riid = currentCache.getRawSubframeData((int) tocNumber, 
+                                                   (int) entryNumber,
+                                                   (int) x, (int) y);
+        } catch (OutOfMemoryError oome) {
+            handleMemoryShortage();
+            riid = null;
+        }
 
-	if (riid == null || riid.imageData == null) {
-	    Debug.message("crfpdetail", "CRFPServer: null image data");
-	    ri.imagedata =  new byte[0];
-	    ri.colortable = new int[0];
-	} else {
-	    ri.imagedata = riid.imageData;
+        if (riid == null || riid.imageData == null) {
+            Debug.message("crfpdetail", "CRFPServer: null image data");
+            ri.imagedata =  new byte[0];
+            ri.colortable = new int[0];
+        } else {
+            ri.imagedata = riid.imageData;
 
-	    RpfColortable colortable = currentCache.getColortable();
-	    
-	    ri.colortable = new int[colortable.colors.length];
-	    for (int i = 0; i < colortable.colors.length; i++) {
-		ri.colortable[i] = colortable.colors[i].getRGB();
-	    }
-	    Debug.message("crfpdetail", "CRFPServer: GOOD image data");
-	}
-	return ri;
+            RpfColortable colortable = currentCache.getColortable();
+            
+            ri.colortable = new int[colortable.colors.length];
+            for (int i = 0; i < colortable.colors.length; i++) {
+                ri.colortable[i] = colortable.colors[i].getRGB();
+            }
+            Debug.message("crfpdetail", "CRFPServer: GOOD image data");
+        }
+        return ri;
     }
 
     /**
@@ -417,18 +417,18 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * @return String with the subframe attributes.
      */
     public String getSubframeAttributes(short tocNumber, short entryNumber,
-					short x, short y, String uniqueID) {
-	Debug.message("crfpdetail", "CRFPServer: handling subframe attribute request for client");
+                                        short x, short y, String uniqueID) {
+        Debug.message("crfpdetail", "CRFPServer: handling subframe attribute request for client");
 
-	try {
-	    currentCache = getCurrentCache(uniqueID);
-	    return currentCache.getSubframeAttributes((int) tocNumber, 
-						      (int) entryNumber,
-						      (int) x, (int) y);
-	} catch (OutOfMemoryError oome) {
-	    handleMemoryShortage();
-	}
-	return new String();
+        try {
+            currentCache = getCurrentCache(uniqueID);
+            return currentCache.getSubframeAttributes((int) tocNumber, 
+                                                      (int) entryNumber,
+                                                      (int) x, (int) y);
+        } catch (OutOfMemoryError oome) {
+            handleMemoryShortage();
+        }
+        return new String();
     }
 
     /**
@@ -437,17 +437,17 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * @param uniqueID a client-unique identifier.
      */
     public void signoff(String uniqueID) {
-	Debug.message("crfp", "CRFPServer: Client" + uniqueID + " signing off!");
-	caches.remove(uniqueID);
-	viewAttributeLists.remove(uniqueID);
-	timestamps.remove(uniqueID);
+        Debug.message("crfp", "CRFPServer: Client" + uniqueID + " signing off!");
+        caches.remove(uniqueID);
+        viewAttributeLists.remove(uniqueID);
+        timestamps.remove(uniqueID);
     }
 
     protected void handleMemoryShortage() {
-	Debug.error("CRFPServer out of memory! Dumping all caches!");
-	caches.clear();
-	viewAttributeLists.clear();
-	timestamps.clear();
+        Debug.error("CRFPServer out of memory! Dumping all caches!");
+        caches.clear();
+        viewAttributeLists.clear();
+        timestamps.clear();
     }
 
     /**
@@ -455,13 +455,13 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * @args command line arguments.
      */
     public void start(String[] args) {
-	CORBASupport cs = new CORBASupport();
+        CORBASupport cs = new CORBASupport();
 
-	if (args != null) {
-	    parseArgs(args);
-	}
+        if (args != null) {
+            parseArgs(args);
+        }
 
-	cs.start(this, args, iorfile, naming);
+        cs.start(this, args, iorfile, naming);
     }
 
     /**
@@ -470,11 +470,11 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * DEFAULT_MAX_USERS will be used.
      */
     public void setMaxUsers(String number) {
-	try {
-	    setMaxUsers(Integer.parseInt(number));
-	} catch (NumberFormatException nfe) {
-	    setMaxUsers(DEFAULT_MAX_USERS);
-	}
+        try {
+            setMaxUsers(Integer.parseInt(number));
+        } catch (NumberFormatException nfe) {
+            setMaxUsers(DEFAULT_MAX_USERS);
+        }
     }
 
     /**
@@ -482,12 +482,12 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * number isn't a good, DEFAULT_MAX_USERS will be used.  
      */
     public void setMaxUsers(int number) {
-	if (number >= 1) {
-	    maxUsers = number;
-	} else {
-	    Debug.output("Max users of " + number + " not supported, set to " + DEFAULT_MAX_USERS);
-	    maxUsers = DEFAULT_MAX_USERS;
-	}
+        if (number >= 1) {
+            maxUsers = number;
+        } else {
+            Debug.output("Max users of " + number + " not supported, set to " + DEFAULT_MAX_USERS);
+            maxUsers = DEFAULT_MAX_USERS;
+        }
     }
     
     /** 
@@ -495,48 +495,48 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * per user.  Get it?  
      */
     public int getMaxUsers() {
-	return maxUsers;
+        return maxUsers;
     }
 
     /**
      * Set how long a user's cache will be kept around.
      */
     public void setTimeWindow(String number) {
-	try {
-	    setTimeWindow(Long.parseLong(number));
-	} catch (NumberFormatException nfe) {
-	    setTimeWindow(DEFAULT_TIME_WINDOW);
-	}
+        try {
+            setTimeWindow(Long.parseLong(number));
+        } catch (NumberFormatException nfe) {
+            setTimeWindow(DEFAULT_TIME_WINDOW);
+        }
     }
 
     /**
      * Set how long a user's cache will be kept around.
      */
     public void setTimeWindow(long number) {
-	if (timer == null) {
-	    timer = new javax.swing.Timer((int)number, (ActionListener)this);
-	}
+        if (timer == null) {
+            timer = new javax.swing.Timer((int)number, (ActionListener)this);
+        }
 
-	if (number >= 1) {
-	    timeWindow = number;
-	    Debug.output("Timer enabled,  set to " + (number/1000) + " seconds");
-	} else if (number == 0) {
-	    // stop timer
-	    timer.stop();
-	    return;
-	} else {
-	    timeWindow = DEFAULT_TIME_WINDOW;
-	    Debug.output("Timer enabled,  set to " + (DEFAULT_TIME_WINDOW/1000) + " seconds");
-	}
+        if (number >= 1) {
+            timeWindow = number;
+            Debug.output("Timer enabled,  set to " + (number/1000) + " seconds");
+        } else if (number == 0) {
+            // stop timer
+            timer.stop();
+            return;
+        } else {
+            timeWindow = DEFAULT_TIME_WINDOW;
+            Debug.output("Timer enabled,  set to " + (DEFAULT_TIME_WINDOW/1000) + " seconds");
+        }
 
-	timer.start();
+        timer.start();
     }
     
     /** 
      * The the time window for how long users caches are kept around.
      */
     public long getTimeWindow() {
-	return timeWindow;
+        return timeWindow;
     }
 
     /**
@@ -544,67 +544,67 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * @param ae action event from the timer.
      */
     public void actionPerformed(java.awt.event.ActionEvent ae) {
-	if (Debug.debugging("crfp")) {
-	    Debug.output("Ping! checking cache...");
-	}
-	cleanCache(getTimeWindow());
+        if (Debug.debugging("crfp")) {
+            Debug.output("Ping! checking cache...");
+        }
+        cleanCache(getTimeWindow());
     }
 
     /**
      */
     public void parseArgs(String[] args) {
-	rpfpaths = null;
+        rpfpaths = null;
 
-	try {
-	    for (int i = 0; i < args.length; i++) {
-		if (args[i].equalsIgnoreCase("-ior")) {
-		    iorfile = args[++i];
-		} else if (args[i].equalsIgnoreCase("-name")) {
-		    naming = args[++i];
-		} else if (args[i].equalsIgnoreCase("-help")) {
-		    printHelp();
-		} else if (args[i].equalsIgnoreCase("-rpfpaths")) {
-		    rpfpaths = getPaths(args[++i]);
-		} else if (args[i].equalsIgnoreCase("-maxusers")) {
-		    setMaxUsers(args[++i]);
-		} else if (args[i].equalsIgnoreCase("-timewindow")) {
-		    setTimeWindow(args[++i]);
-		} else if (args[i].equalsIgnoreCase("-verbose")) {
-		    Debug.put("crfp");
-		} else if (args[i].equalsIgnoreCase("-h")) {
-		    printHelp();
-		}
-	    }
-	} catch (ArrayIndexOutOfBoundsException aioobe) {
-	    printHelp();
-	}
-	
-	// if you didn't specify an iorfile
-	if (iorfile == null && naming == null) {
-	    Debug.error("CRFPServer: IOR file and name service name are null!  Use `-ior' or '-name' flag!");
-	    System.exit(-1);
-	}
+        try {
+            for (int i = 0; i < args.length; i++) {
+                if (args[i].equalsIgnoreCase("-ior")) {
+                    iorfile = args[++i];
+                } else if (args[i].equalsIgnoreCase("-name")) {
+                    naming = args[++i];
+                } else if (args[i].equalsIgnoreCase("-help")) {
+                    printHelp();
+                } else if (args[i].equalsIgnoreCase("-rpfpaths")) {
+                    rpfpaths = getPaths(args[++i]);
+                } else if (args[i].equalsIgnoreCase("-maxusers")) {
+                    setMaxUsers(args[++i]);
+                } else if (args[i].equalsIgnoreCase("-timewindow")) {
+                    setTimeWindow(args[++i]);
+                } else if (args[i].equalsIgnoreCase("-verbose")) {
+                    Debug.put("crfp");
+                } else if (args[i].equalsIgnoreCase("-h")) {
+                    printHelp();
+                }
+            }
+        } catch (ArrayIndexOutOfBoundsException aioobe) {
+            printHelp();
+        }
+        
+        // if you didn't specify an iorfile
+        if (iorfile == null && naming == null) {
+            Debug.error("CRFPServer: IOR file and name service name are null!  Use `-ior' or '-name' flag!");
+            System.exit(-1);
+        }
 
-	if (rpfpaths == null) {
-	    Debug.error("CRFPServer: No RPF directory paths specified!  Use `-rpfpaths' flag!");
-	    System.exit(-1);
-	} else {
-	    tocs = RpfFrameCacheHandler.createTocHandlers(rpfpaths);
-	    Debug.output("CRFPServer: CRFPServer!  Running with paths => ");
-	    for (int j = 0; j < rpfpaths.length; j++) {
-		Debug.output("     " + rpfpaths[j]);
-	    }
-	}
+        if (rpfpaths == null) {
+            Debug.error("CRFPServer: No RPF directory paths specified!  Use `-rpfpaths' flag!");
+            System.exit(-1);
+        } else {
+            tocs = RpfFrameCacheHandler.createTocHandlers(rpfpaths);
+            Debug.output("CRFPServer: CRFPServer!  Running with paths => ");
+            for (int j = 0; j < rpfpaths.length; j++) {
+                Debug.output("     " + rpfpaths[j]);
+            }
+        }
     }
     
     private String[] getPaths (String str) {
-	StringTokenizer tok = new StringTokenizer(str, ";");
-	int len = tok.countTokens();
-	String[] paths = new String[len];
-	for (int j=0; j<len; j++) {
-	    paths[j] = tok.nextToken();
-	}
-	return paths;
+        StringTokenizer tok = new StringTokenizer(str, ";");
+        int len = tok.countTokens();
+        String[] paths = new String[len];
+        for (int j=0; j<len; j++) {
+            paths[j] = tok.nextToken();
+        }
+        return paths;
     }
 
     /** 
@@ -612,16 +612,16 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * command line needs of your specialist. 
      */
     public void printHelp() {
-	Debug.output("usage: java CRFPServer [-ior <file> || -name <NAME>] -rpfpaths \"<path to rpf dir>;<path to rpf dir>;<...>\" -maxusers <max number of users to cache> -timewindow <milliseconds for idle cache removal>");
-	System.exit(1);
+        Debug.output("usage: java CRFPServer [-ior <file> || -name <NAME>] -rpfpaths \"<path to rpf dir>;<path to rpf dir>;<...>\" -maxusers <max number of users to cache> -timewindow <milliseconds for idle cache removal>");
+        System.exit(1);
     }
 
     public static void main (String[] args) {
-	Debug.init(System.getProperties());
+        Debug.init(System.getProperties());
 
-	// Create the specialist server
-	CRFPServer srv = new CRFPServer("CRFPServer");
-	srv.start(args);
+        // Create the specialist server
+        CRFPServer srv = new CRFPServer("CRFPServer");
+        srv.start(args);
     }
 
 }

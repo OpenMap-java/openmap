@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/EOMGListenerSupport.java,v $
 // $RCSfile: EOMGListenerSupport.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:46:44 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:13 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -41,7 +41,7 @@ public class EOMGListenerSupport extends ListenerSupport {
      * Construct a EOMGListenerSupport.
      */
     public EOMGListenerSupport() {
-	this(null);
+        this(null);
     }
 
     /**
@@ -49,7 +49,7 @@ public class EOMGListenerSupport extends ListenerSupport {
      * @param graphic source graphic
      */
     public EOMGListenerSupport(EditableOMGraphic graphic) {
-	super(graphic);
+        super(graphic);
     }
 
     /**
@@ -57,7 +57,7 @@ public class EOMGListenerSupport extends ListenerSupport {
      * @param graphic source EditableOMGraphic
      */
     public synchronized void setEOMG(EditableOMGraphic graphic) {
-	setSource(graphic);
+        setSource(graphic);
     }
 
     /**
@@ -65,7 +65,7 @@ public class EOMGListenerSupport extends ListenerSupport {
      * @return EditableOMGraphic
      */
     public synchronized EditableOMGraphic getEOMG() {
-	return (EditableOMGraphic)getSource();
+        return (EditableOMGraphic)getSource();
     }
 
     /**
@@ -73,7 +73,7 @@ public class EOMGListenerSupport extends ListenerSupport {
      * @param l EOMGListener
      */
     public synchronized void addEOMGListener(EOMGListener l) {
-	addListener(l);
+        addListener(l);
     }
 
     /**
@@ -81,7 +81,7 @@ public class EOMGListenerSupport extends ListenerSupport {
      * @param l EOMGListener
      */
     public synchronized void removeEOMGListener(EOMGListener l) {
-	removeListener(l);
+        removeListener(l);
     }
 
     /**
@@ -90,18 +90,18 @@ public class EOMGListenerSupport extends ListenerSupport {
      * @param event EOMGEvent
      */
     public synchronized void fireEvent(EOMGEvent event) {
-	Iterator it = iterator();
+        Iterator it = iterator();
 
-	if (size() == 0) return;
+        if (size() == 0) return;
 
-	while (it.hasNext()) {
-	    EOMGListener target = (EOMGListener)it.next();
-	    target.eomgChanged(event);
+        while (it.hasNext()) {
+            EOMGListener target = (EOMGListener)it.next();
+            target.eomgChanged(event);
 
-	    if (Debug.debugging("eomgdetail")) {
-		Debug.output("EOMGListenerSupport.fireStatusChanged(): target is: " + 
-			     target);
-	    }
-	}
+            if (Debug.debugging("eomgdetail")) {
+                Debug.output("EOMGListenerSupport.fireStatusChanged(): target is: " + 
+                             target);
+            }
+        }
     }
 }

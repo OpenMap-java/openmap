@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/LinkSpatialIndex.java,v $
 // $RCSfile: LinkSpatialIndex.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,7 @@ public class LinkSpatialIndex extends SpatialIndex {
      * @exception IOException if something goes wrong opening the file
      */
     public LinkSpatialIndex(String ssxFilename) throws IOException {
-	super(ssxFilename);
+        super(ssxFilename);
     }
 
     /**
@@ -52,8 +52,8 @@ public class LinkSpatialIndex extends SpatialIndex {
      * @exception IOException if something goes wrong opening the files
      */
     public LinkSpatialIndex(String ssxFilename, String shpFilename)
-	throws IOException {
-	super(ssxFilename, shpFilename);
+        throws IOException {
+        super(ssxFilename, shpFilename);
     }
 
     /**
@@ -69,23 +69,23 @@ public class LinkSpatialIndex extends SpatialIndex {
      * @see ShapeUtils
      */
     public ESRIRecord makeESRIRecord(int shapeType, byte[] b, int off)
-	throws IOException
+        throws IOException
     {
-	switch ( shapeType ) {
-	case SHAPE_TYPE_NULL:
-	    return null;
-	case SHAPE_TYPE_POINT:
-	    return new ESRILinkPointRecord(b, off);
-	case SHAPE_TYPE_POLYGON:
-	case SHAPE_TYPE_ARC:
-//	case SHAPE_TYPE_POLYLINE:
-	    return new ESRILinkPolygonRecord(b, off);
-	case SHAPE_TYPE_MULTIPOINT:
-	    System.out.println("SpatialIndex.makeESRIRecord: Arc NYI");
-	    return null;
-// 	    return new ESRIMultipointRecord(b, off);
-	default:
-	    return null;
-	}
+        switch ( shapeType ) {
+        case SHAPE_TYPE_NULL:
+            return null;
+        case SHAPE_TYPE_POINT:
+            return new ESRILinkPointRecord(b, off);
+        case SHAPE_TYPE_POLYGON:
+        case SHAPE_TYPE_ARC:
+//      case SHAPE_TYPE_POLYLINE:
+            return new ESRILinkPolygonRecord(b, off);
+        case SHAPE_TYPE_MULTIPOINT:
+            System.out.println("SpatialIndex.makeESRIRecord: Arc NYI");
+            return null;
+//          return new ESRIMultipointRecord(b, off);
+        default:
+            return null;
+        }
     }
 }

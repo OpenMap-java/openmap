@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/TrueFalsePropertyEditor.java,v $
 // $RCSfile: TrueFalsePropertyEditor.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/19 20:41:54 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,62 +53,62 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport
     public final static String FalseString = "false";
 
     public TrueFalsePropertyEditor() {
-	trueButton = new JRadioButton(TrueString);
-	falseButton = new JRadioButton(FalseString);
+        trueButton = new JRadioButton(TrueString);
+        falseButton = new JRadioButton(FalseString);
     }
     
     public boolean supportsCustomEditor() {
-	return true;
+        return true;
     }
     
     public void setUseAltCommandStrings(boolean value) {
-	useAltCommandStrings = value;
+        useAltCommandStrings = value;
     }
 
     public boolean getUseAltCommandStrings() {
-	return useAltCommandStrings;
+        return useAltCommandStrings;
     }
 
     /** Returns the editor GUI, ie a JTextField. */
     public Component getCustomEditor() {
-	JPanel panel = new JPanel();
+        JPanel panel = new JPanel();
 
-	GridBagLayout gridbag = new GridBagLayout();
-	GridBagConstraints c = new GridBagConstraints();
-	panel.setLayout(gridbag);
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        panel.setLayout(gridbag);
 
-	if (!getUseAltCommandStrings()) {
-	    trueButton.setActionCommand(TrueString);
-	    falseButton.setActionCommand(FalseString);
-	}
-	trueButton.addActionListener(this);
-	falseButton.addActionListener(this);
-	
-	buttonGroup.add(trueButton);
-	buttonGroup.add(falseButton);
+        if (!getUseAltCommandStrings()) {
+            trueButton.setActionCommand(TrueString);
+            falseButton.setActionCommand(FalseString);
+        }
+        trueButton.addActionListener(this);
+        falseButton.addActionListener(this);
+        
+        buttonGroup.add(trueButton);
+        buttonGroup.add(falseButton);
 
-	setSelected(option);
+        setSelected(option);
 
-	gridbag.setConstraints(trueButton, c);
-	gridbag.setConstraints(falseButton, c);
-	panel.add(trueButton);
-	panel.add(falseButton);
-	
-	return panel;
+        gridbag.setConstraints(trueButton, c);
+        gridbag.setConstraints(falseButton, c);
+        panel.add(trueButton);
+        panel.add(falseButton);
+        
+        return panel;
     }
     
     public void actionPerformed(ActionEvent e) {
-	String ac = e.getActionCommand();
-	setSelected(ac.equalsIgnoreCase(trueButton.getActionCommand()));
-	
-	//System.out.println("value changed");
-	firePropertyChange();
+        String ac = e.getActionCommand();
+        setSelected(ac.equalsIgnoreCase(trueButton.getActionCommand()));
+        
+        //System.out.println("value changed");
+        firePropertyChange();
     }
 
     public void setSelected(boolean set) {
-	option = set;
-	trueButton.setSelected(option);
-	falseButton.setSelected(!option);
+        option = set;
+        trueButton.setSelected(option);
+        falseButton.setSelected(!option);
     }
 
     public void focusGained(FocusEvent e) {}
@@ -116,18 +116,18 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport
     
     /** Sets String in JTextField. */
     public void setValue(Object string) {
-	if(!(string instanceof String)) {
-	    return;
-	}
+        if(!(string instanceof String)) {
+            return;
+        }
 
-	setSelected(((String)string).equalsIgnoreCase(trueButton.getActionCommand()));
+        setSelected(((String)string).equalsIgnoreCase(trueButton.getActionCommand()));
     }
 
     /** Returns String from ButtonGroup. */
     public String getAsText() {
-	if (option) {
-	    return trueButton.getActionCommand();
-	}
-	return falseButton.getActionCommand();
+        if (option) {
+            return trueButton.getActionCommand();
+        }
+        return falseButton.getActionCommand();
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseSupport.java,v $
 // $RCSfile: MapMouseSupport.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/11/14 20:16:09 $
+// $Revision: 1.7 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -91,7 +91,7 @@ public class MapMouseSupport extends ListenerSupport {
      * The default value of consumeEvents is set to true.
      */
     public MapMouseSupport() {
-	this(null, true);
+        this(null, true);
     }
 
     /**
@@ -101,7 +101,7 @@ public class MapMouseSupport extends ListenerSupport {
      * MapMouseEvent.
      */
     public MapMouseSupport(MapMouseMode mode) {
-	this(mode, true);
+        this(mode, true);
     }
 
     /**
@@ -111,7 +111,7 @@ public class MapMouseSupport extends ListenerSupport {
      * event, if false, events are propagated to all MapMouseListeners
      */
     public MapMouseSupport(boolean shouldConsumeEvents) {
-	this(null, shouldConsumeEvents);
+        this(null, shouldConsumeEvents);
     }
 
     /**
@@ -123,22 +123,22 @@ public class MapMouseSupport extends ListenerSupport {
      * event, if false, events are propagated to all MapMouseListeners
      */
     public MapMouseSupport(MapMouseMode mode, boolean shouldConsumeEvents) {
-	super(mode);
+        super(mode);
 
-	consumeEvents = shouldConsumeEvents;
-	DEBUG = Debug.debugging("mousemode");
-	DEBUG_DETAIL = Debug.debugging("mousemodedetail");
+        consumeEvents = shouldConsumeEvents;
+        DEBUG = Debug.debugging("mousemode");
+        DEBUG_DETAIL = Debug.debugging("mousemodedetail");
     }
 
     /**
      * Set the parent MapMouseMode to use in constructing MapMouseEvents.
      */
     public void setParentMode(MapMouseMode mode) {
-	setSource(mode);
+        setSource(mode);
     }
 
     public MapMouseMode getParentMode() {
-	return (MapMouseMode)getSource();
+        return (MapMouseMode)getSource();
     }
 
     /**
@@ -149,7 +149,7 @@ public class MapMouseSupport extends ListenerSupport {
      * @param shouldConsumeEvents true for limited distribution.
      */
     public void setConsumeEvents(boolean shouldConsumeEvents) {
-	consumeEvents = shouldConsumeEvents;
+        consumeEvents = shouldConsumeEvents;
     }
 
    /**
@@ -157,7 +157,7 @@ public class MapMouseSupport extends ListenerSupport {
     * @return true if only one listner gets to act on an event.
     */
     public boolean isConsumeEvents() {
-	return consumeEvents;
+        return consumeEvents;
     }
 
     /**
@@ -165,7 +165,7 @@ public class MapMouseSupport extends ListenerSupport {
      * @param listener The MapMouseListener to be added
      */
     public void addMapMouseListener(MapMouseListener listener) {
-	addListener(listener);
+        addListener(listener);
     }
 
     /**
@@ -173,14 +173,14 @@ public class MapMouseSupport extends ListenerSupport {
      * @param listener The MapMouseListener to be removed
      */
     public void removeMapMouseListener(MapMouseListener listener) {
-	removeListener(listener);
+        removeListener(listener);
     }
 
     /**
      * Remove all MapMouseListeners from the listener list.
      */
     public void removeAllMapMouseListeners() {
-	removeAll();
+        removeAll();
     }
 
     /**
@@ -188,51 +188,51 @@ public class MapMouseSupport extends ListenerSupport {
      * @param evt MouseEvent to be handled
      */
     public boolean fireMapMousePressed(MouseEvent evt) {
-	if (DEBUG) {
-	    System.out.println("MapMouseSupport.fireMapMousePressed()");
-	}
+        if (DEBUG) {
+            System.out.println("MapMouseSupport.fireMapMousePressed()");
+        }
 
-	boolean consumed = false;
+        boolean consumed = false;
 
-	if (DEBUG) {
-	    Debug.output("  -- has proxy (" + (proxy != null) + 
-			 ") -- shift used (" + evt.isShiftDown() + ")");
-	}
+        if (DEBUG) {
+            Debug.output("  -- has proxy (" + (proxy != null) + 
+                         ") -- shift used (" + evt.isShiftDown() + ")");
+        }
 
-	if (proxy == null || evt.isShiftDown() ||
-	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_PRESSED) > 0) {
+        if (proxy == null || evt.isShiftDown() ||
+            (proxyDistributionMask & PROXY_DISTRIB_MOUSE_PRESSED) > 0) {
 
-	    evt = new MapMouseEvent(getParentMode(), evt);
+            evt = new MapMouseEvent(getParentMode(), evt);
 
-	    if (DEBUG && proxy != null && evt.isShiftDown()) {
-		Debug.output("MMS.fireMapMousePressed(): proxy enabled, but side stepping to send event to primary listeners");
-	    }
+            if (DEBUG && proxy != null && evt.isShiftDown()) {
+                Debug.output("MMS.fireMapMousePressed(): proxy enabled, but side stepping to send event to primary listeners");
+            }
 
 
-	    Iterator it = iterator();
-	    while (it.hasNext() && !consumed) {
-		MapMouseListener target = (MapMouseListener)it.next();
-		consumed = target.mousePressed(evt) && consumeEvents;
+            Iterator it = iterator();
+            while (it.hasNext() && !consumed) {
+                MapMouseListener target = (MapMouseListener)it.next();
+                consumed = target.mousePressed(evt) && consumeEvents;
 
-		if (consumed) {
-		    priorityListener = target;
-		}
-	    }
-	}
+                if (consumed) {
+                    priorityListener = target;
+                }
+            }
+        }
 
-	boolean ignoreConsumed = !consumed ||
-	    (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_PRESSED) == 0));
+        boolean ignoreConsumed = !consumed ||
+            (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_PRESSED) == 0));
 
-	if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
-	    proxy.mousePressed(evt);
-	    consumed = true;
-	} else {
-	    if (DEBUG && evt.isShiftDown()) {
-		Debug.output("MMS.fireMapMousePressed(): side-stepped proxy");
-	    }
-	}
+        if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
+            proxy.mousePressed(evt);
+            consumed = true;
+        } else {
+            if (DEBUG && evt.isShiftDown()) {
+                Debug.output("MMS.fireMapMousePressed(): side-stepped proxy");
+            }
+        }
 
-	return consumed;
+        return consumed;
     }
 
     /**
@@ -244,40 +244,40 @@ public class MapMouseSupport extends ListenerSupport {
      * @param evt MouseEvent to be handled.
      */
     public boolean fireMapMouseReleased(MouseEvent evt) {
-	if (DEBUG) {
-	    Debug.output("MapMouseSupport: fireMapMouseReleased");
-	}
+        if (DEBUG) {
+            Debug.output("MapMouseSupport: fireMapMouseReleased");
+        }
 
-	boolean consumed = false;
+        boolean consumed = false;
 
-	evt = new MapMouseEvent(getParentMode(), evt);
+        evt = new MapMouseEvent(getParentMode(), evt);
 
-	if (priorityListener != null) {
-	    priorityListener.mouseReleased(evt);
-	    if (!clickHappened) {
-		priorityListener = null;
-	    }
-	    consumed = true;
-	}
+        if (priorityListener != null) {
+            priorityListener.mouseReleased(evt);
+            if (!clickHappened) {
+                priorityListener = null;
+            }
+            consumed = true;
+        }
 
-	if (proxy == null || evt.isShiftDown() ||
-	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_RELEASED) > 0) {
+        if (proxy == null || evt.isShiftDown() ||
+            (proxyDistributionMask & PROXY_DISTRIB_MOUSE_RELEASED) > 0) {
 
-	    Iterator it = iterator();
-	    while (it.hasNext() && !consumed) {
-		consumed = ((MapMouseListener)it.next()).mouseReleased(evt) && consumeEvents;
-	    }
-	}
+            Iterator it = iterator();
+            while (it.hasNext() && !consumed) {
+                consumed = ((MapMouseListener)it.next()).mouseReleased(evt) && consumeEvents;
+            }
+        }
 
-	boolean ignoreConsumed = !consumed ||
-	    (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_RELEASED) == 0));
+        boolean ignoreConsumed = !consumed ||
+            (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_RELEASED) == 0));
 
-	if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
-	    proxy.mouseReleased(evt);
-	    consumed = true;
-	}
+        if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
+            proxy.mouseReleased(evt);
+            consumed = true;
+        }
 
-	return consumed;
+        return consumed;
     }
 
     /**
@@ -288,46 +288,46 @@ public class MapMouseSupport extends ListenerSupport {
      * @param evt MouseEvent to be handled.
      */
     public boolean fireMapMouseClicked(MouseEvent evt) {
-	if (DEBUG) {
-	    Debug.output("MapMouseSupport: fireMapMouseClicked");
-	}
+        if (DEBUG) {
+            Debug.output("MapMouseSupport: fireMapMouseClicked");
+        }
 
-	clickHappened = true;
-	boolean consumed = false;
+        clickHappened = true;
+        boolean consumed = false;
 
-	evt = new MapMouseEvent(getParentMode(), evt);
+        evt = new MapMouseEvent(getParentMode(), evt);
 
-	if (priorityListener != null && evt.getClickCount() > 1){
-	    priorityListener.mouseClicked(evt);
-	    consumed = true;
-	}
+        if (priorityListener != null && evt.getClickCount() > 1){
+            priorityListener.mouseClicked(evt);
+            consumed = true;
+        }
 
-	priorityListener = null;
+        priorityListener = null;
 
-	if (proxy == null || evt.isShiftDown() ||
-	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_CLICKED) > 0) {
+        if (proxy == null || evt.isShiftDown() ||
+            (proxyDistributionMask & PROXY_DISTRIB_MOUSE_CLICKED) > 0) {
 
-	    Iterator it = iterator();
+            Iterator it = iterator();
 
-	    while (it.hasNext() && !consumed) {
-		MapMouseListener target = (MapMouseListener)it.next();
-		consumed = target.mouseClicked(evt) && consumeEvents;
+            while (it.hasNext() && !consumed) {
+                MapMouseListener target = (MapMouseListener)it.next();
+                consumed = target.mouseClicked(evt) && consumeEvents;
 
-		if (consumed) {
-		    priorityListener = target;
-		}
-	    }
-	}
+                if (consumed) {
+                    priorityListener = target;
+                }
+            }
+        }
 
-	boolean ignoreConsumed = !consumed ||
-	    (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_CLICKED) == 0));
+        boolean ignoreConsumed = !consumed ||
+            (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_CLICKED) == 0));
 
-	if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
-	    proxy.mouseClicked(evt);
-	    consumed = true;
-	}
+        if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
+            proxy.mouseClicked(evt);
+            consumed = true;
+        }
 
-	return consumed;
+        return consumed;
     }
 
     /**
@@ -336,31 +336,31 @@ public class MapMouseSupport extends ListenerSupport {
      * @return true if there was a target to send the event to.
      */
     public boolean fireMapMouseEntered(MouseEvent evt) {
-	if (DEBUG) {
-	    Debug.output("MapMouseSupport: fireMapMouseEntered");
-	}
+        if (DEBUG) {
+            Debug.output("MapMouseSupport: fireMapMouseEntered");
+        }
 
-	boolean consumed = false;
+        boolean consumed = false;
 
-	if (proxy == null || evt.isShiftDown() ||
-	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_ENTERED) > 0) {
+        if (proxy == null || evt.isShiftDown() ||
+            (proxyDistributionMask & PROXY_DISTRIB_MOUSE_ENTERED) > 0) {
 
-	    evt = new MapMouseEvent(getParentMode(), evt);
+            evt = new MapMouseEvent(getParentMode(), evt);
 
-	    Iterator it = iterator();
+            Iterator it = iterator();
 
-	    while (it.hasNext()) {
-		((MapMouseListener)it.next()).mouseEntered(evt);
-		consumed = true;
-	    }
-	}
+            while (it.hasNext()) {
+                ((MapMouseListener)it.next()).mouseEntered(evt);
+                consumed = true;
+            }
+        }
 
-	if (proxy != null && !evt.isShiftDown()) {
-	    proxy.mouseEntered(evt);
-	    consumed = true;
-	}
+        if (proxy != null && !evt.isShiftDown()) {
+            proxy.mouseEntered(evt);
+            consumed = true;
+        }
 
-	return consumed;
+        return consumed;
     }
 
     /**
@@ -369,31 +369,31 @@ public class MapMouseSupport extends ListenerSupport {
      * @return true if there was a target to send the event to.
      */
     public boolean fireMapMouseExited(MouseEvent evt) {
-	if (DEBUG) {
-	    Debug.output("MapMouseSupport: fireMapMouseExited");
-	}
+        if (DEBUG) {
+            Debug.output("MapMouseSupport: fireMapMouseExited");
+        }
 
-	boolean consumed = false;
+        boolean consumed = false;
 
-	if (proxy == null || evt.isShiftDown() ||
-	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_EXITED) > 0) {
+        if (proxy == null || evt.isShiftDown() ||
+            (proxyDistributionMask & PROXY_DISTRIB_MOUSE_EXITED) > 0) {
 
-	    evt = new MapMouseEvent(getParentMode(), evt);
+            evt = new MapMouseEvent(getParentMode(), evt);
 
-	    Iterator it = iterator();
+            Iterator it = iterator();
 
-	    while (it.hasNext()) {
-		((MapMouseListener)it.next()).mouseExited(evt);
-		consumed = true;
-	    }
-	}
+            while (it.hasNext()) {
+                ((MapMouseListener)it.next()).mouseExited(evt);
+                consumed = true;
+            }
+        }
 
-	if (proxy != null && !evt.isShiftDown()) {
-	    proxy.mouseExited(evt);
-	    consumed = true;
-	}
+        if (proxy != null && !evt.isShiftDown()) {
+            proxy.mouseExited(evt);
+            consumed = true;
+        }
 
-	return consumed;
+        return consumed;
     }
 
     /**
@@ -402,34 +402,34 @@ public class MapMouseSupport extends ListenerSupport {
      * @return false.
      */
     public boolean fireMapMouseDragged(MouseEvent evt) {
-	if (DEBUG_DETAIL) {
-	    Debug.output("MapMouseSupport: fireMapMouseDragged");
-	}
+        if (DEBUG_DETAIL) {
+            Debug.output("MapMouseSupport: fireMapMouseDragged");
+        }
 
-	clickHappened = false;
-	boolean consumed = false;
+        clickHappened = false;
+        boolean consumed = false;
 
-	if (proxy == null || evt.isShiftDown() ||
-	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_DRAGGED) > 0) {
+        if (proxy == null || evt.isShiftDown() ||
+            (proxyDistributionMask & PROXY_DISTRIB_MOUSE_DRAGGED) > 0) {
 
-	    evt = new MapMouseEvent(getParentMode(), evt);
+            evt = new MapMouseEvent(getParentMode(), evt);
 
-	    Iterator it = iterator();
+            Iterator it = iterator();
 
-	    while (it.hasNext() && !consumed) {
-		consumed = ((MapMouseListener)it.next()).mouseDragged(evt) && consumeEvents;
-	    }
-	}
+            while (it.hasNext() && !consumed) {
+                consumed = ((MapMouseListener)it.next()).mouseDragged(evt) && consumeEvents;
+            }
+        }
 
-	boolean ignoreConsumed = !consumed ||
-	    (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_DRAGGED) == 0));
+        boolean ignoreConsumed = !consumed ||
+            (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_DRAGGED) == 0));
 
-	if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
-	    proxy.mouseDragged(evt);
-	    consumed = true;
-	}
+        if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
+            proxy.mouseDragged(evt);
+            consumed = true;
+        }
 
-	return consumed;
+        return consumed;
     }
 
     /**
@@ -441,43 +441,43 @@ public class MapMouseSupport extends ListenerSupport {
      * @return true if the event was consumed.
      */
     public boolean fireMapMouseMoved(MouseEvent evt) {
-	if (DEBUG_DETAIL) {
-	    Debug.output("MapMouseSupport: fireMapMouseMoved");
-	}
+        if (DEBUG_DETAIL) {
+            Debug.output("MapMouseSupport: fireMapMouseMoved");
+        }
 
-	boolean consumed = false;
+        boolean consumed = false;
 
-	if (proxy == null || evt.isShiftDown() ||
-	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_MOVED) > 0) {
+        if (proxy == null || evt.isShiftDown() ||
+            (proxyDistributionMask & PROXY_DISTRIB_MOUSE_MOVED) > 0) {
 
-	    evt = new MapMouseEvent(getParentMode(), evt);
+            evt = new MapMouseEvent(getParentMode(), evt);
 
-	    Iterator it = iterator();
+            Iterator it = iterator();
 
-	    while (it.hasNext()) {
-		MapMouseListener target = (MapMouseListener)it.next();
-		if (consumed) {
-		    target.mouseMoved();
-		} else {
-		    consumed = target.mouseMoved(evt);
-		}
-	    }
-	}
+            while (it.hasNext()) {
+                MapMouseListener target = (MapMouseListener)it.next();
+                if (consumed) {
+                    target.mouseMoved();
+                } else {
+                    consumed = target.mouseMoved(evt);
+                }
+            }
+        }
 
-	// consumed was used above to figure out whether to send
-	// mouseMoved(evt) or mouseMoved(), now we have to set it
-	// based on whether the MouseMode should be consuming events.
-	consumed &= consumeEvents;
+        // consumed was used above to figure out whether to send
+        // mouseMoved(evt) or mouseMoved(), now we have to set it
+        // based on whether the MouseMode should be consuming events.
+        consumed &= consumeEvents;
 
-	boolean ignoreConsumed = !consumed ||
-	    (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_MOVED) == 0));
+        boolean ignoreConsumed = !consumed ||
+            (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_MOVED) == 0));
 
-	if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
-	    proxy.mouseMoved(evt);
-	    consumed = true;
-	}
+        if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
+            proxy.mouseMoved(evt);
+            consumed = true;
+        }
 
-	return consumed;
+        return consumed;
     }
 
     /**
@@ -495,12 +495,12 @@ public class MapMouseSupport extends ListenerSupport {
      * listener.
      */
     protected synchronized boolean setProxyFor(MapMouseMode mmm, int pdm) {
-	proxyDistributionMask = pdm;
-	if (proxy == null || proxy == mmm) {
-	    proxy = mmm;
-	    return true;
-	}
-	return false;
+        proxyDistributionMask = pdm;
+        if (proxy == null || proxy == mmm) {
+            proxy = mmm;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -508,7 +508,7 @@ public class MapMouseSupport extends ListenerSupport {
      * MapMouseMode.
      */
     public synchronized boolean isProxyFor(MapMouseMode mmm) {
-	return proxy == mmm;
+        return proxy == mmm;
     }
 
     /**
@@ -516,8 +516,8 @@ public class MapMouseSupport extends ListenerSupport {
      * distribution mask.
      */
     protected synchronized void releaseProxy() {
-	proxy = null;
-	proxyDistributionMask = 0;
+        proxy = null;
+        proxyDistributionMask = 0;
     }
 
     /**
@@ -526,7 +526,7 @@ public class MapMouseSupport extends ListenerSupport {
      * acting as a proxy.
      */
     protected void setProxyDistributionMask(int mask) {
-	proxyDistributionMask = mask;
+        proxyDistributionMask = mask;
     }
 
     /**
@@ -535,6 +535,6 @@ public class MapMouseSupport extends ListenerSupport {
      * acting as a proxy.
      */
     protected int getProxyDistributionMask() {
-	return proxyDistributionMask;
+        return proxyDistributionMask;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode2.java,v $
 // $RCSfile: NavMouseMode2.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/08 21:29:17 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -61,7 +61,7 @@ public class NavMouseMode2 extends NavMouseMode {
      * true, and the cursor to the crosshair. 
      */
     public NavMouseMode2() {
-	this(true);
+        this(true);
     }
 
     /**
@@ -74,7 +74,7 @@ public class NavMouseMode2 extends NavMouseMode {
      * @param shouldConsumeEvents the mode setting.
      */
     public NavMouseMode2(boolean shouldConsumeEvents) {
-	super(shouldConsumeEvents);
+        super(shouldConsumeEvents);
     }
 
     /**
@@ -88,91 +88,91 @@ public class NavMouseMode2 extends NavMouseMode {
      * @param e MouseEvent to be handled
      */
     public void mouseReleased(MouseEvent e) {
-	if (Debug.debugging("mousemode")) {
-	    Debug.output(getID()+"|NavMouseMode2.mouseReleased()");
- 	}
+        if (Debug.debugging("mousemode")) {
+            Debug.output(getID()+"|NavMouseMode2.mouseReleased()");
+        }
 
-	Object obj = e.getSource();
+        Object obj = e.getSource();
 
-	if (! mouseSupport.fireMapMouseReleased(e)) {
+        if (! mouseSupport.fireMapMouseReleased(e)) {
 
-	    if (!(obj instanceof MapBean) || 
-		!autoZoom || point1 == null) return;
+            if (!(obj instanceof MapBean) || 
+                !autoZoom || point1 == null) return;
 
-	    MapBean map = (MapBean)obj;
-	    Projection projection = map.getProjection();
-	    Proj p = (Proj)projection;
+            MapBean map = (MapBean)obj;
+            Projection projection = map.getProjection();
+            Proj p = (Proj)projection;
 
-	    synchronized (this) {
-		point2 = e.getPoint();
-		int dx = Math.abs(point2.x -point1.x);
-		int dy = Math.abs(point2.y -point1.y);
+            synchronized (this) {
+                point2 = e.getPoint();
+                int dx = Math.abs(point2.x -point1.x);
+                int dy = Math.abs(point2.y -point1.y);
 
-		// Dont bother redrawing if the rectangle is too small
-		if ((dx < 5) || (dy < 5)) {
-		    // clean up the rectangle, since point2 has the old value.
-		    paintRectangle(map, point1, point2); 
+                // Dont bother redrawing if the rectangle is too small
+                if ((dx < 5) || (dy < 5)) {
+                    // clean up the rectangle, since point2 has the old value.
+                    paintRectangle(map, point1, point2); 
 
-		    // If rectangle is too small in both x and y then
-		    // recenter the map
-		    if ((dx < 5) && (dy < 5)) {
-			LatLonPoint llp = projection.inverse(e.getPoint());
+                    // If rectangle is too small in both x and y then
+                    // recenter the map
+                    if ((dx < 5) && (dy < 5)) {
+                        LatLonPoint llp = projection.inverse(e.getPoint());
 
-			boolean shift = e.isShiftDown();
-			boolean control = e.isControlDown();
-			boolean notLeftButton = (e.getModifiers() & InputEvent.BUTTON1_MASK) == 0;
-			if (control) {
-			    if (shift) {
-				p.setScale(p.getScale() * 2.0f);
-			    } else {
-				p.setScale(p.getScale() / 2.0f);
-			    }
-			}
+                        boolean shift = e.isShiftDown();
+                        boolean control = e.isControlDown();
+                        boolean notLeftButton = (e.getModifiers() & InputEvent.BUTTON1_MASK) == 0;
+                        if (control) {
+                            if (shift) {
+                                p.setScale(p.getScale() * 2.0f);
+                            } else {
+                                p.setScale(p.getScale() / 2.0f);
+                            }
+                        }
 
-			// reset the points here so the point doesn't
-			// get rendered on the repaint.
-			point1 = null;
-			point2 = null;
+                        // reset the points here so the point doesn't
+                        // get rendered on the repaint.
+                        point1 = null;
+                        point2 = null;
 
-			p.setCenter(llp);
-			map.setProjection(p);
-		    }
-		    return;
-		}
+                        p.setCenter(llp);
+                        map.setProjection(p);
+                    }
+                    return;
+                }
 
-		// Figure out the new scale
-		dx = Math.abs(point2.x - point1.x);
-		dy = Math.abs(point2.y - point1.y);
+                // Figure out the new scale
+                dx = Math.abs(point2.x - point1.x);
+                dy = Math.abs(point2.y - point1.y);
 
-		// cornerPoint 1 should be the upper left.
-		Point cornerPoint1 = new Point(point2.x < point1.x?point2.x:point1.x,
-					       point2.y < point1.y?point2.y:point1.y);
-		Point cornerPoint2 = new Point(cornerPoint1.x + 2*dx,
-					       cornerPoint1.y + 2*dy);
+                // cornerPoint 1 should be the upper left.
+                Point cornerPoint1 = new Point(point2.x < point1.x?point2.x:point1.x,
+                                               point2.y < point1.y?point2.y:point1.y);
+                Point cornerPoint2 = new Point(cornerPoint1.x + 2*dx,
+                                               cornerPoint1.y + 2*dy);
 
-		float newScale = 
-		    com.bbn.openmap.proj.ProjMath.getScale(cornerPoint1,
-							   cornerPoint2,
-							   projection);
+                float newScale = 
+                    com.bbn.openmap.proj.ProjMath.getScale(cornerPoint1,
+                                                           cornerPoint2,
+                                                           projection);
 
-		// Figure out the center of the rectangle
-		com.bbn.openmap.LatLonPoint center = 
-		    projection.inverse(point1.x, point1.y);
+                // Figure out the center of the rectangle
+                com.bbn.openmap.LatLonPoint center = 
+                    projection.inverse(point1.x, point1.y);
 
-		// Set the parameters of the projection and then set
-		// the projection of the map.  This way we save having
-		// the MapBean fire two ProjectionEvents.
-		p.setScale(newScale);
-		p.setCenter(center);
+                // Set the parameters of the projection and then set
+                // the projection of the map.  This way we save having
+                // the MapBean fire two ProjectionEvents.
+                p.setScale(newScale);
+                p.setCenter(center);
 
-		// reset the points so they don't show up in the
-		// listener paint.
-		point1 = null;
-		point2 = null;
+                // reset the points so they don't show up in the
+                // listener paint.
+                point1 = null;
+                point2 = null;
 
-		map.setProjection(p);
-	    }
-	}
+                map.setProjection(p);
+            }
+        }
     }
 
     // Mouse Motion Listener events
@@ -188,20 +188,20 @@ public class NavMouseMode2 extends NavMouseMode {
      * @param pt2 the opposite corner of the box.
      */
     protected void paintRectangle(Graphics g, Point pt1, Point pt2) {
-	g.setXORMode(java.awt.Color.lightGray);
-	g.setColor(java.awt.Color.darkGray);
+        g.setXORMode(java.awt.Color.lightGray);
+        g.setColor(java.awt.Color.darkGray);
 
-	if (pt1 != null && pt2 != null) {
+        if (pt1 != null && pt2 != null) {
 
-	    int width = Math.abs(pt2.x - pt1.x);
-	    int height = Math.abs(pt2.y - pt1.y);
+            int width = Math.abs(pt2.x - pt1.x);
+            int height = Math.abs(pt2.y - pt1.y);
 
-	    if (width == 0) width++;
-	    if (height == 0) height++;
+            if (width == 0) width++;
+            if (height == 0) height++;
 
-	    g.drawRect(pt1.x - width, pt1.y - height,
-		       width*2, height*2);
-	    g.drawRect(pt1.x - 1, pt1.y - 1, 3, 3);
-	}
+            g.drawRect(pt1.x - width, pt1.y - height,
+                       width*2, height*2);
+            g.drawRect(pt1.x - 1, pt1.y - 1, 3, 3);
+        }
     }
 }

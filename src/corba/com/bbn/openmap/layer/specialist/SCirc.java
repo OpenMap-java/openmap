@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SCirc.java,v $
 // $RCSfile: SCirc.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,73 +82,73 @@ public class SCirc extends SGraphic /* used to be _CircleImplBase */ {
     
     public SCirc() {
         super(GraphicType.GT_Circle, 
-	      RenderType.RT_Unknown, 
-	      LineType.LT_Unknown, 
-	      DeclutterType.DC_None);
+              RenderType.RT_Unknown, 
+              LineType.LT_Unknown, 
+              DeclutterType.DC_None);
         ll1_ =  new LLPoint(0f, 0f);
-	p1_ = new XYPoint((short)0, (short)0);
-	width_ = (short)0;
-	height_ = (short)0;
-	major_ = 0f;
-	minor_ = 0f;
+        p1_ = new XYPoint((short)0, (short)0);
+        width_ = (short)0;
+        height_ = (short)0;
+        major_ = 0f;
+        minor_ = 0f;
     }
   
 
     /** Lat-lon center with lat-lon axis. */
     public SCirc(LLPoint ll1, float major, float minor) {
         super(GraphicType.GT_Circle, 
-	      RenderType.RT_LatLon, 
-	      LineType.LT_Unknown, 
-	      DeclutterType.DC_None);
-	ll1_ = ll1;
-	major_ = major;
-	minor_ = minor;
-	p1_ = new XYPoint((short)0, (short)0);
-	height_ = 0;
-	width_ = 0;
+              RenderType.RT_LatLon, 
+              LineType.LT_Unknown, 
+              DeclutterType.DC_None);
+        ll1_ = ll1;
+        major_ = major;
+        minor_ = minor;
+        p1_ = new XYPoint((short)0, (short)0);
+        height_ = 0;
+        width_ = 0;
     }
 
     /** Lat-lon center with x-y axis.*/
     public SCirc(LLPoint ll1, short width, short height) {
         super(GraphicType.GT_Circle, 
-	      RenderType.RT_Offset, 
-	      LineType.LT_Unknown, 
-	      DeclutterType.DC_None);
+              RenderType.RT_Offset, 
+              LineType.LT_Unknown, 
+              DeclutterType.DC_None);
         ll1_ = ll1;
-	major_ = 0f;
-	minor_ = 0f;
-	p1_ = new XYPoint((short)0, (short)0);
-	height_ = height;
-	width_ = width;
+        major_ = 0f;
+        minor_ = 0f;
+        p1_ = new XYPoint((short)0, (short)0);
+        height_ = height;
+        width_ = width;
     }
 
     /** x-y center with x-y axis.*/
     public SCirc(short x1, short y1, short width, short height) { 
         super(GraphicType.GT_Circle, 
-	      RenderType.RT_XY, 
-	      LineType.LT_Unknown, 
-	      DeclutterType.DC_None);
+              RenderType.RT_XY, 
+              LineType.LT_Unknown, 
+              DeclutterType.DC_None);
         ll1_ = new LLPoint(0f, 0f);
-	major_ = 0;
-	minor_ = 0;
-	p1_ = new XYPoint(x1, y1);
-	width_ = width;
-	height_ = height;
+        major_ = 0;
+        minor_ = 0;
+        p1_ = new XYPoint(x1, y1);
+        width_ = width;
+        height_ = height;
     }
 
     /** Lat-lon location, x-y offset, x-y axis. */
     public SCirc(LLPoint ll1, 
-		  short offset_x1, short offset_y1, short width, short height) { 
+                  short offset_x1, short offset_y1, short width, short height) { 
         super(GraphicType.GT_Circle, 
-	      RenderType.RT_Offset, 
-	      LineType.LT_Unknown, 
-	      DeclutterType.DC_None);
+              RenderType.RT_Offset, 
+              LineType.LT_Unknown, 
+              DeclutterType.DC_None);
         ll1_ = ll1;
-	major_ = 0;
-	minor_ = 0;
-	p1_ = new XYPoint(offset_x1, offset_y1);
-	width_ = width;
-	height_ = height;
+        major_ = 0;
+        minor_ = 0;
+        p1_ = new XYPoint(offset_x1, offset_y1);
+        width_ = width;
+        height_ = height;
     }
   
   /** 
@@ -157,16 +157,16 @@ public class SCirc extends SGraphic /* used to be _CircleImplBase */ {
    */
     public SCirc(LLPoint ll1, float distance, int units) {
         super(GraphicType.GT_Circle, 
-	      RenderType.RT_LatLon, 
-	      LineType.LT_Unknown, 
-	      DeclutterType.DC_None);
+              RenderType.RT_LatLon, 
+              LineType.LT_Unknown, 
+              DeclutterType.DC_None);
         float upd = units_per_degree(units);
-	major_ = distance/upd;
-	minor_ = major_;
-	ll1_ = ll1;
-	width_ = 0;
-	height_ = 0;
-	p1_ = new XYPoint((short)0, (short)0);
+        major_ = distance/upd;
+        minor_ = major_;
+        ll1_ = ll1;
+        width_ = 0;
+        height_ = 0;
+        p1_ = new XYPoint((short)0, (short)0);
     }
 
     //HACK check what OMCircle does.  This should be changed.
@@ -174,12 +174,12 @@ public class SCirc extends SGraphic /* used to be _CircleImplBase */ {
         float kmpdeg = (Planet.wgs84_earthEquatorialRadiusMeters*2f*(float)Math.PI)/(1000f*360f);
         switch(UNITS) {
         case MILES:
-	    return kmpdeg*.6213712f;  // miles/km
+            return kmpdeg*.6213712f;  // miles/km
         case NMILES:
-	    return kmpdeg*.5399568f; // nmiles/km
+            return kmpdeg*.5399568f; // nmiles/km
         default:
-	    return kmpdeg;
-	}
+            return kmpdeg;
+        }
     }
 
     // The SCirc methods
@@ -221,61 +221,61 @@ public class SCirc extends SGraphic /* used to be _CircleImplBase */ {
     }
     public ECircle fill() {
         return new ECircle(eg, p1_, ll1_, 
-			   major_, minor_, width_, height_);
+                           major_, minor_, width_, height_);
     }
 
     public UGraphic ufill() {
         UGraphic ugraphic = new UGraphic();
-	ugraphic.ecirc(fill());
-	return ugraphic;
+        ugraphic.ecirc(fill());
+        return ugraphic;
     }
 
     public void changeP1(XYPoint p1) {
         p1_ = p1;
-	CF_update gupdate = new CF_update();
-	gupdate.p1(p1);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.cf_update(gupdate);
-	addGraphicChange(ug);
+        CF_update gupdate = new CF_update();
+        gupdate.p1(p1);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.cf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeLl1(LLPoint ll1) {
         ll1_ = ll1;
-	CF_update gupdate = new CF_update();
-	gupdate.ll1(ll1);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.cf_update(gupdate);
-	addGraphicChange(ug);
+        CF_update gupdate = new CF_update();
+        gupdate.ll1(ll1);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.cf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeMajor(float major) {
         major_ = major;
-	CF_update gupdate = new CF_update();
-	gupdate.major(major);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.cf_update(gupdate);
-	addGraphicChange(ug);
+        CF_update gupdate = new CF_update();
+        gupdate.major(major);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.cf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeMinor(float minor) {
         minor_ = minor;
-	CF_update gupdate = new CF_update();
-	gupdate.minor(minor);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.cf_update(gupdate);
-	addGraphicChange(ug);
+        CF_update gupdate = new CF_update();
+        gupdate.minor(minor);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.cf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeWidth(short width) {
         width_ = width;
-	CF_update gupdate = new CF_update();
-	gupdate.width(width);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.cf_update(gupdate);
-	addGraphicChange(ug);
+        CF_update gupdate = new CF_update();
+        gupdate.width(width);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.cf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeHeight(short height) {
         height_ = height;
-	CF_update gupdate = new CF_update();
-	gupdate.height(height);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.cf_update(gupdate);
-	addGraphicChange(ug);
+        CF_update gupdate = new CF_update();
+        gupdate.height(height);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.cf_update(gupdate);
+        addGraphicChange(ug);
     }
 }

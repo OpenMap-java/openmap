@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/db/RecordSet.java,v $
 // $RCSfile: RecordSet.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -58,7 +58,7 @@ public class RecordSet {
      * getAllQuery() before trying to iterate through the results.
      */
     public RecordSet(Connection inConnection) throws SQLException {
-	this (inConnection, null);
+        this (inConnection, null);
     }
 
     /**
@@ -67,9 +67,9 @@ public class RecordSet {
      * created.  
      */
     public RecordSet(Connection inConnection, String query) throws SQLException {
-	connection = inConnection;
-	queryString = query;
-	getAllQuery();
+        connection = inConnection;
+        queryString = query;
+        getAllQuery();
     }
     
     /** 
@@ -84,23 +84,23 @@ public class RecordSet {
      */
     public void getAllQuery() throws SQLException {
 
-	if (queryString != null && connection != null){
-	    try {		
+        if (queryString != null && connection != null){
+            try {               
 
-		if (Debug.debugging("location")){
-		    Debug.output("RecordSet calling database with query => " + 
-				 queryString);
-		}
+                if (Debug.debugging("location")){
+                    Debug.output("RecordSet calling database with query => " + 
+                                 queryString);
+                }
 
-		stmt = connection.createStatement();
-		rset = stmt.executeQuery(queryString);
-	    } catch(SQLException sqlE) {	
-		throw new SQLException(queryString + " | " + sqlE.getMessage());
-	    }
-	} else {
-	    Debug.error("Database parameters faulty!\n  query => " + queryString + 
-			"\n  connection => " + connection);
-	}
+                stmt = connection.createStatement();
+                rset = stmt.executeQuery(queryString);
+            } catch(SQLException sqlE) {        
+                throw new SQLException(queryString + " | " + sqlE.getMessage());
+            }
+        } else {
+            Debug.error("Database parameters faulty!\n  query => " + queryString + 
+                        "\n  connection => " + connection);
+        }
     }
 
     /** 
@@ -109,9 +109,9 @@ public class RecordSet {
      * object to the constructor to a new data object.  
      */
     public boolean next() throws SQLException {
-	if (rset != null){
-	    return rset.next();
-	} else return false;
+        if (rset != null){
+            return rset.next();
+        } else return false;
     }
     
     /**
@@ -123,27 +123,27 @@ public class RecordSet {
      * result set won't contain valid data, or may be null.
      */
     public ResultSet getResultSet(){
-	return rset;
+        return rset;
     }
 
-    public void close() throws SQLException {	
-	if (rset != null) rset.close();
-	if (stmt != null) stmt.close();
+    public void close() throws SQLException {   
+        if (rset != null) rset.close();
+        if (stmt != null) stmt.close();
     }
     
     public Connection getConnection(){
-	return connection;
+        return connection;
     }
     
     public void setConnection(Connection inConnection){
-	connection = inConnection;
+        connection = inConnection;
     }
     
     public String getQueryString(){
-	return queryString;
+        return queryString;
     }
     
     public void setQueryString(String inQueryString){
-	queryString = inQueryString;
+        queryString = inQueryString;
     }
 }

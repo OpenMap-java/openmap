@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwThematicIndex.java,v $
 // $RCSfile: DcwThematicIndex.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/24 13:44:32 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:12 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -68,28 +68,28 @@ public class DcwThematicIndex {
      */
     public static class IndexRecord implements Comparable {
         /** the index (code) */
-	final Object index;
+        final Object index;
         /** the offset of the data */
-	final int offset;
+        final int offset;
         /** the number of values - 0 means the offset is the only value */
-	final int numvals;
+        final int numvals;
         /**
-	 * Construct an index record
-	 * @param index the index object
-	 * @param offset the offset of the data
-	 * @param numvals the number of values
-	 */
-	public IndexRecord(Object index, int offset, int numvals) {
-	    this.index = index;
-	    this.offset = offset;
-	    this.numvals = numvals;
-	}
+         * Construct an index record
+         * @param index the index object
+         * @param offset the offset of the data
+         * @param numvals the number of values
+         */
+        public IndexRecord(Object index, int offset, int numvals) {
+            this.index = index;
+            this.offset = offset;
+            this.numvals = numvals;
+        }
 
         public int compareTo(Object obj) {
-	    Object realobj = (obj instanceof IndexRecord) ?
-	      ((IndexRecord)obj).index : obj;
-	    return ((Comparable)index).compareTo(realobj);
-	}
+            Object realobj = (obj instanceof IndexRecord) ?
+              ((IndexRecord)obj).index : obj;
+            return ((Comparable)index).compareTo(realobj);
+        }
     }
 
     /**
@@ -98,8 +98,8 @@ public class DcwThematicIndex {
      * @param border the byteorder
      */
     public DcwThematicIndex(String filename, boolean border)
-	throws FormatException {
-	this(filename, border, false);
+        throws FormatException {
+        this(filename, border, false);
     }
 
 
@@ -112,96 +112,96 @@ public class DcwThematicIndex {
      * header field (sorted).  true will improperly read old-style data.
      */
     public DcwThematicIndex(String filename, boolean border, boolean vpf2407)
-	throws FormatException {
+        throws FormatException {
 
-	this.filename = filename;
-	byteOrder = border;
+        this.filename = filename;
+        byteOrder = border;
 
-	reopen(0);
+        reopen(0);
 
-	if (Debug.debugging("vpfserver")) {
-	    System.out.println("DTI: opened the file " + filename);
-	}
+        if (Debug.debugging("vpfserver")) {
+            System.out.println("DTI: opened the file " + filename);
+        }
 
-	try {
-	    headerSize = inputFile.readInteger();
-	    numberOfCodes = inputFile.readInteger();
-	    numberOfRows = inputFile.readInteger();
-	    typeOfIndex = inputFile.readChar();
-	    fieldTypeOfIndex = inputFile.readChar();
-	    numberOfDataElement = inputFile.readInteger();
-	    dataTypeSpecifier = inputFile.readChar();
-	    tableIndexed = trim(inputFile.readFixedLengthString(12)).toLowerCase();
-	    columnIndexed = trim(inputFile.readFixedLengthString(25)).toLowerCase();
-	    sorted = (inputFile.readChar() == 'S') && vpf2407;
-	    inputFile.seek(60); //skips 3 unused bytes
+        try {
+            headerSize = inputFile.readInteger();
+            numberOfCodes = inputFile.readInteger();
+            numberOfRows = inputFile.readInteger();
+            typeOfIndex = inputFile.readChar();
+            fieldTypeOfIndex = inputFile.readChar();
+            numberOfDataElement = inputFile.readInteger();
+            dataTypeSpecifier = inputFile.readChar();
+            tableIndexed = trim(inputFile.readFixedLengthString(12)).toLowerCase();
+            columnIndexed = trim(inputFile.readFixedLengthString(25)).toLowerCase();
+            sorted = (inputFile.readChar() == 'S') && vpf2407;
+            inputFile.seek(60); //skips 3 unused bytes
 
-	    indexData = new IndexRecord[numberOfCodes];
+            indexData = new IndexRecord[numberOfCodes];
     
-	    if (Debug.debugging("vpfserver")) {
-		System.out.println("HeaderSize = " + headerSize);
-		System.out.println("Number of Codes = " + numberOfCodes);
-		System.out.println("Number of Rows = " + numberOfRows);
-		System.out.println("Type of Index = " + typeOfIndex);
-//  		if (typeOfIndex != 'T') 
-//  		    System.out.println(" *** Strange - dcw spec says it will be T ***");
-		System.out.println("Field Type of Index = " + fieldTypeOfIndex);
-		System.out.println("Number of Data Element = " + numberOfDataElement);
-		System.out.println("Data Type Specifier = " + dataTypeSpecifier);
-		System.out.println("Table Indexed  = " + tableIndexed);
-		System.out.println("Column Indexed = " + columnIndexed);
-		System.out.println("Sorted = " + sorted);
-	    }
+            if (Debug.debugging("vpfserver")) {
+                System.out.println("HeaderSize = " + headerSize);
+                System.out.println("Number of Codes = " + numberOfCodes);
+                System.out.println("Number of Rows = " + numberOfRows);
+                System.out.println("Type of Index = " + typeOfIndex);
+//              if (typeOfIndex != 'T') 
+//                  System.out.println(" *** Strange - dcw spec says it will be T ***");
+                System.out.println("Field Type of Index = " + fieldTypeOfIndex);
+                System.out.println("Number of Data Element = " + numberOfDataElement);
+                System.out.println("Data Type Specifier = " + dataTypeSpecifier);
+                System.out.println("Table Indexed  = " + tableIndexed);
+                System.out.println("Column Indexed = " + columnIndexed);
+                System.out.println("Sorted = " + sorted);
+            }
 
-	    StringBuffer pr = new StringBuffer();
-	    for (int i = 0; i < numberOfCodes; i++) {
-		indexData[i] = new IndexRecord(readIndexField(fieldTypeOfIndex, numberOfDataElement),
-					       inputFile.readInteger(),
-					       inputFile.readInteger());
+            StringBuffer pr = new StringBuffer();
+            for (int i = 0; i < numberOfCodes; i++) {
+                indexData[i] = new IndexRecord(readIndexField(fieldTypeOfIndex, numberOfDataElement),
+                                               inputFile.readInteger(),
+                                               inputFile.readInteger());
 
-		if (Debug.debugging("vpfserver")) {
-		    pr = new StringBuffer("i = " + i);
-		    pr.append("; val = " + indexData[i].index.toString());
-		    pr.append("; offset = " + indexData[i].offset);
-		    pr.append("; number of elts = " + indexData[i].numvals);
-		    if (i < 40) {
-			System.out.println(pr.toString());
-		    }
-		}
-	    }
-	    
-	    if (!sorted) {
-	        Arrays.sort(indexData);
-	    }
+                if (Debug.debugging("vpfserver")) {
+                    pr = new StringBuffer("i = " + i);
+                    pr.append("; val = " + indexData[i].index.toString());
+                    pr.append("; offset = " + indexData[i].offset);
+                    pr.append("; number of elts = " + indexData[i].numvals);
+                    if (i < 40) {
+                        System.out.println(pr.toString());
+                    }
+                }
+            }
+            
+            if (!sorted) {
+                Arrays.sort(indexData);
+            }
 
-	    if (Debug.debugging("vpfserver") && (numberOfCodes > 40)) {
-		System.out.println(pr.toString());
-	    }
+            if (Debug.debugging("vpfserver") && (numberOfCodes > 40)) {
+                System.out.println(pr.toString());
+            }
 
-	    Debug.message("vpfserver", "*** Finished Header Read ***");
+            Debug.message("vpfserver", "*** Finished Header Read ***");
 
-	    if (Debug.debugging("vpfserver")) {
-		if ((typeOfIndex == 'T') || (typeOfIndex == 'I')) {
-		    Debug.output("Normal Inverted Index Format");
-		} else if ((typeOfIndex == 'B') || (typeOfIndex == 'G')) {
-		    Debug.output("Scary Bitmap Index Format");
-		} else {
-		    throw new FormatException("Unidentied TMI format");
-		}
+            if (Debug.debugging("vpfserver")) {
+                if ((typeOfIndex == 'T') || (typeOfIndex == 'I')) {
+                    Debug.output("Normal Inverted Index Format");
+                } else if ((typeOfIndex == 'B') || (typeOfIndex == 'G')) {
+                    Debug.output("Scary Bitmap Index Format");
+                } else {
+                    throw new FormatException("Unidentied TMI format");
+                }
 
-		Object[] indexes = getValueIndexes();
-		// We just know that these values are tile IDs.
-		for (int j = 0; j < indexes.length; j++ ) {
-		    int[] row = get(indexes[j]);
-		    // If you want to do some scary printout, code it up here.
-		}
-	    }
-	    close();
-	} catch (EOFException e) {
-	    throw new FormatException("Hit Premature EOF in thematic index");
-	} catch (IOException i) {
-	    throw new FormatException("Encountered IO Exception: " + i.getMessage());
-	}
+                Object[] indexes = getValueIndexes();
+                // We just know that these values are tile IDs.
+                for (int j = 0; j < indexes.length; j++ ) {
+                    int[] row = get(indexes[j]);
+                    // If you want to do some scary printout, code it up here.
+                }
+            }
+            close();
+        } catch (EOFException e) {
+            throw new FormatException("Hit Premature EOF in thematic index");
+        } catch (IOException i) {
+            throw new FormatException("Encountered IO Exception: " + i.getMessage());
+        }
     }
 
     /**
@@ -209,16 +209,16 @@ public class DcwThematicIndex {
      * @return the set of values indexed
      */
     public Object[] getValueIndexes() {
-	Object[] values = null;
+        Object[] values = null;
 
-	if (indexData != null) {
-	    values = new Object[indexData.length];
+        if (indexData != null) {
+            values = new Object[indexData.length];
 
-	    for (int i = 0; i < indexData.length; i++) {
-		values[i] = indexData[i].index;
-	    }
-	}
-	return values;
+            for (int i = 0; i < indexData.length; i++) {
+                values[i] = indexData[i].index;
+            }
+        }
+        return values;
     }
 
     /**
@@ -227,75 +227,75 @@ public class DcwThematicIndex {
      * @param valueIndex the value to look up
      */
     public synchronized int[] get(Object valueIndex) throws FormatException {
-	int[] values = null;
+        int[] values = null;
 
-	try {
-	    int index = Arrays.binarySearch(indexData, valueIndex);
-	    if (index >= 0) {
- 	        IndexRecord ir = indexData[index];
-		int offset = ir.offset;
-		int numvals = ir.numvals;
-			
-		if ((typeOfIndex == 'T') || (typeOfIndex == 'I')) {
-		    if (numvals == 0) {
-		        values = new int[1];
-			values[0] = offset;
-		    } else {
-		        values = new int[numvals];
-			reopen(offset);
-			
-			for (int j = 0; j < numvals; j++) {
-			    values[j] = readIndexWithFieldType(dataTypeSpecifier);
-			}
-		    }
-			    
-		    return values;
+        try {
+            int index = Arrays.binarySearch(indexData, valueIndex);
+            if (index >= 0) {
+                IndexRecord ir = indexData[index];
+                int offset = ir.offset;
+                int numvals = ir.numvals;
+                        
+                if ((typeOfIndex == 'T') || (typeOfIndex == 'I')) {
+                    if (numvals == 0) {
+                        values = new int[1];
+                        values[0] = offset;
+                    } else {
+                        values = new int[numvals];
+                        reopen(offset);
+                        
+                        for (int j = 0; j < numvals; j++) {
+                            values[j] = readIndexWithFieldType(dataTypeSpecifier);
+                        }
+                    }
+                            
+                    return values;
 
-		} else if ((typeOfIndex == 'B') || (typeOfIndex == 'G')) {
-		    // Don't really do anything with this type of index...
+                } else if ((typeOfIndex == 'B') || (typeOfIndex == 'G')) {
+                    // Don't really do anything with this type of index...
 
-		    int shortread = numberOfRows / 16;
-		    if ((numberOfRows % 16) != 0) {
-		        shortread++;
-		    }
-		    if (Debug.debugging("vpfserver")) {
-		        System.out.println("Reading a bunch of shorts: " + shortread);
-			System.out.println("Starting at offset: " + 
-					   inputFile.getFilePointer());
-		    }
+                    int shortread = numberOfRows / 16;
+                    if ((numberOfRows % 16) != 0) {
+                        shortread++;
+                    }
+                    if (Debug.debugging("vpfserver")) {
+                        System.out.println("Reading a bunch of shorts: " + shortread);
+                        System.out.println("Starting at offset: " + 
+                                           inputFile.getFilePointer());
+                    }
 
-		    BitSet bits = new BitSet(numberOfRows);
-		    int cnt = 0;
-		    for (int shortcnt = 0; shortcnt < shortread; shortcnt++) {
-		        short s = inputFile.readShort();
+                    BitSet bits = new BitSet(numberOfRows);
+                    int cnt = 0;
+                    for (int shortcnt = 0; shortcnt < shortread; shortcnt++) {
+                        short s = inputFile.readShort();
 
-			for (int k = 0; k < 16; k++) {
-			    cnt++;
-			    if ((s & 0x1) == 1) {
-			        bits.set(cnt);
-			    }
-			    s >>= 1;
-			}
-		    }
-		    StringBuffer prt = new StringBuffer();
-		    for (int j = 1; j <= bits.size(); j++) {
-		        if (bits.get(j)) {
-			    prt.append(", " + j);
-			}
-		    }
-		    System.out.println(prt);
+                        for (int k = 0; k < 16; k++) {
+                            cnt++;
+                            if ((s & 0x1) == 1) {
+                                bits.set(cnt);
+                            }
+                            s >>= 1;
+                        }
+                    }
+                    StringBuffer prt = new StringBuffer();
+                    for (int j = 1; j <= bits.size(); j++) {
+                        if (bits.get(j)) {
+                            prt.append(", " + j);
+                        }
+                    }
+                    System.out.println(prt);
 
-		} else {
-		    throw new FormatException("Unidentied TMI format");
-		}
-	    }
-	} catch (EOFException e) {
-	    throw new FormatException("Hit Premature EOF in thematic index");
-	} catch (IOException i) {
-	    throw new FormatException("Encountered IO Exception: " + i.getMessage());
-	}
+                } else {
+                    throw new FormatException("Unidentied TMI format");
+                }
+            }
+        } catch (EOFException e) {
+            throw new FormatException("Hit Premature EOF in thematic index");
+        } catch (IOException i) {
+            throw new FormatException("Encountered IO Exception: " + i.getMessage());
+        }
 
-	return values;
+        return values;
     }
 
     /**
@@ -304,43 +304,43 @@ public class DcwThematicIndex {
      * @returns the value read from the file
      */
     private int readIndexWithFieldType(char ft)
-	throws EOFException, FormatException {
-	switch (ft) {
-	case 'S':
-	    return (int)inputFile.readShort();
-	case 'I':
-	    return inputFile.readInteger();
-	}
-	throw new FormatException("Unrecognized FieldTypeOfIndex");
+        throws EOFException, FormatException {
+        switch (ft) {
+        case 'S':
+            return (int)inputFile.readShort();
+        case 'I':
+            return inputFile.readInteger();
+        }
+        throw new FormatException("Unrecognized FieldTypeOfIndex");
     }
 
     private Object readIndexField(char dts, int textlen)
-	throws EOFException, FormatException {
-	switch (dts) {
-	case 'I':
-	    return new Integer(inputFile.readInteger());
-	case 'T':
-	    return inputFile.readFixedLengthString(textlen);
-	case 'S':
-	    return new Short(inputFile.readShort());
-	case 'F':
-	    return new Float(inputFile.readFloat());
-	case 'R':
-	    return new Double(inputFile.readDouble());
-	}
-	throw new FormatException("Unrecognized field index type");
+        throws EOFException, FormatException {
+        switch (dts) {
+        case 'I':
+            return new Integer(inputFile.readInteger());
+        case 'T':
+            return inputFile.readFixedLengthString(textlen);
+        case 'S':
+            return new Short(inputFile.readShort());
+        case 'F':
+            return new Float(inputFile.readFloat());
+        case 'R':
+            return new Double(inputFile.readDouble());
+        }
+        throw new FormatException("Unrecognized field index type");
     }
 
     private String trim(String s) {
-	StringBuffer ns = new StringBuffer();
-	char foo[] = s.toCharArray();
-	for (int i = 0; i < foo.length; i++) {
-	    if ((foo[i] == ' ') || (foo[i] == 0)) {
-		break;
-	    }
-	    ns.append(foo[i]);
-	}
-	return ns.toString();
+        StringBuffer ns = new StringBuffer();
+        char foo[] = s.toCharArray();
+        for (int i = 0; i < foo.length; i++) {
+            if ((foo[i] == ' ') || (foo[i] == 0)) {
+                break;
+            }
+            ns.append(foo[i]);
+        }
+        return ns.toString();
     }
 
     /**
@@ -408,20 +408,20 @@ public class DcwThematicIndex {
     }
 
     public boolean getSorted() {
-	return sorted;
+        return sorted;
     }
 
     /** Closes the associated input file. (may later get reopened) */
     public synchronized void close() throws FormatException {
-	try {
-	    if (inputFile != null) {
-		inputFile.close();
-	    }
-	    inputFile = null;
-	} catch (IOException i) {
-	    throw new FormatException("DcwThematicIndex: Can't close file " + 
-				      filename + ": " + i.getMessage());
-	}
+        try {
+            if (inputFile != null) {
+                inputFile.close();
+            }
+            inputFile = null;
+        } catch (IOException i) {
+            throw new FormatException("DcwThematicIndex: Can't close file " + 
+                                      filename + ": " + i.getMessage());
+        }
     }
 
     /**
@@ -434,18 +434,18 @@ public class DcwThematicIndex {
      * @see #close()
      */
     public synchronized void reopen(int offset) throws FormatException {
-	try {
-	    if (inputFile == null) {
-		inputFile = new BinaryBufferedFile(filename);
-		inputFile.byteOrder(byteOrder);
-	    }
-	    if (offset > 0) {
-		inputFile.seek(offset);
-	    }
-	} catch (IOException i) {
-	    throw new FormatException("DcwThematicIndex: Can't open file " + 
-				      filename + ": " + i.getMessage());
-	}
+        try {
+            if (inputFile == null) {
+                inputFile = new BinaryBufferedFile(filename);
+                inputFile.byteOrder(byteOrder);
+            }
+            if (offset > 0) {
+                inputFile.seek(offset);
+            }
+        } catch (IOException i) {
+            throw new FormatException("DcwThematicIndex: Can't open file " + 
+                                      filename + ": " + i.getMessage());
+        }
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProgressSupport.java,v $
 // $RCSfile: ProgressSupport.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/08 21:29:17 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,8 +39,8 @@ public class ProgressSupport extends ListenerSupport {
      * @param sourceBean  The bean to be given as the source for any events.
      */
     public ProgressSupport(Object sourceBean) {
-	super(sourceBean);
-	Debug.message("progresssupport","ProgressSupport | ProgressSupport");
+        super(sourceBean);
+        Debug.message("progresssupport","ProgressSupport | ProgressSupport");
     }
 
     /**
@@ -49,7 +49,7 @@ public class ProgressSupport extends ListenerSupport {
      * @param listener  The ProgressListener to be added
      */
     public void addProgressListener(ProgressListener listener) {
-	addListener(listener);
+        addListener(listener);
     }
 
     /**
@@ -58,7 +58,7 @@ public class ProgressSupport extends ListenerSupport {
      * @param listener  The ProgressListener to be removed
      */
     public void removeProgressListener(ProgressListener listener) {
-	removeListener(listener);
+        removeListener(listener);
     }
 
     /**
@@ -69,25 +69,25 @@ public class ProgressSupport extends ListenerSupport {
      * @param currentValue the currentValue
      */
     public void fireUpdate(int type, String taskname,
-			   float finishedValue, 
-			   float currentValue) {
-	Debug.message("progresssupport","ProgressSupport | fireUpdate");
+                           float finishedValue, 
+                           float currentValue) {
+        Debug.message("progresssupport","ProgressSupport | fireUpdate");
 
 
-	boolean DEBUG = Debug.debugging("progresssupport");
+        boolean DEBUG = Debug.debugging("progresssupport");
 
-	if (DEBUG) {
-	    Debug.output("ProgressSupport | fireUpdate has " + size() + " listeners");
-	}
+        if (DEBUG) {
+            Debug.output("ProgressSupport | fireUpdate has " + size() + " listeners");
+        }
 
-	if (size() == 0) return;
+        if (size() == 0) return;
 
         ProgressEvent evt = new ProgressEvent(source, type, taskname,
-					      finishedValue, currentValue);
+                                              finishedValue, currentValue);
 
-	Iterator it = iterator();
-	while (it.hasNext()) {
-	    ((ProgressListener)it.next()).updateProgress(evt);
-	}
+        Iterator it = iterator();
+        while (it.hasNext()) {
+            ((ProgressListener)it.next()).updateProgress(evt);
+        }
     }
 }

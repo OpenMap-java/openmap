@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/Attic/ElevationMBandGenerator.java,v $
 // $RCSfile: ElevationMBandGenerator.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/17 00:22:34 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,7 +53,7 @@ public class ElevationMBandGenerator extends SimpleColorGenerator {
     protected int bandHeight = DEFAULT_BANDHEIGHT; // meters
 
     public ElevationMBandGenerator() {
-	setColortable(createGreyscaleColors(216, 255));
+        setColortable(createGreyscaleColors(216, 255));
     }
 
     /** 
@@ -66,57 +66,57 @@ public class ElevationMBandGenerator extends SimpleColorGenerator {
      * @return the ARGB to color the pixel.  
      */
     public int calibratePointValue(int source) {
-	if (source < -500) {
-	    return 0; // clear, nothing is that low...
-	}
+        if (source < -500) {
+            return 0; // clear, nothing is that low...
+        }
 
-	if (source == 0) {
-	    return colors[0]; // water blue, assumed.
-	}
+        if (source == 0) {
+            return colors[0]; // water blue, assumed.
+        }
 
-	// I'm not really sure how all this works out - I wrote it a
-	// while ago, and it works, so I'm leaving well enough alone.
-	// Some notes from before:
+        // I'm not really sure how all this works out - I wrote it a
+        // while ago, and it works, so I'm leaving well enough alone.
+        // Some notes from before:
 
-	// Start at the darkest color, and then go up through the
-	// colormap for each band height, the start back at the
-	// darkest when you get to the last color.  To make this
-	// more useful, I limit the number of colors (10) used - if
-	// there isn;t enough contrast between the colors, you can't
-	// see the bands.  The contrast adjustment in 24-bit color
-	// mode(216 colors) lets you add a few colors.
-	int assignment = (int)(((source/bandHeight)%(10-2*(3-adjust))*
-				(colors.length/(10-2*(3-adjust)))) + 6);
+        // Start at the darkest color, and then go up through the
+        // colormap for each band height, the start back at the
+        // darkest when you get to the last color.  To make this
+        // more useful, I limit the number of colors (10) used - if
+        // there isn;t enough contrast between the colors, you can't
+        // see the bands.  The contrast adjustment in 24-bit color
+        // mode(216 colors) lets you add a few colors.
+        int assignment = (int)(((source/bandHeight)%(10-2*(3-adjust))*
+                                (colors.length/(10-2*(3-adjust)))) + 6);
 
-	return colors[assignment];
+        return colors[assignment];
     }
 
     public void setColortable(int[] colors) {
-	this.colors = colors;
+        this.colors = colors;
     }
 
     public int[] getColortable() {
-	return colors;
+        return colors;
     }
 
     public void setBandHeight(int height) {
-	if (height <= 0) 
-	    height = DEFAULT_BANDHEIGHT;
-	bandHeight = height;
+        if (height <= 0) 
+            height = DEFAULT_BANDHEIGHT;
+        bandHeight = height;
     }
 
     public int getBandHeight() {
-	return bandHeight;
+        return bandHeight;
     }
 
     public void setAdjust(int value) {
-	if (value <= 0 || value > 5) 
-	    value = DEFAULT_ADJUST;
-	adjust = value;
+        if (value <= 0 || value > 5) 
+            value = DEFAULT_ADJUST;
+        adjust = value;
     }
 
     public int getAdjust() {
-	return adjust;
+        return adjust;
     }
 }
 

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjMath.java,v $
 // $RCSfile: ProjMath.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:57 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:14 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -89,7 +89,7 @@ public final class ProjMath {
      * @see #qint(double)
      */
     final public static double roundAdjust(double x) {
-	return qint_old(x);
+        return qint_old(x);
     }
 
 
@@ -99,16 +99,16 @@ public final class ProjMath {
      * @return double
      */
     final public static double qint(double x) {
-	return qint_new(x);
+        return qint_new(x);
     }
 
 
     final private static double qint_old(double x) {
-	return (((int) x) < 0) ? (x - 0.5) : (x + 0.5);
+        return (((int) x) < 0) ? (x - 0.5) : (x + 0.5);
     }
     final private static double qint_new(double x) {
-	// -1 or +1 away from zero
-	return (x <= 0.0) ? (x - 1.0) : (x + 1.0);
+        // -1 or +1 away from zero
+        return (x <= 0.0) ? (x - 1.0) : (x + 1.0);
     }
 
 
@@ -119,11 +119,11 @@ public final class ProjMath {
      * @return float distance
      */
     final public static float lonDistance(float lon1, float lon2) {
-	return (float)Math.min(
-	    Math.abs(lon1-lon2),
-	    ((lon1 < 0) ? lon1+Math.PI : Math.PI-lon1) +
-	    ((lon2 < 0) ? lon2+Math.PI : Math.PI-lon2)
-	    );
+        return (float)Math.min(
+            Math.abs(lon1-lon2),
+            ((lon1 < 0) ? lon1+Math.PI : Math.PI-lon1) +
+            ((lon2 < 0) ? lon2+Math.PI : Math.PI-lon2)
+            );
     }
 
     /**
@@ -133,7 +133,7 @@ public final class ProjMath {
      *
      */
     final public static long DEG_TO_SC(double deg) {
-	return (long) (deg * 3600000);
+        return (long) (deg * 3600000);
     }
 
 
@@ -143,7 +143,7 @@ public final class ProjMath {
      * @return double decimal degrees
      */
     final public static double SC_TO_DEG(int sc) {
-	return ((double)(sc) / (60.0 * 60.0 * 1000.0));
+        return ((double)(sc) / (60.0 * 60.0 * 1000.0));
     }
 
 
@@ -153,7 +153,7 @@ public final class ProjMath {
      * @return double decimal degrees
      */
     final public static double radToDeg(double rad) {
-	return (rad * (180.0d / Math.PI));
+        return (rad * (180.0d / Math.PI));
     }
 
 
@@ -163,7 +163,7 @@ public final class ProjMath {
      * @return float decimal degrees
      */
     final public static float radToDeg(float rad) {
-	return (rad * (180.0f / (float)Math.PI));
+        return (rad * (180.0f / (float)Math.PI));
     }
 
 
@@ -173,7 +173,7 @@ public final class ProjMath {
      * @return double radians
      */
     final public static double degToRad(double deg) {
-	return (deg * (Math.PI / 180.0d));
+        return (deg * (Math.PI / 180.0d));
     }
 
 
@@ -183,7 +183,7 @@ public final class ProjMath {
      * @return float radians
      */
     final public static float degToRad(float deg) {
-	return (deg * ((float)Math.PI / 180.0f));
+        return (deg * ((float)Math.PI / 180.0f));
     }
 
 
@@ -195,11 +195,11 @@ public final class ProjMath {
      *
      */
     final public static int hashLatLon(float lat, float lon) {
-	if (lat == -0f) lat = 0f;//handle negative zero (anything else?)
-	if (lon == -0f) lon = 0f;
-	int tmp = Float.floatToIntBits(lat);
-	int hash = (tmp<<5) | (tmp>>27);//rotate the lat bits
-	return hash ^ Float.floatToIntBits(lon);//XOR with lon
+        if (lat == -0f) lat = 0f;//handle negative zero (anything else?)
+        if (lon == -0f) lon = 0f;
+        int tmp = Float.floatToIntBits(lat);
+        int hash = (tmp<<5) | (tmp>>27);//rotate the lat bits
+        return hash ^ Float.floatToIntBits(lon);//XOR with lon
     }
 
 
@@ -210,10 +210,10 @@ public final class ProjMath {
      * @return float[] lat/lons in radians
      */
     final public static float[] arrayDegToRad(float[] degs) {
-	for (int i=0; i<degs.length; i++) {
-	    degs[i] = degToRad(degs[i]);
-	}
-	return degs;
+        for (int i=0; i<degs.length; i++) {
+            degs[i] = degToRad(degs[i]);
+        }
+        return degs;
     }
 
 
@@ -224,10 +224,10 @@ public final class ProjMath {
      * @return float[] lat/lons in decimal degrees
      */
     final public static float[] arrayRadToDeg(float[] rads) {
-	for (int i=0; i<rads.length; i++) {
-	    rads[i] = radToDeg(rads[i]);
-	}
-	return rads;
+        for (int i=0; i<rads.length; i++) {
+            rads[i] = radToDeg(rads[i]);
+        }
+        return rads;
     }
 
 
@@ -238,10 +238,10 @@ public final class ProjMath {
      * @return double[] lat/lons in radians
      */
     final public static double[] arrayDegToRad(double[] degs) {
-	for (int i=0; i<degs.length; i++) {
-	    degs[i] = degToRad(degs[i]);
-	}
-	return degs;
+        for (int i=0; i<degs.length; i++) {
+            degs[i] = degToRad(degs[i]);
+        }
+        return degs;
     }
 
 
@@ -252,10 +252,10 @@ public final class ProjMath {
      * @return double[] lat/lons in decimal degrees
      */
     final public static double[] arrayRadToDeg(double[] rads) {
-	for (int i=0; i<rads.length; i++) {
-	    rads[i] = radToDeg(rads[i]);
-	}
-	return rads;
+        for (int i=0; i<rads.length; i++) {
+            rads[i] = radToDeg(rads[i]);
+        }
+        return rads;
     }
 
 
@@ -270,12 +270,12 @@ public final class ProjMath {
      */
     public final static float normalize_latitude(float lat, float epsilon)
     {
-	if (lat > NORTH_POLE_F-epsilon) {
-	    return NORTH_POLE_F-epsilon;
-	} else if (lat < SOUTH_POLE_F+epsilon) {
-	    return SOUTH_POLE_F+epsilon;
-	}
-	return lat;
+        if (lat > NORTH_POLE_F-epsilon) {
+            return NORTH_POLE_F-epsilon;
+        } else if (lat < SOUTH_POLE_F+epsilon) {
+            return SOUTH_POLE_F+epsilon;
+        }
+        return lat;
     }
 
 
@@ -290,12 +290,12 @@ public final class ProjMath {
      */
     public final static double normalize_latitude(double lat, double epsilon)
     {
-	if (lat > NORTH_POLE_D-epsilon) {
-	    return NORTH_POLE_D-epsilon;
-	} else if (lat < SOUTH_POLE_D+epsilon) {
-	    return SOUTH_POLE_D+epsilon;
-	}
-	return lat;
+        if (lat > NORTH_POLE_D-epsilon) {
+            return NORTH_POLE_D-epsilon;
+        } else if (lat < SOUTH_POLE_D+epsilon) {
+            return SOUTH_POLE_D+epsilon;
+        }
+        return lat;
     }
 
 
@@ -306,12 +306,12 @@ public final class ProjMath {
      * @see com.bbn.openmap.LatLonPoint#wrap_longitude(float)
      */
     public final static float wrap_longitude(float lon) {
-	if ((lon < -DATELINE_F) || (lon > DATELINE_F)) {
-	    lon += DATELINE_F;
-	    lon = (lon % LON_RANGE_F);
-	    lon += (lon < 0) ? DATELINE_F : -DATELINE_F;
-	}
-	return lon;
+        if ((lon < -DATELINE_F) || (lon > DATELINE_F)) {
+            lon += DATELINE_F;
+            lon = (lon % LON_RANGE_F);
+            lon += (lon < 0) ? DATELINE_F : -DATELINE_F;
+        }
+        return lon;
     }
 
 
@@ -322,12 +322,12 @@ public final class ProjMath {
      * @see #wrap_longitude(float)
      */
     public final static double wrap_longitude(double lon) {
-	if ((lon < -DATELINE_D) || (lon > DATELINE_D)) {
-	    lon += DATELINE_D;
-	    lon = (lon % LON_RANGE_D);
-	    lon += (lon < 0) ? DATELINE_D : -DATELINE_D;
-	}
-	return lon;
+        if ((lon < -DATELINE_D) || (lon > DATELINE_D)) {
+            lon += DATELINE_D;
+            lon = (lon % LON_RANGE_D);
+            lon += (lon < 0) ? DATELINE_D : -DATELINE_D;
+        }
+        return lon;
     }
 
 
@@ -341,9 +341,9 @@ public final class ProjMath {
      * @return float decimal degrees
      */
     final public static float sphericalUnitsToDeg(
-	    float u, float uCircumference)
+            float u, float uCircumference)
     {
-	return 360f*(u/uCircumference);
+        return 360f*(u/uCircumference);
     }
 
 
@@ -357,9 +357,9 @@ public final class ProjMath {
      * @return float arc radians
      */
     final public static float sphericalUnitsToRad(
-	    float u, float uCircumference)
+            float u, float uCircumference)
     {
-	return MoreMath.TWO_PI*(u/uCircumference);
+        return MoreMath.TWO_PI*(u/uCircumference);
     }
 
 
@@ -380,8 +380,8 @@ public final class ProjMath {
      * @see #geographic_latitude
      */
     public final static float geocentric_latitude(float lat, float flat) {
-	float f = 1.0f - flat;
-	return (float)Math.atan((f*f) * (float)Math.tan(lat));
+        float f = 1.0f - flat;
+        return (float)Math.atan((f*f) * (float)Math.tan(lat));
     }
 
 
@@ -395,8 +395,8 @@ public final class ProjMath {
      * @see #geocentric_latitude
      */
     public final static float geographic_latitude(float lat, float flat) {
-	float f = 1.0f - flat;
-	return (float)Math.atan((float)Math.tan(lat) / (f*f));
+        float f = 1.0f - flat;
+        return (float)Math.atan((float)Math.tan(lat) / (f*f));
     }
 
     /**
@@ -410,16 +410,16 @@ public final class ProjMath {
      * parameters, like map width and map height.
      */
     public static float getScale(com.bbn.openmap.LatLonPoint ll1, 
-				 com.bbn.openmap.LatLonPoint ll2, 
-				 Projection projection) {
-	if (projection == null) {
-	    return Float.MAX_VALUE;
-	}
+                                 com.bbn.openmap.LatLonPoint ll2, 
+                                 Projection projection) {
+        if (projection == null) {
+            return Float.MAX_VALUE;
+        }
 
-	java.awt.Point point1 = projection.forward(ll1);
-	java.awt.Point point2 = projection.forward(ll2);
+        java.awt.Point point1 = projection.forward(ll1);
+        java.awt.Point point2 = projection.forward(ll2);
 
-	return getScale(ll1, ll2, point1, point2, projection);
+        return getScale(ll1, ll2, point1, point2, projection);
     }
 
     /**
@@ -437,17 +437,17 @@ public final class ProjMath {
      * parameters, like map width and map height.
      */
     public static float getScale(java.awt.Point point1,
-				 java.awt.Point point2,
-				 Projection projection) {
-	
-	if (projection == null) {
-	    return Float.MAX_VALUE;
-	}
+                                 java.awt.Point point2,
+                                 Projection projection) {
+        
+        if (projection == null) {
+            return Float.MAX_VALUE;
+        }
 
-	com.bbn.openmap.LatLonPoint ll1 = projection.inverse(point1);
-	com.bbn.openmap.LatLonPoint ll2 = projection.inverse(point2);
-	
-	return getScale(ll1, ll2, point1, point2, projection);
+        com.bbn.openmap.LatLonPoint ll1 = projection.inverse(point1);
+        com.bbn.openmap.LatLonPoint ll2 = projection.inverse(point2);
+        
+        return getScale(ll1, ll2, point1, point2, projection);
     }
 
     /**
@@ -467,34 +467,34 @@ public final class ProjMath {
      * scale for, for projection type and height and width.
      */
     protected static float getScale(com.bbn.openmap.LatLonPoint ll1, 
-				    com.bbn.openmap.LatLonPoint ll2, 
-				    java.awt.Point point1,
-				    java.awt.Point point2,
-				    Projection projection) {
+                                    com.bbn.openmap.LatLonPoint ll2, 
+                                    java.awt.Point point1,
+                                    java.awt.Point point2,
+                                    Projection projection) {
 
-	return projection.getScale(ll1, ll2, point1, point2);
+        return projection.getScale(ll1, ll2, point1, point2);
     }
 
     /*
     public static void main(String[] args) {
-	float degs = sphericalUnitsToRad(
-		Planet.earthEquatorialRadius/2,
-		Planet.earthEquatorialRadius);
-	Debug.output("degs = " + degs);
-	float LAT_DEC_RANGE = 90.0f;
-	float LON_DEC_RANGE = 360.0f;
-	float lat, lon;
-	for (int i = 0; i < 100; i++) {
-	    lat = com.bbn.openmap.LatLonPoint.normalize_latitude(
-		    (float)Math.random()*LAT_DEC_RANGE);
-	    lon = com.bbn.openmap.LatLonPoint.wrap_longitude(
-		    (float)Math.random()*LON_DEC_RANGE);
-	    Debug.output(
-		    "(" + lat + "," + lon + ") : (" +
-		    degToRad(lat) + "," + degToRad(lon) + ") : (" +
-		    radToDeg(degToRad(lat)) + "," + radToDeg(degToRad(lon)) +
-		    ")");
-	}
+        float degs = sphericalUnitsToRad(
+                Planet.earthEquatorialRadius/2,
+                Planet.earthEquatorialRadius);
+        Debug.output("degs = " + degs);
+        float LAT_DEC_RANGE = 90.0f;
+        float LON_DEC_RANGE = 360.0f;
+        float lat, lon;
+        for (int i = 0; i < 100; i++) {
+            lat = com.bbn.openmap.LatLonPoint.normalize_latitude(
+                    (float)Math.random()*LAT_DEC_RANGE);
+            lon = com.bbn.openmap.LatLonPoint.wrap_longitude(
+                    (float)Math.random()*LON_DEC_RANGE);
+            Debug.output(
+                    "(" + lat + "," + lon + ") : (" +
+                    degToRad(lat) + "," + degToRad(lon) + ") : (" +
+                    radToDeg(degToRad(lat)) + "," + radToDeg(degToRad(lon)) +
+                    ")");
+        }
     }
     */
 }

@@ -38,9 +38,9 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @param orientation
      */
     public AbstractShapeDecoration(float length, float width, int orientation) {
-	this.length = length;
-	this.width = width;
-	this.orientation = orientation;
+        this.length = length;
+        this.width = width;
+        this.orientation = orientation;
     }
 
     /**
@@ -48,7 +48,7 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @return float
      */
     public float getLength() {
-	return length;
+        return length;
     }
 
     /**
@@ -56,7 +56,7 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @param length The length to set
      */
     public void setLength(float length) {
-	this.length = length;
+        this.length = length;
     }
 
     /**
@@ -64,7 +64,7 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @return float
      */
     public float getWidth() {
-	return width;
+        return width;
     }
 
     /**
@@ -72,7 +72,7 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @param width The width to set
      */
     public void setWidth(float width) {
-	this.width = width;
+        this.width = width;
     }
 
     /**
@@ -80,7 +80,7 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @return int
      */
     public int getOrientation() {
-	return orientation;
+        return orientation;
     }
 
     /**
@@ -88,7 +88,7 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @param orientation The orientation to set
      */
     public void setOrientation(int orientation) {
-	this.orientation = orientation;
+        this.orientation = orientation;
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @see fr.free.lepicier.awt.ShapeDecoration#revert()
      */
     public void revert() {
-	orientation = orientation == RIGHT ? LEFT : RIGHT;
+        orientation = orientation == RIGHT ? LEFT : RIGHT;
     }
 
     /**
@@ -104,7 +104,7 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @return Paint
      */
     public Paint getPaint() {
-	return paint;
+        return paint;
     }
 
     /**
@@ -112,7 +112,7 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @return Stroke
      */
     public Stroke getStroke() {
-	return stroke;
+        return stroke;
     }
 
     /**
@@ -120,7 +120,7 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @param paint The paint to set
      */
     public void setPaint(Paint paint) {
-	this.paint = paint;
+        this.paint = paint;
     }
 
     /**
@@ -128,7 +128,7 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @param stroke The stroke to set
      */
     public void setStroke(Stroke stroke) {
-	this.stroke = stroke;
+        this.stroke = stroke;
     }
 
     /**
@@ -136,11 +136,11 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @param g
      */
     protected void setGraphics(Graphics g) {
-	Graphics2D g2D = (Graphics2D)g;
-	saveStroke = g2D.getStroke();
-	savePaint = g2D.getPaint();
-	if (stroke != null) g2D.setStroke(stroke);
-	if (paint != null) g2D.setPaint(paint);
+        Graphics2D g2D = (Graphics2D)g;
+        saveStroke = g2D.getStroke();
+        savePaint = g2D.getPaint();
+        if (stroke != null) g2D.setStroke(stroke);
+        if (paint != null) g2D.setPaint(paint);
     }
 
     /**
@@ -150,9 +150,9 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
      * @param g
      */
     protected void restoreGraphics(Graphics g) {
-	Graphics2D g2D = (Graphics2D)g;
-	g2D.setStroke(saveStroke);
-	g2D.setPaint(savePaint);
+        Graphics2D g2D = (Graphics2D)g;
+        g2D.setStroke(saveStroke);
+        g2D.setPaint(savePaint);
     }
 }
 

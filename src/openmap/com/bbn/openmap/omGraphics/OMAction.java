@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMAction.java,v $
 // $RCSfile: OMAction.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/11/14 20:50:27 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,22 +46,22 @@ public class OMAction implements OMGraphicConstants {
      * Create an OMAction that represents no action (No bits are set).
      */ 
     public OMAction() {
-	this.value = 0;
+        this.value = 0;
     }
 
     /**
      * Create an OMAction with the provided actions.
      */ 
     public OMAction(int value) {
-	this.value = value;
+        this.value = value;
     }
 
     public void setValue(int value) {
-	this.value = value;
+        this.value = value;
     }
 
     public int getValue() {
-	return value;
+        return value;
     }
 
     /**
@@ -70,8 +70,8 @@ public class OMAction implements OMGraphicConstants {
      * @return the changed integer value.
      */
     public int setMask(int mask) {
-	value = OMAction.setMask(value, mask);
-	return value;
+        value = OMAction.setMask(value, mask);
+        return value;
     }
 
     /** 
@@ -80,8 +80,8 @@ public class OMAction implements OMGraphicConstants {
      * @return the changed integer value.
      */
     public int unsetMask(int mask) {
-	value = unsetMask(value, mask);
-	return value;
+        value = unsetMask(value, mask);
+        return value;
     }
 
     /** 
@@ -90,7 +90,7 @@ public class OMAction implements OMGraphicConstants {
      * @return whether the value bit is set on the internal value.
      */
     public boolean isMask(int mask) {
-	return isMask(value, mask);
+        return isMask(value, mask);
     }
 
     /**
@@ -100,7 +100,7 @@ public class OMAction implements OMGraphicConstants {
      * @return the changed integer value.
      */
     public static int setMask(int value, int mask) {
-	return (value | mask);
+        return (value | mask);
     }
 
     /**
@@ -110,7 +110,7 @@ public class OMAction implements OMGraphicConstants {
      * @return the changed integer value.
      */
     public static int unsetMask(int value, int mask) {
-	return (value & ~mask);
+        return (value & ~mask);
     }
 
     /**
@@ -120,49 +120,49 @@ public class OMAction implements OMGraphicConstants {
      * @return whether the value bit is set.
      */
     public static boolean isMask(int value, int mask) {
-	// Used to be == 0, but this way it returns true if all of the
-	// mask bits are set.
-	if ((value & mask) < mask) {
-	    return false;
-	}
-	return true;
+        // Used to be == 0, but this way it returns true if all of the
+        // mask bits are set.
+        if ((value & mask) < mask) {
+            return false;
+        }
+        return true;
     }
 
     /**
      * Provide a String that describes what the Action is all about.
      */
     public String toString() {
-	StringBuffer sb = new StringBuffer("OMAction (" + value + ") [ ");
-	boolean gotOne = false;
-	if (value == 0) {
-	    sb.append("add ");
-	} else {
-	    if (isMask(RAISE_TO_TOP_GRAPHIC_MASK)) sb.append("raise_to_top ");
-	    if (isMask(LOWER_TO_BOTTOM_GRAPHIC_MASK)) sb.append("lower_to_bottom ");
-	    if (isMask(DELETE_GRAPHIC_MASK)) sb.append("delete ");
-	    if (isMask(SELECT_GRAPHIC_MASK)) sb.append("select ");
-	    if (isMask(DESELECT_GRAPHIC_MASK)) sb.append("deselect ");
-	    if (isMask(DESELECTALL_GRAPHIC_MASK)) sb.append("deselect_all ");
-	    if (isMask(ADD_GRAPHIC_MASK)) sb.append("add ");
-	    if (isMask(UPDATE_GRAPHIC_MASK)) sb.append("update ");
-	    if (isMask(RAISE_GRAPHIC_MASK)) sb.append("raise ");
-	    if (isMask(LOWER_GRAPHIC_MASK)) sb.append("lower ");
-	    if (isMask(SORT_GRAPHICS_MASK)) sb.append("sort ");
-	}
-	sb.append("]");
-	return sb.toString();
+        StringBuffer sb = new StringBuffer("OMAction (" + value + ") [ ");
+        boolean gotOne = false;
+        if (value == 0) {
+            sb.append("add ");
+        } else {
+            if (isMask(RAISE_TO_TOP_GRAPHIC_MASK)) sb.append("raise_to_top ");
+            if (isMask(LOWER_TO_BOTTOM_GRAPHIC_MASK)) sb.append("lower_to_bottom ");
+            if (isMask(DELETE_GRAPHIC_MASK)) sb.append("delete ");
+            if (isMask(SELECT_GRAPHIC_MASK)) sb.append("select ");
+            if (isMask(DESELECT_GRAPHIC_MASK)) sb.append("deselect ");
+            if (isMask(DESELECTALL_GRAPHIC_MASK)) sb.append("deselect_all ");
+            if (isMask(ADD_GRAPHIC_MASK)) sb.append("add ");
+            if (isMask(UPDATE_GRAPHIC_MASK)) sb.append("update ");
+            if (isMask(RAISE_GRAPHIC_MASK)) sb.append("raise ");
+            if (isMask(LOWER_GRAPHIC_MASK)) sb.append("lower ");
+            if (isMask(SORT_GRAPHICS_MASK)) sb.append("sort ");
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     public final static void main(String[] argv) {
 
-	OMAction action = new OMAction();
-	Debug.init();
-	Debug.output("Setting add mask...");
-	action.setMask(ADD_GRAPHIC_MASK);
-	if (action.isMask(ADD_GRAPHIC_MASK)) {
-	    Debug.output("ADD mask set.");
-	} else {
-	    Debug.output("ADD mask *NOT* set");
-	}
+        OMAction action = new OMAction();
+        Debug.init();
+        Debug.output("Setting add mask...");
+        action.setMask(ADD_GRAPHIC_MASK);
+        if (action.isMask(ADD_GRAPHIC_MASK)) {
+            Debug.output("ADD mask set.");
+        } else {
+            Debug.output("ADD mask *NOT* set");
+        }
     }
 }

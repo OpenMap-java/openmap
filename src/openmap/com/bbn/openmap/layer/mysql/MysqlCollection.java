@@ -24,16 +24,16 @@ package com.bbn.openmap.layer.mysql;
 public class MysqlCollection extends MysqlMulti {
 
     public MysqlCollection() {
-	super();
-	this.setType(this.GEOMETRYCOLLECTIONTYPE);
+        super();
+        this.setType(this.GEOMETRYCOLLECTIONTYPE);
     }
 
     public void addElement(MysqlGeometry mg) {
-	super.elements.add(mg);
+        super.elements.add(mg);
     }
 
     public MysqlGeometry getElementByIndex(int i) {
-	return (MysqlGeometry) super.elements.elementAt(i);
+        return (MysqlGeometry) super.elements.elementAt(i);
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/EditToolLoader.java,v $
 // $RCSfile: EditToolLoader.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -62,7 +62,7 @@ public interface EditToolLoader {
      * don't return it for other queries (getEditableClasses, etc.).
      */
     public EditableOMGraphic getEditableGraphic(String classname, 
-						GraphicAttributes ga);
+                                                GraphicAttributes ga);
 
     /**
      * Give an OMGraphic to the EditToolLoader, which will create an

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/BackgroundColorMenuItem.java,v $
 // $RCSfile: BackgroundColorMenuItem.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:21:42 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,46 +39,46 @@ public class BackgroundColorMenuItem extends JMenuItem
     protected MapBean map = null;
 
     public BackgroundColorMenuItem() {
-	this("Set Map Background Color");
+        this("Set Map Background Color");
     }
 
     public BackgroundColorMenuItem(String title) {
-	super(title);
-	addActionListener(this);
+        super(title);
+        addActionListener(this);
     }
 
     public void setMap(MapBean mapbean) {
-	map = mapbean;
+        map = mapbean;
     }
 
     public MapBean getMap() {
-	return map;
+        return map;
     }
 
     public void actionPerformed(ActionEvent ae) {
-	if (map != null) {
-	    Paint newPaint = OMColorChooser.showDialog(this, getText(),
-						       map.getBackground());
-	    if (newPaint != null) {
+        if (map != null) {
+            Paint newPaint = OMColorChooser.showDialog(this, getText(),
+                                                       map.getBackground());
+            if (newPaint != null) {
 
-		String colorString = Integer.toString(((java.awt.Color)newPaint).getRGB());
-		Environment.set(Environment.BackgroundColor, colorString);
-		map.setBackground((java.awt.Color)newPaint);
-		map.setBckgrnd(newPaint);
-	    }
-	}
+                String colorString = Integer.toString(((java.awt.Color)newPaint).getRGB());
+                Environment.set(Environment.BackgroundColor, colorString);
+                map.setBackground((java.awt.Color)newPaint);
+                map.setBckgrnd(newPaint);
+            }
+        }
     }
 
     public void findAndInit(Object someObj) {
-	if (someObj instanceof MapBean) {
-	    setMap((MapBean)someObj);
-	}
+        if (someObj instanceof MapBean) {
+            setMap((MapBean)someObj);
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof MapBean) {
-	    setMap(null);
-	}
+        if (someObj instanceof MapBean) {
+            setMap(null);
+        }
     }
 
 }

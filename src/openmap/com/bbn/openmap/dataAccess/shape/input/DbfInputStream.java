@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/DbfInputStream.java,v $
 // $RCSfile: DbfInputStream.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/23 18:20:21 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -72,11 +72,11 @@ public class DbfInputStream {
      * @param is An inputstream used to create a LittleEndianInputStream
      */
     public DbfInputStream(InputStream is) throws Exception {
-	BufferedInputStream bis = new BufferedInputStream(is);
-	_leis = new LittleEndianInputStream(bis);
-	readHeader();
-	readFieldDescripters();
-	readData();
+        BufferedInputStream bis = new BufferedInputStream(is);
+        _leis = new LittleEndianInputStream(bis);
+        readHeader();
+        readFieldDescripters();
+        readData();
     }
 
     /**
@@ -84,7 +84,7 @@ public class DbfInputStream {
      * @return An array of column names
      */
     public String[] getColumnNames() {
-	return _columnNames;
+        return _columnNames;
     }
 
     /**
@@ -92,7 +92,7 @@ public class DbfInputStream {
      * @return An array of character lengths
      */
     public int[] getLengths() {
-	return _lengths;
+        return _lengths;
     }
 
     /**
@@ -100,7 +100,7 @@ public class DbfInputStream {
      * @return An array of decimal counts
      */
     public byte[] getDecimalCounts() {
-	return _decimalCounts;
+        return _decimalCounts;
     }
 
     /**
@@ -108,7 +108,7 @@ public class DbfInputStream {
      * @return An array of field types
      */
     public byte[] getTypes() {
-	return _types;
+        return _types;
     }
 
     /**
@@ -116,7 +116,7 @@ public class DbfInputStream {
      * @return An ArrayList of recrods
      */
     public ArrayList getRecords() {
-	return _records;
+        return _records;
     }
 
     /**
@@ -124,7 +124,7 @@ public class DbfInputStream {
      * @return The nunber of columns
      */
     public int getColumnCount() {
-	return _columnCount;
+        return _columnCount;
     }
 
     /**
@@ -132,7 +132,7 @@ public class DbfInputStream {
      * @return The number of rows
      */
     public int getRowCount() {
-	return _rowCount;
+        return _rowCount;
 
     }
 
@@ -140,15 +140,15 @@ public class DbfInputStream {
      * Reads the header
      */
     private void readHeader() throws IOException {
-	byte description = _leis.readByte();
-	byte year = _leis.readByte();
-	byte month = _leis.readByte();
-	byte day = _leis.readByte();
-	_rowCount = _leis.readLEInt();
-	_headerLength = _leis.readLEShort();
-	_recordLength = _leis.readLEShort();
-	_columnCount = (_headerLength - 32 - 1) / 32;
-	_leis.skipBytes(20);
+        byte description = _leis.readByte();
+        byte year = _leis.readByte();
+        byte month = _leis.readByte();
+        byte day = _leis.readByte();
+        _rowCount = _leis.readLEInt();
+        _headerLength = _leis.readLEShort();
+        _recordLength = _leis.readLEShort();
+        _columnCount = (_headerLength - 32 - 1) / 32;
+        _leis.skipBytes(20);
     }
 
     /**
@@ -156,42 +156,42 @@ public class DbfInputStream {
      * lengths, and decimal counts, then populates them
      */
     private void readFieldDescripters() throws IOException {
-	_columnNames = new String[_columnCount];
-	_types = new byte[_columnCount];
-	_lengths = new int[_columnCount];
-	_decimalCounts = new byte[_columnCount];
+        _columnNames = new String[_columnCount];
+        _types = new byte[_columnCount];
+        _lengths = new int[_columnCount];
+        _decimalCounts = new byte[_columnCount];
 
-	for (int n=0; n<=_columnCount-1; n++) {
-	    _columnNames[n] = _leis.readString(11);
-	    _types[n] = (byte)_leis.readByte();
-	    _leis.skipBytes(4);
-	    _lengths[n] = _leis.readUnsignedByte();
-	    _decimalCounts[n] = _leis.readByte();
-	    _leis.skipBytes(14);
-	}
+        for (int n=0; n<=_columnCount-1; n++) {
+            _columnNames[n] = _leis.readString(11);
+            _types[n] = (byte)_leis.readByte();
+            _leis.skipBytes(4);
+            _lengths[n] = _leis.readUnsignedByte();
+            _decimalCounts[n] = _leis.readByte();
+            _leis.skipBytes(14);
+        }
     }
 
     /**
      * Reads the data and places data in a class scope ArrayList of records
      */
     public void readData() throws IOException {
-	_leis.skipBytes(2);
-	_records = new ArrayList();
-	for (int r=0; r <= _rowCount - 1; r++) {
-	    ArrayList record = new ArrayList();
-	    for (int c = 0; c <= _columnCount - 1; c++) {
-		int length = _lengths[c];
-		if (length == -1) length = 255;
-		int type = _types[c];
-		String cell = _leis.readString(length);
-		if (type == DbfTableModel.TYPE_NUMERIC && !cell.equals("")) {
-		    record.add(c, new Double(cell));
-		} else {
-		    record.add(c, cell);
-		}
-	    }
-	    _records.add(record);
-	    _leis.skipBytes(1);
-	}
+        _leis.skipBytes(2);
+        _records = new ArrayList();
+        for (int r=0; r <= _rowCount - 1; r++) {
+            ArrayList record = new ArrayList();
+            for (int c = 0; c <= _columnCount - 1; c++) {
+                int length = _lengths[c];
+                if (length == -1) length = 255;
+                int type = _types[c];
+                String cell = _leis.readString(length);
+                if (type == DbfTableModel.TYPE_NUMERIC && !cell.equals("")) {
+                    record.add(c, new Double(cell));
+                } else {
+                    record.add(c, cell);
+                }
+            }
+            _records.add(record);
+            _leis.skipBytes(1);
+        }
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/dock/DockConstraint.java,v $
 // $RCSfile: DockConstraint.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/08 17:33:14 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,7 +30,7 @@ import java.util.Iterator;
 /**
  * Constraints used for DockPanel behavior.
  * @author Ben Lubin
- * @version $Revision: 1.1 $ on $Date: 2003/04/08 17:33:14 $
+ * @version $Revision: 1.2 $ on $Date: 2004/01/26 18:18:07 $
  * @since 12/5/02
  */
 public class DockConstraint {
@@ -56,7 +56,7 @@ public class DockConstraint {
     private boolean canDockWest = true;
 
     public String getTabName() {
-	return tabName;
+        return tabName;
     }
 
     /**
@@ -64,18 +64,18 @@ public class DockConstraint {
      * (if it can tab).  If unspecified, defaults to Component.getName()
      */
     public void setTabName(String name) {
-	tabName = name;
+        tabName = name;
     }
 
     /** 
      * True iff this class can be transparent
      */
     public boolean canTransparent(){
-	return canTransparent;
+        return canTransparent;
     }
 
     public void setCanTransparent(boolean b) {
-	canTransparent = b;
+        canTransparent = b;
     }
 
     /**
@@ -83,23 +83,23 @@ public class DockConstraint {
      * @param constraints a List of DockConstraints
      */
     public static boolean canTransparent(List constraints) {
-	for (Iterator iter = constraints.iterator(); iter.hasNext();) {
-	    DockConstraint dc = (DockConstraint)iter.next();
-	    if (!dc.canTransparent())
-		return false;	    
-	}
-	return true;
+        for (Iterator iter = constraints.iterator(); iter.hasNext();) {
+            DockConstraint dc = (DockConstraint)iter.next();
+            if (!dc.canTransparent())
+                return false;       
+        }
+        return true;
     }
 
     /** 
      * True iff this class can be resize
      */
     public boolean canResize(){
-	return canResize;
+        return canResize;
     }
 
     public void setCanResize(boolean b) {
-	canResize = b;
+        canResize = b;
     }
 
     /**
@@ -107,23 +107,23 @@ public class DockConstraint {
      * @param constraints a List of DockConstraints
      */
     public static boolean canResize(List constraints) {
-	for (Iterator iter = constraints.iterator(); iter.hasNext();) {
-	    DockConstraint dc = (DockConstraint)iter.next();
-	    if (!dc.canResize())
-		return false;	    
-	}
-	return true;
+        for (Iterator iter = constraints.iterator(); iter.hasNext();) {
+            DockConstraint dc = (DockConstraint)iter.next();
+            if (!dc.canResize())
+                return false;       
+        }
+        return true;
     }
 
     /** 
      * True iff this class can overlap the background
      */
     public boolean canOcclude(){
-	return canOcclude;
+        return canOcclude;
     }
 
     public void setCanOcclude(boolean b) {
-	canOcclude = b;
+        canOcclude = b;
     }
 
     /**
@@ -131,23 +131,23 @@ public class DockConstraint {
      * @param constraints a List of DockConstraints
      */
     public static boolean canOcclude(List constraints) {
-	for (Iterator iter = constraints.iterator(); iter.hasNext();) {
-	    DockConstraint dc = (DockConstraint)iter.next();
-	    if (!dc.canOcclude())
-		return false;	    
-	}
-	return true;
+        for (Iterator iter = constraints.iterator(); iter.hasNext();) {
+            DockConstraint dc = (DockConstraint)iter.next();
+            if (!dc.canOcclude())
+                return false;       
+        }
+        return true;
     }
 
     /** 
      * True iff this class can be tabbed together. 
      */
     public boolean canTab(){
-	return canTab;
+        return canTab;
     }
 
     public void setCanTab(boolean b) {
-	canTab = b;
+        canTab = b;
     }
 
     /**
@@ -155,23 +155,23 @@ public class DockConstraint {
      * @param constraints a List of DockConstraints
      */
     public static boolean canTab(List constraints) {
-	for (Iterator iter = constraints.iterator(); iter.hasNext();) {
-	    DockConstraint dc = (DockConstraint)iter.next();
-	    if (!dc.canTab())
-		return false;	    
-	}
-	return true;
+        for (Iterator iter = constraints.iterator(); iter.hasNext();) {
+            DockConstraint dc = (DockConstraint)iter.next();
+            if (!dc.canTab())
+                return false;       
+        }
+        return true;
     }
 
     /** 
      * True iff this class can be closed 
      */
     public boolean canClose(){
-	return canClose;
+        return canClose;
     }
 
     public void setCanClose(boolean b) {
-	canClose = b;
+        canClose = b;
     }
 
     /**
@@ -179,23 +179,23 @@ public class DockConstraint {
      * @param constraints a List of DockConstraints
      */
     public static boolean canClose(List constraints) {
-	for (Iterator iter = constraints.iterator(); iter.hasNext();) {
-	    DockConstraint dc = (DockConstraint)iter.next();
-	    if (!dc.canClose())
-		return false;	    
-	}
-	return true;
+        for (Iterator iter = constraints.iterator(); iter.hasNext();) {
+            DockConstraint dc = (DockConstraint)iter.next();
+            if (!dc.canClose())
+                return false;       
+        }
+        return true;
     }
 
     /** 
      * True iff this class can be changed to frame
      */
     public boolean canExternalFrame(){
-	return canExternalFrame;
+        return canExternalFrame;
     }    
 
     public void setCanExternalFrame(boolean b) {
-	canExternalFrame = b;
+        canExternalFrame = b;
     }
 
     /**
@@ -203,23 +203,23 @@ public class DockConstraint {
      * @param constraints a List of DockConstraints
      */
     public static boolean canExternalFrame(List constraints) {
-	for (Iterator iter = constraints.iterator(); iter.hasNext();) {
-	    DockConstraint dc = (DockConstraint)iter.next();
-	    if (!dc.canExternalFrame())
-		return false;	    
-	}
-	return true;
+        for (Iterator iter = constraints.iterator(); iter.hasNext();) {
+            DockConstraint dc = (DockConstraint)iter.next();
+            if (!dc.canExternalFrame())
+                return false;       
+        }
+        return true;
     }
 
     /** 
      * True iff this class can be changed to frame
      */
     public boolean canInternalFrame(){
-	return canInternalFrame;
+        return canInternalFrame;
     }    
 
     public void setCanInternalFrame(boolean b) {
-	canInternalFrame = b;
+        canInternalFrame = b;
     }
 
     /**
@@ -227,23 +227,23 @@ public class DockConstraint {
      * @param constraints a List of DockConstraints
      */
     public static boolean canInternalFrame(List constraints) {
-	for (Iterator iter = constraints.iterator(); iter.hasNext();) {
-	    DockConstraint dc = (DockConstraint)iter.next();
-	    if (!dc.canInternalFrame())
-		return false;	    
-	}
-	return true;
+        for (Iterator iter = constraints.iterator(); iter.hasNext();) {
+            DockConstraint dc = (DockConstraint)iter.next();
+            if (!dc.canInternalFrame())
+                return false;       
+        }
+        return true;
     }
 
     /**
      * True iff this clase can be docked in the given direction
      */
     public boolean canDockNorth(){
-	return canDockNorth;
+        return canDockNorth;
     }
 
     public void setCanDockNorth(boolean b) {
-	canDockNorth = b;
+        canDockNorth = b;
     }
 
     /**
@@ -251,23 +251,23 @@ public class DockConstraint {
      * @param constraints a List of DockConstraints
      */
     public static boolean canDockNorth(List constraints) {
-	for (Iterator iter = constraints.iterator(); iter.hasNext();) {
-	    DockConstraint dc = (DockConstraint)iter.next();
-	    if (!dc.canDockNorth())
-		return false;	    
-	}
-	return true;
+        for (Iterator iter = constraints.iterator(); iter.hasNext();) {
+            DockConstraint dc = (DockConstraint)iter.next();
+            if (!dc.canDockNorth())
+                return false;       
+        }
+        return true;
     }
 
     /**
      * True iff this clase can be docked in the given direction
      */
     public boolean canDockSouth(){
-	return canDockSouth;
+        return canDockSouth;
     }
 
     public void setCanDockSouth(boolean b) {
-	canDockSouth = b;
+        canDockSouth = b;
     }
 
     /**
@@ -275,23 +275,23 @@ public class DockConstraint {
      * @param constraints a List of DockConstraints
      */
     public static boolean canDockSouth(List constraints) {
-	for (Iterator iter = constraints.iterator(); iter.hasNext();) {
-	    DockConstraint dc = (DockConstraint)iter.next();
-	    if (!dc.canDockSouth())
-		return false;	    
-	}
-	return true;
+        for (Iterator iter = constraints.iterator(); iter.hasNext();) {
+            DockConstraint dc = (DockConstraint)iter.next();
+            if (!dc.canDockSouth())
+                return false;       
+        }
+        return true;
     }
 
     /**
      * True iff this clase can be docked in the given direction
      */
     public boolean canDockEast(){
-	return canDockEast;
+        return canDockEast;
     }
 
     public void setCanDockEast(boolean b) {
-	canDockEast = b;
+        canDockEast = b;
     }
 
     /**
@@ -299,23 +299,23 @@ public class DockConstraint {
      * @param constraints a List of DockConstraints
      */
     public static boolean canDockEast(List constraints) {
-	for (Iterator iter = constraints.iterator(); iter.hasNext();) {
-	    DockConstraint dc = (DockConstraint)iter.next();
-	    if (!dc.canDockEast())
-		return false;	    
-	}
-	return true;
+        for (Iterator iter = constraints.iterator(); iter.hasNext();) {
+            DockConstraint dc = (DockConstraint)iter.next();
+            if (!dc.canDockEast())
+                return false;       
+        }
+        return true;
     }
 
     /**
      * True iff this clase can be docked in the given direction
      */
     public boolean canDockWest(){
-	return canDockWest;
+        return canDockWest;
     }
 
     public void setCanDockWest(boolean b) {
-	canDockWest = b;
+        canDockWest = b;
     }
 
     /**
@@ -323,11 +323,11 @@ public class DockConstraint {
      * @param constraints a List of DockConstraints
      */
     public static boolean canDockWest(List constraints) {
-	for (Iterator iter = constraints.iterator(); iter.hasNext();) {
-	    DockConstraint dc = (DockConstraint)iter.next();
-	    if (!dc.canDockWest())
-		return false;	    
-	}
-	return true;
+        for (Iterator iter = constraints.iterator(); iter.hasNext();) {
+            DockConstraint dc = (DockConstraint)iter.next();
+            if (!dc.canDockWest())
+                return false;       
+        }
+        return true;
     }
 }

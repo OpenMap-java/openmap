@@ -12,9 +12,9 @@
  * **********************************************************************
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleDisplayLayer.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/12/23 22:55:23 $
- * $Author: wjeuerle $
+ * $Revision: 1.5 $
+ * $Date: 2004/01/26 18:18:08 $
+ * $Author: dietrick $
  *
  * **********************************************************************
  */
@@ -65,7 +65,7 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer  {
     
     public ScaleDisplayLayer() {
         super();
-	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
     
     // Color variables for different line types
@@ -111,38 +111,38 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer  {
         prefix = com.bbn.openmap.util.PropUtils.getScopedPropertyPrefix(prefix);
         
         lineColor = LayerUtils.parseColorFromProperties(
-	    properties, prefix + LineColorProperty,
-	    defaultLineColorString);
+            properties, prefix + LineColorProperty,
+            defaultLineColorString);
         
         textColor = LayerUtils.parseColorFromProperties(
-	    properties, prefix + TextColorProperty,
-	    defaultTextColorString);
+            properties, prefix + TextColorProperty,
+            defaultTextColorString);
         
         String unitOfMeasure =
-	    properties.getProperty(prefix + UnitOfMeasureProperty);
+            properties.getProperty(prefix + UnitOfMeasureProperty);
         setUnitOfMeasure(unitOfMeasure);
         
         locationXoffset = LayerUtils.intFromProperties(
-	    properties, prefix + LocationXOffsetProperty,
-	    defaultLocationXoffset);
+            properties, prefix + LocationXOffsetProperty,
+            defaultLocationXoffset);
         
         locationYoffset = LayerUtils.intFromProperties(
-	    properties, prefix + LocationYOffsetProperty,
-	    defaultLocationYoffset);
+            properties, prefix + LocationYOffsetProperty,
+            defaultLocationYoffset);
         
         width = LayerUtils.intFromProperties(
-	    properties, prefix + WidthProperty,
-	    defaultWidth);
+            properties, prefix + WidthProperty,
+            defaultWidth);
         
         height = LayerUtils.intFromProperties(
-	    properties, prefix + HeightProperty,
-	    defaultHeight);
+            properties, prefix + HeightProperty,
+            defaultHeight);
     }
     
     public OMGraphicList prepare() {
         int w, h, left_x=0, right_x=0, lower_y=0, upper_y=0;
-	Projection projection = getProjection();
-	OMGraphicList graphics = new OMGraphicList();
+        Projection projection = getProjection();
+        OMGraphicList graphics = new OMGraphicList();
 
         w = projection.getWidth();
         h = projection.getHeight();
@@ -175,11 +175,11 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer  {
         line.setLinePaint(lineColor);
         graphics.add(line);
         
-	LatLonPoint loc1 = projection.inverse(left_x, lower_y);
-	LatLonPoint loc2 = projection.inverse(right_x, lower_y);
+        LatLonPoint loc1 = projection.inverse(left_x, lower_y);
+        LatLonPoint loc2 = projection.inverse(right_x, lower_y);
         
         float dist = GreatCircle.spherical_distance(loc1.radlat_, loc1.radlon_, 
-						    loc2.radlat_, loc2.radlon_);
+                                                    loc2.radlat_, loc2.radlon_);
         dist = uom.fromRadians(dist);
         
         if (dist > 1) dist = (int) dist;
@@ -190,7 +190,7 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer  {
         graphics.add(text);
         graphics.generate(projection);
 
-	return graphics;
+        return graphics;
     }
 
     /** Getter for property unitOfMeasure.

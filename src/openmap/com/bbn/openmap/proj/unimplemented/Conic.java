@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/unimplemented/Attic/Conic.java,v $
 // $RCSfile: Conic.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:57 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:14 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -61,8 +61,8 @@ public abstract class Conic extends Proj {
      * @param type projection type
      */
     public Conic (LatLonPoint center, float scale, 
-		  int width, int height, int type){
-	super(center, scale, width, height, type);
+                  int width, int height, int type){
+        super(center, scale, width, height, type);
     }
 
     /**
@@ -71,8 +71,8 @@ public abstract class Conic extends Proj {
      * @see Projection#getProjectionID
      */
     public String toString() {
-	return " origin(" + origin.getLatitude() + "," + 
-	  origin.getLongitude() + ") " + super.toString();
+        return " origin(" + origin.getLatitude() + "," + 
+          origin.getLongitude() + ") " + super.toString();
     }
 
 
@@ -84,30 +84,30 @@ public abstract class Conic extends Proj {
      * used in the forward() and inverse() calls.<p>
      */
     protected void computeParameters() {
-	// HACK grabbed from Cylindrical.  Might need fixing.
-	planetPixelRadius = planetRadius * pixelsPerMeter;
-	planetPixelCircumference = MoreMath.TWO_PI*planetPixelRadius;
+        // HACK grabbed from Cylindrical.  Might need fixing.
+        planetPixelRadius = planetRadius * pixelsPerMeter;
+        planetPixelCircumference = MoreMath.TWO_PI*planetPixelRadius;
 
-	// minscale is the minimum scale allowable (before integer wrapping
-	// can occur)
-	minscale = (float)Math.ceil(planetPixelCircumference/(int)Integer.MAX_VALUE);
-	if (minscale < 1)
-	    minscale = 1;
-	if (scale < minscale)
-	    scale = minscale;
+        // minscale is the minimum scale allowable (before integer wrapping
+        // can occur)
+        minscale = (float)Math.ceil(planetPixelCircumference/(int)Integer.MAX_VALUE);
+        if (minscale < 1)
+            minscale = 1;
+        if (scale < minscale)
+            scale = minscale;
 
-	// maxscale = scale at which world circumference fits in window
-	maxscale = (float) planetPixelCircumference/(float)width;
-	if (maxscale < minscale) {
-	    maxscale = minscale;
-	}
-	if (scale > maxscale) {
-	    scale = maxscale;
-	}
-	scaled_radius = planetPixelRadius/scale;
+        // maxscale = scale at which world circumference fits in window
+        maxscale = (float) planetPixelCircumference/(float)width;
+        if (maxscale < minscale) {
+            maxscale = minscale;
+        }
+        if (scale > maxscale) {
+            scale = maxscale;
+        }
+        scaled_radius = planetPixelRadius/scale;
 
-	// calculate cutoff scale for XWindows workaround
-	XSCALE_THRESHOLD = (int)(planetPixelCircumference/64000);//fudge it a little bit
+        // calculate cutoff scale for XWindows workaround
+        XSCALE_THRESHOLD = (int)(planetPixelCircumference/64000);//fudge it a little bit
     }
 
     /**
@@ -122,11 +122,11 @@ public abstract class Conic extends Proj {
      * @param west float longitude in decimal degrees
      */
     protected void setBorders(float north, float east, 
-			      float south, float west){
+                              float south, float west){
           northBorder = north;
-	  southBorder = south;
-	  eastBorder = east;
-	  westBorder = west;
+          southBorder = south;
+          eastBorder = east;
+          westBorder = west;
     }
 
     /**
@@ -139,15 +139,15 @@ public abstract class Conic extends Proj {
     public void setCenter(float lat, float lon) {
 
         if(eastBorder != Float.NaN) 
-	  if (lon > eastBorder) lon = eastBorder;
+          if (lon > eastBorder) lon = eastBorder;
         if(westBorder != Float.NaN) 
-	  if (lon < westBorder) lon = westBorder;
+          if (lon < westBorder) lon = westBorder;
         if(northBorder != Float.NaN) 
-	  if (lat > northBorder) lat = northBorder;
+          if (lat > northBorder) lat = northBorder;
         if(southBorder != Float.NaN) 
-	  if (lat < southBorder) lat = southBorder;
+          if (lat < southBorder) lat = southBorder;
 
-	super.setCenter(lat, lon);
+        super.setCenter(lat, lon);
     }
 
     /**
@@ -170,29 +170,29 @@ public abstract class Conic extends Proj {
      * visible.
      */
     public boolean forwardRaw(float[] rawllpts, int rawoff,
-			      int[] xcoords, int[] ycoords, boolean[] visible,
-			      int copyoff, int copylen){
-	
-	boolean visibleTotal = false;
-	// HACK grabbed from Cylindrical.  Might need fixing.
-	Point temp = new Point();
-	int end = copylen+copyoff;
-	for (int i=copyoff, j=rawoff; i<end; i++, j+=2) {
-	    forward(rawllpts[j], rawllpts[j+1], temp, true);
-	    xcoords[i] = temp.x;
-	    ycoords[i] = temp.y;
-//  	    visible[i] = true;
+                              int[] xcoords, int[] ycoords, boolean[] visible,
+                              int copyoff, int copylen){
+        
+        boolean visibleTotal = false;
+        // HACK grabbed from Cylindrical.  Might need fixing.
+        Point temp = new Point();
+        int end = copylen+copyoff;
+        for (int i=copyoff, j=rawoff; i<end; i++, j+=2) {
+            forward(rawllpts[j], rawllpts[j+1], temp, true);
+            xcoords[i] = temp.x;
+            ycoords[i] = temp.y;
+//          visible[i] = true;
 
-	    visible[i] = (0 <= temp.x && temp.x <= width) &&
-		(0 <= temp.y && temp.y <= height);
+            visible[i] = (0 <= temp.x && temp.x <= width) &&
+                (0 <= temp.y && temp.y <= height);
 
-	    if (visible[i] == true && visibleTotal == false){
-		visibleTotal = true;
-	    }
-		
-	}
-	// if everything is visible
-	return visibleTotal;
+            if (visible[i] == true && visibleTotal == false){
+                visibleTotal = true;
+            }
+                
+        }
+        // if everything is visible
+        return visibleTotal;
     }
 
 
@@ -208,38 +208,38 @@ public abstract class Conic extends Proj {
      * @return Vector of x[], y[], x[], y[], ... projected poly
      */
     protected Vector _forwardPoly(float[] rawllpts, 
-				  int ltype, 
-				  int nsegs, boolean isFilled){
-	Debug.message("projdetail", "Conic._forwardPoly()");
-	// HACK: not handling any wrapping anomalies...  Need to test this
-	// alot more.
-	int i, j;
+                                  int ltype, 
+                                  int nsegs, boolean isFilled){
+        Debug.message("projdetail", "Conic._forwardPoly()");
+        // HACK: not handling any wrapping anomalies...  Need to test this
+        // alot more.
+        int i, j;
 
-	// determine length of pairs
-	int len = rawllpts.length>>1;	// len/2, chop off extra
-	if (len < 2)
-	    return new Vector(0);
+        // determine length of pairs
+        int len = rawllpts.length>>1;   // len/2, chop off extra
+        if (len < 2)
+            return new Vector(0);
 
-	// handle complicated line in specific routines
-	if (isComplicatedLineType(ltype))
-	    return doPolyDispatch(rawllpts, ltype, nsegs, isFilled);
+        // handle complicated line in specific routines
+        if (isComplicatedLineType(ltype))
+            return doPolyDispatch(rawllpts, ltype, nsegs, isFilled);
 
-	Point temp = new Point();
-	int[] xs = new int[len];
-	int[] ys = new int[len];
+        Point temp = new Point();
+        int[] xs = new int[len];
+        int[] ys = new int[len];
 
-	// forward project the points
-	for (i=0, j=0; i<len; i++, j+=2) {
-	    temp = forward(rawllpts[j], rawllpts[j+1], temp, true);
-	    xs[i] = temp.x;
-	    ys[i] = temp.y;
-	}
+        // forward project the points
+        for (i=0, j=0; i<len; i++, j+=2) {
+            temp = forward(rawllpts[j], rawllpts[j+1], temp, true);
+            xs[i] = temp.x;
+            ys[i] = temp.y;
+        }
 
-	Vector ret_val = new Vector(2);
-	ret_val.addElement(xs);
-	ret_val.addElement(ys);
+        Vector ret_val = new Vector(2);
+        ret_val.addElement(xs);
+        ret_val.addElement(ys);
 
-	return ret_val;
+        return ret_val;
     }
 
 
@@ -248,9 +248,9 @@ public abstract class Conic extends Proj {
      * @param g Graphics
      */
     public void drawBackground(Graphics g) {
-	// HACK grabbed from Cylindrical.  Might need fixing.
-	g.setColor(backgroundColor);
-	g.fillRect(0, 0, getWidth(), getHeight());
+        // HACK grabbed from Cylindrical.  Might need fixing.
+        g.setColor(backgroundColor);
+        g.fillRect(0, 0, getWidth(), getHeight());
     }
     protected static java.awt.Color backgroundColor = new java.awt.Color(191,239,255);
 
@@ -258,7 +258,7 @@ public abstract class Conic extends Proj {
      * Get the name string of the projection.
      */
     public String getName() {
-	return "Conic";
+        return "Conic";
     }
 
 }

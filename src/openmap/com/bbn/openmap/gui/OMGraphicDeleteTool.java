@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMGraphicDeleteTool.java,v $
 // $RCSfile: OMGraphicDeleteTool.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/08 21:31:57 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -70,92 +70,92 @@ public class OMGraphicDeleteTool extends OMToolComponent
     protected JToolBar jToolBar;
 
     public OMGraphicDeleteTool() {
-  	super();
-	setKey(defaultKey);
-	Debug.message("deletebutton", "OMGTL()");
+        super();
+        setKey(defaultKey);
+        Debug.message("deletebutton", "OMGTL()");
 
-	setLayout(new java.awt.GridLayout());
-	jToolBar = new JToolBar();
- 	jToolBar.setFloatable(false);
+        setLayout(new java.awt.GridLayout());
+        jToolBar = new JToolBar();
+        jToolBar.setFloatable(false);
 
-	deleteList = new Hashtable();
-	requestors = new Vector();
+        deleteList = new Hashtable();
+        requestors = new Vector();
 
-	java.net.URL url = this.getClass().getResource("delete.gif");
-	if (url != null) {
-	    ImageIcon icon = new ImageIcon(url);
-	    deleteButton = new JButton(icon);
-	} else {
-	    deleteButton = new JButton("Delete");
-	}
+        java.net.URL url = this.getClass().getResource("delete.gif");
+        if (url != null) {
+            ImageIcon icon = new ImageIcon(url);
+            deleteButton = new JButton(icon);
+        } else {
+            deleteButton = new JButton("Delete");
+        }
 
-	deleteButton.addActionListener(this);
-	deleteButton.setToolTipText("Delete selected map graphic");
-	deleteButton.setEnabled(false);
+        deleteButton.addActionListener(this);
+        deleteButton.setToolTipText("Delete selected map graphic");
+        deleteButton.setEnabled(false);
 
-	jToolBar.add(deleteButton);
-	add(jToolBar);
+        jToolBar.add(deleteButton);
+        add(jToolBar);
     }
 
     public void keyPressed(KeyEvent e) {}
     public void keyReleased(KeyEvent e) {
-	if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-	    deleteSelected();
-	}
+        if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+            deleteSelected();
+        }
     }
     public void keyTyped(KeyEvent e) {}
 
     public void actionPerformed(ActionEvent ae) {
-	Debug.message("deletebutton", "OMGDT.actionPerformed()");
-	deleteSelected();
+        Debug.message("deletebutton", "OMGDT.actionPerformed()");
+        deleteSelected();
     }
 
     public void deleteSelected() {
-	Iterator it = deleteList.values().iterator();
+        Iterator it = deleteList.values().iterator();
 
-	while (it.hasNext()) {
-	    SelectionEvent item = (SelectionEvent)it.next();
-	    Object itemSource = item.getSource();
+        while (it.hasNext()) {
+            SelectionEvent item = (SelectionEvent)it.next();
+            Object itemSource = item.getSource();
 
-	    // Too specific?
-	    if (itemSource instanceof OMDrawingTool) {
-		// This should notify the requestor...
-		((OMDrawingTool)itemSource).deactivate(OMGraphicConstants.DELETE_GRAPHIC_MASK);
+            // Too specific?
+            if (itemSource instanceof OMDrawingTool) {
+                // This should notify the requestor...
+                ((OMDrawingTool)itemSource).deactivate(OMGraphicConstants.DELETE_GRAPHIC_MASK);
 
-	    } else {
-		if (item != null) {  //  is this check necessary?  I doubt it.
-		    DrawingToolRequestor requestor = item.getRequestor();
-		    OMGraphic omg = item.getOMGraphic();
-		    if (requestor != null) {
-			requestor.drawingComplete(omg, new OMAction(OMGraphicConstants.DELETE_GRAPHIC_MASK));
-		    } else {
-			// if there isn't a requestor specified, tell anyone who will listen.
-			Iterator reqs = requestors.iterator();
-			while (reqs.hasNext()) {
-			    ((DrawingToolRequestor)reqs.next()).drawingComplete(omg, new OMAction(OMGraphicConstants.DELETE_GRAPHIC_MASK));			
-			}
-		    }
-		}
-	    }
-	}
+            } else {
+                if (item != null) {  //  is this check necessary?  I doubt it.
+                    DrawingToolRequestor requestor = item.getRequestor();
+                    OMGraphic omg = item.getOMGraphic();
+                    if (requestor != null) {
+                        requestor.drawingComplete(omg, new OMAction(OMGraphicConstants.DELETE_GRAPHIC_MASK));
+                    } else {
+                        // if there isn't a requestor specified, tell anyone who will listen.
+                        Iterator reqs = requestors.iterator();
+                        while (reqs.hasNext()) {
+                            ((DrawingToolRequestor)reqs.next()).drawingComplete(omg, new OMAction(OMGraphicConstants.DELETE_GRAPHIC_MASK));                     
+                        }
+                    }
+                }
+            }
+        }
 
-	// Should we just clear the list now?
-	deleteList.clear();
-	deleteButton.setEnabled(!deleteList.isEmpty());
+        // Should we just clear the list now?
+        deleteList.clear();
+        deleteButton.setEnabled(!deleteList.isEmpty());
     }
 
     public void selectionNotification(SelectionEvent event) {
-	if (event.isSelected() && event.getOMGraphic() != null) {
-	    Debug.message("deletebutton", "OMGDT.selection notification: adding selected to list.");
-	    deleteList.put(event.getOMGraphic(), event);
-	} else if (!event.isSelected()) {
-	    Debug.message("deletebutton", "OMGDT.selection notification: removing selected from list.");
-	    deleteList.remove(event.getOMGraphic());
-	} else {
-	    Debug.message("deletebutton", "OMGDT.selection notification: omgraphic missing from notification.");
-	}
-	
-	deleteButton.setEnabled(!deleteList.isEmpty());
+        if (event.isSelected() && event.getOMGraphic() != null) {
+            Debug.message("deletebutton", "OMGDT.selection notification: adding selected to list.");
+            deleteList.put(event.getOMGraphic(), event);
+        } else if (!event.isSelected()) {
+            Debug.message("deletebutton", "OMGDT.selection notification: removing selected from list.");
+            deleteList.remove(event.getOMGraphic());
+        } else {
+            Debug.message("deletebutton", "OMGDT.selection notification: omgraphic missing from notification.");
+        }
+        
+        deleteButton.setEnabled(!deleteList.isEmpty());
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -164,38 +164,38 @@ public class OMGraphicDeleteTool extends OMToolComponent
     ///////////////////////////////////////////////////////////////////////////
 
     public void findAndInit(Object obj) {
-	if (obj instanceof SelectionProvider) {
-	    Debug.message("deletebutton", "OMGDT.findAndInit() found selection provider");
-	    ((SelectionProvider)obj).addSelectionListener(this);
-	}
+        if (obj instanceof SelectionProvider) {
+            Debug.message("deletebutton", "OMGDT.findAndInit() found selection provider");
+            ((SelectionProvider)obj).addSelectionListener(this);
+        }
 
-	if (obj instanceof DrawingToolRequestor) {
+        if (obj instanceof DrawingToolRequestor) {
 
-	    // Keep track of them so if the requestor is not known, just
-	    // tell everyone who may be listening to delete the
-	    // OMGraphic in question and let them react accordingly.
-	    // If they don't already have the OMGraphic, they should
-	    // just ignore the request.
-	    requestors.add((DrawingToolRequestor)obj);
-	}
+            // Keep track of them so if the requestor is not known, just
+            // tell everyone who may be listening to delete the
+            // OMGraphic in question and let them react accordingly.
+            // If they don't already have the OMGraphic, they should
+            // just ignore the request.
+            requestors.add((DrawingToolRequestor)obj);
+        }
 
-	if (obj instanceof MapBean) {
- 	    ((MapBean)obj).addKeyListener(this);
-	}
+        if (obj instanceof MapBean) {
+            ((MapBean)obj).addKeyListener(this);
+        }
     }
 
     public void findAndUndo(Object obj) {
-	if (obj instanceof SelectionProvider) {
-	    ((SelectionProvider)obj).removeSelectionListener(this);
-	}
+        if (obj instanceof SelectionProvider) {
+            ((SelectionProvider)obj).removeSelectionListener(this);
+        }
 
-	if (obj instanceof DrawingToolRequestor) {
-	    requestors.remove((DrawingToolRequestor)obj);
-	}
+        if (obj instanceof DrawingToolRequestor) {
+            requestors.remove((DrawingToolRequestor)obj);
+        }
 
-	if (obj instanceof MapBean) {
- 	    ((MapBean)obj).removeKeyListener(this);
-	}
+        if (obj instanceof MapBean) {
+            ((MapBean)obj).removeKeyListener(this);
+        }
     }
 
 }

@@ -1,14 +1,14 @@
 /* **********************************************************************
  * 
  *    Use, duplication, or disclosure by the Government is subject to
- * 	     restricted rights as set forth in the DFARS.
+ *           restricted rights as set forth in the DFARS.
  *  
- * 			   BBNT Solutions LLC
- * 			       A Part of 
+ *                         BBNT Solutions LLC
+ *                             A Part of 
  *                  Verizon      
- * 			    10 Moulton Street
- * 			   Cambridge, MA 02138
- * 			    (617) 873-3000
+ *                          10 Moulton Street
+ *                         Cambridge, MA 02138
+ *                          (617) 873-3000
  *
  *    Copyright (C) 2002 by BBNT Solutions, LLC
  *                 All Rights Reserved.
@@ -78,14 +78,14 @@ public class BeanLayoutManagerBeanInfo extends SimpleBeanInfo {
    */
   public java.awt.Image getIcon(int iconKind) {
     if (iconKind == BeanInfo.ICON_COLOR_16x16 || 
-	iconKind == BeanInfo.ICON_MONO_16x16) {
+        iconKind == BeanInfo.ICON_MONO_16x16) {
       java.awt.Image img = loadImage(getImage16Location());
       return img;
     } else
       if (iconKind == BeanInfo.ICON_COLOR_32x32 ||
           iconKind == BeanInfo.ICON_MONO_32x32) {
-	java.awt.Image img = loadImage(getImage32Location());
-	return img;
+        java.awt.Image img = loadImage(getImage32Location());
+        return img;
       }
     return null;
   }

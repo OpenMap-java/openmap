@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/LOSDrawState.java,v $
 // $RCSfile: LOSDrawState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,20 +34,20 @@ class LOSDrawState extends State{
     protected LOSGenerator LOSTool;
 
     public LOSDrawState(LOSGenerator tool){
-	LOSTool = tool;
+        LOSTool = tool;
     }
 
     public boolean mouseReleased(MouseEvent e){ 
-	LOSTool.addLOSEvent(e);
-	LOSTool.layer.repaint();
-	LOSTool.stateMachine.setState(LOSStateMachine.TOOL_DEFINED);
-	return true;
+        LOSTool.addLOSEvent(e);
+        LOSTool.layer.repaint();
+        LOSTool.stateMachine.setState(LOSStateMachine.TOOL_DEFINED);
+        return true;
     }
 
     public boolean mouseDragged(MouseEvent e){
-	LOSTool.addLOSEvent(e);
-	LOSTool.layer.repaint();
-	return true;
+        LOSTool.addLOSEvent(e);
+        LOSTool.layer.repaint();
+        return true;
     }
 }
 

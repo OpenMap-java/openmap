@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageAttributeTable.java,v $
-// $Revision: 1.4 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
+// $Revision: 1.5 $ $Date: 2004/01/26 18:18:11 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -45,12 +45,12 @@ public class CoverageAttributeTable {
     private TileDirectory containedTiles[];
     /** the column names in the cat. file */
     private final static String CATColumns[] = {Constants.CAT_COVNAME,
-						Constants.CAT_DESC,
-						Constants.CAT_LEVEL};
+                                                Constants.CAT_DESC,
+                                                Constants.CAT_LEVEL};
     /** expected schema types for the cat. file */
     private final static char CATschematype[] = {DcwColumnInfo.VPF_COLUMN_TEXT,
-						 DcwColumnInfo.VPF_COLUMN_TEXT,
-				        DcwColumnInfo.VPF_COLUMN_INT_OR_SHORT};
+                                                 DcwColumnInfo.VPF_COLUMN_TEXT,
+                                        DcwColumnInfo.VPF_COLUMN_INT_OR_SHORT};
     /** expected schema lengths for cat. file */
     private final static int CATschemalength[] = {-1 /*8*/, -1 /*50*/, 1};
   
@@ -64,28 +64,28 @@ public class CoverageAttributeTable {
      */
     public CoverageAttributeTable(String dcwpath, String libname)
         throws FormatException {
-	libraryname = libname;
-	dirpath = dcwpath + "/" + libraryname;
-	String cat = dirpath + "/cat";
-	if (!BinaryFile.exists(cat)) {
-	    cat = cat + ".";
-	}
+        libraryname = libname;
+        dirpath = dcwpath + "/" + libraryname;
+        String cat = dirpath + "/cat";
+        if (!BinaryFile.exists(cat)) {
+            cat = cat + ".";
+        }
 
-	DcwRecordFile rf = new DcwRecordFile(cat);
-	int catcols[] = rf.lookupSchema(CATColumns, true, CATschematype,
-					CATschemalength, false);
+        DcwRecordFile rf = new DcwRecordFile(cat);
+        int catcols[] = rf.lookupSchema(CATColumns, true, CATschematype,
+                                        CATschemalength, false);
 
-	List l = new ArrayList(rf.getColumnCount());
-	while (rf.parseRow(l)) {
-	    int topL = ((Number)l.get(catcols[2])).intValue();
-	    String desc = (String)l.get(catcols[1]);
-	    String covtype = ((String)l.get(catcols[0])).toLowerCase().intern();
-	    coverages.put(covtype, new CoverageEntry(topL, desc));
-	}
-	rf.close();
-	rf = null;
+        List l = new ArrayList(rf.getColumnCount());
+        while (rf.parseRow(l)) {
+            int topL = ((Number)l.get(catcols[2])).intValue();
+            String desc = (String)l.get(catcols[1]);
+            String covtype = ((String)l.get(catcols[0])).toLowerCase().intern();
+            coverages.put(covtype, new CoverageEntry(topL, desc));
+        }
+        rf.close();
+        rf = null;
 
-	doTileRefStuff(dirpath + "/tileref");
+        doTileRefStuff(dirpath + "/tileref");
     }
 
     /**
@@ -94,7 +94,7 @@ public class CoverageAttributeTable {
      * @return <code>true</code> for tiled coverage.  <code>false</code> else
      */
     public final boolean isTiledCoverage() {
-	return isTiled;
+        return isTiled;
     }
 
     /**
@@ -103,23 +103,23 @@ public class CoverageAttributeTable {
      * @return the name of the library
      */
     public String getLibraryName() {
-	return libraryname;
+        return libraryname;
     }
 
     /** the columns we need in fbr for tiling */
     private static final String[] fbrColumns = {
-	Constants.FBR_XMIN, Constants.FBR_YMIN,
-	Constants.FBR_XMAX, Constants.FBR_YMAX};
+        Constants.FBR_XMIN, Constants.FBR_YMIN,
+        Constants.FBR_XMAX, Constants.FBR_YMAX};
     /** the columns we need in fcs for tiling */
     private static final String[] fcsColumns = {
-	Constants.FCS_FEATURECLASS,
-	Constants.FCS_TABLE1, Constants.FCS_TABLE1KEY,
-	Constants.FCS_TABLE2, Constants.FCS_TABLE2KEY};
+        Constants.FCS_FEATURECLASS,
+        Constants.FCS_TABLE1, Constants.FCS_TABLE1KEY,
+        Constants.FCS_TABLE2, Constants.FCS_TABLE2KEY};
     /** the columns we need in fcs for tiling for DCW */
     private static final String[] fcsColumnsDCW = {
-	Constants.FCS_FEATURECLASS,
-	Constants.FCS_TABLE1, Constants.DCW_FCS_TABLE1KEY,
-	Constants.FCS_TABLE2, Constants.DCW_FCS_TABLE2KEY};
+        Constants.FCS_FEATURECLASS,
+        Constants.FCS_TABLE1, Constants.DCW_FCS_TABLE1KEY,
+        Constants.FCS_TABLE2, Constants.DCW_FCS_TABLE2KEY};
 
     /**
      * an internal function to load the tiling information
@@ -127,9 +127,9 @@ public class CoverageAttributeTable {
      * @param pathname the path to the tile directory
      */
     private void doTileRefStuff(String pathname) {
-	doTileRefStuff(pathname, false);
+        doTileRefStuff(pathname, false);
     }
-	
+        
     /**
      * an internal function to load the tiling information, with an
      * option to use DCW column names.
@@ -138,173 +138,173 @@ public class CoverageAttributeTable {
      * @param DCW use DCW column names.
      */
     private void doTileRefStuff(String pathname, boolean DCW) {
-	String faceIDColumnName = null;
+        String faceIDColumnName = null;
 
-	// Figure out how files names should be constructed...
-	boolean addSlash = true;
-// 	if (pathname.endsWith(File.separator)) {
-	if (pathname.endsWith("/") || pathname.endsWith(File.separator)) {
-	    addSlash = false;
-	}
+        // Figure out how files names should be constructed...
+        boolean addSlash = true;
+//      if (pathname.endsWith(File.separator)) {
+        if (pathname.endsWith("/") || pathname.endsWith(File.separator)) {
+            addSlash = false;
+        }
 
-	//read fcs to figure out what column in tileref.aft we need to use to
-	//read the fbr (face bounding rectangle) table
-	try {
+        //read fcs to figure out what column in tileref.aft we need to use to
+        //read the fbr (face bounding rectangle) table
+        try {
 
-	    String fcsFile = pathname + (addSlash?"/":"") + "fcs";
+            String fcsFile = pathname + (addSlash?"/":"") + "fcs";
 
-	    if (!BinaryFile.exists(fcsFile)) {
-		fcsFile = fcsFile + ".";
-	    }
+            if (!BinaryFile.exists(fcsFile)) {
+                fcsFile = fcsFile + ".";
+            }
 
-	    DcwRecordFile fcs = new DcwRecordFile(fcsFile);
-	    List fcsv = new ArrayList(fcs.getColumnCount());
+            DcwRecordFile fcs = new DcwRecordFile(fcsFile);
+            List fcsv = new ArrayList(fcs.getColumnCount());
 
-	    int fcscols[];
+            int fcscols[];
 
-	    if (!DCW) {
-		fcscols = fcs.lookupSchema(fcsColumns, true);
-	    } else {
-		fcscols = fcs.lookupSchema(fcsColumnsDCW, true);
-	    }
+            if (!DCW) {
+                fcscols = fcs.lookupSchema(fcsColumns, true);
+            } else {
+                fcscols = fcs.lookupSchema(fcsColumnsDCW, true);
+            }
 
-	    while (fcs.parseRow(fcsv)) {
-		String fclass = (String)fcsv.get(fcscols[0]);
-		String table1 = (String)fcsv.get(fcscols[1]);
-		String table1_key = (String)fcsv.get(fcscols[2]);
-		String table2 = (String)fcsv.get(fcscols[3]);
-		String table2_key = (String)fcsv.get(fcscols[4]);
-		if ("tileref".equalsIgnoreCase(fclass) &&
-		    "tileref.aft".equalsIgnoreCase(table1)) {
-		    faceIDColumnName = table1_key.toLowerCase();
-		    break;
-		}
-	    }
-	    fcs.close();
-	} catch (FormatException f) {
-	    // If DCW, we'll get here, need to try lookupSchema with
-	    // proper column names
-	    if (!DCW) doTileRefStuff(pathname, true);
-	    return; 
-	    //either way, return.  The recursive call may have worked.
+            while (fcs.parseRow(fcsv)) {
+                String fclass = (String)fcsv.get(fcscols[0]);
+                String table1 = (String)fcsv.get(fcscols[1]);
+                String table1_key = (String)fcsv.get(fcscols[2]);
+                String table2 = (String)fcsv.get(fcscols[3]);
+                String table2_key = (String)fcsv.get(fcscols[4]);
+                if ("tileref".equalsIgnoreCase(fclass) &&
+                    "tileref.aft".equalsIgnoreCase(table1)) {
+                    faceIDColumnName = table1_key.toLowerCase();
+                    break;
+                }
+            }
+            fcs.close();
+        } catch (FormatException f) {
+            // If DCW, we'll get here, need to try lookupSchema with
+            // proper column names
+            if (!DCW) doTileRefStuff(pathname, true);
+            return; 
+            //either way, return.  The recursive call may have worked.
 
-	} catch (NullPointerException npe) {
-	    return; // file wasn't found...
-	}
+        } catch (NullPointerException npe) {
+            return; // file wasn't found...
+        }
 
-	if (faceIDColumnName == null) {
-	    return;  //won't be able to read the tiling info.  abort
-	}
+        if (faceIDColumnName == null) {
+            return;  //won't be able to read the tiling info.  abort
+        }
 
-	isTiled = true;
+        isTiled = true;
 
-	//Okay, we've got info on what column we use from tileref.aft
-	//to index into the fbr.
-	try {
-	    DcwRecordFile aft = new DcwRecordFile(pathname + (addSlash?"/":"") + "tileref.aft");
-	    int faceIDColumn = aft.whatColumn(faceIDColumnName.toLowerCase());
-	    int tileNameColumn = aft.whatColumn("tile_name");
-	    if ((faceIDColumn == -1) || (tileNameColumn == -1)) {
-		aft.close();
-		return;
-	    }
+        //Okay, we've got info on what column we use from tileref.aft
+        //to index into the fbr.
+        try {
+            DcwRecordFile aft = new DcwRecordFile(pathname + (addSlash?"/":"") + "tileref.aft");
+            int faceIDColumn = aft.whatColumn(faceIDColumnName.toLowerCase());
+            int tileNameColumn = aft.whatColumn("tile_name");
+            if ((faceIDColumn == -1) || (tileNameColumn == -1)) {
+                aft.close();
+                return;
+            }
 
-	    String fbrFile = pathname + (addSlash?"/":"") + "fbr";
-	    if (!BinaryFile.exists(fbrFile)) {
-		fbrFile = fbrFile + ".";
-	    }
-	    DcwRecordFile fbr = new DcwRecordFile(fbrFile);
-	    int fbrIDColumn = fbr.whatColumn(Constants.ID);
+            String fbrFile = pathname + (addSlash?"/":"") + "fbr";
+            if (!BinaryFile.exists(fbrFile)) {
+                fbrFile = fbrFile + ".";
+            }
+            DcwRecordFile fbr = new DcwRecordFile(fbrFile);
+            int fbrIDColumn = fbr.whatColumn(Constants.ID);
 
-	    List aftv = new ArrayList(aft.getColumnCount());
-	    List fbrv = new ArrayList(fbr.getColumnCount());
-	    int fbrcols[] = fbr.lookupSchema(fbrColumns, true);
-	    
-	    // set the array size to record count + 1, to be able to
-	    // use the tileID as the index into the array
+            List aftv = new ArrayList(aft.getColumnCount());
+            List fbrv = new ArrayList(fbr.getColumnCount());
+            int fbrcols[] = fbr.lookupSchema(fbrColumns, true);
+            
+            // set the array size to record count + 1, to be able to
+            // use the tileID as the index into the array
 
-	    // aft.getRecordCount() is not reliable if file is being
-	    // read with a network input stream.  So, we have to
-	    // create the TileDirectory[] a different way.
-// 	    containedTiles = new TileDirectory[aft.getRecordCount() + 1];
-	    // This is part of that solution...
-	    ArrayList tileArrayList = new ArrayList(500);
-	    Object nullTile = new Object();
+            // aft.getRecordCount() is not reliable if file is being
+            // read with a network input stream.  So, we have to
+            // create the TileDirectory[] a different way.
+//          containedTiles = new TileDirectory[aft.getRecordCount() + 1];
+            // This is part of that solution...
+            ArrayList tileArrayList = new ArrayList(500);
+            Object nullTile = new Object();
 
-	    while (aft.parseRow(aftv)) {
-		int fac_num =((Number)aftv.get(faceIDColumn)).intValue();
-		fbr.getRow(fbrv, fac_num); //mutates fbrv
-		int tileid = ((Number)aftv.get(fbrIDColumn)).intValue();
-		String tilename = (String)aftv.get(tileNameColumn);
+            while (aft.parseRow(aftv)) {
+                int fac_num =((Number)aftv.get(faceIDColumn)).intValue();
+                fbr.getRow(fbrv, fac_num); //mutates fbrv
+                int tileid = ((Number)aftv.get(fbrIDColumn)).intValue();
+                String tilename = (String)aftv.get(tileNameColumn);
 
-		char chs[] = tilename.toCharArray();
-		boolean goodTile = false;
-		for (int i = 0; i < chs.length; i++) {
-		    if ((chs[i] != '\\') && (chs[i] != ' ')) {
-			goodTile = true;
-		    }
-		    if (chs[i] == '\\') {
-//  			chs[i] = File.separatorChar;
-			chs[i] = '/'; // we're using BinaryFile, in java land...
-		    }
-		}
-		tilename = new String(chs);
+                char chs[] = tilename.toCharArray();
+                boolean goodTile = false;
+                for (int i = 0; i < chs.length; i++) {
+                    if ((chs[i] != '\\') && (chs[i] != ' ')) {
+                        goodTile = true;
+                    }
+                    if (chs[i] == '\\') {
+//                      chs[i] = File.separatorChar;
+                        chs[i] = '/'; // we're using BinaryFile, in java land...
+                    }
+                }
+                tilename = new String(chs);
 
-		// Part of the URL solution...
-		// This makes sure that the tileid can be used 
-		// for the index.  If the tile is not good, then
-		// nullTile will be set.  If it is good, it will be
-		// replaced.  This will end up putting nullTile at
-		// index 1 if the tileid is 1.
-		while (tileid > tileArrayList.size() - 1) {
-		    tileArrayList.add(nullTile);
-		}
-		// End of solution addition part...
+                // Part of the URL solution...
+                // This makes sure that the tileid can be used 
+                // for the index.  If the tile is not good, then
+                // nullTile will be set.  If it is good, it will be
+                // replaced.  This will end up putting nullTile at
+                // index 1 if the tileid is 1.
+                while (tileid > tileArrayList.size() - 1) {
+                    tileArrayList.add(nullTile);
+                }
+                // End of solution addition part...
 
-		if (!goodTile) {
-		    // Commenting out line is part of the solution, the
-		    // spot is already marked with a nullTile object.
-// 		    containedTiles[tileid] = null;
-		    continue;
-		}
+                if (!goodTile) {
+                    // Commenting out line is part of the solution, the
+                    // spot is already marked with a nullTile object.
+//                  containedTiles[tileid] = null;
+                    continue;
+                }
 
-		float westlon = ((Number)fbrv.get(fbrcols[0])).floatValue();
-		float southlat = ((Number)fbrv.get(fbrcols[1])).floatValue();
-		float eastlon = ((Number)fbrv.get(fbrcols[2])).floatValue();
-		float northlat = ((Number)fbrv.get(fbrcols[3])).floatValue();
+                float westlon = ((Number)fbrv.get(fbrcols[0])).floatValue();
+                float southlat = ((Number)fbrv.get(fbrcols[1])).floatValue();
+                float eastlon = ((Number)fbrv.get(fbrcols[2])).floatValue();
+                float northlat = ((Number)fbrv.get(fbrcols[3])).floatValue();
 
-		//  Again, URL solution...
-// 		containedTiles[tileid] = new TileDirectory(tilename, tileid,
-// 							   northlat, southlat,
-// 							   eastlon, westlon);
+                //  Again, URL solution...
+//              containedTiles[tileid] = new TileDirectory(tilename, tileid,
+//                                                         northlat, southlat,
+//                                                         eastlon, westlon);
 
-		tileArrayList.set(tileid, new TileDirectory(tilename, tileid,
-							    northlat, southlat,
-							    eastlon, westlon));
+                tileArrayList.set(tileid, new TileDirectory(tilename, tileid,
+                                                            northlat, southlat,
+                                                            eastlon, westlon));
 
-	    }
-	    aft.close();
-	    fbr.close();
+            }
+            aft.close();
+            fbr.close();
 
-	    // And this is the resolution of the solution, taking 
-	    // the ArrayList and converting it to a TileDirectory
-	    // array.
-	    containedTiles = new TileDirectory[tileArrayList.size()];
-	    Iterator it = tileArrayList.iterator();
-	    int cnt = 0;
-	    while (it.hasNext()) {
-		Object obj = it.next();
-		if (obj == nullTile) {
-		    containedTiles[cnt++] = null;
-		} else {
-		    containedTiles[cnt++] = (TileDirectory)obj;
-		}
-	    }
+            // And this is the resolution of the solution, taking 
+            // the ArrayList and converting it to a TileDirectory
+            // array.
+            containedTiles = new TileDirectory[tileArrayList.size()];
+            Iterator it = tileArrayList.iterator();
+            int cnt = 0;
+            while (it.hasNext()) {
+                Object obj = it.next();
+                if (obj == nullTile) {
+                    containedTiles[cnt++] = null;
+                } else {
+                    containedTiles[cnt++] = (TileDirectory)obj;
+                }
+            }
 
-	} catch (FormatException f) {
-	    //probably (hopefully?) untiled coverage...
-	    containedTiles = null;
-	}
+        } catch (FormatException f) {
+            //probably (hopefully?) untiled coverage...
+            containedTiles = null;
+        }
     }
 
     /**
@@ -315,7 +315,7 @@ public class CoverageAttributeTable {
      */
     public String getCoverageDescription(String covname) {
         CoverageEntry ce = (CoverageEntry)coverages.get(covname);
-	return (ce == null) ? null : ce.getDescription();
+        return (ce == null) ? null : ce.getDescription();
     }
     
     /**
@@ -325,7 +325,7 @@ public class CoverageAttributeTable {
      */
     public int getCoverageTopologyLevel(String covname) {
         CoverageEntry ce = (CoverageEntry)coverages.get(covname);
-	return (ce == null) ? -1 : ce.getTopologyLevel();
+        return (ce == null) ? -1 : ce.getTopologyLevel();
     }
 
     /**
@@ -336,24 +336,24 @@ public class CoverageAttributeTable {
      */
     public CoverageTable getCoverageTable(String covname) {
         CoverageEntry ce = (CoverageEntry)coverages.get(covname);
-	if (ce != null) {
-	    if (ce.getCoverageTable() == null) {
-		ce.setCoverageTable(new CoverageTable(dirpath,
-						      covname.intern(),
-						      this));
-		if (Debug.debugging("vpf")) {
-		    Debug.output("Created new coveragetable for " +
-				 covname + ": " + ce.description);
-		}
-	    } else {
-		if (Debug.debugging("vpf")) {
-		    Debug.output("Using cached coveragetable for " +
-				 covname + ": " + ce.description);
-		}
-	    }
-	    return ce.getCoverageTable();
-	}
-	return null;
+        if (ce != null) {
+            if (ce.getCoverageTable() == null) {
+                ce.setCoverageTable(new CoverageTable(dirpath,
+                                                      covname.intern(),
+                                                      this));
+                if (Debug.debugging("vpf")) {
+                    Debug.output("Created new coveragetable for " +
+                                 covname + ": " + ce.description);
+                }
+            } else {
+                if (Debug.debugging("vpf")) {
+                    Debug.output("Using cached coveragetable for " +
+                                 covname + ": " + ce.description);
+                }
+            }
+            return ce.getCoverageTable();
+        }
+        return null;
     }
 
     /**
@@ -366,29 +366,29 @@ public class CoverageAttributeTable {
      * @return a vector of TileDirectories
      */
     public List tilesInRegion(float n, float s, float e, float w) {
-	if (containedTiles == null) {
-	    return null;
-	}
-	List retval = new ArrayList();
-	int numTiles = containedTiles.length;
-	for (int i = 0; i < numTiles; i ++ ) {
-	    TileDirectory tile = containedTiles[i];
-	    if (tile != null && tile.inRegion(n,s,e,w)) {
-		retval.add(tile);
-	    }
-	}
-	return retval;
+        if (containedTiles == null) {
+            return null;
+        }
+        List retval = new ArrayList();
+        int numTiles = containedTiles.length;
+        for (int i = 0; i < numTiles; i ++ ) {
+            TileDirectory tile = containedTiles[i];
+            if (tile != null && tile.inRegion(n,s,e,w)) {
+                retval.add(tile);
+            }
+        }
+        return retval;
     }
   
     /**
      * Get the TileDirectory with the given ID number.
      */
     public TileDirectory getTileWithID(int id) {
-	try {
-	    return containedTiles[id];
-	} catch (ArrayIndexOutOfBoundsException aioobe) {
-	    return null;
-	}
+        try {
+            return containedTiles[id];
+        } catch (ArrayIndexOutOfBoundsException aioobe) {
+            return null;
+        }
     }
 
     /**
@@ -397,11 +397,11 @@ public class CoverageAttributeTable {
      * the tile doesn't really exist (that really shouldn't happen).
      */
     public TileDirectory getTileWithID(String id) {
-	try {
-	    return getTileWithID(Integer.parseInt(id));
-	} catch (NumberFormatException nfe) {
-	    return null;
-	}
+        try {
+            return getTileWithID(Integer.parseInt(id));
+        } catch (NumberFormatException nfe) {
+            return null;
+        }
     }
 
     /**
@@ -434,49 +434,49 @@ public class CoverageAttributeTable {
         /** the CoverageTable for this coverage type */
         private CoverageTable covtable;
         /**
-	 * Create a coverage entry without a coverage table
-	 * @param topologyLevel the topology level for this coverageentry
-	 * @param desc the description for this entry
-	 */
+         * Create a coverage entry without a coverage table
+         * @param topologyLevel the topology level for this coverageentry
+         * @param desc the description for this entry
+         */
         public CoverageEntry(int topologyLevel, String desc) {
-	    this(topologyLevel, desc, null);
-	}
+            this(topologyLevel, desc, null);
+        }
         /**
-	 * Create a coverage entry with an initial coverage table
-	 * @param topologyLevel the topology level for this coverageentry
-	 * @param desc the description for this entry
-	 * @param covtable the coveragetable for this entry
-	 */
+         * Create a coverage entry with an initial coverage table
+         * @param topologyLevel the topology level for this coverageentry
+         * @param desc the description for this entry
+         * @param covtable the coveragetable for this entry
+         */
         public CoverageEntry(int topologyLevel, String desc,
-			     CoverageTable covtable) {
-	    this.tLevel = topologyLevel;
-	    this.description = desc;
-	    this.covtable = covtable;
-	}
+                             CoverageTable covtable) {
+            this.tLevel = topologyLevel;
+            this.description = desc;
+            this.covtable = covtable;
+        }
         /**
-	 * Get the topology level for this entry
-	 */
+         * Get the topology level for this entry
+         */
         public int getTopologyLevel() {
-	    return tLevel;
-	}
+            return tLevel;
+        }
         /**
-	 * Get the description for this entry
-	 */
+         * Get the description for this entry
+         */
         public String getDescription() {
-	    return description;
-	}
+            return description;
+        }
         /**
-	 * Get the associated coveragetable
-	 */
+         * Get the associated coveragetable
+         */
         public CoverageTable getCoverageTable() {
-	    return covtable;
-	}
+            return covtable;
+        }
         /**
-	 * Set the associated coveragetable
-	 * @param covtable the new coveragetable
-	 */
+         * Set the associated coveragetable
+         * @param covtable the new coveragetable
+         */
         /*package*/ void setCoverageTable(CoverageTable covtable) {
-	    this.covtable = covtable;
-	}
+            this.covtable = covtable;
+        }
     }
 }

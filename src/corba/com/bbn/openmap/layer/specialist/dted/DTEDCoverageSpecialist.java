@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/dted/DTEDCoverageSpecialist.java,v $
 // $RCSfile: DTEDCoverageSpecialist.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/24 03:48:07 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,14 +54,14 @@ public class DTEDCoverageSpecialist extends Specialist {
     
     /** The paths to the DTED directories, telling where the data is. */
     protected String[] paths = {
-	"/mnt/cdrom/dted",
-	"/mnt/disk/dted"
+        "/mnt/cdrom/dted",
+        "/mnt/disk/dted"
     };
     /** The paths to the DTED Level 2 directories, telling where the
      * data is. */
     protected String[] paths2 = {
-	"/mnt/cdrom/dted_level2",
-	"/mnt/disk/dted_level2"
+        "/mnt/cdrom/dted_level2",
+        "/mnt/disk/dted_level2"
     };
 
     /** Flag to tell the cache to return the coverage for level 0 dted. */
@@ -149,17 +149,17 @@ public class DTEDCoverageSpecialist extends Specialist {
      * are set to their default values.
      * */
     public DTEDCoverageSpecialist() {
-	super("DTEDCoverageSpecialist", (short)2, false);
+        super("DTEDCoverageSpecialist", (short)2, false);
     }
 
     protected void init() {
-	System.out.println("DTEDCoverageSpecialist: Figuring out which DTED frames exist! (This is a one-time operation!)");
-	System.out.println("Scanning for frames - This could take over (2) minutes!");
+        System.out.println("DTEDCoverageSpecialist: Figuring out which DTED frames exist! (This is a one-time operation!)");
+        System.out.println("Scanning for frames - This could take over (2) minutes!");
 
-	coverageManager = new DTEDCoverageManager(paths, paths2, 
-		coverageURL, coverageFile);
-	coverageManager.setPaint(level0Color, level1Color, level2Color, 
-		opaqueness, fillRects);
+        coverageManager = new DTEDCoverageManager(paths, paths2, 
+                coverageURL, coverageFile);
+        coverageManager.setPaint(level0Color, level1Color, level2Color, 
+                opaqueness, fillRects);
     }
 
     /**
@@ -170,48 +170,48 @@ public class DTEDCoverageSpecialist extends Specialist {
      */
     public void setProperties(String prefix, java.util.Properties properties) {
 
-	paths = initPathsFromProperties(properties.getProperty(prefix + DTEDPathsProperty));
-	paths2 = initPathsFromProperties(properties.getProperty(prefix + DTED2PathsProperty));
+        paths = initPathsFromProperties(properties.getProperty(prefix + DTEDPathsProperty));
+        paths2 = initPathsFromProperties(properties.getProperty(prefix + DTED2PathsProperty));
 
-	coverageFile = properties.getProperty(prefix + CoverageFileProperty);
-	coverageURL = properties.getProperty(prefix + CoverageURLProperty);
+        coverageFile = properties.getProperty(prefix + CoverageFileProperty);
+        coverageURL = properties.getProperty(prefix + CoverageURLProperty);
 
-	String fillString = properties.getProperty(prefix + FillProperty);
-	if (fillString != null)
-	    fillRects = Boolean.valueOf(fillString).booleanValue();
+        String fillString = properties.getProperty(prefix + FillProperty);
+        if (fillString != null)
+            fillRects = Boolean.valueOf(fillString).booleanValue();
 
-	String opaqueString = properties.getProperty(prefix + OpaquenessProperty);
-	try {
-	    opaqueness = Integer.valueOf(opaqueString).intValue();
-	} catch (NumberFormatException e) {
-	    System.err.println("Unable to parse " + OpaquenessProperty +
-			       " = " + opaqueString);
-	    opaqueness = DTEDFrameColorTable.DEFAULT_OPAQUENESS;
-	}
+        String opaqueString = properties.getProperty(prefix + OpaquenessProperty);
+        try {
+            opaqueness = Integer.valueOf(opaqueString).intValue();
+        } catch (NumberFormatException e) {
+            System.err.println("Unable to parse " + OpaquenessProperty +
+                               " = " + opaqueString);
+            opaqueness = DTEDFrameColorTable.DEFAULT_OPAQUENESS;
+        }
 
-	level0Color = parseColor(properties,
-				 prefix + Level0ColorProperty,
-				 defaultLevel0Color);
+        level0Color = parseColor(properties,
+                                 prefix + Level0ColorProperty,
+                                 defaultLevel0Color);
 
-	level1Color = parseColor(properties,
-				 prefix + Level1ColorProperty,
-				 defaultLevel1Color);
+        level1Color = parseColor(properties,
+                                 prefix + Level1ColorProperty,
+                                 defaultLevel1Color);
 
-	level2Color = parseColor(properties,
-				 prefix + Level2ColorProperty,
-				 defaultLevel2Color);
+        level2Color = parseColor(properties,
+                                 prefix + Level2ColorProperty,
+                                 defaultLevel2Color);
 
-	String showLevel0String = properties.getProperty(prefix + ShowLevel0Property);
-	if (showLevel0String != null)
-	    showDTEDLevel0 = Boolean.valueOf(showLevel0String).booleanValue();
+        String showLevel0String = properties.getProperty(prefix + ShowLevel0Property);
+        if (showLevel0String != null)
+            showDTEDLevel0 = Boolean.valueOf(showLevel0String).booleanValue();
 
-	String showLevel1String = properties.getProperty(prefix + ShowLevel1Property);
-	if (showLevel1String != null)
-	    showDTEDLevel1 = Boolean.valueOf(showLevel1String).booleanValue();
+        String showLevel1String = properties.getProperty(prefix + ShowLevel1Property);
+        if (showLevel1String != null)
+            showDTEDLevel1 = Boolean.valueOf(showLevel1String).booleanValue();
 
-	String showLevel2String = properties.getProperty(prefix + ShowLevel2Property);
-	if (showLevel2String != null)
-	    showDTEDLevel2 = Boolean.valueOf(showLevel2String).booleanValue();
+        String showLevel2String = properties.getProperty(prefix + ShowLevel2Property);
+        if (showLevel2String != null)
+            showDTEDLevel2 = Boolean.valueOf(showLevel2String).booleanValue();
     }
 
     /**  
@@ -222,23 +222,23 @@ public class DTEDCoverageSpecialist extends Specialist {
      * @return Array of strings representing paths to dted directories.
      * */
     protected String[] initPathsFromProperties(String rawPaths) {
-	String[] retPaths = null;
-	if (rawPaths != null) {
+        String[] retPaths = null;
+        if (rawPaths != null) {
 
-	    try {
-		StringTokenizer token = new StringTokenizer(rawPaths, File.pathSeparator);
-		int numPaths = token.countTokens();
-		
-		retPaths = new String[numPaths];
-		for (int i = 0; i < numPaths; i++) {
-		    retPaths[i] = token.nextToken();
-		}		    
-		return retPaths;
-	    } catch (java.util.NoSuchElementException e) {
-		e.printStackTrace();
-	    }
-	}
-	return retPaths;
+            try {
+                StringTokenizer token = new StringTokenizer(rawPaths, File.pathSeparator);
+                int numPaths = token.countTokens();
+                
+                retPaths = new String[numPaths];
+                for (int i = 0; i < numPaths; i++) {
+                    retPaths[i] = token.nextToken();
+                }                   
+                return retPaths;
+            } catch (java.util.NoSuchElementException e) {
+                e.printStackTrace();
+            }
+        }
+        return retPaths;
     }
 
     /**
@@ -251,18 +251,18 @@ public class DTEDCoverageSpecialist extends Specialist {
      * @return the java Color.
      * */
     protected Color parseColor(Properties p, String propName, Color dfault) {
-	String colorString = p.getProperty(propName);
-	if (colorString == null) {
-	    return dfault;
-	} else {
-	    try {
-		return parseColor(colorString);
-	    } catch (NumberFormatException e) {
-		System.err.println("Unparseable number \"" + colorString +
-				   "\" in property \"" + propName + "\"");
-		return dfault;
-	    }
-	}
+        String colorString = p.getProperty(propName);
+        if (colorString == null) {
+            return dfault;
+        } else {
+            try {
+                return parseColor(colorString);
+            } catch (NumberFormatException e) {
+                System.err.println("Unparseable number \"" + colorString +
+                                   "\" in property \"" + propName + "\"");
+                return dfault;
+            }
+        }
     }
 
     /**
@@ -273,213 +273,213 @@ public class DTEDCoverageSpecialist extends Specialist {
      * @return the java Color.
      * */
     protected Color parseColor(String colorString)
-	throws NumberFormatException
+        throws NumberFormatException
     {
-	// parse color as hexidecimal RGB value
-	int colorSpec = Integer.parseInt(colorString, 16);
-	if (colorSpec < 0) {
-	    return OMGraphic.clear;
-	} else {
-	    return new Color(colorSpec);
-	}
+        // parse color as hexidecimal RGB value
+        int colorSpec = Integer.parseInt(colorString, 16);
+        if (colorSpec < 0) {
+            return OMGraphic.clear;
+        } else {
+            return new Color(colorSpec);
+        }
     }
 
 
     public UGraphic[] fillRectangle(com.bbn.openmap.CSpecialist.CProjection p,
-				    com.bbn.openmap.CSpecialist.LLPoint ll1,
-				    com.bbn.openmap.CSpecialist.LLPoint ll2,
-				    String staticArgs,
-				    org.omg.CORBA.StringHolder dynamicArgs,
-				    com.bbn.openmap.CSpecialist.GraphicChange notifyOnChange,
-				    String uniqueID)
+                                    com.bbn.openmap.CSpecialist.LLPoint ll1,
+                                    com.bbn.openmap.CSpecialist.LLPoint ll2,
+                                    String staticArgs,
+                                    org.omg.CORBA.StringHolder dynamicArgs,
+                                    com.bbn.openmap.CSpecialist.GraphicChange notifyOnChange,
+                                    String uniqueID)
     {
-	System.out.println("DTEDCoverageSpecialist.fillRectangle()");
+        System.out.println("DTEDCoverageSpecialist.fillRectangle()");
 
 
-	Projection proj;
-	switch (p.kind) {
-	    case CADRG.CADRGType:
-		proj = new CADRG(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height);
-		break;
-	    case Orthographic.OrthographicType:
-		proj = new Orthographic(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height);
-		break;
-	    case Gnomonic.GnomonicType:
-		proj = new Gnomonic(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height);
-		break;
-	    case Mercator.MercatorType:
-	    default:
-		proj = new Mercator(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height);
-		break;
-	}
+        Projection proj;
+        switch (p.kind) {
+            case CADRG.CADRGType:
+                proj = new CADRG(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height);
+                break;
+            case Orthographic.OrthographicType:
+                proj = new Orthographic(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height);
+                break;
+            case Gnomonic.GnomonicType:
+                proj = new Gnomonic(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height);
+                break;
+            case Mercator.MercatorType:
+            default:
+                proj = new Mercator(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height);
+                break;
+        }
 
-	OMGraphicList[] omGraphicLists = coverageManager.getCoverageRects(proj);
+        OMGraphicList[] omGraphicLists = coverageManager.getCoverageRects(proj);
 
-	/////////////////////
-	// safe quit
-	if (omGraphicLists != null) {
+        /////////////////////
+        // safe quit
+        if (omGraphicLists != null) {
 
-	    UGraphic[] level0UGraphics = null;
-	    UGraphic[] level1UGraphics = null;
-	    UGraphic[] level2UGraphics = null;
+            UGraphic[] level0UGraphics = null;
+            UGraphic[] level1UGraphics = null;
+            UGraphic[] level2UGraphics = null;
 
-	    for (int i = 0; i < omGraphicLists.length; i++) {
-		if (i == 0 && showDTEDLevel0) {
-		    level0UGraphics = createUGraphics(omGraphicLists[i]);
-		} else if (i == 1 && showDTEDLevel1) {
-		    level1UGraphics = createUGraphics(omGraphicLists[i]);
-		} else if (i == 2 && showDTEDLevel2) {
-		    level2UGraphics = createUGraphics(omGraphicLists[i]);
-		}
-	    }
+            for (int i = 0; i < omGraphicLists.length; i++) {
+                if (i == 0 && showDTEDLevel0) {
+                    level0UGraphics = createUGraphics(omGraphicLists[i]);
+                } else if (i == 1 && showDTEDLevel1) {
+                    level1UGraphics = createUGraphics(omGraphicLists[i]);
+                } else if (i == 2 && showDTEDLevel2) {
+                    level2UGraphics = createUGraphics(omGraphicLists[i]);
+                }
+            }
 
-	    UGraphic[] ugraphics = new UGraphic[
-		level0UGraphics.length + level1UGraphics.length + level2UGraphics.length];
-	    int off = 0;
-	    System.arraycopy(
-		    level0UGraphics, 0,
-		    ugraphics, off,
-		    level0UGraphics.length);
-	    off += level0UGraphics.length;
-	    System.arraycopy(
-		    level1UGraphics, 0,
-		    ugraphics, off,
-		    level1UGraphics.length);
-	    off += level1UGraphics.length;
-	    System.arraycopy(
-		    level2UGraphics, 0,
-		    ugraphics, off,
-		    level2UGraphics.length);
+            UGraphic[] ugraphics = new UGraphic[
+                level0UGraphics.length + level1UGraphics.length + level2UGraphics.length];
+            int off = 0;
+            System.arraycopy(
+                    level0UGraphics, 0,
+                    ugraphics, off,
+                    level0UGraphics.length);
+            off += level0UGraphics.length;
+            System.arraycopy(
+                    level1UGraphics, 0,
+                    ugraphics, off,
+                    level1UGraphics.length);
+            off += level1UGraphics.length;
+            System.arraycopy(
+                    level2UGraphics, 0,
+                    ugraphics, off,
+                    level2UGraphics.length);
 
-	    System.out.println(
-	      "DTEDCoverageSpecialist.fillRectangle(): returning "+ugraphics.length+" graphics");
-	    return ugraphics;
-	} else  {
-	    System.out.println(
-	      "DTEDCoverageSpecialist.fillRectangle(): finished with null graphics list");
-	    return new UGraphic[0];
-	}
+            System.out.println(
+              "DTEDCoverageSpecialist.fillRectangle(): returning "+ugraphics.length+" graphics");
+            return ugraphics;
+        } else  {
+            System.out.println(
+              "DTEDCoverageSpecialist.fillRectangle(): finished with null graphics list");
+            return new UGraphic[0];
+        }
     }
 
     public void signOff(String uniqueID) {
-	System.out.println("DTEDCoverageSpecialist.signOff()");
+        System.out.println("DTEDCoverageSpecialist.signOff()");
     }
 
 
     protected UGraphic[] createUGraphics(OMGraphicList omgraphics) {
-	int len = omgraphics.size();
-	UGraphic[] ugraphics = new UGraphic[len];
-	ERectangle er;
-	OMGraphic gr;
-	OMRect omr;
-	int lineColor, fillColor;
-	EGraphic eg;
-	UGraphic ug;
-	for (int i=0; i<len; i++) {
-	    gr = omgraphics.getOMGraphicAt(i);
-	    if (gr instanceof OMRect) {
-		omr = (OMRect)gr;
-		eg = SGraphic.createEGraphic();
-		lineColor = omr.getLineColor().getRGB();
-		eg.color = new EColor(null,
-			(short)((lineColor&0xff0000)>>8),
-			(short) (lineColor&0x00ff00),
-			(short)((lineColor&0x0000ff)<<8));
-		if (fillRects) {
-		    fillColor = omr.getFillColor().getRGB();
-		    eg.fillColor = new EColor(null,
-			    (short)((fillColor&0xff0000)>>8),
-			    (short) (fillColor&0x00ff00),
-			    (short)((fillColor&0x0000ff)<<8));
-		}
-		er = new ERectangle(
-			eg, nullP1, nullP1,
-			new LLPoint(omr.getNorthLat(), omr.getWestLon()),
-			new LLPoint(omr.getSouthLat(), omr.getEastLon()));
-		ug = new UGraphic();
-		ug.erect(er);
-		ugraphics[i] = ug;
-	    } else {
-		// Deal with embeded OMGraphicList.  HACK this is
-		// inefficient if there are a bunch of embedded
-		// OMGrahicLists...
-		UGraphic[] x_ugraphics = createUGraphics((OMGraphicList)gr);
-		len = x_ugraphics.length + ugraphics.length-1;
-		UGraphic[] new_ugraphics = new UGraphic[len];
-		System.arraycopy(ugraphics, 0, new_ugraphics, 0, i);
-		System.arraycopy(x_ugraphics, 0, new_ugraphics, i, x_ugraphics.length);
+        int len = omgraphics.size();
+        UGraphic[] ugraphics = new UGraphic[len];
+        ERectangle er;
+        OMGraphic gr;
+        OMRect omr;
+        int lineColor, fillColor;
+        EGraphic eg;
+        UGraphic ug;
+        for (int i=0; i<len; i++) {
+            gr = omgraphics.getOMGraphicAt(i);
+            if (gr instanceof OMRect) {
+                omr = (OMRect)gr;
+                eg = SGraphic.createEGraphic();
+                lineColor = omr.getLineColor().getRGB();
+                eg.color = new EColor(null,
+                        (short)((lineColor&0xff0000)>>8),
+                        (short) (lineColor&0x00ff00),
+                        (short)((lineColor&0x0000ff)<<8));
+                if (fillRects) {
+                    fillColor = omr.getFillColor().getRGB();
+                    eg.fillColor = new EColor(null,
+                            (short)((fillColor&0xff0000)>>8),
+                            (short) (fillColor&0x00ff00),
+                            (short)((fillColor&0x0000ff)<<8));
+                }
+                er = new ERectangle(
+                        eg, nullP1, nullP1,
+                        new LLPoint(omr.getNorthLat(), omr.getWestLon()),
+                        new LLPoint(omr.getSouthLat(), omr.getEastLon()));
+                ug = new UGraphic();
+                ug.erect(er);
+                ugraphics[i] = ug;
+            } else {
+                // Deal with embeded OMGraphicList.  HACK this is
+                // inefficient if there are a bunch of embedded
+                // OMGrahicLists...
+                UGraphic[] x_ugraphics = createUGraphics((OMGraphicList)gr);
+                len = x_ugraphics.length + ugraphics.length-1;
+                UGraphic[] new_ugraphics = new UGraphic[len];
+                System.arraycopy(ugraphics, 0, new_ugraphics, 0, i);
+                System.arraycopy(x_ugraphics, 0, new_ugraphics, i, x_ugraphics.length);
 
-		i+=x_ugraphics.length;
-		ugraphics = new_ugraphics;
-	    }
-	}
-	return ugraphics;
+                i+=x_ugraphics.length;
+                ugraphics = new_ugraphics;
+            }
+        }
+        return ugraphics;
     }
 
 
     public void printHelp() {
-	System.err.println(
-		"usage: java [java/vbj args] <specialist class> [specialist args]");
-	System.err.println("");
-	System.err.println(
-		"	Java Args:");
-	System.err.println(
-		"	-mx<NUM>m		Set max Java heap in Megs");
-	System.err.println(
-		"	...");
-	System.err.println("");
-	System.err.println(
-		"	VBJ Args:");
-	System.err.println(
-		"	-DORBmbufSize=4194304	Define the VBJ buffer size");
-	System.err.println(
-		"	-DORBdebug		Enable VBJ debugging");
-	System.err.println(
-		"	...");
-	System.err.println("");
-	System.err.println(
-		"	Specialist Args:");
-	System.err.println(
-		"	-ior <iorfile>			IOR file (MUST SPECIFY)");
-	System.err.println(
-		"	-covfile <covfile>		Coverage file (R/W)");
-	System.err.println(
-		"	-dtedpaths \"<path1> ...\"	Path to search for DTED data");
-	System.err.println(
-		"	-dted2paths \"<path1> ...\"	Path to search for DTED level2 data");
-	System.exit(1);
+        System.err.println(
+                "usage: java [java/vbj args] <specialist class> [specialist args]");
+        System.err.println("");
+        System.err.println(
+                "       Java Args:");
+        System.err.println(
+                "       -mx<NUM>m               Set max Java heap in Megs");
+        System.err.println(
+                "       ...");
+        System.err.println("");
+        System.err.println(
+                "       VBJ Args:");
+        System.err.println(
+                "       -DORBmbufSize=4194304   Define the VBJ buffer size");
+        System.err.println(
+                "       -DORBdebug              Enable VBJ debugging");
+        System.err.println(
+                "       ...");
+        System.err.println("");
+        System.err.println(
+                "       Specialist Args:");
+        System.err.println(
+                "       -ior <iorfile>                  IOR file (MUST SPECIFY)");
+        System.err.println(
+                "       -covfile <covfile>              Coverage file (R/W)");
+        System.err.println(
+                "       -dtedpaths \"<path1> ...\"      Path to search for DTED data");
+        System.err.println(
+                "       -dted2paths \"<path1> ...\"     Path to search for DTED level2 data");
+        System.exit(1);
     }
 
     private String[] getPaths(String str) {
-	StringTokenizer tok = new StringTokenizer(str);
-	int len = tok.countTokens();
-	String[] paths = new String[len];
-	for (int j=0; j<len; j++) {
-	    paths[j] = tok.nextToken();
-	}
-	return paths;
+        StringTokenizer tok = new StringTokenizer(str);
+        int len = tok.countTokens();
+        String[] paths = new String[len];
+        for (int j=0; j<len; j++) {
+            paths[j] = tok.nextToken();
+        }
+        return paths;
     }
 
     public void parseArgs(String[] args) {
-	for (int i = 0; i < args.length; i++) {
-	    if (args[i].equalsIgnoreCase("-dtedpaths")) {
-		paths = getPaths(args[++i]);
-	    } else if (args[i].equalsIgnoreCase("-dted2paths")) {
-		paths2 = getPaths(args[++i]);
-	    } else if (args[i].equalsIgnoreCase("-covfile")) {
-		coverageFile = args[++i];
-	    }
-	}
-	super.parseArgs(args);
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equalsIgnoreCase("-dtedpaths")) {
+                paths = getPaths(args[++i]);
+            } else if (args[i].equalsIgnoreCase("-dted2paths")) {
+                paths2 = getPaths(args[++i]);
+            } else if (args[i].equalsIgnoreCase("-covfile")) {
+                coverageFile = args[++i];
+            }
+        }
+        super.parseArgs(args);
     }
 
     public static void main(String[] args) {
-	Debug.init(System.getProperties());
+        Debug.init(System.getProperties());
 
-	// Create the specialist server
-	DTEDCoverageSpecialist srv = new DTEDCoverageSpecialist();
-	srv.parseArgs(args);
-	srv.init();
-	srv.start(null);
+        // Create the specialist server
+        DTEDCoverageSpecialist srv = new DTEDCoverageSpecialist();
+        srv.parseArgs(args);
+        srv.init();
+        srv.start(null);
     }
 }

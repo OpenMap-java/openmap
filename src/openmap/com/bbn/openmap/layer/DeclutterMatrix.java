@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DeclutterMatrix.java,v $
 // $RCSfile: DeclutterMatrix.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:25 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -33,6 +33,9 @@
  *
  *  Modification history:
  *  $Log: DeclutterMatrix.java,v $
+ *  Revision 1.3  2004/01/26 18:18:08  dietrick
+ *  Untabified
+ *
  *  Revision 1.2  2003/12/23 20:43:25  wjeuerle
  *  no code changes, updated javadoc comments to fix javadoc warnings
  *
@@ -185,155 +188,155 @@ public class DeclutterMatrix {
      * around a decluttermatrix tile. 
      */
     public static class PositionParameters { 
-	public int position; // should be one of the DCP variables
-	public int ewindex;
-	public int nsindex; 
-	public int direction; // should be one of the DCD_ variables
-	
-	public PositionParameters(int pos, int ewindx, int nsindx, int direc){
-	    position = pos;
-	    ewindex = ewindx;
-	    nsindex = nsindx;
-	    direction = direc;
-	}
+        public int position; // should be one of the DCP variables
+        public int ewindex;
+        public int nsindex; 
+        public int direction; // should be one of the DCD_ variables
+        
+        public PositionParameters(int pos, int ewindx, int nsindx, int direc){
+            position = pos;
+            ewindex = ewindx;
+            nsindex = nsindx;
+            direction = direc;
+        }
     }
 
     /** This is an ordering of the possible positions around a matrix tile.  */
     public final static PositionParameters dcPos[] = new PositionParameters[9];
 
     static {     // Now initialize it. 
-	dcPos[0] = new PositionParameters(DCP_EAST, 1, 0, DCD_NS);
-	dcPos[1] = new PositionParameters(DCP_NORTH, 0, -1, DCD_EW);
-	dcPos[2] = new PositionParameters(DCP_SOUTH, 0, 1, DCD_EW);
-	dcPos[3] = new PositionParameters(DCP_WEST, -1, 0, DCD_NS);
-	dcPos[4] = new PositionParameters(DCP_NEAST, 1, -1, DCD_NONE);
-	dcPos[5] = new PositionParameters(DCP_SEAST, 1, 1, DCD_NONE);
-	dcPos[6] = new PositionParameters(DCP_SWEST, -1, 1, DCD_NONE);
-	dcPos[7] = new PositionParameters(DCP_NWEST, -1, -1, DCD_NONE);
-	dcPos[8] = new PositionParameters(DCP_MIDDLE, 0, 0, DCD_NONE);
+        dcPos[0] = new PositionParameters(DCP_EAST, 1, 0, DCD_NS);
+        dcPos[1] = new PositionParameters(DCP_NORTH, 0, -1, DCD_EW);
+        dcPos[2] = new PositionParameters(DCP_SOUTH, 0, 1, DCD_EW);
+        dcPos[3] = new PositionParameters(DCP_WEST, -1, 0, DCD_NS);
+        dcPos[4] = new PositionParameters(DCP_NEAST, 1, -1, DCD_NONE);
+        dcPos[5] = new PositionParameters(DCP_SEAST, 1, 1, DCD_NONE);
+        dcPos[6] = new PositionParameters(DCP_SWEST, -1, 1, DCD_NONE);
+        dcPos[7] = new PositionParameters(DCP_NWEST, -1, -1, DCD_NONE);
+        dcPos[8] = new PositionParameters(DCP_MIDDLE, 0, 0, DCD_NONE);
     }
     
     public class MatrixIndexes {
 
-	public boolean withinMatrix = false;
-	public boolean partial = false;
-	public int xStart = 0;
-	public int yStart = 0;
-	public int xEnd = 0;
-	public int yEnd = 0;
+        public boolean withinMatrix = false;
+        public boolean partial = false;
+        public int xStart = 0;
+        public int yStart = 0;
+        public int xEnd = 0;
+        public int yEnd = 0;
 
-	public int origXIndex = -1;
-	public int origYIndex = -1;
-	public int origIndexLength = 1;
-	public int origIndexHeight = 1;
-	
-	public MatrixIndexes(){}
+        public int origXIndex = -1;
+        public int origYIndex = -1;
+        public int origIndexLength = 1;
+        public int origIndexHeight = 1;
+        
+        public MatrixIndexes(){}
 
-	public boolean setFromPixels(int pixelXLocation, int pixelYLocation,
-				     int pixelLength, int pixelHeight){
-	    int objXIndex = pixelXLocation/x_pix_interval;
-	    int objYIndex = pixelYLocation/y_pix_interval;
-	    int objLength = (int)Math.ceil((double)pixelLength/
-					(double)x_pix_interval);
-	    int objHeight = (int)Math.ceil((double)pixelHeight/
-					(double)y_pix_interval);
-	    return set(objXIndex, objYIndex, 
-		       objLength, objHeight);
-	}
+        public boolean setFromPixels(int pixelXLocation, int pixelYLocation,
+                                     int pixelLength, int pixelHeight){
+            int objXIndex = pixelXLocation/x_pix_interval;
+            int objYIndex = pixelYLocation/y_pix_interval;
+            int objLength = (int)Math.ceil((double)pixelLength/
+                                        (double)x_pix_interval);
+            int objHeight = (int)Math.ceil((double)pixelHeight/
+                                        (double)y_pix_interval);
+            return set(objXIndex, objYIndex, 
+                       objLength, objHeight);
+        }
 
-	public boolean setFromPixels(int pixelXLocation, int pixelYLocation){
-	    int objXIndex = pixelXLocation/x_pix_interval;
-	    int objYIndex = pixelYLocation/y_pix_interval;
-	    return set(objXIndex, objYIndex, 
-		       origIndexLength, origIndexHeight);
-	}
+        public boolean setFromPixels(int pixelXLocation, int pixelYLocation){
+            int objXIndex = pixelXLocation/x_pix_interval;
+            int objYIndex = pixelYLocation/y_pix_interval;
+            return set(objXIndex, objYIndex, 
+                       origIndexLength, origIndexHeight);
+        }
 
-	public boolean set(int objXIndex, int objYIndex){
-	    objXIndex = objXIndex;
-	    objYIndex = objYIndex;
-	    return set(objXIndex, objYIndex, origIndexLength, origIndexHeight);
-	}
+        public boolean set(int objXIndex, int objYIndex){
+            objXIndex = objXIndex;
+            objYIndex = objYIndex;
+            return set(objXIndex, objYIndex, origIndexLength, origIndexHeight);
+        }
 
-	public boolean set(int objXIndex,
-			   int objYIndex,
-			   int objIndexLength,
-			   int objIndexHeight){
+        public boolean set(int objXIndex,
+                           int objYIndex,
+                           int objIndexLength,
+                           int objIndexHeight){
 
-	    // Save as reference
-	    origXIndex = objXIndex;
-	    origYIndex = objYIndex;
+            // Save as reference
+            origXIndex = objXIndex;
+            origYIndex = objYIndex;
 
-	    // This may be redundant, but so what.  It's too hard to
-	    // tell...
-	    origIndexLength = objIndexLength;
-	    origIndexHeight = objIndexHeight;
-	    
-	    withinMatrix = objOnMatrix(objXIndex, objYIndex, 
-				       objIndexLength, objIndexHeight);
-	    if (!withinMatrix){
-		return false;
-	    }
+            // This may be redundant, but so what.  It's too hard to
+            // tell...
+            origIndexLength = objIndexLength;
+            origIndexHeight = objIndexHeight;
+            
+            withinMatrix = objOnMatrix(objXIndex, objYIndex, 
+                                       objIndexLength, objIndexHeight);
+            if (!withinMatrix){
+                return false;
+            }
 
-	    // End variables refer to an end index
-	    partial = false;
-	    // Set the end of the check - if the end sticks out past the
-	    // matrix, just check the part that's on the matrix.  If it's
-	    // left of the matrix, don't bother going into the loop by
-	    // setting the end point to 0.
-	    if ((objXIndex + objIndexLength) <= maxx){
-		xEnd = objXIndex + objIndexLength;
-	    } else {
-		xEnd = maxx;
-		partial = true;
-	    }
-	    if (xEnd < 0) xEnd = 0;
-	    
-	    // Now do the vertical version of the same thing...
-	    if ((objYIndex + objIndexHeight) <= maxy){
-		yEnd = objYIndex + objIndexHeight;
-	    } else {
-		yEnd = maxy;
-		partial = true;
-	    }
-	    if (yEnd < 0) yEnd = 0;
+            // End variables refer to an end index
+            partial = false;
+            // Set the end of the check - if the end sticks out past the
+            // matrix, just check the part that's on the matrix.  If it's
+            // left of the matrix, don't bother going into the loop by
+            // setting the end point to 0.
+            if ((objXIndex + objIndexLength) <= maxx){
+                xEnd = objXIndex + objIndexLength;
+            } else {
+                xEnd = maxx;
+                partial = true;
+            }
+            if (xEnd < 0) xEnd = 0;
+            
+            // Now do the vertical version of the same thing...
+            if ((objYIndex + objIndexHeight) <= maxy){
+                yEnd = objYIndex + objIndexHeight;
+            } else {
+                yEnd = maxy;
+                partial = true;
+            }
+            if (yEnd < 0) yEnd = 0;
 
-	    // And, figure out what the good starting index point is to
-	    // check for vertical conflicts - This is all to make the
-	    // checkMatrixLocation methods run as efficiently as possible.
-	    if (objYIndex >= 0){
-		yStart = objYIndex;
-	    } else {
-		objYIndex = 0;
-		partial = true;
-	    }
-	    // And horizontal starting index
-	    if (objXIndex >= 0){
-		xStart = objXIndex;
-	    } else {
-		xStart = 0;
-		partial = true;
-	    }
+            // And, figure out what the good starting index point is to
+            // check for vertical conflicts - This is all to make the
+            // checkMatrixLocation methods run as efficiently as possible.
+            if (objYIndex >= 0){
+                yStart = objYIndex;
+            } else {
+                objYIndex = 0;
+                partial = true;
+            }
+            // And horizontal starting index
+            if (objXIndex >= 0){
+                xStart = objXIndex;
+            } else {
+                xStart = 0;
+                partial = true;
+            }
 
-	    return true;
-	}
+            return true;
+        }
 
-	/**
-	 * Test to see if the object is on the matrix. Assumes that
-	 * the matrix is not null. 
-	 * @return true if object is on matrix.
-	 */
-	public boolean objOnMatrix(int objXIndex,
-				   int objYIndex,
-				   int objIndexLength,
-				   int objIndexHeight){
-	    if (objXIndex + objIndexLength < 0 || // left off-matrix
-		objYIndex + objIndexHeight < 0 || // below matrix
-		// right off-matrix and above matrix
-		objXIndex > maxx || objYIndex > maxy){
-		return false;
-	    }
-	    return true;
-	}
+        /**
+         * Test to see if the object is on the matrix. Assumes that
+         * the matrix is not null. 
+         * @return true if object is on matrix.
+         */
+        public boolean objOnMatrix(int objXIndex,
+                                   int objYIndex,
+                                   int objIndexLength,
+                                   int objIndexHeight){
+            if (objXIndex + objIndexLength < 0 || // left off-matrix
+                objYIndex + objIndexHeight < 0 || // below matrix
+                // right off-matrix and above matrix
+                objXIndex > maxx || objYIndex > maxy){
+                return false;
+            }
+            return true;
+        }
     }
 
     /**
@@ -342,7 +345,7 @@ public class DeclutterMatrix {
      * clear.
      */
     public void setAllowPartials(boolean value){
-	allowPartials = value;
+        allowPartials = value;
     }
 
     /** 
@@ -351,7 +354,7 @@ public class DeclutterMatrix {
      * on the map.
      */
     public boolean isAllowPartials(){
-	return allowPartials;
+        return allowPartials;
     }
 
     /**********************************************************************/
@@ -362,29 +365,29 @@ public class DeclutterMatrix {
      * size of the matrix cells 
      */
     public DeclutterMatrix(int width, int height, 
-			   int x_pix_interval, 
-			   int y_pix_interval){
-	this.width = width;
-	this.height = height;
-	if (x_pix_interval != 0) {
-	    this.x_pix_interval = x_pix_interval;
-	} else {
-	    x_pix_interval = 1;
-	}
+                           int x_pix_interval, 
+                           int y_pix_interval){
+        this.width = width;
+        this.height = height;
+        if (x_pix_interval != 0) {
+            this.x_pix_interval = x_pix_interval;
+        } else {
+            x_pix_interval = 1;
+        }
 
-	if (y_pix_interval != 0) {
-	    this.y_pix_interval = y_pix_interval;
-	} else {
-	    y_pix_interval = 1;
-	}
+        if (y_pix_interval != 0) {
+            this.y_pix_interval = y_pix_interval;
+        } else {
+            y_pix_interval = 1;
+        }
 
-	this.matrix = null;
-	
-	this.maxx = (this.width/this.x_pix_interval) - 1;
-	this.maxy = (this.height/this.y_pix_interval) - 1;
-	create();
-	Debug.message("declutter", "Decluttering matrix created." 
-		      + "  Width = " + width + " Height = " + height);
+        this.matrix = null;
+        
+        this.maxx = (this.width/this.x_pix_interval) - 1;
+        this.maxy = (this.height/this.y_pix_interval) - 1;
+        create();
+        Debug.message("declutter", "Decluttering matrix created." 
+                      + "  Width = " + width + " Height = " + height);
     }
     
     /**
@@ -392,12 +395,12 @@ public class DeclutterMatrix {
      * the default matrix cell size 
      */
     public DeclutterMatrix(int width, int height){
-	this(width, height, 1,1);
+        this(width, height, 1,1);
     }
     
     /** Create a new matrix, with null dimensions */
     public DeclutterMatrix(){
-	this(0, 0);
+        this(0, 0);
     }
 
     /*
@@ -408,46 +411,46 @@ public class DeclutterMatrix {
 
 
     public void setXInterval(int x_pix_interval){
-	if (x_pix_interval != 0) {
-	    this.x_pix_interval = x_pix_interval;
-	} else {
-	    this.x_pix_interval = 1; // To avoid DBZ error?
-	}	
-	this.maxx = (this.width/this.x_pix_interval) - 1;
-	needToRecreate = true;
-	Debug.message("declutter", "Decluttering matrix: x_pix_interval changed to "
-		      + x_pix_interval);
+        if (x_pix_interval != 0) {
+            this.x_pix_interval = x_pix_interval;
+        } else {
+            this.x_pix_interval = 1; // To avoid DBZ error?
+        }       
+        this.maxx = (this.width/this.x_pix_interval) - 1;
+        needToRecreate = true;
+        Debug.message("declutter", "Decluttering matrix: x_pix_interval changed to "
+                      + x_pix_interval);
     }
 
 
     public void setYInterval(int y_pix_interval){
-	if (y_pix_interval != 0) {
-	    this.y_pix_interval = y_pix_interval;
-	} else {
-	    this.y_pix_interval = 1;
-	}	
-	this.maxy = (this.height/this.y_pix_interval) - 1;
-	needToRecreate = true;
-	Debug.message("declutter", "Decluttering matrix: y_pix_interval changed to "
-		      + y_pix_interval);
+        if (y_pix_interval != 0) {
+            this.y_pix_interval = y_pix_interval;
+        } else {
+            this.y_pix_interval = 1;
+        }       
+        this.maxy = (this.height/this.y_pix_interval) - 1;
+        needToRecreate = true;
+        Debug.message("declutter", "Decluttering matrix: y_pix_interval changed to "
+                      + y_pix_interval);
     }
     
     public void setWidth(int width){
-	this.width = width;
-	this.maxx = (this.width/this.x_pix_interval) - 1;
-	needToRecreate = true;
-		
-	Debug.message("declutter", "Decluttering matrix: Width reset to "
-		      + width );
+        this.width = width;
+        this.maxx = (this.width/this.x_pix_interval) - 1;
+        needToRecreate = true;
+                
+        Debug.message("declutter", "Decluttering matrix: Width reset to "
+                      + width );
     }
 
     public void setHeight(int height){
-	this.height = height;
-	this.maxy = (this.height/this.y_pix_interval) - 1;
-	needToRecreate = true;
-		
-	Debug.message("declutter", "Decluttering matrix: height reset to "
-		      + height );
+        this.height = height;
+        this.maxy = (this.height/this.y_pix_interval) - 1;
+        needToRecreate = true;
+                
+        Debug.message("declutter", "Decluttering matrix: height reset to "
+                      + height );
     }
 
     /**
@@ -457,13 +460,13 @@ public class DeclutterMatrix {
      * settings were valid (>0).
      */
     public boolean create(){
-	if ((height > 0) && (width > 0)) {
-	    matrix = new boolean[maxx+1][maxy+1];
-	    needToRecreate = false;
-	    return true;
-	}
-	needToRecreate = true;
-	return false;
+        if ((height > 0) && (width > 0)) {
+            matrix = new boolean[maxx+1][maxy+1];
+            needToRecreate = false;
+            return true;
+        }
+        needToRecreate = true;
+        return false;
     }
     
     /** 
@@ -475,73 +478,73 @@ public class DeclutterMatrix {
      * @return true if they were clear previously.  
      */
     protected boolean isClear(MatrixIndexes indexes, 
-			      boolean markAsTaken){
+                              boolean markAsTaken){
 
-	Debug.message("declutterdetail", 
-		      "DeclutterMatrix: Checking space for clear.");
+        Debug.message("declutterdetail", 
+                      "DeclutterMatrix: Checking space for clear.");
 
-	if (this.matrix == null) {
-	    return false;
-	}
+        if (this.matrix == null) {
+            return false;
+        }
 
-	if (!indexes.withinMatrix){
-	    // But, withinMatrix doesn't tell you if there is a
-	    // partial.  It only tells you if any part of the object
-	    // is over the matrix.  So, if it's not within the Matrix,
-	    // the answer should be yes, all the time, because you
-	    // don't have to declutter what you can't see...
+        if (!indexes.withinMatrix){
+            // But, withinMatrix doesn't tell you if there is a
+            // partial.  It only tells you if any part of the object
+            // is over the matrix.  So, if it's not within the Matrix,
+            // the answer should be yes, all the time, because you
+            // don't have to declutter what you can't see...
 
-//  	    return allowPartials;
-	    return true;
-	}
+//          return allowPartials;
+            return true;
+        }
 
-	if (!allowPartials && indexes.partial){
-	    return false;
-	}
+        if (!allowPartials && indexes.partial){
+            return false;
+        }
 
-	// OK - the above check should verify that some part of the
-	// object is on the matrix - so there is a reason to set the
-	// limits for the matrix search below, and not worry about
-	// dealing with funky index values.
+        // OK - the above check should verify that some part of the
+        // object is on the matrix - so there is a reason to set the
+        // limits for the matrix search below, and not worry about
+        // dealing with funky index values.
 
-	boolean notClear = false;
+        boolean notClear = false;
 
-	// Since we have the matrix index limits, have two loops, the
-	// first to check for the open cells, the other to mark the
-	// cells as occupied.  The second loop only gets run if the
-	// markAsTaken flag is set by the caller.
-	for (int taken = 0; taken < 2; taken++){
+        // Since we have the matrix index limits, have two loops, the
+        // first to check for the open cells, the other to mark the
+        // cells as occupied.  The second loop only gets run if the
+        // markAsTaken flag is set by the caller.
+        for (int taken = 0; taken < 2; taken++){
 
-	    // Check to see if the horizontal indexes are on the
-	    // matrix - i should be at least greater than zero here,
-	    // as should j.
-	    for (int i = indexes.xStart; i <= indexes.xEnd; i++){
-		
-		// Check for loop - the first loop is to see if
-		// the spaces are open.
-		if (taken == 0){
-		    notClear = isMatrixLocationTaken(i, indexes.yStart, 
-						     indexes.yEnd - 
-						     indexes.yStart + 1);
-		    if (notClear){
-			return false;
-		    }
-		} else {
-		    // The second loop is to mark the cells as
-		    // taken
-		    setTaken(i, indexes.yStart, 
-			     indexes.yEnd - indexes.yStart + 1);
-		}
-	    }
+            // Check to see if the horizontal indexes are on the
+            // matrix - i should be at least greater than zero here,
+            // as should j.
+            for (int i = indexes.xStart; i <= indexes.xEnd; i++){
+                
+                // Check for loop - the first loop is to see if
+                // the spaces are open.
+                if (taken == 0){
+                    notClear = isMatrixLocationTaken(i, indexes.yStart, 
+                                                     indexes.yEnd - 
+                                                     indexes.yStart + 1);
+                    if (notClear){
+                        return false;
+                    }
+                } else {
+                    // The second loop is to mark the cells as
+                    // taken
+                    setTaken(i, indexes.yStart, 
+                             indexes.yEnd - indexes.yStart + 1);
+                }
+            }
 
-	    // This will prevent the second loop from occuring if it's
-	    // not supposed to - the caller just wanted to check the
-	    // spaces, rather than check and mark.
-	    if (!markAsTaken){
-		return true;
-	    }
-	}
-	return true;
+            // This will prevent the second loop from occuring if it's
+            // not supposed to - the caller just wanted to check the
+            // spaces, rather than check and mark.
+            if (!markAsTaken){
+                return true;
+            }
+        }
+        return true;
     }
 
     /**
@@ -555,18 +558,18 @@ public class DeclutterMatrix {
      * @return true if taken, false if available. 
      */
     protected boolean isMatrixLocationTaken(int horizontalIndex,
-					    int verticalIndex, 
-					    int numCellsToCheck){
-	try {
-	    for (int i = numCellsToCheck - 1; i >= 0; i--){
-		if (matrix[horizontalIndex][verticalIndex + i]){
-		    return true;
-		}
-	    }
-	} catch (ArrayIndexOutOfBoundsException aioobe){
-	    return allowPartials;
-	}
-	return false;
+                                            int verticalIndex, 
+                                            int numCellsToCheck){
+        try {
+            for (int i = numCellsToCheck - 1; i >= 0; i--){
+                if (matrix[horizontalIndex][verticalIndex + i]){
+                    return true;
+                }
+            }
+        } catch (ArrayIndexOutOfBoundsException aioobe){
+            return allowPartials;
+        }
+        return false;
     }
 
     /**
@@ -577,13 +580,13 @@ public class DeclutterMatrix {
      * @param numCellsToMark the number of matrix cells to mark as taken.
      */
     protected void setTaken(int horizontalIndex,
-			    int verticalIndex, 
-			    int numCellsToMark){
-	try {
-	    for (int i = numCellsToMark - 1; i >= 0; i--){
-		matrix[horizontalIndex][verticalIndex + i] = true;
-	    }
-	} catch (ArrayIndexOutOfBoundsException aioobe){}
+                            int verticalIndex, 
+                            int numCellsToMark){
+        try {
+            for (int i = numCellsToMark - 1; i >= 0; i--){
+                matrix[horizontalIndex][verticalIndex + i] = true;
+            }
+        } catch (ArrayIndexOutOfBoundsException aioobe){}
     }
 
     /** 
@@ -594,18 +597,18 @@ public class DeclutterMatrix {
      * @return true if successful.
      */    
     protected boolean setTaken(MatrixIndexes indexes){
-    	if (this.matrix == null){
-	    return false;
-	}
+        if (this.matrix == null){
+            return false;
+        }
 
-	if (!indexes.withinMatrix){
-	    return allowPartials;
-	}
+        if (!indexes.withinMatrix){
+            return allowPartials;
+        }
 
-	for (int i = indexes.xStart; i < indexes.xEnd; i++){
-	    setTaken(i, indexes.yStart, indexes.yEnd - indexes.yStart + 1);
-	}
-	return true;
+        for (int i = indexes.xStart; i < indexes.xEnd; i++){
+            setTaken(i, indexes.yStart, indexes.yEnd - indexes.yStart + 1);
+        }
+        return true;
     }
 
     /** 
@@ -613,7 +616,7 @@ public class DeclutterMatrix {
      * The length is checked from left to right.
      */
     public boolean setTaken(Point point, int pixelLength){
-	return setTaken(point, pixelLength, y_pix_interval);
+        return setTaken(point, pixelLength, y_pix_interval);
     }
 
     /**
@@ -622,10 +625,10 @@ public class DeclutterMatrix {
      * from the bottom to top (NOT like screen coordinates) 
      */
     public boolean setTaken(Point point, int pixelLength, int pixelHeight){
-	if (needToRecreate) create();
+        if (needToRecreate) create();
 
-	indexes.setFromPixels(point.x, point.y, pixelLength, pixelHeight);
-	return setTaken(indexes);
+        indexes.setFromPixels(point.x, point.y, pixelLength, pixelHeight);
+        return setTaken(indexes);
     }
 
     /**
@@ -638,7 +641,7 @@ public class DeclutterMatrix {
      * @return Point of closest open space.
      */
     public Point setNextOpen(Point point, int pixelLength, int pixelHeight){
-	return setNextOpen(point, pixelLength, pixelHeight, -1);
+        return setNextOpen(point, pixelLength, pixelHeight, -1);
     }
 
     /** 
@@ -656,166 +659,166 @@ public class DeclutterMatrix {
      * @return Point of closest open space.  
      */
     public Point setNextOpen(Point point, 
-			     int pixelLength, int pixelHeight,
-			     int pixelAwayLimit){
+                             int pixelLength, int pixelHeight,
+                             int pixelAwayLimit){
 
-	Debug.message("declutterdetail", 
-		      "DeclutterMatrix: Trying to find an open space.");
+        Debug.message("declutterdetail", 
+                      "DeclutterMatrix: Trying to find an open space.");
 
-	if (needToRecreate) create();
+        if (needToRecreate) create();
 
-	boolean set = false;
+        boolean set = false;
 
-	// mark the original spot.  These are indexes, not pixels.
- 	int windex = point.x/x_pix_interval;
- 	int hindex = point.y/y_pix_interval;
+        // mark the original spot.  These are indexes, not pixels.
+        int windex = point.x/x_pix_interval;
+        int hindex = point.y/y_pix_interval;
 
-	// intermediate values used for ew/ns spanning.  This are not
-	// pixels, they are indexes into the matrix
-	int xpoint; 
-	int ypoint;
+        // intermediate values used for ew/ns spanning.  This are not
+        // pixels, they are indexes into the matrix
+        int xpoint; 
+        int ypoint;
 
-	// The point to be returned with the new, declutter postition
-	// for the object.
-	Point ret = null;
-	// Test point, for memory allocation savings.
-	Point testPoint = new Point();
+        // The point to be returned with the new, declutter postition
+        // for the object.
+        Point ret = null;
+        // Test point, for memory allocation savings.
+        Point testPoint = new Point();
 
-	// A round is a cycle through the positions in the search
-	// algorithm.  With every round the distance from the original
-	// position increases.  The search pattern looks like an
-	// expanding square, and it's broken into different pieces:
-	// Each side, not including the corners, and each corner.
+        // A round is a cycle through the positions in the search
+        // algorithm.  With every round the distance from the original
+        // position increases.  The search pattern looks like an
+        // expanding square, and it's broken into different pieces:
+        // Each side, not including the corners, and each corner.
 
-	int round = 0;  // Round 1, round 2 - get it!?!?
-	int pos, i;
-	
-	// Set up the indexes for the original spot.
-	indexes.setFromPixels(point.x, point.y, pixelLength, pixelHeight);
+        int round = 0;  // Round 1, round 2 - get it!?!?
+        int pos, i;
+        
+        // Set up the indexes for the original spot.
+        indexes.setFromPixels(point.x, point.y, pixelLength, pixelHeight);
 
-	// Make sure the graphic is on the visible screen
-	if(matrix == null || !indexes.withinMatrix){
-	    return point;
-	}
+        // Make sure the graphic is on the visible screen
+        if(matrix == null || !indexes.withinMatrix){
+            return point;
+        }
 
-	// Do check for the center here, before looping.  Who knows,
-	// the space might be open.
-  	ret = isAreaClearR(windex, hindex, testPoint);
-	int round_limit;
-	if (pixelAwayLimit < 0){
-	    round_limit = Math.abs(maxy/2 - indexes.yStart) + (maxy / 2);
-	} else {
-	    round_limit = pixelAwayLimit;
-	}
+        // Do check for the center here, before looping.  Who knows,
+        // the space might be open.
+        ret = isAreaClearR(windex, hindex, testPoint);
+        int round_limit;
+        if (pixelAwayLimit < 0){
+            round_limit = Math.abs(maxy/2 - indexes.yStart) + (maxy / 2);
+        } else {
+            round_limit = pixelAwayLimit;
+        }
 
-	// Now that we know it is not open, move on and start searching for
-	// the right place.
-	while (ret == null) {
+        // Now that we know it is not open, move on and start searching for
+        // the right place.
+        while (ret == null) {
 
-	    Debug.message("declutterdetail", "DeclutterMatrix: round " 
-			  + round + "\n");
-	    round++;
-	    for (pos = 0; (dcPos[pos].position != DCP_MIDDLE) 
-		     && (ret == null); pos++){
+            Debug.message("declutterdetail", "DeclutterMatrix: round " 
+                          + round + "\n");
+            round++;
+            for (pos = 0; (dcPos[pos].position != DCP_MIDDLE) 
+                     && (ret == null); pos++){
 
-		// Need to do this based on the length, so as to skip
-		// unnecessary checks.  The xpoint and ypoint are the
-		// starting point for each little incremental search.
-		// This point, in every round, spirals outward from
-		// the original desired location.
-		xpoint = windex+(round*dcPos[pos].ewindex);
-		ypoint = hindex+(round*dcPos[pos].nsindex);
-		
-		// checks to keep starting point away from being
-		// offscreen
-		if(xpoint <= maxx && ypoint <= maxy && 
-		   xpoint >=0 && ypoint >=0){
+                // Need to do this based on the length, so as to skip
+                // unnecessary checks.  The xpoint and ypoint are the
+                // starting point for each little incremental search.
+                // This point, in every round, spirals outward from
+                // the original desired location.
+                xpoint = windex+(round*dcPos[pos].ewindex);
+                ypoint = hindex+(round*dcPos[pos].nsindex);
+                
+                // checks to keep starting point away from being
+                // offscreen
+                if(xpoint <= maxx && ypoint <= maxy && 
+                   xpoint >=0 && ypoint >=0){
 
-		    // Start at handling the parts of the search
-		    // square that make up the sides of the square -
-		    // DCD_NS refers to the fact that the search
-		    // pattern is traversing up the side of the
-		    // square, for either side.
+                    // Start at handling the parts of the search
+                    // square that make up the sides of the square -
+                    // DCD_NS refers to the fact that the search
+                    // pattern is traversing up the side of the
+                    // square, for either side.
 
-		    // for the east and west checks, look
-		    // a north and south variations
-		    if(dcPos[pos].direction == DCD_NS){
-			for(i = -1*(round-1); (i < round-1) && !set ; i++){
+                    // for the east and west checks, look
+                    // a north and south variations
+                    if(dcPos[pos].direction == DCD_NS){
+                        for(i = -1*(round-1); (i < round-1) && !set ; i++){
 
-			    // isAreaClearR used to be used here in
-			    // order to prevent a name from being
-			    // written over an icon.  You know, if the
-			    // icon shouldn't be written over, let it
-			    // be added to the matrix before the name.
-			    // Then it won't be covered.
+                            // isAreaClearR used to be used here in
+                            // order to prevent a name from being
+                            // written over an icon.  You know, if the
+                            // icon shouldn't be written over, let it
+                            // be added to the matrix before the name.
+                            // Then it won't be covered.
 
-// 			    // Don't look both ways if directly to the
-// 			    // east, you'll write over the icon
-// 			    if(dcPos[pos].position == DCP_EAST && 
-// 			       i <= pixelHeight){
-// 				ret = isAreaClearR(xpoint,
-// 						   ypoint+i, 
-// 						   testPoint);
-// 			    } else {
-				ret = isAreaClearBW(xpoint,
-						    ypoint+i, 
-						    testPoint);
-// 			    }
+//                          // Don't look both ways if directly to the
+//                          // east, you'll write over the icon
+//                          if(dcPos[pos].position == DCP_EAST && 
+//                             i <= pixelHeight){
+//                              ret = isAreaClearR(xpoint,
+//                                                 ypoint+i, 
+//                                                 testPoint);
+//                          } else {
+                                ret = isAreaClearBW(xpoint,
+                                                    ypoint+i, 
+                                                    testPoint);
+//                          }
 
-			    // If we've found a clear spot, jump out.
-			    if (ret != null) break;
-			}
-		    } else {
+                            // If we've found a clear spot, jump out.
+                            if (ret != null) break;
+                        }
+                    } else {
 
-			// Now we're checking the top and bottom of
-			// the search square, which moves East-West
+                        // Now we're checking the top and bottom of
+                        // the search square, which moves East-West
 
-			// for the north and south check, look
-			// at EW variations
-			if(dcPos[pos].direction == DCD_EW){
-			    for(i = round-1; (i >= -1*(round-1)) && !set; i--){
-				ret = isAreaClearBW(xpoint+i, 
-						    ypoint, 
-						    testPoint);
+                        // for the north and south check, look
+                        // at EW variations
+                        if(dcPos[pos].direction == DCD_EW){
+                            for(i = round-1; (i >= -1*(round-1)) && !set; i--){
+                                ret = isAreaClearBW(xpoint+i, 
+                                                    ypoint, 
+                                                    testPoint);
 
-				// If we've found a clear spot, jump out.
-				if (ret != null) break;
-			    }
-			    
-			} else {
+                                // If we've found a clear spot, jump out.
+                                if (ret != null) break;
+                            }
+                            
+                        } else {
 
-			    // This part of the code handles the
-			    // corners of the square.
+                            // This part of the code handles the
+                            // corners of the square.
 
-			    // looking at the corners for the
-			    // search pattern
-			    ret = isAreaClearBW(xpoint, ypoint, testPoint);
-			}
-		    }  
-		}
-	    }
+                            // looking at the corners for the
+                            // search pattern
+                            ret = isAreaClearBW(xpoint, ypoint, testPoint);
+                        }
+                    }  
+                }
+            }
 
-	    if (round > round_limit) {
-		break;
-	    }
-	}  //while (ret == null)
+            if (round > round_limit) {
+                break;
+            }
+        }  //while (ret == null)
 
-	if(ret != null){
-	    if (Debug.debugging("declutter")){
-		Debug.output("Placing object at " + ret.x + 
-				  " | " + ret.y );
-	    }
-	} else {
-	    Debug.message("declutter", 
-			  "Decluttering: No space for entry.");
-	    // If you got here, space not found, toss
-	    // oject offscreen
-	    ret = testPoint;
-	    ret.x = -1*windex;
-	    ret.y = -1*hindex;
-	}
-	
-	return ret;
+        if(ret != null){
+            if (Debug.debugging("declutter")){
+                Debug.output("Placing object at " + ret.x + 
+                                  " | " + ret.y );
+            }
+        } else {
+            Debug.message("declutter", 
+                          "Decluttering: No space for entry.");
+            // If you got here, space not found, toss
+            // oject offscreen
+            ret = testPoint;
+            ret.x = -1*windex;
+            ret.y = -1*hindex;
+        }
+        
+        return ret;
     }
 
     /**********************************************************************
@@ -827,21 +830,21 @@ public class DeclutterMatrix {
      * @return point for a good clear space, null if not.
      */
     protected Point isAreaClearR(int xPoint, int yPoint, Point point){
-	Debug.message("declutterdetail", 
-		      "Decluttering: Checking to the right...");
-	if (!indexes.setFromPixels(xPoint, yPoint)){
-	    return null;
-	}
+        Debug.message("declutterdetail", 
+                      "Decluttering: Checking to the right...");
+        if (!indexes.setFromPixels(xPoint, yPoint)){
+            return null;
+        }
 
-	if (isClear(indexes, true)){
-	    point.x = xPoint;
-	    point.y = yPoint;
-	    Debug.message("declutterdetail", 
-			  "*******Decluttering: found a spot");
+        if (isClear(indexes, true)){
+            point.x = xPoint;
+            point.y = yPoint;
+            Debug.message("declutterdetail", 
+                          "*******Decluttering: found a spot");
 
-	    return point;	    
-	}
-	return null;
+            return point;           
+        }
+        return null;
     }
 
     /**
@@ -851,37 +854,37 @@ public class DeclutterMatrix {
      * @return Point for a good space, null if not.
      */
     protected Point isAreaClearBWT(int xPoint, int yPoint, Point point){
-	Debug.message("declutterdetail", 
-		      "Decluttering: Checking both ways...");
-	if (!indexes.setFromPixels(xPoint, yPoint)){
-	    return null;
-	}
+        Debug.message("declutterdetail", 
+                      "Decluttering: Checking both ways...");
+        if (!indexes.setFromPixels(xPoint, yPoint)){
+            return null;
+        }
 
-	if (isClear(indexes, true)){
-	    point.x = xPoint;
-	    point.y = yPoint;
-	    Debug.message("declutterdetail", 
-			  "*******Decluttering: found a spot");
+        if (isClear(indexes, true)){
+            point.x = xPoint;
+            point.y = yPoint;
+            Debug.message("declutterdetail", 
+                          "*******Decluttering: found a spot");
 
-	    return point;	    
-	}
+            return point;           
+        }
 
-	int leftMostIndex = indexes.origXIndex - indexes.origIndexLength;
+        int leftMostIndex = indexes.origXIndex - indexes.origIndexLength;
 
 
-	if (!indexes.set(leftMostIndex, indexes.origYIndex)){
-	    return null;
-	}
+        if (!indexes.set(leftMostIndex, indexes.origYIndex)){
+            return null;
+        }
 
-	if (isClear(indexes, true)){
-	    point.x = leftMostIndex * x_pix_interval;
-	    point.y = yPoint;
-	    Debug.message("declutterdetail", 
-			  "*******Decluttering: found a spot");
+        if (isClear(indexes, true)){
+            point.x = leftMostIndex * x_pix_interval;
+            point.y = yPoint;
+            Debug.message("declutterdetail", 
+                          "*******Decluttering: found a spot");
 
-	    return point;	    
-	}
-	return null;
+            return point;           
+        }
+        return null;
     }
 
     /**
@@ -892,82 +895,82 @@ public class DeclutterMatrix {
      * @return point of some good place is found, null if not.
      */
     protected Point isAreaClearBW(int xPoint, int yPoint,
-				  Point point){
+                                  Point point){
 
-	Debug.message("declutterdetail", 
-		      "Decluttering: Checking both ways...");
-	
-	// Check to see if it's totally offscreen.  If it is, keep it
-	// there..  Also check to see if the first location is good
-	// (isClear)
-	if (!indexes.setFromPixels(xPoint, yPoint)  || isClear(indexes, true)){
-	    point.x = xPoint;
-	    point.y = yPoint;
-	    return point;
-	}
+        Debug.message("declutterdetail", 
+                      "Decluttering: Checking both ways...");
+        
+        // Check to see if it's totally offscreen.  If it is, keep it
+        // there..  Also check to see if the first location is good
+        // (isClear)
+        if (!indexes.setFromPixels(xPoint, yPoint)  || isClear(indexes, true)){
+            point.x = xPoint;
+            point.y = yPoint;
+            return point;
+        }
 
-	// Guess not.  Step our way to the left to see if anything is
-	// available...
+        // Guess not.  Step our way to the left to see if anything is
+        // available...
 
-	// We're going to test the right, and then work our way left
-	// until the original spot is the rightmost spot.
-	int leftMostIndex = indexes.origXIndex - indexes.origIndexLength;
+        // We're going to test the right, and then work our way left
+        // until the original spot is the rightmost spot.
+        int leftMostIndex = indexes.origXIndex - indexes.origIndexLength;
 
-	// Start by keeping track of clear vertical cells.  If we get
-	// a run of them that equals the origIndexLength, then we have
-	// space right there.
-	int count = 0;
-  	int currentXIndex = indexes.origXIndex + indexes.origIndexLength;
+        // Start by keeping track of clear vertical cells.  If we get
+        // a run of them that equals the origIndexLength, then we have
+        // space right there.
+        int count = 0;
+        int currentXIndex = indexes.origXIndex + indexes.origIndexLength;
 
-	while (count < indexes.origIndexLength && 
-	       currentXIndex > leftMostIndex){
+        while (count < indexes.origIndexLength && 
+               currentXIndex > leftMostIndex){
 
-	    if (!indexes.set(currentXIndex, indexes.origYIndex)){
-		// Still off the matrix
-		count = 0;
-		currentXIndex--;
-		continue;
-	    }
+            if (!indexes.set(currentXIndex, indexes.origYIndex)){
+                // Still off the matrix
+                count = 0;
+                currentXIndex--;
+                continue;
+            }
 
-	    if (currentXIndex >= 0 && currentXIndex <= maxx){
-		if(!isMatrixLocationTaken(currentXIndex, indexes.yStart, 
-					  indexes.yEnd - indexes.yStart + 1)){
-		    count++;  // clear column
-		} else {
-		    count = 0; // Start counting again
-		}
-	    } else {
-		// If we are off the matrix, check and see if we want
-		// to consider those space as open autmatically.
-		if (allowPartials) {
-		    count++;
-		} else {
-		    // This will not,  Because it makes it look like
-		    // we ran out of space.  
-		    count = 0;
-		}
-	    }
+            if (currentXIndex >= 0 && currentXIndex <= maxx){
+                if(!isMatrixLocationTaken(currentXIndex, indexes.yStart, 
+                                          indexes.yEnd - indexes.yStart + 1)){
+                    count++;  // clear column
+                } else {
+                    count = 0; // Start counting again
+                }
+            } else {
+                // If we are off the matrix, check and see if we want
+                // to consider those space as open autmatically.
+                if (allowPartials) {
+                    count++;
+                } else {
+                    // This will not,  Because it makes it look like
+                    // we ran out of space.  
+                    count = 0;
+                }
+            }
 
-	    if (count < indexes.origIndexLength){
- 		currentXIndex--;
-	    }
+            if (count < indexes.origIndexLength){
+                currentXIndex--;
+            }
 
-	}
+        }
 
-	// So, either we ran out of space, or we found a space big
-	// enough for the text.
-	if (count >= indexes.origIndexLength){
-	    point.x = currentXIndex * x_pix_interval;
-	    point.y = yPoint;
-	    
-	    indexes.xStart = currentXIndex;
-	    setTaken(indexes);
-	    Debug.message("declutterdetail", 
-			  "Decluttering: found a spot");
-	    return point;
-	}
-	// Ran out of space.
-	return null;
+        // So, either we ran out of space, or we found a space big
+        // enough for the text.
+        if (count >= indexes.origIndexLength){
+            point.x = currentXIndex * x_pix_interval;
+            point.y = yPoint;
+            
+            indexes.xStart = currentXIndex;
+            setTaken(indexes);
+            Debug.message("declutterdetail", 
+                          "Decluttering: found a spot");
+            return point;
+        }
+        // Ran out of space.
+        return null;
     }
 
     private static java.awt.Graphics2D workingGraphics = null;
@@ -979,16 +982,16 @@ public class DeclutterMatrix {
      * @return java.awt.Graphics2D
      */
     public static java.awt.Graphics2D getGraphics(){
-	if (workingGraphics == null){
-	    BufferedImage bi = 
-		new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
-	    GraphicsEnvironment ge = 
-		GraphicsEnvironment.getLocalGraphicsEnvironment();
+        if (workingGraphics == null){
+            BufferedImage bi = 
+                new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+            GraphicsEnvironment ge = 
+                GraphicsEnvironment.getLocalGraphicsEnvironment();
 
-	    workingGraphics = ge.createGraphics(bi);
-	}
+            workingGraphics = ge.createGraphics(bi);
+        }
 
-	return workingGraphics;
+        return workingGraphics;
     }
     
 }

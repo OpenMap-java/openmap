@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/NumAndBox.java,v $
 // $RCSfile: NumAndBox.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,23 +33,23 @@ public class NumAndBox {
     protected ESRIBoundingBox bbox;
     
     public NumAndBox(int recordNumber, ESRIBoundingBox box) {
-	recNum = recordNumber;
-	bbox = box;
+        recNum = recordNumber;
+        bbox = box;
     }
     
     public void setRecNum(int number) {
-	recNum = number;
+        recNum = number;
     }
     
     public int getRecNum() {
-	return recNum;
+        return recNum;
     }
     
     public void setBoundingBox(ESRIBoundingBox box) {
-	bbox = box;
+        bbox = box;
     }
     
     public ESRIBoundingBox getBoundingBox() {
-	return bbox;
+        return bbox;
     }
 }

@@ -13,7 +13,7 @@
 // **********************************************************************
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/SeparatorListener.java,v $
-// $Revision: 1.3 $ $Date: 2003/12/23 21:19:21 $ $Author: wjeuerle $
+// $Revision: 1.4 $ $Date: 2004/01/26 18:18:11 $ $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -35,6 +35,6 @@ public class SeparatorListener implements HttpRequestListener {
      * Ignore the request, just write the separator.
      */
     public void httpRequest (HttpRequestEvent e) throws IOException {
-	e.getWriter().write("<HR>");
+        e.getWriter().write("<HR>");
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileDoNothingState.java,v $
 // $RCSfile: ProfileDoNothingState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,13 +33,13 @@ class ProfileDoNothingState extends State{
     protected ProfileGenerator profileTool;
 
     public ProfileDoNothingState(ProfileGenerator tool){
-	profileTool = tool;
+        profileTool = tool;
     }
 
     public boolean mousePressed(MouseEvent e){ 
-	profileTool.addProfileEvent(e);
-	profileTool.stateMachine.setState(ProfileStateMachine.TOOL_DRAW);
-	return true;
+        profileTool.addProfileEvent(e);
+        profileTool.stateMachine.setState(ProfileStateMachine.TOOL_DRAW);
+        return true;
     }
 }
 

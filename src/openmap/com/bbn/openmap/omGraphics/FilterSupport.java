@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/FilterSupport.java,v $
 // $RCSfile: FilterSupport.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/24 03:37:15 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -61,7 +61,7 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
     public FilterSupport() {}
 
     public FilterSupport(OMGraphicList omgl) {
-	setList(omgl);
+        setList(omgl);
     }
 
     /**
@@ -76,7 +76,7 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      * Shape.  
      */
     public OMGraphicList filter(Shape withinThisShape) {
-	return filter(withinThisShape, true);
+        return filter(withinThisShape, true);
     }
 
     /**
@@ -93,17 +93,17 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      * Shape.  
      */
     public OMGraphicList filter(Shape shapeBoundary, 
-				boolean getInsideBoundary) {
-	Area area = null;
-	if (shapeBoundary != null) {
-	    area = new Area(shapeBoundary);
-	}
+                                boolean getInsideBoundary) {
+        Area area = null;
+        if (shapeBoundary != null) {
+            area = new Area(shapeBoundary);
+        }
 
-	if (Debug.debugging("filtersupportdetail")) {
-	    Debug.output(getList().getDescription());
-	}
+        if (Debug.debugging("filtersupportdetail")) {
+            Debug.output(getList().getDescription());
+        }
 
-	return filterList(getList(), area, getInsideBoundary);
+        return filterList(getList(), area, getInsideBoundary);
     }
 
     /**
@@ -111,114 +111,114 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      * OMGraphicsLists to filter out areas, inside or outside another.
      */
     protected OMGraphicList filterList(OMGraphicList omgl,
-				       Area area, boolean getInsideArea) {
-	
-	OMGraphicList ret = new OMGraphicList();
-	boolean DEBUG_DETAIL = Debug.debugging("filtersupportdetail");
-	boolean DEBUG = Debug.debugging("filtersupport") || DEBUG_DETAIL;
+                                       Area area, boolean getInsideArea) {
+        
+        OMGraphicList ret = new OMGraphicList();
+        boolean DEBUG_DETAIL = Debug.debugging("filtersupportdetail");
+        boolean DEBUG = Debug.debugging("filtersupport") || DEBUG_DETAIL;
 
-	if (DEBUG) {
-	    Debug.output("FilterSupport.filterList");
-	}
+        if (DEBUG) {
+            Debug.output("FilterSupport.filterList");
+        }
 
-	int count = 0; // for debugging
+        int count = 0; // for debugging
 
-	if (area != null && omgl != null) { // just checking
-	    Iterator it = omgl.iterator();
+        if (area != null && omgl != null) { // just checking
+            Iterator it = omgl.iterator();
 
-	    while (it.hasNext()) {
-		OMGraphic omg = (OMGraphic)it.next();
+            while (it.hasNext()) {
+                OMGraphic omg = (OMGraphic)it.next();
 
-		if (DEBUG) {
-		    Debug.output("FilterSupport.filterList evaluating " + (count++) + " OMGraphic, " + omg);
-		}
+                if (DEBUG) {
+                    Debug.output("FilterSupport.filterList evaluating " + (count++) + " OMGraphic, " + omg);
+                }
 
-		boolean outsideFilter = true;
+                boolean outsideFilter = true;
 
-		// If not visible, automatically fails...
-		if (!omg.isVisible()) {
-		    if (DEBUG) {
-			Debug.output("   OMGraphic not visible, ignoring");
-		    }
-		    continue;
-		}
+                // If not visible, automatically fails...
+                if (!omg.isVisible()) {
+                    if (DEBUG) {
+                        Debug.output("   OMGraphic not visible, ignoring");
+                    }
+                    continue;
+                }
 
-		if (omg instanceof OMGraphicList) {
+                if (omg instanceof OMGraphicList) {
 
-		    if (omg == omgl) {
-			Debug.output("   OMGraphic is parent list (points to itself), ignoring...");
-			continue;
-		    }
+                    if (omg == omgl) {
+                        Debug.output("   OMGraphic is parent list (points to itself), ignoring...");
+                        continue;
+                    }
 
-		    if (DEBUG) {
-			Debug.output("  (filterList recursiving handing OMGraphicList)");
-		    }
+                    if (DEBUG) {
+                        Debug.output("  (filterList recursiving handing OMGraphicList)");
+                    }
 
-		    OMGraphicList subList = 
-			filterList((OMGraphicList)omg, area, getInsideArea);
+                    OMGraphicList subList = 
+                        filterList((OMGraphicList)omg, area, getInsideArea);
 
-		    if (!subList.isEmpty()) {
-			if (DEBUG) {
-			    Debug.output("  +++ OMGraphicList's contents (" + 
-					 subList.size() + ") pass filter, adding...");
-			}
-			ret.add(subList);
-		    } else {
-			if (DEBUG) {
-			    Debug.output("  --- OMGraphicList's contents fail filter, ignoring...");
-			}
+                    if (!subList.isEmpty()) {
+                        if (DEBUG) {
+                            Debug.output("  +++ OMGraphicList's contents (" + 
+                                         subList.size() + ") pass filter, adding...");
+                        }
+                        ret.add(subList);
+                    } else {
+                        if (DEBUG) {
+                            Debug.output("  --- OMGraphicList's contents fail filter, ignoring...");
+                        }
 
-			omg.setVisible(false);
-		    }
-		    continue;
-		} else {
-		    Shape omgShape = omg.getShape();
-		    if (omgShape != null && 
-			area.intersects(omgShape.getBounds2D())) {
+                        omg.setVisible(false);
+                    }
+                    continue;
+                } else {
+                    Shape omgShape = omg.getShape();
+                    if (omgShape != null && 
+                        area.intersects(omgShape.getBounds2D())) {
 
-			if (DEBUG_DETAIL) {
-			    Debug.output("   +++ omg intersects bounds");
-			}
+                        if (DEBUG_DETAIL) {
+                            Debug.output("   +++ omg intersects bounds");
+                        }
 
-			// The area.interects() method above is a
-			// general case.  If you care about
-			// preciseness, set the precise flag.
-			// Depending on the performance cost, we might
-			// want to make it permanent.
+                        // The area.interects() method above is a
+                        // general case.  If you care about
+                        // preciseness, set the precise flag.
+                        // Depending on the performance cost, we might
+                        // want to make it permanent.
 
-			if (precise) {
-			    Area clone = (Area)area.clone();
-			    clone.intersect(new Area(omgShape));
-			    if (!clone.isEmpty()) {
-				outsideFilter = false;
-			    }
-			} else {
-			    outsideFilter = false;
-			}
-		    }
+                        if (precise) {
+                            Area clone = (Area)area.clone();
+                            clone.intersect(new Area(omgShape));
+                            if (!clone.isEmpty()) {
+                                outsideFilter = false;
+                            }
+                        } else {
+                            outsideFilter = false;
+                        }
+                    }
 
-		    // decide what to do depending on filteredOut and
-		    // getInsideArea
-		    if ((outsideFilter && !getInsideArea) ||
-			(!outsideFilter && getInsideArea)) {
+                    // decide what to do depending on filteredOut and
+                    // getInsideArea
+                    if ((outsideFilter && !getInsideArea) ||
+                        (!outsideFilter && getInsideArea)) {
 
-			if (DEBUG) {
-			    Debug.output("   +++ OMGraphic passes filter, adding...");
-			}
+                        if (DEBUG) {
+                            Debug.output("   +++ OMGraphic passes filter, adding...");
+                        }
 
-			ret.add(omg);
-		    } else {
-			if (DEBUG) {
-			    Debug.output("   --- OMGraphic fails filter, hiding...");
-			}
-			omg.setVisible(false);
-		    }
+                        ret.add(omg);
+                    } else {
+                        if (DEBUG) {
+                            Debug.output("   --- OMGraphic fails filter, hiding...");
+                        }
+                        omg.setVisible(false);
+                    }
 
-		}
-	    }
-	}
+                }
+            }
+        }
 
-	return ret;
+        return ret;
     }
 
     /**
@@ -226,7 +226,7 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      * for filtering.
      */
     public boolean supportsSQL() {
-	return false;
+        return false;
     }
 
     /**
@@ -240,7 +240,7 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      * SELECT statemenet criteria.
      */
     public OMGraphicList filter(String SQLQuery) {
-	return new OMGraphicList();
+        return new OMGraphicList();
     }
 
     /**
@@ -251,11 +251,11 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      * @return true if the action was able to be carried out.
      */
     public boolean doAction(OMGraphic graphic, OMAction action) {
-	OMGraphicList list = getList();
-	if (list != null) {
-	    list.doAction(graphic, action);
-	}
-	return true; // we can handle it.
+        OMGraphicList list = getList();
+        if (list != null) {
+            list.doAction(graphic, action);
+        }
+        return true; // we can handle it.
     }
 
     /**
@@ -266,17 +266,17 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      * @see OMGraphic#isVisible().  
      */
     public synchronized OMGraphicList getList() {
-	if (DEBUG) {
-	    Debug.output("FilterSupport.getList() with " + (list != null?list.size()+" graphics.":"null list."));
-	}
-	return list;
+        if (DEBUG) {
+            Debug.output("FilterSupport.getList() with " + (list != null?list.size()+" graphics.":"null list."));
+        }
+        return list;
     }
 
     /**
      * Indicates if the OMGraphicHandler can have its OMGraphicList set.
      */
     public boolean canSetList() {
-	return true;
+        return true;
     }
 
     /**
@@ -284,17 +284,17 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      * canSetGraphicList == true.
      */
     public synchronized void setList(OMGraphicList omgl) {
-	if (DEBUG) {
-	    Debug.output("FilterSupport.setList() with " + (omgl != null?omgl.size()+" graphics.":"null list."));
-	}
-	list = omgl;
+        if (DEBUG) {
+            Debug.output("FilterSupport.setList() with " + (omgl != null?omgl.size()+" graphics.":"null list."));
+        }
+        list = omgl;
     }
     
     /**
      * Remove all filters, and reset all graphics to be visible.
      */
     public void resetFiltering() {
-	OMGraphicList list = getList();
-	if (list != null) list.setVisible(true);
+        OMGraphicList list = getList();
+        if (list != null) list.setVisible(true);
     }
 }

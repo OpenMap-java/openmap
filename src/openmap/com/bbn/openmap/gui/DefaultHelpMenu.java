@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/DefaultHelpMenu.java,v $
 // $RCSfile: DefaultHelpMenu.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 02:36:21 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,13 +43,13 @@ public class DefaultHelpMenu extends AbstractOpenMapMenu
     private int defaultMnemonic = 'H';
 
     public DefaultHelpMenu() {
-	setText(defaultText);
-	setMnemonic(defaultMnemonic);    
+        setText(defaultText);
+        setMnemonic(defaultMnemonic);    
     }
   
     public DefaultHelpMenu(String in_text) {
-	super();
-	setText(in_text);
+        super();
+        setText(in_text);
     }
     
     /** 
@@ -57,28 +57,28 @@ public class DefaultHelpMenu extends AbstractOpenMapMenu
      * add them to itself.
      */
     public void findAndInit(Object someObj) {
-	super.findAndInit(someObj);
-	if (someObj instanceof HelpMenuItems) {
-	    if (Debug.debugging("menu")) {
-		Debug.output("DefaultHelpMenu found HelpMenuItems");
-	    }
-	    Iterator hmiit = ((HelpMenuItems)someObj).iterator();
-	    while (hmiit.hasNext()) {
-		add((JMenuItem)hmiit.next());
-	    }
-	}
+        super.findAndInit(someObj);
+        if (someObj instanceof HelpMenuItems) {
+            if (Debug.debugging("menu")) {
+                Debug.output("DefaultHelpMenu found HelpMenuItems");
+            }
+            Iterator hmiit = ((HelpMenuItems)someObj).iterator();
+            while (hmiit.hasNext()) {
+                add((JMenuItem)hmiit.next());
+            }
+        }
     }
   
     /**
      * If an object implementing helpMenuItemsI is found, remove it.
      */
     public void findAndUndo(Object someObj) {
-	super.findAndUndo(someObj);
-	if (someObj instanceof HelpMenuItems) {
-	    Iterator hmiit = ((HelpMenuItems)someObj).iterator();
-	    while (hmiit.hasNext()) {
-		remove((JMenuItem)hmiit.next());
-	    }
-	}
+        super.findAndUndo(someObj);
+        if (someObj instanceof HelpMenuItems) {
+            Iterator hmiit = ((HelpMenuItems)someObj).iterator();
+            while (hmiit.hasNext()) {
+                remove((JMenuItem)hmiit.next());
+            }
+        }
     }
 }

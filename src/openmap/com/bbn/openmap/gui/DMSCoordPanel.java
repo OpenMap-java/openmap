@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/DMSCoordPanel.java,v $
 // $RCSfile: DMSCoordPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 00:30:36 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,126 +48,126 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
      *  Creates the panel.
      */
     public DMSCoordPanel() {
-	super();
+        super();
     }
 
     /**
      *  Creates the panel.
      */
     public DMSCoordPanel(CenterSupport support) {
-	super(support);
+        super(support);
     }
 
     /**
      *  Creates and adds the labels and entry fields for latitude and longitude
      */
     protected void makeWidgets() {
-	GridBagLayout gridbag = new GridBagLayout();
-	GridBagConstraints c = new GridBagConstraints();
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
 
-	setLayout(gridbag);
-	setBorder(new TitledBorder(new EtchedBorder(), "Degress|Minutes|Seconds"));
+        setLayout(gridbag);
+        setBorder(new TitledBorder(new EtchedBorder(), "Degress|Minutes|Seconds"));
 
-	JLabel latlabel = new JLabel("Latitude DMS: ");
-	c.gridx = 0;
-	gridbag.setConstraints(latlabel, c);
-	add(latlabel);
+        JLabel latlabel = new JLabel("Latitude DMS: ");
+        c.gridx = 0;
+        gridbag.setConstraints(latlabel, c);
+        add(latlabel);
 
-	c.gridx = GridBagConstraints.RELATIVE;
-	degLat = new JTextField(4);
-	gridbag.setConstraints(degLat, c);
-	add(degLat);
+        c.gridx = GridBagConstraints.RELATIVE;
+        degLat = new JTextField(4);
+        gridbag.setConstraints(degLat, c);
+        add(degLat);
 
-	minLat = new JTextField(4);
-	gridbag.setConstraints(minLat, c);
-	add(minLat);
+        minLat = new JTextField(4);
+        gridbag.setConstraints(minLat, c);
+        add(minLat);
 
-	secLat = new JTextField(4);
-	gridbag.setConstraints(secLat, c);
-	add(secLat);
+        secLat = new JTextField(4);
+        gridbag.setConstraints(secLat, c);
+        add(secLat);
 
 
-	JLabel lonlabel = new JLabel("Longitude DMS: ");
-	c.gridx = 0;
-	c.gridy = 1;
-	gridbag.setConstraints(lonlabel, c);
-	add(lonlabel);
+        JLabel lonlabel = new JLabel("Longitude DMS: ");
+        c.gridx = 0;
+        c.gridy = 1;
+        gridbag.setConstraints(lonlabel, c);
+        add(lonlabel);
 
-	c.gridx = GridBagConstraints.RELATIVE;
-	degLon = new JTextField(4);
-	gridbag.setConstraints(degLon, c);
-	add(degLon);
+        c.gridx = GridBagConstraints.RELATIVE;
+        degLon = new JTextField(4);
+        gridbag.setConstraints(degLon, c);
+        add(degLon);
 
-	minLon = new JTextField(4);
-	gridbag.setConstraints(minLon, c);
-	add(minLon);
+        minLon = new JTextField(4);
+        gridbag.setConstraints(minLon, c);
+        add(minLon);
 
-	secLon = new JTextField(4);
-	gridbag.setConstraints(secLon, c);
-	add(secLon);
+        secLon = new JTextField(4);
+        gridbag.setConstraints(secLon, c);
+        add(secLon);
     }
 
     /**
      *  @return the LatLonPoint represented by contents of the entry boxes
      */
     public LatLonPoint getLatLon() {
-	int deglat, minlat, deglon, minlon;
-	float seclat, seclon, lat, lon;
-	try {
-	    // Allow blank minutes and seconds fields to represent zero
-	    deglat = Float.valueOf(degLat.getText()).intValue();
-	    
-	    // We just reset the text in the fields to pretty things
-	    // up a little.  Also lets the user know what we think we read.
+        int deglat, minlat, deglon, minlon;
+        float seclat, seclon, lat, lon;
+        try {
+            // Allow blank minutes and seconds fields to represent zero
+            deglat = Float.valueOf(degLat.getText()).intValue();
+            
+            // We just reset the text in the fields to pretty things
+            // up a little.  Also lets the user know what we think we read.
 
-	    minlat = minLat.getText().equals("") ? 0 :
-	        Float.valueOf(minLat.getText()).intValue();
-	    minLat.setText(Integer.toString(Math.abs(minlat)));
-	    seclat = secLat.getText().equals("") ? 0.0f :
-	        Float.valueOf(secLat.getText()).floatValue();
-	    secLat.setText(Float.toString(Math.abs(seclat)));
+            minlat = minLat.getText().equals("") ? 0 :
+                Float.valueOf(minLat.getText()).intValue();
+            minLat.setText(Integer.toString(Math.abs(minlat)));
+            seclat = secLat.getText().equals("") ? 0.0f :
+                Float.valueOf(secLat.getText()).floatValue();
+            secLat.setText(Float.toString(Math.abs(seclat)));
 
-	    deglon = Float.valueOf(degLon.getText()).intValue();
+            deglon = Float.valueOf(degLon.getText()).intValue();
 
-	    minlon = minLon.getText().equals("") ? 0 :
-	        Float.valueOf(minLon.getText()).intValue();
-	    minLon.setText(Integer.toString(Math.abs(minlon)));
+            minlon = minLon.getText().equals("") ? 0 :
+                Float.valueOf(minLon.getText()).intValue();
+            minLon.setText(Integer.toString(Math.abs(minlon)));
 
-	    seclon = secLon.getText().equals("") ? 0.0f :
-	        Float.valueOf(secLon.getText()).floatValue();
-	    secLon.setText(Float.toString(Math.abs(seclon)));
-	    
-	} catch (NumberFormatException except) {
-//  	    System.out.println(except.toString());
-	    clearTextBoxes();
-	    return null;
-	}
+            seclon = secLon.getText().equals("") ? 0.0f :
+                Float.valueOf(secLon.getText()).floatValue();
+            secLon.setText(Float.toString(Math.abs(seclon)));
+            
+        } catch (NumberFormatException except) {
+//          System.out.println(except.toString());
+            clearTextBoxes();
+            return null;
+        }
 
-	degLat.setText(Integer.toString(deglat));
-	degLon.setText(Integer.toString(deglon));
+        degLat.setText(Integer.toString(deglat));
+        degLon.setText(Integer.toString(deglon));
 
-	// I don't this gives the right behavior.  The sign given to
-	// the minutes and seconds should be ignored, giving way to
-	// the sign of the degree value.
-//  	lat = (float)(deglat + ((minlat * 60.0) + seclat)/3600);
-//  	lon = (float)(deglon + ((minlon * 60.0) + seclon)/3600);
+        // I don't this gives the right behavior.  The sign given to
+        // the minutes and seconds should be ignored, giving way to
+        // the sign of the degree value.
+//      lat = (float)(deglat + ((minlat * 60.0) + seclat)/3600);
+//      lon = (float)(deglon + ((minlon * 60.0) + seclon)/3600);
 
-	// So, I'm going to keep track of the degree behavior, and the
-	// minutes and seconds will just build on it.  So for a
-	// negative degree value, positive minutes make the overall
-	// value more negative.  Negative minutes will be abs'ed.
+        // So, I'm going to keep track of the degree behavior, and the
+        // minutes and seconds will just build on it.  So for a
+        // negative degree value, positive minutes make the overall
+        // value more negative.  Negative minutes will be abs'ed.
 
-	float direction = 1f;
-	if (deglat < 0f) direction = -1f;
+        float direction = 1f;
+        if (deglat < 0f) direction = -1f;
 
-	lat = (float)(deglat + (Math.abs(minlat * 60.0f) + Math.abs(seclat))/3600f*direction);
+        lat = (float)(deglat + (Math.abs(minlat * 60.0f) + Math.abs(seclat))/3600f*direction);
 
-	direction = 1f;
-	if (deglon < 0f) direction = -1f;
-  	lon = (float)(deglon + (Math.abs(minlon * 60.0f) + Math.abs(seclon))/3600f * direction);
-//	System.out.println("lat: " +lat + "  lon: "+lon);
+        direction = 1f;
+        if (deglon < 0f) direction = -1f;
+        lon = (float)(deglon + (Math.abs(minlon * 60.0f) + Math.abs(seclon))/3600f * direction);
+//      System.out.println("lat: " +lat + "  lon: "+lon);
 
-	return (new LatLonPoint(lat,lon));
+        return (new LatLonPoint(lat,lon));
     }
 
     /**
@@ -177,59 +177,59 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
      */
      public void setLatLon(LatLonPoint llpoint) {
 
-	 if (llpoint == null) {
-	     clearTextBoxes();
-	     return;
-	 }
+         if (llpoint == null) {
+             clearTextBoxes();
+             return;
+         }
 
-	 double lat = llpoint.getLatitude();
-	 double lon = llpoint.getLongitude();
+         double lat = llpoint.getLatitude();
+         double lon = llpoint.getLongitude();
 
-	 double direction = 1;
-	 if (lat < 0) direction = -1;
+         double direction = 1;
+         if (lat < 0) direction = -1;
 
-	 lat = Math.abs(lat);
-	 double fractLat = lat - Math.floor(lat);
+         lat = Math.abs(lat);
+         double fractLat = lat - Math.floor(lat);
 
-	 degLat.setText(Integer.toString((int)(Math.floor(lat) * direction)));
-	 minLat.setText(Integer.toString((int)Math.floor(fractLat*60)));
-	 secLat.setText(df.format((float)Math.floor((fractLat*60)%1 * 60)));
+         degLat.setText(Integer.toString((int)(Math.floor(lat) * direction)));
+         minLat.setText(Integer.toString((int)Math.floor(fractLat*60)));
+         secLat.setText(df.format((float)Math.floor((fractLat*60)%1 * 60)));
 
-	 direction = 1;
-	 if (lon < 0) direction = -1;
+         direction = 1;
+         if (lon < 0) direction = -1;
 
-	 lon = Math.abs(lon);
-	 double fractLon = lon - Math.floor(lon);
+         lon = Math.abs(lon);
+         double fractLon = lon - Math.floor(lon);
 
-	 degLon.setText(Integer.toString((int)(Math.floor(lon) * direction)));
-	 minLon.setText(Integer.toString((int)Math.floor(fractLon*60)));
-	 secLon.setText(df.format((float)Math.floor((fractLon*60)%1 * 60)));
+         degLon.setText(Integer.toString((int)(Math.floor(lon) * direction)));
+         minLon.setText(Integer.toString((int)Math.floor(fractLon*60)));
+         secLon.setText(df.format((float)Math.floor((fractLon*60)%1 * 60)));
 
-	 if (Debug.debugging("coordpanel")) {
-	     Debug.output("DMSCoordPanel.setLatLon(): setting " + llpoint + 
-			  " to " + degLat.getText() + ", " + 
-			  minLat.getText() + ", " + secLat.getText() +
-			  " and " + degLon.getText() + ", " + 
-			  minLon.getText() + ", " + secLon.getText() + 
-			  " : backcheck = " + getLatLon());
-	 }
+         if (Debug.debugging("coordpanel")) {
+             Debug.output("DMSCoordPanel.setLatLon(): setting " + llpoint + 
+                          " to " + degLat.getText() + ", " + 
+                          minLat.getText() + ", " + secLat.getText() +
+                          " and " + degLon.getText() + ", " + 
+                          minLon.getText() + ", " + secLon.getText() + 
+                          " : backcheck = " + getLatLon());
+         }
 
      }
 
     protected void clearTextBoxes() {
-	degLat.setText("");
-	minLat.setText("");
-	secLat.setText("");
-	degLon.setText("");
-	minLon.setText("");
-	secLon.setText("");
+        degLat.setText("");
+        minLat.setText("");
+        secLat.setText("");
+        degLon.setText("");
+        minLon.setText("");
+        secLon.setText("");
     }
 
     public static void main(String[] argv) {
-	Debug.init();
-	Debug.put("coordpanel");
-	DMSCoordPanel dms = new DMSCoordPanel();
-	dms.setLatLon(new LatLonPoint(40.8000000000f, -75.200000000000f));
-	System.exit(0);
+        Debug.init();
+        Debug.put("coordpanel");
+        DMSCoordPanel dms = new DMSCoordPanel();
+        dms.setLatLon(new LatLonPoint(40.8000000000f, -75.200000000000f));
+        System.exit(0);
     }
 }

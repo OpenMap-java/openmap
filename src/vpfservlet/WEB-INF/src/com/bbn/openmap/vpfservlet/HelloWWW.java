@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/HelloWWW.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -22,10 +22,10 @@ import javax.servlet.http.*;
  */
 public class HelloWWW extends HttpServlet {
     public void doGet(HttpServletRequest req,
-		      HttpServletResponse resp) throws ServletException, IOException {
-	resp.setContentType("text/html");
-	PrintWriter out = resp.getWriter();
-	String docType = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
-	out.println(docType + "<HTML>\n<HEAD><TITLE>Hello WWW</TITLE></HEAD>\n<BODY>\n<H1>Hello WWW</H1>\n</BODY></HTML>\n");
+                      HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("text/html");
+        PrintWriter out = resp.getWriter();
+        String docType = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
+        out.println(docType + "<HTML>\n<HEAD><TITLE>Hello WWW</TITLE></HEAD>\n<BODY>\n<H1>Hello WWW</H1>\n</BODY></HTML>\n");
     }
 }

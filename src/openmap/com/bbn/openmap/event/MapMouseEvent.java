@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseEvent.java,v $
 // $RCSfile: MapMouseEvent.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/02/24 23:03:36 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,23 +46,23 @@ public class MapMouseEvent extends MouseEvent {
      * component, most likely a MapBean.
      */
     public MapMouseEvent(MapMouseMode mode, MouseEvent me) {
-	super((Component)me.getSource(), me.getID(), me.getWhen(), me.getModifiers(),
-	      me.getX(), me.getY(), me.getClickCount(), me.isPopupTrigger());
-	if (me.getSource() instanceof MapBean) {
-	    map = (MapBean) me.getSource();
-	}
-	mapMouseMode = mode;
+        super((Component)me.getSource(), me.getID(), me.getWhen(), me.getModifiers(),
+              me.getX(), me.getY(), me.getClickCount(), me.isPopupTrigger());
+        if (me.getSource() instanceof MapBean) {
+            map = (MapBean) me.getSource();
+        }
+        mapMouseMode = mode;
     }
-	
+        
     /**
      * Get the Lat/Lon for the x/y point, in the current projection of
      * the MapBean that sent the MouseEvent.  Could be null if the
      * MouseEvent did not originate from a MapBean.
      */
     public LatLonPoint getLatLon() {
-	if (map != null) {
-	    return map.getCoordinates(this);
-	} else return null;
+        if (map != null) {
+            return map.getCoordinates(this);
+        } else return null;
     }
 
     /**
@@ -72,6 +72,6 @@ public class MapMouseEvent extends MouseEvent {
      * there isn't a MapMouseMode delivering the MapMouseMode.
      */
     public MapMouseMode getMapMouseMode() {
-	return mapMouseMode;
+        return mapMouseMode;
     }
 }

@@ -39,7 +39,7 @@ public class ShapeDecorator implements Revertable {
      * @return List the list of decorations
      */
     public List getDecorations() {
-	return decorations;
+        return decorations;
     }
 
     /**
@@ -48,7 +48,7 @@ public class ShapeDecorator implements Revertable {
      * @param decoration the new decoration
      */
     public void insertDecoration(int index, ShapeDecoration decoration) {
-	decorations.add(index, decoration);
+        decorations.add(index, decoration);
     }
 
     /**
@@ -56,7 +56,7 @@ public class ShapeDecorator implements Revertable {
      * @param decoration the new decoration
      */
     public void addDecoration(ShapeDecoration decoration) {
-	decorations.add(decoration);
+        decorations.add(decoration);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ShapeDecorator implements Revertable {
      * @return ShapeDecoration the removed Decoration
      */
     public ShapeDecoration removeDecoration(int index) {
-	return (ShapeDecoration) (decorations.remove(index));
+        return (ShapeDecoration) (decorations.remove(index));
     }
 
     /**
@@ -74,7 +74,7 @@ public class ShapeDecorator implements Revertable {
      * @return boolean true if it was removed
      */
     public boolean removeDecoration(ShapeDecoration decoration) {
-	return decorations.remove(decoration);
+        return decorations.remove(decoration);
     }
 
     /**
@@ -82,11 +82,11 @@ public class ShapeDecorator implements Revertable {
      * @implements fr.free.lepicier.awt.Revertable#revert()
      */
     public void revert() {
-	ShapeDecoration s;
-	for (Iterator i = decorations.listIterator(); i.hasNext();) {
-	    s = (ShapeDecoration) i.next();
-	    s.revert();
-	}
+        ShapeDecoration s;
+        for (Iterator i = decorations.listIterator(); i.hasNext();) {
+            s = (ShapeDecoration) i.next();
+            s.revert();
+        }
     }
 
     /**
@@ -96,50 +96,50 @@ public class ShapeDecorator implements Revertable {
      */
     public void draw(Graphics g, Shape s) {
 
-	if (decorations.isEmpty())
-	    return;
+        if (decorations.isEmpty())
+            return;
 
-	PathIterator pi = s.getPathIterator(null, FLATNESS);
-	int segType;
-	double[] segCoords = new double[6];
+        PathIterator pi = s.getPathIterator(null, FLATNESS);
+        int segType;
+        double[] segCoords = new double[6];
 
-	LinkedList points = new LinkedList();
-	Point2D firstPoint = null;
-	Point2D point;
+        LinkedList points = new LinkedList();
+        Point2D firstPoint = null;
+        Point2D point;
 
-	// split path in polylines
-	boolean drawIt = false;
-	do {
-	    segType = pi.currentSegment(segCoords);
-	    point = new Point2D.Double(segCoords[0], segCoords[1]);
+        // split path in polylines
+        boolean drawIt = false;
+        do {
+            segType = pi.currentSegment(segCoords);
+            point = new Point2D.Double(segCoords[0], segCoords[1]);
 
-	    switch (segType) {
-	    case PathIterator.SEG_MOVETO :
-		if (firstPoint == null)
-		    firstPoint = point;
+            switch (segType) {
+            case PathIterator.SEG_MOVETO :
+                if (firstPoint == null)
+                    firstPoint = point;
 
-		if (points.size() > 0) {
-		    // draw decorations for the previous polyline
-		    draw(g, points);
-		}
-		// init a new polyline
-		points.clear();
-		points.add(point);
-		break;
-	    case PathIterator.SEG_LINETO :
-		points.add(point);
-		break;
-	    case PathIterator.SEG_CLOSE :
-		points.add(firstPoint);
-		break;
-	    }
-	    pi.next();
-	} while (!pi.isDone());
+                if (points.size() > 0) {
+                    // draw decorations for the previous polyline
+                    draw(g, points);
+                }
+                // init a new polyline
+                points.clear();
+                points.add(point);
+                break;
+            case PathIterator.SEG_LINETO :
+                points.add(point);
+                break;
+            case PathIterator.SEG_CLOSE :
+                points.add(firstPoint);
+                break;
+            }
+            pi.next();
+        } while (!pi.isDone());
 
-	// draw decorations for the last poly
-	if (points.size() > 0) {
-	    draw(g, points);
-	}
+        // draw decorations for the last poly
+        if (points.size() > 0) {
+            draw(g, points);
+        }
     }
 
     /**
@@ -149,10 +149,10 @@ public class ShapeDecorator implements Revertable {
      * @param ycoords array of y floating coordinates
      */
     public void draw(Graphics g, float xcoords[], float[] ycoords) {
-	LinkedList points = new LinkedList();
-	for (int i = 0; i < xcoords.length; i++)
-	    points.add(new Point2D.Double(xcoords[i], ycoords[i]));
-	draw(g, points);
+        LinkedList points = new LinkedList();
+        for (int i = 0; i < xcoords.length; i++)
+            points.add(new Point2D.Double(xcoords[i], ycoords[i]));
+        draw(g, points);
     }
 
     /**
@@ -162,10 +162,10 @@ public class ShapeDecorator implements Revertable {
      * @param ycoords array of y integer coordinates
      */
     public void draw(Graphics g, int xcoords[], int[] ycoords) {
-	LinkedList points = new LinkedList();
-	for (int i = 0; i < xcoords.length; i++)
-	    points.add(new Point2D.Double(xcoords[i], ycoords[i]));
-	draw(g, points);
+        LinkedList points = new LinkedList();
+        for (int i = 0; i < xcoords.length; i++)
+            points.add(new Point2D.Double(xcoords[i], ycoords[i]));
+        draw(g, points);
     }
 
     /**
@@ -174,10 +174,10 @@ public class ShapeDecorator implements Revertable {
      * @param points array of points
      */
     public void draw(Graphics g, Point2D[] points) {
-	LinkedList pointlist = new LinkedList();
-	for (int i = 0; i < points.length; i++)
-	    pointlist.add(points[i]);
-	draw(g, pointlist);
+        LinkedList pointlist = new LinkedList();
+        for (int i = 0; i < points.length; i++)
+            pointlist.add(points[i]);
+        draw(g, pointlist);
     }
 
     /**
@@ -189,23 +189,23 @@ public class ShapeDecorator implements Revertable {
      * @param points array of points (instances of Point2D)
      */
     protected void draw(Graphics g, LinkedList points) {
-		
-	if (decorations.size() == 0)
-	    throw new NullPointerException("No decorations");
+                
+        if (decorations.size() == 0)
+            throw new NullPointerException("No decorations");
 
-	Iterator decorationIterator = decorations.listIterator();
-	LinkedList polysegment = new LinkedList();
-	Point2D[] point2DArrayType = new Point2D.Double[1];
+        Iterator decorationIterator = decorations.listIterator();
+        LinkedList polysegment = new LinkedList();
+        Point2D[] point2DArrayType = new Point2D.Double[1];
 
-	while (points.size() > 0) {
-	    if (!decorationIterator.hasNext())
-		decorationIterator = decorations.listIterator();
-	    ShapeDecoration decor = (ShapeDecoration) decorationIterator.next();
-		
-	    boolean complete = LineUtil.retrievePoints(decor.getLength(), points, polysegment);
-	    // drawing is delegated to the decoration
-	    decor.draw(g, (Point2D[]) polysegment.toArray(point2DArrayType), complete);
-	}
+        while (points.size() > 0) {
+            if (!decorationIterator.hasNext())
+                decorationIterator = decorations.listIterator();
+            ShapeDecoration decor = (ShapeDecoration) decorationIterator.next();
+                
+            boolean complete = LineUtil.retrievePoints(decor.getLength(), points, polysegment);
+            // drawing is delegated to the decoration
+            decor.draw(g, (Point2D[]) polysegment.toArray(point2DArrayType), complete);
+        }
     }
 
 }

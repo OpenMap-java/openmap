@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ZoomPanel.java,v $
 // $RCSfile: ZoomPanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/24 23:36:28 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,30 +69,30 @@ public class ZoomPanel extends OMToolComponent
      * Construct the ZoomPanel.
      */
     public ZoomPanel() {
-	super();
-	setKey(defaultKey);
-//  	setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-// 	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-	this.setOpaque(false);
+        super();
+        setKey(defaultKey);
+//      setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+//      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setOpaque(false);
 
-	JPanel panel = new JPanel();
-	GridBagLayout internalGridbag = new GridBagLayout();
-	GridBagConstraints c2 = new GridBagConstraints();
-	panel.setLayout(internalGridbag);
+        JPanel panel = new JPanel();
+        GridBagLayout internalGridbag = new GridBagLayout();
+        GridBagConstraints c2 = new GridBagConstraints();
+        panel.setLayout(internalGridbag);
 
-	zoomDelegate = new ZoomSupport(this);
-	zoomInButton = getButton("zoomIn", "Zoom In", zoomInCmd);
-	c2.gridx = 0;
-	c2.gridy = 0;
-	internalGridbag.setConstraints(zoomInButton, c2);
-	panel.add(zoomInButton);
+        zoomDelegate = new ZoomSupport(this);
+        zoomInButton = getButton("zoomIn", "Zoom In", zoomInCmd);
+        c2.gridx = 0;
+        c2.gridy = 0;
+        internalGridbag.setConstraints(zoomInButton, c2);
+        panel.add(zoomInButton);
 
-	zoomOutButton = getButton("zoomOut", "Zoom Out", zoomOutCmd);
-	c2.gridy = 1;
-	internalGridbag.setConstraints(zoomOutButton, c2);
-	panel.add(zoomOutButton);
+        zoomOutButton = getButton("zoomOut", "Zoom Out", zoomOutCmd);
+        c2.gridy = 1;
+        internalGridbag.setConstraints(zoomOutButton, c2);
+        panel.add(zoomOutButton);
 
-	add(panel);
+        add(panel);
     }
 
     /**
@@ -101,7 +101,7 @@ public class ZoomPanel extends OMToolComponent
      * zoom in button is pressed
      */
     public float getZoomInFactor() {
-	return zoomInFactor;
+        return zoomInFactor;
     }
 
     /**
@@ -111,14 +111,14 @@ public class ZoomPanel extends OMToolComponent
      * @param factor the degree by which map scale should be multiplied
      */
     public void setZoomInFactor(float factor) {
-	if (factor < 1.0f){
-	    zoomInFactor=factor;
-	    zoomInButton.setToolTipText("zoom in X" +zoomInFactor);
-	}
-	else {
-	    throw new IllegalArgumentException(
-		    "Zoom In factor too large (must be < 1.0)");
-	}
+        if (factor < 1.0f){
+            zoomInFactor=factor;
+            zoomInButton.setToolTipText("zoom in X" +zoomInFactor);
+        }
+        else {
+            throw new IllegalArgumentException(
+                    "Zoom In factor too large (must be < 1.0)");
+        }
     }
 
     /**
@@ -127,7 +127,7 @@ public class ZoomPanel extends OMToolComponent
      * zoom out button is pressed
      */
     public float getZoomOutFactor() {
-	return zoomOutFactor;
+        return zoomOutFactor;
     }
 
     /**
@@ -137,14 +137,14 @@ public class ZoomPanel extends OMToolComponent
      * @param factor the degree by which map scale should be multiplied.
      */
     public void setZoomOutFactor(float factor) {
-	if (factor > 1.0f) {
-	    zoomOutFactor=factor;
-	    zoomOutButton.setToolTipText("zoom out X" +zoomOutFactor);
-	}
-	else {
-	    throw new IllegalArgumentException(
-		    "Zoom In factor too small (must be > 1.0)");
-	}
+        if (factor > 1.0f) {
+            zoomOutFactor=factor;
+            zoomOutButton.setToolTipText("zoom out X" +zoomOutFactor);
+        }
+        else {
+            throw new IllegalArgumentException(
+                    "Zoom In factor too small (must be > 1.0)");
+        }
     }
 
     /**
@@ -156,18 +156,18 @@ public class ZoomPanel extends OMToolComponent
      *
      */
     protected JButton getButton(String name, String info, String command) {
-	URL url = ZoomPanel.class.getResource(name + ".gif");
-	ImageIcon icon = new ImageIcon(url, info);
-	JButton b = new JButton(icon);
-	b.setPreferredSize(new Dimension(icon.getIconWidth(), 
-					 icon.getIconHeight()));
-	b.setToolTipText(info);
-	b.setMargin(new Insets(0,0,0,0));
+        URL url = ZoomPanel.class.getResource(name + ".gif");
+        ImageIcon icon = new ImageIcon(url, info);
+        JButton b = new JButton(icon);
+        b.setPreferredSize(new Dimension(icon.getIconWidth(), 
+                                         icon.getIconHeight()));
+        b.setToolTipText(info);
+        b.setMargin(new Insets(0,0,0,0));
         b.setActionCommand(command);
-	b.addActionListener(this);
-	b.setBorderPainted(Debug.debugging("layout"));
-	b.setOpaque(false);
-	return b;
+        b.addActionListener(this);
+        b.setBorderPainted(Debug.debugging("layout"));
+        b.setOpaque(false);
+        return b;
     }
 
     /**
@@ -176,7 +176,7 @@ public class ZoomPanel extends OMToolComponent
      * @param listener  The ZoomListener to be added
      */
     public synchronized void addZoomListener(ZoomListener listener) {
-	zoomDelegate.addZoomListener(listener);
+        zoomDelegate.addZoomListener(listener);
     }
 
     /**
@@ -185,7 +185,7 @@ public class ZoomPanel extends OMToolComponent
      * @param listener  The ZoomListener to be removed
      */
     public synchronized void removeZoomListener(ZoomListener listener) {
-	zoomDelegate.removeZoomListener(listener);
+        zoomDelegate.removeZoomListener(listener);
     }
 
     /**
@@ -193,24 +193,24 @@ public class ZoomPanel extends OMToolComponent
      * @param e ActionEvent
      */
     public void actionPerformed(java.awt.event.ActionEvent e) {
-	String command = e.getActionCommand();
+        String command = e.getActionCommand();
 
-	if (command.equals(zoomInCmd)) {
-	    zoomDelegate.fireZoom(ZoomEvent.RELATIVE, zoomInFactor);
-	}
-	else if (command.equals(zoomOutCmd)) {
-	    zoomDelegate.fireZoom(ZoomEvent.RELATIVE, zoomOutFactor);
-	}
+        if (command.equals(zoomInCmd)) {
+            zoomDelegate.fireZoom(ZoomEvent.RELATIVE, zoomInFactor);
+        }
+        else if (command.equals(zoomOutCmd)) {
+            zoomDelegate.fireZoom(ZoomEvent.RELATIVE, zoomOutFactor);
+        }
     }
 
     public void setOpaque(boolean set) {
-	super.setOpaque(set);
-	if (zoomInButton != null) {
-	    zoomInButton.setOpaque(set);
-	}
-	if (zoomOutButton != null) {
-	    zoomOutButton.setOpaque(set);
-	}
+        super.setOpaque(set);
+        if (zoomInButton != null) {
+            zoomInButton.setOpaque(set);
+        }
+        if (zoomOutButton != null) {
+            zoomOutButton.setOpaque(set);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -219,14 +219,14 @@ public class ZoomPanel extends OMToolComponent
     ///////////////////////////////////////////////////////////////////////////
 
     public void findAndInit(Object obj) {
-	if (obj instanceof ZoomListener) {
-	    addZoomListener((ZoomListener)obj);
-	}
+        if (obj instanceof ZoomListener) {
+            addZoomListener((ZoomListener)obj);
+        }
     }
 
     public void findAndUndo(Object obj) {
-	if (obj instanceof ZoomListener) {
-	    removeZoomListener((ZoomListener)obj);
-	}
+        if (obj instanceof ZoomListener) {
+            removeZoomListener((ZoomListener)obj);
+        }
     }
 }

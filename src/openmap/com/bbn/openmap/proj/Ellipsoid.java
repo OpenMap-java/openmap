@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Ellipsoid.java,v $
 // $RCSfile: Ellipsoid.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -101,9 +101,9 @@ public class Ellipsoid {
      * @param eccsq The square of the eccentricity for this ellipsoid.
      */
     public Ellipsoid(String name, double radius, double eccsq){
-	this.name=name;
-	this.radius=radius; 
-	this.eccsq=eccsq;
+        this.name=name;
+        this.radius=radius; 
+        this.eccsq=eccsq;
     }
 
     /**
@@ -113,32 +113,32 @@ public class Ellipsoid {
      */
     public static Ellipsoid[] getAllEllipsoids(){
 
-	Ellipsoid[] all=
- 		{AIRY,
-		AUSTRALIAN_NATIONAL,
-		BESSEL_1841,
-		BESSEL_1841_NAMIBIA,
-		CLARKE_1866,
-		CLARKE_1880,
-		EVEREST,
-		FISHER_1960_MERCURY,
-		FISHER_1968,
-		GRS_1967,
-		GRS_1980,
-		HELMERT_1906,
-		HOUGH,
-		INTERNATIONAL,
-		KRASSOVSKY,
-		MODIFIED_AIRY,
-		MODIFIED_EVEREST,
-		MODIFIED_FISCHER_1960,
-		SOUTH_AMERICAN_1969,
-		WGS_60,
- 		WGS_66,
-		WGS_72,
-		WGS_84};
+        Ellipsoid[] all=
+                {AIRY,
+                AUSTRALIAN_NATIONAL,
+                BESSEL_1841,
+                BESSEL_1841_NAMIBIA,
+                CLARKE_1866,
+                CLARKE_1880,
+                EVEREST,
+                FISHER_1960_MERCURY,
+                FISHER_1968,
+                GRS_1967,
+                GRS_1980,
+                HELMERT_1906,
+                HOUGH,
+                INTERNATIONAL,
+                KRASSOVSKY,
+                MODIFIED_AIRY,
+                MODIFIED_EVEREST,
+                MODIFIED_FISCHER_1960,
+                SOUTH_AMERICAN_1969,
+                WGS_60,
+                WGS_66,
+                WGS_72,
+                WGS_84};
 
-	return all;
+        return all;
     }
 
 
@@ -147,6 +147,6 @@ public class Ellipsoid {
      * @return String representation
      */
     public String toString () {
-	return "Ellipsoid[name=" + name + ", radius=" + radius + ", eccsq=" + eccsq + "]";
+        return "Ellipsoid[name=" + name + ", radius=" + radius + ", eccsq=" + eccsq + "]";
     }
 }

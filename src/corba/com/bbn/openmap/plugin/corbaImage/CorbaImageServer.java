@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/plugin/corbaImage/CorbaImageServer.java,v $
 // $RCSfile: CorbaImageServer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 01:53:36 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -58,7 +58,7 @@ public class CorbaImageServer extends ServerPOA {
      * Default Constructor.
      */
     public CorbaImageServer() {
-	this("Default");
+        this("Default");
     }
 
     /**
@@ -66,7 +66,7 @@ public class CorbaImageServer extends ServerPOA {
      * @param name the identifying name for persistance.
      */
     public CorbaImageServer(String name) {
-	super();
+        super();
     }
 
     /**
@@ -78,29 +78,29 @@ public class CorbaImageServer extends ServerPOA {
      */
     public byte[] getImage(String request) {
 
-	Debug.message("cis", "CorbaImageServer: handling subframe request for client");
+        Debug.message("cis", "CorbaImageServer: handling subframe request for client");
 
-	if (map == null) {
-	    Debug.error("CorbaImageServer not configured for getting data!  No data source");
-	    return new byte[0];
-	}
-	
-	byte[] imageData = new byte[0];
+        if (map == null) {
+            Debug.error("CorbaImageServer not configured for getting data!  No data source");
+            return new byte[0];
+        }
+        
+        byte[] imageData = new byte[0];
 
-	try {
-	    imageData = map.handleRequest(request);
-	} catch (IOException ioe) {
-	    Debug.error("CorbaImageServer: IOException processing: " + request);
-	}
+        try {
+            imageData = map.handleRequest(request);
+        } catch (IOException ioe) {
+            Debug.error("CorbaImageServer: IOException processing: " + request);
+        }
 
-	if (imageData == null) {
-	    // If something went wrong, lets send something safe.
-	    Debug.message("cis", "CorbaImageServer: something went wrong with image creation!");
-	    imageData = new byte[0];
-	}
+        if (imageData == null) {
+            // If something went wrong, lets send something safe.
+            Debug.message("cis", "CorbaImageServer: something went wrong with image creation!");
+            imageData = new byte[0];
+        }
 
-	Debug.message("cis", "CorbaImageServer: returning image of length: " + imageData.length);
-	return imageData;
+        Debug.message("cis", "CorbaImageServer: returning image of length: " + imageData.length);
+        return imageData;
     }
 
     /**
@@ -109,59 +109,59 @@ public class CorbaImageServer extends ServerPOA {
      */
     public void start(String[] args){
 
-	CORBASupport cs = new CORBASupport();
+        CORBASupport cs = new CORBASupport();
 
-	if (args != null) {
-	    parseArgs(args);
-	}
+        if (args != null) {
+            parseArgs(args);
+        }
 
-	cs.start(this, args, iorfile, naming);
+        cs.start(this, args, iorfile, naming);
     }
     
     /**
      */
     public void parseArgs(String[] args) {
-	Properties properties = null;
-	for (int i = 0; i < args.length; i++) {
-	    if (args[i].equalsIgnoreCase("-ior")) {
-		iorfile = args[++i];
-	    } else if (args[i].equalsIgnoreCase("-name")) {
-		naming = args[++i];
-	    } else if (args[i].equalsIgnoreCase("-help")) {
-		printHelp();
-	    } else if (args[i].equalsIgnoreCase("-verbose")) {
-		Debug.put("cis");
-		Debug.put("imageserver");
-		Debug.put("formatter");
-	    } else  if (args[i].equalsIgnoreCase("-properties")) {
+        Properties properties = null;
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equalsIgnoreCase("-ior")) {
+                iorfile = args[++i];
+            } else if (args[i].equalsIgnoreCase("-name")) {
+                naming = args[++i];
+            } else if (args[i].equalsIgnoreCase("-help")) {
+                printHelp();
+            } else if (args[i].equalsIgnoreCase("-verbose")) {
+                Debug.put("cis");
+                Debug.put("imageserver");
+                Debug.put("formatter");
+            } else  if (args[i].equalsIgnoreCase("-properties")) {
 
-		String propLocation = null;
-		propLocation = args[++i];
-		Debug.message("cis", "CorbaImageServer getting properties from " + propLocation);
-		properties = loadProps(propLocation);
-	    } else if (args[i].equalsIgnoreCase("-h")) {
-		printHelp();
-	    }
-	}
-	
-	// if you didn't specify an iorfile
-	if (iorfile == null && naming == null) {
-	    Debug.error("CorbaImageServer: IOR file and name service name are null!  Use `-ior' or '-name' flag!");
-	    System.exit(-1);
-	}
+                String propLocation = null;
+                propLocation = args[++i];
+                Debug.message("cis", "CorbaImageServer getting properties from " + propLocation);
+                properties = loadProps(propLocation);
+            } else if (args[i].equalsIgnoreCase("-h")) {
+                printHelp();
+            }
+        }
+        
+        // if you didn't specify an iorfile
+        if (iorfile == null && naming == null) {
+            Debug.error("CorbaImageServer: IOR file and name service name are null!  Use `-ior' or '-name' flag!");
+            System.exit(-1);
+        }
 
-	if (properties == null){
-	    Debug.error("CorbaImageServer: No properties file for server specified!  Use `-properties' flag and a properties file suitable for MapRequestHandler!");
-	    System.exit(-1);
-	} else {
-	    try {
-		map = new MapRequestHandler(properties);
-		Debug.output("CorbaImageServer: CorbaImageServer!  Running with properties => " + properties);
-	    } catch (IOException ioe) {
-		Debug.error("CorbaImageServer caught IOException while loading properties into the MapRequestHandler.");
-		map = null;
-	    }
-	}
+        if (properties == null){
+            Debug.error("CorbaImageServer: No properties file for server specified!  Use `-properties' flag and a properties file suitable for MapRequestHandler!");
+            System.exit(-1);
+        } else {
+            try {
+                map = new MapRequestHandler(properties);
+                Debug.output("CorbaImageServer: CorbaImageServer!  Running with properties => " + properties);
+            } catch (IOException ioe) {
+                Debug.error("CorbaImageServer caught IOException while loading properties into the MapRequestHandler.");
+                map = null;
+            }
+        }
     }
     
     /**
@@ -174,22 +174,22 @@ public class CorbaImageServer extends ServerPOA {
      * @return the loaded properties
      */
     public Properties loadProps(String file) {
-	java.io.File propsFile = new java.io.File(file);
-	Properties props = new Properties();
-	try {
-	    java.io.InputStream propsStream = new java.io.FileInputStream(propsFile);
-	    props.load(propsStream);
-	} catch (java.io.FileNotFoundException e) {
-	    System.err.println("CorbaImageServer did not find properties file: \"" + 
-			       file + "\"");
-	    System.exit(1);
-	} catch (java.io.IOException e) {
-	    System.err.println("Caught IO Exception reading configuration file \""
-			       + propsFile + "\"");
-	    e.printStackTrace();
-	    System.exit(1);
-	}
-	return props;
+        java.io.File propsFile = new java.io.File(file);
+        Properties props = new Properties();
+        try {
+            java.io.InputStream propsStream = new java.io.FileInputStream(propsFile);
+            props.load(propsStream);
+        } catch (java.io.FileNotFoundException e) {
+            System.err.println("CorbaImageServer did not find properties file: \"" + 
+                               file + "\"");
+            System.exit(1);
+        } catch (java.io.IOException e) {
+            System.err.println("Caught IO Exception reading configuration file \""
+                               + propsFile + "\"");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return props;
     }
 
     /** 
@@ -197,16 +197,16 @@ public class CorbaImageServer extends ServerPOA {
      * command line needs of your specialist. 
      */
     public void printHelp() {
-	Debug.output("usage: java CorbaImageServer [-ior <file> || -name <NAME>] -properties \"<path to properties file>\"");
-	System.exit(1);
+        Debug.output("usage: java CorbaImageServer [-ior <file> || -name <NAME>] -properties \"<path to properties file>\"");
+        System.exit(1);
     }
 
     public static void main (String[] args) {
-	Debug.init(System.getProperties());
+        Debug.init(System.getProperties());
 
-	// Create the specialist server
-	CorbaImageServer srv = new CorbaImageServer("CorbaImageServer");
-	srv.start(args);
+        // Create the specialist server
+        CorbaImageServer srv = new CorbaImageServer("CorbaImageServer");
+        srv.start(args);
     }
 
 }

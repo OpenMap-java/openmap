@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.12 $
-// $Date: 2003/12/23 20:46:43 $
-// $Author: wjeuerle $
+// $Revision: 1.13 $
+// $Date: 2004/01/26 18:18:12 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -254,7 +254,7 @@ public class DrawingAttributes
      * fill paint and pattern, sold black edge line of width 1.  
      */
     public DrawingAttributes() {
-	setProperties(null, null);
+        setProperties(null, null);
     }
 
     /**
@@ -263,7 +263,7 @@ public class DrawingAttributes
      * @param props the Properties to look in.  
      */
     public DrawingAttributes(Properties props) {
-	setProperties(null, props);
+        setProperties(null, props);
     }
 
     /**
@@ -274,43 +274,43 @@ public class DrawingAttributes
      * @param props the Properties to look in.  
      */
     public DrawingAttributes(String prefix, Properties props) {
-	setProperties(prefix, props);
+        setProperties(prefix, props);
     }
 
     /**
      * Shallow clone.
      */
     public Object clone() {
-	DrawingAttributes clone = new DrawingAttributes();
-	setTo(clone);
-	return clone;
+        DrawingAttributes clone = new DrawingAttributes();
+        setTo(clone);
+        return clone;
     }
 
     /**
      * Shallow.
      */
     public void setTo(DrawingAttributes clone) {
-	clone.linePaint = linePaint;
-// 	clone.textPaint = textPaint;
-	clone.selectPaint = selectPaint;
-	clone.fillPaint = fillPaint;
-	clone.mattingPaint = mattingPaint;
-	clone.fillPattern = fillPattern;
-	clone.setStroke(stroke);
-	clone.baseScale = baseScale;
-	clone.matted = matted;
+        clone.linePaint = linePaint;
+//      clone.textPaint = textPaint;
+        clone.selectPaint = selectPaint;
+        clone.fillPaint = fillPaint;
+        clone.mattingPaint = mattingPaint;
+        clone.fillPattern = fillPattern;
+        clone.setStroke(stroke);
+        clone.baseScale = baseScale;
+        clone.matted = matted;
     }
 
     public boolean equals(DrawingAttributes da) {
-	return (da.linePaint == linePaint && 
-// 		da.textPaint == textPaint && 
-		da.selectPaint == selectPaint && 
-		da.fillPaint == fillPaint && 
-		da.mattingPaint == mattingPaint &&
-		da.fillPattern == fillPattern && 
-		da.stroke == stroke && 
-		da.baseScale == baseScale &&
-		da.matted == matted);
+        return (da.linePaint == linePaint && 
+//              da.textPaint == textPaint && 
+                da.selectPaint == selectPaint && 
+                da.fillPaint == fillPaint && 
+                da.mattingPaint == mattingPaint &&
+                da.fillPattern == fillPattern && 
+                da.stroke == stroke && 
+                da.baseScale == baseScale &&
+                da.matted == matted);
     }
 
     /**
@@ -318,7 +318,7 @@ public class DrawingAttributes
      * may modify, get your own copy.
      */
     public static DrawingAttributes getDefaultClone() {
-	return (DrawingAttributes) DEFAULT.clone();
+        return (DrawingAttributes) DEFAULT.clone();
     }
 
     /**
@@ -327,7 +327,7 @@ public class DrawingAttributes
      * @deprecated use setProperties(props).
      */
     public void init(Properties props) {
-	setProperties(null, props);
+        setProperties(null, props);
     }
 
     /**
@@ -341,35 +341,35 @@ public class DrawingAttributes
      * @deprecated use setProperties(prefix, props).
      */
     public void init(String prefix, Properties props) {
-	setProperties(prefix, props);
+        setProperties(prefix, props);
     }
 
     /**
      * Set the Stroke to use for the edge of a graphic.
      */
     public void setStroke(Stroke stroke) {
-	Stroke oldStroke = this.stroke;
-	this.stroke = stroke;
+        Stroke oldStroke = this.stroke;
+        this.stroke = stroke;
 
-	if (stroke instanceof BasicStroke) {
-	    BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
-	    if (tmpbse != null) {
-		tmpbse.setBasicStroke((BasicStroke)stroke);
-	    }
-	}	
+        if (stroke instanceof BasicStroke) {
+            BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
+            if (tmpbse != null) {
+                tmpbse.setBasicStroke((BasicStroke)stroke);
+            }
+        }       
 
-	if (propertyChangeSupport != null) {
-	    propertyChangeSupport.firePropertyChange("stroke", 
-						     oldStroke, 
-						     stroke);
-	}
+        if (propertyChangeSupport != null) {
+            propertyChangeSupport.firePropertyChange("stroke", 
+                                                     oldStroke, 
+                                                     stroke);
+        }
     }
 
     /**
      * Get the Stroke used for the lines of a graphic.
      */
     public Stroke getStroke() {
-	return stroke;
+        return stroke;
     }
 
     /**
@@ -380,25 +380,25 @@ public class DrawingAttributes
      * @param scale scale to compare to the base scale.  
      */
     public Stroke getStrokeForScale(float scale) {
-	if (baseScale != NONE && stroke instanceof BasicStroke) {
-	    BasicStroke bs = (BasicStroke)stroke;
-	    float lineWidth = bs.getLineWidth();
-	    float[] dash = bs.getDashArray();
-	    float scaleFactor = scale/baseScale;
-	    int endCaps = bs.getEndCap();
-	    int lineJoins = bs.getLineJoin();
-	    float miterLimit = bs.getMiterLimit();
+        if (baseScale != NONE && stroke instanceof BasicStroke) {
+            BasicStroke bs = (BasicStroke)stroke;
+            float lineWidth = bs.getLineWidth();
+            float[] dash = bs.getDashArray();
+            float scaleFactor = scale/baseScale;
+            int endCaps = bs.getEndCap();
+            int lineJoins = bs.getLineJoin();
+            float miterLimit = bs.getMiterLimit();
 
-	    lineWidth *= scaleFactor;
-	    for (int i = 0; i < dash.length; i++) {
-		dash[i] *= scaleFactor;
-	    }
+            lineWidth *= scaleFactor;
+            for (int i = 0; i < dash.length; i++) {
+                dash[i] *= scaleFactor;
+            }
 
-	    return new BasicStroke(lineWidth, 
-				   endCaps, lineJoins, miterLimit, 
-				   dash, bs.getDashPhase());
-	}
-	return stroke;
+            return new BasicStroke(lineWidth, 
+                                   endCaps, lineJoins, miterLimit, 
+                                   dash, bs.getDashPhase());
+        }
+        return stroke;
     }
 
     /**
@@ -412,26 +412,26 @@ public class DrawingAttributes
      * necessary.
      */
     public Paint getFillPaintForScale(float scale) {
-	if (fillPattern != null) {
-	    if (baseScale != NONE) {
-		BufferedImage bi = fillPattern.getImage();
-		float scaleFactor = scale/baseScale;
-		Image image = bi.getScaledInstance((int)(bi.getWidth()*scaleFactor), 
-						   (int)(bi.getHeight()*scaleFactor),
-						   Image.SCALE_SMOOTH);
-		try {
-		    bi = BufferedImageHelper.getBufferedImage(image, 0, 0, -1, -1);
-		    
-		    return new TexturePaint(bi, new Rectangle(0,0, bi.getWidth(), 
-							      bi.getHeight()));
-		} catch (InterruptedException ie) {
-		    Debug.error("DrawingAttributes: Interrupted Exception scaling texture paint");
-		}
-	    }
-	    return fillPattern;
-	} else {
-	    return fillPaint;
-	}
+        if (fillPattern != null) {
+            if (baseScale != NONE) {
+                BufferedImage bi = fillPattern.getImage();
+                float scaleFactor = scale/baseScale;
+                Image image = bi.getScaledInstance((int)(bi.getWidth()*scaleFactor), 
+                                                   (int)(bi.getHeight()*scaleFactor),
+                                                   Image.SCALE_SMOOTH);
+                try {
+                    bi = BufferedImageHelper.getBufferedImage(image, 0, 0, -1, -1);
+                    
+                    return new TexturePaint(bi, new Rectangle(0,0, bi.getWidth(), 
+                                                              bi.getHeight()));
+                } catch (InterruptedException ie) {
+                    Debug.error("DrawingAttributes: Interrupted Exception scaling texture paint");
+                }
+            }
+            return fillPattern;
+        } else {
+            return fillPaint;
+        }
     }
 
     /**
@@ -440,20 +440,20 @@ public class DrawingAttributes
      * @param lPaint the paint.  
      */
     public void setLinePaint(Paint lPaint) {
-	Paint oldPaint = linePaint;
-	linePaint = lPaint;
+        Paint oldPaint = linePaint;
+        linePaint = lPaint;
 
-	if (lineColorButton != null) {
-	    lineColorButton.setIcon(getIconForPaint(linePaint, false));
-	}
+        if (lineColorButton != null) {
+            lineColorButton.setIcon(getIconForPaint(linePaint, false));
+        }
 
-	if (mattedCheckBox != null) {
-	    mattedCheckBox.setIcon(getMattedIcon());
-	}
+        if (mattedCheckBox != null) {
+            mattedCheckBox.setIcon(getMattedIcon());
+        }
 
-	propertyChangeSupport.firePropertyChange("linePaint", 
-						 oldPaint, 
-						 linePaint);
+        propertyChangeSupport.firePropertyChange("linePaint", 
+                                                 oldPaint, 
+                                                 linePaint);
     }
 
     /**
@@ -462,7 +462,7 @@ public class DrawingAttributes
      * @return the line paint to use for the edges.
      */
     public Paint getLinePaint() {
-	return linePaint;
+        return linePaint;
     }
 
     /**
@@ -471,16 +471,16 @@ public class DrawingAttributes
      * @param sPaint the paint.  
      */
     public void setSelectPaint(Paint sPaint) {
-	Paint oldPaint = selectPaint;
-	selectPaint = sPaint;
-	
-	if (selectColorButton != null) {
- 	    selectColorButton.setIcon(getIconForPaint(selectPaint, false));
-	}
+        Paint oldPaint = selectPaint;
+        selectPaint = sPaint;
+        
+        if (selectColorButton != null) {
+            selectColorButton.setIcon(getIconForPaint(selectPaint, false));
+        }
 
-	propertyChangeSupport.firePropertyChange("selectPaint", 
-						 oldPaint, 
-						 selectPaint);
+        propertyChangeSupport.firePropertyChange("selectPaint", 
+                                                 oldPaint, 
+                                                 selectPaint);
     }
 
     /**
@@ -489,7 +489,7 @@ public class DrawingAttributes
      * @return the select line paint to use for the edges.
      */
     public Paint getSelectPaint() {
-	return selectPaint;
+        return selectPaint;
     }
 
     /**
@@ -498,16 +498,16 @@ public class DrawingAttributes
      * @param fPaint the paint.  
      */
     public void setFillPaint(Paint fPaint) {
-	Paint oldPaint = fillPaint;
-	fillPaint = fPaint;
-	
-	if (fillColorButton != null) {
- 	    fillColorButton.setIcon(getIconForPaint(fillPaint, true));
-	}
+        Paint oldPaint = fillPaint;
+        fillPaint = fPaint;
+        
+        if (fillColorButton != null) {
+            fillColorButton.setIcon(getIconForPaint(fillPaint, true));
+        }
 
-	propertyChangeSupport.firePropertyChange("fillPaint", 
-						 oldPaint, 
-						 fillPaint);
+        propertyChangeSupport.firePropertyChange("fillPaint", 
+                                                 oldPaint, 
+                                                 fillPaint);
     }
 
     /**
@@ -518,7 +518,7 @@ public class DrawingAttributes
      * @return the fill paint to use for the areas.  
      */
     public Paint getFillPaint() {
-	return fillPaint;
+        return fillPaint;
     }
 
     /**
@@ -530,20 +530,20 @@ public class DrawingAttributes
      * @param mPaint the paint.  
      */
     public void setMattingPaint(Paint mPaint) {
-	Paint oldPaint = mattingPaint;
-	mattingPaint = mPaint;
-	
-	if (mattingColorButton != null) {
- 	    mattingColorButton.setIcon(getMattingIconForPaint());
-	}
+        Paint oldPaint = mattingPaint;
+        mattingPaint = mPaint;
+        
+        if (mattingColorButton != null) {
+            mattingColorButton.setIcon(getMattingIconForPaint());
+        }
 
-	if (mattedCheckBox != null) {
-	    mattedCheckBox.setIcon(getMattedIcon());
-	}
+        if (mattedCheckBox != null) {
+            mattedCheckBox.setIcon(getMattedIcon());
+        }
 
-	propertyChangeSupport.firePropertyChange("mattingPaint", 
-						 oldPaint, 
-						 mattingPaint);
+        propertyChangeSupport.firePropertyChange("mattingPaint", 
+                                                 oldPaint, 
+                                                 mattingPaint);
     }
 
     /**
@@ -552,7 +552,7 @@ public class DrawingAttributes
      * @return the matting paint to use for the areas.  
      */
     public Paint getMattingPaint() {
-	return mattingPaint;
+        return mattingPaint;
     }
 
     /**
@@ -563,16 +563,16 @@ public class DrawingAttributes
      * @param fPattern the TexturePaint to set.  
      */
     public void setFillPattern(TexturePaint fPattern) {
-	Paint oldPattern = fPattern;
-	fillPattern = fPattern;
-	
-	if (fillColorButton != null) {
-	    // GUI doesn't handle fill patterns yet.
-	}
+        Paint oldPattern = fPattern;
+        fillPattern = fPattern;
+        
+        if (fillColorButton != null) {
+            // GUI doesn't handle fill patterns yet.
+        }
 
-	propertyChangeSupport.firePropertyChange("fillPattern", 
-						 oldPattern, 
-						 fillPattern);
+        propertyChangeSupport.firePropertyChange("fillPattern", 
+                                                 oldPattern, 
+                                                 fillPattern);
     }
 
     /**
@@ -581,7 +581,7 @@ public class DrawingAttributes
      * @return TexturePaint.
      */
     public TexturePaint getFillPattern() {
-	return fillPattern;
+        return fillPattern;
     }
 
     /**
@@ -591,11 +591,11 @@ public class DrawingAttributes
      * @param bScale the base scale to use - 1:bScale.
      */
     public void setBaseScale(float bScale) {
-	if (bScale > 0) {
-	    baseScale = bScale;
-	} else {
-	    baseScale = NONE;
-	}
+        if (bScale > 0) {
+            baseScale = bScale;
+        } else {
+            baseScale = NONE;
+        }
     }
 
     /**
@@ -605,30 +605,30 @@ public class DrawingAttributes
      * @return base scale for paint and stroke.  
      */
     public float getBaseScale() {
-	return baseScale;
+        return baseScale;
     }
 
     /**
      * Return whether the OMGraphic has matting around the edge.
      */
     public boolean isMatted() {
-	return matted;
+        return matted;
     }
 
     /**
      * Set whether the OMGraphic should have matting around the edge.
      */
     public void setMatted(boolean set) {
-	boolean oldMatted = matted;
-	matted = set;
+        boolean oldMatted = matted;
+        matted = set;
 
-	if (mattedCheckBox != null) {
-	    mattedCheckBox.setSelected(matted);
-	}
+        if (mattedCheckBox != null) {
+            mattedCheckBox.setSelected(matted);
+        }
 
-	propertyChangeSupport.firePropertyChange("matted", 
-						 oldMatted, 
-						 matted);
+        propertyChangeSupport.firePropertyChange("matted", 
+                                                 oldMatted, 
+                                                 matted);
     }
 
     /**
@@ -637,27 +637,27 @@ public class DrawingAttributes
      */
     public void setFrom(OMGraphic graphic) {
 
-	matted = graphic.isMatted();
-	mattingPaint = graphic.getMattingPaint();
+        matted = graphic.isMatted();
+        mattingPaint = graphic.getMattingPaint();
 
-	linePaint = graphic.getLinePaint();
-	selectPaint = graphic.getSelectPaint();
-	fillPaint = graphic.getFillPaint();
-	fillPattern = graphic.getTextureMask();
+        linePaint = graphic.getLinePaint();
+        selectPaint = graphic.getSelectPaint();
+        fillPaint = graphic.getFillPaint();
+        fillPattern = graphic.getTextureMask();
 
-	// Need to put this in to keep the gui up to date.  Calling
-	// setStroke fires off a propertyChange reaction that
-	// potentially harms other parameters, like renderType.
-	stroke = graphic.getStroke();
+        // Need to put this in to keep the gui up to date.  Calling
+        // setStroke fires off a propertyChange reaction that
+        // potentially harms other parameters, like renderType.
+        stroke = graphic.getStroke();
 
-	// Don't want to call this here, it is CPU intensive.
-	// resetGUI should be called only when the GUI needs to be
-	// updated.
-// 	resetGUI();
+        // Don't want to call this here, it is CPU intensive.
+        // resetGUI should be called only when the GUI needs to be
+        // updated.
+//      resetGUI();
 
-	if (propertyChangeSupport != null) {
-	    propertyChangeSupport.firePropertyChange("all", true, true);
-	}
+        if (propertyChangeSupport != null) {
+            propertyChangeSupport.firePropertyChange("all", true, true);
+        }
     }
 
     /**
@@ -675,25 +675,25 @@ public class DrawingAttributes
      * @param graphic OMGraphic.  
      */
     public void setTo(OMGraphic graphic) {
-	setOMGraphicEdgeAttributes(graphic);
+        setOMGraphicEdgeAttributes(graphic);
 
-	// If the fillPattern is set to a TexturePaint, and the
-	// fillPaint is null or clear, then the fillPattern will be
-	// set as the fill paint.  Otherwise, the fillPaint will be
-	// set in the OMGraphic, and the fillPattern will be set too.
-	// If the OMGraphic.textureMask is != null, then it will get
-	// painted on top of the fillPaint.  Makes for effects if the
-	// fillPattern has some transparent spots.
-	if (fillPattern != null && 
-	    (fillPaint == null || OMGraphic.isClear(fillPaint))) {
-	    graphic.setFillPaint(fillPattern);
-	} else {
-	    graphic.setFillPaint(fillPaint);
-	    graphic.setTextureMask(fillPattern);
-	}
+        // If the fillPattern is set to a TexturePaint, and the
+        // fillPaint is null or clear, then the fillPattern will be
+        // set as the fill paint.  Otherwise, the fillPaint will be
+        // set in the OMGraphic, and the fillPattern will be set too.
+        // If the OMGraphic.textureMask is != null, then it will get
+        // painted on top of the fillPaint.  Makes for effects if the
+        // fillPattern has some transparent spots.
+        if (fillPattern != null && 
+            (fillPaint == null || OMGraphic.isClear(fillPaint))) {
+            graphic.setFillPaint(fillPattern);
+        } else {
+            graphic.setFillPaint(fillPaint);
+            graphic.setTextureMask(fillPattern);
+        }
 
-	graphic.setMatted(matted);
-	graphic.setMattingPaint(mattingPaint);
+        graphic.setMatted(matted);
+        graphic.setMattingPaint(mattingPaint);
     }
 
     /**
@@ -706,14 +706,14 @@ public class DrawingAttributes
      * @param graphic OMGraphic
      */
     public void setOMGraphicEdgeAttributes(OMGraphic graphic) {
-	graphic.setLinePaint(linePaint);
-	graphic.setSelectPaint(selectPaint);
+        graphic.setLinePaint(linePaint);
+        graphic.setSelectPaint(selectPaint);
 
-	if (stroke != null) {
-	    graphic.setStroke(stroke);
-	} else {
-	    graphic.setStroke(OMGraphic.BASIC_STROKE);
-	}
+        if (stroke != null) {
+            graphic.setStroke(stroke);
+        } else {
+            graphic.setStroke(OMGraphic.BASIC_STROKE);
+        }
     }
 
     /**
@@ -727,9 +727,9 @@ public class DrawingAttributes
      * @param scale scale to compare to the base scale.  
      */
     public void setOMGraphicAttributesForScale(OMGraphic graphic, 
-					       float scale) {
-	setOMGraphicEdgeAttributesForScale(graphic, scale);
-	graphic.setFillPaint(getFillPaintForScale(scale));
+                                               float scale) {
+        setOMGraphicEdgeAttributesForScale(graphic, scale);
+        graphic.setFillPaint(getFillPaintForScale(scale));
     }
 
     /**
@@ -745,13 +745,13 @@ public class DrawingAttributes
      */
     public void setOMGraphicEdgeAttributesForScale(OMGraphic graphic, float scale) {
 
-	graphic.setLinePaint(linePaint);
-	graphic.setSelectPaint(selectPaint);
-	if (stroke != null) {
-	    graphic.setStroke(getStrokeForScale(scale));
-	} else {
-	    graphic.setStroke(OMGraphic.BASIC_STROKE);
-	}
+        graphic.setLinePaint(linePaint);
+        graphic.setSelectPaint(selectPaint);
+        if (stroke != null) {
+            graphic.setStroke(getStrokeForScale(scale));
+        } else {
+            graphic.setStroke(OMGraphic.BASIC_STROKE);
+        }
     }
 
     /**
@@ -765,19 +765,19 @@ public class DrawingAttributes
      * the lock, false if you didn't.
      */
     protected synchronized boolean getLock() {
-	if (colorChooserLock == false) {
-	    colorChooserLock = true;
-	    return colorChooserLock;
-	} else {
-	    return false;
-	}
+        if (colorChooserLock == false) {
+            colorChooserLock = true;
+            return colorChooserLock;
+        } else {
+            return false;
+        }
     }
 
     /**
      * Release the lock on the JColorChooser.
      */
     protected synchronized void releaseLock() {
-	colorChooserLock = false;
+        colorChooserLock = false;
     }
 
     /**
@@ -786,48 +786,48 @@ public class DrawingAttributes
      *  widths, etc.
      */
     public void actionPerformed(ActionEvent e) {
-	Object source = e.getSource();
-	String command = e.getActionCommand();
+        Object source = e.getSource();
+        String command = e.getActionCommand();
 
-	Paint oldPaint, tmpPaint;
-	if (command == LineColorCommand && 
-	    linePaint instanceof Color) {
-	    tmpPaint = getNewPaint((Component)source, "Choose Line Color", 
-				   (Color)linePaint);
-	    if (tmpPaint != null) {
-		setLinePaint(tmpPaint);
-	    }
-	    
-	} else if (command == FillColorCommand && 
-		   fillPaint instanceof Color) {
-	    tmpPaint = getNewPaint((Component)source, "Choose Fill Color", 
-				   (Color)fillPaint);
-	    if (tmpPaint != null) {
-		setFillPaint(tmpPaint);
-	    }
-	    
-	} else if (command == SelectColorCommand && 
-		   selectPaint instanceof Color) {
-	    tmpPaint = getNewPaint((Component)source, "Choose Select Color", 
-				   (Color)selectPaint);
-	    if (tmpPaint != null) {
- 		setSelectPaint(tmpPaint);
-	    }
-	} else if (command == MattingColorCommand && 
-		   mattingPaint instanceof Color) {
-	    tmpPaint = getNewPaint((Component)source, "Choose Matting Color", 
-				   (Color)mattingPaint);
-	    if (tmpPaint != null) {
- 		setMattingPaint(tmpPaint);
-	    }
-	} else if (command == MattedCommand) {
-	    JToggleButton check = (JToggleButton)e.getSource();
-	    setMatted(check.isSelected());
-	} else {
-	    if (Debug.debugging("drawingattributes")) {
-		Debug.output("DrawingAttributes.actionPerformed: unrecognized command > " + command);
-	    }
-	}
+        Paint oldPaint, tmpPaint;
+        if (command == LineColorCommand && 
+            linePaint instanceof Color) {
+            tmpPaint = getNewPaint((Component)source, "Choose Line Color", 
+                                   (Color)linePaint);
+            if (tmpPaint != null) {
+                setLinePaint(tmpPaint);
+            }
+            
+        } else if (command == FillColorCommand && 
+                   fillPaint instanceof Color) {
+            tmpPaint = getNewPaint((Component)source, "Choose Fill Color", 
+                                   (Color)fillPaint);
+            if (tmpPaint != null) {
+                setFillPaint(tmpPaint);
+            }
+            
+        } else if (command == SelectColorCommand && 
+                   selectPaint instanceof Color) {
+            tmpPaint = getNewPaint((Component)source, "Choose Select Color", 
+                                   (Color)selectPaint);
+            if (tmpPaint != null) {
+                setSelectPaint(tmpPaint);
+            }
+        } else if (command == MattingColorCommand && 
+                   mattingPaint instanceof Color) {
+            tmpPaint = getNewPaint((Component)source, "Choose Matting Color", 
+                                   (Color)mattingPaint);
+            if (tmpPaint != null) {
+                setMattingPaint(tmpPaint);
+            }
+        } else if (command == MattedCommand) {
+            JToggleButton check = (JToggleButton)e.getSource();
+            setMatted(check.isSelected());
+        } else {
+            if (Debug.debugging("drawingattributes")) {
+                Debug.output("DrawingAttributes.actionPerformed: unrecognized command > " + command);
+            }
+        }
     }
 
     /**
@@ -844,13 +844,13 @@ public class DrawingAttributes
      * chooser can't be sequired.
      */
     protected Color getNewPaint(Component source, String title, 
-				Color startingColor) {
-	Color newPaint = null;
-	if (getLock()) {
-  	    newPaint = OMColorChooser.showDialog(source, title, startingColor);
-	    releaseLock();
-	}
-	return newPaint;
+                                Color startingColor) {
+        Color newPaint = null;
+        if (getLock()) {
+            newPaint = OMColorChooser.showDialog(source, title, startingColor);
+            releaseLock();
+        }
+        return newPaint;
     }
 
     protected JPanel palette = null;
@@ -862,11 +862,11 @@ public class DrawingAttributes
      * JPanel.
      */
     public Component getGUI() {
-	if (Debug.debugging("drawingattributes")) {
- 	    Debug.output("DrawingAttributes: creating palette.");
-	}
+        if (Debug.debugging("drawingattributes")) {
+            Debug.output("DrawingAttributes: creating palette.");
+        }
 
-	return getColorAndLineGUI();
+        return getColorAndLineGUI();
     }
 
     /**
@@ -878,78 +878,78 @@ public class DrawingAttributes
      */
     protected JPanel getColorAndLineGUI() {
 
-	if (palette == null || toolbar == null) {
-	    palette = new JPanel();
+        if (palette == null || toolbar == null) {
+            palette = new JPanel();
 
-	    if (Debug.debugging("layout")) {
-		palette.setBorder(BorderFactory.createLineBorder(Color.red));
-	    }
+            if (Debug.debugging("layout")) {
+                palette.setBorder(BorderFactory.createLineBorder(Color.red));
+            }
 
-	    GridBagLayout gridbag = new GridBagLayout();
-	    GridBagConstraints c = new GridBagConstraints();
-	    palette.setLayout(gridbag);
+            GridBagLayout gridbag = new GridBagLayout();
+            GridBagConstraints c = new GridBagConstraints();
+            palette.setLayout(gridbag);
 
-	    toolbar = new GridBagToolBar();
-	    gridbag.setConstraints(toolbar, c);
-	}	    
+            toolbar = new GridBagToolBar();
+            gridbag.setConstraints(toolbar, c);
+        }           
 
-	resetGUI();
-	palette.removeAll(); // Remove cruft from past OMGraphics
-	toolbar.removeAll(); // Remove cruft from past OMGraphics
-	palette.add(toolbar); // Add back the basic toolbar
-	toolbar.add(lineColorButton);
-	toolbar.add(fillColorButton);
-	toolbar.add(selectColorButton);
-	toolbar.add(mattingColorButton);
-	toolbar.add(new JLabel(" "));
-	toolbar.add(mattedCheckBox);
+        resetGUI();
+        palette.removeAll(); // Remove cruft from past OMGraphics
+        toolbar.removeAll(); // Remove cruft from past OMGraphics
+        palette.add(toolbar); // Add back the basic toolbar
+        toolbar.add(lineColorButton);
+        toolbar.add(fillColorButton);
+        toolbar.add(selectColorButton);
+        toolbar.add(mattingColorButton);
+        toolbar.add(new JLabel(" "));
+        toolbar.add(mattedCheckBox);
 
-	if (stroke instanceof BasicStroke) {
-	    BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
-	    if (tmpbse != null) {
-		ImageIcon icon = BasicStrokeEditorMenu.createIcon(tmpbse.getBasicStroke(), 50, 
-								  icon_height, true);
-		lineButton = new JButton(icon);
-		lineButton.setToolTipText("Modify Line Parameters");
-		lineButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-			    JButton button = getLineButton();
-			    JPopupMenu popup = new JPopupMenu();
+        if (stroke instanceof BasicStroke) {
+            BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
+            if (tmpbse != null) {
+                ImageIcon icon = BasicStrokeEditorMenu.createIcon(tmpbse.getBasicStroke(), 50, 
+                                                                  icon_height, true);
+                lineButton = new JButton(icon);
+                lineButton.setToolTipText("Modify Line Parameters");
+                lineButton.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent ae) {
+                            JButton button = getLineButton();
+                            JPopupMenu popup = new JPopupMenu();
 
-			    JMenu menu = getLineTypeMenu();
-			    if (menu != null) {
-				popup.add(menu);
-			    }
+                            JMenu menu = getLineTypeMenu();
+                            if (menu != null) {
+                                popup.add(menu);
+                            }
 
-			    getBasicStrokeEditor().setGUI(popup);
+                            getBasicStrokeEditor().setGUI(popup);
 
-			    JMenu[] menus = getLineMenuAdditions();
-			    if (menus != null) {
-				for (int i = 0; i < menus.length; i++) {
-				    menu = menus[i];
-				    if (menu != null) {
-					popup.add(menu);
-				    }
-				}
-			    }
+                            JMenu[] menus = getLineMenuAdditions();
+                            if (menus != null) {
+                                for (int i = 0; i < menus.length; i++) {
+                                    menu = menus[i];
+                                    if (menu != null) {
+                                        popup.add(menu);
+                                    }
+                                }
+                            }
 
-			    popup.show(button, button.getWidth(), 0);
-			}
-		    });
-		tmpbse.setLaunchButton(lineButton);
-		toolbar.add(new JLabel(" "));
-		toolbar.add(lineButton);
-	    }
-	}
-	   
-	return palette;
+                            popup.show(button, button.getWidth(), 0);
+                        }
+                    });
+                tmpbse.setLaunchButton(lineButton);
+                toolbar.add(new JLabel(" "));
+                toolbar.add(lineButton);
+            }
+        }
+           
+        return palette;
     }
 
     /**
      * Get the JButton used to bring up the line menu.
      */
     protected JButton getLineButton() {
-	return lineButton;
+        return lineButton;
     }
 
     /**
@@ -958,7 +958,7 @@ public class DrawingAttributes
      * does.
      */
     public JMenu getLineTypeMenu() {
-	return null;
+        return null;
     }
 
     /**
@@ -966,11 +966,11 @@ public class DrawingAttributes
      * DrawingAttributes.
      */
     public void setLineMenuAdditions(JMenu[] lma) {
-	lineMenuAdditions = lma;
+        lineMenuAdditions = lma;
     }
 
     public JMenu[] getLineMenuAdditions() {
-	return lineMenuAdditions;
+        return lineMenuAdditions;
     }
 
     /**
@@ -978,60 +978,60 @@ public class DrawingAttributes
      * current settings.
      */
     public void resetGUI() {
-	if (lineColorButton != null) {
- 	    lineColorButton.setIcon(getIconForPaint(getLinePaint(), false));
-	} else {
-	    lineColorButton = new JButton(getIconForPaint(getLinePaint(), false));
-	    lineColorButton.setActionCommand(LineColorCommand);
-	    lineColorButton.addActionListener(this);
-	    lineColorButton.setToolTipText("Change Edge Color (true/opaque)");
-	}
+        if (lineColorButton != null) {
+            lineColorButton.setIcon(getIconForPaint(getLinePaint(), false));
+        } else {
+            lineColorButton = new JButton(getIconForPaint(getLinePaint(), false));
+            lineColorButton.setActionCommand(LineColorCommand);
+            lineColorButton.addActionListener(this);
+            lineColorButton.setToolTipText("Change Edge Color (true/opaque)");
+        }
 
-	if (fillColorButton != null) {
-  	    fillColorButton.setIcon(getIconForPaint(getFillPaint(), true));
-	} else {
-	    fillColorButton = new JButton(getIconForPaint(getFillPaint(), true));
-	    fillColorButton.setActionCommand(FillColorCommand);
-	    fillColorButton.addActionListener(this);
-	    fillColorButton.setToolTipText("Change Fill Color (true/opaque)");	    
-	}
+        if (fillColorButton != null) {
+            fillColorButton.setIcon(getIconForPaint(getFillPaint(), true));
+        } else {
+            fillColorButton = new JButton(getIconForPaint(getFillPaint(), true));
+            fillColorButton.setActionCommand(FillColorCommand);
+            fillColorButton.addActionListener(this);
+            fillColorButton.setToolTipText("Change Fill Color (true/opaque)");      
+        }
 
-	if (selectColorButton != null) {
- 	    selectColorButton.setIcon(getIconForPaint(getSelectPaint(), false));
-	} else {
-	    selectColorButton = new JButton(getIconForPaint(getSelectPaint(), false));
-	    selectColorButton.setActionCommand(SelectColorCommand);
-	    selectColorButton.addActionListener(this);
-	    selectColorButton.setToolTipText("Change Highlight Edge Color (true/opaque)");
-	}
+        if (selectColorButton != null) {
+            selectColorButton.setIcon(getIconForPaint(getSelectPaint(), false));
+        } else {
+            selectColorButton = new JButton(getIconForPaint(getSelectPaint(), false));
+            selectColorButton.setActionCommand(SelectColorCommand);
+            selectColorButton.addActionListener(this);
+            selectColorButton.setToolTipText("Change Highlight Edge Color (true/opaque)");
+        }
 
-	if (mattingColorButton != null) {
- 	    mattingColorButton.setIcon(getMattingIconForPaint());
-	} else {
-	    mattingColorButton = new JButton(getMattingIconForPaint());
-	    mattingColorButton.setActionCommand(MattingColorCommand);
-	    mattingColorButton.addActionListener(this);
-	    mattingColorButton.setToolTipText("Change Matted Edge Color (true/opaque)");
-	}
+        if (mattingColorButton != null) {
+            mattingColorButton.setIcon(getMattingIconForPaint());
+        } else {
+            mattingColorButton = new JButton(getMattingIconForPaint());
+            mattingColorButton.setActionCommand(MattingColorCommand);
+            mattingColorButton.addActionListener(this);
+            mattingColorButton.setToolTipText("Change Matted Edge Color (true/opaque)");
+        }
 
-	if (mattedCheckBox != null) {
-	    mattedCheckBox.setIcon(getMattedIcon());
-	    mattedCheckBox.setSelected(matted);
-	} else {
-	    mattedCheckBox = new JToggleButton(getMattedIcon(), isMatted());
-	    mattedCheckBox.setActionCommand(MattedCommand);
-	    mattedCheckBox.addActionListener(this);
-	    mattedCheckBox.setToolTipText("Enable/Disable Matting on Edge");
-	}
+        if (mattedCheckBox != null) {
+            mattedCheckBox.setIcon(getMattedIcon());
+            mattedCheckBox.setSelected(matted);
+        } else {
+            mattedCheckBox = new JToggleButton(getMattedIcon(), isMatted());
+            mattedCheckBox.setActionCommand(MattedCommand);
+            mattedCheckBox.addActionListener(this);
+            mattedCheckBox.setToolTipText("Enable/Disable Matting on Edge");
+        }
 
-	if (stroke instanceof BasicStroke) {
-	    BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
-	    if (tmpbse != null) {
-		tmpbse.setBasicStroke((BasicStroke)stroke);
-	    }
-	}
+        if (stroke instanceof BasicStroke) {
+            BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
+            if (tmpbse != null) {
+                tmpbse.setBasicStroke((BasicStroke)stroke);
+            }
+        }
     }
-	
+        
     /**
      * Create an ImageIcon from a java.awt.Paint.
      *
@@ -1040,13 +1040,13 @@ public class DrawingAttributes
      * @param height icon pixel height
      */
     public static ImageIcon getPaletteIcon(Paint paint, int width, int height) {
-	BufferedImage bufferedImage = 
-	    new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-	Graphics2D graphics = (Graphics2D)bufferedImage.getGraphics();
-	graphics.setPaint(paint);
-	graphics.fillRect(0, 0, width, height);
+        BufferedImage bufferedImage = 
+            new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics = (Graphics2D)bufferedImage.getGraphics();
+        graphics.setPaint(paint);
+        graphics.fillRect(0, 0, width, height);
 
-	return new ImageIcon(bufferedImage);
+        return new ImageIcon(bufferedImage);
     }
 
     /**
@@ -1054,31 +1054,31 @@ public class DrawingAttributes
      * is interested in finding out when some parameter has changed.
      */
     public PropertyChangeSupport getPropertyChangeSupport() {
-	return propertyChangeSupport;
+        return propertyChangeSupport;
     }
 
     public void setPropertyChangeSupport(PropertyChangeSupport support) {
-	propertyChangeSupport = support;
+        propertyChangeSupport = support;
     }
 
     public static Color calculateTextColor(Color color) {
-	if (alwaysSetTextToBlack) // Mac OS X
-	    return Color.black;
+        if (alwaysSetTextToBlack) // Mac OS X
+            return Color.black;
 
-	int red = color.getRed();
-	int green = color.getGreen();
-	int blue = color.getBlue();
-	int alpha = color.getAlpha();
+        int red = color.getRed();
+        int green = color.getGreen();
+        int blue = color.getBlue();
+        int alpha = color.getAlpha();
 
-	if (alpha < 128) return Color.black;
+        if (alpha < 128) return Color.black;
 
-	int newred, newgreen, newblue;
-	
-	newred = normalizeOn128(red);
-	newgreen = normalizeOn128(green); 
-	newblue = normalizeOn128(blue);
+        int newred, newgreen, newblue;
+        
+        newred = normalizeOn128(red);
+        newgreen = normalizeOn128(green); 
+        newblue = normalizeOn128(blue);
 
-	return new Color(newred, newgreen, newblue);
+        return new Color(newred, newgreen, newblue);
     }
 
     public static int normalizeOn128(int value) {
@@ -1097,20 +1097,20 @@ public class DrawingAttributes
      * @param props the <code>Properties</code> object.
      */
     public void setProperties(java.util.Properties props) {
-	setProperties(getPropertyPrefix(), props);
+        setProperties(getPropertyPrefix(), props);
     }
 
     public BasicStrokeEditorMenu getBasicStrokeEditor() {
-	if (bse == null && stroke instanceof BasicStroke) {
-	    try {
-		bse = new BasicStrokeEditorMenu((BasicStroke)getStroke());
-		bse.getPropertyChangeSupport().addPropertyChangeListener(this);
-	    } catch (Exception e) {
-		// This happens if a java Toolkit is not available.
-		bse = null;
-	    }
-	}
-	return bse;
+        if (bse == null && stroke instanceof BasicStroke) {
+            try {
+                bse = new BasicStrokeEditorMenu((BasicStroke)getStroke());
+                bse.getPropertyChangeSupport().addPropertyChangeListener(this);
+            } catch (Exception e) {
+                // This happens if a java Toolkit is not available.
+                bse = null;
+            }
+        }
+        return bse;
     }
 
     /**
@@ -1133,162 +1133,162 @@ public class DrawingAttributes
      */
     public void setProperties(String prefix, Properties props) {
 
-	propertyChangeSupport = new PropertyChangeSupport(this);
-	setPropertyPrefix(prefix);
+        propertyChangeSupport = new PropertyChangeSupport(this);
+        setPropertyPrefix(prefix);
 
-	if (props == null) {
-	    return;
-	}
+        if (props == null) {
+            return;
+        }
 
-	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	//  Set up the drawing attributes.
-	linePaint =
-	    LayerUtils.parseColorFromProperties(
-		props, realPrefix + linePaintProperty,
-		linePaint);
-	
-	selectPaint =
-	    LayerUtils.parseColorFromProperties(
-		props, realPrefix + selectPaintProperty,
-		selectPaint);
+        //  Set up the drawing attributes.
+        linePaint =
+            LayerUtils.parseColorFromProperties(
+                props, realPrefix + linePaintProperty,
+                linePaint);
+        
+        selectPaint =
+            LayerUtils.parseColorFromProperties(
+                props, realPrefix + selectPaintProperty,
+                selectPaint);
 
-	mattingPaint =
-	    LayerUtils.parseColorFromProperties(
-		props, realPrefix + mattingPaintProperty,
-		mattingPaint);
-	
-// 	textPaint =
-// 	    LayerUtils.parseColorFromProperties(
-// 		props, realPrefix + textPaintProperty,
-// 		textPaint);
+        mattingPaint =
+            LayerUtils.parseColorFromProperties(
+                props, realPrefix + mattingPaintProperty,
+                mattingPaint);
+        
+//      textPaint =
+//          LayerUtils.parseColorFromProperties(
+//              props, realPrefix + textPaintProperty,
+//              textPaint);
 
-	fillPaint =
-	    LayerUtils.parseColorFromProperties(
-		props, realPrefix + fillPaintProperty,
-		fillPaint);
+        fillPaint =
+            LayerUtils.parseColorFromProperties(
+                props, realPrefix + fillPaintProperty,
+                fillPaint);
 
-	matted = LayerUtils.booleanFromProperties(props, realPrefix + mattedProperty, matted);
+        matted = LayerUtils.booleanFromProperties(props, realPrefix + mattedProperty, matted);
 
-	float lineWidth;
-	boolean basicStrokeDefined = false;
+        float lineWidth;
+        boolean basicStrokeDefined = false;
 
-	if (stroke != null && stroke instanceof BasicStroke) {
-	    basicStrokeDefined = true;
-	}
-	
-	lineWidth =
-	    LayerUtils.floatFromProperties(
-		props, realPrefix + lineWidthProperty,
-		(basicStrokeDefined?((BasicStroke)stroke).getLineWidth():defaultLineWidth));
+        if (stroke != null && stroke instanceof BasicStroke) {
+            basicStrokeDefined = true;
+        }
+        
+        lineWidth =
+            LayerUtils.floatFromProperties(
+                props, realPrefix + lineWidthProperty,
+                (basicStrokeDefined?((BasicStroke)stroke).getLineWidth():defaultLineWidth));
 
-	baseScale =
-	    LayerUtils.floatFromProperties(
-		props, realPrefix + baseScaleProperty,
-		baseScale);
-	
-	// Look for a dash pattern properties to come up with a stroke
-	String dPattern = props.getProperty(realPrefix + dashPatternProperty);
-	if (basicStrokeDefined && dPattern != null && !dPattern.equals("")) {
-	    float dashPhase;
-	    float[] lineDash;
-	    // OK, it exists, come up with a stroke.
-	    try {
-		StringTokenizer t = new StringTokenizer(dPattern);
-		int arraySize = t.countTokens();
-		lineDash = new float[arraySize];
+        baseScale =
+            LayerUtils.floatFromProperties(
+                props, realPrefix + baseScaleProperty,
+                baseScale);
+        
+        // Look for a dash pattern properties to come up with a stroke
+        String dPattern = props.getProperty(realPrefix + dashPatternProperty);
+        if (basicStrokeDefined && dPattern != null && !dPattern.equals("")) {
+            float dashPhase;
+            float[] lineDash;
+            // OK, it exists, come up with a stroke.
+            try {
+                StringTokenizer t = new StringTokenizer(dPattern);
+                int arraySize = t.countTokens();
+                lineDash = new float[arraySize];
 
-		int dashCount = 0;
-		while (t.hasMoreTokens()) {
-		    String segment = t.nextToken();
-		    lineDash[dashCount++] = Float.parseFloat(segment);
-		    if (Debug.debugging("drawingattributes")) {
-			Debug.output("read " + segment);
-		    }
-		}
+                int dashCount = 0;
+                while (t.hasMoreTokens()) {
+                    String segment = t.nextToken();
+                    lineDash[dashCount++] = Float.parseFloat(segment);
+                    if (Debug.debugging("drawingattributes")) {
+                        Debug.output("read " + segment);
+                    }
+                }
 
-	    } catch (NoSuchElementException nsee) {
-		Debug.error("DrawingAttributes.init: dash pattern attributes wrong - should be dashPattern=(number pixels on) (number pixels off)");
-		lineDash = null;
-	    } catch (NumberFormatException nfe) {
-		Debug.error("DrawingAttributes.init: Number format exception for dashPattern");
-		lineDash = null;
-	    } catch (NullPointerException npe) {
-		Debug.error("DrawingAttributes.init: Caught null pointer exception - probably resulting from non-float number format exception for dashPattern");
-		lineDash = null;
-	    }
+            } catch (NoSuchElementException nsee) {
+                Debug.error("DrawingAttributes.init: dash pattern attributes wrong - should be dashPattern=(number pixels on) (number pixels off)");
+                lineDash = null;
+            } catch (NumberFormatException nfe) {
+                Debug.error("DrawingAttributes.init: Number format exception for dashPattern");
+                lineDash = null;
+            } catch (NullPointerException npe) {
+                Debug.error("DrawingAttributes.init: Caught null pointer exception - probably resulting from non-float number format exception for dashPattern");
+                lineDash = null;
+            }
 
-	    if (lineDash == null){
-		if (basicStrokeDefined) {
-		    lineDash = ((BasicStroke)stroke).getDashArray();
-		} else {
-		    lineDash = new float[2];
-		    lineDash[0] = defaultDashLength;
-		    lineDash[1] = defaultDashLength;
-		}
-	    }
+            if (lineDash == null){
+                if (basicStrokeDefined) {
+                    lineDash = ((BasicStroke)stroke).getDashArray();
+                } else {
+                    lineDash = new float[2];
+                    lineDash[0] = defaultDashLength;
+                    lineDash[1] = defaultDashLength;
+                }
+            }
 
-	    int dashCount = 0;
-	    for (int x = 0; x < lineDash.length; x++) {
-		dashCount += lineDash[x];
-	    }
-	    if (dashCount == 0) {
-		lineDash = null;
-	    }
+            int dashCount = 0;
+            for (int x = 0; x < lineDash.length; x++) {
+                dashCount += lineDash[x];
+            }
+            if (dashCount == 0) {
+                lineDash = null;
+            }
 
-	    String dPhase = props.getProperty(realPrefix + dashPhaseProperty);
-	    if (dPhase != null && !dPhase.equals("")) {
-		try {
-		    dashPhase = Float.valueOf(dPhase).floatValue();
-		} catch (NumberFormatException nfe) {
-		    Debug.error("DrawingAttributes.init: Number format exception for dashPhase");
-		    dashPhase = defaultDashPhase;
-		}
-	    } else {
-		if (basicStrokeDefined) {
-		    dashPhase = ((BasicStroke)stroke).getDashPhase();
-		} else {
-		    dashPhase = defaultDashPhase;
-		}
-	    }
+            String dPhase = props.getProperty(realPrefix + dashPhaseProperty);
+            if (dPhase != null && !dPhase.equals("")) {
+                try {
+                    dashPhase = Float.valueOf(dPhase).floatValue();
+                } catch (NumberFormatException nfe) {
+                    Debug.error("DrawingAttributes.init: Number format exception for dashPhase");
+                    dashPhase = defaultDashPhase;
+                }
+            } else {
+                if (basicStrokeDefined) {
+                    dashPhase = ((BasicStroke)stroke).getDashPhase();
+                } else {
+                    dashPhase = defaultDashPhase;
+                }
+            }
 
-	    setStroke(new BasicStroke(lineWidth, 
-				      BasicStroke.CAP_BUTT, 
-				      BasicStroke.JOIN_MITER, 10.0f, 
-				      lineDash, dashPhase));
+            setStroke(new BasicStroke(lineWidth, 
+                                      BasicStroke.CAP_BUTT, 
+                                      BasicStroke.JOIN_MITER, 10.0f, 
+                                      lineDash, dashPhase));
 
-	} else if (basicStrokeDefined) {
-	    setStroke(new BasicStroke(lineWidth));
-	}
+        } else if (basicStrokeDefined) {
+            setStroke(new BasicStroke(lineWidth));
+        }
 
-	//  OK, Fill pattern next...
-	fPattern = props.getProperty(realPrefix + fillPatternProperty);
-	if (fPattern != null && !fPattern.equals("")) {
+        //  OK, Fill pattern next...
+        fPattern = props.getProperty(realPrefix + fillPatternProperty);
+        if (fPattern != null && !fPattern.equals("")) {
 
-	    try {
+            try {
 
-		URL textureImageURL = 
-		    LayerUtils.getResourceOrFileOrURL(this, fPattern);
+                URL textureImageURL = 
+                    LayerUtils.getResourceOrFileOrURL(this, fPattern);
 
-		if (textureImageURL != null) {
+                if (textureImageURL != null) {
 
-		    BufferedImage bi = 
-			BufferedImageHelper.getBufferedImage(textureImageURL, 
-							     0, 0, -1, -1);
-		    
-		    fillPattern = 
-			new TexturePaint(bi, new Rectangle(0,0, bi.getWidth(), 
-							   bi.getHeight()));
-		} 
-	    } catch (MalformedURLException murle) {
-		Debug.error("DrawingAttributes.init: bad texture URL - \n     " + 
-			    realPrefix + fillPatternProperty);
-		fillPattern = null;
-	    } catch (InterruptedException ie) {
-		Debug.error("DrawingAttributes.init: bad problems getting texture URL - \n" + ie);
-		fillPattern = null;
-	    }
-	}
+                    BufferedImage bi = 
+                        BufferedImageHelper.getBufferedImage(textureImageURL, 
+                                                             0, 0, -1, -1);
+                    
+                    fillPattern = 
+                        new TexturePaint(bi, new Rectangle(0,0, bi.getWidth(), 
+                                                           bi.getHeight()));
+                } 
+            } catch (MalformedURLException murle) {
+                Debug.error("DrawingAttributes.init: bad texture URL - \n     " + 
+                            realPrefix + fillPatternProperty);
+                fillPattern = null;
+            } catch (InterruptedException ie) {
+                Debug.error("DrawingAttributes.init: bad problems getting texture URL - \n" + ie);
+                fillPattern = null;
+            }
+        }
     }
 
     /**
@@ -1307,66 +1307,66 @@ public class DrawingAttributes
      * PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	if (linePaint instanceof Color) {
-	    props.put(prefix + linePaintProperty, 
-		      Integer.toHexString(((Color)linePaint).getRGB()));
-	}
-// 	if (textPaint instanceof Color) {
-// 	    props.put(prefix + textPaintProperty, 
-// 		      Integer.toHexString(((Color)textPaint).getRGB()));
-// 	}
-	if (fillPaint instanceof Color) {
-	    props.put(prefix + fillPaintProperty, 
-		      Integer.toHexString(((Color)fillPaint).getRGB()));
-	}
-	if (selectPaint instanceof Color) {
-	    props.put(prefix + selectPaintProperty, 
-		      Integer.toHexString(((Color)selectPaint).getRGB()));
-	}
-	if (mattingPaint instanceof Color) {
-	    props.put(prefix + mattingPaintProperty, 
-		      Integer.toHexString(((Color)mattingPaint).getRGB()));
-	}
+        if (linePaint instanceof Color) {
+            props.put(prefix + linePaintProperty, 
+                      Integer.toHexString(((Color)linePaint).getRGB()));
+        }
+//      if (textPaint instanceof Color) {
+//          props.put(prefix + textPaintProperty, 
+//                    Integer.toHexString(((Color)textPaint).getRGB()));
+//      }
+        if (fillPaint instanceof Color) {
+            props.put(prefix + fillPaintProperty, 
+                      Integer.toHexString(((Color)fillPaint).getRGB()));
+        }
+        if (selectPaint instanceof Color) {
+            props.put(prefix + selectPaintProperty, 
+                      Integer.toHexString(((Color)selectPaint).getRGB()));
+        }
+        if (mattingPaint instanceof Color) {
+            props.put(prefix + mattingPaintProperty, 
+                      Integer.toHexString(((Color)mattingPaint).getRGB()));
+        }
 
-	props.put(prefix + fillPatternProperty, 
-		  (fPattern==null?"":fPattern));
+        props.put(prefix + fillPatternProperty, 
+                  (fPattern==null?"":fPattern));
 
-	Stroke bs = getStroke();
+        Stroke bs = getStroke();
 
-	if (bs == null) {
-	    bs = new BasicStroke();
-	}
+        if (bs == null) {
+            bs = new BasicStroke();
+        }
 
-	if (bs instanceof BasicStroke) {
-	    props.put(prefix + lineWidthProperty, Float.toString(((BasicStroke)bs).getLineWidth()));
-	    
-	    float[] fa = ((BasicStroke)bs).getDashArray();
-	    if (fa != null) {
-		StringBuffer dp = new StringBuffer();
-		for (int i = 0; i < fa.length; i++) {
-		    dp.append(" " + Float.toString(fa[i]));
-		}
-		props.put(prefix + dashPatternProperty, dp.toString());
-		props.put(prefix + dashPhaseProperty, Float.toString(((BasicStroke)bs).getDashPhase()));
-	    } else {
-		props.put(prefix + dashPatternProperty, "");
-		props.put(prefix + dashPhaseProperty, "");
-	    }
-	}
+        if (bs instanceof BasicStroke) {
+            props.put(prefix + lineWidthProperty, Float.toString(((BasicStroke)bs).getLineWidth()));
+            
+            float[] fa = ((BasicStroke)bs).getDashArray();
+            if (fa != null) {
+                StringBuffer dp = new StringBuffer();
+                for (int i = 0; i < fa.length; i++) {
+                    dp.append(" " + Float.toString(fa[i]));
+                }
+                props.put(prefix + dashPatternProperty, dp.toString());
+                props.put(prefix + dashPhaseProperty, Float.toString(((BasicStroke)bs).getDashPhase()));
+            } else {
+                props.put(prefix + dashPatternProperty, "");
+                props.put(prefix + dashPhaseProperty, "");
+            }
+        }
 
-	if (baseScale != NONE) {
-	    props.put(prefix + baseScaleProperty, Float.toString(baseScale));
-	}
+        if (baseScale != NONE) {
+            props.put(prefix + baseScaleProperty, Float.toString(baseScale));
+        }
 
-	props.put(prefix + mattedProperty, new Boolean(matted).toString());
-	
-	return props;
+        props.put(prefix + mattedProperty, new Boolean(matted).toString());
+        
+        return props;
     }
 
     /**
@@ -1387,52 +1387,52 @@ public class DrawingAttributes
      * PropertyConsumer. 
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
+        if (list == null) {
+            list = new Properties();
+        }
 
-	list.put(linePaintProperty, "Edge color for graphics.");
-	list.put(linePaintProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        list.put(linePaintProperty, "Edge color for graphics.");
+        list.put(linePaintProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-// 	list.put(textPaintProperty, "Text color for graphics.");
-// 	list.put(textPaintProperty + ScopedEditorProperty, 
-// 		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+//      list.put(textPaintProperty, "Text color for graphics.");
+//      list.put(textPaintProperty + ScopedEditorProperty, 
+//               "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-	list.put(fillPaintProperty, "Fill color for graphics.");
-	list.put(fillPaintProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        list.put(fillPaintProperty, "Fill color for graphics.");
+        list.put(fillPaintProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-	list.put(selectPaintProperty, "Selected edge color for graphics.");
-	list.put(selectPaintProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        list.put(selectPaintProperty, "Selected edge color for graphics.");
+        list.put(selectPaintProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-	list.put(mattingPaintProperty, "Matting edge color for graphics.");
-	list.put(mattingPaintProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        list.put(mattingPaintProperty, "Matting edge color for graphics.");
+        list.put(mattingPaintProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-	list.put(fillPatternProperty, "Image file to use for fill pattern for graphics (optional).");
-	list.put(fillPatternProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        list.put(fillPatternProperty, "Image file to use for fill pattern for graphics (optional).");
+        list.put(fillPatternProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-	list.put(lineWidthProperty, "Line width for edges of graphics");
-// 	list.put(dashPatternProperty, "<HTML><BODY>Line dash pattern, represented by<br>space separated numbers<br> (on off on ...)</BODY></HTML>");
-	list.put(dashPatternProperty, "Line dash pattern, represented by space separated numbers (on off on ...)");
-	list.put(dashPhaseProperty, "Phase for dash pattern (Default is 0)");
+        list.put(lineWidthProperty, "Line width for edges of graphics");
+//      list.put(dashPatternProperty, "<HTML><BODY>Line dash pattern, represented by<br>space separated numbers<br> (on off on ...)</BODY></HTML>");
+        list.put(dashPatternProperty, "Line dash pattern, represented by space separated numbers (on off on ...)");
+        list.put(dashPhaseProperty, "Phase for dash pattern (Default is 0)");
 
-	list.put(baseScaleProperty, "<HTML><BODY>Scale which should be used as the base scale for the <br>patterns and line width. If set, size of pattern and <br>widths will be adjusted to the map scale</BODY></HTML>");
-	
-	list.put(mattedProperty, "Flag to enable a thin black matting to be drawn around graphics..");
-	list.put(mattedProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+        list.put(baseScaleProperty, "<HTML><BODY>Scale which should be used as the base scale for the <br>patterns and line width. If set, size of pattern and <br>widths will be adjusted to the map scale</BODY></HTML>");
+        
+        list.put(mattedProperty, "Flag to enable a thin black matting to be drawn around graphics..");
+        list.put(mattedProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
 
-// 	list.put(initPropertiesProperty, getInitPropertiesOrder());
+//      list.put(initPropertiesProperty, getInitPropertiesOrder());
 
-	return list;
+        return list;
     }
 
     public String getInitPropertiesOrder() {
-	return " " + linePaintProperty + " " + selectPaintProperty + " " + fillPaintProperty + " " + /*textPaintProperty + " " +*/ mattingPaintProperty + " " + fillPatternProperty + " " + mattedProperty + " " + lineWidthProperty + " " + dashPatternProperty + " " + dashPhaseProperty;
+        return " " + linePaintProperty + " " + selectPaintProperty + " " + fillPaintProperty + " " + /*textPaintProperty + " " +*/ mattingPaintProperty + " " + fillPatternProperty + " " + mattedProperty + " " + lineWidthProperty + " " + dashPatternProperty + " " + dashPhaseProperty;
     }
 
     /**
@@ -1443,7 +1443,7 @@ public class DrawingAttributes
      * @param prefix the prefix String.  
      */
     public void setPropertyPrefix(String prefix) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
     }
 
     /**
@@ -1453,27 +1453,27 @@ public class DrawingAttributes
      * @return the property prefix
      */
     public String getPropertyPrefix() {
-	return propertyPrefix;
+        return propertyPrefix;
     }
 
     public void propertyChange(PropertyChangeEvent pce) {
-	if (pce.getSource() instanceof BasicStrokeEditorMenu) {
-	    setStroke((BasicStroke)pce.getNewValue());
-	}
+        if (pce.getSource() instanceof BasicStrokeEditorMenu) {
+            setStroke((BasicStroke)pce.getNewValue());
+        }
     }
 
     public String toString() {
-	StringBuffer sb = new StringBuffer("DrawningAttributes[");
-	sb.append("linePaint(" + linePaint + "), ");
-	sb.append("selectPaint(" + selectPaint + "), ");
-// 	sb.append("textPaint(" + textPaint + "), ");
-	sb.append("mattingPaint(" + mattingPaint + "), ");
-	sb.append("fillPaint(" + fillPaint + "), ");
-	sb.append("fillPattern(" + fillPattern + "), ");
-	sb.append("stroke(" + stroke + "), ");
-	sb.append("baseScale(" + baseScale + "), ");
-	sb.append("matted(" + new Boolean(matted).toString() + ")]");
-	return sb.toString();
+        StringBuffer sb = new StringBuffer("DrawningAttributes[");
+        sb.append("linePaint(" + linePaint + "), ");
+        sb.append("selectPaint(" + selectPaint + "), ");
+//      sb.append("textPaint(" + textPaint + "), ");
+        sb.append("mattingPaint(" + mattingPaint + "), ");
+        sb.append("fillPaint(" + fillPaint + "), ");
+        sb.append("fillPattern(" + fillPattern + "), ");
+        sb.append("stroke(" + stroke + "), ");
+        sb.append("baseScale(" + baseScale + "), ");
+        sb.append("matted(" + new Boolean(matted).toString() + ")]");
+        return sb.toString();
     }
 
     /**
@@ -1482,7 +1482,7 @@ public class DrawingAttributes
      * contained in this DrawingAttributes object.
      */
     public void render(Graphics2D g, Shape shape) {
-	render(g, shape, false);
+        render(g, shape, false);
     }
     /**
      * Render the Shape into the Graphics2D object, using the
@@ -1499,153 +1499,153 @@ public class DrawingAttributes
      * given.
      */
     public void render(Graphics2D g, Shape shape, 
-		       boolean replaceColorWithGradient) {
+                       boolean replaceColorWithGradient) {
 
-	if (matted) {
-	    if (stroke instanceof BasicStroke) {
-		g.setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
-		g.setPaint(mattingPaint);
-		g.draw(shape);
-	    }
-	}
+        if (matted) {
+            if (stroke instanceof BasicStroke) {
+                g.setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
+                g.setPaint(mattingPaint);
+                g.draw(shape);
+            }
+        }
 
-	if (!OMGraphic.isClear(fillPaint)) {
-	    g.setStroke(OMGraphicConstants.BASIC_STROKE);
+        if (!OMGraphic.isClear(fillPaint)) {
+            g.setStroke(OMGraphicConstants.BASIC_STROKE);
 
-	    if (replaceColorWithGradient) {
-		g.setPaint(getGradientPaintForShape(shape, fillPaint));
-	    } else {
-		g.setPaint(fillPaint);
-	    }
+            if (replaceColorWithGradient) {
+                g.setPaint(getGradientPaintForShape(shape, fillPaint));
+            } else {
+                g.setPaint(fillPaint);
+            }
 
-	    g.fill(shape);
-	    // Seems to help with a rendering problem, not sure why.
-	    // Without this the DrawingAttributes fill icon would not
-	    // be drawn until it was set again.  This way, it always
-	    // appears.  Might be a Mac thing.
-	    g.draw(shape); 
+            g.fill(shape);
+            // Seems to help with a rendering problem, not sure why.
+            // Without this the DrawingAttributes fill icon would not
+            // be drawn until it was set again.  This way, it always
+            // appears.  Might be a Mac thing.
+            g.draw(shape); 
 
-	    if (fillPattern != null && fillPattern != fillPaint) {
-		g.setPaint(fillPattern);
-		g.fill(shape);
-	    }
-	}
-	
- 	if (linePaint != fillPaint) {
-	    g.setStroke(getStroke());
-	    if (replaceColorWithGradient) {
-		g.setPaint(getGradientPaintForShape(shape, linePaint));
-	    } else {
-		g.setPaint(linePaint);
-	    }
-	    g.draw(shape);
-	}
+            if (fillPattern != null && fillPattern != fillPaint) {
+                g.setPaint(fillPattern);
+                g.fill(shape);
+            }
+        }
+        
+        if (linePaint != fillPaint) {
+            g.setStroke(getStroke());
+            if (replaceColorWithGradient) {
+                g.setPaint(getGradientPaintForShape(shape, linePaint));
+            } else {
+                g.setPaint(linePaint);
+            }
+            g.draw(shape);
+        }
     }
 
     public static Paint getGradientPaintForShape(Shape shape, Paint paint) {
-	if (paint instanceof Color) {
-	    Color color = (Color)paint;
-	    Rectangle rect = shape.getBounds();
-	    paint = new GradientPaint((float)rect.getWidth()*.3f,
-				      (float)rect.getHeight()*.3f, 
-				      color.brighter().brighter(),
-				      (float)rect.getWidth()*.7f, 
-				      (float)rect.getHeight()*.7f, 
-				      color.darker().darker());
-	}
-	return paint;
+        if (paint instanceof Color) {
+            Color color = (Color)paint;
+            Rectangle rect = shape.getBounds();
+            paint = new GradientPaint((float)rect.getWidth()*.3f,
+                                      (float)rect.getHeight()*.3f, 
+                                      color.brighter().brighter(),
+                                      (float)rect.getWidth()*.7f, 
+                                      (float)rect.getHeight()*.7f, 
+                                      color.darker().darker());
+        }
+        return paint;
     }
 
     public ImageIcon getMattingIconForPaint() {
 
-	Paint paint = getMattingPaint();
+        Paint paint = getMattingPaint();
 
-	DrawingAttributes da = new DrawingAttributes();
- 	da.setLinePaint(paint);
-	da.setStroke(new BasicStroke(3));
+        DrawingAttributes da = new DrawingAttributes();
+        da.setLinePaint(paint);
+        da.setStroke(new BasicStroke(3));
 
-	DrawingAttributes innerda = new DrawingAttributes();
- 	innerda.setLinePaint(Color.white);
-	innerda.setStroke(new BasicStroke(1));
+        DrawingAttributes innerda = new DrawingAttributes();
+        innerda.setLinePaint(Color.white);
+        innerda.setStroke(new BasicStroke(1));
 
-	OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
-	IconPartList parts = new IconPartList();
+        OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
+        IconPartList parts = new IconPartList();
 
-	if (paint instanceof Color) {
-	    Color color = (Color)paint;
-	    Paint opaqueColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 255);
-	    DrawingAttributes opaqueDA = new DrawingAttributes();
-	    opaqueDA.setLinePaint(opaqueColor);
-	    opaqueDA.setStroke(new BasicStroke(3));
+        if (paint instanceof Color) {
+            Color color = (Color)paint;
+            Paint opaqueColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 255);
+            DrawingAttributes opaqueDA = new DrawingAttributes();
+            opaqueDA.setLinePaint(opaqueColor);
+            opaqueDA.setStroke(new BasicStroke(3));
 
-	    parts.add(collection.get("LR_TRI", opaqueDA));
-	    parts.add(collection.get("UL_TRI", da));
-	    parts.add(collection.get("LR_TRI", innerda));
-	    parts.add(collection.get("UL_TRI", innerda));
-	} else {
-	    parts.add(collection.get("BIG_BOX", da));
-	    parts.add(collection.get("BIG_BOX", innerda));
-	}
+            parts.add(collection.get("LR_TRI", opaqueDA));
+            parts.add(collection.get("UL_TRI", da));
+            parts.add(collection.get("LR_TRI", innerda));
+            parts.add(collection.get("UL_TRI", innerda));
+        } else {
+            parts.add(collection.get("BIG_BOX", da));
+            parts.add(collection.get("BIG_BOX", innerda));
+        }
 
-	return OMIconFactory.getIcon(icon_width, icon_height, parts);
+        return OMIconFactory.getIcon(icon_width, icon_height, parts);
     }
 
     public ImageIcon getIconForPaint(Paint paint, boolean fill) {
 
-	if (paint == null) paint = Color.black;
+        if (paint == null) paint = Color.black;
 
-	DrawingAttributes da = new DrawingAttributes();
- 	da.setLinePaint(paint);
-	da.setStroke(new BasicStroke(2));
-	if (fill) {
-	    da.setFillPaint(paint);
-	}
+        DrawingAttributes da = new DrawingAttributes();
+        da.setLinePaint(paint);
+        da.setStroke(new BasicStroke(2));
+        if (fill) {
+            da.setFillPaint(paint);
+        }
 
-	OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
-	IconPartList parts = new IconPartList();
+        OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
+        IconPartList parts = new IconPartList();
 
-	if (paint instanceof Color || paint == OMColor.clear) {
-	    Color color = (Color)paint;
-	    Color opaqueColor = new Color(color.getRed(), color.getGreen(), color.getBlue());
-	    DrawingAttributes opaqueDA = new DrawingAttributes();
-	    opaqueDA.setLinePaint(opaqueColor);
-	    opaqueDA.setStroke(new BasicStroke(2));
+        if (paint instanceof Color || paint == OMColor.clear) {
+            Color color = (Color)paint;
+            Color opaqueColor = new Color(color.getRed(), color.getGreen(), color.getBlue());
+            DrawingAttributes opaqueDA = new DrawingAttributes();
+            opaqueDA.setLinePaint(opaqueColor);
+            opaqueDA.setStroke(new BasicStroke(2));
 
-	    if (fill) {
-		opaqueDA.setFillPaint(opaqueColor);
-	    }
+            if (fill) {
+                opaqueDA.setFillPaint(opaqueColor);
+            }
 
-	    parts.add(collection.get("LR_TRI", opaqueDA));
-	    parts.add(collection.get("UL_TRI", da));
-	} else {
-	    parts.add(collection.get("BIG_BOX", da));
-	}
+            parts.add(collection.get("LR_TRI", opaqueDA));
+            parts.add(collection.get("UL_TRI", da));
+        } else {
+            parts.add(collection.get("BIG_BOX", da));
+        }
 
-	return OMIconFactory.getIcon(icon_width, icon_height, parts);
+        return OMIconFactory.getIcon(icon_width, icon_height, parts);
     }
 
     public ImageIcon getMattedIcon() {
 
-	Paint paint = getMattingPaint();
+        Paint paint = getMattingPaint();
 
-	DrawingAttributes da = new DrawingAttributes();
- 	da.setLinePaint(paint);
-	da.setStroke(new BasicStroke(2));
+        DrawingAttributes da = new DrawingAttributes();
+        da.setLinePaint(paint);
+        da.setStroke(new BasicStroke(2));
 
-	DrawingAttributes fillda = new DrawingAttributes();
-	Paint lp = getLinePaint();
- 	fillda.setLinePaint(lp);
- 	fillda.setFillPaint(lp);
-	da.setStroke(new BasicStroke(2));
+        DrawingAttributes fillda = new DrawingAttributes();
+        Paint lp = getLinePaint();
+        fillda.setLinePaint(lp);
+        fillda.setFillPaint(lp);
+        da.setStroke(new BasicStroke(2));
 
-	OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
+        OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
 
-	IconPartList parts = new IconPartList();
-	parts.add(collection.get("FILL_BOX", fillda));
-	parts.add(collection.get("BIG_BOX", da));
-	parts.add(collection.get("SMALL_BOX", da));
+        IconPartList parts = new IconPartList();
+        parts.add(collection.get("FILL_BOX", fillda));
+        parts.add(collection.get("BIG_BOX", da));
+        parts.add(collection.get("SMALL_BOX", da));
 
-	return OMIconFactory.getIcon(icon_width, icon_height, parts);
+        return OMIconFactory.getIcon(icon_width, icon_height, parts);
     }
 
 }

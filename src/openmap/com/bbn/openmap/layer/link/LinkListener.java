@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkListener.java,v $
 // $RCSfile: LinkListener.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/28 22:21:18 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -87,15 +87,15 @@ public class LinkListener extends Thread implements LinkPropertiesConstants {
      * called to get the listener listening.
      */
     public synchronized boolean isListening() {
-	return listening;
+        return listening;
     }
 
     protected synchronized void setListening(boolean value) {
-	listening = value;
+        listening = value;
     }
 
     protected LinkListener getListener() {
-	return this;
+        return this;
     }
 
     /**
@@ -103,34 +103,34 @@ public class LinkListener extends Thread implements LinkPropertiesConstants {
      * LinkListener from a new thread.
      */
     public void startUp() {
-	// Have to use a swing worker so that the calling thread
-	// doesn't get hung up on launching the runnable.
-	SwingWorker sw = new SwingWorker() {
-		public Object construct() {
-		    if (Debug.debugging("link")) {
-			Debug.output("LinkListener self-starting...");
-		    }
-		    getListener().start(); 
-		    return null;
-		}
-	    };
-	sw.execute();
+        // Have to use a swing worker so that the calling thread
+        // doesn't get hung up on launching the runnable.
+        SwingWorker sw = new SwingWorker() {
+                public Object construct() {
+                    if (Debug.debugging("link")) {
+                        Debug.output("LinkListener self-starting...");
+                    }
+                    getListener().start(); 
+                    return null;
+                }
+            };
+        sw.execute();
     }
 
     /** From the Runnable interface.  The thread starts here... */
     public void run() {
         try {
-	    Debug.message("link","*** LinkListener starting up ***");
-	    setListening(true);
+            Debug.message("link","*** LinkListener starting up ***");
+            setListening(true);
             listen();
-	    Debug.message("link","...done listening");
+            Debug.message("link","...done listening");
         } catch (java.io.IOException ioe) {
             if (Debug.debugging("link")) {
                 Debug.error(ioe.getMessage());
             }
             Debug.message("link", "LinkListener: Server disconnected");
         }
-	layer.setListener(null);
+        layer.setListener(null);
     }
 
     /**
@@ -141,22 +141,22 @@ public class LinkListener extends Thread implements LinkPropertiesConstants {
      */
     public void listen() throws IOException {
 
-	Debug.message("link","LinkListener: Asynchronously listening...");
+        Debug.message("link","LinkListener: Asynchronously listening...");
 
-	ClientLink link = linkManager.getLink(this);
+        ClientLink link = linkManager.getLink(this);
 
-	Debug.message("link", "LinkListener got link...");
+        Debug.message("link", "LinkListener got link...");
 
-	while (link != null) {
-	    Debug.message("link","LinkListener: listening...");
-	    link.readAndParse(null, currentGenerator, layer);
-	    Debug.message("link","LinkListener: received content from server");
+        while (link != null) {
+            Debug.message("link","LinkListener: listening...");
+            link.readAndParse(null, currentGenerator, layer);
+            Debug.message("link","LinkListener: received content from server");
 
-	    layer.handleLinkGraphicList(link.getGraphicList());
-	    layer.handleLinkActionRequest(link.getActionRequest());
-	    layer.handleLinkActionList(link.getActionList());
+            layer.handleLinkGraphicList(link.getGraphicList());
+            layer.handleLinkActionRequest(link.getActionRequest());
+            layer.handleLinkActionList(link.getActionList());
 
-	    link = linkManager.getLink(this);
-	}
+            link = linkManager.getLink(this);
+        }
     }
 }

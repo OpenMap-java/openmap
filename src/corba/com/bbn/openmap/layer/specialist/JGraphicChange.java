@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JGraphicChange.java,v $
 // $RCSfile: JGraphicChange.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 02:00:34 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,19 +33,19 @@ public class JGraphicChange extends _GraphicChangeStub implements GraphicChange 
     protected CSpecLayer layer = null;
     
     public JGraphicChange(CSpecLayer aLayer) {
-	layer = aLayer;
+        layer = aLayer;
     }
 
     /**
      */
     public void ChangeNotify(boolean forceRedraw,
-			     java.lang.String[] gIDseq) {}
+                             java.lang.String[] gIDseq) {}
 
     /**
      */
     public void ForgetAll(boolean forceRedraw) {
-	if (forceRedraw)
-	    layer.doPrepare();
+        if (forceRedraw)
+            layer.doPrepare();
     }
 
     /**
@@ -58,7 +58,7 @@ public class JGraphicChange extends _GraphicChangeStub implements GraphicChange 
     /**
      */
     public void SetClientAttributes(boolean forceRedraw,
-				    com.bbn.openmap.CSpecialist.UpdateRecord[] info) {}
+                                    com.bbn.openmap.CSpecialist.UpdateRecord[] info) {}
 
     /**
      */

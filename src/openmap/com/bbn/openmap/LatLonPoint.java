@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LatLonPoint.java,v $
 // $RCSfile: LatLonPoint.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,7 +64,7 @@ public class LatLonPoint implements Cloneable, Serializable {
      * @param lon longitude in decimal degrees
      */
     public LatLonPoint(float lat, float lon) {
-	setLatLon(lat, lon);
+        setLatLon(lat, lon);
     }
 
     /**
@@ -75,7 +75,7 @@ public class LatLonPoint implements Cloneable, Serializable {
      * @param isRadian placeholder indicates radians
      */
     public LatLonPoint(float lat, float lon, boolean isRadian) {
-	setLatLon(lat, lon, isRadian);
+        setLatLon(lat, lon, isRadian);
     }
 
     /**
@@ -164,14 +164,14 @@ public class LatLonPoint implements Cloneable, Serializable {
      * @param isRadian placeholder indicates radians
      */
     public void setLatLon(float lat, float lon, boolean isRadian) {
-	if (isRadian) {
-	    radlat_ = lat;
-	    radlon_ = lon;
-	    lat_ = normalize_latitude(ProjMath.radToDeg(radlat_));
-	    lon_ = wrap_longitude(ProjMath.radToDeg(radlon_));
-	} else {
-	    setLatLon(lat, lon);
-	}
+        if (isRadian) {
+            radlat_ = lat;
+            radlon_ = lon;
+            lat_ = normalize_latitude(ProjMath.radToDeg(radlat_));
+            lon_ = wrap_longitude(ProjMath.radToDeg(radlon_));
+        } else {
+            setLatLon(lat, lon);
+        }
     }
 
     /**
@@ -243,7 +243,7 @@ public class LatLonPoint implements Cloneable, Serializable {
      * @param s DataInputStream
      */
     public void read(DataInputStream s) throws IOException {
-	setLatLon(s.readFloat(), s.readFloat());
+        setLatLon(s.readFloat(), s.readFloat());
     }
 
     /**
@@ -254,11 +254,11 @@ public class LatLonPoint implements Cloneable, Serializable {
      * to be decimal degrees.
      */
     public void read(DataInputStream s, boolean inRadians) throws IOException {
-	if (inRadians) {
-	    setLatLon(s.readFloat(), s.readFloat(), inRadians);
-	} else {
-	    read(s);
-	}
+        if (inRadians) {
+            setLatLon(s.readFloat(), s.readFloat(), inRadians);
+        } else {
+            read(s);
+        }
     }
 
     /**

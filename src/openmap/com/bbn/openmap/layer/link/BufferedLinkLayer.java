@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/BufferedLinkLayer.java,v $
 // $RCSfile: BufferedLinkLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/10 22:04:54 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,8 +65,8 @@ public class BufferedLinkLayer extends LinkLayer  {
      * are set to their default values.
      */
     public BufferedLinkLayer() {
-	super();
-	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this));
+        super();
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this));
     }
 
     /**
@@ -79,8 +79,8 @@ public class BufferedLinkLayer extends LinkLayer  {
      * parameters for the server.
      */
     public BufferedLinkLayer(String host, int port, String propertiesURL) {
-	super(host, port, propertiesURL);
-	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this));
+        super(host, port, propertiesURL);
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this));
     }
 
     /**
@@ -95,89 +95,89 @@ public class BufferedLinkLayer extends LinkLayer  {
      */
     public OMGraphicList prepare() {
 
-	if (isCancelled()) {
-	    Debug.message("link", getName()+"|BufferedLinkLayer.prepare(): aborted.");
-	    return null;
-	}
+        if (isCancelled()) {
+            Debug.message("link", getName()+"|BufferedLinkLayer.prepare(): aborted.");
+            return null;
+        }
 
-	Projection projection = getProjection();
+        Projection projection = getProjection();
 
-	if (projection == null) {
-	    System.err.println("Link Layer needs to be added to the MapBean before it can get graphics!");
-	    return new LinkOMGraphicList();
-	}
+        if (projection == null) {
+            System.err.println("Link Layer needs to be added to the MapBean before it can get graphics!");
+            return new LinkOMGraphicList();
+        }
 
-	Debug.message("basic", getName()+"|BufferedLinkLayer.prepare(): doing it");
+        Debug.message("basic", getName()+"|BufferedLinkLayer.prepare(): doing it");
 
-	// Setting the OMGraphicsList for this layer.  Remember, the
-	// LinkOMGraphicList is made up of OMGraphics, which are generated
-	// (projected) when the graphics are added to the list.  So,
-	// after this call, the list is ready for painting.
+        // Setting the OMGraphicsList for this layer.  Remember, the
+        // LinkOMGraphicList is made up of OMGraphics, which are generated
+        // (projected) when the graphics are added to the list.  So,
+        // after this call, the list is ready for painting.
 
-	OMGraphicList omGraphics = getList();
+        OMGraphicList omGraphics = getList();
 
-	if (omGraphics == null || omGraphics.size() == 0) {
-	    
-	    
-	    ////////////// Call getRectangle for server....
-	    try {
-		// We do want the link object here... If another thread is
-		// using the link, wait.
-		ClientLink l = linkManager.getLink(true);
-		
-		if (l == null) {
-		    System.err.println("BufferedLinkLayer: unable to get link in prepare().");
-		    return new LinkOMGraphicList();
-		}
-		
-		synchronized(l) {
-		    omGraphics = getAllGraphics(l, projection);
-		}
-		
-		linkManager.finLink();
-		
-	    } catch (UnknownHostException uhe) {
-		System.err.println("BufferedLinkLayer: unknown host!");
-		omGraphics = new LinkOMGraphicList();
-	    } catch (java.io.IOException ioe) {
-		System.err.println("BufferedLinkLayer: IOException contacting server for map request!");
-		System.err.println(ioe);
-		
-		linkManager.resetLink();
-		
-		if (!quiet) {
-		    fireRequestMessage("Communication error between " + getName() + 
-				       " layer\nand Link Server: Host: " + host + 
-				       ", Port: " + port);
-		}
-		
-		System.err.println("BufferedLinkLayer: Communication error between " + getName() + 
-				   " layer\nand Link Server: Host: " + host + 
-				   ", Port: " + port);
-		
-		omGraphics = new LinkOMGraphicList();
-	    }
-	} else {
-	    omGraphics.project(projection);
-	}
+        if (omGraphics == null || omGraphics.size() == 0) {
+            
+            
+            ////////////// Call getRectangle for server....
+            try {
+                // We do want the link object here... If another thread is
+                // using the link, wait.
+                ClientLink l = linkManager.getLink(true);
+                
+                if (l == null) {
+                    System.err.println("BufferedLinkLayer: unable to get link in prepare().");
+                    return new LinkOMGraphicList();
+                }
+                
+                synchronized(l) {
+                    omGraphics = getAllGraphics(l, projection);
+                }
+                
+                linkManager.finLink();
+                
+            } catch (UnknownHostException uhe) {
+                System.err.println("BufferedLinkLayer: unknown host!");
+                omGraphics = new LinkOMGraphicList();
+            } catch (java.io.IOException ioe) {
+                System.err.println("BufferedLinkLayer: IOException contacting server for map request!");
+                System.err.println(ioe);
+                
+                linkManager.resetLink();
+                
+                if (!quiet) {
+                    fireRequestMessage("Communication error between " + getName() + 
+                                       " layer\nand Link Server: Host: " + host + 
+                                       ", Port: " + port);
+                }
+                
+                System.err.println("BufferedLinkLayer: Communication error between " + getName() + 
+                                   " layer\nand Link Server: Host: " + host + 
+                                   ", Port: " + port);
+                
+                omGraphics = new LinkOMGraphicList();
+            }
+        } else {
+            omGraphics.project(projection);
+        }
 
-	/////////////////////
-	// safe quit
-	int size = 0;
-	if (omGraphics != null) {
-	    size = omGraphics.size();	
+        /////////////////////
+        // safe quit
+        int size = 0;
+        if (omGraphics != null) {
+            size = omGraphics.size();   
 
-	    if (Debug.debugging("basic")) {
-		System.out.println(getName() +
-				   "|BufferedLinkLayer.prepare(): finished with " +
-				   size + " graphics");
-	    }
-	} else {
-	    Debug.message("basic", getName() +
-	      "|BufferedLinkLayer.prepare(): finished with null graphics list");
-	}
+            if (Debug.debugging("basic")) {
+                System.out.println(getName() +
+                                   "|BufferedLinkLayer.prepare(): finished with " +
+                                   size + " graphics");
+            }
+        } else {
+            Debug.message("basic", getName() +
+              "|BufferedLinkLayer.prepare(): finished with null graphics list");
+        }
 
-	return omGraphics;
+        return omGraphics;
     }
 
     /**
@@ -189,35 +189,35 @@ public class BufferedLinkLayer extends LinkLayer  {
      * @throws IOException
      */
     protected LinkOMGraphicList getAllGraphics(ClientLink link, Projection proj) 
-	throws IOException{
+        throws IOException{
 
-	LinkBoundingPoly[] boundingPolys = new LinkBoundingPoly[1];
-	boundingPolys[0] = new LinkBoundingPoly(-180.0f, -90f, 180f, 90);
+        LinkBoundingPoly[] boundingPolys = new LinkBoundingPoly[1];
+        boundingPolys[0] = new LinkBoundingPoly(-180.0f, -90f, 180f, 90);
 
-	LinkMapRequest.write(proj.getCenter().getLatitude(),
-			     proj.getCenter().getLongitude(),
-			     proj.getScale(), 
-			     proj.getHeight(), proj.getWidth(),
-			     boundingPolys, args, link);
+        LinkMapRequest.write(proj.getCenter().getLatitude(),
+                             proj.getCenter().getLongitude(),
+                             proj.getScale(), 
+                             proj.getHeight(), proj.getWidth(),
+                             boundingPolys, args, link);
 
-	link.readAndParse(proj, currentGenerator);
-	
-	// While we are here, check for any change in gesture query
-	// requests.
-	LinkActionRequest lar = link.getActionRequest();
-	if (lar != null) {
-	    setGestureDescriptor(lar.getDescriptor());
-	}
+        link.readAndParse(proj, currentGenerator);
+        
+        // While we are here, check for any change in gesture query
+        // requests.
+        LinkActionRequest lar = link.getActionRequest();
+        if (lar != null) {
+            setGestureDescriptor(lar.getDescriptor());
+        }
 
-	LinkGraphicList lgl = link.getGraphicList();
-	if (lgl != null) {
-	    //Deal with all the messaging....
-	    handleMessages(lgl.getProperties());
-	    return lgl.getGraphics();
-	} else {
-	    Debug.message("link","BufferedLinkLayer: getAllGraphics(): no graphic response.");
-	    return new LinkOMGraphicList();
-	}
+        LinkGraphicList lgl = link.getGraphicList();
+        if (lgl != null) {
+            //Deal with all the messaging....
+            handleMessages(lgl.getProperties());
+            return lgl.getGraphics();
+        } else {
+            Debug.message("link","BufferedLinkLayer: getAllGraphics(): no graphic response.");
+            return new LinkOMGraphicList();
+        }
     }
 
 }

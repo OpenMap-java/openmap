@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPolygonRecord.java,v $
 // $RCSfile: ESRIPolygonRecord.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/03 19:35:52 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import com.bbn.openmap.proj.ProjMath;
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
  * @author HACK-author blame it on aculline
- * @version $Revision: 1.2 $ $Date: 2003/03/03 19:35:52 $
+ * @version $Revision: 1.3 $ $Date: 2004/01/26 18:18:11 $
  */
 public class ESRIPolygonRecord extends ESRIRecord {
 
@@ -48,8 +48,8 @@ public class ESRIPolygonRecord extends ESRIRecord {
     public ESRIPoly[] polygons;
 
     public ESRIPolygonRecord() {
-	bounds = new ESRIBoundingBox();
-	polygons = new ESRIPoly[0];
+        bounds = new ESRIBoundingBox();
+        polygons = new ESRIPoly[0];
     }
 
     /**
@@ -59,51 +59,51 @@ public class ESRIPolygonRecord extends ESRIRecord {
      * @param off the offset into the buffer where the data starts
      */
     public ESRIPolygonRecord(byte b[], int off) throws IOException {
-	super(b, off);
+        super(b, off);
 
-	int ptr = off+8;
+        int ptr = off+8;
 
-	shapeType = readLEInt(b, ptr);
-	ptr += 4;
-	if ((shapeType != SHAPE_TYPE_POLYGON) && (shapeType != SHAPE_TYPE_ARC)) {
-	    throw new IOException("Invalid polygon record.  Expected shape " +
-				  "type " + SHAPE_TYPE_POLYGON + " or type " +
-				  SHAPE_TYPE_ARC + ", but found " + shapeType);
-	}
-	boolean ispolyg = isPolygon();
+        shapeType = readLEInt(b, ptr);
+        ptr += 4;
+        if ((shapeType != SHAPE_TYPE_POLYGON) && (shapeType != SHAPE_TYPE_ARC)) {
+            throw new IOException("Invalid polygon record.  Expected shape " +
+                                  "type " + SHAPE_TYPE_POLYGON + " or type " +
+                                  SHAPE_TYPE_ARC + ", but found " + shapeType);
+        }
+        boolean ispolyg = isPolygon();
 
-	bounds = readBox(b, ptr);
-	ptr += 32;		// A box is 4 doubles (4 x 8bytes)
+        bounds = readBox(b, ptr);
+        ptr += 32;              // A box is 4 doubles (4 x 8bytes)
 
-	int numParts = readLEInt(b, ptr);
-	ptr += 4;
+        int numParts = readLEInt(b, ptr);
+        ptr += 4;
 
-	int numPoints = readLEInt(b, ptr);
-	ptr += 4;
+        int numPoints = readLEInt(b, ptr);
+        ptr += 4;
 
-	if (numParts <= 0) return;
+        if (numParts <= 0) return;
 
-	polygons = new ESRIPoly[numParts];
-	int origin = 0;
-	int _len;
-	for (int i = 0; i < numParts; i++) {
+        polygons = new ESRIPoly[numParts];
+        int origin = 0;
+        int _len;
+        for (int i = 0; i < numParts; i++) {
 
-	    int nextOrigin = readLEInt(b, ptr);
-	    ptr += 4;
+            int nextOrigin = readLEInt(b, ptr);
+            ptr += 4;
 
-	    if (i > 0) {
-		_len = nextOrigin - origin;
-		if (ispolyg) ++_len;//connect pairs
-		polygons[i-1] = new ESRIPoly.ESRIFloatPoly(_len);
-	    }
-	    origin = nextOrigin;
-	}
-	_len = numPoints - origin;
-	if (ispolyg) ++_len;//connect pairs
-	polygons[numParts-1] = new ESRIPoly.ESRIFloatPoly(_len);
-	for (int i = 0; i < numParts; i++) {
-	    ptr += polygons[i].read(b, ptr, ispolyg);
-	}
+            if (i > 0) {
+                _len = nextOrigin - origin;
+                if (ispolyg) ++_len;//connect pairs
+                polygons[i-1] = new ESRIPoly.ESRIFloatPoly(_len);
+            }
+            origin = nextOrigin;
+        }
+        _len = numPoints - origin;
+        if (ispolyg) ++_len;//connect pairs
+        polygons[numParts-1] = new ESRIPoly.ESRIFloatPoly(_len);
+        for (int i = 0; i < numParts; i++) {
+            ptr += polygons[i].read(b, ptr, ispolyg);
+        }
     }
 
     /**
@@ -111,14 +111,14 @@ public class ESRIPolygonRecord extends ESRIRecord {
      * @return boolean
      */
     public boolean isPolygon() {
-	return shapeType == SHAPE_TYPE_POLYGON;
+        return shapeType == SHAPE_TYPE_POLYGON;
     }
 
     /**
      * Set the poly type (polygon or arc/polyline).
      */
     public void setPolygon(boolean isPolygon) {
-	shapeType = isPolygon ? SHAPE_TYPE_POLYGON : SHAPE_TYPE_ARC;
+        shapeType = isPolygon ? SHAPE_TYPE_POLYGON : SHAPE_TYPE_ARC;
     }
 
     /**
@@ -127,24 +127,24 @@ public class ESRIPolygonRecord extends ESRIRecord {
      * RADIANS!
      */
     public void add(float radians[]) {
-	ESRIPoly newPoly = new ESRIPoly.ESRIFloatPoly(radians);
+        ESRIPoly newPoly = new ESRIPoly.ESRIFloatPoly(radians);
 
-	int numParts = polygons.length;
-	ESRIPoly oldPolys[] = polygons;
-	polygons = new ESRIPoly[numParts + 1];
-	for (int i = 0; i < numParts; i++) {
-	    polygons[i] = oldPolys[i];
-	}
+        int numParts = polygons.length;
+        ESRIPoly oldPolys[] = polygons;
+        polygons = new ESRIPoly[numParts + 1];
+        for (int i = 0; i < numParts; i++) {
+            polygons[i] = oldPolys[i];
+        }
 
-	polygons[numParts] = newPoly;
+        polygons[numParts] = newPoly;
 
-	int len = radians.length;
-	for (int i=0; i<len; i+=2) {
-	    // REMEMBER: switch to x,y order
-	    bounds.addPoint(
-		    ProjMath.radToDeg(radians[i+1]),//x (lon)
-		    ProjMath.radToDeg(radians[i]));//y (lat)
-	}
+        int len = radians.length;
+        for (int i=0; i<len; i+=2) {
+            // REMEMBER: switch to x,y order
+            bounds.addPoint(
+                    ProjMath.radToDeg(radians[i+1]),//x (lon)
+                    ProjMath.radToDeg(radians[i]));//y (lat)
+        }
     }
 
     /**
@@ -157,43 +157,43 @@ public class ESRIPolygonRecord extends ESRIRecord {
      * @param drawingAttributes the drawingAttributes to paint the poly.
      */
     public void addOMGraphics(OMGraphicList list,
-			      DrawingAttributes drawingAttributes) {
+                              DrawingAttributes drawingAttributes) {
 
-	int nPolys = polygons.length;
-	if (nPolys <= 0) return;
-	OMPoly p=null;
-	float[] pts;
-	boolean ispolyg = isPolygon();
-	OMGraphicList sublist = null;
-	
-	if (nPolys > 1) {
-	    sublist = new OMGraphicList(10);
-	    sublist.setVague(true);  // Treat list as one object.
-	    list.add(sublist);
-	    sublist.setAppObject(new Integer(getRecordNumber())); 
-	}
+        int nPolys = polygons.length;
+        if (nPolys <= 0) return;
+        OMPoly p=null;
+        float[] pts;
+        boolean ispolyg = isPolygon();
+        OMGraphicList sublist = null;
+        
+        if (nPolys > 1) {
+            sublist = new OMGraphicList(10);
+            sublist.setVague(true);  // Treat list as one object.
+            list.add(sublist);
+            sublist.setAppObject(new Integer(getRecordNumber())); 
+        }
 
-	for (int i=0, j, k; i<nPolys; i++) {
-	    // these points are already in RADIAN lat,lon order!...
-	    pts = ((ESRIPoly.ESRIFloatPoly)polygons[i]).getRadians();
-	    int len = pts.length;
-	    p = new OMPoly(pts,
-			   OMGraphic.RADIANS,
-			   OMGraphic.LINETYPE_STRAIGHT); 
+        for (int i=0, j, k; i<nPolys; i++) {
+            // these points are already in RADIAN lat,lon order!...
+            pts = ((ESRIPoly.ESRIFloatPoly)polygons[i]).getRadians();
+            int len = pts.length;
+            p = new OMPoly(pts,
+                           OMGraphic.RADIANS,
+                           OMGraphic.LINETYPE_STRAIGHT); 
 
-	    drawingAttributes.setTo(p);
-	    if (!ispolyg) {
-		p.setIsPolygon(false);
-	    }
+            drawingAttributes.setTo(p);
+            if (!ispolyg) {
+                p.setIsPolygon(false);
+            }
 
-	    if (sublist != null) {
-		sublist.add(p);
-	    } else {
-		// There should be only one.
-		p.setAppObject(new Integer(getRecordNumber())); 
-		list.add(p);
-	    }
-	}
+            if (sublist != null) {
+                sublist.add(p);
+            } else {
+                // There should be only one.
+                p.setAppObject(new Integer(getRecordNumber())); 
+                list.add(p);
+            }
+        }
     }
 
     /**
@@ -203,32 +203,32 @@ public class ESRIPolygonRecord extends ESRIRecord {
      */
     public OMGeometry addOMGeometry(OMGeometryList list) {
 
-	int nPolys = polygons.length;
-	if (nPolys <= 0) {
-	    return null;
-	}
+        int nPolys = polygons.length;
+        if (nPolys <= 0) {
+            return null;
+        }
 
-	float[] pts;
-	boolean ispolyg = isPolygon();
-	OMGeometry geom = null;
+        float[] pts;
+        boolean ispolyg = isPolygon();
+        OMGeometry geom = null;
 
-	for (int i=0, j, k; i<nPolys; i++) {
-	    // these points are already in RADIAN lat,lon order!...
-	    pts = ((ESRIPoly.ESRIFloatPoly)polygons[i]).getRadians();
-	    int len = pts.length;
-	    if (ispolyg) {
-		
-		geom = new PolygonGeometry.LL(pts,
-					      OMGraphic.RADIANS,
-					      OMGraphic.LINETYPE_STRAIGHT);
-	    } else {
-		geom = new PolylineGeometry.LL(pts,
-					       OMGraphic.RADIANS,
-					       OMGraphic.LINETYPE_STRAIGHT);
-	    }
-	    list.add(geom);
-	}
-	return geom;
+        for (int i=0, j, k; i<nPolys; i++) {
+            // these points are already in RADIAN lat,lon order!...
+            pts = ((ESRIPoly.ESRIFloatPoly)polygons[i]).getRadians();
+            int len = pts.length;
+            if (ispolyg) {
+                
+                geom = new PolygonGeometry.LL(pts,
+                                              OMGraphic.RADIANS,
+                                              OMGraphic.LINETYPE_STRAIGHT);
+            } else {
+                geom = new PolylineGeometry.LL(pts,
+                                               OMGraphic.RADIANS,
+                                               OMGraphic.LINETYPE_STRAIGHT);
+            }
+            list.add(geom);
+        }
+        return geom;
     }
 
     /**
@@ -237,7 +237,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
      * @return a bounding box
      */
     public ESRIBoundingBox getBoundingBox() {
-	return bounds;
+        return bounds;
     }
 
     /**
@@ -248,7 +248,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
      * SHAPE_TYPE_ARC)
      */
     public int getShapeType() {
-	return shapeType;
+        return shapeType;
     }
 
     /**
@@ -261,12 +261,12 @@ public class ESRIPolygonRecord extends ESRIRecord {
      * @return number of bytes equal to the size of this record's data
      */
     public int getRecordLength() {
-	int numParts = polygons.length;
-	int numPoints = 0;
-	for (int i = 0; i < numParts; i++) {
-	    numPoints += polygons[i].nPoints;
-	}
-	return (44 + (numParts * 4) + (numPoints * 16));
+        int numParts = polygons.length;
+        int numPoints = 0;
+        for (int i = 0; i < numParts; i++) {
+            numPoints += polygons[i].nPoints;
+        }
+        return (44 + (numParts * 4) + (numPoints * 16));
     }
 
     /**
@@ -277,40 +277,40 @@ public class ESRIPolygonRecord extends ESRIRecord {
      * @return the number of bytes written
      */
     public int write(byte[] b, int off) {
-	int nBytes = super.write(b, off);
-	nBytes += writeLEInt(b, off + nBytes, shapeType);
-	// bounds
-	nBytes += writeBox(b, off + nBytes, bounds);
-	// numparts
-	int numParts = polygons.length;
-	nBytes += writeLEInt(b, off + nBytes, numParts);
-	// numpoints
-	int numPoints = 0;
-	for (int i = 0; i < numParts; i++) {
-	    numPoints += polygons[i].nPoints;
-	}
-	nBytes += writeLEInt(b, off + nBytes, numPoints);
-	// parts
-	int ptr = 0;
-	for (int i = 0; i < numParts; i++) {
-	    nBytes += writeLEInt(b, off + nBytes, ptr);
-	    ptr += polygons[i].nPoints;
-	}
+        int nBytes = super.write(b, off);
+        nBytes += writeLEInt(b, off + nBytes, shapeType);
+        // bounds
+        nBytes += writeBox(b, off + nBytes, bounds);
+        // numparts
+        int numParts = polygons.length;
+        nBytes += writeLEInt(b, off + nBytes, numParts);
+        // numpoints
+        int numPoints = 0;
+        for (int i = 0; i < numParts; i++) {
+            numPoints += polygons[i].nPoints;
+        }
+        nBytes += writeLEInt(b, off + nBytes, numPoints);
+        // parts
+        int ptr = 0;
+        for (int i = 0; i < numParts; i++) {
+            nBytes += writeLEInt(b, off + nBytes, ptr);
+            ptr += polygons[i].nPoints;
+        }
 
-	// points
-	for (int i = 0; i < numParts; i++) {
-	    // REMEMBER: stored internally as y,x order (lat,lon order)
-	    float[] pts = ((ESRIPoly.ESRIFloatPoly)polygons[i]).getRadians();
-	    int nPts = pts.length;
-	    for (int j=0; j<nPts; j+=2) {
-		nBytes += writeLEDouble(
-			b, off + nBytes, (double)ProjMath.radToDeg(pts[j+1]));//x (lon)
-		nBytes += writeLEDouble(
-			b, off + nBytes, (double)ProjMath.radToDeg(pts[j]));//y (lat)
-	    }
-	}
+        // points
+        for (int i = 0; i < numParts; i++) {
+            // REMEMBER: stored internally as y,x order (lat,lon order)
+            float[] pts = ((ESRIPoly.ESRIFloatPoly)polygons[i]).getRadians();
+            int nPts = pts.length;
+            for (int j=0; j<nPts; j+=2) {
+                nBytes += writeLEDouble(
+                        b, off + nBytes, (double)ProjMath.radToDeg(pts[j+1]));//x (lon)
+                nBytes += writeLEDouble(
+                        b, off + nBytes, (double)ProjMath.radToDeg(pts[j]));//y (lat)
+            }
+        }
 
-	// return number of bytes written
-	return nBytes;
+        // return number of bytes written
+        return nBytes;
     }
 }

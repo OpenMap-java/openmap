@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapHandler.java,v $
 // $RCSfile: MapHandler.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 22:55:21 $
-// $Author: wjeuerle $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:05 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -76,7 +76,7 @@ public class MapHandler extends BeanContextServicesSupport {
     protected Vector addLaterVector = null;
 
     public MapHandler() {
-	DEBUG = Debug.debugging("maphandler");
+        DEBUG = Debug.debugging("maphandler");
     }
 
     /**
@@ -87,7 +87,7 @@ public class MapHandler extends BeanContextServicesSupport {
      * @see SoloMapComponentRejectPolicy
      */
     public void setPolicy(SoloMapComponentPolicy smcp) {
-	policy = smcp;
+        policy = smcp;
     }
 
     /**
@@ -96,10 +96,10 @@ public class MapHandler extends BeanContextServicesSupport {
      * SoloMapComponent.
      */
     public SoloMapComponentPolicy getPolicy() {
-	if (policy == null) {
-	    policy = new SoloMapComponentRejectPolicy();
-	}
-	return policy;
+        if (policy == null) {
+            policy = new SoloMapComponentRejectPolicy();
+        }
+        return policy;
     }
 
     /**
@@ -109,14 +109,14 @@ public class MapHandler extends BeanContextServicesSupport {
      * mechanism.
      */
     protected synchronized void addLater(Object obj) {
-	if (addLaterVector == null) {
-	    addLaterVector = new Vector();
-	}
-	if (DEBUG) {
-	    Debug.output("=== Adding " + obj.getClass().getName() + 
-			 " to list for later addition");
-	}
-	addLaterVector.add(obj);
+        if (addLaterVector == null) {
+            addLaterVector = new Vector();
+        }
+        if (DEBUG) {
+            Debug.output("=== Adding " + obj.getClass().getName() + 
+                         " to list for later addition");
+        }
+        addLaterVector.add(obj);
     }
 
     /**
@@ -127,29 +127,29 @@ public class MapHandler extends BeanContextServicesSupport {
      * mechanism.
      */
     protected synchronized void purgeLaterList() {
-	Vector tmpList = addLaterVector;
-	addLaterVector = null;
+        Vector tmpList = addLaterVector;
+        addLaterVector = null;
 
-	if (tmpList != null) {
-	    Iterator it = tmpList.iterator();
-	    while (it.hasNext()) {
-		Object obj = it.next();
-		if (DEBUG) {
-		    Debug.output("+++ Adding " + obj.getClass().getName() + 
-				 " to MapHandler from later list.");
-		}
-		add(obj);
-	    }
-	    tmpList.clear();
-	}
+        if (tmpList != null) {
+            Iterator it = tmpList.iterator();
+            while (it.hasNext()) {
+                Object obj = it.next();
+                if (DEBUG) {
+                    Debug.output("+++ Adding " + obj.getClass().getName() + 
+                                 " to MapHandler from later list.");
+                }
+                add(obj);
+            }
+            tmpList.clear();
+        }
     }
 
     protected synchronized void setAddInProgress(boolean value) {
-	addInProgress = value;
+        addInProgress = value;
     }
     
     protected synchronized boolean isAddInProgress() {
-	return addInProgress;
+        return addInProgress;
     }
 
     /**
@@ -164,35 +164,35 @@ public class MapHandler extends BeanContextServicesSupport {
      * @throws MultipleSoloMapComponentException.
      */
     public boolean add(Object obj) {
-	try {
-	    boolean passedSoloMapComponentTest = true;
-	    if (obj instanceof SoloMapComponent) {
-		passedSoloMapComponentTest = getPolicy().canAdd(this, obj);
-	    } 
+        try {
+            boolean passedSoloMapComponentTest = true;
+            if (obj instanceof SoloMapComponent) {
+                passedSoloMapComponentTest = getPolicy().canAdd(this, obj);
+            } 
 
-	    if (obj != null && passedSoloMapComponentTest) {
-		
-		if (isAddInProgress()) {
-		    if (DEBUG) {
-			Debug.output("MapHandler: Attempting to add while add in progress, adding [" + obj.getClass().getName() + "]object to list");
-		    }
-		    addLater(obj);
-		} else {
-		    setAddInProgress(true);
-		    boolean ret = super.add(obj);
-		    setAddInProgress(false);
-		    purgeLaterList();
-		    return ret;
-		}
-	    }
-	} catch (java.util.ConcurrentModificationException cme) {
-	    Debug.error("MapHandler caught ConcurrentModificationException when adding [" + obj.getClass().getName() + "]. The addition of this component to the MapHandler is causing some other component to attempt to be added as well, and the coping mechanism in the MapHandler is not handling it well.");
-	}
-	return false;
+            if (obj != null && passedSoloMapComponentTest) {
+                
+                if (isAddInProgress()) {
+                    if (DEBUG) {
+                        Debug.output("MapHandler: Attempting to add while add in progress, adding [" + obj.getClass().getName() + "]object to list");
+                    }
+                    addLater(obj);
+                } else {
+                    setAddInProgress(true);
+                    boolean ret = super.add(obj);
+                    setAddInProgress(false);
+                    purgeLaterList();
+                    return ret;
+                }
+            }
+        } catch (java.util.ConcurrentModificationException cme) {
+            Debug.error("MapHandler caught ConcurrentModificationException when adding [" + obj.getClass().getName() + "]. The addition of this component to the MapHandler is causing some other component to attempt to be added as well, and the coping mechanism in the MapHandler is not handling it well.");
+        }
+        return false;
     }
 
     public String toString() {
-	return getClass().getName();
+        return getClass().getName();
     }
 
     /**
@@ -201,12 +201,12 @@ public class MapHandler extends BeanContextServicesSupport {
      * them in the MapHandler, you will get the first one found.
      */
     public Object get(String classname) {
-	Class someClass = null;
-	try {
-	    someClass = Class.forName(classname);	    
-	} catch (ClassNotFoundException cnfe) {}
+        Class someClass = null;
+        try {
+            someClass = Class.forName(classname);           
+        } catch (ClassNotFoundException cnfe) {}
 
-	return get(someClass);
+        return get(someClass);
     }
 
     /**
@@ -215,14 +215,14 @@ public class MapHandler extends BeanContextServicesSupport {
      * in the MapHandler, you will get the first one found.
      */
     public Object get(Class someClass) {
-	Collection collection = getAll(someClass);
-	
-	Iterator it = collection.iterator();
-	while (it.hasNext()) {
-	    return it.next();
-	}
+        Collection collection = getAll(someClass);
+        
+        Iterator it = collection.iterator();
+        while (it.hasNext()) {
+            return it.next();
+        }
 
-	return null;
+        return null;
     }
 
     /**
@@ -231,12 +231,12 @@ public class MapHandler extends BeanContextServicesSupport {
      * is always returned, although it may be empty.
      */
     public Collection getAll(String classname) {
-	Class someClass = null;
-	try {
-	    someClass = Class.forName(classname);	    
-	} catch (ClassNotFoundException cnfe) {}
+        Class someClass = null;
+        try {
+            someClass = Class.forName(classname);           
+        } catch (ClassNotFoundException cnfe) {}
 
-	return getAll(someClass);
+        return getAll(someClass);
     }
 
     /**
@@ -245,19 +245,19 @@ public class MapHandler extends BeanContextServicesSupport {
      * returned, although it may be empty.
      */
     public Collection getAll(Class someClass) {
-	Collection collection = new LinkedList();
-	
-	if (someClass != null) {
-	    Iterator it = iterator();
-	    while (it.hasNext()) {
-		Object someObj = it.next();
-		if (someClass.isInstance(someObj)) {
-		    collection.add(someObj);
-		}
-	    }
-	}
-	
-	return collection;
+        Collection collection = new LinkedList();
+        
+        if (someClass != null) {
+            Iterator it = iterator();
+            while (it.hasNext()) {
+                Object someObj = it.next();
+                if (someClass.isInstance(someObj)) {
+                    collection.add(someObj);
+                }
+            }
+        }
+        
+        return collection;
     }
 
 }

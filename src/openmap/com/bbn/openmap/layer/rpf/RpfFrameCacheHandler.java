@@ -14,9 +14,9 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrameCacheHandler.java,v $
 // $RCSfile: RpfFrameCacheHandler.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 22:55:25 $
-// $Author: wjeuerle $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:10 $
+// $Author: dietrick $
 //
 // **********************************************************************
 
@@ -70,7 +70,7 @@ public class RpfFrameCacheHandler extends CacheHandler
      * @param RpfPaths the directory paths to the RPF directories.
      */
     public RpfFrameCacheHandler(String[] RpfPaths) {
-	this(RpfPaths, FRAME_CACHE_SIZE);
+        this(RpfPaths, FRAME_CACHE_SIZE);
     }
 
     /**
@@ -80,10 +80,10 @@ public class RpfFrameCacheHandler extends CacheHandler
      * @param RpfPaths the directory paths to the RPF directories.
      */
     public RpfFrameCacheHandler(String[] RpfPaths,
-				int max_size) {
-	super(max_size);
-	tocs = createTocHandlers(RpfPaths);
-	colortable = new RpfColortable();
+                                int max_size) {
+        super(max_size);
+        tocs = createTocHandlers(RpfPaths);
+        colortable = new RpfColortable();
     }
 
     /**
@@ -91,12 +91,12 @@ public class RpfFrameCacheHandler extends CacheHandler
      * to the RpfFrameCacheHandler.
      */
     public RpfFrameCacheHandler(RpfTocHandler[] tocHandlers) {
-	tocs = tocHandlers;
-	colortable = new RpfColortable();
+        tocs = tocHandlers;
+        colortable = new RpfColortable();
     }
 
 //      public void finalize() {
-//  	Debug.message("gc", "RpfFrameCacheHandler: getting GC'd");
+//      Debug.message("gc", "RpfFrameCacheHandler: getting GC'd");
 //      }
 
     /**
@@ -104,7 +104,7 @@ public class RpfFrameCacheHandler extends CacheHandler
      * frame provider, it's local, right?
      */
     public boolean needViewAttributeUpdates() {
-	return false;
+        return false;
     }
 
     /**
@@ -113,12 +113,12 @@ public class RpfFrameCacheHandler extends CacheHandler
      *  valid in other parts of the code.
      */
     public void setViewAttributes(RpfViewAttributes va) {
-	viewAttributes = va;
+        viewAttributes = va;
 
-	if (va != null && colortable != null) {
-	    colortable.setOpaqueness(va.opaqueness);
-	    colortable.setNumColors(va.numberOfColors);
-	}
+        if (va != null && colortable != null) {
+            colortable.setOpaqueness(va.opaqueness);
+            colortable.setNumColors(va.numberOfColors);
+        }
     }
 
     /**
@@ -134,23 +134,23 @@ public class RpfFrameCacheHandler extends CacheHandler
      * @return Vector of RpfCoverageBoxes.
      */
     public Vector getCatalogCoverage(float ullat, float ullon,
-				     float lrlat, float lrlon,
-				     CADRG proj, String chartSeries) {
-	int i;
+                                     float lrlat, float lrlon,
+                                     CADRG proj, String chartSeries) {
+        int i;
 
-	Vector coverages = new Vector();
-	for (i = 0; i < tocs.length; i++) {
+        Vector coverages = new Vector();
+        for (i = 0; i < tocs.length; i++) {
 
-	    // Check the tochandlers for differences, and reload them
-	    // if necessary.
-	    if (tocs[i].hasChanged()) tocs[i].reload();
-	    if (!tocs[i].isValid()) continue;
+            // Check the tochandlers for differences, and reload them
+            // if necessary.
+            if (tocs[i].hasChanged()) tocs[i].reload();
+            if (!tocs[i].isValid()) continue;
 
-	    tocs[i].getCatalogCoverage(ullat, ullon, lrlat, lrlon, proj,
-				       chartSeries, coverages);
-	}
+            tocs[i].getCatalogCoverage(ullat, ullon, lrlat, lrlon, proj,
+                                       chartSeries, coverages);
+        }
 
-	return coverages;
+        return coverages;
     }
 
     /**
@@ -170,89 +170,89 @@ public class RpfFrameCacheHandler extends CacheHandler
      * @see #getCatalogCoverage
      */
     public float getCalculatedCoverage(float ullat, float ullon,
-				       float lrlat, float lrlon,
-				       CADRG p, String chartSeries) {
+                                       float lrlat, float lrlon,
+                                       CADRG p, String chartSeries) {
 
-	if (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)) {
-	    return 0f;
-	}
+        if (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)) {
+            return 0f;
+        }
 
-	Vector results = getCatalogCoverage(ullat, ullon, lrlat, lrlon,
-					    p, chartSeries);
+        Vector results = getCatalogCoverage(ullat, ullon, lrlat, lrlon,
+                                            p, chartSeries);
 
-	int size = results.size();
+        int size = results.size();
 
-	if (size == 0) {
-	    return 0f;
-	}
+        if (size == 0) {
+            return 0f;
+        }
 
-	// Now interpret the results and figure out the real total
-	// percentage coverage for the chartSeries.  First need to
-	// figure out the current size of the subframes.  Then create
-	// a boolean matrix of those subframes that let you figure out
-	// how many of them are available.  Calculate the percentage
-	// off that.
-	int pZone = p.getZone();
-	int i, x, y;
+        // Now interpret the results and figure out the real total
+        // percentage coverage for the chartSeries.  First need to
+        // figure out the current size of the subframes.  Then create
+        // a boolean matrix of those subframes that let you figure out
+        // how many of them are available.  Calculate the percentage
+        // off that.
+        int pZone = p.getZone();
+        int i, x, y;
 
-	double frameLatInterval = Double.MAX_VALUE;
-	double frameLonInterval = Double.MAX_VALUE;
-	RpfCoverageBox rcb;
-	for (i = 0; i < size; i++) {
-	    rcb = (RpfCoverageBox)results.elementAt(i);
-	    if (rcb.subframeLatInterval < frameLatInterval) {
-		frameLatInterval = rcb.subframeLatInterval;
-	    }
-	    if (rcb.subframeLonInterval < frameLonInterval) {
-		frameLonInterval = rcb.subframeLonInterval;
-	    }
-	}
+        double frameLatInterval = Double.MAX_VALUE;
+        double frameLonInterval = Double.MAX_VALUE;
+        RpfCoverageBox rcb;
+        for (i = 0; i < size; i++) {
+            rcb = (RpfCoverageBox)results.elementAt(i);
+            if (rcb.subframeLatInterval < frameLatInterval) {
+                frameLatInterval = rcb.subframeLatInterval;
+            }
+            if (rcb.subframeLonInterval < frameLonInterval) {
+                frameLonInterval = rcb.subframeLonInterval;
+            }
+        }
 
-	if (frameLatInterval == Double.MAX_VALUE ||
-	    frameLonInterval == Double.MAX_VALUE) {
-	    return 0.0f;
-	}
+        if (frameLatInterval == Double.MAX_VALUE ||
+            frameLonInterval == Double.MAX_VALUE) {
+            return 0.0f;
+        }
 
-	int numHFrames = (int) Math.ceil((lrlon - ullon)/frameLonInterval);
-	int numVFrames = (int) Math.ceil((ullat- lrlat)/frameLatInterval);
+        int numHFrames = (int) Math.ceil((lrlon - ullon)/frameLonInterval);
+        int numVFrames = (int) Math.ceil((ullat- lrlat)/frameLatInterval);
 
-	boolean[][] coverage = new boolean[numHFrames][numVFrames];
-	for (i = 0; i < size; i++) {
+        boolean[][] coverage = new boolean[numHFrames][numVFrames];
+        for (i = 0; i < size; i++) {
 
-	    rcb = (RpfCoverageBox)results.elementAt(i);
-	    if (rcb.percentCoverage == 100) {
-		return 1.0f;
-	    }
+            rcb = (RpfCoverageBox)results.elementAt(i);
+            if (rcb.percentCoverage == 100) {
+                return 1.0f;
+            }
 
-	    for (y = 0; y < numVFrames; y++) {
-		for (x = 0; x < numHFrames; x++) {
-		    // degree location of indexs
-		    float yFrameLoc = (float)(lrlat + (y*frameLatInterval));
-		    float xFrameLoc = (float)(ullon + (x*frameLonInterval));
-		    if (coverage[x][y] == false) {
-			if (rcb.within(yFrameLoc, xFrameLoc)) {
-			    coverage[x][y] = true;
-			}
-		    }
-		}
-	    }
-	}
+            for (y = 0; y < numVFrames; y++) {
+                for (x = 0; x < numHFrames; x++) {
+                    // degree location of indexs
+                    float yFrameLoc = (float)(lrlat + (y*frameLatInterval));
+                    float xFrameLoc = (float)(ullon + (x*frameLonInterval));
+                    if (coverage[x][y] == false) {
+                        if (rcb.within(yFrameLoc, xFrameLoc)) {
+                            coverage[x][y] = true;
+                        }
+                    }
+                }
+            }
+        }
 
-	float count = 0;
+        float count = 0;
 
-	for (y = 0; y < numVFrames; y++) {
-	    for (x = 0; x < numHFrames; x++) {
-		if (coverage[x][y] == true) {
-		    // 		    System.out.print("X");
-		    count++;
-		} else {
-		    // 		    System.out.print(".");
-		}
-	    }
-	    // 	    System.out.println("");
-	}
+        for (y = 0; y < numVFrames; y++) {
+            for (x = 0; x < numHFrames; x++) {
+                if (coverage[x][y] == true) {
+                    //              System.out.print("X");
+                    count++;
+                } else {
+                    //              System.out.print(".");
+                }
+            }
+            //      System.out.println("");
+        }
 
-	return count/(float)(numHFrames*numVFrames);
+        return count/(float)(numHFrames*numVFrames);
     }
 
     /**
@@ -279,17 +279,17 @@ public class RpfFrameCacheHandler extends CacheHandler
      * @return Vector of RpfCoverageBoxes.
      */
     public Vector getCoverage(float ullat, float ullon,
-			      float lrlat, float lrlon,
-			      CADRG proj) {
-	int i;
-	RpfTocEntry currentEntry;
-	RpfCoverageBox rcb;
-	List coverageEntries;
-	Debug.message("rpf", "RpfFrameCacheHandler: getCoverage()");
+                              float lrlat, float lrlon,
+                              CADRG proj) {
+        int i;
+        RpfTocEntry currentEntry;
+        RpfCoverageBox rcb;
+        List coverageEntries;
+        Debug.message("rpf", "RpfFrameCacheHandler: getCoverage()");
 
-	Vector coverageBoxes = new Vector();
+        Vector coverageBoxes = new Vector();
 
-	for (i = 0; i < tocs.length; i++) {
+        for (i = 0; i < tocs.length; i++) {
 
            // Check the tochandlers for differences, and reload them
            // if necessary.
@@ -309,57 +309,57 @@ public class RpfFrameCacheHandler extends CacheHandler
               currentEntry = (RpfTocEntry) coverageEntries.get(k);
 
 
-	    // This is a test for total coverage.  If we get total
-	    // coverage of an exact scale match, just return this
-	    // coverage box right away.  If the scale is not a perfect
-	    // match, then we will return the box that has complete
-	    // coverage with the best scale.  A boundaryHit of 8 means
-	    // total coverage.  Trust me.
-	    if (currentEntry != null) {
+            // This is a test for total coverage.  If we get total
+            // coverage of an exact scale match, just return this
+            // coverage box right away.  If the scale is not a perfect
+            // match, then we will return the box that has complete
+            // coverage with the best scale.  A boundaryHit of 8 means
+            // total coverage.  Trust me.
+            if (currentEntry != null) {
 
-		if (Debug.debugging("rpftoc")) {
-		    System.out.println("RFCH: Toc " + i + " returned an entry");
-		}
+                if (Debug.debugging("rpftoc")) {
+                    System.out.println("RFCH: Toc " + i + " returned an entry");
+                }
 
-		RpfCoverageBox currentCoverage = currentEntry.coverage;
+                RpfCoverageBox currentCoverage = currentEntry.coverage;
 
                 // NOTE:
-				// removed because some areas had boxes that claimed perfect 
-				// coverage but didn't actually have it.  
-				// This could be a data problem, but in any case,
+                                // removed because some areas had boxes that claimed perfect 
+                                // coverage but didn't actually have it.  
+                                // This could be a data problem, but in any case,
                 // this work-around returns all relevant coverage boxes.
-		//if (currentCoverage.percentCoverage >= 100f &&
-		//    scaleDifference(proj, currentCoverage) == 0) {
-		//    coverageBoxes.removeAllElements();
-		//    coverageBoxes.addElement(currentCoverage);
-		//    return coverageBoxes;
-		//} else {
+                //if (currentCoverage.percentCoverage >= 100f &&
+                //    scaleDifference(proj, currentCoverage) == 0) {
+                //    coverageBoxes.removeAllElements();
+                //    coverageBoxes.addElement(currentCoverage);
+                //    return coverageBoxes;
+                //} else {
 
-		    // You now ought to at least make sure that the
-		    // scales are the same for all A.TOCs.  That way,
-		    // the subframe spacing will be the same.  Put the
-		    // best coverage (smallest scale difference) at
-		    // the front of the list, and whittle it down from
-		    // there.
+                    // You now ought to at least make sure that the
+                    // scales are the same for all A.TOCs.  That way,
+                    // the subframe spacing will be the same.  Put the
+                    // best coverage (smallest scale difference) at
+                    // the front of the list, and whittle it down from
+                    // there.
 
-		    Object[] coverageArray = new Object[coverageBoxes.size()];
-		    coverageBoxes.copyInto(coverageArray);
-		    coverageBoxes.removeAllElements();
-		    int size = coverageArray.length;
+                    Object[] coverageArray = new Object[coverageBoxes.size()];
+                    coverageBoxes.copyInto(coverageArray);
+                    coverageBoxes.removeAllElements();
+                    int size = coverageArray.length;
 
-		    // Set this here in case the vector is empty...
-		    // 		    float currentScale = currentEntry.info.scale;
+                    // Set this here in case the vector is empty...
+                    //              float currentScale = currentEntry.info.scale;
 
-		    if (size == 0) {
-			coverageBoxes.addElement(currentCoverage);
+                    if (size == 0) {
+                        coverageBoxes.addElement(currentCoverage);
 
-		    } else {
+                    } else {
                       boolean addedCurrent = false;
                       boolean okToAddCurrent = true;
-			for (int j = 0; j < size; j++) {
-			    rcb = (RpfCoverageBox) coverageArray[j];
+                        for (int j = 0; j < size; j++) {
+                            rcb = (RpfCoverageBox) coverageArray[j];
 
-			    if (!addedCurrent) {
+                            if (!addedCurrent) {
                               if (j == 0) {
 
                                 // So first, check to see if the current
@@ -367,7 +367,7 @@ public class RpfFrameCacheHandler extends CacheHandler
                                 // current best, first considering
                                 // scale, and then considering coverage.
 
-								 // NOTE:
+                                                                 // NOTE:
                                  // Changed < to <=, because < gives
                                  // higher priority to whatever is first in the
                                  // list.  I.e. if 2 boxes had the same
@@ -406,14 +406,14 @@ public class RpfFrameCacheHandler extends CacheHandler
                                   coverageBoxes.add(rcb);
                                 }
                               }
-			    } else { // currentCoverage already added;
+                            } else { // currentCoverage already added;
                               // all we need to do is add current rcb if scale matches
                               if (((RpfCoverageBox)coverageBoxes.get(0)).scale == rcb.scale) {
                                 coverageBoxes.add(rcb);
                               } else {
                               }
                             }
-			}
+                        }
                         // Add current if not added already and if scale matches.
                         // It's possible that we performed this check already --
                         // i.e. if currentCoverage had better % coverage
@@ -425,17 +425,17 @@ public class RpfFrameCacheHandler extends CacheHandler
                           } else {
                           }
                         }
-		    }
-		//}
-	    } else {
-		if (Debug.debugging("rpftoc")) {
-		    System.out.println("RFCH: Toc " + i + " did NOT return an entry");
-		}
+                    }
+                //}
+            } else {
+                if (Debug.debugging("rpftoc")) {
+                    System.out.println("RFCH: Toc " + i + " did NOT return an entry");
+                }
              }
           }
        }
 
-	return coverageBoxes;
+        return coverageBoxes;
     }
 
     /**
@@ -457,27 +457,27 @@ public class RpfFrameCacheHandler extends CacheHandler
      */
     public String getSubframeAttributes(int tocNumber, int entryNumber, int x, int y) {
 
-	if (!tocs[tocNumber].isValid()) return null;
+        if (!tocs[tocNumber].isValid()) return null;
 
-	RpfTocEntry entry = tocs[tocNumber].entries[entryNumber];
+        RpfTocEntry entry = tocs[tocNumber].entries[entryNumber];
 
-	/* If beyond the image boundary, forget it */
-	if (y < 0 || x < 0 || entry == null ||
-	    y >= entry.vertFrames * 6 ||
-	    x >= entry.horizFrames * 6) {
+        /* If beyond the image boundary, forget it */
+        if (y < 0 || x < 0 || entry == null ||
+            y >= entry.vertFrames * 6 ||
+            x >= entry.horizFrames * 6) {
 
-	    return null;
-	}
+            return null;
+        }
 
-	RpfFrameEntry frameEntry = entry.frames[y/6][x/6];
+        RpfFrameEntry frameEntry = entry.frames[y/6][x/6];
 
-	/* Get the right frame from the frame cache */
-	RpfFrame frame = (RpfFrame) get(frameEntry);
+        /* Get the right frame from the frame cache */
+        RpfFrame frame = (RpfFrame) get(frameEntry);
 
-	if (frame == null) return null;
+        if (frame == null) return null;
 
-	/* This should never fail, since all subframes should be present */
-	return frame.getReport(x, y, frameEntry, entry.Cib);
+        /* This should never fail, since all subframes should be present */
+        return frame.getReport(x, y, frameEntry, entry.Cib);
     }
 
     /**
@@ -499,64 +499,64 @@ public class RpfFrameCacheHandler extends CacheHandler
      */
     public int[] getSubframeData(int tocNumber, int entryNumber, int x, int y) {
 
-	if (!tocs[tocNumber].isValid()) {
-	    return null;
-	}
+        if (!tocs[tocNumber].isValid()) {
+            return null;
+        }
 
-	RpfTocEntry entry = tocs[tocNumber].entries[entryNumber];
+        RpfTocEntry entry = tocs[tocNumber].entries[entryNumber];
 
-	/* If beyond the image boundary, forget it */
-	if (y < 0 || x < 0 || entry == null ||
-	    y >= entry.vertFrames * 6 ||
-	    x >= entry.horizFrames * 6) {
-	    return null;
-	}
+        /* If beyond the image boundary, forget it */
+        if (y < 0 || x < 0 || entry == null ||
+            y >= entry.vertFrames * 6 ||
+            x >= entry.horizFrames * 6) {
+            return null;
+        }
 
-	RpfFrameEntry frameEntry = entry.frames[y/6][x/6];
+        RpfFrameEntry frameEntry = entry.frames[y/6][x/6];
 
-	/* Get the right frame from the frame cache */
-	RpfFrame frame = (RpfFrame) get(frameEntry);
+        /* Get the right frame from the frame cache */
+        RpfFrame frame = (RpfFrame) get(frameEntry);
 
-	if (frame == null) {
-	    return null;
-	}
+        if (frame == null) {
+            return null;
+        }
 
-	checkColortable(frame, frameEntry, entry, tocNumber, entryNumber);
+        checkColortable(frame, frameEntry, entry, tocNumber, entryNumber);
 
-	/* This should never fail, since all subframes should be present */
-	return frame.decompressSubframe(x, y, colortable);
+        /* This should never fail, since all subframes should be present */
+        return frame.decompressSubframe(x, y, colortable);
     }
 
 
     public RpfIndexedImageData getRawSubframeData(int tocNumber, int entryNumber,
-						  int x, int y) {
-	if (!tocs[tocNumber].isValid()) {
-	    return null;
-	}
+                                                  int x, int y) {
+        if (!tocs[tocNumber].isValid()) {
+            return null;
+        }
 
-	RpfTocEntry entry = tocs[tocNumber].entries[entryNumber];
+        RpfTocEntry entry = tocs[tocNumber].entries[entryNumber];
 
-	/* If beyond the image boundary, forget it */
-	if (y < 0 || x < 0 || entry == null ||
-	    y >= entry.vertFrames * 6 ||
-	    x >= entry.horizFrames * 6) {
+        /* If beyond the image boundary, forget it */
+        if (y < 0 || x < 0 || entry == null ||
+            y >= entry.vertFrames * 6 ||
+            x >= entry.horizFrames * 6) {
 
-	    return null;
-	}
+            return null;
+        }
 
-	RpfFrameEntry frameEntry = entry.frames[y/6][x/6];
+        RpfFrameEntry frameEntry = entry.frames[y/6][x/6];
 
-	/* Get the right frame from the frame cache */
-	RpfFrame frame = (RpfFrame) get(frameEntry);
+        /* Get the right frame from the frame cache */
+        RpfFrame frame = (RpfFrame) get(frameEntry);
 
-	if (frame == null) return null;
+        if (frame == null) return null;
 
-	checkColortable(frame, frameEntry, entry, tocNumber, entryNumber);
+        checkColortable(frame, frameEntry, entry, tocNumber, entryNumber);
 
-	RpfIndexedImageData riid = new RpfIndexedImageData();
-	riid.imageData =  frame.decompressSubframe(x, y);
-	riid.colortable = colortable.colors;
-	return riid;
+        RpfIndexedImageData riid = new RpfIndexedImageData();
+        riid.imageData =  frame.decompressSubframe(x, y);
+        riid.colortable = colortable.colors;
+        return riid;
     }
 
     /**
@@ -571,42 +571,42 @@ public class RpfFrameCacheHandler extends CacheHandler
      * across zones, that's not always the case.
      */
     protected void checkColortable(RpfFrame frame, RpfFrameEntry frameEntry,
-				   RpfTocEntry entry, int tocNumber, int entryNumber) {
-	// Colortables are constant across chart types and zones.  If
-	// the current chart type and zone don't match the colortable,
-	// read the proper one from the frame.  All the frames inside
-	// an entry, which is a boundary box, will certainly share a
-	// colortable.
-	//  	if (colortable.colors == null ||
-	//  	    !colortable.isSameATOCIndexes(tocNumber, entryNumber)) {
+                                   RpfTocEntry entry, int tocNumber, int entryNumber) {
+        // Colortables are constant across chart types and zones.  If
+        // the current chart type and zone don't match the colortable,
+        // read the proper one from the frame.  All the frames inside
+        // an entry, which is a boundary box, will certainly share a
+        // colortable.
+        //      if (colortable.colors == null ||
+        //          !colortable.isSameATOCIndexes(tocNumber, entryNumber)) {
 
-	// You know, we don't need to make the check - we should just
-	// do this every time - the colortable is already created for
-	// the frame, so we might as well use what we know to be good
-	// for each subframe.
+        // You know, we don't need to make the check - we should just
+        // do this every time - the colortable is already created for
+        // the frame, so we might as well use what we know to be good
+        // for each subframe.
 
-	if (true) {
+        if (true) {
 
-	    if (Debug.debugging("rpf")) {
-		Debug.output("RpfFrameCacheHandler: getting new colors");
-		Debug.output("RpfFrameCacheHandler: getting CIB colors = " + entry.Cib);
-	    }
-	    colortable.setCib(entry.Cib);
-	    colortable.setATOCIndexes(tocNumber, entryNumber);
+            if (Debug.debugging("rpf")) {
+                Debug.output("RpfFrameCacheHandler: getting new colors");
+                Debug.output("RpfFrameCacheHandler: getting CIB colors = " + entry.Cib);
+            }
+            colortable.setCib(entry.Cib);
+            colortable.setATOCIndexes(tocNumber, entryNumber);
 
-	    // Seems like there ought to be a better way to do this.
-	    colortable = frame.getColortable();
+            // Seems like there ought to be a better way to do this.
+            colortable = frame.getColortable();
 
-	    colortable.zone = entry.zone;
-	    colortable.seriesCode = entry.info.seriesCode;
-	}
+            colortable.zone = entry.zone;
+            colortable.seriesCode = entry.info.seriesCode;
+        }
 
-	if (viewAttributes != null) {
-	    //this is useless...
-	    //    	    colortable.setNumColors(viewAttributes.numberOfColors);
+        if (viewAttributes != null) {
+            //this is useless...
+            //              colortable.setNumColors(viewAttributes.numberOfColors);
 
-	    colortable.setOpaqueness(viewAttributes.opaqueness);
-	}
+            colortable.setOpaqueness(viewAttributes.opaqueness);
+        }
     }
 
     /**
@@ -617,22 +617,22 @@ public class RpfFrameCacheHandler extends CacheHandler
      */
     public static RpfTocHandler[] createTocHandlers(String[] RpfPaths) {
 
-	RpfTocHandler[] tocs = new RpfTocHandler[(RpfPaths != null?RpfPaths.length:0)];
-	for (int i = 0; i < tocs.length; i++) {
-	    tocs[i] = new RpfTocHandler(RpfPaths[i], i);
-	}
-	return tocs;
+        RpfTocHandler[] tocs = new RpfTocHandler[(RpfPaths != null?RpfPaths.length:0)];
+        for (int i = 0; i < tocs.length; i++) {
+            tocs[i] = new RpfTocHandler(RpfPaths[i], i);
+        }
+        return tocs;
     }
 
     /** Cachehandler method. */
     public CacheObject load(String RpfFramePath) {
 
-	RpfFrame frame = new RpfFrame(RpfFramePath);
-	if (frame.isValid()) {
-	    CacheObject obj = new CacheObject(RpfFramePath, frame);
-	    return obj;
-	}
-	return null;
+        RpfFrame frame = new RpfFrame(RpfFramePath);
+        if (frame.isValid()) {
+            CacheObject obj = new CacheObject(RpfFramePath, frame);
+            return obj;
+        }
+        return null;
     }
 
     /**
@@ -643,52 +643,52 @@ public class RpfFrameCacheHandler extends CacheHandler
      */
     public Object get(RpfFrameEntry rfe) {
 
-	CacheObject ret = searchCache(rfe.framePath);
-	if (ret != null) return ret.obj;
+        CacheObject ret = searchCache(rfe.framePath);
+        if (ret != null) return ret.obj;
 
-	ret = load(rfe);
-	if (ret == null) return null;
+        ret = load(rfe);
+        if (ret == null) return null;
 
-	if (Debug.debugging("rpfdetail")) {
-	    System.out.println(rfe);
-	}
+        if (Debug.debugging("rpfdetail")) {
+            System.out.println(rfe);
+        }
 
-	replaceLeastUsed(ret);
-	return ret.obj;
+        replaceLeastUsed(ret);
+        return ret.obj;
     }
 
     /** Cachehandler method. */
     public CacheObject load(RpfFrameEntry rfe) {
 
-	if (!rfe.exists) {
-	    if (Debug.debugging("rpf")) {
-		System.out.println("RpfFrameCacheHandler: Frame doesn't exist!: " +
-				   rfe.framePath);
-	    }
-	    return null;
-	}
+        if (!rfe.exists) {
+            if (Debug.debugging("rpf")) {
+                System.out.println("RpfFrameCacheHandler: Frame doesn't exist!: " +
+                                   rfe.framePath);
+            }
+            return null;
+        }
 
-	if (Debug.debugging("rpf")) {
-	    Debug.output("RpfFrameCacheHandler: Loading Frame " +
-			 rfe.framePath);
-	}
+        if (Debug.debugging("rpf")) {
+            Debug.output("RpfFrameCacheHandler: Loading Frame " +
+                         rfe.framePath);
+        }
 
-	RpfFrame frame = new RpfFrame(rfe);
-	if (frame.isValid()) {
-	    CacheObject obj = new CacheObject(rfe.framePath, frame);
-	    return obj;
-	} else {
-	    Debug.error("RpfFrameCacheHandler:  Couldn't find frame /" +
-			rfe.framePath + "/ (" + rfe.framePath.length() + " chars)");
-	}
-	return null;
+        RpfFrame frame = new RpfFrame(rfe);
+        if (frame.isValid()) {
+            CacheObject obj = new CacheObject(rfe.framePath, frame);
+            return obj;
+        } else {
+            Debug.error("RpfFrameCacheHandler:  Couldn't find frame /" +
+                        rfe.framePath + "/ (" + rfe.framePath.length() + " chars)");
+        }
+        return null;
     }
 
     /**
      * Cachehandler method.
      */
     public void resizeCache(int max_size) {
-	resetCache(max_size);
+        resetCache(max_size);
     }
 
     /**
@@ -696,16 +696,16 @@ public class RpfFrameCacheHandler extends CacheHandler
      * ready for new objects
      */
     public void resetCache() {
-	super.resetCache();
-	Debug.message("rpf", "RpfFrameCacheHandler: reset frame cache.");
+        super.resetCache();
+        Debug.message("rpf", "RpfFrameCacheHandler: reset frame cache.");
     }
 
     public static float scaleDifference(CADRG proj, RpfCoverageBox box) {
-	return (float)(Math.abs(proj.getScale() - box.scale));
+        return (float)(Math.abs(proj.getScale() - box.scale));
     }
 
     public RpfColortable getColortable() {
-	return colortable;
+        return colortable;
     }
 }
 

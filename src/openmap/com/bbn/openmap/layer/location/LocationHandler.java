@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationHandler.java,v $
-// $Revision: 1.3 $ $Date: 2003/12/23 22:55:24 $ $Author: wjeuerle $
+// $Revision: 1.4 $ $Date: 2004/01/26 18:18:09 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -84,7 +84,7 @@ public interface LocationHandler extends PropertyConsumer {
      * @return Either the Vector passed in, or the new onw that was created.
      */
     public Vector get(float nwLat, float nwLon, float seLat, float seLon, 
-		      Vector graphicList);
+                      Vector graphicList);
     /**
      * A trigger function to tell the handler that new data is
      * available. 

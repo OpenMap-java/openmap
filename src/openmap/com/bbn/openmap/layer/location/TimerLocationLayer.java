@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/TimerLocationLayer.java,v $
 // $RCSfile: TimerLocationLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/20 17:50:24 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,15 +76,15 @@ public class TimerLocationLayer extends LocationLayer {
     public TimerLocationLayer() {}
 
     public void projectionChanged(ProjectionEvent e) {
-	super.projectionChanged(e);
+        super.projectionChanged(e);
 
-	if (autoTimer && timer != null && 
-	    ((timerButton != null && timerButton.isSelected()) || 
-	     (timerButton == null && getUpdateInterval() > 0))) {
+        if (autoTimer && timer != null && 
+            ((timerButton != null && timerButton.isSelected()) || 
+             (timerButton == null && getUpdateInterval() > 0))) {
 
-	    timer.restart();
-	    updateTimerButton();
-	}
+            timer.restart();
+            updateTimerButton();
+        }
     }
 
     /**
@@ -93,10 +93,10 @@ public class TimerLocationLayer extends LocationLayer {
      * set, the timer is stopped.
      */
     public void removed(java.awt.Container cont) {
-	if (autoTimer) {
-	    timer.stop();
-	    updateTimerButton();
-	}
+        if (autoTimer) {
+            timer.stop();
+            updateTimerButton();
+        }
     }
 
     protected JCheckBox timerButton = null;
@@ -109,52 +109,52 @@ public class TimerLocationLayer extends LocationLayer {
      * @return Component object representing the palette widgets.
      */
     public java.awt.Component getGUI() {
-	box = null;
-	box = (Box) super.getGUI();
+        box = null;
+        box = (Box) super.getGUI();
 
-	// Only want to do this once...
-	if (getTimer() != null) {
-	    if (timerButton == null) {
-		String bTitle = "Run Update Timer";
-		int interval = getUpdateInterval();
-		if (interval > 0) {
-		    bTitle = "Reload Data (" + (interval/1000) + " sec)";
-		}
-		timerButton = new JCheckBox(bTitle, getTimer().isRunning());
-		timerButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-			    JCheckBox check = (JCheckBox)ae.getSource();
-			    Timer t = getTimer();
-			    if (t != null) {
-				if (check.isSelected()) {
-				    t.restart();
-				} else {
-				    t.stop();
-				}
-			    }
-			}
-		    });
-		timerButton.setToolTipText("<HTML><BODY>Reload the map data from the original source at specified intervals.</BODY></HTML>");
-	    }		      
+        // Only want to do this once...
+        if (getTimer() != null) {
+            if (timerButton == null) {
+                String bTitle = "Run Update Timer";
+                int interval = getUpdateInterval();
+                if (interval > 0) {
+                    bTitle = "Reload Data (" + (interval/1000) + " sec)";
+                }
+                timerButton = new JCheckBox(bTitle, getTimer().isRunning());
+                timerButton.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent ae) {
+                            JCheckBox check = (JCheckBox)ae.getSource();
+                            Timer t = getTimer();
+                            if (t != null) {
+                                if (check.isSelected()) {
+                                    t.restart();
+                                } else {
+                                    t.stop();
+                                }
+                            }
+                        }
+                    });
+                timerButton.setToolTipText("<HTML><BODY>Reload the map data from the original source at specified intervals.</BODY></HTML>");
+            }                 
 
-	    JPanel tbp = new JPanel(new GridLayout(0, 1));
-	    tbp.add(timerButton);
+            JPanel tbp = new JPanel(new GridLayout(0, 1));
+            tbp.add(timerButton);
 
-	    if (autoTimerButton == null) {
-		autoTimerButton = new JCheckBox("Reload Only When Visible", autoTimer);
-		autoTimerButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-			    JCheckBox check = (JCheckBox)ae.getSource();
-			    setAutoTimer(check.isSelected());
-			}
-		    });
-		autoTimerButton.setToolTipText("<HTML><BODY>Only run the timer when the layer is active on the map.</BODY></HTML>");
-	    }
-	    
-	    tbp.add(autoTimerButton);
-	    box.add(tbp);
-	}
-	return box;
+            if (autoTimerButton == null) {
+                autoTimerButton = new JCheckBox("Reload Only When Visible", autoTimer);
+                autoTimerButton.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent ae) {
+                            JCheckBox check = (JCheckBox)ae.getSource();
+                            setAutoTimer(check.isSelected());
+                        }
+                    });
+                autoTimerButton.setToolTipText("<HTML><BODY>Only run the timer when the layer is active on the map.</BODY></HTML>");
+            }
+            
+            tbp.add(autoTimerButton);
+            box.add(tbp);
+        }
+        return box;
     }
 
     /** 
@@ -165,15 +165,15 @@ public class TimerLocationLayer extends LocationLayer {
      * @param properties the properties set in the properties file.  
      */
     public void setProperties(String prefix, Properties properties) {
-	super.setProperties(prefix, properties);
-	String realPrefix = "";
+        super.setProperties(prefix, properties);
+        String realPrefix = "";
 
-	if (prefix != null) {
-	    realPrefix = prefix + ".";
-	}
+        if (prefix != null) {
+            realPrefix = prefix + ".";
+        }
 
-	setUpdateInterval(PropUtils.intFromProperties(properties, realPrefix + UpdateTimerIntervalProperty, updateInterval));
-	setAutoTimer(PropUtils.booleanFromProperties(properties, realPrefix + AutoTimerProperty, autoTimer));
+        setUpdateInterval(PropUtils.intFromProperties(properties, realPrefix + UpdateTimerIntervalProperty, updateInterval));
+        setAutoTimer(PropUtils.booleanFromProperties(properties, realPrefix + AutoTimerProperty, autoTimer));
     }
 
     /**
@@ -192,16 +192,16 @@ public class TimerLocationLayer extends LocationLayer {
      * PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	props.put(prefix + UpdateTimerIntervalProperty, 
-		  Integer.toString(updateInterval));
-	props.put(prefix + AutoTimerProperty,
-		  new Boolean(autoTimer).toString());
+        props.put(prefix + UpdateTimerIntervalProperty, 
+                  Integer.toString(updateInterval));
+        props.put(prefix + AutoTimerProperty,
+                  new Boolean(autoTimer).toString());
 
-	return props;
+        return props;
     }
 
     /**
@@ -223,13 +223,13 @@ public class TimerLocationLayer extends LocationLayer {
      * PropertyConsumer. 
      */
     public Properties getPropertyInfo(Properties list) {
-	list = super.getPropertyInfo(list);
+        list = super.getPropertyInfo(list);
 
-	list.put(UpdateTimerIntervalProperty, "Number of milliseconds for automatic file reloading.");
-	list.put(AutoTimerProperty, "Flag to start/stop timer automatically when layer is on map.");
-	list.put(AutoTimerProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
-	return list;
+        list.put(UpdateTimerIntervalProperty, "Number of milliseconds for automatic file reloading.");
+        list.put(AutoTimerProperty, "Flag to start/stop timer automatically when layer is on map.");
+        list.put(AutoTimerProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+        return list;
     }
 
     /**
@@ -243,22 +243,22 @@ public class TimerLocationLayer extends LocationLayer {
      * is turned on.  If the autoTimer is on, the timer will be stopped.
      */
     public void setAutoTimer(boolean value) {
-	autoTimer = value;
-	if (autoTimerButton != null) {
-	    autoTimerButton.setSelected(getAutoTimer());
-	}
+        autoTimer = value;
+        if (autoTimerButton != null) {
+            autoTimerButton.setSelected(getAutoTimer());
+        }
 
-	if (!isVisible()) {
-	    if (!value && getProjection() != null) {
-		timer.restart();
-	    } else if (value) {
-		timer.stop();
-	    }
-	}
+        if (!isVisible()) {
+            if (!value && getProjection() != null) {
+                timer.restart();
+            } else if (value) {
+                timer.stop();
+            }
+        }
     }
 
     public boolean getAutoTimer() {
-	return autoTimer;
+        return autoTimer;
     }
 
     /**
@@ -266,7 +266,7 @@ public class TimerLocationLayer extends LocationLayer {
      * a timer is not set.
      */
     public Timer getTimer() {
-	return timer;
+        return timer;
     }
 
     /**
@@ -275,22 +275,22 @@ public class TimerLocationLayer extends LocationLayer {
      * it.
      */
     public void setTimer(Timer t) {
-	if (timer != null) {
-	    timer.stop();
-	}
+        if (timer != null) {
+            timer.stop();
+        }
 
-	timer = t;
-	updateTimerButton();
+        timer = t;
+        updateTimerButton();
     }
 
     /**
      * What to do when the timer goes off.
      */
     public void timerPing() {
-	reloadData();
-	if (isVisible()) {
-	    doPrepare();
-	}
+        reloadData();
+        if (isVisible()) {
+            doPrepare();
+        }
     }
 
     /**
@@ -298,15 +298,15 @@ public class TimerLocationLayer extends LocationLayer {
      * setTimer().
      */
     public void createTimer() {
-	Timer t = new Timer(updateInterval, 
-			    new ActionListener() {
-				public void actionPerformed(ActionEvent ae) {
-				    timerPing();
-				}
-			    });
+        Timer t = new Timer(updateInterval, 
+                            new ActionListener() {
+                                public void actionPerformed(ActionEvent ae) {
+                                    timerPing();
+                                }
+                            });
 
-	t.setInitialDelay(0);
-	setTimer(t);
+        t.setInitialDelay(0);
+        setTimer(t);
     }
 
     /**
@@ -321,23 +321,23 @@ public class TimerLocationLayer extends LocationLayer {
      * be affected.
      */
     public void setUpdateInterval(int delay) {
-	if (delay > 0) {
-	    updateInterval = delay;
-	    if (timer == null) {
-		createTimer();
-	    }
-	    timer.setDelay(updateInterval);
-	    if (timer.isRunning()) {
-		timer.restart();
-	    }
-	} else if (timer != null) {
-	    timer.stop();
-	}
-	updateTimerButton();
+        if (delay > 0) {
+            updateInterval = delay;
+            if (timer == null) {
+                createTimer();
+            }
+            timer.setDelay(updateInterval);
+            if (timer.isRunning()) {
+                timer.restart();
+            }
+        } else if (timer != null) {
+            timer.stop();
+        }
+        updateTimerButton();
     }
 
     public int getUpdateInterval() {
-	return updateInterval;
+        return updateInterval;
     }
 
     /**
@@ -345,10 +345,10 @@ public class TimerLocationLayer extends LocationLayer {
      * timer is running.
      */
     protected void updateTimerButton() {
-	if (timerButton != null) {
-	    timerButton.setEnabled(timer != null);
-	    timerButton.setSelected(timer != null && timer.isRunning());
-	}
+        if (timerButton != null) {
+            timerButton.setEnabled(timer != null);
+            timerButton.setSelected(timer != null && timer.isRunning());
+        }
     }
 
 }

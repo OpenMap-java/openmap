@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.10 $
-// $Date: 2003/12/23 20:47:48 $
-// $Author: wjeuerle $
+// $Revision: 1.11 $
+// $Date: 2004/01/26 18:18:13 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -92,8 +92,8 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * are set to their default values.
      */
     public PlugInLayer() {
-	setName("PlugInLayer");
-	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+        setName("PlugInLayer");
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
 
     /**
@@ -101,86 +101,86 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * the map.
      */
     public void removed(java.awt.Container container) {
-	PlugIn pi = getPlugIn();
-	if (pi != null) {
-	    pi.removed();
-	}
+        PlugIn pi = getPlugIn();
+        if (pi != null) {
+            pi.removed();
+        }
     }
 
     /**
      * Set the properties for the PlugIn Layer.
      */ 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-	plugInClass = props.getProperty(realPrefix + PlugInProperty);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        plugInClass = props.getProperty(realPrefix + PlugInProperty);
 
-	if (plugInClass != null) {
-	    String plugInPrefix = PlugInProperty;
-	    plugInPrefix = realPrefix + PlugInProperty;
-	    setPlugIn((PlugIn)ComponentFactory.create(plugInClass, plugInPrefix, props));
-	} else {
-	    // If plugInClass is not defined, then we want the
-	    // PlugInLayer to be invisible - the PlugIn should be
-	    // the only thing in the properties, and the other
-	    // components should be OK with that.
-	    PlugIn pi = getPlugIn();
-	    if (pi != null) {
-		pi.setProperties(prefix, props);
-	    }
-	}
+        if (plugInClass != null) {
+            String plugInPrefix = PlugInProperty;
+            plugInPrefix = realPrefix + PlugInProperty;
+            setPlugIn((PlugIn)ComponentFactory.create(plugInClass, plugInPrefix, props));
+        } else {
+            // If plugInClass is not defined, then we want the
+            // PlugInLayer to be invisible - the PlugIn should be
+            // the only thing in the properties, and the other
+            // components should be OK with that.
+            PlugIn pi = getPlugIn();
+            if (pi != null) {
+                pi.setProperties(prefix, props);
+            }
+        }
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	PlugIn pi = getPlugIn();
-	String prefix;
-	if (pi != null) {
-	    if (plugInClass != null) {
-		prefix = PropUtils.getScopedPropertyPrefix(this);
-		props.put(prefix + PlugInProperty, pi.getClass().getName());
-	    } else {
-		// If plugInClass is not defined, then we want the
-		// PlugInLayer to be invisible - the PlugIn should be
-		// the only thing in the properties, and ther other
-		// components should be OK with that.
-		prefix = PropUtils.getScopedPropertyPrefix(pi);
-		props.put(prefix + "class", pi.getClass().getName());
-		props.put(prefix + PrettyNameProperty, getName());
-	    }
+        PlugIn pi = getPlugIn();
+        String prefix;
+        if (pi != null) {
+            if (plugInClass != null) {
+                prefix = PropUtils.getScopedPropertyPrefix(this);
+                props.put(prefix + PlugInProperty, pi.getClass().getName());
+            } else {
+                // If plugInClass is not defined, then we want the
+                // PlugInLayer to be invisible - the PlugIn should be
+                // the only thing in the properties, and ther other
+                // components should be OK with that.
+                prefix = PropUtils.getScopedPropertyPrefix(pi);
+                props.put(prefix + "class", pi.getClass().getName());
+                props.put(prefix + PrettyNameProperty, getName());
+            }
 
-	    pi.getProperties(props);
-	}
+            pi.getProperties(props);
+        }
 
-	return props;
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	PlugIn pi = getPlugIn();
-	props = super.getProperties(props);
+        PlugIn pi = getPlugIn();
+        props = super.getProperties(props);
 
-	if (plugInClass != null || pi == null) {
-	    // If plugInClass is not defined, then we want the
-	    // PlugInLayer to be invisible - the PlugIn should be
-	    // the only thing in the properties, and ther other
-	    // components should be OK with that.
-	    
-	    props.put(PlugInProperty, "Class name of PlugIn");
-	    props.put(PlugInProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
-	} else {
-	    props.put("class", "Class name of PlugIn");
-	    props.put("class" + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
-	    props.put(PrettyNameProperty, getName());
-	    props.put(PrettyNameProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
-	}
+        if (plugInClass != null || pi == null) {
+            // If plugInClass is not defined, then we want the
+            // PlugInLayer to be invisible - the PlugIn should be
+            // the only thing in the properties, and ther other
+            // components should be OK with that.
+            
+            props.put(PlugInProperty, "Class name of PlugIn");
+            props.put(PlugInProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
+        } else {
+            props.put("class", "Class name of PlugIn");
+            props.put("class" + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
+            props.put(PrettyNameProperty, getName());
+            props.put(PrettyNameProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
+        }
 
-	if (pi != null) {
-	    pi.getPropertyInfo(props);
-	}
+        if (pi != null) {
+            pi.getPropertyInfo(props);
+        }
 
-	return props;
+        return props;
     }
 
     /**
@@ -191,17 +191,17 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * @param prefix the prefix String.  
      */
     public void setPropertyPrefix(String prefix) {
-	super.setPropertyPrefix(prefix);
+        super.setPropertyPrefix(prefix);
 
-	PlugIn pi = getPlugIn();
+        PlugIn pi = getPlugIn();
 
-	if (pi != null) {
-	    if (plugInClass != null) {
-		pi.setPropertyPrefix(PropUtils.getScopedPropertyPrefix(prefix) + PlugInProperty);
-	    } else {
-		plugin.setPropertyPrefix(prefix);
-	    }
-	}
+        if (pi != null) {
+            if (plugInClass != null) {
+                pi.setPropertyPrefix(PropUtils.getScopedPropertyPrefix(prefix) + PlugInProperty);
+            } else {
+                plugin.setPropertyPrefix(prefix);
+            }
+        }
     }
 
     /**
@@ -211,7 +211,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * @deprecated call setList() instead.
      */
     public synchronized void setGraphicList(OMGraphicList aList) {
-	setList(aList);
+        setList(aList);
     }
 
     /**
@@ -219,7 +219,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * @deprecated call getList() instead.
      */
     public synchronized OMGraphicList getGraphicList() {
-	return getList();
+        return getList();
     }
 
     /** 
@@ -235,13 +235,13 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      *  plugin, too.
      */
     public void setPlugIn(PlugIn aPlugIn) {
-	plugin = aPlugIn;
-	if (aPlugIn != null) {
-	    plugin.setComponent(this);
-	    mml = plugin.getMapMouseListener();
-	} else if (Debug.debugging("plugin")) {
-	    Debug.output("PlugInLayer: null PlugIn set!");
-	}
+        plugin = aPlugIn;
+        if (aPlugIn != null) {
+            plugin.setComponent(this);
+            mml = plugin.getMapMouseListener();
+        } else if (Debug.debugging("plugin")) {
+            Debug.output("PlugInLayer: null PlugIn set!");
+        }
     }
 
     /**
@@ -250,7 +250,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * @return the MapMouseListener for the layer, or null if none
      */
     public synchronized MapMouseListener getMapMouseListener() {
-	return mml;
+        return mml;
     }
  
     /**
@@ -259,7 +259,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * layer.
      */
     public synchronized void setMapMouseListener(MapMouseListener mml) {
-	this.mml = mml;
+        this.mml = mml;
     }
 
     /**
@@ -273,61 +273,61 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * @return new OMGraphicList filled by plugin.
      */
     public OMGraphicList prepare() {
-	Debug.message("plugin", getName()+"|PlugInLayer.prepare()");
+        Debug.message("plugin", getName()+"|PlugInLayer.prepare()");
 
-	if (isCancelled()) {
-	    Debug.message("plugin", getName()+"|PlugInLayer.prepare(): aborted.");
-	    return null;
-	}
+        if (isCancelled()) {
+            Debug.message("plugin", getName()+"|PlugInLayer.prepare(): aborted.");
+            return null;
+        }
 
-	if (plugin == null) {
-	    System.out.println(getName()+"|PlugInLayer.prepare(): No plugin in layer.");
-	    return null;
-	}
+        if (plugin == null) {
+            System.out.println(getName()+"|PlugInLayer.prepare(): No plugin in layer.");
+            return null;
+        }
 
-	Debug.message("basic", getName()+"|PlugInLayer.prepare(): doing it");
+        Debug.message("basic", getName()+"|PlugInLayer.prepare(): doing it");
 
-	// Setting the OMGraphicsList for this layer.  Remember, the
-	// OMGraphicList is made up of OMGraphics, which are generated
-	// (projected) when the graphics are added to the list.  So,
-	// after this call, the list is ready for painting.
+        // Setting the OMGraphicsList for this layer.  Remember, the
+        // OMGraphicList is made up of OMGraphics, which are generated
+        // (projected) when the graphics are added to the list.  So,
+        // after this call, the list is ready for painting.
 
-	// call getRectangle();
-	Projection proj = getProjection();
-	if (Debug.debugging("plugin") && proj != null) {
-	    System.out.println(
-		      getName()+"|PlugInLayer.prepare(): " +
-		      "calling getRectangle " +
-		      " with projection: " + proj +
-		      " ul = " + proj.getUpperLeft() + " lr = " + 
-		      proj.getLowerRight()); 
-	}
+        // call getRectangle();
+        Projection proj = getProjection();
+        if (Debug.debugging("plugin") && proj != null) {
+            System.out.println(
+                      getName()+"|PlugInLayer.prepare(): " +
+                      "calling getRectangle " +
+                      " with projection: " + proj +
+                      " ul = " + proj.getUpperLeft() + " lr = " + 
+                      proj.getLowerRight()); 
+        }
 
-	OMGraphicList omGraphicList = null;
+        OMGraphicList omGraphicList = null;
 
-	if (plugin != null && proj != null) {
-	    omGraphicList = plugin.getRectangle(proj);
-	}
+        if (plugin != null && proj != null) {
+            omGraphicList = plugin.getRectangle(proj);
+        }
 
-	/////////////////////
-	// safe quit
-	int size = 0;
-	if (omGraphicList != null) {
-	    size = omGraphicList.size();	
-	    if (Debug.debugging("basic")) {
-		Debug.output(getName() + "|PlugInLayer.prepare(): finished with "+
-			     size + " graphics");
-	    }
-	} else {
-	    if (Debug.debugging("basic")) {
-		Debug.output(getName() + "|PlugInLayer.prepare(): finished with null graphics list");
-	    }
-	    omGraphicList = new OMGraphicList();
-	}
+        /////////////////////
+        // safe quit
+        int size = 0;
+        if (omGraphicList != null) {
+            size = omGraphicList.size();        
+            if (Debug.debugging("basic")) {
+                Debug.output(getName() + "|PlugInLayer.prepare(): finished with "+
+                             size + " graphics");
+            }
+        } else {
+            if (Debug.debugging("basic")) {
+                Debug.output(getName() + "|PlugInLayer.prepare(): finished with null graphics list");
+            }
+            omGraphicList = new OMGraphicList();
+        }
 
-	// NOTE - We've assumed that the graphics are projected!
+        // NOTE - We've assumed that the graphics are projected!
 
-	return omGraphicList;
+        return omGraphicList;
     }
 
     /**
@@ -335,11 +335,11 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * PlugIn doesn't exist.
      */
     public java.awt.Component getGUI() {
-	if (plugin != null) {
-	    return plugin.getGUI();
-	} else {
-	    return null;
-	}
+        if (plugin != null) {
+            return plugin.getGUI();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -347,42 +347,42 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * being added to the BeanContext.
      */
     public boolean getAddToBeanContext() {
-	boolean ret = false;
-	if (plugin != null && 
+        boolean ret = false;
+        if (plugin != null && 
 
-	    (plugin instanceof BeanContextChild ||
-	     plugin instanceof BeanContextMembershipListener)) {
+            (plugin instanceof BeanContextChild ||
+             plugin instanceof BeanContextMembershipListener)) {
 
-	    if (plugin instanceof AbstractPlugIn) {
-		ret = ((AbstractPlugIn)plugin).getAddToBeanContext();
-	    } else {
-		ret = true;
-	    }
+            if (plugin instanceof AbstractPlugIn) {
+                ret = ((AbstractPlugIn)plugin).getAddToBeanContext();
+            } else {
+                ret = true;
+            }
 
-	} else {
-	    ret = super.getAddToBeanContext();
-	}
+        } else {
+            ret = super.getAddToBeanContext();
+        }
 
-	if (Debug.debugging("plugin")) {
-	    Debug.output(getName() + ".addToBeanContext is " + ret);
-	}
+        if (Debug.debugging("plugin")) {
+            Debug.output(getName() + ".addToBeanContext is " + ret);
+        }
 
-	return ret;
+        return ret;
     }
 
     /** Method for BeanContextChild interface. */
     public void setBeanContext(BeanContext in_bc) 
-	throws PropertyVetoException {
-	super.setBeanContext(in_bc);
+        throws PropertyVetoException {
+        super.setBeanContext(in_bc);
 
-	if (in_bc != null && 
-	    plugin != null && 
+        if (in_bc != null && 
+            plugin != null && 
 
-	    (plugin instanceof BeanContextChild || 
-	     (plugin instanceof AbstractPlugIn && 
-	      ((AbstractPlugIn)plugin).getAddToBeanContext()))) {
+            (plugin instanceof BeanContextChild || 
+             (plugin instanceof AbstractPlugIn && 
+              ((AbstractPlugIn)plugin).getAddToBeanContext()))) {
 
-	    in_bc.add(plugin);
-	}
+            in_bc.add(plugin);
+        }
     }
 }

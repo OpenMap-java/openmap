@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/DrawingEditorTool.java,v $
 // $RCSfile: DrawingEditorTool.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/10/23 21:09:31 $
+// $Revision: 1.8 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -156,7 +156,7 @@ public class DrawingEditorTool extends AbstractEditorTool
     public final static String LoaderProperty = "loaders";
     public final static String AttributesClassProperty = "attributesClass";
     public final static String DefaultDrawingAttributesClass = 
-	"com.bbn.openmap.omGraphics.DrawingAttributes";
+        "com.bbn.openmap.omGraphics.DrawingAttributes";
 
     /**
      * The general constructor that can be called from subclasses to
@@ -165,45 +165,45 @@ public class DrawingEditorTool extends AbstractEditorTool
      * DrawingEditorTool subclass.
      */
     public DrawingEditorTool(EditorLayer layer) {
-	super(layer);
+        super(layer);
 
-	drawingAttributesTable = new Hashtable();
-	initDrawingTool();
+        drawingAttributesTable = new Hashtable();
+        initDrawingTool();
 
-	// Ensures that the drawing tool used by super classes fits 
-	// the OMGraphics created by the EditorTool
-	layer.setDrawingTool(drawingTool);
+        // Ensures that the drawing tool used by super classes fits 
+        // the OMGraphics created by the EditorTool
+        layer.setDrawingTool(drawingTool);
     }
 
     /**
      * Method called in the AbstractDrawingEditorTool constructor.
      */
     public void initDrawingTool() {
-	drawingTool = createDrawingTool();
-	drawingTool.setUseAsTool(true); // prevents popup menu use.
-	drawingTool.getMouseMode().setVisible(false);
-	ga = drawingTool.getAttributes();
- 	ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
- 	ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
+        drawingTool = createDrawingTool();
+        drawingTool.setUseAsTool(true); // prevents popup menu use.
+        drawingTool.getMouseMode().setVisible(false);
+        ga = drawingTool.getAttributes();
+        ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
+        ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
     }
 
     protected OMDrawingTool createDrawingTool() {
-	return new OMDrawingTool();	
+        return new OMDrawingTool();     
     }
 
     public void addEditToolLoader(EditToolLoader loader) {
-	loaderList.add(loader);
-	drawingTool.addLoader(loader);
+        loaderList.add(loader);
+        drawingTool.addLoader(loader);
     }
 
     public void removeEditToolLoader(EditToolLoader loader) {
-	loaderList.remove(loader);
-	drawingTool.removeLoader(loader);
+        loaderList.remove(loader);
+        drawingTool.removeLoader(loader);
     }
 
     public void clearEditToolLoaders() {
-	loaderList.clear();
-	drawingTool.setLoaders(null);
+        loaderList.clear();
+        drawingTool.setLoaders(null);
     }
 
     /**
@@ -211,12 +211,12 @@ public class DrawingEditorTool extends AbstractEditorTool
      * point) capabilities to the tool.
      */
     public void initDefaultDrawingToolLoaders() {
-	addEditToolLoader(new OMDistanceLoader());
-	addEditToolLoader(new OMLineLoader());
-	addEditToolLoader(new OMPolyLoader());
-	addEditToolLoader(new OMRectLoader());
-	addEditToolLoader(new OMCircleLoader());
-	addEditToolLoader(new OMPointLoader());
+        addEditToolLoader(new OMDistanceLoader());
+        addEditToolLoader(new OMLineLoader());
+        addEditToolLoader(new OMPolyLoader());
+        addEditToolLoader(new OMRectLoader());
+        addEditToolLoader(new OMCircleLoader());
+        addEditToolLoader(new OMPointLoader());
     }
 
     /**
@@ -226,13 +226,13 @@ public class DrawingEditorTool extends AbstractEditorTool
      */
     protected void setWantsEvents(String command) {
 
-	if (Debug.debugging("editortool")) {
-	    Debug.output("DET.setWantsEvents(" + command + ")");
-	}
+        if (Debug.debugging("editortool")) {
+            Debug.output("DET.setWantsEvents(" + command + ")");
+        }
 
-	// Has to be called first
-	thingToCreate = command;
-	setWantsEvents(true);
+        // Has to be called first
+        thingToCreate = command;
+        setWantsEvents(true);
     }
 
     /**
@@ -240,21 +240,21 @@ public class DrawingEditorTool extends AbstractEditorTool
      * tool if it doesn't want events.
      */
     public void setWantsEvents(boolean value) {
-	super.setWantsEvents(value);
-	if (!value) {
-	    thingToCreate = null;
-	}
+        super.setWantsEvents(value);
+        if (!value) {
+            thingToCreate = null;
+        }
 
-	if (drawingTool != null && drawingTool.isActivated()) {
-	    drawingTool.resetGUIWhenDeactivated(true);
-	    drawingTool.deactivate();
-	}
+        if (drawingTool != null && drawingTool.isActivated()) {
+            drawingTool.resetGUIWhenDeactivated(true);
+            drawingTool.deactivate();
+        }
 
-	resetForNewGraphic();
+        resetForNewGraphic();
 
-	if (drawingTool != null) {
-	    drawingTool.setVisible(showAttributes);// Just to make sure...
-	}
+        if (drawingTool != null) {
+            drawingTool.setVisible(showAttributes);// Just to make sure...
+        }
     }
 
     /**
@@ -262,43 +262,43 @@ public class DrawingEditorTool extends AbstractEditorTool
      * objects, too.
      */
     public void findAndInit(Object someObj) {
-	super.findAndInit(someObj);
+        super.findAndInit(someObj);
 
-	if (someObj instanceof MapBean ||
-	    someObj instanceof InformationDelegator) {
-	    drawingTool.findAndInit(someObj);
-	}
+        if (someObj instanceof MapBean ||
+            someObj instanceof InformationDelegator) {
+            drawingTool.findAndInit(someObj);
+        }
 
-	if (someObj instanceof MouseDelegator) {
-	    setMouseDelegator((MouseDelegator)someObj);
-	    // I think we want to handle this differently.  The
-	    // EditorToolLayer should get the Gestures MouseMode to
-	    // act as a proxy for the drawing tool mouse mode when a
-	    // tool is not being used.
- 	    drawingTool.findAndInit(someObj);
-	}
+        if (someObj instanceof MouseDelegator) {
+            setMouseDelegator((MouseDelegator)someObj);
+            // I think we want to handle this differently.  The
+            // EditorToolLayer should get the Gestures MouseMode to
+            // act as a proxy for the drawing tool mouse mode when a
+            // tool is not being used.
+            drawingTool.findAndInit(someObj);
+        }
 
-	if (someObj instanceof OMGraphicDeleteTool) {
-	    ((OMGraphicDeleteTool)someObj).findAndInit(getDrawingTool());
-	}
-	
+        if (someObj instanceof OMGraphicDeleteTool) {
+            ((OMGraphicDeleteTool)someObj).findAndInit(getDrawingTool());
+        }
+        
     }
 
     public void findAndUndo(Object someObj) {
-	super.findAndUndo(someObj);
+        super.findAndUndo(someObj);
 
-	if (someObj == mouseDelegator) {
-	    setMouseDelegator(null);
-	}
+        if (someObj == mouseDelegator) {
+            setMouseDelegator(null);
+        }
 
-	if (someObj instanceof MapBean ||
-	    someObj instanceof InformationDelegator) {
-	    drawingTool.findAndUndo(someObj);
-	}
+        if (someObj instanceof MapBean ||
+            someObj instanceof InformationDelegator) {
+            drawingTool.findAndUndo(someObj);
+        }
 
-	if (someObj instanceof OMGraphicDeleteTool) {
-	    ((OMGraphicDeleteTool)someObj).findAndUndo(getDrawingTool());
-	}
+        if (someObj instanceof OMGraphicDeleteTool) {
+            ((OMGraphicDeleteTool)someObj).findAndUndo(getDrawingTool());
+        }
     }
 
     /**
@@ -306,13 +306,13 @@ public class DrawingEditorTool extends AbstractEditorTool
      * another.
      */
     public void drawingComplete(OMGraphic omg, OMAction action) {
-	// Watch out, gets called when drawingTool.deactivate() gets
-	// called, so you can get in a loop if you try to do too much
-	// here with regard to setting up the next OMGraphic to create.
-	if (thingToCreate != null) {
-	    drawingTool.resetGUIWhenDeactivated(false);
-	}
-	omdtmm = null;
+        // Watch out, gets called when drawingTool.deactivate() gets
+        // called, so you can get in a loop if you try to do too much
+        // here with regard to setting up the next OMGraphic to create.
+        if (thingToCreate != null) {
+            drawingTool.resetGUIWhenDeactivated(false);
+        }
+        omdtmm = null;
     }
 
     /**
@@ -325,11 +325,11 @@ public class DrawingEditorTool extends AbstractEditorTool
      * given to it.
      */
     public void resetForNewGraphic() {
-	// if thingToCreate is null, then omdtmm will be set to null
-	// and the drawingTool deactivated.  If thingToCreate is not
-	// null, omdtmm will be ready to receive mouse events for
-	// editing the new OMGraphic.
-	omdtmm = activateDrawingTool(thingToCreate);
+        // if thingToCreate is null, then omdtmm will be set to null
+        // and the drawingTool deactivated.  If thingToCreate is not
+        // null, omdtmm will be ready to receive mouse events for
+        // editing the new OMGraphic.
+        omdtmm = activateDrawingTool(thingToCreate);
     }
 
     /**
@@ -337,55 +337,55 @@ public class DrawingEditorTool extends AbstractEditorTool
      * disable all buttons.
      */
     public void totalReset() {
-	// Need to check if the tool wants events before just 
-	// deactivating the drawing tool - that can mess up a edit
-	// session that is unrelated to the tool but still related to
-	// the DrawingToolLayer.
-	if (wantsEvents()) {
-	    setWantsEvents(false);
-	    if (unpickBtn != null) {
-		unpickBtn.doClick();
-	    }
-	}
+        // Need to check if the tool wants events before just 
+        // deactivating the drawing tool - that can mess up a edit
+        // session that is unrelated to the tool but still related to
+        // the DrawingToolLayer.
+        if (wantsEvents()) {
+            setWantsEvents(false);
+            if (unpickBtn != null) {
+                unpickBtn.doClick();
+            }
+        }
     }
 
     /**
      * Set the OMDrawingTool to use.  It's created internally, though.
      */
     public void setDrawingTool(OMDrawingTool omdt) {
-	drawingTool = omdt;
+        drawingTool = omdt;
     }
 
     /**
      * Get the OMDrawingTool to use with this DrawingEditorTool.
      */
     public OMDrawingTool getDrawingTool() {
-	return drawingTool;
+        return drawingTool;
     }
 
     /**
      * actionPerformed - Handle the mouse clicks on the button(s)
      */
     public void actionPerformed(ActionEvent e) {
-	String command = e.getActionCommand();
+        String command = e.getActionCommand();
 
-	if (Debug.debugging("editortool")) {
-	    Debug.output("DET.actionPerformed(" + command + ")");
-	}
+        if (Debug.debugging("editortool")) {
+            Debug.output("DET.actionPerformed(" + command + ")");
+        }
 
-	if (command == RESET_CMD) {
-	    setWantsEvents(false);
-	} else if (command != thingToCreate) {
-	    EditorLayer elayer = (EditorLayer)getLayer();
-	    elayer.releaseProxyMouseMode();
+        if (command == RESET_CMD) {
+            setWantsEvents(false);
+        } else if (command != thingToCreate) {
+            EditorLayer elayer = (EditorLayer)getLayer();
+            elayer.releaseProxyMouseMode();
 
- 	    if (thingToCreate == null && mouseDelegator != null) {
-		mouseDelegator.setActiveMouseModeWithID(elayer.getMouseMode().getID());
-	    }
+            if (thingToCreate == null && mouseDelegator != null) {
+                mouseDelegator.setActiveMouseModeWithID(elayer.getMouseMode().getID());
+            }
 
-	    // Calling with command will set 'thingToCreate' and resetForNewGraphic
-	    setWantsEvents(command);
-	}
+            // Calling with command will set 'thingToCreate' and resetForNewGraphic
+            setWantsEvents(command);
+        }
     }
 
     /**
@@ -397,36 +397,36 @@ public class DrawingEditorTool extends AbstractEditorTool
      * null if the drawing tool can't create the new thingy.
      */
     protected OMDrawingToolMouseMode activateDrawingTool(String ttc) {
-	if (drawingTool != null && ttc != null) {
-	    // If there is a pre-defined set of DrawingAttributes for
-	    // a particular OMGraphic, set those attributes in the
-	    // GraphicAttributes used in the OMDrawingTool.
-	    DrawingAttributes da = (DrawingAttributes)drawingAttributesTable.get(ttc);
-	    if (da != null) {
-		da.setTo(ga);
-	    }
+        if (drawingTool != null && ttc != null) {
+            // If there is a pre-defined set of DrawingAttributes for
+            // a particular OMGraphic, set those attributes in the
+            // GraphicAttributes used in the OMDrawingTool.
+            DrawingAttributes da = (DrawingAttributes)drawingAttributesTable.get(ttc);
+            if (da != null) {
+                da.setTo(ga);
+            }
 
-	    if (Debug.debugging("editortool")) {
-		Debug.output("DrawingEditorTool.activateDrawingTool(" + ttc + ")");
-	    }
+            if (Debug.debugging("editortool")) {
+                Debug.output("DrawingEditorTool.activateDrawingTool(" + ttc + ")");
+            }
 
-	    drawingTool.setMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK);
-	    if (drawingTool.create(ttc, ga, (DrawingToolRequestor)getLayer(), true) == null) {
-		// Something bad happened, might as well try to clean up.
-		if (Debug.debugging("editortool")) {
-		    Debug.output("DrawingEditorTool.activateDrawingTool() failed, cleaning up...");
-		}
-		drawingTool.deactivate();
-		return null;
-	    }
-	    return drawingTool.getMouseMode();
-	} else {
-	    if (Debug.debugging("editortool")) {
-		Debug.output("DrawingEditorTool.activateDrawingTool(" + ttc + ") with drawing tool = " + drawingTool);
-	    }
-	}
+            drawingTool.setMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK);
+            if (drawingTool.create(ttc, ga, (DrawingToolRequestor)getLayer(), true) == null) {
+                // Something bad happened, might as well try to clean up.
+                if (Debug.debugging("editortool")) {
+                    Debug.output("DrawingEditorTool.activateDrawingTool() failed, cleaning up...");
+                }
+                drawingTool.deactivate();
+                return null;
+            }
+            return drawingTool.getMouseMode();
+        } else {
+            if (Debug.debugging("editortool")) {
+                Debug.output("DrawingEditorTool.activateDrawingTool(" + ttc + ") with drawing tool = " + drawingTool);
+            }
+        }
 
-	return null;
+        return null;
     }
 
     ////////////////////////
@@ -439,14 +439,14 @@ public class DrawingEditorTool extends AbstractEditorTool
      * @return false
      */
     public boolean mousePressed(MouseEvent e) { 
-	if (wantsEvents()) {
-	    if (omdtmm != null) {
-		omdtmm.mousePressed(e);
-	    }
-	    return consumeEvents;
-	} else {
-	    return super.mousePressed(e);
-	}
+        if (wantsEvents()) {
+            if (omdtmm != null) {
+                omdtmm.mousePressed(e);
+            }
+            return consumeEvents;
+        } else {
+            return super.mousePressed(e);
+        }
     }
     
     /**
@@ -455,16 +455,16 @@ public class DrawingEditorTool extends AbstractEditorTool
      * @return false
      */
     public boolean mouseReleased(MouseEvent e) {      
-	if (wantsEvents()) {
-	    if (omdtmm != null) {
-		omdtmm.mouseReleased(e);
-		return true;
-	    } else {
-		return false;
-	    }
-	} else {
-	    return super.mouseReleased(e);
-	}
+        if (wantsEvents()) {
+            if (omdtmm != null) {
+                omdtmm.mouseReleased(e);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return super.mouseReleased(e);
+        }
     }
     
     /**
@@ -473,16 +473,16 @@ public class DrawingEditorTool extends AbstractEditorTool
      * @return false
      */
     public boolean mouseClicked(MouseEvent e) { 
-	if (wantsEvents()) {
-	    if (omdtmm != null) {
-		omdtmm.mouseClicked(e);
-		return consumeEvents;
-	    } else {
-		return false;
-	    }
-	} else {
-	    return super.mouseClicked(e);
-	}
+        if (wantsEvents()) {
+            if (omdtmm != null) {
+                omdtmm.mouseClicked(e);
+                return consumeEvents;
+            } else {
+                return false;
+            }
+        } else {
+            return super.mouseClicked(e);
+        }
     }
     
     /**
@@ -490,13 +490,13 @@ public class DrawingEditorTool extends AbstractEditorTool
      * @param e MouseEvent
      */
     public void mouseEntered(MouseEvent e) {
-	if (wantsEvents()) {
-	    if (omdtmm != null) {
-		omdtmm.mouseEntered(e);
-	    }
-	} else {
-	    super.mouseEntered(e);
-	}
+        if (wantsEvents()) {
+            if (omdtmm != null) {
+                omdtmm.mouseEntered(e);
+            }
+        } else {
+            super.mouseEntered(e);
+        }
     }
     
     /**
@@ -504,13 +504,13 @@ public class DrawingEditorTool extends AbstractEditorTool
      * @param e MouseEvent
      */
     public void mouseExited(MouseEvent e) {
-	if (wantsEvents()) {
-	    if (omdtmm != null) {
-		omdtmm.mouseExited(e);
-	    }
-	} else {
-	    super.mouseExited(e);
-	}
+        if (wantsEvents()) {
+            if (omdtmm != null) {
+                omdtmm.mouseExited(e);
+            }
+        } else {
+            super.mouseExited(e);
+        }
     }
     
     ///////////////////////////////
@@ -524,16 +524,16 @@ public class DrawingEditorTool extends AbstractEditorTool
      * @return false
      */
     public boolean mouseDragged(MouseEvent e) {      
-	if (wantsEvents()) {
-	    if (omdtmm != null) {
-		omdtmm.mouseDragged(e);
-		return consumeEvents;
-	    } else {
-		return false;
-	    }
-	} else {
-	    return super.mouseDragged(e);
-	}
+        if (wantsEvents()) {
+            if (omdtmm != null) {
+                omdtmm.mouseDragged(e);
+                return consumeEvents;
+            } else {
+                return false;
+            }
+        } else {
+            return super.mouseDragged(e);
+        }
     }
 
     /**
@@ -543,25 +543,25 @@ public class DrawingEditorTool extends AbstractEditorTool
      * @return false
      */
     public boolean mouseMoved(MouseEvent e) {  
-	if (wantsEvents()) {
-	    if (omdtmm != null) {
-		omdtmm.mouseMoved(e);
-		return consumeEvents;
-	    } else if (thingToCreate != null) {
-		// This is needed to reinitialize the drawing tool to
-		// create another OMGraphic after the same one was
-		// just completed.  drawingComplete just nulls out
-		// omdtmm so that the drawing tool can finish
-		// deactivating.  The first mouseMoved event should
-		// get the next OMGraphic ready.
-		omdtmm = activateDrawingTool(thingToCreate);
-		return consumeEvents;
-	    } else {
-		return false;
-	    }
-	} else {
-	    return super.mouseMoved(e);
-	}
+        if (wantsEvents()) {
+            if (omdtmm != null) {
+                omdtmm.mouseMoved(e);
+                return consumeEvents;
+            } else if (thingToCreate != null) {
+                // This is needed to reinitialize the drawing tool to
+                // create another OMGraphic after the same one was
+                // just completed.  drawingComplete just nulls out
+                // omdtmm so that the drawing tool can finish
+                // deactivating.  The first mouseMoved event should
+                // get the next OMGraphic ready.
+                omdtmm = activateDrawingTool(thingToCreate);
+                return consumeEvents;
+            } else {
+                return false;
+            }
+        } else {
+            return super.mouseMoved(e);
+        }
     }
     
     ///////////////////////////////
@@ -569,10 +569,10 @@ public class DrawingEditorTool extends AbstractEditorTool
     ///////////////////////////////
 
     public void setVisible(boolean value) {
-	super.setVisible(value);
-	if (!value) {
-	    totalReset();
-	}
+        super.setVisible(value);
+        if (!value) {
+            totalReset();
+        }
     }
 
     /** 
@@ -582,53 +582,53 @@ public class DrawingEditorTool extends AbstractEditorTool
      * @return String The key for this tool.
      */
     public Container getFace() {
-	if (face == null) {
-	    JToolBar faceTB = new GridBagToolBar();
+        if (face == null) {
+            JToolBar faceTB = new GridBagToolBar();
 
-	    if (bg == null) {
-		bg = new ButtonGroup();
-	    }
+            if (bg == null) {
+                bg = new ButtonGroup();
+            }
 
-	    fillFaceToolBar(faceTB, bg);
+            fillFaceToolBar(faceTB, bg);
 
-	    unpickBtn = new JToggleButton("", false);
-	    unpickBtn.setActionCommand(RESET_CMD);
-	    unpickBtn.addActionListener(this);
-	    unpickBtn.setVisible(false);
-	    bg.add(unpickBtn);
-	    faceTB.add(unpickBtn);
-	    
-	    if (drawingTool != null && showAttributes) {
-		faceTB.add(drawingTool);
-		drawingTool.showPalette();
-	    }
+            unpickBtn = new JToggleButton("", false);
+            unpickBtn.setActionCommand(RESET_CMD);
+            unpickBtn.addActionListener(this);
+            unpickBtn.setVisible(false);
+            bg.add(unpickBtn);
+            faceTB.add(unpickBtn);
+            
+            if (drawingTool != null && showAttributes) {
+                faceTB.add(drawingTool);
+                drawingTool.showPalette();
+            }
 
-	    face = faceTB;
-	    face.setVisible(visible);
-	}
+            face = faceTB;
+            face.setVisible(visible);
+        }
 
-	return face;
+        return face;
     }
 
     /**
      * Fill the Face's toolbar with buttons
      **/
     protected void fillFaceToolBar(JToolBar faceTB, ButtonGroup bg) {
-	Iterator it = loaderList.iterator();
-	while (it.hasNext()) {
-	    EditToolLoader loader = (EditToolLoader)it.next();
-	    String[] classnames = loader.getEditableClasses();
-	    
-	    for (int i = 0; i < classnames.length; i++) {
-		ImageIcon icon = loader.getIcon(classnames[i]);
-		JToggleButton btn = new JToggleButton(icon, false);
-		btn.setToolTipText(loader.getPrettyName(classnames[i]));
-		btn.setActionCommand(classnames[i]);
-		btn.addActionListener(this);
-		bg.add(btn);
-		faceTB.add(btn);
-	    }
-	}
+        Iterator it = loaderList.iterator();
+        while (it.hasNext()) {
+            EditToolLoader loader = (EditToolLoader)it.next();
+            String[] classnames = loader.getEditableClasses();
+            
+            for (int i = 0; i < classnames.length; i++) {
+                ImageIcon icon = loader.getIcon(classnames[i]);
+                JToggleButton btn = new JToggleButton(icon, false);
+                btn.setToolTipText(loader.getPrettyName(classnames[i]));
+                btn.setActionCommand(classnames[i]);
+                btn.addActionListener(this);
+                bg.add(btn);
+                faceTB.add(btn);
+            }
+        }
     }
     
     /**
@@ -636,22 +636,22 @@ public class DrawingEditorTool extends AbstractEditorTool
      * available to the map.  
      */
     public void setMouseDelegator(MouseDelegator md) {
-	if (mouseDelegator != null) {
-	    mouseDelegator.removePropertyChangeListener(this);
-	}
+        if (mouseDelegator != null) {
+            mouseDelegator.removePropertyChangeListener(this);
+        }
 
-	mouseDelegator=md;
+        mouseDelegator=md;
 
-	EditorLayer el = (EditorLayer)getLayer();
-	if (el != null) {
-	    mouseDelegator.addMouseMode(el.getMouseMode());
-	}
+        EditorLayer el = (EditorLayer)getLayer();
+        if (el != null) {
+            mouseDelegator.addMouseMode(el.getMouseMode());
+        }
 
-	if (mouseDelegator == null) {
-	    return;
-	}
+        if (mouseDelegator == null) {
+            return;
+        }
 
-	mouseDelegator.addPropertyChangeListener(this);
+        mouseDelegator.addPropertyChangeListener(this);
     }
 
     /**
@@ -659,7 +659,7 @@ public class DrawingEditorTool extends AbstractEditorTool
      * map.  
      */
     public MouseDelegator getMouseDelegator() {
-	return mouseDelegator;
+        return mouseDelegator;
     }
 
     /**
@@ -667,123 +667,123 @@ public class DrawingEditorTool extends AbstractEditorTool
      *  to the list of available mouse modes
      */
     public void propertyChange(PropertyChangeEvent evt) {
-	if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
-	    /* If the mouse mode changes, we want to reset ourselves
-	     * to be ready to just adjust what's on our layer. */
-	    String mmID = ((MapMouseMode)evt.getNewValue()).getID();
+        if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
+            /* If the mouse mode changes, we want to reset ourselves
+             * to be ready to just adjust what's on our layer. */
+            String mmID = ((MapMouseMode)evt.getNewValue()).getID();
 
-	    if (Debug.debugging("editortool")) {
-		Debug.output("DET.propertyChange: mousemode changed to " + mmID);
-	    }
+            if (Debug.debugging("editortool")) {
+                Debug.output("DET.propertyChange: mousemode changed to " + mmID);
+            }
 
-	    if (mmID != ((EditorLayer)getLayer()).getMouseMode().getID()) {
-		totalReset();
-	    }
-	    drawingTool.showPalette(); // Reset to basic parameters
-	}
+            if (mmID != ((EditorLayer)getLayer()).getMouseMode().getID()) {
+                totalReset();
+            }
+            drawingTool.showPalette(); // Reset to basic parameters
+        }
     }
 
     public void setPropertyPrefix(String prefix) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
     }
 
     public String getPropertyPrefix() {
-	return propertyPrefix;
+        return propertyPrefix;
     }
 
     public void setProperties(Properties props) {
-	setProperties(null, props);
+        setProperties(null, props);
     }
 
     public void setProperties(String prefix, Properties props) {
-	setPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	showAttributes = PropUtils.booleanFromProperties(props, prefix + ShowAttributesProperty, showAttributes);
+        showAttributes = PropUtils.booleanFromProperties(props, prefix + ShowAttributesProperty, showAttributes);
 
-	String loaderListString = props.getProperty(prefix + LoaderProperty);
+        String loaderListString = props.getProperty(prefix + LoaderProperty);
 
-	if (loaderListString != null) {
-	    Vector loaderVector = PropUtils.parseSpacedMarkers(loaderListString);
-	    Iterator it = loaderVector.iterator();
-	    while (it.hasNext()) {
-		String loaderPropertyPrefix = 
-		    PropUtils.getScopedPropertyPrefix(prefix + (String)it.next());
-		String loaderClassString = props.getProperty(loaderPropertyPrefix + "class");
-		String loaderAttributeClass = props.getProperty(loaderPropertyPrefix + AttributesClassProperty);
-		if (loaderClassString != null) {
-		    Object obj = ComponentFactory.create(loaderClassString, 
-							 loaderPropertyPrefix, 
-							 props);
+        if (loaderListString != null) {
+            Vector loaderVector = PropUtils.parseSpacedMarkers(loaderListString);
+            Iterator it = loaderVector.iterator();
+            while (it.hasNext()) {
+                String loaderPropertyPrefix = 
+                    PropUtils.getScopedPropertyPrefix(prefix + (String)it.next());
+                String loaderClassString = props.getProperty(loaderPropertyPrefix + "class");
+                String loaderAttributeClass = props.getProperty(loaderPropertyPrefix + AttributesClassProperty);
+                if (loaderClassString != null) {
+                    Object obj = ComponentFactory.create(loaderClassString, 
+                                                         loaderPropertyPrefix, 
+                                                         props);
 
-		    if (obj != null && obj instanceof EditToolLoader) {
-			EditToolLoader loader = (EditToolLoader) obj;
+                    if (obj != null && obj instanceof EditToolLoader) {
+                        EditToolLoader loader = (EditToolLoader) obj;
 
-			if (Debug.debugging("editortool")) {
-			    Debug.output("DrawingEditorTool: adding " + loaderClassString);
-			}
+                        if (Debug.debugging("editortool")) {
+                            Debug.output("DrawingEditorTool: adding " + loaderClassString);
+                        }
 
-			addEditToolLoader(loader);
+                        addEditToolLoader(loader);
 
-			if (loaderAttributeClass != null) {
+                        if (loaderAttributeClass != null) {
 
-			    if (Debug.debugging("editortool")) {
-				Debug.output("DrawingEditorTool: getting attributes for " + 
-					     loaderAttributeClass);
-			    }
+                            if (Debug.debugging("editortool")) {
+                                Debug.output("DrawingEditorTool: getting attributes for " + 
+                                             loaderAttributeClass);
+                            }
 
-			    Object daObject = ComponentFactory.create(loaderAttributeClass, 
-								      loaderPropertyPrefix,
-								      props);
+                            Object daObject = ComponentFactory.create(loaderAttributeClass, 
+                                                                      loaderPropertyPrefix,
+                                                                      props);
 
-			    if (daObject != null && daObject instanceof DrawingAttributes) {
-				if (Debug.debugging("editortool")) {
-				    Debug.output("DrawingEditorTool: attributes from " + 
-						 loaderAttributeClass);
-				}
+                            if (daObject != null && daObject instanceof DrawingAttributes) {
+                                if (Debug.debugging("editortool")) {
+                                    Debug.output("DrawingEditorTool: attributes from " + 
+                                                 loaderAttributeClass);
+                                }
 
-				String[] classnames = loader.getEditableClasses();
-				for (int i = 0; i < classnames.length; i++) {
-				    drawingAttributesTable.put(classnames[i], daObject);
-				}
+                                String[] classnames = loader.getEditableClasses();
+                                for (int i = 0; i < classnames.length; i++) {
+                                    drawingAttributesTable.put(classnames[i], daObject);
+                                }
 
-			    } else {
-				if (Debug.debugging("editortool")) {
-				    Debug.output("DrawingEditorTool: attributes not an instance of DrawingAttributes");
-				}
-			    }
+                            } else {
+                                if (Debug.debugging("editortool")) {
+                                    Debug.output("DrawingEditorTool: attributes not an instance of DrawingAttributes");
+                                }
+                            }
 
-			} else {
-			    if (Debug.debugging("editortool")) {
-				Debug.output("DrawingEditorTool: attributes not defined for " + 
-					     loaderClassString);
-			    }
+                        } else {
+                            if (Debug.debugging("editortool")) {
+                                Debug.output("DrawingEditorTool: attributes not defined for " + 
+                                             loaderClassString);
+                            }
 
-			}
-		    }
+                        }
+                    }
 
-		} else {
-		    Debug.output("DrawingEditorTool.setProperties:  no loader class provided for " + loaderPropertyPrefix);
-		}
-	    }
+                } else {
+                    Debug.output("DrawingEditorTool.setProperties:  no loader class provided for " + loaderPropertyPrefix);
+                }
+            }
 
-	} else {
-	    Debug.output("DrawingEditorTool.setProperties: no loaders set in properties");
-	}
+        } else {
+            Debug.output("DrawingEditorTool.setProperties: no loaders set in properties");
+        }
     }
 
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
-	return props;
+        if (props == null) {
+            props = new Properties();
+        }
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
-	return props;
+        if (props == null) {
+            props = new Properties();
+        }
+        return props;
     }
 }

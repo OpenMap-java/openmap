@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/BasicAppIconPart.java,v $
 // $RCSfile: BasicAppIconPart.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/26 17:48:55 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,11 +43,11 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 public class BasicAppIconPart extends BasicIconPart implements IconPart {
 
     public BasicAppIconPart(Shape shape) {
-	super(shape);
+        super(shape);
     }
 
     public BasicAppIconPart(Shape shape, AffineTransform transform) {
-	super(shape, transform);
+        super(shape, transform);
     }
 
     /**
@@ -58,10 +58,10 @@ public class BasicAppIconPart extends BasicIconPart implements IconPart {
      * @return DrawingAttribute for this part.
      */
     protected DrawingAttributes getAttributesForRendering(DrawingAttributes da) {
-	if (da == null) {
-	    return getRenderingAttributes();
-	} else {
-	    return da;
-	}
+        if (da == null) {
+            return getRenderingAttributes();
+        } else {
+            return da;
+        }
     }
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/HttpRequestEvent.java,v $
 // $RCSfile: HttpRequestEvent.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:32 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:11 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -45,11 +45,11 @@ public class HttpRequestEvent extends java.util.EventObject {
      * @param out the http client output stream
      */
     public HttpRequestEvent(Object source,
-			    String request,
-			    OutputStream out) {
-	super(source);
-	this.request = request;
-	this.output = out;
+                            String request,
+                            OutputStream out) {
+        super(source);
+        this.request = request;
+        this.output = out;
     }
 
     /**
@@ -62,7 +62,7 @@ public class HttpRequestEvent extends java.util.EventObject {
      * @return the request string
      */
     public String getRequest() {
-	return request;
+        return request;
     }
 
     /**
@@ -71,7 +71,7 @@ public class HttpRequestEvent extends java.util.EventObject {
      * @return the OutputStream associated with the http client.
      */
     public OutputStream getOutputStream() {
-	return output;
+        return output;
     }
 
     /**
@@ -82,10 +82,10 @@ public class HttpRequestEvent extends java.util.EventObject {
      * @see java.io.Writer
      */
     public Writer getWriter() {
-	if (writer == null) {
-	    writer = new StringWriter();
-	}
-	return writer;
+        if (writer == null) {
+            writer = new StringWriter();
+        }
+        return writer;
     }
 
     /**
@@ -98,6 +98,6 @@ public class HttpRequestEvent extends java.util.EventObject {
      * @return true if the writer has been created.
      */
     public boolean isWriterUsed() {
-	return (writer != null);
+        return (writer != null);
     }
 }

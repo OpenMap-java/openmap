@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/html/ListElement.java,v $
 // $RCSfile: ListElement.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,13 +37,13 @@ public class ListElement implements ContainerElement {
     /** Add an element to the end of the list
      * @param e the element to add */
     public void addElement(Element e) {
-	v.addElement(e);
+        v.addElement(e);
     }
 
     /** Add an element to the end of the list
      * @param s the string to add */
     public void addElement(String s) {
-	addElement(new StringElement(s));
+        addElement(new StringElement(s));
     }
     
     /** convert representation to html and write it out
@@ -51,7 +51,7 @@ public class ListElement implements ContainerElement {
      * @exception java.io.IOException an IO error occurred accessing out
      */
     public void generate(java.io.Writer out) throws java.io.IOException {
-	for (Enumeration e = v.elements(); e.hasMoreElements(); )
-	    ((Element)e.nextElement()).generate(out);
+        for (Enumeration e = v.elements(); e.hasMoreElements(); )
+            ((Element)e.nextElement()).generate(out);
     }
 }

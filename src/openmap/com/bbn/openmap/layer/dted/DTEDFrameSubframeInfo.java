@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameSubframeInfo.java,v $
 // $RCSfile: DTEDFrameSubframeInfo.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,40 +76,40 @@ public class DTEDFrameSubframeInfo{
     public int colorModel = OMRasterObject.COLORMODEL_DIRECT;
 
     public DTEDFrameSubframeInfo(int Vt, int Bh, int Dl, int Sa){
-	this(DTEDCacheHandler.SF_PIXEL_HW, 
-	     DTEDCacheHandler.SF_PIXEL_HW, 
-	     0.0f, 0.0f, 0, 0, 
-	     (double)0.0, (double)0.0, 
-	     Vt, Bh, Dl, Sa);
+        this(DTEDCacheHandler.SF_PIXEL_HW, 
+             DTEDCacheHandler.SF_PIXEL_HW, 
+             0.0f, 0.0f, 0, 0, 
+             (double)0.0, (double)0.0, 
+             Vt, Bh, Dl, Sa);
     }
 
     public DTEDFrameSubframeInfo(int Height, int Width, 
-				 float Lon, float Lat,
-				 int Subx, int Suby,
-				 double xpi, double ypi,
-				 int Vt, int Bh,
-				 int Dl, int Sa){
+                                 float Lon, float Lat,
+                                 int Subx, int Suby,
+                                 double xpi, double ypi,
+                                 int Vt, int Bh,
+                                 int Dl, int Sa){
         viewType = Vt;
-	bandHeight = Bh;
-	dtedLevel = Dl;
-	slopeAdjust = Sa;
-	xPixInterval = xpi;
-	yPixInterval = ypi;
-	subx = Subx; 
-	suby = Suby;
-	lon = Lon;
-	lat = Lat;
-	height = Height;
-	width = Width;
+        bandHeight = Bh;
+        dtedLevel = Dl;
+        slopeAdjust = Sa;
+        xPixInterval = xpi;
+        yPixInterval = ypi;
+        subx = Subx; 
+        suby = Suby;
+        lon = Lon;
+        lat = Lat;
+        height = Height;
+        width = Width;
     }
 
     public DTEDFrameSubframeInfo makeClone(){
-	return new DTEDFrameSubframeInfo(height, width, 
-					 lon, lat, 
-					 subx, suby, 
-					 xPixInterval, yPixInterval, 
-					 viewType, bandHeight, 
-					 dtedLevel, slopeAdjust);
+        return new DTEDFrameSubframeInfo(height, width, 
+                                         lon, lat, 
+                                         subx, suby, 
+                                         xPixInterval, yPixInterval, 
+                                         viewType, bandHeight, 
+                                         dtedLevel, slopeAdjust);
     }
 
     /** A comparision test to test the drawing parameters, to figure
@@ -118,12 +118,12 @@ public class DTEDFrameSubframeInfo{
      * */
     public boolean equals(DTEDFrameSubframeInfo newInfo){
         boolean result = true;
-	if(viewType != newInfo.viewType) result = false;
-	if(bandHeight != newInfo.bandHeight) result = false;
-	if(dtedLevel != newInfo.dtedLevel) result = false;
-	if(slopeAdjust != newInfo.slopeAdjust) result = false;
-	if(xPixInterval != newInfo.xPixInterval) result = false;
-	if(yPixInterval != newInfo.yPixInterval) result = false;
-	return result;
+        if(viewType != newInfo.viewType) result = false;
+        if(bandHeight != newInfo.bandHeight) result = false;
+        if(dtedLevel != newInfo.dtedLevel) result = false;
+        if(slopeAdjust != newInfo.slopeAdjust) result = false;
+        if(xPixInterval != newInfo.xPixInterval) result = false;
+        if(yPixInterval != newInfo.yPixInterval) result = false;
+        return result;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/LoadPropertiesMenuItem.java,v $
 // $RCSfile: LoadPropertiesMenuItem.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 03:47:01 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,74 +46,74 @@ public class LoadPropertiesMenuItem extends MapHandlerMenuItem
     implements ActionListener {
 
     public LoadPropertiesMenuItem() {
-	super("Load Map Properties");
-	addActionListener(this);
+        super("Load Map Properties");
+        addActionListener(this);
     }
 
     public void actionPerformed(ActionEvent ae) {
-	//Collect properties
-	if (mapHandler == null) {
-	    return;
-	}
+        //Collect properties
+        if (mapHandler == null) {
+            return;
+        }
 
-	PropertyHandler ph = null;
-	Iterator it = mapHandler.iterator();
-	while (it.hasNext()) {
-	    Object someObj = it.next();
-	    if (someObj instanceof PropertyHandler) {
-		ph = (PropertyHandler) someObj;
-		break;
-	    }
-	}
+        PropertyHandler ph = null;
+        Iterator it = mapHandler.iterator();
+        while (it.hasNext()) {
+            Object someObj = it.next();
+            if (someObj instanceof PropertyHandler) {
+                ph = (PropertyHandler) someObj;
+                break;
+            }
+        }
 
-	if (ph == null) {
-	    Debug.error("Couldn't find PropertyHandler");
-	    return;
-	}
+        if (ph == null) {
+            Debug.error("Couldn't find PropertyHandler");
+            return;
+        }
 
 
-	FileDialog fd = new FileDialog(new Frame(), "Loading the map from a Properties file...", FileDialog.LOAD);
-	fd.show();
+        FileDialog fd = new FileDialog(new Frame(), "Loading the map from a Properties file...", FileDialog.LOAD);
+        fd.show();
 
-	String fileName = fd.getFile();
-	String dirName = fd.getDirectory();
+        String fileName = fd.getFile();
+        String dirName = fd.getDirectory();
 
-	if (fileName == null) {
-	    Debug.message("loadpropertiesmenuitem",
-			  "User did not select any file");
-	    return;
-	}
+        if (fileName == null) {
+            Debug.message("loadpropertiesmenuitem",
+                          "User did not select any file");
+            return;
+        }
 
-	Debug.message("loadpropertiesmenuitem",
-		      "User selected file " + dirName + File.separator +
-		      fileName);
+        Debug.message("loadpropertiesmenuitem",
+                      "User selected file " + dirName + File.separator +
+                      fileName);
 
-	File file = new File(new File(dirName), fileName);
+        File file = new File(new File(dirName), fileName);
 
-	try {
-	    Properties newProps = new Properties();
-	    FileInputStream fis = new FileInputStream(file);
+        try {
+            Properties newProps = new Properties();
+            FileInputStream fis = new FileInputStream(file);
 
-	    newProps.load(fis);
+            newProps.load(fis);
 
-	    String test = newProps.getProperty("openmap." + LayerHandler.layersProperty);
-	    if (test == null) {
-		throw new IOException("Doesn't seem like a valid properties file");
-	    }
+            String test = newProps.getProperty("openmap." + LayerHandler.layersProperty);
+            if (test == null) {
+                throw new IOException("Doesn't seem like a valid properties file");
+            }
 
-	    // Just reset the projection and layers, not the components.
-	    ph.loadProjectionAndLayers(mapHandler, newProps);
+            // Just reset the projection and layers, not the components.
+            ph.loadProjectionAndLayers(mapHandler, newProps);
 
-	} catch (FileNotFoundException fnfe) {
-	    Debug.error(fnfe.getMessage());
-	} catch (IOException ioe) {
-	    InformationDelegator id = (InformationDelegator)mapHandler.get("com.bbn.openmap.InformationDelegator");
+        } catch (FileNotFoundException fnfe) {
+            Debug.error(fnfe.getMessage());
+        } catch (IOException ioe) {
+            InformationDelegator id = (InformationDelegator)mapHandler.get("com.bbn.openmap.InformationDelegator");
 
-	    if (id != null) {
-		id.displayMessage("Error loading file...",
-				  "Error occured loading " + file.getAbsolutePath() + "\n" + ioe.getMessage());
-	    }
-	    Debug.error("Error occured loading " + file.getAbsolutePath());
-	}
+            if (id != null) {
+                id.displayMessage("Error loading file...",
+                                  "Error occured loading " + file.getAbsolutePath() + "\n" + ioe.getMessage());
+            }
+            Debug.error("Error occured loading " + file.getAbsolutePath());
+        }
     }
 }

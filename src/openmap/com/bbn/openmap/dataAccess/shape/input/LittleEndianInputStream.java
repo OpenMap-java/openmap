@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/LittleEndianInputStream.java,v $
 // $RCSfile: LittleEndianInputStream.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 22:55:22 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:06 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -38,8 +38,8 @@ public class LittleEndianInputStream extends DataInputStream {
      * @param in An input stream that this is chained to.
      */
     public LittleEndianInputStream(InputStream in) {
-	super(in);
-	this.in = new DataInputStream(in);
+        super(in);
+        this.in = new DataInputStream(in);
     }
 
     /**
@@ -47,10 +47,10 @@ public class LittleEndianInputStream extends DataInputStream {
      * @param length The length of bytes to read
      */
     public String readString(int length) throws IOException {
-	byte[] array = new byte[length];
-	readFully(array);
-	String s = new String(array);
-	return s.trim();
+        byte[] array = new byte[length];
+        readFully(array);
+        String s = new String(array);
+        return s.trim();
     }
 
 
@@ -59,10 +59,10 @@ public class LittleEndianInputStream extends DataInputStream {
      * @return short A big endian short
      */
     public short readLEShort() throws IOException {
-	int byte1 = in.read();
-	int byte2 = in.read();
-	if (byte2 == -1) throw new EOFException();
-	return (short) ((byte2 << 8) + byte1);
+        int byte1 = in.read();
+        int byte2 = in.read();
+        if (byte2 == -1) throw new EOFException();
+        return (short) ((byte2 << 8) + byte1);
     }
 
     /**
@@ -70,10 +70,10 @@ public class LittleEndianInputStream extends DataInputStream {
      * @return int A big endian short
      */
     public int readLEUnsignedShort() throws IOException {
-	int byte1 = in.read();
-	int byte2 = in.read();
-	if (byte2 == -1) throw new EOFException();
-	return (byte2 << 8) + byte1;
+        int byte1 = in.read();
+        int byte2 = in.read();
+        if (byte2 == -1) throw new EOFException();
+        return (byte2 << 8) + byte1;
     }
 
     /**
@@ -81,10 +81,10 @@ public class LittleEndianInputStream extends DataInputStream {
      * @return char A big endian char
      */
     public char readLEChar() throws IOException {
-	int byte1 = in.read();
-	int byte2 = in.read();
-	if (byte2 == -1) throw new EOFException();
-	return (char) ((byte2 << 8) + byte1);
+        int byte1 = in.read();
+        int byte2 = in.read();
+        if (byte2 == -1) throw new EOFException();
+        return (char) ((byte2 << 8) + byte1);
     }
 
     /**
@@ -92,17 +92,17 @@ public class LittleEndianInputStream extends DataInputStream {
      * @return int A big endian int
      */
     public int readLEInt() throws IOException {
-	int byte1, byte2, byte3, byte4;
-	synchronized (this) {
-	    byte1 = in.read();
-	    byte2 = in.read();
-	    byte3 = in.read();
-	    byte4 = in.read();
-	}
-	if (byte4 == -1) {
-	    throw new EOFException();
-	}
-	return (byte4 << 24) + (byte3 << 16) + (byte2 << 8) + byte1;
+        int byte1, byte2, byte3, byte4;
+        synchronized (this) {
+            byte1 = in.read();
+            byte2 = in.read();
+            byte3 = in.read();
+            byte4 = in.read();
+        }
+        if (byte4 == -1) {
+            throw new EOFException();
+        }
+        return (byte4 << 24) + (byte3 << 16) + (byte2 << 8) + byte1;
     }
 
     /**
@@ -110,65 +110,65 @@ public class LittleEndianInputStream extends DataInputStream {
      * @return long A big endian long
      */
     public long readLELong() throws IOException {
-	long byte1 = in.read();
-	long byte2 = in.read();
-	long byte3 = in.read();
-	long byte4 = in.read();
-	long byte5 = in.read();
-	long byte6 = in.read();
-	long byte7 = in.read();
-	long byte8 = in.read();
-	if (byte8 == -1) {
-	    throw new EOFException();
-	}
-	return (byte8 << 56) + (byte7 << 48) + (byte6 << 40) + (byte5 << 32) +
-	    (byte4 << 24) + (byte3 << 16) + (byte2 << 8) + byte1;
+        long byte1 = in.read();
+        long byte2 = in.read();
+        long byte3 = in.read();
+        long byte4 = in.read();
+        long byte5 = in.read();
+        long byte6 = in.read();
+        long byte7 = in.read();
+        long byte8 = in.read();
+        if (byte8 == -1) {
+            throw new EOFException();
+        }
+        return (byte8 << 56) + (byte7 << 48) + (byte6 << 40) + (byte5 << 32) +
+            (byte4 << 24) + (byte3 << 16) + (byte2 << 8) + byte1;
     }
 
     public String readLEUTF() throws IOException {
-	int byte1 = in.read();
-	int byte2 = in.read();
-	if (byte2 == -1) throw new EOFException();
-	int numbytes = (byte1 << 8) + byte2;
+        int byte1 = in.read();
+        int byte2 = in.read();
+        if (byte2 == -1) throw new EOFException();
+        int numbytes = (byte1 << 8) + byte2;
 
-	char result[] = new char[numbytes];
-	int numread = 0;
-	int numchars = 0;
+        char result[] = new char[numbytes];
+        int numread = 0;
+        int numchars = 0;
 
-	while (numread < numbytes) {
-	    int c1 = readUnsignedByte();
-	    int c2, c3;
+        while (numread < numbytes) {
+            int c1 = readUnsignedByte();
+            int c2, c3;
 
-	    // look at the first four bits of c1 to determine how many
-	    // bytes in this char
-	    int test = c1 >> 4;
-	    if (test < 8) {  // one byte
-		numread++;
-		result[numchars++] = (char) c1;
-	    }
-	    else if (test == 12 || test == 13) { // two bytes
-		numread += 2;
-		if (numread > numbytes) throw new UTFDataFormatException();
-		c2 = readUnsignedByte();
-		if ((c2 & 0xC0) != 0x80) throw new UTFDataFormatException();
-		result[numchars++] = (char) (((c1 & 0x1F) << 6) | (c2 & 0x3F));
-	    }
-	    else if (test == 14) { // three bytes
-		numread += 3;
-		if (numread > numbytes) throw new UTFDataFormatException();
-		c2 = readUnsignedByte();
-		c3 = readUnsignedByte();
-		if (((c2 & 0xC0) != 0x80) || ((c3 & 0xC0) != 0x80)) {
-		    throw new UTFDataFormatException();
-		}
-		result[numchars++] = (char)
-		    (((c1 & 0x0F) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F));
-	    }
-	    else { // malformed
-		throw new UTFDataFormatException();
-	    }
-	}  // end while
-	return new String(result, 0, numchars);
+            // look at the first four bits of c1 to determine how many
+            // bytes in this char
+            int test = c1 >> 4;
+            if (test < 8) {  // one byte
+                numread++;
+                result[numchars++] = (char) c1;
+            }
+            else if (test == 12 || test == 13) { // two bytes
+                numread += 2;
+                if (numread > numbytes) throw new UTFDataFormatException();
+                c2 = readUnsignedByte();
+                if ((c2 & 0xC0) != 0x80) throw new UTFDataFormatException();
+                result[numchars++] = (char) (((c1 & 0x1F) << 6) | (c2 & 0x3F));
+            }
+            else if (test == 14) { // three bytes
+                numread += 3;
+                if (numread > numbytes) throw new UTFDataFormatException();
+                c2 = readUnsignedByte();
+                c3 = readUnsignedByte();
+                if (((c2 & 0xC0) != 0x80) || ((c3 & 0xC0) != 0x80)) {
+                    throw new UTFDataFormatException();
+                }
+                result[numchars++] = (char)
+                    (((c1 & 0x0F) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F));
+            }
+            else { // malformed
+                throw new UTFDataFormatException();
+            }
+        }  // end while
+        return new String(result, 0, numchars);
     }
 
     /**
@@ -176,7 +176,7 @@ public class LittleEndianInputStream extends DataInputStream {
      * @return double A big endian double
      */
     public final double readLEDouble() throws IOException {
-	return Double.longBitsToDouble(this.readLELong());
+        return Double.longBitsToDouble(this.readLELong());
     }
 
     /**
@@ -184,7 +184,7 @@ public class LittleEndianInputStream extends DataInputStream {
      * @return float A big endian float
      */
     public final float readLEFloat() throws IOException {
-	return Float.intBitsToFloat(this.readLEInt());
+        return Float.intBitsToFloat(this.readLEInt());
     }
 }
 

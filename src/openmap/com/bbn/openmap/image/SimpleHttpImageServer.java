@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/SimpleHttpImageServer.java,v $
 // $RCSfile: SimpleHttpImageServer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/05/08 16:27:36 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -92,112 +92,112 @@ public class SimpleHttpImageServer
     public final static char queryChar = '?';
 
     public SimpleHttpImageServer(Properties props) throws IOException {
-	this(HttpServer.DEFAULT_PORT, false, props);
+        this(HttpServer.DEFAULT_PORT, false, props);
     }
 
     public SimpleHttpImageServer(int port, boolean asDeamon,
-				 Properties props) throws IOException {
-	httpd = new HttpServer(port, asDeamon);
-	httpd.addHttpRequestListener(this);
+                                 Properties props) throws IOException {
+        httpd = new HttpServer(port, asDeamon);
+        httpd.addHttpRequestListener(this);
 
-	iServer = new MapRequestHandler(props);
+        iServer = new MapRequestHandler(props);
     }
 
     /**
      * Invoked when an http request is received.
      */
     public void httpRequest(HttpRequestEvent e) 
-	throws java.io.IOException {
-	
- 	String request = e.getRequest();
+        throws java.io.IOException {
+        
+        String request = e.getRequest();
 
-	if (Debug.debugging("shis")) {
-	    Debug.output("SHIS: Handling request - \"" +
-		request + "\"");
-	}
-	
-	if (request.charAt(0) == '/') {
-	    request = request.substring(0, request.length());
-	} 
+        if (Debug.debugging("shis")) {
+            Debug.output("SHIS: Handling request - \"" +
+                request + "\"");
+        }
+        
+        if (request.charAt(0) == '/') {
+            request = request.substring(0, request.length());
+        } 
 
-	int index = 0;
-	index = request.indexOf('?');
-	if (index != -1) { // GET Request
-	    request = request.substring(index + 1, request.length());
-	    Debug.message("shis","SHIS: GET Request received");	    
-	} else {
-	    Debug.message("shis","SHIS: Probably a POST Request received");
-	}
-		
-	try {
-	    iServer.handleRequest(request, e.getOutputStream());
-	} catch (IOException ioe) {
-	    Debug.error("SHIS: caught IOException - \n" + ioe.getMessage());
-	} catch (MapRequestFormatException exception) {
-	    String message = "OpenMap SimpleHttpImageServer encountered an problem with your request:\n\n" + exception.getMessage() + "\n\n" + ErrorMessage;
-	    HttpConnection.writeHttpResponse(e.getOutputStream(),
-					     HttpConnection.CONTENT_PLAIN, 
-					     message);
-	}
+        int index = 0;
+        index = request.indexOf('?');
+        if (index != -1) { // GET Request
+            request = request.substring(index + 1, request.length());
+            Debug.message("shis","SHIS: GET Request received");     
+        } else {
+            Debug.message("shis","SHIS: Probably a POST Request received");
+        }
+                
+        try {
+            iServer.handleRequest(request, e.getOutputStream());
+        } catch (IOException ioe) {
+            Debug.error("SHIS: caught IOException - \n" + ioe.getMessage());
+        } catch (MapRequestFormatException exception) {
+            String message = "OpenMap SimpleHttpImageServer encountered an problem with your request:\n\n" + exception.getMessage() + "\n\n" + ErrorMessage;
+            HttpConnection.writeHttpResponse(e.getOutputStream(),
+                                             HttpConnection.CONTENT_PLAIN, 
+                                             message);
+        }
     }
 
     public static void main(String[] args) {
-	Debug.init();
+        Debug.init();
 
-	try {
+        try {
 
-	    ArgParser ap = new ArgParser("SimpleHttpImageServer");
-	    ap.add("properties", "A URL to use to set the properties for the ImageServer.", 1);
-	    ap.add("port", "The port to listen for new map image requests on. (Default 0)", 1);
-	    ap.add("verbose", "Print action messages.");
-	    ap.add("test", "Create a test default image.");
+            ArgParser ap = new ArgParser("SimpleHttpImageServer");
+            ap.add("properties", "A URL to use to set the properties for the ImageServer.", 1);
+            ap.add("port", "The port to listen for new map image requests on. (Default 0)", 1);
+            ap.add("verbose", "Print action messages.");
+            ap.add("test", "Create a test default image.");
 
-	    if (!ap.parse(args)) {
-		ap.printUsage();
-		System.exit(0);
-	    }
+            if (!ap.parse(args)) {
+                ap.printUsage();
+                System.exit(0);
+            }
 
-	    String proparg[];
-	    PropertyHandler propHandler;
-	    proparg = ap.getArgValues("properties");
-	    if (proparg != null) {
-		propHandler = new PropertyHandler(proparg[0]);
-	    } else {
-		propHandler = new PropertyHandler();
-	    }
+            String proparg[];
+            PropertyHandler propHandler;
+            proparg = ap.getArgValues("properties");
+            if (proparg != null) {
+                propHandler = new PropertyHandler(proparg[0]);
+            } else {
+                propHandler = new PropertyHandler();
+            }
 
-	    String[] varg = ap.getArgValues("verbose");
-	    if (varg != null) {
-		Debug.put("shis");
-		Debug.put("imageserver");
-	    }
+            String[] varg = ap.getArgValues("verbose");
+            if (varg != null) {
+                Debug.put("shis");
+                Debug.put("imageserver");
+            }
 
-	    SimpleHttpImageServer shis;
-	    String[] portarg = ap.getArgValues("port");
-	    if (portarg != null) {
-		int port = Integer.parseInt(portarg[0]);
-		shis = new SimpleHttpImageServer(port, false, 
-						 propHandler.getProperties());
-	    } else {
-		shis = new SimpleHttpImageServer(propHandler.getProperties());
-	    }
+            SimpleHttpImageServer shis;
+            String[] portarg = ap.getArgValues("port");
+            if (portarg != null) {
+                int port = Integer.parseInt(portarg[0]);
+                shis = new SimpleHttpImageServer(port, false, 
+                                                 propHandler.getProperties());
+            } else {
+                shis = new SimpleHttpImageServer(propHandler.getProperties());
+            }
 
-	    Debug.output("OpenMap SimpleHttpImageServer: listening on port: " +
-			 shis.httpd.getPort() + 
-			 (proparg == null?"":" with properties in " + proparg[0]));
+            Debug.output("OpenMap SimpleHttpImageServer: listening on port: " +
+                         shis.httpd.getPort() + 
+                         (proparg == null?"":" with properties in " + proparg[0]));
 
-	    String[] testarg = ap.getArgValues("test");
-	    if (testarg != null) {
-		OutputStream out = new FileOutputStream("test.jpg");
-		shis.httpRequest(new HttpRequestEvent(shis, "/openmap?REQUEST=map", out)); 
-	    }
+            String[] testarg = ap.getArgValues("test");
+            if (testarg != null) {
+                OutputStream out = new FileOutputStream("test.jpg");
+                shis.httpRequest(new HttpRequestEvent(shis, "/openmap?REQUEST=map", out)); 
+            }
 
-	} catch (MalformedURLException murle) {
-	    System.err.println("Bad URL path to properties file.");
-	    murle.printStackTrace();
-	} catch (IOException ioe) {
-	    System.err.println("Unable to start http server:");
-	    ioe.printStackTrace();
-	}
+        } catch (MalformedURLException murle) {
+            System.err.println("Bad URL path to properties file.");
+            murle.printStackTrace();
+        } catch (IOException ioe) {
+            System.err.println("Unable to start http server:");
+            ioe.printStackTrace();
+        }
     }
 }

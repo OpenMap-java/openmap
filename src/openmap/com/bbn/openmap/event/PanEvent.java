@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/PanEvent.java,v $
 // $RCSfile: PanEvent.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,17 +32,17 @@ public class PanEvent extends java.util.EventObject {
     /**
      * Marks the first integer id for the range of pan event directions.
      */
-    public static final int PAN_FIRST		= 1300;
+    public static final int PAN_FIRST           = 1300;
 
     /**
      * Marks the last integer id for the range of pan event directions.
      */
-    public static final int PAN_LAST		= 1307;
+    public static final int PAN_LAST            = 1307;
 
     /**
      * The possible pan directions
      */
-    public static final int NORTH	= 1300;
+    public static final int NORTH       = 1300;
     public static final int NORTH_EAST = 1301;
     public static final int EAST =       1302;
     public static final int SOUTH_EAST = 1303;
@@ -62,7 +62,7 @@ public class PanEvent extends java.util.EventObject {
      * @deprecated use new panning semantics
      */
     public PanEvent(Object source, int direction) {
-	this(source, dir2Az(direction), Float.NaN);
+        this(source, dir2Az(direction), Float.NaN);
     }
 
 
@@ -75,7 +75,7 @@ public class PanEvent extends java.util.EventObject {
      * @deprecated use new panning semantics
      */
     public PanEvent(Object source, int direction, float amount) {
-	this(source, dir2Az(direction), Float.NaN);
+        this(source, dir2Az(direction), Float.NaN);
     }
 
 
@@ -92,7 +92,7 @@ public class PanEvent extends java.util.EventObject {
      * <code>-180 &lt;= Az &lt;= 180</code>
      */
     public PanEvent(Object source, float Az) {
-	this(source, Az, Float.NaN);
+        this(source, Az, Float.NaN);
     }
 
 
@@ -110,34 +110,34 @@ public class PanEvent extends java.util.EventObject {
      * @param c arc distance in decimal degrees
      */
     public PanEvent(Object source, float Az, float c) {
-	super(source);
-	this.Az = Az;
-	this.c = c;
+        super(source);
+        this.Az = Az;
+        this.c = c;
     }
 
 
     // convert from old style to new
     final static float dir2Az(int direction) {
-	switch (direction) {
-	    case NORTH_WEST:
-		return -45f;
-	    case NORTH:
-		return 0f;
-	    case NORTH_EAST:
-		return 45f;
-	    case EAST:
-		return 90f;
-	    case SOUTH_EAST:
-		return 135f;
-	    case SOUTH:
-		return 180f;
-	    case SOUTH_WEST:
-		return -135f;
-	    case WEST:
-		return -90f;
-	    default:
-		return 0f;
-	}
+        switch (direction) {
+            case NORTH_WEST:
+                return -45f;
+            case NORTH:
+                return 0f;
+            case NORTH_EAST:
+                return 45f;
+            case EAST:
+                return 90f;
+            case SOUTH_EAST:
+                return 135f;
+            case SOUTH:
+                return 180f;
+            case SOUTH_WEST:
+                return -135f;
+            case WEST:
+                return -90f;
+            default:
+                return 0f;
+        }
     }
 
 
@@ -146,7 +146,7 @@ public class PanEvent extends java.util.EventObject {
      * @return float decimal degrees
      */
     public float getAzimuth() {
-	return Az;
+        return Az;
     }
 
 
@@ -155,7 +155,7 @@ public class PanEvent extends java.util.EventObject {
      * @return float decimal degrees
      */
     public float getArcDistance() {
-	return c;
+        return c;
     }
 
 
@@ -165,7 +165,7 @@ public class PanEvent extends java.util.EventObject {
      * @deprecated use getAzimuth()
      */
     public int getDirection() {
-	return -1;
+        return -1;
     }
 
 
@@ -175,7 +175,7 @@ public class PanEvent extends java.util.EventObject {
      * @deprecated use getArcDistance()
      */
     public float getAmount() {
-	return Float.NaN;
+        return Float.NaN;
     }
 
 
@@ -185,6 +185,6 @@ public class PanEvent extends java.util.EventObject {
      */
     public String toString() {
         return getClass().getName() + "[Az = " + Az +
-	    ", c="+c+", source=" + source + "]";
+            ", c="+c+", source=" + source + "]";
     }
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/dock/DockPanel.java,v $
 // $RCSfile: DockPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/09 20:20:32 $
-// $Author: blubin $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:08 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -33,14 +33,14 @@ import java.util.*;
  * An interface onto a component that has a background component and
  * docking children.
  * @author Ben Lubin
- * @version $Revision: 1.3 $ on $Date: 2003/09/09 20:20:32 $
+ * @version $Revision: 1.4 $ on $Date: 2004/01/26 18:18:08 $
  * @since 12/5/02
  */
 public interface DockPanel {
 
     /** Constraint for the background component */
     public static final String BACKGROUND =
-	BorderLayout.CENTER;
+        BorderLayout.CENTER;
 
     //Background Methods:
     /////////////////////

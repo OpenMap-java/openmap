@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/UserGuideMenuItems.java,v $
 // $RCSfile: UserGuideMenuItems.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 02:36:21 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,9 +44,9 @@ public class UserGuideMenuItems
     private Vector menuItems = new Vector();
   
     public UserGuideMenuItems() {
-	JMenuItem mi = new JMenuItem("OpenMap");
-	mi.addActionListener(this);
-	getMenuItems().add(mi);
+        JMenuItem mi = new JMenuItem("OpenMap");
+        mi.addActionListener(this);
+        getMenuItems().add(mi);
     }
 
     /**
@@ -55,48 +55,48 @@ public class UserGuideMenuItems
      * @param in_informationDelegator 
      */
     public UserGuideMenuItems(InformationDelegator in_informationDelegator) {
-	setInformationDelegator(in_informationDelegator);
+        setInformationDelegator(in_informationDelegator);
     }
   
     /**
      * @param in_informationDelegator
      */
     public void setInformationDelegator(InformationDelegator in_informationDelegator) {
-	informationDelegator = in_informationDelegator;
+        informationDelegator = in_informationDelegator;
     }
   
     /**
      * Return current value of InformationDelegator.
      */
     protected InformationDelegator getInformationDelegator() {
-	return informationDelegator;
+        return informationDelegator;
     }
   
     /**
      * Returns a vector of MenuItems that are part of this object.
      */
     protected Vector getMenuItems() {
-	return menuItems;
+        return menuItems;
     }
 
     /**
      * Returns an Iterator to the MenuItems it holds.
      */
     public Iterator iterator() {
-	return getMenuItems().iterator();    
+        return getMenuItems().iterator();    
     }
   
     /**
      * Called when our menu item is clicked by user.
     */
     public void actionPerformed(ActionEvent ae) {
-	// check if we have the object that generated this event. if
-	// yes do it else complain
-	if (getMenuItems().contains(ae.getSource() ) ){
-	    if (informationDelegator != null) {
-		informationDelegator.displayURL(Environment.get(Environment.HelpURL, "http://javamap.bbn.com/projects/openmap/openmap_maindes.html"));
-	    }
-	}
+        // check if we have the object that generated this event. if
+        // yes do it else complain
+        if (getMenuItems().contains(ae.getSource() ) ){
+            if (informationDelegator != null) {
+                informationDelegator.displayURL(Environment.get(Environment.HelpURL, "http://javamap.bbn.com/projects/openmap/openmap_maindes.html"));
+            }
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -105,15 +105,15 @@ public class UserGuideMenuItems
     ///////////////////////////////////////////////////////////////////////////
 
     public void findAndInit(Object obj) {
-	if (obj instanceof InformationDelegator) {
-	    setInformationDelegator((InformationDelegator)obj);
-	}
+        if (obj instanceof InformationDelegator) {
+            setInformationDelegator((InformationDelegator)obj);
+        }
     }
 
     public void findAndUndo(Object obj) {
-	if (obj instanceof InformationDelegator) {
-	    setInformationDelegator(null);
-	}
+        if (obj instanceof InformationDelegator) {
+            setInformationDelegator(null);
+        }
     }
 
     /**
@@ -133,9 +133,9 @@ public class UserGuideMenuItems
      * Find the ones you need, and hook yourself up.
      */
     public void findAndInit(Iterator it) {
-	while (it.hasNext()) {
-	    findAndInit(it.next());
-	}
+        while (it.hasNext()) {
+            findAndInit(it.next());
+        }
     }
 
     /**
@@ -143,7 +143,7 @@ public class UserGuideMenuItems
      * is added to the BeanContext of this object.  
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
-	findAndInit(bcme.iterator());      
+        findAndInit(bcme.iterator());      
     }
     
     /**
@@ -155,15 +155,15 @@ public class UserGuideMenuItems
      * in those methods.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-	Iterator it = bcme.iterator();
-	while (it.hasNext()) {
-	    findAndUndo(it.next());
-	}
+        Iterator it = bcme.iterator();
+        while (it.hasNext()) {
+            findAndUndo(it.next());
+        }
     }
 
     /** Method for BeanContextChild interface. */
     public BeanContext getBeanContext() {
-	return beanContextChildSupport.getBeanContext();
+        return beanContextChildSupport.getBeanContext();
     }
   
     /**
@@ -173,13 +173,13 @@ public class UserGuideMenuItems
      * objects currently contained in the BeanContext.  
      */
     public void setBeanContext(BeanContext in_bc) 
-	throws PropertyVetoException {
+        throws PropertyVetoException {
 
-	if (in_bc != null) {
-	    in_bc.addBeanContextMembershipListener(this);
-	    beanContextChildSupport.setBeanContext(in_bc);
-	    findAndInit(in_bc.iterator());
-	}
+        if (in_bc != null) {
+            in_bc.addBeanContextMembershipListener(this);
+            beanContextChildSupport.setBeanContext(in_bc);
+            findAndInit(in_bc.iterator());
+        }
     }
   
     /**
@@ -189,8 +189,8 @@ public class UserGuideMenuItems
      * property change.
      */
     public void addVetoableChangeListener(String propertyName,
-					  VetoableChangeListener in_vcl) {
-	beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
+                                          VetoableChangeListener in_vcl) {
+        beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
     }
   
     /**
@@ -199,8 +199,8 @@ public class UserGuideMenuItems
      * property.  The listener has the power to veto property changes.
      */
     public void removeVetoableChangeListener(String propertyName, 
-					     VetoableChangeListener in_vcl) {
-	beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
+                                             VetoableChangeListener in_vcl) {
+        beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
     }
 
     /**
@@ -221,21 +221,21 @@ public class UserGuideMenuItems
      * change to be rolled back.
      */
     public void fireVetoableChange(String name, 
-				   Object oldValue, 
-				   Object newValue) 
-	throws PropertyVetoException {
-	beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
+                                   Object oldValue, 
+                                   Object newValue) 
+        throws PropertyVetoException {
+        beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
     }
 
     /** Method for BeanContextChild interface. */
     public void addPropertyChangeListener(String propertyName,
-					  PropertyChangeListener in_pcl) {
-	beanContextChildSupport.addPropertyChangeListener(propertyName, in_pcl);
+                                          PropertyChangeListener in_pcl) {
+        beanContextChildSupport.addPropertyChangeListener(propertyName, in_pcl);
     }
 
     /** Method for BeanContextChild interface. */
     public void removePropertyChangeListener(String propertyName, 
-					     PropertyChangeListener in_pcl) {
-	beanContextChildSupport.removePropertyChangeListener(propertyName, in_pcl);
+                                             PropertyChangeListener in_pcl) {
+        beanContextChildSupport.removePropertyChangeListener(propertyName, in_pcl);
     }
 }

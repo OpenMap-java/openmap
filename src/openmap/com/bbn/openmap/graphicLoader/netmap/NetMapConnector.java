@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapConnector.java,v $
 // $RCSfile: NetMapConnector.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 22:55:23 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -109,7 +109,7 @@ public class NetMapConnector
     NetMapListenerSupport listenerSupport = null;
 
     public NetMapConnector() {
-	listenerSupport = new NetMapListenerSupport(this);
+        listenerSupport = new NetMapListenerSupport(this);
     }
 
     /**
@@ -117,63 +117,63 @@ public class NetMapConnector
      * server.
      */
     public void setServer(String sName) {
-	server = sName;
+        server = sName;
     }
 
     /**
      * Get the hostname or IP address of the NetMap server.
      */
     public String getServer() {
-	return server;
+        return server;
     }
 
     /**
      * Set the port that the NetMap server is running on.
      */
     public void setPort(String port) {
-	this.port = port;
+        this.port = port;
     }
 
     /**
      * Get the port that the NetMap server is running on.
      */
     public String getPort() {
-	return port;
+        return port;
     }
 
     /**
      * Set the defaultView to use for NetMap server queries.
      */
     public void setDefaultView(String view) {
-	defaultView = view;
+        defaultView = view;
     }
 
     /**
      * Get the defaultView to use for NetMap server queries.
      */
     public String getDefaultView() {
-	return defaultView;
+        return defaultView;
     }
 
     /**
      * Add a NetMapListener to receive NetMapEvents.
      */
     public void addNetMapListener(NetMapListener nml) {
-	listenerSupport.addNetMapListener(nml);
+        listenerSupport.addNetMapListener(nml);
     }
 
     /**
      * Remove a NetMapListener from the list to receive NetMapEvents.
      */
     public void removeNetMapListener(NetMapListener nml) {
-	listenerSupport.removeNetMapListener(nml);
+        listenerSupport.removeNetMapListener(nml);
     }
 
     /**
      * Clear all NetMapListeners from receiving NetMapEvents.
      */
     public void clearNetMapListeners() {
-	listenerSupport.clearNetMapListeners();
+        listenerSupport.clearNetMapListeners();
     }
 
     /**
@@ -181,46 +181,46 @@ public class NetMapConnector
      * event, can be dispersed to the listeners.
      */
     protected void distributeEvent(Properties netmapProps) {
-	listenerSupport.fireNetMapEvent(netmapProps);
+        listenerSupport.fireNetMapEvent(netmapProps);
     }
 
     /** Act on GUI commands controlling the NetMapReader. */
     public void actionPerformed(java.awt.event.ActionEvent ae) {
-	String cmd = ae.getActionCommand();
+        String cmd = ae.getActionCommand();
 
-	server = serverAddrField.getText();
-	port = serverPortField.getText();
+        server = serverAddrField.getText();
+        port = serverPortField.getText();
 
-	if (cmd == GetViewsCmd) {
-	    connectedStatus.setText(STATUS_CONNECTING);
+        if (cmd == GetViewsCmd) {
+            connectedStatus.setText(STATUS_CONNECTING);
 
-	    viewList = getViews();
+            viewList = getViews();
 
-	    if (viewList == null) {
-		Debug.message("netmap", "Can't get view list from " + server + ":" + port);
-		disconnect();
-	    }
+            if (viewList == null) {
+                Debug.message("netmap", "Can't get view list from " + server + ":" + port);
+                disconnect();
+            }
 
-	} else if (cmd == ServerDisconnectCmd) {
+        } else if (cmd == ServerDisconnectCmd) {
 
-	    Debug.message("netmap", "Disconnecting from server " +
-			  server + ":" + port);
-	    disconnect();
+            Debug.message("netmap", "Disconnecting from server " +
+                          server + ":" + port);
+            disconnect();
 
-	} else if (cmd == LoadViewCmd) {
+        } else if (cmd == LoadViewCmd) {
 
-	    ChoiceItem ci = viewList.get(viewChoice.getSelectedItem());
+            ChoiceItem ci = viewList.get(viewChoice.getSelectedItem());
 
-	    if (ci == null) {
-		disconnect();
-		return;
-	    }
+            if (ci == null) {
+                disconnect();
+                return;
+            }
 
-	    String view = ((String)ci.value()).trim();
+            String view = ((String)ci.value()).trim();
 
-	    Debug.message("netmap", "Loading view " + view);
-	    connect(view);
-	}
+            Debug.message("netmap", "Loading view " + view);
+            connect(view);
+        }
     }
 
     /**
@@ -228,10 +228,10 @@ public class NetMapConnector
      * with connection status.
      */
     protected void connectionUp() {
-	if (connectedStatus != null) {
-	    connectedStatus.setText(STATUS_CONNECTED);
-	    connectedStatus.setBackground(Color.green);
-	}
+        if (connectedStatus != null) {
+            connectedStatus.setText(STATUS_CONNECTED);
+            connectedStatus.setBackground(Color.green);
+        }
     }
 
     /**
@@ -239,32 +239,32 @@ public class NetMapConnector
      * with connection status.
      */
     protected void connectionDown() {
-	if (connectedStatus != null) {
-	    connectedStatus.setText(STATUS_IDLE);
-	    connectedStatus.setBackground(Color.red);
-	}
+        if (connectedStatus != null) {
+            connectedStatus.setText(STATUS_IDLE);
+            connectedStatus.setBackground(Color.red);
+        }
     }
 
     /**
      * Resets the controls to the disconnected mode.
      */
     public void disconnect() {
-	if (reader != null) {
-	    reader.shutdown();
-	}
+        if (reader != null) {
+            reader.shutdown();
+        }
 
-	reader = null;
+        reader = null;
 
-	if (serverPanel != null) {
-	    serverAddrField.setEnabled(true);
-	    serverPortField.setEnabled(true);
+        if (serverPanel != null) {
+            serverAddrField.setEnabled(true);
+            serverPortField.setEnabled(true);
 
-	    viewChoice.setEnabled(false);
+            viewChoice.setEnabled(false);
 
-	    controlButton.setText(GetViewsCmd);
-	    controlButton.setActionCommand(GetViewsCmd);
-	    connectedStatus.setText(STATUS_IDLE);
-	}
+            controlButton.setText(GetViewsCmd);
+            controlButton.setActionCommand(GetViewsCmd);
+            connectedStatus.setText(STATUS_IDLE);
+        }
     }
 
     /**
@@ -273,158 +273,158 @@ public class NetMapConnector
      */
     public ChoiceList getViews() {
 
-	ChoiceList views = null;
-	try {
-	    reader = new NetMapReader(server, port, this);
-	} catch (IOException e) {
-	    Debug.message("netmap", "Can't start reader: " + e);
-	}
+        ChoiceList views = null;
+        try {
+            reader = new NetMapReader(server, port, this);
+        } catch (IOException e) {
+            Debug.message("netmap", "Can't start reader: " + e);
+        }
 
-	Debug.message("netmap", "Checking for views...");
+        Debug.message("netmap", "Checking for views...");
 
-	// reader will be null if server or port is bad...
-	if (reader != null) {
-	    views = reader.getViewList(server, port);
-   	}
+        // reader will be null if server or port is bad...
+        if (reader != null) {
+            views = reader.getViewList(server, port);
+        }
 
-	if (serverPanel != null) {
-	    viewChoice.removeAll();
+        if (serverPanel != null) {
+            viewChoice.removeAll();
 
-	    if (views != null) {
-		for (int i = 0; i < views.size(); i++) {
-		    if (Debug.debugging("netmap")) {
-			Debug.output("Adding view: " + views.labelAt(i));
-		    }
-		    viewChoice.add(views.labelAt(i));
-		}
+            if (views != null) {
+                for (int i = 0; i < views.size(); i++) {
+                    if (Debug.debugging("netmap")) {
+                        Debug.output("Adding view: " + views.labelAt(i));
+                    }
+                    viewChoice.add(views.labelAt(i));
+                }
 
-		serverAddrField.setEnabled(false);
-		serverPortField.setEnabled(false);
+                serverAddrField.setEnabled(false);
+                serverPortField.setEnabled(false);
 
-		viewChoice.setEnabled(true);
+                viewChoice.setEnabled(true);
 
- 		controlButton.setText(LoadViewCmd);
- 		controlButton.setActionCommand(LoadViewCmd);
-	    }
-	}
+                controlButton.setText(LoadViewCmd);
+                controlButton.setActionCommand(LoadViewCmd);
+            }
+        }
 
-	return views;
+        return views;
     }
 
     /**
      * Connects to the NetMap server to get messages about the given view.
      */
     public void connect(String view) {
-	try {
-	    
-	    reader = new NetMapReader(server, port, this, view);
-	    reader.start();
+        try {
+            
+            reader = new NetMapReader(server, port, this, view);
+            reader.start();
 
-	    if (serverPanel != null) {
-		serverAddrField.setEnabled(false);
-		serverPortField.setEnabled(false);
+            if (serverPanel != null) {
+                serverAddrField.setEnabled(false);
+                serverPortField.setEnabled(false);
 
-		controlButton.setText(ServerDisconnectCmd);
-		controlButton.setActionCommand(ServerDisconnectCmd);
-	    }
+                controlButton.setText(ServerDisconnectCmd);
+                controlButton.setActionCommand(ServerDisconnectCmd);
+            }
 
-	} catch (IOException e) {
-	    Debug.message("netmap", "Can't start reader: " + e);
-	    disconnect();
-	}
+        } catch (IOException e) {
+            Debug.message("netmap", "Can't start reader: " + e);
+            disconnect();
+        }
     }
 
     /**
      * Complete disconnect, sends clear command to NetMapListeners,
      * resets GUI if it's being used.
-     */	    
+     */     
     public void reset() {
-	disconnect();
+        disconnect();
 
-	Properties rp = new Properties();
-	rp.setProperty(COMMAND_FIELD, CLEAR);
-	distributeEvent(rp);
+        Properties rp = new Properties();
+        rp.setProperty(COMMAND_FIELD, CLEAR);
+        distributeEvent(rp);
 
-	if (serverPanel != null) {
-	    viewChoice.removeAll();
-	    connectedStatus.setText(STATUS_IDLE);
-	}
+        if (serverPanel != null) {
+            viewChoice.removeAll();
+            connectedStatus.setText(STATUS_IDLE);
+        }
     }
 
     /**
      * Gets the GUI control for the NetMapReader, creates it if it doesn't exist.
      */
     public Component getGUI() {
-	if (serverPanel != null) {
-	    return serverPanel;
-	}
+        if (serverPanel != null) {
+            return serverPanel;
+        }
 
-	serverAddrField = new JTextField(server);
-	serverPortField = new JTextField(port);
-	JTextArea serverViewList = new JTextArea();
+        serverAddrField = new JTextField(server);
+        serverPortField = new JTextField(port);
+        JTextArea serverViewList = new JTextArea();
 
-	/*
-	 * Make the NETMAP Server address entry field
-	 */
-	JPanel serverAddrPanel = new JPanel(new GridLayout(0,2));
-	serverAddrPanel.add(new JLabel("Name or IP Addr: "));
-	serverAddrPanel.add(serverAddrField);
-	/*
-	 * Make the NETMAP Server port entry field
-	 */
-	JPanel serverPortPanel = new JPanel(new GridLayout(0, 2));
-	serverPortPanel.add(new JLabel("Port: "));
-	serverPortPanel.add(serverPortField);
+        /*
+         * Make the NETMAP Server address entry field
+         */
+        JPanel serverAddrPanel = new JPanel(new GridLayout(0,2));
+        serverAddrPanel.add(new JLabel("Name or IP Addr: "));
+        serverAddrPanel.add(serverAddrField);
+        /*
+         * Make the NETMAP Server port entry field
+         */
+        JPanel serverPortPanel = new JPanel(new GridLayout(0, 2));
+        serverPortPanel.add(new JLabel("Port: "));
+        serverPortPanel.add(serverPortField);
 
-	/*
-	 */
-	JPanel statusPanel = PaletteHelper.createHorizontalPanel("Server Connection");
-	connectedStatus = new JLabel(STATUS_IDLE);
-	JButton resetButton = new JButton("Reset");
-	resetButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    reset();
-		}
-	    });
+        /*
+         */
+        JPanel statusPanel = PaletteHelper.createHorizontalPanel("Server Connection");
+        connectedStatus = new JLabel(STATUS_IDLE);
+        JButton resetButton = new JButton("Reset");
+        resetButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    reset();
+                }
+            });
 
-	statusPanel.add(connectedStatus);
-	statusPanel.add(resetButton);
+        statusPanel.add(connectedStatus);
+        statusPanel.add(resetButton);
 
-	/*
-	 * Make the toplevel input panel
-	 */
-// 	JPanel netmapPanel = new JPanel(new GridLayout(0, 1));
-	JPanel netmapPanel = PaletteHelper.createVerticalPanel("Server Settings");
-	
-	netmapPanel.add(serverAddrPanel);
-	netmapPanel.add(serverPortPanel);
+        /*
+         * Make the toplevel input panel
+         */
+//      JPanel netmapPanel = new JPanel(new GridLayout(0, 1));
+        JPanel netmapPanel = PaletteHelper.createVerticalPanel("Server Settings");
+        
+        netmapPanel.add(serverAddrPanel);
+        netmapPanel.add(serverPortPanel);
 
-	/*
-	 * Make the "Load View" panel
-	 */
-	viewChoice= new Choice();
-	viewList = new ChoiceList();
-	viewChoice.setEnabled(false);
+        /*
+         * Make the "Load View" panel
+         */
+        viewChoice= new Choice();
+        viewList = new ChoiceList();
+        viewChoice.setEnabled(false);
 
-	controlButton = new JButton(GetViewsCmd);
-	controlButton.setActionCommand(GetViewsCmd);
-	controlButton.addActionListener(this);
+        controlButton = new JButton(GetViewsCmd);
+        controlButton.setActionCommand(GetViewsCmd);
+        controlButton.addActionListener(this);
 
-// 	JPanel viewPanel = new JPanel(new GridLayout(0, 1));
-	JPanel viewPanel = PaletteHelper.createVerticalPanel(null);
+//      JPanel viewPanel = new JPanel(new GridLayout(0, 1));
+        JPanel viewPanel = PaletteHelper.createVerticalPanel(null);
 
-	viewPanel.add(new JLabel("Available Views"));
-	viewPanel.add(viewChoice);
-	viewPanel.add(controlButton);
+        viewPanel.add(new JLabel("Available Views"));
+        viewPanel.add(viewChoice);
+        viewPanel.add(controlButton);
 
- 	serverPanel = new JPanel();
-	Box box = Box.createVerticalBox();
-	box.add(netmapPanel);
-	box.add(statusPanel);
-	box.add(viewPanel);
-	serverPanel.add(box);
+        serverPanel = new JPanel();
+        Box box = Box.createVerticalBox();
+        box.add(netmapPanel);
+        box.add(statusPanel);
+        box.add(viewPanel);
+        serverPanel.add(box);
 
-	return serverPanel;
+        return serverPanel;
     }
 
     /**
@@ -437,7 +437,7 @@ public class NetMapConnector
      * configuration.
      */
     public void setProperties(Properties setList) {
-	setProperties(null, setList);
+        setProperties(null, setList);
     }
 
     /**
@@ -457,19 +457,19 @@ public class NetMapConnector
      * configuration.  
      */
     public void setProperties(String prefix, Properties setList) {
-	setPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	server = setList.getProperty(prefix + ServerProperty);
-	if (server == null) {
-	    server = DEFAULT_SERVER;
-	}
+        server = setList.getProperty(prefix + ServerProperty);
+        if (server == null) {
+            server = DEFAULT_SERVER;
+        }
 
-	port = setList.getProperty(prefix + PortProperty);
-	if (port == null) {
-	    port = DEFAULT_PORT;
-	}
+        port = setList.getProperty(prefix + PortProperty);
+        if (port == null) {
+            port = DEFAULT_PORT;
+        }
     }
 
     /**
@@ -488,14 +488,14 @@ public class NetMapConnector
      * PropertyConsumer.
      */
     public Properties getProperties(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        if (list == null) {
+            list = new Properties();
+        }
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	list.put(prefix + ServerProperty, server);
-	list.put(prefix + PortProperty, port);
-	return list;
+        list.put(prefix + ServerProperty, server);
+        list.put(prefix + PortProperty, port);
+        return list;
     }
 
     /**
@@ -516,13 +516,13 @@ public class NetMapConnector
      * PropertyConsumer.  
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
+        if (list == null) {
+            list = new Properties();
+        }
 
-	list.put(ServerProperty, "The hostname or IP for NetMap server");
-	list.put(PortProperty, "The port number for NetMap server");
-	return list;
+        list.put(ServerProperty, "The hostname or IP for NetMap server");
+        list.put(PortProperty, "The port number for NetMap server");
+        return list;
     }
 
     /**
@@ -533,7 +533,7 @@ public class NetMapConnector
      * @param prefix the prefix String.  
      */
     public void setPropertyPrefix(String prefix) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
     }
 
     /**
@@ -543,7 +543,7 @@ public class NetMapConnector
      * @return the property prefix
      */
     public String getPropertyPrefix() {
-	return propertyPrefix;
+        return propertyPrefix;
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerControlButtonPanel.java,v $
 // $RCSfile: LayerControlButtonPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/10 18:33:12 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -103,41 +103,41 @@ public class LayerControlButtonPanel extends OMComponentPanel
      * Static default initializations.
      */
     static {
-	urlup = LayersPanel.class.getResource("Up.gif");
-	upgif = new ImageIcon(urlup, "Up");
+        urlup = LayersPanel.class.getResource("Up.gif");
+        upgif = new ImageIcon(urlup, "Up");
 
-	urlupc = LayersPanel.class.getResource("Up.gif");
-	upclickedgif = new ImageIcon(urlupc, "Up (clicked)");
+        urlupc = LayersPanel.class.getResource("Up.gif");
+        upclickedgif = new ImageIcon(urlupc, "Up (clicked)");
 
-	urltop = LayersPanel.class.getResource("DoubleUp.gif");
-	topgif = new ImageIcon(urltop, "Top");
+        urltop = LayersPanel.class.getResource("DoubleUp.gif");
+        topgif = new ImageIcon(urltop, "Top");
 
-	urltopc = LayersPanel.class.getResource("DoubleUp.gif");
-	topclickedgif = new ImageIcon(urltopc, "Top (clicked)");
+        urltopc = LayersPanel.class.getResource("DoubleUp.gif");
+        topclickedgif = new ImageIcon(urltopc, "Top (clicked)");
 
-	urldown = LayersPanel.class.getResource("Down.gif");
-	downgif = new ImageIcon(urldown, "Down");
+        urldown = LayersPanel.class.getResource("Down.gif");
+        downgif = new ImageIcon(urldown, "Down");
 
-	urldownc = LayersPanel.class.getResource("Down.gif");
-	downclickedgif = new ImageIcon(urldownc, "Down (clicked)");
+        urldownc = LayersPanel.class.getResource("Down.gif");
+        downclickedgif = new ImageIcon(urldownc, "Down (clicked)");
 
-	urlbottom = LayersPanel.class.getResource("DoubleDown.gif");
-	bottomgif = new ImageIcon(urlbottom, "Bottom");
+        urlbottom = LayersPanel.class.getResource("DoubleDown.gif");
+        bottomgif = new ImageIcon(urlbottom, "Bottom");
 
-	urlbottomc = LayersPanel.class.getResource("DoubleDown.gif");
-	bottomclickedgif = new ImageIcon(urlbottomc, "Bottom (clicked)");
+        urlbottomc = LayersPanel.class.getResource("DoubleDown.gif");
+        bottomclickedgif = new ImageIcon(urlbottomc, "Bottom (clicked)");
 
-	urldelete = LayersPanel.class.getResource("DeleteLayer.gif");
-	deletegif = new ImageIcon(urldelete, "Delete");
+        urldelete = LayersPanel.class.getResource("DeleteLayer.gif");
+        deletegif = new ImageIcon(urldelete, "Delete");
 
-	urldeletec = LayersPanel.class.getResource("DeleteLayer.gif");
-	deleteclickedgif = new ImageIcon(urldeletec, "Delete (clicked)");
+        urldeletec = LayersPanel.class.getResource("DeleteLayer.gif");
+        deleteclickedgif = new ImageIcon(urldeletec, "Delete (clicked)");
 
-	urladd = LayersPanel.class.getResource("AddLayer.gif");
-	addgif = new ImageIcon(urladd, "Add");
+        urladd = LayersPanel.class.getResource("AddLayer.gif");
+        addgif = new ImageIcon(urladd, "Add");
 
-	urladdc = LayersPanel.class.getResource("AddLayer.gif");
-	addclickedgif = new ImageIcon(urladdc, "Add (clicked)");
+        urladdc = LayersPanel.class.getResource("AddLayer.gif");
+        addclickedgif = new ImageIcon(urladdc, "Add (clicked)");
     }
  
     protected JButton add = null;
@@ -172,27 +172,27 @@ public class LayerControlButtonPanel extends OMComponentPanel
     protected boolean addLayers = true;
 
     public LayerControlButtonPanel() {
-	super();
-	createInterface();
+        super();
+        createInterface();
     }
 
     public LayerControlButtonPanel(LayersPanel panel) {
-	this();
-	setLayersPanel(panel);
+        this();
+        setLayersPanel(panel);
     }
 
     public void removeLayersPanel(LayersPanel panel) {
-	panel.removePropertyChangeListener(this);
-	removePropertyChangeListener(panel);
+        panel.removePropertyChangeListener(this);
+        removePropertyChangeListener(panel);
 
-	if (embedded) {
-	    if (configuration.equalsIgnoreCase(NORTH_SOUTH_CONFIG)) {
-		panel.remove(up);
-		panel.remove(down);
-	    } else {
-		panel.remove(this);
-	    }
-	}
+        if (embedded) {
+            if (configuration.equalsIgnoreCase(NORTH_SOUTH_CONFIG)) {
+                panel.remove(up);
+                panel.remove(down);
+            } else {
+                panel.remove(this);
+            }
+        }
     }
 
     /**
@@ -200,82 +200,82 @@ public class LayerControlButtonPanel extends OMComponentPanel
      * displayed in the LayersPanel, change this method.
      */
     public void setLayersPanel(LayersPanel panel) {
-	panel.addPropertyChangeListener(this);
-	addPropertyChangeListener(panel);
+        panel.addPropertyChangeListener(this);
+        addPropertyChangeListener(panel);
 
-	if (embedded) {
-	    createInterface(); // again, reset for new config values
-	    setLayout(new BoxLayout(this, orientation));
+        if (embedded) {
+            createInterface(); // again, reset for new config values
+            setLayout(new BoxLayout(this, orientation));
 
-	    if (panel.getLayout() instanceof BorderLayout) {
-		if (configuration.equalsIgnoreCase(WEST_CONFIG)) {
-		    panel.add(this, BorderLayout.WEST);
-		} else if (configuration.equalsIgnoreCase(EAST_CONFIG)) {
-		    panel.add(this, BorderLayout.EAST);
-		} else if (configuration.equalsIgnoreCase(NORTH_CONFIG)) {
-		    panel.add(this, BorderLayout.NORTH);
-		} else if (configuration.equalsIgnoreCase(SOUTH_CONFIG)) {
-		    panel.add(this, BorderLayout.SOUTH);
-		} else if (configuration.equalsIgnoreCase(NORTH_SOUTH_CONFIG)) {
-		    panel.add(up, BorderLayout.NORTH);
-		    panel.add(down, BorderLayout.SOUTH);
-		}
-	    } else {
-		panel.add(this);
-	    }
-	}
+            if (panel.getLayout() instanceof BorderLayout) {
+                if (configuration.equalsIgnoreCase(WEST_CONFIG)) {
+                    panel.add(this, BorderLayout.WEST);
+                } else if (configuration.equalsIgnoreCase(EAST_CONFIG)) {
+                    panel.add(this, BorderLayout.EAST);
+                } else if (configuration.equalsIgnoreCase(NORTH_CONFIG)) {
+                    panel.add(this, BorderLayout.NORTH);
+                } else if (configuration.equalsIgnoreCase(SOUTH_CONFIG)) {
+                    panel.add(this, BorderLayout.SOUTH);
+                } else if (configuration.equalsIgnoreCase(NORTH_SOUTH_CONFIG)) {
+                    panel.add(up, BorderLayout.NORTH);
+                    panel.add(down, BorderLayout.SOUTH);
+                }
+            } else {
+                panel.add(this);
+            }
+        }
     }
 
     protected void createInterface() {
-	removeAll();
+        removeAll();
 
-  	setAlignmentX(LEFT_ALIGNMENT);
-  	setAlignmentY(CENTER_ALIGNMENT);
-  	setLayout(new BoxLayout(this, orientation));
+        setAlignmentX(LEFT_ALIGNMENT);
+        setAlignmentY(CENTER_ALIGNMENT);
+        setLayout(new BoxLayout(this, orientation));
 
-	top = new JButton(topgif);
-	top.setActionCommand(LayersPanel.LayerTopCmd);
-	top.setPressedIcon(topclickedgif);
-	top.setToolTipText("Move selected layer to top");
-	top.addActionListener(this);
-  	add(top);
+        top = new JButton(topgif);
+        top.setActionCommand(LayersPanel.LayerTopCmd);
+        top.setPressedIcon(topclickedgif);
+        top.setToolTipText("Move selected layer to top");
+        top.addActionListener(this);
+        add(top);
 
-	up = new JButton(upgif);
-	up.setActionCommand(LayersPanel.LayerUpCmd);
-	up.setPressedIcon(upclickedgif);
-	up.setToolTipText("Move selected layer up one");
-	up.addActionListener(this);
-  	add(up);
+        up = new JButton(upgif);
+        up.setActionCommand(LayersPanel.LayerUpCmd);
+        up.setPressedIcon(upclickedgif);
+        up.setToolTipText("Move selected layer up one");
+        up.addActionListener(this);
+        add(up);
 
-	down = new JButton(downgif);
-	down.setPressedIcon(downclickedgif);
-	down.setActionCommand(LayersPanel.LayerDownCmd);
-	down.setToolTipText("Move selected layer down one");
-	down.addActionListener(this);
-  	add(down);
+        down = new JButton(downgif);
+        down.setPressedIcon(downclickedgif);
+        down.setActionCommand(LayersPanel.LayerDownCmd);
+        down.setToolTipText("Move selected layer down one");
+        down.addActionListener(this);
+        add(down);
 
-	bottom = new JButton(bottomgif);
-	bottom.setPressedIcon(bottomclickedgif);
-	bottom.setActionCommand(LayersPanel.LayerBottomCmd);
-	bottom.setToolTipText("Move selected layer to bottom");
-	bottom.addActionListener(this);
-  	add(bottom);
+        bottom = new JButton(bottomgif);
+        bottom.setPressedIcon(bottomclickedgif);
+        bottom.setActionCommand(LayersPanel.LayerBottomCmd);
+        bottom.setToolTipText("Move selected layer to bottom");
+        bottom.addActionListener(this);
+        add(bottom);
 
-	if (deleteLayers) {
-	    JLabel blank = new JLabel(" ");
-	    add(blank);
-	    
-	    delete = new JButton(deletegif);
-	    delete.setActionCommand(LayersPanel.LayerRemoveCmd);
-	    delete.setToolTipText("Remove selected layer");
-	    delete.addActionListener(this);
-	    delete.setEnabled(false);
-	    add(delete);
-	}
+        if (deleteLayers) {
+            JLabel blank = new JLabel(" ");
+            add(blank);
+            
+            delete = new JButton(deletegif);
+            delete.setActionCommand(LayersPanel.LayerRemoveCmd);
+            delete.setToolTipText("Remove selected layer");
+            delete.addActionListener(this);
+            delete.setEnabled(false);
+            add(delete);
+        }
 
-	if (addLayers && add != null) {
-	    add(add);
-	}
+        if (addLayers && add != null) {
+            add(add);
+        }
     }
 
     /**
@@ -283,19 +283,19 @@ public class LayerControlButtonPanel extends OMComponentPanel
      * layers.
      */
     public void setLayerAddPanel(LayerAddPanel lap) {
-	layerAddPanel = lap;
+        layerAddPanel = lap;
 
-	if (layerAddPanel != null) {
-	    add = new JButton(addgif);
-	    add.setActionCommand(LayersPanel.LayerAddCmd);
-	    add.setToolTipText("Add a layer");
-	    add.addActionListener(this);
-	    if (addLayers) {
-		this.add(add);
-	    }
-	} else if (add != null) {
-	    this.remove(add);
-	}
+        if (layerAddPanel != null) {
+            add = new JButton(addgif);
+            add.setActionCommand(LayersPanel.LayerAddCmd);
+            add.setToolTipText("Add a layer");
+            add.addActionListener(this);
+            if (addLayers) {
+                this.add(add);
+            }
+        } else if (add != null) {
+            this.remove(add);
+        }
 
     }
 
@@ -303,7 +303,7 @@ public class LayerControlButtonPanel extends OMComponentPanel
      * Get the panel interface to dynamically add layers.
      */
     public LayerAddPanel getLayerAddPanel() {
-	return layerAddPanel;
+        return layerAddPanel;
     }
 
     /**
@@ -315,130 +315,130 @@ public class LayerControlButtonPanel extends OMComponentPanel
      */
     public void actionPerformed(java.awt.event.ActionEvent e) {
 
-	String command = e.getActionCommand();
+        String command = e.getActionCommand();
 
-	if (Debug.debugging("layerbuttons")) {
-	    Debug.output("LayersPanel.actionPerformed(): " + command);
-	}
+        if (Debug.debugging("layerbuttons")) {
+            Debug.output("LayersPanel.actionPerformed(): " + command);
+        }
 
-	if (command == LayersPanel.LayerTopCmd ||
-	    command == LayersPanel.LayerBottomCmd ||
-	    command == LayersPanel.LayerUpCmd ||
-	    command == LayersPanel.LayerDownCmd ||
-	    command == LayersPanel.LayerRemoveCmd) {
-	    if (selected != null) {
-		if (Debug.debugging("layercontrol")) {
-		    Debug.output("LayerControlButtonPanel: button firing " + 
-				 command + " event for " + selected.getName());
-		}
-		firePropertyChange(command, null, selected);
-	    } else {
-		if (Debug.debugging("layercontrol")) {
-		    Debug.output("LayerControlButtonPanel: button firing " + 
-				 command + " event with no layer selected");
-		}
-	    }
-	} else if (command.equals(LayersPanel.LayerAddCmd)) {
-	    if (layerAddPanel != null) {
-		layerAddPanel.showPanel();
-	    }
-	}
+        if (command == LayersPanel.LayerTopCmd ||
+            command == LayersPanel.LayerBottomCmd ||
+            command == LayersPanel.LayerUpCmd ||
+            command == LayersPanel.LayerDownCmd ||
+            command == LayersPanel.LayerRemoveCmd) {
+            if (selected != null) {
+                if (Debug.debugging("layercontrol")) {
+                    Debug.output("LayerControlButtonPanel: button firing " + 
+                                 command + " event for " + selected.getName());
+                }
+                firePropertyChange(command, null, selected);
+            } else {
+                if (Debug.debugging("layercontrol")) {
+                    Debug.output("LayerControlButtonPanel: button firing " + 
+                                 command + " event with no layer selected");
+                }
+            }
+        } else if (command.equals(LayersPanel.LayerAddCmd)) {
+            if (layerAddPanel != null) {
+                layerAddPanel.showPanel();
+            }
+        }
     }
 
     protected Layer selected = null;
 
     public void propertyChange(PropertyChangeEvent pce) {
-	String command = pce.getPropertyName();
-	Object obj = pce.getNewValue();
-	if (Debug.debugging("layercontrol")) {
-	    Debug.output("LayerControlButtonPanel: receiving PropertyChangeEvent " + pce.getPropertyName());
-	}
+        String command = pce.getPropertyName();
+        Object obj = pce.getNewValue();
+        if (Debug.debugging("layercontrol")) {
+            Debug.output("LayerControlButtonPanel: receiving PropertyChangeEvent " + pce.getPropertyName());
+        }
 
-	if (command == LayersPanel.LayerSelectedCmd &&
-	    obj instanceof Layer) {
+        if (command == LayersPanel.LayerSelectedCmd &&
+            obj instanceof Layer) {
 
-	    selected = (Layer)obj;
+            selected = (Layer)obj;
 
-	    delete.setEnabled(selected.isRemoveable());
+            delete.setEnabled(selected.isRemoveable());
 
-	    if (Debug.debugging("layercontrol")) {
-		Debug.output("LayerControlButtonPanel: got notification that layer is selected: " + selected.getName());
-	    }
-	} else if (command == LayersPanel.LayerDeselectedCmd &&
-		   selected == obj) {
-	    selected = null;
-	    delete.setEnabled(false);
-	}
+            if (Debug.debugging("layercontrol")) {
+                Debug.output("LayerControlButtonPanel: got notification that layer is selected: " + selected.getName());
+            }
+        } else if (command == LayersPanel.LayerDeselectedCmd &&
+                   selected == obj) {
+            selected = null;
+            delete.setEnabled(false);
+        }
     }
 
     public void findAndInit(Object someObj) {
-	if (someObj instanceof LayerAddPanel) {
-	    setLayerAddPanel((LayerAddPanel)someObj);
-	}
+        if (someObj instanceof LayerAddPanel) {
+            setLayerAddPanel((LayerAddPanel)someObj);
+        }
 
-	if (someObj instanceof LayersPanel) {
-	    setLayersPanel((LayersPanel)someObj);
-	}
+        if (someObj instanceof LayersPanel) {
+            setLayersPanel((LayersPanel)someObj);
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof LayerAddPanel) {
-	    if (getLayerAddPanel() == someObj) {
-		setLayerAddPanel(null);
-	    }
-	}
+        if (someObj instanceof LayerAddPanel) {
+            if (getLayerAddPanel() == someObj) {
+                setLayerAddPanel(null);
+            }
+        }
 
-	if (someObj instanceof LayersPanel) {
-	    removeLayersPanel((LayersPanel)someObj);
-	}
+        if (someObj instanceof LayersPanel) {
+            removeLayersPanel((LayersPanel)someObj);
+        }
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        super.setProperties(prefix, props);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	configuration = props.getProperty(prefix + ConfigurationProperty);
+        configuration = props.getProperty(prefix + ConfigurationProperty);
 
-	if (configuration == null) {
-	    configuration = DefaultConfiguration;
-	}
+        if (configuration == null) {
+            configuration = DefaultConfiguration;
+        }
 
-	embedded = LayerUtils.booleanFromProperties(props, prefix + EmbeddedProperty, embedded);
-	deleteLayers = LayerUtils.booleanFromProperties(props, prefix + DeleteLayersProperty, deleteLayers);
-	addLayers = LayerUtils.booleanFromProperties(props, prefix + AddLayersProperty, addLayers);
-	
-	String orient = props.getProperty(prefix + OrientationProperty);
-	if (orient != null && (orient.equalsIgnoreCase(HORIZONTAL_CONFIG) || (orient.equalsIgnoreCase("false")))) {
-	    orientation = BoxLayout.X_AXIS;
-	}
+        embedded = LayerUtils.booleanFromProperties(props, prefix + EmbeddedProperty, embedded);
+        deleteLayers = LayerUtils.booleanFromProperties(props, prefix + DeleteLayersProperty, deleteLayers);
+        addLayers = LayerUtils.booleanFromProperties(props, prefix + AddLayersProperty, addLayers);
+        
+        String orient = props.getProperty(prefix + OrientationProperty);
+        if (orient != null && (orient.equalsIgnoreCase(HORIZONTAL_CONFIG) || (orient.equalsIgnoreCase("false")))) {
+            orientation = BoxLayout.X_AXIS;
+        }
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        props = super.getProperties(props);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	props.put(prefix + ConfigurationProperty, configuration);
-	props.put(prefix + OrientationProperty, (orientation==BoxLayout.X_AXIS?HORIZONTAL_CONFIG:VERTICAL_CONFIG));
-	props.put(prefix + EmbeddedProperty, new Boolean(embedded).toString());
-	props.put(prefix + DeleteLayersProperty, new Boolean(deleteLayers).toString());
-	props.put(prefix + AddLayersProperty, new Boolean(addLayers).toString());
-	return props;
+        props.put(prefix + ConfigurationProperty, configuration);
+        props.put(prefix + OrientationProperty, (orientation==BoxLayout.X_AXIS?HORIZONTAL_CONFIG:VERTICAL_CONFIG));
+        props.put(prefix + EmbeddedProperty, new Boolean(embedded).toString());
+        props.put(prefix + DeleteLayersProperty, new Boolean(deleteLayers).toString());
+        props.put(prefix + AddLayersProperty, new Boolean(addLayers).toString());
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
+        props = super.getPropertyInfo(props);
 
-	props.put(ConfigurationProperty, "Pre-Defined Configuration String (WEST, EAST, NORTH, SOUTH, NORTH_SOUTH).");
-	props.put(OrientationProperty, "Horizontal or Vertical.");
-	props.put(OrientationProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.OrientationPropertyEditor");
-	props.put(EmbeddedProperty, "Insert itself into LayersPanel.");
-	props.put(EmbeddedProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	props.put(DeleteLayersProperty, "Include button to delete layers.");
-	props.put(DeleteLayersProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	props.put(AddLayersProperty, "Include button to add layers.");
-	props.put(AddLayersProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(ConfigurationProperty, "Pre-Defined Configuration String (WEST, EAST, NORTH, SOUTH, NORTH_SOUTH).");
+        props.put(OrientationProperty, "Horizontal or Vertical.");
+        props.put(OrientationProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.OrientationPropertyEditor");
+        props.put(EmbeddedProperty, "Insert itself into LayersPanel.");
+        props.put(EmbeddedProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(DeleteLayersProperty, "Include button to delete layers.");
+        props.put(DeleteLayersProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(AddLayersProperty, "Include button to add layers.");
+        props.put(AddLayersProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-	return props;
+        return props;
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/SimpleColorGenerator.java,v $
 // $RCSfile: SimpleColorGenerator.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/17 00:22:34 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -49,71 +49,71 @@ public class SimpleColorGenerator implements OMGridGenerator {
      */
     public OMGraphic generate(OMGrid grid, Projection proj) {
 
-	Debug.message("grid", 
-		      "SimpleColorGenerator: generating OMRaster from grid");
+        Debug.message("grid", 
+                      "SimpleColorGenerator: generating OMRaster from grid");
 
-	OMRaster raster  = new OMRaster(grid.point1.x, grid.point1.y, 
-					grid.width, grid.height,
-					new int[grid.width*grid.height]);
+        OMRaster raster  = new OMRaster(grid.point1.x, grid.point1.y, 
+                                        grid.width, grid.height,
+                                        new int[grid.width*grid.height]);
 
-	if (grid.height == 0 || grid.width == 0) {
-	    Debug.message("grid", "SimpleColorGenerator: grid height/width ZERO!");
-	    return raster;
-	}
+        if (grid.height == 0 || grid.width == 0) {
+            Debug.message("grid", "SimpleColorGenerator: grid height/width ZERO!");
+            return raster;
+        }
 
-	GridData gd = grid.getData();
-	if (!(gd instanceof GridData.Int)) {
-	    Debug.message("grid", "SimpleColorGenerator: grid doesn't contain integer data.");
-	    return SinkGraphic.getSharedInstance();
-	}
+        GridData gd = grid.getData();
+        if (!(gd instanceof GridData.Int)) {
+            Debug.message("grid", "SimpleColorGenerator: grid doesn't contain integer data.");
+            return SinkGraphic.getSharedInstance();
+        }
 
-	int rows = grid.getRows();
-	int columns = grid.getColumns();
-	int[][] data = ((GridData.Int)gd).getData();
-	boolean major = grid.getMajor();
+        int rows = grid.getRows();
+        int columns = grid.getColumns();
+        int[][] data = ((GridData.Int)gd).getData();
+        boolean major = grid.getMajor();
 
-	/** lat and lon_intervals are grid point/pixel.. */
-	double y_interval = (double)rows/(double)grid.height;
-	double x_interval = (double)columns/(double)grid.width;
+        /** lat and lon_intervals are grid point/pixel.. */
+        double y_interval = (double)rows/(double)grid.height;
+        double x_interval = (double)columns/(double)grid.width;
 
-	Debug.message("grid", 
-		      "SimpleColorGenerator: y_point_interval = " + y_interval + 
-		      ", x_point_interval = " + x_interval);
+        Debug.message("grid", 
+                      "SimpleColorGenerator: y_point_interval = " + y_interval + 
+                      ", x_point_interval = " + x_interval);
 
-	/** Right now, if the rendertype of the grid is
+        /** Right now, if the rendertype of the grid is
             RENDERTYPE_LATLON, we limit rendering to the CADRG
             projection. */
-	
-	int post_x, post_y, value;
-	/** Do this pixel by pixel. */
-	for (int x = 0; x < grid.width; x++) {
-	    for (int y = 0; y < grid.height; y++) {
+        
+        int post_x, post_y, value;
+        /** Do this pixel by pixel. */
+        for (int x = 0; x < grid.width; x++) {
+            for (int y = 0; y < grid.height; y++) {
 
-		post_x = (int)Math.round(x_interval * (double)x);
-		if (grid.getRenderType()== OMGraphic.RENDERTYPE_LATLON) {
-		    post_y = (int)Math.round(y_interval * (grid.height - 1 - (double)y));
-		} else {
-		    post_y = (int)Math.round(y_interval * (double)y);
-		}
-		
-		if (major == OMGrid.COLUMN_MAJOR) {
-		    if (post_x >= columns) post_x = columns - 1;
-		    if (post_y >= rows) post_y = rows - 1;
-		    
-		    value = calibratePointValue(data[post_x][post_y]);
-		} else {
-		    if (post_y >= columns) post_y = columns - 1;
-		    if (post_x >= rows) post_x = rows - 1;
-		    
-		    value = calibratePointValue(data[post_y][post_x]);
-		}
+                post_x = (int)Math.round(x_interval * (double)x);
+                if (grid.getRenderType()== OMGraphic.RENDERTYPE_LATLON) {
+                    post_y = (int)Math.round(y_interval * (grid.height - 1 - (double)y));
+                } else {
+                    post_y = (int)Math.round(y_interval * (double)y);
+                }
+                
+                if (major == OMGrid.COLUMN_MAJOR) {
+                    if (post_x >= columns) post_x = columns - 1;
+                    if (post_y >= rows) post_y = rows - 1;
+                    
+                    value = calibratePointValue(data[post_x][post_y]);
+                } else {
+                    if (post_y >= columns) post_y = columns - 1;
+                    if (post_x >= rows) post_x = rows - 1;
+                    
+                    value = calibratePointValue(data[post_y][post_x]);
+                }
 
-		raster.setPixel(x, y, value);
-	    }
-	}
-	raster.generate(proj);
+                raster.setPixel(x, y, value);
+            }
+        }
+        raster.generate(proj);
 
-	return raster;
+        return raster;
     }
 
     /** 
@@ -125,7 +125,7 @@ public class SimpleColorGenerator implements OMGridGenerator {
      * @return the ARGB to color the pixel.  
      */
     public int calibratePointValue(int source) {
-	return source;
+        return source;
     }
 
     /** 
@@ -134,7 +134,7 @@ public class SimpleColorGenerator implements OMGridGenerator {
      * LATLON rendertype grids.  So return true for everything.
      */
     public boolean needGenerateToRender() {
-	return true;
+        return true;
     }
 
     /* 
@@ -148,31 +148,31 @@ public class SimpleColorGenerator implements OMGridGenerator {
      * @return an array of color ARGB integers.  
      */
     public int[] createGreyscaleColors(int num_colors, int opaqueness) {
-	int[] tempColors = new int[num_colors];
-	if (num_colors == 0) {
-	    num_colors = 216;
-	}
+        int[] tempColors = new int[num_colors];
+        if (num_colors == 0) {
+            num_colors = 216;
+        }
 
-	int grey_interval = 256/num_colors;
-	
-	for (int i=0; i<num_colors; i++) {
-	    
-	    if(i==0) {
-		tempColors[i] = ((opaqueness & 0xFF) << 24) | 
-		    ((191 & 0xFF) << 16 ) |
-		    ((239 & 0xFF) << 8) | 
-		    ((255 & 0xFF));    
-	    }
-	    
-	    else{
-		int color = (i*grey_interval) + (grey_interval/2);
-		tempColors[i] = ((opaqueness & 0xFF) << 24) | 
-		    ((color & 0xFF) << 16 ) |
-		    ((color & 0xFF) << 8) | 
-		    ((color & 0xFF));
-	    }
-	}
-	return tempColors;
+        int grey_interval = 256/num_colors;
+        
+        for (int i=0; i<num_colors; i++) {
+            
+            if(i==0) {
+                tempColors[i] = ((opaqueness & 0xFF) << 24) | 
+                    ((191 & 0xFF) << 16 ) |
+                    ((239 & 0xFF) << 8) | 
+                    ((255 & 0xFF));    
+            }
+            
+            else{
+                int color = (i*grey_interval) + (grey_interval/2);
+                tempColors[i] = ((opaqueness & 0xFF) << 24) | 
+                    ((color & 0xFF) << 16 ) |
+                    ((color & 0xFF) << 8) | 
+                    ((color & 0xFF));
+            }
+        }
+        return tempColors;
     }
 
 }

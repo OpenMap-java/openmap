@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/AbstractEditorTool.java,v $
 // $RCSfile: AbstractEditorTool.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/25 18:59:14 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,35 +45,35 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements E
      * Make sure you set the EditorLayer at some point.
      */
     protected AbstractEditorTool() {    
-	// Set the layer later.
+        // Set the layer later.
     }
 
     /**
      * The preferred constructor.
      */
     public AbstractEditorTool(EditorLayer eLayer) {
-	setLayer(eLayer);
+        setLayer(eLayer);
     }
 
     public void setLayer(OMGraphicHandlerLayer eLayer) {
-	super.setLayer(eLayer);
-	if (eLayer != null && eLayer instanceof EditorLayer) {
-	    ((EditorLayer)eLayer).setMouseEventInterpreter(this);
-	}
+        super.setLayer(eLayer);
+        if (eLayer != null && eLayer instanceof EditorLayer) {
+            ((EditorLayer)eLayer).setMouseEventInterpreter(this);
+        }
     }
 
     /**
      * Set whether the tool should want MouseEvents.
      */
     public void setWantsEvents(boolean value) {
-	wantsEvents = value;
+        wantsEvents = value;
     }
 
     /**
      * Whether the Tool is expecting to be fed MouseEvents.
      */
     public boolean wantsEvents() {
-	return wantsEvents;
+        return wantsEvents;
     }
 
     /**
@@ -102,10 +102,10 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements E
      * should be visible.
      */
     public void setVisible(boolean value) {
-	if (face != null) {
-	    face.setVisible(value);
-	}
-	visible = value;
+        if (face != null) {
+            face.setVisible(value);
+        }
+        visible = value;
     }
 
     /**
@@ -113,11 +113,11 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements E
      * whether its interface is visible.
      */
     public boolean isVisible() {
-	if (face != null) {
-	    return face.isVisible();
-	} else {
-	    return visible;  // they should be the same...
-	}
+        if (face != null) {
+            return face.isVisible();
+        } else {
+            return visible;  // they should be the same...
+        }
     }
 
     ///////////////////////////////
@@ -133,6 +133,6 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements E
      * @return String The key for this tool.
      */
     public Container getFace() {
-	return face;
+        return face;
     }
 }

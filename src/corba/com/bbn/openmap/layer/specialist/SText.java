@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SText.java,v $
 // $RCSfile: SText.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 22:24:17 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,9 +50,9 @@ public class SText extends SGraphic /* used to be _TextImplBase*/ {
   /** Generic, using Helvetica font. */
   public SText() {
       super(GraphicType.GT_Text, 
-	    RenderType.RT_Unknown, 
-	    LineType.LT_Unknown, 
-	    DeclutterType.DC_None);
+            RenderType.RT_Unknown, 
+            LineType.LT_Unknown, 
+            DeclutterType.DC_None);
       ll1_ =  new LLPoint(0f, 0f);
       p1_ = new XYPoint((short)0, (short)0);
       data_ = "";
@@ -63,9 +63,9 @@ public class SText extends SGraphic /* used to be _TextImplBase*/ {
   /** Lat/lon placement. */
   public SText(LLPoint ll1, String data, java.awt.Font font, short justify) {
       super(GraphicType.GT_Text, 
-	    RenderType.RT_LatLon, 
-	    LineType.LT_Unknown, 
-	    DeclutterType.DC_None);
+            RenderType.RT_LatLon, 
+            LineType.LT_Unknown, 
+            DeclutterType.DC_None);
       ll1_ = ll1;
       p1_ = new XYPoint((short)0, (short)0);
       data_ = data;
@@ -75,11 +75,11 @@ public class SText extends SGraphic /* used to be _TextImplBase*/ {
 
   /** XY placement. */
   public SText(short x1, short y1, 
-		String data, java.awt.Font font, short justify) { 
+                String data, java.awt.Font font, short justify) { 
       super(GraphicType.GT_Text, 
-	    RenderType.RT_XY, 
-	    LineType.LT_Unknown, 
-	    DeclutterType.DC_None);
+            RenderType.RT_XY, 
+            LineType.LT_Unknown, 
+            DeclutterType.DC_None);
       ll1_ =  new LLPoint(0f, 0f);
       p1_ = new XYPoint(x1, y1);
       data_ = data;
@@ -89,12 +89,12 @@ public class SText extends SGraphic /* used to be _TextImplBase*/ {
 
   /** Lat/lon placement with XY offset. */
   public SText(LLPoint ll1, 
-	       short x1, short y1, 
-	       String data, java.awt.Font font, short justify) { 
+               short x1, short y1, 
+               String data, java.awt.Font font, short justify) { 
       super(GraphicType.GT_Text, 
-	    RenderType.RT_Offset, 
-	    LineType.LT_Unknown, 
-	    DeclutterType.DC_None);
+            RenderType.RT_Offset, 
+            LineType.LT_Unknown, 
+            DeclutterType.DC_None);
       ll1_ = ll1;
       p1_ = new XYPoint(x1, y1);
       data_ = data;
@@ -138,7 +138,7 @@ public class SText extends SGraphic /* used to be _TextImplBase*/ {
   }
   public EText fill() {
       return new EText(eg, p1_, ll1_, 
-		       data_, resolveFont(realFont_), justify_);
+                       data_, resolveFont(realFont_), justify_);
   }
   public UGraphic ufill() {
       UGraphic ugraphic = new UGraphic();

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/TextPropertyEditor.java,v $
 // $RCSfile: TextPropertyEditor.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/19 20:41:54 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,30 +40,30 @@ public class TextPropertyEditor extends PropertyEditorSupport
     JTextField textField = new JTextField(10);
     
     public boolean supportsCustomEditor() {
-	return true;
+        return true;
     }
     
     /** Returns the editor GUI, ie a JTextField. */
     public Component getCustomEditor() {
-	JPanel jp = new JPanel();
-	textField.addActionListener(this);
-	textField.addFocusListener(this);
+        JPanel jp = new JPanel();
+        textField.addActionListener(this);
+        textField.addFocusListener(this);
 
-	GridBagLayout gridbag = new GridBagLayout();
-	GridBagConstraints c = new GridBagConstraints();
-	jp.setLayout(gridbag);
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        jp.setLayout(gridbag);
 
-	c.weightx = 1f;
-	c.fill = GridBagConstraints.HORIZONTAL;
-	gridbag.setConstraints(textField, c);
-	jp.add(textField);
-	
-	return jp;
+        c.weightx = 1f;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        gridbag.setConstraints(textField, c);
+        jp.add(textField);
+        
+        return jp;
     }
     
     public void actionPerformed(ActionEvent e) {
-	//System.out.println("value changed");
-	firePropertyChange();
+        //System.out.println("value changed");
+        firePropertyChange();
     }
 
     public void focusGained(FocusEvent e) {}
@@ -71,13 +71,13 @@ public class TextPropertyEditor extends PropertyEditorSupport
     
     /** Sets String in JTextField. */
     public void setValue(Object string) {
-	if(!(string instanceof String))
-	    return;
-	textField.setText((String)string);
+        if(!(string instanceof String))
+            return;
+        textField.setText((String)string);
     }
 
     /** Returns String from JTextfield. */
     public String getAsText() {
-	return textField.getText();
+        return textField.getText();
     }
 }

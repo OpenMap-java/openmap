@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaShapeLayer.java,v $
 // $RCSfile: AreaShapeLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/06/26 01:07:10 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,7 +54,7 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
     /**
      */
     public AreaShapeLayer() { 
-	super(); 	
+        super();        
     }
     
     /** 
@@ -63,9 +63,9 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
      * @param props the <code>Properties</code> holding settings for this layer
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
-	areas = new AreaHandler(spatialIndex, drawingAttributes);
-	areas.setProperties(prefix, props);
+        super.setProperties(prefix, props);
+        areas = new AreaHandler(spatialIndex, drawingAttributes);
+        areas.setProperties(prefix, props);
     }
 
 
@@ -73,14 +73,14 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
      * Set the AreaHandler.
      */
     public void setAreas(AreaHandler a) {
-	areas = a;
+        areas = a;
     }
 
     /**
      * Get the AreaHandler.
      */
     public AreaHandler getAreas() {
-	return areas;
+        return areas;
     }
            
     /**
@@ -89,32 +89,32 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
      */
     public OMGraphicList prepare() {
 
-	Projection projection = getProjection();
-	LatLonPoint ul = projection.getUpperLeft();
-	LatLonPoint lr = projection.getLowerRight();
-	float ulLat = ul.getLatitude();
-	float ulLon = ul.getLongitude();
-	float lrLat = lr.getLatitude();
-	float lrLon = lr.getLongitude();
+        Projection projection = getProjection();
+        LatLonPoint ul = projection.getUpperLeft();
+        LatLonPoint lr = projection.getLowerRight();
+        float ulLat = ul.getLatitude();
+        float ulLon = ul.getLongitude();
+        float lrLat = lr.getLatitude();
+        float lrLon = lr.getLongitude();
 
- 	OMGraphicList list = areas.getGraphics(ulLat, ulLon, lrLat, lrLon);
-	list.generate(getProjection(), true);
-	return list;
+        OMGraphicList list = areas.getGraphics(ulLat, ulLon, lrLat, lrLon);
+        list.generate(getProjection(), true);
+        return list;
     }
 
     public void setDrawingAttributes(DrawingAttributes da) {
-	areas.setDrawingAttributes(da);
+        areas.setDrawingAttributes(da);
     }
 
     public DrawingAttributes getDrawingAttributes() {
-	return areas.getDrawingAttributes();
+        return areas.getDrawingAttributes();
     }
 
     /** 
      * Find a PoliticalArea named by the abbreviation 
      */
     public PoliticalArea findPoliticalArea(String area_abbrev) {
-	return areas.findPoliticalArea(area_abbrev);
+        return areas.findPoliticalArea(area_abbrev);
     }
 
     //----------------------------------------------------------------------
@@ -123,46 +123,46 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
     private OMGraphic selectedGraphic;
 
     public boolean mouseMoved(MouseEvent e) {
-	OMGraphicList omgraphics = (OMGraphicList)getList();
-	if (omgraphics == null) return false;
+        OMGraphicList omgraphics = (OMGraphicList)getList();
+        if (omgraphics == null) return false;
 
-	OMGraphic newSelectedGraphic = 
-	    omgraphics.selectClosest(e.getX(), e.getY(), 2.0f);
-	
-	if (newSelectedGraphic != selectedGraphic) {
-	    if (selectedGraphic != null) {
-		selectedGraphic.deselect();
-	    }
+        OMGraphic newSelectedGraphic = 
+            omgraphics.selectClosest(e.getX(), e.getY(), 2.0f);
+        
+        if (newSelectedGraphic != selectedGraphic) {
+            if (selectedGraphic != null) {
+                selectedGraphic.deselect();
+            }
 
-	    selectedGraphic = newSelectedGraphic;
-	    if (newSelectedGraphic != null) {
-		newSelectedGraphic.select();
-		Object obj = newSelectedGraphic.getAppObject();
-		if (obj instanceof String) {
-		    fireRequestInfoLine((String)obj);
-		} else if (obj instanceof Vector) {
-		    fireRequestInfoLine(areas.getName((Vector)obj));
-		} else if (obj instanceof Integer) {
-		    fireRequestInfoLine(areas.getName((Integer)obj));
-		} else {
-		    fireRequestInfoLine("");
-		}
-	    } else {
-		fireRequestInfoLine("");
-	    }		
-	    repaint();
-	    return true;
-	}
+            selectedGraphic = newSelectedGraphic;
+            if (newSelectedGraphic != null) {
+                newSelectedGraphic.select();
+                Object obj = newSelectedGraphic.getAppObject();
+                if (obj instanceof String) {
+                    fireRequestInfoLine((String)obj);
+                } else if (obj instanceof Vector) {
+                    fireRequestInfoLine(areas.getName((Vector)obj));
+                } else if (obj instanceof Integer) {
+                    fireRequestInfoLine(areas.getName((Integer)obj));
+                } else {
+                    fireRequestInfoLine("");
+                }
+            } else {
+                fireRequestInfoLine("");
+            }           
+            repaint();
+            return true;
+        }
 
-	if (newSelectedGraphic == null) {
-	    return false;
-	} else {
-	    return true;
-	}
+        if (newSelectedGraphic == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public synchronized MapMouseListener getMapMouseListener() {
-	return this;
+        return this;
     }
 
     /**
@@ -171,10 +171,10 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
      * interested in.
      */
     public String[] getMouseModeServiceList() {
-	String[] modes = new String[1];
-	modes[0] = com.bbn.openmap.event.SelectMouseMode.modeID;
+        String[] modes = new String[1];
+        modes[0] = com.bbn.openmap.event.SelectMouseMode.modeID;
 
-	return modes;
+        return modes;
     }
 
     // Mouse Listener events
@@ -186,7 +186,7 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
      * @return false
      */
     public boolean mousePressed(MouseEvent e) { 
-	return false; // did not handle the event
+        return false; // did not handle the event
     }
 
     /**
@@ -195,7 +195,7 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
      * @return false
      */
     public boolean mouseReleased(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -204,7 +204,7 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
      * @return false
      */
     public boolean mouseClicked(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -231,7 +231,7 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
      * @return false
      */
     public boolean mouseDragged(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**

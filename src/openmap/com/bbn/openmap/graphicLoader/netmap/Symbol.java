@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/Symbol.java,v $
 // $RCSfile: Symbol.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,11 +29,11 @@ public class Symbol {   /* Symbol for sexp */
     int type;
 
     Symbol(String s, int type) {
-	this.str=s;
-	this.type=type;
+        this.str=s;
+        this.type=type;
     }
 
     public String toString() {
-	return this.str;
+        return this.str;
     }
 }

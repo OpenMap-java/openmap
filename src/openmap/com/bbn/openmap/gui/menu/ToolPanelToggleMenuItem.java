@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/ToolPanelToggleMenuItem.java,v $
 // $RCSfile: ToolPanelToggleMenuItem.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/08 22:25:44 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,63 +47,63 @@ public class ToolPanelToggleMenuItem extends JMenuItem
     protected final static String displayLabel = "Display Tool Panel";
 
     public ToolPanelToggleMenuItem() {
-	// assume that the tool panel isn't there.  
-	// Won't be visible if it isn't.
-	super(hideLabel);
-	init(null);
+        // assume that the tool panel isn't there.  
+        // Won't be visible if it isn't.
+        super(hideLabel);
+        init(null);
     }
 
     public ToolPanelToggleMenuItem(ToolPanel tp) {
-	super(tp.isVisible()?hideLabel:displayLabel);
-	init(tp);
+        super(tp.isVisible()?hideLabel:displayLabel);
+        init(tp);
     }
 
     public void init(ToolPanel tp) {
-	setToolPanel(tp);
-	addActionListener(this);
+        setToolPanel(tp);
+        addActionListener(this);
     }
 
     public void setToolPanel(ToolPanel tp) {
-	if (toolPanel != null) {
-	    toolPanel.removeComponentListener(this);
-	}
+        if (toolPanel != null) {
+            toolPanel.removeComponentListener(this);
+        }
 
-	toolPanel = tp;
-	this.setVisible(toolPanel != null);
+        toolPanel = tp;
+        this.setVisible(toolPanel != null);
 
-	if (toolPanel != null) {
-	    toolPanel.addComponentListener(this);
-	    stateCheck();
-	}
+        if (toolPanel != null) {
+            toolPanel.addComponentListener(this);
+            stateCheck();
+        }
     }
 
     public ToolPanel getToolPanel() {
-	return toolPanel;
+        return toolPanel;
     }
 
     public boolean forToolPanel(ToolPanel tp) {
-	return (tp == toolPanel);
+        return (tp == toolPanel);
     }
 
     public void actionPerformed(ActionEvent ae) {
-	if (toolPanel != null) {
-	    boolean selected = toolPanel.isVisible();
-	    toolPanel.setVisible(!selected);
-	    setText(selected?displayLabel:hideLabel);
-	}
+        if (toolPanel != null) {
+            boolean selected = toolPanel.isVisible();
+            toolPanel.setVisible(!selected);
+            setText(selected?displayLabel:hideLabel);
+        }
     }
 
     public void findAndInit(Object someObj) {
-	if (someObj instanceof ToolPanel) {
-	    setToolPanel((ToolPanel)someObj);
-	}
+        if (someObj instanceof ToolPanel) {
+            setToolPanel((ToolPanel)someObj);
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof ToolPanel &&
-	    getToolPanel() == (ToolPanel)someObj) {
-	    setToolPanel(null);
-	}
+        if (someObj instanceof ToolPanel &&
+            getToolPanel() == (ToolPanel)someObj) {
+            setToolPanel(null);
+        }
     }
 
     /**
@@ -111,14 +111,14 @@ public class ToolPanelToggleMenuItem extends JMenuItem
      * accordingly.
      */
     public void stateCheck() {
-	if (toolPanel != null) {
-	    setEnabled(toolPanel.areComponentsVisible());
-	    setText(toolPanel.isVisible()?hideLabel:displayLabel);
-	}
+        if (toolPanel != null) {
+            setEnabled(toolPanel.areComponentsVisible());
+            setText(toolPanel.isVisible()?hideLabel:displayLabel);
+        }
     }
 
     public void componentHidden(ComponentEvent ce) {
-	stateCheck();
+        stateCheck();
     }
 
     public void componentMoved(ComponentEvent ce) {}
@@ -126,6 +126,6 @@ public class ToolPanelToggleMenuItem extends JMenuItem
     public void componentResized(ComponentEvent ce) {}
 
     public void componentShown(ComponentEvent ce) {
-	stateCheck();
+        stateCheck();
     }
 }

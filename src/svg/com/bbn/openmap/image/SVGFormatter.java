@@ -1,23 +1,23 @@
 /* **********************************************************************
  * 
  *    Use, duplication, or disclosure by the Government is subject to
- * 	     restricted rights as set forth in the DFARS.
+ *           restricted rights as set forth in the DFARS.
  *  
- * 			   BBNT Solutions LLC
- * 			      A Part of  
- * 			         GTE      
- * 			  10 Moulton Street
- * 			 Cambridge, MA 02138
- * 			    (617) 873-3000
+ *                         BBNT Solutions LLC
+ *                            A Part of  
+ *                               GTE      
+ *                        10 Moulton Street
+ *                       Cambridge, MA 02138
+ *                          (617) 873-3000
  *  
- * 	  Copyright 1999-2000 by BBNT Solutions LLC,
- * 		A part of GTE, all rights reserved.
+ *        Copyright 1999-2000 by BBNT Solutions LLC,
+ *              A part of GTE, all rights reserved.
  *  
  * **********************************************************************
  * 
  * $Source: /cvs/distapps/openmap/src/svg/com/bbn/openmap/image/SVGFormatter.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/11/18 16:28:17 $
+ * $Revision: 1.4 $
+ * $Date: 2004/01/26 18:18:16 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -67,7 +67,7 @@ public class SVGFormatter extends AbstractImageFormatter {
      * properties set.
      */
     public ImageFormatter makeClone() {
-	return new SVGFormatter();
+        return new SVGFormatter();
     }
 
     /**
@@ -80,7 +80,7 @@ public class SVGFormatter extends AbstractImageFormatter {
      * information about the image. Probably not what you expected.  
      */
     public byte[] formatImage(BufferedImage bi) {
-	return null;
+        return null;
     }
 
     /**
@@ -90,32 +90,32 @@ public class SVGFormatter extends AbstractImageFormatter {
      */
     public byte[] getImageFromMapBean(com.bbn.openmap.MapBean map) {
 
-	Proj proj = (Proj)map.getProjection();
-	java.awt.Graphics graphics = getGraphics(proj.getWidth(), proj.getHeight());
+        Proj proj = (Proj)map.getProjection();
+        java.awt.Graphics graphics = getGraphics(proj.getWidth(), proj.getHeight());
 
-	// This should actually be getting the layers, and rendering
-	// each one.  It turns out that calling paintChildren() will
-	// render a buffered image if the MapBean is buffered, and
-	// that's not what we really want here.
-	// 	map.paintChildren(graphics);
+        // This should actually be getting the layers, and rendering
+        // each one.  It turns out that calling paintChildren() will
+        // render a buffered image if the MapBean is buffered, and
+        // that's not what we really want here.
+        //      map.paintChildren(graphics);
 
-	map.addPropertyChangeListener(this);
+        map.addPropertyChangeListener(this);
 
-	// Layers should be set...
-	proj.drawBackground((Graphics2D)graphics, map.getBckgrnd());
+        // Layers should be set...
+        proj.drawBackground((Graphics2D)graphics, map.getBckgrnd());
 
-	if (layers != null) {
-	    for (int i = layers.length - 1; i >= 0; i--) {
-		layers[i].renderDataForProjection(proj, graphics);
-	    }
-	} else {
-	    Debug.error("SVGFormatter can't get layers from map!");
-	}
+        if (layers != null) {
+            for (int i = layers.length - 1; i >= 0; i--) {
+                layers[i].renderDataForProjection(proj, graphics);
+            }
+        } else {
+            Debug.error("SVGFormatter can't get layers from map!");
+        }
 
-	map.removePropertyChangeListener(this);
-	layers = null;
+        map.removePropertyChangeListener(this);
+        layers = null;
 
-	return getImageBytes();
+        return getImageBytes();
     }
 
     /**
@@ -130,13 +130,13 @@ public class SVGFormatter extends AbstractImageFormatter {
      * @return java.awt.Graphics object to use.  
      */
     public Graphics getGraphics(int width, int height) {
-	if (svgGenerator == null) {
-	    DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
-	    Document document = domImpl.createDocument(null, "svg", null);
-	    svgGenerator = new SVGGraphics2D(document);
-	    svgGenerator.setClip(0, 0, width, height);
-	}
-	return svgGenerator;
+        if (svgGenerator == null) {
+            DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
+            Document document = domImpl.createDocument(null, "svg", null);
+            svgGenerator = new SVGGraphics2D(document);
+            svgGenerator.setClip(0, 0, width, height);
+        }
+        return svgGenerator;
     }
 
     /**
@@ -144,7 +144,7 @@ public class SVGFormatter extends AbstractImageFormatter {
      * @return null - there isn't a BufferedImage in this formatter.
      */
     public BufferedImage getBufferedImage() {
-	return null;
+        return null;
     }
 
     /**
@@ -163,8 +163,8 @@ public class SVGFormatter extends AbstractImageFormatter {
      * @return null.
      */
     public BufferedImage getScaledBufferedImage(int scaledWidth, 
-						int scaledHeight) {
-	return null;
+                                                int scaledHeight) {
+        return null;
     }
 
     /**
@@ -172,17 +172,17 @@ public class SVGFormatter extends AbstractImageFormatter {
      * @return byte[] representing the image.
      */
     public byte[] getImageBytes() {
-	if (svgGenerator != null) {
-	    try {
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
- 		OutputStreamWriter writer = new OutputStreamWriter(stream, SVGGraphics2D.DEFAULT_XML_ENCODING);
-		svgGenerator.stream(writer, false);
-		return stream.toByteArray();
-	    } catch (java.io.IOException ioe){
-		Debug.error("SVGFormatter caught IOException formatting svg!");
-	    }
-	}
-	return new byte[0];
+        if (svgGenerator != null) {
+            try {
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                OutputStreamWriter writer = new OutputStreamWriter(stream, SVGGraphics2D.DEFAULT_XML_ENCODING);
+                svgGenerator.stream(writer, false);
+                return stream.toByteArray();
+            } catch (java.io.IOException ioe){
+                Debug.error("SVGFormatter caught IOException formatting svg!");
+            }
+        }
+        return new byte[0];
     }
 
     /**
@@ -193,8 +193,8 @@ public class SVGFormatter extends AbstractImageFormatter {
      * @return byte[] representing the image.  
      */
     public byte[] getScaledImageBytes(int scaledWidth, 
-				      int scaledHeight) {
-	return getImageBytes();
+                                      int scaledHeight) {
+        return getImageBytes();
     }
 
     /**
@@ -203,6 +203,6 @@ public class SVGFormatter extends AbstractImageFormatter {
      * Some are listed in the WMTConstants interface file.
      */
     public String getFormatLabel() {
-	return WMTConstants.IMAGEFORMAT_SVG;	
+        return WMTConstants.IMAGEFORMAT_SVG;    
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicEditState.java,v $
 // $RCSfile: GraphicEditState.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/03 22:18:41 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,39 +37,39 @@ public class GraphicEditState extends State implements EOMGEditState {
     protected EditableOMGraphic graphic;
 
     public GraphicEditState(EditableOMGraphic eomg) {
-	graphic = eomg;
+        graphic = eomg;
     }
 
     public boolean mouseDragged(MouseEvent e) {
-	Debug.message("eomg", "GraphicStateMachine|edit state|mouseDragged");
-	if (graphic.getMovingPoint() != null) {
-	    graphic.redraw(e);
-	} else {
-	    graphic.getStateMachine().setSelected();
-	}
-	return getMapMouseListenerResponse();
+        Debug.message("eomg", "GraphicStateMachine|edit state|mouseDragged");
+        if (graphic.getMovingPoint() != null) {
+            graphic.redraw(e);
+        } else {
+            graphic.getStateMachine().setSelected();
+        }
+        return getMapMouseListenerResponse();
     }
 
     public boolean mouseReleased(MouseEvent e) {
-	Debug.message("eomg", "GraphicStateMachine|edit state|mouseReleased");
+        Debug.message("eomg", "GraphicStateMachine|edit state|mouseReleased");
 
-	if ((graphic.getStateMachine()).isOffsetNeeded() == true) {
-	    graphic.getStateMachine().setOffset();
-	    graphic.getStateMachine().setOffsetNeeded(false);
-	} else {
-	    graphic.getStateMachine().setSelected();
-	    GrabPoint mp = graphic.getMovingPoint();
-	    if (mp == null && !graphic.getCanGrabGraphic()) {
-		graphic.fireEvent(EOMGCursors.DEFAULT, "", e);
-     	    } else {
-		graphic.fireEvent(EOMGCursors.EDIT, "", e);
-	    }
-	}
+        if ((graphic.getStateMachine()).isOffsetNeeded() == true) {
+            graphic.getStateMachine().setOffset();
+            graphic.getStateMachine().setOffsetNeeded(false);
+        } else {
+            graphic.getStateMachine().setSelected();
+            GrabPoint mp = graphic.getMovingPoint();
+            if (mp == null && !graphic.getCanGrabGraphic()) {
+                graphic.fireEvent(EOMGCursors.DEFAULT, "", e);
+            } else {
+                graphic.fireEvent(EOMGCursors.EDIT, "", e);
+            }
+        }
 
-	graphic.redraw(e, true);
-	graphic.setMovingPoint(null);
+        graphic.redraw(e, true);
+        graphic.setMovingPoint(null);
 
-	return getMapMouseListenerResponse();
+        return getMapMouseListenerResponse();
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/GridData.java,v $
 // $RCSfile: GridData.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/01/17 00:22:34 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,37 +41,37 @@ public interface GridData {
     public boolean getMajor();
 
     public interface Boolean extends GridData {
-	public boolean getBooleanValue(int x, int y);
-	public boolean[][] getData();
+        public boolean getBooleanValue(int x, int y);
+        public boolean[][] getData();
     }
 
     public interface Byte extends GridData {
-	public byte getByteValue(int x, int y);
-	public byte[][] getData();
+        public byte getByteValue(int x, int y);
+        public byte[][] getData();
     }
 
     public interface Char extends GridData {
-	public char getCharValue(int x, int y);
-	public char[][] getData();
+        public char getCharValue(int x, int y);
+        public char[][] getData();
     }
 
     public interface Short extends GridData {
-	public short getShortValue(int x, int y);
-	public short[][] getData();
+        public short getShortValue(int x, int y);
+        public short[][] getData();
     }
 
     public interface Int extends GridData {
-	public int getIntValue(int x, int y);
-	public int [][] getData();
+        public int getIntValue(int x, int y);
+        public int [][] getData();
     }
 
     public interface Float extends GridData {
-	public float getFloatValue(int x, int y);
-	public float[][] getData();
+        public float getFloatValue(int x, int y);
+        public float[][] getData();
     }
 
     public interface Double extends GridData {
-	public double getDoubleValue(int x, int y);
-	public double[][] getData();
+        public double getDoubleValue(int x, int y);
+        public double[][] getData();
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeOptions.java,v $
 // $RCSfile: CodeOptions.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,21 +35,21 @@ public class CodeOptions {
     protected List options;
 
     public CodeOptions(List opts) {
-	options = opts;
+        options = opts;
     }
     
     public String toString() {
-	StringBuffer sb = new StringBuffer("CodeOptions:\n");
-	if (options != null) {
-	    for (Iterator it = options.iterator(); it.hasNext();) {
-		sb.append(((CodePosition)it.next()).toString() + "\n");
-	    }
-	}
-	return sb.toString();
+        StringBuffer sb = new StringBuffer("CodeOptions:\n");
+        if (options != null) {
+            for (Iterator it = options.iterator(); it.hasNext();) {
+                sb.append(((CodePosition)it.next()).toString() + "\n");
+            }
+        }
+        return sb.toString();
     }
 
     public List getOptions() {
-	return options;
+        return options;
     }
 
 }

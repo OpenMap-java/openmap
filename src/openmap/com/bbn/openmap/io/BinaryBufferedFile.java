@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/BinaryBufferedFile.java,v $
 // $RCSfile: BinaryBufferedFile.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,8 +55,8 @@ public class BinaryBufferedFile extends BinaryFile {
      * @see com.bbn.openmap.io.BinaryFile
      */
     public BinaryBufferedFile(File f, int buffersize) throws IOException {
-	super(f);
-	buffer = new byte[buffersize];
+        super(f);
+        buffer = new byte[buffersize];
     }
 
     /**
@@ -67,7 +67,7 @@ public class BinaryBufferedFile extends BinaryFile {
      * @see com.bbn.openmap.io.BinaryFile
      */
     public BinaryBufferedFile(File f) throws IOException {
-	this(f, 4096);
+        this(f, 4096);
     }
 
     /**
@@ -79,8 +79,8 @@ public class BinaryBufferedFile extends BinaryFile {
      * @see com.bbn.openmap.io.BinaryFile
      */
     public BinaryBufferedFile(String name, int buffersize) throws IOException {
-	super(name);
-	buffer = new byte[buffersize];
+        super(name);
+        buffer = new byte[buffersize];
     }
 
     /**
@@ -91,7 +91,7 @@ public class BinaryBufferedFile extends BinaryFile {
      * @see com.bbn.openmap.io.BinaryFile
      */
     public BinaryBufferedFile(String name) throws IOException {
-	this(name, 4096);
+        this(name, 4096);
     }
 
     /**
@@ -100,7 +100,7 @@ public class BinaryBufferedFile extends BinaryFile {
      * BinaryFile if successful, null if not.
      */
     public static BinaryBufferedFile create(String name) {
-	return create(name, 4096);
+        return create(name, 4096);
     }
 
     /**
@@ -109,11 +109,11 @@ public class BinaryBufferedFile extends BinaryFile {
      * BinaryFile if successful, null if not.
      */
     public static BinaryBufferedFile create(String name, int buffersize) {
-	BinaryBufferedFile bf = null;
-	try {
-	    bf = new BinaryBufferedFile(name, buffersize);
-	} catch (IOException ioe) {}
-	return bf;
+        BinaryBufferedFile bf = null;
+        try {
+            bf = new BinaryBufferedFile(name, buffersize);
+        } catch (IOException ioe) {}
+        return bf;
     }
 
     /**
@@ -122,10 +122,10 @@ public class BinaryBufferedFile extends BinaryFile {
      * beginning of the file.
      */
     public void setInputReader(InputReader reader) {
-	super.setInputReader(reader);
-	firstbyteoffset = 0;
-	bytesinbuffer = 0;
-	curptr = 0;
+        super.setInputReader(reader);
+        firstbyteoffset = 0;
+        bytesinbuffer = 0;
+        curptr = 0;
     }
 
     /**
@@ -136,11 +136,11 @@ public class BinaryBufferedFile extends BinaryFile {
      */
     private void refillBuffer() throws IOException, EOFException {
         firstbyteoffset += (curptr + bytesinbuffer);
-	int err = super.read(buffer, 0, buffer.length);
-	curptr = 0;
-	if (err == -1)
-	    throw new EOFException();
-	bytesinbuffer = err;
+        int err = super.read(buffer, 0, buffer.length);
+        curptr = 0;
+        if (err == -1)
+            throw new EOFException();
+        bytesinbuffer = err;
     }
 
     /**
@@ -151,75 +151,75 @@ public class BinaryBufferedFile extends BinaryFile {
      * @exception EOFException couldn't get any bytes
      */
     private void assertSize(int minlength)
-	throws FormatException, EOFException {
-	try {
-	    if (bytesinbuffer < minlength) {
-		if (curptr != 0) {
-		    firstbyteoffset += curptr;
-		    System.arraycopy(buffer, curptr, buffer, 0, bytesinbuffer);
-		    curptr=0;
-		}
-		int err = super.read(buffer, bytesinbuffer,
-				     buffer.length - bytesinbuffer);
-		if (err == -1) {
+        throws FormatException, EOFException {
+        try {
+            if (bytesinbuffer < minlength) {
+                if (curptr != 0) {
+                    firstbyteoffset += curptr;
+                    System.arraycopy(buffer, curptr, buffer, 0, bytesinbuffer);
+                    curptr=0;
+                }
+                int err = super.read(buffer, bytesinbuffer,
+                                     buffer.length - bytesinbuffer);
+                if (err == -1) {
 
-		    if (available() <= 0) {
-			throw new EOFException("BinaryBufferedFile, no bytes at all, trying to read " + minlength);
-		    } else {
-			throw new FormatException("BinaryBufferedFile: failed to read " + minlength + " bytes, with " + bytesinbuffer + " bytes in the buffer and " + available() + " bytes available, have read " + curptr + " bytes.");
-		    }
-		}
-		bytesinbuffer += err;
-		assertSize(minlength);
-	    }
-	} catch (EOFException e) {
-	    throw e;
-	} catch (IOException i) {
-	    throw new FormatException("assertSize IOException: " +
-				      i.getMessage());
-	}
+                    if (available() <= 0) {
+                        throw new EOFException("BinaryBufferedFile, no bytes at all, trying to read " + minlength);
+                    } else {
+                        throw new FormatException("BinaryBufferedFile: failed to read " + minlength + " bytes, with " + bytesinbuffer + " bytes in the buffer and " + available() + " bytes available, have read " + curptr + " bytes.");
+                    }
+                }
+                bytesinbuffer += err;
+                assertSize(minlength);
+            }
+        } catch (EOFException e) {
+            throw e;
+        } catch (IOException i) {
+            throw new FormatException("assertSize IOException: " +
+                                      i.getMessage());
+        }
     }
 
     public long skipBytes(long n) throws IOException {
-	if (n < bytesinbuffer) {
-	    bytesinbuffer -= n;
-	    curptr += n;
-	    return n;
-	}
-	final long oldbinb = bytesinbuffer;
-	bytesinbuffer = 0;
-	curptr = 0;
-	final int skipcnt = (int)super.skipBytes(n-oldbinb);
-	firstbyteoffset += skipcnt;
-	return (oldbinb + skipcnt);
+        if (n < bytesinbuffer) {
+            bytesinbuffer -= n;
+            curptr += n;
+            return n;
+        }
+        final long oldbinb = bytesinbuffer;
+        bytesinbuffer = 0;
+        curptr = 0;
+        final int skipcnt = (int)super.skipBytes(n-oldbinb);
+        firstbyteoffset += skipcnt;
+        return (oldbinb + skipcnt);
     }
     
     public long getFilePointer() throws IOException {
-	return (firstbyteoffset + curptr);
+        return (firstbyteoffset + curptr);
     }
     
     public void seek(long pos) throws IOException {
         final long relpos = pos - firstbyteoffset;
-	if ((relpos >= 0) && (relpos < (curptr + bytesinbuffer))) {
-	  final int relcur = (int)relpos - curptr;
-	  if (relcur != 0) {
-	    bytesinbuffer -= relcur;
-	    curptr = (int)relpos;
-	  } //else we're already at the right place
-	} else {
-	    super.seek(pos);
-	    firstbyteoffset = pos;
-	    bytesinbuffer = 0;
-	    curptr = 0;
-	}
+        if ((relpos >= 0) && (relpos < (curptr + bytesinbuffer))) {
+          final int relcur = (int)relpos - curptr;
+          if (relcur != 0) {
+            bytesinbuffer -= relcur;
+            curptr = (int)relpos;
+          } //else we're already at the right place
+        } else {
+            super.seek(pos);
+            firstbyteoffset = pos;
+            bytesinbuffer = 0;
+            curptr = 0;
+        }
     }
     
     public long length() throws IOException {
-	return super.length();
+        return super.length();
     }
     
     public long available() throws IOException {
-	return(length() - firstbyteoffset - curptr);
+        return(length() - firstbyteoffset - curptr);
     }
     
     /**
@@ -229,19 +229,19 @@ public class BinaryBufferedFile extends BinaryFile {
      * @exception IOException IO errors envountered in closing the file
      */
     public void close() throws IOException {
-	buffer = null;
-	super.close();
+        buffer = null;
+        super.close();
     }
     
     public int read() throws IOException {
-	try {
-	    if (bytesinbuffer == 0)
-		refillBuffer();
-	} catch (EOFException e) {
-	    return -1;
-	}
-	bytesinbuffer--;
-	return MoreMath.signedToInt(buffer[curptr++]);
+        try {
+            if (bytesinbuffer == 0)
+                refillBuffer();
+        } catch (EOFException e) {
+            return -1;
+        }
+        bytesinbuffer--;
+        return MoreMath.signedToInt(buffer[curptr++]);
     }
     
     /**
@@ -255,45 +255,45 @@ public class BinaryBufferedFile extends BinaryFile {
      * the file
      */
     public int read(byte b[], int off, int len) throws IOException {
-	int numread = 0;
-	int copy;
-	if (len < bytesinbuffer)
-	    copy = len;
-	else
-	    copy = bytesinbuffer;
-	numread += copy;
-	bytesinbuffer -= copy;
-	System.arraycopy(buffer, curptr, b, off, copy);
-	curptr += copy;
-	off += copy;
-	
-	if (len == copy)
-	    return numread;
-	
-	len -= copy;
-	//was not enough stuff in buffer, do some reads...
-	
-	if (len > 512) {//threshold exceeded, read straight into user buffer
+        int numread = 0;
+        int copy;
+        if (len < bytesinbuffer)
+            copy = len;
+        else
+            copy = bytesinbuffer;
+        numread += copy;
+        bytesinbuffer -= copy;
+        System.arraycopy(buffer, curptr, b, off, copy);
+        curptr += copy;
+        off += copy;
+        
+        if (len == copy)
+            return numread;
+        
+        len -= copy;
+        //was not enough stuff in buffer, do some reads...
+        
+        if (len > 512) {//threshold exceeded, read straight into user buffer
 
-	    final int bcnt = super.read(b, off, len);
-	    firstbyteoffset += (curptr + bcnt);
-	    curptr = 0;
-	    return (numread + bcnt);
+            final int bcnt = super.read(b, off, len);
+            firstbyteoffset += (curptr + bcnt);
+            curptr = 0;
+            return (numread + bcnt);
 
-	} else { //refull buffer and recurse
+        } else { //refull buffer and recurse
 
-	    try {
-		refillBuffer();
-	    } catch (EOFException e) {
-		return numread;
-	    }
-	    return (numread + read(b, off, len));
+            try {
+                refillBuffer();
+            } catch (EOFException e) {
+                return numread;
+            }
+            return (numread + read(b, off, len));
 
-	}
+        }
     }
 
     public int read(byte b[]) throws IOException {
-	return read(b, 0, b.length);
+        return read(b, 0, b.length);
     }
     
     /**
@@ -309,35 +309,35 @@ public class BinaryBufferedFile extends BinaryFile {
      * was <code>false</code>, but NO bytes had been read.
      */
     public byte[] readBytes(int howmany, boolean allowless) 
-	throws EOFException, FormatException {
+        throws EOFException, FormatException {
 
-	byte foo[] = new byte[howmany];
-	int gotsofar = 0;
-	try {
-	    while (gotsofar < howmany) {
-		int err = read(foo, gotsofar, howmany - gotsofar);
-		if (err == -1) {
-		    if (allowless) {
-			/* return a smaller array, so the caller can tell
-			   how much they really got */
-			byte retval[] = new byte[gotsofar];
-			System.arraycopy(foo, 0, retval, 0, gotsofar);
-			return retval;
-		    } else { //some kind of failure...
-			if (gotsofar > 0) {
-			    throw new FormatException("EOF while reading");
-			} else {
-			    throw new EOFException();
-			}
-		    }
-		}
-		gotsofar += err;
-	    }
-	} catch (IOException i) {
-	    throw new FormatException("IOException reading file: " +
-				      i.getMessage());
-	}
-	return foo;
+        byte foo[] = new byte[howmany];
+        int gotsofar = 0;
+        try {
+            while (gotsofar < howmany) {
+                int err = read(foo, gotsofar, howmany - gotsofar);
+                if (err == -1) {
+                    if (allowless) {
+                        /* return a smaller array, so the caller can tell
+                           how much they really got */
+                        byte retval[] = new byte[gotsofar];
+                        System.arraycopy(foo, 0, retval, 0, gotsofar);
+                        return retval;
+                    } else { //some kind of failure...
+                        if (gotsofar > 0) {
+                            throw new FormatException("EOF while reading");
+                        } else {
+                            throw new EOFException();
+                        }
+                    }
+                }
+                gotsofar += err;
+            }
+        } catch (IOException i) {
+            throw new FormatException("IOException reading file: " +
+                                      i.getMessage());
+        }
+        return foo;
     }
 
     /**
@@ -348,16 +348,16 @@ public class BinaryBufferedFile extends BinaryFile {
      * where available
      * @exception FormatException a rethrown IOException */
     public char readChar() throws EOFException, FormatException {
-	try {
-	    int retv = read();
-	    if (retv == -1) {
-		throw new EOFException("Error in ReadChar, EOF reached");
-	    }
-	    return (char)retv;
-	} catch (IOException i) {
-	    throw new FormatException("IOException in ReadChar: " +
-				      i.getMessage());
-	}
+        try {
+            int retv = read();
+            if (retv == -1) {
+                throw new EOFException("Error in ReadChar, EOF reached");
+            }
+            return (char)retv;
+        } catch (IOException i) {
+            throw new FormatException("IOException in ReadChar: " +
+                                      i.getMessage());
+        }
     }
     
     /**
@@ -371,10 +371,10 @@ public class BinaryBufferedFile extends BinaryFile {
      * @see #read(byte[])
      */
     public short readShort() throws EOFException, FormatException {
-	//MSBFirst must be set when we are called
-	assertSize(2);
-	curptr += 2; bytesinbuffer -= 2;
-	return MoreMath.BuildShort(buffer, curptr-2, MSBFirst);
+        //MSBFirst must be set when we are called
+        assertSize(2);
+        curptr += 2; bytesinbuffer -= 2;
+        return MoreMath.BuildShort(buffer, curptr-2, MSBFirst);
     }
 
     /**
@@ -388,28 +388,28 @@ public class BinaryBufferedFile extends BinaryFile {
      * reading the bytes for the array
      */
     public void readShortArray(short vec[], int offset, int len) 
-	throws EOFException, FormatException {
+        throws EOFException, FormatException {
 
       while (len > 0) {
-	int shortsleft = bytesinbuffer / 2;
-	if (shortsleft == 0) {
-	  assertSize(2); //force a buffer refill - throws exception if it can't
-	  continue;
-	}
-	int reallyread = (len < shortsleft) ? len : shortsleft;
-	if (MSBFirst) {
-	  for (int i = 0; i < reallyread; i++) {
-	    vec[offset++] = MoreMath.BuildShortBE(buffer, curptr);
-	    curptr += 2;
-	  }
-	} else {
-	  for (int i = 0; i < reallyread; i++) {
-	    vec[offset++] = MoreMath.BuildShortLE(buffer, curptr);
-	    curptr += 2;
-	  }
-	}
-	len -= reallyread;
-	bytesinbuffer -= (2 * reallyread);
+        int shortsleft = bytesinbuffer / 2;
+        if (shortsleft == 0) {
+          assertSize(2); //force a buffer refill - throws exception if it can't
+          continue;
+        }
+        int reallyread = (len < shortsleft) ? len : shortsleft;
+        if (MSBFirst) {
+          for (int i = 0; i < reallyread; i++) {
+            vec[offset++] = MoreMath.BuildShortBE(buffer, curptr);
+            curptr += 2;
+          }
+        } else {
+          for (int i = 0; i < reallyread; i++) {
+            vec[offset++] = MoreMath.BuildShortLE(buffer, curptr);
+            curptr += 2;
+          }
+        }
+        len -= reallyread;
+        bytesinbuffer -= (2 * reallyread);
       }
     }
 
@@ -423,10 +423,10 @@ public class BinaryBufferedFile extends BinaryFile {
      * reading the bytes for the integer
      */
     public int readInteger() throws EOFException, FormatException {
-	//MSBFirst must be set when we are called
-	assertSize(4);
-	curptr += 4; bytesinbuffer -= 4;
-	return MoreMath.BuildInteger(buffer, curptr-4, MSBFirst);
+        //MSBFirst must be set when we are called
+        assertSize(4);
+        curptr += 4; bytesinbuffer -= 4;
+        return MoreMath.BuildInteger(buffer, curptr-4, MSBFirst);
     }
      
     /**
@@ -437,30 +437,30 @@ public class BinaryBufferedFile extends BinaryFile {
      * reading the bytes for the array
      */
     public void readIntegerArray(int vec[], int offset, int len)
-	throws EOFException, FormatException {
-	while (len > 0) {
-	    int intsleft = bytesinbuffer / 4;
-	    if (intsleft == 0) {
-		assertSize(4); //force a buffer refill
-		continue;
-	    }
-	    int reallyread = (len < intsleft) ? len : intsleft;
-	    int cursor = curptr;
-	    if (MSBFirst) {
-		for (int i = 0; i < reallyread; i++) {
-		    vec[offset++] = MoreMath.BuildIntegerBE(buffer, cursor);
-		    cursor += 4;
-		}
-	    } else {
-		for (int i = 0; i < reallyread; i++) {
-		    vec[offset++] = MoreMath.BuildIntegerLE(buffer, cursor);
-		    cursor += 4;
-		}
-	    }
-	    len -= reallyread;
-	    bytesinbuffer -= (4 * reallyread);
-	    curptr = cursor;
-	}
+        throws EOFException, FormatException {
+        while (len > 0) {
+            int intsleft = bytesinbuffer / 4;
+            if (intsleft == 0) {
+                assertSize(4); //force a buffer refill
+                continue;
+            }
+            int reallyread = (len < intsleft) ? len : intsleft;
+            int cursor = curptr;
+            if (MSBFirst) {
+                for (int i = 0; i < reallyread; i++) {
+                    vec[offset++] = MoreMath.BuildIntegerBE(buffer, cursor);
+                    cursor += 4;
+                }
+            } else {
+                for (int i = 0; i < reallyread; i++) {
+                    vec[offset++] = MoreMath.BuildIntegerLE(buffer, cursor);
+                    cursor += 4;
+                }
+            }
+            len -= reallyread;
+            bytesinbuffer -= (4 * reallyread);
+            curptr = cursor;
+        }
     }
 
     /**
@@ -474,32 +474,32 @@ public class BinaryBufferedFile extends BinaryFile {
      * reading the bytes for the integer
      */
     public void readFloatArray(float vec[], int offset, int len)
-	throws EOFException, FormatException {
-	while (len > 0) {
-	    int floatsleft = bytesinbuffer / 4;
-	    if (floatsleft == 0) {
-		assertSize(4); //force a buffer refill
-		continue;
-	    }
-	    int reallyread = (len < floatsleft) ? len : floatsleft;
-	    int cursor = curptr;
-	    if (MSBFirst) {
-		for (int i = 0; i < reallyread; i++) {
-		    int floatasint = MoreMath.BuildIntegerBE(buffer, cursor);
-		    vec[offset++] = Float.intBitsToFloat(floatasint);
-		    cursor += 4;
-		}
-	    } else {
-		for (int i = 0; i < reallyread; i++) {
-		    int floatasint = MoreMath.BuildIntegerLE(buffer, cursor);
-		    vec[offset++] = Float.intBitsToFloat(floatasint);
-		    cursor += 4;
-		}
-	    }
-	    len -= reallyread;
-	    bytesinbuffer -= (4 * reallyread);
-	    curptr = cursor;
-	}
+        throws EOFException, FormatException {
+        while (len > 0) {
+            int floatsleft = bytesinbuffer / 4;
+            if (floatsleft == 0) {
+                assertSize(4); //force a buffer refill
+                continue;
+            }
+            int reallyread = (len < floatsleft) ? len : floatsleft;
+            int cursor = curptr;
+            if (MSBFirst) {
+                for (int i = 0; i < reallyread; i++) {
+                    int floatasint = MoreMath.BuildIntegerBE(buffer, cursor);
+                    vec[offset++] = Float.intBitsToFloat(floatasint);
+                    cursor += 4;
+                }
+            } else {
+                for (int i = 0; i < reallyread; i++) {
+                    int floatasint = MoreMath.BuildIntegerLE(buffer, cursor);
+                    vec[offset++] = Float.intBitsToFloat(floatasint);
+                    cursor += 4;
+                }
+            }
+            len -= reallyread;
+            bytesinbuffer -= (4 * reallyread);
+            curptr = cursor;
+        }
     }
 
     /**
@@ -513,9 +513,9 @@ public class BinaryBufferedFile extends BinaryFile {
      * @see #read(byte[])
      */
     public long readLong() throws EOFException, FormatException {
-	assertSize(8);
-	curptr += 8; bytesinbuffer -= 8;
-	return MoreMath.BuildLong(buffer, curptr-8, MSBFirst);
+        assertSize(8);
+        curptr += 8; bytesinbuffer -= 8;
+        return MoreMath.BuildLong(buffer, curptr-8, MSBFirst);
     }
 
     /**
@@ -531,15 +531,15 @@ public class BinaryBufferedFile extends BinaryFile {
      */
     public String readFixedLengthString(int length) throws EOFException, FormatException {
         String retstring;
-	if (length < buffer.length) {
-	    assertSize(length);
-	    retstring = new String(buffer, curptr, length);
-	    curptr += length;
-	    bytesinbuffer -= length;
-	} else {
-	    byte foo[] = readBytes(length, false);
-	    retstring = new String(foo, 0, length);
-	}
-	return retstring;
+        if (length < buffer.length) {
+            assertSize(length);
+            retstring = new String(buffer, curptr, length);
+            curptr += length;
+            bytesinbuffer -= length;
+        } else {
+            byte foo[] = readBytes(length, false);
+            retstring = new String(foo, 0, length);
+        }
+        return retstring;
     }
 }

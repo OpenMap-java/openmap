@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMText.java,v $
 // $RCSfile: EditableOMText.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:50:27 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,7 +59,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * the point off of the gestures.  
      */
     public EditableOMText() {
-	createGraphic(null);
+        createGraphic(null);
     }
 
     /**
@@ -67,7 +67,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * parameters in the GraphicAttributes object.
      */
     public EditableOMText(GraphicAttributes ga) {
-	createGraphic(ga);
+        createGraphic(ga);
     }
 
     /**
@@ -77,7 +77,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * @param omc OMText that should be edited.
      */
     public EditableOMText(OMText omc) {
-	setGraphic(omc);
+        setGraphic(omc);
     }
 
     /**
@@ -87,9 +87,9 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * EditableOMText.
      */
     public void init() {
-	setCanGrabGraphic(false);
-	setStateMachine(new TextStateMachine(this));
- 	gPoints = new GrabPoint[2];
+        setCanGrabGraphic(false);
+        setStateMachine(new TextStateMachine(this));
+        gPoints = new GrabPoint[2];
     }
 
     /**
@@ -99,14 +99,14 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * map.  
      */
     public void setGraphic(OMGraphic graphic) {
-	init();
-	if (graphic instanceof OMText) {
-	    text = (OMText)graphic;
-	    stateMachine.setSelected();
+        init();
+        if (graphic instanceof OMText) {
+            text = (OMText)graphic;
+            stateMachine.setSelected();
             setGrabPoints(text);
-	} else {
-	    createGraphic(null);
-	}
+        } else {
+            createGraphic(null);
+        }
     }
 
     /**
@@ -114,38 +114,38 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * GraphicAttributes describe the type of point to create. 
      */
     public void createGraphic(GraphicAttributes ga) {
-	init();
-	stateMachine.setUndefined();
-	int renderType = OMGraphic.RENDERTYPE_UNKNOWN;
+        init();
+        stateMachine.setUndefined();
+        int renderType = OMGraphic.RENDERTYPE_UNKNOWN;
 
-	if (ga != null) {
-	    renderType = ga.getRenderType();
-	}
+        if (ga != null) {
+            renderType = ga.getRenderType();
+        }
 
-	switch (renderType) {
-	case (OMGraphic.RENDERTYPE_LATLON):
-	    text = new OMText(90f, -180f, "Text", OMText.JUSTIFY_LEFT);
-	    break;
-	case (OMGraphic.RENDERTYPE_OFFSET):
-	    text = new OMText(90f, -180f, 0, 0, "Text", OMText.JUSTIFY_LEFT);
-	    break;
-	default:
-	    text = new OMText(0, 0, "Text", OMText.JUSTIFY_LEFT);
-	}
+        switch (renderType) {
+        case (OMGraphic.RENDERTYPE_LATLON):
+            text = new OMText(90f, -180f, "Text", OMText.JUSTIFY_LEFT);
+            break;
+        case (OMGraphic.RENDERTYPE_OFFSET):
+            text = new OMText(90f, -180f, 0, 0, "Text", OMText.JUSTIFY_LEFT);
+            break;
+        default:
+            text = new OMText(0, 0, "Text", OMText.JUSTIFY_LEFT);
+        }
 
-	if (ga != null) {
-	    ga.setTo(text);
-	    text.setLinePaint(ga.getLinePaint());
-	}
+        if (ga != null) {
+            ga.setTo(text);
+            text.setLinePaint(ga.getLinePaint());
+        }
 
-	assertGrabPoints();
+        assertGrabPoints();
     }
 
     /**
      * Get the OMGraphic being created/modified by the EditableOMText.  
      */
     public OMGraphic getGraphic() {
-	return text;
+        return text;
     }
 
     /**
@@ -155,7 +155,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * OffsetGrabPoints should be attached to it.
      */
     public void attachToMovingGrabPoint(OffsetGrabPoint gp) {
-	gp.addGrabPoint(gpo);
+        gp.addGrabPoint(gpo);
     }
 
     /**
@@ -165,7 +165,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * OffsetGrabPoint.
      */
     public void detachFromMovingGrabPoint(OffsetGrabPoint gp) {
-	gp.removeGrabPoint(gpo);
+        gp.removeGrabPoint(gpo);
     }
 
     /**
@@ -173,7 +173,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * result of a mouseDragged event, or other selection process.
      */
     public void setMovingPoint(GrabPoint gp) {
-	super.setMovingPoint(gp);
+        super.setMovingPoint(gp);
     }
 
 
@@ -187,23 +187,23 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      */
     public GrabPoint getMovingPoint(MouseEvent e) {
 
-	movingPoint = null;
-	GrabPoint[] gb = getGrabPoints();
-	int x = e.getX();
-	int y = e.getY();
+        movingPoint = null;
+        GrabPoint[] gb = getGrabPoints();
+        int x = e.getX();
+        int y = e.getY();
 
-	for (int i = gb.length - 1; i >=0; i--) {
+        for (int i = gb.length - 1; i >=0; i--) {
 
-	    if (gb[i] != null && 
-		gb[i].distance(x, y) == 0) {
+            if (gb[i] != null && 
+                gb[i].distance(x, y) == 0) {
 
-		setMovingPoint(gb[i]);
-		// in case the points are on top of each other, the
-		// last point in the array will take precidence.
-		break;
-	    }
-	}
-	return movingPoint;
+                setMovingPoint(gb[i]);
+                // in case the points are on top of each other, the
+                // last point in the array will take precidence.
+                break;
+            }
+        }
+        return movingPoint;
     }
 
     protected int lastRenderType = -1;
@@ -213,31 +213,31 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * allocate them, and them assign them to the array. 
      */
     public void assertGrabPoints() {
-	int rt = getGraphic().getRenderType();
-	if (rt != lastRenderType) {
-	    clearGrabPoints();
-	    lastRenderType = rt;
-	}
+        int rt = getGraphic().getRenderType();
+        if (rt != lastRenderType) {
+            clearGrabPoints();
+            lastRenderType = rt;
+        }
 
-	if (gpc == null) {
-	    gpc = new GrabPoint(-1, -1);
-	    gPoints[CENTER_POINT_INDEX] = gpc;
-	}
+        if (gpc == null) {
+            gpc = new GrabPoint(-1, -1);
+            gPoints[CENTER_POINT_INDEX] = gpc;
+        }
 
-	if (gpo == null) {
-	    gpo = new OffsetGrabPoint(-1, -1);
-	    gPoints[OFFSET_POINT_INDEX] = gpo;
-	    gpo.addGrabPoint(gpc);
-	}
+        if (gpo == null) {
+            gpo = new OffsetGrabPoint(-1, -1);
+            gPoints[OFFSET_POINT_INDEX] = gpo;
+            gpo.addGrabPoint(gpc);
+        }
     }
 
     protected void clearGrabPoints() {
 
-	gpc = null;
-	gpo = null;
+        gpc = null;
+        gpo = null;
 
-	gPoints[CENTER_POINT_INDEX] = gpc;
-	gPoints[OFFSET_POINT_INDEX] = gpo;
+        gPoints[CENTER_POINT_INDEX] = gpc;
+        gPoints[OFFSET_POINT_INDEX] = gpo;
     }
 
     /**
@@ -246,60 +246,60 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * grab points off the location of the graphic.
      */
     public void setGrabPoints(OMGraphic graphic) {
-	if (!(graphic instanceof OMText)) {
-	    return;
-	}
-	assertGrabPoints();
+        if (!(graphic instanceof OMText)) {
+            return;
+        }
+        assertGrabPoints();
 
-	OMText text = (OMText) graphic;
-	boolean ntr = text.getNeedToRegenerate();
-	int renderType = text.getRenderType();
-	int lineType = text.getLineType();
+        OMText text = (OMText) graphic;
+        boolean ntr = text.getNeedToRegenerate();
+        int renderType = text.getRenderType();
+        int lineType = text.getLineType();
 
-	int top = 0;
-	int bottom = 0;
-	int left = 0;
-	int right = 0;
-	LatLonPoint llp;
-	int latoffset = 0;
-	int lonoffset = 0;
+        int top = 0;
+        int bottom = 0;
+        int left = 0;
+        int right = 0;
+        LatLonPoint llp;
+        int latoffset = 0;
+        int lonoffset = 0;
 
-	boolean doStraight = true;
+        boolean doStraight = true;
 
-	if (ntr == false) {
+        if (ntr == false) {
 
-	    if (renderType == OMGraphic.RENDERTYPE_LATLON || 
-		renderType == OMGraphic.RENDERTYPE_OFFSET) {
-		
-		if (projection != null) {
-		    float lon = text.getLon();
-		    float lat = text.getLat();
+            if (renderType == OMGraphic.RENDERTYPE_LATLON || 
+                renderType == OMGraphic.RENDERTYPE_OFFSET) {
+                
+                if (projection != null) {
+                    float lon = text.getLon();
+                    float lat = text.getLat();
 
-		    llp = new LatLonPoint(lat, lon);
-		    java.awt.Point p = projection.forward(llp);
-		    if (renderType == OMGraphic.RENDERTYPE_LATLON) {
-    			doStraight = false;
-			gpc.set((int)p.getX(), (int)p.getY());
-		    } else {
-			latoffset = (int)p.getY();
-			lonoffset = (int)p.getX();
-			gpo.set(lonoffset, latoffset);
-		    }
-		}
-	    }
+                    llp = new LatLonPoint(lat, lon);
+                    java.awt.Point p = projection.forward(llp);
+                    if (renderType == OMGraphic.RENDERTYPE_LATLON) {
+                        doStraight = false;
+                        gpc.set((int)p.getX(), (int)p.getY());
+                    } else {
+                        latoffset = (int)p.getY();
+                        lonoffset = (int)p.getX();
+                        gpo.set(lonoffset, latoffset);
+                    }
+                }
+            }
 
-		
-	    if (doStraight) {
-		gpc.set(lonoffset + text.getX(), latoffset + text.getY());
-	    }
+                
+            if (doStraight) {
+                gpc.set(lonoffset + text.getX(), latoffset + text.getY());
+            }
 
-	    if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
-		gpo.updateOffsets();
-	    }
+            if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
+                gpo.updateOffsets();
+            }
 
-	} else {
-	    System.out.println("EditableOMText.setGrabPoint: graphic needs to be regenerated");
-	}
+        } else {
+            System.out.println("EditableOMText.setGrabPoint: graphic needs to be regenerated");
+        }
     }
 
     /**
@@ -309,59 +309,59 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      */
     public void setGrabPoints() {
 
-	int renderType = text.getRenderType();
-	LatLonPoint llp1;
+        int renderType = text.getRenderType();
+        LatLonPoint llp1;
 
-	Debug.message("eomt", "EditableOMText.setGrabPoints()");
+        Debug.message("eomt", "EditableOMText.setGrabPoints()");
 
-	// Do center point for lat/lon or offset points
-	if (renderType == OMGraphic.RENDERTYPE_LATLON) {
+        // Do center point for lat/lon or offset points
+        if (renderType == OMGraphic.RENDERTYPE_LATLON) {
 
-	    if (projection != null) {
-		//movingPoint == gpc
-		llp1 = projection.inverse(gpc.getX(), gpc.getY());
-		text.setLat(llp1.getLatitude());
-		text.setLon(llp1.getLongitude());
-		// text.setNeedToRegenerate set
-	    }
-	}
+            if (projection != null) {
+                //movingPoint == gpc
+                llp1 = projection.inverse(gpc.getX(), gpc.getY());
+                text.setLat(llp1.getLatitude());
+                text.setLon(llp1.getLongitude());
+                // text.setNeedToRegenerate set
+            }
+        }
 
-	boolean settingOffset = getStateMachine().getState() instanceof GraphicSetOffsetState && movingPoint == gpo;
+        boolean settingOffset = getStateMachine().getState() instanceof GraphicSetOffsetState && movingPoint == gpo;
 
-	// If the center point is moving, the offset distance changes
-	if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
+        // If the center point is moving, the offset distance changes
+        if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
-	    llp1 = projection.inverse(gpo.getX(), gpo.getY());
+            llp1 = projection.inverse(gpo.getX(), gpo.getY());
 
-	    text.setLat(llp1.getLatitude());
-	    text.setLon(llp1.getLongitude());
+            text.setLat(llp1.getLatitude());
+            text.setLon(llp1.getLongitude());
 
-	    if (settingOffset || movingPoint == gpc) {
-		// Don't call point.setLocation because we only want to
-		// setNeedToRegenerate if !settingOffset.
-		text.setX(gpc.getX() - gpo.getX());
-		text.setY(gpc.getY() - gpo.getY());
-	    }
+            if (settingOffset || movingPoint == gpc) {
+                // Don't call point.setLocation because we only want to
+                // setNeedToRegenerate if !settingOffset.
+                text.setX(gpc.getX() - gpo.getX());
+                text.setY(gpc.getY() - gpo.getY());
+            }
 
-	    if (!settingOffset) {
-		text.setX(gpc.getX() - gpo.getX());
-		text.setY(gpc.getY() - gpo.getY());
-	    }
+            if (!settingOffset) {
+                text.setX(gpc.getX() - gpo.getX());
+                text.setY(gpc.getY() - gpo.getY());
+            }
 
-	    // Set Location has reset the rendertype, but provides
-	    // the convenience of setting the max and min values
-	    // for us.
-	    text.setRenderType(OMGraphic.RENDERTYPE_OFFSET);
-	}
+            // Set Location has reset the rendertype, but provides
+            // the convenience of setting the max and min values
+            // for us.
+            text.setRenderType(OMGraphic.RENDERTYPE_OFFSET);
+        }
 
-	// Do the point height and width for XY and OFFSET render types.
-	if (renderType == OMGraphic.RENDERTYPE_XY) {
+        // Do the point height and width for XY and OFFSET render types.
+        if (renderType == OMGraphic.RENDERTYPE_XY) {
 
-	    if (movingPoint == gpc) {
-		text.setX(gpc.getX());
-		text.setY(gpc.getY());
-	    }
-	}
+            if (movingPoint == gpc) {
+                text.setX(gpc.getX());
+                text.setY(gpc.getY());
+            }
+        }
 
     }
 
@@ -370,7 +370,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * than just by its grab points.
      */
     public boolean getCanGrabGraphic() {
-	return false;
+        return false;
     }
 
 
@@ -396,14 +396,14 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * @return true 
      */
     public boolean generate(Projection proj) {
-	if (text != null) text.regenerate(proj);
-	for (int i = 0; i < gPoints.length; i++) {
-	    GrabPoint gp = gPoints[i];
-	    if (gp != null) {
-		gp.generate(proj);
-	    }
-	}
-	return true;
+        if (text != null) text.regenerate(proj);
+        for (int i = 0; i < gPoints.length; i++) {
+            GrabPoint gp = gPoints[i];
+            if (gp != null) {
+                gp.generate(proj);
+            }
+        }
+        return true;
     }
 
     /**
@@ -412,10 +412,10 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * when the projection changes.
      */
     public void regenerate(Projection proj) {
-	if (text != null) text.regenerate(proj);
+        if (text != null) text.regenerate(proj);
 
-	setGrabPoints(text);
-	generate(proj);
+        setGrabPoints(text);
+        generate(proj);
     }
 
     /**
@@ -427,44 +427,44 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      */
     public void render(java.awt.Graphics graphics) {
 
-	State state = getStateMachine().getState();
+        State state = getStateMachine().getState();
 
-	if (!(state instanceof GraphicUndefinedState)) {
-	    if (text != null) {
-		text.setVisible(true);
-		text.render(graphics);
-		text.setVisible(false);
-	    } else {
-		Debug.message("eomg", "EditableOMText.render: null point.");
-	    }
-	
-	    int renderType = text.getRenderType();
+        if (!(state instanceof GraphicUndefinedState)) {
+            if (text != null) {
+                text.setVisible(true);
+                text.render(graphics);
+                text.setVisible(false);
+            } else {
+                Debug.message("eomg", "EditableOMText.render: null point.");
+            }
+        
+            int renderType = text.getRenderType();
 
-	    if (state instanceof GraphicSelectedState ||
-		state instanceof GraphicEditState) {
+            if (state instanceof GraphicSelectedState ||
+                state instanceof GraphicEditState) {
 
-		for (int i = 0; i < gPoints.length; i++) {
-		    GrabPoint gp = gPoints[i];
-		    if (gp != null) {
-			if ((i == OFFSET_POINT_INDEX &&
-			     renderType == OMGraphic.RENDERTYPE_OFFSET &&
-			     movingPoint == gpo) || 
-			
-			    (state instanceof GraphicSelectedState && 
-			     ((i != OFFSET_POINT_INDEX && 
-			       renderType != OMGraphic.RENDERTYPE_OFFSET) || 
-			      (renderType == OMGraphic.RENDERTYPE_OFFSET)))
-			
-			    ) {
+                for (int i = 0; i < gPoints.length; i++) {
+                    GrabPoint gp = gPoints[i];
+                    if (gp != null) {
+                        if ((i == OFFSET_POINT_INDEX &&
+                             renderType == OMGraphic.RENDERTYPE_OFFSET &&
+                             movingPoint == gpo) || 
+                        
+                            (state instanceof GraphicSelectedState && 
+                             ((i != OFFSET_POINT_INDEX && 
+                               renderType != OMGraphic.RENDERTYPE_OFFSET) || 
+                              (renderType == OMGraphic.RENDERTYPE_OFFSET)))
+                        
+                            ) {
 
-			    gp.setVisible(true);
-			    gp.render(graphics);
-			    gp.setVisible(false);
-			}
-		    }
-		}
-	    }
-	}
+                            gp.setVisible(true);
+                            gp.render(graphics);
+                            gp.setVisible(false);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -481,14 +481,14 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * @return java.awt.Component to use to control parameters for this EOMG.
      */
     public java.awt.Component getGUI(GraphicAttributes graphicAttributes) {
-	Debug.message("eomg", "EditableOMPoly.getGUI");
-	if (graphicAttributes != null) {
-	    Component gaGUI = graphicAttributes.getGUI();
-	    ((JComponent)gaGUI).add(getTextGUI());
-	    return gaGUI;
-	} else {
-	    return getTextGUI();
-	}
+        Debug.message("eomg", "EditableOMPoly.getGUI");
+        if (graphicAttributes != null) {
+            Component gaGUI = graphicAttributes.getGUI();
+            ((JComponent)gaGUI).add(getTextGUI());
+            return gaGUI;
+        } else {
+            return getTextGUI();
+        }
     }
 
     JComboBox sizesFont;
@@ -500,47 +500,47 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     public final static String TextRotationCommand = "TextRotation";
         
     protected java.awt.Component getTextGUI() {
-	javax.swing.Box attributeBox = javax.swing.Box.createHorizontalBox();
-	
-	attributeBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-	attributeBox.setAlignmentY(Component.CENTER_ALIGNMENT);
+        javax.swing.Box attributeBox = javax.swing.Box.createHorizontalBox();
+        
+        attributeBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        attributeBox.setAlignmentY(Component.CENTER_ALIGNMENT);
 
-	String textString = "Text";
-	if (text != null) {
-	    textString = text.getData();
-	}
+        String textString = "Text";
+        if (text != null) {
+            textString = text.getData();
+        }
 
         JTextField textField = new JTextField(textString, 25);
-	textField.setActionCommand(TextFieldCommand);
-	textField.addActionListener(this);
-	textField.setMargin(new Insets(0, 1, 0, 1));
+        textField.setActionCommand(TextFieldCommand);
+        textField.addActionListener(this);
+        textField.setMargin(new Insets(0, 1, 0, 1));
         textField.setMinimumSize(new java.awt.Dimension(100, 20));
         textField.setPreferredSize(new java.awt.Dimension(100, 20));
-	attributeBox.add(textField);
+        attributeBox.add(textField);
         
 //         JPanel palette = PaletteHelper.createHorizontalPanel("Rotation");
         javax.swing.Box palette = javax.swing.Box.createHorizontalBox();
         textField = new JTextField(Integer.toString((int)(text.getRotationAngle()*180/Math.PI)), 5);
-	textField.setActionCommand(TextRotationCommand);
-	textField.setToolTipText("Text Rotation");
-	textField.setMargin(new Insets(0, 1, 0, 1));
-	textField.addActionListener(this);
+        textField.setActionCommand(TextRotationCommand);
+        textField.setToolTipText("Text Rotation");
+        textField.setMargin(new Insets(0, 1, 0, 1));
+        textField.addActionListener(this);
         textField.setMinimumSize(new java.awt.Dimension(30, 20));
-	textField.setPreferredSize(new java.awt.Dimension(30, 20));
-	palette.add(textField);
-	palette.add(new JLabel("degree "));
-	attributeBox.add(palette);
+        textField.setPreferredSize(new java.awt.Dimension(30, 20));
+        palette.add(textField);
+        palette.add(new JLabel("degree "));
+        attributeBox.add(palette);
         
-	String[] sizesStrings = {"3","5","8","10","12","14","18","20","24","36","48"};
-	sizesFont = new JComboBox(sizesStrings);
-	sizesFont.setToolTipText("Font Size");
-	sizesFont.setSelectedItem("" + (text.getFont()).getSize());
-	sizesFont.setActionCommand(TextFontCommand);
-	sizesFont.addActionListener(this);
+        String[] sizesStrings = {"3","5","8","10","12","14","18","20","24","36","48"};
+        sizesFont = new JComboBox(sizesStrings);
+        sizesFont.setToolTipText("Font Size");
+        sizesFont.setSelectedItem("" + (text.getFont()).getSize());
+        sizesFont.setActionCommand(TextFontCommand);
+        sizesFont.addActionListener(this);
         
-	String[] styleStrings = {"Plain","Bold","Italic","Bold Italic"};
-	styleFont = new JComboBox(styleStrings);
-	styleFont.setToolTipText("Font Style");
+        String[] styleStrings = {"Plain","Bold","Italic","Bold Italic"};
+        styleFont = new JComboBox(styleStrings);
+        styleFont.setToolTipText("Font Style");
         if((text.getFont().isBold()) && (text.getFont().isItalic())) 
             styleFont.setSelectedIndex(3);
         else if(text.getFont().isBold())
@@ -549,29 +549,29 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
             styleFont.setSelectedIndex(2);
         else
             styleFont.setSelectedIndex(0);
-	styleFont.setActionCommand(TextFontCommand);
-	styleFont.addActionListener(this);
+        styleFont.setActionCommand(TextFontCommand);
+        styleFont.addActionListener(this);
         
         attributeBox.add(sizesFont);
         attributeBox.add(styleFont);
 
-	return attributeBox;
+        return attributeBox;
     }
 
 
     public void actionPerformed(ActionEvent e) {
-	Object source = e.getSource();
-	String command = e.getActionCommand();
+        Object source = e.getSource();
+        String command = e.getActionCommand();
         
-	if (command == TextFontCommand) {
+        if (command == TextFontCommand) {
             String FontString = text.fontToXFont(text.getFont());
             FontString = FontString.substring(0,FontString.indexOf("-", 3));
- 	    StringBuffer ret = new StringBuffer(FontString);
-            if((styleFont.getSelectedIndex() == 1) || (styleFont.getSelectedIndex() == 3)) 	
+            StringBuffer ret = new StringBuffer(FontString);
+            if((styleFont.getSelectedIndex() == 1) || (styleFont.getSelectedIndex() == 3))      
                 ret.append("-bold");
             else 
                 ret.append("-normal");
-            if(styleFont.getSelectedIndex() > 1)  	
+            if(styleFont.getSelectedIndex() > 1)        
                 ret.append("-i");
             else 
                 ret.append("-o");
@@ -580,16 +580,16 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
             ret.append("-*-*-*-*-*-*");
             ret.toString();
             text.setFont(text.rebuildFont(ret.toString()));
-	    repaint();           
-	} else if (command == TextFieldCommand) {
+            repaint();           
+        } else if (command == TextFieldCommand) {
             text.setData(((JTextField)source).getText());
             text.regenerate(projection);
-	    repaint();
-	} else if (command == TextRotationCommand) {
+            repaint();
+        } else if (command == TextRotationCommand) {
             Integer rotation = new Integer(((JTextField)source).getText());
             text.setRotationAngle(Math.PI/180 * (rotation.intValue()%360));
             text.regenerate(projection);
-	    repaint();
+            repaint();
         }
     }    
 }

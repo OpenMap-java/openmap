@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/ContextInfo.java,v $
-// $Revision: 1.2 $ $Date: 2004/01/25 23:31:47 $ $Author: wjeuerle $
+// $Revision: 1.3 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -40,8 +40,8 @@ public class ContextInfo {
      * @see #getContextInfo
      */
     private ContextInfo(ServletContext context) {
-	lib_pathmap = createLibrariesMap(context);
-	lib_lstmap = new HashMap();
+        lib_pathmap = createLibrariesMap(context);
+        lib_lstmap = new HashMap();
     }
 
     /**
@@ -51,12 +51,12 @@ public class ContextInfo {
      * if one doesn't already exist for the context.
      */
     public static synchronized ContextInfo getContextInfo(ServletContext context) {
-	ContextInfo ci = (ContextInfo)context.getAttribute(CONTEXT_INFO);
-	if (ci == null) {
-	    ci = new ContextInfo(context);
-	    context.setAttribute(CONTEXT_INFO, ci);
-	}
-	return ci;
+        ContextInfo ci = (ContextInfo)context.getAttribute(CONTEXT_INFO);
+        if (ci == null) {
+            ci = new ContextInfo(context);
+            context.setAttribute(CONTEXT_INFO, ci);
+        }
+        return ci;
     }
 
     /**
@@ -65,16 +65,16 @@ public class ContextInfo {
      * @param context the context to grovel through
      */
     private Map createLibrariesMap(ServletContext context) {
-	HashMap library_map = new HashMap();
-	for (Enumeration en = context.getInitParameterNames();
-	     en.hasMoreElements(); ) {
-	    String s = (String)en.nextElement();
-	    if (s.startsWith(LIBRARY_PREFIX)) {
-		library_map.put(s.substring(LIBRARY_PREFIX.length()),
-				context.getInitParameter(s));
-	    }
-	}
-	return Collections.unmodifiableMap(library_map);
+        HashMap library_map = new HashMap();
+        for (Enumeration en = context.getInitParameterNames();
+             en.hasMoreElements(); ) {
+            String s = (String)en.nextElement();
+            if (s.startsWith(LIBRARY_PREFIX)) {
+                library_map.put(s.substring(LIBRARY_PREFIX.length()),
+                                context.getInitParameter(s));
+            }
+        }
+        return Collections.unmodifiableMap(library_map);
     }
     
     /**
@@ -84,34 +84,34 @@ public class ContextInfo {
      * @return a File if it could be resolved, null otherwise
      */
     public String resolvePath(String pathInfo) {
-	if ((pathInfo == null) || 
-	    (pathInfo.indexOf("..") != -1)) { //don't climb out of sandbox
-	    return null;
-	}
-	int libStart = pathInfo.indexOf('/') + 1;
-	int libEnd = pathInfo.indexOf('/', libStart);
-	if (libEnd == -1) {
-	    libEnd = pathInfo.length();
-	}
-	String libname = pathInfo.substring(libStart, libEnd);
-	String subpath = pathInfo.substring(libEnd);
+        if ((pathInfo == null) || 
+            (pathInfo.indexOf("..") != -1)) { //don't climb out of sandbox
+            return null;
+        }
+        int libStart = pathInfo.indexOf('/') + 1;
+        int libEnd = pathInfo.indexOf('/', libStart);
+        if (libEnd == -1) {
+            libEnd = pathInfo.length();
+        }
+        String libname = pathInfo.substring(libStart, libEnd);
+        String subpath = pathInfo.substring(libEnd);
 
-	String lib_home = getPath(libname);
-	if (lib_home == null) {
-	    return null;
-	}
+        String lib_home = getPath(libname);
+        if (lib_home == null) {
+            return null;
+        }
 
-	return lib_home + "/" + subpath;
+        return lib_home + "/" + subpath;
     }
     
     /**
      * Returns the final path component (minus any trailing '.')
      */
 //      public static String getFilename(String filename) {
-// 	int strlen = filename.length();
-// 	int firstchar = filename.lastIndexOf('/');
-// 	int lastchar = filename.endsWith(".")?strlen-1:strlen;
-// 	return filename.substring(firstchar+1, lastchar);
+//      int strlen = filename.length();
+//      int firstchar = filename.lastIndexOf('/');
+//      int lastchar = filename.endsWith(".")?strlen-1:strlen;
+//      return filename.substring(firstchar+1, lastchar);
 //     }
     
     /**
@@ -120,7 +120,7 @@ public class ContextInfo {
      * @return a set of library names
      */
     public Set keySet() {
-	return new TreeSet(lib_pathmap.keySet());
+        return new TreeSet(lib_pathmap.keySet());
     }
 
     /**
@@ -129,7 +129,7 @@ public class ContextInfo {
      * @return the path or null
      */    
     public String getPath(String libname) {
-	return (String)lib_pathmap.get(libname);
+        return (String)lib_pathmap.get(libname);
     }
     
     /**
@@ -138,7 +138,7 @@ public class ContextInfo {
      * @return the LST or null
      */    
     public LibrarySelectionTable getLST(String libname) {
-	return (LibrarySelectionTable)lib_lstmap.get(libname);
+        return (LibrarySelectionTable)lib_lstmap.get(libname);
     }
 
     /**
@@ -147,7 +147,7 @@ public class ContextInfo {
      * @param lst the LibrarySelectionTable for libname
      */    
     public void putLST(String libname, LibrarySelectionTable lst) {
-	lib_lstmap.put(libname, lst);
+        lib_lstmap.put(libname, lst);
     }
 }
     

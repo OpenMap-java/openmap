@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:30 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:11 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -206,28 +206,28 @@ public class AreaHandler implements PropertyConsumer {
      * default DrawingAttributes.
      */
     public AreaHandler(SpatialIndex si, DrawingAttributes da) {
-	setDrawingAttributes(da);
-	setSpatialIndex(si);
+        setDrawingAttributes(da);
+        setSpatialIndex(si);
     }
     
     public void setDrawingAttributes(DrawingAttributes da) {
-	drawingAttributes = da;
+        drawingAttributes = da;
     }
 
     public DrawingAttributes getDrawingAttributes() {
-	return drawingAttributes;
+        return drawingAttributes;
     }
 
     public void setSpatialIndex(SpatialIndex si) {
-	spatialIndex = si;
+        spatialIndex = si;
     }
 
     public SpatialIndex getSpatialIndex() {
-	return spatialIndex;
+        return spatialIndex;
     }
 
     public void setProperties(Properties props) {
-	setProperties(null, props);
+        setProperties(null, props);
     }
 
     /** 
@@ -237,44 +237,44 @@ public class AreaHandler implements PropertyConsumer {
      * this object 
      */
     public void setProperties(String prefix, Properties props) {
-	if (Debug.debugging("areas")) {
-	    Debug.output("AreaHandler: setting properties");
-	}
+        if (Debug.debugging("areas")) {
+            Debug.output("AreaHandler: setting properties");
+        }
 
-	setPropertyPrefix(prefix);
-	originalProperties = props;
+        setPropertyPrefix(prefix);
+        originalProperties = props;
 
-	// These will get initialized when someone asks for it.
-	// Otherwise, it delays the startup of the map.
-	politicalAreas = null;
+        // These will get initialized when someone asks for it.
+        // Otherwise, it delays the startup of the map.
+        politicalAreas = null;
     }
 
     /** PropertyConsumer method. */
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-	return props;
+        return props;
     }
 
     /** PropertyConsumer method. */
     public Properties getPropertyInfo(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-	return props;
+        return props;
     }
 
     /** PropertyConsumer method. */
     public void setPropertyPrefix(String pre) {
-	originalPrefix = pre;
+        originalPrefix = pre;
     }
 
     /** PropertyConsumer method. */
     public String getPropertyPrefix() {
-	return originalPrefix;
+        return originalPrefix;
     }
 
     /**
@@ -286,33 +286,33 @@ public class AreaHandler implements PropertyConsumer {
      */
     public void initialize(String prefix, Properties props) {
 
-	if (prefix == null || props == null) {
-	    Debug.error("AreaHandler: initialize received bad input:\n\tprefix: " + prefix + "\n\tproperties: " + (props == null?"null":"OK"));
-	    politicalAreas = null;
-	    return;
-	}
+        if (prefix == null || props == null) {
+            Debug.error("AreaHandler: initialize received bad input:\n\tprefix: " + prefix + "\n\tproperties: " + (props == null?"null":"OK"));
+            politicalAreas = null;
+            return;
+        }
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	politicalAreas = new Hashtable();
+        politicalAreas = new Hashtable();
 
-	//  OK, Get the graphics.  We are not expecting that all the
-	//  graphics in the file are not too much to handle.  Also, we
-	//  test for the serialized graphics file first, and if it
-	//  isn't designated, then look for a shapefile and spatial
-	//  index file to create an OMGraphicsList.
-	String cacheFile = props.getProperty(prefix + CacheFileProperty);
+        //  OK, Get the graphics.  We are not expecting that all the
+        //  graphics in the file are not too much to handle.  Also, we
+        //  test for the serialized graphics file first, and if it
+        //  isn't designated, then look for a shapefile and spatial
+        //  index file to create an OMGraphicsList.
+        String cacheFile = props.getProperty(prefix + CacheFileProperty);
 
-	// First find the resource, if not, then try as a file-URL...
-	try {
-	    cacheURL = LayerUtils.getResourceOrFileOrURL(this, cacheFile);
-	    
-	    if (cacheURL != null) {
-		omgraphics = readCachedGraphics(cacheURL);
-	    } else {
-		// We'll use the spatial index set from the ShapeLayer.
+        // First find the resource, if not, then try as a file-URL...
+        try {
+            cacheURL = LayerUtils.getResourceOrFileOrURL(this, cacheFile);
+            
+            if (cacheURL != null) {
+                omgraphics = readCachedGraphics(cacheURL);
+            } else {
+                // We'll use the spatial index set from the ShapeLayer.
 
-		// Now, get the attribute file
+                // Now, get the attribute file
                 String dbfFile = props.getProperty(prefix + dbfFileProperty);
                 URL dbfFileURL = null;
                 if (dbfFile != null) {
@@ -322,96 +322,96 @@ public class AreaHandler implements PropertyConsumer {
                     InputStream is = dbfFileURL.openStream();
                     dbfModel = new DbfTableModel(new DbfInputStream(is));
                 }
-		if (dbfModel == null) {		      
-        	    String csvFile = props.getProperty(prefix + csvFileProperty);
-        	    URL infofileURL = null;
-        	    if (csvFile != null) {
-        	        infofileURL = 
-        			LayerUtils.getResourceOrFileOrURL(this, csvFile);
-        	    }
-        		
-        	    // Read them in.
-        	    if (infofileURL != null) {
-        	        infoFile = new CSVShapeInfoFile(csvFile);
-        	        infoFile.setHeadersExist(LayerUtils.booleanFromProperties(props, prefix + csvHeaderProperty, true));
-        	        infoFile.loadData(true);
+                if (dbfModel == null) {               
+                    String csvFile = props.getProperty(prefix + csvFileProperty);
+                    URL infofileURL = null;
+                    if (csvFile != null) {
+                        infofileURL = 
+                                LayerUtils.getResourceOrFileOrURL(this, csvFile);
                     }
-        	}
+                        
+                    // Read them in.
+                    if (infofileURL != null) {
+                        infoFile = new CSVShapeInfoFile(csvFile);
+                        infoFile.setHeadersExist(LayerUtils.booleanFromProperties(props, prefix + csvHeaderProperty, true));
+                        infoFile.loadData(true);
+                    }
+                }
             }
-	} catch (java.net.MalformedURLException murle) {
-	    omgraphics = new OMGraphicList();
-	} catch (java.io.IOException ioe) {
-	    omgraphics = new OMGraphicList();
+        } catch (java.net.MalformedURLException murle) {
+            omgraphics = new OMGraphicList();
+        } catch (java.io.IOException ioe) {
+            omgraphics = new OMGraphicList();
         } catch (Exception exc) {
             omgraphics = new OMGraphicList();
         }
 
-	// This is handled properly yet.  The PoliticalArea should be
-	// updated to handle URLs for area points, and have different
-	// icons for different areas.
-// 	String defaultPointImageURLString = props.getProperty(prefix + pointImageURLProperty);
+        // This is handled properly yet.  The PoliticalArea should be
+        // updated to handle URLs for area points, and have different
+        // icons for different areas.
+//      String defaultPointImageURLString = props.getProperty(prefix + pointImageURLProperty);
 
-	// Now, match the attributes to the graphics.  Find the
-	// indexes of the name and the search key.  Also figure out
-	// which areas have special coloring needs.
-	keyIndex = LayerUtils.intFromProperties(props, prefix + keyIndexProperty, keyIndex);
-	nameIndex = LayerUtils.intFromProperties(props, prefix + nameIndexProperty, nameIndex);
-	String areas = props.getProperty(prefix+areasProperty);
+        // Now, match the attributes to the graphics.  Find the
+        // indexes of the name and the search key.  Also figure out
+        // which areas have special coloring needs.
+        keyIndex = LayerUtils.intFromProperties(props, prefix + keyIndexProperty, keyIndex);
+        nameIndex = LayerUtils.intFromProperties(props, prefix + nameIndexProperty, nameIndex);
+        String areas = props.getProperty(prefix+areasProperty);
 
-	if (areas == null) areas = "";
+        if (areas == null) areas = "";
  
-	StringTokenizer tokenizer = new StringTokenizer(areas," ");
-	// All this uses the properties to set the individual colors
-	// of any area
-	String currentArea;
-	String currentAreaColorStr;
-	String currentAreaFillPatternStr;
-	Color currentAreaColor;
+        StringTokenizer tokenizer = new StringTokenizer(areas," ");
+        // All this uses the properties to set the individual colors
+        // of any area
+        String currentArea;
+        String currentAreaColorStr;
+        String currentAreaFillPatternStr;
+        Color currentAreaColor;
 
-	while (tokenizer.hasMoreTokens()) {
-	    currentArea = tokenizer.nextToken();
+        while (tokenizer.hasMoreTokens()) {
+            currentArea = tokenizer.nextToken();
 
-  	    PoliticalArea newParams = new PoliticalArea(currentArea);
+            PoliticalArea newParams = new PoliticalArea(currentArea);
 
-	    if (Debug.debugging("areas")) {
-		Debug.output("AreaHandler: setting SPECIALIZED attributes for \"" + newParams.id + "\"");
-	    }
+            if (Debug.debugging("areas")) {
+                Debug.output("AreaHandler: setting SPECIALIZED attributes for \"" + newParams.id + "\"");
+            }
 
-	    areasItems.addElement(currentArea);
+            areasItems.addElement(currentArea);
 
-	    newParams.drawingAttributes = new DrawingAttributes(prefix + areasProperty + "." + currentArea, props);
+            newParams.drawingAttributes = new DrawingAttributes(prefix + areasProperty + "." + currentArea, props);
 
-	    politicalAreas.put(newParams.id.toUpperCase().intern(), newParams);
-	}
+            politicalAreas.put(newParams.id.toUpperCase().intern(), newParams);
+        }
 
-	if (Debug.debugging("areas")) {
-	    Debug.output("AreaHandler: finished initialization");
-	}
+        if (Debug.debugging("areas")) {
+            Debug.output("AreaHandler: finished initialization");
+        }
     }
 
     /** 
      * Read a cache of OMGraphics
      */
     public OMGraphicList readCachedGraphics(URL url)
-	throws java.io.IOException {
+        throws java.io.IOException {
 
-	if (Debug.debugging("areas")) {
-	    Debug.output("Reading cached graphics");
-	}
-	
-	OMGraphicList omgraphics = new OMGraphicList();
-	
-	if (url != null) {
-	    omgraphics.readGraphics(url);
-	}
-	return omgraphics;
+        if (Debug.debugging("areas")) {
+            Debug.output("Reading cached graphics");
+        }
+        
+        OMGraphicList omgraphics = new OMGraphicList();
+        
+        if (url != null) {
+            omgraphics.readGraphics(url);
+        }
+        return omgraphics;
     }
 
     /**
      * Get all the graphics from the shapefile, colored appropriately.
      */
     public OMGraphicList getGraphics() {
-	return getGraphics(90f, -180f, -90f, 180f);
+        return getGraphics(90f, -180f, -90f, 180f);
     }
     
     /** 
@@ -424,80 +424,80 @@ public class AreaHandler implements PropertyConsumer {
      * @return OMGraphicList
      */
     public OMGraphicList getGraphics(float ulLat, float ulLon, 
-				     float lrLat, float lrLon) {
+                                     float lrLat, float lrLon) {
 
-	if (cacheURL != null) {
-	    return omgraphics;
-	}
+        if (cacheURL != null) {
+            return omgraphics;
+        }
 
-	if (spatialIndex == null) {
-	    return new OMGraphicList();
-	}
+        if (spatialIndex == null) {
+            return new OMGraphicList();
+        }
 
-	if (politicalAreas == null) {
-	    initialize(originalPrefix, originalProperties);
-	}
+        if (politicalAreas == null) {
+            initialize(originalPrefix, originalProperties);
+        }
 
-	OMGraphicList list = null;
-	DrawingAttributes drawParams;
+        OMGraphicList list = null;
+        DrawingAttributes drawParams;
 
-	// check for dateline anomaly on the screen.  we check for ulLon >=
-	// lrLon, but we need to be careful of the check for equality because
-	// of floating point arguments...
-	if ((ulLon > lrLon) ||
-	    MoreMath.approximately_equal(ulLon, lrLon, .001f))
-	{
-	    if (Debug.debugging("areas")) {
-		Debug.output("AreaHandler.getGraphics(): Dateline is on screen");
-	    }
+        // check for dateline anomaly on the screen.  we check for ulLon >=
+        // lrLon, but we need to be careful of the check for equality because
+        // of floating point arguments...
+        if ((ulLon > lrLon) ||
+            MoreMath.approximately_equal(ulLon, lrLon, .001f))
+        {
+            if (Debug.debugging("areas")) {
+                Debug.output("AreaHandler.getGraphics(): Dateline is on screen");
+            }
 
-	    double ymin = (double) Math.min(ulLat, lrLat);
-	    double ymax = (double) Math.max(ulLat, lrLat);
+            double ymin = (double) Math.min(ulLat, lrLat);
+            double ymax = (double) Math.max(ulLat, lrLat);
 
-	    try {
-		ESRIRecord records1[] = spatialIndex.locateRecords(
-		    ulLon, ymin, 180.0d, ymax);
-		ESRIRecord records2[] = spatialIndex.locateRecords(
-		    -180.0d, ymin, lrLon, ymax);
-		int nRecords1 = records1.length;
-		int nRecords2 = records2.length;
-		list = new OMGraphicList(nRecords1+nRecords2);
-		for (int i = 0; i < nRecords1; i++) {
-		    drawParams = getDrawParams(records1[i].getRecordNumber());
-		    list.addOMGraphic(recordList(records1[i], drawParams));
-		}
-		for (int i = 0; i < nRecords2; i++) {
-		    drawParams = getDrawParams(records2[i].getRecordNumber());
-		    list.addOMGraphic(recordList(records2[i], drawParams));
-		}
-	    } catch (java.io.IOException ex) {
-		ex.printStackTrace();
-	    } catch (FormatException fe) {
-		fe.printStackTrace();
-	    }
-	} else {
+            try {
+                ESRIRecord records1[] = spatialIndex.locateRecords(
+                    ulLon, ymin, 180.0d, ymax);
+                ESRIRecord records2[] = spatialIndex.locateRecords(
+                    -180.0d, ymin, lrLon, ymax);
+                int nRecords1 = records1.length;
+                int nRecords2 = records2.length;
+                list = new OMGraphicList(nRecords1+nRecords2);
+                for (int i = 0; i < nRecords1; i++) {
+                    drawParams = getDrawParams(records1[i].getRecordNumber());
+                    list.addOMGraphic(recordList(records1[i], drawParams));
+                }
+                for (int i = 0; i < nRecords2; i++) {
+                    drawParams = getDrawParams(records2[i].getRecordNumber());
+                    list.addOMGraphic(recordList(records2[i], drawParams));
+                }
+            } catch (java.io.IOException ex) {
+                ex.printStackTrace();
+            } catch (FormatException fe) {
+                fe.printStackTrace();
+            }
+        } else {
 
-	    double xmin = (double) Math.min(ulLon, lrLon);
-	    double xmax = (double) Math.max(ulLon, lrLon);
-	    double ymin = (double) Math.min(ulLat, lrLat);
-	    double ymax = (double) Math.max(ulLat, lrLat);
+            double xmin = (double) Math.min(ulLon, lrLon);
+            double xmax = (double) Math.max(ulLon, lrLon);
+            double ymin = (double) Math.min(ulLat, lrLat);
+            double ymax = (double) Math.max(ulLat, lrLat);
 
-	    try {
-		ESRIRecord records[] = spatialIndex.locateRecords(
-		    xmin, ymin, xmax, ymax);
-		int nRecords = records.length;
-		list = new OMGraphicList(nRecords);
-		for (int i = 0; i < nRecords; i++) {
-		    drawParams = getDrawParams(records[i].getRecordNumber());
-		    list.addOMGraphic(recordList(records[i], drawParams));
-		}
-	    } catch (java.io.IOException ex) {
-		ex.printStackTrace();
-	    } catch (FormatException fe) {
-		fe.printStackTrace();
-	    }
-	}
-	return list;
+            try {
+                ESRIRecord records[] = spatialIndex.locateRecords(
+                    xmin, ymin, xmax, ymax);
+                int nRecords = records.length;
+                list = new OMGraphicList(nRecords);
+                for (int i = 0; i < nRecords; i++) {
+                    drawParams = getDrawParams(records[i].getRecordNumber());
+                    list.addOMGraphic(recordList(records[i], drawParams));
+                }
+            } catch (java.io.IOException ex) {
+                ex.printStackTrace();
+            } catch (FormatException fe) {
+                fe.printStackTrace();
+            }
+        }
+        return list;
     }
 
     /**
@@ -506,11 +506,11 @@ public class AreaHandler implements PropertyConsumer {
      * an empty string if something goes wrong.
      */
     public String getName(Vector vector) {
-	try {
-	    String string = (String)vector.elementAt(nameIndex);
-	    return string;
-	} catch (ClassCastException cce) {}
-	return "";
+        try {
+            String string = (String)vector.elementAt(nameIndex);
+            return string;
+        } catch (ClassCastException cce) {}
+        return "";
     }
 
     /**
@@ -519,24 +519,24 @@ public class AreaHandler implements PropertyConsumer {
      * index number.  Returns an empty string if something goes wrong.
      */
     public String getName(Integer integer) {
-	try {
-	    if (infoFile != null) {
-		Vector vector = infoFile.getRecord(integer.intValue() - 1);
-		if (vector != null) {
-		    return (String)vector.elementAt(nameIndex);
-		}
-	    } else if (dbfModel != null) {
-		Object obj = dbfModel.getValueAt(integer.intValue() - 1, nameIndex);
-		if (obj != null) {
-		    if (obj instanceof String) {
-			return (String)obj;
-		    } else {
-			return obj.toString();
-		    }
-		}
-	    }
-	} catch (ClassCastException cce) {}
-	return "";
+        try {
+            if (infoFile != null) {
+                Vector vector = infoFile.getRecord(integer.intValue() - 1);
+                if (vector != null) {
+                    return (String)vector.elementAt(nameIndex);
+                }
+            } else if (dbfModel != null) {
+                Object obj = dbfModel.getValueAt(integer.intValue() - 1, nameIndex);
+                if (obj != null) {
+                    if (obj instanceof String) {
+                        return (String)obj;
+                    } else {
+                        return obj.toString();
+                    }
+                }
+            }
+        } catch (ClassCastException cce) {}
+        return "";
     }
 
     /**
@@ -655,9 +655,9 @@ public class AreaHandler implements PropertyConsumer {
      */
     public DrawingAttributes getDrawParams(int recordNumber) {
         if (dbfModel != null)
-	    return getDrawParamsFromDBF(recordNumber);
-	else
-	    return getDrawParamsFromCSV(recordNumber);    
+            return getDrawParamsFromDBF(recordNumber);
+        else
+            return getDrawParamsFromCSV(recordNumber);    
     }
     /**
      * This function takes an OMGraphicList and loads each one with
@@ -692,18 +692,18 @@ public class AreaHandler implements PropertyConsumer {
      * @return OMGraphicList
      */
     protected OMGraphicList recordList(ESRIRecord rec, DrawingAttributes drawParams) {
-	int recNumber = rec.getRecordNumber();
-	OMGraphicList recList = new OMGraphicList(10);
+        int recNumber = rec.getRecordNumber();
+        OMGraphicList recList = new OMGraphicList(10);
 
-	if (drawParams != null) {	    
-	    rec.addOMGraphics(recList, drawParams);
-	} else {
-	    rec.addOMGraphics(recList, DrawingAttributes.getDefaultClone());
-	}
-	// Remember recordNumber to work with .dbf file
-	recList.setAppObject(new Integer(recNumber)); 
-	
-	return recList;
+        if (drawParams != null) {           
+            rec.addOMGraphics(recList, drawParams);
+        } else {
+            rec.addOMGraphics(recList, DrawingAttributes.getDefaultClone());
+        }
+        // Remember recordNumber to work with .dbf file
+        recList.setAppObject(new Integer(recNumber)); 
+        
+        return recList;
     }
 
     /** 
@@ -716,37 +716,37 @@ public class AreaHandler implements PropertyConsumer {
      */
     public PoliticalArea findPoliticalArea(String area_key) {
 
-	// Right now, this method gathers all the graphics in the
-	// shape file, groups them, and then returns the PoliticalArea
-	// for the key.  In the future, it would be nice to have the
-	// option to actually search through the data file, find the
-	// indexes of the graphics that go to the area, and assemble a
-	// temporary list to pass back.
+        // Right now, this method gathers all the graphics in the
+        // shape file, groups them, and then returns the PoliticalArea
+        // for the key.  In the future, it would be nice to have the
+        // option to actually search through the data file, find the
+        // indexes of the graphics that go to the area, and assemble a
+        // temporary list to pass back.
 
-	if (politicalAreas == null) {
-	    Debug.message("areas", "AreaHandler: initializing graphic attributes");
-	    initialize(originalPrefix, originalProperties);
+        if (politicalAreas == null) {
+            Debug.message("areas", "AreaHandler: initializing graphic attributes");
+            initialize(originalPrefix, originalProperties);
 
-	    if (omgraphics == null) {
-		omgraphics = getGraphics();
+            if (omgraphics == null) {
+                omgraphics = getGraphics();
                 if (dbfModel != null)
-      	            loadDbfModelIntoGraphics(omgraphics);
+                    loadDbfModelIntoGraphics(omgraphics);
                 else
-	            infoFile.loadIntoGraphics(omgraphics);
-	    }
+                    infoFile.loadIntoGraphics(omgraphics);
+            }
 
-	    politicalAreas = determinePoliticalAreas(omgraphics);
-	    Debug.message("areas", "AreaHandler: completed initialization");
-	}
+            politicalAreas = determinePoliticalAreas(omgraphics);
+            Debug.message("areas", "AreaHandler: completed initialization");
+        }
 
-	if (politicalAreas != null) {
-	    String key = area_key.toUpperCase().intern(); // Just to be sure. 
+        if (politicalAreas != null) {
+            String key = area_key.toUpperCase().intern(); // Just to be sure. 
 
-	    return (PoliticalArea)politicalAreas.get(key);
-	} else {
-	    Debug.error("AreaHandler: initialization failed for " + originalPrefix + "\n\tNo data will be displayed");
-	    return null;
-	}
+            return (PoliticalArea)politicalAreas.get(key);
+        } else {
+            Debug.error("AreaHandler: initialization failed for " + originalPrefix + "\n\tNo data will be displayed");
+            return null;
+        }
     }
 
     /**
@@ -758,12 +758,12 @@ public class AreaHandler implements PropertyConsumer {
      * column was designated in the properties file.  
      */
     public OMGeometryList findGraphics(String area_key) {
-	PoliticalArea area = findPoliticalArea(area_key);
-	if (area == null) {
-	    return null;
-	} else {
-	    return area.getGeometry();
-	}
+        PoliticalArea area = findPoliticalArea(area_key);
+        if (area == null) {
+            return null;
+        } else {
+            return area.getGeometry();
+        }
     }
 
     /** 
@@ -774,12 +774,12 @@ public class AreaHandler implements PropertyConsumer {
      * entries on the list represent areas.  
      */
     public Hashtable determinePoliticalAreas(OMGraphicList graphicList) {
-	if (Debug.debugging("areas")) {
-	    Debug.output("AreaHandler: Determining political areas from OMGraphicList");
-	}
-	
-	Hashtable poli_areas = new Hashtable();
-	return determinePoliticalAreas(graphicList, poli_areas);
+        if (Debug.debugging("areas")) {
+            Debug.output("AreaHandler: Determining political areas from OMGraphicList");
+        }
+        
+        Hashtable poli_areas = new Hashtable();
+        return determinePoliticalAreas(graphicList, poli_areas);
     }
 
     /** 
@@ -795,79 +795,79 @@ public class AreaHandler implements PropertyConsumer {
      * entries on the list represent areas.
      */
     public Hashtable determinePoliticalAreas(OMGraphicList graphicList,
-					     Hashtable poli_areas) {
+                                             Hashtable poli_areas) {
 
-	// Simple case.  No graphics means an empty list of regions. 
-	String name = null;
-	String key = null;
+        // Simple case.  No graphics means an empty list of regions. 
+        String name = null;
+        String key = null;
 
-	if (graphicList != null)	{
-	    int size = graphicList.size();
-	    for (int i = 0; i < size; i++) {
-		OMGraphic graphic = graphicList.getOMGraphicAt(i);
-		// below should be a vector like [ "Massachusetts", "MA" ];
+        if (graphicList != null)        {
+            int size = graphicList.size();
+            for (int i = 0; i < size; i++) {
+                OMGraphic graphic = graphicList.getOMGraphicAt(i);
+                // below should be a vector like [ "Massachusetts", "MA" ];
 
-		Object obj = graphic.getAppObject();
-		if (obj == null) {
-		    if (Debug.debugging("verbose")) {
-			Debug.error("AreaHandler: Caught a null app object for graphic #"+ i);
-		    }
-		    continue;
-		}
+                Object obj = graphic.getAppObject();
+                if (obj == null) {
+                    if (Debug.debugging("verbose")) {
+                        Debug.error("AreaHandler: Caught a null app object for graphic #"+ i);
+                    }
+                    continue;
+                }
 
-		if (obj instanceof Vector) {
-		    Vector pair = (Vector)obj;
-		    
-		    name = (String)pair.elementAt(nameIndex);
-		    key = ((String)pair.elementAt(keyIndex)).toUpperCase().intern();
-		    if (Debug.debugging("areas")) {
-		      Debug.output("AreaHandler: looking at " + 
-				   name + ", " + key);
-		    }
-		} else if (obj instanceof String) {
-  		    // Assume that the key is stored here, I guess.
-		    key = (String) obj;
-		    if (Debug.debugging("areas")) {
-		        Debug.output("AreaHandler: String app object, looking at " + key);
-		    }
-		} else {
-		    if (Debug.debugging("verbose")) {
-			Debug.output("AreaHandler: Unidentified app object type " + obj);
-		    }
-		}
+                if (obj instanceof Vector) {
+                    Vector pair = (Vector)obj;
+                    
+                    name = (String)pair.elementAt(nameIndex);
+                    key = ((String)pair.elementAt(keyIndex)).toUpperCase().intern();
+                    if (Debug.debugging("areas")) {
+                      Debug.output("AreaHandler: looking at " + 
+                                   name + ", " + key);
+                    }
+                } else if (obj instanceof String) {
+                    // Assume that the key is stored here, I guess.
+                    key = (String) obj;
+                    if (Debug.debugging("areas")) {
+                        Debug.output("AreaHandler: String app object, looking at " + key);
+                    }
+                } else {
+                    if (Debug.debugging("verbose")) {
+                        Debug.output("AreaHandler: Unidentified app object type " + obj);
+                    }
+                }
 
-		// Get the political area object for this keyiation.
-		PoliticalArea area = (PoliticalArea)poli_areas.get(key);
+                // Get the political area object for this keyiation.
+                PoliticalArea area = (PoliticalArea)poli_areas.get(key);
 
-		if (area == null) { // key is not in table
-		    area = new PoliticalArea(name, key);
-		    poli_areas.put(key, area); // add it to the table
-//  		    AreaDrawParams adp = (AreaDrawParams)drawingParams.get(key);
-//  		    if (adp != null) {
-//  			area.setDrawingAttributes(adp.drawingAttributes);
-//  		    }
-		}
+                if (area == null) { // key is not in table
+                    area = new PoliticalArea(name, key);
+                    poli_areas.put(key, area); // add it to the table
+//                  AreaDrawParams adp = (AreaDrawParams)drawingParams.get(key);
+//                  if (adp != null) {
+//                      area.setDrawingAttributes(adp.drawingAttributes);
+//                  }
+                }
 
-		// Add the graphic to the list for this political area.
-		area.addGraphic(graphic);
-	    }
-	    
-	    if (Debug.debugging("areas")) {
-		Debug.output("AreaHandler: Finished determinePoliticalAreas: " + poli_areas.size() + " areas defined.");
-	    }
-	}
-	
-	return poli_areas;
+                // Add the graphic to the list for this political area.
+                area.addGraphic(graphic);
+            }
+            
+            if (Debug.debugging("areas")) {
+                Debug.output("AreaHandler: Finished determinePoliticalAreas: " + poli_areas.size() + " areas defined.");
+            }
+        }
+        
+        return poli_areas;
     }
     
     protected Color getColor(String colorString) {
-	Color result = Color.black;
-	try {
-	    result = LayerUtils.parseColor(colorString);
-	} catch (NumberFormatException nfe) {
-	    result = GetColorFromString(colorString);
-	}
-	return result;
+        Color result = Color.black;
+        try {
+            result = LayerUtils.parseColor(colorString);
+        } catch (NumberFormatException nfe) {
+            result = GetColorFromString(colorString);
+        }
+        return result;
     }
 
     /** 
@@ -877,51 +877,51 @@ public class AreaHandler implements PropertyConsumer {
      * or Octal number like 0xffeeffee 
      */
     protected Color GetColorFromString(String token) {
-	String tokstring = (String)token;
-	
-	Color result = Color.black;
-	
-	if (Debug.debugging("areas")) {
-	    Debug.output("AreaHandler: GetColorFromString(" +
-			 tokstring + ")");
-	}
+        String tokstring = (String)token;
+        
+        Color result = Color.black;
+        
+        if (Debug.debugging("areas")) {
+            Debug.output("AreaHandler: GetColorFromString(" +
+                         tokstring + ")");
+        }
 
-	// Thank the heavens for Emacs macros!
-	if (tokstring.equals("black"))
-	    result =  Color.black;
-	else if (tokstring.equals("blue"))
-	    result =  Color.blue;
-	else if (tokstring.equals("cyan"))
-	    result =  Color.cyan;
-	else if (tokstring.equals("darkGray"))
-	    result =  Color.darkGray;
-	else if (tokstring.equals("gray"))
-	    result =  Color.gray;
-	else if (tokstring.equals("green"))
-	    result =  Color.green;
-	else if (tokstring.equals("lightGray"))
-	    result =  Color.lightGray;
-	else if (tokstring.equals("magenta"))
-	    result =  Color.magenta;
-	else if (tokstring.equals("orange"))
-	    result =  Color.orange;
-	else if (tokstring.equals("pink"))
-	    result =  Color.pink;
-	else if (tokstring.equals("red"))
-	    result =  Color.red;
-	else if (tokstring.equals("white"))
-	    result =  Color.white;
-	else if (tokstring.equals("yellow"))
-	    result =  Color.yellow;
-	else
-	    // decode a hex color string.
-	    result = Color.decode(tokstring);
-	
-	if (Debug.debugging("areas")) {
-	    Debug.output("AreaHandler.GetColorFromToken returns (" + 
-			 result + ")");
-	}
-	return result;
+        // Thank the heavens for Emacs macros!
+        if (tokstring.equals("black"))
+            result =  Color.black;
+        else if (tokstring.equals("blue"))
+            result =  Color.blue;
+        else if (tokstring.equals("cyan"))
+            result =  Color.cyan;
+        else if (tokstring.equals("darkGray"))
+            result =  Color.darkGray;
+        else if (tokstring.equals("gray"))
+            result =  Color.gray;
+        else if (tokstring.equals("green"))
+            result =  Color.green;
+        else if (tokstring.equals("lightGray"))
+            result =  Color.lightGray;
+        else if (tokstring.equals("magenta"))
+            result =  Color.magenta;
+        else if (tokstring.equals("orange"))
+            result =  Color.orange;
+        else if (tokstring.equals("pink"))
+            result =  Color.pink;
+        else if (tokstring.equals("red"))
+            result =  Color.red;
+        else if (tokstring.equals("white"))
+            result =  Color.white;
+        else if (tokstring.equals("yellow"))
+            result =  Color.yellow;
+        else
+            // decode a hex color string.
+            result = Color.decode(tokstring);
+        
+        if (Debug.debugging("areas")) {
+            Debug.output("AreaHandler.GetColorFromToken returns (" + 
+                         result + ")");
+        }
+        return result;
     }
 
     /**
@@ -930,63 +930,63 @@ public class AreaHandler implements PropertyConsumer {
      * serialized graphics file that will act like a cache later.  
      */
     public static void main(String[] argv) {
-	String propertiesFile = null;
-	String prefix = null;
-	String outputFile = null;
+        String propertiesFile = null;
+        String prefix = null;
+        String outputFile = null;
 
-	Debug.init();
+        Debug.init();
 
-	if (argv.length < 6) printUsage();
+        if (argv.length < 6) printUsage();
 
-	for (int i = 0; i < argv.length; i++) {
-	    if (argv[i].equalsIgnoreCase("-props")) {
-		propertiesFile = argv[++i];
-	    } else if (argv[i].equalsIgnoreCase("-prefix")) {
-		prefix = argv[++i];
-	    } else if (argv[i].equalsIgnoreCase("-file")) {
-		outputFile = argv[++i];
-	    } 
-	}
-	
-	if (propertiesFile == null || 
-	    prefix == null || 
-	    outputFile == null) {
-	    printUsage();
-	}
+        for (int i = 0; i < argv.length; i++) {
+            if (argv[i].equalsIgnoreCase("-props")) {
+                propertiesFile = argv[++i];
+            } else if (argv[i].equalsIgnoreCase("-prefix")) {
+                prefix = argv[++i];
+            } else if (argv[i].equalsIgnoreCase("-file")) {
+                outputFile = argv[++i];
+            } 
+        }
+        
+        if (propertiesFile == null || 
+            prefix == null || 
+            outputFile == null) {
+            printUsage();
+        }
 
-	try {
-	    Properties properties = new Properties();
-	    // Read in the properties.
-	    URL propertiesURL = new URL(propertiesFile);
-	    InputStream is = propertiesURL.openStream();
-	    properties.load(is);
+        try {
+            Properties properties = new Properties();
+            // Read in the properties.
+            URL propertiesURL = new URL(propertiesFile);
+            InputStream is = propertiesURL.openStream();
+            properties.load(is);
 
-	    //  Let's make a file
-	    ShapeLayer sl = new ShapeLayer();
-	    sl.setProperties(prefix, properties);
+            //  Let's make a file
+            ShapeLayer sl = new ShapeLayer();
+            sl.setProperties(prefix, properties);
 
-	    AreaHandler ah = new AreaHandler(sl.getSpatialIndex(),
-					     sl.getDrawingAttributes());
+            AreaHandler ah = new AreaHandler(sl.getSpatialIndex(),
+                                             sl.getDrawingAttributes());
 
-	    // Set the properties in the handler.
-	    ah.setProperties(prefix, properties);
-	    // Write the saved graphics.
-	    ah.getGraphics().writeGraphics(outputFile);
+            // Set the properties in the handler.
+            ah.setProperties(prefix, properties);
+            // Write the saved graphics.
+            ah.getGraphics().writeGraphics(outputFile);
 
-	} catch (java.net.MalformedURLException murle) {
-	    Debug.error("Bad URL for properties file : " + 
-			propertiesFile);
-	    printUsage();
-	} catch (java.io.IOException ioe) {
-	    Debug.error("IOException creating cached graphics file: " +
-			outputFile);
-	    printUsage();
-	}
+        } catch (java.net.MalformedURLException murle) {
+            Debug.error("Bad URL for properties file : " + 
+                        propertiesFile);
+            printUsage();
+        } catch (java.io.IOException ioe) {
+            Debug.error("IOException creating cached graphics file: " +
+                        outputFile);
+            printUsage();
+        }
     }
 
     public static void printUsage() {
-	Debug.output("Usage: java com.bbn.openmap.layer.shape.areas.AreaHandler -props <URL to properties file> -prefix <handler property prefix> -file <path to output file>");
-	System.exit(-1);
+        Debug.output("Usage: java com.bbn.openmap.layer.shape.areas.AreaHandler -props <URL to properties file> -prefix <handler property prefix> -file <path to output file>");
+        System.exit(-1);
     }
 
 }

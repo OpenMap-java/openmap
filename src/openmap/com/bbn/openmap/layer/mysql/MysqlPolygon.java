@@ -32,8 +32,8 @@ public class MysqlPolygon extends MysqlGeometry {
     private Vector rings;
 
     public MysqlPolygon() {
-	super();
-	this.setType(this.POLYGONTTYPE);
+        super();
+        this.setType(this.POLYGONTTYPE);
     }
 
     /**
@@ -41,7 +41,7 @@ public class MysqlPolygon extends MysqlGeometry {
      * @return Vector
      */
     public Vector getRings() {
-	return rings;
+        return rings;
     }
 
     /**
@@ -49,7 +49,7 @@ public class MysqlPolygon extends MysqlGeometry {
      * @param rings The rings to set
      */
     public void setRings(Vector rings) {
-	this.rings = rings;
+        this.rings = rings;
     }
 
 }

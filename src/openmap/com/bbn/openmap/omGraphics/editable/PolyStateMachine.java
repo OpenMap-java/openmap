@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PolyStateMachine.java,v $
 // $RCSfile: PolyStateMachine.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/26 17:40:07 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,24 +41,24 @@ public class PolyStateMachine extends EOMGStateMachine {
     public static final int POLY_DELETE_NODE = DEFAULT_NUMBER_STATES + 2;
 
     public PolyStateMachine(EditableOMPoly p){
-	super(p);
+        super(p);
     }
 
     protected State[] init(){
-	Debug.message("eomg", "PolyStateMachine.init()");
-	NUMBER_STATES = DEFAULT_NUMBER_STATES + 3;
+        Debug.message("eomg", "PolyStateMachine.init()");
+        NUMBER_STATES = DEFAULT_NUMBER_STATES + 3;
 
-	State[] states = new State[NUMBER_STATES];
+        State[] states = new State[NUMBER_STATES];
 
-	states[GRAPHIC_UNDEFINED] = new PolyUndefinedState((EditableOMPoly)graphic);
-	states[GRAPHIC_UNSELECTED] = new GraphicUnselectedState(graphic);
-	states[GRAPHIC_SELECTED] = new GraphicSelectedState(graphic);
-	states[GRAPHIC_EDIT] = new GraphicEditState(graphic);
-	states[GRAPHIC_SETOFFSET] = new PolySetOffsetState((EditableOMPoly)graphic);
-	states[POLY_ADD_POINT] = new PolyAddPointState((EditableOMPoly) graphic);
-	states[POLY_ADD_NODE] = new PolyAddNodeState((EditableOMPoly) graphic);
-	states[POLY_DELETE_NODE] = new PolyDeleteNodeState((EditableOMPoly) graphic);
-	return states;
+        states[GRAPHIC_UNDEFINED] = new PolyUndefinedState((EditableOMPoly)graphic);
+        states[GRAPHIC_UNSELECTED] = new GraphicUnselectedState(graphic);
+        states[GRAPHIC_SELECTED] = new GraphicSelectedState(graphic);
+        states[GRAPHIC_EDIT] = new GraphicEditState(graphic);
+        states[GRAPHIC_SETOFFSET] = new PolySetOffsetState((EditableOMPoly)graphic);
+        states[POLY_ADD_POINT] = new PolyAddPointState((EditableOMPoly) graphic);
+        states[POLY_ADD_NODE] = new PolyAddNodeState((EditableOMPoly) graphic);
+        states[POLY_DELETE_NODE] = new PolyDeleteNodeState((EditableOMPoly) graphic);
+        return states;
 
     }
 
@@ -66,30 +66,30 @@ public class PolyStateMachine extends EOMGStateMachine {
      * State where points are added to the end of the polyline.
      */
     public void setAddPoint() {
-	setState(POLY_ADD_POINT);
+        setState(POLY_ADD_POINT);
     }
     
     /**
      * State where a node is duplicated if you click on it.
      */
     public void setAddNode() {
-	setState(POLY_ADD_NODE);
+        setState(POLY_ADD_NODE);
     }
 
     /**
      * State where a node is deleted if you click on it.
      */
     public void setDeleteNode() {
-	setState(POLY_DELETE_NODE);
+        setState(POLY_DELETE_NODE);
     }
 
     public void setSelected() {
-	super.setSelected();
-	((EditableOMPoly)graphic).enablePolygonEditButtons(true);
+        super.setSelected();
+        ((EditableOMPoly)graphic).enablePolygonEditButtons(true);
     }
 
     public void setUnselected() {
-	super.setUnselected();
-	((EditableOMPoly)graphic).enablePolygonEditButtons(false);
+        super.setUnselected();
+        ((EditableOMPoly)graphic).enablePolygonEditButtons(false);
     }
 }

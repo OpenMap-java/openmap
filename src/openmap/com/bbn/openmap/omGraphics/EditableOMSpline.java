@@ -29,7 +29,7 @@ public class EditableOMSpline extends EditableOMPoly {
      * Constructor.
      */
     public EditableOMSpline() {
-	super();
+        super();
     }
 
     /**
@@ -37,7 +37,7 @@ public class EditableOMSpline extends EditableOMPoly {
      * @param ga
      */
     public EditableOMSpline(GraphicAttributes ga) {
-	super(ga);
+        super(ga);
     }
 
     /**
@@ -45,27 +45,27 @@ public class EditableOMSpline extends EditableOMPoly {
      * @param omp
      */
     public EditableOMSpline(OMSpline omp) {
-	super(omp);
+        super(omp);
     }
 
     /**
      *  Extendable method to create specific subclasses of OMPolys.
      */
     public OMGraphic createGraphic(int renderType, int lineType) {
-	OMGraphic g = null;
-	switch (renderType) {
-	case (OMGraphic.RENDERTYPE_LATLON) :
-	    g = new OMSpline(new float[0], OMGraphic.RADIANS, lineType);
-	    break;
-	case (OMGraphic.RENDERTYPE_OFFSET) :
-	    g =	new OMSpline(90f, -180f, new int[0],
-			     OMSpline.COORDMODE_ORIGIN);
-	    break;
-	default :
-	    g = new OMSpline(new int[0]);
-	}
-	((OMSpline) g).setDoShapes(true);
-	return g;
+        OMGraphic g = null;
+        switch (renderType) {
+        case (OMGraphic.RENDERTYPE_LATLON) :
+            g = new OMSpline(new float[0], OMGraphic.RADIANS, lineType);
+            break;
+        case (OMGraphic.RENDERTYPE_OFFSET) :
+            g = new OMSpline(90f, -180f, new int[0],
+                             OMSpline.COORDMODE_ORIGIN);
+            break;
+        default :
+            g = new OMSpline(new int[0]);
+        }
+        ((OMSpline) g).setDoShapes(true);
+        return g;
     }
 
     /**
@@ -73,19 +73,19 @@ public class EditableOMSpline extends EditableOMPoly {
      * occurs when a point is added.  Slows things down, however.
      */
     public int addMovingPoint(int x, int y) {
-	int position = super.addMovingPoint(x, y);
-	redraw(null, true);
-	return position;
+        int position = super.addMovingPoint(x, y);
+        redraw(null, true);
+        return position;
     }
 
     public java.net.URL getImageURL(String imageName) {
-	try {
-	    return Class.forName(
-		"com.bbn.openmap.omGraphics.EditableOMPoly").getResource(
-		    imageName);
-	}
-	catch (ClassNotFoundException cnfe) {}
-	return null;
+        try {
+            return Class.forName(
+                "com.bbn.openmap.omGraphics.EditableOMPoly").getResource(
+                    imageName);
+        }
+        catch (ClassNotFoundException cnfe) {}
+        return null;
     }
 
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 22:55:25 $
-// $Author: wjeuerle $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:11 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -123,7 +123,7 @@ import com.bbn.openmap.Environment;
  * </UL>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.5 $ $Date: 2003/12/23 22:55:25 $
+ * @version $Revision: 1.6 $ $Date: 2004/01/26 18:18:11 $
  * @see ShapeIndex
  */
 public class SpatialIndex extends ShapeUtils {
@@ -162,7 +162,7 @@ public class SpatialIndex extends ShapeUtils {
      * @exception IOException if something goes wrong opening the file
      */
     public SpatialIndex(String ssxFilename) throws IOException {
-	ssx = new BinaryBufferedFile(ssxFilename);
+        ssx = new BinaryBufferedFile(ssxFilename);
     }
 
     /**
@@ -173,31 +173,31 @@ public class SpatialIndex extends ShapeUtils {
      * @exception IOException if something goes wrong opening the files
      */
     public SpatialIndex(String ssxFilename, String shpFilename)
-	throws IOException
+        throws IOException
     {
-	if (Debug.debugging("spatialindex")) {
-	    Debug.output("SpatialIndex(" + ssxFilename + ", " +
-			 shpFilename + ");");
-	}
+        if (Debug.debugging("spatialindex")) {
+            Debug.output("SpatialIndex(" + ssxFilename + ", " +
+                         shpFilename + ");");
+        }
 
-	ssx = new BinaryBufferedFile(ssxFilename);
-	shp = new BinaryBufferedFile(shpFilename);
+        ssx = new BinaryBufferedFile(ssxFilename);
+        shp = new BinaryBufferedFile(shpFilename);
     }
 
     /**
      * Get the box boundary containing all the shapes.
      */
     public ESRIBoundingBox getBounds() {
-	if (bounds == null) {
-	    try {
-		locateRecords(-180, -90, 180, 90);
-	    } catch (IOException ioe) {
-		bounds = null;
-	    } catch (FormatException fe) {
-		bounds = null;
-	    }
-	}
-	return bounds;
+        if (bounds == null) {
+            try {
+                locateRecords(-180, -90, 180, 90);
+            } catch (IOException ioe) {
+                bounds = null;
+            } catch (FormatException fe) {
+                bounds = null;
+            }
+        }
+        return bounds;
     }
 
     /**
@@ -205,7 +205,7 @@ public class SpatialIndex extends ShapeUtils {
      * file is read.
      */
     public void resetBounds() {
-	bounds = null;
+        bounds = null;
     }
 
     /**
@@ -221,25 +221,25 @@ public class SpatialIndex extends ShapeUtils {
      * @see ShapeUtils
      */
     public ESRIRecord makeESRIRecord(int shapeType, byte[] b, int off)
-	throws IOException
+        throws IOException
     {
-	switch ( shapeType ) {
-	case SHAPE_TYPE_NULL:
-	    return null;
-	case SHAPE_TYPE_POINT:
-//  	    return new ESRIPointRecord(b, off);
-	    return new ESRIPointRecord(b, off, pointIcon);
-	case SHAPE_TYPE_POLYGON:
-	case SHAPE_TYPE_ARC:
-//	case SHAPE_TYPE_POLYLINE:
-	    return new ESRIPolygonRecord(b, off);
-	case SHAPE_TYPE_MULTIPOINT:
-	    Debug.output("SpatialIndex.makeESRIRecord: Arc NYI");
-	    return null;
-// 	    return new ESRIMultipointRecord(b, off);
-	default:
-	    return null;
-	}
+        switch ( shapeType ) {
+        case SHAPE_TYPE_NULL:
+            return null;
+        case SHAPE_TYPE_POINT:
+//          return new ESRIPointRecord(b, off);
+            return new ESRIPointRecord(b, off, pointIcon);
+        case SHAPE_TYPE_POLYGON:
+        case SHAPE_TYPE_ARC:
+//      case SHAPE_TYPE_POLYLINE:
+            return new ESRIPolygonRecord(b, off);
+        case SHAPE_TYPE_MULTIPOINT:
+            Debug.output("SpatialIndex.makeESRIRecord: Arc NYI");
+            return null;
+//          return new ESRIMultipointRecord(b, off);
+        default:
+            return null;
+        }
     }
 
     /**
@@ -256,125 +256,125 @@ public class SpatialIndex extends ShapeUtils {
      * @exception IOException if something goes wrong reading the files
      */
     public ESRIRecord[] locateRecords(double xmin, double ymin,
-				      double xmax, double ymax)
-	throws IOException, FormatException
+                                      double xmax, double ymax)
+        throws IOException, FormatException
     {
 
-	boolean gatherBounds = false;
+        boolean gatherBounds = false;
 
-	if (bounds == null) {
-	    bounds = new ESRIBoundingBox();
-	    gatherBounds = true;
-	}
+        if (bounds == null) {
+            bounds = new ESRIBoundingBox();
+            gatherBounds = true;
+        }
 
-	if (Debug.debugging("spatialindex")) {
-	    Debug.output("locateRecords:");
-	    Debug.output("\txmin: " + xmin + "; ymin: " + ymin);
-	    Debug.output("\txmax: " + xmax + "; ymax: " + ymax);
-	}
+        if (Debug.debugging("spatialindex")) {
+            Debug.output("locateRecords:");
+            Debug.output("\txmin: " + xmin + "; ymin: " + ymin);
+            Debug.output("\txmax: " + xmax + "; ymax: " + ymax);
+        }
 
-	byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
-	int recNum = 0;
-	Vector v = new Vector();
-	int sRecordSize = DEFAULT_SHAPE_RECORD_SIZE;
-	byte sRecord[] = new byte[sRecordSize];
+        byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
+        int recNum = 0;
+        Vector v = new Vector();
+        int sRecordSize = DEFAULT_SHAPE_RECORD_SIZE;
+        byte sRecord[] = new byte[sRecordSize];
 
-	// Need to figure out what the shape type is...
-	ssx.seek(32);
+        // Need to figure out what the shape type is...
+        ssx.seek(32);
 
-//  	int shapeType = readLEInt(ssx);
-	///
-	ssx.byteOrder(false);
-  	int shapeType = ssx.readInteger();
-	///
-	ssx.seek(100);		// skip the file header
+//      int shapeType = readLEInt(ssx);
+        ///
+        ssx.byteOrder(false);
+        int shapeType = ssx.readInteger();
+        ///
+        ssx.seek(100);          // skip the file header
 
-	while (true) {
-	    int result = ssx.read(ixRecord, 0, SPATIAL_INDEX_RECORD_LENGTH);
-//   	    if (result == -1) {
-	    if (result <= 0) {
-		break;//EOF
-	    } else {
-		recNum++;
-		double xmin2 = readLEDouble(ixRecord, 8);
-		double ymin2 = readLEDouble(ixRecord, 16);
-		double xmax2 = readLEDouble(ixRecord, 24);
-		double ymax2 = readLEDouble(ixRecord, 32);
-		if (Debug.debugging("spatialindexdetail")) {
-		    Debug.output("Looking at rec num " + recNum);
-		    Debug.output("  " + xmin2 + ", " + ymin2 +
-				 "\n  " + xmax2 + ", " + ymax2);
-		}
+        while (true) {
+            int result = ssx.read(ixRecord, 0, SPATIAL_INDEX_RECORD_LENGTH);
+//          if (result == -1) {
+            if (result <= 0) {
+                break;//EOF
+            } else {
+                recNum++;
+                double xmin2 = readLEDouble(ixRecord, 8);
+                double ymin2 = readLEDouble(ixRecord, 16);
+                double xmax2 = readLEDouble(ixRecord, 24);
+                double ymax2 = readLEDouble(ixRecord, 32);
+                if (Debug.debugging("spatialindexdetail")) {
+                    Debug.output("Looking at rec num " + recNum);
+                    Debug.output("  " + xmin2 + ", " + ymin2 +
+                                 "\n  " + xmax2 + ", " + ymax2);
+                }
 
-		if (gatherBounds) {
-		    bounds.addPoint(xmin2, ymin2);
-		    bounds.addPoint(xmax2, ymax2);
-		}
+                if (gatherBounds) {
+                    bounds.addPoint(xmin2, ymin2);
+                    bounds.addPoint(xmax2, ymax2);
+                }
 
-		if (intersects(xmin, ymin, xmax, ymax,
-			       xmin2, ymin2, xmax2, ymax2)) {
-		    
-		    int offset = readBEInt(ixRecord, 0);
-		    int byteOffset = offset*2;
-		    int contentLength = readBEInt(ixRecord, 4);
-		    int recordSize = (contentLength * 2) + 8;
-//  		    System.out.print(".");
-//  		    System.out.flush();
+                if (intersects(xmin, ymin, xmax, ymax,
+                               xmin2, ymin2, xmax2, ymax2)) {
+                    
+                    int offset = readBEInt(ixRecord, 0);
+                    int byteOffset = offset*2;
+                    int contentLength = readBEInt(ixRecord, 4);
+                    int recordSize = (contentLength * 2) + 8;
+//                  System.out.print(".");
+//                  System.out.flush();
 
-		    if (recordSize < 0) {
-			Debug.error("SpatialIndex: supposed to read record size of " +
-				    recordSize); 
-			break;
-		    }
+                    if (recordSize < 0) {
+                        Debug.error("SpatialIndex: supposed to read record size of " +
+                                    recordSize); 
+                        break;
+                    }
 
 
-		    if (recordSize > sRecordSize) {
-			sRecordSize = recordSize;
-			if (Debug.debugging("spatialindexdetail")) {
-			    Debug.output("Shapefile SpatialIndex record size: " + sRecordSize);
-			}
-			sRecord = new byte[sRecordSize];
-		    }
+                    if (recordSize > sRecordSize) {
+                        sRecordSize = recordSize;
+                        if (Debug.debugging("spatialindexdetail")) {
+                            Debug.output("Shapefile SpatialIndex record size: " + sRecordSize);
+                        }
+                        sRecord = new byte[sRecordSize];
+                    }
 
-		    if (Debug.debugging("spatialindex")) {
-			Debug.output("going to shp byteOffset = " + byteOffset + 
-				     " for record size = " + recordSize + 
-				     ", offset = " + offset + ", shape type = " +
-				     shapeType);
-		    }
+                    if (Debug.debugging("spatialindex")) {
+                        Debug.output("going to shp byteOffset = " + byteOffset + 
+                                     " for record size = " + recordSize + 
+                                     ", offset = " + offset + ", shape type = " +
+                                     shapeType);
+                    }
 
-		    try {
-			shp.seek(byteOffset);
-			int nBytes = shp.read(sRecord, 0, recordSize);
-			if (nBytes < recordSize) {
-			    Debug.error("Shapefile SpatialIndex expected " + 
-					recordSize + " bytes, but got " + 
-					nBytes + " bytes instead.");
-			}
+                    try {
+                        shp.seek(byteOffset);
+                        int nBytes = shp.read(sRecord, 0, recordSize);
+                        if (nBytes < recordSize) {
+                            Debug.error("Shapefile SpatialIndex expected " + 
+                                        recordSize + " bytes, but got " + 
+                                        nBytes + " bytes instead.");
+                        }
 
-			ESRIRecord record = makeESRIRecord(shapeType, sRecord, 0);
-			v.addElement(record);
-		    } catch (IOException ioe) {
-			Debug.error("SpatialIndex.locateRecords: IOException. ");
-			ioe.printStackTrace();
-			break;
-		    }
-		}
-	    }
-	}
+                        ESRIRecord record = makeESRIRecord(shapeType, sRecord, 0);
+                        v.addElement(record);
+                    } catch (IOException ioe) {
+                        Debug.error("SpatialIndex.locateRecords: IOException. ");
+                        ioe.printStackTrace();
+                        break;
+                    }
+                }
+            }
+        }
 
-	if (Debug.debugging("spatialindex")) {
-	    Debug.output("Processed " + recNum + " records");
-	    Debug.output("Selected " + v.size() + " records");
-	}
-	int nRecords = v.size();
+        if (Debug.debugging("spatialindex")) {
+            Debug.output("Processed " + recNum + " records");
+            Debug.output("Selected " + v.size() + " records");
+        }
+        int nRecords = v.size();
 
-	ssx.seek(0);
-	shp.seek(0);
-	ESRIRecord result[] = new ESRIRecord[nRecords];
-	v.copyInto(result);
-	return result;
-	    
+        ssx.seek(0);
+        shp.seek(0);
+        ESRIRecord result[] = new ESRIRecord[nRecords];
+        v.copyInto(result);
+        return result;
+            
     }
 
     /**
@@ -395,14 +395,14 @@ public class SpatialIndex extends ShapeUtils {
      *         <code>false</code> if they do not
      */
     protected static final boolean intersects(double xmin1, double ymin1,
-					      double xmax1, double ymax1,
-					      double xmin2, double ymin2,
-					      double xmax2, double ymax2)
+                                              double xmax1, double ymax1,
+                                              double xmin2, double ymin2,
+                                              double xmax2, double ymax2)
     {
-	return !((xmax1 <= xmin2) ||
-		 (ymax1 <= ymin2) ||
-		 (xmin1 >= xmax2) ||
-		 (ymin1 >= ymax2));
+        return !((xmax1 <= xmin2) ||
+                 (ymax1 <= ymin2) ||
+                 (xmin1 >= xmax2) ||
+                 (ymin1 >= ymax2));
     }
 
     /**
@@ -412,28 +412,28 @@ public class SpatialIndex extends ShapeUtils {
      * @exception IOException if something goes wrong reading the file
      */
     public void dumpIndex(boolean showBounds) throws IOException {
-	byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
-	int recNum = 0;
+        byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
+        int recNum = 0;
 
-	ssx.seek(100);		// skip the file header
-	while (true) {
-	    int result = ssx.read(ixRecord, 0, SPATIAL_INDEX_RECORD_LENGTH);
-//  	    if (result == -1) {
-	    if (result <= 0) {
-//  		Debug.output("Processed " + recNum + " records");
-		break;//EOF
-	    } else {
-		recNum++;
-		int offset = readBEInt(ixRecord, 0);
-		int length = readBEInt(ixRecord, 4);
-		Debug.output("Record " + recNum + ": " +
-			     offset + ", " + length +
-			     (showBounds?("; " + readLEDouble(ixRecord, 8) +
-					  ", " + readLEDouble(ixRecord, 16) +
-					  ", " + readLEDouble(ixRecord, 24) +
-					  ", " + readLEDouble(ixRecord, 32)):""));
-	    }
-	}
+        ssx.seek(100);          // skip the file header
+        while (true) {
+            int result = ssx.read(ixRecord, 0, SPATIAL_INDEX_RECORD_LENGTH);
+//          if (result == -1) {
+            if (result <= 0) {
+//              Debug.output("Processed " + recNum + " records");
+                break;//EOF
+            } else {
+                recNum++;
+                int offset = readBEInt(ixRecord, 0);
+                int length = readBEInt(ixRecord, 4);
+                Debug.output("Record " + recNum + ": " +
+                             offset + ", " + length +
+                             (showBounds?("; " + readLEDouble(ixRecord, 8) +
+                                          ", " + readLEDouble(ixRecord, 16) +
+                                          ", " + readLEDouble(ixRecord, 24) +
+                                          ", " + readLEDouble(ixRecord, 32)):""));
+            }
+        }
     }
 
     /**
@@ -444,60 +444,60 @@ public class SpatialIndex extends ShapeUtils {
      * @param os the spatial index file output stream
      */
     protected static void indexPolygons(InputStream is, long ptr,
-					OutputStream os) {
-	boolean moreRecords = true;
-	byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
-	byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
-	int result;
-	int nRecords = 0;
-	int recLengthWords, recLengthBytes, recNumber;
-	long recOffset;
-	int recBufSize = 100000;
-	byte recBuf[] = new byte[recBufSize];
-	ESRIBoundingBox polyBounds;
-	
-	try {
-	    while (moreRecords) {
-		result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
-		if (result < 0) {
-		    moreRecords = false;
-		    Debug.output("Shapefile SpatialIndex Found " + nRecords + " records");
-		    Debug.output("Shapefile SpatialIndex recBufSize = " + recBufSize);
-		} else {
-		    nRecords++;
-		    recOffset = ptr;
-		    recNumber = readBEInt(rHdr, 0);
-		    recLengthWords = readBEInt(rHdr, 4);
-		    recLengthBytes = recLengthWords * 2;
+                                        OutputStream os) {
+        boolean moreRecords = true;
+        byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
+        byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
+        int result;
+        int nRecords = 0;
+        int recLengthWords, recLengthBytes, recNumber;
+        long recOffset;
+        int recBufSize = 100000;
+        byte recBuf[] = new byte[recBufSize];
+        ESRIBoundingBox polyBounds;
+        
+        try {
+            while (moreRecords) {
+                result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
+                if (result < 0) {
+                    moreRecords = false;
+                    Debug.output("Shapefile SpatialIndex Found " + nRecords + " records");
+                    Debug.output("Shapefile SpatialIndex recBufSize = " + recBufSize);
+                } else {
+                    nRecords++;
+                    recOffset = ptr;
+                    recNumber = readBEInt(rHdr, 0);
+                    recLengthWords = readBEInt(rHdr, 4);
+                    recLengthBytes = recLengthWords * 2;
 
-		    if (recLengthBytes > recBufSize) {
-			Debug.output("Shapefile SpatialIndex increasing recBufSize to " +
-					   recLengthBytes);
-			recBufSize = recLengthBytes;
-			recBuf = new byte[recBufSize];
-		    }
+                    if (recLengthBytes > recBufSize) {
+                        Debug.output("Shapefile SpatialIndex increasing recBufSize to " +
+                                           recLengthBytes);
+                        recBufSize = recLengthBytes;
+                        recBuf = new byte[recBufSize];
+                    }
 
-		    result = is.read(recBuf, 0, recLengthBytes);
-		    polyBounds = readBox(recBuf, 4);
-		    ptr += recLengthBytes + 8;
+                    result = is.read(recBuf, 0, recLengthBytes);
+                    polyBounds = readBox(recBuf, 4);
+                    ptr += recLengthBytes + 8;
 
-		    writeBEInt(outBuf, 0, (int)(recOffset/2));
-		    writeBEInt(outBuf, 4, recLengthWords);
-		    writeLEDouble(outBuf,  8, polyBounds.min.x);
-		    writeLEDouble(outBuf, 16, polyBounds.min.y);
-		    writeLEDouble(outBuf, 24, polyBounds.max.x);
-		    writeLEDouble(outBuf, 32, polyBounds.max.y);
-		    os.write(outBuf, 0, SPATIAL_INDEX_RECORD_LENGTH);
-		}
-	    }
-	} catch (java.io.IOException e) {
-	    e.printStackTrace();
-	} finally {
-	    try {
-		is.close();
-	    } catch (java.io.IOException e) {
-	    }
-	}
+                    writeBEInt(outBuf, 0, (int)(recOffset/2));
+                    writeBEInt(outBuf, 4, recLengthWords);
+                    writeLEDouble(outBuf,  8, polyBounds.min.x);
+                    writeLEDouble(outBuf, 16, polyBounds.min.y);
+                    writeLEDouble(outBuf, 24, polyBounds.max.x);
+                    writeLEDouble(outBuf, 32, polyBounds.max.y);
+                    os.write(outBuf, 0, SPATIAL_INDEX_RECORD_LENGTH);
+                }
+            }
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (java.io.IOException e) {
+            }
+        }
     }
 
     /**
@@ -508,62 +508,62 @@ public class SpatialIndex extends ShapeUtils {
      * @param os the spatial index file output stream
      */
     protected static void indexPoints(InputStream is, long ptr,
-				      OutputStream os) {
-	boolean moreRecords = true;
-	byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
-	byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
-	int result;
-	int nRecords = 0;
-	int recLengthWords, recLengthBytes, recNumber;
-	long recOffset;
-	int recBufSize = 20;
-	byte recBuf[] = new byte[recBufSize];
-	double x;
-	double y;
-	
-	try {
-	    while (moreRecords) {
-		result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
-		if (result < 0) {
-		    moreRecords = false;
-		    Debug.output("Found " + nRecords + " records");
-		    Debug.output("recBufSize = " + recBufSize);
-		} else {
-		    nRecords++;
-		    recOffset = ptr;
-		    recNumber = readBEInt(rHdr, 0);
-		    recLengthWords = readBEInt(rHdr, 4);
-		    recLengthBytes = recLengthWords * 2;
+                                      OutputStream os) {
+        boolean moreRecords = true;
+        byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
+        byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
+        int result;
+        int nRecords = 0;
+        int recLengthWords, recLengthBytes, recNumber;
+        long recOffset;
+        int recBufSize = 20;
+        byte recBuf[] = new byte[recBufSize];
+        double x;
+        double y;
+        
+        try {
+            while (moreRecords) {
+                result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
+                if (result < 0) {
+                    moreRecords = false;
+                    Debug.output("Found " + nRecords + " records");
+                    Debug.output("recBufSize = " + recBufSize);
+                } else {
+                    nRecords++;
+                    recOffset = ptr;
+                    recNumber = readBEInt(rHdr, 0);
+                    recLengthWords = readBEInt(rHdr, 4);
+                    recLengthBytes = recLengthWords * 2;
 
-		    if (recLengthBytes > recBufSize) {
-			Debug.output("Shapefile SpatialIndex increasing recBufSize to " +
-					   recLengthBytes);
-			recBufSize = recLengthBytes;
-			recBuf = new byte[recBufSize];
-		    }
+                    if (recLengthBytes > recBufSize) {
+                        Debug.output("Shapefile SpatialIndex increasing recBufSize to " +
+                                           recLengthBytes);
+                        recBufSize = recLengthBytes;
+                        recBuf = new byte[recBufSize];
+                    }
 
-		    result = is.read(recBuf, 0, recLengthBytes);
-		    x = readLEDouble(recBuf, 4);
-		    y = readLEDouble(recBuf, 12);
-		    ptr += recLengthBytes + 8;
+                    result = is.read(recBuf, 0, recLengthBytes);
+                    x = readLEDouble(recBuf, 4);
+                    y = readLEDouble(recBuf, 12);
+                    ptr += recLengthBytes + 8;
 
-		    writeBEInt(outBuf, 0, (int)(recOffset/2));
-		    writeBEInt(outBuf, 4, recLengthWords);
-		    writeLEDouble(outBuf,  8, x);
-		    writeLEDouble(outBuf, 16, y);
-		    writeLEDouble(outBuf, 24, x);
-		    writeLEDouble(outBuf, 32, y);
-		    os.write(outBuf, 0, SPATIAL_INDEX_RECORD_LENGTH);
-		}
-	    }
-	} catch (java.io.IOException e) {
-	    e.printStackTrace();
-	} finally {
-	    try {
-		is.close();
-	    } catch (java.io.IOException e) {
-	    }
-	}
+                    writeBEInt(outBuf, 0, (int)(recOffset/2));
+                    writeBEInt(outBuf, 4, recLengthWords);
+                    writeLEDouble(outBuf,  8, x);
+                    writeLEDouble(outBuf, 16, y);
+                    writeLEDouble(outBuf, 24, x);
+                    writeLEDouble(outBuf, 32, y);
+                    os.write(outBuf, 0, SPATIAL_INDEX_RECORD_LENGTH);
+                }
+            }
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (java.io.IOException e) {
+            }
+        }
     }
 
     /**
@@ -575,47 +575,47 @@ public class SpatialIndex extends ShapeUtils {
      * @param outFile the spatial index file
      */
     public static void createIndex(String inFile, String outFile) {
-	byte fileHeader[] = new byte[SHAPE_FILE_HEADER_LENGTH];
-	FileInputStream shp = null;
-	FileOutputStream ssx = null;
-	int shapeType;
-	try {
-	    shp = new FileInputStream(inFile);
-	    ssx = new FileOutputStream(outFile);
-	    shp.read(fileHeader, 0, SHAPE_FILE_HEADER_LENGTH);
-	    ssx.write(fileHeader, 0, SHAPE_FILE_HEADER_LENGTH);
-	    shapeType = readLEInt(fileHeader, 32);
-	    switch(shapeType) {
-	    case SHAPE_TYPE_NULL:
-		Debug.error("Unable to index shape type NULL");
-		break;
-	    case SHAPE_TYPE_POINT:
-		indexPoints(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
-		break;
-	    case SHAPE_TYPE_ARC:
-//	    case SHAPE_TYPE_POLYLINE:
-		indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
-		break;
-	    case SHAPE_TYPE_POLYGON:
-		indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
-		break;
-	    case SHAPE_TYPE_MULTIPOINT:
-		Debug.error("Shapefile SpatialIndex: Unable to index shape type MULTIPOINT");
-		break;
-	    default:
-		Debug.error("Shapefile SpatialIndex.createIndex:  Unknown shape type: " +
-			    shapeType);
-	    }
+        byte fileHeader[] = new byte[SHAPE_FILE_HEADER_LENGTH];
+        FileInputStream shp = null;
+        FileOutputStream ssx = null;
+        int shapeType;
+        try {
+            shp = new FileInputStream(inFile);
+            ssx = new FileOutputStream(outFile);
+            shp.read(fileHeader, 0, SHAPE_FILE_HEADER_LENGTH);
+            ssx.write(fileHeader, 0, SHAPE_FILE_HEADER_LENGTH);
+            shapeType = readLEInt(fileHeader, 32);
+            switch(shapeType) {
+            case SHAPE_TYPE_NULL:
+                Debug.error("Unable to index shape type NULL");
+                break;
+            case SHAPE_TYPE_POINT:
+                indexPoints(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
+                break;
+            case SHAPE_TYPE_ARC:
+//          case SHAPE_TYPE_POLYLINE:
+                indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
+                break;
+            case SHAPE_TYPE_POLYGON:
+                indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
+                break;
+            case SHAPE_TYPE_MULTIPOINT:
+                Debug.error("Shapefile SpatialIndex: Unable to index shape type MULTIPOINT");
+                break;
+            default:
+                Debug.error("Shapefile SpatialIndex.createIndex:  Unknown shape type: " +
+                            shapeType);
+            }
 
-	} catch (java.io.IOException e) {
-	    e.printStackTrace();
-	} finally {
-	    try {
-		shp.close();
-		ssx.close();
-	    } catch (java.io.IOException e) {
-	    }
-	}
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                shp.close();
+                ssx.close();
+            } catch (java.io.IOException e) {
+            }
+        }
     }
 
     /**
@@ -625,23 +625,23 @@ public class SpatialIndex extends ShapeUtils {
      * @param out The output stream to use for output
      */
     public static void printUsage(PrintStream out) {
-	String className = SpatialIndex.class.getName();
+        String className = SpatialIndex.class.getName();
 
-	out.println("Usage:");
-	out.println();
-	out.println("java " + className + " -c file.ssx file.shp");
-	out.println("Creates spatial index <file.ssx> from "
-		    + "shape file <file.shp>.");
-	out.println();
-	out.println("java " + className + " -d file.ssx");
-	out.println("Dumps spatial index information, excluding "
-		    + "bounding boxes to stdout.  Useful for "
-		    + "comparing to a shape index.");
-	out.println();
-	out.println("java " + className + " -d -b file.ssx");
-	out.println("Dumps spatial index information including "
-		    + "bounding boxes to stdout.");
-	out.println();
+        out.println("Usage:");
+        out.println();
+        out.println("java " + className + " -c file.ssx file.shp");
+        out.println("Creates spatial index <file.ssx> from "
+                    + "shape file <file.shp>.");
+        out.println();
+        out.println("java " + className + " -d file.ssx");
+        out.println("Dumps spatial index information, excluding "
+                    + "bounding boxes to stdout.  Useful for "
+                    + "comparing to a shape index.");
+        out.println();
+        out.println("java " + className + " -d -b file.ssx");
+        out.println("Dumps spatial index information including "
+                    + "bounding boxes to stdout.");
+        out.println();
     }
 
     /**
@@ -649,24 +649,24 @@ public class SpatialIndex extends ShapeUtils {
      * @return absolute name of the file as a string if found, null otherwise.
      */
     public static String locateFile(String name) {
-	File file = new File(name);
-	if (file.exists()) {
-	    return name;
-	} else {
-	    java.net.URL url = ClassLoader.getSystemResource(name);
-	    
-	    //OK, now we want to look around for the file, in the
-	    //classpaths, and as a resource.  It may be a file in
-	    //a classpath, available for direct access.
-	    if (url != null) {
-		String newname = url.getFile();
-		file = new File(newname);
-		if (file.exists()) {
-		    return newname;
-		}
-	    }
-	} 
-	return null;
+        File file = new File(name);
+        if (file.exists()) {
+            return name;
+        } else {
+            java.net.URL url = ClassLoader.getSystemResource(name);
+            
+            //OK, now we want to look around for the file, in the
+            //classpaths, and as a resource.  It may be a file in
+            //a classpath, available for direct access.
+            if (url != null) {
+                String newname = url.getFile();
+                file = new File(newname);
+                if (file.exists()) {
+                    return newname;
+                }
+            }
+        } 
+        return null;
     }
 
     /**
@@ -675,87 +675,87 @@ public class SpatialIndex extends ShapeUtils {
      * spatial index file and place it next to the shape file.  
      */
     public static SpatialIndex locateAndSetShapeData(String shapeFileName) {
-	SpatialIndex spi = null;
-	int appendixIndex = shapeFileName.indexOf(".shp");
-	String spatialIndexFileName, newShapeFileName, newSpatialIndexFileName;
+        SpatialIndex spi = null;
+        int appendixIndex = shapeFileName.indexOf(".shp");
+        String spatialIndexFileName, newShapeFileName, newSpatialIndexFileName;
 
-	if (Debug.debugging("shape")) {
-	    Debug.output("SpatialIndex: created with just the shape file " + shapeFileName);
-	}
+        if (Debug.debugging("shape")) {
+            Debug.output("SpatialIndex: created with just the shape file " + shapeFileName);
+        }
 
-	if (appendixIndex != -1) {
-	    
-	    if (BinaryFile.exists(shapeFileName)) {
-		// OK, the shape files exists - now look for spatial
-		// index file next to it.
-		spatialIndexFileName = shapeFileName.substring(0, appendixIndex) + ".ssx";
+        if (appendixIndex != -1) {
+            
+            if (BinaryFile.exists(shapeFileName)) {
+                // OK, the shape files exists - now look for spatial
+                // index file next to it.
+                spatialIndexFileName = shapeFileName.substring(0, appendixIndex) + ".ssx";
 
-		// Now, see if the spatialIndexFileName exists, and if
-		// not, create it.
-		if (Debug.debugging("shape")) {
-		    Debug.output("Trying to locate spatial index file " + 
-				 spatialIndexFileName);
-		}
-		
-		if (!BinaryFile.exists(spatialIndexFileName)) {
-		    // OK, the spatial index doesn't exist, but if the
-		    // shape file is local, we have a shot at creating
-		    // it.
-		    newShapeFileName = locateFile(shapeFileName);
+                // Now, see if the spatialIndexFileName exists, and if
+                // not, create it.
+                if (Debug.debugging("shape")) {
+                    Debug.output("Trying to locate spatial index file " + 
+                                 spatialIndexFileName);
+                }
+                
+                if (!BinaryFile.exists(spatialIndexFileName)) {
+                    // OK, the spatial index doesn't exist, but if the
+                    // shape file is local, we have a shot at creating
+                    // it.
+                    newShapeFileName = locateFile(shapeFileName);
 
-		    if (newShapeFileName != null) {
-			// It's Local!!  
-			Debug.output("Creating spatial index file: " +
-				     spatialIndexFileName);
+                    if (newShapeFileName != null) {
+                        // It's Local!!  
+                        Debug.output("Creating spatial index file: " +
+                                     spatialIndexFileName);
 
-			appendixIndex = newShapeFileName.indexOf(".shp");
-			newSpatialIndexFileName = newShapeFileName.substring(0, appendixIndex) + ".ssx";
-			SpatialIndex.createIndex(newShapeFileName, 
-						 newSpatialIndexFileName);
-		    } else {
-			Debug.error("Can't create SpatialIndex for URL/JAR shapefile: " +
-				    shapeFileName);
-		    }
-		}
-		
-		try {
-		    spi = new SpatialIndex(spatialIndexFileName, 
-					   shapeFileName);
-		} catch(java.io.IOException ioe) {
-		    Debug.error(ioe.getMessage());
-		    ioe.printStackTrace(Debug.getErrorStream());
-		    spi = null;
-		}
-	    } else {
-		Debug.error("SpatialIndex: Couldn't locate shape file " + 
-			    shapeFileName);
-	    }
+                        appendixIndex = newShapeFileName.indexOf(".shp");
+                        newSpatialIndexFileName = newShapeFileName.substring(0, appendixIndex) + ".ssx";
+                        SpatialIndex.createIndex(newShapeFileName, 
+                                                 newSpatialIndexFileName);
+                    } else {
+                        Debug.error("Can't create SpatialIndex for URL/JAR shapefile: " +
+                                    shapeFileName);
+                    }
+                }
+                
+                try {
+                    spi = new SpatialIndex(spatialIndexFileName, 
+                                           shapeFileName);
+                } catch(java.io.IOException ioe) {
+                    Debug.error(ioe.getMessage());
+                    ioe.printStackTrace(Debug.getErrorStream());
+                    spi = null;
+                }
+            } else {
+                Debug.error("SpatialIndex: Couldn't locate shape file " + 
+                            shapeFileName);
+            }
 
-	} else {
-	    if (Debug.debugging("shape")) {
-		Debug.output("SpatialIndex: file " + shapeFileName + 
-			     " doesn't look like a shape file");
-	    }
-	}
+        } else {
+            if (Debug.debugging("shape")) {
+                Debug.output("SpatialIndex: file " + shapeFileName + 
+                             " doesn't look like a shape file");
+            }
+        }
 
-	return spi;
+        return spi;
     }
 
     public static SpatialIndex locateAndSetShapeData(String shapeFileName,
-						     String spatialIndexFileName) {
+                                                     String spatialIndexFileName) {
         SpatialIndex spi = null;
-	String message = "ShapeLayer SpatialIndex: problem setting up the shape files:\n      shape file: " + shapeFileName + "\n     spatial index file: " + spatialIndexFileName;
+        String message = "ShapeLayer SpatialIndex: problem setting up the shape files:\n      shape file: " + shapeFileName + "\n     spatial index file: " + spatialIndexFileName;
 
-	try {
-	    if (BinaryFile.exists(shapeFileName) && BinaryFile.exists(spatialIndexFileName)) {
-		spi = new SpatialIndex(spatialIndexFileName, shapeFileName);
-	    } else {
-		Debug.error(message);
-	    }
-	} catch(java.io.IOException ioe) {
-	    Debug.error(message + "\n" + ioe.getMessage());
-	    ioe.printStackTrace(Debug.getErrorStream());
-	}
+        try {
+            if (BinaryFile.exists(shapeFileName) && BinaryFile.exists(spatialIndexFileName)) {
+                spi = new SpatialIndex(spatialIndexFileName, shapeFileName);
+            } else {
+                Debug.error(message);
+            }
+        } catch(java.io.IOException ioe) {
+            Debug.error(message + "\n" + ioe.getMessage());
+            ioe.printStackTrace(Debug.getErrorStream());
+        }
         return spi;
     }
     
@@ -770,35 +770,35 @@ public class SpatialIndex extends ShapeUtils {
      *            writing the file
      */
     public static void main(String argv[]) throws IOException {
-	int argc = argv.length;
+        int argc = argv.length;
 
-	if (argc == 0) {
-	    // No arguments, give the user some help
-	    printUsage(System.out);
-	    System.exit(0);
-	}
+        if (argc == 0) {
+            // No arguments, give the user some help
+            printUsage(System.out);
+            System.exit(0);
+        }
 
-	if (argv[0].equals("-d")) {
-	    if (argc == 2) {
-		String name = argv[1];
-		SpatialIndex si = new SpatialIndex(name);
-		si.dumpIndex(false);
-	    } else if ((argc == 3) && (argv[1].equals("-b"))) {
-		String name = argv[2];
-		SpatialIndex si = new SpatialIndex(name);
-		si.dumpIndex(true);
-	    } else {
-		printUsage(System.err);
-		System.exit(1);
-	    }
-	} else if ((argc == 3) && argv[0].equals("-c")) {
-	    String indexFile = argv[1];
-	    String shapeFile = argv[2];
-	    SpatialIndex.createIndex(shapeFile, indexFile);
-	} else {
-	    printUsage(System.err);
-	    System.exit(1);
-	}
+        if (argv[0].equals("-d")) {
+            if (argc == 2) {
+                String name = argv[1];
+                SpatialIndex si = new SpatialIndex(name);
+                si.dumpIndex(false);
+            } else if ((argc == 3) && (argv[1].equals("-b"))) {
+                String name = argv[2];
+                SpatialIndex si = new SpatialIndex(name);
+                si.dumpIndex(true);
+            } else {
+                printUsage(System.err);
+                System.exit(1);
+            }
+        } else if ((argc == 3) && argv[0].equals("-c")) {
+            String indexFile = argv[1];
+            String shapeFile = argv[2];
+            SpatialIndex.createIndex(shapeFile, indexFile);
+        } else {
+            printUsage(System.err);
+            System.exit(1);
+        }
     }
 
     /** 
@@ -806,7 +806,7 @@ public class SpatialIndex extends ShapeUtils {
      * @param ii ImageIcon to use for icon.
      */
     public synchronized void setPointIcon(ImageIcon ii){
-	pointIcon = ii;
+        pointIcon = ii;
     }
 
     /**
@@ -814,7 +814,7 @@ public class SpatialIndex extends ShapeUtils {
      * @return ImageIcon, null if not set.
      */
     public synchronized ImageIcon getPointIcon(){
-	return pointIcon;
+        return pointIcon;
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/quadtree/QuadTreeLeaf.java,v $
 // $RCSfile: QuadTreeLeaf.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,8 +35,8 @@ public class QuadTreeLeaf implements Serializable{
     public Object object;
 
     public QuadTreeLeaf (float lat, float lon, Object obj){
-	latitude = lat;
-	longitude = lon;
-	object = obj;
+        latitude = lat;
+        longitude = lon;
+        object = obj;
     }
 }

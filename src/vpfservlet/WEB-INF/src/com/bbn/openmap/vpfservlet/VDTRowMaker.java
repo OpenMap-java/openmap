@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/VDTRowMaker.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -31,23 +31,23 @@ public class VDTRowMaker extends ReferenceRowMaker {
     final int tableCol;
 
     public VDTRowMaker(HttpServletRequest request,
-		       HttpServletResponse response,
-		       String basepath, DcwRecordFile drf) {
-	super(request, response);
-	this.basepath = basepath;
-	tableCol = drf.whatColumn("table");
+                       HttpServletResponse response,
+                       String basepath, DcwRecordFile drf) {
+        super(request, response);
+        this.basepath = basepath;
+        tableCol = drf.whatColumn("table");
     }
     
     public void addToRow(TableRowElement row, List l) {
-	int i = 0;
-	for (Iterator li = l.iterator(); li.hasNext(); ) {
-	    Object elt = li.next();
-	    if (i == tableCol) {
-		row.addElement(fileURL(basepath, ((String)elt).toLowerCase()));
-	    } else {
-		row.addElement(elt.toString());
-	    }
-	    i++;
-	}
+        int i = 0;
+        for (Iterator li = l.iterator(); li.hasNext(); ) {
+            Object elt = li.next();
+            if (i == tableCol) {
+                row.addElement(fileURL(basepath, ((String)elt).toLowerCase()));
+            } else {
+                row.addElement(elt.toString());
+            }
+            i++;
+        }
     }
 }

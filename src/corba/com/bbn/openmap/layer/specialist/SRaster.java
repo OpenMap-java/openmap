@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SRaster.java,v $
 // $RCSfile: SRaster.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -62,7 +62,7 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase*/ {
     /** Generic object with nothing allocated internally. */
     public SRaster() {
       super(GraphicType.GT_Raster, RenderType.RT_Unknown, 
-	    LineType.LT_Unknown, DeclutterType.DC_None);
+            LineType.LT_Unknown, DeclutterType.DC_None);
       p1_ = new XYPoint((short)0, (short)0);
       ll1_ = new LLPoint(0f, 0f);
       width_ = 0;
@@ -77,67 +77,67 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase*/ {
 
   /** Lat/Lon placement */
     public SRaster(LLPoint ll1, 
-		   short width, short height, 
-		   byte[] pixels,
-		   short colorsTotal,
-		   CTEntry[] ct,
-		   short transparent, 
-		   short x_hot, short y_hot) {
+                   short width, short height, 
+                   byte[] pixels,
+                   short colorsTotal,
+                   CTEntry[] ct,
+                   short transparent, 
+                   short x_hot, short y_hot) {
 
-	super(GraphicType.GT_Raster, RenderType.RT_LatLon, 
-	      LineType.LT_Unknown, DeclutterType.DC_None);
+        super(GraphicType.GT_Raster, RenderType.RT_LatLon, 
+              LineType.LT_Unknown, DeclutterType.DC_None);
         p1_ = new XYPoint((short)0, (short)0);
-	ll1_ = ll1;
-	width_ = width;
-	height_ = height;
-	x_hot_ = x_hot;
-	y_hot_ = y_hot;
-	pixels_ = pixels;
-	transparent_ = transparent;
-	makeMatch(colorsTotal, ct);
+        ll1_ = ll1;
+        width_ = width;
+        height_ = height;
+        x_hot_ = x_hot;
+        y_hot_ = y_hot;
+        pixels_ = pixels;
+        transparent_ = transparent;
+        makeMatch(colorsTotal, ct);
     }
   
     /** XY placement. */
     public SRaster(short x1, short y1,
-		   short width, short height,
-		   byte[] pixels,
-		   short colorsTotal,
-		   CTEntry[] ct,
-		   short transparent,
-		   short x_hot, short y_hot) {
+                   short width, short height,
+                   byte[] pixels,
+                   short colorsTotal,
+                   CTEntry[] ct,
+                   short transparent,
+                   short x_hot, short y_hot) {
         super(GraphicType.GT_Raster, RenderType.RT_XY, 
-	      LineType.LT_Unknown, DeclutterType.DC_None);
+              LineType.LT_Unknown, DeclutterType.DC_None);
         p1_ = new XYPoint(x1, y1);
-	ll1_ = new LLPoint(0f, 0f);
-	width_ = width;
-	height_ = height;
-	x_hot_ = x_hot;
-	y_hot_ = y_hot;
-	pixels_ = pixels;
-	makeMatch(colorsTotal, ct);
-	transparent_ = transparent;
+        ll1_ = new LLPoint(0f, 0f);
+        width_ = width;
+        height_ = height;
+        x_hot_ = x_hot;
+        y_hot_ = y_hot;
+        pixels_ = pixels;
+        makeMatch(colorsTotal, ct);
+        transparent_ = transparent;
     }
 
     /** Lat/lon placement with XY offset.*/
     public SRaster(LLPoint ll1,
-		   short offset_x1, short offset_y1,
-		   short width, short height,
-		   byte[] pixels,
-		   short colorsTotal,
-		   CTEntry[] ct,
-		   short transparent,
-		   short x_hot, short y_hot) {
-	super(GraphicType.GT_Raster, RenderType.RT_Offset, 
-	      LineType.LT_Unknown, DeclutterType.DC_None);
+                   short offset_x1, short offset_y1,
+                   short width, short height,
+                   byte[] pixels,
+                   short colorsTotal,
+                   CTEntry[] ct,
+                   short transparent,
+                   short x_hot, short y_hot) {
+        super(GraphicType.GT_Raster, RenderType.RT_Offset, 
+              LineType.LT_Unknown, DeclutterType.DC_None);
         p1_ = new XYPoint(offset_x1, offset_y1);
-	ll1_ = ll1;
-	width_ = width;
-	height_ = height;
-	x_hot_ = x_hot;
-	y_hot_ = y_hot;
-	pixels_ = pixels;
-	makeMatch(colorsTotal, ct);
-	transparent_ = transparent;
+        ll1_ = ll1;
+        width_ = width;
+        height_ = height;
+        x_hot_ = x_hot;
+        y_hot_ = y_hot;
+        pixels_ = pixels;
+        makeMatch(colorsTotal, ct);
+        transparent_ = transparent;
     }
 
   /** Lat/Lon placement. Use this if you are building images in a
@@ -149,20 +149,20 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase*/ {
    * @see #setColor(int index, CTEntry color)
    */
     public SRaster(LLPoint ll1, 
-		   short width, short height, 
-		   short x_hot, short y_hot) {
-	super(GraphicType.GT_Raster, RenderType.RT_LatLon, 
-	      LineType.LT_Unknown, DeclutterType.DC_None);
+                   short width, short height, 
+                   short x_hot, short y_hot) {
+        super(GraphicType.GT_Raster, RenderType.RT_LatLon, 
+              LineType.LT_Unknown, DeclutterType.DC_None);
         p1_ = new XYPoint((short)0, (short)0);
-	ll1_ = ll1;
-	width_ = width;
-	height_ = height;
-	x_hot_ = x_hot;
-	y_hot_ = y_hot;
-	pixels_ = new byte[height*width];
-	colorsTotal_ = 0;
-	transparent_ = 0;
-	ct_ = new CTEntry[0];
+        ll1_ = ll1;
+        width_ = width;
+        height_ = height;
+        x_hot_ = x_hot;
+        y_hot_ = y_hot;
+        pixels_ = new byte[height*width];
+        colorsTotal_ = 0;
+        transparent_ = 0;
+        ct_ = new CTEntry[0];
     }
   
   /** XY placement.  Use this if you are building images in a cache,
@@ -174,20 +174,20 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase*/ {
    * @see #setColor(int index, CTEntry color) 
    */
     public SRaster(short x1, short y1,
-		   short width, short height,
-		   short x_hot, short y_hot) {
-	super(GraphicType.GT_Raster, RenderType.RT_XY, 
-	      LineType.LT_Unknown, DeclutterType.DC_None);
+                   short width, short height,
+                   short x_hot, short y_hot) {
+        super(GraphicType.GT_Raster, RenderType.RT_XY, 
+              LineType.LT_Unknown, DeclutterType.DC_None);
         p1_ = new XYPoint(x1, y1);
-	ll1_ = new LLPoint(0f, 0f);
-	width_ = width;
-	height_ = height;
-	x_hot_ = x_hot;
-	y_hot_ = y_hot;
-	pixels_ = new byte[height*width];
-	colorsTotal_ = 0;
-	transparent_ = 0;
-	ct_ = new CTEntry[0];
+        ll1_ = new LLPoint(0f, 0f);
+        width_ = width;
+        height_ = height;
+        x_hot_ = x_hot;
+        y_hot_ = y_hot;
+        pixels_ = new byte[height*width];
+        colorsTotal_ = 0;
+        transparent_ = 0;
+        ct_ = new CTEntry[0];
     }
 
   /**
@@ -200,21 +200,21 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase*/ {
    * @see #setColor(int index, CTEntry color)
    */
     public SRaster(LLPoint ll1,
-		   short offset_x1, short offset_y1,
-		   short width, short height,
-		   short x_hot, short y_hot) {
-	super(GraphicType.GT_Raster, RenderType.RT_Offset, 
-	      LineType.LT_Unknown, DeclutterType.DC_None);
+                   short offset_x1, short offset_y1,
+                   short width, short height,
+                   short x_hot, short y_hot) {
+        super(GraphicType.GT_Raster, RenderType.RT_Offset, 
+              LineType.LT_Unknown, DeclutterType.DC_None);
         p1_ = new XYPoint(offset_x1, offset_y1);
-	ll1_ = ll1;
-	width_ = width;
-	height_ = height;
-	x_hot_ = x_hot;
-	y_hot_ = y_hot;
-	pixels_ = new byte[height*width];
-	colorsTotal_ = 0;
-	transparent_ = 0;
-	ct_ = new CTEntry[0];
+        ll1_ = ll1;
+        width_ = width;
+        height_ = height;
+        x_hot_ = x_hot;
+        y_hot_ = y_hot;
+        pixels_ = new byte[height*width];
+        colorsTotal_ = 0;
+        transparent_ = 0;
+        ct_ = new CTEntry[0];
     }
 
     /** Set image pixel data.
@@ -225,10 +225,10 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase*/ {
      */
     public boolean setPixel(short x, short y, byte ctIndex) {
         if(boundsSafe(x, y)) {
-	    pixels_[(y*width_)+x] = ctIndex;
-	    return true;
-	}
-	return false;  //fail
+            pixels_[(y*width_)+x] = ctIndex;
+            return true;
+        }
+        return false;  //fail
     }
 
     /** Set image pixel data.
@@ -238,9 +238,9 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase*/ {
      */
     public byte getPixel(short x, short y) {
         if(boundsSafe(x, y)) {
-	    return pixels_[(y*width_)+x];
-	}
-	return 0;  //fail - but also the ct[0] - hmmmmm.
+            return pixels_[(y*width_)+x];
+        }
+        return 0;  //fail - but also the ct[0] - hmmmmm.
     }
 
     /** Set color entry in the colortable.
@@ -250,10 +250,10 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase*/ {
      */
     public boolean setColor(int index, CTEntry color) {
         if(index < colorsTotal_) {
-	    ct_[index] = color;
-	    return true;
-	}
-	return false;
+            ct_[index] = color;
+            return true;
+        }
+        return false;
     }
 
     /** Get color entry in the colortable.
@@ -262,31 +262,31 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase*/ {
      */
     public CTEntry getColor(int index) {
         if(index < colorsTotal_) return ct_[index];
-	return null;
+        return null;
     }
 
     private boolean boundsSafe(short x, short y) {
         if ((y < 0) || (y >= height_) || (x < 0) || (x >= width_)) 
-	    return false;
-	return true;
+            return false;
+        return true;
     }
 
     /** Force the colorsTotal_/ct_ to be the larger of the two. */
     private void makeMatch(short colorsTotal, CTEntry[] ct) {
-	if(colorsTotal == ct.length) {
-	    ct_ = ct;
-	    colorsTotal_ = colorsTotal;
-	}
-	else {
-  	    if (ct.length > colorsTotal) {
-	        colorsTotal_ = (short)ct.length;
-		ct_ = ct;
-	    }
-	    else {
-	        ct_ = new CTEntry[colorsTotal];
-		for (int i=0; i<ct.length; i++) ct_[i] = ct[i];
-	    }
-	}
+        if(colorsTotal == ct.length) {
+            ct_ = ct;
+            colorsTotal_ = colorsTotal;
+        }
+        else {
+            if (ct.length > colorsTotal) {
+                colorsTotal_ = (short)ct.length;
+                ct_ = ct;
+            }
+            else {
+                ct_ = new CTEntry[colorsTotal];
+                for (int i=0; i<ct.length; i++) ct_[i] = ct[i];
+            }
+        }
     }
 
     // Object methods for member variables - Any resizing of the
@@ -308,14 +308,14 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase*/ {
     }
     public void width(short width) {
         width_ = width;
-	pixels_ = new byte[width_*height_];
+        pixels_ = new byte[width_*height_];
     }
     public short width() {
         return width_;
     }
     public void height(short height) {
         height_ = height;
-	pixels_ = new byte[width_*height_];
+        pixels_ = new byte[width_*height_];
     }
     public short height() {
         return height_;
@@ -340,7 +340,7 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase*/ {
     }
     public void colorsTotal(short num_colors) {
         CTEntry[] tmp = ct_;
-	makeMatch(num_colors, tmp);
+        makeMatch(num_colors, tmp);
     }
     public short colorsTotal() {
         return colorsTotal_;
@@ -361,99 +361,99 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase*/ {
     public ERaster fill() {
 
         return new ERaster(eg,
-			   p1_, ll1_, pixels_,
-			   width_, height_,
-			   x_hot_, y_hot_,
-			   colorsTotal_,
-			   ct_,
-			   transparent_);
+                           p1_, ll1_, pixels_,
+                           width_, height_,
+                           x_hot_, y_hot_,
+                           colorsTotal_,
+                           ct_,
+                           transparent_);
     }
 
     public UGraphic ufill() {
         UGraphic ugraphic = new UGraphic();
-	ugraphic.eras(fill());
-	return ugraphic;
+        ugraphic.eras(fill());
+        return ugraphic;
     }
 
     public void changeP1(com.bbn.openmap.CSpecialist.XYPoint p1) {
         p1_ = p1;
-	RASF_update gupdate = new RASF_update();
-	gupdate.p1(p1);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rasf_update(gupdate);
-	addGraphicChange(ug);
+        RASF_update gupdate = new RASF_update();
+        gupdate.p1(p1);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rasf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeLl1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
-	RASF_update gupdate = new RASF_update();
-	gupdate.ll1(ll1);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rasf_update(gupdate);
-	addGraphicChange(ug);
+        RASF_update gupdate = new RASF_update();
+        gupdate.ll1(ll1);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rasf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeWidth(short width) {
         width_ = width;
-	RASF_update gupdate = new RASF_update();
-	gupdate.width(width);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rasf_update(gupdate);
-	addGraphicChange(ug);
+        RASF_update gupdate = new RASF_update();
+        gupdate.width(width);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rasf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeHeight(short height) {
         height_ = height;
-	RASF_update gupdate = new RASF_update();
-	gupdate.height(height);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rasf_update(gupdate);
-	addGraphicChange(ug);
+        RASF_update gupdate = new RASF_update();
+        gupdate.height(height);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rasf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeX_hot(short x_hot) {
         x_hot_ = x_hot;
-	RASF_update gupdate = new RASF_update();
-	gupdate.x_hot(x_hot);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rasf_update(gupdate);
-	addGraphicChange(ug);
+        RASF_update gupdate = new RASF_update();
+        gupdate.x_hot(x_hot);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rasf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeY_hot(short y_hot) {
         y_hot_ = y_hot;
-	RASF_update gupdate = new RASF_update();
-	gupdate.y_hot(y_hot);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rasf_update(gupdate);
-	addGraphicChange(ug);
+        RASF_update gupdate = new RASF_update();
+        gupdate.y_hot(y_hot);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rasf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changePixels(byte[] pixels) {
         pixels_ = pixels;
-	RASF_update gupdate = new RASF_update();
-	gupdate.pixels(pixels);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rasf_update(gupdate);
-	addGraphicChange(ug);
+        RASF_update gupdate = new RASF_update();
+        gupdate.pixels(pixels);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rasf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeColorsTotal(short num_colors) {
         colorsTotal_ = num_colors;
-	RASF_update gupdate = new RASF_update();
-	gupdate.colorsTotal(num_colors);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rasf_update(gupdate);
-	addGraphicChange(ug);
+        RASF_update gupdate = new RASF_update();
+        gupdate.colorsTotal(num_colors);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rasf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeCt(CTEntry[] ct) {
         ct_ = ct;
-	RASF_update gupdate = new RASF_update();
-	gupdate.ct(ct);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rasf_update(gupdate);
-	addGraphicChange(ug);
+        RASF_update gupdate = new RASF_update();
+        gupdate.ct(ct);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rasf_update(gupdate);
+        addGraphicChange(ug);
     }
     public void changeTransparent(short transparent) {
         transparent_ = transparent;
-	RASF_update gupdate = new RASF_update();
-	gupdate.transparent(transparent);
-	UpdateGraphic ug = new UpdateGraphic();
-	ug.rasf_update(gupdate);
-	addGraphicChange(ug);
+        RASF_update gupdate = new RASF_update();
+        gupdate.transparent(transparent);
+        UpdateGraphic ug = new UpdateGraphic();
+        ug.rasf_update(gupdate);
+        addGraphicChange(ug);
     }
 }
 

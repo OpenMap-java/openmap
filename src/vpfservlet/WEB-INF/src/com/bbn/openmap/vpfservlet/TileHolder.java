@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/TileHolder.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -45,16 +45,16 @@ public class TileHolder {
      * @throws FormatException something went wrong
      */
     public TileHolder(File basepath, String fileName, boolean isTiled)
-	throws FormatException {
-	this.fileName = fileName;
-	this.basepath = basepath;
-	curTile = -1;
-	if (isTiled) {
-	    tileStuff = doTileRefStuff(basepath);
-	} else {
-	    currentTileFile = new DcwRecordFile(basepath + File.separator +
-						fileName);
-	}
+        throws FormatException {
+        this.fileName = fileName;
+        this.basepath = basepath;
+        curTile = -1;
+        if (isTiled) {
+            tileStuff = doTileRefStuff(basepath);
+        } else {
+            currentTileFile = new DcwRecordFile(basepath + File.separator +
+                                                fileName);
+        }
     }
 
     /**
@@ -67,22 +67,22 @@ public class TileHolder {
      * @throws FormatException
      */
     public boolean getRow(int tileColumn, int rowColumn, List tileRow,
-			  List retrow) throws FormatException {
-	int tileId = (tileColumn == -1) ? -1
-	    : VPFUtil.objectToInt(tileRow.get(tileColumn));
-	int rowId = VPFUtil.objectToInt(tileRow.get(rowColumn));
-	return getRow(tileId, rowId, retrow);
+                          List retrow) throws FormatException {
+        int tileId = (tileColumn == -1) ? -1
+            : VPFUtil.objectToInt(tileRow.get(tileColumn));
+        int rowId = VPFUtil.objectToInt(tileRow.get(rowColumn));
+        return getRow(tileId, rowId, retrow);
     }
 
     public boolean getRow(TilingAdapter ta, List tileRow, List retrow)
-	throws FormatException {
-	return getRow(ta.getTileId(tileRow), ta.getTilePrimId(tileRow),
-		      retrow);
+        throws FormatException {
+        return getRow(ta.getTileId(tileRow), ta.getTilePrimId(tileRow),
+                      retrow);
     }
 
 
     public boolean getRow(DcwCrossTileID prim, List retrow) throws FormatException {
-	return getRow(prim.nextTileID, prim.nextTileKey, retrow);
+        return getRow(prim.nextTileID, prim.nextTileKey, retrow);
     }
 
     /**
@@ -95,29 +95,29 @@ public class TileHolder {
      * @throws FormatException
      */
     public boolean getRow(int tileId, int rowId, List retrow)
-	throws FormatException {
-	if (rowId <= 0) {
-	    return false;
-	}
-	if (tileId != curTile) {
-	    File joinfile = new File(basepath + File.separator + 
-				     tileStuff[tileId]);
-	    close();
-	    currentTileFile = new DcwRecordFile(joinfile + File.separator +
-						fileName);
-	    curTile = tileId;
-	}
-	return currentTileFile.getRow(retrow, rowId);
-    }	
+        throws FormatException {
+        if (rowId <= 0) {
+            return false;
+        }
+        if (tileId != curTile) {
+            File joinfile = new File(basepath + File.separator + 
+                                     tileStuff[tileId]);
+            close();
+            currentTileFile = new DcwRecordFile(joinfile + File.separator +
+                                                fileName);
+            curTile = tileId;
+        }
+        return currentTileFile.getRow(retrow, rowId);
+    }   
 
     /**
      * Closes any related tables.
      */
     public void close() {
-	if (currentTileFile != null) {
-	    currentTileFile.close();
-	}
-	currentTileFile = null;
+        if (currentTileFile != null) {
+            currentTileFile.close();
+        }
+        currentTileFile = null;
     }
 
     /**
@@ -126,68 +126,68 @@ public class TileHolder {
      * @return an array of tile paths
      */
     private static String[] doTileRefStuff(File path) throws FormatException {
-	File pathname = new File(path.getParentFile(), "tileref");
-	String faceIDColumnName = null;
-	//read fcs to figure out what column in tileref.aft we need to use to
-	//read the fbr (face bounding rectangle) table
-	File fcsFile = new File(pathname, "fcs");
-	if (!fcsFile.canRead()) {
-	    fcsFile = new File(pathname, "fcs.");
-	}
-	DcwRecordFile fcs = new DcwRecordFile(fcsFile.toString());
-	Vector fcsv = new Vector(fcs.getColumnCount());
-	while (fcs.parseRow(fcsv)) {
-	    String fclass = ((String)fcsv.elementAt(1)).toLowerCase();
-	    String table1 = ((String)fcsv.elementAt(2)).toLowerCase();
-	    if ((fclass.equals("tileref")) &&
-		(table1.equals("tileref.aft"))) {
-		faceIDColumnName = (String)fcsv.elementAt(3);
-		break;
-	    }
-	}
-	fcs.close();
+        File pathname = new File(path.getParentFile(), "tileref");
+        String faceIDColumnName = null;
+        //read fcs to figure out what column in tileref.aft we need to use to
+        //read the fbr (face bounding rectangle) table
+        File fcsFile = new File(pathname, "fcs");
+        if (!fcsFile.canRead()) {
+            fcsFile = new File(pathname, "fcs.");
+        }
+        DcwRecordFile fcs = new DcwRecordFile(fcsFile.toString());
+        Vector fcsv = new Vector(fcs.getColumnCount());
+        while (fcs.parseRow(fcsv)) {
+            String fclass = ((String)fcsv.elementAt(1)).toLowerCase();
+            String table1 = ((String)fcsv.elementAt(2)).toLowerCase();
+            if ((fclass.equals("tileref")) &&
+                (table1.equals("tileref.aft"))) {
+                faceIDColumnName = (String)fcsv.elementAt(3);
+                break;
+            }
+        }
+        fcs.close();
 
-	if (faceIDColumnName == null) {
-	    throw new FormatException("no faceIDColumn");
-	    //won't be able to read the tiling info.  abort
-	}
+        if (faceIDColumnName == null) {
+            throw new FormatException("no faceIDColumn");
+            //won't be able to read the tiling info.  abort
+        }
 
-	//Okay, we've got info on what column we use from tileref.aft to index
-	//into the fbr.
-	DcwRecordFile aft = new DcwRecordFile(pathname + File.separator +  "tileref.aft");
-	int faceIDColumn = aft.whatColumn(faceIDColumnName.toLowerCase());
-	int tileNameColumn = aft.whatColumn("tile_name");
+        //Okay, we've got info on what column we use from tileref.aft to index
+        //into the fbr.
+        DcwRecordFile aft = new DcwRecordFile(pathname + File.separator +  "tileref.aft");
+        int faceIDColumn = aft.whatColumn(faceIDColumnName.toLowerCase());
+        int tileNameColumn = aft.whatColumn("tile_name");
 
-	if ((faceIDColumn == -1) || (tileNameColumn == -1)) {
-	    aft.close();
-	    throw new FormatException("no faceIDColumn");
-	}
+        if ((faceIDColumn == -1) || (tileNameColumn == -1)) {
+            aft.close();
+            throw new FormatException("no faceIDColumn");
+        }
 
-	Vector aftv = new Vector(aft.getColumnCount());
-	
-	// set the array size to record count + 1, to be able to
-	// use the tileID as the index into the array
-	String containedTiles[] = new String[aft.getRecordCount() + 1];
-	
-	int tileid = 1;
-	while (aft.parseRow(aftv)) {
-	    int fac_num =((Number)aftv.elementAt(faceIDColumn)).intValue();
-	    String tilename = (String)aftv.elementAt(tileNameColumn);
-	    
-	    char chs[] = tilename.toCharArray();
-	    boolean goodTile = false;
-	    for (int i = 0; i < chs.length; i++) {
-		if ((chs[i] != '\\') && (chs[i] != ' ')) {
-		    goodTile = true;
-		    chs[i] = Character.toLowerCase(chs[i]);
-		}
-		if (chs[i] == '\\') {
-		    chs[i] = File.separatorChar;
-		}
-	    }
-	    containedTiles[tileid++] = (goodTile) ? new String(chs) : null;
-	}
-	aft.close();
-	return containedTiles;
+        Vector aftv = new Vector(aft.getColumnCount());
+        
+        // set the array size to record count + 1, to be able to
+        // use the tileID as the index into the array
+        String containedTiles[] = new String[aft.getRecordCount() + 1];
+        
+        int tileid = 1;
+        while (aft.parseRow(aftv)) {
+            int fac_num =((Number)aftv.elementAt(faceIDColumn)).intValue();
+            String tilename = (String)aftv.elementAt(tileNameColumn);
+            
+            char chs[] = tilename.toCharArray();
+            boolean goodTile = false;
+            for (int i = 0; i < chs.length; i++) {
+                if ((chs[i] != '\\') && (chs[i] != ' ')) {
+                    goodTile = true;
+                    chs[i] = Character.toLowerCase(chs[i]);
+                }
+                if (chs[i] == '\\') {
+                    chs[i] = File.separatorChar;
+                }
+            }
+            containedTiles[tileid++] = (goodTile) ? new String(chs) : null;
+        }
+        aft.close();
+        return containedTiles;
     }
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayer.java,v $
 // $RCSfile: EditorLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/12/23 20:43:26 $
-// $Author: wjeuerle $
+// $Revision: 1.10 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -74,38 +74,38 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
     public final static String EditorToolProperty = "editor";
 
     public EditorLayer() {
-	super();
+        super();
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	if (editorTool == null) {
-	    String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-	    String editorClassName = props.getProperty(realPrefix + EditorToolProperty);
-	    if (editorClassName != null) {
-		// Try to create with this layer as an argument.
-		Object[] objArgs = {this};
+        if (editorTool == null) {
+            String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+            String editorClassName = props.getProperty(realPrefix + EditorToolProperty);
+            if (editorClassName != null) {
+                // Try to create with this layer as an argument.
+                Object[] objArgs = {this};
 
-		editorTool = (EditorTool)ComponentFactory.create(editorClassName, objArgs, prefix, props);
-		
-		if (editorTool == null) {
-		    // OK, try to create with an empty constructor.
-		    editorTool = (EditorTool)ComponentFactory.create(editorClassName, prefix, props);
-		}
+                editorTool = (EditorTool)ComponentFactory.create(editorClassName, objArgs, prefix, props);
+                
+                if (editorTool == null) {
+                    // OK, try to create with an empty constructor.
+                    editorTool = (EditorTool)ComponentFactory.create(editorClassName, prefix, props);
+                }
 
-		if (editorTool == null) {
-		    String additionalInfo = ".";
-		    if (editorClassName != null) {
-			additionalInfo = ", although an editor tool class (" +
-			    editorClassName + ") was defined.";
-		    }
-		    Debug.error(getName() + 
-				" doesn't have a EditorTool defined" + 
-				additionalInfo);
-		}
-	    }
-	}
+                if (editorTool == null) {
+                    String additionalInfo = ".";
+                    if (editorClassName != null) {
+                        additionalInfo = ", although an editor tool class (" +
+                            editorClassName + ") was defined.";
+                    }
+                    Debug.error(getName() + 
+                                " doesn't have a EditorTool defined" + 
+                                additionalInfo);
+                }
+            }
+        }
     }
 
     /**
@@ -126,18 +126,18 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      * used.
      */
     public EditorLayerMouseMode getMouseMode() {
-	if (elmm == null) {
-	    String ln = getName();
-	    if (ln == null) {
-		// Try something unique, but don't make it permanent.
-		// This will keep the layer cookin' along, but force a
-		// new mouse mode until the name gets set.
-		ln = this.getClass().getName() + System.currentTimeMillis();
-		return new EditorLayerMouseMode(ln.intern(), true);
-	    }
-	    elmm = new EditorLayerMouseMode(ln.intern(), true);
-	}
-	return elmm;
+        if (elmm == null) {
+            String ln = getName();
+            if (ln == null) {
+                // Try something unique, but don't make it permanent.
+                // This will keep the layer cookin' along, but force a
+                // new mouse mode until the name gets set.
+                ln = this.getClass().getName() + System.currentTimeMillis();
+                return new EditorLayerMouseMode(ln.intern(), true);
+            }
+            elmm = new EditorLayerMouseMode(ln.intern(), true);
+        }
+        return elmm;
     }
 
     /**
@@ -148,10 +148,10 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      * new OMGraphic if necessary.
      */
     public void drawingComplete(OMGraphic omg, OMAction action) {
-	super.drawingComplete(omg, action);
-	if (editorTool != null) {
-	    editorTool.drawingComplete(omg, action);
-	}
+        super.drawingComplete(omg, action);
+        if (editorTool != null) {
+            editorTool.drawingComplete(omg, action);
+        }
     }
 
     /**
@@ -159,54 +159,54 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      * objects, too.
      */
     public void findAndInit(Object someObj) {
-	// We don't want the EditorLayer to find the DrawingTool
-	// in the MapHandler.  The EditorTool should set its own.
-	if (!(someObj instanceof DrawingTool)) {
-	    super.findAndInit(someObj);
-	}
+        // We don't want the EditorLayer to find the DrawingTool
+        // in the MapHandler.  The EditorTool should set its own.
+        if (!(someObj instanceof DrawingTool)) {
+            super.findAndInit(someObj);
+        }
 
-	if (editorTool != null) {
-	    editorTool.findAndInit(someObj);
-	}
+        if (editorTool != null) {
+            editorTool.findAndInit(someObj);
+        }
 
-	if (someObj instanceof InformationDelegator || 
-	    someObj instanceof SelectMouseMode) {
-	    getMouseMode().findAndInit(someObj);
-	}
+        if (someObj instanceof InformationDelegator || 
+            someObj instanceof SelectMouseMode) {
+            getMouseMode().findAndInit(someObj);
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	super.findAndUndo(someObj);
-	if (editorTool != null) {
-	    editorTool.findAndUndo(someObj);
-	}
+        super.findAndUndo(someObj);
+        if (editorTool != null) {
+            editorTool.findAndUndo(someObj);
+        }
 
-	if (someObj instanceof InformationDelegator || 
-	    someObj instanceof SelectMouseMode) {
-	    getMouseMode().findAndUndo(someObj);
-	}
+        if (someObj instanceof InformationDelegator || 
+            someObj instanceof SelectMouseMode) {
+            getMouseMode().findAndUndo(someObj);
+        }
     }
 
     public void setMouseModeIDsForEvents(String[] modes) {
-	// creates the MouseMode if needed
-	EditorLayerMouseMode elmm = getMouseMode();
+        // creates the MouseMode if needed
+        EditorLayerMouseMode elmm = getMouseMode();
 
-	String[] newModes = new String[modes.length + 1];
-	System.arraycopy(modes, 0, newModes, 0, modes.length);
-	newModes[modes.length] = elmm.getID();
-	super.setMouseModeIDsForEvents(newModes);
+        String[] newModes = new String[modes.length + 1];
+        System.arraycopy(modes, 0, newModes, 0, modes.length);
+        newModes[modes.length] = elmm.getID();
+        super.setMouseModeIDsForEvents(newModes);
     }
 
     public String[] getMouseModeIDsForEvents() {
-	String[] modes = super.getMouseModeIDsForEvents();
-	if (modes == null) {
-	    // Set the internal mouse mode as valid, since it hasn't been set yet.
-	    setMouseModeIDsForEvents(new String[0]);
-	    // Since it's set now, return it.
-	    return super.getMouseModeIDsForEvents();
-	} else {
-	    return modes;
-	}
+        String[] modes = super.getMouseModeIDsForEvents();
+        if (modes == null) {
+            // Set the internal mouse mode as valid, since it hasn't been set yet.
+            setMouseModeIDsForEvents(new String[0]);
+            // Since it's set now, return it.
+            return super.getMouseModeIDsForEvents();
+        } else {
+            return modes;
+        }
     }
 
     /**
@@ -216,7 +216,7 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      * could be null.
      */
     public MapMouseInterpreter getMouseEventInterpreter() {
-	return mouseEventInterpreter;
+        return mouseEventInterpreter;
     }
 
     /**
@@ -225,11 +225,11 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      * ComponentHidden notification.  Remove when it works.
      */
     public void setVisible(boolean show) {
-	if (editorTool != null) {
-	    editorTool.setVisible(show);
-	}
-	super.setVisible(show);
-    }	
+        if (editorTool != null) {
+            editorTool.setVisible(show);
+        }
+        super.setVisible(show);
+    }   
 
     ///////////////////////////////
     // Tool interface methods
@@ -242,11 +242,11 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      * @return String The key for this tool.
      */
     public Container getFace() {
-	if (editorTool != null) {
-	    return editorTool.getFace();
-	} else {
-	    return new JPanel();
-	}
+        if (editorTool != null) {
+            return editorTool.getFace();
+        } else {
+            return new JPanel();
+        }
     }
     
     /** 
@@ -256,7 +256,7 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      * @return String The key for this tool.
      */
     public String getKey() {
-	return getPropertyPrefix();
+        return getPropertyPrefix();
     }
     
     /** 
@@ -269,7 +269,7 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      * @param aKey The key for this tool.
      */
     public void setKey(String aKey) {
-	setPropertyPrefix(aKey);
+        setPropertyPrefix(aKey);
     }
 }
 

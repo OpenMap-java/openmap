@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/EarthquakeLayer.java,v $
 // $RCSfile: EarthquakeLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/10 22:04:54 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -68,23 +68,23 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * Sites to finger user the user `quake'.
      */
     protected String fingerSites[] = {
-	"scec.gps.caltech.edu",
-	"geophys.washington.edu",
-	"giseis.alaska.edu",
-	"mbmgsun.mtech.edu",
-	"quake.eas.slu.edu"
+        "scec.gps.caltech.edu",
+        "geophys.washington.edu",
+        "giseis.alaska.edu",
+        "mbmgsun.mtech.edu",
+        "quake.eas.slu.edu"
     };
 
     // Old sites
-// 	"gldfs.cr.usgs.gov",
-// 	"andreas.wr.usgs.gov",
-// 	"seismo.unr.edu",
-// 	"eqinfo.seis.utah.edu",
-// 	"sisyphus.idbsu.edu",
-// 	"info.seismo.usbr.gov",
-// 	"vtso.geol.vt.edu",
-// 	"tako.wr.usgs.gov",
-// 	"ldeo.columbia.edu"
+//      "gldfs.cr.usgs.gov",
+//      "andreas.wr.usgs.gov",
+//      "seismo.unr.edu",
+//      "eqinfo.seis.utah.edu",
+//      "sisyphus.idbsu.edu",
+//      "info.seismo.usbr.gov",
+//      "vtso.geol.vt.edu",
+//      "tako.wr.usgs.gov",
+//      "ldeo.columbia.edu"
 
     /**
      * Sites that are actively being queried.
@@ -113,8 +113,8 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * Construct an EarthquakeLayer.
      */
     public EarthquakeLayer() {
-	activeSites[0] = true;
-	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+        activeSites[0] = true;
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
 
     /**
@@ -122,59 +122,59 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * OMGraphics with the current projection regardless.
      */
     public OMGraphicList prepare() {
-	if (needToRefetchData()) {
-	    parseData(getEarthquakeData());
-	}
-	return generateGraphics();
+        if (needToRefetchData()) {
+            parseData(getEarthquakeData());
+        }
+        return generateGraphics();
     }
 
     /**
      * Fetches data if it hasn't been fetched in a while.
      */
     protected boolean needToRefetchData() {
-	long now = System.currentTimeMillis();
-	long last = lastDataFetchTime;
+        long now = System.currentTimeMillis();
+        long last = lastDataFetchTime;
 
-	if ((last + fetchIntervalMillis) < now) {
-	    lastDataFetchTime = now;
-	    return true;
-	}
-	return false;
+        if ((last + fetchIntervalMillis) < now) {
+            lastDataFetchTime = now;
+            return true;
+        }
+        return false;
     }
 
     /**
      * Create the graphics.
      */
     protected OMGraphicList generateGraphics() {
-	OMGraphicList omgraphics = new OMGraphicList();
-	OMPoint circ;
-	OMText text;
+        OMGraphicList omgraphics = new OMGraphicList();
+        OMPoint circ;
+        OMText text;
 
-	int circle_r = 2;
-	int circle_h = 5;
+        int circle_r = 2;
+        int circle_h = 5;
 
-	for (int i=0, j=0; i<llData.length; i+=2, j++) {
+        for (int i=0, j=0; i<llData.length; i+=2, j++) {
 
-	    // grouping
-	    OMGraphicList group = new OMGraphicList(2);
+            // grouping
+            OMGraphicList group = new OMGraphicList(2);
 
-	    // XY-Circle at LatLonPoint
-	    circ = new OMPoint(llData[i], llData[i+1], circle_r);
-	    circ.setOval(true);
-	    circ.setFillPaint(lineColor);
-	    group.add(circ);
+            // XY-Circle at LatLonPoint
+            circ = new OMPoint(llData[i], llData[i+1], circle_r);
+            circ.setOval(true);
+            circ.setFillPaint(lineColor);
+            group.add(circ);
 
-	    // Info
-	    text = new OMText(llData[i], llData[i+1], 0, circle_h+10, infoData[j], java.awt.Font.decode("SansSerif"), OMText.JUSTIFY_CENTER);
-	    text.setLinePaint(lineColor);
-	    group.add(text);
+            // Info
+            text = new OMText(llData[i], llData[i+1], 0, circle_h+10, infoData[j], java.awt.Font.decode("SansSerif"), OMText.JUSTIFY_CENTER);
+            text.setLinePaint(lineColor);
+            group.add(text);
 
-	    group.setAppObject(new Integer(j));//remember index
-	    omgraphics.add(group);
-	}
+            group.setAppObject(new Integer(j));//remember index
+            omgraphics.add(group);
+        }
 
-	omgraphics.generate(getProjection(), false);
-	return omgraphics;
+        omgraphics.generate(getProjection(), false);
+        return omgraphics;
     }
 
     /**
@@ -182,69 +182,69 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * @param data Vector
      */
     protected void parseData(Vector data) {
-	int nLines = data.size();
-	llData = new float[2*nLines];
-	infoData = new String[nLines];
-	drillData = new String[nLines];
+        int nLines = data.size();
+        llData = new float[2*nLines];
+        infoData = new String[nLines];
+        drillData = new String[nLines];
 
-	for (int i=0, j=0, k=0; i<nLines; i++) {
-	    String line = (String)data.elementAt(i);
+        for (int i=0, j=0, k=0; i<nLines; i++) {
+            String line = (String)data.elementAt(i);
 
-	    // Read a line of input and break it down
-	    StringTokenizer tokens = new StringTokenizer(line);
-	    String sdate = tokens.nextToken();
-	    String stime = tokens.nextToken();
-	    String slat  = tokens.nextToken();
-	    String slon  = tokens.nextToken();
-	    if (slon.startsWith("NWSE"))// handle ` ' in LatLon data
-		slon = tokens.nextToken();
-	    String sdep  = tokens.nextToken();
-	    if (sdep.startsWith("NWSE"))// handle ` ' in LatLon data
-		sdep = tokens.nextToken();
-	    String smag  = tokens.nextToken();
-	    String q = tokens.nextToken();
-	    String scomment = tokens.nextToken("\r\n");
-	    if (q.length() > 1) {
-		scomment = q+" "+scomment;
-	    }
+            // Read a line of input and break it down
+            StringTokenizer tokens = new StringTokenizer(line);
+            String sdate = tokens.nextToken();
+            String stime = tokens.nextToken();
+            String slat  = tokens.nextToken();
+            String slon  = tokens.nextToken();
+            if (slon.startsWith("NWSE"))// handle ` ' in LatLon data
+                slon = tokens.nextToken();
+            String sdep  = tokens.nextToken();
+            if (sdep.startsWith("NWSE"))// handle ` ' in LatLon data
+                sdep = tokens.nextToken();
+            String smag  = tokens.nextToken();
+            String q = tokens.nextToken();
+            String scomment = tokens.nextToken("\r\n");
+            if (q.length() > 1) {
+                scomment = q+" "+scomment;
+            }
 
-	    infoData[j] = smag;
-	    drillData[j++] = sdate+" "+stime+" (UTC)  "+slat+" "+slon+" "+smag+" "+scomment;
-	    
-	    // Remove NESW from lat and lon before converting to float
-	    int west = slon.indexOf("W");
-	    int south = slat.indexOf("S");
+            infoData[j] = smag;
+            drillData[j++] = sdate+" "+stime+" (UTC)  "+slat+" "+slon+" "+smag+" "+scomment;
+            
+            // Remove NESW from lat and lon before converting to float
+            int west = slon.indexOf("W");
+            int south = slat.indexOf("S");
 
-	    if (west >= 0)
-		slon = slon.replace('W', '\0');
-	    else 
-		slon = slon.replace('E', '\0');
-	    if (south >= 0)
-		slat = slat.replace('S', '\0');
-	    else 
-		slat = slat.replace('N', '\0');
-	    slon = slon.trim();
-	    slat = slat.trim();
+            if (west >= 0)
+                slon = slon.replace('W', '\0');
+            else 
+                slon = slon.replace('E', '\0');
+            if (south >= 0)
+                slat = slat.replace('S', '\0');
+            else 
+                slat = slat.replace('N', '\0');
+            slon = slon.trim();
+            slat = slat.trim();
 
-	    float flat=0, flon=0;
-	    try {
-		flat = new Float(slat).floatValue();
-		flon = new Float(slon).floatValue();
-	    } catch (NumberFormatException e) {
-		Debug.error(
-			"EarthquakeLayer.parseData(): " + e +
-			" line: "+ line);
-	    }
-	    
-	    // replace West and South demarcations with minus sign
-	    if (south >= 0)
-		flat = -flat;
-	    if (west >= 0)
-		flon = -flon;
+            float flat=0, flon=0;
+            try {
+                flat = new Float(slat).floatValue();
+                flon = new Float(slon).floatValue();
+            } catch (NumberFormatException e) {
+                Debug.error(
+                        "EarthquakeLayer.parseData(): " + e +
+                        " line: "+ line);
+            }
+            
+            // replace West and South demarcations with minus sign
+            if (south >= 0)
+                flat = -flat;
+            if (west >= 0)
+                flon = -flon;
 
-	    llData[k++] = flat;
-	    llData[k++] = flon;
-	}
+            llData[k++] = flat;
+            llData[k++] = flon;
+        }
     }
 
     /**
@@ -253,74 +253,74 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * @return Vector containing information from the websites.
      */
     protected Vector getEarthquakeData() {
-	Vector linesOfData = new Vector();
-	Socket quakefinger= null;
-	PrintWriter output= null;
-	BufferedReader input = null;
+        Vector linesOfData = new Vector();
+        Socket quakefinger= null;
+        PrintWriter output= null;
+        BufferedReader input = null;
         String line;
-	
-	for (int i=0; i<activeSites.length; i++) {
-	    // skip sites which aren't on the active list
-	    if (!activeSites[i])
-		continue;
+        
+        for (int i=0; i<activeSites.length; i++) {
+            // skip sites which aren't on the active list
+            if (!activeSites[i])
+                continue;
 
-	    try {
-		if (Debug.debugging("earthquake")) {
-		    Debug.output("Opening socket connection to " + fingerSites[i]);
-		}
-		quakefinger = new Socket(fingerSites[i], 79);//open connection to finger port
-		quakefinger.setSoTimeout(120*1000);// 2 minute timeout
-		output = new PrintWriter(new OutputStreamWriter(quakefinger.getOutputStream()), true);
-		input = new 
-		    BufferedReader(new InputStreamReader(quakefinger.getInputStream()), 1);
-		output.println("/W quake");// use `/W' flag for long output
-	    } catch (IOException e) {
-		Debug.error(
-			"EarthquakeLayer.getEarthquakeData(): " +
-			"can't open or write to socket: " + e);
-		continue;
-	    }
+            try {
+                if (Debug.debugging("earthquake")) {
+                    Debug.output("Opening socket connection to " + fingerSites[i]);
+                }
+                quakefinger = new Socket(fingerSites[i], 79);//open connection to finger port
+                quakefinger.setSoTimeout(120*1000);// 2 minute timeout
+                output = new PrintWriter(new OutputStreamWriter(quakefinger.getOutputStream()), true);
+                input = new 
+                    BufferedReader(new InputStreamReader(quakefinger.getInputStream()), 1);
+                output.println("/W quake");// use `/W' flag for long output
+            } catch (IOException e) {
+                Debug.error(
+                        "EarthquakeLayer.getEarthquakeData(): " +
+                        "can't open or write to socket: " + e);
+                continue;
+            }
 
-	
-	    try {
-		// add data lines to list
-		while ((line = input.readLine()) != null) {
-		    if (Debug.debugging("earthquake")) {
-			Debug.output("EarthquakeLayer.getEarthQuakeData(): "+line);
-		    }
-		    if (line.length() == 0)
-			continue;
-		    if (!Character.isDigit(line.charAt(0)))
-			continue;
+        
+            try {
+                // add data lines to list
+                while ((line = input.readLine()) != null) {
+                    if (Debug.debugging("earthquake")) {
+                        Debug.output("EarthquakeLayer.getEarthQuakeData(): "+line);
+                    }
+                    if (line.length() == 0)
+                        continue;
+                    if (!Character.isDigit(line.charAt(0)))
+                        continue;
 
-		    line = hackY2K(line);
-		    if (line == null)
-			continue;
-		    linesOfData.addElement(line);
-		}
-	    } catch (IOException e) {
-		Debug.error(
-			"EarthquakeLayer.getEarthquakeData(): " +
-			"can't read from the socket: " + e);
-		if (cancelled) {
-		    return null;
-		}
-	    }
+                    line = hackY2K(line);
+                    if (line == null)
+                        continue;
+                    linesOfData.addElement(line);
+                }
+            } catch (IOException e) {
+                Debug.error(
+                        "EarthquakeLayer.getEarthquakeData(): " +
+                        "can't read from the socket: " + e);
+                if (cancelled) {
+                    return null;
+                }
+            }
 
-	    try {
-		quakefinger.close();
-	    } catch (IOException e) {
-		Debug.error(
-			"EarthquakeLayer.getEarthquakeData(): " +
-			"error closing socket: " + e);
-	    }
-	}
+            try {
+                quakefinger.close();
+            } catch (IOException e) {
+                Debug.error(
+                        "EarthquakeLayer.getEarthquakeData(): " +
+                        "error closing socket: " + e);
+            }
+        }
 
-//   	int nQuakes = linesOfData.size();
-//   	for (int i=0; i<nQuakes; i++) {
-//   	    Debug.output((String)linesOfData.elementAt(i));
-//   	}
-	return linesOfData;
+//      int nQuakes = linesOfData.size();
+//      for (int i=0; i<nQuakes; i++) {
+//          Debug.output((String)linesOfData.elementAt(i));
+//      }
+        return linesOfData;
     }
 
     // This is the USGS's date problem, not ours (of course when they
@@ -328,40 +328,40 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
     // Note that also this could just be a bogus line (not a dataline)
     // beginning with a number, so we've got to deal with it here.
     private String hackY2K(String date) {
-	StringTokenizer tok = new StringTokenizer(date, "/");
-	String year, month, day;
-	try {
-	    year = tok.nextToken();
-	    month = tok.nextToken();
-	    day = tok.nextToken();
-	} catch (NoSuchElementException e) {
-	    Debug.error(
-		    "EarthquakeLayer: unparsable date: " + date);
-	    return null;
-	}
-	if (year.length() == 2) {
-	    int y;
-	    try {
-		y = Integer.parseInt(year);
-	    } catch (NumberFormatException e) {
-		Debug.error(
-			"EarthquakeLayer: invalid year: " + year);
-		return null;
-	    }
-	    // Sliding window technique...
-	    if (y > 70) {
-		date = "19";
-	    } else {
-		date = "20";
-	    }
-	} else if (year.length() != 4) {
-	    Debug.error(
-		    "EarthquakeLayer: unparsable year: " + year);
-	    return null;
-	}
+        StringTokenizer tok = new StringTokenizer(date, "/");
+        String year, month, day;
+        try {
+            year = tok.nextToken();
+            month = tok.nextToken();
+            day = tok.nextToken();
+        } catch (NoSuchElementException e) {
+            Debug.error(
+                    "EarthquakeLayer: unparsable date: " + date);
+            return null;
+        }
+        if (year.length() == 2) {
+            int y;
+            try {
+                y = Integer.parseInt(year);
+            } catch (NumberFormatException e) {
+                Debug.error(
+                        "EarthquakeLayer: invalid year: " + year);
+                return null;
+            }
+            // Sliding window technique...
+            if (y > 70) {
+                date = "19";
+            } else {
+                date = "20";
+            }
+        } else if (year.length() != 4) {
+            Debug.error(
+                    "EarthquakeLayer: unparsable year: " + year);
+            return null;
+        }
 
-	date = date + year + "/" + month + "/" + day;
-	return date;
+        date = date + year + "/" + month + "/" + day;
+        return date;
     }
 
     /**
@@ -369,42 +369,42 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * @return Component
      */
     public Component getGUI() {
-	JPanel p;
-	if (gui == null) {
-	    gui = PaletteHelper.createVerticalPanel("Earthquakes");
+        JPanel p;
+        if (gui == null) {
+            gui = PaletteHelper.createVerticalPanel("Earthquakes");
 
-	    GridBagLayout gridbag = new GridBagLayout();
-	    GridBagConstraints constraints = new GridBagConstraints();
-	    gui.setLayout(gridbag);
-	    constraints.fill = GridBagConstraints.HORIZONTAL; // fill horizontally
-	    constraints.gridwidth = GridBagConstraints.REMAINDER; //another row
-	    constraints.anchor = GridBagConstraints.EAST; // tack to the left edge
+            GridBagLayout gridbag = new GridBagLayout();
+            GridBagConstraints constraints = new GridBagConstraints();
+            gui.setLayout(gridbag);
+            constraints.fill = GridBagConstraints.HORIZONTAL; // fill horizontally
+            constraints.gridwidth = GridBagConstraints.REMAINDER; //another row
+            constraints.anchor = GridBagConstraints.EAST; // tack to the left edge
 
-	    ActionListener al = new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    int index = Integer.parseInt(
-			    e.getActionCommand(), 10);
-		    activeSites[index] = !activeSites[index];
-		}
-	    };
-	    p = PaletteHelper.createCheckbox(
-		"Sites", fingerSites, activeSites, al);
-	    gridbag.setConstraints(p, constraints);
-	    gui.add(p);
+            ActionListener al = new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    int index = Integer.parseInt(
+                            e.getActionCommand(), 10);
+                    activeSites[index] = !activeSites[index];
+                }
+            };
+            p = PaletteHelper.createCheckbox(
+                "Sites", fingerSites, activeSites, al);
+            gridbag.setConstraints(p, constraints);
+            gui.add(p);
 
-	    JButton b = new JButton("Query Now");
-	    b.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    // force refetch of data
-		    lastDataFetchTime=0;
-		    doPrepare();
-		}
-	    });
-	    gridbag.setConstraints(p, constraints);
-	    gui.add(b);
+            JButton b = new JButton("Query Now");
+            b.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    // force refetch of data
+                    lastDataFetchTime=0;
+                    doPrepare();
+                }
+            });
+            gridbag.setConstraints(p, constraints);
+            gui.add(b);
 
-	}
-	return gui;
+        }
+        return gui;
     }
 
     /**
@@ -413,7 +413,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * @return the MapMouseListener for the layer, or null if none
      */
     public MapMouseListener getMapMouseListener() {
-	return this;
+        return this;
     }
 
     //----------------------------------------------------------------
@@ -429,9 +429,9 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * receiving events in "select" mode:
      * <code>
      * <pre>
-     *	return new String[] {
-     *	    SelectMouseMode.modeID
-     *	};
+     *  return new String[] {
+     *      SelectMouseMode.modeID
+     *  };
      * </pre>
      * <code>
      * @return String[] of modeID's
@@ -440,9 +440,9 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * @see com.bbn.openmap.event.NullMouseMode#modeID
      */
     public String[] getMouseModeServiceList() {
-	return new String [] {
-	    com.bbn.openmap.event.SelectMouseMode.modeID
-	};
+        return new String [] {
+            com.bbn.openmap.event.SelectMouseMode.modeID
+        };
     }
 
     /**
@@ -451,7 +451,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * @return true if the listener was able to process the event.
      */
     public boolean mousePressed(MouseEvent e) {
-	return false;
+        return false;
     }
  
     /**
@@ -460,17 +460,17 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * @return true if the listener was able to process the event.
      */
     public boolean mouseReleased(MouseEvent e) {
-	OMGraphicList omgraphics = getList();
-	if (omgraphics != null && drillData != null) {
-	    OMGraphic obj = omgraphics.findClosest(e.getX(), e.getY(), 4);
-	    if (obj != null) {
-		int id = ((Integer)obj.getAppObject()).intValue();
-		fireRequestInfoLine(drillData[id]);
-		showingInfoLine = true;
-		return true;
-	    }
-	}
-	return false;
+        OMGraphicList omgraphics = getList();
+        if (omgraphics != null && drillData != null) {
+            OMGraphic obj = omgraphics.findClosest(e.getX(), e.getY(), 4);
+            if (obj != null) {
+                int id = ((Integer)obj.getAppObject()).intValue();
+                fireRequestInfoLine(drillData[id]);
+                showingInfoLine = true;
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -484,7 +484,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * @return true if the listener was able to process the event.
      */
     public boolean mouseClicked(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -510,7 +510,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * @return true if the listener was able to process the event.
      */
     public boolean mouseDragged(MouseEvent e) {
-	return false;
+        return false;
     }
 
     /**
@@ -520,12 +520,12 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * @return true if the listener was able to process the event.
      */
     public boolean mouseMoved(MouseEvent e) {
-	// clean up display
-	if (showingInfoLine) {
-	    showingInfoLine = false;
-	    fireRequestInfoLine("");
-	}
-	return false;
+        // clean up display
+        if (showingInfoLine) {
+            showingInfoLine = false;
+            fireRequestInfoLine("");
+        }
+        return false;
     }
 
     /**
@@ -549,36 +549,36 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * @param props Properties
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	// list of sites
-	String sites = props.getProperty(prefix + fingerSitesProperty);
-	if (sites != null) {
-	    Vector v = new Vector();
-	    String str; StringTokenizer tok = new StringTokenizer(sites);
-		while (tok.hasMoreTokens()) {
-	      str = tok.nextToken();
-		  v.addElement(str);
-	    }
-	    int len = v.size();
-	    fingerSites = new String[len];
-	    activeSites = new boolean[len];
-	    activeSites[0] = true;
-	    for (int i=0; i<len; i++) {
-		fingerSites[i] = (String)v.elementAt(i);
-	    }
-	}
+        // list of sites
+        String sites = props.getProperty(prefix + fingerSitesProperty);
+        if (sites != null) {
+            Vector v = new Vector();
+            String str; StringTokenizer tok = new StringTokenizer(sites);
+                while (tok.hasMoreTokens()) {
+              str = tok.nextToken();
+                  v.addElement(str);
+            }
+            int len = v.size();
+            fingerSites = new String[len];
+            activeSites = new boolean[len];
+            activeSites[0] = true;
+            for (int i=0; i<len; i++) {
+                fingerSites[i] = (String)v.elementAt(i);
+            }
+        }
 
-	fetchIntervalMillis = LayerUtils.intFromProperties(props, prefix + queryIntervalProperty, 300) * 1000;
+        fetchIntervalMillis = LayerUtils.intFromProperties(props, prefix + queryIntervalProperty, 300) * 1000;
     }
 
     /**
      * Get the associated properties object.
      */
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
         return getProperties(propertyPrefix, props);
     }
     
@@ -591,21 +591,21 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * in milliseconds (see class description.)
      */
     public Properties getProperties(String prefix, Properties props) {
-	props = super.getProperties(props);
-	
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        props = super.getProperties(props);
+        
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         StringBuffer sitesToFinger = new StringBuffer("");
-	for(int i=0; i<fingerSites.length; ++i) {
-	    sitesToFinger.append(fingerSites[i]);
-	    sitesToFinger.append(" ");
-	}
+        for(int i=0; i<fingerSites.length; ++i) {
+            sitesToFinger.append(fingerSites[i]);
+            sitesToFinger.append(" ");
+        }
 
-	sitesToFinger.deleteCharAt(sitesToFinger.length()-1);
+        sitesToFinger.deleteCharAt(sitesToFinger.length()-1);
 
-	props.put(prefix+fingerSitesProperty, sitesToFinger.toString());
-	props.put(prefix+queryIntervalProperty, Long.toString(fetchIntervalMillis));
-	return props;
+        props.put(prefix+fingerSitesProperty, sitesToFinger.toString());
+        props.put(prefix+queryIntervalProperty, Long.toString(fetchIntervalMillis));
+        return props;
     }
     
     /**
@@ -616,10 +616,10 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * class.)
      */
     public Properties getPropertyInfo(Properties info) {
-	info = super.getPropertyInfo(info);
+        info = super.getPropertyInfo(info);
 
-	info.put(fingerSitesProperty, "WWW sites to finger");
-	info.put(queryIntervalProperty, "Query interval in seconds");
+        info.put(fingerSitesProperty, "WWW sites to finger");
+        info.put(queryIntervalProperty, "Query interval in seconds");
         return info;
     }
 }

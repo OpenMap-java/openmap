@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProjMapBeanKeyListener.java,v $
 // $RCSfile: ProjMapBeanKeyListener.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/10 15:40:15 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -56,57 +56,57 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener
     protected ListenerSupport projListeners;
 
     public ProjMapBeanKeyListener() {
-	panners = new PanSupport(this);
-	zoomers = new ZoomSupport(this);
-	projListeners = new ListenerSupport(this);
+        panners = new PanSupport(this);
+        zoomers = new ZoomSupport(this);
+        projListeners = new ListenerSupport(this);
     }
 
     public void keyReleased(KeyEvent e) {
 
-	int keyCode = e.getKeyCode();
+        int keyCode = e.getKeyCode();
 
-	// When we can control rates, we'll use shift for double pan,
-	// and ctrl for half pan
-// 	int modifiers = e.getModifiers();
+        // When we can control rates, we'll use shift for double pan,
+        // and ctrl for half pan
+//      int modifiers = e.getModifiers();
 
-	switch (keyCode) {
-	case KeyEvent.VK_UP:
-	case KeyEvent.VK_KP_UP:
-	    panners.firePan(PanEvent.NORTH);
-	    break;
-	case KeyEvent.VK_DOWN:
-	case KeyEvent.VK_KP_DOWN:
-	    panners.firePan(PanEvent.SOUTH);
-	    break;
-	case KeyEvent.VK_LEFT:
-	case KeyEvent.VK_KP_LEFT:
-	    panners.firePan(PanEvent.WEST);
-	    break;
-	case KeyEvent.VK_RIGHT:
-	case KeyEvent.VK_KP_RIGHT:
-	    panners.firePan(PanEvent.EAST);
-	    break;
-	case KeyEvent.VK_Z:
-	    if (e.isShiftDown()) {
-		zoomers.fireZoom(ZoomEvent.RELATIVE, zoomFactor);
-	    } else {
-		zoomers.fireZoom(ZoomEvent.RELATIVE, 1f/zoomFactor);
-	    }
+        switch (keyCode) {
+        case KeyEvent.VK_UP:
+        case KeyEvent.VK_KP_UP:
+            panners.firePan(PanEvent.NORTH);
+            break;
+        case KeyEvent.VK_DOWN:
+        case KeyEvent.VK_KP_DOWN:
+            panners.firePan(PanEvent.SOUTH);
+            break;
+        case KeyEvent.VK_LEFT:
+        case KeyEvent.VK_KP_LEFT:
+            panners.firePan(PanEvent.WEST);
+            break;
+        case KeyEvent.VK_RIGHT:
+        case KeyEvent.VK_KP_RIGHT:
+            panners.firePan(PanEvent.EAST);
+            break;
+        case KeyEvent.VK_Z:
+            if (e.isShiftDown()) {
+                zoomers.fireZoom(ZoomEvent.RELATIVE, zoomFactor);
+            } else {
+                zoomers.fireZoom(ZoomEvent.RELATIVE, 1f/zoomFactor);
+            }
 
-	    break;
-	case KeyEvent.VK_PLUS:
-	    zoomers.fireZoom(ZoomEvent.RELATIVE, 1f/zoomFactor);
-	    break;
-	case KeyEvent.VK_MINUS:
-	    zoomers.fireZoom(ZoomEvent.RELATIVE, zoomFactor);
-	    break;
-	case KeyEvent.VK_COMMA:
-	    fireProjectionStackEvent(ProjectionStack.BackProjCmd);
-	    break;
-	case KeyEvent.VK_PERIOD:
-	    fireProjectionStackEvent(ProjectionStack.ForwardProjCmd);
-	    break;
-	}
+            break;
+        case KeyEvent.VK_PLUS:
+            zoomers.fireZoom(ZoomEvent.RELATIVE, 1f/zoomFactor);
+            break;
+        case KeyEvent.VK_MINUS:
+            zoomers.fireZoom(ZoomEvent.RELATIVE, zoomFactor);
+            break;
+        case KeyEvent.VK_COMMA:
+            fireProjectionStackEvent(ProjectionStack.BackProjCmd);
+            break;
+        case KeyEvent.VK_PERIOD:
+            fireProjectionStackEvent(ProjectionStack.ForwardProjCmd);
+            break;
+        }
     }
 
     /**
@@ -114,32 +114,32 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener
      * MapBean as a zoom and pan listener.
      */
     public void setMapBean(MapBean map) {
-	if (mapBean != null) {
-	    panners.removePanListener(map);
-	    zoomers.removeZoomListener(map);
-	}
+        if (mapBean != null) {
+            panners.removePanListener(map);
+            zoomers.removeZoomListener(map);
+        }
 
-	super.setMapBean(map);
+        super.setMapBean(map);
 
-	if (mapBean != null) {
-	    panners.addPanListener(map);
-	    zoomers.addZoomListener(map);
-	}
+        if (mapBean != null) {
+            panners.addPanListener(map);
+            zoomers.addZoomListener(map);
+        }
     }
 
     /**
      * Called by keyReleased when the period/comma keys are pressed.
      */
     protected void fireProjectionStackEvent(String command) {
-	if (projListeners.size() == 0) {
-	    return;
-	}
+        if (projListeners.size() == 0) {
+            return;
+        }
 
-	ActionEvent event = new ActionEvent(this, 0, command);
-	Iterator it = projListeners.iterator();
-	while (it.hasNext()) {
-	    ((ActionListener)it.next()).actionPerformed(event);
-	}
+        ActionEvent event = new ActionEvent(this, 0, command);
+        Iterator it = projListeners.iterator();
+        while (it.hasNext()) {
+            ((ActionListener)it.next()).actionPerformed(event);
+        }
 
     }
 
@@ -148,7 +148,7 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener
      * Projection stack.
      */
     public void addActionListener(ActionListener al) {
-	projListeners.addListener(al);
+        projListeners.addListener(al);
     }
 
     /**
@@ -156,7 +156,7 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener
      * events to shift the Projection stack.
      */
     public void removeActionListener(ActionListener al) {
-	projListeners.removeListener(al);
+        projListeners.removeListener(al);
     }
 
     /**
@@ -171,24 +171,24 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener
      * is being used. 
      */
     public void updateProjectionStackStatus(boolean containsBackProjections,
-					    boolean containsForwardProjections) {}
+                                            boolean containsForwardProjections) {}
 
     /**
      * In addition to the MapBean, find a projection stack so the less
      * than/greater than works on that.
      */
     public void findAndInit(Object someObj) {
-	super.findAndInit(someObj);
-	if (someObj instanceof ProjectionStack) {
-	    addActionListener((ActionListener)someObj);
-	}
+        super.findAndInit(someObj);
+        if (someObj instanceof ProjectionStack) {
+            addActionListener((ActionListener)someObj);
+        }
     }
 
     public void findAndUndo(Object someObj) {
-	super.findAndUndo(someObj);
-	if (someObj instanceof ProjectionStack) {
-	    removeActionListener((ActionListener)someObj);
-	}
+        super.findAndUndo(someObj);
+        if (someObj instanceof ProjectionStack) {
+            removeActionListener((ActionListener)someObj);
+        }
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/DataBounds.java,v $
 // $RCSfile: DataBounds.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/21 22:28:28 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,13 +36,13 @@ public class DataBounds {
     public DataBounds() {}
 
     public DataBounds(double minx, double miny, double maxx, double maxy) {
-	add(minx, miny);
-	add(maxx, maxy);
+        add(minx, miny);
+        add(maxx, maxy);
     }
 
     public DataBounds(Point minP, Point maxP) {
-	add(minP);
-	add(maxP);
+        add(minP);
+        add(maxP);
     }
 
     /**
@@ -50,54 +50,54 @@ public class DataBounds {
      * May return null if no points have been added.
      */
     public Point2D getCenter() {
-	if (min != null) {
-	    double minx = min.getX();
-	    double miny = min.getY();
-	    double maxx = max.getX();
-	    double maxy = max.getY();
-	    return new Point2D.Double((minx + maxx)/2, (miny + maxy)/2);
-	} else return null;
+        if (min != null) {
+            double minx = min.getX();
+            double miny = min.getY();
+            double maxx = max.getX();
+            double maxy = max.getY();
+            return new Point2D.Double((minx + maxx)/2, (miny + maxy)/2);
+        } else return null;
     }
 
     /**
      * Upper right point.
      */
     public Point2D getMax() {
-	return max;
+        return max;
     }
 
     /**
      * Lower left point.
      */
     public Point2D getMin() {
-	return min;
+        return min;
     }
 
     public void add(double x, double y) {
-	if (min == null) {
-	    min = new Point2D.Double(x, y);
-	    max = new Point2D.Double(x, y);
-	} else {
-	    double minx = min.getX();
-	    double miny = min.getY();
-	    double maxx = max.getX();
-	    double maxy = max.getY();
+        if (min == null) {
+            min = new Point2D.Double(x, y);
+            max = new Point2D.Double(x, y);
+        } else {
+            double minx = min.getX();
+            double miny = min.getY();
+            double maxx = max.getX();
+            double maxy = max.getY();
 
-	    if (minx > x)
-		minx = x;
-	    if (miny > y)
-		miny = y;
-	    if (maxx < x)
-		maxx = x;
-	    if (maxy < y)
-		maxy = y;
+            if (minx > x)
+                minx = x;
+            if (miny > y)
+                miny = y;
+            if (maxx < x)
+                maxx = x;
+            if (maxy < y)
+                maxy = y;
 
-	    min.setLocation(minx, miny);
-	    max.setLocation(maxx, maxy);
-	}
+            min.setLocation(minx, miny);
+            max.setLocation(maxx, maxy);
+        }
     }
 
     public void add(Point2D point) {
-	add((double)point.getX(), (double)point.getY());
+        add((double)point.getX(), (double)point.getY());
     }
 }

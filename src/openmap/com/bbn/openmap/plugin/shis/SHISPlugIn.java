@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/shis/SHISPlugIn.java,v $
 // $RCSfile: SHISPlugIn.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -90,130 +90,130 @@ public class SHISPlugIn extends WebImagePlugIn implements ImageServerConstants {
      */
     public String createQueryString(Projection p) {
 
-	if (queryHeader == null) {
-	    return null;
-	}
+        if (queryHeader == null) {
+            return null;
+        }
 
         String bbox = "undefined";
-	String height = "undefined";
-	String width = "undefined";
+        String height = "undefined";
+        String width = "undefined";
 
-	StringBuffer buf = new StringBuffer(queryHeader);
-	buf.append(REQUEST + "=" + MAP + "&");
+        StringBuffer buf = new StringBuffer(queryHeader);
+        buf.append(REQUEST + "=" + MAP + "&");
 
-	if (p != null) {
-	    buf.append(PROJTYPE + "=" + p.getName() + "&" +
-		       SCALE + "=" + p.getScale() + "&" +
-		       LAT + "=" + p.getCenter().getLatitude() + "&" +
-		       LON + "=" + p.getCenter().getLongitude() + "&" +
-		       HEIGHT + "=" + p.getHeight() + "&" +
-		       WIDTH + "=" + p.getWidth());
-	} else {
-	    buf.append(PROJTYPE + "=name_undefined&" +
-		       SCALE + "=scale_undefined&" +
-		       LAT + "=center_lat_undefined&" +
-		       LON + "=center_lon_undefined&" +
-		       HEIGHT + "=height_undefined&" +
-		       WIDTH + "=width_undefined");
-	}
+        if (p != null) {
+            buf.append(PROJTYPE + "=" + p.getName() + "&" +
+                       SCALE + "=" + p.getScale() + "&" +
+                       LAT + "=" + p.getCenter().getLatitude() + "&" +
+                       LON + "=" + p.getCenter().getLongitude() + "&" +
+                       HEIGHT + "=" + p.getHeight() + "&" +
+                       WIDTH + "=" + p.getWidth());
+        } else {
+            buf.append(PROJTYPE + "=name_undefined&" +
+                       SCALE + "=scale_undefined&" +
+                       LAT + "=center_lat_undefined&" +
+                       LON + "=center_lon_undefined&" +
+                       HEIGHT + "=height_undefined&" +
+                       WIDTH + "=width_undefined");
+        }
 
-	if (imageFormat != null) {
-	    buf.append("&" + FORMAT + "=" + imageFormat);
-	}
+        if (imageFormat != null) {
+            buf.append("&" + FORMAT + "=" + imageFormat);
+        }
 
-	if (transparent != null) {
-	    buf.append("&" + TRANSPARENT + "=true");
-	}
+        if (transparent != null) {
+            buf.append("&" + TRANSPARENT + "=true");
+        }
 
-	if (backgroundColor != null) {
-	    buf.append("&" + BGCOLOR + "=" + backgroundColor);
-	}
+        if (backgroundColor != null) {
+            buf.append("&" + BGCOLOR + "=" + backgroundColor);
+        }
 
-	String layers = getLayerMarkers();
-	if (layers != null) {
-	    buf.append("&" + layers);
-	}
+        String layers = getLayerMarkers();
+        if (layers != null) {
+            buf.append("&" + layers);
+        }
 
-	return buf.toString();
+        return buf.toString();
     }
 
     public String getServerName() {
-	return queryHeader;
+        return queryHeader;
     }
 
     public String getLayerMarkers() {
-	// Not implemented - should be a list that can be set by the user.
-	return null;
+        // Not implemented - should be a list that can be set by the user.
+        return null;
     }
 
     /**
      * PropertyConsumer method.
      */
     public void setProperties(String prefix, Properties setList) {
-	super.setProperties(prefix, setList);
+        super.setProperties(prefix, setList);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
-	
-	host = setList.getProperty(prefix + HostNameProperty);
-	port = setList.getProperty(prefix + PortNumberProperty);
-	path = setList.getProperty(prefix + PathProperty);
-	imageFormat = setList.getProperty(prefix + ImageFormatProperty);
-	transparent = setList.getProperty(prefix + TransparentProperty);
-	backgroundColor = setList.getProperty(prefix + BackgroundColorProperty);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        
+        host = setList.getProperty(prefix + HostNameProperty);
+        port = setList.getProperty(prefix + PortNumberProperty);
+        path = setList.getProperty(prefix + PathProperty);
+        imageFormat = setList.getProperty(prefix + ImageFormatProperty);
+        transparent = setList.getProperty(prefix + TransparentProperty);
+        backgroundColor = setList.getProperty(prefix + BackgroundColorProperty);
 
-	if (path == null) {
-	    path = com.bbn.openmap.Environment.OpenMapPrefix; // "openmap"
-	}
+        if (path == null) {
+            path = com.bbn.openmap.Environment.OpenMapPrefix; // "openmap"
+        }
 
-	if (host == null || port == null) {
-	    Debug.error("SHISPlugIn needs a host name and port number for the image server.");
-	    queryHeader = null;
-	    return;
-	}
+        if (host == null || port == null) {
+            Debug.error("SHISPlugIn needs a host name and port number for the image server.");
+            queryHeader = null;
+            return;
+        }
 
-	queryHeader = "http://" + (host == null?"localhost":host) +
-	    (port == null?"":(":" + port)) + "/" + path + "?";
+        queryHeader = "http://" + (host == null?"localhost":host) +
+            (port == null?"":(":" + port)) + "/" + path + "?";
 
-	if (Debug.debugging("plugin")){
-	    Debug.output("SHISPlugIn: set up with header \"" + queryHeader + "\"");
-	}
+        if (Debug.debugging("plugin")){
+            Debug.output("SHISPlugIn: set up with header \"" + queryHeader + "\"");
+        }
     }
 
     /**
      * PropertyConsumer method.
      */
     public Properties getProperties(Properties getList) {
-	getList = super.getProperties(getList);
+        getList = super.getProperties(getList);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	getList.put(prefix + HostNameProperty, PropUtils.unnull(host));
-	getList.put(prefix + PortNumberProperty, PropUtils.unnull(port));
-	getList.put(prefix + PathProperty, PropUtils.unnull(path));
-	getList.put(prefix + ImageFormatProperty, PropUtils.unnull(imageFormat));
-	getList.put(prefix + TransparentProperty, PropUtils.unnull(transparent));
-	getList.put(prefix + BackgroundColorProperty, PropUtils.unnull(backgroundColor));
-	return getList;
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        getList.put(prefix + HostNameProperty, PropUtils.unnull(host));
+        getList.put(prefix + PortNumberProperty, PropUtils.unnull(port));
+        getList.put(prefix + PathProperty, PropUtils.unnull(path));
+        getList.put(prefix + ImageFormatProperty, PropUtils.unnull(imageFormat));
+        getList.put(prefix + TransparentProperty, PropUtils.unnull(transparent));
+        getList.put(prefix + BackgroundColorProperty, PropUtils.unnull(backgroundColor));
+        return getList;
     }    
 
     /**
      * PropertyConsumer method.
      */
     public Properties getPropertyInfo(Properties list) {
-	list = super.getPropertyInfo(list);
+        list = super.getPropertyInfo(list);
 
-	list.put(initPropertiesProperty, HostNameProperty + " " + PortNumberProperty + " " + PathProperty + " " + ImageFormatProperty + " " + TransparentProperty + " " + BackgroundColorProperty);
+        list.put(initPropertiesProperty, HostNameProperty + " " + PortNumberProperty + " " + PathProperty + " " + ImageFormatProperty + " " + TransparentProperty + " " + BackgroundColorProperty);
 
-	list.put(HostNameProperty, "This hostname of the server machine.");
-	list.put(PortNumberProperty, "The port number the server is running on.");
-	list.put(PathProperty, "The path to the server (openmap is default)");
-	list.put(ImageFormatProperty, "Image format (JPEG|GIF|PPM|PNG)");
-	list.put(TransparentProperty, "Whether background of image should be transparent.");
-	list.put(TransparentProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(HostNameProperty, "This hostname of the server machine.");
+        list.put(PortNumberProperty, "The port number the server is running on.");
+        list.put(PathProperty, "The path to the server (openmap is default)");
+        list.put(ImageFormatProperty, "Image format (JPEG|GIF|PPM|PNG)");
+        list.put(TransparentProperty, "Whether background of image should be transparent.");
+        list.put(TransparentProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-	list.put(BackgroundColorProperty, "Background color for image.");
-	list.put(BackgroundColorProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-	return list;
+        list.put(BackgroundColorProperty, "Background color for image.");
+        list.put(BackgroundColorProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        return list;
     }
 }

@@ -14,9 +14,9 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCoverageBox.java,v $
 // $RCSfile: RpfCoverageBox.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 22:55:25 $
-// $Author: wjeuerle $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:10 $
+// $Author: dietrick $
 //
 // **********************************************************************
 
@@ -104,10 +104,10 @@ public class RpfCoverageBox {
          // same.  Even if it isn't the same, the subframes from
          // this source should be the same.
 
-		 // NOTE: added +se_lat+se_lon because of 
-		 // uniqueness problems
+                 // NOTE: added +se_lat+se_lon because of 
+                 // uniqueness problems
          id = tocNumber + entryNumber + nw_lat + nw_lon +
-	     se_lat + se_lon + chartCode;
+             se_lat + se_lon + chartCode;
 
       }
       return id;
@@ -218,9 +218,9 @@ public class RpfCoverageBox {
       tempInterval = (nw_lat - lrlat)/subframeLatInterval;
       end.y = (int) tempInterval;
       if (tempInterval < 0 && tempInterval < (double) end.y) end.y--;
-	//(int) (Math.abs(lrlon - ullon)/subframeLonInterval);
+        //(int) (Math.abs(lrlon - ullon)/subframeLonInterval);
       int num_horiz_subframes = horizontalSubframes();
-	//(int) (Math.abs(ullat - lrlat)/subframeLatInterval);
+        //(int) (Math.abs(ullat - lrlat)/subframeLatInterval);
       int num_vert_subframes = verticalSubframes();
 
       if ((start.y>=0 || end.y>=0) && (start.x>=0 || end.x>=0) &&
@@ -234,7 +234,7 @@ public class RpfCoverageBox {
          int top = start.y < 0?0:start.y;
          int bottom = end.y >= num_vert_subframes?(num_vert_subframes-1):end.y;
 
-	    percentCoverage = ((float)((Math.abs(right - left)+1f) * (Math.abs(bottom - top)+1f))/(float)((Math.abs(end.x - start.x)+1f) * (Math.abs(end.y - start.y)+1)))*100f;
+            percentCoverage = ((float)((Math.abs(right - left)+1f) * (Math.abs(bottom - top)+1f))/(float)((Math.abs(end.x - start.x)+1f) * (Math.abs(end.y - start.y)+1)))*100f;
 
          if (percentCoverage > 100f) percentCoverage = 100f;
 

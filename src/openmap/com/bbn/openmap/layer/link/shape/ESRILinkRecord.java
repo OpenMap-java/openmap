@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/ESRILinkRecord.java,v $
 // $RCSfile: ESRILinkRecord.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:28 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -43,5 +43,5 @@ public interface ESRILinkRecord {
      * @param properties the properties of the polys
      */
     public void writeLinkGraphics (LinkGraphicList lgl,
-				   LinkProperties properties) throws IOException;
+                                   LinkProperties properties) throws IOException;
 }

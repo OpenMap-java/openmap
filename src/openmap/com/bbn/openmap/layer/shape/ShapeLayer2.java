@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/Attic/ShapeLayer2.java,v $
 // $RCSfile: ShapeLayer2.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -71,7 +71,7 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/26 18:18:11 $
  * @see SpatialIndex 
  */
 public class ShapeLayer2 extends ShapeLayer implements ActionListener {
@@ -84,7 +84,7 @@ public class ShapeLayer2 extends ShapeLayer implements ActionListener {
     }
 
     public ShapeLayer2(String shapeFileName) {
-	super(shapeFileName);
+        super(shapeFileName);
     }
 
     /**
@@ -92,23 +92,23 @@ public class ShapeLayer2 extends ShapeLayer implements ActionListener {
      * created.
      */
     protected OMGeometryList RecordList(ESRIRecord rec) {
-	return RecordList(null, rec);
+        return RecordList(null, rec);
     }
 
     /**
      * Add all the graphics to one OMGeometryList.
      */
     protected OMGeometryList RecordList(OMGeometryList list, 
-					ESRIRecord rec) {
-	if (list == null) {
-	    list = new OMGeometryList(10);
-	}
+                                        ESRIRecord rec) {
+        if (list == null) {
+            list = new OMGeometryList(10);
+        }
 
-	OMGeometry geom = rec.addOMGeometry(list);
-	geom.setAppObject(new NumAndBox(rec.getRecordNumber(),
-					rec.getBoundingBox()));
+        OMGeometry geom = rec.addOMGeometry(list);
+        geom.setAppObject(new NumAndBox(rec.getRecordNumber(),
+                                        rec.getBoundingBox()));
 
-	return list;
+        return list;
     }
 
     /**
@@ -117,79 +117,79 @@ public class ShapeLayer2 extends ShapeLayer implements ActionListener {
      */
     public OMGraphicList prepare() {
 
-	if (spatialIndex == null) {
-	    Debug.message("shape", "ShapeLayer: spatialIndex is null!");
-	    return new OMGraphicList();
-	}
+        if (spatialIndex == null) {
+            Debug.message("shape", "ShapeLayer: spatialIndex is null!");
+            return new OMGraphicList();
+        }
 
-	Projection projection = getProjection();
-	LatLonPoint ul = projection.getUpperLeft();
-	LatLonPoint lr = projection.getLowerRight();
-	float ulLat = ul.getLatitude();
-	float ulLon = ul.getLongitude();
-	float lrLat = lr.getLatitude();
-	float lrLon = lr.getLongitude();
+        Projection projection = getProjection();
+        LatLonPoint ul = projection.getUpperLeft();
+        LatLonPoint lr = projection.getLowerRight();
+        float ulLat = ul.getLatitude();
+        float ulLon = ul.getLongitude();
+        float lrLat = lr.getLatitude();
+        float lrLon = lr.getLongitude();
 
-	OMGeometryList stuff = new OMGeometryList();
-	drawingAttributes.setTo(stuff);
+        OMGeometryList stuff = new OMGeometryList();
+        drawingAttributes.setTo(stuff);
 
-	// check for dateline anomaly on the screen.  we check for
-	// ulLon >= lrLon, but we need to be careful of the check for
-	// equality because of floating point arguments...
-	if ((ulLon > lrLon) ||
-		MoreMath.approximately_equal(ulLon, lrLon, .001f))
-	{
-	    if (Debug.debugging("shape")) {
-		Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
-	    }
+        // check for dateline anomaly on the screen.  we check for
+        // ulLon >= lrLon, but we need to be careful of the check for
+        // equality because of floating point arguments...
+        if ((ulLon > lrLon) ||
+                MoreMath.approximately_equal(ulLon, lrLon, .001f))
+        {
+            if (Debug.debugging("shape")) {
+                Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
+            }
 
-	    double ymin = (double) Math.min(ulLat, lrLat);
-	    double ymax = (double) Math.max(ulLat, lrLat);
+            double ymin = (double) Math.min(ulLat, lrLat);
+            double ymax = (double) Math.max(ulLat, lrLat);
 
-	    try {
-		ESRIRecord records1[] = spatialIndex.locateRecords(
-		    ulLon, ymin, 180.0d, ymax);
-		ESRIRecord records2[] = spatialIndex.locateRecords(
-		    -180.0d, ymin, lrLon, ymax);
-		int nRecords1 = records1.length;
-		int nRecords2 = records2.length;
+            try {
+                ESRIRecord records1[] = spatialIndex.locateRecords(
+                    ulLon, ymin, 180.0d, ymax);
+                ESRIRecord records2[] = spatialIndex.locateRecords(
+                    -180.0d, ymin, lrLon, ymax);
+                int nRecords1 = records1.length;
+                int nRecords2 = records2.length;
 
-		for (int i = 0; i < nRecords1; i++) {
-		    RecordList(stuff, records1[i]);
-		}
-		for (int i = 0; i < nRecords2; i++) {
-		    RecordList(stuff, records2[i]);
-		}
-	    } catch (java.io.IOException ex) {
-		ex.printStackTrace();
-	    } catch (FormatException fe) {
-		fe.printStackTrace();
-	    }
-	} else {
+                for (int i = 0; i < nRecords1; i++) {
+                    RecordList(stuff, records1[i]);
+                }
+                for (int i = 0; i < nRecords2; i++) {
+                    RecordList(stuff, records2[i]);
+                }
+            } catch (java.io.IOException ex) {
+                ex.printStackTrace();
+            } catch (FormatException fe) {
+                fe.printStackTrace();
+            }
+        } else {
 
-	    double xmin = (double) Math.min(ulLon, lrLon);
-	    double xmax = (double) Math.max(ulLon, lrLon);
-	    double ymin = (double) Math.min(ulLat, lrLat);
-	    double ymax = (double) Math.max(ulLat, lrLat);
+            double xmin = (double) Math.min(ulLon, lrLon);
+            double xmax = (double) Math.max(ulLon, lrLon);
+            double ymin = (double) Math.min(ulLat, lrLat);
+            double ymax = (double) Math.max(ulLat, lrLat);
 
-	    try {
-		ESRIRecord records[] = spatialIndex.locateRecords(
-		    xmin, ymin, xmax, ymax);
-		int nRecords = records.length;
-		for (int i = 0; i < nRecords; i++) {
-		    RecordList(stuff, records[i]);
-		}
-	    } catch (java.io.IOException ex) {
-		ex.printStackTrace();
-	    } catch (FormatException fe) {
-		fe.printStackTrace();
-	    }
-	}
+            try {
+                ESRIRecord records[] = spatialIndex.locateRecords(
+                    xmin, ymin, xmax, ymax);
+                int nRecords = records.length;
+                for (int i = 0; i < nRecords; i++) {
+                    RecordList(stuff, records[i]);
+                }
+            } catch (java.io.IOException ex) {
+                ex.printStackTrace();
+            } catch (FormatException fe) {
+                fe.printStackTrace();
+            }
+        }
 
-	if (stuff != null) {
-	    stuff.generate(projection, true);//all new graphics
-	}
-	return stuff;
+        if (stuff != null) {
+            stuff.generate(projection, true);//all new graphics
+        }
+        return stuff;
     }
 
 }

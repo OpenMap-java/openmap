@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/SoloMapComponentRejectPolicy.java,v $
 // $RCSfile: SoloMapComponentRejectPolicy.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:47:43 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:05 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -38,23 +38,23 @@ public class SoloMapComponentRejectPolicy implements SoloMapComponentPolicy {
      * @return true if the object can be added to the MapHandler.
      */
     public boolean canAdd(BeanContextSupport bc, Object obj) 
-	throws MultipleSoloMapComponentException {
-	if (obj instanceof SoloMapComponent) {
-	    Class firstClass = obj.getClass();
-	    for (Iterator it = bc.iterator(); it.hasNext(); ) {
-		Object someObj = it.next();
-		if (someObj instanceof SoloMapComponent) {
-		    Class secondClass = someObj.getClass();
+        throws MultipleSoloMapComponentException {
+        if (obj instanceof SoloMapComponent) {
+            Class firstClass = obj.getClass();
+            for (Iterator it = bc.iterator(); it.hasNext(); ) {
+                Object someObj = it.next();
+                if (someObj instanceof SoloMapComponent) {
+                    Class secondClass = someObj.getClass();
 
-		    if (firstClass == secondClass ||
-			firstClass.isAssignableFrom(secondClass) || 
-			secondClass.isAssignableFrom(firstClass)) {
+                    if (firstClass == secondClass ||
+                        firstClass.isAssignableFrom(secondClass) || 
+                        secondClass.isAssignableFrom(firstClass)) {
 
-			throw new MultipleSoloMapComponentException(firstClass, secondClass);
-		    }
-		}
-	    }
-	} 
-	return true;
+                        throw new MultipleSoloMapComponentException(firstClass, secondClass);
+                    }
+                }
+            }
+        } 
+        return true;
     }
 }

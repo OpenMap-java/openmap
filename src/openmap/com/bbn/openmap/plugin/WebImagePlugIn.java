@@ -1,8 +1,8 @@
 /* **********************************************************************
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/WebImagePlugIn.java,v $
- * $Revision: 1.2 $ 
- * $Date: 2003/12/23 21:16:27 $ 
- * $Author: wjeuerle $
+ * $Revision: 1.3 $ 
+ * $Date: 2004/01/26 18:18:13 $ 
+ * $Author: dietrick $
  *
  * Code provided by Raj Singh from Syncline, rs@syncline.com
  * Updates provided by Holger Kohler, Holger.Kohler@dsto.defence.gov.au
@@ -55,8 +55,8 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
      */
     public OMGraphicList getRectangle(Projection p) {
         OMGraphicList list = new OMGraphicList();
-	
-	currentProjection = p;
+        
+        currentProjection = p;
 
         String urlString = createQueryString(p);
 
@@ -79,14 +79,14 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
                 Debug.output("url content type: "+ urlc.getContentType());
             }
 
-	    if (urlc == null || urlc.getContentType() == null) {
-		if (layer != null) {
-		    layer.fireRequestMessage(getName() + ": unable to connect to " + getServerName());
-		} else {
-		    Debug.error(getName() + ": unable to connect to " + getServerName());
-		}
-		return list;
-	    }
+            if (urlc == null || urlc.getContentType() == null) {
+                if (layer != null) {
+                    layer.fireRequestMessage(getName() + ": unable to connect to " + getServerName());
+                } else {
+                    Debug.error(getName() + ": unable to connect to " + getServerName());
+                }
+                return list;
+            }
 
             // text
             if (urlc.getContentType().startsWith("text")) {
@@ -100,10 +100,10 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
                 }
 
 //                  Debug.error(message);
-		// How about we toss the message out to the user instead?
-		if (layer != null) {
-		    layer.fireRequestMessage(message);
-		}
+                // How about we toss the message out to the user instead?
+                if (layer != null) {
+                    layer.fireRequestMessage(message);
+                }
 
             // image
             } else if (urlc.getContentType().startsWith("image")) {
@@ -114,9 +114,9 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
             } // end if image
         } catch (java.net.MalformedURLException murle) {
             Debug.error("WebImagePlugIn: URL \"" + urlString +
-			"\" is malformed.");
+                        "\" is malformed.");
         } catch (java.io.IOException ioe) {
-	    messageWindow.showMessageDialog(null, getName() + ":\n\n   Couldn't connect to " + getServerName(), "Connection Problem", JOptionPane.INFORMATION_MESSAGE);
+            messageWindow.showMessageDialog(null, getName() + ":\n\n   Couldn't connect to " + getServerName(), "Connection Problem", JOptionPane.INFORMATION_MESSAGE);
 
         }
 
@@ -127,49 +127,49 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
     public abstract String getServerName();
 
     public java.awt.Component getGUI() {
-	JPanel panel = new JPanel(new GridLayout(0, 1));
-	JButton parameterButton = new JButton("Adjust Parameters");
-	parameterButton.setActionCommand(Layer.DisplayPropertiesCmd);
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+        JButton parameterButton = new JButton("Adjust Parameters");
+        parameterButton.setActionCommand(Layer.DisplayPropertiesCmd);
 
-	if (layer != null) {
-	    parameterButton.addActionListener(layer);
-	}
+        if (layer != null) {
+            parameterButton.addActionListener(layer);
+        }
 
-	JButton viewQueryButton = new JButton("View Current Query");
-	viewQueryButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    if (layer != null) {
-			String query = createQueryString(currentProjection);
-			Vector queryStrings = PropUtils.parseMarkers(query, "&");
-			StringBuffer updatedQuery = new StringBuffer();
-			Iterator it = queryStrings.iterator();
-			if (it.hasNext()) {
-			    updatedQuery.append((String)it.next());
-			}
-			while (it.hasNext()) {
-			    updatedQuery.append("&\n   ");
-			    updatedQuery.append((String) it.next());
-			}
+        JButton viewQueryButton = new JButton("View Current Query");
+        viewQueryButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    if (layer != null) {
+                        String query = createQueryString(currentProjection);
+                        Vector queryStrings = PropUtils.parseMarkers(query, "&");
+                        StringBuffer updatedQuery = new StringBuffer();
+                        Iterator it = queryStrings.iterator();
+                        if (it.hasNext()) {
+                            updatedQuery.append((String)it.next());
+                        }
+                        while (it.hasNext()) {
+                            updatedQuery.append("&\n   ");
+                            updatedQuery.append((String) it.next());
+                        }
 
-			messageWindow.showMessageDialog(null, updatedQuery.toString(), "Current Query for " + getName(), JOptionPane.INFORMATION_MESSAGE);
-		    }
-		}
-	    });
+                        messageWindow.showMessageDialog(null, updatedQuery.toString(), "Current Query for " + getName(), JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            });
 
-	redrawButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    if (layer != null) {
-			layer.doPrepare();
-		    }
-		}
-	    });
+        redrawButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    if (layer != null) {
+                        layer.doPrepare();
+                    }
+                }
+            });
 
-	redrawButton.setEnabled(layer != null);
+        redrawButton.setEnabled(layer != null);
 
-	panel.add(parameterButton);
-	panel.add(viewQueryButton);
-	panel.add(redrawButton);
-	return panel;
+        panel.add(parameterButton);
+        panel.add(viewQueryButton);
+        panel.add(redrawButton);
+        return panel;
     }
 
     protected JButton redrawButton = new JButton("Query Server");
@@ -179,13 +179,13 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
      * Set the component that this PlugIn uses as a grip to the map.  
      */
     public void setComponent(Component comp) {
-	super.setComponent(comp);
-	if (comp instanceof PlugInLayer) {
-	    layer = (PlugInLayer) comp;
-	} else {
-	    layer = null;
-	}
-	redrawButton.setEnabled(layer != null);
+        super.setComponent(comp);
+        if (comp instanceof PlugInLayer) {
+            layer = (PlugInLayer) comp;
+        } else {
+            layer = null;
+        }
+        redrawButton.setEnabled(layer != null);
     }
 
 } //end WMSPlugin

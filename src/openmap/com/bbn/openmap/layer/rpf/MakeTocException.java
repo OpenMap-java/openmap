@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/MakeTocException.java,v $
 // $RCSfile: MakeTocException.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,10 +29,10 @@ package com.bbn.openmap.layer.rpf;
 public class MakeTocException extends Exception {
 
     public MakeTocException() {
-	super();
+        super();
     }
 
     public MakeTocException(String statement) {
-	super(statement);
+        super(statement);
     }
 }

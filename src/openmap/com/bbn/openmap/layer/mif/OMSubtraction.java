@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/OMSubtraction.java,v $
 // $RCSfile: OMSubtraction.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,51 +47,51 @@ public class OMSubtraction extends OMGraphic implements Serializable {
     Projection project;
 
     public OMSubtraction(float[] lat, float[] lon) {
-	super(RENDERTYPE_LATLON,LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	outer=new SubArea(lat,lon);
+        super(RENDERTYPE_LATLON,LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        outer=new SubArea(lat,lon);
     }
 
     boolean contains(float[] latp,float[] lonp) {
-	if (outer.contains(latp,lonp)) {
-	    if (subs==null)subs=new Vector();
-	    subs.addElement(new SubArea(latp,lonp));
-	    return true;
-	}
-	return false;
+        if (outer.contains(latp,lonp)) {
+            if (subs==null)subs=new Vector();
+            subs.addElement(new SubArea(latp,lonp));
+            return true;
+        }
+        return false;
     }
 
     public boolean generate(Projection proj) {
 
-	if (proj == null) {
-	    System.err.println("OMText: null projection in generate!"); 
-	    return false;
-	}
-	project=proj; 
-	if (!outer.isPlotable(proj)) return false;
+        if (proj == null) {
+            System.err.println("OMText: null projection in generate!"); 
+            return false;
+        }
+        project=proj; 
+        if (!outer.isPlotable(proj)) return false;
 
-	area=outer.getArea(proj);
+        area=outer.getArea(proj);
 
-	if (subs!=null) {
-	    int sublen=subs.size();
-	    for(int i=0;i<sublen;i++) {
-		SubArea sb=(SubArea)subs.elementAt(i);
-		area.subtract(sb.getArea(proj));
-	    }
-	}
+        if (subs!=null) {
+            int sublen=subs.size();
+            for(int i=0;i<sublen;i++) {
+                SubArea sb=(SubArea)subs.elementAt(i);
+                area.subtract(sb.getArea(proj));
+            }
+        }
 
-	setNeedToRegenerate(false);
-	return true;
+        setNeedToRegenerate(false);
+        return true;
     }
 
     public synchronized void render(Graphics g) {
 
-	if (getNeedToRegenerate()) return;
-	//Check if we can plot the area
-	if (!outer.isPlotable(project))return;
+        if (getNeedToRegenerate()) return;
+        //Check if we can plot the area
+        if (!outer.isPlotable(project))return;
 
-	Graphics2D g2=(Graphics2D)g;
-	g2.setPaint(getFillPaint());
-	g2.fill(area);
+        Graphics2D g2=(Graphics2D)g;
+        g2.setPaint(getFillPaint());
+        g2.fill(area);
     }
 
     /**
@@ -102,61 +102,61 @@ public class OMSubtraction extends OMGraphic implements Serializable {
      * @return float always zero
      */
     public float distance(int x, int y) { //return zero
-	return 0.0f;
+        return 0.0f;
     }
 
     class SubArea {
 
-	float[] lat;
-	float[] lon;
-	int[] x,y;
-	int len;
+        float[] lat;
+        float[] lon;
+        int[] x,y;
+        int len;
 
-	// We use this to ask if a point lies inside this area,
-	// Polygon class is no good cos it needs ints
-	GeneralPath gpath; 
+        // We use this to ask if a point lies inside this area,
+        // Polygon class is no good cos it needs ints
+        GeneralPath gpath; 
 
-	SubArea(float[] lat,float[] lon) {
-	    this.lat=lat; 
-	    this.lon=lon; 
-	    len=lat.length;
-	    x=new int[len]; 
-	    y=new int[len];
-	}
+        SubArea(float[] lat,float[] lon) {
+            this.lat=lat; 
+            this.lon=lon; 
+            len=lat.length;
+            x=new int[len]; 
+            y=new int[len];
+        }
 
-	Area getArea(Projection proj) {
-	    Point pt=new Point();
-	    for(int i=0;i<len;i++) {
-		proj.forward(lat[i],lon[i],pt); 
-		x[i]=pt.x; 
-		y[i]=pt.y;
-	    }
-	    return new Area(new Polygon(x,y,len));
-	}
+        Area getArea(Projection proj) {
+            Point pt=new Point();
+            for(int i=0;i<len;i++) {
+                proj.forward(lat[i],lon[i],pt); 
+                x[i]=pt.x; 
+                y[i]=pt.y;
+            }
+            return new Area(new Polygon(x,y,len));
+        }
 
-	boolean isPlotable(Projection proj) {
-	    return proj.isPlotable(lat[0],lon[0]);
-	}
+        boolean isPlotable(Projection proj) {
+            return proj.isPlotable(lat[0],lon[0]);
+        }
 
-	boolean contains(float[] latp,float[] lonp) {
+        boolean contains(float[] latp,float[] lonp) {
 
-	    if (gpath==null) {
-		gpath=new GeneralPath();
-		for (int i=0;i<len;i++) {
-		    if (i==0) gpath.moveTo(lat[0],lon[0]);
-		    gpath.lineTo(lat[i],lon[i]);
-		}
-		gpath.closePath();
-	    }
+            if (gpath==null) {
+                gpath=new GeneralPath();
+                for (int i=0;i<len;i++) {
+                    if (i==0) gpath.moveTo(lat[0],lon[0]);
+                    gpath.lineTo(lat[i],lon[i]);
+                }
+                gpath.closePath();
+            }
 
-	    int len=latp.length;
-	    for (int i=0;i<len;i++) {
-		if (gpath.contains(latp[i],lonp[i])) {
-		    return true;
-		}
-	    }
-	    return false;
-	}
+            int len=latp.length;
+            for (int i=0;i<len;i++) {
+                if (gpath.contains(latp[i],lonp[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
     }
 }

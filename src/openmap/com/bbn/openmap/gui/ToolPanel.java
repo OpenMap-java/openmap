@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ToolPanel.java,v $
 // $RCSfile: ToolPanel.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/10/23 21:01:16 $
+// $Revision: 1.8 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -116,9 +116,9 @@ public class ToolPanel extends JToolBar
      * Constructor
      */
     public ToolPanel() {
-	setLayout(gridbag);
-  	setFloatable(false);
-	setVisible(false);
+        setLayout(gridbag);
+        setFloatable(false);
+        setVisible(false);
     }
     
     /**
@@ -128,7 +128,7 @@ public class ToolPanel extends JToolBar
      * @param item The Tool to add.
      */
     public void add(String key, Tool item) {
-	add(key, item, -1);
+        add(key, item, -1);
     }
     
     /**
@@ -144,7 +144,7 @@ public class ToolPanel extends JToolBar
      * starting at 0.
      */
     protected int getNextAvailableIndex() {
-	return getNextAvailableIndex(0);
+        return getNextAvailableIndex(0);
     }
 
     /**
@@ -153,19 +153,19 @@ public class ToolPanel extends JToolBar
      */
     protected int getNextAvailableIndex(int startAt) {
 
-	if (usedIndexes == null) {
-	    usedIndexes = new boolean[MAX_INDEXES];
-	}
+        if (usedIndexes == null) {
+            usedIndexes = new boolean[MAX_INDEXES];
+        }
 
-	if (startAt < 0) startAt = 0;
-	if (startAt >= MAX_INDEXES) startAt = MAX_INDEXES - 1;
+        if (startAt < 0) startAt = 0;
+        if (startAt >= MAX_INDEXES) startAt = MAX_INDEXES - 1;
 
-	int i = startAt;
-	// Find the first unused
-	for (; i < MAX_INDEXES && usedIndexes[i] == true; i++) {}
-	usedIndexes[i] = true;
+        int i = startAt;
+        // Find the first unused
+        for (; i < MAX_INDEXES && usedIndexes[i] == true; i++) {}
+        usedIndexes[i] = true;
 
-	return i;
+        return i;
     }
 
     /**
@@ -180,40 +180,40 @@ public class ToolPanel extends JToolBar
      * mess up intended order.
      */
     public void add(String key, Tool item, int index) {
-	Container face = item.getFace();
+        Container face = item.getFace();
 
-	if (face != null) {
-	    face.addComponentListener(this);
-	    items.put(key.intern(), item); 
-	    
-	    if (autoSpace) {
-		index *= 2;
-	    }
+        if (face != null) {
+            face.addComponentListener(this);
+            items.put(key.intern(), item); 
+            
+            if (autoSpace) {
+                index *= 2;
+            }
 
-	    c.gridy = 0;
-	    c.weightx = 0;
-	    c.anchor = GridBagConstraints.WEST;
-	    c.gridx = getNextAvailableIndex(index);
+            c.gridy = 0;
+            c.weightx = 0;
+            c.anchor = GridBagConstraints.WEST;
+            c.gridx = getNextAvailableIndex(index);
 
-	    gridbag.setConstraints(face, c);
-	    add(face);
+            gridbag.setConstraints(face, c);
+            add(face);
 
-	    if (filler == null) {
-		c.gridx = getNextAvailableIndex(MAX_INDEXES);
-		c.anchor = GridBagConstraints.EAST;
-		c.weightx = 1;
-		
-		filler = new JLabel("");
-		gridbag.setConstraints(filler, c);
-		add(filler);
-	    }
+            if (filler == null) {
+                c.gridx = getNextAvailableIndex(MAX_INDEXES);
+                c.anchor = GridBagConstraints.EAST;
+                c.weightx = 1;
+                
+                filler = new JLabel("");
+                gridbag.setConstraints(filler, c);
+                add(filler);
+            }
 
-	    if (autoSpace) {
-		addSpace();
-	    }
-	}
+            if (autoSpace) {
+                addSpace();
+            }
+        }
 
-	setVisibility();
+        setVisibility();
     }
 
     /** 
@@ -223,7 +223,7 @@ public class ToolPanel extends JToolBar
      * @param item The Tool to add.
      */
     public void add(Tool item) {
-	add(item, -1);
+        add(item, -1);
     }
 
     /** 
@@ -235,16 +235,16 @@ public class ToolPanel extends JToolBar
      * the end.
      */
     public void add(Tool item, int index) {
-	try {
-	    add(item.getKey(), item, index);
-	} catch (NullPointerException npe) {
-	    if (item != null) {
-		Debug.error("ToolPanel.add(): no name for " + item.getClass().getName());
-		npe.printStackTrace();
-	    } else {
-		Debug.error("ToolPanel.add(): no name for null tool.");
-	    }
-	}
+        try {
+            add(item.getKey(), item, index);
+        } catch (NullPointerException npe) {
+            if (item != null) {
+                Debug.error("ToolPanel.add(): no name for " + item.getClass().getName());
+                npe.printStackTrace();
+            } else {
+                Debug.error("ToolPanel.add(): no name for null tool.");
+            }
+        }
     }
 
     /**
@@ -254,26 +254,26 @@ public class ToolPanel extends JToolBar
      * @return The tool associated with the key, null if not found.
      */
     public Tool get(String key) {
-	return (Tool)items.get(key.intern()); 
+        return (Tool)items.get(key.intern()); 
     } 
     
     /** Remove a tool with the right key */
     public void remove(String key) {
-	Tool tool = (Tool) items.remove(key.intern());
-	if (tool != null) {
-	    remove(tool.getFace());
-	    tool.getFace().removeComponentListener(this);
-	}
+        Tool tool = (Tool) items.remove(key.intern());
+        if (tool != null) {
+            remove(tool.getFace());
+            tool.getFace().removeComponentListener(this);
+        }
     }
 
     /** Add a space between tools. */
     protected void addSpace() { 
-	add(new JLabel(" "));
+        add(new JLabel(" "));
     }
 
     /** Set whether spaces are placed between tools. */
     public void setAutoSpace(boolean set) {
-	autoSpace = set;
+        autoSpace = set;
     }
 
     /**
@@ -285,17 +285,17 @@ public class ToolPanel extends JToolBar
      * MapPanelChild method.
      */
     public void setPreferredLocation(String value) {
-	preferredLocation = value;
+        preferredLocation = value;
     }
 
     /** MapPanelChild method. */
     public String getPreferredLocation() {
-	return preferredLocation;
+        return preferredLocation;
     }
 
     /** Find out whether spaces are being placed between tools. */
     public boolean isAutoSpace() {
-	return autoSpace;
+        return autoSpace;
     }
 
     /**
@@ -304,7 +304,7 @@ public class ToolPanel extends JToolBar
      * where they should go.
      */
     public void setComponentList(List list) {
-	componentList = list;
+        componentList = list;
     }
 
     /**
@@ -313,7 +313,7 @@ public class ToolPanel extends JToolBar
      * where they should go.
      */
     public List getComponentList() {
-	return componentList;
+        return componentList;
     }
 
     /**
@@ -321,7 +321,7 @@ public class ToolPanel extends JToolBar
      * which Tools should not be added (in the findAndInit()) method.
      */
     public void setAvoidList(List list) {
-	avoidList = list;
+        avoidList = list;
     }
 
     /**
@@ -329,7 +329,7 @@ public class ToolPanel extends JToolBar
      * which Tools should not be added (in the findAndInit()) method.
      */
     public List getAvoidList() {
-	return avoidList;
+        return avoidList;
     }
 
     /**
@@ -340,9 +340,9 @@ public class ToolPanel extends JToolBar
      * @param it iterator to use to go through the new objects.
      */
     public void findAndInit(Iterator it) {
-	while (it.hasNext()) {
-	    findAndInit(it.next());
-	} 
+        while (it.hasNext()) {
+            findAndInit(it.next());
+        } 
     }
 
     /**
@@ -353,47 +353,47 @@ public class ToolPanel extends JToolBar
      * @return -1 if not on the list, the index starting at 0 if it is.
      */
     protected int keyOnList(String key, List list) {
-	int ret = -1;
-	int index = 0;
-	if (list != null) {
-	    Iterator it = list.iterator();
-	    while (it.hasNext()) {
-		String listKey = (String)it.next();
-		if (listKey.equalsIgnoreCase(key)) {
-		    ret = index;
-		    break;
-		}
-		index++;
-	    }
-	}
-	return ret;
+        int ret = -1;
+        int index = 0;
+        if (list != null) {
+            Iterator it = list.iterator();
+            while (it.hasNext()) {
+                String listKey = (String)it.next();
+                if (listKey.equalsIgnoreCase(key)) {
+                    ret = index;
+                    break;
+                }
+                index++;
+            }
+        }
+        return ret;
     }
 
     public void findAndInit(Object someObj) {
-	if (someObj instanceof Tool) {
-	    String key = ((Tool)someObj).getKey();
-	    List list = getComponentList();
-	    int index;
-	    if (list != null) {
-		index = keyOnList(key, list);
+        if (someObj instanceof Tool) {
+            String key = ((Tool)someObj).getKey();
+            List list = getComponentList();
+            int index;
+            if (list != null) {
+                index = keyOnList(key, list);
 
-		if (index >= 0) {
-		    if (Debug.debugging("basic")) {
-			Debug.output("ToolPanel: found a tool Object " + 
-				     key + " for placement at " + index);
-		    }
-			
-		    add((Tool)someObj, index);
-		}
+                if (index >= 0) {
+                    if (Debug.debugging("basic")) {
+                        Debug.output("ToolPanel: found a tool Object " + 
+                                     key + " for placement at " + index);
+                    }
+                        
+                    add((Tool)someObj, index);
+                }
 
-	    } else {
-		index = keyOnList(key, getAvoidList());
-		if (index < 0) {
-		    Debug.message("basic", "ToolPanel: found a tool Object");
-		    add((Tool)someObj);
-		}
-	    }
-	}
+            } else {
+                index = keyOnList(key, getAvoidList());
+                if (index < 0) {
+                    Debug.message("basic", "ToolPanel: found a tool Object");
+                    add((Tool)someObj);
+                }
+            }
+        }
     }
 
     /** 
@@ -403,7 +403,7 @@ public class ToolPanel extends JToolBar
      * @param bcme the event containing the iterator with new objects.
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
-	findAndInit(bcme.iterator());      
+        findAndInit(bcme.iterator());      
     }
     
     /** 
@@ -414,21 +414,21 @@ public class ToolPanel extends JToolBar
      * @param bcme the event containing the iterator with removed objects.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-	Iterator it = bcme.iterator();
-	Object someObj;
-	while (it.hasNext()) {
-	    someObj = it.next();
-	    if (someObj instanceof Tool) {
-		// do the initializing that need to be done here
-		Debug.message("toolpanel","ToolPanel removing tool Object");
-		remove(((Tool)someObj).getKey());
-	    }
-	}
+        Iterator it = bcme.iterator();
+        Object someObj;
+        while (it.hasNext()) {
+            someObj = it.next();
+            if (someObj instanceof Tool) {
+                // do the initializing that need to be done here
+                Debug.message("toolpanel","ToolPanel removing tool Object");
+                remove(((Tool)someObj).getKey());
+            }
+        }
     }
 
     /** Method for BeanContextChild interface. */
     public BeanContext getBeanContext() {
-	return beanContextChildSupport.getBeanContext();
+        return beanContextChildSupport.getBeanContext();
     }
   
     /** 
@@ -438,84 +438,84 @@ public class ToolPanel extends JToolBar
      * @param in_bc the BeanContext.
      */
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
-	if (in_bc != null) {
-	    in_bc.addBeanContextMembershipListener(this);
-	    beanContextChildSupport.setBeanContext(in_bc);
-	    findAndInit(in_bc.iterator());
-	}
+        if (in_bc != null) {
+            in_bc.addBeanContextMembershipListener(this);
+            beanContextChildSupport.setBeanContext(in_bc);
+            findAndInit(in_bc.iterator());
+        }
     }
   
     /** Method for BeanContextChild interface. */
     public void addPropertyChangeListener(String propertyName,
-					  PropertyChangeListener in_pcl) {
-	beanContextChildSupport.addPropertyChangeListener(propertyName, in_pcl);
+                                          PropertyChangeListener in_pcl) {
+        beanContextChildSupport.addPropertyChangeListener(propertyName, in_pcl);
     }
 
     /** Method for BeanContextChild interface. */
     public void removePropertyChangeListener(String propertyName, 
-					     PropertyChangeListener in_pcl) {
-	beanContextChildSupport.removePropertyChangeListener(propertyName, in_pcl);
+                                             PropertyChangeListener in_pcl) {
+        beanContextChildSupport.removePropertyChangeListener(propertyName, in_pcl);
     }
   
     /** Method for BeanContextChild interface. */
     public void addVetoableChangeListener(String propertyName,
-					  VetoableChangeListener in_vcl) {
-	beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
+                                          VetoableChangeListener in_vcl) {
+        beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
     }
   
     /** Method for BeanContextChild interface. */
     public void removeVetoableChangeListener(String propertyName, 
-					     VetoableChangeListener in_vcl) {
-	beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
+                                             VetoableChangeListener in_vcl) {
+        beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
     }
 
     public void setPropertyPrefix(String prefix) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
     }
 
     public String getPropertyPrefix() {
-	return propertyPrefix;
+        return propertyPrefix;
     }
 
     public void setProperties(Properties props) {
-	setProperties(null, props);
+        setProperties(null, props);
     }
 
     public void setProperties(String prefix, Properties props) {
-	setPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String componentsString = 
-	    props.getProperty(prefix + ComponentsProperty);
+        String componentsString = 
+            props.getProperty(prefix + ComponentsProperty);
 
-	if (componentsString != null) {
-	    setComponentList(PropUtils.parseSpacedMarkers(componentsString));
-	}
+        if (componentsString != null) {
+            setComponentList(PropUtils.parseSpacedMarkers(componentsString));
+        }
 
-	String avoidComponentsString = 
-	    props.getProperty(prefix + AvoidComponentsProperty);
+        String avoidComponentsString = 
+            props.getProperty(prefix + AvoidComponentsProperty);
 
-	if (avoidComponentsString != null) {
-	    setAvoidList(PropUtils.parseSpacedMarkers(avoidComponentsString));
-	}
+        if (avoidComponentsString != null) {
+            setAvoidList(PropUtils.parseSpacedMarkers(avoidComponentsString));
+        }
 
-	String preferredLocationString = 
-	    props.getProperty(prefix + PreferredLocationProperty);
+        String preferredLocationString = 
+            props.getProperty(prefix + PreferredLocationProperty);
 
-	if (preferredLocationString != null) {
-	    try {
-		preferredLocationString = (String)java.awt.BorderLayout.class.getField(preferredLocationString).get(null);
-	    } catch (NoSuchFieldException nsfe) {
-		preferredLocationString = null;
-	    } catch (IllegalAccessException iae) {
-		preferredLocationString = null;
-	    }
+        if (preferredLocationString != null) {
+            try {
+                preferredLocationString = (String)java.awt.BorderLayout.class.getField(preferredLocationString).get(null);
+            } catch (NoSuchFieldException nsfe) {
+                preferredLocationString = null;
+            } catch (IllegalAccessException iae) {
+                preferredLocationString = null;
+            }
 
-	    if (preferredLocationString != null) {
-		setPreferredLocation(preferredLocationString);
-	    }
-	}
+            if (preferredLocationString != null) {
+                setPreferredLocation(preferredLocationString);
+            }
+        }
     }
 
     /**
@@ -523,47 +523,47 @@ public class ToolPanel extends JToolBar
      * Return null if the List is null.
      */
     protected StringBuffer rebuildListProperty(List aList) {
-	StringBuffer list = null;
-	if (aList != null) {
-	    list = new StringBuffer();
-	    Iterator it = aList.iterator();
-	    while (it.hasNext()) {
-		list.append((String)it.next() + " ");
-	    }
-	}
-	return list;
+        StringBuffer list = null;
+        if (aList != null) {
+            list = new StringBuffer();
+            Iterator it = aList.iterator();
+            while (it.hasNext()) {
+                list.append((String)it.next() + " ");
+            }
+        }
+        return list;
     }
 
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	StringBuffer listProp = rebuildListProperty(getComponentList());
-	if (listProp != null) {
-	    props.put(prefix + ComponentsProperty, listProp.toString());
-	}
+        StringBuffer listProp = rebuildListProperty(getComponentList());
+        if (listProp != null) {
+            props.put(prefix + ComponentsProperty, listProp.toString());
+        }
 
-	listProp = rebuildListProperty(getAvoidList());
-	if (listProp != null) {
-	    props.put(prefix + AvoidComponentsProperty, listProp.toString());
-	}
+        listProp = rebuildListProperty(getAvoidList());
+        if (listProp != null) {
+            props.put(prefix + AvoidComponentsProperty, listProp.toString());
+        }
 
-	props.put(prefix + PreferredLocationProperty, getPreferredLocation());
+        props.put(prefix + PreferredLocationProperty, getPreferredLocation());
 
-	return props;
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-	props.put(ComponentsProperty, "List of Names of Tools to Add");
-	    
-	return props;
+        props.put(ComponentsProperty, "List of Names of Tools to Add");
+            
+        return props;
     }
 
     /**
@@ -572,22 +572,22 @@ public class ToolPanel extends JToolBar
      * invisible.
      */
     protected void setVisibility() {
-	setVisible(areComponentsVisible());
+        setVisible(areComponentsVisible());
     }
 
     public boolean areComponentsVisible() {
-	Enumeration enum = items.elements();
-	while (enum.hasMoreElements()) {
-	    Component comp = (Component)enum.nextElement();
-	    if (comp != filler && comp.isVisible()) {
-		return true;
-	    }
-	}
-	return false;
+        Enumeration enum = items.elements();
+        while (enum.hasMoreElements()) {
+            Component comp = (Component)enum.nextElement();
+            if (comp != filler && comp.isVisible()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void componentHidden(ComponentEvent ce) {
-	setVisibility();
+        setVisibility();
     }
 
     public void componentMoved(ComponentEvent ce) {
@@ -599,7 +599,7 @@ public class ToolPanel extends JToolBar
     }
 
     public void componentShown(ComponentEvent ce) {
-	setVisibility();
+        setVisibility();
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingRaster.java,v $
 // $RCSfile: OMScalingRaster.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/16 22:54:31 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -99,13 +99,13 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param pix color values for the pixels.
      */
     public OMScalingRaster(float ullat, float ullon, 
-			   float lrlat, float lrlon,
-			   int w, int h, 
-			   int[] pix) {
+                           float lrlat, float lrlon,
+                           int w, int h, 
+                           int[] pix) {
 
-	super(ullat, ullon, w, h, pix);
-	lat2 = lrlat;
-	lon2 = lrlon;
+        super(ullat, ullon, w, h, pix);
+        lat2 = lrlat;
+        lon2 = lrlon;
     }
   
     ////////////////////////////////////// IMAGEICON
@@ -120,9 +120,9 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param ii ImageIcon used for the image.
      */
     public OMScalingRaster(float ullat, float ullon, 
-			   float lrlat, float lrlon,
-			   ImageIcon ii) {
-	this(ullat, ullon, lrlat, lrlon, ii.getImage());
+                           float lrlat, float lrlon,
+                           ImageIcon ii) {
+        this(ullat, ullon, lrlat, lrlon, ii.getImage());
     }
 
     /**
@@ -135,16 +135,16 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param ii Image used for the image.
      */
     public OMScalingRaster(float ullat, float ullon,
-			   float lrlat, float lrlon, Image ii) {
-	super();
-	setRenderType(OMGraphic.RENDERTYPE_LATLON);
-	setColorModel(COLORMODEL_IMAGEICON);
+                           float lrlat, float lrlon, Image ii) {
+        super();
+        setRenderType(OMGraphic.RENDERTYPE_LATLON);
+        setColorModel(COLORMODEL_IMAGEICON);
 
-	lat = ullat;
-	lon = ullon;
-	lat2 = lrlat;
-	lon2 = lrlon;
-	setImage(ii);
+        lat = ullat;
+        lon = ullon;
+        lat2 = lrlat;
+        lon2 = lrlon;
+        setImage(ii);
     }
   
     ////////////////////////////////////// BYTE PIXELS with COLORTABLE
@@ -164,15 +164,15 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param trans transparency of image.
      */
     public OMScalingRaster(float ullat, float ullon,
-			   float lrlat, float lrlon,
-			   int w, int h, 
-			   byte[] bytes,
-			   Color[] colorTable,
-			   int trans) {
+                           float lrlat, float lrlon,
+                           int w, int h, 
+                           byte[] bytes,
+                           Color[] colorTable,
+                           int trans) {
 
-	super(ullat, ullon, w, h, bytes, colorTable, trans);
-	lat2 = lrlat;
-	lon2 = lrlon;
+        super(ullat, ullon, w, h, bytes, colorTable, trans);
+        lat2 = lrlat;
+        lon2 = lrlon;
     }
 
     /**
@@ -185,29 +185,29 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param image the input image.  
      */
     public void setImage(Image image) {
-	if (DEBUG) {
-	    Debug.output("OMScalingRaster.setImage: " + image);
-	}
+        if (DEBUG) {
+            Debug.output("OMScalingRaster.setImage: " + image);
+        }
 
-	if (image == null) {
-	    return;
-	}
+        if (image == null) {
+            return;
+        }
 
-	if (!(image instanceof BufferedImage)) {
-	    sourceImage = new BufferedImage(image.getWidth(this),
-					    image.getHeight(this),
-					    BufferedImage.TYPE_INT_ARGB);
-	    Graphics2D g2D = sourceImage.createGraphics();
-	    g2D.drawImage(image, 0, 0, this);
-	} else {
-	    sourceImage = (BufferedImage)image;
-	}
+        if (!(image instanceof BufferedImage)) {
+            sourceImage = new BufferedImage(image.getWidth(this),
+                                            image.getHeight(this),
+                                            BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2D = sourceImage.createGraphics();
+            g2D.drawImage(image, 0, 0, this);
+        } else {
+            sourceImage = (BufferedImage)image;
+        }
 
-	width = sourceImage.getWidth();
-	height = sourceImage.getHeight();
+        width = sourceImage.getWidth();
+        height = sourceImage.getHeight();
 
-	// Just in case rendering tries to happen.
-	bitmap = sourceImage;
+        // Just in case rendering tries to happen.
+        bitmap = sourceImage;
     }
 
     /**
@@ -222,16 +222,16 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      */
     protected boolean position(Projection proj) {
 
-	if (proj == null) {
-	    Debug.error("OMScalingRaster: null projection in position!");
-	    return false;
-	}
+        if (proj == null) {
+            Debug.error("OMScalingRaster: null projection in position!");
+            return false;
+        }
 
-	point1 = proj.forward(lat, lon);
-	point2 = proj.forward(lat2, lon2);
+        point1 = proj.forward(lat, lon);
+        point2 = proj.forward(lat2, lon2);
 
-	setNeedToReposition(false);
-	return true;
+        setNeedToReposition(false);
+        return true;
     }
 
     /** 
@@ -247,43 +247,43 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      */
     public boolean generate(Projection proj) {
 
-	// Position sets the position for the OMRaster!!!!
-	if (!position(proj)) {
-	    if (DEBUG) {
-		Debug.error("OMRaster.generate(): positioning failed!");
-	    }
-	    return false;
-	}
+        // Position sets the position for the OMRaster!!!!
+        if (!position(proj)) {
+            if (DEBUG) {
+                Debug.error("OMRaster.generate(): positioning failed!");
+            }
+            return false;
+        }
 
-	if (colorModel != COLORMODEL_IMAGEICON) {
-	    // If the sourceImage hasn't been created, and needs to
-	    // be, then just do what we normally do in OMRaster.
-	    if (sourceImage == null || getNeedToRegenerate()) {
-		if (DEBUG) {
-		    Debug.output("OMScalingRaster: generating image");
-		}
-		boolean ret = super.generate(proj);
-		// bitmap is set to a BufferedImage
-		setImage(bitmap);
-	    }
-	}	    
+        if (colorModel != COLORMODEL_IMAGEICON) {
+            // If the sourceImage hasn't been created, and needs to
+            // be, then just do what we normally do in OMRaster.
+            if (sourceImage == null || getNeedToRegenerate()) {
+                if (DEBUG) {
+                    Debug.output("OMScalingRaster: generating image");
+                }
+                boolean ret = super.generate(proj);
+                // bitmap is set to a BufferedImage
+                setImage(bitmap);
+            }
+        }           
 
-	// point1 and point2 are already set in position()
+        // point1 and point2 are already set in position()
 
-	// We assume that the image doesn't cross the dateline, and
-	// that p1 is upper left corner, and p2 is lower right.
-	// scaleTo modifies the internal bitmap image for display.
-	scaleTo(proj);
+        // We assume that the image doesn't cross the dateline, and
+        // that p1 is upper left corner, and p2 is lower right.
+        // scaleTo modifies the internal bitmap image for display.
+        scaleTo(proj);
 
-	// generate shape that is a boundary of the generated image.
-	// We'll make it a GeneralPath rectangle.
-	int w = bitmap.getWidth(this);
-	int h = bitmap.getHeight(this);
+        // generate shape that is a boundary of the generated image.
+        // We'll make it a GeneralPath rectangle.
+        int w = bitmap.getWidth(this);
+        int h = bitmap.getHeight(this);
 
-	shape = createBoxShape(point1.x, point1.y, w, h);
+        shape = createBoxShape(point1.x, point1.y, w, h);
 
-	setNeedToRegenerate(false);
-	return true;
+        setNeedToRegenerate(false);
+        return true;
     }
 
     /**
@@ -293,9 +293,9 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * within OMRasterObject.render().
      */
     protected void rotate(Graphics2D g) {
-	int rotOffsetX = point1.x + (point2.x - point1.x)/2;
-	int rotOffsetY = point1.y + (point2.y - point1.y)/2;
-	((Graphics2D)g).rotate(rotationAngle, rotOffsetX, rotOffsetY);
+        int rotOffsetX = point1.x + (point2.x - point1.x)/2;
+        int rotOffsetY = point1.y + (point2.y - point1.y)/2;
+        ((Graphics2D)g).rotate(rotationAngle, rotOffsetX, rotOffsetY);
     }
 
     /**
@@ -317,80 +317,80 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      */
     protected void scaleTo(Projection thisProj) {
 
-	if (DEBUG) Debug.output("OMScalingRaster: scaleTo()");
+        if (DEBUG) Debug.output("OMScalingRaster: scaleTo()");
 
-	if (sourceImage == null) {
-	    Debug.output("OMScalingRaster.scaleTo() sourceImage is null");
-	    return;
-	}
-	
-	// Get the projection window rectangle in pix
-	Rectangle winRect = new Rectangle(thisProj.getWidth(),	
-					  thisProj.getHeight());
-	// Get image projection rectangle
-	Rectangle projRect = new Rectangle();
-	projRect.setLocation(point1);
-	projRect.setSize(point2.x - point1.x, point2.y - point1.y);
-	
-	Rectangle sourceRect = new Rectangle();
-	sourceRect.width = sourceImage.getWidth();
-	sourceRect.height = sourceImage.getHeight();
-	
-	// Now we have everything we need to sort out this new
-	// projection.
-	setVisible(false); // Assume we wont see it
-	clipRect = null;
+        if (sourceImage == null) {
+            Debug.output("OMScalingRaster.scaleTo() sourceImage is null");
+            return;
+        }
+        
+        // Get the projection window rectangle in pix
+        Rectangle winRect = new Rectangle(thisProj.getWidth(),  
+                                          thisProj.getHeight());
+        // Get image projection rectangle
+        Rectangle projRect = new Rectangle();
+        projRect.setLocation(point1);
+        projRect.setSize(point2.x - point1.x, point2.y - point1.y);
+        
+        Rectangle sourceRect = new Rectangle();
+        sourceRect.width = sourceImage.getWidth();
+        sourceRect.height = sourceImage.getHeight();
+        
+        // Now we have everything we need to sort out this new
+        // projection.
+        setVisible(false); // Assume we wont see it
+        clipRect = null;
 
-	Rectangle iRect = winRect.intersection(projRect);
-	if (!iRect.isEmpty()) {
-	    // Now we have the visible rectangle of the projected
-	    // image we need to figure out which pixels from the
-	    // source image get scaled to produce it.
-	    
-	    // Assume will need whole image, set the clipRect so it's
-	    // on the map, somewhere.
-	    clipRect = new Rectangle();
-	    clipRect.setBounds(sourceRect);
+        Rectangle iRect = winRect.intersection(projRect);
+        if (!iRect.isEmpty()) {
+            // Now we have the visible rectangle of the projected
+            // image we need to figure out which pixels from the
+            // source image get scaled to produce it.
+            
+            // Assume will need whole image, set the clipRect so it's
+            // on the map, somewhere.
+            clipRect = new Rectangle();
+            clipRect.setBounds(sourceRect);
 
-	    // If big enough to see
-	    if ((iRect.width >= 1) && (iRect.height >= 1)) {
+            // If big enough to see
+            if ((iRect.width >= 1) && (iRect.height >= 1)) {
 
-		// If it didn't all fit
-		if (!winRect.contains(projRect)) {
-		    //   calc X scale factor
-		    float xScaleFactor = (float)sourceRect.width / (float)projRect.width;
-		    //   and Y scale factor
-		    float yScaleFactor = (float)sourceRect.height / (float)projRect.height;
-		    int xOffset = (int)((iRect.x - projRect.x)); //   and x offset
-		    int yOffset = (int)((iRect.y - projRect.y)); //   and y offset
-		    clipRect.x = (int)(xOffset * xScaleFactor); //   scale the x position
-		    clipRect.y = (int)(yOffset * yScaleFactor);	//   scale the y position
-		    clipRect.width = (int)(iRect.width * xScaleFactor); //   scale the width
-		    clipRect.height = (int)(iRect.height * yScaleFactor); //   scale the height
-		}		    
-		// Now we can grab the bit we want out of the source and
-		// scale it to fit the intersection.
-		
-		// Calc width adjustment
-		double widthAdj = (double)iRect.width / (double)clipRect.width;
-		// Calc height adjustment
-		double heightAdj = (double)iRect.height / (double)clipRect.height;
-		// Create the transform
-		AffineTransform xform = new AffineTransform();
-		// Specify scaling
-		xform.setToScale(widthAdj, heightAdj);
-		
-		// Create the transform op.
-		AffineTransformOp xformOp = new AffineTransformOp(xform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-		// Scale clip area -> newImage
-		//   extract sub-image
-		BufferedImage newImage = xformOp.filter(sourceImage.getSubimage(clipRect.x, clipRect.y, clipRect.width, clipRect.height), null);
-		
-		bitmap = newImage;
-		point1.setLocation(iRect.x, iRect.y);
-		setVisible(true);
-	    }
-	}
+                // If it didn't all fit
+                if (!winRect.contains(projRect)) {
+                    //   calc X scale factor
+                    float xScaleFactor = (float)sourceRect.width / (float)projRect.width;
+                    //   and Y scale factor
+                    float yScaleFactor = (float)sourceRect.height / (float)projRect.height;
+                    int xOffset = (int)((iRect.x - projRect.x)); //   and x offset
+                    int yOffset = (int)((iRect.y - projRect.y)); //   and y offset
+                    clipRect.x = (int)(xOffset * xScaleFactor); //   scale the x position
+                    clipRect.y = (int)(yOffset * yScaleFactor); //   scale the y position
+                    clipRect.width = (int)(iRect.width * xScaleFactor); //   scale the width
+                    clipRect.height = (int)(iRect.height * yScaleFactor); //   scale the height
+                }                   
+                // Now we can grab the bit we want out of the source and
+                // scale it to fit the intersection.
+                
+                // Calc width adjustment
+                double widthAdj = (double)iRect.width / (double)clipRect.width;
+                // Calc height adjustment
+                double heightAdj = (double)iRect.height / (double)clipRect.height;
+                // Create the transform
+                AffineTransform xform = new AffineTransform();
+                // Specify scaling
+                xform.setToScale(widthAdj, heightAdj);
+                
+                // Create the transform op.
+                AffineTransformOp xformOp = new AffineTransformOp(xform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+                // Scale clip area -> newImage
+                //   extract sub-image
+                BufferedImage newImage = xformOp.filter(sourceImage.getSubimage(clipRect.x, clipRect.y, clipRect.width, clipRect.height), null);
+                
+                bitmap = newImage;
+                point1.setLocation(iRect.x, iRect.y);
+                setVisible(true);
+            }
+        }
     }
     
     /**
@@ -401,7 +401,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * bounds of the window.
      */
     public Rectangle getClippedRectangle() {
-	return clipRect;
+        return clipRect;
     }
 
     /**
@@ -410,7 +410,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param value latitude in decimal degrees.  
      */
     public void setULLat(float value) {
-	setLat(value);
+        setLat(value);
     }
 
     /**
@@ -419,7 +419,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @return the latitude in decimal degrees.
      */
     public float getULLat() {
-	return getLat();
+        return getLat();
     }
 
     /**
@@ -428,7 +428,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param value the longitude in decimal degrees.  
      */
     public void setULLon(float value) {
-	setLon(value);
+        setLon(value);
     }
 
     /**
@@ -437,7 +437,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @return longitude in decimal degrees.
      */
     public float getULLon() {
-	return getLon();
+        return getLon();
     }
 
     /**
@@ -447,8 +447,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      */
     public void setLRLat(float value) {
         if (lat2 == value) return;
-	lat2 = value;
-	setNeedToReposition(true);
+        lat2 = value;
+        setNeedToReposition(true);
     }
 
     /**
@@ -467,8 +467,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      */
     public void setLRLon(float value) {
         if (lon2 == value) return;
-	lon2 = value;
-	setNeedToReposition(true);
+        lon2 = value;
+        setNeedToReposition(true);
     }
 
     /**
@@ -486,30 +486,30 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      */
     public void setShape() {
 
-	// generate shape that is a boundary of the generated image.
-	// We'll make it a GeneralPath rectangle.
-	int w = point2.x - point1.x;
-	int h = point2.y - point1.y;
+        // generate shape that is a boundary of the generated image.
+        // We'll make it a GeneralPath rectangle.
+        int w = point2.x - point1.x;
+        int h = point2.y - point1.y;
 
-	shape = createBoxShape(point1.x, point1.y, w, h);
+        shape = createBoxShape(point1.x, point1.y, w, h);
     }
 
     public boolean isOnMap(Projection proj) {
-	Point p1 = proj.forward(lat, lon);
-	Point p2 = proj.forward(lat2, lon2);
-	int h = (int)(p2.getY() - p1.getY());
-	int w = (int)(p2.getX() - p1.getX());
+        Point p1 = proj.forward(lat, lon);
+        Point p2 = proj.forward(lat2, lon2);
+        int h = (int)(p2.getY() - p1.getY());
+        int w = (int)(p2.getX() - p1.getX());
 
-	Rectangle imageRect = new Rectangle((int)p1.getX(), (int)p1.getY(), w, h);
+        Rectangle imageRect = new Rectangle((int)p1.getX(), (int)p1.getY(), w, h);
 
-	proj.forward(proj.getUpperLeft(), p1);
-	proj.forward(proj.getLowerRight(), p2);
-	h = (int)(p2.getY() - p1.getY());
-	w = (int)(p2.getX() - p1.getX());
+        proj.forward(proj.getUpperLeft(), p1);
+        proj.forward(proj.getLowerRight(), p2);
+        h = (int)(p2.getY() - p1.getY());
+        w = (int)(p2.getX() - p1.getX());
 
-	Rectangle mapRect = new Rectangle((int)p1.getX(), (int)p1.getY(), w, h);
-	
-	return mapRect.intersects(imageRect);
+        Rectangle mapRect = new Rectangle((int)p1.getX(), (int)p1.getY(), w, h);
+        
+        return mapRect.intersects(imageRect);
     }
 
 }

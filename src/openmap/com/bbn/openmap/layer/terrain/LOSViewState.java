@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/LOSViewState.java,v $
 // $RCSfile: LOSViewState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,17 +34,17 @@ class LOSViewState extends State{
     protected LOSGenerator LOSTool;
 
     public LOSViewState(LOSGenerator tool){
-	LOSTool = tool;
+        LOSTool = tool;
     }
 
     public void actionPerformed(ActionEvent e){
-	String ac = e.getActionCommand();
-	if (ac.equalsIgnoreCase(TerrainLayer.createCommand)){
-	    LOSTool.doImage();
-	}
-	else if (ac.equalsIgnoreCase(TerrainLayer.clearCommand)){
-	    LOSTool.reset();
-	}
+        String ac = e.getActionCommand();
+        if (ac.equalsIgnoreCase(TerrainLayer.createCommand)){
+            LOSTool.doImage();
+        }
+        else if (ac.equalsIgnoreCase(TerrainLayer.clearCommand)){
+            LOSTool.reset();
+        }
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/TestResponsePolicy.java,v $
 // $RCSfile: TestResponsePolicy.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/10 15:47:30 $
+// $Revision: 1.5 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,75 +41,75 @@ public class TestResponsePolicy implements GestureResponsePolicy {
     ////// Queries
 
     public boolean isHighlightable(OMGraphic omg) {
-	Debug.output("isHighlightable(" + omg.getClass().getName() + ")");
-	return true;
+        Debug.output("isHighlightable(" + omg.getClass().getName() + ")");
+        return true;
     }
 
     public boolean isSelectable(OMGraphic omg) {
-	Debug.output("isSelectable(" + omg.getClass().getName() + ")");
-	return true;
+        Debug.output("isSelectable(" + omg.getClass().getName() + ")");
+        return true;
     }
 
     public OMGraphicList getSelected() {
-	Debug.output("getSelected()");
-	return selected;
+        Debug.output("getSelected()");
+        return selected;
     }
 
     ////// Reactions
  
     /** Fleeting change of appearance. */
     public void highlight(OMGraphic omg) {
-	Debug.output("highlight(" + omg.getClass().getName() + ")");
+        Debug.output("highlight(" + omg.getClass().getName() + ")");
     }
 
     public void unhighlight(OMGraphic omg) {
-	Debug.output("unhighlight(" + omg.getClass().getName() + ")");
+        Debug.output("unhighlight(" + omg.getClass().getName() + ")");
     }
 
    public void select(OMGraphicList omgl) {
-	Debug.output("select(" + omgl.getDescription() + ")");
-	selected = omgl;
+        Debug.output("select(" + omgl.getDescription() + ")");
+        selected = omgl;
     }
 
     public void deselect(OMGraphicList omgl) {
-	Debug.output("deselect(" + omgl.getDescription() + ")");
-	selected = null;
+        Debug.output("deselect(" + omgl.getDescription() + ")");
+        selected = null;
     }
 
     public OMGraphicList cut(OMGraphicList omgl) {
-	Debug.output("cut(" + omgl.getDescription() + ")");
-	return omgl;
+        Debug.output("cut(" + omgl.getDescription() + ")");
+        return omgl;
     }
 
     public OMGraphicList copy(OMGraphicList omgl) {
-	Debug.output("copy(" + omgl.getDescription() + ")");
-	return omgl;
+        Debug.output("copy(" + omgl.getDescription() + ")");
+        return omgl;
     }
 
     public void paste(OMGraphicList omgl) {
-	Debug.output("paste(" + omgl.getDescription() + ")");
+        Debug.output("paste(" + omgl.getDescription() + ")");
     }
 
     public String getInfoText(OMGraphic omg) {
-	Debug.output("getInfoTextFor(" + omg.getClass().getName() + ")");
-	return omg.getClass().getName();
+        Debug.output("getInfoTextFor(" + omg.getClass().getName() + ")");
+        return omg.getClass().getName();
     }
 
     public String getToolTipTextFor(OMGraphic omg) {
-	Debug.output("getToolTipTextFor(" + omg.getClass().getName() + ")");
-	return "TextResponsePolicy ToolTipText";
+        Debug.output("getToolTipTextFor(" + omg.getClass().getName() + ")");
+        return "TextResponsePolicy ToolTipText";
     }
 
     public List getItemsForMapMenu() {
-	Debug.output("getMenuForMap(MAP)");
-	return null;
+        Debug.output("getMenuForMap(MAP)");
+        return null;
     }
 
     public List getItemsForOMGraphicMenu(OMGraphic omg) {
-	Debug.output("getMenuFor(" + omg.getClass().getName() + ")");
-	List list = new LinkedList();
-	list.add(new JMenuItem(omg.getClass().getName()));
-	return list;
+        Debug.output("getMenuFor(" + omg.getClass().getName() + ")");
+        List list = new LinkedList();
+        list.add(new JMenuItem(omg.getClass().getName()));
+        return list;
     }
 
 }

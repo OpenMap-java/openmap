@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolPart.java,v $
 // $RCSfile: SymbolPart.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/12/18 23:37:49 $
+// $Revision: 1.8 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -105,7 +105,7 @@ public class SymbolPart {
     public final char WILD = '*';
     
     protected SymbolPart() {
-	DEBUG = Debug.debugging("symbolpart");
+        DEBUG = Debug.debugging("symbolpart");
     }
 
     /**
@@ -128,9 +128,9 @@ public class SymbolPart {
      * SymbolPart tree.
      */
     public SymbolPart(CodePosition codePosition, String symbolCode,
-		      Properties props, SymbolPart parent) {
-	this(codePosition, symbolCode, props, parent, 
-	     codePosition.getStartIndex(), codePosition.getEndIndex(), true);
+                      Properties props, SymbolPart parent) {
+        this(codePosition, symbolCode, props, parent, 
+             codePosition.getStartIndex(), codePosition.getEndIndex(), true);
     }
 
     /**
@@ -152,89 +152,89 @@ public class SymbolPart {
      * SymbolPart tree.
      */
     public SymbolPart(CodePosition codePosition, String symbolCode,
-		      Properties props, SymbolPart parent, int start, int end, 
-		      boolean shiftIfNecessary) {
+                      Properties props, SymbolPart parent, int start, int end, 
+                      boolean shiftIfNecessary) {
 
- 	this.code = symbolCode.substring(start, end);
-	this.codePosition = codePosition;
+        this.code = symbolCode.substring(start, end);
+        this.codePosition = codePosition;
 
-	// For OptionPositions, we need to have a version where the
-	// start and end aren't used for parsing, because the
-	// properties are especially designed for them.  We just need
-	// the indexes for placement into the symbol code later.  The
-	// new code just needs to read symbolCode from the beginning
-	// for the length between the indexes.
+        // For OptionPositions, we need to have a version where the
+        // start and end aren't used for parsing, because the
+        // properties are especially designed for them.  We just need
+        // the indexes for placement into the symbol code later.  The
+        // new code just needs to read symbolCode from the beginning
+        // for the length between the indexes.
 
-	boolean debug = DEBUG;
+        boolean debug = DEBUG;
 
-	// This corrects the situation where the symbol code is
-	// shorter in the specification than it would seem
-	// appropriate for its place in the hierarchy.
-	while (code.charAt(0) == UNUSED && start > 1 && shiftIfNecessary) {
-	    code = symbolCode.substring(--start, end);
-	    this.positionShift--;
-	}
+        // This corrects the situation where the symbol code is
+        // shorter in the specification than it would seem
+        // appropriate for its place in the hierarchy.
+        while (code.charAt(0) == UNUSED && start > 1 && shiftIfNecessary) {
+            code = symbolCode.substring(--start, end);
+            this.positionShift--;
+        }
 
-	this.prettyName = props.getProperty(symbolCode + "." + NameProperty);
-	this.cgmName = props.getProperty(symbolCode + "." + CGMProperty);
-	this.parent = parent;
+        this.prettyName = props.getProperty(symbolCode + "." + NameProperty);
+        this.cgmName = props.getProperty(symbolCode + "." + CGMProperty);
+        this.parent = parent;
 
-	String sc = getSymbolCode();
+        String sc = getSymbolCode();
 
-	if (Debug.debugging("errors") && !symbolCode.equals(sc)) {
-	    debug = true;
-	}
+        if (Debug.debugging("errors") && !symbolCode.equals(sc)) {
+            debug = true;
+        }
 
-	if (debug) {
-	    Debug.output("SymbolPart(" + codePosition.getPrettyName() + 
-			 "): read " + start +
-			 " of [" + symbolCode + 
-			 "] as [" + sc +
-			 "] : " + this.prettyName + 
-			 " (" + code + ")");
-	}
+        if (debug) {
+            Debug.output("SymbolPart(" + codePosition.getPrettyName() + 
+                         "): read " + start +
+                         " of [" + symbolCode + 
+                         "] as [" + sc +
+                         "] : " + this.prettyName + 
+                         " (" + code + ")");
+        }
     }
 
     /**
      * Sets the part of the SymbolCode that is unique to this SymbolPart.
      */
     public void setCode(String c) {
-	code = c;
+        code = c;
     }
 
     /**
      * Gets the part of the SymbolCode that is unique to this SymbolPart.
      */
     public String getCode() {
-	return code;
+        return code;
     }
    
     /**
      * Sets the descriptive name if this SymbolPart.
      */
     public void setPrettyName(String pn) {
-	prettyName = pn;
+        prettyName = pn;
     }
 
     /**
      * Sets the descriptive name if this SymbolPart.
      */
     public String getPrettyName() {
-	return prettyName;
+        return prettyName;
     }
 
     /**
      * Sets the SymbolPart's parent in the SymbolPart tree.
      */
     public void setParent(SymbolPart par) {
-	parent = par;
+        parent = par;
     }
 
     /**
      * Retrieves the SymbolPart's parent in the SymbolPart tree.
      */
     public SymbolPart getParent() {
-	return parent;
+        return parent;
     }
 
     /**
@@ -242,7 +242,7 @@ public class SymbolPart {
      * representations of what this SymbolPart represents.
      */
     public void setSubs(List set) {
-	subs = set;
+        subs = set;
     }
 
     /**
@@ -250,7 +250,7 @@ public class SymbolPart {
      * representations of what this SymbolPart represents.
      */
     public List getSubs() {
-	return subs;
+        return subs;
     }
 
     /**
@@ -258,8 +258,8 @@ public class SymbolPart {
      * including the 15 digit code and the pretty name.
      */
     public String toString() {
-// 	return " [" + getSymbolCode() + "] " + prettyName;
-	return prettyName;
+//      return " [" + getSymbolCode() + "] " + prettyName;
+        return prettyName;
     }
 
     /**
@@ -267,43 +267,43 @@ public class SymbolPart {
      * how all the SymbolParts are connected.
      */
     public String getDescription(int level) {
-	StringBuffer sb = new StringBuffer();
-	String indicator = "|--> ";
-	if (level > 0) {
-	    sb.append(indicator);
-	}
+        StringBuffer sb = new StringBuffer();
+        String indicator = "|--> ";
+        if (level > 0) {
+            sb.append(indicator);
+        }
 
-	List subs = getSubs();
-	int subSize = 0;
-	if (subs != null) {
-	    subSize = subs.size();
-	}
+        List subs = getSubs();
+        int subSize = 0;
+        if (subs != null) {
+            subSize = subs.size();
+        }
 
-	sb.append(toString());
-	if (subSize > 0) {
-	    sb.append (" with " + subSize + " subcategor" + 
-		       (subSize == 1?"y\n":"ies\n"));
-	} else {
-	    sb.append("\n");
-	}
+        sb.append(toString());
+        if (subSize > 0) {
+            sb.append (" with " + subSize + " subcategor" + 
+                       (subSize == 1?"y\n":"ies\n"));
+        } else {
+            sb.append("\n");
+        }
 
-	if (subs != null) {
-	    synchronized (this) {
-		StringBuffer sb1 = new StringBuffer();
+        if (subs != null) {
+            synchronized (this) {
+                StringBuffer sb1 = new StringBuffer();
 
-		for (int i = 0; i < level; i++) {
-		    sb1.append("     ");
-		}
+                for (int i = 0; i < level; i++) {
+                    sb1.append("     ");
+                }
 
-		String spacer = sb1.toString();
-	
-		for (Iterator it = subs.iterator();it.hasNext();) {
-		    sb.append(spacer + ((SymbolPart)it.next()).getDescription(level+1));
-		}
-	    }
-	}
+                String spacer = sb1.toString();
+        
+                for (Iterator it = subs.iterator();it.hasNext();) {
+                    sb.append(spacer + ((SymbolPart)it.next()).getDescription(level+1));
+                }
+            }
+        }
 
-	return sb.toString();
+        return sb.toString();
     }
     
     /**
@@ -311,7 +311,7 @@ public class SymbolPart {
      * SymbolPart being the top of the tree.
      */
     public String getDescription() {
-	return getDescription(0);
+        return getDescription(0);
     }
 
     /**
@@ -320,7 +320,7 @@ public class SymbolPart {
      * it's parents to contribute their part of the code as well.
      */
     public String getSymbolCode() {
-	return getSymbolCode(null).toString();
+        return getSymbolCode(null).toString();
     }
 
     /**
@@ -329,7 +329,7 @@ public class SymbolPart {
      * getSymbolCode() string.
      */
     public StringBuffer getSymbolCodeMask() {
-	return new StringBuffer(DEFAULT_SYMBOL_CODE);
+        return new StringBuffer(DEFAULT_SYMBOL_CODE);
     }
 
     /**
@@ -338,47 +338,47 @@ public class SymbolPart {
      */
     protected StringBuffer getSymbolCode(StringBuffer symbolCode) {
 
-	if (codePosition instanceof CodeScheme) {
-	    symbolCode = ((CodeScheme)codePosition).getDefaultSymbolCode();
-	} else if (parent != null) {
-	    symbolCode = parent.getSymbolCode(symbolCode);
-	} else {
-	    symbolCode = getSymbolCodeMask();
-	}
+        if (codePosition instanceof CodeScheme) {
+            symbolCode = ((CodeScheme)codePosition).getDefaultSymbolCode();
+        } else if (parent != null) {
+            symbolCode = parent.getSymbolCode(symbolCode);
+        } else {
+            symbolCode = getSymbolCodeMask();
+        }
 
-	if (codePosition != null) {
-	    int key = codePosition.getStartIndex() + positionShift;
-	    symbolCode = symbolCode.replace(key, codePosition.getEndIndex(), code);
-	}
+        if (codePosition != null) {
+            int key = codePosition.getStartIndex() + positionShift;
+            symbolCode = symbolCode.replace(key, codePosition.getEndIndex(), code);
+        }
 
-	return symbolCode;
+        return symbolCode;
     }
 
     public CodePosition getCodePosition() {
-	return codePosition;
+        return codePosition;
     }
 
     public CodeOptions getCodeOptions() {
-	CodeScheme cs = getCodeScheme();
-	if (cs != null) {
-	    return cs.getCodeOptions(this);
-	} else {
-	    return null;
-	}
+        CodeScheme cs = getCodeScheme();
+        if (cs != null) {
+            return cs.getCodeOptions(this);
+        } else {
+            return null;
+        }
     }
 
     public CodeScheme getCodeScheme() {
-	CodeScheme cs = null;
-	if (codePosition instanceof CodeScheme) {
-	    cs = (CodeScheme)codePosition;
-	} else if (parent != null) {
-	    cs = parent.getCodeScheme();
-	}
-	return null;
+        CodeScheme cs = null;
+        if (codePosition instanceof CodeScheme) {
+            cs = (CodeScheme)codePosition;
+        } else if (parent != null) {
+            cs = parent.getCodeScheme();
+        }
+        return null;
     }
 
     public void paintIcon(Graphics2D g, CodeOptions co, Dimension di) {
-	
+        
 
     }
 

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMComponentPanel.java,v $
 // $RCSfile: OMComponentPanel.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 20:47:46 $
-// $Author: wjeuerle $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -56,17 +56,17 @@ public abstract class OMComponentPanel extends JPanel
     protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
 
     protected OMComponentPanel() {
-	super();
+        super();
     }
 
     protected WindowSupport windowSupport;
 
     public void setWindowSupport(WindowSupport ws) {
-	windowSupport = ws;
+        windowSupport = ws;
     }
 
     public WindowSupport getWindowSupport() {
-	return windowSupport;
+        return windowSupport;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ public abstract class OMComponentPanel extends JPanel
      * @param props the <code>Properties</code> object.
      */
     public void setProperties(java.util.Properties props) {
-	setProperties(getPropertyPrefix(), props);
+        setProperties(getPropertyPrefix(), props);
     }
 
     /**
@@ -93,9 +93,9 @@ public abstract class OMComponentPanel extends JPanel
      * @param props the <code>Properties</code> object
      */
     public void setProperties(String prefix, java.util.Properties props) {
-	setPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
 
-//  	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+//      String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
     }
 
     /**
@@ -114,13 +114,13 @@ public abstract class OMComponentPanel extends JPanel
      * PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-//  	String prefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
+//      String prefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
 
-	return props;
+        return props;
     }
 
     /**
@@ -142,10 +142,10 @@ public abstract class OMComponentPanel extends JPanel
      * PropertyConsumer. 
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
-	return list;
+        if (list == null) {
+            list = new Properties();
+        }
+        return list;
     }
 
     /**
@@ -156,7 +156,7 @@ public abstract class OMComponentPanel extends JPanel
      * @param prefix the prefix String.  
      */
     public void setPropertyPrefix(String prefix) {
-	propertyPrefix = prefix;
+        propertyPrefix = prefix;
     }
 
     /**
@@ -166,7 +166,7 @@ public abstract class OMComponentPanel extends JPanel
      * @return the property prefix for the panel
      */
     public String getPropertyPrefix() {
-	return propertyPrefix;
+        return propertyPrefix;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -189,9 +189,9 @@ public abstract class OMComponentPanel extends JPanel
      * Find the ones you need, and hook yourself up.
      */
     public void findAndInit(Iterator it) {
-	while (it.hasNext()) {
-	    findAndInit(it.next());
-	}
+        while (it.hasNext()) {
+            findAndInit(it.next());
+        }
     }
 
     /**
@@ -199,7 +199,7 @@ public abstract class OMComponentPanel extends JPanel
      * is added to the BeanContext of this object.  
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
-	findAndInit(bcme.iterator());      
+        findAndInit(bcme.iterator());      
     }
     
     /**
@@ -211,15 +211,15 @@ public abstract class OMComponentPanel extends JPanel
      * in those methods.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-	Iterator it = bcme.iterator();
-	while (it.hasNext()) {
-	    findAndUndo(it.next());
-	}
+        Iterator it = bcme.iterator();
+        while (it.hasNext()) {
+            findAndUndo(it.next());
+        }
     }
 
     /** Method for BeanContextChild interface. */
     public BeanContext getBeanContext() {
-	return beanContextChildSupport.getBeanContext();
+        return beanContextChildSupport.getBeanContext();
     }
   
     /**
@@ -229,13 +229,13 @@ public abstract class OMComponentPanel extends JPanel
      * objects currently contained in the BeanContext.  
      */
     public void setBeanContext(BeanContext in_bc) 
-	throws PropertyVetoException {
+        throws PropertyVetoException {
 
-	if (in_bc != null) {
-	    in_bc.addBeanContextMembershipListener(this);
-	    beanContextChildSupport.setBeanContext(in_bc);
-	    findAndInit(in_bc.iterator());
-	}
+        if (in_bc != null) {
+            in_bc.addBeanContextMembershipListener(this);
+            beanContextChildSupport.setBeanContext(in_bc);
+            findAndInit(in_bc.iterator());
+        }
     }
   
     /**
@@ -245,8 +245,8 @@ public abstract class OMComponentPanel extends JPanel
      * property change.
      */
     public void addVetoableChangeListener(String propertyName,
-					  VetoableChangeListener in_vcl) {
-	beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
+                                          VetoableChangeListener in_vcl) {
+        beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
     }
   
     /**
@@ -255,8 +255,8 @@ public abstract class OMComponentPanel extends JPanel
      * property.  The listener has the power to veto property changes.
      */
     public void removeVetoableChangeListener(String propertyName, 
-					     VetoableChangeListener in_vcl) {
-	beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
+                                             VetoableChangeListener in_vcl) {
+        beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
     }
 
     /**
@@ -277,10 +277,10 @@ public abstract class OMComponentPanel extends JPanel
      * change to be rolled back.
      */
     public void fireVetoableChange(String name, 
-				   Object oldValue, 
-				   Object newValue) 
-	throws PropertyVetoException {
-	super.fireVetoableChange(name, oldValue, newValue);
-	beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
+                                   Object oldValue, 
+                                   Object newValue) 
+        throws PropertyVetoException {
+        super.fireVetoableChange(name, oldValue, newValue);
+        beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
     }
 }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoordFloatString.java,v $
 // $RCSfile: CoordFloatString.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/16 14:23:43 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:11 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -47,84 +47,84 @@ public class CoordFloatString {
      * @exception FormatException if we have IO errors or premature end-of-file
      */
     public CoordFloatString(int tuplecount, int tuplesize, BinaryFile input)
-	throws FormatException {
-	tcount = tuplecount;
-	tsize = tuplesize;
-	int totallen = tcount * tsize;
-	vals = new float[totallen];
-	try {
-	    input.readFloatArray(vals, 0, totallen);
-	} catch (EOFException e) {
-	    throw new FormatException("CoordFloatString EOFException");
-	}
+        throws FormatException {
+        tcount = tuplecount;
+        tsize = tuplesize;
+        int totallen = tcount * tsize;
+        vals = new float[totallen];
+        try {
+            input.readFloatArray(vals, 0, totallen);
+        } catch (EOFException e) {
+            throw new FormatException("CoordFloatString EOFException");
+        }
     }
 
     /** The maximum indexable tuple value
      * @return the maximum valid tuple index */
     public int maxIndex() {
-	return tcount;
+        return tcount;
     }
 
     /** A pretty formatter for the floatstring
      * @return a pretty string of the tuple */
     public String toString() {
         boolean singleCoord = (vals.length == tsize);
-	StringBuffer retval = new StringBuffer(singleCoord ? "" : "CFS:");
-	if (!singleCoord) { 
-	  retval.append(tcount).append("[");
-	}
+        StringBuffer retval = new StringBuffer(singleCoord ? "" : "CFS:");
+        if (!singleCoord) { 
+          retval.append(tcount).append("[");
+        }
 
-	if (vals.length > 0) {
-	    retval.append("(").append(vals[0]);
-	    for (int j=1; j < tsize; j++) {
-		retval.append(", ").append(vals[j]);
-	    }
-	    retval.append(")");
-	}
-	if (vals.length > tsize) {
-	    retval.append(" ... (").append(vals[vals.length-tsize]);
-	    for (int j=tsize-1; j > 0; j--) {
-		retval.append(", ").append(vals[vals.length-j]);
-	    }
-	    retval.append(")");
-	}
+        if (vals.length > 0) {
+            retval.append("(").append(vals[0]);
+            for (int j=1; j < tsize; j++) {
+                retval.append(", ").append(vals[j]);
+            }
+            retval.append(")");
+        }
+        if (vals.length > tsize) {
+            retval.append(" ... (").append(vals[vals.length-tsize]);
+            for (int j=tsize-1; j > 0; j--) {
+                retval.append(", ").append(vals[vals.length-j]);
+            }
+            retval.append(")");
+        }
 
-	if (!singleCoord) {
-	  retval.append("]");
-	}
-	return retval.toString();
+        if (!singleCoord) {
+          retval.append("]");
+        }
+        return retval.toString();
     }
  
     /** Get the first value of a tuple
      * @param tuple the index of the tuple
      * @return the first value of the tuple given by <code>tuple</code> */
     public float getXasFloat(int tuple) {
-	return vals[tuple*tsize];
+        return vals[tuple*tsize];
     }
 
     /** Get the second value of a tuple
      * @param tuple the index of the tuple
      * @return the second value of the tuple given by <code>tuple</code> */
     public float getYasFloat(int tuple) {
-	return vals[tuple*tsize+1];
+        return vals[tuple*tsize+1];
     }
   
     /** Get the third value of a tuple
      * @param tuple the index of the tuple
      * @return the third value of the tuple given by <code>tuple</code> */
     public float getZasFloat(int tuple) {
-	return vals[tuple*tsize+2];
+        return vals[tuple*tsize+2];
     }
 
     /** Get a tuple
      * @param tuple the index of the tuple
      * @return the tuple given by <code>tuple</code> */
     public float[] getasFloatV(int tuple) {
-	float rv[] = new float[tsize];
-	for (int i = 0 ; i < tsize; i++) {
-	    rv[i] = vals[tsize * tuple + i];
-	}
-	return rv;
+        float rv[] = new float[tsize];
+        for (int i = 0 ; i < tsize; i++) {
+            rv[i] = vals[tsize * tuple + i];
+        }
+        return rv;
     }
 
     /** Get a value in a tuple
@@ -132,7 +132,7 @@ public class CoordFloatString {
      * @param val the index of the value
      * @return the tuple given by <code>tuple</code> */
     public float getasFloat(int tuple, int val) {
-	return vals[tuple*tsize + val];
+        return vals[tuple*tsize + val];
     }
 
 }

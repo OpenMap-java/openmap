@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMPolyLoader.java,v $
 // $RCSfile: OMPolyLoader.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,19 +40,19 @@ public class OMPolyLoader extends AbstractToolLoader
     protected String labeledClassName = "com.bbn.openmap.omGraphics.labeled.LabeledOMPoly";
 
     public OMPolyLoader() {
-	init();
+        init();
     }
 
     public void init() {
-	EditClassWrapper ecw = 
-	    new EditClassWrapper(graphicClassName,
-				 "com.bbn.openmap.omGraphics.EditableOMPoly",
-				 "editablepoly.gif",
-				 "Polygons/Polylines");
-	addEditClassWrapper(ecw);
+        EditClassWrapper ecw = 
+            new EditClassWrapper(graphicClassName,
+                                 "com.bbn.openmap.omGraphics.EditableOMPoly",
+                                 "editablepoly.gif",
+                                 "Polygons/Polylines");
+        addEditClassWrapper(ecw);
 
-	// A class wrapper isn't added here for the LabeledOMPoly
-	// because currently they are only created programmatically.
+        // A class wrapper isn't added here for the LabeledOMPoly
+        // because currently they are only created programmatically.
     }
 
     /**
@@ -62,14 +62,14 @@ public class OMPolyLoader extends AbstractToolLoader
      * like poly type and rendertype.
      */
     public EditableOMGraphic getEditableGraphic(String classname, 
-						GraphicAttributes ga) {
-	if (classname.intern() == graphicClassName) {
-	    return new EditableOMPoly(ga);
-	}
-	if (classname.intern() == labeledClassName) {
-	    return new EditableLabeledOMPoly(ga);
-	}
-	return null;
+                                                GraphicAttributes ga) {
+        if (classname.intern() == graphicClassName) {
+            return new EditableOMPoly(ga);
+        }
+        if (classname.intern() == labeledClassName) {
+            return new EditableLabeledOMPoly(ga);
+        }
+        return null;
     }
 
     /**
@@ -77,9 +77,9 @@ public class OMPolyLoader extends AbstractToolLoader
      * EditableOMGraphic for it.
      */
     public EditableOMGraphic getEditableGraphic(OMGraphic graphic) {
-	if (graphic instanceof OMPoly) {
-	    return new EditableOMPoly((OMPoly)graphic);
-	}
-	return null;
+        if (graphic instanceof OMPoly) {
+            return new EditableOMPoly((OMPoly)graphic);
+        }
+        return null;
     }
 }

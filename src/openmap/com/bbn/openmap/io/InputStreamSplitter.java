@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/InputStreamSplitter.java,v $
 // $RCSfile: InputStreamSplitter.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,8 +47,8 @@ public class InputStreamSplitter extends FilterInputStream {
      * @param   out  the output stream
      */
     public InputStreamSplitter(InputStream in, OutputStream out) {
-	super(in);
-	this.out = out;
+        super(in);
+        this.out = out;
     }
 
     /**
@@ -64,10 +64,10 @@ public class InputStreamSplitter extends FilterInputStream {
      * @exception  IOException  if an I/O error occurs.
      */
     public int read() throws IOException {
-	final int i = super.read();
-	if (i >= 0)
-	    out.write(i);
-	return i;
+        final int i = super.read();
+        if (i >= 0)
+            out.write(i);
+        return i;
     }
 
     /**
@@ -83,10 +83,10 @@ public class InputStreamSplitter extends FilterInputStream {
      * @see        #read(byte[], int, int)
      */
     public int read(byte b[]) throws IOException {
-	final int i = super.read(b);
-	if (i >= 0)
-	    out.write(b, 0, i);
-	return i;
+        final int i = super.read(b);
+        if (i >= 0)
+            out.write(b, 0, i);
+        return i;
     }
 
     /**
@@ -103,10 +103,10 @@ public class InputStreamSplitter extends FilterInputStream {
      * @exception  IOException  if an I/O error occurs.
      */
     public int read(byte b[], int off, int len) throws IOException {
-	final int i = super.read(b, off, len);
-	if (i >= 0)
-	    out.write(b, off, i);
-	return i;
+        final int i = super.read(b, off, len);
+        if (i >= 0)
+            out.write(b, off, i);
+        return i;
     }
 
     /**
@@ -115,8 +115,8 @@ public class InputStreamSplitter extends FilterInputStream {
      * @exception  IOException  if an I/O error occurs.
      */
     public void close() throws IOException {
-	super.close();
-	out.close();
+        super.close();
+        out.close();
     }
 
     /**
@@ -124,6 +124,6 @@ public class InputStreamSplitter extends FilterInputStream {
      * @exception  IOException  if an I/O error occurs.
      */
     public void flush() throws IOException {
-	out.flush();
+        out.flush();
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFileSections.java,v $
 // $RCSfile: RpfFileSections.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -102,51 +102,51 @@ public class RpfFileSections {
      * @param binFile the binaryFile of the RPF frame file.
      */
     public RpfFileSections(BinaryFile binFile) {
-	parse(binFile);
+        parse(binFile);
     }
     
     public void parse(BinaryFile binFile) {
-	DEBUG_RPFDETAIL = Debug.debugging("rpfdetail");
-	// Location section
-	parseLocationSection(binFile);
+        DEBUG_RPFDETAIL = Debug.debugging("rpfdetail");
+        // Location section
+        parseLocationSection(binFile);
     }
 
     public RpfLocationRecord[] getLocations(int key) {
 
-	if (locationRecords == null) return null;
+        if (locationRecords == null) return null;
 
-	RpfLocationRecord[] locations = new RpfLocationRecord[key];
-	int[] ids = new int[key];
-	
-	switch (key) {
-	case TOC_LOCATION_KEY:
-	    ids[0] = LOC_BOUNDARY_SECTION_SUBHEADER;  /* 148 */
-	    ids[1] = LOC_BOUNDARY_RECTANGLE_TABLE;  /* 149 */
-	    ids[2] = LOC_FRAME_FILE_INDEX_SUBHEADER;  /* 150 */
-	    ids[3] = LOC_FRAME_FILE_INDEX_SUBSECTION;  /* 151 */
-	    break;
-	case FRAME_LOCATION_KEY:
-	    ids[0] = LOC_COMPRESSION_SECTION; /* 131 */
-	    ids[1] = LOC_IMAGE_DESCR_SUBHEADER; /* 136 */
-	    ids[2] = LOC_COMPRESSION_LOOKUP_SUBSECTION; /* 132 */
-	    ids[3] = LOC_SPATIAL_DATA_SUBSECTION; /* 140 */
-	    ids[4] = LOC_IMAGE_DISPLAY_PARAM_SUBHEADER; /* 137 */
-	    ids[5] = LOC_MASK_SUBSECTION; /* 138 */
-	    ids[6] = LOC_ATTRIBUTE_SECTION_SUBHEADER; /* 141 */
-	    ids[7] = LOC_ATTRIBUTE_SUBSECTION; /* 142 */
-	    break;
-	case COLOR_LOCATION_KEY:
-	    ids[0] = LOC_COLORGRAY_SECTION_SUBHEADER;   /* 134 */
-	    ids[1] = LOC_COLORMAP_SUBSECTION;  /* 135 */
-	    ids[2] = LOC_COLOR_CONVERTER_SUBSECTION;  /* 139 */
-	    break;
-	default:
-	}
-	
-	for (int i = 0; i < key; i++)
-	    locations[i] = getRpfLocationRecord(ids[i]);
-	
-	return locations;
+        RpfLocationRecord[] locations = new RpfLocationRecord[key];
+        int[] ids = new int[key];
+        
+        switch (key) {
+        case TOC_LOCATION_KEY:
+            ids[0] = LOC_BOUNDARY_SECTION_SUBHEADER;  /* 148 */
+            ids[1] = LOC_BOUNDARY_RECTANGLE_TABLE;  /* 149 */
+            ids[2] = LOC_FRAME_FILE_INDEX_SUBHEADER;  /* 150 */
+            ids[3] = LOC_FRAME_FILE_INDEX_SUBSECTION;  /* 151 */
+            break;
+        case FRAME_LOCATION_KEY:
+            ids[0] = LOC_COMPRESSION_SECTION; /* 131 */
+            ids[1] = LOC_IMAGE_DESCR_SUBHEADER; /* 136 */
+            ids[2] = LOC_COMPRESSION_LOOKUP_SUBSECTION; /* 132 */
+            ids[3] = LOC_SPATIAL_DATA_SUBSECTION; /* 140 */
+            ids[4] = LOC_IMAGE_DISPLAY_PARAM_SUBHEADER; /* 137 */
+            ids[5] = LOC_MASK_SUBSECTION; /* 138 */
+            ids[6] = LOC_ATTRIBUTE_SECTION_SUBHEADER; /* 141 */
+            ids[7] = LOC_ATTRIBUTE_SUBSECTION; /* 142 */
+            break;
+        case COLOR_LOCATION_KEY:
+            ids[0] = LOC_COLORGRAY_SECTION_SUBHEADER;   /* 134 */
+            ids[1] = LOC_COLORMAP_SUBSECTION;  /* 135 */
+            ids[2] = LOC_COLOR_CONVERTER_SUBSECTION;  /* 139 */
+            break;
+        default:
+        }
+        
+        for (int i = 0; i < key; i++)
+            locations[i] = getRpfLocationRecord(ids[i]);
+        
+        return locations;
     }
 
 
@@ -156,14 +156,14 @@ public class RpfFileSections {
      * this file.
      */
     public RpfLocationRecord getRpfLocationRecord(int locationRecordId) {
-	if (locationRecords != null) {
-	    for (int i = 0; i < locationRecords.length; i++) {
-		if (locationRecordId == locationRecords[i].id) {
-		    return locationRecords[i];
-		}
-	    }
-	}
-	return null;
+        if (locationRecords != null) {
+            for (int i = 0; i < locationRecords.length; i++) {
+                if (locationRecordId == locationRecords[i].id) {
+                    return locationRecords[i];
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -175,44 +175,44 @@ public class RpfFileSections {
      */
     protected boolean parseLocationSection(BinaryFile binFile) {
 
-	locationSection = new RpfLocationSection();
+        locationSection = new RpfLocationSection();
 
-	try {
-	    locationSection.length = (int) binFile.readShort();
-	    locationSection.tableOffset = (long) binFile.readInteger();
-	    locationSection.numberRecords = (int) binFile.readShort();
-	    locationSection.recordLength = (int) binFile.readShort();
-	    locationSection.aggregateLength = (long) binFile.readInteger();
-	    
-	    if (DEBUG_RPFDETAIL) {
-		Debug.output(locationSection.toString());
-	    }
+        try {
+            locationSection.length = (int) binFile.readShort();
+            locationSection.tableOffset = (long) binFile.readInteger();
+            locationSection.numberRecords = (int) binFile.readShort();
+            locationSection.recordLength = (int) binFile.readShort();
+            locationSection.aggregateLength = (long) binFile.readInteger();
+            
+            if (DEBUG_RPFDETAIL) {
+                Debug.output(locationSection.toString());
+            }
 
-	    locationRecords = new RpfLocationRecord[locationSection.numberRecords];
+            locationRecords = new RpfLocationRecord[locationSection.numberRecords];
 
-	    // Now go find the ones we want 
-	    for (int i = 0; i < locationSection.numberRecords; i++)
-	    {
-		locationRecords[i] = new RpfLocationRecord();
-		locationRecords[i].id = binFile.readShort();
-		locationRecords[i].componentLength = (long) binFile.readInteger();
-		locationRecords[i].componentLocation = (long) (binFile.readInteger());
+            // Now go find the ones we want 
+            for (int i = 0; i < locationSection.numberRecords; i++)
+            {
+                locationRecords[i] = new RpfLocationRecord();
+                locationRecords[i].id = binFile.readShort();
+                locationRecords[i].componentLength = (long) binFile.readInteger();
+                locationRecords[i].componentLocation = (long) (binFile.readInteger());
 
-		if (DEBUG_RPFDETAIL) {
-		    Debug.output("** record " + i + ": " + locationRecords[i].toString());
-		}
+                if (DEBUG_RPFDETAIL) {
+                    Debug.output("** record " + i + ": " + locationRecords[i].toString());
+                }
 
-	    }
-	    
-	} catch (IOException ioe) {
-	    Debug.error("RpfFileSections: IO ERROR parsing locations!\n" + ioe);
-	    return false;	    
-	} catch (FormatException fe) {
-	    Debug.error("RpfFileSections: Format ERROR parsing locations!\n" + fe);
-	    return false;
-	} 
+            }
+            
+        } catch (IOException ioe) {
+            Debug.error("RpfFileSections: IO ERROR parsing locations!\n" + ioe);
+            return false;           
+        } catch (FormatException fe) {
+            Debug.error("RpfFileSections: Format ERROR parsing locations!\n" + fe);
+            return false;
+        } 
 
-	return true;
+        return true;
     }
 
     /**
@@ -221,23 +221,23 @@ public class RpfFileSections {
      * inside the file.
      */
     public RpfCoverageSection parseCoverageSection(BinaryFile binFile) {
-	RpfLocationRecord lr = getRpfLocationRecord(LOC_COVERAGE_SECTION);
-	if (lr == null) return null;
+        RpfLocationRecord lr = getRpfLocationRecord(LOC_COVERAGE_SECTION);
+        if (lr == null) return null;
 
-	try{
-	    binFile.seek(lr.componentLocation);
+        try{
+            binFile.seek(lr.componentLocation);
 
-	    RpfCoverageSection coverage = new RpfCoverageSection();
-	    
-	    if (coverage.read(binFile)) {
-		if (DEBUG_RPFDETAIL)
-		    Debug.output(coverage.toString());
-		return coverage;
-	    }
-	} catch (IOException ioe) {
-	    Debug.error("RpfFileSections: IO ERROR parsing coverage!\n" + ioe);
-	}
-	return null;
+            RpfCoverageSection coverage = new RpfCoverageSection();
+            
+            if (coverage.read(binFile)) {
+                if (DEBUG_RPFDETAIL)
+                    Debug.output(coverage.toString());
+                return coverage;
+            }
+        } catch (IOException ioe) {
+            Debug.error("RpfFileSections: IO ERROR parsing coverage!\n" + ioe);
+        }
+        return null;
 
     }
 
@@ -247,20 +247,20 @@ public class RpfFileSections {
      * inside the file.
      */
     public RpfAttributes parseAttributes(BinaryFile binFile) {
-	RpfLocationRecord lr = getRpfLocationRecord(LOC_ATTRIBUTE_SECTION_SUBHEADER);
-	if (lr == null) {
-	    if (DEBUG_RPFDETAIL) {
-		Debug.error("RpfFileSections: attribute section not found!");
-	    }
-	    return null;
-	}
-	RpfAttributes attributes = new RpfAttributes();
-	if (attributes.read(binFile, lr.componentLocation)) {
-	    if (DEBUG_RPFDETAIL)
-		Debug.output(attributes.toString());
-	    return attributes;
-	}
-	return null;
+        RpfLocationRecord lr = getRpfLocationRecord(LOC_ATTRIBUTE_SECTION_SUBHEADER);
+        if (lr == null) {
+            if (DEBUG_RPFDETAIL) {
+                Debug.error("RpfFileSections: attribute section not found!");
+            }
+            return null;
+        }
+        RpfAttributes attributes = new RpfAttributes();
+        if (attributes.read(binFile, lr.componentLocation)) {
+            if (DEBUG_RPFDETAIL)
+                Debug.output(attributes.toString());
+            return attributes;
+        }
+        return null;
     }
     
     /**
@@ -271,100 +271,100 @@ public class RpfFileSections {
      * correctly.
      */
     public OMColor[] parseColorSection(BinaryFile binFile, RpfColortable colortable) {
-	if (locationRecords == null) return null;
-	return colortable.parseColorLookUpTable(binFile, getLocations(COLOR_LOCATION_KEY));
+        if (locationRecords == null) return null;
+        return colortable.parseColorLookUpTable(binFile, getLocations(COLOR_LOCATION_KEY));
     }
 
     static public class RpfCoverageSection {
-	public double nwlat;
-	public double nwlon;
-	public double swlat;
-	public double swlon;
-	public double nelat;
-	public double nelon;
-	public double selat;
-	public double selon;
-	public double nsVertRes;
-	public double ewHorRes;
-	public double latInterval;
-	public double lonInterval;
+        public double nwlat;
+        public double nwlon;
+        public double swlat;
+        public double swlon;
+        public double nelat;
+        public double nelon;
+        public double selat;
+        public double selon;
+        public double nsVertRes;
+        public double ewHorRes;
+        public double latInterval;
+        public double lonInterval;
 
-	public synchronized boolean read(BinaryFile binFile) {
-	    try {
+        public synchronized boolean read(BinaryFile binFile) {
+            try {
 
-		nwlat = binFile.readDouble();
-		nwlon = binFile.readDouble();
-		swlat = binFile.readDouble();
-		swlon = binFile.readDouble();
-		nelat = binFile.readDouble();
-		nelon = binFile.readDouble();
-		selat = binFile.readDouble();
-		selon = binFile.readDouble();
-		nsVertRes = binFile.readDouble();
-		ewHorRes = binFile.readDouble();
-		latInterval = binFile.readDouble();
-		lonInterval = binFile.readDouble();
-		
-	    } catch (IOException ioe) {
-		Debug.error("RpfFileSections: IO ERROR parsing coverage!\n" + ioe);
-		return false;	    
-	    } catch (FormatException fe) {
-		Debug.error("RpfFileSections: Format ERROR parsing coverage!\n" + fe);
-		return false;
-	    } 
-	    return true;
-	}
+                nwlat = binFile.readDouble();
+                nwlon = binFile.readDouble();
+                swlat = binFile.readDouble();
+                swlon = binFile.readDouble();
+                nelat = binFile.readDouble();
+                nelon = binFile.readDouble();
+                selat = binFile.readDouble();
+                selon = binFile.readDouble();
+                nsVertRes = binFile.readDouble();
+                ewHorRes = binFile.readDouble();
+                latInterval = binFile.readDouble();
+                lonInterval = binFile.readDouble();
+                
+            } catch (IOException ioe) {
+                Debug.error("RpfFileSections: IO ERROR parsing coverage!\n" + ioe);
+                return false;       
+            } catch (FormatException fe) {
+                Debug.error("RpfFileSections: Format ERROR parsing coverage!\n" + fe);
+                return false;
+            } 
+            return true;
+        }
 
-	public String toString() {
-	    StringBuffer s = new StringBuffer();
-	    s.append("Coverage Section:\n");
-	    s.append(" nwlat = " + nwlat + "\n");
-	    s.append(" nwlon = " + nwlon + "\n");
-	    s.append(" swlat = " + swlat + "\n");
-	    s.append(" swlon = " + swlon + "\n");
-	    s.append(" nelat = " + nelat + "\n");
-	    s.append(" nelon = " + nelon + "\n");
-	    s.append(" selat = " + selat + "\n");
-	    s.append(" selon = " + selon + "\n");
-	    s.append(" ns vertical resolution = " + nsVertRes + "\n");
-	    s.append(" ew horizontal resolution = " + ewHorRes + "\n");
-	    s.append(" lat interval = " + latInterval + "\n");
-	    s.append(" lon interval = " + lonInterval + "\n");
-	    return s.toString();
-	}
+        public String toString() {
+            StringBuffer s = new StringBuffer();
+            s.append("Coverage Section:\n");
+            s.append(" nwlat = " + nwlat + "\n");
+            s.append(" nwlon = " + nwlon + "\n");
+            s.append(" swlat = " + swlat + "\n");
+            s.append(" swlon = " + swlon + "\n");
+            s.append(" nelat = " + nelat + "\n");
+            s.append(" nelon = " + nelon + "\n");
+            s.append(" selat = " + selat + "\n");
+            s.append(" selon = " + selon + "\n");
+            s.append(" ns vertical resolution = " + nsVertRes + "\n");
+            s.append(" ew horizontal resolution = " + ewHorRes + "\n");
+            s.append(" lat interval = " + latInterval + "\n");
+            s.append(" lon interval = " + lonInterval + "\n");
+            return s.toString();
+        }
     }
 
     static public class RpfLocationSection {
-	public int length; // ushort
-	public long tableOffset; // ulong
-	public int numberRecords; //ushort
-	public int recordLength; //ushort
-	public long aggregateLength; //ulong
+        public int length; // ushort
+        public long tableOffset; // ulong
+        public int numberRecords; //ushort
+        public int recordLength; //ushort
+        public long aggregateLength; //ulong
 
-	public String toString() {
-	    StringBuffer s = new StringBuffer();
-	    s.append("RpfLocationSection:\n");
-	    s.append(" length = " + length + "\n");
-	    s.append(" table offset = " + tableOffset + "\n");
-	    s.append(" number of records = " + numberRecords + "\n");
-	    s.append(" record length = " + recordLength + "\n");
-	    s.append(" aggregate length = " + aggregateLength + "\n");
-	    return s.toString();
-	}
+        public String toString() {
+            StringBuffer s = new StringBuffer();
+            s.append("RpfLocationSection:\n");
+            s.append(" length = " + length + "\n");
+            s.append(" table offset = " + tableOffset + "\n");
+            s.append(" number of records = " + numberRecords + "\n");
+            s.append(" record length = " + recordLength + "\n");
+            s.append(" aggregate length = " + aggregateLength + "\n");
+            return s.toString();
+        }
     }
     
     static public class RpfLocationRecord {
-	public short id;
-	public long componentLength;
-	public long componentLocation;
+        public short id;
+        public long componentLength;
+        public long componentLocation;
 
-	public String toString() {
-	    StringBuffer s = new StringBuffer();
-	    s.append("RpfLocationRecord:\n");
-	    s.append(" id = " + id + "\n");
-	    s.append(" component length  = " + componentLength + "\n");
-	    s.append(" component location = " + componentLocation + "\n");
-	    return s.toString();
-	}
+        public String toString() {
+            StringBuffer s = new StringBuffer();
+            s.append("RpfLocationRecord:\n");
+            s.append(" id = " + id + "\n");
+            s.append(" component length  = " + componentLength + "\n");
+            s.append(" component location = " + componentLocation + "\n");
+            return s.toString();
+        }
     }
 }

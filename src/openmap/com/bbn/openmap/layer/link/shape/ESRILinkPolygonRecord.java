@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/ESRILinkPolygonRecord.java,v $
 // $RCSfile: ESRILinkPolygonRecord.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:28 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:09 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -35,12 +35,12 @@ public class ESRILinkPolygonRecord extends ESRIPolygonRecord
     implements ESRILinkRecord {
 
     public ESRILinkPolygonRecord() {
-	super();
+        super();
     }
 
     public ESRILinkPolygonRecord(byte b[], int off)
-	throws IOException{
-	super(b, off);
+        throws IOException{
+        super(b, off);
     }
 
     /**
@@ -53,21 +53,21 @@ public class ESRILinkPolygonRecord extends ESRIPolygonRecord
      * @param properties the semantic description of how the graphic should be drawn.
      */
     public void writeLinkGraphics (LinkGraphicList lgl,
-				   LinkProperties properties) 
-	throws IOException {
-	int nPolys = polygons.length;
-	if (nPolys <= 0) return;
-	OMPoly p=null;
-	float[] pts;
-	boolean ispolyg = isPolygon();
+                                   LinkProperties properties) 
+        throws IOException {
+        int nPolys = polygons.length;
+        if (nPolys <= 0) return;
+        OMPoly p=null;
+        float[] pts;
+        boolean ispolyg = isPolygon();
 
-	for (int i=0, j, k; i<nPolys; i++) {
-	    // these points are already in RADIAN lat,lon order!...
-	    pts = ((ESRIPoly.ESRIFloatPoly)polygons[i]).getRadians();
+        for (int i=0, j, k; i<nPolys; i++) {
+            // these points are already in RADIAN lat,lon order!...
+            pts = ((ESRIPoly.ESRIFloatPoly)polygons[i]).getRadians();
 
-	    lgl.addPoly(pts, OMGraphic.RADIANS, 
-		       OMGraphic.LINETYPE_STRAIGHT, properties); 
+            lgl.addPoly(pts, OMGraphic.RADIANS, 
+                       OMGraphic.LINETYPE_STRAIGHT, properties); 
 
-	}
+        }
     }
 }

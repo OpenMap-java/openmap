@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeAffiliation.java,v $
 // $RCSfile: CodeAffiliation.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,6 +35,6 @@ import java.util.List;
 public class CodeAffiliation extends CodePosition {
 
     public CodeAffiliation() {
-	super("Affiliation", 2, 2);
+        super("Affiliation", 2, 2);
     }
 }

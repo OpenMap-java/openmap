@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconFactoryTestingTool.java,v $
 // $RCSfile: IconFactoryTestingTool.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:47:49 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:15 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -56,50 +56,50 @@ public class IconFactoryTestingTool implements Tool {
      * @return String The key for this tool.
      */
     public Container getFace() {
-	JToolBar jtb = new JToolBar();
-	jtb.setFloatable(false);
+        JToolBar jtb = new JToolBar();
+        jtb.setFloatable(false);
 
-	DrawingAttributes da = new DrawingAttributes();
- 	da.setLinePaint(Color.blue);
- 	da.setFillPaint(Color.blue);
-	da.setStroke(new BasicStroke(2));
-	DrawingAttributes da2 = new DrawingAttributes();
- 	da2.setFillPaint(Color.lightGray);
- 	da2.setLinePaint(Color.lightGray);
-	da2.setStroke(new BasicStroke(2));
+        DrawingAttributes da = new DrawingAttributes();
+        da.setLinePaint(Color.blue);
+        da.setFillPaint(Color.blue);
+        da.setStroke(new BasicStroke(2));
+        DrawingAttributes da2 = new DrawingAttributes();
+        da2.setFillPaint(Color.lightGray);
+        da2.setLinePaint(Color.lightGray);
+        da2.setStroke(new BasicStroke(2));
 
-	int[] xpoints = new int[] {15, 15, 50, 50, 90, 50, 50, 15};
-	int[] ypoints = new int[] {30, 70, 70, 90, 50, 10, 30, 30};
-	Shape shape = new Polygon(xpoints, ypoints, xpoints.length);
+        int[] xpoints = new int[] {15, 15, 50, 50, 90, 50, 50, 15};
+        int[] ypoints = new int[] {30, 70, 70, 90, 50, 10, 30, 30};
+        Shape shape = new Polygon(xpoints, ypoints, xpoints.length);
 
-	BasicIconPart testPart = new BasicIconPart(shape);
-	testPart.setRenderingAttributes(da);
-	testPart.setGradient(true);
+        BasicIconPart testPart = new BasicIconPart(shape);
+        testPart.setRenderingAttributes(da);
+        testPart.setGradient(true);
 
-	Shape shape2 = new Ellipse2D.Double(5, 5, 90, 90);
-	BasicIconPart testPart2 = new BasicIconPart(shape2);
-	testPart2.setRenderingAttributes(da2);
-	testPart2.setGradient(true);
+        Shape shape2 = new Ellipse2D.Double(5, 5, 90, 90);
+        BasicIconPart testPart2 = new BasicIconPart(shape2);
+        testPart2.setRenderingAttributes(da2);
+        testPart2.setGradient(true);
 
-	IconPartList parts = new IconPartList();
-	parts.add(testPart2);
-	parts.add(testPart);
+        IconPartList parts = new IconPartList();
+        parts.add(testPart2);
+        parts.add(testPart);
 
-	BasicIconPart testPart3 = new BasicIconPart(shape, AffineTransform.getRotateInstance(Math.PI/4, 50, 50));
-	testPart3.setRenderingAttributes(da);
-	testPart3.setGradient(true);
+        BasicIconPart testPart3 = new BasicIconPart(shape, AffineTransform.getRotateInstance(Math.PI/4, 50, 50));
+        testPart3.setRenderingAttributes(da);
+        testPart3.setGradient(true);
 
-	IconPartList parts2 = new IconPartList();
-	parts2.add(testPart2);
-	parts2.add(testPart3);
+        IconPartList parts2 = new IconPartList();
+        parts2.add(testPart2);
+        parts2.add(testPart3);
 
-	jtb.add(new JButton(OMIconFactory.getIcon(10, 10, parts)));
-	jtb.add(new JButton(OMIconFactory.getIcon(20, 20, parts)));
-	jtb.add(new JButton(OMIconFactory.getIcon(50, 50, parts)));
-	jtb.add(new JButton(OMIconFactory.getIcon(50, 50, parts2)));
-	jtb.add(new JButton(OMIconFactory.getIcon(10, 20, parts2)));
+        jtb.add(new JButton(OMIconFactory.getIcon(10, 10, parts)));
+        jtb.add(new JButton(OMIconFactory.getIcon(20, 20, parts)));
+        jtb.add(new JButton(OMIconFactory.getIcon(50, 50, parts)));
+        jtb.add(new JButton(OMIconFactory.getIcon(50, 50, parts2)));
+        jtb.add(new JButton(OMIconFactory.getIcon(10, 20, parts2)));
 
-	return jtb;
+        return jtb;
     }
     
     /** 
@@ -108,7 +108,7 @@ public class IconFactoryTestingTool implements Tool {
      * @return String The key for this tool.
      **/
     public String getKey() {
-	return "IconFactoryTestingTool";
+        return "IconFactoryTestingTool";
     }
     
     /** 
@@ -119,17 +119,17 @@ public class IconFactoryTestingTool implements Tool {
     public void setKey(String aKey) {}
 
     public static void main(String[] argv) {
-	JFrame frame = new JFrame("IconFactoryTestingTool");
-	frame.getContentPane().add(new IconFactoryTestingTool().getFace());
-	frame.pack();
-	frame.addWindowListener(new WindowAdapter() {
-		public void windowClosing(WindowEvent e) {
-		    // need a shutdown event to notify other gui beans and
-		    // then exit.
-		    System.exit(0);
-		}
-	    });
+        JFrame frame = new JFrame("IconFactoryTestingTool");
+        frame.getContentPane().add(new IconFactoryTestingTool().getFace());
+        frame.pack();
+        frame.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    // need a shutdown event to notify other gui beans and
+                    // then exit.
+                    System.exit(0);
+                }
+            });
 
-	frame.show();
+        frame.show();
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMColor.java,v $
 // $RCSfile: OMColor.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -71,34 +71,34 @@ public class OMColor extends java.awt.Color {
     // check to see if alpha values are supported by the underlying
     // java.awt.Color class.
     static {
-	Color c;
-	Constructor cons;
-	boolean b;
-	try {
-	    // we prefer the Java 2 solution (java.awt.Color supports alpha)
-	    cons = Color.class.getConstructor(
-		    new Class[] {
-			Integer.TYPE, Boolean.TYPE
-		    });
-	    if (com.bbn.openmap.util.Debug.debugging("env")) {
-		System.out.println("Alpha supported by java.awt.Color");
-	    }
-	    c = (Color)cons.newInstance(new Object[] {
-			new Integer(0), new Boolean(true)
-		    });
-	    b = true;
-	} catch (Exception e) {
-	    // this means we need to hack alphas.
-	    if (com.bbn.openmap.util.Debug.debugging("env")) {
-		System.out.println("Alpha NOT SUPPORTED by java.awt.Color");
-	    }
-	    cons = null;
-	    c = new OMColor(0);
-	    b = false;
-	}
-	clear = c;
-	alphaValueConstructor = cons;
-	nativeAlpha = b;
+        Color c;
+        Constructor cons;
+        boolean b;
+        try {
+            // we prefer the Java 2 solution (java.awt.Color supports alpha)
+            cons = Color.class.getConstructor(
+                    new Class[] {
+                        Integer.TYPE, Boolean.TYPE
+                    });
+            if (com.bbn.openmap.util.Debug.debugging("env")) {
+                System.out.println("Alpha supported by java.awt.Color");
+            }
+            c = (Color)cons.newInstance(new Object[] {
+                        new Integer(0), new Boolean(true)
+                    });
+            b = true;
+        } catch (Exception e) {
+            // this means we need to hack alphas.
+            if (com.bbn.openmap.util.Debug.debugging("env")) {
+                System.out.println("Alpha NOT SUPPORTED by java.awt.Color");
+            }
+            cons = null;
+            c = new OMColor(0);
+            b = false;
+        }
+        clear = c;
+        alphaValueConstructor = cons;
+        nativeAlpha = b;
     }
 
     /**
@@ -114,9 +114,9 @@ public class OMColor extends java.awt.Color {
 //       * arguments.  It should be OMColor(int r, int g, int b, int a).
      */
     public OMColor(int a, int r, int g, int b) {
-	super(r, g, b);//HACK unnecessary?...
+        super(r, g, b);//HACK unnecessary?...
         argb = (a << 24) | ((r & 0xFF) << 16) | 
-	    ((g & 0xFF) << 8) | ((b & 0xFF) << 0);
+            ((g & 0xFF) << 8) | ((b & 0xFF) << 0);
     }
 
     /**
@@ -129,8 +129,8 @@ public class OMColor extends java.awt.Color {
      * @param argb 32bit Hex ARGB value
      */
     public OMColor(int argb) {
-	super(argb);//HACK unnecessary?...
-	this.argb = argb;
+        super(argb);//HACK unnecessary?...
+        this.argb = argb;
     }
 
     /**
@@ -144,11 +144,11 @@ public class OMColor extends java.awt.Color {
 //       * arguments.  It should be OMColor(float r, float g, float b, float a).
      */
     public OMColor(float a, float r, float g, float b) {
-	super(r, g, b);//HACK unnecessary?...
-	argb = (((int)(a * 255)) << 24) | 
-	    (((int)(r * 255) & 0xFF) << 16) | 
-	    (((int)(g * 255) & 0xFF) << 8) | 
-	    (((int)(b * 255) & 0xFF) << 0);
+        super(r, g, b);//HACK unnecessary?...
+        argb = (((int)(a * 255)) << 24) | 
+            (((int)(r * 255) & 0xFF) << 16) | 
+            (((int)(g * 255) & 0xFF) << 8) | 
+            (((int)(b * 255) & 0xFF) << 0);
     }
 
     /**
@@ -163,7 +163,7 @@ public class OMColor extends java.awt.Color {
      * @return the integer value of the color.
      */
     public int getRGB () {
-	return argb;
+        return argb;
     }
 
 
@@ -173,7 +173,7 @@ public class OMColor extends java.awt.Color {
      * @param value the transparency value between 0-255. 
      */
     public void setRGB (int value) {
-	argb = value;
+        argb = value;
     }
 
     /**
@@ -182,7 +182,7 @@ public class OMColor extends java.awt.Color {
      * @return the integer red value.
      */
     public int getRed () {
-	return (argb >> 16) & 0xff;
+        return (argb >> 16) & 0xff;
     }
 
     /**
@@ -190,7 +190,7 @@ public class OMColor extends java.awt.Color {
      * @param value the red value between 0-255. 
      */
     public void setRed (int value) {
-	argb = (argb & 0xFF00FFFF) | ((value&0xff)<<16);
+        argb = (argb & 0xFF00FFFF) | ((value&0xff)<<16);
     }
 
     /**
@@ -199,7 +199,7 @@ public class OMColor extends java.awt.Color {
      * @return the integer green value.
      */
     public int getGreen () {
-	return (argb >> 8) & 0xff;
+        return (argb >> 8) & 0xff;
     }
 
     /**
@@ -207,7 +207,7 @@ public class OMColor extends java.awt.Color {
      * @param value the green value between 0-255. 
      */
     public void setGreen (int value) {
-	argb = (argb & 0xFFFF00FF) | ((value&0xff)<<8);
+        argb = (argb & 0xFFFF00FF) | ((value&0xff)<<8);
     }
 
     /**
@@ -216,7 +216,7 @@ public class OMColor extends java.awt.Color {
      * @return the integer blue value.
      */
     public int getBlue () {
-	return argb & 0xff;
+        return argb & 0xff;
     }
 
     /**
@@ -224,7 +224,7 @@ public class OMColor extends java.awt.Color {
      * @param value the blue value between 0-255. 
      */
     public void setBlue (int value) {
-	argb = (argb & 0xFFFFFF00) | (value&0xff);
+        argb = (argb & 0xFFFFFF00) | (value&0xff);
     }
 
     /**
@@ -233,7 +233,7 @@ public class OMColor extends java.awt.Color {
      * @return the integer transparency value.
      */
     public int getAlpha () {
-	return argb >>> 24;
+        return argb >>> 24;
     }
 
     /**
@@ -241,7 +241,7 @@ public class OMColor extends java.awt.Color {
      * @param value the transparency value between 0-255. 
      */
     public void setAlpha (int value) {
-	argb = (argb & 0x00FFFFFF) | (value << 24);
+        argb = (argb & 0x00FFFFFF) | (value << 24);
     }
 
     /**
@@ -256,7 +256,7 @@ public class OMColor extends java.awt.Color {
      * @return the integer color value with the transparency value.
      */
     public static int setTransparentValue(int colorValue, int transValue){
-	return ((0x00FFFFFF & colorValue) | (transValue << 24));
+        return ((0x00FFFFFF & colorValue) | (transValue << 24));
     }
 
     /**
@@ -269,8 +269,8 @@ public class OMColor extends java.awt.Color {
      * @return the integer color value with the transparency value.
      */
      public static int setTransparentValue(int colorValue, float transValue){
-	 return ((0x00FFFFFF & colorValue) | 
-		 (((int)(transValue * 255)) << 24));
+         return ((0x00FFFFFF & colorValue) | 
+                 (((int)(transValue * 255)) << 24));
      }
 
     /**
@@ -280,7 +280,7 @@ public class OMColor extends java.awt.Color {
      * @return true if Color is null or transparent
      */
     public static boolean isClear(Color value){
-	return (value == null) || ((value.getRGB() >>> 24) == 0);
+        return (value == null) || ((value.getRGB() >>> 24) == 0);
     }
 
     /**
@@ -288,7 +288,7 @@ public class OMColor extends java.awt.Color {
      * @return     a hash code value for this object.
      */
     public int hashCode() {
-	return getRGB();
+        return getRGB();
     }
 
     /**
@@ -301,7 +301,7 @@ public class OMColor extends java.awt.Color {
      * @return  true if the objects are the same, false otherwise.
      */
     public boolean equals(Object obj) {
-	return (obj instanceof Color) && (((Color)obj).getRGB() == this.getRGB());
+        return (obj instanceof Color) && (((Color)obj).getRGB() == this.getRGB());
     }
 
 
@@ -314,7 +314,7 @@ public class OMColor extends java.awt.Color {
      * @return  a string representation of this color.
      */
     public String toString(){
-	return "{" + super.toString() + " a=" + getAlpha() +"}";
+        return "{" + super.toString() + " a=" + getAlpha() +"}";
     }
 
 }

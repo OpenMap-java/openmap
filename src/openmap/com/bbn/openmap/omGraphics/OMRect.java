@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRect.java,v $
 // $RCSfile: OMRect.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -97,8 +97,8 @@ public class OMRect extends OMGraphic implements Serializable {
      * @param lType line type  - see OMGraphic.lineType.
      */
     public OMRect(float lt1, float ln1, float lt2, float ln2, 
-		  int lType) {
-	this (lt1, ln1, lt2, ln2, lType, -1);
+                  int lType) {
+        this (lt1, ln1, lt2, ln2, lType, -1);
     }
 
     /**
@@ -114,13 +114,13 @@ public class OMRect extends OMGraphic implements Serializable {
      * internally)
      */
     public OMRect(float lt1, float ln1, float lt2, float ln2, 
-		  int lType, int nsegs) {
+                  int lType, int nsegs) {
         super(RENDERTYPE_LATLON, lType, DECLUTTERTYPE_NONE);
-	lat1 = lt1;
-	lon1 = ln1;
-	lat2 = lt2;
-	lon2 = ln2;
-	this.nsegs = nsegs;
+        lat1 = lt1;
+        lon1 = ln1;
+        lat2 = lt2;
+        lon2 = ln2;
+        this.nsegs = nsegs;
     }
 
     /**
@@ -140,10 +140,10 @@ public class OMRect extends OMGraphic implements Serializable {
     public OMRect(int px1, int py1, int px2, int py2) { 
         super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
-	x1 = px1;
-	y1 = py1;
-	x2 = px2;
-	y2 = py2;
+        x1 = px1;
+        y1 = py1;
+        x2 = px2;
+        y2 = py2;
     }
 
     /**
@@ -164,14 +164,14 @@ public class OMRect extends OMGraphic implements Serializable {
      * reference point
      */
     public OMRect(float lt1, float ln1, 
-		  int px1, int py1, int px2, int py2) { 
+                  int px1, int py1, int px2, int py2) { 
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-	lat1 = lt1;
-	lon1 = ln1;
-	x1 = px1;
-	y1 = py1;
-	x2 = px2;
-	y2 = py2;
+        lat1 = lt1;
+        lon1 = ln1;
+        x1 = px1;
+        y1 = py1;
+        x2 = px2;
+        y2 = py2;
     }
 
     /**
@@ -184,15 +184,15 @@ public class OMRect extends OMGraphic implements Serializable {
      * @param lType line type  - see OMGraphic.lineType.
      */
     public void setLocation(float lt1, float ln1, 
-			    float lt2, float ln2, 
-			    int lType) {
-	setRenderType(RENDERTYPE_LATLON);
-	setLineType(lType);
-	lat1 = lt1;
-	lon1 = ln1;
-	lat2 = lt2;
-	lon2 = ln2;
-	setNeedToRegenerate(true);
+                            float lt2, float ln2, 
+                            int lType) {
+        setRenderType(RENDERTYPE_LATLON);
+        setLineType(lType);
+        lat1 = lt1;
+        lon1 = ln1;
+        lat2 = lt2;
+        lon2 = ln2;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -210,13 +210,13 @@ public class OMRect extends OMGraphic implements Serializable {
      * window origin
      */
     public void setLocation(int px1, int py1, int px2, int py2) { 
-	setRenderType(RENDERTYPE_XY);
-	setLineType(LINETYPE_UNKNOWN);
-	x1 = Math.min(px1, px2);
-	y1 = Math.min(py1, py2);
-	x2 = Math.max(px1, px2);
-	y2 = Math.max(py1, py2);
-	setNeedToRegenerate(true);
+        setRenderType(RENDERTYPE_XY);
+        setLineType(LINETYPE_UNKNOWN);
+        x1 = Math.min(px1, px2);
+        y1 = Math.min(py1, py2);
+        x2 = Math.max(px1, px2);
+        y2 = Math.max(py1, py2);
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -237,16 +237,16 @@ public class OMRect extends OMGraphic implements Serializable {
      * reference point
      */
     public void setLocation(float lt1, float ln1, 
-			    int px1, int py1, int px2, int py2) { 
+                            int px1, int py1, int px2, int py2) { 
         setRenderType(RENDERTYPE_OFFSET);
-	setLineType(LINETYPE_UNKNOWN);
-	lat1 = lt1;
-	lon1 = ln1;
-	x1 = px1;
-	y1 = py1;
-	x2 = px2;
-	y2 = py2;
-	setNeedToRegenerate(true);
+        setLineType(LINETYPE_UNKNOWN);
+        lat1 = lt1;
+        lon1 = ln1;
+        x1 = px1;
+        y1 = py1;
+        x2 = px2;
+        y2 = py2;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -256,7 +256,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @return float latitude 
      */
     public float getNorthLat() {
-	return lat1;
+        return lat1;
     }
 
     /**
@@ -266,7 +266,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @return float longitude 
      */
     public float getWestLon() {
-	return lon1;
+        return lon1;
     }
 
     /**
@@ -275,7 +275,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @return float latitude
      */
     public float getSouthLat() {
-	return lat2;
+        return lat2;
     }
 
     /**
@@ -284,7 +284,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @return float longitude
      */
     public float getEastLon() {
-	return lon2;
+        return lon2;
     }
 
     /**
@@ -293,7 +293,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @return int
      */
     public int getTop() {
-	return y1;
+        return y1;
     }
 
     /**
@@ -302,7 +302,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @return int
      */
     public int getLeft() {
-	return x1;
+        return x1;
     }
 
     /**
@@ -311,7 +311,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @return int
      */
     public int getBottom() {
-	return y2;
+        return y2;
     }
 
     /**
@@ -320,7 +320,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @return int
      */
     public int getRight() {
-	return x2;
+        return x2;
     }
 
     /**
@@ -331,7 +331,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @param nsegs number of segment points
      */
     public void setNumSegs(int nsegs) {
-	this.nsegs = nsegs;
+        this.nsegs = nsegs;
     }
 
     /**
@@ -342,7 +342,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @return int number of segment points
      */
     public int getNumSegs() {
-	return nsegs;
+        return nsegs;
     }
 
     /**
@@ -352,60 +352,60 @@ public class OMRect extends OMGraphic implements Serializable {
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-	shape = null;
+        shape = null;
 
-	if (proj == null) {
-	    Debug.message("omgraphic", "OMRect: null projection in generate!");
-	    return false;
-	}
+        if (proj == null) {
+            Debug.message("omgraphic", "OMRect: null projection in generate!");
+            return false;
+        }
 
-	// reset the internals
-	
-	switch (renderType) {
-	case RENDERTYPE_XY:
-	    shape = createBoxShape((int)Math.min(x2, x1),
-				   (int)Math.min(y2, y1),
-				   (int)Math.abs(x2 - x1), 
-				   (int)Math.abs(y2 - y1));
-	    break;
-	case RENDERTYPE_OFFSET:
-	    if (!proj.isPlotable(lat1, lon1)) {
-		setNeedToRegenerate(true);//HMMM not the best flag
-		return false;
-	    }
-	    Point p1 = proj.forward(lat1, lon1);
+        // reset the internals
+        
+        switch (renderType) {
+        case RENDERTYPE_XY:
+            shape = createBoxShape((int)Math.min(x2, x1),
+                                   (int)Math.min(y2, y1),
+                                   (int)Math.abs(x2 - x1), 
+                                   (int)Math.abs(y2 - y1));
+            break;
+        case RENDERTYPE_OFFSET:
+            if (!proj.isPlotable(lat1, lon1)) {
+                setNeedToRegenerate(true);//HMMM not the best flag
+                return false;
+            }
+            Point p1 = proj.forward(lat1, lon1);
 
-	    shape = createBoxShape((int)Math.min(p1.x + x1, 
-						 p1.x + x2),
-				   (int)Math.min(p1.y + y1, 
-						 p1.y + y2),
-				   (int)Math.abs(x2 - x1), 
-				   (int)Math.abs(y2 - y1));
-	    break;
-	case RENDERTYPE_LATLON:
-	    ArrayList rects =
-		proj.forwardRect(
-		    new LatLonPoint(lat1, lon1), // NW
-		    new LatLonPoint(lat2, lon2), // SE
-		    lineType, nsegs, !isClear(fillPaint));
-	    int size = rects.size();
+            shape = createBoxShape((int)Math.min(p1.x + x1, 
+                                                 p1.x + x2),
+                                   (int)Math.min(p1.y + y1, 
+                                                 p1.y + y2),
+                                   (int)Math.abs(x2 - x1), 
+                                   (int)Math.abs(y2 - y1));
+            break;
+        case RENDERTYPE_LATLON:
+            ArrayList rects =
+                proj.forwardRect(
+                    new LatLonPoint(lat1, lon1), // NW
+                    new LatLonPoint(lat2, lon2), // SE
+                    lineType, nsegs, !isClear(fillPaint));
+            int size = rects.size();
 
-	    for (int i=0, j=0; i<size; i+=2, j++) {
-		GeneralPath gp = createShape((int[])rects.get(i), 
-					     (int[])rects.get(i+1), true);
+            for (int i=0, j=0; i<size; i+=2, j++) {
+                GeneralPath gp = createShape((int[])rects.get(i), 
+                                             (int[])rects.get(i+1), true);
 
-		if (shape == null) {
-		    shape = gp;
-		} else {
-		    ((GeneralPath)shape).append(gp, false);
-		}
-	    }
-	    break;
-	case RENDERTYPE_UNKNOWN:
-	    System.err.println("OMRect.generate(): invalid RenderType");
-	    return false;
-	}
-	setNeedToRegenerate(false);
-	return true;
+                if (shape == null) {
+                    shape = gp;
+                } else {
+                    ((GeneralPath)shape).append(gp, false);
+                }
+            }
+            break;
+        case RENDERTYPE_UNKNOWN:
+            System.err.println("OMRect.generate(): invalid RenderType");
+            return false;
+        }
+        setNeedToRegenerate(false);
+        return true;
     }
 }

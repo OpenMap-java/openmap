@@ -95,13 +95,13 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * be saved without any GUI confirmation.
      */
     public EsriShapeExport(OMGraphicList list, 
-			   Projection proj, 
-			   String pathToFile) {
+                           Projection proj, 
+                           String pathToFile) {
 
-	setGraphicList(list);
-	projection = proj;
-	filePath = pathToFile;
-	DEBUG = Debug.debugging("shape");
+        setGraphicList(list);
+        projection = proj;
+        filePath = pathToFile;
+        DEBUG = Debug.debugging("shape");
     }
 
     /**
@@ -110,35 +110,35 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * export.
      */
     public void setGraphicList(OMGraphicList list) {
-	graphicList = list;
+        graphicList = list;
 
-	if (list != null) {
-	    Object obj = list.getAppObject();
-	    if (obj instanceof DbfTableModel) {
-		masterDBF = (DbfTableModel) obj;
-		Debug.message("shape", "Setting master DBF in ESE");
-	    }
-	}
+        if (list != null) {
+            Object obj = list.getAppObject();
+            if (obj instanceof DbfTableModel) {
+                masterDBF = (DbfTableModel) obj;
+                Debug.message("shape", "Setting master DBF in ESE");
+            }
+        }
     }
 
     public OMGraphicList getGraphicList() {
-	return graphicList;
+        return graphicList;
     }
 
     public void setProjection(Projection proj) {
-	projection = proj;
+        projection = proj;
     }
 
     public Projection getProjection() {
-	return projection;
+        return projection;
     }
 
     public void setFilePath(String pathToFile) {
-	filePath = pathToFile;
+        filePath = pathToFile;
     }
 
     public String getFilePath() {
-	return filePath;
+        return filePath;
     }
 
     protected EsriPolygonList polyList = null;
@@ -149,22 +149,22 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * Return the polygon list, create it if needed.
      */
     protected EsriPolygonList getPolyList() {
-	if (polyList == null) {
-	    polyList = new EsriPolygonList();
-	    polyList.setTable(getMasterDBFHeaderClone());
-	}
-	return polyList;
+        if (polyList == null) {
+            polyList = new EsriPolygonList();
+            polyList.setTable(getMasterDBFHeaderClone());
+        }
+        return polyList;
     }
 
     /**
      * Return the line list, create it if needed.
      */
     protected EsriPolylineList getLineList() {
-	if (lineList == null) {
-	    lineList = new EsriPolylineList();
-	    lineList.setTable(getMasterDBFHeaderClone());
-	}
-	return lineList;
+        if (lineList == null) {
+            lineList = new EsriPolylineList();
+            lineList.setTable(getMasterDBFHeaderClone());
+        }
+        return lineList;
     }
 
     /**
@@ -175,11 +175,11 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * AppObject is set to null, and a default one will be created.
      */
     protected EsriPointList getPointList() {
-	if (pointList == null) {
-	    pointList = new EsriPointList();
-	    pointList.setTable(getMasterDBFHeaderClone());
-	}
-	return pointList;
+        if (pointList == null) {
+            pointList = new EsriPointList();
+            pointList.setTable(getMasterDBFHeaderClone());
+        }
+        return pointList;
     }
 
     /**
@@ -187,28 +187,28 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * DbfTableModel if both exist.
      */
     protected void addGraphic(EsriGraphicList egl,
-			      OMGraphic graphic, 
-			      ArrayList record) {
-	egl.add(graphic);
-	DbfTableModel dtm = egl.getTable();
-	if (dtm != null && record != null) {
-	    dtm.addRecord(record);
-	}
+                              OMGraphic graphic, 
+                              ArrayList record) {
+        egl.add(graphic);
+        DbfTableModel dtm = egl.getTable();
+        if (dtm != null && record != null) {
+            dtm.addRecord(record);
+        }
     }
 
     /** Scoping method to call addGraphic with the right list. */
     protected void addPolygon(OMGraphic graphic, ArrayList record) {
-	addGraphic(getPolyList(), graphic, record);
+        addGraphic(getPolyList(), graphic, record);
     }
 
     /** Scoping method to call addGraphic with the right list. */
     protected void addLine(OMGraphic graphic, ArrayList record) {
-	addGraphic(getLineList(), graphic, record);
+        addGraphic(getLineList(), graphic, record);
     }
 
     /** Scoping method to call addGraphic with the right list. */
     protected void addPoint(OMGraphic graphic, ArrayList record) {
-	addGraphic(getPointList(), graphic, record);
+        addGraphic(getPointList(), graphic, record);
     }
 
     /**
@@ -217,7 +217,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * appObject within the top level OMGraphicList.
      */
     public void setMasterDBF(DbfTableModel dbf) {
-	masterDBF = dbf;
+        masterDBF = dbf;
     }
 
     /**
@@ -225,7 +225,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * OMGraphicList.
      */
     public DbfTableModel getMasterDBF() {
-	return masterDBF;
+        return masterDBF;
     }
 
     /**
@@ -234,7 +234,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * will be created if set to true, and this is true by default.
      */
     public void setWriteDBF(boolean value) {
-	writeDBF = value;
+        writeDBF = value;
     }
 
     /**
@@ -242,7 +242,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * OMGraphicList is exported to a .shp/.shx file.
      */
     public boolean getWriteDBF() {
-	return writeDBF;
+        return writeDBF;
     }
 
     /**
@@ -251,7 +251,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * there.
      */
     public void setDBFHasRenderingInfo(boolean value) {
-	dbfHasRenderingInfo = value;
+        dbfHasRenderingInfo = value;
     }
 
     /**
@@ -260,7 +260,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * there.
      */
     public boolean getDBFHasRenderingInfo() {
-	return dbfHasRenderingInfo;
+        return dbfHasRenderingInfo;
     }
 
     /**
@@ -270,10 +270,10 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * OMGraphicList AppObject.
      */
     protected DbfTableModel getMasterDBFHeaderClone() {
-	if (masterDBF != null) {
-	    return masterDBF.headerClone();
-	}
-	return null;
+        if (masterDBF != null) {
+            return masterDBF.headerClone();
+        }
+        return null;
     }
 
     /**
@@ -283,13 +283,13 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * different tables, too.
      */
     protected ArrayList getMasterDBFRecord(int index) {
-	try {
-	    if (masterDBF != null) {
-		return (ArrayList)masterDBF.getRecord(index);
-	    }
-	} catch (IndexOutOfBoundsException ioobe) {
-	}
-	return null;
+        try {
+            if (masterDBF != null) {
+                return (ArrayList)masterDBF.getRecord(index);
+            }
+        } catch (IndexOutOfBoundsException ioobe) {
+        }
+        return null;
     }
 
     /**
@@ -302,13 +302,13 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * shape files to be of one type.
      */
     public void export() {
-	OMGraphicList list = getGraphicList();
-	if (list == null) {
-	    Debug.error("EsriShapeExport: no graphic list to export!");
-	    return;
-	}
+        OMGraphicList list = getGraphicList();
+        if (list == null) {
+            Debug.error("EsriShapeExport: no graphic list to export!");
+            return;
+        }
 
-	export(list, null, true);
+        export(list, null, true);
     }
 
     /**
@@ -330,7 +330,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * @see #export(OMGraphicList list, ArrayList record, boolean writeFiles)
      */
     protected void export(OMGraphicList list, ArrayList record) {
-	export(list, record, true);
+        export(list, record, true);
     }
 
     /**
@@ -349,36 +349,36 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * performed on this round of the method call.
      */
     protected void export(OMGraphicList list, ArrayList record, boolean writeFiles) {
-	badGraphics = 0;
+        badGraphics = 0;
 
-	if (list == null) {
-	    return;
-	}
+        if (list == null) {
+            return;
+        }
 
-	int dbfIndex = 0;
-	boolean iterative = false;
+        int dbfIndex = 0;
+        boolean iterative = false;
 
         //parse the graphic list and fill the individual lists with
         //the appropriate shape types
-	Iterator it = list.iterator();
-	while (it.hasNext()) {
+        Iterator it = list.iterator();
+        while (it.hasNext()) {
             OMGraphic dtlGraphic = (OMGraphic) it.next();
 
-	    if (record == null) {
-		record = getMasterDBFRecord(dbfIndex++);
-	    }
+            if (record == null) {
+                record = getMasterDBFRecord(dbfIndex++);
+            }
 
-	    // If we have an OMGraphicList, interate through that one
-	    // as well.  We're not handling multi-part geometries yet.
-	    if (dtlGraphic instanceof OMGraphicList) {
-		if (DEBUG) Debug.output("ESE: handling OMGraphicList");
-		export((OMGraphicList)dtlGraphic, record, false);
-		continue;
-	    }
+            // If we have an OMGraphicList, interate through that one
+            // as well.  We're not handling multi-part geometries yet.
+            if (dtlGraphic instanceof OMGraphicList) {
+                if (DEBUG) Debug.output("ESE: handling OMGraphicList");
+                export((OMGraphicList)dtlGraphic, record, false);
+                continue;
+            }
 
             //check to be sure the graphic is rendered in LAT/LON
             if (dtlGraphic.getRenderType() != RENDERTYPE_LATLON) {
-		badGraphics++;
+                badGraphics++;
                 continue;
             }
 
@@ -386,104 +386,104 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
                 OMPoly omPoly = (OMPoly)dtlGraphic;
                 //verify that this instance of OMPoly is a polygon
                 if (isPolygon(omPoly)) {
-		    if (DEBUG) Debug.output("ESE: handling OMPoly polygon");
+                    if (DEBUG) Debug.output("ESE: handling OMPoly polygon");
                     addPolygon(dtlGraphic, record);
                 }
                 //if it is not it must be a polyline and therefore
                 //added to the line list
                 else {
-		    if (DEBUG) Debug.output("ESE: handling OMPoly line");
+                    if (DEBUG) Debug.output("ESE: handling OMPoly line");
                     addLine(dtlGraphic, record);
                 }
             }
             //(end)if (dtlGraphic instanceof OMPoly)
             //add all other fully enclosed graphics to the polyList
             else if (dtlGraphic instanceof OMRect) {
-		if (DEBUG) Debug.output("ESE: handling OMRect");
-		addPolygon((OMGraphic)EsriPolygonList.convert((OMRect)dtlGraphic), record);
-	    } else if (dtlGraphic instanceof OMCircle) {
-		if (DEBUG) Debug.output("ESE: handling OMCircle");
-		addPolygon((OMGraphic)EsriPolygonList.convert((OMCircle)dtlGraphic, projection), record);
+                if (DEBUG) Debug.output("ESE: handling OMRect");
+                addPolygon((OMGraphic)EsriPolygonList.convert((OMRect)dtlGraphic), record);
+            } else if (dtlGraphic instanceof OMCircle) {
+                if (DEBUG) Debug.output("ESE: handling OMCircle");
+                addPolygon((OMGraphic)EsriPolygonList.convert((OMCircle)dtlGraphic, projection), record);
 
-	    } else if (dtlGraphic instanceof OMRangeRings) {
-		if (DEBUG) Debug.output("ESE: handling OMRangeRings");
-		export(EsriPolygonList.convert((OMRangeRings)dtlGraphic, projection), record, false);
+            } else if (dtlGraphic instanceof OMRangeRings) {
+                if (DEBUG) Debug.output("ESE: handling OMRangeRings");
+                export(EsriPolygonList.convert((OMRangeRings)dtlGraphic, projection), record, false);
 
-	    }
+            }
 
             //add lines to the lineList
             else if (dtlGraphic instanceof OMLine) {
-		if (DEBUG) Debug.output("ESE: handling OMLine");
+                if (DEBUG) Debug.output("ESE: handling OMLine");
                 addLine((OMGraphic)EsriPolylineList.convert((OMLine)dtlGraphic), record);
             }
             //add points to the pointList
             else if (dtlGraphic instanceof OMPoint) {
-		if (DEBUG) Debug.output("ESE: handling OMPoint");
+                if (DEBUG) Debug.output("ESE: handling OMPoint");
                 addPoint(dtlGraphic, record);
             }
         }
         //(end)for (int i = 0; i < dtlGraphicList.size(); i++)
 
-	if (badGraphics > 0) {
-	    // Information popup provider, it's OK that this gets dropped.
-	    DrawingToolRenderException.notifyUserOfNonLatLonGraphics(badGraphics);
-	}
-
-	if (!writeFiles) {
-	    // Punch the stack back up so that the initial call will
-	    // write the files.
-	    return;
-	}
-
-	boolean needConfirmation = false;
-        //call the file chooser if no path is given
-        if (filePath == null) {
-	    filePath = getFilePathFromUser();
-	    needConfirmation = true;
+        if (badGraphics > 0) {
+            // Information popup provider, it's OK that this gets dropped.
+            DrawingToolRenderException.notifyUserOfNonLatLonGraphics(badGraphics);
         }
 
-	if (DEBUG) Debug.output("ESE: writing files...");
+        if (!writeFiles) {
+            // Punch the stack back up so that the initial call will
+            // write the files.
+            return;
+        }
 
-	boolean needTypeSuffix = false;
+        boolean needConfirmation = false;
+        //call the file chooser if no path is given
+        if (filePath == null) {
+            filePath = getFilePathFromUser();
+            needConfirmation = true;
+        }
+
+        if (DEBUG) Debug.output("ESE: writing files...");
+
+        boolean needTypeSuffix = false;
 
         //(end)if (filePath == null) call the appropriate methods to
         //set up the shape files of their respective types
         if (polyList != null) {
-	    eseInterfaces.add(new ESEInterface(polyList, filePath, null));
-	    needTypeSuffix = true;
+            eseInterfaces.add(new ESEInterface(polyList, filePath, null));
+            needTypeSuffix = true;
         }
 
         if (lineList != null) {
-	    eseInterfaces.add(new ESEInterface(lineList, filePath, (needTypeSuffix?"Lines":null)));
-	    needTypeSuffix = true;
+            eseInterfaces.add(new ESEInterface(lineList, filePath, (needTypeSuffix?"Lines":null)));
+            needTypeSuffix = true;
         }
 
         if (pointList != null) {
-	    eseInterfaces.add(new ESEInterface(pointList, filePath, (needTypeSuffix?"Pts":null)));
+            eseInterfaces.add(new ESEInterface(pointList, filePath, (needTypeSuffix?"Pts":null)));
         }
 
-	if (needConfirmation) {
-	    showGUI();
-	} else {
-	    writeFiles();
-	}
+        if (needConfirmation) {
+            showGUI();
+        } else {
+            writeFiles();
+        }
     }
 
     /**
      * The the Iterator of ESEIterators.
      */
     protected Iterator getInterfaces() {
-	return eseInterfaces.iterator();
+        return eseInterfaces.iterator();
     }
 
     /**
      * Just write the files from the ESEInterfaces.
      */
     protected void writeFiles() {
-	Iterator it = getInterfaces();
-	while (it.hasNext()) {
-	    ((ESEInterface)it.next()).write();
-	}
+        Iterator it = getInterfaces();
+        while (it.hasNext()) {
+            ((ESEInterface)it.next()).write();
+        }
     }
 
     protected JFrame frame = null;
@@ -493,24 +493,24 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      */
     public void showGUI() {
 
-	if (frame == null) {
-	    frame = new JFrame("Saving Shape Files");
-	
-	    frame.getContentPane().add(getGUI(), BorderLayout.CENTER);
-//  	    frame.setSize(400, 300);
-	    frame.pack();
-	}
+        if (frame == null) {
+            frame = new JFrame("Saving Shape Files");
+        
+            frame.getContentPane().add(getGUI(), BorderLayout.CENTER);
+//          frame.setSize(400, 300);
+            frame.pack();
+        }
 
-	frame.setVisible(true);
+        frame.setVisible(true);
     }
 
     /**
      * Hide the Frame holding the GUI.
      */
     public void hideGUI() {
-	if (frame != null) {
-	    frame.setVisible(false);
-	}
+        if (frame != null) {
+            frame.setVisible(false);
+        }
     }
 
     /**
@@ -518,44 +518,44 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      */
     public Component getGUI() {
 
-	JPanel panel = new JPanel();
-	panel.setLayout(new BorderLayout());
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
 
-	JPanel interfacePanel = new JPanel();
-	interfacePanel.setLayout(new GridLayout(0, 1));
+        JPanel interfacePanel = new JPanel();
+        interfacePanel.setLayout(new GridLayout(0, 1));
 
-	Iterator interfaces = getInterfaces();
-	int count = 0;
-	while (interfaces.hasNext()) {
-	    interfacePanel.add(((ESEInterface)interfaces.next()).getGUI());
-	    count++;
-	}
-	panel.add(interfacePanel, BorderLayout.CENTER);
+        Iterator interfaces = getInterfaces();
+        int count = 0;
+        while (interfaces.hasNext()) {
+            interfacePanel.add(((ESEInterface)interfaces.next()).getGUI());
+            count++;
+        }
+        panel.add(interfacePanel, BorderLayout.CENTER);
 
-	if (count > 1) {
-	    JLabel notification = new JLabel("  " + count + " Shape file sets needed:");
-	    panel.add(notification, BorderLayout.NORTH);
-	}
+        if (count > 1) {
+            JLabel notification = new JLabel("  " + count + " Shape file sets needed:");
+            panel.add(notification, BorderLayout.NORTH);
+        }
 
-	JButton saveButton = new JButton("Save");
-	saveButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    writeFiles();
-		    hideGUI();
-		}
-	    });
+        JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    writeFiles();
+                    hideGUI();
+                }
+            });
 
-	JButton cancelButton = new JButton("Cancel");
-	cancelButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    hideGUI();
-		}
-	    });
-	JPanel controlPanel = new JPanel();
-	controlPanel.add(saveButton);
-	controlPanel.add(cancelButton);
-	panel.add(controlPanel, BorderLayout.SOUTH);
-	return panel;
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    hideGUI();
+                }
+            });
+        JPanel controlPanel = new JPanel();
+        controlPanel.add(saveButton);
+        controlPanel.add(cancelButton);
+        panel.add(controlPanel, BorderLayout.SOUTH);
+        return panel;
     }
 
     /**
@@ -568,9 +568,9 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * @return The completed DbfTableModel.
      */
     public DbfTableModel createDefaultModel(EsriGraphicList list) {
-	if (DEBUG) Debug.output("ESE: creating DbfTableModel");
+        if (DEBUG) Debug.output("ESE: creating DbfTableModel");
 
-	DbfTableModel _model = new DbfTableModel(7);
+        DbfTableModel _model = new DbfTableModel(7);
         //Setup table structure
         //column 0
         //The first parameter, 0, respresents the first column
@@ -615,37 +615,37 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         _model.setType(6, (byte)DbfTableModel.TYPE_NUMERIC);
         _model.setDecimalCount(6, (byte)4);
 
-	// At a later time, more stroke parameters can be addded, like
-	// dash phase, end cap, line joins, and dash pattern.
+        // At a later time, more stroke parameters can be addded, like
+        // dash phase, end cap, line joins, and dash pattern.
 
-	Iterator iterator = list.iterator();
-	while (iterator.hasNext()) {
-	    OMGraphic omg = (OMGraphic)iterator.next();
+        Iterator iterator = list.iterator();
+        while (iterator.hasNext()) {
+            OMGraphic omg = (OMGraphic)iterator.next();
 
-	    ArrayList record = new ArrayList();
+            ArrayList record = new ArrayList();
 
-	    // Description
-	    Object obj = omg.getAppObject();
-	    if (obj instanceof String) {
-		record.add(obj);
-	    } else {
-		record.add("");
-	    }
+            // Description
+            Object obj = omg.getAppObject();
+            if (obj instanceof String) {
+                record.add(obj);
+            } else {
+                record.add("");
+            }
 
-	    record.add(ColorFactory.getHexColorString(omg.getLineColor()));
-	    record.add(ColorFactory.getHexColorString(omg.getFillColor()));
-	    record.add(ColorFactory.getHexColorString(omg.getSelectColor()));
-	    BasicStroke bs = (BasicStroke)omg.getStroke();
-	    record.add(new Double(bs.getLineWidth()));
-	    String dp = BasicStrokeEditor.dashArrayToString(bs.getDashArray());
-	    if (dp == BasicStrokeEditor.NONE) {
-		dp = "";
-	    }
-	    record.add(dp);
-	    record.add(new Double(bs.getDashPhase()));
-	    _model.addRecord(record);
-	    if (DEBUG) Debug.output("ESE: adding record: " + record);
-	}
+            record.add(ColorFactory.getHexColorString(omg.getLineColor()));
+            record.add(ColorFactory.getHexColorString(omg.getFillColor()));
+            record.add(ColorFactory.getHexColorString(omg.getSelectColor()));
+            BasicStroke bs = (BasicStroke)omg.getStroke();
+            record.add(new Double(bs.getLineWidth()));
+            String dp = BasicStrokeEditor.dashArrayToString(bs.getDashArray());
+            if (dp == BasicStrokeEditor.NONE) {
+                dp = "";
+            }
+            record.add(dp);
+            record.add(new Double(bs.getDashPhase()));
+            _model.addRecord(record);
+            if (DEBUG) Debug.output("ESE: adding record: " + record);
+        }
 
         return _model;
     }
@@ -673,7 +673,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         //compare the first and last set of points, equal points
         //verifies a polygon.
         if (points[0] == points[i - 2] && 
-	    points[1] == points[i - 1]) {
+            points[1] == points[i - 1]) {
 
             isPolygon = true;
         }
@@ -689,13 +689,13 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * Generic error handling, puts up an error window.
      */
     protected void handleException(Exception e) {
-	//System.out.println(e);
-	StringBuffer sb = new StringBuffer("ShapeFile Export Error:");
-	sb.append("\nProblem with creating the shapefile set.");
-	sb.append("\n" + e.toString());
-	
-	JOptionPane.showMessageDialog(null, sb.toString(), "ESRI Shape Export to File", JOptionPane.ERROR_MESSAGE);
-	e.printStackTrace();
+        //System.out.println(e);
+        StringBuffer sb = new StringBuffer("ShapeFile Export Error:");
+        sb.append("\nProblem with creating the shapefile set.");
+        sb.append("\n" + e.toString());
+        
+        JOptionPane.showMessageDialog(null, sb.toString(), "ESRI Shape Export to File", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
     }
 
     /**
@@ -703,35 +703,35 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * null if the user cancels.
      */
     public String getFilePathFromUser() {
-	String ret = null;
-	try {
-	    //setup the file chooser
-	    File startingPoint = new File(Environment.get("lastchosendirectory", System.getProperty("user.home")));
-	    JFileChooser chooser = new JFileChooser(startingPoint);
+        String ret = null;
+        try {
+            //setup the file chooser
+            File startingPoint = new File(Environment.get("lastchosendirectory", System.getProperty("user.home")));
+            JFileChooser chooser = new JFileChooser(startingPoint);
 
-	    chooser.setDialogTitle("Select ShapeFile Set Name...");
+            chooser.setDialogTitle("Select ShapeFile Set Name...");
 
-	    int state = chooser.showSaveDialog(null);
-	    //only bother trying to read the file if there is one
-	    //for some reason, the APPROVE_OPTION said it was a
-	    //boolean during compile and didn't work in this next
-	    //statement
-	    if ((state != JFileChooser.CANCEL_OPTION) && 
-		(state != JFileChooser.ERROR_OPTION)) {
+            int state = chooser.showSaveDialog(null);
+            //only bother trying to read the file if there is one
+            //for some reason, the APPROVE_OPTION said it was a
+            //boolean during compile and didn't work in this next
+            //statement
+            if ((state != JFileChooser.CANCEL_OPTION) && 
+                (state != JFileChooser.ERROR_OPTION)) {
 
-		ret = chooser.getSelectedFile().getCanonicalPath();
+                ret = chooser.getSelectedFile().getCanonicalPath();
 
-		//store the selected file for later
-		Environment.set("lastchosendirectory", ret);
-	    } else {
-		// no need to try to continue if the user doesn't
-		// actually pick a filename
-		if (DEBUG) Debug.output("ESE: No output file chosen.");
-	    }
-	} catch (IOException ioe) {
-	    handleException(ioe);
-	}
-	return ret;
+                //store the selected file for later
+                Environment.set("lastchosendirectory", ret);
+            } else {
+                // no need to try to continue if the user doesn't
+                // actually pick a filename
+                if (DEBUG) Debug.output("ESE: No output file chosen.");
+            }
+        } catch (IOException ioe) {
+            handleException(ioe);
+        }
+        return ret;
     }
 
     /**
@@ -742,130 +742,130 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      */
     public class ESEInterface {
 
-	protected EsriGraphicList list;
-	protected DbfTableModel model;
-	protected String suffix;
-	protected String filePath;
+        protected EsriGraphicList list;
+        protected DbfTableModel model;
+        protected String suffix;
+        protected String filePath;
 
-	File shpFile = null;
-	File shxFile = null;
-	File dbfFile = null;
+        File shpFile = null;
+        File shxFile = null;
+        File dbfFile = null;
 
-	protected JTextField filePathField;
+        protected JTextField filePathField;
 
-	public ESEInterface(EsriGraphicList eglist, 
-			    String filePathString,
-			    String fileNameSuffix) {
-	    list = eglist;
-	    filePath = filePathString;
+        public ESEInterface(EsriGraphicList eglist, 
+                            String filePathString,
+                            String fileNameSuffix) {
+            list = eglist;
+            filePath = filePathString;
 
-	    model = eglist.getTable();
+            model = eglist.getTable();
 
-	    if (model == null) {
-		model = createDefaultModel(list);
-	    }
-	    model.setWritable(true);
+            if (model == null) {
+                model = createDefaultModel(list);
+            }
+            model.setWritable(true);
 
-	    suffix = (fileNameSuffix==null?"":fileNameSuffix);
-	}
+            suffix = (fileNameSuffix==null?"":fileNameSuffix);
+        }
 
-	public Component getGUI() {
-	    JPanel panel = new JPanel();
+        public Component getGUI() {
+            JPanel panel = new JPanel();
 
-	    int type = list.getType();
-	    String sectionTitle;
-	    switch (type) {
-	    case (SHAPE_TYPE_POINT):
-		sectionTitle = "Point Shape File";
-		break;
-	    case (SHAPE_TYPE_POLYLINE):
-		sectionTitle = "Line Shape File";
-		break;
-	    case (SHAPE_TYPE_POLYGON):
-		sectionTitle = "Polygon Shape File";
-		break;
-	    default:
-		sectionTitle = "Shape File";
-	    }
+            int type = list.getType();
+            String sectionTitle;
+            switch (type) {
+            case (SHAPE_TYPE_POINT):
+                sectionTitle = "Point Shape File";
+                break;
+            case (SHAPE_TYPE_POLYLINE):
+                sectionTitle = "Line Shape File";
+                break;
+            case (SHAPE_TYPE_POLYGON):
+                sectionTitle = "Polygon Shape File";
+                break;
+            default:
+                sectionTitle = "Shape File";
+            }
 
-	    panel.setBorder(
-		BorderFactory.createTitledBorder(
-		    BorderFactory.createEtchedBorder(), sectionTitle));
-	    
-	    panel.setLayout(new GridLayout(0, 1));
-	    JPanel pathPanel = new JPanel();
-	    filePathField = new JTextField(20);
-	    filePathField.setText(filePath + suffix);
-	    JButton filePathChooserLauncher = new JButton("Change Path");
-	    filePathChooserLauncher.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent ae) {
-			setFilePath(getFilePathFromUser());
-		    }
-		});
+            panel.setBorder(
+                BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(), sectionTitle));
+            
+            panel.setLayout(new GridLayout(0, 1));
+            JPanel pathPanel = new JPanel();
+            filePathField = new JTextField(20);
+            filePathField.setText(filePath + suffix);
+            JButton filePathChooserLauncher = new JButton("Change Path");
+            filePathChooserLauncher.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        setFilePath(getFilePathFromUser());
+                    }
+                });
 
-	    panel.add(filePathField);
+            panel.add(filePathField);
 
-	    JButton editDBFButton = new JButton("Edit the Attribute File...");
-	    editDBFButton.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent ae) {
-			model.showGUI(getFilePath() + " Attributes", DbfTableModel.DONE_MASK | DbfTableModel.MODIFY_COLUMN_MASK);
-		    }
-		});
+            JButton editDBFButton = new JButton("Edit the Attribute File...");
+            editDBFButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        model.showGUI(getFilePath() + " Attributes", DbfTableModel.DONE_MASK | DbfTableModel.MODIFY_COLUMN_MASK);
+                    }
+                });
 
-	    pathPanel.add(editDBFButton);
-	    pathPanel.add(filePathChooserLauncher);
+            pathPanel.add(editDBFButton);
+            pathPanel.add(filePathChooserLauncher);
 
-	    panel.add(pathPanel);
+            panel.add(pathPanel);
 
-	    return panel;
-	}
+            return panel;
+        }
 
-	protected void setFilePath(String path) {
-	    filePath = path;
-	}
+        protected void setFilePath(String path) {
+            filePath = path;
+        }
 
-	public void write() {
+        public void write() {
 
-	    if (filePathField != null) {
-		filePath = filePathField.getText();
-	    } 
+            if (filePathField != null) {
+                filePath = filePathField.getText();
+            } 
 
-	    if (filePath == null) {
-		filePath = getFilePathFromUser();
-		if (filePath == null) {
-		    return;
-		}
-	    }
+            if (filePath == null) {
+                filePath = getFilePathFromUser();
+                if (filePath == null) {
+                    return;
+                }
+            }
 
-	    shpFile = new File(filePath + ".shp");
-	    shxFile = new File(filePath + ".shx");
-	    dbfFile = new File(filePath + ".dbf");
+            shpFile = new File(filePath + ".shp");
+            shxFile = new File(filePath + ".shx");
+            dbfFile = new File(filePath + ".dbf");
 
-	    try {
-	    
-		//create an esriGraphicList and export it to the shapefile set
-		if (DEBUG) Debug.output("ESE writing: " + 
-					list.size() + 
-					" elements");
-		
-		ShpOutputStream pos = 
-		    new ShpOutputStream(new FileOutputStream(shpFile));
-		int[][] indexData = pos.writeGeometry(list);
-		
-		ShxOutputStream xos = 
-		    new ShxOutputStream(new FileOutputStream(shxFile));
-		xos.writeIndex(indexData, list.getType());
-		
-		if (getWriteDBF()) {
-		    DbfOutputStream dos = 
-			new DbfOutputStream(new FileOutputStream(dbfFile));
-		    dos.writeModel(model);
-		}
+            try {
+            
+                //create an esriGraphicList and export it to the shapefile set
+                if (DEBUG) Debug.output("ESE writing: " + 
+                                        list.size() + 
+                                        " elements");
+                
+                ShpOutputStream pos = 
+                    new ShpOutputStream(new FileOutputStream(shpFile));
+                int[][] indexData = pos.writeGeometry(list);
+                
+                ShxOutputStream xos = 
+                    new ShxOutputStream(new FileOutputStream(shxFile));
+                xos.writeIndex(indexData, list.getType());
+                
+                if (getWriteDBF()) {
+                    DbfOutputStream dos = 
+                        new DbfOutputStream(new FileOutputStream(dbfFile));
+                    dos.writeModel(model);
+                }
 
-	    } catch (Exception e) {
-		handleException(e);
-	    }
-	}
+            } catch (Exception e) {
+                handleException(e);
+            }
+        }
 
     }
 }

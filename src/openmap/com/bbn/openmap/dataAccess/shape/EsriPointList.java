@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPointList.java,v $
 // $RCSfile: EsriPointList.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/01 12:39:02 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,49 +40,49 @@ public class EsriPointList extends EsriGraphicList {
      * @param shape the non-null OMGraphic to add 
      */
     public void add(OMGraphic shape) {
-	try {
-	    if (shape instanceof OMPoint) {
-		shape = EsriPoint.convert((OMPoint) shape);
-		// test for null in next if statement.
-	    }
+        try {
+            if (shape instanceof OMPoint) {
+                shape = EsriPoint.convert((OMPoint) shape);
+                // test for null in next if statement.
+            }
 
-	    if (shape instanceof EsriPointList) {
-		OMGraphicList list = (OMGraphicList)shape;
-		EsriGraphic graphic = (EsriGraphic)list.getOMGraphicAt(0);
-		
-		if (graphic instanceof EsriPoint ||
-		    graphic instanceof EsriPointList) {
-		    graphics.add(shape);
-		    addExtents(((EsriGraphicList)shape).getExtents());
-		} else if (graphic instanceof OMGraphic) {
-		    // Try recursively...
-		    add((OMGraphic)graphic);
-		} else {
-		    Debug.message("esri", "EsriPointList.add()- graphic list isn't EsriPointList, can't add.");
-		}
-	    } else if (shape instanceof EsriPoint) {
-		graphics.add(shape);
-		addExtents(((EsriPoint)shape).getExtents());
-	    } else {
-		Debug.message("esri", "EsriPointList.add()- graphic isn't an EsriPoint, can't add.");
-		return;
-	    }
-	} catch (ClassCastException cce) {
-	}
+            if (shape instanceof EsriPointList) {
+                OMGraphicList list = (OMGraphicList)shape;
+                EsriGraphic graphic = (EsriGraphic)list.getOMGraphicAt(0);
+                
+                if (graphic instanceof EsriPoint ||
+                    graphic instanceof EsriPointList) {
+                    graphics.add(shape);
+                    addExtents(((EsriGraphicList)shape).getExtents());
+                } else if (graphic instanceof OMGraphic) {
+                    // Try recursively...
+                    add((OMGraphic)graphic);
+                } else {
+                    Debug.message("esri", "EsriPointList.add()- graphic list isn't EsriPointList, can't add.");
+                }
+            } else if (shape instanceof EsriPoint) {
+                graphics.add(shape);
+                addExtents(((EsriPoint)shape).getExtents());
+            } else {
+                Debug.message("esri", "EsriPointList.add()- graphic isn't an EsriPoint, can't add.");
+                return;
+            }
+        } catch (ClassCastException cce) {
+        }
     }
 
     /**
      * Get the list type in ESRI type number form - 0.
      */
     public int getType() {
-	return SHAPE_TYPE_POINT;
+        return SHAPE_TYPE_POINT;
     }
 
     /**
      * Construct an EsriPointList.
      */
     public EsriPointList() {
-	super();
+        super();
     }
     
     /**
@@ -91,7 +91,7 @@ public class EsriPointList extends EsriGraphicList {
      * @param initialCapacity the initial capacity of the list 
      */
     public EsriPointList(int initialCapacity) {
-	super(initialCapacity);
+        super(initialCapacity);
     }
 
     /**
@@ -103,17 +103,17 @@ public class EsriPointList extends EsriGraphicList {
      * @deprecated capacityIncrement doesn't do anything.
      */
     public EsriPointList(int initialCapacity, int capacityIncrement) {
-	super(initialCapacity);
+        super(initialCapacity);
     }
 
     public EsriGraphic shallowCopy() {
-	EsriPointList ret = new EsriPointList(size());
-	ret.setAppObject(getAppObject());
-	for (Iterator iter = iterator(); iter.hasNext(); ) {
-	    EsriGraphic g = (EsriGraphic)iter.next();
-	    ret.add((OMGraphic)g.shallowCopy());
-	}
-	return ret;
+        EsriPointList ret = new EsriPointList(size());
+        ret.setAppObject(getAppObject());
+        for (Iterator iter = iterator(); iter.hasNext(); ) {
+            EsriGraphic g = (EsriGraphic)iter.next();
+            ret.add((OMGraphic)g.shallowCopy());
+        }
+        return ret;
     }
 }
 

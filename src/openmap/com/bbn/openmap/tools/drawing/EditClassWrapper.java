@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/EditClassWrapper.java,v $
 // $RCSfile: EditClassWrapper.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,47 +39,47 @@ public class EditClassWrapper {
     protected String prettyName;
     
     public EditClassWrapper(String classname,
-			    String editableclassname,
-			    String iconname,
-			    String prettyname) {
-	className = classname;
-	editableClassName = editableclassname;
-	prettyName = prettyname;
-	URL url = this.getClass().getResource(iconname);
-	if (url != null) {
-	    icon = new ImageIcon(url);
-	}
+                            String editableclassname,
+                            String iconname,
+                            String prettyname) {
+        className = classname;
+        editableClassName = editableclassname;
+        prettyName = prettyname;
+        URL url = this.getClass().getResource(iconname);
+        if (url != null) {
+            icon = new ImageIcon(url);
+        }
     }
 
     public void setClassName(String classname) {
-	className = classname;
+        className = classname;
     }
 
     public String getClassName() {
-	return className;
+        return className;
     }
 
     public void setEditableClassName(String editableclassname) {
-	editableClassName = editableclassname;
+        editableClassName = editableclassname;
     }
 
     public String getEditableClassName() {
-	return editableClassName;
+        return editableClassName;
     }
 
     public void setPrettyName(String prettyname) {
-	prettyName = prettyname;
+        prettyName = prettyname;
     }
 
     public String getPrettyName() {
-	return prettyName;
+        return prettyName;
     }
 
     public void setIcon(ImageIcon image) {
-	icon = image;
+        icon = image;
     }
 
     public ImageIcon getIcon() {
-	return icon;
+        return icon;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/TimeStamp.java,v $
 // $RCSfile: TimeStamp.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,39 +47,39 @@ public class TimeStamp implements Comparator {
      * Create a TimeStamp to be used as a position by ScenarioPoints.
      */
     public TimeStamp(float lat, float lon, long t) {
-	latitude = lat;
-	longitude = lon;
-	time = t;
+        latitude = lat;
+        longitude = lon;
+        time = t;
     }
 
     public String toString() {
-	return "TimeStamp [ lat=" + latitude + " lon=" + longitude + " time=" + time + " ]";
+        return "TimeStamp [ lat=" + latitude + " lon=" + longitude + " time=" + time + " ]";
     }
 
     public void setTime(long t) {
-	time = t;
+        time = t;
     }
 
     public long getTime() {
-	return time;
+        return time;
     }
 
     public void setLocation(LatLonPoint llp) {
-	setLocation(llp.getLatitude(), llp.getLongitude());
+        setLocation(llp.getLatitude(), llp.getLongitude());
     }
 
     public void setLocation(float lat, float lon) {
-	latitude = lat;
-	longitude = lon;
+        latitude = lat;
+        longitude = lon;
     }
 
     public LatLonPoint getLocation() {
-	return getLocation(new LatLonPoint());
+        return getLocation(new LatLonPoint());
     }
 
     public LatLonPoint getLocation(LatLonPoint llp) {
-	llp.setLatLon(latitude, longitude);
-	return llp;
+        llp.setLatLon(latitude, longitude);
+        return llp;
     }
 
     /**
@@ -90,15 +90,15 @@ public class TimeStamp implements Comparator {
      * fields.
      */
     public int compare(Object obj1, Object obj2) {
-	long time1 = ((TimeStamp)obj1).time;
-	long time2 = ((TimeStamp)obj2).time;
-	if (time1 < time2) {
-	    return -1;
-	} else if (time1 > time2) {
-	    return 1;
-	} else {
-	    return 0;
-	}
+        long time1 = ((TimeStamp)obj1).time;
+        long time2 = ((TimeStamp)obj2).time;
+        if (time1 < time2) {
+            return -1;
+        } else if (time1 > time2) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -107,7 +107,7 @@ public class TimeStamp implements Comparator {
      * object.  Compares time fields.
      */
     public boolean equals(Object obj) {
-	return (((TimeStamp)obj).time == time);
+        return (((TimeStamp)obj).time == time);
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/TextStateMachine.java,v $
 // $RCSfile: TextStateMachine.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:50:27 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,17 +30,17 @@ import com.bbn.openmap.util.Debug;
 public class TextStateMachine extends EOMGStateMachine {
 
     public TextStateMachine(EditableOMText text) {
-	super(text);
+        super(text);
     }
 
 
     protected State[] init() {
-	State[] states = super.init();
+        State[] states = super.init();
 
-	//  These are the only three states that need something special to happen.
-	states[GRAPHIC_UNDEFINED] = new TextUndefinedState((EditableOMText)graphic);
-	states[GRAPHIC_EDIT] = new TextEditState((EditableOMText)graphic);
-	states[GRAPHIC_SETOFFSET] = new TextSetOffsetState((EditableOMText)graphic);
-	return states;
+        //  These are the only three states that need something special to happen.
+        states[GRAPHIC_UNDEFINED] = new TextUndefinedState((EditableOMText)graphic);
+        states[GRAPHIC_EDIT] = new TextEditState((EditableOMText)graphic);
+        states[GRAPHIC_SETOFFSET] = new TextSetOffsetState((EditableOMText)graphic);
+        return states;
     }
 }

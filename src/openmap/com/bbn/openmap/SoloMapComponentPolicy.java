@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/SoloMapComponentPolicy.java,v $
 // $RCSfile: SoloMapComponentPolicy.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/05 15:38:21 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,6 +40,6 @@ public interface SoloMapComponentPolicy {
      * conflict if there is one and the object can't be added.
      */
     public boolean canAdd(BeanContextSupport bc, Object obj) 
-	throws MultipleSoloMapComponentException;
+        throws MultipleSoloMapComponentException;
 
 }

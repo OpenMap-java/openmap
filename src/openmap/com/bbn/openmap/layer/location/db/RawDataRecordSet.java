@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/db/RawDataRecordSet.java,v $
 // $RCSfile: RawDataRecordSet.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,103 +63,103 @@ public class RawDataRecordSet {
     public RawDataRecordSet() {}
 
     public RawDataRecordSet(Connection inConnection){
-	setConnection(inConnection);
+        setConnection(inConnection);
     }
     
     public RawDataRecordSet(Connection inconnection, String prefix,
-			    Properties properties){
+                            Properties properties){
 
-	if (prefix != null) {
-	    prefix = prefix + ".";
-	} else {
-	    prefix = "";
-	}
-	
-	setConnection(inconnection);
-	setTableName(properties.getProperty(prefix+tableNameProperty));
-	setRawDataColumnName(properties.getProperty(prefix+rawDataColumnNameProperty));
-	setRawDataKeyColumnName(properties.getProperty(prefix+rawDataKeyColumnNameProperty));
-    }	
+        if (prefix != null) {
+            prefix = prefix + ".";
+        } else {
+            prefix = "";
+        }
+        
+        setConnection(inconnection);
+        setTableName(properties.getProperty(prefix+tableNameProperty));
+        setRawDataColumnName(properties.getProperty(prefix+rawDataColumnNameProperty));
+        setRawDataKeyColumnName(properties.getProperty(prefix+rawDataKeyColumnNameProperty));
+    }   
 
     /** Returns a byte[] array if successfull, null otherwise */
     public byte[] getRawData(String lookUpKey) throws SQLException {
 
-	byte[] foundit = (byte[]) byteCache.get(lookUpKey.toLowerCase().intern());
+        byte[] foundit = (byte[]) byteCache.get(lookUpKey.toLowerCase().intern());
 
-	if (foundit != null){
-	    return foundit;
-	}
+        if (foundit != null){
+            return foundit;
+        }
 
-	String query = "Select " + rawDataColumnName + 
-	    " from " + tableName+ 
-	    " where " + rawDataKeyColumnName + 
-	    " = '"+ lookUpKey.toLowerCase() +"' ";
+        String query = "Select " + rawDataColumnName + 
+            " from " + tableName+ 
+            " where " + rawDataKeyColumnName + 
+            " = '"+ lookUpKey.toLowerCase() +"' ";
 
-	try {
-	    Statement stmt = connection.createStatement ();
-	    ResultSet rset = stmt.executeQuery(query);
-	    rset.next();
+        try {
+            Statement stmt = connection.createStatement ();
+            ResultSet rset = stmt.executeQuery(query);
+            rset.next();
 
-	    // This is the only(first hence 1)
-	    InputStream dbis  = rset.getBinaryStream(1); 
-	    int chunksize = 4096;
-	    byte barr[] = new byte[chunksize];
-	    int imagelength = 0;;
+            // This is the only(first hence 1)
+            InputStream dbis  = rset.getBinaryStream(1); 
+            int chunksize = 4096;
+            byte barr[] = new byte[chunksize];
+            int imagelength = 0;;
 
-	    try {
-		imagelength = dbis.read(barr);
-	    } catch(IOException ioE) {				
-		System.err.println("ERROR - while reading raw data\n" + ioE.getMessage());
-	    }
-// 	    System.out.println("image length = " + imagelength);
-	    byte image[] = new byte[imagelength];
-	    System.arraycopy(barr,0,image,0,imagelength);
+            try {
+                imagelength = dbis.read(barr);
+            } catch(IOException ioE) {                          
+                System.err.println("ERROR - while reading raw data\n" + ioE.getMessage());
+            }
+//          System.out.println("image length = " + imagelength);
+            byte image[] = new byte[imagelength];
+            System.arraycopy(barr,0,image,0,imagelength);
 
-	    // close the resultSet
-	    rset.close();		
-	    // Close the statement
-	    stmt.close();
-	    byteCache.put(lookUpKey.toLowerCase().intern(), image);
-	    return image;
+            // close the resultSet
+            rset.close();               
+            // Close the statement
+            stmt.close();
+            byteCache.put(lookUpKey.toLowerCase().intern(), image);
+            return image;
 
-	} catch(SQLException sqlE){			
-// 	    throw new SQLException(sqlE.getMessage() + "\n"+ 
-// 				   "SQL String " + query);
-	    System.err.println("ERROR - " + sqlE.getMessage() + "\n" +  
-			       "SQL String: " + query);
-	    return null;
-	}
+        } catch(SQLException sqlE){                     
+//          throw new SQLException(sqlE.getMessage() + "\n"+ 
+//                                 "SQL String " + query);
+            System.err.println("ERROR - " + sqlE.getMessage() + "\n" +  
+                               "SQL String: " + query);
+            return null;
+        }
     }
 
     public Connection getConnection(){
-	return connection;
+        return connection;
     }
 
     public void setConnection(Connection inConnection){
-	connection = inConnection;
+        connection = inConnection;
     }
     
     public String getTableName(){
-	return tableName;
+        return tableName;
     }
 
     public void setTableName(String inTableName){
-	tableName = inTableName;
+        tableName = inTableName;
     }
-	
+        
     public String getRawDataColumnName(){
-	return rawDataColumnName;
+        return rawDataColumnName;
     }
     
     public void setRawDataColumnName(String inrawDataColumnName){
-	rawDataColumnName = inrawDataColumnName;
+        rawDataColumnName = inrawDataColumnName;
     }
     
     public String getRawDataKeyColumnName(){
-	return rawDataKeyColumnName;
+        return rawDataKeyColumnName;
     }
-	
+        
     public void setRawDataKeyColumnName(String inrawDataKeyColumnName){
-	rawDataKeyColumnName = inrawDataKeyColumnName;
+        rawDataKeyColumnName = inrawDataKeyColumnName;
     }
 }

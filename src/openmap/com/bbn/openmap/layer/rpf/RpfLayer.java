@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/11/14 20:36:36 $
+// $Revision: 1.9 $
+// $Date: 2004/01/26 18:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -156,8 +156,8 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * paths. 
      */
     public RpfLayer() {
-	viewAttributes = new RpfViewAttributes();
-	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+        viewAttributes = new RpfViewAttributes();
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
 
     /** 
@@ -168,8 +168,8 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * A.TOC files.  
      */
     public RpfLayer(String[] pathsToRPFDirs) {
-	this();
-	setPaths(pathsToRPFDirs);
+        this();
+        setPaths(pathsToRPFDirs);
     }
 
     /**
@@ -181,14 +181,14 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * RPF directories.  
      */
     public void setPaths(String[] pathsToRPFDirs) {
-	if (pathsToRPFDirs != null) {
-	    setFrameProvider(new RpfFrameCacheHandler(pathsToRPFDirs));
-	} else {
-	    Debug.output("RpfLayer: Need RPF directory paths.");
-	    frameProvider = null;
-	}
-	paths = pathsToRPFDirs;
-	this.cache = null;
+        if (pathsToRPFDirs != null) {
+            setFrameProvider(new RpfFrameCacheHandler(pathsToRPFDirs));
+        } else {
+            Debug.output("RpfLayer: Need RPF directory paths.");
+            frameProvider = null;
+        }
+        paths = pathsToRPFDirs;
+        this.cache = null;
     }
 
     /**
@@ -197,7 +197,7 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * @return String[]
      */
     public String[] getPaths() {
-	return paths;
+        return paths;
     }
 
    /** 
@@ -206,20 +206,20 @@ public class RpfLayer extends OMGraphicHandlerLayer
      *  link. 
      */
     public void removed(java.awt.Container cont) {
-	if (killCache) {
-	    Debug.message("rpf", "RpfLayer: emptying cache!");
-	    clearCache();
-	}
+        if (killCache) {
+            Debug.message("rpf", "RpfLayer: emptying cache!");
+            clearCache();
+        }
 
-	// need to reset this for when it gets added again, if it was
-	// removed without the projection actually changing. This
-	// helps when the cache needs to be rebuilt.
-	setProjection((Projection)null); 
+        // need to reset this for when it gets added again, if it was
+        // removed without the projection actually changing. This
+        // helps when the cache needs to be rebuilt.
+        setProjection((Projection)null); 
     }
 
     protected void setDefaultValues() {
-	// defaults
-	paths = null;
+        // defaults
+        paths = null;
     }
 
     /**
@@ -227,30 +227,30 @@ public class RpfLayer extends OMGraphicHandlerLayer
      */
     public void setProperties(String prefix, java.util.Properties properties) {
 
-	super.setProperties(prefix, properties);
+        super.setProperties(prefix, properties);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	paths = LayerUtils.initPathsFromProperties(properties, 
-						   prefix + RpfPathsProperty);
+        paths = LayerUtils.initPathsFromProperties(properties, 
+                                                   prefix + RpfPathsProperty);
 
-	viewAttributes.setProperties(prefix, properties);
+        viewAttributes.setProperties(prefix, properties);
 
-	subframeCacheSize = LayerUtils.intFromProperties(properties, prefix + CacheSizeProperty, RpfCacheHandler.SUBFRAME_CACHE_SIZE);
+        subframeCacheSize = LayerUtils.intFromProperties(properties, prefix + CacheSizeProperty, RpfCacheHandler.SUBFRAME_CACHE_SIZE);
 
-	auxSubframeCacheSize = LayerUtils.intFromProperties(properties, prefix + CacheSizeProperty, RpfCacheManager.SMALL_CACHE_SIZE);
+        auxSubframeCacheSize = LayerUtils.intFromProperties(properties, prefix + CacheSizeProperty, RpfCacheManager.SMALL_CACHE_SIZE);
 
-	if (viewAttributes.chartSeries == null) 
-	    viewAttributes.chartSeries = RpfViewAttributes.ANY;
+        if (viewAttributes.chartSeries == null) 
+            viewAttributes.chartSeries = RpfViewAttributes.ANY;
 
-	killCache = LayerUtils.booleanFromProperties(properties, prefix + KillCacheProperty, true);
+        killCache = LayerUtils.booleanFromProperties(properties, prefix + KillCacheProperty, true);
 
-	if (LayerUtils.booleanFromProperties(properties, 
-					     prefix + CoverageProperty, false)) {
-	    setCoverage(new RpfCoverage(this));
-	    coverage.setProperties(prefix, properties);
-	}
-	
+        if (LayerUtils.booleanFromProperties(properties, 
+                                             prefix + CoverageProperty, false)) {
+            setCoverage(new RpfCoverage(this));
+            coverage.setProperties(prefix, properties);
+        }
+        
     }
 
     /**
@@ -269,43 +269,43 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        props = super.getProperties(props);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	// find out paths...
-	String[] p = getPaths();
-	StringBuffer pathString = new StringBuffer();
-	if (p != null) {
-	    for (int i = 0; i < p.length; i++) {
-		if (p[i] != null) {
-		    pathString.append(p[i]);
-		    if (i < p.length - 1) {
-			pathString.append(";"); // separate paths with ;
-		    }
-		}
-	    }
-	    props.put(prefix + RpfPathsProperty, pathString.toString());
-	} else {
-	    props.put(prefix + RpfPathsProperty, "");
-	}
+        // find out paths...
+        String[] p = getPaths();
+        StringBuffer pathString = new StringBuffer();
+        if (p != null) {
+            for (int i = 0; i < p.length; i++) {
+                if (p[i] != null) {
+                    pathString.append(p[i]);
+                    if (i < p.length - 1) {
+                        pathString.append(";"); // separate paths with ;
+                    }
+                }
+            }
+            props.put(prefix + RpfPathsProperty, pathString.toString());
+        } else {
+            props.put(prefix + RpfPathsProperty, "");
+        }
     
-	props.put(prefix + KillCacheProperty, new Boolean(killCache).toString());
-	props.put(prefix + CoverageProperty, new Boolean(coverage == null).toString());
-	props.put(prefix + CacheSizeProperty, Integer.toString(subframeCacheSize));
-	props.put(prefix + AuxCacheSizeProperty, Integer.toString(auxSubframeCacheSize));
+        props.put(prefix + KillCacheProperty, new Boolean(killCache).toString());
+        props.put(prefix + CoverageProperty, new Boolean(coverage == null).toString());
+        props.put(prefix + CacheSizeProperty, Integer.toString(subframeCacheSize));
+        props.put(prefix + AuxCacheSizeProperty, Integer.toString(auxSubframeCacheSize));
 
-	viewAttributes.setPropertyPrefix(prefix);
-	viewAttributes.getProperties(props);
+        viewAttributes.setPropertyPrefix(prefix);
+        viewAttributes.getProperties(props);
 
-	if (coverage == null) {
-	    RpfCoverage cov = new RpfCoverage(this);
-	    cov.setProperties(prefix, new Properties());
-	    cov.getProperties(props);
-	} else {
-	    coverage.getProperties(props);
-	}
+        if (coverage == null) {
+            RpfCoverage cov = new RpfCoverage(this);
+            cov.setProperties(prefix, new Properties());
+            cov.getProperties(props);
+        } else {
+            coverage.getProperties(props);
+        }
 
-	return props;
+        return props;
     }
 
     /**
@@ -327,35 +327,35 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * PropertyConsumer. 
      */
     public Properties getPropertyInfo(Properties list) {
-	list = super.getPropertyInfo(list);
-	
-	list.put(RpfPathsProperty, "Paths to RPF directories.  Semi-colon separated paths");
-	list.put(RpfPathsProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.MultiDirectoryPropertyEditor");
+        list = super.getPropertyInfo(list);
+        
+        list.put(RpfPathsProperty, "Paths to RPF directories.  Semi-colon separated paths");
+        list.put(RpfPathsProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.MultiDirectoryPropertyEditor");
 
-	list.put(KillCacheProperty, "Flag to trigger the cache to be cleared when layer is removed from the map.");
-	list.put(KillCacheProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+        list.put(KillCacheProperty, "Flag to trigger the cache to be cleared when layer is removed from the map.");
+        list.put(KillCacheProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
 
-	list.put(CoverageProperty, "Flag that adds the coverage tool to the layer.");
-	list.put(CoverageProperty + ScopedEditorProperty,
-		 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+        list.put(CoverageProperty, "Flag that adds the coverage tool to the layer.");
+        list.put(CoverageProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
 
-	list.put(CacheSizeProperty, "Number of frames to hold in the frame cache.");
-	list.put(AuxCacheSizeProperty, "Number of subframes to hold in the subframe cache.");
+        list.put(CacheSizeProperty, "Number of frames to hold in the frame cache.");
+        list.put(AuxCacheSizeProperty, "Number of subframes to hold in the subframe cache.");
 
-	viewAttributes.getPropertyInfo(list);
+        viewAttributes.getPropertyInfo(list);
 
-	RpfCoverage tmpCov = coverage;
-	if (tmpCov == null) {
-	    tmpCov = new RpfCoverage(this);
-	}
+        RpfCoverage tmpCov = coverage;
+        if (tmpCov == null) {
+            tmpCov = new RpfCoverage(this);
+        }
 
-	tmpCov.getPropertyInfo(list);
+        tmpCov.getPropertyInfo(list);
 
-	list.put(initPropertiesProperty, RpfPathsProperty + " " + KillCacheProperty + " " + CacheSizeProperty + " " + AuxCacheSizeProperty + " " + viewAttributes.getInitPropertiesOrder() + " " + AddToBeanContextProperty + " " + CoverageProperty + " " + tmpCov.getInitPropertiesOrder());
+        list.put(initPropertiesProperty, RpfPathsProperty + " " + KillCacheProperty + " " + CacheSizeProperty + " " + AuxCacheSizeProperty + " " + viewAttributes.getInitPropertiesOrder() + " " + AddToBeanContextProperty + " " + CoverageProperty + " " + tmpCov.getInitPropertiesOrder());
 
-	return list;
+        return list;
     }
 
     /**
@@ -364,12 +364,12 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * @param aList a list of OMGraphics.
      */
     public synchronized void setGraphicList(OMGraphicList aList) {
-	setList(aList);
+        setList(aList);
     }
 
     /** Retrieves the current graphics list.  */
     public synchronized OMGraphicList getGraphicList() {
-	return getList();
+        return getList();
     }
 
     /**
@@ -377,20 +377,20 @@ public class RpfLayer extends OMGraphicHandlerLayer
      */
     public void clearCache() {
 
-	if (frameProvider instanceof CacheHandler) {
-	    ((CacheHandler)frameProvider).resetCache();
-	}
+        if (frameProvider instanceof CacheHandler) {
+            ((CacheHandler)frameProvider).resetCache();
+        }
 
-	if (this.cache != null) {
-	    this.cache.setViewAttributes(null);
-	    this.cache.setFrameProvider(null);
-	    this.cache.clearCaches();
-	}
+        if (this.cache != null) {
+            this.cache.setViewAttributes(null);
+            this.cache.setFrameProvider(null);
+            this.cache.clearCaches();
+        }
 
-	frameProvider = null;
+        frameProvider = null;
 
-	setGraphicList(null);
-	this.cache = null;
+        setGraphicList(null);
+        this.cache = null;
     }
 
     /**
@@ -399,10 +399,10 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * @param rva the RpfViewAttributes used for the layer.  
      */
     public void setViewAttributes(RpfViewAttributes rva) {
-	viewAttributes = rva;
-	if (this.cache != null) {
-	    this.cache.setViewAttributes(rva);
-	}
+        viewAttributes = rva;
+        if (this.cache != null) {
+            this.cache.setViewAttributes(rva);
+        }
     }
 
     /** 
@@ -410,7 +410,7 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * @return RpfViewAttributes.
      */
     public RpfViewAttributes getViewAttributes() {
-	return viewAttributes;
+        return viewAttributes;
     }
 
     /**
@@ -421,11 +421,11 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * @param cov the RpfCoverage tool.  
      */
     public void setCoverage(RpfCoverage cov) {
-	coverage = cov;
-	if (viewAttributes != null && coverage != null &&
-	    !viewAttributes.chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)) {
-	    coverage.setShowPalette(false);
-	}
+        coverage = cov;
+        if (viewAttributes != null && coverage != null &&
+            !viewAttributes.chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)) {
+            coverage.setShowPalette(false);
+        }
     }
 
     /**
@@ -433,7 +433,7 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * @return RpfCoverage tool.
      */
     public RpfCoverage getCoverage() {
-	return coverage;
+        return coverage;
     }
 
     /**
@@ -443,17 +443,17 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * @param fp the frame provider.  
      */
     public void setFrameProvider(RpfFrameProvider fp) {
-	frameProvider = fp;
-	if (this.cache != null) {
-	    this.cache.setFrameProvider(frameProvider);
-	}
+        frameProvider = fp;
+        if (this.cache != null) {
+            this.cache.setFrameProvider(frameProvider);
+        }
     }
 
     /**
      * Return RpfFrameProvider used by the layer.
      */
     public RpfFrameProvider getFrameProvider() {
-	return frameProvider;
+        return frameProvider;
     }
 
     /**
@@ -465,7 +465,7 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * @return Vector of RpfCoverageBoxes.  
      */
     public Vector getCoverageBoxes() {
-	return this.cache.getCoverageBoxes();
+        return this.cache.getCoverageBoxes();
     }
 
     /**
@@ -477,7 +477,7 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * bean. 
      */
     public void projectionChanged(ProjectionEvent e) {
-	projectionChanged(e, false);
+        projectionChanged(e, false);
     }
 
     /** 
@@ -494,39 +494,39 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * happening quickly.
      */
     public void projectionChanged(ProjectionEvent e, 
-				  boolean saveGraphicsForRedraw) {
-	Debug.message("basic", getName()+"|RpfLayer.projectionChanged()");
+                                  boolean saveGraphicsForRedraw) {
+        Debug.message("basic", getName()+"|RpfLayer.projectionChanged()");
 
-	// Need to grab a copy of the old projection in case
-	// saveGraphicsForRedraw is true and the projection changes,
-	// so we can test to see if the zone and scale have changed,
-	// testing for reuse of current frames.
-	Projection oldProj = getProjection();
-	Projection newProj = setProjection(e);
+        // Need to grab a copy of the old projection in case
+        // saveGraphicsForRedraw is true and the projection changes,
+        // so we can test to see if the zone and scale have changed,
+        // testing for reuse of current frames.
+        Projection oldProj = getProjection();
+        Projection newProj = setProjection(e);
 
-	if (newProj == null) {
-	    // Projection didn't change, nothing to do, already have
-	    // good graphics and just need to paint...
-	    repaint();
-	    return;
-	}
+        if (newProj == null) {
+            // Projection didn't change, nothing to do, already have
+            // good graphics and just need to paint...
+            repaint();
+            return;
+        }
 
-	if (saveGraphicsForRedraw && 
-	    oldProj instanceof CADRG &&
-	    newProj instanceof CADRG) {
+        if (saveGraphicsForRedraw && 
+            oldProj instanceof CADRG &&
+            newProj instanceof CADRG) {
 
-	    CADRG cadrg1 = (CADRG) oldProj;
-	    CADRG cadrg2 = (CADRG) newProj;
-	    if (cadrg1.getScale() != cadrg2.getScale() ||
-		cadrg1.getZone() != cadrg2.getZone()) {
-		setGraphicList(null);
-	    }
-	    // else set graphic list escapes deletion...
-	} else {
-	    setGraphicList(null);
-	}
+            CADRG cadrg1 = (CADRG) oldProj;
+            CADRG cadrg2 = (CADRG) newProj;
+            if (cadrg1.getScale() != cadrg2.getScale() ||
+                cadrg1.getZone() != cadrg2.getZone()) {
+                setGraphicList(null);
+            }
+            // else set graphic list escapes deletion...
+        } else {
+            setGraphicList(null);
+        }
 
-	doPrepare();
+        doPrepare();
     }
 
     /**
@@ -542,119 +542,119 @@ public class RpfLayer extends OMGraphicHandlerLayer
      */
     public OMGraphicList prepare() {
 
-	if (isCancelled()) {
-	    Debug.message("rpf", getName()+"|RpfLayer.prepare(): aborted.");
-	    return null;
-	}
+        if (isCancelled()) {
+            Debug.message("rpf", getName()+"|RpfLayer.prepare(): aborted.");
+            return null;
+        }
 
-	if (frameProvider == null) {
-	    // Assuming running locally - otherwise the
-	    // frameProvider should be set before we get here,
-	    // like in setProperties or in the constructor.
-	    setPaths(paths);
-	    if (frameProvider == null) {
-		// Doh! no paths were set!
-		Debug.error(getName()+"|RpfLayer.prepare(): null frame provider - either no RPF paths were set, or no frame provider was assigned.  The RpfLayer has no way to get RPF data.");
-		return new OMGraphicList();
-	    }
-	}
+        if (frameProvider == null) {
+            // Assuming running locally - otherwise the
+            // frameProvider should be set before we get here,
+            // like in setProperties or in the constructor.
+            setPaths(paths);
+            if (frameProvider == null) {
+                // Doh! no paths were set!
+                Debug.error(getName()+"|RpfLayer.prepare(): null frame provider - either no RPF paths were set, or no frame provider was assigned.  The RpfLayer has no way to get RPF data.");
+                return new OMGraphicList();
+            }
+        }
 
-	if (this.cache == null) {
-	    Debug.message("rpf", getName() + "|RpfLayer: Creating cache!");
-	    this.cache = new RpfCacheManager(frameProvider, viewAttributes,
-					     subframeCacheSize, auxSubframeCacheSize);
-	}
+        if (this.cache == null) {
+            Debug.message("rpf", getName() + "|RpfLayer: Creating cache!");
+            this.cache = new RpfCacheManager(frameProvider, viewAttributes,
+                                             subframeCacheSize, auxSubframeCacheSize);
+        }
 
-	Projection projection = getProjection();
+        Projection projection = getProjection();
 
-	if (coverage != null && coverage.isInUse()) {
-	    coverage.prepare(frameProvider, projection, 
-			     viewAttributes.chartSeries);
-	}
+        if (coverage != null && coverage.isInUse()) {
+            coverage.prepare(frameProvider, projection, 
+                             viewAttributes.chartSeries);
+        }
 
-	// Check to make sure the projection is CADRG
-	if (!(projection instanceof EqualArc) && 
-	    (viewAttributes.showMaps || viewAttributes.showInfo)) {
-	    fireRequestInfoLine("RpfLayer requires an Equal Arc projection (CADRG/LLXY) for images or attributes!");
-	    return null;
-	}
+        // Check to make sure the projection is CADRG
+        if (!(projection instanceof EqualArc) && 
+            (viewAttributes.showMaps || viewAttributes.showInfo)) {
+            fireRequestInfoLine("RpfLayer requires an Equal Arc projection (CADRG/LLXY) for images or attributes!");
+            return null;
+        }
 
-	Debug.message("basic", getName()+"|RpfLayer.prepare(): doing it");
+        Debug.message("basic", getName()+"|RpfLayer.prepare(): doing it");
 
-	// Setting the OMGraphicsList for this layer.  Remember, the
-	// OMGraphicList is made up of OMGraphics, which are generated
-	// (projected) when the graphics are added to the list.  So,
-	// after this call, the list is ready for painting.
+        // Setting the OMGraphicsList for this layer.  Remember, the
+        // OMGraphicList is made up of OMGraphics, which are generated
+        // (projected) when the graphics are added to the list.  So,
+        // after this call, the list is ready for painting.
 
-	// call getRectangle();
-	if (Debug.debugging("rpf")) {
-	    Debug.output(getName()+"|RpfLayer.prepare(): " +
-			 "calling getRectangle " +
-			 " with projection: " + projection +
-			 " ul = " + projection.getUpperLeft() + " lr = " + 
-			 projection.getLowerRight()); 
-	}
+        // call getRectangle();
+        if (Debug.debugging("rpf")) {
+            Debug.output(getName()+"|RpfLayer.prepare(): " +
+                         "calling getRectangle " +
+                         " with projection: " + projection +
+                         " ul = " + projection.getUpperLeft() + " lr = " + 
+                         projection.getLowerRight()); 
+        }
 
-	if (frameProvider.needViewAttributeUpdates()) {
-	    frameProvider.setViewAttributes(viewAttributes);
-	}
+        if (frameProvider.needViewAttributeUpdates()) {
+            frameProvider.setViewAttributes(viewAttributes);
+        }
 
-	Projection cadrgProj = projection;
-	if (!(projection instanceof CADRG)) {
-	    cadrgProj = new CADRG(projection.getCenter(), projection.getScale(),
-				  projection.getWidth(), projection.getHeight());
+        Projection cadrgProj = projection;
+        if (!(projection instanceof CADRG)) {
+            cadrgProj = new CADRG(projection.getCenter(), projection.getScale(),
+                                  projection.getWidth(), projection.getHeight());
 
-	    Point ulp = cadrgProj.forward(projection.getUpperLeft());
-	    Point lrp = cadrgProj.forward(projection.getLowerRight());
+            Point ulp = cadrgProj.forward(projection.getUpperLeft());
+            Point lrp = cadrgProj.forward(projection.getLowerRight());
 
-	    int w = (int)Math.abs(lrp.getX() - ulp.getX());
-	    int h = (int)Math.abs(lrp.getY() - ulp.getY());
+            int w = (int)Math.abs(lrp.getX() - ulp.getX());
+            int h = (int)Math.abs(lrp.getY() - ulp.getY());
 
-// 	    float cadrgScale = ProjMath.getScale(projection.getUpperLeft(),
-// 						 projection.getLowerRight(),
-// 						 cadrgProj);
+//          float cadrgScale = ProjMath.getScale(projection.getUpperLeft(),
+//                                               projection.getLowerRight(),
+//                                               cadrgProj);
 
-	    cadrgProj = new CADRG(projection.getCenter(), projection.getScale(),
-				  w, h);
-	}
+            cadrgProj = new CADRG(projection.getCenter(), projection.getScale(),
+                                  w, h);
+        }
 
-	// Fetch the list with a CADRG projection, generate it with
-	// the real projection.
+        // Fetch the list with a CADRG projection, generate it with
+        // the real projection.
 
-	OMGraphicList omGraphicList;
-	try{
-	    omGraphicList = this.cache.getRectangle(cadrgProj);
-	} catch (java.lang.NullPointerException npe) {
-	    Debug.error(getName() + 
-			"|RpfLayer.prepare(): Something really bad happened - \n " +
-			npe);
-	    npe.printStackTrace();
-	    omGraphicList = new OMGraphicList();
-	    this.cache = null;
-	}
+        OMGraphicList omGraphicList;
+        try{
+            omGraphicList = this.cache.getRectangle(cadrgProj);
+        } catch (java.lang.NullPointerException npe) {
+            Debug.error(getName() + 
+                        "|RpfLayer.prepare(): Something really bad happened - \n " +
+                        npe);
+            npe.printStackTrace();
+            omGraphicList = new OMGraphicList();
+            this.cache = null;
+        }
 
-	/////////////////////
-	// safe quit
-	int size = 0;
-	if (omGraphicList != null) {
-	    size = omGraphicList.size();	
-	    if (Debug.debugging("basic")) {
-		Debug.output("RpfLayer.prepare(): finished with "+
-			     size + " graphics");
-	    }
+        /////////////////////
+        // safe quit
+        int size = 0;
+        if (omGraphicList != null) {
+            size = omGraphicList.size();        
+            if (Debug.debugging("basic")) {
+                Debug.output("RpfLayer.prepare(): finished with "+
+                             size + " graphics");
+            }
 
-	    // Don't forget to project them.  Since they are only
-	    // being recalled if the projection hase changed, then we
-	    // need to force a reprojection of all of them because the
-	    // screen position has changed.
-	    omGraphicList.project(projection, true);
+            // Don't forget to project them.  Since they are only
+            // being recalled if the projection hase changed, then we
+            // need to force a reprojection of all of them because the
+            // screen position has changed.
+            omGraphicList.project(projection, true);
 
-	} else {
-	    Debug.message("basic", 
-			  "RpfLayer.prepare(): finished with null graphics list");
-	}
+        } else {
+            Debug.message("basic", 
+                          "RpfLayer.prepare(): finished with null graphics list");
+        }
 
-	return omGraphicList;
+        return omGraphicList;
     }
 
 
@@ -665,17 +665,17 @@ public class RpfLayer extends OMGraphicHandlerLayer
      *
      */
     public void paint(java.awt.Graphics g) {
-	Debug.message("rpf", "RpfLayer.paint()");
+        Debug.message("rpf", "RpfLayer.paint()");
 
-	OMGraphicList tmpGraphics = getGraphicList();
+        OMGraphicList tmpGraphics = getGraphicList();
 
-	if (tmpGraphics != null) {
-	    tmpGraphics.render(g);
-	}
+        if (tmpGraphics != null) {
+            tmpGraphics.render(g);
+        }
 
-	if (coverage != null && coverage.isInUse()) {
-	    coverage.paint(g);
-	}
+        if (coverage != null && coverage.isInUse()) {
+            coverage.paint(g);
+        }
     }
 
     
@@ -690,87 +690,87 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * @return Component object representing the palette widgets.
      */
     public java.awt.Component getGUI() {
-	if (box == null) {
-	    JCheckBox showMapsCheck, showInfoCheck, lockSeriesCheck;
+        if (box == null) {
+            JCheckBox showMapsCheck, showInfoCheck, lockSeriesCheck;
 
-	    box = Box.createVerticalBox();
-	    Box box1 = Box.createVerticalBox();
-	    Box box2 = Box.createVerticalBox();
-	    JPanel topbox = new JPanel();
-	    JPanel subbox2 = new JPanel();
+            box = Box.createVerticalBox();
+            Box box1 = Box.createVerticalBox();
+            Box box2 = Box.createVerticalBox();
+            JPanel topbox = new JPanel();
+            JPanel subbox2 = new JPanel();
 
-	    showMapsCheck = new JCheckBox("Show Images", viewAttributes.showMaps);
-	    showMapsCheck.setActionCommand(showMapsCommand);
-	    showMapsCheck.addActionListener(this);
+            showMapsCheck = new JCheckBox("Show Images", viewAttributes.showMaps);
+            showMapsCheck.setActionCommand(showMapsCommand);
+            showMapsCheck.addActionListener(this);
 
-	    showInfoCheck = new JCheckBox("Show Attributes", viewAttributes.showInfo);
-	    showInfoCheck.setActionCommand(showInfoCommand);
-	    showInfoCheck.addActionListener(this);
+            showInfoCheck = new JCheckBox("Show Attributes", viewAttributes.showInfo);
+            showInfoCheck.setActionCommand(showInfoCommand);
+            showInfoCheck.addActionListener(this);
 
-	    String tmpCS = viewAttributes.chartSeries;
-	    if (tmpCS == null) {
-		tmpCS = RpfViewAttributes.ANY;
-	    }
+            String tmpCS = viewAttributes.chartSeries;
+            if (tmpCS == null) {
+                tmpCS = RpfViewAttributes.ANY;
+            }
 
-	    boolean locked = !tmpCS.equalsIgnoreCase(RpfViewAttributes.ANY);
-	    String lockedTitle = 
-		locked?(lockedButtonTitle + " - " + tmpCS):unlockedButtonTitle;
+            boolean locked = !tmpCS.equalsIgnoreCase(RpfViewAttributes.ANY);
+            String lockedTitle = 
+                locked?(lockedButtonTitle + " - " + tmpCS):unlockedButtonTitle;
 
-	    lockSeriesCheck = new JCheckBox(lockedTitle, locked);
-	    lockSeriesCheck.setActionCommand(lockSeriesCommand);
-	    lockSeriesCheck.addActionListener(this);
+            lockSeriesCheck = new JCheckBox(lockedTitle, locked);
+            lockSeriesCheck.setActionCommand(lockSeriesCommand);
+            lockSeriesCheck.addActionListener(this);
 
-	    box1.add(showMapsCheck);
-	    box1.add(showInfoCheck);
-	    box1.add(lockSeriesCheck);
+            box1.add(showMapsCheck);
+            box1.add(showInfoCheck);
+            box1.add(lockSeriesCheck);
 
-	    if (coverage != null) {
-		JCheckBox showCoverageCheck;
-		if (coverage.isShowPalette()) {
-		    showCoverageCheck = new JCheckBox("Show Coverage Tool", false);
-		} else {
-		    showCoverageCheck = new JCheckBox("Show Coverage", false);
-		}
-		showCoverageCheck.setActionCommand(showCoverageCommand);
-		showCoverageCheck.addActionListener(this);
-		box1.add(showCoverageCheck);
-	    }
+            if (coverage != null) {
+                JCheckBox showCoverageCheck;
+                if (coverage.isShowPalette()) {
+                    showCoverageCheck = new JCheckBox("Show Coverage Tool", false);
+                } else {
+                    showCoverageCheck = new JCheckBox("Show Coverage", false);
+                }
+                showCoverageCheck.setActionCommand(showCoverageCommand);
+                showCoverageCheck.addActionListener(this);
+                box1.add(showCoverageCheck);
+            }
 
-	    topbox.add(box1);
-	    topbox.add(box2);
-	    box.add(topbox);
+            topbox.add(box1);
+            topbox.add(box2);
+            box.add(topbox);
 
-	    JPanel opaquePanel = PaletteHelper.createPaletteJPanel("Map Opaqueness");
-	    JSlider opaqueSlide = new JSlider(
-		JSlider.HORIZONTAL, 0/*min*/, 255/*max*/, 
-		viewAttributes.opaqueness/*inital*/);
-	    java.util.Hashtable dict = new java.util.Hashtable();
-	    dict.put(new Integer(0), new JLabel("clear"));
-	    dict.put(new Integer(255), new JLabel("opaque"));
-	    opaqueSlide.setLabelTable(dict);
-	    opaqueSlide.setPaintLabels(true);
-	    opaqueSlide.setMajorTickSpacing(50);
-	    opaqueSlide.setPaintTicks(true);
-	    opaqueSlide.addChangeListener(new ChangeListener() {
-		    public void stateChanged(ChangeEvent ce) {
-			JSlider slider = (JSlider) ce.getSource();
-			if (slider.getValueIsAdjusting()) {
-			    viewAttributes.opaqueness = slider.getValue();
-			    fireRequestInfoLine("RPF Opaqueness set to " + 
-						viewAttributes.opaqueness + 
-						" for future requests.");
-			}
-		    }
-		});
-	    opaquePanel.add(opaqueSlide);
-	    box.add(opaquePanel);
+            JPanel opaquePanel = PaletteHelper.createPaletteJPanel("Map Opaqueness");
+            JSlider opaqueSlide = new JSlider(
+                JSlider.HORIZONTAL, 0/*min*/, 255/*max*/, 
+                viewAttributes.opaqueness/*inital*/);
+            java.util.Hashtable dict = new java.util.Hashtable();
+            dict.put(new Integer(0), new JLabel("clear"));
+            dict.put(new Integer(255), new JLabel("opaque"));
+            opaqueSlide.setLabelTable(dict);
+            opaqueSlide.setPaintLabels(true);
+            opaqueSlide.setMajorTickSpacing(50);
+            opaqueSlide.setPaintTicks(true);
+            opaqueSlide.addChangeListener(new ChangeListener() {
+                    public void stateChanged(ChangeEvent ce) {
+                        JSlider slider = (JSlider) ce.getSource();
+                        if (slider.getValueIsAdjusting()) {
+                            viewAttributes.opaqueness = slider.getValue();
+                            fireRequestInfoLine("RPF Opaqueness set to " + 
+                                                viewAttributes.opaqueness + 
+                                                " for future requests.");
+                        }
+                    }
+                });
+            opaquePanel.add(opaqueSlide);
+            box.add(opaquePanel);
 
-	    JButton redraw = new JButton("Redraw RPF Layer");
-	    redraw.addActionListener(this);
-	    subbox2.add(redraw);
-	    box.add(subbox2);
-	}
-	return box;
+            JButton redraw = new JButton("Redraw RPF Layer");
+            redraw.addActionListener(this);
+            subbox2.add(redraw);
+            box.add(subbox2);
+        }
+        return box;
     }
 
 
@@ -783,94 +783,94 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * actions.
      */
     public void actionPerformed(ActionEvent e) {
-	super.actionPerformed(e);
-	String cmd = e.getActionCommand();
-	if (cmd == showMapsCommand) {
-	    JCheckBox mapCheck = (JCheckBox)e.getSource();
-	    viewAttributes.showMaps = mapCheck.isSelected();
-	    repaint();
-	} else if (cmd == showInfoCommand) {
-	    JCheckBox infoCheck = (JCheckBox)e.getSource();
-	    viewAttributes.showInfo = infoCheck.isSelected();
-	    repaint();
-	} else if (cmd == lockSeriesCommand) {
-	    JCheckBox lockCheck = (JCheckBox)e.getSource();
-	    boolean locked = lockCheck.isSelected();
-	    if (locked) {
-		Vector vector = getCoverageBoxes();
-		String seriesName;
+        super.actionPerformed(e);
+        String cmd = e.getActionCommand();
+        if (cmd == showMapsCommand) {
+            JCheckBox mapCheck = (JCheckBox)e.getSource();
+            viewAttributes.showMaps = mapCheck.isSelected();
+            repaint();
+        } else if (cmd == showInfoCommand) {
+            JCheckBox infoCheck = (JCheckBox)e.getSource();
+            viewAttributes.showInfo = infoCheck.isSelected();
+            repaint();
+        } else if (cmd == lockSeriesCommand) {
+            JCheckBox lockCheck = (JCheckBox)e.getSource();
+            boolean locked = lockCheck.isSelected();
+            if (locked) {
+                Vector vector = getCoverageBoxes();
+                String seriesName;
 
-		if (vector == null || vector.size() == 0) {
-		    seriesName = RpfViewAttributes.ANY;
-		} else {
-		    seriesName = ((RpfCoverageBox)vector.elementAt(0)).chartCode;
-		}
+                if (vector == null || vector.size() == 0) {
+                    seriesName = RpfViewAttributes.ANY;
+                } else {
+                    seriesName = ((RpfCoverageBox)vector.elementAt(0)).chartCode;
+                }
 
-		if (seriesName == null) {
-		    seriesName = RpfViewAttributes.ANY;
-		    fireRequestMessage("The " + getName() + " Layer is having trouble determining what kind\nof charts are being displayed.  Can't establish lock for charts\ncurrently being viewed.");
-		}
+                if (seriesName == null) {
+                    seriesName = RpfViewAttributes.ANY;
+                    fireRequestMessage("The " + getName() + " Layer is having trouble determining what kind\nof charts are being displayed.  Can't establish lock for charts\ncurrently being viewed.");
+                }
 
-		lockCheck.setText(lockedButtonTitle + " - " + seriesName);
-		viewAttributes.chartSeries = seriesName;
+                lockCheck.setText(lockedButtonTitle + " - " + seriesName);
+                viewAttributes.chartSeries = seriesName;
 
-	    } else {
-		lockCheck.setText(unlockedButtonTitle);
-		viewAttributes.chartSeries = RpfViewAttributes.ANY;
-	    }
+            } else {
+                lockCheck.setText(unlockedButtonTitle);
+                viewAttributes.chartSeries = RpfViewAttributes.ANY;
+            }
 
-	} else if (cmd == showCoverageCommand) {
-	    if (coverage != null) {
-		JCheckBox coverageCheck = (JCheckBox)e.getSource();
-		coverage.setInUse(coverageCheck.isSelected());
-		if (coverage.isInUse()) {
-		    coverage.prepare(frameProvider, getProjection(),
-				     viewAttributes.chartSeries);
-		}
-		repaint();
-	    }
-	} else {
-//  	    Debug.error("RpfLayer: Unknown action command \"" + cmd +
-//  			"\" in RpfLayer.actionPerformed().");
+        } else if (cmd == showCoverageCommand) {
+            if (coverage != null) {
+                JCheckBox coverageCheck = (JCheckBox)e.getSource();
+                coverage.setInUse(coverageCheck.isSelected());
+                if (coverage.isInUse()) {
+                    coverage.prepare(frameProvider, getProjection(),
+                                     viewAttributes.chartSeries);
+                }
+                repaint();
+            }
+        } else {
+//          Debug.error("RpfLayer: Unknown action command \"" + cmd +
+//                      "\" in RpfLayer.actionPerformed().");
 
-	    // OK, not really sure what happened, just act like a
-	    // reset.
-	    doPrepare();
-	}
+            // OK, not really sure what happened, just act like a
+            // reset.
+            doPrepare();
+        }
     }
 
     /** Print out the contents of a properties file. */
     public static void main(String[] argv) {
-	System.out.println("#########################################");
-	System.out.println("# Properties for the JAVA RpfLayer");
-	System.out.println("# Mandatory properties:");
-	System.out.println("layer.class=com.bbn.openmap.layer.rpf.RpfLayer");
-	System.out.println("layer.prettyName=CADRG");
-	System.out.println("# This property should reflect the paths to the RPF directories");
-	System.out.println("layer.paths=<Path to RPF dir>;/cdrom/cdrom0/RPF");
-	System.out.println("# Optional properties - Defaults will be set for properties not included (defaults are listed):");
-	System.out.println("# Number between 0-255: 0 is transparent, 255 is opaque");
-	System.out.println("layer.opaque=255");
-	System.out.println("# Number of colors to use on the maps - 16, 32, 216");
-	System.out.println("layer.numberColors=216");
-	System.out.println("# Display maps on startup");
-	System.out.println("layer.showMaps=true");
-	System.out.println("# Display attribute information on startup");
-	System.out.println("layer.showInfo=false");
-	System.out.println("# Scale images to match map scale");
-	System.out.println("layer.scaleImages=true");
-	System.out.println("# The scale factor to allow when scaling images (2x, 4x, also mean 1/2, 1/4).  Default is 4.");
-	System.out.println("rpf.imageScaleFactor=4");
-	System.out.println("# Reset the cache if layer is removed from map");
-	System.out.println("layer.killCache=false");
-	System.out.println("# Limit the display to the chart code specified. (GN, JN, ON, TP, etc.)");
-	System.out.println("layer.chartSeries=ANY");
-	System.out.println("# Set the subframe cache size. (Number of subframes to hold on to, 256x256 pixels");
-	System.out.println("layer.subframeCacheSize=128");
-	System.out.println("# Get the subframe attribute data from the frame provider.");
-	System.out.println("rpf.autofetchAttributes=false");
-	System.out.println("#If you want the coverage tool to be available");
-	System.out.println("layer.coverage=true");
-	System.out.println("#Then add coverage constants as needed.");
+        System.out.println("#########################################");
+        System.out.println("# Properties for the JAVA RpfLayer");
+        System.out.println("# Mandatory properties:");
+        System.out.println("layer.class=com.bbn.openmap.layer.rpf.RpfLayer");
+        System.out.println("layer.prettyName=CADRG");
+        System.out.println("# This property should reflect the paths to the RPF directories");
+        System.out.println("layer.paths=<Path to RPF dir>;/cdrom/cdrom0/RPF");
+        System.out.println("# Optional properties - Defaults will be set for properties not included (defaults are listed):");
+        System.out.println("# Number between 0-255: 0 is transparent, 255 is opaque");
+        System.out.println("layer.opaque=255");
+        System.out.println("# Number of colors to use on the maps - 16, 32, 216");
+        System.out.println("layer.numberColors=216");
+        System.out.println("# Display maps on startup");
+        System.out.println("layer.showMaps=true");
+        System.out.println("# Display attribute information on startup");
+        System.out.println("layer.showInfo=false");
+        System.out.println("# Scale images to match map scale");
+        System.out.println("layer.scaleImages=true");
+        System.out.println("# The scale factor to allow when scaling images (2x, 4x, also mean 1/2, 1/4).  Default is 4.");
+        System.out.println("rpf.imageScaleFactor=4");
+        System.out.println("# Reset the cache if layer is removed from map");
+        System.out.println("layer.killCache=false");
+        System.out.println("# Limit the display to the chart code specified. (GN, JN, ON, TP, etc.)");
+        System.out.println("layer.chartSeries=ANY");
+        System.out.println("# Set the subframe cache size. (Number of subframes to hold on to, 256x256 pixels");
+        System.out.println("layer.subframeCacheSize=128");
+        System.out.println("# Get the subframe attribute data from the frame provider.");
+        System.out.println("rpf.autofetchAttributes=false");
+        System.out.println("#If you want the coverage tool to be available");
+        System.out.println("layer.coverage=true");
+        System.out.println("#Then add coverage constants as needed.");
     }
 }

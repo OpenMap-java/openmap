@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ControlMenu.java,v $
 // $RCSfile: ControlMenu.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/06 03:09:04 $
+// $Revision: 1.4 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,12 +37,12 @@ public class ControlMenu extends AbstractOpenMapMenu {
     private int defaultMnemonic = 'C';
 
     public ControlMenu() {
-	super();
-	setText(defaultText);
-	setMnemonic(defaultMnemonic);
+        super();
+        setText(defaultText);
+        setMnemonic(defaultMnemonic);
 
-	add(new MouseModeMenu());
-	add(new BackgroundColorMenuItem());
- 	add(new ToolPanelToggleMenuItem());
+        add(new MouseModeMenu());
+        add(new BackgroundColorMenuItem());
+        add(new ToolPanelToggleMenuItem());
     }
 }

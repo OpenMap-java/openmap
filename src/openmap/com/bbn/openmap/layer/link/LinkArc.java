@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkArc.java,v $
 // $RCSfile: LinkArc.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:09 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -59,10 +59,10 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
      * @throws IOException
      */
     public static void write(float latPoint, float lonPoint,
-			     int w, int h, float s, float e,
-			     LinkProperties properties,
-			     DataOutputStream dos) throws IOException {
-	LinkArc.write(latPoint, lonPoint, 0, 0, w, h, s, e, properties, dos);
+                             int w, int h, float s, float e,
+                             LinkProperties properties,
+                             DataOutputStream dos) throws IOException {
+        LinkArc.write(latPoint, lonPoint, 0, 0, w, h, s, e, properties, dos);
     }
 
     /**
@@ -80,20 +80,20 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
      */
     public static void write(int x1, int y1, int w, int h,
                              float s, float e,
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException {
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.ARC_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_ARC);
-	dos.writeInt(RENDERTYPE_XY);
-	dos.writeInt(x1);
-	dos.writeInt(y1);
-	dos.writeInt(w);
-	dos.writeInt(h);
+        dos.write(Link.ARC_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_ARC);
+        dos.writeInt(RENDERTYPE_XY);
+        dos.writeInt(x1);
+        dos.writeInt(y1);
+        dos.writeInt(w);
+        dos.writeInt(h);
         dos.writeFloat(s);
         dos.writeFloat(e);
-	properties.write(dos);
+        properties.write(dos);
     }
 
     /**
@@ -114,24 +114,24 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
      * @throws IOException
      */
     public static void write(float latPoint, float lonPoint,
-			     int offset_x1, int offset_y1,
-			     int w, int h, float s, float e,
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException {
+                             int offset_x1, int offset_y1,
+                             int w, int h, float s, float e,
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException {
 
-	dos.write(Link.ARC_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_ARC);
-	dos.writeInt(RENDERTYPE_OFFSET);
-	dos.writeFloat(latPoint);
-	dos.writeFloat(lonPoint);
-	dos.writeInt(offset_x1);
-	dos.writeInt(offset_y1);
-	dos.writeInt(w);
-	dos.writeInt(h);
+        dos.write(Link.ARC_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_ARC);
+        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeFloat(latPoint);
+        dos.writeFloat(lonPoint);
+        dos.writeInt(offset_x1);
+        dos.writeInt(offset_y1);
+        dos.writeInt(w);
+        dos.writeInt(h);
         dos.writeFloat(s);
         dos.writeFloat(e);
-	properties.write(dos);
+        properties.write(dos);
     }
 
     /**
@@ -149,10 +149,10 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
      */
     public static void write(float latPoint, float lonPoint, float radius,
                              float s, float e,
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException  {
-	LinkArc.write(latPoint, lonPoint, radius, -1, -1, s, e, properties, dos);
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException  {
+        LinkArc.write(latPoint, lonPoint, radius, -1, -1, s, e, properties, dos);
     }
 
     /**
@@ -171,12 +171,12 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
      * @throws IOException
      */
     public static void write(float latPoint, float lonPoint,
-			     float radius, int units,
+                             float radius, int units,
                              float s, float e,
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException {
-	LinkArc.write(latPoint, lonPoint, radius, units, -1, s, e, properties, dos);
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException {
+        LinkArc.write(latPoint, lonPoint, radius, units, -1, s, e, properties, dos);
     }
 
     /**
@@ -198,54 +198,54 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
      * @throws IOException
      */
     public static void write(float latPoint, float lonPoint,
-			     float radius, int units, int nverts,
+                             float radius, int units, int nverts,
                              float s, float e,
-			     LinkProperties properties,
-			     DataOutputStream dos)
-	throws IOException {
-	// Write this out...
-	dos.write(Link.ARC_HEADER.getBytes());
-	dos.writeInt(GRAPHICTYPE_ARC);
-	dos.writeInt(RENDERTYPE_LATLON);
-	dos.writeFloat(latPoint);
-	dos.writeFloat(lonPoint);
-	dos.writeFloat(radius);
-	dos.writeInt(units);
-	dos.writeInt(nverts);
+                             LinkProperties properties,
+                             DataOutputStream dos)
+        throws IOException {
+        // Write this out...
+        dos.write(Link.ARC_HEADER.getBytes());
+        dos.writeInt(GRAPHICTYPE_ARC);
+        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeFloat(latPoint);
+        dos.writeFloat(lonPoint);
+        dos.writeFloat(radius);
+        dos.writeInt(units);
+        dos.writeInt(nverts);
         dos.writeFloat(s);
         dos.writeFloat(e);
-	properties.write(dos);
+        properties.write(dos);
     }
 
     public static void write(OMArc arc, Link link, LinkProperties props)
-	throws IOException {
+        throws IOException {
 
-	LatLonPoint llp;
-	switch (arc.getRenderType()) {
-	case OMArc.RENDERTYPE_LATLON:
-	    llp = arc.getLatLon();
-	    LinkArc.write(llp.getLatitude(), llp.getLongitude(),
-			  arc.getRadius(),
-			  arc.getStartAngle(), arc.getExtentAngle(),
-			  props, link.dos);
-	    break;
-	case OMArc.RENDERTYPE_XY:
-	    LinkArc.write(arc.getX(), arc.getY(),
-			  arc.getWidth(), arc.getHeight(),
-			  arc.getStartAngle(), arc.getExtentAngle(),
-			  props, link.dos);
-	    break;
-	case OMArc.RENDERTYPE_OFFSET:
-	    llp = arc.getLatLon();
-	    LinkArc.write(llp.getLatitude(), llp.getLongitude(),
-			  arc.getOffX(), arc.getOffY(),
-			  arc.getWidth(), arc.getHeight(),
-			  arc.getStartAngle(), arc.getExtentAngle(),
-			  props, link.dos);
-	    break;
-	default:
-	    Debug.error("LinkArc.write: arc rendertype unknown.");
-	}
+        LatLonPoint llp;
+        switch (arc.getRenderType()) {
+        case OMArc.RENDERTYPE_LATLON:
+            llp = arc.getLatLon();
+            LinkArc.write(llp.getLatitude(), llp.getLongitude(),
+                          arc.getRadius(),
+                          arc.getStartAngle(), arc.getExtentAngle(),
+                          props, link.dos);
+            break;
+        case OMArc.RENDERTYPE_XY:
+            LinkArc.write(arc.getX(), arc.getY(),
+                          arc.getWidth(), arc.getHeight(),
+                          arc.getStartAngle(), arc.getExtentAngle(),
+                          props, link.dos);
+            break;
+        case OMArc.RENDERTYPE_OFFSET:
+            llp = arc.getLatLon();
+            LinkArc.write(llp.getLatitude(), llp.getLongitude(),
+                          arc.getOffX(), arc.getOffY(),
+                          arc.getWidth(), arc.getHeight(),
+                          arc.getStartAngle(), arc.getExtentAngle(),
+                          props, link.dos);
+            break;
+        default:
+            Debug.error("LinkArc.write: arc rendertype unknown.");
+        }
     }
 
     /**
@@ -259,69 +259,69 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
      * @see com.bbn.openmap.omGraphics.OMArc
      */
     public static OMArc read(DataInputStream dis)
-	throws IOException {
+        throws IOException {
 
-	OMArc arc = null;
-	float lat, lon, radius, start, extent;
-	int x, y, w, h;
+        OMArc arc = null;
+        float lat, lon, radius, start, extent;
+        int x, y, w, h;
 
-	int renderType = dis.readInt();
+        int renderType = dis.readInt();
 
-	switch (renderType) {
-	case RENDERTYPE_LATLON:
-	    lat = dis.readFloat();
-	    lon = dis.readFloat();
-	    radius = dis.readFloat();
+        switch (renderType) {
+        case RENDERTYPE_LATLON:
+            lat = dis.readFloat();
+            lon = dis.readFloat();
+            radius = dis.readFloat();
             start = dis.readFloat();
             extent = dis.readFloat();
-	    int units = dis.readInt();
-	    int nverts = dis.readInt();
+            int units = dis.readInt();
+            int nverts = dis.readInt();
 
-	    Length unit = Length.DECIMAL_DEGREE;
+            Length unit = Length.DECIMAL_DEGREE;
 
-	    switch (units) {
-	    case 0: unit = Length.KM;
-		break;
-	    case 1: unit = Length.MILE;
-		break;
-	    case 2: unit = Length.NM;
-		break;
-	    default:
-	    }
+            switch (units) {
+            case 0: unit = Length.KM;
+                break;
+            case 1: unit = Length.MILE;
+                break;
+            case 2: unit = Length.NM;
+                break;
+            default:
+            }
 
-	    arc = new OMArc(new LatLonPoint(lat, lon),
-			    radius, unit, nverts, start, extent);
-	    break;
-	case RENDERTYPE_XY:
-	    x = dis.readInt();
-	    y = dis.readInt();
-	    w = dis.readInt();
-	    h = dis.readInt();
+            arc = new OMArc(new LatLonPoint(lat, lon),
+                            radius, unit, nverts, start, extent);
+            break;
+        case RENDERTYPE_XY:
+            x = dis.readInt();
+            y = dis.readInt();
+            w = dis.readInt();
+            h = dis.readInt();
             start = dis.readFloat();
             extent = dis.readFloat();
 
-	    arc = new OMArc(x, y, w, h, start, extent);
-	    break;
-	case RENDERTYPE_OFFSET:
-	    lat = dis.readFloat();
-	    lon = dis.readFloat();
-	    x = dis.readInt();
-	    y = dis.readInt();
-	    w = dis.readInt();
-	    h = dis.readInt();
+            arc = new OMArc(x, y, w, h, start, extent);
+            break;
+        case RENDERTYPE_OFFSET:
+            lat = dis.readFloat();
+            lon = dis.readFloat();
+            x = dis.readInt();
+            y = dis.readInt();
+            w = dis.readInt();
+            h = dis.readInt();
             start = dis.readFloat();
             extent = dis.readFloat();
-	    arc = new OMArc(lat, lon, x, y, w, h, start, extent);
-	    break;
-	default:
-	}
+            arc = new OMArc(lat, lon, x, y, w, h, start, extent);
+            break;
+        default:
+        }
 
-	LinkProperties properties = new LinkProperties(dis);
-	if (arc != null) {
-	    properties.setProperties(arc);
-	}
+        LinkProperties properties = new LinkProperties(dis);
+        if (arc != null) {
+            properties.setProperties(arc);
+        }
 
-	return arc;
+        return arc;
     }
 
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeOrderOfBattle.java,v $
 // $RCSfile: CodeOrderOfBattle.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.6 $
+// $Date: 2004/01/26 18:18:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,6 +34,6 @@ import java.util.List;
 public class CodeOrderOfBattle extends CodePosition {
 
     public CodeOrderOfBattle() {
-	super("Order of Battle", 15, 15);
+        super("Order of Battle", 15, 15);
     }
 }

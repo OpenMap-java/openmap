@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/AbstractGraphicLoader.java,v $
 // $RCSfile: AbstractGraphicLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/21 20:36:57 $
+// $Revision: 1.3 $
+// $Date: 2004/01/26 18:18:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -70,13 +70,13 @@ public abstract class AbstractGraphicLoader extends OMComponent
     public final static String NameProperty = "prettyName";
 
     public AbstractGraphicLoader() {
-	createTimer();
+        createTimer();
     }
 
     public AbstractGraphicLoader(OMGraphicHandler receiver) {
-	super();
-	setReceiver(receiver);
-	manageGraphics();
+        super();
+        setReceiver(receiver);
+        manageGraphics();
     }
 
     /**
@@ -93,29 +93,29 @@ public abstract class AbstractGraphicLoader extends OMComponent
      * it's null.
      */
     public Component getGUI() {
-	return null;
+        return null;
     }
 
     /**
      * Calls manageGraphics() if projection is different().
      */
     public void setProjection(Projection p) {
-	if (!p.equals(getProjection())) {
-	    proj = p;
-	    manageGraphics();
-	} 
+        if (!p.equals(getProjection())) {
+            proj = p;
+            manageGraphics();
+        } 
     }
 
     public Projection getProjection() {
-	return proj;
+        return proj;
     }
 
     public void setReceiver(OMGraphicHandler r) {
-	receiver = r;
+        receiver = r;
     }
 
     public OMGraphicHandler getReceiver() {
-	return receiver;
+        return receiver;
     }
 
     /**
@@ -123,7 +123,7 @@ public abstract class AbstractGraphicLoader extends OMComponent
      * a timer is not set.
      */
     public Timer getTimer() {
-	return timer;
+        return timer;
     }
 
     /**
@@ -134,15 +134,15 @@ public abstract class AbstractGraphicLoader extends OMComponent
      * graphic loader is added as an ActionListener.
      */
     public void setTimer(Timer t) {
-	if (timer != null) {
-	    timer.stop();
-	    timer.removeActionListener(this);
-	}
+        if (timer != null) {
+            timer.stop();
+            timer.removeActionListener(this);
+        }
 
-	timer = t;
-	if (timer != null) {
-	    timer.addActionListener(this);
-	}
+        timer = t;
+        if (timer != null) {
+            timer.addActionListener(this);
+        }
     }
 
     /**
@@ -150,9 +150,9 @@ public abstract class AbstractGraphicLoader extends OMComponent
      * setTimer().
      */
     public void createTimer() {
-	Timer t = new Timer(updateInterval, this);
-	t.setInitialDelay(0);
-	setTimer(t);
+        Timer t = new Timer(updateInterval, this);
+        t.setInitialDelay(0);
+        setTimer(t);
     }
 
     /**
@@ -161,17 +161,17 @@ public abstract class AbstractGraphicLoader extends OMComponent
     protected int updateInterval = 3000;
 
     public void setUpdateInterval(int delay) {
-	updateInterval = delay;
-	if (timer != null) {
-	    timer.setDelay(updateInterval);
-	    if (timer.isRunning()) {
-		timer.restart();
-	    }
-	}
+        updateInterval = delay;
+        if (timer != null) {
+            timer.setDelay(updateInterval);
+            if (timer.isRunning()) {
+                timer.restart();
+            }
+        }
     }
 
     public int getUpdateInterval() {
-	return updateInterval;
+        return updateInterval;
     }
 
     /**
@@ -180,7 +180,7 @@ public abstract class AbstractGraphicLoader extends OMComponent
      * ActionListener.  By default, calls manageGraphics();
      */
     public void actionPerformed(ActionEvent ae) {
-	manageGraphics();
+        manageGraphics();
     }
 
     /**
@@ -188,36 +188,36 @@ public abstract class AbstractGraphicLoader extends OMComponent
      * loader does.
      */
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	name = props.getProperty(prefix + NameProperty, name);
+        name = props.getProperty(prefix + NameProperty, name);
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	props.put(prefix + NameProperty, getName());
-	return props;
+        props.put(prefix + NameProperty, getName());
+        return props;
     }
 
     public Properties getPropertyInfo(Properties list) {
-	list = super.getPropertyInfo(list);
+        list = super.getPropertyInfo(list);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	list.put(NameProperty, "A short name description for what this GraphicLoader does.");
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        list.put(NameProperty, "A short name description for what this GraphicLoader does.");
 
-	return list;
+        return list;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/QuitMenuItem.java,v $
 // $RCSfile: QuitMenuItem.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/06 02:31:29 $
+// $Revision: 1.2 $
+// $Date: 2004/01/26 18:18:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,15 +30,15 @@ import javax.swing.JMenuItem;
 public class QuitMenuItem extends JMenuItem {
 
     public QuitMenuItem() {
-	super("Quit");
-	addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    // HACK - need to call shutdown() on mapbean
-		    // actually we should broadcast a shutdown
-		    // event so thato ther gui components can
-		    // clean up, and maybe only one can call exit.
-		    System.exit(0);
-		}
-	    });
+        super("Quit");
+        addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    // HACK - need to call shutdown() on mapbean
+                    // actually we should broadcast a shutdown
+                    // event so thato ther gui components can
+                    // clean up, and maybe only one can call exit.
+                    System.exit(0);
+                }
+            });
     }
 }

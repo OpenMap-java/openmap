@@ -14,7 +14,7 @@ import java.awt.geom.Point2D;
  * @version 26 juil. 2002
  */
 public interface ShapeDecoration extends Revertable {
-	
+        
     /**
      * The right orientation constant
      */
@@ -23,7 +23,7 @@ public interface ShapeDecoration extends Revertable {
      * The left orientation constant
      */
     public static final int LEFT = 2;
-	
+        
     /**
      * Returns the length.
      * @return float
@@ -54,7 +54,7 @@ public interface ShapeDecoration extends Revertable {
      * reverts the orientation
      */
     public void revert();
-	
+        
     /**
      * Draws itself along the specified polyline
      * Called by ShapeDecorator
