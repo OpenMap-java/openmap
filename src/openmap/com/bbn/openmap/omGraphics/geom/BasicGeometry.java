@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/10/14 18:06:17 $
+// $Revision: 1.12 $
+// $Date: 2004/11/26 03:50:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -858,7 +858,8 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * Convenience method to append the edge of a GeneralPath Shape to
      * another GeneralPath Shape. A PathIterator is used to figure out
      * the points to use to add to the toShape. You need to close the
-     * path yourself if you want it to be a polygon.
+     * path yourself if you want it to be a polygon. Assumes that the
+     * two paths should be connected.
      * 
      * @param toShape the GeneralPath Shape object to add the edge to.
      * @param addShape the GeneralPath Shape to add to the toShape.
@@ -867,10 +868,28 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      */
     public static GeneralPath appendShapeEdge(GeneralPath toShape,
                                               GeneralPath addShape) {
+        return appendShapeEdge(toShape, addShape, true);
+    }
+
+    /**
+     * Convenience method to append the edge of a GeneralPath Shape to
+     * another GeneralPath Shape. A PathIterator is used to figure out
+     * the points to use to add to the toShape. You need to close the
+     * path yourself if you want it to be a polygon.
+     * 
+     * @param toShape the GeneralPath Shape object to add the edge to.
+     * @param addShape the GeneralPath Shape to add to the toShape.
+     * @param moveTo specify whether the first point of the appended
+     *        path is connected to the original path. True to connect.
+     * @return toShape, with coordinates appended. Returns addShape if
+     *         toShape was null.
+     */
+    public static GeneralPath appendShapeEdge(GeneralPath toShape,
+                                              GeneralPath addShape,
+                                              boolean lineTo) {
 
         boolean DEBUG = Debug.debugging("arealist");
         int pointCount = 0;
-        boolean firstPoint = false;
 
         // If both null, return null.
         if (addShape == null) {
@@ -887,20 +906,21 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
 
         while (!pi.isDone()) {
             int type = pi.currentSegment(coords);
-            if (firstPoint) {
-                if (DEBUG) {
-                    Debug.output("Creating new shape, first point "
-                            + (float) coords[0] + ", " + (float) coords[1]);
-                }
-                toShape.moveTo((float) coords[0], (float) coords[1]);
-                firstPoint = false;
-            } else {
+            if (lineTo) {
                 if (DEBUG) {
                     Debug.output(" adding point [" + type + "] ("
                             + (pointCount++) + ") " + (float) coords[0] + ", "
                             + (float) coords[1]);
                 }
                 toShape.lineTo((float) coords[0], (float) coords[1]);
+
+            } else {
+                if (DEBUG) {
+                    Debug.output("Creating new shape, first point "
+                            + (float) coords[0] + ", " + (float) coords[1]);
+                }
+                toShape.moveTo((float) coords[0], (float) coords[1]);
+                lineTo = true;
             }
             pi.next();
         }
