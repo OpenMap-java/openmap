@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigateMenu.java,v $
 // $RCSfile: NavigateMenu.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.8 $
+// $Date: 2004/02/09 13:33:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -106,7 +106,7 @@ public class NavigateMenu extends AbstractOpenMapMenu
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand();
 
-        Debug.message("NavigateMenu", "MenuPanel.actionPerformed(): " + command);
+        Debug.message("navigatemenu", "NavigateMenu.actionPerformed(): " + command);
 
         if (command.equals(zoomIn2Cmd)) {
             fireZoom(ZoomEvent.RELATIVE, 0.5f);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/MouseModeMenu.java,v $
 // $RCSfile: MouseModeMenu.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/03 23:39:39 $
+// $Revision: 1.5 $
+// $Date: 2004/02/09 13:33:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -141,7 +141,7 @@ public class MouseModeMenu extends AbstractOpenMapMenu
                 //System.out.println(mmID + " " +mouseModeButtons[i].getName());
                 if (mouseModeButtons[i].getName().equals(mmID)) {
                     mouseModeButtons[i].setSelected(true);
-                    //System.out.println("MenuPanel: New Active Mode " + mmID);
+                    //System.out.println("MouseModeMenu: New Active Mode " + mmID);
                     break;
                 }
             }

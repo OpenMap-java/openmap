@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPoint.java,v $
 // $RCSfile: EsriPoint.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/01 21:08:41 $
+// $Revision: 1.6 $
+// $Date: 2004/02/09 13:33:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriGraphicList.java,v $
 // $RCSfile: EsriGraphicList.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/03 20:39:58 $
+// $Revision: 1.4 $
+// $Date: 2004/02/09 13:33:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************

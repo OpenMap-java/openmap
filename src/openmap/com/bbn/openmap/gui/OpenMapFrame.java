@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OpenMapFrame.java,v $
 // $RCSfile: OpenMapFrame.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/02/01 21:17:05 $
+// $Revision: 1.9 $
+// $Date: 2004/02/09 13:33:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -251,14 +251,14 @@ public class OpenMapFrame extends JFrame
             getContentPane().remove((Container)someObj);
 
             if (getJMenuBar() == ((MapPanel)someObj).getMapMenuBar()) {
-                Debug.message("basic", "OpenMapFrame: MenuPanel's MenuBar is being removed");
+                Debug.message("basic", "OpenMapFrame: Menu Bar is being removed");
                 setJMenuBar(null);
             }
         }
             
         if (someObj instanceof JMenuBar) {
             if (getJMenuBar() == (JMenuBar) someObj) {
-                Debug.message("basic", "OpenMapFrame: MenuPanel is being removed");
+                Debug.message("basic", "OpenMapFrame: Menu Bar is being removed");
                 setJMenuBar(null);
             }
         }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/etopo/ETOPOJarLayer.java,v $
 // $RCSfile: ETOPOJarLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.4 $
+// $Date: 2004/02/09 13:33:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFLayer.java,v $
 // $RCSfile: MIFLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/02/05 18:15:08 $
+// $Revision: 1.8 $
+// $Date: 2004/02/09 13:33:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************

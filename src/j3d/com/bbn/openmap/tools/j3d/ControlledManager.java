@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/ControlledManager.java,v $
 // $RCSfile: ControlledManager.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:05 $
+// $Revision: 1.3 $
+// $Date: 2004/02/09 13:33:36 $
 // $Author: dietrick $
 //
 // **********************************************************************

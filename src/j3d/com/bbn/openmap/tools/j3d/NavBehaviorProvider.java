@@ -14,8 +14,8 @@
  *
  *  $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/NavBehaviorProvider.java,v $
  *  $RCSfile: NavBehaviorProvider.java,v $
- *  $Revision: 1.1.1.1 $
- *  $Date: 2003/02/14 21:35:48 $
+ *  $Revision: 1.2 $
+ *  $Date: 2004/02/09 13:33:36 $
  *  $Author: dietrick $
  *
  *  **********************************************************************

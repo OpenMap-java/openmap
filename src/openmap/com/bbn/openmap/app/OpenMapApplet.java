@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMapApplet.java,v $
 // $RCSfile: OpenMapApplet.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:05 $
+// $Revision: 1.7 $
+// $Date: 2004/02/09 13:33:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -282,7 +282,7 @@ public class OpenMapApplet extends JApplet
             getContentPane().remove((Container)someObj);
 
             if (getJMenuBar() == ((MapPanel)someObj).getMapMenuBar()) {
-                Debug.message("basic", "OpenMapApplet: MenuPanel's MenuBar is being removed");
+                Debug.message("basic", "OpenMapApplet: Menu Bar is being removed");
                 setJMenuBar(null);
             }
         }

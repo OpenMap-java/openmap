@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygon.java,v $
 // $RCSfile: EsriPolygon.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/01 21:08:42 $
+// $Revision: 1.6 $
+// $Date: 2004/02/09 13:33:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************

@@ -99,11 +99,11 @@
 	menus.
 
 	* Changed MapPanel to be an interface to a component that can
-	provide it's MapBean, MapHandler, MenuBar or single Menu with
-	appropriate sub-menus.  Created the BasicMapPanel to implement
-	the MapPanel interface.  Modified OpenMapApplet and OpenMapFrame
-	to find a MapPanel, add it to their content pane, and ask it for
-	it's JMenuBar.
+	provide its MapBean, MapHandler and menu information(MenuBar
+	or single Menu with appropriate sub-menus).  Created the
+	BasicMapPanel to implement the MapPanel interface.  Modified
+	OpenMapApplet and OpenMapFrame to find a MapPanel, add it to
+	their content pane, and ask it for it's JMenuBar.
 
 	* Added a librarian function in the PropertyHandler so you can ask
 	it for objects that were created with a particular property

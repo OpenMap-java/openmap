@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMAction.java,v $
 // $RCSfile: OMAction.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.5 $
+// $Date: 2004/02/09 13:33:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************

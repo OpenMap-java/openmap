@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GridBagToolBar.java,v $
 // $RCSfile: GridBagToolBar.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.3 $
+// $Date: 2004/02/09 13:33:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,6 +30,9 @@ import javax.swing.BorderFactory;
 
 import com.bbn.openmap.util.Debug;
 
+/**
+ * JToolBar with a GridBagLayout to have a more compressed look.
+ */
 public class GridBagToolBar extends javax.swing.JToolBar {
     GridBagLayout gridbag = new GridBagLayout();
     GridBagConstraints c = new GridBagConstraints();

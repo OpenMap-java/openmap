@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/LittleEndianOutputStream.java,v $
 // $RCSfile: LittleEndianOutputStream.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/02/09 13:33:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
