@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingIcon.java,v $
 // $RCSfile: OMScalingIcon.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/06 19:01:20 $
+// $Revision: 1.4 $
+// $Date: 2004/09/24 20:21:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,8 +24,6 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/09/03 22:30:40 $
+// $Revision: 1.10 $
+// $Date: 2004/09/24 20:21:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -786,10 +786,11 @@ public abstract class OMRasterObject extends OMGraphic
             }
         }
 
-        ImageProducer prod = new FilteredImageSource(bitmap.getSource(), imageFilter);
-        if (Toolkit.getDefaultToolkit() != null)
-            return Toolkit.getDefaultToolkit().createImage(prod);
-        else return bitmap;
+        
+        if (Toolkit.getDefaultToolkit() != null && bitmap != null) {
+        		ImageProducer prod = new FilteredImageSource(bitmap.getSource(), imageFilter);
+        		return Toolkit.getDefaultToolkit().createImage(prod);
+        } else return bitmap;
     }
 
     /**
@@ -966,7 +967,7 @@ public abstract class OMRasterObject extends OMGraphic
        objectstream.defaultWriteObject();
        PixelGrabber grabber = new PixelGrabber(bitmap, 0, 0, -1, -1, true);
 
-       if (colorModel == COLORMODEL_IMAGEICON) {
+       if (colorModel == COLORMODEL_IMAGEICON && bitmap != null) {
           try {
             grabber.grabPixels();
           } catch (InterruptedException e) {
