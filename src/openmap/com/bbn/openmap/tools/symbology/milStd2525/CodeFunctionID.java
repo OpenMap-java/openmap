@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeFunctionID.java,v $
 // $RCSfile: CodeFunctionID.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.5 $
+// $Date: 2003/12/18 23:37:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import com.bbn.openmap.util.Debug;
  * part of the tree that starts to really scope in on a symbol's
  * purpose.  CodeFunctionIDs are used to represent the 5-10 characters
  * of a symbol code.  The CodePositions are linked together in a tree
- * format when the heirarchy tree is read and interpreted, with like
+ * format when the hierarchy tree is read and interpreted, with like
  * features grouped together under a common SymbolPart by a
  * CodeFunctionID.
  */
@@ -54,7 +54,7 @@ public class CodeFunctionID extends CodePosition {
 	super("Function ID", pos, 10);
     }
 
-    public void parseHeirarchy(String hCode, Properties props, SymbolPart parent) {
+    public void parseHierarchy(String hCode, Properties props, SymbolPart parent) {
 	
 	List parentList = null;
 	int subLevelNumber = 1;
@@ -103,7 +103,7 @@ public class CodeFunctionID extends CodePosition {
 			     sp.getPrettyName());
 		}
 
-		cp.parseHeirarchy(hCode2, props, sp);
+		cp.parseHierarchy(hCode2, props, sp);
 		subLevelNumber++;
 
 	    } else {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeScheme.java,v $
 // $RCSfile: CodeScheme.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.6 $
+// $Date: 2003/12/18 23:37:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,11 +55,11 @@ public class CodeScheme extends CodePosition {
      */
     protected String defaultSymbolCode = SymbolPart.DEFAULT_SYMBOL_CODE;
     /**
-     * For parsing the heirarchy, most schemes have some characters
-     * added to their heirarchy index number.  This can be specified
+     * For parsing the hierarchy, most schemes have some characters
+     * added to their hierarchy index number.  This can be specified
      * in the position properties.
      */
-    protected String heirarchyAddition;
+    protected String hierarchyAddition;
 
     /**
      * Property keyword for the default symbol code 'defaultSymbolCode'.
@@ -67,9 +67,9 @@ public class CodeScheme extends CodePosition {
     public final static String DefaultSymbolCodeProperty = "defaultSymbolCode";
 
     /**
-     * Property keyword for the heirarchy addition string 'heirarchyCodeAddition'.
+     * Property keyword for the hierarchy addition string 'hierarchyCodeAddition'.
      */
-    public final static String HeirarchyCodeAdditionProperty = "heirarchyCodeAddition";
+    public final static String HierarchyCodeAdditionProperty = "hierarchyCodeAddition";
 
     public CodeScheme() {
 	super("Scheme", 1, 1);
@@ -78,7 +78,7 @@ public class CodeScheme extends CodePosition {
     /**
      * The method needs more information from the properties than the
      * CodePosition version of this method provides, like getting the
-     * base symbol code for the scheme and the heirarchy addition.
+     * base symbol code for the scheme and the hierarchy addition.
      */
     public CodePosition addPositionChoice(int index, String entry,
 					  String prefix, Properties props) {
@@ -109,41 +109,41 @@ public class CodeScheme extends CodePosition {
 	}
 
 	cs.defaultSymbolCode = props.getProperty(prefix + DefaultSymbolCodeProperty);
-	cs.heirarchyAddition = props.getProperty(prefix + HeirarchyCodeAdditionProperty, "");
+	cs.hierarchyAddition = props.getProperty(prefix + HierarchyCodeAdditionProperty, "");
 	// Don't need to add to choices, already done in super class method.
 	return cs;
     }
 
     /**
-     * Parse the heirarchy properties to create SymbolParts for those
+     * Parse the hierarchy properties to create SymbolParts for those
      * parts under a particular scheme represented by this instance of
      * CodeScheme.
-     * @param props the heirarchy properties.
+     * @param props the hierarchy properties.
      * @parent the SymbolPart parent that the new SymbolPart tree falls under.
      */
-    public SymbolPart parseHeirarchy(Properties props, SymbolPart parent) {
-	String hCode = getHeirarchyNumber() + heirarchyAddition;
+    public SymbolPart parseHierarchy(Properties props, SymbolPart parent) {
+	String hCode = getHierarchyNumber() + hierarchyAddition;
 	String entry = props.getProperty(hCode);
 	SymbolPart sp = null;
 
 	if (entry != null) {
 	    sp = new SymbolPart(this, entry, props, parent);
-	    parseHeirarchy(hCode, props, sp);
+	    parseHierarchy(hCode, props, sp);
 	}
 
 	return sp;
     }
 
     /**
-     * Parse the heirarchy properties to create SymbolParts for those
+     * Parse the hierarchy properties to create SymbolParts for those
      * parts under a particular scheme represented by this instance of
      * CodeScheme.
-     * @param hCode the heirarchy code of this scheme, used to grow
+     * @param hCode the hierarchy code of this scheme, used to grow
      * the tree for subsequent generations.
-     * @param props the heirarchy properties.
+     * @param props the hierarchy properties.
      * @parent the SymbolPart parent that the new SymbolPart tree falls under.
      */
-    public void parseHeirarchy(String hCode, Properties props, SymbolPart parent) {
+    public void parseHierarchy(String hCode, Properties props, SymbolPart parent) {
 	
  	List codePositionList = null;
 
@@ -152,7 +152,7 @@ public class CodeScheme extends CodePosition {
 	}
 
 	if (codePositionList == null || codePositionList.size() == 0) {
-	    Debug.output(prettyName + ".parseHeirarchy(): codePositionList.size = 0");
+	    Debug.output(prettyName + ".parseHierarchy(): codePositionList.size = 0");
 	    return;
 	}
 
@@ -160,7 +160,7 @@ public class CodeScheme extends CodePosition {
 
 	for (Iterator it = codePositionList.iterator(); it.hasNext();) {
 	    CodePosition cp = (CodePosition)it.next();
-	    String newHCode = hCode + "." + cp.getHeirarchyNumber();
+	    String newHCode = hCode + "." + cp.getHierarchyNumber();
 	    if (DEBUG) {
 		Debug.output("CodeScheme.parse: " + 
 			     newHCode + " with " + 
@@ -191,7 +191,7 @@ public class CodeScheme extends CodePosition {
 				 " children for " + sp.getPrettyName());
 		}
 
-		cp.parseHeirarchy(newHCode, props, sp);
+		cp.parseHierarchy(newHCode, props, sp);
 	    
 	    } else {
 		if (DEBUG) {

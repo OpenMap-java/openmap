@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodePositionTree.java,v $
 // $RCSfile: CodePositionTree.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.4 $
+// $Date: 2003/12/18 23:37:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,22 +35,22 @@ import com.bbn.openmap.util.Debug;
  * some intelligence on how to starting building the SymbolPart tree
  * for the SymbolReferenceLibrary.  It knows how to set up CodeOptions
  * for the different types of CodeSchemes, and starts the parsing of
- * the heirarchy properties.
+ * the hierarchy properties.
  */
 public class CodePositionTree extends CodeScheme {
 
     public CodePositionTree(Properties positionProperties) {
 	// Read CodeSchemes, build position tree.  Then, this
-	// CodePosition can be used to build the heirarchal symbol
+	// CodePosition can be used to build the hierarchal symbol
 	// tree from the head SymbolPart
 	
 	CodeScheme cs = new CodeScheme();
 	cs.parsePositions("scheme", positionProperties);
-	// This is needed to parse heirarchy...
+	// This is needed to parse hierarchy...
 	choices = cs.getPositionChoices();
 
 // 	parsePositions("scheme", positionProperties);
-// 	// This is needed to parse heirarchy...
+// 	// This is needed to parse hierarchy...
 // 	choices = cs.getPositionChoices();
 
 
@@ -87,7 +87,7 @@ public class CodePositionTree extends CodeScheme {
 	warfightingOptions.add(cwm);
 // 	warfightingOptions.add(cc); // CodeCountry
 	warfightingOptions.add(coob);
-	// Kind of a hack, I know the number is the heirarchy number
+	// Kind of a hack, I know the number is the hierarchy number
 	// of the particular scheme, and that the position.properties
 	// file is setting up the options to reflect that for all of
 	// these code option settings.
@@ -119,7 +119,7 @@ public class CodePositionTree extends CodeScheme {
 // 	((CodeScheme)getFromChoices(5)).setCodeOptions(new CodeOptions(mootwOptions));
     }
 
-    public SymbolPart parseHeirarchy(String name, Properties heirarchyProperties) {
+    public SymbolPart parseHierarchy(String name, Properties hierarchyProperties) {
 	List positions = getPositionChoices();
 
 	SymbolPartTree head = new SymbolPartTree(name);
@@ -133,7 +133,7 @@ public class CodePositionTree extends CodeScheme {
 		Debug.output("CodePositionTree: loading " + cs.getPrettyName());
 	    }
 
-	    SymbolPart sp = cs.parseHeirarchy(heirarchyProperties, head);
+	    SymbolPart sp = cs.parseHierarchy(hierarchyProperties, head);
 	    if (sp != null) {
 		subs.add(sp);
 	    }

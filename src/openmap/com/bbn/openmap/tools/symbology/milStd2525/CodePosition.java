@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodePosition.java,v $
 // $RCSfile: CodePosition.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.7 $
+// $Date: 2003/12/18 23:37:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,7 +46,7 @@ import com.bbn.openmap.util.PropUtils;
  * the parent's CodePositin to see that meaning as well. <P>
  *
  * CodePositions have some intelligence for parsing position
- * properties and heirarchy properties, which allow the whole symbol
+ * properties and hierarchy properties, which allow the whole symbol
  * tree to be defined. <P>
  *
  * CodePositions server a couple of different roles.  Some
@@ -63,7 +63,7 @@ public class CodePosition {
     public final static char NO_CHAR = ' ';
     public final static int NO_NUMBER = -1;
 
-    protected int heirarchyNumber;
+    protected int hierarchyNumber;
     protected char id;
     protected String prettyName;
     protected int startIndex;
@@ -111,16 +111,16 @@ public class CodePosition {
 
     /**
      * Get a CodePosition from this list of available possibilities
-     * given the heirarchy number for the position.  Not all positions
-     * have a heirarchy number, but the number given in the positions
+     * given the hierarchy number for the position.  Not all positions
+     * have a hierarchy number, but the number given in the positions
      * properties will probably suffice.
      */
-    public CodePosition getFromChoices(int heirarchyNumber) {
+    public CodePosition getFromChoices(int hierarchyNumber) {
 	List aList = getPositionChoices();
 	if (aList != null) {
 	    for (Iterator it = aList.iterator(); it.hasNext();) {
 		CodePosition cp = (CodePosition)it.next();
-		if (heirarchyNumber == cp.getHeirarchyNumber()) {
+		if (hierarchyNumber == cp.getHierarchyNumber()) {
 		    return cp;
 		}
 	    }
@@ -130,9 +130,9 @@ public class CodePosition {
 
     /**
      * Method to add a position to the choices for this particular code position.
-     * @param index the heirarhical index for this position choice.
+     * @param index the hierarhical index for this position choice.
      * This really only becomes important for those CodePositions
-     * which are used for interpreting the heirarchy properties.
+     * which are used for interpreting the hierarchy properties.
      * Other positions can use them for convenience, and this value
      * will probably be just an ordering number for this choice out of
      * all the other choices for the position.
@@ -159,7 +159,7 @@ public class CodePosition {
 	    prefix = PropUtils.getScopedPropertyPrefix(prefix) + entry + ".";
 
 	    // Might not mean anything for option-type positions
-	    cp.heirarchyNumber = index;
+	    cp.hierarchyNumber = index;
 	    cp.id = entry.charAt(0);  // ASSUMED
 	    cp.prettyName = props.getProperty(prefix + NameProperty);
 	    addPositionChoice(cp);
@@ -211,21 +211,21 @@ public class CodePosition {
 			      offset + endIndex - startIndex, false);
     }
 
-    protected void parseHeirarchy(String hCode, Properties props, SymbolPart parent) {
+    protected void parseHierarchy(String hCode, Properties props, SymbolPart parent) {
 	
 	List parentList = null;
 	int levelCounter = 1;
 
 	while (levelCounter > 0) {
 
-	    String heirarchyCode = hCode + "." + levelCounter;
+	    String hierarchyCode = hCode + "." + levelCounter;
 
 	    if (DEBUG) {
-		Debug.output("CodePosition.parse: " + heirarchyCode + 
+		Debug.output("CodePosition.parse: " + hierarchyCode + 
 			     " with " + getPrettyName());
 	    }
 
-	    String entry = props.getProperty(heirarchyCode);
+	    String entry = props.getProperty(hierarchyCode);
 
 	    if (entry != null) {
 		CodeFunctionID cp = new CodeFunctionID();
@@ -252,7 +252,7 @@ public class CodePosition {
 				 sp.getPrettyName());
 		}
 
-		cp.parseHeirarchy(heirarchyCode, props, sp);
+		cp.parseHierarchy(hierarchyCode, props, sp);
 
 		levelCounter++;
 
@@ -263,19 +263,19 @@ public class CodePosition {
     }
 
     /**
-     * The SymbolPart tree can be represented by a heirarchy number
-     * system, and this system is what is used in the heirarchy
+     * The SymbolPart tree can be represented by a hierarchy number
+     * system, and this system is what is used in the hierarchy
      * properties file to build the symbol tree.
      */
-    public int getHeirarchyNumber() {
-	return heirarchyNumber;
+    public int getHierarchyNumber() {
+	return hierarchyNumber;
     }
 
     /**
-     * Return a string version of the heirarchy number.
+     * Return a string version of the hierarchy number.
      */
-    public String getHeirarchyNumberString() {
-	return Integer.toString(heirarchyNumber);
+    public String getHierarchyNumberString() {
+	return Integer.toString(hierarchyNumber);
     }
 
     /**
@@ -310,7 +310,7 @@ public class CodePosition {
 
     /**
      * Return the next CodePosition.  An organizational tool to help
-     * build the SymbolPart tree when parsing the heirarchy
+     * build the SymbolPart tree when parsing the hierarchy
      * properties.
      */
     public CodePosition getNextPosition() {

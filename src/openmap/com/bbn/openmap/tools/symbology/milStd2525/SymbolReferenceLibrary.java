@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolReferenceLibrary.java,v $
 // $RCSfile: SymbolReferenceLibrary.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.5 $
+// $Date: 2003/12/18 23:37:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,7 +44,7 @@ public class SymbolReferenceLibrary {
     protected CodeOptions symbolAttributes;
 
     public SymbolReferenceLibrary() {
-	Properties props = getProperties("heirarchy.properties");
+	Properties props = getProperties("hierarchy.properties");
 	if (props != null) {
 	    initialize(props);
 	}
@@ -71,7 +71,7 @@ public class SymbolReferenceLibrary {
 
     protected void initialize(Properties props) {
 	if (props == null) {
-	    // Get the heirarchy.properties file as a local resource
+	    // Get the hierarchy.properties file as a local resource
 	    // and load that.
 	}
 
@@ -82,7 +82,7 @@ public class SymbolReferenceLibrary {
 	Properties positionProperties = getProperties("positions.properties");
 	if (positionProperties != null) {
 	    positionTree = new CodePositionTree(positionProperties);
-	    head = positionTree.parseHeirarchy("MIL-STD-2525B Symbology", props);
+	    head = positionTree.parseHierarchy("MIL-STD-2525B Symbology", props);
 	}
 
 	if (Debug.debugging("symbology")) {
@@ -131,7 +131,7 @@ public class SymbolReferenceLibrary {
     }
 
     /**
-     * The SymbolParts in the library are stored in a tree heirarchy,
+     * The SymbolParts in the library are stored in a tree hierarchy,
      * and this method gets the top level one representing the
      * MIL-STD-2525 tree.
      */

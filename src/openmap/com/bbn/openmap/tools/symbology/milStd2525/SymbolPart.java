@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolPart.java,v $
 // $RCSfile: SymbolPart.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/18 19:11:11 $
+// $Revision: 1.7 $
+// $Date: 2003/12/18 23:37:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,8 @@
 
 package com.bbn.openmap.tools.symbology.milStd2525;
 
+import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -33,16 +35,16 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The SymbolPart class represents one part in a heirarchy of pieces
+ * The SymbolPart class represents one part in a hierarchy of pieces
  * needed to represent an actual symbol.  A symbol may require
  * geometries from its parents, as each piece further down the
- * heirarchy makes each symbol's meaning more specific, or scoped for
+ * hierarchy makes each symbol's meaning more specific, or scoped for
  * a particular task.  The top-level SymbolPart represents the entire
  * symbology tree.  Descending down through the tree, a SymbolPart
  * representing one of the 5 Scheme sections is next, with the lower
  * levels dependent on the Scheme definitions. <P>
  *
- * The SymbolPart is smart enough to use the heirarchy.properties file
+ * The SymbolPart is smart enough to use the hierarchy.properties file
  * that defines the symbol set and create the symbol tree using the
  * appropriate Code classes.  Not all Code classes help define the
  * tree, because some aspects of a symbol are flexible, like the
@@ -62,7 +64,7 @@ public class SymbolPart {
 
     /**
      * The Object that describes the location of this symbol part in
-     * the symbol heirarchy as defined by the 15 digit symbol code.
+     * the symbol hierarchy as defined by the 15 digit symbol code.
      */
     protected CodePosition codePosition;
     /**
@@ -72,7 +74,7 @@ public class SymbolPart {
     protected String code;
     /**
      * The pretty name for a symbol represented by this SymbolPart at
-     * this point in the heirarchy.
+     * this point in the hierarchy.
      */
     protected String prettyName;
     /**
@@ -118,7 +120,7 @@ public class SymbolPart {
      * SymbolPart.  CodePosition object with lower position numbers
      * tend to define more general symbols.
      * @param symbolCode the 15 character symbol string that defines
-     * this SymbolPart.  This string is associated with a heirarchy
+     * this SymbolPart.  This string is associated with a hierarchy
      * number in the Properties.
      * @param props the Properties object contains all the information
      * about the symbol tree.
@@ -142,7 +144,7 @@ public class SymbolPart {
      * SymbolPart.  CodePosition object with lower position numbers
      * tend to define more general symbols.
      * @param symbolCode the 15 character symbol string that defines
-     * this SymbolPart.  This string is associated with a heirarchy
+     * this SymbolPart.  This string is associated with a hierarchy
      * number in the Properties.
      * @param props the Properties object contains all the information
      * about the symbol tree.
@@ -167,7 +169,7 @@ public class SymbolPart {
 
 	// This corrects the situation where the symbol code is
 	// shorter in the specification than it would seem
-	// appropriate for its place in the heirarchy.
+	// appropriate for its place in the hierarchy.
 	while (code.charAt(0) == UNUSED && start > 1 && shiftIfNecessary) {
 	    code = symbolCode.substring(--start, end);
 	    this.positionShift--;
