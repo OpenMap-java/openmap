@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.5 $
-# $Date: 1998/04/30 15:31:24 $
+# $Revision: 1.6 $
+# $Date: 1998/04/30 15:49:05 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -32,8 +32,8 @@
 #
 # Parameters:
 #
-# buildDir  - The build directory
-#
+# -d <buildDir>  - The build directory
+# -l <logFile>   - The log file
 # **********************************************************************
 
 echo ""
