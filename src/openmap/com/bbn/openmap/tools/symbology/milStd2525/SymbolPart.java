@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolPart.java,v $
 // $RCSfile: SymbolPart.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/17 00:23:49 $
+// $Revision: 1.5 $
+// $Date: 2003/12/17 00:44:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -350,6 +350,10 @@ public class SymbolPart {
 	}
 
 	return symbolCode;
+    }
+
+    public CodePosition getCodePosition() {
+	return codePosition;
     }
 
     public CodeOptions getCodeOptions() {

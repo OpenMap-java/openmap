@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolChooser.java,v $
 // $RCSfile: SymbolChooser.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/17 00:23:49 $
+// $Revision: 1.2 $
+// $Date: 2003/12/17 00:44:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -127,6 +127,8 @@ public class SymbolChooser extends JPanel implements ActionListener {
 		    SymbolPart symbolPart = (SymbolPart)nodeInfo;
 		    currentSymbol = node;
 		    nameField.setText(symbolPart.getSymbolCode());
+		} else {
+		    nameField.setText("");
 		}
             }
         });
@@ -245,7 +247,20 @@ public class SymbolChooser extends JPanel implements ActionListener {
     private void createNodes(DefaultMutableTreeNode top, SymbolReferenceLibrary srl) 
 	throws FormatException {
 	SymbolPart head = srl.getHead();
-	addNodes(top, head);
+
+        DefaultMutableTreeNode schemeNode = null;
+	java.util.List subs = head.getSubs();
+	if (subs != null) {
+	    for (Iterator it = subs.iterator(); it.hasNext();) {
+		SymbolPart sp = (SymbolPart)it.next();
+		schemeNode = new DefaultMutableTreeNode(sp.getCodePosition());
+		top.add(schemeNode);
+
+		DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(sp);
+		schemeNode.add(newNode);
+		addNodes(newNode, sp);
+	    }
+	}
     }
 
     private void addNodes(DefaultMutableTreeNode node, SymbolPart sp) {

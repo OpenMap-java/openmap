@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodePosition.java,v $
 // $RCSfile: CodePosition.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/17 00:23:49 $
+// $Revision: 1.5 $
+// $Date: 2003/12/17 00:44:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -267,7 +267,8 @@ public class CodePosition {
     }
 
     public String toString() {
-	return getPrettyName() + " [" + getID() + "] at " + 
-	    getStartIndex() + ", " + getEndIndex();
+// 	return getPrettyName() + " [" + getID() + "] at " + 
+// 	    getStartIndex() + ", " + getEndIndex();
+	return getPrettyName();
     }
 }
