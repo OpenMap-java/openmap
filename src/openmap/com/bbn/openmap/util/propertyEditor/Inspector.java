@@ -267,6 +267,9 @@ public class Inspector implements ActionListener {
             try {
                 propertyEditorClass = Class.forName(editorClass);
                 editor = (PropertyEditor)propertyEditorClass.newInstance();
+                if (editor instanceof PropertyConsumer) {
+                    ((PropertyConsumer)editor).setProperties(marker, info);
+                }
                 editors.put(prop, editor);
             } catch(Exception e) {
                 e.printStackTrace();
@@ -406,6 +409,10 @@ public class Inspector implements ActionListener {
                 // its default settings.
                 if (!stuff.equals("")) {
                     props.put(key, stuff);
+                }
+
+                if (editor instanceof PropertyConsumer) {
+                    ((PropertyConsumer)editor).getProperties(props);
                 }
             }
         }

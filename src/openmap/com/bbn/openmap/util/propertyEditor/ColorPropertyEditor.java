@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/ColorPropertyEditor.java,v $
 // $RCSfile: ColorPropertyEditor.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/03/23 18:51:55 $
+// $Revision: 1.5 $
+// $Date: 2004/05/25 02:29:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,17 +23,22 @@
 
 package com.bbn.openmap.util.propertyEditor;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Paint;
 import java.awt.event.*;
 import javax.swing.*;
 import java.beans.*;
 
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMColorChooser;
+import com.bbn.openmap.tools.icon.*;
 import com.bbn.openmap.util.ColorFactory;
+import com.bbn.openmap.util.Debug;
 
 /** 
  * A PropertyEditor that brings up a JFileChooser panel to select a
@@ -45,7 +50,8 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
     JButton button;
 
     public final static String title = "Select color...";
-
+    protected int icon_width = 20;
+    protected int icon_height = 20;
 
     /** Create FilePropertyEditor.  */
     public ColorPropertyEditor() {
@@ -94,13 +100,69 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
         return panel;
     }
 
+    public ImageIcon getIconForPaint(Paint paint, boolean fill) {
+
+        if (paint == null) paint = Color.black;
+
+        DrawingAttributes da = new DrawingAttributes();
+        da.setLinePaint(paint);
+        da.setStroke(new BasicStroke(2));
+        if (fill) {
+            da.setFillPaint(paint);
+        }
+
+        OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
+        IconPartList parts = new IconPartList();
+
+        if (paint instanceof Color || paint == OMColor.clear) {
+            Color color = (Color)paint;
+            Color opaqueColor = new Color(color.getRed(), color.getGreen(), color.getBlue());
+            DrawingAttributes opaqueDA = new DrawingAttributes();
+            opaqueDA.setLinePaint(opaqueColor);
+            opaqueDA.setStroke(new BasicStroke(2));
+
+            if (fill) {
+                opaqueDA.setFillPaint(opaqueColor);
+            }
+
+            parts.add(collection.get("LR_TRI", opaqueDA));
+            parts.add(collection.get("UL_TRI", da));
+        } else {
+            parts.add(collection.get("BIG_BOX", da));
+        }
+
+        return OMIconFactory.getIcon(icon_width, icon_height, parts);
+    }
+
+
     /** Implement PropertyEditor interface. */
     public void setValue(Object someObj) {
-        if (someObj instanceof String) {
-            button.setText((String)someObj);
+
+        if (someObj == null) {
+            setButtonForColor(Color.black);
         } else if (someObj instanceof Color) {
-            button.setText(Integer.toHexString(((Color)someObj).getRGB()));
+            setButtonForColor((Color)someObj);
+        } else if (someObj instanceof String) {
+            Color color = OMColor.clear;
+            try {
+                color = ColorFactory.parseColor((String)someObj, true);
+            } catch (NumberFormatException nfe) {
+                Debug.output("ColorPropertyEditor.setValue: " + someObj + "\n" + 
+                             nfe.getMessage());
+            }
+
+            setButtonForColor(color);
         }
+    }
+
+    protected void setButtonForColor(Color color) {
+        button.setIcon(getIconForPaint(color, true));
+        String val = Integer.toHexString(color.getRGB());
+        if (val.equals("0")) {
+            val = "00000000";
+        }
+        
+        button.setText(val);
     }
     
     /** Implement PropertyEditor interface. */
