@@ -1,9 +1,9 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/openmap-arch.sgml,v $
 $RCSfile: openmap-arch.sgml,v $
-$Revision: 1.15 $
-$Date: 2002/10/28 23:45:19 $
-$Author: dietrick $
+$Revision: 1.16 $
+$Date: 2004/06/25 16:08:46 $
+$Author: bmackiew $
 
 OpenMap architecture document
 -->
@@ -161,7 +161,7 @@ MapBean to create passive and interactive maps.
 
 <sect1>OpenMap Viewer<label id="sec-mapbean-viewer">
 <p>
-The <htmlurl url="../com/bbn/openmap/app/OpenMap.java" name="OpenMap
+The <htmlurl url="../src/openmap/com/bbn/openmap/app/OpenMap.java" name="OpenMap
 Viewer"> example is the default "face" of OpenMap.  While it looks
 like a complex example to start with, it's really a simple framework
 that uses the MapHandler to add and connect the OpenMap components.
@@ -187,7 +187,7 @@ file and are connected at runtime.
 <p>
 This is a very simple example that shows how you use the MapBean and a
 layer which shows a map of the world.  This <htmlurl
-url="../com/bbn/openmap/examples/simple/SimpleMap.java" name="example"> uses the
+url="../src/openmap/com/bbn/openmap/examples/simple/SimpleMap.java" name="example"> uses the
 MapBean to create a static political map in a window with these
 steps:
 <itemize>
@@ -203,13 +203,13 @@ name="JFrame"> window.
 
 <sect1>SimpleMap2<label id="sec-mapbean-simplemap2">
 <p>
-This <htmlurl url="../com/bbn/openmap/examples/simple/SimpleMap2.java"
+This <htmlurl url="../src/openmap/com/bbn/openmap/examples/simple/SimpleMap2.java"
 name="example"> is a little more complicated than the previous one,
 but is more usable.  It shows the same political layer along with a
 background <htmlurl
 url="./api/com/bbn/openmap/layer/GraticuleLayer.html"
 name="graticule"> and a <htmlurl
-url="../com/bbn/openmap/examples/simple/RouteLayer.java"
+url="../src/openmap/com/bbn/openmap/examples/simple/RouteLayer.java"
 name="foreground layer"> which shows hypothetical transportation
 routes.  This RouteLayer is a good example of how to extend the
 <htmlurl url="./api/com/bbn/openmap/Layer.html" name="Layer.java">
@@ -244,7 +244,7 @@ which are used to control the MapBean.
 
 <sect1>HelloWorld<label id="sec-mapbean-helloworld">
 <p>
-The <htmlurl url="../com/bbn/openmap/examples/hello/HelloWorld.java"
+The <htmlurl url="../src/openmap/com/bbn/openmap/examples/hello/HelloWorld.java"
 name="HelloWorld"> example extends the ideas developed in the
 SimpleMap2 example.  It again uses the MapBean to show a political map
 of the world, but this time with a blazing "Hello World!" painted over
@@ -256,7 +256,7 @@ navigation.
 <p>
 You can integrate OpenMap into your own Java application primarily by
 using the MapHandler, MapBean and Layers.  We recommend that you use
-the <htmlurl url="../com/bbn/openmap/app/OpenMap.java" name="OpenMap
+the <htmlurl url="../src/openmap/com/bbn/openmap/app/OpenMap.java" name="OpenMap
 Viewer application"> as an example of using the MapHandler, and add
 the components you need for your application to the MapHandler.
 
@@ -365,11 +365,11 @@ which will be added to the MenuBar in the order in which they are
 found.  The AbstractOpenMapMenu is the MapHandlerChild implementation
 for menus, and by extending this class menu contents can connect with
 the other OpenMap components they are controlling. The <htmlurl
-url="../com/bbn/openmap/gui/FileMenu.java" name="FileMenu">, <htmlurl
-url="../com/bbn/openmap/gui/ControlMenu.java" name="ControlMenu">, <htmlurl
-url="../com/bbn/openmap/gui/NavigateMenu.java" name="NavigateMenu">,
+url="../src/openmap/com/bbn/openmap/gui/FileMenu.java" name="FileMenu">, <htmlurl
+url="../src/openmap/com/bbn/openmap/gui/ControlMenu.java" name="ControlMenu">, <htmlurl
+url="../src/openmap/com/bbn/openmap/gui/NavigateMenu.java" name="NavigateMenu">,
 and  <htmlurl
-url="../com/bbn/openmap/gui/GoToMenu.java" name="GoToMenu">
+url="../src/openmap/com/bbn/openmap/gui/GoToMenu.java" name="GoToMenu">
 can be used as examples of how to write different menus.
 
 <sect2>ToolPanel<label id="sec-toolpanel">
