@@ -16,7 +16,7 @@
 
     <property name="javac.excludes" value="${general.excludes}, 
 					   **/*.gif, **/*.png" />
-
+    <property name="mac.app" value="OpenMap.app"/>
     <property name="jar.excludes" value="${general.excludes}, **/*.java"/>
     
     <property name="openmap.src" value="${openmap.home}/src/openmap"/>
@@ -85,11 +85,12 @@
 	  description="Delete jar files, class files, and generated documentation."/>
 
   <target name="clean" depends="init"
-	  description="Delete jar files and all class files">
+	  description="Delete jar files and all class files.">
     <ant antfile="${openmap.src}/build.xml" target="clean.openmap"/>
     <ant antfile="${svg.src}/build.xml" target="clean.svg"/>
     <ant antfile="${j3d.src}/build.xml" target="clean.j3d"/>
     <ant antfile="${corba.src}/build.xml" target="clean.corba"/>
+    <delete dir="${mac.app}"/>
   </target>
 
   <target name="distclean" depends="init"
@@ -124,14 +125,28 @@
 	  fork="yes"/>
   </target>
 
-  <target name="osxize" depends="init">
-    <taskdef name="osxize" classname="com.neo.util.mac.OSXizeAntTask" />
-    <osxize name="OpenMap" shortname="openmap"
-            mainclass="com.bbn.openmap.app.OpenMap" 
-	    dir="bin"
-            jars="lib/openmap.jar:lib/omsvg.jar"
-	    verbose="true" />
-       <!--":lib/j3d.jar:lib/omcorba_vb.jar" --> 
+  <target name="mac" depends="all" description="Create MacOS X application.">
+    <copy todir="${mac.app}"> 
+      <fileset dir="${openmap.home}/src/mac/OpenMap.app"/>
+    </copy>
+
+    <copy todir="${mac.app}/Contents/Resources">
+      <fileset dir="${openmap.home}/share"
+	       includes="**/data/**"/>
+    </copy>
+
+    <copy todir="${mac.app}/Contents/Resources"
+	  file="${openmap.home}/openmap.properties"/> 
+
+    <copy todir="${mac.app}/Contents/Resources/Java">
+      <fileset dir="${openmap.home}/lib" 
+	       includes="**/*.jar"/>
+    </copy>
+
+    <chmod file="${mac.app}/Contents/MacOS/JavaApplicationStub"
+	   perm="ugo+rx"/>
+    <chmod dir="${mac.app}" perm="ugo+rx"/>
+    
   </target>
 
 </project>
