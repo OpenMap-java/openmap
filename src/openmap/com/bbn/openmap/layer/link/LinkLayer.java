@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.5 $
+// $Date: 2003/08/28 22:21:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -165,7 +165,13 @@ public class LinkLayer extends OMGraphicHandlerLayer
 	// behavior, the current list should be reprojected and the
 	// server notified, and the server will update itself if
 	// needed.
-	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this) {
+		// Modified so it doesn't reset the OMGraphicList when
+		// the SwingWorker thread returns.  The list has
+		// already been nulled out, will be reset when the
+		// asynchronous thread decides it is.
+		public void workerComplete(OMGraphicList list) {}
+	    });
     }
 
     /**
@@ -301,7 +307,11 @@ public class LinkLayer extends OMGraphicHandlerLayer
 
 	distanceLimit = PropUtils.intFromProperties(properties, realPrefix + DistanceLimitProperty, distanceLimit);
 
-	listener = new LinkListener(linkManager, this, currentGenerator);
+// 	listener = new LinkListener(linkManager, this, currentGenerator);
+    }
+
+    protected void setListener(LinkListener ll) {
+	listener = ll;
     }
 
     protected LinkListener getListener() {
@@ -322,26 +332,25 @@ public class LinkLayer extends OMGraphicHandlerLayer
 
 	OMGraphicList currentList = getList();
 
+	if (listener == null) {
+	    listener = new LinkListener(linkManager, this, currentGenerator);
+	}
+	
 	if (listener != null && !listener.isListening()) {
-
-	    SwingWorker sw = new SwingWorker() {
-		    public Object construct() {
-			Debug.message("link", "LinkLayer.prepare():  calling for the LinkListener startup");
-			getListener().start(); 
-			return null;
-		    }
-		};
-	    sw.execute();
-// 	    listener.start();
+	    // Call LinkListener to launch SwingWorker to kick off a
+	    // thread for the listener.
+	    listener.startUp();
 	}
 
-	Debug.output("Listener " + (listener == null?"is null,":"is OK,") + " listening (" + (listener == null?"nope":"" + listener.isListening()) + ")");
-
+	if (Debug.debugging("link")) {
+	    Debug.output(getName() + "|LinkLayer.prepare(): Listener " + (listener == null?"is null,":"is OK,") + " listening (" + (listener == null?"nope":"" + listener.isListening()) + ")");
+	}
 
 	if (isCancelled()) {
 	    Debug.message("link", getName()+"|LinkLayer.prepare(): aborted.");
 	    return currentList;
 	}
+
 	Projection projection = getProjection();
 	if (projection == null) {
 	    Debug.error("Link Layer needs to be added to the MapBean before it can get graphics!");
@@ -509,11 +518,12 @@ public class LinkLayer extends OMGraphicHandlerLayer
 	    // Do we need to regenerate?
 	    Projection proj = getProjection();
 	    if (lomgl.getNeedToRegenerate(proj)) {
-		// set to false in Link.readAndParse if the projection
-		// was there when the LinkGraphicList was created.  If
-		// it wasn't there, we need to try to project them
-		// before calling repaint().  Projection will be null
-		// if the layer hasn't been added to the map.
+		// set to false in LinkGraphicList.readGraphics if the
+		// projection was there when the LinkGraphicList was
+		// created.  If it wasn't there, we need to try to
+		// project them before calling repaint().  Projection
+		// will be null if the layer hasn't been added to the
+		// map.
 		lomgl.generate(proj);
 	    }
 
@@ -542,7 +552,7 @@ public class LinkLayer extends OMGraphicHandlerLayer
 	    // Why ignore what the server has to say, set the new
 	    // OMGraphicList and react accordingly.
 	    graphics = new LinkOMGraphicList();
-	    setList(graphics);
+	    setGraphicList(graphics);
 	}
 
 	while (items.hasMoreElements()) {

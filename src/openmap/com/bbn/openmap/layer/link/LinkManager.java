@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkManager.java,v $
 // $RCSfile: LinkManager.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.3 $
+// $Date: 2003/08/28 22:21:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -153,6 +153,9 @@ public class LinkManager {
 
 	ClientLink tmplink = null;
 	try {
+	    if (Debug.debugging("link")) {
+		Debug.output("LinkManager.getLink(): establishing link to " + host + " on port " + port);
+	    }
 	    Socket socket = new Socket(host, port);
 	    tmplink = new ClientLink(socket);
 	} catch (java.net.UnknownHostException uhe) {
@@ -188,6 +191,7 @@ public class LinkManager {
     public void resetLink() {
 	if (link != null) {
 	    try {
+		link.cleanUp();
 		link.close();
 	    } catch (IOException ioe) {
 		// Nice try...

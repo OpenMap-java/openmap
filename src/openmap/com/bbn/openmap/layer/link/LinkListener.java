@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkListener.java,v $
 // $RCSfile: LinkListener.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.2 $
+// $Date: 2003/08/28 22:21:18 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -46,8 +46,9 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- *  The Link Listener is the object communicating with the link server.
- *  It is launched within its own thread to handle a specific link layer.
+ * The Link Listener is the object listening from input from the link
+ * server, asynchronously.  It is launched within its own thread to
+ * handle a specific link layer.
  */
 public class LinkListener extends Thread implements LinkPropertiesConstants {
     /** The Link to use to talk to the client. */
@@ -93,11 +94,33 @@ public class LinkListener extends Thread implements LinkPropertiesConstants {
 	listening = value;
     }
 
+    protected LinkListener getListener() {
+	return this;
+    }
+
+    /**
+     * Use a SwingWorker to launch the listener.  Calls start() on the
+     * LinkListener from a new thread.
+     */
+    public void startUp() {
+	// Have to use a swing worker so that the calling thread
+	// doesn't get hung up on launching the runnable.
+	SwingWorker sw = new SwingWorker() {
+		public Object construct() {
+		    if (Debug.debugging("link")) {
+			Debug.output("LinkListener self-starting...");
+		    }
+		    getListener().start(); 
+		    return null;
+		}
+	    };
+	sw.execute();
+    }
+
     /** From the Runnable interface.  The thread starts here... */
     public void run() {
         try {
 	    Debug.message("link","*** LinkListener starting up ***");
-//             sleep(2000); // give it some time to start
 	    setListening(true);
             listen();
 	    Debug.message("link","...done listening");
@@ -105,10 +128,9 @@ public class LinkListener extends Thread implements LinkPropertiesConstants {
             if (Debug.debugging("link")) {
                 Debug.error(ioe.getMessage());
             }
-            Debug.output("LinkListener: Server disconnected");
-            System.gc();
+            Debug.message("link", "LinkListener: Server disconnected");
         }
-	setListening(false);
+	layer.setListener(null);
     }
 
     /**
@@ -125,15 +147,16 @@ public class LinkListener extends Thread implements LinkPropertiesConstants {
 
 	Debug.message("link", "LinkListener got link...");
 
-	while (true) {
+	while (link != null) {
 	    Debug.message("link","LinkListener: listening...");
-// 	    link.readAndParse(layer.getProjection(), currentGenerator, layer);
 	    link.readAndParse(null, currentGenerator, layer);
 	    Debug.message("link","LinkListener: received content from server");
 
 	    layer.handleLinkGraphicList(link.getGraphicList());
 	    layer.handleLinkActionRequest(link.getActionRequest());
 	    layer.handleLinkActionList(link.getActionList());
+
+	    link = linkManager.getLink(this);
 	}
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/Link.java,v $
 // $RCSfile: Link.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.3 $
+// $Date: 2003/08/28 22:21:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -233,13 +233,10 @@ public class Link implements LinkConstants {
 	String delimiter = null;
 	
 	if (Debug.debugging("link")) {
-	    System.out.println("Link|readAndParse: reading link:");
-	    if (proj != null) {
-		System.out.println(" with projection");
-	    }
-	    if (layer != null) {
-		System.out.println(" and a layer");
-	    }
+	    System.out.println("Link|readAndParse: listening to link:");
+	    System.out.println((proj == null?" without ":" with ") +
+			       "a projection and");
+	    System.out.println((layer == null?" without ":" with ") + "a layer");
 	}
 
 	while (true) {
@@ -248,7 +245,11 @@ public class Link implements LinkConstants {
 		System.out.println("Link:reading section: " + delimiter);
 	    }
 	    if (delimiter == GRAPHICS_HEADER) {
-		graphicList = new LinkGraphicList(this, graphics, proj, generator);
+		if (layer != null) {
+		    graphicList = new LinkGraphicList(this, graphics, layer.getProjection(), generator);
+		} else {
+		    graphicList = new LinkGraphicList(this, graphics, proj, generator);
+		}
 		delimiter = graphicList.getLinkStatus();
 	    } else if (delimiter == ACTIONS_HEADER) {
  		actionList = new LinkActionList(this, layer, proj, generator);

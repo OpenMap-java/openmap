@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGraphicList.java,v $
 // $RCSfile: LinkGraphicList.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.3 $
+// $Date: 2003/08/28 22:21:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -214,8 +214,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
 	    if (header == Link.END_TOTAL || header == Link.END_SECTION) {
 		
 		long endTime = System.currentTimeMillis();
-		Debug.message("link", "LinkGraphicList: received bytes in "
-			      + (float)(endTime - startTime)/1000.0f + 
+		Debug.message("link", "LinkGraphicList: received " +
+			      graphics.size()  + " graphics in " +
+			      (float)(endTime - startTime)/1000.0f + 
 			      " seconds");
 		
 		return header;
