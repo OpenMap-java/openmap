@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriPlugIn.java,v $
 // $RCSfile: EsriPlugIn.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/02/03 20:42:10 $
+// $Revision: 1.10 $
+// $Date: 2004/05/10 20:53:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -352,11 +352,17 @@ public class EsriPlugIn extends AbstractPlugIn
         
         OMGraphicList list = epi.getEsriGraphicList();
 
+        if (list != null) {
+            Debug.output(list.getDescription());
+        }
+
         String dbfFileName = argv[0].substring(0, argv[0].lastIndexOf('.') + 1)+ "dbf";
 
         try {
-            list.setAppObject(epi.getDbfTableModel(PropUtils.getResourceOrFileOrURL(epi, dbfFileName)));
+            DbfTableModel dbf = epi.getDbfTableModel(PropUtils.getResourceOrFileOrURL(epi, dbfFileName));
+            list.setAppObject(dbf);
             Debug.output("Set list in table");
+            dbf.showGUI(dbfFileName, 0);
 
         } catch (Exception e) {
             Debug.error("Can't read .dbf file for .shp file: " + dbfFileName + "\n" + e.getMessage());
@@ -367,7 +373,6 @@ public class EsriPlugIn extends AbstractPlugIn
         Debug.output("Exporting...");
         ese.export();
         Debug.output("Done.");
-        System.exit(0);
     }
 
     /**
