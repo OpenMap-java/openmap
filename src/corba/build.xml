@@ -216,14 +216,14 @@
 	  description="Delete jar files, class files, and generated documentation."/>
 
   <target name="clean.corba" 
-	  depends="distclean.corba, clean_jars.corba"
-	  description="Delete jar files and all class files"/>
-
-  <target name="distclean.corba"
-	  depends="clean_stubs.corba"
-	  description="Delete the Corba OpenMap class files and the stub classes, but not the jar files.">
+	  depends="init.corba, clean_jars.corba"
+	  description="Delete jar files and all class files" >
     <delete dir="${corba.classes}"/>
   </target>
+
+  <target name="distclean.corba"
+	  depends="clean_stubs.corba, clean.corba"
+	  description="Delete the Corba OpenMap class files and the stub classes, but not the jar files."/>
 
   <target name="clean_stubs.corba"
 	  depends="init.corba"
