@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ComponentFactory.java,v $
 // $RCSfile: ComponentFactory.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/08 22:41:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -83,10 +83,40 @@ public class ComponentFactory {
      * @param progressSupport ProgressSupport object to provide
      * progress updates to.  It's OK if this is null to not have
      * progress events sent.
-     * @return Vector containing the new Objects.  
+     * @return Vector containing the new Objects.
      */
     public static Vector create(Vector markerNames, Properties properties,
 				ProgressSupport progressSupport) {
+	return create(markerNames, properties, progressSupport, false);
+    }
+
+    /**
+     * Given a Vector of marker name Strings, and a Properties object,
+     * look in the Properties object for the markerName.class property
+     * to get a class name to create each object.  Then, if the new
+     * objects are PropertyConsumers, use the marker name as a
+     * property prefix to get properties for that object out of the
+     * Properties.
+     *
+     * @param markerNames String of space separated marker names.
+     * @param properties Properties object containing the details.
+     * @param progressSupport ProgressSupport object to provide
+     * progress updates to.  It's OK if this is null to not have
+     * progress events sent.
+     * @param matchInOutVectorSize if true, then if there is any
+     * trouble creating an object, it's marker name will be placed in
+     * the returned vector instead of a component.  If false, only
+     * valid objects will be returned in the vector.
+     * @return Vector containing the new Objects.  If a component
+     * could not be created, the markerName is returned in its place,
+     * so you can figure out which one couldn't be created.  In any
+     * case, the size of the returned vector is the same size as the
+     * markerNames vector, so you can figure out which markerNames go
+     * with which objects.
+     */
+    public static Vector create(Vector markerNames, Properties properties,
+				ProgressSupport progressSupport, 
+				boolean matchInOutVectorSize) {
 
 	int size = markerNames.size();
 	Vector vector = new Vector(size);
@@ -103,6 +133,9 @@ public class ComponentFactory {
 
 	    if (className == null) {
 		Debug.error("ComponentFactory.create: Failed to locate property \"" + componentName + "\" with class \"" + classProperty + "\"\n  Skipping component \"" + componentName + "\"");
+		if (matchInOutVectorSize) {
+		    vector.add(componentName);
+		}
 		continue;
 	    }
  
@@ -115,7 +148,6 @@ public class ComponentFactory {
 
 	    if (component != null) {
 		vector.add(component);
-
 		if (Debug.debugging("componentfactory")) {
 		    Debug.output("ComponentFactory: [" + i + 
 				 "] created - " + className);
@@ -123,6 +155,9 @@ public class ComponentFactory {
 	    } else if (Debug.debugging("componentfactory")) {
 		Debug.output("ComponentFactory: [" + i +
 			     "] NOT created - " + className);
+		if (matchInOutVectorSize) {
+		    vector.add(componentName);
+		}
 	    }
 	}
 
@@ -181,7 +216,7 @@ public class ComponentFactory {
 	boolean DEBUG = false;
 	try {
 	    
-	    if (Debug.debugging("componentfactory")) {
+	    if (Debug.debugging("componentfactorydetail")) {
 		DEBUG = true;
 		Debug.output("ComponentFactory.create: " + className);
 	    }
@@ -224,7 +259,7 @@ public class ComponentFactory {
 	    }
 
 	    if (obj instanceof PropertyConsumer && properties != null) {
-		if (Debug.debugging("componentfactory")) {
+		if (DEBUG) {
 		    Debug.output("  setting properties with prefix \"" + prefix + "\"");
 		}
 		((PropertyConsumer)obj).setProperties(prefix, properties);
@@ -259,7 +294,7 @@ public class ComponentFactory {
 							      Class[] argClasses) 
 	throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-	boolean DEBUG = Debug.debugging("componentfactory");
+	boolean DEBUG = Debug.debugging("componentfactorydetail");
 
 	int numArgClasses = 0;
 

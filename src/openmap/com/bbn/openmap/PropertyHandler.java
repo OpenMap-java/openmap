@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/04/05 05:40:28 $
+// $Revision: 1.5 $
+// $Date: 2003/04/08 22:41:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -123,7 +123,10 @@ public class PropertyHandler implements SoloMapComponent {
      * Container to hold prefixes for components that have been
      * created, in order to determine if duplicates might have been
      * made.  Important if properties are going to be written out, so
-     * that property scoping can occur properly.
+     * that property scoping can occur properly.  This collection
+     * holds prefixes of objects that have been created by this
+     * PropertyHandler, and also prefixes that have been given out on
+     * request.
      */
     protected Set usedPrefixes = Collections.synchronizedSet(new HashSet());
 
@@ -135,6 +138,12 @@ public class PropertyHandler implements SoloMapComponent {
      * components.
      */
     protected boolean updateProgress = false;
+
+    /**
+     * A hashtable to keep track of property prefixes and the objects
+     * that were created for them.
+     */
+    protected Hashtable prefixLibrarian = new Hashtable();
 
     /**
      * Create a PropertyHandler object that checks in the default
@@ -547,6 +556,22 @@ public class PropertyHandler implements SoloMapComponent {
     }
 
     /**
+     * Given a property prefix, or markername, from the properties
+     * file, get the object that was created for it.
+     */
+    public Object get(String markername) {
+	return prefixLibrarian.get(markername.intern());
+    }
+
+    /**
+     * Get the Hashtable being held that matches property prefix
+     * strings with components.
+     */
+    public Hashtable getPrefixLibrarian() {
+	return prefixLibrarian;
+    }
+
+    /**
      * Given a BeanContext (actually a MapHandler, to handle
      * SoloMapComponents), look for the openmap.components property in
      * the current properties, and parse the list given as that
@@ -600,29 +625,31 @@ public class PropertyHandler implements SoloMapComponent {
 
 	Vector components = 
 	    ComponentFactory.create(componentList, properties, 
-				    (updateProgress?getProgressSupport():null));
+				    (updateProgress?getProgressSupport():null), true);
 
 	size = components.size();
 
 	for (i = 0; i < size; i++) {
 	    Object obj = (Object) components.elementAt(i);
 	    try {
+		if (obj instanceof String) {
+		    Debug.error("PropertyHandler finding out that the " + obj + " wasn't created");
+		    continue;
+		}
+
 		if (obj instanceof SoloMapComponent) {
 		    mapHandler.add((SoloMapComponent) obj);
 		} else {
 		    mapHandler.add(obj);
 		}
-	    
+
+		String markerName = ((String)componentList.elementAt(i)).intern();
+		prefixLibrarian.put(markerName, obj);
+		addUsedPrefix(markerName);
+
 	    } catch (MultipleSoloMapComponentException msmce) {
 		Debug.error("PropertyHandler.createComponents(): tried to add multiple components of the same type when only one is allowed! - " + msmce);
 	    }
-	}
-
-	// Add the used prefixes to the prefix list, for later
-	// reference.
-	Iterator pres = componentList.iterator();
-	while (pres.hasNext()) {
-	    addUsedPrefix((String)pres.next());
 	}
 
 	fireProgressUpdate(ProgressEvent.DONE,
