@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/10 22:04:54 $
+// $Revision: 1.4 $
+// $Date: 2003/03/19 20:33:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -330,9 +330,7 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * PropertyConsumer. 
      */
     public Properties getPropertyInfo(Properties list) {
-	if (list == null) {
-	    list = new Properties();
-	}
+	list = super.getPropertyInfo(list);
 	
 	list.put(RpfPathsProperty, "Paths to RPF directories.  Semi-colon separated paths");
 	list.put(RpfPathsProperty + ScopedEditorProperty, 
