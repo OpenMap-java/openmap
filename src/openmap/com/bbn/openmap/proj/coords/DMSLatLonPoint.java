@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/DMSLatLonPoint.java,v $
 // $RCSfile: DMSLatLonPoint.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/26 00:23:24 $
+// $Revision: 1.2 $
+// $Date: 2003/06/02 18:41:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -86,16 +86,16 @@ public class DMSLatLonPoint implements Cloneable {
      * @param lat_isnegative boolean value indicating the sign of the latitude
      * @param lat_degrees integer number of degrees in latitude
      * @param lat_minutes integer number of minutes in latitude
-     * @param lat_seconds integer number of seconds in latitude
+     * @param lat_seconds float number of seconds in latitude
      * @param lon_isnegative boolean value indicating the sign of the longitude
      * @param lon_degrees integer number of degrees in longitude
      * @param lon_minutes integer number of minutes in longitude
-     * @param lon_seconds integer number of seconds in longitude 
+     * @param lon_seconds float number of seconds in longitude 
      */
     public DMSLatLonPoint(boolean lat_isnegative, 
-			  int lat_degrees, int lat_minutes, int lat_seconds,
+			  int lat_degrees, int lat_minutes, float lat_seconds,
 			  boolean lon_isnegative,
-			  int lon_degrees, int lon_minutes, int lon_seconds) {
+			  int lon_degrees, int lon_minutes, float lon_seconds) {
 
 	this.lat_isnegative=lat_isnegative;
 	this.lat_degrees=(int)LatLonPoint.normalize_latitude(lat_degrees);
@@ -162,7 +162,7 @@ public class DMSLatLonPoint implements Cloneable {
 	    //take out the whole degrees
 	    float rem=val-deg;
 	    //Do we have anything left to convert to a minute
-	    if(rem>=MINUTE) { //get the minutes
+	    if (rem>=MINUTE) { //get the minutes
 		int min=(int)(rem*60); dllp.lat_minutes=min;
 		rem=rem-(min*MINUTE);
 	    }
