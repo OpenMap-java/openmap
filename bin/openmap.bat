@@ -1,3 +1,5 @@
+@echo off
+
 rem This will launch the OpenMap application
 rem YOU MUST EDIT THE SETTINGS IN THIS FILE TO MATCH YOUR CONFIGURATION
 
