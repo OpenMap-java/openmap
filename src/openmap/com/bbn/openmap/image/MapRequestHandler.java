@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/MapRequestHandler.java,v $
 // $RCSfile: MapRequestHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/26 23:52:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -119,9 +119,6 @@ public class MapRequestHandler extends ImageServer
 	}
 
 	setUseVisibility(LayerUtils.booleanFromProperties(props, prefix + UseVisibilityProperty, getUseVisibility()));
-
-	Layer[] l = getLayers();
-	l[1].setVisible(false);
     }
 
     public Properties getPropertyInfo(Properties props) {
