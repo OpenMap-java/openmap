@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/03/06 04:23:08 $
+// $Revision: 1.7 $
+// $Date: 2003/04/08 18:55:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -141,8 +141,8 @@ public class DemoLayer extends OMGraphicHandlerLayer
 		llPointsy,
 		OMPoly.COORDMODE_ORIGIN);
 	spline.setText("Testing");
-	//	spline.setLocateAtCenter(true);
-	spline.setIndex(2);
+	spline.setLocateAtCenter(true);
+// 	spline.setIndex(2);
 	omList.add(spline);
 
 	OMSpline spline2 = new OMSpline(llPointsx, llPointsy);
