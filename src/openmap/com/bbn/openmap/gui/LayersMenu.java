@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersMenu.java,v $
 // $RCSfile: LayersMenu.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 02:36:21 $
+// $Revision: 1.3 $
+// $Date: 2003/03/06 03:09:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,19 +23,21 @@
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.beans.beancontext.*;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.beans.PropertyVetoException;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.*;
-import javax.swing.event.*;
 
-import com.bbn.openmap.*;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.event.LayerListener;
 import com.bbn.openmap.event.LayerSupport;
@@ -60,9 +62,7 @@ import com.bbn.openmap.util.PaletteHelper;
  * the one hooked up to this LayersMenu.  
  */
 public class LayersMenu extends AbstractOpenMapMenu 
-    implements Serializable, LayerListener, MenuBarMenu,
-	BeanContextChild, BeanContextMembershipListener 
-{
+    implements Serializable, LayerListener {
 
     /**
      * Static value to set this menu to control layer visibility.

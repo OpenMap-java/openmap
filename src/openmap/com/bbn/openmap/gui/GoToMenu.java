@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 02:36:21 $
+// $Revision: 1.3 $
+// $Date: 2003/03/06 03:09:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,16 +23,23 @@
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.beans.beancontext.*;
-import java.util.*;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
+import java.util.Vector;
+import java.util.Properties;
 import javax.swing.*;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.*;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.proj.Mercator;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.ProjectionFactory;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.layer.util.LayerUtils;
 
 /**
@@ -42,14 +49,14 @@ import com.bbn.openmap.layer.util.LayerUtils;
  * views can be added.  If these views are added to the properties
  * file, they will be added to the menu automatically for later uses.
  */
-public class GoToMenu extends AbstractOpenMapMenu 
-    implements MenuBarMenu, PropertyConsumer {
+public class GoToMenu extends AbstractOpenMapMenu {
 
     private String defaultText = "Views";
     private int defaultMnemonic = 'v';
 
     protected AddNewViewButton bcb;
     protected MapBean map;
+
     /**
      * A space separated list of marker names for the views to be
      * loaded from the properties.
@@ -74,6 +81,9 @@ public class GoToMenu extends AbstractOpenMapMenu
 	super();
 	setText(I18N.get("menu.goto", defaultText));
 	setMnemonic(defaultMnemonic);
+
+	add(new AddNewViewButton("Add Saved View..."));
+	add(new JSeparator());
     }
   
     public void findAndUndo(Object someObj) {
@@ -101,30 +111,11 @@ public class GoToMenu extends AbstractOpenMapMenu
 	return map;
     }
 
-    protected String propertyPrefix = null;
-    /** PropertyConsumer interface method. */
-    public void setPropertyPrefix(String prefix) {
-	propertyPrefix = prefix;
-    }
-
-    /** PropertyConsumer interface method. */
-    public String getPropertyPrefix() {
-	return propertyPrefix;
-    }
-
-    /** PropertyConsumer interface method. */
-    public void setProperties(Properties props) {
-	setProperties(null, props);
-    }
-
     /** PropertyConsumer interface method. */
     public void setProperties(String prefix, Properties props) {
-	setPropertyPrefix(prefix);
+	super.setProperties(prefix, props);
 
 	prefix = PropUtils.getScopedPropertyPrefix(prefix);
-
-	add(new AddNewViewButton("Add Saved View..."));
-	add(new JSeparator());
 
 	addDefaults = LayerUtils.booleanFromProperties(props, prefix + AddDefaultListProperty, addDefaults);
 
@@ -147,9 +138,7 @@ public class GoToMenu extends AbstractOpenMapMenu
 
     /** PropertyConsumer interface method. */
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+	props = super.getProperties(props);
 
 	String prefix = PropUtils.getScopedPropertyPrefix(this);
 
@@ -185,9 +174,7 @@ public class GoToMenu extends AbstractOpenMapMenu
     
     /** PropertyConsumer interface method. */
     public Properties getPropertyInfo(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+	props = super.getPropertyInfo(props);
 
 	props.put(ViewListProperty, "Space-separated marker list of different views");
 	props.put(AddDefaultListProperty, "Flag to add default views (true/false).");
@@ -362,13 +349,25 @@ public class GoToMenu extends AbstractOpenMapMenu
 	    palette.add(namePanel);
 
 	    JPanel buttonPanel = new JPanel();
-	    buttonPanel.setLayout(new GridLayout(0, 2));
+	    GridBagLayout gridbag = new GridBagLayout();
+	    GridBagConstraints c = new GridBagConstraints();
+
+	    buttonPanel.setLayout(gridbag);
+
 	    closebutton = new JButton("Cancel");
 	    closebutton.addActionListener(this);
+	    c.gridx = 0;
+	    c.gridy = 0;
+	    gridbag.setConstraints(closebutton, c);
+
+	    buttonPanel.add(closebutton);
+
 	    applybutton = new JButton("OK");
 	    applybutton.addActionListener(this);
+	    c.gridx = GridBagConstraints.RELATIVE;
+	    gridbag.setConstraints(applybutton, c);
+
 	    buttonPanel.add(applybutton);
-	    buttonPanel.add(closebutton);
 	    
 	    palette.add(buttonPanel);
 	    

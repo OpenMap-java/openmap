@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ControlMenu.java,v $
 // $RCSfile: ControlMenu.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 02:36:21 $
+// $Revision: 1.3 $
+// $Date: 2003/03/06 03:09:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,7 @@
 package com.bbn.openmap.gui;
 
 import com.bbn.openmap.gui.menu.BackgroundColorMenuItem;
+import com.bbn.openmap.gui.menu.MouseModeMenu;
 import com.bbn.openmap.gui.menu.ToolPanelToggleMenuItem;
 
 /**
