@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapGraphicLoader.java,v $
 // $RCSfile: NetMapGraphicLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/06/26 00:54:43 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:16:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -156,7 +156,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader
 	if (geo != null) {
 	    try {
 		node.setLat(Float.parseFloat(geo));
-		node.posLat = new String(geo);
+		node.posLat = geo;
 	    } catch (Exception e) {
 		Debug.error("NetMapGraphicLoader: " + geo + 
 			    " is not a valid latitude value.");
@@ -168,7 +168,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader
 	if (geo != null) {
 	    try {
 		node.setLon(Float.parseFloat(geo));
-		node.posLon = new String(geo);
+		node.posLon = geo;
 	    } catch (Exception e) {
 		Debug.error("NetMapGraphicLoader: " + geo + 
 			    " is not a valid longitude value.");

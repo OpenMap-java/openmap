@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/Node.java,v $
 // $RCSfile: Node.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:16:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,7 +64,7 @@ public class Node extends OMPoint
     public Node(String label, int index, int shape, int menu, int color) {
 	super();
 
-	this.label = new String(label);
+	this.label = label;
 	this.index = index;
 
 	this.shape = shape;
