@@ -8,10 +8,12 @@ PRG=`basename $0` >/dev/null 2>&1
 cd $DIR
 PRG=`pwd`/$PRG >/dev/null 2>&1
 
+TEST=/usr/bin/test
+
 #
 # If PRG is a symlink, trace it to the real home directory
 #
-while /bin/test -L "$PRG"
+while $TEST -L "$PRG"
 do
     newprg=`expr "\`/bin/ls -l "$PRG"\`" : ".*$PRG -> \(.*\)"`
     expr "$newprg" : / >/dev/null || newprg="`dirname $PRG`/$newprg"
