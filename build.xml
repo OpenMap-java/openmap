@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<project name="OpenMap" default="all" basedir=".">
+
+  <target name="init" 
+          description="Sets properties needed by the other targets.">
+    <tstamp/>
+    <property name="build.compiler" value="classic"/>
+    <property name="openmap.home" value="."/>
+    <property name="openmap.contrib" value="${openmap.home}/contrib"/>
+    <property name="javac.excludes" value="**/*.in, **/Makefile, **/*.bat,
+					   **/ChangeLog, **/*.html, **/*.txt,
+					   **/*.*.txt, **/*.dat,
+					   **/*.pl, **/unimplemented/**" />
+    <property name="jar.excludes" value="${javac.excludes}, **/*.java"/>
+    <property name="corba.excludes" value="**/corba/**"/>
+
+    <uptodate property="openmapBuild.notRequired"
+              targetfile="${openmap.home}/lib/openmap.jar" >
+       <srcfiles dir= "${openmap.home}/com"
+                 excludes="${javac.excludes}, ${corba.excludes}"
+		 includes="**/*.java, **/*.class" />
+    </uptodate>
+
+    <uptodate property="contribBuild.notRequired"
+              targetfile="${openmap.home}/lib/omcontrib.jar" >
+       <srcfiles dir= "${openmap.home}/contrib"
+                 excludes="${javac.excludes}, ${corba.excludes}"
+		 includes="**/*.java, **/*.class" />
+    </uptodate>
+  </target>
+
+  <target name="all" 
+          depends="jars" 
+          description="Compiles classes and builds jar files in lib directory."/>
+
+  <!-- Separate this so it will be easier to control.  
+       Go ahead and build jarfile to reduce key strokes -->
+
+  <target name="jars"
+          depends="contrib, openmap"
+	  description="Builds jar files, placing them in the lib directory."
+	  unless="contribBuild.buildRequired, openmapBuild.buildRequired">
+    <jar jarfile="${openmap.home}/lib/omcontrib.jar"
+         basedir="${openmap.home}/contrib" includes="**/*.class"/>
+
+    <jar jarfile="${openmap.home}/lib/openmap.jar" 
+         basedir="${openmap.home}"
+	 includes="com/**/*.class, com/**/*.gif, share/"/>
+
+    <jar jarfile="${openmap.home}/lib/omcore.jar"
+         basedir="${openmap.home}"
+         includes="com/bbn/openmap/*.class,
+                   com/bbn/openmap/*.gif,
+                   com/bbn/openmap/event/*.class,
+                   com/bbn/openmap/gui/*.class, 
+                   com/bbn/openmap/gui/*.gif, 
+                   com/bbn/openmap/graphics/*.class, 
+                   com/bbn/openmap/graphics/editable/*.class, 
+                   com/bbn/openmap/graphics/event*.class, 
+                   com/bbn/openmap/graphics/grid/*.class, 
+                   com/bbn/openmap/graphics/util/*.class, 
+                   com/bbn/openmap/proj/*.class, 
+                   com/bbn/openmap/tools/drawing/*.class, 
+                   com/bbn/openmap/util/*.class, 
+                   com/bbn/openmap/util/quadtree/*.class, 
+                   com/bbn/openmap/image/*.class"/>
+  </target>    
+  
+  <!-- exclude Makefiles, buildfiles, html.
+       corba excludes needs to be fixed later -->
+
+  <target name="openmap" 
+          depends="contrib"
+	  description="Compiles the OpenMap classes.  Contrib classes compiled if needed.">
+    <echo message="Building OpenMap classes..."/>
+    <javac srcdir="${openmap.home}"
+           classpath="${openmap.home}/lib/omcontrib.jar;${openmap.home}/contrib" 
+           excludes="${javac.excludes}, ${corba.excludes}"/>
+  </target>
+
+  <target name="contrib" 
+          depends="init"
+	  description="Compiles the contrib classes that OpenMap needs.">
+    <echo message="Building OpenMap contrib classes..."/>
+    <javac srcdir="${openmap.contrib}"/>   
+  </target>
+
+  <target name="docs" 
+          depends="init"
+	  description="Make the javadoc API html documents.">
+    <javadoc sourcepath="${openmap.home}"
+             destdir="${openmap.home}/doc"
+             packagenames="com.bbn.openmap.*"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="OpenMap API"
+             doctitle="OpenMap"
+             bottom="Copyright 1998-2000, BBNT Solutions LLC, a part of GTE; See http://openmap.bbn.com/ for details"
+    />
+  </target>
+  
+  <target name="clean" 
+          depends="clean_classes, clean_contrib, clean_jars"
+	  description="Delete jar files and all class files"/>
+
+  <target name="clean_all"
+          depends="clean, clean_docs"
+	  description="Delete jar files, class files, and generated documentation."/>
+
+  <target name="distclean"
+          depends="clean_classes, clean_contrib"
+	  description="Delete class files, but not the jar files."/>
+
+  <target name="clean_classes" 
+          depends="init"
+	  description="Delete the OpenMap class files.">
+    <delete>
+      <fileset dir="com/bbn/openmap" includes="**/*.class" />
+    </delete>
+  </target>
+
+  <target name="clean_contrib" 
+          depends="init"
+	  description="Delete only the class files in the contrib directory.">
+    <delete>
+      <fileset dir="contrib" includes="**/*.class" />
+    </delete>
+  </target>
+
+  <target name="clean_jars"
+          description="Delete only the jar files from the lib directory.">
+    <delete file="lib/omcontrib.jar"/>
+    <delete file="lib/omcore.jar"/>
+    <delete file="lib/openmap.jar"/>
+  </target>
+
+  <target name="clean_docs"
+          description="Delete only the generated API documentation.">
+    <delete dir="doc/com"/>
+    <delete>
+      <fileset dir="doc" includes="**/*.html"/>
+    </delete>
+    <delete file="doc/stylesheet.css"/>
+    <delete file="doc/package-list"/>
+  </target>
+
+<!--
+  <target name="run"
+          depends="jars"
+	  description="Run the OpenMap application.">
+    <java classname="com.bbn.openmap.app.OpenMap"
+          classpath="lib/openmap.jar:lib/omcontrib.jar"
+	  fork="yes"/>
+
+  </target>
+-->
+
+</project>
