@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/BeanContextAbstractPlugIn.java,v $
 // $RCSfile: BeanContextAbstractPlugIn.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/21 22:44:16 $
+// $Revision: 1.3 $
+// $Date: 2003/09/09 15:43:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,12 +52,10 @@ public abstract class BeanContextAbstractPlugIn extends AbstractPlugIn
 
     public BeanContextAbstractPlugIn() {
 	super();
-	addToBeanContext = true;
     }
 
     public BeanContextAbstractPlugIn(Component comp) {
 	super(comp);
-	addToBeanContext = true;
     }
 
     /**

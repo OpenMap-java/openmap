@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/AbstractPlugIn.java,v $
 // $RCSfile: AbstractPlugIn.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/21 22:02:13 $
+// $Revision: 1.4 $
+// $Date: 2003/09/09 15:43:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -62,9 +62,9 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer, MapMou
 
     /**
      * Flag to denote whether the plugin should be added to the bean
-     * context (MapHandler).
+     * context (MapHandler).  True by default.
      */
-    protected boolean addToBeanContext = false;
+    protected boolean addToBeanContext = true;
 
     public AbstractPlugIn() {}
 
