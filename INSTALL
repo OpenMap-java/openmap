@@ -1,8 +1,8 @@
 -*- Mode: text-mode -*-
 $Source: /cvs/distapps/openmap/INSTALL,v $
 $RCSfile: INSTALL,v $
-$Revision: 1.7 $
-$Date: 1998/12/07 15:18:17 $
+$Revision: 1.8 $
+$Date: 1998/12/16 19:10:45 $
 $Author: aculline $
 
 Prerequisites
@@ -146,6 +146,6 @@ Detailed Configuration
     If you have installed swing as /usr/local/java/swing you could
     enter "./configure --with-swing=/usr/local/java/swing/swing.jar".
 
-    OpenMap is known to run with swing 1.0.2 or later.  You can
+    OpenMap is known to run with swing 1.0.3 or later.  You can
     use swing.jar or swingall.jar.  OpenMap only uses classes included
     in swing.jar.
