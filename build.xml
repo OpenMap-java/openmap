@@ -93,12 +93,9 @@
     <ant antfile="${openmap.src}/build.xml" target="clean.openmap"/>
   </target>
 
-  <target name="distclean" depends="clean_classes"
-	  description="Delete class files, but not the jar files."/>
-
-  <target name="clean_classes" depends="init"
-	  description="Delete the OpenMap class files.">
-    <ant antfile="${openmap.src}/build.xml" target="clean_classes.openmap"/>
+  <target name="distclean" depends="init"
+	  description="Delete class files, but not the jar files.">
+    <ant antfile="${openmap.src}/build.xml" target="distclean.openmap"/>
   </target>
 
   <target name="clean_jars" depends="init"
