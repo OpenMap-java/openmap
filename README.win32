@@ -1,10 +1,41 @@
-Included in this distribution are two batch files for compiling and
-removing OpenMap Objects in a Windows/MS-DOS environment.  These files
-are located in com/bbn/openmap and should be run from that location.
-"buildall.bat" compiles the entire source tree.  It sets a number of
-environment variables at the beginning of the file to point to
-software locations and set compiler flags.  It then runs through the
-entire source tree and compiles all of the *.java files.
+$Source: /cvs/distapps/openmap/Attic/README.win32,v $
+$RCSfile: README.win32,v $
+$Revision: 1.4 $
+$Date: 1999/04/07 19:56:47 $
+$Author: aculline $
+
+Quickstart
+==========
+
+Check the prerequisites section of the INSTALL file, then come back
+here.
+
+We have supplied pre-built JAR (Java ARchive) files of OpenMap, but
+you will still need to edit the `openmap.bat' file in the bin/
+subdirectory to get OpenMap to run.
+
+	* Load the openmap.bat file in your favorite editor.
+
+	* Change the path to the Java VM to match your
+	  local configuration.
+
+	* Change the path to OpenMap to match your configuration.
+
+	* Run the batch file.
+
+Compilation
+===========
+
+You may want to build OpenMap from the source code yourself.  If you
+have the cygwin toolkit from Cygnus,
+(http://sourceware.cygnus.com/cygwin/), then you should follow the
+instructions in INSTALL.  Otherwise you can use two extra batch files
+included in this distribution.  These files are located in
+com/bbn/openmap and should be run from that location.  "buildall.bat"
+compiles the entire source tree.  It sets a number of environment
+variables at the beginning of the file to point to software locations
+and set compiler flags.  It then runs through the entire source tree
+and compiles all of the *.java files.
 
 "removeall.bat" runs through the entire tree, removing all of the
 *.class files that it finds.

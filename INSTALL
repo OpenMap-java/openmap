@@ -1,8 +1,8 @@
 -*- Mode: text-mode -*-
 $Source: /cvs/distapps/openmap/INSTALL,v $
 $RCSfile: INSTALL,v $
-$Revision: 1.11 $
-$Date: 1999/02/04 20:20:38 $
+$Revision: 1.12 $
+$Date: 1999/04/07 19:56:46 $
 $Author: aculline $
 
 Prerequisites
@@ -12,10 +12,15 @@ Prerequisites
    OpenMap software.  You also need the Java Foundation Classes (JFC)
    installed.  The JFC "Swing Set" is available from Sun at
    http://java.sun.com/products/jfc/ for free download.
-   
+
    NOTE: OpenMap requires minimal configuration to build and run with
    Java 2.  Additional arguments to configure are required to build
    with JDK1.1.  See below for details.
+
+   NOTE: We have decided to supply pre-compiled OpenMap JAR files.  If
+   you decide to use them, you may still need to run `./configure', or
+   at least edit/study the launch scripts in the bin/ subdirectory to
+   launch OpenMap.
 
 Basic Installation
 ==================
@@ -175,7 +180,7 @@ Detailed Configuration
     OpenMap builds and runs without any special arguments if you're
     using the Java 2 platform.  This is because the JFC classes are
     included as part of the core platform.
-    
+
     You can build OpenMap with JDK 1.1.X and Swing 1.1, but you need
     to explicitly point the configure script at the Swing JAR file
     (either swing.jar or swingall.jar will do) by using the

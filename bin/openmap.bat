@@ -1,15 +1,16 @@
-rem This file works with OpenMap 3.1.2 or greater using Java 1.2 (Java 2)
-rem   This file run the OpenMap application
+rem This will launch the OpenMap application
+rem YOU MUST EDIT THE SETTINGS IN THIS FILE TO MATCH YOUR CONFIGURATION
 
-rem Set up some environment variables
-
-rem This is where the OpenMap top-level directories are.
+rem Java Virtual Machine
 rem CHANGE THIS TO MATCH YOUR CONFIGURATION
-set OM_HOME=C:\home\adoyle\openmap
+set JAVABIN=C:\jdk1.2\bin\java.exe
 
-rem This assumes your CLASSPATH is already set
-set CLASSPATH=%CLASSPATH%;%OM_HOME%;%OM_HOME%\share
-set JAVABIN=java
+rem OpenMap top-level directory
+rem CHANGE THIS TO MATCH YOUR CONFIGURATION
+set OM_HOME=C:\openmap
 
-rem OK, now run it
+rem CLASSPATH points to toplevel OpenMap directory and share subdirectory
+set CLASSPATH=%OM_HOME%;%OM_HOME%\share;%OM_HOME%\lib\openmap.jar
+
+rem OK, now run OpenMap
 %JAVABIN% -mx64m -Dopenmap.configDir=%OM_HOME%\share com.bbn.openmap.app.OpenMap
