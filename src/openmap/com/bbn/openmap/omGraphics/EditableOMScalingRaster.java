@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMScalingRaster.java,v $
 // $RCSfile: EditableOMScalingRaster.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:11 $
+// $Revision: 1.3 $
+// $Date: 2005/01/12 19:34:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -256,10 +256,16 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
         if (!(graphic instanceof OMScalingRaster)) {
             return;
         }
-
+        
         assertGrabPoints();
 
         OMScalingRaster raster = (OMScalingRaster) graphic;
+
+        if (graphic instanceof OMScalingIcon) {
+            setGrabPointsForOMSI((OMScalingIcon)graphic);
+            return;
+        }
+        
         boolean ntr = raster.getNeedToRegenerate();
         int renderType = raster.getRenderType();
         int lineType = raster.getLineType();
@@ -365,6 +371,37 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     }
 
     /**
+     * @param icon
+     */
+    protected void setGrabPointsForOMSI(OMScalingIcon icon) {
+        if (projection != null) {
+            float lon = icon.getLon();
+            float lat = icon.getLat();
+            int renderType = icon.getRenderType();
+            LatLonPoint llp = new LatLonPoint(lat, lon);
+            java.awt.Point p = projection.forward(llp);
+            if (renderType == OMGraphic.RENDERTYPE_LATLON) {
+                gpc.set((int) p.getX(), (int) p.getY());
+            }
+        }        
+    }
+
+    protected void setGrabPointsForOMSI() {
+        
+        if (projection != null) {
+            //movingPoint == gpc
+            LatLonPoint llp1 = projection.inverse(gpc.getX(), gpc.getY());
+            raster.setLat(llp1.getLatitude());
+            raster.setLon(llp1.getLongitude());
+            // point.setNeedToRegenerate set
+        }
+        
+        if (projection != null) {
+            regenerate(projection);
+        }
+    }
+    
+    /**
      * Take the current location of the GrabPoints, and modify the
      * location parameters of the OMScalingRaster with them. Called
      * when you want the graphic to change according to the grab
@@ -381,7 +418,11 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
         if (renderType == OMGraphic.RENDERTYPE_LATLON) {
 
             if (projection != null) {
-
+                if (raster instanceof OMScalingIcon) {
+                    setGrabPointsForOMSI();
+                    return;
+                }
+                
                 // Need to figure out which point was moved, and then
                 // set the upper left and lower right points
                 // accordingly.
