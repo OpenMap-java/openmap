@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/openmap-arch.sgml,v $
 $RCSfile: openmap-arch.sgml,v $
-$Revision: 1.8 $
-$Date: 1999/11/04 15:09:53 $
+$Revision: 1.9 $
+$Date: 2000/01/10 19:34:48 $
 $Author: bmackiew $
 
 OpenMap architecture document
@@ -66,7 +66,7 @@ forward to hearing how you will use OpenMap!</em>
 <img src="images/mapbean.png">
 </#if>
 <p>
-The <htmlurl url="api/com.bbn.openmap.MapBean.html" name="MapBean"> is
+The <htmlurl url="api/com/bbn/openmap/MapBean.html" name="MapBean"> is
 a drawing canvas that derives from the Swing <htmlurl
 url="http://java.sun.com/products/jfc/swingdoc-api-1.1/javax/swing/JComponent.html"
 name="JComponent"> class.  Because the MapBean is a Swing component,
@@ -110,12 +110,12 @@ This <htmlurl url="../com/bbn/openmap/examples/simple/SimpleMap2.java"
 name="example"> is a little more complicated than the previous one,
 but is more usable.  It shows the same political layer along with a
 background <htmlurl
-url="./api/com.bbn.openmap.layer.GraticuleLayer.html"
+url="./api/com/bbn/openmap/layer/GraticuleLayer.html"
 name="graticule"> and a <htmlurl
 url="../com/bbn/openmap/examples/simple/RouteLayer.java"
 name="foreground layer"> which shows hypothetical transportation
 routes.  This RouteLayer is a good example of how to extend the
-<htmlurl url="./api/com.bbn.openmap.Layer.html" name="Layer.java">
+<htmlurl url="./api/com/bbn/openmap/Layer.html" name="Layer.java">
 class to create your own Layer (More about this <bf><ref
 id="sec-write-your-own-layer" name="later"></bf> in this document).
 This example program also includes OpenMap GUI widgets for navigating
@@ -135,14 +135,14 @@ name="JFrame"> window.
 </itemize>
 <P>
 Since the MapBean is a <htmlurl
-url="api/com.bbn.openmap.event.PanListener.html" name="PanListener">
-and <htmlurl url="api/com.bbn.openmap.event.ZoomListener.html"
+url="api/com/bbn/openmap/event/PanListener.html" name="PanListener">
+and <htmlurl url="api/com/bbn/openmap/event/ZoomListener.html"
 name="ZoomListener">, you can create an object that produces these
 events and hook it up to the MapBean in order to "drive" the map.  The
 <bf><ref id="sec-toolpanel" name="ToolPanel"></bf> object generates
-<htmlurl url="api/com.bbn.openmap.event.PanEvent.html"
+<htmlurl url="api/com/bbn/openmap/event/PanEvent.html"
 name="PanEvents"> and <htmlurl
-url="./api/com.bbn.openmap.event.ZoomEvent.html" name="ZoomEvents">
+url="./api/com/bbn/openmap/event/ZoomEvent.html" name="ZoomEvents">
 which are used to control the MapBean.
 
 
@@ -174,7 +174,7 @@ to get configuration information.
 
 <sect1>BufferedMapBean<label id="sec-mapbean-buffered">
 <p>
-The <htmlurl url="./api/com.bbn.openmap.BufferedMapBean.html"
+The <htmlurl url="./api/com/bbn/openmap/BufferedMapBean.html"
 name="BufferedMapBean"> extends the MapBean by forcing its layers to
 paint their graphics into a buffer.  This drawing buffer is then
 rendered whenever the AWT causes a redraw.  This dramatically
@@ -197,7 +197,7 @@ of the simple examples.
 <sect2>GUI Beans<label id="sec-gui-beans">
 <P>
 You can use the various <htmlurl
-url="./api/package-com.bbn.openmap.gui.html" name="Map GUI Beans"> in
+url="./api/com/bbn/openmap/gui/package-tree.html" name="Map GUI Beans"> in
 your application to control the MapBean.  To use them, you need to
 hook them up with components they need to communicate with, and then
 add them to your user interface.
@@ -208,7 +208,7 @@ add them to your user interface.
 <img src="images/toolbar-minimal.png">
 </#if>
 <P>
-The <htmlurl url="./api/com.bbn.openmap.gui.ToolPanel.html" name="ToolPanel">
+The <htmlurl url="./api/com/bbn/openmap/gui/ToolPanel.html" name="ToolPanel">
 is a composite GUI JavaBean, set up to control the view and mouse
 modes of the MapBean.  It is made up of the:
 
@@ -218,7 +218,7 @@ modes of the MapBean.  It is made up of the:
 <img src="images/rosette.png">
 </#if>
 Directional control.  Made from the <htmlurl
-url="./api/com.bbn.openmap.gui.NavigatePanel.html"
+url="./api/com/bbn/openmap/gui/NavigatePanel.html"
 name="NavigatePanel"> Bean.  This lets you pan the screen in the
 direction of the button that is pressed.
 
@@ -227,7 +227,7 @@ direction of the button that is pressed.
 <IMG SRC="images/zoombar.png">
 </#if>
 Zoom buttons.  Made from the <htmlurl
-url="./api/com.bbn.openmap.gui.ZoomPanel.html" name="ZoomPanel">.
+url="./api/com/bbn/openmap/gui/ZoomPanel.html" name="ZoomPanel">.
 This panel has two buttons - the plus (+) button zooms in (increases
 scale by 2X), and the minus (-) button zooms out (decreases scale by
 2X).
@@ -245,7 +245,7 @@ and also lets you enter a desired scale directly.
 <#if output=html>
 <IMG SRC="images/whopanel.png">
 </#if>
-The <htmlurl url="./api/com.bbn.openmap.InformationDelegator.html"
+The <htmlurl url="./api/com/bbn/openmap/InformationDelegator.html"
 name="InformationDelegator"> is a JavaBean used for status updates and
 messages.  The <bf><ref id="sec-navmousemode"
 name="NavMouseMode"></bf> uses the InformationDelegator to display the
@@ -260,7 +260,7 @@ one-liners, pop-up messages, and web pages.
 <IMG SRC="images/layers-window.png">
 </#if>
 <P>
-The <htmlurl url="./api/com.bbn.openmap.gui.LayersPanel.html"
+The <htmlurl url="./api/com/bbn/openmap/gui/LayersPanel.html"
 name="LayersPanel"> is used to manage the display and order of the
 layers in the MapBean.  This panel also lets you bring up and dismiss
 the GUI controls for a layer.  Some of the buttons act on a `selected'
@@ -321,11 +321,11 @@ other objects, we have slightly restricted this behavior.  Instead
 we've developed the notion of "MouseModes", in which MouseEvents get
 delivered to listeners registered for a mode only when that mode is
 active.  Because of this, layers are restricted to implementing our
-<htmlurl url="./api/com.bbn.openmap.event.MapMouseListener.html"
+<htmlurl url="./api/com/bbn/openmap/event/MapMouseListener.html"
 name="MapMouseListener"> interface instead of the MouseListener
 interface.
 <p>
-The <htmlurl url="./api/com.bbn.openmap.event.MapMouseMode.html"
+The <htmlurl url="./api/com/bbn/openmap/event/MapMouseMode.html"
 name="MapMouseMode"> interface has been implemented in two default
 MapMouseModes: <bf><ref id="sec-navmousemode" name="Navigation"></bf>
 mode and Layer <bf><ref id="sec-selectmode" name="Selection"></bf>
@@ -333,7 +333,7 @@ mode.
 
 <sect3>NavMouseMode<label id="sec-navmousemode">
 <p>
-The <htmlurl url="./api/com.bbn.openmap.event.NavMouseMode.html"
+The <htmlurl url="./api/com/bbn/openmap/event/NavMouseMode.html"
 name="NavMouseMode"> manages MouseEvents that recenter or zoom the
 MapBean canvas.  Other components can register for this mode too, but
 they should not interfere with the navigation handling:
@@ -346,7 +346,7 @@ adjusts the scale of the MapBean canvas to match up with the box.
 
 <sect3>SelectMouseMode<label id="sec-selectmode">
 <p>
-The <htmlurl url="./api/com.bbn.openmap.event.SelectMouseMode.html"
+The <htmlurl url="./api/com/bbn/openmap/event/SelectMouseMode.html"
 name="SelectMouseMode"> passes MouseEvents to layers and other
 components that have registered under this mode.  MouseEvents are
 passed down the hierarchy until a listener "consumes" the event.
@@ -355,7 +355,7 @@ passed down the hierarchy until a listener "consumes" the event.
 
 <sect>Layers<label id="sec-layers">
 <p>
-<htmlurl url="./api/com.bbn.openmap.Layer.html" name="Layers"> are
+<htmlurl url="./api/com/bbn/openmap/Layer.html" name="Layers"> are
 components that get added to the MapBean in a hierarchical stacking
 order.  The map is drawn by painting the graphics of each layer
 starting with the bottommost one and proceeding up the hierarchy.
@@ -371,7 +371,7 @@ Layers can also be interactive: they can register for mouse events and
 construct their very own GUI widget controls.
 <p>
 When a layer is added to the MapBean, it automatically becomes a
-<htmlurl url="api/com.bbn.openmap.event.ProjectionListener.html"
+<htmlurl url="api/com/bbn/openmap/event/ProjectionListener.html"
 name="ProjectionListener"> of the MapBean.  This means that the layer
 receives notification when the <bf><ref id="sec-projection"
 name="Projection"></bf> (or view) of the map changes.
@@ -388,7 +388,7 @@ To reiterate, the standard capabilities of a Layer are:
 <p>
 This is a generic layer for displaying data in <htmlurl
 url="http://www.esri.com/" name="ESRI"> shapefile format.  See the
-<htmlurl url="api/com.bbn.openmap.layer.shape.ShapeLayer.html"
+<htmlurl url="api/com/bbn/openmap/layer/shape/ShapeLayer.html"
 name="ShapeLayer"> class.
 
 
@@ -396,13 +396,13 @@ name="ShapeLayer"> class.
 <p>
 This is a generic layer for displaying <htmlurl
 url="http://www.nima.mil/" name="NIMA"> VPF data.  See the <htmlurl
-url="api/com.bbn.openmap.layer.vpf.VPFLayer.html" name="VPFLayer">
+url="api/com/bbn/openmap/layer/vpf/VPFLayer.html" name="VPFLayer">
 class.
 
 
 <sect1>EarthquakeLayer<label id="sec-earthquakelayer">
 <p>
-The <htmlurl url="api/com.bbn.openmap.layer.EarthquakeLayer.html"
+The <htmlurl url="api/com/bbn/openmap/layer/EarthquakeLayer.html"
 name="EarthquakeLayer"> displays data of recent earthquake activity.
 It gets its data by querying live data feeds at the <htmlurl
 url="http://www.usgs.gov/" name="USGS">.
@@ -411,10 +411,10 @@ url="http://www.usgs.gov/" name="USGS">.
 <sect1>Raster Layers<label id="sec-raster-layers">
 <p>
 <itemize>
-<item><htmlurl url="./api/com.bbn.openmap.layer.rpf.RpfLayer.html"
+<item><htmlurl url="./api/com/bbn/openmap/layer/rpf/RpfLayer.html"
 name="Raster Product Format (RPF) Layer">, which displays <htmlurl
 url="http://www.nima.mil/" name="NIMA's"> CADRG and CIB data.
-<item><htmlurl url="./api/com.bbn.openmap.layer.dted.DTEDLayer.html"
+<item><htmlurl url="./api/com/bbn/openmap/layer/dted/DTEDLayer.html"
 name="DTED Layer">, which displays NIMA's Digital Terrain Elevation
 Data.
 </itemize>
@@ -423,7 +423,7 @@ Data.
 <sect1>Writing your own layer<label id="sec-write-your-own-layer">
 <p>
 To write your own layer, you need to extend the <htmlurl
-url="api/com.bbn.openmap.Layer.html" name="Layer"> class.  The minimum
+url="api/com/bbn/openmap/Layer.html" name="Layer"> class.  The minimum
 requirement is that you override the <tt/projectionChanged()/ and
 <tt/paint()/ methods.  This former method is invoked when your layer
 is part of the MapBean and the view changes (e.g., when someone
@@ -431,9 +431,9 @@ recenters the map).  It is up to you to fetch and prepare your
 graphics (or maybe do something else), and then <tt/repaint()/
 yourself.  The easiest way to write your own layer is to derive it
 from another one already cooked up.  For some simple examples see the
-<htmlurl url="api/com.bbn.openmap.layer.GraticuleLayer.html"
+<htmlurl url="api/com/bbn/openmap/layer/GraticuleLayer.html"
 name="GraticuleLayer"> and <htmlurl
-url="api/com.bbn.openmap.layer.TestLayer.html" name="TestLayer">
+url="api/com/bbn/openmap/layer/TestLayer.html" name="TestLayer">
 classes.
 <P>
 Many layers get their data from the local disk or cdrom of the machine
@@ -444,7 +444,7 @@ Layer"></bf> is a good example of live layer.
 
 <sect2>OMGraphics<label id="sec-omgraphics">
 <p>
-<htmlurl url="./api/package-com.bbn.openmap.omGraphics.html"
+<htmlurl url="./api/com/bbn/openmap/omGraphics/package-frame.html"
 name="OMGraphics"> help you to turn your vector or raster data into
 interactive graphics that can be rendered on the map canvas.
 Each OMGraphic provides a simple interface to manage projecting,
@@ -464,25 +464,25 @@ it is `rendered', or it will not show up on the map.
 <itemize>
 <item>Vector graphics
 	<itemize>
-	<item><htmlurl url="./api/com.bbn.openmap.omGraphics.OMCircle.html" name="Circle">
-	<item><htmlurl url="./api/com.bbn.openmap.omGraphics.OMLine.html" name="Line">
-	<item><htmlurl url="./api/com.bbn.openmap.omGraphics.OMPoly.html" name="Polygon and Polyline">
-	<item><htmlurl url="./api/com.bbn.openmap.omGraphics.OMRect.html" name="Rectangle">
+	<item><htmlurl url="./api/com/bbn/openmap/omGraphics/OMCircle.html" name="Circle">
+	<item><htmlurl url="./api/com/bbn/openmap/omGraphics/OMLine.html" name="Line">
+	<item><htmlurl url="./api/com/bbn/openmap/omGraphics/OMPoly.html" name="Polygon and Polyline">
+	<item><htmlurl url="./api/com/bbn/openmap/omGraphics/OMRect.html" name="Rectangle">
 	</itemize>
 <item>Raster Graphics
 	<itemize>
-	<item><htmlurl url="./api/com.bbn.openmap.omGraphics.OMBitmap.html" name="Bitmap">
-	<item><htmlurl url="./api/com.bbn.openmap.omGraphics.OMRaster.html" name="Raster (image)">
+	<item><htmlurl url="./api/com/bbn/openmap/omGraphics/OMBitmap.html" name="Bitmap">
+	<item><htmlurl url="./api/com/bbn/openmap/omGraphics/OMRaster.html" name="Raster (image)">
 	</itemize>
 <item>Other
 	<itemize>
-	<item><htmlurl url="./api/com.bbn.openmap.omGraphics.OMGraphic.html" name="Parent Graphic">
-	<item><htmlurl url="./api/com.bbn.openmap.omGraphics.OMText.html" name="Text">
-	<item><htmlurl url="./api/com.bbn.openmap.omGraphics.OMGraphicList.html" name="Graphic List">
+	<item><htmlurl url="./api/com/bbn/openmap/omGraphics/OMGraphic.html" name="Parent Graphic">
+	<item><htmlurl url="./api/com/bbn/openmap/omGraphics/OMText.html" name="Text">
+	<item><htmlurl url="./api/com/bbn/openmap/omGraphics/OMGraphicList.html" name="Graphic List">
 	</itemize>
 </itemize>
 <p>
-The <htmlurl url="./api/com.bbn.openmap.omGraphics.OMGraphicList.html"
+The <htmlurl url="./api/com/bbn/openmap/omGraphics/OMGraphicList.html"
 name="OMGraphicList"> is a unique OMGraphic: it can be used to manage
 a vector of OMGraphics.  It can also contain other OMGraphicLists, so
 you can create nested groupings of graphics.
@@ -515,7 +515,7 @@ layers are Swing components, they can call <tt/repaint()/ anytime when
 they've got something new to show.  So once your thread finishes doing
 work, and you've got new data, you can initiate a <tt/repaint()/.
 <P>
-The <htmlurl url="./api/com.bbn.openmap.util.SwingWorker.html"
+The <htmlurl url="./api/com/bbn/openmap/util/SwingWorker.html"
 name="SwingWorker"> is a class which supports spawning and managing
 worker threads; Sun has a <htmlurl
 url="http://java.sun.com/docs/books/tutorial/ui/swingMisc/threads.html#SwingWorker"
@@ -527,11 +527,11 @@ name="ShapeLayer"></bf>.
 
 <sect>Projection<label id="sec-projection">
 <p>
-The <htmlurl url="api/com.bbn.openmap.proj.Projection.html"
+The <htmlurl url="api/com/bbn/openmap/proj/Projection.html"
 name="Projection"> interface allows you read-only access to the
 current MapBean projection.  The MapBean updates all the Layers and
 other <htmlurl
-url="./api/com.bbn.openmap.event.ProjectionListener.html"
+url="./api/com/bbn/openmap/event/ProjectionListener.html"
 name="ProjectionListeners"> when the view changes.
 <p>
 A Projection object is defined with:

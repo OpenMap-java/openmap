@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/Attic/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.10 $
-$Date: 1999/09/15 12:45:03 $
+$Revision: 1.11 $
+$Date: 2000/01/10 19:34:48 $
 $Author: bmackiew $
 
 Frequently Asked Questions for the OpenMap system.
@@ -103,7 +103,7 @@ Questions concerning the core OpenMap source code.
 of the data.  What's wrong?
 <p>
 The Openmap <htmlurl
-url="api/com.bbn.openmap.layer.shape.ShapeLayer.html"
+url="api/com/bbn/openmap/layer/shape/ShapeLayer.html"
 name="ShapeLayer"> uses a customized indexing scheme to efficiently
 draw the shape file data.  You'll need to create a spatial index from
 your shape file.  A spatial index is different from a shape index
@@ -177,7 +177,7 @@ The `myLayer.class' property is the full class-name for your layer.
 The `myLayer.prettyName' property is the human-readable name that you
 want to appear in the list of layers.  These properties are passed to
 and processed by the base <tt><htmlurl
-url="./api/com.bbn.openmap.Layer.html" name="Layer"></tt> class via
+url="./api/com/bbn/openmap/Layer.html" name="Layer"></tt> class via
 <tt/Layer.setProperties()/.  You can provide additional configuration
 strings to the <tt><htmlurl url="../share/openmap.properties"
 name="openmap.properties"></tt> file and override
@@ -213,9 +213,9 @@ working on a Java front end to gdb, the GNU debugger.
 Most of our debugging is done with the Java equivalent of printfs,
 (System.out.printlns), at crucial places in the code.  And we
 sometimes use the classes <tt><htmlurl
-url="./api/com.bbn.openmap.util.Debug.html"
+url="./api/com/bbn/openmap/util/Debug.html"
 name="com.bbn.openmap.util.Debug"></tt> and <tt><htmlurl
-url="./api/com.bbn.openmap.util.Assert.html"
+url="./api/com/bbn/openmap/util/Assert.html"
 name="com.bbn.openmap.util.Assert"></tt> to leave permanent (but not
 necessary visible) checks throughout the code.
 <p>
