@@ -1,9 +1,9 @@
 <!--
 $source: /net/blatz/u4/rcs/openmap/doc/sgml/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.16 $
-$Date: 2000/05/08 15:16:51 $
-$Author: wjeuerle $
+$Revision: 1.17 $
+$Date: 2000/05/19 14:37:35 $
+$Author: bmackiew $
 
 Frequently Asked Questions for the OpenMap system.
 -->
@@ -276,6 +276,15 @@ If you want to build OpenMap from the source code yourself, we recommend
 the cygwin toolkit from Cygnus (http://sourceware.cygnus.com/cygwin).  Note
 that we've had better luck under Windows NT than Windows 95 or 98, as there
 are some problems with long command lines under these operating systems.
+
+<sect1> Why can't I read my CSV files in Windows correctly?
+<p>
+
+If you're used to a Unix environment, keep in mind that Windows text files
+end lines with a line feed and a carriage return, while Unix text files end
+lines with a line feed <b>only</b>.  This has come up while testing with CSV 
+files created under Unix with the Windows JVM.  Appending a carriage return 
+(^M) to each line of text in the file should solve the problem.
 
 <sect1> How can I compile and run on Unix?
 <p>
