@@ -12,8 +12,9 @@ rem THIS POINTS TO THE DIRECTORY ABOVE "BIN". CHANGE THIS IF YOU MOVE THE
 rem BATCH FILE.
 set OPENMAP_HOME=..
 
-rem CLASSPATH points to toplevel OpenMap directory and share subdirectory
-set CLASSPATH=%OPENMAP_HOME%;%OPENMAP_HOME%\classes\openmap;%OPENMAP_HOME%\share;%OPENMAP_HOME%\lib\openmap.jar;
+rem CLASSPATH points to toplevel OpenMap directory and share
+rem subdirectory.  Add other jar files as available.
+set CLASSPATH=%OPENMAP_HOME%;%OPENMAP_HOME%\classes\openmap;%OPENMAP_HOME%\share;%OPENMAP_HOME%\lib\openmap.jar;%OPENMAP_HOME%\lib\omsvg.jar;%OPENMAP_HOME%\lib\omj3d.jar;%OPENMAP_HOME%\lib\omcorba_vb.jar;
 
 rem OK, now run OpenMap
-%JAVABIN% -mx64m -Dopenmap.configDir=%OPENMAP_HOME%\share com.bbn.openmap.app.OpenMap
+%JAVABIN% -mx64m -Dopenmap.configDir=%OPENMAP_HOME%\share -Ddebug.showprogress com.bbn.openmap.app.OpenMap

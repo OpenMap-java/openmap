@@ -63,8 +63,9 @@ DIRLIBS=${OPENMAP_HOME}/lib/*.jar
 # Change to match your installation
 
 # For SVG capabilities with the Batik package...
-#BATIK_HOME=/usr/local/openmap/batik-1.1.1
-#DIRLIBS=${DIRLIBS}" "${BATIK_HOME}/lib/*.jar
+BATIK_HOME=/usr/local/openmap/batik-1.1.1
+BATIK_HOME=/usr/local/java/batik-1.1.1
+DIRLIBS=${DIRLIBS}" "${BATIK_HOME}/lib/*.jar
 
 # For CORBA capabilities using Visibroker...
 #VISIBROKER_HOME=/usr/local/openmap/vbroker-3.4
@@ -119,10 +120,10 @@ done
 
 if [ "$VISIBROKER_HOME" = "" ] ; then
 #    echo $JAVACMD -Xmx256m -classpath "$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
-    $JAVACMD -Xmx256m -classpath "$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
+    $JAVACMD -Xmx512m -classpath "$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share -Ddebug.showprogress $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
 else
 #    echo $JAVACMD -Xmx256m -Xbootclasspath:"$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
-    $JAVACMD -Xmx256m -Xbootclasspath:"$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
+    $JAVACMD -Xmx512m -Xbootclasspath:"$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share -Ddebug.showprogress $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
 fi
 
 
