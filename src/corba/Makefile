@@ -12,10 +12,10 @@
 # </copyright>
 # **********************************************************************
 # 
-# $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/Attic/Makefile,v $
+# $Source: /cvs/distapps/openmap/src/corba/Attic/Makefile,v $
 # $RCSfile: Makefile,v $
-# $Revision: 1.2 $
-# $Date: 2003/03/14 17:30:30 $
+# $Revision: 1.1 $
+# $Date: 2003/03/14 17:30:29 $
 # $Author: dietrick $
 # 
 # **********************************************************************

@@ -14,38 +14,38 @@
 # 
 # $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/util/corba/Attic/Makefile,v $
 # $RCSfile: Makefile,v $
-# $Revision: 1.1 $
-# $Date: 2003/03/13 17:34:21 $
+# $Revision: 1.2 $
+# $Date: 2003/03/14 17:30:30 $
 # $Author: dietrick $
 # 
 # **********************************************************************
 
 
-default: classes
+default: all
+
+all:
+	cd ${OPENMAP_HOME}/src/corba && ${OPENMAP_HOME}/bin/ant -emacs $@.corba
 
 classes:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+	cd ${OPENMAP_HOME}/src/corba && ${OPENMAP_HOME}/bin/ant -emacs $@.corba
 
 clean:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+	cd ${OPENMAP_HOME}/src/corba && ${OPENMAP_HOME}/bin/ant -emacs $@.corba
+
+distclean:
+	cd ${OPENMAP_HOME}/src/corba && ${OPENMAP_HOME}/bin/ant -emacs $@.corba
 
 docs:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+	cd ${OPENMAP_HOME}/src/corba && ${OPENMAP_HOME}/bin/ant -emacs $@.corba
+
+clean_docs:
+	cd ${OPENMAP_HOME}/src/corba && ${OPENMAP_HOME}/bin/ant -emacs $@.corba
 
 jar:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
-
-svg:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
-
-j3d:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
-
-visibroker:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
-
-todo:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+	cd ${OPENMAP_HOME}/src/corba && ${OPENMAP_HOME}/bin/ant -emacs $@.corba
 
 help:
-	cd ${OPENMAP_HOME} && bin/ant -emacs -projecthelp
+	cd ${OPENMAP_HOME}/src/corba && ${OPENMAP_HOME}/bin/ant -emacs -projecthelp
+
+
+
