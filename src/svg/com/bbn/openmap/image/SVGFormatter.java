@@ -16,8 +16,8 @@
  * **********************************************************************
  * 
  * $Source: /cvs/distapps/openmap/src/svg/com/bbn/openmap/image/SVGFormatter.java,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:49 $
+ * $Revision: 1.2 $
+ * $Date: 2003/03/14 18:22:21 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -133,6 +133,7 @@ public class SVGFormatter extends AbstractImageFormatter {
 	    DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
 	    Document document = domImpl.createDocument(null, "svg", null);
 	    svgGenerator = new SVGGraphics2D(document);
+	    svgGenerator.setClip(0, 0, width, height);
 	}
 	return svgGenerator;
     }
