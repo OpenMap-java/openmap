@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.8 $
-# $Date: 1998/05/07 18:32:41 $
+# $Revision: 1.9 $
+# $Date: 1998/05/07 20:08:07 $
 # $Author: aculline $
 # 
 # **********************************************************************
@@ -40,9 +40,7 @@ echo ""
 echo "MapBean build started at `date`"
 
 # if BuildRoot is already set, then use it
-if [ -z ${BuildRoot} ] ; then
-	BuildRoot=/u4/openmap/builds
-fi
+BuildRoot=${BuildRoot:-/u4/openmap/builds}
 echo "building in $BuildRoot"
 
 VersionID=Autobuild
