@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CoordMouseMode.java,v $
 // $RCSfile: CoordMouseMode.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/08 21:29:17 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:16:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -104,8 +104,8 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
      */
     public void setActive(boolean active) {
 	if (Debug.debugging("mousemode")) {
-	    Debug.output("CoordMouseMode: made active (" + 
-			 active + ")");
+	    Debug.output("CoordMouseMode(" + getPrettyName() + 
+			 "): made active (" + active + ")");
 	}
 	if (!active && infoDelegator != null) {
 	    infoDelegator.requestInfoLine(new InfoDisplayEvent(this, "", InformationDelegator.COORDINATE_INFO_LINE));

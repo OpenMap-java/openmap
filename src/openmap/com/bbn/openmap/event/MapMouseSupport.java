@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseSupport.java,v $
 // $RCSfile: MapMouseSupport.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/23 21:03:33 $
+// $Revision: 1.6 $
+// $Date: 2003/11/14 20:16:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -194,10 +194,20 @@ public class MapMouseSupport extends ListenerSupport {
 
 	boolean consumed = false;
 
+	if (DEBUG) {
+	    Debug.output("  -- has proxy (" + (proxy != null) + 
+			 ") -- shift used (" + evt.isShiftDown() + ")");
+	}
+
 	if (proxy == null || evt.isShiftDown() ||
 	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_PRESSED) > 0) {
 
 	    evt = new MapMouseEvent(getParentMode(), evt);
+
+	    if (DEBUG && proxy != null && evt.isShiftDown()) {
+		Debug.output("MMS.fireMapMousePressed(): proxy enabled, but side stepping to send event to primary listeners");
+	    }
+
 
 	    Iterator it = iterator();
 	    while (it.hasNext() && !consumed) {
@@ -216,6 +226,10 @@ public class MapMouseSupport extends ListenerSupport {
 	if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
 	    proxy.mousePressed(evt);
 	    consumed = true;
+	} else {
+	    if (DEBUG && evt.isShiftDown()) {
+		Debug.output("MMS.fireMapMousePressed(): side-stepped proxy");
+	    }
 	}
 
 	return consumed;
@@ -482,7 +496,7 @@ public class MapMouseSupport extends ListenerSupport {
      */
     protected synchronized boolean setProxyFor(MapMouseMode mmm, int pdm) {
 	proxyDistributionMask = pdm;
-	if (proxy == null) {
+	if (proxy == null || proxy == mmm) {
 	    proxy = mmm;
 	    return true;
 	}
