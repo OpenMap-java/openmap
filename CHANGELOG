@@ -1,3 +1,56 @@
+2004-05-10  Donald Dietrick  <dietrick@dhcp89-077-080.bbn.com>
+
+	* Modified the StandardPCPolicy so that has the option to be told
+	to always spawn a thread when a projection is received.  It used
+	to use the number of OMGraphics on it's current list to determine
+	if that should happen, but that caused problems if the one
+	OMGraphic created took a while to create.  You can pass the new
+	flag in a constructor, or set it later.
+
+	* Modified how PlugInLayer handles plugin with the BeanContext,
+	so PlugIns added to the layer at a later time still get to work
+	with the BeanContext.
+
+	* Added the com.bbn.openmap.dataAccess.iso8211 package that
+	provides support for reading ISO 8211 data files.  Also added the
+	com.bbn.openmap.dataAccess.asrp package that reads ASRP image
+	data.  ASRP images can be displayed using the
+	com.bbn.openmap.layer.asrp.ASRPLayer.
+
+	* Added attribute mechanism to OMGeometry/OMGraphic objects.  The
+	attributes are stored in a hashtable in the app object of the
+	OMGeometry/OMGraphic and can be retrieved with new methods.  The
+	code has been written to work with the possibility of other code
+	still using the setAppObject and getAppObject methods, as the app
+	object set as in older versions of OpenMap is now stored as an
+	attribute when other attributes are added.  This should be
+	seamless to anybody that is currently using the app object.
+
+	* Created MapBeanPrinterMenuItem and added it to the FileMenu.
+
+	* Modified the BasicMapPanel so the empty constructor doesn't
+	create a PropertyHandler that will search for an
+	openmap.properties file and fill the application with it.  The
+	basic BasicMapHandler will create a MapHandler and
+	BufferedLayerMapBean, and an empty PropertyHandler.  To create a
+	BasicMapPanel that does look for an openmap.properties file,
+	create a PropertyHandler with an empty constructor and pass it to
+	the BasicMapPanel.
+
+	* Added I18 contributions to gui package from Mirek Pawlowski.
+
+	* Modified the GestureResponsePolicy interface, adding the
+	receivesMapEvents(), mouseOver() and leftClick() methods so the
+	policy could receive information about mouse events that were
+	occuring over the background map and not over its OMGraphics.  The
+	latter two methods only get called when the first returns true.
+	Modified the StandardMapMouseInterpreter to use these methods.
+	Modified the OMGraphicHandlerLayer to not do anything when these
+	methods were called.
+
+	* Added Piotr Kaminski's RhumbCalculator class that computes the
+	lengths of Rhumb lines.
+
 2004-04-16  Bill Mackiewicz <bmackiew@bbn.com>
 	* Replaced ext/jakarta-ant-1.5.1/ with ext/apache-ant-1.6.1/
 
