@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolSet.java,v $
 // $RCSfile: OMToolSet.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/08 22:25:44 $
+// $Revision: 1.5 $
+// $Date: 2003/10/23 21:42:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -89,7 +89,6 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
 						navPanel.getHeight()));
 	navPanel.setMaximumSize(new Dimension(navPanel.getWidth(), 
 					      navPanel.getHeight()));
-	navPanel.setUseToolTips(true);
 	zoomPanel = new ZoomPanel();
 
 	scaleField = new ScaleTextPanel();
