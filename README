@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/README,v $
 $RCSfile: README,v $
-$Revision: 1.7 $
-$Date: 1999/03/30 18:19:37 $
+$Revision: 1.8 $
+$Date: 1999/04/05 19:05:33 $
 $Author: aculline $
 
 
@@ -55,9 +55,10 @@ service would be valuable to you.
 
 Mailing lists
 -------------
-Currently there are no mailing lists concerning OpenMap issues.
-However, you can address common OpenMap questions, comments,
-criticisms, bug-reports, patches, etc, to openmap@bbn.com.
+Currently there are no mailing lists specific to OpenMap issues.
+We suggest that you address common OpenMap questions, comments,
+criticisms, bug-reports, patches, etc, to openmap@bbn.com or the
+USENET newsgroup comp.infosystems.gis
 
 
 Please help out!
