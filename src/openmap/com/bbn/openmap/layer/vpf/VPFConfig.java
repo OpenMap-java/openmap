@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFConfig.java,v $
 // $RCSfile: VPFConfig.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:06:09 $
+// $Revision: 1.9 $
+// $Date: 2004/11/26 03:46:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -131,9 +131,19 @@ public class VPFConfig extends JPanel implements ActionListener {
         this.layerName = layerName;
 
         if (dataPaths != null && dataPaths.length > 0) {
+
+            // Take the time to replace any \ with /, it matters if
+            // the properties get printed out for later.
+            // Permanently set them from \ to / for when they get
+            // passed to BinaryFile.
+            dataPaths[0] = dataPaths[0].replace('\\', '/');
             StringBuffer buf = new StringBuffer(dataPaths[0]);
+
             for (int i = 1; i < dataPaths.length; i++) {
                 buf.append(";");
+                // Permanently set them from \ to / for when they get
+                // passed to BinaryFile.
+                dataPaths[i] = dataPaths[i].replace('\\', '/');
                 buf.append(dataPaths[i]);
             }
             paths = buf.toString();

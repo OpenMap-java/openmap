@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VMAP2Shape.java,v $
 // $RCSfile: VMAP2Shape.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/11/08 15:35:07 $
+// $Revision: 1.5 $
+// $Date: 2004/11/26 03:46:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,37 +78,37 @@ public class VMAP2Shape {
             }
 
             System.out.println(nGraphics + " candidates.");
-            
+
+            for (int i = 0; i < nGraphics; i++) {
+                OMGraphic omg = graphics.getOMGraphicAt(i);
+                if ((omg instanceof OMPoly)
+                        && (omg.getRenderType() == OMGraphic.RENDERTYPE_LATLON)) {
+                    OMPoly poly = (OMPoly) omg;
+
+                    if (doThinning && maybeThrowAwayPoly(poly)) {
+                        continue;
+                    }
+
+                    saveGraphics.addOMGraphic(poly);
+                } else {
+                    System.out.println("Skipping candidate: "
+                            + omg.getClass().toString() + ", "
+                            + omg.getRenderType());
+                }
+            }
+            graphics = saveGraphics;
+
+            // join polylines
+            if (doThinning) {
+                nGraphics = graphics.size();
+                System.out.println(nGraphics + " candidates.");
+                graphics = joinCommonLines(graphics);
+            }
+
+            // save graphics
             EsriShapeExport ese = new EsriShapeExport(graphics, (Projection)null, shapeFileName);
             ese.export();
-//            
-//            for (int i = 0; i < nGraphics; i++) {
-//                OMGraphic omg = graphics.getOMGraphicAt(i);
-//                if ((omg instanceof OMPoly)
-//                        && (omg.getRenderType() == OMGraphic.RENDERTYPE_LATLON)) {
-//                    OMPoly poly = (OMPoly) omg;
-//
-//                    if (doThinning && maybeThrowAwayPoly(poly)) {
-//                        continue;
-//                    }
-//
-//                    saveGraphics.addOMGraphic(poly);
-//                } else {
-//                    System.out.println("Skipping candidate: "
-//                            + omg.getClass().toString() + ", "
-//                            + omg.getRenderType());
-//                }
-//            }
-//            graphics = saveGraphics;
-//
-//            // join polylines
-//            if (false) {
-//                nGraphics = graphics.size();
-//                System.out.println(nGraphics + " candidates.");
-//                graphics = joinCommonLines(graphics);
-//            }
-//
-//            // save graphics
+            
 //            nGraphics = graphics.size();
 //            System.out.println("Dumping " + nGraphics + " graphics.");
 //            for (int i = 0; i < nGraphics; i++) {
