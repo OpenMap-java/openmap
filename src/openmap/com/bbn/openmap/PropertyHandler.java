@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.22 $
-// $Date: 2004/09/17 17:56:57 $
+// $Revision: 1.23 $
+// $Date: 2004/09/30 22:32:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,8 +23,6 @@
 
 package com.bbn.openmap;
 
-import java.awt.Color;
-import java.awt.Cursor;
 import java.util.*;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -36,6 +34,7 @@ import com.bbn.openmap.event.ProgressListener;
 import com.bbn.openmap.event.ProgressSupport;
 import com.bbn.openmap.gui.ProgressListenerGauge;
 import com.bbn.openmap.plugin.PlugIn;
+import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -1205,20 +1204,21 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
     /**
      * Given a MapHandler and a Java Properties object, the
      * LayerHandler will be cleared of it's current layers, and
-     * reloaded with the layers in the properties.  The MapBean will
-     * be set to the projection settings listed in the properties.
+     * reloaded with the layers in the properties. The MapBean will be
+     * set to the projection settings listed in the properties.
      */
-    public void loadProjectionAndLayers(MapHandler mapHandler,
-                                        Properties props) {
+    public void loadProjectionAndLayers(MapHandler mapHandler, Properties props) {
 
         MapBean mapBean = (MapBean) mapHandler.get("com.bbn.openmap.MapBean");
-        LayerHandler layerHandler = (LayerHandler) mapHandler.get("com.bbn.openmap.LayerHandler");
-        InformationDelegator id = (InformationDelegator) mapHandler.get("com.bbn.openmap.InformationDelegator");
+        LayerHandler layerHandler = (LayerHandler) mapHandler
+                .get("com.bbn.openmap.LayerHandler");
+        InformationDelegator id = (InformationDelegator) mapHandler
+                .get("com.bbn.openmap.InformationDelegator");
 
-//      if (id != null) {
-//          id.requestCursor(new Cursor(Cursor.WAIT_CURSOR));
-//      }
-        
+        //      if (id != null) {
+        //          id.requestCursor(new Cursor(Cursor.WAIT_CURSOR));
+        //      }
+
         if (layerHandler != null) {
             layerHandler.removeAll();
             layerHandler.init(Environment.OpenMapPrefix, props);
@@ -1227,26 +1227,16 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
         }
 
         if (mapBean != null) {
-            String projName = props.getProperty(Environment.Projection);
-            int projType = com.bbn.openmap.proj.ProjectionFactory.getProjType(projName);
-            mapBean.setProjectionType(projType);
-
-            mapBean.setScale(PropUtils.floatFromProperties(
-                props, Environment.Scale, Float.POSITIVE_INFINITY));
-            float lat = PropUtils.floatFromProperties(
-                props, Environment.Latitude, 0f);
-            float lon = PropUtils.floatFromProperties(
-                props, Environment.Longitude, 0f);
-
-            mapBean.setCenter(new LatLonPoint(lat, lon));
-
+            mapBean.setProjection(ProjectionFactory
+                    .getDefaultProjectionFromEnvironment(mapBean.getWidth(), 
+                                                         mapBean.getHeight()));
         } else {
             Debug.error("Can't load new projection - can't find MapBean");
         }
 
-//      if (id != null) {
-//          id.requestCursor(null);
-//      }
+        //      if (id != null) {
+        //          id.requestCursor(null);
+        //      }
     }
 
     /**

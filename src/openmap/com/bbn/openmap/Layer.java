@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.20 $
-// $Date: 2004/03/17 23:08:58 $
+// $Revision: 1.21 $
+// $Date: 2004/09/30 22:32:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,9 +29,7 @@ import java.beans.*;
 import java.beans.beancontext.*;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.Vector;
 import javax.swing.*;
-import javax.swing.event.*;
 
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.ProjectionPainter;
