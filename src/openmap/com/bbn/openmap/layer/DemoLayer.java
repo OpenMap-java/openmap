@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.15 $
-// $Date: 2004/10/14 18:05:52 $
+// $Revision: 1.16 $
+// $Date: 2004/10/25 15:04:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -83,6 +83,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         // SelectMouseMode, which has a modeID of "Gestures". Other
         // IDs can be added as needed.
         setMouseModeIDsForEvents(new String[] { "Gestures" });
+        init();
     }
 
     public void paint(java.awt.Graphics g) {
@@ -312,7 +313,6 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
 
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
-        init();
         setAddToBeanContext(true);
     }
 
