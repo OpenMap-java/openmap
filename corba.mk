@@ -16,8 +16,8 @@
 # **********************************************************************
 # 
 # $Source: /cvs/distapps/openmap/Attic/corba.mk,v $
-# $Revision: 1.1 $
-# $Date: 2000/08/28 19:31:16 $
+# $Revision: 1.2 $
+# $Date: 2000/11/29 19:46:34 $
 # $Author: dietrick $
 # 
 # **********************************************************************
@@ -37,7 +37,7 @@
 # Our specifics
 JAVA_HOME = /usr/local/java
 VISIBROKER_HOME = /usr/local/vbroker
-CSPEC_JAR = ${TOP}/lib/cspec58.jar
+CSPEC_JAR = ${rootdir}/lib/cspec58.jar
 CORBA_CLASSES = ${VISIBROKER_HOME}/lib/vbjapp.jar:${VISIBROKER_HOME}/lib/vbjcosnm.jar:${VISIBROKER_HOME}/lib/vbjtools.jar:${VISIBROKER_HOME}/lib/vbjorb.jar:${CSPEC_JAR}
 
 #bootclasspath = <path to the corba jars (like Visibroker); development path to openmap; path to runtime jar (rt.jar)>
