@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/10/15 16:51:52 $
+// $Revision: 1.9 $
+// $Date: 2003/10/15 19:46:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -621,6 +621,13 @@ public class LinkLayer extends OMGraphicHandlerLayer
 			gu.action = 0; // No action...
 			Debug.error("LinkLayer.handleLinkActionList: Gesture Response on an unknown graphic.");
 		    }
+		} else if (LinkUtil.isMask(gu.action, UPDATE_GRAPHIC_MASK)) {
+		    if (gug != null) {
+			gug.generate(proj);
+			reactionGraphic = gug;
+		    } else {
+			Debug.message("link", "LinkLayer.handleLinkActionList: trying to update null OMGraphic, id: " + gu.id);
+		    }
 		} else {
 		    reactionGraphic = graphics.getOMGraphicWithId(gu.id);
 		}
@@ -640,7 +647,6 @@ public class LinkLayer extends OMGraphicHandlerLayer
 		// For properties updating, or graphic replacement
 		if (LinkUtil.isMask(gu.action, UPDATE_GRAPHIC_MASK)) {
 		    Debug.message("link","LinkLayer: updating graphic");
-		    reactionGraphic.generate(proj);
 		    graphics.setOMGraphicAt(reactionGraphic, reactionGraphicIndex);
 		}
 		    
