@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION(OpenMap $Revision: 1.51 $)
+AC_REVISION(OpenMap $Revision: 1.52 $)
 AC_INIT(openmap.mk.in)
 
 #
@@ -229,6 +229,7 @@ AC_OUTPUT(openmap.mk
 	com/bbn/openmap/proj/Makefile
 	com/bbn/openmap/tools/Makefile
 	com/bbn/openmap/tools/drawing/Makefile
+	com/bbn/openmap/tools/j3d/Makefile
 	com/bbn/openmap/tools/terrain/Makefile
 	com/bbn/openmap/util/Makefile
 	com/bbn/openmap/util/propertyEditor/Makefile

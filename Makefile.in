@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.63 $  $Date: 2001/12/18 01:51:26 $
+# $Revision: 1.64 $  $Date: 2002/03/06 17:05:21 $
 # **********************************************************************
 
 
@@ -49,6 +49,7 @@ Core.pkgs =	com.bbn.openmap \
 		com.bbn.openmap.plugin \
 		com.bbn.openmap.proj \
 		com.bbn.openmap.tools.drawing \
+#		com.bbn.openmap.tools.j3d \
 		com.bbn.openmap.tools.terrain \
 		com.bbn.openmap.util \
 		com.bbn.openmap.util.propertyEditor \
@@ -73,6 +74,7 @@ Core.classes =	com/bbn/openmap/*.class \
 	 	com/bbn/openmap/plugin/*.class \
 		com/bbn/openmap/proj/*.class \
 		com/bbn/openmap/tools/drawing/*.class \
+		com/bbn/openmap/tools/j3d/*.class \
 		com/bbn/openmap/tools/terrain/*.class \
 		com/bbn/openmap/util/*.class \
 		com/bbn/openmap/util/propertyEditor/*.class \
@@ -81,7 +83,8 @@ Core.classes =	com/bbn/openmap/*.class \
 Core.extra =	com/bbn/openmap/*.gif \
 		com/bbn/openmap/gui/*.gif \
 		com/bbn/openmap/omGraphics/*.gif \
-		com/bbn/openmap/tools/drawing/*.gif
+		com/bbn/openmap/tools/drawing/*.gif \
+		com/bbn/openmap/tools/j3d/*.gif
 
 Core.jar =	${Core.classes} ${Core.extra}
 

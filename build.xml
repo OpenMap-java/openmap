@@ -15,17 +15,22 @@
     <property name="jar.excludes" value="${javac.excludes}, **/*.java"/>
     <property name="corba.excludes" value="**/corba/**"/>
 
+    <!-- These are packages that depend on other, non-standard java
+	installations. You can remove these packages from this list if you
+	have the packages installed.  -->
+    <property name="dependency.excludes" value="**/j3d/**" />
+
     <uptodate property="openmapBuild.notRequired"
               targetfile="${openmap.home}/lib/openmap.jar" >
        <srcfiles dir= "${openmap.home}/com"
-                 excludes="${javac.excludes}, ${corba.excludes}"
+                 excludes="${javac.excludes}, ${corba.excludes}, ${dependecy.excludes}"
 		 includes="**/*.java, **/*.class" />
     </uptodate>
 
     <uptodate property="contribBuild.notRequired"
               targetfile="${openmap.home}/lib/omcontrib.jar" >
        <srcfiles dir= "${openmap.home}/contrib"
-                 excludes="${javac.excludes}, ${corba.excludes}"
+                 excludes="${javac.excludes}, ${corba.excludes}, ${dependecy.excludes}"
 		 includes="**/*.java, **/*.class" />
     </uptodate>
   </target>
@@ -86,7 +91,7 @@
     <echo message="Building OpenMap classes..."/>
     <javac srcdir="${openmap.home}"
            classpath="${openmap.home}/lib/omcontrib.jar;${openmap.home}/contrib" 
-           excludes="${javac.excludes}, ${corba.excludes}"/>
+           excludes="${javac.excludes}, ${corba.excludes, ${dependecy.excludes}"/>
   </target>
 
   <target name="contrib" 
@@ -166,3 +171,4 @@
   </target>
 
 </project>
+
