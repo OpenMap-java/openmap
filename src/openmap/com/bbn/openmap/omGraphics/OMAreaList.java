@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMAreaList.java,v $
 // $RCSfile: OMAreaList.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:12 $
+// $Revision: 1.8 $
+// $Date: 2004/11/26 03:51:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,11 +78,13 @@ public class OMAreaList extends OMGeometryList implements GraphicList,
     /**
      * Initialization that sets the OMAreaList, which is a modified
      * OMGraphicList, to be vague and constructed in a first added,
-     * first used order.
+     * first used order. connectParts, a variable from OMGeometryList,
+     * is also set to true.
      */
     protected void init() {
         setVague(true);
         setTraverseMode(LAST_ADDED_ON_TOP);
+        setConnectParts(true);
     }
 
     /**
@@ -122,8 +124,8 @@ public class OMAreaList extends OMGeometryList implements GraphicList,
                 return;
             }
 
-            shape = appendShapeEdge(shape, gp);
-            // save memory by deleting the shape in each part, since
+            shape = appendShapeEdge(shape, gp, connectParts);
+            // save memory?? by deleting the shape in each part, since
             // they are each contributing to the whole.
             geometry.setShape((GeneralPath) null);
         }
