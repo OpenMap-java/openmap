@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/LayerUtils.java,v $
 // $RCSfile: LayerUtils.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/26 01:05:26 $
+// $Revision: 1.4 $
+// $Date: 2003/05/06 23:33:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,26 +23,26 @@
 
 package com.bbn.openmap.layer.util;
 
-
 /*  Java Core  */
 import java.awt.Color;
 import java.awt.Paint;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Enumeration;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 /* OpenMap */
-import com.bbn.openmap.Environment;
 import com.bbn.openmap.util.ColorFactory;
-import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /** 
  * A Class that provides some static methods useful for generic tasks
  * within the layer, like changing a single string of File.separator
  * paths into an array of Strings, and creating java.awt.Colors from a
- * hex string.
+ * hex string.<P>
+ *
+ * To merge all of the functions that deal with handling properties,
+ * these methods have been moved to the com.bbn.openmap.util.PropUtils
+ * class.  If you call these methods, they now simply call the same
+ * PropUtils method.
  */
 public class LayerUtils {
 
@@ -57,7 +57,7 @@ public class LayerUtils {
      */
     public static String[] initPathsFromProperties(Properties p, 
 						   String propName) {
-	return stringArrayFromProperties(p, propName, ";");
+	return PropUtils.initPathsFromProperties(p, propName);
     }
 
     /** 
@@ -74,17 +74,7 @@ public class LayerUtils {
     public static int intFromProperties(Properties p, 
 					String propName,
 					int defaultValue) {
-	int ret = defaultValue;
-	String intString = p.getProperty(propName);
-
-	if (intString != null) {
-	    try {
-		ret = Integer.parseInt(intString);
-	    } catch (NumberFormatException e) {
-		ret = defaultValue;
-	    }
-	}
-	return ret;
+	return PropUtils.intFromProperties(p, propName, defaultValue);
     }
 
     /** 
@@ -101,17 +91,7 @@ public class LayerUtils {
     public static float floatFromProperties(Properties p, 
 					    String propName,
 					    float defaultValue) {
-	float ret = defaultValue;
-	String floatString = p.getProperty(propName);
-
-	if (floatString != null) {
-	    try {
-		ret = Float.valueOf(floatString).floatValue();
-	    } catch (NumberFormatException e) {
-		ret = defaultValue;
-	    }
-	}
-	return ret;
+	return PropUtils.floatFromProperties(p, propName, defaultValue);
     }
 
     /** 
@@ -128,13 +108,7 @@ public class LayerUtils {
     public static boolean booleanFromProperties(Properties p, 
 						String propName,
 						boolean defaultValue) {
-	boolean ret = defaultValue;
-	String booleanString = p.getProperty(propName);
-	if (booleanString != null) {
-	    ret = booleanString.toLowerCase().equals("true");
-	}
-	
-	return ret;
+	return PropUtils.booleanFromProperties(p, propName, defaultValue);
     }
 
     /**
@@ -148,22 +122,7 @@ public class LayerUtils {
      */
     public static Object objectFromProperties(Properties p, 
 					      String propName) {
-
-	Object ret = null;
-	String objectName = p.getProperty(propName);
-	if (objectName != null) {
-	    try {
-		ret = Class.forName(objectName).newInstance();// Works for applet!
-		//ret = java.beans.Beans.instantiate(null, objectName);
-	    } catch (java.lang.InstantiationException e) {
-		ret = null;
-	    } catch (java.lang.IllegalAccessException e) {
-		ret = null;
-	    } catch (java.lang.ClassNotFoundException e) {
-		ret = null;
-	    }
-	}
-	return ret;
+	return PropUtils.objectFromProperties(p, propName);
     }
 
     /**  
@@ -179,54 +138,25 @@ public class LayerUtils {
     public static String[] stringArrayFromProperties(Properties p, 
 						     String propName, 
 						     String tok) {
-
-	String[] ret = null;
-	String raw = p.getProperty(propName);
-
-	if (raw != null) {
-
-	    try {
-		StringTokenizer token = new StringTokenizer(raw, tok);
-		int numPaths = token.countTokens();
-		
-		ret = new String[numPaths];
-		for (int i = 0; i < numPaths; i++) {
-		    ret[i] = token.nextToken();
-		}		    
-		return ret;
-	    } catch (java.util.NoSuchElementException e) {
-		e.printStackTrace();
-	    }
-	}
-	return ret;
+	return PropUtils.stringArrayFromProperties(p, propName, tok);
     }
 
-  /**
-   * Gets a double out of a properties object.  Returns the default value
-   * if something goes wrong.
-   *
-   * @param p properties
-   * @param propName name of the property associated with the wanted value.
-   * @param defaultValue what to return if the property name doesn't exist,
-   * or if the value isn't a numerical value.
-   * @return double value associated with the property.
-   */
+    /**
+     * Gets a double out of a properties object.  Returns the default value
+     * if something goes wrong.
+     *
+     * @param p properties
+     * @param propName name of the property associated with the wanted value.
+     * @param defaultValue what to return if the property name doesn't exist,
+     * or if the value isn't a numerical value.
+     * @return double value associated with the property.
+     */
 
-  public static double doubleFromProperties(Properties p,
-					    String propName,
-					    double defaultValue) {
-    double ret = defaultValue;
-    String doubleString = p.getProperty(propName);
-    
-    if(doubleString != null) {
-      try {
-	ret = Double.valueOf(doubleString).doubleValue();
-      } catch (NumberFormatException e) {
-	ret = defaultValue;
-      }
+    public static double doubleFromProperties(Properties p,
+					      String propName,
+					      double defaultValue) {
+	return PropUtils.doubleFromProperties(p, propName, defaultValue);
     }
-    return ret;
-  }
       
     /** 
      * Take a string from a properties file, representing the 24bit
@@ -244,9 +174,9 @@ public class LayerUtils {
 						 String propName, 
 						 String dfault)
 	throws NumberFormatException
-    {
-	return ColorFactory.parseColorFromProperties(p, propName, dfault, false);
-    }
+	{
+	    return ColorFactory.parseColorFromProperties(p, propName, dfault, false);
+	}
 
     /** 
      * Take a string from a properties file, representing the 24bit
@@ -265,9 +195,9 @@ public class LayerUtils {
 						 String propName, 
 						 Paint dfault)
 	throws NumberFormatException
-    {
-	return ColorFactory.parseColorFromProperties(p, propName, dfault);
-    }
+	{
+	    return ColorFactory.parseColorFromProperties(p, propName, dfault);
+	}
 
     /**
      * Convert a string representing a 24/32bit hex color value into a
@@ -288,9 +218,9 @@ public class LayerUtils {
      */
     public static Color parseColor(String colorString)
 	throws NumberFormatException
-    {
-	return ColorFactory.parseColor(colorString, false);
-    }
+	{
+	    return ColorFactory.parseColor(colorString, false);
+	}
 
     /**
      * Converts a properties object to an array of Strings.  The
@@ -302,16 +232,7 @@ public class LayerUtils {
      */
     public static String[] getPropertiesAsStringArray(Properties props) {
 
-	int size = props.size();
-	String[] ret = new String[size*2]; // key and value
-	int count = 0;
-	Enumeration things = props.propertyNames();
-	while (things.hasMoreElements()) {
-	    ret[count] = (String)things.nextElement();
-	    ret[count+1] = (String)props.getProperty(ret[count]);
-	    count+=2;
-	}
-	return ret;
+	return PropUtils.getPropertiesAsStringArray(props);
     }
 
     /** 
@@ -323,7 +244,7 @@ public class LayerUtils {
      */
     public static URL getResourceOrFileOrURL(String name)
 	throws java.net.MalformedURLException {
-	return getResourceOrFileOrURL(null, name);
+	return PropUtils.getResourceOrFileOrURL(null, name);
     }
 
     /** 
@@ -336,8 +257,7 @@ public class LayerUtils {
      */
     public static URL getResourceOrFileOrURL(Object askingClass, String name)
 	throws java.net.MalformedURLException {
-	  
-	return getResourceOrFileOrURL(askingClass.getClass(), name);
+	return PropUtils.getResourceOrFileOrURL(askingClass.getClass(), name);
     }
 
     /** 
@@ -350,80 +270,6 @@ public class LayerUtils {
      */
     public static URL getResourceOrFileOrURL(Class askingClass, String name)
 	throws java.net.MalformedURLException {
-
-	boolean DEBUG = Debug.debugging("layerutil");
-
-	if (name == null) {
-	    if (DEBUG) Debug.output("LayerUtil.getROFOU(): null file name");
-  	    return null;
-	}
-
-	URL retval = null;
-	if (DEBUG) Debug.output("LayerUtil.getROFOU(): looking for " + name);
-
-	if (askingClass != null) {
-	    // First see if we have a resource by that name
-	    if (DEBUG) Debug.output("LayerUtil.getROFOU(): checking as resource");
-
-	    retval = askingClass.getResource(name);
-	}
-	if (retval == null) {
-	    // Check the general classpath...
-	    if (DEBUG) Debug.output("LayerUtil.getROFOU(): checking in general classpath");
-	    retval = Thread.currentThread().getContextClassLoader().getResource(name);
-	}
-	if (retval == null && !Environment.isApplet()) {
-	    // Check the classpath plus the share directory, which may
-	    // be in the openmap.jar file or in the development
-	    // environment.
-	    if (DEBUG) Debug.output("LayerUtil.getROFOU(): checking with ClassLoader");
-	    retval = ClassLoader.getSystemResource("share/" + name);
-	}
-
-	if (retval == null && Environment.isApplet()) {
-	    if (DEBUG) Debug.output("LayerUtil.getROFOU(): checking with URLClassLoader");
-	    URL[] cba = new URL[1];
-	    cba[0] =  Environment.getApplet().getCodeBase();
-	    URLClassLoader ucl = URLClassLoader.newInstance(cba);
-  	    retval = ucl.getResource(name);
-	}
-
-	// If there was no resource by that name available
-	if (retval == null) {
-	    if (DEBUG) Debug.output("LayerUtil.getROFOU(): not found as resource");
-
-	    try {
-		java.io.File file = new java.io.File(name);
-		if (file.exists()) {
-		    retval = file.toURL();
-		    if (DEBUG) Debug.output("LayerUtil.getROFOU(): found as file :)");
-		} else {
-		    // Otherwise treat it as a raw URL.
-		    if (DEBUG) Debug.output("LayerUtil.getROFOU(): Not a file, checking as URL");
-		    retval = new URL(name);
-		    java.io.InputStream is = retval.openStream();
-		    is.close();
-		    if (DEBUG) Debug.output("LayerUtil.getROFOU(): OK as URL :)");
-		}
-	    } catch (java.io.IOException ioe) {
-		retval = null;
-	    } catch (java.security.AccessControlException ace) {
-		Debug.error("LayerUtils: AccessControlException trying to access " + name);
-		retval = null;
-	    } catch (Exception e) {
-		Debug.error("LayerUtils: caught exception " + e.getMessage());
-		retval = null;
-	    }
-	}
-
-	if (DEBUG) {
-	    if (retval != null) {
-		Debug.output("Resource "+ name + "=" + retval.toString());
-	    } else {
-		Debug.output("Resource " + name + " can't be found..." );
-	    }
-	}
-
-	return retval;
+	return PropUtils.getResourceOrFileOrURL(askingClass, name);
     }
 }
