@@ -343,7 +343,7 @@
 		                 **/layer/specialist/**/*.java,
 				 **/plugin/corbaImage/**/*.java"
 		       excludes="**/unimplemented/**"
-		       classpath="${openmap.vb_classes};${openmap.classes}" />
+		       bootclasspath="${visibroker.bootclasspath}" />
 		<jar jarfile="${openmap.home}/lib/omcorba_vb.jar"
 		     basedir="${openmap.vb_classes}"
 		     includes="**/*.class"/>
