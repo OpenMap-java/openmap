@@ -17,9 +17,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/jar.mk,v $
 # $RCSfile: jar.mk,v $
-# $Revision: 1.2 $
-# $Date: 1998/03/17 18:10:20 $
-# $Author: tmitchel $
+# $Revision: 1.3 $
+# $Date: 1998/07/22 19:06:29 $
+# $Author: rmcneil $
 # 
 # **********************************************************************
 
@@ -32,16 +32,19 @@ SRCDIR =	com/bbn/openmap
 
 # jar up OpenMap, Java libCspec, Java libCspec sample, IDL generated
 # code
-OPENMAP.JAR =	$(SRCDIR)/*.class $(SRCDIR)/awt/*.class \
-		$(SRCDIR)/client/*.class $(SRCDIR)/html/*.class \
-		$(SRCDIR)/http/*.class $(SRCDIR)/proj/*.class \
-		$(SRCDIR)/spec/*.class $(SRCDIR)/kfc/*.class \
-		$(SRCDIR)/streamlayer/*.class \
-		$(SRCDIR)/streamlayer/sample/*.class \
-		$(SRCDIR)/specialist/*.class \
-		$(SRCDIR)/specialist/sample/*.class \
-		$(SRCDIR)/CSpecialist/*.class \
-		$(SRCDIR)/CSpecialist/*/*.class
+OPENMAP.JAR =	$(SRCDIR)/*.class $(SRCDIR)/app/*.class \
+		$(SRCDIR)/corba/*.class $(SRCDIR)/dcwSpecialist/*.class \
+		$(SRCDIR)/event/*.class \
+		$(SRCDIR)/gui/*.class \
+		$(SRCDIR)/html/*.class \
+		$(SRCDIR)/http/*.class \
+		$(SRCDIR)/omGraphics/*.class \
+		$(SRCDIR)/overlay/*.class \
+		$(SRCDIR)/pluginLayer/*.class \
+		$(SRCDIR)/proj/*.class \
+		$(SRCDIR)/specialist/*.class $(SRCDIR)/util/*.class \
+		com/bbn/util/*.class \
+		$(SRCDIR)/gui/*.gif
 
 APPLET.JAR =	$(SRCDIR)/*.class $(SRCDIR)/awt/*.class \
 		$(SRCDIR)/client/*.class $(SRCDIR)/proj/*.class \
