@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ToolPanel.java,v $
 // $RCSfile: ToolPanel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/04 14:34:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,7 +46,7 @@ import java.beans.beancontext.*;
  * @author john gash 
  */
 public class ToolPanel extends JToolBar 
-    implements BeanContextChild, BeanContextMembershipListener {
+    implements BeanContextChild, BeanContextMembershipListener, MapPanelChild {
 
     /** The set of tools contained on the toolbar. */
     protected Hashtable items = new Hashtable();
@@ -55,7 +55,7 @@ public class ToolPanel extends JToolBar
      * tools. 
      */
     protected boolean autoSpace = false;
-    
+
     /**
      * BeanContextChildSupport object provides helper functions for
      * BeanContextChild interface.
@@ -68,6 +68,7 @@ public class ToolPanel extends JToolBar
     public ToolPanel() {
 	super();
 	setLayout(new FlowLayout(FlowLayout.LEFT));
+	setFloatable(false);
     }
     
     /**
@@ -123,6 +124,23 @@ public class ToolPanel extends JToolBar
     /** Set whether spaces are placed between tools. */
     public void setAutoSpace(boolean set) {
 	autoSpace = set;
+    }
+
+    /**
+     * BorderLayout.NORTH by default for this class.
+     */
+    protected String preferredLocation = java.awt.BorderLayout.NORTH;
+
+    /**
+     * MapPanelChild method.
+     */
+    public void setPreferredLocation(String value) {
+	preferredLocation = value;
+    }
+
+    /** MapPanelChild method. */
+    public String getPreferredLocation() {
+	return preferredLocation;
     }
 
     /** Find out whether spaces are being placed between tools. */

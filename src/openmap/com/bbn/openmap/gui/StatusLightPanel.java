@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/StatusLightPanel.java,v $
 // $RCSfile: StatusLightPanel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/04 14:34:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -179,7 +179,7 @@ public class StatusLightPanel extends OMComponentPanel
 //  	    newLight = new JButton(greyIcon);
 	    newLight = new JButton(greenIcon);
 	    newLight.setToolTipText(layer.getName());
-	    newLight.setMargin(new Insets(0, 0, 0, 0));
+	    newLight.setMargin(new Insets(2, 1, 2, 1));
 	    statusLights.put(layer, newLight);
 
 	    if (lightTriggers) {

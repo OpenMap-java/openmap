@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OpenMapFrame.java,v $
 // $RCSfile: OpenMapFrame.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/04 14:34:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,30 +23,42 @@
 
 package com.bbn.openmap.gui;
 
-import javax.swing.*;
-import javax.swing.border.*;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
+import java.beans.beancontext.BeanContext;
+import java.beans.beancontext.BeanContextChild;
+import java.beans.beancontext.BeanContextChildSupport;
+import java.beans.beancontext.BeanContextMembershipEvent;
+import java.beans.beancontext.BeanContextMembershipListener;
+import java.util.Iterator;
+import java.util.Properties;
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 
-import java.beans.beancontext.*;
-import java.beans.*;
-import java.util.*;
-import java.awt.*;
-import java.awt.event.*;
-
-import com.bbn.openmap.*;
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.util.Debug;
 
 /**
  * The OpenMapFrame is the application window frame that holds the
- * MapBean.  It listeners for the addition of Beans to the MapHandler
- * BeanContext, and then positions the widgets it can deal with within
- * itself.  <P>Right now, the frame does not present itself until a
- * MapBean is found.
+ * MapPanel, and eventually the MapBean.  It listens to the
+ * MapHandler for the addition of Beans to the MapHandler BeanContext,
+ * and then positions the widgets it can deal with within itself.  The
+ * frame does not present itself until an MapPanel is found.
+ *
+ * <p>The OpenMapFrame is intended to be used in an application
+ * environment.  The applet checks and code to handle the applet
+ * environment was moved to the OpenMapApplet class.
  */
 public class OpenMapFrame extends JFrame 
     implements BeanContextMembershipListener, BeanContextChild, PropertyConsumer {
     
-    /** The pane to which we add OpenMap components in application.*/
-    Container contentPane=null;
     /** Starting X coordinate of window */
     public static final String xProperty = Environment.OpenMapPrefix + ".x";
     
@@ -79,6 +91,10 @@ public class OpenMapFrame extends JFrame
 
 	Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 	Debug.message("basic","Screen dimensions are " + d);
+
+	if (w > d.width) w = d.width - d.width/10;
+	if (h > d.height) h = d.height - d.height/10;
+
 	int x = Environment.getInteger(xProperty, -1);
 	int y = Environment.getInteger(yProperty, -1);
 	if (x < 0)
@@ -103,80 +119,43 @@ public class OpenMapFrame extends JFrame
     public OpenMapFrame(String title) {
 	super(title);
 					
-	// show the window
-	if (Environment.isApplication()) {
-	    contentPane = getContentPane();
-	    contentPane.setLayout(new BorderLayout());
-	    addWindowListener(new WindowAdapter() {
+	addWindowListener(new WindowAdapter() {
 		public void windowClosing(WindowEvent e) {
 		    // need a shutdown event to notify other gui beans and
 		    // then exit.
 		    System.exit(0);
 		}
 	    });
-	} else {
-	    contentPane = ((JApplet)(Environment.getApplet())).getContentPane();
-	}
     }
 
     /**
      * Called when the OpenMapFrame is added to a BeanContext, and
      * when other objects are added to the BeanContext.  The
      * OpenMapFrame looks for objects that it knows how to place upon
-     * itself (MapBean, ToolPanel, JMenuBar, InformationDelegator).
-     * The OpenMapFrame does not check to see if the objects looked
-     * for are already added to itself.  It assumes that if some
-     * object type is getting added to it, the caller must know what
-     * they are doing - just like a regular JFrame.
+     * itself (MapPanel, JMenuBar).  The OpenMapFrame does not check
+     * to see if the objects looked for are already added to itself.
+     * It assumes that if some object type is getting added to it, the
+     * caller must know what they are doing - just like a regular
+     * JFrame.
      *
      * @param it Iterator to use to go through the BeanContext objects.  
      */
-    protected void findAndInit(Iterator it) {
+    public void findAndInit(Iterator it) {
 	Object someObj;
 	while (it.hasNext()) {
 	    someObj = it.next();
-	    if (someObj instanceof MapBean) {
-		// do the initializing that need to be done here
-		MapBean mapBean = (MapBean)someObj;
-		if (Debug.debugging("basic")) {
-		    Debug.output("OpenMapFrame: found a MapBean, size " + mapBean.getSize() +
-				 ", preferred size " + mapBean.getPreferredSize() +
-				 ", " + mapBean.getProjection());
-		}
-		contentPane.add((MapBean)someObj, BorderLayout.CENTER);
-		
-		if (!Environment.isApplet()) {
-		    setPosition();
-		    show();
-		    if (Debug.debugging("basic")) {
-			Debug.output("OpenMapFrame: After layout, MapBean size " + mapBean.getSize());
-		    }
-		}
-	    }
-	    
-	    if (someObj instanceof ToolPanel) {
-		// do the initializing that need to be done here
-		Debug.message("basic", "OpenMapFrame: found a ToolPanel.");
-		ToolPanel toolPanel = (ToolPanel)someObj;
-		toolPanel.setFloatable(false);
-		contentPane.add(toolPanel, BorderLayout.NORTH);
+	    if (someObj instanceof MapPanel) {
+		Debug.message("basic", "OpenMapFrame: Found a MapPanel");
+		getContentPane().add((MapPanel)someObj);
+		setPosition();
+		invalidate();
+		show();
 	    }
 
 	    if (someObj instanceof JMenuBar) {
-		Debug.message("basic", "OK...Frame Found a MenuBar Object");
-		if(!Environment.isApplet()){
-		    getRootPane().setJMenuBar((JMenuBar)someObj);
-		} else {
-		    ((JApplet)Environment.getApplet()).getRootPane().setJMenuBar((JMenuBar)someObj);
-		}
-
-	    }
-
-	    if (someObj instanceof InformationDelegator) {
-		Debug.message("basic", "OpenMapFrame: found an InfoDelegator.");
-		InformationDelegator info = (InformationDelegator)someObj;
-		info.setFloatable(false);
-		contentPane.add(info, BorderLayout.SOUTH);
+		Debug.message("basic", "OpenMapFrame: Found a MenuBar");
+		getRootPane().setJMenuBar((JMenuBar)someObj);
+		invalidate();
 	    }
 	}
     }
@@ -206,29 +185,16 @@ public class OpenMapFrame extends JFrame
 	Iterator it = bcme.iterator();
 	while (it.hasNext()) {
 	    someObj = it.next();
-	    if (someObj instanceof MapBean) {		
+	    if (someObj instanceof MapPanel) {		
 		Debug.message("basic", "OpenMapFrame: MapBean is being removed from frame");
-		// if it's not on the content pane, no foul...
-		getContentPane().remove((MapBean)someObj);
+		getContentPane().remove((MapPanel)someObj);
 	    }
 	    
-	    if (someObj instanceof ToolPanel) {		
-		Debug.message("basic", "OpenMapFrame: ToolPanel is being removed from frame");
-		// if it's not on the content pane, no foul...
-		getContentPane().remove((ToolPanel)someObj);
-	    }
-
 	    if (someObj instanceof JMenuBar) {
 		if (getJMenuBar() == (JMenuBar) someObj) {
 		    Debug.message("basic", "OpenMapFrame: MenuPanel is being removed");
 		    setJMenuBar(null);
 		}
-	    }
-
-	    if (someObj instanceof InformationDelegator) {
-		Debug.message("basic", "OpenMapFrame: InfoDelegator being removed.");
-		// if it's not on the content pane, no foul...
-		getContentPane().remove((InformationDelegator)someObj);
 	    }
 	}
     }
@@ -275,8 +241,7 @@ public class OpenMapFrame extends JFrame
      * can use to retrieve expected properties it can use for
      * configuration.
      */
-    public void setProperties(Properties setList) {
-    }
+    public void setProperties(Properties setList) {}
 
     /**
      * Method to set the properties in the PropertyConsumer.  The
@@ -351,9 +316,9 @@ public class OpenMapFrame extends JFrame
     }
 
     /**
-     * Set the property key prefix that should be used by the
-     * PropertyConsumer.  The prefix, along with a '.', should be
-     * prepended to the property keys known by the PropertyConsumer.
+     * Doesn't do anything.  The OpenMapFrame looks for properties set
+     * with the "openmap" property prefix.  This method is part of the
+     * PropertyConsumer interface.
      *
      * @param prefix the prefix String.  
      */
@@ -361,7 +326,7 @@ public class OpenMapFrame extends JFrame
 
     /**
      * Get the property key prefix that is being used to prepend to
-     * the property keys for Properties lookups.
+     * the property keys for Properties lookups.  Returns "openmap".
      *
      * @param String prefix String.  
      */
