@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/openmap.mk.in,v $
 # $RCSfile: openmap.mk.in,v $
-# $Revision: 1.15 $
-# $Date: 1998/11/19 14:33:20 $
+# $Revision: 1.16 $
+# $Date: 1998/12/18 02:31:55 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -31,7 +31,7 @@
 #top = @top_srcdir@
 
 #for architecture independent files
-prefix = @prefix@
+prefix = ${ROOT}/@prefix@
 
 #for architecture dependent files
 exec_prefix = @exec_prefix@
