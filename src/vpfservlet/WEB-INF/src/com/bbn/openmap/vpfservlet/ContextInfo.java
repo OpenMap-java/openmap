@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/ContextInfo.java,v $
-// $Revision: 1.4 $ $Date: 2004/02/02 06:46:41 $ $Author: wjeuerle $
+// $Revision: 1.5 $ $Date: 2004/02/03 05:31:04 $ $Author: wjeuerle $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -67,14 +67,52 @@ public class ContextInfo {
     private Map createLibrariesMap(ServletContext context) {
         HashMap library_map = new HashMap();
         for (Enumeration en = context.getInitParameterNames();
-	     en.hasMoreElements(); ) {
+             en.hasMoreElements(); ) {
             String s = (String)en.nextElement();
             if (s.startsWith(LIBRARY_PREFIX)) {
-                library_map.put(s.substring(LIBRARY_PREFIX.length()),
-                                context.getInitParameter(s));
+                String libname = s.substring(LIBRARY_PREFIX.length());
+                String path = getPath(context, context.getInitParameter(s));
+                if (path != null) {
+                    library_map.put(libname, path);
+                } else {
+                    context.log("Excluding " + libname +
+                                " from database list, can't resolve path");
+                }
+                
             }
         }
         return Collections.unmodifiableMap(library_map);
+    }
+
+    /**
+     * Try and find an absolute path from an init parameter
+     * @param context the context to use to resolve paths
+     * @param path the path to try and resolve
+     * @return an absolute path to a file (hopefully a directory) on
+     * the system, or null indicating the resolve failed to find
+     * anything useful.
+     */
+    private String getPath(ServletContext context, String path) {
+        //try to resolve as a relative path in the war file
+        try {
+            String p2 = context.getRealPath(path);
+            File f = new File(p2);
+            if (f.exists()) {
+                return p2;
+            }
+        } catch (java.security.AccessControlException jsace) {
+            //ignore, nothing to do but press on
+        }
+        //try to resolve as an absolute path on the system
+        try {
+            File f = new File(path);
+            if (f.exists()) {
+                return path;
+            } 
+        } catch (java.security.AccessControlException jsace) {
+            //ignore, nothing to do
+        }
+        return null;
     }
     
     /**
@@ -103,16 +141,6 @@ public class ContextInfo {
 
         return lib_home + "/" + subpath;
     }
-    
-    /**
-     * Returns the final path component (minus any trailing '.')
-     */
-//      public static String getFilename(String filename) {
-//      int strlen = filename.length();
-//      int firstchar = filename.lastIndexOf('/');
-//      int lastchar = filename.endsWith(".")?strlen-1:strlen;
-//      return filename.substring(firstchar+1, lastchar);
-//     }
     
     /**
      * Returns a Set whose values are the (String) names of the configured
