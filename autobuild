@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.28 $
-# $Date: 1998/11/12 13:55:30 $
+# $Revision: 1.29 $
+# $Date: 1998/11/12 14:23:02 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -175,7 +175,7 @@ fi
 CLASSPATH=$OpenMapClassPath:$SwingClassPath:$GifJarFile:$JdkClassPath:$VbjClassPath
 export CLASSPATH
 
-PATH=/bin:/usr/bin:/usr/local/gnu/bin:/usr/ucb:$JDK/bin
+PATH=/bin:/usr/bin:/usr/local/gnu/bin:$JDK/bin
 export PATH
 
 LayerPackages="com.bbn.openmap.layer.dted com.bbn.openmap.layer.nitf com.bbn.openmap.layer.plotLayer com.bbn.openmap.layer.pluginLayer com.bbn.openmap.layer.rpf com.bbn.openmap.layer.shape com.bbn.openmap.layer.specialist com.bbn.openmap.layer.util.cacheHandler com.bbn.openmap.layer.util.html com.bbn.openmap.layer.util.http com.bbn.openmap.layer.util.stateMachine com.bbn.openmap.layer.vpf"
@@ -291,14 +291,14 @@ else
   exit 1;
 fi
 
-if /bin/mv $BuildDir/lib/openmap.jar $BuildDir/lib; then
+if /bin/mv $BuildDir/openmap/lib/openmap.jar $BuildDir/lib; then
   echo "++Copied openmap.jar";
 else
   echo "++Copy failed: openmap.jar";
   exit 1;
 fi
 
-if /bin/mv $BuildDir/lib/om_core.jar $BuildDir/lib; then
+if /bin/mv $BuildDir/openmap/lib/om_core.jar $BuildDir/lib; then
   echo "++Copied om_core.jar";
 else
   echo "++Copy failed: om_core.jar";

@@ -1,9 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION(OpenMap $Revision: 1.11 $)
+AC_REVISION(OpenMap $Revision: 1.12 $)
 AC_INIT(openmap.mk.in)
 
 dnl Checks for programs.
 
+AC_PROG_INSTALL
 AC_PROG_JAVA
 AC_PROG_JAVAC
 AC_FIND_SWING_JAR

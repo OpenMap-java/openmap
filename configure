@@ -546,6 +546,85 @@ fi
 
 
 
+ac_aux_dir=
+for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
+  if test -f $ac_dir/install-sh; then
+    ac_aux_dir=$ac_dir
+    ac_install_sh="$ac_aux_dir/install-sh -c"
+    break
+  elif test -f $ac_dir/install.sh; then
+    ac_aux_dir=$ac_dir
+    ac_install_sh="$ac_aux_dir/install.sh -c"
+    break
+  fi
+done
+if test -z "$ac_aux_dir"; then
+  { echo "configure: error: can not find install-sh or install.sh in $srcdir $srcdir/.. $srcdir/../.." 1>&2; exit 1; }
+fi
+ac_config_guess=$ac_aux_dir/config.guess
+ac_config_sub=$ac_aux_dir/config.sub
+ac_configure=$ac_aux_dir/configure # This should be Cygnus configure.
+
+# Find a good install program.  We prefer a C program (faster),
+# so one script is as good as another.  But avoid the broken or
+# incompatible versions:
+# SysV /etc/install, /usr/sbin/install
+# SunOS /usr/etc/install
+# IRIX /sbin/install
+# AIX /bin/install
+# AFS /usr/afsws/bin/install, which mishandles nonexistent args
+# SVR4 /usr/ucb/install, which tries to use the nonexistent group "staff"
+# ./install, which can be erroneously created by make from ./install.sh.
+echo $ac_n "checking for a BSD compatible install""... $ac_c" 1>&6
+echo "configure:580: checking for a BSD compatible install" >&5
+if test -z "$INSTALL"; then
+if eval "test \"`echo '$''{'ac_cv_path_install'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+    IFS="${IFS= 	}"; ac_save_IFS="$IFS"; IFS="${IFS}:"
+  for ac_dir in $PATH; do
+    # Account for people who put trailing slashes in PATH elements.
+    case "$ac_dir/" in
+    /|./|.//|/etc/*|/usr/sbin/*|/usr/etc/*|/sbin/*|/usr/afsws/bin/*|/usr/ucb/*) ;;
+    *)
+      # OSF1 and SCO ODT 3.0 have their own names for install.
+      for ac_prog in ginstall installbsd scoinst install; do
+        if test -f $ac_dir/$ac_prog; then
+	  if test $ac_prog = install &&
+            grep dspmsg $ac_dir/$ac_prog >/dev/null 2>&1; then
+	    # AIX install.  It has an incompatible calling convention.
+	    # OSF/1 installbsd also uses dspmsg, but is usable.
+	    :
+	  else
+	    ac_cv_path_install="$ac_dir/$ac_prog -c"
+	    break 2
+	  fi
+	fi
+      done
+      ;;
+    esac
+  done
+  IFS="$ac_save_IFS"
+
+fi
+  if test "${ac_cv_path_install+set}" = set; then
+    INSTALL="$ac_cv_path_install"
+  else
+    # As a last resort, use the slow shell script.  We don't cache a
+    # path for INSTALL within a source directory, because that will
+    # break other packages using the cache if that directory is
+    # removed, or if the path is relative.
+    INSTALL="$ac_install_sh"
+  fi
+fi
+echo "$ac_t""$INSTALL" 1>&6
+
+# Use test -z because SunOS4 sh mishandles braces in ${var-val}.
+# It thinks the first close brace ends the variable substitution.
+test -z "$INSTALL_PROGRAM" && INSTALL_PROGRAM='${INSTALL}'
+
+test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
+
 if test "x$with_java" = "xno"; then
   # user specified no java...
   { echo "configure: error: cannot configure without java" 1>&2; exit 1; }
@@ -556,7 +635,7 @@ elif test "x$with_java" = "xyes" || test "x$with_java" = "x" ; then
   # Extract the first word of "java", so it can be a program name with args.
 set dummy java; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:560: checking for $ac_word" >&5
+echo "configure:639: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVA'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -590,7 +669,7 @@ fi
 else
   # with_java is not no, or yes, or empty.  Assume it is a path.
   echo $ac_n "checking for java""... $ac_c" 1>&6
-echo "configure:594: checking for java" >&5
+echo "configure:673: checking for java" >&5
   JAVA=$with_java
   if test -f $JAVA && test -x $JAVA; then
     
@@ -601,7 +680,7 @@ echo "configure:594: checking for java" >&5
 fi
 # FIXME Check version number to be sure it is acceptable.
 echo $ac_n "checking java version""... $ac_c" 1>&6
-echo "configure:605: checking java version" >&5
+echo "configure:684: checking java version" >&5
 JAVA_VERSION=`$JAVA -version 2>&1 | head -1 | sed 's/^.*"\(.*\)".*/\1/'`
 
 echo "$ac_t""$JAVA_VERSION" 1>&6
@@ -617,7 +696,7 @@ elif test "x$with_javac" = "xyes" || test "x$with_javac" = "x" ; then
   # Extract the first word of "javac", so it can be a program name with args.
 set dummy javac; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:621: checking for $ac_word" >&5
+echo "configure:700: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVAC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -651,7 +730,7 @@ fi
 else
   # with_java is not no, or yes, or empty.  Assume it is a path.
   echo $ac_n "checking for javac""... $ac_c" 1>&6
-echo "configure:655: checking for javac" >&5
+echo "configure:734: checking for javac" >&5
   JAVAC=$with_javac
   if test -f $JAVAC && test -x $JAVAC; then
     
@@ -662,7 +741,7 @@ echo "configure:655: checking for javac" >&5
 fi
 # FIXME Check that it actually works by compiling and running a test program
 echo $ac_n "checking the java compiler""... $ac_c" 1>&6
-echo "configure:666: checking the java compiler" >&5
+echo "configure:745: checking the java compiler" >&5
 	cat >test.java <<EOF
 	public class test { public static void main(String[] args) { 
 		System.out.println("present");
@@ -678,7 +757,7 @@ EOF
 
 # locate swing in the classpath
 echo $ac_n "checking for swing""... $ac_c" 1>&6
-echo "configure:682: checking for swing" >&5
+echo "configure:761: checking for swing" >&5
 ac_swing_path=$CLASSPATH
 ac_swing_jar=""
 case $with_swing in
@@ -876,6 +955,7 @@ do
 done
 
 ac_given_srcdir=$srcdir
+ac_given_INSTALL="$INSTALL"
 
 trap 'rm -fr `echo "openmap.mk
 	Makefile
@@ -935,6 +1015,8 @@ s%@includedir@%$includedir%g
 s%@oldincludedir@%$oldincludedir%g
 s%@infodir@%$infodir%g
 s%@mandir@%$mandir%g
+s%@INSTALL_PROGRAM@%$INSTALL_PROGRAM%g
+s%@INSTALL_DATA@%$INSTALL_DATA%g
 s%@JAVA@%$JAVA%g
 s%@JAVA_VERSION@%$JAVA_VERSION%g
 s%@JAVAC@%$JAVAC%g
@@ -1046,6 +1128,10 @@ for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
     top_srcdir="$ac_dots$ac_given_srcdir" ;;
   esac
 
+  case "$ac_given_INSTALL" in
+  [/$]*) INSTALL="$ac_given_INSTALL" ;;
+  *) INSTALL="$ac_dots$ac_given_INSTALL" ;;
+  esac
 
   echo creating "$ac_file"
   rm -f "$ac_file"
@@ -1061,6 +1147,7 @@ for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
 s%@configure_input@%$configure_input%g
 s%@srcdir@%$srcdir%g
 s%@top_srcdir@%$top_srcdir%g
+s%@INSTALL@%$INSTALL%g
 " $ac_file_inputs | (eval "$ac_sed_cmds") > $ac_file
 fi; done
 rm -f conftest.s*
