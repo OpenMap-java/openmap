@@ -1248,20 +1248,11 @@ rm -fr confdefs* $ac_clean_files
 test "$no_create" = yes || ${CONFIG_SHELL-/bin/sh} $CONFIG_STATUS || exit 1
 
 
-
-
-
-
-
-
-
 echo "chmod +x bin/openmap"
 echo "chmod +x com/bbn/openmap/examples/hello/hello-world"
 echo "chmod +x com/bbn/openmap/examples/simple/simple"
 echo "chmod +x com/bbn/openmap/examples/simple/simple2"
-echo "Setting openmap.mk.don to openmap.mk"
 chmod +x bin/openmap
 chmod +x com/bbn/openmap/examples/hello/hello-world
 chmod +x com/bbn/openmap/examples/simple/simple
 chmod +x com/bbn/openmap/examples/simple/simple2
-cp openmap.mk.don openmap.mk
