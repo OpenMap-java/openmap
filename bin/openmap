@@ -78,12 +78,18 @@ do
     # if the directory is empty, then it will return the input string
     # this is stupid, so case for it
     if [ "$i" != "${DIRLIBS}" ] ; then
-	LOCALCLASSPATH=$LOCALCLASSPATH:"$i"
+	if [ "$LOCALCLASSPATH" != "" ] ; then
+	    LOCALCLASSPATH=$LOCALCLASSPATH:"$i"
+	else 
+	    LOCALCLASSPATH="$i"
+	fi
     fi
 done
 
+LOCALCLASSPATH=$LOCALCLASSPATH:${OPENMAP_HOME}/share
+
 if [ "$CLASSPATH" != "" ] ; then
-  LOCALCLASSPATH=$CLASSPATH:${OPENMAP_HOME}/classes/openmap:${OPENMAP_HOME}/classes/corba_vb$LOCALCLASSPATH:${OPENMAP_HOME}/share
+  LOCALCLASSPATH=$CLASSPATH:${OPENMAP_HOME}/classes/openmap:${OPENMAP_HOME}/classes/corba_vb$LOCALCLASSPATH
 fi
 
 # For Cygwin, switch paths to Windows format before running java
@@ -108,7 +114,7 @@ do
 done
 
 if [ "$VISIBROKER_HOME" = "" ] ; then
-    echo $JAVACMD -Xmx256m -classpath "$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
+#    echo $JAVACMD -Xmx256m -classpath "$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
     $JAVACMD -Xmx256m -classpath "$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
 else
 #    echo $JAVACMD -Xmx256m -Xbootclasspath:"$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
