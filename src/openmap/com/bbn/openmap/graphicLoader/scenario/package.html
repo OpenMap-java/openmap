@@ -1,0 +1,39 @@
+<!-- *****************************************************************-->
+<!-- *                                                                -->
+<!-- *  BBNT Solutions LLC, A part of GTE -->
+<!-- *  10 Moulton St.                                                -->
+<!-- *  Cambridge, MA 02138                                           -->
+<!-- *  (617) 873-2000                                                -->
+<!-- *                                                                -->
+<!-- *  Copyright (C) 1999-2000                                            -->
+<!-- *  This software is subject to copyright protection              -->
+<!-- *  under the laws of the United States and other countries.      -->
+<!-- *                                                                -->
+<!-- *****************************************************************-->
+<!-- *                                                                -->
+<!-- * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/package.html,v $-->
+<!-- * $Revision: 1.1 $                                              -->
+<!-- * $Date: 2003/06/25 20:38:09 $                                   -->
+<!-- * $Author: dietrick $                                            -->
+<!-- *                                                                -->
+<!-- *****************************************************************-->
+
+<body>
+
+The Scenario GraphicLoader PlugIn package is designed to provide
+support for displaying scripted movement of map objects.
+<P>
+
+The ScenarioGraphicLoader reads two csv files - a location file that
+provides names and icons for a file, and an activity file that
+describes entries for the name, along with a lat/lon at a specific
+time.  As the activities file is read, the lat/lons are mapped to
+time so the ScenarioPoints can figure out where they should be at
+different times during the scenario.  The ScenarioPoints interpolate
+their locations if the ScenarioGraphicLoader's current time is in
+between defined locations.  If the ScenarioPoint should be staying in
+one place, then two entries should be placed in the activities file
+at the same location with the start and end times of the stationary
+position.
+
+</body>
