@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkOMGraphicList.java,v $
 // $RCSfile: LinkOMGraphicList.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.3 $
+// $Date: 2003/09/03 13:49:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -95,7 +95,7 @@ public class LinkOMGraphicList extends OMGraphicList
 	    Debug.output("LinkOMGraphicList: Adding graphic, id(" + id + ")");
 	}
 	if (id != null) {
-	    hash.put(id, g);
+	    hash.put(id.intern(), g);
 	}
     }
 
@@ -110,7 +110,7 @@ public class LinkOMGraphicList extends OMGraphicList
 	if (ret != null) {
 	    String id = ((LinkProperties) ((OMGeometry)ret).getAppObject()).getProperty(LPC_GRAPHICID);
 	    if (id != null) {
-		hash.remove(id);
+		hash.remove(id.intern());
 		if (Debug.debugging("link")) {
 		    Debug.output("LinkOMGraphicList: Removing graphic " + id);
 		}
@@ -132,7 +132,7 @@ public class LinkOMGraphicList extends OMGraphicList
 	boolean ret = super._remove(geometry);
 	if (ret != false) {
 	    String id = ((LinkProperties)geometry.getAppObject()).getProperty(LPC_GRAPHICID);
-	    hash.remove(id);
+	    hash.remove(id.intern());
 	    if (Debug.debugging("link")) {
 		Debug.output("LinkOMGraphicList: Removing graphic " + id);
 	    }
@@ -143,40 +143,36 @@ public class LinkOMGraphicList extends OMGraphicList
     /**
      * Set the graphic at the specified location.  The OMGraphic must
      * not be null, the AppObject in the OMGraphic must be null or a
-     * LinkProperties object.
+     * LinkProperties object.  This method is extended from
+     * OMGraphicList so the link id is added to the hashtable for
+     * faster searching.
      *
      * @param graphic OMGraphic
      * @param index index of the OMGraphic to return
      * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     public synchronized void setOMGraphicAt(OMGraphic graphic, int index) {
-	LinkProperties linkp = (LinkProperties)graphic.getAppObject();
-	String id = null;
-	if (linkp != null) {
-	    id = linkp.getProperty(LPC_GRAPHICID);
-	    Debug.message("link", "Updating graphic " + id);
-	}
+	LinkProperties linkp = null;
 
-	OMGraphic old = null;
-	if (id != null) {
-	    old = (OMGraphic) hash.put(id, graphic);
-	}
+	try {
+	    linkp = (LinkProperties)graphic.getAppObject();
 
-	// old will be any previous OMGraphic with the same ID
-	// that might not be in the list, but is still in the
-	// HashMap.
-	if (old != null) {
-	    index = indexOf(old);
-	    if (index < 0) {
-		addOMGraphic(graphic);
-	    } else {
-		setOMGraphicAt(graphic, index);
+	    String id = null;
+	    if (linkp != null) {
+		id = linkp.getProperty(LPC_GRAPHICID);
+		if (Debug.debugging("link")) {
+		    Debug.output("LinkOMGraphicList.setOMGraphicAt(): Updating graphic " + id + " at " + index);
+		}
+		if (id != null) {
+		    hash.put(id.intern(), graphic);
+		}
 	    }
-	} else {
-	    // If there wasn't anything with the same ID, just add
-	    // the new OMGraphic.
-	    super.setOMGraphicAt(graphic, index);
+
+	} catch (ClassCastException cce) {
+	    Debug.error("LinkOMGraphicList.setOMGraphicAt(): Updated graphic doesn't have id");
 	}
+
+	super.setOMGraphicAt(graphic, index);
     }
 
     /**
@@ -185,7 +181,7 @@ public class LinkOMGraphicList extends OMGraphicList
       * @return OMGraphic or null if not found
       */
      public OMGraphic getOMGraphicWithId(String gid) {
-          return (OMGraphic) hash.get(gid);
+	 return (OMGraphic) hash.get(gid.intern());
      }
 
     /**
