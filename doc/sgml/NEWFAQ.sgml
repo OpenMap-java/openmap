@@ -1,4 +1,4 @@
-<!--
+<p><!--
 
 Frequently Asked Questions for the OpenMap system.
 -->
@@ -48,34 +48,84 @@ do a lot of our work on Linux systems. Not to mention that
 Antarctica's kind of a cool place.
 
 
-
-
-
 <sect>OpenMap Description
 <p>
-High-level functionality-type questions.
+High-level functionality-type questions.  Details on actual
+implementation is covered in the Components section.
 
 <sect1>How can I put my data on a map?
-<sect1>How can I select, modify, or query graphics?
+<p>
+In general, data is placed on a map by a Layer.  The OpenMap package
+comes with layers that can display several different standard data
+formats, including ESRI Shapefiles and NIMA's RPF, VPF and DTED data.
+There are also layers that let you read in data from a CSV (Comma
+Separated Value) file and display the locations from it.  To display
+your data, look through the layer packages to see if your data type is
+handled by an existing layer.  The Layer API java documentation should
+have information on how to configure the layer to display your data.
+<p>If your data type isn't supported by an existing layer, you can
+write a Layer to do it instead.  The Components section has more
+details on how to write a Layer to display data objects.
+
+<sect1>Can I select, modify, or query graphics?
+<p>
+OpenMap maps are made up of graphical objects which can react to user
+inputs.  The OpenMap architecture has the mechanism in place to
+distibute mouse and keyboard events to Layers that want to receive
+them.  The Layer has the capability to change a graphic's appearance,
+add or delete graphics, or provide more information about a graphic.
+The graphic's information can be displayed in a Web browser,
+a text line section, or a pop-up window.
+
 <sect1>What are palettes?
-<sect1>Flexibility of the layer interface
+<p>
+Every Layer has the capability of displaying a unique user interface
+inside a frame window.  These windows, called palettes, give the user
+direct access to a Layer to control how it displays its graphics.
+
+<sect1>How flexible is the Layer interface?  Are there any
+restrictions on how to create a Layer?
+<p>
+Since Layers are Java Swing components, they are totally responsible for
+drawing themselves, as part of a greater whole.  Java Swing handles
+the layering of graphics from multiple layers.  That said, the fact
+that the Layers are so independent gives them great leway on how they
+can access their data source and create their graphics for the map.
+They can access data files and data servers in any manner imagined.
+Layers can act as clients, creating graphics from data received from a
+server, or simply displaying graphics acquired from a server.  They
+can also create graphics from internal algorithms.
+<p>
+Some restrictions get imposed on Layers if they are being used
+inside an Applet.  In this case, the Layers are subject to the
+security restrictions imposed on applet objects - Layers that are
+designed to contact a server may only contact a server that is
+residing on the computer from where the applet was loaded.
 
 <sect>Hardware and Development Environment Requirements
 <p>
 What do you need to run and develop with OpenMap?
 
 <sect1>What systems have you tested OpenMap on?
+
 <sect1>What JDK issues are there?
+
 <sect1>What GUI builders have you worked with?
-<sect1>Can I use OpenMap in Symantec Visual Cafe?  I get the "jar file contains  no valid beans" message when I try to load in openmap.jar.
+<p>
+Very few, and none seriously.
+
+<sect1>Can I use OpenMap in Symantec Visual Cafe?  I get the "jar file
+contains no valid beans" message when I try to load in openmap.jar.
 <p>
 Symantec's Visual Cafe product requires that beans be "100% JavaBean
 compliant", according to the Sun JavaBeans(tm) specification available
-at Sun's Java web site at <tt><htmlurl url="http://java.sun.com/beans/docs/spec.html"></tt>. Right now, the openmap.jar file is not 100% JavaBean compliant, and
-thus cannot be imported as a component.
+at Sun's Java web site at <tt><htmlurl
+url="http://java.sun.com/beans/docs/spec.html"></tt>. Right now, the
+openmap.jar file is not 100% JavaBean compliant, and thus cannot be
+imported as a component.
 
 While the bean is not all the way there, however, it should be
-relatively close.  Since OpenMap is open source, we welcome 
+relatively close.  Since OpenMap is open source, we welcome
 contributions from the user community, including the necessary
 modifications to bring the jar files up to spec.  If you're interested
 in contributing, send mail to openmap@bbn.com and let us know!
@@ -83,8 +133,44 @@ in contributing, send mail to openmap@bbn.com and let us know!
 
 <sect>About the OpenMap Package
 <sect1> What does the OpenMap package contain?
+<p>
+The OpenMap package contains toolkit components, and a couple of
+mapping applications.
+<P>
+The OpenMap components are Java Swing components, and can be used to
+add functionality to existing applications, or combined with other
+components to create a unique application.
+<p>
+The com.bbn.openmap.app.OpenMap class is the primary OpenMap
+application provided in the package, and also serves as an example of
+how to connect the components together.  There are simple examples
+located in the com.bbn.openmap.examples package which demonstrate the
+basics of using graphics and layers within a MapBean to create a map.
+
 <sect1> Where should I start if I'm a novice user?
+<p>
+The best place to start for a novice user is to get the OpenMap
+application working as it is provided in the package.  The java
+classes are precompiled in the openmap.jar file included in the
+openmap/lib directory, and can be run as downloaded.  Look at the
+following sections for information on compiling and running OpenMap on
+your platform.
+<p>
+The configuration of the OpenMap application can be adjusted by
+modifying the entries in the openmap.properties file located in the
+openmap/share directory.  This file can be copied into your personal
+home directory and modifed to add/delete layers as well as to adjust
+the starting location and scale of the MapBean.
+
 <sect1> Where should I start if I'm a toolkit developer?
+<p>
+Toolkit developers are more likely to be interested in the
+com.bbn.openmap.MapBean class and how it interacts with applications
+and Layers.  The MapBean examples in the com.bbn.openmap.examples
+package demostrate how to integrate the MapBean, with Layers, into a
+simple window.  The com.bbn.openmap.app.OpenMap application provides
+an example of integrating all the components together.
+
 <sect1> What does OpenMap's architecture look like?
 
 <sect>Using/Building OpenMap
@@ -96,8 +182,10 @@ to:
 
 <list>
 <item> Load the openmap.bat batch file in your favorite editor.
-<item> Change the path to the Java virtual machine to match where your installation of Java is.
-<item> Change the path of OpenMap to match where you unpacked the distribution.
+<item> Change the path to the Java virtual machine to match where your
+installation of Java is.  
+<item> Change the path of OpenMap to match
+where you unpacked the distribution.
 </list>
 
 Then, run the openmap.bat file.
@@ -116,14 +204,23 @@ software, as well as the Java Foundation Classes (JFC).
 Once you have this software on your system, you can:
 
 <list>
-<item> `cd' to the top level directory of the OpenMap package and type `./configure' to configure the package for your system.  If you're using csh on an old version of System V, you might need to type `sh ./configure' instead to prevent sh from trying to execute `configure' itself.
+<item> `cd' to the top level directory of the OpenMap package and type
+`./configure' to configure the package for your system.  If you're
+using csh on an old version of System V, you might need to type `sh
+./configure' instead to prevent sh from trying to execute `configure'
+itself.
 <item> Type `make' to compile the package.
-<item> Type `make install' to install the programs and any data files and documentation.
-<item> If you want documentation, type `make docs'.  NOTE: javadoc documentation is now pre-built.  This step is unnecessary unless you want to rebuild the javadoc documentation.
+<item> Type `make install' to install the programs and any data files
+and documentation.
+<item> If you want documentation, type `make docs'.  NOTE: javadoc
+documentation is now pre-built.  This step is unnecessary unless you
+want to rebuild the javadoc documentation.
 <item> To install the documentation, type `make install-docs'.
 </list>
 
-You can test OpenMap by running the various launch scripts provided in the bin/ and the com/bbn/openmap/examples/ directories.  Read the INSTALL file in the distribution for more information.
+You can test OpenMap by running the various launch scripts provided in
+the bin/ and the com/bbn/openmap/examples/ directories.  Read the
+INSTALL file in the distribution for more information.
 
 <sect1> What flavors of Unix do you work with?
 <p>
@@ -132,6 +229,17 @@ RedHat Linux 5.1, 5.2, 6.0, and 6.1.  OpenMap should work on any system on
 which you have a Java compiler, VM, and the Java Foundation Classes.
 
 <sect1> How can I compile and run on a Macintosh?
+<p>
+Because the Java runtime is only JDK 1.1.X compliant, there are some
+modifications that need to be made to some parts of the code.
+We've done our best to keep the OpenMap components JDK 1.1.X
+compliant, but there are some graphics objects that take advantage of
+the Java 2D API that JDK 1.2 provides.  The code that relies on JDK
+1.2 can be deleted from the build, and the majority of the components
+will build correctly.
+<p>
+We've built the code using CodeWarrior on a Mac.
+
 <sect1> How can I generate the Javadoc documentation?
 <p>
 The Javadocs come pre-built with the OpenMap distribution in the doc/
@@ -174,16 +282,50 @@ is set up properly to point to your layer code, this becomes:
 
 <sect>Components
 <sect1> What is the MapBean?
+<p>
+The MapBean is a Java Swing component that represents a map window.
+It serves as the keeper of the projection, which is the description of
+how the map should be drawn (latitude/longitude location, scale,
+projection type, pixel height and width of the map).  The MapBean also
+acts as the parent class to the Layer objects, which act as child
+components to the MapBean.
+<p>
+You can change the map by modifying the projection that the MapBean
+has, or by changing the layers that are contained within the MapBean.
+The Layers listen for any changes to the projection in the MapBean,
+update their graphics accordingly, and then redraw themselves.
+
 <sect1> What projections are available?
+<p>
+We've included a Mercator, Orthographic, and Gnomic projection on the
+package, as defined by the USGS Projection Manual 1932.  There is also
+a CADRG projection, which is actually an Albers Equal Arc projection
+that is compliant with the pixel spacings defined in NIMA's Raster
+Product Format (RPF) specification.  Finally there is a simple XY
+projection as well.
+<p>
+OpenMap projections are able to do more than forward and inverse
+translations - they are capable of defining these functions for
+different shape types, attempting to resolve some of the ambiguities
+of drawing these graphics on a globe.
+
 <sect1> What does the InformationDelegator do?
 <sect1> What do Listeners do?
 <sect1> What are MouseModes?
 <sect1> What are OpenMap's scale units?
 <p>
 
-OpenMap's scale is a ratio, based on a pixelsPerMeter constant that we computed long ago.  (It's roughly the number of pixels per meter on a Sun monitor from 1994.)  The idea was that projections are calculated in meters, and that the pixelsPerMeter should be settable to match your output device.  In theory, the scale would have been a measurable quantity.
+OpenMap's scale is a ratio, based on a pixelsPerMeter constant that we
+computed long ago.  (It's roughly the number of pixels per meter on a
+Sun monitor from 1994.)  The idea was that projections are calculated
+in meters, and that the pixelsPerMeter should be settable to match
+your output device.  In theory, the scale would have been a measurable
+quantity.
 	
-In practice, X-windows was supposed to provide a way of getting the actual pPM but few vendors went through the trouble of setting the value properly.  In the meantime, the OpenMap's scale can be used as a general ratio.
+In practice, X-windows was supposed to provide a way of getting the
+actual pPM but few vendors went through the trouble of setting the
+value properly.  In the meantime, the OpenMap's scale can be used as a
+general ratio.
 
 <sect>Layers
 <sect1> How can I put my data on a map?
@@ -286,7 +428,6 @@ to develop map layers which can display your own private formats.
 Yes, we have code that can display this data.  RPF support is new as
 of OpenMap 3.2.
 
-
 <sect1>What is CADRG, CIB, and RPF?
 <p>
 The first two are data types, the latter is a format. These come from
@@ -306,7 +447,8 @@ like to contribute a reader!
 <sect1> You didn't list this specific data type.  When will you support it?
 
 
-<sect1>When adding ESRI shape files to OpenMap I don't see (some/all) of the data.  What's wrong?
+<sect1>When adding ESRI shape files to OpenMap I don't see (some/all)
+of the data.  What's wrong?
 <p>
 The Openmap <htmlurl
 url="api/com/bbn/openmap/layer/shape/ShapeLayer.html"
@@ -328,7 +470,8 @@ country.spatialIndex=country.ssx
 Be sure to substitute the correct name of your shape file and layer
 for the word 'country' in the examples above.
 
-<sect1> How can I use the .dbf files that came with my shape file data through  OpenMap?
+<sect1> How can I use the .dbf files that came with my shape file data
+through OpenMap?
 
 <p>
 The .dbf file holds attributes for the graphical objects stored in
