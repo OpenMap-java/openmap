@@ -1,0 +1,55 @@
+$Source: /cvs/distapps/openmap/README,v $
+$RCSfile: README,v $
+$Revision: 1.1 $
+$Date: 1998/11/12 16:12:55 $
+$Author: aculline $
+
+
+OpenMap
+
+What is it?
+-----------
+
+Downloads and home page
+-----------------------
+
+Downloads of the current distribution are available at:
+
+<URL:ftp://javamap.bbn.com/pub/mapBean/>.
+
+The homepage is at <URL:http://javamap.bbn.com/>.
+
+Anonymous CVS repository
+------------------------
+
+There is currently no anonymous CVS access.  Please let us know if this
+service would be valuable to you.
+
+GNATS Buglist
+-------------
+
+There is currently no GNATS access.  Please let us know if this service would
+be valuable to you.
+
+Mailing lists
+-------------
+
+Currently there are no mailing lists concering OpenMap issues.  However, you
+can address common OpenMap questions, comments, criticisms, bug-reports,
+patches, etc, to openmap@bbn.com.
+
+Please help out!
+----------------
+
+There's much room for improvement of the OpenMap sources.  We are interested
+in any changes you make to the core source, or layers you develop.
+See the CodingStyle document for our prefered style.
+
+Regression testing
+------------------
+
+DejaGNU?
+
+Other similar projects
+----------------------
+We are aware of the following related (OpenSource?) projects.
