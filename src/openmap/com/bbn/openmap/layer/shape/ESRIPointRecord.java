@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPointRecord.java,v $
 // $RCSfile: ESRIPointRecord.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/06/02 18:36:55 $
+// $Revision: 1.3 $
+// $Date: 2003/10/17 16:34:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,7 +32,7 @@ import com.bbn.openmap.omGraphics.*;
  *
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.2 $ $Date: 2003/06/02 18:36:55 $
+ * @version $Revision: 1.3 $ $Date: 2003/10/17 16:34:19 $
  */
 public class ESRIPointRecord extends ESRIRecord {
 
@@ -156,6 +156,7 @@ public class ESRIPointRecord extends ESRIRecord {
 	    OMPoint r = new OMPoint((float)y, (float)x);
 	    drawingAttributes.setTo(r);
 	    list.add(r);
+	    r.setAppObject(new Integer(getRecordNumber())); //added by DGK
 	} else {
 	    list.add(new OMRaster((float)y, (float)x, 
 				  -ii.getIconWidth()/2, -ii.getIconHeight()/2,
