@@ -85,7 +85,9 @@
 <!--    <antcall target="classes.visibroker"/> -->
   </target>
 
-  <target name="jar.corba" depends="jar.jdkcorba" if="idl.compiled"/> 
+  <target name="jar.corba" > 
+    <antcall target="jar.jdkcorba" />
+  </target>
 
   <!--  ############################
 	JDK CORBA targets
@@ -264,7 +266,7 @@
   <target name="jar.visibroker"
 	  depends="init.corba"
 	  description="Builds jar files, placing them in the lib directory."
-	  if="do.visibroker,idl.compiled">
+	  if="do.visibroker,idl.compiled" >
 
     <jar jarfile="${corba_vb.jar}" 
 	 basedir="${corba.classes}"
