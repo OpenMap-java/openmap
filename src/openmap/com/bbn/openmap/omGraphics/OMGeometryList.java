@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGeometryList.java,v $
 // $RCSfile: OMGeometryList.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/03 15:29:31 $
+// $Revision: 1.3 $
+// $Date: 2003/04/05 05:45:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -279,13 +279,13 @@ public class OMGeometryList extends OMGraphicList
      * @param gr the AWT Graphics context
      */
     public void render(Graphics gr) {
-
-	if (shape != null) { 
+	Shape shp = getShape();
+	if (shp != null) { 
 
 	    setGraphicsForFill(gr);
-	    ((Graphics2D)gr).fill(shape);
+	    ((Graphics2D)gr).fill(shp);
 	    setGraphicsForEdge(gr);
-	    ((Graphics2D)gr).draw(shape);
+	    ((Graphics2D)gr).draw(shp);
 
 	} else {
 	    ListIterator iterator;
