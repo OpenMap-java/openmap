@@ -292,6 +292,13 @@ public class Inspector implements ActionListener {
                 editor.setValue(propVal);
             }
 
+            // Customized labels for each property, instead of the
+            // abbreviated nature of the true property names.
+            String labelText = (String)info.get(marker + PropertyConsumer.LabelEditorProperty);
+            if (labelText == null) {
+                labelText = marker;
+            }
+
             JLabel label = new JLabel(marker + ":");
             label.setHorizontalAlignment(SwingConstants.RIGHT);
 
