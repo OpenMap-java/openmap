@@ -1,15 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.21 
-
-
-
-
-
-
-
-
-
+# From configure.in OpenMap Revision: 1.22 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.12 
 # Copyright (C) 1992, 93, 94, 95, 96 Free Software Foundation, Inc.
@@ -23,9 +14,9 @@ ac_default_prefix=/usr/local
 # Any additions from configure.in:
 ac_default_prefix=/usr/local/openmap
 ac_help="$ac_help
-  --with-jdk=JDK_HOME     Home directory of JDK"
+  --with-jdk=JDK_HOME             Home directory of JDK"
 ac_help="$ac_help
-  --with-swing=JARFILE    Swing jar file"
+  --with-classpath=<CLASSPATH>    Additional classpath for compiling"
 
 # Initialize some variables set by options.
 # The variables have the same names as the options, with
@@ -575,9 +566,6 @@ case $with_jdk in
 esac
 
 
-
-
-
 #
 ## Handle the possibility that we're on a Cygwin platform.
 ##
@@ -590,7 +578,7 @@ CLASSPATH_SEP=":"
 
 
 echo $ac_n "checking for cygwin platform""... $ac_c" 1>&6
-echo "configure:594: checking for cygwin platform" >&5
+echo "configure:582: checking for cygwin platform" >&5
 if uname -s 2>/dev/null | grep -i cyg >/dev/null 2>&1; then
   echo "$ac_t""yes" 1>&6
   CLASSPATH_SEP=";"
@@ -628,7 +616,7 @@ ac_configure=$ac_aux_dir/configure # This should be Cygnus configure.
 # SVR4 /usr/ucb/install, which tries to use the nonexistent group "staff"
 # ./install, which can be erroneously created by make from ./install.sh.
 echo $ac_n "checking for a BSD compatible install""... $ac_c" 1>&6
-echo "configure:632: checking for a BSD compatible install" >&5
+echo "configure:620: checking for a BSD compatible install" >&5
 if test -z "$INSTALL"; then
 if eval "test \"`echo '$''{'ac_cv_path_install'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -684,7 +672,7 @@ test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 # Extract the first word of "java", so it can be a program name with args.
 set dummy java; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:688: checking for $ac_word" >&5
+echo "configure:676: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVA'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -712,19 +700,11 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -z "$JAVA"; then
-  if test -z "$JDK_PATH"; then
-    { echo "configure: error: Can't build openmap without java" 1>&2; exit 1; }
-  else
-    { echo "configure: error: Can't locate java in $JDK_PATH" 1>&2; exit 1; }
-  fi
-fi
-
 
 # Extract the first word of "javac", so it can be a program name with args.
 set dummy javac; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:728: checking for $ac_word" >&5
+echo "configure:708: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVAC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -752,19 +732,11 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -z "$JAVAC"; then
-  if test -z "$JDK_PATH"; then
-    { echo "configure: error: Can't build openmap without javac" 1>&2; exit 1; }
-  else
-    { echo "configure: error: Can't locate javac in $JDK_PATH" 1>&2; exit 1; }
-  fi
-fi
-
 
 # Extract the first word of "jar", so it can be a program name with args.
 set dummy jar; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:768: checking for $ac_word" >&5
+echo "configure:740: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAR'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -792,19 +764,11 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -z "$JAR"; then
-  if test -z "$JDK_PATH"; then
-    { echo "configure: error: Can't build openmap without jar" 1>&2; exit 1; }
-  else
-    { echo "configure: error: Can't locate jar in $JDK_PATH" 1>&2; exit 1; }
-  fi
-fi
-
 
 # Extract the first word of "javadoc", so it can be a program name with args.
 set dummy javadoc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:808: checking for $ac_word" >&5
+echo "configure:772: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVADOC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -832,62 +796,39 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -z "$JAVADOC"; then
-  if test -z "$JDK_PATH"; then
-    { echo "configure: error: Can't build openmap without javadoc" 1>&2; exit 1; }
-  else
-    { echo "configure: error: Can't locate javadoc in $JDK_PATH" 1>&2; exit 1; }
-  fi
-fi
 
+#----------------------------------------------------------------------
+#  Determine a reasonable CLASSPATH for building OpenMap
+#----------------------------------------------------------------------
+rootdir=$srcdir
 
-# locate swing in the classpath
-echo $ac_n "checking for swing""... $ac_c" 1>&6
-echo "configure:847: checking for swing" >&5
-ac_swing_path=$CLASSPATH
-ac_swing_jar=""
-case $with_swing in
-  no)
-    # user specified --without-swing
-    ;;
+case $rootdir in
   /*)
-    ac_swing_jar=$with_swing
-    ;;
-  "" | yes)
-    # comment
-  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}${CLASSPATH_SEP}"
-  for entry in $ac_swing_path; do
-    if basename $entry | grep "swing.*\.jar" 2>&1 >/dev/null; then
-      ac_swing_jar=$entry
-      break
-    fi
-  done
-  IFS="$ac_save_ifs"
-
+    # Fully qualified path.  Leave it alone.
     ;;
   *)
-    # comment
-  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}${CLASSPATH_SEP}"
-  for entry in $ac_swing_path; do
-    if basename $entry | grep $with_swing 2>&1 >/dev/null; then
-      ac_swing_jar=$entry
-      break
-    fi
-  done
-  IFS="$ac_save_ifs"
-
+    # relative path.  fully qualify it.
+    om_curdir=`pwd`;
+    cd $srcdir;
+    rootdir=`pwd`;
+    cd $om_curdir;
     ;;
 esac
-if test -n "$ac_swing_jar"; then
-  SWING_JAR=$ac_swing_jar
-  
-  echo "$ac_t""using $ac_swing_jar" 1>&6
-elif test "x$with_swing" = "xno"; then
-  # do nothing, user specified --without-swing
-  /bin/true
-else
-  { echo "configure: error: couldn't locate swing in CLASSPATH" 1>&2; exit 1; }
-fi
+
+classpath=$rootdir
+
+case $with_classpath in
+  no | "" | yes)
+    # user specified '--without-classpath' OR '--with-classpath=' 
+    #   OR '--with-classpath'
+    #
+    # do nothing
+    ;;
+  *)
+    # user specified a path, either relative or not
+    classpath=${classpath}${CLASSPATH_SEP}${with_classpath}
+    ;;
+esac
 
 
 
@@ -927,21 +868,6 @@ case $with_devtarget in
     ;;
 esac
 
-
-rootdir=$srcdir
-
-case $rootdir in
-  /*)
-    # Fully qualified path.  Leave it alone.
-    ;;
-  *)
-    # relative path.  fully qualify it.
-    om_curdir=`pwd`;
-    cd $srcdir;
-    rootdir=`pwd`;
-    cd $om_curdir;
-    ;;
-esac
 
 trap '' 1 2 15
 cat > confcache <<\EOF
@@ -1120,9 +1046,9 @@ s%@JAVA@%$JAVA%g
 s%@JAVAC@%$JAVAC%g
 s%@JAR@%$JAR%g
 s%@JAVADOC@%$JAVADOC%g
-s%@SWING_JAR@%$SWING_JAR%g
-s%@DEFAULT_TARGET@%$DEFAULT_TARGET%g
 s%@rootdir@%$rootdir%g
+s%@classpath@%$classpath%g
+s%@DEFAULT_TARGET@%$DEFAULT_TARGET%g
 
 CEOF
 EOF

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION(OpenMap $Revision: 1.22 $)
+AC_REVISION(OpenMap $Revision: 1.23 $)
 AC_INIT(openmap.mk.in)
 
 #
@@ -42,19 +42,6 @@ case $with_jdk in
     ;;
 esac
 
-dnl AC_DIE_IF_NOT_FOUND(VARIABLE,name,PATH)
-dnl isses an error and dies if VARIABLE is not set
-AC_DEFUN(AC_DIE_IF_NOT_FOUND,
-[if test -z "[$]$1"; then
-  if test -z "$3"; then
-    AC_MSG_ERROR([Can't build openmap without $2])
-  else
-    AC_MSG_ERROR([Can't locate $2 in $3])
-  fi
-fi
-])
-
-
 dnl Checks for programs.
 
 #
@@ -82,18 +69,46 @@ AC_PROG_INSTALL
 # This solves the case where the user specified --with-jdk=<jdk path>,
 # but doesn't have the executables referenced in PATH.
 AC_PATH_PROG(JAVA,java,,$JDK_PATH)
-AC_DIE_IF_NOT_FOUND(JAVA,java,$JDK_PATH)
 
 AC_PATH_PROG(JAVAC,javac,,$JDK_PATH)
-AC_DIE_IF_NOT_FOUND(JAVAC,javac,$JDK_PATH)
 
 AC_PATH_PROG(JAR,jar,,$JDK_PATH)
-AC_DIE_IF_NOT_FOUND(JAR,jar,$JDK_PATH)
 
 AC_PATH_PROG(JAVADOC,javadoc,,$JDK_PATH)
-AC_DIE_IF_NOT_FOUND(JAVADOC,javadoc,$JDK_PATH)
 
-AC_FIND_SWING_JAR
+#----------------------------------------------------------------------
+#  Determine a reasonable CLASSPATH for building OpenMap
+#----------------------------------------------------------------------
+rootdir=$srcdir
+AC_SUBST(rootdir)
+case $rootdir in
+  /*)
+    # Fully qualified path.  Leave it alone.
+    ;;
+  *)
+    # relative path.  fully qualify it.
+    om_curdir=`pwd`;
+    cd $srcdir;
+    rootdir=`pwd`;
+    cd $om_curdir;
+    ;;
+esac
+
+classpath=$rootdir
+AC_SUBST(classpath)
+case $with_classpath in
+  no | "" | yes)
+    # user specified '--without-classpath' OR '--with-classpath=' 
+    #   OR '--with-classpath'
+    #
+    # do nothing
+    ;;
+  *)
+    # user specified a path, either relative or not
+    classpath=${classpath}${CLASSPATH_SEP}${with_classpath}
+    ;;
+esac
+
 
 
 dnl Checks for libraries.
@@ -105,8 +120,8 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 dnl Checks for library functions.
 
 dnl Checks for packages
-AC_ARG_WITH(jdk, [  --with-jdk=JDK_HOME     Home directory of JDK])
-AC_ARG_WITH(swing, [  --with-swing=JARFILE    Swing jar file])
+AC_ARG_WITH(jdk, [  --with-jdk=JDK_HOME             Home directory of JDK])
+AC_ARG_WITH(swing, [  --with-classpath=<CLASSPATH>    Additional classpath for compiling])
 
 DEFAULT_TARGET=all
 AC_SUBST(DEFAULT_TARGET)
@@ -127,21 +142,6 @@ case $with_devtarget in
     ;;
 esac
 
-
-rootdir=$srcdir
-AC_SUBST(rootdir)
-case $rootdir in
-  /*)
-    # Fully qualified path.  Leave it alone.
-    ;;
-  *)
-    # relative path.  fully qualify it.
-    om_curdir=`pwd`;
-    cd $srcdir;
-    rootdir=`pwd`;
-    cd $om_curdir;
-    ;;
-esac
 
 AC_OUTPUT(openmap.mk
 	Makefile
