@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.16 $
-# $Date: 1998/07/08 15:10:26 $
+# $Revision: 1.17 $
+# $Date: 1998/07/08 18:42:53 $
 # $Author: aculline $
 # 
 # **********************************************************************
@@ -135,7 +135,7 @@ fi
 JdkClassPath=$JDK/lib/classes.zip
 
 # set openmap jar file(s) if not set
-if [ -z "${OpenMapClassPath} " ] ; then
+if [ -z "${OpenMapClassPath}" ] ; then
 	MattClassDir=/usr/local/matt/openmap/common/lib
 	OpenMapClassPath=$MattClassDir/cspec58.jar
 fi
