@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/03/19 20:38:12 $
+// $Revision: 1.5 $
+// $Date: 2003/03/20 18:17:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -295,7 +295,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 
 	OMGraphicList omGraphicList = null;
 
-	if (plugin != null) {
+	if (plugin != null && proj != null) {
 	    omGraphicList = plugin.getRectangle(proj);
 	}
 
