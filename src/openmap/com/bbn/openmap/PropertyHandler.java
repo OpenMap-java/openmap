@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/03 15:30:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -154,7 +154,7 @@ public class PropertyHandler implements SoloMapComponent {
 	tmpProperties.load(is);
 
 	init(tmpProperties, "URL");
-	Environment.init(properties);
+	Environment.init(getProperties());
     }
 
     /**
@@ -162,9 +162,8 @@ public class PropertyHandler implements SoloMapComponent {
      * context for a particular map.  
      */
     public PropertyHandler(Properties props) {
-
 	init(props, null);
-	Environment.init(properties);
+	Environment.init(getProperties());
     }
 
     /**
@@ -225,12 +224,9 @@ public class PropertyHandler implements SoloMapComponent {
 	}
 
 	if (propsIn != null) {
-
-	    PropUtils.loadProperties(tmpProperties, propsIn);
+	    foundProperties = PropUtils.loadProperties(tmpProperties, propsIn);
 	    init(tmpProperties, "resources");
-
 	    tmpProperties.clear();
-	    foundProperties = true;
 	}
 
 	if (foundProperties == false && (Environment.isApplet() || showDebugMessages)) {
@@ -239,7 +235,7 @@ public class PropertyHandler implements SoloMapComponent {
 
 	//  Seems like we can kick out here in event of Applet...
 	if (Environment.isApplet()) {
-	    Environment.init(properties);
+	    Environment.init(getProperties());
 	    return;
 	}
 
@@ -250,6 +246,7 @@ public class PropertyHandler implements SoloMapComponent {
 	} catch (java.security.AccessControlException ace) {
 	    systemProperties = new Properties();
 	}
+
 	String openmapConfigDirectory = 
 	    systemProperties.getProperty(configDirProperty);
 
@@ -277,44 +274,36 @@ public class PropertyHandler implements SoloMapComponent {
 			 (openmapConfigDirectory == null?"not set":openmapConfigDirectory));
 	}
 
-	if (PropUtils.loadProperties(tmpProperties, 
-				     openmapConfigDirectory, 
-				     propsFileName)) {
-	    foundProperties = true;
-	}
+	foundProperties = PropUtils.loadProperties(tmpProperties, 
+						   openmapConfigDirectory, 
+						   propsFileName);
 	
 	// Include properties from config file properties.
 	includeProperties = 
 	    getIncludeProperties(tmpProperties.getProperty(includeProperty),
 				 tmpProperties);
-	merge(includeProperties, properties, 
-	      "include file properties", openmapConfigDirectory);
-	
+	merge(includeProperties, "include file properties", openmapConfigDirectory);
+
 	// OK, now merge the config file properties into the main properties
-	merge(tmpProperties, properties, 
-	      propsFileName, openmapConfigDirectory);
+	merge(tmpProperties, propsFileName, openmapConfigDirectory);
 	// Clear out the tmp
 	tmpProperties.clear();
 	
 	// Let system properties take precidence over resource and
 	// config dir properties.
-	merge(systemProperties, properties,
-	      "system properties", "system");
-	foundProperties = true;
+	merge(systemProperties, "system properties", "system");
 
 	// in user's home directory, most precedence.
-	String userHomeDirectory  = systemProperties.getProperty("user.home");
+	String userHomeDirectory = systemProperties.getProperty("user.home");
 	if (showDebugMessages) {
 	    Debug.output("PropertyHandler: Looking for " + 
 			 propsFileName + " in user's home directory: " + 
 			 userHomeDirectory);
 	}
-	if (PropUtils.loadProperties(tmpProperties, 
-				     userHomeDirectory, 
-				     propsFileName)) {
-	    foundProperties = true;
-	}
-
+	
+	foundProperties = PropUtils.loadProperties(tmpProperties, 
+						   userHomeDirectory, 
+						   propsFileName);
 	if (showDebugMessages) {
 	    Debug.output("***** Done with property search ****");
 	}
@@ -330,14 +319,13 @@ public class PropertyHandler implements SoloMapComponent {
 	includeProperties = 
 	    getIncludeProperties(tmpProperties.getProperty(includeProperty),
 				 tmpProperties);
-	merge(includeProperties, properties, 
-	      "include file properties", userHomeDirectory);
+	merge(includeProperties, "include file properties", userHomeDirectory);
 
 	// Now, load the user home preferences last, since they take
 	// the highest precidence.
-	merge(tmpProperties, properties, propsFileName, userHomeDirectory);
+	merge(tmpProperties, propsFileName, userHomeDirectory);
 
-	Environment.init(properties);
+	Environment.init(getProperties());
     }
 
     /**
@@ -353,20 +341,20 @@ public class PropertyHandler implements SoloMapComponent {
      * @param howString a string describing where the properties come
      * from.  Just used for debugging purposes, so passing in a null
      * value is no big deal.
+     * @return the properties contained in this PropertyHandler.
      */
     protected void init(Properties props, String howString) {
 
 	// Include properties noted in resources properties.
 	Properties includeProperties = getIncludeProperties(props.getProperty(includeProperty), props);
-	merge(includeProperties, properties, 
-	      "include file properties", howString);
+	merge(includeProperties, "include file properties", howString);
 
 	if (!Environment.isApplet()) {
 	    Properties systemProperties = System.getProperties();
 	    merge(systemProperties, props);
 	}
 
-	merge(props, properties, "loaded", howString);
+	merge(props, "loaded", howString);
 
 	if (Debug.debugging("properties")) {
 	    Debug.output("PropertyHandler: loaded properties");
@@ -437,12 +425,38 @@ public class PropertyHandler implements SoloMapComponent {
     }
 
     /**
+     * Take the from properties, copy them into the internal
+     * PropertyHandler properties.
+     * @param from the source properties.
+     */
+    protected void merge(Properties from) {
+	merge(from, getProperties(), null, null);
+    }
+
+    /**
      * Take the from properties, copy them into the to properties.
      * @param from the source properties.
      * @param to the destination properties.
      */
     protected void merge(Properties from, Properties to) {
 	merge(from, to, null, null);
+    }
+
+    /**
+     * Take the from properties, copy them into the internal
+     * PropertyHandler properties.  The what and where are simple for
+     * a more clearly defined Debug statement.  The what and where are
+     * only used for debugging statements when there are no properties
+     * found, so don't put too much work into creating them, like
+     * adding strings together before passing them in.  The what and
+     * where fit into a debug output statement like:
+     * PropertyHandler.merge(): no _what_ found in _where_.
+     * @param from the source properties.
+     * @param what a description of what the from properties represent.
+     * @param where a description of where the properties were read from.  
+     */
+    protected void merge(Properties from, String what, String where) {
+	merge(from, getProperties(), what, where);
     }
 
     /**
@@ -462,6 +476,10 @@ public class PropertyHandler implements SoloMapComponent {
     protected void merge(Properties from, Properties to, 
 			 String what, String where) {
 	if (from.size() > 0) {
+
+	    if (to == null) {
+		to = getProperties();
+	    }
 	    PropUtils.copyProperties(from, to);
 	} else {
 	    if (what != null && Debug.debugging("properties")) {
@@ -484,6 +502,9 @@ public class PropertyHandler implements SoloMapComponent {
      * Get the current properties set within this handler.
      */
     public Properties getProperties() {
+	if (properties == null) {
+	    properties = new Properties();
+	}
 	return properties;
     }
 
@@ -504,7 +525,6 @@ public class PropertyHandler implements SoloMapComponent {
 	    Debug.message("properties", "PropertyHandler.createComponents(): null handler.");
 	    return;
 	}
-
 	
 	ProgressListenerGauge plg;
 
@@ -643,9 +663,7 @@ public class PropertyHandler implements SoloMapComponent {
 	ps.println("######################################");
 
 	printMapProperties(mapBean, ps);
-
 	printComponentProperties(otherComponents, propertyHandler, ps);
-
 	printLayerProperties(layerHandler, ps);
 
 	return createdProperties;
