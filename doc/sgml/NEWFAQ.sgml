@@ -729,7 +729,10 @@ You'll want to check out the com.bbn.openmap.image package, focusing
 on the ImageServer, ImageGenerator and ImageReceiver classes.  They
 are set up to control the layers and the multi-threaded nature of
 their SwingWorkers, and then create an image using the graphics from
-the layers.
+the layers.  There is a UML <htmlurl
+url="./image/openmap_image_toolkit.ps" name="postscript"> file of the
+image package available.
+
 <p>
 You basically configure an ImageServer with properties, which set up
 the layers it should use to create the image.  Then you hand the
