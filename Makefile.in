@@ -17,9 +17,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.30 $
-# $Date: 1999/05/17 19:51:31 $
-# $Author: aculline $
+# $Revision: 1.31 $
+# $Date: 1999/07/19 17:33:41 $
+# $Author: wjeuerle $
 # 
 # **********************************************************************
 
@@ -39,8 +39,10 @@ Core.pkgs =	com.bbn.openmap \
 		com.bbn.openmap.event \
 		com.bbn.openmap.gui \
 		com.bbn.openmap.omGraphics \
+		com.bbn.openmap.omGraphics.grid \
 		com.bbn.openmap.proj \
-		com.bbn.openmap.util
+		com.bbn.openmap.util \
+		com.bbn.openmap.util.quadtree
 
 Core.classes =	com/bbn/openmap/*.class \
 		com/bbn/openmap/event/*.class \
