@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/ProjectionChangePolicy.java,v $
 // $RCSfile: ProjectionChangePolicy.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/28 22:25:04 $
+// $Revision: 1.3 $
+// $Date: 2003/09/04 18:15:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,11 +27,41 @@ import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 
+/**
+ * A ProjectionChangePolicy is a policy object that determines how an
+ * OMGraphicHandler layer reacts to a projectionChanged() method call.
+ * The OMGraphicHandlerLayer has been written to consult this object
+ * to contral that activity.  The reaction could include clearing out
+ * the current OMGraphicList or keeping it, or launching a SwingWorker
+ * with a doPrepare() call on the layer to have the layer's prepare()
+ * method called.
+ */
 public interface ProjectionChangePolicy {
 
+    /**
+     * Set the OMGraphicHandlerLayer to work with.
+     */
+    public void setLayer(OMGraphicHandlerLayer layer);
+
+    /**
+     * Get the OMGraphicHandlerLayer to work with.
+     */
     public OMGraphicHandlerLayer getLayer();
 
+    /**
+     * The method that is called when the projection changes.  The
+     * ProjectionChangePolicy should modify the OMGraphicList and do
+     * other functions as dictated by the policy, like starting
+     * threads to gather data and generating new OMGraphics for the
+     * layer.
+     */
     public void projectionChanged(ProjectionEvent pe);
 
+    /**
+     * The method that gets called when the SwingWorker thread
+     * finishes.  The OMGraphicList is what is getting returned from
+     * the prepare() method on the layer, so it's most likely that
+     * this list should be set on the layer.
+     */
     public void workerComplete(OMGraphicList aList);
 }

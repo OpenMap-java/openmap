@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardPCPolicy.java,v $
 // $RCSfile: StandardPCPolicy.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/28 22:25:05 $
+// $Revision: 1.3 $
+// $Date: 2003/09/04 18:15:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,10 +50,19 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
     protected int graphicCutoff = 50;
 
     /**
+     * You must set a layer at some point before using this class.
+     */
+    public StandardPCPolicy() {}
+
+    /**
      * Don't pass in a null layer.
      */
     public StandardPCPolicy(OMGraphicHandlerLayer layer) {
 	this.layer = layer;
+    }
+
+    public void setLayer(OMGraphicHandlerLayer l) {
+	layer = l;
     }
 
     public OMGraphicHandlerLayer getLayer() {
@@ -61,30 +70,33 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
     }
 
     public void projectionChanged(ProjectionEvent pe) {
-
-	Projection proj = layer.setProjection(pe);
-	// proj will be null if the projection hasn't changed, a 
-	// signal that work does not need to be done.
-	if (proj != null) {
-	    // Some criteria can decide whether
-	    // starting another thread is worth it...
-	    if (shouldSpawnThreadForPrepare()) {
-		if (Debug.debugging("layer")) {
-		    Debug.output(getLayer().getName() + ": StandardPCPolicy projectionChanged with NEW projection, spawning thread to handle it.");
+	if (layer != null) {
+	    Projection proj = layer.setProjection(pe);
+	    // proj will be null if the projection hasn't changed, a 
+	    // signal that work does not need to be done.
+	    if (proj != null) {
+		// Some criteria can decide whether
+		// starting another thread is worth it...
+		if (shouldSpawnThreadForPrepare()) {
+		    if (Debug.debugging("layer")) {
+			Debug.output(getLayer().getName() + ": StandardPCPolicy projectionChanged with NEW projection, spawning thread to handle it.");
+		    }
+		    layer.doPrepare();
+		    return;
+		} else {
+		    if (Debug.debugging("layer")) {
+			Debug.output(getLayer().getName() + ": StandardPCPolicy projectionChanged with NEW projection, handling it within current thread.");
+		    }
+		    layer.prepare();
+		    layer.repaint();
 		}
-		layer.doPrepare();
-		return;
 	    } else {
-		if (Debug.debugging("layer")) {
-		    Debug.output(getLayer().getName() + ": StandardPCPolicy projectionChanged with NEW projection, handling it within current thread.");
-		}
-		layer.prepare();
 		layer.repaint();
 	    }
+	    layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
 	} else {
-	    layer.repaint();
+	    Debug.error("StandardPCPolicy.projectionChanged(): NULL layer, can't do anything.");
 	}
-	layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
     }
 
     /**

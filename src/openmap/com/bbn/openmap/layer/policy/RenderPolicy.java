@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/RenderPolicy.java,v $
 // $RCSfile: RenderPolicy.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/10 22:03:57 $
+// $Revision: 1.2 $
+// $Date: 2003/09/04 18:15:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,11 +28,19 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
 import java.awt.Graphics;
 
 /**
- * A policy object that can be used by a layer to figure out the best
- * way to paint on the map.
+ * A policy object that can be used by an OMGraphicHandlerLayer to
+ * figure out the best way to paint on the map.
  */
 public interface RenderPolicy {
 
+    /**
+     * A method to set the parent layer on the RenderPolicy.
+     */
+    public void setLayer(OMGraphicHandlerLayer layer);
+
+    /**
+     * A method to get the parent layer on the RenderPolicy.
+     */
     public OMGraphicHandlerLayer getLayer();
 
     /**
@@ -45,7 +53,10 @@ public interface RenderPolicy {
 
     /**
      * Called from OMGraphicHandlerLayer.paint(Graphics), so the
-     * policy can handle the painting for the layer.
+     * policy can handle the painting for the layer.  If you are going
+     * to change the Graphics object in this method, you should make a
+     * copy of it first using the Graphics.create() method so the
+     * changes won't affect other layers.
      */
     public void paint(Graphics g);
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/ListResetPCPolicy.java,v $
 // $RCSfile: ListResetPCPolicy.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/28 22:25:04 $
+// $Revision: 1.3 $
+// $Date: 2003/09/04 18:15:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,10 +44,20 @@ public class ListResetPCPolicy implements ProjectionChangePolicy {
     protected OMGraphicHandlerLayer layer;
 
     /**
+     * You MUST set a layer at some point.
+     */
+    public ListResetPCPolicy() {
+    }
+
+    /**
      * Don't pass in a null layer.
      */
     public ListResetPCPolicy(OMGraphicHandlerLayer layer) {
 	this.layer = layer;
+    }
+
+    public void setLayer(OMGraphicHandlerLayer l) {
+	layer = l;
     }
 
     public OMGraphicHandlerLayer getLayer() {
@@ -55,22 +65,25 @@ public class ListResetPCPolicy implements ProjectionChangePolicy {
     }
 
     public void projectionChanged(ProjectionEvent pe) {
-
-	Projection proj = layer.setProjection(pe);
-	// proj will be null if the projection hasn't changed, a 
-	// signal that work does not need to be done.
-	if (proj != null) {
-	    if (Debug.debugging("layer")) {
-		Debug.output(getLayer().getName() + ": ListResetPCPolicy projectionChanged with NEW projection, resetting list.");
+	if (layer != null) {
+	    Projection proj = layer.setProjection(pe);
+	    // proj will be null if the projection hasn't changed, a 
+	    // signal that work does not need to be done.
+	    if (proj != null) {
+		if (Debug.debugging("layer")) {
+		    Debug.output(getLayer().getName() + ": ListResetPCPolicy projectionChanged with NEW projection, resetting list.");
+		}
+		layer.setList(null);
+		layer.doPrepare();
+	    } else {
+		if (Debug.debugging("layer")) {
+		    Debug.output(getLayer().getName() + ": ListResetPCPolicy projectionChanged with OLD projection, repainting.");
+		}
+		layer.repaint();
+		layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
 	    }
-	    layer.setList(null);
-	    layer.doPrepare();
 	} else {
-	    if (Debug.debugging("layer")) {
-		Debug.output(getLayer().getName() + ": ListResetPCPolicy projectionChanged with OLD projection, repainting.");
-	    }
-	    layer.repaint();
-	    layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+	    Debug.error("ListResetPCPolicy.projectionChanged():  NULL layer, can't do anything.");
 	}
     }
 

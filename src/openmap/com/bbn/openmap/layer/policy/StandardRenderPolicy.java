@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardRenderPolicy.java,v $
 // $RCSfile: StandardRenderPolicy.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/28 22:25:05 $
+// $Revision: 1.3 $
+// $Date: 2003/09/04 18:15:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,7 @@
 
 package com.bbn.openmap.layer.policy;
 
+import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.util.Debug;
@@ -32,21 +33,29 @@ import java.awt.Graphics;
  * The StandardRenderPolicy is a RenderPolicy that simply paints the
  * current graphic list.  No conditions or deviations are considered.
  */
-public class StandardRenderPolicy implements RenderPolicy {
+public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
 
     /**
-     * Don't let this be null.
+     * Don't let this be null, nothing will happen.  At all.
      */
     protected OMGraphicHandlerLayer layer;
 
     protected boolean DEBUG = false;
 
+    protected StandardRenderPolicy() {
+	DEBUG = Debug.debugging("layer") || Debug.debugging("policy");
+    }
+    
     /**
      * Don't pass in a null layer.
      */
     public StandardRenderPolicy(OMGraphicHandlerLayer layer) {
-	this.layer = layer;
-	DEBUG = Debug.debugging("layer");
+	this();
+	setLayer(layer);
+    }
+
+    public void setLayer(OMGraphicHandlerLayer l) {
+	layer = l;
     }
 
     public OMGraphicHandlerLayer getLayer() {
@@ -54,15 +63,23 @@ public class StandardRenderPolicy implements RenderPolicy {
     }
 
     public OMGraphicList prepare() {
-	return layer.prepare();
+	if (layer != null) {
+	    return layer.prepare();
+	} else {
+	    return null;
+	}
     }
 
     public void paint(Graphics g) {
-	OMGraphicList list = layer.getList();
-	if (list != null) {
-	    list.render(g);
-	} else if (DEBUG) {
-	    Debug.output(layer.getName() + ".paint(): NULL list, skipping...");
+	if (layer != null) {
+	    OMGraphicList list = layer.getList();
+	    if (list != null) {
+		list.render(g);
+	    } else if (DEBUG) {
+		Debug.output(layer.getName() + ".paint(): NULL list, skipping...");
+	    }
+	} else {
+	    Debug.error("RenderPolicy.paint():  NULL layer, skipping...");
 	}
     }
 }

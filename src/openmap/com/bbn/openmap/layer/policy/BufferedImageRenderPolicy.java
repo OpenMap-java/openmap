@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/BufferedImageRenderPolicy.java,v $
 // $RCSfile: BufferedImageRenderPolicy.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/10 22:03:57 $
+// $Revision: 1.2 $
+// $Date: 2003/09/04 18:15:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,6 +50,13 @@ public class BufferedImageRenderPolicy extends StandardRenderPolicy {
     protected boolean useImageBuffer = false;
 
     /**
+     * Set the layer at some point before use.
+     */
+    public BufferedImageRenderPolicy() {
+	super();
+    }
+
+    /**
      * Don't pass in a null layer.
      */
     public BufferedImageRenderPolicy(OMGraphicHandlerLayer layer) {
@@ -57,15 +64,25 @@ public class BufferedImageRenderPolicy extends StandardRenderPolicy {
     }
 
     public OMGraphicList prepare() {
-	setBuffer(null);
-	OMGraphicList list = layer.prepare();
-	if (isUseImageBuffer()) {
-	    setBuffer(createAndPaintImageBuffer(list));
+	if (layer != null) {
+	    setBuffer(null);
+	    OMGraphicList list = layer.prepare();
+	    if (isUseImageBuffer()) {
+		setBuffer(createAndPaintImageBuffer(list));
+	    }
+	    return list;
+	} else {
+	    Debug.error("BufferedImageRenderPolicy.prepare():  NULL layer, can't do anything.");
 	}
-	return list;
+	return null;
     }
 
     public void paint(Graphics g) {
+	if (layer == null) {
+	    Debug.error("BufferedImageRenderPolicy.paint():  NULL layer, skipping...");
+	    return;
+	}
+
 	OMGraphicList list = layer.getList();
 
 	if (list != null) {
@@ -115,7 +132,7 @@ public class BufferedImageRenderPolicy extends StandardRenderPolicy {
 
     protected BufferedImage createAndPaintImageBuffer(OMGraphicList list) {
 	BufferedImage bufferedImage = null;
-	if (list != null) {
+	if (list != null && layer != null) {
 	    int w = layer.getProjection().getWidth();
 	    int h = layer.getProjection().getHeight();
 	    bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
