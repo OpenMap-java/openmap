@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/java.mk,v $
 # $RCSfile: java.mk,v $
-# $Revision: 1.2 $
-# $Date: 1998/03/17 18:10:21 $
+# $Revision: 1.3 $
+# $Date: 1998/04/22 19:22:43 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -43,4 +43,4 @@ JFLAGS = $(JFLAGS_DEV)
 
 # *.java to *.class make rule
 .java.class:
-	$(JC) $(JFLAGS) $<
+	$(JC) -classpath $(CLASSPATH) -J-mx128m $(JFLAGS) $<
