@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimeSliderSupport.java,v $
 // $RCSfile: TimeSliderSupport.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/02 18:27:45 $
+// $Revision: 1.2 $
+// $Date: 2003/06/03 16:18:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,6 +42,11 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
 	rtHandler = rth;
 	startTime = startingTime;
 	endTime = endingTime;
+
+	if (Debug.debugging("timedetail")) {
+	    Debug.output("TimeSliderSupport: initialized to:" + startTime +
+			 ", " + endTime);
+	}
 
 	timeSlider.addChangeListener(this);
     }
@@ -99,5 +104,37 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
 	    Debug.error(ae.getMessage());
 	    return startTime;
 	}
+    }
+
+    public void setTimeSlider(JSlider jslider) {
+	timeSlider = jslider;
+    }
+
+    public JSlider setTimeSlider() {
+	return timeSlider;
+    }
+
+    public void setHandler(RealTimeHandler rth) {
+	rtHandler = rth;
+    }
+
+    public RealTimeHandler getHandler() {
+	return rtHandler;
+    }
+
+    public void setStartTime(long time) {
+	startTime = time;
+    }
+
+    public long getStartTime() {
+	return startTime;
+    }
+
+    public void setEndTime(long time) {
+	endTime = time;
+    }
+
+    public long getEndTime() {
+	return endTime;
     }
 }
