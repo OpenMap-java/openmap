@@ -334,42 +334,20 @@ public class DistanceMouseMode extends CoordMouseMode {
                     lat2  = rPoint2.getLatitude();
                     long2 = rPoint2.getLongitude();
                     // calculate great circle distance in nm
-//                  distance = getGreatCircleDist(lat1, long1, 
-//                                                lat2, long2, Length.NM);
+//                     distance = getGreatCircleDist(lat1, long1, 
+//                                                   lat2, long2, Length.NM);
                     distance = (double)GreatCircle.spherical_distance(ProjMath.degToRad(lat1),
-                                                           ProjMath.degToRad(long1),
-                                                           ProjMath.degToRad(lat2),
-                                                           ProjMath.degToRad(long2));
+                                                                      ProjMath.degToRad(long1),
+                                                                      ProjMath.degToRad(lat2),
+                                                                      ProjMath.degToRad(long2));
+                    
                     
                     // calculate azimuth angle dec deg
                     float azimuth = getSphericalAzimuth(lat1, long1, lat2, long2);
                     // convert total distance into all distance units
-//                  String distNM   = df.format(totalDistance+distance);
+//                     String distNM   = df.format(totalDistance+distance);
                     double tmpDistance = totalDistance+distance;
-                    // setup the distance info to be displayed
-                    String unitInfo = null;
-                    // what unit is asked for
-                    if (unit == null) {
-                        unitInfo = df.format(Length.NM.fromRadians((float)tmpDistance)) + 
-                            Length.NM.getAbbr() + ",  " +
-                            df.format(Length.KM.fromRadians((float)tmpDistance)) + 
-                            Length.KM.getAbbr() + ",  " + 
-                            df.format(Length.MILE.fromRadians((float)tmpDistance)) + 
-                            Length.MILE.getAbbr() + "  ";
-                    } else {
-                        unitInfo = unit.fromRadians((float)tmpDistance) + " " + unit.getAbbr();
-                    }
-
-                    // add the mouse lat, lon
-                    String infoLine = "Lat, Lon (" + 
-                        df.format(rPoint2.getLatitude()) +
-                        ", " + df.format(rPoint2.getLongitude())  + 
-                        "), distance (";
-                    // add the units
-                    infoLine = infoLine + unitInfo + ")";
-                    // add the azimuth angle if need be
-                    if (showAngle) infoLine = infoLine + ", angle (" + 
-                                       df.format(azimuth) + ")";
+                    String infoLine = createDistanceInformationLine(rPoint2,tmpDistance,azimuth);
                     // setup the info event
                     InfoDisplayEvent info = new InfoDisplayEvent(this, infoLine, InformationDelegator.COORDINATE_INFO_LINE);
                     // ask the infoDelegator to display the info
@@ -379,6 +357,34 @@ public class DistanceMouseMode extends CoordMouseMode {
                 fireMouseLocation(e);
             }
         }
+    }
+    
+    protected String createDistanceInformationLine(LatLonPoint llp, double distance, double azimuth) {
+        // setup the distance info to be displayed
+        String unitInfo = null;
+        // what unit is asked for
+        if (unit == null) {
+            unitInfo = df.format(Length.NM.fromRadians((float)distance)) +
+                Length.NM.getAbbr() + ",  " +
+                df.format(Length.KM.fromRadians((float)distance)) +
+                Length.KM.getAbbr() + ",  " +
+                df.format(Length.MILE.fromRadians((float)distance)) +
+                Length.MILE.getAbbr() + "  ";
+        } else {
+            unitInfo = unit.fromRadians((float)distance) + " " + unit.getAbbr();
+        }
+
+        // add the mouse lat, lon
+        String infoLine = "Lat, Lon (" + df.format(llp.getLatitude()) +
+            ", " + df.format(llp.getLongitude())  + "), distance (";
+
+        // add the units
+        infoLine = infoLine + unitInfo + ")";
+        // add the azimuth angle if need be
+        if (showAngle) {
+            infoLine = infoLine + ", angle (" + df.format(azimuth) + ")";
+        }
+        return infoLine;
     }
 
     /**
@@ -434,12 +440,11 @@ public class DistanceMouseMode extends CoordMouseMode {
         g.setColor(java.awt.Color.darkGray);
         if (pt1 != null && pt2 != null) {
             // the line connecting the segments
-            OMLine cLine = new OMLine(
-                pt1.getLatitude(),
-                pt1.getLongitude(),
-                pt2.getLatitude(),
-                pt2.getLongitude(),
-                lineType);
+            OMLine cLine = new OMLine(pt1.getLatitude(),
+                                      pt1.getLongitude(),
+                                      pt2.getLatitude(),
+                                      pt2.getLongitude(),
+                                      lineType);
             // get the map projection
             Projection proj = theMap.getProjection();
             // prepare the line for rendering
@@ -479,8 +484,7 @@ public class DistanceMouseMode extends CoordMouseMode {
                 float radphi = ProjMath.degToRad(pt2.getLatitude());
                 float radlambda = ProjMath.degToRad(pt2.getLongitude());
                 // calculate the circle radius
-                double dRad = GreatCircle.spherical_distance(
-                    radphi1, radlambda0,  radphi, radlambda);
+                double dRad = GreatCircle.spherical_distance(radphi1, radlambda0,  radphi, radlambda);
                 // convert into decimal degrees
                 float rad = (float)ProjMath.radToDeg(dRad);
                 // make the circle
@@ -689,7 +693,8 @@ public class DistanceMouseMode extends CoordMouseMode {
      * PropertyConsumer interface method.
      */
     public void setProperties(String prefix, Properties setList) {
-        setPropertyPrefix(prefix);
+        super.setProperties(prefix, setList);
+                
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         String name = setList.getProperty(prefix + UnitProperty);
