@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/Attic/AbstractGraphicLoader.java,v $
 // $RCSfile: AbstractGraphicLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/11 23:59:44 $
+// $Revision: 1.3 $
+// $Date: 2003/05/06 23:30:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -70,7 +70,7 @@ public abstract class AbstractGraphicLoader extends OMComponent
     public final static String NameProperty = "prettyName";
 
     public AbstractGraphicLoader() {
-	setTimer(new Timer(updateInterval, this));
+	createTimer();
     }
 
     public AbstractGraphicLoader(OMGraphicHandler receiver) {
@@ -88,7 +88,13 @@ public abstract class AbstractGraphicLoader extends OMComponent
      */
     public abstract void manageGraphics();
 
-    public abstract Component getGUI();
+    /**
+     * Provide a GUI for controlling the GraphicLoader.  It's OK if
+     * it's null.
+     */
+    public Component getGUI() {
+	return null;
+    }
 
     /**
      * Calls manageGraphics() if projection is different().
@@ -126,6 +132,11 @@ public abstract class AbstractGraphicLoader extends OMComponent
      */
     public void setTimer(Timer t) {
 	timer = t;
+    }
+
+    public void createTimer() {
+	timer = new Timer(updateInterval, this);
+	timer.setInitialDelay(0);
     }
 
     /**
