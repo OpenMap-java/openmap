@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/db/DBLocationHandler.java,v $
 // $RCSfile: DBLocationHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/24 23:36:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,40 +24,24 @@
 package com.bbn.openmap.layer.location.db;
 
 
-/*  Java Core  */
+/*  Java  */
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Point;
-import java.awt.event.*;
-import java.io.*;
-import java.net.URL;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.Enumeration;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Vector;
-
-/*  OpenMap  */
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.DeclutterMatrix;
-import com.bbn.openmap.layer.location.*;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.omGraphics.OMRect;
-import com.bbn.openmap.omGraphics.OMText;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.SwingWorker;
-import com.bbn.openmap.util.quadtree.QuadTree;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
+
+/*  OpenMap  */
+import com.bbn.openmap.layer.location.*;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.quadtree.QuadTree;
 
 /** 
  * The DBLocationLayer is a LocationHandler designed to let you put
@@ -203,20 +187,17 @@ public class DBLocationHandler extends AbstractLocationHandler
 	}
 
 	props.put(prefix + "class", this.getClass().getName());
-	props.put(prefix + jdbcStringProperty, jdbcString);
-	props.put(prefix + jdbcDriverProperty, jdbcDriver);
-	props.put(prefix + userNameProperty, userName);
-	props.put(prefix + userPasswordProperty, userPassword);
-	props.put(prefix + locationQueryStringProperty, locationQueryString);
+	props.put(prefix + jdbcStringProperty, PropUtils.unnull(jdbcString));
+	props.put(prefix + jdbcDriverProperty, PropUtils.unnull(jdbcDriver));
+	props.put(prefix + userNameProperty, PropUtils.unnull(userName));
+	props.put(prefix + userPasswordProperty, PropUtils.unnull(userPassword));
+	props.put(prefix + locationQueryStringProperty, PropUtils.unnull(locationQueryString));
 
 	// Put the properties in here for the RawDataRecordSet, which
 	// gets images that can be used for the locations.
-	props.put(prefix + RawDataRecordSet.tableNameProperty,  
-		  props.getProperty(prefix + RawDataRecordSet.tableNameProperty));
-	props.put(prefix + RawDataRecordSet.rawDataColumnNameProperty, 
-		  props.getProperty(prefix + RawDataRecordSet.rawDataColumnNameProperty));
-	props.put(prefix + RawDataRecordSet.rawDataKeyColumnNameProperty, 
-		  props.getProperty(prefix + RawDataRecordSet.rawDataKeyColumnNameProperty));
+	props.put(prefix + RawDataRecordSet.tableNameProperty, PropUtils.unnull(props.getProperty(prefix + RawDataRecordSet.tableNameProperty)));
+	props.put(prefix + RawDataRecordSet.rawDataColumnNameProperty, PropUtils.unnull(props.getProperty(prefix + RawDataRecordSet.rawDataColumnNameProperty)));
+	props.put(prefix + RawDataRecordSet.rawDataKeyColumnNameProperty, PropUtils.unnull(props.getProperty(prefix + RawDataRecordSet.rawDataKeyColumnNameProperty)));
 
 	return props;
     }
@@ -244,19 +225,16 @@ public class DBLocationHandler extends AbstractLocationHandler
     public Properties getPropertyInfo(Properties list) {
 	list = super.getPropertyInfo(list);
 	
+	list.put("class" + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
 	list.put(jdbcStringProperty, "JDBC login string");
 	list.put(jdbcDriverProperty, "JDBC driver class name");
 	list.put(userNameProperty, "User name");
 	list.put(userPasswordProperty, "User password");
 	list.put(locationQueryStringProperty, "Select statement that the data object needs.");
 
-
-	list.put(RawDataRecordSet.tableNameProperty,  
-		 "The name of the table in the database that holds the images.");
-	list.put(RawDataRecordSet.rawDataColumnNameProperty, 
-		 "The name of the column in the table in the database that holds the name (key) of the image.");
-	list.put(RawDataRecordSet.rawDataKeyColumnNameProperty, 
-		 "The name of the column in the table in the database that holds the raw image bytes.");
+	list.put(RawDataRecordSet.tableNameProperty, "The name of the table in the database that holds the images.");
+	list.put(RawDataRecordSet.rawDataColumnNameProperty, "The name of the column in the table in the database that holds the name (key) of the image.");
+	list.put(RawDataRecordSet.rawDataKeyColumnNameProperty, "The name of the column in the table in the database that holds the raw image bytes.");
 
 	return list;
     }
@@ -410,7 +388,7 @@ public class DBLocationHandler extends AbstractLocationHandler
      * 
      * @return Component object representing the palette widgets.
      */
-    public java.awt.Component getGUI() {
+    public Component getGUI() {
 	if (box == null) {
 	    JCheckBox showDBLocationCheck, showNameCheck;
 	    JButton rereadFilesButton;

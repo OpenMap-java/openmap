@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/csv/CSVLocationHandler.java,v $
 // $RCSfile: CSVLocationHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/24 23:36:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,17 +24,20 @@
 package com.bbn.openmap.layer.location.csv;
 
 
-/*  Java Core  */
-import java.awt.Point;
-import java.awt.Component;
+/*  Java  */
 import java.awt.Color;
-import java.awt.event.*;
-import java.util.StringTokenizer;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.Enumeration;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.URL;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 
 /*  OpenMap  */
 import com.bbn.openmap.util.Debug;
@@ -43,22 +46,8 @@ import com.bbn.openmap.util.CSVTokenizer;
 import com.bbn.openmap.util.quadtree.QuadTree;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.omGraphics.OMRect;
-import com.bbn.openmap.omGraphics.OMText;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.layer.DeclutterMatrix;
 import com.bbn.openmap.layer.location.*;
-
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JPopupMenu;
-import javax.swing.JMenuItem;
-import javax.swing.Box;
-import javax.swing.SwingUtilities;
 
 /**  
  * The CSVLocationLayer is a LocationHandler designed to let you put
@@ -235,26 +224,14 @@ public class CSVLocationHandler extends AbstractLocationHandler
 	String prefix = PropUtils.getScopedPropertyPrefix(this);
 
 	props.put(prefix + "class", this.getClass().getName());
-	props.put(prefix + LocationFileProperty, locationFile);
+	props.put(prefix + LocationFileProperty, PropUtils.unnull(locationFile));
 
-	if (eastIsNeg == true) {
-	    props.put(prefix + eastIsNegProperty, new Boolean(eastIsNeg).toString());
-	}
-	if (nameIndex != -1) {
-	    props.put(prefix + NameIndexProperty, Integer.toString(nameIndex));
-	}
-	if (latIndex != -1) {
-	    props.put(prefix + LatIndexProperty, Integer.toString(latIndex));
-	}
-	if (lonIndex != -1) {
-	    props.put(prefix + LonIndexProperty, Integer.toString(lonIndex));
-	}
-	if (iconIndex != -1) {
-	    props.put(prefix + IconIndexProperty, Integer.toString(iconIndex));
-	}
-	if (defaultIconURL != null) {
-	    props.put(prefix + DefaultIconURLProperty, defaultIconURL);
-	}
+	props.put(prefix + eastIsNegProperty, new Boolean(eastIsNeg).toString());
+	props.put(prefix + NameIndexProperty, (nameIndex != -1?Integer.toString(nameIndex):""));
+	props.put(prefix + LatIndexProperty, (latIndex != -1?Integer.toString(latIndex):""));
+	props.put(prefix + LonIndexProperty, (lonIndex != -1?Integer.toString(lonIndex):""));
+	props.put(prefix + IconIndexProperty, (iconIndex != -1?Integer.toString(iconIndex):""));
+	props.put(prefix + DefaultIconURLProperty, PropUtils.unnull(defaultIconURL));
 
 	return props;
     }
@@ -281,14 +258,17 @@ public class CSVLocationHandler extends AbstractLocationHandler
      */
     public Properties getPropertyInfo(Properties list) {
 	list = super.getPropertyInfo(list);
-	
+
+	list.put("class" + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
 	list.put(LocationFileProperty, "URL of file containing location information.");
-	list.put(eastIsNegProperty, "Flag to note that negative latitude are over the eastern hemisphere (true/false, false is default)");
+	list .put(LocationFileProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+	list.put(eastIsNegProperty, "Flag to note that negative latitude are over the eastern hemisphere.");
+	list.put(eastIsNegProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 	list.put(NameIndexProperty, "The column index, in the location file, of the location label text.");
 	list.put(LatIndexProperty, "The column index, in the location file, of the latitudes.");
 	list.put(LonIndexProperty, "The column index, in the location file, of the longitudes.");
-	list.put(IconIndexProperty, "The column index, in the location file, of the icon for locations.");
-	list.put(DefaultIconURLProperty, "The URL of an image file to use as a default for the location markers");
+	list.put(IconIndexProperty, "The column index, in the location file, of the icon for locations (optional).");
+	list.put(DefaultIconURLProperty, "The URL of an image file to use as a default for the location markers (optional).");
 
 	return list;
     }
@@ -534,7 +514,7 @@ public class CSVLocationHandler extends AbstractLocationHandler
      * 
      * @return Component object representing the palette widgets.
      */
-    public java.awt.Component getGUI() {
+    public Component getGUI() {
 	if (box == null){
 	    JCheckBox showCSVLocationCheck, showNameCheck;
 	    JButton rereadFilesButton;

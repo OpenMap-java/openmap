@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/AbstractLocationHandler.java,v $
 // $RCSfile: AbstractLocationHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/24 23:36:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 
 import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -41,7 +42,7 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  *
  * @see         com.bbn.openmap.layer.location.LocationHandler
- * @version    $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version    $Revision: 1.2 $ $Date: 2003/03/24 23:36:04 $
  * @author     Michael E. Los D530/23448
  *
  * locationhandler.locationColor=FF0000<BR>
@@ -76,6 +77,17 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      */
     protected String propertyPrefix = null;
     
+    protected AbstractLocationHandler() {
+	try {
+	    nameColor = ColorFactory.parseColor(defaultNameColorString, true);
+	    locationColor = ColorFactory.parseColor(defaultLocationColorString, true);
+	} catch (NumberFormatException nfe) {
+	    nameColor = Color.black;
+	    locationColor = Color.black;
+	}
+    }
+
+
     /**
      * The location layer passes a LocationPopupMenu to the handler
      * when on of its locations has been clicked on.  This is an
@@ -287,7 +299,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
 	list.put(NameColorProperty, "Color of name label");
 	list.put(NameColorProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 	list.put(ShowLocationsProperty, "Display all the location markers");
-	list.put(ShowNamesProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+	list.put(ShowLocationsProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 	list.put(LocationColorProperty, "Color of location marker");
 	list.put(LocationColorProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
