@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/BasicI18n.java,v $
 // $RCSfile: BasicI18n.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/11/18 14:51:13 $
-// $Author: blubin $
+// $Revision: 1.2 $
+// $Date: 2003/12/08 23:56:30 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -42,7 +42,16 @@ import com.bbn.openmap.util.Debug;
  */
 public class BasicI18n implements I18n {
 
-    public static final String DEBUG = "I18n";
+    /**
+     * Debug string, 'i18n'
+     */
+    public static final String DEBUG = "i18n";
+
+    /**
+     * All properties files containing string should be contained in a
+     * file called I18N.properties.  This string defines the I18N.
+     */
+    public static final String ResourceFileNamePrefix = "I18N";
 
     private Locale loc;
 
@@ -370,7 +379,11 @@ public class BasicI18n implements I18n {
      */
     protected String getInternal(Class requestor, String field, int type) {
 	ResourceBundle bundle = null;
-	String bString = requestor.getPackage().getName() + ".I18n";
+
+	String bString = 
+	    requestor.getPackage().getName() + "." + 
+	    ResourceFileNamePrefix;
+
 	try {
 	    bundle = ResourceBundle.getBundle(bString, loc);
 	} catch (MissingResourceException e) {

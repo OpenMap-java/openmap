@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies, a Verizon Company
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Environment.java,v $
 // $RCSfile: Environment.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/11/18 14:51:29 $
-// $Author: blubin $
-// 
+// $Revision: 1.6 $
+// $Date: 2003/12/08 23:56:30 $
+// $Author: dietrick $
+//
 // **********************************************************************
 
 package com.bbn.openmap;
@@ -91,7 +91,7 @@ import com.bbn.openmap.util.PropUtils;
  * openmap.Debug - Debug tokens to activate for printout.  @see com.bbn.openmap.util.Debug
  *
  * openmap.UniqueID String for unique identification of OpenMap instance (calculated)
- * </pre> 
+ * </pre>
  */
 public class Environment extends Properties {
 
@@ -103,7 +103,7 @@ public class Environment extends Properties {
      * User properties editor
      *
      *--------------------------------------------------*/
-    
+
     protected static Environment env;
     protected Properties hardcodedProps;
     protected Properties runtimeProps;
@@ -114,7 +114,7 @@ public class Environment extends Properties {
     private static transient Vector extraPaths = new Vector();
 
     // user preferences file (used for later references)
-    public static transient final String OpenMapPrefix ="openmap";
+    public static transient final String OpenMapPrefix = "openmap";
     public static transient final String PreferencesURL = OpenMapPrefix + ".PreferencesURL";
 
     // metanames of the names of the variables used in the OpenMap system
@@ -140,9 +140,9 @@ public class Environment extends Properties {
     private static transient boolean isXWindows = false;
     public static transient boolean doingXWindowsWorkaround = false;// will do it if isXWindows
 
-    public final static transient String title="$$Title="+MapBean.title;
-    public final static transient String version="$$Version="+MapBean.version;
-    public final static transient String build="$$BuildDate=";//autobuild should set this.
+    public final static transient String title = "$$Title=" + MapBean.title;
+    public final static transient String version = "$$Version=" + MapBean.version;
+    public final static transient String build = "$$BuildDate=";//autobuild should set this.
 
     /**
      * Hardcoded default properties.
@@ -154,20 +154,21 @@ public class Environment extends Properties {
      */
     protected final static void initHardCodedProperties(Properties p) {
 
-	StringTokenizer tokenizer;
-	tokenizer = new StringTokenizer(title, "=");
-	tokenizer.nextToken();
-	p.put(Title, tokenizer.nextToken());
+        StringTokenizer tokenizer;
+        tokenizer = new StringTokenizer(title, "=");
+        tokenizer.nextToken();
+        p.put(Title, tokenizer.nextToken());
 
-	tokenizer = new StringTokenizer(version, "=");
-	tokenizer.nextToken();
-	p.put(Version, tokenizer.nextToken());
+        tokenizer = new StringTokenizer(version, "=");
+        tokenizer.nextToken();
+        p.put(Version, tokenizer.nextToken());
 
-	tokenizer = new StringTokenizer(build, "=");
-	tokenizer.nextToken();
-	try {
-	    p.put(BuildDate, tokenizer.nextToken());
-	} catch (NoSuchElementException e) {}// no BuildDate
+        tokenizer = new StringTokenizer(build, "=");
+        tokenizer.nextToken();
+        try {
+            p.put(BuildDate, tokenizer.nextToken());
+        } catch (NoSuchElementException e) {
+        }// no BuildDate
     }
 
     /**
@@ -177,38 +178,38 @@ public class Environment extends Properties {
      * @see          java.applet.Applet
      */
     public static void init(Applet applet) {
-	if (applet == null) {
-	    init(System.getProperties());
-	} else {
-	    if (env != null) {
-		// overwrite properties
-		Debug.output("Reinitializing Applet Environment!");
-		setApplet(applet);
-		env.setAppletProperties(applet, env);
-		return;
-	    }
-	    new Environment(applet);
-	}
-	if (Debug.debugging("env")) {
-	    env.list(System.out);
-	}
+        if (applet == null) {
+            init(System.getProperties());
+        } else {
+            if (env != null) {
+                // overwrite properties
+                Debug.output("Reinitializing Applet Environment!");
+                setApplet(applet);
+                env.setAppletProperties(applet, env);
+                return;
+            }
+            new Environment(applet);
+        }
+        if (Debug.debugging("env")) {
+            env.list(System.out);
+        }
     }
-    
+
     /**
      * Initializes the environment of an application.
      *
      * @param sysProps Runtime/System Properties (Toplevel)
      */
     public static void init(Properties sysProps) {
-	if (env != null) {
-//  	    Debug.output("Reinitializing Environment!");
-	    // overwrite properties
-	    env.installProps(sysProps);
-	    return;
-	}
-	new Environment (sysProps);
-	if (Debug.debugging("env"))
-	    env.list(System.out);
+        if (env != null) {
+	    //  	    Debug.output("Reinitializing Environment!");
+            // overwrite properties
+            env.installProps(sysProps);
+            return;
+        }
+        new Environment(sysProps);
+        if (Debug.debugging("env"))
+            env.list(System.out);
     }
 
     /**
@@ -216,7 +217,7 @@ public class Environment extends Properties {
      * Installs the default System Properties into the Environment.
      */
     public static void init() {
-	init(System.getProperties());
+        init(System.getProperties());
     }
 
     /**
@@ -225,10 +226,10 @@ public class Environment extends Properties {
      * @param applet an Applet
      */
     protected Environment(Applet applet) {
-	env = this;
-	setApplet(applet);
-	setAppletProperties(applet, this);
-	commonInit();
+        env = this;
+        setApplet(applet);
+        setAppletProperties(applet, this);
+        commonInit();
     }
 
     /**
@@ -237,9 +238,9 @@ public class Environment extends Properties {
      * @param sysProps system properties
      */
     protected Environment(Properties sysProps) {
-	env = this;
-	installProps(sysProps);
-	commonInit();
+        env = this;
+        installProps(sysProps);
+        commonInit();
     }
 
     /**
@@ -249,32 +250,32 @@ public class Environment extends Properties {
      *
      */
     private void installProps(Properties sysProps) {
-	// Copy the specified property list
-	Enumeration e = sysProps.propertyNames();
-	while (e.hasMoreElements()) {
-	    String key = (String)e.nextElement();
-	    String val = (String)sysProps.getProperty(key);
-	    try {
-		this.put(key, val);
-	    } catch (NullPointerException ex) {
-		// Key or Value must have been null.  C'est la vie.
-	    }
-	}
+        // Copy the specified property list
+        Enumeration e = sysProps.propertyNames();
+        while (e.hasMoreElements()) {
+            String key = (String) e.nextElement();
+            String val = (String) sysProps.getProperty(key);
+            try {
+                this.put(key, val);
+            } catch (NullPointerException ex) {
+                // Key or Value must have been null.  C'est la vie.
+            }
+        }
     }
 
     /**
      * Adds runtime, user, and base properties to the Environment.
      */
     protected void commonInit() {
-	hardcodedProps = new Properties();
-	runtimeProps = new Properties(hardcodedProps);
+        hardcodedProps = new Properties();
+        runtimeProps = new Properties(hardcodedProps);
 
-	// the Environment defaults are the properties lists just
-	// constructed
-	defaults = runtimeProps;
+        // the Environment defaults are the properties lists just
+        // constructed
+        defaults = runtimeProps;
 
-	initHardCodedProperties(hardcodedProps);
-	initRuntimeProperties(runtimeProps);
+        initHardCodedProperties(hardcodedProps);
+        initRuntimeProperties(runtimeProps);
     }
 
     /**
@@ -287,42 +288,42 @@ public class Environment extends Properties {
      * @see java.applet.Applet#getParameterInfo
      */
     protected void setAppletProperties(Applet applet, Properties props) {
-	/*
-	 * These are the ten properties available to applets.
-	 */
-	final String[] appletProps = {
-	    "java.version",
-	    "java.vendor",
-	    "java.vendor.url",
-	    "java.class.version",
-	    "os.name",
-	    "os.arch",
-	    "os.version",
-	    "file.separator",
-	    "path.separator",
-	    "line.separator"
-	};
+        /*
+         * These are the ten properties available to applets.
+         */
+        final String[] appletProps = {
+            "java.version",
+            "java.vendor",
+            "java.vendor.url",
+            "java.class.version",
+            "os.name",
+            "os.arch",
+            "os.version",
+            "file.separator",
+            "path.separator",
+            "line.separator"
+        };
 
-	int i;
+        int i;
 
-	for (i=0; i<appletProps.length; i++) {
-	    String prop = appletProps[i];
-	    props.put(prop, System.getProperty(prop));
-	}
+        for (i = 0; i < appletProps.length; i++) {
+            String prop = appletProps[i];
+            props.put(prop, System.getProperty(prop));
+        }
 
-	String[][] pinfo = applet.getParameterInfo();
-	if (pinfo == null) return;
-	for (i=0; i<pinfo.length; i++) {
-	    try {
-		String key = pinfo[i][0];
-		String value = applet.getParameter(key);
-		Debug.message("env",
+        String[][] pinfo = applet.getParameterInfo();
+        if (pinfo == null) return;
+        for (i = 0; i < pinfo.length; i++) {
+            try {
+                String key = pinfo[i][0];
+                String value = applet.getParameter(key);
+                Debug.message("env",
 			      "Applet Parameter " + key +
 			      " has value " + value);
-		props.put(key, value);
-	    } catch (NullPointerException e) {
-	    }
-	}
+                props.put(key, value);
+            } catch (NullPointerException e) {
+            }
+        }
     }
 
     /**
@@ -334,28 +335,28 @@ public class Environment extends Properties {
      * @param p The runtime properties list
      */
     protected static void initRuntimeProperties(Properties p) {
-	if (isApplet()) {
-	    p.put("user.name", "appletUser");//for convenience
-	}
+        if (isApplet()) {
+            p.put("user.name", "appletUser");//for convenience
+        }
 
-	java.net.InetAddress addr = null;
-	try {
-	    addr = java.net.InetAddress.getLocalHost();
-	} catch (NullPointerException npe) {
-	    // Linux threw a npe when unconnected.
-	    Debug.output("Environment.init: Can't get hostname from InetAddress!");
-	} catch (java.net.UnknownHostException e) {
-	    Debug.output("Environment.init: I don't know my hostname!");
-	} catch (IndexOutOfBoundsException ioobe) {
-	    // Caught something weird here a couple of times when running unconnected.
-	    Debug.output("Environment.init: network may not be available");
-	}
+        java.net.InetAddress addr = null;
+        try {
+            addr = java.net.InetAddress.getLocalHost();
+        } catch (NullPointerException npe) {
+            // Linux threw a npe when unconnected.
+            Debug.output("Environment.init: Can't get hostname from InetAddress!");
+        } catch (java.net.UnknownHostException e) {
+            Debug.output("Environment.init: I don't know my hostname!");
+        } catch (IndexOutOfBoundsException ioobe) {
+            // Caught something weird here a couple of times when running unconnected.
+            Debug.output("Environment.init: network may not be available");
+        }
 
-	// the UniqueID is generated from other runtime values.  This should
-	// be unique for this Java VM.  Note that for security reasons, you
-	// might not want to ship around this value on a network because it
-	// details some interesting tidbits about the running application.
-	p.put(UniqueID, "_" +
+        // the UniqueID is generated from other runtime values.  This should
+        // be unique for this Java VM.  Note that for security reasons, you
+        // might not want to ship around this value on a network because it
+        // details some interesting tidbits about the running application.
+        p.put(UniqueID, "_" +
 	      Environment.get("user.name") + "_" +
 	      Environment.get(Version) + "_" +
 	      Environment.get("os.arch") + "_" +
@@ -363,54 +364,54 @@ public class Environment extends Properties {
 	      ((addr != null) ? addr.getHostName() : "nohost") + "_" +
 	      timestamp() + "_");
 
-	// determine window system (for HACKing around Java-under-XWindows
-	// polygon wraparound bug.
-	String osname = Environment.get("os.name");
+        // determine window system (for HACKing around Java-under-XWindows
+        // polygon wraparound bug.
+        String osname = Environment.get("os.name");
 
-	if (osname == null) {
-  	    isXWindows = false;
-  	    doingXWindowsWorkaround = false;
-	    Debug.message("env", "Environment: is applet, Web Start.");
-	    return;
-	}
+        if (osname == null) {
+            isXWindows = false;
+            doingXWindowsWorkaround = false;
+            Debug.message("env", "Environment: is applet, Web Start.");
+            return;
+        }
 
-	if (osname.equalsIgnoreCase("solaris")
-	     || osname.equalsIgnoreCase("SunOS") ) {
-	    isXWindows = true;
-	    doingXWindowsWorkaround = true;
-	    Debug.message("env", "Environment: is X Windows!");
-	} else if (osname.equalsIgnoreCase("linux")) {
-	    isXWindows = true;
-	    doingXWindowsWorkaround = true;
-	    Debug.message("env", "Environment: is X Windows!");
-	} else if (osname.startsWith("Windows")) {
-  	    isXWindows = false;
-  	    doingXWindowsWorkaround = false;
-  	    isXWindows = true;
-  	    doingXWindowsWorkaround = true;
-	    Debug.message("env", "Environment: is MS Windows!");
-	} else if (osname.equalsIgnoreCase("Mac OS")) {
-	    isXWindows = false;
-	    doingXWindowsWorkaround = false;
-	    Debug.message("env", "Environment: is Mac OS!");
-	} else if (osname.equalsIgnoreCase("Mac OS X")) {
- 	    isXWindows = true;
- 	    doingXWindowsWorkaround = true;
-// 	    isXWindows = false;
-// 	    doingXWindowsWorkaround = false;
-	    com.bbn.openmap.omGraphics.DrawingAttributes.alwaysSetTextToBlack = true;
-	    Debug.message("env", "Environment: Excellent! Mac OS X!");
-	} else {
-	    System.err.println("Environment.initRuntimeProperties(): " +
-		    "running on unknown/untested OS: " + osname);
-	}
+        if (osname.equalsIgnoreCase("solaris")
+	    || osname.equalsIgnoreCase("SunOS")) {
+            isXWindows = true;
+            doingXWindowsWorkaround = true;
+            Debug.message("env", "Environment: is X Windows!");
+        } else if (osname.equalsIgnoreCase("linux")) {
+            isXWindows = true;
+            doingXWindowsWorkaround = true;
+            Debug.message("env", "Environment: is X Windows!");
+        } else if (osname.startsWith("Windows")) {
+            isXWindows = false;
+            doingXWindowsWorkaround = false;
+            isXWindows = true;
+            doingXWindowsWorkaround = true;
+            Debug.message("env", "Environment: is MS Windows!");
+        } else if (osname.equalsIgnoreCase("Mac OS")) {
+            isXWindows = false;
+            doingXWindowsWorkaround = false;
+            Debug.message("env", "Environment: is Mac OS!");
+        } else if (osname.equalsIgnoreCase("Mac OS X")) {
+            isXWindows = true;
+            doingXWindowsWorkaround = true;
+	    // 	    isXWindows = false;
+	    // 	    doingXWindowsWorkaround = false;
+            com.bbn.openmap.omGraphics.DrawingAttributes.alwaysSetTextToBlack = true;
+            Debug.message("env", "Environment: Excellent! Mac OS X!");
+        } else {
+            System.err.println("Environment.initRuntimeProperties(): " +
+			       "running on unknown/untested OS: " + osname);
+        }
 
-	// should have initialized user properties already
-	if (Environment.get(OpenMapPrefix + ".noXWindowsWorkaround") != null) {
-	    Debug.message("env", "Environment.initRuntimeProperties(): " +
-		    "not working around XWindows clipping bug.");
-	    doingXWindowsWorkaround = false;
-	}
+        // should have initialized user properties already
+        if (Environment.get(OpenMapPrefix + ".noXWindowsWorkaround") != null) {
+            Debug.message("env", "Environment.initRuntimeProperties(): " +
+			  "not working around XWindows clipping bug.");
+            doingXWindowsWorkaround = false;
+        }
     }
 
     /**
@@ -420,14 +421,14 @@ public class Environment extends Properties {
      *          <code>false</code> otherwise.
      */
     public static boolean isApplet() {
-	return (applet != null);
+        return (applet != null);
     }
 
     protected static void setApplet(Applet applet) {
-	Environment.applet = applet;
-	if (applet instanceof JApplet) {
-	    Environment.useInternalFrames(((JApplet)applet).getRootPane());
-	}
+        Environment.applet = applet;
+        if (applet instanceof JApplet) {
+            Environment.useInternalFrames(((JApplet) applet).getRootPane());
+        }
     }
 
     /**
@@ -437,7 +438,7 @@ public class Environment extends Properties {
      *          <code>false</code> otherwise.
      */
     public static boolean isApplication() {
-	return (applet == null);
+        return (applet == null);
     }
 
     /**
@@ -450,7 +451,7 @@ public class Environment extends Properties {
      *            <code>null</code> if there is no property with that key.
      */
     public static String get(String key) {
-	return Environment.get(key, null);
+        return Environment.get(key, null);
     }
 
     /**
@@ -465,17 +466,16 @@ public class Environment extends Properties {
      *            that key.
      */
     public static String get(String key, String defaultValue) {
-	if (env == null) {
-	    if (Debug.debugging("env")) {
-	    System.err.println("Environment.get(" +
-			       key + ", " + defaultValue +
-			       ") called with null environment");
-	    }
-	    return defaultValue;
-	}
-	else {
-	    return env.getProperty(key, defaultValue);
-	}
+        if (env == null) {
+            if (Debug.debugging("env")) {
+                System.err.println("Environment.get(" +
+				   key + ", " + defaultValue +
+				   ") called with null environment");
+            }
+            return defaultValue;
+        } else {
+            return env.getProperty(key, defaultValue);
+        }
     }
 
     /**
@@ -484,19 +484,19 @@ public class Environment extends Properties {
      * @param key the property key.
      * @param value the value to the key.
      * @return the value of the property set, or null if the
-     * environment isn't ready for it.  
+     * environment isn't ready for it.
      */
     public static String set(String key, String value) {
-	if (env == null) {
-	    if (Debug.debugging("env")) {
-		System.err.println("Can't Environment.put(" +
-				   key + ", " + value + 
+        if (env == null) {
+            if (Debug.debugging("env")) {
+                System.err.println("Can't Environment.put(" +
+				   key + ", " + value +
 				   ") - no environment yet.");
-	    }
-	    return null;
-	} else {
-	    return (String) env.put(key, value);
-	}
+            }
+            return null;
+        } else {
+            return (String) env.put(key, value);
+        }
     }
 
     /**
@@ -508,7 +508,7 @@ public class Environment extends Properties {
      *
      */
     public static boolean getBoolean(String key) {
-	return getBoolean(key, false);
+        return getBoolean(key, false);
     }
 
     /**
@@ -521,12 +521,12 @@ public class Environment extends Properties {
      *
      */
     public static boolean getBoolean(String key, boolean defaultValue) {
-	String str = Environment.get(key, null);
-	if (str == null) {
-	    return defaultValue;
-	}
+        String str = Environment.get(key, null);
+        if (str == null) {
+            return defaultValue;
+        }
 
-	return (Boolean.valueOf(str)).booleanValue();
+        return (Boolean.valueOf(str)).booleanValue();
     }
 
     /**
@@ -538,7 +538,7 @@ public class Environment extends Properties {
      *
      */
     public static int getInteger(String key) {
-	return getInteger(key, Integer.MIN_VALUE, 10);
+        return getInteger(key, Integer.MIN_VALUE, 10);
     }
 
     /**
@@ -551,7 +551,7 @@ public class Environment extends Properties {
      *
      */
     public static int getInteger(String key, int defaultValue) {
-	return getInteger(key, defaultValue, 10);
+        return getInteger(key, defaultValue, 10);
     }
 
     /**
@@ -565,16 +565,16 @@ public class Environment extends Properties {
      *
      */
     public static int getInteger(String key, int defaultValue, int radix) {
-	String str = Environment.get(key, null);
-	if (str == null) {
-	    return defaultValue;
-	}
+        String str = Environment.get(key, null);
+        if (str == null) {
+            return defaultValue;
+        }
 
-	try {
-	    return Integer.parseInt(str, radix);
-	} catch (NumberFormatException e) {
-	    return defaultValue;
-	}
+        try {
+            return Integer.parseInt(str, radix);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 
     /**
@@ -586,7 +586,7 @@ public class Environment extends Properties {
      *
      */
     public static float getFloat(String key) {
-	return getFloat(key, Float.NaN);
+        return getFloat(key, Float.NaN);
     }
 
     /**
@@ -599,17 +599,16 @@ public class Environment extends Properties {
      *
      */
     public static float getFloat(String key, float defaultValue) {
-	String str = Environment.get(key, null);
-	if (str == null) {
-	    return defaultValue;
-	}
+        String str = Environment.get(key, null);
+        if (str == null) {
+            return defaultValue;
+        }
 
-	try {
-	    return Float.valueOf(str).floatValue();
-	}
-	catch (NumberFormatException e) {
-	    return defaultValue;
-	}
+        try {
+            return Float.valueOf(str).floatValue();
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 
     /**
@@ -621,7 +620,7 @@ public class Environment extends Properties {
      *
      */
     public static double getDouble(String key) {
-	return getDouble(key, Double.NaN);
+        return getDouble(key, Double.NaN);
     }
 
     /**
@@ -634,17 +633,16 @@ public class Environment extends Properties {
      *
      */
     public static double getDouble(String key, double defaultValue) {
-	String str = Environment.get(key, null);
-	if (str == null) {
-	    return defaultValue;
-	}
+        String str = Environment.get(key, null);
+        if (str == null) {
+            return defaultValue;
+        }
 
-	try {
-	    return Double.valueOf(str).doubleValue();
-	}
-	catch (NumberFormatException e) {
-	    return defaultValue;
-	}
+        try {
+            return Double.valueOf(str).doubleValue();
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 
     /**
@@ -653,7 +651,7 @@ public class Environment extends Properties {
      * @return the applet, or null if process is an application
      */
     public static Applet getApplet() {
-	return applet;
+        return applet;
     }
 
     /**
@@ -664,7 +662,7 @@ public class Environment extends Properties {
      * @see Environment#get
      */
     public static void addSystemProperty(String key, String value) {
-	env.put(key, value);
+        env.put(key, value);
     }
 
     /**
@@ -675,7 +673,7 @@ public class Environment extends Properties {
      * @see Environment#get
      */
     public static void addRuntimeProperty(String key, String value) {
-	env.runtimeProps.put(key, value);
+        env.runtimeProps.put(key, value);
     }
 
     /**
@@ -685,7 +683,7 @@ public class Environment extends Properties {
      *
      */
     public static Properties getProperties() {
-	return env;
+        return env;
     }
 
     /**
@@ -697,8 +695,8 @@ public class Environment extends Properties {
      *
      */
     public static String timestamp() {
-	Calendar calendar = Calendar.getInstance();
-	return "" +
+        Calendar calendar = Calendar.getInstance();
+        return "" +
 	    calendar.get(Calendar.YEAR) +
 	    calendar.get(Calendar.MONTH) +
 	    calendar.get(Calendar.DAY_OF_MONTH) +
@@ -717,7 +715,7 @@ public class Environment extends Properties {
      *
      */
     public final static boolean isXWindowSystem() {
-	return isXWindows;
+        return isXWindows;
     }
 
     /**
@@ -737,24 +735,24 @@ public class Environment extends Properties {
      * @return Vector of Strings
      */
     public final static Vector getClasspathDirs() {
-	Vector v = new Vector();
-	try {
-	    String classPath = System.getProperty("java.class.path");
-	    StringTokenizer st = new StringTokenizer(classPath,
+        Vector v = new Vector();
+        try {
+            String classPath = System.getProperty("java.class.path");
+            StringTokenizer st = new StringTokenizer(classPath,
 						     File.pathSeparator);
-	    
-	    while (st.hasMoreTokens()) {
-		String path = st.nextToken();
-		if ((new File(path)).isDirectory()) {
-		    v.addElement(path);
-		}
-	    }
-	} catch (java.security.AccessControlException ace) {
-	    // Running as an applet?!?
-	}
 
-	v.addAll(extraPaths);
-	return v;
+            while (st.hasMoreTokens()) {
+                String path = st.nextToken();
+                if ((new File(path)).isDirectory()) {
+                    v.addElement(path);
+                }
+            }
+        } catch (java.security.AccessControlException ace) {
+            // Running as an applet?!?
+        }
+
+        v.addAll(extraPaths);
+        return v;
     }
 
     /**
@@ -763,7 +761,7 @@ public class Environment extends Properties {
      * classpaths.
      */
     public static void addPathToClasspaths(String path) {
-	extraPaths.addElement(path);
+        extraPaths.addElement(path);
     }
 
     /**
@@ -771,19 +769,19 @@ public class Environment extends Properties {
      * as a hex ARGB string, has been set.  If it hasn't or if it
      * doesn't represent a valid color number, then null is returned,
      * which should be interpreted as an excuse to use the default
-     * pretty blue embedded in the projection.  
+     * pretty blue embedded in the projection.
      */
     public static Color getCustomBackgroundColor() {
-	String colorRep = get(BackgroundColor);
-	if (colorRep == null) {
-	    return null;
-	} else {
-	    try {
-		return PropUtils.parseColor(colorRep);
-	    } catch (NumberFormatException nfe){
-		return null;
-	    }
-	}
+        String colorRep = get(BackgroundColor);
+        if (colorRep == null) {
+            return null;
+        } else {
+            try {
+                return PropUtils.parseColor(colorRep);
+            } catch (NumberFormatException nfe) {
+                return null;
+            }
+        }
     }
 
     /**
@@ -793,11 +791,11 @@ public class Environment extends Properties {
      * gets the LayeredPane from the rootPane.
      */
     public static void useInternalFrames(JRootPane rootPane) {
-	if (rootPane != null) {
-	    useInternalFrames(rootPane.getLayeredPane());
-	} else {
-	    useInternalFrames((JLayeredPane)null);
-	}
+        if (rootPane != null) {
+            useInternalFrames(rootPane.getLayeredPane());
+        } else {
+            useInternalFrames((JLayeredPane) null);
+        }
     }
 
     /**
@@ -806,14 +804,14 @@ public class Environment extends Properties {
      * @param layeredPane to use for the internal frames.
      */
     public static void useInternalFrames(JLayeredPane layeredPane) {
-	if (layeredPane != null) {
-	    env.desktop = layeredPane;
-	    env.desktop.setOpaque(true);
-	    set(UseInternalFrames, "true");
-	} else {
-	    env.desktop = null;
-	    set(UseInternalFrames, "false");
-	}
+        if (layeredPane != null) {
+            env.desktop = layeredPane;
+            env.desktop.setOpaque(true);
+            set(UseInternalFrames, "true");
+        } else {
+            env.desktop = null;
+            set(UseInternalFrames, "false");
+        }
     }
 
     /**
@@ -821,16 +819,17 @@ public class Environment extends Properties {
      * if the Environment hasn't be set with the root pane.
      */
     public static JLayeredPane getInternalFrameDesktop() {
-	return env.desktop;
+        return env.desktop;
     }
 
 
     private static I18n i18n = new BasicI18n();
+
     /**
      * Get the Internationalization instance.
      **/
     public static I18n getI18n() {
-	return i18n;
+        return i18n;
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.12 $
-// $Date: 2003/11/14 20:09:38 $
+// $Revision: 1.13 $
+// $Date: 2003/12/08 23:56:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1279,7 +1279,10 @@ public abstract class Layer extends JComponent
 		Debug.output(getName() + " displaying palette");
 	    }
 	    showPalette();
-	} else if (command == HidePaletteCmd) {
+	} else if (command == HidePaletteCmd) {	 
+	    if (Debug.debugging("layer")) {
+		Debug.output(getName() + " hiding palette");
+	    }
 	    hidePalette();
 	} else if (command == DisplayPropertiesCmd) {
 	    Inspector inspector = new Inspector();
