@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwThematicIndex.java,v $
 // $RCSfile: DcwThematicIndex.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/09/24 13:44:32 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -131,8 +131,8 @@ public class DcwThematicIndex {
 	    fieldTypeOfIndex = inputFile.readChar();
 	    numberOfDataElement = inputFile.readInteger();
 	    dataTypeSpecifier = inputFile.readChar();
-	    tableIndexed = trim(inputFile.readFixedLengthString(12));
-	    columnIndexed = trim(inputFile.readFixedLengthString(25));
+	    tableIndexed = trim(inputFile.readFixedLengthString(12)).toLowerCase();
+	    columnIndexed = trim(inputFile.readFixedLengthString(25)).toLowerCase();
 	    sorted = (inputFile.readChar() == 'S') && vpf2407;
 	    inputFile.seek(60); //skips 3 unused bytes
 
