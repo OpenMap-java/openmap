@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/CSVTiledImagePlugIn.java,v $
 // $RCSfile: CSVTiledImagePlugIn.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.5 $
+// $Date: 2004/02/03 20:41:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -173,7 +173,6 @@ public class CSVTiledImagePlugIn extends OMGraphicHandlerPlugIn {
             }
         }
         repaint();
-//      list.generate(p);
         return list;
 
     } //end getRectangle
@@ -239,7 +238,11 @@ public class CSVTiledImagePlugIn extends OMGraphicHandlerPlugIn {
                         try {
                             tracker.addImage(fileImage, imageCount);
                             tracker.waitForID(imageCount); 
-                        } catch (Exception e) {} // Catch errors
+                        } catch (Exception e) {
+                            if (Debug.debugging("csvtiledimage")) {
+                                e.printStackTrace();
+                            }
+                        } // Catch errors
 
                         OMScalingRaster omsr = new OMScalingRaster(ullat, ullon,
                                                                    lrlat, lrlon,
