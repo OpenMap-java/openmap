@@ -5,7 +5,7 @@
 	<key>CFBundleName</key>
 	<string>OpenMap</string>
 	<key>CFBundleVersion</key>
-	<string>4.6 Beta</string>
+	<string>4.6</string>
 	<key>CFBundleAllowMixedLocalizations</key>
 	<string>false</string>
 	<key>CFBundleExecutable</key>
@@ -17,7 +17,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleGetInfoString</key>
-	<string>OpenMap 4.6 Beta, Copyright (C) BBN Technologies LLC</string>
+	<string>OpenMap 4.6, Copyright (C) BBN Technologies LLC</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleIconFile</key>
