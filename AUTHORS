@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/AUTHORS,v $
 $RCSfile: AUTHORS,v $
-$Revision: 1.6 $
-$Date: 2000/05/04 20:38:10 $
+$Revision: 1.7 $
+$Date: 2000/08/03 16:22:06 $
 $Author: dietrick $
 
 People and organizations that have contributed to OpenMap
@@ -46,12 +46,26 @@ Dan Schmitt (dan@computer.org)
   example, which starts up the ImageServer to create an image.
 
 Michael Los
-  Provided the AbstractHandlerLocation idea, code and prodding.
+  Provided the AbstractHandlerLocation idea, code and prodding.  Also
+  submitted changes to the quadtree to make it serializable.
 
 Willie Macris
   Provided a update which greatly lessoned the memory requirements of 
   the RpfCacheHandler, and helped out with the garbage collection.
 
+Ringo Wathelet (DSTO in Australia)
+  Provided the DistanceMouseMode.
+
+Paul Tomblin
+  Provided a fix for the quadtree rectangle test for bounds checking.
+
+Davis Gillespie (formally from General Dynamics)
+  Provided fixes for a memory leak in the DTEDLayer and DTEDFrameCache.
+
 --------------------------------------
 
 Thank you!
+
+If we've left you off this list - Sorry!  Let us know - it's important
+that we give credit where it's due.  We really appreciate that people
+take the time to submit code to us.
