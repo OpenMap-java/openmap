@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ComponentFactory.java,v $
 // $RCSfile: ComponentFactory.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/09/22 23:34:46 $
+// $Revision: 1.8 $
+// $Date: 2003/09/25 18:53:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -308,7 +308,16 @@ public class ComponentFactory {
 	    }
 
 	    if (DEBUG) {
-		Debug.output(" - created class arguments " + constructorArgs);
+		StringBuffer sb = new StringBuffer();
+		if (constructorArgs == null) {
+		    sb.append("null");
+		} else {
+		    for (int i = 0; i < constructorArgs.length; i++) {
+			sb.append(constructorArgs[i].getClass().getName());
+			if (i < constructorArgs.length - 1) sb.append(", ");
+		    }
+		}
+		Debug.output(" - created class arguments [" + sb.toString() + "]");
 	    }
 
 	    Constructor constructor = null;
@@ -342,7 +351,7 @@ public class ComponentFactory {
 	} catch (NoSuchMethodException nsme) {
 	    errorMessage = "NoSuchMethodException: " + nsme.getMessage();
 	} catch (InstantiationException ie) {
-	    errorMessage = "InstantiationException: " + ie.getMessage();
+	    errorMessage = "InstantiationException: " + ie.getMessage() + " - Might be trying to create an abstract class";
 	} catch (IllegalAccessException iae) {
 	    if (DEBUG) iae.printStackTrace();
 	    errorMessage = "IllegalAccessException: " + iae.getMessage();
