@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ComponentFactory.java,v $
 // $RCSfile: ComponentFactory.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/08 22:41:58 $
+// $Revision: 1.3 $
+// $Date: 2003/07/15 23:48:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -171,11 +171,23 @@ public class ComponentFactory {
     /**
      * Create a single object.
      *
+     * @param className Class name to instantiate, empty constructor.
+     * @return object if all goes well, null if not.
+     */
+    public static Object create(String className) {
+	return create(className, (Object[])null, null, null);
+    }
+
+    /**
+     * Create a single object.
+     *
      * @param className Class name to instantiate.
-     * @param properties Properties to use to initalize the object.
+     * @param properties Properties to use to initalize the object, if
+     * the object is a PropertyConsumer.
+     * @return object if all goes well, null if not.
      */
     public static Object create(String className, Properties properties) {
-	return create(className, null, properties);
+	return create(className, (Object[])null, null, properties);
     }
 
     /**
@@ -185,14 +197,46 @@ public class ComponentFactory {
      * @param className Class name to instantiate.
      * @param prefix Properties prefix to use by the object to scope
      * its properties.
-     * @param properties Properties to use to initalize the object.  
+     * @param properties Properties to use to initalize the object, if
+     * the object is a PropertyConsumer.  
      */
     public static Object create(String className,
 				String prefix, 
 				Properties properties) {
 
 	return create(className, (Object[])null, prefix, properties);
+    }
 
+    /**
+     * Create a single object.  If you want it to complain about
+     * classes it can't find, then set the 'basic' debug flag.
+     *
+     * @param className Class name to instantiate.
+     * @param constructorArgs an Object array of arguments to use in
+     * the constructor of the component.
+     * @return object if all goes well, null if anything bad happens.
+     */
+    public static Object create(String className,
+				Object[] constructorArgs) {
+	return create(className, constructorArgs, null, null, null);
+    }
+
+    /**
+     * Create a single object.  If you want it to complain about
+     * classes it can't find, then set the 'basic' debug flag.
+     *
+     * @param className Class name to instantiate.
+     * @param constructorArgs an Object array of arguments to use in
+     * the constructor of the component.
+     * @param argClasses an array of classes to use to scope which
+     * constructor to use.  If null, then an array will be built from
+     * the constructorArgs.
+     * @return object if all goes well, null if anything bad happens.
+     */
+    public static Object create(String className,
+				Object[] constructorArgs,
+				Class[] argClasses) {
+	return create(className, constructorArgs, argClasses, null, null);
     }
 
     /**
@@ -204,11 +248,36 @@ public class ComponentFactory {
      * the constructor of the component.
      * @param prefix Properties prefix to use by the object to scope
      * its properties.
-     * @param properties Properties to use to initalize the object.  
+     * @param properties Properties to use to initalize the object, if
+     * the object is a PropertyConsumer.  
      * @return object if all goes well, null if anything bad happens.
      */
     public static Object create(String className,
 				Object[] constructorArgs,
+				String prefix, 
+				Properties properties) {
+	return create(className, constructorArgs, null, prefix, properties);
+    }
+
+    /**
+     * Create a single object.  If you want it to complain about
+     * classes it can't find, then set the 'basic' debug flag.
+     *
+     * @param className Class name to instantiate.
+     * @param constructorArgs an Object array of arguments to use in
+     * the constructor of the component.
+     * @param argClasses an array of classes to use to scope which
+     * constructor to use.  If null, then an array will be built from
+     * the constructorArgs.
+     * @param prefix Properties prefix to use by the object to scope
+     * its properties.
+     * @param properties Properties to use to initalize the object, if
+     * the object is a PropertyConsumer.  
+     * @return object if all goes well, null if anything bad happens.
+     */
+    public static Object create(String className,
+				Object[] constructorArgs,
+				Class[] argClasses,
 				String prefix, 
 				Properties properties) {
 
@@ -224,15 +293,18 @@ public class ComponentFactory {
 	    Class newObjClass = Class.forName(className);
 	    if (DEBUG) Debug.output(" - got class for " + className);
 
-	    Class[] argClasses = null;
-	    if (constructorArgs != null && constructorArgs.length > 0) {
-		argClasses = new Class[constructorArgs.length];
-		for (int i = 0; i < argClasses.length; i++) {
-		    argClasses[i] = constructorArgs[i].getClass();
+	    if (argClasses == null) {
+		if (constructorArgs != null && 
+		    constructorArgs.length > 0) {
+
+		    argClasses = new Class[constructorArgs.length];
+		    for (int i = 0; i < argClasses.length; i++) {
+			argClasses[i] = constructorArgs[i].getClass();
+		    }
+		} else {
+		    // If empty, make null
+		    constructorArgs = null;
 		}
-	    } else {
-		// If empty, make null
-		constructorArgs = null;
 	    }
 
 	    if (DEBUG) {
@@ -254,7 +326,7 @@ public class ComponentFactory {
 	    } catch (NoSuchMethodException nsmei) {
 		// The argClasses may have subclasses of what the desired 
 		// constructor needs, so we need to check explicitly.
-		obj = createWithSubclassConstructorArgs(newObjClass, argClasses);
+		obj = createWithSubclassConstructorArgs(newObjClass, argClasses, constructorArgs);
 		if (DEBUG && obj != null) Debug.output(" - got object on try #2");
 	    }
 
@@ -291,7 +363,8 @@ public class ComponentFactory {
     }
 
     protected static Object createWithSubclassConstructorArgs(Class newObjClass, 
-							      Class[] argClasses) 
+							      Class[] argClasses, 
+							      Object[] constructorArgs) 
 	throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 	boolean DEBUG = Debug.debugging("componentfactorydetail");
@@ -304,6 +377,13 @@ public class ComponentFactory {
 
 	Constructor[] constructors = newObjClass.getConstructors();
 	int numConstructors = constructors.length;
+
+	if (DEBUG) {
+	    Debug.output(" - searching " + numConstructors +
+			 " possible constructor" + 
+			 (numConstructors==1?"":"s"));
+	}
+
 	for (int i = 0; i < numConstructors; i++) {
 	    Constructor constructor = constructors[i];
 
@@ -340,20 +420,32 @@ public class ComponentFactory {
 		    good = true; // Maintain true...
 		} else if (arguments[j].isAssignableFrom(argClasses[j])) {
 
-		    // Doesn't work quite yet.  May have to check for
+		    //  Doesn't work quite yet.  May have to check for
 		    //  super-super class,etc, and we still get an
 		    //  IllegalArgumentException due to argument type
 		    //  mismatch.
 
+		    // Is this even necessary?  Don't think so...
 		    argClasses[j] = argClasses[j].getSuperclass();
 		    if (DEBUG) {
-			Debug.output(" - superclass arg class match, arg " + j + 
-				     " reassigning to " + argClasses[j].toString());
+			Debug.output(" - superclass arg class match, arg " + 
+				     j + " reassigning to " + 
+				     argClasses[j].toString());
 		    }
 		    good = true; // Maintain true...
+// 		} else if (constructorArgs[j] instanceof Number) {
+// 		    if (DEBUG) {
+// 			Debug.output(" - Number type match, arg " + j);
+// 		    }
+// 		    good = true; // Maintain true...
+
 		} else {
 		    if (DEBUG) {
-			Debug.output(" - arg class mismatch on arg " + j + ", bailing");
+			Debug.output(" - arg class mismatch on arg " + j + 
+				     ", bailing (" + 
+				     arguments[j].getName() + 
+				     " vs. " + 
+				     argClasses[j].getName() + ")");
 		    }
 		    good = false; // Punch with false
 		    break;
@@ -364,7 +456,7 @@ public class ComponentFactory {
 		if (DEBUG) {
 		    Debug.debugging(" - creating object");
 		}
-		Object obj = constructor.newInstance(argClasses);
+		Object obj = constructor.newInstance(constructorArgs);
 		if (DEBUG) {
 		    Debug.debugging(" - created object");
 		}
