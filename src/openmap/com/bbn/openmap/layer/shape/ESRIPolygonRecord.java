@@ -1,30 +1,38 @@
-// **********************************************************************
+// ********************************************************************** 
 // 
-// <copyright>
+// <copyright> 
 // 
-//  BBN Technologies
-//  10 Moulton Street
-//  Cambridge, MA 02138
-//  (617) 873-8000
+// BBN Technologies, a Verizon Company 
+// 10 Moulton Street 
+// Cambridge, MA 02138 
+// (617) 873-8000 
 // 
-//  Copyright (C) BBNT Solutions LLC. All rights reserved.
+// Copyright (C) BBNT Solutions LLC. All rights reserved. 
 // 
-// </copyright>
-// **********************************************************************
+// </copyright> 
+// ********************************************************************** 
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPolygonRecord.java,v $
-// $RCSfile: ESRIPolygonRecord.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:04 $
-// $Author: dietrick $
+// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPolygonRecord.java,v $ 
+// $RCSfile: ESRIPolygonRecord.java,v $ 
+// $Revision: 1.5 $ 
+// $Date: 2004/11/26 03:44:42 $ 
+// $Author: dietrick $ 
 // 
-// **********************************************************************
+// ********************************************************************** 
 
 package com.bbn.openmap.layer.shape;
 
 import java.io.IOException;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.geom.*;
+
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMAreaList;
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGeometryList;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.geom.PolygonGeometry;
+import com.bbn.openmap.omGraphics.geom.PolylineGeometry;
 import com.bbn.openmap.proj.ProjMath;
 
 /**
@@ -34,7 +42,7 @@ import com.bbn.openmap.proj.ProjMath;
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
  * @author HACK-author blame it on aculline
- * @version $Revision: 1.4 $ $Date: 2004/10/14 18:06:04 $
+ * @version $Revision: 1.5 $ $Date: 2004/11/26 03:44:42 $
  */
 public class ESRIPolygonRecord extends ESRIRecord {
 
@@ -66,7 +74,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
         shapeType = readLEInt(b, ptr);
         ptr += 4;
         if ((shapeType != SHAPE_TYPE_POLYGON) && (shapeType != SHAPE_TYPE_ARC)) {
-            throw new IOException("Invalid polygon record.  Expected shape "
+            throw new IOException("Invalid polygon record. Expected shape "
                     + "type " + SHAPE_TYPE_POLYGON + " or type "
                     + SHAPE_TYPE_ARC + ", but found " + shapeType);
         }
@@ -81,8 +89,10 @@ public class ESRIPolygonRecord extends ESRIRecord {
         int numPoints = readLEInt(b, ptr);
         ptr += 4;
 
-        if (numParts <= 0)
+        if (numParts <= 0) {
+            polygons = new ESRIPoly[0];
             return;
+        }
 
         polygons = new ESRIPoly[numParts];
         int origin = 0;
@@ -147,7 +157,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
         for (int i = 0; i < len; i += 2) {
             // REMEMBER: switch to x,y order
             bounds.addPoint(ProjMath.radToDeg(radians[i + 1]),//x
-                                                              // (lon)
+                    // (lon)
                     ProjMath.radToDeg(radians[i]));//y (lat)
         }
     }
@@ -171,10 +181,29 @@ public class ESRIPolygonRecord extends ESRIRecord {
         OMPoly p = null;
         float[] pts;
         boolean ispolyg = isPolygon();
+        /*
+         * modifications in the next 4 lines marked with as: allow to
+         * treat ESRIPolygonRecord with holes correctly (ESRIPolys
+         * with counterclockwise order of vertices)
+         */
         OMGraphicList sublist = null;
 
         if (nPolys > 1) {
-            sublist = new OMGraphicList(10);
+            // Only want the OMAreaList if the shape type is for
+            // polygons
+            if (false && ispolyg) {
+                // There's a problem here with OMPolys that wrap
+                // around the earth, putting them in OMAreaLists makes
+                // them draw lines through the map. Need to sort that
+                // out before enabling this code by removing 'false'
+                // in if statement.
+                sublist = new OMAreaList();
+            } else {
+                sublist = new OMGraphicList();
+            }
+
+            drawingAttributes.setTo(sublist);
+
             sublist.setVague(true); // Treat list as one object.
             list.add(sublist);
             sublist.setAppObject(new Integer(getRecordNumber()));
@@ -308,7 +337,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
                 nBytes += writeLEDouble(b,
                         off + nBytes,
                         (double) ProjMath.radToDeg(pts[j + 1]));//x
-                                                                // (lon)
+                // (lon)
                 nBytes += writeLEDouble(b,
                         off + nBytes,
                         (double) ProjMath.radToDeg(pts[j]));//y (lat)
