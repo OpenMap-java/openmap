@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardRenderPolicy.java,v $
 // $RCSfile: StandardRenderPolicy.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/04 18:15:21 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:35:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,7 +42,7 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
 
     protected boolean DEBUG = false;
 
-    protected StandardRenderPolicy() {
+    public StandardRenderPolicy() {
 	DEBUG = Debug.debugging("layer") || Debug.debugging("policy");
     }
     
