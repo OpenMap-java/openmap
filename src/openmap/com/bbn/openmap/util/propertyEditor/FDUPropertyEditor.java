@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/FDUPropertyEditor.java,v $
 // $RCSfile: FDUPropertyEditor.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.4 $
+// $Date: 2004/02/06 00:07:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,6 +46,7 @@ public class FDUPropertyEditor extends MultiDirectoryPropertyEditor {
         int returnVal = chooser.showDialog((Component)null, "Select");
         if (returnVal==JFileChooser.APPROVE_OPTION) {
             String newFilename = chooser.getSelectedFile().getAbsolutePath();
+            newFilename = cleanUpName(newFilename);
             setValue(newFilename);
             firePropertyChange();
         }

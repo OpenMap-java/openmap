@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/MultiDirectoryPropertyEditor.java,v $
 // $RCSfile: MultiDirectoryPropertyEditor.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.4 $
+// $Date: 2004/02/06 00:07:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,6 +65,7 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
         int returnVal = chooser.showDialog((Component)null, "Select");
         if (returnVal==JFileChooser.APPROVE_OPTION) {
             String newFilename = chooser.getSelectedFile().getAbsolutePath();
+            newFilename = cleanUpName(newFilename);
             append(newFilename);
             firePropertyChange();
         }
