@@ -183,7 +183,7 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
      */
     public String[] getMouseModeServiceList() {
 	String[] ret = new String[1];
-	ret[0] = new String("Gestures");
+	ret[0] = "Gestures";
 	return ret;
     }
 

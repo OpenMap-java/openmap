@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:47:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -346,8 +346,10 @@ public class AreaHandler implements PropertyConsumer {
             omgraphics = new OMGraphicList();
         }
 
-  
-	String defaultPointImageURLString = props.getProperty(prefix + pointImageURLProperty);
+	// This is handled properly yet.  The PoliticalArea should be
+	// updated to handle URLs for area points, and have different
+	// icons for different areas.
+// 	String defaultPointImageURLString = props.getProperty(prefix + pointImageURLProperty);
 
 	// Now, match the attributes to the graphics.  Find the
 	// indexes of the name and the search key.  Also figure out

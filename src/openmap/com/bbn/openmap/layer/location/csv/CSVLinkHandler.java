@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/csv/CSVLinkHandler.java,v $
 // $RCSfile: CSVLinkHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:47:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -443,13 +443,13 @@ public class CSVLinkHandler extends CSVLocationHandler {
 		token = csvt.token();
 	    }
 	} catch (java.io.IOException ioe) {
-	    new com.bbn.openmap.util.HandleError(ioe);
+	    throw new com.bbn.openmap.util.HandleError(ioe);
 	} catch (ArrayIndexOutOfBoundsException aioobe) {
-	    new com.bbn.openmap.util.HandleError(aioobe);
+	    throw new com.bbn.openmap.util.HandleError(aioobe);
 	} catch (NumberFormatException nfe) {
-	    new com.bbn.openmap.util.HandleError(nfe);
+	    throw new com.bbn.openmap.util.HandleError(nfe);
 	} catch (ClassCastException cce) {
-	    new com.bbn.openmap.util.HandleError(cce);
+	    throw new com.bbn.openmap.util.HandleError(cce);
 	}
 	Debug.message("link", "CSVLinkHandler: Finished File:" + locationFile);
 	return qt;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/URLRasterLocation.java,v $
 // $RCSfile: URLRasterLocation.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/20 22:02:26 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:47:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,10 +53,10 @@ public class URLRasterLocation extends Location {
      * @param iconURL a string to a URL for an image
      */
     public URLRasterLocation(float latitude, float longitude, 
-			     String name, String iconURL){
+			     String name, String iconURL) {
 	super(latitude, longitude, name, getIconRaster(latitude, longitude, iconURL));
 
-	if (location instanceof OMRaster){
+	if (location instanceof OMRaster) {
 	    setHorizontalLabelBuffer((((OMRaster)location).getWidth()/2) + SPACING);
 	}
 
@@ -71,10 +71,10 @@ public class URLRasterLocation extends Location {
      * @param iconURL a URL for an image
      */
     public URLRasterLocation(float latitude, float longitude, 
-			     String name, URL iconURL){
+			     String name, URL iconURL) {
 	super(latitude, longitude, name, getIconRaster(latitude, longitude, iconURL));
 
-	if (location instanceof OMRaster){
+	if (location instanceof OMRaster) {
 	    setHorizontalLabelBuffer((((OMRaster)location).getWidth()/2) + SPACING);
 	}
 
@@ -91,10 +91,10 @@ public class URLRasterLocation extends Location {
      * @param iconURL a String for a URL for an image
      */
     public URLRasterLocation(int x, int y, String name, 
-			     String iconURL){
+			     String iconURL) {
 	super(x, y, name, getIconRaster(x, y, iconURL));
 
-	if (location instanceof OMRaster){
+	if (location instanceof OMRaster) {
 	    setHorizontalLabelBuffer((((OMRaster)location).getWidth()/2) + SPACING);
 	}
     }
@@ -110,10 +110,10 @@ public class URLRasterLocation extends Location {
      * @param iconURL a URL for an image
      */
     public URLRasterLocation(int x, int y, String name, 
-			     URL iconURL){
+			     URL iconURL) {
 	super(x, y, name, getIconRaster(x, y, iconURL));
 
-	if (location instanceof OMRaster){
+	if (location instanceof OMRaster) {
 	    setHorizontalLabelBuffer((((OMRaster)location).getWidth()/2) + SPACING);
 	}
     }
@@ -132,11 +132,11 @@ public class URLRasterLocation extends Location {
      */
     public URLRasterLocation(float latitude, float longitude,
 			     int xOffset, int yOffset, String name, 
-			     String iconURL){
+			     String iconURL) {
 	super(latitude, longitude, xOffset, yOffset, name, 
 	      getIconRaster(latitude, longitude, xOffset, yOffset, iconURL));
 
-	if (location instanceof OMRaster){
+	if (location instanceof OMRaster) {
 	    setHorizontalLabelBuffer((((OMRaster)location).getWidth()/2) + SPACING);
 	}
     }
@@ -155,11 +155,11 @@ public class URLRasterLocation extends Location {
      */
     public URLRasterLocation(float latitude, float longitude,
 			     int xOffset, int yOffset, String name, 
-			     URL iconURL){
+			     URL iconURL) {
 	super(latitude, longitude, xOffset, yOffset, name, 
 	      getIconRaster(latitude, longitude, xOffset, yOffset, iconURL));
 
-	if (location instanceof OMRaster){
+	if (location instanceof OMRaster) {
 	    setHorizontalLabelBuffer((((OMRaster)location).getWidth()/2) + SPACING);
 	}
     }
@@ -171,7 +171,7 @@ public class URLRasterLocation extends Location {
      * @param longitude longitude in decimal degrees.
      * @param iconURL a URL for an image
      */
-    public static OMRaster getIconRaster(float lat, float lon, String iconURL){
+    public static OMRaster getIconRaster(float lat, float lon, String iconURL) {
 	URL url = getIconRasterURL(iconURL);
 	if (url == null) return null;
 
@@ -185,7 +185,7 @@ public class URLRasterLocation extends Location {
      * @param longitude longitude in decimal degrees.
      * @param iconURL a URL for an image
      */
-    public static OMRaster getIconRaster(float lat, float lon, URL iconURL){
+    public static OMRaster getIconRaster(float lat, float lon, URL iconURL) {
 
 	ImageIcon icon = new ImageIcon(iconURL);
 	if (icon == null) return null;
@@ -204,7 +204,7 @@ public class URLRasterLocation extends Location {
      * map.
      * @param iconURL a String for a URL for an image
      */
-    public static OMRaster getIconRaster(int x, int y, String iconURL){
+    public static OMRaster getIconRaster(int x, int y, String iconURL) {
 	URL url = getIconRasterURL(iconURL);
 	if (url == null) return null;
 
@@ -220,7 +220,7 @@ public class URLRasterLocation extends Location {
      * map.
      * @param iconURL a URL for an image
      */
-    public static OMRaster getIconRaster(int x, int y, URL iconURL){
+    public static OMRaster getIconRaster(int x, int y, URL iconURL) {
 	ImageIcon icon = new ImageIcon(iconURL);
 	if (icon == null) return null;
 
@@ -241,7 +241,7 @@ public class URLRasterLocation extends Location {
      * @param iconURL a String for URL for an image
      */
     public static OMRaster getIconRaster(float lat, float lon, 
-					 int x, int y, String iconURL){
+					 int x, int y, String iconURL) {
 	URL url = getIconRasterURL(iconURL);
 	if (url == null) return null;
 
@@ -260,7 +260,7 @@ public class URLRasterLocation extends Location {
      * @param iconURL a URL for an image
      */
     public static OMRaster getIconRaster(float lat, float lon, 
-					 int x, int y, URL iconURL){
+					 int x, int y, URL iconURL) {
 	ImageIcon icon = new ImageIcon(iconURL);
 	if (icon == null) return null;
 
@@ -273,23 +273,22 @@ public class URLRasterLocation extends Location {
      * Create an ImageIcon from a String to an image URL.
      * @param iconURL can be a path to a resource, file or URL.
      */
-    public static URL getIconRasterURL(String iconURL){
+    public static URL getIconRasterURL(String iconURL) {
 	try {
 	    return LayerUtils.getResourceOrFileOrURL(null, iconURL);
 	} catch (java.net.MalformedURLException mue) {
-	    new com.bbn.openmap.util.HandleError(mue);
-	} catch (java.io.IOException ioe){
-	    new com.bbn.openmap.util.HandleError(ioe);
+	    throw new com.bbn.openmap.util.HandleError(mue);
+	} catch (java.io.IOException ioe) {
+	    throw new com.bbn.openmap.util.HandleError(ioe);
 	}
-	return null;
     }
 
     /**
      * Given a new latitude/longitude, reposition the graphic and
      * label.
      */
-    public void setGraphicLocations(float latitude, float longitude){
-	if (location instanceof OMRaster){
+    public void setGraphicLocations(float latitude, float longitude) {
+	if (location instanceof OMRaster) {
 	    OMRaster ras = (OMRaster) location;
 	    ras.setLat(latitude);
 	    ras.setLon(longitude);
@@ -304,8 +303,8 @@ public class URLRasterLocation extends Location {
      * Given a new x/y screen location, reposition the graphic and
      * label.
      */
-    public void setGraphicLocations(int x, int y){
-	if (location instanceof OMRaster){
+    public void setGraphicLocations(int x, int y) {
+	if (location instanceof OMRaster) {
 	    OMRaster ras = (OMRaster) location;
 	    ras.setX(x);
 	    ras.setY(y);
@@ -321,8 +320,8 @@ public class URLRasterLocation extends Location {
      * reposition the graphic and label. 
      */
     public void setGraphicLocations(float latitude, float longitude,
-				    int offsetX, int offsetY){
-	if (location instanceof OMRaster){
+				    int offsetX, int offsetY) {
+	if (location instanceof OMRaster) {
 	    OMRaster ras = (OMRaster) location;
 	    ras.setLat(latitude);
 	    ras.setLon(longitude);

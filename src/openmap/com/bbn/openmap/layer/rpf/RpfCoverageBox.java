@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCoverageBox.java,v $
 // $RCSfile: RpfCoverageBox.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/28 22:33:30 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:49:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -106,8 +106,8 @@ public class RpfCoverageBox {
 
 		 // NOTE: added +se_lat+se_lon because of 
 		 // uniqueness problems
-         id = new String(tocNumber + entryNumber + nw_lat + nw_lon +
-                         se_lat + se_lon + chartCode);
+         id = tocNumber + entryNumber + nw_lat + nw_lon +
+	     se_lat + se_lon + chartCode;
 
       }
       return id;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrame.java,v $
 // $RCSfile: RpfFrame.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:49:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -172,10 +172,8 @@ public class RpfFrame {
 	if (entry != null) {
 	    s.append("\nFrame Name: ");
 	    s.append(entry.filename);
-	}
-	else{
-	    s.append("\nThere are no attributes in frame: ");
-	    s.append(entry.filename);
+	} else{
+	    s.append("\nFrame Name: Unavailable.");
 	}
 
 	if (report == null) setReport(Cib);  // preset the attribute part of the info.
@@ -337,8 +335,6 @@ public class RpfFrame {
 	    nitfHeader = new NitfHeader();
 	    // If false, it might not be a NITF file, start over...
 	    if (!nitfHeader.read(binFile)) binFile.seek(0);
-
-	    long rpfOffset = binFile.getFilePointer();
 
 	    header = new RpfHeader();
 	    // Now, read the RPF header...

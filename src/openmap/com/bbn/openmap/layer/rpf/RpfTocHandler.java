@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocHandler.java,v $
 // $RCSfile: RpfTocHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/28 22:33:30 $
+// $Revision: 1.4 $
+// $Date: 2003/09/22 23:49:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -236,7 +236,7 @@ public class RpfTocHandler {
 		Debug.output("RpfTocHandler: TOC file is in " + parentDir);
 	    }
 
-	    dir = new String(parentDir + "/");
+	    dir = parentDir + "/";
 
 	    // With the new BinaryFile, we can't get to this
 	    // info, because we aren't using File objects anymore.
@@ -553,7 +553,7 @@ public class RpfTocHandler {
 
   		if (exists) {
 		    frame.diskspace = diskspace;
-		    frame.framePath = new String(tempPath);
+		    frame.framePath = tempPath;
 		    frame.exists = true;
 		} else if (!fullPathsInATOC) {
 
@@ -563,7 +563,7 @@ public class RpfTocHandler {
 
   		    if (BinaryFile.exists(tempPath)) {
 			frame.diskspace = diskspace;
-			frame.framePath = new String(tempPath);
+			frame.framePath = tempPath;
 			frame.exists = true;
 		    }
 		}

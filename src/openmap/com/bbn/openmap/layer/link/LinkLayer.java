@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/08/28 22:21:18 $
+// $Revision: 1.6 $
+// $Date: 2003/09/22 23:52:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -271,7 +271,6 @@ public class LinkLayer extends OMGraphicHandlerLayer
 	    quiet = true;
 	}
 
-	String portString = properties.getProperty(realPrefix + PortProperty);
 	host = properties.getProperty(realPrefix + HostProperty);
 
 	port = PropUtils.intFromProperties(properties, realPrefix + PortProperty,

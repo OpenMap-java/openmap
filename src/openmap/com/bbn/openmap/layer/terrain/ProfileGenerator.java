@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileGenerator.java,v $
 // $RCSfile: ProfileGenerator.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:47:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -108,8 +108,7 @@ public class ProfileGenerator implements TerrainTool {
 	profileLine.setLinePaint(toolColor);
 
 	graphics.add(profileLine);
-// 	System.loadLibrary(
-//            new String("com_bbn_openmap_terrain_ProfileGenerator"));
+// 	System.loadLibrary("com_bbn_openmap_terrain_ProfileGenerator");
 
 	stateMachine = new ProfileStateMachine(this);
     }
@@ -295,7 +294,7 @@ public class ProfileGenerator implements TerrainTool {
 
 	    int meters = max * i/8;
 	    int feet =(int)(meters * 3.2);
-	    String lineLabel = new String(meters + "m / " + feet + "ft"); 
+	    String lineLabel = meters + "m / " + feet + "ft"; 
 	    byte[] lineLabelBytes = lineLabel.getBytes();
 
 	    graphics.drawString(lineLabel, 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/csv/CSVLocationHandler.java,v $
 // $RCSfile: CSVLocationHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/04 14:29:06 $
+// $Revision: 1.4 $
+// $Date: 2003/09/22 23:47:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -370,17 +370,17 @@ public class CSVLocationHandler extends AbstractLocationHandler
 		token = csvt.token();
 	    }
 	} catch (java.io.IOException ioe){
-	    new com.bbn.openmap.util.HandleError(ioe);
+	    throw new com.bbn.openmap.util.HandleError(ioe);
 	} catch (ArrayIndexOutOfBoundsException aioobe){
-	    new com.bbn.openmap.util.HandleError(aioobe);
+	    throw new com.bbn.openmap.util.HandleError(aioobe);
 	} catch (NumberFormatException nfe){
-	    new com.bbn.openmap.util.HandleError(nfe);
+	    throw new com.bbn.openmap.util.HandleError(nfe);
 	} catch (ClassCastException cce){
-	    new com.bbn.openmap.util.HandleError(cce);
+	    throw new com.bbn.openmap.util.HandleError(cce);
 	} catch (NullPointerException npe) {
-	    new com.bbn.openmap.util.HandleError(npe);
+	    throw new com.bbn.openmap.util.HandleError(npe);
 	} catch (java.security.AccessControlException ace) {
-	    new com.bbn.openmap.util.HandleError(ace);
+	    throw new com.bbn.openmap.util.HandleError(ace);
 	}
 
 	Debug.message("csvlocation",
@@ -392,7 +392,7 @@ public class CSVLocationHandler extends AbstractLocationHandler
 		streamReader.close();
 	    }
 	} catch(java.io.IOException ioe) {
-	    new com.bbn.openmap.util.HandleError(ioe);
+	    throw new com.bbn.openmap.util.HandleError(ioe);
 	}
 		
 	if (lineCount == 0 && readHeader) {

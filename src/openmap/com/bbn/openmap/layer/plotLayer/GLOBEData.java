@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/plotLayer/GLOBEData.java,v $
 // $RCSfile: GLOBEData.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:47:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,30 +31,26 @@ public abstract class GLOBEData {
     
     public GLOBEData() {}
 
-
     public void loadData(InputStream instream) 
-	throws IOException
-    {
+	throws IOException {
 	readDataFromStream(instream);
     }
-
 
     protected abstract void parseDataFromStream(String line);
 
 
     public void readDataFromStream(InputStream istream)
-	throws IOException
-    {
+	throws IOException {
+
 	int lines_read = 0;
 	BufferedReader buffstream = 
 	    new BufferedReader(new InputStreamReader(istream), 65536);
 
-	while (true)
-	{ 
+	while (true) { 
 	    String line = buffstream.readLine();
 	    if (line == null)
 		break;
-	    line.trim();
+	    line = line.trim();
 	    // ignore comments
 	    if (line.equals("") || line.startsWith("#")) {
 		continue;

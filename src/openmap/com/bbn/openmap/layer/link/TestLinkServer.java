@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/TestLinkServer.java,v $
 // $RCSfile: TestLinkServer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:52:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,7 +46,7 @@ public class TestLinkServer extends LinkServer
      *
      * @param socket the socket to communicate over.
      */
-    public TestLinkServer(Socket s){
+    public TestLinkServer(Socket s) {
 	super(s);
     }
 
@@ -59,7 +59,7 @@ public class TestLinkServer extends LinkServer
     public void handleClient() throws IOException {
 	boolean validQuery;
 	
-	while (true){
+	while (true) {
 	    link.readAndParse();
 	    validQuery = false;
 	    System.out.println("TestLinkServer: fielding request");
@@ -68,12 +68,12 @@ public class TestLinkServer extends LinkServer
 	    LinkActionRequest gestureQuery = link.getActionRequest();
 	    LinkActionList actionList = link.getActionList();
 
-	    if (graphicsQuery != null){
+	    if (graphicsQuery != null) {
 		System.out.println((LinkMapRequest)graphicsQuery);
 		getRectangle(graphicsQuery, link);
 		validQuery = true;
 	    } 
-	    if (gestureQuery != null){
+	    if (gestureQuery != null) {
 		System.out.println(gestureQuery);
 		handleGesture(gestureQuery, link);
 		validQuery = true;
@@ -100,16 +100,17 @@ public class TestLinkServer extends LinkServer
 				(LinkProperties) graphic.getAppObject();
 			    
 			    props.setProperty(LPC_GRAPHICID, 
-					      new String("graphic" + (newGraphicCounter++)));
+					      "graphic" + (newGraphicCounter++));
 			    System.out.println("TestLinkServer: new graphic given id " + props);
 			}
+
+			clientCreatedGraphics.doAction(gu.graphic, new OMAction(gu.action));
+
 		    }
-		    clientCreatedGraphics.doAction(gu.graphic, 
-						   new OMAction(gu.action));
 		}
 	    }
 	    
-	    if (!validQuery){
+	    if (!validQuery) {
 		huh(link);
 	    }
 	}
@@ -140,7 +141,7 @@ public class TestLinkServer extends LinkServer
 	
 	LinkBoundingPoly[] bounds = query.getBoundingPolys();
 
-	for (int i = 0; i < bounds.length; i++){
+	for (int i = 0; i < bounds.length; i++) {
 	    
 	    gr.addLine(bounds[i].maxY, bounds[i].minX, 
 		       bounds[i].minY, bounds[i].maxX,
@@ -150,12 +151,12 @@ public class TestLinkServer extends LinkServer
 
 	    int []data = new int[10000];
 	    
-	    for (int j = 0; j < 10000; j++){
-		if (j < 3000){
+	    for (int j = 0; j < 10000; j++) {
+		if (j < 3000) {
 		    data[j] = 0xFFFF0000;
-		} else if (j < 6000){
+		} else if (j < 6000) {
 		    data[j] = 0xFF00FF00;
-		} else if (j < 8000){
+		} else if (j < 8000) {
 		    data[j] = 0xFF0000FF;
 		} else {
 		    data[j] = 0xFFAAAAAA;
@@ -167,8 +168,8 @@ public class TestLinkServer extends LinkServer
 		       new LinkProperties());
 	    count++;
 
-// 	for (int x = 10; x < 600; x+=2){
-// 	    for (int y = 10; y < 500; y+=50){
+// 	for (int x = 10; x < 600; x+=2) {
+// 	    for (int y = 10; y < 500; y+=50) {
 // 		link.addLine(x, y, x + 40, y + 40, lineSemantics);
 // 		count++;
 // 	    }
@@ -211,7 +212,7 @@ public class TestLinkServer extends LinkServer
 							 ", y = " + glq.getY()));
 	LinkActionList glr = new LinkActionList(link, props);
 	String gid = glq.getGraphicID();
-	if (gid == null){
+	if (gid == null) {
 	    System.out.println("Deselecting graphic");
 	    glr.deselectGraphics();
 	} else {

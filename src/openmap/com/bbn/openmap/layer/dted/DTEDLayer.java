@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDLayer.java,v $
 // $RCSfile: DTEDLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:47:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -390,10 +390,6 @@ public class DTEDLayer extends Layer
 
 	paths = LayerUtils.initPathsFromProperties(properties, prefix + DTEDPathsProperty);
 	paths2 = LayerUtils.initPathsFromProperties(properties, prefix + DTED2PathsProperty);
-
-	String bandHeightString = properties.getProperty(prefix + DTEDBandHeightProperty);
-	String minScaleString = properties.getProperty(prefix + DTEDMinScaleProperty);
-
 	opaqueness = LayerUtils.intFromProperties(properties, prefix + OpaquenessProperty, DTEDFrameColorTable.DEFAULT_OPAQUENESS);
 	
 	numColors = LayerUtils.intFromProperties(properties, prefix + NumColorsProperty, DTEDFrameColorTable.DTED_COLORS);
@@ -595,16 +591,18 @@ public class DTEDLayer extends Layer
 	    Debug.message("basic", getName()+
 			  "|DTEDLayer.prepare(): finished with "+
 			  size+" graphics");
-	}
-	else 
+
+	    // Don't forget to project them.  Since they are only
+	    // being recalled if the projection hase changed, then we
+	    // need to force a reprojection of all of them because the
+	    // screen position has changed.
+	    omGraphicList.project(projection, true);
+
+	} else {
 	    Debug.message("basic", getName()+
 	      "|DTEDLayer.prepare(): finished with null graphics list");
+	}
 
-	// Don't forget to project them.  Since they are only being
-	// recalled if the projection hase changed, then we need to
-	// force a reprojection of all of them because the screen
-	// position has changed.
-	omGraphicList.project(projection, true);
 	return omGraphicList;
     }
 

@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/etopo/ETOPOLayer.java,v $
 // $RCSfile: ETOPOLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/21 20:41:49 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:47:35 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -564,7 +564,7 @@ public class ETOPOLayer extends Layer implements ActionListener {
 	    resIdx = 3; //ep-g
 
 	// build file name
-	String fileName = new String(path+etopoFileNames[resIdx]);
+	String fileName = path+etopoFileNames[resIdx];
 
 	// Clean this out...dfd
 	dataBuffer = null;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/06/25 15:28:12 $
+// $Revision: 1.7 $
+// $Date: 2003/09/22 23:49:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -233,9 +233,6 @@ public class RpfLayer extends OMGraphicHandlerLayer
 
 	paths = LayerUtils.initPathsFromProperties(properties, 
 						   prefix + RpfPathsProperty);
-
-	String numColorsString = properties.getProperty(prefix + 
-							NumColorsProperty);
 
 	viewAttributes.setProperties(prefix, properties);
 
@@ -623,16 +620,18 @@ public class RpfLayer extends OMGraphicHandlerLayer
 		Debug.output("RpfLayer.prepare(): finished with "+
 			     size + " graphics");
 	    }
-	}
-	else 
+
+	    // Don't forget to project them.  Since they are only
+	    // being recalled if the projection hase changed, then we
+	    // need to force a reprojection of all of them because the
+	    // screen position has changed.
+	    omGraphicList.project(projection, true);
+
+	} else {
 	    Debug.message("basic", 
 			  "RpfLayer.prepare(): finished with null graphics list");
+	}
 
-	// Don't forget to project them.  Since they are only being
-	// recalled if the projection hase changed, then we need to
-	// force a reprojection of all of them because the screen
-	// position has changed.
-	omGraphicList.project(projection, true);
 	return omGraphicList;
     }
 
