@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.10 $
-// $Date: 2003/12/08 23:59:51 $
+// $Revision: 1.11 $
+// $Date: 2004/01/14 16:39:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,78 +67,78 @@ public class WindowSupport extends ListenerSupport
      * @param windowTitle the title of the window.
      */
     public WindowSupport(Component content, String windowTitle) {
-	super(content);
-	this.content = content;
-	this.title = windowTitle;
+        super(content);
+        this.content = content;
+        this.title = windowTitle;
     }
 
     /**
      * Set the location of the window.
      */
     public void setComponentLocation(Point p) {
-	componentLocation = p;
+        componentLocation = p;
     }
 
     /**
      * Get the location of the window.
      */
     public Point getComponentLocation() {
-	return componentLocation;
+        return componentLocation;
     }
 
     /**
      * Set the size of the window.
      */
     public void setComponentSize(Dimension dim) {
-	componentSize = dim;
+        componentSize = dim;
     }
 
     /**
      * Get the size of the window.
      */
     public Dimension getComponentSize() {
-	return componentSize;
+        return componentSize;
     }
 
     /**
      * ComponentListener method, new size is noted.
      */
     public void componentResized(ComponentEvent e) {
-	Component source = (Component)e.getSource();
-	if (source instanceof JFrame) {
-	    source = ((JFrame)source).getContentPane();
-	} else if (source instanceof JInternalFrame) {
-	    source = ((JInternalFrame)source).getContentPane();
-	} else if (source instanceof JDialog) {
-	    source = ((JDialog)source).getContentPane();
-	}
-	setComponentSize(new Dimension(source.getWidth(), source.getHeight()));
+        Component source = (Component)e.getSource();
+        if (source instanceof JFrame) {
+            source = ((JFrame)source).getContentPane();
+        } else if (source instanceof JInternalFrame) {
+            source = ((JInternalFrame)source).getContentPane();
+        } else if (source instanceof JDialog) {
+            source = ((JDialog)source).getContentPane();
+        }
+        setComponentSize(new Dimension(source.getWidth(), source.getHeight()));
 
-	Iterator it = iterator();
-	while (it.hasNext()) {
-	    ((ComponentListener)it.next()).componentResized(e);
-	}
+        Iterator it = iterator();
+        while (it.hasNext()) {
+            ((ComponentListener)it.next()).componentResized(e);
+        }
     }
 
     /**
      * ComponentListener method, new location is noted.
      */
     public void componentMoved(ComponentEvent e) {
-	setComponentLocation(((Component)e.getSource()).getLocation());
-	Iterator it = iterator();
-	while (it.hasNext()) {
-	    ((ComponentListener)it.next()).componentMoved(e);
-	}
+        setComponentLocation(((Component)e.getSource()).getLocation());
+        Iterator it = iterator();
+        while (it.hasNext()) {
+            ((ComponentListener)it.next()).componentMoved(e);
+        }
     }
 
     /**
      * ComponentListener method.
      */
     public void componentShown(ComponentEvent e) {
-	Iterator it = iterator();
-	while (it.hasNext()) {
-	    ((ComponentListener)it.next()).componentShown(e);
-	}
+        Iterator it = iterator();
+        while (it.hasNext()) {
+            ((ComponentListener)it.next()).componentShown(e);
+        }
     }
 
     /**
@@ -146,65 +146,65 @@ public class WindowSupport extends ListenerSupport
      * it is hidden.
      */
     public void componentHidden(ComponentEvent e) {
-	Component source = (Component)e.getSource();
-	if (source == dialog || source == iFrame) {
-	    cleanUp();
-	}
+        Component source = (Component)e.getSource();
+        if (source == dialog || source == iFrame) {
+            cleanUp();
+        }
 
-	Iterator it = iterator();
-	while (it.hasNext()) {
-	    ((ComponentListener)it.next()).componentHidden(e);
-	}
+        Iterator it = iterator();
+        while (it.hasNext()) {
+            ((ComponentListener)it.next()).componentHidden(e);
+        }
     }
 
     public void actionPerformed(ActionEvent ae) {
-	String command = ae.getActionCommand();
-	if (command == KillWindowCmd) {
-	    killWindow();
-	} else if (command == DisplayWindowCmd) {
-	    displayInWindow();
-	}
+        String command = ae.getActionCommand();
+        if (command == KillWindowCmd) {
+            killWindow();
+        } else if (command == DisplayWindowCmd) {
+            displayInWindow();
+        }
     }
 
     protected void finalize() {
-	if (Debug.debugging("gc")) {
-	    Debug.output("WindowSupport being gc'd");
-	}
+        if (Debug.debugging("gc")) {
+            Debug.output("WindowSupport being gc'd");
+        }
     }
 
     /**
      * Sets the title of the JInternalFrame/JDialog.
      */
     public void setTitle(String tle) {
-	title = tle;
- 	if (iFrame != null) {
-	    iFrame.setTitle(tle);
-	} else if (dialog != null) {
-	    dialog.setTitle(tle);
-	}
+        title = tle;
+        if (iFrame != null) {
+            iFrame.setTitle(tle);
+        } else if (dialog != null) {
+            dialog.setTitle(tle);
+        }
     }
 
     public String getTitle() {
-	return title;
+        return title;
     }
 
     /**
      * Sets the content in the JInternalFrame/JDialog.
      */
     public void setContent(Component comp) {
-	content = comp;
- 	if (iFrame != null) {
-	    iFrame.getContentPane().add(content);
-	    iFrame.pack();
-	} else if (dialog != null) {
-	    dialog.getContentPane().removeAll();
-	    dialog.getContentPane().add(content);
-	    dialog.pack();
-	}
+        content = comp;
+        if (iFrame != null) {
+            iFrame.getContentPane().add(content);
+            iFrame.pack();
+        } else if (dialog != null) {
+            dialog.getContentPane().removeAll();
+            dialog.getContentPane().add(content);
+            dialog.pack();
+        }
     }
 
     public Component getContent() {
-	return content;
+        return content;
     }
     
     protected int maxHeight = -1;
@@ -216,8 +216,8 @@ public class WindowSupport extends ListenerSupport
      * the natural size of the content will be displayed.
      */
     public void setMaxSize(int width, int height) {
-	maxHeight = height;
-	maxWidth = width;
+        maxHeight = height;
+        maxWidth = width;
     }
 
     /**
@@ -225,7 +225,7 @@ public class WindowSupport extends ListenerSupport
      * size and location are for the window.
      */
     public void displayInWindow() {
-	displayInWindow(null);
+        displayInWindow(null);
     }
 
     /**
@@ -235,24 +235,24 @@ public class WindowSupport extends ListenerSupport
      */
     public void displayInWindow(Frame owner) {
 
-	int w = 0;
-	int h = 0;
+        int w = 0;
+        int h = 0;
 
-	Dimension dim = getComponentSize();
-	if (dim != null) {
-	    content.setSize(dim);
-	}
+        Dimension dim = getComponentSize();
+        if (dim != null) {
+            content.setSize(dim);
+        }
 
-	int x = 10;
-	int y = 10;
-	    
-	Point loc = getComponentLocation();
-	if (loc != null) {
-	    x = (int) loc.getX();
-	    y = (int) loc.getY();
-	}
+        int x = 10;
+        int y = 10;
+            
+        Point loc = getComponentLocation();
+        if (loc != null) {
+            x = (int) loc.getX();
+            y = (int) loc.getY();
+        }
 
-	displayInWindow(owner, x, y, -1, -1);
+        displayInWindow(owner, x, y, -1, -1);
     }
 
     /**
@@ -265,7 +265,7 @@ public class WindowSupport extends ListenerSupport
      * equal to zero the content size will be used.
      */
     public void displayInWindow(int x, int y, int width, int height) {
-	displayInWindow(null, x, y, width, height);
+        displayInWindow(null, x, y, width, height);
     }
 
     /**
@@ -279,57 +279,57 @@ public class WindowSupport extends ListenerSupport
      * equal to zero the content size will be used.
      */
     public void displayInWindow(Frame owner, int x, int y, 
-				int width, int height) {
+                                int width, int height) {
 
-	if (content == null) {
-	    Debug.message("windowsupport", "WindowSupport asked to display window with null content");
-	    return;
-	}
+        if (content == null) {
+            Debug.message("windowsupport", "WindowSupport asked to display window with null content");
+            return;
+        }
 
- 	if (iFrame == null && dialog == null) {
-	
-	    // Try to group the applet-specific stuff in here...
-	    if (Environment.getBoolean(Environment.UseInternalFrames)) {
+        if (iFrame == null && dialog == null) {
+        
+            // Try to group the applet-specific stuff in here...
+            if (Environment.getBoolean(Environment.UseInternalFrames)) {
 
-		iFrame = new JInternalFrame(
-		    title,
-		    /*resizable*/ true,
-		    /*closable*/ true,
-		    /*maximizable*/ false,
-		    /*iconifiable*/ true);
-		iFrame.setOpaque(true);
-		iFrame.addComponentListener(this);
-		
-		JLayeredPane desktop = 
-		    Environment.getInternalFrameDesktop();
+                iFrame = new JInternalFrame(
+                    title,
+                    /*resizable*/ true,
+                    /*closable*/ true,
+                    /*maximizable*/ false,
+                    /*iconifiable*/ true);
+                iFrame.setOpaque(true);
+                iFrame.addComponentListener(this);
+                
+                JLayeredPane desktop = 
+                    Environment.getInternalFrameDesktop();
 
-		if (desktop != null) {
-		    desktop.remove(iFrame);
-		    desktop.add(iFrame, JLayeredPane.PALETTE_LAYER);
-		}
-		
-	    } else { // Working as an application...
-		dialog = new JDialog(owner, title);
-		dialog.addComponentListener(this);
-	    }
-	}
+                if (desktop != null) {
+                    desktop.remove(iFrame);
+                    desktop.add(iFrame, JLayeredPane.PALETTE_LAYER);
+                }
+                
+            } else { // Working as an application...
+                dialog = new JDialog(owner, title);
+                dialog.addComponentListener(this);
+            }
+        }
 
-	setContent(content);
+        setContent(content);
 
-	if (content instanceof ComponentListener) {
-	    addComponentListener((ComponentListener)content);
-	}
+        if (content instanceof ComponentListener) {
+            addComponentListener((ComponentListener)content);
+        }
 
-	if (iFrame != null) {
-	    iFrame.pack();
-	    checkBounds(iFrame, x, y, width, height);
-	    iFrame.show();
-	    iFrame.toFront();
-	} else if (dialog != null) {
-	    dialog.pack();
-	    checkBounds(dialog, x, y, width, height);
-	    dialog.show();
-	}
+        if (iFrame != null) {
+            iFrame.pack();
+            checkBounds(iFrame, x, y, width, height);
+            iFrame.show();
+            iFrame.toFront();
+        } else if (dialog != null) {
+            dialog.pack();
+            checkBounds(dialog, x, y, width, height);
+            dialog.show();
+        }
     }
 
     /**
@@ -338,27 +338,27 @@ public class WindowSupport extends ListenerSupport
      * WindowSupport.  Calls setBounds() on the Component.
      */
     protected void checkBounds(Component comp, int x, int y, 
-			       int width, int height) {
-	if (comp != null) {
+                               int width, int height) {
+        if (comp != null) {
 
-	    if (width <= 0) {
-		width = comp.getWidth();
-	    }
+            if (width <= 0) {
+                width = comp.getWidth();
+            }
 
-	    if (maxWidth > 0 && width > maxWidth) {
-		width = maxWidth;
-	    }
+            if (maxWidth > 0 && width > maxWidth) {
+                width = maxWidth;
+            }
 
-	    if (height <= 0) {
-		height = comp.getHeight();
-	    }
+            if (height <= 0) {
+                height = comp.getHeight();
+            }
 
-	    if (maxHeight > 0 && height > maxHeight) {
-		height = maxHeight;
-	    }
+            if (maxHeight > 0 && height > maxHeight) {
+                height = maxHeight;
+            }
 
-	    comp.setBounds(x, y, width, height);
-	}
+            comp.setBounds(x, y, width, height);
+        }
     }
 
     /**
@@ -370,36 +370,38 @@ public class WindowSupport extends ListenerSupport
      */
     public void killWindow() {
 
-	ComponentEvent ce = null;
+        ComponentEvent ce = null;
 
-	if (dialog != null) {
-	    dialog.setVisible(false);
-	    ce = new ComponentEvent(dialog, ComponentEvent.COMPONENT_HIDDEN);
-	} else if (iFrame != null) {
-	    iFrame.setVisible(false);
-	    ce = new ComponentEvent(iFrame, ComponentEvent.COMPONENT_HIDDEN);
-	}
+        if (dialog != null) {
+            dialog.setVisible(false);
+            ce = new ComponentEvent(dialog, ComponentEvent.COMPONENT_HIDDEN);
+        } else if (iFrame != null) {
+            iFrame.setVisible(false);
+            ce = new ComponentEvent(iFrame, ComponentEvent.COMPONENT_HIDDEN);
+        }
 
-	componentHidden(ce);
+        if (ce != null) {
+            componentHidden(ce);
+        }
     }
 
     /**
      * Get rid of the window used to display the content.
      */
     protected void cleanUp() {
-	if (dialog != null) {
-	    dialog.removeComponentListener(this);
-	    dialog.dispose();
-	    dialog = null;
-	} else if (iFrame != null) {
-	    iFrame.removeComponentListener(this);
-	    iFrame.dispose();
-	    iFrame = null;
-	}
+        if (dialog != null) {
+            dialog.removeComponentListener(this);
+            dialog.dispose();
+            dialog = null;
+        } else if (iFrame != null) {
+            iFrame.removeComponentListener(this);
+            iFrame.dispose();
+            iFrame = null;
+        }
 
-	if (content instanceof ComponentListener) {
-	    removeComponentListener((ComponentListener)content);
-	}
+        if (content instanceof ComponentListener) {
+            removeComponentListener((ComponentListener)content);
+        }
     }
 
     /**
@@ -407,7 +409,7 @@ public class WindowSupport extends ListenerSupport
      * what happens to the window.
      */
     public void addComponentListener(ComponentListener l) {
-	addListener(l);
+        addListener(l);
     }
 
     /**
@@ -415,17 +417,17 @@ public class WindowSupport extends ListenerSupport
      * what happens to the window.
      */
     public void removeComponentListener(ComponentListener l) {
-	removeListener(l);
+        removeListener(l);
     }
 
     /**
      * Return the window displaying the content.  May be null.
      */
     public Container getWindow() {
-	if (dialog != null) {
-	    return dialog;
-	} 
-	return iFrame;
+        if (dialog != null) {
+            return dialog;
+        } 
+        return iFrame;
     }
 
 }
