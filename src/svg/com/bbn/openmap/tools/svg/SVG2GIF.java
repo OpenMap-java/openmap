@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/svg/com/bbn/openmap/tools/svg/SVG2GIF.java,v $
 // $RCSfile: SVG2GIF.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/12/08 01:23:13 $
+// $Revision: 1.2 $
+// $Date: 2005/01/13 01:24:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,7 @@
 package com.bbn.openmap.tools.svg;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -47,11 +48,13 @@ public class SVG2GIF implements WandererCallback {
     boolean DETAIL = false;
 
     protected ImageFormatter formatter;
-    
+
+    protected Dimension imageDimension;
+
     public SVG2GIF() {
         formatter = new AcmeGifFormatter();
     }
-    
+
     // do nothing on directories
     public void handleDirectory(File directory) {}
 
@@ -65,11 +68,13 @@ public class SVG2GIF implements WandererCallback {
             SVGRasterizer svgr;
             svgr = new SVGRasterizer(file.toURL());
             svgr.setBackgroundColor(new Color(128, 128, 128, 0));
-            BufferedImage bi = svgr.createBufferedImage();
+            BufferedImage bi = svgr.createBufferedImage(imageDimension);
             byte[] imageBytes = formatter.formatImage(bi);
-            
+
             String newFileName = file.toString().replaceAll(".svg", ".gif");
-            Debug.output("writing " + newFileName + " from " + file);
+            if (Debug.debugging("svg")) {
+                Debug.output("writing " + newFileName + " from " + file);
+            }
             FileOutputStream fos = new FileOutputStream(newFileName);
             fos.write(imageBytes);
             fos.flush();
@@ -94,18 +99,43 @@ public class SVG2GIF implements WandererCallback {
     public static void main(String[] argv) {
         Debug.init();
 
-        ArgParser ap = new ArgParser("SVG");
+        ArgParser ap = new ArgParser("SVG2GIF");
+        ap.add("dimension",
+                "Dimension of output image, add height and width arguments separated by a space",
+                2);
 
         if (argv.length == 0) {
-            ap.bail("Usage: java com.bbn.openmap.util.wanderer.SVG <dir>",
+            ap.bail("Usage: java com.bbn.openmap.util.wanderer.SVG <dir> (-help for options)",
                     false);
         }
 
         ap.parse(argv);
 
-        String[] dirs = argv;
+        Dimension dim = null;
+        String[] arg = ap.getArgValues("dimension");
+        if (arg != null) {
+
+            String heightString = arg[0];
+            String widthString = arg[1];
+
+            Debug.output("Creating images with height (" + heightString
+                    + ") width (" + widthString + ")");
+            try {
+                int width = Integer.parseInt(widthString);
+                int height = Integer.parseInt(heightString);
+                dim = new Dimension(width, height);
+            } catch (NumberFormatException nfe) {
+                String message = "Problem reading dimensions: " + nfe.getMessage();
+                ap.bail(message, false);
+            }
+        }
+
+        String[] dirs = ap.getRest();
 
         SVG2GIF svg2gif = new SVG2GIF();
+        if (dim != null) {
+            svg2gif.setDimension(dim);
+        }
         Wanderer wanderer = new Wanderer(svg2gif);
 
         int runningTotal = 0;
@@ -117,12 +147,21 @@ public class SVG2GIF implements WandererCallback {
         }
 
     }
+
+    /**
+     * @param dim
+     */
+    protected void setDimension(Dimension dim) {
+        imageDimension = dim;
+    }
+
     /**
      * @return Returns the formatter.
      */
     public ImageFormatter getFormatter() {
         return formatter;
     }
+
     /**
      * @param formatter The formatter to set.
      */

@@ -137,7 +137,9 @@ public class SVGRasterizer {
 
     public BufferedImage createBufferedImage(Dimension d)
             throws TranscoderException, IOException {
-        this.setImageDimension(d);
+        if (d != null) {
+            this.setImageDimension(d);
+        }
         Rasterizer r = new Rasterizer();
         r.setTranscodingHints((Map) hints);
         r.transcode(input, null);

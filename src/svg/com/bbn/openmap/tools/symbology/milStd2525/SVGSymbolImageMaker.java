@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: SVGSymbolImageMaker.java,v $
-//$Revision: 1.3 $
-//$Date: 2005/01/10 16:03:12 $
+//$Revision: 1.4 $
+//$Date: 2005/01/13 01:24:13 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -79,5 +79,9 @@ public class SVGSymbolImageMaker extends AbstractSymbolImageMaker {
             }
         }
         return null;
+    }
+    
+    public String getFileExtension() {
+        return ".svg";
     }
 }
