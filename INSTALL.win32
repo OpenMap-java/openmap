@@ -1,0 +1,61 @@
+$Source: /cvs/distapps/openmap/INSTALL.win32,v $
+$RCSfile: INSTALL.win32,v $
+$Revision: 1.1 $
+$Date: 2003/07/18 19:28:01 $
+$Author: bmackiew $
+
+Installation under Windows
+==========================
+
+Quickstart
+==========
+
+Check the prerequisites section of the INSTALL file, then come back
+here.
+
+We have supplied pre-built JAR (Java ARchive) files of OpenMap, but
+you will still need to edit the `openmap.bat' file in the bin/
+subdirectory to get OpenMap to run.
+
+	* Load the openmap.bat file in your favorite editor.
+
+	* Change the path to the Java VM to match your
+	  local configuration.
+
+	* Change the path to OpenMap to match your configuration.
+
+	* Run the batch file.
+
+Compilation
+===========
+
+You may want to build OpenMap from the source code yourself.  OpenMap includes
+Ant, the Java-based build tool from Apache, available at
+http://jakarta.apache.org/ant
+
+If you'd like to build OpenMap using Ant, you'll need to:
+
+	1. Edit the ANT_ENV.BAT batch file in the OpenMap distribution:
+		- Set your OPENMAP_HOME variable to point to your 
+			OpenMap directory.
+		- Set your JAVA_HOME variable to point to your Java 
+		  distribution.
+
+	2. Open an MS-DOS window and right-click on it to access the 
+	   properties. Set Memory -> Initial Environment to a value of at 
+	   least 768 or you'll see "Out of environment space" errors when you
+	   run Ant.
+
+	3. Close and re-open the MS-DOS window to gain the benefit of the 
+	   updated initial environment settings.
+
+	4. Run the ANT_ENV.bat file to set your path and environment variables
+	   correctly.
+	
+	5. Run "ant" from the top level of the OpenMap distribution to 
+	   recompile the jar files.  Run "ant clean" to clean out the
+	   directories, analogous to "make clean".
+
+Another possibility for recompiling under Windows is using the Cygwin toolkit,
+available from http://www.cygwin.com.  This provides you with a Unix-like 
+shell, but isn't as simple to use as Ant.
