@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/BasicMapPanel.java,v $
 // $RCSfile: BasicMapPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/05/14 17:24:27 $
+// $Revision: 1.3 $
+// $Date: 2003/06/02 18:24:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,7 +35,6 @@ import javax.swing.border.Border;
 
 import com.bbn.openmap.BufferedLayerMapBean;
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MultipleSoloMapComponentException;

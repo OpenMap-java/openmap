@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerAddPanel.java,v $
 // $RCSfile: LayerAddPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/05 05:39:01 $
+// $Revision: 1.3 $
+// $Date: 2003/06/02 18:24:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -92,7 +92,7 @@ public class LayerAddPanel extends OMComponentPanel
     public LayerAddPanel() {
 	super();
 	inspector = new Inspector();
-	inspector.addActionListener((java.awt.event.ActionListener)this);
+	inspector.addActionListener((ActionListener)this);
 	setWindowSupport(new WindowSupport(this, "Add Layer"));
     }
     
@@ -207,7 +207,7 @@ public class LayerAddPanel extends OMComponentPanel
     /**
      * Method associated with the ActionListener interface. 
      */
-    public void actionPerformed(java.awt.event.ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
 	
 	if (e.getActionCommand()==configureActionCommand) {
 	    // instanciate a default instance of the chosen layer
