@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/25 18:49:01 $
+// $Revision: 1.5 $
+// $Date: 2003/09/26 19:09:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,8 +23,11 @@
 
 package com.bbn.openmap.omGraphics.event;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -295,6 +298,82 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
  	setCurrentMouseEvent(e);
 	boolean ret = false;
 
+	if ((noTimerOverOMGraphic && getMovementInterest() != null) || mouseTimerInterval <= 0) {
+	    return updateMouseMoved(e);
+	} else {
+	    if (mouseTimer == null) {
+		mouseTimer = new Timer(mouseTimerInterval, mouseTimerListener);
+		mouseTimer.setRepeats(false);
+	    }
+
+	    mouseTimerListener.setEvent(e);
+	    mouseTimer.restart();
+	    return false;
+	}
+    }
+
+    protected boolean noTimerOverOMGraphic = true;
+
+    /**
+     * Set whether to ignore the timer when movement is occuring over
+     * an OMGraphic.  Sometimes unhighlight can be inappropriately
+     * delayed when timer is enabled.
+     */
+    public void setNoTimerOverOMGraphic(boolean val) {
+	noTimerOverOMGraphic = val;
+    }
+
+    public boolean getNoTimerOverOMGraphic() {
+	return noTimerOverOMGraphic;
+    }
+
+    /**
+     * The wait interval before a mouse over event gets triggered.
+     */
+    protected int mouseTimerInterval = 150;
+
+    /**
+     * Set the time interval that the mouse timer waits before calling
+     * upateMouseMoved.  A negative number or zero will disable the
+     * timer.
+     */
+    public void setMouseTimerInterval(int interval) {
+	mouseTimerInterval = interval;
+    }
+
+    public int getMouseTimerInterval() {
+	return mouseTimerInterval;
+    }
+
+    /**
+     * The timer used to track the wait interval.
+     */
+    protected Timer mouseTimer = null;
+
+    protected MouseTimerListener mouseTimerListener = new MouseTimerListener();
+
+    protected class MouseTimerListener implements ActionListener {
+
+	private MouseEvent event;
+
+	public synchronized void setEvent(MouseEvent e) {
+	    event = e;
+	}
+
+	public synchronized void actionPerformed(ActionEvent ae) {
+	    if (event != null) {	    
+		updateMouseMoved(event);
+	    }
+	}
+    }
+
+    /**
+     * The real mouseMoved call, called when mouseMoved is called and,
+     * if there is a mouse timer interval set, that interval time has
+     * passed.
+     */
+    protected boolean updateMouseMoved(MouseEvent e) {
+	boolean ret = false;
 	OMGraphic omg = getGeometryUnder(e);
 	GeometryOfInterest goi = getMovementInterest();
 
@@ -310,6 +389,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 
 		goi = new GeometryOfInterest(omg, e);
 		setMovementInterest(goi);
+		setNoTimerOverOMGraphic(!omg.shouldRenderFill());
 		ret = mouseOver(omg, e);
 	    }
 
