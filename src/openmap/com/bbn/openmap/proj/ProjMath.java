@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjMath.java,v $
 // $RCSfile: ProjMath.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:23 $
+// $Revision: 1.5 $
+// $Date: 2005/02/11 22:37:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -79,7 +79,7 @@ public final class ProjMath {
      * @return double
      * @see #qint(double)
      */
-    final public static double roundAdjust(double x) {
+    public final static double roundAdjust(double x) {
         return qint_old(x);
     }
 
@@ -89,7 +89,7 @@ public final class ProjMath {
      * @param x value
      * @return double
      */
-    final public static double qint(double x) {
+    public final static double qint(double x) {
         return qint_new(x);
     }
 
@@ -109,7 +109,7 @@ public final class ProjMath {
      * @param lon2 radians
      * @return float distance
      */
-    final public static float lonDistance(float lon1, float lon2) {
+    public final static float lonDistance(float lon1, float lon2) {
         return (float) Math.min(Math.abs(lon1 - lon2), ((lon1 < 0) ? lon1
                 + Math.PI : Math.PI - lon1)
                 + ((lon2 < 0) ? lon2 + Math.PI : Math.PI - lon2));
@@ -122,7 +122,7 @@ public final class ProjMath {
      * @return long scoords
      *  
      */
-    final public static long DEG_TO_SC(double deg) {
+    public final static long DEG_TO_SC(double deg) {
         return (long) (deg * 3600000);
     }
 
@@ -132,7 +132,7 @@ public final class ProjMath {
      * @param sc scoords
      * @return double decimal degrees
      */
-    final public static double SC_TO_DEG(int sc) {
+    public final static double SC_TO_DEG(int sc) {
         return ((double) (sc) / (60.0 * 60.0 * 1000.0));
     }
 
@@ -142,7 +142,7 @@ public final class ProjMath {
      * @param rad radians
      * @return double decimal degrees
      */
-    final public static double radToDeg(double rad) {
+    public final static double radToDeg(double rad) {
         return (rad * (180.0d / Math.PI));
     }
 
@@ -152,8 +152,8 @@ public final class ProjMath {
      * @param rad radians
      * @return float decimal degrees
      */
-    final public static float radToDeg(float rad) {
-        return (rad * (180.0f / (float) Math.PI));
+    public final static float radToDeg(float rad) {
+        return (float) radToDeg((double)rad);
     }
 
     /**
@@ -162,7 +162,7 @@ public final class ProjMath {
      * @param deg degrees
      * @return double radians
      */
-    final public static double degToRad(double deg) {
+    public final static double degToRad(double deg) {
         return (deg * (Math.PI / 180.0d));
     }
 
@@ -172,8 +172,8 @@ public final class ProjMath {
      * @param deg degrees
      * @return float radians
      */
-    final public static float degToRad(float deg) {
-        return (deg * ((float) Math.PI / 180.0f));
+    public final static float degToRad(float deg) {
+        return (float) degToRad((double)deg);
     }
 
     /**
@@ -184,7 +184,7 @@ public final class ProjMath {
      * @return int hashcode
      *  
      */
-    final public static int hashLatLon(float lat, float lon) {
+    public final static int hashLatLon(float lat, float lon) {
         if (lat == -0f)
             lat = 0f;//handle negative zero (anything else?)
         if (lon == -0f)
@@ -201,7 +201,7 @@ public final class ProjMath {
      * @param degs float[] lat/lons in decimal degrees
      * @return float[] lat/lons in radians
      */
-    final public static float[] arrayDegToRad(float[] degs) {
+    public final static float[] arrayDegToRad(float[] degs) {
         for (int i = 0; i < degs.length; i++) {
             degs[i] = degToRad(degs[i]);
         }
@@ -215,7 +215,7 @@ public final class ProjMath {
      * @param rads float[] lat/lons in radians
      * @return float[] lat/lons in decimal degrees
      */
-    final public static float[] arrayRadToDeg(float[] rads) {
+    public final static float[] arrayRadToDeg(float[] rads) {
         for (int i = 0; i < rads.length; i++) {
             rads[i] = radToDeg(rads[i]);
         }
@@ -229,7 +229,7 @@ public final class ProjMath {
      * @param degs double[] lat/lons in decimal degrees
      * @return double[] lat/lons in radians
      */
-    final public static double[] arrayDegToRad(double[] degs) {
+    public final static double[] arrayDegToRad(double[] degs) {
         for (int i = 0; i < degs.length; i++) {
             degs[i] = degToRad(degs[i]);
         }
@@ -243,7 +243,7 @@ public final class ProjMath {
      * @param rads double[] lat/lons in radians
      * @return double[] lat/lons in decimal degrees
      */
-    final public static double[] arrayRadToDeg(double[] rads) {
+    public final static double[] arrayRadToDeg(double[] rads) {
         for (int i = 0; i < rads.length; i++) {
             rads[i] = radToDeg(rads[i]);
         }
@@ -330,7 +330,7 @@ public final class ProjMath {
      * @param uCircumference units circumference of planet
      * @return float decimal degrees
      */
-    final public static float sphericalUnitsToDeg(float u, float uCircumference) {
+    public final static float sphericalUnitsToDeg(float u, float uCircumference) {
         return 360f * (u / uCircumference);
     }
 
@@ -344,7 +344,7 @@ public final class ProjMath {
      * @param uCircumference units circumference of planet
      * @return float arc radians
      */
-    final public static float sphericalUnitsToRad(float u, float uCircumference) {
+    public final static float sphericalUnitsToRad(float u, float uCircumference) {
         return MoreMath.TWO_PI * (u / uCircumference);
     }
 
