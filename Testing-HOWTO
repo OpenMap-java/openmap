@@ -13,8 +13,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Testing-HOWTO,v $
 # $RCSfile: Testing-HOWTO,v $
-# $Revision: 1.1 $
-# $Date: 1998/08/25 15:29:20 $
+# $Revision: 1.2 $
+# $Date: 1998/08/28 18:54:22 $
 # $Author: aculline $
 # 
 # **********************************************************************
@@ -53,6 +53,10 @@ your CLASSPATH set properly before running.
 Running the Applet/Application:
 ------------------------------
 
+	If you don't have a map of anything, verify that a political boundary
+	type of layer is turned on in the Layers menu.  If it isn't, then turn
+	it on now.
+
 	i) File Menu
 		- Select File->About and verify that a popup dialog box
 		  describing OpenMap comes up.
@@ -63,8 +67,8 @@ Running the Applet/Application:
 		- Select Navigate->Coordinates and verify that an internal
 		  window with text entry fields comes up. Type in 70,0,0 for
 		  DMS Latitude and 180,0,0 for DMS Longitude.  Click apply
-		  and the map should recenter over the Chukchi sea.  Now
-		  select on the "Dec Deg" tab and enter 19.5 latitude, -155.4
+		  and the map should recenter over the Chukchi sea.
+		  Now select on the "Dec Deg" tab and enter 19.5 latitude, -155.4
 		  longitude.  Click apply and the map should recenter over the
 		  island of Hawaii.  Close the dialog.
 		- Select Navigate->Projection->CADRG to change the projection.
@@ -77,11 +81,13 @@ Running the Applet/Application:
 		Skip this for now.
 
 	iv) Layers Menu
-		- Verify that there are two layer selections, a political solid
-		  type and a graticule type.
+		- Verify that there are two layer selections, a political boundary
+		  type and a graticule type.  If not, then turn them on.
 		- Select Layers->Edit Layers.  This should bring up an
 		  internal window with a list of layers.  Find the topmost
-		  selected layer and move it below the other selected layer.
+		  selected layer and move it below the other selected layer by
+		  first selecting on the text name of the layer and then
+		  clicking on the double-down-arrow box.
 		  Make sure this change is reflected in the Map.  Toggle off
 		  one layer and verify that it is no longer showing on the
 		  map.  Click it back on and it should redraw itself quickly.

@@ -13,8 +13,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/NewVersion-HOWTO,v $
 # $RCSfile: NewVersion-HOWTO,v $
-# $Revision: 1.1 $
-# $Date: 1998/08/25 15:29:20 $
+# $Revision: 1.2 $
+# $Date: 1998/08/28 18:54:22 $
 # $Author: aculline $
 # 
 # **********************************************************************
@@ -27,82 +27,69 @@ branch, and then run the autobuild script to compile it.  After the autobuild
 completes, you include all the appropriate stuff out of the build directory and
 etc/ directory into the new openmap-<version>/ release directory.
 
+0) Pre branch
+-------------
 
-1) Check out and compile
-------------------------
+Make sure the etc/ files README-install, README-runtime, .omprefs, overlays.txt,
+openmap.html, OpenMap, OpenMap.bat, etc all make sense for this version.  Make
+sure the README instructions make sense and are up-to-date.
 
-Check out the version of OpenMap you want into your own openmap
-directory.
+Check the autobuild script to make sure it's going to include the correct
+files in the final (tar|zip)balls.
+
+
+1) Branch the sources
+---------------------
+
+Check out the version of OpenMap you want into your own openmap directory.
+
 	cvs co openmap
 
+Change the hardcoded version number in the Environment.java file to a stable
+release number.  We use the Linux development model where even minor numbers
+are stable releases, and odd minor numbers are development versions.  Any 3rd
+numbers are the patchlevel of the particular branch.  You should only tag,
+branch, and release versions like 2.0, 2.2, 3.0, etc.
+
 Tag this version of the openmap source tree.  Do a...
+
 	cvs tag -b OpenMap_<major>_<minor> openmap
 
-Where <major> and <minor> constitute the OpenMap version as hardcoded
-in Environment.java.  We use the Linux development model where odd minor
-numbers are bleeding-edge releases, and even minor numbers are stable release
-versions.  Any 3rd numbers are the patchlevel of the particular branch.
-You should only tag, branch, and release versions like 2.0, 2.2, 3.0,
-etc.
+...where <major> and <minor> constitute the OpenMap version as hardcoded
+in Environment.java.
 
-Compile OpenMap by running the autobuild script.  Use autobuild --help for
-up-to-date arguments.
-	autobuild
+Commit this version back to the source tree.
 
-2) Create the openmap-<version> distribution
---------------------------------------------------
+	cvs commit -r OpenMap_<major>_<minor> openmap
 
-Copy the appropriate jar files to the etc/lib directory.
-	cp openmap.jar etc/lib/
-	cp cspec58.jar etc/lib/
-	cp swingall.jar etc/lib/
 
-Copy any additional freely available and necessary jar files to the etc/lib
-directory.
+2) Run the autobuild
+--------------------
 
-Include the appropriate READMEs, HOWTOs, javadocs, and additional
-documentation in the appropriate subdirectory.
+Run the autobuild script.  Try autobuild --help for a list of up-to-date
+arguments to the script.  Usually you will do something like...
 
-Copy sample specialist IDL and sample source code to the etc/src
-directory:
-	cp com/bbn/openmap/CSpecialist/Specialist.idl etc/src
-	cp com/bbn/openmap/specialist/sample/*.java etc/src
+	./autobuild -d /tmp/openmap-<version> -t OpenMap_<major>_<minor>
 
-Remove unnecessary files from the etc and etc/scripts directory
-including this file (once you're done with it!).  And remove any CVS/
-directories and .cvsignore files in etc and all its subdirectories.
+...although you might have to specify additional arguments and envvars.
 
-Also, you'll need to run the HTML-Converter program on the
-openmap*.html files to make them work with the Java PlugIn for
-browsers.  This program is located in /usr/local/matt/HTML_Converter,
-or /usr/local/blatz/HTML_Converter.  Watch out, though.  The
-HTML_Convertor converts all PARAM tags, even if they are commented
-out.  So take out all of the PARAM tags you do not want in the
-resulting file before you run the convertor.  The originals should be
-put in a backup directory so that a customer can modify them if they
-need to.
+Once the script has finished running you will have the .tar.gz, tar.Z, and
+.zip versions of the OpenMap distribution.  You may want to verify that they
+do indeed work as advertised.  Refer to the Testing-HOWTO for the test
+sequence.
 
-Rename the etc/scripts directory as etc/bin and symlink etc/scripts to
-it.
 
-Rename the etc directory as openmap-<version> and then create tar.gz, tar.Z,
-and .zip files out of it:
-	mv etc openmap-<version>
-	tar cvf openmap-<version>.tar openmap-version
-	gzip openmap-<version>.tar
-
-3) Final steps
+3) Post branch
 --------------
 
-Now you have an official OpenMap release.  The final step is to change
-the hardcoded version number in the main OpenMap source tree to the next
-development version (for example from 2.4 to 2.5).
+Check out the sources from the main branch into your own openmap directory.
+
 	cvs update -A openmap
-		(update to main tree)
-	vi openmap/com/bbn/openmap/Environment.java
-		(change the minor number)
+
+Bump the version number in the Environment.java file to the next development
+version and commit it back in to the main branch.
+
 	cvs commit openmap/com/bbn/openmap/Environment.java
-		(commit to main tree)
 
 Copy the release files out to the javamap/openmap FTP directories, and notify
-our customers.
+our customers via email.
