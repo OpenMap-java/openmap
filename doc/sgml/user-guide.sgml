@@ -1,13 +1,17 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/user-guide.sgml,v $
 $RCSfile: user-guide.sgml,v $
-$Revision: 1.11 $
-$Date: 2001/11/01 23:56:24 $
+$Revision: 1.12 $
+$Date: 2001/11/02 00:10:18 $
 $Author: dietrick $
 
 User's Guide for the OpenMap Viewer application.
 Launch the viewer with `java com.bbn.openmap.app.OpenMap' or by
-running the `openmap' script in the bin/ directory.
+running the `openmap' script in the bin/ directory.  Make sure the
+openmap.jar file and the omcontrib.jar file are in your Java CLASSPATH
+environment variable.  If you get a ClassNotFoundError, the CLASSPATH
+is not set up properly.
+
 -->
 
 <!doctype linuxdoc system>
@@ -16,11 +20,12 @@ running the `openmap' script in the bin/ directory.
 
 <title>OpenMap Viewer Application
 <author>BBNT Solutions LLC
-<date>2 February 1999
+<date>1 Nov 2001
 <abstract>
 This document is a user's guide for running the OpenMap Viewer
-application.  It assumes that you have already built and installed the
-OpenMap package.
+application.  It assumes that you have already installed the
+OpenMap package.  The OpenMap classes are ready to run, but you can
+modify the source code and rebuild the code if you like.
 </abstract>
 
 
@@ -28,9 +33,10 @@ OpenMap package.
 <p>
 The OpenMap Viewer application is our basic MapViewer application.  It
 allows you to add, remove, and change the positioning of different
-layers on the map, and to navigate over the map.  There are many other
-applications that use the OpenMap components.  We encourage you to try
-out the Viewer and to tweak it to fit your own needs.
+application components and layers, and to navigate over the map.
+There are many other applications that use the OpenMap components.  We
+encourage you to try out the Viewer and to tweak it to fit your own
+needs.
 
 
 <sect>Launch Scripts
@@ -42,19 +48,22 @@ Windows, you may need to edit the paths referenced in the
 <tt>openmap.bat</tt> script.  These scripts set your
 <tt>CLASSPATH</tt> before invoking the Java VM.
 <p>
+Also, <tt><htmlurl url="http://jakarta.apache.org/ant"
+name="Ant"></tt> can be used to build and launch OpenMap.  The
+<tt><htmlurl url="../build.xml" name="build file"></tt> is included in
+the OpenMap package.
 
 
 <sect>Properties File<label id="sec-props">
 <p>
 The OpenMap Viewer loads properties from an <tt><htmlurl
-url="../share/openmap.properties" name="openmap.properties"></tt> file.
-It searches for this file in three locations: 1) in the JAR file or
-class directory, 2) in the installation "share" subdirectory, and 3)
-in the user's home directory.  If it finds the file in any of these
-places, it loads the properties from it, overriding previous settings.
-We suggest that you copy the <tt>openmap.properties</tt> file from the
-installation "share" subdirectory to your home directory, and edit the
-settings to your own liking.
+url="../openmap.properties" name="openmap.properties"></tt> file.  It
+searches for this file in two locations: 1) in the JAR file or class
+directory, 2) in the user's home directory.  If it finds the file in
+any of these places, it loads the properties from it, overriding
+previous settings.  We suggest that you copy the
+<tt>openmap.properties</tt> file from the openmap directory to your
+home directory, and edit the settings to your own liking.
 
 
 <sect>Running the OpenMap Viewer
