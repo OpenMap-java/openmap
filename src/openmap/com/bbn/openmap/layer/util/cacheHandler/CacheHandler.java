@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/cacheHandler/CacheHandler.java,v $
 // $RCSfile: CacheHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/24 03:43:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ public abstract class CacheHandler {
     /** 
      * Standard default constructor
      */
-    public CacheHandler(){
+    public CacheHandler() {
 	initCache(DEFAULT_MAX_CACHE_SIZE);
     }
 
