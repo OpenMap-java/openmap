@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProjectionSupport.java,v $
 // $RCSfile: ProjectionSupport.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:45 $
+// $Revision: 1.6 $
+// $Date: 2004/11/26 03:38:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,14 +82,35 @@ public class ProjectionSupport extends ListenerSupport {
 
         ProjectionEvent evt = new ProjectionEvent(getSource(), proj);
 
-        Iterator it = iterator();
-        while (it.hasNext()) {
-            target = (ProjectionListener) it.next();
-            if (Debug.debugging("mapbean")) {
-                Debug.output("ProjectionSupport.fireProjectionChanged(): "
-                        + "target is: " + target);
-            }
-            target.projectionChanged(evt);
-        }
+        ProjectionChangedRunnable pcr = new ProjectionChangedRunnable(evt);
+        new Thread(pcr).start();
     }
+
+    /**
+     * A Runnable class that disperses the projection, instead of
+     * letting the Swing thread do it. A new one is created for every
+     * projection change, so the current ProjectionEvent object is
+     * getting delivered with it.
+     */
+    protected class ProjectionChangedRunnable implements Runnable {
+        protected ProjectionEvent projEvent;
+
+        public ProjectionChangedRunnable(ProjectionEvent pe) {
+            projEvent = pe;
+        }
+
+        public void run() {
+            ProjectionListener target = null;
+            Iterator it = iterator();
+            while (it.hasNext()) {
+                target = (ProjectionListener) it.next();
+                if (Debug.debugging("mapbean")) {
+                    Debug.output("ProjectionChangeRunnable: firing projection change, target is: "
+                            + target);
+                }
+                target.projectionChanged(projEvent);
+            }
+        }
+    };
+
 }
