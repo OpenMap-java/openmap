@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconPartCollection.java,v $
 // $RCSfile: IconPartCollection.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/26 17:48:55 $
+// $Revision: 1.2 $
+// $Date: 2003/09/26 17:34:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -85,6 +85,18 @@ public class IconPartCollection extends IconPartCollectionEntry {
     }
 
     /**
+     * Get an icon part for the given name set with the given
+     * rendering attributes.  Calls get(name);
+     */
+    public IconPart get(String name, com.bbn.openmap.omGraphics.DrawingAttributes da) {
+	IconPart ip = get(name);
+	if (ip != null) {
+	    ip.setRenderingAttributes(da);
+	}
+	return ip;
+    }
+
+    /**
      * Get an icon part for the given name.  The top level
      * IconPartCollectionEntries are checked for the name.  Will
      * return null if no IconPart exists for the name.  If the name is
@@ -97,7 +109,7 @@ public class IconPartCollection extends IconPartCollectionEntry {
 	IconPart part = null;
 
 	if (entry != null) {
-	    part = ((IconPartCollectionEntry)entry).getIconPart();
+	    part = (IconPart)((IconPart)((IconPartCollectionEntry)entry).getIconPart()).clone();
 	}
 
 	if (part == null) {

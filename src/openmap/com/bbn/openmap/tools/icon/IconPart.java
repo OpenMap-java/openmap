@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconPart.java,v $
 // $RCSfile: IconPart.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/26 17:48:55 $
+// $Revision: 1.2 $
+// $Date: 2003/09/26 17:34:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,7 +44,7 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
  * not appear on the icon.  That may help with defining certain shapes
  * to appear on the icon, however.
  */
-public interface IconPart {
+public interface IconPart extends Cloneable {
 
     /**
      * Have the IconPart render itself into the Graphic object for a
@@ -94,5 +94,10 @@ public interface IconPart {
      * Get the rendering attributes for this IconPart.
      */
     public DrawingAttributes getRenderingAttributes();
+
+    /**
+     * Create a clone of this part.
+     */
+    public Object clone();
 
 }

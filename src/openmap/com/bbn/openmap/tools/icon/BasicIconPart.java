@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/BasicIconPart.java,v $
 // $RCSfile: BasicIconPart.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/26 17:48:55 $
+// $Revision: 1.2 $
+// $Date: 2003/09/26 17:34:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -159,6 +159,14 @@ public class BasicIconPart implements IconPart {
 	return geometry;
     }
 
+    public void setTransform(AffineTransform af) {
+	baseTransform = af;
+    }
+
+    public AffineTransform getTransform() {
+	return baseTransform;
+    }
+
     public void setRenderingAttributes(DrawingAttributes da) {
 	renderingAttributes = da;
     }
@@ -171,4 +179,10 @@ public class BasicIconPart implements IconPart {
 	}
     }
 
+    public Object clone() {
+	BasicIconPart clone = new BasicIconPart(getGeometry(), getTransform());
+	clone.setRenderingAttributes(getRenderingAttributes());
+	clone.setClip(getClip());
+	return clone;
+    }
 }

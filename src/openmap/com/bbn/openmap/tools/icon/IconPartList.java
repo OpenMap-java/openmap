@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconPartList.java,v $
 // $RCSfile: IconPartList.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/26 17:48:55 $
+// $Revision: 1.2 $
+// $Date: 2003/09/26 17:34:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -164,6 +164,19 @@ public class IconPartList implements IconPart {
 
     public DrawingAttributes getRenderingAttributes() {
 	return renderingAttributes;
+    }
+
+    public Object clone() {
+	IconPartList clone = new IconPartList();
+	Iterator it = iterator();
+	while (it.hasNext()) {
+	    IconPart ip = (IconPart)it.next();
+	    clone.add((IconPart)ip.clone());
+	}
+
+	clone.setRenderingAttributes(getRenderingAttributes());
+	clone.setClip(getClip());
+	return clone;
     }
 
 }
