@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolPart.java,v $
 // $RCSfile: SymbolPart.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/16 01:08:49 $
+// $Revision: 1.4 $
+// $Date: 2003/12/17 00:23:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,6 +52,8 @@ import com.bbn.openmap.util.PropUtils;
  * SymbolPart at the time icons are created.
  */
 public class SymbolPart {
+
+    public final static String DEFAULT_SYMBOL_CODE = "               ";
 
     /** Property file property for pretty name 'name' */
     public final static String NameProperty = "name";
@@ -177,9 +179,9 @@ public class SymbolPart {
 
 	String sc = getSymbolCode();
 
-// 	if (!symbolCode.equals(sc)) {
-// 	    debug = true;
-// 	}
+	if (Debug.debugging("errors") && !symbolCode.equals(sc)) {
+	    debug = true;
+	}
 
 	if (debug) {
 	    Debug.output("SymbolPart(" + codePosition.getPrettyName() + 
@@ -254,7 +256,8 @@ public class SymbolPart {
      * including the 15 digit code and the pretty name.
      */
     public String toString() {
-	return " [" + getSymbolCode() + "] " + prettyName;
+// 	return " [" + getSymbolCode() + "] " + prettyName;
+	return prettyName;
     }
 
     /**
@@ -324,7 +327,7 @@ public class SymbolPart {
      * getSymbolCode() string.
      */
     public StringBuffer getSymbolCodeMask() {
-	return new StringBuffer("               ");
+	return new StringBuffer(DEFAULT_SYMBOL_CODE);
     }
 
     /**
@@ -349,14 +352,14 @@ public class SymbolPart {
 	return symbolCode;
     }
 
-//     public CodeOptions getCodeOptions() {
-// 	CodeScheme cs = getCodeScheme();
-// 	if (cs != null) {
-// 	    cs.getCodeOptions();
-// 	} else {
-// 	    return null;
-// 	}
-//     }
+    public CodeOptions getCodeOptions() {
+	CodeScheme cs = getCodeScheme();
+	if (cs != null) {
+	    return cs.getCodeOptions(this);
+	} else {
+	    return null;
+	}
+    }
 
     public CodeScheme getCodeScheme() {
 	CodeScheme cs = null;

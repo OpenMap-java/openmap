@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolReferenceLibrary.java,v $
 // $RCSfile: SymbolReferenceLibrary.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/16 01:08:49 $
+// $Revision: 1.3 $
+// $Date: 2003/12/17 00:23:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,65 +78,7 @@ public class SymbolReferenceLibrary {
 	if (positionProperties != null) {
 	    positionTree = new CodePositionTree(positionProperties);
 	    head = positionTree.parseHeirarchy("MIL-STD-2525B Symbology", props);
-
-	    CodeAffiliation ca = new CodeAffiliation();
-	    ca.parsePositions("affiliation", positionProperties);
-
-	    CodeWarfightingModifier cwm = new CodeWarfightingModifier();
-	    CodeSizeModifier csm = new CodeSizeModifier();
-	    cwm.parsePositions("modifiers", positionProperties);
-	    csm.parsePositions("modifiers", positionProperties);
-
-	    CodeStatus cs = new CodeStatus();
-	    cs.parsePositions("status", positionProperties);
-
-	    CodeOrderOfBattle coob = new CodeOrderOfBattle();
-	    coob.parsePositions("oob", positionProperties);
 	}
-
-//     public List getDefaultFlags() {
-// 	List schemeList = (List)positions.get(getPrettyName());
-// 	if (schemeList == null) {
-// 	    // Might as well get them all loaded...
-// 	    // WARFIGHTING
-// 	    schemeList = new ArrayList();
-// 	    schemeList.add(CodeAffiliation.class);
-// 	    schemeList.add(CodeStatus.class);
-// 	    schemeList.add(CodeWarfightingModifier.class);
-// 	    schemeList.add(CodeCountry.class);
-// 	    schemeList.add(CodeOrderOfBattle.class);
-// 	    positions.put(WARFIGHTING.getPrettyName(), schemeList);
-// 	    // TACTICAL_GRAPHICS
-// 	    schemeList = new ArrayList();
-// 	    schemeList.add(CodeAffiliation.class);
-// 	    schemeList.add(CodeStatus.class);
-// 	    schemeList.add(CodeSize.class);
-// 	    schemeList.add(CodeCountry.class);
-// 	    positions.put(TACTICAL_GRAPHICS.getPrettyName(), schemeList);
-// 	    // METOC
-// 	    schemeList = new ArrayList();
-// 	    positions.put(METOC.getPrettyName(), schemeList);
-// 	    // INTELLIGENCE
-// 	    schemeList = new ArrayList();
-// 	    schemeList.add(CodeAffiliation.class);
-// 	    schemeList.add(CodeStatus.class);
-// 	    schemeList.add(CodeCountry.class);	
-// 	    schemeList.add(CodeOrderOfBattle.class);
-// 	    positions.put(INTELLIGENCE.getPrettyName(), schemeList);
-// 	    // MOOTW
-// 	    schemeList = new ArrayList();
-// 	    schemeList.add(CodeAffiliation.class);
-// 	    schemeList.add(CodeStatus.class);
-// 	    schemeList.add(CodeMOOTWModifier.class);
-// 	    schemeList.add(CodeCountry.class);
-// 	    schemeList.add(CodeOrderOfBattle.class);
-// 	    positions.put(MOOTW.getPrettyName(), schemeList);
-
-// 	    schemeList = (List)positions.get(getPrettyName());
-
-// 	}
-// 	return schemeList;
-//     }
 
 	if (Debug.debugging("symbology")) {
 	    Debug.output("SRL: initialized");

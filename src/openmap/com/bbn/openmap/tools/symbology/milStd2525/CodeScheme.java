@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeScheme.java,v $
 // $RCSfile: CodeScheme.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/16 01:08:49 $
+// $Revision: 1.4 $
+// $Date: 2003/12/17 00:23:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,16 +35,38 @@ import com.bbn.openmap.util.PropUtils;
 
 public class CodeScheme extends CodePosition {
 
-    protected String defaultSymbolCode;
+    /**
+     * The base 15 character code for a symbol under a scheme.  This
+     * code has wild-cards and unused charaters in them where
+     * appropriate for the scheme.
+     */
+    protected String defaultSymbolCode = SymbolPart.DEFAULT_SYMBOL_CODE;
+    /**
+     * For parsing the heirarchy, most schemes have some characters
+     * added to their heirarchy index number.  This can be specified
+     * in the position properties.
+     */
     protected String heirarchyAddition;
 
+    /**
+     * Property keyword for the default symbol code 'defaultSymbolCode'.
+     */
     public final static String DefaultSymbolCodeProperty = "defaultSymbolCode";
+
+    /**
+     * Property keyword for the heirarchy addition string 'heirarchyCodeAddition'.
+     */
     public final static String HeirarchyCodeAdditionProperty = "heirarchyCodeAddition";
 
     public CodeScheme() {
 	super("Scheme", 1, 1);
     }
 
+    /**
+     * The method needs more information from the properties than the
+     * CodePosition version of this method provides, like getting the
+     * base symbol code for the scheme and the heirarchy addition.
+     */
     public CodePosition addPositionChoice(int index, String entry,
 					  String prefix, Properties props) {
 	
@@ -154,11 +176,21 @@ public class CodeScheme extends CodePosition {
 	return new StringBuffer(defaultSymbolCode);
     }
 
+    protected CodeOptions options;
+
+    public void setCodeOptions(CodeOptions co) {
+	options = co;
+    }
+
     public CodeOptions getCodeOptions(SymbolPart sp) {
 	// Check with the symbol part first to see of there are any
 	// options for the particular positions established and
 	// limiting for the particular symbol, and then subsitute
 	// defaults for any other positions.
-	return null;
+	
+
+	return options;
+
+
     }
 }

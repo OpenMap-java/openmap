@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeOptions.java,v $
 // $RCSfile: CodeOptions.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/16 01:08:49 $
+// $Revision: 1.2 $
+// $Date: 2003/12/17 00:23:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,7 +23,25 @@
 
 package com.bbn.openmap.tools.symbology.milStd2525;
 
-public class CodeOptions {
+import java.util.Iterator;
+import java.util.List;
 
-    public CodeOptions() {}
+public class CodeOptions {
+    protected List options;
+
+    public CodeOptions(List opts) {
+	options = opts;
+    }
+    
+    public String toString() {
+	StringBuffer sb = new StringBuffer("CodeOptions:\n");
+	if (options != null) {
+	    for (Iterator it = options.iterator(); it.hasNext();) {
+		sb.append(((CodePosition)it.next()).toString() + "\n");
+	    }
+	}
+	return sb.toString();
+    }
+
+
 }

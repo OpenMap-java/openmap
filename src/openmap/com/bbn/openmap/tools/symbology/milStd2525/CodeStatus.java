@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeStatus.java,v $
 // $RCSfile: CodeStatus.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/16 01:08:49 $
+// $Revision: 1.4 $
+// $Date: 2003/12/17 00:23:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,7 +26,7 @@ package com.bbn.openmap.tools.symbology.milStd2525;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CodeStatus extends OptionPosition {
+public class CodeStatus extends CodePosition {
 
     public CodeStatus() {
 	super("Status", 4, 4);

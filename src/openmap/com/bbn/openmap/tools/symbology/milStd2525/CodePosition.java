@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodePosition.java,v $
 // $RCSfile: CodePosition.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/16 01:08:49 $
+// $Revision: 1.4 $
+// $Date: 2003/12/17 00:23:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,9 +24,9 @@
 package com.bbn.openmap.tools.symbology.milStd2525;
 
 import java.lang.reflect.*;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
@@ -45,6 +45,7 @@ public class CodePosition {
     protected int startIndex;
     protected int endIndex;
     protected CodePosition nextPosition = null;
+    protected SymbolPart symbolPart = null;
 
     public static boolean DEBUG = false;
 
@@ -58,23 +59,38 @@ public class CodePosition {
     public final static String NextProperty = "next";
 
     /**
-     * A list of CodePosition choices for this position.
+     * A list of CodePosition choices for this position.  This is only
+     * used for a single instance of the CodePosition that in turn
+     * holds this list of possible versions.
      */
-    protected List choices = new ArrayList();
+    protected List choices;
 
-    protected CodePosition() {};
+    public CodePosition() {
+	DEBUG = Debug.debugging("codeposition");
+    };
 
     public CodePosition(String name, int start, int end) {
-	DEBUG = Debug.debugging("codeposition");
+	this();
 	startIndex = start - 1;
 	endIndex = end;
 	prettyName = name;
     }
 
+    /**
+     * Get the current list of CodePosition possibilies.  Only returns
+     * a list for the CodePositions used to parse the position
+     * properties.
+     */
     public List getPositionChoices() {
 	return choices;
     }
 
+    /**
+     * Get a CodePosition from this list of available possibilities
+     * given the heirarchy number for the position.  Not all positions
+     * have a heirarchy number, but the number given in the positions
+     * properties will probably suffice.
+     */
     public CodePosition getFromChoices(int heirarchyNumber) {
 	List aList = getPositionChoices();
 	if (aList != null) {
@@ -89,18 +105,21 @@ public class CodePosition {
     }
 
     /**
+     * Method to add a position to the choices for this particular code position.
+     * @param index the heirarhical index for this position choice.
+     * This really only becomes important for those CodePositions
+     * which are used for interpreting the heirarchy properties.
+     * Other positions can use them for convenience, and this value
+     * will probably be just an ordering number for this choice out of
+     * all the other choices for the position.
+     * @param entry this should be character or characters used in the
+     * symbol code for this particular position choice.
+     * @param prefix the scoping property prefix used for all the
+     * properties.  The entry is discovered by looking in the
+     * properties for this 'prefix.index'.  Then other properties are
+     * discovered by looking for 'prefix.entry.propertyKey' properties.
+     * @param props the position properties.
      */
-    protected void parsePositions(String prefix, Properties props) {
-	int index = 1;
-	String entry = props.getProperty(PropUtils.getScopedPropertyPrefix(prefix) +
-					 Integer.toString(index));
-	while (entry != null) {
-	    addPositionChoice(index, entry, prefix, props);
-	    entry = props.getProperty(PropUtils.getScopedPropertyPrefix(prefix) +
-				      Integer.toString(++index));
-	}
-    }
-
     protected CodePosition addPositionChoice(int index, String entry, 
 					     String prefix, Properties props) {
 	String className = this.getClass().getName();
@@ -110,17 +129,62 @@ public class CodePosition {
 		Debug.output("CodePosition:  created position (" + className + ")");
 	    }
 
+	    // Before prefix is modified
+	    cp.symbolPart = getSymbolPart(prefix + entry, prefix, props);
+
 	    prefix = PropUtils.getScopedPropertyPrefix(prefix) + entry + ".";
+
+	    // Might not mean anything for option-type positions
 	    cp.heirarchyNumber = index;
 	    cp.id = entry.charAt(0);  // ASSUMED
 	    cp.prettyName = props.getProperty(prefix + NameProperty);
-	    choices.add(cp);
+	    addPositionChoice(cp);
 	} else {
 	    if (DEBUG) {
 		Debug.output("CodePosition: couldn't create position (" + className + ")");
 	    }
 	}
 	return cp;
+    }
+
+    /**
+     * Add the CodePosition to the choices, creating the choices List
+     * if needed.
+     */
+    public void addPositionChoice(CodePosition cp) {
+	if (choices == null) {
+	    choices = new LinkedList();
+	}
+	choices.add(cp);
+    }
+
+    /**
+     * This method reads Properties to add choices to this class as
+     * options for what values are valid in this position.
+     */
+    protected void parsePositions(String prefix, Properties props) {
+	int index = 1;
+	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+	String entry = props.getProperty(prefix + Integer.toString(index));
+	while (entry != null) {
+	    addPositionChoice(index, entry, prefix, props);
+	    entry = props.getProperty(prefix + Integer.toString(++index));
+	}
+    }
+
+    /**
+     * A method called when parsing position properties.
+     * @param entry should be prefix of the overall position class
+     * along with the symbol representation for that position.
+     * @param prefix should just be the prefix for the overall
+     * position class, including the period before the symbol
+     * representation for that position.
+     * @param props the position properties.
+     */
+    protected SymbolPart getSymbolPart(String entry, String prefix, Properties props) {
+	int offset = prefix.length();
+	return new SymbolPart(this, entry, props, null, offset, 
+			      offset + endIndex - startIndex, false);
     }
 
     protected void parseHeirarchy(String hCode, Properties props, SymbolPart parent) {
@@ -146,7 +210,7 @@ public class CodePosition {
 		if (parentList == null) {
 		    parentList = parent.getSubs();
 		    if (parentList == null) {
-			parentList = new ArrayList();
+			parentList = new LinkedList();
 			parent.setSubs(parentList);
 		    }
 		}
@@ -202,4 +266,8 @@ public class CodePosition {
 	return nextPosition;
     }
 
+    public String toString() {
+	return getPrettyName() + " [" + getID() + "] at " + 
+	    getStartIndex() + ", " + getEndIndex();
+    }
 }
