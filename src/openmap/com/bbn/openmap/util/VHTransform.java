@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/VHTransform.java,v $
 // $RCSfile: VHTransform.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/10/24 20:14:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -105,13 +105,15 @@ public class VHTransform {
     public double getLon() { return this.resultLon; }
     
     /** Return the distance in miles between 2 VH pairs. **/
-    public static double distance 
-    (double v1, double h1, double v2, double h2) {
+    public static double distance(double v1, double h1, double v2, double h2) {
 	double dv = v2 - v1;
-    double dh = h2 - h1;
-    return Math.sqrt(dv*dv + dh*dh)/10.0; }
-    
-    
+	double dh = h2 - h1;
+	// Was
+// 	return Math.sqrt(dv*dv + dh*dh)/10.0; 
+	// Now, thanks to Andrew Canfield
+	return Math.sqrt((dv*dv + dh*dh)/10.0); 
+    }
+        
     private double resultV   = 0.0;
     private double resultH   = 0.0;
     private double resultLat = 0.0;
