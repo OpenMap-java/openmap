@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleFilterLayer.java,v $
 // $RCSfile: ScaleFilterLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/13 19:45:59 $
+// $Revision: 1.8 $
+// $Date: 2004/03/17 23:11:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,8 +29,8 @@ import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.beans.*;
+import java.beans.beancontext.*;
 import java.util.*;
 
 import javax.swing.*;
@@ -313,8 +313,8 @@ public class ScaleFilterLayer extends Layer
     /** 
      * Implementing the ProjectionPainter interface.
      */
-    public synchronized void renderDataForProjection(Projection proj, java.awt.Graphics g){
-        if (proj == null){
+    public synchronized void renderDataForProjection(Projection proj, java.awt.Graphics g) {
+        if (proj == null) {
             Debug.error("ScaleFilterLayer.renderDataForProjection: null projection!");
             return;
         } else {
@@ -781,6 +781,19 @@ public class ScaleFilterLayer extends Layer
         }
     }
 
+    /** Method for BeanContextChild interface. */
+    public void setBeanContext(BeanContext in_bc) 
+        throws PropertyVetoException {
+
+        for (Iterator it = getLayers().iterator(); it.hasNext();
+             ((Layer)it.next()).connectToBeanContext(in_bc)) {
+            // You don't actually want to add the layer to the
+            // BeanContext, because then the LayerHandler will pick it
+            // up and add it to the main list of layers.
+        }
+
+        super.setBeanContext(in_bc);
+    }
 
     /**
      * MapHandler child methods, passing found objects to child layers.
@@ -790,10 +803,8 @@ public class ScaleFilterLayer extends Layer
             ((MouseDelegator)obj).addPropertyChangeListener(this);
         }
 
-        Iterator it = getLayers().iterator();
-        while (it.hasNext()) {
-            ((Layer)it.next()).findAndInit(obj);
-        }
+        for (Iterator it = getLayers().iterator(); it.hasNext();
+             ((Layer)it.next()).findAndInit(obj)) {}
     }
 
     /**
@@ -804,10 +815,8 @@ public class ScaleFilterLayer extends Layer
             ((MouseDelegator)obj).removePropertyChangeListener(this);
         }
 
-        Iterator it = getLayers().iterator();
-        while (it.hasNext()) {
-            ((Layer)it.next()).findAndUndo(obj);
-        }
+        for (Iterator it = getLayers().iterator(); it.hasNext();
+             ((Layer)it.next()).findAndUndo(obj)) {}
     }
 
 }

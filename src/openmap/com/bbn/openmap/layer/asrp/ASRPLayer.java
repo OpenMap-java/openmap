@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/asrp/ASRPLayer.java,v $
 // $RCSfile: ASRPLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/03/05 02:25:58 $
+// $Revision: 1.3 $
+// $Date: 2004/03/17 23:11:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,7 @@ package com.bbn.openmap.layer.asrp;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.dataAccess.asrp.*;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
@@ -36,18 +37,55 @@ import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
+import java.awt.GridLayout;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import javax.swing.*;
 
+/**
+ * The ASRPLayer displays ASRP data, which is an international,
+ * seamless imagery format, kind of like CADRG.  This data must be
+ * displayed on either LLYX or CADRG projections, although the layer
+ * will display coverage rectangles over areas with imagery for
+ * projections that are not the right type, or if the user should zoom
+ * in or out to view the images.  The properties for this layer are:<P><pre>
+ *
+ * # Paths to TRANSH01.THF files that organize sets of ASRP image directories.
+ * asrpLayer.thf=thf1;thf2
+ * # Alternatively, paths to ASRP directories can be used if the thf property is undefined.
+ * asrpLayer.asrpDirs=dir1;dir2
+ * # Flag to show coverages when images can't be displayed.
+ * asrpLayer.showCoverage
+ * # Lastly, the suite of DrawingAttributes properties can be provided to set 
+ * # the parameters for the coverage rectangles. See DrawingAttributes for more options.
+ * asrpLayer.lineColor=FFFF0000
+ * asrpLayer.fillColor=FFFF0000
+ *
+ * </pre>
+ */
 public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvider {
 
-    protected List asrpList = null;
+    protected ASRPDirectoryHandler asrpHandler;
     protected String[] thfPaths = null;
     protected String[] asrpDirs = null;
 
+    protected boolean showCoverage = true;
+
+    DrawingAttributes coverageDrawingAttributes = DrawingAttributes.getDefaultClone();
+
+    /**
+     * Property describing a flag that can be set to show where image
+     * files are when they cannot be displayed or aren't showing up.
+     */
+    public final static String ShowCoverageProperty = "showCoverage";
     /**
      * The ASRPDirectory can be used to view the images from ASRP
      * directories containing GEN, GER, SOU, QAL and IMG files.  This
@@ -69,49 +107,45 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvid
 
     public synchronized OMGraphicList prepare() {
 
+        OMGraphicList ret = null;
         Projection proj = getProjection();
+
         if (proj == null) {
-            return null;
+            return ret;
         }
 
         try {
 
-            if (asrpList == null) {
-                asrpList = initialize();
+            if (asrpHandler == null) {
+                asrpHandler = initialize();
             }
 
             if (!(proj instanceof EqualArc)) {
                 fireRequestInfoLine("ASRP data requires an Equal Arc projection (CADRG/LLXY)");
-                return null;
+            } else {
+                ret = asrpHandler.getImagesForProjection((EqualArc)proj);
             }
 
-            OMGraphicList list = new OMGraphicList();
-            for (Iterator it = asrpList.iterator(); it.hasNext(); ) {
-                ASRPDirectory asrpDir = (ASRPDirectory) it.next();
-                
-                list.add(asrpDir.getTiledImages(proj));
+            if (ret == null && showCoverage) {
+                ret = asrpHandler.getCoverageBounds(proj, coverageDrawingAttributes);
             }
 
-            return list;
         } catch (IOException ioe) {
             Debug.error("ASRPLayer(" + getName() + 
-                        ") caught exception reading tiles:\n" + 
+                        ") caught exception fetching images:\n" + 
                         ioe.getMessage());
-        } catch (ClassCastException cce) {
-            Debug.error("ASRPLayer (" + getName() + ") given a list of something other than ASRP directories to fetch data from");
         }
 
-        return null;
+        return ret;
     }
 
-    protected List initialize() {
-        LinkedList list = new LinkedList();
+    protected ASRPDirectoryHandler initialize() {
+        ASRPDirectoryHandler asrpDirHandler = new ASRPDirectoryHandler();
         int i;
         if (thfPaths != null) {
             for (i = 0; i < thfPaths.length; i++) {
                 try {
-                    TransmittalHeaderFile thf = new TransmittalHeaderFile(thfPaths[i]);
-                    list.addAll(thf.getASRPDirectories());
+                    asrpDirHandler.add(new TransmittalHeaderFile(thfPaths[i]));
                 } catch (IOException ioe) {
                     Debug.error("ASRPLayer (" + getName() + 
                                 ") caught exception trying to read TRANSH02.THF: " + 
@@ -120,19 +154,19 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvid
             }
         } else if (asrpDirs != null) {
             for (i = 0; i < asrpDirs.length; i++) {
-                list.add(new ASRPDirectory(asrpDirs[i]));
+                asrpDirHandler.add(new ASRPDirectory(asrpDirs[i]));
             }
         }
 
-        return list;
+        return asrpDirHandler;
     }
 
-    public List getASRPList() {
-        return asrpList;
+    public ASRPDirectoryHandler getASRPHandler() {
+        return asrpHandler;
     }
 
-    public void setASRPList(List asrpListIn) {
-        asrpList = asrpListIn;
+    public void setASRPHandler(ASRPDirectoryHandler asrpHandlerIn) {
+        asrpHandler = asrpHandlerIn;
     }
 
     /**
@@ -151,7 +185,7 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvid
                 asrpDirs = pathsIn;
             }
 
-            asrpList = null;// next projection change, we reload.
+            asrpHandler = null;// next projection change, we reload.
         }
     }
 
@@ -170,15 +204,21 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvid
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
 
+        coverageDrawingAttributes.setProperties(prefix, props);
+
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
         thfPaths = PropUtils.initPathsFromProperties(props, prefix + THFProperty);
         if (thfPaths == null) {
             asrpDirs = PropUtils.initPathsFromProperties(props, prefix + ASRPDirectoryProperty);
         }
+
+        showCoverage = PropUtils.booleanFromProperties(props, prefix + ShowCoverageProperty, showCoverage);
+
     }
 
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
+
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         // find out paths...
@@ -218,6 +258,10 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvid
             props.put(prefix + ASRPDirectoryProperty, "");
         }
 
+        props.put(prefix + ShowCoverageProperty, new Boolean(showCoverage).toString());
+
+        coverageDrawingAttributes.getProperties(props);
+
         return props;
     }
 
@@ -238,6 +282,18 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvid
         props.put(ASRPDirectoryProperty + LabelEditorProperty,interString);
         props.put(ASRPDirectoryProperty + ScopedEditorProperty, 
                   "com.bbn.openmap.util.propertyEditor.MultiDirectoryPropertyEditor");
+
+        interString = i18n.get(ASRPLayer.class,ShowCoverageProperty,I18n.TOOLTIP,"Show coverage areas when images can't be displayed.");
+        props.put(ShowCoverageProperty, interString);
+        interString = i18n.get(ASRPLayer.class, ShowCoverageProperty, "Show Coverage Areas");
+        props.put(ShowCoverageProperty + LabelEditorProperty,interString);
+        props.put(ShowCoverageProperty + ScopedEditorProperty, 
+                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
+        coverageDrawingAttributes.getPropertyInfo(props);
+
+        props.put(initPropertiesProperty, THFProperty + " " + ASRPDirectoryProperty + " " + ShowCoverageProperty + " " + coverageDrawingAttributes.getInitPropertiesOrder());
+
         return props;
     }
 
@@ -247,34 +303,56 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvid
     public DataBounds getDataBounds() {
         DataBounds box = null;
 
-        double minx = 180;
-        double miny = 90;
-        double maxx = -180;
-        double maxy = -90;
-        if (asrpList != null) {
-
-            for (Iterator it = asrpList.iterator(); it.hasNext();) {
-                OMRect rect = ((ASRPDirectory)it.next()).getBounds();
-                float n = rect.getNorthLat();
-                float s = rect.getSouthLat();
-                float w = rect.getWestLon();
-                float e = rect.getEastLon();
-
-                if (n < miny) miny = n;
-                if (n > maxy) maxy = n;
-                if (s < miny) miny = s;
-                if (s > maxy) maxy = s;
-                if (w < minx) minx = w;
-                if (w > maxx) maxx = w;
-                if (e < minx) minx = e;
-                if (e > maxx) maxx = e;
-
-            }
-
-            box = new DataBounds(minx, miny, maxx, maxy);
+        if (asrpHandler != null) {
+            box = asrpHandler.getDataBounds();
         }
-        Debug.output(box.toString());
+
         return box;
+    }
+
+    public void setShowCoverage(boolean showCoverageIn) {
+        showCoverage = showCoverageIn;
+    }
+
+    public boolean getShowCoverage() {
+        return showCoverage;
+    }
+
+    JPanel guiPanel = null;
+
+    public Component getGUI() {
+        if (guiPanel == null) {
+            JPanel gp = new JPanel();
+            gp.setLayout(new GridLayout(0, 1));
+            String interString = i18n.get(ASRPLayer.class, "showCoverageCheck", "Show Coverage");
+            JCheckBox coverageCheck = new JCheckBox(interString, getShowCoverage());
+            interString = i18n.get(ASRPLayer.class, "showCoverageCheck", I18n.TOOLTIP, "Show coverage areas when images can't be displayed.");
+            coverageCheck.setToolTipText(interString);
+            coverageCheck.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        JCheckBox jcb = (JCheckBox)ae.getSource();
+                        setShowCoverage(jcb.isSelected());
+                        doPrepare();
+                    }
+                });
+
+            coverageDrawingAttributes.getPropertyChangeSupport().addPropertyChangeListener(new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent pce) {
+                        doPrepare();
+                    }
+                });
+
+
+            interString = i18n.get(ASRPLayer.class, "coveragePanelTitle", "Coverage Controls");
+            JPanel covPanel = com.bbn.openmap.util.PaletteHelper.createVerticalPanel(interString);
+
+            covPanel.add(coverageCheck);
+            covPanel.add(coverageDrawingAttributes.getGUI());
+            gp.add(covPanel);
+            guiPanel = gp;
+        }
+
+        return guiPanel;
     }
 
 }
