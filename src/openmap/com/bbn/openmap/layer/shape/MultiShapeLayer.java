@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/28 00:00:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,7 +76,7 @@ import com.bbn.openmap.util.SwingWorker;
  * ############################
  * </pre></code>
  *
- * @version $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/28 00:00:40 $
  * @see SpatialIndex 
  */
 public class MultiShapeLayer extends ShapeLayer {
@@ -328,6 +328,8 @@ public class MultiShapeLayer extends ShapeLayer {
 	if (box == null) {
 
 	    box = new JPanel();
+	    JTabbedPane tabs = new JTabbedPane();
+
 	    box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
   	    box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -335,8 +337,12 @@ public class MultiShapeLayer extends ShapeLayer {
 	    while (sii.hasNext()) {
 		SpatialIndexHandler sih = (SpatialIndexHandler)sii.next();
 		JPanel stuff = (JPanel)sih.getGUI();
-		box.add(stuff);
+		if (stuff != null) {
+		    tabs.addTab(sih.getPrettyName(), stuff);
+		}
 	    }
+
+	    box.add(tabs);
 
 	    JPanel pal2 = new JPanel();
 	    JButton redraw = new JButton("Redraw Layer");
