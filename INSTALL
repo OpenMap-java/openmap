@@ -1,8 +1,8 @@
 -*- Mode: text-mode -*-
 $Source: /cvs/distapps/openmap/INSTALL,v $
 $RCSfile: INSTALL,v $
-$Revision: 1.13 $
-$Date: 2001/02/18 17:52:08 $
+$Revision: 1.14 $
+$Date: 2001/11/16 03:19:20 $
 $Author: bmackiew $
 
 Prerequisites
@@ -73,6 +73,14 @@ The simplest way to compile this package is:
      source code directory by typing `make clean'.  To also remove the
      files that `configure' created (so you can compile the package
      for a different kind of computer), type `make distclean'.
+
+You may also compile the package using Ant, a Java-based build tool.  Ant may
+be found at http://jakarta.apache.org/ant  In short, you need to add the Ant
+distribution's bin directory to your path, set your JAVA_HOME environment
+variable to point to your Java distribution, and run "ant" from the top level
+of the OpenMap distribution.  Windows users should read the "README.win32"
+file for more detailed instructions.
+
 
 Test Drive
 ==========
