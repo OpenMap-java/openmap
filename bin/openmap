@@ -63,8 +63,7 @@ DIRLIBS=${OPENMAP_HOME}/lib/*.jar
 # Change to match your installation
 
 # For SVG capabilities with the Batik package...
-BATIK_HOME=/usr/local/openmap/batik-1.1.1
-BATIK_HOME=/usr/local/java/batik-1.1.1
+BATIK_HOME=/usr/local/java/batik-1.5
 DIRLIBS=${DIRLIBS}" "${BATIK_HOME}/lib/*.jar
 
 # For CORBA capabilities using Visibroker...
