@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ComponentFactory.java,v $
 // $RCSfile: ComponentFactory.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.10 $
+// $Date: 2004/05/15 02:29:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,7 +67,45 @@ public class ComponentFactory {
      * @return Vector containing the new Objects.
      */
     public static Vector create(Vector markerNames, Properties properties) {
-        return create(markerNames, properties, null);
+        return create(markerNames, null, properties, null, false);
+    }
+
+    /**
+     * Given a Vector of marker name Strings, and a Properties object,
+     * look in the Properties object for the markerName.class property
+     * to get a class name to create each object.  Then, if the new
+     * objects are PropertyConsumers, use the marker name as a
+     * property prefix to get properties for that object out of the
+     * Properties.
+     *
+     * @param markerNames String of space separated marker names.
+     * @param prefix The prefix that should be prepended to the marker names.
+     * @param properties Properties object containing the details.
+     * @return Vector containing the new Objects.
+     */
+    public static Vector create(Vector markerNames, String prefix, Properties properties) {
+        return create(markerNames, prefix, properties, null, false);
+    }
+
+    /**
+     * Given a Vector of marker name Strings, and a Properties object,
+     * look in the Properties object for the markerName.class property
+     * to get a class name to create each object.  Then, if the new
+     * objects are PropertyConsumers, use the marker name as a
+     * property prefix to get properties for that object out of the
+     * Properties.
+     *
+     * @param markerNames String of space separated marker names.
+     * @param prefix The prefix that should be prepended to the marker names.
+     * @param properties Properties object containing the details.
+     * @param progressSupport ProgressSupport object to provide
+     * progress updates to.  It's OK if this is null to not have
+     * progress events sent.
+     * @return Vector containing the new Objects.
+     */
+    public static Vector create(Vector markerNames, String prefix, Properties properties,
+                                ProgressSupport progressSupport) {
+        return create(markerNames, prefix, properties, progressSupport, false);
     }
 
     /**
@@ -87,7 +125,7 @@ public class ComponentFactory {
      */
     public static Vector create(Vector markerNames, Properties properties,
                                 ProgressSupport progressSupport) {
-        return create(markerNames, properties, progressSupport, false);
+        return create(markerNames, null, properties, progressSupport, false);
     }
 
     /**
@@ -117,6 +155,38 @@ public class ComponentFactory {
     public static Vector create(Vector markerNames, Properties properties,
                                 ProgressSupport progressSupport, 
                                 boolean matchInOutVectorSize) {
+        return create(markerNames, null, properties, progressSupport, matchInOutVectorSize);
+    }
+
+    /**
+     * Given a Vector of marker name Strings, and a Properties object,
+     * look in the Properties object for the markerName.class property
+     * to get a class name to create each object.  Then, if the new
+     * objects are PropertyConsumers, use the marker name as a
+     * property prefix to get properties for that object out of the
+     * Properties.
+     *
+     * @param markerNames String of space separated marker names.
+     * @param prefix The prefix that should be prepended to the marker names.
+     * @param properties Properties object containing the details.
+     * @param progressSupport ProgressSupport object to provide
+     * progress updates to.  It's OK if this is null to not have
+     * progress events sent.
+     * @param matchInOutVectorSize if true, then if there is any
+     * trouble creating an object, it's marker name will be placed in
+     * the returned vector instead of a component.  If false, only
+     * valid objects will be returned in the vector.
+     * @return Vector containing the new Objects.  If a component
+     * could not be created, the markerName is returned in its place,
+     * so you can figure out which one couldn't be created.  In any
+     * case, the size of the returned vector is the same size as the
+     * markerNames vector, so you can figure out which markerNames go
+     * with which objects.
+     */
+    public static Vector create(Vector markerNames, 
+                                String prefix, Properties properties,
+                                ProgressSupport progressSupport, 
+                                boolean matchInOutVectorSize) {
 
         int size = markerNames.size();
         Vector vector = new Vector(size);
@@ -127,7 +197,10 @@ public class ComponentFactory {
         }
 
         for (int i = 0; i < size; i++) {
-            String componentName = (String) markerNames.elementAt(i);
+            String componentName = 
+                PropUtils.getScopedPropertyPrefix(prefix) + 
+                (String) markerNames.elementAt(i);
+
             String classProperty = componentName + ClassNameProperty;
             String className = properties.getProperty(classProperty);
 
