@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/03/19 20:33:18 $
+// $Revision: 1.5 $
+// $Date: 2003/03/29 07:15:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -683,10 +683,14 @@ public class RpfLayer extends OMGraphicHandlerLayer
 	    showInfoCheck.setActionCommand(showInfoCommand);
 	    showInfoCheck.addActionListener(this);
 
-	    boolean locked = viewAttributes.chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)?false:true;
-	    String lockedTitle = locked?
-		(lockedButtonTitle + " - " + viewAttributes.chartSeries):
-		unlockedButtonTitle;
+	    String tmpCS = viewAttributes.chartSeries;
+	    if (tmpCS == null) {
+		tmpCS = RpfViewAttributes.ANY;
+	    }
+
+	    boolean locked = !tmpCS.equalsIgnoreCase(RpfViewAttributes.ANY);
+	    String lockedTitle = 
+		locked?(lockedButtonTitle + " - " + tmpCS):unlockedButtonTitle;
 
 	    lockSeriesCheck = new JCheckBox(lockedTitle, locked);
 	    lockSeriesCheck.setActionCommand(lockSeriesCommand);
@@ -777,8 +781,13 @@ public class RpfLayer extends OMGraphicHandlerLayer
 		} else {
 		    seriesName = ((RpfCoverageBox)vector.elementAt(0)).chartCode;
 		}
-		lockCheck.setText(lockedButtonTitle + " - " + 
-				  seriesName);
+
+		if (seriesName == null) {
+		    seriesName = RpfViewAttributes.ANY;
+		    fireRequestMessage("The " + getName() + " Layer is having trouble determining what kind\nof charts are being displayed.  Can't establish lock for charts\ncurrently being viewed.");
+		}
+
+		lockCheck.setText(lockedButtonTitle + " - " + seriesName);
 		viewAttributes.chartSeries = seriesName;
 
 	    } else {
