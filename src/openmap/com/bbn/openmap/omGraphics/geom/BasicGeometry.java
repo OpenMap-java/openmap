@@ -14,24 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/11/26 03:50:28 $
+// $Revision: 1.13 $
+// $Date: 2005/01/10 16:58:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.geom;
 
-import com.bbn.openmap.omGraphics.OMGeometry;
-import com.bbn.openmap.omGraphics.OMGraphicConstants;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.Debug;
-
-import java.awt.*;
-import java.awt.geom.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.FlatteningPathIterator;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Map;
+
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGraphicConstants;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Base class implementation of OpenMap OMGeometry, the super class
@@ -327,7 +332,9 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * created if it doesn't exist.
      */
     public void putAttribute(Object key, Object value) {
-        getAttributeMap().put(key, value);
+        if (key != null && value != null) {
+            getAttributeMap().put(key, value);
+        }
     }
 
     /**
@@ -336,11 +343,12 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * the Map isn't considered to be the 'official' attribute Map.
      */
     public Object getAttribute(Object key) {
-        Object appObj = getAppObject(false);
-        if (appObj instanceof Map) {
-            return ((Map) appObj).get(key);
+        if (key != null) {
+            Object appObj = getAppObject(false);
+            if (appObj instanceof Map) {
+                return ((Map) appObj).get(key);
+            }
         }
-        // else
         return null;
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.14 $
-// $Date: 2004/10/14 18:06:17 $
+// $Revision: 1.15 $
+// $Date: 2005/01/10 16:58:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -183,11 +184,11 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 
             // jdk 1.3 version Don't know if the numbers are the same
             // as in me.getButton, shouldn't make a difference.
-            if (SwingUtilities.isLeftMouseButton(me)) {
-                return 0;
-            } else if (SwingUtilities.isRightMouseButton(me)
-                    || me.isControlDown()) {
+            if (me.isControlDown() /* PopupTrigger() */
+                    || SwingUtilities.isRightMouseButton(me)) {
                 return 1;
+            } else if (SwingUtilities.isLeftMouseButton(me)) {
+                return 0;
             } else {
                 return 2;
             }
@@ -198,6 +199,16 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
          */
         public boolean isLeftButton() {
             return leftButton;
+        }
+
+        /**
+         * Called when the popup trigger is known to have been
+         * triggered and a click interest has been set by it.
+         * 
+         * @param b
+         */
+        public void setLeftButton(boolean b) {
+            leftButton = b;
         }
     }
 
@@ -240,7 +251,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
      * count control-clicks as not a left mouse click.
      */
     public boolean isLeftMouseButton(MouseEvent me) {
-        return SwingUtilities.isLeftMouseButton(me) && !me.isControlDown();
+        return SwingUtilities.isLeftMouseButton(me);
     }
 
     /**
@@ -345,10 +356,13 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
         }
 
         if (omg != null) {
-            if (isLeftMouseButton(e)) {
-                select(omg);
-            }
             setClickInterest(new GeometryOfInterest(omg, e));
+        }
+
+        ret = testForAndHandlePopupTrigger(e);
+
+        if (omg != null && !ret) {
+            select(omg);
             ret = true;
         }
 
@@ -363,37 +377,58 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
      */
     public boolean mouseReleased(MouseEvent e) {
         setCurrentMouseEvent(e);
+        return testForAndHandlePopupTrigger(e) && consumeEvents;
+    }
+
+    /**
+     * Tests the MouseEvent to see if it's a popup trigger, and calls
+     * rightClick appropriately if there is an OMGraphic involved.
+     * 
+     * @param e MouseEvent
+     * @return true if the MouseEvent is a popup trigger.
+     */
+    public boolean testForAndHandlePopupTrigger(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            GeometryOfInterest goi = getClickInterest();
+            // If there is a click interest
+            if (goi != null) {
+                // Tell the policy it an OMGraphic was clicked.
+                goi.setLeftButton(false);
+                rightClick(goi.getGeometry(), e);
+            } else {
+                rightClick(e);
+            }
+            return true;
+        }
         return false;
     }
 
     /**
-     * Invoked when the mouse has been clicked. Notifies the left,
-     * right click methods for the applicable OMGraphic or the map.
+     * Invoked when the mouse has been clicked. Notifies the left
+     * click methods for the applicable OMGraphic or the map. Right
+     * click methods are handled when the testForAndHandlePopupTrigger
+     * method is called in mousePressed and mouseReleased.
      * 
      * @param e MouseEvent
      * @return the consumeEvents setting.
      */
     public boolean mouseClicked(MouseEvent e) {
         setCurrentMouseEvent(e);
-        GeometryOfInterest goi = getClickInterest();
 
-        // If there is a click interest
-        if (goi != null) {
-            // Tell the policy it an OMGraphic was clicked.
-            if (isLeftMouseButton(e)) {
+        if (isLeftMouseButton(e)) {
+            GeometryOfInterest goi = getClickInterest();
+            // If there is a click interest
+            if (goi != null && goi.isLeftButton()) {
+                // Tell the policy it an OMGraphic was clicked.
                 leftClick(goi.getGeometry(), e);
             } else {
-                rightClick(goi.getGeometry(), e);
-            }
-        } else {
-            if (isLeftMouseButton(e)) {
                 leftClick(e);
-            } else {
-                rightClick(e);
             }
+
+            return consumeEvents;
         }
 
-        return consumeEvents;
+        return false;
     }
 
     /**
