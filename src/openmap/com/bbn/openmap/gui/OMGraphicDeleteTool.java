@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMGraphicDeleteTool.java,v $
 // $RCSfile: OMGraphicDeleteTool.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/07 16:25:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -104,19 +104,21 @@ public class OMGraphicDeleteTool extends OMToolComponent
 
 	    // Too specific?
 	    if (itemSource instanceof OMDrawingTool) {
-		((OMDrawingTool)itemSource).deactivate();
-	    }
+		// This should notify the requestor...
+		((OMDrawingTool)itemSource).deactivate(OMGraphicConstants.DELETE_GRAPHIC_MASK);
 
-	    DrawingToolRequestor requestor = item.getRequestor();
-	    if (item != null) {
-		OMGraphic omg = item.getOMGraphic();
-		if (requestor != null) {
-		    requestor.drawingComplete(omg, new OMAction(OMGraphicConstants.DELETE_GRAPHIC_MASK));
-		} else {
-		    // if there isn't a requestor specified, tell anyone who will listen.
-		    Iterator reqs = requestors.iterator();
-		    while (reqs.hasNext()) {
-			((DrawingToolRequestor)reqs.next()).drawingComplete(omg, new OMAction(OMGraphicConstants.DELETE_GRAPHIC_MASK));			
+	    } else {
+		if (item != null) {  //  is this check necessary?  I doubt it.
+		    DrawingToolRequestor requestor = item.getRequestor();
+		    OMGraphic omg = item.getOMGraphic();
+		    if (requestor != null) {
+			requestor.drawingComplete(omg, new OMAction(OMGraphicConstants.DELETE_GRAPHIC_MASK));
+		    } else {
+			// if there isn't a requestor specified, tell anyone who will listen.
+			Iterator reqs = requestors.iterator();
+			while (reqs.hasNext()) {
+			    ((DrawingToolRequestor)reqs.next()).drawingComplete(omg, new OMAction(OMGraphicConstants.DELETE_GRAPHIC_MASK));			
+			}
 		    }
 		}
 	    }
