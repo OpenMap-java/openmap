@@ -416,7 +416,7 @@ public class Inspector implements ActionListener {
     }
 
     public WindowSupport getWindowSupport() {
-        return windowSupport();
+        return windowSupport;
     }
     
     /** test cases. */
