@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.16 $
-// $Date: 2004/10/14 18:06:04 $
+// $Revision: 1.17 $
+// $Date: 2005/02/02 13:17:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,19 +24,29 @@ package com.bbn.openmap.layer.rpf;
 
 /*  Java Core  */
 import java.awt.Point;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.util.Properties;
 import java.util.Vector;
-import javax.swing.*;
-import javax.swing.event.*;
 
-/*  OpenMap  */
-import com.bbn.openmap.event.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.proj.CADRG;
+import com.bbn.openmap.proj.EqualArc;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
@@ -72,49 +82,67 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * <pre>
  * 
- * #-----------------------------
- * # Properties for RpfLayer
- * #-----------------------------
- * # Mandatory properties
- * # This property should reflect the paths to the RPF directories
- * rpf.paths=/usr/local/matt/data/RPF /usr/local/matt/data/CIB/RPF
- * 
- * # Optional Properties - the default will be set if these are not 
- * # included in the properties file: 
- * # Number between 0-255: 0 is transparent, 255 is opaque.  255 is default.
- * rpf.opaque=128
- * 
- * # Number of colors to use on the maps - 16, 32, 216.  216 is default.
- * rpf.numberColors=216
- * 
- * # Display maps on startup.  Default is true.
- * rpf.showMaps=true
- * 
- * # Display attribute information on startup.  Default is false.
- * rpf.showInfo=false
- * 
- * # Scale charts to match display scale.  Default is true.
- * rpf.scaleImages=true
- * 
- * # The scale factor to allow when scaling images (2x, 4x, also mean 1/2, 1/4).  Default is 4.
- * rpf.imageScaleFactor=4
- * 
- * # Delete the cache if the layer is removed from the map.  Default is false.
- * rpf.killCache=true
- * # Limit the display to the chart code specified. (GN, JN, ON, TP, etc.).
- * # Default is ANY
- * rpf.chartSeries=ANY
- * # Get the subframe attribute data from the Frame provider.
- * rpf.autofetchAttributes=false
- * # Set to true if you want the coverage tool available.
- * rpf.coverage=true
- * # Set the subframe cache size. (Number of subframes to hold on to, 256x256 pixels)
- * rpf.subframeCacheSize=128
- * # Then also include coverage properties, which are available in the RpfConstants.
- * #------------------------------------
- * # End of properties for RpfLayer
- * #------------------------------------
- * 
+ *  
+ *   
+ *    
+ *     
+ *      
+ *       
+ *        
+ *         
+ *          
+ *          #-----------------------------
+ *          # Properties for RpfLayer
+ *          #-----------------------------
+ *          # Mandatory properties
+ *          # This property should reflect the paths to the RPF directories
+ *          rpf.paths=/usr/local/matt/data/RPF /usr/local/matt/data/CIB/RPF
+ *          
+ *          # Optional Properties - the default will be set if these are not 
+ *          # included in the properties file: 
+ *          # Number between 0-255: 0 is transparent, 255 is opaque.  255 is default.
+ *          rpf.opaque=128
+ *          
+ *          # Number of colors to use on the maps - 16, 32, 216.  216 is default.
+ *          rpf.numberColors=216
+ *          
+ *          # Display maps on startup.  Default is true.
+ *          rpf.showMaps=true
+ *          
+ *          # Display attribute information on startup.  Default is false.
+ *          rpf.showInfo=false
+ *          
+ *          # Scale charts to match display scale.  Default is true.
+ *          rpf.scaleImages=true
+ *          
+ *          # The scale factor to allow when scaling images (2x, 4x, also mean 1/2, 1/4).  Default is 4.
+ *          rpf.imageScaleFactor=4
+ *          
+ *          # Delete the cache if the layer is removed from the map.  Default is false.
+ *          rpf.killCache=true
+ *          # Limit the display to the chart code specified. (GN, JN, ON, TP, etc.).
+ *          # Default is ANY
+ *          rpf.chartSeries=ANY
+ *          # Get the subframe attribute data from the Frame provider.
+ *          rpf.autofetchAttributes=false
+ *          # Set to true if you want the coverage tool available.
+ *          rpf.coverage=true
+ *          # Set the subframe cache size. (Number of subframes to hold on to, 256x256 pixels)
+ *          rpf.subframeCacheSize=128
+ *          # Then also include coverage properties, which are available in the RpfConstants.
+ *          #------------------------------------
+ *          # End of properties for RpfLayer
+ *          #------------------------------------
+ *          
+ *          
+ *         
+ *        
+ *       
+ *      
+ *     
+ *    
+ *   
+ *  
  * </pre>
  *  
  */
@@ -145,9 +173,9 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
     /** The coverage tool for the layer. */
     protected RpfCoverage coverage;
     /** Subframe cache size. Default is 40. */
-    protected int subframeCacheSize;
+    protected int subframeCacheSize = RpfCacheHandler.SUBFRAME_CACHE_SIZE;
     /** Auxillary subframe cache size. Default is 10. */
-    protected int auxSubframeCacheSize;
+    protected int auxSubframeCacheSize = RpfCacheManager.SMALL_CACHE_SIZE;
 
     /**
      * The default constructor for the Layer. All of the attributes
@@ -237,23 +265,23 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
         viewAttributes.setProperties(prefix, properties);
 
         subframeCacheSize = PropUtils.intFromProperties(properties, prefix
-                + CacheSizeProperty, RpfCacheHandler.SUBFRAME_CACHE_SIZE);
+                + CacheSizeProperty, subframeCacheSize);
 
         auxSubframeCacheSize = PropUtils.intFromProperties(properties, prefix
-                + CacheSizeProperty, RpfCacheManager.SMALL_CACHE_SIZE);
+                + CacheSizeProperty, auxSubframeCacheSize);
 
         if (viewAttributes.chartSeries == null)
             viewAttributes.chartSeries = RpfViewAttributes.ANY;
 
         killCache = PropUtils.booleanFromProperties(properties, prefix
-                + KillCacheProperty, true);
+                + KillCacheProperty, killCache);
 
-        if (PropUtils.booleanFromProperties(properties, prefix
-                + CoverageProperty, false)) {
+        if (coverage == null) {
             setCoverage(new RpfCoverage(this));
-            coverage.setProperties(prefix, properties);
         }
+        coverage.setProperties(prefix, properties);
 
+        resetPalette();
     }
 
     /**
@@ -284,7 +312,7 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
                     pathString.append(p[i]);
                     if (i < p.length - 1) {
                         pathString.append(";"); // separate paths with
-                                                // ;
+                        // ;
                     }
                 }
             }
@@ -294,8 +322,6 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
         }
 
         props.put(prefix + KillCacheProperty, new Boolean(killCache).toString());
-        props.put(prefix + CoverageProperty,
-                new Boolean(coverage == null).toString());
         props.put(prefix + CacheSizeProperty,
                 Integer.toString(subframeCacheSize));
         props.put(prefix + AuxCacheSizeProperty,
@@ -335,26 +361,47 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
      */
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
+        String interString;
 
-        list.put(RpfPathsProperty,
-                "Paths to RPF directories.  Semi-colon separated paths");
+        interString = i18n.get(RpfLayer.class,
+                RpfPathsProperty,
+                I18n.TOOLTIP,
+                "Paths to RPF directories.  Semi-colon separated paths.");
+        list.put(RpfPathsProperty, interString);
         list.put(RpfPathsProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.MultiDirectoryPropertyEditor");
+        interString = i18n.get(RpfLayer.class, RpfPathsProperty, "Data Path");
+        list.put(RpfPathsProperty + LabelEditorProperty, interString);
 
-        list.put(KillCacheProperty,
+        interString = i18n.get(RpfLayer.class,
+                KillCacheProperty,
+                I18n.TOOLTIP,
                 "Flag to trigger the cache to be cleared when layer is removed from the map.");
+        list.put(KillCacheProperty, interString);
         list.put(KillCacheProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+        interString = i18n.get(RpfLayer.class, KillCacheProperty, "Clear Cache");
+        list.put(KillCacheProperty + LabelEditorProperty, interString);
 
-        list.put(CoverageProperty,
-                "Flag that adds the coverage tool to the layer.");
-        list.put(CoverageProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
-
-        list.put(CacheSizeProperty,
+        interString = i18n.get(RpfLayer.class,
+                CacheSizeProperty,
+                I18n.TOOLTIP,
                 "Number of frames to hold in the frame cache.");
-        list.put(AuxCacheSizeProperty,
-                "Number of subframes to hold in the subframe cache.");
+        list.put(CacheSizeProperty, interString);
+        interString = i18n.get(RpfLayer.class,
+                CacheSizeProperty,
+                "Frame Cache Size");
+        list.put(CacheSizeProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(RpfLayer.class,
+                AuxCacheSizeProperty,
+                I18n.TOOLTIP,
+                "Number of frames to hold in aux. frame caches.");
+        list.put(AuxCacheSizeProperty, interString);
+        interString = i18n.get(RpfLayer.class,
+                AuxCacheSizeProperty,
+                "Aux Frame Cache Size");
+        list.put(AuxCacheSizeProperty + LabelEditorProperty, interString);
 
         viewAttributes.getPropertyInfo(list);
 
@@ -370,10 +417,21 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
                 + AuxCacheSizeProperty + " "
                 + viewAttributes.getInitPropertiesOrder() + " "
                 + AddToBeanContextProperty + " " + AddAsBackgroundProperty
-                + " " + RemoveableProperty + " " + CoverageProperty + " "
+                + " " + RemovableProperty + " " + CoverageProperty + " "
                 + tmpCov.getInitPropertiesOrder());
 
         return list;
+    }
+
+    public void resetPalette() {
+        box = null;
+        if (coverage != null) {
+            if (coverage.isInUse()) {
+                coverage.resetColors();
+            }
+        }
+
+        super.resetPalette();
     }
 
     /**
@@ -713,7 +771,6 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
 
             box = Box.createVerticalBox();
             Box box1 = Box.createVerticalBox();
-            Box box2 = Box.createVerticalBox();
             JPanel topbox = new JPanel();
             JPanel subbox2 = new JPanel();
 
@@ -743,19 +800,20 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
             box1.add(lockSeriesCheck);
 
             if (coverage != null) {
-                JCheckBox showCoverageCheck;
-                if (coverage.isShowPalette()) {
-                    showCoverageCheck = new JCheckBox("Show Coverage Tool", false);
-                } else {
-                    showCoverageCheck = new JCheckBox("Show Coverage", false);
-                }
+                JCheckBox showCoverageCheck = new JCheckBox("Show Coverage", coverage.isInUse());
                 showCoverageCheck.setActionCommand(showCoverageCommand);
                 showCoverageCheck.addActionListener(this);
                 box1.add(showCoverageCheck);
             }
 
+            JButton setProperties = new JButton(i18n.get(RpfLayer.class,
+                    "setProperties",
+                    "Change All Settings"));
+            setProperties.setActionCommand(DisplayPropertiesCmd);
+            setProperties.addActionListener(this);
+            box1.add(setProperties);
+
             topbox.add(box1);
-            topbox.add(box2);
             box.add(topbox);
 
             JPanel opaquePanel = PaletteHelper.createPaletteJPanel("Map Opaqueness");

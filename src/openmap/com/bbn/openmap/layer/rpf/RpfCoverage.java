@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCoverage.java,v $
 // $RCSfile: RpfCoverage.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:03 $
+// $Revision: 1.7 $
+// $Date: 2005/02/02 13:17:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,20 +23,31 @@
 package com.bbn.openmap.layer.rpf;
 
 /*  Java Core  */
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Properties;
 import java.util.Vector;
 
-/*  OpenMap  */
-import com.bbn.openmap.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-
-import javax.swing.*;
 
 /**
  * This is a tool that provides coverage information on the Rpf data.
@@ -53,18 +64,28 @@ import javax.swing.*;
  * <P>
  * 
  * <pre>
- * The properties for this file are:
- *  # Java Rpf properties
- *  # Number between 0-255: 0 is transparent, 255 is opaque
- *  jrpf.coverageOpaque=255
- *  #Default is true, don't need this entry if you like it...
- *  jrpf.CG.showcov=true
- *  #Default colors don't need this entry
- *  jrpf.CG.color=CE4F3F
- *  # Other types can be substituted for CG (TLM, JOG, TPC, ONC, JNC, GNC, CIB10, CIB5, MISC)
- *  # Fill the rectangle, default is true
- *  jrpf.coverageFill=true
  * 
+ *  
+ *   
+ *    
+ *     
+ *      The properties for this file are:
+ *       # Java Rpf properties
+ *       # Number between 0-255: 0 is transparent, 255 is opaque
+ *       jrpf.coverageOpaque=255
+ *       #Default is true, don't need this entry if you like it...
+ *       jrpf.CG.showcov=true
+ *       #Default colors don't need this entry
+ *       jrpf.CG.color=CE4F3F
+ *       # Other types can be substituted for CG (TLM, JOG, TPC, ONC, JNC, GNC, CIB10, CIB5, MISC)
+ *       # Fill the rectangle, default is true
+ *       jrpf.coverageFill=true
+ *      
+ *      
+ *     
+ *    
+ *   
+ *  
  * </pre>
  */
 public class RpfCoverage implements ActionListener, RpfConstants,
@@ -152,12 +173,12 @@ public class RpfCoverage implements ActionListener, RpfConstants,
      * A setting for how transparent to make the images. The default
      * is 255, which is totally opaque. Not used right now.
      */
-    protected int opaqueness;
+    protected int opaqueness = RpfColortable.DEFAULT_OPAQUENESS;
     /** Flag to fill the coverage rectangles. */
     protected boolean fillRects;
 
     /** Property to use for filled rectangles (when java supports it). */
-    public static final String OpaquenessProperty = "coverageOpaque";
+    public static final String CoverageOpaquenessProperty = "coverageOpaque";
     /** Property to use to fill rectangles. */
     public static final String FillProperty = "coverageFill";
 
@@ -170,6 +191,8 @@ public class RpfCoverage implements ActionListener, RpfConstants,
      * layers limiting chart seriestypes for display.
      */
     protected boolean showPalette = true;
+
+    protected I18n i18n = Environment.getI18n();
 
     /**
      * The default constructor for the Layer. All of the attributes
@@ -241,10 +264,13 @@ public class RpfCoverage implements ActionListener, RpfConstants,
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         fillRects = PropUtils.booleanFromProperties(properties, prefix
-                + FillProperty, true);
+                + FillProperty, fillRects);
+
+        showPalette = PropUtils.booleanFromProperties(properties, prefix
+                + CoverageProperty, showPalette);
 
         opaqueness = PropUtils.intFromProperties(properties, prefix
-                + OpaquenessProperty, RpfColortable.DEFAULT_OPAQUENESS);
+                + CoverageOpaquenessProperty, opaqueness);
 
         CGColor = (Color) PropUtils.parseColorFromProperties(properties, prefix
                 + CGColorProperty, CGColor);
@@ -326,7 +352,9 @@ public class RpfCoverage implements ActionListener, RpfConstants,
         String prefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
 
         props.put(prefix + FillProperty, new Boolean(fillRects).toString());
-        props.put(prefix + OpaquenessProperty, Integer.toString(opaqueness));
+        props.put(prefix + CoverageProperty, new Boolean(showPalette).toString());
+        props.put(prefix + CoverageOpaquenessProperty,
+                Integer.toString(opaqueness));
         props.put(prefix + CGColorProperty,
                 Integer.toHexString(CGColor.getRGB()));
         props.put(prefix + TLMColorProperty,
@@ -373,49 +401,160 @@ public class RpfCoverage implements ActionListener, RpfConstants,
         if (list == null) {
             list = new Properties();
         }
-
-        list.put(FillProperty,
+        String interString;
+        interString = i18n.get(RpfLayer.class,
+                FillProperty,
+                I18n.TOOLTIP,
                 "Flag to set if the coverage rectangles should be filled.");
+        list.put(FillProperty, interString);
         list.put(FillProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+        interString = i18n.get(RpfLayer.class,
+                FillProperty,
+                "Fill Coverage Rectangles");
+        list.put(FillProperty + LabelEditorProperty, interString);
 
-        list.put(OpaquenessProperty,
-                "Integer representing opaqueness level (0-255, 0 is clear) of rectangles.");
+        interString = i18n.get(RpfLayer.class,
+                CoverageProperty,
+                I18n.TOOLTIP,
+                "Flag to set the coverage palette should be shown.");
+        list.put(CoverageProperty, interString);
+        list.put(CoverageProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+        interString = i18n.get(RpfLayer.class,
+                CoverageProperty,
+                "Show Coverage Palette");
+        list.put(CoverageProperty + LabelEditorProperty, interString);
+        
+        interString = i18n.get(RpfLayer.class,
+                CoverageOpaquenessProperty,
+                I18n.TOOLTIP,
+                "Integer representing opaqueness level (0-255, 0 is clear) of coverage rectangles.");
+        list.put(CoverageOpaquenessProperty, interString);
+        interString = i18n.get(RpfLayer.class,
+                CoverageOpaquenessProperty,
+                "Coverage Opaqueness");
+        list.put(CoverageOpaquenessProperty + LabelEditorProperty, interString);
 
-        list.put(CGColorProperty,
-                "Color string for City Graphics chart coverage.");
+        interString = i18n.get(RpfLayer.class,
+                CGColorProperty,
+                I18n.TOOLTIP,
+                "Color for City Graphics chart coverage.");
+        list.put(CGColorProperty, interString);
         list.put(CGColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-        list.put(TLMColorProperty, "Color string for TLM chart coverage.");
+        interString = i18n.get(RpfLayer.class,
+                CGColorProperty,
+                "CG Coverage Color");
+        list.put(CGColorProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(RpfLayer.class,
+                TLMColorProperty,
+                I18n.TOOLTIP,
+                "Color for TLM chart coverage.");
+        list.put(TLMColorProperty, interString);
         list.put(TLMColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-        list.put(JOGColorProperty, "Color string for JOG chart coverage.");
+        interString = i18n.get(RpfLayer.class,
+                TLMColorProperty,
+                "TLM Coverage Color");
+        list.put(TLMColorProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(RpfLayer.class,
+                JOGColorProperty,
+                I18n.TOOLTIP,
+                "Color for JOG chart coverage.");
+        list.put(JOGColorProperty, interString);
         list.put(JOGColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-        list.put(TPCColorProperty, "Color string for TPC chart coverage.");
+        interString = i18n.get(RpfLayer.class,
+                JOGColorProperty,
+                "JOG Coverage Color");
+        list.put(JOGColorProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(RpfLayer.class,
+                TPCColorProperty,
+                I18n.TOOLTIP,
+                "Color for TPC chart coverage.");
+        list.put(TPCColorProperty, interString);
         list.put(TPCColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-        list.put(ONCColorProperty, "Color string for ONC chart coverage.");
+        interString = i18n.get(RpfLayer.class,
+                TPCColorProperty,
+                "TPC Coverage Color");
+        list.put(TPCColorProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(RpfLayer.class,
+                ONCColorProperty,
+                I18n.TOOLTIP,
+                "Color for ONC chart coverage.");
+        list.put(ONCColorProperty, interString);
         list.put(ONCColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-        list.put(JNCColorProperty, "Color string for JNC chart coverage.");
+        interString = i18n.get(RpfLayer.class,
+                ONCColorProperty,
+                "ONC Coverage Color");
+        list.put(ONCColorProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(RpfLayer.class,
+                JNCColorProperty,
+                I18n.TOOLTIP,
+                "Color for JNC chart coverage.");
+        list.put(JNCColorProperty, interString);
         list.put(JNCColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-        list.put(GNCColorProperty, "Color string for GNC chart coverage.");
+        interString = i18n.get(RpfLayer.class,
+                JNCColorProperty,
+                "JNC Coverage Color");
+        list.put(JNCColorProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(RpfLayer.class,
+                GNCColorProperty,
+                I18n.TOOLTIP,
+                "Color for GNC chart coverage.");
+        list.put(GNCColorProperty, interString);
         list.put(GNCColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-        list.put(CIB10ColorProperty,
-                "Color string for CIB 10 meter image coverage.");
+        interString = i18n.get(RpfLayer.class,
+                GNCColorProperty,
+                "GNC Coverage Color");
+        list.put(GNCColorProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(RpfLayer.class,
+                CIB10ColorProperty,
+                I18n.TOOLTIP,
+                "Color for CIB 10 meter image coverage.");
+        list.put(CIB10ColorProperty, interString);
         list.put(CIB10ColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-        list.put(CIB5ColorProperty,
-                "Color string for CIB 5 meter image coverage.");
+        interString = i18n.get(RpfLayer.class,
+                CIB10ColorProperty,
+                "CIB10 Coverage Color");
+        list.put(CIB10ColorProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(RpfLayer.class,
+                CIB5ColorProperty,
+                I18n.TOOLTIP,
+                "Color for CIB 5 meter image coverage.");
+        list.put(CIB5ColorProperty, interString);
         list.put(CIB5ColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-        list.put(MISCColorProperty,
-                "Color string for all other chart coverage.");
+        interString = i18n.get(RpfLayer.class,
+                CIB5ColorProperty,
+                "CIB5 Coverage Color");
+        list.put(CIB5ColorProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(RpfLayer.class,
+                MISCColorProperty,
+                I18n.TOOLTIP,
+                "Color for all other chart/image coverage.");
+        list.put(MISCColorProperty, interString);
         list.put(MISCColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        interString = i18n.get(RpfLayer.class,
+                MISCColorProperty,
+                "Misc Coverage Color");
+        list.put(MISCColorProperty + LabelEditorProperty, interString);
 
         return list;
     }
@@ -424,7 +563,7 @@ public class RpfCoverage implements ActionListener, RpfConstants,
      * Specify what order properties should be presented in an editor.
      */
     public String getInitPropertiesOrder() {
-        return " " + FillProperty + " " + OpaquenessProperty + " "
+        return " " + FillProperty + " " + CoverageOpaquenessProperty + " "
                 + GNCColorProperty + " " + JNCColorProperty + " "
                 + ONCColorProperty + " " + TPCColorProperty + " "
                 + JOGColorProperty + " " + TLMColorProperty + " "
@@ -521,9 +660,13 @@ public class RpfCoverage implements ActionListener, RpfConstants,
     }
 
     protected Color getModifiedColor(Color color) {
-        int opa = opaqueness << 24;
-        return ColorFactory.createColor(((color.getRGB() & 0x00FFFFFF) | opa),
-                true);
+        if (opaqueness < 255) {
+            int opa = opaqueness << 24;
+            return ColorFactory.createColor(((color.getRGB() & 0x00FFFFFF) | opa),
+                    true);
+        } else {
+            return ColorFactory.createColor(color.getRGB(), true);
+        }
     }
 
     public synchronized void setGraphicLists(Vector lists) {
