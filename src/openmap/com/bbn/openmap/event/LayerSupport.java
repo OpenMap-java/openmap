@@ -14,18 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/LayerSupport.java,v $
 // $RCSfile: LayerSupport.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.5 $
+// $Date: 2005/01/10 16:07:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.event;
 
+import java.util.Iterator;
+import java.util.Vector;
+
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.util.Debug;
-
-import java.util.Iterator;
 
 /**
  * This is a utility class that can be used by beans that need support
@@ -88,4 +89,82 @@ public class LayerSupport extends ListenerSupport {
             ((LayerListener) it.next()).setLayers(evt);
         }
     }
+    /**
+     * Used to see if another Thread object needs to be created.
+     */
+    protected Thread t;
+    /**
+     * Event information stack.
+     */
+    protected Vector events = new Vector();
+
+    /**
+     * Pushed the information onto a Vector stack to get executed by a
+     * separate thread. Any thread launched is held on to, and if that
+     * thread is is null or not active, a new thread is kicked off.
+     * The dying thread checks the Vector stack and fires another
+     * event if it can.
+     * 
+     * @param layerEventType
+     * @param layers
+     */
+    public synchronized void pushLayerEvent(int layerEventType, Layer[] layers) {
+        events.add(new SetLayerRunnable(layerEventType, layers));
+
+        if (t == null || !t.isAlive()) {
+            SetLayerRunnable runnable = popLayerEvent();
+            if (runnable != null) {
+                t = new Thread(runnable);
+                t.start();
+            }
+        }
+    }
+
+    /**
+     * Return the first event on the stack, may be null if there is nothing to do.
+     */
+    public synchronized SetLayerRunnable popLayerEvent() {
+        try {
+            return (SetLayerRunnable) events.remove(0);
+        } catch (ArrayIndexOutOfBoundsException aioobe) {
+            return null;
+        }
+    }
+
+    /**
+     * A reusable Runnable used by a thread to notify listeners when
+     * layers are turned on/off or shuffled.
+     */
+    protected class SetLayerRunnable implements Runnable {
+        protected int layerEventType;
+        protected Layer[] layers;
+
+        public SetLayerRunnable(int let, Layer[] lrs) {
+            layerEventType = let;
+            layers = lrs;
+        }
+
+        public int getEventType() {
+            return layerEventType;
+        }
+
+        public Layer[] getLayers() {
+            return layers;
+        }
+
+        public void run() {
+            doIt(getEventType(), getLayers());
+            SetLayerRunnable runnable = popLayerEvent();
+            while (runnable != null) {
+                doIt(runnable.getEventType(), runnable.getLayers());
+                runnable = popLayerEvent();
+            }
+        }
+
+        public void doIt(int eventType, Layer[] layers) {
+            Debug.message("layerhandler", "LayerSupport: firing LayerEvent on LayerListeners");
+            fireLayer(eventType, layers);
+        }
+    };
+
 }
