@@ -164,21 +164,26 @@ basics of using graphics and layers within a MapBean to create a map.
 
 <sect1> Where should I start if I'm a novice user?  
 <p>
+
 If you are completely new to Java, you should go to the Sun Java
-website (http://java.sun.com) to learn more about running java
-programs.  We have found novice users have trouble with the concept of
-the CLASSPATH environment variable.  In order for the java virtual
-machine to use class files (compiled java files), it relies on the
-CLASSPATH environment variable to be able to locate those files.  If
-the class files are stored in a jar file, the complete path to the jar
-file needs to be in the CLASSPATH variable.  For class files in
-general, the parent directory of the package name of the class needs
-to be in the CLASSPATH.  For instance, to find the main OpenMap
-application from the top openmap directory, you would find it in the
+website (<htmlurl
+url="http://developer.java.sun.com/developer/onlineTraining/new2java/"
+name="new2java"> or <htmlurl url="http://java.sun.com" name="Sun's
+java website"> ) to learn more about running java programs.  We have
+found novice users have trouble with the concept of the CLASSPATH
+environment variable.  In order for the java virtual machine to use
+class files (compiled java files), it relies on the CLASSPATH
+environment variable to be able to locate those files.  If the class
+files are stored in a jar file, the complete path to the jar file
+needs to be in the CLASSPATH variable.  For class files in general,
+the parent directory of the package name of the class needs to be in
+the CLASSPATH.  For instance, to find the main OpenMap application
+from the top openmap directory, you would find it in the
 com/bbn/openmap/app directory.  As java requires, the package name of
 the OpenMap Application class is com.bbn.openmap.app.  The java
 virtual machine can find the com.bbn.openmap.app.OpenMap class if the
 top-level openmap directory is in the CLASSPATH.
+
 <p>
 If you have java under control, the best place to start for a novice
 user is to get the OpenMap application working as it is provided in
@@ -203,10 +208,33 @@ simple window.  The com.bbn.openmap.app.OpenMap application provides
 an example of integrating all the components together.
 
 <sect1> What does OpenMap's architecture look like?
+<p>At the heart of the architecture is the <htmlurl
+url="./api/com/bbn/openmap/MapBean.html" name="MapBean">.  The MapBean
+is a Swing component that is a map window.  To define that that map
+should look like, the MapBean needs a <html
+url="./api/com/bbn/openmap/proj/Projection.html" name="Projection">.
+The Projection has a scale, a center latitude and longitude, a window
+pixel height and width, and a projection type.  All of these
+attributes go towards describing the map in the MapBean window.
 
-****************************
+<p>To place graphics on the map, <htmlurl
+url="./api/com/bbn/openmap/Layer.html" name="Layers"> need to be added
+to the MapBean.  Layers are the objects expected to have a
+relationship with some data source, and use that relationship to
+create graphics from that data source.  Layers, which are also Swing
+components, are <htmlurl
+url="./api/com/bbn/openmap/event/ProjectionListener.html"
+name="ProjectionListeners">, and are notified when any attribute of
+the MapBean's projection is changed.  They are expected to modify
+their list of graphics according to the parameters of the projection,
+pass the projection to the graphics so they can figure out how to draw
+themselves, and then pass the Java Graphics (received in the Layer's
+paint() method) object to the graphics so they can draw themselves
+into it.  The Layers control how and (approximately) when their
+contributions to the map are drawn.
 
-
+<p>All communications between OpenMap components follows the JDK 1.1
+event model, where objects are listeners to other objects.
 
 <sect>Starting/Building OpenMap
 <sect1> How can I compile and run on Windows?
@@ -416,24 +444,36 @@ general ratio.
 <sect>Layers
 <sect1> How can I put my data on a map?
 <p>
-
-************************************
-
-
+Of course this depends on the data.  The first thing you should do is
+determine if we already have a layer in the OpenMap package that
+handles your type of data.  If we do, then you need to consult that
+layer documentation for information on configuring the layer to use
+your dataset.
+<p>
+If we don't have a Layer that uses your type of data, you can write
+your own layer to do it.  The main idea is to be able to access your
+data given an latitude/longitude area, a scale, and a projection
+type (if you are dealing with images).  Once you have that, you can
+create a list of OMGraphics that OpenMap will place on the map.  The
+<htmlurl url="./api/com/bbn/openmap/layer/DemoLayer.html"
+name="DemoLayer"> code and the openmap/com/bbn/openmap/examples code can
+give you a idea of how to write a simple layer.  Other, more complex,
+examples can be found in the layers we provide, such as the
+<htmlurl url="./api/com/bbn/openmap/layer/shape/ShapeLayer.html" name="ShapeLayer">, DTEDLayer, RpfLayer and VPFLayer.
 
 <sect1> How can I manage omGraphics?
-The com.bbn.openmap.omGraphics package is designed to help you translate data into graphics that
-appear on the screen.  The <htmlurl
-url="./api/com/bbn/openmap/omGraphics/OMGraphic.html" name=OMGraphic> 
+<p>The com.bbn.openmap.omGraphics package is designed to help you
+translate data into graphics that appear on the screen.  The <htmlurl
+url="./api/com/bbn/openmap/omGraphics/OMGraphic.html" name=OMGraphic>
 is the parent class for all types of graphics, and it implements the
 basic functions that any layer would require from a graphic.  In
 general, there are three steps needed to get the graphic to appear on
 the screen.  It needs to be created, with its drawing attributes
 defined.  It needs to have its generate() method called with the
 latest version of the MapBean projection passed to the layer, so that
-it can create it's on-screen representation.  Lastly, it needs to have 
+it can create it's on-screen representation.  Lastly, it needs to have
 its render() method called with the java.awt.Graphics object given in
-the layer's paint() method.  If an object is not 'generated' before it 
+the layer's paint() method.  If an object is not 'generated' before it
 is 'rendered', it will not show up.
 
 <P>There are several other points that are important to remember about
@@ -685,7 +725,18 @@ the layer.
 <sect> Using OpenMap to Create Image Files
 <sect1> What code do I use?
 <p>
-************************************
+You'll want to check out the com.bbn.openmap.image package, focusing
+on the ImageServer, ImageGenerator and ImageReceiver classes.  They
+are set up to control the layers and the multi-threaded nature of
+their SwingWorkers, and then create an image using the graphics from
+the layers.
+<p>
+You basically configure an ImageServer with properties, which set up
+the layers it should use to create the image.  Then you hand the
+ImageServer a projection, and an implementation of the ImageReceiver.
+The ImageReceiver gets called when the image is complete, and receives
+a byte[] representing the image, which you can write to a file or any
+other OutputStream.
 
 <sect1> What image formats are available?
 <p>There are encoders for JPEG, PPM and GIF image formats.  There is
@@ -693,7 +744,6 @@ an ImageFormatter that uses Sun's JPEG encoder, and ImageFormatters
 that use the Acme encoders to create JPEG and GIF images.  The Acme
 code was provided to the Open Source community by Jef Poskanzer at
 <tt><htmlurl url="http://www.acme.com"></tt>.
-
 
 <sect>OpenMap as an Applet
 <p>
