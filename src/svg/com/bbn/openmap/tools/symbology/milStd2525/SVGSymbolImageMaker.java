@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: SVGSymbolImageMaker.java,v $
-//$Revision: 1.4 $
-//$Date: 2005/01/13 01:24:13 $
+//$Revision: 1.5 $
+//$Date: 2005/02/11 22:17:38 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -35,7 +35,7 @@ import org.apache.batik.transcoder.TranscoderException;
 import com.bbn.openmap.tools.svg.SVGRasterizer;
 import com.bbn.openmap.util.Debug;
 
-public class SVGSymbolImageMaker extends AbstractSymbolImageMaker {
+public class SVGSymbolImageMaker extends BasicSymbolImageMaker {
 
     protected SVGRasterizer rasterizer;
 

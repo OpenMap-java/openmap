@@ -270,7 +270,7 @@ public class SVGRasterizer {
 
     public static void main(String[] args) {
         try {
-            String fileName = FileUtils.getFilePathFromUser("Locate SVG File");
+            String fileName = FileUtils.getFilePathToOpenFromUser("Locate SVG File");
             URL fileURL = PropUtils.getResourceOrFileOrURL(fileName);
 
             SVGRasterizer svgr = new SVGRasterizer(fileURL);
