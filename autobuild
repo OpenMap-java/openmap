@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.32 $
-# $Date: 1998/11/12 16:58:45 $
+# $Revision: 1.33 $
+# $Date: 1998/11/12 17:35:07 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -323,7 +323,7 @@ fi
 
 # Create packages in tar.Z, tar.gz, and zip format
 
-PkgFiles="$BeanName/doc $BeanName/examples $BeanName/etc $BeanName/lib $BeanName/bin $BeanName/README*"
+PkgFiles="$BeanName/doc $BeanName/examples $BeanName/etc $BeanName/lib $BeanName/bin"
 
 cd $BuildDir/..
 tar cf $BuildDir/$BeanName.tar $PkgFiles
