@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/JarInputReader.java,v $
 // $RCSfile: JarInputReader.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/12/17 14:58:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ public class JarInputReader extends StreamInputReader {
 	if (jarFile != null) jarFile.close();
 	jarFile = null;
 
-	jarFile = new JarFile(jarFileName);
+	jarFile = new JarFile(URLDecoder.decode(jarFileName, "UTF-8"));
 	JarEntry entry = jarFile.getJarEntry(jarEntryName);
 	inputStream = jarFile.getInputStream(entry);
 	if (inputStream == null) {
