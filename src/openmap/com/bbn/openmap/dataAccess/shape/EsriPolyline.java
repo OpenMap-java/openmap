@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolyline.java,v $
 // $RCSfile: EsriPolyline.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.5 $
+// $Date: 2004/02/01 21:08:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -108,10 +108,6 @@ public class EsriPolyline extends OMPoly implements EsriGraphic, Cloneable {
     }
 
     public EsriPolyline shallowCopyPolyline() {
-        try {
-            return (EsriPolyline) clone();
-        } catch (CloneNotSupportedException e) {
-            return null;
-        }
+        return (EsriPolyline) clone();
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPoint.java,v $
 // $RCSfile: EsriPoint.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.5 $
+// $Date: 2004/02/01 21:08:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -86,11 +86,7 @@ public class EsriPoint extends OMPoint
     }
 
     public EsriPoint shallowCopyPoint() {
-        try {
-            return (EsriPoint) clone();
-        } catch (CloneNotSupportedException e) {
-            return null;
-        }
+        return (EsriPoint) super.clone();
     }
 
 }
