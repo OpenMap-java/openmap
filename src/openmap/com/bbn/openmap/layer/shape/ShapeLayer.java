@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/02/02 22:54:37 $
+// $Revision: 1.10 $
+// $Date: 2004/02/04 00:26:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.9 $ $Date: 2004/02/02 22:54:37 $
+ * @version $Revision: 1.10 $ $Date: 2004/02/04 00:26:48 $
  * @see SpatialIndex 
  */
 public class ShapeLayer extends OMGraphicHandlerLayer
@@ -112,6 +112,9 @@ public class ShapeLayer extends OMGraphicHandlerLayer
     String shapeFileName = null; 
     String spatialIndexFileName = null;
     String imageURLString = null;
+    
+    //for internationalization
+    protected I18n i18n = Environment.getI18n();
 
     /**
      * Initializes an empty shape layer.
@@ -234,6 +237,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer
      */
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
+        String interString;
 
         DrawingAttributes da;
         if (drawingAttributes != null) {
@@ -246,21 +250,36 @@ public class ShapeLayer extends OMGraphicHandlerLayer
 
         list.put(initPropertiesProperty, shapeFileProperty + " " + spatialIndexProperty + " " + pointImageURLProperty + " " + shadowXProperty + " " + shadowYProperty + da.getInitPropertiesOrder() + " " + AddToBeanContextProperty);
 
-        list.put(shapeFileProperty,
-                 "Location of Shape file - .shp (File, URL or relative file path).");
+        interString = i18n.get(ShapeLayer.class,shapeFileProperty,I18n.TOOLTIP,"Location of Shape file - .shp (File, URL or relative file path).");
+        list.put(shapeFileProperty, interString);
+        interString = i18n.get(ShapeLayer.class, shapeFileProperty, shapeFileProperty);
+        list.put(shapeFileProperty + LabelEditorProperty,interString);
         list.put(shapeFileProperty + ScopedEditorProperty, 
                  "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-        list.put(spatialIndexProperty, 
-                 "Location of Spatial Index file - .ssx (File, URL or relative file path).");
+
+        interString = i18n.get(ShapeLayer.class,spatialIndexProperty,I18n.TOOLTIP,"Location of Spatial Index file - .ssx (File, URL or relative file path).");
+        list.put(spatialIndexProperty,interString);
+        interString = i18n.get(ShapeLayer.class, spatialIndexProperty, spatialIndexProperty);
+        list.put(spatialIndexProperty + LabelEditorProperty,interString);
         list.put(spatialIndexProperty + ScopedEditorProperty, 
                  "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-        list.put(pointImageURLProperty, "Image file to use for map location of point data (optional).");
+        interString = i18n.get(ShapeLayer.class,pointImageURLProperty,I18n.TOOLTIP,"Image file to use for map location of point data (optional).");
+        list.put(pointImageURLProperty, interString);    
+        interString = i18n.get(ShapeLayer.class, pointImageURLProperty, pointImageURLProperty);
+        list.put(pointImageURLProperty + LabelEditorProperty,interString);
         list.put(pointImageURLProperty + ScopedEditorProperty, 
                  "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-
-        list.put(shadowXProperty, "Horizontal pixel offset for shadow image for shapes.");
-        list.put(shadowYProperty, "Vertical pixel offset for shadow image for shapes.");
+    
+        interString = i18n.get(ShapeLayer.class,shadowXProperty,I18n.TOOLTIP,"Horizontal pixel offset for shadow image for shapes.");
+        list.put(shadowXProperty, interString);
+        interString = i18n.get(ShapeLayer.class, shadowXProperty, shadowXProperty);
+        list.put(shadowXProperty + LabelEditorProperty,interString);
+    
+        interString = i18n.get(ShapeLayer.class,shadowYProperty,I18n.TOOLTIP,"Vertical pixel offset for shadow image for shapes.");    
+        list.put(shadowYProperty, interString);
+        interString = i18n.get(ShapeLayer.class, shadowYProperty, shadowYProperty);
+        list.put(shadowYProperty + LabelEditorProperty,interString);
 
 
         return list;
@@ -298,7 +317,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer
 
         if (projection == null) {
             Debug.message("basic", "ShapeLayer|" + getName() + 
-                         ": prepare called with null projection");
+                          ": prepare called with null projection");
             return new OMGraphicList();
         }
 
@@ -315,35 +334,33 @@ public class ShapeLayer extends OMGraphicHandlerLayer
         // ulLon >= lrLon, but we need to be careful of the check for
         // equality because of floating point arguments...
         if ((ulLon > lrLon) ||
-                MoreMath.approximately_equal(ulLon, lrLon, .001f))
-        {
-            if (Debug.debugging("shape")) {
-                Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
-            }
-
-            double ymin = (double) Math.min(ulLat, lrLat);
-            double ymax = (double) Math.max(ulLat, lrLat);
-
-            try {
-                ESRIRecord records1[] = spatialIndex.locateRecords(
-                    ulLon, ymin, 180.0d, ymax);
-                ESRIRecord records2[] = spatialIndex.locateRecords(
-                    -180.0d, ymin, lrLon, ymax);
-                int nRecords1 = records1.length;
-                int nRecords2 = records2.length;
-                list = new OMGraphicList(nRecords1+nRecords2);
-                for (int i = 0; i < nRecords1; i++) {
-                    records1[i].addOMGraphics(list, drawingAttributes);
+            MoreMath.approximately_equal(ulLon, lrLon, .001f))
+            {
+                if (Debug.debugging("shape")) {
+                    Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
                 }
-                for (int i = 0; i < nRecords2; i++) {
-                    records2[i].addOMGraphics(list, drawingAttributes);
+
+                double ymin = (double) Math.min(ulLat, lrLat);
+                double ymax = (double) Math.max(ulLat, lrLat);
+
+                try {
+                    ESRIRecord records1[] = spatialIndex.locateRecords(ulLon, ymin, 180.0d, ymax);
+                    ESRIRecord records2[] = spatialIndex.locateRecords(-180.0d, ymin, lrLon, ymax);
+                    int nRecords1 = records1.length;
+                    int nRecords2 = records2.length;
+                    list = new OMGraphicList(nRecords1+nRecords2);
+                    for (int i = 0; i < nRecords1; i++) {
+                        records1[i].addOMGraphics(list, drawingAttributes);
+                    }
+                    for (int i = 0; i < nRecords2; i++) {
+                        records2[i].addOMGraphics(list, drawingAttributes);
+                    }
+                } catch (java.io.IOException ex) {
+                    ex.printStackTrace();
+                } catch (FormatException fe) {
+                    fe.printStackTrace();
                 }
-            } catch (java.io.IOException ex) {
-                ex.printStackTrace();
-            } catch (FormatException fe) {
-                fe.printStackTrace();
-            }
-        } else {
+            } else {
 
             double xmin = (double) Math.min(ulLon, lrLon);
             double xmax = (double) Math.max(ulLon, lrLon);
@@ -351,8 +368,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer
             double ymax = (double) Math.max(ulLat, lrLat);
 
             try {
-                ESRIRecord records[] = spatialIndex.locateRecords(
-                    xmin, ymin, xmax, ymax);
+                ESRIRecord records[] = spatialIndex.locateRecords(xmin, ymin, xmax, ymax);
                 int nRecords = records.length;
                 list = new OMGraphicList(nRecords);
                 for (int i = 0; i < nRecords; i++) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndexHandler.java,v $
 // $RCSfile: SpatialIndexHandler.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.5 $
+// $Date: 2004/02/04 00:26:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,6 +33,7 @@ import java.util.*;
 import javax.swing.*;
 
 import com.bbn.openmap.*;
+//import com.bbn.openmap.I18n
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.util.LayerUtils;
@@ -61,6 +62,9 @@ public class SpatialIndexHandler implements PropertyConsumer {
 
     public final static String EnabledProperty = "enabled";
     public final static String BufferedProperty = "buffered";
+    
+    //for internationalization
+    protected I18n i18n = Environment.getI18n();
 
     public SpatialIndexHandler() {}
 
@@ -88,7 +92,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
         stuff.add(drawingAttributes.getGUI());
 
         JPanel checks = new JPanel(new GridLayout(0, 1));
-        JCheckBox enableButton = new JCheckBox("Show");
+        JCheckBox enableButton = new JCheckBox(i18n.get(SpatialIndexHandler.class,"enableButton","Show"));
         enableButton.setSelected(enabled);
         enableButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
@@ -98,7 +102,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
             });
         checks.add(enableButton);
 
-        JCheckBox bufferButton = new JCheckBox("Buffer");
+        JCheckBox bufferButton = new JCheckBox(i18n.get(SpatialIndexHandler.class,"bufferButton","Buffer"));
         bufferButton.setSelected(buffered);
         bufferButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
@@ -168,7 +172,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
             Debug.error("\t" + realPrefix + ShapeLayer.shapeFileProperty);
             Debug.error("\t" + realPrefix + ShapeLayer.spatialIndexProperty);
         }
-            
+        props.put(ShapeLayer.spatialIndexProperty, "Location of Spatial Index file - .ssx (File, URL or relative file path).");
         drawingAttributes = new DrawingAttributes(realPrefix, props);
 
         enabled = LayerUtils.booleanFromProperties(props, realPrefix + EnabledProperty, enabled);
@@ -206,24 +210,51 @@ public class SpatialIndexHandler implements PropertyConsumer {
         if (props == null) {
             props = new Properties();
         }
+        String interString;
+    
+        //those strings are already internationalized in ShapeLayer. So only thing to do is use
+        //keys and values from there.The main question is: what about .class?
+        //What should I use as requestor field when calling
+        // i18n.get(...) ?  DFD - use the ShapeLayer class, so you
+        // only have to modify one properties file with the
+        // translation.
 
-        props.put(ShapeLayer.shapeFileProperty, "Location of Shape file - .shp (File, URL or relative file path).");
-        props.put(ShapeLayer.shapeFileProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-        props.put(ShapeLayer.spatialIndexProperty, "Location of Spatial Index file - .ssx (File, URL or relative file path).");
-        props.put(ShapeLayer.spatialIndexProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        interString = i18n.get(ShapeLayer.class,ShapeLayer.shapeFileProperty,I18n.TOOLTIP,"Location of Shape file - .shp (File, URL or relative file path).");
+        props.put(ShapeLayer.shapeFileProperty, interString);
+        interString = i18n.get(ShapeLayer.class, ShapeLayer.shapeFileProperty, ShapeLayer.shapeFileProperty);
+        props.put(ShapeLayer.shapeFileProperty + LabelEditorProperty,interString);
+        props.put(ShapeLayer.shapeFileProperty + ScopedEditorProperty, 
+                  "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-        props.put(ShapeLayer.pointImageURLProperty, "Image file to use for map location of point data (optional).");
-        props.put(ShapeLayer.pointImageURLProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        interString = i18n.get(ShapeLayer.class,ShapeLayer.spatialIndexProperty,I18n.TOOLTIP,"Location of Spatial Index file - .ssx (File, URL or relative file path).");
+        props.put(ShapeLayer.spatialIndexProperty,interString);
+        interString = i18n.get(ShapeLayer.class, ShapeLayer.spatialIndexProperty, ShapeLayer.spatialIndexProperty);
+        props.put(ShapeLayer.spatialIndexProperty + LabelEditorProperty,interString);
+        props.put(ShapeLayer.spatialIndexProperty + ScopedEditorProperty, 
+                  "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
+        interString = i18n.get(ShapeLayer.class,ShapeLayer.pointImageURLProperty,I18n.TOOLTIP,"Image file to use for map location of point data (optional).");
+        props.put(ShapeLayer.pointImageURLProperty, interString);    
+        interString = i18n.get(ShapeLayer.class, ShapeLayer.pointImageURLProperty, ShapeLayer.pointImageURLProperty);
+        props.put(ShapeLayer.pointImageURLProperty + LabelEditorProperty,interString);
+        props.put(ShapeLayer.pointImageURLProperty + ScopedEditorProperty, 
+                  "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+    
         if (drawingAttributes != null) {
             drawingAttributes.getPropertyInfo(props);
         } else {
             DrawingAttributes.DEFAULT.getPropertyInfo(props);
         }
-        props.put(EnabledProperty, "Show file contents");
+        interString = i18n.get(SpatialIndexHandler.class, EnabledProperty, I18n.TOOLTIP,"Show file contents");
+        props.put(EnabledProperty, interString);
+        interString = i18n.get(SpatialIndexHandler.class, EnabledProperty, EnabledProperty);
+        props.put(EnabledProperty + LabelEditorProperty, interString);
         props.put(EnabledProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        props.put(BufferedProperty, "Read and hold entire file contents (may be faster)");
+        interString = i18n.get(SpatialIndexHandler.class, BufferedProperty, I18n.TOOLTIP,"Read and hold entire file contents (may be faster)");
+        props.put(BufferedProperty, interString);
+        interString = i18n.get(SpatialIndexHandler.class, BufferedProperty, BufferedProperty);
+        props.put(BufferedProperty + LabelEditorProperty, interString);
         props.put(BufferedProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return props;
@@ -326,11 +357,11 @@ public class SpatialIndexHandler implements PropertyConsumer {
                     max = nab.getBoundingBox().max;
                     
                     if (!SpatialIndex.intersects(
-                        xmin, ymin, xmax, ymax,
-                        min.x, min.y, max.x, max.y))
-                    {
-                        geom.setVisible(false);
-                    }
+                                                 xmin, ymin, xmax, ymax,
+                                                 min.x, min.y, max.x, max.y))
+                        {
+                            geom.setVisible(false);
+                        }
                 }
             }
         }
@@ -372,7 +403,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
         }
         try {
             ESRIRecord records[] = spatialIndex.locateRecords(
-                    -180d, -90d, 180d, 90d);
+                                                              -180d, -90d, 180d, 90d);
             int nRecords = records.length;
 
             for (int i=0; i < nRecords; i++) {

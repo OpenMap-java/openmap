@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.6 $
+// $Date: 2004/02/04 00:26:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -86,6 +86,8 @@ import com.bbn.openmap.util.*;
 public class GraticuleLayer extends OMGraphicHandlerLayer 
     implements ActionListener {
 
+        
+    protected I18n i18n = Environment.getI18n();
     // default to not showing the ruler (mimicing older GraticuleLayer)
     protected boolean defaultShowRuler = false;
     protected boolean defaultShowOneAndFiveLines = false;
@@ -168,50 +170,50 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
         super.setProperties(prefix, properties);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        tenDegreeColor = PropUtils.parseColorFromProperties(
-            properties, prefix + TenDegreeColorProperty,
-            defaultTenDegreeColorString);       
+        tenDegreeColor = PropUtils.parseColorFromProperties(properties,
+                                                            prefix + TenDegreeColorProperty,
+                                                            defaultTenDegreeColorString);
 
-        fiveDegreeColor = PropUtils.parseColorFromProperties(
-            properties, prefix + FiveDegreeColorProperty,
-            defaultFiveDegreeColorString);
+        fiveDegreeColor = PropUtils.parseColorFromProperties(properties, 
+                                                             prefix + FiveDegreeColorProperty,
+                                                             defaultFiveDegreeColorString);
         
-        oneDegreeColor = PropUtils.parseColorFromProperties(
-            properties, prefix + OneDegreeColorProperty,
-            defaultOneDegreeColorString);       
+        oneDegreeColor = PropUtils.parseColorFromProperties(properties, 
+                                                            prefix + OneDegreeColorProperty,
+                                                            defaultOneDegreeColorString);
         
-        equatorColor = PropUtils.parseColorFromProperties(
-            properties, prefix + EquatorColorProperty,
-            defaultEquatorColorString); 
+        equatorColor = PropUtils.parseColorFromProperties(properties, 
+                                                          prefix + EquatorColorProperty,
+                                                          defaultEquatorColorString); 
         
-        dateLineColor = PropUtils.parseColorFromProperties(
-            properties, prefix + DateLineColorProperty,
-            defaultDateLineColorString);        
+        dateLineColor = PropUtils.parseColorFromProperties(properties, 
+                                                           prefix + DateLineColorProperty,
+                                                           defaultDateLineColorString);        
         
-        specialLineColor = PropUtils.parseColorFromProperties(
-            properties, prefix + SpecialLineColorProperty,
-            defaultSpecialLineColorString);     
+        specialLineColor = PropUtils.parseColorFromProperties(properties, 
+                                                              prefix + SpecialLineColorProperty,
+                                                              defaultSpecialLineColorString);
         
-        textColor = PropUtils.parseColorFromProperties(
-            properties, prefix + TextColorProperty,
-            defaultTextColorString);    
+        textColor = PropUtils.parseColorFromProperties(properties, 
+                                                       prefix + TextColorProperty,
+                                                       defaultTextColorString);    
 
         threshold = PropUtils.intFromProperties(properties, 
-                                                 prefix + ThresholdProperty, 
-                                                 defaultThreshold);
+                                                prefix + ThresholdProperty, 
+                                                defaultThreshold);
 
         fontSize = PropUtils.intFromProperties(properties, 
-                                                prefix + FontSizeProperty, 
-                                                fontSize);
+                                               prefix + FontSizeProperty, 
+                                               fontSize);
         font = new Font("Helvetica", java.awt.Font.PLAIN, fontSize);
 
-        setShowOneAndFiveLines(PropUtils.booleanFromProperties(
-            properties, prefix + ShowOneAndFiveProperty, 
-            defaultShowOneAndFiveLines));
+        setShowOneAndFiveLines(PropUtils.booleanFromProperties(properties,
+                                                               prefix + ShowOneAndFiveProperty, 
+                                                               defaultShowOneAndFiveLines));
 
-        setShowRuler(PropUtils.booleanFromProperties(
-            properties, prefix + ShowRulerProperty, 
-            defaultShowRuler));
+        setShowRuler(PropUtils.booleanFromProperties(properties, 
+                                                     prefix + ShowRulerProperty, 
+                                                     defaultShowRuler));
 
         // So they will get re-created.
         tenDegreeLines = null;
@@ -322,49 +324,84 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
      */
     public Properties getPropertyInfo(Properties properties) {
         properties = super.getPropertyInfo(properties);
-
+        String interString;
         properties.put(initPropertiesProperty, TenDegreeColorProperty + " " + FiveDegreeColorProperty + " " + OneDegreeColorProperty + " " + EquatorColorProperty + " " + DateLineColorProperty + " " + SpecialLineColorProperty + " " + ShowOneAndFiveProperty + " " + ShowRulerProperty + " " + ThresholdProperty + " " + FontSizeProperty);
-
-        properties.put(TenDegreeColorProperty, "Color of the ten degree graticule lines.");
+    
+        interString = i18n.get(GraticuleLayer.class,TenDegreeColorProperty,I18n.TOOLTIP,"Color of the ten degree graticule lines.");
+        properties.put(TenDegreeColorProperty, interString);    
+        interString = i18n.get(GraticuleLayer.class,TenDegreeColorProperty,TenDegreeColorProperty);    
+        properties.put(TenDegreeColorProperty + LabelEditorProperty, interString);    
         properties.put(TenDegreeColorProperty + ScopedEditorProperty, 
                        "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        properties.put(FiveDegreeColorProperty, "Color of the five degree graticule lines.");
+        interString = i18n.get(GraticuleLayer.class,FiveDegreeColorProperty,I18n.TOOLTIP,"Color of the five degree graticule lines.");
+        properties.put(FiveDegreeColorProperty, interString);
+        interString = i18n.get(GraticuleLayer.class,FiveDegreeColorProperty,"Color of the five degree graticule lines.");
+        properties.put(FiveDegreeColorProperty + ScopedEditorProperty, interString);
+        interString = i18n.get(GraticuleLayer.class,FiveDegreeColorProperty,FiveDegreeColorProperty);
+        properties.put(FiveDegreeColorProperty + LabelEditorProperty, interString);
         properties.put(FiveDegreeColorProperty + ScopedEditorProperty, 
                        "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        properties.put(OneDegreeColorProperty, "Color of the one degree graticule lines.");
+        interString = i18n.get(GraticuleLayer.class,OneDegreeColorProperty,I18n.TOOLTIP,"Color of the one degree graticule lines.");
+        properties.put(OneDegreeColorProperty, interString);
+        interString = i18n.get(GraticuleLayer.class,OneDegreeColorProperty,OneDegreeColorProperty);
+        properties.put(OneDegreeColorProperty + LabelEditorProperty, interString);
         properties.put(OneDegreeColorProperty + ScopedEditorProperty, 
                        "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        properties.put(EquatorColorProperty, "Color of the Equator.");
+        interString = i18n.get(GraticuleLayer.class,EquatorColorProperty,I18n.TOOLTIP,"Color of the Equator.");
+        properties.put(EquatorColorProperty,interString );
+        interString = i18n.get(GraticuleLayer.class,EquatorColorProperty,EquatorColorProperty);
+        properties.put(EquatorColorProperty + LabelEditorProperty, interString);
         properties.put(EquatorColorProperty + ScopedEditorProperty, 
                        "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        properties.put(DateLineColorProperty, "Color of the Date line.");
+        interString = i18n.get(GraticuleLayer.class,DateLineColorProperty,I18n.TOOLTIP,"Color of the Date line.");
+        properties.put(DateLineColorProperty, interString);
+        interString = i18n.get(GraticuleLayer.class,DateLineColorProperty,DateLineColorProperty);
+        properties.put(DateLineColorProperty + LabelEditorProperty, interString);
         properties.put(DateLineColorProperty + ScopedEditorProperty, 
                        "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        properties.put(SpecialLineColorProperty, "Color of Tropic of Cancer, Capricorn lines.");
+        interString = i18n.get(GraticuleLayer.class,SpecialLineColorProperty,I18n.TOOLTIP,"Color of Tropic of Cancer, Capricorn lines.");
+        properties.put(SpecialLineColorProperty, interString);
+        interString = i18n.get(GraticuleLayer.class,SpecialLineColorProperty,SpecialLineColorProperty);
+        properties.put(SpecialLineColorProperty + LabelEditorProperty, interString);
         properties.put(SpecialLineColorProperty + ScopedEditorProperty, 
                        "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        properties.put(TextColorProperty, "Color of the line label text.");
+        interString = i18n.get(GraticuleLayer.class,TextColorProperty,I18n.TOOLTIP,"Color of the line label text.");
+        properties.put(TextColorProperty, interString);
+        interString = i18n.get(GraticuleLayer.class,TextColorProperty,TextColorProperty);
+        properties.put(TextColorProperty + LabelEditorProperty, interString);
         properties.put(TextColorProperty + ScopedEditorProperty, 
                        "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        properties.put(ThresholdProperty, "The number of lines showing before finer grain lines appear.");
-
-        properties.put(ShowOneAndFiveProperty, "Show the one and five degree lines.");
+        interString = i18n.get(GraticuleLayer.class,ThresholdProperty,I18n.TOOLTIP,"The number of lines showing before finer grain lines appear.");
+        properties.put(ThresholdProperty, interString);
+        interString = i18n.get(GraticuleLayer.class,ThresholdProperty,ThresholdProperty);
+        properties.put(ThresholdProperty + LabelEditorProperty, interString);
+    
+        interString = i18n.get(GraticuleLayer.class,ShowOneAndFiveProperty,I18n.TOOLTIP,"Show the one and five degree lines.");
+        properties.put(ShowOneAndFiveProperty, interString);
+        interString = i18n.get(GraticuleLayer.class,ShowOneAndFiveProperty,ShowOneAndFiveProperty);
+        properties.put(ShowOneAndFiveProperty + LabelEditorProperty, interString);  
         properties.put(ShowOneAndFiveProperty + ScopedEditorProperty, 
                        "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
 
-        properties.put(ShowRulerProperty, "Show the line label text.");
+        interString = i18n.get(GraticuleLayer.class,ShowRulerProperty,I18n.TOOLTIP,"Show the line label text.");
+        properties.put(ShowRulerProperty, interString);
+        interString = i18n.get(GraticuleLayer.class,ShowRulerProperty,ShowRulerProperty);
+        properties.put(ShowRulerProperty + LabelEditorProperty, interString);  
         properties.put(ShowRulerProperty + ScopedEditorProperty, 
                        "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
 
         //DNA
-        properties.put(FontSizeProperty, "The size of the font, in points, of the line labels");
+        interString = i18n.get(GraticuleLayer.class,FontSizeProperty,I18n.TOOLTIP, "The size of the font, in points, of the line labels.");
+        properties.put(FontSizeProperty, interString);
+        interString = i18n.get(GraticuleLayer.class,FontSizeProperty,FontSizeProperty);
+        properties.put(FontSizeProperty + LabelEditorProperty, interString);  
         //DNA
         return properties;
     }
@@ -504,7 +541,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
 
         if (Debug.debugging("graticule")) {
             Debug.output("GraticuleLayer.constructGraticuleLines(): " +
-                    "constructed " + newgraphics.size() + " graticule lines");
+                         "constructed " + newgraphics.size() + " graticule lines");
         }
 
         return newgraphics;
@@ -717,7 +754,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
 
         if (Debug.debugging("graticule")) {
             Debug.output("GraticuleLayer.constructTenDegreeLines(): " +
-                    "constructed " + lines.size() + " graticule lines");
+                         "constructed " + lines.size() + " graticule lines");
         }
         lines.generate(projection);
         return lines;
@@ -767,7 +804,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
 
         if (Debug.debugging("graticule")) {
             Debug.output("GraticuleLayer.constructTenDegreeLines(): " +
-                    "constructed " + lines.size() + " graticule lines");
+                         "constructed " + lines.size() + " graticule lines");
         }
         lines.generate(getProjection());
         return lines;
@@ -880,7 +917,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
 
         if (Debug.debugging("graticule")) {
             Debug.output("GraticuleLayer.constructTensLabels(): " +
-                    "constructed " + labels.size() + " graticule labels");
+                         "constructed " + labels.size() + " graticule labels");
         }
         labels.generate(projection);
         return labels;
@@ -920,7 +957,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
 
         if (Debug.debugging("graticule")) {
             Debug.output("GraticuleLayer.constructMarkerLines(): " +
-                    "constructed " + lines.size() + " graticule lines");
+                         "constructed " + lines.size() + " graticule lines");
         }
         lines.generate(getProjection());
         return lines;
@@ -960,32 +997,30 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
 
             palette = Box.createVerticalBox();
 
-            JPanel layerPanel = PaletteHelper.createPaletteJPanel("Graticule Layer Options");
+            JPanel layerPanel = PaletteHelper.createPaletteJPanel(i18n.get(GraticuleLayer.class,"layerPanel","Graticule Layer Options"));
             
             ActionListener al = new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    String ac = e.getActionCommand();
+                    public void actionPerformed(ActionEvent e) {
+                        String ac = e.getActionCommand();
                     
-                    if (ac.equalsIgnoreCase(ShowRulerProperty)) {
-                        JCheckBox jcb = (JCheckBox)e.getSource();
-                        showRuler = jcb.isSelected();
-                    } else if (ac.equalsIgnoreCase(ShowOneAndFiveProperty)) {
-                        JCheckBox jcb = (JCheckBox)e.getSource();
-                        showOneAndFiveLines = jcb.isSelected();
-                    } else {
-                        Debug.error("Unknown action command \"" + ac +
-                                           "\" in GraticuleLayer.actionPerformed().");
+                        if (ac.equalsIgnoreCase(ShowRulerProperty)) {
+                            JCheckBox jcb = (JCheckBox)e.getSource();
+                            showRuler = jcb.isSelected();
+                        } else if (ac.equalsIgnoreCase(ShowOneAndFiveProperty)) {
+                            JCheckBox jcb = (JCheckBox)e.getSource();
+                            showOneAndFiveLines = jcb.isSelected();
+                        } else {
+                            Debug.error("Unknown action command \"" + ac +
+                                        "\" in GraticuleLayer.actionPerformed().");
+                        }
                     }
-                }
-            };
+                };
 
-            showRulerButton = new JCheckBox("Show Lat/Lon Labels", 
-                                            showRuler);
+            showRulerButton = new JCheckBox(i18n.get(GraticuleLayer.class,"showRulerButton","Show Lat/Lon Labels"), showRuler);
             showRulerButton.addActionListener(al);
             showRulerButton.setActionCommand(ShowRulerProperty);
 
-            show15Button = new JCheckBox("Show 1, 5 Degree Lines", 
-                                         showOneAndFiveLines);
+            show15Button = new JCheckBox(i18n.get(GraticuleLayer.class,"show15Button","Show 1, 5 Degree Lines"), showOneAndFiveLines);
             show15Button.addActionListener(al);
             show15Button.setActionCommand(ShowOneAndFiveProperty);
 
@@ -996,12 +1031,12 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
             
             JPanel subbox3 = new JPanel(new GridLayout(0, 1));
             
-            JButton setProperties = new JButton("Preferences");
+            JButton setProperties = new JButton(i18n.get(GraticuleLayer.class,"setProperties","Preferences"));
             setProperties.setActionCommand(DisplayPropertiesCmd);
             setProperties.addActionListener(this);
             subbox3.add(setProperties);
 
-            JButton redraw = new JButton("Redraw Graticule Layer");
+            JButton redraw = new JButton(i18n.get(GraticuleLayer.class,"redraw","Redraw Graticule Layer"));
             redraw.setActionCommand(RedrawCmd);
             redraw.addActionListener(this);
             subbox3.add(redraw);
@@ -1023,7 +1058,9 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
 
         if (command == RedrawCmd) {
             //redrawbutton
-            doPrepare();
+            if (isVisible()) {
+                doPrepare();
+            }
         }
     }
 
