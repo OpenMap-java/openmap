@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/InfoDisplayEvent.java,v $
 // $RCSfile: InfoDisplayEvent.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/21 20:24:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,6 +39,13 @@ public class InfoDisplayEvent extends java.util.EventObject {
     protected String information = null;
 
     /**
+     * A preferred location index for which info line, if there is
+     * more than one, should display the requested information.  The
+     * default is 0.
+     */
+    protected int preferredLocation = 0;
+
+    /**
      * Construct an InfoDisplayEvent.
      * @param source Object
      */
@@ -54,6 +61,19 @@ public class InfoDisplayEvent extends java.util.EventObject {
     public InfoDisplayEvent(Object source, String info) {
 	super(source);
 	information = info;
+    }
+
+    /**
+     * Construct an InfoDisplayEvent.
+     * @param source Object
+     * @param info String information
+     * @param loc the location index for which info line should
+     * display the information.
+     */
+    public InfoDisplayEvent(Object source, String info, int loc) {
+        super(source);
+        information = info;
+        preferredLocation = loc;
     }
 
     /**
@@ -83,5 +103,21 @@ public class InfoDisplayEvent extends java.util.EventObject {
      */
     public void setInformation(String info) {
 	information = info;
+    }
+
+    /**
+     * Get the preferred location index where the information should
+     * be displayed.
+     */
+    public int getPreferredLocation() {
+	return preferredLocation;
+    }
+
+    /**
+     * Set the preferred location index where the information should
+     * be displayed.
+     */
+    public void setPreferredLocation(int pl) {
+	preferredLocation = pl;
     }
 }

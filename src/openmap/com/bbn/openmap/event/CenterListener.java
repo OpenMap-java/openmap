@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CenterListener.java,v $
 // $RCSfile: CenterListener.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/21 20:24:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,5 +27,5 @@ package com.bbn.openmap.event;
  * Listens for requests to recenter the map.
  */
 public interface CenterListener extends java.util.EventListener {
-    public void center (CenterEvent evt);
+    public void center(CenterEvent evt);
 }
