@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/02/02 13:02:55 $
+// $Revision: 1.10 $
+// $Date: 2005/02/11 22:27:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -494,7 +494,7 @@ public class DbfTableModel extends AbstractTableModel implements
             saveButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     try {
-                        String filePath = FileUtils.getFilePathFromUser("Select DBF file name...");
+                        String filePath = FileUtils.getFilePathToSaveFromUser("Select DBF file name...");
                         if (!filePath.endsWith(".dbf")) {
                             filePath = filePath + ".dbf";
                         }

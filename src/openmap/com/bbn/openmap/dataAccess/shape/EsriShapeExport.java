@@ -804,7 +804,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * @see com.bbn.openmap.util.FileUtils.getFilePathFromUser
      */
     public String getFilePathFromUser() {
-        return FileUtils.getFilePathFromUser("Select Name for Shape File Set...");
+        return FileUtils.getFilePathToSaveFromUser("Select Name for Shape File Set...");
     }
 
     /**
