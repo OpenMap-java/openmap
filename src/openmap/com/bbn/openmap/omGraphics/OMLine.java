@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMLine.java,v $
 // $RCSfile: OMLine.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/06/02 18:39:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -593,7 +593,7 @@ public class OMLine extends OMGraphic implements Serializable {
 	if (shouldRenderFill()) {
 	    return super.contains(x, y);
 	} else {
-	    return (distance(x, y) > 0);
+ 	    return (distance(x, y) == 0);
 	}
     }
 

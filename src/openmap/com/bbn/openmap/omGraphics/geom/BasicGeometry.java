@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/06/02 18:39:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -350,7 +350,9 @@ public abstract class BasicGeometry
      * OMGeometrys to internally represent themselves as java.awt.Shape
      * objects, it's a more generic method.  If the OMGeometry hasn't
      * been updated to use Shape objects, it should have its own
-     * distance method.
+     * distance method.<p>
+     *
+     * Calls _distance(x, y);
      *
      * @param x X coordinate of the point.
      * @param y Y coordinate of the point.
@@ -359,6 +361,26 @@ public abstract class BasicGeometry
      * (ungenerated).
      */
     public float distance(int x, int y) {
+	return _distance(x, y);
+    }
+
+    /**
+     * Return the shortest distance from the graphic to an
+     * XY-point. Checks to see of the point is contained within the
+     * OMGraphic, which may, or may not be the right thing for clear
+     * OMGraphics or lines.<p>
+     *
+     * _distance was added so subclasses could make this call if their
+     * geometries/attributes require this action (when fill color
+     * doesn't matter).
+     *
+     * @param x X coordinate of the point.
+     * @param y Y coordinate of the point.
+     * @return float distance, in pixels, from graphic to the point.
+     * Returns Float.POSITIVE_INFINITY if the graphic isn't ready
+     * (ungenerated).
+     */
+    protected float _distance(int x, int y) {
 	float temp, distance = Float.POSITIVE_INFINITY;
 
 	if (getNeedToRegenerate() || shape == null) {

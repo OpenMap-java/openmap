@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/18 00:40:23 $
+// $Revision: 1.3 $
+// $Date: 2003/06/02 18:39:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1123,4 +1123,20 @@ public class OMText extends OMGraphic implements Serializable {
 	}
     }
 
+    /**
+     * Return the shortest distance from the OMText to an
+     * XY-point. <p>
+     *
+     * This method uses the OMText's internal Shape object, created
+     * from the boundary of the text, as its boundary.
+     *
+     * @param x X coordinate of the point.
+     * @param y Y coordinate of the point.
+     * @return float distance, in pixels, from graphic to the point.
+     * Returns Float.POSITIVE_INFINITY if the graphic isn't ready
+     * (ungenerated).
+     */
+    public float distance(int x, int y) {
+	return _distance(x, y);
+    }
 }
