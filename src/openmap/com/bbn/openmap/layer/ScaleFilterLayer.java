@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleFilterLayer.java,v $
 // $RCSfile: ScaleFilterLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/27 23:59:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,9 +23,17 @@
 
 package com.bbn.openmap.layer;
 
+import java.awt.Container;
+import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.*;
+
+import javax.swing.*;
 
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
@@ -36,17 +44,8 @@ import com.bbn.openmap.util.Debug;
 /**
  * An OpenMap Layer that encapsulates other layers and acts as a scale
  * filter.  It will delegate responsibility to one of several layers
- * depending on the scale.  Repainting is undefined unless the
- * encapsulated layers broadcast LayerStatusEvents to indicate when
- * they're finished working (ready with graphics).
+ * depending on the scale.
  * <p>
- * <h3>HACK TODO</h3>
- * <ul>
- * <li>Need to implement more listener types.
- * <li>Need to override more base-class methods and delegate to the
- * appropriate layer.
- * </ul>
- * <P>
  * To use this layer, list it as a layer in the openmap.properties
  * file in the openmap.layers properties, as you would add any other
  * layer. Then, add these properties to the openmap.properties
@@ -72,7 +71,7 @@ import com.bbn.openmap.util.Debug;
  * </pre></code>
  */
 public class ScaleFilterLayer extends Layer
-    implements LayerStatusListener {
+    implements InfoDisplayListener, LayerStatusListener, PropertyChangeListener, MapMouseListener {
 
     /**
      * The layers property.
@@ -105,37 +104,25 @@ public class ScaleFilterLayer extends Layer
     protected int targetIndex = -1;
 
     /**
-     * HACK.
-     * This is only being used so that layers can prompt a repaint.
-     * Layers which reference the MapBean for anything else will be
-     * screwed up by the current implementation.  We need to make this
-     * a fully-fledged clone of the "real" MapBean, or find a
-     * different solution to the repaint() conundrum...
-     */
-    private static class PseudoMapBean extends MapBean {
-	protected ScaleFilterLayer layer;
-
-	static {
-	    suppressCopyright = true;
-	}
-
-	public PseudoMapBean(ScaleFilterLayer layer) {
-	    super();
-	    this.layer = layer;
-	}
-
-	public void repaint(long tm, int x, int y, int width, int height) {
-	    layer.repaint(tm, x, y, width, height);
-	}
-    }
-    private PseudoMapBean pseudoMB;
-
-
-    /**
      * Initializes an empty layer.
      */
     public ScaleFilterLayer() {
-	pseudoMB = new PseudoMapBean(this);
+	setLayout(new OverlayLayout(this));
+	/** To get MouseDelegator, to make decisions on receiving
+	 * mouse modes for child layers. */
+	setAddToBeanContext(true);
+    }
+
+    /**
+     * Get the Vector holding the Layers.  If it hasn't been asked for
+     * yet, a new, empty Vector will be returned, one that will be
+     * used internally.
+     */
+    public Vector getLayers() {
+	if (layers == null) {
+	    layers = new Vector();
+	}
+	return layers;
     }
 
     /**
@@ -158,7 +145,7 @@ public class ScaleFilterLayer extends Layer
      * @return Layer 
      */
     protected Layer getAppropriateLayer() {
-	Vector target = layers;
+	Vector target = getLayers();
 	if (target == null) {
 	    return SinkLayer.getSharedInstance();
 	}
@@ -178,7 +165,7 @@ public class ScaleFilterLayer extends Layer
      */
     protected void parseLayers(String prefix, Properties props) {
 	String layersString = props.getProperty(prefix + layersProperty);
-	layers = new Vector();
+	Vector layers = getLayers();
 	if (layersString == null || layersString.equals("")) {
 	    Debug.error("ScaleFilterLayer(): null layersString!");
 	    return;
@@ -190,31 +177,25 @@ public class ScaleFilterLayer extends Layer
 	    String classProperty = layerName + ".class";
 	    String className = props.getProperty(classProperty);
 	    if (className == null) {
-		Debug.error(
-			"ScaleFilterLayer.parseLayers(): " +
-			"Failed to locate property \""
-			+ classProperty + "\"");
-		Debug.error(
-			"ScaleFilterLayer.parseLayers(): " +
-			"Skipping layer \"" + layerName + "\"");
+		Debug.error("ScaleFilterLayer.parseLayers(): Failed to locate property \"" + 
+			    classProperty + "\"");
+		Debug.error("ScaleFilterLayer.parseLayers(): Skipping layer \"" + 
+			    layerName + "\"");
 		className = SinkLayer.class.getName();
 	    }
 
 	    try {
-		if (className.equals(SinkLayer.class.getName()))
+		if (className.equals(SinkLayer.class.getName())) {
 		    obj = SinkLayer.getSharedInstance();
-		else
+		} else {
 		    obj = Class.forName(className).newInstance();
+		}
 		if (Debug.debugging("ScaleFilterLayer")) {
-		    Debug.output(
-			    "ScaleFilterLayer.parseLayers(): " +
-			    "Instantiated " + className);
+		    Debug.output("ScaleFilterLayer.parseLayers(): Instantiated " + className);
 		}
 	    } catch (Exception e) {
-		Debug.error(
-			"ScaleFilterLayer.parseLayers(): " +
-			"Failed to instantiate \""
-			+ className + "\": " + e);
+		Debug.error("ScaleFilterLayer.parseLayers(): Failed to instantiate \"" +
+			    className + "\": " + e);
 		obj = SinkLayer.getSharedInstance();
 	    }
 
@@ -223,6 +204,7 @@ public class ScaleFilterLayer extends Layer
 		Layer l = (Layer) obj;
 		l.setProperties(layerName, props);
 		l.addLayerStatusListener(this);
+		l.addInfoDisplayListener(this);
 		layers.addElement(l);
 	    }
 	}
@@ -236,18 +218,19 @@ public class ScaleFilterLayer extends Layer
      */
     protected void parseScales(String prefix, Properties props) {
 	StringTokenizer tok = null;
+	Vector layers = getLayers();
 	int size = layers.size();
-	if (size > 0)
+	if (size > 0) {
 	    --size;
+	}
 	transitionScales = new float[size];
 	String scales = props.getProperty(prefix + transitionScalesProperty);
 	if (scales == null) {
-	    Debug.error(
-			"ScaleFilterLayer.parseScales(): " +
-			"Failed to locate property \""
-			+ transitionScalesProperty + "\"");
-	    if (transitionScales.length > 0)
+	    Debug.error("ScaleFilterLayer.parseScales(): Failed to locate property \"" + 
+			transitionScalesProperty + "\"");
+	    if (transitionScales.length > 0) {
 		transitionScales[0] = defaultTransitionScale;
+	    }
 	    for (int i=1; i<transitionScales.length; i++) {
 		transitionScales[i] = transitionScales[i-1]/3;
 	    }
@@ -260,8 +243,7 @@ public class ScaleFilterLayer extends Layer
 		? new Float(tok.nextToken()).floatValue()
 		: defaultTransitionScale;
 	} catch (NumberFormatException e) {
-	    Debug.error(
-		    "ScaleFilterLayer.parseScales()1: " + e);
+	    Debug.error("ScaleFilterLayer.parseScales()1: " + e);
 	    transitionScales[0] = defaultTransitionScale;
 	}
 
@@ -271,8 +253,7 @@ public class ScaleFilterLayer extends Layer
 		    ? new Float(tok.nextToken()).floatValue()
 		    : transitionScales[i-1]/3;
 	    } catch (NumberFormatException e) {
-		Debug.error(
-			"ScaleFilterLayer.parseScales()2: " + e);
+		Debug.error("ScaleFilterLayer.parseScales()2: " + e);
 		transitionScales[i] = transitionScales[i-1]/3;
 	    }
 	}
@@ -287,13 +268,7 @@ public class ScaleFilterLayer extends Layer
 	    return;
 	} else {
 	    boolean changed = setTargetIndex(proj.getScale());
-	    
 	    Layer layer = getAppropriateLayer();
-	    // Try to keep the layer and the Psudeo MB up to date.
-	    if (changed) {
-		pseudoMB.setLayers(new LayerEvent(
-		    this, LayerEvent.REPLACE, new Layer [] { layer }));
-	    }
 	    layer.renderDataForProjection(proj, g);
 	}
     }
@@ -338,13 +313,20 @@ public class ScaleFilterLayer extends Layer
      * @param ev the new projection event */
     public void projectionChanged(ProjectionEvent ev) {
 	Projection proj = ev.getProjection();
+	Layer currentLayer = getAppropriateLayer();
 	boolean changed = setTargetIndex(proj.getScale());
 
 	// get the appropriate layer and invoke projectionChanged
 	Layer layer = getAppropriateLayer();
 	if (changed) {
-	    pseudoMB.setLayers(new LayerEvent(
-			this, LayerEvent.REPLACE, new Layer [] { layer }));
+	    currentLayer.removeNotify();
+	    setPaletteTab(targetIndex);
+	    remove(currentLayer);
+
+	    // This will handle the repaint() requests from the layer...
+	    add(layer);
+	    layer.addNotify();
+	    checkMouseMode();
 	}
 
 	fireStatusUpdate(LayerStatusEvent.START_WORKING);
@@ -352,13 +334,12 @@ public class ScaleFilterLayer extends Layer
     }
 
     /**
-     * Renders the layer on the map.
+     * Renders the scale-appropriate layer on the map.
      *
      * @param g a graphics context
      */
     public void paint(Graphics g) {
-	Layer layer = getAppropriateLayer();
-	layer.paint(g);
+	getAppropriateLayer().paint(g);
 	fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
     }
 
@@ -367,14 +348,398 @@ public class ScaleFilterLayer extends Layer
     //----------------------------------------------------------------
 
     /**
-     * Repaint the map when we get a FINISH_WORKING notification.
+     * Try to handle receiving LayerStatusEvents from child layers.
+     * May not always work, depending on what thread sends/receives
+     * this event - usually in the Swing thread, and the GUI can't
+     * always be updated as expected.
      * @param evt LayerStatusEvent
      */
     public void updateLayerStatus(LayerStatusEvent evt) {
 	int status = evt.getStatus();
-	if (status == LayerStatusEvent.FINISH_WORKING) {
-	    repaint();
-	}
 	fireStatusUpdate(evt);
     }
+
+    protected JPanel panel = null;
+    protected JTabbedPane tabs = null;
+
+    /**
+     * Get the GUI (palettes) for the layers.  The BufferedLayer
+     * actually creates a JTabbedPane holding the palettes for all of
+     * its layers, and also has a pane for itself that provides
+     * visibility control for the group layers.
+     */
+    public Component getGUI() {
+	if (panel == null) {
+
+	    Iterator it = getLayers().iterator();
+	    panel = new JPanel();
+	    tabs = new JTabbedPane();
+
+ 	    // bfPanel still needs controls for controlling scales, 
+ 	    // etc, showing which one is showing, etc., as well as
+ 	    // some indication as which layer is currently active.
+
+	    JPanel bfPanel = new JPanel();
+	    GridBagLayout gridbag = new GridBagLayout();
+	    GridBagConstraints c = new GridBagConstraints();
+	    bfPanel.setLayout(gridbag);
+
+	    tabs.addTab("Scale Filter Controls", bfPanel);
+
+	    JButton gotoButton = new JButton("Go to Active Layer Tab");
+	    gotoButton.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent ae) {
+			setPaletteTab(targetIndex);
+		    }
+		});
+
+	    c.gridy = 0;
+	    gridbag.setConstraints(gotoButton, c);
+	    bfPanel.add(gotoButton);
+
+	    while (it.hasNext()) {
+		Layer layer = (Layer) it.next();
+		Component layerGUI = layer.getGUI();
+		if (layerGUI != null) {
+		    tabs.addTab(layer.getName(), layerGUI);
+		}
+	    }
+	    panel.add(tabs);
+	}
+	setPaletteTab(targetIndex);
+	return panel;
+    }
+
+    protected void setPaletteTab(int layerIndex) {
+	Vector layers = getLayers();
+	if (layers.size() > layerIndex && tabs != null) {
+	    // +1 because the first tab is the ScaleFilterLayer tab
+	    tabs.setSelectedIndex(layerIndex + 1);
+	}
+    }
+
+    ////////////////////////////////
+    // InfoDisplayListener Methods
+    ////////////////////////////////
+
+    /**
+     * Request to have a URL displayed in a Browser.
+     * @param event InfoDisplayEvent
+     */
+    public void requestURL(InfoDisplayEvent event) {
+	fireRequestURL(new InfoDisplayEvent(this, event.getInformation()));
+    }
+
+    /** 
+     * Request to have a message displayed in a dialog window.
+     * @param event InfoDisplayEvent
+     */
+    public void requestMessage(InfoDisplayEvent event) {
+	fireRequestMessage(new InfoDisplayEvent(this, event.getInformation()));
+    }
+    
+    /** 
+     * Request to have an information line displayed in an
+     * application status window.
+     * @param event InfoDisplayEvent
+     */
+    public void requestInfoLine(InfoDisplayEvent event) {
+	fireRequestInfoLine(new InfoDisplayEvent(this, event.getInformation()));
+    }
+
+    /** 
+     * Request that plain text or html text be displayed in a
+     * browser.
+     * @param event InfoDisplayEvent
+     */
+    public void requestBrowserContent(InfoDisplayEvent event) {
+	fireRequestBrowserContent(new InfoDisplayEvent(this, event.getInformation()));
+    }
+
+    /**
+     * Request that the MapBean cursor be set to a certain type.
+     * @param Cursor java.awt.Cursor to set over the MapBean.
+     */
+    public void requestCursor(java.awt.Cursor cursor) {
+	fireRequestCursor(cursor);
+    }
+
+    /**
+     * Request a tool tip be shown.
+     *
+     * @param me MouseEvent for where the tip should be placed.
+     * @param event The InfoDisplayEvent containing the text and
+     * requestor.  
+     */
+    public void requestShowToolTip(MouseEvent me, InfoDisplayEvent event) {
+	fireRequestToolTip(me, new InfoDisplayEvent(this, event.getInformation()));
+    }
+
+    /**
+     * Request a tool tip be hidden.
+     *
+     * @param me MouseEvent for where the tip was. May not be exact.
+     */
+    public void requestHideToolTip(MouseEvent me) {
+	fireHideToolTip(me);
+    }
+
+    /**
+     * Try to handle mouse events for the current layer.
+     */
+    public synchronized MapMouseListener getMapMouseListener() {
+	return this;
+    }
+    
+    /** The current active mouse mode ID. */
+    protected String mmID = null;
+    /**
+     * Flag to specify that the current layer wants events from the
+     * current active mouse mode. 
+     */
+    protected boolean coolMM = false;
+    /**
+     * The current MapMouseListener from the currently appropriate layer.
+     */
+    protected MapMouseListener clmml = null; // current layer map mouse listener
+
+    /**
+     * Set the coolMM flag, whenever the scale-appropriate layer
+     * changes, or if the active mouse mode changes.
+     */
+    public synchronized boolean checkMouseMode() {
+	// check the current MouseMode with the current layer
+	coolMM = false;
+	Layer layer = getAppropriateLayer();
+	MapMouseListener mml = layer.getMapMouseListener();
+	setCurrentLayerMapMouseListener(mml);
+	if (mml != null) {
+	    String[] mmsl = mml.getMouseModeServiceList();
+	    for (int i = 0; i < mmsl.length; i++) {
+		if (mmsl[i].intern() == mmID) {
+		    coolMM = true;
+		    break;
+		}
+	    }
+	}
+	return coolMM;
+    }
+
+    /**
+     * Pre-set the MapMouseListener to received events if the current
+     * layer wants them.
+     */
+    public void setCurrentLayerMapMouseListener(MapMouseListener mml) {
+	clmml = mml;
+    }
+
+    /**
+     * Get the MapMouseListener to received events if the current
+     * layer wants them.  May be null, but coolMM should be false in
+     * that case.
+     */
+    public MapMouseListener getCurrentLayerMapMouseListener() {
+	return clmml;
+    }
+
+    /**
+     *  Listen for changes to the active mouse mode and for any changes
+     *  to the list of available mouse modes
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
+	if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
+	    mmID = ((MapMouseMode)evt.getNewValue()).getID().intern();
+	    checkMouseMode();
+	}
+    }
+
+    /**
+     * Return a list of the modes that are interesting to the
+     * MapMouseListener.  The source MouseEvents will only get sent to
+     * the MapMouseListener if the mode is set to one that the
+     * listener is interested in.
+     * Layers interested in receiving events should register for
+     * receiving events in "select" mode:
+     * <code>
+     * <pre>
+     *	return new String[] {
+     *	    SelectMouseMode.modeID
+     *	};
+     * </pre>
+     * <code>
+     * @return String[] of modeID's
+     * @see NavMouseMode#modeID
+     * @see SelectMouseMode#modeID
+     * @see NullMouseMode#modeID
+     */
+    public String[] getMouseModeServiceList() {
+	HashSet mmsl = new HashSet();
+	Iterator it = getLayers().iterator();
+	while (it.hasNext()) {
+	    Layer l = (Layer)it.next();
+	    MapMouseListener mml = l.getMapMouseListener();
+	    if (mml != null) {
+		String[] llist = mml.getMouseModeServiceList();
+		for (int i = 0; i < llist.length; i++) {
+		    mmsl.add(llist[i].intern());
+		}
+	    }
+	}
+	Object[] objs = mmsl.toArray();
+	String[] rets = new String[objs.length];
+
+	for (int i = 0; i < rets.length; i++) {
+	    rets[i] = (String) objs[i];
+	}
+	return rets;
+    }
+
+    // Mouse Listener events
+    ////////////////////////
+
+    /**
+     * Invoked when a mouse button has been pressed on a component.
+     * @param e MouseEvent
+     * @return true if the listener was able to process the event.
+     */
+    public boolean mousePressed(MouseEvent e) {
+	if (coolMM) {
+	    return getCurrentLayerMapMouseListener().mousePressed(e);
+	} else {
+	    return false;
+	}
+    }
+ 
+    /**
+     * Invoked when a mouse button has been released on a component.
+     * @param e MouseEvent
+     * @return true if the listener was able to process the event.
+     */
+    public boolean mouseReleased(MouseEvent e) {
+	if (coolMM) {
+	    return getCurrentLayerMapMouseListener().mouseReleased(e);
+	} else {
+	    return false;
+	}
+    }
+
+    /**
+     * Invoked when the mouse has been clicked on a component.
+     * The listener will receive this event if it successfully
+     * processed <code>mousePressed()</code>, or if no other listener
+     * processes the event.  If the listener successfully processes
+     * <code>mouseClicked()</code>, then it will receive the next
+     * <code>mouseClicked()</code> notifications that have a click
+     * count greater than one.
+     * <p>
+     * @param e MouseEvent
+     * @return true if the listener was able to process the event.
+     */
+    public boolean mouseClicked(MouseEvent e) {
+	if (coolMM) {
+	    return getCurrentLayerMapMouseListener().mouseClicked(e);
+	} else {
+	    return false;
+	}
+
+    }
+
+    /**
+     * Invoked when the mouse enters a component.
+     * @param e MouseEvent
+     */
+    public void mouseEntered(MouseEvent e) {
+	if (coolMM) {
+	    getCurrentLayerMapMouseListener().mouseEntered(e);
+	}
+
+    }
+ 
+    /**
+     * Invoked when the mouse exits a component.
+     * @param e MouseEvent
+     */
+    public void mouseExited(MouseEvent e) {
+	if (coolMM) {
+	    getCurrentLayerMapMouseListener().mouseExited(e);
+	}
+    }
+
+    // Mouse Motion Listener events
+    ///////////////////////////////
+
+    /**
+     * Invoked when a mouse button is pressed on a component and then 
+     * dragged.  The listener will receive these events if it
+     * successfully processes mousePressed(), or if no other listener
+     * processes the event.
+     * @param e MouseEvent
+     * @return true if the listener was able to process the event.
+     */
+    public boolean mouseDragged(MouseEvent e) {
+	if (coolMM) {
+	    return getCurrentLayerMapMouseListener().mouseDragged(e);
+	} else {
+	    return false;
+	}
+    }
+
+    /**
+     * Invoked when the mouse button has been moved on a component
+     * (with no buttons down).
+     * @param e MouseEvent
+     * @return true if the listener was able to process the event.
+     */
+    public boolean mouseMoved(MouseEvent e) {
+	if (coolMM) {
+	    return getCurrentLayerMapMouseListener().mouseMoved(e);
+	} else {
+	    return false;
+	}
+
+    }
+
+    /**
+     * Handle a mouse cursor moving without the button being pressed.
+     * This event is intended to tell the listener that there was a
+     * mouse movement, but that the event was consumed by another
+     * layer.  This will allow a mouse listener to clean up actions
+     * that might have happened because of another motion event
+     * response.
+     */
+    public void mouseMoved() {
+	if (coolMM) {
+	    getCurrentLayerMapMouseListener().mouseMoved();
+	}
+    }
+
+
+    /**
+     * MapHandler child methods, passing found objects to child layers.
+     */
+    public void findAndInit(Object obj) {
+	if (obj instanceof MouseDelegator) {
+	    ((MouseDelegator)obj).addPropertyChangeListener(this);
+	}
+
+	Iterator it = getLayers().iterator();
+	while (it.hasNext()) {
+	    ((Layer)it.next()).findAndInit(obj);
+	}
+    }
+
+    /**
+     * MapHandler child methods, passing removed objects to child layers.
+     */
+    public void findAndUndo(Object obj) {
+	if (obj instanceof MouseDelegator) {
+	    ((MouseDelegator)obj).removePropertyChangeListener(this);
+	}
+
+	Iterator it = getLayers().iterator();
+	while (it.hasNext()) {
+	    ((Layer)it.next()).findAndUndo(obj);
+	}
+    }
+
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/02/20 02:43:49 $
+// $Revision: 1.4 $
+// $Date: 2003/02/27 23:59:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,8 @@ package com.bbn.openmap.layer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -253,7 +255,12 @@ public class DemoLayer extends OMGraphicHandlerLayer
 
     public java.awt.Component getGUI() {
 
-	JPanel box = PaletteHelper.createVerticalPanel("Filtering Demo");
+	JPanel panel = new JPanel();
+	GridBagLayout gridbag = new GridBagLayout();
+	GridBagConstraints c = new GridBagConstraints();
+	panel.setLayout(gridbag);
+	
+	JPanel box = PaletteHelper.createVerticalPanel(" Create Filters for Map ");
 	box.setLayout(new java.awt.GridLayout(0, 1));
 
 	//  	JButton button = new JButton("Add and Edit Offset Line");
@@ -654,7 +661,9 @@ public class DemoLayer extends OMGraphicHandlerLayer
 	//  	    });
 	//  	box.add(button);
 
-	return box;
+	gridbag.setConstraints(box, c);
+	panel.add(box);
+	return panel;
     }
 
     protected DrawingTool drawingTool;
