@@ -105,7 +105,9 @@
 
 	<jar jarfile="${openmap.home}/lib/openmap.jar" 
 	     basedir="${openmap.classes}"
-	     includes="openmap.properties, com/**/*.class, com/**/*.gif,
+	     manifest="${openmap.home}/share/manifest.txt" 
+	     includes="openmap.properties, com/**/*.class,
+		       com/**/*.gif, com/**/*.png,
 		       Acme/**/*.class, doppelt/**/*.class, 
 		       com/**/*.properties" 
 	     excludes="${corba.excludes}"/>
@@ -155,6 +157,7 @@
 	     <mkdir dir="${openmap.classes}"/>
 	     <javac srcdir="${openmap.home}" 
 	            destdir="${openmap.classes}"    
+		    debug="on"
 	            includes="com/bbn/openmap/util/Debug.java"/>
 	</target>
 
@@ -167,6 +170,7 @@
 	       <echo message="Building OpenMap contrib classes..."/>
 	       <javac srcdir="${openmap.contrib}"
 	              destdir="${openmap.classes}"
+		      debug="on"
 		      excludes="${javac.excludes}, ${dependency.excludes}"/>
 	</target>
 
@@ -179,6 +183,7 @@
 	     <echo message="Building OpenMap classes..."/>
 	     <javac srcdir="${openmap.home}" 
 	            destdir="${openmap.classes}"
+		    debug="on"
 		    excludes="${javac.excludes}, ${dependency.excludes}"/>
 
 	     <!-- Copy the gifs and other resources to the new classpath. -->
@@ -186,9 +191,7 @@
 	           file="${openmap.home}/openmap.properties"/> 
 	     <copy todir="${openmap.classes}/com/bbn/openmap"> 
 	          <fileset dir="${openmap.home}/com/bbn/openmap" 
-		           includes="*.gif, gui/*.gif, tools/drawing/*.gif,
-			             tools/j3d/*.gif, omGraphics/*.gif,
-				     omGraphics/editable/*.gif, **/*.properties"/>
+		           includes="**/*.gif, **/*.png, **/*.properties"/>
 	     </copy>
 
 	</target>
@@ -321,6 +324,7 @@
 
 		<javac srcdir="${openmap.home}"
                        destdir="${openmap.vb_classes}"
+		       debug="on"
 		       includes="**/CRpfFrameProvider/**, **/CSpecialist/**, **/corbaImageServer/**"
 		       excludes="${java.excludes}"
 		       bootclasspath="${visibroker.bootclasspath}" />
@@ -342,6 +346,7 @@
 		<echo message="Compiling CORBA classes with Visibroker..."/>
 		<javac srcdir="${openmap.home}"
 		       destdir="${openmap.vb_classes}"
+		       debug="on"
 		       includes="**/layer/rpf/corba/**/*.java,
 		                 **/layer/specialist/**/*.java,
 				 **/plugin/corbaImage/**/*.java"
@@ -371,6 +376,7 @@
 		description="Compiles the Java 3D OpenMap code.  You must have the Java 3D extension package (http://java.sun.com/products/java-media/3D/index.html) installed in your Java installation.">
 		<javac srcdir="${openmap.home}"
 		       destdir="${openmap.classes}"
+		       debug="on"
 		       includes="${j3d.excludes}"
 		       classpath="${openmap.home}/lib/openmap.jar;${openmap.home};${openmap.home}/contrib"
 		       excludes="${javac.excludes}"/>
