@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/csv/CSVLocationHandler.java,v $
 // $RCSfile: CSVLocationHandler.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/01/28 17:41:39 $
+// $Revision: 1.9 $
+// $Date: 2004/02/02 18:49:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -337,7 +337,11 @@ public class CSVLocationHandler extends AbstractLocationHandler
 
                     if (readHeader) {
                         if (i == nameIndex) {
-                            name = (String)token;
+                            if (token instanceof Double) {
+                                name = ((Double)token).toString();
+                            } else {
+                                name = (String)token;
+                            }
                         } else if (i == latIndex) {
                             lat = ((Double)token).floatValue();
                         } else if (i == lonIndex) {
@@ -382,6 +386,8 @@ public class CSVLocationHandler extends AbstractLocationHandler
         } catch (NumberFormatException nfe){
             throw new com.bbn.openmap.util.HandleError(nfe);
         } catch (ClassCastException cce){
+            Debug.error("Problem reading entries in " + locationFile + 
+                        ", check your index settings, first column = 0.");
             throw new com.bbn.openmap.util.HandleError(cce);
         } catch (NullPointerException npe) {
             throw new com.bbn.openmap.util.HandleError(npe);
