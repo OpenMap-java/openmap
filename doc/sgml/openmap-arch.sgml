@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/openmap-arch.sgml,v $
 $RCSfile: openmap-arch.sgml,v $
-$Revision: 1.14 $
-$Date: 2001/11/05 23:30:44 $
+$Revision: 1.15 $
+$Date: 2002/10/28 23:45:19 $
 $Author: dietrick $
 
 OpenMap architecture document
@@ -89,7 +89,9 @@ url="api/com/bbn/openmap/SoloMapComponentReplacePolicy.html"
 name="replacement policy"> for actions to take when a duplicate
 SoloMapComponent class is added to the MapHandler. As an example, the
 MapBean is a SoloMapComponent - the MapHandler can only use one
-MapBean at a time.
+MapBean at a time.  If your application needs more than one MapBean,
+use the same number of MapHandlers, with the corresponding number of
+needed SoloMapComponents.
 
 <p>
 All OpenMap components have been designed to use the MapHandler to
