@@ -22,6 +22,39 @@ tomcat home directory is set.  You might have to set the servlet.jar
 file name (servlet-api.jar for tomcat 5) depending on the version of
 tomcat you are using.
 
+Next, you need to modify the WEB-INF/web.xml file so it points to
+your VPF data.  This is done by modifying/adding these sections:
+
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.noamer</param-name>
+      <param-value>/data/vpf/vmaplv0/disk0</param-value>
+      <description>
+        VMAP Level 0 North America Data.
+      </description>
+    </context-param>
+
+where the param-value parameter should point to the same directory
+that the VPFLayer does, the parent of the .lat file for the dataset.
+From the instructions in the web.xml file:
+
+    Any parameter with a name beginning with
+    "com.bbn.openmap.vpfservlet.vpf_library." will be interpreted as a path to
+    the root of a VPF database. The servlets will first try and resolve the
+    path within the webapp directory, and if not found there, will try the
+    path as an absolute path.  If either of these paths are found, the library
+    will be added to the list of available databases on the servlet home page.
+    If neither of the paths work, the library will not be listed, and an error
+    logged in the servlet logs.
+
+Finally, run ant on your build.xml file, and a vbfbrowse.war file will
+be created.  This war file needs to be moved into the tomcat webapps
+directory.
+
+The servlet can then be accessed by connecting to:
+
+http://localhost:tomcat_port/vpfbrowse
+
+
 Among the improvements needed:
   HTML generation code should move to JSPs wherever possible, java
 code should just provide access to the JSP layer.
