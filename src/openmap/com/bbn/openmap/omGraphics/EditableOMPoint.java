@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/03 00:53:03 $
+// $Revision: 1.4 $
+// $Date: 2003/10/10 19:18:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -420,36 +420,40 @@ public class EditableOMPoint extends EditableOMGraphic {
 
 	State state = getStateMachine().getState();
 
-	if (point != null) {
-	    point.setVisible(true);
-	    point.render(graphics);
-	    point.setVisible(false);
-	} else {
-	    Debug.message("eomg", "EditableOMPoint.render: null point.");
-	}
+	if (!(state instanceof GraphicUndefinedState)) {
+	    if (point != null) {
+		point.setVisible(true);
+		point.render(graphics);
+		point.setVisible(false);
+	    } else {
+		Debug.message("eomg", "EditableOMPoint.render: null point.");
+	    }
 	
-	int renderType = point.getRenderType();
+	    int renderType = point.getRenderType();
 
-	if (state instanceof GraphicSelectedState ||
-	    state instanceof GraphicEditState) {
+	    if (state instanceof GraphicSelectedState ||
+		state instanceof GraphicEditState) {
 
-	    for (int i = 0; i < gPoints.length; i++) {
+		for (int i = 0; i < gPoints.length; i++) {
 
-		GrabPoint gp = gPoints[i];
-		if (gp != null) {
-		    if ((i == OFFSET_POINT_INDEX &&
-			 renderType == OMGraphic.RENDERTYPE_OFFSET &&
-			 movingPoint == gpo) || 
+		    GrabPoint gp = gPoints[i];
+		    if (gp != null) {
+			if ((i == OFFSET_POINT_INDEX &&
+			     renderType == OMGraphic.RENDERTYPE_OFFSET &&
+			     movingPoint == gpo) || 
 			
-			(state instanceof GraphicSelectedState && 
-			 ((i != OFFSET_POINT_INDEX && renderType != OMGraphic.RENDERTYPE_OFFSET) || 
-			  (renderType == OMGraphic.RENDERTYPE_OFFSET)))
+			    (state instanceof GraphicSelectedState && 
+			     ((i != OFFSET_POINT_INDEX && 
+			       renderType != OMGraphic.RENDERTYPE_OFFSET) || 
+			      
+			      (renderType == OMGraphic.RENDERTYPE_OFFSET)))
 			
-			) {
+			    ) {
 
-			gp.setVisible(true);
-			gp.render(graphics);
-			gp.setVisible(false);
+			    gp.setVisible(true);
+			    gp.render(graphics);
+			    gp.setVisible(false);
+			}
 		    }
 		}
 	    }

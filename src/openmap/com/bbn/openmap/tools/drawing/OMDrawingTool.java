@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.16 $
-// $Date: 2003/10/10 16:58:09 $
+// $Revision: 1.17 $
+// $Date: 2003/10/10 19:18:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1017,7 +1017,9 @@ public class OMDrawingTool extends OMToolComponent
 	OMGraphic g = null;
 
 	if (currentEditable != null) {
-	    g = currentEditable.getGraphic();
+	    if (!(currentEditable.getStateMachine().getState() instanceof com.bbn.openmap.omGraphics.editable.GraphicUndefinedState)) {
+		g = currentEditable.getGraphic();
+	    }
 	    currentEditable.removeEOMGListener(this);
 	}
 
