@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/TextTable.java,v $
-// $Revision: 1.3 $ $Date: 2004/01/26 18:18:12 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2004/02/02 05:43:20 $ $Author: wjeuerle $
 // **********************************************************************
 
 
@@ -51,7 +51,15 @@ public class TextTable extends PrimitiveTable {
                                       + "string column"); 
         }
     }
-
+    
+    /**
+     * Returns the coordinate string for the text primitive
+     * @param textprim the text primitive
+     */
+    public CoordFloatString getCoordinates(List textprim) {
+	return (CoordFloatString)textprim.get(coordColumn);
+    }
+	
     /**
      * Parse the text records for this tile, calling warehouse.createText
      * once for each record in the selection region.
