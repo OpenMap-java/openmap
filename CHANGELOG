@@ -1,3 +1,286 @@
+2003-03-13  Don Dietrick  <dietrick@bbn.com>
+
+	* The directory structure of the OpenMap package has been changed
+	in order to make it easier to add external code packages that
+	OpenMap classes rely on.  The new structure of the package is:
+
+ANT_ENV.bat  	  - environment configuration for Ant for Windows machines.
+AUTHORS 	  - People who have contributed to OpenMap.
+CHANGELOG 	  - List of changes between versions.
+INSTALL 	  - Installation instructions for compiling.
+LICENSE 	  - OpenMap License.
+Makefile	  - Makefile for compiling code, forwards targets to Ant.
+README 		  - Start here, information about using OpenMap.
+README.win32 	  - additional information for Windows users.
+bin 		  - scripts for building, starting the OpenMap application.
+build.xml 	  - Ant build file for compiling code.
+classes 	  - created when code is compiled, not present by default.
+doc 		  - Java API and architecture documentation.
+ext 		  - Externally available packages that OpenMap packages rely on.
+iis		   - .NET webpages
+lib 		  - jar files used by OpenMap, including jars created from OpenMap
+		    code.
+openmap.properties - default configuration file for the OpenMap application.
+share 		   - misc information, applet pages, map data.
+src 		   - the OpenMap code packages.
+
+src/openmap	   - the OpenMap code base, compiles with Java 2.
+src/ext 	   - external code integrated into OpenMap package, compiled into
+		     openmap.jar file.
+src/svg		   - OpenMap code that relies on Apache Batik SVG
+		     package.
+src/j3d		   - OpenMap code that relies on Java 3D package.
+src/corba	   - OpenMap CORBA client-server code that relies on
+		     Inprise Visibroker package.
+
+
+	* OpenMap GUI components have been overhauled.  Previously, most
+	of them created the Swing components they needed to provide their
+	GUIs. Now they have been written to extend the Swing classes they
+	used to use.  Components that created many Swing objects and
+	managed their configuration have been broken into several new
+	components that can each use the MapHandler to configure
+	themselves. 
+	
+        	- The OMComponentPanel is a new OpenMap base class that
+		extends JPanel.  This class implements the methods of the
+		MapHandlerChild (it knows how to work with the MapHandler)
+		and has methods that let it act as a PropertyConsumer.
+
+		- The OMToolComponent is a OMComponentPanel extension that
+		can provide a GUI face to let it act like an OpenMap Tool.
+		The OpenMap Tool behavior can be controlled through
+		properties that can be set on the component.
+        
+		- The InformationDelegator is now an OMComponentPanel, now
+		uses the StatusLightPanel instead of creating and managing
+		the status icons itself.
+
+		- The OverviewMapHandler is an OMToolComponent, and can
+		now beused as a JPanel.
+
+		- The JPanel components in the OMToolSet have been
+		separated from the OMToolSet and made into
+		OMComponentPanels - the NavigatePanel, the ZoomPanel, the
+		ScaleTextPanel.  All can be used individually.  The
+		ProjectionStackTool can be used the same way.
+
+	The Menus have been changed, too.  The AbstractOpenMapMenu is the
+	base class for all menus, and is capable of being configured via
+	properties.  The menu items for all of the menus have been
+	converted into JMenuItems that can use the MapHandler to connect
+	to other components (LightMapHandlerChild objects).  These
+	JMenuItems are stored in the new gui/menu package, and all of the
+	old Menus - FileMenu, ControlMenu, NavigateMenu - have been
+	updated to use them. The com.bbn.openmap.gui.menu.OMBasicMenu is a
+	menu that can be configured through the properties.
+
+	* The MapHandler has new methods that let you ask for components
+	using Class objects.  Also, there are methods that let you receive
+	a Collection of objects as a result of queries if more than one
+	object meets the query.
+
+	  The methods for the components that use the MapHandler have been
+	standardized to the familiar ones defined in the MapHandlerChild
+	class.  Most OpenMap components now inherit most of the
+	MapHandlerChild methods from a superclass, and override the
+	findAndInit(Object) and findAndUndo(Object) methods.  A new
+	interface, the com.bbn.openmap.LightMapHandlerChild, specifies
+	these two methods as a component that can hook up to other
+	components it needs.
+	
+	* The MapBean now uses a MapBeanRepaintPolicy object to determine
+	how it will react to layer repaint requests.  The
+	StandardMapBeaRepaintPolicy, used by default, simply forwards all
+	requests normally.  The MapBean also forwards projection changes
+	in PropertyChangeEvents.
+
+	* The Layer class has changed.  All references to the AWTAvailable
+	variable have been removed.  The ImageGenerator, which used this
+	variable to try to track Layer threads, has been removed.  The
+	Layer.repaint() method now calls MapBean.repaint(layer) if its
+	parent is a MapBean.  This is to allow the MapBeanRepaintPolicy to
+	take effect. 
+
+	* A MGRSPoint has been implemented, allowing conversions between
+	decimal degree lat/lon, UTM and MGRS coordinates.  The UTM and
+	MGRS panels have been added to the CoordDialog component.  The
+	CoordDialog, in addition to recentering the map on the entered
+	coordinates, also converts the coordinates to the other
+	representations in the different panels of the dialog.
+
+	  The com.bbn.openmap.plugin.UTMGridPlugIn has been added, which
+	draws the UTM zones on the map, labeled below certain scales.  It
+	also has the capability of drawing distance grid squares around
+	the center point of the projection.  These grids are labeled with
+	MGRS grid lables when zoomed in.
+
+	* Thomas Paricaud contributed the e00 layer package, enabling the
+	reading of ArcView export formatted files.
+
+	* MouseModes now have a notion of being invisible to the GUI
+	(their presence is expected to be noted by another component or
+	tool), and also have the ability to act as a proxy for another
+	MouseMode.  When a MapMouseMode acts as a proxy for another
+	MapMouseMode, it sends all its events to the hidden MapMouseMode.
+	This functionality has been built into the AbstractMapMouseMode.
+		
+	  MouseEvents are now wrapped within a MapMouseEvent by the
+	AbstractMapMouseMode.  The MapMouseEvent provides information
+	about what MapMouseMode sent the event, provides a handle to the
+	MapBean and has a method to provide the latitude/longitude of the
+	MouseEvent location.
+
+	  The CoordMouseMode now calls a method for setting up the text
+	that gets presented in the GUI for the coordinates of the mouse.
+	This lets you easily extend the CoordMouseMode to specify the
+	units and format of the string.
+
+
+	* The OMGraphicHandlerLayer has become the uber-layer for
+	OpenMap.  The methods for creating and rendering OMGraphics and
+	handing projection changes have been standardized in the
+	OMGraphicHandlerLayer, and a SwingWorker added to it.  Almost all
+	of the other OpenMap layers are now based on the OMGraphicHandler
+	layer, with their SwingWorkers deleted and using the one from the
+	super class. 
+
+	  The OMGraphicHandlerLayer now uses two different policy objects,
+	one that determines the behavior of the layer when the projection
+	changes (should the layer clear out the current OMGraphicList with
+	each projection change because it needs to repopulate it based on
+	the new projection or reuse all OMGraphics, and should a
+	SwingWorker thread be launched) and the behavior for rendering
+	OMGraphics.  The prepare() method for an OMGraphicHandlerLayer
+	returns the OMGraphicList to be used for a projection, and can be
+	called in any thread.  The doPrepare() method launches a
+	SwingWorker to call the prepare() method. Different OpenMap
+	layers set different ProjectionChangePolicy and RenderPolicy
+	objects depending on the behavior desired and how they gather
+	their OMGraphics.
+
+	  The StandardRenderPolicy forwards paint() requests to the render
+	method of the OMGraphicList.  The BufferedImageRenderPolicy keeps
+	track of how long it takes to paint the OMGraphicList, and if it
+	exceeds a threshold it will create a BufferedImage to paint the
+	OMGraphicList into.  If paint times decrease, the buffer is
+	discarded automatically.
+
+	* Added many OMGraphic package improvements:
+
+		- OMGraphicList has a 'vague' variable added that controls
+		certain behaviors.  If an OMGraphicList is vague, it acts
+		as a whole OMGraphic, with any child OMGraphics
+		contributing to the whole group. The group gets treated as
+		the OMGraphic for find/select requests.  If an
+		OMGraphicList is not vague, which is the default, the
+		OMGraphicList acts as a pass-through, an organizational
+		container for the child OMGraphics.  Methods that also
+		modify the internal List have been synchronized on the
+		List to avoid ConcurrentModificationExceptions.
+
+		- OMDistance has been added, an OMPolygon with labels at
+		each node specifying segment and total distance from the
+		first node.
+
+		- OMSpline, OMDecoratedSpline have been contributed by
+		Eric Lepicier, along with their decorations and supporting
+		Editable classes.
+
+		- Bart Geraci contributed new OMArrowHeads, much improved
+		look.
+
+		- OMGraphics now have a getDescription() method, returning
+		a String that describes what they are.  When called on an
+		OMGraphicList, you get a huge printout of the structure of
+		the OMGraphicList and its contents, including the contents
+		of any child OMGraphicLists.  
+
+		- OMText now have a setUseMaxWidthForBounds() method,
+		which let the background area for Multi-line text appear
+		as a bounding box, instead of a form-fitting polygon.
+
+
+	* Modified the OMDrawingTool by adding a behavior mask, which
+	dictates how the OMDrawingTool acts.  There are behavior options
+	for deactivating when the mouse is clicked off the edited
+	OMGraphic instead of using the pop-up menu or palette Done button,
+	presenting the palette, presenting the pop-up menu, presenting the
+	pop-up menu on a ctrl-click or right mouse click.  This makes
+	using the OMDrawingTool much easier to use for the user.  The
+	OMDrawingTool now has a canEdit() method, which lets you ask if it
+	can edit a particular Class of OMGraphic without invoking the
+	tool.
+
+	* Modified the DrawingToolLayer to have methods that ask whether
+	an OMGraphic should be edited (handed to the OMDrawingTool), and
+	what the tool tip should be for an OMGraphic.  This makes it
+	easier to customize behavior for mouse events in layer subclasses.
+
+	* The BufferedImageHelper will use JAI if it is available to
+	create a BufferedImage.  It uses reflection to figure this out, so
+	it will compile and run if the JAI is not installed.
+
+	* Added an OMGraphicDeleteTool, a button component that sits in
+	the tool panel and listens for events from any other component,
+	like the OMDrawingTool, for OMGraphics that have been selected.
+	If the button is pressed, the OMGraphicDeleteTool deletes the
+	selected OMGraphic by notifying the DrawingToolRequestor to
+	delete the OMGraphic.  If the source of the selection is the
+	OMDrawingTool, the OMGraphicDeleteTool will tell the
+	OMDrawingTool to delete the OMGraphic, which it does by notifying
+	the DrawingToolRequestor when the drawing tool deactivates.
+
+	* Added the com.bbn.openmap.layer.editor package, which contains
+	an EditorLayer that extends the DrawingToolLayer.  The EditorLayer
+	uses an EditTool to make modifications to its OMGraphics.  Unlike
+	the DrawingToolLayer, the EditorTool presents a GUI in the tool
+	panel that controls tools specifically for that layer, with uses
+	and meanings designated for interaction with that layer.  There
+	have been three EditorTools implemented - a superclass
+	AbstractDrawingEditorTool that creates an internal OMDrawingTool,
+	and two subclasses.  The DrawingEditorTool loads different
+	EditToolLoaders into the OMDrawingTool - creating the drawing
+	layer that most people were expected before the drawing tool came
+	out, with any graphics created going directly to the layer.  The
+	DistanceEditorTool has a button to create OMDistance objects,
+	which, unlike the DistanceMouseMode, creates distance lines that
+	are persistant.  The AbstractDrawingEditorTools use the
+	SelectMouseMode to modify OMGraphics that are on the map.  If an
+	OMGraphic is being edited, the SelectMouseMode is used as a proxy
+	for the internal OMDrawingTool, so the modifications look like
+	they are being managed from the Gestures mouse mode.
+
+	* ScaleFilterLayer now presents palettes for layers, forwards
+	MapMouseModes to active layer, status event for active layer.
+	
+	* The EsriGraphicList and DbfTableModel have static methods that
+	take a URL to a file and provide an instance of themselves.
+	EsriPoint and EsriPolys are cloneable.
+
+	* VPFLayer can be told to get features from a particular library.
+
+	* New icons for the MouseModeButtonPanel.
+
+	* The com.bbn.openmap.plugin.graphicLoader package documentation
+	has been improved, and the GraphicLoaderConnector problem caused
+	by adding GraphicLoaderPlugIn/PlugInLayers to the MapHandler when
+	the GraphicLoader was given a handle to the LayerHandler.  This
+	caused a concurrent modification exception. Now a list of new
+	PlugInLayers is maintained, and added to the MapHandler after the
+	iteration.
+
+	* The projections have been modified to help out the
+	ProjUtils.getScale() method, returning the proper scale for the
+	particular projection type.
+
+	* ArgParser can now be told to expect '-' in arguments (for
+	negative numbers) instead of automatically assuming that those
+	arguments are command arguments.
+
+	* The ComponentFactory can now use reflection to create Objects
+	with arguments in their constructors.
+
 2002-12-20  Donald Dietrick  <dietrick@bbn.com>
 
 	* Moved the CHANGELOG to the top-level directory, in order to help
