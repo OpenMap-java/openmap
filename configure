@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.15 
+# From configure.in OpenMap Revision: 1.16 
 
 
 
@@ -583,32 +583,19 @@ esac
 #
 ## Handle the possibility that we're on a Cygwin platform.
 ##
-## There are two things we need to do for the cygwin platform:
-##
-## 1. The CLASSPATH separator is a semi-colon instead of a colon.
-##
-##   The variable CLASSPATH_SEP is set to the appropriate separator.
-##
-## 2. In order to use the CLASSPATH=/foo/bar.jar:/foo/baz.jar javac ...
-##    syntax on the command line, the CLASSPATH= portion needs to be
-##    enclosed in double quote.
-##
-##   The variable DBL_QT is set to the appropriate encloser (nothing
-##   or a double quote.
+## On the cygwin platform the CLASSPATH separator is a semi-colon
+## instead of a colon.  The variable CLASSPATH_SEP is set to the
+## appropriate separator.
 ##
 #
 CLASSPATH_SEP=":"
 
 
-DBL_QT=""
-
-
 echo $ac_n "checking for cygwin platform""... $ac_c" 1>&6
-echo "configure:608: checking for cygwin platform" >&5
+echo "configure:596: checking for cygwin platform" >&5
 if uname -s 2>/dev/null | grep -i cyg >/dev/null 2>&1; then
   echo "$ac_t""yes" 1>&6
   CLASSPATH_SEP=";"
-  DBL_QT="\""
 else
   echo "$ac_t""no" 1>&6
 fi
@@ -643,7 +630,7 @@ ac_configure=$ac_aux_dir/configure # This should be Cygnus configure.
 # SVR4 /usr/ucb/install, which tries to use the nonexistent group "staff"
 # ./install, which can be erroneously created by make from ./install.sh.
 echo $ac_n "checking for a BSD compatible install""... $ac_c" 1>&6
-echo "configure:647: checking for a BSD compatible install" >&5
+echo "configure:634: checking for a BSD compatible install" >&5
 if test -z "$INSTALL"; then
 if eval "test \"`echo '$''{'ac_cv_path_install'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -696,7 +683,7 @@ test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 # Extract the first word of "java", so it can be a program name with args.
 set dummy java; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:700: checking for $ac_word" >&5
+echo "configure:687: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVA'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -736,7 +723,7 @@ fi
 # Extract the first word of "javac", so it can be a program name with args.
 set dummy javac; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:740: checking for $ac_word" >&5
+echo "configure:727: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVAC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -776,7 +763,7 @@ fi
 # Extract the first word of "jar", so it can be a program name with args.
 set dummy jar; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:780: checking for $ac_word" >&5
+echo "configure:767: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAR'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -816,7 +803,7 @@ fi
 # Extract the first word of "javadoc", so it can be a program name with args.
 set dummy javadoc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:820: checking for $ac_word" >&5
+echo "configure:807: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVADOC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -855,7 +842,7 @@ fi
 
 # locate swing in the classpath
 echo $ac_n "checking for swing""... $ac_c" 1>&6
-echo "configure:859: checking for swing" >&5
+echo "configure:846: checking for swing" >&5
 ac_swing_path=$CLASSPATH
 ac_swing_jar=""
 case $with_swing in
@@ -1109,7 +1096,6 @@ s%@oldincludedir@%$oldincludedir%g
 s%@infodir@%$infodir%g
 s%@mandir@%$mandir%g
 s%@CLASSPATH_SEP@%$CLASSPATH_SEP%g
-s%@DBL_QT@%$DBL_QT%g
 s%@INSTALL_PROGRAM@%$INSTALL_PROGRAM%g
 s%@INSTALL_DATA@%$INSTALL_DATA%g
 s%@JAVA@%$JAVA%g
