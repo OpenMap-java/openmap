@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/11/14 20:21:42 $
+// $Revision: 1.10 $
+// $Date: 2003/12/08 23:59:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -148,7 +148,7 @@ public class WindowSupport extends ListenerSupport
     public void componentHidden(ComponentEvent e) {
 	Component source = (Component)e.getSource();
 	if (source == dialog || source == iFrame) {
-	    killWindow();
+	    cleanUp();
 	}
 
 	Iterator it = iterator();
@@ -362,10 +362,31 @@ public class WindowSupport extends ListenerSupport
     }
 
     /**
-     * Get rid of the window used to display the content.
+     * Set the window to be hidden and fire a ComponentEvent for
+     * COMPONENT_HIDDEN.  Normally, just setting the visibility of the
+     * window would be enough, but we're running into that problem we
+     * had with the layers not firing ComponentEvents when hidden.
+     * This method calls componentHidden, which in turn calls cleanUp.
      */
     public void killWindow() {
 
+	ComponentEvent ce = null;
+
+	if (dialog != null) {
+	    dialog.setVisible(false);
+	    ce = new ComponentEvent(dialog, ComponentEvent.COMPONENT_HIDDEN);
+	} else if (iFrame != null) {
+	    iFrame.setVisible(false);
+	    ce = new ComponentEvent(iFrame, ComponentEvent.COMPONENT_HIDDEN);
+	}
+
+	componentHidden(ce);
+    }
+
+    /**
+     * Get rid of the window used to display the content.
+     */
+    protected void cleanUp() {
 	if (dialog != null) {
 	    dialog.removeComponentListener(this);
 	    dialog.dispose();
@@ -379,7 +400,6 @@ public class WindowSupport extends ListenerSupport
 	if (content instanceof ComponentListener) {
 	    removeComponentListener((ComponentListener)content);
 	}
-
     }
 
     /**
