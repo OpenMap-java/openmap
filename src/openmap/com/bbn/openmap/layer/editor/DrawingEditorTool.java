@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/DrawingEditorTool.java,v $
 // $RCSfile: DrawingEditorTool.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/25 18:59:14 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/10/02 23:04:13 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -556,9 +556,6 @@ public class DrawingEditorTool extends AbstractEditorTool
      * @return String The key for this tool.
      */
     public Container getFace() {
-
-	ImageIcon icon = null;
-
 	if (face == null) {
 	    face = new JPanel();
 	    ((JPanel)face).setBorder(BorderFactory.createEmptyBorder());
@@ -568,27 +565,11 @@ public class DrawingEditorTool extends AbstractEditorTool
 	    faceTB.setBorder(BorderFactory.createEmptyBorder());
  	    face.add(faceTB);
 
-	    Iterator it = loaderList.iterator();
 	    if (bg == null) {
 		bg = new ButtonGroup();
 	    }
 
-	    JToggleButton btn;
-	    while (it.hasNext()) {
-		EditToolLoader loader = (EditToolLoader)it.next();
-		String[] classnames = loader.getEditableClasses();
-
-		for (int i = 0; i < classnames.length; i++) {
-		    icon = loader.getIcon(classnames[i]);
-		    btn = new JToggleButton(icon, false);
-		    btn.setToolTipText(loader.getPrettyName(classnames[i]));
-		    btn.setActionCommand(classnames[i]);
-		    btn.addActionListener(this);
-		    bg.add(btn);
-
-		    faceTB.add(btn);
-		}
-	    }
+	    fillFaceToolBar(faceTB, bg);
 
 	    unpickBtn = new JToggleButton("", false);
 	    unpickBtn.setActionCommand(RESET_CMD);
@@ -606,6 +587,27 @@ public class DrawingEditorTool extends AbstractEditorTool
 	}
 
 	return face;
+    }
+
+    /**
+     * Fill the Face's toolbar with buttons
+     **/
+    protected void fillFaceToolBar(JToolBar faceTB, ButtonGroup bg) {
+	Iterator it = loaderList.iterator();
+	while (it.hasNext()) {
+	    EditToolLoader loader = (EditToolLoader)it.next();
+	    String[] classnames = loader.getEditableClasses();
+	    
+	    for (int i = 0; i < classnames.length; i++) {
+		ImageIcon icon = loader.getIcon(classnames[i]);
+		JToggleButton btn = new JToggleButton(icon, false);
+		btn.setToolTipText(loader.getPrettyName(classnames[i]));
+		btn.setActionCommand(classnames[i]);
+		btn.addActionListener(this);
+		bg.add(btn);
+		faceTB.add(btn);
+	    }
+	}
     }
     
     /**
