@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OverviewMapHandler.java,v $
 // $RCSfile: OverviewMapHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/20 06:59:05 $
+// $Revision: 1.3 $
+// $Date: 2003/03/20 18:15:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -83,6 +83,11 @@ import javax.swing.*;
  * # want to pass to the overviewStatusLayer instance, in addition to
  * # being used to define the class to use for that special layer.
  * overviewMapHandler.overviewStatusLayer.class=com.bbn.openmap.layer.OverviewMapAreaLayer
+ * # Properties can be passed to the overview status layer by listing
+ * # them with the OverviewMapHandler prefix.
+ *
+ * # Set the line color for the coverage box outline...
+ * # overviewMapHandler.lineColor=FFFF0000
  *
  * # A sample overview map layer
  * overviewLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
@@ -306,7 +311,9 @@ public class OverviewMapHandler extends OMToolComponent
 	} else {
 	    statusLayer = new OverviewMapAreaLayer();
 	}
-		
+
+	statusLayer.setProperties(prefix, props);
+			
 	projection = createStartingProjection(props.getProperty(prefix + ProjectionTypeProperty));
 
 	setLayers(LayerHandler.getLayers(overviewLayers, overviewLayers, props));
@@ -380,6 +387,8 @@ public class OverviewMapHandler extends OMToolComponent
 		String key =  (String)slpe.nextElement();
 		props.put(key, slp.getProperty(key));
 	    }
+
+	    statusLayer.getProperties(props);
 	}
 	
 	props.put(prefix + ControlSourceMapProperty, new Boolean(controlSourceMap).toString());
@@ -421,6 +430,9 @@ public class OverviewMapHandler extends OMToolComponent
 	list.put(BackgroundSlaveProperty, "Flag to have the map mimic any changes made to the source map's background (true/false, default is true).");
 	list.put(BackgroundSlaveProperty + ScopedEditorProperty, 
 		 "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
+
+	statusLayer.getPropertyInfo(list);
+
 	return list;
     }
 
