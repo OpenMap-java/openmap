@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/MenuList.java,v $
 // $RCSfile: MenuList.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/08 16:23:27 $
+// $Revision: 1.2 $
+// $Date: 2003/09/08 20:31:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -97,9 +97,11 @@ public class MenuList extends OMComponent {
      * Get a JMenu with JMenus on it as sub-menus.  If the MenuList
      * has been given a MapHandler, the Menus will have been added to
      * it, and therefore will be connected to OpenMap components.
+     * This menu will be named "OpenMap", but you can rename it if you
+     * want.
      */
     public JMenu getMenu() {
-	JMenu menu = new JMenu();
+	JMenu menu = new JMenu("OpenMap");
 	Iterator iterator = menus.iterator();
 	while (iterator.hasNext()) {
 	    menu.add((JMenu)iterator.next());
