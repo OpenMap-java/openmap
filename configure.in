@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION(OpenMap $Revision: 1.24 $)
+AC_REVISION(OpenMap $Revision: 1.25 $)
 AC_INIT(openmap.mk.in)
 
 #
@@ -171,6 +171,7 @@ AC_OUTPUT(openmap.mk
 	com/bbn/openmap/layer/util/http/Makefile
 	com/bbn/openmap/layer/util/stateMachine/Makefile
 	com/bbn/openmap/layer/vpf/Makefile
+	com/bbn/openmap/layer/csvLocation/Makefile
 	)
 
 AC_OUTPUT_COMMANDS([echo "chmod +x bin/openmap"],[chmod +x bin/openmap])
