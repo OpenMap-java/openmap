@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.18 $
-// $Date: 2004/03/23 18:51:16 $
+// $Revision: 1.19 $
+// $Date: 2004/09/22 20:49:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -707,6 +707,7 @@ public class DrawingAttributes
      * settings of an OMGraphic.  
      */
     public void setFrom(OMGraphic graphic) {
+        if (graphic == null) return;
 
         matted = graphic.isMatted();
         mattingPaint = graphic.getMattingPaint();
@@ -751,6 +752,8 @@ public class DrawingAttributes
      * @param graphic OMGraphic.  
      */
     public void setTo(OMGraphic graphic) {
+        if (graphic == null) return;
+
         setOMGraphicEdgeAttributes(graphic);
 
         // If the fillPattern is set to a TexturePaint, and the

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/GraphicAttributes.java,v $
 // $RCSfile: GraphicAttributes.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.8 $
+// $Date: 2004/09/22 20:49:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -214,6 +214,8 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * settings of an OMGraphic.  
      */
     public void setFrom(OMGraphic graphic) {
+        if (graphic == null) return;
+
         super.setFrom(graphic);
         lineType = graphic.getLineType();
         renderType = graphic.getRenderType();
@@ -227,6 +229,8 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * @param graphic OMGraphic.  
      */
     public void setTo(OMGraphic graphic) {
+        if (graphic == null) return;
+
         super.setTo(graphic);
         graphic.setLineType(lineType);
         graphic.setRenderType(renderType);
