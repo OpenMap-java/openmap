@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingRaster.java,v $
 // $RCSfile: OMScalingRaster.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/01/10 16:58:34 $
+// $Revision: 1.10 $
+// $Date: 2005/02/02 13:18:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -246,7 +246,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @return true if the image is ready to paint.
      */
     public boolean generate(Projection proj) {
-
+        this.shape = null;
+        
         // Position sets the position for the OMRaster!!!!
         if (!position(proj)) {
             if (DEBUG) {
