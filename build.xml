@@ -46,7 +46,7 @@
 
     <jar jarfile="${openmap.home}/lib/openmap.jar" 
          basedir="${openmap.home}"
-	 includes="openmap.properties, com/**/*.class, com/**/*.gif, share/"/>
+	 includes="openmap.properties, com/**/*.class, com/**/*.gif"/>
 
     <jar jarfile="${openmap.home}/lib/omcore.jar"
          basedir="${openmap.home}"
@@ -67,8 +67,6 @@
 		   com/bbn/openmap/layer/util/http/*.class,
 		   com/bbn/openmap/layer/util/stateMachine/*.class,
                    com/bbn/openmap/plugin/*.class, 
-                   com/bbn/openmap/plugin/shis/*.class, 
-                   com/bbn/openmap/plugin/earthImage/*.class, 
                    com/bbn/openmap/proj/*.class, 
                    com/bbn/openmap/tools/drawing/*.class, 
                    com/bbn/openmap/util/*.class, 

@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.52 $  $Date: 2001/06/15 03:10:28 $
+# $Revision: 1.53 $  $Date: 2001/06/18 19:45:08 $
 # **********************************************************************
 
 
@@ -46,8 +46,6 @@ Core.pkgs =	com.bbn.openmap \
 		com.bbn.openmap.omGraphics.grid \
 		com.bbn.openmap.omGraphics.util \
 		com.bbn.openmap.plugin \
-		com.bbn.openmap.plugin.shis \
-		com.bbn.openmap.plugin.earthImage \
 		com.bbn.openmap.proj \
 		com.bbn.openmap.tools.drawing \
 		com.bbn.openmap.util \
@@ -68,10 +66,7 @@ Core.classes =	com/bbn/openmap/*.class \
 		com/bbn/openmap/omGraphics/event/*.class \
 		com/bbn/openmap/omGraphics/grid/*.class \
 		com/bbn/openmap/omGraphics/util/*.class \
-		com/bbn/openmap/plugin/*.class \
-		com/bbn/openmap/plugin/*.class \
-		com/bbn/openmap/plugin/shis/*.class \
-		com/bbn/openmap/plugin/earthImage/*.class \
+	 	com/bbn/openmap/plugin/*.class \
 		com/bbn/openmap/proj/*.class \
 		com/bbn/openmap/tools/drawing/*.class \
 		com/bbn/openmap/util/*.class \
@@ -130,6 +125,17 @@ Layer.props =   com/bbn/openmap/layer/vpf/*.properties
 
 Layer.jar =	${Layer.classes} ${Layer.props}
 
+PlugIn.pkgs = 	com/bbn/openmap/plugin/earthImage \
+		com/bbn/openmap/plugin/shis \
+		com/bbn/openmap/plugin/wms
+
+PlugIn.classes = \
+		com/bbn/openmap/plugin/earthImage/*.class \
+		com/bbn/openmap/plugin/shis/*.class \
+		com/bbn/openmap/plugin/wms/*.class
+
+PlugIn.jar =	${PlugIn.classes}
+
 App.pkgs = 	com.bbn.openmap.app
 
 App.props = 	openmap.properties
@@ -181,7 +187,7 @@ lib:
 	${INSTALL.dir} $@
 
 lib/openmap.jar:: omcore lib
-	${JAR} cf $@ ${Core.jar} ${Layer.jar} ${App.jar} ${Example.jar}
+	${JAR} cf $@ ${Core.jar} ${Layer.jar} ${PlugIn.jar} ${App.jar} ${Example.jar}
 
 lib/omcore.jar:: omcore lib
 	${JAR} cf $@ ${Core.jar} ${App.props}
@@ -215,7 +221,7 @@ ${JAVADOC.dir}:
 
 javadocs:	${JAVADOC.dir}
 	${JAVADOC} @JAVA2_DOC_ARGS@ -J-mx48m -version -d ${JAVADOC.dir} \
-		${Core.pkgs} ${App.pkgs} ${Layer.pkgs}
+		${Core.pkgs} ${App.pkgs} ${Layer.pkgs} ${PlugIn.pkgs}
 
 ################
 # installation #
