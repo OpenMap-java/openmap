@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.27 $
-// $Date: 2004/10/14 18:06:26 $
+// $Revision: 1.28 $
+// $Date: 2005/02/15 17:29:10 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -437,7 +437,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
 
         EditableOMGraphic eomg = getEditableGraphic(classname, ga);
 
-        if (eomg == null) {
+        if (eomg == null || eomg.getGraphic() == null) {
             return null;
         }
 
@@ -487,6 +487,13 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
     public OMGraphic edit(OMGraphic g, DrawingToolRequestor requestor,
                           boolean showGUI) {
 
+        if (g == null) {
+            if (DEBUG) {
+                Debug.output("OMDrawingTool.edit(): can't edit null OMGraphic.");
+            }
+            return null;
+        }
+        
         if (getCurrentEditable() != null) {
             if (DEBUG) {
                 Debug.output("OMDrawingTool.edit(): can't edit "
