@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/user-guide.sgml,v $
 $RCSfile: user-guide.sgml,v $
-$Revision: 1.10 $
-$Date: 2001/11/01 23:54:35 $
+$Revision: 1.11 $
+$Date: 2001/11/01 23:56:24 $
 $Author: dietrick $
 
 User's Guide for the OpenMap Viewer application.
@@ -260,10 +260,10 @@ Delete the selected layer from the application.
 Bring up a tool to add and configure a layer.
 
 <p>
-<item>
 <#if output=html>
 <img src="images/palette.png">
 </#if>
+<item>
 An example of a layer palette.  This palette is for the Graticule
 layer, and it lets you modify the layer's behavior.
 
