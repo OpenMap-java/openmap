@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.15 $
-// $Date: 2004/02/02 23:55:12 $
+// $Revision: 1.16 $
+// $Date: 2004/02/03 23:54:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,6 +41,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 /* OpenMap */
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.Environment;
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.PropertyConsumer;
@@ -211,6 +213,11 @@ public class DrawingAttributes
      * Support object to notify listeners when something has changed.
      */
     protected PropertyChangeSupport propertyChangeSupport = null;
+    
+    /**
+     * For internationalization.
+     */
+    protected I18n i18n = Environment.getI18n();
 
     /** Command for line color string adjustments. */
     public final static String LineColorCommand = "LineColor";
@@ -539,7 +546,7 @@ public class DrawingAttributes
      */
     public void setMattingPaint(Paint mPaint) {
         if (mPaint == mattingPaint) return;
-
+        
         Paint oldPaint = mattingPaint;
         mattingPaint = mPaint;
         
@@ -798,11 +805,14 @@ public class DrawingAttributes
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         String command = e.getActionCommand();
-
+        String interString;
         Paint oldPaint, tmpPaint;
         if (command == LineColorCommand && 
             linePaint instanceof Color) {
-            tmpPaint = getNewPaint((Component)source, "Choose Line Color", 
+            interString = i18n.get(DrawingAttributes.class,
+                                   "chooseLineColor",
+                                   "Choose Line Color");
+            tmpPaint = getNewPaint((Component)source, interString, 
                                    (Color)linePaint);
             if (tmpPaint != null) {
                 setLinePaint(tmpPaint);
@@ -810,7 +820,10 @@ public class DrawingAttributes
             
         } else if (command == FillColorCommand && 
                    fillPaint instanceof Color) {
-            tmpPaint = getNewPaint((Component)source, "Choose Fill Color", 
+            interString = i18n.get(DrawingAttributes.class,
+                                   "chooseFillColor",
+                                   "Choose Fill Color");
+            tmpPaint = getNewPaint((Component)source, interString, 
                                    (Color)fillPaint);
             if (tmpPaint != null) {
                 setFillPaint(tmpPaint);
@@ -818,14 +831,20 @@ public class DrawingAttributes
             
         } else if (command == SelectColorCommand && 
                    selectPaint instanceof Color) {
-            tmpPaint = getNewPaint((Component)source, "Choose Select Color", 
+            interString = i18n.get(DrawingAttributes.class,
+                                   "chooseSelectColor",
+                                   "Choose Select Color");
+            tmpPaint = getNewPaint((Component)source, interString, 
                                    (Color)selectPaint);
             if (tmpPaint != null) {
                 setSelectPaint(tmpPaint);
             }
         } else if (command == MattingColorCommand && 
                    mattingPaint instanceof Color) {
-            tmpPaint = getNewPaint((Component)source, "Choose Matting Color", 
+            interString = i18n.get(DrawingAttributes.class,
+                                   "chooseMattingColor",
+                                   "Choose Matting Color");
+            tmpPaint = getNewPaint((Component)source, interString, 
                                    (Color)mattingPaint);
             if (tmpPaint != null) {
                 setMattingPaint(tmpPaint);
@@ -887,7 +906,7 @@ public class DrawingAttributes
      * stuff to the panel instead.
      */
     protected JPanel getColorAndLineGUI() {
-
+    
         if (palette == null || toolbar == null) {
             palette = new JPanel();
 
@@ -920,7 +939,12 @@ public class DrawingAttributes
                 ImageIcon icon = BasicStrokeEditorMenu.createIcon(tmpbse.getBasicStroke(), 50, 
                                                                   icon_height, true);
                 lineButton = new JButton(icon);
-                lineButton.setToolTipText("Modify Line Parameters");
+        
+                lineButton.setToolTipText(i18n.get(DrawingAttributes.class,
+                                                   "lineButton",
+                                                   I18n.TOOLTIP,
+                                                   "Modify Line Parameters"));
+
                 lineButton.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent ae) {
                             JButton button = getLineButton();
@@ -988,13 +1012,19 @@ public class DrawingAttributes
      * current settings.
      */
     public void resetGUI() {
+        String interString;
+    
         if (lineColorButton != null) {
             lineColorButton.setIcon(getIconForPaint(getLinePaint(), false));
         } else {
             lineColorButton = new JButton(getIconForPaint(getLinePaint(), false));
             lineColorButton.setActionCommand(LineColorCommand);
             lineColorButton.addActionListener(this);
-            lineColorButton.setToolTipText("Change Edge Color (true/opaque)");
+            interString = i18n.get(DrawingAttributes.class, 
+                                   "lineColorButton",
+                                   I18n.TOOLTIP,
+                                   "Change Edge Color (true/opaque)");
+            lineColorButton.setToolTipText(interString);
         }
 
         if (fillColorButton != null) {
@@ -1003,7 +1033,11 @@ public class DrawingAttributes
             fillColorButton = new JButton(getIconForPaint(getFillPaint(), true));
             fillColorButton.setActionCommand(FillColorCommand);
             fillColorButton.addActionListener(this);
-            fillColorButton.setToolTipText("Change Fill Color (true/opaque)");      
+            interString = i18n.get(DrawingAttributes.class, 
+                                   "fillColorButton",
+                                   I18n.TOOLTIP,
+                                   "Change Fill Color (true/opaque)");
+            fillColorButton.setToolTipText(interString);            
         }
 
         if (selectColorButton != null) {
@@ -1012,7 +1046,11 @@ public class DrawingAttributes
             selectColorButton = new JButton(getIconForPaint(getSelectPaint(), false));
             selectColorButton.setActionCommand(SelectColorCommand);
             selectColorButton.addActionListener(this);
-            selectColorButton.setToolTipText("Change Highlight Edge Color (true/opaque)");
+            interString = i18n.get(DrawingAttributes.class,
+                                   "selectColorButton",
+                                   I18n.TOOLTIP,
+                                   "Change Highlight Edge Color (true/opaque)");
+            selectColorButton.setToolTipText(interString);
         }
 
         if (mattingColorButton != null) {
@@ -1021,7 +1059,11 @@ public class DrawingAttributes
             mattingColorButton = new JButton(getMattingIconForPaint());
             mattingColorButton.setActionCommand(MattingColorCommand);
             mattingColorButton.addActionListener(this);
-            mattingColorButton.setToolTipText("Change Matted Edge Color (true/opaque)");
+            interString = i18n.get(DrawingAttributes.class,
+                                   "mattingColorButton",
+                                   I18n.TOOLTIP,
+                                   "Change Matted Edge Color (true/opaque)");
+            mattingColorButton.setToolTipText(interString);
         }
 
         if (mattedCheckBox != null) {
@@ -1031,7 +1073,11 @@ public class DrawingAttributes
             mattedCheckBox = new JToggleButton(getMattedIcon(), isMatted());
             mattedCheckBox.setActionCommand(MattedCommand);
             mattedCheckBox.addActionListener(this);
-            mattedCheckBox.setToolTipText("Enable/Disable Matting on Edge");
+            interString = i18n.get(DrawingAttributes.class,
+                                   "mattedCheckBox",
+                                   I18n.TOOLTIP,
+                                   "Enable/Disable Matting on Edge");
+            mattedCheckBox.setToolTipText(interString);
         }
 
         if (stroke instanceof BasicStroke) {
@@ -1092,10 +1138,10 @@ public class DrawingAttributes
     }
 
     public static int normalizeOn128(int value) {
-       if (value >= 255) return 0;
-       else if (value <= 0) return 255;
-       else if (value <= 128) return 192;
-       return 64;
+        if (value >= 255) return 0;
+        else if (value <= 0) return 255;
+        else if (value <= 128) return 192;
+        return 64;
     }
 
     /**
@@ -1154,19 +1200,16 @@ public class DrawingAttributes
 
         //  Set up the drawing attributes.
         linePaint =
-            LayerUtils.parseColorFromProperties(
-                props, realPrefix + linePaintProperty,
-                linePaint);
+            LayerUtils.parseColorFromProperties(props, realPrefix + linePaintProperty,
+                                                linePaint);
         
         selectPaint =
-            LayerUtils.parseColorFromProperties(
-                props, realPrefix + selectPaintProperty,
-                selectPaint);
+            LayerUtils.parseColorFromProperties(props, realPrefix + selectPaintProperty,
+                                                selectPaint);
 
         mattingPaint =
-            LayerUtils.parseColorFromProperties(
-                props, realPrefix + mattingPaintProperty,
-                mattingPaint);
+            LayerUtils.parseColorFromProperties(props, realPrefix + mattingPaintProperty,
+                                                mattingPaint);
         
 //      textPaint =
 //          LayerUtils.parseColorFromProperties(
@@ -1174,9 +1217,8 @@ public class DrawingAttributes
 //              textPaint);
 
         fillPaint =
-            LayerUtils.parseColorFromProperties(
-                props, realPrefix + fillPaintProperty,
-                fillPaint);
+            LayerUtils.parseColorFromProperties(props, realPrefix + fillPaintProperty,
+                                                fillPaint);
 
         matted = LayerUtils.booleanFromProperties(props, realPrefix + mattedProperty, matted);
 
@@ -1188,14 +1230,12 @@ public class DrawingAttributes
         }
         
         lineWidth =
-            LayerUtils.floatFromProperties(
-                props, realPrefix + lineWidthProperty,
-                (basicStrokeDefined?((BasicStroke)stroke).getLineWidth():defaultLineWidth));
+            LayerUtils.floatFromProperties(props, realPrefix + lineWidthProperty,
+                                           (basicStrokeDefined?((BasicStroke)stroke).getLineWidth():defaultLineWidth));
 
         baseScale =
-            LayerUtils.floatFromProperties(
-                props, realPrefix + baseScaleProperty,
-                baseScale);
+            LayerUtils.floatFromProperties(props, realPrefix + baseScaleProperty,
+                                           baseScale);
         
         // Look for a dash pattern properties to come up with a stroke
         String dPattern = props.getProperty(realPrefix + dashPatternProperty);
@@ -1400,8 +1440,12 @@ public class DrawingAttributes
         if (list == null) {
             list = new Properties();
         }
-
-        list.put(linePaintProperty, "Edge color for graphics.");
+        String interString;
+    
+        interString = i18n.get(DrawingAttributes.class,linePaintProperty,I18n.TOOLTIP,"Edge color for graphics.");
+        list.put(linePaintProperty, interString);
+        interString = i18n.get(DrawingAttributes.class, linePaintProperty, linePaintProperty);
+        list.put(linePaintProperty + LabelEditorProperty, interString);
         list.put(linePaintProperty + ScopedEditorProperty, 
                  "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
@@ -1409,34 +1453,63 @@ public class DrawingAttributes
 //      list.put(textPaintProperty + ScopedEditorProperty, 
 //               "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        list.put(fillPaintProperty, "Fill color for graphics.");
+        interString = i18n.get(DrawingAttributes.class,fillPaintProperty,I18n.TOOLTIP,"Fill color for graphics.");
+        list.put(fillPaintProperty, interString);
+        interString = i18n.get(DrawingAttributes.class, fillPaintProperty, fillPaintProperty);
+        list.put(fillPaintProperty + LabelEditorProperty, interString);
         list.put(fillPaintProperty + ScopedEditorProperty, 
                  "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        list.put(selectPaintProperty, "Selected edge color for graphics.");
+        interString = i18n.get(DrawingAttributes.class,selectPaintProperty,I18n.TOOLTIP,"Selected edge color for graphics.");    
+        list.put(selectPaintProperty, interString);
+        interString = i18n.get(DrawingAttributes.class, selectPaintProperty, selectPaintProperty);
+        list.put(selectPaintProperty + LabelEditorProperty, interString);
         list.put(selectPaintProperty + ScopedEditorProperty, 
                  "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        list.put(mattingPaintProperty, "Matting edge color for graphics.");
+        interString = i18n.get(DrawingAttributes.class,mattingPaintProperty,I18n.TOOLTIP,"Matting edge color for graphics.");    
+        list.put(mattingPaintProperty, interString);
+        interString = i18n.get(DrawingAttributes.class, mattingPaintProperty, mattingPaintProperty);
+        list.put(mattingPaintProperty + LabelEditorProperty, interString);
         list.put(mattingPaintProperty + ScopedEditorProperty, 
                  "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        list.put(fillPatternProperty, "Image file to use for fill pattern for graphics (optional).");
+        interString = i18n.get(DrawingAttributes.class,fillPatternProperty,I18n.TOOLTIP,"Image file to use for fill pattern for graphics (optional).");    
+        list.put(fillPatternProperty, interString);
+        interString = i18n.get(DrawingAttributes.class, fillPatternProperty, fillPatternProperty);
+        list.put(fillPatternProperty + LabelEditorProperty, interString);
         list.put(fillPatternProperty + ScopedEditorProperty, 
                  "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-        list.put(lineWidthProperty, "Line width for edges of graphics");
-//      list.put(dashPatternProperty, "<HTML><BODY>Line dash pattern, represented by<br>space separated numbers<br> (on off on ...)</BODY></HTML>");
-        list.put(dashPatternProperty, "Line dash pattern, represented by space separated numbers (on off on ...)");
-        list.put(dashPhaseProperty, "Phase for dash pattern (Default is 0)");
+        interString = i18n.get(DrawingAttributes.class,lineWidthProperty,I18n.TOOLTIP,"Line width for edges of graphics");    
+        list.put(lineWidthProperty, interString);
+        interString = i18n.get(DrawingAttributes.class, lineWidthProperty, lineWidthProperty);
+        list.put(lineWidthProperty + LabelEditorProperty, interString);
+    
+        //      list.put(dashPatternProperty, "<HTML><BODY>Line dash pattern, represented by<br>space separated numbers<br> (on off on ...)</BODY></HTML>");
+        interString = i18n.get(DrawingAttributes.class,dashPatternProperty,I18n.TOOLTIP,"Line dash pattern, represented by space separated numbers (on off on ...)");    
+        list.put(dashPatternProperty, interString);
+        interString = i18n.get(DrawingAttributes.class, dashPatternProperty, dashPatternProperty);
+        list.put(dashPatternProperty + LabelEditorProperty, interString);
 
-        list.put(baseScaleProperty, "<HTML><BODY>Scale which should be used as the base scale for the <br>patterns and line width. If set, size of pattern and <br>widths will be adjusted to the map scale</BODY></HTML>");
-        
-        list.put(mattedProperty, "Flag to enable a thin black matting to be drawn around graphics..");
+        interString = i18n.get(DrawingAttributes.class,dashPhaseProperty,I18n.TOOLTIP,"Phase for dash pattern (Default is 0)");    
+        list.put(dashPhaseProperty, interString);
+        interString = i18n.get(DrawingAttributes.class, dashPhaseProperty, dashPhaseProperty);
+        list.put(dashPhaseProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(DrawingAttributes.class,baseScaleProperty,I18n.TOOLTIP,"<HTML><BODY>Scale which should be used as the base scale for the <br>patterns and line width. If set, size of pattern and <br>widths will be adjusted to the map scale</BODY></HTML>");    
+        list.put(baseScaleProperty, interString);
+        interString = i18n.get(DrawingAttributes.class, baseScaleProperty, baseScaleProperty);
+        list.put(baseScaleProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(DrawingAttributes.class,mattedProperty,I18n.TOOLTIP,"Flag to enable a thin black matting to be drawn around graphics..");    
+        list.put(mattedProperty, interString);
+        interString = i18n.get(DrawingAttributes.class, mattedProperty, mattedProperty);
+        list.put(mattedProperty + LabelEditorProperty, interString);
         list.put(mattedProperty + ScopedEditorProperty,
                  "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
 
-//      list.put(initPropertiesProperty, getInitPropertiesOrder());
+//         list.put(initPropertiesProperty, getInitPropertiesOrder());
 
         return list;
     }
@@ -1460,7 +1533,7 @@ public class DrawingAttributes
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @return the property prefix
+     * @return the prefix String.  
      */
     public String getPropertyPrefix() {
         return propertyPrefix;
