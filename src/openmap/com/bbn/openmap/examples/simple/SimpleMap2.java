@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/simple/SimpleMap2.java,v $
 // $RCSfile: SimpleMap2.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/05/14 17:27:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,6 +32,8 @@ import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MultipleSoloMapComponentException;
+import com.bbn.openmap.gui.BasicMapPanel;
+import com.bbn.openmap.gui.MapPanel;
 import com.bbn.openmap.gui.OMToolSet;
 import com.bbn.openmap.gui.OpenMapFrame;
 import com.bbn.openmap.gui.ToolPanel;
@@ -66,19 +68,25 @@ public class SimpleMap2 {
 
 	try {
 
-	    MapHandler mapHandler = new MapHandler();
+	    // The BasicMapPanel automatically creates many 
+	    // default components, including the MapBean and the
+	    // MapHandler.  You can extend the BasicMapPanel class if
+	    // you like to add different functionality or different
+	    // types of objects.
+	    MapPanel mapPanel = new BasicMapPanel();
+
+	    // Get the default MapHandler the BasicMapPanel created.
+	    MapHandler mapHandler = mapPanel.getMapHandler();
 	    mapHandler.add(frame);
 
-	    // Create a MapBean
-	    MapBean mapBean = new MapBean();
+	    // Get the default MapBean that the BasicMapPanel created.
+	    MapBean mapBean = mapPanel.getMapBean();
 
 	    // Set the map's center
 	    mapBean.setCenter(new LatLonPoint(43.0f, -95.0f));
 
 	    // Set the map's scale 1:120 million
 	    mapBean.setScale(120000000f);
-
-	    mapHandler.add(mapBean);
 
 	    // Create and add a LayerHandler to the MapHandler.  The
 	    // LayerHandler manages Layers, whether they are part of the

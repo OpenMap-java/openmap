@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/crew/Crew.java,v $
 // $RCSfile: Crew.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/05/14 17:27:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -224,6 +224,7 @@ public class Crew extends JFrame {
 	try {
 	    crew = new Crew(crewProps);
 	    crew.setSize(700, 500);
+	    crew.pack();
 	    crew.setVisible(true);
 	} catch (MultipleSoloMapComponentException msmce) {
 	    // The MapHandler is only allowed to have one of certain
