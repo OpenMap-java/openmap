@@ -1,3 +1,48 @@
+2004-05-14  Donald Dietrick  <dietrick@jader.local>
+
+	* Modified the ProjectionFactory to dynamically manage
+	projections.  This involved changing the ProjectionFactory from a
+	class containing static methods that accessed hard-coded classes
+	to a singleton instance that uses the MapHandler to gather
+	ProjectionLoaders that it uses to create Projection objects.  A
+	BasicProjectionLoader class has been written implementing the
+	ProjectionLoader interface, and 5 ProjectionLoader classes have
+	been written extending BasicProjectionLoader that create the
+	Mercator, CADRG, Orthographic, LLXY and Gnomonic projections.
+
+	The ProjectionFactoryLoader class has been written to be added to
+	the openmap.components property in order to put the
+	ProjectionFactory instance into the MapHandler.  It can also be
+	used to define the properties for ProjectionLoaders, although
+	ProjectionLoaders can also be added directly to the MapHandler as
+	well.
+
+	Because the change to openmap.properties might catch some people
+	by surprise, particularly those who use their own
+	openmap.properties file, the BasicMapPanel has been modified to
+	check the MapHandler to see if a ProjectionFactory has been added
+	to it.  If a ProjectionFactory cannot be found, the singleton
+	instance is automatically added with the default set of
+	ProjectionLoaders.
+
+	Lastly, the Projection property defined in the openmap.properties
+	file has to be a class name, instead of a nickname of one of the
+	projection classes.  Some available class names have been added to
+	the openmap.properties comments next to that property, and the
+	BasicMapPanel has been configured to complain about using the old
+	style.
+	
+	* Added methods to ComponentFactory so that those methods that
+	created components from a list of marker names and a set of
+	properties could be provided a prefix to place in front of the
+	marker name and its properties.
+
+	* Moved/Added I18n handle to OMComponent, OMComponentPanel and
+	AbstractOpenMapMenu, to make I18n easier to implement.
+
+	* Modified when/how tooltips are cleared and reset in the
+	InformationDelegator.
+
 2004-05-10  Donald Dietrick  <dietrick@dhcp89-077-080.bbn.com>
 
 	* Modified the StandardPCPolicy so that has the option to be told

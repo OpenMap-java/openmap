@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/BasicMapPanel.java,v $
 // $RCSfile: BasicMapPanel.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/05/10 20:43:03 $
+// $Revision: 1.13 $
+// $Date: 2004/05/15 04:13:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -165,10 +165,27 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         // Make sure the MapBean is created and added to the
         // MapHandler.
         MapBean mb = getMapBean();
-        getMapHandler().add(this);
+        MapHandler mh = getMapHandler();
+        mh.add(this);
         ph.createComponents(getMapHandler());
 
         mb.setBckgrnd(Environment.getCustomBackgroundColor());
+
+        // At this point, check the MapHandler to see if a
+        // ProjectionFactory has been added.  If it hasn't, create one
+        // with the default ProjectionLoaders.  We might want to
+        // remove this at some point, but not having it here will
+        // catch some people by suprise when 4.6.1 comes out.
+        Object obj = mh.get(com.bbn.openmap.proj.ProjectionFactory.class);
+        if (obj == null) {
+            Debug.message("basic", "BasicMapPanel adding ProjectionFactory and projections to MapHandler since there are none to be found.");
+            mh.add(com.bbn.openmap.proj.ProjectionFactory.getInstance());
+            mh.add(new com.bbn.openmap.proj.MercatorLoader());
+            mh.add(new com.bbn.openmap.proj.OrthographicLoader());
+            mh.add(new com.bbn.openmap.proj.CADRGLoader());
+            mh.add(new com.bbn.openmap.proj.LLXYLoader());
+            mh.add(new com.bbn.openmap.proj.GnomonicLoader());
+        }
     }
 
     /**
@@ -387,12 +404,23 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
         // Initialize the map projection, scale, center
         // with user prefs or defaults
-        Projection proj = ProjectionFactory.makeProjection(
-            ProjectionFactory.getProjType(Environment.get(Environment.Projection, Mercator.MercatorName)),
-            Environment.getFloat(Environment.Latitude, 0f),
-            Environment.getFloat(Environment.Longitude, 0f),
-            Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY),
-            envWidth, envHeight);
+        Projection proj = null;
+            try {
+                proj = ProjectionFactory.makeProjection(
+                   Environment.get(Environment.Projection, "com.bbn.openmap.proj.Mercator"),
+                   Environment.getFloat(Environment.Latitude, 0f),
+                   Environment.getFloat(Environment.Longitude, 0f),
+                   Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY),
+                   envWidth, envHeight);
+        } catch (com.bbn.openmap.proj.ProjectionException pe) {
+            Debug.error("Can't use (" + Environment.Projection + " = " + Environment.get(Environment.Projection) + ") property as a projection class, need a class name instead.  Using default of com.bbn.openmap.proj.Mercator.");
+            proj = ProjectionFactory.makeProjection(
+                   com.bbn.openmap.proj.Mercator.class,
+                   Environment.getFloat(Environment.Latitude, 0f),
+                   Environment.getFloat(Environment.Longitude, 0f),
+                   Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY),
+                   envWidth, envHeight);
+        }
 
         if (Debug.debugging("mappanel")) {
             Debug.output("MapPanel: creating MapBean with initial projection " + proj);
