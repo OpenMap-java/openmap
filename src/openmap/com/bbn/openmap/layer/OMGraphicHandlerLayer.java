@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2003/10/04 04:47:41 $
+// $Revision: 1.12 $
+// $Date: 2003/10/06 19:26:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -812,16 +812,17 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	MapMouseListener mml = getMouseEventInterpreter();
 
 	if (mml != null) {
-	    String[] modes = mml.getMouseModeServiceList();
-	    StringBuffer sb = new StringBuffer();
-	    for (int i = 0; i < modes.length; i++) {
-		sb.append(modes[i] + ", ");
-	    }
-
 	    if (Debug.debugging("layer")) {
+
+		String[] modes = mml.getMouseModeServiceList();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < modes.length; i++) {
+		    sb.append(modes[i] + ", ");
+		}
+
 		Debug.output("Layer " + getName() + " returning " + 
 			     mml.getClass().getName() + 
-			     " as map mouse listener that listens to :" + sb.toString());
+			     " as map mouse listener that listens to: " + sb.toString());
 	    }
 	}
 
@@ -863,12 +864,13 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * to.  The array should contain the mouse mode IDs.
      */
     public void setMouseModeIDsForEvents(String[] mm) {
-	StringBuffer sb = new StringBuffer();
-	for (int i = 0; i < mm.length;i++) {
-	    sb.append(mm[i] + " ");
-	}
 
 	if (Debug.debugging("layer")) {
+	    StringBuffer sb = new StringBuffer();
+	    for (int i = 0; i < mm.length;i++) {
+		sb.append(mm[i] + " ");
+	    }
+
 	    Debug.output("For layer " + getName() + ", setting mouse modes to " + sb.toString());
 	}
 
@@ -885,7 +887,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * (depends on the MapMouseInterpetor).
      */
     public boolean isHighlightable(OMGraphic omg) {
-	return omg instanceof OMBitmap;
+	return true;
     }
 
     /**
@@ -1008,19 +1010,24 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 
     /**
      * If applicable, add contents to a popup menu for a location over
-     * the map.  Return the provided JPopupMenu if no modifications
-     * are to be made.
+     * the map.
+     * @return the provided JPopupMenu if no modifications are to be
+     * made, null if no popup should be displayed.  You can create a
+     * different JPopupMenu if you want and return that instead.
+     * Returns null by default.
      */
     public JPopupMenu modifyPopupMenuForMap(JPopupMenu jpm) {
-	return jpm;
+	return null;
     }
 
     /**
      * If applicable, add contents to a popup menu for a location over
-     * an OMGraphic.  Return the provided JPopupMenu if no modifications
-     * are to be made.
+     * an OMGraphic.  
+     * @return the provided JPopupMenu if no modifications are to be
+     * made.You can create a different JPopupMenu if you want and
+     * return that instead. Returns null by default.
      */
     public JPopupMenu modifyPopupMenuFor(OMGraphic omg, JPopupMenu jpm) {
-	return jpm;
+	return null;
     }
 }
