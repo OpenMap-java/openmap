@@ -6,6 +6,49 @@
 JAVA=@JAVA@
 DEV_CLASSPATH=@classpath@
 
+showUsage () {
+  /bin/cat<<EOF
+usage: $0 <args>
+Arguments:
+	(-? | -h | --help)			Show this message
+	(-c | --classpath) <CLASSPATH>		Specify FULL classpath
+	(-x | --x-classpath) <CLASSPATH>	Specify augmented classpath
+
+All other arguments are passed to the Java Virtual Machine.
+EOF
+  exit 1
+}
+
+# check args
+while [ "$1" != "" ] ; do
+
+  case $1 in
+
+    "-?" | "-h" | "--help" )
+
+      showUsage
+      ;;
+
+    "-c" | "--classpath" )
+
+      full_classpath=$2
+      shift
+      ;;
+
+    "-x" | "--x-classpath" )
+
+      extra_classpath=$2
+      shift
+      ;;
+
+    * )
+      java_args="$java_args $1"
+      ;;
+
+  esac;
+  shift;
+done
+
 DIR=`dirname $0` >/dev/null 2>&1
 PRG=`basename $0` >/dev/null 2>&1
 cd $DIR
@@ -24,7 +67,20 @@ do
 done
 
 OM_HOME=`dirname $PRG`/..
+
+#
+# Final CLASSPATH setup
+#
 CLASSPATH=$OM_HOME:$OM_HOME/lib/openmap.jar:$OM_HOME/share:$DEV_CLASSPATH
+if [ ! -z "${full_classpath}" ] ; then
+    CLASSPATH=$full_classpath
+elif [ ! -z "${extra_classpath}" ] ; then
+    CLASSPATH=$CLASSPATH:$extra_classpath
+fi
 export CLASSPATH
 
-$JAVA -mx64m -Dopenmap.configDir=$OM_HOME/share com.bbn.openmap.app.OpenMap
+
+#
+# Launch Java VM
+#
+exec $JAVA -mx64m -Dopenmap.configDir=$OM_HOME/share $java_args com.bbn.openmap.app.OpenMap
