@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LayerHandler.java,v $
 // $RCSfile: LayerHandler.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/11/26 03:37:11 $
+// $Revision: 1.11 $
+// $Date: 2005/01/10 16:41:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -71,19 +71,23 @@ import java.util.Vector;
  * <pre>
  * 
  *  
- *              openmap.layers=marker1 marker2 (etc)
- *              marker1.class=com.bbn.openmap.layer.GraticuleLayer
- *              marker1.prettyName=Graticule Layer
- *              # false is default
- *              marker1.addToBeanContext=false
- *             
- *              marker2.class=com.bbn.openmap.layer.shape.ShapeLayer
- *              marker2.prettyName=Political Boundaries
- *              marker2.shapeFile=pathToShapeFile
- *              marker2.spatialIndex=pathToSpatialIndexFile
- *              marker2.lineColor=FFFFFFFF
- *              marker2.fillColor=FFFF0000
- * 
+ *   
+ *    
+ *                openmap.layers=marker1 marker2 (etc)
+ *                marker1.class=com.bbn.openmap.layer.GraticuleLayer
+ *                marker1.prettyName=Graticule Layer
+ *                # false is default
+ *                marker1.addToBeanContext=false
+ *               
+ *                marker2.class=com.bbn.openmap.layer.shape.ShapeLayer
+ *                marker2.prettyName=Political Boundaries
+ *                marker2.shapeFile=pathToShapeFile
+ *                marker2.spatialIndex=pathToSpatialIndexFile
+ *                marker2.lineColor=FFFFFFFF
+ *                marker2.fillColor=FFFF0000
+ *   
+ *    
+ *   
  *  
  * </pre>
  * 
@@ -118,7 +122,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     public static final String startUpLayersProperty = "startUpLayers";
     /**
      * The object holding on to all LayerListeners interested in the
-     * layer arrangement and availability.
+     * layer arrangement and availability.  Not expected to be null.
      */
     protected transient LayerSupport listeners = new LayerSupport(this);
     /**
@@ -132,39 +136,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      */
     protected PropertyHandler propertyHandler;
 
-    /**
-     * A reuseable runnable used by a thread to handle all the
-     * administration of turning layers on/off and the event chain.
-     */
-    protected Runnable turnLayerOnRunnable = new Runnable() {
-        public void run() {
-            LayerSupport listeners = getListeners();
-            if (listeners != null) {
-                listeners.fireLayer(LayerEvent.REPLACE, getMapLayers());
-            }
-        }
-    };
-
-    /**
-     * A reusable Runnable used by a thread to notify listeners when
-     * layers are turned on/off.
-     */
-    protected Runnable setLayerRunnable = new Runnable() {
-        public void run() {
-            LayerSupport listeners = getListeners();
-            if (listeners != null) {
-                Debug.message("layerhandler",
-                        "firing LayerEvent.ALL on LayerListeners");
-                listeners.fireLayer(LayerEvent.ALL, getLayers());
-                Debug.message("layerhandler",
-                        "firing LayerEvent.REPLACE on LayerListeners");
-                listeners.fireLayer(LayerEvent.REPLACE, getMapLayers());
-            } else {
-                Debug.message("layerhandler", "LayerListeners object is null");
-            }
-        }
-    };
-
+ 
     /**
      * If you use this constructor, the LayerHandler expects that the
      * layers will be created and added later, either by addLayer() or
@@ -477,15 +449,22 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      * @param layers Layer array of all the layers to be held by the
      *        LayerHandler.
      */
-    public void setLayers(Layer[] layers) {
+    public synchronized void setLayers(Layer[] layers) {
         allLayers = layers;
 
         if (Debug.debugging("layerhandler")) {
             Debug.output("LayerHandler.setLayers: " + layers);
         }
 
-        new Thread(setLayerRunnable).start();
-
+        // The setLayers needs to push a new runnable into a fifo
+        // stack. A copy of the layers should be made, and then passed
+        // to the runnable. When the runnable finishes, it should kick
+        // off any other threads waiting to get started.
+        Layer[] layersCopy = new Layer[allLayers.length];
+        System.arraycopy(allLayers, 0, layersCopy, 0, allLayers.length);
+        
+        getListeners().pushLayerEvent(LayerEvent.ALL, layersCopy);
+        getListeners().pushLayerEvent(LayerEvent.REPLACE, getMapLayers());
     }
 
     /**
@@ -911,12 +890,12 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
 
             layer.setVisible(setting);
 
-            new Thread(turnLayerOnRunnable).start();
+            getListeners().pushLayerEvent(LayerEvent.REPLACE, getMapLayers());
             return true;
         }
         return false;
     }
-
+    
     /**
      * Called from childrenAdded(), when a new component is added to
      * the BeanContext, and from setBeanContext() when the
