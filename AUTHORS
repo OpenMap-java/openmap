@@ -1,8 +1,8 @@
 $Source: /cvs/distapps/openmap/AUTHORS,v $
 $RCSfile: AUTHORS,v $
-$Revision: 1.4 $
-$Date: 1999/08/05 19:16:15 $
-$Author: adoyle $
+$Revision: 1.5 $
+$Date: 2000/02/25 18:06:31 $
+$Author: dietrick $
 
 People and organizations that have contributed to OpenMap
 ---------------------------------------------------------
@@ -38,6 +38,15 @@ Joe Warzecha
   Provided changes to BufferedMapBean.java to speed up
   refresh and fixed a NullPointerException when its used in a
   JInternalFrame.
+
+Dan Schmitt (dan@computer.org)
+  of the Ranching Systems Group (http://cnrit.tamu.edu/rsg/) provided 
+  the nexrad package, which displays nexrad rain data.  He wrote the 
+  LabelLayer, and subclassed the DateLayer to it.  He also wrote the mapIt
+  example, which starts up the ImageServer to create an image.
+
+Michael Los
+  Provided the AbstractHandlerLocation idea, code and prodding.
 
 --------------------------------------
 
