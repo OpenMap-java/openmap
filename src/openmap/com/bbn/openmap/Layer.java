@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/03/19 20:31:43 $
+// $Revision: 1.5 $
+// $Date: 2003/03/21 22:24:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -153,22 +153,6 @@ public abstract class Layer extends JComponent
     protected Vector lsListeners = null;
 
     /**
-     * Arguments modified by the Layer, or set by the Bean, at
-     * runtime.
-     * @deprecated use setProperties
-     */
-    protected String dynamicArgs = null;
-
-    /** 
-     * Flag to indicate whether a AWTToolkit is available. Almost
-     * always should be left alone, unless you are doing something
-     * without a display available.  This flag, when false, redirects
-     * the repaint() method to fire a LayerStatusEvent.FINISH_WORKING
-     * instead.
-     */
-//     protected static boolean AWTAvailable = true;
-    
-    /**
      * Token uniquely identifying this layer in the application
      * properties.
      */
@@ -205,26 +189,6 @@ public abstract class Layer extends JComponent
     protected final BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
 
     protected transient Container palette = null;
-
-    /**
-     * Set AWTAvailable flag.
-     * Your layer should not need to call this.
-     * @param value boolean
-     * @deprecated use ProjectionPainter interface method instead.
-     */
-    public static void setAWTAvailable(boolean value) {
-// 	AWTAvailable = value;
-    }
-
-    /**
-     * Check AWTAvailable flag.
-     * @return boolean
-     * @deprecated use ProjectionPainter interface method instead.
-     */
-    public static boolean isAWTAvailable() {
-	return true;
-// 	return AWTAvailable;
-    }
 
     /**
      * Returns the package of the given class as a string.
@@ -268,42 +232,6 @@ public abstract class Layer extends JComponent
 		    + pkg + "\" is not in the swing package (\"" +
 		    SWING_PACKAGE + "\").");
 	}
-    }
-
-    /**
-     * Interface Layer method to get the dynamic args.
-     * @return String args
-     * @deprecated use setProperties
-     */
-    public String getArgs() {
-        return dynamicArgs;
-    }
-
-    /**
-     * Interface Layer method to set the dynamic args.
-     * @param args String
-     * @deprecated use setProperties
-     */
-    public void setArgs(String args) {
-	dynamicArgs = args;
-    }
-
-    /**
-     * Interface Layer method to receive layer arguments.
-     * @deprecated use setProperties
-     * @param argv String[]
-     */
-    public void setArgs(String argv[]) {
-    }
-
-    /**
-     * Accessor for the marker associated with this layer.  This is
-     * the marker that uniquely identifies this layer in the
-     * application properties.
-     * @deprecated replaced by getPropertyPrefix() as of OpenMap 4.0.
-     */
-    public String getMarker() {
-	return getPropertyPrefix();
     }
 
     /**
@@ -479,7 +407,7 @@ public abstract class Layer extends JComponent
      */
     public Projection setProjection(ProjectionEvent projEvent) {
 	Projection newProjection = projEvent.getProjection();
-	
+
 	if (!newProjection.equals(getProjection())) {
 	    Projection clone = newProjection.makeClone();
 	    setProjection(clone);
