@@ -211,7 +211,7 @@ an example of integrating all the components together.
 <p>At the heart of the architecture is the <htmlurl
 url="./api/com/bbn/openmap/MapBean.html" name="MapBean">.  The MapBean
 is a Swing component that is a map window.  To define that that map
-should look like, the MapBean needs a <html
+should look like, the MapBean needs a <htmlurl
 url="./api/com/bbn/openmap/proj/Projection.html" name="Projection">.
 The Projection has a scale, a center latitude and longitude, a window
 pixel height and width, and a projection type.  All of these
