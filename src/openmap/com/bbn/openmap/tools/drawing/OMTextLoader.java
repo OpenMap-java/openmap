@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMTextLoader.java,v $
 // $RCSfile: OMTextLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.4 $
+// $Date: 2004/02/04 17:26:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,12 +42,13 @@ public class OMTextLoader extends AbstractToolLoader implements EditToolLoader {
             new EditClassWrapper(textClassName,
                                  "com.bbn.openmap.omGraphics.EditableOMText",
                                  "editabletext.gif",
-                                 "Text");
+                                 i18n.get(OMTextLoader.class,"omtext","Text"));
+                                 
         addEditClassWrapper(ecw);
 
     }
 
-   /**
+    /**
      * Give the classname of a graphic to create, returning an
      * EditableOMGraphic for that graphic.  The GraphicAttributes
      * object lets you set some of the initial parameters of the text,

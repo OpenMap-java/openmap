@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMPointLoader.java,v $
 // $RCSfile: OMPointLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/02/04 17:26:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,7 +43,8 @@ public class OMPointLoader extends AbstractToolLoader
             new EditClassWrapper(graphicClassName,
                                  "com.bbn.openmap.omGraphics.EditableOMPoint",
                                  "editablepoint.gif",
-                                 "Point");
+                                 i18n.get(OMPointLoader.class,"ompoint","Point"));
+                                
         addEditClassWrapper(ecw);
     }
 

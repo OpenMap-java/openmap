@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMPolyLoader.java,v $
 // $RCSfile: OMPolyLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/02/04 17:26:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,7 +48,8 @@ public class OMPolyLoader extends AbstractToolLoader
             new EditClassWrapper(graphicClassName,
                                  "com.bbn.openmap.omGraphics.EditableOMPoly",
                                  "editablepoly.gif",
-                                 "Polygons/Polylines");
+                                 i18n.get(OMPolyLoader.class,"ompoly","Polygons/Polylines"));
+                                 
         addEditClassWrapper(ecw);
 
         // A class wrapper isn't added here for the LabeledOMPoly

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/AbstractToolLoader.java,v $
 // $RCSfile: AbstractToolLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/02/04 17:26:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,8 @@
 
 package com.bbn.openmap.tools.drawing;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.util.Debug;
 import java.util.HashMap;
@@ -39,6 +41,7 @@ import javax.swing.ImageIcon;
 public abstract class AbstractToolLoader implements EditToolLoader {
 
     protected HashMap graphicInfo;
+    protected I18n i18n = Environment.getI18n();
 
     /**
      * Each subclass should initialize the graphicInfo HashMap by

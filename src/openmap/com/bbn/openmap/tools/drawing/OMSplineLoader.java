@@ -1,3 +1,26 @@
+// **********************************************************************
+// 
+// <copyright>
+// 
+//  BBN Technologies, a Verizon Company
+//  10 Moulton Street
+//  Cambridge, MA 02138
+//  (617) 873-8000
+// 
+//  Copyright (C) BBNT Solutions LLC. All rights reserved.
+// 
+// </copyright>
+// **********************************************************************
+// 
+// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMSplineLoader.java,v $
+// $RCSfile: OMSplineLoader.java,v $
+// $Revision: 1.3 $
+// $Date: 2004/02/04 17:26:04 $
+// $Author: dietrick $
+// 
+// **********************************************************************
+
+
 package com.bbn.openmap.tools.drawing;
 
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
@@ -31,10 +54,10 @@ public class OMSplineLoader extends AbstractToolLoader
     public void init() {
         EditClassWrapper ecw =
             new EditClassWrapper(
-                graphicClassName,
-                "com.bbn.openmap.omGraphics.EditableOMSpline",
-                "editablespline.gif",
-                "Splines");
+                                 graphicClassName,
+                                 "com.bbn.openmap.omGraphics.EditableOMSpline",
+                                 "editablespline.gif",
+                                 i18n.get(OMSplineLoader.class,"omspline","Splines"));
         addEditClassWrapper(ecw);
 
         // A class wrapper isn't added here for the LabeledOMSpline
@@ -48,8 +71,8 @@ public class OMSplineLoader extends AbstractToolLoader
      * like spline type and rendertype.
      */
     public EditableOMGraphic getEditableGraphic(
-        String classname,
-        GraphicAttributes ga) {
+                                                String classname,
+                                                GraphicAttributes ga) {
         if (classname.intern() == graphicClassName) {
             return new EditableOMSpline(ga);
         }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMLineLoader.java,v $
 // $RCSfile: OMLineLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/02/04 17:26:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,7 +44,7 @@ public class OMLineLoader extends AbstractToolLoader
             new EditClassWrapper(graphicClassName,
                                  "com.bbn.openmap.omGraphics.EditableOMLine",
                                  "editableline.gif",
-                                 "Line");
+                                 i18n.get(OMLineLoader.class,"omline","Line"));                          
         addEditClassWrapper(ecw);
     }
 

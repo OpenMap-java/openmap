@@ -11,8 +11,13 @@
 // 
 // </copyright>
 // **********************************************************************
+// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
-// $Revision: 1.13 $ $Date: 2004/01/26 18:18:15 $ $Author: dietrick $
+// $RCSfile: OMDrawingToolLauncher.java,v $
+// $Revision: 1.14 $
+// $Date: 2004/02/04 17:26:04 $
+// $Author: dietrick $
+// 
 // **********************************************************************
 
 
@@ -20,6 +25,7 @@
 package com.bbn.openmap.tools.drawing;
 
 import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.gui.OMToolComponent;
 import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.InformationDelegator;
@@ -43,8 +49,10 @@ import javax.swing.*;
  * MapHandler.  There are no methods to manually add stuff to this
  * GUI.
  */
-public class OMDrawingToolLauncher extends OMToolComponent implements ActionListener, PropertyChangeListener {
+public class OMDrawingToolLauncher extends OMToolComponent 
+    implements ActionListener, PropertyChangeListener {
 
+    protected I18n i18n = Environment.getI18n();
     protected DrawingTool drawingTool;
     protected boolean useTextEditToolTitles = false;
     protected GraphicAttributes defaultGraphicAttributes = new GraphicAttributes();
@@ -56,7 +64,10 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
     protected String currentCreation;
     protected JComboBox requestors;
 
-    String[] rtc = { "Lat/Lon", "X/Y", "X/Y Offset" };
+    String[] rtc = { i18n.get(OMDrawingToolLauncher.class,"renderingType.LatLon","Lat/Lon"),
+                     i18n.get(OMDrawingToolLauncher.class,"renderingType.XY","X/Y"),
+                     i18n.get(OMDrawingToolLauncher.class,"renderingType.XYOffset","X/Y Offset") };
+                     
     public final static String CreateCmd = "CREATE";
 
     /** Default key for the DrawingToolLauncher Tool. */
@@ -64,7 +75,8 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
 
     public OMDrawingToolLauncher() {
         super();
-        setWindowSupport(new WindowSupport(this, "Drawing Tool Launcher"));
+    
+        setWindowSupport(new WindowSupport(this,i18n.get(OMDrawingToolLauncher.class,"omdrawingtoollauncher","Drawing Tool Launcher")));
         setKey(defaultKey);
         defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_LATLON);
         defaultGraphicAttributes.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
@@ -127,22 +139,22 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
                 StringBuffer em = new StringBuffer();
 
                 if (dt == null) {
-                    sb.append("   No drawing tool is available!\n");
-                    em.append("   No drawing tool is available!\n");
+                    sb.append("   No drawing tool is available!\n");            
+                    em.append(i18n.get(OMDrawingToolLauncher.class,"noDrowingTool","   No drawing tool is available!\n"));
                 } else {
                     sb.append("   Drawing tool OK.\n");
                 }
 
                 if (currentCreation == null) {
-                    sb.append("   No valid choice of graphic to create.\n");
-                    em.append("   No valid choice of graphic to create.\n");
+                    sb.append("   No valid choice of graphic to create.\n");            
+                    em.append(i18n.get(OMDrawingToolLauncher.class,"noValidChoice","   No valid choice of graphic to create.\n"));
                 } else {
                     sb.append("   Graphic choice OK.\n");
                 }
 
                 if (currentRequestor == null) {
-                    sb.append("   No valid receiver for the created graphic.\n");
-                    em.append("   No valid receiver for the created graphic.\n");
+                    sb.append("   No valid receiver for the created graphic.\n");            
+                    em.append(i18n.get(OMDrawingToolLauncher.class,"noValidReceiver","   No valid receiver for the created graphic.\n"));
                 } else {
                     sb.append("   Graphic receiver OK.\n");
                 }
@@ -153,8 +165,11 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
                 MapHandler mapHandler = (MapHandler)getBeanContext();
                 if (mapHandler != null) {
                     InformationDelegator id = (InformationDelegator)mapHandler.get("com.bbn.openmap.InformationDelegator");
-                    if (id != null) {
-                        id.displayMessage("Problem", "Problem creating new graphic:\n" + em.toString());
+                    if (id != null) {                
+                
+                        id.displayMessage(i18n.get(OMDrawingToolLauncher.class,"problem","Problem"),
+                                          i18n.get(OMDrawingToolLauncher.class,"problemCreatingGraphic","Problem creating new graphic:\n")
+                                          + em.toString());
                     }
                 }
             }
@@ -221,8 +236,8 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
                 requestors.setSelectedItem(oldChoice);
             }
         }
-
-        JPanel panel = PaletteHelper.createPaletteJPanel("Send To:");
+    
+        JPanel panel = PaletteHelper.createPaletteJPanel(i18n.get(OMDrawingToolLauncher.class,"panelSendTo","Send To:"));
         panel.add(requestors);
         palette.add(panel);
             
@@ -230,7 +245,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
             Debug.output("Figuring out tools, using names");
         }
         
-        panel = PaletteHelper.createPaletteJPanel("Graphic Type:");
+        panel = PaletteHelper.createPaletteJPanel(i18n.get(OMDrawingToolLauncher.class,"panelGraphicType","Graphic Type:"));
         panel.add(getToolWidgets(useTextEditToolTitles));
         palette.add(panel);
 
@@ -256,24 +271,27 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
             });
 
         renderTypeList.setSelectedIndex(defaultGraphicAttributes.getRenderType() - 1);
-        
-        panel = PaletteHelper.createVerticalPanel("Graphic Attributes:");
+
+        panel = PaletteHelper.createVerticalPanel(i18n.get(OMDrawingToolLauncher.class,"panelGraphicAttributes","Graphic Attributes:"));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JPanel panel2 = PaletteHelper.createVerticalPanel("Rendering Type:");
-        panel2.add(renderTypeList);
-        JPanel panel3 = PaletteHelper.createVerticalPanel("Line Types and Colors:");
+        
+        JPanel panel2 = PaletteHelper.createVerticalPanel(i18n.get(OMDrawingToolLauncher.class,"panelRenderingType","Rendering Type:"));
+        panel2.add(renderTypeList);  
+        JPanel panel3 = PaletteHelper.createVerticalPanel(i18n.get(OMDrawingToolLauncher.class,"panelLineColorTypes","Line Types and Colors:"));
         panel3.add(defaultGraphicAttributes.getGUI());
         panel.add(panel2);
         panel.add(panel3);
         palette.add(panel);
-
-        JButton createButton = new JButton("Create Graphic");
+    
+    
+        JButton createButton = new JButton(i18n.get(OMDrawingToolLauncher.class,"createButton","Create Graphic"));
         createButton.setActionCommand(CreateCmd);
         createButton.addActionListener(this);
 
         JPanel dismissBox = new JPanel();
-        JButton dismiss = new JButton("Close");
+    
+        JButton dismiss = new JButton(i18n.get(OMDrawingToolLauncher.class,"dismiss","Close"));
         dismissBox.setLayout(new BoxLayout(dismissBox, BoxLayout.X_AXIS));
         dismissBox.setAlignmentX(Component.CENTER_ALIGNMENT);
         dismissBox.setAlignmentY(Component.BOTTOM_ALIGNMENT);
@@ -424,7 +442,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * another object gets added to the MapHandler after the object is
      * a member.  
      *
-     * @param someObj the object being added to the BeanContext
+     * @param someObj the object that was added to the BeanContext
+     * (MapHandler) that is being searched for.  Find the ones you
+     * need, and hook yourself up.
      */
     public void findAndInit(Object someObj) {
         if (someObj instanceof OMDrawingTool){
@@ -476,8 +496,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
         JToolBar jtb = null;
         if (getUseAsTool()) {
             jtb = new com.bbn.openmap.gui.GridBagToolBar();
-            JButton drawingToolButton = new JButton(new ImageIcon(OMDrawingToolLauncher.class.getResource("Drawing.gif"), "Drawing Tool Launcher"));
-            drawingToolButton.setToolTipText("Drawing Tool Launcher");
+            //"Drawing Tool Launcher";
+            JButton drawingToolButton = new JButton(new ImageIcon(OMDrawingToolLauncher.class.getResource("Drawing.gif"), i18n.get(OMDrawingToolLauncher.class,"drawingToolButton",I18n.TOOLTIP,"Drawing Tool Launcher")));
+            drawingToolButton.setToolTipText(i18n.get(OMDrawingToolLauncher.class,"drawingToolButton",I18n.TOOLTIP,"Drawing Tool Launcher"));
             drawingToolButton.addActionListener(getActionListener());
             jtb.add(drawingToolButton);
         }

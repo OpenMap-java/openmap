@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMRectLoader.java,v $
 // $RCSfile: OMRectLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/02/04 17:26:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,7 +42,7 @@ public class OMRectLoader extends AbstractToolLoader
             new EditClassWrapper(graphicClassName,
                                  "com.bbn.openmap.omGraphics.EditableOMRect",
                                  "editablerect.gif",
-                                 "Rectangle");
+                                 i18n.get(OMRectLoader.class,"omrect","Rectangle"));                            
         addEditClassWrapper(ecw);
     }
 

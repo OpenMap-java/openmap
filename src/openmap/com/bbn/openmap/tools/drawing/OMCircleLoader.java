@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMCircleLoader.java,v $
 // $RCSfile: OMCircleLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/02/04 17:26:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,14 +43,14 @@ public class OMCircleLoader extends AbstractToolLoader
             new EditClassWrapper(circleClassName,
                                  "com.bbn.openmap.omGraphics.EditableOMCircle",
                                  "editablecircle.gif",
-                                 "Circle");
+                                 i18n.get(OMCircleLoader.class,"omcircle.circle","Circle"));
         addEditClassWrapper(ecw);
 
         ecw = 
             new EditClassWrapper(rangeRingsClassName,
                                  "com.bbn.openmap.omGraphics.EditableOMRangeRings",
                                  "editablerangering.gif",
-                                 "Range Rings");
+                                 i18n.get(OMCircleLoader.class,"omcircle.rings","Range Rings"));
         addEditClassWrapper(ecw);
     }
 

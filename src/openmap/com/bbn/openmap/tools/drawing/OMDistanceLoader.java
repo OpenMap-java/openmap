@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDistanceLoader.java,v $
 // $RCSfile: OMDistanceLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/02/04 17:26:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.drawing;
 
@@ -33,14 +32,15 @@ import java.awt.Component;
 /**
  * Loader that knows how to create/edit OMDistance objects.
  * @author Ben Lubin
- * @version $Revision: 1.2 $ on $Date: 2004/01/26 18:18:15 $
+ * @version $Revision: 1.3 $ on $Date: 2004/02/04 17:26:04 $
  * @since 1/3/03
- **/
+ */
 public class OMDistanceLoader extends AbstractToolLoader 
     implements EditToolLoader {
 
     protected String graphicClassName = 
         "com.bbn.openmap.omGraphics.OMDistance";
+
     protected String editableClassName = 
         "com.bbn.openmap.omGraphics.EditableOMDistance";
 
@@ -53,7 +53,8 @@ public class OMDistanceLoader extends AbstractToolLoader
             new EditClassWrapper(graphicClassName,
                                  editableClassName,
                                  "distance.png",
-                                 "Distance");
+                                 i18n.get(OMDistanceLoader.class,"omdistance","Distance"));
+
         addEditClassWrapper(ecw);
 
         // A class wrapper isn't added here for the LabeledOMPoly
@@ -85,3 +86,4 @@ public class OMDistanceLoader extends AbstractToolLoader
         return null;
     }
 }
+
