@@ -1,3 +1,6 @@
+2004-04-16  Bill Mackiewicz <bmackiew@bbn.com>
+	* Replaced ext/jakarta-ant-1.5.1/ with ext/apache-ant-1.6.1/
+
 2004-02-13  Don Dietrick  <dietrick@dhcp89-077-065.bbn.com>
 
 	* Added Gordon Vidaver's route calculation package (originally

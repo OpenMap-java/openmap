@@ -10,7 +10,7 @@ case "`uname`" in
   *) cygwin=false ;;
 esac
 
-OPENMAP_ANT_HOME=${OPENMAP_HOME}/ext/jakarta-ant-1.5.1
+OPENMAP_ANT_HOME=${OPENMAP_HOME}/ext/apache-ant-1.6.1
 
 # For Cygwin, ensure paths are in UNIX format before anything is touched
 if $cygwin; then

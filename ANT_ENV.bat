@@ -5,7 +5,7 @@ rem Otherwise update the paths to reflect your environment.
 set OPENMAP_HOME=C:\openmap
 set JAVA_HOME=C:\jdk1.4.1_01
 
-set ANT_HOME=%OPENMAP_HOME%\ext\jakarta-ant-1.5.1
+set ANT_HOME=%OPENMAP_HOME%\ext\apache-ant-1.6.1
 set PATH=%ANT_HOME%\bin;%PATH%
 set CLASSPATH=%CLASSPATH%;%ANT_HOME%\lib\ant.jar;%ANT_HOME%\lib\crimson.jar;%ANT_HOME%\lib\jaxp.jar
 

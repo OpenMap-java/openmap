@@ -1,9 +1,9 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/user-guide.sgml,v $
 $RCSfile: user-guide.sgml,v $
-$Revision: 1.12 $
-$Date: 2001/11/02 00:10:18 $
-$Author: dietrick $
+$Revision: 1.13 $
+$Date: 2004/04/19 13:54:27 $
+$Author: bmackiew $
 
 User's Guide for the OpenMap Viewer application.
 Launch the viewer with `java com.bbn.openmap.app.OpenMap' or by
@@ -48,7 +48,7 @@ Windows, you may need to edit the paths referenced in the
 <tt>openmap.bat</tt> script.  These scripts set your
 <tt>CLASSPATH</tt> before invoking the Java VM.
 <p>
-Also, <tt><htmlurl url="http://jakarta.apache.org/ant"
+Also, <tt><htmlurl url="http://ant.apache.org"
 name="Ant"></tt> can be used to build and launch OpenMap.  The
 <tt><htmlurl url="../build.xml" name="build file"></tt> is included in
 the OpenMap package.

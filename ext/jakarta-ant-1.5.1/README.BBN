@@ -1,0 +1,13 @@
+April 16, 2004
+--------------
+
+BBN has replaced the jakarta-ant-1.5.1/ release with apache-ant-1.6.1/ in 
+order to provide OpenMap users with the most updated version of Ant.
+
+For the purposes of cleaner CVS management, the jakarta-ant-1.5.1 directory
+and subdirectories will be left in the ext/ directory.  When OpenMap 4.6.1
+is released and the external CVS repository is refreshed, these directories
+will be formally deleted.
+
+The OpenMap Developers
+openmap@bbn.com

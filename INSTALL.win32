@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/INSTALL.win32,v $
 $RCSfile: INSTALL.win32,v $
-$Revision: 1.1 $
-$Date: 2003/07/18 19:28:01 $
+$Revision: 1.2 $
+$Date: 2004/04/19 13:54:27 $
 $Author: bmackiew $
 
 Installation under Windows
@@ -31,7 +31,7 @@ Compilation
 
 You may want to build OpenMap from the source code yourself.  OpenMap includes
 Ant, the Java-based build tool from Apache, available at
-http://jakarta.apache.org/ant
+http://ant.apache.org
 
 If you'd like to build OpenMap using Ant, you'll need to:
 
