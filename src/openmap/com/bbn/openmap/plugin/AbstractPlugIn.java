@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/AbstractPlugIn.java,v $
 // $RCSfile: AbstractPlugIn.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/09 15:43:56 $
+// $Revision: 1.5 $
+// $Date: 2003/11/14 20:52:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,7 +43,8 @@ import com.bbn.openmap.util.PropUtils;
  * @see com.bbn.openmap.plugin.PlugInLayer
  * @see com.bbn.openmap.plugin.PlugIn
  */
-public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer, MapMouseListener {
+public abstract class AbstractPlugIn 
+    implements PlugIn, PropertyConsumer, MapMouseListener {
 
     /** The parent component, usually the PlugInLayer. */
     protected Component component = null;
@@ -234,7 +235,10 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer, MapMou
 	if (getList == null) {
 	    getList = new Properties();
 	}
-	getList.put(prefix + Layer.AddToBeanContextProperty, new Boolean(addToBeanContext).toString());
+
+	String realPrefix = PropUtils.getScopedPropertyPrefix(this);
+	getList.put(realPrefix + Layer.AddToBeanContextProperty, 
+		    new Boolean(addToBeanContext).toString());
 	return getList;
     }
 
@@ -272,7 +276,7 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer, MapMou
      *
      * @param prefix the prefix String.  
      */
-    public void setPropertyPrefix(String prefix){
+    public void setPropertyPrefix(String prefix) {
 	this.prefix = prefix;
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriPlugIn.java,v $
 // $RCSfile: EsriPlugIn.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/14 22:51:47 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:52:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -303,11 +303,11 @@ public class EsriPlugIn extends AbstractPlugIn
 		// and shx file are not provided, look for them next
 		// to the shape file. - DFD
 
-		if (shx == null && shp != null) {
+		if ((shx == null || shx.equals("")) && shp != null) {
 		    shx = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_SHX;
 		}
 
-		if (dbf == null && shp != null) {
+		if ((dbf == null || dbf.equals("")) && shp != null) {
 		    dbf = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_DBF;
 		}
 
@@ -477,6 +477,7 @@ public class EsriPlugIn extends AbstractPlugIn
 	props.put(prefix + PARAM_SHX, PropUtils.unnull(shx));
 	props.put(prefix + PARAM_DBF, PropUtils.unnull(dbf));
 
+	// Need to make sure they line up.
 	drawingAttributes.setPropertyPrefix(getPropertyPrefix());
 	drawingAttributes.getProperties(props);
 	return props;
