@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v $
 // $RCSfile: PropUtils.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/03/04 04:14:30 $
+// $Revision: 1.8 $
+// $Date: 2004/05/11 23:28:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -474,7 +474,34 @@ public class PropUtils {
         }
         return ret;
     }
-      
+
+    /**
+     * Gets a long out of a properties object.  Returns the default value
+     * if something goes wrong.
+     *
+     * @param p properties
+     * @param propName name of the property associated with the wanted value.
+     * @param defaultValue what to return if the property name doesn't exist,
+     * or if the value isn't a numerical value.
+     * @return long value associated with the property.
+     */
+
+    public static long longFromProperties(Properties p,
+                                          String propName,
+                                          long defaultValue) {
+        long ret = defaultValue;
+        String longString = p.getProperty(propName);
+    
+        if (longString != null) {
+            try {
+                ret = Long.parseLong(longString.trim());
+            } catch (NumberFormatException e) {
+                ret = defaultValue;
+            }
+        }
+        return ret;
+    }
+
     /** 
      * Take a string from a properties file, representing the 24bit
      * RGB or 32bit ARGB hex values for a color, and convert it to a
@@ -502,15 +529,11 @@ public class PropUtils {
      * @param propName the name of the property
      * @param dfault color to use if the property value doesn't work
      * @return java.awt.Color
-     * @exception NumberFormatException if the specified string
-     * cannot be interpreted as a hexidecimal integer
      * @see ColorFactory#parseColorFromProperties(Properties, String,
      * String, boolean) 
      */
     public static Paint parseColorFromProperties(
-        Properties p, String propName, Paint dfault)
-        throws NumberFormatException {
-
+        Properties p, String propName, Paint dfault) {
         return ColorFactory.parseColorFromProperties(p, propName, dfault);
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ColorFactory.java,v $
 // $RCSfile: ColorFactory.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.4 $
+// $Date: 2004/05/11 23:28:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -117,19 +117,17 @@ public class ColorFactory {
      * @param propName the name of the property
      * @param dfault color to use if the property value doesn't work
      * @return java.awt.Color
-     * @exception NumberFormatException if the specified string
-     * cannot be interpreted as a hexidecimal integer
      * @see #parseColor(String, boolean)
      */
     public static Paint parseColorFromProperties(Properties p, 
                                                  String propName, 
-                                                 Paint dfault)
-        throws NumberFormatException
-    {
-        String colorString = p.getProperty(propName);
-        if (colorString != null) {
-            return parseColor(colorString, false);
-        }
+                                                 Paint dfault) {
+        try {
+            String colorString = p.getProperty(propName);
+            if (colorString != null) {
+                return parseColor(colorString, false);
+            }
+        } catch (NumberFormatException nfe) {}
         return dfault;
     }
 
