@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoint.java,v $
 // $RCSfile: OMPoint.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/03/06 03:11:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -215,7 +215,10 @@ public class OMPoint extends OMGraphic implements Serializable {
      * @param set true for circles.
      */
     public void setOval(boolean set) {
-	oval = set;
+	if (oval != set) {
+	    setNeedToRegenerate(true);
+	    oval = set;
+	}
     } 
 
     /**
