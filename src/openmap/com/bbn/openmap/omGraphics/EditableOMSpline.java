@@ -68,6 +68,16 @@ public class EditableOMSpline extends EditableOMPoly {
 	return g;
     }
 
+    /**
+     * Overridden to overcome some repainting unpleasantness that
+     * occurs when a point is added.  Slows things down, however.
+     */
+    public int addMovingPoint(int x, int y) {
+	int position = super.addMovingPoint(x, y);
+	redraw(null, true);
+	return position;
+    }
+
     public java.net.URL getImageURL(String imageName) {
 	try {
 	    return Class.forName(

@@ -154,15 +154,11 @@ public class OMSpline extends OMPoly {
 	shape = null;
 
 	if (proj == null) {
-	    Debug.message(
-		"omgraphic",
-		"OMSpline: null projection in generate!");
+	    Debug.message("omspline", "OMSpline: null projection in generate!");
 	    return false;
 	}
 
-	// HACK : isPolygon is not updated when DrawingTool asks for closing
-	NatCubicSpline spline = isClosed() ? natCubicClosed : natCubic;
-	//		NatCubicSpline spline = isPolygon() ? natCubicClosed : natCubic;
+	NatCubicSpline spline = isGeometryClosed() ? natCubicClosed : natCubic;
 
 	// HACK : should use something else than nsegs
 	spline.setSteps(nsegs);
@@ -173,9 +169,8 @@ public class OMSpline extends OMPoly {
 
 	case RENDERTYPE_XY :
 	    if (xs == null) {
-		Debug.message(
-		    "omgraphic",
-		    "OMSpline x/y rendertype null coordinates");
+		Debug.message("omspline", "OMSpline x/y rendertype null coordinates");
+		setNeedToRegenerate(true);
 		return false;
 	    }
 
@@ -189,15 +184,15 @@ public class OMSpline extends OMPoly {
 	    ypoints[0] = splinePoints[1];
 
 	    if (doShapes) {
+		setNeedToRegenerate(false);
 		createShape();
 	    }
 	    break;
 
 	case RENDERTYPE_OFFSET :
 	    if (xs == null) {
-		Debug.message(
-		    "omgraphic",
-		    "OMSpline offset rendertype null coordinates");
+		Debug.message("omspline", "OMSpline offset rendertype null coordinates");
+		setNeedToRegenerate(true);
 		return false;
 	    }
 
@@ -235,19 +230,24 @@ public class OMSpline extends OMPoly {
 	    ypoints[0] = splinePoints[1];
 
 	    if (doShapes) {
+		setNeedToRegenerate(false);
 		createShape();
 	    }
 	    break;
 
 	case RENDERTYPE_LATLON :
-	    ArrayList vector = null;
+	    if (rawllpts == null) {
+		Debug.message("omspline", "OMSpline latlon rendertype null coordinates");
+		setNeedToRegenerate(true);
+		return false;
+	    }
 
 	    // spline creation ; precision 1e-8 rad = 0.002"
 	    float[] splinellpts = spline.calc(rawllpts, 1e-8f);
 
 	    // polygon/polyline project the polygon/polyline.
 	    // Vertices should already be in radians.
-	    vector =
+	    ArrayList vector =
 		proj.forwardPoly(splinellpts, lineType, nsegs, isPolygon);
 	    int size = vector.size();
 
@@ -289,31 +289,4 @@ public class OMSpline extends OMPoly {
 	return true;
     }
 
-    /**
-     * Is it closed ?
-     * @return boolean
-     */
-    private boolean isClosed() {
-	boolean closed = false;
-	switch (renderType) {
-	case RENDERTYPE_XY :
-	case RENDERTYPE_OFFSET :
-	    if (xs.length > 2)
-		closed =
-		    xs[0] == xs[xs.length - 1]
-		    && ys[0] == ys[ys.length - 1];
-	    break;
-	case RENDERTYPE_LATLON :
-	    int l = rawllpts.length;
-	    if (l > 4)
-		closed =
-		    Math.abs(rawllpts[0] - rawllpts[l - 2]) < 1e-5
-		    && Math.abs(rawllpts[1] - rawllpts[l - 1]) < 1e-5;
-	    break;
-	case RENDERTYPE_UNKNOWN :
-	    Debug.error("OMSpline.generate: invalid RenderType");
-	    break;
-	}
-	return closed;
-    }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMGraphic.java,v $
 // $RCSfile: EditableOMGraphic.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/03 00:53:03 $
+// $Revision: 1.6 $
+// $Date: 2003/10/14 23:40:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -326,7 +326,14 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * none are.
      */
     public GrabPoint getMovingPoint(MouseEvent e) {
+	return _getMovingPoint(e);
+    }
 
+    /**
+     * Method for grandchildren classes.
+     * @see getMovingPoint(MouseEvent)
+     */
+    public GrabPoint _getMovingPoint(MouseEvent e) {
 	movingPoint = null;
 
 	GrabPoint[] gb = getGrabPoints();
@@ -432,9 +439,9 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
 	    // possible.
 	    holder.setFrom(graphic);
 	    DrawingAttributes.DEFAULT.setTo(graphic);
-	    graphic.regenerate(getProjection());
 
 	    modifyOMGraphicForEditRender();
+	    graphic.regenerate(getProjection());
 
 	    if (drawXOR) {
 		g.setXORMode(Color.lightGray);

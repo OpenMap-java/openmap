@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/08 21:35:37 $
+// $Revision: 1.7 $
+// $Date: 2003/10/14 23:40:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -601,6 +601,12 @@ public class OMPoly extends OMGraphic implements Serializable {
 	    return false;
 	}
 
+	// answer the question now, saving calcuation for future
+	// calculations.  The set method forces the calculation for
+	// the query.
+	setNeedToRegenerate(true);
+	isGeometryClosed(); 
+
 	switch (renderType) {
 
 	case RENDERTYPE_XY:
@@ -810,6 +816,9 @@ public class OMPoly extends OMGraphic implements Serializable {
 	    // Trying to catch any clipping problems from within a JRE
 	    Debug.output("OMPoly: caught Java rendering exception\n" + 
 			 e.getMessage());
+	    if (Debug.debugging("ompoly")) {
+		e.printStackTrace();
+	    }
 	}
     }
 
@@ -895,7 +904,6 @@ public class OMPoly extends OMGraphic implements Serializable {
 
 	case RENDERTYPE_XY:
 	case RENDERTYPE_OFFSET:
-
 	    shape = createShape(xpoints[0], ypoints[0], isPolygon);
 	    break;
 	case RENDERTYPE_LATLON:
@@ -915,5 +923,38 @@ public class OMPoly extends OMGraphic implements Serializable {
 	default:
 	}
 
+    }
+
+    protected boolean geometryClosed = false;
+
+    /**
+     * Is the geometry closed ?
+     * @return boolean
+     */
+    protected boolean isGeometryClosed() {
+	geometryClosed = false;
+	switch (renderType) {
+	case RENDERTYPE_XY :
+	case RENDERTYPE_OFFSET :
+	    if (xs != null && xs.length > 2) {
+		geometryClosed = (xs[0] == xs[xs.length - 1] && 
+				  ys[0] == ys[ys.length - 1]);
+	    }
+	    break;
+	case RENDERTYPE_LATLON :
+	    if (rawllpts != null) {
+		int l = rawllpts.length;
+		if (l > 4) {
+		    geometryClosed = (Math.abs(rawllpts[0] - rawllpts[l - 2]) < 1e-5 && 
+				      Math.abs(rawllpts[1] - rawllpts[l - 1]) < 1e-5);
+		}
+	    }
+	    break;
+	case RENDERTYPE_UNKNOWN :
+	    Debug.error("OMPoly.generate: invalid RenderType");
+	    break;
+	}
+
+	return geometryClosed;
     }
 }
