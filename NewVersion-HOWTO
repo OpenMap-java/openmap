@@ -13,8 +13,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/NewVersion-HOWTO,v $
 # $RCSfile: NewVersion-HOWTO,v $
-# $Revision: 1.2 $
-# $Date: 1998/08/28 18:54:22 $
+# $Revision: 1.3 $
+# $Date: 1998/08/28 18:56:06 $
 # $Author: aculline $
 # 
 # **********************************************************************
@@ -36,6 +36,8 @@ sure the README instructions make sense and are up-to-date.
 
 Check the autobuild script to make sure it's going to include the correct
 files in the final (tar|zip)balls.
+
+Make any changes you need and check them back into the main branch.
 
 
 1) Branch the sources
