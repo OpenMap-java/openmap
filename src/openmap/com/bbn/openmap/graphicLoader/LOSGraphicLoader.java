@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/LOSGraphicLoader.java,v $
 // $RCSfile: LOSGraphicLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/21 20:36:57 $
+// $Revision: 1.3 $
+// $Date: 2004/01/24 03:35:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,7 +30,7 @@ import java.util.Iterator;
 import javax.swing.*;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.layer.dted.DTEDFrameCache;
+import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.DrawUtil;

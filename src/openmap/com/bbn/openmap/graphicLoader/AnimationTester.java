@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/AnimationTester.java,v $
 // $RCSfile: AnimationTester.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2004/01/24 03:35:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,7 +31,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.layer.dted.DTEDFrameCache;
+import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.DrawUtil;
