@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/OpenMapAppPartCollection.java,v $
 // $RCSfile: OpenMapAppPartCollection.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/09/17 19:10:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,7 +67,7 @@ public class OpenMapAppPartCollection extends IconPartCollection {
     public final static OpenMapAppPart LL_UR_LINE = new OpenMapAppPart(
         "LL_UR_LINE", "LL_UR_LINE", new int[] {10, 90}, new int[] {90, 10});
     public final static OpenMapAppPart UL_LR_LINE = new OpenMapAppPart(
-        "UL_LR_LINE", "UL_LR_LINE", new int[] {10, 10}, new int[] {90, 90});
+        "UL_LR_LINE", "UL_LR_LINE", new int[] {10, 90}, new int[] {10, 90});
 
     public static class OpenMapAppPart {
         int[] xpoints;
