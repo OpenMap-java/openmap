@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/TerrainLayer.java,v $
 // $RCSfile: TerrainLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/20 02:43:50 $
+// $Revision: 1.3 $
+// $Date: 2003/03/10 22:04:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -144,6 +144,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer
     public void init() {
         profileTool = new ProfileGenerator(this);
  	LOSTool = new LOSGenerator(this);
+	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
 
     /**
@@ -154,15 +155,6 @@ public class TerrainLayer extends OMGraphicHandlerLayer
 	// defaults
 	dtedDataPaths = null;
 	mode = PROFILE;
-    }
-
-    /**
-     * Overriding what happens to the internal OMGraphicList when the
-     * projection changes.  For this layer, we want to reset the
-     * internal OMGraphicList when the projection changes.
-     */
-    protected void resetListForProjectionChange() {
-	setList(null);
     }
 
     /** 

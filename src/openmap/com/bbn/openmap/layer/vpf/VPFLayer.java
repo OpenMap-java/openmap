@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/03/07 15:06:07 $
+// $Revision: 1.5 $
+// $Date: 2003/03/10 22:04:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
@@ -185,7 +184,10 @@ public class VPFLayer extends OMGraphicHandlerLayer
     /**
      *  Construct a VPF layer.
      */
-    public VPFLayer() {}
+    public VPFLayer() {
+	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+	setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
+    }
 
     /**
      * Construct a VPFLayer, and sets its name.
@@ -194,15 +196,6 @@ public class VPFLayer extends OMGraphicHandlerLayer
     public VPFLayer(String name) {
 	this();
 	setName(name);
-    }
-
-    /**
-     * Overriding what happens to the internal OMGraphicList when the
-     * projection changes.  For this layer, we want to reset the
-     * internal OMGraphicList when the projection changes.
-     */
-    protected void resetListForProjectionChange() {
-	setList(null);
     }
 
     /**

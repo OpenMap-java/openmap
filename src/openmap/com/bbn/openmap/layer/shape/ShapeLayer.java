@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/03 19:35:52 $
+// $Revision: 1.4 $
+// $Date: 2003/03/10 22:04:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -66,7 +66,7 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.3 $ $Date: 2003/03/03 19:35:52 $
+ * @version $Revision: 1.4 $ $Date: 2003/03/10 22:04:54 $
  * @see SpatialIndex 
  */
 public class ShapeLayer extends OMGraphicHandlerLayer
@@ -113,9 +113,12 @@ public class ShapeLayer extends OMGraphicHandlerLayer
     /**
      * Initializes an empty shape layer.
      */
-    public ShapeLayer() { }
+    public ShapeLayer() { 
+	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+    }
 
     public ShapeLayer(String shapeFileName) {
+	this();
 	spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
     }
 
@@ -372,23 +375,29 @@ public class ShapeLayer extends OMGraphicHandlerLayer
      * @param g a graphics context
      */
     public void paint(Graphics g) {
-	// grab local for thread safety
-	OMGraphicList omg = getList();
+	if (shadowX == 0 && shadowY == 0) {
+	    // Enabling buffer...
+	    super.paint(g);
+	} else {
+	    // grab local for thread safety
+	    OMGraphicList omg = getList();
 
-	if (omg != null) {
-	    if (Debug.debugging("shape"))
-		Debug.output("ShapeLayer.paint(): " + omg.size() +
-			     " omg" + " shadow=" + shadowX + "," + shadowY);
+	    if (omg != null) {
+		if (Debug.debugging("shape"))
+		    Debug.output("ShapeLayer.paint(): " + omg.size() +
+				 " omg" + " shadow=" + shadowX + "," + shadowY);
 	    
-	    if (shadowX != 0 || shadowY != 0) {
-		Graphics shadowG = g.create();
-		shadowG.translate(shadowX, shadowY);
-		omg.render(shadowG);
-	    } else {
-		omg.render(g);
-	    }
-	    if (Debug.debugging("shape")) {
-		Debug.output("ShapeLayer.paint(): done");
+		if (shadowX != 0 || shadowY != 0) {
+		    Graphics shadowG = g.create();
+		    shadowG.translate(shadowX, shadowY);
+		    omg.render(shadowG);
+		} else {
+		    omg.render(g);
+		}
+
+		if (Debug.debugging("shape")) {
+		    Debug.output("ShapeLayer.paint(): done");
+		}
 	    }
 	}
     }

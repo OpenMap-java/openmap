@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/20 02:43:50 $
+// $Revision: 1.3 $
+// $Date: 2003/03/10 22:04:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -139,7 +139,9 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * The default constructor for the Layer.  All of the attributes
      * are set to their default values.
      */
-    public LinkLayer() {}
+    public LinkLayer() {
+	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+    }
 
     /**
      * Constructor to use when LinkLayer is not being used with
@@ -151,7 +153,7 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * parameters for the server.
      */
     public LinkLayer(String host, int port, String propertiesURL) {
-
+	this();
 	this.host = host;
 	this.port = port;
 	linkManager = new LinkManager(host, port);
@@ -171,15 +173,6 @@ public class LinkLayer extends OMGraphicHandlerLayer
 		System.err.println(ioe);
 	    }
 	}
-    }
-
-    /**
-     * Overriding what happens to the internal OMGraphicList when the
-     * projection changes.  For this layer, we want to reset the
-     * internal OMGraphicList when the projection changes.
-     */
-    protected void resetListForProjectionChange() {
-	setList(null);
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/BufferedLinkLayer.java,v $
 // $RCSfile: BufferedLinkLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/10 22:04:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,8 +64,9 @@ public class BufferedLinkLayer extends LinkLayer  {
      * The default constructor for the Layer.  All of the attributes
      * are set to their default values.
      */
-    public BufferedLinkLayer () {
+    public BufferedLinkLayer() {
 	super();
+	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this));
     }
 
     /**
@@ -77,15 +78,10 @@ public class BufferedLinkLayer extends LinkLayer  {
      * @param propertiesURL the URL of a properties file that contains
      * parameters for the server.
      */
-    public BufferedLinkLayer (String host, int port, String propertiesURL) {
+    public BufferedLinkLayer(String host, int port, String propertiesURL) {
 	super(host, port, propertiesURL);
+	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this));
     }
-
-    /**
-     * Overrides the default action of nulling out the graphic list on
-     * a re-projection.
-     */
-    protected void resetListForProjectionChange() {}
 
     /**
      * Prepares the graphics for the layer.  This is where the

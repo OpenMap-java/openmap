@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/20 02:43:50 $
+// $Revision: 1.3 $
+// $Date: 2003/03/10 22:04:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -157,6 +157,7 @@ public class RpfLayer extends OMGraphicHandlerLayer
      */
     public RpfLayer() {
 	viewAttributes = new RpfViewAttributes();
+	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
 
     /** 
@@ -167,8 +168,8 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * A.TOC files.  
      */
     public RpfLayer(String[] pathsToRPFDirs) {
+	this();
 	setPaths(pathsToRPFDirs);
-	viewAttributes = new RpfViewAttributes();
     }
 
     /**
@@ -197,15 +198,6 @@ public class RpfLayer extends OMGraphicHandlerLayer
      */
     public String[] getPaths() {
 	return paths;
-    }
-
-    /**
-     * Overriding what happens to the internal OMGraphicList when the
-     * projection changes.  For this layer, we want to reset the
-     * internal OMGraphicList when the projection changes.
-     */
-    protected void resetListForProjectionChange() {
-	setList(null);
     }
 
    /** 

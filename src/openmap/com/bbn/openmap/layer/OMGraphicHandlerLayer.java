@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/02/21 17:47:02 $
+// $Revision: 1.4 $
+// $Date: 2003/03/10 22:04:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,13 +23,17 @@
 
 package com.bbn.openmap.layer;
 
-import java.awt.Shape;
 import java.awt.Graphics;
+import java.awt.Shape;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.event.InfoDisplayEvent;
 import com.bbn.openmap.event.LayerStatusEvent;
 import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.layer.policy.ProjectionChangePolicy;
+import com.bbn.openmap.layer.policy.StandardPCPolicy;
+import com.bbn.openmap.layer.policy.RenderPolicy;
+import com.bbn.openmap.layer.policy.StandardRenderPolicy;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
@@ -43,29 +47,36 @@ import com.bbn.openmap.util.SwingWorker;
  *
  * The OMGraphicHandlerLayer already has an OMGraphicList variable, so
  * if you extend this class you don't have to manage another one.  You
- * can add your OMGraphics to the list provided. Make sure you
- * override resetListForProjectionChange() if you want the internal
- * list to be nulled out when the projection changes.  If you create a
- * list of OMGraphics that is reused and simply re[projected when the
- * projection changes, do nothing - that's what happens anyway.  If
- * you let prepare() create a new OMGraphicList based on the new
- * projection, then have the resetListForProjectionChange set the list
- * to null, or at least clear out the old graphics at some point. If
- * you are managing a lot of OMGraphics and do not null out the list,
- * you may see your layer appear to lag behind the projection changes.
- * That's because another layer with less work to do finishes and
- * calls repaint, and since your list is still set with OMGraphics
- * ready for the old projection, it will just draw what it had, and
- * then draw again when it has finished working.  Nulling out the list
- * will prevent your layer from drawing anything on the new projection
- * until it is ready.<P>
+ * can add your OMGraphics to the list provided. If you create a list
+ * of OMGraphics that is reused and simply re-projected when the
+ * projection changes, do nothing - that's what happens anyway based
+ * on the default ProjectionChangePolicy set for the layer
+ * (StandardPCPolicy).  If you let prepare() create a new
+ * OMGraphicList based on the new projection, then make sure the
+ * ProjectionChangePolicy for the layer is set to a
+ * com.bbn.openmap.layer.policy.ResetListPCPolicy, or at least clear
+ * out the old graphics at some point. You just have to do one, not
+ * both, of those things.  If you are managing a lot of OMGraphics and
+ * do not null out the list, you may see your layer appear to lag
+ * behind the projection changes.  That's because another layer with
+ * less work to do finishes and calls repaint, and since your list is
+ * still set with OMGraphics ready for the old projection, it will
+ * just draw what it had, and then draw again when it has finished
+ * working.  Nulling out the list will prevent your layer from drawing
+ * anything on the new projection until it is ready.<P>
  *
  * The OMGraphicHandlerLayer has support built in for launching a
- * SwingWorker to do work for you in a separate thread.  If the
+ * SwingWorker to do work for you in a separate thread.  This behavior
+ * is controlled by the ProjectionChangePolicy that is set for the
+ * layer.  Both the StandardPCPolicy and ListResetPCPolicy launch
+ * threads by calling doPrepare() on this layer.  The StandardPCPolicy
+ * only calls this if the number of OMGraphics on its list is greater
+ * than some cutoff value. <P>
+ * 
  * useLayerWorker variable is true (default), then doPrepare() will be
  * called when a new ProjectionEvent is received in the
  * projectionChanged method.  This will cause prepare() to be called
- * in a separate thread.  You can use prepare() to create OMGraphics,
+ * in a separate thread.   You can use prepare() to create OMGraphics,
  * the projection will have been set in the layer and is available via
  * getProjection().  You should generate() the OMGraphics in prepare.
  * NOTE: You can override the projectionChanged() method to
@@ -79,18 +90,25 @@ public class OMGraphicHandlerLayer extends Layer {
      */
     protected FilterSupport filter = new FilterSupport();
 
+    /** 
+     * The ProjectionChangePolicy object that determines how a layer
+     * reacts and sets up the OMGraphicList to be rendered for the
+     * layer when the projection changes. 
+     */
+    protected ProjectionChangePolicy projectionChangePolicy = null;
+
+    /**
+     * The RenderPolicy object that determines how a layer's
+     * OMGraphicList is rendered in the layer.paint() method.
+     */
+    protected RenderPolicy renderPolicy = null;
+
     /**
      * A SwingWorker that can be used for gathering OMGraphics or
      * doing other work in a different thread.
      */
     protected SwingWorker layerWorker;
     
-    /**
-     * The flag that sets whether the layer will kick off a thread to
-     * do work and call prepare().  True by default.
-     */
-    protected boolean useLayerWorker = true;
-
     // OMGraphicHandler methods, deferred to FilterSupport...
 
     /**
@@ -184,78 +202,73 @@ public class OMGraphicHandlerLayer extends Layer {
      * when the layer is part of the map, and whenever the map
      * projection changes.  Will trigger a repaint().<p>
      *
-     * This method will not do anything to the internal OMGraphicList
-     * if the projection has changed.  The paint() method checks for a
-     * null OMGraphicList and handles that gracefully, so make sure
-     * you are aware of that if you override the paint method.  The
-     * reason the OMGraphicList is nulled out is so if another layer
-     * finishes before yours does and gets repainted, your old
-     * OMGraphics don't get painted along side their new ones - it's a
-     * mismatched situation.
+     * The ProjectionEvent is passed to the current
+     * ProjectionChangePolicy object, which determines what will
+     * happen on the layer and how.  By default, a StandardPCPolicy is
+     * notified with the projection change, and it will test the
+     * projection for changes and make sure prepare() is called.  It
+     * will make the decision whether doPrepare() is called, based on
+     * the number of OMGraphics on the list, which may launch a swing
+     * worker thread to call prepare().  The StandardPCPolicy does not
+     * do anything to the OMGraphicList when the projection
+     * changes.<p>
+     *
+     * If you need the OMGraphicList cleared out with a new
+     * projection, you can substitute a ListRestPCPolicy for the
+     * StandardPCPolicy.  You would want to do this if your
+     * OMGraphicList changes for different projections - The reason
+     * the OMGraphicList is nulled out is so if another layer finishes
+     * before yours does and gets repainted, your old OMGraphics don't
+     * get painted along side their new ones - it's a mismatched
+     * situation.  You can set the ProjectionChangePolicy directly
+     * with the setProjectionChangePolicy, or by overriding the
+     * getProjectionChangePolicy method and returning the type you
+     * want by default if it is null.
+     *
+     * @see com.bbn.openmap.layer.policy.ProjectionChangePolicy
+     * @see com.bbn.openmap.layer.policy.StandardPCPolicy
+     * @see com.bbn.openmap.layer.policy.ListResetPCPolicy
      */
     public void projectionChanged(ProjectionEvent pe) {    
-	Projection proj = setProjection(pe);
-	// proj will be null if the projection hasn't changed, a 
-	// signal that work does not need to be done.
-	if (proj != null) {
-	    // reset list if desired, which is false by default.
-	    resetListForProjectionChange();
-	    // OK decision time.  If you need to do so much work that
-	    // the application appears to hang, launch a thread to do
-	    // the work for you.  This may be true even though you
-	    // don't need to gather/create OMGraphics - if you have to
-	    // generate a large number of them, launch a thread.
-	    if (getUseLayerWorker()) {
-		doPrepare();
-		// doPrepare() takes care of status events and repainting.
-		return;
-	    } else {
-		prepare();
-		repaint();
-	    }
-	} else {
-	    repaint();
+	getProjectionChangePolicy().projectionChanged(pe);
+    }
+
+    /**
+     * Get the ProjectionChangePolicy that determines how a layer
+     * reacts and gathers OMGraphics for a projection change.
+     */
+    public ProjectionChangePolicy getProjectionChangePolicy() {
+	if (projectionChangePolicy == null) {
+	    projectionChangePolicy = new StandardPCPolicy(this);
 	}
-
-	fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+	return projectionChangePolicy;
     }
 
     /**
-     * Notification to reset the list when the projection changes.  If
-     * the layer is going to create new OMGraphics, this should
-     * definitely call setList(null).  If the list is going to be
-     * generated and not re-created, probably not.  By default, the
-     * internal OMGraphicsList is set to null. <P> 
-     *
-     * If you are using the OMGraphicHandlerLayer paint() method, you
-     * should think about how your OMGraphics will be painted if that
-     * gets called before your layer has fully reacted to a projection
-     * change.  If you don't null out the list, you can get in a
-     * situation where another layers new OMGraphics are painted over
-     * your old ones.
+     * Set the ProjectionChangePolicy that determines how a layer
+     * reacts and gathers OMGraphics for a projection change.
      */
-    protected void resetListForProjectionChange() {
-	// If you are going to set new OMGraphics in the layer 
-	// depending on the projection, then clear or null out the
-	// list:
-// 	setList(null);
-
-        // Otherwise, do nothing, and the current OMGraphicList 
-	// will get reprojected.
+    public void setProjectionChangePolicy(ProjectionChangePolicy pcp) {
+	projectionChangePolicy = pcp;
     }
 
     /**
-     * Set the threading behavior.
-     * @param value if true, doPrepare() will be called in
-     * projectionChanged that will launch a thread to call prepare().
-     * If false, prepare() will be called by the Swing thread.
+     * Get the RenderPolicy that determines how an OMGraphicList is
+     * rendered.
      */
-    public boolean getUseLayerWorker() {
-	return useLayerWorker;
+    public RenderPolicy getRenderPolicy() {
+	if (renderPolicy == null) {
+	    renderPolicy = new StandardRenderPolicy(this);
+	}
+	return renderPolicy;
     }
 
-    public void setUseLayerWorker(boolean value) {
-	useLayerWorker = value;
+    /**
+     * Set the RenderPolicy that determines how the OMGraphicList is
+     * rendered.
+     */
+    public void setRenderPolicy(RenderPolicy rp) {
+	renderPolicy = rp;
     }
 
     public void interrupt() {
@@ -308,10 +321,7 @@ public class OMGraphicHandlerLayer extends Layer {
      * @param g java.awt.Graphics object to render OMGraphics into.
      */
     public void paint(Graphics g) {
-	OMGraphicList list = getList();
-	if (list != null) {
-	    list.render(g);
-	}
+	getRenderPolicy().paint(g);
     }
 
     /**
@@ -357,6 +367,7 @@ public class OMGraphicHandlerLayer extends Layer {
 	if (currentList != null && proj != null) {
 	    currentList.generate(proj);
 	}
+
 	return currentList;
     }
 
@@ -426,7 +437,7 @@ public class OMGraphicHandlerLayer extends Layer {
 	    try {
 
 		long start = System.currentTimeMillis();
-		OMGraphicList list = prepare();
+		OMGraphicList list = getRenderPolicy().prepare();
 		long stop = System.currentTimeMillis();
 		if (Debug.debugging("layer")) {
 		    int size = list.size();

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFLayer.java,v $
 // $RCSfile: MIFLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/20 02:43:50 $
+// $Revision: 1.3 $
+// $Date: 2003/03/10 22:04:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,15 +51,8 @@ public class MIFLayer extends OMGraphicHandlerLayer {
     boolean accurate = true;
     MIFLoader mifl = null;
 
-    public MIFLayer() {}
-
-    /**
-     * Overriding what happens to the internal OMGraphicList when the
-     * projection changes.  For this layer, we want to reset the
-     * internal OMGraphicList when the projection changes.
-     */
-    protected void resetListForProjectionChange() {
-	setList(null);
+    public MIFLayer() {
+	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
 
     /**

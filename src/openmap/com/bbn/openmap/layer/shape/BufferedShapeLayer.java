@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/BufferedShapeLayer.java,v $
 // $RCSfile: BufferedShapeLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/10 22:04:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,6 +53,7 @@ public class BufferedShapeLayer extends ShapeLayer {
      */
     public BufferedShapeLayer() {
 	super();
+	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this));
     }
 
     /**
