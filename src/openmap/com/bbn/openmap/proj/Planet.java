@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Planet.java,v $
 // $RCSfile: Planet.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/21 18:49:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,8 +53,9 @@ public class Planet {
     final public static transient float wgs84_earthEquatorialCircumferenceMiles =
 	wgs84_earthEquatorialCircumferenceKM*0.62137119f;//HACK use UNIX units?
     final public static transient float wgs84_earthEquatorialCircumferenceNMiles =
-	wgs84_earthEquatorialCircumferenceKM*0.5399568f;//HACK use UNIX units?
-
+ 	21600.0f; // 60.0f * 360.0f; // sixty nm per degree
+// 	wgs84_earthEquatorialCircumferenceKM*0.5389892f; // calculated, same as line above.
+//   	wgs84_earthEquatorialCircumferenceKM*0.5399568f;//HACK use UNIX units? << This was wrong.
 
     // Mars
     final public static transient float marsEquatorialRadius = 3393400.0f;// meters

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/GreatCircle.java,v $
 // $RCSfile: GreatCircle.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/21 18:49:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -80,8 +80,8 @@ public class GreatCircle {
     final public static float spherical_distance(
 	float phi1, float lambda0, float phi, float lambda)
     {
-	float pdiff = (float)Math.sin(((phi-phi1)/2));
-	float ldiff = (float)Math.sin((lambda-lambda0)/2);
+	float pdiff = (float)Math.sin(((phi-phi1)/2f));
+	float ldiff = (float)Math.sin((lambda-lambda0)/2f);
 	float rval = (float)Math.sqrt((pdiff*pdiff) +
 		     (float)Math.cos(phi1)*(float)Math.cos(phi)*(ldiff*ldiff));
 	
