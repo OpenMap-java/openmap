@@ -48,12 +48,6 @@ public class DDFSubfieldDefinition implements DDFConstants {
     protected char chFormatDelimeter;
     protected int nFormatWidth;
 
-    /**
-     * Fetched string cache.  This is where we hold the values 
-     * returned from extractStringData().
-     */
-    protected byte[] pachBuffer;
-
     public interface DDFBinaryFormat {
         public final static int NotBinary = 0;
         public final static int UInt = 1;
@@ -98,7 +92,6 @@ public class DDFSubfieldDefinition implements DDFConstants {
         eType = DDFDataType.DDFString;
     
         pszFormatString = new String("");
-        pachBuffer = null;
     }
 
     /**
@@ -166,7 +159,11 @@ public class DDFSubfieldDefinition implements DDFConstants {
             bIsVariable = false;
             if (pszFormatString.charAt(1) == '(') {
 
-                nFormatWidth = Integer.valueOf(pszFormatString.substring(2)).intValue();
+                int numEndIndex = 2;
+                for (;Character.isDigit(pszFormatString.charAt(numEndIndex)); numEndIndex++) {}
+
+                String numberString = pszFormatString.substring(2, numEndIndex);
+                nFormatWidth = Integer.valueOf(numberString).intValue();
 
                 if (nFormatWidth % 8 != 0) {
                     Debug.error("DDFSubfieldDefinition.setFormat() problem with " + 
@@ -174,7 +171,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
                     return false;
                 }
             
-                nFormatWidth = Integer.parseInt(pszFormatString.substring(2)) / 8;
+                nFormatWidth = Integer.parseInt(numberString) / 8;
 
                 eBinaryFormat = DDFBinaryFormat.SInt; // good default, works for SDTS.
 
@@ -188,7 +185,10 @@ public class DDFSubfieldDefinition implements DDFConstants {
 
                 eBinaryFormat = (int)(pszFormatString.charAt(1) - '0');
 
-                nFormatWidth = Integer.valueOf(pszFormatString.substring(2)).intValue();
+                int numEndIndex = 2;
+                for (;Character.isDigit(pszFormatString.charAt(numEndIndex)); numEndIndex++) {}
+
+                nFormatWidth = Integer.valueOf(pszFormatString.substring(2, numEndIndex)).intValue();
 
                 if (eBinaryFormat == DDFBinaryFormat.SInt || 
                     eBinaryFormat == DDFBinaryFormat.UInt) {
@@ -344,7 +344,11 @@ public class DDFSubfieldDefinition implements DDFConstants {
      */
     String extractStringData(byte[] pachSourceData, int nMaxBytes, 
                              MutableInt pnConsumedBytes) {
-        int oldConsumed = pnConsumedBytes.value;
+        int oldConsumed = 0;
+        if (pnConsumedBytes != null) {
+            oldConsumed = pnConsumedBytes.value;
+        }
+
         int nLength = getDataLength(pachSourceData, nMaxBytes, pnConsumedBytes);
         String ns = new String(pachSourceData, 0, nLength);
 

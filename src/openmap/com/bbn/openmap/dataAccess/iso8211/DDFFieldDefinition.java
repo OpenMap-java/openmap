@@ -37,20 +37,20 @@ import java.util.Vector;
  */
 public class DDFFieldDefinition implements DDFConstants {
 
-    DDFModule poModule;
-    String pszTag;
+    protected DDFModule poModule;
+    protected String pszTag;
 
-    String _fieldName;
-    String _arrayDescr;
-    String _formatControls;
+    protected String _fieldName;
+    protected String _arrayDescr;
+    protected String _formatControls;
 
-    boolean bRepeatingSubfields;
-    int nFixedWidth;    // zero if variable. 
+    protected boolean bRepeatingSubfields;
+    protected int nFixedWidth;    // zero if variable. 
 
-    DataStructCode _data_struct_code;
-    DataTypeCode   _data_type_code;
+    protected DataStructCode _data_struct_code;
+    protected DataTypeCode   _data_type_code;
 
-    Vector paoSubfields;
+    protected Vector paoSubfieldDefns;
 
     /**
      * Fetch a pointer to the field name (tag).
@@ -72,8 +72,8 @@ public class DDFFieldDefinition implements DDFConstants {
      * Get the number of subfields. 
      */
     public int getSubfieldCount() { 
-        if (paoSubfields != null) {
-            return paoSubfields.size(); 
+        if (paoSubfieldDefns != null) {
+            return paoSubfieldDefns.size(); 
         }
         return 0;
     }
@@ -113,7 +113,7 @@ public class DDFFieldDefinition implements DDFConstants {
         _fieldName = null;
         _arrayDescr = null;
         _formatControls = null;
-        paoSubfields = null;
+        paoSubfieldDefns = null;
         bRepeatingSubfields = false;
     }
 
@@ -137,10 +137,6 @@ public class DDFFieldDefinition implements DDFConstants {
                               String pszTagIn, 
                               byte[] pachFieldArea) {
 
-        if (Debug.debugging("iso8211")) {
-            Debug.output("DDFFieldDefinition.initialize(): " + pszTagIn);
-        }
-
         /// pachFieldArea needs to be specified better.  It's an
         /// offset into a character array, and we need to know what it
         /// is to scope it better in Java.
@@ -157,8 +153,10 @@ public class DDFFieldDefinition implements DDFConstants {
         _data_type_code = DataTypeCode.get((char)pachFieldArea[1]);
 
         if (Debug.debugging("iso8211")) {
-            Debug.output("DDFFieldDefinition.initialize(): data_struct_code = " + _data_struct_code +
-                         ", data_type_code = " + _data_type_code + ", iFDOffset = " + iFDOffset);
+            Debug.output("DDFFieldDefinition.initialize(" + pszTagIn + 
+                         "):\n\t\t data_struct_code = " + _data_struct_code +
+                         "\n\t\t data_type_code = " + _data_type_code + 
+                         "\n\t\t iFDOffset = " + iFDOffset);
         }
 
         /* -------------------------------------------------------------------- */
@@ -175,7 +173,8 @@ public class DDFFieldDefinition implements DDFConstants {
                                             DDF_UNIT_TERMINATOR, DDF_FIELD_TERMINATOR, 
                                             nCharsConsumed);
         if (Debug.debugging("iso8211")) {
-            Debug.output("DDFFieldDefinition: created field name " + _fieldName);
+            Debug.output("DDFFieldDefinition.initialize(" + pszTagIn + 
+                         "): created field name " + _fieldName);
         }
 
         iFDOffset += nCharsConsumed.value;
@@ -198,7 +197,7 @@ public class DDFFieldDefinition implements DDFConstants {
         /*      Parse the subfield info.                                        */
         /* -------------------------------------------------------------------- */
         if (_data_struct_code != DataStructCode.ELEMENTARY) {
-            if (!buildSubfields(_arrayDescr)) {
+            if (!buildSubfieldDefns(_arrayDescr)) {
                 return false;
             }
 
@@ -225,8 +224,8 @@ public class DDFFieldDefinition implements DDFConstants {
         buf.append("      _data_struct_code = " + _data_struct_code + "\n");
         buf.append("      _data_type_code = " + _data_type_code + "\n");
 
-        if (paoSubfields != null) {
-            for (Iterator it = paoSubfields.iterator(); it.hasNext();) {
+        if (paoSubfieldDefns != null) {
+            for (Iterator it = paoSubfieldDefns.iterator(); it.hasNext();) {
                 buf.append((DDFSubfieldDefinition)it.next());
             }
         }
@@ -235,9 +234,10 @@ public class DDFFieldDefinition implements DDFConstants {
     }
 
     /**
-     * Based on the list contained in the string, build a set of subfields.            
+     * Based on the list contained in the string, build a set of
+     * subfield definitions.
      */
-    protected boolean buildSubfields(String pszSublist) {
+    protected boolean buildSubfieldDefns(String pszSublist) {
 
         if (pszSublist.charAt(0) == '*') {
             bRepeatingSubfields = true;
@@ -246,12 +246,12 @@ public class DDFFieldDefinition implements DDFConstants {
 
         Vector papszSubfieldNames = PropUtils.parseMarkers(pszSublist, "!");
 
-        paoSubfields = new Vector();
+        paoSubfieldDefns = new Vector();
     
         for (Iterator it = papszSubfieldNames.iterator(); it.hasNext();) {
             DDFSubfieldDefinition ddfsd = new DDFSubfieldDefinition();
             ddfsd.setName((String)it.next());
-            paoSubfields.add(ddfsd);
+            paoSubfieldDefns.add(ddfsd);
         }
 
         return true;
@@ -404,13 +404,13 @@ public class DDFFieldDefinition implements DDFConstants {
             // isn't encountered in any formats we care about so we just
             // blow.
         
-            if (iFormatItem > paoSubfields.size()) {
+            if (iFormatItem > paoSubfieldDefns.size()) {
                 Debug.error("DDFFieldDefinition: Got more formats than subfields for field " +
                             pszTag);
                 break;
             }
         
-            if (!((DDFSubfieldDefinition)paoSubfields.elementAt(iFormatItem)).setFormat(pszPastPrefix)) {
+            if (!((DDFSubfieldDefinition)paoSubfieldDefns.elementAt(iFormatItem)).setFormat(pszPastPrefix)) {
                 Debug.output("DDFFieldDefinition had problem setting format for " + pszPastPrefix);
                 return false;
             }
@@ -419,9 +419,9 @@ public class DDFFieldDefinition implements DDFConstants {
         /* -------------------------------------------------------------------- */
         /*      Verify that we got enough formats, cleanup and return.          */
         /* -------------------------------------------------------------------- */
-        if (iFormatItem < paoSubfields.size()) {
+        if (iFormatItem < paoSubfieldDefns.size()) {
                 Debug.error("DDFFieldDefinition: Got fewer formats than subfields for field " +
-                            pszTag + " got (" + iFormatItem + ", should have " + paoSubfields.size() + ")");
+                            pszTag + " got (" + iFormatItem + ", should have " + paoSubfieldDefns.size() + ")");
                 return false;
         }
 
@@ -430,8 +430,8 @@ public class DDFFieldDefinition implements DDFConstants {
         /*      too.  This is important for repeating fields.                   */
         /* -------------------------------------------------------------------- */
         nFixedWidth = 0;
-        for (int i = 0; i < paoSubfields.size(); i++) {
-            DDFSubfieldDefinition ddfsd = (DDFSubfieldDefinition)paoSubfields.elementAt(i);
+        for (int i = 0; i < paoSubfieldDefns.size(); i++) {
+            DDFSubfieldDefinition ddfsd = (DDFSubfieldDefinition)paoSubfieldDefns.elementAt(i);
             if (ddfsd.getWidth() == 0) {
                 nFixedWidth = 0;
                 break;
@@ -451,8 +451,8 @@ public class DDFFieldDefinition implements DDFConstants {
      * @return The subfield pointer, or null if there isn't any such subfield.
      */
     public DDFSubfieldDefinition findSubfieldDefn(String pszMnemonic) {
-        if (paoSubfields != null) {
-            for (Iterator it = paoSubfields.iterator(); pszMnemonic != null && it.hasNext();) {
+        if (paoSubfieldDefns != null) {
+            for (Iterator it = paoSubfieldDefns.iterator(); pszMnemonic != null && it.hasNext();) {
                 DDFSubfieldDefinition ddfsd = (DDFSubfieldDefinition) it.next();
                 if (pszMnemonic.equalsIgnoreCase(ddfsd.getName())) {
                     return ddfsd;
@@ -469,12 +469,12 @@ public class DDFFieldDefinition implements DDFConstants {
      * @param The index subfield index. (Between 0 and GetSubfieldCount()-1)
      * @return The subfield pointer, or null if the index is out of range.
      */
-    public DDFSubfieldDefinition getSubfield(int i) {
-        if (paoSubfields == null || i < 0 || i >= paoSubfields.size()) {
+    public DDFSubfieldDefinition getSubfieldDefn(int i) {
+        if (paoSubfieldDefns == null || i < 0 || i >= paoSubfieldDefns.size()) {
             return null;
         }
              
-        return (DDFSubfieldDefinition)paoSubfields.elementAt(i);
+        return (DDFSubfieldDefinition)paoSubfieldDefns.elementAt(i);
     }
 
     public static class DataStructCode {

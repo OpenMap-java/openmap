@@ -164,6 +164,11 @@ public class DDFModule implements DDFConstants {
                 || _sizeFieldPos == 0 || _sizeFieldTag == 0) {
                 bValid = false;
             }
+
+            if (Debug.debugging("iso8211")) {
+                Debug.output("bValid = " + bValid + ", from " + new String(achLeader));
+                Debug.output(toString());
+            }
         }
 
         // If the header is invalid, then clean up, report the error
@@ -259,7 +264,7 @@ public class DDFModule implements DDFConstants {
         StringBuffer buf = new StringBuffer("DDFModule:\n");
         buf.append("    _recLength = " + _recLength + "\n");
         buf.append("    _interchangeLevel = " + _interchangeLevel + "\n");
-        buf.append("    _leaderIden = " + _leaderIden + "\n");
+        buf.append("    _leaderIden = " + (char)_leaderIden + "\n");
         buf.append("    _inlineCodeExtensionIndicator = " + 
                    _inlineCodeExtensionIndicator + "\n");
         buf.append("    _versionNumber = " + _versionNumber + "\n");
@@ -270,6 +275,20 @@ public class DDFModule implements DDFConstants {
         buf.append("    _sizeFieldLength = " + _sizeFieldLength + "\n");
         buf.append("    _sizeFieldPos = " + _sizeFieldPos + "\n");
         buf.append("    _sizeFieldTag = " + _sizeFieldTag + "\n");
+        return buf.toString();
+    }
+
+    public String dump() {
+        StringBuffer buf = new StringBuffer(toString());
+
+        DDFRecord poRecord;
+        int iRecord = 0;
+        while((poRecord = readRecord()) != null) {
+            buf.append("  Record " + (iRecord++) + "(" + poRecord.getDataSize() + " bytes)\n");
+            
+            for (Iterator it = poRecord.iterator(); it.hasNext(); 
+                 buf.append(((DDFField)it.next()).toString())) {}
+        }
         return buf.toString();
     }
 
@@ -297,7 +316,7 @@ public class DDFModule implements DDFConstants {
                              ") checking against [" + pszThisName + ":" + pszThisName.length() + "]");
             }
         
-            if (pszFieldName.equals(pszThisName)) {
+            if (pszFieldName.equalsIgnoreCase(pszThisName)) {
                 return ddffd;
             }
         }
@@ -351,6 +370,37 @@ public class DDFModule implements DDFConstants {
         return 0;
     }
 
+    /**
+     * Convenience method to read a byte from the data file.  Assumes
+     * that you know what you are doing based on the parameters read
+     * in the data file.  For DDFFields that haven't loaded their
+     * subfields.
+     */
+    protected int read() {
+        if (fpDDF != null) {
+            try {
+                return fpDDF.read();
+            } catch (IOException ioe) {
+                Debug.error("DDFModule.read(): IOException caught");
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Convenience method to seek to a location in the data file.
+     * Assumes that you know what you are doing based on the
+     * parameters read in the data file.  For DDFFields that haven't
+     * loaded their subfields.
+     * @param pos the byte position to reposition the file pointer to.
+     */
+    protected void seek(long pos) throws IOException {
+        if (fpDDF != null) {
+            fpDDF.seek(pos);
+        } else {
+            throw new IOException("DDFModule doesn't have a pointer to a file");
+        }
+    }
 
     /**
      * Fetch a field definition by index.

@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * $Id: View8211.java,v 1.1 2004/02/27 19:50:04 dietrick Exp $
+ * $Id: View8211.java,v 1.2 2004/03/02 20:45:06 dietrick Exp $
  *
  * Project:  SDTS Translator
  * Purpose:  Example program dumping data in 8211 data to stdout.
@@ -35,6 +35,7 @@ import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * Class that uses the DDF* classes to read an 8211 file and print out the contents.
@@ -79,10 +80,9 @@ public class View8211 {
                 /* ------------------------------------------------------------ */
                 /*      Loop over each field in this particular record.         */
                 /* ------------------------------------------------------------ */
-                for (int iField = 0; iField < poRecord.getFieldCount(); iField++) {
-                    DDFField poField = poRecord.getField(iField);
-                    viewRecordField(poField);
-                }
+                for (Iterator it = poRecord.iterator(); 
+                     it != null && it.hasNext(); 
+                     Debug.output(((DDFField)it.next()).toString()));
             }
 
         } catch (IOException ioe) {
@@ -95,8 +95,6 @@ public class View8211 {
      * Dump the contents of a field instance in a record.
      */
     protected void viewRecordField(DDFField poField) {
-        int nBytesRemaining;
-        byte[] pachFieldData;
         DDFFieldDefinition poFieldDefn = poField.getFieldDefn();
     
         // Report general information about the field.
@@ -106,8 +104,8 @@ public class View8211 {
         // Get pointer to this fields raw data.  We will move through
         // it consuming data as we report subfield values.
             
-        pachFieldData = poField.getData();
-        nBytesRemaining = poField.getDataSize();
+        byte[] pachFieldData = poField.getData();
+        int nBytesRemaining = poField.getDataSize();
                 
         /* -------------------------------------------------------- */
         /*      Loop over the repeat count for this fields          */
@@ -115,14 +113,16 @@ public class View8211 {
         /*      always be one.                                      */
         /* -------------------------------------------------------- */
         for (int iRepeat = 0; iRepeat < poField.getRepeatCount(); iRepeat++) {
-
+            if (iRepeat > 0) {
+                Debug.output("Repeating (" + iRepeat + ")...");
+            }
             /* -------------------------------------------------------- */
             /*   Loop over all the subfields of this field, advancing   */
             /*   the data pointer as we consume data.                   */
             /* -------------------------------------------------------- */
             for (int iSF = 0; iSF < poFieldDefn.getSubfieldCount(); iSF++) {
 
-                DDFSubfieldDefinition poSFDefn = poFieldDefn.getSubfield(iSF);
+                DDFSubfieldDefinition poSFDefn = poFieldDefn.getSubfieldDefn(iSF);
                 int nBytesConsumed = viewSubfield(poSFDefn, pachFieldData,
                                                   nBytesRemaining);
                 nBytesRemaining -= nBytesConsumed;

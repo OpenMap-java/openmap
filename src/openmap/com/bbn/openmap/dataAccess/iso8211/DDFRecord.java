@@ -96,8 +96,8 @@ public class DDFRecord implements DDFConstants {
      */
     public String toString() {
         StringBuffer buf = new StringBuffer("DDFRecord:\n");
-        buf.append("    nReuseHeader = " + nReuseHeader + "\n");
-        buf.append("    nDataSize = " + nDataSize + "\n");
+        buf.append("    ReuseHeader = " + nReuseHeader + "\n");
+        buf.append("    DataSize = " + nDataSize + "\n");
 
         if (paoFields != null) {
             for (Iterator it = paoFields.iterator(); it.hasNext();) {
@@ -122,6 +122,7 @@ public class DDFRecord implements DDFConstants {
         /*      As a side effect this will read the data for the record as well.*/
         /* -------------------------------------------------------------------- */
         if (!nReuseHeader) {
+            Debug.message("iso8211", "DDFRecord reusing header, calling readHeader()");
             return readHeader();
         }
 
@@ -201,17 +202,22 @@ public class DDFRecord implements DDFConstants {
         byte _leaderIden;
     
         try {
-            _recLength = Integer.valueOf(new String(achLeader, 0, 5)).intValue();
-            _fieldAreaStart = Integer.valueOf(new String(achLeader, 12, 5)).intValue();
+            String recLength = new String(achLeader, 0, 5);
+            String fieldAreaStart = new String(achLeader, 12, 5);
+            _recLength = Integer.valueOf(recLength).intValue();
+            _fieldAreaStart = Integer.valueOf(fieldAreaStart).intValue();
         } catch (NumberFormatException nfe) {
 
-            // Turns out, this usually indicates the end of a file,
-            // with "^^^^^^^" being in the file.  Might be filler.
+            // Turns out, this usually indicates the end of the header information, 
+            // with "^^^^^^^" being in the file.  This is filler.
             if (Debug.debugging("iso8211")) {
+                Debug.output("Finished reading headers");
+            }
+            if (Debug.debugging("iso8211detail")) {
                 Debug.error("DDFRecord.readHeader(): " + nfe.getMessage());
                 nfe.printStackTrace();
             } else {
-                Debug.output("Data record appears to be corrupt on DDF file.\n -- ensure that the files were uncompressed without modifying\n carriage return/linefeeds (by default WINZIP does this).");
+//                 Debug.output("Data record appears to be corrupt on DDF file.\n -- ensure that the files were uncompressed without modifying\n carriage return/linefeeds (by default WINZIP does this).");
             }
 
             return false;
@@ -228,20 +234,41 @@ public class DDFRecord implements DDFConstants {
 
         nFieldOffset = _fieldAreaStart - DDF_LEADER_SIZE;
 
+        if (Debug.debugging("iso8211")) {
+            Debug.output("\trecord length [0,5] = " + _recLength);
+            Debug.output("\tfield area start [12,5]= " + _fieldAreaStart);
+            Debug.output("\tleader id [6] = " + (char)_leaderIden + ", reuse header = " + nReuseHeader);
+            Debug.output("\tfield length [20] = " + _sizeFieldLength);
+            Debug.output("\tfield position [21] = " + _sizeFieldPos);
+            Debug.output("\tfield tag [23] = " + _sizeFieldTag);
+        }
+
+        boolean readSubfields = false;
+
         /* -------------------------------------------------------------------- */
         /*      Is there anything seemly screwy about this record?              */
         /* -------------------------------------------------------------------- */
-        if (_recLength < 24 || _recLength > 100000000
+        if (_recLength == 0) {
+            // Looks like for record lengths of zero, we really want
+            // to consult the size of the fields before we try to read
+            // in all of the data for this record.  Most likely, we
+            // don't, and want to access the data later only when we
+            // need it.
+
+            nDataSize = _fieldAreaStart - DDF_LEADER_SIZE;
+        } else if (_recLength < 24 || _recLength > 100000000
             || _fieldAreaStart < 24 || _fieldAreaStart > 100000) {
+
             Debug.error("DDFRecord: Data record appears to be corrupt on DDF file.\n -- ensure that the files were uncompressed without modifying\n carriage return/linefeeds (by default WINZIP does this).");
-        
             return false;
+        } else {
+            /* -------------------------------------------------------------------- */
+            /*      Read the remainder of the record.                               */
+            /* -------------------------------------------------------------------- */
+            nDataSize = _recLength - DDF_LEADER_SIZE;
+            readSubfields = true;
         }
 
-        /* -------------------------------------------------------------------- */
-        /*      Read the remainder of the record.                               */
-        /* -------------------------------------------------------------------- */
-        nDataSize = _recLength - DDF_LEADER_SIZE;
         pachData = new byte[nDataSize];
 
         if (poModule.read(pachData, 0, nDataSize) != nDataSize) {
@@ -295,13 +322,26 @@ public class DDFRecord implements DDFConstants {
                 return false;
             }
 
-            /* -------------------------------------------------------------------- */
-            /*      Assign info the DDFField.                                       */
-            /* -------------------------------------------------------------------- */
-            byte[] tempData = new byte[nFieldLength];
-            System.arraycopy(pachData,  _fieldAreaStart + nFieldPos - DDF_LEADER_SIZE, tempData, 0, tempData.length);
+            DDFField ddff = null;
 
-            paoFields.add(new DDFField(poFieldDefn, tempData));
+            if (readSubfields) {
+
+                /* -------------------------------------------------------------------- */
+                /*      Assign info the DDFField.                                       */
+                /* -------------------------------------------------------------------- */
+                byte[] tempData = new byte[nFieldLength];
+                System.arraycopy(pachData,  _fieldAreaStart + nFieldPos - DDF_LEADER_SIZE, 
+                                 tempData, 0, tempData.length);
+
+                ddff = new DDFField(poFieldDefn, tempData, readSubfields);
+
+            } else {
+
+                // Save the info for reading later directly out of the field.
+                ddff = new DDFField(poFieldDefn, nFieldPos, nFieldLength);
+            }
+
+            paoFields.add(ddff);
         }
 
         return true;
@@ -322,7 +362,7 @@ public class DDFRecord implements DDFConstants {
     public DDFField findField(String pszName, int iFieldIndex) {
         for (Iterator it = paoFields.iterator(); it.hasNext();) {
             DDFField ddff = (DDFField)it.next();
-            if (pszName.equals(ddff.getFieldDefn().getName())) {
+            if (pszName.equalsIgnoreCase(ddff.getFieldDefn().getName())) {
                 if (iFieldIndex == 0) {
                     return ddff;
                 } else {
@@ -346,6 +386,16 @@ public class DDFRecord implements DDFConstants {
         } catch (ArrayIndexOutOfBoundsException aioobe) {
             return null;
         }
+    }
+
+    /**
+     * Get an interator over the fields.
+     */
+    public Iterator iterator() {
+        if (paoFields != null) {
+            return paoFields.iterator();
+        }
+        return null;
     }
 
     /**

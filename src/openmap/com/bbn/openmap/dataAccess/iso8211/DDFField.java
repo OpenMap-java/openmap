@@ -23,6 +23,14 @@
 package com.bbn.openmap.dataAccess.iso8211;
 
 import com.bbn.openmap.layer.vpf.MutableInt;
+import com.bbn.openmap.util.Debug;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * This object represents one field in a DDFRecord.  This
@@ -34,6 +42,36 @@ import com.bbn.openmap.layer.vpf.MutableInt;
  */
 public class DDFField {
 
+    protected DDFFieldDefinition poDefn;
+    protected byte[] pachData;
+    protected Hashtable subfields;
+    protected int dataPosition;
+    protected int dataLength;
+    public DDFField() {}
+
+    public DDFField(DDFFieldDefinition poDefnIn, int dataPositionIn, int dataLengthIn) {
+        initialize(poDefnIn, null);
+        dataPosition = dataPositionIn;
+        dataLength = dataLengthIn;
+    }
+
+    public DDFField(DDFFieldDefinition poDefnIn, byte[] pachDataIn) {
+        this(poDefnIn, pachDataIn, true);
+    }
+
+    public DDFField(DDFFieldDefinition poDefnIn, byte[] pachDataIn, boolean doSubfields) {
+        initialize(poDefnIn, pachDataIn);
+        if (doSubfields) {
+            buildSubfields();
+        }
+    }
+
+    public void initialize(DDFFieldDefinition poDefnIn, byte[] pachDataIn) {
+        pachData = pachDataIn;
+        poDefn = poDefnIn;
+        subfields = new Hashtable();
+    }
+
     /**
      * Return the pointer to the entire data block for this record. This
      * is an internal copy, and shouldn't be freed by the application.
@@ -44,7 +82,9 @@ public class DDFField {
 
     /** Return the number of bytes in the data block returned by GetData(). */
     public int getDataSize() { 
-        return pachData.length; 
+        if (pachData != null) {
+            return pachData.length;
+        } else return 0; 
     }
 
     /** Fetch the corresponding DDFFieldDefn. */
@@ -52,25 +92,6 @@ public class DDFField {
         return poDefn; 
     }
     
-    protected DDFFieldDefinition poDefn;
-    protected byte[] pachData;
-
-
-    public DDFField() {}
-
-    public DDFField(DDFFieldDefinition poDefnIn, byte[] pachDataIn) {
-        initialize(poDefnIn, pachDataIn);
-    }
-
-    // Note, we implement no constructor for this class to make instantiation
-    // cheaper.  It is required that the Initialize() be called before anything
-    // else.
-
-    public void initialize(DDFFieldDefinition poDefnIn, byte[] pachDataIn) {
-        pachData = pachDataIn;
-        poDefn = poDefnIn;
-    }
-
     /**
      * Creates a string with variety of information about this field,
      * and all it's subfields is written to the given debugging file
@@ -81,14 +102,21 @@ public class DDFField {
      */
     public String toString() {
         StringBuffer buf = new StringBuffer("  DDFField:\n");
-        buf.append("      Tag = " + poDefn.getName() + "\n");
+        buf.append("\tTag = " + poDefn.getName() + "\n");
+        buf.append("\tDescription = " + poDefn.getDescription() + "\n");
         int size = getDataSize();
-        buf.append("      DataSize = " + size + "\n");
+        buf.append("\tDataSize = " + size + "\n");
 
-        buf.append("      Data = `");
+        if (pachData == null) {
+            buf.append("\tData position = " + dataPosition + "\n");
+            buf.append("\tData length = " + dataLength + "\n");
+            return buf.toString();
+        }
+
+        buf.append("\tData = ");
         for (int i = 0; i < Math.min(size, 40); i++) {
             if (pachData[i] < 32 || pachData[i] > 126) {
-                buf.append("\\" + (char)pachData[i]);
+                buf.append(" | " + (char)pachData[i]);
             } else {
                 buf.append(pachData[i]);
             }
@@ -100,28 +128,82 @@ public class DDFField {
         /* -------------------------------------------------------------------- */
         /*      dump the data of the subfields.                                 */
         /* -------------------------------------------------------------------- */
-        int iOffset = 0;
-        MutableInt nBytesConsumed = new MutableInt(0);
+        if (Debug.debugging("iso8211.raw")) {
+            int iOffset = 0;
+            MutableInt nBytesConsumed = new MutableInt(0);
 
-        for (int nLoopCount = 0; nLoopCount < getRepeatCount(); nLoopCount++) {
-            if (nLoopCount > 8) {
-                buf.append("      ...\n");
-                break;
-            }
+            for (int nLoopCount = 0; nLoopCount < getRepeatCount(); nLoopCount++) {
+                if (nLoopCount > 8) {
+                    buf.append("      ...\n");
+                    break;
+                }
         
-            for (int i = 0; i < poDefn.getSubfieldCount(); i++) {
-                byte[] subPachData = new byte[pachData.length - iOffset];
-                System.arraycopy(pachData, iOffset, subPachData, 0, subPachData.length);
+                for (int i = 0; i < poDefn.getSubfieldCount(); i++) {
+                    byte[] subPachData = new byte[pachData.length - iOffset];
+                    System.arraycopy(pachData, iOffset, subPachData, 0, subPachData.length);
 
-                buf.append(poDefn.getSubfield(i).dumpData(subPachData, subPachData.length));
+                    buf.append(poDefn.getSubfieldDefn(i).dumpData(subPachData, subPachData.length));
                 
-                poDefn.getSubfield(i).getDataLength(subPachData, subPachData.length, 
-                                                    nBytesConsumed);
-                iOffset += nBytesConsumed.value;
+                    poDefn.getSubfieldDefn(i).getDataLength(subPachData, subPachData.length, 
+                                                            nBytesConsumed);
+                    iOffset += nBytesConsumed.value;
+                }
+            }
+        } else {
+            buf.append("      Subfields:\n");
+
+            for (Enumeration enum = subfields.keys(); enum.hasMoreElements();) {
+                Object obj = subfields.get(enum.nextElement());
+
+
+                if (obj instanceof List) {
+                    for (Iterator it = ((List)obj).iterator(); it.hasNext();) {
+                        DDFSubfield ddfs = (DDFSubfield)it.next();
+                        buf.append("        " + ddfs.toString() + "\n");
+                    }
+                } else {
+                    buf.append("        " + obj.toString() + "\n");
+                }
             }
         }
 
         return buf.toString();
+    }
+
+    /**
+     * Will return an ordered list of DDFSubfield objects.  If the
+     * subfield wasn't repeated, it will provide a list containing one
+     * object.  Will return null if the subfield doesn't exist.
+     */
+    public List getSubfields(String subfieldName) {
+        Object obj = subfields.get(subfieldName);
+        if (obj instanceof List) {
+            return (List) obj;
+        } else {
+            LinkedList ll = new LinkedList();
+            ll.add(obj);
+            return ll;
+        }
+    }
+
+    /**
+     * Will return a DDFSubfield object with the given name, or the
+     * first one off the list for a repeating subfield. Will return
+     * null if the subfield doesn't exist.
+     */
+    public DDFSubfield getSubfield(String subfieldName) {
+        Object obj = subfields.get(subfieldName);
+        if (obj instanceof List) {
+            List l = (List)obj;
+            if (!l.isEmpty()) {
+                return (DDFSubfield)(l.get(0));
+            }
+            obj = null;
+        }
+
+        // May be null if subfield list above is empty.  Not sure if
+        // that's possible.
+        return (DDFSubfield) obj;
     }
 
     /**
@@ -161,7 +243,7 @@ public class DDFField {
         MutableInt nBytesConsumed = new MutableInt(0);
         while (iSubfieldIndex >= 0) {
             for (int iSF = 0; iSF < poDefn.getSubfieldCount(); iSF++) {
-                DDFSubfieldDefinition poThisSFDefn = poDefn.getSubfield(iSF);
+                DDFSubfieldDefinition poThisSFDefn = poDefn.getSubfieldDefn(iSF);
             
                 byte[] subPachData = new byte[pachData.length - iOffset];
                 System.arraycopy(pachData, iOffset, subPachData, 0, subPachData.length);
@@ -188,19 +270,67 @@ public class DDFField {
         return null;
     }
 
+    public void buildSubfields() {
+        byte[] pachFieldData = pachData;
+        int nBytesRemaining = pachData.length;
+
+        for (int iRepeat = 0; iRepeat < getRepeatCount(); iRepeat++) {
+
+            /* -------------------------------------------------------- */
+            /*   Loop over all the subfields of this field, advancing   */
+            /*   the data pointer as we consume data.                   */
+            /* -------------------------------------------------------- */
+            for (int iSF = 0; iSF < poDefn.getSubfieldCount(); iSF++) {
+
+                DDFSubfield ddfs = new DDFSubfield(poDefn.getSubfieldDefn(iSF), 
+                                                   pachFieldData,
+                                                   nBytesRemaining);
+
+                addSubfield(ddfs);
+
+                // Reset data for next subfield;
+                int nBytesConsumed = ddfs.getByteSize();
+                nBytesRemaining -= nBytesConsumed;
+                byte[] tempData = new byte[pachFieldData.length - nBytesConsumed];
+                System.arraycopy(pachFieldData, nBytesConsumed, tempData, 0, tempData.length);
+                pachFieldData  = tempData;
+            }
+        }
+
+    }
+
+    protected void addSubfield(DDFSubfield ddfs) {
+        if (Debug.debugging("iso8211")) {
+            Debug.output("DDFField.addSubfield(" + ddfs + ")");
+        }
+
+        String sfName = ddfs.getDefn().getName();
+        Object sf = subfields.get(sfName);
+        if (sf == null) {
+            subfields.put(sfName, ddfs);
+        } else {
+            if (sf instanceof List) {
+                ((List)sf).add(ddfs);
+            } else {
+                Vector subList = new Vector();
+                subList.add(sf);
+                subList.add(ddfs);
+                subfields.put(sfName, subList);
+            }
+        }
+    }
+
     /**
      * How many times do the subfields of this record repeat?  This    
      * will always be one for non-repeating fields.
      *
      * @return The number of times that the subfields of this record occur
      * in this record.  This will be one for non-repeating fields.
-     *
-     * @see <a href="example.html">8211view example program</a>
-     * for demonstation of handling repeated fields properly.
      */
     public int getRepeatCount() {
-        if (!poDefn.isRepeating())
+        if (!poDefn.isRepeating()) {
             return 1;
+        }
 
         /* -------------------------------------------------------------------- */
         /*      The occurance count depends on how many copies of this          */
@@ -225,7 +355,7 @@ public class DDFField {
 
         while (true) {
             for (int iSF = 0; iSF < poDefn.getSubfieldCount(); iSF++) {
-                DDFSubfieldDefinition poThisSFDefn = poDefn.getSubfield(iSF);
+                DDFSubfieldDefinition poThisSFDefn = poDefn.getSubfieldDefn(iSF);
                 
                 if (poThisSFDefn.getWidth() > pachData.length - iOffset) {
                     nBytesConsumed.value = poThisSFDefn.getWidth();
