@@ -56,6 +56,10 @@ PRG=`pwd`/$PRG >/dev/null 2>&1
 
 TEST=/usr/bin/test
 
+if [ ! -f $TEST ] ; then
+    TEST=/bin/test
+fi
+
 #
 # If PRG is a symlink, trace it to the real home directory
 #
