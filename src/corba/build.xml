@@ -72,7 +72,7 @@
 
   <target name="jdkcorba.idl" depends="init.corba"
 	  description="Create stub classes from idl files and compile stubs."
-	  unless="idl.compiled,do.visibroker"
+	  unless="idl.compiled"
 	  if="idl.compiler">
     <echo message="Creating CORBA stub classes from idls with JDK CORBA..."/>
     
