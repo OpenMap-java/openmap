@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/18 00:44:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -173,6 +173,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 		// on another graphic.  If it is (null), then
 		// deactivate and try again.  If it fails again, then
 		// the tool can't handle the omgr.
+
+		// This is fine for OMGraphics that are not near to each other, but not for neighbors.
 		if (dt.edit(omgr, layer, e) == null) {
 		    dt.deactivate();
 		    dt.edit(omgr, layer, e);
@@ -255,8 +257,6 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	return false;
     }
 
-    OMGraphic lastSelected = null;
-
     /**
      * Invoked when the mouse button has been moved on a component
      * (with no buttons down).
@@ -264,32 +264,39 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      * @return false
      */
     public boolean mouseMoved(MouseEvent e) {  
-	
 	OMGraphic omgr = ((OMGraphicList)getList()).findClosest(e.getX(),e.getY(),4.0f);
-	boolean ret = false;
 
 	if (omgr != null) {
-//  	    fireRequestInfoLine("Click to edit graphic.");
+// 	    fireRequestInfoLine("Click to edit graphic.");
 	    if (showHints) {
-		fireRequestToolTip(e, "Click to Edit");
+		String tt = getToolTipForOMGraphic(omgr);
+		if (tt != null) {
+		    fireRequestToolTip(e, tt);
+		    return true;
+		} else {
+		    fireHideToolTip(e);
+		}
 	    }
-	    ret = true;
 	} else {
-//  	    fireRequestInfoLine("");
+// 	    fireRequestInfoLine("");
 	    if (showHints) {
 		fireHideToolTip(e);
 	    }
-	    if (lastSelected != null) {
-		lastSelected.deselect();
-		lastSelected.generate(getProjection());
-		lastSelected = null;
-		repaint();
-	    }
 	}
-
-	return ret;
+	return false;
     }
     
+    /**
+     * Called by default in the MouseMoved method, in order to fire a
+     * ToolTip for a particular OMGraphic.  Return a String if you
+     * want a ToolTip displayed, null if you don't.  By default,
+     * returns 'Click to Edit'.  You can override and change, and also
+     * return different String for different OMGraphics.
+     */
+    protected String getToolTipForOMGraphic(OMGraphic omgr) {
+	return "Click to Edit";
+    }
+
     /**
      * Handle a mouse cursor moving without the button being pressed.
      * Another layer has consumed the event.

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayerMouseMode.java,v $
 // $RCSfile: EditorLayerMouseMode.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/18 00:44:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,15 @@ package com.bbn.openmap.layer.editor;
 
 import com.bbn.openmap.event.SelectMouseMode;
 
+/**
+ *  The EditorLayerMouseMode is a mouse mode that is made active when
+ *  the EditorTool needs events.  It serves to ensure that the
+ *  EditorLayer is the only layer receiving events from the MapBean
+ *  when the EditorTool needs them, with the addition bonus of being
+ *  invisible.  The EditorTool should take care of indicating what it
+ *  is doing with the MouseEvents, by creating certain OMGraphics,
+ *  selecting certain types of objects, etc.
+ */
 public class EditorLayerMouseMode extends SelectMouseMode {
 
     /**

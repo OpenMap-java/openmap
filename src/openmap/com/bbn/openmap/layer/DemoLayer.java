@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/18 00:44:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -834,8 +834,11 @@ public class DemoLayer extends OMGraphicHandlerLayer
 	boolean ret = false;
 
 	if (omgr != null) {
-	    fireRequestInfoLine("Click to edit graphic.");
-	    fireRequestToolTip(e, "Demo Layer Object");
+	    DrawingTool dt = getDrawingTool();
+	    if (dt != null && dt.canEdit(omgr.getClass())) {
+		fireRequestInfoLine("Click to edit graphic.");
+		fireRequestToolTip(e, "Demo Layer Object");
+	    }
 	    ret = true;
 	}
 	else {
