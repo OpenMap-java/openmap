@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION(OpenMap $Revision: 1.19 $)
+AC_REVISION(OpenMap $Revision: 1.20 $)
 AC_INIT(openmap.mk.in)
 
 #
@@ -104,18 +104,6 @@ dnl Checks for library functions.
 dnl Checks for packages
 AC_ARG_WITH(jdk, [  --with-jdk=JDK_HOME     Home directory of JDK])
 AC_ARG_WITH(swing, [  --with-swing=JARFILE    Swing jar file])
-AC_ARG_WITH(specialist, [  --with-specialist       Build CORBA Specialists])
-
-AC_SUBST(layer_build_targets)
-AC_SUBST(layer_clean_targets)
-
-if test "x$with_specialist" = "xyes"; then
-  layer_build_targets="$layer_build_targets specialist_all"
-  layer_clean_targets="$layer_clean_targets specialist_clean"
-  CORBA_CLASSPATH=\$\{TOP\}/lib/vbjall.jar\$\{CLASSPATH_SEP\}\$\{TOP\}/lib/cspec58.jar
-  AC_SUBST(CORBA_CLASSPATH)
-  CORBA_DIRS="com/bbn/openmap/layer/specialist/Makefile com/bbn/openmap/layer/specialist/vpf/Makefile"
-fi
 
 DEFAULT_TARGET=all
 AC_SUBST(DEFAULT_TARGET)
@@ -166,7 +154,6 @@ AC_OUTPUT(openmap.mk
 	com/bbn/openmap/layer/util/http/Makefile
 	com/bbn/openmap/layer/util/stateMachine/Makefile
 	com/bbn/openmap/layer/vpf/Makefile
-	$CORBA_DIRS
 	)
 
 AC_OUTPUT_COMMANDS([echo "chmod +x bin/openmap"],[chmod +x bin/openmap])
