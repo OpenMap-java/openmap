@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SavePropertiesMenuItem.java,v $
 // $RCSfile: SavePropertiesMenuItem.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/06 02:31:29 $
+// $Revision: 1.2 $
+// $Date: 2003/03/06 03:47:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,7 +45,7 @@ public class SavePropertiesMenuItem extends MapHandlerMenuItem
     implements ActionListener {
 
     public SavePropertiesMenuItem() {
-	super("Save Map...");
+	super("Save Map Properties");
 	addActionListener(this);
     }
 

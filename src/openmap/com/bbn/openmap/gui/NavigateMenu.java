@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigateMenu.java,v $
 // $RCSfile: NavigateMenu.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 02:36:21 $
+// $Revision: 1.3 $
+// $Date: 2003/03/06 03:47:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,10 +30,14 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Iterator;
 
-import com.bbn.openmap.*;
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.gui.menu.ProjectionMenu;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.event.*;
+import com.bbn.openmap.event.ProjectionSupport;
+import com.bbn.openmap.event.ZoomEvent;
+import com.bbn.openmap.event.ZoomListener;
+import com.bbn.openmap.event.ZoomSupport;
 
 /**
  * Provides MenuItems that lets users control the projection.  This
@@ -42,7 +46,7 @@ import com.bbn.openmap.event.*;
  * menu, and zooming choices.
  */
 public class NavigateMenu extends AbstractOpenMapMenu 
-  implements ActionListener, MenuBarMenu {
+  implements ActionListener {
 
     public static final String defaultText = "Navigate";
     public static final int defaultMnemonic = 'N';
@@ -212,12 +216,14 @@ public class NavigateMenu extends AbstractOpenMapMenu
     }
    
     public void findAndInit(Object someObj) {
+	super.findAndInit(someObj);
 	if(someObj instanceof MapBean) {
 	    setupListeners((MapBean)someObj);
 	}
     }
 
     public void findAndUndo(Object someObj) {
+	super.findAndUndo(someObj);
 	if(someObj instanceof MapBean) {
 	    undoListeners((MapBean)someObj);
 	}

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/LoadPropertiesMenuItem.java,v $
 // $RCSfile: LoadPropertiesMenuItem.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/06 02:31:29 $
+// $Revision: 1.2 $
+// $Date: 2003/03/06 03:47:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,7 +46,7 @@ public class LoadPropertiesMenuItem extends MapHandlerMenuItem
     implements ActionListener {
 
     public LoadPropertiesMenuItem() {
-	super("Load Map...");
+	super("Load Map Properties");
 	addActionListener(this);
     }
 

@@ -12,37 +12,41 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/ProjectionMenu.java,v $
+// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/ProjectionMenu.java,v $
 // $RCSfile: ProjectionMenu.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.1 $
+// $Date: 2003/03/06 03:47:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 
-package com.bbn.openmap.gui;
+package com.bbn.openmap.gui.menu;
 
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
-import java.util.*;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.event.ProjectionListener;
+import com.bbn.openmap.event.ProjectionSupport;
+import com.bbn.openmap.gui.AbstractOpenMapMenu;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.Debug;
 
 /**
- *  Provides ProjectionMenu items
+ *  Provides ProjectionMenu items for selecting Projection type.
  */
 public class ProjectionMenu extends AbstractOpenMapMenu 
   implements ActionListener, ProjectionListener {
 
-    protected ProjectionSupport projectionSupport= new ProjectionSupport(this);
+    protected transient ProjectionSupport projectionSupport = new ProjectionSupport(this);
     protected transient Projection projection;
-    protected transient java.awt.Component projComponent;
+    protected transient Component projComponent;
     public final static transient String projCmd = "setProj";
-    
     
     /**
      * Create the projection submenu.
@@ -75,11 +79,9 @@ public class ProjectionMenu extends AbstractOpenMapMenu
 	    JRadioButtonMenuItem rb = (JRadioButtonMenuItem)(ae.getSource());
 	    int projType = Short.parseShort(rb.getName());
 	    Debug.message("projectionmenu", "ProjectionMenu.projType: " + projType);
-	    Projection newProj =
-		ProjectionFactory.makeProjection(projType, projection);
+	    Projection newProj = ProjectionFactory.makeProjection(projType, projection);
 	    fireProjectionChanged(newProj);
 	}
-	
     }
     
     //------------------------------------------------------------
@@ -87,7 +89,8 @@ public class ProjectionMenu extends AbstractOpenMapMenu
     //------------------------------------------------------------
     
     /**
-     * The Map projection has changed.
+     * The Map projection has changed, in order to baseline new
+     * changes as a result of menu options being selected.
      * @param e ProjectionEvent
      */
     public void projectionChanged(ProjectionEvent e) {
@@ -98,8 +101,8 @@ public class ProjectionMenu extends AbstractOpenMapMenu
 	if (projection == null ||  (! projection.equals(newProj))) {
 	    setProjection((Projection) newProj.makeClone());
 	    Object source = e.getSource();
-	    if (source instanceof java.awt.Component) {
-		projComponent = (java.awt.Component)source;
+	    if (source instanceof Component) {
+		projComponent = (Component)source;
 	    }
 	}
     }
@@ -128,8 +131,6 @@ public class ProjectionMenu extends AbstractOpenMapMenu
 	}
     }
     
-    
-    
     /** 
      *  Convenience function for setting up listeners
      */
@@ -147,44 +148,39 @@ public class ProjectionMenu extends AbstractOpenMapMenu
 	map.removeProjectionListener(this);   
     }
     
-    
     /*----------------------------------------------------------------------
      * Projection Support - for broadcasting projection changed events
      *----------------------------------------------------------------------*/
-    
     /**
-     *
+     * Add a ProjectionListener to this menu and its components.
      */
     protected synchronized void addProjectionListener(ProjectionListener l) {
 	projectionSupport.addProjectionListener(l);
     }
     
-    
     /**
-     *
+     * Remove a ProjectionListener from this menu and its components.
      */
     protected synchronized void removeProjectionListener(ProjectionListener l) {
 	projectionSupport.removeProjectionListener(l);
     }
-    
-    
+        
     /**
-     *
+     * Fire the changed projection from the support.
      */
     public void fireProjectionChanged(Projection p) {
 	projectionSupport.fireProjectionChanged(p);
     }
     
-    public void findAndInit(Iterator it) {
-	Object someObj;
-	while (it.hasNext()) {
-	    someObj = it.next();
-	    if (someObj instanceof MapBean) {
-		setupListeners((MapBean)someObj);
-	    }
+    public void findAndInit(Object someObj) {
+	if (someObj instanceof MapBean) {
+	    setupListeners((MapBean)someObj);
 	}
     }
     
-    public void findAndUnInit(Iterator it) {
+    public void findAndUndo(Object someObj) {
+	if (someObj instanceof MapBean) {
+	    undoListeners((MapBean)someObj);
+	}
     }
 }
