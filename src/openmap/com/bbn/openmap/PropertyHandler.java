@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.18 $
-// $Date: 2004/01/26 18:18:05 $
+// $Revision: 1.19 $
+// $Date: 2004/02/06 00:00:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1080,6 +1080,9 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
             TreeMap orderedProperties = new TreeMap(layerProperties);
             for (Iterator keys = orderedProperties.keySet().iterator(); keys.hasNext();) {
                 String key = (String) keys.next();
+                // Could add .replace("\\", "/") to the end of this
+                // line to prevent \\ from appearing in the properties
+                // file.
                 String value = layerProperties.getProperty(key);
 
                 if (value != null) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.17 $
-// $Date: 2004/02/04 22:35:29 $
+// $Revision: 1.18 $
+// $Date: 2004/02/06 00:00:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1277,6 +1277,28 @@ public abstract class Layer extends JComponent
             Frame frame = null;
             if (mh != null) {
                 frame = (Frame)mh.get(java.awt.Frame.class);
+
+                if (frame == null) {
+                    MapBean mapBean = (MapBean) mh.get("com.bbn.openmap.MapBean");
+                    if (mapBean == null) {
+                        Debug.message("layer", "Layer.showPalette: Warning...mapBean = null");
+                    } else {
+                        try {
+                            java.awt.Component parent = mapBean.getParent();
+                            while (parent.getParent() != null &&
+                                   !(parent instanceof java.awt.Frame)) {
+                                parent = parent.getParent();
+                            }
+
+                            if (parent instanceof java.awt.Frame) {
+                                frame = (java.awt.Frame) parent;
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } // ignore any problems here
+                    }
+                }
             }
 
             if (paletteListener != null) {
