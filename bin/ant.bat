@@ -60,9 +60,7 @@ set OPENMAP_CLASSPATH=%CLASSPATH%
 for %%i in ("%OPENMAP_ANT_HOME%\lib\*.jar") do call "%OPENMAP_ANT_HOME%\bin\lcp.bat" "%%i"
 
 if "%JAVA_HOME%" == "" goto noJavaHome
-if "%_JAVACMD%" == "" set _JAVACMD=%JAVA_HOME%\bin\java
-if exist "%JAVA_HOME%\lib\tools.jar" call "%ANT_HOME%\bin\acp.bat" "%JAVA_HOME%\lib\tools.jar"
-if exist "%JAVA_HOME%\lib\classes.zip" call "%ANT_HOME%\bin\acp.bat" "%JAVA_HOME%\lib\classes.zip"
+if "%_JAVACMD%" == "" set _JAVACMD=%JAVA_HOME%\bin\java.exe
 goto checkJikes
 
 :noJavaHome
