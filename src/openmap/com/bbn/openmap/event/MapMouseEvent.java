@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseEvent.java,v $
 // $RCSfile: MapMouseEvent.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/05/10 20:40:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -74,4 +74,13 @@ public class MapMouseEvent extends MouseEvent {
     public MapMouseMode getMapMouseMode() {
         return mapMouseMode;
     }
+
+    /**
+     * Returns a String representation of this object.
+     */
+    public String paramString() {
+        return super.paramString() + " " + getLatLon();
+    }
+
+
 }
