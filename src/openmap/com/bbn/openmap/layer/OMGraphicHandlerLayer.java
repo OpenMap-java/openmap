@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/08/28 22:16:41 $
+// $Revision: 1.7 $
+// $Date: 2003/09/04 18:17:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -274,6 +274,8 @@ public class OMGraphicHandlerLayer extends Layer {
      */
     public void setProjectionChangePolicy(ProjectionChangePolicy pcp) {
 	projectionChangePolicy = pcp;
+	// Just to make sure, 
+	pcp.setLayer(this);
     }
 
     /**
@@ -293,6 +295,8 @@ public class OMGraphicHandlerLayer extends Layer {
      */
     public void setRenderPolicy(RenderPolicy rp) {
 	renderPolicy = rp;
+	// Just to make sure, 
+	rp.setLayer(this);
     }
 
     public void interrupt() {
