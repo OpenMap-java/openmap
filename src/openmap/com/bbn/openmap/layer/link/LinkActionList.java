@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkActionList.java,v $
 // $RCSfile: LinkActionList.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,9 +51,18 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
     protected String linkStatus = Link.END_TOTAL;
     /** */
     protected boolean reacted = false;
-    /** Instead of allocating a new empty vector for each gesture
+    /**
+     * This flag tells whether properties have been received that
+     * note how to update the map. 
+     */
+    protected boolean mapUpdate = false;
+    /** Use these properties to set the map */
+    protected LinkProperties mapProperties;
+    /**
+     * Instead of allocating a new empty vector for each gesture
      * response, even if there isn't a graphic update, use this to
-     * return an empty vector. */
+     * return an empty vector. 
+     */
     protected static Vector emptyGraphicUpdates = new Vector();
     /** Graphics list received. */
     protected Vector updates = null;
@@ -101,7 +110,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * 
      * @return either Link.END_TOTAL or Link.END_SECTION. 
      */
-    public String getLinkStatus(){
+    public String getLinkStatus() {
 	return linkStatus;
     }
 
@@ -112,8 +121,17 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      *
      * @return properties 
      */
-    public LinkProperties getProperties(){
+    public LinkProperties getProperties() {
 	return properties;
+    }
+
+    /**
+     * Get the properties for the map update.
+     *
+     * @return mapProperties
+     */
+    public LinkProperties getMapProperties() {
+        return mapProperties;
     }
 
     /**
@@ -123,8 +141,8 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      *
      * @return Vector of GraphicUpdate objects.
      */
-    public Vector getGraphicUpdates(){
-	if (updates == null){
+    public Vector getGraphicUpdates() {
+	if (updates == null) {
 	    return emptyGraphicUpdates;
 	} else {
 	    return updates;
@@ -177,8 +195,8 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
 
 	float ver = link.dis.readFloat();
 
-	if (ver != version){
-	    if (ver == .1){// Big difference....
+	if (ver != version) {
+	    if (ver == .1) {// Big difference....
 		throw new IOException("LinkActionList: Versions do not match! DANGER!");
 	    } else {
 		Debug.message("link", "LinkActionList: Versions do not match");
@@ -189,18 +207,20 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
 
 	Debug.message("link", "LinkActionList: reading actions:");
 
-	while (true){
+	while (true) {
 	    graphic = null;
 	    // Just consume the header, don't create a useless
 	    // string object.
 	    header = link.readDelimiter(false);
 	    
-	    if (header == Link.END_TOTAL || header == Link.END_SECTION){
+	    if (header == Link.END_TOTAL || header == Link.END_SECTION) {
 		
 		long endTime = System.currentTimeMillis();
-		Debug.message("link", "LinkActionList: received in " + 
-			      (float)(endTime - startTime)/1000.0f + 
-			      " seconds");
+		if (Debug.debugging("link")) {
+		    Debug.output("LinkActionList: received in " + 
+				 (float)(endTime - startTime)/1000.0f + 
+				 " seconds");
+		}
 		
 		return header;
 	    }
@@ -209,25 +229,29 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
 	    int length;
 	    String data;
 
-	    switch (gestureType){
+	    switch (gestureType) {
 	    case ACTION_GRAPHICS:
 		int graphicAction = link.dis.readInt();
 
-		if (updates == null){
+		if (updates == null) {
 		    updates = new Vector();
 		}
 
 		if (LinkUtil.isMask(graphicAction, UPDATE_ADD_GRAPHIC_MASK) ||
-		    LinkUtil.isMask(graphicAction, UPDATE_GRAPHIC_MASK)){
+		    LinkUtil.isMask(graphicAction, UPDATE_GRAPHIC_MASK)) {
 		    updates.addElement(readGraphic(graphicAction, proj, generator));
 		} else {
 		    LinkProperties props = new LinkProperties(link);
 		    updates.addElement(new GraphicUpdate(graphicAction, 
-				       props.getProperty(LPC_GRAPHICID)));
+							 props.getProperty(LPC_GRAPHICID)));
 		}
 		reacted = true;
 		break;
 	    case ACTION_GUI:
+		break;
+	    case ACTION_MAP:
+		mapUpdate = true;
+                mapProperties = new LinkProperties(link);
 		break;
 	    default:
 		System.err.println("LinkActionList: received unknown gesture type.");
@@ -253,13 +277,13 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
 	String header = link.readDelimiter(false);
 	
 	// Sanity check
-	if (header == Link.END_TOTAL || header == Link.END_SECTION){
+	if (header == Link.END_TOTAL || header == Link.END_SECTION) {
 	    return null;
 	}
 
 	int graphicType = link.dis.readInt();
 	    
-	switch (graphicType){
+	switch (graphicType) {
 	case LinkGraphicList.GRAPHICTYPE_LINE:
 	    graphic = LinkLine.read(link.dis);
 	    break;
@@ -287,12 +311,15 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
 	case LinkGraphicList.GRAPHICTYPE_GRID:
 	    graphic = LinkGrid.read(link.dis);
 	    break;
+	case LinkGraphicList.GRAPHICTYPE_ARC:
+	    graphic = LinkArc.read(link.dis);
+	    break;
 	default:
 	    System.err.println("LinkActionList: received unknown graphic type.");
 	}
 
-	if (graphic != null && proj != null){
-	    if (graphic instanceof OMGrid){
+	if (graphic != null && proj != null) {
+	    if (graphic instanceof OMGrid) {
 		((OMGrid)graphic).setGenerator(generator);
 	    }
 	    graphic.generate(proj);
@@ -302,8 +329,21 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
     }
 
     /** Returns true if the gesture was consumed by the server. */
-    public boolean consumedGesture(){
+    public boolean consumedGesture() {
 	return reacted;
+    }
+
+    /** Returns true if a map update command was given. */
+    public boolean getNeedMapUpdate() {
+        return mapUpdate;
+    }
+
+    /**
+     * Sets whether a set of MapUpdate parameters needs to be fetched.
+     * Should be reset to false after the map projection has been updated.
+     */
+    public void setNeedMapUpdate(boolean value) {
+	mapUpdate = value;
     }
 
     /** 
@@ -354,6 +394,141 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
 	link.dos.writeInt(graphicUpdateMask);
     }
 
+    /**
+     * Update an arc with lat/lon placement.
+     * @param latPoint latitude of center point, decimal degrees
+     * @param lonPoint longitude of center point, decimal degrees
+     * @param w horizontal diameter of arc, pixels
+     * @param h vertical diameter of arc, pixels
+     * @param s starting angle of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees
+     * @param properties attributes for the arc.
+     * @throws IOException
+     */
+    public void updateArc(float latPoint, float lonPoint,
+			  int w, int h, float s, float e,
+			  LinkProperties properties, int graphicUpdateMask)
+	throws IOException {
+	writeGraphicGestureHeader(graphicUpdateMask);
+	LinkArc.write(latPoint, lonPoint, 0, 0, w, h, s, e, 
+		      properties, link.dos);
+    }
+
+    /**
+     * Update an arc with x/y placement.
+     *
+     * @param x1 window position of center point from left of window, in pixels
+     * @param y1 window position of center point from top of window, in pixels
+     * @param w horizontal diameter of arc, pixels
+     * @param h vertical diameter of arc, pixels
+     * @param s starting angle of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees
+     * @param properties attributes for the arc.
+     * @throws IOException
+     */
+    public void updateArc(int x1, int y1, int w, int h,
+			  float s, float e,
+			  LinkProperties properties, int graphicUpdateMask)
+	throws IOException {
+	writeGraphicGestureHeader(graphicUpdateMask);
+	LinkArc.write(x1, y1, w, h, s, e, properties, link.dos);
+    }
+
+    /**
+     * Writing an arc at a x, y, offset to a Lat/Lon location.
+     *
+     * @param latPoint latitude of center of arc.
+     * @param lonPoint longitude of center of arc.
+     * @param offset_x1 # pixels to the right the center will be moved
+     * from lonPoint.
+     * @param offset_y1 # pixels down that the center will be moved
+     * from latPoint.
+     * @param w horizontal diameter of arc, pixels.
+     * @param h vertical diameter of arc, pixels.
+     * @param s starting angle of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees
+     * @param properties attributes for the arc.
+     * @throws IOException
+     */
+    public void updateArc(float latPoint, float lonPoint,
+			  int offset_x1, int offset_y1,
+			  int w, int h, float s, float e,
+			  LinkProperties properties, int graphicUpdateMask)
+	throws IOException {
+	writeGraphicGestureHeader(graphicUpdateMask);
+	LinkArc.write(latPoint, lonPoint, offset_x1, offset_y1, w, h, s, e, properties, link.dos);
+    }
+
+    /**
+     * Update an arc with a certain radius at a Lat/Lon location.
+     * Assumes the radius is in decimal degrees.
+     *
+     * @param latPoint latitude of center point, decimal degrees
+     * @param lonPoint longitude of center point, decimal degrees
+     * @param radius distance in decimal degrees
+     * @param s starting angle of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees
+     * @param properties attributes for the arc.
+     * @throws IOException
+     */
+    public void updateArc(float latPoint, float lonPoint, float radius,
+			  float s, float e,
+			  LinkProperties properties, int graphicUpdateMask)
+	throws IOException {
+	writeGraphicGestureHeader(graphicUpdateMask);
+	LinkArc.write(latPoint, lonPoint, radius, -1, -1, s, e, properties, link.dos);
+    }
+
+    /**
+     * Update an arc with a certain radius at a Lat/Lon location,
+     * and allows you to specify units of the radius.
+     *
+     * @param latPoint latitude of center of arc in decimal degrees
+     * @param lonPoint longitude of center of arc in decimal degrees
+     * @param radius distance
+     * @param units integer value for units for distance - KM, MILES,
+     * NMILES.  If &lt; 0, assume decimal degrees.
+     * @param s starting angle of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees
+     * @param properties attributes for the arc.
+     * @throws IOException
+     */
+    public void updateArc(float latPoint, float lonPoint,
+			  float radius, int units,
+			  float s, float e,
+			  LinkProperties properties, int graphicUpdateMask)
+	throws IOException {
+	writeGraphicGestureHeader(graphicUpdateMask);
+	LinkArc.write(latPoint, lonPoint, radius, units, -1, s, e, properties, link.dos);
+    }
+
+    /**
+     * Update an arc with a certain radius at a Lat/Lon location,
+     * and allows you to specify units of the radius, as well as the
+     * number of verticies to use to approximate the arc.
+     *
+     * @param latPoint latitude of center of arc in decimal degrees
+     * @param lonPoint longitude of center of arc in decimal degrees
+     * @param radius distance
+     * @param units integer value for units for distance - OMArc.KM, OMArc.MILES,
+     * OMArc.NMILES.  If &lt; 0, assume decimal degrees.
+     * @param nverts number of vertices for the poly-arc (if &lt; 3, value
+     * is generated internally).
+     * @param s starting angle of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees
+     * @param properties attributes for the arc.
+     * @throws IOException
+     */
+    public void updateArc(float latPoint, float lonPoint,
+			  float radius, int units, int nverts,
+			  float s, float e,
+			  LinkProperties properties, int graphicUpdateMask)
+	throws IOException {
+	writeGraphicGestureHeader(graphicUpdateMask);
+	LinkArc.write(latPoint, lonPoint, radius, units, nverts, s, e, properties, link.dos);
+    }
+
+
     /** 
      * Update the bitmap.
      * @param lt latitude of placement of upper left corner of bitmap.
@@ -386,7 +561,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkBitmap
      */
     public void updateBitmap(int x1, int y1, int w, int h, byte[] bytes, 
-			  LinkProperties properties, int graphicUpdateMask)
+			     LinkProperties properties, int graphicUpdateMask)
 	throws IOException {
 	writeGraphicGestureHeader(graphicUpdateMask);
 	LinkBitmap.write(x1, y1, w, h, bytes, properties, link.dos);
@@ -407,8 +582,8 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkBitmap
      */
     public void updateBitmap(float lt, float ln, int offset_x1, int offset_y1,
-			  int w, int h, byte[] bytes, 
-			  LinkProperties properties, int graphicUpdateMask)
+			     int w, int h, byte[] bytes, 
+			     LinkProperties properties, int graphicUpdateMask)
 	throws IOException {
 	writeGraphicGestureHeader(graphicUpdateMask);
 	LinkBitmap.write(lt, ln, offset_x1, offset_y1, w, h, bytes, properties, link.dos);
@@ -657,8 +832,8 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkLine
      */
     public void updateLine(float lat_1, float lon_1, float lat_2, float lon_2, 
-			int lineType, int nsegs, 
-			LinkProperties properties, int graphicUpdateMask)
+			   int lineType, int nsegs, 
+			   LinkProperties properties, int graphicUpdateMask)
 	throws IOException {
 	writeGraphicGestureHeader(graphicUpdateMask);
 	LinkLine.write(lat_1, lon_1, lat_2, lon_2, lineType, nsegs, properties, link.dos);
@@ -861,7 +1036,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(int x1, int y1, int w, int h, int[] pix, 
-			  LinkProperties properties, int graphicUpdateMask)
+			     LinkProperties properties, int graphicUpdateMask)
 	throws IOException {
 	writeGraphicGestureHeader(graphicUpdateMask);
 	LinkRaster.write(x1, y1, w, h, pix, properties, link.dos);
@@ -882,8 +1057,8 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(float lt, float ln, int offset_x1, int offset_y1,
-			  int w, int h, int[] pix, 
-			  LinkProperties properties, int graphicUpdateMask)
+			     int w, int h, int[] pix, 
+			     LinkProperties properties, int graphicUpdateMask)
 	throws IOException {
 	writeGraphicGestureHeader(graphicUpdateMask);
 	LinkRaster.write(lt, ln, offset_x1, offset_y1, w, h, pix, properties, link.dos);
@@ -900,7 +1075,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
     public void updateRaster(float lt, float ln, String url,
-			  LinkProperties properties, int graphicUpdateMask)
+			     LinkProperties properties, int graphicUpdateMask)
 	throws IOException {
 	writeGraphicGestureHeader(graphicUpdateMask);
 	LinkRaster.write(lt, ln, url, properties, link.dos);
@@ -1071,7 +1246,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
 	LinkRectangle.write(x1, y1, x2, y2, properties, link.dos);
     }
     
-   /** 
+    /** 
      * Write a rectangle in the response.
      * @param lt1 latitude of placement of upper left corner of bitmap.
      * @param ln1 longitude of placement of upper left corner of bitmap.
@@ -1126,7 +1301,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
 	LinkPoint.write(x1, y1, radius, properties, link.dos);
     }
     
-   /** 
+    /** 
      * Write a point in the response.
      * @param lt1 latitude of placement of upper left corner of bitmap.
      * @param ln1 longitude of placement of upper left corner of bitmap.
@@ -1163,7 +1338,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
 	LinkPoly.write(llPoints, units, lType, properties, link.dos);
     }
     
-   /** 
+    /** 
      * Write a poly in the response.
      * @param llpoints alternating latitude and logitude points of poly.
      * @param units degrees or radians.
@@ -1313,7 +1488,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
 		       stuff, LinkText.DEFAULT_FONT, justify, properties, link.dos);
     }
     
-   /** 
+    /** 
      * Write a text in the response.
      * @param latPoint latitude of placement of text.
      * @param lonPoint longitude of placement of text.

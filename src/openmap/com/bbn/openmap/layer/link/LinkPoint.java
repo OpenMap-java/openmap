@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkPoint.java,v $
 // $RCSfile: LinkPoint.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,9 +24,9 @@
 package com.bbn.openmap.layer.link;
 
 import com.bbn.openmap.omGraphics.OMPoint;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 import java.awt.BasicStroke;
 import java.io.DataInputStream;
@@ -60,9 +60,9 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
      * @param dos DataOutputStream
      * @throws IOException
      */
-    public static void write (float lt, float ln, int radius,
-			      LinkProperties properties, 
-			      DataOutputStream dos)
+    public static void write(float lt, float ln, int radius,
+			     LinkProperties properties, 
+			     DataOutputStream dos)
 	throws IOException {
 	
 	dos.write(Link.POINT_HEADER.getBytes());
@@ -85,9 +85,9 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
      * @param dos DataOutputStream
      * @throws IOException
      */
-    public static void write (int px1, int py1, int radius,
-			      LinkProperties properties,
-			      DataOutputStream dos)
+    public static void write(int px1, int py1, int radius,
+			     LinkProperties properties,
+			     DataOutputStream dos)
 	throws IOException { 
 	
 	dos.write(Link.POINT_HEADER.getBytes());
@@ -115,10 +115,10 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
      * @param dos DataOutputStream
      * @throws IOException
      */
-    public static void write (float lt, float ln, 
-			      int px1, int py1, int radius, 
-			      LinkProperties properties,
-			      DataOutputStream dos)
+    public static void write(float lt, float ln, 
+			     int px1, int py1, int radius, 
+			     LinkProperties properties,
+			     DataOutputStream dos)
 	throws IOException { 
 
 	dos.write(Link.POINT_HEADER.getBytes());
@@ -179,9 +179,8 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
 
 	int renderType = dis.readInt();
 	
-	switch (renderType){
+	switch (renderType) {
 	case RENDERTYPE_LATLON:
-	    int lineType = dis.readInt();
 	    lt = dis.readFloat();
 	    ln = dis.readFloat();
 	    radius = dis.readInt();
@@ -209,22 +208,10 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
 	}
 
 	LinkProperties properties = new LinkProperties(dis);
-
-	if (point != null){
-	    point.setLinePaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_LINECOLOR,
-		BLACK_COLOR_STRING, true));
-	    point.setFillPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_FILLCOLOR,
-		CLEAR_COLOR_STRING, true));
-	    point.setSelectPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_HIGHLIGHTCOLOR,
-		BLACK_COLOR_STRING, true));
-	    point.setStroke(new BasicStroke(LayerUtils.intFromProperties(
-		properties, LPC_LINEWIDTH, 1)));
-	    point.setOval(LayerUtils.booleanFromProperties(
-		properties, LPC_POINT_OVAL, OMPoint.DEFAULT_ISOVAL));
-	    point.setAppObject(properties);
+	if (point != null) {
+	    properties.setProperties(point);
+	    point.setOval(PropUtils.booleanFromProperties(
+			      properties, LPC_POINT_OVAL, OMPoint.DEFAULT_ISOVAL));
 	}
 	
 	return point;

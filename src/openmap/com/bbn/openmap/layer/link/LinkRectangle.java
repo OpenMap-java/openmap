@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkRectangle.java,v $
 // $RCSfile: LinkRectangle.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -49,10 +49,10 @@ public class LinkRectangle implements LinkGraphicConstants, LinkPropertiesConsta
      * @param dos DataOutputStream
      * @throws IOException
      */
-    public static void write (float lt1, float ln1, 
-			      float lt2, float ln2, 
-			      int lType, LinkProperties properties, 
-			      DataOutputStream dos)
+    public static void write(float lt1, float ln1, 
+			     float lt2, float ln2, 
+			     int lType, LinkProperties properties, 
+			     DataOutputStream dos)
 	throws IOException {
 	LinkRectangle.write (lt1, ln1, lt2, ln2, lType, -1, properties, dos);
     }
@@ -71,11 +71,11 @@ public class LinkRectangle implements LinkGraphicConstants, LinkPropertiesConsta
      * @param dos DataOutputStream
      * @throws IOException
      */
-    public static void write (float lt1, float ln1, 
-			      float lt2, float ln2, 
-			      int lType, int nsegs, 
-			      LinkProperties properties, 
-			      DataOutputStream dos)
+    public static void write(float lt1, float ln1, 
+			     float lt2, float ln2, 
+			     int lType, int nsegs, 
+			     LinkProperties properties, 
+			     DataOutputStream dos)
 	throws IOException {
 	
 	dos.write(Link.RECTANGLE_HEADER.getBytes());
@@ -107,9 +107,9 @@ public class LinkRectangle implements LinkGraphicConstants, LinkPropertiesConsta
      * @param dos DataOutputStream
      * @throws IOException
      */
-    public static void write (int px1, int py1, int px2, int py2, 
-			      LinkProperties properties,
-			      DataOutputStream dos)
+    public static void write(int px1, int py1, int px2, int py2, 
+			     LinkProperties properties,
+			     DataOutputStream dos)
 	throws IOException { 
 	
 	dos.write(Link.RECTANGLE_HEADER.getBytes());
@@ -141,10 +141,10 @@ public class LinkRectangle implements LinkGraphicConstants, LinkPropertiesConsta
      * @param dos DataOutputStream
      * @throws IOException
      */
-    public static void write (float lt1, float ln1, 
-			      int px1, int py1, int px2, int py2, 
-			      LinkProperties properties,
-			      DataOutputStream dos)
+    public static void write(float lt1, float ln1, 
+			     int px1, int py1, int px2, int py2, 
+			     LinkProperties properties,
+			     DataOutputStream dos)
 	throws IOException { 
 
 	dos.write(Link.RECTANGLE_HEADER.getBytes());
@@ -208,7 +208,7 @@ public class LinkRectangle implements LinkGraphicConstants, LinkPropertiesConsta
 
 	int renderType = dis.readInt();
 	
-	switch (renderType){
+	switch (renderType) {
 	case RENDERTYPE_LATLON:
 	    int lineType = dis.readInt();
 	    lt1 = dis.readFloat();
@@ -242,20 +242,8 @@ public class LinkRectangle implements LinkGraphicConstants, LinkPropertiesConsta
 	}
 
 	LinkProperties properties = new LinkProperties(dis);
-
-	if (rect != null){
-	    rect.setLinePaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_LINECOLOR,
-		BLACK_COLOR_STRING, true));
-	    rect.setFillPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_FILLCOLOR,
-		CLEAR_COLOR_STRING, true));
-	    rect.setSelectPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_HIGHLIGHTCOLOR,
-		BLACK_COLOR_STRING, true));
-	    rect.setStroke(new BasicStroke(LayerUtils.intFromProperties(
-		properties, LPC_LINEWIDTH, 1)));
-	    rect.setAppObject(properties);
+	if (rect != null) {
+	    properties.setProperties(rect);
 	}
 	
 	return rect;

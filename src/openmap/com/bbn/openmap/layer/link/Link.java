@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/Link.java,v $
 // $RCSfile: Link.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -58,7 +58,8 @@ public class Link implements LinkConstants {
     protected DataInputStream dis = null;
     /** Used to read/create strings from off the input stream. */
     protected char[] charArray = new char[MAX_HEADER_LENGTH];
-    /** Set for the client, by the server, to indicate whether the
+    /**
+     * Set for the client, by the server, to indicate whether the
      * socket should be closed.  By default, this will be false,
      * Used when the server wants to run in a stateless mode, and doesn't
      * care to maintain a connection with the client. It's included in
@@ -66,30 +67,50 @@ public class Link implements LinkConstants {
      * in the client.
      */
     protected boolean closeLink = false;
-    /** Used to retrieve any potential graphics queries that came in
-     *  over the link. */
+    /**
+     * Used to retrieve any potential graphics queries that came in
+     * over the link. 
+     */
     protected LinkMapRequest mapRequest = null;
-    /** Used to retrieve any potential graphics responses that came in
-     *  over the link. */
+    /**
+     * Used to retrieve any potential graphics responses that came in
+     * over the link. 
+     */
     protected LinkGraphicList graphicList = null;
-    /** Used to retrieve any potential gesture queries that came in
-     *  over the link. */
+    /**
+     * Used to retrieve any potential gesture queries that came in
+     * over the link. 
+     */
     protected LinkActionRequest actionRequest = null;
-    /** Used to retrieve any potential gesture responses that came in
-     *  over the link. */
+    /**
+     * Used to retrieve any potential gesture responses that came in
+     * over the link. 
+     */
     protected LinkActionList actionList = null;
-    /** Used to retrieve any potential GUI queries that came in
-     *  over the link. */
+    /**
+     * Used to retrieve any potential GUI queries that came in
+     * over the link. 
+     */
     protected LinkGUIRequest guiRequest = null;
-    /** Used to retrieve any potential GUI responses that came in
-     *  over the link. */
+    /**
+     * Used to retrieve any potential GUI responses that came in
+     * over the link. 
+     */
     protected LinkGUIList guiList = null;
     /** The socket used for the link. Kept for convenience. */
     protected Socket socket = null;
-    /** The lock. This should only be changed within a syhchronized
-     *  block of code, synchronized on the link object.!!  Otherwise,
-     *  race conditions can result.*/
+    /**
+     * The lock. This should only be changed within a syhchronized
+     * block of code, synchronized on the link object.!!  Otherwise,
+     * race conditions can result.
+     */
     protected boolean locked = false;
+    /**
+     * Flag to control whether this side of the link will adhere to
+     * shutdown commands issued from other side of the link.  False by
+     * default.
+     */
+    protected boolean obeyCommandToExit = false;
 
     /** 
      * Open up a link over a socket. 
@@ -148,12 +169,12 @@ public class Link implements LinkConstants {
      */
     public void end(String endType) throws IOException {
 	dos.write(endType.getBytes());
-	if (endType == END_TOTAL){
+	if (endType == END_TOTAL) {
 	    dos.flush();
 	}
     }
 
-   /**
+    /**
      * Called to begin reading the information coming off the link.
      * Since the information can be coming in different sections, this
      * method figures out how to read the different sections and get
@@ -169,7 +190,7 @@ public class Link implements LinkConstants {
 	readAndParse(null, null);
     }
 
-   /**
+    /**
      * Called to begin reading the information coming off the link.
      * 
      * @param proj a projection for graphics
@@ -213,47 +234,64 @@ public class Link implements LinkConstants {
 	
 	if (Debug.debugging("link")) {
 	    System.out.println("Link|readAndParse: reading link:");
-	    if (proj != null){
+	    if (proj != null) {
 		System.out.println(" with projection");
 	    }
-	    if(layer != null){
+	    if (layer != null) {
 		System.out.println(" and a layer");
 	    }
 	}
 
-	while (true){
+	while (true) {
 	    delimiter = readDelimiter(true);
-	    if (Debug.debugging("link")){
+	    if (Debug.debugging("link")) {
 		System.out.println("Link:reading section: " + delimiter);
 	    }
-	    if (delimiter == GRAPHICS_HEADER){
+	    if (delimiter == GRAPHICS_HEADER) {
 		graphicList = new LinkGraphicList(this, graphics, proj, generator);
 		delimiter = graphicList.getLinkStatus();
-	    } else if (delimiter == ACTIONS_HEADER){
+	    } else if (delimiter == ACTIONS_HEADER) {
  		actionList = new LinkActionList(this, layer, proj, generator);
  		delimiter = actionList.getLinkStatus();
-	    } else if (delimiter == GUI_HEADER){
+	    } else if (delimiter == GUI_HEADER) {
   		guiList = new LinkGUIList(this);
 		delimiter = guiList.getLinkStatus();
-	    } else if (delimiter == CLOSE_LINK_HEADER){
+	    } else if (delimiter == CLOSE_LINK_HEADER) {
 		closeLink = true;
-	    } else if (delimiter == HUH_HEADER){
+	    } else if (delimiter == SHUTDOWN_HEADER) {
+		Debug.message("link", "Link.received command to exit");
+		if (obeyCommandToExit) {
+		    System.exit(0);
+		}
+	    } else if (delimiter == HUH_HEADER) {
 		delimiter = readDelimiter(true);
-	    } else if (delimiter == MAP_REQUEST_HEADER){
+	    } else if (delimiter == MAP_REQUEST_HEADER) {
 		mapRequest = new LinkMapRequest(this);
 		delimiter = mapRequest.getLinkStatus();
-	    } else if (delimiter == ACTION_REQUEST_HEADER){
+	    } else if (delimiter == ACTION_REQUEST_HEADER) {
 		actionRequest = new LinkActionRequest(this);
 		delimiter = actionRequest.getLinkStatus();
-	    } else if (delimiter == GUI_REQUEST_HEADER){
+	    } else if (delimiter == GUI_REQUEST_HEADER) {
 		guiRequest = new LinkGUIRequest(this);
 		delimiter = guiRequest.getLinkStatus();
+            } else if (delimiter == PING_REQUEST_HEADER){
+                start(PING_RESPONSE_HEADER);
+                end(END_TOTAL);
+                delimiter = readDelimiter(false);
 	    }
 
-	    if (delimiter == END_TOTAL){
+	    if (delimiter == END_TOTAL) {
 		return;
 	    }
 	}
+    }
+
+    public void setObeyCommandToExit(boolean value) {
+	obeyCommandToExit = value;
+    }
+
+    public boolean getAcceptCommandToExit() {
+	return obeyCommandToExit;
     }
 
     /**
@@ -262,7 +300,7 @@ public class Link implements LinkConstants {
      *
      * @return LinkMapRequest containing the request.
      */
-    public LinkMapRequest getMapRequest(){
+    public LinkMapRequest getMapRequest() {
 	return mapRequest;
     }
 
@@ -274,7 +312,7 @@ public class Link implements LinkConstants {
      * @return GraphicLinkRsponse containing the information.  If no
      * graphics were sent the list will be empty.
      */
-    public LinkGraphicList getGraphicList(){
+    public LinkGraphicList getGraphicList() {
 	return graphicList;
     }
 
@@ -284,7 +322,7 @@ public class Link implements LinkConstants {
      *
      * @return LinkActionRequest containing the request.
      */
-    public LinkActionRequest getActionRequest(){
+    public LinkActionRequest getActionRequest() {
 	return actionRequest;
     }
 
@@ -294,7 +332,7 @@ public class Link implements LinkConstants {
      *
      * @return LinkActionList containing the information.
      */
-    public LinkActionList getActionList(){
+    public LinkActionList getActionList() {
 	return actionList;
     }
 
@@ -304,7 +342,7 @@ public class Link implements LinkConstants {
      *
      * @return LinkGUIRequest containing the request.
      */
-    public LinkGUIRequest getGUIRequest(){
+    public LinkGUIRequest getGUIRequest() {
 	return guiRequest;
     }
 
@@ -314,7 +352,7 @@ public class Link implements LinkConstants {
      * GUI components were sent.
      *
      */
-    public LinkGUIList getGUIList(){
+    public LinkGUIList getGUIList() {
  	return guiList;
     }
 
@@ -342,14 +380,14 @@ public class Link implements LinkConstants {
 	char c = (char)dis.readByte();
 
 	// NOTE: possibility of early exits here...
-	if (c == END_TOTAL_CHAR){
+	if (c == END_TOTAL_CHAR) {
 	    Debug.message("link","Link|readDelimiter: Found END_TOTAL");
 	    return END_TOTAL;
-	} else if (c == END_SECTION_CHAR){
+	} else if (c == END_SECTION_CHAR) {
 	    Debug.message("link","Link|readDelimiter: Found END_SECTION");
 	    return END_SECTION;
-	} else if (c != '<'){
-	    if (Debug.debugging("link")){
+	} else if (c != '<') {
+	    if (Debug.debugging("link")) {
 		System.out.println("Link|readDelimiter: unexpected protocol data read '" + c + "'");
 	    }
 	    throw new IOException("readDelimiter: unexpected protocol data read.");
@@ -362,21 +400,21 @@ public class Link implements LinkConstants {
 	charArray[charCount++] = c;
 	// Get the rest of the header information
 	c = (char)dis.readByte();		
-	while (c != '>' && charCount < MAX_HEADER_LENGTH - 1){
+	while (c != '>' && charCount < MAX_HEADER_LENGTH - 1) {
 	    charArray[charCount++] = c;
 	    c = (char)dis.readByte();
 	}
 
 	// c should == '>' or uh-oh - too many characters between
 	// them.  Exit with a faulty return if this is the case.
-	if (c != '>'){
+	if (c != '>') {
 	    throw new IOException("readDelimiter: header is too long.");
 	}
 
 	charArray[charCount++] = c;
 
 	// OK, got it - return string
-	if (returnString){
+	if (returnString) {
 	    ret = new String(charArray, 0, charCount).intern();
 	} else {
 	    ret = "";
@@ -388,7 +426,7 @@ public class Link implements LinkConstants {
      * Other threads can check to see if the link is in use.
      * @return true if link in use and unavailable.
      */
-    public boolean isLocked(){
+    public boolean isLocked() {
 	return locked;
     }
 
@@ -399,9 +437,9 @@ public class Link implements LinkConstants {
      * @param set true if the lock should be turned on, false if the
      * link should be released.
      */
-    public synchronized boolean setLocked(boolean set){
-	if (set == true){
-	    if (locked == true){
+    public synchronized boolean setLocked(boolean set) {
+	if (set == true) {
+	    if (locked == true) {
 		// The lock was NOT set for the caller - unsuccessful.
 		return false;
 	    } else {
@@ -416,24 +454,22 @@ public class Link implements LinkConstants {
 	}
     }
 
-   /**
+    /**
      * This method is provided for those who want to optimize how
      * they write the graphical objects to the output stream.  Look in
      * the Link<graphics> API to find out the order of the pieces for
      * each graphic type.  Not recommended for the faint of heart.
      */
-    public DataOutput getDOS(){
+    public DataOutput getDOS() {
 	return dos;
     }
-
-  /**
-   * This method complements getDOS().
-   *
-   */
-  
-  public DataInput getDIS() {
-    return dis;
-  }
+    
+    /**
+     * This method complements getDOS().
+     */
+    public DataInput getDIS() {
+	return dis;
+    }
 
     /**
      * Returns the number of bytes written since the last

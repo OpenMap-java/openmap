@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/ClientLink.java,v $
 // $RCSfile: ClientLink.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,7 +40,7 @@ import javax.swing.JComponent;
  * however, and the ClientLink provides a method for the client to
  * check if that request has been made.
  */
-public class ClientLink extends Link{
+public class ClientLink extends Link {
 
     /** Constructor. */
     public ClientLink(Socket socket) throws IOException {
@@ -60,7 +60,7 @@ public class ClientLink extends Link{
      *
      * @return true if the link should be shut down.
      */
-    public boolean isCloseLink(){
+    public boolean isCloseLink() {
 	return closeLink;
     }
 }

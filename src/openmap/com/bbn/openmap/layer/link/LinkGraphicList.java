@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGraphicList.java,v $
 // $RCSfile: LinkGraphicList.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -103,6 +103,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
 	throws IOException, EOFException {
 	this.link = link;
 	graphics = graphicList;
+
+	if (graphics == null) {
+	    graphics = new LinkOMGraphicList();
+	}
+
 	linkStatus = readGraphics(graphics, proj, generator);
     }
 
@@ -114,7 +119,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @return LinkOMGraphicList containing the graphics read off the
      * link.  If no graphics were sent the list will be empty. 
      */
-    public LinkOMGraphicList getGraphics(){
+    public LinkOMGraphicList getGraphics() {
 	return graphics;
     }
 
@@ -125,7 +130,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * 
      * @return either Link.END_TOTAL or Link.END_SECTION. 
      */
-    public String getLinkStatus(){
+    public String getLinkStatus() {
 	return linkStatus;
     }
 
@@ -136,7 +141,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      *
      * @return properties 
      */
-    public LinkProperties getProperties(){
+    public LinkProperties getProperties() {
 	return properties;
     }
 
@@ -161,7 +166,8 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * of graphics that follows.  The graphics are read and added to
      * the LinkOMGraphicList provided.
      *
-     * @param graphics the LinkOMGraphicList to add the link graphics too.
+     * @param graphics the LinkOMGraphicList to add the link graphics
+     * too.  This method assumes that this is never null.
      * @param proj If you want the graphics to be projected as they
      * come off the wire, add a projection here.  Otherwise, use null.
      * @param generator an OMGridGenerator that knows how to render
@@ -179,11 +185,16 @@ public class LinkGraphicList implements LinkGraphicConstants {
 	int graphicType;
 	boolean moreData = true;
 
+	// This is important, it's checked by the LinkLayer to see if
+	// it needs to generate the LinkOMGraphicList to see if the
+	// contents need to be generated.
+	graphics.setNeedToRegenerate(proj == null);
+
 	// doing nothing with the version number.
 	float ver = link.dis.readFloat();
 
-	if (ver != version){
-	    if (ver == .1){// Big difference....
+	if (ver != version) {
+	    if (ver == .1) {// Big difference....
 		throw new IOException("LinkGraphicList: Versions do not match! DANGER!");
 	    } else {
 		Debug.message("link", "LinkGraphicList: Versions do not match.");
@@ -194,13 +205,13 @@ public class LinkGraphicList implements LinkGraphicConstants {
 
 	Debug.message("link", "LinkGraphicList: reading graphics:");
 
-	while (true){
+	while (true) {
 	    graphic = null;
 	    // Just consume the header, don't create a useless
 	    // string object.
 	    header = link.readDelimiter(false);
 	  
-	    if (header == Link.END_TOTAL || header == Link.END_SECTION){
+	    if (header == Link.END_TOTAL || header == Link.END_SECTION) {
 		
 		long endTime = System.currentTimeMillis();
 		Debug.message("link", "LinkGraphicList: received bytes in "
@@ -212,7 +223,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
 	    
 	    graphicType = link.dis.readInt();
 	    
-	    switch (graphicType){
+	    switch (graphicType) {
 	    case GRAPHICTYPE_LINE:
 		graphic = LinkLine.read(link.dis);
 		break;
@@ -244,17 +255,145 @@ public class LinkGraphicList implements LinkGraphicConstants {
 		throw new IOException("LinkGraphicList: received unknown graphic type.");
 	    }
 
-	    if (graphic != null){
-		if (proj != null){
-		    if (graphic instanceof OMGrid){
-			((OMGrid)graphic).setGenerator(generator);
-		    }
+	    if (graphic != null) {
+		if (graphic instanceof OMGrid) {
+		    ((OMGrid)graphic).setGenerator(generator);
+		}
+		if (proj != null) {
 		    graphic.generate(proj);
 		}
 		graphics.add(graphic);
 	    }
 	}
     }
+
+    /**
+     * Write an arc with lat/lon placement.
+     * @param latPoint latitude of center point, decimal degrees
+     * @param lonPoint longitude of center point, decimal degrees
+     * @param w horizontal diameter of arc, pixels
+     * @param h vertical diameter of arc, pixels
+     * @param s starting angle of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees
+     * @param properties attributes for the arc.
+     * @throws IOException
+     */
+    public void addArc(float latPoint, float lonPoint,
+		       int w, int h, float s, float e,
+		       LinkProperties properties) throws IOException {
+	LinkArc.write(latPoint, lonPoint, 0, 0, w, h, s, e, 
+		      properties, link.dos);
+    }
+
+    /**
+     * Write an arc with x/y placement.
+     *
+     * @param x1 window position of center point from left of window, in pixels
+     * @param y1 window position of center point from top of window, in pixels
+     * @param w horizontal diameter of arc, pixels
+     * @param h vertical diameter of arc, pixels
+     * @param s starting angle of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees
+     * @param properties attributes for the arc.
+     * @throws IOException
+     */
+    public void addArc(int x1, int y1, int w, int h,
+		       float s, float e,
+		       LinkProperties properties)
+	throws IOException {
+	LinkArc.write(x1, y1, w, h, s, e, properties, link.dos);
+    }
+
+    /**
+     * Writing an arc at a x, y, offset to a Lat/Lon location.
+     *
+     * @param latPoint latitude of center of arc.
+     * @param lonPoint longitude of center of arc.
+     * @param offset_x1 # pixels to the right the center will be moved
+     * from lonPoint.
+     * @param offset_y1 # pixels down that the center will be moved
+     * from latPoint.
+     * @param w horizontal diameter of arc, pixels.
+     * @param h vertical diameter of arc, pixels.
+     * @param s starting angle of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees
+     * @param properties attributes for the arc.
+     * @throws IOException
+     */
+    public void addArc(float latPoint, float lonPoint,
+		       int offset_x1, int offset_y1,
+		       int w, int h, float s, float e,
+		       LinkProperties properties)
+	throws IOException {
+	LinkArc.write(latPoint, lonPoint, offset_x1, offset_y1, w, h, s, e, properties, link.dos);
+    }
+
+    /**
+     * Write an arc with a certain radius at a Lat/Lon location.
+     * Assumes the radius is in decimal degrees.
+     *
+     * @param latPoint latitude of center point, decimal degrees
+     * @param lonPoint longitude of center point, decimal degrees
+     * @param radius distance in decimal degrees
+     * @param s starting angle of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees
+     * @param properties attributes for the arc.
+     * @throws IOException
+     */
+    public void addArc(float latPoint, float lonPoint, float radius,
+		       float s, float e,
+		       LinkProperties properties)
+	throws IOException {
+	LinkArc.write(latPoint, lonPoint, radius, -1, -1, s, e, properties, link.dos);
+    }
+
+    /**
+     * Write an arc with a certain radius at a Lat/Lon location,
+     * and allows you to specify units of the radius.
+     *
+     * @param latPoint latitude of center of arc in decimal degrees
+     * @param lonPoint longitude of center of arc in decimal degrees
+     * @param radius distance
+     * @param units integer value for units for distance - KM, MILES,
+     * NMILES.  If &lt; 0, assume decimal degrees.
+     * @param s starting angle of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees
+     * @param properties attributes for the arc.
+     * @throws IOException
+     */
+    public void addArc(float latPoint, float lonPoint,
+		       float radius, int units,
+		       float s, float e,
+		       LinkProperties properties)
+	throws IOException {
+	LinkArc.write(latPoint, lonPoint, radius, units, -1, s, e, properties, link.dos);
+    }
+
+    /**
+     * Write an arc with a certain radius at a Lat/Lon location,
+     * and allows you to specify units of the radius, as well as the
+     * number of verticies to use to approximate the arc.
+     *
+     * @param latPoint latitude of center of arc in decimal degrees
+     * @param lonPoint longitude of center of arc in decimal degrees
+     * @param radius distance
+     * @param units integer value for units for distance - OMArc.KM, OMArc.MILES,
+     * OMArc.NMILES.  If &lt; 0, assume decimal degrees.
+     * @param nverts number of vertices for the poly-arc (if &lt; 3, value
+     * is generated internally).
+     * @param s starting angle of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees
+     * @param properties attributes for the arc.
+     * @throws IOException
+     */
+    public void addArc(float latPoint, float lonPoint,
+		       float radius, int units, int nverts,
+		       float s, float e,
+		       LinkProperties properties)
+	throws IOException {
+	LinkArc.write(latPoint, lonPoint, radius, units, nverts, s, e, properties, link.dos);
+    }
+
 
     /** 
      * Write a bitmap in the response.
@@ -492,10 +631,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException
      */
     public void addGrid(float lt, float ln, int offset_x1, int offset_y1,
-			       int rows, int columns, 
-			       float orientation, float vResolution, float hResolution,
-			       int major, int[] data, 
-			       LinkProperties properties)
+			int rows, int columns, 
+			float orientation, float vResolution, float hResolution,
+			int major, int[] data, 
+			LinkProperties properties)
 	throws IOException {
 	LinkGrid.write(lt, ln, offset_x1, offset_y1, rows, columns, 
 		       orientation, vResolution, hResolution,
@@ -884,7 +1023,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @see com.bbn.openmap.layer.link.LinkRectangle 
      */
     public void addRectangle(float lt1, float ln1, float lt2, float ln2, 
-			    int lType, int nsegs,
+			     int lType, int nsegs,
 			     LinkProperties properties)
 	throws IOException {
 	LinkRectangle.write(lt1, ln1, lt2, ln2, lType, nsegs, properties, link.dos);
@@ -900,8 +1039,8 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRectangle
      */
-   public void addRectangle(int x1, int y1, int x2, int y2, 
-			    LinkProperties properties)
+    public void addRectangle(int x1, int y1, int x2, int y2, 
+			     LinkProperties properties)
 	throws IOException {
 	LinkRectangle.write(x1, y1, x2, y2, properties, link.dos);
     }
@@ -1122,7 +1261,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
 		       stuff, LinkText.DEFAULT_FONT, justify, properties, link.dos);
     }
 
-   /** 
+    /** 
      * Write a text in the response.
      * @param latPoint latitude of placement of text.
      * @param lonPoint longitude of placement of text.

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkCircle.java,v $
 // $RCSfile: LinkCircle.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -235,7 +235,7 @@ public class LinkCircle implements LinkGraphicConstants, LinkPropertiesConstants
 
 	int renderType = dis.readInt();
 	
-	switch (renderType){
+	switch (renderType) {
 	case RENDERTYPE_LATLON:
 	    lat = dis.readFloat();
 	    lon = dis.readFloat();
@@ -280,20 +280,8 @@ public class LinkCircle implements LinkGraphicConstants, LinkPropertiesConstants
 	}
 
 	LinkProperties properties = new LinkProperties(dis);
-
-	if (circle != null){
-	    circle.setLinePaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_LINECOLOR,
-		BLACK_COLOR_STRING, true));
-	    circle.setFillPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_FILLCOLOR,
-		CLEAR_COLOR_STRING, true));
-	    circle.setSelectPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_HIGHLIGHTCOLOR,
-		BLACK_COLOR_STRING, true));
-	    circle.setStroke(new BasicStroke(LayerUtils.intFromProperties(
-		properties, LPC_LINEWIDTH, 1)));
-	    circle.setAppObject(properties);
+	if (circle != null) {
+	    properties.setProperties(circle);
 	}
 
 	return circle;

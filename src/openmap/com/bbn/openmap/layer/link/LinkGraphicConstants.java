@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGraphicConstants.java,v $
 // $RCSfile: LinkGraphicConstants.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,24 +82,26 @@ public interface LinkGraphicConstants {
 
     /** The generic graphic type. */
     public final static int GRAPHICTYPE_GRAPHIC = 0;
-    /** A bitmap type . */
+    /** A bitmap type. */
     public final static int GRAPHICTYPE_BITMAP = 1;
-    /** A text type . */
+    /** A text type. */
     public final static int GRAPHICTYPE_TEXT = 2;
     /** A polygon/polyline type. */
     public final static int GRAPHICTYPE_POLY = 3;
-    /** A line type . */
+    /** A line type. */
     public final static int GRAPHICTYPE_LINE = 4;
-    /** A rectangle type . */
+    /** A rectangle type. */
     public final static int GRAPHICTYPE_RECTANGLE = 5;
-    /** A ellipse/circle type . */
+    /** A ellipse/circle type. */
     public final static int GRAPHICTYPE_CIRCLE = 6;
-    /** A raster type . */
+    /** A raster type. */
     public final static int GRAPHICTYPE_RASTER = 7;
-    /** A grid type . */
+    /** A grid type. */
     public final static int GRAPHICTYPE_GRID = 8;
-    /** A point type . */
+    /** A point type. */
     public final static int GRAPHICTYPE_POINT = 9;
+    /** An arc type. */
+    public final static int GRAPHICTYPE_ARC = 10;
 
     /** The float coordinates are in decimal degrees. */
     public final static int DECIMAL_DEGREES = 0;
@@ -131,6 +133,12 @@ public interface LinkGraphicConstants {
     public final static int JUSTIFY_CENTER = 1;
     /** Align the text to the left of the location. */
     public final static int JUSTIFY_RIGHT = 2;
+    /** Align the baseline of text to the location. */
+    public final static int BASELINE_BOTTOM = 0;
+    /** Align the middle of text to the location. */
+    public final static int BASELINE_MIDDLE = 1;
+    /** Align the top of text to the location. */
+    public final static int BASELINE_TOP = 2;
 
     /** For Grids, note that the columns are the primary dimension of the data. */
     public final static int COLUMN_MAJOR = 0;

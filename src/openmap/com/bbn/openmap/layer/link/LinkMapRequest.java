@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkMapRequest.java,v $
 // $RCSfile: LinkMapRequest.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -73,7 +73,7 @@ public class LinkMapRequest {
      * Return the header for this object. 
      * @return the String representing the header.
      */
-    public String getType(){
+    public String getType() {
 	return Link.MAP_REQUEST_HEADER;
     }
 
@@ -84,7 +84,7 @@ public class LinkMapRequest {
      * 
      * @return either Link.END_TOTAL or Link.END_SECTION. 
      */
-    public String getLinkStatus(){
+    public String getLinkStatus() {
 	return linkStatus;
     }
 
@@ -116,7 +116,7 @@ public class LinkMapRequest {
 	link.dos.writeInt(height);
 	link.dos.writeInt(width);
 	link.dos.writeInt(boundingPolys.length);
-	for (i = 0; i < boundingPolys.length; i++){
+	for (i = 0; i < boundingPolys.length; i++) {
 	    boundingPolys[i].write(link.dos);
 	}
 
@@ -133,7 +133,7 @@ public class LinkMapRequest {
 	    System.out.println(" height = " + height);
 	    System.out.println(" width = " + width);
 	    System.out.println(" bounding polys:");
-	    for (i = 0; i < boundingPolys.length; i++){
+	    for (i = 0; i < boundingPolys.length; i++) {
 		System.out.println(boundingPolys[i]);
 	    }
 	    System.out.println(" Args:");
@@ -157,8 +157,8 @@ public class LinkMapRequest {
 
 	float ver = link.dis.readFloat();
 
-	if (ver != version){
-	    if (ver == .1){// Big differece....
+	if (ver != version) {
+	    if (ver == .1) {// Big differece....
 		throw new IOException("LinkMapRequest: Versions do not match! DANGER!");
 	    } else {
 		Debug.message("link", "LinkMapRequest: Versions do not match");
@@ -176,7 +176,7 @@ public class LinkMapRequest {
 	int length = link.dis.readInt();
 	
 	boundingPolys = new LinkBoundingPoly[length];
-	for (i = 0; i < boundingPolys.length; i++){
+	for (i = 0; i < boundingPolys.length; i++) {
 	    boundingPolys[i] = new LinkBoundingPoly(link.dis);
 	}
 
@@ -186,36 +186,36 @@ public class LinkMapRequest {
     }
 
     /** Get the center of the map. */
-    public LatLonPoint getCenter(){
+    public LatLonPoint getCenter() {
 	return center;
     }
 
     /** Get the scale of the map. */
-    public float getScale(){
+    public float getScale() {
 	return scale;
     }
 
     /** Get the height of map in pixels. */
-    public int getHeight(){
+    public int getHeight() {
 	return height;
     }
 
     /** Get the width of the map in pixels. */
-    public int getWidth(){
+    public int getWidth() {
 	return width;
     }
 
     /** Get an array of bounding polygons. */
-    public LinkBoundingPoly[] getBoundingPolys(){
+    public LinkBoundingPoly[] getBoundingPolys() {
 	return boundingPolys;
     }
 
     /** Get the key-value arguments for the request. */
-    public LinkProperties getProperties(){
+    public LinkProperties getProperties() {
 	return properties;
     }
 
-    public String toString(){
+    public String toString() {
 	StringBuffer s = new StringBuffer();
 	s.append("LinkMapRequest:\n");
 	s.append("LinkMapRequest wrote:\n");
@@ -226,7 +226,7 @@ public class LinkMapRequest {
 	s.append(" width = " + width + "\n");
 	s.append(" " + boundingPolys.length  + " bounding polys:");
 	int i;
-	for (i = 0; i < boundingPolys.length; i++){
+	for (i = 0; i < boundingPolys.length; i++) {
 		s.append("\n" + boundingPolys[i]);
 	}
 	return s.toString();

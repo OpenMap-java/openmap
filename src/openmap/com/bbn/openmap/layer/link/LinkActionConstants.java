@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkActionConstants.java,v $
 // $RCSfile: LinkActionConstants.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,6 +48,8 @@ public interface LinkActionConstants {
     public static final int ACTION_GRAPHICS = 0;
     /** Action identifier - change/modify/add GUI components. */
     public static final int ACTION_GUI = 1;
+    /** Action identifier - center/zoom/change projection of map. */
+    public static final int ACTION_MAP = 2;
 
     /** Graphic action descriptor mask - raise the graphic on top of others. */
     public static final int MODIFY_RAISE_GRAPHIC_MASK = 1 << 0;

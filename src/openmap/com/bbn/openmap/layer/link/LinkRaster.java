@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkRaster.java,v $
 // $RCSfile: LinkRaster.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,21 +23,21 @@
 
 package com.bbn.openmap.layer.link;
 
-import java.awt.Color;
-import javax.swing.ImageIcon;
-import java.awt.Image;
-import java.awt.image.PixelGrabber;
-
-import com.bbn.openmap.omGraphics.OMRaster;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.util.PropUtils;
 
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.image.PixelGrabber;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import javax.swing.ImageIcon;
 
 /**
  * Read and write a Link protocol versions of a raster.
@@ -75,7 +75,7 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
 	dos.writeInt(h);
 	dos.writeInt(pix.length);
 	
-	for (int i = 0; i < pix.length; i++){
+	for (int i = 0; i < pix.length; i++) {
 	    dos.writeInt(pix[i]);
 	}
 	properties.write(dos);
@@ -112,7 +112,7 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
 	dos.writeInt(h);
 	dos.writeInt(pix.length);
 	
-	for (int i = 0; i < pix.length; i++){
+	for (int i = 0; i < pix.length; i++) {
 	    dos.writeInt(pix[i]);
 	}
 	properties.write(dos);
@@ -155,7 +155,7 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
 	dos.writeInt(h);
 	dos.writeInt(pix.length);
 	
-	for (int i = 0; i < pix.length; i++){
+	for (int i = 0; i < pix.length; i++) {
 	    dos.writeInt(pix[i]);
 	}
 	properties.write(dos);
@@ -468,7 +468,7 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
 	dos.writeInt(colorTable.length);
 	
 	int i;
-	for (i = 0; i < colorTable.length; i++){
+	for (i = 0; i < colorTable.length; i++) {
 	    dos.writeInt(colorTable[i].getRGB());
 	}
 	dos.writeInt(trans);
@@ -512,7 +512,7 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
 	dos.writeInt(colorTable.length);
 	
 	int i;
-	for (i = 0; i < colorTable.length; i++){
+	for (i = 0; i < colorTable.length; i++) {
 	    dos.writeInt(colorTable[i].getRGB());
 	}
 	dos.writeInt(trans);
@@ -564,7 +564,7 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
 	
 	int i;
 	 
-	for (i = 0; i < colorTable.length; i++){
+	for (i = 0; i < colorTable.length; i++) {
 	    dos.writeInt(colorTable[i].getRGB());
 	}
 	dos.writeInt(trans);
@@ -613,12 +613,12 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
 	int renderType = dis.readInt();
 	int colorModel = dis.readInt();
 
-	if (Debug.debugging("link")){
+	if (Debug.debugging("link")) {
 	    System.out.println("LinkRaster | Rendertype = " + 
 			       renderType + ", colorModel = " + colorModel);
 	}
 	
-	switch (renderType){
+	switch (renderType) {
 	case RENDERTYPE_OFFSET:
 	    lat = dis.readFloat();
 	    lon = dis.readFloat();
@@ -631,19 +631,19 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
 	default:
 	    lat = dis.readFloat();
 	    lon = dis.readFloat();
-	    if (Debug.debugging("link")){
+	    if (Debug.debugging("link")) {
 		System.out.println("LinkRaster | Location: lat = " + 
 				   lat + ", lon = " + lon);
 	    }
 	}
 	
 	// Now act differently depending on the colormodel
-	if (colorModel != COLORMODEL_URL){
+	if (colorModel != COLORMODEL_URL) {
 
 	    w = dis.readInt();
 	    h = dis.readInt();
 
-	    if (Debug.debugging("link")){
+	    if (Debug.debugging("link")) {
 		System.out.println("LinkRaster | Size: width = " + 
 				   w + ", height = " + h);
 	    }
@@ -654,28 +654,28 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
 		
 		byte[] bytes = new byte[length];
 		
-		if (Debug.debugging("link")){
+		if (Debug.debugging("link")) {
 		    System.out.println("LinkRaster | Reading " + 
 				       length + " bytes.");
 		}
 		dis.readFully(bytes);
 
-		if (Debug.debugging("link")){
+		if (Debug.debugging("link")) {
 		    System.out.println("LinkRaster | read bytes.");
 		}
 
 		length = dis.readInt();
 
-		if (Debug.debugging("link")){
+		if (Debug.debugging("link")) {
 		    System.out.println("LinkRaster | " + 
 				       length + " Colors.");
 		}
 
 		Color[] colorTable = new Color[length];
-		for (i = 0; i < length; i++){
+		for (i = 0; i < length; i++) {
 		    int colorvalue = dis.readInt();
 		    colorTable[i] = ColorFactory.createColor(colorvalue, true);
-		    if (Debug.debugging("linkdetail")){
+		    if (Debug.debugging("linkdetail")) {
 			System.out.println( "LinkRaster | Color " + i + 
 					    " =  " + colorTable[i] + 
 					    " from " + 
@@ -684,12 +684,12 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
 		}
 
 		int trans = dis.readInt();
-		if (Debug.debugging("link")){
+		if (Debug.debugging("link")) {
 		    System.out.println("LinkRaster | Transparency =  " + 
 				       trans);
 		}
 
-		switch (renderType){
+		switch (renderType) {
 		case RENDERTYPE_OFFSET:
 		    raster = new OMRaster(lat, lon, x, y, 
 					  w, h, bytes, colorTable, trans);
@@ -705,15 +705,15 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
 	    } else { // must be COLORMODEL_DIRECT
 		length = dis.readInt();
 		int[] pix = new int[length];
-		if (Debug.debugging("link")){
+		if (Debug.debugging("link")) {
 		    System.out.println("LinkRaster | Reading " + 
 				       length + " pixels.");
 		}
 
-		for (i = 0; i < length; i++){
+		for (i = 0; i < length; i++) {
 		    pix[i] = dis.readInt();
 		}
-		switch (renderType){
+		switch (renderType) {
 		case RENDERTYPE_OFFSET:
 		    raster = new OMRaster(lat, lon, x, y, w, h, pix);
 		    break;
@@ -729,11 +729,11 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
 	
 	LinkProperties properties = new LinkProperties(dis);
 
-	if (colorModel == COLORMODEL_URL){
+	if (colorModel == COLORMODEL_URL) {
 	    url = properties.getProperty(LPC_LINKRASTERIMAGEURL);
 
-	    if (url != null){
-		switch (renderType){
+	    if (url != null) {
+		switch (renderType) {
 		case RENDERTYPE_OFFSET:
 		    raster = new OMRaster(lat, lon, x, y, new ImageIcon(url));
 		    break;
@@ -747,8 +747,9 @@ public class LinkRaster implements LinkGraphicConstants, LinkPropertiesConstants
 	    }
 	}
 
-	if (raster != null){
+	if (raster != null) {
 	    raster.setAppObject(properties);
+	    raster.setRotationAngle((double) ProjMath.degToRad(PropUtils.floatFromProperties(properties, LPC_LINKROTATION, 0.0f)));
 	}
 
 	return raster;

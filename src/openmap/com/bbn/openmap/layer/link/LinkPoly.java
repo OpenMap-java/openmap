@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkPoly.java,v $
 // $RCSfile: LinkPoly.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -75,7 +75,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 	dos.writeInt(lType);
 	dos.writeInt(llpoints.length);
 	
-	for (int i = 0; i < llpoints.length; i++){
+	for (int i = 0; i < llpoints.length; i++) {
 	    dos.writeFloat(llpoints[i]);
 	}
 	
@@ -109,13 +109,13 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 	int length = latpoints.length;
 	// We only want to write out the points that have equal
 	// pairings.
-	if (lonpoints.length < latpoints.length){
+	if (lonpoints.length < latpoints.length) {
 	    length = lonpoints.length;
 	}
 
 	dos.writeInt(length);
 	
-	for (int i = 0; i < length; i++){
+	for (int i = 0; i < length; i++) {
 	    dos.writeFloat(latpoints[i]);
 	    dos.writeFloat(lonpoints[i]);
 	}
@@ -142,7 +142,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 	dos.writeInt(RENDERTYPE_XY);
 	dos.writeInt(xypoints.length);
 	
-	for (int i = 0; i < xypoints.length; i++){
+	for (int i = 0; i < xypoints.length; i++) {
 	    dos.writeInt(xypoints[i]);
 	}
 	properties.write(dos);
@@ -166,7 +166,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 	int numPoints = xpoints.length + ypoints.length;
 	dos.writeInt(numPoints);
 	
-	for (int i = 0; i < numPoints/2; i++){
+	for (int i = 0; i < numPoints/2; i++) {
 	    dos.writeInt(xpoints[i]);
 	    dos.writeInt(ypoints[i]);
 	}
@@ -198,7 +198,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 	dos.writeFloat(lonPoint);
 	dos.writeInt(xypoints.length);
 	
-	for (int i = 0; i < xypoints.length; i++){
+	for (int i = 0; i < xypoints.length; i++) {
 	    dos.writeInt(xypoints[i]);
 	}
 	
@@ -233,7 +233,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 	int numPoints = xpoints.length + ypoints.length;
 	dos.writeInt(numPoints);
 	    
-	for (int i = 0; i < numPoints/2; i++){
+	for (int i = 0; i < numPoints/2; i++) {
 	    dos.writeInt(xpoints[i]);
 	    dos.writeInt(ypoints[i]);
 	}
@@ -282,13 +282,13 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 
 	int renderType = dis.readInt();
 	
-	switch (renderType){
+	switch (renderType) {
 	case RENDERTYPE_LATLON:
 	    int lineType = dis.readInt();
 	    numPoints = dis.readInt();
 	    
 	    float[] llpoints = new float[numPoints];
-	    for (int i = 0; i < numPoints; i++){
+	    for (int i = 0; i < numPoints; i++) {
 		llpoints[i] = dis.readFloat();
 	    }
 	    int units = dis.readInt();
@@ -298,7 +298,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 		System.out.println("  Lat/Lon LinkPoly:");
 		System.out.println("  linetype = " + lineType);
 		System.out.println("  number of points = " + numPoints/2);
-// 		for (int i = 0; i < numPoints; i+=2){
+// 		for (int i = 0; i < numPoints; i+=2) {
 // 		    System.out.println("   Lat = " + llpoints[i] + 
 // 				       ", Lon = " + llpoints[i+1]);
 // 		}
@@ -313,7 +313,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 	    xpoints = new int[numPoints/2];
 	    ypoints = new int[numPoints/2];
 	    
-	    for (int i = 0; i < numPoints/2; i+=1){
+	    for (int i = 0; i < numPoints/2; i+=1) {
 		xpoints[i] = dis.readInt();
 		ypoints[i] = dis.readInt();
 	    }
@@ -321,7 +321,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 	    if (Debug.debugging("linkdetail")) {
 		System.out.println("  X/Y LinkPoly:");
 		System.out.println("  number of points = " + numPoints/2);
-// 		for (i = 0; i < numPoints; i++){
+// 		for (i = 0; i < numPoints; i++) {
 // 		    System.out.println("   X = " + xpoints[i] + 
 // 				       ", Y = " + ypoints[i]);
 // 		}
@@ -337,7 +337,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 	    xpoints = new int[numPoints/2];
 	    ypoints = new int[numPoints/2];
 	    
-	    for (int i = 0; i < numPoints/2; i+=1){
+	    for (int i = 0; i < numPoints/2; i+=1) {
 		xpoints[i] = dis.readInt();
 		ypoints[i] = dis.readInt();
 	    }
@@ -348,7 +348,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 		System.out.println("  lat = " + lat_1);
 		System.out.println("  lon = " + lon_1);
 		System.out.println("  number of points = " + numPoints/2);
-// 		for (i = 0; i < numPoints; i+=2){
+// 		for (i = 0; i < numPoints; i+=2) {
 // 		    System.out.println("   Lat = " + llpoints[i] + 
 // 				       ", Lon = " + llpoints[i+1]);
 // 		}
@@ -361,20 +361,8 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 	}
 
 	LinkProperties properties = new LinkProperties(dis);
-
-	if (poly != null){
-	    poly.setLinePaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_LINECOLOR,
-		BLACK_COLOR_STRING, true));
-	    poly.setFillPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_FILLCOLOR,
-		CLEAR_COLOR_STRING, true));
-	    poly.setSelectPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_HIGHLIGHTCOLOR,
-		BLACK_COLOR_STRING, true));
-	    poly.setStroke(new BasicStroke(LayerUtils.intFromProperties(
-		properties, LPC_LINEWIDTH, 1)));
-	    poly.setAppObject(properties);
+	if (poly != null) {
+	    properties.setProperties(poly);
 	}
 	
 	return poly;

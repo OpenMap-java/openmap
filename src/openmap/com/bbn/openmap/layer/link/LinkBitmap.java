@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkBitmap.java,v $
 // $RCSfile: LinkBitmap.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,10 +23,11 @@
 
 package com.bbn.openmap.layer.link;
 
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.omGraphics.OMBitmap;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 import java.awt.BasicStroke;
 import java.io.DataInputStream;
@@ -188,7 +189,7 @@ public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants
 
 	int renderType = dis.readInt();
 	
-	switch (renderType){
+	switch (renderType) {
 	case RENDERTYPE_OFFSET:
 	    lat = dis.readFloat();
 	    lon = dis.readFloat();
@@ -210,7 +211,7 @@ public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants
 	byte[] bytes = new byte[length];
 	dis.readFully(bytes);
 	
-	switch (renderType){
+	switch (renderType) {
 	case RENDERTYPE_OFFSET:
 	    bitmap = new OMBitmap(lat, lon, x, y, w, h, bytes);
 	    break;
@@ -223,20 +224,9 @@ public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants
 	}
 	
 	LinkProperties properties = new LinkProperties(dis);
-
-	if (bitmap != null){
-	    bitmap.setLinePaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_LINECOLOR,
-		BLACK_COLOR_STRING, true));
-	    bitmap.setFillPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_FILLCOLOR,
-		CLEAR_COLOR_STRING, true));
-	    bitmap.setSelectPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_HIGHLIGHTCOLOR,
-		BLACK_COLOR_STRING, true));
-	    bitmap.setStroke(new BasicStroke(LayerUtils.intFromProperties(
-		properties, LPC_LINEWIDTH, 1)));
-	    bitmap.setAppObject(properties);
+	if (bitmap != null) {
+	    properties.setProperties(bitmap);
+	    bitmap.setRotationAngle((double) ProjMath.degToRad(PropUtils.floatFromProperties(properties, LPC_LINKROTATION, 0.0f)));
 	}
 
 	return bitmap;

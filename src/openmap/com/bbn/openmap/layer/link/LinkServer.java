@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkServer.java,v $
 // $RCSfile: LinkServer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,17 +47,17 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
      * Constructor used by the LinkServerStarter in using this class
      * as a LinkServerFactory. 
      */
-    public LinkServer(){}
+    public LinkServer() {}
 
     /** 
      * Create child thread that will handle the client.
      *
      * @param socket the socket to communicate over.
      */
-    public LinkServer(Socket s){
+    public LinkServer(Socket s) {
 	try {
 	    link = new Link(s);
-	} catch (java.io.IOException ioe){
+	} catch (java.io.IOException ioe) {
 	    System.err.println("LinkServer: IOException while creating child server:");
 	    System.err.println(ioe);
 	}
@@ -67,7 +67,7 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
     public void run() {
 	try {
 	    handleClient();
-	} catch (java.io.IOException ioe){
+	} catch (java.io.IOException ioe) {
 	    link.cleanUp();
 	    link = null;
 	    if (com.bbn.openmap.util.Debug.debugging("link")) {
@@ -88,7 +88,7 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
     public void handleClient() throws IOException {
 	boolean validQuery;
 	
-	while (true){
+	while (true) {
 	    link.readAndParse();
 	    validQuery = false;
 
@@ -97,16 +97,16 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
 // 	    LinkMapRequest graphicsQuery = link.getMapRequest();
 // 	    LinkActionRequest gestureQuery = link.getActionRequest();
 
-// 	    if (graphicsQuery != null){
+// 	    if (graphicsQuery != null) {
 // 		getRectangle(graphicsQuery, link);
 // 		validQuery = true;
 // 	    } 
-// 	    if (gestureQuery != null){
+// 	    if (gestureQuery != null) {
 // 		handleGesture(gestureQuery, link);
 // 		validQuery = true;
 // 	    }
 	    
-	    if (!validQuery){
+	    if (!validQuery) {
 		huh(link);
 	    }
 	}
@@ -168,7 +168,7 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
 	int descriptor = lar.getDescriptor();
 
 	String gid = lar.getProperties().getProperty(LPC_GRAPHICID);
-	if (gid == null){
+	if (gid == null) {
 	    System.out.println("Deselecting graphics");
 	    lal.deselectGraphics();
 	} else {

@@ -14,14 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkManager.java,v $
 // $RCSfile: LinkManager.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 
 package com.bbn.openmap.layer.link;
+
+import com.bbn.openmap.util.Debug;
 
 import java.io.*;
 import java.net.Socket;
@@ -33,9 +35,12 @@ public class LinkManager {
 
     protected String host;
     protected int port;
+    protected boolean obeyCommandToExit;
 
-    /** volatile because we want internal methods to get the message
-     * that a link was nulled out. */
+    /**
+     * volatile because we want internal methods to get the message
+     * that a link was nulled out. 
+     */
     protected volatile ClientLink link;
 
     /** Constructor. */
@@ -45,6 +50,14 @@ public class LinkManager {
     public LinkManager(String host, int port) {
 	this.host = host;
 	this.port = port;
+    }
+
+    public void setObeyCommandToExit(boolean value) {
+	obeyCommandToExit = value;
+    }
+
+    public boolean getObeyCommandToExit() {
+	return obeyCommandToExit;
     }
 
     /**
@@ -71,6 +84,7 @@ public class LinkManager {
 	    synchronized (this) {
 		if (link == null) {
 		    link = getLink();
+		    link.setObeyCommandToExit(obeyCommandToExit);
 		}
 	    }
 	} 
@@ -103,6 +117,34 @@ public class LinkManager {
     }
     
     /**
+     * Called for a LayerListener that will not write to the Link,
+     * only read from it.  Doesn't effect the lock.
+     *
+     * @param waitForLock if true, the caller will block in this
+     * method until the link has been locked for the caller.  If
+     * false, a null will be returned if the lock on the link couldn't
+     * be set for the caller's use.
+     * @return a link if the link is locked for the caller's use, null
+     * if the link is not available.
+     */
+    protected ClientLink getLink(LinkListener ll) throws java.io.IOException {
+
+	// NOTE: This should be the only place that the link
+	// object gets assigned.  Otherwise, the layer can end up
+	// using two different links via different threads.
+	if (link == null) {
+	    synchronized (this) {
+		if (link == null) {
+		    link = getLink();
+		    link.setObeyCommandToExit(obeyCommandToExit);
+		}
+	    }
+	} 
+
+	return link;
+    }
+    
+    /**
      * Get the ClientLink however it is appropriate for this
      * LinkManager.  In this case, the LinkManager will just use the
      * host and port assigned.
@@ -114,8 +156,7 @@ public class LinkManager {
 	    Socket socket = new Socket(host, port);
 	    tmplink = new ClientLink(socket);
 	} catch (java.net.UnknownHostException uhe) {
-	    System.err.println("LinkLayer: error trying to contact host:" +
-			       host);
+	    Debug.error("LinkLayer: error trying to contact host:" + host);
 	    tmplink = null;
 	    throw new java.io.IOException("No Contact with host:" + host + 
 					  " on port:"+ port);
@@ -132,9 +173,11 @@ public class LinkManager {
      */
     public void finLink() throws IOException {
 	if (link.isCloseLink()) {
+	    Debug.message("link", "LinkManager.finLink: closing Link");
 	    link.close();
 	    link = null;
 	} else {
+	    Debug.message("link", "LinkManager.finLink: releasing lock on Link");
 	    link.setLocked(false);
 	}
     }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGrid.java,v $
 // $RCSfile: LinkGrid.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,7 +78,7 @@ public class LinkGrid implements LinkGraphicConstants {
 	dos.writeInt(major);
 
 	dos.writeInt(data.length); 
-	for (int i = 0; i < data.length; i++){
+	for (int i = 0; i < data.length; i++) {
 	    dos.writeInt(data[i]);
 	}
 
@@ -124,7 +124,7 @@ public class LinkGrid implements LinkGraphicConstants {
 	dos.writeInt(major);
 
 	dos.writeInt(data.length); 
-	for (int i = 0; i < data.length; i++){
+	for (int i = 0; i < data.length; i++) {
 	    dos.writeInt(data[i]);
 	}
 	
@@ -175,7 +175,7 @@ public class LinkGrid implements LinkGraphicConstants {
 	dos.writeInt(major);
 
 	dos.writeInt(data.length); 
-	for (int i = 0; i < data.length; i++){
+	for (int i = 0; i < data.length; i++) {
 	    dos.writeInt(data[i]);
 	}
 
@@ -192,8 +192,8 @@ public class LinkGrid implements LinkGraphicConstants {
 
 	int [][] d = grid.getData();
 	int[] data = new int[rows*columns];
-	for (int i = 0; i < d.length; i++){
-	    for (int j = 0; j < d[0].length; j++){
+	for (int i = 0; i < d.length; i++) {
+	    for (int j = 0; j < d[0].length; j++) {
 		data[(i * d[0].length) + j] = d[i][j];
 	    }
 	}
@@ -244,7 +244,7 @@ public class LinkGrid implements LinkGraphicConstants {
 
 	int renderType = dis.readInt();
 	
-	switch (renderType){
+	switch (renderType) {
 	case RENDERTYPE_OFFSET:
 	    lat = dis.readFloat();
 	    lon = dis.readFloat();
@@ -283,14 +283,14 @@ public class LinkGrid implements LinkGraphicConstants {
 		      ", with number of points = " + length);
 
 	int[][] data;
-	if (major == LinkGraphicConstants.COLUMN_MAJOR){
+	if (major == LinkGraphicConstants.COLUMN_MAJOR) {
 	    data = new int[columns][rows];
 	} else {
 	    data = new int[rows][columns];
 	}
 
-	for (int i = 0; i < data.length; i++){
-	    for (int j = 0; j < data[0].length; j++){
+	for (int i = 0; i < data.length; i++) {
+	    for (int j = 0; j < data[0].length; j++) {
 		data[i][j] = dis.readInt();
 // 		    Debug.message("linkdetail", "LinkGrid reading " + 
 // 				  (rows*i + j) + " " +
@@ -305,7 +305,7 @@ public class LinkGrid implements LinkGraphicConstants {
 
 	Debug.message("linkdetail", "LinkGrid read all the data.");
 
-	switch (renderType){
+	switch (renderType) {
 	case RENDERTYPE_OFFSET:
 	    grid = new OMGrid(lat, lon, x, y, vResolution, hResolution, data);
 	    break;
@@ -321,7 +321,7 @@ public class LinkGrid implements LinkGraphicConstants {
 
 	LinkProperties properties = new LinkProperties(dis);
 
-	if (grid != null){
+	if (grid != null) {
 	    grid.setMajor(major == LinkGraphicConstants.COLUMN_MAJOR?true:false);
 	    grid.setOrientation(orientation);
 	    grid.setAppObject(properties);

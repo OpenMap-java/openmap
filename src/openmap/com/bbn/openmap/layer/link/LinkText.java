@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkText.java,v $
 // $RCSfile: LinkText.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,11 +23,12 @@
 
 package com.bbn.openmap.layer.link;
 
+import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMText;
-import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.util.PropUtils;
 
 import java.awt.BasicStroke;
 import java.io.DataInputStream;
@@ -175,7 +176,7 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
 
 	int renderType = dis.readInt();
 	
-	switch (renderType){
+	switch (renderType) {
 	case RENDERTYPE_OFFSET:
 	    lat = dis.readFloat();
 	    lon = dis.readFloat();	    
@@ -199,7 +200,7 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
 	if (string == null) string = "";
 	if (font == null) font = DEFAULT_FONT;
 	
-	switch (renderType){
+	switch (renderType) {
 	case RENDERTYPE_OFFSET:
 	    text = new OMText(lat, lon, x, y, string, OMText.rebuildFont(font), just);
 	    break;
@@ -211,19 +212,10 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
 	    text = new OMText(lat, lon, string, OMText.rebuildFont(font), just);
 	}
 	
-	if (text != null){
-	    text.setLinePaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_LINECOLOR,
-		BLACK_COLOR_STRING, true));
-	    text.setFillPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_FILLCOLOR,
-		CLEAR_COLOR_STRING, true));
-	    text.setSelectPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_HIGHLIGHTCOLOR,
-		BLACK_COLOR_STRING, true));
-	    text.setStroke(new BasicStroke(LayerUtils.intFromProperties(
-		properties, LPC_LINEWIDTH, 1)));
-	    text.setAppObject(properties);
+	if (text != null) {
+	    properties.setProperties(text);
+	    text.setBaseline(PropUtils.intFromProperties(properties, LPC_LINKTEXTBASELINE, BASELINE_BOTTOM));
+	    text.setRotationAngle((double) ProjMath.degToRad(PropUtils.floatFromProperties(properties, LPC_LINKROTATION, 0.0f)));
 	}
 
 	return text;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLine.java,v $
 // $RCSfile: LinkLine.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -201,7 +201,7 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
 
 	int renderType = dis.readInt();
 	
-	switch (renderType){
+	switch (renderType) {
 	case RENDERTYPE_LATLON:
 	    int lineType = dis.readInt();
 	    lat_1 = dis.readFloat();
@@ -235,20 +235,8 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
 	}
 
 	LinkProperties properties = new LinkProperties(dis);
-
-	if (line != null){
-	    line.setLinePaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_LINECOLOR,
-		BLACK_COLOR_STRING, true));
-	    line.setFillPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_FILLCOLOR,
-		CLEAR_COLOR_STRING, true));
-	    line.setSelectPaint(ColorFactory.parseColorFromProperties(
-		properties, LPC_HIGHLIGHTCOLOR,
-		BLACK_COLOR_STRING, true));
-	    line.setStroke(new BasicStroke(LayerUtils.intFromProperties(
-		properties, LPC_LINEWIDTH, 1)));
-	    line.setAppObject(properties);
+	if (line != null) {
+	    properties.setProperties(line);
 	}
 	return line;
     }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkConstants.java,v $
 // $RCSfile: LinkConstants.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:28:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -56,6 +56,12 @@ public interface LinkConstants {
     public static final String CLOSE_LINK_HEADER = "<OMLINK:CLOSE_LINK>";
     /** No Action header. */
     public static final String HUH_HEADER = "<OMLINK:HUH?>";
+    /** Ping request header. */
+    public static final String PING_REQUEST_HEADER = "<OMLINK:PING_REQUEST>";
+    /** Ping response header */
+    public static final String PING_RESPONSE_HEADER = "<OMLINK:PING_RESPONSE>";
+    /** Header to instruct the other other side to quit. */
+    public static final String SHUTDOWN_HEADER = "<OMLINK:SHUTDOWN>";
 
     /** Bitmap graphic object header. */
     public static final String BITMAP_HEADER ="<OMLINK:BITMAP>";
@@ -77,9 +83,14 @@ public interface LinkConstants {
     public static final String GRAPHIC_HEADER = "<OMLINK:GRAPHIC>";
     /** Point graphic object header. */
     public static final String POINT_HEADER = "<OMLINK:POINT>";
+    /** Arc graphic object header. */
+    public static final String ARC_HEADER = "<OMLINK:ARC>";
 
     /** Graphics action object header. */
     public static final String UPDATE_GRAPHICS = "<OMLINK:UPDATE_GRAPHICS>";
     /** GUI action object header. */
     public static final String UPDATE_GUI = "<OMLINK:UPDATE_GUI>";
+    /** Map action object header. */
+    public static final String UPDATE_MAP = "<OMLINK:UPDATE_MAP>";
+
 }
