@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/ChangeCase.java,v $
 // $RCSfile: ChangeCase.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/01/27 01:49:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,11 +40,20 @@ import com.bbn.openmap.util.Debug;
 public class ChangeCase extends Wanderer implements WandererCallback {
 
     boolean toUpper = false;
+    boolean verbose = false;
 
     public ChangeCase(boolean toUpperCase) {
         super();
         toUpper = toUpperCase;
         setCallback(this);
+    }
+
+    public void setVerbose(boolean val) {
+        verbose = val;
+    }
+
+    public boolean getVerbose() {
+        return verbose;
     }
 
     public void handleDirectory(File directory) {
@@ -70,7 +79,9 @@ public class ChangeCase extends Wanderer implements WandererCallback {
         }
         
         if (file.renameTo(newFile)) {
-            System.out.println("Renamed " + (file.getParent() == null?".":file.getParent()) + File.separator + file.getName() + " to " + (newFile.getParent() == null?".":newFile.getParent()) + File.separator + newFile.getName());
+            if (verbose) {
+                System.out.println("Renamed " + (file.getParent() == null?".":file.getParent()) + File.separator + file.getName() + " to " + (newFile.getParent() == null?".":newFile.getParent()) + File.separator + newFile.getName());
+            }
         } else {
             System.out.println("Renaming " + (file.getParent() == null?".":file.getParent()) + File.separator + file.getName() + " to " + (newFile.getParent() == null?".":newFile.getParent()) + File.separator + newFile.getName() + " FAILED");
         }
@@ -89,6 +100,7 @@ public class ChangeCase extends Wanderer implements WandererCallback {
         ArgParser ap = new ArgParser("ChangeCase");
         ap.add("upper", "Change file and directory names to UPPER CASE (default). <path> <path> ...", ArgParser.TO_END);
         ap.add("lower", "Change file and directory names to lower case. <path> <path> ...", ArgParser.TO_END);
+        ap.add("verbose", "Announce all changes, failures will still be reported.");
 
         if (argv.length == 0) {
             ap.bail("", true);
@@ -110,7 +122,14 @@ public class ChangeCase extends Wanderer implements WandererCallback {
             Debug.output("Converting to UPPER CASE names...");
         }
 
+        boolean verbose = false;
+        dirs = ap.getArgValues("verbose");
+        if (dirs != null) {
+            verbose = true;
+        }
+
         ChangeCase cc = new ChangeCase(toUpper);
+        cc.setVerbose(verbose);
 
         // Assume that the arguments are paths to directories or
         // files.
