@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerControlButtonPanel.java,v $
 // $RCSfile: LayerControlButtonPanel.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/19 20:36:50 $
+// $Revision: 1.2 $
+// $Date: 2003/10/10 18:33:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -269,6 +269,7 @@ public class LayerControlButtonPanel extends OMComponentPanel
 	    delete.setActionCommand(LayersPanel.LayerRemoveCmd);
 	    delete.setToolTipText("Remove selected layer");
 	    delete.addActionListener(this);
+	    delete.setEnabled(false);
 	    add(delete);
 	}
 
@@ -358,12 +359,15 @@ public class LayerControlButtonPanel extends OMComponentPanel
 
 	    selected = (Layer)obj;
 
+	    delete.setEnabled(selected.isRemoveable());
+
 	    if (Debug.debugging("layercontrol")) {
 		Debug.output("LayerControlButtonPanel: got notification that layer is selected: " + selected.getName());
 	    }
 	} else if (command == LayersPanel.LayerDeselectedCmd &&
 		   selected == obj) {
 	    selected = null;
+	    delete.setEnabled(false);
 	}
     }
 

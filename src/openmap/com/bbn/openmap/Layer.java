@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.10 $
-// $Date: 2003/10/10 15:37:39 $
+// $Revision: 1.11 $
+// $Date: 2003/10/10 18:33:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -105,18 +105,29 @@ public abstract class Layer extends JComponent
 
     /**
      * The property to set to add the layer to the BeanContext
-     * "addToBeanContext".  This needs be set by the layer itself,
-     * because it knows whether it needs other components or not.
-     * However, this property is defined in case an option can be
-     * given to the user.  If a Layer doesn't want this option given,
-     * it should reset the addToBeanContext variable after
+     * "addToBeanContext".  This probably needs be set by the layer
+     * itself, because it knows whether it needs other components or
+     * not.  However, this property is defined in case an option can
+     * be given to the user.  If a Layer doesn't want this option
+     * given, it should reset the addToBeanContext variable after
      * setProperties() is called.  The Layer.setProperties() methods
      * maintain the current state of the variable if undefined, which
-     * is false by default.
+     * is true by default.
      */
     public static final String AddToBeanContextProperty = "addToBeanContext";
 
+    /**
+     * Property 'background' to designate this layer as a background
+     * layer, which will cause extra buffering to occur if the
+     * application can handle it.  False by default.
+     */
     public static final String AddAsBackgroundProperty = "background";
+
+    /**
+     * Property 'removeable' to designate this layer as removeable
+     * from the application, or able to be deleted.  True by default.
+     */
+    public static final String RemoveableProperty = "removeable";
 
     /**
      * The property to show the palette when the layer is created -
@@ -171,6 +182,11 @@ public abstract class Layer extends JComponent
      * events from being received by the layer.
      */
     protected boolean addAsBackground = false;
+
+    /**
+     * Flag to designate the layer as removeable or not.
+     */
+    protected boolean removeable = true;
 
     /**
      * A flag to have the layer display it's palette when the
@@ -304,6 +320,8 @@ public abstract class Layer extends JComponent
 
 	setAddAsBackground(PropUtils.booleanFromProperties(props, realPrefix + AddAsBackgroundProperty, addAsBackground));
 
+	setRemoveable(PropUtils.booleanFromProperties(props, realPrefix + RemoveableProperty, removeable));
+
 	autoPalette = PropUtils.booleanFromProperties(props, realPrefix + AutoPaletteProperty, autoPalette);
     }
 
@@ -337,6 +355,7 @@ public abstract class Layer extends JComponent
 
 	props.put(prefix + AutoPaletteProperty, new Boolean(autoPalette).toString());
  	props.put(prefix + AddAsBackgroundProperty, new Boolean(addAsBackground).toString());
+ 	props.put(prefix + RemoveableProperty, new Boolean(removeable).toString());
 	props.put(prefix + AddToBeanContextProperty, new Boolean(addToBeanContext).toString());
 
 	return props;
@@ -374,6 +393,9 @@ public abstract class Layer extends JComponent
 
 	list.put(AddAsBackgroundProperty, "Flag to use the layer as a background layer.");
 	list.put(AddAsBackgroundProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
+	list.put(RemoveableProperty, "Flag to allow layer to be deleted.");
+	list.put(RemoveableProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
 	list.put(AddToBeanContextProperty, "Flag to give the layer access to all of the other application components.");
 	list.put(AddToBeanContextProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
@@ -934,6 +956,24 @@ public abstract class Layer extends JComponent
      */
     public boolean getAddAsBackground() {
 	return addAsBackground;
+    }
+
+    /**
+     * Mark the layer as removeable, or one that can be deleted from
+     * the application.  What that means is up to the LayerHandler or
+     * other application components.
+     */
+    public void setRemoveable(boolean set) {
+	removeable = set;
+    } 
+
+    /**
+     * Check to see if the layer is marked as one that can be removed
+     * from an application.
+     * @return true if layer should be allowed to be deleted.
+     */
+    public boolean isRemoveable() {
+	return removeable;
     }
     
     /**

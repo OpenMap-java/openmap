@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LayerHandler.java,v $
 // $RCSfile: LayerHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/09 16:54:56 $
+// $Revision: 1.4 $
+// $Date: 2003/10/10 18:33:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -651,16 +651,23 @@ public class LayerHandler extends OMComponent
      * @param layer to remove.
      */
     public void removeLayer(Layer layer) {
-	int index = -1;
-	for (int i = 0; i < allLayers.length; i++) {
-	    if (layer == allLayers[i]) {
-		index = i;
-		break;
+	if (layer != null && layer.isRemoveable()) {
+	    int index = -1;
+	    for (int i = 0; i < allLayers.length; i++) {
+		if (layer == allLayers[i]) {
+		    index = i;
+		    break;
+		}
 	    }
-	}
-	// If the layer is actually there...
-	if (index != -1) {
-	    removeLayer(allLayers, index);
+	    // If the layer is actually there...
+	    if (index != -1) {
+		removeLayer(allLayers, index);
+	    }
+	} else {
+	    if (layer != null) {
+		Debug.error("LayerHandler: received command to remove " + layer.getName() +
+			    ", which has been designated as *NOT* removeable");
+	    }
 	}
     }
 
@@ -686,28 +693,43 @@ public class LayerHandler extends OMComponent
     }
 
     /**
-     * Remove all the layers.
+     * Remove all the layers (that are marked as removeable).
      */
     public void removeAll() {
 	BeanContext bc = getBeanContext();
 	Layer[] oldLayers = allLayers;
+	Vector nonRemoveableLayers = null;
 
-	allLayers = new Layer[0];
 	for (int i = 0; i < oldLayers.length; i++) {
-	    turnLayerOn(false, oldLayers[i]);
-	    oldLayers[i].clearListeners();
+	    Layer layer = oldLayers[i];
+	    if (layer.isRemoveable()) {
+		turnLayerOn(false, layer);
+		layer.clearListeners();
+		if (bc != null) {
+		    // Remove the layer from the BeanContext
+		    bc.remove(layer);
+		}
+		oldLayers[i] = null;
+	    } else {
+		if (nonRemoveableLayers == null) {
+		    nonRemoveableLayers = new Vector(oldLayers.length);
+		}
+		nonRemoveableLayers.add(layer);
+	    }
+	}
+
+	if (nonRemoveableLayers != null) {
+	    allLayers = new Layer[nonRemoveableLayers.size()];
+	    allLayers = (Layer[])nonRemoveableLayers.toArray(allLayers);
+	} else {
+	    allLayers = new Layer[0];
 	}
 
 	setLayers(allLayers);
 
-	for (int i = 0; i < oldLayers.length; i++) {
-	    // Remove the layer to the BeanContext, if it wants to be.	
-	    if (bc != null) {
-		bc.remove(oldLayers[i]);
-	    }
-	    oldLayers[i] = null;
-	}
-
+	// I know this is bad but it seems to work, forcing the
+	// memory from old, deleted layers to be freed.  With such a
+	// drastic method call as removeAll, this should be OK.
 	System.gc();
     }
 
@@ -721,6 +743,13 @@ public class LayerHandler extends OMComponent
      */
     protected void removeLayer(Layer[] currentLayers, int index) {
 	Layer rLayer = currentLayers[index];
+
+	if (!rLayer.isRemoveable()) {
+	    Debug.error("LayerHandler: received command to remove " + rLayer.getName() +
+			", which has been designated as *NOT* removeable");
+	    return;
+	}
+
 	rLayer.setVisible(false);
 
 	Layer[] newLayers = new Layer[currentLayers.length - 1];
