@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/openmap.mk.in,v $
 # $RCSfile: openmap.mk.in,v $
-# $Revision: 1.4 $
-# $Date: 1998/11/06 02:57:04 $
+# $Revision: 1.5 $
+# $Date: 1998/11/12 02:37:22 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -83,6 +83,7 @@ INSTALL.bin =		install --mode=555
 INSTALL.class =		install --mode=444
 INSTALL.image =		install --mode=444
 INSTALL.props =		install --mode=444
+INSTALL.data =		install --mode=444
 
 # ------------------------------------------------------------
 # End of User settings

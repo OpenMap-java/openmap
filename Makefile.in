@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.8 $
-# $Date: 1998/11/11 21:34:32 $
+# $Revision: 1.9 $
+# $Date: 1998/11/12 02:37:21 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -112,12 +112,21 @@ ${bindir}:
 ${libdir}:
 	${INSTALL.dir} $@
 
-${bindir}/openmap: ${bindir} bin/openmap
-	${INSTALL.bin} bin/opemmap $@
+${datadir}:
+	${INSTALL.dir} $@
 
-install::	${bindir}/openmap
+install::	${bindir} bin/openmap
+	${INSTALL.bin} bin/openmap ${bindir}/openmap
 
-${libdir}/openmap.jar: ${libdir} lib/openmap.jar
-	${INSTALL.jar} lib/openmap.jar $@
+install::	${libdir} lib/omcore.jar lib/openmap.jar
+	${INSTALL.jar} lib/omcore.jar ${libdir}/omcore.jar
+	${INSTALL.jar} lib/openmap.jar ${libdir}/openmap.jar
 
-install::	${libdir}/openmap.jar
+DATA_FILES =	openmap.properties \
+		dcwpo-browse.shp \
+		dcwpo-browse.ssx
+
+SHARE_DATA = ${DATA_FILES:%=share/%}
+
+install::	${datadir}
+	${INSTALL.data} ${SHARE_DATA} ${datadir}
