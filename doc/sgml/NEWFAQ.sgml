@@ -1,4 +1,4 @@
-<p><!--
+<!--
 
 Frequently Asked Questions for the OpenMap system.
 -->
@@ -25,7 +25,7 @@ BBN was bought by GTE, but BBN is still the legal entity under which we
 operate. You can see a history of BBN at 
 <tt><htmlurl url="http://www.bbn.com"></tt>
 (actually at <tt><htmlurl
-url="http://www.bbn.com/roles/researcher/timeline/"></tt>) where
+url="http://www.bbn.com/about/timeline/index.htm"></tt>) where
 you'll see that we helped build the ARPANET which eventually became
 the Internet.
 
@@ -107,8 +107,20 @@ residing on the computer from where the applet was loaded.
 What do you need to run and develop with OpenMap?
 
 <sect1>What systems have you tested OpenMap on?
+<p>
+We've tested on Solaris 2.5, 2.5.1, 2.6, and 2.7 with Sun's JDK 1.2.  Under
+Linux, we've tested with RedHat 5.1, 5.2, and 6.0 with Blackdown's JVM.  
+Under Windows NT, we've successfully tested using CygWin32 and Sun's JDK 1.2
+We've run OpenMap under Windows 95 and 98, and have built it under the CygWin32
+tools, but have run into problems with long command lines.  
 
 <sect1>What JDK issues are there?
+<p>
+OpenMap works best under JDK 1.2.  We've done our best to keep the OpenMap
+components JDk 1.1.X-compliant, but there are some graphics objects that take
+advantage of the Java 2D API that JDK 1.2 provides.  The code that relies on
+JDK 1.2 can be deleted from the build, and the majority of the components will
+build correctly.
 
 <sect1>What GUI builders have you worked with?
 <p>
@@ -411,6 +423,7 @@ We'll release that in a future release. Right now we're concentrating
 on getting a version out that's easy to build and easy to work with.
 
 <sect>Data
+<p>
 Questions about supported data types and problems managing specific types of 
 data.
 
