@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/ASRPDirectory.java,v $
 // $RCSfile: ASRPDirectory.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/03/05 02:25:58 $
+// $Revision: 1.3 $
+// $Date: 2004/03/17 23:07:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -148,8 +148,8 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
     public OMRect getBounds() {
         if (bounds == null) {
             bounds = new OMRect(pso, lso, 
-                                pso + degPerHorBlock*numHorBlocks_N, 
-                                lso - degPerVerBlock*numVerBlocks_M, 
+                                pso - degPerHorBlock*numHorBlocks_N, 
+                                lso + degPerVerBlock*numVerBlocks_M, 
                                 OMGraphic.LINETYPE_GREATCIRCLE);
         }
 
@@ -195,15 +195,26 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
      * Get an OMGraphicList of files that cover the projection.
      * Returns an empty list if the coverage isn't over the map.
      */
-    public OMGraphicList getTiledImages(Projection proj) throws IOException {
+    public OMGraphicList checkProjAndGetTiledImages(Projection proj) throws IOException {
 
         if (!isOnMap(proj) || !validScale(proj)) {
             // off the map
             return new OMGraphicList();
         }
 
+        return getTiledImages(proj);
+    }
+
+    /**
+     * Assumes that the projection checks have occured, have passed,
+     * and just fetches the image tiles.
+     */
+    public OMGraphicList getTiledImages(Projection proj)  throws IOException {
+
         float ullat = pso;
         float ullon = lso;
+        float lrlat = ullat - (degPerVerBlock * numVerBlocks_M);
+        float lrlon = ullon + (degPerHorBlock * numHorBlocks_N);
 
         LatLonPoint llp1 = proj.getUpperLeft();
         LatLonPoint llp2 = proj.getLowerRight();
@@ -211,8 +222,8 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
         int startX = (int) Math.floor((llp1.getLongitude() - ullon) / degPerHorBlock);
         int startY = (int) Math.floor((ullat - llp1.getLatitude()) / degPerVerBlock);
         
-        int endX = (int) Math.ceil((llp2.getLongitude() - ullon) / degPerHorBlock);
-        int endY = (int) Math.ceil((ullat - llp2.getLatitude()) / degPerVerBlock);
+        int endX = numHorBlocks_N - (int) Math.floor((lrlon - llp2.getLongitude()) / degPerHorBlock);
+        int endY = numVerBlocks_M - (int) Math.floor((llp2.getLatitude() - lrlat) / degPerVerBlock);
 
         if (startX < 0) startX = 0;
         if (startY < 0) startY = 0;
@@ -315,7 +326,7 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
                 for (int c = 0; c < cpc; c++) {
                     rowCount++;
                     if (colors != null && cpv > colors.length) {
-                        if (Debug.debugging("asrp")) {
+                        if (Debug.debugging("asrpdetail")) {
                             Debug.output("Got value that is too big for colortable");
                         }
                     }
