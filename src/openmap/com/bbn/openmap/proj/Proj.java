@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Proj.java,v $
 // $RCSfile: Proj.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/07/16 00:02:34 $
+// $Revision: 1.3 $
+// $Date: 2003/07/28 20:05:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -760,7 +760,7 @@ public abstract class Proj implements Projection, Cloneable {
 	    isFilled = true;
 	    break;
 	default:
-	    rawllpts = new float[(nverts<<1)];//*2 for pairs, no connect
+	    // Don't need to do anything, defaults already set.
 	}
 
         // forward project the arc-poly.
