@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/05/14 17:17:45 $
+// $Revision: 1.7 $
+// $Date: 2003/09/05 15:42:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -72,10 +72,6 @@ public class OpenMap {
      * PropertyHandler may be null.
      */
     public OpenMap(PropertyHandler propertyHandler) {
-	if (propertyHandler == null) {
-	    propertyHandler = new PropertyHandler();
-	}
-
 	mapPanel = new BasicMapPanel(propertyHandler);
 	mapPanel.getMapHandler().add(new OpenMapFrame());
 	mapPanel.getMapBean().showLayerPalettes();
