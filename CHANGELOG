@@ -1,5 +1,10 @@
 2003-04-14  Don Dietrick  <dietrick@bbn.com>
 
+	* Added the com.bbn.openmap.gui.menu.MenuList component, which
+	can create a set of menus from properties, and can provide a
+	JMenuBar or JMenu containing those menus.  Maintains order of the
+	menus.
+
 	* Changed MapPanel to be an interface to a component that can
 	provide it's MapBean, MapHandler, MenuBar or single Menu with
 	appropriate sub-menus.  Created the BasicMapPanel to implement
