@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.15 $
-// $Date: 2004/01/26 18:18:05 $
+// $Revision: 1.16 $
+// $Date: 2004/02/02 22:49:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,6 +35,7 @@ import javax.swing.event.*;
 
 import com.bbn.openmap.ProjectionPainter;
 import com.bbn.openmap.event.*;
+import com.bbn.openmap.gui.ScrollPaneWindowSupport;
 import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
@@ -1215,6 +1216,10 @@ public abstract class Layer extends JComponent
         return windowSupport;
     }
 
+    protected WindowSupport createWindowSupport() {
+        return new ScrollPaneWindowSupport(getGUI(), getName());
+    }
+
     /**
      * Make the palette visible.  Will automatically determine if
      * we're running in an applet environment and will use a
@@ -1223,9 +1228,8 @@ public abstract class Layer extends JComponent
     public void showPalette() {
 
         WindowSupport ws = getWindowSupport();
-
         if (ws == null) {
-            ws = new WindowSupport(getGUI(), getName());
+            ws = createWindowSupport();
             paletteListener = new ComponentAdapter() {
                     public void componentShown(ComponentEvent e) {
                         firePaletteEvent(e);
