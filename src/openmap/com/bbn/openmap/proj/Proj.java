@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Proj.java,v $
 // $RCSfile: Proj.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/07/16 00:02:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,7 @@
 package com.bbn.openmap.proj;
 
 import java.awt.*;
+import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 import com.bbn.openmap.*;
 import com.bbn.openmap.util.Debug;
@@ -358,7 +359,7 @@ public abstract class Proj implements Projection, Cloneable {
      */
     public void setHeight(int height) {
 	this.height = height;
-	if (this.height < MIN_HEIGHT){
+	if (this.height < MIN_HEIGHT) {
 	    Debug.message("proj", "Proj.setHeight: height too small!");
 	    this.height = MIN_HEIGHT;
 	}
@@ -668,6 +669,105 @@ public abstract class Proj implements Projection, Cloneable {
 
 
     /**
+     * Forward project an arc.
+     * @param c LatLonPoint center
+     * @param radians boolean radius in radians?
+     * @param radius radius in radians or decimal degrees
+     * @param start the starting angle of the arc, zero being North
+     * up.  Units are dependent on radians parameter - the start
+     * paramter is in radians if radians equals true, decimal degrees
+     * if not.
+     * @param extent the angular extent angle of the arc, zero being
+     * no length.  Units are dependent on radians parameter -
+     * the extent paramter is in radians if radians equals true,
+     * decimal degrees if not.
+     */
+    public ArrayList forwardArc(LatLonPoint c, boolean radians, float radius,
+                                float start, float extent) {
+        return forwardArc(c, radians, radius, -1, start, extent, 
+			  java.awt.geom.Arc2D.OPEN);
+    }
+    public ArrayList forwardArc(
+            LatLonPoint c, boolean radians, float radius, int nverts,
+            float start, float extent) {
+        return forwardArc(c, radians, radius, nverts, start, extent, 
+			  java.awt.geom.Arc2D.OPEN);
+    }
+
+    /**
+     * Forward project a Lat/Lon Arc.
+     * <p>
+     * Arcs have the same restrictions as <a href="#poly_restrictions">
+     * polys</a>.
+     * @param c LatLonPoint center of circle
+     * @param radians radius in radians or decimal degrees?
+     * @param radius radius of circle (0 &lt; radius &lt; 180)
+     * @param nverts number of vertices of the circle poly.
+     * @param start the starting angle of the arc, zero being North
+     * up.  Units are dependent on radians parameter - the start
+     * paramter is in radians if radians equals true, decimal degrees
+     * if not.
+     * @param extent the angular extent angle of the arc, zero being
+     * no length.  Units are dependent on radians parameter -
+     * the extent paramter is in radians if radians equals true,
+     * decimal degrees if not.
+     * @param arcType type of arc to create - see java.awt.geom.Arc2D
+     * for (OPEN, CHORD, PIE).  Arc2D.OPEN means that the just the
+     * points for the curved edge will be provided.  Arc2D.PIE means
+     * that addition lines from the edge of the curve to the center
+     * point will be added.  Arc2D.CHORD means a single line from each
+     * end of the curve will be drawn.
+     */
+    public ArrayList forwardArc(
+            LatLonPoint c, boolean radians, float radius, int nverts,
+            float start, float extent, int arcType)
+    {
+        // HACK-need better decision for number of vertices.
+        if (nverts < 3)
+            nverts = NUM_DEFAULT_CIRCLE_VERTS;
+
+        float[] rawllpts;
+
+	switch (arcType) {
+	case Arc2D.PIE:
+	    rawllpts = new float[(nverts<<1)+4];//*2 for pairs +4 connect
+	    break;
+	case Arc2D.CHORD:
+	    rawllpts = new float[(nverts<<1)+2];//*2 for pairs +2 connect
+	    break;
+	default:
+	    rawllpts = new float[(nverts<<1)];//*2 for pairs, no connect
+	}
+
+        GreatCircle.earth_circle(
+                c.radlat_, c.radlon_,
+                (radians) ? radius : ProjMath.degToRad(radius),
+                (radians) ? start : ProjMath.degToRad(start),
+                (radians) ? extent : ProjMath.degToRad(extent),
+                nverts, rawllpts);
+
+	int linetype = LineType.Straight;
+	boolean isFilled = false;
+
+	switch (arcType) {
+	case Arc2D.PIE:
+	    rawllpts[rawllpts.length-4] = c.radlat_;
+	    rawllpts[rawllpts.length-3] = c.radlon_;
+	case Arc2D.CHORD:
+	    rawllpts[rawllpts.length-2] = rawllpts[0];
+	    rawllpts[rawllpts.length-1] = rawllpts[1];
+	    linetype = LineType.GreatCircle;
+	    isFilled = true;
+	    break;
+	default:
+	    rawllpts = new float[(nverts<<1)];//*2 for pairs, no connect
+	}
+
+        // forward project the arc-poly.
+	return forwardPoly(rawllpts, linetype, -1, isFilled);
+    }
+
+    /**
      * Forward project a circle.
      * @param c LatLonPoint center
      * @param radians boolean radius in radians?
@@ -694,7 +794,8 @@ public abstract class Proj implements Projection, Cloneable {
      * @param isFilled filled poly?
      */
     public ArrayList forwardCircle(
-	    LatLonPoint c, boolean radians, float radius, int nverts, boolean isFilled)
+	    LatLonPoint c, boolean radians, float radius, 
+	    int nverts, boolean isFilled)
     {
 	// HACK-need better decision for number of vertices.
 	if (nverts < 3)

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/GreatCircle.java,v $
 // $RCSfile: GreatCircle.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/21 18:49:51 $
+// $Revision: 1.3 $
+// $Date: 2003/07/16 00:02:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -267,6 +267,28 @@ public class GreatCircle {
     }//great_circle()
 
     /**
+     * Calculate partial earth circle on the sphere.
+     * <p>
+     * Returns n float lat,lon pairs at arc distance c from point at
+     * phi1,lambda0.
+     * <p>
+     * @param phi1 latitude in radians of center point
+     * @param lambda0 longitude in radians of center point
+     * @param c arc radius in radians (0 &lt; c &lt; PI)
+     * @param s starting angle in radians.  North up is zero.
+     * @param e angular extent in radians, clockwise right from
+     * starting angle.
+     * @param n number of points along circle edge to calculate
+     * @return float[n] radian lat,lon pairs along earth circle
+     *
+     */
+    final public static float[] earth_circle(
+        float phi1, float lambda0, float c, float s, float e, int n)
+    {
+        return earth_circle(phi1, lambda0, c, s, e, n, new float[n<<1]);
+    }
+
+    /**
      * Calculate earth circle on the sphere.
      * <p>
      * Returns n float lat,lon pairs at arc distance c from point at
@@ -282,7 +304,8 @@ public class GreatCircle {
     final public static float[] earth_circle(
 	float phi1, float lambda0, float c, int n)
     {
-	return earth_circle(phi1, lambda0, c, n, new float[n<<1]);
+	return earth_circle(phi1, lambda0, c, 0.0f, MoreMath.TWO_PI,
+                            n, new float[n<<1]);
     }
 
     /**
@@ -302,6 +325,33 @@ public class GreatCircle {
     final public static float[] earth_circle(
 	float phi1, float lambda0, float c, int n, float[] ret_val)
     {
+      return earth_circle(phi1, lambda0, c, 0.0f, MoreMath.TWO_PI,
+                          n, ret_val);
+  }
+
+
+    /**
+     * Calculate earth circle in the sphere.
+     * <p>
+     * Returns n float lat,lon pairs at arc distance c from point at
+     * phi1,lambda0.
+     * <p>
+     * @param phi1 latitude in radians of center point.
+     * @param lambda0 longitude in radians of center point.
+     * @param c arc radius in radians (0 &lt; c &lt; PI).
+     * @param s starting angle in radians.  North up is zero.
+     * @param e angular extent in radians, clockwise right from
+     * starting angle.
+     * @param n number of points along circle edge to calculate.
+     * @param ret_val float[] ret_val array of n*2 number of points
+     * along circle edge to calculate.
+     * @return float[n] radian lat,lon pairs along earth circle.
+     *
+     */
+    final public static float[] earth_circle(
+	float phi1, float lambda0, float c, float s, float e,
+        int n, float[] ret_val)
+    {
 	float Az, cosAz, sinAz;
 	float cosphi1 = (float)Math.cos(phi1);
 	float sinphi1 = (float)Math.sin(phi1);
@@ -310,8 +360,8 @@ public class GreatCircle {
 	int end = n<<1;//*2
 //	float[] ret_val = new float[end];
 
-	float inc = MoreMath.TWO_PI/n;
-	Az = (float)-Math.PI;
+	float inc = e/n;
+	Az = s;
 
 	// generate the points in clockwise order (conforming to
 	// internal standard!)

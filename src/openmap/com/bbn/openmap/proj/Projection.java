@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Projection.java,v $
 // $RCSfile: Projection.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/07/16 00:02:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -401,6 +401,31 @@ public interface Projection extends java.io.Serializable {
      */
     public ArrayList forwardRect(LatLonPoint ll1, LatLonPoint ll2, 
 				 int ltype, int nsegs, boolean isFilled);
+
+    /**
+     * Forward project a LatLon Arc.
+     * <p>
+     * Arcss have the same restrictions as <a href="#poly_restrictions">
+     * polys</a>.
+     *
+     * @param c LatLonPoint center of circle
+     * @param radians radius in radians or decimal degrees?
+     * @param radius radius of circle (0 &lt; radius &lt; 180)
+     * @param nverts number of vertices of the circle poly.
+     * @param start the starting angle of the arc in decimal degrees.
+     * @param extent the angular extent of the arc in decimal degrees.
+     * @param arcType type of arc to create - see java.awt.geom.Arc2D
+     * for (OPEN, CHORD, PIE).  Arc2D.OPEN means that the just the
+     * points for the curved edge will be provided.  Arc2D.PIE means
+     * that addition lines from the edge of the curve to the center
+     * point will be added.  Arc2D.CHORD means a single line from each
+     * end of the curve will be drawn.
+     * @see #forwardPoly
+     */
+    public ArrayList forwardArc(LatLonPoint c, boolean radians,
+				float radius, int nverts,
+				float start, float extent,
+				int arcType);
 
     /**
      * Forward project a LatLon Circle.
