@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.6 
+# From configure.in OpenMap Revision: 1.7 
 ac_extraJavaPath=/usr/local/java/bin:/usr/local/jdk/bin
 
 
@@ -36,7 +36,7 @@ ac_help="$ac_help
 ac_help="$ac_help
   --with-swing=JARFILE    Swing jar file"
 ac_help="$ac_help
-  --with-corba            Build CORBA Specialists"
+  --with-specialist       Build CORBA Specialists"
 
 # Initialize some variables set by options.
 # The variables have the same names as the options, with
@@ -747,22 +747,22 @@ if test "${with_swing+set}" = set; then
   :
 fi
 
-# Check whether --with-corba or --without-corba was given.
-if test "${with_corba+set}" = set; then
-  withval="$with_corba"
+# Check whether --with-specialist or --without-specialist was given.
+if test "${with_specialist+set}" = set; then
+  withval="$with_specialist"
   :
 fi
 
 
-if test "x$with_corba" = "xyes"; then
-  BUILD_CORBA=all_corba
-  
-  CLEAN_CORBA=clean_corba
-  
+
+
+
+if test "x$with_specialist" = "xyes"; then
+  layer_build_targets="$layer_build_targets specialist_all"
+  layer_clean_targets="$layer_build_targets specialist_clean"
   CORBA_CLASSPATH=:/home/tmitchel/jars/vbjall.jar:/home/tmitchel/jars/cspec58.jar
   
-  CORBA_DIRS=com/bbn/openmap/layer/specialist/Makefile \
-		com/bbn/openmap/layer/specialist/vpf/Makefile
+  CORBA_DIRS="com/bbn/openmap/layer/specialist/Makefile com/bbn/openmap/layer/specialist/vpf/Makefile"
 fi
 
 trap '' 1 2 15
@@ -894,6 +894,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/layer/Makefile
 	com/bbn/openmap/layer/dted/Makefile
 	com/bbn/openmap/layer/nitf/Makefile
+	com/bbn/openmap/layer/plotLayer/Makefile
 	com/bbn/openmap/layer/pluginLayer/Makefile
 	com/bbn/openmap/layer/rpf/Makefile
 	com/bbn/openmap/layer/shape/Makefile
@@ -939,8 +940,8 @@ s%@JAVA@%$JAVA%g
 s%@JAVA_VERSION@%$JAVA_VERSION%g
 s%@JAVAC@%$JAVAC%g
 s%@SWING_JAR@%$SWING_JAR%g
-s%@BUILD_CORBA@%$BUILD_CORBA%g
-s%@CLEAN_CORBA@%$CLEAN_CORBA%g
+s%@layer_build_targets@%$layer_build_targets%g
+s%@layer_clean_targets@%$layer_clean_targets%g
 s%@CORBA_CLASSPATH@%$CORBA_CLASSPATH%g
 
 CEOF
@@ -1000,6 +1001,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/layer/Makefile
 	com/bbn/openmap/layer/dted/Makefile
 	com/bbn/openmap/layer/nitf/Makefile
+	com/bbn/openmap/layer/plotLayer/Makefile
 	com/bbn/openmap/layer/pluginLayer/Makefile
 	com/bbn/openmap/layer/rpf/Makefile
 	com/bbn/openmap/layer/shape/Makefile
