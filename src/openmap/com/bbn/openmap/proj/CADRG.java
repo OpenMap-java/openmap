@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/CADRG.java,v $
 // $RCSfile: CADRG.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:21 $
+// $Revision: 1.6 $
+// $Date: 2005/02/15 17:26:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,7 +53,7 @@ public class CADRG extends Cylindrical implements EqualArc {
     private double spps_x, spps_y; // scaled pixels per SCoord
     private static final int CADRG_ARC_A[] = { 369664, 302592, 245760, 199168,
             163328, 137216, 110080, 82432 };
-    private static final double CADRG_SCALE_LIMIT = 200.0;
+    private static final double CADRG_SCALE_LIMIT = 2000.0;
     private static final int CADRG_get_zone_old_extents[] = { 32, 48, 56, 64,
             68, 72, 76, 80, 90 };
     private int /* ox, */oy;
