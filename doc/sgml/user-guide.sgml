@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/user-guide.sgml,v $
 $RCSfile: user-guide.sgml,v $
-$Revision: 1.2 $
-$Date: 1998/12/04 16:13:55 $
+$Revision: 1.3 $
+$Date: 1999/01/07 15:00:38 $
 $Author: aculline $
 
 User's Guide for the OpenMap Viewer application.
@@ -59,31 +59,25 @@ your own liking.
 
 <sect>Running the OpenMap Viewer
 <p>
-<figure>
-<eps file=openmap>
+<#if output=html>
 <img src="images/openmap.gif">
-<caption></caption>
-</figure>
+</#if>
 <p>
 Once the OpenMap Viewer application starts you will see a map of the
 Earth with a 10° graticule.
 
 <sect1>Menu Options
 <p>
-<figure>
-<eps file=menu>
+<#if output=html>
 <img src="images/menubar.gif">
-<caption></caption>
-</figure>
+</#if>
 <p>
 <itemize>
 <item>File Menu
 	<p>
-	<figure>
-	<eps file=file-menu>
+	<#if output=html>
 	<img src="images/file-menu.gif">
-	<caption></caption>
-	</figure>
+	</#if>
 	<itemize>
 	<item><em>About</em> About the underlying OpenMap software.
 	<item><em>Quit</em> Quit the map application.
@@ -91,11 +85,9 @@ Earth with a 10° graticule.
 	<p>
 <item>Navigate Menu
 	<p>
-	<figure>
-	<eps file=navigate-menu>
+	<#if output=html>
 	<img src="images/navigate-menu.gif">
-	<caption></caption>
-	</figure>
+	</#if>
 	<itemize>
 	<item><em>Coordinates...</em> Reposition map dialog.
 	<item><em>Projection</em> Set the map display projection.
@@ -107,11 +99,9 @@ Earth with a 10° graticule.
 	<p>
 <item>Control Menu
 	<p>
-	<figure>
-	<eps file=control-menu>
+	<#if output=html>
 	<img src="images/control-menu.gif">
-	<caption></caption>
-	</figure>
+	</#if>
 	<itemize>
 	<item><em>Mouse Mode...</em> Change the mouse behavior.
 	<em>Navigate</em> allows you to move around on the map.
@@ -121,11 +111,9 @@ Earth with a 10° graticule.
 	<p>
 <item>Layers
 	<p>
-	<figure>
-	<eps file=layers-menu>
+	<#if output=html>
 	<img src="images/layers-menu.gif">
-	<caption></caption>
-	</figure>
+	</#if>
 	<itemize>
 	<item><em>&lt;Layer1&gt;</em> Select topmost layer on map.
 	<item><em>&lt;Layer2&gt;</em> Select next layer.
@@ -135,22 +123,18 @@ Earth with a 10° graticule.
 	</itemize>
 <item>Help
 	<p>
-	<figure>
-	<eps file=help-menu>
+	<#if output=html>
 	<img src="images/help-menu.gif">
-	<caption></caption>
-	</figure>
+	</#if>
 	Bring up help in your Web Browser.  This option needs to be
 	configured in your <tt>openmap.properties</tt> file.
 </itemize>
 
 <sect1>Toolbar Options
 <p>
-<figure>
-<eps file=toolbar>
+<#if output=html>
 <img src="images/toolbar.gif">
-<caption></caption>
-</figure>
+</#if>
 <p>
 <itemize>
 	<item><em>Rosette</em>
@@ -169,11 +153,9 @@ Earth with a 10° graticule.
 
 <sect1>Layer Editor Window
 <p>
-<figure>
-<eps file=layers-window>
+<#if output=html>
 <img src="images/layers-window.gif">
-<caption></caption>
-</figure>
+</#if>
 <p>
 In addition to adding and removing layers from the map, the Layer
 Editor allows you to change their vertical position in relation to
@@ -182,61 +164,41 @@ each other, and bring up their specific palette controls.
 <itemize>
 
 <item>
-<figure>
-<eps file=layerNotSelected>
+<#if output=html>
 <img src="images/layerNotSelected.gif">
-<caption></caption>
-</figure>
-<figure>
-<eps file=layerSelected>
 <img src="images/layerSelected.gif">
-<caption></caption>
-</figure>
+</#if>
 Turn layer off/on.
 
 <item>
-<figure>
-<eps file=palette>
+<#if output=html>
 <img src="images/palette.gif">
-<caption></caption>
-</figure>
-<figure>
-<eps file="palette_on">
 <img src="images/palette_on.gif">
-<caption></caption>
-</figure>
+</#if>
 Turn layer palette controls off/on.
 
 <item>
-<figure>
-<eps file=top>
+<#if output=html>
 <img src="images/top.gif">
-<caption></caption>
-</figure>
+</#if>
 Move selected layer to top of map.
 
 <item>
-<figure>
-<eps file=up>
+<#if output=html>
 <img src="images/up.gif">
-<caption></caption>
-</figure>
+</#if>
 Move selected layer up one level in map.
 
 <item>
-<figure>
-<eps file=down>
+<#if output=html>
 <img src="images/down.gif">
-<caption></caption>
-</figure>
+</#if>
 Move selected layer down one level in map.
 
 <item>
-<figure>
-<eps file=bottom>
+<#if output=html>
 <img src="images/bottom.gif">
-<caption></caption>
-</figure>
+</#if>
 Move selected layer to bottom of map.
 
 </itemize>
@@ -244,11 +206,9 @@ Move selected layer to bottom of map.
 
 <sect1>Coordinates Window
 <p>
-<figure>
-<eps file=coordinates>
+<#if output=html>
 <img src="images/coordinates.gif">
-<caption></caption>
-</figure>
+</#if>
 <p>
 Specify coordinates in decimal degrees or DMS.  Click apply and the map
 will be recentered over the position indicated.

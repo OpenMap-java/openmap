@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/openmap-arch.sgml,v $
 $RCSfile: openmap-arch.sgml,v $
-$Revision: 1.2 $
-$Date: 1998/12/17 16:25:00 $
+$Revision: 1.3 $
+$Date: 1999/01/07 15:00:38 $
 $Author: aculline $
 
 OpenMap architecture document
@@ -23,30 +23,24 @@ architecture.
 
 <toc>
 <p>
-<figure>
-<eps file=bigpicture>
+<#if output=html>
 <img src="images/bigpicture.gif">
-<caption></caption>
-</figure>
+</#if>
 
 
 <sect>Overview
 <p>
-<figure>
-<eps file=overview>
+<#if output=html>
 <img src="images/overview.gif">
-<caption></caption>
-</figure>
+</#if>
 <p>
 
 
 <sect>MapBean
 <p>
-<figure>
-<eps file=mapbean>
+<#if output=html>
 <img src="images/mapbean.gif">
-<caption></caption>
-</figure>
+</#if>
 <p>
 
 
