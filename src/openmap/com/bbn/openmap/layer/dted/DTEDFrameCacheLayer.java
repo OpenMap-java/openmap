@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameCacheLayer.java,v $
 // $RCSfile: DTEDFrameCacheLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/03/15 23:48:35 $
+// $Revision: 1.5 $
+// $Date: 2004/04/02 23:08:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -223,14 +223,12 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer
     }
 
     /** 
-     *  Called when the layer is no longer part of the map.  In this
-     *  case, we should disconnect from the server if we have a
-     *  link. 
+     *  Called when the layer is no longer part of the map. 
      */
     public void removed(java.awt.Container cont) {
-        if (killCache) {
-            Debug.output("DTEDFrameCacheLayer: emptying cache!");
-            cache = null;
+        OMGraphicList rasters = getList();
+        if (rasters != null) {
+            rasters.clear();
         }
     }
 
@@ -267,6 +265,10 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer
         if (isCancelled()) {
             Debug.message("dted", getName()+"|DTEDFrameCacheLayer.prepare(): aborted.");
             return null;
+        }
+
+        if (cache == null) {
+            Debug.message("dted", getName()+"|DTEDFrameCacheLayer can't add anything to map because the DTEDFrameCache has not been set.");
         }
 
         Projection projection = getProjection();

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDSlopeGenerator.java,v $
 // $RCSfile: DTEDSlopeGenerator.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/01/24 02:56:11 $
+// $Revision: 1.2 $
+// $Date: 2004/04/02 23:08:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -58,10 +58,17 @@ public class DTEDSlopeGenerator extends SlopeGenerator {
         if (grid instanceof OMDTEDGrid) {
             OMDTEDGrid dGrid = (OMDTEDGrid)grid;
 
-            raster = new OMScalingRaster(dGrid.getUpperLat(), dGrid.getLeftLon(), 
-                                         dGrid.getLowerLat(), dGrid.getRightLon(),
-                                         dGrid.width, dGrid.height,
-                                         new int[dGrid.width*dGrid.height]);
+            // This is probably too expensive for our tastes, since it
+            // could be keeping two images around.  One for the
+            // created image, and one for the scaled image.
+//             raster = new OMScalingRaster(dGrid.getUpperLat(), dGrid.getLeftLon(), 
+//                                          dGrid.getLowerLat(), dGrid.getRightLon(),
+//                                          dGrid.width, dGrid.height,
+//                                          new int[dGrid.width*dGrid.height]);
+
+            raster = new OMRaster(dGrid.getUpperLat(), dGrid.getLeftLon(), 
+                                  dGrid.width, dGrid.height,
+                                  new int[dGrid.width*dGrid.height]);
             return raster;
         } else {
             raster = null;
@@ -73,7 +80,8 @@ public class DTEDSlopeGenerator extends SlopeGenerator {
      * The cached OMScalingRaster, which can be reused instead of
      * regenerated in some projection circumstances.
      */
-    protected OMScalingRaster raster;
+    protected OMRaster raster;
+
     /**
      * The scale at which the cached raster was generated.
      */
@@ -88,8 +96,13 @@ public class DTEDSlopeGenerator extends SlopeGenerator {
         // should generate a new raster from the data with better
         // detail.
 
-        if (raster != null && proj instanceof EqualArc && 
-            proj.getScale() >= generatedScale && !isIncompleteImage()) {
+        // We used to keep the same OMScalingRaster here if the scale
+        // number was larger, but I think that might be too much
+        // memory usage, more so if the scales are pretty close and
+        // you have two images pretty much the same size for each dted
+        // frame.  So we reuse if the scales match.
+        if (raster != null && proj instanceof EqualArc
+            && proj.getScale() == generatedScale && !isIncompleteImage()) {
             raster.generate(proj);
             return raster;
         } else {
