@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.18 $
-# $Date: 1998/12/15 20:30:48 $
+# $Revision: 1.19 $
+# $Date: 1999/01/06 20:57:28 $
 # $Author: aculline $
 # 
 # **********************************************************************
@@ -142,7 +142,7 @@ gmakefile:
 
 JAVADOC.dir = doc/api
 
-docs distclean::
+docs::
 	${RM} ${JAVADOC.dir}/*.html
 
 docs:: javadocs
