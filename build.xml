@@ -70,12 +70,23 @@
 	Main targets
 	############################ -->  
 
+  <target name="todo" 
+          depends="presvg, prej3d, visibroker" 
+          description="Compiles all of the OpenMap classes and builds
+          jar files in lib directory, including the svg, j3d and corba
+          packages."/>
+
+  <target name="classes" 
+          depends="contrib, openmap" 
+          description="Compiles standard OpenMap classes."/>
+
   <target name="all" 
           depends="jars" 
-          description="Compiles standard OpenMap classes and builds jar files in lib directory."/>
+          description="Compiles standard OpenMap classes and creates
+          the jar files."/>
 
   <target name="jars"
-          depends="contrib, openmap"
+          depends="classes"
 	  description="Builds jar files, placing them in the lib directory."
 	  unless="contribBuild.buildRequired, openmapBuild.buildRequired">
     <jar jarfile="${openmap.home}/lib/omcontrib.jar"
