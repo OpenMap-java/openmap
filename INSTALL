@@ -1,9 +1,9 @@
 -*- Mode: text-mode -*-
 $Source: /cvs/distapps/openmap/INSTALL,v $
 $RCSfile: INSTALL,v $
-$Revision: 1.10 $
-$Date: 1999/01/20 17:35:47 $
-$Author: tmitchel $
+$Revision: 1.11 $
+$Date: 1999/02/04 20:20:38 $
+$Author: aculline $
 
 Prerequisites
 =============
@@ -13,9 +13,9 @@ Prerequisites
    installed.  The JFC "Swing Set" is available from Sun at
    http://java.sun.com/products/jfc/ for free download.
    
-   NOTE: OpenMap will build and run out-of-the-box with Java 2.
-   Additional arguments to configure are required to build with
-   JDK1.1.  See below for details.
+   NOTE: OpenMap requires minimal configuration to build and run with
+   Java 2.  Additional arguments to configure are required to build
+   with JDK1.1.  See below for details.
 
 Basic Installation
 ==================
@@ -134,7 +134,10 @@ Detailed Configuration
 
     Use this option to specify a CLASSPATH with which to build and run
     OpenMap.  You need to use this option if you plan to build OpenMap
-    with JDK1.1.  See below for details.
+    with JDK1.1.  In particular you need to specify the location of
+    the swing.jar file.  For example:
+
+    	./configure --with-classpath=/usr/local/swing-1.1/swingall.jar
 
   Overriding Particular Executables
   ---------------------------------
@@ -175,12 +178,8 @@ Detailed Configuration
     
     You can build OpenMap with JDK 1.1.X and Swing 1.1, but you need
     to explicitly point the configure script at the Swing JAR file
-    (either swing.jar or swingall.jar will do).  For example:
-
-    	./configure --with-classpath=/usr/local/swing-1.1/swingall.jar
-
-    See above for more information about the `--with-classpath'
-    option.
+    (either swing.jar or swingall.jar will do) by using the
+    `--with-classpath' option (see above).
 
     You can also build OpenMap with JDK 1.1.X and Swing 1.0.3, but you
     will need to rename all the swing import statements in the OpenMap
