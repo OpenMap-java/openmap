@@ -29,15 +29,42 @@
     <property name="crfp.home" value="${corba.src}/com/bbn/openmap/layer/rpf/corba/CRpfFrameProvider"/>
     <property name="corbaimage.home" value="${corba.src}/com/bbn/openmap/plugin/corbaImage/corbaImageServer"/>
 
-<!--    <property name="idl2java.compiler" value="com.sun.tools.corba.se.idl.toJavaPortable.Compile" /> -->
-    <property name="idl2java.compiler" value="idlj2" />
+    <!-- 
+	 Initial check to see if the idls need to be compiled.  If the
+	 stub directories exist, assume they do.  You can 'make
+	 distclean' to delete these directories to start over. 
+      -->
+    <condition property="idl.compiled">
+      <and>
+	<available file="${cspecialist.home}" /> 
+	<available file="${crfp.home}" /> 
+	<available file="${corbaimage.home}" /> 
+      </and>
+    </condition>
 
-    <!-- ### VisiBroker settings - need to set idl2java compiler property differently. ### -->
-    <!-- sets the visibroker.home present property to the value "true"
+    <!-- This commented out property is for the old method of
+	 compiling the idl files by invoking a java class.  This
+	 proved to be unreliable across platforms, so we changed
+	 things to call the executable.  Make sure the idl2java
+	 compiler is in your path.
+
+	 <property name="idl2java.compiler" value="com.sun.tools.corba.se.idl.toJavaPortable.Compile" /> 
+	 -->
+
+    <!-- Set this value to your idl2java executable, and make sure
+	 it's in your path -->
+    <property name="idl2java.compiler" value="idlj" />
+
+    <!-- #################################
+	 VisiBroker settings - need to set idl2java compiler
+	 property differently. 
+         -->
+
+    <!-- sets the do.visibroker present property to the value "true"
 	 if the home directory of Visibroker is found. -->
     <property name="visibroker.home" value="/usr/local/openmap/vbroker-3.4/java"/>
     <available file="${visibroker.home}" property="do.visibroker"/> 
-    <!-- Visibroker compiler is:
+    <!-- Visibroker compiler class is:
     <property name="idl2java.compiler" value="com.visigenic.vbroker.tools.idl2java" />
     -->
     <property name="visibroker.jars" value="${visibroker.home}/lib/vbjapp.jar:${visibroker.home}/lib/vbjcosnm.jar:${visibroker.home}/lib/vbjtools.jar:${visibroker.home}/lib/vbjorb.jar"/>
@@ -69,25 +96,39 @@
 	  unless="idl.compiled" >
     <echo message="Creating CORBA stub classes from idls with JDK CORBA..."/>
     
+    <!-- Used to compile the idl files with a java command, but the
+	 class isn't being found consistently across platforms.  If
+	 you want to use this method, note the <java> command.  The
+	 arg line is the same.  You can modify the other two packages
+	 accordingly.
+
+    <echo message="  CORBA RPF FrameProvider package..."/>
+    <java classname="${idl2java.compiler}" fork="yes"> 
+      <arg line='-td ${corba.src} -fall -pkgPrefix CRpfFrameProvider com.bbn.openmap.layer.rpf.corba com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl'/>
+    </java>
+    -->
+
     <echo message="  CORBA RPF FrameProvider package..."/>
     <exec executable="${idl2java.compiler}" failifexecutionfails="false" >
-<!--    <java classname="${idl2java.compiler}" fork="yes"> -->
       <arg line='-td ${corba.src} -fall -pkgPrefix CRpfFrameProvider com.bbn.openmap.layer.rpf.corba com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl'/>
     </exec>
 
     <echo message="  CORBA Specialist package..."/>
     <exec executable="${idl2java.compiler}" failifexecutionfails="false" >
-<!--    <java classname="${idl2java.compiler}" fork="yes"> -->
       <arg line='-td ${corba.src} -fall -pkgPrefix CSpecialist com.bbn.openmap com/bbn/openmap/layer/specialist/Specialist.idl'/>
     </exec>
 
     <echo message="  CORBA ImageServer package..."/>
     <exec executable="${idl2java.compiler}" failifexecutionfails="false" >
-<!--    <java classname="${idl2java.compiler}" fork="yes"> -->
       <arg line='-td ${corba.src} -fall -pkgPrefix corbaImageServer com.bbn.openmap.plugin.corbaImage com/bbn/openmap/plugin/corbaImage/CorbaImageServer.idl'/>
     </exec>
 
-    <!-- Update the idl.compiled property if the compilations passed. -->
+    <!-- 
+	 Update the idl.compiled property if the compilations
+	 passed. If the compilations failed, then these directories
+	 won't be created, and the other class files won't be given to
+	 the compiler and an empty jar file won't be created.  
+      -->
     <condition property="idl.compiled">
       <and>
 	<available file="${cspecialist.home}" /> 
@@ -148,6 +189,12 @@
 	  unless="idl.compiled"
 	  if="idl.compiler">
     <echo message="Creating CORBA stub classes from idls with Visibroker..."/>
+
+    <!-- These compilations rely on the java invocation of the idl
+	 compiler, you can certainly modidify them to match the jdk idl
+	 compiler invocation if you like. The problem is that the
+	 visibroker invocation has to change the bootclasspath, at
+	 least for the version we last used. -->
     
     <java classname="${idl2java.compiler}" fork="yes">
       <jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>

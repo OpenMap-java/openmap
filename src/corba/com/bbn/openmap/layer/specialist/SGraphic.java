@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SGraphic.java,v $
 // $RCSfile: SGraphic.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/05/07 20:56:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,7 +47,7 @@ public abstract class SGraphic {
     public static EGraphic createEGraphic() {
         EGraphic eg = new EGraphic();
 	eg.graph = null;
-	eg.object = nullComp;
+	eg.obj = nullComp;
 	eg.gType = GraphicType.GT_Raster;
 	eg.rType = RenderType.RT_LatLon;
 	eg.lType = com.bbn.openmap.CSpecialist.GraphicPackage.LineType.LT_Unknown;
@@ -66,7 +66,7 @@ public abstract class SGraphic {
 		    LineType lType, DeclutterType dcType) {
         eg = new EGraphic();
 	eg.graph = g;
-	eg.object = nullComp;
+	eg.obj = nullComp;
 	eg.gType = gType;
 	eg.rType = rType;
 	eg.lType = lType;
@@ -100,15 +100,15 @@ public abstract class SGraphic {
     } 
 
     public void object(Comp object) {
-	eg.object = (object == null) ? nullComp : object.fill();
+	eg.obj = (object == null) ? nullComp : object.fill();
     }
 
     public Comp object() {
-        return eg.object.comp;
+        return eg.obj.comp;
     }
   
     public SComp sobject() {
-	return((eg.object.comp instanceof SComp)?(SComp)eg.object.comp:null);
+	return((eg.obj.comp instanceof SComp)?(SComp)eg.obj.comp:null);
     }
 
     public void lType(LineType lType) {
@@ -197,10 +197,10 @@ public abstract class SGraphic {
 
     abstract public UGraphic ufill();
 
-    public void changeObject(Comp object) {
-        object(object);
+    public void changeObject(Comp obj) {
+        object(obj);
 	GF_update gupdate = new GF_update();
-	gupdate.object(eg.object);
+	gupdate.obj(eg.obj);
 	UpdateGraphic ug = new UpdateGraphic();
 	ug.gf_update(gupdate);
 	addGraphicChange(ug);

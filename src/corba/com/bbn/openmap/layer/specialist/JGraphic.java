@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JGraphic.java,v $
 // $RCSfile: JGraphic.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/05/07 20:56:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -58,7 +58,7 @@ public class JGraphic implements Serializable {
 	newbie.setFillPaint(getColor(egraphic.fillColor));
 
 	if (newbie instanceof JObjectHolder)
-	    ((JObjectHolder)newbie).setObject(egraphic.object);
+	    ((JObjectHolder)newbie).setObject(egraphic.obj);
     }
 
 //////////////////////////////////////////////////////////////////////////
@@ -247,7 +247,7 @@ public class JGraphic implements Serializable {
 
 	      // mousable object changed
 	  case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_object:
- 	      graphic.setObject(update.object());
+ 	      graphic.setObject(update.obj());
 	      break;
 
 	      // line type changed

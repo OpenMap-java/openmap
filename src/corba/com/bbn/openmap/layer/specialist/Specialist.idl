@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/Specialist.idl,v $
 // $RCSfile: Specialist.idl,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/05/07 20:56:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,7 +37,7 @@ module CSpecialist {
 // ----------------------------------------------------------------------
 //  Basic Structures
 // ----------------------------------------------------------------------
-    const string Revision = "@(#)$Header: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/Specialist.idl,v 1.1.1.1 2003/02/14 21:35:47 dietrick Exp $";
+    const string Revision = "@(#)$Header: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/Specialist.idl,v 1.2 2003/05/07 20:56:59 dietrick Exp $";
     
     struct XYPoint {
 	short x;
@@ -151,7 +151,7 @@ module CSpecialist {
 
 	readonly attribute string gID;
 	readonly attribute GraphicType gType;
-	attribute Comp object;
+	attribute Comp obj;
 	attribute LineType lType;
 	attribute RenderType rType;
 	attribute CColor color;
@@ -173,7 +173,7 @@ module CSpecialist {
 	    GF_fillStipple
 	};
 	union GF_update switch (settableFields) {
-	  case GF_object: EComp object;
+	  case GF_object: EComp obj;
 	  case GF_lType: Graphic::LineType lType;
 	  case GF_rType: Graphic::RenderType rType;
 	  case GF_color: CColor::EColor color;
@@ -184,7 +184,7 @@ module CSpecialist {
 	};
 	struct EGraphic {
 	    Graphic graph;
-	    EComp object;
+	    EComp obj;
 	    string gID;
 	    Graphic::LineType lType;
 	    Graphic::GraphicType gType;

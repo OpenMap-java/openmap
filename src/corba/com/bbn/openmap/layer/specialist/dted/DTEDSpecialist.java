@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/dted/DTEDSpecialist.java,v $
 // $RCSfile: DTEDSpecialist.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/05/07 20:56:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -147,7 +147,7 @@ public class DTEDSpecialist extends Specialist {
     protected EGraphic createEGraphic() {
         EGraphic eg = new EGraphic();
 	eg.graph = null;
-	eg.object = nullComp;
+	eg.obj = nullComp;
 	eg.gType = GraphicType.GT_Raster;
 	eg.rType = RenderType.RT_LatLon;
 	eg.lType = com.bbn.openmap.CSpecialist.GraphicPackage.LineType.LT_Unknown;
