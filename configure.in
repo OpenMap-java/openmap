@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION(OpenMap $Revision: 1.15 $)
+AC_REVISION(OpenMap $Revision: 1.16 $)
 AC_INIT(openmap.mk.in)
 
 #
@@ -59,12 +59,32 @@ dnl Checks for programs.
 
 #
 ## Handle the possibility that we're on a Cygwin platform.
+##
+## There are two things we need to do for the cygwin platform:
+##
+## 1. The CLASSPATH separator is a semi-colon instead of a colon.
+##
+##   The variable CLASSPATH_SEP is set to the appropriate separator.
+##
+## 2. In order to use the CLASSPATH=/foo/bar.jar:/foo/baz.jar javac ...
+##    syntax on the command line, the CLASSPATH= portion needs to be
+##    enclosed in double quote.
+##
+##   The variable DBL_QT is set to the appropriate encloser (nothing
+##   or a double quote.
+##
 #
 CLASSPATH_SEP=":"
+AC_SUBST(CLASSPATH_SEP)
+
+DBL_QT=""
+AC_SUBST(DBL_QT)
+
 AC_MSG_CHECKING([for cygwin platform])
 if uname -s 2>/dev/null | grep -i cyg >/dev/null 2>&1; then
   AC_MSG_RESULT([yes])
   CLASSPATH_SEP=";"
+  DBL_QT="\""
 else
   AC_MSG_RESULT([no])
 fi

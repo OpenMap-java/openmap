@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/openmap.mk.in,v $
 # $RCSfile: openmap.mk.in,v $
-# $Revision: 1.11 $
-# $Date: 1998/11/13 18:10:32 $
+# $Revision: 1.12 $
+# $Date: 1998/11/13 18:31:53 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -63,7 +63,7 @@ localstatedir = @localstatedir@
 JAVA = @JAVA@
 JAVAC = @JAVAC@
 JAR = @JAR@
-JAVADOC = "CLASSPATH=$(CLASSPATH)" @JAVADOC@
+JAVADOC = ${DBL_QT}CLASSPATH=${CLASSPATH}${DBL_QT} @JAVADOC@
 SWING_JAR = @SWING_JAR@
 
 # Java compiler flags for optimizing
@@ -90,6 +90,9 @@ INSTALL.props =		${INSTALL_DATA}
 INSTALL.data =		${INSTALL_DATA}
 INSTALL.doc =		${INSTALL_DATA}
 
+CLASSPATH_SEP =	@CLASSPATH_SEP@
+DBL_QT =	@DBL_QT@
+
 # ------------------------------------------------------------
 # End of User settings
 # ------------------------------------------------------------
@@ -104,7 +107,7 @@ INSTALL.doc =		${INSTALL_DATA}
 
 # *.java to *.class make rule
 .java.class:
-	"CLASSPATH=$(CLASSPATH)" $(JAVAC) $(JFLAGS) $<
+	${DBL_QT}CLASSPATH=${CLASSPATH}${DBL_QT} $(JAVAC) $(JFLAGS) $<
 
 # ------------------------------------------------------------
 # End of Java to class file rule
