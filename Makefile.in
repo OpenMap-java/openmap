@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.62 $  $Date: 2001/11/21 16:47:07 $
+# $Revision: 1.63 $  $Date: 2001/12/18 01:51:26 $
 # **********************************************************************
 
 
@@ -49,6 +49,7 @@ Core.pkgs =	com.bbn.openmap \
 		com.bbn.openmap.plugin \
 		com.bbn.openmap.proj \
 		com.bbn.openmap.tools.drawing \
+		com.bbn.openmap.tools.terrain \
 		com.bbn.openmap.util \
 		com.bbn.openmap.util.propertyEditor \
 		com.bbn.openmap.util.quadtree
@@ -72,6 +73,7 @@ Core.classes =	com/bbn/openmap/*.class \
 	 	com/bbn/openmap/plugin/*.class \
 		com/bbn/openmap/proj/*.class \
 		com/bbn/openmap/tools/drawing/*.class \
+		com/bbn/openmap/tools/terrain/*.class \
 		com/bbn/openmap/util/*.class \
 		com/bbn/openmap/util/propertyEditor/*.class \
 		com/bbn/openmap/util/quadtree/*.class
@@ -135,6 +137,7 @@ PlugIn.pkgs = 	com.bbn.openmap.plugin.earthImage \
 		com.bbn.openmap.plugin.esri \
 		com.bbn.openmap.plugin.esri.input \
 		com.bbn.openmap.plugin.esri.output \
+		com.bbn.openmap.plugin.graphicLoader \
 		com.bbn.openmap.plugin.shis \
 		com.bbn.openmap.plugin.wms
 
@@ -143,6 +146,7 @@ PlugIn.classes = \
 		com/bbn/openmap/plugin/esri/*.class \
 		com/bbn/openmap/plugin/esri/input/*.class \
 		com/bbn/openmap/plugin/esri/output/*.class \
+		com/bbn/openmap/plugin/graphicLoader/*.class \
 		com/bbn/openmap/plugin/shis/*.class \
 		com/bbn/openmap/plugin/wms/*.class
 
