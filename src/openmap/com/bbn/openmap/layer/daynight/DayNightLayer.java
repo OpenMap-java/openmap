@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/daynight/DayNightLayer.java,v $
 // $RCSfile: DayNightLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/02/05 18:15:07 $
+// $Revision: 1.7 $
+// $Date: 2004/05/11 23:19:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,6 +38,7 @@ import java.net.URL;
 
 /*  OpenMap  */
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.SwingWorker;
 import com.bbn.openmap.util.CSVTokenizer;
 import com.bbn.openmap.util.ColorFactory;
@@ -108,17 +109,15 @@ public class DayNightLayer extends OMGraphicHandlerLayer
      * This means that the last 10% of the horizon will be faded
      * out. 
      */
-    public static final transient float DEFAULT_TERM_FADE = .10f;
+    public static final float DEFAULT_TERM_FADE = .10f;
     /** Default update interval, which is never - updates occur on re-projections. */
-    public static final transient int DO_NOT_UPDATE = -1;
+    public static final int DO_NOT_UPDATE = -1;
+
     /** The color of daytime - default is white and clear. */
-    protected Color daytimeColor;
-    /** Default color string for daytime */
-    protected String defaultDaytimeColorString = "00FFFFFF";
+    protected Color daytimeColor = new Color(0x00FFFFFF);
     /** the color of darkness - default is black. */
-    protected Color nighttimeColor;
-    /** Default color string for nighttime */
-    protected String defaultNighttimeColorString = "7F000000";
+    protected Color nighttimeColor = new Color(0x7F000000);
+
     /**
      * Percentage of the distance from the horizon to the brightest
      * point to start fading to darkness. Expected to be between 0.0 and 0.5.
@@ -130,7 +129,7 @@ public class DayNightLayer extends OMGraphicHandlerLayer
      */
     protected boolean currentTime = true;
     /** The time used to create the layer, in milliseconds from java/unix epoch. */
-    protected long overlayTime;
+    protected long overlayTime = 0;
     /** Update interval to automatically update the layer, in milli-seconds */
     protected int updateInterval = 300000;
     /** Update timer. */
@@ -147,20 +146,22 @@ public class DayNightLayer extends OMGraphicHandlerLayer
     protected int terminatorVerts = 360;
 
     /////// Properties
-    public static final transient String DaytimeColorProperty = ".daytimeColor";
-    public static final transient String NighttimeColorProperty = ".nighttimeColor";
-    public static final transient String TermFadeProperty = ".termFade";
-    public static final transient String CurrentTimeProperty = ".useCurrentTime";
-    public static final transient String OverlayTimeProperty = ".overlayTime";
-    public static final transient String UpdateIntervalProperty = ".updateInterval";
-    public static final transient String DoPolyTerminatorProperty = ".doPolyTerminator";
-    public static final transient String TerminatorVertsProperty = ".terminatorVerts";
+    public static final String DaytimeColorProperty = "daytimeColor";
+    public static final String NighttimeColorProperty = "nighttimeColor";
+    public static final String TermFadeProperty = "termFade";
+    public static final String CurrentTimeProperty = "useCurrentTime";
+    public static final String OverlayTimeProperty = "overlayTime";
+    public static final String UpdateIntervalProperty = "updateInterval";
+    public static final String DoPolyTerminatorProperty = "doPolyTerminator";
+    public static final String TerminatorVertsProperty = "terminatorVerts";
 
     /** 
      * The default constructor for the Layer.  All of the attributes
      * are set to their default values.
      */
-    public DayNightLayer () {}
+    public DayNightLayer () {
+        setName("Day-Night");
+    }
 
     /** 
      * The properties and prefix are managed and decoded here, for
@@ -172,83 +173,107 @@ public class DayNightLayer extends OMGraphicHandlerLayer
     public void setProperties(String prefix, java.util.Properties properties) {
         super.setProperties(prefix, properties);
 
-        String termFadeString = properties.getProperty(prefix + TermFadeProperty);
-        String currentTimeString = properties.getProperty(prefix + CurrentTimeProperty);
-        String overlayTimeString = properties.getProperty(prefix + OverlayTimeProperty);
-        String updateIntervalString = properties.getProperty(prefix + 
-                                                             UpdateIntervalProperty);
-        
-        if (currentTimeString != null)
-            currentTime = Boolean.valueOf(currentTimeString).booleanValue();
-        
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        // If something stupid gets passed in here, just us the current time...
-        try {
-            if (overlayTimeString != null)
-                overlayTime = Long.valueOf(overlayTimeString).longValue();
-            if (overlayTime <= 0){
-                currentTime = true;
-            }
-        } catch (NumberFormatException e) {
-            System.err.println("DayNightLayer: Unable to parse " + 
-                               OverlayTimeProperty +
-                               " = " + overlayTimeString);
+        overlayTime = PropUtils.longFromProperties(properties, prefix + OverlayTimeProperty, overlayTime);
+        if (overlayTime <= 0) {
             currentTime = true;
         }
 
-        try {
-            if (updateIntervalString != null)
-                updateInterval = Integer.valueOf(updateIntervalString).intValue();
-            if (updateInterval <= 0){
-                updateInterval = DO_NOT_UPDATE;
-                System.err.println("DayNightLayer: Not updating display.");
-            } else {
-                timer = new Timer(updateInterval, this);
-            }
-        } catch (NumberFormatException e) {
-            System.err.println("DayNightLayer: Unable to parse " + 
-                               UpdateIntervalProperty +
-                               " = " + updateIntervalString);
-            updateInterval = DO_NOT_UPDATE;
+        currentTime = PropUtils.booleanFromProperties(properties, prefix + CurrentTimeProperty, currentTime);
+
+        updateInterval = PropUtils.intFromProperties(properties, prefix + UpdateIntervalProperty, updateInterval);
+
+        if (updateInterval > 0) {
+            timer = new Timer(updateInterval, this);
         }
 
-        try {
-            if (termFadeString != null)
-                termFade = Float.valueOf(termFadeString).floatValue();
-            else termFade = DEFAULT_TERM_FADE;
+        termFade = PropUtils.floatFromProperties(properties, prefix + TermFadeProperty, termFade);
 
-            if (termFade < 0 || termFade >= .5){
-                System.err.println("DayNightLayer: termFade funky value ignored.");
-                termFade = DEFAULT_TERM_FADE;
-            }
-        } catch (NumberFormatException e) {
-            System.err.println("DayNightLayer: Unable to parse " + 
-                               TermFadeProperty +
-                               " = " + termFadeString);
+        if (termFade < 0 || termFade >= .5){
+            Debug.output("DayNightLayer: termFade funky value ignored.");
             termFade = DEFAULT_TERM_FADE;
         }
 
-        daytimeColor = ColorFactory.parseColorFromProperties(
-            properties,
-            prefix + DaytimeColorProperty,
-            defaultDaytimeColorString, true);
+        daytimeColor = (Color)PropUtils.parseColorFromProperties(properties, prefix + DaytimeColorProperty, daytimeColor);
+        nighttimeColor = (Color)PropUtils.parseColorFromProperties(properties, prefix + NighttimeColorProperty, nighttimeColor);
 
-        nighttimeColor = ColorFactory.parseColorFromProperties(
-            properties,
-            prefix + NighttimeColorProperty,
-            defaultNighttimeColorString, true);
+        doPolyTerminator = PropUtils.booleanFromProperties(properties, prefix + DoPolyTerminatorProperty, doPolyTerminator);
+        terminatorVerts = PropUtils.intFromProperties(properties, prefix+TerminatorVertsProperty, terminatorVerts);
+    }
 
-        doPolyTerminator = Boolean.valueOf(properties.getProperty(
-                    prefix + DoPolyTerminatorProperty, ""+doPolyTerminator)).booleanValue();
+    public Properties getProperties(Properties props) {
+        props = super.getProperties(props);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        try {
-            terminatorVerts = Integer.parseInt(
-                    properties.getProperty(
-                        prefix+TerminatorVertsProperty, ""+terminatorVerts));
-        } catch (NumberFormatException e) {
-            System.err.println("DayNightLayer: Unable to parse " + 
-                               TerminatorVertsProperty);
-        }
+        props.put(prefix + OverlayTimeProperty, Long.toString(overlayTime));
+        props.put(prefix + CurrentTimeProperty, new Boolean(currentTime).toString());
+        props.put(prefix + UpdateIntervalProperty, Integer.toString(updateInterval));
+        props.put(prefix + TermFadeProperty, Float.toString(termFade));
+        props.put(prefix + DaytimeColorProperty, Integer.toHexString(daytimeColor.getRGB()));
+        props.put(prefix + NighttimeColorProperty, Integer.toHexString(nighttimeColor.getRGB()));
+        props.put(prefix + DoPolyTerminatorProperty, new Boolean(doPolyTerminator).toString());
+        props.put(prefix + TerminatorVertsProperty, Integer.toString(terminatorVerts));
+        
+        return props;
+    }
+
+    public Properties getPropertyInfo(Properties props) {
+        props = super.getPropertyInfo(props);
+        String interString;
+
+        interString = i18n.get(DayNightLayer.class, OverlayTimeProperty,I18n.TOOLTIP,"The time used to create the layer, in milliseconds from java/unix epoch (leave empty for current time).");
+        props.put(OverlayTimeProperty, interString);
+        interString = i18n.get(DayNightLayer.class, OverlayTimeProperty, OverlayTimeProperty);
+        props.put(OverlayTimeProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(DayNightLayer.class, CurrentTimeProperty,I18n.TOOLTIP,"If true, the layer will set the darkness according to the current time.");
+        props.put(CurrentTimeProperty, interString);
+        interString = i18n.get(DayNightLayer.class, CurrentTimeProperty, CurrentTimeProperty);
+        props.put(CurrentTimeProperty + LabelEditorProperty, interString);
+        props.put(CurrentTimeProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
+        interString = i18n.get(DayNightLayer.class, UpdateIntervalProperty,I18n.TOOLTIP,"Update interval to automatically update the layer, in milli-seconds.");
+        props.put(UpdateIntervalProperty, interString);
+        interString = i18n.get(DayNightLayer.class, UpdateIntervalProperty, UpdateIntervalProperty);
+        props.put(UpdateIntervalProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(DayNightLayer.class, TermFadeProperty,I18n.TOOLTIP,"Percentage of the distance from the horizon to the brightest point to start fading to darkness, 0.0 to 0.5.");
+        props.put(TermFadeProperty, interString);
+        interString = i18n.get(DayNightLayer.class, TermFadeProperty, TermFadeProperty);
+        props.put(TermFadeProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(DayNightLayer.class, DaytimeColorProperty,I18n.TOOLTIP,"Color for the daytime area, if polygon terminator isn't used.");
+        props.put(DaytimeColorProperty, interString);
+        interString = i18n.get(DayNightLayer.class, DaytimeColorProperty, DaytimeColorProperty);
+        props.put(DaytimeColorProperty + LabelEditorProperty, interString);
+        props.put(DaytimeColorProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+
+        interString = i18n.get(DayNightLayer.class, NighttimeColorProperty,I18n.TOOLTIP,"Color for the nighttime area.");
+        props.put(NighttimeColorProperty, interString);
+        interString = i18n.get(DayNightLayer.class, NighttimeColorProperty, NighttimeColorProperty);
+        props.put(NighttimeColorProperty + LabelEditorProperty, interString);
+        props.put(NighttimeColorProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+
+        interString = i18n.get(DayNightLayer.class, DoPolyTerminatorProperty,I18n.TOOLTIP,"Render with polygon instead of image (it's faster).");
+        props.put(DoPolyTerminatorProperty, interString);
+        interString = i18n.get(DayNightLayer.class, DoPolyTerminatorProperty, DoPolyTerminatorProperty);
+        props.put(DoPolyTerminatorProperty + LabelEditorProperty, interString);
+        props.put(DoPolyTerminatorProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
+        interString = i18n.get(DayNightLayer.class, TerminatorVertsProperty,I18n.TOOLTIP,"Number of vertices of the polygon terminator (more is smoother).");
+        props.put(TerminatorVertsProperty, interString);
+        interString = i18n.get(DayNightLayer.class, TerminatorVertsProperty, TerminatorVertsProperty);
+        props.put(TerminatorVertsProperty + LabelEditorProperty, interString);
+
+
+        props.put(initPropertiesProperty, CurrentTimeProperty + " " + OverlayTimeProperty + " " + UpdateIntervalProperty + " " + NighttimeColorProperty + " " + DoPolyTerminatorProperty + " " + TerminatorVertsProperty + " " + DaytimeColorProperty + " " + TermFadeProperty + " " + RemoveableProperty + " " + AddAsBackgroundProperty);
+
+        return props;
     }
 
     /**
@@ -318,8 +343,6 @@ public class DayNightLayer extends OMGraphicHandlerLayer
         int[] pixels = new int[width*height];
 
         OMRaster ret = new OMRaster((int)0, (int)0, width, height, pixels);
-
-
 
         float lat, lon;
 
