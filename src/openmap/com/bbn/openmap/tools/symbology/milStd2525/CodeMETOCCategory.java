@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeMETOCCategory.java,v $
 // $RCSfile: CodeMETOCCategory.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/11 08:31:52 $
+// $Revision: 1.3 $
+// $Date: 2003/12/16 01:08:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,28 +28,7 @@ import java.util.List;
 
 public class CodeMETOCCategory extends CodePosition {
 
-    public final static CodeMETOCCategory ATMOSPHERIC = 
-	new CodeMETOCCategory(1, 'A', "ATMOSPHERIC");
-    public final static CodeMETOCCategory OCEANIC = 
-	new CodeMETOCCategory(2, 'O', "OCEANIC");
-    public final static CodeMETOCCategory SPACE = 
-	new CodeMETOCCategory(3, 'S', "SPACE");
-
-    protected CodeMETOCCategory(int heirarchyLevelNumber, char idChar, String name) {
-	super(heirarchyLevelNumber, idChar, name, 2, 2, CodeFunctionID.class);
+    public CodeMETOCCategory() {
+	super("METOC Catetory", 2, 2);
     }
-
-    public static List getList() {
-	List list = (List)positions.get(CodeMETOCCategory.class.getName());
-	if (list == null) {
-	    list = new ArrayList();
-	    list.add(ATMOSPHERIC);
-	    list.add(OCEANIC);
-	    list.add(SPACE);
-	    positions.put(CodeMETOCCategory.class.getName(), list);
-	}
-
-	return list;
-    }
-
 }

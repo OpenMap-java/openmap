@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeFunctionID.java,v $
 // $RCSfile: CodeFunctionID.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/11 08:31:52 $
+// $Revision: 1.3 $
+// $Date: 2003/12/16 01:08:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,21 +31,21 @@ import com.bbn.openmap.util.Debug;
 
 public class CodeFunctionID extends CodePosition {
 
-    protected CodeFunctionID() {
+    public CodeFunctionID() {
 	// Code function IDs are not kept around, they are just used
 	// to create the SymbolPart Structure.  The first three
 	// arguments in the super call are meaningless.
 	this(5);
     }
 
-    protected CodeFunctionID(int pos) {
+    public CodeFunctionID(int pos) {
 	// Code function IDs are not kept around, they are just used
 	// to create the SymbolPart Structure.  The first three
 	// arguments in the super call are meaningless.
-	super(0, ' ', null, pos, 10, CodeFunctionID.class);
+	super("Function ID", pos, 10);
     }
 
-    protected void parse(String hCode, Properties props, SymbolPart parent) {
+    public void parseHeirarchy(String hCode, Properties props, SymbolPart parent) {
 	
 	List parentList = null;
 	int subLevelNumber = 1;
@@ -94,7 +94,7 @@ public class CodeFunctionID extends CodePosition {
 			     sp.getPrettyName());
 		}
 
-		cp.parse(hCode2, props, sp);
+		cp.parseHeirarchy(hCode2, props, sp);
 		subLevelNumber++;
 
 	    } else {

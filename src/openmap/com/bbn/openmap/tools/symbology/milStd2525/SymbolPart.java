@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolPart.java,v $
 // $RCSfile: SymbolPart.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/11 08:31:52 $
+// $Revision: 1.3 $
+// $Date: 2003/12/16 01:08:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,6 +32,25 @@ import com.bbn.openmap.dataAccess.cgm.CGM;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
+/**
+ * The SymbolPart class represents the heirarchy of pieces needed to
+ * represent an actual symbol.  A symbol may require geometries from
+ * its parents, as each piece further down the heirarchy makes each
+ * symbol's meaning more specific, or scoped for a particular task.
+ * The top-level SymbolPart represents the entire symbology tree.
+ * Descending down through the tree, a SymbolPart representing one of
+ * the 5 Scheme sections is next, with the lower levels dependent on
+ * the Scheme definitions. <P>
+ *
+ * The SymbolPart is smart enough to use the heirarchy.properties file
+ * that defines the symbol set and create the symbol tree using the
+ * appropriate Code classes.  Not all Code classes help define the
+ * tree, because some aspects of a symbol are flexible, like the
+ * Affiliation (enemy, friend, etc).  The SymbolPart tree only defines
+ * some aspects of the symbol.  Other parts of the symbol are
+ * dependent on these flexible variations that are provided to the
+ * SymbolPart at the time icons are created.
+ */
 public class SymbolPart {
 
     /** Property file property for pretty name 'name' */
@@ -81,53 +100,73 @@ public class SymbolPart {
     public final char UNUSED = '-';
     public final char WILD = '*';
     
-    /**
-     * A special constructor for the head.
-     */
-    public SymbolPart(Properties props) {
-	this.prettyName = "MIL-STD-2525B Symbology";
-
+    protected SymbolPart() {
 	DEBUG = Debug.debugging("symbolpart");
-	if (DEBUG) {
-	    Debug.output("SymbolPart head");
-	}
-
-	String schemeCode;
-	SymbolPart symbolSet = null;
-	subs = new Vector();
-
-	List schemes = CodeScheme.getList();
-	if (DEBUG) {
-	    Debug.output("SymbolPart head: loading schemes");
-	}
-	
-	for (Iterator it = schemes.iterator(); it.hasNext();) {
-	    CodeScheme cs = (CodeScheme)it.next();
-
-	    if (DEBUG) {
-		Debug.output("SymbolPart head: loading " + cs.getPrettyName());
-	    }
-
-	    symbolSet = cs.parse(props, this);
-	    if (symbolSet != null) {
-		subs.add(symbolSet);
-	    }
-	}
     }
 
+    /**
+     * The most-used constructor, used by CodePosition objects to
+     * create the different levels of the SymbolPart tree.  The
+     * SymbolPart uses the parameters and the Properties to define its
+     * name and get the cgm file holding the geometry for the symbol.
+     * This constructor focuses on the Scheme, Dimension and
+     * FunctionID symbol parts.
+     * 
+     * @param codePosition CodePosition object that corresponds to the
+     * SymbolPart.  CodePosition object with lower position numbers
+     * tend to define more general symbols.
+     * @param symbolCode the 15 character symbol string that defines
+     * this SymbolPart.  This string is associated with a heirarchy
+     * number in the Properties.
+     * @param props the Properties object contains all the information
+     * about the symbol tree.
+     * @param parent the SymbolPart that is above this one in the
+     * SymbolPart tree.
+     */
     public SymbolPart(CodePosition codePosition, String symbolCode,
 		      Properties props, SymbolPart parent) {
-	int start = codePosition.getStartIndex();
-	int end = codePosition.getEndIndex();
+	this(codePosition, symbolCode, props, parent, 
+	     codePosition.getStartIndex(), codePosition.getEndIndex(), true);
+    }
+
+    /**
+     * A different constructor used by OptionPositions.  The
+     * SymbolPart uses the parameters and the Properties to define its
+     * name and get the cgm file holding the geometry for the symbol.
+     * This constructor focuses on the Scheme, Dimension and
+     * FunctionID symbol parts.
+     * 
+     * @param codePosition CodePosition object that corresponds to the
+     * SymbolPart.  CodePosition object with lower position numbers
+     * tend to define more general symbols.
+     * @param symbolCode the 15 character symbol string that defines
+     * this SymbolPart.  This string is associated with a heirarchy
+     * number in the Properties.
+     * @param props the Properties object contains all the information
+     * about the symbol tree.
+     * @param parent the SymbolPart that is above this one in the
+     * SymbolPart tree.
+     */
+    public SymbolPart(CodePosition codePosition, String symbolCode,
+		      Properties props, SymbolPart parent, int start, int end, 
+		      boolean shiftIfNecessary) {
+
  	this.code = symbolCode.substring(start, end);
 	this.codePosition = codePosition;
+
+	// For OptionPositions, we need to have a version where the
+	// start and end aren't used for parsing, because the
+	// properties are especially designed for them.  We just need
+	// the indexes for placement into the symbol code later.  The
+	// new code just needs to read symbolCode from the beginning
+	// for the length between the indexes.
 
 	boolean debug = DEBUG;
 
 	// This corrects the situation where the symbol code is
 	// shorter in the specification than it would seem
 	// appropriate for its place in the heirarchy.
-	while (code.charAt(0) == UNUSED && start > 1) {
+	while (code.charAt(0) == UNUSED && start > 1 && shiftIfNecessary) {
 	    code = symbolCode.substring(--start, end);
 	    this.positionShift--;
 	}
@@ -138,12 +177,13 @@ public class SymbolPart {
 
 	String sc = getSymbolCode();
 
-	if (!symbolCode.equals(sc)) {
-	    debug = true;
-	}
+// 	if (!symbolCode.equals(sc)) {
+// 	    debug = true;
+// 	}
 
 	if (debug) {
-	    Debug.output("SymbolPart(): read " + start +
+	    Debug.output("SymbolPart(" + codePosition.getPrettyName() + 
+			 "): read " + start +
 			 " of [" + symbolCode + 
 			 "] as [" + sc +
 			 "] : " + this.prettyName + 
@@ -151,43 +191,75 @@ public class SymbolPart {
 	}
     }
 
+    /**
+     * Sets the part of the SymbolCode that is unique to this SymbolPart.
+     */
     public void setCode(String c) {
 	code = c;
     }
 
+    /**
+     * Gets the part of the SymbolCode that is unique to this SymbolPart.
+     */
     public String getCode() {
 	return code;
     }
    
+    /**
+     * Sets the descriptive name if this SymbolPart.
+     */
     public void setPrettyName(String pn) {
 	prettyName = pn;
     }
 
+    /**
+     * Sets the descriptive name if this SymbolPart.
+     */
     public String getPrettyName() {
 	return prettyName;
     }
 
+    /**
+     * Sets the SymbolPart's parent in the SymbolPart tree.
+     */
     public void setParent(SymbolPart par) {
 	parent = par;
     }
 
+    /**
+     * Retrieves the SymbolPart's parent in the SymbolPart tree.
+     */
     public SymbolPart getParent() {
 	return parent;
     }
 
+    /**
+     * Sets a list of SymbolPart tree for more specific
+     * representations of what this SymbolPart represents.
+     */
     public void setSubs(List set) {
 	subs = set;
     }
 
+    /**
+     * Gets a list of SymbolPart tree for more specific
+     * representations of what this SymbolPart represents.
+     */
     public List getSubs() {
 	return subs;
     }
 
+    /**
+     * Get a simple string representation of this SymbolPart,
+     * including the 15 digit code and the pretty name.
+     */
     public String toString() {
 	return " [" + getSymbolCode() + "] " + prettyName;
     }
 
     /**
+     * A method used by the tree to provide a string representation of
+     * how all the SymbolParts are connected.
      */
     public String getDescription(int level) {
 	StringBuffer sb = new StringBuffer();
@@ -230,15 +302,35 @@ public class SymbolPart {
     }
     
     /**
+     * The starting command for retrieving the description with this
+     * SymbolPart being the top of the tree.
      */
     public String getDescription() {
 	return getDescription(0);
     }
 
+    /**
+     * Retrieves the 15 character symbol code for this SymbolPart.
+     * Calling this method will cause the SymbolPart to ask all of
+     * it's parents to contribute their part of the code as well.
+     */
     public String getSymbolCode() {
 	return getSymbolCode(null).toString();
     }
 
+    /**
+     * A 15 character string of spaces, where spaces won't overwrite
+     * the current character when this symbol writes to a
+     * getSymbolCode() string.
+     */
+    public StringBuffer getSymbolCodeMask() {
+	return new StringBuffer("               ");
+    }
+
+    /**
+     * A SymbolPart tree method that gets the SymbolPart's parents
+     * contribution for the symbol code.
+     */
     protected StringBuffer getSymbolCode(StringBuffer symbolCode) {
 
 	if (codePosition instanceof CodeScheme) {
@@ -246,20 +338,33 @@ public class SymbolPart {
 	} else if (parent != null) {
 	    symbolCode = parent.getSymbolCode(symbolCode);
 	} else {
-	    Debug.output(prettyName + ": No parent and no scheme to use for setting up default symbol code");
-	    symbolCode = new StringBuffer("---------------");
+	    symbolCode = getSymbolCodeMask();
 	}
-
 
 	if (codePosition != null) {
 	    int key = codePosition.getStartIndex() + positionShift;
-// 	    char sChar = symbolCode.charAt(key);
-
 	    symbolCode = symbolCode.replace(key, codePosition.getEndIndex(), code);
-
-// 	    symbolCode.setCharAt(key, code);
 	}
 
 	return symbolCode;
+    }
+
+//     public CodeOptions getCodeOptions() {
+// 	CodeScheme cs = getCodeScheme();
+// 	if (cs != null) {
+// 	    cs.getCodeOptions();
+// 	} else {
+// 	    return null;
+// 	}
+//     }
+
+    public CodeScheme getCodeScheme() {
+	CodeScheme cs = null;
+	if (codePosition instanceof CodeScheme) {
+	    cs = (CodeScheme)codePosition;
+	} else if (parent != null) {
+	    cs = parent.getCodeScheme();
+	}
+	return null;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodePosition.java,v $
 // $RCSfile: CodePosition.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/11 08:31:52 $
+// $Revision: 1.3 $
+// $Date: 2003/12/16 01:08:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,44 +30,53 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 public class CodePosition {
+
+    public final static char NO_CHAR = ' ';
+    public final static int NO_NUMBER = -1;
 
     protected int heirarchyNumber;
     protected char id;
     protected String prettyName;
     protected int startIndex;
     protected int endIndex;
-    protected Class nextPosition = null;
+    protected CodePosition nextPosition = null;
 
     public static boolean DEBUG = false;
 
-    protected static Hashtable positions = new Hashtable();
+    /** Property file property for pretty name 'name' */
+    public final static String NameProperty = "name";
 
-    protected CodePosition(int heirarchyLevelNumber, char idChar, String name, 
-			   int start, int end, Class np) {
+    /** 
+     * Property file property for a classname representing the next
+     * position in the position tree 'next'. 
+     */
+    public final static String NextProperty = "next";
 
+    /**
+     * A list of CodePosition choices for this position.
+     */
+    protected List choices = new ArrayList();
+
+    protected CodePosition() {};
+
+    public CodePosition(String name, int start, int end) {
 	DEBUG = Debug.debugging("codeposition");
 	startIndex = start - 1;
 	endIndex = end;
-	nextPosition = np;
-	heirarchyNumber = heirarchyLevelNumber;
-	id = idChar;
 	prettyName = name;
     }
 
-    public static List getList() {
-	List list = (List)positions.get(CodePosition.class);
-	if (list == null) {
-	    list = new ArrayList();
-	    positions.put(CodePosition.class, list);
-	}
-	return list;
+    public List getPositionChoices() {
+	return choices;
     }
 
-    public static CodePosition getFromList(int heirarchyNumber) {
-	List aList = getList();
+    public CodePosition getFromChoices(int heirarchyNumber) {
+	List aList = getPositionChoices();
 	if (aList != null) {
 	    for (Iterator it = aList.iterator(); it.hasNext();) {
 		CodePosition cp = (CodePosition)it.next();
@@ -79,7 +88,42 @@ public class CodePosition {
 	return null;
     }
 
-    protected void parse(String hCode, Properties props, SymbolPart parent) {
+    /**
+     */
+    protected void parsePositions(String prefix, Properties props) {
+	int index = 1;
+	String entry = props.getProperty(PropUtils.getScopedPropertyPrefix(prefix) +
+					 Integer.toString(index));
+	while (entry != null) {
+	    addPositionChoice(index, entry, prefix, props);
+	    entry = props.getProperty(PropUtils.getScopedPropertyPrefix(prefix) +
+				      Integer.toString(++index));
+	}
+    }
+
+    protected CodePosition addPositionChoice(int index, String entry, 
+					     String prefix, Properties props) {
+	String className = this.getClass().getName();
+	CodePosition cp = (CodePosition)ComponentFactory.create(className);
+	if (cp != null) {
+	    if (DEBUG) {
+		Debug.output("CodePosition:  created position (" + className + ")");
+	    }
+
+	    prefix = PropUtils.getScopedPropertyPrefix(prefix) + entry + ".";
+	    cp.heirarchyNumber = index;
+	    cp.id = entry.charAt(0);  // ASSUMED
+	    cp.prettyName = props.getProperty(prefix + NameProperty);
+	    choices.add(cp);
+	} else {
+	    if (DEBUG) {
+		Debug.output("CodePosition: couldn't create position (" + className + ")");
+	    }
+	}
+	return cp;
+    }
+
+    protected void parseHeirarchy(String hCode, Properties props, SymbolPart parent) {
 	
 	List parentList = null;
 	int levelCounter = 1;
@@ -120,7 +164,7 @@ public class CodePosition {
 				 sp.getPrettyName());
 		}
 
-		cp.parse(heirarchyCode, props, sp);
+		cp.parseHeirarchy(heirarchyCode, props, sp);
 
 		levelCounter++;
 
@@ -154,7 +198,7 @@ public class CodePosition {
 	return endIndex;
     }
 
-    public Class getNextPosition() {
+    public CodePosition getNextPosition() {
 	return nextPosition;
     }
 

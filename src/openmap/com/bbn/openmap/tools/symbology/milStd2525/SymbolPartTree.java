@@ -12,9 +12,9 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeStatus.java,v $
-// $RCSfile: CodeStatus.java,v $
-// $Revision: 1.3 $
+// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolPartTree.java,v $
+// $RCSfile: SymbolPartTree.java,v $
+// $Revision: 1.1 $
 // $Date: 2003/12/16 01:08:49 $
 // $Author: dietrick $
 // 
@@ -23,13 +23,17 @@
 
 package com.bbn.openmap.tools.symbology.milStd2525;
 
-import java.util.ArrayList;
-import java.util.List;
+public class SymbolPartTree extends SymbolPart {
 
-public class CodeStatus extends OptionPosition {
-
-    public CodeStatus() {
-	super("Status", 4, 4);
+    public SymbolPartTree(String name) {
+	prettyName = name;
     }
 
+    /**
+     * Get a simple string representation of this SymbolPart,
+     * including the 15 digit code and the pretty name.
+     */
+    public String toString() {
+	return "[" + prettyName + "] Symbol Set";
+    }
 }

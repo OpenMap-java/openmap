@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeScheme.java,v $
 // $RCSfile: CodeScheme.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/11 08:31:52 $
+// $Revision: 1.3 $
+// $Date: 2003/12/16 01:08:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,81 +29,79 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 public class CodeScheme extends CodePosition {
 
     protected String defaultSymbolCode;
+    protected String heirarchyAddition;
 
-    public final static CodeScheme WARFIGHTING = 
-	new CodeScheme(1, 'S', "WARFIGHTING", 
-		       CodeBattleDimension.class, 
-		       "****------*****");
+    public final static String DefaultSymbolCodeProperty = "defaultSymbolCode";
+    public final static String HeirarchyCodeAdditionProperty = "heirarchyCodeAddition";
 
-    public final static CodeScheme TACTICAL_GRAPHICS = 
-	new CodeScheme(2, 'G', "TACTICAL GRAPHICS", 
-		       CodeBattleDimension.class,
-		       "****------****X");
-
-    public final static CodeScheme METOC = 
-	new CodeScheme.METOC(3, 'W', "METOC", 
-			     CodeMETOCCategory.class, 
-			    "---------------");
-
-    public final static CodeScheme INTELLIGENCE = 
-	new CodeScheme(4, 'I', "INTELLIGENCE", 
-		       CodeBattleDimension.class, 
-		       "****--------***");
-
-    public final static CodeScheme MOOTW = 
-	new CodeScheme(5, 'O', "Military Operations Other Than War (MOOTW)", 
-		       CodeMOOTWCategory.class, 
-		       "****------*****");
-    public final static CodeScheme MAPPING = 
-	new CodeScheme(6, 'M', "Mapping (reserved - under development)", 
-		       null, "               ");
-
-    protected CodeScheme(int heirarchyLevelNumber, 
-			 char heirarchyLevelChar, String name,
-			 Class nextCodePosition,
-			 String defaultSymbolCode) {
-	super(heirarchyLevelNumber, heirarchyLevelChar, name, 1, 1, nextCodePosition);
-	this.defaultSymbolCode = defaultSymbolCode;
+    public CodeScheme() {
+	super("Scheme", 1, 1);
     }
 
-    public static List getList() {
-	List list = (List)positions.get(CodeScheme.class);
-	if (list == null) {
-	    list = new ArrayList();
-	    list.add(WARFIGHTING);
-	    list.add(TACTICAL_GRAPHICS);
-	    list.add(METOC);
-	    list.add(INTELLIGENCE);
-	    list.add(MOOTW);
-	    positions.put(CodeScheme.class, list);
+    public CodePosition addPositionChoice(int index, String entry,
+					  String prefix, Properties props) {
+	
+	CodeScheme cs = (CodeScheme)super.addPositionChoice(index, entry, prefix, props);
+	prefix = PropUtils.getScopedPropertyPrefix(prefix) + entry + ".";
+
+	String next = props.getProperty(prefix + NextProperty);
+
+	if (next != null) {
+	    String nextClassName = props.getProperty(next + ".class");
+	    if (nextClassName != null) {
+		CodePosition cp = (CodePosition)ComponentFactory.create(nextClassName);
+		if (DEBUG) {
+		    Debug.output("CodeScheme created next class(" + 
+				 next + "), " + nextClassName);
+		}
+		if (cp != null) {
+		    cs.nextPosition = cp;
+		    cp.parsePositions(next, props);
+		}
+	    } else {
+		if (DEBUG) {
+		    Debug.output("CodeScheme couldn't create next class(" + 
+				 next + "), " + nextClassName);
+		}
+	    }
 	}
-	return list;
+
+	cs.defaultSymbolCode = props.getProperty(prefix + DefaultSymbolCodeProperty);
+	cs.heirarchyAddition = props.getProperty(prefix + HeirarchyCodeAdditionProperty, "");
+	// Don't need to add to choices, already done in super class method.
+	return cs;
     }
 
-    protected SymbolPart parse(Properties props, SymbolPart parent) {
-	String hCode = getHeirarchyNumber() + ".X";
+    public SymbolPart parseHeirarchy(Properties props, SymbolPart parent) {
+	String hCode = getHeirarchyNumber() + heirarchyAddition;
 	String entry = props.getProperty(hCode);
 	SymbolPart sp = null;
 
 	if (entry != null) {
 	    sp = new SymbolPart(this, entry, props, parent);
-	    parse(hCode, props, sp);
+	    parseHeirarchy(hCode, props, sp);
 	}
 
 	return sp;
     }
 
-    protected void parse(String hCode, Properties props, SymbolPart parent) {
+    public void parseHeirarchy(String hCode, Properties props, SymbolPart parent) {
 	
-	List codePositionList = getNextPositionList();
+ 	List codePositionList = null;
+
+	if (nextPosition != null) {
+	    codePositionList = nextPosition.getPositionChoices();
+	}
 
 	if (codePositionList == null || codePositionList.size() == 0) {
-	    Debug.output(prettyName + ".parse(): codePositionList.size = 0");
+	    Debug.output(prettyName + ".parseHeirarchy(): codePositionList.size = 0");
 	    return;
 	}
 
@@ -142,7 +140,7 @@ public class CodeScheme extends CodePosition {
 				 " children for " + sp.getPrettyName());
 		}
 
-		cp.parse(newHCode, props, sp);
+		cp.parseHeirarchy(newHCode, props, sp);
 	    
 	    } else {
 		if (DEBUG) {
@@ -152,61 +150,15 @@ public class CodeScheme extends CodePosition {
 	}
     }
 
-    /**
-     */
-    protected List getNextPositionList() {
-
-	List nextLevelList = null;
-
-	if (nextPosition != null) {
-
-	    if (DEBUG) {
-		Debug.output(getClass().getName() + " looking to " + 
-			     nextPosition.getName());
-	    }
-
-	    try {
-		Method npm = nextPosition.getMethod("getList", null);
-		nextLevelList = (List)npm.invoke(nextPosition, null);
-	    } catch (NoSuchMethodException nsme) {
-	    } catch (SecurityException se) {
-	    } catch (IllegalAccessException iae) {
-	    } catch (IllegalArgumentException iae2) {
-	    } catch (InvocationTargetException ite) {
-	    }
-	}
-
-	return nextLevelList;
-    }
-
     public StringBuffer getDefaultSymbolCode() {
 	return new StringBuffer(defaultSymbolCode);
     }
 
-    public static class METOC extends CodeScheme {
-
-	public METOC(int heirarchyLevelNumber, 
-		     char heirarchyLevelChar, String name,
-		     Class nextCodePosition,
-		     String defaultSymbolCode) {
-	    super(heirarchyLevelNumber, heirarchyLevelChar, name,
-		  nextCodePosition, defaultSymbolCode);
-	}
-
-	protected SymbolPart parse(Properties props, SymbolPart parent) {
-
-	    String hCode = Integer.toString(getHeirarchyNumber());
-	    String entry = props.getProperty(hCode);
-	    SymbolPart sp = null;
-
-	    if (entry != null) {
-		sp = new SymbolPart(this, entry, props, parent);
-		parse(hCode, props, sp);
-	    }
-
-	    return sp;
-	}
-
+    public CodeOptions getCodeOptions(SymbolPart sp) {
+	// Check with the symbol part first to see of there are any
+	// options for the particular positions established and
+	// limiting for the particular symbol, and then subsitute
+	// defaults for any other positions.
+	return null;
     }
-
 }
