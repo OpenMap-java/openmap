@@ -14,27 +14,13 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/10/14 18:06:20 $
+// $Revision: 1.11 $
+// $Date: 2005/01/12 19:36:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.plugin;
-
-import com.bbn.openmap.I18n;
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.geom.*;
-import com.bbn.openmap.proj.Ellipsoid;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.coords.MGRSPoint;
-import com.bbn.openmap.proj.coords.UTMPoint;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PaletteHelper;
-import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.quadtree.QuadTree;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -48,7 +34,32 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.omGraphics.OMColorChooser;
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGeometryList;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.omGraphics.geom.BasicGeometry;
+import com.bbn.openmap.omGraphics.geom.PolygonGeometry;
+import com.bbn.openmap.omGraphics.geom.PolylineGeometry;
+import com.bbn.openmap.proj.Ellipsoid;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.MGRSPoint;
+import com.bbn.openmap.proj.coords.UTMPoint;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.quadtree.QuadTree;
 
 /**
  * The UTMGridPlugIn renders UTM Zone areas, and renders a grid
@@ -168,7 +179,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         OMGeometryList horizontalList = new OMGeometryList();
         float[] points = null;
 
-        for (int lat = -80; lat <= 72; lat += 8) {
+        for (float lat = -80f; lat <= 72f; lat += 8f) {
             points = new float[] { lat, -180f, lat, -90f, lat, 0f, lat, 90f,
                     lat, 180f };
             horizontalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB));
