@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/dock/DockPanel.java,v $
 // $RCSfile: DockPanel.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/08 17:33:14 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/09/08 20:54:27 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -34,14 +34,10 @@ import com.bbn.openmap.util.Debug;
 /**
  * A component that has a background component and docking children.
  * @author Ben Lubin
- * @version $Revision: 1.1 $ on $Date: 2003/04/08 17:33:14 $
+ * @version $Revision: 1.2 $ on $Date: 2003/09/08 20:54:27 $
  * @since 12/5/02
  */
-public class DockPanel extends JLayeredPane {
-
-    /** Constraint for the background component */
-    public static final String BACKGROUND =
-	BorderLayout.CENTER;
+public class DockPanel extends JLayeredPane implements DockablePanel {
 
     /** Layer where we add the background component */
     private static final Integer BACKGROUND_LAYER = new Integer(-100);
@@ -88,21 +84,22 @@ public class DockPanel extends JLayeredPane {
 	setBackground(UIManager.getColor("control"));
     }
 
-    //Accessors:
-    ////////////
+    //Background Methods:
+    /////////////////////
 
-    public int getOverlapTolerance() {
-	return 5;
-    }
-
-    /*package*/ DockWrapper getNorth() { return north;}
-    /*package*/ DockWrapper getSouth() { return south;}
-    /*package*/ DockWrapper getEast() { return east;}
-    /*package*/ DockWrapper getWest() { return west;}
-    
     public JComponent getBackgroundComponent() {
 	return background;
     }
+
+    public void setBackgroundComponent(JComponent back) {
+	if (getBackgroundComponent() != null) {
+	    remove(getBackgroundComponent());
+	}
+	add(back, BACKGROUND);
+    }
+
+    //Constraint Methods:
+    /////////////////////
 
     public void setConstraint(JComponent child, DockConstraint c) {
 	childToConstraint.put(child, c);
@@ -112,41 +109,12 @@ public class DockPanel extends JLayeredPane {
 	return (DockConstraint) childToConstraint.get(child);
     }
 
-    /**
-     * Get a list of DockConstraint objects for a list of children.
-     * @param children a List of JComponent children
-     * @return a List of DockConstraints
-     */
-    public List getConstraints(List children) {
-	List ret = new ArrayList(children.size());
-	for (Iterator iter = children.iterator(); iter.hasNext();) {
-	    JComponent child = (JComponent)iter.next();
-	    ret.add(getConstraint(child));
-	}
-	return ret;
-    }
-
     public void removeConstraint(JComponent child) {
 	childToConstraint.remove(child);
     }
 
-    public void setWrapper(JComponent child, DockWrapper w) {
-	childToWrapper.put(child, w);
-    }
-
-    public DockWrapper getWrapper(JComponent child) {
-	return (DockWrapper)childToWrapper.get(child);
-    }
-
-    public void removeWrapper(DockWrapper wrapper) {
-	for(Iterator iter = wrapper.getChildren().iterator(); iter.hasNext();){
-	    JComponent j = (JComponent)iter.next();
-	    childToWrapper.remove(j);
-	}
-    }
-
-    //Setup Functions:
-    //////////////////
+    //Constraint Setup Functions:
+    /////////////////////////////
 
     public void setPreferredHeight(JComponent child, int i) {
 	DockWrapper dw = getWrapper(child);
@@ -225,32 +193,6 @@ public class DockPanel extends JLayeredPane {
     //Docking Functions:
     ////////////////////
 
-    /**
-     * Remove the wrapper from wherever it is currently 
-     */
-    public void freeWrapper(DockWrapper w) {
-	if (externalFrameWrappers.remove(w)) {
-	    w.freeWrapper();
-	    return;
-	}
-	if (internalFrameWrappers.remove(w)) {
-	    w.freeWrapper();
-	    return;
-	}
-	if (north.freeWrapper(w)) {
-	    return;
-	}
-	if (south.freeWrapper(w)) {
-	    return;
-	}
-	if (east.freeWrapper(w)) {
-	    return;
-	}
-	if (west.freeWrapper(w)) {
-	    return;
-	}
-    }
-
     public void dockNorth(JComponent child) {
 	dockNorth(child, -1);
     }
@@ -259,14 +201,14 @@ public class DockPanel extends JLayeredPane {
 	dockNorth(getWrapper(child), idx);
     }
 
-    public void dockNorth(DockWrapper wrapper) {
+    protected void dockNorth(DockWrapper wrapper) {
 	dockNorth(wrapper, -1);
     }
 
     /**
      * Dock the given child into the given position on the MapPanel
      */
-    public void dockNorth(DockWrapper wrapper, int idx) {
+    protected void dockNorth(DockWrapper wrapper, int idx) {
 	dock(north, wrapper, idx);
     }
 
@@ -278,14 +220,14 @@ public class DockPanel extends JLayeredPane {
 	dockSouth(getWrapper(child), idx);
     }
 
-    public void dockSouth(DockWrapper wrapper) {
+    protected void dockSouth(DockWrapper wrapper) {
 	dockSouth(wrapper, -1);
     }
 
     /**
      * Dock the given child into the given position on the MapPanel
      */
-    public void dockSouth(DockWrapper wrapper, int idx) {
+    protected void dockSouth(DockWrapper wrapper, int idx) {
 	dock(south, wrapper, idx);
     }
 
@@ -297,14 +239,14 @@ public class DockPanel extends JLayeredPane {
 	dockEast(getWrapper(child), idx);
     }
 
-    public void dockEast(DockWrapper wrapper) {
+    protected void dockEast(DockWrapper wrapper) {
 	dockEast(wrapper, -1);
     }
 
     /**
      * Dock the given child into the given position on the MapPanel
      */
-    public void dockEast(DockWrapper wrapper, int idx) {
+    protected void dockEast(DockWrapper wrapper, int idx) {
 	dock(east, wrapper, idx);
     }
 
@@ -316,14 +258,14 @@ public class DockPanel extends JLayeredPane {
 	dockWest(getWrapper(child), idx);
     }
 
-    public void dockWest(DockWrapper wrapper) {
+    protected void dockWest(DockWrapper wrapper) {
 	dockWest(wrapper, -1);
     }
 
     /**
      * Dock the given child into the given position on the MapPanel
      */
-    public void dockWest(DockWrapper wrapper, int idx) {
+    protected void dockWest(DockWrapper wrapper, int idx) {
 	dock(west, wrapper, idx);
     }
 
@@ -347,7 +289,7 @@ public class DockPanel extends JLayeredPane {
      * Dock the given child onto the given parent, which is itself a 
      * child of this class.
      */
-    public void dock(DockWrapper outter, DockWrapper inner) {
+    protected void dock(DockWrapper outter, DockWrapper inner) {
 	dock(outter, inner, -1);
     }    
 
@@ -355,7 +297,7 @@ public class DockPanel extends JLayeredPane {
      * Dock the given child onto the given parent, which is itself a 
      * child of this class.
      */
-    public void dock(DockWrapper outter, DockWrapper inner, int idx) {
+    protected void dock(DockWrapper outter, DockWrapper inner, int idx) {
 	freeWrapper(inner);
 	outter.dock(inner, idx);
     }    
@@ -370,7 +312,7 @@ public class DockPanel extends JLayeredPane {
     /**
      * Set the component to an internal frame
      */
-    public void internalFrame(DockWrapper wrapper) {
+    protected void internalFrame(DockWrapper wrapper) {
 	freeWrapper(wrapper);
 	internalFrameWrappers.add(wrapper);
 	wrapper.makeInternalFrame();
@@ -386,7 +328,7 @@ public class DockPanel extends JLayeredPane {
     /**
      * Set the component to an internal frame
      */
-    public void externalFrame(DockWrapper wrapper) {
+    protected void externalFrame(DockWrapper wrapper) {
 	freeWrapper(wrapper);
 	externalFrameWrappers.add(wrapper);
 	wrapper.makeExternalFrame();
@@ -403,7 +345,10 @@ public class DockPanel extends JLayeredPane {
     /**
      * Dock the given child somewhere...
      */
-    public void dockSomewhere(DockWrapper wrapper) {
+    protected void dockSomewhere(DockWrapper wrapper) {
+	if (wrapper == null) {
+	    throw new RuntimeException("Can't dock null!");
+	}
 	if (wrapper.canDockNorth()) {
 	    dockNorth(wrapper);
 	    return;
@@ -434,8 +379,8 @@ public class DockPanel extends JLayeredPane {
 	externalFrame(wrapper);
     }
 
-    //Low level functions:
-    //////////////////////
+    //Overwrite from Component:
+    ///////////////////////////
 
     /** 
      * We need to handle adding the component specially.
@@ -453,8 +398,13 @@ public class DockPanel extends JLayeredPane {
      * wrap it up...
      */
     public void add(Component comp, Object constraints) {
+	if (comp == null) {
+	    throw new RuntimeException
+		("Can't add null component to DockPanel");
+	}
 	if (comp instanceof DockWrapper) {
-	    Debug.error("DockPanel: Unexpected call to add with a DockWrapper");
+	    Debug.error
+		("DockPanel: Unexpected call to add with a DockWrapper");
 	    DockWrapper dw = (DockWrapper) comp;
 	    super.add(comp, constraints);
 	} else {
@@ -468,34 +418,21 @@ public class DockPanel extends JLayeredPane {
 		    t.setFloatable(false);
 		}		
 		setConstraint((JComponent)comp, 
-			      (DockConstraint)constraints);		
-		createDockWrapper((JComponent)comp);
+			      (DockConstraint)constraints);
+		if (!alreadyAdded(comp)) {
+		    createDockWrapper((JComponent)comp);
+		}
 	    } else {
-		Debug.error("DockPanel: Unexpected constraint: " + constraints);
+		Debug.error("DockPanel: Unexpected constraint: " + 
+			    constraints);
 	    }
 	}
     }
 
-    /** Create a DockWrapper for the given JComponent. */
-    /* package */ DockWrapper createDockWrapper(JComponent comp) {
-	DockWrapper dw = new DockWrapper(this);
-	setWrapper(comp, dw);
-	dw.addChild(comp);
-	dockSomewhere(comp);		
-	return dw;
-    }
-
-    /** Pass back to add the dockwrapper to the layer. */
-    /* package */ void addDockWrapper(DockWrapper dw) {
-	super.add(dw, null);	
-    }
-
-    /** Pass back to remove the dockwrapper from the layer. */
-    /* package */ void removeDockWrapper(DockWrapper dw) {
-	super.remove(dw);
-    }
-
     public void remove(Component comp) {
+	if (comp == null) {
+	    Debug.error("Trying to remove null component");
+	}
 	if (comp instanceof DockWrapper) {
 	    freeWrapper((DockWrapper)comp);
 	    removeWrapper((DockWrapper)comp);
@@ -517,6 +454,118 @@ public class DockPanel extends JLayeredPane {
 	    }
 	}
 	super.removeAll();
+    }
+
+    ////
+    ////Package/Protected/Private Implementation Functions:
+    ///////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////
+
+    protected DockWrapper getNorth() { return north;}
+    protected DockWrapper getSouth() { return south;}
+    protected DockWrapper getEast() { return east;}
+    protected DockWrapper getWest() { return west;}
+    
+    protected int getOverlapTolerance() {
+	return 5;
+    }
+    
+    //Wrapper Functions:
+    /////////////////////
+
+    protected void setWrapper(JComponent child, DockWrapper w) {
+	childToWrapper.put(child, w);
+    }
+
+    protected DockWrapper getWrapper(JComponent child) {
+	return (DockWrapper)childToWrapper.get(child);
+    }
+
+    protected void removeWrapper(DockWrapper wrapper) {
+	for(Iterator iter = wrapper.getChildren().iterator(); iter.hasNext();){
+	    JComponent j = (JComponent)iter.next();
+	    childToWrapper.remove(j);
+	}
+    }
+
+    /**
+     * Remove the wrapper from wherever it is currently 
+     */
+    protected void freeWrapper(DockWrapper w) {
+	if (externalFrameWrappers.remove(w)) {
+	    w.freeWrapper();
+	    return;
+	}
+	if (internalFrameWrappers.remove(w)) {
+	    w.freeWrapper();
+	    return;
+	}
+	if (north.freeWrapper(w)) {
+	    return;
+	}
+	if (south.freeWrapper(w)) {
+	    return;
+	}
+	if (east.freeWrapper(w)) {
+	    return;
+	}
+	if (west.freeWrapper(w)) {
+	    return;
+	}
+    }
+
+    //Package Accessors for access from DockWrapper:
+    ////////////////////////////////////////////////
+
+    /**
+     * Get a list of DockConstraint objects for a list of children.
+     * @param children a List of JComponent children
+     * @return a List of DockConstraints
+     */
+    List getConstraints(List children) {
+	List ret = new ArrayList(children.size());
+	for (Iterator iter = children.iterator(); iter.hasNext();) {
+	    JComponent child = (JComponent)iter.next();
+	    ret.add(getConstraint(child));
+	}
+	return ret;
+    }
+
+    /** Create a DockWrapper for the given JComponent. */
+    DockWrapper createDockWrapper(JComponent comp) {
+	DockWrapper dw = new DockWrapper(this);
+	setWrapper(comp, dw);
+	dw.addChild(comp);
+	dockSomewhere(comp);		
+	return dw;
+    }
+
+    /** Pass back to add the dockwrapper to the layer. */
+    void addDockWrapper(DockWrapper dw) {
+	super.add(dw, null);	
+    }
+
+    /** Pass back to remove the dockwrapper from the layer. */
+    void removeDockWrapper(DockWrapper dw) {
+	super.remove(dw);
+    }
+
+    /** 
+     * Returns true if the component has already been added to
+     * a DockWrapper that has been added to the DockPanel. 
+     */
+    boolean alreadyAdded(Component comp) {
+	Component components[] = getComponents();
+	for (int i=0; i<components.length; i++) {
+	    Component c = components[i];
+	    if (c instanceof DockWrapper) {
+		DockWrapper dw = (DockWrapper)c;
+		if (dw.getChildren().contains(comp)) {
+		    return true;
+		}
+	    }
+	}
+	return false;
     }
 }
 
