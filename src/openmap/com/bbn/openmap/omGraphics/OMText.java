@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/11/14 20:50:27 $
+// $Revision: 1.8 $
+// $Date: 2003/12/16 01:16:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -182,12 +182,6 @@ public class OMText extends OMGraphic implements Serializable {
 
     /** The bounding rectangle of this Text. */
     protected transient Polygon polyBounds;
-
-//     /** The line color for the polyBounds. */
-//     protected Paint boundsLineColor = linePaint;
-
-//     /** The display color for the polyBounds. */
-//     protected Paint boundsDisplayColor = boundsLineColor;
 
     /** The Metrics of the current font. */
     protected transient FontMetrics fm;
@@ -654,33 +648,6 @@ public class OMText extends OMGraphic implements Serializable {
 	return polyBounds;
     }
 
-//     /**
-//      * Set the fill and line color of the text bounds object.
-//      * This sets both the fill and line color of the background
-//      * text-bounds to <code>color</code>.
-//      * @param color Color
-//      */
-//     public void setFillPaint(Paint color) { 
-// 	super.setFillPaint(color);
-// 	setBoundsLineColor(color);
-//     }
-
-//     /**
-//      * Set the fill color of the text bounds object.
-//      * @param color Color
-//      */
-//     public void setBoundsFillColor(Paint color) { 
-// 	super.setFillPaint(color);
-//     }
-
-//     /**
-//      * Get the fill color of the text bounds object.
-//      * @return Color
-//      */
-//     public Paint getBoundsFillColor() { 
-// 	return super.getFillPaint();
-//     }
-
     /** 
      * Set the fmHeight to use for the footprint.
      * @param fmh the setting for fmHeight, out of the parameters
@@ -698,50 +665,6 @@ public class OMText extends OMGraphic implements Serializable {
     public int getFMHeight() {
 	return fmHeight;
     }
-
-//     /**
-//      * Set the line color of the text bounds object.
-//      * @deprecated use setMattingPaint(Paint) instead.
-//      * @param color Color
-//      */
-//     public void setBoundsLineColor(Paint color) { 
-// 	setMattingPaint(color);
-//     }
-
-//     /**
-//      * Get the line color of the text bounds object.
-//      * @deprecated use getMattingPaint()
-//      * @return Color
-//      */
-//     public Paint getBoundsLineColor() { 
-// 	return getMattingPaint();
-//     }
-
-//     /**
-//      * Get the display color of the text bounds object.
-//      * @return Color
-//      */
-//     public Paint getBoundsDisplayColor() {
-//        return boundsDisplayColor;
-//     }
-
-//     /**
-//      * Set the selected attribute to true, and sets the color to the
-//      * select color.
-//      */
-//     public void select() {
-// 	super.select();
-// 	boundsDisplayColor = getSelectPaint();
-//     }
-
-//     /**
-//      * Set the selected attribute to false, sets the color to the line
-//      * color.
-//      */
-//     public void deselect() {
-// 	super.deselect();
-// 	boundsDisplayColor = boundsLineColor;
-//     }
 
     /**
      * Set the angle by which the text is to rotated.
@@ -1024,20 +947,6 @@ public class OMText extends OMGraphic implements Serializable {
 	}
 	computeBounds();		
     }
-
-//     /**
-//      * Given a java.awt.Graphics object, set the Stroke and Paint
-//      * parameters of it to match the OMGraphic's bounds settings.
-//      *
-//      * @param g java.awt.Graphics
-//      * @see #setGraphicsColor
-//      */
-//     public void setGraphicsForBounds(Graphics g) {
-//         if (g instanceof Graphics2D) {
-//             ((Graphics2D)g).setStroke(BASIC_STROKE);
-//         }
-//         setGraphicsColor(g, getBoundsDisplayColor());
-//     }
 
     /**
      * Renders the text onto the given graphics.
