@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/ECEFPoint.java,v $
 // $RCSfile: ECEFPoint.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/09/22 20:51:07 $
+// $Revision: 1.2 $
+// $Date: 2004/09/23 19:27:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,11 +30,14 @@
 // **********************************************************************
 
 
-package  com.bbn.openmap;
+package  com.bbn.openmap.proj.coords;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.MoreMath;
 
 /**
  * From: http://www.commlinx.com.au/Datum%20Transformation%20Description.html :<P>
@@ -190,7 +193,9 @@ public class ECEFPoint {
     public boolean equals(Object obj) {
         if (obj instanceof ECEFPoint) {
             ECEFPoint pt = (ECEFPoint)obj;
-            return  (MoreMath.approximately_equal(x_, pt.x_, EQUIVALENT_TOLERANCE) && MoreMath.approximately_equal(y_, pt.y_, EQUIVALENT_TOLERANCE) && MoreMath.approximately_equal(z_, pt.z_, EQUIVALENT_TOLERANCE));
+            return  (MoreMath.approximately_equal(x_, pt.x_, EQUIVALENT_TOLERANCE) && 
+            			MoreMath.approximately_equal(y_, pt.y_, EQUIVALENT_TOLERANCE) && 
+					MoreMath.approximately_equal(z_, pt.z_, EQUIVALENT_TOLERANCE));
         }
         return  false;
     }
