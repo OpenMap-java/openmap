@@ -1,9 +1,9 @@
 <!--
 $source: /net/blatz/u4/rcs/openmap/doc/sgml/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.19 $
-$Date: 2000/11/07 21:36:53 $
-$Author: bmackiew $
+$Revision: 1.20 $
+$Date: 2000/12/21 04:12:22 $
+$Author: wjeuerle $
 
 Frequently Asked Questions for the OpenMap system.
 -->
@@ -28,11 +28,12 @@ This FAQ contains questions and answers about the OpenMap system.
 <p>
 BBNT Solutions LLC is what was formerly known as BBN Technologies, a
 division of BBN Corporation, which was owned by GTE. For regulatory
-reasons related to the pending merger of GTE and Bell Atlantic, GTE
+reasons related to the merger of GTE and Bell Atlantic, GTE
 was forced to divest its internet backbone and ISP services, which
 were operated by BBN Corporation.  In order to retain BBN
 Technologies while completing the divesture, BBNT Solutions LLC was
-formed.
+formed. Verizon is the name of the corporation formed from the merger of
+GTE and Bell Atlantic.
 
 <p>
 You can see a history of BBN at <tt><htmlurl
