@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SaveAsImageFileChooser.java,v $
 // $RCSfile: SaveAsImageFileChooser.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/15 20:36:25 $
+// $Revision: 1.2 $
+// $Date: 2003/03/26 13:35:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,63 +46,12 @@ public class SaveAsImageFileChooser extends JFileChooser {
 	super();
 	dqp.setImageHeight(height);
 	dqp.setImageWidth(width);
+	JPanel imageSizePanel = PaletteHelper.createPaletteJPanel(" Set Image Size ");
+	imageSizePanel.setLayout(new BorderLayout());
+	imageSizePanel.add(dqp, BorderLayout.CENTER);
+	setAccessory(imageSizePanel);
     }
     
-   /**
-     * Creates and returns a new <code>JDialog</code> wrapping
-     * <code>this</code> centered on the <code>parent</code>
-     * in the <code>parent</code>'s frame.
-     * This method can be overriden to further manipulate the dialog,
-     * to disable resizing, set the location, etc. Example:
-     * <pre>
-     *     class MyFileChooser extends SaveAsImageFileChooser {
-     *         protected JDialog createDialog(Component parent) throws HeadlessException {
-     *             JDialog dialog = super.createDialog(parent);
-     *             dialog.setLocation(300, 200);
-     *             dialog.setResizable(false);
-     *             return dialog;
-     *         }
-     *     }
-     * </pre>
-     *
-     * @param   parent  the parent component of the dialog;
-     *			can be <code>null</code>
-     * @return a new <code>JDialog</code> containing this instance
-     * @exception HeadlessException if GraphicsEnvironment.isHeadless()
-     * returns true.
-     * @see java.awt.GraphicsEnvironment#isHeadless
-     * @since 1.4
-     */
-    protected JDialog createDialog(Component parent) throws HeadlessException {
-        Frame frame = parent instanceof Frame ? (Frame) parent
-              : (Frame)SwingUtilities.getAncestorOfClass(Frame.class, parent);
-
-	String title = getUI().getDialogTitle(this);
-
-        JDialog dialog = new JDialog(frame, title, true);
-
-        Container contentPane = dialog.getContentPane();
-        contentPane.setLayout(new BorderLayout());
-        contentPane.add(this, BorderLayout.CENTER);
-
-	JPanel imageSizePanel = PaletteHelper.createPaletteJPanel(" Set Image Size ");
-	imageSizePanel.add(dqp);
-	contentPane.add(imageSizePanel, BorderLayout.NORTH);
-
-        if (JDialog.isDefaultLookAndFeelDecorated()) {
-            boolean supportsWindowDecorations = 
-            UIManager.getLookAndFeel().getSupportsWindowDecorations();
-            if (supportsWindowDecorations) {
-                dialog.getRootPane().setWindowDecorationStyle(JRootPane.FILE_CHOOSER_DIALOG);
-            }
-        }
-
-        dialog.pack();
-        dialog.setLocationRelativeTo(parent);
-
-	return dialog;
-    }
-
     /**
      * Set the value of the image width setting from the GUI.
      */
@@ -145,9 +94,9 @@ public class SaveAsImageFileChooser extends JFileChooser {
 
 	public DimensionQueryPanel(int width, int height) {
 
-	    htext = new JLabel("Height: ");
+	    htext = new JLabel("Width: ");
 	    htext.setHorizontalAlignment(SwingConstants.RIGHT);
-	    vtext = new JLabel("Width: ");
+	    vtext = new JLabel("Height: ");
 	    vtext.setHorizontalAlignment(SwingConstants.RIGHT);
 	    hfield = new JTextField(Integer.toString(width),5);
 	    vfield = new JTextField(Integer.toString(height),5);
@@ -173,35 +122,57 @@ public class SaveAsImageFileChooser extends JFileChooser {
 	}
 
 	public void layoutPanel() {
+
 	    GridBagLayout gb = new GridBagLayout();
 	    GridBagConstraints c = new GridBagConstraints();
-	    
 	    setLayout(gb);
-	    c.fill = GridBagConstraints.HORIZONTAL;
-	    c.weightx = .25;
+
+	    c.insets = new Insets(3, 3, 3, 3);
 	    c.gridx = 0;
 	    c.gridy = 0;
+	    c.fill = GridBagConstraints.NONE;
+	    c.weightx = 0;
+	    c.anchor = GridBagConstraints.EAST;
+
 	    gb.setConstraints(htext,c);
 	    add(htext);
 
-	    c.gridx = GridBagConstraints.RELATIVE;
-	    c.weightx = 0;
+	    c.gridx = 1;
+	    c.fill = GridBagConstraints.HORIZONTAL;
+	    c.weightx = 1f;
+	    c.anchor = GridBagConstraints.WEST;
+
 	    gb.setConstraints(hfield,c);
 	    add(hfield);
 
-	    c.weightx = .25;
+	    c.gridx = 2;
+	    c.fill = GridBagConstraints.NONE;
+	    c.weightx = 0;
 	    gb.setConstraints(ptext1,c);
 	    add(ptext1);
 
-	    c.weightx = .25;
+	    // Next row
+
+	    c.gridx = 0;
+	    c.gridy = 1;
+	    c.fill = GridBagConstraints.NONE;
+	    c.weightx = 0;
+	    c.anchor = GridBagConstraints.EAST;
+
 	    gb.setConstraints(vtext,c);
 	    add(vtext);
 
-	    c.weightx = 0;
+	    c.gridx = 1;
+	    c.fill = GridBagConstraints.HORIZONTAL;
+	    c.weightx = 1f;
+	    c.anchor = GridBagConstraints.WEST;
+
 	    gb.setConstraints(vfield,c);
 	    add(vfield);
 
-	    c.weightx = .25;
+	    c.gridx = 2;
+	    c.fill = GridBagConstraints.NONE;
+	    c.weightx = 0;
 	    gb.setConstraints(ptext2,c);
 	    add(ptext2);
 	}
