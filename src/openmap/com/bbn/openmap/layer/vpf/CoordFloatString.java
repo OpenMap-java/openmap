@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoordFloatString.java,v $
 // $RCSfile: CoordFloatString.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.1.1.2 $
+// $Date: 2003/09/16 14:16:35 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -68,25 +68,30 @@ public class CoordFloatString {
     /** A pretty formatter for the floatstring
      * @return a pretty string of the tuple */
     public String toString() {
-	StringBuffer retval = new StringBuffer("CFS:");
-	retval.append(vals.length).append("[");
+        boolean singleCoord = (vals.length == tsize);
+	StringBuffer retval = new StringBuffer(singleCoord ? "" : "CFS:");
+	if (!singleCoord) { 
+	  retval.append(tcount).append("[");
+	}
 
 	if (vals.length > 0) {
-	    retval.append("(");
-	    for (int j=0; j < tsize; j++) {
-		retval.append(vals[j]).append(", ");
+	    retval.append("(").append(vals[0]);
+	    for (int j=1; j < tsize; j++) {
+		retval.append(", ").append(vals[j]);
 	    }
-	    retval.append(") ");
+	    retval.append(")");
 	}
-	if (vals.length > 1) {
-	    retval.append("... (");
-	    for (int j=tsize; j > 0; j--) {
-		retval.append(vals[vals.length-j]).append(", ");
+	if (vals.length > tsize) {
+	    retval.append(" ... (").append(vals[vals.length-tsize]);
+	    for (int j=tsize-1; j > 0; j--) {
+		retval.append(", ").append(vals[vals.length-j]);
 	    }
-	    retval.append(") ");
+	    retval.append(")");
 	}
 
-	retval.append("]");
+	if (!singleCoord) {
+	  retval.append("]");
+	}
 	return retval.toString();
     }
  
