@@ -140,6 +140,9 @@ public class BrowserLauncher {
     /** JVM constant for MRJ 3.1 */
     private static final int MRJ_3_1 = 4;
 
+    /** JVM constant for MRJ 4.1 */
+    private static final int MRJ_4_1 = 7;
+
     /** JVM constant for any Windows NT JVM */
     private static final int WINDOWS_NT = 5;
 	
@@ -214,9 +217,14 @@ public class BrowserLauncher {
 		    jvm = MRJ_2_1;
 		} else if (version == 3.0) {
 		    jvm = MRJ_3_0;
-		} else if (version >= 3.1) {
+		} else if (version == 3.1) {
 		    // Assume that all 3.1 and later versions of MRJ work the same.
+		    // Bad assumption, they don't.
 		    jvm = MRJ_3_1;
+		} else if (version >= 4.1) {
+		    // Assume that all 4.1 and later versions of MRJ work the same.
+		    // Probably won't in the future.
+		    jvm = MRJ_4_1;
 		} else {
 		    loadedWithoutErrors = false;
 		    errorMessage = "Unsupported MRJ version: " + version;
@@ -349,6 +357,18 @@ public class BrowserLauncher {
 		return false;
 	    }
 	    break;
+	case MRJ_4_1:
+	    try {
+		mrjFileUtilsClass = Class.forName("com.apple.eio.FileManager");
+		openURL = mrjFileUtilsClass.getDeclaredMethod("openURL", new Class[] { String.class });
+	    } catch (ClassNotFoundException cnfe) {
+		errorMessage = cnfe.getMessage();
+		return false;
+	    } catch (NoSuchMethodException nsme) {
+		errorMessage = nsme.getMessage();
+		return false;
+	    }
+	    break;
 	default:
 	    break;
 	}
@@ -449,6 +469,7 @@ public class BrowserLauncher {
 	    break;
 	case MRJ_3_0:
 	case MRJ_3_1:
+	case MRJ_4_1:
 	    browser = "";	// Return something non-null
 	    break;
 	case WINDOWS_NT:
@@ -522,6 +543,7 @@ public class BrowserLauncher {
 	    }
 	    break;
 	case MRJ_3_1:
+	case MRJ_4_1:
 	    try {
 		openURL.invoke(null, new Object[] { url });
 	    } catch (InvocationTargetException ite) {
