@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibraryBean.java,v $
 // $RCSfile: LibraryBean.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/01 21:21:59 $
+// $Revision: 1.5 $
+// $Date: 2004/03/15 23:50:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,6 +41,9 @@ import com.bbn.openmap.layer.util.LayerUtils;
  *VMAPData.class=com.bbn.openmap.layer.vpf.LibraryBean
  *# as in the layer .vpfPath, a ';' separated list of paths to VPF data
  *VMAPData.vpfPath=e:/VMAPLV0
+ *# the name of the library bean, used by the VPFLayers to identify
+ *# this bean as the one they want to use.
+ *VMAPData.name=VMAPLEVEL0
  *# Maximum number of tiles to cache.
  *VMAPData.cacheSize=25
  * </pre>

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/02/05 18:15:08 $
+// $Revision: 1.13 $
+// $Date: 2004/03/15 23:50:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -467,7 +467,13 @@ public class VPFLayer extends OMGraphicHandlerLayer
                             Debug.output("VPFLayer.initLST(libraryBean)");
                         }
                     } else {
-                        Debug.output("VPFLayer.init: Couldn't find libraryBean " + libraryBeanName + " to read VPF data");
+                        if (Debug.debugging("vpf")) {
+                            // Encasing it in a debug statement,
+                            // because we could get here by adding the
+                            // LayerHandler to the MapHandler before
+                            // the LibraryBean.
+                            Debug.output("VPFLayer.init: Couldn't find libraryBean " + libraryBeanName + " to read VPF data");
+                        }
                     }
                 } else {
                     if (dataPaths == null) {
@@ -550,11 +556,20 @@ public class VPFLayer extends OMGraphicHandlerLayer
         if (lst == null) {
             try {
                 initLST();
-            } catch (IllegalArgumentException iae){
-                Debug.error("VPFLayer.getRectangle: Illegal Argument Exception.\n\nPerhaps a file not found.  Check to make sure that the paths to the VPF data directories are the parents of \"lat\" or \"lat.\" files. \n\n" + iae);
+            } catch (IllegalArgumentException iae) {
+                Debug.error("VPFLayer.prepare: Illegal Argument Exception.\n\nPerhaps a file not found.  Check to make sure that the paths to the VPF data directories are the parents of \"lat\" or \"lat.\" files. \n\n" + iae);
+                return null;
+            }
+
+            if (lst == null) {
+                if (Debug.debugging("vpf")) {
+                    Debug.output("VPFLayer| " + getName() + " prepare(), Library Selection Table not set.");
+                }
+
                 return null;
             }
         }
+
         if (warehouse == null) {
             StringBuffer dpb = new StringBuffer();
             if (dataPaths != null) {
