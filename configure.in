@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION(OpenMap $Revision: 1.18 $)
+AC_REVISION(OpenMap $Revision: 1.19 $)
 AC_INIT(openmap.mk.in)
 
 #
@@ -116,6 +116,26 @@ if test "x$with_specialist" = "xyes"; then
   AC_SUBST(CORBA_CLASSPATH)
   CORBA_DIRS="com/bbn/openmap/layer/specialist/Makefile com/bbn/openmap/layer/specialist/vpf/Makefile"
 fi
+
+DEFAULT_TARGET=all
+AC_SUBST(DEFAULT_TARGET)
+case $with_devtarget in
+  "")
+    # nothing specified, use default as already set.
+    ;;
+  no)
+    # user specified --without-devtarget.  Use default as already set.
+    ;;
+  yes)
+    # user specified --with-devtarget, but didn't specify which target
+    DEFAULT_TARGET=omcore
+    ;;
+  *)
+    # user specified a target with --with-devtarget=target.  Use it.
+    DEFAULT_TARGET=$with_devtarget
+    ;;
+esac
+
 
 AC_OUTPUT(openmap.mk
 	Makefile

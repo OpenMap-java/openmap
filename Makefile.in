@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.12 $
-# $Date: 1998/11/13 16:01:05 $
+# $Revision: 1.13 $
+# $Date: 1998/11/16 23:04:31 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -96,7 +96,7 @@ App.jar = 	${App.classes}
 # rules #
 #########
 
-default:	all
+default:	@DEFAULT_TARGET@
 
 # java compile OpenMap code
 core: omcore

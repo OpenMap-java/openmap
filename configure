@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.17 
+# From configure.in OpenMap Revision: 1.18 
 
 
 
@@ -924,6 +924,26 @@ if test "x$with_specialist" = "xyes"; then
   CORBA_DIRS="com/bbn/openmap/layer/specialist/Makefile com/bbn/openmap/layer/specialist/vpf/Makefile"
 fi
 
+DEFAULT_TARGET=all
+
+case $with_devtarget in
+  "")
+    # nothing specified, use default as already set.
+    ;;
+  no)
+    # user specified --without-devtarget.  Use default as already set.
+    ;;
+  yes)
+    # user specified --with-devtarget, but didn't specify which target
+    DEFAULT_TARGET=omcore
+    ;;
+  *)
+    # user specified a target with --with-devtarget=target.  Use it.
+    DEFAULT_TARGET=$with_devtarget
+    ;;
+esac
+
+
 trap '' 1 2 15
 cat > confcache <<\EOF
 # This file is a shell script that caches the results of configure
@@ -1108,6 +1128,7 @@ s%@SWING_JAR@%$SWING_JAR%g
 s%@layer_build_targets@%$layer_build_targets%g
 s%@layer_clean_targets@%$layer_clean_targets%g
 s%@CORBA_CLASSPATH@%$CORBA_CLASSPATH%g
+s%@DEFAULT_TARGET@%$DEFAULT_TARGET%g
 
 CEOF
 EOF
