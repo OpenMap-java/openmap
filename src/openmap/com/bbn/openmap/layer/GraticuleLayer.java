@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/05/10 21:10:44 $
+// $Revision: 1.9 $
+// $Date: 2004/05/11 23:17:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -89,8 +89,8 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
         
     protected I18n i18n = Environment.getI18n();
     // default to not showing the ruler (mimicing older GraticuleLayer)
-    protected boolean defaultShowRuler = false;
-    protected boolean defaultShowOneAndFiveLines = false;
+    protected boolean defaultShowRuler = true;
+    protected boolean defaultShowOneAndFiveLines = true;
     protected int defaultThreshold = 2;
 
     /**
@@ -157,6 +157,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
     public GraticuleLayer() {
         // precalculate for boxy
         boxy = true;
+        setName("Graticule");
     }
 
     /** 

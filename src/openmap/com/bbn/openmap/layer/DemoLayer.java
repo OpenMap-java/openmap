@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/05/10 21:10:44 $
+// $Revision: 1.13 $
+// $Date: 2004/05/11 23:17:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -74,6 +74,7 @@ public class DemoLayer extends OMGraphicHandlerLayer
     protected JPanel legend;
 
     public DemoLayer() {
+        setName("Demo");
         // This is how to set the ProjectionChangePolicy, which
         // dictates how the layer behaves when a new projection is
         // received.
