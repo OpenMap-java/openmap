@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDLayer.java,v $
 // $RCSfile: DTEDLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/02/05 18:15:07 $
+// $Revision: 1.7 $
+// $Date: 2004/03/04 04:14:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1005,7 +1005,7 @@ public class DTEDLayer extends Layer
     // MapMouseListener interface implementation
     //----------------------------------------------------------------------
 
-    public synchronized MapMouseListener getMapMouseListener() {
+    public MapMouseListener getMapMouseListener() {
         return this;
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/E00Layer.java,v $
 // $RCSfile: E00Layer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.5 $
+// $Date: 2004/03/04 04:14:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,7 +51,7 @@ import javax.swing.*;
  *
  * Examples of properties for OpenMap:<P><pre>
  * ### E00 layer
- * e00.class=E00.E00Layer
+ * e00.class=com.bbn.openmap.layer.e00.E00Layer
  * e00.prettyName=E00 file
  * e00.FileName=data/france/hynet.e00
  * ### E00 layer

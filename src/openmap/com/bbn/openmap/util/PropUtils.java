@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v $
 // $RCSfile: PropUtils.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.7 $
+// $Date: 2004/03/04 04:14:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -326,7 +326,7 @@ public class PropUtils {
 
         if (intString != null) {
             try {
-                ret = Integer.parseInt(intString);
+                ret = Integer.parseInt(intString.trim());
             } catch (NumberFormatException e) {
                 ret = defaultValue;
             }
@@ -353,7 +353,7 @@ public class PropUtils {
 
         if (floatString != null) {
             try {
-                ret = Float.valueOf(floatString).floatValue();
+                ret = Float.parseFloat(floatString.trim());
             } catch (NumberFormatException e) {
                 ret = defaultValue;
             }
@@ -378,7 +378,7 @@ public class PropUtils {
         boolean ret = defaultValue;
         String booleanString = p.getProperty(propName);
         if (booleanString != null) {
-            ret = booleanString.toLowerCase().equals("true");
+            ret = booleanString.trim().toLowerCase().equals("true");
         }
         
         return ret;
@@ -467,7 +467,7 @@ public class PropUtils {
     
         if (doubleString != null) {
             try {
-                ret = Double.valueOf(doubleString).doubleValue();
+                ret = Double.parseDouble(doubleString.trim());
             } catch (NumberFormatException e) {
                 ret = defaultValue;
             }

@@ -63,6 +63,7 @@
 
     <jar jarfile="${svg.jar}" 
 	 basedir="${svg.classes}"
+         index="true"
 	 includes="**/*.class"/>
   </target>    
 

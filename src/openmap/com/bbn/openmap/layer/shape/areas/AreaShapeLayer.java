@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaShapeLayer.java,v $
 // $RCSfile: AreaShapeLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/05 18:15:37 $
+// $Revision: 1.5 $
+// $Date: 2004/03/04 04:14:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -161,7 +161,7 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
         }
     }
 
-    public synchronized MapMouseListener getMapMouseListener() {
+    public MapMouseListener getMapMouseListener() {
         return this;
     }
 

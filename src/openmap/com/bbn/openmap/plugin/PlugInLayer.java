@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/02/05 18:15:07 $
+// $Revision: 1.13 $
+// $Date: 2004/03/04 04:14:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -238,7 +238,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
         plugin = aPlugIn;
         if (aPlugIn != null) {
             plugin.setComponent(this);
-            mml = plugin.getMapMouseListener();
+            setMapMouseListener(plugin.getMapMouseListener());
         } else if (Debug.debugging("plugin")) {
             Debug.output("PlugInLayer: null PlugIn set!");
         }
@@ -249,7 +249,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * events.
      * @return the MapMouseListener for the layer, or null if none
      */
-    public synchronized MapMouseListener getMapMouseListener() {
+    public MapMouseListener getMapMouseListener() {
         return mml;
     }
  
@@ -258,8 +258,8 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * @param mml the object that will handle the mouse events for the
      * layer.
      */
-    public synchronized void setMapMouseListener(MapMouseListener mml) {
-        this.mml = mml;
+    public synchronized void setMapMouseListener(MapMouseListener mmlIn) {
+        mml = mmlIn;
     }
 
     /**
