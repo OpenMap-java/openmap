@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/GraphicLoaderConnector.java,v $
 // $RCSfile: GraphicLoaderConnector.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/02/21 18:56:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,9 @@
 package com.bbn.openmap.plugin.graphicLoader;
 
 import java.beans.beancontext.BeanContext;
+import java.util.Iterator;
+import java.util.List;
+import java.util.LinkedList;
 import java.util.Properties;
 
 import com.bbn.openmap.LayerHandler;
@@ -34,16 +37,25 @@ import com.bbn.openmap.util.PropUtils;
 
 /**
  * The GraphicLoaderConnector is a MapHandler membership listener,
- * looking for GraphicLoaders without receivers.  If it finds one, it
- * creates a GraphicLoaderPlugIn, and adds the plugin to the
- * LayerHandler.
+ * looking for GraphicLoaders without receivers.  This class uses the
+ * MapHandler to find GraphicLoaders, and requires the LayerHandler to
+ * be added to the MapHandler, also. <P>
+ *
+ * If the GraphicLoaderCOnnector finds a GraphicLoader that is not
+ * hooked up to a recevier, it creates a GraphicLoaderPlugIn and
+ * PlugInLayer, and adds the PlugInLayer to the LayerHandler.  This
+ * causes the LayerHandler to add the layer to the application.  If
+ * the GraphicLoaderConnector doesn't have a handle to the
+ * LayerHandler when it finds a GraphicLoader, it adds the
+ * PlugInLayer it created to an internal list to add to the
+ * LayerHandler when the connector finds one.
  */
 public class GraphicLoaderConnector extends OMComponent {
 
     protected LayerHandler layerHandler = null;
     protected int newLayerIndex = 0; // On Top by default
     protected boolean newLayerVisible = true; // Make new PlugInLayers visible.
-
+    protected List orphanGraphicLoaderPlugIns = null;
     public final static String NewLayerIndexProperty = "newLayerIndex";
     public final static String NewLayerVisibleProperty = "newLayerVisible";
 
@@ -80,6 +92,16 @@ public class GraphicLoaderConnector extends OMComponent {
      */
     public void setLayerHandler(LayerHandler lh) {
 	layerHandler = lh;
+	if (orphanGraphicLoaderPlugIns != null) {
+	    if (Debug.debugging("glc")) {
+		Debug.output("GraphicLoaderConnector: have LayerHandler, adding PlugInLayers from orphaned GraphicLoaders");
+	    }
+	    Iterator it = orphanGraphicLoaderPlugIns.iterator();
+	    while (it.hasNext()) {
+		layerHandler.addLayer((PlugInLayer)it.next(), newLayerIndex);
+	    }
+	    orphanGraphicLoaderPlugIns = null;
+	}
     }
 
     public LayerHandler getLayerHandler() {
@@ -115,16 +137,13 @@ public class GraphicLoaderConnector extends OMComponent {
 	    if (lh != null) {
 		lh.addLayer(pl, newLayerIndex);
 	    } else {
-		// If we haven't seen the LayerHandler yet, just toss
-		// the PlugInLayer back into the MapHandler, where the
-		// LayerHandler will hopefully pick it up when it does
-		// get added.
-
-		// Can't do this, ConcurrentModificationException...
-// 		BeanContext bc = getBeanContext();
-// 		if (bc != null) {
-// 		    bc.add(pl);
-// 		}
+		// If we haven't seen the LayerHandler yet, add the 
+		// PlugInLayer to a list that we can use later when
+		// the LayerHandler is found.
+		if (orphanGraphicLoaderPlugIns == null) {
+		    orphanGraphicLoaderPlugIns = new LinkedList();
+		}
+		orphanGraphicLoaderPlugIns.add(pl);
 	    }
 	}
     }
