@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/CoordDialog.java,v $
 // $RCSfile: CoordDialog.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/28 00:36:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -107,7 +107,7 @@ public class CoordDialog extends JDialog
 
 	bigPanel.add(buttonPanel);
 	contentPane.add(bigPanel);
-
+	pack();
 // 	setSize(200, 150);
 //   	setSize(300, 210);
 
