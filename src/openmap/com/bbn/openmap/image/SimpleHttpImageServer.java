@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/SimpleHttpImageServer.java,v $
 // $RCSfile: SimpleHttpImageServer.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.4 $
+// $Date: 2004/02/13 17:19:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -79,7 +79,14 @@ import com.bbn.openmap.layer.util.LayerUtils;
  * formatter1.class
  * # other formatter1 properties follow...
  *
- * </pre>
+ * </pre> <P>
+ *
+ * If the 'layers' property is not defined the openmap.properties
+ * file, then the 'openmap.layers' property will be used, and the
+ * 'openmap.startUpLayers' property will be used to define the default
+ * set of layers.  This lets there be more layers available to the
+ * client than would be sent by default (if the client doesn't specify
+ * layers).
  * @see ImageServer 
  */
 public class SimpleHttpImageServer 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/MapRequestHandler.java,v $
 // $RCSfile: MapRequestHandler.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.7 $
+// $Date: 2004/02/13 17:19:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,8 +50,9 @@ import com.bbn.openmap.layer.util.LayerUtils;
  * If the 'layers' property is not defined the openmap.properties
  * file, then the 'openmap.layers' property will be used, and the
  * 'openmap.startUpLayers' property will be used to define the default
- * set of layers.  This lets there me more layers available to the
- * client than would be sent by default (client doesn't specify layers).
+ * set of layers.  This lets there be more layers available to the
+ * client than would be sent by default (if the client doesn't specify
+ * layers).
  */
 public class MapRequestHandler extends ImageServer 
     implements ImageServerConstants {
