@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionFactory.java,v $
 // $RCSfile: ProjectionFactory.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/05/15 02:21:47 $
+// $Revision: 1.6 $
+// $Date: 2004/05/26 14:20:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -413,12 +413,18 @@ public class ProjectionFactory extends OMComponent {
     }
 
     public void addPropertyChangeListener(PropertyChangeListener pcl) {
-	pcs.addPropertyChangeListener(pcl);
+        if (pcl != null) {
+            pcs.addPropertyChangeListener(pcl);
+            pcl.propertyChange(new PropertyChangeEvent(this, AvailableProjectionProperty, null, projLoaders));
+        }
     }
 
     public void addPropertyChangeListener(String propertyName,
 					  PropertyChangeListener pcl) {
-	pcs.addPropertyChangeListener(propertyName, pcl);
+        if (pcl != null) {
+            pcs.addPropertyChangeListener(propertyName, pcl);
+            pcl.propertyChange(new PropertyChangeEvent(this, AvailableProjectionProperty, null, projLoaders));
+        }
     }
 
     public void removePropertyChangeListener(PropertyChangeListener pcl) {
