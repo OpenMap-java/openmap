@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.10 $
-// $Date: 2003/03/06 03:10:17 $
+// $Revision: 1.11 $
+// $Date: 2003/03/07 15:06:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -100,16 +100,22 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      * DrawingToolRequestor method.
      */
     public void drawingComplete(OMGraphic omg, OMAction action) {
+
+	if (DTL_DEBUG) {
+	    String cname = omg.getClass().getName();
+	    int lastPeriod = cname.indexOf('.');
+	    if (lastPeriod != -1) {
+		cname = cname.substring(lastPeriod);
+	    }
+	    Debug.output("DrawingToolLayer: DrawingTool complete for " +
+			 cname + " " + action);
+	}
 	// First thing, release the proxy MapMouseMode, if there is one.
 	releaseProxyMouseMode();
 
 	getList(); // create a list if there isn't one.
 	doAction(omg, action);
 	repaint();
-
-	if (DTL_DEBUG) {
-	    Debug.output("DrawingToolLayer: DrawingTool complete");
-	}
     }
 
     /**

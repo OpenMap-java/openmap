@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/02/28 15:51:23 $
+// $Revision: 1.4 $
+// $Date: 2003/03/07 15:06:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -605,7 +605,13 @@ public class VPFLayer extends OMGraphicHandlerLayer
      * @return Component or null
      */
     public Component getGUI() {
-	initLST();
+
+	try {
+	    initLST();
+	} catch (IllegalArgumentException iie) {
+	    Debug.error(iie.getMessage());
+	}
+
 	if (warehouse == null) {
 	    return (new javax.swing.JLabel("VPF Layer data not loaded properly."));
 	}
