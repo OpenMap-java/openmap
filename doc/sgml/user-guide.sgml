@@ -1,9 +1,9 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/user-guide.sgml,v $
 $RCSfile: user-guide.sgml,v $
-$Revision: 1.9 $
-$Date: 2000/05/08 15:16:52 $
-$Author: wjeuerle $
+$Revision: 1.10 $
+$Date: 2001/11/01 23:54:35 $
+$Author: dietrick $
 
 User's Guide for the OpenMap Viewer application.
 Launch the viewer with `java com.bbn.openmap.app.OpenMap' or by
@@ -73,17 +73,46 @@ Earth with a 10° graticule.
 </#if>
 <p>
 <itemize>
-<item>File Menu
+<item>File Menu - This menu has main application controls, and
+input/output controls.
 	<p>
 	<#if output=html>
 	<img src="images/file-menu.png">
 	</#if>
 	<itemize>
 	<item><em>About</em> About the underlying OpenMap software.
+	<item><em>Save Map...</em> Save the current projection and
+	layers in an openmap.properties file.
+	<item><em>Load Map...</em> Choose and load an
+	openmap.properties file containing settings for a new
+	projection and layers.
+	<item><em>Save As</em> Save the map as...
+	<itemize>
+	<item><em>JPEG</em> A JPEG image.
+	</itemize>
 	<item><em>Quit</em> Quit the map application.
 	</itemize>
 	<p>
-<item>Navigate Menu
+<item>Control Menu - This menu has application controls.
+	<p>
+	<#if output=html>
+	<img src="images/control-menu.png">
+	</#if>
+	<itemize>
+	<item><em>Mouse Mode...</em> Change the mouse behavior.
+	<itemize>
+	<item><em>Navigate</em> allows you to move around on the map.
+	<item><em>Gestures</em> passes mouse events through to layers.
+	<item><em>Distance</em> measure distances on the map.
+	<item><em>None</em> no actions performed.
+	</itemize>
+	<item><em>Set Background Color</em> Change the background
+	color of the map.
+	<item><em>Display Tool Panel</em> Toggles the Tool Panel above
+	the map.
+	</itemize>
+	<p>
+<item>Navigate Menu - This menu has map projection controls.
 	<p>
 	<#if output=html>
 	<img src="images/navigate-menu.png">
@@ -97,19 +126,7 @@ Earth with a 10° graticule.
 	amount.
 	</itemize>
 	<p>
-<item>Control Menu
-	<p>
-	<#if output=html>
-	<img src="images/control-menu.png">
-	</#if>
-	<itemize>
-	<item><em>Mouse Mode...</em> Change the mouse behavior.
-	<em>Navigate</em> allows you to move around on the map.
-	<em>Gestures</em> passes mouse events through to layers.
-	<item><em>Redraw</em> Redraw the map.
-	</itemize>
-	<p>
-<item>Layers
+<item>Layers - This menu controls which layers are on the map.
 	<p>
 	<#if output=html>
 	<img src="images/layers-menu.png">
@@ -120,7 +137,21 @@ Earth with a 10° graticule.
 	<item><em>&lt;...&gt;</em>
 	<item><em>&lt;LayerN&gt;</em> Select bottommost layer on map.
 	<item><em>Edit Layers...</em> Bring up the layer editor window.
+	<item><em>Add Layers...</em> Add and configure a new layer.
 	</itemize>
+	<p>
+<item>Views - This menu controls saved map locations.
+	<p>
+	<#if output=html>
+	<img src="images/view-menu.png">
+	</#if>
+	<itemize>
+	<item><em>Add Saved View...</em> Save the current map
+	projection as a view.
+	<item><em>&lt;World&gt;</em> Default world view.
+	<item><em>&lt;...&gt;</em> Different defined views.
+	</itemize>
+	<p>
 <item>Help
 	<p>
 	<#if output=html>
@@ -147,12 +178,25 @@ Earth with a 10° graticule.
 	Zooms out 2X over the center of the map.
 	<item><em>Scale Entry</em>
 	Enter the scale of the map.
-	<item><em>Mouse Mode...</em> Change the mouse behavior.
-	<em>Navigate</em> allows you to move around on the map.
-	<em>Gestures</em> passes mouse events through to layers.
+	<item><em>Layer Panel Button</em> Brings up the layers panel
+	to change the order of layers, control layer palettes, and to
+	add/remove layers.
+	<item><em>Drawing Tool Launcher</em> Draw on the map, and
+	choose which layer will receive the graphic.
+	<item><em>Overview Map</em> Bring up a smaller map for
+	reference and navigation.
+	<item><em>Mouse Mode</em> Change the mouse behavior.
+	<itemize>
+	<item><em>Navigate</em> allows you to move around on the map.
+	<item><em>Gestures</em> passes mouse events through to layers.
+	<item><em>Distance</em> measure distances on the map.
+	<item><em>None</em> no actions performed.
+	</itemize>
+	<item><em>Projection Stack Buttons</em> Return to the previous
+	projection, or move forward to the next one (if defined).
 </itemize>
 
-<sect1>Layer Editor Window
+<sect1>Layers Panel Window
 <p>
 <#if output=html>
 <img src="images/layers-window.png">
@@ -173,34 +217,55 @@ Turn layer off/on.
 
 <item>
 <#if output=html>
-<img src="images/palette.png">
+<img src="images/palette_off.png">
 <img src="images/palette_on.png">
 </#if>
-Turn layer palette (GUI) controls off/on.
+Turn layer palette (GUI) controls on.  Button reflects if the palette
+is active, and the palette has a control button to hide itself.
 
 <item>
 <#if output=html>
 <img src="images/top.png">
 </#if>
-Move selected layer to top of map.
+Move the selected layer to top of map.
 
 <item>
 <#if output=html>
 <img src="images/up.png">
 </#if>
-Move selected layer up one level in map.
+Move the selected layer up one level in map.
 
 <item>
 <#if output=html>
 <img src="images/down.png">
 </#if>
-Move selected layer down one level in map.
+Move the selected layer down one level in map.
 
 <item>
 <#if output=html>
 <img src="images/bottom.png">
 </#if>
-Move selected layer to bottom of map.
+Move the selected layer to bottom of map.
+
+<item>
+<#if output=html>
+<img src="images/DeleteLayer.png">
+</#if>
+Delete the selected layer from the application.
+
+<item>
+<#if output=html>
+<img src="images/AddLayer.png">
+</#if>
+Bring up a tool to add and configure a layer.
+
+<p>
+<item>
+<#if output=html>
+<img src="images/palette.png">
+</#if>
+An example of a layer palette.  This palette is for the Graticule
+layer, and it lets you modify the layer's behavior.
 
 </itemize>
 
@@ -219,17 +284,25 @@ will be recentered over the position indicated.
 <p>
 A simple way to extend the Viewer is to use different map layers.  You
 can add and remove layers by editing the <tt><ref id="sec-props"
-name="openmap.properties"></tt> file.
+name="openmap.properties"></tt> file, or by bringing up the Layers
+Panel.  You can also add and remove components from the application by
+modifying the openmap.components property in that file.
 <p>
+
 The source code for the OpenMap Viewer is the <tt><htmlurl
 url="./api/com/bbn/openmap/app/OpenMap.html"
-name="com/bbn/openmap/app/OpenMap.java"></tt> file.  It hooks together
-various MapBean components to create the Viewer application.  You can
-write your own application by copying and changing this file.
+name="com/bbn/openmap/app/OpenMap.java"></tt> file.  It uses the
+settings in the <tt><ref id="sec-props"
+name="openmap.properties"></tt> file to configure the application at
+runtime, using various MapBean components to create the Viewer
+application.  You can configure and build your own application by
+modifying the openmap.properties file.  If you place a copy of this
+file in your home directory on your computer, it will override the
+generic copy found in the openmap.jar file.
+
 <p>
 Be sure to check the toplevel documentation
 <htmlurl url="doc-index.html" name="index"> for information on the OpenMap
-core MapBean and Layer APIs.
-
+core components, including the MapBean, Layer and PlugIn APIs.
 
 </article>
