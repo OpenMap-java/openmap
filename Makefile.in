@@ -14,8 +14,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.69 $
-# $Date: 2002/05/08 00:54:11 $
+# $Revision: 1.70 $
+# $Date: 2002/05/22 22:18:39 $
 # $Author: dietrick $
 # 
 # **********************************************************************
@@ -134,12 +134,8 @@ Layer.classes =	com/bbn/openmap/layer/*.class \
 
 Layer.props =   com/bbn/openmap/layer/vpf/*.properties
 
-Layer.jar =	${Layer.classes} ${Layer.props}
-
 PlugIn.pkgs = 	com.bbn.openmap.plugin.earthImage \
 		com.bbn.openmap.plugin.esri \
-		com.bbn.openmap.plugin.esri.input \
-		com.bbn.openmap.plugin.esri.output \
 		com.bbn.openmap.plugin.graphicLoader \
 		com.bbn.openmap.plugin.shis \
 		com.bbn.openmap.plugin.wms
@@ -147,13 +143,21 @@ PlugIn.pkgs = 	com.bbn.openmap.plugin.earthImage \
 PlugIn.classes = \
 		com/bbn/openmap/plugin/earthImage/*.class \
 		com/bbn/openmap/plugin/esri/*.class \
-		com/bbn/openmap/plugin/esri/input/*.class \
-		com/bbn/openmap/plugin/esri/output/*.class \
 		com/bbn/openmap/plugin/graphicLoader/*.class \
 		com/bbn/openmap/plugin/shis/*.class \
 		com/bbn/openmap/plugin/wms/*.class
 
-PlugIn.jar =	${PlugIn.classes}
+Data.pkgs = 	com.bbn.openmap.dataAccess.shape \
+		com.bbn.openmap.dataAccess.shape.input \
+		com.bbn.openmap.dataAccess.shape.output
+
+Data.classes = \
+		com/bbn/openmap/dataAccess/shape/*.class \
+		com/bbn/openmap/dataAccess/shape/input/*.class \
+		com/bbn/openmap/dataAccess/shape/output/*.class
+
+
+DataSpecific.jar = ${Layer.classes} ${Layer.props} ${PlugIn.classes} ${Data.classes}
 
 App.pkgs = 	com.bbn.openmap.app
 
@@ -208,7 +212,7 @@ lib:
 	${INSTALL.dir} $@
 
 lib/openmap.jar:: omcore lib
-	${JAR} cf $@ ${Core.jar} ${Layer.jar} ${PlugIn.jar} ${App.jar} ${Example.jar}
+	${JAR} cf $@ ${Core.jar} ${DataSpecific.jar} ${App.jar} ${Example.jar}
 
 lib/omcore.jar:: omcore lib
 	${JAR} cf $@ ${Core.jar} ${App.props}
@@ -228,7 +232,7 @@ gmakefile:
 
 svg:	omcore
 	cd com/bbn/openmap/image && $(MAKE) $@
-	${JAR} cf lib/openmap.jar ${Core.jar} ${Layer.jar} ${PlugIn.jar} ${App.jar} ${Example.jar}
+	${JAR} cf lib/openmap.jar ${Core.jar} ${DataSpecific.jar} ${App.jar} ${Example.jar}
 
 J3D.jar = \
 	com/bbn/openmap/tools/j3d/*.class \
@@ -238,7 +242,7 @@ J3D.jar = \
 j3d:	omcore
 	cd com/bbn/openmap/tools/j3d && $(MAKE)
 	cd com/bbn/openmap/plugin/pilot && $(MAKE)
-	${JAR} cf lib/openmap.jar ${Core.jar} ${J3D.jar} ${Layer.jar} ${PlugIn.jar} ${App.jar} ${Example.jar}
+	${JAR} cf lib/openmap.jar ${Core.jar} ${J3D.jar} ${DataSpecific.jar} ${App.jar} ${Example.jar}
 
 j3d_clean j3d_reallyclean::
 	cd com/bbn/openmap/tools/j3d && $(MAKE) $@
@@ -284,7 +288,7 @@ ${JAVADOC.dir}:
 
 javadocs:	${JAVADOC.dir}
 	${JAVADOC} @JAVA2_DOC_ARGS@ -J-mx64m -version -d ${JAVADOC.dir} \
-	-windowtitle "OpenMap API" ${Core.pkgs} ${App.pkgs} ${Layer.pkgs} ${PlugIn.pkgs}
+	-windowtitle "OpenMap API" ${Core.pkgs} ${App.pkgs} ${Layer.pkgs} ${PlugIn.pkgs} ${Data.pkgs}
 
 ################
 # installation #
