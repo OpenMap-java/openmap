@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/01/10 16:58:34 $
+// $Revision: 1.14 $
+// $Date: 2005/05/23 20:38:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -275,14 +275,21 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      */
     protected void replaceAppObjectWithAttributeMap() {
         if (!checkAttributeMap()) {
-            Object appObj = getAppObject();
-            if (appObj == null) {
-                setAppObject(createAttributeMap(), false);
-            } else {
-                Map attributes = createAttributeMap();
+            // OK, we know we need to create a Map for the attributes,
+            // and place it in the appObject of this BasicGeometry.
+            // So, get whatever is already there,
+            Object appObj = getAppObject(false);
+
+            // Create the new Map, set a pointer to itself so we know
+            // it's the attribute Map (and not just replacing a Map
+            // that someone else was using before
+            Map attributes = createAttributeMap();
+            attributes.put(ATT_MAP_KEY, attributes);
+            setAppObject(attributes, false);
+
+            // Now, set the old appObject if appropriate.
+            if (appObj != null) {
                 attributes.put(APP_OBJECT_KEY, appObj);
-                attributes.put(ATT_MAP_KEY, attributes);
-                setAppObject(attributes, false);
             }
         }
     }
@@ -404,7 +411,9 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      */
     public void setAttributes(Map atts) {
         if (!checkAttributeMap()) {
-            atts.put(APP_OBJECT_KEY, appObject);
+            if (appObject != null) {
+                atts.put(APP_OBJECT_KEY, appObject);
+            }
         } else {
             Object appObj = getAttribute(APP_OBJECT_KEY);
             if (appObj != null) {
