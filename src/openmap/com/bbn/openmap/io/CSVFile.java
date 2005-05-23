@@ -14,22 +14,24 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/CSVFile.java,v $
 // $RCSfile: CSVFile.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:51 $
+// $Revision: 1.7 $
+// $Date: 2005/05/23 19:54:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.io;
 
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.CSVTokenizer;
-import com.bbn.openmap.util.PropUtils;
-
-import java.io.*;
-import java.util.*;
-import java.net.URL;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.Vector;
+
+import com.bbn.openmap.util.CSVTokenizer;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The CSVFile holds on to the contents of a CSV file.
@@ -149,6 +151,10 @@ public class CSVFile {
             throw new com.bbn.openmap.util.HandleError(aioobe);
         } catch (ClassCastException cce) {
             throw new com.bbn.openmap.util.HandleError(cce);
+        } catch (NullPointerException npe) {
+            // Usually gets fired when the URL isn't properly formatted in windows
+            Debug.error("CSVFile can't open: " + infoUrl
+                    + ", check URL notation.");
         }
 
         try {
