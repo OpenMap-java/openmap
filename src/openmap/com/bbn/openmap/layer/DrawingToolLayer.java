@@ -14,35 +14,63 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.26 $
-// $Date: 2004/10/14 18:05:52 $
+// $Revision: 1.27 $
+// $Date: 2005/05/23 19:58:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer;
 
-import com.bbn.openmap.dataAccess.shape.EsriShapeExport;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
-import com.bbn.openmap.tools.drawing.DrawingTool;
-import com.bbn.openmap.tools.drawing.OMDrawingTool;
-import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
-import com.bbn.openmap.util.*;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
+import java.net.URL;
 import java.util.Properties;
-import javax.swing.*;
+import java.util.Vector;
+
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.dataAccess.shape.EsriShapeExport;
+import com.bbn.openmap.event.MapMouseEvent;
+import com.bbn.openmap.event.MapMouseMode;
+import com.bbn.openmap.event.MapMouseSupport;
+import com.bbn.openmap.event.SelectMouseMode;
+import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.tools.drawing.DrawingTool;
+import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
+import com.bbn.openmap.tools.drawing.OMDrawingTool;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.FileUtils;
+import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.propertyEditor.Inspector;
 
 /**
  * This layer can receive graphics from the OMDrawingToolLauncher, and
  * also sent it's graphics to the OMDrawingTool for editing.
  * <P>
  * 
- * The projectionChanged() and paint() methods are taken care of in
- * the OMGraphicHandlerLayer superclass.
+ * The projectionChanged() method is taken care of in the
+ * OMGraphicHandlerLayer superclass.
  * <P>
  * 
  * This class responds to all the properties that the
@@ -54,6 +82,82 @@ import javax.swing.*;
  * (true by default), which dictates if tooltips and information
  * delegator text is displayed when the layer's contents are moused
  * over.
+ * 
+ * <pre>
+ * 
+ *  
+ *   
+ *    
+ *     
+ *      
+ *       
+ *        
+ *         
+ *          
+ *           
+ *            
+ *             
+ *              
+ *               
+ *                
+ *                 
+ *                  
+ *                   
+ *                    
+ *                     
+ *                      
+ *                       
+ *                        
+ *                         
+ *                          
+ *                           
+ *                            
+ *                             
+ *                              
+ *                               
+ *                               # Properties for DrawingToolLayer:
+ *                               drawingToolLayer.class=com.bbn.openmap.layer.DrawingToolLayer
+ *                              
+ *                               drawingToolLayer.prettyName=General Layer
+ *                              
+ *                               # optional flag to tell layer to display tooltip queues over it's OMGraphics
+ *                               drawingToolLayer.showHints=true
+ *                              
+ *                               # optional flag to specify file to store and read OMGraphics.  A Save button 
+ *                               # is available on the palette.  If it's not specified and the Save button is 
+ *                               # chosen, the user will queried for this location.
+ *                               drawingToolLayer.file=file to read OMGraphics from
+ *                               
+ *                              
+ *                             
+ *                            
+ *                           
+ *                          
+ *                         
+ *                        
+ *                       
+ *                      
+ *                     
+ *                    
+ *                   
+ *                  
+ *                 
+ *                
+ *               
+ *              
+ *             
+ *            
+ *           
+ *          
+ *         
+ *        
+ *       
+ *      
+ *     
+ *    
+ *   
+ *  
+ * </pre>
  */
 public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         DrawingToolRequestor {
@@ -66,12 +170,27 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
      */
     protected boolean showHints = true;
 
+    /**
+     * A property that can control whether mouse events generate hints
+     * over map objects (showHints).
+     */
     public final static String ShowHintsProperty = "showHints";
+
+    /**
+     * A property to specify the file to use to read and save map
+     * objects in (file).
+     */
+    public final static String SerializedURLNameProperty = "file";
+
+    /**
+     * The name of the file to read/save OMGraphics in.
+     */
+    protected String fileName = null;
 
     protected boolean DTL_DEBUG = false;
 
     public DrawingToolLayer() {
-        setList(new OMGraphicList());
+        //setList(new OMGraphicList());
         setAddToBeanContext(true);
 
         DTL_DEBUG = Debug.debugging("dtl");
@@ -87,6 +206,66 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         if (getMouseModeIDsForEvents() == null) {
             setMouseModeIDsForEvents(new String[] { SelectMouseMode.modeID });
         }
+
+        fileName = props.getProperty(realPrefix + SerializedURLNameProperty);
+    }
+
+    public Properties getProperties(Properties props) {
+        props = super.getProperties(props);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+
+        props.put(prefix + ShowHintsProperty, new Boolean(showHints).toString());
+        props.put(prefix + SerializedURLNameProperty,
+                PropUtils.unnull(fileName));
+        return props;
+    }
+
+    public Properties getPropertyInfo(Properties props) {
+        props = super.getPropertyInfo(props);
+
+        String interString;
+
+        interString = i18n.get(DrawingToolLayer.class,
+                ShowHintsProperty,
+                I18n.TOOLTIP,
+                "Display tooltips over layer's map objects.");
+        props.put(ShowHintsProperty, interString);
+        props.put(ShowHintsProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        interString = i18n.get(DrawingToolLayer.class,
+                ShowHintsProperty,
+                "Show Hints");
+        props.put(ShowHintsProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(DrawingToolLayer.class,
+                SerializedURLNameProperty,
+                I18n.TOOLTIP,
+                "File to use for reading and saving map objects.");
+        props.put(SerializedURLNameProperty, interString);
+        props.put(SerializedURLNameProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        interString = i18n.get(DrawingToolLayer.class,
+                ShowHintsProperty,
+                "File Name for Saving");
+        props.put(SerializedURLNameProperty + LabelEditorProperty, interString);
+
+        props.put(initPropertiesProperty, SerializedURLNameProperty + " "
+                + ShowHintsProperty);
+        return props;
+    }
+
+    public OMGraphicList prepare() {
+        OMGraphicList list = getList();
+        Projection proj = getProjection();
+        if (list == null) {
+            list = load();
+        }
+
+        if (list != null && proj != null) {
+            list.generate(proj);
+        }
+
+        return list;
     }
 
     public OMDrawingTool getDrawingTool() {
@@ -121,6 +300,12 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         deselect(omgl);
 
         OMGraphicList list = getList();
+
+        if (list == null) {
+            list = load();
+            setList(list);
+        }
+
         if (list != null) {
             doAction(omg, action);
             repaint();
@@ -215,25 +400,202 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         return true;
     }
 
-    public Component getGUI() {
+    JPanel box;
+    JComboBox jcb;
 
-        JPanel box = PaletteHelper.createVerticalPanel("Save Layer Graphics");
-        box.setLayout(new java.awt.GridLayout(0, 1));
-        JButton button = new JButton("Save As Shape File");
-        button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
+    public Component getGUI() {
+        if (box == null) {
+
+            String interString = i18n.get(DrawingToolLayer.class,
+                    "QUERY_HEADER",
+                    "What would you like to do?");
+
+            box = PaletteHelper.createVerticalPanel(interString);
+
+            GridBagLayout gridbag = new GridBagLayout();
+            GridBagConstraints c = new GridBagConstraints();
+            box.setLayout(gridbag);
+
+            jcb = new JComboBox(getActions());
+            c.gridx = GridBagConstraints.REMAINDER;
+            gridbag.setConstraints(jcb, c);
+            box.add(jcb);
+
+            interString = i18n.get(DrawingToolLayer.class, "OK", "OK");
+            JButton button = new JButton(interString);
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    doIt();
+                }
+            });
+            gridbag.setConstraints(button, c);
+            box.add(button);
+        }
+
+        return box;
+    }
+
+    protected void doIt() {
+        if (jcb != null) {
+            ((javax.swing.Action) jcb.getSelectedItem()).actionPerformed(null);
+        }
+        hidePalette();
+    }
+
+    /**
+     * You can override this class if you want to provide more, fewer
+     * or different actions to the user.
+     * 
+     * @return Vector of Actions
+     */
+    protected Vector getActions() {
+        Vector actions = new Vector();
+
+        actions.add(new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                saveOMGraphics();
+            }
+
+            public String toString() {
+                return i18n.get(DrawingToolLayer.class, "SAVE_MAP", "Save map");
+            }
+        });
+        actions.add(new AbstractAction() {
+
+            public void actionPerformed(ActionEvent e) {
                 OMGraphicList list = getList();
                 if (list != null) {
                     EsriShapeExport ese = new EsriShapeExport(list, getProjection(), null);
                     ese.export();
                 } else {
-                    fireRequestMessage("There's nothing on the map for this layer to save.");
+                    String message = i18n.get(DrawingToolLayer.class,
+                            "SHAPE_ERROR_MESSAGE",
+                            "There's nothing on the map for this layer to save.");
+                    fireRequestMessage(message);
                 }
             }
-        });
-        box.add(button);
 
-        return box;
+            public String toString() {
+                return i18n.get(DrawingToolLayer.class,
+                        "SHAPE_SAVE_MAP",
+                        "Save map as Shape file(s)");
+            }
+        });
+        actions.add(new AbstractAction() {
+
+            public void actionPerformed(ActionEvent e) {
+                setList(load());
+                doPrepare();
+            }
+
+            public String toString() {
+                return i18n.get(DrawingToolLayer.class,
+                        "RELOAD",
+                        "Re-load map from file");
+            }
+        });
+        actions.add(new AbstractAction() {
+
+            public void actionPerformed(ActionEvent e) {
+                Inspector inspector = new Inspector();
+                inspector.inspectPropertyConsumer(DrawingToolLayer.this);
+            }
+
+            public String toString() {
+                return i18n.get(DrawingToolLayer.class,
+                        "PREFERENCES",
+                        "Change preferences");
+            }
+        });
+        actions.add(new AbstractAction() {
+
+            public void actionPerformed(ActionEvent e) {}
+
+            public String toString() {
+                return i18n.get(DrawingToolLayer.class, "NOTHING", "Nothing");
+            }
+        });
+
+        return actions;
+    }
+
+    /**
+     * Get the current OMGraphicList and save it out to the file named
+     * in this class. If that's null, the user will be asked for one.
+     *  
+     */
+    public void saveOMGraphics() {
+        if (fileName == null) {
+            fileName = FileUtils.getFilePathToSaveFromUser(i18n.get(DrawingToolLayer.class,
+                    "CHOOSE_SAVE",
+                    "Choose file to use to save layer:"));
+        }
+
+        if (fileName != null) {
+            OMGraphicList list = getList();
+
+            if (list != null) {
+                try {
+                    FileOutputStream fos = new FileOutputStream(new File(fileName));
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(list);
+                    oos.close();
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * Load the data from the file set in this layer.
+     * 
+     * @param fileName
+     * @return
+     */
+    public OMGraphicList load() {
+        OMGraphicList list = null;
+
+        if (fileName != null) {
+            try {
+                URL url = PropUtils.getResourceOrFileOrURL(fileName);
+                if (url != null) {
+                    ObjectInputStream ois = new ObjectInputStream(url.openStream());
+                    list = (OMGraphicList) ois.readObject();
+                    ois.close();
+                    return list;
+                }
+            } catch (FileNotFoundException e) {
+                if (DTL_DEBUG) {
+                    e.printStackTrace();
+                }
+            } catch (StreamCorruptedException sce) {
+                sce.printStackTrace();
+                fireRequestMessage(i18n.get(DrawingToolLayer.class,
+                        "LOAD_ERROR",
+                        "The file doesn't appear to be a valid map file"));
+            } catch (IOException e) {
+                if (DTL_DEBUG) {
+                    e.printStackTrace();
+                }
+            } catch (ClassNotFoundException e) {
+                if (DTL_DEBUG) {
+                    e.printStackTrace();
+                }
+            } catch (ClassCastException cce) {
+                if (DTL_DEBUG) {
+                    cce.printStackTrace();
+                }
+            }
+        }
+        // Something went wrong, we don't want to overwrite something
+        // that might potentially be something else if a save is
+        // called for later.
+        fileName = null;
+        return new OMGraphicList();
     }
 
     /**
@@ -265,6 +627,10 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         return (shouldEdit(omg) && dt != null && dt.canEdit(omg.getClass()));
     }
 
+    String editInstruction = i18n.get(DrawingToolLayer.class,
+            "CLICK_TO_EDIT",
+            "Click to edit.");
+
     /**
      * Query for what text should be placed over the information bar
      * when the mouse is over a particular OMGraphic.
@@ -272,7 +638,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     public String getInfoText(OMGraphic omg) {
         DrawingTool dt = getDrawingTool();
         if (dt != null && dt.canEdit(omg.getClass())) {
-            return "Click to edit.";
+            return editInstruction;
         } else {
             return null;
         }
@@ -286,7 +652,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         OMDrawingTool dt = getDrawingTool();
         if (shouldEdit(omgr) && dt.canEdit(omgr.getClass())
                 && !dt.isActivated()) {
-            return "Click to Edit";
+            return editInstruction;
         } else {
             return null;
         }
@@ -380,5 +746,12 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             }
         }
     }
-}
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setSFileName(String serializedFile) {
+        this.fileName = serializedFile;
+    }
+}
