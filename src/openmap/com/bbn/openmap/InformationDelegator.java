@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.15 $
-// $Date: 2004/11/10 13:43:03 $
+// $Revision: 1.16 $
+// $Date: 2005/05/23 19:32:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -428,7 +428,7 @@ public class InformationDelegator extends OMComponentPanel implements
      */
     public void displayMessage(String title, String message) {
         if (Environment.getBoolean(Environment.UseInternalFrames)) {
-            JOptionPane.showInternalMessageDialog(null,
+            JOptionPane.showInternalMessageDialog(Environment.getInternalFrameDesktop(),
                     message,
                     title,
                     JOptionPane.INFORMATION_MESSAGE);
