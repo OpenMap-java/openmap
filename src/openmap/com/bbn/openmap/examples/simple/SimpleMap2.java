@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/simple/SimpleMap2.java,v $
 // $RCSfile: SimpleMap2.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:46 $
+// $Revision: 1.5 $
+// $Date: 2005/05/23 19:46:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -66,11 +66,13 @@ public class SimpleMap2 {
 
         try {
 
-            // The BasicMapPanel automatically creates many
-            // default components, including the MapBean and the
-            // MapHandler. You can extend the BasicMapPanel class if
-            // you like to add different functionality or different
-            // types of objects.
+            /*
+             * The BasicMapPanel automatically creates many default
+             * components, including the MapBean and the MapHandler.
+             * You can extend the BasicMapPanel class if you like to
+             * add different functionality or different types of
+             * objects.
+             */
             MapPanel mapPanel = new BasicMapPanel();
 
             // Get the default MapHandler the BasicMapPanel created.
@@ -86,30 +88,29 @@ public class SimpleMap2 {
             // Set the map's scale 1:120 million
             mapBean.setScale(120000000f);
 
-            // Create and add a LayerHandler to the MapHandler. The
-            // LayerHandler manages Layers, whether they are part of
-            // the
-            // map or not. layer.setVisible(true) will add it to the
-            // map.
-            // The LayerHandler has methods to do this, too. The
-            // LayerHandler will find the MapBean in the MapHandler.
+            /*
+             * Create and add a LayerHandler to the MapHandler. The
+             * LayerHandler manages Layers, whether they are part of
+             * the map or not. layer.setVisible(true) will add it to
+             * the map. The LayerHandler has methods to do this, too.
+             * The LayerHandler will find the MapBean in the
+             * MapHandler.
+             */
             mapHandler.add(new LayerHandler());
 
             // Add a route layer.
             RouteLayer routeLayer = new RouteLayer();
             routeLayer.setVisible(true);
             // The LayerHandler will find the Layer in the MapHandler.
-            mapHandler.add(routeLayer);
 
-            mapHandler.add(new GraticuleLayer());
-
-            // Create a ShapeLayer to show world political boundaries.
-            // Set the properties of the layer. This assumes that the
-            // datafiles "dcwpo-browse.shp" and "dcwpo-browse.ssx" are
-            // in
-            // a path specified in the CLASSPATH variable. These files
-            // are distributed with OpenMap and reside in the toplevel
-            // "share" subdirectory.
+            /*
+             * Create a ShapeLayer to show world political boundaries.
+             * Set the properties of the layer. This assumes that the
+             * datafiles "dcwpo-browse.shp" and "dcwpo-browse.ssx" are
+             * in a path specified in the CLASSPATH variable. These
+             * files are distributed with OpenMap and reside in the
+             * toplevel "share" subdirectory.
+             */
             ShapeLayer shapeLayer = new ShapeLayer();
 
             // Since this Properties object is being used just for
@@ -125,20 +126,23 @@ public class SimpleMap2 {
             shapeLayer.setProperties(shapeLayerProps);
             shapeLayer.setVisible(true);
 
+            
+            // Last on top.
             mapHandler.add(shapeLayer);
+            mapHandler.add(new GraticuleLayer());
+            mapHandler.add(routeLayer);
 
             // Create the directional and zoom control tool
             OMToolSet omts = new OMToolSet();
             // Create an OpenMap toolbar
             ToolPanel toolBar = new ToolPanel();
 
-            // Add the ToolPanel and the OMToolSet to the MapHandler.
-            // The
-            // OpenMapFrame will find the ToolPanel and attach it to
-            // the
-            // top part of its content pane, and the ToolPanel will
-            // find
-            // the OMToolSet and add it to itself.
+            /*
+             * Add the ToolPanel and the OMToolSet to the MapHandler.
+             * The OpenMapFrame will find the ToolPanel and attach it
+             * to the top part of its content pane, and the ToolPanel
+             * will find the OMToolSet and add it to itself.
+             */
             mapHandler.add(omts);
             mapHandler.add(toolBar);
             // Display the frame

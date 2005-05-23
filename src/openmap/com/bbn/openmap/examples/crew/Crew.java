@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/crew/Crew.java,v $
 // $RCSfile: Crew.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:46 $
+// $Revision: 1.5 $
+// $Date: 2005/05/23 19:46:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -118,19 +118,19 @@ public class Crew extends JFrame {
         // Add a LayerHandler, which manages all layers, on or off.
         mapHandler.add(new LayerHandler());
 
+        // Create and add a Political Background
+        Layer layer = createPoliticalLayer();
+        if (layer != null)
+            mapHandler.add(layer);
+
         // Create and add a Route Layer. The LayerHandler will find
         // it via the LayerHandler, and then the LayerHandler will add
         // it to the map because layer.isVisible() == true;
-        Layer layer = createRouteLayer();
+        layer = createRouteLayer();
         if (layer != null) {
             layer.setName("Routes");
             mapHandler.add(layer);
         }
-
-        // Create and add a Political Background
-        layer = createPoliticalLayer();
-        if (layer != null)
-            mapHandler.add(layer);
 
         // Add some navigation tools. The ToolPanel will find the
         // OMToolSet (a Tool) in the MapHandler.
