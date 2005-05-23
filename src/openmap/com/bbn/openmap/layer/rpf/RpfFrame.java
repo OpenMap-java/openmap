@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrame.java,v $
 // $RCSfile: RpfFrame.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:04 $
+// $Revision: 1.7 $
+// $Date: 2005/05/23 20:08:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,13 +32,23 @@
 
 package com.bbn.openmap.layer.rpf;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.io.IOException;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.awt.image.MemoryImageSource;
 import java.io.FileNotFoundException;
-import javax.swing.*;
+import java.io.IOException;
 
-import com.bbn.openmap.io.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.nitf.NitfHeader;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.OMRasterObject;
@@ -136,6 +146,7 @@ public class RpfFrame {
         try {
             BinaryFile binFile = new BinaryBufferedFile(framePath);
             read(binFile);
+            binFile.close();
         } catch (FileNotFoundException e) {
             Debug.error("RpfFrame: file " + framePath + " not found");
             valid = false;
@@ -703,7 +714,7 @@ public class RpfFrame {
                         compressedSubframe[i][j] = new byte[6144];
                 }
             }
-
+            
         } catch (IOException e) {
             Debug.error("RpfFrame: read(): File IO Error!\n" + e);
             return false;

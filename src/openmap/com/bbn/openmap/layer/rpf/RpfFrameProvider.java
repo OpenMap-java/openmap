@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrameProvider.java,v $
 // $RCSfile: RpfFrameProvider.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:04 $
+// $Revision: 1.4 $
+// $Date: 2005/05/23 20:08:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,6 +59,12 @@ public interface RpfFrameProvider {
      * Given a projection that describes a map or geographical area,
      * return RpfCoverageBoxes that let you know what bounding boxes
      * of data are available.
+     * 
+     * @param ullat upper lat
+     * @param ullon left lon
+     * @param lrlat lower lat
+     * @param lrlon right lon
+     * @param chartSeries can be null to see all/any.
      */
     public Vector getCatalogCoverage(float ullat, float ullon, float lrlat,
                                      float lrlon, CADRG p, String chartSeries);

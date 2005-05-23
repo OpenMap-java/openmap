@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrameCacheHandler.java,v $
 // $RCSfile: RpfFrameCacheHandler.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:04 $
+// $Revision: 1.8 $
+// $Date: 2005/05/23 20:08:28 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -29,12 +29,13 @@
 
 package com.bbn.openmap.layer.rpf;
 
-import java.util.*;
+import java.util.List;
+import java.util.Vector;
 
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
 import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
 import com.bbn.openmap.proj.CADRG;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The RpfFrameCacheHandler does everything involved with handling RAW
@@ -125,7 +126,7 @@ public class RpfFrameCacheHandler extends CacheHandler implements
      * @param lrlat SE latitude.
      * @param lrlon SE longitude
      * @param proj CADRG projection to use for zone decisions.
-     * @param chartSeries RpfProductInfo.seriesCode entry.
+     * @param chartSeries RpfProductInfo.seriesCode entry, null for all/any.
      * @return Vector of RpfCoverageBoxes.
      */
     public Vector getCatalogCoverage(float ullat, float ullon, float lrlat,
