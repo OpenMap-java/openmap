@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrame.java,v $
 // $RCSfile: DTEDFrame.java,v $
-// $Revision: 1.3 $
-// $Date: 2005/01/19 14:18:03 $
+// $Revision: 1.4 $
+// $Date: 2005/05/23 19:44:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -139,6 +139,7 @@ public class DTEDFrame implements Closable {
      */
     public void dispose() {
         //System.out.println("DTED Frame Disposed " + me);
+        this.close(true);
         BinaryFile.removeClosable(this);
     }
 
