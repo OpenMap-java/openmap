@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFLayer.java,v $
 // $RCSfile: MIFLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:06:00 $
+// $Revision: 1.10 $
+// $Date: 2005/05/23 20:06:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,8 +23,9 @@
 package com.bbn.openmap.layer.mif;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Properties;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -72,7 +73,11 @@ public class MIFLayer extends OMGraphicHandlerLayer {
                 + pointVisibleProperty, -1f);
 
         try {
-            BufferedReader bfr = new BufferedReader(new FileReader(mifFileName));
+
+            URL fileURL = PropUtils.getResourceOrFileOrURL(null, mifFileName);
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(fileURL
+                      .openStream()));
+
             mifl = new MIFLoader(bfr, accurate, textVisible, pointVisible);
         } catch (IOException ioe) {
             Debug.error("MIFLayer: didn't find file " + mifFileName);
