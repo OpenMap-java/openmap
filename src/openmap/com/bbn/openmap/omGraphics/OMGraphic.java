@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphic.java,v $
 // $RCSfile: OMGraphic.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/01/10 16:58:33 $
+// $Revision: 1.11 $
+// $Date: 2005/05/23 20:36:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -713,7 +713,7 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
         if (s != null) {
             stroke = s;
         } else {
-            stroke = new BasicStroke();
+            stroke = BASIC_STROKE;
         }
     }
 
@@ -721,6 +721,9 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
      * Get the Stroke used for the graphic edge.
      */
     public Stroke getStroke() {
+        if (stroke == null) {
+            stroke = BASIC_STROKE;
+        }
         return stroke;
     }
 

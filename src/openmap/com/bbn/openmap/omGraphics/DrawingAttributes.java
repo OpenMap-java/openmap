@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.21 $
-// $Date: 2005/01/10 16:58:33 $
+// $Revision: 1.22 $
+// $Date: 2005/05/23 20:36:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -88,32 +88,36 @@ import com.bbn.openmap.util.PropUtils;
  * <pre>
  * 
  *  
- *   # The Edge or Line color
- *   lineColor=AARRGGBB (Hex ARGB Color, black is default)
- *   # The Fill color for 2D shapes
- *   fillColor=AARRGGBB (Hex ARGB Color, clean is default)
- *   # The Text Color for objects where any text should be different than the line color.
- *   textColor=AARRGGBB (Hex ARGB Color, black is default)
- *   # A highlight color to switch a graphic to when &quot;selected&quot;.
- *   selectColor=AARRGGBB (Hex ARGB Color, black is default)
- *   # A file or URL that can be used for a fill pattern, in place of the fill color.
- *   fillPattern=file://file (default is N/A)
- *   # The line width of the edge of the graphic
- *   lineWidth=int (1 is default)
- *   # A pattern to use for a dashed line, reflected as a
- *   # space-separated list of numbers, which are interpreted as on dash
- *   # length, off dash length, on dash length, etc.  
- *   dashPattern=10 5 3 5 (5 5 is the default if an error occurs reading the numbers, a non-dashed line is the default.)  
- *   The phase for the dash pattern,
- *   dashPhase=0.0f (0 is the default)
- *   # The scale to use for certain measurements, so that fill patterns
- *   # can be scaled depending on the map scale compaired to the
- *   # baseScale.
- *   baseScale=XXXXXX (where 1:XXXXXX is the scale to use.  N/A for the default).
- *   # Set whether any OMPoints that are given to the DrawingAttributes object are oval or rectangle.
- *   pointOval=false
- *   # Set the pixel radius of any OMPoint given to the DrawingAttributes object.
- *   pointRadius=2
+ *   
+ *    
+ *     # The Edge or Line color
+ *     lineColor=AARRGGBB (Hex ARGB Color, black is default)
+ *     # The Fill color for 2D shapes
+ *     fillColor=AARRGGBB (Hex ARGB Color, clean is default)
+ *     # The Text Color for objects where any text should be different than the line color.
+ *     textColor=AARRGGBB (Hex ARGB Color, black is default)
+ *     # A highlight color to switch a graphic to when &quot;selected&quot;.
+ *     selectColor=AARRGGBB (Hex ARGB Color, black is default)
+ *     # A file or URL that can be used for a fill pattern, in place of the fill color.
+ *     fillPattern=file://file (default is N/A)
+ *     # The line width of the edge of the graphic
+ *     lineWidth=int (1 is default)
+ *     # A pattern to use for a dashed line, reflected as a
+ *     # space-separated list of numbers, which are interpreted as on dash
+ *     # length, off dash length, on dash length, etc.  
+ *     dashPattern=10 5 3 5 (5 5 is the default if an error occurs reading the numbers, a non-dashed line is the default.)  
+ *     The phase for the dash pattern,
+ *     dashPhase=0.0f (0 is the default)
+ *     # The scale to use for certain measurements, so that fill patterns
+ *     # can be scaled depending on the map scale compaired to the
+ *     # baseScale.
+ *     baseScale=XXXXXX (where 1:XXXXXX is the scale to use.  N/A for the default).
+ *     # Set whether any OMPoints that are given to the DrawingAttributes object are oval or rectangle.
+ *     pointOval=false
+ *     # Set the pixel radius of any OMPoint given to the DrawingAttributes object.
+ *     pointRadius=2
+ *   
+ *  
  * 
  * 
  */
@@ -415,11 +419,18 @@ public class DrawingAttributes implements ActionListener, Serializable,
         Stroke oldStroke = this.stroke;
         this.stroke = stroke;
 
-        if (stroke instanceof BasicStroke) {
-            BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
-            if (tmpbse != null) {
-                tmpbse.setBasicStroke((BasicStroke) stroke);
-            }
+        // We don't want to call getBasicStrokeEditor, that creates
+        // the editor if it doesn't exist, which may be problematic
+        // for cases where there is no Graphics Display.
+        if (stroke instanceof BasicStroke && bse != null) {
+            bse.setBasicStroke((BasicStroke) stroke);
+            // This requires that the JRE has a display, which may be
+            // unnecessary in some situations where the editor is
+            // never used.
+            //            BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
+            //            if (tmpbse != null) {
+            //                tmpbse.setBasicStroke((BasicStroke) stroke);
+            //            }
         }
 
         if (propertyChangeSupport != null) {
@@ -1484,23 +1495,23 @@ public class DrawingAttributes implements ActionListener, Serializable,
 
         if (linePaint instanceof Color) {
             props.put(prefix + linePaintProperty,
-                    Integer.toHexString(((Color) linePaint).getRGB()));
+                    PropUtils.getProperty((Color) linePaint));
         }
         //      if (textPaint instanceof Color) {
         //          props.put(prefix + textPaintProperty,
-        //                    Integer.toHexString(((Color)textPaint).getRGB()));
+        //                    PropUtils.getProperty((Color)textPaint));
         //      }
         if (fillPaint instanceof Color) {
             props.put(prefix + fillPaintProperty,
-                    Integer.toHexString(((Color) fillPaint).getRGB()));
+                    PropUtils.getProperty((Color) fillPaint));
         }
         if (selectPaint instanceof Color) {
             props.put(prefix + selectPaintProperty,
-                    Integer.toHexString(((Color) selectPaint).getRGB()));
+                    PropUtils.getProperty((Color) selectPaint));
         }
         if (mattingPaint instanceof Color) {
             props.put(prefix + mattingPaintProperty,
-                    Integer.toHexString(((Color) mattingPaint).getRGB()));
+                    PropUtils.getProperty((Color) mattingPaint));
         }
 
         props.put(prefix + PointRadiusProperty, Integer.toString(pointRadius));

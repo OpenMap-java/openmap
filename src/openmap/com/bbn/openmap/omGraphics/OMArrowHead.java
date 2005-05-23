@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArrowHead.java,v $
 // $RCSfile: OMArrowHead.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:12 $
+// $Revision: 1.6 $
+// $Date: 2005/05/23 20:36:35 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -34,8 +34,14 @@ import java.awt.geom.GeneralPath;
 /**
  * Basic implementation of arrowhead graphics. This class expects
  * intimate knowledge of an OMLine, and is used to add Arrowhead
- * shapes to the actual OMLine internal Shape object. Once you have a
- * generated OMLine, call addArrowHeads on this class with it.
+ * shapes to the actual OMLine internal Shape object. You don't have
+ * to know about this class, just call the OMLine methods that create
+ * arrowheads and the OMLine will take care of the rest.
+ * 
+ * @see OMLine.addArrowHead(boolean)
+ * @see OMLine.addArrowHead(int)
+ * @see OMLine.addArrowHead(int, int)
+ * @see OMLine.addArrowHead(int, int, int, int)
  */
 public class OMArrowHead {
 
@@ -47,6 +53,23 @@ public class OMArrowHead {
     protected static int DEFAULT_WINGTIP = 5;
     protected static int DEFAULT_WINGLENGTH = 20;
 
+    /**
+     * Create an arrowhead for the provided line
+     * 
+     * @param arrowDirectionType ARROWHEAD_DIRECTION_FORWARD for the
+     *        arrowhead pointing to the last coordinate of the OMLine,
+     *        ARROWHEAD_DIRECTION_BACKWARD for the arrowhead pointing
+     *        to the first coordinate in the OMLine, and
+     *        ARROWHEAD_DIRECTION_BOTH for the arrowhead on both ends.
+     * @param location A number between 0-100, reflecting the
+     *        percentage of the line traversed before placing the
+     *        arrowhead. For ARROWHEAD_DIRECTION_FORWARD and a
+     *        location of 100, the arrowhead will be placed all the
+     *        way at the end of the line. For a location of 50, the
+     *        arrowhead will be placed in the middle of the line.
+     * @param line OMLine to use to place arrowhead.
+     * @return the GeneralPath for the arrowhead.
+     */
     public static GeneralPath createArrowHeads(int arrowDirectionType,
                                                int location, OMLine line) {
         return createArrowHeads(arrowDirectionType,
@@ -56,6 +79,27 @@ public class OMArrowHead {
                 DEFAULT_WINGLENGTH);
     }
 
+    /**
+     * Create an arrowhead for the provided line
+     * 
+     * @param arrowDirectionType ARROWHEAD_DIRECTION_FORWARD for the
+     *        arrowhead pointing to the last coordinate of the OMLine,
+     *        ARROWHEAD_DIRECTION_BACKWARD for the arrowhead pointing
+     *        to the first coordinate in the OMLine, and
+     *        ARROWHEAD_DIRECTION_BOTH for the arrowhead on both ends.
+     * @param location A number between 0-100, reflecting the
+     *        percentage of the line traversed before placing the
+     *        arrowhead. For ARROWHEAD_DIRECTION_FORWARD and a
+     *        location of 100, the arrowhead will be placed all the
+     *        way at the end of the line. For a location of 50, the
+     *        arrowhead will be placed in the middle of the line.
+     * @param line OMLine to use to place arrowhead.
+     * @param wingTip Number of pixels to push the side of the
+     *        arrowhead away from the line.
+     * @param wingLength Number of pixels reflecting the arrowhead
+     *        length.
+     * @return the GeneralPath for the arrowhead.
+     */
     public static GeneralPath createArrowHeads(int arrowDirectionType,
                                                int location, OMLine line,
                                                int wingTip, int wingLength) {
