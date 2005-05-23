@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: FeatureDrawingAttributes.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/01/10 16:36:21 $
+//$Revision: 1.2 $
+//$Date: 2005/05/23 20:25:33 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -120,8 +120,9 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
             return;
         }
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
-        displayType = props.getProperty(prefix + DisplayTypeProperty);
-        attributeColName = props.getProperty(prefix + AttributeProperty);
+        setDisplayType(props.getProperty(prefix + DisplayTypeProperty));
+        attributeColName = props.getProperty(prefix + AttributeProperty,
+                attributeColName);
     }
 
     /**
@@ -178,6 +179,8 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
             String dt = getDisplayType();
             if (dt != null) {
                 String tooltip = fci.getAttribute(id, getAttributeCol(), null);
+                // Might want to to .equals here, test for speed effect.
+//                if (dt.equals(OMGraphicConstants.LABEL)) {
                 if (dt == OMGraphicConstants.LABEL) {
                     OMTextLabeler omtl = new OMTextLabeler(tooltip);
                     super.setTo(omtl);
@@ -306,26 +309,35 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
      *  
      */
     protected void updateAttributeGUI() {
-        if (fci != null) {
-            attributeJCB.removeAllItems();
+        if (attributePanel != null && attributeJCB != null
+                && displayTypeJCB != null) {
 
-            DcwColumnInfo[] dci = fci.getColumnInfo();
-            int colCount = dci.length;
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < colCount; i++) {
-                FCIChoice fcic = new FCIChoice(dci[i].getColumnName(), dci[i].getColumnDescription(), i);
-                attributeJCB.addItem(fcic);
-                if (dci[i].getColumnName().equalsIgnoreCase(attributeColName)) {
-                    attributeJCB.setSelectedItem(fcic);
+            if (fci != null) {
+                attributeJCB.removeAllItems();
+
+                DcwColumnInfo[] dci = fci.getColumnInfo();
+                int colCount = dci.length;
+                StringBuffer sb = new StringBuffer();
+                // Need to save current attributeColName, because
+                // setting a new choice on an empty combo box will set
+                // it to that first added attribute automatically.
+                String cacn = attributeColName;
+                for (int i = 0; i < colCount; i++) {
+                    FCIChoice fcic = new FCIChoice(dci[i].getColumnName(), dci[i].getColumnDescription(), i);
+                    attributeJCB.addItem(fcic);
+                    if (dci[i].getColumnName()
+                            .equalsIgnoreCase(cacn)) {
+                        attributeJCB.setSelectedItem(fcic);
+                    }
                 }
+                attributePanel.setVisible(true);
+                attributeJCB.setEnabled(true);
+                displayTypeJCB.setEnabled(true);
+            } else {
+                attributePanel.setVisible(false);
+                attributeJCB.setEnabled(false);
+                displayTypeJCB.setEnabled(false);
             }
-            attributePanel.setVisible(true);
-            attributeJCB.setEnabled(true);
-            displayTypeJCB.setEnabled(true);
-        } else {
-            attributePanel.setVisible(false);
-            attributeJCB.setEnabled(false);
-            displayTypeJCB.setEnabled(false);
         }
     }
 
@@ -341,6 +353,17 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
      */
     public void setDisplayType(String displayType) {
         this.displayType = displayType;
+
+        // Check and update for not-null, so that equality check can be used later 
+        if (displayType != null) {
+            if (displayType.equalsIgnoreCase(OMGraphicConstants.TOOLTIP)) {
+                displayType = OMGraphicConstants.TOOLTIP;
+            } else if (displayType.equalsIgnoreCase(OMGraphicConstants.LABEL)) {
+                displayType = OMGraphicConstants.LABEL;
+            } else if (displayType.equalsIgnoreCase(OMGraphicConstants.INFOLINE)) {
+                displayType = OMGraphicConstants.INFOLINE;
+            }
+        }
     }
 
     /**

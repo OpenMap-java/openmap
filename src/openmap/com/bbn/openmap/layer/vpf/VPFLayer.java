@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.17 $
-// $Date: 2005/01/10 16:36:21 $
+// $Revision: 1.18 $
+// $Date: 2005/05/23 20:25:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,83 +63,100 @@ import com.bbn.openmap.util.PropUtils;
  * <pre>
  * 
  *  
- *  #-----------------------------
- *  # Properties for a VMAP political layer
- *  #-----------------------------
- *  # Mandatory properties
- *  # Mandatory for all layers
- *  vmapPol.class= com.bbn.openmap.layer.vpf.VPFLayer
- *  vmapPol.prettyName= Political Boundaries from VMAP
- *  # Mandatory - choose .vpfPath or .libraryBean
- *  # .vpfPath specifies a ';' separated list of paths to data, each of these
- *  #directories should have a &quot;lat&quot; or &quot;lat.&quot; file in them.
- *  vmapPol.vpfPath= e:/VMAPLV0
- *  # .libraryBean specifies a separate object in the properties file that
- *  # locates vpf data.  You should use this option if you have multiple VPF
- *  # layers displaying the same VPF database.  (For example, you have 3 VMAP
- *  # layers, displaying coastlines, railroads and rivers.  Each layer would
- *  # then specify the same libraryBean name.  This reduces the memory 
- *  # consumption of the VPF layers.)
- *  # See {@link com.bbn.openmap.layer.vpf.LibraryBean LibraryBean javadoc} for properties info. (Example below)
- *  vmapPol.libraryBean= VMAPdata
- *  VMAPData.class=com.bbn.openmap.layer.vpf.LibraryBean
- *  VMAPData.vpfPath=e:/VMAPLV0
- *  # Don't forget to add VMAPData to the openmap.components property list, too.
- *  #
- *  #Optional (default is false) changes how features are located.  Should
- *  #use this option for multiple coverage types, or when null pointer errors
- *  #are encountered.
- *  vmapPol.searchByFeature=true
- *  #Limit which VPF library is used (optional).  If not specified,
- *  #all available libraries will be checked and used.
- *  vmapPol.libraryName=noamer
- *  #
- *  # Choose either .defaultLayer or .coverageType
- *  #
- *  # .defaultLayer results in the layer looking up the remainder of the
- *  # properties in the defaultVPFLayers.properties files.
- *  vmapPol.defaultLayer= vmapPolitical
- *  #
- *  # .coverageType continues in this property file - chose the VMAP bnd
- *  # (Boundary) coverage
- *  vmapPol.coverageType= bnd
- *  # Select if we want edges (polylines), areas (filled polygons) or text
- *  # This is a space-separated list of &quot;edge&quot; &quot;area&quot; &quot;text&quot; &quot;epoint&quot; and &quot;cpoint&quot;
- *  vmapPol.featureTypes= edge area
- *  #For DCW, the remaining 3 properties are ignored
- *  #Select the text featureclasses we'd like to display.  Since we didn't
- *  #select text above, this is ignored
- *  vmapPol.text= 
- *  #Select the edge featureclasses we'd like to display. In this case,
- *  #draw political boundaries and coastline, but skip anything else.
- *  vmapPol.edge=polbndl coastl
- *  #Select the area featureclasses we'd like to display. In this case,
- *  #draw politcal areas, but skip anything else.
- *  vmapPol.area=polbnda
- *  #Selectable drawing attributes - for default values, they don't need to
- *  #be included.  A hex ARGB color looks like FF000000 for black.
- *  vmapPol.lineColor=hex ARGB color value - Black is default.
- *  vmapPol.fillColor=hex ARGB color value - Clear is default.
- *  vmapPol.lineWidth=float value, 1f is the default, 10f is the max.
- *  #------------------------------------
- *  # End of properties for a VMAP political layer
- *  #------------------------------------
+ *   
+ *   #-----------------------------
+ *   # Properties for a VMAP political layer
+ *   #-----------------------------
+ *   # Mandatory properties
+ *   # Mandatory for all layers
+ *   vmapPol.class= com.bbn.openmap.layer.vpf.VPFLayer
+ *   vmapPol.prettyName= Political Boundaries from VMAP
+ *   # Mandatory - choose .vpfPath or .libraryBean
+ *   # .vpfPath specifies a ';' separated list of paths to data, each of these
+ *   #directories should have a &quot;lat&quot; or &quot;lat.&quot; file in them.
+ *   vmapPol.vpfPath= e:/VMAPLV0
+ *   # .libraryBean specifies a separate object in the properties file that
+ *   # locates vpf data.  You should use this option if you have multiple VPF
+ *   # layers displaying the same VPF database.  (For example, you have 3 VMAP
+ *   # layers, displaying coastlines, railroads and rivers.  Each layer would
+ *   # then specify the same libraryBean name.  This reduces the memory 
+ *   # consumption of the VPF layers.)
+ *   # See {@link com.bbn.openmap.layer.vpf.LibraryBean LibraryBean javadoc} for properties info. (Example below)
+ *   vmapPol.libraryBean= VMAPdata
+ *   VMAPData.class=com.bbn.openmap.layer.vpf.LibraryBean
+ *   VMAPData.vpfPath=e:/VMAPLV0
+ *   # Don't forget to add VMAPData to the openmap.components property list, too.
+ *   #
+ *   #Optional (default is true) changes how features are located.  Should
+ *   #use this option for multiple coverage types, or when null pointer errors
+ *   #are encountered.
+ *   vmapPol.searchByFeature=true
  *  
- *  ### Now a VMAP Coastline layer
- *  vmapCoast.class=com.bbn.openmap.layer.vpf.VPFLayer
- *  vmapCoast.prettyName=VMAP Coastline Layer
- *  vmapCoast.vpfPath=/u5/vmap/vmaplv0
- *  ## a predefined layer from the VPF predefined layer set found in
- *  ## com/bbn/openmap/layer/vpf/defaultVPFLayers.properties
- *  vmapCoast.defaultLayer=vmapCoastline
+ *   #Limit which VPF library is used (optional).  If not specified,
+ *   #all available libraries will be checked and used.
+ *   vmapPol.libraryName=noamer
+ *   #
+ *   # Choose either .defaultLayer or .coverageType
+ *   #
+ *   # .defaultLayer results in the layer looking up the remainder of the
+ *   # properties in the defaultVPFLayers.properties files.
+ *   vmapPol.defaultLayer= vmapPolitical
+ *   #
+ *   # .coverageType continues in this property file - chose the VMAP bnd
+ *   # (Boundary) coverage
+ *   vmapPol.coverageType= bnd
+ *   # Select if we want edges (polylines), areas (filled polygons) or text
+ *   # This is a space-separated list of &quot;edge&quot; &quot;area&quot; &quot;text&quot; &quot;epoint&quot; and &quot;cpoint&quot;
+ *   vmapPol.featureTypes= edge area
+ *   #For DCW, the remaining 3 properties are ignored
+ *   #Select the text featureclasses we'd like to display.  Since we didn't
+ *   #select text above, this is ignored
+ *   vmapPol.text= 
+ *   #Select the edge featureclasses we'd like to display. In this case,
+ *   #draw political boundaries and coastline, but skip anything else.
+ *   vmapPol.edge=polbndl coastl
+ *   #Select the area featureclasses we'd like to display. In this case,
+ *   #draw politcal areas, but skip anything else.
+ *   vmapPol.area=polbnda
+ *   #Selectable drawing attributes - for default values, they don't need to
+ *   #be included.  A hex ARGB color looks like FF000000 for black.
+ *   vmapPol.lineColor=hex ARGB color value - Black is default.
+ *   vmapPol.fillColor=hex ARGB color value - Clear is default.
+ *   vmapPol.lineWidth=float value, 1f is the default, 10f is the max.
  *  
- *  ### Now a DCW Political layer
- *  # Basic political boundaries with DCW
- *  dcwPolitical.class=com.bbn.openmap.layer.vpf.VPFLayer
- *  dcwPolitical.prettyName=DCW Political Boundaries
- *  dcwPolitical.vpfPath=path to data
- *  dcwPolitical.coverageType=po
- *  dcwPolitical.featureTypes=edge area
+ *   # The column name in the feature table that should be displayed.  The easiest 
+ *   # way to find out what these columns should be for an application is to run the 
+ *   # application with the other properties set for the layer, and then bring up 
+ *   # the layer's palette.  When the feature is selected, there are additional 
+ *   # controls that let you display the coverage column names and display type, 
+ *   # and the coverage column names in the popup are the ones that can be used 
+ *   # in the properties (the column names are in parenthesis).  NOTE:   The features 
+ *   # have to be added to the map and visible (proper scale setting &lt; 30,000,000) 
+ *   # in order for the palette controls to be visible.
+ *   vmapPol.attribute=na2
+ *   # How the attributes should be displayed, either 'label', 'tooltip', or 'information line'
+ *   vmapPol.attributeDisplay=label
+ *  
+ *   #------------------------------------
+ *   # End of properties for a VMAP political layer
+ *   #------------------------------------
+ *   
+ *   ### Now a VMAP Coastline layer
+ *   vmapCoast.class=com.bbn.openmap.layer.vpf.VPFLayer
+ *   vmapCoast.prettyName=VMAP Coastline Layer
+ *   vmapCoast.vpfPath=/u5/vmap/vmaplv0
+ *   ## a predefined layer from the VPF predefined layer set found in
+ *   ## com/bbn/openmap/layer/vpf/defaultVPFLayers.properties
+ *   vmapCoast.defaultLayer=vmapCoastline
+ *   
+ *   ### Now a DCW Political layer
+ *   # Basic political boundaries with DCW
+ *   dcwPolitical.class=com.bbn.openmap.layer.vpf.VPFLayer
+ *   dcwPolitical.prettyName=DCW Political Boundaries
+ *   dcwPolitical.vpfPath=path to data
+ *   dcwPolitical.coverageType=po
+ *   dcwPolitical.featureTypes=edge area
+ *    
  *   
  *  
  * </pre>
@@ -207,7 +224,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
     public VPFLayer() {
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
         setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
-        setMouseModeIDsForEvents(new String[] {"Gestures"});
+        setMouseModeIDsForEvents(new String[] { "Gestures" });
     }
 
     /**
@@ -874,12 +891,12 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
             configWindowSupport.setTitle(getName());
         }
     }
-    
+
     public String getToolTipTextFor(OMGraphic omg) {
-        return (String)omg.getAttribute(OMGraphicConstants.TOOLTIP);
+        return (String) omg.getAttribute(OMGraphicConstants.TOOLTIP);
     }
-    
+
     public String getInfoText(OMGraphic omg) {
-        return (String)omg.getAttribute(OMGraphicConstants.INFOLINE);
+        return (String) omg.getAttribute(OMGraphicConstants.INFOLINE);
     }
 }
