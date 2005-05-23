@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ToolPanel.java,v $
 // $RCSfile: ToolPanel.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/12/08 00:58:54 $
+// $Revision: 1.12 $
+// $Date: 2005/05/23 19:51:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -210,7 +210,9 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
             }
 
             if (autoSpace) {
-                addSpace();
+                JLabel l = new JLabel(" ");
+                gridbag.setConstraints(l, c);
+                add(l);
             }
         }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersMenu.java,v $
 // $RCSfile: LayersMenu.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:48 $
+// $Revision: 1.9 $
+// $Date: 2005/05/23 19:51:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -339,7 +339,9 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
          * references.
          */
         public void cleanup() {
-            layer.removeComponentListener(this);
+            if (layer != null) {
+                layer.removeComponentListener(this);
+            }
             this.removeActionListener(this);
             layer = null;
         }
