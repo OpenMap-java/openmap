@@ -14,30 +14,39 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.17 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.18 $
+// $Date: 2005/05/23 20:18:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
-import javax.swing.*;
+import java.util.Properties;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.DataBoundsProvider;
-import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -72,7 +81,7 @@ import com.bbn.openmap.util.PropUtils;
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.17 $ $Date: 2004/10/14 18:06:05 $
+ * @version $Revision: 1.18 $ $Date: 2005/05/23 20:18:49 $
  * @see SpatialIndex
  */
 public class ShapeLayer extends OMGraphicHandlerLayer implements

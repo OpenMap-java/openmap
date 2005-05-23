@@ -14,26 +14,39 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndexHandler.java,v $
 // $RCSfile: SpatialIndexHandler.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.7 $
+// $Date: 2005/05/23 20:18:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
-import javax.swing.*;
+import java.util.Iterator;
+import java.util.Properties;
 
-import com.bbn.openmap.*;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGeometryList;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -503,5 +516,12 @@ public class SpatialIndexHandler implements PropertyConsumer {
 
     public boolean getEnabled() {
         return enabled;
+    }
+
+    public boolean close(boolean done) {
+        if (spatialIndex != null) {
+            return spatialIndex.close(done);
+        }
+        return false;
     }
 }

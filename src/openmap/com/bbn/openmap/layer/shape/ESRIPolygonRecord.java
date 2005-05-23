@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPolygonRecord.java,v $ 
 // $RCSfile: ESRIPolygonRecord.java,v $ 
-// $Revision: 1.5 $ 
-// $Date: 2004/11/26 03:44:42 $ 
+// $Revision: 1.6 $ 
+// $Date: 2005/05/23 20:18:49 $ 
 // $Author: dietrick $ 
 // 
 // ********************************************************************** 
@@ -42,7 +42,7 @@ import com.bbn.openmap.proj.ProjMath;
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
  * @author HACK-author blame it on aculline
- * @version $Revision: 1.5 $ $Date: 2004/11/26 03:44:42 $
+ * @version $Revision: 1.6 $ $Date: 2005/05/23 20:18:49 $
  */
 public class ESRIPolygonRecord extends ESRIRecord {
 
@@ -198,11 +198,14 @@ public class ESRIPolygonRecord extends ESRIRecord {
                 // out before enabling this code by removing 'false'
                 // in if statement.
                 sublist = new OMAreaList();
+                ((OMAreaList) sublist).setConnectParts(false);
             } else {
                 sublist = new OMGraphicList();
             }
 
-            drawingAttributes.setTo(sublist);
+            if (drawingAttributes != null) {
+                drawingAttributes.setTo(sublist);
+            }
 
             sublist.setVague(true); // Treat list as one object.
             list.add(sublist);

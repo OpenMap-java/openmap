@@ -14,22 +14,30 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.9 $
+// $Date: 2005/05/23 20:18:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Vector;
+
 import javax.swing.ImageIcon;
 
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.BinaryFile;
-import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.io.Closable;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.util.Debug;
 
 /**
  * A Spatial Index is a variation on a Shape Index, adding the
@@ -100,8 +108,8 @@ import com.bbn.openmap.io.FormatException;
  * <p>
  * <DT>java com.bbn.openmap.layer.shape.SpatialIndex -d -b file.ssx
  * </DT>
- * <DD><i>Dumps spatial index information including bounding boxes
- * to stdout. </i></DD>
+ * <DD><i>Dumps spatial index information including bounding boxes to
+ * stdout. </i></DD>
  * <p>
  * <DT>java com.bbn.openmap.layer.shape.SpatialIndex -c file.ssx
  * file.shp</DT>
@@ -123,10 +131,10 @@ import com.bbn.openmap.io.FormatException;
  * </UL>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.8 $ $Date: 2004/10/14 18:06:05 $
+ * @version $Revision: 1.9 $ $Date: 2005/05/23 20:18:49 $
  * @see ShapeIndex
  */
-public class SpatialIndex extends ShapeUtils {
+public class SpatialIndex extends ShapeUtils implements Closable {
 
     /** Size of a shape file header in bytes. */
     public final static int SHAPE_FILE_HEADER_LENGTH = 100;
@@ -835,5 +843,27 @@ public class SpatialIndex extends ShapeUtils {
     public synchronized ImageIcon getPointIcon() {
         return pointIcon;
     }
-}
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.bbn.openmap.io.Closable#close(boolean)
+     */
+    public boolean close(boolean done) {
+        try {
+            if (shp != null) {
+                shp.close();
+            }
+
+            if (ssx != null) {
+                ssx.close();
+            }
+            
+            return true;
+        } catch (IOException ioe) {
+
+        }
+
+        return false;
+    }
+}
