@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/Location.java,v $
 // $RCSfile: Location.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:59 $
+// $Revision: 1.9 $
+// $Date: 2005/05/23 20:03:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,17 +23,19 @@
 package com.bbn.openmap.layer.location;
 
 /*  Java Core  */
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Paint;
+import java.awt.Point;
+import java.awt.Rectangle;
 
-/*  OpenMap  */
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
+import com.bbn.openmap.layer.DeclutterMatrix;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMText;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.layer.DeclutterMatrix;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * A Location is a place. It can be thought of as a lat/lon place,
@@ -613,17 +615,7 @@ public abstract class Location extends OMGraphic {
      * @param g Graphics context to render into.
      */
     public void renderName(Graphics g) {
-        boolean globalShowNames = false;
-        boolean forceGlobal = false;
-        if (handler != null) {
-            globalShowNames = handler.isShowNames();
-            forceGlobal = handler.isForceGlobal();
-        }
-
-        if (label != null
-                && ((forceGlobal && globalShowNames) || (!forceGlobal && showName))) {
-
-            //      if (showName && label != null) {
+        if (shouldRenderName()) {
             label.render(g);
         }
     }
@@ -639,6 +631,36 @@ public abstract class Location extends OMGraphic {
      * @param g Graphics context to render into.
      */
     public void renderLocation(Graphics g) {
+        if (shouldRenderLocation()) {
+            location.render(g);
+        }
+    }
+
+    /**
+     * Convenience method to see if handler/global settings dictate
+     * that the location label should be rendered.
+     * 
+     * @return
+     */
+    protected boolean shouldRenderName() {
+        boolean globalShowNames = false;
+        boolean forceGlobal = false;
+        if (handler != null) {
+            globalShowNames = handler.isShowNames();
+            forceGlobal = handler.isForceGlobal();
+        }
+
+        return label != null
+                && ((forceGlobal && globalShowNames) || (!forceGlobal && showName));
+    }
+
+    /**
+     * Convenience method to see if handler/global settings dictate
+     * that the location icon should be rendered.
+     * 
+     * @return
+     */
+    protected boolean shouldRenderLocation() {
         boolean globalShowLocations = false;
         boolean forceGlobal = false;
         if (handler != null) {
@@ -646,12 +668,8 @@ public abstract class Location extends OMGraphic {
             forceGlobal = handler.isForceGlobal();
         }
 
-        if (location != null
-                && ((forceGlobal && globalShowLocations) || (!forceGlobal && showLocation))) {
-
-            //      if (showLocation && location != null) {
-            location.render(g);
-        }
+        return location != null
+                && ((forceGlobal && globalShowLocations) || (!forceGlobal && showLocation));
     }
 
     /**
@@ -664,19 +682,12 @@ public abstract class Location extends OMGraphic {
     public float distance(int x, int y) {
         float labelDist = Float.MAX_VALUE;
         float locationDist = Float.MAX_VALUE;
-        boolean globalShowLocations = false;
-        boolean globalShowNames = false;
 
-        if (handler != null) {
-            globalShowLocations = handler.isShowLocations();
-            globalShowNames = handler.isShowNames();
-        }
-
-        if (showLocation && location != null) {
+        if (shouldRenderLocation()) {
             locationDist = location.distance(x, y);
         }
 
-        if (showName && label != null) {
+        if (shouldRenderName()) {
             labelDist = label.distance(x, y);
         }
 
@@ -735,7 +746,7 @@ public abstract class Location extends OMGraphic {
         //          }
         //      }
 
-        if (isShowName() || handler.isShowNames()) {
+        if (isShowName() || (handler != null && handler.isShowNames())) {
 
             if (label == null || label.getPolyBounds() == null) {
                 // Why bother going further??
