@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.27 $
-// $Date: 2005/05/23 19:58:30 $
+// $Revision: 1.28 $
+// $Date: 2005/05/24 18:29:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -421,15 +421,45 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             gridbag.setConstraints(jcb, c);
             box.add(jcb);
 
+
+            JPanel goPanel = new JPanel();
+            gridbag.setConstraints(goPanel, c);
+            box.add(goPanel);
+            
             interString = i18n.get(DrawingToolLayer.class, "OK", "OK");
             JButton button = new JButton(interString);
+            interString = i18n.get(DrawingToolLayer.class, "OK.TOOLTIP", I18n.TOOLTIP, "Do action and dismiss window.");
+            button.setToolTipText(interString);
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    doIt();
+                    hidePalette();
+                }
+            });
+            goPanel.add(button);
+            
+            interString = i18n.get(DrawingToolLayer.class, "Apply", "Apply");
+            button = new JButton(interString);
+            interString = i18n.get(DrawingToolLayer.class, "Apply.TOOLTIP", I18n.TOOLTIP, "Do action and leave window up.");
+            button.setToolTipText(interString);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
                     doIt();
                 }
             });
-            gridbag.setConstraints(button, c);
-            box.add(button);
+            goPanel.add(button);
+            
+            interString = i18n.get(DrawingToolLayer.class, "Cancel", "Cancel");
+            button = new JButton(interString);
+            interString = i18n.get(DrawingToolLayer.class, "Cancel.TOOLTIP", I18n.TOOLTIP, "Do nothing and dismiss window.");
+            button.setToolTipText(interString);
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    hidePalette();
+                }
+            });
+            goPanel.add(button);
+
         }
 
         return box;
@@ -439,7 +469,6 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         if (jcb != null) {
             ((javax.swing.Action) jcb.getSelectedItem()).actionPerformed(null);
         }
-        hidePalette();
     }
 
     /**
@@ -507,15 +536,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                         "Change preferences");
             }
         });
-        actions.add(new AbstractAction() {
-
-            public void actionPerformed(ActionEvent e) {}
-
-            public String toString() {
-                return i18n.get(DrawingToolLayer.class, "NOTHING", "Nothing");
-            }
-        });
-
+  
         return actions;
     }
 
