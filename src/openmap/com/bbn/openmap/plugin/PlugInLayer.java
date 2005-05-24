@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.15 $
-// $Date: 2004/10/14 18:06:20 $
+// $Revision: 1.16 $
+// $Date: 2005/05/24 01:06:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,6 +50,15 @@ import com.bbn.openmap.util.PropUtils;
  * of the PlugIn, and when graphical objects are to be rendered, it
  * tells the plugin's OMGraphicsList to render the object using a
  * Graphics that the Layer provides.
+ * <pre>
+ * 
+ * #Properties for basic PlugInLayer:
+ * pluginlayer.class=com.bbn.openmap.plugin.PlugInLayer
+ * pluginlayer.prettyName=PRETTY NAME
+ * pluginlayer.plugin=classname of plugin
+ * #.... followed by plugin properties with the "pluginlayer" prefix...
+ * 
+ * </pre>
  */
 public class PlugInLayer extends OMGraphicHandlerLayer {
 
