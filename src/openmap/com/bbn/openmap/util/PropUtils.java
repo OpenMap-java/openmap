@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v
 // $
 // $RCSfile: PropUtils.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/10/14 18:06:30 $
+// $Revision: 1.11 $
+// $Date: 2005/05/24 02:16:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,12 +37,11 @@ import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
 import javax.swing.JFileChooser;
 
-/* OpenMap */
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.util.ColorFactory;
-import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.PropertyConsumer;
 
 public class PropUtils {
 
@@ -268,8 +267,7 @@ public class PropUtils {
      * beginning of your defined propery names to get a valid property
      * based on what the prefix is.
      */
-    public static String getScopedPropertyPrefix(
-                                                 com.bbn.openmap.PropertyConsumer pc) {
+    public static String getScopedPropertyPrefix(PropertyConsumer pc) {
         return getScopedPropertyPrefix(pc.getPropertyPrefix());
     }
 
@@ -430,19 +428,7 @@ public class PropUtils {
         Object ret = null;
         String objectName = p.getProperty(propName);
         if (objectName != null) {
-            try {
-                ret = Class.forName(objectName).newInstance();// Works
-                                                              // for
-                                                              // applet!
-                //ret = java.beans.Beans.instantiate(null,
-                // objectName);
-            } catch (java.lang.InstantiationException e) {
-                ret = null;
-            } catch (java.lang.IllegalAccessException e) {
-                ret = null;
-            } catch (java.lang.ClassNotFoundException e) {
-                ret = null;
-            }
+            ret = ComponentFactory.create(objectName);
         }
         return ret;
     }
@@ -493,7 +479,6 @@ public class PropUtils {
      *        exist, or if the value isn't a numerical value.
      * @return double value associated with the property.
      */
-
     public static double doubleFromProperties(Properties p, String propName,
                                               double defaultValue) {
         double ret = defaultValue;
@@ -520,7 +505,6 @@ public class PropUtils {
      *        exist, or if the value isn't a numerical value.
      * @return long value associated with the property.
      */
-
     public static long longFromProperties(Properties p, String propName,
                                           long defaultValue) {
         long ret = defaultValue;
@@ -553,7 +537,6 @@ public class PropUtils {
     public static Color parseColorFromProperties(Properties p, String propName,
                                                  String dfault)
             throws NumberFormatException {
-
         return ColorFactory.parseColorFromProperties(p, propName, dfault, false);
     }
 
@@ -593,8 +576,22 @@ public class PropUtils {
      */
     public static Color parseColor(String colorString)
             throws NumberFormatException {
-
         return ColorFactory.parseColor(colorString, false);
+    }
+
+    /**
+     * Returns a string representing a color, properly buffered for
+     * zeros for different alpha values.
+     * 
+     * @param color
+     * @return string for color with alpha values.
+     */
+    public static String getProperty(Color color) {
+        StringBuffer hexstring = new StringBuffer(Integer.toHexString(color.getRGB()));
+        while (hexstring.length() < 8) {
+            hexstring.insert(0, '0');
+        }
+        return hexstring.toString();
     }
 
     /**

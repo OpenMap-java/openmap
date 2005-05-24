@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ComponentFactory.java,v $
 // $RCSfile: ComponentFactory.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/02/11 22:42:01 $
+// $Revision: 1.13 $
+// $Date: 2005/05/24 02:16:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,6 +53,35 @@ public class ComponentFactory {
     public static final String ClassNameProperty = ".class";
 
     /**
+     * The singleton instance of the ComponentFactory.
+     */
+    private static ComponentFactory singleton;
+
+    protected ComponentFactory() {}
+
+    /**
+     * Method call to retrieve the singleton instance of the
+     * ComponentFactory.
+     * 
+     * @return ComponentFactory.
+     */
+    protected static ComponentFactory getInstance() {
+        if (singleton == null) {
+            singleton = new ComponentFactory();
+        }
+        return singleton;
+    }
+
+    /**
+     * Set the singleton instance of the ComponentFactory.
+     * 
+     * @param cf
+     */
+    protected static void setInstance(ComponentFactory cf) {
+        singleton = cf;
+    }
+
+    /**
      * Given a Vector of marker name Strings, and a Properties object,
      * look in the Properties object for the markerName.class property
      * to get a class name to create each object. Then, if the new
@@ -65,7 +94,7 @@ public class ComponentFactory {
      * @return Vector containing the new Objects.
      */
     public static Vector create(Vector markerNames, Properties properties) {
-        return create(markerNames, null, properties, null, false);
+        return getInstance()._create(markerNames, null, properties, null, false);
     }
 
     /**
@@ -84,7 +113,11 @@ public class ComponentFactory {
      */
     public static Vector create(Vector markerNames, String prefix,
                                 Properties properties) {
-        return create(markerNames, prefix, properties, null, false);
+        return getInstance()._create(markerNames,
+                prefix,
+                properties,
+                null,
+                false);
     }
 
     /**
@@ -107,7 +140,11 @@ public class ComponentFactory {
     public static Vector create(Vector markerNames, String prefix,
                                 Properties properties,
                                 ProgressSupport progressSupport) {
-        return create(markerNames, prefix, properties, progressSupport, false);
+        return getInstance()._create(markerNames,
+                prefix,
+                properties,
+                progressSupport,
+                false);
     }
 
     /**
@@ -127,7 +164,11 @@ public class ComponentFactory {
      */
     public static Vector create(Vector markerNames, Properties properties,
                                 ProgressSupport progressSupport) {
-        return create(markerNames, null, properties, progressSupport, false);
+        return getInstance()._create(markerNames,
+                null,
+                properties,
+                progressSupport,
+                false);
     }
 
     /**
@@ -158,7 +199,7 @@ public class ComponentFactory {
     public static Vector create(Vector markerNames, Properties properties,
                                 ProgressSupport progressSupport,
                                 boolean matchInOutVectorSize) {
-        return create(markerNames,
+        return getInstance()._create(markerNames,
                 null,
                 properties,
                 progressSupport,
@@ -196,6 +237,45 @@ public class ComponentFactory {
                                 Properties properties,
                                 ProgressSupport progressSupport,
                                 boolean matchInOutVectorSize) {
+
+        return getInstance()._create(markerNames,
+                prefix,
+                properties,
+                progressSupport,
+                matchInOutVectorSize);
+    }
+
+    /**
+     * Given a Vector of marker name Strings, and a Properties object,
+     * look in the Properties object for the markerName.class property
+     * to get a class name to create each object. Then, if the new
+     * objects are PropertyConsumers, use the marker name as a
+     * property prefix to get properties for that object out of the
+     * Properties.
+     * 
+     * @param markerNames String of space separated marker names.
+     * @param prefix The prefix that should be prepended to the marker
+     *        names.
+     * @param properties Properties object containing the details.
+     * @param progressSupport ProgressSupport object to provide
+     *        progress updates to. It's OK if this is null to not have
+     *        progress events sent.
+     * @param matchInOutVectorSize if true, then if there is any
+     *        trouble creating an object, it's marker name will be
+     *        placed in the returned vector instead of a component. If
+     *        false, only valid objects will be returned in the
+     *        vector.
+     * @return Vector containing the new Objects. If a component could
+     *         not be created, the markerName is returned in its
+     *         place, so you can figure out which one couldn't be
+     *         created. In any case, the size of the returned vector
+     *         is the same size as the markerNames vector, so you can
+     *         figure out which markerNames go with which objects.
+     */
+    protected Vector _create(Vector markerNames, String prefix,
+                             Properties properties,
+                             ProgressSupport progressSupport,
+                             boolean matchInOutVectorSize) {
 
         int size = markerNames.size();
         Vector vector = new Vector(size);
@@ -365,7 +445,32 @@ public class ComponentFactory {
     public static Object create(String className, Object[] constructorArgs,
                                 Class[] argClasses, String prefix,
                                 Properties properties) {
+        return getInstance()._create(className,
+                constructorArgs,
+                argClasses,
+                prefix,
+                properties);
+    }
 
+    /**
+     * Create a single object. If you want it to complain about
+     * classes it can't find, then set the 'basic' debug flag.
+     * 
+     * @param className Class name to instantiate.
+     * @param constructorArgs an Object array of arguments to use in
+     *        the constructor of the component.
+     * @param argClasses an array of classes to use to scope which
+     *        constructor to use. If null, then an array will be built
+     *        from the constructorArgs.
+     * @param prefix Properties prefix to use by the object to scope
+     *        its properties.
+     * @param properties Properties to use to initalize the object, if
+     *        the object is a PropertyConsumer.
+     * @return object if all goes well, null if anything bad happens.
+     */
+    protected Object _create(String className, Object[] constructorArgs,
+                             Class[] argClasses, String prefix,
+                             Properties properties) {
         String errorMessage = null;
         boolean DEBUG = false;
         try {
@@ -422,9 +527,11 @@ public class ComponentFactory {
                     Debug.output(" - got object");
 
             } catch (NoSuchMethodException nsmei) {
-                // The argClasses may have subclasses of what the
-                // desired
-                // constructor needs, so we need to check explicitly.
+                /*
+                 * The argClasses may have subclasses of what the
+                 * desired constructor needs, so we need to check
+                 * explicitly.
+                 */
                 obj = createWithSubclassConstructorArgs(newObjClass,
                         argClasses,
                         constructorArgs);
@@ -440,11 +547,13 @@ public class ComponentFactory {
                 ((PropertyConsumer) obj).setProperties(prefix, properties);
 
                 if (Debug.debugging(BasicI18n.DEBUG_CREATE)) {
-                    // If we're interested in creating resource bundle
-                    // files, we should cause these PropertyConsumers
-                    // to ask for their property info, since this is
-                    // where most of the elective GUI strings are
-                    // queried and found.
+                    /*
+                     * If we're interested in creating resource bundle
+                     * files, we should cause these PropertyConsumers
+                     * to ask for their property info, since this is
+                     * where most of the elective GUI strings are
+                     * queried and found.
+                     */
                     ((PropertyConsumer) obj).getPropertyInfo(null);
                 }
 
@@ -485,10 +594,22 @@ public class ComponentFactory {
         return null;
     }
 
-    protected static Object createWithSubclassConstructorArgs(
-                                                              Class newObjClass,
-                                                              Class[] argClasses,
-                                                              Object[] constructorArgs)
+    /**
+     * Method to create Object with arguments.
+     * 
+     * @param newObjClass the Class to be created.
+     * @param argClasses an array of Classes describing the arguments.
+     * @param constructorArgs an array of Objects for arguments.
+     * @return
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     */
+    protected Object createWithSubclassConstructorArgs(Class newObjClass,
+                                                       Class[] argClasses,
+                                                       Object[] constructorArgs)
             throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
