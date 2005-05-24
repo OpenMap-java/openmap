@@ -1,3 +1,61 @@
+2005-05-24  Don Dietrick  <dietrick@dhcp89-077-058.bbn.com>
+
+	* Refactored the FilePropertyEditor so it includes an uneditable
+	text area, and added callback methods for settings that all the
+	other file-related PropertyEditors use now.  Justified the
+	ColorPropertyEditor and choice PropertyEditor widgets to the left
+	instead of centered.
+
+2005-05-23  Don Dietrick  <dietrick@dhcp89-077-058.bbn.com>
+
+	* ComponentFactory updated to contain a singleton instance, and
+	the static methods have been updated to use that singleton
+	instance.  This makes it possible to change the behavior of the
+	ComponentFactory by setting a subclass as the singleton.  The
+	PropUtils.createObjectFromProperties(...) method now calls the
+	ComponentFactory.create(...) method.
+
+	* Fixed the BasicGeometry attribute handling where the first
+	attribute being set was being stomped on and deleted when
+	subsequent attributes were added.
+
+	* Updated DrawingAttributes so it doesn't create a
+	BasicStrokeEditor when the stroke is being set, for those times
+	when a display is not available.  Property output for colors now
+	in hex strings.  OMGraphic uses static BASIC_STROKE object for
+	default strokes, instead of creating new object.
+
+	* Updated VPF FeatureDrawingAttributes to set String constants
+	when display type is set, added null checks when GUI is reset.
+	Fixed problem for initial settings for attribute display via
+	properties file.
+
+	* Added null check in ESRIPolygonRecor/ESRIPointRectord for
+	DrawingAttributes being set, made SpatialIndex a Closable object.
+	Added the connectParts() call to OMAreaList for handing holes, but
+	that code section still isn't active by default due to problems
+	with OMAreaList and very large objects.
+
+	* Updated MIFLayer to be able to read files specified as
+	resources, files or URLs.
+
+	* Updated Location object to have more specific
+	shouldRenderName(...) and shouldRenderLocation(...) methods, these
+	methods make it easier for subclasses to determine/control when
+	those parts should be drawn.
+	
+	* Updated the DrawingToolLayer to have an option-filled GUI that
+	allows the saving and loading of a serialized OMGraphicList
+	to/from a file, as well as saving the properties for the layer.
+	Shape layer creation is also an option.
+
+	* Updated the layer ordering in the Crew and SimpleMap2 examples.
+
+	* Updated DTEDFrame and RpfFrame to call close on its file handle.
+
+	* Updated InformationDelegator to use the Environment Desktop for
+	internal frames.
+
 2005-02-15  Donald Dietrick  <dietrick@dhcp89-077-080.bbn.com>
 
 	* added the cntry02 world boundary shape files to the package and
