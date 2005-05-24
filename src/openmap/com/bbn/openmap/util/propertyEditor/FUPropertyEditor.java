@@ -14,15 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/FUPropertyEditor.java,v $
 // $RCSfile: FUPropertyEditor.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:31 $
+// $Revision: 1.4 $
+// $Date: 2005/05/24 17:55:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.util.propertyEditor;
 
-import javax.swing.JFileChooser;
 
 /**
  * FUPropertyEditor - File and URL PropertyEditor. This is a
@@ -31,24 +30,18 @@ import javax.swing.JFileChooser;
  * chooser, and anything chosen *replaces* the contents in the text
  * field.
  */
-public class FUPropertyEditor extends FDUPropertyEditor {
+public class FUPropertyEditor extends FilePropertyEditor {
 
-    /** Create MultiDirectoryPropertyEditor. */
-    public FUPropertyEditor() {
-        super();
-    }
+    /** Create FUPropertyEditor. */
+    public FUPropertyEditor() {}
+
 
     /**
-     * Returns a JFileChooser that will choose a directory. The
-     * MultiSelectionEnabled doesn't work yet, so we have to have a
-     * workaround.
+     * Internal callback method that can be overridden by subclasses.
      * 
-     * @return JFileChooser
+     * @return true for FUPropertyEditor.
      */
-    public JFileChooser getFileChooser() {
-        JFileChooser chooser = new JFileChooser(getLastLocation());
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        chooser.setMultiSelectionEnabled(true);
-        return chooser;
+    public boolean isTextFieldEditable() {
+        return true;
     }
 }

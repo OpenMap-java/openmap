@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/MultiDirFilePropertyEditor.java,v $
 // $RCSfile: MultiDirFilePropertyEditor.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:31 $
+// $Revision: 1.3 $
+// $Date: 2005/05/24 17:55:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,21 +34,16 @@ import javax.swing.JFileChooser;
 public class MultiDirFilePropertyEditor extends MultiDirectoryPropertyEditor {
 
     /** Create MultiDirFilePropertyEditor. */
-    public MultiDirFilePropertyEditor() {
-        super();
-    }
+    public MultiDirFilePropertyEditor() {}
 
     /**
-     * Returns a JFileChooser that will choose a directory. The
-     * MultiSelectionEnabled doesn't work yet, so we have to have a
-     * workaround.
+     * Internal callback method that can be overridden by subclasses.
      * 
-     * @return JFileChooser
+     * @return JFileChooser.DIRECTORIES_ONLY for
+     *         MultiDirFilePropertyEditor.
      */
-    public JFileChooser getFileChooser() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setMultiSelectionEnabled(true);
-        return chooser;
+    public int getFileSelectionMode() {
+        return JFileChooser.FILES_AND_DIRECTORIES;
     }
 
 }

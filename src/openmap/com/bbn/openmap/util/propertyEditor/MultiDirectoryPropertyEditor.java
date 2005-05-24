@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/MultiDirectoryPropertyEditor.java,v $
 // $RCSfile: MultiDirectoryPropertyEditor.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:31 $
+// $Revision: 1.8 $
+// $Date: 2005/05/24 17:55:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,34 +23,58 @@
 package com.bbn.openmap.util.propertyEditor;
 
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.io.File;
 
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 /**
- * A PropertyEditor that brings up a JFileChooser panel to several
- * files and directories. You can enter information in the text field,
- * and pressing the add button will bring up a file chooser. Anything
- * chosen in the file chooser will be appended to what is currently in
- * the text field.
+ * A PropertyEditor that brings up a JFileChooser panel that allows
+ * the user to choose one or more directories. The user can also enter
+ * information in the text field, and pressing the add button will
+ * bring up a file chooser. Anything chosen in the file chooser will
+ * be appended to what is currently in the text field.
  */
 public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
 
-    /** The GUI component of this editor. */
-    protected JTextField textField = new JTextField(15);
     protected char pathSeparator;
 
     /** Create MultiDirectoryPropertyEditor. */
     public MultiDirectoryPropertyEditor() {
-        button = new JButton("Add");
         setPathSeparator(';');
     }
 
+    public String getButtonTitle() {
+        return "Add";
+    }
+
+    /**
+     * Internal callback method that can be overridden by subclasses.
+     * 
+     * @return true for MultiDirectoryPropertyEditor.
+     */
+    public boolean isTextFieldEditable() {
+        return true;
+    }
+
+    /**
+     * Internal callback method that can be overridden by subclasses.
+     * 
+     * @return JFileChooser.DIRECTORIES_ONLY for MultiDirectoryPropertyEditor.
+     */
+    public int getFileSelectionMode() {
+        return JFileChooser.DIRECTORIES_ONLY;
+    }
+
+    /**
+     * Internal callback method that can be overridden by subclasses.
+     * 
+     * @return true for MultiDirectoryPropertyEditor.
+     */
+    public boolean isMultiSelectEnabled() {
+        return true;
+    }
+    
     /**
      * Set the character to use when appending paths.
      */
@@ -66,51 +90,15 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
         JFileChooser chooser = getFileChooser();
         int returnVal = chooser.showOpenDialog((Component) null);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            String newFilename = chooser.getSelectedFile().getAbsolutePath();
-            newFilename = cleanUpName(newFilename);
-            append(newFilename);
+
+            File[] choices = chooser.getSelectedFiles();
+            for (int i = 0; i < choices.length; i++) {
+                String newFilename = choices[i].getAbsolutePath();
+                newFilename = cleanUpName(newFilename);
+                append(newFilename);
+            }
             firePropertyChange();
         }
-    }
-
-    /**
-     * Returns a JButton that will bring up a JFileChooser dialog.
-     * 
-     * @return JButton button
-     */
-    public Component getCustomEditor() {
-        button.addActionListener(this);
-
-        JPanel jp = new JPanel();
-        GridBagLayout gridbag = new GridBagLayout();
-        GridBagConstraints c = new GridBagConstraints();
-        jp.setLayout(gridbag);
-
-        c.weightx = 1f;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(textField, c);
-        jp.add(textField);
-
-        c.weightx = 0;
-        c.anchor = GridBagConstraints.EAST;
-        c.fill = GridBagConstraints.NONE;
-        gridbag.setConstraints(button, c);
-        jp.add(button);
-        return jp;
-    }
-
-    /**
-     * Returns a JFileChooser that will choose a directory. The
-     * MultiSelectionEnabled doesn't work yet, so we have to have a
-     * workaround.
-     * 
-     * @return JFileChooser
-     */
-    public JFileChooser getFileChooser() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        chooser.setMultiSelectionEnabled(true);
-        return chooser;
     }
 
     /**
@@ -124,17 +112,5 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
         } else {
             setValue(currentPath.concat(";" + addPath));
         }
-    }
-
-    /** Sets String in JTextField. */
-    public void setValue(Object string) {
-        if (!(string instanceof String))
-            return;
-        textField.setText((String) string);
-    }
-
-    /** Returns String from JTextfield. */
-    public String getAsText() {
-        return textField.getText();
     }
 }

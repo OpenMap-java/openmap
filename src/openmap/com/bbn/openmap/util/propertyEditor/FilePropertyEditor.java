@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/FilePropertyEditor.java,v $
 // $RCSfile: FilePropertyEditor.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:31 $
+// $Revision: 1.7 $
+// $Date: 2005/05/24 17:55:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,12 +23,16 @@
 package com.bbn.openmap.util.propertyEditor;
 
 import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyEditorSupport;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * A PropertyEditor that brings up a JFileChooser panel to select a
@@ -40,10 +44,48 @@ public class FilePropertyEditor extends PropertyEditorSupport implements
 
     /** The Component returned by getCustomEditor(). */
     protected JButton button;
+    protected JTextField textField = new JTextField(15);
 
     /** Create FilePropertyEditor. */
     public FilePropertyEditor() {
-        button = new JButton("Select file...");
+        button = new JButton(getButtonTitle());
+        textField.setEditable(isTextFieldEditable());
+    }
+
+    /**
+     * Internal callback method that can be overridden by subclasses.
+     * 
+     * @return "Set" for FilePropertyEditor.
+     */
+    public String getButtonTitle() {
+        return "Set";
+    }
+
+    /**
+     * Internal callback method that can be overridden by subclasses.
+     * 
+     * @return false for FilePropertyEditor.
+     */
+    public boolean isTextFieldEditable() {
+        return false;
+    }
+
+    /**
+     * Internal callback method that can be overridden by subclasses.
+     * 
+     * @return JFileChooser.FILES_ONLY for FilePropertyEditor.
+     */
+    public int getFileSelectionMode() {
+        return JFileChooser.FILES_ONLY;
+    }
+
+    /**
+     * Internal callback method that can be overridden by subclasses.
+     * 
+     * @return false for FilePropertyEditor.
+     */
+    public boolean isMultiSelectEnabled() {
+        return false;
     }
 
     //
@@ -65,7 +107,7 @@ public class FilePropertyEditor extends PropertyEditorSupport implements
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             String newFilename = chooser.getSelectedFile().getAbsolutePath();
             newFilename = cleanUpName(newFilename);
-            button.setText(newFilename);
+            textField.setText(newFilename);
             firePropertyChange();
         }
     }
@@ -76,33 +118,53 @@ public class FilePropertyEditor extends PropertyEditorSupport implements
     protected String cleanUpName(String name) {
         // replace all back slashes with forward slashes to permit
         // safe writing and reading from PrintStreams
-        return name.replace('\\', '/');
+        return name.replace('\\', '/').trim();
     }
 
     /**
-     * Returns a JButton that will bring up a JFileChooser dialog.
+     * Returns an uneditable text area with a JButton that will bring
+     * up a JFileChooser dialog.
      * 
      * @return JButton button
      */
     public Component getCustomEditor() {
         button.addActionListener(this);
-        return button;
+
+        JPanel jp = new JPanel();
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        jp.setLayout(gridbag);
+
+        c.weightx = 1f;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        gridbag.setConstraints(textField, c);
+        jp.add(textField);
+
+        c.weightx = 0;
+        c.anchor = GridBagConstraints.EAST;
+        c.fill = GridBagConstraints.NONE;
+        gridbag.setConstraints(button, c);
+        jp.add(button);
+        return jp;
     }
 
     public JFileChooser getFileChooser() {
-        return new JFileChooser(getLastLocation());
+        JFileChooser chooser = new JFileChooser(getLastLocation());
+        chooser.setFileSelectionMode(getFileSelectionMode());
+        chooser.setMultiSelectionEnabled(isMultiSelectEnabled());
+        return chooser;
     }
 
     /** Implement PropertyEditor interface. */
     public void setValue(Object someObj) {
         if (someObj instanceof String) {
-            button.setText((String) someObj);
+            textField.setText((String) someObj);
         }
     }
 
     /** Implement PropertyEditor interface. */
     public String getAsText() {
-        return button.getText();
+        return textField.getText();
     }
 
     public String getLastLocation() {

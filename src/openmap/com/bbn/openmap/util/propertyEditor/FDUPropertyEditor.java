@@ -14,18 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/FDUPropertyEditor.java,v $
 // $RCSfile: FDUPropertyEditor.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:31 $
+// $Revision: 1.7 $
+// $Date: 2005/05/24 17:55:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.util.propertyEditor;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 /**
@@ -35,35 +31,27 @@ import javax.swing.JFileChooser;
  * brings up a file chooser, and anything chosen *replaces* the
  * contents in the text field.
  */
-public class FDUPropertyEditor extends MultiDirectoryPropertyEditor {
+public class FDUPropertyEditor extends FilePropertyEditor {
 
-    /** Create MultiDirectoryPropertyEditor. */
-    public FDUPropertyEditor() {
-        button = new JButton("Set");
-    }
+    /** Create FDUDirectoryPropertyEditor. */
+    public FDUPropertyEditor() {}
 
-    public void actionPerformed(ActionEvent e) {
-        JFileChooser chooser = getFileChooser();
-        int returnVal = chooser.showOpenDialog((Component) null);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            String newFilename = chooser.getSelectedFile().getAbsolutePath();
-            newFilename = cleanUpName(newFilename);
-            setValue(newFilename);
-            firePropertyChange();
-        }
+    /**
+     * Internal callback method that can be overridden by subclasses.
+     * 
+     * @return true for FDUPropertyEditor.
+     */
+    public boolean isTextFieldEditable() {
+        return true;
     }
 
     /**
-     * Returns a JFileChooser that will choose a directory. The
-     * MultiSelectionEnabled doesn't work yet, so we have to have a
-     * workaround.
+     * Internal callback method that can be overridden by subclasses.
      * 
-     * @return JFileChooser
+     * @return JFileChooser.FILES_AND_DIRECTORIES for FDUPropertyEditor.
      */
-    public JFileChooser getFileChooser() {
-        JFileChooser chooser = new JFileChooser(getLastLocation());
-        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        chooser.setMultiSelectionEnabled(true);
-        return chooser;
+    public int getFileSelectionMode() {
+        return JFileChooser.FILES_AND_DIRECTORIES;
     }
+
 }

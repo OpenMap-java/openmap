@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/TrueFalsePropertyEditor.java,v $
 // $RCSfile: TrueFalsePropertyEditor.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:31 $
+// $Revision: 1.5 $
+// $Date: 2005/05/24 17:55:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -80,6 +80,7 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport implements
 
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.WEST;
         panel.setLayout(gridbag);
 
         if (!getUseAltCommandStrings()) {
@@ -95,6 +96,8 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport implements
         setSelected(option);
 
         gridbag.setConstraints(trueButton, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
         gridbag.setConstraints(falseButton, c);
         panel.add(trueButton);
         panel.add(falseButton);

@@ -254,7 +254,7 @@ public class Inspector implements ActionListener {
 
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(2, 20, 2, 20);
+        c.insets = new Insets(2, 10, 2, 10);
         propertyPanel.setLayout(gridbag);
 
         int i = 0;

@@ -14,15 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/DirectoryPropertyEditor.java,v $
 // $RCSfile: DirectoryPropertyEditor.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:31 $
+// $Revision: 1.4 $
+// $Date: 2005/05/24 17:55:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.util.propertyEditor;
 
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 /**
@@ -32,19 +31,19 @@ import javax.swing.JFileChooser;
  */
 public class DirectoryPropertyEditor extends FilePropertyEditor {
 
-    /** Create DirectoryPropertyEditor. */
-    public DirectoryPropertyEditor() {
-        button = new JButton("Select directory...");
-    }
+    /**
+     *  
+     */
+    public DirectoryPropertyEditor() {}
 
     /**
-     * Returns a JFileChooser that will choose a directory.
+     * Internal callback method that can be overridden by subclasses.
      * 
-     * @return JFileChooser
+     * @return JFileChooser.DIRECTORIES_ONLY for
+     *         DirectoryPropertyEditor.
      */
-    public JFileChooser getFileChooser() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        return chooser;
+    public int getFileSelectionMode() {
+        return JFileChooser.DIRECTORIES_ONLY;
     }
+
 }

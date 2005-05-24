@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/ColorPropertyEditor.java,v $
 // $RCSfile: ColorPropertyEditor.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:31 $
+// $Revision: 1.7 $
+// $Date: 2005/05/24 17:55:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -103,6 +103,8 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
         JPanel panel = new JPanel();
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.WEST;
+        c.weightx = 1;
         panel.setLayout(gridbag);
         gridbag.setConstraints(button, c);
         panel.add(button);
@@ -157,7 +159,7 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
             try {
                 color = ColorFactory.parseColor((String) someObj, true);
             } catch (NumberFormatException nfe) {
-                Debug.output("ColorPropertyEditor.setValue: " + someObj + "\n"
+                Debug.output("ColorPropertyEditor.setValue problem with color: " + someObj + "\n"
                         + nfe.getMessage());
             }
 
