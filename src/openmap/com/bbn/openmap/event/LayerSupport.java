@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/LayerSupport.java,v $
 // $RCSfile: LayerSupport.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/01/10 16:07:56 $
+// $Revision: 1.6 $
+// $Date: 2005/05/25 19:48:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,6 +35,8 @@ import com.bbn.openmap.util.Debug;
  * work to it.
  */
 public class LayerSupport extends ListenerSupport {
+
+    protected boolean synchronous = false;
 
     /**
      * Construct a LayerSupport.
@@ -109,19 +111,26 @@ public class LayerSupport extends ListenerSupport {
      * @param layers
      */
     public synchronized void pushLayerEvent(int layerEventType, Layer[] layers) {
-        events.add(new SetLayerRunnable(layerEventType, layers));
 
-        if (t == null || !t.isAlive()) {
-            SetLayerRunnable runnable = popLayerEvent();
-            if (runnable != null) {
-                t = new Thread(runnable);
-                t.start();
+        if (synchronous) {
+            fireLayer(layerEventType, layers);
+        } else {
+
+            events.add(new SetLayerRunnable(layerEventType, layers));
+
+            if (t == null || !t.isAlive()) {
+                SetLayerRunnable runnable = popLayerEvent();
+                if (runnable != null) {
+                    t = new Thread(runnable);
+                    t.start();
+                }
             }
         }
     }
 
     /**
-     * Return the first event on the stack, may be null if there is nothing to do.
+     * Return the first event on the stack, may be null if there is
+     * nothing to do.
      */
     public synchronized SetLayerRunnable popLayerEvent() {
         try {
@@ -162,9 +171,17 @@ public class LayerSupport extends ListenerSupport {
         }
 
         public void doIt(int eventType, Layer[] layers) {
-            Debug.message("layerhandler", "LayerSupport: firing LayerEvent on LayerListeners");
+            Debug.message("layerhandler",
+                    "LayerSupport: firing LayerEvent on LayerListeners");
             fireLayer(eventType, layers);
         }
     };
 
+    public boolean isSynchronous() {
+        return synchronous;
+    }
+
+    public void setSynchronous(boolean synchronous) {
+        this.synchronous = synchronous;
+    }
 }

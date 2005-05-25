@@ -14,13 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LayerHandler.java,v $
 // $RCSfile: LayerHandler.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/02/02 12:56:56 $
+// $Revision: 1.13 $
+// $Date: 2005/05/25 19:48:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap;
+
+import java.beans.PropertyVetoException;
+import java.beans.beancontext.BeanContext;
+import java.io.Serializable;
+import java.util.Properties;
+import java.util.Vector;
 
 import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.event.LayerListener;
@@ -30,14 +36,6 @@ import com.bbn.openmap.plugin.PlugInLayer;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-
-import java.beans.PropertyVetoException;
-import java.beans.beancontext.BeanContext;
-import java.beans.beancontext.BeanContextMembershipEvent;
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Vector;
 
 /**
  * The LayerHandler is a component that keeps track of all Layers for
@@ -73,19 +71,39 @@ import java.util.Vector;
  *  
  *   
  *    
- *                openmap.layers=marker1 marker2 (etc)
- *                marker1.class=com.bbn.openmap.layer.GraticuleLayer
- *                marker1.prettyName=Graticule Layer
- *                # false is default
- *                marker1.addToBeanContext=false
- *               
- *                marker2.class=com.bbn.openmap.layer.shape.ShapeLayer
- *                marker2.prettyName=Political Boundaries
- *                marker2.shapeFile=pathToShapeFile
- *                marker2.spatialIndex=pathToSpatialIndexFile
- *                marker2.lineColor=FFFFFFFF
- *                marker2.fillColor=FFFF0000
- *   
+ *     
+ *      
+ *       
+ *        
+ *         
+ *          
+ *           
+ *            
+ *             
+ *              
+ *                          openmap.layers=marker1 marker2 (etc)
+ *                          marker1.class=com.bbn.openmap.layer.GraticuleLayer
+ *                          marker1.prettyName=Graticule Layer
+ *                          # false is default
+ *                          marker1.addToBeanContext=false
+ *                         
+ *                          marker2.class=com.bbn.openmap.layer.shape.ShapeLayer
+ *                          marker2.prettyName=Political Boundaries
+ *                          marker2.shapeFile=pathToShapeFile
+ *                          marker2.spatialIndex=pathToSpatialIndexFile
+ *                          marker2.lineColor=FFFFFFFF
+ *                          marker2.fillColor=FFFF0000
+ *             
+ *              
+ *             
+ *            
+ *           
+ *          
+ *         
+ *        
+ *       
+ *      
+ *     
  *    
  *   
  *  
@@ -121,8 +139,21 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      */
     public static final String startUpLayersProperty = "startUpLayers";
     /**
+     * Flag to set synchronous threading on the LayerHandler, telling
+     * it to react to layer order changes and layer visibility
+     * requests within the calling thread. By default, this action is
+     * true. Setting it to false may eliminate pauses in GUI reactions
+     * by offloading work done by layers being added to the MapBean,
+     * but there have been reports that the asynchronous nature of the
+     * threading queue may be causing an unexpected state in layer
+     * order and/or availability under certain intense layer
+     * management conditions (created by automated processes, for
+     * example).
+     */
+    public static final String SynchronousThreadingProperty = "synchronousThreading";
+    /**
      * The object holding on to all LayerListeners interested in the
-     * layer arrangement and availability.  Not expected to be null.
+     * layer arrangement and availability. Not expected to be null.
      */
     protected transient LayerSupport listeners = new LayerSupport(this);
     /**
@@ -136,7 +167,6 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      */
     protected PropertyHandler propertyHandler;
 
- 
     /**
      * If you use this constructor, the LayerHandler expects that the
      * layers will be created and added later, either by addLayer() or
@@ -202,6 +232,11 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      */
     public void init(String prefix, Properties props) {
         init(getLayers(prefix, props));
+
+        getListeners().setSynchronous(PropUtils.booleanFromProperties(props,
+                PropUtils.getScopedPropertyPrefix(prefix)
+                        + SynchronousThreadingProperty,
+                getListeners().isSynchronous()));
     }
 
     /**
@@ -462,7 +497,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
         // off any other threads waiting to get started.
         Layer[] layersCopy = new Layer[allLayers.length];
         System.arraycopy(allLayers, 0, layersCopy, 0, allLayers.length);
-        
+
         getListeners().pushLayerEvent(LayerEvent.ALL, layersCopy);
         getListeners().pushLayerEvent(LayerEvent.REPLACE, getMapLayers());
     }
@@ -895,7 +930,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
         }
         return false;
     }
-    
+
     /**
      * Called from childrenAdded(), when a new component is added to
      * the BeanContext, and from setBeanContext() when the
@@ -911,30 +946,27 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      * 
      * @param it Iterator with objects to look through.
      */
-    public void findAndInit(Iterator it) {
-        while (it.hasNext()) {
-            Object someObj = it.next();
-            if (someObj instanceof com.bbn.openmap.event.LayerListener) {
-                Debug.message("layerhandler",
-                        "LayerHandler found a LayerListener.");
-                addLayerListener((LayerListener) someObj);
-            }
+    public void findAndInit(Object someObj) {
 
-            if (someObj instanceof Layer) {
-                if (Debug.debugging("layerhandler")) {
-                    Debug.output("LayerHandler found a Layer |"
-                            + ((Layer) someObj).getName() + "|");
-                }
-                if (!hasLayer((Layer) someObj)) {
-                    addLayer((Layer) someObj, 0);
-                }
-            }
+        if (someObj instanceof com.bbn.openmap.event.LayerListener) {
+            Debug.message("layerhandler", "LayerHandler found a LayerListener.");
+            addLayerListener((LayerListener) someObj);
+        }
 
-            if (someObj instanceof PropertyHandler) {
-                // Used to notify the PropertyHandler of used property
-                // prefix names.
-                setPropertyHandler((PropertyHandler) someObj);
+        if (someObj instanceof Layer) {
+            if (Debug.debugging("layerhandler")) {
+                Debug.output("LayerHandler found a Layer |"
+                        + ((Layer) someObj).getName() + "|");
             }
+            if (!hasLayer((Layer) someObj)) {
+                addLayer((Layer) someObj, 0);
+            }
+        }
+
+        if (someObj instanceof PropertyHandler) {
+            // Used to notify the PropertyHandler of used property
+            // prefix names.
+            setPropertyHandler((PropertyHandler) someObj);
         }
     }
 
@@ -947,24 +979,21 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      * @param bcme an event containing an Iterator containing removed
      *        objects.
      */
-    public void childrenRemoved(BeanContextMembershipEvent bcme) {
-        Iterator it = bcme.iterator();
-        while (it.hasNext()) {
-            Object someObj = it.next();
-            if (someObj instanceof com.bbn.openmap.event.LayerListener) {
-                Debug.message("layerhandler",
-                        "LayerListener object is being removed");
-                removeLayerListener((LayerListener) someObj);
-            }
+    public void findAndUndo(Object someObj) {
 
-            if (someObj instanceof Layer) {
-                removeLayer((Layer) someObj);
-            }
+        if (someObj instanceof com.bbn.openmap.event.LayerListener) {
+            Debug.message("layerhandler",
+                    "LayerListener object is being removed");
+            removeLayerListener((LayerListener) someObj);
+        }
 
-            if (someObj instanceof PropertyHandler
-                    && someObj == getPropertyHandler()) {
-                setPropertyHandler(null);
-            }
+        if (someObj instanceof Layer) {
+            removeLayer((Layer) someObj);
+        }
+
+        if (someObj instanceof PropertyHandler
+                && someObj == getPropertyHandler()) {
+            setPropertyHandler(null);
         }
     }
 
@@ -1014,5 +1043,42 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
             // LayerListener.
             findAndInit(in_bc.iterator());
         }
+    }
+
+    public void setSynchronousThreading(boolean s) {
+        getListeners().setSynchronous(s);
+    }
+
+    public boolean isSynchronousThreading() {
+        return getListeners().isSynchronous();
+    }
+
+    public Properties getProperties(Properties props) {
+        props = super.getProperties(props);
+
+        props.put(PropUtils.getScopedPropertyPrefix(this)
+                + SynchronousThreadingProperty,
+                Boolean.toString(getListeners().isSynchronous()));
+
+        return props;
+    }
+
+    public Properties getPropertyInfo(Properties props) {
+        props = super.getPropertyInfo(props);
+
+        String internString = i18n.get(LayerHandler.class,
+                SynchronousThreadingProperty,
+                I18n.TOOLTIP,
+                "Launch new threads to do work.");
+        props.put(SynchronousThreadingProperty, internString);
+        internString = i18n.get(LayerHandler.class,
+                SynchronousThreadingProperty,
+                "Synchronous Threading");
+        props.put(SynchronousThreadingProperty + LabelEditorProperty,
+                internString);
+        props.put(SynchronousThreadingProperty + EditorProperty,
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
+        return props;
     }
 }
