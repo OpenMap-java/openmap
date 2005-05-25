@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/XBMFile.java,v $
 // $RCSfile: XBMFile.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:51 $
+// $Revision: 1.5 $
+// $Date: 2005/05/25 04:56:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -101,9 +101,9 @@ public class XBMFile {
             in.read(fileStuff);
             fileStuffString = new String(fileStuff);
             int startWidth = fileStuffString.indexOf("width") + 6;
-            int endWidth = fileStuffString.indexOf("\n", startWidth);
+            int endWidth = fileStuffString.indexOf(System.getProperty("line.separator"), startWidth);
             int startHeight = fileStuffString.indexOf("height") + 7;
-            int endHeight = fileStuffString.indexOf("\n", startHeight);
+            int endHeight = fileStuffString.indexOf(System.getProperty("line.separator"), startHeight);
             int startBits = fileStuffString.indexOf("0x");
             int endBits = fileStuffString.indexOf("};");
 
