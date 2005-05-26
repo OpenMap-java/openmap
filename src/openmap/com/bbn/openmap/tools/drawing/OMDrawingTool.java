@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.28 $
-// $Date: 2005/02/15 17:29:10 $
+// $Revision: 1.29 $
+// $Date: 2005/05/26 19:14:48 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -493,7 +493,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
             }
             return null;
         }
-        
+
         if (getCurrentEditable() != null) {
             if (DEBUG) {
                 Debug.output("OMDrawingTool.edit(): can't edit "
@@ -1104,7 +1104,6 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
         }
 
         revalidate();
-
         return this;
     }
 
@@ -1553,6 +1552,12 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
         resetGUIWhenDeactivated = true;
         getGUI(); // resets the gui.
 
+        /*
+         * This repaint needs to be here because sometimes the GUI
+         * doesn't update on the revalidate being called in the GUI.
+         */
+        repaint();
+        
         // Should only be visible if the tool isn't being used as a
         // tool, which means that it's being held by something else,
         // or if it is a tool and the SHOW_GUI flag is set.
