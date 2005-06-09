@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServer.java,v $
 // $RCSfile: ImageServer.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.8 $
+// $Date: 2005/06/09 23:30:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,20 +63,22 @@ import com.bbn.openmap.util.*;
  * <code><pre>
  * 
  *  
- *   # If the ImageServer is created and given a prefix (in this example,
- *   # 'imageServer') the properties file should contain the properties:
- *   imageServer.layers=&lt;layer1 layer2 ...&gt;
- *   layer1.className=&lt;classname&gt;
- *   layer1.prettyName=&lt;pretty name of layer&gt;
- *   # Add other attributes as required by layer1...
- *   layer2.className=&lt;classname&gt;
- *   layer2.prettyName=&lt;pretty name of layer&gt;
- *   # Add other attributes as required by layer2...
- *   # First formatter listed is default.
- *   imageServer.formatters=&lt;formatter1 formatter2 ...&gt;
- *   formatter1.class=&lt;classname of formatter 1&gt;
- *   # Add other formatter1 properties
- *   formatter2.class=&lt;classname of formatter 2&gt;
+ *   
+ *    # If the ImageServer is created and given a prefix (in this example,
+ *    # 'imageServer') the properties file should contain the properties:
+ *    imageServer.layers=&lt;layer1 layer2 ...&gt;
+ *    layer1.className=&lt;classname&gt;
+ *    layer1.prettyName=&lt;pretty name of layer&gt;
+ *    # Add other attributes as required by layer1...
+ *    layer2.className=&lt;classname&gt;
+ *    layer2.prettyName=&lt;pretty name of layer&gt;
+ *    # Add other attributes as required by layer2...
+ *    # First formatter listed is default.
+ *    imageServer.formatters=&lt;formatter1 formatter2 ...&gt;
+ *    formatter1.class=&lt;classname of formatter 1&gt;
+ *    # Add other formatter1 properties
+ *    formatter2.class=&lt;classname of formatter 2&gt;
+ *    
  *   
  *  
  * </pre></code>
@@ -382,20 +384,25 @@ public class ImageServer implements
                     + " for image...");
         }
 
-        for (int i = layers.length - 1; i >= 0; i--) {
+        if (layers != null) {
+            for (int i = layers.length - 1; i >= 0; i--) {
+                if ((includedLayerMask & (0x00000001 << i)) != 0) {
+                    if (Debug.debugging("imageserver")) {
+                        Debug.output("ImageServer: image request adding layer graphics from : "
+                                + layers[i].getName());
+                    }
 
-            if ((includedLayerMask & (0x00000001 << i)) != 0) {
-                if (Debug.debugging("imageserver")) {
-                    Debug.output("ImageServer: image request adding layer graphics from : "
-                            + layers[i].getName());
+                    layers[i].renderDataForProjection(proj, graphics);
+                } else {
+                    if (Debug.debugging("imageserver")) {
+                        Debug.output("ImageServer: skipping layer graphics from : "
+                                + layers[i].getName());
+                    }
                 }
-
-                layers[i].renderDataForProjection(proj, graphics);
-            } else {
-                if (Debug.debugging("imageserver")) {
-                    Debug.output("ImageServer: skipping layer graphics from : "
-                            + layers[i].getName());
-                }
+            }
+        } else {
+            if (Debug.debugging("imageserver")) {
+                Debug.output("ImageServer: no layers available");
             }
         }
 
@@ -558,10 +565,10 @@ public class ImageServer implements
      * @return layer[]
      */
     protected synchronized Layer[] getMaskedLayers(int layerMask) {
-        if (layerMask == 0xFFFFFFFF) {
+        if (layerMask == 0xFFFFFFFF || layers == null) {
             //  They all want to be there
             Debug.message("imageserver",
-                    "ImageServer: image request adding all layers.");
+                    (layers != null?"ImageServer: image request adding all layers.":"ImageServer.getMaskedLayers() null layers"));
             return layers;
         } else {
             //  Use the vector as a growable array, and add the layers
@@ -930,8 +937,10 @@ public class ImageServer implements
      * 
      * <pre>
      * 
-     *  java com.bbn.openmap.image.ImageServer -properties (path
-     *   to properties file) -file (path to output image) 
+     *  
+     *   java com.bbn.openmap.image.ImageServer -properties (path
+     *    to properties file) -file (path to output image) 
+     *   
      *  
      * </pre>
      * 
@@ -998,4 +1007,3 @@ public class ImageServer implements
         System.exit(0);
     }
 }
-
