@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BoundingCircle.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/06/23 22:57:40 $
+//$Revision: 1.2 $
+//$Date: 2005/07/05 23:08:29 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -55,7 +55,7 @@ public interface BoundingCircle {
             init(center, radius);
         }
 
-        public Impl(GeoSpace region) {
+        public Impl(Region region) {
             init(region.getBoundary());
         }
 

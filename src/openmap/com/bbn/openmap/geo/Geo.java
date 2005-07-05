@@ -32,7 +32,7 @@ import java.util.Enumeration;
  * @author Ken Anderson
  * @author Sachin Date
  * @author Ben Lubin
- * @version $Revision: 1.7 $ on $Date: 2005/06/23 22:57:40 $
+ * @version $Revision: 1.8 $ on $Date: 2005/07/05 23:08:29 $
  */
 public class Geo {
 
@@ -496,14 +496,6 @@ public class Geo {
      * 
      * <pre>
      * 
-     *  
-     *   
-     *    
-     *     
-     *      
-     *       
-     *        
-     *         
      *              y = [x*this + (1-x)*q]*c
      *              where c = 1/y.dot(y) is a factor for normalizing y.
      *              y.dot(r) = 0
@@ -513,15 +505,7 @@ public class Geo {
      *              x*this.dot(r) + (1-x)*q.dot(r) = 0
      *              x*a + (1-x)*b = 0
      *              x = -b/(a - b)
-     *              
-     *         
-     *        
-     *       
-     *      
-     *     
-     *    
-     *   
-     *  
+     *           
      * </pre>
      * 
      * We assume that this and q are less than 180 degrees appart.

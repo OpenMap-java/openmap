@@ -19,7 +19,7 @@ package com.bbn.openmap.geo;
  * @author mthome@bbn.com
  */
 
-public interface Path extends GExtent {
+public interface Path extends GeoExtent {
     Path.SegmentIterator segmentIterator();
 
     Path.PointIterator pointIterator();
@@ -41,7 +41,7 @@ public interface Path extends GExtent {
          * 
          * @return the next GSegment
          */
-        GSegment nextSegment();
+        GeoSegment nextSegment();
     }
 
     interface PointIterator extends java.util.Iterator {
@@ -61,7 +61,7 @@ public interface Path extends GExtent {
          * 
          * @return the next GPoint
          */
-        GPoint nextPoint();
+        GeoPoint nextPoint();
     }
 
 }

@@ -16,8 +16,13 @@ package com.bbn.openmap.geo;
 /**
  * An arbitrary space described in terms of Geo objects.
  */
-public interface GeoSpace {
+public interface Region {
 
+    /**
+     * @return RoundingCircle encompassing all points in the boundary.
+     */
+    BoundingCircle getBoundingCircle();
+    
     /**
      * return an array of Geo objects that contain the space. This is
      * a hack for now, as we really want a better mechanism to
@@ -26,5 +31,5 @@ public interface GeoSpace {
     Geo[] getBoundary();
 
     /** Does the segment s come within epsilon (in radians) of us? */
-    boolean isSegmentNear(GSegment s, double epsilon);
+    boolean isSegmentNear(GeoSegment s, double epsilon);
 }

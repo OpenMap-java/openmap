@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: LatLonPath.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/06/23 22:57:40 $
+//$Revision: 1.2 $
+//$Date: 2005/07/05 23:08:29 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -67,7 +67,7 @@ public class LatLonPath implements Path {
         return new PointIt();
     }
 
-    protected class SegIt implements Path.SegmentIterator, GSegment {
+    protected class SegIt implements Path.SegmentIterator, GeoSegment {
         int i = -1;
         Geo[] seg = new Geo[2];
 
@@ -83,7 +83,7 @@ public class LatLonPath implements Path {
             return nextSegment();
         }
 
-        public GSegment nextSegment() {
+        public GeoSegment nextSegment() {
             i++;
             seg[0] = seg[1];
             seg[1] = pts[i + 1];
@@ -127,7 +127,7 @@ public class LatLonPath implements Path {
         }
     }
 
-    protected class PointIt implements Path.PointIterator, GPoint {
+    protected class PointIt implements Path.PointIterator, GeoPoint {
         int i = -1;
         Geo[] seg = new Geo[2];
 
@@ -143,7 +143,7 @@ public class LatLonPath implements Path {
             return nextPoint();
         }
 
-        public GPoint nextPoint() {
+        public GeoPoint nextPoint() {
             i++;
             return this;
         }

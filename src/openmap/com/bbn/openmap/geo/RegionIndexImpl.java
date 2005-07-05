@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: RegionIndexImpl.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/06/23 22:57:40 $
+//$Revision: 1.2 $
+//$Date: 2005/07/05 23:08:29 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -71,14 +71,21 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
     protected final List discarded = new ArrayList();
 
     /**
-     * Method to call to add BoundingCircle object to Collection and
-     * organize it for later retrieval.
+     * Method to call to add Region object with BoundingCircle to
+     * Collection and organize it for later retrieval.
      * 
-     * @param bc BoundingCircle object
+     * @param region Region to index
      * @return true if object added, false if it's been discarded.
      */
-    public boolean addBoundingCircle(BoundingCircle bc) {
+    public boolean addRegion(Region region) {
+        boolean ret = false;
         try {
+
+            BoundingCircle bc = region.getBoundingCircle();
+            if (bc == null) {
+                discarded.add(region);
+                return false;
+            }
 
             Geo center = bc.getCenter();
             double clon = center.getLongitude();
@@ -86,17 +93,16 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
             double radd = Geo.degrees(bc.getRadius());
 
             if ((clat == 90.0 && clon == -180.0) || radd >= 90.0) {
-                discarded.add(bc);
-                return false;
+                discarded.add(region);
             } else {
-                all.add(bc); // add to the everything list
+                all.add(region); // add to the everything list
 
                 // we need to project the radius away from the
                 // center at the latitude, NOT at the equator!
                 double latfactor = Geo.npdAtLat(clat);
                 if (latfactor == 0) {
-                    polar.add(bc);
-                    return true;
+                    polar.add(region);
+                    ret = true;
                 } else {
                     double xd = nmMargin / latfactor; // 50 nm
                     /*
@@ -104,8 +110,8 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
                      * latitude
                      */
                     if (xd >= 45) {
-                        polar.add(bc);
-                        return true;
+                        polar.add(region);
+                        ret = true;
                     } else {
                         int lon1 = (int) Math.floor((180 + clon - (xd + radd))
                                 * NBUCKETS / 360.0);
@@ -122,15 +128,15 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
                                 b = new ArrayList(5);
                                 buckets[x] = b;
                             }
-                            b.add(bc);
-                            return true;
+                            b.add(region);
+                            ret = true;
                         }
                     }
                 }
             }
         } catch (Exception e) {
         }
-        return false;
+        return ret;
     }
 
     private Iterator lookup(float left, float right) {
@@ -164,11 +170,11 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
     }
 
     /**
-     * @param segment to check against Collection's BoundingCircles.
-     * @return Iterator of BoundingCircles that pertain to segment.
+     * @param segment to check against Collection's BoundingCircles
+     *        for Regions.
+     * @return Iterator of Regions that pertain to segment.
      */
-    private Iterator segmentMatches(GSegment segment) {
-        //return complete.iterator();
+    private Iterator segmentMatches(GeoSegment segment) {
         Geo[] pts = segment.getSeg();
         float left = (float) pts[0].getLongitude();
         float right = left;
@@ -183,20 +189,20 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
             left = x;
         if (x > right)
             right = x;
-
+        
         return lookup(left, right);
     }
 
     /**
      * @param path A Path to check against Collection's
-     *        BoundingCircles.
-     * @return Iterator of BoundingCircles that pertain to path.
+     *        BoundingCircles for Regions.
+     * @return Iterator of Regions that pertain to path.
      */
     private Iterator pathMatches(Path path) {
         Set results = new HashSet();
         Path.SegmentIterator pit = path.segmentIterator();
         while (pit.hasNext()) {
-            GSegment seg = pit.nextSegment();
+            GeoSegment seg = pit.nextSegment();
             for (Iterator it = segmentMatches(seg); it.hasNext();) {
                 results.add(it.next());
             }
@@ -205,14 +211,26 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
     }
 
     /**
+     * @param p a Geo to check for intersections against
+     *        Collection's BoundingCircles for Regions.
+     * @return Iterator of Regions that pertain to point.
+     */
+    public Iterator iterator(Geo p) {
+        float lon = (float) p.getLongitude();
+        return lookup(lon, lon);
+    }
+
+    /**
      * @return an Iterator over BoundingCircle objects in the
      *         Collection where the GExtent may be related to them.
      */
-    public Iterator iterator(GExtent o) {
-        if (o instanceof GSegment) {
-            return segmentMatches((GSegment) o);
+    public Iterator iterator(GeoExtent o) {
+        if (o instanceof GeoSegment) {
+            return segmentMatches((GeoSegment) o);
         } else if (o instanceof Path) {
             return pathMatches((Path) o);
+        } else if (o instanceof GeoPoint) {
+            return iterator(((GeoPoint)o).getPoint());
         } else {
             return Collections.EMPTY_LIST.iterator();
         }
@@ -226,7 +244,7 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
     }
 
     /**
-     * @return number of entries in Collection.
+     * @return number of all entries in Collection.
      */
     public int size() {
         return all.size();

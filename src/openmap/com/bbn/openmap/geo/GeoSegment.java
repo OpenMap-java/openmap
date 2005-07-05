@@ -19,7 +19,7 @@ package com.bbn.openmap.geo;
  * @author mthome@bbn.com
  */
 
-public interface GSegment extends GExtent {
+public interface GeoSegment extends GeoExtent {
     /**
      * @return the current segment as a two-element array of Geo The
      *         first point is the "current point" and the second is

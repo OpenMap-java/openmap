@@ -28,6 +28,13 @@ public interface RegionIndex extends java.util.Collection {
      * report on the maximum horizontalRange supported by this index.
      */
     double indexHorizontalRange();
+    
+    /**
+     * Add a region to the index.
+     * @param region
+     * @returns true if Region successfully added, false if not.
+     */
+    boolean addRegion(Region region);
 
     /**
      * return an iterator listing a subset of the whole collection
@@ -40,5 +47,18 @@ public interface RegionIndex extends java.util.Collection {
      * around the actual segment to accommodate buffer zones around
      * the segment.
      */
-    Iterator iterator(GExtent extent);
+    Iterator iterator(GeoExtent extent);
+    
+    /**
+     * return an iterator listing a subset of the whole collection
+     * that is a superset of the actual matches. A valid (but
+     * inefficient) implementation would return an iterator over the
+     * whole collection.
+     * 
+     * Implementation should match anything that is likely to match -
+     * this will generally include, for instance, additional space
+     * around the actual segment to accommodate buffer zones around
+     * the segment.
+     */
+    Iterator iterator(Geo p);
 }

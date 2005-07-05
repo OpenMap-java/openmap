@@ -18,7 +18,7 @@ package com.bbn.openmap.geo;
  * 
  * @author mthome@bbn.com
  */
-public interface GPoint {
+public interface GeoPoint {
     /** return the current point as a Geo object */
     Geo getPoint();
 
