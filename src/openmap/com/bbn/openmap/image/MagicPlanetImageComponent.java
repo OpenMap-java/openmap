@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: MagicPlanetImageComponent.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/06/09 23:27:44 $
+//$Revision: 1.3 $
+//$Date: 2005/07/11 21:52:29 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -67,6 +67,7 @@ import com.bbn.openmap.util.PropUtils;
  * displaying images stored in a particular directory, either
  * displaying the latest (lexically) image or cycling through a set of
  * images in the directory to create a movie on the globe.
+ * <p>
  * 
  * The class has options that change the format of the images created,
  * where the images are stored, how often they are created, and the
@@ -75,6 +76,64 @@ import com.bbn.openmap.util.PropUtils;
  * it to work on the globe. The projection used for the images is
  * always the OpenMap LLXY projection, that's what the MagicPlanet
  * expects.
+ * <p>
+ * 
+ * The properties for this component are:
+ * 
+ * <pre>
+ *           outputDirectory=path_to_directory_for_writing_images
+ *           
+ *           # Milliseconds between image creation, 60000 is the default, representing 1 minute
+ *           updateInterval=60000
+ *           
+ *           # The scale of the image, it determines the size of the image.  This 
+ *           # may be important for certain layers to show particular details.  
+ *           # The default is 60000000F, which represents an image approximately 2kx1k
+ *           scale=60000000F
+ *           
+ *           # Property to tell the component to create a new image and reset the timer if the 
+ *           # layers on the MapBean change.  True by default.
+ *           autoUpdate=true
+ *           
+ *           # Property to tell the component to remove old images, default is true
+ *           cleanup=true
+ *           
+ *           # Property to set the wait time before deleting old images, represented 
+ *           # in milliseconds. The default is 86400000, representing one day. 
+ *           cleanupInterval=86400000
+ *           
+ *           # Properties for setting the pixel width and height of the images. These properties 
+ *           # provide a more precise way to control the image size, and tell the component to 
+ *           # scale the image created with the scale setting set above.  The closer you get 
+ *           # the scale to provide you the image size you want, the higher quality image 
+ *           # you will have.  The default values for these properties are -1, which tells
+ *           # the component to not change the size of the image resulting from the scale setting.
+ *           width=-1 
+ *           height=-1
+ *           
+ *           # Property to set the name of the last image written in a file, so other programs 
+ *           # can more easily figure out what it was.  The property should reflect the path 
+ *           # to the file to be written, which will contain 'MagicPlanet.lastFile=YYYYMMDDhhmmss.ext',
+ *           # where YYYYMMDDhhmmss are year, month, day, hour, minute and second the file was created, 
+ *           # and ext is the extension for the image type.  This information, combined with the directory 
+ *           # information stored above, will let you know where the file is.  If this property is not set, 
+ *           # no text file will be written.
+ *           lastImageFile=path_to_text_file 
+ *           
+ *           # Property that describes a system command that should be run each time an image is created.
+ *           # The property should contain exactly what would be typed into a command line for a script 
+ *           # to be run, in the same environment this component is being run in.  There are special arguments
+ *           # that can be inserted into this property string that the component will use to replace the current
+ *           # image file name:
+ *           #
+ *           # %FILEPATH% gets replaced with the complete path of the new image file.
+ *           # %FILENAME% gets replaced with the file name if the image file.
+ *           # %FILENAME_WITHOUT_EXTENSION% gets replaced with the file name without a '.' or anything after that.
+ *           #
+ *           # The default is no value being set for the script, which means nothing will happen.  Here is an example for
+ *           # creating a .dds file from the current image, using nvidiea's nvdxt script.
+ *           postProcessingScript=nvdxt.exe -file %FILEPATH% -all -swap -dxt1c -output %FILENAME_WITHOUT_EXTENSION%.dds
+ * </pre>
  * 
  * @author dietrick
  */
@@ -89,6 +148,13 @@ public class MagicPlanetImageComponent extends OMComponent implements
     public final static String CleanupIntervalProperty = "cleanupInterval";
     public final static String HeightProperty = "height";
     public final static String WidthProperty = "width";
+    public final static String LastImageFileProperty = "lastImageFile";
+    public final static String PostProcessingScriptProperty = "postProcessingScript";
+
+    public final static String LAST_IMAGE_FILE_KEY = "MagicPlanet.lastFile";
+    public final static String REPLACE_FILEPATH_MARKER = "%FILEPATH%";
+    public final static String REPLACE_FILENAME_MARKER = "%FILENAME%";
+    public final static String REPLACE_FILENAME_WOEXT_MARKER = "%FILENAME_WITHOUT_EXTENSION%";
 
     protected boolean DEBUG = false;
 
@@ -112,6 +178,8 @@ public class MagicPlanetImageComponent extends OMComponent implements
     protected int cleanupInterval = 86400000; // one day
     protected int height = -1;// unscaled, go with scale
     protected int width = -1; // unscaled, go with scale
+    protected String lastImageFile = null;
+    protected String postProcessingScript = null;
 
     protected Timer timer;
 
@@ -312,12 +380,18 @@ public class MagicPlanetImageComponent extends OMComponent implements
         setCleanupInterval(PropUtils.intFromProperties(props, prefix
                 + CleanupIntervalProperty, getCleanupInterval()));
 
+        setLastImageFile(props.getProperty(prefix + LastImageFileProperty,
+                getLastImageFile()));
+
+        setPostProcessingScript(props.getProperty(prefix
+                + PostProcessingScriptProperty, getPostProcessingScript()));
     }
 
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
         String prefix = PropUtils.getScopedPropertyPrefix(this);
-        props.put(prefix + OutputDirectoryProperty, PropUtils.unnull(getOutputDirectoryString()));
+        props.put(prefix + OutputDirectoryProperty,
+                PropUtils.unnull(getOutputDirectoryString()));
         props.put(prefix + AutoUpdateProperty, Boolean.toString(isAutoUpdate()));
         props.put(prefix + HeightProperty, Integer.toString(getHeight()));
         props.put(prefix + WidthProperty, Integer.toString(getWidth()));
@@ -327,6 +401,11 @@ public class MagicPlanetImageComponent extends OMComponent implements
         props.put(prefix + CleanupProperty, Boolean.toString(isCleanup()));
         props.put(prefix + CleanupIntervalProperty,
                 Integer.toString(getCleanupInterval()));
+        props.put(prefix + LastImageFileProperty,
+                PropUtils.unnull(getLastImageFile()));
+        props.put(prefix + PostProcessingScriptProperty,
+                PropUtils.unnull(getPostProcessingScript()));
+
         return props;
     }
 
@@ -335,7 +414,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
 
         String interString;
 
-        //-------
+        // -------
         interString = i18n.get(MagicPlanetImageComponent.class,
                 OutputDirectoryProperty,
                 I18n.TOOLTIP,
@@ -347,7 +426,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
                 OutputDirectoryProperty,
                 "Directory Path");
         props.put(OutputDirectoryProperty + LabelEditorProperty, interString);
-        //-------
+        // -------
         interString = i18n.get(MagicPlanetImageComponent.class,
                 AutoUpdateProperty,
                 I18n.TOOLTIP,
@@ -359,7 +438,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
                 AutoUpdateProperty,
                 "Auto-Update");
         props.put(AutoUpdateProperty + LabelEditorProperty, interString);
-        //-------
+        // -------
         interString = i18n.get(MagicPlanetImageComponent.class,
                 HeightProperty,
                 I18n.TOOLTIP,
@@ -369,7 +448,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
                 HeightProperty,
                 "Image Height");
         props.put(HeightProperty + LabelEditorProperty, interString);
-        //-------
+        // -------
         interString = i18n.get(MagicPlanetImageComponent.class,
                 WidthProperty,
                 I18n.TOOLTIP,
@@ -379,7 +458,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
                 WidthProperty,
                 "Image Width");
         props.put(WidthProperty + LabelEditorProperty, interString);
-        //-------
+        // -------
         interString = i18n.get(MagicPlanetImageComponent.class,
                 ScaleProperty,
                 I18n.TOOLTIP,
@@ -389,7 +468,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
                 ScaleProperty,
                 "Projection Scale");
         props.put(ScaleProperty + LabelEditorProperty, interString);
-        //-------
+        // -------
         interString = i18n.get(MagicPlanetImageComponent.class,
                 UpdateIntervalProperty,
                 I18n.TOOLTIP,
@@ -399,7 +478,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
                 UpdateIntervalProperty,
                 "Update Interval");
         props.put(UpdateIntervalProperty + LabelEditorProperty, interString);
-        //-------
+        // -------
         interString = i18n.get(MagicPlanetImageComponent.class,
                 CleanupProperty,
                 I18n.TOOLTIP,
@@ -411,7 +490,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
                 CleanupProperty,
                 "Delete Old Images");
         props.put(CleanupProperty + LabelEditorProperty, interString);
-        //-------
+        // -------
         interString = i18n.get(MagicPlanetImageComponent.class,
                 CleanupIntervalProperty,
                 I18n.TOOLTIP,
@@ -421,12 +500,34 @@ public class MagicPlanetImageComponent extends OMComponent implements
                 CleanupIntervalProperty,
                 "Cleanup Interval");
         props.put(CleanupIntervalProperty + LabelEditorProperty, interString);
+        // -------
+        interString = i18n.get(MagicPlanetImageComponent.class,
+                LastImageFileProperty,
+                I18n.TOOLTIP,
+                "Path to file containing name of last image file created.");
+        props.put(LastImageFileProperty, interString);
+        interString = i18n.get(MagicPlanetImageComponent.class,
+                LastImageFileProperty,
+                "Last Image Name");
+        props.put(LastImageFileProperty + LabelEditorProperty, interString);
+        // -------
+        interString = i18n.get(MagicPlanetImageComponent.class,
+                PostProcessingScriptProperty,
+                I18n.TOOLTIP,
+                "Script to run on the image file after it's been created.");
+        props.put(LastImageFileProperty, interString);
+        interString = i18n.get(MagicPlanetImageComponent.class,
+                PostProcessingScriptProperty,
+                "Post Processing Script");
+        props.put(PostProcessingScriptProperty + LabelEditorProperty,
+                interString);
 
         props.put(initPropertiesProperty, OutputDirectoryProperty + " "
                 + ScaleProperty + " " + UpdateIntervalProperty + " "
                 + AutoUpdateProperty + " " + CleanupProperty + " "
                 + CleanupIntervalProperty + " " + HeightProperty + " "
-                + WidthProperty);
+                + WidthProperty + LastImageFileProperty
+                + PostProcessingScriptProperty);
 
         return props;
     }
@@ -467,10 +568,11 @@ public class MagicPlanetImageComponent extends OMComponent implements
         }
 
         String fileName = getFileNameForTime(System.currentTimeMillis());
+        String filePath = getOutputDirectoryString() + "/" + fileName;
 
         if (DEBUG) {
             Debug.output("MagicPlanetImageComponent: creating image: "
-                    + fileName);
+                    + filePath);
         }
 
         Layer[] layers = getLayers();
@@ -479,12 +581,17 @@ public class MagicPlanetImageComponent extends OMComponent implements
         }
 
         ImageServer is = new ImageServer(layers, new SunJPEGFormatter());
-        is.setBackground(getBackground());
+        try {
+            is.setBackground(getBackground());
+        } catch (NoSuchMethodError nsme) {
+            // Older version of OpenMap, going to just use what the
+            // MapBean has
+        }
         byte[] imageBytes = is.createImage(getProj(), getWidth(), getHeight());
 
         FileOutputStream fos;
         try {
-            fos = new FileOutputStream(fileName);
+            fos = new FileOutputStream(filePath);
             fos.write(imageBytes);
             fos.flush();
             fos.close();
@@ -497,6 +604,68 @@ public class MagicPlanetImageComponent extends OMComponent implements
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        mapBean.setProjection(mapBean.getProjection());
+
+        String launchCmd = generatePostProcessingCmd(postProcessingScript,
+                filePath);
+
+        if (launchCmd != null) {
+            try {
+
+                if (DEBUG)
+                    Debug.output("MP post processing: " + launchCmd);
+                Runtime.getRuntime().exec(launchCmd);
+            } catch (IOException e) {
+                System.err.println("MP post processing:  " + e);
+            }
+        }
+
+        if (lastImageFile != null) {
+            try {
+                File lastImageFileFile = new File(lastImageFile);
+                fos = new FileOutputStream(lastImageFileFile);
+                fos.write(new String(LAST_IMAGE_FILE_KEY + "=" + fileName).getBytes());
+                fos.flush();
+                fos.close();
+
+                if (DEBUG) {
+                    Debug.output("  MP: done writing file noting last image file name: "
+                            + lastImageFile);
+                }
+            } catch (IOException ioe) {
+                Debug.error("MP: error writing file to note last image file name:\n"
+                        + ioe.getMessage());
+                ioe.printStackTrace();
+                lastImageFile = null;
+            }
+        }
+    }
+
+    protected String generatePostProcessingCmd(String script, String filePath) {
+        String ret = null;
+
+        if (script != null && filePath != null) {
+            // nvdxt.exe -file Image.jpg -all -swap -dxt1c -output
+            // Image.dds
+            // nvdxt.exe -file %FILENAME% -all -swap -dxt1c -output
+            // %FILENAME_WITHOUT_EXTENSION%.dds
+            if (DEBUG) {
+                Debug.output(" Replacing script: |" + script + "|" + filePath);
+            }
+            ret = script.replaceAll(REPLACE_FILEPATH_MARKER, filePath);
+            ret = ret.replaceAll(REPLACE_FILENAME_MARKER,
+                    filePath.substring(filePath.lastIndexOf('/') + 1));
+            ret = ret.replaceAll(REPLACE_FILENAME_WOEXT_MARKER,
+                    filePath.substring(filePath.lastIndexOf('/') + 1,
+                            filePath.lastIndexOf('.')));
+
+            if (DEBUG) {
+                Debug.output(" returning script: " + ret);
+            }
+        }
+
+        return ret;
     }
 
     /**
@@ -516,7 +685,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
                 + twoDigits.format(cal.get(Calendar.MINUTE))
                 + twoDigits.format(cal.get(Calendar.SECOND));
 
-        return getOutputDirectoryString() + "/" + tMarker + "."
+        return tMarker + "."
                 + getImageFormatter().getFormatLabel().toLowerCase();
     }
 
@@ -815,5 +984,45 @@ public class MagicPlanetImageComponent extends OMComponent implements
      */
     public void setWidth(int width) {
         this.width = width;
+    }
+
+    /**
+     * Get the location of a file that can be read to find out the
+     * name of the last image to be created. If null, that means no
+     * such file is being created.
+     * 
+     * @return the file name.
+     */
+    public String getLastImageFile() {
+        return lastImageFile;
+    }
+
+    /**
+     * Set the location of a file that can be read to find out the
+     * name of the last image to be created. If null, that means no
+     * such file is being created.
+     * 
+     * @param lastImageFile
+     */
+    public void setLastImageFile(String lastImageFile) {
+        this.lastImageFile = checkTrimAndNull(lastImageFile);
+    }
+
+    public String getPostProcessingScript() {
+        return postProcessingScript;
+    }
+
+    public void setPostProcessingScript(String postProcessingScript) {
+        this.postProcessingScript = checkTrimAndNull(postProcessingScript);
+    }
+
+    protected String checkTrimAndNull(String s) {
+        if (s != null) {
+            s = s.trim();
+            if (s.length() == 0) {
+                s = null;
+            }
+        }
+        return s;
     }
 }
