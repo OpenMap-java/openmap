@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: LatLonPath.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/07/05 23:08:29 $
+//$Revision: 1.3 $
+//$Date: 2005/07/18 22:18:08 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -34,16 +34,19 @@ public class LatLonPath implements Path {
 
     /**
      * Create a path of LatLon pairs.
+     * 
      * @param lls alternating lat/lon in decimal degrees.
      */
     public LatLonPath(float[] lls) {
         this(lls, true);
     }
-    
+
     /**
      * Create a path of LatLon pairs.
+     * 
      * @param lls alternating lat/lon values.
-     * @param isDegrees true if lat/lon are in degrees, false if in radians.
+     * @param isDegrees true if lat/lon are in degrees, false if in
+     *        radians.
      */
     public LatLonPath(float[] lls, boolean isDegrees) {
         int al = lls.length;
@@ -54,7 +57,17 @@ public class LatLonPath implements Path {
             p++;
         }
     }
-    
+
+    /**
+     * Create a path from Geos.
+     * 
+     * @param geos
+     */
+    public LatLonPath(Geo[] geos) {
+        pts = geos;
+        length = pts.length;
+    }
+
     public int length() {
         return length;
     }
@@ -65,6 +78,32 @@ public class LatLonPath implements Path {
 
     public Path.PointIterator pointIterator() {
         return new PointIt();
+    }
+
+    /**
+     * Callback for the SegIt to find out how the LatLonPath wants
+     * the segment IDed.
+     * 
+     * @param i The index of the segment in question.
+     * @return Object that IDs the segment, could be this path, too.
+     *         Depends on what the Intersection Algorithm wants to do
+     *         in consider().
+     */
+    protected Object getSegID(int i) {
+        return new Integer(i);
+    }
+
+    /**
+     * Callback for the PointIt to find out how the LatLonPath wants
+     * the points IDed.
+     * 
+     * @param i The index of the point in question.
+     * @return Object that IDs the point, could be this path, too.
+     *         Depends on what the Intersection Algorithm wants to do
+     *         in consider().
+     */
+    protected Object getPointID(int i) {
+        return new Integer(i);
     }
 
     protected class SegIt implements Path.SegmentIterator, GeoSegment {
@@ -123,7 +162,7 @@ public class LatLonPath implements Path {
          * Return Object ID for current segment.
          */
         public Object getSegId() {
-            return new Integer(i);
+            return LatLonPath.this.getSegID(i);
         }
     }
 
@@ -157,7 +196,7 @@ public class LatLonPath implements Path {
         }
 
         public Object getPointId() {
-            return new Integer(i);
+            return LatLonPath.this.getPointID(i);
         }
     }
 }

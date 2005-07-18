@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: RegionIndexImpl.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/07/05 23:08:29 $
+//$Revision: 1.3 $
+//$Date: 2005/07/18 22:18:08 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -139,7 +139,33 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
         return ret;
     }
 
-    private Iterator lookup(float left, float right) {
+    /**
+     * Called when you want everything in each bucket between the
+     * coordinates.
+     * 
+     * @param left left-most (west) bucket value.
+     * @param right right-most (east) bucket value.
+     * @return Iterator over regions in buckets that cover range
+     *         provided.
+     */
+    protected Iterator lookup(float left, float right) {
+        return lookup(left, right, null);
+    }
+
+    /**
+     * Called when you want to get the regions in the buckets, but you
+     * want to further filter on objects that can intersect based on
+     * the bounding circle provided.
+     * 
+     * @param left left-most (west) bucket value.
+     * @param right right-most (east) bucket value.
+     * @param bc Bounding circle to do another filter check, if null,
+     *        everything in a bucket will be returned.
+     * @return Iterator over regions in buckets that cover range
+     *         provided that intersect with the BoundingCircle (if one
+     *         is provided).
+     */
+    protected Iterator lookup(float left, float right, BoundingCircle bc) {
         Set s = new HashSet();
         int l = (int) Math.floor((left + 180) * NBUCKETS / 360.0f);
         int r = (int) Math.ceil((right + 180) * NBUCKETS / 360.0f);
@@ -153,11 +179,100 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
             if (x < 0)
                 x = x + NBUCKETS;
             List b = buckets[x];
-            if (b != null)
-                s.addAll(b);
+            if (b != null) {
+                if (bc == null) {
+                    s.addAll(b);
+                } else {
+                    for (Iterator it = b.iterator(); it.hasNext();) {
+                        Region region = (Region) it.next();
+                        if (bc.intersects(region.getBoundingCircle())) {
+                            s.add(region);
+                        }
+                    }
+                }
+            }
         }
         s.addAll(polar); // add all the polar regions, just in case
         return s.iterator();
+    }
+
+    /**
+     * Method to call to remove a region from the index.
+     * 
+     * @return true if the region was found and removed.
+     */
+    public boolean removeRegion(Region region) {
+        boolean ret = false;
+        try {
+
+            BoundingCircle bc = region.getBoundingCircle();
+            if (bc == null) {
+                discarded.add(region);
+                return false;
+            }
+
+            Geo center = bc.getCenter();
+            double clon = center.getLongitude();
+            double clat = center.getLatitude();
+            double radd = Geo.degrees(bc.getRadius());
+
+            if ((clat == 90.0 && clon == -180.0) || radd >= 90.0) {
+                discarded.remove(region);
+            } else {
+                all.remove(region); // add to the everything list
+
+                // we need to project the radius away from the
+                // center at the latitude, NOT at the equator!
+                double latfactor = Geo.npdAtLat(clat);
+                if (latfactor == 0) {
+                    polar.remove(region);
+                    ret = true;
+                } else {
+                    double xd = nmMargin / latfactor; // 50 nm
+                    /*
+                     * margin = xd "extra degrees" at the center's
+                     * latitude
+                     */
+                    if (xd >= 45) {
+                        polar.remove(region);
+                        ret = true;
+                    } else {
+                        int lon1 = (int) Math.floor((180 + clon - (xd + radd))
+                                * NBUCKETS / 360.0);
+                        int lon2 = (int) Math.ceil((180 + clon + (xd + radd))
+                                * NBUCKETS / 360.0);
+                        for (int i = lon1; i <= lon2; i++) {
+                            int x = i;
+                            if (x >= NBUCKETS)
+                                x = x - NBUCKETS;
+                            if (x < 0)
+                                x = x + NBUCKETS;
+                            List b = buckets[x];
+                            if (b == null) {
+                                b = new ArrayList(5);
+                                buckets[x] = b;
+                            }
+                            b.remove(region);
+                            ret = true;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+        return ret;
+    }
+
+    /**
+     * Method to call to clear out the index.
+     */
+    public void clearRegions() {
+        all.clear();
+        polar.clear();
+        discarded.clear();
+        for (int i = 0; i < buckets.length; i++) {
+            buckets[i].clear();
+        }
     }
 
     /**
@@ -174,7 +289,7 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
      *        for Regions.
      * @return Iterator of Regions that pertain to segment.
      */
-    private Iterator segmentMatches(GeoSegment segment) {
+    protected Iterator segmentMatches(GeoSegment segment) {
         Geo[] pts = segment.getSeg();
         float left = (float) pts[0].getLongitude();
         float right = left;
@@ -189,8 +304,8 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
             left = x;
         if (x > right)
             right = x;
-        
-        return lookup(left, right);
+
+        return lookup(left, right, new BoundingCircle.Impl(segment.getSeg()));
     }
 
     /**
@@ -198,7 +313,7 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
      *        BoundingCircles for Regions.
      * @return Iterator of Regions that pertain to path.
      */
-    private Iterator pathMatches(Path path) {
+    protected Iterator pathMatches(Path path) {
         Set results = new HashSet();
         Path.SegmentIterator pit = path.segmentIterator();
         while (pit.hasNext()) {
@@ -211,13 +326,14 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
     }
 
     /**
-     * @param p a Geo to check for intersections against
-     *        Collection's BoundingCircles for Regions.
+     * @param p a Geo to check for intersections against Collection's
+     *        BoundingCircles for Regions.
      * @return Iterator of Regions that pertain to point.
      */
-    public Iterator iterator(Geo p) {
-        float lon = (float) p.getLongitude();
-        return lookup(lon, lon);
+    public Iterator iterator(BoundingCircle bc) {
+        float lon = (float) bc.getCenter().getLongitude();
+        float radius = (float)Math.toDegrees(bc.getRadius());
+        return lookup(lon - radius, lon + radius, bc);
     }
 
     /**
@@ -230,7 +346,7 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
         } else if (o instanceof Path) {
             return pathMatches((Path) o);
         } else if (o instanceof GeoPoint) {
-            return iterator(((GeoPoint)o).getPoint());
+            return iterator(new BoundingCircle.Impl(((GeoPoint)o).getPoint(), 0));
         } else {
             return Collections.EMPTY_LIST.iterator();
         }

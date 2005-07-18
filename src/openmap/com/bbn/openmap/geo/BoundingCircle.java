@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BoundingCircle.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/07/05 23:08:29 $
+//$Revision: 1.3 $
+//$Date: 2005/07/18 22:18:08 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -42,6 +42,16 @@ public interface BoundingCircle {
      * @return the radius of the bounding circle in radians.
      */
     public double getRadius();
+    
+    /**
+     * @returns whether this bounding circle intersects with another.
+     */
+    public boolean intersects(BoundingCircle bc);
+    
+    /**
+     * @returns whether this bounding circle intersects with a Geo with a radius (radians) around it.
+     */
+    public boolean intersects(Geo g, double radius);
 
     /**
      * A simple implementation of BoundingCircle, storing the center
@@ -69,6 +79,10 @@ public interface BoundingCircle {
             }
             
             init(region);
+        }
+        
+        public Impl(Geo[] gs) {
+            init(gs);
         }
         
         /**
@@ -102,6 +116,14 @@ public interface BoundingCircle {
 
         public final double getRadius() {
             return radius;
+        }
+        
+        public boolean intersects(BoundingCircle bc) {
+            return intersects(bc.getCenter(), bc.getRadius());
+        }
+        
+        public boolean intersects(Geo g, double r) {
+            return this.center.distance(g) <= (getRadius() + r);
         }
     }
 }

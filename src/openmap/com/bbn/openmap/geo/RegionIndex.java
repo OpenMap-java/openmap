@@ -35,6 +35,18 @@ public interface RegionIndex extends java.util.Collection {
      * @returns true if Region successfully added, false if not.
      */
     boolean addRegion(Region region);
+    
+    /**
+     * Remove a region from the index.
+     * @param region
+     * @return true if the region was found and removed.
+     */
+    boolean removeRegion(Region region);
+    
+    /**
+     * Resets the index to an empty state. 
+     */
+    void clearRegions();
 
     /**
      * return an iterator listing a subset of the whole collection
@@ -57,8 +69,8 @@ public interface RegionIndex extends java.util.Collection {
      * 
      * Implementation should match anything that is likely to match -
      * this will generally include, for instance, additional space
-     * around the actual segment to accommodate buffer zones around
-     * the segment.
+     * around the actual point to accommodate buffer zones around
+     * the segment.  The BoundingCircle allows you to set the buffer.
      */
-    Iterator iterator(Geo p);
+    Iterator iterator(BoundingCircle bc);
 }

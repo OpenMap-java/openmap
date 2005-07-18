@@ -26,7 +26,7 @@ import java.util.List;
  * 
  * @author Sachin Date
  * @author Ken Anderson
- * @version $Revision: 1.7 $ on $Date: 2005/07/05 23:08:29 $
+ * @version $Revision: 1.8 $ on $Date: 2005/07/18 22:18:08 $
  */
 public class Intersection {
 
@@ -196,7 +196,7 @@ public class Intersection {
      */
     public static boolean isOnSegment(Geo a, Geo b, Geo i) {
 
-        //assert (< (Math.abs (.dot (.crossNormalize a b) i))
+        // assert (< (Math.abs (.dot (.crossNormalize a b) i))
         // 1.e-15))
 
         return ((a.distance(i) < a.distance(b)) && (b.distance(i) < b.distance(a)));
@@ -388,18 +388,18 @@ public class Intersection {
      * <code>poly<code> is an array of latitude/longitude points where:
      * <br>
      * <pre>
-     * 
-     *                                        
-     *                                         poly[0] = latitude 1
-     *                                         poly[1] = longitude 1
-     *                                         poly[2] = latitude 2
-     *                                         poly[3] = longitude 2
-     *                                         .
-     *                                         .
-     *                                         .
-     *                                         poly[n-1] = latitude 1
-     *                                         poly[n] = longitude 1
-     *                                         
+     *            
+     *                                                   
+     *                                                    poly[0] = latitude 1
+     *                                                    poly[1] = longitude 1
+     *                                                    poly[2] = latitude 2
+     *                                                    poly[3] = longitude 2
+     *                                                    .
+     *                                                    .
+     *                                                    .
+     *                                                    poly[n-1] = latitude 1
+     *                                                    poly[n] = longitude 1
+     *                                                    
      * </pre>
      *
      * @param x a geographic coordinate
@@ -586,73 +586,73 @@ public class Intersection {
         return llp;
     }
 
-    //    /**
-    //     * returns the point of interection of two great circle segments
-    //     * defined by the segments. (lat1, lon1) to (lat2, lon2) and
-    //     * (lat2, lon2) to (lat4, lon4). All lat-lon values are in
-    //     * degrees.
-    //     *
-    //     * @return a float array of length 4 containing upto 2 valid
-    //     * lat-lon points of intersection that lie on both
-    //     * segments. Positions in the array not containing a valid
-    //     * lat/lon value are initialized to Float.MAX_VALUE.
-    //     */
-    //    public static float[] getSegIntersectionOrig(float lat1, float
+    // /**
+    // * returns the point of interection of two great circle segments
+    // * defined by the segments. (lat1, lon1) to (lat2, lon2) and
+    // * (lat2, lon2) to (lat4, lon4). All lat-lon values are in
+    // * degrees.
+    // *
+    // * @return a float array of length 4 containing upto 2 valid
+    // * lat-lon points of intersection that lie on both
+    // * segments. Positions in the array not containing a valid
+    // * lat/lon value are initialized to Float.MAX_VALUE.
+    // */
+    // public static float[] getSegIntersectionOrig(float lat1, float
     // lon1,
-    //                                                 float lat2, float lon2,
-    //                                                 float lat3, float lon3,
-    //                                                 float lat4, float lon4) {
-    //        // KRA 03SEP03: We can do better than this.
+    // float lat2, float lon2,
+    // float lat3, float lon3,
+    // float lat4, float lon4) {
+    // // KRA 03SEP03: We can do better than this.
     //
-    //        float[] ll = getIntersection(lat1,
-    //                lon1,
-    //                lat2,
-    //                lon2,
-    //                lat3,
-    //                lon3,
-    //                lat4,
-    //                lon4);
+    // float[] ll = getIntersection(lat1,
+    // lon1,
+    // lat2,
+    // lon2,
+    // lat3,
+    // lon3,
+    // lat4,
+    // lon4);
     //
-    //        // check if the point of intersection lies on both segs
+    // // check if the point of intersection lies on both segs
     //
-    //        // length of seg1
-    //        double d1 = Geo.distance(lat1, lon1, lat2, lon2);
-    //        // length of seg2
-    //        double d2 = Geo.distance(lat3, lon3, lat4, lon4);
+    // // length of seg1
+    // double d1 = Geo.distance(lat1, lon1, lat2, lon2);
+    // // length of seg2
+    // double d2 = Geo.distance(lat3, lon3, lat4, lon4);
     //
-    //        // between seg1 endpoints and first point of intersection
-    //        double d111 = Geo.distance(lat1, lon1, ll[0], ll[1]);
-    //        double d121 = Geo.distance(lat2, lon2, ll[0], ll[1]);
+    // // between seg1 endpoints and first point of intersection
+    // double d111 = Geo.distance(lat1, lon1, ll[0], ll[1]);
+    // double d121 = Geo.distance(lat2, lon2, ll[0], ll[1]);
     //
-    //        // between seg1 endpoints and second point of intersection
-    //        double d112 = Geo.distance(lat1, lon1, ll[2], ll[3]);
-    //        double d122 = Geo.distance(lat2, lon2, ll[2], ll[3]);
+    // // between seg1 endpoints and second point of intersection
+    // double d112 = Geo.distance(lat1, lon1, ll[2], ll[3]);
+    // double d122 = Geo.distance(lat2, lon2, ll[2], ll[3]);
     //
-    //        // between seg2 endpoints and first point of intersection
-    //        double d211 = Geo.distance(lat3, lon3, ll[0], ll[1]);
-    //        double d221 = Geo.distance(lat4, lon4, ll[0], ll[1]);
+    // // between seg2 endpoints and first point of intersection
+    // double d211 = Geo.distance(lat3, lon3, ll[0], ll[1]);
+    // double d221 = Geo.distance(lat4, lon4, ll[0], ll[1]);
     //
-    //        // between seg2 endpoints and second point of intersection
-    //        double d212 = Geo.distance(lat3, lon3, ll[2], ll[3]);
-    //        double d222 = Geo.distance(lat4, lon4, ll[2], ll[3]);
+    // // between seg2 endpoints and second point of intersection
+    // double d212 = Geo.distance(lat3, lon3, ll[2], ll[3]);
+    // double d222 = Geo.distance(lat4, lon4, ll[2], ll[3]);
     //
-    //        float[] llp = new float[] { Float.MAX_VALUE, Float.MAX_VALUE,
-    //                Float.MAX_VALUE, Float.MAX_VALUE };
+    // float[] llp = new float[] { Float.MAX_VALUE, Float.MAX_VALUE,
+    // Float.MAX_VALUE, Float.MAX_VALUE };
     //
-    //        // check if first point of intersection lies on both segments
-    //        if (d1 >= d111 && d1 >= d121 && d2 >= d211 && d2 >= d221) {
-    //            llp[0] = ll[0];
-    //            llp[1] = ll[1];
-    //        }
+    // // check if first point of intersection lies on both segments
+    // if (d1 >= d111 && d1 >= d121 && d2 >= d211 && d2 >= d221) {
+    // llp[0] = ll[0];
+    // llp[1] = ll[1];
+    // }
     //
-    //        // check if second point of intersection lies on both segments
-    //        if (d1 >= d112 && d1 >= d122 && d2 >= d212 && d2 >= d222) {
-    //            llp[2] = ll[2];
-    //            llp[3] = ll[3];
-    //        }
+    // // check if second point of intersection lies on both segments
+    // if (d1 >= d112 && d1 >= d122 && d2 >= d212 && d2 >= d222) {
+    // llp[2] = ll[2];
+    // llp[3] = ll[3];
+    // }
     //
-    //        return llp;
-    //    }
+    // return llp;
+    // }
 
     /**
      * An interface to an object called by the algorithm-parameterized
@@ -685,6 +685,12 @@ public class Intersection {
         boolean consider(Geo p, Region region);
 
         /**
+         * Invoked to really check a region against another.
+         * Intersection will invokech IFF this method returns true.
+         */
+        boolean consider(Region r, Region region);
+
+        /**
          * Invoked at the beginning of a search. May be used to
          * initialize the Algorithm instance
          */
@@ -715,12 +721,34 @@ public class Intersection {
             hrange = params.horizontalRange();
         }
 
+        /**
+         * Calls Intersection.isSegmentNearRegion() to see if segment
+         * is near the region.
+         */
         public boolean consider(GeoSegment segment, Region region) {
             return Intersection.isSegmentNearRegion(segment, hrange, region);
         }
 
+        /**
+         * Calls Intersection.isPointInPolygon() to see if point is
+         * within region.
+         */
         public boolean consider(Geo p, Region region) {
             return Intersection.isPointInPolygon(p, region.getBoundary());
+        }
+
+        /**
+         * Does a reverse check to see if region is completely within
+         * r. All other situations will be caught by consider(segment,
+         * region).
+         */
+        public boolean consider(Region r, Region region) {
+            Geo[] pts = region.getBoundary();
+            if (pts != null && pts.length > 0) {
+                return Intersection.isPointInPolygon(pts[pts.length - 1],
+                        r.getBoundary());
+            }
+            return false;
         }
 
         /** invoked before a search to initialize search state * */
@@ -760,10 +788,10 @@ public class Intersection {
 
             while (rit.hasNext()) {
                 try {
-                    Region region = (Region) rit.next();
-                    if (algorithm.consider(seg, region)) {
+                    Region collectionRegion = (Region) rit.next();
+                    if (algorithm.consider(seg, collectionRegion)) {
                         // notify the controller
-                        algorithm.match(seg.getSegId(), region);
+                        algorithm.match(seg.getSegId(), collectionRegion);
                     }
                 } catch (ClassCastException cce) {
                     System.err.println("Intersection.intersect(): Region Collection inappropriately holding something other than a Region");
@@ -771,6 +799,73 @@ public class Intersection {
                 }
             }
         }
+    }
+
+    /**
+     * Find intersections between a Region and a set of regions of
+     * interest. Creates a path out of the region points and then does
+     * the same basic thing that the intesection code for paths does,
+     * with the added check to see of each collection region might
+     * also reside entirely withing the given region.
+     * 
+     * @param region a region to match against regions.
+     * @param regions a Collection of possible Region regions to
+     *        match. If it is a RegionIndex, then a more constrained
+     *        lookup can be performed.
+     * @param algorithm search parameters, control mechanisms, and
+     *        data collection for the search.
+     */
+    public static void intersect(Region region, Collection regions,
+                                 Algorithm algorithm) {
+        algorithm.startingSearch();
+
+        LatLonPath path = new LatLonPath(region.getBoundary());
+        Iterator rit;
+        Region collectionRegion;
+
+        // Catch the edge intersections...
+        for (Path.SegmentIterator pit = path.segmentIterator(); pit.hasNext();) {
+            GeoSegment seg = pit.nextSegment();
+
+            if (regions instanceof RegionIndex) {
+                rit = ((RegionIndex) regions).iterator(path);
+            } else {
+                rit = regions.iterator();
+            }
+
+            while (rit.hasNext()) {
+
+                try {
+                    collectionRegion = (Region) rit.next();
+
+                    if (algorithm.consider(seg, collectionRegion)) {
+                        // notify the controller
+                        algorithm.match(seg.getSegId(), collectionRegion);
+                    }
+
+                } catch (ClassCastException cce) {
+                    System.err.println("Intersection.intersect(): Region Collection inappropriately holding something other than a Region");
+                    // Whew, blow it off...
+                }
+            }
+        }
+
+        // This catches the regions in the collection that lie
+        // completely within the region.
+        if (regions instanceof RegionIndex) {
+            rit = ((RegionIndex) regions).iterator(region.getBoundingCircle());
+        } else {
+            rit = regions.iterator();
+        }
+
+        while (rit.hasNext()) {
+            collectionRegion = (Region) rit.next();
+            if (algorithm.consider(region, collectionRegion)) {
+                algorithm.match(region, collectionRegion);
+            }
+
+        }
+
     }
 
     /**
@@ -784,12 +879,13 @@ public class Intersection {
      * @param algorithm search parameters, control mechanisms, and
      *        data collection for the search.
      */
-    public static void intersect(Geo point, Collection regions, Algorithm algorithm) {
+    public static void intersect(Geo point, Collection regions,
+                                 Algorithm algorithm) {
         algorithm.startingSearch();
 
         Iterator rit;
         if (regions instanceof RegionIndex) {
-            rit = ((RegionIndex) regions).iterator(point);
+            rit = ((RegionIndex) regions).iterator(new BoundingCircle.Impl(point, 0));
         } else {
             rit = regions.iterator();
         }
@@ -806,6 +902,30 @@ public class Intersection {
                 // Whew, blow it off...
             }
         }
+    }
+
+    /**
+     * Simplified version of #intersect(Region, Collection, Algorithm)
+     * for old code, using the default match algorithm, and returning
+     * the identifiers of the regions that intersect with the path.
+     * 
+     * @param region a region to match against regions.
+     * @param regions a Collection of possible Region regions to
+     *        match. If it is a RegionIndex, then a more constrained
+     *        lookup can be performed.
+     * @return an interator over a list of the identifiers of the
+     *         intersecting regions.
+     */
+    public static Iterator intersect(Region r, Collection regions) {
+        final ArrayList l = new ArrayList(10);
+        BasicAlgorithm alg = new BasicAlgorithm() {
+            public void match(Object query, Object match) {
+                l.add(match);
+            }
+        };
+        // alg.setMatchParameters(MatchParameters.ROUTE_DEFAULT);
+        intersect(r, regions, alg);
+        return l.iterator();
     }
 
     /**
@@ -827,7 +947,7 @@ public class Intersection {
                 l.add(match);
             }
         };
-        alg.setMatchParameters(MatchParameters.ROUTE_DEFAULT);
+        // alg.setMatchParameters(MatchParameters.ROUTE_DEFAULT);
         intersect(path, regions, alg);
         return l.iterator();
     }
@@ -852,7 +972,7 @@ public class Intersection {
                 l.add(match);
             }
         };
-        alg.setMatchParameters(MatchParameters.ROUTE_DEFAULT);
+        // alg.setMatchParameters(MatchParameters.ROUTE_DEFAULT);
         intersect(point, regions, alg);
         return l.iterator();
     }
