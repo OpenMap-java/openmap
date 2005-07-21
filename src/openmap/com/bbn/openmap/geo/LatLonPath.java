@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: LatLonPath.java,v $
-//$Revision: 1.3 $
-//$Date: 2005/07/18 22:18:08 $
+//$Revision: 1.4 $
+//$Date: 2005/07/21 22:58:27 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -28,7 +28,7 @@ package com.bbn.openmap.geo;
  * An implementation of Path that takes an alternating lat/lon array
  * and (optionally) an array of altitudes.
  */
-public class LatLonPath implements Path {
+public class LatLonPath implements GeoPath {
     protected Geo[] pts;
     protected int length;
 
@@ -68,21 +68,34 @@ public class LatLonPath implements Path {
         length = pts.length;
     }
 
+    public Geo[] toPointArray() {
+        return pts;
+    }
+
+    private transient BoundingCircle bc = null;
+
+    public synchronized BoundingCircle getBoundingCircle() {
+        if (bc == null)
+            bc = new BoundingCircle.Impl(this);
+
+        return bc;
+    }
+
     public int length() {
         return length;
     }
 
-    public Path.SegmentIterator segmentIterator() {
+    public GeoPath.SegmentIterator segmentIterator() {
         return new SegIt();
     }
 
-    public Path.PointIterator pointIterator() {
+    public GeoPath.PointIterator pointIterator() {
         return new PointIt();
     }
 
     /**
-     * Callback for the SegIt to find out how the LatLonPath wants
-     * the segment IDed.
+     * Callback for the SegIt to find out how the LatLonPath wants the
+     * segment IDed.
      * 
      * @param i The index of the segment in question.
      * @return Object that IDs the segment, could be this path, too.
@@ -106,12 +119,18 @@ public class LatLonPath implements Path {
         return new Integer(i);
     }
 
-    protected class SegIt implements Path.SegmentIterator, GeoSegment {
+    protected class SegIt implements GeoPath.SegmentIterator, GeoSegment {
         int i = -1;
         Geo[] seg = new Geo[2];
 
         public SegIt() {
             seg[1] = pts[0];
+        }
+
+        /** Constructs a new bounding circle instance each call. * */
+        public BoundingCircle getBoundingCircle() {
+            Geo c = Intersection.center(seg);
+            return new BoundingCircle.Impl(c, c.distance(seg[0]));
         }
 
         public boolean hasNext() {
@@ -130,7 +149,7 @@ public class LatLonPath implements Path {
         }
 
         public void remove() {
-            throw new UnsupportedOperationException("Path.Iterator doesn't support remove");
+            throw new UnsupportedOperationException("Path.SegmentIterator doesn't support remove");
         }
 
         /**
@@ -166,13 +185,10 @@ public class LatLonPath implements Path {
         }
     }
 
-    protected class PointIt implements Path.PointIterator, GeoPoint {
+    protected class PointIt implements GeoPath.PointIterator, GeoPoint {
         int i = -1;
-        Geo[] seg = new Geo[2];
 
-        public PointIt() {
-            seg[1] = pts[0];
-        }
+        public PointIt() {}
 
         public boolean hasNext() {
             return i < length;
@@ -192,11 +208,15 @@ public class LatLonPath implements Path {
         }
 
         public Geo getPoint() {
-            return seg[i];
+            return pts[i];
         }
 
         public Object getPointId() {
             return LatLonPath.this.getPointID(i);
+        }
+
+        public BoundingCircle getBoundingCircle() {
+            return new BoundingCircle.Impl(pts[i], 0.0);
         }
     }
 }

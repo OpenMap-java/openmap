@@ -23,30 +23,30 @@ import java.util.Iterator;
  * 
  * @author mthome@bbn.com
  */
-public interface RegionIndex extends java.util.Collection {
+public interface ExtentIndex extends java.util.Collection {
     /**
      * report on the maximum horizontalRange supported by this index.
      */
     double indexHorizontalRange();
     
     /**
-     * Add a region to the index.
+     * Add a extent to the index.
      * @param region
      * @returns true if Region successfully added, false if not.
      */
-    boolean addRegion(Region region);
+    boolean addExtent(GeoExtent region);
     
     /**
      * Remove a region from the index.
      * @param region
      * @return true if the region was found and removed.
      */
-    boolean removeRegion(Region region);
+    boolean removeExtent(GeoExtent region);
     
     /**
      * Resets the index to an empty state. 
      */
-    void clearRegions();
+    void clear();
 
     /**
      * return an iterator listing a subset of the whole collection
@@ -60,17 +60,5 @@ public interface RegionIndex extends java.util.Collection {
      * the segment.
      */
     Iterator iterator(GeoExtent extent);
-    
-    /**
-     * return an iterator listing a subset of the whole collection
-     * that is a superset of the actual matches. A valid (but
-     * inefficient) implementation would return an iterator over the
-     * whole collection.
-     * 
-     * Implementation should match anything that is likely to match -
-     * this will generally include, for instance, additional space
-     * around the actual point to accommodate buffer zones around
-     * the segment.  The BoundingCircle allows you to set the buffer.
-     */
-    Iterator iterator(BoundingCircle bc);
+
 }

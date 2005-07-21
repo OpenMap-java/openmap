@@ -32,7 +32,7 @@ import java.util.Enumeration;
  * @author Ken Anderson
  * @author Sachin Date
  * @author Ben Lubin
- * @version $Revision: 1.8 $ on $Date: 2005/07/05 23:08:29 $
+ * @version $Revision: 1.9 $ on $Date: 2005/07/21 22:58:27 $
  */
 public class Geo {
 
@@ -49,9 +49,9 @@ public class Geo {
     public static final double FLATTENING_C = (1.0 - flattening) * (1.0 - flattening);
     
     public static final double METERS_PER_NM = 1852;
-    private static final double LTERM1 = 111412.84 / METERS_PER_NM;
-    private static final double LTERM2 = -93.5 / METERS_PER_NM;
-    private static final double LTERM3 = 0.118 / METERS_PER_NM;
+    private static final double NPD_LTERM1 = 111412.84 / METERS_PER_NM;
+    private static final double NPD_LTERM2 = -93.5 / METERS_PER_NM;
+    private static final double NPD_LTERM3 = 0.118 / METERS_PER_NM;
     
     private double x;
     private double y;
@@ -65,7 +65,7 @@ public class Geo {
      */
     public final static double npdAtLat(double latdeg) {
         double lat = (latdeg * Math.PI) / 180.0;
-        return LTERM1 * Math.cos(lat) + LTERM2 * Math.cos(3 * lat) + LTERM3
+        return NPD_LTERM1 * Math.cos(lat) + NPD_LTERM2 * Math.cos(3 * lat) + NPD_LTERM3
                 * Math.cos(5 * lat);
     }
 
@@ -296,6 +296,10 @@ public class Geo {
     /** Returns this - b. */
     public Geo subtract(Geo b) {
         return new Geo(this.x() - b.x(), this.y() - b.y(), this.z() - b.z());
+    }
+    
+    public boolean equals(Geo v2) {
+        return this.x == v2.x  && this.y == v2.y && this.z == v2.z;
     }
 
     /** Angular distance, in radians between this and v2. */

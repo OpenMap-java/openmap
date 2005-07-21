@@ -42,4 +42,40 @@ public interface GeoSegment extends GeoExtent {
      *         returned.
      */
     Object getSegId();
+
+    public static class Impl implements GeoSegment {
+        protected Geo[] seg;
+        protected Object id = GeoSegment.Impl.this;
+
+        /**
+         * Create a GeoSegment.Impl with an array of 2 Geos.
+         * 
+         * @param segment Geo[2].
+         */
+        public Impl(Geo[] segment) {
+            seg = segment;
+        }
+        
+        public Geo[] getSeg() {
+            return seg;
+        }
+
+        public float[] getSegArray() {
+            return new float[] { (float) seg[0].getLatitude(),
+                    (float) seg[0].getLongitude(),
+                    (float) seg[1].getLatitude(), (float) seg[1].getLongitude() };
+        }
+
+        public BoundingCircle getBoundingCircle() {
+            return new BoundingCircle.Impl(seg);
+        }
+        
+        public void setSegId(Object segId) {
+            id = segId;
+        }
+        
+        public Object getSegId() {
+            return id;
+        }
+    }
 }

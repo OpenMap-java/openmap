@@ -15,9 +15,9 @@
 //$Source:
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
-//$RCSfile: RegionIndexImpl.java,v $
-//$Revision: 1.3 $
-//$Date: 2005/07/18 22:18:08 $
+//$RCSfile: ExtentIndexImpl.java,v $
+//$Revision: 1.1 $
+//$Date: 2005/07/21 22:58:27 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -25,7 +25,6 @@
 package com.bbn.openmap.geo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -35,18 +34,32 @@ import java.util.Set;
  * Separable indexed database for Regional BoundingCircles. This is
  * currently a simple longitude coverage map of the world, broken into
  * buckets covering 1 degrees. A given BoundingCircle will show up in
- * every bucket that it touches or comes within 30nm of.
+ * every bucket that it touches or comes within the margin.
  */
-public class RegionIndexImpl extends java.util.AbstractCollection implements
-        RegionIndex {
+public class ExtentIndexImpl extends java.util.AbstractCollection implements
+        ExtentIndex {
+
+    /**
+     * Default value for #nbuckets if not specified in the call to the
+     * constructor.
+     */
+    public static final int D_NBUCKETS = 360;
+
+    /**
+     * Default value for #margin if not specified in the call to the
+     * constructor.
+     */
+    public static final double D_MARGIN = 50.0;
 
     /**
      * how many buckets in the longitudinal index - 360 means 1 bucket
      * per degree of longitude. More than 360 doesn't seem to add much
      * search speed, less than 180 makes it slower. The sweet spot on
      * current datasets is somewhere in between.
+     * 
+     * If unspecifed, defaults to #D_NBUCKETS
      */
-    public static final int NBUCKETS = 360;
+    public final int nbuckets;
 
     /**
      * how much of a margin to put around regions for indexing
@@ -54,14 +67,15 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
      * margin searched for by route (currently 50nmiles) - the larger
      * this value, the larger the average entries/bucket and so, the
      * slower the search.
+     * 
+     * If unspecfied, defaults to #D_MARGIN
      */
-    public static final double nmMargin = 50.0;
+    public final double margin;
+
+    protected final List buckets[];
 
     /** all is a collection of everything successfully indexed. */
     protected final List all = new ArrayList(2000);
-
-    protected final List buckets[] = new List[NBUCKETS];
-
     /**
      * polar is a bucket for anything that is near enough to either
      * pole to cover more than 1/2 the buckets.
@@ -70,65 +84,100 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
 
     protected final List discarded = new ArrayList();
 
+    public ExtentIndexImpl() {
+        nbuckets = D_NBUCKETS;
+        margin = D_MARGIN;
+        buckets = new List[nbuckets];
+    }
+
+    public ExtentIndexImpl(int nb) {
+        nbuckets = nb;
+        margin = D_MARGIN;
+        buckets = new List[nbuckets];
+    }
+
+    public ExtentIndexImpl(int nb, double m) {
+        nbuckets = nb;
+        margin = m;
+        buckets = new List[nbuckets];
+    }
+
+    public ExtentIndexImpl(double m) {
+        nbuckets = D_NBUCKETS;
+        margin = m;
+        buckets = new List[nbuckets];
+    }
+
+    /**
+     * Add an object to the index.
+     * 
+     * @return true if object is a GeoExtent and was added.
+     */
+    public boolean add(Object o) {
+        if (o instanceof GeoExtent) {
+            return addExtent((GeoExtent) o);
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Method to call to add Region object with BoundingCircle to
      * Collection and organize it for later retrieval.
      * 
-     * @param region Region to index
+     * @param extent Region to index
      * @return true if object added, false if it's been discarded.
      */
-    public boolean addRegion(Region region) {
+    public boolean addExtent(GeoExtent extent) {
         boolean ret = false;
         try {
 
-            BoundingCircle bc = region.getBoundingCircle();
+            BoundingCircle bc = extent.getBoundingCircle();
             if (bc == null) {
-                discarded.add(region);
+                discarded.add(extent);
                 return false;
             }
 
             Geo center = bc.getCenter();
             double clon = center.getLongitude();
             double clat = center.getLatitude();
-            double radd = Geo.degrees(bc.getRadius());
+            double rnm = Geo.nm(bc.getRadius());
 
-            if ((clat == 90.0 && clon == -180.0) || radd >= 90.0) {
-                discarded.add(region);
+            if ((clat == 90.0 && clon == -180.0) || rnm >= 90 * 60) {
+                discarded.add(extent);
             } else {
-                all.add(region); // add to the everything list
+                all.add(extent); // add to the everything list
 
                 // we need to project the radius away from the
                 // center at the latitude, NOT at the equator!
                 double latfactor = Geo.npdAtLat(clat);
                 if (latfactor == 0) {
-                    polar.add(region);
+                    polar.add(extent);
                     ret = true;
                 } else {
-                    double xd = nmMargin / latfactor; // 50 nm
+                    double xd = (rnm + margin) / latfactor;
                     /*
                      * margin = xd "extra degrees" at the center's
                      * latitude
                      */
                     if (xd >= 45) {
-                        polar.add(region);
+                        polar.add(extent);
                         ret = true;
                     } else {
-                        int lon1 = (int) Math.floor((180 + clon - (xd + radd))
-                                * NBUCKETS / 360.0);
-                        int lon2 = (int) Math.ceil((180 + clon + (xd + radd))
-                                * NBUCKETS / 360.0);
-                        for (int i = lon1; i <= lon2; i++) {
-                            int x = i;
-                            if (x >= NBUCKETS)
-                                x = x - NBUCKETS;
-                            if (x < 0)
-                                x = x + NBUCKETS;
+                        double[] lons = normalizeLons(new double[] { clon - xd,
+                                clon + xd });
+                        int lb = bucketFor(lons[0]);
+                        int rb = bucketFor(lons[1]);
+                        if (rb < lb)
+                            rb = rb + nbuckets;
+                        for (int i = lb; i <= rb; i++) {
+                            int x = i % nbuckets;
                             List b = buckets[x];
                             if (b == null) {
                                 b = new ArrayList(5);
                                 buckets[x] = b;
                             }
-                            b.add(region);
+                            b.add(extent);
                             ret = true;
                         }
                     }
@@ -137,6 +186,41 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
         } catch (Exception e) {
         }
         return ret;
+    }
+
+    /** normalize longitude to be at least 0.0 and less than 360 * */
+    protected static final double normalizeLon(double lon) {
+        // put it into the range of [-360.0, +360.0]
+        double n = lon % 360;
+        return (n < 0.0) ? n + 360.0 : n;
+        // now n is (0.0,+360]
+    }
+
+    /** figure out what bucket a particular longitude goes in * */
+    protected final int bucketFor(double lon) {
+        return (int) Math.floor(normalizeLon(lon) / nbuckets); // which
+        // bucket?
+    }
+
+    /*
+     * Normalize and sort the argument two element array so that on a
+     * north-up globe, a great-circle arc between the points is headed
+     * eastward and is less than half-way around the world. @param
+     * lons two-element array on longitudes @return the mutated
+     * argument.
+     */
+    protected final static double[] normalizeLons(double[] lons) {
+        double a = normalizeLon(lons[0]);
+        double b = normalizeLon(lons[1]);
+        // if wide and east or narrow and west, swap
+        if ((Math.abs(b - a) > 180.0) == (b > a)) {
+            lons[0] = b;
+            lons[1] = a;
+        } else {
+            lons[0] = a;
+            lons[1] = b;
+        }
+        return lons;
     }
 
     /**
@@ -148,7 +232,7 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
      * @return Iterator over regions in buckets that cover range
      *         provided.
      */
-    protected Iterator lookup(float left, float right) {
+    protected Iterator lookup(double left, double right) {
         return lookup(left, right, null);
     }
 
@@ -165,26 +249,20 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
      *         provided that intersect with the BoundingCircle (if one
      *         is provided).
      */
-    protected Iterator lookup(float left, float right, BoundingCircle bc) {
+    protected Iterator lookup(double left, double right, BoundingCircle bc) {
         Set s = new HashSet();
-        int l = (int) Math.floor((left + 180) * NBUCKETS / 360.0f);
-        int r = (int) Math.ceil((right + 180) * NBUCKETS / 360.0f);
-        if (r < l) {
-            r = r + NBUCKETS;
-        }
-        for (int i = l; i <= r; i++) {
-            int x = i;
-            if (x >= NBUCKETS)
-                x = x - NBUCKETS;
-            if (x < 0)
-                x = x + NBUCKETS;
-            List b = buckets[x];
+        int lb = bucketFor(left);
+        int rb = bucketFor(right);
+        if (rb < lb)
+            rb = rb + nbuckets;
+        for (int i = lb; i <= rb; i++) {
+            List b = buckets[i % nbuckets];
             if (b != null) {
                 if (bc == null) {
                     s.addAll(b);
                 } else {
                     for (Iterator it = b.iterator(); it.hasNext();) {
-                        Region region = (Region) it.next();
+                        GeoRegion region = (GeoRegion) it.next();
                         if (bc.intersects(region.getBoundingCircle())) {
                             s.add(region);
                         }
@@ -201,7 +279,7 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
      * 
      * @return true if the region was found and removed.
      */
-    public boolean removeRegion(Region region) {
+    public boolean removeExtent(GeoExtent region) {
         boolean ret = false;
         try {
 
@@ -214,12 +292,12 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
             Geo center = bc.getCenter();
             double clon = center.getLongitude();
             double clat = center.getLatitude();
-            double radd = Geo.degrees(bc.getRadius());
+            double rnm = Geo.nm(bc.getRadius());
 
-            if ((clat == 90.0 && clon == -180.0) || radd >= 90.0) {
+            if ((clat == 90.0 && clon == -180.0) || rnm >= 90 * 60) {
                 discarded.remove(region);
             } else {
-                all.remove(region); // add to the everything list
+                all.remove(region); // remove from the everything list
 
                 // we need to project the radius away from the
                 // center at the latitude, NOT at the equator!
@@ -228,7 +306,7 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
                     polar.remove(region);
                     ret = true;
                 } else {
-                    double xd = nmMargin / latfactor; // 50 nm
+                    double xd = (rnm + margin) / latfactor;
                     /*
                      * margin = xd "extra degrees" at the center's
                      * latitude
@@ -237,16 +315,14 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
                         polar.remove(region);
                         ret = true;
                     } else {
-                        int lon1 = (int) Math.floor((180 + clon - (xd + radd))
-                                * NBUCKETS / 360.0);
-                        int lon2 = (int) Math.ceil((180 + clon + (xd + radd))
-                                * NBUCKETS / 360.0);
-                        for (int i = lon1; i <= lon2; i++) {
-                            int x = i;
-                            if (x >= NBUCKETS)
-                                x = x - NBUCKETS;
-                            if (x < 0)
-                                x = x + NBUCKETS;
+                        double[] lons = normalizeLons(new double[] { clon - xd,
+                                clon + xd });
+                        int lb = bucketFor(lons[0]);
+                        int rb = bucketFor(lons[1]);
+                        if (rb < lb)
+                            rb = rb + nbuckets;
+                        for (int i = lb; i <= rb; i++) {
+                            int x = i % nbuckets;
                             List b = buckets[x];
                             if (b == null) {
                                 b = new ArrayList(5);
@@ -266,7 +342,7 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
     /**
      * Method to call to clear out the index.
      */
-    public void clearRegions() {
+    public void clear() {
         all.clear();
         polar.clear();
         discarded.clear();
@@ -281,59 +357,43 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
      * @return horizontal range in nautical miles for matches.
      */
     public double indexHorizontalRange() {
-        return nmMargin;
+        return margin;
     }
 
-    /**
-     * @param segment to check against Collection's BoundingCircles
-     *        for Regions.
-     * @return Iterator of Regions that pertain to segment.
-     */
-    protected Iterator segmentMatches(GeoSegment segment) {
+    public Iterator lookupBySegment(GeoSegment segment) {
         Geo[] pts = segment.getSeg();
-        float left = (float) pts[0].getLongitude();
-        float right = left;
-        float x = (float) pts[1].getLongitude();
-        if (x - left > 180) {
-            x = x - 360;
-        } // if x crossed the dateline going east...
-        if (left - x > 180) {
-            x = x + 360;
-        } // going west
-        if (x < left)
-            left = x;
-        if (x > right)
-            right = x;
-
-        return lookup(left, right, new BoundingCircle.Impl(segment.getSeg()));
+        double[] lons = normalizeLons(new double[] { pts[0].getLongitude(),
+                pts[1].getLongitude() });
+        return lookup(lons[0], lons[1], segment.getBoundingCircle());
     }
 
-    /**
-     * @param path A Path to check against Collection's
-     *        BoundingCircles for Regions.
-     * @return Iterator of Regions that pertain to path.
-     */
-    protected Iterator pathMatches(Path path) {
+    public Iterator lookupByPath(GeoPath path) {
         Set results = new HashSet();
-        Path.SegmentIterator pit = path.segmentIterator();
+        GeoPath.SegmentIterator pit = path.segmentIterator();
         while (pit.hasNext()) {
             GeoSegment seg = pit.nextSegment();
-            for (Iterator it = segmentMatches(seg); it.hasNext();) {
+            for (Iterator it = lookupBySegment(seg); it.hasNext();) {
                 results.add(it.next());
             }
         }
         return results.iterator();
     }
 
-    /**
-     * @param p a Geo to check for intersections against Collection's
-     *        BoundingCircles for Regions.
-     * @return Iterator of Regions that pertain to point.
-     */
-    public Iterator iterator(BoundingCircle bc) {
-        float lon = (float) bc.getCenter().getLongitude();
-        float radius = (float)Math.toDegrees(bc.getRadius());
-        return lookup(lon - radius, lon + radius, bc);
+    public Iterator lookupByBoundingCircle(BoundingCircle bc) {
+        double cLon = bc.getCenter().getLongitude();
+        double rNM = Geo.nm(bc.getRadius()); // radius in nm at
+        // equator
+        double npd = Geo.npdAtLat(bc.getCenter().getLatitude());
+        if (npd == 0) { // avoid divide by zero - polar region
+            return iterator();
+        } else {
+            double rdeg = rNM / npd;
+            if (rdeg >= 180) {
+                return iterator(); // radius covers the whole world
+            } else {
+                return lookup(cLon - rdeg, cLon + rdeg, bc);
+            }
+        }
     }
 
     /**
@@ -342,13 +402,13 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
      */
     public Iterator iterator(GeoExtent o) {
         if (o instanceof GeoSegment) {
-            return segmentMatches((GeoSegment) o);
-        } else if (o instanceof Path) {
-            return pathMatches((Path) o);
+            return lookupBySegment((GeoSegment) o);
+        } else if (o instanceof GeoPath) {
+            return lookupByPath((GeoPath) o);
         } else if (o instanceof GeoPoint) {
-            return iterator(new BoundingCircle.Impl(((GeoPoint)o).getPoint(), 0));
+            return lookupByBoundingCircle(new BoundingCircle.Impl(((GeoPoint) o).getPoint(), 0));
         } else {
-            return Collections.EMPTY_LIST.iterator();
+            return lookupByBoundingCircle(o.getBoundingCircle());
         }
     }
 
@@ -373,7 +433,7 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
     public String toString() {
         int entc = 0;
         int empties = 0;
-        for (int i = 0; i < NBUCKETS; i++) {
+        for (int i = 0; i < nbuckets; i++) {
             List l = buckets[i];
             if (l != null) {
                 entc += l.size();
@@ -383,6 +443,6 @@ public class RegionIndexImpl extends java.util.AbstractCollection implements
         }
 
         return "RegionIndexImpl[" + size() + " -" + discarded.size() + " E"
-                + (entc / ((float) NBUCKETS)) + "]";
+                + (entc / ((float) nbuckets)) + "]";
     }
 }

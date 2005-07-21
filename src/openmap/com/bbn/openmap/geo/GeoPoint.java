@@ -18,7 +18,7 @@ package com.bbn.openmap.geo;
  * 
  * @author mthome@bbn.com
  */
-public interface GeoPoint {
+public interface GeoPoint extends GeoExtent {
     /** return the current point as a Geo object */
     Geo getPoint();
 
@@ -27,4 +27,44 @@ public interface GeoPoint {
      * Different implementations may document the type to be returned.
      */
     Object getPointId();
+    
+    /**
+     * A standard implementation of GeoPoint.
+     * 
+     * @author dietrick
+     */
+    public static class Impl implements GeoPoint {
+        protected Geo point;
+        protected Object id = GeoPoint.Impl.this;
+        
+        public Impl(Geo p) {
+            point = p;
+        }
+        
+        /**
+         * Create a Impl from decimal degrees lat/lon coordinates.
+         * @param lat
+         * @param lon
+         */
+        public Impl(float lat, float lon) {
+            point = new Geo(lat, lon);
+        }
+        
+        public Geo getPoint() {
+            return point;
+        }
+        
+        public void setPointId(Object pid) {
+            id = pid;
+        }
+        
+        public Object getPointId() {
+            return id;
+        }
+        
+        public BoundingCircle getBoundingCircle() {
+            return new BoundingCircle.Impl(point, 0.0);
+        }
+        
+    }
 }

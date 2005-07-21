@@ -42,7 +42,11 @@ public interface MatchParameters {
     }
 
     /**
-     * A set of parameters that matches radius of 10nmiles.
+     * A set of parameters that matches radius of 10 nmiles.
      */
     MatchParameters ROUTE_DEFAULT = new Standard(Geo.nmToAngle(10));
+    /**
+     * A set of parameters for strict intersections, 0 nmiles.
+     */
+    MatchParameters STRICT = new Standard(0.0);
 }

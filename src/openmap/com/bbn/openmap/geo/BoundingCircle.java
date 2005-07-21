@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BoundingCircle.java,v $
-//$Revision: 1.3 $
-//$Date: 2005/07/18 22:18:08 $
+//$Revision: 1.4 $
+//$Date: 2005/07/21 22:58:26 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -65,16 +65,16 @@ public interface BoundingCircle {
             init(center, radius);
         }
 
-        public Impl(Region region) {
+        public Impl(GeoRegion region) {
             init(region.getBoundary());
         }
 
-        public Impl(LatLonPath llPath) {
+        public Impl(GeoPath path) {
 
-            Geo[] region = new Geo[llPath.length()];
+            Geo[] region = new Geo[path.length()];
 
             int i = 0;
-            for (Path.PointIterator pi = llPath.pointIterator(); pi.hasNext(); i++) {
+            for (GeoPath.PointIterator pi = path.pointIterator(); pi.hasNext(); i++) {
                 region[i] = (Geo) pi.next();
             }
             

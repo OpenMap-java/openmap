@@ -14,15 +14,34 @@
 package com.bbn.openmap.geo;
 
 /**
- * An abstraction of an arbitrary geographic path.
+ * An abstraction of an arbitrary geographic path. A path is assumed
+ * to mean a chain of points that although it may share a common starting and end
+ * point, it will not not represent an area in that case.
  * 
  * @author mthome@bbn.com
  */
 
-public interface Path extends GeoExtent {
-    Path.SegmentIterator segmentIterator();
+public interface GeoPath extends GeoExtent {
+    /** @return an iterator over the segments of the path * */
+    GeoPath.SegmentIterator segmentIterator();
 
-    Path.PointIterator pointIterator();
+    /** @return an iterator over the points of the path * */
+    GeoPath.PointIterator pointIterator();
+
+    /**
+     * Return the points that make up the path as an array of Geo
+     * object. Closed paths are not specially marked. Specifically,
+     * closed paths do not have equal first and last Geo points in the
+     * returned array.
+     * 
+     * @return the Geo points of the Path
+     */
+    Geo[] toPointArray();
+
+    /**
+     * @return the number of points in the path.
+     */
+    int length();
 
     interface SegmentIterator extends java.util.Iterator {
         /** is there another segment? * */
