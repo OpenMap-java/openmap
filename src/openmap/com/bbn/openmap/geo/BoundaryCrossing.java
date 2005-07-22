@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BoundaryCrossing.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/07/21 22:58:27 $
+//$Revision: 1.2 $
+//$Date: 2005/07/22 21:22:48 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -29,9 +29,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.bbn.openmap.geo.Intersection.Algorithm;
-import com.bbn.openmap.geo.Intersection.BasicAlgorithm;
 
 public class BoundaryCrossing {
 
@@ -60,29 +57,24 @@ public class BoundaryCrossing {
         return out;
     }
 
-    public static Results getCrossings(GeoPath path, Collection regions) {
-        Results results = new Results();
-        CrossingAlgorithm algor = new CrossingAlgorithm(results);
-        Intersection.intersect(path, regions, algor);
-        results.compact();
-        return results;
+    public static Collector getCrossings(GeoPath path, Collection regions) {
+        Collector collector = new Collector();
+        CrossingIntersection crossings = new CrossingIntersection(collector);
+        crossings.consider(path, regions);
+        return collector;
     }
 
-    public static class Results {
+    public static class Collector extends MatchCollector.SetMatchCollector {
 
         List crossings = new ArrayList(10);
-        List intersected = new ArrayList(10);
-
-        public Results() {}
-
-
+        List lastSegmentCrossingList;
+        Geo lastSegmentStartingPoint;
+        
+        public Collector() {}
 
         protected void addCrossing(BoundaryCrossing bc) {
             crossings.add(bc);
         }
-        
-        List lastSegmentCrossingList;
-        Geo lastSegmentStartingPoint;
         
         protected void addCrossing(Collection c, GeoSegment segment,
                                    GeoRegion region) {
@@ -137,7 +129,7 @@ public class BoundaryCrossing {
             }
 
             boolean goinin = !Intersection.isPointInPolygon(start,
-                    region.getBoundary());
+                    region.toPointArray());
             for (Iterator it = orderedList.iterator(); it.hasNext();) {
                 BoundaryCrossing bc = (BoundaryCrossing) it.next();
 
@@ -184,16 +176,9 @@ public class BoundaryCrossing {
             }
         }
 
-        protected void addIntersected(GeoRegion intersectedRegion) {
-            intersected.add(intersectedRegion);
-        }
-
         public Iterator getCrossings() {
+            compact();
             return crossings.iterator();
-        }
-
-        public Iterator getIntersected() {
-            return intersected.iterator();
         }
 
     }
@@ -207,46 +192,29 @@ public class BoundaryCrossing {
      * This implementation requires that setMatchParameters be called
      * prior to starting the match.
      */
-    public static class CrossingAlgorithm extends BasicAlgorithm implements
-            Algorithm {
+    public static class CrossingIntersection extends Intersection {
 
-        Results r;
-
-        public CrossingAlgorithm(Results results) {
-            // Can't have crossings on near misses.
-            setMatchParameters(MatchParameters.STRICT);
-            r = results;
+        public CrossingIntersection(Collector collector) {
+            super(new MatchFilter.ExactMF(), collector);
         }
 
         /**
          * Calls Intersection.isSegmentNearRegion() to see if segment
-         * is near the region.m We're going to assume that this is
+         * is near the region. We're going to assume that this is
          * going to be called with segments ordered as they appear in
          * the path, in case the path is kinda crazy, and then we can
          * keep track of the crossings in the right order.
          */
-        public boolean consider(GeoSegment segment, GeoRegion region) {
+        public boolean considerSegmentXRegion(GeoSegment segment, GeoRegion region) {
             List hits = Intersection.segmentNearPoly(segment,
-                    region.getBoundary(),
+                    region.toPointArray(),
                     0.0);
 
             if (hits != null) {
-                r.addCrossing(hits, segment, region);
+                ((Collector)collector).addCrossing(hits, segment, region);
                 return true;
             }
 
-            return false;
-        }
-
-        /**
-         * Calls Intersection.isPointInPolygon() to see if point is on
-         * region boundary.
-         */
-        public boolean consider(Geo p, GeoRegion region) {
-            if (Intersection.isPointNearPoly(p, region.getBoundary(), 0.0)) {
-                r.addCrossing(new BoundaryCrossing(p, region, true));
-                return true;
-            }
             return false;
         }
 
@@ -260,12 +228,6 @@ public class BoundaryCrossing {
             // since we just want crossings, this check is moot. The
             // consider(segment, region) method should be used.
             return false;
-        }
-
-        public void match(Object query, Object match) {
-            if (match instanceof GeoRegion) {
-                r.addIntersected((GeoRegion) match);
-            }
         }
     }
 

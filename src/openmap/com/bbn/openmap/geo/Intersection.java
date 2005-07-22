@@ -13,7 +13,6 @@
 
 package com.bbn.openmap.geo;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -26,9 +25,198 @@ import java.util.List;
  * 
  * @author Sachin Date
  * @author Ken Anderson
- * @version $Revision: 1.9 $ on $Date: 2005/07/21 22:58:27 $
+ * @version $Revision: 1.10 $ on $Date: 2005/07/22 21:22:48 $
  */
 public class Intersection {
+
+    protected final MatchFilter filter;
+    protected final MatchCollector collector;
+
+    public Intersection(MatchFilter filter, MatchCollector collector) {
+        this.filter = filter;
+        this.collector = collector;
+    }
+
+    public static Intersection intersector() {
+        return new Intersection(new MatchFilter.MatchParametersMF(MatchParameters.STRICT), new MatchCollector.SetMatchCollector());
+    }
+
+    public static Intersection intersector(MatchParameters params) {
+        return new Intersection(new MatchFilter.MatchParametersMF(params), new MatchCollector.SetMatchCollector());
+
+    }
+
+    public static Intersection intersector(MatchParameters params,
+                                           final Collection c) {
+        return new Intersection(new MatchFilter.MatchParametersMF(params), new MatchCollector.CollectionMatchCollector(c));
+    }
+
+    public static Intersection intersector(MatchFilter filter,
+                                           MatchCollector collector) {
+        return new Intersection(filter, collector);
+    }
+
+    public void consider(Object a, Object b) {
+        if (b instanceof Collection) {
+            if (a instanceof GeoRegion) {
+                considerRegionXRegions((GeoRegion) a, (Collection) b);
+            } else if (a instanceof GeoPath) {
+                considerPathXRegions((GeoPath) a, (Collection) b);
+            } else if (a instanceof GeoPoint) {
+                considerPointXRegions((GeoPoint) a, (Collection) b);
+            }
+        } else if (b instanceof GeoRegion) {
+            if (a instanceof GeoRegion) {
+                considerRegionXRegion((GeoRegion) a, (GeoRegion) b);
+            } else if (a instanceof GeoPath) {
+                considerPathXRegion((GeoPath) a, (GeoRegion) b);
+            } else if (a instanceof GeoPoint) {
+                considerPointXRegion((GeoPoint) a, (GeoRegion) b);
+            }
+        }
+    }
+
+    public void considerRegionXRegions(GeoRegion r, Collection regions) {
+
+        ExtentIndex rindex = null; // keep this out of the loop
+        if (regions instanceof ExtentIndex) {
+            rindex = (ExtentIndex) regions;
+        }
+
+        /*
+         * since the path is closed we'll check the region index for
+         * the whole thing instead of segment-by-segment
+         */
+        Iterator possibles;
+        if (rindex != null) { // if we've got an index, narrow the
+            // set down
+            possibles = rindex.iterator(r);
+        } else {
+            possibles = regions.iterator();
+        }
+        while (possibles.hasNext()) {
+            GeoRegion region = (GeoRegion) possibles.next();
+            considerRegionXRegion(r, region);
+        }
+    }
+
+    public void considerRegionXRegion(GeoRegion r, GeoRegion region) {
+        /* these must be cheap! */
+        Geo[] regionBoundary = r.toPointArray();
+        /* get the first path point */
+        Geo pathPoint = regionBoundary[0];
+        Geo[] rboundary = region.toPointArray();
+        // check for total containment
+        if ((rboundary != null && (Intersection.isPointInPolygon(pathPoint,
+                rboundary) || Intersection.isPointInPolygon(rboundary[0],
+                regionBoundary)))
+                || (rboundary == null && (region.isPointInside(pathPoint) ||
+                /* first path point is inside the region? */
+                Intersection.isPointInPolygon(region.getBoundingCircle()
+                        .getCenter(), regionBoundary)))) {
+            collector.collect(r.getRegionId(), region);
+        } else {
+            // gotta try harder, so we fall back to segment-by-segment
+            // intersections
+            for (GeoPath.SegmentIterator pit = r.segmentIterator(); pit.hasNext();) {
+                GeoSegment seg = pit.nextSegment();
+                if (filter.preConsider(seg, region)
+                        && considerSegmentXRegion(seg, region)) {
+                    collector.collect(seg.getSegId(), region);
+                    // For the default implementation, we just care
+                    // about first hit.
+                    return;
+                }
+            }
+        }
+    }
+
+    public void considerPathXRegions(GeoPath path, Collection regions) {
+        /*
+         * Since the path is open, then our best bet is to check each
+         * segment separately
+         */
+        for (GeoPath.SegmentIterator pit = path.segmentIterator(); pit.hasNext();) {
+            GeoSegment seg = pit.nextSegment();
+            Iterator rit;
+            if (regions instanceof ExtentIndex) {
+                rit = ((ExtentIndex) regions).iterator(seg);
+            } else {
+                rit = regions.iterator();
+            }
+
+            while (rit.hasNext()) {
+                GeoRegion region = (GeoRegion) rit.next();
+                if (filter.preConsider(seg, region)
+                        && considerSegmentXRegion(seg, region)) {
+                    collector.collect(seg.getSegId(), region);
+                }
+            }
+        }
+    }
+
+    public void considerPathXRegion(GeoPath path, GeoRegion region) {
+        for (GeoPath.SegmentIterator pit = path.segmentIterator(); pit.hasNext();) {
+            GeoSegment seg = pit.nextSegment();
+
+            if (filter.preConsider(seg, region)
+                    && considerSegmentXRegion(seg, region)) {
+                collector.collect(seg.getSegId(), region);
+                // For the default implementation, we just care about
+                // the first contact.
+                return;
+            }
+        }
+    }
+
+    public boolean considerSegmentXRegion(GeoSegment seg, GeoRegion region) {
+        return region.isSegmentNear(seg, filter.getHRange());
+    }
+
+    public void considerPointXRegions(GeoPoint p, Collection regions) {
+        Iterator rit;
+        if (regions instanceof ExtentIndex) {
+            rit = ((ExtentIndex) regions).iterator(p);
+        } else {
+            rit = regions.iterator();
+        }
+
+        while (rit.hasNext()) {
+            GeoRegion region = (GeoRegion) rit.next();
+            if (filter.preConsider(p, region)
+                    && considerPointXRegion(p, region)) {
+                collector.collect(p, region);
+            }
+        }
+    }
+    
+    public boolean considerPointXRegion(GeoPoint p, GeoRegion region) {
+        return isPointInPolygon(p.getPoint(), region.toPointArray());
+    }
+    
+    //
+    // Static versions of intersection methods
+    //
+
+    /**
+     * Simplified version of #intersect(Path, Collection, Algorithm)
+     * for old code, using the default match algorithm, and returning
+     * the identifiers of the regions that intersect with the path.
+     * 
+     * @param path
+     * @param regions
+     * @return a list of the identifiers of the intersecting regions.
+     */
+    public static Iterator intersect(Object path, Object regions) {
+        MatchCollector.SetMatchCollector c = new MatchCollector.SetMatchCollector();
+        Intersection ix = new Intersection(new MatchFilter.MatchParametersMF(MatchParameters.STRICT), c);
+        ix.consider(path, regions);
+        return c.iterator();
+    }
+
+    //
+    // Utility methods (The Mathematics)
+    //
 
     /**
      * Returns the two antipodal points of interection of two great
@@ -388,18 +576,18 @@ public class Intersection {
      * <code>poly<code> is an array of latitude/longitude points where:
      * <br>
      * <pre>
-     *              
-     *                                                     
-     *                                                      poly[0] = latitude 1
-     *                                                      poly[1] = longitude 1
-     *                                                      poly[2] = latitude 2
-     *                                                      poly[3] = longitude 2
-     *                                                      .
-     *                                                      .
-     *                                                      .
-     *                                                      poly[n-1] = latitude 1
-     *                                                      poly[n] = longitude 1
-     *                                                      
+     *                         
+     *                                                                
+     *                                                                 poly[0] = latitude 1
+     *                                                                 poly[1] = longitude 1
+     *                                                                 poly[2] = latitude 2
+     *                                                                 poly[3] = longitude 2
+     *                                                                 .
+     *                                                                 .
+     *                                                                 .
+     *                                                                 poly[n-1] = latitude 1
+     *                                                                 poly[n] = longitude 1
+     *                                                                 
      * </pre>
      *
      * @param x a geographic coordinate
@@ -667,355 +855,6 @@ public class Intersection {
     // }
 
     /**
-     * An interface to an object called by the algorithm-parameterized
-     * Intersection methods to control the behavior of the geometric
-     * matches and to call back into external code, for instance, to
-     * collect results. A new instance must be used each time.
-     */
-    public static interface Algorithm {
-        /**
-         * Invoked when Intersect finds a match. The parameters passed
-         * depend on the arguments to the Intersect.
-         * 
-         * @param query the object or portion of the object passed as
-         *        the first argument to Intersect.
-         * @param match the object or portion of the object passed as
-         *        the second argument to Intersect.
-         */
-        void match(Object queryObject, Object matchedObject);
-
-        /**
-         * Invoked to consider matching a possible match. Intersection
-         * will invoke match IFF this method return true.
-         */
-        boolean consider(GeoSegment segment, GeoRegion region);
-
-        /**
-         * Invoked to consider matching a possible match. Intersection
-         * will invoke match IFF this method returns true.
-         */
-        boolean consider(GeoPoint p, GeoRegion region);
-
-        /**
-         * Invoked to really check a region against another.
-         * Intersection will invokech IFF this method returns true.
-         */
-        boolean consider(GeoRegion r, GeoRegion region);
-
-        /**
-         * Invoked at the beginning of a search. May be used to
-         * initialize the Algorithm instance
-         */
-        void startingSearch();
-    }
-
-    /**
-     * Used by the intersection methods to control the behavior of the
-     * geometric matches and to call back into external code, for
-     * instance, to collect results. A new instance is (and must be)
-     * used each time.
-     * <p>
-     * This implementation requires that setMatchParameters be called
-     * prior to starting the match.
-     */
-    public static abstract class BasicAlgorithm implements Algorithm {
-        // state and default algorithm
-        protected double hrange = 0.0;
-
-        /**
-         * Used to make certain that an algorithm instance is not
-         * reused.
-         */
-        protected boolean fresh = true;
-
-        public void setMatchParameters(MatchParameters params) {
-            // initialize search parameters from method calls
-            if (params != null) {
-                hrange = params.horizontalRange();
-            }
-        }
-
-        /**
-         * Calls Intersection.isSegmentNearRegion() to see if segment
-         * is near the region.
-         */
-        public boolean consider(GeoSegment segment, GeoRegion region) {
-            return Intersection.isSegmentNearRegion(segment, hrange, region);
-        }
-
-        /**
-         * Calls Intersection.isPointInPolygon() to see if point is
-         * within region.
-         */
-        public boolean consider(GeoPoint p, GeoRegion region) {
-            return Intersection.isPointInPolygon(p.getPoint(),
-                    region.getBoundary());
-        }
-
-        /**
-         * Does a reverse check to see if any point of region is
-         * within r, giving an indication if region is entirely within
-         * r. All other intersection situations should be caught by
-         * consider(segment, region).
-         */
-        public boolean consider(GeoRegion r, GeoRegion region) {
-            Geo[] pts = region.getBoundary();
-            if (pts != null && pts.length > 0) {
-                return Intersection.isPointInPolygon(pts[pts.length - 1],
-                        r.getBoundary());
-            }
-            return false;
-        }
-
-        /** invoked before a search to initialize search state * */
-        public synchronized final void startingSearch() {
-            if (!fresh) {
-                throw new IllegalArgumentException("Instersections.Algorithm instances may only be used once!");
-            }
-            fresh = false;
-        }
-
-    }
-
-    /**
-     * Find intersections between a Path and a set of regions of
-     * interest. Invokes algorithm.match(path.iterator().getSegID(),
-     * region) on matches.
-     * 
-     * @param path a set of points to match against regions.
-     * @param regions a Collection of possible Region regions to
-     *        match. If it is a RegionIndex, then a more constrained
-     *        lookup can be performed.
-     * @param algorithm search parameters, control mechanisms, and
-     *        data collection for the search.
-     */
-    public static void intersect(GeoPath path, Collection regions,
-                                 Algorithm algorithm) {
-        algorithm.startingSearch();
-
-        for (GeoPath.SegmentIterator pit = path.segmentIterator(); pit.hasNext();) {
-            GeoSegment seg = pit.nextSegment();
-            Iterator rit;
-            if (regions instanceof ExtentIndex) {
-                rit = ((ExtentIndex) regions).iterator(seg);
-            } else {
-                rit = regions.iterator();
-            }
-
-            while (rit.hasNext()) {
-                try {
-                    GeoRegion collectionRegion = (GeoRegion) rit.next();
-                    if (algorithm.consider(seg, collectionRegion)) {
-                        // notify the controller
-                        algorithm.match(seg.getSegId(), collectionRegion);
-                    }
-                } catch (ClassCastException cce) {
-                    System.err.println("Intersection.intersect(): Region Collection inappropriately holding something other than a Region");
-                    // Whew, blow it off...
-                }
-            }
-        }
-    }
-
-    /**
-     * Find intersections between a Region and a set of regions of
-     * interest. Creates a path out of the region points and then does
-     * the same basic thing that the intesection code for paths does,
-     * with the added check to see of each collection region might
-     * also reside entirely withing the given region.
-     * 
-     * @param region a region to match against regions.
-     * @param regions a Collection of possible Region regions to
-     *        match. If it is a RegionIndex, then a more constrained
-     *        lookup can be performed.
-     * @param algorithm search parameters, control mechanisms, and
-     *        data collection for the search.
-     */
-    public static void intersect(GeoRegion region, Collection regions,
-                                 Algorithm algorithm) {
-        algorithm.startingSearch();
-
-        LatLonPath path = new LatLonPath(region.getBoundary());
-        Iterator rit;
-        GeoRegion collectionRegion;
-
-        // Catch the edge intersections...
-        for (GeoPath.SegmentIterator pit = path.segmentIterator(); pit.hasNext();) {
-            GeoSegment seg = pit.nextSegment();
-
-            if (regions instanceof ExtentIndex) {
-                rit = ((ExtentIndex) regions).iterator(seg);
-            } else {
-                rit = regions.iterator();
-            }
-
-            while (rit.hasNext()) {
-
-                try {
-                    collectionRegion = (GeoRegion) rit.next();
-                    if (algorithm.consider(seg, collectionRegion)) {
-                        // notify the controller
-                        algorithm.match(seg.getSegId(), collectionRegion);
-                    }
-
-                } catch (ClassCastException cce) {
-                    System.err.println("Intersection.intersect(): Region Collection inappropriately holding something other than a Region");
-                    // Whew, blow it off...
-                }
-            }
-        }
-
-        // This catches the regions in the collection that lie
-        // completely within the region.
-        if (regions instanceof ExtentIndex) {
-            // Need to get the iterator over the bounding circle of
-            // the region, in order to catch the stuff that is further
-            // away from the path in the middle of a region than any
-            // of the segments is long (outside the bounding circle of
-            // any path segment).
-            rit = ((ExtentIndex) regions).iterator(region);
-        } else {
-            rit = regions.iterator();
-        }
-
-        while (rit.hasNext()) {
-            try {
-                collectionRegion = (GeoRegion) rit.next();
-                if (algorithm.consider(region, collectionRegion)) {
-                    algorithm.match(region, collectionRegion);
-                }
-            } catch (ClassCastException cce) {
-                System.err.println("Intersection.intersect(): Region Collection inappropriately holding something other than a Region");
-                // Whew, blow it off...
-            }
-        }
-    }
-
-    /**
-     * Find intersections between a Geo and a set of regions of
-     * interest. Invokes algorithm.match(Geo, region) on matches.
-     * 
-     * @param point a Geo to match against regions.
-     * @param regions a Collection of possible Region regions to
-     *        match. If it is a RegionIndex, then a more constrained
-     *        lookup can be performed.
-     * @param algorithm search parameters, control mechanisms, and
-     *        data collection for the search.
-     */
-    public static void intersect(GeoPoint point, Collection regions,
-                                 Algorithm algorithm) {
-        algorithm.startingSearch();
-
-        Iterator rit;
-        if (regions instanceof ExtentIndex) {
-            rit = ((ExtentIndex) regions).iterator(point);
-        } else {
-            rit = regions.iterator();
-        }
-
-        while (rit.hasNext()) {
-            try {
-                GeoRegion region = (GeoRegion) rit.next();
-                if (algorithm.consider(point, region)) {
-                    // notify the controller
-                    algorithm.match(point, region);
-                }
-            } catch (ClassCastException cce) {
-                System.err.println("Intersection.intersect(): Region Collection inappropriately holding something other than a Region");
-                // Whew, blow it off...
-            }
-        }
-    }
-
-    /**
-     * Simplified version of #intersect(Region, Collection, Algorithm)
-     * for old code, using the default match algorithm, and returning
-     * the identifiers of the regions that intersect with the path.
-     * 
-     * @param region a region to match against regions.
-     * @param regions a Collection of possible Region regions to
-     *        match. If it is a RegionIndex, then a more constrained
-     *        lookup can be performed.
-     * @param matchParameters a MatchParameters object that lets you
-     *        set the acceptable range of distance between the point
-     *        and regions in the collection. If null, only strict
-     *        intersections will be considered.
-     * @return an interator over a list of the identifiers of the
-     *         intersecting regions.
-     */
-    public static Iterator intersect(GeoRegion r, Collection regions,
-                                     MatchParameters matchParameters) {
-        final ArrayList l = new ArrayList(10);
-        BasicAlgorithm alg = new BasicAlgorithm() {
-            public void match(Object query, Object match) {
-                l.add(match);
-            }
-        };
-        alg.setMatchParameters(matchParameters);
-        intersect(r, regions, alg);
-        return l.iterator();
-    }
-
-    /**
-     * Simplified version of #intersect(Path, Collection, Algorithm)
-     * for old code, using the default match algorithm, and returning
-     * the identifiers of the regions that intersect with the path.
-     * 
-     * @param path a set of points to match against regions.
-     * @param regions a Collection of possible Region regions to
-     *        match. If it is a RegionIndex, then a more constrained
-     *        lookup can be performed.
-     * @param matchParameters a MatchParameters object that lets you
-     *        set the acceptable range of distance between the point
-     *        and regions in the collection. If null, only strict
-     *        intersections will be considered.
-     * @return an interator over a list of the identifiers of the
-     *         intersecting regions.
-     */
-    public static Iterator intersect(GeoPath path, Collection regions,
-                                     MatchParameters matchParameters) {
-        final ArrayList l = new ArrayList(10);
-        BasicAlgorithm alg = new BasicAlgorithm() {
-            public void match(Object query, Object match) {
-                l.add(match);
-            }
-        };
-        alg.setMatchParameters(matchParameters);
-        intersect(path, regions, alg);
-        return l.iterator();
-    }
-
-    /**
-     * Simplified version of #intersect(Geo, Collection, Algorithm)
-     * for old code, using the default match algorithm, and returning
-     * the identifiers of the regions that intersect with the Geo
-     * point.
-     * 
-     * @param point a GeoPoint to check against regions.
-     * @param regions a Collection of possible Region regions to
-     *        match. If it is a RegionIndex, then a more constrained
-     *        lookup can be performed.
-     * @param matchParameters a MatchParameters object that lets you
-     *        set the acceptable range of distance between the point
-     *        and regions in the collection. If null, only strict
-     *        intersections will be considered.
-     * @return an interator over a list of the identifiers of the
-     *         intersecting regions.
-     */
-    public static Iterator intersect(GeoPoint point, Collection regions,
-                                     MatchParameters matchParameters) {
-        final ArrayList l = new ArrayList(10);
-        BasicAlgorithm alg = new BasicAlgorithm() {
-            public void match(Object query, Object match) {
-                l.add(match);
-            }
-        };
-        alg.setMatchParameters(matchParameters);
-        intersect(point, regions, alg);
-        return l.iterator();
-    }
-
-    /**
      * Does the segment come within near radians of the region defined
      * by rCenter at rRadius?
      */
@@ -1049,7 +888,7 @@ public class Intersection {
         // region.isSegmentNear(segment, hrange) can result in
         // circular code if the region just calls this method, which
         // may seem reasonable, if you look at the API.
-        return isSegmentNearPolyRegion(segment, region.getBoundary(), hrange);
+        return isSegmentNearPolyRegion(segment, region.toPointArray(), hrange);
     }
 
     /**
