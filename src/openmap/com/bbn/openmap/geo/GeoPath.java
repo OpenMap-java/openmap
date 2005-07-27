@@ -115,12 +115,13 @@ public interface GeoPath extends GeoExtent {
          */
         public Impl(float[] lls, boolean isDegrees) {
             int al = lls.length;
-            length = al / 2;
-            pts = new Geo[length];
+            int length = al / 2;
+            Geo[] pts = new Geo[length];
             for (int i = 0, p = 0; i < al; i = i + 2) {
                 pts[p] = new Geo(lls[i], lls[i + 1], isDegrees);
                 p++;
             }
+            setPoints(pts);
         }
 
         /**
@@ -129,8 +130,20 @@ public interface GeoPath extends GeoExtent {
          * @param geos
          */
         public Impl(Geo[] geos) {
-            pts = geos;
-            length = pts.length;
+            setPoints(geos);
+        }
+        
+        /**
+         * Method for subclasses to set pts and length of Geos.
+         * @param points
+         */
+        protected void setPoints(Geo[] points) {
+            pts = points;
+            if (pts != null) {
+                length = pts.length;
+            } else {
+                length = 0;
+            }
         }
 
         public Geo[] toPointArray() {

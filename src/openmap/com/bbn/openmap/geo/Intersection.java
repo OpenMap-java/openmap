@@ -22,40 +22,81 @@ import java.util.List;
  * Contains great circle intersection algorithms and helper methods.
  * Sources: http://williams.best.vwh.net/intersect.htm
  * http://mathforum.org/library/drmath/view/60711.html
+ * <P>
+ * The Intersection class has been updated to manage query
+ * intersections of GeoExtents over other GeoExtents. MatchCollectors
+ * and MatchFilters can be used to help optimize the search and manage
+ * the results.
  * 
  * @author Sachin Date
  * @author Ken Anderson
- * @version $Revision: 1.10 $ on $Date: 2005/07/22 21:22:48 $
+ * @version $Revision: 1.11 $ on $Date: 2005/07/27 21:58:12 $
  */
 public class Intersection {
 
     protected final MatchFilter filter;
     protected final MatchCollector collector;
 
+    /**
+     * Create an Intersection class that will use the provided
+     * MatchFilter and MatchCollector.
+     * 
+     * @param filter
+     * @param collector
+     */
     public Intersection(MatchFilter filter, MatchCollector collector) {
         this.filter = filter;
         this.collector = collector;
     }
 
+    /**
+     * Create an Intersection class that will use the
+     * MatchFilter.MatchParameters class with STRICT settings, and a
+     * MatchCollector.SetMatchCollector.
+     */
     public static Intersection intersector() {
         return new Intersection(new MatchFilter.MatchParametersMF(MatchParameters.STRICT), new MatchCollector.SetMatchCollector());
     }
 
+    /**
+     * Create an Intersection class that will use the
+     * MatchFilter.MatchParameters class with provided settings, and a
+     * MatchCollector.SetMatchCollector.
+     */
     public static Intersection intersector(MatchParameters params) {
         return new Intersection(new MatchFilter.MatchParametersMF(params), new MatchCollector.SetMatchCollector());
 
     }
 
+    /**
+     * Create an Intersection class that will use the
+     * MatchFilter.MatchParameters class with provided settings, and a
+     * MatchCollector.CollectionMatchCollector with the provided
+     * collector.
+     */
     public static Intersection intersector(MatchParameters params,
                                            final Collection c) {
         return new Intersection(new MatchFilter.MatchParametersMF(params), new MatchCollector.CollectionMatchCollector(c));
     }
 
+    /**
+     * Create an Intersection class that will use the provided
+     * MatchFilter class and the provided MatchCollector.
+     */
     public static Intersection intersector(MatchFilter filter,
                                            MatchCollector collector) {
         return new Intersection(filter, collector);
     }
 
+    /**
+     * Asks the Intersection class to calcuate the relationships
+     * between object a and b. Calls the other consider methods,
+     * depending on what a and b are. Consult the MatchCollector for
+     * the results.
+     * 
+     * @param a A GeoExtent object, generally.
+     * @param b A ExtentImpl object or GeoExtent object, generally.
+     */
     public void consider(Object a, Object b) {
         if (b instanceof Collection) {
             if (a instanceof GeoRegion) {
@@ -78,25 +119,32 @@ public class Intersection {
 
     public void considerRegionXRegions(GeoRegion r, Collection regions) {
 
-        ExtentIndex rindex = null; // keep this out of the loop
-        if (regions instanceof ExtentIndex) {
-            rindex = (ExtentIndex) regions;
-        }
-
         /*
          * since the path is closed we'll check the region index for
          * the whole thing instead of segment-by-segment
          */
         Iterator possibles;
-        if (rindex != null) { // if we've got an index, narrow the
-            // set down
-            possibles = rindex.iterator(r);
+        if (regions instanceof ExtentIndex) {
+            // if we've got an index, narrow the set down
+            possibles = ((ExtentIndex) regions).iterator(r);
         } else {
             possibles = regions.iterator();
         }
+
         while (possibles.hasNext()) {
-            GeoRegion region = (GeoRegion) possibles.next();
-            considerRegionXRegion(r, region);
+            GeoExtent extent = (GeoExtent) possibles.next();
+            if (extent instanceof GeoRegion) {
+                considerRegionXRegion(r, (GeoRegion) extent);
+            } else if (extent instanceof GeoPath) {
+                considerPathXRegion((GeoPath) extent, r);
+            } else {
+                BoundingCircle bc = extent.getBoundingCircle();
+                BoundingCircle rbc = r.getBoundingCircle();
+                if (rbc.intersects(bc.getCenter(), bc.getRadius()
+                        + filter.getHRange())) {
+                    collector.collect(r.getRegionId(), extent);
+                }
+            }
         }
     }
 
@@ -146,11 +194,31 @@ public class Intersection {
             }
 
             while (rit.hasNext()) {
-                GeoRegion region = (GeoRegion) rit.next();
-                if (filter.preConsider(seg, region)
-                        && considerSegmentXRegion(seg, region)) {
-                    collector.collect(seg.getSegId(), region);
+                GeoExtent extent = (GeoExtent) rit.next();
+                if (filter.preConsider(path, extent)) {
+                    if (extent instanceof GeoRegion) {
+                        GeoRegion region = (GeoRegion) extent;
+                        if (considerSegmentXRegion(seg, region)) {
+                            collector.collect(seg.getSegId(), region);
+                        }
+                    } else if (extent instanceof GeoPath) {
+                        GeoPath p = (GeoPath) extent;
+                        if (isSegmentNearPoly(seg,
+                                p.toPointArray(),
+                                filter.getHRange()) != null) {
+                            collector.collect(seg.getSegId(), p);
+                        }
+                    } else {
+                        BoundingCircle bc = extent.getBoundingCircle();
+                        if (isSegmentNearRadialRegion(seg,
+                                bc.getCenter(),
+                                bc.getRadius(),
+                                filter.getHRange())) {
+                            collector.collect(seg.getSegId(), extent);
+                        }
+                    }
                 }
+
             }
         }
     }
@@ -182,18 +250,35 @@ public class Intersection {
         }
 
         while (rit.hasNext()) {
-            GeoRegion region = (GeoRegion) rit.next();
-            if (filter.preConsider(p, region)
-                    && considerPointXRegion(p, region)) {
-                collector.collect(p, region);
+            GeoExtent extent = (GeoExtent) rit.next();
+            if (filter.preConsider(p, extent)) {
+                if (extent instanceof GeoRegion) {
+                    GeoRegion region = (GeoRegion) extent;
+                    if (considerPointXRegion(p, region)) {
+                        collector.collect(p, region);
+                    }
+                } else if (extent instanceof GeoPath) {
+                    GeoPath path = (GeoPath) extent;
+                    if (isPointNearPoly(p.getPoint(),
+                            path.toPointArray(),
+                            filter.getHRange())) {
+                        collector.collect(p.getPointId(), path);
+                    }
+                } else {
+                    BoundingCircle bc = extent.getBoundingCircle();
+                    if (p.getPoint().distance(bc.getCenter()) <= bc.getRadius()
+                            + filter.getHRange()) {
+                        collector.collect(p.getPoint(), extent);
+                    }
+                }
             }
         }
     }
-    
+
     public boolean considerPointXRegion(GeoPoint p, GeoRegion region) {
         return isPointInPolygon(p.getPoint(), region.toPointArray());
     }
-    
+
     //
     // Static versions of intersection methods
     //
@@ -576,18 +661,18 @@ public class Intersection {
      * <code>poly<code> is an array of latitude/longitude points where:
      * <br>
      * <pre>
-     *                         
-     *                                                                
-     *                                                                 poly[0] = latitude 1
-     *                                                                 poly[1] = longitude 1
-     *                                                                 poly[2] = latitude 2
-     *                                                                 poly[3] = longitude 2
-     *                                                                 .
-     *                                                                 .
-     *                                                                 .
-     *                                                                 poly[n-1] = latitude 1
-     *                                                                 poly[n] = longitude 1
-     *                                                                 
+     *                                  
+     *                                                                         
+     *                                                                          poly[0] = latitude 1
+     *                                                                          poly[1] = longitude 1
+     *                                                                          poly[2] = latitude 2
+     *                                                                          poly[3] = longitude 2
+     *                                                                          .
+     *                                                                          .
+     *                                                                          .
+     *                                                                          poly[n-1] = latitude 1
+     *                                                                          poly[n] = longitude 1
+     *                                                                          
      * </pre>
      *
      * @param x a geographic coordinate

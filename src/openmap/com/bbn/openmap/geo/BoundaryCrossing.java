@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BoundaryCrossing.java,v $
-//$Revision: 1.3 $
-//$Date: 2005/07/27 17:23:49 $
+//$Revision: 1.4 $
+//$Date: 2005/07/27 21:58:12 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -30,12 +30,38 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The BoundaryCrossing class represents a location where a path
+ * crosses a region. Since a location can represent a region being
+ * left and a region being entered, you can ask it for the out
+ * GeoRegion and the in GeoRegion. Both won't be null at the same
+ * time, but either may be.
+ * 
+ * @author dietrick
+ */
 public class BoundaryCrossing {
 
+    /**
+     * The Geo location of the crossing.
+     */
     protected Geo geo;
+    /**
+     * The GeoRegion that is being entered.
+     */
     protected GeoRegion in;
+    /**
+     * The GeoRegion that is being exited.
+     */
     protected GeoRegion out;
 
+    /**
+     * Creates the BoundaryCrossing. The getCrossings() factory method
+     * will result in BoundaryCrossings being created.
+     * 
+     * @param p The Geo location
+     * @param r the GeoRegion being entered/exited
+     * @param goinin whether the path is goin' in to the region.
+     */
     protected BoundaryCrossing(Geo p, GeoRegion r, boolean goinin) {
         geo = p;
         if (goinin) {
@@ -57,6 +83,15 @@ public class BoundaryCrossing {
         return out;
     }
 
+    /**
+     * The main factory method to create BoundaryCrossings. Provides a
+     * BoundaryCrossing.Collector so that crossing points can be
+     * retrieved, as well as an iterator over regions intersected.
+     * 
+     * @param path GeoPath to travel over
+     * @param regions An ExtentIndex filled with GeoRegions.
+     * @return BoundaryCrossing.Collector
+     */
     public static Collector getCrossings(GeoPath path, Collection regions) {
         Collector collector = new Collector();
         CrossingIntersection crossings = new CrossingIntersection(collector);
@@ -64,6 +99,12 @@ public class BoundaryCrossing {
         return collector;
     }
 
+    /**
+     * A Collector is an object that organizes boundary crossings, as
+     * discovered by CrossingIntersection class.
+     * 
+     * @author dietrick
+     */
     public static class Collector extends MatchCollector.SetMatchCollector {
 
         List crossings = new ArrayList(10);
@@ -72,10 +113,27 @@ public class BoundaryCrossing {
 
         public Collector() {}
 
+        /**
+         * Add a BoundaryCrossing to the collection of crossings.
+         * 
+         * @param bc
+         */
         protected void addCrossing(BoundaryCrossing bc) {
             crossings.add(bc);
         }
 
+        /**
+         * Add a BoundaryCrossing associated with a segment and
+         * region. This is the main thinkin' method, called by the
+         * CrossingInspector with lists of crossings. This method
+         * organizes and orders BorderCrossings according to the
+         * segment order of the path that caused the crossings.
+         * 
+         * @param c A list of Geos that a segement intersects with a
+         *        region.
+         * @param segment GeoSegment
+         * @param region GeoRegion
+         */
         protected void addCrossing(Collection c, GeoSegment segment,
                                    GeoRegion region) {
 
@@ -165,6 +223,13 @@ public class BoundaryCrossing {
             lastSegmentStartingPoint = start;
         }
 
+        /**
+         * An important method that cleans up the segment/region
+         * BoundaryCrossing order, and also resolves the
+         * BoundaryCrossing.in/out settings for regions. Must be
+         * called before the crossing iterator is retrieved, but the
+         * BoundaryCrossing method does that.
+         */
         protected void compact() {
             if (lastSegmentCrossingList != null
                     && lastSegmentCrossingList.size() > 0) {
@@ -196,7 +261,8 @@ public class BoundaryCrossing {
 
                     continue;
                 } else {
-                    // First point or if the distance between points is not zero, if the bc.out is set, then we
+                    // First point or if the distance between points
+                    // is not zero, if the bc.out is set, then we
                     // should set the bc.in to null, just to indicate
                     // that the point reflects a crossing from outside
                     // any other region into that particular region.
@@ -218,13 +284,9 @@ public class BoundaryCrossing {
     }
 
     /**
-     * Used by the intersection methods to control the behavior of the
-     * geometric matches and to call back into external code, for
-     * instance, to collect results. A new instance is (and must be)
-     * used each time.
-     * <p>
-     * This implementation requires that setMatchParameters be called
-     * prior to starting the match.
+     * A Intersection class that knows how to call
+     * BoundaryCrossing.Collector to keep track of the path's
+     * relationship with the regions.
      */
     public static class CrossingIntersection extends Intersection {
 
@@ -253,17 +315,6 @@ public class BoundaryCrossing {
             return false;
         }
 
-        /**
-         * Does a reverse check to see if any point of region is
-         * within r, giving an indication if region is entirely within
-         * r. All other intersection situations should be caught by
-         * consider(segment, region).
-         */
-        public boolean consider(GeoRegion r, GeoRegion region) {
-            // since we just want crossings, this check is moot. The
-            // consider(segment, region) method should be used.
-            return false;
-        }
     }
 
 }
