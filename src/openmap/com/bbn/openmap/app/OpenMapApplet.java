@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMapApplet.java,v $
 // $RCSfile: OpenMapApplet.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:40 $
+// $Revision: 1.9 $
+// $Date: 2005/07/29 19:17:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -70,9 +70,9 @@ public class OpenMapApplet extends JApplet implements
     // pinfo used to have these parameters, too, but that doesn't
     // seem right to include visibroker arguments in the generic
     // applet parameter info.
-    //      {"ORBdisableLocator", "boolean", "disable Visiborker
+    // {"ORBdisableLocator", "boolean", "disable Visiborker
     // Gatekeeper"},
-    //      {"ORBgatekeeperIOR", "boolean", "URL to gatekeeper IOR."},
+    // {"ORBgatekeeperIOR", "boolean", "URL to gatekeeper IOR."},
 
     protected final String pinfo[][] = {
             { Environment.Latitude, "float", "Starting center latitude" },
@@ -227,7 +227,6 @@ public class OpenMapApplet extends JApplet implements
      * find components in the MapHandler.
      */
     public void findAndInit(Iterator it) {
-        Object someObj;
         while (it.hasNext()) {
             findAndInit(it.next());
         }
@@ -277,9 +276,7 @@ public class OpenMapApplet extends JApplet implements
      *        through the removed objects.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-        Object someObj;
-        Iterator it = bcme.iterator();
-        while (it.hasNext()) {
+        for (Iterator it = bcme.iterator(); it.hasNext();) {
             findAndUndo(it.next());
         }
     }

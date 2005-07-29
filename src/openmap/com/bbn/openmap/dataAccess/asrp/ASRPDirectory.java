@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/ASRPDirectory.java,v $
 // $RCSfile: ASRPDirectory.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:40 $
+// $Revision: 1.6 $
+// $Date: 2005/07/29 19:19:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -336,7 +336,6 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
             int rowCount = 0; // the per row count, should equal 128 (
                               // numHorPixels_Q) at the end of every
                               // row
-            int numRow = 0;
             int cpc = 0; // current pixel count for file pointer
             int cpv = 0; // current pixel value for file pointer
             while (byteCount < numBlockPixels) {
@@ -591,7 +590,7 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
         if (argv.length < 1) {
             Debug.output("Usage: ASRPDirectory dir_pathname");
         } else {
-            ASRPDirectory dir = new ASRPDirectory(argv[0]);
+            new ASRPDirectory(argv[0]);
         }
 
         System.exit(0);
