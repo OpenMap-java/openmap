@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ExtentIndexImpl.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/07/21 22:58:27 $
+//$Revision: 1.2 $
+//$Date: 2005/07/29 13:09:24 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -347,7 +347,9 @@ public class ExtentIndexImpl extends java.util.AbstractCollection implements
         polar.clear();
         discarded.clear();
         for (int i = 0; i < buckets.length; i++) {
-            buckets[i].clear();
+            if (buckets[i] != null) {
+                buckets[i].clear();
+            }
         }
     }
 
