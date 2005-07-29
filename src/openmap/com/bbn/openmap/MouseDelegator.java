@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MouseDelegator.java,v $
 // $RCSfile: MouseDelegator.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:39 $
+// $Revision: 1.5 $
+// $Date: 2005/07/29 14:36:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -507,7 +507,6 @@ public class MouseDelegator implements PropertyChangeListener,
      *        BeanContext.
      */
     public void findAndInit(Iterator it) {
-        Object someObj;
         while (it.hasNext()) {
             findAndInit(it.next());
         }
@@ -551,7 +550,6 @@ public class MouseDelegator implements PropertyChangeListener,
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
         Iterator it = bcme.iterator();
-        Object someObj;
         while (it.hasNext()) {
             findAndUndo(it.next());
         }

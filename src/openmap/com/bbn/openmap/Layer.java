@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.24 $
-// $Date: 2005/02/11 22:25:59 $
+// $Revision: 1.25 $
+// $Date: 2005/07/29 14:36:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,13 +40,13 @@ import java.beans.beancontext.BeanContextChild;
 import java.beans.beancontext.BeanContextChildSupport;
 import java.beans.beancontext.BeanContextMembershipEvent;
 import java.beans.beancontext.BeanContextMembershipListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Iterator;
 import java.util.Properties;
 
 import javax.swing.JComponent;
 
-import com.bbn.openmap.I18n;
-import com.bbn.openmap.ProjectionPainter;
 import com.bbn.openmap.event.InfoDisplayEvent;
 import com.bbn.openmap.event.InfoDisplayListener;
 import com.bbn.openmap.event.LayerStatusEvent;
@@ -213,7 +213,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     protected boolean addAsBackground = false;
 
     /**
-     * Flag to designate the layer as removable or not.
+     * Flag to designate the layer as removeable or not.
      */
     protected boolean removable = true;
 
@@ -254,12 +254,13 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * other components to find the layer, if the layer is added to
      * it.
      */
-    protected final BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
+    protected transient BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
+
     /**
      * All layers have access to an I18n object, which is provided by
      * the Environment.
      */
-    protected I18n i18n = Environment.getI18n();
+    protected transient I18n i18n = Environment.getI18n();
 
     /**
      * Returns the package of the given class as a string.
@@ -358,7 +359,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
         setRemovable(PropUtils.booleanFromProperties(props, realPrefix
                 + RemovableProperty, removable));
-        // Remove this for 4.7, just covering for misspelled original version.
+        // Remove this for 4.7, just covering for misspelled original
+        // version.
         setRemovable(PropUtils.booleanFromProperties(props, realPrefix
                 + RemoveableProperty, isRemovable()));
 
@@ -600,8 +602,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
         return null;
     }
 
-    ///////////////////////////////////////////////////
-    //  InfoDisplay Handling Setup and Firing
+    // /////////////////////////////////////////////////
+    // InfoDisplay Handling Setup and Firing
 
     /**
      * Adds a listener for <code>InfoDisplayEvent</code>s.
@@ -842,8 +844,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
         }
     }
 
-    ///////////////////////////////////////////////////
-    //  LayerStatus Handling Setup and Firing
+    // /////////////////////////////////////////////////
+    // LayerStatus Handling Setup and Firing
 
     /**
      * Adds a listener for <code>LayerStatusEvent</code>s.
@@ -1471,5 +1473,20 @@ public abstract class Layer extends JComponent implements ProjectionListener,
             Inspector inspector = new Inspector();
             inspector.inspectPropertyConsumer(this);
         }
+    }
+
+    /**
+     * Handle Serialization a little bit better, replacing the I18n
+     * and BeanContextChildSupport.
+     * 
+     * @param in
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private void readObject(ObjectInputStream in) throws IOException,
+            ClassNotFoundException {
+        in.defaultReadObject();
+        i18n = Environment.getI18n();
+        beanContextChildSupport = new BeanContextChildSupport(this);
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/BasicI18n.java,v $
 // $RCSfile: BasicI18n.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/02/11 22:25:59 $
+// $Revision: 1.6 $
+// $Date: 2005/07/29 14:36:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.Enumeration;
@@ -68,7 +69,7 @@ import com.bbn.openmap.util.FileUtils;
  * the US locale). You can add the I18nFileCreateMenuItem to an
  * application to trigger the dumpCreatedResourceBundles() method.
  */
-public class BasicI18n implements I18n {
+public class BasicI18n implements I18n, Serializable {
 
     /**
      * Debug string, 'i18n'
@@ -98,10 +99,10 @@ public class BasicI18n implements I18n {
 
     private Locale loc;
 
-    protected Hashtable createHash = null;
+    protected transient Hashtable createHash = null;
 
-    //Constructors:
-    ///////////////
+    // Constructors:
+    // /////////////
 
     /**
      * Create a BasicI18n object from the default locale.
@@ -151,8 +152,8 @@ public class BasicI18n implements I18n {
         return createHash;
     }
 
-    //Methods making it easier to use MessageFormat:
-    ////////////////////////////////////////////////
+    // Methods making it easier to use MessageFormat:
+    // //////////////////////////////////////////////
 
     public String get(Object requestor, String field, String defaultString,
                       Object param1) {
@@ -241,9 +242,9 @@ public class BasicI18n implements I18n {
                 params);
     }
 
-    //Methods fill setting the textual properties of common Swing
+    // Methods fill setting the textual properties of common Swing
     // components:
-    /////////////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////////////
 
     public void set(Object requestor, String field, JLabel comp) {
         set(requestor, field, (JComponent) comp);
@@ -292,8 +293,8 @@ public class BasicI18n implements I18n {
         }
     }
 
-    //Methods for filling in strings using reflection:
-    //////////////////////////////////////////////////
+    // Methods for filling in strings using reflection:
+    // ////////////////////////////////////////////////
 
     public void set(Object requestor, String field) {
         Class c = requestor.getClass();
@@ -301,7 +302,7 @@ public class BasicI18n implements I18n {
         try {
             f = c.getField(field);
         } catch (NoSuchFieldException e) {
-            //We'll try again below.
+            // We'll try again below.
         } catch (SecurityException e) {
             RuntimeException r = new MissingResourceException("SecurityException trying to reflect on field field", c.getName(), field);
             r.initCause(e);
@@ -320,13 +321,13 @@ public class BasicI18n implements I18n {
                 throw r;
             }
         }
-        //Try to set it accessible:
+        // Try to set it accessible:
         try {
             f.setAccessible(true);
         } catch (SecurityException e) {
             Debug.message(DEBUG, "Coudn't set field " + field + " accessible");
         }
-        //Ok, now try to get the data:
+        // Ok, now try to get the data:
         Class type = f.getType();
         Object fd = null;
         try {
@@ -340,7 +341,7 @@ public class BasicI18n implements I18n {
             r.initCause(e);
             throw r;
         }
-        //Now do the calls:
+        // Now do the calls:
         if (JLabel.class.isInstance(type)) {
             set(requestor, field, (JLabel) fd);
         } else if (JButton.class.isInstance(type)) {
@@ -365,10 +366,10 @@ public class BasicI18n implements I18n {
 
     }
 
-    ////
-    //// Implemenation Methods:
-    ///////////////////////////
-    ///////////////////////////
+    // //
+    // // Implemenation Methods:
+    // /////////////////////////
+    // /////////////////////////
 
     /**
      * Set a tooltip on the given component if it has one.
@@ -425,10 +426,10 @@ public class BasicI18n implements I18n {
             }
             return defaultInt;
         }
-        //Now parse this string into something useful:
-        //For now, don't deal with virtual keys, though that is an
+        // Now parse this string into something useful:
+        // For now, don't deal with virtual keys, though that is an
         // obvious
-        //extension:
+        // extension:
         return Character.getNumericValue(mn.charAt(0));
     }
 
@@ -441,8 +442,10 @@ public class BasicI18n implements I18n {
      */
     protected String getInternal(Class requestor, String field, int type) {
         ResourceBundle bundle = null;
+        Package pckg = requestor.getPackage();
 
-        String bString = requestor.getPackage().getName() + "."
+        String bString = (pckg == null ? ""
+                : (requestor.getPackage().getName() + "."))
                 + ResourceFileNamePrefix;
 
         try {
@@ -456,7 +459,7 @@ public class BasicI18n implements I18n {
         String key = shortClassName(requestor) + "." + field;
         switch (type) {
         case TEXT:
-            //Do nothing.
+            // Do nothing.
             break;
         case TITLE:
             key += ".title";
@@ -474,9 +477,10 @@ public class BasicI18n implements I18n {
             return bundle.getString(key);
 
         } catch (MissingResourceException e) {
+
             Debug.message(DEBUG, "Could not locate string in resource: "
-                    + requestor.getPackage().getName().replace('.', '/')
-                    + ".properties for key: " + key);
+                    + (pckg == null ? "" : (requestor.getPackage().getName().replace('.', '/') + ".")) 
+                    + "properties for key: " + key);
 
             return null;
         }
@@ -493,9 +497,12 @@ public class BasicI18n implements I18n {
                                         int type, String defaultString) {
         ResourceBundle bundle = null;
 
-        String bString = requestor.getPackage().getName() + "."
-                + ResourceFileNamePrefix;
+        Package pckg = requestor.getPackage();
 
+        String bString = (pckg == null ? ""
+                : (requestor.getPackage().getName() + "."))
+                + ResourceFileNamePrefix;
+        
         String propertyFileNameKey = null;
         Properties propertyFileProperties = null;
 
@@ -527,7 +534,7 @@ public class BasicI18n implements I18n {
         String resourceKey = shortClassName(requestor) + "." + field;
         switch (type) {
         case TEXT:
-            //Do nothing.
+            // Do nothing.
             break;
         case TITLE:
             resourceKey += ".title";

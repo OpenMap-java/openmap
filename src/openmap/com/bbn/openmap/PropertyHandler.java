@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.24 $
-// $Date: 2004/10/14 18:05:40 $
+// $Revision: 1.25 $
+// $Date: 2005/07/29 14:36:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -339,7 +339,7 @@ public class PropertyHandler extends MapHandlerChild implements
                     + propsFileName);
         }
 
-        //  Seems like we can kick out here in event of Applet...
+        // Seems like we can kick out here in event of Applet...
         if (Environment.isApplet()) {
             Environment.init(getProperties());
             return;
@@ -361,12 +361,12 @@ public class PropertyHandler extends MapHandlerChild implements
             for (int searchCount = 0; searchCount < cps.size(); searchCount++) {
                 File shareDir = new File((String) cps.elementAt(searchCount), defaultExtraDir);
                 if (shareDir.exists()) {
-                    //                  Debug.output("Found share directory: " +
+                    // Debug.output("Found share directory: " +
                     // shareDir.getPath());
                     openmapConfigDirectory = shareDir.getPath();
                     break;
-                    //              } else {
-                    //                  Debug.output("No share directory in: " +
+                    // } else {
+                    // Debug.output("No share directory in: " +
                     // shareDir.getPath());
                 }
             }
@@ -427,9 +427,9 @@ public class PropertyHandler extends MapHandlerChild implements
                     properties);
         }
 
-        //  Before we the user properties into the overall properties,
-        //  need to check for the include properties URLs, and load
-        //  those first.
+        // Before we the user properties into the overall properties,
+        // need to check for the include properties URLs, and load
+        // those first.
         includeProperties = getIncludeProperties(tmpProperties.getProperty(includeProperty),
                 tmpProperties);
         merge(includeProperties, "include file properties", userHomeDirectory);
@@ -989,7 +989,7 @@ public class PropertyHandler extends MapHandlerChild implements
     protected static void printMapProperties(MapBean mapBean, PrintStream ps,
                                              Properties createdProperties) {
 
-        //warning...hackish...
+        // warning...hackish...
         com.bbn.openmap.proj.Proj proj = mapBean.projection;
 
         ps.println("\n### OpenMap initial Map Settings ###");
@@ -1066,7 +1066,7 @@ public class PropertyHandler extends MapHandlerChild implements
 
         if (ph != null && buildConfiguredApplication) {
             Properties phProps = ph.getProperties();
-            //  Ahh, phProps'l never be null, right?
+            // Ahh, phProps'l never be null, right?
 
             // Let's build them from the current properties file.
             componentMarkerString.append(phProps.getProperty(PropertyHandler.componentProperty));
@@ -1307,11 +1307,12 @@ public class PropertyHandler extends MapHandlerChild implements
 
         MapBean mapBean = (MapBean) mapHandler.get("com.bbn.openmap.MapBean");
         LayerHandler layerHandler = (LayerHandler) mapHandler.get("com.bbn.openmap.LayerHandler");
-        InformationDelegator id = (InformationDelegator) mapHandler.get("com.bbn.openmap.InformationDelegator");
+        // InformationDelegator id = (InformationDelegator)
+        // mapHandler.get("com.bbn.openmap.InformationDelegator");
 
-        //      if (id != null) {
-        //          id.requestCursor(new Cursor(Cursor.WAIT_CURSOR));
-        //      }
+        // if (id != null) {
+        // id.requestCursor(new Cursor(Cursor.WAIT_CURSOR));
+        // }
 
         if (layerHandler != null) {
             layerHandler.removeAll();
@@ -1327,9 +1328,9 @@ public class PropertyHandler extends MapHandlerChild implements
             Debug.error("Can't load new projection - can't find MapBean");
         }
 
-        //      if (id != null) {
-        //          id.requestCursor(null);
-        //      }
+        // if (id != null) {
+        // id.requestCursor(null);
+        // }
     }
 
     /**
@@ -1446,8 +1447,8 @@ public class PropertyHandler extends MapHandlerChild implements
         return updateProgress;
     }
 
-    //Property Functions:
-    /////////////////////
+    // Property Functions:
+    // ///////////////////
 
     /**
      * Remove an existing property if it exists.
@@ -1516,12 +1517,12 @@ public class PropertyHandler extends MapHandlerChild implements
      */
     public void removeMarker(String property, String marker) {
         // Requires jdk 1.4
-        //      StringBuffer sb =
-        //          new StringBuffer(getProperties().getProperty(property,
+        // StringBuffer sb =
+        // new StringBuffer(getProperties().getProperty(property,
         // ""));
-        //      int idx = sb.indexOf(marker);
+        // int idx = sb.indexOf(marker);
 
-        //jdk 1.3 version
+        // jdk 1.3 version
         String propertyString = getProperties().getProperty(property, "");
         int idx = propertyString.indexOf(marker);
         if (idx != -1) {
@@ -1613,4 +1614,3 @@ public class PropertyHandler extends MapHandlerChild implements
         }
     }
 }
-
