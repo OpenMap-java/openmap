@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDAdmin.java,v $
 // $RCSfile: DTEDAdmin.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:42 $
+// $Revision: 1.6 $
+// $Date: 2005/08/04 18:08:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -212,8 +212,6 @@ public class DTEDAdmin {
      * source directory provided.
      */
     protected LinkedList getFrameList(String dtedDir) {
-        String newname;
-        String testname;
         int lev;
         boolean dothisone;
         int leftx = (int) Math.floor(ullon_);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrame.java,v $
 // $RCSfile: DTEDFrame.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/05/23 19:44:27 $
+// $Revision: 1.5 $
+// $Date: 2005/08/04 18:08:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,12 +67,14 @@ public class DTEDFrame implements Closable {
     public DTEDFrameDSI dsi;
     /** User header label section of the file. */
     public DTEDFrameUHL uhl;
+    /** Accuracy description section of the file. */
+    public DTEDFrameACC acc;
     /** Validity flag for the quality of the data file. */
     public boolean frame_is_valid = false;
 
-    //////////////////
+    // ////////////////
     // Administrative methods
-    //////////////////
+    // ////////////////
 
     /**
      * Simplest constructor.
@@ -122,10 +124,11 @@ public class DTEDFrame implements Closable {
      *        needed.
      */
     protected void read(BinaryFile binFile, boolean readWholeFile) {
-        binFile.byteOrder(true); //boolean msbfirst
+        binFile.byteOrder(true); // boolean msbfirst
         dsi = new DTEDFrameDSI(binFile);
         uhl = new DTEDFrameUHL(binFile);
-        //  Allocate just the columns now - we'll do the rows as
+        acc = new DTEDFrameACC(binFile);
+        // Allocate just the columns now - we'll do the rows as
         // needed...
         elevations = new short[uhl.num_lon_lines][];
         if (readWholeFile)
@@ -138,7 +141,7 @@ public class DTEDFrame implements Closable {
      * the garbage collection of frames.
      */
     public void dispose() {
-        //System.out.println("DTED Frame Disposed " + me);
+        // System.out.println("DTED Frame Disposed " + me);
         this.close(true);
         BinaryFile.removeClosable(this);
     }
@@ -178,10 +181,10 @@ public class DTEDFrame implements Closable {
         }
     }
 
-    //////////////////
+    // ////////////////
     // These functions can be called from the outside,
     // as queries about the data
-    //////////////////
+    // ////////////////
 
     /**
      * The elevation at the closest SW post to the given lat/lon. This
@@ -235,7 +238,7 @@ public class DTEDFrame implements Closable {
 
                 int lflon_index = (int) Math.floor(lon_index);
                 int lclon_index = (int) Math.ceil(lon_index);
-                int lflat_index = (int) Math.floor(lat_index);
+                // int lflat_index = (int) Math.floor(lat_index);
                 int lclat_index = (int) Math.ceil(lat_index);
 
                 if (elevations[lflon_index] == null)
@@ -243,21 +246,21 @@ public class DTEDFrame implements Closable {
                 if (elevations[lclon_index] == null)
                     readDataRecord(lclon_index);
 
-                //////////////////////////////////////////////////////
+                // ////////////////////////////////////////////////////
                 // Print out grid of 20x20 elevations with
                 // the "asked for" point being in the middle
-                //          System.out.println("***Elevation Map***");
-                //          for(int l = lclat_index + 5; l > lflat_index - 5;
+                // System.out.println("***Elevation Map***");
+                // for(int l = lclat_index + 5; l > lflat_index - 5;
                 // l--) {
-                //              System.out.println();
-                //              for(int k = lflon_index - 5; k < lclon_index + 5;
+                // System.out.println();
+                // for(int k = lflon_index - 5; k < lclon_index + 5;
                 // k++) {
-                //                  if (elevations[k]==null) readDataRecord(k);
-                //                  System.out.print(elevations[k][l] + " ");
-                //              }
-                //          }
-                //          System.out.println();System.out.println();
-                //////////////////////////////////////////////////////
+                // if (elevations[k]==null) readDataRecord(k);
+                // System.out.print(elevations[k][l] + " ");
+                // }
+                // }
+                // System.out.println();System.out.println();
+                // ////////////////////////////////////////////////////
 
                 int ul = elevations[lflon_index][lclat_index];
                 int ur = elevations[lclon_index][lclat_index];
@@ -409,9 +412,9 @@ public class DTEDFrame implements Closable {
         return matrix;
     }
 
-    //////////////////
+    // ////////////////
     // Internal methods
-    //////////////////
+    // ////////////////
 
     /**
      * A try at interoplating the corners of the surrounding posts,
@@ -458,10 +461,10 @@ public class DTEDFrame implements Closable {
             // 2*uhl....size of elevation post space
             binFile.seek(UHL_SIZE + DSI_SIZE + ACC_SIZE
                     + (lon_index * (12 + (2 * uhl.num_lat_points))));
-            int sent = binFile.read();
+            binFile.read(); // sent byte
             binFile.skipBytes(3); // 3 byte data_block_count
-            short lon_count = binFile.readShort();
-            short lat_count = binFile.readShort();
+            binFile.readShort(); // longitude count
+            binFile.readShort(); // latitude count
             // Allocate the rows of the row
             elevations[lon_index] = new short[uhl.num_lat_points];
             for (int j = 0; j < uhl.num_lat_points; j++) {
@@ -558,20 +561,21 @@ public class DTEDFrame implements Closable {
         if (df.frame_is_valid) {
             System.out.println(df.uhl);
             System.out.println(df.dsi);
+            System.out.println(df.acc);
 
-            //          int startx = 5;
-            //          int starty = 6;
-            //          int endx = 10;
-            //          int endy = 30;
+            // int startx = 5;
+            // int starty = 6;
+            // int endx = 10;
+            // int endy = 30;
 
-            //          short[][] e = df.getElevations(startx, starty, endx,
+            // short[][] e = df.getElevations(startx, starty, endx,
             // endy);
-            //          for (int i = e[0].length-1; i >= 0; i--) {
-            //              for (int j = 0; j < e.length; j++) {
-            //                  System.out.print(e[j][i] + " ");
-            //              }
-            //              System.out.println("");
-            //          }
+            // for (int i = e[0].length-1; i >= 0; i--) {
+            // for (int j = 0; j < e.length; j++) {
+            // System.out.print(e[j][i] + " ");
+            // }
+            // System.out.println("");
+            // }
         }
         float lat = df.dsi.lat_origin + .5f;
         float lon = df.dsi.lon_origin + .5f;
@@ -603,4 +607,3 @@ public class DTEDFrame implements Closable {
         window.repaint();
     }
 }
-
