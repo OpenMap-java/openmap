@@ -53,7 +53,6 @@ public class DDFUtils {
                                        char nDelimChar1, char nDelimChar2,
                                        MutableInt pnConsumedChars) {
         int i;
-        String pszReturn;
 
         for (i = 0; i < nMaxChars - 1 && pszRecord[i] != nDelimChar1
                 && pszRecord[i] != nDelimChar2; i++) {

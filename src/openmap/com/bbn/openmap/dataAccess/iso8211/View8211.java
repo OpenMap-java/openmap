@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * $Id: View8211.java,v 1.4 2004/10/14 18:05:43 dietrick Exp $
+ * $Id: View8211.java,v 1.5 2005/08/04 18:12:00 dietrick Exp $
  *
  * Project:  SDTS Translator
  * Purpose:  Example program dumping data in 8211 data to stdout.
@@ -83,7 +83,7 @@ public class View8211 {
                 /* ------------------------------------------------------------ */
                 for (Iterator it = poRecord.iterator(); it != null
                         && it.hasNext();
-                //                      Debug.output(((DDFField)it.next()).toString()));
+                // Debug.output(((DDFField)it.next()).toString()));
                 viewRecordField(((DDFField) it.next())))
                     ;
             }
@@ -171,10 +171,9 @@ public class View8211 {
                             nBytesRemaining,
                             nBytesConsumed));
         } else if (ddfdt == DDFDataType.DDFBinaryString) {
-            int i;
-            String pabyBString = poSFDefn.extractStringData(pachFieldData,
+            poSFDefn.extractStringData(pachFieldData,
                     nBytesRemaining,
-                    nBytesConsumed);
+                    nBytesConsumed); // pabyBString
 
             Debug.output("        " + poSFDefn.getName());
         }
@@ -207,4 +206,3 @@ public class View8211 {
     }
 
 }
-
