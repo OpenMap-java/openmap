@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrameUHL.java,v
 // $
 // $RCSfile: DTEDFrameUHL.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:42 $
+// $Revision: 1.4 $
+// $Date: 2005/08/04 18:08:12 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -45,7 +45,7 @@ public class DTEDFrameUHL {
     public DTEDFrameUHL(BinaryFile binFile) {
         try {
             binFile.seek(0);
-            String checkUHL = binFile.readFixedLengthString(3);
+            binFile.readFixedLengthString(3); // checkUHL
 
             binFile.skipBytes(1);
             lon_origin = DTEDFrameUtil.stringToLon(binFile.readFixedLengthString(8));

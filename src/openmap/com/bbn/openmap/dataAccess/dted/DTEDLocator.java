@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDLocator.java,v $
 // $RCSfile: DTEDLocator.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:42 $
+// $Revision: 1.4 $
+// $Date: 2005/08/04 18:08:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -195,7 +195,6 @@ public class DTEDLocator extends Wanderer implements WandererCallback {
      */
     public static void main(String[] argv) {
         Debug.init();
-        boolean toUpper = true;
 
         ArgParser ap = new ArgParser("DTEDLocator");
 
