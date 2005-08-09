@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/Link.java,v $
 // $RCSfile: Link.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:59 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 18:15:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,16 +23,25 @@
 package com.bbn.openmap.layer.location;
 
 /*  Java Core  */
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Paint;
+import java.awt.Stroke;
 
-/*  OpenMap  */
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.util.Debug;
 
 /**
  * A Link is a relationship between Locations, represented as a line
- * between them.
+ * between them. If you want to draw the endpoints, use a
+ * LocationHandler for them.
+ * <P>
+ * 
+ * Although this class extends from Location, it doesn't handle
+ * displaying a name for the link that well. The name will appear as
+ * the first node's marker name, although it should declutter if
+ * needed.
  */
 public class Link extends Location {
 
@@ -49,10 +58,10 @@ public class Link extends Location {
     /** The y of point 2. */
     public int y2 = 0;
 
-    /** The x offset of point 2. */
-    public int xOffset2 = 0;
-    /** The y offset of point 2. */
-    public int yOffset2 = 0;
+    // /** The x offset of point 2, never used. */
+    // public int xOffset2 = 0;
+    // /** The y offset of point 2, never used. */
+    // public int yOffset2 = 0;
 
     /** the default color is black */
     public static Color DEFAULT_COLOR = Color.black;

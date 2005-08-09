@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/AbstractLocationHandler.java,v $
-// $Revision: 1.7 $ $Date: 2004/10/14 18:05:59 $ $Author: dietrick $
+// $Revision: 1.8 $ $Date: 2005/08/09 18:15:13 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.location;
@@ -21,10 +21,10 @@ package com.bbn.openmap.layer.location;
 import java.awt.Color;
 import java.util.Properties;
 
-import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-import com.bbn.openmap.util.ColorFactory;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -34,17 +34,17 @@ import com.bbn.openmap.util.PropUtils;
  * implement get(), setProperties(), and reloadData().
  * 
  * <pre>
- * 
- *  locationhandler.locationColor=FF0000
- *  locationhandler.nameColor=008C54
- *  locationhandler.showNames=false
- *  locationhandler.showLocations=true
- *  locationhandler.override=true
- *  
+ *   
+ *    locationhandler.locationColor=FF0000
+ *    locationhandler.nameColor=008C54
+ *    locationhandler.showNames=false
+ *    locationhandler.showLocations=true
+ *    locationhandler.override=true
+ *    
  * </pre>
  * 
  * @see com.bbn.openmap.layer.location.LocationHandler
- * @version $Revision: 1.7 $ $Date: 2004/10/14 18:05:59 $
+ * @version $Revision: 1.8 $ $Date: 2005/08/09 18:15:13 $
  * @author Michael E. Los D530/23448
  */
 public abstract class AbstractLocationHandler implements LocationHandler {
@@ -59,6 +59,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     private boolean showNames = false;
     /** The color for the names. */
     protected Color nameColor;
+    protected DrawingAttributes nameDrawingAttributes;
 
     // - - - - - - - - - - - - - -
     // Location-related Variables
@@ -67,6 +68,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     private boolean showLocations = true;
     /** The color for the locations. */
     protected Color locationColor;
+    protected DrawingAttributes locationDrawingAttributes;
 
     /**
      * Force global settings to override local Location settings for
@@ -81,14 +83,16 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     protected String propertyPrefix = null;
 
     protected AbstractLocationHandler() {
-        try {
-            nameColor = ColorFactory.parseColor(defaultNameColorString, true);
-            locationColor = ColorFactory.parseColor(defaultLocationColorString,
-                    true);
-        } catch (NumberFormatException nfe) {
-            nameColor = Color.black;
-            locationColor = Color.black;
-        }
+        nameDrawingAttributes = new DrawingAttributes();
+        locationDrawingAttributes = new DrawingAttributes();
+
+//        try {
+//            nameDrawingAttributes.setLinePaint(ColorFactory.parseColor(defaultNameColorString,
+//                    true));
+//            locationDrawingAttributes.setLinePaint(ColorFactory.parseColor(defaultLocationColorString,
+//                    true));
+//        } catch (NumberFormatException nfe) {
+//        }
     }
 
     /**
@@ -168,28 +172,28 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * Set the color used for the name label.
      */
     public void setNameColor(Color nColor) {
-        nameColor = nColor;
+        nameDrawingAttributes.setLinePaint(nColor);
     }
 
     /**
      * Get the color used for the name label.
      */
     public Color getNameColor() {
-        return nameColor;
+        return (Color) nameDrawingAttributes.getLinePaint();
     }
 
     /**
      * Set the color used for the location graphic.
      */
     public void setLocationColor(Color lColor) {
-        locationColor = lColor;
+        locationDrawingAttributes.setLinePaint(lColor);
     }
 
     /**
      * Get the color used for the location graphic.
      */
     public Color getLocationColor() {
-        return locationColor;
+        return (Color) locationDrawingAttributes.getLinePaint();
     }
 
     /**
@@ -245,17 +249,25 @@ public abstract class AbstractLocationHandler implements LocationHandler {
 
         showLocations = PropUtils.booleanFromProperties(properties, prefix
                 + ShowLocationsProperty, showLocations);
-
-        locationColor = PropUtils.parseColorFromProperties(properties, prefix
-                + LocationColorProperty, defaultLocationColorString);
-
         showNames = PropUtils.booleanFromProperties(properties, prefix
                 + ShowNamesProperty, showNames);
-        nameColor = PropUtils.parseColorFromProperties(properties, prefix
-                + NameColorProperty, defaultNameColorString);
+
+        nameDrawingAttributes.setProperties(prefix + NamePropertyPrefix,
+                properties);
+        locationDrawingAttributes.setProperties(prefix + LocationPropertyPrefix,
+                properties);
+        
+        // For backward compatibility
+        setLocationColor((Color) PropUtils.parseColorFromProperties(properties,
+                prefix + LocationColorProperty,
+                getLocationColor()));
+        setNameColor((Color) PropUtils.parseColorFromProperties(properties,
+                prefix + NameColorProperty,
+                getNameColor()));
+        //
+
         forceGlobal = PropUtils.booleanFromProperties(properties, prefix
                 + ForceGlobalProperty, forceGlobal);
-
     }
 
     /**
@@ -284,14 +296,17 @@ public abstract class AbstractLocationHandler implements LocationHandler {
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         props.put(prefix + ShowNamesProperty, new Boolean(showNames).toString());
-        props.put(prefix + NameColorProperty,
-                Integer.toHexString(nameColor.getRGB()));
         props.put(prefix + ShowLocationsProperty,
                 new Boolean(showLocations).toString());
+        props.put(prefix + NameColorProperty,
+                Integer.toHexString(getNameColor().getRGB()));
         props.put(prefix + LocationColorProperty,
-                Integer.toHexString(locationColor.getRGB()));
+                Integer.toHexString(getLocationColor().getRGB()));
         props.put(prefix + ForceGlobalProperty,
                 new Boolean(forceGlobal).toString());
+
+        nameDrawingAttributes.getProperties(props);
+        locationDrawingAttributes.getProperties(props);
 
         return props;
     }
@@ -360,6 +375,22 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      */
     public String getPropertyPrefix() {
         return propertyPrefix;
+    }
+
+    public DrawingAttributes getLocationDrawingAttributes() {
+        return locationDrawingAttributes;
+    }
+
+    public void setLocationDrawingAttributes(DrawingAttributes lda) {
+        this.locationDrawingAttributes = lda;
+    }
+
+    public DrawingAttributes getNameDrawingAttributes() {
+        return nameDrawingAttributes;
+    }
+
+    public void setNameDrawingAttributes(DrawingAttributes nda) {
+        this.nameDrawingAttributes = nda;
     }
 
 }
