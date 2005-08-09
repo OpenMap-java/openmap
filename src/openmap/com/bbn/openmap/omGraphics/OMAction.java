@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMAction.java,v $
 // $RCSfile: OMAction.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:12 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 20:01:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -133,7 +133,7 @@ public class OMAction implements OMGraphicConstants {
      */
     public String toString() {
         StringBuffer sb = new StringBuffer("OMAction (" + value + ") [ ");
-        boolean gotOne = false;
+
         if (value == 0) {
             sb.append("add ");
         } else {

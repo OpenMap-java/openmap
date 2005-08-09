@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMLine.java,v $
 // $RCSfile: OMLine.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/01/10 16:58:33 $
+// $Revision: 1.10 $
+// $Date: 2005/08/09 20:01:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,7 +53,7 @@ import com.bbn.openmap.util.Debug;
  * 
  * @see OMPoly
  */
-public class OMLine extends OMGraphic implements Serializable {
+public class OMLine extends OMAbstractLine implements Serializable {
 
     protected boolean isPolyline = false;
 
@@ -62,49 +62,6 @@ public class OMLine extends OMGraphic implements Serializable {
 
     /** pts is an array of 4 ints - px1, py1, px2, py2. */
     protected int[] pts = null;
-
-    /**
-     * X coordinate arrays of the projected points.
-     */
-    protected int[][] xpoints = new int[0][0];
-
-    /**
-     * Y coordinate arrays of the projected points.
-     */
-    protected int[][] ypoints = new int[0][0];
-
-    /** Flag used to create arrow heads on lines. */
-    protected boolean doArrowHead = false;
-
-    /**
-     * Used to draw the ArrowHead on the finishing end, the starting
-     * end, or both.
-     */
-    protected int arrowDirectionType = OMArrowHead.ARROWHEAD_DIRECTION_FORWARD;
-    /**
-     * Where on the line to put the ArrowHead, from 0 (start) to 100
-     * (end) of the line. For BACKWARDS directions, 100 would be at
-     * the beginning of the line.
-     */
-    protected int arrowLocation = 100;
-
-    /**
-     * For arrowhead creation, the width of half of the base of the
-     * arrowhead.
-     */
-    protected int wingTip = OMArrowHead.DEFAULT_WINGTIP;
-
-    /**
-     * For arrowhead creation, the pixel distance from the tip of the
-     * arrowhead to the base.
-     */
-    protected int wingLength = OMArrowHead.DEFAULT_WINGLENGTH;
-
-    /**
-     * Number of segments to draw (used only for LINETYPE_GREATCIRCLE
-     * or LINETYPE_RHUMB lines).
-     */
-    protected int nsegs = -1;
 
     /**
      * For x-y and offset lines, there is the ability to put a curve
@@ -303,99 +260,6 @@ public class OMLine extends OMGraphic implements Serializable {
     }
 
     /**
-     * Turn the ArrowHead on/off. The ArrowHead is placed on the
-     * finishing end.
-     * 
-     * @param value on/off
-     */
-    public void addArrowHead(boolean value) {
-        doArrowHead = value;
-        if (doArrowHead) {
-            addArrowHead(OMArrowHead.ARROWHEAD_DIRECTION_FORWARD, 100);
-        } else {
-            arrowhead = null;
-        }
-    }
-
-    /**
-     * Turn the ArrowHead on. The ArrowHead is placed on the finishing
-     * end (OMArrowHead.ARROWHEAD_DIRECTION_FORWARD), beginning end
-     * (OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD), or both
-     * ends(OMArrowHead.ARROWHEAD_DIRECTION_BOTH).
-     * 
-     * @param directionType which way to point the arrow head.
-     */
-    public void addArrowHead(int directionType) {
-        addArrowHead(directionType, 100);
-    }
-
-    /**
-     * Turn the ArrowHead on. The ArrowHead is placed on the finishing
-     * end (OMArrowHead.ARROWHEAD_DIRECTION_FORWARD), beginning end
-     * (OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD), or both
-     * ends(OMArrowHead.ARROWHEAD_DIRECTION_BOTH).
-     * 
-     * @param directionType which way to point the arrow head.
-     * @param location where on the line to put the arrow head - 0 for
-     *        the starting point, 100 for the end.
-     */
-    public void addArrowHead(int directionType, int location) {
-        addArrowHead(directionType, location, wingTip, wingLength);
-    }
-
-    /**
-     * Turn the ArrowHead on. The ArrowHead is placed on the finishing
-     * end (OMArrowHead.ARROWHEAD_DIRECTION_FORWARD), beginning end
-     * (OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD), or both
-     * ends(OMArrowHead.ARROWHEAD_DIRECTION_BOTH).
-     * 
-     * @param directionType which way to point the arrow head.
-     * @param location where on the line to put the arrow head - 0 for
-     *        the starting point, 100 for the end.
-     * @param tipWidth the width factor for the base of the arrowhead,
-     *        on one side of the line. (Default is 5)
-     * @param arrowLength the length factor of the arrowhead, from the
-     *        tip of the line to the base of the arrowhead. (Default
-     *        is 20)
-     */
-    public void addArrowHead(int directionType, int location, int tipWidth,
-                             int arrowLength) {
-        doArrowHead = true;
-
-        arrowDirectionType = directionType;
-
-        if (location < 1)
-            arrowLocation = 1;
-        else if (location > 100)
-            arrowLocation = 100;
-        else
-            arrowLocation = location;
-
-        wingTip = tipWidth;
-        wingLength = arrowLength;
-
-        if (wingTip <= 0 || wingLength <= 0) {
-            Debug.error("OMLine.addArrowHead: Bad parameters in for arrowhead width: "
-                    + tipWidth + ", or arrowhead length: " + arrowLength);
-            doArrowHead = false;
-        }
-    }
-
-    /**
-     * Arrowhead function, to find out the wing tip width.
-     */
-    public int getWingTip() {
-        return wingTip;
-    }
-
-    /**
-     * Arrowhead function, to find out the arrowhead length.
-     */
-    public int getWingLength() {
-        return wingLength;
-    }
-
-    /**
      * Set the arc that is drawn between the points of a x-y or offset
      * line.
      */
@@ -455,7 +319,7 @@ public class OMLine extends OMGraphic implements Serializable {
             break;
         case RENDERTYPE_OFFSET:
             if (!proj.isPlotable(latlons[0], latlons[1])) {
-                setNeedToRegenerate(true);//HMMM not the best flag
+                setNeedToRegenerate(true);// HMMM not the best flag
                 return false;
             }
             Point p1 = proj.forward(latlons[0], latlons[1]);
@@ -527,8 +391,8 @@ public class OMLine extends OMGraphic implements Serializable {
 
         setLabelLocation(shape);
 
-        if (doArrowHead) {
-            arrowhead = createArrowHeads();
+        if (arrowhead != null) {
+            arrowhead.generate(this);
         }
 
         if (Debug.debugging("arc") && arc != null) {
@@ -539,22 +403,6 @@ public class OMLine extends OMGraphic implements Serializable {
 
         setNeedToRegenerate(false);
         return true;
-    }
-
-    GeneralPath arrowhead = null;
-
-    /**
-     * This is a method that you can extend to create the GeneralPath
-     * for the arrowheads, if you want a different way of doing it. By
-     * default, it calls OMArrowHead.createArrowHeads(), using the
-     * different arrowhead variables set in the OMLine.
-     */
-    public GeneralPath createArrowHeads() {
-        return OMArrowHead.createArrowHeads(arrowDirectionType,
-                arrowLocation,
-                this,
-                wingTip,
-                wingLength);
     }
 
     /**
@@ -575,14 +423,14 @@ public class OMLine extends OMGraphic implements Serializable {
                 && stroke instanceof BasicStroke) {
             ((Graphics2D) g).setStroke(new BasicStroke(((BasicStroke) stroke).getLineWidth() + 2f));
             setGraphicsColor(g, Color.black);
-            ((Graphics2D) g).draw(arrowhead);
+            arrowhead.render(g);
         }
 
         super.render(g);
 
         if (arrowhead != null) {
             setGraphicsForEdge(g);
-            ((Graphics2D) g).fill(arrowhead);
+            arrowhead.render(g);
         }
 
         if (Debug.debugging("arc") && arc != null) {

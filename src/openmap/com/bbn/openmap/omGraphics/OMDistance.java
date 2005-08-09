@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMDistance.java,v $
 // $RCSfile: OMDistance.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/06/27 18:09:34 $
+// $Revision: 1.10 $
+// $Date: 2005/08/09 20:01:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -143,7 +143,6 @@ public class OMDistance extends OMPoly {
         Geo lastGeo = new Geo(rawllpts[0], rawllpts[1], false);
         points.add(new OMPoint(ProjMath.radToDeg(rawllpts[0]), ProjMath.radToDeg(rawllpts[1]), 1));
         Geo curGeo = null;
-        int l = 0;
         float cumulativeDist = 0f;
         for (int p = 2; p < rawllpts.length; p += 2) {
             if (curGeo == null) {

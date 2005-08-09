@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGeometryList.java,v $
 // $RCSfile: OMGeometryList.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:06:13 $
+// $Revision: 1.10 $
+// $Date: 2005/08/09 20:01:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -487,7 +487,7 @@ public class OMGeometryList extends OMGraphicList implements GraphicList,
      *         ready (ungenerated).
      */
     protected float _distance(int x, int y) {
-        float temp, distance = Float.POSITIVE_INFINITY;
+        float distance = Float.POSITIVE_INFINITY;
 
         if (isVague()) {
 

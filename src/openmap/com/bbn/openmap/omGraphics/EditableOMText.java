@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMText.java,v $
 // $RCSfile: EditableOMText.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:11 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 20:01:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -243,12 +243,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         OMText text = (OMText) graphic;
         boolean ntr = text.getNeedToRegenerate();
         int renderType = text.getRenderType();
-        int lineType = text.getLineType();
 
-        int top = 0;
-        int bottom = 0;
-        int left = 0;
-        int right = 0;
         LatLonPoint llp;
         int latoffset = 0;
         int lonoffset = 0;

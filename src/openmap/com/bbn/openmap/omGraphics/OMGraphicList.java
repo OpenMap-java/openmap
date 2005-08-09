@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.16 $
-// $Date: 2004/10/14 18:06:13 $
+// $Revision: 1.17 $
+// $Date: 2005/08/09 20:01:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -565,7 +565,6 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
      * @see #moveIndexedOneToBack(int)
      */
     public void moveIndexedOneToBottom(int location) {
-        OMGeometry tmpGraphic = _getAt(location);
         if (traverseMode == FIRST_ADDED_ON_TOP) {
             moveIndexedOneToBack(location);
         } else {
@@ -583,7 +582,6 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
      * @param location the index location of the graphic to move.
      */
     public void moveIndexedToBottom(int location) {
-        OMGeometry tmpGraphic = _getAt(location);
         if (traverseMode == FIRST_ADDED_ON_TOP) {
             moveIndexedToLast(location);
         } else {
@@ -1326,8 +1324,6 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
         OMDist tomd;
         ListIterator iterator;
         OMGeometry ret = null;
-        OMGeometry current;
-        OMGraphicList omgl;
 
         // Handle vagueness.
         if (isVague()) {

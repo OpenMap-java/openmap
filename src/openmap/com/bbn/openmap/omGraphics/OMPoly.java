@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.14 $
-// $Date: 2005/01/14 16:47:28 $
+// $Revision: 1.15 $
+// $Date: 2005/08/09 20:01:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -87,7 +87,7 @@ import com.bbn.openmap.util.Debug;
  * @see OMRect
  * @see OMLine
  */
-public class OMPoly extends OMGraphic implements Serializable {
+public class OMPoly extends OMAbstractLine implements Serializable {
 
     /**
      * Translation offsets. For RENDERTYPE_OFFSET, the xy points are
@@ -108,12 +108,6 @@ public class OMPoly extends OMGraphic implements Serializable {
      */
     protected int units = -1;// this should be set correctly at
     // construction
-
-    /** Internal array of projected x coordinate arrays. */
-    protected int[][] xpoints = new int[0][0];
-
-    /** Internal array of projected y coordinate arrays. */
-    protected int[][] ypoints = new int[0][0];
 
     /**
      * For RENDERTYPE_OFFSET, the latitude of the starting point of
@@ -155,12 +149,6 @@ public class OMPoly extends OMGraphic implements Serializable {
 
     /** raw float lats and lons stored internally in radians. */
     protected float[] rawllpts = null;
-
-    /**
-     * Number of segments to draw (used only for LINETYPE_GREATCIRCLE
-     * or LINETYPE_RHUMB lines).
-     */
-    protected int nsegs = -1;
 
     /**
      * Flag for telling the OMPoly to use the Shape objects to
@@ -641,7 +629,7 @@ public class OMPoly extends OMGraphic implements Serializable {
             int[] _y = new int[npts];
 
             // forward project the radian point
-            Point origin = proj.forward(lat, lon, new Point(0, 0), true);//radians
+            Point origin = proj.forward(lat, lon, new Point(0, 0), true);// radians
 
             if (coordMode == COORDMODE_ORIGIN) {
                 for (i = 0; i < npts; i++) {
@@ -684,6 +672,9 @@ public class OMPoly extends OMGraphic implements Serializable {
 
             if (!doShapes) {
                 if (size > 1) {
+                    if (arrowhead != null) {
+                        arrowhead.generate(this);
+                    }
                     setNeedToRegenerate(false);
                     initLabelingDuringGenerate();
                     if (checkPoints(xpoints, ypoints)) {
@@ -702,13 +693,19 @@ public class OMPoly extends OMGraphic implements Serializable {
             return false;
         }
 
+        if (arrowhead != null) {
+            arrowhead.generate(this);
+        }
+        
         setNeedToRegenerate(false);
         createShape();
         return true;
     }
 
     /**
-     * Return true if the xpoints and ypoints are not null and contain coordinates.
+     * Return true if the xpoints and ypoints are not null and contain
+     * coordinates.
+     * 
      * @param xpoints2
      * @param ypoints2
      * @return
@@ -737,6 +734,11 @@ public class OMPoly extends OMGraphic implements Serializable {
     public void render(Graphics g) {
         if (shape != null) {
             super.render(g);
+
+            if (arrowhead != null) {
+                arrowhead.render(g);
+            }
+
             return;
         }
 
@@ -818,6 +820,12 @@ public class OMPoly extends OMGraphic implements Serializable {
                         if (g instanceof Graphics2D
                                 && stroke instanceof BasicStroke) {
                             ((Graphics2D) g).setStroke(new BasicStroke(((BasicStroke) stroke).getLineWidth() + 2f));
+                            // Just to draw the matting for the
+                            // arrowhead.
+                            if (arrowhead != null) {
+                                setGraphicsColor(g, mattingPaint);
+                                arrowhead.render(g);
+                            }
                             setGraphicsColor(g, mattingPaint);
                             g.drawPolyline(_x, _y, _x.length);
                         }
@@ -826,6 +834,10 @@ public class OMPoly extends OMGraphic implements Serializable {
                     // draw main outline
                     setGraphicsForEdge(g);
                     g.drawPolyline(_x, _y, _x.length);
+
+                    if (arrowhead != null) {
+                        arrowhead.render(g);
+                    }
                 }
             }
 
@@ -982,5 +994,4 @@ public class OMPoly extends OMGraphic implements Serializable {
 
         return geometryClosed;
     }
-
 }

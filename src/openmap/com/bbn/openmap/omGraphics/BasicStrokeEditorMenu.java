@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/BasicStrokeEditorMenu.java,v $
 // $RCSfile: BasicStrokeEditorMenu.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/28 19:53:49 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 20:01:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,15 +26,20 @@ package com.bbn.openmap.omGraphics;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeSupport;
 import java.util.Enumeration;
 import java.util.Vector;
-import javax.swing.*;
 
-/* OpenMap */
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+
 import com.bbn.openmap.util.PropUtils;
 
 /** 
@@ -73,7 +78,6 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
 
     public JButton getLaunchButton() {
         if (launchButton == null) {
-            BasicStroke bs = getBasicStroke();
             float buttonHeight = 20;
             ImageIcon icon = createIcon(getBasicStroke(),
                     50,

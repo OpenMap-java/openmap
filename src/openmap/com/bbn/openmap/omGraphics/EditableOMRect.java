@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRect.java,v $
 // $RCSfile: EditableOMRect.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:11 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 20:01:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,8 +24,11 @@ package com.bbn.openmap.omGraphics;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.layer.util.stateMachine.State;
-import com.bbn.openmap.omGraphics.editable.*;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.omGraphics.editable.GraphicEditState;
+import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
+import com.bbn.openmap.omGraphics.editable.GraphicSetOffsetState;
+import com.bbn.openmap.omGraphics.editable.RectStateMachine;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -270,7 +273,6 @@ public class EditableOMRect extends EditableOMGraphic {
         OMRect rect = (OMRect) graphic;
         boolean ntr = rect.getNeedToRegenerate();
         int renderType = rect.getRenderType();
-        int lineType = rect.getLineType();
 
         int top = 0;
         int bottom = 0;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/GraphicAttributes.java,v $
 // $RCSfile: GraphicAttributes.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:06:11 $
+// $Revision: 1.10 $
+// $Date: 2005/08/09 20:01:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,11 +27,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.Properties;
-import javax.swing.*;
 
-/* OpenMap */
-import com.bbn.openmap.layer.util.LayerUtils;
+import javax.swing.ButtonGroup;
+import javax.swing.JMenu;
+import javax.swing.JRadioButtonMenuItem;
+
 import com.bbn.openmap.proj.LineType;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The GraphicAttributes provides an extension to DrawingAttributes by
@@ -125,10 +127,10 @@ public class GraphicAttributes extends DrawingAttributes implements
         }
 
         //  Set up the Graphic attributes.
-        lineType = LayerUtils.intFromProperties(props, realPrefix
+        lineType = PropUtils.intFromProperties(props, realPrefix
                 + lineTypeProperty, LINETYPE_UNKNOWN);
 
-        renderType = LayerUtils.intFromProperties(props, realPrefix
+        renderType = PropUtils.intFromProperties(props, realPrefix
                 + renderTypeProperty, RENDERTYPE_UNKNOWN);
     }
 

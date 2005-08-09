@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphic.java,v $
 // $RCSfile: OMGraphic.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/05/23 20:36:35 $
+// $Revision: 1.12 $
+// $Date: 2005/08/09 20:01:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -247,9 +247,9 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     public OMGraphic(int rType, int lType, int dcType, Color lc, Color fc,
             Color sc) {
         this(rType, lType, dcType);
-        setLineColor(lc);
-        setSelectColor(sc);
-        setFillColor(fc);
+        setLinePaint(lc);
+        setSelectPaint(sc);
+        setFillPaint(fc);
     }
 
     /**

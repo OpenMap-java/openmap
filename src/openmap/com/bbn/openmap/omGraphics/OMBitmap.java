@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMBitmap.java,v $
 // $RCSfile: OMBitmap.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/01/10 16:58:33 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 20:01:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -199,7 +199,6 @@ public class OMBitmap extends OMRasterObject implements Serializable {
     protected boolean computePixels() {
 
         int foreground, background;
-        int nColors = 2;
         int npix, i, j, k, w;
         int[] masks = { 1, 2, 4, 8, 16, 32, 64, 128 };
 

@@ -14,41 +14,53 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/10/14 18:06:11 $
+// $Revision: 1.11 $
+// $Date: 2005/08/09 20:01:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.gui.GridBagToolBar;
-import com.bbn.openmap.layer.util.stateMachine.State;
-import com.bbn.openmap.omGraphics.editable.*;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
-
 import java.awt.Component;
 import java.awt.Point;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
-import javax.swing.*;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JMenu;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.gui.GridBagToolBar;
+import com.bbn.openmap.layer.util.stateMachine.State;
+import com.bbn.openmap.omGraphics.editable.GraphicEditState;
+import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
+import com.bbn.openmap.omGraphics.editable.PolyAddNodeState;
+import com.bbn.openmap.omGraphics.editable.PolyDeleteNodeState;
+import com.bbn.openmap.omGraphics.editable.PolyStateMachine;
+import com.bbn.openmap.omGraphics.editable.PolyUndefinedState;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The EditableOMPoly encompasses an OMPoly, providing methods for
  * modifying or creating it.
  */
-public class EditableOMPoly extends EditableOMGraphic {
+public class EditableOMPoly extends EditableOMAbstractLine {
 
     protected ArrayList polyGrabPoints;
     protected OffsetGrabPoint gpo; // offset
-    protected OffsetGrabPoint gpm; // for grabbing the poly and moving
-                                   // it.
+    protected OffsetGrabPoint gpm; // for grabbing the poly and
+    // moving
+    // it.
 
     protected OMPoly poly;
     /**
@@ -416,7 +428,7 @@ public class EditableOMPoly extends EditableOMGraphic {
 
                     float[] ll = poly.getLatLonArray();
 
-                    gb = null; //reset for this loop
+                    gb = null; // reset for this loop
 
                     for (i = 0; i < ll.length; i += 2) {
                         projection.forward(ll[i], ll[i + 1], p, true);
@@ -804,9 +816,9 @@ public class EditableOMPoly extends EditableOMGraphic {
             }
 
             if (poly.coordMode == OMPoly.COORDMODE_ORIGIN || position == 0) { // cover
-                                                                              // the
-                                                                              // first
-                                                                              // point
+                // the
+                // first
+                // point
 
                 newxs[position] = x - offsetX;
                 newys[position] = y - offsetY;
@@ -831,7 +843,18 @@ public class EditableOMPoly extends EditableOMGraphic {
                     newys);
         }
 
+        // Need to reset the arrowhead when an end point is added,
+        // removing it from the shape when the point gets added.
+        // Otherwise, you end up with a arrowhead at each junction of
+        // the polygon.
+        OMArrowHead omah = poly.getArrowHead();
+        poly.setArrowHead(null);
+        // This is the standard call that needs to be made here, the
+        // arrowhead changes are around this.
         poly.regenerate(projection);
+        // Reset the arrowhead so it will get drawn on the new
+        // segment.
+        poly.setArrowHead(omah);
         polyGrabPoints.add(position, gp);
 
         if (gpo != null) {
@@ -1023,8 +1046,9 @@ public class EditableOMPoly extends EditableOMGraphic {
      */
     public boolean generate(Projection proj) {
         Debug.message("eomg", "EditableOMPoly.generate()");
-        if (poly != null)
+        if (poly != null) {
             poly.generate(proj);
+        }
 
         // Generate all the grab points
         Iterator gps = polyGrabPoints.iterator();
@@ -1038,7 +1062,6 @@ public class EditableOMPoly extends EditableOMGraphic {
             gpo.generate(proj);
             gpo.updateOffsets();
         }
-        ;
 
         return true;
     }
@@ -1055,7 +1078,7 @@ public class EditableOMPoly extends EditableOMGraphic {
             setGrabPoints(poly);
         }
 
-        //Generate all the grab points
+        // Generate all the grab points
         Iterator gps = polyGrabPoints.iterator();
         while (gps.hasNext()) {
             GrabPoint gb = (GrabPoint) gps.next();
@@ -1102,6 +1125,7 @@ public class EditableOMPoly extends EditableOMGraphic {
                 GrabPoint gb = (GrabPoint) gps.next();
                 if (gb != null) {
                     gb.setVisible(true);
+                    poly.render(graphics);
                     gb.render(graphics);
                     gb.setVisible(false);
                 }
@@ -1112,10 +1136,10 @@ public class EditableOMPoly extends EditableOMGraphic {
 
         if (state instanceof GraphicSelectedState
                 || state instanceof GraphicEditState /*
-                                                      * || state
-                                                      * instanceof
-                                                      * PolySetOffsetState
-                                                      */) {
+                                                         * || state
+                                                         * instanceof
+                                                         * PolySetOffsetState
+                                                         */) {
             if (gpo != null
                     && poly.getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
                 gpo.setVisible(true);
@@ -1125,14 +1149,14 @@ public class EditableOMPoly extends EditableOMGraphic {
         }
     }
 
-    /////////////// Special Grab Point functions
+    // ///////////// Special Grab Point functions
     // /////////////////////
     // Since the GrabPoints only refer to the points actually on the
     // polygon, we have to make sure that the generic
     // EditableOMGraphic grab point methods handle that. The
     // OffsetGrabPointIndex is -1, so we have to look out for that and
     // use the gpo when appropriate.
-    ///////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////
 
     /**
      * Set the grab point objects within the EditableOMGraphic array.
@@ -1255,6 +1279,8 @@ public class EditableOMPoly extends EditableOMGraphic {
     public Component getGUI(GraphicAttributes graphicAttributes) {
         Debug.message("eomg", "EditableOMPoly.getGUI");
         if (graphicAttributes != null) {
+            JMenu ahm = getArrowHeadMenu();
+            graphicAttributes.setLineMenuAdditions(new JMenu[] { ahm });
             Component gaGUI = graphicAttributes.getGUI();
             ((JComponent) gaGUI).add(getPolyGUI());
             return gaGUI;

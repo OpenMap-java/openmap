@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/BasicStrokeEditor.java,v $
 // $RCSfile: BasicStrokeEditor.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:10 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 20:01:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,15 +23,29 @@
 package com.bbn.openmap.omGraphics;
 
 /*  Java Core  */
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Graphics2D;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.*;
-import javax.swing.*;
+import java.beans.PropertyChangeSupport;
+import java.util.Enumeration;
+import java.util.Vector;
 
-/* OpenMap */
-import com.bbn.openmap.util.*;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The BasicStrokeEditor provides a GUI to adjust BasicStroke
@@ -161,8 +175,8 @@ public class BasicStrokeEditor extends JDialog implements ActionListener {
             dlPanel.setLayout(new FlowLayout());
 
             JLabel dashLabel = new JLabel("Dash Pattern");
-            float[] da = basicStroke.getDashArray();
-            String dashArrayString = dashArrayToString(da);
+//            float[] da = basicStroke.getDashArray();
+//            String dashArrayString = dashArrayToString(da);
 
             dashField = new JTextField(dashArrayToString(basicStroke.getDashArray()), 15);
             dashField.setToolTipText("Number of pixels on off on ...");
@@ -289,9 +303,8 @@ public class BasicStrokeEditor extends JDialog implements ActionListener {
 
     public JButton getLaunchButton() {
         if (launchButton == null) {
-            BasicStroke bs = getBasicStroke();
-            //          float buttonHeight = (bs == null?11:bs.getLineWidth() +
-            // 10f);
+//            BasicStroke bs = getBasicStroke();
+//            float buttonHeight = (bs == null ? 11 : bs.getLineWidth() + 10f);
             float buttonHeight = 20;
             ImageIcon icon = createIcon(getBasicStroke(),
                     40,

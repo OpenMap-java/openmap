@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArrowHead.java,v $
 // $RCSfile: OMArrowHead.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/05/23 20:36:35 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 20:01:46 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -26,6 +26,7 @@ import com.bbn.openmap.proj.DrawUtil;
 import com.bbn.openmap.util.Debug;
 
 import java.awt.BasicStroke;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -53,6 +54,42 @@ public class OMArrowHead {
     protected static int DEFAULT_WINGTIP = 5;
     protected static int DEFAULT_WINGLENGTH = 20;
 
+    protected Shape shape = null;
+    protected int arrowDirectionType = ARROWHEAD_DIRECTION_FORWARD;
+    protected int location = 100;
+    protected int wingTip = 5;
+    protected int wingLength = 20;
+
+    public OMArrowHead(int arrowDirectionType, int location) {
+        this(arrowDirectionType, location, DEFAULT_WINGTIP, DEFAULT_WINGLENGTH);
+    }
+
+    public OMArrowHead(int arrowDirectionType, int location, int wingtip,
+            int winglength) {
+        this.arrowDirectionType = arrowDirectionType;
+        setLocation(location);
+        this.wingTip = wingtip;
+        this.wingLength = winglength;
+    }
+
+    public void generate(OMAbstractLine omal) {
+        if (wingTip > 0 && wingLength > 0 && omal != null) {
+            shape = createArrowHeads(arrowDirectionType,
+                    location,
+                    omal,
+                    wingTip,
+                    wingLength);
+        } else {
+            shape = null;
+        }
+    }
+
+    public void render(Graphics g) {
+        if (shape != null) {
+            ((java.awt.Graphics2D) g).fill(shape);
+        }
+    }
+
     /**
      * Create an arrowhead for the provided line
      * 
@@ -71,7 +108,7 @@ public class OMArrowHead {
      * @return the GeneralPath for the arrowhead.
      */
     public static GeneralPath createArrowHeads(int arrowDirectionType,
-                                               int location, OMLine line) {
+                                               int location, OMAbstractLine line) {
         return createArrowHeads(arrowDirectionType,
                 location,
                 line,
@@ -101,7 +138,8 @@ public class OMArrowHead {
      * @return the GeneralPath for the arrowhead.
      */
     public static GeneralPath createArrowHeads(int arrowDirectionType,
-                                               int location, OMLine line,
+                                               int location,
+                                               OMAbstractLine line,
                                                int wingTip, int wingLength) {
 
         Point[] locPoints = locateArrowHeads(arrowDirectionType, location, line);
@@ -134,7 +172,7 @@ public class OMArrowHead {
     }
 
     public static void addArrowHeads(int arrowDirectionType, int location,
-                                     OMLine line) {
+                                     OMAbstractLine line) {
 
         Shape arrowHeads = createArrowHeads(arrowDirectionType, location, line);
         if (arrowHeads != null) {
@@ -173,14 +211,15 @@ public class OMArrowHead {
      * object.
      */
     protected static Point[] locateArrowHeads(int arrowDirection,
-                                              int arrowLocation, OMLine line) {
+                                              int arrowLocation,
+                                              OMAbstractLine line) {
 
-        //NOTE: xpoints[0] refers to the original copy of the
+        // NOTE: xpoints[0] refers to the original copy of the
         // xpoints,
-        //as opposed to the [1] copy, which gets used when the line
-        //needs to wrap around the screen and show up on the other
-        //side. Might have to think about the [1] points, and adding
-        //a arrowhead there if it shows up in the future.
+        // as opposed to the [1] copy, which gets used when the line
+        // needs to wrap around the screen and show up on the other
+        // side. Might have to think about the [1] points, and adding
+        // a arrowhead there if it shows up in the future.
 
         if (line.xpoints == null || line.xpoints.length == 0
                 || line.xpoints[0].length == 0) {
@@ -225,11 +264,14 @@ public class OMArrowHead {
 
         // do we have to reverse the arrows?
 
-        if (line.arc != null && line.arc.getReversed() == true) {
-            if (arrowDirection == OMArrowHead.ARROWHEAD_DIRECTION_FORWARD) {
-                arrowDirection = OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD;
-            } else if (arrowDirection == OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD) {
-                arrowDirection = OMArrowHead.ARROWHEAD_DIRECTION_FORWARD;
+        if (line instanceof OMLine) {
+            OMLine omLine = (OMLine) line;
+            if (omLine.arc != null && omLine.arc.getReversed() == true) {
+                if (arrowDirection == OMArrowHead.ARROWHEAD_DIRECTION_FORWARD) {
+                    arrowDirection = OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD;
+                } else if (arrowDirection == OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD) {
+                    arrowDirection = OMArrowHead.ARROWHEAD_DIRECTION_FORWARD;
+                }
             }
         }
 
@@ -391,7 +433,7 @@ public class OMArrowHead {
 
                     }
 
-                } //end if (arrowLocation != 100)
+                } // end if (arrowLocation != 100)
 
                 // finally, copy the results to sPoint1/ePoint1
 
@@ -453,7 +495,7 @@ public class OMArrowHead {
                 ePoint1.x = line.xpoints[0][findex + 1];
                 ePoint1.y = line.ypoints[0][findex + 1];
 
-            } //end if (needForwardArrow(arrowDirection))
+            } // end if (needForwardArrow(arrowDirection))
 
             break;
 
@@ -479,6 +521,51 @@ public class OMArrowHead {
 
     private static boolean needForwardArrow(int arrowDir) {
         return (arrowDir == ARROWHEAD_DIRECTION_FORWARD || arrowDir == ARROWHEAD_DIRECTION_BOTH);
+    }
+
+    public int getArrowDirectionType() {
+        return arrowDirectionType;
+    }
+
+    public void setArrowDirectionType(int arrowDirectionType) {
+        this.arrowDirectionType = arrowDirectionType;
+    }
+
+    public int getLocation() {
+        return location;
+    }
+
+    public void setLocation(int location) {
+        if (location < 1)
+            this.location = 1;
+        else if (location > 100)
+            this.location = 100;
+        else
+            this.location = location;
+    }
+
+    public Shape getShape() {
+        return shape;
+    }
+
+    public void setShape(Shape shape) {
+        this.shape = shape;
+    }
+
+    public int getWingLength() {
+        return wingLength;
+    }
+
+    public void setWingLength(int wingLength) {
+        this.wingLength = wingLength;
+    }
+
+    public int getWingTip() {
+        return wingTip;
+    }
+
+    public void setWingTip(int wingTip) {
+        this.wingTip = wingTip;
     }
 
 }

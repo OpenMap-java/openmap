@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.22 $
-// $Date: 2005/05/23 20:36:35 $
+// $Revision: 1.23 $
+// $Date: 2005/08/09 20:01:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,7 +52,6 @@ import java.util.StringTokenizer;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
@@ -282,8 +281,6 @@ public class DrawingAttributes implements ActionListener, Serializable,
     private JButton selectColorButton;
     private JButton mattingColorButton;
     private JToggleButton mattedCheckBox;
-    private JComboBox lineCombo;
-    private JComboBox dashCombo;
 
     protected final static int icon_width = 20;
     protected final static int icon_height = 20;
@@ -926,7 +923,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
         Object source = e.getSource();
         String command = e.getActionCommand();
         String interString;
-        Paint oldPaint, tmpPaint;
+        Paint tmpPaint;
         if (command == LineColorCommand && linePaint instanceof Color) {
             interString = i18n.get(DrawingAttributes.class,
                     "chooseLineColor",

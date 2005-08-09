@@ -14,25 +14,30 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:06:11 $
+// $Revision: 1.9 $
+// $Date: 2005/08/09 20:01:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
+import java.awt.Component;
+import java.awt.event.MouseEvent;
+
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
+
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.layer.util.stateMachine.State;
-import com.bbn.openmap.omGraphics.editable.*;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.omGraphics.editable.GraphicEditState;
+import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
+import com.bbn.openmap.omGraphics.editable.GraphicSetOffsetState;
+import com.bbn.openmap.omGraphics.editable.GraphicUndefinedState;
+import com.bbn.openmap.omGraphics.editable.PointStateMachine;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-
-import java.awt.Component;
-import java.awt.event.*;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
 
 /**
  * An EditableOMGraphic that encapsulates an OMPoint.
@@ -253,12 +258,7 @@ public class EditableOMPoint extends EditableOMGraphic {
         OMPoint point = (OMPoint) graphic;
         boolean ntr = point.getNeedToRegenerate();
         int renderType = point.getRenderType();
-        int lineType = point.getLineType();
 
-        int top = 0;
-        int bottom = 0;
-        int left = 0;
-        int right = 0;
         LatLonPoint llp;
         int latoffset = 0;
         int lonoffset = 0;

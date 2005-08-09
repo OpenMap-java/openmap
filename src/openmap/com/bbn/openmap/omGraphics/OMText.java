@@ -14,14 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.14 $
-// $Date: 2005/01/10 16:58:34 $
+// $Revision: 1.15 $
+// $Date: 2005/08/09 20:01:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -29,6 +31,10 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
@@ -112,6 +118,11 @@ public class OMText extends OMGraphic implements Serializable {
 
     public static final Font DEFAULT_FONT = new Font("SansSerif", java.awt.Font.PLAIN, 12);
 
+    /**
+     * The default text matte stroke that is used to surround each
+     * character with the color set in the textMatteColor attribute.
+     */
+    public static final Stroke DEFAULT_TEXT_MATTE_STROKE = new BasicStroke( 2f );
     //----------------------------------------------------------------------
     // Fields
     //----------------------------------------------------------------------
@@ -176,6 +187,18 @@ public class OMText extends OMGraphic implements Serializable {
 
     /** The angle by which the text is to be rotated, in radians */
     protected double rotationAngle = DEFAULT_ROTATIONANGLE;
+
+    /**
+     * The text matte color surrounds each character of the string with this color.
+     * If the color is null, the text matte is not used.
+     */
+    protected Color textMatteColor;
+
+    /**
+     * The stroke used to paint the outline of each character. The stroke should
+     * be larger than 1 to give proper effect.
+     */
+    protected Stroke textMatteStroke = DEFAULT_TEXT_MATTE_STROKE;
 
     //----------------------------------------------------------------------
     // Caches
@@ -520,6 +543,51 @@ public class OMText extends OMGraphic implements Serializable {
     public void setMapLocation(Point point) {
         pt = point;
         polyBounds = null;
+    }
+
+    /**
+     * Returns the color used to matte the actuall text of this class.
+     * @return the text matte color, null if not used
+     */
+    public Color getTextMatteColor() {
+        return textMatteColor;
+    }
+
+    /**
+     * Sets the color used to paint the outline of the characters
+     * in this text. The thickness of the outline is decided by the
+     * textMatteStroke.
+     * If the color is null, the outline will not be painted.
+     *
+     * The default value is null.
+     *
+     * @param textMatteColor
+     */
+    public void setTextMatteColor(Color textMatteColor) {
+        this.textMatteColor = textMatteColor;
+    }
+
+    /**
+     * Returns the stroke used to paint the outline of the characters
+     * in this text.
+     * @return the stroke used to paint the outline
+     */
+    public Stroke getTextMatteStroke() {
+        return textMatteStroke;
+    }
+
+    /**
+     * Sets the stroke used to paint the outline of the characters
+     * in this text
+     * For best effect the stroke thickness should be larger
+     * than 1 and it should be continuous.
+     *
+     * The default thickness is 2.
+     *
+     * @param textMatteStroke the new stroke
+     */
+    public void setTextMatteStroke(Stroke textMatteStroke) {
+        this.textMatteStroke = textMatteStroke;
     }
 
     /**
@@ -1020,9 +1088,7 @@ public class OMText extends OMGraphic implements Serializable {
 
         // to use later to unset the transform, if used.
         double rx = 0.0;
-        double ry = 0.0;
         double rw = 0.0;
-        double rh = 0.0;
         double woffset = 0.0;
 
         if (g instanceof Graphics2D && rotationAngle != DEFAULT_ROTATIONANGLE) {
@@ -1030,9 +1096,7 @@ public class OMText extends OMGraphic implements Serializable {
             Rectangle rect = polyBounds.getBounds();
 
             rx = rect.getX();
-            ry = rect.getY();
             rw = rect.getWidth();
-            rh = rect.getHeight();
             woffset = 0.0;
 
             switch (justify) {
@@ -1072,31 +1136,52 @@ public class OMText extends OMGraphic implements Serializable {
         }
 
         switch (justify) {
-        case JUSTIFY_LEFT:
-            // Easy case, just draw them.
-            for (int i = 0; i < parsedData.length; i++) {
-                g.drawString(parsedData[i], pt.x, baselineLocation
-                        + (height * i));
-            }
-            break;
-        case JUSTIFY_CENTER:
-            computeStringWidths(fm);
-            for (int i = 0; i < parsedData.length; i++) {
-                g.drawString(parsedData[i],
-                        pt.x - (widths[i] / 2),
-                        baselineLocation + (height * i));
-            }
-            break;
-        case JUSTIFY_RIGHT:
-            computeStringWidths(fm);
-            for (int i = 0; i < parsedData.length; i++) {
-                g.drawString(parsedData[i], pt.x - widths[i], baselineLocation
-                        + (height * i));
-            }
-            break;
+            case JUSTIFY_LEFT:
+                // Easy case, just draw them.
+                for (int i = 0; i < parsedData.length; i++) {
+                    renderString(g, parsedData[i], pt.x, baselineLocation + (height * i));
+                }
+                break;
+            case JUSTIFY_CENTER:
+                computeStringWidths(fm);
+                for (int i = 0; i < parsedData.length; i++) {
+                    renderString(g,
+                                parsedData[i],
+                                pt.x - (widths[i] / 2),
+                                baselineLocation + (height * i));
+                }
+                break;
+            case JUSTIFY_RIGHT:
+                computeStringWidths(fm);
+                for (int i = 0; i < parsedData.length; i++) {
+                    renderString(g,
+                                parsedData[i],
+                                pt.x - widths[i],
+                                baselineLocation + (height * i));
+                }
+                break;
         }
     }
 
+    protected void renderString(Graphics g, String string, int x, int y) {
+        if (g instanceof Graphics2D) {
+            Graphics2D g2 = (Graphics2D) g;
+            if (getTextMatteColor() != null) {
+                FontRenderContext context = g2.getFontRenderContext();
+                GlyphVector glyphVector = g2.getFont().createGlyphVector(context, string);
+                Shape outline = glyphVector.getOutline();
+                g2.translate(x, y);
+                g2.setStroke( getTextMatteStroke() );
+                g2.setColor(getTextMatteColor());
+                g2.draw(outline);
+                g2.translate(-x, -y);
+
+                g2.setColor(getLineColor());
+            }
+        }
+        g.drawString(string, x, y);
+    }
+    
     /**
      * Computes the bounding polygon. Sets the cache field
      * <code>polyBounds</code>.

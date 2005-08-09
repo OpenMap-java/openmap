@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMScalingRaster.java,v $
 // $RCSfile: EditableOMScalingRaster.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/02/15 17:25:38 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 20:01:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -278,7 +278,6 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
 
         boolean ntr = raster.getNeedToRegenerate();
         int renderType = raster.getRenderType();
-        int lineType = raster.getLineType();
 
         int top = 0;
         int bottom = 0;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingRaster.java,v $
 // $RCSfile: OMScalingRaster.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/02/02 13:18:37 $
+// $Revision: 1.11 $
+// $Date: 2005/08/09 20:01:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -263,7 +263,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                 if (DEBUG) {
                     Debug.output("OMScalingRaster: generating image");
                 }
-                boolean ret = super.generate(proj);
+                super.generate(proj);
                 // bitmap is set to a BufferedImage
                 setImage(bitmap);
             }
