@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/earthImage/EarthImagePlugIn.java,v $
 // $RCSfile: EarthImagePlugIn.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:20 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 20:25:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,21 +23,21 @@
 package com.bbn.openmap.plugin.earthImage;
 
 import java.awt.Component;
-import java.awt.image.BufferedImage;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.PixelGrabber;
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.image.BufferedImageHelper;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.plugin.*;
+import com.bbn.openmap.image.ImageServerConstants;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.plugin.AbstractPlugIn;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -140,7 +140,7 @@ public class EarthImagePlugIn extends AbstractPlugIn implements
                     + ImageProperty + " : " + imageString);
         }
         try {
-            URL url = LayerUtils.getResourceOrFileOrURL(this, imageString);
+            URL url = PropUtils.getResourceOrFileOrURL(this, imageString);
             bi = BufferedImageHelper.getBufferedImage(url, 0, 0, -1, -1);
 
             if (Debug.debugging("earthimage") && bi != null) {
@@ -280,11 +280,8 @@ public class EarthImagePlugIn extends AbstractPlugIn implements
                 //                           lrhorIndex + ", " + lrverIndex);
                 ///////////////////////////////////
 
-                int imageHIndex;
-                int imageWIndex;
                 int clear = 0x00000000;
 
-                Point point = new Point();
                 Point ctp = new Point();
                 LatLonPoint llp = new LatLonPoint();
                 LatLonPoint center = p.getCenter();

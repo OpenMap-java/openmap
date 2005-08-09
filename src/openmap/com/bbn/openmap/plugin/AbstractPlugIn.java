@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/AbstractPlugIn.java,v $
 // $RCSfile: AbstractPlugIn.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/02/11 22:36:37 $
+// $Revision: 1.12 $
+// $Date: 2005/08/09 20:23:37 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -32,7 +32,6 @@ import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.SelectMouseMode;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.PropUtils;
@@ -258,7 +257,7 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         name = setList.getProperty(realPrefix + Layer.PrettyNameProperty);
-        setAddToBeanContext(LayerUtils.booleanFromProperties(setList,
+        setAddToBeanContext(PropUtils.booleanFromProperties(setList,
                 realPrefix + Layer.AddToBeanContextProperty,
                 addToBeanContext));
         setRemovable(PropUtils.booleanFromProperties(setList, realPrefix

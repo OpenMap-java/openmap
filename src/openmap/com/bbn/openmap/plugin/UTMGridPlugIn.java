@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/01/12 19:36:08 $
+// $Revision: 1.12 $
+// $Date: 2005/08/09 20:23:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,6 @@ import javax.swing.JPanel;
 
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMColorChooser;
 import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGeometryList;
@@ -821,19 +820,19 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        showLabels = LayerUtils.booleanFromProperties(props, prefix
+        showLabels = PropUtils.booleanFromProperties(props, prefix
                 + ShowLabelsProperty, showLabels);
-        showZones = LayerUtils.booleanFromProperties(props, prefix
+        showZones = PropUtils.booleanFromProperties(props, prefix
                 + ShowZonesProperty, showZones);
-        show100kGrid = LayerUtils.booleanFromProperties(props, prefix
+        show100kGrid = PropUtils.booleanFromProperties(props, prefix
                 + Show100kGridProperty, show100kGrid);
-        labelCutoffScale = LayerUtils.floatFromProperties(props, prefix
+        labelCutoffScale = PropUtils.floatFromProperties(props, prefix
                 + LabelCutoffScaleProperty, labelCutoffScale);
-        utmGridPaint = LayerUtils.parseColorFromProperties(props, prefix
+        utmGridPaint = PropUtils.parseColorFromProperties(props, prefix
                 + UTMGridColorProperty, utmGridPaint);
-        distanceGridPaint = LayerUtils.parseColorFromProperties(props, prefix
+        distanceGridPaint = PropUtils.parseColorFromProperties(props, prefix
                 + DistanceGridColorProperty, distanceGridPaint);
-        setDistanceGridResolution(LayerUtils.intFromProperties(props, prefix
+        setDistanceGridResolution(PropUtils.intFromProperties(props, prefix
                 + DistanceGridResolutionProperty, distanceGridResolution));
     }
 

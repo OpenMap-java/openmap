@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/CSVTiledImagePlugIn.java,v $
 // $RCSfile: CSVTiledImagePlugIn.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:19 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 20:23:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,6 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 
 import com.bbn.openmap.io.CSVFile;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMScalingRaster;
 import com.bbn.openmap.proj.Projection;
@@ -199,7 +198,7 @@ public class CSVTiledImagePlugIn extends OMGraphicHandlerPlugIn {
             Debug.output("CSVTIPI: file: " + tileFileName);
         }
 
-        fileHasHeader = LayerUtils.booleanFromProperties(props, realPrefix + FileHasHeaderProperty, fileHasHeader);
+        fileHasHeader = PropUtils.booleanFromProperties(props, realPrefix + FileHasHeaderProperty, fileHasHeader);
 
         if (DEBUG) {
             Debug.output("CSVTIPI: file has header: " + fileHasHeader);
