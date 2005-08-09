@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFileSearch.java,v $
 // $RCSfile: RpfFileSearch.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/12/08 01:04:23 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 18:45:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,7 +46,6 @@ public class RpfFileSearch {
 
     /** Search, starting with the given directory pathname. */
     public boolean handleEntry(String startingDir) {
-        String sDir;
         File startingFile = null;
 
         // This line, if included, wipes out files received from

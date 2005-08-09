@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocHandler.java,v $
 // $RCSfile: RpfTocHandler.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/05/23 20:08:28 $
+// $Revision: 1.12 $
+// $Date: 2005/08/09 18:45:53 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -45,7 +45,6 @@ import java.util.Vector;
 
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.BinaryFile;
-import com.bbn.openmap.io.FileInputReader;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.util.Debug;
@@ -264,7 +263,7 @@ public class RpfTocHandler {
         RpfFrameEntry frame;
 
         int n, pathLength; // ushort
-        int i, j, k, currentPosition;
+        int i, currentPosition;
         int boundaryId, frameRow, frameCol; // ushort
         long numFrameIndexRecords; // uint # frame file index records
 
@@ -274,7 +273,7 @@ public class RpfTocHandler {
         int numPathnameRecords; //ushort
         int indexRecordLength; //ushort, frame file index record
                                // length
-        int indexSubheaderLength = 9; //ushort, frame file index
+        //int indexSubheaderLength = 9; //ushort, frame file index
                                       // subheader length
 
         long boundRectTableOffset; // uint, Bound. rect. table offset
@@ -285,10 +284,11 @@ public class RpfTocHandler {
             Debug.output("ENTER TOC parsing...");
         }
 
-        boolean local = false;
-        if (binFile.getInputReader() instanceof FileInputReader) {
-            local = true;
-        }
+        // Stuff that used this is now commented out below...
+//        boolean local = false;
+//        if (binFile.getInputReader() instanceof FileInputReader) {
+//            local = true;
+//        }
 
         try {
             // binFile should be set to the beginning at this point
@@ -569,7 +569,8 @@ public class RpfTocHandler {
                 }
 
                 long diskspace = 288000;
-                boolean exists = true;
+                
+                // boolean exists = true;
 
                 // Turns out this check is wicked expensive!!!!!!
                 // Assume it's there, the RPFFrame has been modified
@@ -676,7 +677,6 @@ public class RpfTocHandler {
         int expLetter; // location of m, M, K
         int expLetterSmall;
         int colon = textScale.indexOf(":");
-        boolean hasExpLetter = false;
 
         try {
             if (colon == -1) {
@@ -850,7 +850,6 @@ public class RpfTocHandler {
             return null;
 
         List coverageEntries = new Vector();
-        int insideBoundaries = 0;
         double scaleFactor = 0;
         double lowerScaleFactorLimit = 1.0;
         double upperScaleFactorLimit = 1.0;

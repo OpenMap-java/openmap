@@ -16,16 +16,20 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/plotLayer/GLOBETempData.java,v
 // $
 // $RCSfile: GLOBETempData.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:01 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 18:44:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.plotLayer;
 
-import java.util.*;
-import java.text.*;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 
 public class GLOBETempData extends GLOBEData {
 
@@ -73,7 +77,7 @@ public class GLOBETempData extends GLOBEData {
 
             for (int i = 0; i < 2; i++)
                 tokenizer.nextToken();
-            int site_number = dec_format.parse(tokenizer.nextToken())
+            /*int site_number = */dec_format.parse(tokenizer.nextToken())
                     .intValue();
             ;
 

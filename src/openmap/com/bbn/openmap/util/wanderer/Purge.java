@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/Purge.java,v $
 // $RCSfile: Purge.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:32 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 18:41:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -119,7 +119,6 @@ public class Purge extends Wanderer implements WandererCallback {
      */
     public static void main(String[] argv) {
         Debug.init();
-        boolean toUpper = true;
 
         ArgParser ap = new ArgParser("Purge");
 

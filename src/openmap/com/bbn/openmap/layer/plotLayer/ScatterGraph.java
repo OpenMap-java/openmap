@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/plotLayer/ScatterGraph.java,v
 // $
 // $RCSfile: ScatterGraph.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/12/08 01:04:23 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 18:44:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -72,10 +72,10 @@ public class ScatterGraph {
     private int frame_x, frame_y;
     private int frame_height_, frame_width_;
     private int plot_height_, plot_width_;
-    private int frame_xoffset_, frame_yoffset_;
+//    private int frame_xoffset_, frame_yoffset_;
 
-    private static final byte[] datapoint_bits_ = { (byte) 0x0e, (byte) 0x1f,
-            (byte) 0x1b, (byte) 0x1f, (byte) 0x0e };
+//    private static final byte[] datapoint_bits_ = { (byte) 0x0e, (byte) 0x1f,
+//            (byte) 0x1b, (byte) 0x1f, (byte) 0x0e };
 
     private void initialize(int height, int width, int xoffset, int yoffset,
                             Vector sites, float minyear, float maxyear,
@@ -88,8 +88,7 @@ public class ScatterGraph {
         plot_points_.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
         plot_background_.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
 
-        frame_xoffset_ = xoffset;
-        frame_yoffset_ = yoffset;
+//
 
         max_year_ = maxyear;
         min_year_ = minyear;
@@ -286,8 +285,6 @@ public class ScatterGraph {
 
     private String GetStringDateFromFloat(float fdate) {
         Date date = GetDateFromFloat(fdate);
-        StringBuffer buff = new StringBuffer();
-
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm MM/dd/yyyy");
         String datestring = sdf.format(date);
         return datestring;

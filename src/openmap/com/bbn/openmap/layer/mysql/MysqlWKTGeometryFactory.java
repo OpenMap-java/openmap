@@ -31,7 +31,7 @@ import com.bbn.openmap.util.Debug;
  */
 public class MysqlWKTGeometryFactory {
 
-    private Vector coordStringsVector = new Vector();
+//    private Vector coordStringsVector = new Vector();
 
     public static MysqlGeometry createGeometry(String geotext) {
         WKTNode wktRoot = parseGeometryText(geotext);
@@ -39,7 +39,7 @@ public class MysqlWKTGeometryFactory {
         return util(wktRoot, type);
     }
 
-    private static MysqlGeometry util(WKTNode wktRoot, String type) {
+    protected static MysqlGeometry util(WKTNode wktRoot, String type) {
 
         if (type.equals(MysqlGeometry.POINTTYPE)) {
             return createPoint(wktRoot.getChildByNumber(0).getGeoWKT());
@@ -106,7 +106,7 @@ public class MysqlWKTGeometryFactory {
         }
     }
 
-    private static MysqlPoint createPoint(String s) {
+    protected static MysqlPoint createPoint(String s) {
         MysqlPoint g = new MysqlPoint();
         Vector v = parseStringByToken(s, ' ');
         double[] d = createDoubleLatLongArray(v);
@@ -115,7 +115,7 @@ public class MysqlWKTGeometryFactory {
         return g;
     }
 
-    private static MysqlLine createLine(String s) {
+    protected static MysqlLine createLine(String s) {
         MysqlLine g = new MysqlLine();
         Vector v = parseStringByToken(s.replaceAll(",", " "), ' ');
         double[] d = createDoubleLatLongArray(v);
@@ -123,7 +123,7 @@ public class MysqlWKTGeometryFactory {
         return g;
     }
 
-    private static MysqlPolygon createPolygon(WKTNode wktRoot) {
+    protected static MysqlPolygon createPolygon(WKTNode wktRoot) {
         MysqlPolygon g = new MysqlPolygon();
 
         WKTNode n = wktRoot.getChildByNumber(0);
@@ -141,7 +141,7 @@ public class MysqlWKTGeometryFactory {
         return g;
     }
 
-    private static void iterateWKTNodeTree(WKTNode n) {
+    protected static void iterateWKTNodeTree(WKTNode n) {
         if (Debug.debugging("mysql")) {
             Debug.output("------------");
         }
@@ -157,7 +157,7 @@ public class MysqlWKTGeometryFactory {
         }
     }
 
-    private static WKTNode parseGeometryText(String coordString) {
+    protected static WKTNode parseGeometryText(String coordString) {
         int i = coordString.indexOf("(");
         int j = coordString.lastIndexOf(")") + 1;
         coordString = coordString.substring(i, j);
@@ -246,7 +246,7 @@ public class MysqlWKTGeometryFactory {
     //      return darray;
     //     }
 
-    private static double[] createDoubleLatLongArray(Vector v) {
+    protected static double[] createDoubleLatLongArray(Vector v) {
         int i = v.size();
         double[] darray = new double[i];
 
@@ -268,7 +268,7 @@ public class MysqlWKTGeometryFactory {
         return darray;
     }
 
-    private static Vector parseStringByToken(String s, char token) {
+    protected static Vector parseStringByToken(String s, char token) {
 
         char[] ca = s.toCharArray();
         char[] charArray;

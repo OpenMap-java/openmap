@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocEntry.java,v $
 // $RCSfile: RpfTocEntry.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:04 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 18:45:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -90,7 +90,7 @@ public class RpfTocEntry {
          * e.g. "CADRG" , for type - deduced later, via framename of
          * entry, and using RpfProductInfo.
          */
-        String type = binFile.readFixedLengthString(5);
+        /*String type = */binFile.readFixedLengthString(5);
         compressionRatio = binFile.readFixedLengthString(5);
         /*
          * Same as type - deduced via RpfProductInfo. There is a float
@@ -102,10 +102,10 @@ public class RpfTocEntry {
 
         coverage.nw_lat = binFile.readDouble();
         coverage.nw_lon = binFile.readDouble();
-        double sw_lat = binFile.readDouble();
-        double sw_lon = binFile.readDouble();
-        double ne_lat = binFile.readDouble();
-        double ne_lon = binFile.readDouble();
+        /*double sw_lat = */binFile.readDouble();
+        /*double sw_lon = */binFile.readDouble();
+        /*double ne_lat = */binFile.readDouble();
+        /*double ne_lon = */binFile.readDouble();
         coverage.se_lat = binFile.readDouble();
         coverage.se_lon = binFile.readDouble();
         vertResolution = binFile.readDouble();

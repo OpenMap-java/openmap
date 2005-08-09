@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/MakeToc.java,v $
 // $RCSfile: MakeToc.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/02/11 22:34:14 $
+// $Revision: 1.10 $
+// $Date: 2005/08/09 18:45:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -553,19 +553,17 @@ public class MakeToc {
                                Vector frames) {
 
         int tail;
-        int i, j;
-        boolean done;
+        int i;
 
         /* New, DKS */
-        boolean Cib = false; /* CIB data flag: 1:I1(10M); 2:I2(5M) */
-        boolean Cdted = false; /* CDTED data flag: 1: DT1(100M) */
+        //boolean Cib = false; /* CIB data flag: 1:I1(10M); 2:I2(5M) */
+        //boolean Cdted = false; /* CDTED data flag: 1: DT1(100M) */
 
         boolean isoverview = false;
         boolean islegend = false;
 
         Frame frame;
 
-        RpfFileSections.RpfLocationSection loc;
         RpfFileSections.RpfCoverageSection coverage;
 
         Debug.message("maketoc",
@@ -885,7 +883,6 @@ public class MakeToc {
                              Vector groups) throws MakeTocException {
 
         short us;
-        int ui;
         int i, j, tail;
 
         /*
@@ -2008,7 +2005,6 @@ public class MakeToc {
         char tmp = 'A'; // no reason for 'A'
         char tmp1 = 'A';
         char tmp2 = 'A';
-        int deg, minute, sec;
 
         // These serve as tmps in integer form.
         int tmpi, tmpi1, tmpi2;

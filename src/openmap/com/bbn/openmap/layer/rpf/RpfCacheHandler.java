@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCacheHandler.java,v $
 // $RCSfile: RpfCacheHandler.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:03 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 18:45:53 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -40,7 +40,6 @@ package com.bbn.openmap.layer.rpf;
 
 import java.awt.Point;
 import java.util.Vector;
-import javax.swing.ImageIcon;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMRasterObject;
@@ -429,7 +428,6 @@ public class RpfCacheHandler {
 
     protected void initCache(boolean newCache) {
         int i;
-        float lat, lon;
 
         //      Don't have a cache.
         if (subframeCacheSize <= 0) {
@@ -601,8 +599,6 @@ public class RpfCacheHandler {
         int size = coverageBoxes.size();
         RpfCoverageBox currentBox = null;
 
-        Point tmpStart = new Point();
-        Point tmpEnd = new Point();
         // Decision to never cache if it's coming from another TOC.
         // Problems arose in areas that had 3 coverage boxes
         // converging.
@@ -859,7 +855,6 @@ public class RpfCacheHandler {
                                    RpfCoverageBox coverageBox, int x, int y) {
         boolean good = false;
         int[] pixels = null;
-        ImageIcon ii = null;
 
         if (frameProvider == null) {
             Debug.message("rpf",

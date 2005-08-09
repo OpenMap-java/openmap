@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrameCacheHandler.java,v $
 // $RCSfile: RpfFrameCacheHandler.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/05/23 20:08:28 $
+// $Revision: 1.9 $
+// $Date: 2005/08/09 18:45:53 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -197,7 +197,6 @@ public class RpfFrameCacheHandler extends CacheHandler implements
         // a boolean matrix of those subframes that let you figure out
         // how many of them are available. Calculate the percentage
         // off that.
-        int pZone = p.getZone();
         int i, x, y;
 
         double frameLatInterval = Double.MAX_VALUE;

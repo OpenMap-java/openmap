@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrame.java,v $
 // $RCSfile: RpfFrame.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/05/23 20:08:28 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 18:45:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -337,8 +337,7 @@ public class RpfFrame {
         Image image;
 
         int[][] indices = new int[6][6]; //ushort
-        int rowBytes;
-        int i, j, rc;
+        int i, j;
 
         /* bool (uchar) */
         /* all subframes present indicator */
@@ -356,7 +355,6 @@ public class RpfFrame {
         int chummedSubframe; //uint
         int attributeId; // ushort
         int attributeParamId; //uchar
-        int tempc; //uchar
         long attributeRecOffset; //uint
         int numAttributeOffsetRecs; //ushort
         int numSubframesChummed; //ushort
@@ -513,7 +511,7 @@ public class RpfFrame {
                 for (i = 0; i < numAttributeOffsetRecs; i++) {
                     attributeId = (int) binFile.readShort();
                     attributeParamId = binFile.read();
-                    tempc = binFile.read();
+                    /**int tempc = */binFile.read(); // uchar
                     attributeRecOffset = (long) binFile.readInteger();
 
                     /* # subframes impacted */
@@ -657,7 +655,8 @@ public class RpfFrame {
                 Debug.output("Not 6x6 subframes per frame: must be masked.");
             }
 
-            rowBytes = 256 / 4 * 3 / 2;
+            // int rowBytes = 256 / 4 * 3 / 2;
+            
             // Is this section needed??
             /* fseek to LOC_IMAGE_DISPLAY_PARAM_SUBHEADER, ID=137 */
             if (loc[4] == null) {

@@ -16,17 +16,20 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/plotLayer/GLOBESite.java,v
 // $
 // $RCSfile: GLOBESite.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:01 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 18:44:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.plotLayer;
 
-import java.util.*;
 import java.awt.Color;
-import com.bbn.openmap.omGraphics.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+
+import com.bbn.openmap.omGraphics.OMCircle;
+import com.bbn.openmap.omGraphics.OMGraphic;
 
 public class GLOBESite {
 
@@ -43,11 +46,11 @@ public class GLOBESite {
 
     private String name_;
 
-    private static final byte[] default_bits_ = { (byte) 0x00, (byte) 0x00,
-            (byte) 0x00, (byte) 0x00, (byte) 0x70, (byte) 0x00, (byte) 0xf8,
-            (byte) 0x00, (byte) 0xfc, (byte) 0x01, (byte) 0xfc, (byte) 0x01,
-            (byte) 0xfc, (byte) 0x01, (byte) 0xf8, (byte) 0x00, (byte) 0x70,
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 };
+//    private static final byte[] default_bits_ = { (byte) 0x00, (byte) 0x00,
+//            (byte) 0x00, (byte) 0x00, (byte) 0x70, (byte) 0x00, (byte) 0xf8,
+//            (byte) 0x00, (byte) 0xfc, (byte) 0x01, (byte) 0xfc, (byte) 0x01,
+//            (byte) 0xfc, (byte) 0x01, (byte) 0xf8, (byte) 0x00, (byte) 0x70,
+//            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 };
 
     private OMGraphic graphic_;
 
@@ -137,7 +140,7 @@ public class GLOBESite {
         return -99;
     }
 
-    private void recalcLimits() {
+    protected void recalcLimits() {
         Enumeration all_years = temp_table_.keys();
         while (all_years.hasMoreElements()) {
             float year = ((Float) all_years.nextElement()).floatValue();

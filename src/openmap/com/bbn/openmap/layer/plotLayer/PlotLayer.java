@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/plotLayer/PlotLayer.java,v $
 // $RCSfile: PlotLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/12/08 01:04:23 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 18:44:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,9 +50,6 @@ import com.bbn.openmap.util.PaletteHelper;
  */
 public class PlotLayer extends OMGraphicHandlerLayer implements
         MapMouseListener {
-
-    private static transient int counter = 0;
-    private boolean boxy = true;
 
     private ScatterGraph graph = null;
     private boolean show_plot_ = false;
@@ -100,8 +97,6 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
      * Construct the PlotLayer.
      */
     public PlotLayer() {
-        // precalculate for boxy
-        boxy = true;
 
         getDataSource();
         graph = new ScatterGraph(678, 790, null, temperature_data.overall_min_year_, temperature_data.overall_max_year_, temperature_data.overall_min_temp_, temperature_data.overall_max_temp_);
