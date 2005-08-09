@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/TerrainLayer.java,v $
 // $RCSfile: TerrainLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:06:06 $
+// $Revision: 1.10 $
+// $Date: 2005/08/09 18:50:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,18 +23,25 @@
 package com.bbn.openmap.layer.terrain;
 
 /*  Java Core  */
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 
-import javax.swing.*;
-import javax.swing.event.ChangeListener;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-/*  OpenMap  */
-import com.bbn.openmap.*;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
-import com.bbn.openmap.event.*;
+import com.bbn.openmap.event.MapMouseListener;
+import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
@@ -195,9 +202,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
         // OMGraphicList is made up of OMGraphics, which are generated
         // (projected) when the graphics are added to the list. So,
         // after this call, the list is ready for painting.
-        LatLonPoint ll2 = projection.getLowerRight();
-        LatLonPoint ll1 = projection.getUpperLeft();
-
+        
         profileTool.setScreenParameters(projection);
         LOSTool.setScreenParameters(projection);
         return currentTool.getGraphics();

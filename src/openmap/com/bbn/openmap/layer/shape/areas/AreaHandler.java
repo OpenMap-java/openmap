@@ -14,31 +14,38 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/26 20:08:08 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 18:49:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape.areas;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.layer.shape.*;
-import com.bbn.openmap.layer.util.*;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.dataAccess.shape.DbfTableModel;
-import com.bbn.openmap.dataAccess.shape.input.DbfInputStream;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
-
-import java.awt.*;
+import java.awt.Color;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.Vector;
+
+import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.dataAccess.shape.DbfTableModel;
+import com.bbn.openmap.dataAccess.shape.input.DbfInputStream;
+import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.layer.shape.CSVShapeInfoFile;
+import com.bbn.openmap.layer.shape.ESRIRecord;
+import com.bbn.openmap.layer.shape.ShapeLayer;
+import com.bbn.openmap.layer.shape.SpatialIndex;
+import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGeometryList;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * An object to organize graphics in a shapefile and their
@@ -377,9 +384,6 @@ public class AreaHandler implements PropertyConsumer {
         // All this uses the properties to set the individual colors
         // of any area
         String currentArea;
-        String currentAreaColorStr;
-        String currentAreaFillPatternStr;
-        Color currentAreaColor;
 
         while (tokenizer.hasMoreTokens()) {
             currentArea = tokenizer.nextToken();

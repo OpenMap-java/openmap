@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/LOSGenerator.java,v $
 // $RCSfile: LOSGenerator.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 18:50:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -282,7 +282,6 @@ public class LOSGenerator implements TerrainTool {
                 0,
                 100);
         int x, y;
-        int numPixThisRound = 0;
         boolean mark = false;
         int markColor = colortable[INVISIBLE];
         int range;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileGenerator.java,v $
 // $RCSfile: ProfileGenerator.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 18:50:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -253,9 +253,9 @@ public class ProfileGenerator implements TerrainTool {
         java.awt.Graphics graphics = formatter.getGraphics(gif_width,
                 gif_height);
 
-        Color gray10 = new Color(25, 25, 25);
+//        Color gray10 = new Color(25, 25, 25);
         Color gray50 = new Color(128, 128, 128);
-        Color gray75 = new Color(191, 191, 191);
+//        Color gray75 = new Color(191, 191, 191);
         Color gray90 = new Color(230, 230, 230);
 
         Debug.message("terrain",
@@ -303,7 +303,7 @@ public class ProfileGenerator implements TerrainTool {
             int meters = max * i / 8;
             int feet = (int) (meters * 3.2);
             String lineLabel = meters + "m / " + feet + "ft";
-            byte[] lineLabelBytes = lineLabel.getBytes();
+//            byte[] lineLabelBytes = lineLabel.getBytes();
 
             graphics.drawString(lineLabel,
                     gif_width_buffer + box_width + 10,
@@ -311,9 +311,9 @@ public class ProfileGenerator implements TerrainTool {
                             - (max * i / 8) + (f.getAscent() / 2));
         }
 
-        int last_x = gif_width_buffer + 1;
-        int last_height = gif_height_buffer + box_height - box_height_buffer
-                - post_height[0];
+//        int last_x = gif_width_buffer + 1;
+//        int last_height = gif_height_buffer + box_height - box_height_buffer
+//                - post_height[0];
 
         int total_distance = 0;
         Debug.message("terrain",
