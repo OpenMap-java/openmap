@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/LayerUtils.java,v $
 // $RCSfile: LayerUtils.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:06 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 18:56:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,6 +43,9 @@ import com.bbn.openmap.util.PropUtils;
  * these methods have been moved to the com.bbn.openmap.util.PropUtils
  * class. If you call these methods, they now simply call the same
  * PropUtils method.
+ * 
+ * @deprecated Use com.bbn.openmap.util.PropUtils and
+ *             com.bbn.openmap.util.ColorFactory instead.
  */
 public class LayerUtils {
 
