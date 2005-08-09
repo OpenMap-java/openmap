@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/shis/SHISPlugIn.java,v $
 // $RCSfile: SHISPlugIn.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:21 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 20:37:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -88,10 +88,6 @@ public class SHISPlugIn extends WebImagePlugIn implements ImageServerConstants {
         if (queryHeader == null) {
             return null;
         }
-
-        String bbox = "undefined";
-        String height = "undefined";
-        String width = "undefined";
 
         StringBuffer buf = new StringBuffer(queryHeader);
         buf.append(REQUEST + "=" + MAP + "&");

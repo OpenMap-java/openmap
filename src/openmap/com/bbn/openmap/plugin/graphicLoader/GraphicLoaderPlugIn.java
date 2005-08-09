@@ -14,27 +14,30 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/GraphicLoaderPlugIn.java,v $
 // $RCSfile: GraphicLoaderPlugIn.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:06:21 $
+// $Revision: 1.9 $
+// $Date: 2005/08/09 20:35:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.plugin.graphicLoader;
 
-import java.awt.*;
-import java.beans.*;
-import java.beans.beancontext.*;
+import java.awt.Component;
+import java.beans.PropertyVetoException;
+import java.beans.beancontext.BeanContext;
 import java.util.Properties;
 
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.graphicLoader.GraphicLoader;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.plugin.*;
+import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.plugin.OMGraphicHandlerPlugIn;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.*;
+import com.bbn.openmap.util.ComponentFactory;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * A GraphicLoaderPlugIn is a PlugIn that receives its OMGraphics from
@@ -237,7 +240,7 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         String glString = props.getProperty(realPrefix + GraphicLoaderProperty);
-        addGraphicLoaderToMapHandler = LayerUtils.booleanFromProperties(props,
+        addGraphicLoaderToMapHandler = PropUtils.booleanFromProperties(props,
                 realPrefix + AddGraphicLoaderToMapHandlerProperty,
                 addGraphicLoaderToMapHandler);
 

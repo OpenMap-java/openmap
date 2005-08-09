@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/GraphicLoaderConnector.java,v $
 // $RCSfile: GraphicLoaderConnector.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:21 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 20:35:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,7 +30,6 @@ import java.util.Properties;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.graphicLoader.GraphicLoader;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.plugin.PlugInLayer;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -180,10 +179,10 @@ public class GraphicLoaderConnector extends OMComponent {
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        newLayerIndex = LayerUtils.intFromProperties(props, prefix
+        newLayerIndex = PropUtils.intFromProperties(props, prefix
                 + NewLayerIndexProperty, newLayerIndex);
 
-        newLayerVisible = LayerUtils.booleanFromProperties(props, prefix
+        newLayerVisible = PropUtils.booleanFromProperties(props, prefix
                 + NewLayerVisibleProperty, newLayerVisible);
 
     }
@@ -202,8 +201,6 @@ public class GraphicLoaderConnector extends OMComponent {
 
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
-
-        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         list.put(NewLayerIndexProperty,
                 "The new layer index, where it should be added to the map. (0 on top)");
