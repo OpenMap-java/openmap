@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/meteo/ColdFrontShapeDecoration.java,v $
 //$RCSfile: ColdFrontShapeDecoration.java,v $
-//$Revision: 1.6 $
-//$Date: 2004/10/14 18:06:19 $
+//$Revision: 1.7 $
+//$Date: 2005/08/09 20:11:32 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -24,7 +24,6 @@ package com.bbn.openmap.omGraphics.meteo;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
 import com.bbn.openmap.omGraphics.awt.AbstractShapeDecoration;
@@ -63,7 +62,6 @@ public class ColdFrontShapeDecoration extends AbstractShapeDecoration {
      *      Point2D[], boolean)
      */
     public void draw(Graphics g, Point2D[] points, boolean complete) {
-        Graphics2D g2D = (Graphics2D) g;
         setGraphics(g);
 
         int nbpts = points.length;

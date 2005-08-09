@@ -114,7 +114,6 @@ public class ShapeDecorator implements Revertable {
         Point2D point;
 
         // split path in polylines
-        boolean drawIt = false;
         do {
             segType = pi.currentSegment(segCoords);
             point = new Point2D.Double(segCoords[0], segCoords[1]);

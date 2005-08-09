@@ -1,7 +1,6 @@
 package com.bbn.openmap.omGraphics.awt;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.geom.Point2D;
 
@@ -41,7 +40,6 @@ public class CircleShapeDecoration extends AbstractShapeDecoration {
      *      Point2D[], boolean)
      */
     public void draw(Graphics g, Point2D[] points, boolean complete) {
-        Graphics2D g2D = (Graphics2D) g;
         setGraphics(g);
 
         int nbpts = points.length;

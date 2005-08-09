@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/SlopeGenerator.java,v $
 // $RCSfile: SlopeGenerator.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/01/19 14:18:03 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 20:08:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -149,7 +149,7 @@ public class SlopeGenerator implements OMGridGenerator {
         int rows = grid.getRows();
         int columns = grid.getColumns();
         short[][] data = ((GridData.Short) gd).getData();
-        boolean major = grid.getMajor();
+//        boolean major = grid.getMajor();
 
         double distance = getSlopeRun(grid, getContrast());
 

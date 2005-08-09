@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.14 $
-// $Date: 2005/05/23 20:38:51 $
+// $Revision: 1.15 $
+// $Date: 2005/08/09 20:07:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -511,7 +511,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      *         ready (ungenerated).
      */
     public float distanceToEdge(int x, int y) {
-        float temp, distance = Float.POSITIVE_INFINITY;
+        float distance = Float.POSITIVE_INFINITY;
 
         if (getNeedToRegenerate() || shape == null) {
             return distance;
@@ -614,7 +614,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      *         ready (ungenerated).
      */
     protected float _distance(int x, int y) {
-        float temp, distance = Float.POSITIVE_INFINITY;
+        float distance = Float.POSITIVE_INFINITY;
 
         if (getNeedToRegenerate() || shape == null) {
             return distance;

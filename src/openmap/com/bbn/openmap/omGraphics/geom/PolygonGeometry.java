@@ -14,21 +14,25 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/PolygonGeometry.java,v $
 // $RCSfile: PolygonGeometry.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:17 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 20:07:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.geom;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.util.ArrayList;
+import java.awt.Point;
+import java.awt.geom.GeneralPath;
 import java.io.Serializable;
+import java.util.ArrayList;
+
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.proj.DrawUtil;
+import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
 
 /**
  * Graphic object that represents a polygon.
@@ -309,7 +313,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         }
 
         public boolean generate(Projection proj) {
-            int i, j, npts;
+            int i, j;
             shape = null;
 
             if (proj == null) {
@@ -482,7 +486,6 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         }
 
         public boolean generate(Projection proj) {
-            int i, j, npts;
             shape = null;
 
             if (proj == null) {
@@ -497,7 +500,6 @@ public abstract class PolygonGeometry extends BasicGeometry implements
                 return false;
             }
 
-            npts = xs.length;
             // Need to keep these around for the LabeledOMPoly
             xpoints = new int[1][0];
             xpoints[0] = xs;
@@ -705,7 +707,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         }
 
         public boolean generate(Projection proj) {
-            int i, j, npts;
+            int i, npts;
             shape = null;
 
             if (proj == null) {

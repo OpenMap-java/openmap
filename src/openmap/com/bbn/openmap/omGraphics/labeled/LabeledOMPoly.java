@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/labeled/LabeledOMPoly.java,v $
 // $RCSfile: LabeledOMPoly.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:18 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 20:09:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -351,9 +351,6 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
      * Calculate where the text point ought to go.
      */
     protected Point getTextPoint(Projection proj) {
-        int i;
-        int avgx = 0;
-        int avgy = 0;
 
         // Assuming that the rendertype is not unknown...
         if (renderType == RENDERTYPE_LATLON) {

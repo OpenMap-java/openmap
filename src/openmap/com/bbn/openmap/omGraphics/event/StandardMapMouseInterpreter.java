@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.15 $
-// $Date: 2005/01/10 16:58:34 $
+// $Revision: 1.16 $
+// $Date: 2005/08/09 20:06:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -480,7 +480,6 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
      */
     public boolean mouseMoved(MouseEvent e) {
         setCurrentMouseEvent(e);
-        boolean ret = false;
 
         if ((noTimerOverOMGraphic && getMovementInterest() != null)
                 || mouseTimerInterval <= 0) {
