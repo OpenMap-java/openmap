@@ -14,25 +14,51 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/test/TestLayer.java,v $
 // $RCSfile: TestLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:06 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 18:51:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.test;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseEvent;
 import java.util.StringTokenizer;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
-import com.bbn.openmap.event.*;
+import com.bbn.openmap.event.MapMouseListener;
+import com.bbn.openmap.event.NavMouseMode;
+import com.bbn.openmap.event.NullMouseMode;
+import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.*;
+import com.bbn.openmap.omGraphics.OMArrowHead;
+import com.bbn.openmap.omGraphics.OMCircle;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PaletteHelper;
 
 /**
  * A Layer for testing different types of graphics. The GUI code is
@@ -364,7 +390,7 @@ public class TestLayer extends OMGraphicHandlerLayer implements
      * @return JPanel sub-palette
      */
     protected JPanel getGraphicPalette(final GraphicBase obj, final String title) {
-        JPanel pal;
+
         final JComboBox jcb;
         final JFrame jframe;
         final JRootPane main;
@@ -871,7 +897,6 @@ public class TestLayer extends OMGraphicHandlerLayer implements
             requestFocus();
 
             final JPanel pop;
-            JPanel pal;
             JTextField tf;
             pop = PaletteHelper.createVerticalPanel(null);
 
