@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/HttpConnection.java,v $
 // $RCSfile: HttpConnection.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/01/10 16:36:21 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 18:57:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -71,14 +71,14 @@ public class HttpConnection extends Thread {
         client = client_socket;
         this.server = server;
         InputStreamReader isr;
-        OutputStreamWriter osr;
+//        OutputStreamWriter osr;
 
         try {
             isr = new InputStreamReader(client.getInputStream());
             in = new BufferedReader(isr);
             out = client.getOutputStream();
-            //              osr = new OutputStreamWriter(client.getOutputStream());
-            //              out = new BufferedWriter(osr);
+//              osr = new OutputStreamWriter(client.getOutputStream());
+//              out = new BufferedWriter(osr);
         } catch (IOException e) {
             try {
                 close();
@@ -102,8 +102,6 @@ public class HttpConnection extends Thread {
      */
     public void run() {
         String line;
-        StringBuffer revline;
-        int len;
 
         try {
             while (isConnectionOpen) {
@@ -146,7 +144,6 @@ public class HttpConnection extends Thread {
     protected void handlePost() throws IOException {
         Debug.message("httpconnection", "HttpConnection | handlePost");
         String line;
-        int nEnvarVariables = 0;
         int contentLength = 0;
         try {
             while (isConnectionOpen) {

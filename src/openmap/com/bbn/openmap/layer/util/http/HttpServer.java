@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/HttpServer.java,v $
 // $RCSfile: HttpServer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:07 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 18:57:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -106,7 +106,7 @@ public class HttpServer extends Thread {
         try {
             while (true) {
                 Socket client_socket = listen_socket.accept();
-                HttpConnection c = new HttpConnection(client_socket, this);
+                new HttpConnection(client_socket, this);
             }
         } catch (IOException e) {
             System.err.println("Exception while listening for connections");
