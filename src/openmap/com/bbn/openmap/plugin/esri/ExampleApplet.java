@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/ExampleApplet.java,v $
 // $RCSfile: ExampleApplet.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:21 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 20:33:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,24 +23,37 @@
 package com.bbn.openmap.plugin.esri;
 
 import java.awt.BorderLayout;
-import java.awt.event.*;
-import java.net.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.URL;
+import java.util.Properties;
+import java.util.Vector;
+
+import javax.swing.JApplet;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MouseDelegator;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.gui.*;
+import com.bbn.openmap.dataAccess.shape.DbfTableModel;
+import com.bbn.openmap.dataAccess.shape.EsriGraphicList;
+import com.bbn.openmap.event.NavMouseMode;
+import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.gui.OMToolSet;
+import com.bbn.openmap.gui.Tool;
 import com.bbn.openmap.gui.ToolPanel;
-import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.layer.GraticuleLayer;
-import com.bbn.openmap.dataAccess.shape.*;
+import com.bbn.openmap.omGraphics.OMGraphic;
 
 /**
  * ExampleApplet is an example of how to use the EsriLayer in a
@@ -63,14 +76,11 @@ public class ExampleApplet extends JApplet {
     private LayerHandler _layerHandler = null;
     private OMToolSet _omts = null;
     private ToolPanel _toolPanel = null;
-    private JMenuBar _menuBar = null;
     private MouseDelegator _mouseDelegator = null;
-    private MouseModePanel _mouseModePanel = null;
 
     private JButton _cmdAddLayers = null;
     private JButton _cmdShowTable = null;
 
-    private JPanel _buttonPanel = null;
     private JCheckBox _runningLocally = null;
 
     /*
@@ -78,12 +88,10 @@ public class ExampleApplet extends JApplet {
      */
     public ExampleApplet() {
         _mapBean = new MapBean();
-        _menuBar = new JMenuBar();
         _toolPanel = new ToolPanel();
         _omts = new OMToolSet();
         _omts.findAndInit(_mapBean);
         _mouseDelegator = new MouseDelegator(_mapBean);
-        _mouseModePanel = new MouseModePanel(_mouseDelegator);
 
         NavMouseMode nmm = new NavMouseMode();
         SelectMouseMode smm = new SelectMouseMode();

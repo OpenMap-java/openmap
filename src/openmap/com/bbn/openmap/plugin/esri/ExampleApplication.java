@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/ExampleApplication.java,v
 // $
 // $RCSfile: ExampleApplication.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:21 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 20:33:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,26 +25,50 @@
 package com.bbn.openmap.plugin.esri;
 
 import java.awt.BorderLayout;
-import java.awt.event.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Properties;
+import java.util.Vector;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MouseDelegator;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.gui.*;
+import com.bbn.openmap.dataAccess.shape.DbfTableModel;
+import com.bbn.openmap.dataAccess.shape.EsriGraphicList;
+import com.bbn.openmap.dataAccess.shape.EsriPolyline;
+import com.bbn.openmap.dataAccess.shape.EsriPolylineList;
+import com.bbn.openmap.dataAccess.shape.output.DbfOutputStream;
+import com.bbn.openmap.dataAccess.shape.output.ShpOutputStream;
+import com.bbn.openmap.dataAccess.shape.output.ShxOutputStream;
+import com.bbn.openmap.event.NavMouseMode;
+import com.bbn.openmap.event.SelectMouseMode;
+import com.bbn.openmap.gui.DefaultHelpMenu;
+import com.bbn.openmap.gui.LayersMenu;
+import com.bbn.openmap.gui.MouseModePanel;
 import com.bbn.openmap.gui.OMToolSet;
+import com.bbn.openmap.gui.Tool;
 import com.bbn.openmap.gui.ToolPanel;
 import com.bbn.openmap.layer.GraticuleLayer;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.dataAccess.shape.*;
-import com.bbn.openmap.dataAccess.shape.output.*;
+import com.bbn.openmap.omGraphics.OMGraphic;
 
 /*
  * ExampleApplication illustrates three uses of the EsriLayer: 1) how
@@ -75,10 +99,9 @@ public class ExampleApplication extends JFrame {
     private JMenuItem _exit = null;
     private JMenuItem _addShape = null;
     private JMenuItem _setModel = null;
-    private JMenuItem _createEsriFile = null;
 
     /*
-     * Contructor.
+     * Constructor.
      */
     public ExampleApplication() {
         _mapBean = new MapBean();

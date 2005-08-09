@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriLayer.java,v $
 // $RCSfile: EsriLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:06:20 $
+// $Revision: 1.9 $
+// $Date: 2005/08/09 20:33:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -217,6 +217,10 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      */
     public void addRecord(OMGraphic graphic, ArrayList record) {
         OMGraphicList _list = getList();
+        
+        // Associate the record directly in the OMGraphic
+        graphic.putAttribute(SHAPE_DBF_INFO_ATTRIBUTE, record);
+        
         if (_list != null) {
             _list.add(graphic);
         }
