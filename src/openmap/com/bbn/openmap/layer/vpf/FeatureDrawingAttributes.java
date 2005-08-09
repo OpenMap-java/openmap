@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: FeatureDrawingAttributes.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/05/23 20:25:33 $
+//$Revision: 1.3 $
+//$Date: 2005/08/09 19:29:39 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -317,7 +317,9 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
 
                 DcwColumnInfo[] dci = fci.getColumnInfo();
                 int colCount = dci.length;
-                StringBuffer sb = new StringBuffer();
+
+                // StringBuffer sb = new StringBuffer();
+                
                 // Need to save current attributeColName, because
                 // setting a new choice on an empty combo box will set
                 // it to that first added attribute automatically.

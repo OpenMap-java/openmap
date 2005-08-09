@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFConfig.java,v $
 // $RCSfile: VPFConfig.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/12/08 01:04:24 $
+// $Revision: 1.11 $
+// $Date: 2005/08/09 19:29:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -74,7 +74,7 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class VPFConfig extends JPanel implements ActionListener {
 
-    private static boolean DEBUG = false;
+    //private static boolean DEBUG = false;
 
     //Optionally play with line styles. Possible values are
     //"Angled", "Horizontal", and "None" (the default).
@@ -223,7 +223,6 @@ public class VPFConfig extends JPanel implements ActionListener {
 
                 Object nodeInfo = node.getUserObject();
                 if (node.isLeaf() && nodeInfo instanceof FeatureInfo) {
-                    FeatureInfo feature = (FeatureInfo) nodeInfo;
                     currentFeature = node;
                     // enable addToLayer button here.
                     addFeatureButton.setEnabled(true);
@@ -640,8 +639,6 @@ public class VPFConfig extends JPanel implements ActionListener {
 
     private void createNodes(DefaultMutableTreeNode top, String[] dataPaths)
             throws FormatException {
-
-        DefaultMutableTreeNode category = null;
 
         for (int i = 0; i < dataPaths.length; i++) {
             String rootpath = dataPaths[i];

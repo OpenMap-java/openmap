@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwThematicIndex.java,v $
 // $RCSfile: DcwThematicIndex.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:08 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 19:29:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -195,7 +195,7 @@ public class DcwThematicIndex {
                 Object[] indexes = getValueIndexes();
                 // We just know that these values are tile IDs.
                 for (int j = 0; j < indexes.length; j++) {
-                    int[] row = get(indexes[j]);
+                    // int[] row = get(indexes[j]);
                     // If you want to do some scary printout, code it
                     // up here.
                 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwCrossTileID.java,v $
 // $RCSfile: DcwCrossTileID.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:08 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 19:29:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -85,7 +85,7 @@ public class DcwCrossTileID {
             currentTileKey = readIntegerByKey(in, format >> 6);
             nextTileID = readIntegerByKey(in, format >> 4);
             nextTileKey = readIntegerByKey(in, format >> 2);
-            int unusedDcwKey = readIntegerByKey(in, format);
+            /*int unusedDcwKey = */readIntegerByKey(in, format);
         } catch (EOFException e) {
             throw new FormatException("DcwCrossTileID: unexpected EOD "
                     + e.getMessage());

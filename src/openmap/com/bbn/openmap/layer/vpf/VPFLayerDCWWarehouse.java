@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayerDCWWarehouse.java,v $
-// $Revision: 1.4 $ $Date: 2004/10/14 18:06:10 $ $Author: dietrick $
+// $Revision: 1.5 $ $Date: 2005/08/09 19:29:38 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -176,7 +176,7 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
         if (areaTypeExcludes != null) {
 
             MutableInt areatype = new MutableInt(-1);
-            String descript = covtable.getAreaDescription(facevec, areatype);
+            // String descript = covtable.getAreaDescription(facevec, areatype);
 
             if (onList(areaTypeExcludes, areatype.value)) {
                 return;
@@ -237,7 +237,7 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
         if (lineTypeExcludes != null) {
 
             MutableInt lineType = new MutableInt(-1);
-            String desc = covtable.getLineDescription(edgevec, lineType);
+            //String desc = covtable.getLineDescription(edgevec, lineType);
 
             if (onList(lineTypeExcludes, lineType.value)) {
                 return;
@@ -261,7 +261,7 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
         if (textTypeExcludes != null) {
 
             MutableInt textType = new MutableInt(-1);
-            String desc = covtable.getTextDescription(textvec, textType);
+            //String desc = covtable.getTextDescription(textvec, textType);
 
             if (onList(textTypeExcludes, textType.value)) {
                 return;

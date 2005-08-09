@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageAttributeTable.java,v $
-// $Revision: 1.7 $ $Date: 2005/01/10 16:36:21 $ $Author: dietrick $
+// $Revision: 1.8 $ $Date: 2005/08/09 19:29:39 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -180,8 +180,10 @@ public class CoverageAttributeTable {
                 String fclass = (String) fcsv.get(fcscols[0]);
                 String table1 = (String) fcsv.get(fcscols[1]);
                 String table1_key = (String) fcsv.get(fcscols[2]);
+                /* Not used
                 String table2 = (String) fcsv.get(fcscols[3]);
                 String table2_key = (String) fcsv.get(fcscols[4]);
+                */
                 if ("tileref".equalsIgnoreCase(fclass)
                         && "tileref.aft".equalsIgnoreCase(table1)) {
                     faceIDColumnName = table1_key.toLowerCase();

@@ -12,7 +12,7 @@
  * 24.02.2002 Don Dietrick <dietrick@bbn.com>
  * version 1.1 updated to work with OpenMap 4.5, added to OpenMap package.
  *
- * $Id: GenerateVPFProperties.java,v 1.5 2004/10/14 18:06:08 dietrick Exp $
+ * $Id: GenerateVPFProperties.java,v 1.6 2005/08/09 19:29:39 dietrick Exp $
  * **********************************************************************
  */
 
@@ -157,12 +157,12 @@ public class GenerateVPFProperties extends DescribeDB {
             DcwRecordFile fcadesc = new DcwRecordFile(fcaPath);
             int fclass = fcadesc.whatColumn("fclass");
             int type = fcadesc.whatColumn("type");
-            int descr = fcadesc.whatColumn("descr");
+            //int descr = fcadesc.whatColumn("descr");
             List v = new ArrayList();
             while (fcadesc.parseRow(v)) {
                 String name = (String) v.get(fclass);
                 String t = (String) v.get(type);
-                String desc = (String) v.get(descr);
+                //String desc = (String) v.get(descr);
                 //String tstring = "[unknown] ";
                 if (t.equals("T")) {
                     text_features.add(name);

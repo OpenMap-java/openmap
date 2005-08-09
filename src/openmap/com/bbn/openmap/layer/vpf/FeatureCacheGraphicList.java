@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/FeatureCacheGraphicList.java,v $
 // $RCSfile: FeatureCacheGraphicList.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:08 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 19:29:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,7 +77,7 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList implements
 
         int lastCharIndex = featureType.length() - 1;
         if (lastCharIndex >= 0) {
-            char lastLetter = featureType.charAt(lastCharIndex);
+            // char lastLetter = featureType.charAt(lastCharIndex);
 
             if (featureType == VPFUtil.Edge) {
                 return new FeatureCacheGraphicList.EDGE();

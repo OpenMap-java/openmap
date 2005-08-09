@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VMAP2Shape.java,v $
 // $RCSfile: VMAP2Shape.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/11/26 03:46:56 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 19:29:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,7 +31,6 @@ import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.dataAccess.shape.EsriShapeExport;
 import com.bbn.openmap.layer.shape.ShapeFile;
 import com.bbn.openmap.layer.shape.ShapeUtils;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoly;
@@ -65,7 +64,6 @@ public class VMAP2Shape {
         try {
             ShapeFile s = new ShapeFile(shapeFileName);
             int nGraphics = graphics.size();
-            int nDumped = 0;
             if (nGraphics > 0) {
                 OMGraphic omg = graphics.getOMGraphicAt(0);
                 if ((omg instanceof OMPoly)
@@ -314,7 +312,7 @@ public class VMAP2Shape {
 
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        String[] paths = LayerUtils.initPathsFromProperties(props, realPrefix
+        String[] paths = PropUtils.initPathsFromProperties(props, realPrefix
                 + VPFLayer.pathProperty);
 
         String defaultProperty = props.getProperty(realPrefix

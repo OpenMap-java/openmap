@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageTable.java,v $
-// $Revision: 1.10 $ $Date: 2005/01/10 16:36:21 $ $Author: dietrick $
+// $Revision: 1.11 $ $Date: 2005/08/09 19:29:39 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -307,7 +307,7 @@ public class CoverageTable {
                 }
 
                 FeatureClassInfo featureClass = new FeatureClassInfo(this, foreign_key.intern(), tablepath.intern(), table1.intern(), table2.intern(), foreign_key.intern());
-
+                featureClass.close(false); // releases file descriptors
                 featureTypes.put(feature_class.intern(), featureClass);
 
             } else {

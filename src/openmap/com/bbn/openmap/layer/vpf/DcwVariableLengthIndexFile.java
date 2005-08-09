@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwVariableLengthIndexFile.java,v $
 // $RCSfile: DcwVariableLengthIndexFile.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:08 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 19:29:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -68,7 +68,7 @@ public class DcwVariableLengthIndexFile {
             inputstream.byteOrder(msbfirst);
 
             recordCount = inputstream.readInteger();
-            int HeaderLength = inputstream.readInteger();
+            /*int HeaderLength = */inputstream.readInteger();
             offsettable = new int[recordCount * 2];
             inputstream.readIntegerArray(offsettable, 0, recordCount * 2);
             endOfFileOffset = offsettable[offsettable.length - 2]

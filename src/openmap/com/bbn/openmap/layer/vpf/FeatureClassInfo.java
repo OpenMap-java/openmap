@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/FeatureClassInfo.java,v $
 // $RCSfile: FeatureClassInfo.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/01/10 16:36:21 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 19:29:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -56,7 +56,7 @@ public class FeatureClassInfo extends DcwRecordFile implements
     private boolean fullInit = false;
 
     /** things constructed with deferred initialization get queued here */
-    final private static RunQueue tq = new RunQueue(true, Thread.MIN_PRIORITY, true);
+    // private static RunQueue tq = new RunQueue(true, Thread.MIN_PRIORITY, true);
 
     /** temporary list for use in getDescription() */
     final private List tmpVec = new ArrayList();
@@ -401,7 +401,8 @@ public class FeatureClassInfo extends DcwRecordFile implements
             if (!getRow(tmpVec, ftid)) {
                 return null;
             }
-            boolean haveivdtindex = false;
+
+            //boolean haveivdtindex = false;
 
             for (int i = 0; i < columnInfo.length; i++) {
                 DcwColumnInfo dci = columnInfo[i];

@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LayerGraphicWarehouseSupport.java,v $
-// $Revision: 1.10 $ $Date: 2005/01/10 16:36:21 $ $Author: dietrick $
+// $Revision: 1.11 $ $Date: 2005/08/09 19:29:39 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -387,8 +387,6 @@ public abstract class LayerGraphicWarehouseSupport implements
         if (props == null) {
             props = new Properties();
         }
-
-        String features;
 
         String realPrefix = PropUtils.getScopedPropertyPrefix(drawingAttributes);
 

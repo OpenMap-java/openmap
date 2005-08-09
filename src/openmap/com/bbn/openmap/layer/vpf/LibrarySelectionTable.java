@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibrarySelectionTable.java,v $
-// $Revision: 1.11 $ $Date: 2004/12/08 01:04:24 $ $Author: dietrick $
+// $Revision: 1.12 $ $Date: 2005/08/09 19:29:38 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -56,7 +56,7 @@ public class LibrarySelectionTable {
      * the names of the VPF libraries listed in the library attribute
      * table
      */
-    private String libraryname[] = null; //library [i]
+    //private String libraryname[] = null; //library [i]
     /** the bounding rectangle of the respective libraries */
     private Map boundrec = new HashMap();//bounding rect as [W,S,E,N]
     /** the CoverageAttributeTables corresponding to the different libs */
