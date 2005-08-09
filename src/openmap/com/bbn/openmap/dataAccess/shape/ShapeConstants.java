@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/ShapeConstants.java,v
 // $
 // $RCSfile: ShapeConstants.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 17:21:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,5 +82,23 @@ public interface ShapeConstants {
     public static final String SHAPE_DBF_LINEWIDTH = DrawingAttributes.lineWidthProperty;
     public static final String SHAPE_DBF_DASHPATTERN = DrawingAttributes.dashPatternProperty;
     public static final String SHAPE_DBF_DASHPHASE = DrawingAttributes.dashPhaseProperty;
+
+    /**
+     * Attribute Key for DbfTableModel stored in an EsriGraphicList.
+     * or for a row of attribute information (ArrayList) from the DBF
+     * file on a Shape feature.
+     */
+    public static final String DBF_ATTRIBUTE = "DBF_ATTRIBUTE";
+    /**
+     * Attribute key for row of attribute information (ArrayList) from
+     * the DBF file on a Shape feature.
+     */
+    public static final String SHAPE_DBF_INFO_ATTRIBUTE = "SHAPE_DBF_INFO_ATTRIBUTE";
+    /**
+     * Attribute key for index Integer for a shape feature, indicating
+     * the shape index into the file for the feature. Caution! Shape
+     * indexes start at 1, not zero!
+     */
+    public static final String SHAPE_INDEX_ATTRIBUTE = "SHAPE_INDEX_ATTRIBUTE";
 
 }

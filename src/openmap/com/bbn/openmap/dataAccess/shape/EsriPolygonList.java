@@ -14,21 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygonList.java,v $
 // $RCSfile: EsriPolygonList.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:43 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 17:21:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape;
 
+import java.awt.geom.GeneralPath;
+import java.awt.geom.PathIterator;
+import java.util.Iterator;
+import java.util.Vector;
+
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMCircle;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMRangeRings;
+import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import java.awt.geom.*;
-import java.util.Vector;
-import java.util.Iterator;
 
 /**
  * An EsriGraphicList ensures that only EsriPolygons are added to its
@@ -50,7 +58,7 @@ public class EsriPolygonList extends EsriGraphicList {
     public void add(OMGraphic shape) {
         try {
 
-            if (shape instanceof OMPoly) {
+            if (!(shape instanceof EsriPolygon) && shape instanceof OMPoly) {
                 shape = EsriPolygon.convert((OMPoly) shape);
                 // test for null in next if statement.
             }
@@ -139,7 +147,7 @@ public class EsriPolygonList extends EsriGraphicList {
 
         //using the OMRect data create an OMPoly
         OMPoly poly = new OMPoly(rectPoints, OMGraphic.DECIMAL_DEGREES, omRect.getLineType());
-        poly.setAppObject(omRect.getAppObject());
+        poly.setAttributes(omRect.getAttributes());
         DrawingAttributes da = new DrawingAttributes();
         da.setFrom(omRect);
         da.setTo(poly);
@@ -156,10 +164,9 @@ public class EsriPolygonList extends EsriGraphicList {
         float[] segPoints = new float[2];
 
         while (!circle.isDone()) {
-            //by passing segpoints the array is filled with each x\y
-            // point
-            //iterated by the circle
-            int segType = circle.currentSegment(segPoints);
+            // by passing segpoints the array is filled with each x\y
+            // point iterated by the circle
+//            int segType = circle.currentSegment(segPoints);
             initialPoints.add(new Float(segPoints[0]));
             initialPoints.add(new Float(segPoints[1]));
             circle.next();
@@ -182,7 +189,7 @@ public class EsriPolygonList extends EsriGraphicList {
 
         //using the circle data create an OMPoly
         OMPoly poly = new OMPoly(circlePoints, OMGraphic.DECIMAL_DEGREES, omCircle.getLineType());
-        poly.setAppObject(omCircle.getAppObject());
+        poly.setAttributes(omCircle.getAttributes());
         DrawingAttributes da = new DrawingAttributes();
         da.setFrom(omCircle);
         da.setTo(poly);
@@ -194,9 +201,8 @@ public class EsriPolygonList extends EsriGraphicList {
     public static OMGraphicList convert(OMRangeRings omRR, Projection proj) {
         //get the array of circles
         OMCircle[] circles = omRR.createCircles();
-        OMCircle circ;
         OMGraphicList circleList = new OMGraphicList();
-        circleList.setAppObject(omRR.getAppObject());
+        circleList.setAttributes(omRR.getAttributes());
 
         //get the line color and fill color that are to be passed
         // with
@@ -210,8 +216,7 @@ public class EsriPolygonList extends EsriGraphicList {
             return circleList;
         }
 
-        int i;
-        for (i = 0; i < circles.length; i++) {
+        for (int i = 0; i < circles.length; i++) {
             //information passed to the dbflist includes the interval
             //units and the interval
             //              dbfList = getDbfList("RangeRings(" +
@@ -258,7 +263,8 @@ public class EsriPolygonList extends EsriGraphicList {
             EsriGraphic g = (EsriGraphic) iter.next();
             ret.add((OMGraphic) g.shallowCopy());
         }
-        ret.setAppObject(getAppObject());
+
+        ret.setAttributes(getAttributes());
         return ret;
     }
 }

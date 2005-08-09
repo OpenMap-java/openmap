@@ -14,20 +14,24 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DrawingAttributesUtility.java,v $
 // $RCSfile: DrawingAttributesUtility.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:43 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 17:21:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.util.ColorFactory;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+
+import com.bbn.openmap.omGraphics.BasicStrokeEditor;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.util.ColorFactory;
 
 /**
  * A class to help out with looking in a DBF file, and setting

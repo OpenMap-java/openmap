@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/02/11 22:27:21 $
+// $Revision: 1.11 $
+// $Date: 2005/08/09 17:21:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -758,7 +758,6 @@ public class DbfTableModel extends AbstractTableModel implements
      * @return The DbfTableModel, null if there is a problem.
      */
     public static DbfTableModel getDbfTableModel(URL dbf) {
-        URL url;
         DbfTableModel model = null;
         try {
             InputStream is = dbf.openStream();

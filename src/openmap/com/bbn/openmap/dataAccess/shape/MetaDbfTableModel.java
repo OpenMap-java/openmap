@@ -14,21 +14,27 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/MetaDbfTableModel.java,v $
 // $RCSfile: MetaDbfTableModel.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:43 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 17:21:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape;
 
-import java.net.*;
-import java.util.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.net.URL;
+import java.util.ArrayList;
 
-import com.bbn.openmap.dataAccess.shape.input.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import com.bbn.openmap.dataAccess.shape.input.DbfInputStream;
 import com.bbn.openmap.util.Debug;
 
 /**

@@ -14,15 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPoint.java,v $
 // $RCSfile: EsriPoint.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:43 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 17:21:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphicConstants;
+import com.bbn.openmap.omGraphics.OMPoint;
 
 /**
  * An extension to OMPoint that typecasts a specific Esri graphic
@@ -62,7 +64,7 @@ public class EsriPoint extends OMPoint implements Cloneable, EsriGraphic,
     public static EsriPoint convert(OMPoint ompoint) {
         if (ompoint.getRenderType() == RENDERTYPE_LATLON) {
             EsriPoint ePoint = new EsriPoint(ompoint.getLat(), ompoint.getLon());
-            ePoint.setAppObject(ompoint.getAppObject());
+            ePoint.setAttributes(ompoint.getAttributes());
             DrawingAttributes attributes = new DrawingAttributes();
             attributes.setFrom(ompoint);
             attributes.setTo(ePoint);

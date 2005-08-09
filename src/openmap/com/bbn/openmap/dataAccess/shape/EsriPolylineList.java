@@ -14,17 +14,22 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolylineList.java,v $
 // $RCSfile: EsriPolylineList.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:43 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 17:21:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.util.Debug;
 import java.util.Iterator;
+
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.util.Debug;
 
 /**
  * An EsriGraphicList ensures that only EsriPolygons are added to its
@@ -46,7 +51,7 @@ public class EsriPolylineList extends EsriGraphicList {
     public void add(OMGraphic shape) {
         try {
 
-            if (shape instanceof OMPoly) {
+            if (!(shape instanceof EsriPolyline) && shape instanceof OMPoly) {
                 shape = EsriPolyline.convert((OMPoly) shape);
             } else if (shape instanceof OMLine) {
                 shape = EsriPolyline.convert(EsriPolylineList.convert((OMLine) shape));
@@ -116,7 +121,7 @@ public class EsriPolylineList extends EsriGraphicList {
     public static OMPoly convert(OMLine omLine) {
         if (omLine.getRenderType() == OMGraphic.RENDERTYPE_LATLON) {
             OMPoly poly = new OMPoly(omLine.getLL(), OMGraphic.DECIMAL_DEGREES, omLine.getLineType());
-            poly.setAppObject(omLine.getAppObject());
+            poly.setAttributes(omLine.getAttributes());
             DrawingAttributes da = new DrawingAttributes();
             da.setFrom(omLine);
             da.setTo(poly);
@@ -127,7 +132,7 @@ public class EsriPolylineList extends EsriGraphicList {
 
     public EsriGraphic shallowCopy() {
         EsriPolylineList ret = new EsriPolylineList(size());
-        ret.setAppObject(getAppObject());
+        ret.setAttributes(getAttributes());
         for (Iterator iter = iterator(); iter.hasNext();) {
             EsriGraphic g = (EsriGraphic) iter.next();
             ret.add((OMGraphic) g.shallowCopy());

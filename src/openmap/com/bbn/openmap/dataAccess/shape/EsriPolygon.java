@@ -14,15 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygon.java,v $
 // $RCSfile: EsriPolygon.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:43 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 17:21:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.proj.ProjMath;
 
 /**
@@ -98,7 +100,8 @@ public class EsriPolygon extends OMPoly implements Cloneable, EsriGraphic {
             DrawingAttributes attributes = new DrawingAttributes();
             attributes.setFrom(ompoly);
             attributes.setTo(ePoly);
-            ePoly.setAppObject(ompoly.getAppObject());
+            ePoly.setAttributes(ompoly.getAttributes());
+            ePoly.setIsPolygon(true);
             return ePoly;
         } else {
             return null;

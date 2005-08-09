@@ -14,19 +14,24 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriGraphicList.java,v $
 // $RCSfile: EsriGraphicList.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:43 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 17:21:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape;
 
-import com.bbn.openmap.dataAccess.shape.input.*;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.util.Debug;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Iterator;
+
+import com.bbn.openmap.dataAccess.shape.input.ShpInputStream;
+import com.bbn.openmap.dataAccess.shape.input.ShxInputStream;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.util.Debug;
 
 /**
  * EsriGraphicList ensures that only supported geometry types are
@@ -139,11 +144,11 @@ public abstract class EsriGraphicList extends OMGraphicList implements
                 ex[3] = graphicExtents[i + 1];
         }
 
-        //      System.out.println("extents of list: " +
-        //                         ex[1] + ", " +
-        //                         ex[0] + ", " +
-        //                         ex[3] + ", " +
-        //                         ex[2]);
+        // System.out.println("extents of list: " +
+        // ex[1] + ", " +
+        // ex[0] + ", " +
+        // ex[3] + ", " +
+        // ex[2]);
 
     }
 
@@ -152,14 +157,19 @@ public abstract class EsriGraphicList extends OMGraphicList implements
      * the attribute information about this list's objects.
      */
     public void setTable(DbfTableModel dtm) {
-        setAppObject(dtm);
+        putAttribute(DBF_ATTRIBUTE, dtm);
+        // setAppObject(dtm);
     }
 
     /**
      * Get the DbfTableModel object from the AppObject of this list.
      */
     public DbfTableModel getTable() {
-        Object obj = getAppObject();
+        Object obj = getAttribute(DBF_ATTRIBUTE);
+        // Backward compatibility
+        if (obj == null) {
+            obj = getAppObject();
+        }
         if (obj instanceof DbfTableModel) {
             return (DbfTableModel) obj;
         } else {
@@ -177,8 +187,8 @@ public abstract class EsriGraphicList extends OMGraphicList implements
         // lineWidth, lineColor, fillColor, selectColor We could do
         // stroke info. Toss space in there for name, or general
         // attribute for later.
-        DbfTableModel dtm = new DbfTableModel(5);
-
+        // this.setAppObject(EsriShapeExport.createDefaultModel(this));
+        putAttribute(DBF_ATTRIBUTE, EsriShapeExport.createDefaultModel(this));
     }
 
     /*
@@ -221,7 +231,7 @@ public abstract class EsriGraphicList extends OMGraphicList implements
             return null;
         }
 
-        //Open and stream shp file
+        // Open and stream shp file
         try {
             InputStream is = shp.openStream();
             ShpInputStream pis = new ShpInputStream(is);
@@ -240,16 +250,18 @@ public abstract class EsriGraphicList extends OMGraphicList implements
 
         if (list != null && dbf != null && dbf.getRowCount() == list.size()) {
             list.setTable(dbf);
-            java.util.Iterator it = list.iterator();
-            int count = 0;
 
-            while (it.hasNext()) {
+            int count = 0;
+            for (Iterator it = list.iterator(); it.hasNext(); count++) {
                 OMGraphic graphic = (OMGraphic) it.next();
-                graphic.setAppObject(dbf.getRecord(count++));
+                if (dbf != null) {
+                    graphic.putAttribute(SHAPE_DBF_INFO_ATTRIBUTE,
+                            dbf.getRecord(count));
+                }
+                // graphic.setAppObject(dbf.getRecord(count++));
             }
         }
 
         return list;
     }
 }
-
