@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/daynight/DayNightLayer.java,v $
 // $RCSfile: DayNightLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/02/02 13:15:21 $
+// $Revision: 1.10 $
+// $Date: 2005/08/09 18:05:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -408,8 +408,6 @@ public class DayNightLayer extends OMGraphicHandlerLayer implements
         int[] pixels = new int[width * height];
 
         OMRaster ret = new OMRaster((int) 0, (int) 0, width, height, pixels);
-
-        float lat, lon;
 
         Debug.message("daynight", getName()
                 + "|createImage: Center of bright spot lat= "

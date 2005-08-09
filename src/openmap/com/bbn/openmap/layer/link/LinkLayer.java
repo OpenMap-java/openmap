@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.13 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.14 $
+// $Date: 2005/08/09 18:08:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -916,8 +916,6 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      */
     protected boolean handleGesture(int descriptor, MouseEvent e) {
         Debug.message("link", "LinkLayer: handleGesture:");
-        // Set if we need to repaint
-        boolean needRepaint = false;
 
         try {
             LinkOMGraphicList graphics = getGraphicList(); // Get old
@@ -937,9 +935,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             }
 
             // Find out if a graphic is closeby...
-            int gesGraphicIndex = graphics.findIndexOfClosest(e.getX(),
-                    e.getY(),
-                    distanceLimit);
+//            int gesGraphicIndex = graphics.findIndexOfClosest(e.getX(),
+//                    e.getY(),
+//                    distanceLimit);
 
             // We need to do this to deselect everything else too.
             OMGraphic gesGraphic = graphics.selectClosest(e.getX(),

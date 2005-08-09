@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameCache.java,v $
 // $RCSfile: DTEDFrameCache.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:54 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 18:06:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -155,9 +155,6 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
         String latString = DTEDFrameUtil.latToFileString((float) lat, level);
 
         String partialFile = "/" + lonString + "/" + latString;
-
-        String[] searchPaths = dtedDirPaths;
-
         String ret = findFileName(dtedDirPaths, partialFile);
 
         // HACK to handle old DTED level 2 data, not needed for new

@@ -14,19 +14,20 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGUIList.java,v $
 // $RCSfile: LinkGUIList.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 18:08:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.util.Debug;
-
-import java.io.*;
+import java.io.EOFException;
+import java.io.IOException;
 
 import javax.swing.JComponent;
+
+import com.bbn.openmap.util.Debug;
 
 /**
  */
@@ -86,17 +87,15 @@ public class LinkGUIList {
      */
     protected String readWidgets() throws IOException, EOFException {
 
-        JComponent widget;
         long startTime = System.currentTimeMillis();
         String header = null;
         int widgetType;
-        boolean moreData = true;
 
         float ver = link.dis.readFloat();
-        Debug.message("link", "LinkGUIList: reading graphics:");
+        Debug.message("link", "LinkGUIList: reading graphics: version(" + ver + ")");
 
         while (true) {
-            widget = null;
+
             // Just consume the header, don't create a useless
             // string object.
             header = link.readDelimiter(false);

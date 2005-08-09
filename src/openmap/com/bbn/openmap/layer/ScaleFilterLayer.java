@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleFilterLayer.java,v $
 // $RCSfile: ScaleFilterLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:05:53 $
+// $Revision: 1.10 $
+// $Date: 2005/08/09 18:05:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,17 +24,39 @@ package com.bbn.openmap.layer;
 
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.awt.event.*;
-import java.beans.*;
-import java.beans.beancontext.*;
-import java.util.*;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
+import java.beans.beancontext.BeanContext;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.OverlayLayout;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.MouseDelegator;
+import com.bbn.openmap.event.InfoDisplayEvent;
+import com.bbn.openmap.event.InfoDisplayListener;
+import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.LayerStatusListener;
+import com.bbn.openmap.event.MapMouseListener;
+import com.bbn.openmap.event.MapMouseMode;
+import com.bbn.openmap.event.NavMouseMode;
+import com.bbn.openmap.event.NullMouseMode;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -320,7 +342,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
             Debug.error("ScaleFilterLayer.renderDataForProjection: null projection!");
             return;
         } else {
-            boolean changed = setTargetIndex(proj.getScale());
+            setTargetIndex(proj.getScale());
             Layer layer = getAppropriateLayer();
             layer.renderDataForProjection(proj, g);
         }
@@ -411,7 +433,6 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * @param evt LayerStatusEvent
      */
     public void updateLayerStatus(LayerStatusEvent evt) {
-        int status = evt.getStatus();
         fireStatusUpdate(evt);
     }
 

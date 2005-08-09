@@ -14,20 +14,24 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/GeneratorTester.java,v $
 // $RCSfile: GeneratorTester.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 17:56:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.image;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Properties;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.Environment;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -56,16 +60,16 @@ public class GeneratorTester implements ImageReceiver {
             return;
         }
 
-        Projection proj = ProjectionFactory.makeProjection(CADRG.class,
-                42.0f,
-                -72.0f,
-                5000000f,
-                500,
-                500);
+//        Projection proj = ProjectionFactory.makeProjection(CADRG.class,
+//                42.0f,
+//                -72.0f,
+//                5000000f,
+//                500,
+//                500);
 
         server = new ImageServer(props);
 
-        //      server.createImage(proj, this);
+//      server.createImage(proj, this);
     }
 
     public void receiveImageData(byte[] bytes) {
@@ -86,7 +90,7 @@ public class GeneratorTester implements ImageReceiver {
      *  
      */
     public static void main(String[] args) {
-        GeneratorTester gen = new GeneratorTester(args);
+        new GeneratorTester(args);
     }
 
     /**

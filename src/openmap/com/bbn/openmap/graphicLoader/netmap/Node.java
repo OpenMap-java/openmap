@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/Node.java,v $
 // $RCSfile: Node.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:47 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 17:46:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,9 +33,9 @@ import com.bbn.openmap.omGraphics.OMPoint;
  */
 public class Node extends OMPoint implements ActionListener, FocusListener {
 
-    private static final int DEFAULT_LENGTH = 10;
-    private static final int DEFAULT_WIDTH = 10;
-    private static final int DEFAULT_RADIUS = 5;
+    public static final int DEFAULT_LENGTH = 10;
+    public static final int DEFAULT_WIDTH = 10;
+    public static final int DEFAULT_RADIUS = 5;
 
     public static Color STATUS_UP = Color.green;
     public static Color STATUS_DOWN = Color.red;

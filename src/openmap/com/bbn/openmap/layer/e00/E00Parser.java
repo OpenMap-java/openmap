@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/E00Parser.java,v $
 // $RCSfile: E00Parser.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:55 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 18:07:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -638,7 +638,9 @@ public class E00Parser {
         int ival = r.getItemIndex(prefix.substring(0, 2) + "PTVAL");
         int ival2 = r.getItemIndex(prefix.substring(0, 2) + "PYTYPE");
         int iname = r.getItemIndex(prefix.substring(0, 2) + "PTNAME");
-        int iflag = r.getItemIndex(prefix.substring(0, 2) + "PTFLAG");
+        // Unused
+        //int iflag = r.getItemIndex(prefix.substring(0, 2) + "PTFLAG");
+
         //System.out.println(itype+" "+iname+" "+iflag);
         for (int i = 0; i < n; i++) {
             r.read(isr);
@@ -677,7 +679,6 @@ public class E00Parser {
      */
     void readAAT(E00Record r, int n) throws IOException {
         OMGraphic og;
-        int k = 0;
         int type = Integer.MIN_VALUE;
         int val = Integer.MIN_VALUE;
         int itype = r.getItemIndex(prefix.substring(0, 2) + "LNTYPE");

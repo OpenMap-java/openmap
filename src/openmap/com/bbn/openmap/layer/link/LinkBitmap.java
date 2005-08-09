@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkBitmap.java,v $
 // $RCSfile: LinkBitmap.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 18:08:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -190,8 +190,7 @@ public class LinkBitmap implements LinkGraphicConstants,
         int y = 0;
         int w = 0;
         int h = 0;
-        int length, i;
-        String url;
+        int length;
 
         int renderType = dis.readInt();
 

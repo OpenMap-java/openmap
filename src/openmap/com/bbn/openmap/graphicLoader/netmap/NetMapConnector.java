@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapConnector.java,v $
 // $RCSfile: NetMapConnector.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:47 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 17:46:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -370,7 +370,6 @@ public class NetMapConnector implements ActionListener, NetMapConstants,
 
         serverAddrField = new JTextField(server);
         serverPortField = new JTextField(port);
-        JTextArea serverViewList = new JTextArea();
 
         /*
          * Make the NETMAP Server address entry field

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/dock/BasicDockPanel.java,v $
 // $RCSfile: BasicDockPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 17:50:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,7 +32,7 @@ import com.bbn.openmap.util.Debug;
  * A component that has a background component and docking children.
  * 
  * @author Ben Lubin
- * @version $Revision: 1.3 $ on $Date: 2004/10/14 18:05:49 $
+ * @version $Revision: 1.4 $ on $Date: 2005/08/09 17:50:51 $
  * @since 12/5/02
  */
 public class BasicDockPanel extends JLayeredPane implements DockPanel {
@@ -409,7 +409,6 @@ public class BasicDockPanel extends JLayeredPane implements DockPanel {
         }
         if (comp instanceof DockWrapper) {
             Debug.error("DockPanel: Unexpected call to add with a DockWrapper");
-            DockWrapper dw = (DockWrapper) comp;
             super.add(comp, constraints);
         } else {
             if (constraints.equals(BACKGROUND)) {

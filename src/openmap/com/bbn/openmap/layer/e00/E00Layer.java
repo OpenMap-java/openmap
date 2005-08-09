@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/E00Layer.java,v $
 // $RCSfile: E00Layer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:55 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 18:07:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -193,7 +193,7 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
                 + ".Tx7Visible", Tx7Visible);
 
         Paint dfault = null;
-        OMGraphic LabMarker;
+
         ArcColors = parseColors(props, prefix, "ArcColors", Color.black);
         LabColors = parseColors(props, prefix, "LabColors", Color.black);
         Tx7Color = parseColor(props, prefix, "Tx7Color", dfault);
@@ -488,7 +488,6 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
     protected void exportArcs() {
         if (arcs == null)
             return;
-        OMGraphic og;
 
         Vector V = new Vector();
         int n = arcs.size();
@@ -509,7 +508,6 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
                 continue;
             ll = oj.getLatLonArray();
             llsize = ll.length;
-            boolean closed = true;
             if ((ll[0] != ll[llsize - 2]) || (ll[1] != ll[llsize - 1])) {
                 // contour non clos;
                 float[] coords = new float[] { ll[0], ll[1], ll[llsize - 2],
@@ -622,12 +620,12 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
             ll = oj.getLatLonArray();
             llsize = ll.length;
             double z = data.valeur * 0.304;
-            double z2 = data.valeur2 * 0.304;
+//            double z2 = data.valeur2 * 0.304;
             boolean closed = true;
-            float[] coords = null;
+//            float[] coords = null;
             if (data instanceof ArcData) {
                 ArcData dn = (ArcData) data;
-                coords = dn.coords;
+//                coords = dn.coords;
                 dn.coords = null;
                 closed = false;
             }
@@ -650,7 +648,6 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
      * @since
      */
     protected void exportArcs1() {
-        OMGraphic og;
         PrintStream out = null;
         double lt;
         double ln;
@@ -678,7 +675,6 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
                 continue;
             ll = oj.getLatLonArray();
             llsize = ll.length;
-            boolean closed = true;
             out.println(oj.getLinePaint());
             if ((ll[0] != ll[llsize - 2]) || (ll[1] != ll[llsize - 1]))
                 out.print("MetaPolyline: ");

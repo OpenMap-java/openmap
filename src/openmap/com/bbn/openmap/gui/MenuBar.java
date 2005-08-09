@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MenuBar.java,v $
 // $RCSfile: MenuBar.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:48 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 17:49:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,7 +53,6 @@ public class MenuBar extends JMenuBar implements Serializable,
      * @param it Iterator
      */
     protected void findAndInit(Iterator it) {
-        Object someObj;
         while (it.hasNext()) {
             findAndInit(it.next());
         }

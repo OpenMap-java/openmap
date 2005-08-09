@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkServer.java,v $
 // $RCSfile: LinkServer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:57 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 18:08:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -130,7 +130,6 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
     public void getRectangle(LinkMapRequest query, Link link)
             throws IOException {
 
-        int count = 0;
         LinkGraphicList lgl = new LinkGraphicList(link, new LinkProperties());
 
         // Send nothing
@@ -159,7 +158,7 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
                 + ", y = " + lar.getY()));
 
         LinkActionList lal = new LinkActionList(link, properties);
-        int descriptor = lar.getDescriptor();
+//        int descriptor = lar.getDescriptor();
 
         String gid = lar.getProperties().getProperty(LPC_GRAPHICID);
         if (gid == null) {

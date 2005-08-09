@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.17 $
-// $Date: 2004/11/26 03:42:03 $
+// $Revision: 1.18 $
+// $Date: 2005/08/09 17:49:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -246,9 +246,6 @@ public class WindowSupport extends ListenerSupport implements
      * @param owner Frame for JDialog
      */
     public void displayInWindow(Frame owner) {
-
-        int w = 0;
-        int h = 0;
 
         Dimension dim = getComponentSize();
         if (dim != null) {

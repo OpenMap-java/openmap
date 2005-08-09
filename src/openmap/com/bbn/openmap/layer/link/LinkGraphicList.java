@@ -14,24 +14,26 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGraphicList.java,v $
 // $RCSfile: LinkGraphicList.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 18:08:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.grid.*;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
-
 import java.awt.Color;
-import java.io.*;
+import java.awt.Image;
+import java.io.EOFException;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
-import java.awt.Image;
+
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGrid;
+import com.bbn.openmap.omGraphics.grid.OMGridGenerator;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The LinkGraphicList is an object that describes a list of graphics.
@@ -184,7 +186,6 @@ public class LinkGraphicList implements LinkGraphicConstants {
         long startTime = System.currentTimeMillis();
         String header = null;
         int graphicType;
-        boolean moreData = true;
 
         // This is important, it's checked by the LinkLayer to see if
         // it needs to generate the LinkOMGraphicList to see if the

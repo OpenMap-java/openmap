@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/dock/DockLayout.java,v $
 // $RCSfile: DockLayout.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 17:50:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,7 +32,7 @@ import com.bbn.openmap.util.Debug;
  * A Layout manager used for the docking component...
  * 
  * @author Ben Lubin
- * @version $Revision: 1.4 $ on $Date: 2004/10/14 18:05:49 $
+ * @version $Revision: 1.5 $ on $Date: 2005/08/09 17:50:51 $
  * @since 12/5/02
  */
 public class DockLayout implements LayoutManager2 {
@@ -293,11 +293,11 @@ public class DockLayout implements LayoutManager2 {
     // Utilities:
     /////////////
 
-    private int min(int a, int b) {
+    protected int min(int a, int b) {
         return Math.min(a, b);
     }
 
-    private int max(int a, int b) {
+    protected int max(int a, int b) {
         return Math.max(a, b);
     }
 

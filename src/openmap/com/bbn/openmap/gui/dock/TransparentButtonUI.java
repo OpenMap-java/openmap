@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/dock/TransparentButtonUI.java,v $
 // $RCSfile: TransparentButtonUI.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 17:50:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,7 +33,7 @@ import javax.swing.BorderFactory;
  * top of other components.
  * 
  * @author Ben Lubin
- * @version $Revision: 1.3 $ on $Date: 2004/10/14 18:05:49 $
+ * @version $Revision: 1.4 $ on $Date: 2005/08/09 17:50:51 $
  * @since 12/5/02
  */
 public class TransparentButtonUI extends MetalButtonUI {
@@ -67,7 +67,7 @@ public class TransparentButtonUI extends MetalButtonUI {
     }
 
     public Color getSelectedBGColor(AbstractButton c) {
-        Color bg = c.getBackground();
+//        Color bg = c.getBackground();
         return new Color(225, 225, 125, 200);
     }
 

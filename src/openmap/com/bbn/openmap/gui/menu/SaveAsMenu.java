@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SaveAsMenu.java,v
 // $
 // $RCSfile: SaveAsMenu.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 17:51:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -80,7 +80,7 @@ public class SaveAsMenu extends AbstractOpenMapMenu {
                 // available. If it isn't, this statement should
                 // throw an exception, and the SVG option will not be
                 // added to the SaveAs Menu item.
-                Object batikTest = Class.forName("org.apache.batik.swing.JSVGCanvas")
+                Class.forName("org.apache.batik.swing.JSVGCanvas")
                         .newInstance();
                 menu.add(new SaveAsImageMenuItem("SVG", (AbstractImageFormatter) obj));
                 return;

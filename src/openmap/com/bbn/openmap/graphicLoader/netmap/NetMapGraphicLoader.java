@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapGraphicLoader.java,v $
 // $RCSfile: NetMapGraphicLoader.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:47 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 17:46:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -186,7 +186,6 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
      * @param eventProps the properties from a NetMapEvent.
      */
     protected void processEventProperties(Properties eventProps) {
-        JIcon jicon = null;
         int status;
         Node node;
         Line line;
@@ -238,27 +237,32 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
                 // Define a new entry if "shape" is anything else,
                 // including NODE_MOVE without a valid node.
 
-                int posX = LayerUtils.intFromProperties(eventProps,
-                        POSX_FIELD,
-                        ERROR_VALUE_INT);
-                int posY = LayerUtils.intFromProperties(eventProps,
-                        POSY_FIELD,
-                        ERROR_VALUE_INT);
-                int width = LayerUtils.intFromProperties(eventProps,
-                        WIDTH_FIELD,
-                        ERROR_VALUE_INT);
-                int height = LayerUtils.intFromProperties(eventProps,
-                        HEIGHT_FIELD,
-                        ERROR_VALUE_INT);
+                /*
+                 * int posX = LayerUtils.intFromProperties(eventProps,
+                 * POSX_FIELD, ERROR_VALUE_INT);
+                 * 
+                 * int posY = LayerUtils.intFromProperties(eventProps,
+                 * POSY_FIELD, ERROR_VALUE_INT);
+                 * 
+                 * int width =
+                 * LayerUtils.intFromProperties(eventProps,
+                 * WIDTH_FIELD, ERROR_VALUE_INT);
+                 * 
+                 * int height =
+                 * LayerUtils.intFromProperties(eventProps,
+                 * HEIGHT_FIELD, ERROR_VALUE_INT);
+                 */
                 status = LayerUtils.intFromProperties(eventProps,
                         STATUS_FIELD,
                         0);
                 int menu = LayerUtils.intFromProperties(eventProps,
                         MENU_FIELD,
                         0);
-                int joffset = LayerUtils.intFromProperties(eventProps,
-                        JOFFSET_FIELD,
-                        ERROR_VALUE_INT);
+                /*
+                 * int joffset =
+                 * LayerUtils.intFromProperties(eventProps,
+                 * JOFFSET_FIELD, ERROR_VALUE_INT);
+                 */
 
                 String label = eventProps.getProperty(LABEL_FIELD);
                 if (label == null) {
@@ -267,9 +271,12 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
                 }
 
                 String ip = eventProps.getProperty(IP_FIELD);
-                float elevation = LayerUtils.floatFromProperties(eventProps,
-                        ELEVATION_FIELD,
-                        0f);
+
+                /*
+                 * float elevation =
+                 * LayerUtils.floatFromProperties(eventProps,
+                 * ELEVATION_FIELD, 0f);
+                 */
 
                 boolean isLocalhost = false;
                 if (ip != null && localhostIP != null) {
@@ -380,7 +387,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
             }
 
         } else if (cmd.equals(REFRESH) || cmd.equals(UPDATE)) {
-            //          manageGraphics();
+            // manageGraphics();
         } else if (cmd.equals(CLEAR)) {
             if (nodeList != null) {
                 nodeList.flush();
@@ -388,7 +395,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
             if (lineList != null) {
                 lineList.flush();
             }
-            //          manageGraphics();
+            // manageGraphics();
         } else {
             if (DEBUG) {
                 Debug.output("NMGL: received unused event: "
@@ -499,8 +506,8 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
             String label = null;
             if (graphic instanceof Node) {
                 label = ((Node) graphic).getLabel();
-                //          } else if (graphic instanceof Line) {
-                //              label = ((Line)graphic).getLabel();
+                // } else if (graphic instanceof Line) {
+                // label = ((Line)graphic).getLabel();
             }
             if (receiver instanceof PlugIn) {
                 Component comp = ((PlugIn) receiver).getComponent();
@@ -520,4 +527,3 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
     }
 
 }
-

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NodeColor.java,v $
 // $RCSfile: NodeColor.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:47 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 17:46:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,7 +44,7 @@ public class NodeColor {
     public static int valueOf(Color color) {
         int rgb = color.getRGB();
         for (int i = 0; i < nodeColors.length; i++) {
-            if (nodeColors[i].getRGB() == color.getRGB())
+            if (nodeColors[i].getRGB() == rgb)
                 return (colortomap(i));
         }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/UTMCoordPanel.java,v $
 // $RCSfile: UTMCoordPanel.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 17:49:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -110,7 +110,6 @@ public class UTMCoordPanel extends CoordPanel implements Serializable {
      *         boxes
      */
     public LatLonPoint getLatLon() {
-        float fnorthing, feasting;
         int iZoneNumber;
         char cZoneLetter;
 

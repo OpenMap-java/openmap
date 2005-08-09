@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/CSVFile.java,v $
 // $RCSfile: CSVFile.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/05/23 19:54:43 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 18:00:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -115,8 +115,6 @@ public class CSVFile {
             URL csvURL = infoUrl;
             streamReader = new BufferedReader(new InputStreamReader(csvURL.openStream()));
             CSVTokenizer csvt = new CSVTokenizer(streamReader, readNumbersAsStrings);
-            String name = null;
-            String abbreviation = null;
             int count = 0;
             token = csvt.token();
             while (!csvt.isEOF(token)) {

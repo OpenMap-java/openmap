@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/02/11 22:32:27 $
+// $Revision: 1.13 $
+// $Date: 2005/08/09 18:05:08 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -630,7 +630,6 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
      * @return OMGraphicList new graphic list
      */
     protected OMGraphicList constructGraticuleLines() {
-        float[] llp;
 
         OMGraphicList newgraphics = new OMGraphicList(20);
         // Lets figure out which lines should be painted...

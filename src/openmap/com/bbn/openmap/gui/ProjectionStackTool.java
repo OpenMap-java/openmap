@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ProjectionStackTool.java,v $
 // $RCSfile: ProjectionStackTool.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/02/11 22:30:29 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 17:49:51 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -128,27 +128,20 @@ public class ProjectionStackTool extends OMToolComponent implements
     public void resetButtons(boolean enableBackButton,
                              boolean enableForwardButton) {
 
-        java.net.URL url;
-        JButton b;
-
         if (backIcon == null) {
-            url = getClass().getResource(backName);
-            backIcon = new ImageIcon(url);
+            backIcon = new ImageIcon(getClass().getResource(backName));
         }
 
         if (dimBackIcon == null) {
-            url = getClass().getResource(dimBackName);
-            dimBackIcon = new ImageIcon(url);
+            dimBackIcon = new ImageIcon(getClass().getResource(dimBackName));
         }
 
         if (forwardIcon == null) {
-            url = getClass().getResource(forwardName);
-            forwardIcon = new ImageIcon(url);
+            forwardIcon = new ImageIcon(getClass().getResource(forwardName));
         }
 
         if (dimForwardIcon == null) {
-            url = getClass().getResource(dimForwardName);
-            dimForwardIcon = new ImageIcon(url);
+            dimForwardIcon = new ImageIcon(getClass().getResource(dimForwardName));
         }
 
         ImageIcon active;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkActionList.java,v $
 // $RCSfile: LinkActionList.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 18:08:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -188,11 +188,9 @@ public class LinkActionList implements LinkActionConstants,
                                           OMGridGenerator generator)
             throws IOException, EOFException {
 
-        OMGraphic graphic;
         long startTime = System.currentTimeMillis();
         String header = null;
         int gestureType;
-        boolean moreData = true;
 
         float ver = link.dis.readFloat();
 
@@ -209,7 +207,6 @@ public class LinkActionList implements LinkActionConstants,
         Debug.message("link", "LinkActionList: reading actions:");
 
         while (true) {
-            graphic = null;
             // Just consume the header, don't create a useless
             // string object.
             header = link.readDelimiter(false);
@@ -227,8 +224,6 @@ public class LinkActionList implements LinkActionConstants,
             }
 
             gestureType = link.dis.readInt();
-            int length;
-            String data;
 
             switch (gestureType) {
             case ACTION_GRAPHICS:

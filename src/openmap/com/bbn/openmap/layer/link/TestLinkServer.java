@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/TestLinkServer.java,v $
 // $RCSfile: TestLinkServer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:57 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 18:08:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -215,7 +215,7 @@ public class TestLinkServer extends LinkServer implements LinkActionConstants,
     public void handleGesture(LinkActionRequest glq, Link link)
             throws IOException {
 
-        int descriptor = glq.getDescriptor();
+//        int descriptor = glq.getDescriptor();
 
         LinkProperties props = new LinkProperties();
         props.setProperty(LPC_INFO, ("Mouse Clicked at: x = " + glq.getX()

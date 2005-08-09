@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/dock/DockWrapper.java,v $
 // $RCSfile: DockWrapper.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 17:50:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,7 +43,7 @@ import com.bbn.openmap.util.Debug;
  * internal-framed or external framed...
  * 
  * @author Ben Lubin
- * @version $Revision: 1.6 $ on $Date: 2004/10/14 18:05:49 $
+ * @version $Revision: 1.7 $ on $Date: 2005/08/09 17:50:51 $
  * @since 12/5/02
  */
 public class DockWrapper extends JPanel {
@@ -187,21 +187,21 @@ public class DockWrapper extends JPanel {
         }
     }
 
-    private void untab(JComponent child) {
-        if (child == null) {
-            throw new RuntimeException("Can't untab null");
-        }
-        removeChild(child);
-        if (children.size() == 1) {
-            JComponent curChild = getChild();
-            removeChild(curChild);
-            remove(tabPane);
-            tabPane = null;
-            addChild(curChild);
-            setOpaque(false);
-        }
-        DockWrapper dw = dockPanel.createDockWrapper(child);
-    }
+//    private void untab(JComponent child) {
+//        if (child == null) {
+//            throw new RuntimeException("Can't untab null");
+//        }
+//        removeChild(child);
+//        if (children.size() == 1) {
+//            JComponent curChild = getChild();
+//            removeChild(curChild);
+//            remove(tabPane);
+//            tabPane = null;
+//            addChild(curChild);
+//            setOpaque(false);
+//        }
+//        DockWrapper dw = dockPanel.createDockWrapper(child);
+//    }
 
     //Transparency Methods:
     ///////////////////////

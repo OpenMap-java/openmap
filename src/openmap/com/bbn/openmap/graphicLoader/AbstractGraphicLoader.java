@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/AbstractGraphicLoader.java,v $
 // $RCSfile: AbstractGraphicLoader.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:46 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 17:44:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -204,20 +204,15 @@ public abstract class AbstractGraphicLoader extends OMComponent implements
 
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
-
         String prefix = PropUtils.getScopedPropertyPrefix(this);
-
         props.put(prefix + NameProperty, getName());
         return props;
     }
 
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
-
-        String prefix = PropUtils.getScopedPropertyPrefix(this);
         list.put(NameProperty,
                 "A short name description for what this GraphicLoader does.");
-
         return list;
     }
 }

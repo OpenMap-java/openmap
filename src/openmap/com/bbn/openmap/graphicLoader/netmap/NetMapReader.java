@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapReader.java,v $
 // $RCSfile: NetMapReader.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:47 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 17:46:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -354,7 +354,6 @@ public class NetMapReader extends Thread implements NetMapConstants {
         if (DEBUG_VERBOSE)
             Debug.output("  parsed: " + v.toString());
 
-        JIcon jicon = null;
         Properties eventProps = new Properties();
 
         String cmd = v.firstElement().toString();
@@ -578,8 +577,6 @@ public class NetMapReader extends Thread implements NetMapConstants {
     protected String getVal(String marker, String line) {
         int sTok = 0;
         int eTok = 0;
-
-        String ret = null;
 
         if ((sTok = line.toLowerCase().indexOf(marker)) < 0)
             return null;

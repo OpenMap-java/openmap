@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OpenMapFrame.java,v $
 // $RCSfile: OpenMapFrame.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.12 $
+// $Date: 2005/08/09 17:49:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -171,7 +171,6 @@ public class OpenMapFrame extends JFrame implements
      *        objects.
      */
     public void findAndInit(Iterator it) {
-        Object someObj;
         while (it.hasNext()) {
             findAndInit(it.next());
         }
@@ -238,7 +237,6 @@ public class OpenMapFrame extends JFrame implements
      *        through the removed objects.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-        Object someObj;
         Iterator it = bcme.iterator();
         while (it.hasNext()) {
             findAndUndo(it.next());

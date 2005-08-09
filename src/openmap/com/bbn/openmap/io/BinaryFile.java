@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/BinaryFile.java,v $
 // $RCSfile: BinaryFile.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:51 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 18:00:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -154,17 +154,6 @@ public class BinaryFile {
 
                     if (url != null) {
                         setInputReader(new URLInputReader(url));
-
-                        //  This has been commented out because the
-                        //  AppletDataNugget has been deprecated, and
-                        //  is not needed.
-
-                        //                  } else {
-                        //                      url = AppletDataNugget.findResource(name);
-
-                        //                      if (url != null) {
-                        //                          setInputReader(new URLInputReader(url));
-                        //                      }
                     }
                 }
 
@@ -183,6 +172,7 @@ public class BinaryFile {
                                 + name + " as a URL");
                     }
                 }
+                
             }
 
             if (inputReader == null) {

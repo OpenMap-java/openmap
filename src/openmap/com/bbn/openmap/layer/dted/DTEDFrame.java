@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrame.java,v $
 // $RCSfile: DTEDFrame.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/05/23 19:44:27 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 18:06:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -295,7 +295,7 @@ public class DTEDFrame implements Closable {
 
                 int lflon_index = (int) Math.floor(lon_index);
                 int lclon_index = (int) Math.ceil(lon_index);
-                int lflat_index = (int) Math.floor(lat_index);
+                /*int lflat_index = (int) Math.floor(lat_index);*/
                 int lclat_index = (int) Math.ceil(lat_index);
 
                 if (elevations[lflon_index] == null)
@@ -516,10 +516,10 @@ public class DTEDFrame implements Closable {
             // 2*uhl....size of elevation post space
             binFile.seek(UHL_SIZE + DSI_SIZE + ACC_SIZE
                     + (lon_index * (12 + (2 * uhl.num_lat_points))));
-            int sent = binFile.read();
+            /*int sent = */binFile.read();
             binFile.skipBytes(3); // 3 byte data_block_count
-            short lon_count = binFile.readShort();
-            short lat_count = binFile.readShort();
+            /*short lon_count = */binFile.readShort();
+            /*short lat_count = */binFile.readShort();
             // Allocate the rows of the row
             elevations[lon_index] = new short[uhl.num_lat_points];
             for (int j = 0; j < uhl.num_lat_points; j++)

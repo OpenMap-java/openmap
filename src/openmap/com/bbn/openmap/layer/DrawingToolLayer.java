@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.28 $
-// $Date: 2005/05/24 18:29:05 $
+// $Revision: 1.29 $
+// $Date: 2005/08/09 18:05:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -84,36 +84,6 @@ import com.bbn.openmap.util.propertyEditor.Inspector;
  * over.
  * 
  * <pre>
- * 
- *  
- *   
- *    
- *     
- *      
- *       
- *        
- *         
- *          
- *           
- *            
- *             
- *              
- *               
- *                
- *                 
- *                  
- *                   
- *                    
- *                     
- *                      
- *                       
- *                        
- *                         
- *                          
- *                           
- *                            
- *                             
- *                              
  *                               
  *                               # Properties for DrawingToolLayer:
  *                               drawingToolLayer.class=com.bbn.openmap.layer.DrawingToolLayer
@@ -127,35 +97,6 @@ import com.bbn.openmap.util.propertyEditor.Inspector;
  *                               # is available on the palette.  If it's not specified and the Save button is 
  *                               # chosen, the user will queried for this location.
  *                               drawingToolLayer.file=file to read OMGraphics from
- *                               
- *                              
- *                             
- *                            
- *                           
- *                          
- *                         
- *                        
- *                       
- *                      
- *                     
- *                    
- *                   
- *                  
- *                 
- *                
- *               
- *              
- *             
- *            
- *           
- *          
- *         
- *        
- *       
- *      
- *     
- *    
- *   
  *  
  * </pre>
  */

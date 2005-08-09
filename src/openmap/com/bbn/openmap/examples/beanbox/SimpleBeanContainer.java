@@ -111,11 +111,7 @@ public class SimpleBeanContainer extends SimpleBeanObject implements
     public boolean contains(Object obj) {
 
         if (obj instanceof SimpleBeanObject) {
-
-            SimpleBeanObject bean = (SimpleBeanObject) obj;
-
             return this.contains(new Long(((SimpleBeanObject) obj).getId()));
-
         }
 
         return false;

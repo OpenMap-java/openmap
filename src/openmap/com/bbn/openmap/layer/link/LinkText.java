@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkText.java,v $
 // $RCSfile: LinkText.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:57 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 18:08:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -176,9 +176,7 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
         float lon = 0;
         int x = 0;
         int y = 0;
-        int i = 0;
         int just = 0;
-        int length;
         String string, font;
 
         int renderType = dis.readInt();

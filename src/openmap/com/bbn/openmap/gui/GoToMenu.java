@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/10/14 18:05:48 $
+// $Revision: 1.12 $
+// $Date: 2005/08/09 17:49:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,26 +25,35 @@ package com.bbn.openmap.gui;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Vector;
-import javax.swing.*;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
 
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.gui.menu.DataBoundsViewMenuItem;
 import com.bbn.openmap.gui.menu.OMBasicMenu;
+import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjectionFactory;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.DataBoundsProvider;
+import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.layer.util.LayerUtils;
 
 /**
  * Menu that keeps track of different saved map views (lat/lon, scale
@@ -326,8 +335,6 @@ public class GoToMenu extends AbstractOpenMapMenu {
         revalidate();
     }
 
-    final GoToMenu parent = this;
-
     /**
      * This is the button that will bring up the dialog to actually
      * name a new view being added. The new view will be the current
@@ -344,7 +351,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
             if (map != null) {
                 Projection proj = map.getProjection();
                 LatLonPoint llp = proj.getCenter();
-                GoToButton gtb = new GoToButton(llp.getLatitude(), llp.getLongitude(), proj.getScale(), proj.getName());
+                new GoToButton(llp.getLatitude(), llp.getLongitude(), proj.getScale(), proj.getName());
             }
         }
     }
@@ -370,6 +377,14 @@ public class GoToMenu extends AbstractOpenMapMenu {
         public GoToButton(float lat, float lon, float s, String projID) {
             init(lat, lon, s, projID);
             NameFetcher nf = new NameFetcher(this);
+            if (map != null) {
+                Point p = map.getLocationOnScreen();
+                int x = (int)p.getX();
+                int y = (int)p.getY();
+                int w = map.getWidth();
+                int h = map.getHeight();
+                nf.setLocation(x + (w-nf.getWidth())/2, y + (h - nf.getHeight())/2);
+            }
             nf.show();
         }
 
@@ -381,9 +396,13 @@ public class GoToMenu extends AbstractOpenMapMenu {
             this.addActionListener(this);
         }
 
+        /**
+         * Gets called when the NameFetcher sucessfully retrieves a name for the view.
+         * @param name new name for the button.
+         */
         public void setNameAndAdd(String name) {
             this.setText(name);
-            parent.addView(this);
+            GoToMenu.this.addView(this);
         }
 
         public void actionPerformed(ActionEvent ae) {
@@ -465,10 +484,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
                 if (newName != null && !(newName.equals(""))) {
                     notifyThis.setNameAndAdd(newName);
                 }
-                this.setVisible(false);
-            } else {
-                this.setVisible(false);
             }
+            this.setVisible(false);
         }
     }
 }

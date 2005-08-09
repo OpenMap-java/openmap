@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkMapRequest.java,v $
 // $RCSfile: LinkMapRequest.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 18:08:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -157,9 +157,6 @@ public class LinkMapRequest {
 
         Debug.message("link", "LinkMapRequest: read()");
 
-        float east, west, north, south;
-        int i;
-
         float ver = link.dis.readFloat();
 
         if (ver != version) {
@@ -181,7 +178,7 @@ public class LinkMapRequest {
         int length = link.dis.readInt();
 
         boundingPolys = new LinkBoundingPoly[length];
-        for (i = 0; i < boundingPolys.length; i++) {
+        for (int i = 0; i < boundingPolys.length; i++) {
             boundingPolys[i] = new LinkBoundingPoly(link.dis);
         }
 

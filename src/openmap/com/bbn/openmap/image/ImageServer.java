@@ -14,23 +14,41 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServer.java,v $
 // $RCSfile: ImageServer.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/06/09 23:30:10 $
+// $Revision: 1.9 $
+// $Date: 2005/08/09 17:56:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.image;
 
-import java.awt.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.RenderingHints;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.Vector;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.plugin.*;
-import com.bbn.openmap.util.*;
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.plugin.PlugIn;
+import com.bbn.openmap.plugin.PlugInLayer;
+import com.bbn.openmap.proj.Mercator;
+import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.ProjectionFactory;
+import com.bbn.openmap.util.ComponentFactory;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The image server is the class you want to deal with when creating
@@ -61,26 +79,26 @@ import com.bbn.openmap.util.*;
  * someday.
  * <P>
  * <code><pre>
- * 
  *  
  *   
- *    # If the ImageServer is created and given a prefix (in this example,
- *    # 'imageServer') the properties file should contain the properties:
- *    imageServer.layers=&lt;layer1 layer2 ...&gt;
- *    layer1.className=&lt;classname&gt;
- *    layer1.prettyName=&lt;pretty name of layer&gt;
- *    # Add other attributes as required by layer1...
- *    layer2.className=&lt;classname&gt;
- *    layer2.prettyName=&lt;pretty name of layer&gt;
- *    # Add other attributes as required by layer2...
- *    # First formatter listed is default.
- *    imageServer.formatters=&lt;formatter1 formatter2 ...&gt;
- *    formatter1.class=&lt;classname of formatter 1&gt;
- *    # Add other formatter1 properties
- *    formatter2.class=&lt;classname of formatter 2&gt;
+ *    
+ *     # If the ImageServer is created and given a prefix (in this example,
+ *     # 'imageServer') the properties file should contain the properties:
+ *     imageServer.layers=&lt;layer1 layer2 ...&gt;
+ *     layer1.className=&lt;classname&gt;
+ *     layer1.prettyName=&lt;pretty name of layer&gt;
+ *     # Add other attributes as required by layer1...
+ *     layer2.className=&lt;classname&gt;
+ *     layer2.prettyName=&lt;pretty name of layer&gt;
+ *     # Add other attributes as required by layer2...
+ *     # First formatter listed is default.
+ *     imageServer.formatters=&lt;formatter1 formatter2 ...&gt;
+ *     formatter1.class=&lt;classname of formatter 1&gt;
+ *     # Add other formatter1 properties
+ *     formatter2.class=&lt;classname of formatter 2&gt;
+ *     
  *    
  *   
- *  
  * </pre></code>
  * <P>
  * NOTE: If you simply hand the ImageServer a standard
@@ -92,7 +110,7 @@ import com.bbn.openmap.util.*;
  * available for the ImageServer.
  */
 public class ImageServer implements
- /* ImageReadyListener, ImageReceiver, */PropertyConsumer {
+/* ImageReadyListener, ImageReceiver, */PropertyConsumer {
 
     /** The Image formatter for the output image. */
     protected ImageFormatter formatter;
@@ -566,13 +584,14 @@ public class ImageServer implements
      */
     protected synchronized Layer[] getMaskedLayers(int layerMask) {
         if (layerMask == 0xFFFFFFFF || layers == null) {
-            //  They all want to be there
+            // They all want to be there
             Debug.message("imageserver",
-                    (layers != null?"ImageServer: image request adding all layers.":"ImageServer.getMaskedLayers() null layers"));
+                    (layers != null ? "ImageServer: image request adding all layers."
+                            : "ImageServer.getMaskedLayers() null layers"));
             return layers;
         } else {
-            //  Use the vector as a growable array, and add the layers
-            //  to it that the mask says should be there.
+            // Use the vector as a growable array, and add the layers
+            // to it that the mask says should be there.
             Vector layerVector = new Vector(layers.length);
             for (int i = 0; i < layers.length; i++) {
                 if ((layerMask & (0x00000001 << i)) != 0) {
@@ -655,7 +674,7 @@ public class ImageServer implements
      * @return default formatter.
      */
     protected ImageFormatter getFormatters(Properties p) {
-        String formatterString, formattersString;
+        String formattersString;
         ImageFormatter iFormatter = null;
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
@@ -747,7 +766,7 @@ public class ImageServer implements
                 if (iLayer != null) {
 
                     // We might want to consider adding this:
-                    //                  iLayer.setProperties(layerName, p);
+                    // iLayer.setProperties(layerName, p);
 
                     layers.add(iLayer);
                     if (Debug.debugging("imageserver")) {
@@ -805,11 +824,11 @@ public class ImageServer implements
         }
     }
 
-    //      protected void finalize() {
-    //      if (Debug.debugging("gc")) {
-    //          Debug.output("ImageServer: GC'd.");
-    //      }
-    //      }
+    // protected void finalize() {
+    // if (Debug.debugging("gc")) {
+    // Debug.output("ImageServer: GC'd.");
+    // }
+    // }
 
     /**
      * For convenience, to create an image file based on the contents
@@ -936,12 +955,12 @@ public class ImageServer implements
      * from a modified openmap.properties file.
      * 
      * <pre>
-     * 
      *  
-     *   java com.bbn.openmap.image.ImageServer -properties (path
-     *    to properties file) -file (path to output image) 
      *   
-     *  
+     *    java com.bbn.openmap.image.ImageServer -properties (path
+     *     to properties file) -file (path to output image) 
+     *    
+     *   
      * </pre>
      * 
      * <P>

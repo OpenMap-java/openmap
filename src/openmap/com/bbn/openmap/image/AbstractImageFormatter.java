@@ -14,26 +14,27 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/AbstractImageFormatter.java,v $
 // $RCSfile: AbstractImageFormatter.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 17:56:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.image;
 
-import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
-import java.beans.PropertyChangeListener;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Properties;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -158,7 +159,7 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
             // This lets us know what the layers are
             map.addPropertyChangeListener(this);
 
-            //          Layers should be set...
+            // Layers should be set...
             com.bbn.openmap.LatLonPoint cp = new com.bbn.openmap.LatLonPoint(map.getCenter());
 
             double scaleMod = 1f;// scale factor for image scale
@@ -175,7 +176,8 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
                 scaleMod = Math.sqrt(area1 / area2);
             }
 
-            Proj tp = (Proj) com.bbn.openmap.proj.ProjectionFactory.makeProjection(map.getProjection().getClass(),
+            Proj tp = (Proj) com.bbn.openmap.proj.ProjectionFactory.makeProjection(map.getProjection()
+                    .getClass(),
                     cp.getLatitude(),
                     cp.getLongitude(),
                     map.getScale() * (float) scaleMod,
@@ -186,12 +188,22 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
 
             if (layers != null) {
                 for (int i = layers.length - 1; i >= 0; i--) {
+                    Projection oldProj = layers[i].getProjection();
                     layers[i].renderDataForProjection(tp, graphics);
                     if (Debug.debugging("formatter")) {
                         Debug.output("AbstractImageFormatter: rendering "
                                 + layers[i].getName());
                     }
-                    layers[i].setProjection(proj);
+                    // Need to set the old Projection object on the
+                    // Layer, not the current MapBean Proj object. If
+                    // you set the MapBean Proj object, make sure you
+                    // clone it first. The Layer will do a check on
+                    // the Projection object it has against any new
+                    // ones it receives. If it has the original from
+                    // the MapBean, the check it does will return a
+                    // false negative, and the layer will think it
+                    // doesn't have to do anything.
+                    layers[i].setProjection(oldProj);
                 }
 
             } else {

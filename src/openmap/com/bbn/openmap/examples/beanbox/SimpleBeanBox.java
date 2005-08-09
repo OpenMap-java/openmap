@@ -38,8 +38,6 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
 
     private SimpleBeanLayer layer;
 
-    private OMGraphic selectedGraphic;
-
     private static SimpleBeanBox thisBeanBox = null;
 
     public SimpleBeanBox(SimpleBeanLayer l) {

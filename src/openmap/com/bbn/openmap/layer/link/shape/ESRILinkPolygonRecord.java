@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/ESRILinkPolygonRecord.java,v $
 // $RCSfile: ESRILinkPolygonRecord.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:58 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 18:09:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,15 +55,10 @@ public class ESRILinkPolygonRecord extends ESRIPolygonRecord implements
         int nPolys = polygons.length;
         if (nPolys <= 0)
             return;
-        OMPoly p = null;
-        float[] pts;
-        boolean ispolyg = isPolygon();
 
-        for (int i = 0, j, k; i < nPolys; i++) {
+        for (int i = 0; i < nPolys; i++) {
             // these points are already in RADIAN lat,lon order!...
-            pts = ((ESRIPoly.ESRIFloatPoly) polygons[i]).getRadians();
-
-            lgl.addPoly(pts,
+            lgl.addPoly(((ESRIPoly.ESRIFloatPoly) polygons[i]).getRadians(),
                     OMGraphic.RADIANS,
                     OMGraphic.LINETYPE_STRAIGHT,
                     properties);

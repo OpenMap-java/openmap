@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MGRSCoordPanel.java,v $
 // $RCSfile: MGRSCoordPanel.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:48 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 17:49:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -86,12 +86,8 @@ public class MGRSCoordPanel extends CoordPanel implements Serializable {
      */
     public LatLonPoint getLatLon() {
 
-        String mgrsString;
-
         try {
-            // Allow blank minutes and seconds fields to represent
-            // zero
-
+            // Allow blank minutes and seconds fields to represent zero
             return new MGRSPoint(mgrs.getText()).toLatLonPoint();
 
         } catch (NumberFormatException except) {
