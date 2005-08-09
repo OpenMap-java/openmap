@@ -4,8 +4,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LambertConformal.java,v $
 // $RCSfile: LambertConformal.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 22:35:28 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 20:38:12 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -76,7 +76,7 @@ public class LambertConformal extends Proj {
      * @param width width of screen
      * @param height height of screen
      */
-    private LambertConformal(LatLonPoint center, float scale, int width,
+    protected LambertConformal(LatLonPoint center, float scale, int width,
             int height) {
         super(center, scale, width, height, LambertConformalType);
     }
@@ -92,7 +92,7 @@ public class LambertConformal extends Proj {
      * @param sp_one Standard Parallel One in degrees.
      * @param sp_two Standard Parallel Two in degrees.
      */
-    private LambertConformal(LatLonPoint center, float scale, int width,
+    protected LambertConformal(LatLonPoint center, float scale, int width,
             int height, float centralMeridian, float sp_one, float sp_two) {
         this(center,
              scale,
@@ -146,7 +146,7 @@ public class LambertConformal extends Proj {
      * instance, they may need to recalculate "constant" parameters
      * used in the forward() and inverse() calls.
      * <p>
-     *  
+     * 
      */
     public void computeParameters() {
 
@@ -166,9 +166,9 @@ public class LambertConformal extends Proj {
         locationCenterXPixel = (int) ((float) getWidth() / 2.0 + .5);
         locationCenterYPixel = (int) ((float) getHeight() / 2.0 + .5);
 
-        //Multiply by the cosmological constant of 100 to adjust
+        // Multiply by the cosmological constant of 100 to adjust
         // pixels per lambert
-        //to produce a ratio that is close to that of other
+        // to produce a ratio that is close to that of other
         // projections
         locationPixelsPerLambert = getMaxScale() / getScale() * 100;
 
@@ -202,7 +202,7 @@ public class LambertConformal extends Proj {
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
      * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
-     *  
+     * 
      */
     public float normalize_latitude(float lat) {
         if (lat > NORTH_POLE) {
@@ -227,21 +227,21 @@ public class LambertConformal extends Proj {
      */
     public void pan(float Az) {
         if (MoreMath.approximately_equal(Math.abs(Az), 180f, 0.01f)) {
-            setCenter(inverse(width / 2, height));//south
+            setCenter(inverse(width / 2, height));// south
         } else if (MoreMath.approximately_equal(Az, -135f, 0.01f)) {
-            setCenter(inverse(0, height));//southwest
+            setCenter(inverse(0, height));// southwest
         } else if (MoreMath.approximately_equal(Az, -90f, 0.01f)) {
-            setCenter(inverse(0, height / 2));//west
+            setCenter(inverse(0, height / 2));// west
         } else if (MoreMath.approximately_equal(Az, -45f, 0.01f)) {
-            setCenter(inverse(0, 0));//northwest
+            setCenter(inverse(0, 0));// northwest
         } else if (MoreMath.approximately_equal(Az, 0f, 0.01f)) {
-            setCenter(inverse(width / 2, 0));//north
+            setCenter(inverse(width / 2, 0));// north
         } else if (MoreMath.approximately_equal(Az, 45f, 0.01f)) {
-            setCenter(inverse(width, 0));//northeast
+            setCenter(inverse(width, 0));// northeast
         } else if (MoreMath.approximately_equal(Az, 90f, 0.01f)) {
-            setCenter(inverse(width, height / 2));//east
+            setCenter(inverse(width, height / 2));// east
         } else if (MoreMath.approximately_equal(Az, 135f, 0.01f)) {
-            setCenter(inverse(width, height));//southeast
+            setCenter(inverse(width, height));// southeast
         } else {
             super.pan(Az);
         }
@@ -267,8 +267,8 @@ public class LambertConformal extends Proj {
 
         double formula_two = ProjMath.degToRad(Math.abs(lambert_lamn) * (lon));
 
-        lp.setLocation(formula_one * Math.sin(formula_two),
-                formula_one * Math.cos(formula_two));
+        lp.setLocation(formula_one * Math.sin(formula_two), formula_one
+                * Math.cos(formula_two));
 
         return lp;
     } /* end of function LLToWorld */
@@ -359,7 +359,7 @@ public class LambertConformal extends Proj {
      * @return true is plotable, otherwise false
      */
     public boolean isPlotable(float lat, float lon) {
-        //It is almost impossible to determine it the location
+        // It is almost impossible to determine it the location
         // is plotable without calling forward() for the Point
         // and checking if the point is in bounds.
         // Be lazy and return true.

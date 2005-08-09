@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/CADRG.java,v $
 // $RCSfile: CADRG.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/02/15 17:26:32 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 20:38:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -323,7 +323,6 @@ public class CADRG extends Cylindrical implements EqualArc {
      */
     private double CADRG_x_pix_constant(double adrgscale, int zone) {
         // E-W pixel constant
-        double tempx = 0;
         double x_pix = (double) adrgscale * CADRG_ARC_A[zone - 1] / 512.0;
 
         // Increase, if necessary, to the next highest integer value
@@ -357,7 +356,6 @@ public class CADRG extends Cylindrical implements EqualArc {
      *  
      */
     private double CADRG_y_pix_constant(double adrgscale) {
-        double tempy = 0;
         final int CADRG_ARC_B = 400384;
 
         double y_pix = (double) adrgscale * CADRG_ARC_B / 512.0;

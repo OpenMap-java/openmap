@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/02/16 21:05:36 $
+// $Revision: 1.13 $
+// $Date: 2005/08/09 20:39:35 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -364,9 +364,6 @@ public class MGRSPoint extends ZonedUTMPoint {
         int length = mgrsString.length();
 
         String hunK = null;
-        String seasting = null;
-        String snorthing = null;
-
         StringBuffer sb = new StringBuffer();
         char testChar;
         int i = 0;
@@ -970,9 +967,6 @@ public class MGRSPoint extends ZonedUTMPoint {
                             + LLtoUTM(llp) + "\n");
                     outStr2.append(record + " is " + mgrsp + "\n");
                 } else if (inType.equalsIgnoreCase("LatLon")) {
-                    MGRSPoint mgrsp;
-                    UTMPoint utmp;
-                    LatLonPoint llp;
                     float lat, lon;
                     int index;
                     String tmp;
@@ -985,9 +979,9 @@ public class MGRSPoint extends ZonedUTMPoint {
                     lat = Float.parseFloat(tmp);
                     tmp = record.substring(index);
                     lon = Float.parseFloat(tmp);
-                    llp = new LatLonPoint(lat, lon);
-                    utmp = LLtoUTM(llp);
-                    mgrsp = LLtoMGRS(llp);
+                    LatLonPoint llp = new LatLonPoint(lat, lon);
+//                    UTMPoint utmp = LLtoUTM(llp);
+                    MGRSPoint mgrsp = LLtoMGRS(llp);
                     outStr1.append(record + " to UTM: " + mgrsp.zone_number
                             + " " + mgrsp.easting + " " + mgrsp.northing + "\n");
                     outStr2.append(record + "    ->    " + mgrsp.mgrs + "\n");

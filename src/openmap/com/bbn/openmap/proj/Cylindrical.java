@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Cylindrical.java,v $
 // $RCSfile: Cylindrical.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:21 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 20:38:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -260,7 +260,7 @@ public abstract class Cylindrical extends Proj {
      */
     protected ArrayList _forwardPoly(float[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
-        int p, n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
+        int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
 
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
@@ -348,7 +348,7 @@ public abstract class Cylindrical extends Proj {
     }//_forwardPoly()
 
     // print out polygon
-    private static final void dumpPoly(float[] rawllpts, int[] xs, int[] ys) {
+    public static final void dumpPoly(float[] rawllpts, int[] xs, int[] ys) {
         Debug.output("poly:");
         for (int i = 0, j = 0; j < xs.length; i += 2, j++) {
             System.out.print("[" + ProjMath.radToDeg(rawllpts[i]) + ","

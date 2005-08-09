@@ -1,5 +1,5 @@
 /*
- * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/RhumbCalculator.java,v 1.2 2004/10/14 18:06:23 dietrick Exp $
+ * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/RhumbCalculator.java,v 1.3 2005/08/09 20:38:12 dietrick Exp $
  *
  * Copyright 2004 OBR Centrum Techniki Morskiej, All rights reserved.
  *
@@ -97,8 +97,8 @@ public class RhumbCalculator {
         double tc = 0.0;
         double dlon_W = mod(lon2 - lon1, 2 * Math.PI);
         double dlon_E = mod(lon1 - lon2, 2 * Math.PI);
-        double dphi = Math.log((1 + Math.sin(lat2)) / Math.cos(lat2))
-                - Math.log((1 + Math.sin(lat1)) / Math.cos(lat1));
+//        double dphi = Math.log((1 + Math.sin(lat2)) / Math.cos(lat2))
+//                - Math.log((1 + Math.sin(lat1)) / Math.cos(lat1));
         tc = getAzimuthBetweenPoints(p1, p2);
         if (Math.abs(lat1 - lat2) < Math.sqrt(0.00000000000001)) {
             d = Math.min(dlon_W, dlon_E) * Math.cos(lat1); // distance

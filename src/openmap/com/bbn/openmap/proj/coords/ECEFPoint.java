@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/ECEFPoint.java,v $
 // $RCSfile: ECEFPoint.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:23 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 20:39:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -149,7 +149,7 @@ public class ECEFPoint {
     /**
      * Set x y z.
      */
-    private void setECEF(double x, double y, double z) {
+    public void setECEF(double x, double y, double z) {
         x_ = x;
         y_ = y;
         z_ = z;
@@ -158,7 +158,7 @@ public class ECEFPoint {
     /**
      * Set ECEFPoint.
      */
-    private void setECEF(ECEFPoint pt) {
+    public void setECEF(ECEFPoint pt) {
         x_ = pt.x_;
         y_ = pt.y_;
         z_ = pt.z_;
@@ -283,7 +283,7 @@ public class ECEFPoint {
         /**
          * Cosine of 67.5 degrees.
          */
-        final double COS_67P5 = 0.38268343236508977;
+//        final double COS_67P5 = 0.38268343236508977;
 
         /**
          * Toms region 1 constant.

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Mercator.java,v $
 // $RCSfile: Mercator.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:22 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 20:38:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -327,7 +327,7 @@ public class Mercator extends Cylindrical {
         //      Debug.output(
         //              "from=("+from.x+","+from.y+")to=("+to.x+","+to.y+")");
         LatLonPoint llp = inverse(from.x, from.y, new LatLonPoint());
-        LatLonPoint llp2 = inverse(to.x, to.y, new LatLonPoint());
+//        LatLonPoint llp2 = inverse(to.x, to.y, new LatLonPoint());
         //      Debug.output(
         //              "invfrom=("+llp.getLatitude()+","+llp.getLongitude()+
         //              ")invto=("+llp2.getLatitude()+","+llp2.getLongitude()+")");

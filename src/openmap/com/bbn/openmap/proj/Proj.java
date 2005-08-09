@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Proj.java,v $
 // $RCSfile: Proj.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:06:23 $
+// $Revision: 1.10 $
+// $Date: 2005/08/09 20:38:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -87,7 +87,7 @@ import com.bbn.openmap.util.Debug;
  * @see Planet
  * @see GreatCircle
  * @see com.bbn.openmap.omGraphics.OMPoly
- *  
+ * 
  */
 public abstract class Proj implements Projection, Cloneable {
 
@@ -752,15 +752,15 @@ public abstract class Proj implements Projection, Cloneable {
 
         switch (arcType) {
         case Arc2D.PIE:
-            rawllpts = new float[(nverts << 1) + 4];//*2 for pairs +4
+            rawllpts = new float[(nverts << 1) + 4];// *2 for pairs +4
             // connect
             break;
         case Arc2D.CHORD:
-            rawllpts = new float[(nverts << 1) + 2];//*2 for pairs +2
+            rawllpts = new float[(nverts << 1) + 2];// *2 for pairs +2
             // connect
             break;
         default:
-            rawllpts = new float[(nverts << 1)];//*2 for pairs, no
+            rawllpts = new float[(nverts << 1)];// *2 for pairs, no
         // connect
         }
 
@@ -825,7 +825,7 @@ public abstract class Proj implements Projection, Cloneable {
         if (nverts < 3)
             nverts = NUM_DEFAULT_CIRCLE_VERTS;
 
-        float[] rawllpts = new float[(nverts << 1) + 2];//*2 for
+        float[] rawllpts = new float[(nverts << 1) + 2];// *2 for
         // pairs +2
         // connect
         GreatCircle.earth_circle(c.radlat_, c.radlon_, (radians) ? radius
@@ -838,9 +838,9 @@ public abstract class Proj implements Projection, Cloneable {
         return forwardPoly(rawllpts, LineType.Straight, -1, isFilled);
     }
 
-    //HACK
-    protected transient static int XTHRESHOLD = 16384;//half range
-    protected transient int XSCALE_THRESHOLD = 1000000;//dynamically
+    // HACK
+    protected transient static int XTHRESHOLD = 16384;// half range
+    protected transient int XSCALE_THRESHOLD = 1000000;// dynamically
 
     // calculated
 
@@ -870,8 +870,7 @@ public abstract class Proj implements Projection, Cloneable {
                                  boolean isFilled) {
         ArrayList stuff = _forwardPoly(rawllpts, ltype, nsegs, isFilled);
         // @HACK: workaround XWindows bug. simple clip to a boundary.
-        // this
-        // is ugly.
+        // this is ugly.
         if (Environment.doingXWindowsWorkaround && (scale <= XSCALE_THRESHOLD)) {
             int i, j, size = stuff.size();
             int[] xpts, ypts;
@@ -931,26 +930,26 @@ public abstract class Proj implements Projection, Cloneable {
                                          boolean isFilled) {
 
         // IDEA:
-        //      Rhumblines are straight in the Mercator projection.
-        //      So we can use the Mercator projection to calculate
-        //      vertices along the rhumbline between two points. But
-        //      if there's a better way to calculate loxodromes,
-        //      someone please chime in (openmap@bbn.com)...
+        // Rhumblines are straight in the Mercator projection.
+        // So we can use the Mercator projection to calculate
+        // vertices along the rhumbline between two points. But
+        // if there's a better way to calculate loxodromes,
+        // someone please chime in (openmap@bbn.com)...
         //
         // ALG:
-        //      Project pairs of vertices through the Mercator
-        //      projection into screen XY space, pick intermediate
-        //      segment points along the straight XY line, then
-        //      convert all vertices back into LatLon space. Pass the
-        //      augmented vertices to _forwardPoly() to be drawn as
-        //      straight segments.
+        // Project pairs of vertices through the Mercator
+        // projection into screen XY space, pick intermediate
+        // segment points along the straight XY line, then
+        // convert all vertices back into LatLon space. Pass the
+        // augmented vertices to _forwardPoly() to be drawn as
+        // straight segments.
         //
         // WARNING:
-        //      The algorithm fixes the Cylindrical-wrapping
-        //      problem, and thus duplicates some code in
-        //      Cylindrical._forwardPoly()
+        // The algorithm fixes the Cylindrical-wrapping
+        // problem, and thus duplicates some code in
+        // Cylindrical._forwardPoly()
         //
-        if (this instanceof Mercator) {//simple
+        if (this instanceof Mercator) {// simple
             return _forwardPoly(rawllpts, LineType.Straight, nsegs, isFilled);
         }
 
@@ -964,7 +963,7 @@ public abstract class Proj implements Projection, Cloneable {
 
         // lock access to object global, since this is probably not
         // cloned and different layers may be accessing this.
-        //      synchronized (mercator) {
+        // synchronized (mercator) {
 
         // we now create a clone of the mercator variable in
         // makeClone(), so since different objects should be using
@@ -972,9 +971,9 @@ public abstract class Proj implements Projection, Cloneable {
         // synchronization should be unneeded.
 
         // use mercator projection to calculate rhumblines.
-        //          mercator.setParms(
-        //                  new LatLonPoint(ctrLat, ctrLon, true),
-        //                  scale, width, height);
+        // mercator.setParms(
+        // new LatLonPoint(ctrLat, ctrLon, true),
+        // scale, width, height);
 
         // Unnecessary to set parameters !! ^^^^^
 
@@ -987,14 +986,15 @@ public abstract class Proj implements Projection, Cloneable {
             mercator.forward(rawllpts[n], rawllpts[n + 1], to, true);
             // segment crosses longitude along screen edge
             if (Math.abs(xp - to.x) >= mercator.half_world) {
-                flag += (xp < to.x) ? -1 : 1;//inc/dec the wrap count
-                xadj = flag * mercator.world.x;//adjustment to x
+                flag += (xp < to.x) ? -1 : 1;// inc/dec the wrap
+                                                // count
+                xadj = flag * mercator.world.x;// adjustment to x
                 // coordinates
-                //                  Debug.output("flag=" + flag + " xadj=" + xadj);
+                // Debug.output("flag=" + flag + " xadj=" + xadj);
             }
             xp = to.x;
             if (flag != 0) {
-                to.x += xadj;//adjust x coordinate
+                to.x += xadj;// adjust x coordinate
             }
 
             augllpts[i] = mercator.rhumbProject(from, to, false, nsegs);
@@ -1003,7 +1003,7 @@ public abstract class Proj implements Projection, Cloneable {
             from.y = to.y;
         }
         llp = mercator.inverse(from);
-        //      }// end synchronized around mercator
+        // }// end synchronized around mercator
 
         augllpts[i] = new float[2];
         augllpts[i][0] = llp.radlat_;
@@ -1014,14 +1014,14 @@ public abstract class Proj implements Projection, Cloneable {
         float[] newllpts = new float[totalpts];
         int pos = 0;
         for (i = 0; i < augllpts.length; i++) {
-            //          Debug.output("copying " + augllpts[i].length + "
+            // Debug.output("copying " + augllpts[i].length + "
             // floats");
             System.arraycopy(
             /* src */augllpts[i], 0,
             /* dest */newllpts, pos, augllpts[i].length);
             pos += augllpts[i].length;
         }
-        //      Debug.output("done copying " + totalpts + " total floats");
+        // Debug.output("done copying " + totalpts + " total floats");
 
         // free unused variables
         augllpts = null;
@@ -1053,7 +1053,7 @@ public abstract class Proj implements Projection, Cloneable {
 
         int end = rawllpts.length >>> 1;
         float[][] augllpts = new float[end][0];
-        end -= 1;//stop before last segment
+        end -= 1;// stop before last segment
 
         // calculate extra vertices between all the original segments.
         forward(rawllpts[0], rawllpts[1], from, true);
@@ -1104,7 +1104,7 @@ public abstract class Proj implements Projection, Cloneable {
      * @param to Point
      * @param include_last include n or n+1 points of the n segments?
      * @return float[] lat/lon points in RADIANS!
-     *  
+     * 
      */
     private float[] getGreatVertices(float latp, float lonp, float latn,
                                      float lonn, Point from, Point to,
@@ -1113,13 +1113,12 @@ public abstract class Proj implements Projection, Cloneable {
             // calculate pixel distance
             int dist = DrawUtil.pixel_distance(from.x, from.y, to.x, to.y);
 
-            // determine what would be a decent number of segments to
-            // draw.
-            // HACK: this is hardcoded calculated by what might look
-            // ok on
-            // screen. We also put a cap on the number of extra
-            // segments we
-            // draw.
+            /*
+             * determine what would be a decent number of segments to
+             * draw. HACK: this is hardcoded calculated by what might
+             * look ok on screen. We also put a cap on the number of
+             * extra segments we draw.
+             */
             nsegs = dist >> 3;// dist/8
             if (nsegs == 0) {
                 nsegs = 1;
@@ -1127,13 +1126,12 @@ public abstract class Proj implements Projection, Cloneable {
                 nsegs = NUM_DEFAULT_GREAT_SEGS;
             }
 
-            //          Debug.output(
-            //                  "("+from.x+","+from.y+")("+to.x+","+to.y+")
+            // Debug.output(
+            // "("+from.x+","+from.y+")("+to.x+","+to.y+")
             // dist="+dist+" nsegs="+nsegs);
         }
 
         // both of these return float[] radian coordinates!
-        float[] radpts;
         return GreatCircle.great_circle(latp,
                 lonp,
                 latn,
@@ -1174,9 +1172,9 @@ public abstract class Proj implements Projection, Cloneable {
                     : true;
         case LineType.GreatCircle:
             return true/*
-                        * (getProjectionType() ==
-                        * Gnomonic.GnomonicType) ? false : true
-                        */;
+                         * (getProjectionType() ==
+                         * Gnomonic.GnomonicType) ? false : true
+                         */;
         default:
             Debug.error("Proj.isComplicatedLineType: invalid LineType!");
             return false;

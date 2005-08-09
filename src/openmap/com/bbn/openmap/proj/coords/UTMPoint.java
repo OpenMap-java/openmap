@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UTMPoint.java,v $
 // $RCSfile: UTMPoint.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/02/02 00:26:55 $
+// $Revision: 1.9 $
+// $Date: 2005/08/09 20:39:35 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -471,23 +471,17 @@ public class UTMPoint {
                 / (1 + Math.sqrt(1 - eccSquared));
         double N1, T1, C1, R1, D, M;
         double LongOrigin;
-        double mu, phi1, phi1Rad;
-        double x, y;
-        int NorthernHemisphere; //1 for northern hemispher, 0 for
-                                // southern
+        double mu, phi1Rad;
 
-        x = UTMEasting - 500000.0d; //remove 500,000 meter offset for
-                                    // longitude
-        y = UTMNorthing;
+        // remove 500,000 meter offset for longitude
+        double x = UTMEasting - 500000.0d; 
+        double y = UTMNorthing;
 
         //We must know somehow if we are in the Northern or Southern
         //hemisphere, this is the only time we use the letter So even
         //if the Zone letter isn't exactly correct it should indicate
         //the hemisphere correctly
-        if (ZoneLetter >= 'N') {
-            NorthernHemisphere = 1;//point is in northern hemisphere
-        } else {
-            NorthernHemisphere = 0;//point is in southern hemisphere
+        if (ZoneLetter < 'N') {
             y -= 10000000.0d;//remove 10,000,000 meter offset used
                              // for southern hemisphere
         }
@@ -508,7 +502,7 @@ public class UTMPoint {
                 + (21 * e1 * e1 / 16 - 55 * e1 * e1 * e1 * e1 / 32)
                 * Math.sin(4 * mu) + (151 * e1 * e1 * e1 / 96)
                 * Math.sin(6 * mu);
-        phi1 = ProjMath.radToDeg(phi1Rad);
+//        double phi1 = ProjMath.radToDeg(phi1Rad);
 
         N1 = a
                 / Math.sqrt(1 - eccSquared * Math.sin(phi1Rad)
