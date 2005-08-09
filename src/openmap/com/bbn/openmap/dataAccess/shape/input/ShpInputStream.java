@@ -14,18 +14,32 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/ShpInputStream.java,v $
 // $RCSfile: ShpInputStream.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 17:23:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape.input;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.dataAccess.shape.*;
+import com.bbn.openmap.dataAccess.shape.EsriGraphic;
+import com.bbn.openmap.dataAccess.shape.EsriGraphicList;
+import com.bbn.openmap.dataAccess.shape.EsriPoint;
+import com.bbn.openmap.dataAccess.shape.EsriPointList;
+import com.bbn.openmap.dataAccess.shape.EsriPolygon;
+import com.bbn.openmap.dataAccess.shape.EsriPolygonList;
+import com.bbn.openmap.dataAccess.shape.EsriPolyline;
+import com.bbn.openmap.dataAccess.shape.EsriPolylineList;
+import com.bbn.openmap.dataAccess.shape.ShapeConstants;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -93,7 +107,7 @@ public class ShpInputStream implements ShapeConstants {
      *         part begins witin an array of point data for a given
      *         shape
      */
-    private int[] getPartOffsets(OMGraphicList sublist) {
+    protected int[] getPartOffsets(OMGraphicList sublist) {
         int pos = 0;
         int[] offsets = new int[sublist.size()];
         for (int j = 0; j < sublist.size(); j++) {
@@ -118,14 +132,13 @@ public class ShpInputStream implements ShapeConstants {
 
         EsriGraphicList list = new EsriPointList();
         double lambda, phi;
-        int numVertices;
         int numShapes = indexData[1].length;
 
         EsriPoint point;
         for (int i = 0; i < numShapes; i++) {
-            int shpRecord = _leis.readInt();
-            int shpContentLength = _leis.readInt();
-            int shpType = _leis.readLEInt();
+            Integer shpRecordIndex = new Integer(_leis.readInt());
+            /*int shpContentLength = */_leis.readInt();
+            /*int shpType = */_leis.readLEInt();
 
             lambda = _leis.readLEDouble();
             phi = _leis.readLEDouble();
@@ -137,7 +150,8 @@ public class ShpInputStream implements ShapeConstants {
             float f2 = d2.floatValue();
 
             point = new EsriPoint(f2, f1);
-            point.setAppObject(new Integer(shpRecord));
+            //point.setAppObject(new Integer(shpRecord));
+            point.putAttribute(SHAPE_INDEX_ATTRIBUTE, shpRecordIndex);
             if (drawingAttributes != null) {
                 drawingAttributes.setTo(point);
             } else {
@@ -155,7 +169,7 @@ public class ShpInputStream implements ShapeConstants {
      * @param sublist A list that contains multiple parts
      * @return The total number of points for a given shape
      */
-    private int getPointsPerShape(OMGraphicList sublist) {
+    protected int getPointsPerShape(OMGraphicList sublist) {
         int numPoints = 0;
         for (int i = 0; i < sublist.size(); i++) {
             OMPoly poly = (OMPoly) sublist.getOMGraphicAt(i);
@@ -187,24 +201,21 @@ public class ShpInputStream implements ShapeConstants {
         }
 
         int numVertices;
-        int pos = 0;
 
         int numShapes = indexData[1].length;
 
         for (int t = 0; t < numShapes; t++) {
-            int shpRecord = _leis.readInt();
-            int shpContentLength = _leis.readInt();
-            int shpType = _leis.readLEInt();
+            Integer shpRecordIndex = new Integer(_leis.readInt());
+            /*int shpContentLength = */_leis.readInt();
+            /*int shpType = */_leis.readLEInt();
 
-            double xLeft = _leis.readLEDouble();
-            double xBottom = _leis.readLEDouble();
-            double xRight = _leis.readLEDouble();
-            double xTop = _leis.readLEDouble();
+            /*double xLeft = */_leis.readLEDouble();
+            /*double xBottom = */_leis.readLEDouble();
+            /*double xRight = */_leis.readLEDouble();
+            /*double xTop = */_leis.readLEDouble();
             int numParts = _leis.readLEInt();
             int numPoints = _leis.readLEInt();
 
-            double[] ptsx = new double[numPoints];
-            double[] ptsy = new double[numPoints];
             int[] offsets = new int[numParts];
 
             // OK, we don't want to create a sublist unless the poly
@@ -228,7 +239,8 @@ public class ShpInputStream implements ShapeConstants {
 
                 sublist.setVague(true); // Treat sublist as one
                 // OMGraphic.
-                sublist.setAppObject(new Integer(shpRecord));
+                sublist.putAttribute(SHAPE_INDEX_ATTRIBUTE, shpRecordIndex);
+                //sublist.setAppObject(new Integer(shpRecord));
             }
 
             for (int j = 0; j < numParts; j++) {
@@ -257,7 +269,8 @@ public class ShpInputStream implements ShapeConstants {
                     poly = new EsriPolygon(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
                 }
 
-                poly.setAppObject(new Integer(shpRecord));
+                //poly.setAppObject(new Integer(shpRecord));
+                poly.putAttribute(SHAPE_INDEX_ATTRIBUTE, shpRecordIndex);
 
                 if (drawingAttributes != null) {
                     drawingAttributes.setTo(poly);
@@ -298,6 +311,8 @@ public class ShpInputStream implements ShapeConstants {
                         + ex1[0] + ", xmax=" + ex1[3] + ", ymax=" + ex1[2]);
                 Debug.output("list.size=" + list.size());
             }
+
+            
         }
 
         if (Debug.debugging("esri")) {
@@ -315,19 +330,19 @@ public class ShpInputStream implements ShapeConstants {
      * @return the shape type
      */
     public int readHeader() throws IOException {
-        int fileCode = _leis.readInt();
+        /*int fileCode = */_leis.readInt();
         _leis.skipBytes(20);
-        int fileLength = _leis.readInt();
-        int version = _leis.readLEInt();
+        /*int fileLength = */_leis.readInt();
+        /*int version = */_leis.readLEInt();
         int shapeType = _leis.readLEInt();
-        double xMin = _leis.readLEDouble();
-        double yMin = _leis.readLEDouble();
-        double xMax = _leis.readLEDouble();
-        double yMax = _leis.readLEDouble();
-        double zMin = _leis.readLEDouble();
-        double zMax = _leis.readLEDouble();
-        double mMin = _leis.readLEDouble();
-        double mMax = _leis.readLEDouble();
+        /*double xMin = */_leis.readLEDouble();
+        /*double yMin = */_leis.readLEDouble();
+        /*double xMax = */_leis.readLEDouble();
+        /*double yMax = */_leis.readLEDouble();
+        /*double zMin = */_leis.readLEDouble();
+        /*double zMax = */_leis.readLEDouble();
+        /*double mMin = */_leis.readLEDouble();
+        /*double mMax = */_leis.readLEDouble();
         return shapeType;
     }
 }

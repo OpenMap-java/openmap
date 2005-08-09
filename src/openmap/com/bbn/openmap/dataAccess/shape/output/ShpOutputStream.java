@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/ShpOutputStream.java,v $
 // $RCSfile: ShpOutputStream.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 17:25:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -72,7 +72,7 @@ public class ShpOutputStream {
      * @param list The EsriGraphicList to write
      * @return The index data that is used to create the .shx file
      */
-    private int[][] createPointIndex(OMGraphicList list) {
+    protected int[][] createPointIndex(OMGraphicList list) {
         int[][] indexData = new int[2][list.size()];
 
         int pos = 50;
@@ -99,7 +99,7 @@ public class ShpOutputStream {
      * @param list The list from which to create the respective array
      * @return The index data that is used to create the .shx file
      */
-    private int[][] createPolyIndex(EsriGraphicList list) {
+    protected int[][] createPolyIndex(EsriGraphicList list) {
         float[] data;
 
         int[][] indexData = new int[2][list.size()];
@@ -148,7 +148,7 @@ public class ShpOutputStream {
      * @param contentLengths The array for which to get offsets from
      * @return An array of record offsets
      */
-    private int[] getRecordOffsets(int[] contentLengths) {
+    protected int[] getRecordOffsets(int[] contentLengths) {
         int[] offsets = new int[contentLengths.length];
         int pos = 50;
         for (int i = 0; i < contentLengths.length; i++) {
@@ -165,7 +165,7 @@ public class ShpOutputStream {
      * @param sublist A list of shapes
      * @return An array of part offsets
      */
-    private int[] getPartOffsets(OMGraphicList sublist) {
+    protected int[] getPartOffsets(OMGraphicList sublist) {
         int pos = 0;
         int[] offsets = new int[sublist.size()];
         for (int j = 0; j < sublist.size(); j++) {
@@ -184,7 +184,7 @@ public class ShpOutputStream {
      * @param sublist A list of shapes
      * @return The number of points for a given shape
      */
-    private int getPointsPerShape(OMGraphicList sublist) {
+    protected int getPointsPerShape(OMGraphicList sublist) {
         int numPoints = 0;
         for (int i = 0; i < sublist.size(); i++) {
             OMPoly poly = (OMPoly) sublist.getOMGraphicAt(i);
@@ -195,7 +195,7 @@ public class ShpOutputStream {
         return numPoints;
     }
 
-    private void writeExtents(float[] extents) throws IOException {
+    protected void writeExtents(float[] extents) throws IOException {
 
         if (_leos == null) {
             return;
@@ -230,7 +230,6 @@ public class ShpOutputStream {
      */
     public int[][] writePolyGeometry(EsriGraphicList list) throws IOException {
 
-        int numShapes = list.size();
         OMPoly poly;
 
         _leos.writeInt(9994); //Byte 0 File Code

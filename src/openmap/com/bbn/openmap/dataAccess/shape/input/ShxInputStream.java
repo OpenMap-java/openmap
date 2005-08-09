@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/ShxInputStream.java,v $
 // $RCSfile: ShxInputStream.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 17:23:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,7 +35,7 @@ public class ShxInputStream {
      * An integer specifying the type of layer, as defined by Esri's
      * shape file format specifications
      */
-    private int _type = -1;
+    //private int _type = -1; // Unused
 
     /**
      * An input stream to process primitives in Little Endian or Big
@@ -62,15 +62,13 @@ public class ShxInputStream {
     public int[][] getIndex() {
         int[][] indexData = null;
         try {
-            int fileCode, fileLength, contentLength, Offset, numShapes;
-            fileCode = _leis.readInt();
+            /*int fileCode = */_leis.readInt();
             _leis.skipBytes(20);
-            fileLength = _leis.readInt();
-            numShapes = (fileLength - 50) / 4;
+            int fileLength = _leis.readInt();
+            int numShapes = (fileLength - 50) / 4;
             indexData = new int[2][numShapes];
             _leis.skipBytes(4);
-            byte[] intBytes = new byte[4];
-            _type = _leis.readLEInt();
+            /*_type = */_leis.readLEInt();
             _leis.skip(64);
             for (int i = 0; i <= numShapes - 1; i++) {
                 indexData[0][i] = _leis.readInt();

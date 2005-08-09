@@ -14,19 +14,23 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/DbfInputStream.java,v $
 // $RCSfile: DbfInputStream.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 17:23:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape.input;
 
-import com.bbn.openmap.dataAccess.shape.*;
-import com.bbn.openmap.util.Debug;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Locale;
+
+import com.bbn.openmap.dataAccess.shape.DbfTableModel;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Reads the contents of a DBF file and provides access to what it has
@@ -75,7 +79,7 @@ public class DbfInputStream {
     private short _headerLength = -1;
 
     /** The record length */
-    private short _recordLength = -1;
+//    private short _recordLength = -1; // Unused
 
     /**
      * An ArrayList with each element representing a record, which
@@ -166,13 +170,13 @@ public class DbfInputStream {
      * Reads the header
      */
     private void readHeader() throws IOException {
-        byte description = _leis.readByte();
-        byte year = _leis.readByte();
-        byte month = _leis.readByte();
-        byte day = _leis.readByte();
+        /*byte description = */_leis.readByte();
+        /*byte year = */_leis.readByte();
+        /*byte month = */_leis.readByte();
+        /*byte day = */_leis.readByte();
         _rowCount = _leis.readLEInt();
         _headerLength = _leis.readLEShort();
-        _recordLength = _leis.readLEShort();
+        /*_recordLength = */_leis.readLEShort();
         _columnCount = (_headerLength - 32 - 1) / 32;
         _leis.skipBytes(20);
     }
@@ -202,7 +206,14 @@ public class DbfInputStream {
      * records
      */
     public void readData() throws IOException {
+
+        // Thanks to Bart Jourquin for the heads-up that some locales
+        // may try to read this data incorrectly. DBF files have to
+        // have '.' as decimal markers, not ','
         java.text.DecimalFormat df = new java.text.DecimalFormat();
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.ENGLISH);
+        df.setDecimalFormatSymbols(dfs);
+
         _leis.skipBytes(2);
         _records = new ArrayList();
         for (int r = 0; r <= _rowCount - 1; r++) {

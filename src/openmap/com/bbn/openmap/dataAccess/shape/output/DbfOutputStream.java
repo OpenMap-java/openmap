@@ -14,16 +14,21 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.11 $
+// $Date: 2005/08/09 17:25:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape.output;
 
-import com.bbn.openmap.dataAccess.shape.*;
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.NumberFormat;
+import java.util.Locale;
+
+import com.bbn.openmap.dataAccess.shape.DbfTableModel;
 
 /**
  * Writes date in a DbfTableModel to a file, conforming to the DBF III
@@ -203,7 +208,7 @@ public class DbfOutputStream {
     }
 
     public void writeRecords(DbfTableModel model) throws IOException {
-        java.text.NumberFormat df = new java.text.DecimalFormat();
+        java.text.NumberFormat df = NumberFormat.getNumberInstance(Locale.ENGLISH);
         int rowCount = model.getRowCount();
         int columnCount = model.getColumnCount();
         for (int r = 0; r <= rowCount - 1; r++) {
