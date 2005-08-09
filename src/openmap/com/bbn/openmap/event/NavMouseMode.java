@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode.java,v $
 // $RCSfile: NavMouseMode.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:45 $
+// $Revision: 1.9 $
+// $Date: 2005/08/09 17:37:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,13 +25,12 @@ package com.bbn.openmap.event;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
-import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -146,7 +145,7 @@ public class NavMouseMode extends CoordMouseMode {
 
                     boolean shift = e.isShiftDown();
                     boolean control = e.isControlDown();
-                    boolean notLeftButton = (e.getModifiers() & InputEvent.BUTTON1_MASK) == 0;
+
                     if (control) {
                         if (shift) {
                             p.setScale(p.getScale() * 2.0f);

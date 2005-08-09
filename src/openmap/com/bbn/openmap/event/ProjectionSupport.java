@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProjectionSupport.java,v $
 // $RCSfile: ProjectionSupport.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/11/26 03:38:43 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 17:37:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -75,7 +75,6 @@ public class ProjectionSupport extends ListenerSupport {
      * @param proj Projection
      */
     public void fireProjectionChanged(Projection proj) {
-        ProjectionListener target;
 
         if (size() == 0)
             return;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ZoomEvent.java,v $
 // $RCSfile: ZoomEvent.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:45 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 17:37:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,13 +29,13 @@ package com.bbn.openmap.event;
 public class ZoomEvent extends java.util.EventObject implements
         java.io.Serializable {
     /**
-     * Specifies that the amount should be used as a multiplier to the
+     * Type that specifies that the amount should be used as a multiplier to the
      * current scale.
      */
     public transient static final int RELATIVE = 301;
 
     /**
-     * Specifies that the amount should be used as the new scale.
+     * Type that specifies that the amount should be used as the new scale.
      */
     public transient static final int ABSOLUTE = 302;
 
