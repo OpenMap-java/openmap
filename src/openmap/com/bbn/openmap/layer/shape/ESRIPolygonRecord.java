@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPolygonRecord.java,v $ 
 // $RCSfile: ESRIPolygonRecord.java,v $ 
-// $Revision: 1.6 $ 
-// $Date: 2005/05/23 20:18:49 $ 
+// $Revision: 1.7 $ 
+// $Date: 2005/08/09 18:48:03 $ 
 // $Author: dietrick $ 
 // 
 // ********************************************************************** 
@@ -42,7 +42,7 @@ import com.bbn.openmap.proj.ProjMath;
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
  * @author HACK-author blame it on aculline
- * @version $Revision: 1.6 $ $Date: 2005/05/23 20:18:49 $
+ * @version $Revision: 1.7 $ $Date: 2005/08/09 18:48:03 $
  */
 public class ESRIPolygonRecord extends ESRIRecord {
 
@@ -212,10 +212,9 @@ public class ESRIPolygonRecord extends ESRIRecord {
             sublist.setAppObject(new Integer(getRecordNumber()));
         }
 
-        for (int i = 0, j, k; i < nPolys; i++) {
+        for (int i = 0; i < nPolys; i++) {
             // these points are already in RADIAN lat,lon order!...
             pts = ((ESRIPoly.ESRIFloatPoly) polygons[i]).getRadians();
-            int len = pts.length;
             p = new OMPoly(pts, OMGraphic.RADIANS, OMGraphic.LINETYPE_STRAIGHT);
 
             drawingAttributes.setTo(p);
@@ -249,12 +248,10 @@ public class ESRIPolygonRecord extends ESRIRecord {
         boolean ispolyg = isPolygon();
         OMGeometry geom = null;
 
-        for (int i = 0, j, k; i < nPolys; i++) {
+        for (int i = 0; i < nPolys; i++) {
             // these points are already in RADIAN lat,lon order!...
             pts = ((ESRIPoly.ESRIFloatPoly) polygons[i]).getRadians();
-            int len = pts.length;
             if (ispolyg) {
-
                 geom = new PolygonGeometry.LL(pts, OMGraphic.RADIANS, OMGraphic.LINETYPE_STRAIGHT);
             } else {
                 geom = new PolylineGeometry.LL(pts, OMGraphic.RADIANS, OMGraphic.LINETYPE_STRAIGHT);

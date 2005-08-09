@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.18 $
-// $Date: 2005/05/23 20:18:49 $
+// $Revision: 1.19 $
+// $Date: 2005/08/09 18:48:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -81,7 +81,7 @@ import com.bbn.openmap.util.PropUtils;
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.18 $ $Date: 2005/05/23 20:18:49 $
+ * @version $Revision: 1.19 $ $Date: 2005/08/09 18:48:03 $
  * @see SpatialIndex
  */
 public class ShapeLayer extends OMGraphicHandlerLayer implements
@@ -121,7 +121,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
      * The DrawingAttributes object to describe the rendering of
      * graphics.
      */
-    protected DrawingAttributes drawingAttributes;
+    protected DrawingAttributes drawingAttributes = (DrawingAttributes) DrawingAttributes.DEFAULT.clone();
 
     // For writing out to properties file later.
     String shapeFileName = null;
@@ -165,6 +165,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                 + spatialIndexProperty);
 
         if (shapeFileName != null && !shapeFileName.equals("")) {
+            SpatialIndex spatialIndex;
             if (spatialIndexFileName != null
                     && !spatialIndexFileName.equals("")) {
                 spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName,
@@ -191,6 +192,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                 fireRequestMessage("Can't access icon image: \n    "
                         + imageURLString);
             }
+            
+            setSpatialIndex(spatialIndex);
 
         } else {
             Debug.error("One of the following properties was null or empty:");

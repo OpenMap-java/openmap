@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeFileCrop.java,v $
 // $RCSfile: ShapeFileCrop.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 18:48:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,7 +43,7 @@ import java.io.*;
  * <p>
  * 
  * @author Eliot Lebsack <elebsack@mitre.org>
- * @version $Revision: 1.3 $ $Date: 2004/10/14 18:06:05 $
+ * @version $Revision: 1.4 $ $Date: 2005/08/09 18:48:03 $
  */
 public class ShapeFileCrop {
 
@@ -79,7 +79,6 @@ public class ShapeFileCrop {
      *            reading the file.
      */
     public void cropShapeFile() throws IOException {
-        ESRIRecord r;
         ESRIPolygonRecord pr;
         int nRecordNum = 0;
         int nRecords = 0;
@@ -156,7 +155,6 @@ public class ShapeFileCrop {
      */
 
     public static void main(String[] args) throws IOException {
-        int argc = args.length;
         String inpath = "";
         String outpath = "";
         String sllp;

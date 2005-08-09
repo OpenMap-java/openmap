@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/05/23 20:18:49 $
+// $Revision: 1.10 $
+// $Date: 2005/08/09 18:48:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -131,7 +131,7 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.9 $ $Date: 2005/05/23 20:18:49 $
+ * @version $Revision: 1.10 $ $Date: 2005/08/09 18:48:03 $
  * @see ShapeIndex
  */
 public class SpatialIndex extends ShapeUtils implements Closable {
@@ -464,7 +464,7 @@ public class SpatialIndex extends ShapeUtils implements Closable {
         byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
         int result;
         int nRecords = 0;
-        int recLengthWords, recLengthBytes, recNumber;
+        int recLengthWords, recLengthBytes;
         long recOffset;
         int recBufSize = 100000;
         byte recBuf[] = new byte[recBufSize];
@@ -482,7 +482,7 @@ public class SpatialIndex extends ShapeUtils implements Closable {
                 } else {
                     nRecords++;
                     recOffset = ptr;
-                    recNumber = readBEInt(rHdr, 0);
+                    /*int recNumber = */readBEInt(rHdr, 0);
                     recLengthWords = readBEInt(rHdr, 4);
                     recLengthBytes = recLengthWords * 2;
 
@@ -529,7 +529,7 @@ public class SpatialIndex extends ShapeUtils implements Closable {
         byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
         int result;
         int nRecords = 0;
-        int recLengthWords, recLengthBytes, recNumber;
+        int recLengthWords, recLengthBytes;
         long recOffset;
         int recBufSize = 20;
         byte recBuf[] = new byte[recBufSize];
@@ -546,7 +546,7 @@ public class SpatialIndex extends ShapeUtils implements Closable {
                 } else {
                     nRecords++;
                     recOffset = ptr;
-                    recNumber = readBEInt(rHdr, 0);
+                    /* int recNumber = */readBEInt(rHdr, 0);
                     recLengthWords = readBEInt(rHdr, 4);
                     recLengthBytes = recLengthWords * 2;
 

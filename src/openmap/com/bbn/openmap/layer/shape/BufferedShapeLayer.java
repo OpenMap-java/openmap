@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/BufferedShapeLayer.java,v $
 // $RCSfile: BufferedShapeLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:04 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 18:48:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,13 +51,11 @@ public class BufferedShapeLayer extends ShapeLayer {
     }
 
     /**
-     * Initializes this layer from the given properties.
-     * 
-     * @param props the <code>Properties</code> holding settings for
-     *        this layer
+     * Sets the SpatialIndex on the layer, and reloads the cached
+     * OMGraphicList.
      */
-    public void setProperties(String prefix, Properties props) {
-        super.setProperties(prefix, props);
+    public void setSpatialIndex(SpatialIndex si) {
+        super.setSpatialIndex(si);
         try {
             setList(getWholePlanet());
         } catch (FormatException fe) {
@@ -210,7 +208,7 @@ public class BufferedShapeLayer extends ShapeLayer {
             }
         }
 
-        masterList.generate(proj, true);//all new graphics
+        masterList.generate(proj, true);// all new graphics
         return masterList;
     }
 

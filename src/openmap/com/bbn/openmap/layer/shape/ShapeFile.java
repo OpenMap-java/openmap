@@ -14,16 +14,18 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeFile.java,v $
 // $RCSfile: ShapeFile.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 18:48:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.Vector;
 
 import com.bbn.openmap.util.Debug;
 
@@ -46,7 +48,7 @@ import com.bbn.openmap.util.Debug;
  * @author Tom Mitchell <tmitchell@bbn.com>
  * @author Ray Tomlinson
  * @author Geoffrey Knauth
- * @version $Revision: 1.3 $ $Date: 2004/10/14 18:06:05 $
+ * @version $Revision: 1.4 $ $Date: 2005/08/09 18:48:03 $
  */
 public class ShapeFile extends ShapeUtils {
 
@@ -139,7 +141,7 @@ public class ShapeFile extends ShapeUtils {
         header = new byte[SHAPE_FILE_HEADER_LENGTH];
         writeBEInt(header, 0, SHAPE_FILE_CODE);
         writeBEInt(header, 24, 50); // empty shape file size in 16 bit
-                                    // words
+        // words
         writeLEInt(header, 28, SHAPE_FILE_VERSION);
         writeLEInt(header, 32, SHAPE_TYPE_NULL);
         writeLEDouble(header, 36, 0.0);
@@ -179,7 +181,8 @@ public class ShapeFile extends ShapeUtils {
         }
 
         fileLength = ShapeUtils.readBEInt(header, 24);
-        fileLength *= 2; // convert from 16-bit words to 8-bit bytes
+        fileLength *= 2; // convert from 16-bit words to 8-bit
+                            // bytes
         fileShapeType = ShapeUtils.readLEInt(header, 32);
         fileBounds = ShapeUtils.readBox(header, 36);
     }
@@ -262,13 +265,13 @@ public class ShapeFile extends ShapeUtils {
      * @exception IOException if something goes wrong reading the file
      */
     public ESRIRecord getNextRecord() throws IOException {
-        //      Debug.output("getNextRecord: ptr = " +
+        // Debug.output("getNextRecord: ptr = " +
         // raf.getFilePointer());
         int result = raf.read(recHdr,
                 0,
                 ShapeUtils.SHAPE_FILE_RECORD_HEADER_LENGTH);
         if (result == -1) { // EOF
-        //          Debug.output("getNextRecord: EOF");
+            // Debug.output("getNextRecord: EOF");
             return null;
         }
 
@@ -299,7 +302,7 @@ public class ShapeFile extends ShapeUtils {
             return new ESRIPointRecord(recBuf, 0);
 
         case ShapeUtils.SHAPE_TYPE_ARC:
-            //      case ShapeUtils.SHAPE_TYPE_POLYLINE:
+            // case ShapeUtils.SHAPE_TYPE_POLYLINE:
             return new ESRIPolygonRecord(recBuf, 0);
 
         case ShapeUtils.SHAPE_TYPE_POLYGON:
@@ -326,8 +329,8 @@ public class ShapeFile extends ShapeUtils {
         if (r.getShapeType() == fileShapeType) {
             verifyRecordBuffer(r.getBinaryStoreSize());
             int nBytes = r.write(recBuf, 0);
-            //          long len = raf.length();
-            //          Debug.output("seek to " + len);
+            // long len = raf.length();
+            // Debug.output("seek to " + len);
             raf.seek(raf.length());
             raf.write(recBuf, 0, nBytes);
         } else {
@@ -367,7 +370,6 @@ public class ShapeFile extends ShapeUtils {
         // Does each record header have the correct record number?
         // Do we reach EOF at the end of a record?
         boolean headerChanged = false;
-        boolean recordsChanged = false;
         long fLen = raf.length();
         if (verbose) {
             Debug.output("Checking file length...");
@@ -393,10 +395,10 @@ public class ShapeFile extends ShapeUtils {
         }
 
         // loop through file to verify:
-        //   record numbers
-        //   Shape types
-        //   bounding box
-        //   correct EOF
+        // record numbers
+        // Shape types
+        // bounding box
+        // correct EOF
 
         raf.seek(100);
         ESRIRecord r;
@@ -407,13 +409,13 @@ public class ShapeFile extends ShapeUtils {
         byte intBuf[] = new byte[4];
         while ((r = getNextRecord()) != null) {
             long recEnd = raf.getFilePointer();
-            //          Debug.output("verify - start: " + recStart +
-            //                             "; end: " + recEnd);
+            // Debug.output("verify - start: " + recStart +
+            // "; end: " + recEnd);
             nRecords++;
             v.addElement(r);
             if (r.getRecordNumber() != nRecords) {
-                //              Debug.output("updating record number for record "
-                //                                 + nRecords);
+                // Debug.output("updating record number for record "
+                // + nRecords);
                 writeBEInt(intBuf, 0, nRecords);
                 raf.seek(recStart);
                 raf.write(intBuf, 0, 4);
@@ -486,9 +488,8 @@ public class ShapeFile extends ShapeUtils {
             Debug.output("bounds:");
             Debug.output("\tmin: " + sf.getBoundingBox().min);
             Debug.output("\tmax: " + sf.getBoundingBox().max);
-            ESRIRecord r;
             int nRecords = 0;
-            while ((r = sf.getNextRecord()) != null) {
+            while (sf.getNextRecord() != null) {
                 nRecords++;
             }
             Debug.output("records: " + nRecords);

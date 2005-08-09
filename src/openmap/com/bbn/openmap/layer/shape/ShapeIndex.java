@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeIndex.java,v $
 // $RCSfile: ShapeIndex.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 18:48:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,7 +43,7 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.4 $ $Date: 2004/10/14 18:06:05 $
+ * @version $Revision: 1.5 $ $Date: 2005/08/09 18:48:03 $
  * @see SpatialIndex
  */
 public class ShapeIndex extends ShapeUtils {
@@ -73,7 +73,6 @@ public class ShapeIndex extends ShapeUtils {
         boolean atEOF = false;
         byte ixRecord[] = new byte[SHAPE_INDEX_RECORD_LENGTH];
         int recNum = 0;
-        int count = 0;
 
         shx.seek(100); // skip the file header
         while (!atEOF) {
