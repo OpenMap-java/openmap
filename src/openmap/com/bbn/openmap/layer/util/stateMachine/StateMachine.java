@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/stateMachine/StateMachine.java,v $
 // $RCSfile: StateMachine.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:07 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 18:58:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,7 +33,7 @@ import java.util.*;
  */
 public class StateMachine {
     /** The states to track. */
-    public Vector states = new Vector();
+    protected Vector states = new Vector();
     /** The current state that will receive the next event. */
     protected State currentState;
     /** The state to go to whan all is bad. */
@@ -63,6 +63,34 @@ public class StateMachine {
      * @param s array of states.
      */
     public void setStates(State[] s) {
+        states.clear();
+        addStates(s);
+    }
+
+    /**
+     * Set the states to the vector of States.
+     * 
+     * @param s
+     */
+    public void setStates(Vector s) {
+        states = s;
+    }
+
+    /**
+     * Get the Vector of States.
+     * 
+     * @return Vector
+     */
+    public Vector getStates() {
+        return states;
+    }
+
+    /**
+     * Append States to the state Vector.
+     * 
+     * @param s an Array of States.
+     */
+    public void addStates(State[] s) {
         for (int i = 0; i < s.length; i++)
             states.addElement(s[i]);
     }
@@ -93,6 +121,21 @@ public class StateMachine {
         } catch (ArrayIndexOutOfBoundsException e) {
             reset();
             System.err.println("StateMachine: out of bounds exception caught!");
+        }
+    }
+
+    /**
+     * Set the state at an index to new State Object. If the index
+     * isn't currently being used, the StateMachine is reset.
+     * 
+     * @param stateIndex
+     * @param state
+     */
+    public void setStateAt(int stateIndex, State state) {
+        try {
+            states.setElementAt(state, stateIndex);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.err.println("StateMachine: out of bounds exception caught when trying to replace State that didn't exist.");
         }
     }
 
@@ -154,4 +197,3 @@ public class StateMachine {
         }
     }
 }
-
