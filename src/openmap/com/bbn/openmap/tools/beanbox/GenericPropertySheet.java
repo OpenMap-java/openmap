@@ -257,9 +257,9 @@ public class GenericPropertySheet extends JDialog implements
         // GenericPropertySheet.setTarget()");
     }
 
-    private void setCustomizer(Customizer c) {
-        panel.setCustomizer(c);
-    }
+//    private void setCustomizer(Customizer c) {
+//        panel.setCustomizer(c);
+//    }
 
     /**
      * Required by interface PropertyChangeListener. This method is
@@ -407,7 +407,6 @@ class PropertySheetPanel extends JPanel {
                 else if (editor.getTags() != null)
                     view = new PropertySelector(editor);
                 else if (editor.getAsText() != null) {
-                    String init = editor.getAsText();
                     view = new PropertyText(editor);
                 } else {
                     System.err.println("Warning: Property \"" + name
@@ -579,9 +578,9 @@ class PropertySheetPanel extends JPanel {
 
     //----------------------------------------------------------------------
 
-    private void warning(String s) {
-        System.out.println("Warning: " + s);
-    }
+//    private void warning(String s) {
+//        System.out.println("Warning: " + s);
+//    }
 
     //----------------------------------------------------------------------
     // Log an error.

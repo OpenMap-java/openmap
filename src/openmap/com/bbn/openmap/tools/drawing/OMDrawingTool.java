@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.29 $
-// $Date: 2005/05/26 19:14:48 $
+// $Revision: 1.30 $
+// $Date: 2005/08/09 20:45:09 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -738,8 +738,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
             // OK, even if we've just created the new EOMGL and added
             // a previous OMG to it, we still need to deal with the
             // OMG that has just been added into the method.
-            EditableOMGraphic addedEditable = ((EditableOMGraphicList) currentEditable).add(omg,
-                    this);
+            ((EditableOMGraphicList) currentEditable).add(omg, this);
 
             if (requestor instanceof DrawingToolRequestorList) {
                 ((DrawingToolRequestorList) requestor).add(omg, req);
@@ -832,12 +831,12 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
         // handled for editing, but we still need to come up with a
         // way to handle DrawingToolRequestors.
 
-        //      if (g instanceof OMGraphicList) {
-        //          EditableOMGraphicList eomgl =
-        //              new EditableOMGraphicList((OMGraphicList)g);
-        //          eomgl.init(this);
-        //          return eomgl;
-        //      }
+        // if (g instanceof OMGraphicList) {
+        // EditableOMGraphicList eomgl =
+        // new EditableOMGraphicList((OMGraphicList)g);
+        // eomgl.init(this);
+        // return eomgl;
+        // }
 
         Set keys = loaders.keySet();
         Iterator iterator = keys.iterator();
@@ -922,6 +921,10 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
     public synchronized boolean setCurrentEditable(EditableOMGraphic eomg) {
 
         if (currentEditable == null || eomg == null) {
+            // Moved here so that currentEditable is set when the
+            // events are fired, in case someone want's to know when
+            // an OMGraphic has been selected.
+            currentEditable = eomg;
 
             if (selectionSupport != null) {
                 if (eomg == null && currentEditable != null) {
@@ -937,7 +940,6 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
                 } // else all is null, ignore...
             }
 
-            currentEditable = eomg;
             if (currentEditable != null) {
                 return true;
             }
@@ -1276,7 +1278,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
             currentEditable.removeEOMGListener(this);
         }
 
-        //////////////////////////////////
+        // ////////////////////////////////
         // Clean up, then notify listener
 
         setCurrentEditable(null);
@@ -1288,7 +1290,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
         activated = false;
 
         // End cleanup
-        //////////////////////////////////
+        // ////////////////////////////////
 
         if (g != null && requestor != null) {
             g.setVisible(true);
@@ -1542,7 +1544,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
         }
     }
 
-    //////////////// end BeanContext stuff
+    // ////////////// end BeanContext stuff
 
     /**
      * Display the palette.
@@ -1557,7 +1559,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
          * doesn't update on the revalidate being called in the GUI.
          */
         repaint();
-        
+
         // Should only be visible if the tool isn't being used as a
         // tool, which means that it's being held by something else,
         // or if it is a tool and the SHOW_GUI flag is set.
@@ -1874,15 +1876,15 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
             }
         });
 
-        //      JMenuItem reset = new JMenuItem("Undo Changes");
-        //      reset.setEnabled(false);
-        //      reset.addActionListener(new ActionListener() {
-        //              public void actionPerformed(ActionEvent ae) {
-        //                  if (currentEditable != null) {
-        //                      currentEditable.reset();
-        //                  }
-        //              }
-        //          });
+        // JMenuItem reset = new JMenuItem("Undo Changes");
+        // reset.setEnabled(false);
+        // reset.addActionListener(new ActionListener() {
+        // public void actionPerformed(ActionEvent ae) {
+        // if (currentEditable != null) {
+        // currentEditable.reset();
+        // }
+        // }
+        // });
 
         if (isMask(SHOW_GUI_BEHAVIOR_MASK | GUI_VIA_POPUP_BEHAVIOR_MASK)
                 && !getUseAsTool()) {
@@ -1893,13 +1895,13 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
                     + getUseAsTool() + ")");
         }
 
-        //      pum.add(reset);
+        // pum.add(reset);
         pum.add(delete);
 
         return pum;
     }
 
-    //////////// SelectionListener support
+    // ////////// SelectionListener support
     public void addSelectionListener(SelectionListener list) {
         if (selectionSupport != null)
             selectionSupport.addSelectionListener(list);
@@ -1915,7 +1917,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
             selectionSupport.clearSelectionListeners();
     }
 
-    //////////// SelectionListener support ends
+    // ////////// SelectionListener support ends
 
     public static void main(String[] args) {
         OMDrawingTool omdt = new OMDrawingTool();

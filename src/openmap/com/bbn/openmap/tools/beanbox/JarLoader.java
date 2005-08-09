@@ -21,11 +21,17 @@ package com.bbn.openmap.tools.beanbox;
  *  
  */
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import java.beans.*;
-import java.net.*;
+import java.beans.BeanInfo;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class JarLoader {
 
@@ -53,27 +59,27 @@ public class JarLoader {
     /*
      * In here for compatibility with older versions of JDK1.1
      */
-    private String guessContentTypeFromStream(InputStream is)
-            throws IOException {
-        String type;
-        type = URLConnection.guessContentTypeFromStream(is);
-        // that should be taught about serialized objects.
-
-        if (type == null) {
-            is.mark(10);
-            int c1 = is.read();
-            int c2 = is.read();
-            int c3 = is.read();
-            int c4 = is.read();
-            int c5 = is.read();
-            int c6 = is.read();
-            is.reset();
-            if (c1 == 0xAC && c2 == 0xED) {
-                type = "application/java-serialized-object";
-            }
-        }
-        return type;
-    }
+//    private String guessContentTypeFromStream(InputStream is)
+//            throws IOException {
+//        String type;
+//        type = URLConnection.guessContentTypeFromStream(is);
+//        // that should be taught about serialized objects.
+//
+//        if (type == null) {
+//            is.mark(10);
+//            int c1 = is.read();
+//            int c2 = is.read();
+//            int c3 = is.read();
+//            int c4 = is.read();
+//            int c5 = is.read();
+//            int c6 = is.read();
+//            is.reset();
+//            if (c1 == 0xAC && c2 == 0xED) {
+//                type = "application/java-serialized-object";
+//            }
+//        }
+//        return type;
+//    }
 
     /**
      * Load the classes, resources, etc.

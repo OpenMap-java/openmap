@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/Route.java,v
 // $
 // $RCSfile: Route.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:28 $
+// $Revision: 1.3 $
+// $Date: 2005/08/09 20:45:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,8 +40,8 @@ public class Route implements Cloneable {
     Road[] roads;
 
     private boolean startWithFirstIntersection;
+//    private boolean endWithFirstIntersection;
 
-    private boolean endWithFirstIntersection;
     Logger logger = Logger.getLogger(this.getClass().getName());
 
     static class NodeInfo {
@@ -155,7 +155,6 @@ public class Route implements Cloneable {
         Vector roadVector = new Vector();
         Route result = null;
         if (haveRoute) {
-            int i = 0;
             for (NodeInfo info = (NodeInfo) marks.get(to); result == null;) {
                 roadVector.addElement(info.bestRoad);
                 // System.err.println ("adding Road #" + (i++) + " - "

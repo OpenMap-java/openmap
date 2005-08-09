@@ -17,8 +17,8 @@
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/RoadFinder.java,v $
  * $RCSfile: RoadFinder.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/14 18:06:28 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/09 20:45:09 $
  * $Author: dietrick $
  *
  * **********************************************************************
@@ -375,7 +375,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
      */
     protected void makeRoad(Shape shape, OMGeometry graphic, int num,
                             int[] xPoints, int[] yPoints, int segment) {
-        RoadObject road = createRoadFromPoints(num, xPoints, yPoints, segment);
+        createRoadFromPoints(num, xPoints, yPoints, segment);
     }
 
     /**
@@ -909,16 +909,14 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         Projection proj = getProjection();
 
         Intersection origin = bestRoute.getOriginIntersection();
-        Intersection dest = bestRoute.getDestinationIntersection();
+//        Intersection dest = bestRoute.getDestinationIntersection();
 
         if (logger.isLoggable(Level.INFO))
             logger.info("adding " + bestRoute.roads.length + " new roads.");
 
         Road road = null;
 
-        Intersection last = null;
         Intersection from = origin, to = null;
-        last = null;
 
         Set loopSet = new HashSet();
         if (doLoopCheck)

@@ -702,7 +702,7 @@ public class BeanPanel extends OMToolComponent implements Serializable {
                     return;
                 }
 
-                JarInfo ji = (JarInfo) beanJars.get(index);
+//                JarInfo ji = (JarInfo) beanJars.get(index);
                 String beanName = (String) beanNames.get(index);
 
                 Object bean = null;

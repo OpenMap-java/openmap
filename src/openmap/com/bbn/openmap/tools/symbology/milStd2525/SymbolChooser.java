@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolChooser.java,v $
 // $RCSfile: SymbolChooser.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/02/11 22:39:43 $
+// $Revision: 1.11 $
+// $Date: 2005/08/09 20:45:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -608,7 +608,6 @@ public class SymbolChooser extends JPanel implements ActionListener {
         }
 
         public DefaultMutableTreeNode getNodeForCode(String code) {
-            DefaultMutableTreeNode ret = null;
 
             DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel()
                     .getRoot();

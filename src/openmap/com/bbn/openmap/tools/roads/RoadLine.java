@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/RoadLine.java,v
 // $
 // $RCSfile: RoadLine.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:28 $
+// $Revision: 1.3 $
+// $Date: 2005/08/09 20:45:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -73,8 +73,6 @@ public class RoadLine extends Visual implements RoadObject {
     }
 
     public class Graphic extends OMLine implements RoadGraphic {
-        private boolean blink = false;
-
         Graphic(LatLonPoint p1, LatLonPoint p2) {
             super(p1.getLatitude(),
                   p1.getLongitude(),

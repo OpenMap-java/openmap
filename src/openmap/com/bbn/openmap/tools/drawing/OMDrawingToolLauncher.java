@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.17 $
-// $Date: 2004/10/14 18:06:26 $
+// $Revision: 1.18 $
+// $Date: 2005/08/09 20:45:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -166,8 +166,6 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
 
         Debug.message("drawingtool", "DrawingToolLauncher.actionPerformed(): "
                 + command);
-
-        Object source = ae.getSource();
 
         //  This is important. We need to set the current projection
         //  before setting the projection in the MapBean. That way,

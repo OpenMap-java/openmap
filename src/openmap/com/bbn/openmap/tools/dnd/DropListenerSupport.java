@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/dnd/DropListenerSupport.java,v $
 //$RCSfile: DropListenerSupport.java,v $
-//$Revision: 1.2 $
-//$Date: 2004/10/14 18:06:26 $
+//$Revision: 1.3 $
+//$Date: 2005/08/09 20:45:09 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -126,7 +126,6 @@ public class DropListenerSupport implements PropertyChangeListener,
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
         Iterator it = bcme.iterator();
-        Object someObj;
         while (it.hasNext()) {
             findAndUndo(it.next());
         }
@@ -164,7 +163,6 @@ public class DropListenerSupport implements PropertyChangeListener,
      *        BeanContext.
      */
     public void findAndInit(Iterator it) {
-        Object someObj;
         while (it.hasNext()) {
             findAndInit(it.next());
         }

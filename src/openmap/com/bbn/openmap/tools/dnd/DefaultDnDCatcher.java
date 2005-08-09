@@ -14,38 +14,63 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/dnd/DefaultDnDCatcher.java,v $
 //$RCSfile: DefaultDnDCatcher.java,v $
-//$Revision: 1.5 $
-//$Date: 2004/10/14 18:06:25 $
+//$Revision: 1.6 $
+//$Date: 2005/08/09 20:45:09 $
 //$Author: dietrick $
 //
 //**********************************************************************
 
 package com.bbn.openmap.tools.dnd;
 
-import java.awt.dnd.*;
-import java.awt.*;
-import java.util.*;
-import java.beans.*;
-import java.beans.beancontext.*;
-
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
+import java.beans.beancontext.BeanContext;
+import java.beans.beancontext.BeanContextChild;
+import java.beans.beancontext.BeanContextChildSupport;
+import java.beans.beancontext.BeanContextMembershipEvent;
+import java.beans.beancontext.BeanContextMembershipListener;
 import java.io.Serializable;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+
 import javax.swing.BorderFactory;
 import javax.swing.JMenuItem;
-import javax.swing.SwingConstants;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMAction;
-import com.bbn.openmap.omGraphics.SinkGraphic;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.LayerHandler;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.MouseDelegator;
+import com.bbn.openmap.event.LayerEvent;
+import com.bbn.openmap.event.LayerListener;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.event.ProjectionListener;
+import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.layer.location.Location;
+import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.SinkGraphic;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
@@ -201,7 +226,6 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
         Iterator it = bcme.iterator();
-        Object someObj;
         while (it.hasNext()) {
             findAndUndo(it.next());
         }
@@ -396,7 +420,6 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
      *        BeanContext.
      */
     public void findAndInit(Iterator it) {
-        Object someObj;
         while (it.hasNext()) {
             findAndInit(it.next());
         }
@@ -536,12 +559,11 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
      * the applicable layers.
      */
     public void setLayers(Layer[] allLayers) {
-        DropTarget dropTarget;
         // remove old layers list
         layers.clear();
         for (int i = 0; i < allLayers.length; i++) {
             // create a new drop target
-            dropTarget = new DropTarget(allLayers[i], DnDConstants.ACTION_MOVE, this);
+            /* dropTarget = */new DropTarget(allLayers[i], DnDConstants.ACTION_MOVE, this);
             if (allLayers[i] instanceof OMGraphicHandlerLayer) {
                 Debug.message("DnDCatcher", "Layers changed");
                 // keep a reference to potential drop target

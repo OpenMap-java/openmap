@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/Road.java,v
 // $
 // $RCSfile: Road.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:28 $
+// $Revision: 1.3 $
+// $Date: 2005/08/09 20:45:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -442,5 +442,13 @@ public class Road implements RoadObject {
     public String toString() {
         return name + " from " + getFirstIntersection() + " to "
                 + getSecondIntersection() + " " + points.length + " points.";
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }
