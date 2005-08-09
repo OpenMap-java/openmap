@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ColorFactory.java,v $
 // $RCSfile: ColorFactory.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:29 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 18:37:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,7 @@ package com.bbn.openmap.util;
 
 import java.awt.Color;
 import java.awt.Paint;
+import java.lang.reflect.Field;
 import java.util.Properties;
 
 import com.bbn.openmap.omGraphics.OMColor;
@@ -290,5 +291,35 @@ public class ColorFactory {
     public static String getHexColorString(Color color) {
         return Integer.toHexString((color.getRGB() & 0x00FFFFFF)
                 | (color.getAlpha() << 24));
+    }
+
+    /**
+     * Method that returns a java.awt.Color object given the name of
+     * the color. Depends on the static instances of color provided by
+     * the java.awt.Color class.
+     * 
+     * @param name
+     * @param defaultColor
+     * @return
+     */
+    public static Color getNamedColor(String name, Color defaultColor) {
+        if (name != null) {
+            Field[] colorFields = Color.class.getDeclaredFields();
+            for (int i = 0; i < colorFields.length; i++) {
+                Field f = colorFields[i];
+                try {
+                    if (name.equalsIgnoreCase(f.getName())) {
+                        return (Color) f.get((Object) null);
+                    }
+                } catch (IllegalAccessException iae) {
+                    // Whoa, shouldn't happen, but hey
+                } catch (ClassCastException cce) {
+                    // Shouldn't ask for anything other than colors,
+                    // either.
+                }
+            }
+        }
+
+        return defaultColor;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/WebBrowser.java,v $
 // $RCSfile: WebBrowser.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:30 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 18:37:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -121,7 +121,7 @@ public class WebBrowser {
 
             String cmd;
             String arch = Environment.get("os.arch");
-            String osname = Environment.get("os.name");
+//            String osname = Environment.get("os.name");
 
             if (Environment.isApplet()) {
                 try {
