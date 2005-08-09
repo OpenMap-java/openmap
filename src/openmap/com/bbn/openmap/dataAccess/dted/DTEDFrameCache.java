@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrameCache.java,v $
 // $RCSfile: DTEDFrameCache.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:42 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 19:03:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,13 +26,12 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
-import com.bbn.openmap.io.*;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
 import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.proj.EqualArc;
-import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -593,7 +592,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
             addDTEDDirectoryHandler(handler);
         }
 
-        resetCache(LayerUtils.intFromProperties(props, prefix
+        resetCache(PropUtils.intFromProperties(props, prefix
                 + DTEDFrameCacheSizeProperty, DEFAULT_CACHE_SIZE));
     }
 

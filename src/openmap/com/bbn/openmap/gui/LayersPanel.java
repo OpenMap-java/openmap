@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/02/11 22:30:29 $
+// $Revision: 1.13 $
+// $Date: 2005/08/09 19:14:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -56,7 +56,6 @@ import com.bbn.openmap.LightMapHandlerChild;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.event.LayerListener;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -1007,9 +1006,9 @@ public class LayersPanel extends OMToolComponent implements Serializable,
             }
         }
 
-        bufferedBoundary = LayerUtils.booleanFromProperties(props, prefix
+        bufferedBoundary = PropUtils.booleanFromProperties(props, prefix
                 + BufferedBoundaryProperty, bufferedBoundary);
-        showStatus = LayerUtils.booleanFromProperties(props, prefix
+        showStatus = PropUtils.booleanFromProperties(props, prefix
                 + ShowStatusProperty, showStatus);
     }
 

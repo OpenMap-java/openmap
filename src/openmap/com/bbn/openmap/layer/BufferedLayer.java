@@ -14,31 +14,44 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/BufferedLayer.java,v $
 // $RCSfile: BufferedLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:52 $
+// $Revision: 1.9 $
+// $Date: 2005/08/09 19:20:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.omGraphics.OMColor;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Paint;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.beans.beancontext.BeanContext;
-import java.util.*;
+import java.util.Properties;
+import java.util.Vector;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+
+import com.bbn.openmap.BufferedMapBean;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.LayerHandler;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * A BufferedLayer is a layer that buffers a group of layers into an
@@ -136,7 +149,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        hasActiveLayers = LayerUtils.booleanFromProperties(props, prefix
+        hasActiveLayers = PropUtils.booleanFromProperties(props, prefix
                 + HasActiveLayersProperty, hasActiveLayers);
 
         Vector layersValue = PropUtils.parseSpacedMarkers(props.getProperty(prefix

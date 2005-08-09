@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapGraphicLoader.java,v $
 // $RCSfile: NetMapGraphicLoader.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 17:46:33 $
+// $Revision: 1.9 $
+// $Date: 2005/08/09 19:09:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,13 +28,13 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import com.bbn.openmap.Layer;
-import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.graphicLoader.MMLGraphicLoader;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.plugin.PlugIn;
-import com.bbn.openmap.graphicLoader.MMLGraphicLoader;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The NetMapGraphicLoader is a component that can listen to a
@@ -193,12 +193,12 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
 
         // Used for many (if not all commands, might as well do this
         // here.
-        int index = LayerUtils.intFromProperties(eventProps,
+        int index = PropUtils.intFromProperties(eventProps,
                 INDEX_FIELD,
                 ERROR_VALUE_INT);
         if (cmd.equals(NODE_OBJECT)) {
 
-            int shape = LayerUtils.intFromProperties(eventProps,
+            int shape = PropUtils.intFromProperties(eventProps,
                     SHAPE_FIELD,
                     ERROR_VALUE_INT);
 
@@ -252,10 +252,10 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
                  * LayerUtils.intFromProperties(eventProps,
                  * HEIGHT_FIELD, ERROR_VALUE_INT);
                  */
-                status = LayerUtils.intFromProperties(eventProps,
+                status = PropUtils.intFromProperties(eventProps,
                         STATUS_FIELD,
                         0);
-                int menu = LayerUtils.intFromProperties(eventProps,
+                int menu = PropUtils.intFromProperties(eventProps,
                         MENU_FIELD,
                         0);
                 /*
@@ -312,7 +312,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
             node = nodeList.get(index);
 
             if (node != null) {
-                status = LayerUtils.intFromProperties(eventProps,
+                status = PropUtils.intFromProperties(eventProps,
                         STATUS_FIELD,
                         ERROR_VALUE_INT);
                 if (status != ERROR_VALUE_INT) {
@@ -330,7 +330,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
             line = lineList.get(index);
 
             if (line != null) {
-                status = LayerUtils.intFromProperties(eventProps,
+                status = PropUtils.intFromProperties(eventProps,
                         STATUS_FIELD,
                         ERROR_VALUE_INT);
                 if (status != ERROR_VALUE_INT) {
@@ -347,20 +347,20 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
 
             line = lineList.get(index);
 
-            int shape = LayerUtils.intFromProperties(eventProps,
+            int shape = PropUtils.intFromProperties(eventProps,
                     SHAPE_FIELD,
                     ERROR_VALUE_INT);
 
             if (shape == NODE_DELETE) {
                 lineList.del(index);
             } else {
-                status = LayerUtils.intFromProperties(eventProps,
+                status = PropUtils.intFromProperties(eventProps,
                         STATUS_FIELD,
                         0);
-                int node1 = LayerUtils.intFromProperties(eventProps,
+                int node1 = PropUtils.intFromProperties(eventProps,
                         LINK_NODE1_FIELD,
                         ERROR_VALUE_INT);
-                int node2 = LayerUtils.intFromProperties(eventProps,
+                int node2 = PropUtils.intFromProperties(eventProps,
                         LINK_NODE2_FIELD,
                         ERROR_VALUE_INT);
 

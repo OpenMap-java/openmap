@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerControlButtonPanel.java,v $
 // $RCSfile: LayerControlButtonPanel.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/02/11 22:30:29 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 19:14:52 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -36,7 +36,6 @@ import javax.swing.JLabel;
 
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
@@ -449,11 +448,11 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
             configuration = DefaultConfiguration;
         }
 
-        embedded = LayerUtils.booleanFromProperties(props, prefix
+        embedded = PropUtils.booleanFromProperties(props, prefix
                 + EmbeddedProperty, embedded);
-        deleteLayers = LayerUtils.booleanFromProperties(props, prefix
+        deleteLayers = PropUtils.booleanFromProperties(props, prefix
                 + DeleteLayersProperty, deleteLayers);
-        addLayers = LayerUtils.booleanFromProperties(props, prefix
+        addLayers = PropUtils.booleanFromProperties(props, prefix
                 + AddLayersProperty, addLayers);
 
         String orient = props.getProperty(prefix + OrientationProperty);

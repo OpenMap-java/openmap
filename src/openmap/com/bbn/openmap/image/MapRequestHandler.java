@@ -14,25 +14,28 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/MapRequestHandler.java,v $
 // $RCSfile: MapRequestHandler.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/10/14 18:05:51 $
+// $Revision: 1.11 $
+// $Date: 2005/08/09 19:17:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.image;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URLDecoder;
-import java.util.*;
+import java.util.Properties;
+import java.util.Vector;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.layer.util.http.HttpConnection;
+import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.PropertyStringFormatException;
-import com.bbn.openmap.layer.util.http.*;
-import com.bbn.openmap.layer.util.LayerUtils;
 
 /**
  * The MapRequestHandler is the front end for String requests to the
@@ -129,7 +132,7 @@ public class MapRequestHandler extends ImageServer implements
             defaultLayers = props.getProperty(defaultLayersProperty);
         }
 
-        setUseVisibility(LayerUtils.booleanFromProperties(props, prefix
+        setUseVisibility(PropUtils.booleanFromProperties(props, prefix
                 + UseVisibilityProperty, getUseVisibility()));
     }
 

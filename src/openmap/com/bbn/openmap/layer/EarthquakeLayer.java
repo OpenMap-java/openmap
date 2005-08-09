@@ -14,27 +14,43 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/EarthquakeLayer.java,v $
 // $RCSfile: EarthquakeLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:52 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 19:20:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.*;
+import java.util.NoSuchElementException;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JPanel;
 
 import com.bbn.openmap.event.MapMouseListener;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.util.*;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * Get data about recent earthquakes from the USGS finger sites and
@@ -574,7 +590,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
             }
         }
 
-        fetchIntervalMillis = LayerUtils.intFromProperties(props, prefix
+        fetchIntervalMillis = PropUtils.intFromProperties(props, prefix
                 + queryIntervalProperty, 300) * 1000;
     }
 

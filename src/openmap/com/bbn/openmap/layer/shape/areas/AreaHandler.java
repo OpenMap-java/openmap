@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 18:49:20 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 19:28:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,7 +39,6 @@ import com.bbn.openmap.layer.shape.CSVShapeInfoFile;
 import com.bbn.openmap.layer.shape.ESRIRecord;
 import com.bbn.openmap.layer.shape.ShapeLayer;
 import com.bbn.openmap.layer.shape.SpatialIndex;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGeometryList;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -317,7 +316,7 @@ public class AreaHandler implements PropertyConsumer {
 
         // First find the resource, if not, then try as a file-URL...
         try {
-            cacheURL = LayerUtils.getResourceOrFileOrURL(this, cacheFile);
+            cacheURL = PropUtils.getResourceOrFileOrURL(this, cacheFile);
 
             if (cacheURL != null) {
                 omgraphics = readCachedGraphics(cacheURL);
@@ -329,7 +328,7 @@ public class AreaHandler implements PropertyConsumer {
                 String dbfFile = props.getProperty(prefix + dbfFileProperty);
                 URL dbfFileURL = null;
                 if (dbfFile != null) {
-                    dbfFileURL = LayerUtils.getResourceOrFileOrURL(this,
+                    dbfFileURL = PropUtils.getResourceOrFileOrURL(this,
                             dbfFile);
                 }
                 if (dbfFileURL != null) {
@@ -340,14 +339,14 @@ public class AreaHandler implements PropertyConsumer {
                     String csvFile = props.getProperty(prefix + csvFileProperty);
                     URL infofileURL = null;
                     if (csvFile != null) {
-                        infofileURL = LayerUtils.getResourceOrFileOrURL(this,
+                        infofileURL = PropUtils.getResourceOrFileOrURL(this,
                                 csvFile);
                     }
 
                     // Read them in.
                     if (infofileURL != null) {
                         infoFile = new CSVShapeInfoFile(csvFile);
-                        infoFile.setHeadersExist(LayerUtils.booleanFromProperties(props,
+                        infoFile.setHeadersExist(PropUtils.booleanFromProperties(props,
                                 prefix + csvHeaderProperty,
                                 true));
                         infoFile.loadData(true);
@@ -371,9 +370,9 @@ public class AreaHandler implements PropertyConsumer {
         // Now, match the attributes to the graphics. Find the
         // indexes of the name and the search key. Also figure out
         // which areas have special coloring needs.
-        keyIndex = LayerUtils.intFromProperties(props, prefix
+        keyIndex = PropUtils.intFromProperties(props, prefix
                 + keyIndexProperty, keyIndex);
-        nameIndex = LayerUtils.intFromProperties(props, prefix
+        nameIndex = PropUtils.intFromProperties(props, prefix
                 + nameIndexProperty, nameIndex);
         String areas = props.getProperty(prefix + areasProperty);
 
@@ -922,7 +921,7 @@ public class AreaHandler implements PropertyConsumer {
     protected Color getColor(String colorString) {
         Color result = Color.black;
         try {
-            result = LayerUtils.parseColor(colorString);
+            result = PropUtils.parseColor(colorString);
         } catch (NumberFormatException nfe) {
             result = GetColorFromString(colorString);
         }

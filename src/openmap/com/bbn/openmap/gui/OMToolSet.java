@@ -14,24 +14,27 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolSet.java,v $
 // $RCSfile: OMToolSet.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.10 $
+// $Date: 2005/08/09 19:14:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
-import javax.swing.*;
+import java.util.Properties;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.layer.util.LayerUtils;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+
+import com.bbn.openmap.MapBean;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -196,7 +199,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      */
     public void addButton(String name, String info, ActionListener al) {
         try {
-            URL url = LayerUtils.getResourceOrFileOrURL(null, name);
+            URL url = PropUtils.getResourceOrFileOrURL(null, name);
             if (url != null) {
                 addButton(url, info, al);
             }
@@ -267,11 +270,11 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        addZoom = LayerUtils.booleanFromProperties(setList, prefix
+        addZoom = PropUtils.booleanFromProperties(setList, prefix
                 + AddZoomProperty, addZoom);
-        addPan = LayerUtils.booleanFromProperties(setList, prefix
+        addPan = PropUtils.booleanFromProperties(setList, prefix
                 + AddPanProperty, addPan);
-        addScale = LayerUtils.booleanFromProperties(setList, prefix
+        addScale = PropUtils.booleanFromProperties(setList, prefix
                 + AddScaleProperty, addScale);
 
         createFace();

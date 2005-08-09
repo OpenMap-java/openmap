@@ -14,33 +14,35 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/CacheLayer.java,v $
 // $RCSfile: CacheLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:52 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 19:20:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer;
 
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.event.SelectMouseMode;
-import com.bbn.openmap.util.*;
-import com.bbn.openmap.layer.util.LayerUtils;
-
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.net.URL;
-import java.util.*;
-import javax.swing.JButton;
+import java.util.Properties;
+
 import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.event.MapMouseListener;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.event.SelectMouseMode;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * A Layer that gets it's graphics from a URL containing a serialized
@@ -115,7 +117,7 @@ public class CacheLayer extends Layer implements ActionListener,
 
                 // First find the resource, if not, then try as a
                 // file-URL... b
-                cacheURL = LayerUtils.getResourceOrFileOrURL(this, cacheFile);
+                cacheURL = PropUtils.getResourceOrFileOrURL(this, cacheFile);
 
                 if (cacheURL != null) {
                     readGraphics();

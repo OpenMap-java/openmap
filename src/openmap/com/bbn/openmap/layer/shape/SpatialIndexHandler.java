@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndexHandler.java,v $
 // $RCSfile: SpatialIndexHandler.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/05/23 20:18:49 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 19:26:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,7 +42,6 @@ import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGeometryList;
@@ -167,7 +166,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
 
             try {
                 if (imageURLString != null && !imageURLString.equals("")) {
-                    URL imageURL = LayerUtils.getResourceOrFileOrURL(this,
+                    URL imageURL = PropUtils.getResourceOrFileOrURL(this,
                             imageURLString);
                     ImageIcon imageIcon = new ImageIcon(imageURL);
                     spatialIndex.setPointIcon(imageIcon);
@@ -192,9 +191,9 @@ public class SpatialIndexHandler implements PropertyConsumer {
                 "Location of Spatial Index file - .ssx (File, URL or relative file path).");
         drawingAttributes = new DrawingAttributes(realPrefix, props);
 
-        enabled = LayerUtils.booleanFromProperties(props, realPrefix
+        enabled = PropUtils.booleanFromProperties(props, realPrefix
                 + EnabledProperty, enabled);
-        buffered = LayerUtils.booleanFromProperties(props, realPrefix
+        buffered = PropUtils.booleanFromProperties(props, realPrefix
                 + BufferedProperty, buffered);
     }
 

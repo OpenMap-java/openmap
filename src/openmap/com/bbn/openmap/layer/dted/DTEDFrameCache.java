@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameCache.java,v $
 // $RCSfile: DTEDFrameCache.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 18:06:34 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 19:22:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,7 +27,6 @@ import java.util.Properties;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
 import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.LatLonPoint;
@@ -638,14 +637,14 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
 
         prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        String[] paths = LayerUtils.initPathsFromProperties(props, prefix
+        String[] paths = PropUtils.initPathsFromProperties(props, prefix
                 + DTEDPathsProperty);
-        String[] paths2 = LayerUtils.initPathsFromProperties(props, prefix
+        String[] paths2 = PropUtils.initPathsFromProperties(props, prefix
                 + DTED2PathsProperty);
 
         setDtedDirPaths(paths, paths2);
 
-        resetCache((int) LayerUtils.intFromProperties(props, prefix
+        resetCache((int) PropUtils.intFromProperties(props, prefix
                 + DTEDFrameCacheSizeProperty, DTEDCacheHandler.FRAME_CACHE_SIZE));
 
     }

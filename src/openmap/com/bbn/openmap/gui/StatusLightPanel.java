@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/StatusLightPanel.java,v $
 // $RCSfile: StatusLightPanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 19:14:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,15 +24,23 @@ package com.bbn.openmap.gui;
 
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.beans.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Properties;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JToolBar;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.LayerStatusListener;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -312,7 +320,7 @@ public class StatusLightPanel extends OMComponentPanel implements
         setPropertyPrefix(prefix);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        setLightTriggers(LayerUtils.booleanFromProperties(props, prefix
+        setLightTriggers(PropUtils.booleanFromProperties(props, prefix
                 + LightTriggersProperty, lightTriggers));
     }
 

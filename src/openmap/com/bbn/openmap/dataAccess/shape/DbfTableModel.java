@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/08/09 17:21:28 $
+// $Revision: 1.12 $
+// $Date: 2005/08/09 19:05:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,6 +54,7 @@ import com.bbn.openmap.dataAccess.shape.input.DbfInputStream;
 import com.bbn.openmap.dataAccess.shape.output.DbfOutputStream;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.FileUtils;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * An implemention of TableModel that manages tabular data read from a
@@ -781,8 +782,7 @@ public class DbfTableModel extends AbstractTableModel implements
 
         try {
 
-            URL dbf = com.bbn.openmap.layer.util.LayerUtils.getResourceOrFileOrURL(null,
-                    args[0]);
+            URL dbf = PropUtils.getResourceOrFileOrURL(args[0]);
             InputStream is = dbf.openStream();
             DbfInputStream dis = new DbfInputStream(is);
             DbfTableModel dtm = new DbfTableModel(dis);

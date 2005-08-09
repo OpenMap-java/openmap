@@ -14,19 +14,21 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/PPMFormatter.java,v $
 // $RCSfile: PPMFormatter.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:51 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 19:17:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.image;
 
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.util.Debug;
-import java.util.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.util.Properties;
+
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * A simple formatter to create PPM images.
@@ -49,7 +51,7 @@ public class PPMFormatter extends AbstractImageFormatter {
     public PPMFormatter() {}
 
     public void setProperties(String prefix, Properties props) {
-        rawbits = LayerUtils.booleanFromProperties(props, (prefix == null ? ""
+        rawbits = PropUtils.booleanFromProperties(props, (prefix == null ? ""
                 : prefix)
                 + RawBitsProperty, true);
     }

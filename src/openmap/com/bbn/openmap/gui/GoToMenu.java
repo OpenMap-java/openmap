@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/08/09 17:49:51 $
+// $Revision: 1.13 $
+// $Date: 2005/08/09 19:14:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,7 +47,6 @@ import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.gui.menu.DataBoundsViewMenuItem;
 import com.bbn.openmap.gui.menu.OMBasicMenu;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjectionFactory;
@@ -184,10 +183,10 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        addDefaults = LayerUtils.booleanFromProperties(props, prefix
+        addDefaults = PropUtils.booleanFromProperties(props, prefix
                 + AddDefaultListProperty, addDefaults);
 
-        addDataViews = LayerUtils.booleanFromProperties(props, prefix
+        addDataViews = PropUtils.booleanFromProperties(props, prefix
                 + AddDataViewsProperty, addDataViews);
 
         dataBoundsMenu.setVisible(addDataViews);

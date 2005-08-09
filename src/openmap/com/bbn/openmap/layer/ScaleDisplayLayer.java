@@ -12,8 +12,8 @@
  * **********************************************************************
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleDisplayLayer.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/10/14 18:05:53 $
+ * $Revision: 1.8 $
+ * $Date: 2005/08/09 19:20:29 $
  * $Author: dietrick $
  *
  * **********************************************************************
@@ -21,19 +21,20 @@
 
 package com.bbn.openmap.layer;
 
+import java.beans.PropertyVetoException;
+import java.util.Properties;
+
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
-
-import java.util.Properties;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * Layer objects are components which can be added to the MapBean to
@@ -115,27 +116,27 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
         super.setProperties(prefix, properties);
         prefix = com.bbn.openmap.util.PropUtils.getScopedPropertyPrefix(prefix);
 
-        lineColor = LayerUtils.parseColorFromProperties(properties, prefix
+        lineColor = PropUtils.parseColorFromProperties(properties, prefix
                 + LineColorProperty, defaultLineColorString);
 
-        textColor = LayerUtils.parseColorFromProperties(properties, prefix
+        textColor = PropUtils.parseColorFromProperties(properties, prefix
                 + TextColorProperty, defaultTextColorString);
 
         String unitOfMeasure = properties.getProperty(prefix
                 + UnitOfMeasureProperty);
         setUnitOfMeasure(unitOfMeasure);
 
-        locationXoffset = LayerUtils.intFromProperties(properties, prefix
+        locationXoffset = PropUtils.intFromProperties(properties, prefix
                 + LocationXOffsetProperty, defaultLocationXoffset);
 
-        locationYoffset = LayerUtils.intFromProperties(properties, prefix
+        locationYoffset = PropUtils.intFromProperties(properties, prefix
                 + LocationYOffsetProperty, defaultLocationYoffset);
 
-        width = LayerUtils.intFromProperties(properties,
+        width = PropUtils.intFromProperties(properties,
                 prefix + WidthProperty,
                 defaultWidth);
 
-        height = LayerUtils.intFromProperties(properties, prefix
+        height = PropUtils.intFromProperties(properties, prefix
                 + HeightProperty, defaultHeight);
     }
 

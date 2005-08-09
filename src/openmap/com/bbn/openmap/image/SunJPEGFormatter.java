@@ -16,19 +16,19 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/SunJPEGFormatter.java,v
 // $
 // $RCSfile: SunJPEGFormatter.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:51 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 19:17:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.image;
 
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.layer.util.LayerUtils;
-
-import java.util.*;
 import java.awt.image.BufferedImage;
+import java.util.Properties;
+
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 public class SunJPEGFormatter extends AbstractImageFormatter {
 
@@ -39,7 +39,7 @@ public class SunJPEGFormatter extends AbstractImageFormatter {
     public SunJPEGFormatter() {}
 
     public void setProperties(String prefix, Properties props) {
-        imageQuality = LayerUtils.floatFromProperties(props,
+        imageQuality = PropUtils.floatFromProperties(props,
                 (prefix == null ? "" : prefix) + QualityProperty,
                 imageQuality);
         if (Debug.debugging("image")) {

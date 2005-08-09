@@ -21,21 +21,26 @@
 
 package com.bbn.openmap.event;
 
-import com.bbn.openmap.InformationDelegator;
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.MapBean;
-import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.proj.GreatCircle;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
-
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.MouseEvent;
+import java.util.Properties;
+import java.util.Vector;
+
+import com.bbn.openmap.InformationDelegator;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.omGraphics.OMCircle;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.proj.GreatCircle;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.Planet;
+import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * This mouse mode draws a rubberband line and circle between each
@@ -751,11 +756,11 @@ public class DistanceMouseMode extends CoordMouseMode {
             }
         }
 
-        showCircle(LayerUtils.booleanFromProperties(setList, prefix
+        showCircle(PropUtils.booleanFromProperties(setList, prefix
                 + ShowCircleProperty, true));
-        showAzimuth(LayerUtils.booleanFromProperties(setList, prefix
+        showAzimuth(PropUtils.booleanFromProperties(setList, prefix
                 + ShowAngleProperty, true));
-        setRepaintToClean(LayerUtils.booleanFromProperties(setList, prefix
+        setRepaintToClean(PropUtils.booleanFromProperties(setList, prefix
                 + RepaintToCleanProperty, false));
     }
 

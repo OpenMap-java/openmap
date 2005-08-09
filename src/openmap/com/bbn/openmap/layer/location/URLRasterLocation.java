@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/URLRasterLocation.java,v $
 // $RCSfile: URLRasterLocation.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:59 $
+// $Revision: 1.7 $
+// $Date: 2005/08/09 19:24:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,11 +24,11 @@ package com.bbn.openmap.layer.location;
 
 /*  Java Core  */
 import java.net.URL;
+
 import javax.swing.ImageIcon;
 
-/*  OpenMap  */
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * A Location that takes an URL for an image and creates a Raster for
@@ -293,7 +293,7 @@ public class URLRasterLocation extends Location {
      */
     public static URL getIconRasterURL(String iconURL) {
         try {
-            return LayerUtils.getResourceOrFileOrURL(null, iconURL);
+            return PropUtils.getResourceOrFileOrURL(null, iconURL);
         } catch (java.net.MalformedURLException mue) {
             throw new com.bbn.openmap.util.HandleError(mue);
         }

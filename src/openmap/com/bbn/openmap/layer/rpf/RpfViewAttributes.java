@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfViewAttributes.java,v $
 // $RCSfile: RpfViewAttributes.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/02/11 22:34:15 $
+// $Revision: 1.9 $
+// $Date: 2005/08/09 19:25:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,7 +27,6 @@ import java.util.Properties;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.util.PropUtils;
@@ -139,27 +138,27 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        opaqueness = LayerUtils.intFromProperties(props, prefix
+        opaqueness = PropUtils.intFromProperties(props, prefix
                 + OpaquenessProperty, opaqueness);
 
-        numberOfColors = LayerUtils.intFromProperties(props, prefix
+        numberOfColors = PropUtils.intFromProperties(props, prefix
                 + NumColorsProperty, numberOfColors);
 
-        showMaps = LayerUtils.booleanFromProperties(props, prefix
+        showMaps = PropUtils.booleanFromProperties(props, prefix
                 + ShowMapsProperty, showMaps);
 
-        showInfo = LayerUtils.booleanFromProperties(props, prefix
+        showInfo = PropUtils.booleanFromProperties(props, prefix
                 + ShowInfoProperty, showInfo);
 
-        scaleImages = LayerUtils.booleanFromProperties(props, prefix
+        scaleImages = PropUtils.booleanFromProperties(props, prefix
                 + ScaleImagesProperty, scaleImages);
 
         chartSeries = props.getProperty(prefix + ChartSeriesProperty);
 
-        autofetchAttributes = LayerUtils.booleanFromProperties(props, prefix
+        autofetchAttributes = PropUtils.booleanFromProperties(props, prefix
                 + AutoFetchAttributeProperty, autofetchAttributes);
 
-        imageScaleFactor = LayerUtils.floatFromProperties(props, prefix
+        imageScaleFactor = PropUtils.floatFromProperties(props, prefix
                 + ImageScaleFactorProperty, imageScaleFactor);
 
         String colormodel = props.getProperty(prefix + ColormodelProperty);
