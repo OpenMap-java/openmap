@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/CRFPClient.java,v $
 // $RCSfile: CRFPClient.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:35 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 20:57:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,21 +23,31 @@
 package com.bbn.openmap.layer.rpf.corba;
 
 import java.awt.Point;
-import java.awt.image.*;
-import java.io.*;
-import java.net.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Vector;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.layer.rpf.*;
-import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.*;
-import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.layer.rpf.RpfCoverageBox;
+import com.bbn.openmap.layer.rpf.RpfFrameProvider;
+import com.bbn.openmap.layer.rpf.RpfIndexedImageData;
+import com.bbn.openmap.layer.rpf.RpfViewAttributes;
+import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.CRFPCADRGProjection;
+import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.CRFPCoverageBox;
+import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.CRFPViewAttributes;
+import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.LLPoint;
+import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.RawImage;
+import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.Server;
+import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.ServerHelper;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-
-import com.sun.image.codec.jpeg.*;
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGImageDecoder;
 
 /**
  * An implementation of the RpfFrameProvider interface that uses CORBA
@@ -145,13 +155,13 @@ public class CRFPClient implements RpfFrameProvider {
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        jpegQuality = LayerUtils.floatFromProperties(properties, prefix
+        jpegQuality = PropUtils.floatFromProperties(properties, prefix
                 + JPEGQualityProperty, .8f);
 
         String url = properties.getProperty(prefix + iorUrlProperty);
         if (url != null) {
             try {
-                iorURL = LayerUtils.getResourceOrFileOrURL(url);
+                iorURL = PropUtils.getResourceOrFileOrURL(url);
             } catch (MalformedURLException e) {
                 throw new IllegalArgumentException("\"" + url + "\""
                         + " is malformed.");
@@ -324,7 +334,7 @@ public class CRFPClient implements RpfFrameProvider {
         // a boolean matrix of those subframes that let you figure out
         // how many of them are available. Calculate the percentage
         // off that.
-        int pZone = p.getZone();
+        //int pZone = p.getZone();
         int i, x, y;
 
         double frameLatInterval = Double.MAX_VALUE;

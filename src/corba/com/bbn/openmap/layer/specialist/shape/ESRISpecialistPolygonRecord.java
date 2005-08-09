@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/shape/ESRISpecialistPolygonRecord.java,v $
 // $RCSfile: ESRISpecialistPolygonRecord.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:37 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 21:01:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,7 +63,7 @@ public class ESRISpecialistPolygonRecord extends ESRIPolygonRecord implements
         SPoly sp = null;
         float[] pts;
         LLPoint[] ll;
-        boolean ispolyg = isPolygon();
+        //boolean ispolyg = isPolygon();
 
         for (int i = 0; i < nPolys; i++) {
             // these points are already in RADIAN lat,lon order!...

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/CorbaRpfLayer.java,v $
 // $RCSfile: CorbaRpfLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:35 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 20:57:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,15 +25,23 @@ package com.bbn.openmap.layer.rpf.corba;
 /*  Java Core  */
 
 import java.util.Properties;
-import javax.swing.*;
-import javax.swing.event.*;
 
-/*  OpenMap  */
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.util.PaletteHelper;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.layer.rpf.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.layer.rpf.RpfFrameProvider;
+import com.bbn.openmap.layer.rpf.RpfLayer;
+import com.bbn.openmap.layer.rpf.RpfViewAttributes;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * An RpfLayer that uses a CORBA-based RpfFrameProvider. JDK 1.2 and
@@ -86,7 +94,7 @@ public class CorbaRpfLayer extends RpfLayer {
         props = properties;
 
         ((CRFPClient) frameProvider).setProperties(prefix, properties);
-        quickRedraw = LayerUtils.booleanFromProperties(properties, prefix
+        quickRedraw = PropUtils.booleanFromProperties(properties, prefix
                 + QuickRedrawProperty, false);
     }
 

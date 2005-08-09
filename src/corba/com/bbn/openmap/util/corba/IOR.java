@@ -14,15 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/util/corba/IOR.java,v $
 // $RCSfile: IOR.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:38 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 21:04:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.util.corba;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.PrintWriter;
 
 /**
  * Utility class that reads and decodes CORBA IOR files. For debugging
@@ -284,7 +286,7 @@ public class IOR {
             FileInputStream fis = new FileInputStream(f);
             int nAvail = fis.available();
             contents = new byte[nAvail];
-            int length = fis.read(contents);
+            /*int length = */fis.read(contents);
             fis.close();
 
             new IOR(contents).parse(new PrintWriter(System.out, true));

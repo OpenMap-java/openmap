@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/vpf/GraphicWarehouseSupport.java,v
 // $
 // $RCSfile: GraphicWarehouseSupport.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:37 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 21:02:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -232,7 +232,6 @@ public abstract class GraphicWarehouseSupport implements VPFGraphicWarehouse {
 
             LLPoint pt = (LLPoint) ipts.get(i);
             float lllat = pt.lat;
-            float lllon = pt.lon;
 
             if ((prevPt != null) && (i != (coordcount - 1))
                     && (Math.abs(prevPt.lat - pt.lat) < dpplat)

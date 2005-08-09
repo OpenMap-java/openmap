@@ -1,153 +1,140 @@
 <?xml version="1.0"?>
 <project name="OpenMap" default="all" basedir=".">
 
-  <!--  ############################
+	<!--  ############################
 	Set up the different builds.
-	############################ -->  
+	############################ -->
 
-  <target name="init" description="Sets properties needed by the other targets.">
-    
-    <property name="openmap.home" value="."/>
-    
-    <property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
+	<target name="init" description="Sets properties needed by the other targets.">
+
+		<property name="openmap.home" value="." />
+
+		<property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
 		                             **/ChangeLog, **/*.html, **/*.txt,
 					     **/*.*.txt, **/*.dat,
-					     **/*.pl, **/unimplemented/**, **/build.xml"/>
+					     **/*.pl, **/unimplemented/**, **/build.xml" />
 
-    <property name="javac.excludes" value="${general.excludes}, 
+		<property name="javac.excludes" value="${general.excludes}, 
 					   **/*.gif, **/*.png" />
-    <property name="mac.app" value="OpenMap.app"/>
-    <property name="jar.excludes" value="${general.excludes}, **/*.java"/>
-    
-    <property name="openmap.src" value="${openmap.home}/src/openmap"/>
-    <property name="svg.src" value="${openmap.home}/src/svg"/>
-    <property name="j3d.src" value="${openmap.home}/src/j3d"/>
-    <property name="corba.src" value="${openmap.home}/src/corba"/>
-  
-  </target>
+		<property name="mac.app" value="OpenMap.app" />
+		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
 
-  <!--  ############################
+		<property name="openmap.src" value="${openmap.home}/src/openmap" />
+		<property name="svg.src" value="${openmap.home}/src/svg" />
+		<property name="j3d.src" value="${openmap.home}/src/j3d" />
+		<property name="corba.src" value="${openmap.home}/src/corba" />
+
+	</target>
+
+	<!--  ############################
 	Main targets
-	############################ -->  
+	############################ -->
 
-  <target name="classes" 
-	  depends="init" 
-          description="Compiles standard OpenMap classes.">
-    <ant antfile="${openmap.src}/build.xml" target="classes" inheritAll="false"/>
-    <antcall target="svg"/>
-    <antcall target="j3d"/>
-    <antcall target="corba"/>
-  </target>
+	<target name="classes" depends="init" description="Compiles standard OpenMap classes.">
+		<ant antfile="${openmap.src}/build.xml" target="classes" inheritAll="false" />
+		<antcall target="svg" />
+		<antcall target="j3d" />
+		<antcall target="corba" />
+	</target>
 
-  <target name="svg" description="Compiles SVG OpenMap classes.">
-    <ant antfile="${svg.src}/build.xml" target="classes.svg" inheritAll="false">
-      <!-- Change and add this location if your batik home is different,
+	<target name="svg" description="Compiles SVG OpenMap classes.">
+		<ant antfile="${svg.src}/build.xml" target="classes.svg" inheritAll="false">
+			<!-- Change and add this location if your batik home is different,
 	   or you can make the change in the src/svg/build.xml file.
 	   <property name="batik.home" value="/usr/local/java/batik-1.1.1"/>
 	   -->
-    </ant>
-  </target>
+		</ant>
+	</target>
 
-  <target name="j3d" description="Compiles J3D OpenMap classes.">
-    <ant antfile="${j3d.src}/build.xml" target="classes.j3d" inheritAll="false"/>
-  </target>
+	<target name="j3d" description="Compiles J3D OpenMap classes.">
+		<ant antfile="${j3d.src}/build.xml" target="classes.j3d" inheritAll="false" />
+	</target>
 
-  <target name="corba" description="Compiles CORBA OpenMap classes.">
-    <ant antfile="${corba.src}/build.xml" target="classes.corba" inheritAll="false"/>
-  </target>
+	<target name="corba" description="Compiles CORBA OpenMap classes.">
+		<ant antfile="${corba.src}/build.xml" target="classes.corba" inheritAll="false" />
+	</target>
 
-  <target name="jars" depends="classes" 
-          description="Compiles OpenMap and alternative classes.">
-    <ant antfile="${openmap.src}/build.xml" target="jar.openmap" inheritAll="false"/>
-    <ant antfile="${svg.src}/build.xml" target="jar.svg" inheritAll="false"/>
-    <ant antfile="${j3d.src}/build.xml" target="jar.j3d" inheritAll="false"/>
-    <ant antfile="${corba.src}/build.xml" target="jar.corba" inheritAll="false"/>
-  </target>
+	<target name="jars" depends="classes" description="Compiles OpenMap and alternative classes.">
+		<ant antfile="${openmap.src}/build.xml" target="jar.openmap" inheritAll="false" />
+		<ant antfile="${svg.src}/build.xml" target="jar.svg" inheritAll="false" />
+		<ant antfile="${j3d.src}/build.xml" target="jar.j3d" inheritAll="false" />
+		<ant antfile="${corba.src}/build.xml" target="jar.corba" inheritAll="false" />
+	</target>
 
-  <target name="all" depends="init"
-	  description="Compiles OpenMap classes and creates the jar files.">
-    <ant antfile="${openmap.src}/build.xml" target="all.openmap" inheritAll="false"/>
-    <ant antfile="${svg.src}/build.xml" target="all.svg" inheritAll="false"/>
-    <ant antfile="${j3d.src}/build.xml" target="all.j3d" inheritAll="false"/>
-    <ant antfile="${corba.src}/build.xml" target="all.corba" inheritAll="false"/>
-  </target>
+	<target name="geo" depends="init" description="Compiles Geo package and creates omgeo.jar.">
+		<ant antfile="${openmap.src}/build.xml" target="jar.geo" inheritAll="false" />
+	</target>
 
-  <target name="docs" depends="init" 
-	  description="Creates OpenMap API documentation.">
-    <ant antfile="${openmap.src}/build.xml" target="docs.openmap"/>
-  </target>
+	<target name="all" depends="init" description="Compiles OpenMap classes and creates the jar files.">
+		<ant antfile="${openmap.src}/build.xml" target="all.openmap" inheritAll="false" />
+		<ant antfile="${svg.src}/build.xml" target="all.svg" inheritAll="false" />
+		<ant antfile="${j3d.src}/build.xml" target="all.j3d" inheritAll="false" />
+		<ant antfile="${corba.src}/build.xml" target="all.corba" inheritAll="false" />
+	</target>
 
-  <!--  ############################
+	<target name="docs" depends="init" description="Creates OpenMap API documentation.">
+		<ant antfile="${openmap.src}/build.xml" target="docs.openmap" />
+	</target>
+
+	<!--  ############################
 	Cleanup targets
-	############################ -->  
-  <target name="clean_all"
-	  depends="clean, clean_docs"
-	  description="Delete jar files, class files, and generated documentation."/>
+	############################ -->
+	<target name="clean_all" depends="clean, clean_docs" description="Delete jar files, class files, and generated documentation." />
 
-  <target name="clean" depends="init"
-	  description="Delete jar files and all class files.">
-    <ant antfile="${openmap.src}/build.xml" target="clean.openmap"/>
-    <ant antfile="${svg.src}/build.xml" target="clean.svg"/>
-    <ant antfile="${j3d.src}/build.xml" target="clean.j3d"/>
-    <ant antfile="${corba.src}/build.xml" target="clean.corba"/>
-    <delete dir="${mac.app}"/>
-  </target>
+	<target name="clean" depends="init" description="Delete jar files and all class files.">
+		<ant antfile="${openmap.src}/build.xml" target="clean.openmap" />
+		<ant antfile="${svg.src}/build.xml" target="clean.svg" />
+		<ant antfile="${j3d.src}/build.xml" target="clean.j3d" />
+		<ant antfile="${corba.src}/build.xml" target="clean.corba" />
+		<delete dir="${mac.app}" />
+	</target>
 
-  <target name="distclean" depends="init"
-	  description="Delete class files, but not the jar files.">
-    <ant antfile="${openmap.src}/build.xml" target="distclean.openmap"/>
-    <ant antfile="${svg.src}/build.xml" target="distclean.svg"/>
-    <ant antfile="${j3d.src}/build.xml" target="distclean.j3d"/>
-    <ant antfile="${corba.src}/build.xml" target="distclean.corba"/>
-  </target>
+	<target name="distclean" depends="init" description="Delete class files, but not the jar files.">
+		<ant antfile="${openmap.src}/build.xml" target="distclean.openmap" />
+		<ant antfile="${svg.src}/build.xml" target="distclean.svg" />
+		<ant antfile="${j3d.src}/build.xml" target="distclean.j3d" />
+		<ant antfile="${corba.src}/build.xml" target="distclean.corba" />
+	</target>
 
-  <target name="clean_jars" depends="init"
-	  description="Delete only the jar files from the lib directory.">
-    <ant antfile="${openmap.src}/build.xml" target="clean_jars.openmap"/>
-    <ant antfile="${svg.src}/build.xml" target="clean_jars.svg"/>
-    <ant antfile="${j3d.src}/build.xml" target="clean_jars.j3d"/>
-    <ant antfile="${corba.src}/build.xml" target="clean_jars.corba"/>
-  </target>
+	<target name="clean_jars" depends="init" description="Delete only the jar files from the lib directory.">
+		<ant antfile="${openmap.src}/build.xml" target="clean_jars.openmap" />
+		<ant antfile="${svg.src}/build.xml" target="clean_jars.svg" />
+		<ant antfile="${j3d.src}/build.xml" target="clean_jars.j3d" />
+		<ant antfile="${corba.src}/build.xml" target="clean_jars.corba" />
+	</target>
 
-  <target name="clean_docs" depends="init"
-          description="Delete only the generated API documentation.">
-    <ant antfile="${openmap.src}/build.xml" target="clean_docs.openmap"/>
-  </target>
+	<target name="clean_docs" depends="init" description="Delete only the generated API documentation.">
+		<ant antfile="${openmap.src}/build.xml" target="clean_docs.openmap" />
+	</target>
 
-  <!--  ############################
+	<!--  ############################
 	End of cleanup targets.
-	############################ -->  
+	############################ -->
 
-  <!-- depends="jar" -->
-  <target name="run" description="Run the OpenMap application.">
-    <java classname="com.bbn.openmap.app.OpenMap"
-	  classpath="lib/openmap.jar;lib/milStd2525_png.jar;lib/omcorba.jar;lib/omsvg.jar;lib/omj3d;share"
-	  fork="yes"/>
-  </target>
+	<!-- depends="jar" -->
+	<target name="run" description="Run the OpenMap application.">
+		<java classname="com.bbn.openmap.app.OpenMap" classpath="lib/openmap.jar;lib/milStd2525_png.jar;lib/omcorba.jar;lib/omsvg.jar;lib/omj3d;share" fork="yes" />
+	</target>
 
-  <target name="mac" depends="all" description="Create MacOS X application.">
-    <copy todir="${mac.app}"> 
-      <fileset dir="${openmap.home}/src/mac/OpenMap.app"/>
-    </copy>
+	<target name="mac" depends="all" description="Create MacOS X application.">
+		<copy todir="${mac.app}">
+			<fileset dir="${openmap.home}/src/mac/OpenMap.app" />
+		</copy>
 
-    <copy todir="${mac.app}/Contents/Resources">
-      <fileset dir="${openmap.home}/share"
-	       includes="**/data/**"/>
-    </copy>
+		<copy todir="${mac.app}/Contents/Resources">
+			<fileset dir="${openmap.home}/share" includes="**/data/**" />
+		</copy>
 
-    <copy todir="${mac.app}/Contents/Resources"
-	  file="${openmap.home}/openmap.properties"/> 
+		<copy todir="${mac.app}/Contents/Resources" file="${openmap.home}/openmap.properties" />
 
-    <copy todir="${mac.app}/Contents/Resources/Java">
-      <fileset dir="${openmap.home}/lib" 
-	       includes="**/*.jar"/>
-    </copy>
+		<copy todir="${mac.app}/Contents/Resources/Java">
+			<fileset dir="${openmap.home}/lib" includes="**/*.jar" />
+		</copy>
 
-    <chmod file="${mac.app}/Contents/MacOS/JavaApplicationStub"
-	   perm="ugo+rx"/>
-    <chmod dir="${mac.app}" perm="ugo+rx"/>
-    
-  </target>
+		<chmod file="${mac.app}/Contents/MacOS/JavaApplicationStub" perm="ugo+rx" />
+		<chmod dir="${mac.app}" perm="ugo+rx" />
+
+	</target>
 
 </project>
 

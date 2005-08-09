@@ -14,28 +14,31 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/shape/ShapeSpecialist.java,v $
 // $RCSfile: ShapeSpecialist.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:37 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 21:01:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.specialist.shape;
 
-import java.util.*;
-import java.io.*;
 import java.awt.Color;
+import java.io.File;
+import java.util.Properties;
+import java.util.Vector;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.layer.shape.*;
-import com.bbn.openmap.layer.specialist.*;
-import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.CSpecialist.MouseEvent;
+import com.bbn.openmap.CSpecialist.UGraphic;
+import com.bbn.openmap.CSpecialist.WidgetChange;
+import com.bbn.openmap.layer.shape.ESRIRecord;
+import com.bbn.openmap.layer.shape.SpatialIndex;
+import com.bbn.openmap.layer.specialist.SColor;
+import com.bbn.openmap.layer.specialist.SGraphic;
+import com.bbn.openmap.layer.specialist.Specialist;
 import com.bbn.openmap.util.Debug;
-
-// specialist stuff
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.CStipplePackage.*;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * Implements the Specialist interface so that we can serve graphics
@@ -80,12 +83,12 @@ public class ShapeSpecialist extends Specialist {
     /** The color to fill the shapes. */
     protected SColor fillColor = null;
 
-    final private static SColor nullColor = new SColor((short) 0, (short) 0, (short) 0);
-    final private static EStipple nullStipple = new EStipple(null, (short) 0, (short) 0, new byte[0]);
-    final private static EComp nullComp = new EComp(null, "");
-    final private static XYPoint nullP1 = new XYPoint((short) 0, (short) 0);
-    final private static XYPoint[] nullPA = new XYPoint[0];
-    final private static LLPoint nullLL1 = new LLPoint(0.0f, 0.0f);
+//    final private static SColor nullColor = new SColor((short) 0, (short) 0, (short) 0);
+//    final private static EStipple nullStipple = new EStipple(null, (short) 0, (short) 0, new byte[0]);
+//    final private static EComp nullComp = new EComp(null, "");
+//    final private static XYPoint nullP1 = new XYPoint((short) 0, (short) 0);
+//    final private static XYPoint[] nullPA = new XYPoint[0];
+//    final private static LLPoint nullLL1 = new LLPoint(0.0f, 0.0f);
 
     /**
      * default constructor is called when we're loading the class
@@ -222,7 +225,6 @@ public class ShapeSpecialist extends Specialist {
             int len = list.size();
 
             UGraphic[] ugraphics = new UGraphic[len];
-            CTEntry[] ct;
             for (int i = 0; i < len; i++) {
                 SGraphic sg = (SGraphic) list.elementAt(i);
                 ugraphics[i] = sg.ufill();
@@ -325,13 +327,13 @@ public class ShapeSpecialist extends Specialist {
                     && (args.length > (i + 1))) {
                 properties = loadProps(args[i + 1]);
 
-                lcolor = LayerUtils.parseColorFromProperties(properties,
+                lcolor = PropUtils.parseColorFromProperties(properties,
                         lineColorProperty,
                         "FF000000");
                 lineColor = new SColor((short) ((lcolor.getRed()) * 65535 / 255), (short) ((lcolor.getGreen()) * 65535 / 255), (short) ((lcolor.getBlue()) * 65535 / 255));
                 if (properties.getProperty(fillColorProperty) != null) {
 
-                    fcolor = LayerUtils.parseColorFromProperties(properties,
+                    fcolor = PropUtils.parseColorFromProperties(properties,
                             fillColorProperty,
                             "FF000000");
 

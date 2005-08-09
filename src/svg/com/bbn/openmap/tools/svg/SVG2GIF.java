@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/svg/com/bbn/openmap/tools/svg/SVG2GIF.java,v $
 // $RCSfile: SVG2GIF.java,v $
-// $Revision: 1.2 $
-// $Date: 2005/01/13 01:24:12 $
+// $Revision: 1.3 $
+// $Date: 2005/08/09 21:07:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -138,7 +138,6 @@ public class SVG2GIF implements WandererCallback {
         }
         Wanderer wanderer = new Wanderer(svg2gif);
 
-        int runningTotal = 0;
 
         // Assume that the arguments are paths to directories or
         // files.

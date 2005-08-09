@@ -172,6 +172,10 @@ public abstract class ImageEncoder implements ImageConsumer {
         this.props = props;
     }
 
+    public Hashtable getProperties() {
+        return this.props;
+    }
+    
     public void setColorModel(ColorModel model) {
     // Ignore.
     }

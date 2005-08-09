@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/BufferedCSpecLayer.java,v $
 // $RCSfile: BufferedCSpecLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:35 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 20:59:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,7 +40,7 @@ import com.bbn.openmap.proj.Projection;
  */
 public class BufferedCSpecLayer extends CSpecLayer {
 
-    private final static String[] debugTokens = { "debug.cspec" };
+//    private final static String[] debugTokens = { "debug.cspec" };
 
     // Cached graphics
     UGraphic[] graphics = null;

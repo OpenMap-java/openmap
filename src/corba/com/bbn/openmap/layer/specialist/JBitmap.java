@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JBitmap.java,v
 // $
 // $RCSfile: JBitmap.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:36 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 20:59:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,7 +37,7 @@ public class JBitmap extends OMBitmap implements Serializable, JObjectHolder {
     public java.lang.String bmref;
     protected transient com.bbn.openmap.CSpecialist.EComp object = null;
 
-    private int x_hot, y_hot;//UNUSED
+    protected int x_hot, y_hot;//UNUSED
 
     /** Constructor. Creates an OMBitmap out of a EBitmap. */
     public JBitmap(EBitmap ebit) {

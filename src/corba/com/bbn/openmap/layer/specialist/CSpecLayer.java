@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/CSpecLayer.java,v $
 // $RCSfile: CSpecLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:35 $
+// $Revision: 1.8 $
+// $Date: 2005/08/09 20:59:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,31 +24,31 @@ package com.bbn.openmap.layer.specialist;
 
 /*  Java Core  */
 import java.awt.Component;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-/*  CORBA  */
 import org.omg.CORBA.BooleanHolder;
 import org.omg.CORBA.ShortHolder;
 import org.omg.CORBA.StringHolder;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.CSpecialist.CProjection;
 import com.bbn.openmap.CSpecialist.GraphicChange;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
 import com.bbn.openmap.CSpecialist.LLPoint;
 import com.bbn.openmap.CSpecialist.Server;
 import com.bbn.openmap.CSpecialist.ServerHelper;
 import com.bbn.openmap.CSpecialist.UGraphic;
 import com.bbn.openmap.CSpecialist.UWidget;
-
-/*  OpenMap  */
-import com.bbn.openmap.Environment;
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType;
+import com.bbn.openmap.event.InfoDisplayEvent;
+import com.bbn.openmap.event.MapMouseListener;
+import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -75,7 +75,7 @@ import com.bbn.openmap.util.PropUtils;
 public class CSpecLayer extends OMGraphicHandlerLayer implements
         MapMouseListener {
 
-    private final static String[] debugTokens = { "debug.cspec" };
+//    private final static String[] debugTokens = { "debug.cspec" };
 
     /** The property specifying the IOR URL. */
     public static final String iorUrlProperty = "ior";
@@ -198,7 +198,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
         String url = props.getProperty(prefix + iorUrlProperty);
         if (url != null) {
             try {
-                setIorUrl(LayerUtils.getResourceOrFileOrURL(null, url));
+                setIorUrl(PropUtils.getResourceOrFileOrURL(null, url));
             } catch (MalformedURLException e) {
                 throw new IllegalArgumentException("\"" + url
                         + "\" is malformed.");
@@ -211,7 +211,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
         String staticArgValue = props.getProperty(prefix + staticArgsProperty);
         setStaticArgs(staticArgValue);
 
-        handleGraphicChangeRequests(LayerUtils.booleanFromProperties(props,
+        handleGraphicChangeRequests(PropUtils.booleanFromProperties(props,
                 prefix + serverUpdateProperty,
                 notifyOnChange != null));
     }

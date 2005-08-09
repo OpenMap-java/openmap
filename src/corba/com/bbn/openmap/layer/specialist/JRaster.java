@@ -16,27 +16,28 @@
 // /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JRaster.java,v
 // $
 // $RCSfile: JRaster.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:36 $
+// $Revision: 1.4 $
+// $Date: 2005/08/09 20:59:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.LLPoint;
-import com.bbn.openmap.CSpecialist.RasterPackage.*;
-import com.bbn.openmap.CSpecialist.XYPoint;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.util.ColorFactory;
 import java.awt.Color;
 import java.io.Serializable;
+
+import com.bbn.openmap.CSpecialist.LLPoint;
+import com.bbn.openmap.CSpecialist.XYPoint;
+import com.bbn.openmap.CSpecialist.RasterPackage.ERaster;
+import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.util.ColorFactory;
 
 public class JRaster extends OMRaster implements Serializable, JObjectHolder {
 
     protected transient com.bbn.openmap.CSpecialist.EComp object = null;
 
-    private int x_hot, y_hot;//UNUSED
+    protected int x_hot, y_hot;//UNUSED
 
     /** Constructor */
     public JRaster(ERaster eraster) {
@@ -64,7 +65,6 @@ public class JRaster extends OMRaster implements Serializable, JObjectHolder {
 
         // save the tmp colortable
         Color[] tmpColors = new Color[eraster.colorsTotal];
-        int value;
         for (int i = 0; i < eraster.colorsTotal; i++) {
             tmpColors[i] = ColorFactory.createColor(eraster.ct[i].red,
                     eraster.ct[i].green,

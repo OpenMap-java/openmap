@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/plugin/corbaImage/CorbaImagePlugIn.java,v $
 // $RCSfile: CorbaImagePlugIn.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:37 $
+// $Revision: 1.5 $
+// $Date: 2005/08/09 21:03:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,16 +23,19 @@
 
 package com.bbn.openmap.plugin.corbaImage;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
+
 import javax.swing.ImageIcon;
 
 import com.bbn.openmap.image.ImageServerConstants;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.plugin.*;
-import com.bbn.openmap.plugin.corbaImage.corbaImageServer.*;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.plugin.WebImagePlugIn;
+import com.bbn.openmap.plugin.corbaImage.corbaImageServer.Server;
+import com.bbn.openmap.plugin.corbaImage.corbaImageServer.ServerHelper;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -101,10 +104,6 @@ public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConst
         if (queryHeader == null) {
             return null;
         }
-
-        String bbox = "undefined";
-        String height = "undefined";
-        String width = "undefined";
 
         StringBuffer buf = new StringBuffer(queryHeader);
         buf.append(REQUEST + "=" + MAP + "&");
@@ -212,14 +211,14 @@ public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConst
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
         
         imageFormat = setList.getProperty(prefix + ImageFormatProperty);
-        transparent =  LayerUtils.booleanFromProperties(setList, prefix + TransparentProperty, false);
+        transparent =  PropUtils.booleanFromProperties(setList, prefix + TransparentProperty, false);
 
         backgroundColor = setList.getProperty(prefix + BackgroundColorProperty);
 
         String url = setList.getProperty(prefix + iorUrlProperty);
         if (url != null) {
             try {
-                iorURL = LayerUtils.getResourceOrFileOrURL(url);
+                iorURL = PropUtils.getResourceOrFileOrURL(url);
             } catch (MalformedURLException e) {
                 throw new IllegalArgumentException("\"" + url + "\""
                                                    + " is malformed.");

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/dted/DTEDCoverageSpecialist.java,v $
 // $RCSfile: DTEDCoverageSpecialist.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:37 $
+// $Revision: 1.6 $
+// $Date: 2005/08/09 21:00:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -106,9 +106,9 @@ public class DTEDCoverageSpecialist extends Specialist {
     /** The array of coverage for level 2 data. */
     protected boolean[][] level2Frames = new boolean[180][360];
 
-    private final static transient String showLevel0Command = "showLevel0";
-    private final static transient String showLevel1Command = "showLevel1";
-    private final static transient String showLevel2Command = "showLevel2";
+//    private final static transient String showLevel0Command = "showLevel0";
+//    private final static transient String showLevel1Command = "showLevel1";
+//    private final static transient String showLevel2Command = "showLevel2";
     private final static transient XYPoint nullP1 = new XYPoint((short) 0, (short) 0);
 
     /** The property describing the locations of level 0 and 1 data. */
