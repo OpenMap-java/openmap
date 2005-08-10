@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerPane.java,v $
 // $RCSfile: LayerPane.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/02/11 22:30:29 $
+// $Revision: 1.10 $
+// $Date: 2005/08/10 21:30:47 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -121,7 +121,7 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
         layerName.addActionListener(this);
         offColor = layerName.getBackground();
         layerName.setToolTipText(i18n.get(LayerPane.class,
-                "clickToSelectLayer",
+                "layerName.tooltip",
                 "Click to select layer"));
         layerName.setHorizontalAlignment(SwingConstants.LEFT);
         bg.add(layerName);
@@ -170,25 +170,14 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
         onoffButton.addActionListener(this);
 
         String interString = i18n.get(LayerPane.class,
-                "turnLayerOnOFF",
-                ("Turn " + LAYERNAME + " layer on/off"));
-
-        int index = interString.indexOf(LAYERNAME);
-        if (index > 0) {
-            String tooltiptext1 = interString.substring(0, index);
-            String tooltiptext2 = interString.substring(index
-                    + LAYERNAME.length());
-            onoffButton.setToolTipText(tooltiptext1 + layer.getName()
-                    + tooltiptext2);
-        } else {
-            onoffButton.setToolTipText(interString);
-        }
+                "onoffButton.tooltip",
+                "Turn \"{0}\" layer on/off",
+                layer.getName());
+        onoffButton.setToolTipText(interString);
         // Determine if this layer has already been activated
         onoffButton.setSelected(layer.isVisible());
         return onoffButton;
     }
-
-    public final static String LAYERNAME = "%LAYERNAME%";
 
     /**
      * Simply creates the AbstractButton object that turns the layer
@@ -212,29 +201,21 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
         AbstractButton paletteButton = createPaletteButton();
         paletteButton.setSelectedIcon(paletteOnIcon);
         paletteButton.setBorderPainted(false);
-        String interString;
 
+        String interString;
         if (layer.getGUI() == null) {
             interString = i18n.get(LayerPane.class,
-                    "noPaletteAvailable",
-                    "No tools available for " + LAYERNAME + " layer");
+                    "paletteButton.noPaletteAvailable.tooltip",
+                    "No tools available for \"{0}\" layer",
+                    layer.getName());
             paletteButton.setEnabled(false);
         } else {
             interString = i18n.get(LayerPane.class,
-                    "paletteAvailable",
-                    "Display tools for " + LAYERNAME + " layer");
+                    "paletteButton.paletteAvailable.tooltip",
+                    "Display tools for \"{0}\" layer",
+                    layer.getName());
         }
-
-        int index = interString.indexOf(LAYERNAME);
-        if (index > 0) {
-            String tooltiptext1 = interString.substring(0, index);
-            String tooltiptext2 = interString.substring(index
-                    + LAYERNAME.length());
-            paletteButton.setToolTipText(tooltiptext1 + layer.getName()
-                    + tooltiptext2);
-        } else {
-            paletteButton.setToolTipText(interString);
-        }
+        paletteButton.setToolTipText(interString);
 
         paletteButton.setActionCommand(showPaletteCmd);
         paletteButton.addActionListener(this);
@@ -494,4 +475,3 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
         return backgroundLayerSeparator;
     }
 }
-

@@ -1,23 +1,23 @@
 // **********************************************************************
-//
+// 
 // <copyright>
-//
-// BBN Technologies, a Verizon Company
-// 10 Moulton Street
-// Cambridge, MA 02138
-// (617) 873-8000
-//
-// Copyright (C) BBNT Solutions LLC. All rights reserved.
-//
+// 
+//  BBN Technologies, a Verizon Company
+//  10 Moulton Street
+//  Cambridge, MA 02138
+//  (617) 873-8000
+// 
+//  Copyright (C) BBNT Solutions LLC. All rights reserved.
+// 
 // </copyright>
 // **********************************************************************
-//
+// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigatePanel.java,v $
 // $RCSfile: NavigatePanel.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/02/11 22:30:29 $
+// $Revision: 1.11 $
+// $Date: 2005/08/10 21:30:47 $
 // $Author: dietrick $
-//
+// 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
@@ -109,7 +109,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
 
         // begin top row
         String info = i18n.get(NavigatePanel.class,
-                "panel.northwest",
+                "panNW.tooltip",
                 "Pan Northwest");
         nwButton = getButton(nwName, info, panNWCmd);
         c2.gridx = 0;
@@ -117,14 +117,14 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
         internalGridbag.setConstraints(nwButton, c2);
         panel.add(nwButton);
 
-        info = i18n.get(NavigatePanel.class, "panel.north", "Pan North");
+        info = i18n.get(NavigatePanel.class, "panN.tooltip", "Pan North");
         nButton = getButton(nName, info, panNCmd);
         c2.gridx = 1;
         c2.gridy = 0;
         internalGridbag.setConstraints(nButton, c2);
         panel.add(nButton);
 
-        info = i18n.get(NavigatePanel.class, "panel.northeast", "Pan Northeast");
+        info = i18n.get(NavigatePanel.class, "panNE.tooltip", "Pan Northeast");
         neButton = getButton(neName, info, panNECmd);
         c2.gridx = 2;
         c2.gridy = 0;
@@ -132,7 +132,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
         panel.add(neButton);
 
         // begin middle row
-        info = i18n.get(NavigatePanel.class, "panel.west", "Pan West");
+        info = i18n.get(NavigatePanel.class, "panW.tooltip", "Pan West");
         wButton = getButton(wName, info, panWCmd);
         c2.gridx = 0;
         c2.gridy = 1;
@@ -140,7 +140,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
         panel.add(wButton);
 
         info = i18n.get(NavigatePanel.class,
-                "panel.centerAtStart",
+                "center.tooltip",
                 "Center Map at Starting Coords");
         cButton = getButton(cName, info, centerCmd);
         c2.gridx = 1;
@@ -148,7 +148,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
         internalGridbag.setConstraints(cButton, c2);
         panel.add(cButton);
 
-        info = i18n.get(NavigatePanel.class, "panel.east", "Pan East");
+        info = i18n.get(NavigatePanel.class, "panE.tooltip", "Pan East");
         eButton = getButton(eName, info, panECmd);
         c2.gridx = 2;
         c2.gridy = 1;
@@ -156,21 +156,21 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
         panel.add(eButton);
 
         // begin bottom row
-        info = i18n.get(NavigatePanel.class, "panel.southwest", "Pan Southwest");
+        info = i18n.get(NavigatePanel.class, "panSW.tooltip", "Pan Southwest");
         swButton = getButton(swName, info, panSWCmd);
         c2.gridx = 0;
         c2.gridy = 2;
         internalGridbag.setConstraints(swButton, c2);
         panel.add(swButton);
 
-        info = i18n.get(NavigatePanel.class, "panel.south", "Pan South");
+        info = i18n.get(NavigatePanel.class, "panS.tooltip", "Pan South");
         sButton = getButton(sName, info, panSCmd);
         c2.gridx = 1;
         c2.gridy = 2;
         internalGridbag.setConstraints(sButton, c2);
         panel.add(sButton);
 
-        info = i18n.get(NavigatePanel.class, "panel.southeast", "Pan Southeast");
+        info = i18n.get(NavigatePanel.class, "panSE.tooltip", "Pan Southeast");
         seButton = getButton(seName, info, panSECmd);
         c2.gridx = 2;
         c2.gridy = 2;
@@ -186,7 +186,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
      * @param name GIF image name
      * @param info ToolTip text
      * @param command String command name
-     *  
+     * 
      */
     protected JButton getButton(String name, String info, String command) {
         URL url = NavigatePanel.class.getResource(name);
@@ -339,11 +339,11 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
 
-    //// OMComponentPanel methods to make the tool work with
-    //// the MapHandler to find objects it needs.
-    ///////////////////////////////////////////////////////////////////////////
+    // // OMComponentPanel methods to make the tool work with
+    // // the MapHandler to find objects it needs.
+    // /////////////////////////////////////////////////////////////////////////
 
     public void findAndInit(Object obj) {
         if (obj instanceof PanListener) {
@@ -364,4 +364,3 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
     }
 
 }
-
