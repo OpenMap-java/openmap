@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.25 $
-// $Date: 2005/07/29 14:36:23 $
+// $Revision: 1.26 $
+// $Date: 2005/08/10 22:40:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,8 +45,11 @@ import java.io.ObjectInputStream;
 import java.util.Iterator;
 import java.util.Properties;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
 
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.ProjectionPainter;
 import com.bbn.openmap.event.InfoDisplayEvent;
 import com.bbn.openmap.event.InfoDisplayListener;
 import com.bbn.openmap.event.LayerStatusEvent;
@@ -213,7 +216,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     protected boolean addAsBackground = false;
 
     /**
-     * Flag to designate the layer as removeable or not.
+     * Flag to designate the layer as removable or not.
      */
     protected boolean removable = true;
 
@@ -261,6 +264,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * the Environment.
      */
     protected transient I18n i18n = Environment.getI18n();
+
+    /**
+     * Icon associated with layer.
+     */
+    private Icon icon = null;
 
     /**
      * Returns the package of the given class as a string.
@@ -1488,5 +1496,13 @@ public abstract class Layer extends JComponent implements ProjectionListener,
         in.defaultReadObject();
         i18n = Environment.getI18n();
         beanContextChildSupport = new BeanContextChildSupport(this);
+    }
+
+    public Icon getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Icon icon) {
+        this.icon = icon;
     }
 }
