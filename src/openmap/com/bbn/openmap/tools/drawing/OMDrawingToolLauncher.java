@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.18 $
-// $Date: 2005/08/09 20:45:09 $
+// $Revision: 1.19 $
+// $Date: 2005/08/10 22:32:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,10 +51,10 @@ import javax.swing.JToolBar;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.gui.OMToolComponent;
-import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.MapHandler;
+import com.bbn.openmap.gui.OMToolComponent;
+import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.util.Debug;
@@ -72,20 +72,20 @@ import com.bbn.openmap.util.PropUtils;
  * There are two properties that can be set for the launcher:
  * 
  * <pre>
- * 
  *  
  *   
- *   
- *    # Number of launcher buttons to place in a row in that part of the
- *    # GUI. -1 (the default) is to keep them all on one line.
- *    omdtl.horizNumLoaderButtons=-1
- *   
- *    # If set to true, a text popup will be used for the OMGraphic
- *    # loaders instead of buttons (false is default).
- *    omdtl.useTextLabels=false
+ *    
+ *    
+ *     # Number of launcher buttons to place in a row in that part of the
+ *     # GUI. -1 (the default) is to keep them all on one line.
+ *     omdtl.horizNumLoaderButtons=-1
+ *    
+ *     # If set to true, a text popup will be used for the OMGraphic
+ *     # loaders instead of buttons (false is default).
+ *     omdtl.useTextLabels=false
+ *     
  *    
  *   
- *  
  * </pre>
  */
 public class OMDrawingToolLauncher extends OMToolComponent implements
@@ -98,7 +98,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     public int maxHorNumLoaderButtons = -1;
 
     // Places buttons in alphabetical order
-    //     protected TreeMap loaders = new TreeMap();
+    // protected TreeMap loaders = new TreeMap();
     protected Vector loaders = new Vector();
 
     protected Vector drawingToolRequestors = new Vector();
@@ -167,9 +167,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
         Debug.message("drawingtool", "DrawingToolLauncher.actionPerformed(): "
                 + command);
 
-        //  This is important. We need to set the current projection
-        //  before setting the projection in the MapBean. That way,
-        //  the projectionChanged method actions won't get fired
+        // This is important. We need to set the current projection
+        // before setting the projection in the MapBean. That way,
+        // the projectionChanged method actions won't get fired
         if (command == CreateCmd) {
             // Get the active EditToolLoader
             DrawingTool dt = getDrawingTool();
@@ -251,8 +251,39 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
      */
     public void setRequestor(String aName) {
         if (requestors != null) {
-            requestors.setSelectedItem(aName);
+            if (aName != null) {
+                requestors.setSelectedItem(aName);
+            } else {
+                if (drawingToolRequestors.size() > 0) {
+                    setRequestor(((DrawingToolRequestor) drawingToolRequestors.elementAt(0)).getName());
+                }
+            }
         }
+    }
+
+    /**
+     * Fillse combobox with recent values.
+     */
+    private void resetCombo() {
+        Object oldChoice = null;
+        if (requestors != null) {
+            oldChoice = requestors.getSelectedItem();
+        }
+        ActionListener[] actions = requestors.getActionListeners();
+        for (int loop = 0; loop < actions.length; loop++) {
+            requestors.removeActionListener(actions[loop]);
+        }
+        requestors.removeAllItems();
+        for (Iterator it = drawingToolRequestors.iterator(); it.hasNext();) {
+            requestors.addItem(((DrawingToolRequestor) it.next()).getName());
+        }
+        if (oldChoice != null) {
+            requestors.setSelectedItem(oldChoice);
+        }
+        for (int loop = 0; loop < actions.length; loop++) {
+            requestors.addActionListener(actions[loop]);
+        }
+
     }
 
     /**
@@ -604,7 +635,8 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
                         + ((DrawingToolRequestor) someObj).getName());
             }
             drawingToolRequestors.add(someObj);
-            resetGUI();
+            // resetGUI();
+            resetCombo();
         }
     }
 
@@ -625,13 +657,23 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
                 dt.removePropertyChangeListener(this);
             }
         }
+
         if (someObj instanceof DrawingToolRequestor) {
             if (Debug.debugging("omdtl")) {
                 Debug.output("OMDrawingToolLauncher removing a DrawingToolRequestor - "
                         + ((DrawingToolRequestor) someObj).getName());
             }
             drawingToolRequestors.remove(someObj);
-            resetGUI();
+            if (drawingToolRequestors.size() == 0) {// there is no
+                                                    // Requestor, so
+                                                    // lets remove the
+                                                    // window.
+                getWindowSupport().killWindow();
+                return;
+            }
+            // resetGUI();
+            resetCombo();
+            setRequestor(null);
         }
     }
 
@@ -645,7 +687,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
         JToolBar jtb = null;
         if (getUseAsTool()) {
             jtb = new com.bbn.openmap.gui.GridBagToolBar();
-            //"Drawing Tool Launcher";
+            // "Drawing Tool Launcher";
             JButton drawingToolButton = new JButton(new ImageIcon(OMDrawingToolLauncher.class.getResource("Drawing.gif"), i18n.get(OMDrawingToolLauncher.class,
                     "drawingToolButton",
                     I18n.TOOLTIP,

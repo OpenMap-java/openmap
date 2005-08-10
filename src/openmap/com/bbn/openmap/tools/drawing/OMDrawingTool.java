@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.30 $
-// $Date: 2005/08/09 20:45:09 $
+// $Revision: 1.31 $
+// $Date: 2005/08/10 22:32:45 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -64,6 +64,7 @@ import com.bbn.openmap.omGraphics.EditableOMGraphicList;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMAction;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.omGraphics.event.EOMGListener;
@@ -1841,40 +1842,64 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
 
     public JPopupMenu createPopupMenu() {
 
+        OMGraphic g = getCurrentEditable().getGraphic();
         JPopupMenu pum = new JPopupMenu();
-        JMenuItem delete = new JMenuItem("Delete");
-        delete.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                OMAction action = new OMAction();
-                action.setMask(OMGraphic.DELETE_GRAPHIC_MASK);
-                EditableOMGraphic eomg = getCurrentEditable();
-                if (eomg != null) {
-                    OMGraphic g = eomg.getGraphic();
-                    if (g != null) {
-                        notifyListener(g, action);
-                    }
-                }
-                setCurrentEditable(null);
-                deactivate();
-            }
-        });
 
-        JMenuItem gui = new JMenuItem("Change Appearance");
-        gui.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                EditableOMGraphic eomg = getCurrentEditable();
-                if (eomg != null) {
-                    boolean previous = eomg.getShowGUI();
-                    eomg.setShowGUI(true);
-                    setVisible(true);
-                    if (!getUseAsTool()) {
-                        showInWindow();
+        if ((g.getAttribute(OMGraphicConstants.CHANGE_APPEARANCE)) == null
+                || ((Boolean) g.getAttribute(OMGraphicConstants.CHANGE_APPEARANCE)).booleanValue()) {
+
+            JMenuItem gui = new JMenuItem(i18n.get(OMDrawingTool.class,
+                    "popupMenuChangeAppearance",
+                    "Change Appearance"));
+            gui.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    EditableOMGraphic eomg = getCurrentEditable();
+                    if (eomg != null) {
+                        boolean previous = eomg.getShowGUI();
+                        eomg.setShowGUI(true);
+                        setVisible(true);
+                        if (!getUseAsTool()) {
+                            showInWindow();
+                        }
+                        eomg.setShowGUI(previous);
+                        eomg.getStateMachine().setSelected();
                     }
-                    eomg.setShowGUI(previous);
-                    eomg.getStateMachine().setSelected();
                 }
+            });
+            if (isMask(SHOW_GUI_BEHAVIOR_MASK | GUI_VIA_POPUP_BEHAVIOR_MASK)
+                    && !getUseAsTool()) {
+                pum.add(gui);
+            } else {
+                Debug.output("Not adding Change Appearance to popup: guiViaPopup("
+                        + isMask(SHOW_GUI_BEHAVIOR_MASK)
+                        + ") isTool("
+                        + getUseAsTool() + ")");
             }
-        });
+        }
+
+        if ((g.getAttribute(OMGraphicConstants.REMOVABLE)) == null
+                || ((Boolean) g.getAttribute(OMGraphicConstants.REMOVABLE)).booleanValue()) {
+
+            JMenuItem delete = new JMenuItem(i18n.get(OMDrawingTool.class,
+                    "popupMenuDelete",
+                    "Delete"));
+            delete.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    OMAction action = new OMAction();
+                    action.setMask(OMGraphic.DELETE_GRAPHIC_MASK);
+                    EditableOMGraphic eomg = getCurrentEditable();
+                    if (eomg != null) {
+                        OMGraphic g = eomg.getGraphic();
+                        if (g != null) {
+                            notifyListener(g, action);
+                        }
+                    }
+                    setCurrentEditable(null);
+                    deactivate();
+                }
+            });
+            pum.add(delete);
+        }
 
         // JMenuItem reset = new JMenuItem("Undo Changes");
         // reset.setEnabled(false);
@@ -1886,19 +1911,9 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
         // }
         // });
 
-        if (isMask(SHOW_GUI_BEHAVIOR_MASK | GUI_VIA_POPUP_BEHAVIOR_MASK)
-                && !getUseAsTool()) {
-            pum.add(gui);
-        } else {
-            Debug.output("Not adding Change Appearance to popup: guiViaPopup("
-                    + isMask(SHOW_GUI_BEHAVIOR_MASK) + ") isTool("
-                    + getUseAsTool() + ")");
-        }
-
         // pum.add(reset);
-        pum.add(delete);
 
-        return pum;
+        return pum.getComponentCount() > 0 ? pum : null;
     }
 
     // ////////// SelectionListener support
