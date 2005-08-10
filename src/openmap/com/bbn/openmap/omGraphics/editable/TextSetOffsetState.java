@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/TextSetOffsetState.java,v
 // $
 // $RCSfile: TextSetOffsetState.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:16 $
+// $Revision: 1.4 $
+// $Date: 2005/08/10 22:27:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,7 +42,9 @@ public class TextSetOffsetState extends GraphicSetOffsetState {
 
         graphic.setMovingPoint(graphic.getGrabPoint(EditableOMText.OFFSET_POINT_INDEX));
         graphic.redraw(e);
-        graphic.fireEvent(EOMGCursors.PUTNODE, "Click to place offset point.");
+        graphic.fireEvent(EOMGCursors.PUTNODE,
+                i18n.get(TextSetOffsetState.class,
+                        "Click_to_place_offset_point.",
+                        "Click to place offset point."));
     }
 }
-

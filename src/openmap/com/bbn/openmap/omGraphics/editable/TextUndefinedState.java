@@ -1,25 +1,25 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
-//  BBN Technologies
-//  10 Moulton Street
-//  Cambridge, MA 02138
-//  (617) 873-8000
-// 
-//  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
+// BBN Technologies
+// 10 Moulton Street
+// Cambridge, MA 02138
+// (617) 873-8000
+//
+// Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source:
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/TextUndefinedState.java,v
 // $
 // $RCSfile: TextUndefinedState.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:17 $
+// $Revision: 1.5 $
+// $Date: 2005/08/10 22:27:17 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.editable;
@@ -32,29 +32,54 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 
 public class TextUndefinedState extends GraphicUndefinedState {
 
+    // ~ Constructors
+    // ---------------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a new TextUndefinedState object.
+     * 
+     * @param eomc
+     */
     public TextUndefinedState(EditableOMText eomc) {
         super(eomc);
     }
 
-    public boolean mousePressed(MouseEvent e) {
+    // ~ Methods
+    // --------------------------------------------------------------------------------------------------------
 
+    /**
+     * 
+     * @param e
+     * @return
+     */
+    public boolean mousePressed(MouseEvent e) {
         GrabPoint gb = graphic.getGrabPoint(EditableOMText.CENTER_POINT_INDEX);
+
         gb.set(e.getX(), e.getY());
+
         graphic.setMovingPoint(gb);
 
         if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
             graphic.getGrabPoint(EditableOMText.OFFSET_POINT_INDEX)
                     .set(e.getX(), e.getY());
+
             graphic.getStateMachine().setOffsetNeeded(true);
         }
 
         graphic.getStateMachine().setEdit();
+
         return getMapMouseListenerResponse();
     }
 
+    /**
+     * 
+     * @param e
+     * @return
+     */
     public boolean mouseMoved(MouseEvent e) {
-        graphic.fireEvent(EOMGCursors.EDIT,
-                "Click to define the text location.");
+        graphic.fireEvent(EOMGCursors.EDIT, i18n.get(TextUndefinedState.class,
+                "Click_to_define_the_text_location.",
+                "Click to define the text location."));
         return false;
     }
-}
+} // end class TextUndefinedState

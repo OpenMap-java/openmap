@@ -16,18 +16,19 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicUndefinedState.java,v
 // $
 // $RCSfile: GraphicUndefinedState.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:16 $
+// $Revision: 1.4 $
+// $Date: 2005/08/10 22:27:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
+import com.bbn.openmap.layer.util.stateMachine.State;
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.util.Debug;
 
 public class GraphicUndefinedState extends State implements EOMGUndefinedState {
@@ -49,11 +50,11 @@ public class GraphicUndefinedState extends State implements EOMGUndefinedState {
                     + graphic.getGraphic().getRenderType());
         }
 
-        //      graphic.getGrabPoint(EditableOMGraphic.STARTING_POINT_INDEX).set(e.getX(),
+        // graphic.getGrabPoint(EditableOMGraphic.STARTING_POINT_INDEX).set(e.getX(),
         // e.getY());
-        //      graphic.getGrabPoint(EditableOMGraphic.ENDING_POINT_INDEX).set(e.getX(),
+        // graphic.getGrabPoint(EditableOMGraphic.ENDING_POINT_INDEX).set(e.getX(),
         // e.getY());
-        //      graphic.setMovingPoint(graphic.getGrabPoint(EditableOMGraphic.ENDING_POINT_INDEX));
+        // graphic.setMovingPoint(graphic.getGrabPoint(EditableOMGraphic.ENDING_POINT_INDEX));
 
         if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
             graphic.getStateMachine().setOffsetNeeded(true);
@@ -67,7 +68,10 @@ public class GraphicUndefinedState extends State implements EOMGUndefinedState {
     public boolean mouseMoved(MouseEvent e) {
         Debug.message("eomgdetail",
                 "GraphicStateMachine|undefined state|mouseMoved");
-        graphic.fireEvent(EOMGCursors.EDIT, "Click and Drag to define graphic.");
+        graphic.fireEvent(EOMGCursors.EDIT,
+                i18n.get(GraphicUndefinedState.class,
+                        "Click_and_Drag_to_define_graphic.",
+                        "Click and Drag to define graphic."));
         return false;
     }
 

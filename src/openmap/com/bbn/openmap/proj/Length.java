@@ -14,14 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Length.java,v $
 // $RCSfile: Length.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:22 $
+// $Revision: 1.7 $
+// $Date: 2005/08/10 22:31:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.proj;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -53,6 +55,8 @@ public class Length {
     protected final double constant;
     protected final String name;
     protected final String abbr;
+    protected double unitEquatorCircumference;
+    protected I18n i18n = Environment.getI18n();
 
     /**
      * Create a Length, with a name an the number of it's units that
@@ -60,8 +64,9 @@ public class Length {
      * are converted to lower case for consistency.
      */
     public Length(String name, String abbr, double unitEquatorCircumference) {
-        this.name = name.toLowerCase().intern();
-        constant = unitEquatorCircumference / com.bbn.openmap.MoreMath.TWO_PI_D;
+        this.name = i18n.get(this, abbr + ".name", name).toLowerCase().intern();
+        this.unitEquatorCircumference = unitEquatorCircumference;
+        this.constant = unitEquatorCircumference / com.bbn.openmap.MoreMath.TWO_PI_D;
         this.abbr = abbr.toLowerCase().intern();
     }
 

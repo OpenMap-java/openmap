@@ -16,17 +16,18 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/ListSelectedState.java,v
 // $
 // $RCSfile: ListSelectedState.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:16 $
+// $Revision: 1.4 $
+// $Date: 2005/08/10 22:27:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
+import com.bbn.openmap.omGraphics.GrabPoint;
 import com.bbn.openmap.util.Debug;
 
 public class ListSelectedState extends GraphicSelectedState {
@@ -102,9 +103,10 @@ public class ListSelectedState extends GraphicSelectedState {
             graphic.fireEvent(EOMGCursors.DEFAULT, "");
         } else {
             graphic.fireEvent(EOMGCursors.EDIT,
-                    "Click and Drag to change the graphic.");
+                    i18n.get(ListSelectedState.class,
+                            "Click_and_Drag_to_change_the_graphic.",
+                            "Click and Drag to change the graphic."));
         }
         return false;
     }
 }
-

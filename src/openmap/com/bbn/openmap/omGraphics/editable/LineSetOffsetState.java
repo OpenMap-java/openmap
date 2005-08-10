@@ -16,17 +16,18 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/LineSetOffsetState.java,v
 // $
 // $RCSfile: LineSetOffsetState.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:16 $
+// $Revision: 1.4 $
+// $Date: 2005/08/10 22:27:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.EditableOMLine;
+import com.bbn.openmap.omGraphics.OffsetGrabPoint;
 
 public class LineSetOffsetState extends GraphicSetOffsetState {
 
@@ -42,7 +43,8 @@ public class LineSetOffsetState extends GraphicSetOffsetState {
         graphic.setMovingPoint(graphic.getGrabPoint(EditableOMLine.OFFSET_POINT_INDEX));
         graphic.redraw(e);
         graphic.fireEvent(EOMGCursors.PUTNODE,
-                "Click to place offset point for line.");
+                i18n.get(LineSetOffsetState.class,
+                        "Click_to_place_offset_point_for_line.",
+                        "Click to place offset point for line."));
     }
 }
-

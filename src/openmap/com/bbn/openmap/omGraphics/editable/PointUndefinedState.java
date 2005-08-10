@@ -16,17 +16,19 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PointUndefinedState.java,v
 // $
 // $RCSfile: PointUndefinedState.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:16 $
+// $Revision: 1.5 $
+// $Date: 2005/08/10 22:27:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.EditableOMPoint;
+import com.bbn.openmap.omGraphics.GrabPoint;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.util.Debug;
 
 public class PointUndefinedState extends GraphicUndefinedState {
@@ -62,8 +64,9 @@ public class PointUndefinedState extends GraphicUndefinedState {
     }
 
     public boolean mouseMoved(MouseEvent e) {
-        graphic.fireEvent(EOMGCursors.EDIT,
-                "Click to define the point location.");
+        graphic.fireEvent(EOMGCursors.EDIT, i18n.get(PointUndefinedState.class,
+                "Click_to_define_the_point_location.",
+                "Click to define the point location."));
         return false;
     }
 }

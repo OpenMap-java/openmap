@@ -16,17 +16,19 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/CircleSelectedState.java,v
 // $
 // $RCSfile: CircleSelectedState.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:15 $
+// $Revision: 1.6 $
+// $Date: 2005/08/10 22:27:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.EditableOMCircle;
+import com.bbn.openmap.omGraphics.GrabPoint;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.util.Debug;
 
 public class CircleSelectedState extends GraphicSelectedState {
@@ -65,7 +67,7 @@ public class CircleSelectedState extends GraphicSelectedState {
                     // the
                     // GraphicSelectedState.mousePressed method.
                     graphic.fireEvent(EOMGCursors.EDIT, "");
-                    ////////
+                    // //////
 
                     graphic.move(e);
                 }
@@ -94,16 +96,19 @@ public class CircleSelectedState extends GraphicSelectedState {
                     && graphic.getGraphic().distanceToEdge(e.getX(), e.getY()) < 2) {
 
                 graphic.fireEvent(EOMGCursors.EDIT,
-                        "Click and Drag edge to resize.");
+                        i18n.get(CircleSelectedState.class,
+                                "Click_and_Drag_edge_to_resize.",
+                                "Click and Drag edge to resize."));
             } else {
                 graphic.fireEvent(EOMGCursors.DEFAULT, "");
             }
 
         } else {
             graphic.fireEvent(EOMGCursors.EDIT,
-                    "Click and Drag to change the graphic.");
+                    i18n.get(CircleSelectedState.class,
+                            "Click_and_Drag_to_change_the_graphic.",
+                            "Click and Drag to change the graphic."));
         }
         return false;
     }
 }
-

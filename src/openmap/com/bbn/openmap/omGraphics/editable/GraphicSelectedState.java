@@ -16,18 +16,19 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicSelectedState.java,v
 // $
 // $RCSfile: GraphicSelectedState.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:15 $
+// $Revision: 1.7 $
+// $Date: 2005/08/10 22:27:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
+import com.bbn.openmap.layer.util.stateMachine.State;
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
+import com.bbn.openmap.omGraphics.GrabPoint;
 import com.bbn.openmap.util.Debug;
 
 public class GraphicSelectedState extends State implements EOMGSelectedState {
@@ -77,7 +78,7 @@ public class GraphicSelectedState extends State implements EOMGSelectedState {
                 graphic.fireEvent(EOMGCursors.DEFAULT, "");
                 // Preparing for deactivation, why bother
                 // repainting...
-                //              graphic.redraw(e, true);
+                // graphic.redraw(e, true);
             }
         } else {
             // else, if the moving point is set, go to edit mode. If
@@ -138,15 +139,18 @@ public class GraphicSelectedState extends State implements EOMGSelectedState {
         if (mp == null) {
             if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
                 graphic.fireEvent(EOMGCursors.EDIT,
-                        "Click and Drag to move the graphic.");
+                        i18n.get(GraphicSelectedState.class,
+                                "Click_and_Drag_to_move_the_graphic.",
+                                "Click and Drag to move the graphic."));
             } else {
                 graphic.fireEvent(EOMGCursors.DEFAULT, "");
             }
         } else {
             graphic.fireEvent(EOMGCursors.EDIT,
-                    "Click and Drag to change the graphic.");
+                    i18n.get(GraphicSelectedState.class,
+                            "Click_and_Drag_to_change_the_graphic.",
+                            "Click and Drag to change the graphic."));
         }
         return false;
     }
 }
-

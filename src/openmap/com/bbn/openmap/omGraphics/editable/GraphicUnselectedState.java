@@ -16,18 +16,19 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicUnselectedState.java,v
 // $
 // $RCSfile: GraphicUnselectedState.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:16 $
+// $Revision: 1.4 $
+// $Date: 2005/08/10 22:27:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
+import com.bbn.openmap.layer.util.stateMachine.State;
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
+import com.bbn.openmap.omGraphics.GrabPoint;
 import com.bbn.openmap.util.Debug;
 
 public class GraphicUnselectedState extends State implements EOMGDefinedState {
@@ -55,15 +56,15 @@ public class GraphicUnselectedState extends State implements EOMGDefinedState {
         if (mp == null) {
             if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
                 if (graphic.getCanGrabGraphic()) {
-                    //  OK, so a grab point has not been selected, but
-                    //  the graphic has been, and the button is down.
-                    //  We should be moving the end grab points of the
-                    //  graphic. If the graphic is not a
-                    //  RENDERTYPE_OFFSET graphic, then the
-                    //  OffsetGrabPoint is available to use for this.
-                    //  If the graphic is RENDERTYPE_OFFSET, then we
-                    //  need to create a OffsetGrabPoint to use
-                    //  temporarily to move just the end points.
+                    // OK, so a grab point has not been selected, but
+                    // the graphic has been, and the button is down.
+                    // We should be moving the end grab points of the
+                    // graphic. If the graphic is not a
+                    // RENDERTYPE_OFFSET graphic, then the
+                    // OffsetGrabPoint is available to use for this.
+                    // If the graphic is RENDERTYPE_OFFSET, then we
+                    // need to create a OffsetGrabPoint to use
+                    // temporarily to move just the end points.
                     Debug.message("eomg",
                             "GraphicStateMachine|unselected state|mousePressed - graphic held");
                     graphic.getStateMachine().setEdit();
@@ -121,11 +122,13 @@ public class GraphicUnselectedState extends State implements EOMGDefinedState {
                 "GraphicStateMachine|unselected state|mouseMoved");
 
         if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
-            graphic.fireEvent(EOMGCursors.EDIT, "Click to select the graphic.");
+            graphic.fireEvent(EOMGCursors.EDIT,
+                    i18n.get(GraphicUnselectedState.class,
+                            "Click_to_select_the_graphic.",
+                            "Click to select the graphic."));
         } else {
             graphic.fireEvent(EOMGCursors.DEFAULT, "");
         }
         return false;
     }
 }
-
