@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/08/09 20:23:37 $
+// $Revision: 1.13 $
+// $Date: 2005/08/10 22:29:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -714,6 +714,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                 doPrepare();
             }
         });
+        resList.setSelectedIndex(getDistanceGridResolution());
 
         resPanel.add(resList);
 
