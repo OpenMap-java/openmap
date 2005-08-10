@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.29 $
-// $Date: 2005/08/09 18:05:09 $
+// $Revision: 1.30 $
+// $Date: 2005/08/10 21:41:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -369,7 +369,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             
             interString = i18n.get(DrawingToolLayer.class, "OK", "OK");
             JButton button = new JButton(interString);
-            interString = i18n.get(DrawingToolLayer.class, "OK.TOOLTIP", I18n.TOOLTIP, "Do action and dismiss window.");
+            interString = i18n.get(DrawingToolLayer.class, "OK", I18n.TOOLTIP, "Do action and dismiss window.");
             button.setToolTipText(interString);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
@@ -381,7 +381,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             
             interString = i18n.get(DrawingToolLayer.class, "Apply", "Apply");
             button = new JButton(interString);
-            interString = i18n.get(DrawingToolLayer.class, "Apply.TOOLTIP", I18n.TOOLTIP, "Do action and leave window up.");
+            interString = i18n.get(DrawingToolLayer.class, "Apply", I18n.TOOLTIP, "Do action and leave window up.");
             button.setToolTipText(interString);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
@@ -392,7 +392,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             
             interString = i18n.get(DrawingToolLayer.class, "Cancel", "Cancel");
             button = new JButton(interString);
-            interString = i18n.get(DrawingToolLayer.class, "Cancel.TOOLTIP", I18n.TOOLTIP, "Do nothing and dismiss window.");
+            interString = i18n.get(DrawingToolLayer.class, "Cancel", I18n.TOOLTIP, "Do nothing and dismiss window.");
             button.setToolTipText(interString);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
