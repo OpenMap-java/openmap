@@ -14,15 +14,36 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/stateMachine/State.java,v $
 // $RCSfile: State.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:07 $
+// $Revision: 1.4 $
+// $Date: 2005/08/10 22:19:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.util.stateMachine;
 
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.TextEvent;
+import java.awt.event.TextListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.MapMouseListener;
 
 /**
@@ -51,6 +72,9 @@ public abstract class State implements ActionListener, AdjustmentListener,
     /** The default response for the MapMouseListener methods. */
     boolean mapMouseListenerResponse = false;
 
+    /** To read local settings */
+    protected I18n i18n = Environment.getI18n();
+
     /**
      * Set the MapMouseListener method default response value. If
      * value is true, other layers on the map will not receive mouse
@@ -68,13 +92,13 @@ public abstract class State implements ActionListener, AdjustmentListener,
         return mapMouseListenerResponse;
     }
 
-    /// ActionListener interface
+    // / ActionListener interface
     public void actionPerformed(ActionEvent e) {}
 
-    /// AdjustmentListener interface
+    // / AdjustmentListener interface
     public void adjustmentValueChanged(AdjustmentEvent e) {}
 
-    /// ComponentListener interface
+    // / ComponentListener interface
     public void componentResized(ComponentEvent e) {}
 
     public void componentMoved(ComponentEvent e) {}
@@ -83,27 +107,27 @@ public abstract class State implements ActionListener, AdjustmentListener,
 
     public void componentHidden(ComponentEvent e) {}
 
-    /// ContainerListener interface
+    // / ContainerListener interface
     public void componentAdded(ContainerEvent e) {}
 
     public void componentRemoved(ContainerEvent e) {}
 
-    /// FocusListener interface
+    // / FocusListener interface
     public void focusGained(FocusEvent e) {}
 
     public void focusLost(FocusEvent e) {}
 
-    /// ItemListener interface
+    // / ItemListener interface
     public void itemStateChanged(ItemEvent e) {}
 
-    /// KeyListener interface
+    // / KeyListener interface
     public void keyTyped(KeyEvent e) {}
 
     public void keyPressed(KeyEvent e) {}
 
     public void keyReleased(KeyEvent e) {}
 
-    /// MapMouseListener
+    // / MapMouseListener
     public String[] getMouseModeServiceList() {
         return null;
     }
@@ -134,10 +158,10 @@ public abstract class State implements ActionListener, AdjustmentListener,
 
     public void mouseMoved() {}
 
-    /// TextListener interface
+    // / TextListener interface
     public void textValueChanged(TextEvent e) {}
 
-    /// WindowListener interface
+    // / WindowListener interface
     public void windowOpened(WindowEvent e) {}
 
     public void windowClosing(WindowEvent e) {}
@@ -153,4 +177,3 @@ public abstract class State implements ActionListener, AdjustmentListener,
     public void windowDeactivated(WindowEvent e) {}
 
 }
-

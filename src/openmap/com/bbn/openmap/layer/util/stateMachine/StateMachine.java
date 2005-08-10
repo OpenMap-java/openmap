@@ -14,15 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/stateMachine/StateMachine.java,v $
 // $RCSfile: StateMachine.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 18:58:59 $
+// $Revision: 1.5 $
+// $Date: 2005/08/10 22:19:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.util.stateMachine;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * The StateMachine lets you organize event handling, if the order of
