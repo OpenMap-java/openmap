@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMLine.java,v $
 // $RCSfile: EditableOMLine.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 20:01:46 $
+// $Revision: 1.8 $
+// $Date: 2005/08/10 22:25:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************

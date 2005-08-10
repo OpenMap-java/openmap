@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMAbstractLine.java,v $
 // $RCSfile: EditableOMAbstractLine.java,v $
-// $Revision: 1.1 $
-// $Date: 2005/08/09 20:01:47 $
+// $Revision: 1.2 $
+// $Date: 2005/08/10 22:25:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,6 +36,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+
 /**
  * The EditableOMAbstractLine encompasses an OMAbstractLine, providing
  * a mechanism for adding an arrowhead menu in the line editor menu.
@@ -43,6 +46,8 @@ import javax.swing.JRadioButtonMenuItem;
 public abstract class EditableOMAbstractLine extends EditableOMGraphic {
 
     protected JMenu arrowheadMenu = null;
+    
+    protected I18n i18n = Environment.getI18n();
 
     public Component getGUI(GraphicAttributes graphicAttributes) {
         if (graphicAttributes != null) {
@@ -56,7 +61,7 @@ public abstract class EditableOMAbstractLine extends EditableOMGraphic {
     public JMenu getArrowHeadMenu() {
 
         if (arrowheadMenu == null) {
-            arrowheadMenu = new JMenu("Arrows");
+            arrowheadMenu = new JMenu(i18n.get(EditableOMAbstractLine.class, "Arrows", "Arrows"));
 
             ActionListener listener = new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {

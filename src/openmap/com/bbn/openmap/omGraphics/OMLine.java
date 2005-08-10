@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMLine.java,v $
 // $RCSfile: OMLine.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/08/09 20:01:46 $
+// $Revision: 1.11 $
+// $Date: 2005/08/10 22:25:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -395,10 +395,9 @@ public class OMLine extends OMAbstractLine implements Serializable {
             arrowhead.generate(this);
         }
 
-        if (Debug.debugging("arc") && arc != null) {
-            OMGraphicList arcGraphics = arc.getArcGraphics();
-            Debug.output("OMLine generating arcGraphics. " + arcGraphics);
-            arcGraphics.generate(proj);
+        if (arc != null) {
+            // This will only do something if debugging is on.
+            arc.generate(proj);
         }
 
         setNeedToRegenerate(false);
@@ -433,11 +432,9 @@ public class OMLine extends OMAbstractLine implements Serializable {
             arrowhead.render(g);
         }
 
-        if (Debug.debugging("arc") && arc != null) {
-            OMGraphicList arcGraphics = arc.getArcGraphics();
-            Debug.output("OMLine rendering " + arcGraphics.size()
-                    + " arcGraphics.");
-            arcGraphics.render(g);
+        if (arc != null) {
+            // This is a debugging thing, most times does nothing.
+            arc.render(g);
         }
 
     }

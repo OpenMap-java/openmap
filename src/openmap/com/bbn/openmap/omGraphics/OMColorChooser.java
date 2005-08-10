@@ -13,20 +13,36 @@
 // **********************************************************************
 // 
 // $RCSfile: OMColorChooser.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:12 $
+// $Revision: 1.7 $
+// $Date: 2005/08/10 22:25:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
-import javax.swing.*;
-import javax.swing.colorchooser.*;
-import javax.swing.event.*;
+
+import javax.swing.Box;
+import javax.swing.JColorChooser;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.colorchooser.ColorSelectionModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 
 /**
  * A wrapper class that pops up a modified JColorChooser class. The
@@ -38,7 +54,6 @@ import javax.swing.event.*;
  *         transparency.
  */
 public class OMColorChooser {
-
     /**
      * Displays a dialog that lets you change a color. Locks up the
      * application until a choice is made, returning the chosen color,
@@ -87,6 +102,8 @@ class ColorTracker implements ActionListener, ChangeListener, Serializable {
     JColorChooser chooser;
     Color color;
     int transparency;
+    private I18n i18n = Environment.getI18n();
+    boolean isOK = false;//added because method <code>getColor</code> does not return null if action was not performed
 
     public ColorTracker(JColorChooser c) {
         chooser = c;
@@ -100,6 +117,7 @@ class ColorTracker implements ActionListener, ChangeListener, Serializable {
     public void actionPerformed(ActionEvent e) {
         color = chooser.getColor();
         setPreviewColor(color);
+        isOK = true;
     }
 
     /**
@@ -127,6 +145,9 @@ class ColorTracker implements ActionListener, ChangeListener, Serializable {
      * based on the transparency slider.
      */
     public Color getColor() {
+        if (!isOK) {
+            return null;
+        }
         if (color != null) {
             color = new Color(color.getRed(), color.getGreen(), color.getBlue(), transparency);
         }
@@ -149,8 +170,16 @@ class ColorTracker implements ActionListener, ChangeListener, Serializable {
 
         JSlider opaqueSlide = new JSlider(JSlider.HORIZONTAL, 0/* min */, 255/* max */, initialValue/* inital */);
         java.util.Hashtable dict = new java.util.Hashtable();
-        dict.put(new Integer(50), new JLabel("clear"));
-        dict.put(new Integer(200), new JLabel("opaque"));
+        String opaqueLabel = i18n.get(ColorTracker.class, "opaque", "opaque");
+        String clearLabel = i18n.get(ColorTracker.class, "clear", "clear");
+        if (opaqueLabel == null || opaqueLabel.length() == 0) {
+            // translations are too long :(
+            dict.put(new Integer(126), new JLabel(clearLabel));            
+        } else {        
+            dict.put(new Integer(50), new JLabel(clearLabel));
+            dict.put(new Integer(200), new JLabel(opaqueLabel));
+        }
+        //commented because polish translations are too long
         opaqueSlide.setLabelTable(dict);
         opaqueSlide.setPaintLabels(true);
         opaqueSlide.setMajorTickSpacing(50);
@@ -178,6 +207,7 @@ class ColorTracker implements ActionListener, ChangeListener, Serializable {
         slidePanel.setSize(new Dimension(50, 50));
         return slidePanel;
     }
+       
 }
 
 // class to display the currently selected color

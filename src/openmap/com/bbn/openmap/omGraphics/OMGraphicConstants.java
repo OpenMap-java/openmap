@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicConstants.java,v $
 // $RCSfile: OMGraphicConstants.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/01/10 16:58:33 $
+// $Revision: 1.6 $
+// $Date: 2005/08/10 22:25:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -194,4 +194,20 @@ public interface OMGraphicConstants {
      */
     public static final String LABEL = "Label";
 
+    /**
+     * A string that can be used for a keyword into the OMGraphic
+     * attribute hashtable. If the value exists and is false
+     * it means graphic can't be removed (there won't be menu item "delete")
+     */
+    public static final String REMOVABLE = "Removable";
+    
+
+    /**
+     * A string that can be used for a keyword into the OMGraphic
+     * attribute hashtable. If the value exists and is false
+     * it means graphic change appereance can't be changed 
+     * (there won't be menu item "Change appereance")
+     */
+    public static final String CHANGE_APPEARANCE = "ChangeAppearance";    
 }
+

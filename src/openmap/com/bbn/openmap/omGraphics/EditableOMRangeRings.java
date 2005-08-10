@@ -14,22 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRangeRings.java,v $
 // $RCSfile: EditableOMRangeRings.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:11 $
+// $Revision: 1.8 $
+// $Date: 2005/08/10 22:25:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import com.bbn.openmap.gui.GridBagToolBar;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.Debug;
-
 import java.awt.Component;
 import java.awt.Insets;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.gui.GridBagToolBar;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.util.Debug;
 
 /**
  */
@@ -148,6 +155,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
     protected JTextField intervalField = null;
     protected JToolBar rrToolBar = null;
     protected transient java.text.DecimalFormat df = new java.text.DecimalFormat();
+    protected I18n i18n = Environment.getI18n();
 
     protected JToolBar getRangeRingGUI() {
         if (rrToolBar == null) {
@@ -160,7 +168,8 @@ public class EditableOMRangeRings extends EditableOMCircle {
             intervalField = new JTextField(Integer.toString(((OMRangeRings) circle).getInterval()), 5);
             intervalField.setMargin(new Insets(0, 1, 0, 1));
             intervalField.setHorizontalAlignment(JTextField.RIGHT);
-            intervalField.setToolTipText("Value for interval between rings.");
+            intervalField.setToolTipText(i18n.get(this, "intervalField.tooltip"
+              , "Value for interval between rings."));
             intervalField.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     updateInterval(((JTextField) (ae.getSource())).getText());
@@ -209,7 +218,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
                     currentIndex = i;
                 }
             }
-            unitStrings[unitStrings.length - 1] = "concentric";
+            unitStrings[unitStrings.length - 1] = i18n.get(this, "unitStrings.concentric", "concentric");
 
             JComboBox unitList = new JComboBox(unitStrings);
             unitList.setBorder(new javax.swing.border.EmptyBorder(0, 1, 0, 1));

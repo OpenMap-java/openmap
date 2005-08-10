@@ -14,19 +14,25 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/util/ArcCalc.java,v $
 // $RCSfile: ArcCalc.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:19 $
+// $Revision: 1.5 $
+// $Date: 2005/08/10 22:28:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.util;
 
+import java.awt.Graphics;
 import java.awt.Point;
+import java.io.Serializable;
 
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * A class that calculates an arc between two points, given the point
@@ -34,23 +40,13 @@ import com.bbn.openmap.omGraphics.*;
  * the length of the part of the circle that should be represented by
  * the arc.
  */
-public class ArcCalc {
+public class ArcCalc implements Serializable {
 
-    protected OMGraphicList arcGraphics = null;
-    protected boolean generated = false;
+    /** Debugging list showing algorithm points. */
+    protected transient OMGraphicList arcGraphics = null;
 
-    public double distance;
-    public double straightLineSlope;
-    public double inverseSlope;
-    public Point midPoint = new Point();
-    public Point arcCenter = new Point();
-    public Point peakPoint = new Point();
-    public double startSlope;
-    public double endSlope;
-    public double arcRadius;
-
-    protected int[] xpoints;
-    protected int[] ypoints;
+    protected transient int[] xpoints;
+    protected transient int[] ypoints;
 
     /**
      * This setting is the amount of an angle, limited to a
@@ -97,7 +93,6 @@ public class ArcCalc {
         if (arcAngle > Math.PI) {
             arcAngle = Math.PI;
         }
-        generated = false;
     }
 
     /**
@@ -147,19 +142,19 @@ public class ArcCalc {
         // the coordinates for the arced line, a given radius away
         // from the circle center, between the arc angle extents.
 
-        if (Debug.debugging("arc")) {
-            Debug.output("ArcCalc.generateArc: creating supplimental graphics list");
-            arcGraphics = new OMGraphicList();
-        }
+        Point midPoint = new Point();
+        Point arcCenter = new Point();
+        Point peakPoint = new Point();
 
         // pixel distance between points.
-        distance = Math.sqrt(Math.pow(Math.abs(y2 - y1), 2.0)
+        double distance = Math.sqrt(Math.pow(Math.abs(y2 - y1), 2.0)
                 + Math.pow(Math.abs(x2 - x1), 2.0));
         // slope of straight line between points.
-        straightLineSlope = Math.atan((double) (y2 - y1) / (double) (x2 - x1));
+        double straightLineSlope = Math.atan((double) (y2 - y1)
+                / (double) (x2 - x1));
 
         // slope of line that the arc focus will reside on.
-        inverseSlope = straightLineSlope - (Math.PI / 2.0);
+        double inverseSlope = straightLineSlope - (Math.PI / 2.0);
 
         if (Debug.debugging("arc")) {
             Debug.output("ArcCalc.generate: Slope is "
@@ -178,6 +173,8 @@ public class ArcCalc {
         }
 
         double arccos = Math.cos(arcAngle);
+        double arcRadius;
+
         if (arccos != 1.0) {
             arcRadius = distance / Math.sqrt(2.0 * (1.0 - Math.cos(arcAngle)));
         } else {
@@ -219,6 +216,9 @@ public class ArcCalc {
 
         if (Debug.debugging("arc")) {
 
+            Debug.output("ArcCalc.generateArc: creating supplimental graphics list");
+            arcGraphics = new OMGraphicList();
+
             double dist1 = Math.sqrt(Math.pow((double) (arcCenter.x - x1), 2.0)
                     + Math.pow((double) (arcCenter.y - y1), 2.0));
             double dist2 = Math.sqrt(Math.pow((double) (arcCenter.x - x2), 2.0)
@@ -233,7 +233,7 @@ public class ArcCalc {
                     + "\n                    Distance to point 2 from arc focus = "
                     + dist2);
 
-            //  Let's hightlight the end points.
+            // Let's hightlight the end points.
             OMRect point1 = new OMRect(x1 - 1, y1 - 1, x1 + 1, y1 + 1);
             OMRect point2 = new OMRect(x2 - 1, y2 - 1, x2 + 1, y2 + 1);
             OMRect arcPoint = new OMRect(arcCenter.x - 1, arcCenter.y - 1, arcCenter.x + 1, arcCenter.y + 1);
@@ -253,11 +253,11 @@ public class ArcCalc {
 
         int realCount = 0;
 
-        //  Figure out the arc extents for each endpoint. I think
-        //  it's easier to keep track of the angles if they are always
-        //  positive, and we always go from smaller to larger.
-        startSlope = getRealAngle(arcCenter.x, arcCenter.y, x1, y1);
-        endSlope = getRealAngle(arcCenter.x, arcCenter.y, x2, y2);
+        // Figure out the arc extents for each endpoint. I think
+        // it's easier to keep track of the angles if they are always
+        // positive, and we always go from smaller to larger.
+        double startSlope = getRealAngle(arcCenter.x, arcCenter.y, x1, y1);
+        double endSlope = getRealAngle(arcCenter.x, arcCenter.y, x2, y2);
 
         double smallSlope, largeSlope;
         double angleIncrement;
@@ -280,8 +280,8 @@ public class ArcCalc {
             largeSlope = tmpSlope;
         }
 
-        //  Experienced some trouble with vertical and horizonal half
-        //  circles. This took care of that.
+        // Experienced some trouble with vertical and horizonal half
+        // circles. This took care of that.
         if (arcAngle == Math.PI && arcUp) {
             Debug.message("arc",
                     "ArcCalc.generate: Modifying 180 angle points.");
@@ -352,7 +352,7 @@ public class ArcCalc {
             realCount++;
         }
 
-        //  Give the coordinates to the OMLine.
+        // Give the coordinates to the OMLine.
         xpoints = new int[realCount];
         ypoints = new int[realCount];
 
@@ -372,8 +372,8 @@ public class ArcCalc {
         double horDiff = (double) (x2 - x1);
         double vertDiff = (double) (y2 - y1);
 
-        //  If there is no horizontal difference, then it's pointing
-        //  up or down.
+        // If there is no horizontal difference, then it's pointing
+        // up or down.
         if (horDiff == 0) {
             if (vertDiff > 0) {
                 angle = MoreMath.HALF_PI;
@@ -402,6 +402,20 @@ public class ArcCalc {
 
     public int[] getYPoints() {
         return ypoints;
+    }
+
+    public void generate(Projection proj) {
+        if (proj != null && arcGraphics != null) {
+            arcGraphics.generate(proj);
+        }
+    }
+
+    public void render(Graphics g) {
+        if (arcGraphics != null) {
+            Debug.output("OMLine rendering " + arcGraphics.size()
+                    + " arcGraphics.");
+            arcGraphics.render(g);
+        }
     }
 
     public OMGraphicList getArcGraphics() {

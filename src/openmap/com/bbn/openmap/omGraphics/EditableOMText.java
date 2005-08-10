@@ -14,27 +14,47 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMText.java,v $
 // $RCSfile: EditableOMText.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 20:01:45 $
+// $Revision: 1.8 $
+// $Date: 2005/08/10 22:25:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+
+import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.layer.util.stateMachine.State;
-import com.bbn.openmap.omGraphics.editable.*;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.omGraphics.editable.GraphicEditState;
+import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
+import com.bbn.openmap.omGraphics.editable.GraphicSetOffsetState;
+import com.bbn.openmap.omGraphics.editable.GraphicUndefinedState;
+import com.bbn.openmap.omGraphics.editable.TextStateMachine;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
-import java.awt.Insets;
-import java.awt.Component;
-import java.awt.event.*;
-import javax.swing.*;
-
 /**
- * Wrapper class to edit OMText objects.  This component is used by the OMDrawingTool.
+ * Wrapper class to edit OMText objects. This component is used by the
+ * OMDrawingTool.
  */
 public class EditableOMText extends EditableOMGraphic implements ActionListener {
 
@@ -45,6 +65,11 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
 
     public final static int CENTER_POINT_INDEX = 0;
     public final static int OFFSET_POINT_INDEX = 1;
+
+    /**
+     * For internationalization.
+     */
+    protected I18n i18n = Environment.getI18n();
 
     /**
      * Create the EditableOMText, setting the state machine to create
@@ -301,7 +326,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         if (renderType == OMGraphic.RENDERTYPE_LATLON) {
 
             if (projection != null) {
-                //movingPoint == gpc
+                // movingPoint == gpc
                 llp1 = projection.inverse(gpc.getX(), gpc.getY());
                 text.setLat(llp1.getLatitude());
                 text.setLon(llp1.getLongitude());
@@ -482,7 +507,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     }
 
     JComboBox sizesFont;
-    JComboBox styleFont;
+    JToggleButton boldFont;
+    JToggleButton italicFont;
 
     /** Command for text string adjustments. */
     public final static String TextFieldCommand = "TextField";
@@ -508,12 +534,15 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         textField.setPreferredSize(new java.awt.Dimension(100, 20));
         attributeBox.add(textField);
 
-        //         JPanel palette =
+        // JPanel palette =
         // PaletteHelper.createHorizontalPanel("Rotation");
         javax.swing.Box palette = javax.swing.Box.createHorizontalBox();
         textField = new JTextField(Integer.toString((int) (text.getRotationAngle() * 180 / Math.PI)), 5);
         textField.setActionCommand(TextRotationCommand);
-        textField.setToolTipText("Text rotation in degrees");
+        textField.setToolTipText(i18n.get(EditableOMText.class,
+                "textField",
+                I18n.TOOLTIP,
+                "Text rotation in degrees"));
         textField.setMargin(new Insets(0, 1, 0, 1));
         textField.addActionListener(this);
         textField.setMinimumSize(new java.awt.Dimension(30, 20));
@@ -525,29 +554,71 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         String[] sizesStrings = { "3", "5", "8", "10", "12", "14", "18", "20",
                 "24", "36", "48" };
         sizesFont = new JComboBox(sizesStrings);
-        sizesFont.setToolTipText("Font Size");
+        sizesFont.setToolTipText(i18n.get(EditableOMText.class,
+                "sizesFont",
+                I18n.TOOLTIP,
+                "Font Size"));
         sizesFont.setSelectedItem("" + (text.getFont()).getSize());
         sizesFont.setActionCommand(TextFontCommand);
         sizesFont.addActionListener(this);
 
-        String[] styleStrings = { "Plain", "Bold", "Italic", "Bold Italic" };
-        styleFont = new JComboBox(styleStrings);
-        styleFont.setToolTipText("Font Style");
-        if ((text.getFont().isBold()) && (text.getFont().isItalic()))
-            styleFont.setSelectedIndex(3);
-        else if (text.getFont().isBold())
-            styleFont.setSelectedIndex(1);
-        else if (text.getFont().isItalic())
-            styleFont.setSelectedIndex(2);
-        else
-            styleFont.setSelectedIndex(0);
-        styleFont.setActionCommand(TextFontCommand);
-        styleFont.addActionListener(this);
+        int textButtonWidth = 10;
+        int textButtonHeight = 15;
+
+        boldFont = new JToggleButton();
+        boldFont.setIcon(getTextAccentToggleButtonImage(textButtonWidth,
+                textButtonHeight,
+                new Font(boldFont.getFont().getName(), Font.BOLD, boldFont.getFont()
+                        .getSize()),
+                "B"));
+
+        // Too wide margins for 1 letter look unnatural
+        Insets insets = boldFont.getInsets();
+        insets.left = insets.left / 2;
+        insets.right = insets.right / 2;
+        boldFont.setMargin(insets);
+        boldFont.setSelected(text.getFont().isBold());
+        boldFont.setToolTipText(i18n.get(EditableOMText.class,
+                "boldFont",
+                I18n.TOOLTIP,
+                "Bold Font"));
+        boldFont.setActionCommand(TextFontCommand);
+        boldFont.addActionListener(this);
+
+        italicFont = new JToggleButton();
+        italicFont.setIcon(getTextAccentToggleButtonImage(textButtonWidth,
+                textButtonHeight,
+                new Font(italicFont.getFont().getName(), Font.ITALIC, italicFont.getFont()
+                        .getSize()),
+                "I"));
+        italicFont.setMargin(insets);
+        italicFont.setSelected(text.getFont().isItalic());
+        italicFont.setToolTipText(i18n.get(EditableOMText.class,
+                "italicFont",
+                I18n.TOOLTIP,
+                "Italic Font"));
+        italicFont.setActionCommand(TextFontCommand);
+        italicFont.addActionListener(this);
 
         attributeBox.add(sizesFont);
-        attributeBox.add(styleFont);
+        attributeBox.add(boldFont);
+        attributeBox.add(italicFont);
 
         return attributeBox;
+    }
+
+    private ImageIcon getTextAccentToggleButtonImage(int width, int height,
+                                                     Font f, String s) {
+        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = bi.getGraphics();
+        g.setFont(f);
+        g.setColor(Color.black);
+        FontMetrics fm = g.getFontMetrics();
+
+        int stringWidth = fm.stringWidth(s);
+        int stringHeight = f.getSize() - 2;
+        g.drawString(s, (width - stringWidth) / 2, height - (height - stringHeight) / 2);
+        return new ImageIcon(bi);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -558,12 +629,11 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
             String FontString = OMText.fontToXFont(text.getFont());
             FontString = FontString.substring(0, FontString.indexOf("-", 3));
             StringBuffer ret = new StringBuffer(FontString);
-            if ((styleFont.getSelectedIndex() == 1)
-                    || (styleFont.getSelectedIndex() == 3))
+            if (boldFont.isSelected())
                 ret.append("-bold");
             else
                 ret.append("-normal");
-            if (styleFont.getSelectedIndex() > 1)
+            if (italicFont.isSelected())
                 ret.append("-i");
             else
                 ret.append("-o");

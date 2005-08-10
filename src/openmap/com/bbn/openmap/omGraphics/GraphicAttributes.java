@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/GraphicAttributes.java,v $
 // $RCSfile: GraphicAttributes.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/08/09 20:01:45 $
+// $Revision: 1.11 $
+// $Date: 2005/08/10 22:25:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,6 +32,8 @@ import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.proj.LineType;
 import com.bbn.openmap.util.PropUtils;
 
@@ -67,6 +69,8 @@ public class GraphicAttributes extends DrawingAttributes implements
     protected boolean enableLineTypeChoice = true;
 
     public final static GraphicAttributes DEFAULT = new GraphicAttributes();
+    
+    private I18n i18n = Environment.getI18n();
 
     /**
      * Create a GraphicAttributes with the default settings - clear
@@ -247,7 +251,7 @@ public class GraphicAttributes extends DrawingAttributes implements
         JMenu lineTypeMenu = null;
 
         if (renderType == RENDERTYPE_LATLON && enableLineTypeChoice) {
-            lineTypeMenu = new JMenu("Line Type");
+            lineTypeMenu = new JMenu(i18n.get(GraphicAttributes.class, "Line_Type", "Line Type"));
 
             ActionListener listener = new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
@@ -260,19 +264,19 @@ public class GraphicAttributes extends DrawingAttributes implements
             };
 
             ButtonGroup group = new ButtonGroup();
-            JRadioButtonMenuItem button = new JRadioButtonMenuItem("Great Circle", lineType == LineType.GreatCircle);
+            JRadioButtonMenuItem button = new JRadioButtonMenuItem(i18n.get(GraphicAttributes.class, "Great_Circle", "Great Circle"), lineType == LineType.GreatCircle);
             button.setActionCommand(String.valueOf(LineType.GreatCircle));
             group.add(button);
             button.addActionListener(listener);
             lineTypeMenu.add(button);
 
-            button = new JRadioButtonMenuItem("Rhumb", lineType == LineType.Rhumb);
+            button = new JRadioButtonMenuItem(i18n.get(GraphicAttributes.class, "Rhumb", "Rhumb"), lineType == LineType.Rhumb);
             button.setActionCommand(String.valueOf(LineType.Rhumb));
             group.add(button);
             button.addActionListener(listener);
             lineTypeMenu.add(button);
 
-            button = new JRadioButtonMenuItem("Straight", lineType == LineType.Straight);
+            button = new JRadioButtonMenuItem(i18n.get(GraphicAttributes.class, "Straight", "Straight"), lineType == LineType.Straight);
             button.setActionCommand(String.valueOf(LineType.Straight));
             group.add(button);
             button.addActionListener(listener);

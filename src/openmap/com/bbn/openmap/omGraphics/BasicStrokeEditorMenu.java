@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/BasicStrokeEditorMenu.java,v $
 // $RCSfile: BasicStrokeEditorMenu.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 20:01:47 $
+// $Revision: 1.6 $
+// $Date: 2005/08/10 22:25:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,6 +40,8 @@ import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /** 
@@ -56,6 +58,8 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
     protected float[] dash;
     protected float dashPhase;
 
+    private I18n i18n = Environment.getI18n();
+    
     protected JButton launchButton;
 
     public BasicStrokeEditorMenu() {
@@ -84,7 +88,7 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
                     (int) buttonHeight,
                     true);
             launchButton = new JButton(icon);
-            launchButton.setToolTipText("Modify Line Parameters");
+            launchButton.setToolTipText(i18n.get(BasicStrokeEditorMenu.class, "Modify_Line_Parameters", "Modify Line Parameters"));
             launchButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     JButton button = getLaunchButton();
@@ -116,7 +120,7 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
     public JPopupMenu setGUI(JPopupMenu popup) {
 
         //////// Line Cap
-        JMenu capMenu = new JMenu("Cap Decoration");
+        JMenu capMenu = new JMenu(i18n.get(BasicStrokeEditorMenu.class, "Cap_Decoration", "Cap Decoration"));
 
         ActionListener listener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -130,19 +134,19 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
         };
 
         ButtonGroup group = new ButtonGroup();
-        JRadioButtonMenuItem button = new JRadioButtonMenuItem("Butt", endCaps == BasicStroke.CAP_BUTT);
+        JRadioButtonMenuItem button = new JRadioButtonMenuItem(i18n.get(BasicStrokeEditorMenu.class, "Butt", "Butt"), endCaps == BasicStroke.CAP_BUTT);
         button.setActionCommand(String.valueOf(BasicStroke.CAP_BUTT));
         group.add(button);
         button.addActionListener(listener);
         capMenu.add(button);
 
-        button = new JRadioButtonMenuItem("Round", endCaps == BasicStroke.CAP_ROUND);
+        button = new JRadioButtonMenuItem(i18n.get(BasicStrokeEditorMenu.class, "Round", "Round"), endCaps == BasicStroke.CAP_ROUND);
         button.setActionCommand(String.valueOf(BasicStroke.CAP_ROUND));
         group.add(button);
         button.addActionListener(listener);
         capMenu.add(button);
 
-        button = new JRadioButtonMenuItem("Square", endCaps == BasicStroke.CAP_SQUARE);
+        button = new JRadioButtonMenuItem(i18n.get(BasicStrokeEditorMenu.class, "Square", "Square"), endCaps == BasicStroke.CAP_SQUARE);
         button.setActionCommand(String.valueOf(BasicStroke.CAP_SQUARE));
         group.add(button);
         button.addActionListener(listener);
@@ -150,7 +154,7 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
 
         //////// Line Joins
 
-        JMenu joinMenu = new JMenu("Joint Decoration");
+        JMenu joinMenu = new JMenu(i18n.get(BasicStrokeEditorMenu.class, "Joint_Decoration", "Joint Decoration"));
 
         listener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -164,19 +168,19 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
         };
 
         group = new ButtonGroup();
-        button = new JRadioButtonMenuItem("Miter", lineJoins == BasicStroke.JOIN_MITER);
+        button = new JRadioButtonMenuItem(i18n.get(BasicStrokeEditorMenu.class, "Miter", "Miter"), lineJoins == BasicStroke.JOIN_MITER);
         button.setActionCommand(String.valueOf(BasicStroke.JOIN_MITER));
         group.add(button);
         button.addActionListener(listener);
         joinMenu.add(button);
 
-        button = new JRadioButtonMenuItem("Round", lineJoins == BasicStroke.JOIN_ROUND);
+        button = new JRadioButtonMenuItem(i18n.get(BasicStrokeEditorMenu.class, "Round", "Round"), lineJoins == BasicStroke.JOIN_ROUND);
         button.setActionCommand(String.valueOf(BasicStroke.JOIN_ROUND));
         group.add(button);
         button.addActionListener(listener);
         joinMenu.add(button);
 
-        button = new JRadioButtonMenuItem("Bevel", lineJoins == BasicStroke.JOIN_BEVEL);
+        button = new JRadioButtonMenuItem(i18n.get(BasicStrokeEditorMenu.class, "Bevel", "Bevel"), lineJoins == BasicStroke.JOIN_BEVEL);
         button.setActionCommand(String.valueOf(BasicStroke.JOIN_BEVEL));
         group.add(button);
         button.addActionListener(listener);
@@ -184,7 +188,7 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
 
         //////// Line Width
 
-        JMenu widthMenu = new JMenu("Line Width");
+        JMenu widthMenu = new JMenu(i18n.get(BasicStrokeEditorMenu.class, "Line_Width", "Line_Width"));
 
         listener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -202,16 +206,18 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
         int i;
         for (i = 1; i < 13; i++) {
             ii = createIcon(new BasicStroke(i), 50, 20, true);
-            button = new JRadioButtonMenuItem(ii, (int) width == i);
+            button = new JRadioButtonMenuItem(" ", ii, (int) width == i);//without the space as a parameter these instances look strange with some Look&Feel
             button.setActionCommand(String.valueOf(i));
             group.add(button);
             button.addActionListener(listener);
+            button.setMargin( new java.awt.Insets(0,10,0,10));
+            button.setPreferredSize(new java.awt.Dimension(70,20));
             widthMenu.add(button);
         }
 
         //////// Dash Pattern
 
-        JMenu dashMenu = new JMenu("Dash Pattern");
+        JMenu dashMenu = new JMenu(i18n.get(BasicStrokeEditorMenu.class, "Dash_Pattern", "Dash Pattern"));
 
         listener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -234,10 +240,12 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
             BasicStroke dashStroke = new BasicStroke(1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, stringToDashArray(patterns[i]), 0.0f);
             ii = createIcon(dashStroke, 90, 10, true);
 
-            button = new JRadioButtonMenuItem(ii, currentDash.equals(patterns[i]));
+            button = new JRadioButtonMenuItem(" ", ii, currentDash.equals(patterns[i]));
             button.setActionCommand(patterns[i]);
             group.add(button);
             button.addActionListener(listener);
+            button.setMargin( new java.awt.Insets(0,10,0,10));
+            button.setPreferredSize(new java.awt.Dimension(110,20));
             dashMenu.add(button);
         }
 

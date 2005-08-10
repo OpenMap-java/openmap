@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.15 $
-// $Date: 2005/08/09 20:01:46 $
+// $Revision: 1.16 $
+// $Date: 2005/08/10 22:25:08 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
@@ -994,4 +994,15 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
         return geometryClosed;
     }
+
+    /** For XMLEncoder */
+    public float[] getRawllpts() {
+        return this.rawllpts;
+    }
+
+    /** For XMLEncoder */
+    public int getUnits() {
+        return this.units;
+    }
+
 }
