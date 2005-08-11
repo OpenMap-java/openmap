@@ -1,5 +1,5 @@
 /*
- * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/RhumbCalculator.java,v 1.3 2005/08/09 20:38:12 dietrick Exp $
+ * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/RhumbCalculator.java,v 1.4 2005/08/11 20:39:16 dietrick Exp $
  *
  * Copyright 2004 OBR Centrum Techniki Morskiej, All rights reserved.
  *
@@ -22,8 +22,6 @@ import com.bbn.openmap.LatLonPoint;
  * OpenMap¹ nie jest z niczym zwi¹zana. Mo¿na j¹ wrzuciæ do OpenMapy i
  * u¿yæ zawartych w niej wzorów tam gdzie to bêdzie potrzebne (a jest
  * takich miejsc kilka).
- * @todo T¹ klasê nale¿y potraktowaæ jako narzêdzie i wrzuciæ do
- *       OpenMapy.
  */
 public class RhumbCalculator {
 

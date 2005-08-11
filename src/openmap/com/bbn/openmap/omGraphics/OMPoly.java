@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.16 $
-// $Date: 2005/08/10 22:25:08 $
+// $Revision: 1.17 $
+// $Date: 2005/08/11 20:39:14 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -708,7 +708,6 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * 
      * @param xpoints2
      * @param ypoints2
-     * @return
      */
     protected boolean checkPoints(int[][] xpoints2, int[][] ypoints2) {
         if (xpoints == null || ypoints == null || xpoints.length == 0

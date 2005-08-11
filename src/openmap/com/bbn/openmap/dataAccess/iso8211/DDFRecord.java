@@ -92,8 +92,6 @@ public class DDFRecord implements DDFConstants {
      * and subfields is written to the given debugging file handle.
      * Note that field definition information (ala DDFFieldDefn) isn't
      * written.
-     * 
-     * @param fp The standard io file handle to write to. ie. stderr
      */
     public String toString() {
         StringBuffer buf = new StringBuffer("DDFRecord:\n");
@@ -428,9 +426,6 @@ public class DDFRecord implements DDFConstants {
      *        field.
      * @param iSubfieldIndex The instance of this subfield within the
      *        record. Use zero for the first instance.
-     * @param pnSuccess Pointer to an int which will be set to true if
-     *        the fetch succeeds, or false if it fails. Use null if
-     *        you don't want to check success.
      * @return The value of the subfield, or zero if it failed for
      *         some reason.
      */
@@ -485,9 +480,6 @@ public class DDFRecord implements DDFConstants {
      *        field.
      * @param iSubfieldIndex The instance of this subfield within the
      *        record. Use zero for the first instance.
-     * @param pnSuccess Pointer to an int which will be set to true if
-     *        the fetch succeeds, or false if it fails. Use null if
-     *        you don't want to check success.
      * @return The value of the subfield, or zero if it failed for
      *         some reason.
      */
@@ -539,9 +531,6 @@ public class DDFRecord implements DDFConstants {
      *        field.
      * @param iSubfieldIndex The instance of this subfield within the
      *        record. Use zero for the first instance.
-     * @param pnSuccess Pointer to an int which will be set to true if
-     *        the fetch succeeds, or false if it fails. Use null if
-     *        you don't want to check success.
      * @return The value of the subfield, or null if it failed for
      *         some reason. The returned pointer is to internal data
      *         and should not be modified or freed by the application.

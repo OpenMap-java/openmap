@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/FeatureClassInfo.java,v $
 // $RCSfile: FeatureClassInfo.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 19:29:39 $
+// $Revision: 1.7 $
+// $Date: 2005/08/11 20:39:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -341,7 +341,7 @@ public class FeatureClassInfo extends DcwRecordFile implements
      * Given a row from the primitive table, this function returns a
      * full string description of the row
      * 
-     * @param l the record list from the primitive table
+     * @param ftid the record list from the primitive table
      * @param colIndex column index for attribute to return
      * @param type the first integral type
      * @return the description string for the list

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolPart.java,v $
 // $RCSfile: SymbolPart.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/08/09 20:45:09 $
+// $Revision: 1.12 $
+// $Date: 2005/08/11 20:39:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -387,7 +387,7 @@ public class SymbolPart {
      * to this symbol part.
      * 
      * @param queryCode
-     * @return
+     * @return true if the code applies to this position.
      */
     public boolean codeMatches(String queryCode) {
         if (codePosition != null && code != null) {

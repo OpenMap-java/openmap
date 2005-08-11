@@ -364,8 +364,6 @@ public class DDFSubfieldDefinition implements DDFConstants {
      *         which is invalidated on the next ExtractStringData()
      *         call on this DDFSubfieldDefn(). It should not be freed
      *         by the application.
-     * 
-     * @see ExtractIntData(), ExtractFloatData()
      */
     String extractStringData(byte[] pachSourceData, int nMaxBytes,
                              MutableInt pnConsumedBytes) {
@@ -409,8 +407,6 @@ public class DDFSubfieldDefinition implements DDFConstants {
      * 
      * @return The subfield's numeric value (or zero if it isn't
      *         numeric).
-     * 
-     * @see ExtractIntData(), ExtractStringData()
      */
     public double extractFloatData(byte[] pachSourceData, int nMaxBytes,
                                    MutableInt pnConsumedBytes) {
@@ -542,8 +538,6 @@ public class DDFSubfieldDefinition implements DDFConstants {
      * 
      * @return The subfield's numeric value (or zero if it isn't
      *         numeric).
-     * 
-     * @see ExtractFloatData(), ExtractStringData()
      */
     public int extractIntData(byte[] pachSourceData, int nMaxBytes,
                               MutableInt pnConsumedBytes) {

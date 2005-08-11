@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/ASRPDirectory.java,v $
 // $RCSfile: ASRPDirectory.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/07/29 19:19:32 $
+// $Revision: 1.7 $
+// $Date: 2005/08/11 20:39:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -555,7 +555,7 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
      * Load a block image into the cache, based on the relative
      * coordintes of the block as a key.
      * 
-     * @param string of form 'x,y' identifying the relative location
+     * @param xAndY String of form 'x,y' identifying the relative location
      *        of the subframe image.
      * @return Block image, hidden as a CacheObject.
      */

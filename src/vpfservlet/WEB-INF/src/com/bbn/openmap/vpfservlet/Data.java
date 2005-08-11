@@ -9,18 +9,31 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/Data.java,v $
-// $Revision: 1.5 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
+// $Revision: 1.6 $ $Date: 2005/08/11 20:39:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 
-import com.bbn.openmap.layer.util.html.*;
-import com.bbn.openmap.layer.vpf.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.layer.util.html.ListElement;
+import com.bbn.openmap.layer.util.html.StringElement;
+import com.bbn.openmap.layer.util.html.TableHeaderElement;
+import com.bbn.openmap.layer.util.html.TableRowElement;
+import com.bbn.openmap.layer.util.html.WrapElement;
+import com.bbn.openmap.layer.vpf.Constants;
+import com.bbn.openmap.layer.vpf.DcwColumnInfo;
+import com.bbn.openmap.layer.vpf.DcwRecordFile;
 
 /**
  * A servlet class that will output table data.
@@ -33,7 +46,7 @@ public class Data extends VPFHttpServlet {
     public static final String RowSelectAll = "all";
     public static final String RowSelectNone = "none";
     public static final String RowSelectTest = "test";
-    /**  other parameters that the servlet takes */
+    /** other parameters that the servlet takes */
     public static final String JoinColumnParam = "colname";
     public static final String JoinOtherTableParam = "othertable";
     public static final String JoinOtherTableKeyParam = "othertablekey";
@@ -46,11 +59,10 @@ public class Data extends VPFHttpServlet {
         super();
     }
 
-    public void doGet(HttpServletRequest request,
-                      HttpServletResponse response) 
-        throws ServletException, IOException {
-        
-        DcwRecordFile foo = (DcwRecordFile)request.getAttribute(DispatchServlet.RECORD_FILE_OBJ);
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        DcwRecordFile foo = (DcwRecordFile) request.getAttribute(DispatchServlet.RECORD_FILE_OBJ);
         if (foo == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
@@ -58,9 +70,10 @@ public class Data extends VPFHttpServlet {
         try {
             doWork(request, response, foo);
         } catch (FormatException fe) {
-            response.getWriter().println("FormatException dealing with table: " + fe);
+            response.getWriter().println("FormatException dealing with table: "
+                    + fe);
         }
-    }   
+    }
 
     /**
      * Generates the heading used for each HTML table
@@ -88,7 +101,7 @@ public class Data extends VPFHttpServlet {
                 baseurl.append(VDTParam).append("=");
                 if (vdtl == null) {
                     vdtl = "";
-                } 
+                }
                 boolean appendCol = true;
                 boolean needSep = false;
                 StringTokenizer st = new StringTokenizer(vdtl, ",");
@@ -115,19 +128,19 @@ public class Data extends VPFHttpServlet {
         return (needSep ? base.append(",") : base).append(app);
     }
 
-    public static final String ROWLIST_OBJECT = Data.class.getPackage().getName()+".rowlist";
+    public static final String ROWLIST_OBJECT = Data.class.getPackage()
+            .getName()
+            + ".rowlist";
 
     protected void doWork(HttpServletRequest request,
-                          HttpServletResponse response,
-                          DcwRecordFile drf) 
-        throws FormatException, IOException {
+                          HttpServletResponse response, DcwRecordFile drf)
+            throws FormatException, IOException {
         DcwColumnInfo dci[] = drf.getColumnInfo();
 
-        int rowlist[] = (int[])request.getAttribute(ROWLIST_OBJECT);
-                
+        int rowlist[] = (int[]) request.getAttribute(ROWLIST_OBJECT);
+
         ListElement rows = new ListElement();
-        WrapElement table = new WrapElement("table", "BORDER=1 ALIGN=CENTER",
-                                            rows);
+        WrapElement table = new WrapElement("table", "BORDER=1 ALIGN=CENTER", rows);
         TableRowElement thr = generateHeader(request, response, dci);
         rows.addElement(thr);
 
@@ -136,7 +149,8 @@ public class Data extends VPFHttpServlet {
         boolean parseall = RowSelectTest.equals(row_show);
         boolean schemaonly = RowSelectNone.equals(row_show);
 
-        String baseurl = request.getContextPath() + request.getServletPath() + request.getPathInfo();
+        String baseurl = request.getContextPath() + request.getServletPath()
+                + request.getPathInfo();
         String all = baseurl + "?" + RowSelectParam + "=" + RowSelectAll;
         String none = baseurl + "?" + RowSelectParam + "=" + RowSelectNone;
         String some = baseurl;
@@ -152,14 +166,13 @@ public class Data extends VPFHttpServlet {
             qstr += "&" + VDTParam + "=ALL";
         }
         String vdtlookup = baseurl + "?" + qstr;
-        
+
         response.getWriter().println("<H2>Table Data</H2>");
-        String redisplay = "Redisplay " +
-            buildHREF(response, all, "All") + "\r\n|" +
-            buildHREF(response, none, "None") + "\r\n|" +
-            buildHREF(response, some, "Some") + "\r\n|" +
-            buildHREF(response, test, "Test") + "\r\n|" +
-            buildHREF(response, vdtlookup, "All VDT Columns") + "\r\n"; 
+        String redisplay = "Redisplay " + buildHREF(response, all, "All")
+                + "\r\n|" + buildHREF(response, none, "None") + "\r\n|"
+                + buildHREF(response, some, "Some") + "\r\n|"
+                + buildHREF(response, test, "Test") + "\r\n|"
+                + buildHREF(response, vdtlookup, "All VDT Columns") + "\r\n";
 
         if (schemaonly) {
             response.getWriter().println("Data Omitted: " + redisplay);
@@ -177,11 +190,10 @@ public class Data extends VPFHttpServlet {
             if (Constants.ID.equals(jointablekey)) {
                 rm = new JoinRowMaker(drf, joincol, jointable, isTiled);
             } else {
-                rm = new ComplexJoinRowMaker(drf, joincol,
-                                             jointable, jointablekey, isTiled);
+                rm = new ComplexJoinRowMaker(drf, joincol, jointable, jointablekey, isTiled);
             }
-        } else if (drf.getTableName().equals(Constants.charVDTTableName) ||
-                   drf.getTableName().equals(Constants.intVDTTableName)) {
+        } else if (drf.getTableName().equals(Constants.charVDTTableName)
+                || drf.getTableName().equals(Constants.intVDTTableName)) {
             rm = new VDTRowMaker(request, response, basepath, drf);
         } else if (drf.getTableName().equals("fcs")) {
             rm = new FCSRowMaker(request, response, basepath, drf);
@@ -194,7 +206,7 @@ public class Data extends VPFHttpServlet {
                 for (int i = 0; i < ss.length; i++) {
                     ss[i] = st.nextToken();
                     if ("ALL".equals(ss[i])) {
-                        ss = null; //null array gets all VDT lookups
+                        ss = null; // null array gets all VDT lookups
                         break;
                     }
                 }
@@ -202,13 +214,13 @@ public class Data extends VPFHttpServlet {
             rm = new DetailRowMaker(drf, ss);
         } else if (drf.getTableName().endsWith(".fit")) {
             rm = new FITRowMaker(drf);
-        } else if (drf.getTableName().endsWith(".cft") ||
-                   drf.getTableName().endsWith(".cjt")) {
+        } else if (drf.getTableName().endsWith(".cft")
+                || drf.getTableName().endsWith(".cjt")) {
             rm = new ComplexFeatureJoinRowMaker(drf);
         } else {
             rm = new PlainRowMaker();
         }
-        
+
         Iterator rowiter;
         if (rowlist != null) {
             rowiter = new TableSubsetRecordIterator(rowlist, drf);
@@ -219,52 +231,51 @@ public class Data extends VPFHttpServlet {
         } else {
             rowiter = new TableSampleIterator(drf);
         }
-//      response.getWriter().println("<hr>Tn = " + drf.getTableName() +
-//                                   "<hr>" + rm.getClass().getName() + " " +
-//                                   rowiter.getClass().getName() + "<hr>");
+        // response.getWriter().println("<hr>Tn = " +
+        // drf.getTableName() +
+        // "<hr>" + rm.getClass().getName() + " " +
+        // rowiter.getClass().getName() + "<hr>");
         int rowcount = 0;
         while (rowiter.hasNext()) {
             if (rowcount++ >= 99) {
                 response.getWriter().println(redisplay);
                 table.generate(response.getWriter());
                 rows = new ListElement();
-                table = new WrapElement("table", "BORDER=1 ALIGN=CENTER",
-                                        rows);
+                table = new WrapElement("table", "BORDER=1 ALIGN=CENTER", rows);
                 rows.addElement(new WrapElement("CAPTION", new StringElement("table data")));
                 rows.addElement(thr);
-                
+
                 rowcount = 0;
             }
-            rows.addElement(rm.generateRow((List)rowiter.next()));
+            rows.addElement(rm.generateRow((List) rowiter.next()));
         }
         rm.close();
         response.getWriter().println(redisplay);
         table.generate(response.getWriter());
     }
-    
+
     public ContextInfo getContextInfo() {
         return contextInfo;
     }
 
     public static String joinURL(HttpServletRequest request,
-                                 HttpServletResponse response,
-                                 int tag, String filename, String colname,
+                                 HttpServletResponse response, int tag,
+                                 String filename, String colname,
                                  String othertable, String othertablekey,
                                  boolean isTiled) {
         String pathInfo = request.getPathInfo();
         int index = pathInfo.lastIndexOf('/');
         String subpath = pathInfo.substring(0, index + 1);
-        String url = request.getContextPath() + request.getServletPath() +
-            subpath + filename +
-            "?" + JoinColumnParam + "="+ colname +
-            "&" + JoinOtherTableParam + "=" + othertable +
-            "&" + JoinOtherTableKeyParam + "=" + othertablekey +
-            "&" + IsTiledParam + "=" + isTiled;
-        String value = "<A HREF=\""+ response.encodeURL(url) +"\">" + tag +
-            "</A>\r\n";
+        String url = request.getContextPath() + request.getServletPath()
+                + subpath + filename + "?" + JoinColumnParam + "=" + colname
+                + "&" + JoinOtherTableParam + "=" + othertable + "&"
+                + JoinOtherTableKeyParam + "=" + othertablekey + "&"
+                + IsTiledParam + "=" + isTiled;
+        String value = "<A HREF=\"" + response.encodeURL(url) + "\">" + tag
+                + "</A>\r\n";
         return value;
     }
-    
+
     /**
      * An iterator that returns a subset of the table rows
      */
@@ -273,17 +284,21 @@ public class Data extends VPFHttpServlet {
         private final int columnCount;
         private int curRow = 0;
         private final DcwRecordFile drf;
+
         public TableSampleIterator(DcwRecordFile drf) throws FormatException {
             this.drf = drf;
             recordCount = drf.getRecordCount();
             columnCount = drf.getColumnCount();
         }
+
         public void remove() {
             throw new UnsupportedOperationException();
         }
+
         public boolean hasNext() {
             return (curRow < recordCount);
         }
+
         public Object next() {
             if (curRow < 10) {
                 curRow++;
@@ -313,24 +328,26 @@ public class Data extends VPFHttpServlet {
      */
     private static class TableTestParseIterator implements Iterator {
         final ListIterator base;
+
         public TableTestParseIterator(DcwRecordFile drf) throws FormatException {
             base = new TableListIterator(drf);
         }
-        
+
         public void remove() {
             throw new UnsupportedOperationException();
         }
+
         public boolean hasNext() {
             return base.hasNext();
         }
+
         public Object next() {
             int index;
             Object ret;
             do {
                 index = base.nextIndex();
                 ret = base.next();
-            } while ((index > 10) && ((index % 100) != 0) && 
-                     base.hasNext());
+            } while ((index > 10) && ((index % 100) != 0) && base.hasNext());
             return ret;
         }
     }
@@ -343,20 +360,25 @@ public class Data extends VPFHttpServlet {
         private final DcwRecordFile drf;
         private final int columnCount;
         private final int recordCount;
+
         public TableListIterator(DcwRecordFile drf) throws FormatException {
             this.drf = drf;
             columnCount = drf.getColumnCount();
             recordCount = drf.getRecordCount();
         }
+
         public void add(Object o) {
             throw new UnsupportedOperationException();
         }
+
         public boolean hasPrevious() {
             return (curRow > 1);
         }
+
         public boolean hasNext() {
             return (curRow <= recordCount);
         }
+
         private ArrayList getRow(int row) {
             ArrayList al = new ArrayList(columnCount);
             try {
@@ -368,21 +390,27 @@ public class Data extends VPFHttpServlet {
             }
             return al;
         }
+
         public Object next() {
             return getRow(curRow++);
         }
+
         public Object previous() {
             return getRow(--curRow);
         }
+
         public int nextIndex() {
             return curRow;
         }
+
         public int previousIndex() {
-            return (curRow-1);
+            return (curRow - 1);
         }
+
         public void remove() {
             throw new UnsupportedOperationException();
         }
+
         public void set(Object o) {
             throw new UnsupportedOperationException();
         }

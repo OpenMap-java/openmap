@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/labeled/LabeledOMGraphic.java,v $
 // $RCSfile: LabeledOMGraphic.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:18 $
+// $Revision: 1.3 $
+// $Date: 2005/08/11 20:39:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,9 +30,6 @@ import java.awt.Point;
  * text string can be set for the graphic on the map. It provides
  * basic functionality. If you need more control, try the Location
  * object or use a OMText object for your label.
- * 
- * @see com.bbn.openmap.omGraphics.OMText
- * @see com.bbn.openmap.layer.location.Location
  */
 public interface LabeledOMGraphic {
 

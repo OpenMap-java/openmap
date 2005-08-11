@@ -23,7 +23,7 @@ public interface GeoRegion extends GeoPath {
      * Is the Geo inside the region?
      * 
      * @param point
-     * @return
+     * @return true if point is inside region.
      */
     boolean isPointInside(Geo point);
 

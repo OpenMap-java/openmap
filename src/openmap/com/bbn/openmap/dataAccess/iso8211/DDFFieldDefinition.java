@@ -94,7 +94,6 @@ public class DDFFieldDefinition implements DDFConstants {
     /**
      * Fetch repeating flag.
      * 
-     * @see DDFField::GetRepeatCount()
      * @return true if the field is marked as repeating.
      */
     public boolean isRepeating() {
@@ -485,7 +484,7 @@ public class DDFFieldDefinition implements DDFConstants {
     /**
      * Find a subfield definition by it's mnemonic tag.
      * 
-     * @param The name of the field.
+     * @param pszMnemonic The name of the field.
      * 
      * @return The subfield pointer, or null if there isn't any such
      *         subfield.
@@ -507,7 +506,7 @@ public class DDFFieldDefinition implements DDFConstants {
     /**
      * Fetch a subfield by index.
      * 
-     * @param The index subfield index. (Between 0 and
+     * @param i The index subfield index. (Between 0 and
      *        GetSubfieldCount()-1)
      * @return The subfield pointer, or null if the index is out of
      *         range.

@@ -9,17 +9,26 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/URLCheck.java,v $
-// $Revision: 1.3 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2005/08/11 20:39:15 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
- * Command line program to wander the vpfservlet pages, to make sure all URLs
- * generated are valid.
+ * Command line program to wander the vpfservlet pages, to make sure
+ * all URLs generated are valid.
  */
 public class URLCheck {
     public static Set check(String surl, PrintStream out) throws IOException {
@@ -46,14 +55,14 @@ public class URLCheck {
             int gt;
             while ((gt = str.indexOf('>', fromIx)) != -1) {
                 int lt = str.indexOf('<', fromIx);
-                fromIx = gt+1;
+                fromIx = gt + 1;
                 char firstChar = str.charAt(lt + 1);
                 if ((firstChar != 'A') && (firstChar != 'a')) {
                     continue;
                 }
                 String substr = str.substring(lt + 1, gt);
                 String lsubstr = substr.toLowerCase();
-                
+
                 int hquote = lsubstr.indexOf(href);
                 if (hquote != -1) {
                     hquote += href.length();
@@ -79,10 +88,10 @@ public class URLCheck {
                 }
 
             }
-            sb.delete(0,fromIx);
+            sb.delete(0, fromIx);
         }
-        for (Iterator i = localrefs.iterator(); i.hasNext(); ) {
-            String localref = (String)i.next();
+        for (Iterator i = localrefs.iterator(); i.hasNext();) {
+            String localref = (String) i.next();
             if (!names.contains(localref)) {
                 out.println("MISSING REF: " + localref);
             }
@@ -94,8 +103,8 @@ public class URLCheck {
 
     public static Set workOn(Set master, Set urls, PrintStream out) {
         Set newurls = null;
-        for (Iterator i = urls.iterator(); i.hasNext(); ) {
-            String surl = (String)i.next();
+        for (Iterator i = urls.iterator(); i.hasNext();) {
+            String surl = (String) i.next();
             if (master.add(surl)) {
                 try {
                     Set rets = check(surl, out);
@@ -107,13 +116,14 @@ public class URLCheck {
                 } catch (FileNotFoundException fnfe) {
                     out.println("Bogus URL: " + surl);
                 } catch (IOException ioe) {
-                    out.println("   " + surl + " " + ioe.getClass() + " " + ioe.getMessage());
+                    out.println("   " + surl + " " + ioe.getClass() + " "
+                            + ioe.getMessage());
                 }
             }
         }
         return newurls;
     }
-            
+
     public static void main(String[] args) {
         Set master = new HashSet();
         Set workon = new HashSet();

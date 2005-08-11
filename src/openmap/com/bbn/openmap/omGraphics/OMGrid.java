@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGrid.java,v $
 // $RCSfile: OMGrid.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/01/10 16:58:33 $
+// $Revision: 1.10 $
+// $Date: 2005/08/11 20:39:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -277,7 +277,7 @@ public class OMGrid extends OMGraphicList {
      *        decimal degrees per row.
      * @param hResolution the horizontal resolution of the data, as
      *        decimal degrees per column.
-     * @param GridData object holding rows and columns of grid data.
+     * @param data GridData object holding rows and columns of grid data.
      */
     public OMGrid(float lat, float lon, float vResolution, float hResolution,
             GridData data) {
@@ -298,7 +298,7 @@ public class OMGrid extends OMGraphicList {
      *        pixels per row.
      * @param hResolution the horizontal resolution of the data, as
      *        pixels per column.
-     * @param GridData object holding rows and columns of grid data.
+     * @param data GridData object holding rows and columns of grid data.
      */
     public OMGrid(int x, int y, float vResolution, float hResolution,
             GridData data) {
@@ -324,7 +324,7 @@ public class OMGrid extends OMGraphicList {
      *        pixels per row.
      * @param hResolution the horizontal resolution of the data, as
      *        pixels per column.
-     * @param GridData object holding rows and columns of grid data.
+     * @param data GridData object holding rows and columns of grid data.
      */
     public OMGrid(float lat, float lon, int x, int y, float vResolution,
             float hResolution, GridData data) {

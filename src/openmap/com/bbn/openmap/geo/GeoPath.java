@@ -48,7 +48,7 @@ public interface GeoPath extends GeoExtent {
     int length();
 
     interface SegmentIterator extends java.util.Iterator {
-        /** is there another segment? * */
+        /** Asking if there is another segment. * */
         boolean hasNext();
 
         /**
@@ -68,7 +68,7 @@ public interface GeoPath extends GeoExtent {
     }
 
     interface PointIterator extends java.util.Iterator {
-        /** is there another point? * */
+        /** Asking if is there another point. * */
         boolean hasNext();
 
         /**

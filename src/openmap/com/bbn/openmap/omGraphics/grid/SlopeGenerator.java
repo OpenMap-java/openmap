@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/SlopeGenerator.java,v $
 // $RCSfile: SlopeGenerator.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 20:08:56 $
+// $Revision: 1.6 $
+// $Date: 2005/08/11 20:39:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -99,7 +99,7 @@ public class SlopeGenerator implements OMGridGenerator {
      * 
      * @param grid
      * @param proj
-     * @return
+     * @return OMRaster that reflects slope information.
      */
     public OMRaster generateRasterForProjection(OMGrid grid, Projection proj) {
         OMGraphic omg = generate(grid, proj);

@@ -13,8 +13,8 @@
 // **********************************************************************
 // 
 // $RCSfile: OMColorChooser.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/10 22:25:08 $
+// $Revision: 1.8 $
+// $Date: 2005/08/11 20:39:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -226,7 +226,7 @@ class ColorRect extends JPanel {
     /**
      * set the color to tht specified
      * 
-     * @param c color to paint
+     * @param _c color to paint
      */
     public void setColor(Color _c) {
         c = _c;

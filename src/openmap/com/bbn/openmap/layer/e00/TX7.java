@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/TX7.java,v $
 // $RCSfile: TX7.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:55 $
+// $Revision: 1.6 $
+// $Date: 2005/08/11 20:39:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,7 +46,6 @@ import com.bbn.openmap.util.Debug;
  * a polyline defined by lat lon points.
  * 
  * @author paricaud
- * @created 18 décembre 2002
  */
 public class TX7 extends OMGraphic {
     double w = 1, angle = 0;

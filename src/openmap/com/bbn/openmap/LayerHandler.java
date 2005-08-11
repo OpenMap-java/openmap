@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LayerHandler.java,v $
 // $RCSfile: LayerHandler.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/05/25 19:48:38 $
+// $Revision: 1.14 $
+// $Date: 2005/08/11 20:39:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -944,7 +944,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      * is called, effectively resetting the layers held by the
      * LayerHandler.
      * 
-     * @param it Iterator with objects to look through.
+     * @param someObj an Object being added to the MapHandler/BeanContext.
      */
     public void findAndInit(Object someObj) {
 
@@ -976,8 +976,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      * LayerListener or Layer is found on this list, it is removed
      * from the list of LayerListeners.
      * 
-     * @param bcme an event containing an Iterator containing removed
-     *        objects.
+     * @param someObj an Object being removed from the MapHandler/BeanContext.
      */
     public void findAndUndo(Object someObj) {
 

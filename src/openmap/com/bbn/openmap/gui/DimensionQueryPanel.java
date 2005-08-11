@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: DimensionQueryPanel.java,v $
-//$Revision: 1.1 $
-//$Date: 2004/12/10 14:08:54 $
+//$Revision: 1.2 $
+//$Date: 2005/08/11 20:39:19 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -160,7 +160,7 @@ public class DimensionQueryPanel extends JPanel {
     }
 
     /**
-     * @return
+     * @return Dimension of panel.
      */
     public Dimension getDimension() {
         return new Dimension(getWidth(), getHeight());

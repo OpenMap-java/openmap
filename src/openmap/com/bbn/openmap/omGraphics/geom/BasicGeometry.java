@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.15 $
-// $Date: 2005/08/09 20:07:53 $
+// $Revision: 1.16 $
+// $Date: 2005/08/11 20:39:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -896,7 +896,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * 
      * @param toShape the GeneralPath Shape object to add the edge to.
      * @param addShape the GeneralPath Shape to add to the toShape.
-     * @param moveTo specify whether the first point of the appended
+     * @param lineTo specify whether the first point of the appended
      *        path is connected to the original path. True to connect.
      * @return toShape, with coordinates appended. Returns addShape if
      *         toShape was null.

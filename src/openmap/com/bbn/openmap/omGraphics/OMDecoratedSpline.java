@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMDecoratedSpline.java,v $
 //$RCSfile: OMDecoratedSpline.java,v $
-//$Revision: 1.6 $
-//$Date: 2004/10/14 18:06:12 $
+//$Revision: 1.7 $
+//$Date: 2005/08/11 20:39:14 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -222,7 +222,7 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
     protected void initDecorations() {}
 
     /**
-     * @see fr.free.lepicier.awt.Revertable#revert()
+     * @see com.bbn.openmap.omGraphics.awt.Revertable#revert()
      */
     public void revert() {
         decorator.revert();

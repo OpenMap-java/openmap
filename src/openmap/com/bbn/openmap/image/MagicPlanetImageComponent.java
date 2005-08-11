@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: MagicPlanetImageComponent.java,v $
-//$Revision: 1.4 $
-//$Date: 2005/07/11 23:20:08 $
+//$Revision: 1.5 $
+//$Date: 2005/08/11 20:39:16 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -320,8 +320,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
 	 * known to this component, this component will remove itself as a listener
 	 * to the previous LayerHandler.
 	 * 
-	 * @param object
-	 *            LayerHandler.
+	 * @param lh LayerHandler.
 	 */
 	protected void setLayerHandler(LayerHandler lh) {
 		if (layerHandler != null) {
@@ -359,8 +358,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
 	 * MapBean known to this component, this component will remove itself as a
 	 * listener to the previous MapBean.
 	 * 
-	 * @param object
-	 *            MapBean.
+	 * @param mb MapBean.
 	 */
 	protected void setMapBean(MapBean mb) {
 		if (mapBean != null) {
@@ -685,9 +683,8 @@ public class MagicPlanetImageComponent extends OMComponent implements
 	}
 
 	/**
-	 * @param l
-	 *            unix time in milliseconds
-	 * @return
+	 * @param l unix time in milliseconds
+	 * @return String representing file name for the given time.
 	 */
 	protected String getFileNameForTime(long l) {
 		Calendar cal = new GregorianCalendar();
@@ -871,7 +868,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
 	/**
 	 * Get the image projection.
 	 * 
-	 * @return
+	 * @return current Projection of image.
 	 */
 	public Projection getProj() {
 		return proj;

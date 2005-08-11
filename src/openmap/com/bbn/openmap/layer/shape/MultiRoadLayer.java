@@ -17,8 +17,8 @@
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiRoadLayer.java,v $
  * $RCSfile: MultiRoadLayer.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/14 18:06:05 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/11 20:39:17 $
  * $Author: dietrick $
  *
  * **********************************************************************
@@ -52,7 +52,7 @@ import java.util.logging.Level;
  * will show each road path request and its result. The results shown
  * accumulate over time.
  * 
- * @see com.bbn.openmap.tools.road.RoadServices
+ * @see com.bbn.openmap.tools.roads.RoadServices
  */
 public class MultiRoadLayer extends MultiShapeLayer implements RoadServices,
         ProjectionListener, LayerView {

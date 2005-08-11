@@ -9,19 +9,22 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/VDTRowMaker.java,v $
-// $Revision: 1.3 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2005/08/11 20:39:15 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
-import java.util.*;
-import javax.servlet.http.*;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.bbn.openmap.layer.util.html.TableRowElement;
-import com.bbn.openmap.layer.vpf.*;
+import com.bbn.openmap.layer.vpf.DcwRecordFile;
 
 /**
- * A RowMaker class for int.vdt and char.vdt tables.  It generates
- * a URL for columns that reference another table.
+ * A RowMaker class for int.vdt and char.vdt tables. It generates a
+ * URL for columns that reference another table.
  */
 public class VDTRowMaker extends ReferenceRowMaker {
 
@@ -31,19 +34,18 @@ public class VDTRowMaker extends ReferenceRowMaker {
     final int tableCol;
 
     public VDTRowMaker(HttpServletRequest request,
-                       HttpServletResponse response,
-                       String basepath, DcwRecordFile drf) {
+            HttpServletResponse response, String basepath, DcwRecordFile drf) {
         super(request, response);
         this.basepath = basepath;
         tableCol = drf.whatColumn("table");
     }
-    
+
     public void addToRow(TableRowElement row, List l) {
         int i = 0;
-        for (Iterator li = l.iterator(); li.hasNext(); ) {
+        for (Iterator li = l.iterator(); li.hasNext();) {
             Object elt = li.next();
             if (i == tableCol) {
-                row.addElement(fileURL(basepath, ((String)elt).toLowerCase()));
+                row.addElement(fileURL(basepath, ((String) elt).toLowerCase()));
             } else {
                 row.addElement(elt.toString());
             }

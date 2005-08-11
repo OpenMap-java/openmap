@@ -62,8 +62,7 @@ public interface ShapeDecoration extends Revertable {
      * Draws itself along the specified polyline Called by
      * ShapeDecorator
      * 
-     * @see fr.free.lepicier.awt.ShapeDecorator#draw(Graphics,
-     *      Point2D)
+     * @see com.bbn.openmap.omGraphics.awt.ShapeDecorator#draw(Graphics, Point2D[])
      * @param g
      * @param points the polyline
      * @param complete true if the polyline length equals the

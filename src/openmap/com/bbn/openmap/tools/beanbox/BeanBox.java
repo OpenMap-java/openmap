@@ -103,7 +103,7 @@ public abstract class BeanBox {
      * This method is called by the BeanBoxDnDCatcher to give the
      * BeanBox the bean has has just been dropped on the map.
      * 
-     * @param a Vector containing in the following order: the dropped
+     * @param object a Vector containing in the following order: the dropped
      *        bean object, its BeanInfo and a Point object containing
      *        the drop location.
      */

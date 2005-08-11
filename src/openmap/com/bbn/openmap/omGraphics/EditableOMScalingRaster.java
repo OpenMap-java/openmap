@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMScalingRaster.java,v $
 // $RCSfile: EditableOMScalingRaster.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 20:01:47 $
+// $Revision: 1.7 $
+// $Date: 2005/08/11 20:39:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,7 +82,7 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
      * Create the EditableOMScalingRaster with an OMScalingRaster
      * already defined, ready for editing.
      * 
-     * @param omc OMScalingRaster that should be edited.
+     * @param omsr OMScalingRaster that should be edited.
      */
     public EditableOMScalingRaster(OMScalingRaster omsr) {
         setGraphic(omsr);

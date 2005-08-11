@@ -9,17 +9,20 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/FITRowMaker.java,v $
-// $Revision: 1.3 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2005/08/11 20:39:15 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
 import java.io.File;
-import java.util.*;
-import javax.servlet.http.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import com.bbn.openmap.layer.util.html.*;
-import com.bbn.openmap.layer.vpf.*;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.layer.util.html.TableDataElement;
+import com.bbn.openmap.layer.util.html.TableRowElement;
+import com.bbn.openmap.layer.vpf.DcwRecordFile;
+import com.bbn.openmap.layer.vpf.VPFUtil;
 
 /**
  * A RowMaker that performs the join in a feature index table.
@@ -33,7 +36,7 @@ public class FITRowMaker extends PlainRowMaker {
     /** the array of feature tables, each index is lazy-initialized */
     final DcwRecordFile[] featureTables;
     /** the array of feature names for the coverage */
-    final String [] featureNames;
+    final String[] featureNames;
 
     /** the utility class that understands tiled and untiled data */
     final TileHolder tiler;
@@ -53,6 +56,7 @@ public class FITRowMaker extends PlainRowMaker {
 
     /**
      * Construct a rowmaker for a feature index table.
+     * 
      * @param drf the feature index table
      * @throws FormatException some error was encountered
      */
@@ -73,17 +77,19 @@ public class FITRowMaker extends PlainRowMaker {
     }
 
     /**
-     * Returns the feature table that corresponds to the feature class ID.
+     * Returns the feature table that corresponds to the feature class
+     * ID.
+     * 
      * @param fcId the feature class ID
      * @return the feature table
      * @throws FormatException the feature table couldn't be created
      */
     public DcwRecordFile getFeatureTable(int fcId) throws FormatException {
-        fcId -= 1;  //array is 0-based, table ids are 1-based
+        fcId -= 1; // array is 0-based, table ids are 1-based
         DcwRecordFile retval = featureTables[fcId];
         if (retval == null) {
-            retval = new DcwRecordFile(dirPath + File.separator +
-                                       featureNames[fcId].toLowerCase() + featureTableExt);
+            retval = new DcwRecordFile(dirPath + File.separator
+                    + featureNames[fcId].toLowerCase() + featureTableExt);
             featureTables[fcId] = retval;
         }
         return retval;
@@ -92,23 +98,23 @@ public class FITRowMaker extends PlainRowMaker {
     public void addToRow(TableRowElement row, List l) {
         int primId = VPFUtil.objectToInt(l.get(primIdColumn));
         int tileId = (tileIdColumn == -1) ? -1
-            : VPFUtil.objectToInt(l.get(tileIdColumn));
+                : VPFUtil.objectToInt(l.get(tileIdColumn));
         int fcId = VPFUtil.objectToInt(l.get(fcIdColumn));
         int featureId = VPFUtil.objectToInt(l.get(featureIdColumn));
         int id = VPFUtil.objectToInt(l.get(0));
-        row.addElement("" + id + " (" + tileId + "," + primId + ") (" +
-                       fcId + ", " + featureId + ")");
+        row.addElement("" + id + " (" + tileId + "," + primId + ") (" + fcId
+                + ", " + featureId + ")");
         try {
             tiler.getRow(tileId, primId, primRow);
             DcwRecordFile featureTable = getFeatureTable(fcId);
             featureTable.getRow(featureRow, featureId);
-            for (Iterator i = primRow.iterator(); i.hasNext(); ) {
-                row.addElement(new TableDataElement("CLASS=JoinColumn",
-                                                    i.next().toString()));
+            for (Iterator i = primRow.iterator(); i.hasNext();) {
+                row.addElement(new TableDataElement("CLASS=JoinColumn", i.next()
+                        .toString()));
             }
-            for (Iterator i = featureRow.iterator(); i.hasNext(); ) {
-                row.addElement(new TableDataElement("CLASS=Join2Column",
-                                                    i.next().toString()));
+            for (Iterator i = featureRow.iterator(); i.hasNext();) {
+                row.addElement(new TableDataElement("CLASS=Join2Column", i.next()
+                        .toString()));
             }
         } catch (FormatException fe) {
             row.addElement(fe.toString());
@@ -134,7 +140,7 @@ public class FITRowMaker extends PlainRowMaker {
     }
 
     public static String getExtensionForTable(String tablename) {
-        
+
         if (tablename.equals("fac")) {
             return ".aft";
         } else if (tablename.equals("cnd")) {
@@ -159,4 +165,3 @@ public class FITRowMaker extends PlainRowMaker {
         }
     }
 }
-

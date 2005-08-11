@@ -9,18 +9,27 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/ThematicIndexServlet.java,v $
-// $Revision: 1.3 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2005/08/11 20:39:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 
-import com.bbn.openmap.layer.util.html.*;
-import com.bbn.openmap.layer.vpf.*;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.layer.util.html.Element;
+import com.bbn.openmap.layer.util.html.HtmlListElement;
+import com.bbn.openmap.layer.util.html.ListElement;
+import com.bbn.openmap.layer.util.html.TableHeaderElement;
+import com.bbn.openmap.layer.util.html.TableRowElement;
+import com.bbn.openmap.layer.util.html.WrapElement;
+import com.bbn.openmap.layer.vpf.DcwThematicIndex;
 
 /**
  * This servlet generates HTML for VPF files in thematic index format.
@@ -35,9 +44,9 @@ public class ThematicIndexServlet extends VPFHttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        
-        String filePath = (String)request.getAttribute(DispatchServlet.ROOTPATH_FILENAME);
+            throws ServletException, IOException {
+
+        String filePath = (String) request.getAttribute(DispatchServlet.ROOTPATH_FILENAME);
         if (filePath == null) {
             String pathInfo = setPathInfo(request);
             filePath = contextInfo.resolvePath(pathInfo);
@@ -45,7 +54,7 @@ public class ThematicIndexServlet extends VPFHttpServlet {
                 return;
             }
         }
-            
+
         DcwThematicIndex ti;
         try {
             ti = new DcwThematicIndex(filePath, false);
@@ -63,20 +72,19 @@ public class ThematicIndexServlet extends VPFHttpServlet {
         try {
             ti.close();
         } catch (FormatException fe) {
-            //ignore
+            // ignore
         }
     }
 
     protected void showTableData(HttpServletRequest request,
                                  HttpServletResponse response,
                                  DcwThematicIndex ti, String filePath)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
 
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
-        String title = "VPF Thematic Index for " +
-            new File(filePath).getName();
+        String title = "VPF Thematic Index for " + new File(filePath).getName();
         String basepath = getRootDir(request);
         out.println("<HEAD><TITLE>" + title + "</TITLE></HEAD>");
         out.println(getStylesheetHTML(request));
@@ -88,27 +96,26 @@ public class ThematicIndexServlet extends VPFHttpServlet {
         list.addElement("Number of Rows: " + ti.getNumberOfRows());
         list.addElement("Type Of Index: " + ti.getTypeOfIndex());
         list.addElement("Field Type of Index: " + ti.getFieldTypeOfIndex());
-        list.addElement("Number of Data Elements: " +
-                        ti.getNumberOfDataElements());
+        list.addElement("Number of Data Elements: "
+                + ti.getNumberOfDataElements());
         list.addElement("Data Type Specifier: " + ti.getDataTypeSpecifier());
-        list.addElement("Table Indexed: " + fileURL(request, response,
-                                                    basepath,
-                                                    ti.getTableIndexed()));
+        list.addElement("Table Indexed: "
+                + fileURL(request, response, basepath, ti.getTableIndexed()));
         list.addElement("Column Indexed: " + ti.getColumnIndexed());
         list.addElement("Fields Sorted: " + ti.getSorted());
         list.generate(out);
-        
+
         out.println("<H3 CLASS=TableSubheadingColor>Thematic Index Data</H3>");
         Object[] values = ti.getValueIndexes();
         ListElement rows = null;
         Element table = null;
         TableRowElement th = new TableRowElement();
-        th.addElement(new TableHeaderElement("CLASS=NavBarCell2",
-                                             "Index Value"));
+        th.addElement(new TableHeaderElement("CLASS=NavBarCell2", "Index Value"));
         th.addElement(new TableHeaderElement("Count"));
         th.addElement(new TableHeaderElement("Rows..."));
-        String valStr = "<A HREF=\"" + request.getContextPath() +
-            request.getServletPath() + getPathInfo(request) + "?valIndex=";
+        String valStr = "<A HREF=\"" + request.getContextPath()
+                + request.getServletPath() + getPathInfo(request)
+                + "?valIndex=";
         for (int i = 0; i < values.length; i++) {
             if ((i % 50) == 0) {
                 if (table != null) {
@@ -140,7 +147,7 @@ public class ThematicIndexServlet extends VPFHttpServlet {
     protected void showTableIndexed(HttpServletRequest request,
                                     HttpServletResponse response,
                                     String valIndex, DcwThematicIndex ti)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
         Object val = null;
         switch (ti.getFieldTypeOfIndex()) {
         case 'I':
@@ -157,15 +164,13 @@ public class ThematicIndexServlet extends VPFHttpServlet {
             int[] vals = ti.get(val);
             request.setAttribute(Data.ROWLIST_OBJECT, vals);
         } catch (FormatException fe) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                               fe.toString());
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, fe.toString());
         }
         String pi = request.getPathInfo();
         int lin = pi.lastIndexOf('/') + 1;
-        RequestDispatcher rd = request.getRequestDispatcher("/UnknownType" +
-                                  pi.substring(0, lin) + ti.getTableIndexed());
+        RequestDispatcher rd = request.getRequestDispatcher("/UnknownType"
+                + pi.substring(0, lin) + ti.getTableIndexed());
         rd.forward(request, response);
     }
 
 }
-        

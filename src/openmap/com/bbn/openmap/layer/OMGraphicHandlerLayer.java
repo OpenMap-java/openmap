@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.26 $
-// $Date: 2004/10/14 18:05:52 $
+// $Revision: 1.27 $
+// $Date: 2005/08/11 20:39:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -247,7 +247,7 @@ public class OMGraphicHandlerLayer extends Layer implements
     }
 
     /**
-     * @see OMGraphicHandler#filter(Shape, boolean).
+     * @see com.bbn.openmap.omGraphics.OMGraphicHandler#filter(Shape, boolean).
      */
     public OMGraphicList filter(Shape shapeBoundary, boolean getInsideBoundary) {
         return filter.filter(shapeBoundary, getInsideBoundary);
@@ -256,7 +256,7 @@ public class OMGraphicHandlerLayer extends Layer implements
     /**
      * To find out whether SQL queries are handled.
      * 
-     * @see OMGraphicHandler#supportsSQL().
+     * @see com.bbn.openmap.omGraphics.OMGraphicHandler#supportsSQL().
      */
     public boolean supportsSQL() {
         return filter.supportsSQL();

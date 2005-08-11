@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/E00Parser.java,v $
 // $RCSfile: E00Parser.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 18:07:32 $
+// $Revision: 1.8 $
+// $Date: 2005/08/11 20:39:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,7 +64,6 @@ import java.io.IOException;
  * 
  * 
  * @author paricaud
- * @created 16 décembre 2002 made with jEdit : visit www.jedit.org.
  */
 public class E00Parser {
     protected OMGraphicList labs, arcs, tx7;
@@ -805,7 +804,6 @@ public class E00Parser {
      * data on le last persed record
      * 
      * @author tparicau
-     * @created 16 décembre 2002
      */
     static class E00Record {
         String[] itemName;
@@ -976,21 +974,21 @@ public class E00Parser {
     }
 
     /**
-     * @return
+     * @return OMGraphicsList of arcs.
      */
     public OMGraphicList getArcList() {
         return arcs;
     }
 
     /**
-     * @return
+     * @return OMGraphicList of lab.
      */
     public OMGraphicList getLabList() {
         return labs;
     }
 
     /**
-     * @return
+     * @return OMGraphicList of Tx7.
      */
     public OMGraphicList getTx7List() {
         return tx7;

@@ -9,18 +9,26 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/SpatialIndexServlet.java,v $
-// $Revision: 1.3 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2005/08/11 20:39:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
 
-import com.bbn.openmap.layer.util.html.*;
-import com.bbn.openmap.layer.vpf.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.layer.util.html.HtmlListElement;
+import com.bbn.openmap.layer.util.html.ListElement;
+import com.bbn.openmap.layer.util.html.TableHeaderElement;
+import com.bbn.openmap.layer.util.html.TableRowElement;
+import com.bbn.openmap.layer.util.html.WrapElement;
+import com.bbn.openmap.layer.vpf.DcwSpatialIndex;
 
 /**
  * This servlet generates HTML for VPF files in spatial index format.
@@ -35,9 +43,9 @@ public class SpatialIndexServlet extends VPFHttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        
-        String filePath = (String)request.getAttribute(DispatchServlet.ROOTPATH_FILENAME);
+            throws ServletException, IOException {
+
+        String filePath = (String) request.getAttribute(DispatchServlet.ROOTPATH_FILENAME);
         if (filePath == null) {
             String pathInfo = setPathInfo(request);
             filePath = contextInfo.resolvePath(pathInfo);
@@ -54,14 +62,15 @@ public class SpatialIndexServlet extends VPFHttpServlet {
         if (tableMatch == null) {
             tableMatch = "non-standard spatial index";
         } else {
-            tableMatch = fileURL(request, response,
-                                 getRootDir(request), tableMatch);
+            tableMatch = fileURL(request,
+                    response,
+                    getRootDir(request),
+                    tableMatch);
         }
 
-        out.println(HTML_DOCTYPE + "<HTML><HEAD><TITLE>VPF Spatial Index " +
-                    filename +
-                    "</TITLE></HEAD>\r\n<BODY>\r\n<H1>Spatial Index " +
-                    filename+" for Table " + tableMatch + "</H1>\r\n");
+        out.println(HTML_DOCTYPE + "<HTML><HEAD><TITLE>VPF Spatial Index "
+                + filename + "</TITLE></HEAD>\r\n<BODY>\r\n<H1>Spatial Index "
+                + filename + " for Table " + tableMatch + "</H1>\r\n");
 
         out.println(getStylesheetHTML(request));
 
@@ -70,25 +79,24 @@ public class SpatialIndexServlet extends VPFHttpServlet {
             printSpatial(request, response, ff);
             ff.close();
         } catch (FormatException fe) {
-            out.println("FormatException while reading spatial index: " + 
-                        fe.getMessage());
+            out.println("FormatException while reading spatial index: "
+                    + fe.getMessage());
         }
         out.println("</BODY></HTML>\r\n");
     }
 
     public void printSpatial(HttpServletRequest request,
-                             HttpServletResponse response,
-                             DcwSpatialIndex si)
-        throws FormatException, IOException {
+                             HttpServletResponse response, DcwSpatialIndex si)
+            throws FormatException, IOException {
         PrintWriter out = response.getWriter();
         out.println("<H3>General Spatial Index Information</H3>");
         HtmlListElement list = new HtmlListElement();
         list.addElement("Number Of Primitives: " + si.getNumberOfPrimitives());
         int nodesInTree = si.getNodesInTree();
         list.addElement("Nodes in Tree: " + nodesInTree);
-        list.addElement("Bounding Rectangle: (" + si.getBoundingX1() + ", " +
-                        si.getBoundingY1() + ") - (" + si.getBoundingX2() +
-                        ", " + si.getBoundingY2() + ")");
+        list.addElement("Bounding Rectangle: (" + si.getBoundingX1() + ", "
+                + si.getBoundingY1() + ") - (" + si.getBoundingX2() + ", "
+                + si.getBoundingY2() + ")");
         list.generate(out);
         out.println("<H3>Spatial Index Data</H3>");
         TableRowElement columnNames = new TableRowElement();
@@ -101,13 +109,13 @@ public class SpatialIndexServlet extends VPFHttpServlet {
             int count = si.getPrimitiveCount(i);
             int offset = si.getPrimitiveOffset(i);
             DcwSpatialIndex.PrimitiveRecord pr[] = si.getPrimitiveRecords(i);
-            
-            out.println("<H4>Node " + i );
+
+            out.println("<H4>Node " + i);
             if (count == 0) {
                 out.println("(no primitives)</H4>\r\n");
             } else {
-                out.println("</H4>Primitive Count:" + count +
-                            " Relative Offset:"+offset + "\n");
+                out.println("</H4>Primitive Count:" + count
+                        + " Relative Offset:" + offset + "\n");
 
                 ListElement rows = new ListElement();
                 WrapElement table = new WrapElement("table", "BORDER=1", rows);
@@ -117,10 +125,10 @@ public class SpatialIndexServlet extends VPFHttpServlet {
                     TableRowElement datarow = new TableRowElement();
                     rows.addElement(datarow);
                     datarow.addElement(Integer.toString(pr1.primId));
-                    datarow.addElement(  Short.toString(pr1.x1));
-                    datarow.addElement(  Short.toString(pr1.x2));
-                    datarow.addElement(  Short.toString(pr1.y1));
-                    datarow.addElement(  Short.toString(pr1.y2));
+                    datarow.addElement(Short.toString(pr1.x1));
+                    datarow.addElement(Short.toString(pr1.x2));
+                    datarow.addElement(Short.toString(pr1.y1));
+                    datarow.addElement(Short.toString(pr1.y2));
                 }
                 table.generate(out);
             }
@@ -131,7 +139,9 @@ public class SpatialIndexServlet extends VPFHttpServlet {
     private HashMap indexTableMap;
 
     /**
-     * Returns the name of the primitive file that the spatial index is for.
+     * Returns the name of the primitive file that the spatial index
+     * is for.
+     * 
      * @param indexName the name of the index
      * @return the name of the primitive file
      */
@@ -150,6 +160,6 @@ public class SpatialIndexServlet extends VPFHttpServlet {
             newMap.put("tsi.", "txt.");
             indexTableMap = newMap;
         }
-        return (String)indexTableMap.get(indexName);
+        return (String) indexTableMap.get(indexName);
     }
 }

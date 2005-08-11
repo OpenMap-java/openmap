@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/Location.java,v $
 // $RCSfile: Location.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/05/23 20:03:51 $
+// $Revision: 1.10 $
+// $Date: 2005/08/11 20:39:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -640,7 +640,7 @@ public abstract class Location extends OMGraphic {
      * Convenience method to see if handler/global settings dictate
      * that the location label should be rendered.
      * 
-     * @return
+     * @return true if the name label should be rendered.
      */
     protected boolean shouldRenderName() {
         boolean globalShowNames = false;
@@ -658,7 +658,7 @@ public abstract class Location extends OMGraphic {
      * Convenience method to see if handler/global settings dictate
      * that the location icon should be rendered.
      * 
-     * @return
+     * @return true of the location marker should be rendered.
      */
     protected boolean shouldRenderLocation() {
         boolean globalShowLocations = false;

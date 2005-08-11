@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDNameTranslator.java,v $
 // $RCSfile: DTEDNameTranslator.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:42 $
+// $Revision: 1.4 $
+// $Date: 2005/08/11 20:39:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,8 +50,8 @@ public interface DTEDNameTranslator {
     public void set(String filePath) throws FormatException;
 
     /**
-     * Set the internal parameters given a parent DTED directory,
-     * latitude, longitude and level. getName() can be called to fetch
+     * Sets the internal parameters given a parent DTED directory,
+     * latitude, longitude and level. getName can be called to fetch
      * a file name for these parameters.
      * 
      * @param dtedDir the path to the top DTED directory.
@@ -87,7 +87,7 @@ public interface DTEDNameTranslator {
     /**
      * Set the longitude in the translator.
      * 
-     * @param lat the desired longitude, in decimal degrees.
+     * @param lon the desired longitude, in decimal degrees.
      */
     public void setLon(double lon);
 

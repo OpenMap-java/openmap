@@ -9,17 +9,20 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/ComplexFeatureJoinRowMaker.java,v $
-// $Revision: 1.3 $ $Date: 2004/10/14 18:06:32 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2005/08/11 20:39:15 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
 import java.io.File;
-import java.util.*;
-import javax.servlet.http.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import com.bbn.openmap.layer.util.html.*;
-import com.bbn.openmap.layer.vpf.*;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.layer.util.html.TableDataElement;
+import com.bbn.openmap.layer.util.html.TableRowElement;
+import com.bbn.openmap.layer.vpf.DcwRecordFile;
+import com.bbn.openmap.layer.vpf.VPFUtil;
 
 /**
  * A RowMaker that performs the join in a feature index table.

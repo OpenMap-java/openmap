@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ColorFactory.java,v $
 // $RCSfile: ColorFactory.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 18:37:41 $
+// $Revision: 1.7 $
+// $Date: 2005/08/11 20:39:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -300,7 +300,7 @@ public class ColorFactory {
      * 
      * @param name
      * @param defaultColor
-     * @return
+     * @return Color that reflects the name, or the default color.
      */
     public static Color getNamedColor(String name, Color defaultColor) {
         if (name != null) {

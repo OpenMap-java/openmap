@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.30 $
-// $Date: 2005/08/10 21:41:16 $
+// $Revision: 1.31 $
+// $Date: 2005/08/11 20:39:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -515,8 +515,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     /**
      * Load the data from the file set in this layer.
      * 
-     * @param fileName
-     * @return
+     * @return OMGraphicList loaded from fileName.
      */
     public OMGraphicList load() {
         OMGraphicList list = null;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodePosition.java,v $
 // $RCSfile: CodePosition.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/12/10 14:17:11 $
+// $Revision: 1.12 $
+// $Date: 2005/08/11 20:39:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -103,7 +103,7 @@ public class CodePosition {
      * to this symbol part.
      * 
      * @param queryCode
-     * @return
+     * @return true if the code applies to this position.
      */
     public boolean codeMatches(String queryCode) {
         int length = id.length();

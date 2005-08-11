@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BoundingCircle.java,v $
-//$Revision: 1.5 $
-//$Date: 2005/07/22 21:22:48 $
+//$Revision: 1.6 $
+//$Date: 2005/08/11 20:39:17 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -44,12 +44,12 @@ public interface BoundingCircle {
     public double getRadius();
     
     /**
-     * @returns whether this bounding circle intersects with another.
+     * @return whether this bounding circle intersects with another.
      */
     public boolean intersects(BoundingCircle bc);
     
     /**
-     * @returns whether this bounding circle intersects with a Geo with a radius (radians) around it.
+     * @return whether this bounding circle intersects with a Geo with a radius (radians) around it.
      */
     public boolean intersects(Geo g, double radius);
 
@@ -87,7 +87,7 @@ public interface BoundingCircle {
         
         /**
          * Works by computing the centroid, then finding the
-         * largest radius. this will not, in general, produce the
+         * largest radius. This will not, in general, produce the
          * minimal bounding circle.
          */
         protected void init(Geo[] region) {

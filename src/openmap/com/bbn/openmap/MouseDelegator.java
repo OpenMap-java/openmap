@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MouseDelegator.java,v $
 // $RCSfile: MouseDelegator.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/07/29 14:36:23 $
+// $Revision: 1.6 $
+// $Date: 2005/08/11 20:39:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,10 +48,10 @@ import com.bbn.openmap.util.Debug;
  * MouseEvents on the map. There should only be one MouseDelegator
  * within a MapHandler.
  * 
- * @see MapMouseMode
- * @see AbstractMouseMode
- * @see NavMouseMode
- * @see SelectMouseMode
+ * @see com.bbn.openmap.event.MapMouseMode
+ * @see com.bbn.openmap.event.AbstractMouseMode
+ * @see com.bbn.openmap.event.NavMouseMode
+ * @see com.bbn.openmap.event.SelectMouseMode
  */
 public class MouseDelegator implements PropertyChangeListener,
         java.io.Serializable, BeanContextChild, BeanContextMembershipListener,

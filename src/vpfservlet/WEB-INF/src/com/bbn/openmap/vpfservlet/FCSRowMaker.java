@@ -9,16 +9,19 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/FCSRowMaker.java,v $
-// $Revision: 1.3 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2005/08/11 20:39:15 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
 import java.io.File;
 import java.util.List;
-import javax.servlet.http.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.bbn.openmap.layer.util.html.TableRowElement;
-import com.bbn.openmap.layer.vpf.*;
+import com.bbn.openmap.layer.vpf.Constants;
+import com.bbn.openmap.layer.vpf.DcwRecordFile;
 
 /**
  * A RowMaker class specifically for the markup of VPF feature class schema

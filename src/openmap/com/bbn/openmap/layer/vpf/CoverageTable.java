@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageTable.java,v $
-// $Revision: 1.11 $ $Date: 2005/08/09 19:29:39 $ $Author: dietrick $
+// $Revision: 1.12 $ $Date: 2005/08/11 20:39:19 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -897,7 +897,7 @@ class TableHolder {
      * 
      * @param featureType from the CoverageTable, either
      *        AREA_FEATURETYPE, EDGE_FEATURETYPE or TEXT_FEATURETYPE.
-     * @param tilePath the path to the tile directory that needs to be
+     * @param tile the tile directory that needs to be
      *        used when fetching graphics from the appropriate files.
      */
     protected void setTables(char featureType, TileDirectory tile)

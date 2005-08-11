@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.12 $
+// $Date: 2005/08/11 20:39:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -70,7 +70,7 @@ import com.bbn.openmap.util.PropUtils;
  *  
  * </pre></code>
  * 
- * @version $Revision: 1.11 $ $Date: 2004/10/14 18:06:05 $
+ * @version $Revision: 1.12 $ $Date: 2005/08/11 20:39:17 $
  * @see SpatialIndex
  */
 public class MultiShapeLayer extends ShapeLayer {
@@ -94,7 +94,7 @@ public class MultiShapeLayer extends ShapeLayer {
     /**
      * This method gets called from setProperties.
      * 
-     * @param realPrefix This prefix has already been scoped, which
+     * @param prefix This prefix has already been scoped, which
      *        means it is an empty string if setProperties was called
      *        with a null prefix, or it's a String ending with a
      *        period if it was defined with characters.
@@ -112,7 +112,7 @@ public class MultiShapeLayer extends ShapeLayer {
      *        it is an empty string if setProperties was called with a
      *        null prefix, or it's a String ending with a period if it
      *        was defined with characters.
-     * @param props Properties containing information about files and
+     * @param p Properties containing information about files and
      *        the layer.
      */
     protected void setSpatialIndexes(String prefix, Properties p) {

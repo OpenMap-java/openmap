@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameCacheLayer.java,v $
 // $RCSfile: DTEDFrameCacheLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/15 14:38:56 $
+// $Revision: 1.8 $
+// $Date: 2005/08/11 20:39:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -198,11 +198,10 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
      * The default constructor for the Layer. All of the attributes
      * are set to their default values.
      * 
-     * @param pathsToDTEDDirs paths to the DTED directories that hold
+     * @param dfc paths to the DTED directories that hold
      *        level 0 and 1 data.
      */
-    public DTEDFrameCacheLayer(
-            com.bbn.openmap.dataAccess.dted.DTEDFrameCache dfc) {
+    public DTEDFrameCacheLayer(com.bbn.openmap.dataAccess.dted.DTEDFrameCache dfc) {
         this();
         setFrameCache(dfc);
     }

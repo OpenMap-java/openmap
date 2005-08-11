@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/TextUndefinedState.java,v
 // $
 // $RCSfile: TextUndefinedState.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/10 22:27:17 $
+// $Revision: 1.6 $
+// $Date: 2005/08/11 20:39:17 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -48,9 +48,6 @@ public class TextUndefinedState extends GraphicUndefinedState {
     // --------------------------------------------------------------------------------------------------------
 
     /**
-     * 
-     * @param e
-     * @return
      */
     public boolean mousePressed(MouseEvent e) {
         GrabPoint gb = graphic.getGrabPoint(EditableOMText.CENTER_POINT_INDEX);
@@ -72,9 +69,6 @@ public class TextUndefinedState extends GraphicUndefinedState {
     }
 
     /**
-     * 
-     * @param e
-     * @return
      */
     public boolean mouseMoved(MouseEvent e) {
         graphic.fireEvent(EOMGCursors.EDIT, i18n.get(TextUndefinedState.class,

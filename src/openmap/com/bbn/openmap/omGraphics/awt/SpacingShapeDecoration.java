@@ -21,7 +21,7 @@ public class SpacingShapeDecoration extends AbstractShapeDecoration {
     }
 
     /**
-     * @see fr.free.lepicier.awt.ShapeDecoration#draw(Graphics,
+     * @see com.bbn.openmap.omGraphics.awt.ShapeDecoration#draw(Graphics,
      *      Point2D[], boolean)
      */
     public void draw(Graphics g, Point2D[] points, boolean complete) {

@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BasicSymbolImageMaker.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/02/11 22:39:43 $
+//$Revision: 1.2 $
+//$Date: 2005/08/11 20:39:17 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -75,7 +75,8 @@ public class BasicSymbolImageMaker extends OMComponent implements
 
     /**
      * @param code
-     * @return
+     * @return URL for a file containing the symbol for the given
+     *         code, null if it's not available.
      * @throws MalformedURLException
      */
     protected URL getFileURL(String code) throws MalformedURLException {
@@ -95,8 +96,6 @@ public class BasicSymbolImageMaker extends OMComponent implements
      * a file name. The BasicSymbolImageLaker doesn't add an
      * extension. If you override, include the dot at the beginning of
      * the return string.
-     * 
-     * @return
      */
     public String getFileExtension() {
         return "";
@@ -104,7 +103,8 @@ public class BasicSymbolImageMaker extends OMComponent implements
 
     /**
      * @param code
-     * @return
+     * @return code that has any wildcard characters changed for the
+     *         sake of the symbol database.
      */
     protected String massageCode(String code) {
         code = code.replace('*', '-').toLowerCase();

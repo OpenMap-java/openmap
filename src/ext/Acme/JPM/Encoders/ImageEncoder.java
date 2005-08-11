@@ -59,7 +59,6 @@ import java.util.Hashtable;
  * 
  * @see GifEncoder
  * @see PpmEncoder
- * @see Acme.JPM.Decoders.ImageDecoder
  */
 public abstract class ImageEncoder implements ImageConsumer {
 

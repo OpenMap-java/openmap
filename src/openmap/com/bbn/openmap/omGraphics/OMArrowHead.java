@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArrowHead.java,v $
 // $RCSfile: OMArrowHead.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 20:01:46 $
+// $Revision: 1.8 $
+// $Date: 2005/08/11 20:39:14 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -38,11 +38,6 @@ import java.awt.geom.GeneralPath;
  * shapes to the actual OMLine internal Shape object. You don't have
  * to know about this class, just call the OMLine methods that create
  * arrowheads and the OMLine will take care of the rest.
- * 
- * @see OMLine.addArrowHead(boolean)
- * @see OMLine.addArrowHead(int)
- * @see OMLine.addArrowHead(int, int)
- * @see OMLine.addArrowHead(int, int, int, int)
  */
 public class OMArrowHead {
 

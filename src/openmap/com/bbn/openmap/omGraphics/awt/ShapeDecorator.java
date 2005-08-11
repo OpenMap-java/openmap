@@ -84,7 +84,7 @@ public class ShapeDecorator implements Revertable {
     /**
      * Reverts all the decorations
      * 
-     * @implements fr.free.lepicier.awt.Revertable#revert()
+     * @see com.bbn.openmap.omGraphics.awt.Revertable#revert()
      */
     public void revert() {
         ShapeDecoration s;

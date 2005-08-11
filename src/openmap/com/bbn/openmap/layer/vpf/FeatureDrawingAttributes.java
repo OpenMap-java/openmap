@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: FeatureDrawingAttributes.java,v $
-//$Revision: 1.3 $
-//$Date: 2005/08/09 19:29:39 $
+//$Revision: 1.4 $
+//$Date: 2005/08/11 20:39:19 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -196,7 +196,7 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
      * Retrieve the column index number out of the feature class info
      * file that is being used/displayed.
      * 
-     * @return
+     * @return column index of attribute information.
      */
     protected int getAttributeCol() {
         return attributeCol;

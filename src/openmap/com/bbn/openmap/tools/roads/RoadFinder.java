@@ -17,8 +17,8 @@
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/RoadFinder.java,v $
  * $RCSfile: RoadFinder.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/09 20:45:09 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/11 20:39:19 $
  * $Author: dietrick $
  *
  * **********************************************************************
@@ -738,7 +738,6 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
      * @param segments as side effect, populated with PathSegments
      *        between returned WayPoints
      * @return List of WayPoints
-     * @see com.bbn.apa.genome.WayPoint
      */
     public List getPathOnRoad(Point start, Point end, List segments) {
         List newPoints;
@@ -901,8 +900,9 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
      * one road should be the start of the next. This is not
      * guaranteed by the route, so we have to check.
      * 
-     * @param newPoint populated with points on the route
-     * @param segments populated with Segments
+     * @param bestRoute route to iterate over.
+     * @param newPoints populated with points on the route.
+     * @param segments populated with Segments.
      */
     protected void populatePointsAndSegments(Route bestRoute, List newPoints,
                                              List segments) {

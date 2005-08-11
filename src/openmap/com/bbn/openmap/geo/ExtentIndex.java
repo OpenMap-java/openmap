@@ -32,7 +32,7 @@ public interface ExtentIndex extends java.util.Collection {
     /**
      * Add a extent to the index.
      * @param region
-     * @returns true if Region successfully added, false if not.
+     * @return true if Region successfully added, false if not.
      */
     boolean addExtent(GeoExtent region);
     

@@ -32,14 +32,14 @@ import java.util.Enumeration;
  * @author Ken Anderson
  * @author Sachin Date
  * @author Ben Lubin
- * @version $Revision: 1.9 $ on $Date: 2005/07/21 22:58:27 $
+ * @version $Revision: 1.10 $ on $Date: 2005/08/11 20:39:17 $
  */
 public class Geo {
 
-    /*****************************************************************
+    /* ****************************************************************
      * Constants for the shape of the earth. see
      * http://www.gfy.ku.dk/%7Eiag/HB2000/part4/groten.htm
-     ****************************************************************/
+     *************************************************************** */
     // Replaced by Length constants.
     //     public static final double radiusKM = 6378.13662; // in KM.
     //     public static final double radiusNM = 3443.9182; // in NM.
@@ -135,14 +135,14 @@ public class Geo {
         }
     }
 
-    /** Construct a Geo from its parts. * */
+    /** Construct a Geo from its parts. */
     public Geo(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    /** Construct a Geo from another Geo. * */
+    /** Construct a Geo from another Geo. */
     public Geo(Geo geo) {
         this(geo.x, geo.y, geo.z);
     }
@@ -266,7 +266,7 @@ public class Geo {
                 - this.x() * b.z(), this.x() * b.y() - this.y() * b.x());
     }
 
-    /** Eqvivalent to this.cross(b).length(). * */
+    /** Eqvivalent to this.cross(b).length(). */
     public double crossLength(Geo b) {
         double x = this.y() * b.z() - this.z() * b.y();
         double y = this.z() * b.x() - this.x() * b.z();
@@ -274,7 +274,7 @@ public class Geo {
         return Math.sqrt(x * x + y * y + z * z);
     }
 
-    /** Eqvivalent to <code>this.cross(b).normalize()</code>. * */
+    /** Eqvivalent to <code>this.cross(b).normalize()</code>. */
     public Geo crossNormalize(Geo b) {
         double x = this.y() * b.z() - this.z() * b.y();
         double y = this.z() * b.x() - this.x() * b.z();
@@ -283,12 +283,12 @@ public class Geo {
         return new Geo(x / L, y / L, z / L);
     }
 
-    /** Eqvivalent to <code>this.cross(b).normalize()</code>. * */
+    /** Eqvivalent to <code>this.cross(b).normalize()</code>. */
     public static Geo crossNormalize(Geo a, Geo b) {
         return a.crossNormalize(b);
     }
 
-    /** Returns this + b. * */
+    /** Returns this + b. */
     public Geo add(Geo b) {
         return new Geo(this.x() + b.x(), this.y() + b.y(), this.z() + b.z());
     }
@@ -486,7 +486,7 @@ public class Geo {
                 .dot(p.subtract(this)) > 0.0) ? forwardRadius : backRadius);
     }
 
-    /** Returns the point opposite this point on the earth. * */
+    /** Returns the point opposite this point on the earth. */
     public Geo antipode() {
         return this.scale(-1.0);
     }

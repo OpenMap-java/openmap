@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolReferenceLibrary.java,v $
 // $RCSfile: SymbolReferenceLibrary.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/08/09 20:45:09 $
+// $Revision: 1.12 $
+// $Date: 2005/08/11 20:39:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -244,7 +244,7 @@ public class SymbolReferenceLibrary extends OMComponent {
      * SymbolPart back from this query, then you can call getIcon.
      * 
      * @param code
-     * @return
+     * @return SymbolPart for the 15 character code of a symbol.
      */
     public SymbolPart getSymbolPartForCode(String code) {
 

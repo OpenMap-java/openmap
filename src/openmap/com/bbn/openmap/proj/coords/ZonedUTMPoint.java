@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ZonedUTMPoint.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/02/16 21:05:36 $
+//$Revision: 1.2 $
+//$Date: 2005/08/11 20:39:18 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -114,7 +114,7 @@ public class ZonedUTMPoint extends UTMPoint {
      * latitude returns 'Z' if latitude is outside the MGRS limits of
      * 84N to 80S.
      * 
-     * @param Lat The float value of the latitude.
+     * @param lat The float value of the latitude.
      * 
      * @return A char value which is the MGRS zone letter.
      */

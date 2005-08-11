@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrameCache.java,v $
 // $RCSfile: DTEDFrameCache.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 19:03:51 $
+// $Revision: 1.6 $
+// $Date: 2005/08/11 20:39:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -94,8 +94,6 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
      * maximum number of frames to keep on hand. Assumes the paths
      * given are for level 0 and 1 data.
      * 
-     * @param dtedPaths path to the level 0 and level 1 dted
-     *        directories
      * @param max_size max number of frames to keep in the cache..
      */
     public DTEDFrameCache(int max_size) {

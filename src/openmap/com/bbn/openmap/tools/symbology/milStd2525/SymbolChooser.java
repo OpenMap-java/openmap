@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolChooser.java,v $
 // $RCSfile: SymbolChooser.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/08/09 20:45:09 $
+// $Revision: 1.12 $
+// $Date: 2005/08/11 20:39:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -356,7 +356,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
      * SymbolReferenceLibrary.
      * 
      * @param srl
-     * @return
+     * @return List of nodes of the symbol part tree.
      * @throws FormatException
      */
     protected List createNodes(SymbolReferenceLibrary srl)
@@ -381,7 +381,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
     /**
      * Get the current symbol code listed in the GUI.
      * 
-     * @return
+     * @return code for current symbol.
      */
     public String getCode() {
         if (nameField != null)
@@ -407,7 +407,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
     /**
      * Get the icon displayed in the GUI.
      * 
-     * @return
+     * @return ImageIcon being displayed.
      */
     public ImageIcon getImageIcon() {
         return symbolImage;

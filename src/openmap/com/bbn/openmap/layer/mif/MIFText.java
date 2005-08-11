@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFText.java,v $
 // $RCSfile: MIFText.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:01 $
+// $Revision: 1.4 $
+// $Date: 2005/08/11 20:39:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,7 +67,7 @@ public class MIFText extends OMText implements MIFGraphic, java.io.Serializable 
      * Sets the scale at which the graphic becomes visible, if set to
      * -1 the graphic is viaible at all scale levels.
      * 
-     * @param scale
+     * @param visibleScale
      */
     public void setVisibleScale(float visibleScale) {
         this.visibleScale = visibleScale;

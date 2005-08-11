@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/StandardDTEDNameTranslator.java,v $
 // $RCSfile: StandardDTEDNameTranslator.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:42 $
+// $Revision: 1.5 $
+// $Date: 2005/08/11 20:39:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -56,7 +56,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
 
     /**
      * Set the internal parameters given a parent DTED directory,
-     * latitude, longitude and level. getName() can be called to fetch
+     * latitude, longitude and level. getName can be called to fetch
      * a file name for these parameters.
      * 
      * @param dtedDir the path to the top DTED directory.
@@ -93,7 +93,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
 
     /**
      * Set the internal parameters given a parent DTED directory,
-     * latitude, longitude and level. getName() can be called to fetch
+     * latitude, longitude and level. getName can be called to fetch
      * a file name for these parameters.
      * 
      * @param dtedDir the path to the top DTED directory.
@@ -122,7 +122,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
     /**
      * Set the latitude in the translator.
      * 
-     * @param lat the desired latitude, in decimal degrees.
+     * @param latitude the desired latitude, in decimal degrees.
      */
     public void setLat(double latitude) {
         filename = evaluate(latitude, getLon(), getLevel());
@@ -138,7 +138,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
     /**
      * Set the longitude in the translator.
      * 
-     * @param lat the desired longitude, in decimal degrees.
+     * @param longitude the desired longitude, in decimal degrees.
      */
     public void setLon(double longitude) {
         filename = evaluate(getLat(), longitude, getLevel());

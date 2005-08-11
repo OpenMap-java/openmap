@@ -9,21 +9,26 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/SpatialGraphicServlet.java,v $
-// $Revision: 1.3 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2005/08/11 20:39:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.HashMap;
 
-import com.bbn.openmap.layer.util.html.*;
-import com.bbn.openmap.layer.vpf.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.image.*;
+import com.bbn.openmap.layer.util.html.HtmlListElement;
+import com.bbn.openmap.layer.util.html.ListElement;
+import com.bbn.openmap.layer.util.html.TableHeaderElement;
+import com.bbn.openmap.layer.util.html.TableRowElement;
+import com.bbn.openmap.layer.vpf.DcwSpatialIndex;
 
 /**
  * This servlet generates HTML for VPF files in spatial index format.
@@ -38,9 +43,9 @@ public class SpatialGraphicServlet extends VPFHttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        
-        String filePath = (String)request.getAttribute(DispatchServlet.ROOTPATH_FILENAME);
+            throws ServletException, IOException {
+
+        String filePath = (String) request.getAttribute(DispatchServlet.ROOTPATH_FILENAME);
         if (filePath == null) {
             String pathInfo = setPathInfo(request);
             filePath = contextInfo.resolvePath(pathInfo);
@@ -58,22 +63,24 @@ public class SpatialGraphicServlet extends VPFHttpServlet {
         Graphics2D g2d = bufferedImage.createGraphics();
         g2d.setClip(0, 0, width, height);
         g2d.setColor(Color.red);
-        g2d.drawLine(10,10,95,95);
-        g2d.drawLine(105,105,190,190);
-        g2d.drawRect(1,1,198,198);
+        g2d.drawLine(10, 10, 95, 95);
+        g2d.drawLine(105, 105, 190, 190);
+        g2d.drawRect(1, 1, 198, 198);
         g2d.dispose();
-//      byte [] imageData = AcmeGifHelper.encodeGif(bufferedImage);
-        
-        ServletOutputStream sos = response.getOutputStream();
-//      sos.write(imageData);
-        
+        // byte [] imageData = AcmeGifHelper.encodeGif(bufferedImage);
+
+        // ServletOutputStream sos = response.getOutputStream();
+        // sos.write(imageData);
+
         String filename = filePath;
         String tableMatch = getIndexedTable(filename);
         if (tableMatch == null) {
             tableMatch = "non-standard spatial index";
         } else {
-            tableMatch = fileURL(request, response,
-                                 getRootDir(request), tableMatch);
+            tableMatch = fileURL(request,
+                    response,
+                    getRootDir(request),
+                    tableMatch);
         }
 
         try {
@@ -85,9 +92,8 @@ public class SpatialGraphicServlet extends VPFHttpServlet {
     }
 
     public void printSpatial(HttpServletRequest request,
-                             HttpServletResponse response,
-                             DcwSpatialIndex si)
-        throws com.bbn.openmap.io.FormatException, IOException {
+                             HttpServletResponse response, DcwSpatialIndex si)
+            throws com.bbn.openmap.io.FormatException, IOException {
         int width = 200;
         int height = 200;
         int imageType = BufferedImage.TYPE_INT_ARGB;
@@ -95,22 +101,22 @@ public class SpatialGraphicServlet extends VPFHttpServlet {
         Graphics2D g2d = bufferedImage.createGraphics();
         g2d.setClip(0, 0, width, height);
         g2d.setColor(Color.red);
-        g2d.drawLine(10,10,95,95);
-        g2d.drawLine(105,105,190,190);
-        g2d.drawRect(1,1,198,198);
+        g2d.drawLine(10, 10, 95, 95);
+        g2d.drawLine(105, 105, 190, 190);
+        g2d.drawRect(1, 1, 198, 198);
         g2d.dispose();
-//      byte [] imageData = AcmeGifHelper.encodeGif(bufferedImage);
-        
-        ServletOutputStream sos = response.getOutputStream();
-//      sos.write(imageData);
+        // byte [] imageData = AcmeGifHelper.encodeGif(bufferedImage);
+
+        // ServletOutputStream sos = response.getOutputStream();
+        // sos.write(imageData);
 
         HtmlListElement list = new HtmlListElement();
         list.addElement("Number Of Primitives: " + si.getNumberOfPrimitives());
         int nodesInTree = si.getNodesInTree();
         list.addElement("Nodes in Tree: " + nodesInTree);
-        list.addElement("Bounding Rectangle: (" + si.getBoundingX1() + ", " +
-                        si.getBoundingY1() + ") - (" + si.getBoundingX2() +
-                        ", " + si.getBoundingY2() + ")");
+        list.addElement("Bounding Rectangle: (" + si.getBoundingX1() + ", "
+                + si.getBoundingY1() + ") - (" + si.getBoundingX2() + ", "
+                + si.getBoundingY2() + ")");
         TableRowElement columnNames = new TableRowElement();
         columnNames.addElement(new TableHeaderElement("Primitive ID"));
         columnNames.addElement(new TableHeaderElement("x1"));
@@ -119,23 +125,23 @@ public class SpatialGraphicServlet extends VPFHttpServlet {
         columnNames.addElement(new TableHeaderElement("y2"));
         for (int i = 0; i < nodesInTree; i++) {
             int count = si.getPrimitiveCount(i);
-            int offset = si.getPrimitiveOffset(i);
+            //int offset = si.getPrimitiveOffset(i);
             DcwSpatialIndex.PrimitiveRecord pr[] = si.getPrimitiveRecords(i);
-            
+
             if (count == 0) {
             } else {
                 ListElement rows = new ListElement();
-                WrapElement table = new WrapElement("table", "BORDER=1", rows);
+                //WrapElement table = new WrapElement("table", "BORDER=1", rows);
                 rows.addElement(columnNames);
                 for (int j = 0; j < pr.length; j++) {
                     DcwSpatialIndex.PrimitiveRecord pr1 = pr[j];
                     TableRowElement datarow = new TableRowElement();
                     rows.addElement(datarow);
                     datarow.addElement(Integer.toString(pr1.primId));
-                    datarow.addElement(  Short.toString(pr1.x1));
-                    datarow.addElement(  Short.toString(pr1.x2));
-                    datarow.addElement(  Short.toString(pr1.y1));
-                    datarow.addElement(  Short.toString(pr1.y2));
+                    datarow.addElement(Short.toString(pr1.x1));
+                    datarow.addElement(Short.toString(pr1.x2));
+                    datarow.addElement(Short.toString(pr1.y1));
+                    datarow.addElement(Short.toString(pr1.y2));
                 }
             }
         }
@@ -145,7 +151,9 @@ public class SpatialGraphicServlet extends VPFHttpServlet {
     private HashMap indexTableMap;
 
     /**
-     * Returns the name of the primitive file that the spatial index is for.
+     * Returns the name of the primitive file that the spatial index
+     * is for.
+     * 
      * @param indexName the name of the index
      * @return the name of the primitive file
      */
@@ -164,6 +172,6 @@ public class SpatialGraphicServlet extends VPFHttpServlet {
             newMap.put("tsi.", "txt.");
             indexTableMap = newMap;
         }
-        return (String)indexTableMap.get(indexName);
+        return (String) indexTableMap.get(indexName);
     }
 }

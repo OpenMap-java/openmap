@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/BasicProjectionLoader.java,v $
 // $RCSfile: BasicProjectionLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:21 $
+// $Revision: 1.4 $
+// $Date: 2005/08/11 20:39:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -112,7 +112,7 @@ public abstract class BasicProjectionLoader extends OMComponent implements
     /**
      * Create the projection with the given parameters.
      * 
-     * @throw exception if a parameter is missing or invalid.
+     * @throws exception if a parameter is missing or invalid.
      */
     public abstract Projection create(Properties props)
             throws ProjectionException;

@@ -9,26 +9,22 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/VPFTable.java,v $
-// $Revision: 1.3 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2005/08/11 20:39:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
-import java.io.*;
-import java.util.*;
-
-import com.bbn.openmap.layer.vpf.*;
-import com.bbn.openmap.io.*;
+import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.layer.vpf.DcwRecordFile;
 
 /**
- * Wrapper for DcwRecordFile objects, to give JSPs a way to interact with
- * them directly.
+ * Wrapper for DcwRecordFile objects, to give JSPs a way to interact
+ * with them directly.
  */
 public class VPFTable {
-    
+
     private DcwRecordFile table;
 
-    public VPFTable() {
-    }
+    public VPFTable() {}
 
     public void setFile(String file) {
         try {
@@ -48,6 +44,6 @@ public class VPFTable {
     }
 
     public String getDescription() {
-      return (table == null) ? "default" : table.getDescription();
+        return (table == null) ? "default" : table.getDescription();
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphic.java,v $
 // $RCSfile: OMGraphic.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/08/09 20:01:45 $
+// $Revision: 1.13 $
+// $Date: 2005/08/11 20:39:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -869,7 +869,7 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
      * method calls set this flag which is used to opt-out of labeling
      * methods for better performance.
      * 
-     * @return
+     * @return true if OMGraphic has label set.
      */
     public boolean getHasLabel() {
         return hasLabel;

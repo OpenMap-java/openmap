@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/meteo/TurbulanceShapeDecoration.java,v $
 //$RCSfile: TurbulanceShapeDecoration.java,v $
-//$Revision: 1.3 $
-//$Date: 2005/08/09 20:11:31 $
+//$Revision: 1.4 $
+//$Date: 2005/08/11 20:39:14 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -47,7 +47,6 @@ public class TurbulanceShapeDecoration extends AbstractShapeDecoration {
      * 
      * @param length
      * @param radius
-     * @param orientation
      */
     public TurbulanceShapeDecoration(int length, int radius) {
         super(length, radius, 1);

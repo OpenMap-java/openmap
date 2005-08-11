@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LambertConformalLoader.java,v $
 // $RCSfile: LambertConformalLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:22 $
+// $Revision: 1.3 $
+// $Date: 2005/08/11 20:39:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -61,7 +61,7 @@ public class LambertConformalLoader extends BasicProjectionLoader implements
     /**
      * Create the projection with the given parameters.
      * 
-     * @throw exception if a parameter is missing or invalid.
+     * @throws exception if a parameter is missing or invalid.
      */
     public Projection create(Properties props) throws ProjectionException {
 

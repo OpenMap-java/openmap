@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ComponentFactory.java,v $
 // $RCSfile: ComponentFactory.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/05/24 02:16:58 $
+// $Revision: 1.14 $
+// $Date: 2005/08/11 20:39:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -600,7 +600,7 @@ public class ComponentFactory {
      * @param newObjClass the Class to be created.
      * @param argClasses an array of Classes describing the arguments.
      * @param constructorArgs an array of Objects for arguments.
-     * @return
+     * @return Object created from the Class and arguments.
      * @throws NoSuchMethodException
      * @throws InstantiationException
      * @throws IllegalAccessException

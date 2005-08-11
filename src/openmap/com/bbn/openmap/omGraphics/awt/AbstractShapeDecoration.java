@@ -102,7 +102,7 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
     /**
      * Reverts the orientation
      * 
-     * @see fr.free.lepicier.awt.ShapeDecoration#revert()
+     * @see com.bbn.openmap.omGraphics.awt.ShapeDecoration#revert()
      */
     public void revert() {
         orientation = orientation == RIGHT ? LEFT : RIGHT;

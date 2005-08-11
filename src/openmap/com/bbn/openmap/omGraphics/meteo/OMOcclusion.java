@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/meteo/OMOcclusion.java,v $
 //$RCSfile: OMOcclusion.java,v $
-//$Revision: 1.4 $
-//$Date: 2004/10/14 18:06:19 $
+//$Revision: 1.5 $
+//$Date: 2005/08/11 20:39:14 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -116,7 +116,7 @@ public class OMOcclusion extends OMDecoratedSpline {
     }
 
     /**
-     * @see fr.shom.jcirrus.openmap.omGraphics.OMDecoratedSpline#initDecorations()
+     * @see com.bbn.openmap.omGraphics.OMDecoratedSpline#initDecorations()
      */
     protected void initDecorations() {
         getDecorator().addDecoration(new LineShapeDecoration(SPACING, COLOR));

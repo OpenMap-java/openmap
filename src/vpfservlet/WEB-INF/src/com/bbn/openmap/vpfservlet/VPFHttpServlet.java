@@ -9,20 +9,25 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/VPFHttpServlet.java,v $
-// $Revision: 1.3 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2005/08/11 20:39:15 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.File;
+import java.io.IOException;
 
-import com.bbn.openmap.layer.util.html.*;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.bbn.openmap.layer.util.html.TableHeaderElement;
 
 /**
- * A base class useful for servlets that use the VPF tools context object.
- * This class also defines some utility methods used in the package.
+ * A base class useful for servlets that use the VPF tools context
+ * object. This class also defines some utility methods used in the
+ * package.
  */
 public abstract class VPFHttpServlet extends HttpServlet {
 
@@ -45,7 +50,9 @@ public abstract class VPFHttpServlet extends HttpServlet {
     }
 
     /**
-     * Checks if a path refers to a file.  If its not, reports an error.
+     * Checks if a path refers to a file. If its not, reports an
+     * error.
+     * 
      * @param rootpath the path to check (can be null)
      * @param pathInfo used in the error message if rootpath is null
      * @param response used to send the error
@@ -53,15 +60,15 @@ public abstract class VPFHttpServlet extends HttpServlet {
      * @see HttpServletResponse#sendError
      */
     public static boolean pathOkay(String rootpath, String pathInfo,
-                                   HttpServletResponse response) 
-        throws IOException {
+                                   HttpServletResponse response)
+            throws IOException {
         if (rootpath == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                               pathInfo + " (invalid path)");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, pathInfo
+                    + " (invalid path)");
             return false;
         } else if (!new File(rootpath).canRead()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                               rootpath.toString() + " not found");
+                    rootpath.toString() + " not found");
             return false;
         }
         return true;
@@ -69,15 +76,17 @@ public abstract class VPFHttpServlet extends HttpServlet {
 
     /**
      * Returns the HTML to reference the common stylesheet
+     * 
      * @return the stylesheet HTML
      */
     public String getStylesheetHTML(HttpServletRequest request) {
-        return("<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"" +
-            request.getContextPath() + "/stylesheet.css\" TITLE=\"Style\">");
+        return ("<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\""
+                + request.getContextPath() + "/stylesheet.css\" TITLE=\"Style\">");
     }
 
     /**
      * Returns a TableHeaderElement that contains a URL
+     * 
      * @param text the text for the reference
      * @param url the URL for the reference
      * @return a table cell containing a URL
@@ -88,9 +97,11 @@ public abstract class VPFHttpServlet extends HttpServlet {
 
     /**
      * Returns a TableHeaderElement that contains a URL
+     * 
      * @param text the text for the reference
      * @param url the URL for the reference
-     * @param response the HttpServletResponse object used to encode the url
+     * @param response the HttpServletResponse object used to encode
+     *        the url
      * @return a table cell containing a URL
      */
     public TableHeaderElement THE(String text, String url,
@@ -100,29 +111,34 @@ public abstract class VPFHttpServlet extends HttpServlet {
 
     /**
      * Returns a string usable as an HTML HREF element
+     * 
      * @param tag the text for the reference
      * @param url the URL for the reference
      * @return a string containing an HTML HREF
      */
     public static String buildHREF(String url, String tag) {
-        return "<A HREF=\""+url+"\">" + tag + "</A>";
+        return "<A HREF=\"" + url + "\">" + tag + "</A>";
     }
 
     /**
      * Returns a string usable as an HTML HREF element
+     * 
      * @param tag the text for the reference
      * @param url the URL for the reference
-     * @param response the HttpServletResponse object used to encode the url
+     * @param response the HttpServletResponse object used to encode
+     *        the url
      * @return a string containing an HTML HREF
      */
-    public static String buildHREF(HttpServletResponse response, 
-                                   String url, String tag) {
+    public static String buildHREF(HttpServletResponse response, String url,
+                                   String tag) {
         return buildHREF(response.encodeURL(url), tag);
     }
 
     /**
-     * Returns an HTML HREF based on the parameters.  This method is
-     * equivelent to toURL(request, response, "/UnknownType", pathname, filename);
+     * Returns an HTML HREF based on the parameters. This method is
+     * equivelent to toURL(request, response, "/UnknownType",
+     * pathname, filename);
+     * 
      * @see #toURL
      * @param request the request to use for context info
      * @param response the response to use to encode the URL
@@ -131,13 +147,14 @@ public abstract class VPFHttpServlet extends HttpServlet {
      * @return a string HREF
      */
     public static String fileURL(HttpServletRequest request,
-                                 HttpServletResponse response,
-                                 String pathname, String filename) {
+                                 HttpServletResponse response, String pathname,
+                                 String filename) {
         return toURL(request, response, "/UnknownType", pathname, filename);
     }
 
     /**
      * Returns an HTML HREF based on the parameters.
+     * 
      * @param request the request to use for context info
      * @param response the response to use to encode the URL
      * @param pathname the path of the file
@@ -147,30 +164,32 @@ public abstract class VPFHttpServlet extends HttpServlet {
      */
     public static String toURL(HttpServletRequest request,
                                HttpServletResponse response,
-                               String servletName,
-                               String pathname, String filename) {
+                               String servletName, String pathname,
+                               String filename) {
         String value;
         if (filename == null) {
             value = "---";
         } else {
-            String url = request.getContextPath() + servletName + pathname +
-                filename;
-            value = "<A HREF=\""+ response.encodeURL(url) +"\">" +
-                filename + "</A>\r\n";
-            
+            String url = request.getContextPath() + servletName + pathname
+                    + filename;
+            value = "<A HREF=\"" + response.encodeURL(url) + "\">" + filename
+                    + "</A>\r\n";
+
         }
         return value;
     }
 
-    public static final String ROOT_PATHDIR = VPFHttpServlet.class.getName() + ".rootPathDir";
-    public static final String ROOT_PATH = VPFHttpServlet.class.getName() + ".rootPath";
+    public static final String ROOT_PATHDIR = VPFHttpServlet.class.getName()
+            + ".rootPathDir";
+    public static final String ROOT_PATH = VPFHttpServlet.class.getName()
+            + ".rootPath";
 
     public static void setRootDir(HttpServletRequest request, String path) {
         request.setAttribute(ROOT_PATHDIR, path);
     }
 
     public static String getRootDir(HttpServletRequest request) {
-        return (String)request.getAttribute(ROOT_PATHDIR);
+        return (String) request.getAttribute(ROOT_PATHDIR);
     }
 
     public static void setPathInfo(HttpServletRequest request, String path) {
@@ -178,7 +197,7 @@ public abstract class VPFHttpServlet extends HttpServlet {
     }
 
     public static String getPathInfo(HttpServletRequest request) {
-        return (String)request.getAttribute(ROOT_PATH);
+        return (String) request.getAttribute(ROOT_PATH);
     }
 
     protected static String setPathInfo(HttpServletRequest request) {

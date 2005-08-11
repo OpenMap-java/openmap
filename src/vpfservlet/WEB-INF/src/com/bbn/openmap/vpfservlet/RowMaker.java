@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/RowMaker.java,v $
-// $Revision: 1.2 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
+// $Revision: 1.3 $ $Date: 2005/08/11 20:39:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -18,11 +18,13 @@ import java.util.List;
 import com.bbn.openmap.layer.util.html.TableRowElement;
 
 /**
- * An interface used to generate rows of an (html) table from a (VPF) table.
+ * An interface used to generate rows of an (html) table from a (VPF)
+ * table.
  */
 public interface RowMaker {
     /**
      * Generate an HTML table row from a vpf table row
+     * 
      * @param row the VPF table row
      * @return the HTML representation
      */

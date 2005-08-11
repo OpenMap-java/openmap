@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/ECEFPoint.java,v $
 // $RCSfile: ECEFPoint.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 20:39:35 $
+// $Revision: 1.5 $
+// $Date: 2005/08/11 20:39:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,8 +76,6 @@ public class ECEFPoint {
 
     /**
      * Construct an ECEFPoint
-     * 
-     * @param double x,y,z
      */
     public ECEFPoint(double x, double y, double z) {
         setECEF(x, y, z);
@@ -86,7 +84,7 @@ public class ECEFPoint {
     /**
      * Construct an ECEFPoint
      * 
-     * @param ECEFPoint pt
+     * @param pt ECEFPoint
      */
     public ECEFPoint(ECEFPoint pt) {
         x_ = pt.x_;
@@ -96,8 +94,6 @@ public class ECEFPoint {
 
     /**
      * Construct an ECEFPoint
-     * 
-     * @param float x,y,z
      */
     public ECEFPoint(float x, float y, float z) {
         this((double) x, (double) y, (double) z);
@@ -230,16 +226,14 @@ public class ECEFPoint {
     /**
      * Set an ECEFPoint from a LatLonPoint
      * 
-     * @param LatLonPoint pt
+     * @param pt LatLonPoint
      */
     public void setLatLon(LatLonPoint pt) {
         setLatLon(pt.getLatitude(), pt.getLongitude());
     }
 
     /**
-     * Set an ECEFPoint from a LatLon
-     * 
-     * @param float lat, lon
+     * Set an ECEFPoint from a Lat, Lon
      */
     public void setLatLon(float lat, float lon) {
 

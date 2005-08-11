@@ -105,7 +105,7 @@ public class TextShapeDecoration extends AbstractShapeDecoration {
     /**
      * Draws the text along the polyline
      * 
-     * @see fr.shom.jcirrus.awt.ShapeDecoration#draw(Graphics,
+     * @see com.bbn.openmap.omGraphics.awt.ShapeDecoration#draw(Graphics,
      *      Point2D[], boolean)
      */
     public void draw(Graphics g, Point2D[] points, boolean complete) {

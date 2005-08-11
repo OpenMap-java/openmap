@@ -9,23 +9,29 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/DirectoryServlet.java,v $
-// $Revision: 1.4 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
+// $Revision: 1.5 $ $Date: 2005/08/11 20:39:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 
-import com.bbn.openmap.layer.util.html.*;
-import com.bbn.openmap.layer.vpf.*;
-import com.bbn.openmap.io.FormatException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.bbn.openmap.layer.util.html.HtmlListElement;
 
 /**
- * This servlet lists the files in a directory of a configured VPF database.
- * Directory listing can be disabled, see the listDirectories servlet
- * parameter in the deployment descriptor. (web.xml)
+ * This servlet lists the files in a directory of a configured VPF
+ * database. Directory listing can be disabled, see the
+ * listDirectories servlet parameter in the deployment descriptor.
+ * (web.xml)
  */
 public class DirectoryServlet extends VPFHttpServlet {
 
@@ -37,17 +43,15 @@ public class DirectoryServlet extends VPFHttpServlet {
     }
 
     /**
-     * false if this servlet should generate a "disabled by administrator"
-     * method rather than a directory list.
+     * false if this servlet should generate a "disabled by
+     * administrator" method rather than a directory list.
      */
     private boolean listFiles;
 
-    public void doGet(HttpServletRequest request,
-                      HttpServletResponse response) 
-        throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-
-        String filePath = (String)request.getAttribute(DispatchServlet.ROOTPATH_FILENAME);
+        String filePath = (String) request.getAttribute(DispatchServlet.ROOTPATH_FILENAME);
         if (filePath == null) {
             String path = setPathInfo(request);
             filePath = contextInfo.resolvePath(path);
@@ -57,16 +61,18 @@ public class DirectoryServlet extends VPFHttpServlet {
         }
         File fp = new File(filePath);
         String pathInfo = getPathInfo(request);
-        
+
         PrintWriter out = response.getWriter();
 
         String filename = fp.getName().toLowerCase();
+        
+        // This was never used!!!
         String end = "</BODY></HTML>";
 
         response.setContentType("text/html");
-        out.println(HTML_DOCTYPE + "<HTML>\n<HEAD><TITLE>" + filename +
-                    "</TITLE></HEAD>\r\n<BODY>\r\n<H1>Directory " +
-                    filename+"</H1>\r\n");
+        out.println(HTML_DOCTYPE + "<HTML>\n<HEAD><TITLE>" + filename
+                + "</TITLE></HEAD>\r\n<BODY>\r\n<H1>Directory " + filename
+                + "</H1>\r\n");
         out.println(getStylesheetHTML(request));
 
         if (!listFiles) {
@@ -88,32 +94,38 @@ public class DirectoryServlet extends VPFHttpServlet {
             }
             Collections.sort(directories);
             Collections.sort(filenames);
-            
+
             if (!pathInfo.endsWith("/")) {
                 pathInfo += '/';
             }
-            
+
             HtmlListElement filelist = new HtmlListElement("Sub-Directories");
-            
-            for (Iterator dir = directories.iterator(); dir.hasNext(); ) {
-                String url = fileURL(request, response,
-                                     pathInfo, (String)dir.next());
+
+            for (Iterator dir = directories.iterator(); dir.hasNext();) {
+                String url = fileURL(request,
+                        response,
+                        pathInfo,
+                        (String) dir.next());
                 filelist.addElement(url);
             }
             filelist.generate(out);
-            
+
             filelist = new HtmlListElement("Files");
-            for (Iterator file = filenames.iterator(); file.hasNext(); ) {
-                String url = fileURL(request, response,
-                                     pathInfo, (String)file.next());
+            for (Iterator file = filenames.iterator(); file.hasNext();) {
+                String url = fileURL(request,
+                        response,
+                        pathInfo,
+                        (String) file.next());
                 filelist.addElement(url);
             }
             filelist.generate(out);
         }
+        out.println(end);
     }
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        listFiles = Boolean.valueOf(config.getInitParameter("listDirectories")).booleanValue();
+        listFiles = Boolean.valueOf(config.getInitParameter("listDirectories"))
+                .booleanValue();
     }
 }

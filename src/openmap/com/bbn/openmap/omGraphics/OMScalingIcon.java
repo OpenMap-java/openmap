@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingIcon.java,v $
 // $RCSfile: OMScalingIcon.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/01/10 16:58:34 $
+// $Revision: 1.8 $
+// $Date: 2005/08/11 20:39:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -150,7 +150,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.
-     * @param ii ImageIcon used for the image.
+     * @param image ImageIcon used for the image.
      */
     public OMScalingIcon(float centerLat, float centerLon, Image image) {
         this(centerLat, centerLon, 0, 0, image, 4000000);

@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UPSPoint.java,v $
 // $RCSfile: UPSPoint.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:24 $
+// $Revision: 1.7 $
+// $Date: 2005/08/11 20:39:18 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -39,7 +39,6 @@ import com.bbn.openmap.LatLonPoint;
  * <p>
  * 
  * @author Bob Hayes
- * @created April 18, 2003
  */
 public class UPSPoint {
 

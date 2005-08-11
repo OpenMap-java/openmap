@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionFactory.java,v $
 // $RCSfile: ProjectionFactory.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/01/10 17:06:17 $
+// $Revision: 1.12 $
+// $Date: 2005/08/11 20:39:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -465,12 +465,13 @@ public class ProjectionFactory extends OMComponent {
      * if it has a problem creating the projection with the provided
      * parameters.
      * 
+     * @param loader projection loader to use.
      * @param centerLat center latitude in decimal degrees.
      * @param centerLon center latitude in decimal degrees.
      * @param scale float scale.
      * @param width pixel width of projection.
      * @param height pixel height of projection.
-     * @param projProperties a Properties object to add the parameters
+     * @param projProps a Properties object to add the parameters
      *        to, which can include extra parameters that are needed
      *        by this particular projection loader. If null, a
      *        Properties object will be created.

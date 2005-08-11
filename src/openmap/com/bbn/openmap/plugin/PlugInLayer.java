@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.16 $
-// $Date: 2005/05/24 01:06:45 $
+// $Revision: 1.17 $
+// $Date: 2005/08/11 20:39:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -279,7 +279,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
     /**
      * Set the MapMouseListener for the layer.
      * 
-     * @param mml the object that will handle the mouse events for the
+     * @param mmlIn the object that will handle the mouse events for the
      *        layer.
      */
     public synchronized void setMapMouseListener(MapMouseListener mmlIn) {

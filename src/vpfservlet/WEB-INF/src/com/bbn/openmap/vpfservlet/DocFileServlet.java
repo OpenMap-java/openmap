@@ -9,29 +9,32 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/DocFileServlet.java,v $
-// $Revision: 1.3 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2005/08/11 20:39:16 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 
-import com.bbn.openmap.layer.util.html.*;
-import com.bbn.openmap.layer.vpf.*;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.layer.vpf.DcwRecordFile;
 
 /**
  * This class handles displaying VPF .doc files
  */
 public class DocFileServlet extends VPFHttpServlet {
     /** the columns we need from a VPF doc file */
-    static final String FieldColumns[] = {"text"};
+    static final String FieldColumns[] = { "text" };
     /** the fields in a VPF doc file we need */
-    static final char[] FieldTypeSchema = {'T'};
+    static final char[] FieldTypeSchema = { 'T' };
     /** the field lengths in a VPF doc file we need */
-    static final int[] FieldLengthSchema = {-1};
+    static final int[] FieldLengthSchema = { -1 };
 
     /**
      * A do-nothing constructor - init does all the work.
@@ -41,9 +44,9 @@ public class DocFileServlet extends VPFHttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
 
-        String filePath = (String)request.getAttribute(DispatchServlet.ROOTPATH_FILENAME);
+        String filePath = (String) request.getAttribute(DispatchServlet.ROOTPATH_FILENAME);
         if (filePath == null) {
             String pathInfo = setPathInfo(request);
             filePath = contextInfo.resolvePath(pathInfo);
@@ -57,7 +60,7 @@ public class DocFileServlet extends VPFHttpServlet {
             docfile = new DcwRecordFile(filePath);
         } catch (FormatException fe) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                               " docfile not found");
+                    " docfile not found");
             return;
         }
 
@@ -71,10 +74,13 @@ public class DocFileServlet extends VPFHttpServlet {
         String title = "VPF Documentation File " + tableName;
         out.println("<HEAD><TITLE>" + title + "</TITLE></HEAD>");
         out.println("<BODY><H1>" + title + "</H1>");
-        
+
         try {
-            docfile.lookupSchema(FieldColumns, true,
-                                 FieldTypeSchema, FieldLengthSchema, false);
+            docfile.lookupSchema(FieldColumns,
+                    true,
+                    FieldTypeSchema,
+                    FieldLengthSchema,
+                    false);
         } catch (FormatException fe) {
             out.println("The documentation file appears to be invalid.");
             RequestDispatcher rd = request.getRequestDispatcher("/Schema");
@@ -83,7 +89,7 @@ public class DocFileServlet extends VPFHttpServlet {
             docfile.close();
             return;
         }
-        
+
         ArrayList al = new ArrayList(FieldTypeSchema.length);
         out.println("<pre>");
         try {
