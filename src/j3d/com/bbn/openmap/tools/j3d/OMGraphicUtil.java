@@ -14,33 +14,54 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OMGraphicUtil.java,v $
 // $RCSfile: OMGraphicUtil.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:38 $
+// $Revision: 1.6 $
+// $Date: 2005/08/11 19:27:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
 
 package com.bbn.openmap.tools.j3d;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.grid.*;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
-
-import com.sun.j3d.utils.geometry.*;
-import java.awt.*;
-import java.awt.geom.*;
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.Shape;
+import java.awt.geom.FlatteningPathIterator;
+import java.awt.geom.PathIterator;
 import java.util.HashSet;
 import java.util.Iterator;
-import javax.vecmath.*;
-import javax.media.j3d.*;
+
+import javax.media.j3d.Appearance;
+import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.LineArray;
+import javax.media.j3d.LineStripArray;
+import javax.media.j3d.Material;
+import javax.media.j3d.PolygonAttributes;
+import javax.media.j3d.Shape3D;
+import javax.media.j3d.TriangleStripArray;
+import javax.vecmath.Color3f;
+import javax.vecmath.Color4b;
+import javax.vecmath.Point3d;
+
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.omGraphics.OMGeometryList;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMGrid;
+import com.bbn.openmap.omGraphics.grid.GridData;
+import com.bbn.openmap.omGraphics.grid.OMGridGenerator;
+import com.bbn.openmap.omGraphics.grid.SimpleColorGenerator;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
+import com.sun.j3d.utils.geometry.GeometryInfo;
+import com.sun.j3d.utils.geometry.NormalGenerator;
+import com.sun.j3d.utils.geometry.Stripifier;
+import com.sun.j3d.utils.geometry.Triangulator;
 
 /**
  * This class handles translating OMGraphics into a Java 3D Scene.
  * 
  * @author dietrick
- * @created April 25, 2002
  */
 public class OMGraphicUtil {
 
@@ -77,8 +98,6 @@ public class OMGraphicUtil {
         if (graphic == null) {
             return NULL_ITERATOR;
         }
-
-        Iterator subList;
 
         if (graphic instanceof OMGraphicList
                 && !(graphic instanceof OMGeometryList)) {
@@ -191,7 +210,7 @@ public class OMGraphicUtil {
         }
 
         LatLonPoint anchorLL = new LatLonPoint(grid.getLatitude(), grid.getLongitude());
-        Point anchorP = projection.forward(anchorLL);
+//        Point anchorP = projection.forward(anchorLL);
         float vRes = grid.getVerticalResolution();
         float hRes = grid.getHorizontalResolution();
 
@@ -350,7 +369,6 @@ public class OMGraphicUtil {
         FlatteningPathIterator pi = new FlatteningPathIterator(pi2, flatness);
 
         double[] coords = new double[6];
-        int count = 0;
         double pntx = 0;
         double pnty = 0;
         double pntz = baselineHeight;
@@ -365,10 +383,8 @@ public class OMGraphicUtil {
 
         while (!pi.isDone()) {
             int type = pi.currentSegment(coords);
-            float dist;
 
             switch (type) {
-
             case PathIterator.SEG_MOVETO:
                 if (dataIndex != 0) {
                     shape3D = createShape3D(data,

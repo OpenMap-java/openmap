@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/MapContent.java,v $
 // $RCSfile: MapContent.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:38 $
+// $Revision: 1.7 $
+// $Date: 2005/08/11 19:27:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -26,18 +26,32 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.image.BufferedImage;
-import java.util.Iterator;
 import java.util.HashSet;
-import javax.media.j3d.*;
-import javax.vecmath.*;
+import java.util.Iterator;
 
-import com.bbn.openmap.*;
+import javax.media.j3d.Appearance;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.GeometryArray;
+import javax.media.j3d.ImageComponent2D;
+import javax.media.j3d.QuadArray;
+import javax.media.j3d.Shape3D;
+import javax.media.j3d.Texture;
+import javax.media.j3d.Texture2D;
+import javax.media.j3d.TransformGroup;
+import javax.media.j3d.TransparencyAttributes;
+import javax.vecmath.Point2f;
+import javax.vecmath.Point3f;
+
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.LayerHandler;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.image.AcmeGifFormatter;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGrid;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-
 import com.sun.j3d.utils.image.TextureLoader;
 
 /**
@@ -48,7 +62,6 @@ import com.sun.j3d.utils.image.TextureLoader;
  * into the scene as specific objects.
  * 
  * @author dietrick
- * @created April 25, 2002
  */
 public class MapContent extends BranchGroup implements OM3DConstants {
 

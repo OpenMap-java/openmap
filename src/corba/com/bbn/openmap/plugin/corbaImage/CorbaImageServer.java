@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/plugin/corbaImage/CorbaImageServer.java,v $
 // $RCSfile: CorbaImageServer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:37 $
+// $Revision: 1.5 $
+// $Date: 2005/08/11 19:30:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -73,7 +73,7 @@ public class CorbaImageServer extends ServerPOA {
      * Retrieve the subframe data from the frame cache, decompress it,
      * and convert it to an image.
      * 
-     * @param properties a sequence of key/value pairs from the
+     * @param request a sequence of key/value pairs from the
      *        client, stating preferences.
      * @return byte[] of image
      */
@@ -110,7 +110,7 @@ public class CorbaImageServer extends ServerPOA {
     /**
      * Start the server.
      * 
-     * @args command line arguments.
+     * @param args command line arguments.
      */
     public void start(String[] args) {
 

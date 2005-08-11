@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/CRFPServer.java,v $
 // $RCSfile: CRFPServer.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 20:57:25 $
+// $Revision: 1.6 $
+// $Date: 2005/08/11 19:30:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -475,7 +475,7 @@ public class CRFPServer extends ServerPOA implements ActionListener {
     /**
      * Start the server.
      * 
-     * @args command line arguments.
+     * @param args command line arguments.
      */
     public void start(String[] args) {
         CORBASupport cs = new CORBASupport();

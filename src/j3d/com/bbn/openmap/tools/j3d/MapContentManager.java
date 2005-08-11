@@ -14,21 +14,30 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/MapContentManager.java,v $
 // $RCSfile: MapContentManager.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:38 $
+// $Revision: 1.5 $
+// $Date: 2005/08/11 19:27:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
 
 package com.bbn.openmap.tools.j3d;
 
+import java.awt.BorderLayout;
+
+import javax.media.j3d.AmbientLight;
+import javax.media.j3d.Background;
+import javax.media.j3d.Behavior;
+import javax.media.j3d.BoundingLeaf;
+import javax.media.j3d.BoundingSphere;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Group;
+import javax.media.j3d.TransformGroup;
+import javax.swing.JFrame;
+
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import java.awt.*;
-import javax.media.j3d.*;
-import javax.swing.JFrame;
 
 /**
  * The 3D manager that takes an OpenMap MapHandler, and creates a 3D
@@ -36,7 +45,6 @@ import javax.swing.JFrame;
  * to 3D objects.
  * 
  * @author dietrick
- * @created April 25, 2002
  */
 public class MapContentManager extends OM3DManager {
 

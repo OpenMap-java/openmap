@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/ControlledManager.java,v $
 // $RCSfile: ControlledManager.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:38 $
+// $Revision: 1.5 $
+// $Date: 2005/08/11 19:27:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -34,7 +34,6 @@ import javax.swing.JFrame;
  * just not position. (I don't think they do, yet).
  * 
  * @author dietrick
- * @created April 25, 2002
  */
 public class ControlledManager extends MapContentManager {
 

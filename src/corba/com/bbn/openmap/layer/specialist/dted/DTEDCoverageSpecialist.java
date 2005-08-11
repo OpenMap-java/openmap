@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/dted/DTEDCoverageSpecialist.java,v $
 // $RCSfile: DTEDCoverageSpecialist.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 21:00:12 $
+// $Revision: 1.7 $
+// $Date: 2005/08/11 19:30:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -266,9 +266,9 @@ public class DTEDCoverageSpecialist extends Specialist {
      * Take a string, representing the hex values for a color, and
      * convert it to a java Color.
      * 
-     * @param p properties
-     * @param propName the name of the property
-     * @param the default color to use if the property value doesn't
+     * @param p properties.
+     * @param propName the name of the property.
+     * @param dfault the default color to use if the property value doesn't
      *        work.
      * @return the java Color.
      */

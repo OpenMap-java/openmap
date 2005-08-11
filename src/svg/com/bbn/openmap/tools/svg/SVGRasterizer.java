@@ -173,7 +173,7 @@ public class SVGRasterizer {
     /**
      * Sets the height of the image to rasterize.
      * 
-     * @param width the image height
+     * @param height the image height
      */
     public void setImageHeight(float height) {
         hints.put(ImageTranscoder.KEY_HEIGHT, new Float(height));

@@ -18,7 +18,6 @@ import javax.media.j3d.*;
  * well as a separate branch for cameras.
  * 
  * @author Justin Couch
- * @created April 25, 2002
  * @version Who Cares!
  */
 public class UniverseManager extends VirtualUniverse {

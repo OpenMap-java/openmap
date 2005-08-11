@@ -18,9 +18,7 @@ import com.bbn.openmap.tools.j3d.OMGraphicUtil;
  * barrier that will hide those leftovers.
  * 
  * @author dietrick
- * @created April 25, 2002
  */
-
 public class Curtain extends MapHandlerChild implements OM3DGraphicHandler {
 
     /**

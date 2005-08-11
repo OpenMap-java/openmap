@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/vpf/GraphicWarehouseSupport.java,v
 // $
 // $RCSfile: GraphicWarehouseSupport.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 21:02:33 $
+// $Revision: 1.6 $
+// $Date: 2005/08/11 19:30:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,7 +45,7 @@ import com.bbn.openmap.layer.specialist.SText;
 
 public abstract class GraphicWarehouseSupport implements VPFGraphicWarehouse {
 
-    /** @HACK around antarctica display problem. */
+    /** HACK around antarctica display problem. */
     final transient protected static float antarcticaThreshold = -89.9f;
 
     /** hang on to the graphics that we build */

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OMKeyBehavior.java,v $
 // $RCSfile: OMKeyBehavior.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:38 $
+// $Revision: 1.5 $
+// $Date: 2005/08/11 19:27:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -88,7 +88,6 @@ import com.bbn.openmap.proj.Projection;
  *       COLLABORATORS: 
  * </pre>
  * 
- * @created April 25, 2002
  * @version 1.0, 25 September 1998 aajc
  */
 public class OMKeyBehavior extends Behavior {

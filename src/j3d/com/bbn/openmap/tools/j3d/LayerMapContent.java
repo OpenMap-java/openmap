@@ -14,8 +14,8 @@
  *
  *  $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/LayerMapContent.java,v $
  *  $RCSfile: LayerMapContent.java,v $
- *  $Revision: 1.5 $
- *  $Date: 2004/10/14 18:05:38 $
+ *  $Revision: 1.6 $
+ *  $Date: 2005/08/11 19:27:04 $
  *  $Author: dietrick $
  *
  *  **********************************************************************
@@ -40,7 +40,6 @@ import com.bbn.openmap.util.Debug;
  * background color of the map.
  * 
  * @author dietrick
- * @created April 25, 2002
  */
 public class LayerMapContent extends OrderedGroup {
 

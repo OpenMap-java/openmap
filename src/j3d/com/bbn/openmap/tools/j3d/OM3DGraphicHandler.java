@@ -14,8 +14,8 @@
  *
  *  $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OM3DGraphicHandler.java,v $
  *  $RCSfile: OM3DGraphicHandler.java,v $
- *  $Revision: 1.3 $
- *  $Date: 2004/10/14 18:05:38 $
+ *  $Revision: 1.4 $
+ *  $Date: 2005/08/11 19:27:04 $
  *  $Author: dietrick $
  *
  *  **********************************************************************
@@ -29,7 +29,6 @@ package com.bbn.openmap.tools.j3d;
  * object that you can use to add different objects to the scene.
  * 
  * @author dietrick
- * @created April 25, 2002
  */
 public interface OM3DGraphicHandler {
 

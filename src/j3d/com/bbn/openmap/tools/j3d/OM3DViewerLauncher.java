@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OM3DViewerLauncher.java,v $
 // $RCSfile: OM3DViewerLauncher.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:38 $
+// $Revision: 1.5 $
+// $Date: 2005/08/11 19:27:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -36,7 +36,6 @@ import javax.swing.*;
 
 /**
  * @author dietrick
- * @created April 25, 2002
  */
 public class OM3DViewerLauncher extends MapHandlerChild implements
         ActionListener, Tool, OM3DGraphicHandler {

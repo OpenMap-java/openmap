@@ -21,7 +21,6 @@ import javax.vecmath.AxisAngle4f;
  * Basic view consists of the standard placement.
  * 
  * @author Justin Couch
- * @created April 25, 2002
  * @author dietrick
  */
 public class Camera implements OM3DConstants {
