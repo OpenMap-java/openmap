@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleFilterLayer.java,v $
 // $RCSfile: ScaleFilterLayer.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/08/09 18:05:09 $
+// $Revision: 1.11 $
+// $Date: 2005/08/11 21:34:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -216,7 +216,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * 
      * @return Layer
      */
-    protected Layer getAppropriateLayer() {
+    public Layer getAppropriateLayer() {
         Vector target = getLayers();
         if (target == null) {
             return SinkLayer.getSharedInstance();

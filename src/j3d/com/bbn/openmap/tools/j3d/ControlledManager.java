@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/ControlledManager.java,v $
 // $RCSfile: ControlledManager.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/11 19:27:04 $
+// $Revision: 1.6 $
+// $Date: 2005/08/11 21:34:55 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -93,7 +93,7 @@ public class ControlledManager extends MapContentManager {
         frame.setSize(width, height);
         frame.getContentPane().setLayout(new BorderLayout());
         ControlledManager c3d = new ControlledManager(mapHandler, controller, background, contentMask);
-
+        c3d.compileUniverse();
         frame.getContentPane().add("Center", c3d.getCanvas());
         return frame;
     }

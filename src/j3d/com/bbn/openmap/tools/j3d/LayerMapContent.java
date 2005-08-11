@@ -14,8 +14,8 @@
  *
  *  $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/LayerMapContent.java,v $
  *  $RCSfile: LayerMapContent.java,v $
- *  $Revision: 1.6 $
- *  $Date: 2005/08/11 19:27:04 $
+ *  $Revision: 1.7 $
+ *  $Date: 2005/08/11 21:34:55 $
  *  $Author: dietrick $
  *
  *  **********************************************************************
@@ -24,10 +24,17 @@ package com.bbn.openmap.tools.j3d;
 
 import java.awt.Color;
 import java.util.Iterator;
-import javax.media.j3d.*;
 
-import com.bbn.openmap.*;
+import javax.media.j3d.Group;
+import javax.media.j3d.OrderedGroup;
+import javax.media.j3d.Shape3D;
+
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.LayerHandler;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.layer.ScaleFilterLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
@@ -100,6 +107,10 @@ public class LayerMapContent extends OrderedGroup {
             for (int i = layers.length - 1; i >= 0; i--) {
                 Layer layer = layers[i];
                 if (layer.isVisible()) {
+                    if (layer instanceof ScaleFilterLayer) {
+                        ScaleFilterLayer sfl = (ScaleFilterLayer) layer;
+                        layer = sfl.getAppropriateLayer();
+                    }
                     if (layer instanceof OMGraphicHandlerLayer) {
                         addContent(this,
                                 (OMGraphicHandlerLayer) layer,
@@ -137,7 +148,7 @@ public class LayerMapContent extends OrderedGroup {
             int height = proj.getHeight();
 
             java.awt.geom.GeneralPath background =
-            //              OMGraphic.createBoxShape(0, 0, width, height);
+            // OMGraphic.createBoxShape(0, 0, width, height);
             OMGraphic.createBoxShape(-width, -height, width * 3, height * 3);
 
             addTo(bg,

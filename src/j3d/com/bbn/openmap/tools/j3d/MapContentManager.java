@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/MapContentManager.java,v $
 // $RCSfile: MapContentManager.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/11 19:27:04 $
+// $Revision: 1.6 $
+// $Date: 2005/08/11 21:34:55 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -27,7 +27,6 @@ import java.awt.BorderLayout;
 import javax.media.j3d.AmbientLight;
 import javax.media.j3d.Background;
 import javax.media.j3d.Behavior;
-import javax.media.j3d.BoundingLeaf;
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Group;
@@ -75,9 +74,19 @@ public class MapContentManager extends OM3DManager {
         setSceneBackground(background);
         // objRootBG gets created in super class
         addMapContent(mapHandler, objRootBG, contentMask);
+    }
 
+    /**
+     * IMPORTANT! You need to call this to compile the universe after
+     * everything is set.
+     */
+    public void compileUniverse() {
         // Important!! Compiles the universe
         ((UniverseManager) universe).makeLive();
+    }
+
+    public void addBehavior(Behavior behavior) {
+        objRootBG.addChild(behavior);
     }
 
     /**
@@ -116,7 +125,7 @@ public class MapContentManager extends OM3DManager {
 
             BoundingSphere bs = new BoundingSphere(ORIGIN, boundsDimension);
 
-            BoundingLeaf boundingLeaf = new BoundingLeaf(bs);
+            //BoundingLeaf boundingLeaf = new BoundingLeaf(bs);
 
             background.setApplicationBounds(bs);
 
@@ -130,13 +139,13 @@ public class MapContentManager extends OM3DManager {
             ambientLight.setInfluencingBounds(bs);
             worldGroup.addChild(ambientLight);
 
-            /////////
+            // ///////
             Behavior beh = getMotionBehavior((TransformGroup) getCamera().getNode(),
                     projection);
             beh.setSchedulingBounds(bs);
 
             worldGroup.addChild(beh);
-            /////////
+            // ///////
             worldGroup.addChild(mapTransformGroup);
         }
     }
@@ -194,8 +203,8 @@ public class MapContentManager extends OM3DManager {
         frame.setSize(width, height);
         frame.getContentPane().setLayout(new BorderLayout());
         MapContentManager mc3d = new MapContentManager(mapHandler, background, contentMask);
+        mc3d.compileUniverse();
         frame.getContentPane().add("Center", mc3d.getCanvas());
         return frame;
     }
 }
-

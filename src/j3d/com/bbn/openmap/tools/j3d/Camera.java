@@ -123,7 +123,7 @@ public class Camera implements OM3DConstants {
      * 
      * @return The root TransformGroup of the camera
      */
-    Node getNode() {
+    public Node getNode() {
         return root_tx_grp;
     }
 }
