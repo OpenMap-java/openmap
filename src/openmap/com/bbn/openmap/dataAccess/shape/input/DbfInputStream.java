@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/DbfInputStream.java,v $
 // $RCSfile: DbfInputStream.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 17:23:43 $
+// $Revision: 1.9 $
+// $Date: 2005/08/12 14:25:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -79,8 +79,7 @@ public class DbfInputStream {
     private short _headerLength = -1;
 
     /** The record length */
-//    private short _recordLength = -1; // Unused
-
+    // private short _recordLength = -1; // Unused
     /**
      * An ArrayList with each element representing a record, which
      * itself is an ArrayList
@@ -170,13 +169,13 @@ public class DbfInputStream {
      * Reads the header
      */
     private void readHeader() throws IOException {
-        /*byte description = */_leis.readByte();
-        /*byte year = */_leis.readByte();
-        /*byte month = */_leis.readByte();
-        /*byte day = */_leis.readByte();
+        /* byte description = */_leis.readByte();
+        /* byte year = */_leis.readByte();
+        /* byte month = */_leis.readByte();
+        /* byte day = */_leis.readByte();
         _rowCount = _leis.readLEInt();
         _headerLength = _leis.readLEShort();
-        /*_recordLength = */_leis.readLEShort();
+        /* _recordLength = */_leis.readLEShort();
         _columnCount = (_headerLength - 32 - 1) / 32;
         _leis.skipBytes(20);
     }
@@ -193,6 +192,14 @@ public class DbfInputStream {
 
         for (int n = 0; n <= _columnCount - 1; n++) {
             _columnNames[n] = _leis.readString(11);
+            //
+            // Some TIGER dbf files from ESRI have nulls
+            // in the column names. Delete them.
+            //
+            int ix = _columnNames[n].indexOf((char) 0);
+            if (ix > 0) {
+                _columnNames[n] = _columnNames[n].substring(0, ix);
+            }
             _types[n] = (byte) _leis.readByte();
             _leis.skipBytes(4);
             _lengths[n] = _leis.readUnsignedByte();
@@ -226,13 +233,13 @@ public class DbfInputStream {
                 String cell = _leis.readString(length);
                 if (type == DbfTableModel.TYPE_NUMERIC && !cell.equals("")) {
                     try {
-                        //                         record.add(c, new Double(cell));
+                        // record.add(c, new Double(cell));
                         record.add(c, new Double(df.parse(cell).doubleValue()));
-                        //                     } catch (NumberFormatException nfe) {
-                        //                         Debug.error("DbfInputStream: error reading
+                        // } catch (NumberFormatException nfe) {
+                        // Debug.error("DbfInputStream: error reading
                         // column " + c + ", row " + r +
-                        //                                     ", expected number and got " + cell);
-                        //                         record.add(c, new Double(0));
+                        // ", expected number and got " + cell);
+                        // record.add(c, new Double(0));
                     } catch (java.text.ParseException pe) {
                         Debug.error("DbfInputStream:  error parsing column "
                                 + c + ", row " + r
