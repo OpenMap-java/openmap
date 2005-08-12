@@ -16,21 +16,23 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/Road.java,v
 // $
 // $RCSfile: Road.java,v $
-// $Revision: 1.3 $
-// $Date: 2005/08/09 20:45:09 $
+// $Revision: 1.4 $
+// $Date: 2005/08/12 21:47:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.tools.roads;
 
-import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.proj.GreatCircle;
-import com.bbn.openmap.LatLonPoint;
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.logging.Logger;
 
-public class Road implements RoadObject {
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.GreatCircle;
+
+public class Road implements RoadObject, Serializable {
     Logger logger = Logger.getLogger(this.getClass().getName());
 
     /**
@@ -73,7 +75,7 @@ public class Road implements RoadObject {
     /**
      * The RoadLayer we belong to so we can invoke its services.
      */
-    private RoadLayer roadLayer;
+    private transient RoadLayer roadLayer;
 
     /**
      * Selection flag for this road.

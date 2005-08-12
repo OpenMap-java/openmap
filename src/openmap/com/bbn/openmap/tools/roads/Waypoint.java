@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/Waypoint.java,v
 // $
 // $RCSfile: Waypoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:28 $
+// $Revision: 1.3 $
+// $Date: 2005/08/12 21:47:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,13 +26,14 @@ package com.bbn.openmap.tools.roads;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
 
-public abstract class Waypoint extends Visual {
+public abstract class Waypoint extends Visual implements Serializable {
 
     /**
      * The location of this waypoint.

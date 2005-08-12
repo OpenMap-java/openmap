@@ -17,24 +17,14 @@
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/RoadFinder.java,v $
  * $RCSfile: RoadFinder.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/11 20:39:19 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/12 21:47:49 $
  * $Author: dietrick $
  *
  * **********************************************************************
  */
 
 package com.bbn.openmap.tools.roads;
-
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.event.ProjectionListener;
-import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.omGraphics.OMGeometry;
-import com.bbn.openmap.omGraphics.OMLine;
-import com.bbn.openmap.omGraphics.OMPoint;
-import com.bbn.openmap.omGraphics.OMText;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.quadtree.QuadTree;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -45,14 +35,33 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.io.PrintStream;
-import java.util.*;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.event.ProjectionListener;
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.quadtree.QuadTree;
 
 /**
  * Gives road access to a shape or vpf layer.
  */
-public class RoadFinder implements ProjectionListener, RoadLayer {
+public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
 
     protected RoadClasses roadClasses = new RoadClasses();
 
@@ -137,7 +146,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
     /**
      * Take the shape data on the layer and use it to populate our
      * roads and intersections.
-     *  
+     * 
      */
     protected void getRoads() throws Exception {
         roadsMade = 0;
@@ -182,7 +191,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
                     itemsInPath++;
                     boolean offScreen = false;
                     if (points[0] < 0 || points[0] >= width) {
-                        //logger.warning("skipping x point " +
+                        // logger.warning("skipping x point " +
                         // points[0] + " b/c it's off the map.");
                         offScreen = true;
                     }
@@ -473,7 +482,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
             logger.warning("Error : somehow made a road " + road
                     + " with too few points.");
         else if (logger.isLoggable(Level.INFO)) {
-            //logger.info("made " + road);
+            // logger.info("made " + road);
         }
 
         return road;
@@ -530,8 +539,8 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
                     - loc.getLongitude()));
             if (distance * Intersection.GRID > 0.1f) {
                 intersection = findIntersection(loc); // Ignore the
-                                                      // name, it's
-                                                      // too far away.
+                // name, it's
+                // too far away.
                 System.out.println("Using " + intersection.getName()
                         + " instead of " + name + " distance = " + distance);
                 return intersection;
@@ -728,22 +737,21 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
     }
 
     /**
-     * The main public method!
+     * Displays a Route between two points on the map.
+     * <p>
      * 
-     * find closest intersection to start and end find path from start
-     * intersection to end intersection
-     * 
-     * @param start from start point on map
+     * @param start start from start point on map
      * @param end to end point on map
+     * @param route the Route to travel from start to end
      * @param segments as side effect, populated with PathSegments
      *        between returned WayPoints
      * @return List of WayPoints
      */
-    public List getPathOnRoad(Point start, Point end, List segments) {
+    public List displayPathOnRoad(Point start, Point end, Route route,
+                                  List segments) {
         List newPoints;
         try {
-            Route bestRoute = getRouteBetweenPoints(start, end);
-            if (bestRoute == null) {
+            if (route == null) {
                 OMPoint point = new RedPoint(start.x, start.y, 5);
                 toDraw.add(point);
                 point = new RedPoint(end.x, end.y, 5);
@@ -760,7 +768,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
             }
 
             newPoints = new ArrayList();
-            populatePointsAndSegments(bestRoute, newPoints, segments);
+            populatePointsAndSegments(route, newPoints, segments);
 
             if (drawResults) {
                 Point last = null;
@@ -782,6 +790,34 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
                 line = new YellowLine(last.x, last.y, end.x, end.y, 10);
                 toDraw.add(line);
             }
+        } catch (Exception e) {
+            logger.warning("Got exception " + e);
+            e.printStackTrace();
+            return null;
+        }
+
+        return newPoints;
+
+    }
+
+    /**
+     * Finds closest intersection to start and end find path from
+     * start intersection to end intersection
+     * <p>
+     * 
+     * This method works on screen coordinates.
+     * 
+     * @param start from start point on map
+     * @param end to end point on map
+     * @param segments as side effect, populated with PathSegments
+     *        between returned WayPoints
+     * @return List of WayPoints
+     */
+    public List getPathOnRoad(Point start, Point end, List segments) {
+        List newPoints;
+        try {
+            Route bestRoute = getRouteBetweenPoints(start, end);
+            newPoints = displayPathOnRoad(start, end, bestRoute, segments);
         } catch (Exception e) {
             logger.warning("Got exception " + e);
             e.printStackTrace();
@@ -831,13 +867,17 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
     }
 
     /**
-     * get Route between two points
+     * Returns best Route between two points specified by latitude and
+     * longitude.
+     * <p>
+     * 
+     * This method works on latitude/longitude coordinates.
      * 
      * @return Route between two points
      */
-    public Route getRouteBetweenPoints(Point start, Point end) {
-        Intersection startTemp = findClosestIntersection(start.x, start.y);
-        Intersection endTemp = findClosestIntersection(end.x, end.y);
+    public Route getPathOnRoad(LatLonPoint start, LatLonPoint end) {
+        Intersection startTemp = findClosestIntersection(start);
+        Intersection endTemp = findClosestIntersection(end);
 
         Route bestRoute = null;
 
@@ -878,14 +918,35 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
     }
 
     /**
+     * Returns best Route between two points
+     * 
+     * This method works on latitude/longitude coordinates.
+     * 
+     * @return Route between two points
+     */
+    public Route getRouteBetweenPoints(Point start, Point end) {
+        return getPathOnRoad(createLatLonPoint(start.x, start.y),
+                createLatLonPoint(end.x, end.y));
+    }
+
+    /**
      * Look in intersection Quad Tree for closest intersection to
      * point x,y
      * 
      * @return Intersection closest
      */
     protected Intersection findClosestIntersection(int x, int y) {
-        LatLonPoint latLon = createLatLonPoint(x, y);
+        return findClosestIntersection(createLatLonPoint(x, y));
+    }
 
+    /**
+     * Look in intersection Quad Tree for closest intersection to
+     * point at specified latitude and longitude.
+     * <p>
+     * 
+     * @return Intersection closest
+     */
+    protected Intersection findClosestIntersection(LatLonPoint latLon) {
         Intersection inter = (Intersection) interQuadTree.get(latLon.getLatitude(),
                 latLon.getLongitude());
         if (inter == null)
@@ -909,7 +970,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         Projection proj = getProjection();
 
         Intersection origin = bestRoute.getOriginIntersection();
-//        Intersection dest = bestRoute.getDestinationIntersection();
+        // Intersection dest = bestRoute.getDestinationIntersection();
 
         if (logger.isLoggable(Level.INFO))
             logger.info("adding " + bestRoute.roads.length + " new roads.");
@@ -1039,8 +1100,8 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
      * as being in the roads vector.
      */
     protected void checkIntegrity() {
-        // 	CharArrayWriter errorWriter = new CharArrayWriter();
-        // 	PrintWriter errors = new PrintWriter(errorWriter);
+        // CharArrayWriter errorWriter = new CharArrayWriter();
+        // PrintWriter errors = new PrintWriter(errorWriter);
         PrintStream errors = System.err;
         Hashtable otherIntersections = new Hashtable();
         Object bothIntersections = new Object();
@@ -1094,23 +1155,23 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
                 errors.println("          Road = " + road);
             }
         }
-        // 	String errString = errorWriter.toString();
-        // 	if (errString.equals(""))
-        // 	    return;
-        // 	JTextArea text = new JTextArea(errString);
-        // 	JScrollPane scrollPane = new JScrollPane(text);
-        // 	final JFrame dialog = new JFrame("Errors");
-        // 	JButton ok = new JButton("OK");
-        // 	ok.addActionListener(new ActionListener() {
-        // 	    public void actionPerformed(ActionEvent e) {
-        // 		dialog.dispose();
-        // 	    }
-        // 	});
-        // 	dialog.getContentPane().add(scrollPane,
+        // String errString = errorWriter.toString();
+        // if (errString.equals(""))
+        // return;
+        // JTextArea text = new JTextArea(errString);
+        // JScrollPane scrollPane = new JScrollPane(text);
+        // final JFrame dialog = new JFrame("Errors");
+        // JButton ok = new JButton("OK");
+        // ok.addActionListener(new ActionListener() {
+        // public void actionPerformed(ActionEvent e) {
+        // dialog.dispose();
+        // }
+        // });
+        // dialog.getContentPane().add(scrollPane,
         // BorderLayout.CENTER);
-        // 	dialog.getContentPane().add(ok, BorderLayout.SOUTH);
-        // 	dialog.setSize(new java.awt.Dimension(640, 480));
-        // 	dialog.setVisible(true);
+        // dialog.getContentPane().add(ok, BorderLayout.SOUTH);
+        // dialog.setSize(new java.awt.Dimension(640, 480));
+        // dialog.setVisible(true);
     }
 
     static class RoadVector {

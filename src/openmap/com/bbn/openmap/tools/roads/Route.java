@@ -16,22 +16,24 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/Route.java,v
 // $
 // $RCSfile: Route.java,v $
-// $Revision: 1.3 $
-// $Date: 2005/08/09 20:45:09 $
+// $Revision: 1.4 $
+// $Date: 2005/08/12 21:47:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.tools.roads;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.proj.GreatCircle;
-import java.util.Hashtable;
+import java.io.Serializable;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-public class Route implements Cloneable {
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.proj.GreatCircle;
+
+public class Route implements Cloneable, Serializable {
 
     private static float MSEC_PER_HOUR = 3600000.0f;
 

@@ -16,27 +16,29 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/Visual.java,v
 // $
 // $RCSfile: Visual.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:28 $
+// $Revision: 1.3 $
+// $Date: 2005/08/12 21:47:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.tools.roads;
 
-public class Visual {
+import java.io.Serializable;
+
+public class Visual implements Serializable {
 
     /**
      * The visual representation of this Waypoint.
      */
-    private RoadGraphic visual;
+    private transient RoadGraphic visual;
 
     protected boolean blinkState = false;
 
     /**
      * The RoadLayer of which we are a part.
      */
-    protected RoadLayer layer;
+    protected transient RoadLayer layer;
 
     /**
      * Mark this Visual as needing to have its visual representation

@@ -17,8 +17,8 @@
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFRoadLayer.java,v $
  * $RCSfile: VPFRoadLayer.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/14 18:06:10 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/12 21:47:49 $
  * $Author: dietrick $
  *
  * **********************************************************************
@@ -26,16 +26,22 @@
 
 package com.bbn.openmap.layer.vpf;
 
+import java.awt.Graphics;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Logger;
+
+import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.tools.roads.*;
+import com.bbn.openmap.tools.roads.LayerView;
+import com.bbn.openmap.tools.roads.RoadFinder;
+import com.bbn.openmap.tools.roads.RoadServices;
+import com.bbn.openmap.tools.roads.Route;
 import com.bbn.openmap.util.PropUtils;
-
-import java.awt.Point;
-import java.awt.Graphics;
-import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Imposes a road layer on the VPF layer.
@@ -115,6 +121,30 @@ public class VPFRoadLayer extends VPFLayer implements ProjectionListener,
     }
 
     /**
+     * @see com.bbn.openmap.tools.roads.RoadServices#getPathOnRoad(com.bbn.openmap.LatLonPoint, com.bbn.openmap.LatLonPoint)
+     */
+    public Route getPathOnRoad(LatLonPoint start, LatLonPoint end) {
+      return helper.getPathOnRoad(start, end);
+    }
+
+    /**
+     * @see com.bbn.openmap.tools.roads.RoadServices#displayPathOnRoad(java.awt.Point, java.awt.Point, com.bbn.openmap.tools.roads.Route, java.util.List)
+     */
+    public List displayPathOnRoad(Point start, Point end, Route route, List segments) {
+      return helper.displayPathOnRoad(start, end, route, segments);
+    }
+    
+    /**
+     * Returns the RoadServices instance.
+     * <p>
+     * 
+     * @return the RoadServices instance.
+     */
+    public RoadServices getRoadServices() {
+      return helper;
+    }
+    
+    /**
      * Implemented for ProjectionListener
      */
     public void projectionChanged(ProjectionEvent e) {
@@ -183,4 +213,5 @@ public class VPFRoadLayer extends VPFLayer implements ProjectionListener,
         }
         return new ArrayList();
     }
+
 }

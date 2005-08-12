@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/RoadClass.java,v
 // $
 // $RCSfile: RoadClass.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:28 $
+// $Revision: 1.3 $
+// $Date: 2005/08/12 21:47:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,22 +25,23 @@
 package com.bbn.openmap.tools.roads;
 
 import java.awt.Color;
+import java.io.Serializable;
 
-public class RoadClass {
+public class RoadClass implements Serializable {
 
-    private Object name;
+    private Serializable name;
     private Color color;
     private int width;
     private float convoySpeed;
 
-    public RoadClass(Object name, Color color, int width, float convoySpeed) {
+    public RoadClass(Serializable name, Color color, int width, float convoySpeed) {
         this.name = name;
         this.color = color;
         this.width = width;
         this.convoySpeed = convoySpeed;
     }
 
-    public Object getName() {
+    public Serializable getName() {
         return name;
     }
 
