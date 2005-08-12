@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/BinaryFile.java,v $
 // $RCSfile: BinaryFile.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 18:00:47 $
+// $Revision: 1.7 $
+// $Date: 2005/08/12 22:13:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -158,7 +158,7 @@ public class BinaryFile {
                 }
 
                 // It's not in the classpath, so try it as a URL.
-                if (inputReader == null && name.indexOf("http:") != -1) {
+                if (inputReader == null) {
 
                     if (showDebug) {
                         Debug.output(" lastly, trying as URL: " + name);
