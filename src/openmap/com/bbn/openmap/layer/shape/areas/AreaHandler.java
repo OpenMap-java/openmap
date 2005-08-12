@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 19:28:02 $
+// $Revision: 1.9 $
+// $Date: 2005/08/12 20:59:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,51 +64,51 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  * 
  * <pre>
- * 
- *  
- *   layer.class=com.bbn.openmap.layer.shape.areas.AreaShapeLayer
- *   layer.prettyName=Layer Name
- *   layer.shapeFile=/usr/local/data/shape/shapefile.shp
- *   layer.spatialIndex=/usr/local/data/shape/shapefile.ssx
- *  
- *   # Now, provide a data file that says what the shapes in the .shp
- *   # file are.  You can use the DBF file:
- *   layer.dbfFile=/usr/local/data/shape/shapefile.dbf
- *   # OR a csv file, created yourself or from the .dbf file.  There
- *   # should be the same number of entries in the .csv file that are in
- *   # the .shp file.
- *   layer.csvFile=/usr/local/data/shape/shapefile.csv
- *   # An attribute to tell the AreaHandler to skip over the first row
- *   # of the csv file if it contains descriptive column header names.
- *   layer.csvFileHasHeader=true
- *  
- *   # Default DrawingAttributes properties for everything not defined
- *   # specifically:
- *   layer.lineColor=ff000000
- *   layer.fillColor=ffff00ff
- *  
- *   # Now add any other attributes accepted by the DrawingAttributes
- *   # object, with the prefix as stated above, i.e. layer.lineColor)
- *   #
- *   # The first column index is 0, not 1.
- *   #
- *   # The key index specifies which column in the csv file contains
- *   # unique area names that are listed in the areas list here in the
- *   # properties.  In this case, it's the column that contains MA in one
- *   # of its rows.
- *   layer.keyIndex=4
- *  
- *   # The name index is the column in the csv file that contains what
- *   # should be displayed in the application when a shape is chosen - the
- *   # object's proper name.
- *   layer.nameIndex=4
- *   layer.areas=MA RI
- *   layer.areas.MA.fillColor=ffff0000
- *   layer.areas.MA.lineColor=ff00ff00
- *   layer.areas.RI.fillColor=ffff0000
- *   layer.areas.RI.lineColor=ff00ff00
- *   
- *  
+ *     
+ *      
+ *       layer.class=com.bbn.openmap.layer.shape.areas.AreaShapeLayer
+ *       layer.prettyName=Layer Name
+ *       layer.shapeFile=/usr/local/data/shape/shapefile.shp
+ *       layer.spatialIndex=/usr/local/data/shape/shapefile.ssx
+ *      
+ *       # Now, provide a data file that says what the shapes in the .shp
+ *       # file are.  You can use the DBF file:
+ *       layer.dbfFile=/usr/local/data/shape/shapefile.dbf
+ *       # OR a csv file, created yourself or from the .dbf file.  There
+ *       # should be the same number of entries in the .csv file that are in
+ *       # the .shp file.
+ *       layer.csvFile=/usr/local/data/shape/shapefile.csv
+ *       # An attribute to tell the AreaHandler to skip over the first row
+ *       # of the csv file if it contains descriptive column header names.
+ *       layer.csvFileHasHeader=true
+ *      
+ *       # Default DrawingAttributes properties for everything not defined
+ *       # specifically:
+ *       layer.lineColor=ff000000
+ *       layer.fillColor=ffff00ff
+ *      
+ *       # Now add any other attributes accepted by the DrawingAttributes
+ *       # object, with the prefix as stated above, i.e. layer.lineColor)
+ *       #
+ *       # The first column index is 0, not 1.
+ *       #
+ *       # The key index specifies which column in the csv file contains
+ *       # unique area names that are listed in the areas list here in the
+ *       # properties.  In this case, it's the column that contains MA in one
+ *       # of its rows.
+ *       layer.keyIndex=4
+ *      
+ *       # The name index is the column in the csv file that contains what
+ *       # should be displayed in the application when a shape is chosen - the
+ *       # object's proper name.
+ *       layer.nameIndex=4
+ *       layer.areas=MA RI
+ *       layer.areas.MA.fillColor=ffff0000
+ *       layer.areas.MA.lineColor=ff00ff00
+ *       layer.areas.RI.fillColor=ffff0000
+ *       layer.areas.RI.lineColor=ff00ff00
+ *       
+ *      
  * </pre>
  * 
  * <P>
@@ -204,7 +204,7 @@ public class AreaHandler implements PropertyConsumer {
     protected String originalPrefix = null;
     protected SpatialIndex spatialIndex = null;
 
-    //      public AreaHandler() {}
+    // public AreaHandler() {}
 
     /**
      * Construct an AreaHandler. Needs an external SpatialIndex, and
@@ -307,11 +307,11 @@ public class AreaHandler implements PropertyConsumer {
 
         politicalAreas = new Hashtable();
 
-        //  OK, Get the graphics. We are not expecting that all the
-        //  graphics in the file are not too much to handle. Also, we
-        //  test for the serialized graphics file first, and if it
-        //  isn't designated, then look for a shapefile and spatial
-        //  index file to create an OMGraphicsList.
+        // OK, Get the graphics. We are not expecting that all the
+        // graphics in the file are not too much to handle. Also, we
+        // test for the serialized graphics file first, and if it
+        // isn't designated, then look for a shapefile and spatial
+        // index file to create an OMGraphicsList.
         String cacheFile = props.getProperty(prefix + CacheFileProperty);
 
         // First find the resource, if not, then try as a file-URL...
@@ -328,8 +328,7 @@ public class AreaHandler implements PropertyConsumer {
                 String dbfFile = props.getProperty(prefix + dbfFileProperty);
                 URL dbfFileURL = null;
                 if (dbfFile != null) {
-                    dbfFileURL = PropUtils.getResourceOrFileOrURL(this,
-                            dbfFile);
+                    dbfFileURL = PropUtils.getResourceOrFileOrURL(this, dbfFile);
                 }
                 if (dbfFileURL != null) {
                     InputStream is = dbfFileURL.openStream();
@@ -364,14 +363,15 @@ public class AreaHandler implements PropertyConsumer {
         // This is handled properly yet. The PoliticalArea should be
         // updated to handle URLs for area points, and have different
         // icons for different areas.
-        //      String defaultPointImageURLString =
+        // String defaultPointImageURLString =
         // props.getProperty(prefix + pointImageURLProperty);
 
         // Now, match the attributes to the graphics. Find the
         // indexes of the name and the search key. Also figure out
         // which areas have special coloring needs.
-        keyIndex = PropUtils.intFromProperties(props, prefix
-                + keyIndexProperty, keyIndex);
+        keyIndex = PropUtils.intFromProperties(props,
+                prefix + keyIndexProperty,
+                keyIndex);
         nameIndex = PropUtils.intFromProperties(props, prefix
                 + nameIndexProperty, nameIndex);
         String areas = props.getProperty(prefix + areasProperty);
@@ -597,7 +597,7 @@ public class AreaHandler implements PropertyConsumer {
         PoliticalArea pa = null;
 
         if (keyObj != null) {
-            key = ((String) keyObj).toUpperCase().intern();
+            key = createStringFromKeyObject(keyObj);
             pa = (PoliticalArea) politicalAreas.get(key);
         }
 
@@ -642,7 +642,7 @@ public class AreaHandler implements PropertyConsumer {
         // OFF BY ONE!!! The shape record numbers
         // assigned to the records start with 1, while
         // everything else we do starts with 0...
-        //Vector info = infoFile.getRecord(recordNumber-1);
+        // Vector info = infoFile.getRecord(recordNumber-1);
         if (dbfModel == null || dbfModel.getRowCount() < recordNumber) {
             if (Debug.debugging("areas")) {
                 Debug.output("AreaHandler.getDrawParameters: record "
@@ -656,7 +656,7 @@ public class AreaHandler implements PropertyConsumer {
         PoliticalArea pa = null;
 
         if (keyObj != null) {
-            key = ((String) keyObj).toUpperCase().intern();
+            key = createStringFromKeyObject(keyObj);
             pa = (PoliticalArea) politicalAreas.get(key);
         }
 
@@ -670,7 +670,7 @@ public class AreaHandler implements PropertyConsumer {
         } else {
             // Only bother with this the first time around.
             if (pa.name == null) {
-                //String name = (String) info.elementAt(nameIndex);
+                // String name = (String) info.elementAt(nameIndex);
                 String name = (String) dbfModel.getValueAt(recordNumber - 1,
                         nameIndex);
                 if (name != null) {
@@ -687,6 +687,40 @@ public class AreaHandler implements PropertyConsumer {
             }
             return pa.drawingAttributes;
         }
+    }
+    
+    /**
+     * OK, we can't assume that we are assigning a string as a
+     * key, you might want to key in on a specific attribute that
+     * is a number, like the country coloring code that ESRI has
+     * in the country file. We're going to assume that if the
+     * number has an integer value, it shouldn't have decimal
+     * places. That is, a 1.0 will be truncated to 1, because that
+     * makes more sense in a data file where you are using a key
+     * as a factor. If the double value doesn't match the integer
+     * value, though, we'll assume that's what was meant and leave
+     * it alone.<p>
+     */
+    protected String createStringFromKeyObject(Object keyObj) {
+        String key = null;
+        if (keyObj instanceof String) {
+            key = ((String) keyObj).toUpperCase().intern();
+        } else if (keyObj instanceof Number) {
+            Number keyNum = (Number) keyObj;
+            if (keyNum.doubleValue() == (double) keyNum.intValue()) {
+                // Strips off empty decimal places, for sure
+                key = Integer.toString(keyNum.intValue()).intern();
+            } else {
+                key = Double.toString(keyNum.doubleValue()).intern();
+            }
+        } else {
+            try {
+                key = keyObj.toString().toUpperCase().intern();
+            } catch (Exception e) {
+                Debug.error("AreaHandler.createStringFromKeyObject: bad key object:" + keyObj);
+            }
+        }
+        return key;
     }
 
     /**
@@ -897,11 +931,11 @@ public class AreaHandler implements PropertyConsumer {
                 if (area == null) { // key is not in table
                     area = new PoliticalArea(name, key);
                     poli_areas.put(key, area); // add it to the table
-                    //                  AreaDrawParams adp =
+                    // AreaDrawParams adp =
                     // (AreaDrawParams)drawingParams.get(key);
-                    //                  if (adp != null) {
-                    //                      area.setDrawingAttributes(adp.drawingAttributes);
-                    //                  }
+                    // if (adp != null) {
+                    // area.setDrawingAttributes(adp.drawingAttributes);
+                    // }
                 }
 
                 // Add the graphic to the list for this political
@@ -1017,7 +1051,7 @@ public class AreaHandler implements PropertyConsumer {
             InputStream is = propertiesURL.openStream();
             properties.load(is);
 
-            //  Let's make a file
+            // Let's make a file
             ShapeLayer sl = new ShapeLayer();
             sl.setProperties(prefix, properties);
 
