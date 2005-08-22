@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LLXY.java,v $
 // $RCSfile: LLXY.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:22 $
+// $Revision: 1.7 $
+// $Date: 2005/08/22 14:22:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -106,10 +106,10 @@ public class LLXY extends Cylindrical implements EqualArc {
 
         if (cLat > latLimit) {
             cLat = latLimit;
-            ctrLon = ProjMath.degToRad(cLat);
+            ctrLat = ProjMath.degToRad(cLat);
         } else if (cLat < -latLimit) {
             cLat = -latLimit;
-            ctrLon = ProjMath.degToRad(cLat);
+            ctrLat = ProjMath.degToRad(cLat);
         }
 
         if (Debug.debugging("llxy")) {
