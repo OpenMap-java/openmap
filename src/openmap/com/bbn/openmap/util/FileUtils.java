@@ -16,16 +16,27 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/FileUtils.java,v
 // $
 // $RCSfile: FileUtils.java,v $
-// $Revision: 1.3 $
-// $Date: 2005/02/11 22:42:01 $
+// $Revision: 1.4 $
+// $Date: 2005/08/24 20:17:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -59,7 +70,7 @@ public class FileUtils {
     }
 
     protected static JFileChooser getChooser(String title) {
-        //setup the file chooser
+        // setup the file chooser
         File startingPoint = new File(Environment.get("lastchosendirectory",
                 System.getProperty("user.home")));
         return new JFileChooser(startingPoint);
@@ -68,10 +79,10 @@ public class FileUtils {
     protected static String handleResponse(JFileChooser chooser, int state) {
         String ret = null;
         try {
-            //only bother trying to read the file if there is one
-            //for some reason, the APPROVE_OPTION said it was a
-            //boolean during compile and didn't work in this next
-            //statement
+            // only bother trying to read the file if there is one
+            // for some reason, the APPROVE_OPTION said it was a
+            // boolean during compile and didn't work in this next
+            // statement
             if ((state != JFileChooser.CANCEL_OPTION)
                     && (state != JFileChooser.ERROR_OPTION)) {
 
@@ -79,7 +90,7 @@ public class FileUtils {
 
                 int dirIndex = ret.lastIndexOf(File.separator);
                 if (dirIndex >= 0) {
-                    //store the selected file for later
+                    // store the selected file for later
                     Environment.set("lastchosendirectory", ret.substring(0,
                             dirIndex));
                 }
@@ -93,4 +104,205 @@ public class FileUtils {
         }
         return ret;
     }
+
+    /**
+     * Copy a file to another location, byte-wise.
+     * 
+     * @param fromFile the File to copy from.
+     * @param toFile the File to copy to.
+     * @param bufSize the byte size of the transfer buffer.
+     * @throws IOException Thrown if anything goes wrong.
+     */
+    public static void copy(File fromFile, File toFile, int bufSize)
+            throws IOException {
+
+        FileInputStream fis = new FileInputStream(fromFile);
+        FileOutputStream fos = new FileOutputStream(toFile);
+
+        if (bufSize <= 0) {
+            bufSize = 1024;
+        }
+
+        byte[] bytes = new byte[bufSize];
+
+        int numRead;
+
+        while ((numRead = fis.read(bytes)) > 0) {
+            fos.write(bytes, 0, numRead);
+        }
+
+        fis.close();
+        fos.close();
+    }
+
+    /**
+     * Create a zip file containing the given File.
+     * 
+     * @param zipFileName The path to the zip file. If it doesn't end
+     *        in .zip, .zip will be added to it.
+     * @param toBeZipped The Path of the file/directory to be zipped.
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    public static void saveZipFile(String zipFileName, File toBeZipped)
+            throws IOException, FileNotFoundException {
+
+        try {
+
+            if (!zipFileName.endsWith(".zip")) {
+                zipFileName += ".zip";
+            }
+
+            File zipFile = new File(zipFileName);
+            if (!zipFile.getParentFile().exists()) {
+                zipFile.getParentFile().mkdirs();
+            }
+            FileOutputStream fos = new FileOutputStream(zipFile);
+            ZipOutputStream zoStream = new ZipOutputStream(fos);
+            // zoStream.setMethod(ZipOutputStream.STORED);
+            writeZipEntry(toBeZipped,
+                    zoStream,
+                    toBeZipped.getParent().length() + 1);
+            zoStream.close();
+        } catch (SecurityException se) {
+            Debug.error("Security Exception caught while creating "
+                    + zipFileName);
+        }
+    }
+
+    protected static void writeZipEntry(File toBeZipped,
+                                        ZipOutputStream zoStream,
+                                        int prefixTrimLength) {
+
+        if (toBeZipped.isDirectory()) {
+            File[] files = toBeZipped.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                writeZipEntry(files[i], zoStream, prefixTrimLength);
+            }
+        } else {
+
+            if (Debug.debugging("zip")) {
+                Debug.output("FileUtils.writeZipEntry("
+                        + toBeZipped
+                        + ", "
+                        + toBeZipped.getAbsolutePath()
+                                .substring(prefixTrimLength) + ")");
+            }
+
+            writeZipEntry(toBeZipped,
+                    zoStream,
+                    prefixTrimLength < 0 ? toBeZipped.getName()
+                            : toBeZipped.getAbsolutePath()
+                                    .substring(prefixTrimLength));
+        }
+    }
+
+    protected static void writeZipEntry(File fromFile,
+                                        ZipOutputStream zoStream,
+                                        String entryName) {
+
+        try {
+
+            long size = fromFile.length();
+            ZipEntry zEntry = new ZipEntry(entryName);
+            zEntry.setSize(size);
+            zEntry.setCrc(0);// Don't know what it these values are
+            // right now, but zero works...
+            zoStream.putNextEntry(zEntry);
+
+            FileInputStream fis = new FileInputStream(fromFile);
+
+            byte[] bytes = new byte[1024];
+
+            int numRead;
+            CRC32 checksum = new CRC32();
+            while ((numRead = fis.read(bytes)) > 0) {
+                zoStream.write(bytes, 0, numRead);
+                checksum.update(bytes, 0, numRead);
+            }
+            zEntry.setCrc(checksum.getValue());
+
+            fis.close();
+            zoStream.closeEntry();
+
+        } catch (IOException ioe) {
+            Debug.error("Error writing zip entry " + entryName);
+            ioe.printStackTrace();
+        }
+    }
+
+    /**
+     * Unpack a zip file.
+     * @param zipFileName The path name of the zip file to unpack.
+     * @param toDir the directory to put the unpacked files in.
+     * @param deleteAfter flag to delete the zip file when complete.
+     */
+    public static void openZipFile(String zipFileName, File toDir,
+                                   boolean deleteAfter) {
+        if (zipFileName != null) {
+            try {
+                InputStream in;
+
+                if (!toDir.exists()) {
+                    toDir.mkdirs();
+                }
+
+                URL zipurl = PropUtils.getResourceOrFileOrURL(zipFileName);
+                if (zipurl != null) {
+
+                    in = new BufferedInputStream(zipurl.openStream());
+
+                    if (Debug.debugging("zip")) {
+                        Debug.output(" unzipping " + zipFileName);
+                    }
+                    ZipInputStream zin = new ZipInputStream(in);
+                    ZipEntry e;
+
+                    while ((e = zin.getNextEntry()) != null) {
+
+                        if (e.isDirectory()) {
+                            new File(toDir, e.getName()).mkdirs();
+                        } else {
+                            if (Debug.debugging("zip")) {
+                                Debug.output(" unzipping " + e.getName());
+                            }
+                            unzip(zin, new File(toDir, e.getName()));
+                        }
+                    }
+                    zin.close();
+                    if (deleteAfter) {
+                        if (Debug.debugging("zip")) {
+                            Debug.output("unzipping complete, deleting zip file");
+                        }
+
+                        File file = new File(zipurl.getFile());
+                        if (file.exists()) {
+                            file.delete();
+                        }
+                    } else if (Debug.debugging("zip")) {
+                        Debug.output("unzipping complete, leaving zip file");
+                    }
+                    return;
+                }
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    protected static void unzip(ZipInputStream zin, File f) throws IOException {
+        final int BUFFER = 2048;
+        FileOutputStream out = new FileOutputStream(f);
+        byte[] b = new byte[BUFFER];
+        int len = 0;
+        BufferedOutputStream dest = new BufferedOutputStream(out, BUFFER);
+        while ((len = zin.read(b, 0, BUFFER)) != -1) {
+            dest.write(b, 0, len);
+        }
+        dest.flush();
+        dest.close();
+    }
+
 }

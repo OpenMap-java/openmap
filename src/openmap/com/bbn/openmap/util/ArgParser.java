@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ArgParser.java,v $
 // $RCSfile: ArgParser.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/01/10 17:08:20 $
+// $Revision: 1.6 $
+// $Date: 2005/08/24 20:17:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -268,7 +268,9 @@ public class ArgParser {
         for (int i = 0; i < args.size(); i++) {
             ArgParser.Arg arg = (ArgParser.Arg) args.elementAt(i);
             StringBuffer sb = new StringBuffer();
-            sb.append("  -" + arg.name + "  \t" + arg.description);
+            String filler = arg.name.length() < 6?"\t\t":"\t";
+
+            sb.append("  -" + arg.name + filler + arg.description);
             if (arg.numExpectedValues == TO_END) {
                 sb.append(" (Variable number of arguments expected)");
             } else if (arg.numExpectedValues == 1) {
