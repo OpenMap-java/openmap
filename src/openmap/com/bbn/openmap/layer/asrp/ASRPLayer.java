@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/asrp/ASRPLayer.java,v $
 // $RCSfile: ASRPLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:53 $
+// $Revision: 1.8 $
+// $Date: 2005/08/25 16:04:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,22 +59,22 @@ import javax.swing.JPanel;
  * <P>
  * 
  * <pre>
- * 
- *  
- *  
- *   # Paths to TRANSH01.THF files that organize sets of ASRP image directories.
- *   asrpLayer.thf=thf1;thf2
- *   # Alternatively, paths to ASRP directories can be used if the thf property is undefined.
- *   asrpLayer.asrpDirs=dir1;dir2
- *   # Flag to show coverages when images can't be displayed.
- *   asrpLayer.showCoverage
- *   # Lastly, the suite of DrawingAttributes properties can be provided to set 
- *   # the parameters for the coverage rectangles. See DrawingAttributes for more options.
- *   asrpLayer.lineColor=FFFF0000
- *   asrpLayer.fillColor=FFFF0000
  *  
  *   
- *  
+ *   
+ *    # Paths to TRANSH01.THF files that organize sets of ASRP image directories.
+ *    asrpLayer.thf=thf1;thf2
+ *    # Alternatively, paths to ASRP directories can be used if the thf property is undefined.
+ *    asrpLayer.asrpDirs=dir1;dir2
+ *    # Flag to show coverages when images can't be displayed.
+ *    asrpLayer.showCoverage
+ *    # Lastly, the suite of DrawingAttributes properties can be provided to set 
+ *    # the parameters for the coverage rectangles. See DrawingAttributes for more options.
+ *    asrpLayer.lineColor=FFFF0000
+ *    asrpLayer.fillColor=FFFF0000
+ *   
+ *    
+ *   
  * </pre>
  */
 public class ASRPLayer extends OMGraphicHandlerLayer implements
@@ -324,9 +324,29 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements
 
         coverageDrawingAttributes.getPropertyInfo(props);
 
+        interString = i18n.get(ASRPLayer.class,
+                DrawingAttributes.linePaintProperty,
+                I18n.TOOLTIP,
+                "Edge color for coverage area markings.");
+        props.put(DrawingAttributes.linePaintProperty, interString);
+        
+        interString = i18n.get(ASRPLayer.class,
+                DrawingAttributes.lineWidthProperty,
+                I18n.TOOLTIP,
+                "Line Width for coverage area markings.");
+        props.put(DrawingAttributes.lineWidthProperty, interString);
+        
+        interString = i18n.get(ASRPLayer.class,
+                DrawingAttributes.fillPaintProperty,
+                I18n.TOOLTIP,
+                "Fill color for coverage area markings.");
+        props.put(DrawingAttributes.fillPaintProperty, interString);
+        
         props.put(initPropertiesProperty, THFProperty + " "
                 + ASRPDirectoryProperty + " " + ShowCoverageProperty + " "
-                + coverageDrawingAttributes.getInitPropertiesOrder());
+                + DrawingAttributes.linePaintProperty + " "
+                + DrawingAttributes.lineWidthProperty + " "
+                + DrawingAttributes.fillPaintProperty);
 
         return props;
     }
