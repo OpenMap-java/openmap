@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ExtentIndexImpl.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/07/29 13:09:24 $
+//$Revision: 1.3 $
+//$Date: 2005/08/29 22:17:50 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -49,7 +49,7 @@ public class ExtentIndexImpl extends java.util.AbstractCollection implements
      * Default value for #margin if not specified in the call to the
      * constructor.
      */
-    public static final double D_MARGIN = 50.0;
+    public static final double D_MARGIN = 0.0;
 
     /**
      * how many buckets in the longitudinal index - 360 means 1 bucket
@@ -196,10 +196,11 @@ public class ExtentIndexImpl extends java.util.AbstractCollection implements
         // now n is (0.0,+360]
     }
 
-    /** figure out what bucket a particular longitude goes in * */
+    /**
+     * figure out what bucket a particular longitude goes in.
+     */
     protected final int bucketFor(double lon) {
-        return (int) Math.floor(normalizeLon(lon) / nbuckets); // which
-        // bucket?
+        return (int) Math.floor(normalizeLon(lon)/360.0 * (double) nbuckets);
     }
 
     /*
