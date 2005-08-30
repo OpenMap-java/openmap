@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.26 $
-// $Date: 2005/08/10 22:40:53 $
+// $Revision: 1.27 $
+// $Date: 2005/08/30 16:07:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -297,17 +297,17 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     public final void addMouseListener(MouseListener l) {
         String pkg = getPackage(l.getClass());
         if (java.beans.Beans.isDesignTime() || pkg.equals(SWING_PACKAGE)
-                || pkg.startsWith(SWING_PACKAGE)) {
+                || pkg.startsWith(SWING_PACKAGE)
+                || pkg.startsWith("com.sun.java.accessibility.util")) {
 
             // Used to do nothing for the equals and startsWith
             // comparison, but that breaks the menus from being
             // recinded when something else is clicked on. Thanks to
             // Tom Peel for pointing this out, 11/29/00.
             super.addMouseListener(l);
-
         } else {
             throw new IllegalArgumentException("This operation is disallowed because the package \""
-                    + pkg
+                    + getPackage(l.getClass())
                     + "\" is not in the swing package (\""
                     + SWING_PACKAGE + "\").");
         }
