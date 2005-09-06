@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphic.java,v $
 // $RCSfile: OMGraphic.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/08/11 20:39:14 $
+// $Revision: 1.14 $
+// $Date: 2005/09/06 20:02:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,6 +31,10 @@ import java.awt.Point;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.geom.GeneralPath;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import com.bbn.openmap.omGraphics.geom.BasicGeometry;
 import com.bbn.openmap.proj.Projection;
@@ -86,7 +90,7 @@ import com.bbn.openmap.util.Debug;
  * @see Projection
  */
 public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
-        OMGraphicConstants, Cloneable {
+        OMGraphicConstants, Cloneable, Serializable {
 
     /**
      * The Java2D Stroke. This is used for lineWidth, and dashing of
@@ -211,7 +215,7 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
         }
     }
 
-    //////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////
 
     /**
      * Construct a default OMGraphic.
@@ -774,7 +778,7 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
         return distance;
     }
 
-    //////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////
 
     /**
      * Prepare the graphic for rendering. This must be done before
@@ -1054,4 +1058,78 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
             return SinkGraphic.getSharedInstance();
         }
     }
+
+    /**
+     * Write this object to a stream.
+     */
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+
+        // Now write the Stroke. Take into account the stroke member
+        // could be null.
+
+        boolean writeStroke = (stroke != OMGraphic.BASIC_STROKE) && stroke != null;
+
+        if (writeStroke) {
+            // First write a flag indicating if a Stroke is on the
+            // stream.
+            oos.writeBoolean(true);
+            if (stroke instanceof BasicStroke) {
+                BasicStroke s = (BasicStroke) stroke;
+
+
+                // Then write flag indicating stroke is a BasicStroke
+                oos.writeBoolean(true);
+
+                // Write the Stroke data if a Stroke is on this
+                // object.
+                if (s != null) {
+                    oos.writeFloat(s.getLineWidth());
+                    oos.writeInt(s.getEndCap());
+                    oos.writeInt(s.getLineJoin());
+                    oos.writeFloat(s.getMiterLimit());
+                    oos.writeObject(s.getDashArray());
+                    oos.writeFloat(s.getDashPhase());
+                }
+            } else if (stroke instanceof Serializable) {
+                oos.writeBoolean(false);
+                oos.writeObject((Serializable) stroke);
+            }
+
+        } else {
+            oos.writeBoolean(false);
+        }
+    }
+
+    /**
+     * Read this object from a stream.
+     */
+    private void readObject(ObjectInputStream ois)
+            throws ClassNotFoundException, IOException {
+        ois.defaultReadObject();
+
+        // Read the Stroke
+
+        // Get the flag indicating a stroke was streamed
+        boolean streamHasStroke = ois.readBoolean();
+
+        // Read and create the stroke
+        if (streamHasStroke) {
+            boolean isBasicStroke = ois.readBoolean();
+            if (isBasicStroke) {
+                float linewidth = ois.readFloat();
+                int endcap = ois.readInt();
+                int linejoin = ois.readInt();
+                float miterlimit = ois.readFloat();
+                float dasharray[] = (float[]) ois.readObject();
+                float dashphase = ois.readFloat();
+                stroke = new BasicStroke(linewidth, endcap, linejoin, miterlimit, dasharray, dashphase);
+            } else {
+                stroke = (Stroke) ois.readObject();
+            }
+        } else {
+            stroke = OMGraphic.BASIC_STROKE;
+        }
+    }
+
 }

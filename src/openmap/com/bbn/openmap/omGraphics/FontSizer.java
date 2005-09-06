@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/FontSizer.java,v $
 // $RCSfile: FontSizer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:11 $
+// $Revision: 1.7 $
+// $Date: 2005/09/06 20:02:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,20 +23,25 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Font;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * Helper class to OMText object that resizes font when scale changes.
  * Font gets bigger as you zoom in.
  */
-public class FontSizer {
+public class FontSizer implements Serializable {
 
-    protected Font font = OMText.DEFAULT_FONT;
-    protected Font lastFont = OMText.DEFAULT_FONT;
+    protected transient Font font = OMText.DEFAULT_FONT;
+    protected transient Font lastFont = OMText.DEFAULT_FONT;
     protected float baseScale = -1;
-    protected float lastScale = -1;
-    protected float curScale = -1;
+    protected transient float lastScale = -1;
+    protected transient float curScale = -1;
     protected int minPointSize = font.getSize();
     protected int maxPointSize = font.getSize();
+
     /**
      * Default of 1. Used against the base scale/current scale ratio
      * to speed up or slow down font size changes based on scale.
@@ -135,4 +140,41 @@ public class FontSizer {
         return multiplier;
     }
 
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+
+        // Write the Font. Take into account the font member could be
+        // null, although this is unlikely it never hurts to
+        // protect one's self.
+        boolean writeFont = (font != OMText.DEFAULT_FONT);
+        // First write a flag indicating if a Font is on the stream.
+        oos.writeBoolean(writeFont);
+
+        // Write the Font data if a font is on this object.
+        if (writeFont) {
+            oos.writeObject(font.getName());
+            oos.writeInt(font.getSize());
+            oos.writeInt(font.getStyle());
+        }
+    }
+
+    /**
+     * Reconstitute from an ObjectInputStream.
+     */
+    private void readObject(ObjectInputStream ois)
+            throws ClassNotFoundException, IOException {
+        ois.defaultReadObject();
+
+        // Get the flag form the stream
+        boolean hasFont = ois.readBoolean();
+
+        if (hasFont) {
+            String name = (String) ois.readObject();
+            int size = ois.readInt();
+            int style = ois.readInt();
+            font = new Font(name, style, size);
+        } else {
+            font = OMText.DEFAULT_FONT;
+        }
+    }
 }

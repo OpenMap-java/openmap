@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.15 $
-// $Date: 2005/08/09 20:01:47 $
+// $Revision: 1.16 $
+// $Date: 2005/09/06 20:02:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,6 +38,9 @@ import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import com.bbn.openmap.proj.Projection;
@@ -50,9 +53,9 @@ import com.bbn.openmap.util.Debug;
  */
 public class OMText extends OMGraphic implements Serializable {
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // Static constants
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /** Align the text to the right of the location. */
     public final static transient int JUSTIFY_LEFT = 0;
@@ -122,10 +125,10 @@ public class OMText extends OMGraphic implements Serializable {
      * The default text matte stroke that is used to surround each
      * character with the color set in the textMatteColor attribute.
      */
-    public static final Stroke DEFAULT_TEXT_MATTE_STROKE = new BasicStroke( 2f );
-    //----------------------------------------------------------------------
+    public static final Stroke DEFAULT_TEXT_MATTE_STROKE = new BasicStroke(2f);
+    // ----------------------------------------------------------------------
     // Fields
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /**
      * The projected xy window location of the bottom left corner of
@@ -189,21 +192,22 @@ public class OMText extends OMGraphic implements Serializable {
     protected double rotationAngle = DEFAULT_ROTATIONANGLE;
 
     /**
-     * The text matte color surrounds each character of the string with this color.
-     * If the color is null, the text matte is not used.
+     * The text matte color surrounds each character of the string
+     * with this color. If the color is null, the text matte is not
+     * used.
      */
     protected Color textMatteColor;
 
     /**
-     * The stroke used to paint the outline of each character. The stroke should
-     * be larger than 1 to give proper effect.
+     * The stroke used to paint the outline of each character. The
+     * stroke should be larger than 1 to give proper effect.
      */
     protected Stroke textMatteStroke = DEFAULT_TEXT_MATTE_STROKE;
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // Caches
-    //    These fields cache computed data.
-    //----------------------------------------------------------------------
+    // These fields cache computed data.
+    // ----------------------------------------------------------------------
 
     /** The bounding rectangle of this Text. */
     protected transient Polygon polyBounds;
@@ -217,9 +221,9 @@ public class OMText extends OMGraphic implements Serializable {
     /** cached string widths. */
     protected transient int widths[];
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // Constructors
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /**
      * Default constructor. Produces an instance with no location and
@@ -547,6 +551,7 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Returns the color used to matte the actuall text of this class.
+     * 
      * @return the text matte color, null if not used
      */
     public Color getTextMatteColor() {
@@ -554,13 +559,13 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Sets the color used to paint the outline of the characters
-     * in this text. The thickness of the outline is decided by the
-     * textMatteStroke.
-     * If the color is null, the outline will not be painted.
-     *
+     * Sets the color used to paint the outline of the characters in
+     * this text. The thickness of the outline is decided by the
+     * textMatteStroke. If the color is null, the outline will not be
+     * painted.
+     * 
      * The default value is null.
-     *
+     * 
      * @param textMatteColor
      */
     public void setTextMatteColor(Color textMatteColor) {
@@ -570,6 +575,7 @@ public class OMText extends OMGraphic implements Serializable {
     /**
      * Returns the stroke used to paint the outline of the characters
      * in this text.
+     * 
      * @return the stroke used to paint the outline
      */
     public Stroke getTextMatteStroke() {
@@ -577,13 +583,12 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Sets the stroke used to paint the outline of the characters
-     * in this text
-     * For best effect the stroke thickness should be larger
+     * Sets the stroke used to paint the outline of the characters in
+     * this text For best effect the stroke thickness should be larger
      * than 1 and it should be continuous.
-     *
+     * 
      * The default thickness is 2.
-     *
+     * 
      * @param textMatteStroke the new stroke
      */
     public void setTextMatteStroke(Stroke textMatteStroke) {
@@ -831,7 +836,7 @@ public class OMText extends OMGraphic implements Serializable {
             if (!proj.isPlotable(lat, lon)) {
                 if (Debug.debugging("omgraphic"))
                     System.err.println("OMText.generate(): offset point is not plotable!");
-                setNeedToRegenerate(true);//so we don't render it!
+                setNeedToRegenerate(true);// so we don't render it!
                 return false;
             }
             pt = proj.forward(lat, lon);
@@ -841,7 +846,7 @@ public class OMText extends OMGraphic implements Serializable {
             if (!proj.isPlotable(lat, lon)) {
                 if (Debug.debugging("omgraphic"))
                     System.err.println("OMText.generate(): llpoint is not plotable!");
-                setNeedToRegenerate(true);//so we don't render it!
+                setNeedToRegenerate(true);// so we don't render it!
                 return false;
             }
             pt = proj.forward(lat, lon);
@@ -882,22 +887,22 @@ public class OMText extends OMGraphic implements Serializable {
         // Taking the X Font-type string and converting the
         // essential parts to a java Font object.
 
-        int start = fontString.indexOf("-", 1) + 1; //skipping first
-                                                    // field
+        int start = fontString.indexOf("-", 1) + 1; // skipping first
+        // field
         int end = fontString.indexOf("-", start + 1);
         String name = fontString.substring(start, end);
-        //System.out.println("rebuildFont: Name is " + name);
+        // System.out.println("rebuildFont: Name is " + name);
         if (fontString.indexOf("-bold-") >= 0)
             fontStyle = Font.BOLD;
         if (fontString.indexOf("-i-") >= 0)
             fontStyle += Font.ITALIC;
-        //System.out.println("rebuildFont: Style is " + fontStyle);
+        // System.out.println("rebuildFont: Style is " + fontStyle);
         start = fontString.indexOf("--") + 2;
         end = fontString.indexOf("-", start + 1);
         String tmpFontSize = fontString.substring(start, end);
         if (tmpFontSize.indexOf("*") < 0)
             fontSize = Integer.parseInt(tmpFontSize);
-        //System.out.println("rebuildFont: Size is " + fontSize);
+        // System.out.println("rebuildFont: Size is " + fontSize);
         return new Font(name, fontStyle, fontSize);
     }
 
@@ -914,35 +919,35 @@ public class OMText extends OMGraphic implements Serializable {
      * @return the font as a string.
      */
     public static String fontToXFont(java.awt.Font font) {
-        //-foundry(who made it)
+        // -foundry(who made it)
         StringBuffer ret = new StringBuffer("-*");
-        //-font family(name)
+        // -font family(name)
         ret.append("-" + font.getName());
-        //-weight(bold, medium)
+        // -weight(bold, medium)
         if (font.isBold())
             ret.append("-bold");
         else
             ret.append("-normal");
-        //-slant(o,i)
+        // -slant(o,i)
         if (font.isItalic())
             ret.append("-i");
         else
             ret.append("-o");
-        //-set width(normal, condensed, narrow, double width)
+        // -set width(normal, condensed, narrow, double width)
         ret.append("-normal");
-        //--pixels(height)
+        // --pixels(height)
         ret.append("--" + font.getSize());
-        //-points(in tenths of a point, related to screen)
+        // -points(in tenths of a point, related to screen)
         ret.append("-*");
-        //-horizontal resolution in dpi
+        // -horizontal resolution in dpi
         ret.append("-*");
-        //-vertical resolution in dpi
+        // -vertical resolution in dpi
         ret.append("-*");
-        //-spacing(m-monospace or p-proportional)
+        // -spacing(m-monospace or p-proportional)
         ret.append("-*");
-        //-average width(of each letter, in tenths of a pixel)
+        // -average width(of each letter, in tenths of a pixel)
         ret.append("-*");
-        //-character set(like an ISO designation.
+        // -character set(like an ISO designation.
         ret.append("-*");
         // System.out.println("SText.fontString: " + ret);
         return ret.toString();
@@ -1109,7 +1114,7 @@ public class OMText extends OMGraphic implements Serializable {
             case JUSTIFY_RIGHT:
                 woffset = rw;
             }
-            //rotate about our text anchor point
+            // rotate about our text anchor point
             ((Graphics2D) g).rotate(rotationAngle, rx + woffset, pt.y);
         }
 
@@ -1126,8 +1131,9 @@ public class OMText extends OMGraphic implements Serializable {
             height = fm.getAscent();
         }
 
-        int baselineLocation = pt.y; // baseline == BASELINE_BOTTOM,
-                                     // normal.
+        int baselineLocation = pt.y; // baseline ==
+                                        // BASELINE_BOTTOM,
+        // normal.
 
         if (baseline == BASELINE_MIDDLE) {
             baselineLocation += (fm.getAscent() - fm.getDescent()) / 2;
@@ -1136,30 +1142,31 @@ public class OMText extends OMGraphic implements Serializable {
         }
 
         switch (justify) {
-            case JUSTIFY_LEFT:
-                // Easy case, just draw them.
-                for (int i = 0; i < parsedData.length; i++) {
-                    renderString(g, parsedData[i], pt.x, baselineLocation + (height * i));
-                }
-                break;
-            case JUSTIFY_CENTER:
-                computeStringWidths(fm);
-                for (int i = 0; i < parsedData.length; i++) {
-                    renderString(g,
-                                parsedData[i],
-                                pt.x - (widths[i] / 2),
-                                baselineLocation + (height * i));
-                }
-                break;
-            case JUSTIFY_RIGHT:
-                computeStringWidths(fm);
-                for (int i = 0; i < parsedData.length; i++) {
-                    renderString(g,
-                                parsedData[i],
-                                pt.x - widths[i],
-                                baselineLocation + (height * i));
-                }
-                break;
+        case JUSTIFY_LEFT:
+            // Easy case, just draw them.
+            for (int i = 0; i < parsedData.length; i++) {
+                renderString(g, parsedData[i], pt.x, baselineLocation
+                        + (height * i));
+            }
+            break;
+        case JUSTIFY_CENTER:
+            computeStringWidths(fm);
+            for (int i = 0; i < parsedData.length; i++) {
+                renderString(g,
+                        parsedData[i],
+                        pt.x - (widths[i] / 2),
+                        baselineLocation + (height * i));
+            }
+            break;
+        case JUSTIFY_RIGHT:
+            computeStringWidths(fm);
+            for (int i = 0; i < parsedData.length; i++) {
+                renderString(g,
+                        parsedData[i],
+                        pt.x - widths[i],
+                        baselineLocation + (height * i));
+            }
+            break;
         }
     }
 
@@ -1168,10 +1175,11 @@ public class OMText extends OMGraphic implements Serializable {
             Graphics2D g2 = (Graphics2D) g;
             if (getTextMatteColor() != null) {
                 FontRenderContext context = g2.getFontRenderContext();
-                GlyphVector glyphVector = g2.getFont().createGlyphVector(context, string);
+                GlyphVector glyphVector = g2.getFont()
+                        .createGlyphVector(context, string);
                 Shape outline = glyphVector.getOutline();
                 g2.translate(x, y);
-                g2.setStroke( getTextMatteStroke() );
+                g2.setStroke(getTextMatteStroke());
                 g2.setColor(getTextMatteColor());
                 g2.draw(outline);
                 g2.translate(-x, -y);
@@ -1181,7 +1189,7 @@ public class OMText extends OMGraphic implements Serializable {
         }
         g.drawString(string, x, y);
     }
-    
+
     /**
      * Computes the bounding polygon. Sets the cache field
      * <code>polyBounds</code>.
@@ -1195,7 +1203,7 @@ public class OMText extends OMGraphic implements Serializable {
 
         if (polyBounds == null && pt != null && fm != null) {
 
-            //      System.out.println("\tcomputing poly bounds");
+            // System.out.println("\tcomputing poly bounds");
 
             int xoffset = 0;
             int i;
@@ -1222,7 +1230,7 @@ public class OMText extends OMGraphic implements Serializable {
             computeStringWidths(fm);
 
             int baselineOffset = 0; // baseline == BASELINE_BOTTOM,
-                                    // normal.
+            // normal.
 
             if (baseline == BASELINE_MIDDLE) {
                 baselineOffset = descent / 2;
@@ -1351,6 +1359,49 @@ public class OMText extends OMGraphic implements Serializable {
 
     protected boolean hasLineTypeChoice() {
         return false;
+    }
+
+    /**
+     * Write this object to a stream.
+     */
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+
+        // Write the Font. Take into account the font member could be
+        // null, although this is unlikely it never hurts to
+        // protect one's self.
+
+        boolean writeFont = (f != OMText.DEFAULT_FONT);
+        
+        // First write a flag indicating if a Font is on the stream.
+        oos.writeBoolean(writeFont);
+
+        // Write the Font data if a font is on this object.
+        if (writeFont) {
+            oos.writeObject(f.getName());
+            oos.writeInt(f.getSize());
+            oos.writeInt(f.getStyle());
+        }
+    }
+
+    /**
+     * Reconstitute from an ObjectInputStream.
+     */
+    private void readObject(ObjectInputStream ois)
+            throws ClassNotFoundException, IOException {
+        ois.defaultReadObject();
+
+        // Get the flag form the stream
+        boolean hasFont = ois.readBoolean();
+
+        if (hasFont) {
+            String name = (String) ois.readObject();
+            int size = ois.readInt();
+            int style = ois.readInt();
+            f = new Font(name, style, size);
+        } else {
+            f = OMText.DEFAULT_FONT;
+        }
     }
 
 }

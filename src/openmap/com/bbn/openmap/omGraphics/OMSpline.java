@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMSpline.java,v $
 //$RCSfile: OMSpline.java,v $
-//$Revision: 1.8 $
-//$Date: 2005/01/10 16:58:34 $
+//$Revision: 1.9 $
+//$Date: 2005/09/06 20:02:10 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -23,6 +23,9 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Point;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import com.bbn.openmap.proj.Projection;
@@ -206,7 +209,7 @@ public class OMSpline extends OMPoly {
             int[] _y = new int[npts];
 
             // forward project the radian point
-            Point origin = proj.forward(lat, lon, new Point(0, 0), true);//radians
+            Point origin = proj.forward(lat, lon, new Point(0, 0), true);// radians
 
             if (coordMode == COORDMODE_ORIGIN) {
                 for (i = 0; i < npts; i++) {
@@ -277,5 +280,30 @@ public class OMSpline extends OMPoly {
         createShape();
         return true;
     }
-}
 
+    /**
+     * Write this object to a stream.
+     */
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        // Include the writeObject() method for consistency.
+        // even though we only do the default serialization.
+        // Its just good practice to have both writeObject()
+        // and readObject() when performing custom serialization.
+    }
+
+    /**
+     * Read this object from a stream.
+     */
+    private void readObject(ObjectInputStream ois)
+            throws ClassNotFoundException, IOException {
+        ois.defaultReadObject();
+
+        // Instatiate the objects that are transient
+        // These are not creating on the deserialization
+        // candidate object.
+        natCubic = new NatCubicSpline();
+        natCubicClosed = new NatCubicClosedSpline();
+    }
+
+}
