@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/BinaryFile.java,v $
 // $RCSfile: BinaryFile.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/12 22:13:01 $
+// $Revision: 1.8 $
+// $Date: 2005/09/13 14:29:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -104,14 +104,14 @@ public class BinaryFile {
                 // use the RandomAccessFile aspect of the BinaryFile.
                 setInputReader(new FileInputReader(file));
             } else {
-                //              url = ClassLoader.getSystemResource(name);
+                // url = ClassLoader.getSystemResource(name);
                 url = Thread.currentThread()
                         .getContextClassLoader()
                         .getResource(name);
 
-                //OK, now we want to look around for the file, in the
-                //classpaths, and as a resource. It may be a file in
-                //a classpath, available for direct access.
+                // OK, now we want to look around for the file, in the
+                // classpaths, and as a resource. It may be a file in
+                // a classpath, available for direct access.
                 if (url != null) {
 
                     String newname = url.getFile();
@@ -172,7 +172,7 @@ public class BinaryFile {
                                 + name + " as a URL");
                     }
                 }
-                
+
             }
 
             if (inputReader == null) {
@@ -203,8 +203,8 @@ public class BinaryFile {
 
                 // Used to be this, modified by Erik Sanders to work
                 // with jdk 1.4 plugin
-                //              String jarFileName =
-                //                  name.substring(name.indexOf(":") + 1, index);
+                // String jarFileName =
+                // name.substring(name.indexOf(":") + 1, index);
 
                 // changed to this...
                 String jarFileName;
@@ -216,7 +216,10 @@ public class BinaryFile {
                 } else {
                     // java-plugin 1.4 returns reference to server, so
                     // leave http:// part
-                    jarFileName = name.substring(1, index);
+
+                    // Used to start the substring from 1, but changed
+                    // to 0 thanks to DGK
+                    jarFileName = name.substring(0, index);
                 }
 
                 // skip !/ "
@@ -224,6 +227,17 @@ public class BinaryFile {
                 if (Debug.debugging("binaryfile")) {
                     Debug.output(" got: \n" + jarFileName + "\n" + jarEntryName);
                 }
+
+                // If the jar doesn't exist, should return something
+                // that indicates this. Should check the performance
+                // impllications of this call, though, at some point.
+
+                // DGK added
+                File f = new File(jarFileName); 
+                if (f.exists() == false) {
+                    return false; 
+                }
+                
                 setInputReader(new JarInputReader(jarFileName, jarEntryName));
                 return true;
             }
@@ -259,14 +273,14 @@ public class BinaryFile {
             if (file != null && file.exists()) {
                 exists = true;
             } else {
-                //              url = ClassLoader.getSystemResource(name);
+                // url = ClassLoader.getSystemResource(name);
                 url = Thread.currentThread()
                         .getContextClassLoader()
                         .getResource(name);
 
-                //OK, now we want to look around for the file, in the
-                //classpaths, and as a resource. It may be a file in
-                //a classpath, available for direct access.
+                // OK, now we want to look around for the file, in the
+                // classpaths, and as a resource. It may be a file in
+                // a classpath, available for direct access.
                 if (url != null) {
                     exists = true;
                 } else if (Environment.isApplet()) {
@@ -281,16 +295,16 @@ public class BinaryFile {
                     if (ucl.getResource(name) != null) {
                         exists = true;
 
-                        //  This has been commented out because the
-                        //  AppletDataNugget has been deprecated, and
-                        //  is not needed.
+                        // This has been commented out because the
+                        // AppletDataNugget has been deprecated, and
+                        // is not needed.
 
-                        //                  } else {
-                        //                      url = AppletDataNugget.findResource(name);
+                        // } else {
+                        // url = AppletDataNugget.findResource(name);
 
-                        //                      if (url != null) {
-                        //                          exists = true;
-                        //                      }
+                        // if (url != null) {
+                        // exists = true;
+                        // }
                     }
                 }
 
@@ -528,7 +542,7 @@ public class BinaryFile {
      * @see #read(byte[])
      */
     public short readShort() throws EOFException, FormatException {
-        //MSBFirst must be set when we are called
+        // MSBFirst must be set when we are called
         return MoreMath.BuildShort(readBytes(2, false), MSBFirst);
     }
 
@@ -544,7 +558,7 @@ public class BinaryFile {
      * @see #read(byte[])
      */
     public int readInteger() throws EOFException, FormatException {
-        //MSBFirst must be set when we are called
+        // MSBFirst must be set when we are called
         return MoreMath.BuildInteger(readBytes(4, false), MSBFirst);
     }
 
@@ -662,7 +676,7 @@ public class BinaryFile {
             while ((tmp = readChar()) != delim)
                 buildretval.append(tmp);
         } catch (EOFException e) {
-            //allowable
+            // allowable
         }
         return buildretval.toString();
     }
@@ -704,7 +718,7 @@ public class BinaryFile {
             Object o = ((WeakReference) closableList.elementAt(i)).get();
             if ((o == it) || (o == null)) {
                 closableList.removeElementAt(i);
-                i--; //in case its in the list more than once
+                i--; // in case its in the list more than once
             }
         }
     }
