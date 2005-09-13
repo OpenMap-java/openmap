@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/URLRasterLocation.java,v $
 // $RCSfile: URLRasterLocation.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 19:24:02 $
+// $Revision: 1.8 $
+// $Date: 2005/09/13 14:38:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,6 +41,11 @@ public class URLRasterLocation extends Location {
     /** The spacing between the label and the outside of the image. */
     public int SPACING = 0;
 
+    /**
+     * A constructor to enable creation of subclasses.
+     */
+    public URLRasterLocation() {}
+    
     /**
      * Create a ByteRasterLocation at a latitude/longtude location.
      * 
