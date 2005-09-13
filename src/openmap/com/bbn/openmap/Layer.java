@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.27 $
-// $Date: 2005/08/30 16:07:39 $
+// $Revision: 1.28 $
+// $Date: 2005/09/13 14:27:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -160,6 +160,20 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * @deprecated use RemovableProperty
      */
     public static final String RemoveableProperty = "removeable";
+    /**
+     * The property for designating the minimum projection scale value
+     * that the layer will respond to. This Layer class doesn't limit
+     * how subclasses will react to projections with scale values
+     * smaller than the specified value.
+     */
+    public static final String MinScaleProperty = "minScale";
+    /**
+     * The property for designating the maximum projection scale value
+     * that the layer will respond to. This Layer class doesn't limit
+     * how subclasses will react to projections with scale values
+     * greater than the specified value.
+     */
+    public static final String MaxScaleProperty = "maxScale";
 
     /**
      * The property to show the palette when the layer is created -
@@ -226,6 +240,24 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * call showPalette() instead.
      */
     protected boolean autoPalette = false;
+
+    /**
+     * A minimum projection scale value that the layer will respond
+     * to. Using this value for reacting to the projection depends on
+     * the Layer implementation, the Layer class doesn't limit
+     * subclasses from doing their own thing in response to the scale
+     * setting on a projection.
+     */
+    protected float minScale = Float.MIN_VALUE;
+
+    /**
+     * A maximum projection scale value that the layer will respond
+     * to. Using this value for reacting to the projection depends on
+     * the Layer implementation, the Layer class doesn't limit
+     * subclasses from doing their own thing in response to the scale
+     * setting on a projection.
+     */
+    protected float maxScale = Float.MAX_VALUE;
 
     /**
      * This is a convenience copy of the latest projection received
@@ -309,7 +341,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
             throw new IllegalArgumentException("This operation is disallowed because the package \""
                     + getPackage(l.getClass())
                     + "\" is not in the swing package (\""
-                    + SWING_PACKAGE + "\").");
+                    + SWING_PACKAGE
+                    + "\").");
         }
     }
 
@@ -374,6 +407,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
         autoPalette = PropUtils.booleanFromProperties(props, realPrefix
                 + AutoPaletteProperty, autoPalette);
+
+        setMinScale(PropUtils.floatFromProperties(props, realPrefix
+                + MinScaleProperty, getMinScale()));
+        setMaxScale(PropUtils.floatFromProperties(props, realPrefix
+                + MaxScaleProperty, getMaxScale()));
     }
 
     public void setName(String name) {
@@ -424,6 +462,13 @@ public abstract class Layer extends JComponent implements ProjectionListener,
         props.put(prefix + RemovableProperty, new Boolean(removable).toString());
         props.put(prefix + AddToBeanContextProperty,
                 new Boolean(addToBeanContext).toString());
+
+        if (getMinScale() != Float.MIN_VALUE) {
+            props.put(prefix + MinScaleProperty, Float.toString(getMinScale()));
+        }
+        if (getMaxScale() != Float.MAX_VALUE) {
+            props.put(prefix + MaxScaleProperty, Float.toString(getMaxScale()));
+        }
 
         return props;
     }
@@ -510,6 +555,26 @@ public abstract class Layer extends JComponent implements ProjectionListener,
         list.put(AddToBeanContextProperty + LabelEditorProperty, internString);
         list.put(AddToBeanContextProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
+        internString = i18n.get(Layer.class,
+                MinScaleProperty,
+                I18n.TOOLTIP,
+                "Minimum projection scale value that the layer will respond to.");
+        list.put(MinScaleProperty, internString);
+        internString = i18n.get(Layer.class,
+                MinScaleProperty,
+                "Minimum Scale Value");
+        list.put(MinScaleProperty + LabelEditorProperty, internString);
+
+        internString = i18n.get(Layer.class,
+                MaxScaleProperty,
+                I18n.TOOLTIP,
+                "Maximum projection scale value that the layer will respond to.");
+        list.put(MaxScaleProperty, internString);
+        internString = i18n.get(Layer.class,
+                MaxScaleProperty,
+                "Maximum Scale Value");
+        list.put(MaxScaleProperty + LabelEditorProperty, internString);
 
         return list;
     }
@@ -965,7 +1030,23 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * @param g java.awt.Graphics to draw into.
      */
     public void renderDataForProjection(Projection proj, Graphics g) {
+        if (!isProjectionOK(proj)) {
+            return;
+        }
         paint(g);
+    }
+
+    /**
+     * Method that responds whether the Layer should render on the
+     * map, given a particular projection. The method currently just
+     * tests the projection's scale against the min and max values set
+     * on the layer.
+     * 
+     * @param proj The projection to test against.
+     * @return true if OK.
+     */
+    public boolean isProjectionOK(Projection proj) {
+        return !(proj == null || proj.getScale() < minScale || proj.getScale() > maxScale);
     }
 
     /**
@@ -1504,5 +1585,29 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
     public void setIcon(Icon icon) {
         this.icon = icon;
+    }
+
+    public boolean isAutoPalette() {
+        return autoPalette;
+    }
+
+    public void setAutoPalette(boolean autoPalette) {
+        this.autoPalette = autoPalette;
+    }
+
+    public float getMaxScale() {
+        return maxScale;
+    }
+
+    public void setMaxScale(float maxScale) {
+        this.maxScale = maxScale;
+    }
+
+    public float getMinScale() {
+        return minScale;
+    }
+
+    public void setMinScale(float minScale) {
+        this.minScale = minScale;
     }
 }
