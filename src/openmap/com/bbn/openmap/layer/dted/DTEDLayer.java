@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDLayer.java,v $
 // $RCSfile: DTEDLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/10/14 18:05:54 $
+// $Revision: 1.12 $
+// $Date: 2005/09/13 14:33:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -187,7 +187,6 @@ public class DTEDLayer extends Layer implements ActionListener,
     protected int slopeAdjust = DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST;
     protected int numColors = DTEDFrameColorTable.DTED_COLORS;
     protected int opaqueness = DTEDFrameColorTable.DEFAULT_OPAQUENESS;
-    protected long minScale = 20000000;
     /** Flag to delete the cache if the layer is removed from the map. */
     protected boolean killCache = true;
     /** The number of frames held by the cache objects. */
@@ -375,7 +374,7 @@ public class DTEDLayer extends Layer implements ActionListener,
         setBandHeight(DTEDFrameSubframe.DEFAULT_BANDHEIGHT);
         setSlopeAdjust(DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST);
         setViewType(DTEDFrameSubframe.COLOREDSHADING);
-        setMinScale(20000000);
+        setMaxScale(20000000);
     }
 
     /**
@@ -431,8 +430,9 @@ public class DTEDLayer extends Layer implements ActionListener,
         setBandHeight(PropUtils.intFromProperties(properties, prefix
                 + DTEDBandHeightProperty, getBandHeight()));
 
-        setMinScale((long) PropUtils.intFromProperties(properties, prefix
-                + DTEDMinScaleProperty, (int) getMinScale()));
+        // The Layer maxScale is talking the place of the DTEDLayer minScale property.
+        setMaxScale(PropUtils.floatFromProperties(properties, prefix
+                + DTEDMinScaleProperty, getMaxScale()));
 
         setCacheSize((int) PropUtils.intFromProperties(properties, prefix
                 + DTEDFrameCacheSizeProperty, getCacheSize()));
@@ -599,12 +599,12 @@ public class DTEDLayer extends Layer implements ActionListener,
 
         OMGraphicList omGraphicList;
 
-        if (projection.getScale() < minScale) {
+        if (projection.getScale() < maxScale) {
             omGraphicList = cache.getRectangle((EqualArc) projection);
         } else {
             fireRequestInfoLine("  The scale is too small for DTED viewing.");
-            Debug.error("DTEDLayer: scale (" + projection.getScale()
-                    + ") is smaller than minimum (" + minScale + ") allowed.");
+            Debug.error("DTEDLayer: scale (1:" + projection.getScale()
+                    + ") is smaller than minimum (1:" + maxScale + ") allowed.");
             omGraphicList = new OMGraphicList();
         }
         /////////////////////
@@ -754,22 +754,6 @@ public class DTEDLayer extends Layer implements ActionListener,
                 cache.setOpaqueness(opaqueness);
             }
         }
-    }
-
-    /**
-     * Get the minimum scale for when the DTED images will be shown.
-     */
-    public long getMinScale() {
-        return minScale;
-    }
-
-    public void setMinScale(long ms) {
-        if (ms < 100) {
-            ms = 20000000;
-            Debug.error("DTEDLayer: minimum scale setting unreasonable (" + ms
-                    + "), setting to 20M");
-        }
-        minScale = ms;
     }
 
     /**

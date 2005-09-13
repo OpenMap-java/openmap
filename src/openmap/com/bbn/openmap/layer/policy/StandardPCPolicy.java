@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardPCPolicy.java,v $
 // $RCSfile: StandardPCPolicy.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:02 $
+// $Revision: 1.8 $
+// $Date: 2005/09/13 14:33:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -107,6 +107,16 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
      * layer. repaint() will be automatically called. This method does
      * not generate the OMGraphics in the list. The layer is still
      * expected to do that in prepare().
+     * <P>
+     * If a Layer is using this PC policy, then it's kind of assumed
+     * that the layer is setting the list and generating the same list
+     * over and over again with the new projection. So, when we look
+     * at the min and max scales set on the layer, we don't want to
+     * clear out that list if the projection scale is outside of the
+     * acceptable range of good projection scales. Instead, we want to
+     * skip the prepare() method call as to not waste CPU cycles
+     * generating things we won't see, and let the RenderPolicy check
+     * to see if the list should be painted.
      */
     public void projectionChanged(ProjectionEvent pe) {
         if (layer != null) {
@@ -121,14 +131,21 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
                         Debug.output(getLayer().getName()
                                 + ": StandardPCPolicy projectionChanged with NEW projection, spawning thread to handle it.");
                     }
-                    layer.doPrepare();
+
+                    if (layer.isProjectionOK(proj)) {
+                        layer.doPrepare();
+                    }
                     return;
                 } else {
                     if (Debug.debugging("layer")) {
                         Debug.output(getLayer().getName()
                                 + ": StandardPCPolicy projectionChanged with NEW projection, handling it within current thread.");
                     }
-                    layer.prepare();
+ 
+                    if (layer.isProjectionOK(proj)) {
+                        layer.prepare();
+                    }
+
                     layer.repaint();
                 }
             } else {

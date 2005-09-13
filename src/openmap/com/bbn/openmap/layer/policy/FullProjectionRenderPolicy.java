@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/FullProjectionRenderPolicy.java,v $
 // $RCSfile: FullProjectionRenderPolicy.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:02 $
+// $Revision: 1.3 $
+// $Date: 2005/09/13 14:33:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,8 +46,10 @@ public class FullProjectionRenderPolicy extends StandardRenderPolicy {
     }
 
     public void paint(Graphics g) {
-        if (layer != null) {
+        if (layer != null && layer.isProjectionOK(layer.getProjection())) {
             Projection proj = layer.getProjection();
+            // The proj shouldn't be null, because isProjectionOK
+            // checks for that, but that method may be overridden
             if (proj != null) {
                 g.setClip(0, 0, proj.getWidth(), proj.getHeight());
             }

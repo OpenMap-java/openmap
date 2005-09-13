@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardRenderPolicy.java,v $
 // $RCSfile: StandardRenderPolicy.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:02 $
+// $Revision: 1.8 $
+// $Date: 2005/09/13 14:33:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -73,8 +73,8 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
     public void paint(Graphics g) {
         if (layer != null) {
             OMGraphicList list = layer.getList();
-            if (list != null) {
-                Projection proj = layer.getProjection();
+            Projection proj = layer.getProjection();
+            if (list != null && layer.isProjectionOK(proj)) {
                 if (proj != null) {
                     g.setClip(0, 0, proj.getWidth(), proj.getHeight());
                 }
@@ -82,7 +82,9 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
                 list.render(g);
             } else if (DEBUG) {
                 Debug.output(layer.getName()
-                        + ".paint(): NULL list, skipping...");
+                        + ".paint(): "
+                        + (list == null ? "NULL list, skipping..."
+                                : " skipping due to projection."));
             }
         } else {
             Debug.error("RenderPolicy.paint():  NULL layer, skipping...");

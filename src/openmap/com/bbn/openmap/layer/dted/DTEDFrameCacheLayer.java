@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameCacheLayer.java,v $
 // $RCSfile: DTEDFrameCacheLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/11 20:39:18 $
+// $Revision: 1.9 $
+// $Date: 2005/09/13 14:33:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -221,7 +221,7 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
 
     protected void setDefaultValues() {
         // defaults
-        setMinScale(20000000);
+        setMaxScale(20000000);
     }
 
     /**
@@ -333,12 +333,12 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
 
         OMGraphicList omGraphicList;
 
-        if (projection.getScale() < minScale) {
+        if (projection.getScale() < maxScale) {
             omGraphicList = cache.getRectangle((EqualArc) projection);
         } else {
             fireRequestInfoLine("  The scale is too small for DTED viewing.");
-            Debug.error("DTEDFrameCacheLayer: scale (" + projection.getScale()
-                    + ") is smaller than minimum (" + minScale + ") allowed.");
+            Debug.error("DTEDFrameCacheLayer: scale (1:" + projection.getScale()
+                    + ") is smaller than minimum (1:" + maxScale + ") allowed.");
             omGraphicList = new OMGraphicList();
         }
         /////////////////////
@@ -392,22 +392,6 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
         if (cache != null) {
             cache.setDtedLevel(level);
         }
-    }
-
-    /**
-     * Get the minimum scale for when the DTED images will be shown.
-     */
-    public long getMinScale() {
-        return minScale;
-    }
-
-    public void setMinScale(long ms) {
-        if (ms < 100) {
-            ms = 20000000;
-            Debug.error("DTEDFrameCacheLayer: minimum scale setting unreasonable ("
-                    + ms + "), setting to 20M");
-        }
-        minScale = ms;
     }
 
     /**

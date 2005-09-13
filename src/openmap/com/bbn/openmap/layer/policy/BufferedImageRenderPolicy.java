@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/BufferedImageRenderPolicy.java,v $
 // $RCSfile: BufferedImageRenderPolicy.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:02 $
+// $Revision: 1.7 $
+// $Date: 2005/09/13 14:33:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,12 +48,15 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
     protected BufferedImage buffer = null;
 
     protected boolean useImageBuffer = false;
-
+    
+    protected boolean DEBUG = false;
+    
     /**
      * Set the layer at some point before use.
      */
     public BufferedImageRenderPolicy() {
         super();
+        DEBUG = Debug.debugging("policy");
     }
 
     /**
@@ -61,6 +64,7 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
      */
     public BufferedImageRenderPolicy(OMGraphicHandlerLayer layer) {
         super(layer);
+        DEBUG = Debug.debugging("policy");
     }
 
     public OMGraphicList prepare() {
@@ -84,8 +88,9 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
         }
 
         OMGraphicList list = layer.getList();
+        Projection proj = layer.getProjection();
 
-        if (list != null) {
+        if (list != null && layer.isProjectionOK(proj)) {
 
             if (isUseImageBuffer() && getBuffer() == null) {
                 setBuffer(createAndPaintImageBuffer(list));
@@ -95,7 +100,6 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
 
             if (bufferedImage != null) {
 
-                Projection proj = layer.getProjection();
                 if (proj != null) {
                     // Gets reset by JComponent
                     g.setClip(0, 0, proj.getWidth(), proj.getHeight());
@@ -103,7 +107,7 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
 
                 ((Graphics2D) g).drawRenderedImage((BufferedImage) bufferedImage,
                         new AffineTransform());
-                if (Debug.debugging("policy")) {
+                if (DEBUG) {
                     Debug.output("RenderingPolicy:" + layer.getName()
                             + ": rendering buffer");
                 }
@@ -121,12 +125,17 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
                     setUseImageBuffer(true);
                 }
 
-                if (Debug.debugging("policy")) {
+                if (DEBUG) {
                     Debug.output("RenderingPolicy:" + layer.getName()
                             + ": rendering list, buffer(" + isUseImageBuffer()
                             + ")");
                 }
             }
+        } else if (DEBUG) {
+            Debug.output(layer.getName()
+                    + ".paint(): "
+                    + (list == null ? "NULL list, skipping..."
+                            : " skipping due to projection."));
         }
 
     }

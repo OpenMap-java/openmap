@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/ListResetPCPolicy.java,v $
 // $RCSfile: ListResetPCPolicy.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:02 $
+// $Revision: 1.8 $
+// $Date: 2005/09/13 14:33:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -73,7 +73,10 @@ public class ListResetPCPolicy implements ProjectionChangePolicy {
                             + ": ListResetPCPolicy projectionChanged with NEW projection, resetting list.");
                 }
                 layer.setList(null);
-                layer.doPrepare();
+                // Check to see if the projection is worth reacting to.
+                if (layer.isProjectionOK(proj)) {
+                    layer.doPrepare();
+                }
             } else {
                 if (Debug.debugging("layer")) {
                     Debug.output(getLayer().getName()

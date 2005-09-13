@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.19 $
-// $Date: 2005/08/09 18:48:03 $
+// $Revision: 1.20 $
+// $Date: 2005/09/13 14:33:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,29 +59,29 @@ import com.bbn.openmap.util.PropUtils;
  * file.
  * <p>
  * <code><pre>
- * 
  *  
  *   
  *    
- *     ############################
- *     # Properties for a shape layer
- *     shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
- *     shapeLayer.prettyName=Name_for_Menu
- *     shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
- *     shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
- *     shapeLayer.lineColor=ff000000
- *     shapeLayer.fillColor=ff000000
- *     # plus any other properties used by the DrawingAttributes object.
- *     shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
- *     ############################
+ *     
+ *      ############################
+ *      # Properties for a shape layer
+ *      shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
+ *      shapeLayer.prettyName=Name_for_Menu
+ *      shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
+ *      shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
+ *      shapeLayer.lineColor=ff000000
+ *      shapeLayer.fillColor=ff000000
+ *      # plus any other properties used by the DrawingAttributes object.
+ *      shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
+ *      ############################
+ *      
  *     
  *    
  *   
- *  
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.19 $ $Date: 2005/08/09 18:48:03 $
+ * @version $Revision: 1.20 $ $Date: 2005/09/13 14:33:12 $
  * @see SpatialIndex
  */
 public class ShapeLayer extends OMGraphicHandlerLayer implements
@@ -192,7 +192,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                 fireRequestMessage("Can't access icon image: \n    "
                         + imageURLString);
             }
-            
+
             setSpatialIndex(spatialIndex);
 
         } else {
@@ -285,7 +285,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
         list.put(initPropertiesProperty, shapeFileProperty + " "
                 + spatialIndexProperty + " " + pointImageURLProperty + " "
                 + shadowXProperty + " " + shadowYProperty
-                + da.getInitPropertiesOrder() + " " + AddToBeanContextProperty);
+                + da.getInitPropertiesOrder() + " " + AddToBeanContextProperty + " "
+                + MinScaleProperty + " " + MaxScaleProperty);
 
         interString = i18n.get(ShapeLayer.class,
                 shapeFileProperty,
@@ -465,7 +466,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
         }
 
         if (list != null) {
-            list.generate(projection, true);//all new graphics
+            list.generate(projection, true);// all new graphics
         }
 
         return list;
@@ -515,9 +516,9 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
             box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             JPanel stuff = new JPanel();
-            //          stuff.setLayout(new BoxLayout(stuff,
+            // stuff.setLayout(new BoxLayout(stuff,
             // BoxLayout.X_AXIS));
-            //          stuff.setAlignmentX(Component.LEFT_ALIGNMENT);
+            // stuff.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             DrawingAttributes da = getDrawingAttributes();
             if (da != null) {
