@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/MakeToc.java,v $
 // $RCSfile: MakeToc.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/08/09 18:45:53 $
+// $Revision: 1.11 $
+// $Date: 2005/09/15 14:04:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -732,14 +732,15 @@ public class MakeToc {
                 frame.cdted = true;
             } // else do nothing for CADRG
 
-            // Set the string to length 15
-            if (scaleString.length() < 15) {
-                padding = createPadding(15 - scaleString.length(), false);
+            // Set the string to length 12, was 15 for some reason.
+            int scaleStringLength = 12;
+            if (scaleString.length() < scaleStringLength) {
+                padding = createPadding(scaleStringLength - scaleString.length(), false);
                 scaleString = scaleString + padding;
-            } else if (scaleString.length() > 15) {
-                scaleString = scaleString.substring(0, 15);
+            } else if (scaleString.length() > scaleStringLength) {
+                scaleString = scaleString.substring(0, scaleStringLength);
             }
-
+            
             frame.scale = scaleString;
             frame.zone = head.filename.charAt(11);
 
