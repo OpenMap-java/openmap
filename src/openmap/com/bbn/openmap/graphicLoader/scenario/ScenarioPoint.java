@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/ScenarioPoint.java,v $
 // $RCSfile: ScenarioPoint.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:47 $
+// $Revision: 1.4 $
+// $Date: 2005/09/15 14:39:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,13 +51,13 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
     /**
      * A list of points where this point should be.
      */
-    List timeStamps;
+    protected List timeStamps;
 
     /**
      * A list of graphics to be used to render this point, and any
      * other symbology it needs during the scenario.
      */
-    OMGraphicList renderList;
+    protected OMGraphicList renderList;
 
     /**
      * The radius of OMPoints, if icons are not found.
@@ -247,8 +247,14 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
      * Prepare the ScenarioPoint to be rendered in its position at a
      * certain time.
      */
-    public void generateSnapshot(Projection p, long time) {
-        renderList.clear();
+    public void generate(Projection p, long time, boolean showScenario) {
+        
+        if (renderList.isEmpty()) {
+            generateTotalScenario(p);
+        }
+        
+        renderList.setVisible(showScenario);
+        
         if (DEBUG) {
             Debug.output("ScenarioPoint (" + getName()
                     + ") calculating snapshot location.");
@@ -256,24 +262,7 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
 
         setPosition(time);
 
-        if (location.isVisible() && isShowLocation()) {
-            if (DEBUG) {
-                Debug.output("ScenarioPoint (" + getName()
-                        + ") adding location (" + location.getClass().getName()
-                        + ")");
-            }
-            renderList.add(location);
-        }
-
-        if (label.isVisible() && isShowName()) {
-            if (DEBUG) {
-                Debug.output("ScenarioPoint (" + getName() + ") adding label ("
-                        + label.getData() + ")");
-            }
-            renderList.add(label);
-        }
-
-        super.generate(p);
+        generate(p);
         setNeedToRegenerate(false);
     }
 
@@ -297,7 +286,7 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
             super.setGraphicLocations(latitude, longitude);
         }
     }
-
+    
     /**
      * Prepare the ScenarioPoint to render its entire scenario
      * performance.
@@ -319,7 +308,7 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
             while (it.hasNext()) {
                 TimeStamp ts = (TimeStamp) it.next();
 
-                if (image != null) {
+                if (false && image != null) {
                     if (DEBUG) {
                         Debug.output("ScenarioPoint (" + getName()
                                 + ") represented by image");
@@ -332,10 +321,10 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
                         Debug.output("ScenarioPoint (" + getName()
                                 + ") represented by OMPoint");
                     }
-                    OMPoint point = new OMPoint(ts.latitude, ts.longitude, radius);
+                    OMPoint point = new OMPoint(ts.latitude, ts.longitude, 2);
                     point.setOval(true);
-                    point.setFillPaint(getFillPaint());
-                    point.setLinePaint(getLinePaint());
+                    point.setFillPaint(getSelectPaint());
+                    point.setLinePaint(getSelectPaint());
                     point.generate(p);
                     icons.add(point);
                 }
@@ -386,6 +375,7 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
         }
         if (isVisible() && !getNeedToRegenerate()) {
             renderList.render(g);
+            super.render(g);
         }
     }
 }

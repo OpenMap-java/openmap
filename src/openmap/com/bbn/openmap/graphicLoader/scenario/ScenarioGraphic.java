@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/ScenarioGraphic.java,v $
 // $RCSfile: ScenarioGraphic.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:05:47 $
+// $Revision: 1.3 $
+// $Date: 2005/09/15 14:39:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,9 +53,10 @@ public interface ScenarioGraphic {
 
     /**
      * Prepare the ScenarioPoint to be rendered in its position at a
-     * certain time.
+     * certain time. include a flag that says whether the entire path
+     * of the graphic should be displayed.
      */
-    public void generateSnapshot(Projection p, long time);
+    public void generate(Projection p, long time, boolean showTotalScenario);
 
     /**
      * Prepare the ScenarioPoint to display its overall scenario

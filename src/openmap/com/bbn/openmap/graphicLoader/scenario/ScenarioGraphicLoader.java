@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/ScenarioGraphicLoader.java,v $
 // $RCSfile: ScenarioGraphicLoader.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:47 $
+// $Revision: 1.8 $
+// $Date: 2005/09/15 14:39:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,7 @@ package com.bbn.openmap.graphicLoader.scenario;
 
 import java.awt.Container;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeSupport;
@@ -37,10 +38,18 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.Vector;
-import javax.swing.*;
+
+import javax.swing.Box;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.graphicLoader.MMLGraphicLoader;
 import com.bbn.openmap.gui.Tool;
 import com.bbn.openmap.gui.time.RealTimeHandler;
 import com.bbn.openmap.gui.time.TimeConstants;
@@ -53,12 +62,11 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicHandler;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.graphicLoader.MMLGraphicLoader;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.DataBoundsProvider;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The ScenarioGraphicLoader contains all the ScenarioGraphics and
@@ -89,51 +97,51 @@ import com.bbn.openmap.util.DataBoundsProvider;
  * Sample properties:
  * 
  * <pre>
- * 
- * 
- *  scenario.class=com.bbn.openmap.graphicLoader.scenario.ScenarioGraphicLoader
- *  scenario.prettyName=Test Scenario
- *  scenario.locationFile=org-list.csv
- *  scenario.locationFileHasHeader=true
- *  scenario.nameIndex=0
- *  scenario.iconIndex=5
- *  scenario.activityFile=org-activities.csv
- *  scenario.activityFileHasHeader=true
- *  scenario.activityNameIndex=1
- *  scenario.latIndex=9
- *  scenario.lonIndex=10
- *  scenario.timeFormat=d-MMM-yyyy HH:mm
- *  scenario.timeIndex=7
- *  # If no icon defined, used for org. location markers edge.
- *  scenario.lineColor=aaaaaa33
- *  # If no icon defined, used for org. location markers fill.
- *  scenario.fillColor=aaaaaa33
- *  # Used for lines for total scenario paths
- *  scenario.selectColor=aaaa0000
- *  
- *  scenario.timerRates=vs s m a q f vf
- *  scenario.vs.prettyName=Very Slow
- *  scenario.vs.clockIntervalMillis=2000
- *  scenario.vs.pace=00:06:00
- *  scenario.s.prettyName=Slow
- *  scenario.s.clockIntervalMillis=1000
- *  scenario.s.pace=00:06:00
- *  scenario.m.prettyName=Moderate
- *  scenario.m.clockIntervalMillis=400
- *  scenario.m.pace=00:06:00
- *  scenario.a.prettyName=Average
- *  scenario.a.clockIntervalMillis=200
- *  scenario.a.pace=00:06:00
- *  scenario.q.prettyName=Quick
- *  scenario.q.clockIntervalMillis=100
- *  scenario.q.pace=00:06:00
- *  scenario.f.prettyName=Fast
- *  scenario.f.clockIntervalMillis=40
- *  scenario.f.pace=00:06:00
- *  scenario.vf.prettyName=Very Fast
- *  scenario.vf.clockIntervalMillis=10
- *  scenario.vf.pace=01:00:00
- *  
+ *   
+ *   
+ *    scenario.class=com.bbn.openmap.graphicLoader.scenario.ScenarioGraphicLoader
+ *    scenario.prettyName=Test Scenario
+ *    scenario.locationFile=org-list.csv
+ *    scenario.locationFileHasHeader=true
+ *    scenario.nameIndex=0
+ *    scenario.iconIndex=5
+ *    scenario.activityFile=org-activities.csv
+ *    scenario.activityFileHasHeader=true
+ *    scenario.activityNameIndex=1
+ *    scenario.latIndex=9
+ *    scenario.lonIndex=10
+ *    scenario.timeFormat=d-MMM-yyyy HH:mm
+ *    scenario.timeIndex=7
+ *    # If no icon defined, used for org. location markers edge.
+ *    scenario.lineColor=aaaaaa33
+ *    # If no icon defined, used for org. location markers fill.
+ *    scenario.fillColor=aaaaaa33
+ *    # Used for lines for total scenario paths
+ *    scenario.selectColor=aaaa0000
+ *    
+ *    scenario.timerRates=vs s m a q f vf
+ *    scenario.vs.prettyName=Very Slow
+ *    scenario.vs.clockIntervalMillis=2000
+ *    scenario.vs.pace=00:06:00
+ *    scenario.s.prettyName=Slow
+ *    scenario.s.clockIntervalMillis=1000
+ *    scenario.s.pace=00:06:00
+ *    scenario.m.prettyName=Moderate
+ *    scenario.m.clockIntervalMillis=400
+ *    scenario.m.pace=00:06:00
+ *    scenario.a.prettyName=Average
+ *    scenario.a.clockIntervalMillis=200
+ *    scenario.a.pace=00:06:00
+ *    scenario.q.prettyName=Quick
+ *    scenario.q.clockIntervalMillis=100
+ *    scenario.q.pace=00:06:00
+ *    scenario.f.prettyName=Fast
+ *    scenario.f.clockIntervalMillis=40
+ *    scenario.f.pace=00:06:00
+ *    scenario.vf.prettyName=Very Fast
+ *    scenario.vf.clockIntervalMillis=10
+ *    scenario.vf.pace=01:00:00
+ *    
  * </pre>
  */
 public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
@@ -235,7 +243,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
     protected DataBounds dataBounds = null;
     protected Date timeDate = null;
 
-    /// GUI ToolPanel widgets. Kept here to make their visibility
+    // / GUI ToolPanel widgets. Kept here to make their visibility
     // adjustable.
     protected JToggleButton timeWrapToggle;
     protected JLabel timeLabel;
@@ -269,20 +277,15 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
                 }
             }
 
-            if (mode == TOTAL_SCENARIO_MODE) {
-                if (DEBUG) {
-                    Debug.output("ScenarioGraphicLoader (" + getName()
-                            + ") generating total scenario ");
-                }
-                scenarioGraphics.generateTotalScenario(p);
-            } else {
-                long currentTime = getTime();
-                if (DEBUG) {
-                    Debug.output("ScenarioGraphicLoader (" + getName()
-                            + ") snapshot at " + currentTime);
-                }
-                scenarioGraphics.generateSnapshot(p, currentTime);
+            long currentTime = getTime();
+            if (DEBUG) {
+                Debug.output("ScenarioGraphicLoader (" + getName()
+                        + ") snapshot at " + currentTime);
             }
+            scenarioGraphics.generate(p,
+                    currentTime,
+                    getMode() == TOTAL_SCENARIO_MODE);
+
             if (DEBUG) {
                 Debug.output("ScenarioGraphicLoader (" + getName()
                         + ") setting list of " + scenarioGraphics.size()
@@ -319,14 +322,6 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
 
         if (timeSliderSupport != null) {
             timeSliderSupport.update(time);
-        }
-
-        // If the time has been set to be somewhere within the
-        // boundaries
-        // of time, make sure we're showing the current location of
-        // everything.
-        if (time > startTime && time < endTime) {
-            mode = SNAPSHOT_SCENARIO_MODE;
         }
 
         manageGraphics();
@@ -440,7 +435,6 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
                 }
 
                 if (timer.isRunning()) {
-                    mode = TOTAL_SCENARIO_MODE;
                     stopClock();
                     setTime(newTime);
                     return;
@@ -456,7 +450,6 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
                     + ")");
         }
 
-        mode = SNAPSHOT_SCENARIO_MODE;
         setTime(newTime);
     }
 
@@ -876,87 +869,87 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
         return list;
     }
 
-    //     /**
-    //      * Tool Method. The retrieval tool's interface. This is added to
+    // /**
+    // * Tool Method. The retrieval tool's interface. This is added to
     // the
-    //      * tool bar.
-    //      *
-    //      * @return String The key for this tool.
-    //      */
-    //     public Container getFace() {
-    //      JToolBar jtb = new JToolBar();
-    //      jtb.setFloatable(false);
+    // * tool bar.
+    // *
+    // * @return String The key for this tool.
+    // */
+    // public Container getFace() {
+    // JToolBar jtb = new JToolBar();
+    // jtb.setFloatable(false);
 
     // // TimerToggleButton ttb = new TimerToggleButton(this);
     // // ttb.setToolTipText("Start/Stop Scenario Timer");
     // // jtb.add(ttb);
     // // pcs.addPropertyChangeListener(TIMER_RUNNING_STATUS, ttb);
 
-    //      try {
-    //          URL url = PropUtils.getResourceOrFileOrURL(this,
+    // try {
+    // URL url = PropUtils.getResourceOrFileOrURL(this,
     // snapshotIconName);
-    //          ImageIcon snapshotIcon = new ImageIcon(url);
+    // ImageIcon snapshotIcon = new ImageIcon(url);
 
-    //          url = PropUtils.getResourceOrFileOrURL(this,
+    // url = PropUtils.getResourceOrFileOrURL(this,
     // totalScenarioIconName);
-    //          ImageIcon totalScenarioIcon = new ImageIcon(url);
+    // ImageIcon totalScenarioIcon = new ImageIcon(url);
 
-    //          timeWrapToggle = new JToggleButton(totalScenarioIcon,
+    // timeWrapToggle = new JToggleButton(totalScenarioIcon,
     // timeWrap);
-    //          timeWrapToggle.setSelectedIcon(snapshotIcon);
-    //          timeWrapToggle.setActionCommand(SCENARIO_MODE_CMD);
-    //          timeWrapToggle.addActionListener(this);
-    //          timeWrapToggle.setToolTipText("Wrap Scenario Time Scale");
-    //          jtb.add(timeWrapToggle);
+    // timeWrapToggle.setSelectedIcon(snapshotIcon);
+    // timeWrapToggle.setActionCommand(SCENARIO_MODE_CMD);
+    // timeWrapToggle.addActionListener(this);
+    // timeWrapToggle.setToolTipText("Wrap Scenario Time Scale");
+    // jtb.add(timeWrapToggle);
 
-    //      } catch (MalformedURLException murle) {
-    //          Debug.error("ScenarioGraphicLoader " + getName() + ":" +
+    // } catch (MalformedURLException murle) {
+    // Debug.error("ScenarioGraphicLoader " + getName() + ":" +
     // murle.getMessage());
-    //      } catch (NullPointerException npe) {
-    //          Debug.error("ScenarioGraphicLoader " + getName() + ":" +
+    // } catch (NullPointerException npe) {
+    // Debug.error("ScenarioGraphicLoader " + getName() + ":" +
     // npe.getMessage());
-    //      }
+    // }
 
-    //      timerControl = new TimerControlButtonPanel(this);
-    //      jtb.add(timerControl);
-    //      pcs.addPropertyChangeListener(TIMER_RUNNING_STATUS,
+    // timerControl = new TimerControlButtonPanel(this);
+    // jtb.add(timerControl);
+    // pcs.addPropertyChangeListener(TIMER_RUNNING_STATUS,
     // timerControl);
 
-    //      String runningStatus = timer.isRunning()?(getClockDirection() >
+    // String runningStatus = timer.isRunning()?(getClockDirection() >
     // 0?TIMER_FORWARD:TIMER_BACKWARD):TIMER_STOPPED;
-    //      pcs.firePropertyChange(TIMER_RUNNING_STATUS, null,
-    //                             runningStatus);
+    // pcs.firePropertyChange(TIMER_RUNNING_STATUS, null,
+    // runningStatus);
 
-    //      timerRateControl = new TimerRateComboBox(this);
-    //      timerRateControl.setToolTipText("Change clock rate for
+    // timerRateControl = new TimerRateComboBox(this);
+    // timerRateControl.setToolTipText("Change clock rate for
     // Scenario");
 
-    //      Iterator it = timerRates.iterator();
-    //      while (it.hasNext()) {
-    //          TimerRateHolder trh = (TimerRateHolder)it.next();
-    //          timerRateControl.add(trh.label, trh.clock, trh.pace);
-    //      }
+    // Iterator it = timerRates.iterator();
+    // while (it.hasNext()) {
+    // TimerRateHolder trh = (TimerRateHolder)it.next();
+    // timerRateControl.add(trh.label, trh.clock, trh.pace);
+    // }
 
-    //      int si = timerRates.size()/2;
-    //      if (si > 0) {
-    //          timerRateControl.setSelectedIndex(si);
-    //      }
+    // int si = timerRates.size()/2;
+    // if (si > 0) {
+    // timerRateControl.setSelectedIndex(si);
+    // }
 
-    //      jtb.add(timerRateControl);
+    // jtb.add(timerRateControl);
 
-    //      timeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 0);
-    //      timeSliderSupport = new TimeSliderSupport(timeSlider, this,
+    // timeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 0);
+    // timeSliderSupport = new TimeSliderSupport(timeSlider, this,
     // startTime, endTime);
-    //      jtb.add(timeSlider);
+    // jtb.add(timeSlider);
 
-    //      timeLabel = new JLabel();
-    //      java.awt.Font defaultFont = timeLabel.getFont();
-    //      timeLabel.setFont(new java.awt.Font(defaultFont.getName(),
+    // timeLabel = new JLabel();
+    // java.awt.Font defaultFont = timeLabel.getFont();
+    // timeLabel.setFont(new java.awt.Font(defaultFont.getName(),
     // defaultFont.getStyle(), 9));
-    //      jtb.add(timeLabel);
+    // jtb.add(timeLabel);
 
-    //      return jtb;
-    //     }
+    // return jtb;
+    // }
 
     /**
      * Tool Method. The retrieval tool's interface. This is added to
@@ -984,7 +977,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
             timeWrapToggle.setActionCommand(SCENARIO_MODE_CMD);
             timeWrapToggle.addActionListener(this);
             timeWrapToggle.setToolTipText("Wrap Scenario Time Scale");
-            //          jtb.add(timeWrapToggle);
+            // jtb.add(timeWrapToggle);
             innerBox.add(timeWrapToggle);
 
         } catch (MalformedURLException murle) {
@@ -996,7 +989,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
         }
 
         timerControl = new TimerControlButtonPanel(this);
-        //      jtb.add(timerControl);
+        // jtb.add(timerControl);
         innerBox.add(timerControl);
         rightBox.add(innerBox);
 
@@ -1021,25 +1014,52 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
             timerRateControl.setSelectedIndex(si);
         }
 
-        //      jtb.add(timerRateControl);
+        // jtb.add(timerRateControl);
         rightBox.add(timerRateControl);
 
         timeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 0);
         timeSliderSupport = new TimeSliderSupport(timeSlider, this, startTime, endTime);
-        //      jtb.add(timeSlider);
+        // jtb.add(timeSlider);
         leftBox.add(timeSlider);
 
         timeLabel = new JLabel(" ", SwingConstants.CENTER);
         java.awt.Font defaultFont = timeLabel.getFont();
         timeLabel.setFont(new java.awt.Font(defaultFont.getName(), defaultFont.getStyle(), 10));
-        //      jtb.add(timeLabel);
+        // jtb.add(timeLabel);
         leftBox.add(timeLabel);
 
+        URL url = ScenarioGraphicLoader.class.getResource("path.png");
+        ImageIcon icon = new ImageIcon(url);
+
+        JToggleButton modeButton = new JToggleButton(icon, mode == TOTAL_SCENARIO_MODE);
+        modeButton.setToolTipText((mode == TOTAL_SCENARIO_MODE ? "Hide"
+                : "Show")
+                + " scenario paths on " + getName());
+        modeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                JToggleButton jtb = (JToggleButton) ae.getSource();
+                boolean sel = jtb.isSelected();
+                setMode((sel ? TOTAL_SCENARIO_MODE : SNAPSHOT_SCENARIO_MODE));
+                jtb.setToolTipText((sel ? "Hide" : "Show")
+                        + " scenario paths on " + getName());
+                manageGraphics();
+            }
+        });
+
+        bigBox.add(modeButton);
         bigBox.add(leftBox);
         bigBox.add(rightBox);
         jtb.add(bigBox);
 
         return jtb;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 
     /**
@@ -1085,27 +1105,15 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
             super();
         }
 
-        public void generateTotalScenario(Projection p) {
+        public void generate(Projection p, long time, boolean showScenario) {
             synchronized (graphics) {
                 Iterator it = iterator();
                 while (it.hasNext()) {
                     OMGraphic graphic = (OMGraphic) it.next();
                     if (graphic instanceof ScenarioGraphic) {
-                        ((ScenarioGraphic) graphic).generateTotalScenario(p);
-                    } else {
-                        graphic.generate(p);
-                    }
-                }
-            }
-        }
-
-        public void generateSnapshot(Projection p, long time) {
-            synchronized (graphics) {
-                Iterator it = iterator();
-                while (it.hasNext()) {
-                    OMGraphic graphic = (OMGraphic) it.next();
-                    if (graphic instanceof ScenarioGraphic) {
-                        ((ScenarioGraphic) graphic).generateSnapshot(p, time);
+                        ((ScenarioGraphic) graphic).generate(p,
+                                time,
+                                showScenario);
                     } else {
                         graphic.generate(p);
                     }
