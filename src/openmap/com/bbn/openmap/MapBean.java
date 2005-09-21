@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.15 $
-// $Date: 2004/10/14 18:05:39 $
+// $Revision: 1.16 $
+// $Date: 2005/09/21 13:57:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -413,6 +413,9 @@ public class MapBean extends JComponent implements ComponentListener,
         // Fire the property change, so the messages get cleared out.
         // Then, if any of the layers have a problem with their new
         // projection, their messages will be displayed.
+        if (Debug.debugging("proj")) {
+            Debug.output("MapBean firing projection: " + getProjection());
+        }
         firePropertyChange(ProjectionProperty, null, getProjection());
         projectionSupport.fireProjectionChanged(getProjection());
         purgeAndNotifyRemovedLayers();
