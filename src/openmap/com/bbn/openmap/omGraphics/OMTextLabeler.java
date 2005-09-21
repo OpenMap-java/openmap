@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: OMTextLabeler.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/01/10 16:58:34 $
+//$Revision: 1.2 $
+//$Date: 2005/09/21 13:56:12 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -37,7 +37,7 @@ import java.awt.geom.GeneralPath;
 public class OMTextLabeler extends OMText implements OMLabeler {
 
     /**
-     *  
+     * 
      */
     public OMTextLabeler(String stuff) {
         this(stuff, DEFAULT_FONT, JUSTIFY_LEFT);
@@ -64,8 +64,10 @@ public class OMTextLabeler extends OMText implements OMLabeler {
     }
 
     public void setLocation(GeneralPath gp) {
-        Rectangle rect = gp.getBounds();
-        setLocation(new Point((int) (rect.getX() + rect.getWidth() / 2), (int) (rect.getY() + rect.getHeight() / 2)));
+        if (gp != null) {
+            Rectangle rect = gp.getBounds();
+            setLocation(new Point((int) (rect.getX() + rect.getWidth() / 2), (int) (rect.getY() + rect.getHeight() / 2)));
+        }
     }
 
     /*
@@ -75,8 +77,8 @@ public class OMTextLabeler extends OMText implements OMLabeler {
      */
     public void setLocation(Point p) {
         polyBounds = null;
-        setX((int)p.getX());
-        setY((int)p.getY());
+        setX((int) p.getX());
+        setY((int) p.getY());
         setMapLocation(p);
         computeBounds();
         setNeedToRegenerate(false);
@@ -139,9 +141,9 @@ public class OMTextLabeler extends OMText implements OMLabeler {
 
         // bbenyo: take the absolute value cause I was getting
         // negative values
-        //         for polys with all positive vertices
-        //      cx = Math.abs(cx * factor);
-        //      cy = Math.abs(cy * factor);
+        // for polys with all positive vertices
+        // cx = Math.abs(cx * factor);
+        // cy = Math.abs(cy * factor);
 
         // DFD and RS - let the area calculation return negative
         // values, and don't do this absolute value calculation.
