@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.27 $
-// $Date: 2005/08/11 20:39:15 $
+// $Revision: 1.28 $
+// $Date: 2005/09/21 13:54:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -135,24 +135,24 @@ import com.bbn.openmap.util.SwingWorker;
  * be set that dictate important behavior:
  * 
  * <pre>
- * 
- *  
- *  
- *   layer.projectionChangePolicy=pcp
- *   layer.pcp.class=com.bbn.openmap.layer.policy.StandardPCPolicy
- *  
- *   layer.renderPolicy=srp
- *   layer.srp.class=com.bbn.openmap.layer.policy.StandardRenderPolicy
- *   # or
- *   layer.renderPolicy=ta
- *   layer.ta.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
- *   layer.ta.renderingHints=KEY_TEXT_ANTIALIASING
- *   layer.ta.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
- *  
- *   layer.mouseModes=Gestures
- *   layer.consumeEvents=true
  *   
- *  
+ *    
+ *    
+ *     layer.projectionChangePolicy=pcp
+ *     layer.pcp.class=com.bbn.openmap.layer.policy.StandardPCPolicy
+ *    
+ *     layer.renderPolicy=srp
+ *     layer.srp.class=com.bbn.openmap.layer.policy.StandardRenderPolicy
+ *     # or
+ *     layer.renderPolicy=ta
+ *     layer.ta.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
+ *     layer.ta.renderingHints=KEY_TEXT_ANTIALIASING
+ *     layer.ta.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
+ *    
+ *     layer.mouseModes=Gestures
+ *     layer.consumeEvents=true
+ *     
+ *    
  * </pre>
  */
 public class OMGraphicHandlerLayer extends Layer implements
@@ -247,7 +247,8 @@ public class OMGraphicHandlerLayer extends Layer implements
     }
 
     /**
-     * @see com.bbn.openmap.omGraphics.OMGraphicHandler#filter(Shape, boolean).
+     * @see com.bbn.openmap.omGraphics.OMGraphicHandler#filter(Shape,
+     *      boolean).
      */
     public OMGraphicList filter(Shape shapeBoundary, boolean getInsideBoundary) {
         return filter.filter(shapeBoundary, getInsideBoundary);
@@ -441,6 +442,18 @@ public class OMGraphicHandlerLayer extends Layer implements
     }
 
     /**
+     * Called from within the layer to create a LayerWorker to use for
+     * the prepare() method. By default, a new LayerWorker is
+     * returned. This method may be overridden to make the layer use
+     * an extended LayerWorker/SwingWorker class.
+     * 
+     * @return SwingWorker/LayerWorker
+     */
+    protected SwingWorker createLayerWorker() {
+        return new LayerWorker();
+    }
+
+    /**
      * This method is here to provide a default action for Layers as
      * they act as a ProjectionPainter. Normally, ProjectionPainters
      * are expected to receive the projection, gather/create
@@ -504,7 +517,7 @@ public class OMGraphicHandlerLayer extends Layer implements
         // changed or other doPrepare call, then create a thread that
         // will do the real work. If there is a thread working on
         // this, then set the cancelled flag in the layer.
-        setLayerWorker(new LayerWorker());
+        setLayerWorker(createLayerWorker());
     }
 
     /**
@@ -618,7 +631,7 @@ public class OMGraphicHandlerLayer extends Layer implements
             repaint();
         } else {
             setCancelled(false);
-            setLayerWorker(new LayerWorker());
+            setLayerWorker(createLayerWorker());
         }
     }
 
@@ -671,7 +684,6 @@ public class OMGraphicHandlerLayer extends Layer implements
                 fireRequestMessage(new InfoDisplayEvent(this, msg));
             }
 
-            fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
             return null;
         }
 
@@ -876,7 +888,7 @@ public class OMGraphicHandlerLayer extends Layer implements
         String prefix = PropUtils.getScopedPropertyPrefix(this);
         String policyPrefix = null;
 
-        ////// ProjectionChangePolicy
+        // //// ProjectionChangePolicy
 
         ProjectionChangePolicy pcp = getProjectionChangePolicy();
         if (pcp instanceof PropertyConsumer) {
@@ -888,9 +900,9 @@ public class OMGraphicHandlerLayer extends Layer implements
             policyPrefix = prefix + "pcp";
         }
 
-        //Whoops, need to make sure pcp is valid but removing the
-        //OMGHL prefix from the front of the policy prefix (if
-        //applicable). Same for RenderPolicy
+        // Whoops, need to make sure pcp is valid but removing the
+        // OMGHL prefix from the front of the policy prefix (if
+        // applicable). Same for RenderPolicy
 
         props.put(prefix + ProjectionChangePolicyProperty,
                 policyPrefix.substring(prefix.length()));
@@ -905,7 +917,7 @@ public class OMGraphicHandlerLayer extends Layer implements
             ((PropertyConsumer) rp).getProperties(props);
         }
 
-        ///// RenderPolicy
+        // /// RenderPolicy
 
         if (policyPrefix == null) {
             policyPrefix = prefix + "rp";
@@ -1166,7 +1178,7 @@ public class OMGraphicHandlerLayer extends Layer implements
         return selectedList;
     }
 
-    ////// Reactions
+    // //// Reactions
 
     /**
      * Fleeting change of appearance for mouse movements over an
