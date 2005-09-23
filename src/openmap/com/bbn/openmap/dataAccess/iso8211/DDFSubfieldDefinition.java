@@ -144,7 +144,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
 
         case 'A':
         case 'C': // It isn't clear to me how this is different than
-                  // 'A'
+            // 'A'
             eType = DDFDataType.DDFString;
             break;
 
@@ -164,7 +164,8 @@ public class DDFSubfieldDefinition implements DDFConstants {
             if (pszFormatString.charAt(1) == '(') {
 
                 int numEndIndex = 2;
-                for (; Character.isDigit(pszFormatString.charAt(numEndIndex)); numEndIndex++) {
+                for (; numEndIndex < pszFormatString.length()
+                        && Character.isDigit(pszFormatString.charAt(numEndIndex)); numEndIndex++) {
                 }
 
                 String numberString = pszFormatString.substring(2, numEndIndex);
@@ -179,9 +180,10 @@ public class DDFSubfieldDefinition implements DDFConstants {
 
                 nFormatWidth = Integer.parseInt(numberString) / 8;
 
-                eBinaryFormat = DDFBinaryFormat.SInt; // good default,
-                                                      // works for
-                                                      // SDTS.
+                eBinaryFormat = DDFBinaryFormat.SInt; // good
+                // default,
+                // works for
+                // SDTS.
 
                 if (nFormatWidth < 5) {
                     eType = DDFDataType.DDFInt;
@@ -189,13 +191,13 @@ public class DDFSubfieldDefinition implements DDFConstants {
                     eType = DDFDataType.DDFBinaryString;
                 }
 
-            } else { // or do we have a binary type indicator? (is it
-                     // binary)
+            } else { // or do we have a binary type indicator? (is it binary)
 
                 eBinaryFormat = (int) (pszFormatString.charAt(1) - '0');
 
                 int numEndIndex = 2;
-                for (; Character.isDigit(pszFormatString.charAt(numEndIndex)); numEndIndex++) {
+                for (; numEndIndex < pszFormatString.length()
+                        && Character.isDigit(pszFormatString.charAt(numEndIndex)); numEndIndex++) {
                 }
 
                 nFormatWidth = Integer.valueOf(pszFormatString.substring(2,
@@ -455,14 +457,14 @@ public class DDFSubfieldDefinition implements DDFConstants {
             // DFD - don't think this applies to Java, since it's
             // always big endian
 
-            //             if (pszFormatString.charAt(0) == 'B') ||
+            // if (pszFormatString.charAt(0) == 'B') ||
             // (pszFormatString.charAt(0) == 'b') {
-            //                 for (int i = 0; i < nFormatWidth; i++) {
-            //                     abyData[nFormatWidth-i-1] = pachSourceData[i];
-            //                 }
-            //             } else {
+            // for (int i = 0; i < nFormatWidth; i++) {
+            // abyData[nFormatWidth-i-1] = pachSourceData[i];
+            // }
+            // } else {
             System.arraycopy(pachSourceData, 0, abyData, 0, nFormatWidth);
-            //             }
+            // }
 
             // Interpret the bytes of data.
             switch (eBinaryFormat) {
@@ -471,35 +473,35 @@ public class DDFSubfieldDefinition implements DDFConstants {
             case DDFBinaryFormat.FloatReal:
                 return (double) MoreMath.BuildIntegerBE(abyData);
 
-            //                 if (nFormatWidth == 1)
-            //                     return(abyData[0]);
-            //                 else if (nFormatWidth == 2)
-            //                     return(*((GUInt16 *) abyData));
-            //                 else if (nFormatWidth == 4)
-            //                     return(*((GUInt32 *) abyData));
-            //                 else {
-            //                     return 0.0;
-            //                 }
+            // if (nFormatWidth == 1)
+            // return(abyData[0]);
+            // else if (nFormatWidth == 2)
+            // return(*((GUInt16 *) abyData));
+            // else if (nFormatWidth == 4)
+            // return(*((GUInt32 *) abyData));
+            // else {
+            // return 0.0;
+            // }
 
-            //             case DDFBinaryFormat.SInt:
-            //                 if (nFormatWidth == 1)
-            //                     return(*((signed char *) abyData));
-            //                 else if (nFormatWidth == 2)
-            //                     return(*((GInt16 *) abyData));
-            //                 else if (nFormatWidth == 4)
-            //                     return(*((GInt32 *) abyData));
-            //                 else {
-            //                     return 0.0;
-            //                 }
+            // case DDFBinaryFormat.SInt:
+            // if (nFormatWidth == 1)
+            // return(*((signed char *) abyData));
+            // else if (nFormatWidth == 2)
+            // return(*((GInt16 *) abyData));
+            // else if (nFormatWidth == 4)
+            // return(*((GInt32 *) abyData));
+            // else {
+            // return 0.0;
+            // }
 
-            //             case DDFBinaryFormat.FloatReal:
-            //                 if (nFormatWidth == 4)
-            //                     return(*((float *) abyData));
-            //                 else if (nFormatWidth == 8)
-            //                     return(*((double *) abyData));
-            //                 else {
-            //                     return 0.0;
-            //                 }
+            // case DDFBinaryFormat.FloatReal:
+            // if (nFormatWidth == 4)
+            // return(*((float *) abyData));
+            // else if (nFormatWidth == 8)
+            // return(*((double *) abyData));
+            // else {
+            // return 0.0;
+            // }
 
             case DDFBinaryFormat.NotBinary:
             case DDFBinaryFormat.FPReal:
@@ -586,39 +588,39 @@ public class DDFSubfieldDefinition implements DDFConstants {
             case DDFBinaryFormat.FloatReal:
                 return (int) MoreMath.BuildIntegerBE(abyData);
 
-            //             case DDFBinaryFormat.UInt:
-            //                 if (nFormatWidth == 4)
-            //                     return((int) *((GUInt32 *) abyData));
-            //                 else if (nFormatWidth == 1)
-            //                     return(abyData[0]);
-            //                 else if (nFormatWidth == 2)
-            //                     return(*((GUInt16 *) abyData));
-            //                 else {
-            //                     CPLAssert(false);
-            //                     return 0;
-            //                 }
+            // case DDFBinaryFormat.UInt:
+            // if (nFormatWidth == 4)
+            // return((int) *((GUInt32 *) abyData));
+            // else if (nFormatWidth == 1)
+            // return(abyData[0]);
+            // else if (nFormatWidth == 2)
+            // return(*((GUInt16 *) abyData));
+            // else {
+            // CPLAssert(false);
+            // return 0;
+            // }
 
-            //             case DDFBinaryFormat.SInt:
-            //                 if (nFormatWidth == 4)
-            //                     return(*((GInt32 *) abyData));
-            //                 else if (nFormatWidth == 1)
-            //                     return(*((signed char *) abyData));
-            //                 else if (nFormatWidth == 2)
-            //                     return(*((GInt16 *) abyData));
-            //                 else {
-            //                     CPLAssert(false);
-            //                     return 0;
-            //                 }
+            // case DDFBinaryFormat.SInt:
+            // if (nFormatWidth == 4)
+            // return(*((GInt32 *) abyData));
+            // else if (nFormatWidth == 1)
+            // return(*((signed char *) abyData));
+            // else if (nFormatWidth == 2)
+            // return(*((GInt16 *) abyData));
+            // else {
+            // CPLAssert(false);
+            // return 0;
+            // }
 
-            //             case DDFBinaryFormat.FloatReal:
-            //                 if (nFormatWidth == 4)
-            //                     return((int) *((float *) abyData));
-            //                 else if (nFormatWidth == 8)
-            //                     return((int) *((double *) abyData));
-            //                 else {
-            //                     CPLAssert(false);
-            //                     return 0;
-            //                 }
+            // case DDFBinaryFormat.FloatReal:
+            // if (nFormatWidth == 4)
+            // return((int) *((float *) abyData));
+            // else if (nFormatWidth == 8)
+            // return((int) *((double *) abyData));
+            // else {
+            // CPLAssert(false);
+            // return 0;
+            // }
 
             case DDFBinaryFormat.NotBinary:
             case DDFBinaryFormat.FPReal:
