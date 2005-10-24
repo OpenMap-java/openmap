@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/08/09 20:39:35 $
+// $Revision: 1.14 $
+// $Date: 2005/10/24 14:37:40 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -255,13 +255,37 @@ public class MGRSPoint extends ZonedUTMPoint {
      */
     public static LatLonPoint MGRStoLL(MGRSPoint mgrsp, Ellipsoid ellip,
                                        LatLonPoint llp) {
-        //        return UTMtoLL(mgrsp, ellip, llp);
+        // return UTMtoLL(mgrsp, ellip, llp);
 
         return UTMtoLL(ellip,
                 mgrsp.northing,
                 mgrsp.easting,
                 mgrsp.zone_number,
                 MGRSPoint.MGRSZoneToUTMZone(mgrsp.zone_letter),
+                llp);
+    }
+
+    /**
+     * Create a LatLonPoint from a MGRSPoint.
+     * 
+     * @param mgrsp to convert.
+     * @param ellip Ellipsoid for earth model.
+     * @param llp a LatLonPoint to fill in values for. If null, a new
+     *        LatLonPoint will be returned. If not null, the new
+     *        values will be set in this object, and it will be
+     *        returned.
+     * @return LatLonPoint with values converted from MGRS coordinate.
+     */
+    public static LatLonPoint MGRStoLL(Ellipsoid ellip, float northing,
+                                       float easting, int zoneNumber,
+                                       char zoneLetter, LatLonPoint llp) {
+        // return UTMtoLL(mgrsp, ellip, llp);
+
+        return UTMtoLL(ellip,
+                northing,
+                easting,
+                zoneNumber,
+                MGRSPoint.MGRSZoneToUTMZone(zoneLetter),
                 llp);
     }
 
@@ -653,7 +677,7 @@ public class MGRSPoint extends ZonedUTMPoint {
             // fixing a bug making whole application hang in this loop
             // when 'n' is a wrong character
             if (curRow > V) {
-                if (rewindMarker) { //making sure that this loop ends
+                if (rewindMarker) { // making sure that this loop ends
                     throw new NumberFormatException("Bad character: " + n);
                 }
                 curRow = A;
@@ -980,7 +1004,7 @@ public class MGRSPoint extends ZonedUTMPoint {
                     tmp = record.substring(index);
                     lon = Float.parseFloat(tmp);
                     LatLonPoint llp = new LatLonPoint(lat, lon);
-//                    UTMPoint utmp = LLtoUTM(llp);
+                    // UTMPoint utmp = LLtoUTM(llp);
                     MGRSPoint mgrsp = LLtoMGRS(llp);
                     outStr1.append(record + " to UTM: " + mgrsp.zone_number
                             + " " + mgrsp.easting + " " + mgrsp.northing + "\n");
@@ -1088,4 +1112,3 @@ public class MGRSPoint extends ZonedUTMPoint {
 
     }
 }
-

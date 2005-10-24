@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UTMPoint.java,v $
 // $RCSfile: UTMPoint.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/08/11 20:39:18 $
+// $Revision: 1.11 $
+// $Date: 2005/10/24 14:37:41 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -425,7 +425,7 @@ public class UTMPoint {
                 UTMNorthing,
                 UTMEasting,
                 ZoneNumber,
-                (isnorthern) ? 'N' : 'M',
+                (isnorthern) ? 'N' : 'S',
                 llpoint);
     }
 
@@ -481,7 +481,7 @@ public class UTMPoint {
         //hemisphere, this is the only time we use the letter So even
         //if the Zone letter isn't exactly correct it should indicate
         //the hemisphere correctly
-        if (ZoneLetter < 'N') {
+        if (ZoneLetter == 'S') {
             y -= 10000000.0d;//remove 10,000,000 meter offset used
                              // for southern hemisphere
         }
