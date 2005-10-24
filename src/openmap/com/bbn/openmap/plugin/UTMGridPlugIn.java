@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/08/10 22:29:47 $
+// $Revision: 1.14 $
+// $Date: 2005/10/24 14:36:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -464,7 +464,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         char zone_letter = mgrsBasePoint.zone_letter;
 
         LatLonPoint llp1 = new LatLonPoint();
-        MGRSPoint.UTMtoLL(ellipsoid,
+        MGRSPoint.MGRStoLL(ellipsoid,
                 northing,
                 easting,
                 zone_number,
@@ -475,7 +475,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         llpoints[8] = llp1.getLatitude();
         llpoints[9] = llp1.getLongitude();
 
-        MGRSPoint.UTMtoLL(ellipsoid,
+        MGRSPoint.MGRStoLL(ellipsoid,
                 northing,
                 easting + interval,
                 zone_number,
@@ -484,7 +484,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         llpoints[2] = llp1.getLatitude();
         llpoints[3] = llp1.getLongitude();
 
-        MGRSPoint.UTMtoLL(ellipsoid,
+        MGRSPoint.MGRStoLL(ellipsoid,
                 northing + interval,
                 easting + interval,
                 zone_number,
@@ -493,7 +493,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         llpoints[4] = llp1.getLatitude();
         llpoints[5] = llp1.getLongitude();
 
-        MGRSPoint.UTMtoLL(ellipsoid,
+        MGRSPoint.MGRStoLL(ellipsoid,
                 northing + interval,
                 easting,
                 zone_number,
