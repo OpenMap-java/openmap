@@ -16,9 +16,9 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ExtentIndexImpl.java,v $
-//$Revision: 1.3 $
-//$Date: 2005/08/29 22:17:50 $
-//$Author: dietrick $
+//$Revision: 1.4 $
+//$Date: 2005/10/25 18:03:19 $
+//$Author: mthome $
 //
 //**********************************************************************
 
@@ -263,7 +263,7 @@ public class ExtentIndexImpl extends java.util.AbstractCollection implements
                     s.addAll(b);
                 } else {
                     for (Iterator it = b.iterator(); it.hasNext();) {
-                        GeoRegion region = (GeoRegion) it.next();
+                        GeoExtent region = (GeoExtent) it.next();
                         if (bc.intersects(region.getBoundingCircle())) {
                             s.add(region);
                         }
