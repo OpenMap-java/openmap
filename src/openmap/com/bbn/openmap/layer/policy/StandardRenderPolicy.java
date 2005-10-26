@@ -14,20 +14,23 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardRenderPolicy.java,v $
 // $RCSfile: StandardRenderPolicy.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/09/13 14:33:11 $
+// $Revision: 1.9 $
+// $Date: 2005/10/26 15:47:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.policy;
 
+import java.awt.Composite;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import java.awt.Graphics;
 
 /**
  * The StandardRenderPolicy is a RenderPolicy that simply paints the
@@ -41,6 +44,8 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
     protected OMGraphicHandlerLayer layer;
 
     protected boolean DEBUG = false;
+
+    protected Composite composite;
 
     public StandardRenderPolicy() {
         DEBUG = Debug.debugging("layer") || Debug.debugging("policy");
@@ -62,6 +67,33 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
         return layer;
     }
 
+    public Composite getComposite() {
+        return composite;
+    }
+
+    /**
+     * Can be used to set Composite objects (like AlphaComposite) on
+     * Graphics2D objects before the layer is painted.
+     * 
+     * @param composite
+     */
+    public void setComposite(Composite composite) {
+        this.composite = composite;
+    }
+
+    /**
+     * Call made by the policy from the paint(g) method in order to
+     * set the composite on the Graphics2D object. This method is
+     * meant to be overridden if needed.
+     * 
+     * @param g Graphics2D that the Composite will be set on.
+     */
+    protected void setCompositeOnGraphics(Graphics2D g) {
+        if (composite != null) {
+            g.setComposite(composite);
+        }
+    }
+
     public OMGraphicList prepare() {
         if (layer != null) {
             return layer.prepare();
@@ -78,6 +110,8 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
                 if (proj != null) {
                     g.setClip(0, 0, proj.getWidth(), proj.getHeight());
                 }
+
+                setCompositeOnGraphics((Graphics2D) g);
 
                 list.render(g);
             } else if (DEBUG) {

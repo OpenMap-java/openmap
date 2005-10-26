@@ -14,23 +14,23 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/BufferedImageRenderPolicy.java,v $
 // $RCSfile: BufferedImageRenderPolicy.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/09/13 14:33:11 $
+// $Revision: 1.8 $
+// $Date: 2005/10/26 15:47:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.policy;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.awt.geom.AffineTransform;
 
 /**
  * The BufferedImageRenderPolicy is a RenderPolicy that creates and
@@ -48,9 +48,9 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
     protected BufferedImage buffer = null;
 
     protected boolean useImageBuffer = false;
-    
+
     protected boolean DEBUG = false;
-    
+
     /**
      * Set the layer at some point before use.
      */
@@ -98,6 +98,12 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
 
             BufferedImage bufferedImage = getBuffer();
 
+            if (composite != null) {
+                ((Graphics2D) g).setComposite(composite);
+            }
+            
+            setCompositeOnGraphics((Graphics2D)g);
+            
             if (bufferedImage != null) {
 
                 if (proj != null) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/FullProjectionRenderPolicy.java,v $
 // $RCSfile: FullProjectionRenderPolicy.java,v $
-// $Revision: 1.3 $
-// $Date: 2005/09/13 14:33:11 $
+// $Revision: 1.4 $
+// $Date: 2005/10/26 15:47:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,6 +33,9 @@ import java.awt.Graphics;
  * policy if you want to paint into a buffer that is bigger than the
  * layer size (and MapBean size), because Java sets the max clipping
  * size to the size of the component.
+ * <p>
+ * This class seems useless, because it looks like the
+ * StandardRenderPolicy does the same thing automatically.
  */
 public class FullProjectionRenderPolicy extends StandardRenderPolicy {
 

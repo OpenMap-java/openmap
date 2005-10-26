@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/RenderingHintsRenderPolicy.java,v $
 // $RCSfile: RenderingHintsRenderPolicy.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:02 $
+// $Revision: 1.4 $
+// $Date: 2005/10/26 15:47:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -129,6 +129,7 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
     public void paint(Graphics g) {
         g = g.create(); // Make a copy to use just for this layer.
         setRenderingHints(g);
+        setCompositeOnGraphics((Graphics2D)g);
         super.paint(g);
     }
 

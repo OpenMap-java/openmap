@@ -14,17 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/RenderPolicy.java,v $
 // $RCSfile: RenderPolicy.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:02 $
+// $Revision: 1.4 $
+// $Date: 2005/10/26 15:47:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.policy;
 
+import java.awt.Composite;
+import java.awt.Graphics;
+
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import java.awt.Graphics;
 
 /**
  * A policy object that can be used by an OMGraphicHandlerLayer to
@@ -41,6 +43,14 @@ public interface RenderPolicy {
      * A method to get the parent layer on the RenderPolicy.
      */
     public OMGraphicHandlerLayer getLayer();
+
+    /**
+     * Set a Composite object on a Graphics2D object before rendering.
+     * Set to null (default) to not do anything.
+     */
+    public void setComposite(Composite composite);
+
+    public Composite getComposite();
 
     /**
      * Called when an OMGraphicHandlerLayer should begin preparing
