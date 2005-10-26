@@ -30,7 +30,7 @@ import java.util.List;
  * 
  * @author Sachin Date
  * @author Ken Anderson
- * @version $Revision: 1.11 $ on $Date: 2005/07/27 21:58:12 $
+ * @version $Revision: 1.12 $ on $Date: 2005/10/26 15:31:39 $
  */
 public class Intersection {
 
@@ -136,7 +136,17 @@ public class Intersection {
             if (extent instanceof GeoRegion) {
                 considerRegionXRegion(r, (GeoRegion) extent);
             } else if (extent instanceof GeoPath) {
-                considerPathXRegion((GeoPath) extent, r);
+              // This body used to be the following:
+              //   considerPathXRegion((GeoPath) extent, r);
+              // but this reverses the match order and leads to "r" getting collected
+              // instead of extent.  I've inlined the essential body and left it here
+              for (GeoPath.SegmentIterator pit = ((GeoPath)extent).segmentIterator(); pit.hasNext();) {
+                GeoSegment seg = pit.nextSegment();
+                if (filter.preConsider(seg, r)
+                    && considerSegmentXRegion(seg, r)) {
+                  collector.collect(seg.getSegId(), extent);
+                }
+              }
             } else {
                 BoundingCircle bc = extent.getBoundingCircle();
                 BoundingCircle rbc = r.getBoundingCircle();
