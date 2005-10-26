@@ -30,7 +30,7 @@ import java.util.List;
  * 
  * @author Sachin Date
  * @author Ken Anderson
- * @version $Revision: 1.12 $ on $Date: 2005/10/26 15:31:39 $
+ * @version $Revision: 1.13 $ on $Date: 2005/10/26 18:39:28 $
  */
 public class Intersection {
 
@@ -144,7 +144,7 @@ public class Intersection {
                 GeoSegment seg = pit.nextSegment();
                 if (filter.preConsider(seg, r)
                     && considerSegmentXRegion(seg, r)) {
-                  collector.collect(seg.getSegId(), extent);
+                  collector.collect(seg, extent);
                 }
               }
             } else {
@@ -152,7 +152,7 @@ public class Intersection {
                 BoundingCircle rbc = r.getBoundingCircle();
                 if (rbc.intersects(bc.getCenter(), bc.getRadius()
                         + filter.getHRange())) {
-                    collector.collect(r.getRegionId(), extent);
+                    collector.collect(r, extent);
                 }
             }
         }
@@ -172,7 +172,7 @@ public class Intersection {
                 /* first path point is inside the region? */
                 Intersection.isPointInPolygon(region.getBoundingCircle()
                         .getCenter(), regionBoundary)))) {
-            collector.collect(r.getRegionId(), region);
+            collector.collect(r, region);
         } else {
             // gotta try harder, so we fall back to segment-by-segment
             // intersections
@@ -180,7 +180,7 @@ public class Intersection {
                 GeoSegment seg = pit.nextSegment();
                 if (filter.preConsider(seg, region)
                         && considerSegmentXRegion(seg, region)) {
-                    collector.collect(seg.getSegId(), region);
+                    collector.collect(seg, region);
                     // For the default implementation, we just care
                     // about first hit.
                     return;
@@ -209,14 +209,14 @@ public class Intersection {
                     if (extent instanceof GeoRegion) {
                         GeoRegion region = (GeoRegion) extent;
                         if (considerSegmentXRegion(seg, region)) {
-                            collector.collect(seg.getSegId(), region);
+                            collector.collect(seg, region);
                         }
                     } else if (extent instanceof GeoPath) {
                         GeoPath p = (GeoPath) extent;
                         if (isSegmentNearPoly(seg,
                                 p.toPointArray(),
                                 filter.getHRange()) != null) {
-                            collector.collect(seg.getSegId(), p);
+                            collector.collect(seg, p);
                         }
                     } else {
                         BoundingCircle bc = extent.getBoundingCircle();
@@ -224,7 +224,7 @@ public class Intersection {
                                 bc.getCenter(),
                                 bc.getRadius(),
                                 filter.getHRange())) {
-                            collector.collect(seg.getSegId(), extent);
+                            collector.collect(seg, extent);
                         }
                     }
                 }
@@ -239,7 +239,7 @@ public class Intersection {
 
             if (filter.preConsider(seg, region)
                     && considerSegmentXRegion(seg, region)) {
-                collector.collect(seg.getSegId(), region);
+                collector.collect(seg, region);
                 // For the default implementation, we just care about
                 // the first contact.
                 return;
@@ -272,13 +272,13 @@ public class Intersection {
                     if (isPointNearPoly(p.getPoint(),
                             path.toPointArray(),
                             filter.getHRange())) {
-                        collector.collect(p.getPointId(), path);
+                        collector.collect(p, path);
                     }
                 } else {
                     BoundingCircle bc = extent.getBoundingCircle();
                     if (p.getPoint().distance(bc.getCenter()) <= bc.getRadius()
                             + filter.getHRange()) {
-                        collector.collect(p.getPoint(), extent);
+                        collector.collect(p, extent);
                     }
                 }
             }
