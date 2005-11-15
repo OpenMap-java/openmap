@@ -32,7 +32,7 @@ import java.util.Enumeration;
  * @author Ken Anderson
  * @author Sachin Date
  * @author Ben Lubin
- * @version $Revision: 1.10 $ on $Date: 2005/08/11 20:39:17 $
+ * @version $Revision: 1.11 $ on $Date: 2005/11/15 19:47:54 $
  */
 public class Geo {
 
@@ -220,20 +220,20 @@ public class Geo {
     }
 
     // Readers
-    public double x() {
+    public final double x() {
         return this.x;
     }
 
-    public double y() {
+    public final double y() {
         return this.y;
     }
 
-    public double z() {
+    public final double z() {
         return this.z;
     }
 
     /** North pole. */
-    public static Geo north = new Geo(0.0, 0.0, 1.0);
+    public static final Geo north = new Geo(0.0, 0.0, 1.0);
 
     /** Dot product. */
     public double dot(Geo b) {
