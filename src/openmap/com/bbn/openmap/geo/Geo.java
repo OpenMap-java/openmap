@@ -35,7 +35,7 @@ import java.util.Enumeration;
  * @author Ken Anderson
  * @author Sachin Date
  * @author Ben Lubin
- * @version $Revision: 1.14 $ on $Date: 2005/11/16 20:52:24 $
+ * @version $Revision: 1.15 $ on $Date: 2005/11/16 20:54:47 $
  */
 public class Geo {
 
@@ -556,11 +556,12 @@ public class Geo {
     public static Geo[] computeCorridor(Geo[] path, double radius) {
       return computeCorridor(path, radius, radians(10.0), true);
     }
+    
     /**
      * Wrap a fixed-distance corridor around an (open) path, as specified by an array of Geo.
      * @param path Open path
      * @param radius Distance from path to widen corridor, in angular radians.
-     * @param err maximum angle of rounded edges, in radians
+     * @param err maximum angle of rounded edges, in radians.  If 0, will directly cut outside bends.
      * @param capp iff true, will round end caps
      * @return a closed polygon representing the specified corridor around the path.
      *
