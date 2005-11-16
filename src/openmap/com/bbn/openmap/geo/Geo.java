@@ -14,6 +14,8 @@
 package com.bbn.openmap.geo;
 
 import com.bbn.openmap.proj.Length;
+
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 /**
@@ -32,7 +34,7 @@ import java.util.Enumeration;
  * @author Ken Anderson
  * @author Sachin Date
  * @author Ben Lubin
- * @version $Revision: 1.11 $ on $Date: 2005/11/15 19:47:54 $
+ * @version $Revision: 1.12 $ on $Date: 2005/11/16 13:42:42 $
  */
 public class Geo {
 
@@ -527,4 +529,100 @@ public class Geo {
         double x = -b / (a - b);
         return this.scale(x).add(q.scale(1.0 - x)).normalize();
     }
+    
+    /**
+     * Wrap a fixed-distance corridor around an (open) path, as specified by an array of Geo.
+     * @param path Open path
+     * @param radius Distance from path to widen corridor, in angular radians.
+     * @return a closed polygon representing the specified corridor around the path.
+     *
+     */
+    public static Geo[] computeCorridor(Geo[] path, double radius) {
+      assert path!=null;
+      assert radius > 0.0;
+      
+      int pl = path.length;
+      if (pl<2) return null;
+      
+      // final polygon will be left[0],...,left[n],right[m],...,right[0]
+      ArrayList left = new ArrayList((int) (pl*1.5));
+      ArrayList right = new ArrayList((int) (pl*1.5));
+      
+      Geo g0 = null;            // previous point
+      Geo n0 = null;            // previous normal vector
+      Geo l0 = null;
+      Geo r0 = null;
+      
+      Geo g1 = path[0];         // current point
+      
+      for (int i=1; i<pl; i++) {
+        Geo g2 = path[i];       // next point
+        Geo n1 = g1.crossNormalize(g2);   // n is perpendicular to the vector from g1 to g2
+        n1 = n1.scale(radius);  // normalize to radius
+        // these are the offsets on the g2 side at g1
+        Geo r1b = g1.add(n1);
+        Geo l1b = g1.subtract(n1);
+        
+        if (n0 == null) {
+          // no previous point - we'll just be square
+          left.add(l1b);
+          right.add(r1b);
+          // advance normals
+          l0 = l1b;
+          r0 = r1b;
+        } else {
+          // otherwise, compute a more complex shape
+          
+          // these are the right and left on the g0 side of g1
+          Geo r1a = g1.add(n0);
+          Geo l1a = g1.subtract(n0);
+          
+          double theta = Geo.angle(g0,g1,g2);  // angle between g0-g1 and g1-g2
+          if (theta > Math.PI) { // acute angle: left needs two points, right needs 1
+            // this should be an arc from l1a to l1b centered at g1
+            left.add(l1a);
+            Geo l1x = g1.subtract(n0.add(n1).normalize().scale(-radius));
+            left.add(l1x);
+            left.add(l1b);
+            l0 = l1b;
+            Geo ip = Intersection.segmentsIntersect(r0, r1a, r1b, g2.add(n1));
+            right.add(ip);
+            r0 = ip;
+          } else {
+            Geo ip = Intersection.segmentsIntersect(l0, l1a, l1b, g2.subtract(n1));
+            left.add(ip);
+            l0 = ip;
+
+            // this should be an arc from r1a to r1b centered at g1
+            right.add(r1a);
+            Geo r1x = g1.add(n0.add(n1).normalize().scale(radius));
+            right.add(r1x);
+            right.add(r1b);
+            r0=r1b;
+          }
+          
+        } 
+        
+        // advance points
+        g0=g1;
+        n0=n1;
+        g1=g2;
+      }
+      
+      // finish it off
+      left.add(g1.subtract(n0));
+      int ll = left.size();
+      right.add(g1.add(n0));
+      int rl = right.size();
+      Geo[] result = new Geo[ll+rl];
+      for (int i=0;i<ll;i++) {
+        result[i]=(Geo) left.get(i);
+      }
+      int j=ll;
+      for (int i=rl-1; i>=0; i--) {
+        result[j++]=(Geo) right.get(i);
+      }
+      return result;
+    }
+    
 }
