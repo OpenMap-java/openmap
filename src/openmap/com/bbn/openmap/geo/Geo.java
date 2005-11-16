@@ -35,7 +35,8 @@ import java.util.Enumeration;
  * @author Ken Anderson
  * @author Sachin Date
  * @author Ben Lubin
- * @version $Revision: 1.15 $ on $Date: 2005/11/16 20:54:47 $
+ * @author Michael Thome
+ * @version $Revision: 1.16 $ on $Date: 2005/11/16 20:55:32 $
  */
 public class Geo {
 
