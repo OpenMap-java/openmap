@@ -34,7 +34,7 @@ import java.util.Enumeration;
  * @author Ken Anderson
  * @author Sachin Date
  * @author Ben Lubin
- * @version $Revision: 1.12 $ on $Date: 2005/11/16 13:42:42 $
+ * @version $Revision: 1.13 $ on $Date: 2005/11/16 15:04:03 $
  */
 public class Geo {
 
@@ -577,21 +577,25 @@ public class Geo {
           Geo r1a = g1.add(n0);
           Geo l1a = g1.subtract(n0);
           
-          double theta = Geo.angle(g0,g1,g2);  // angle between g0-g1 and g1-g2
-          if (theta > Math.PI) { // acute angle: left needs two points, right needs 1
+          double hand = g0.cross(g1).dot(g2);  // right or left handed divergence
+          if (hand>0) { // left needs two points, right needs 1
             // this should be an arc from l1a to l1b centered at g1
             left.add(l1a);
-            Geo l1x = g1.subtract(n0.add(n1).normalize().scale(-radius));
+            Geo l1x = g1.add(n0.add(n1).normalize().scale(-radius));
             left.add(l1x);
             left.add(l1b);
             l0 = l1b;
             Geo ip = Intersection.segmentsIntersect(r0, r1a, r1b, g2.add(n1));
             right.add(ip);
-            r0 = ip;
+            r0 = ip;            
           } else {
             Geo ip = Intersection.segmentsIntersect(l0, l1a, l1b, g2.subtract(n1));
-            left.add(ip);
-            l0 = ip;
+            if (ip != null) {
+              left.add(ip);
+              l0 = ip;
+            } else {
+              System.out.println("No intersection: "+l0+" - "+l1a+" v "+l1b+" - "+g2.subtract(n1));
+            }
 
             // this should be an arc from r1a to r1b centered at g1
             right.add(r1a);
@@ -600,7 +604,6 @@ public class Geo {
             right.add(r1b);
             r0=r1b;
           }
-          
         } 
         
         // advance points
@@ -610,7 +613,7 @@ public class Geo {
       }
       
       // finish it off
-      left.add(g1.subtract(n0));
+      left.add(g1.subtract(n0));      
       int ll = left.size();
       right.add(g1.add(n0));
       int rl = right.size();
@@ -624,5 +627,4 @@ public class Geo {
       }
       return result;
     }
-    
 }
