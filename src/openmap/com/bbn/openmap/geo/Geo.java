@@ -13,8 +13,10 @@
 
 package com.bbn.openmap.geo;
 
+import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.ProjMath;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -36,7 +38,7 @@ import java.util.Enumeration;
  * @author Sachin Date
  * @author Ben Lubin
  * @author Michael Thome
- * @version $Revision: 1.17 $ on $Date: 2005/11/18 14:57:46 $
+ * @version $Revision: 1.18 $ on $Date: 2005/11/18 15:09:28 $
  */
 public class Geo {
 
@@ -745,4 +747,22 @@ public class Geo {
     public Geo offset(Geo origin, double distance, double azimuth) {
       return origin.geoAt(distance, azimuth);
     }
+    
+    /*
+    //same as offset, except using trig instead of vector mathematics
+    public Geo trig_offset(double distance, double azimuth) {
+      double latr = getLatitudeRadians();
+      double lonr = getLongitudeRadians();
+      
+      double coslat = Math.cos(latr);
+      double sinlat = Math.sin(latr);
+      double cosaz = Math.cos(azimuth);
+      double sinaz = Math.sin(azimuth);
+      double sind = Math.sin(distance);
+      double cosd = Math.cos(distance);
+      
+      return makeGeoRadians(Math.asin(sinlat * cosd + coslat * sind * cosaz),
+                            Math.atan2(sind * sinaz, coslat * cosd - sinlat * sind * cosaz) + lonr);
+    }
+    */
 }
