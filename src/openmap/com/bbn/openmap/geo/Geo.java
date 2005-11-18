@@ -38,7 +38,7 @@ import java.util.Enumeration;
  * @author Sachin Date
  * @author Ben Lubin
  * @author Michael Thome
- * @version $Revision: 1.18 $ on $Date: 2005/11/18 15:09:28 $
+ * @version $Revision: 1.19 $ on $Date: 2005/11/18 19:27:13 $
  */
 public class Geo {
 
@@ -598,7 +598,7 @@ public class Geo {
         if (n0 == null) {
           if (capp && err>0) {
             // start cap
-            Geo[] arc = computeApproximateArc(g1,l1b,r1b,err);
+            Geo[] arc = approximateArc(g1,l1b,r1b,err);
             for (int j=arc.length-1;j>=0;j--) {
               right.add(arc[j]);
             }
@@ -620,7 +620,7 @@ public class Geo {
           double handed = g0.cross(g1).dot(g2);  // right or left handed divergence
           if (handed>0) { // left needs two points, right needs 1
             if (err>0) {
-              Geo[] arc = computeApproximateArc(g1,l1b,l1a,err);
+              Geo[] arc = approximateArc(g1,l1b,l1a,err);
               for (int j=arc.length-1;j>=0;j--) {
                 right.add(arc[j]);
               }
@@ -638,7 +638,7 @@ public class Geo {
             right.add(ip);
             l0 = ip;
             if (err>0) {
-              Geo[] arc = computeApproximateArc(g1,r1a,r1b,err);
+              Geo[] arc = approximateArc(g1,r1a,r1b,err);
               for (int j=0;j<arc.length;j++) {
                 left.add(arc[j]);
               }
@@ -661,7 +661,7 @@ public class Geo {
       Geo ln = g1.add(n0);
       if (capp && err>0) {
         // end cap
-        Geo[] arc = computeApproximateArc(g1,ln,rn,err);
+        Geo[] arc = approximateArc(g1,ln,rn,err);
         for (int j=arc.length-1; j>=0; j--) {
           right.add(arc[j]);
         }
@@ -698,8 +698,7 @@ public class Geo {
      * look better but will result in more returned points.
      * @return
      */
-    public static final Geo[] computeApproximateArc(Geo pc, Geo p0, Geo p1, double err) {
-      double rad = pc.distance(p0);  // radius of arc (in radians)
+    public static final Geo[] approximateArc(Geo pc, Geo p0, Geo p1, double err) {
       
       double theta = angle(p0,pc,p1);
       // if the rest of the code is undefined in this situation, just skip it.
@@ -712,19 +711,20 @@ public class Geo {
       result[0] = p0;
       double dtheta = theta/(n-1);
       
-      // TODO: I'd rather do this in geocentric coords, but my math isn't quite up to it just now.
-      double rho = pc.azimuth(p0); // starting angle
-      for (int i = 1; i < n-1; i++) {
+      double rho = 0.0; // angle starts at 0 (directly at p0)
+      
+     for (int i = 1; i < n-1; i++) {
         rho += dtheta;
-        result[i] = pc.offset(rad, rho);
+        // Rotate p0 around this so it has the right azimuth.
+        result[i] = (new Rotation(pc, 2.0*Math.PI - rho)).rotate(p0);
       }
       result[n-1] = p1;
       
       return result;
     }
     
-    public final Geo[] computeApproximateArc(Geo p0, Geo p1, double err) {
-      return computeApproximateArc(this, p0, p1, err);
+    public final Geo[] approximateArc(Geo p0, Geo p1, double err) {
+      return approximateArc(this, p0, p1, err);
     }
     
     /** @deprecated use </b>#offset(double, double) */
@@ -734,6 +734,9 @@ public class Geo {
     
     /** Returns a Geo that is distance (radians), and azimuth (radians)
      * away from this. 
+     * @param distance distance of this to the target point in radians.
+     * @param azimuth Direction of target point from this, in radians, clockwise from north.
+     * @note this is undefined at the north pole, at which point "azimuth" is undefined.
      */
     public Geo offset(double distance, double azimuth) {
       // m is normal the the meridian through this.
