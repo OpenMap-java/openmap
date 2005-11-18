@@ -38,7 +38,7 @@ import java.util.Enumeration;
  * @author Sachin Date
  * @author Ben Lubin
  * @author Michael Thome
- * @version $Revision: 1.19 $ on $Date: 2005/11/18 19:27:13 $
+ * @version $Revision: 1.20 $ on $Date: 2005/11/18 19:39:35 $
  */
 public class Geo {
 
@@ -748,7 +748,7 @@ public class Geo {
     }
     
     public Geo offset(Geo origin, double distance, double azimuth) {
-      return origin.geoAt(distance, azimuth);
+      return origin.offset(distance, azimuth);
     }
     
     /*
