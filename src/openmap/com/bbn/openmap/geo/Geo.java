@@ -36,7 +36,7 @@ import java.util.Enumeration;
  * @author Sachin Date
  * @author Ben Lubin
  * @author Michael Thome
- * @version $Revision: 1.16 $ on $Date: 2005/11/16 20:55:32 $
+ * @version $Revision: 1.17 $ on $Date: 2005/11/18 14:57:46 $
  */
 public class Geo {
 
@@ -396,7 +396,7 @@ public class Geo {
     public static double angle(Geo p0, Geo p1, Geo p2) {
         return Math.PI - p0.cross(p1).distance(p1.cross(p2));
     }
-
+    
     /**
      * Computes the area of a polygon on the surface of a unit sphere
      * given an enumeration of its point.. For a non unit sphere,
@@ -710,6 +710,7 @@ public class Geo {
       result[0] = p0;
       double dtheta = theta/(n-1);
       
+      // TODO: I'd rather do this in geocentric coords, but my math isn't quite up to it just now.
       double rho = pc.azimuth(p0); // starting angle
       for (int i = 1; i < n-1; i++) {
         rho += dtheta;
@@ -724,39 +725,24 @@ public class Geo {
       return computeApproximateArc(this, p0, p1, err);
     }
     
-    /**
-     * Calculate point at azimuth and distance from another point.
-     * <p>
-     * Returns a Geo at arc distance #radius in direction #theta
-     * from start point.
-     * 
-     * @param radius arc radius in radians (0 &lt; c &lt;= PI)
-     * @param theta azimuth (direction) east of north (-PI &lt;= Az &lt; PI)
-     *  
-     */
-    public final Geo offset(double radius, double theta) {
-      // TODO: rather do this in geocentric coords, but my math isn't quite up to it just now.
-      // TODO: check correctness at poles
-      double lat = getLatitudeRadians();
-      double lon = getLongitudeRadians();
-      double coslat = Math.cos(lat);
-      double sinlat = Math.sin(lat);
-      double costh = Math.cos(theta);
-      double sinth = Math.sin(theta);
-      double sinr = Math.sin(radius);
-      double cosr = Math.cos(radius);
-      return makeGeoRadians(Math.asin(sinlat * cosr + coslat * sinr * costh),
-                            Math.atan2(sinr * sinth, coslat * cosr - sinlat * sinr * costh) + lon);
+    /** @deprecated use </b>#offset(double, double) */
+    public Geo geoAt(double distance, double azimuth) {
+      return offset(distance, azimuth);
     }
-    /** alias for <code>g.offset(radius, theta);</code>
-     * 
-     * @param g Point of origin
-     * @param radius Radius (distance) of offset in radians
-     * @param theta Direction of offset, in azmuth radians (north-zero, clockwise)
-     * @return the offset point.
-     *
+    
+    /** Returns a Geo that is distance (radians), and azimuth (radians)
+     * away from this. 
      */
-    public final Geo offset(Geo g, double radius, double theta) {
-      return g.offset(radius, theta);
+    public Geo offset(double distance, double azimuth) {
+      // m is normal the the meridian through this.
+      Geo m = this.crossNormalize(north);
+      // p is a point on the meridian distance <tt>distance</tt> from this.
+      Geo p = (new Rotation(m, distance)).rotate(this);
+      // Rotate p around this so it has the right azimuth.
+      return (new Rotation(this, 2.0*Math.PI - azimuth)).rotate(p);
+    }
+    
+    public Geo offset(Geo origin, double distance, double azimuth) {
+      return origin.geoAt(distance, azimuth);
     }
 }

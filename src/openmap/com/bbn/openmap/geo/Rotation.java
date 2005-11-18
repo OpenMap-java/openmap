@@ -67,7 +67,8 @@ public class Rotation {
 
     public Geo rotate(Geo v) {
         double x = v.x(), y = v.y(), z = v.z();
-        return new Geo(m00 * x + m01 * y + m02 * z, m10 * x + m11 * y + m12 * z, m20
-                * x + m21 * y + m22 * z);
+        return new Geo(m00 * x + m01 * y + m02 * z,
+                       m10 * x + m11 * y + m12 * z,
+                       m20 * x + m21 * y + m22 * z);
     }
 }
