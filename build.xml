@@ -37,7 +37,7 @@
 		<antcall target="corba" />
 	</target>
 
-	<target name="svg" description="Compiles SVG OpenMap classes.">
+	<target name="svg" depends="init" description="Compiles SVG OpenMap classes.">
 		<ant antfile="${svg.src}/build.xml" target="classes.svg" inheritAll="false">
 			<!-- Change and add this location if your batik home is different,
 	   or you can make the change in the src/svg/build.xml file.
@@ -46,11 +46,11 @@
 		</ant>
 	</target>
 
-	<target name="j3d" description="Compiles J3D OpenMap classes.">
+	<target name="j3d" depends="init" description="Compiles J3D OpenMap classes.">
 		<ant antfile="${j3d.src}/build.xml" target="classes.j3d" inheritAll="false" />
 	</target>
 
-	<target name="corba" description="Compiles CORBA OpenMap classes.">
+	<target name="corba" depends="init" description="Compiles CORBA OpenMap classes.">
 		<ant antfile="${corba.src}/build.xml" target="classes.corba" inheritAll="false" />
 	</target>
 

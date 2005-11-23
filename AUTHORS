@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/AUTHORS,v $
 $RCSfile: AUTHORS,v $
-$Revision: 1.18 $
-$Date: 2004/09/22 21:04:05 $
+$Revision: 1.19 $
+$Date: 2005/11/23 20:54:15 $
 $Author: dietrick $
 
 People and organizations that have contributed to OpenMap
@@ -114,6 +114,12 @@ Simon Bowen
 
 Dan Bitts
   Provided the EditableOMScalingRaster classes.
+  
+Land Software Engineering Centre for DND Canada
+  Provided extensive review and fixes for the MGRS Conversion algorithm.
+  
+Sebastien Rosset of Cougaar Software
+  Provided several patchs to improve the roads package, add arrow support for OMPoly, J3D API updates. 
 
 --------------------------------------
 
