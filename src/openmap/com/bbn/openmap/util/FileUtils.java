@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/FileUtils.java,v
 // $
 // $RCSfile: FileUtils.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/24 20:17:48 $
+// $Revision: 1.5 $
+// $Date: 2005/11/23 20:47:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,7 +48,6 @@ public class FileUtils {
 
     public static String getFilePathToSaveFromUser(String title) {
         JFileChooser chooser = getChooser(title);
-        chooser.setDialogTitle(title);
         int state = chooser.showSaveDialog(null);
         String ret = handleResponse(chooser, state);
         return ret;
@@ -60,7 +59,6 @@ public class FileUtils {
 
     public static String getFilePathToOpenFromUser(String title, FileFilter ff) {
         JFileChooser chooser = getChooser(title);
-        chooser.setDialogTitle(title);
         if (ff != null) {
             chooser.setFileFilter(ff);
         }
@@ -69,14 +67,16 @@ public class FileUtils {
         return ret;
     }
 
-    protected static JFileChooser getChooser(String title) {
+    public static JFileChooser getChooser(String title) {
         // setup the file chooser
         File startingPoint = new File(Environment.get("lastchosendirectory",
                 System.getProperty("user.home")));
-        return new JFileChooser(startingPoint);
+        JFileChooser chooser = new JFileChooser(startingPoint);
+        chooser.setDialogTitle(title);
+        return chooser;
     }
 
-    protected static String handleResponse(JFileChooser chooser, int state) {
+    public static String handleResponse(JFileChooser chooser, int state) {
         String ret = null;
         try {
             // only bother trying to read the file if there is one
