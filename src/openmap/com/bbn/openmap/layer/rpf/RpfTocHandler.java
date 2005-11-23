@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocHandler.java,v $
 // $RCSfile: RpfTocHandler.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/08/09 18:45:53 $
+// $Revision: 1.13 $
+// $Date: 2005/11/23 20:49:06 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -116,6 +116,11 @@ public class RpfTocHandler {
 
     public RpfTocHandler() {
 
+        DEBUG_RPF = Debug.debugging("rpf");
+        DEBUG_RPFTOC = Debug.debugging("rpftoc");
+        DEBUG_RPFTOCDETAIL = Debug.debugging("rpftocdetail");
+        DEBUG_RPFTOCFRAMEDETAIL = Debug.debugging("rpftocframedetail");
+
         estimateDiskSpace = DEFAULT_FRAME_SPACE;
 
         if (Debug.debugging("rpftoc")) {
@@ -151,10 +156,6 @@ public class RpfTocHandler {
             Debug.error("RpfTocHandler: Invalid TOC File in " + parentDir);
         }
 
-        DEBUG_RPF = Debug.debugging("rpf");
-        DEBUG_RPFTOC = Debug.debugging("rpftoc");
-        DEBUG_RPFTOCDETAIL = Debug.debugging("rpftocdetail");
-        DEBUG_RPFTOCFRAMEDETAIL = Debug.debugging("rpftocframedetail");
     }
 
     /**
