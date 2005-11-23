@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/AbstractImageFormatter.java,v $
 // $RCSfile: AbstractImageFormatter.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 17:56:10 $
+// $Revision: 1.8 $
+// $Date: 2005/11/23 20:51:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -203,6 +203,20 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
                     // the MapBean, the check it does will return a
                     // false negative, and the layer will think it
                     // doesn't have to do anything.
+
+                    if (oldProj != null && oldProj == map.getProjection()) {
+                        // Seems like a lot of users are getting
+                        // burned by manually setting the same
+                        // projection on the MapBean as they are on
+                        // the layers, and the layers are freezing up
+                        // after they are used to create an image.
+
+                        // I don't see how this problem is manifesting
+                        // itself, but this code section is an attempt
+                        // to help.
+                        oldProj = oldProj.makeClone();
+                    }
+
                     layers[i].setProjection(oldProj);
                 }
 
