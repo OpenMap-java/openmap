@@ -38,7 +38,7 @@ import java.util.Enumeration;
  * @author Sachin Date
  * @author Ben Lubin
  * @author Michael Thome
- * @version $Revision: 1.20 $ on $Date: 2005/11/18 19:39:35 $
+ * @version $Revision: 1.21 $ on $Date: 2005/12/05 19:49:45 $
  */
 public class Geo {
 
@@ -631,11 +631,23 @@ public class Geo {
             l0 = l1b;
             
             Geo ip = Intersection.segmentsIntersect(r0, r1a, r1b, g2.add(n1));
-            left.add(ip);
+            // if they intersect, take the intersection, else use the points and punt
+            if (ip != null) {
+              left.add(ip);
+            } else {
+              left.add(r1a);
+              left.add(r1b);
+            }
             r0 = ip;            
           } else {
             Geo ip = Intersection.segmentsIntersect(l0, l1a, l1b, g2.subtract(n1));
-            right.add(ip);
+            // if they intersect, take the intersection, else use the points and punt
+            if (ip != null) {
+              right.add(ip);
+            } else {
+              right.add(l1a);
+              right.add(l1b);
+            }
             l0 = ip;
             if (err>0) {
               Geo[] arc = approximateArc(g1,r1a,r1b,err);
