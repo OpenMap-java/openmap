@@ -13,13 +13,10 @@
 
 package com.bbn.openmap.geo;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.proj.GreatCircle;
-import com.bbn.openmap.proj.Length;
-import com.bbn.openmap.proj.ProjMath;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
+
+import com.bbn.openmap.proj.Length;
 
 /**
  * A class that represents a point on the Earth as a three dimensional
@@ -38,7 +35,7 @@ import java.util.Enumeration;
  * @author Sachin Date
  * @author Ben Lubin
  * @author Michael Thome
- * @version $Revision: 1.21 $ on $Date: 2005/12/05 19:49:45 $
+ * @version $Revision: 1.22 $ on $Date: 2005/12/09 20:57:17 $
  */
 public class Geo {
 
@@ -155,22 +152,23 @@ public class Geo {
     }
     
     public static final Geo makeGeoRadians(double latr, double lonr) {
-      double rlat = geocentricLatitude(latr);
-      double c = Math.cos(rlat);
-      return new Geo(c * Math.cos(lonr),
-                     c * Math.sin(lonr),
-                     Math.sin(rlat)); 
+        double rlat = geocentricLatitude(latr);
+        double c = Math.cos(rlat);
+        return new Geo(c * Math.cos(lonr),
+                c * Math.sin(lonr),
+                Math.sin(rlat)); 
     }
+    
     public static final Geo makeGeoDegrees(double latd, double lond) {
-      return makeGeoRadians(radians(latd), radians(lond));
+        return makeGeoRadians(radians(latd), radians(lond));
     }
     
     public static final Geo makeGeo(double x, double y, double z) {
-      return new Geo(x, y, z);
+        return new Geo(x, y, z);
     }
     
     public static final Geo makeGeo(Geo p) {
-      return new Geo(p.x, p.y, p.z);
+        return new Geo(p.x, p.y, p.z);
     }
 
     /**
