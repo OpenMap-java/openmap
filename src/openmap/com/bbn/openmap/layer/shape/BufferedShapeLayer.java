@@ -14,22 +14,25 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/BufferedShapeLayer.java,v $
 // $RCSfile: BufferedShapeLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 18:48:03 $
+// $Revision: 1.7 $
+// $Date: 2005/12/09 21:09:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape;
 
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.geom.Point2D;
+import java.util.Iterator;
 
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.*;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGeometryList;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * An OpenMap Layer that displays shape files. This loads the data up
@@ -122,12 +125,12 @@ public class BufferedShapeLayer extends ShapeLayer {
         // grab local
         Projection proj = getProjection();
 
-        LatLonPoint ul = proj.getUpperLeft();
-        LatLonPoint lr = proj.getLowerRight();
-        float ulLat = ul.getLatitude();
-        float ulLon = ul.getLongitude();
-        float lrLat = lr.getLatitude();
-        float lrLon = lr.getLongitude();
+        Point2D ul = proj.getUpperLeft();
+        Point2D lr = proj.getLowerRight();
+        double ulLat = ul.getY();
+        double ulLon = ul.getX();
+        double lrLat = lr.getY();
+        double lrLon = lr.getX();
 
         drawingAttributes.setTo(masterList);
 

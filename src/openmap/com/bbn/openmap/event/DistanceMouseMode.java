@@ -24,6 +24,7 @@ package com.bbn.openmap.event;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -70,9 +71,9 @@ import com.bbn.openmap.util.PropUtils;
  * property:
  * 
  * <pre>
- * 
- *  prefix.units= &amp;lt name for Length.java (km, miles, meters, nm) &amp;gt
- *  
+ *   
+ *    prefix.units= &amp;lt name for Length.java (km, miles, meters, nm) &amp;gt
+ *    
  * </pre>
  */
 public class DistanceMouseMode extends CoordMouseMode {
@@ -90,11 +91,11 @@ public class DistanceMouseMode extends CoordMouseMode {
     /**
      * rPoint1 is the anchor point of a line segment
      */
-    public LatLonPoint rPoint1;
+    public Point2D rPoint1;
     /**
      * rPoint2 is the new (current) point of a line segment
      */
-    public LatLonPoint rPoint2;
+    public Point2D rPoint2;
     /**
      * Flag, true if the mouse has already been pressed
      */
@@ -199,7 +200,7 @@ public class DistanceMouseMode extends CoordMouseMode {
             Length units) {
         super(modeID, consumeEvents);
         // if you really want to change the cursor shape
-        //  setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
+        // setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
         infoDelegator = id;
         unit = units;
     }
@@ -224,7 +225,7 @@ public class DistanceMouseMode extends CoordMouseMode {
             Length units, int lType) {
         super(modeID, consumeEvents);
         // if you really want to change the cursor shape
-        //  setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
+        // setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
         infoDelegator = id;
         unit = units;
         lineType = lType;
@@ -243,7 +244,7 @@ public class DistanceMouseMode extends CoordMouseMode {
     public DistanceMouseMode(boolean consumeEvents, InformationDelegator id) {
         super(modeID, consumeEvents);
         // if you really want to change the cursor shape
-        //  setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
+        // setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
         infoDelegator = id;
     }
 
@@ -263,7 +264,7 @@ public class DistanceMouseMode extends CoordMouseMode {
             InformationDelegator id) {
         super(name, consumeEvents);
         // if you really want to change the cursor shape
-        //  setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
+        // setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
         infoDelegator = id;
     }
 
@@ -346,15 +347,15 @@ public class DistanceMouseMode extends CoordMouseMode {
                     Debug.message("mousemodedetail",
                             "DistanceMouseMode: firing mouse location");
                     // lat, lon of anchor point
-                    lat1 = rPoint1.getLatitude();
-                    long1 = rPoint1.getLongitude();
+                    lat1 = (float) rPoint1.getY();
+                    long1 = (float) rPoint1.getX();
                     // lat, lon of current mouse position
-                    lat2 = rPoint2.getLatitude();
-                    long2 = rPoint2.getLongitude();
+                    lat2 = (float) rPoint2.getY();
+                    long2 = (float) rPoint2.getX();
                     // calculate great circle distance in nm
-                    //                     distance = getGreatCircleDist(lat1, long1,
-                    //                                                   lat2, long2, Length.NM);
-                    distance = (double) GreatCircle.spherical_distance(ProjMath.degToRad(lat1),
+                    // distance = getGreatCircleDist(lat1, long1,
+                    // lat2, long2, Length.NM);
+                    distance = (double) GreatCircle.sphericalDistance(ProjMath.degToRad(lat1),
                             ProjMath.degToRad(long1),
                             ProjMath.degToRad(lat2),
                             ProjMath.degToRad(long2));
@@ -365,7 +366,7 @@ public class DistanceMouseMode extends CoordMouseMode {
                             lat2,
                             long2);
                     // convert total distance into all distance units
-                    //                     String distNM =
+                    // String distNM =
                     // df.format(totalDistance+distance);
                     double tmpDistance = totalDistance + distance;
                     String infoLine = createDistanceInformationLine(rPoint2,
@@ -382,7 +383,7 @@ public class DistanceMouseMode extends CoordMouseMode {
         }
     }
 
-    protected String createDistanceInformationLine(LatLonPoint llp,
+    protected String createDistanceInformationLine(Point2D llp,
                                                    double distance,
                                                    double azimuth) {
         // setup the distance info to be displayed
@@ -401,8 +402,8 @@ public class DistanceMouseMode extends CoordMouseMode {
         }
 
         // add the mouse lat, lon
-        String infoLine = "Lat, Lon (" + df.format(llp.getLatitude()) + ", "
-                + df.format(llp.getLongitude()) + "), distance (";
+        String infoLine = "Lat, Lon (" + df.format(llp.getY()) + ", "
+                + df.format(llp.getX()) + "), distance (";
 
         // add the units
         infoLine = infoLine + unitInfo + ")";
@@ -451,7 +452,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
      */
-    public void paintLine(LatLonPoint pt1, LatLonPoint pt2) {
+    public void paintLine(Point2D pt1, Point2D pt2) {
         if (theMap != null) {
             paintLine(pt1, pt2, theMap.getGraphics());
         }
@@ -465,13 +466,13 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param pt2 the current (mouse) position.
      * @param graphics a java.awt.Graphics object to render into.
      */
-    public void paintLine(LatLonPoint pt1, LatLonPoint pt2, Graphics graphics) {
+    public void paintLine(Point2D pt1, Point2D pt2, Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics;
         g.setXORMode(java.awt.Color.lightGray);
         g.setColor(java.awt.Color.darkGray);
         if (pt1 != null && pt2 != null) {
             // the line connecting the segments
-            OMLine cLine = new OMLine(pt1.getLatitude(), pt1.getLongitude(), pt2.getLatitude(), pt2.getLongitude(), lineType);
+            OMLine cLine = new OMLine((float) pt1.getY(), (float) pt1.getX(), (float) pt2.getY(), (float) pt2.getX(), lineType);
             // get the map projection
             Projection proj = theMap.getProjection();
             // prepare the line for rendering
@@ -487,7 +488,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
      */
-    public void paintCircle(LatLonPoint pt1, LatLonPoint pt2) {
+    public void paintCircle(Point2D pt1, Point2D pt2) {
         if (theMap != null) {
             paintCircle(pt1, pt2, theMap.getGraphics());
         }
@@ -500,7 +501,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param pt2 the current (mouse) position.
      * @param graphics a java.awt.Graphics object to render into.
      */
-    public void paintCircle(LatLonPoint pt1, LatLonPoint pt2, Graphics graphics) {
+    public void paintCircle(Point2D pt1, Point2D pt2, Graphics graphics) {
         // do all this only if want to display the rubberband circle
         if (displayCircle) {
             Graphics2D g = (Graphics2D) graphics;
@@ -508,19 +509,19 @@ public class DistanceMouseMode extends CoordMouseMode {
             g.setColor(java.awt.Color.darkGray);
             if (pt1 != null && pt2 != null) {
                 // first convert degrees to radians
-                float radphi1 = ProjMath.degToRad(pt1.getLatitude());
-                float radlambda0 = ProjMath.degToRad(pt1.getLongitude());
-                float radphi = ProjMath.degToRad(pt2.getLatitude());
-                float radlambda = ProjMath.degToRad(pt2.getLongitude());
+                float radphi1 = (float) ProjMath.degToRad(pt1.getY());
+                float radlambda0 = (float) ProjMath.degToRad(pt1.getX());
+                float radphi = (float) ProjMath.degToRad(pt2.getY());
+                float radlambda = (float) ProjMath.degToRad(pt2.getX());
                 // calculate the circle radius
-                double dRad = GreatCircle.spherical_distance(radphi1,
+                double dRad = GreatCircle.sphericalDistance(radphi1,
                         radlambda0,
                         radphi,
                         radlambda);
                 // convert into decimal degrees
                 float rad = (float) ProjMath.radToDeg(dRad);
                 // make the circle
-                OMCircle circle = new OMCircle(pt1.getLatitude(), pt1.getLongitude(), rad);
+                OMCircle circle = new OMCircle((float) pt1.getY(), (float) pt1.getX(), rad);
                 // get the map projection
                 Projection proj = theMap.getProjection();
                 // prepare the circle for rendering
@@ -537,7 +538,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
      */
-    public void paintRubberband(LatLonPoint pt1, LatLonPoint pt2) {
+    public void paintRubberband(Point2D pt1, Point2D pt2) {
         if (theMap != null) {
             paintRubberband(pt1, pt2, theMap.getGraphics());
         }
@@ -550,7 +551,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param pt2 the current (mouse) position.
      * @param g a java.awt.Graphics object to render into.
      */
-    public void paintRubberband(LatLonPoint pt1, LatLonPoint pt2, Graphics g) {
+    public void paintRubberband(Point2D pt1, Point2D pt2, Graphics g) {
         paintLine(pt1, pt2, g);
         paintCircle(pt1, pt2, g);
     }
@@ -560,8 +561,8 @@ public class DistanceMouseMode extends CoordMouseMode {
      */
     public void eraseLines() {
         for (int i = 0; i < segments.size() - 1; i++) {
-            paintLine((LatLonPoint) (segments.elementAt(i)),
-                    (LatLonPoint) (segments.elementAt(i + 1)));
+            paintLine((Point2D) (segments.elementAt(i)),
+                    (Point2D) (segments.elementAt(i + 1)));
         }
     }
 
@@ -606,7 +607,7 @@ public class DistanceMouseMode extends CoordMouseMode {
         float radlambda = ProjMath.degToRad(lambda);
         // get the spherical distance in radians between the two
         // points
-        double distRad = (double) GreatCircle.spherical_distance(radphi1,
+        double distRad = (double) GreatCircle.sphericalDistance(radphi1,
                 radlambda0,
                 radphi,
                 radlambda);
@@ -642,7 +643,7 @@ public class DistanceMouseMode extends CoordMouseMode {
         float radphi = ProjMath.degToRad(phi);
         float radlambda = ProjMath.degToRad(lambda);
         // get the spherical azimuth in radians between the two points
-        float az = GreatCircle.spherical_azimuth(radphi1,
+        float az = GreatCircle.sphericalAzimuth(radphi1,
                 radlambda0,
                 radphi,
                 radlambda);

@@ -14,19 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseEvent.java,v $
 // $RCSfile: MapMouseEvent.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.event;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MapBean;
-
 import java.awt.Component;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+
+import com.bbn.openmap.MapBean;
 
 /**
  * MouseEvent extension and wrapper that provides the additional
@@ -65,7 +65,7 @@ public class MapMouseEvent extends MouseEvent {
      * the MapBean that sent the MouseEvent. Could be null if the
      * MouseEvent did not originate from a MapBean.
      */
-    public LatLonPoint getLatLon() {
+    public Point2D getLatLon() {
         if (map != null) {
             return map.getCoordinates(this);
         } else

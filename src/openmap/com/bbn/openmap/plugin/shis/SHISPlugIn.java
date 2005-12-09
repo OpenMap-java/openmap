@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/shis/SHISPlugIn.java,v $
 // $RCSfile: SHISPlugIn.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 20:37:00 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -95,8 +95,8 @@ public class SHISPlugIn extends WebImagePlugIn implements ImageServerConstants {
         if (p != null) {
             buf.append(PROJTYPE + "=" + p.getName() + "&" + SCALE + "="
                     + p.getScale() + "&" + LAT + "="
-                    + p.getCenter().getLatitude() + "&" + LON + "="
-                    + p.getCenter().getLongitude() + "&" + HEIGHT + "="
+                    + p.getCenter().getY() + "&" + LON + "="
+                    + p.getCenter().getX() + "&" + HEIGHT + "="
                     + p.getHeight() + "&" + WIDTH + "=" + p.getWidth());
         } else {
             buf.append(PROJTYPE + "=name_undefined&" + SCALE

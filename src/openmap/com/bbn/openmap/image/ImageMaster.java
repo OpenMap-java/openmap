@@ -14,21 +14,32 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageMaster.java,v $
 // $RCSfile: ImageMaster.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.image;
 
-import java.awt.*;
-import java.util.*;
-import java.net.*;
-import java.io.*;
+import java.awt.Color;
+import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.proj.Mercator;
+import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -433,8 +444,7 @@ public class ImageMaster {
             }
 
             proj = (Proj) ProjectionFactory.makeProjection(projClass,
-                    latitude,
-                    longitude,
+                    new Point2D.Float(latitude, longitude),
                     scale,
                     width,
                     height);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.18 $
-// $Date: 2005/02/11 22:34:14 $
+// $Revision: 1.19 $
+// $Date: 2005/12/09 21:09:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,6 +47,7 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
@@ -81,70 +82,54 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  * 
  * <pre>
- * 
  *  
+
+ *           #-----------------------------
+ *           # Properties for RpfLayer
+ *           #-----------------------------
+ *           # Mandatory properties
+ *           # This property should reflect the paths to the RPF directories
+ *           rpf.paths=/usr/local/matt/data/RPF /usr/local/matt/data/CIB/RPF
+ *           
+ *           # Optional Properties - the default will be set if these are not 
+ *           # included in the properties file: 
+ *           # Number between 0-255: 0 is transparent, 255 is opaque.  255 is default.
+ *           rpf.opaque=128
+ *           
+ *           # Number of colors to use on the maps - 16, 32, 216.  216 is default.
+ *           rpf.numberColors=216
+ *           
+ *           # Display maps on startup.  Default is true.
+ *           rpf.showMaps=true
+ *           
+ *           # Display attribute information on startup.  Default is false.
+ *           rpf.showInfo=false
+ *           
+ *           # Scale charts to match display scale.  Default is true.
+ *           rpf.scaleImages=true
+ *           
+ *           # The scale factor to allow when scaling images (2x, 4x, also mean 1/2, 1/4).  Default is 4.
+ *           rpf.imageScaleFactor=4
+ *           
+ *           # Delete the cache if the layer is removed from the map.  Default is false.
+ *           rpf.killCache=true
+ *           # Limit the display to the chart code specified. (GN, JN, ON, TP, etc.).
+ *           # Default is ANY
+ *           rpf.chartSeries=ANY
+ *           # Get the subframe attribute data from the Frame provider.
+ *           rpf.autofetchAttributes=false
+ *           # Set to true if you want the coverage tool available.
+ *           rpf.coverage=true
+ *           # Set the subframe cache size. (Number of subframes to hold on to, 256x256 pixels)
+ *           rpf.subframeCacheSize=128
+ *           # Then also include coverage properties, which are available in the RpfConstants.
+ *           #------------------------------------
+ *           # End of properties for RpfLayer
+ *           #------------------------------------
+ *
  *   
- *    
- *     
- *      
- *       
- *        
- *         
- *          
- *          #-----------------------------
- *          # Properties for RpfLayer
- *          #-----------------------------
- *          # Mandatory properties
- *          # This property should reflect the paths to the RPF directories
- *          rpf.paths=/usr/local/matt/data/RPF /usr/local/matt/data/CIB/RPF
- *          
- *          # Optional Properties - the default will be set if these are not 
- *          # included in the properties file: 
- *          # Number between 0-255: 0 is transparent, 255 is opaque.  255 is default.
- *          rpf.opaque=128
- *          
- *          # Number of colors to use on the maps - 16, 32, 216.  216 is default.
- *          rpf.numberColors=216
- *          
- *          # Display maps on startup.  Default is true.
- *          rpf.showMaps=true
- *          
- *          # Display attribute information on startup.  Default is false.
- *          rpf.showInfo=false
- *          
- *          # Scale charts to match display scale.  Default is true.
- *          rpf.scaleImages=true
- *          
- *          # The scale factor to allow when scaling images (2x, 4x, also mean 1/2, 1/4).  Default is 4.
- *          rpf.imageScaleFactor=4
- *          
- *          # Delete the cache if the layer is removed from the map.  Default is false.
- *          rpf.killCache=true
- *          # Limit the display to the chart code specified. (GN, JN, ON, TP, etc.).
- *          # Default is ANY
- *          rpf.chartSeries=ANY
- *          # Get the subframe attribute data from the Frame provider.
- *          rpf.autofetchAttributes=false
- *          # Set to true if you want the coverage tool available.
- *          rpf.coverage=true
- *          # Set the subframe cache size. (Number of subframes to hold on to, 256x256 pixels)
- *          rpf.subframeCacheSize=128
- *          # Then also include coverage properties, which are available in the RpfConstants.
- *          #------------------------------------
- *          # End of properties for RpfLayer
- *          #------------------------------------
- *          
- *          
- *         
- *        
- *       
- *      
- *     
- *    
- *   
- *  
  * </pre>
- *  
+ * 
  */
 public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
         RpfConstants, Serializable {
@@ -684,7 +669,7 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
 
         Projection cadrgProj = projection;
         if (!(projection instanceof CADRG)) {
-            cadrgProj = new CADRG(projection.getCenter(), projection.getScale(), projection.getWidth(), projection.getHeight());
+            cadrgProj = new CADRG((LatLonPoint) projection.getCenter(new LatLonPoint.Float()), projection.getScale(), projection.getWidth(), projection.getHeight());
 
             Point ulp = cadrgProj.forward(projection.getUpperLeft());
             Point lrp = cadrgProj.forward(projection.getLowerRight());
@@ -692,12 +677,12 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
             int w = (int) Math.abs(lrp.getX() - ulp.getX());
             int h = (int) Math.abs(lrp.getY() - ulp.getY());
 
-            //          float cadrgScale =
+            // float cadrgScale =
             // ProjMath.getScale(projection.getUpperLeft(),
-            //                                               projection.getLowerRight(),
-            //                                               cadrgProj);
+            // projection.getLowerRight(),
+            // cadrgProj);
 
-            cadrgProj = new CADRG(projection.getCenter(), projection.getScale(), w, h);
+            cadrgProj = new CADRG((LatLonPoint) projection.getCenter(new LatLonPoint.Float()), projection.getScale(), w, h);
         }
 
         // Fetch the list with a CADRG projection, generate it with
@@ -715,7 +700,7 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
             this.cache = null;
         }
 
-        /////////////////////
+        // ///////////////////
         // safe quit
         int size = 0;
         if (omGraphicList != null) {
@@ -743,7 +728,7 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
      * Paints the layer.
      * 
      * @param g the Graphics context for painting
-     *  
+     * 
      */
     public void paint(java.awt.Graphics g) {
         Debug.message("rpf", "RpfLayer.paint()");
@@ -754,9 +739,9 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
         }
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // GUI
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     private transient Box box = null;
 
     /**
@@ -851,9 +836,9 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
         return box;
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // ActionListener interface implementation
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /**
      * The Action Listener method, that reacts to the palette widgets
@@ -910,9 +895,9 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
                 repaint();
             }
         } else {
-            //          Debug.error("RpfLayer: Unknown action command \"" + cmd
+            // Debug.error("RpfLayer: Unknown action command \"" + cmd
             // +
-            //                      "\" in RpfLayer.actionPerformed().");
+            // "\" in RpfLayer.actionPerformed().");
 
             // OK, not really sure what happened, just act like a
             // reset.

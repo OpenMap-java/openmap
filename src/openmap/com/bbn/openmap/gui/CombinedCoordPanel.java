@@ -14,23 +14,27 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/CombinedCoordPanel.java,v $
 // $RCSfile: CombinedCoordPanel.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:47 $
+// $Revision: 1.7 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import com.bbn.openmap.*;
+import java.awt.event.ActionListener;
+import java.io.Serializable;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+
+import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.CenterEvent;
 import com.bbn.openmap.event.CenterListener;
 import com.bbn.openmap.event.CenterSupport;
-
-import javax.swing.*;
-
-import java.awt.event.*;
-import java.io.Serializable;
 
 /**
  * A JPanel containing a tabbed set of CoordPanels. Hitting the apply

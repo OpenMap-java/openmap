@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMText.java,v $
 // $RCSfile: EditableOMText.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/10 22:25:08 $
+// $Revision: 1.9 $
+// $Date: 2005/12/09 21:09:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -327,7 +327,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
 
             if (projection != null) {
                 // movingPoint == gpc
-                llp1 = projection.inverse(gpc.getX(), gpc.getY());
+                llp1 = LatLonPoint.getLatLon(gpc.getX(), gpc.getY(), projection);
                 text.setLat(llp1.getLatitude());
                 text.setLon(llp1.getLongitude());
                 // text.setNeedToRegenerate set
@@ -340,7 +340,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         // If the center point is moving, the offset distance changes
         if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
-            llp1 = projection.inverse(gpo.getX(), gpo.getY());
+            llp1 = LatLonPoint.getLatLon(gpo.getX(), gpo.getY(), projection);
 
             text.setLat(llp1.getLatitude());
             text.setLon(llp1.getLongitude());

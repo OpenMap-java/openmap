@@ -14,14 +14,15 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.25 $
-// $Date: 2005/07/29 14:36:23 $
+// $Revision: 1.26 $
+// $Date: 2005/12/09 21:09:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap;
 
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +49,6 @@ import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.Environment;
 
 /**
  * The PropertyHandler object is the organizer of properties, looking
@@ -993,15 +993,15 @@ public class PropertyHandler extends MapHandlerChild implements
         com.bbn.openmap.proj.Proj proj = mapBean.projection;
 
         ps.println("\n### OpenMap initial Map Settings ###");
-        LatLonPoint llp = proj.getCenter();
+        Point2D llp = proj.getCenter();
 
         printProperties(Environment.Latitude,
-                Float.toString(llp.getLatitude()),
+                Float.toString((float)llp.getY()),
                 ps,
                 createdProperties);
 
         printProperties(Environment.Longitude,
-                Float.toString(llp.getLongitude()),
+                Float.toString((float)llp.getX()),
                 ps,
                 createdProperties);
 

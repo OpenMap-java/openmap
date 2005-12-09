@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/BufferedLinkLayer.java,v $
 // $RCSfile: BufferedLinkLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:55 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -191,8 +191,8 @@ public class BufferedLinkLayer extends LinkLayer {
         LinkBoundingPoly[] boundingPolys = new LinkBoundingPoly[1];
         boundingPolys[0] = new LinkBoundingPoly(-180.0f, -90f, 180f, 90);
 
-        LinkMapRequest.write(proj.getCenter().getLatitude(),
-                proj.getCenter().getLongitude(),
+        LinkMapRequest.write((float)proj.getCenter().getY(),
+                (float)proj.getCenter().getX(),
                 proj.getScale(),
                 proj.getHeight(),
                 proj.getWidth(),

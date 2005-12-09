@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/etopo/ETOPOJarLayer.java,v $
 // $RCSfile: ETOPOJarLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:55 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,6 +29,7 @@ package com.bbn.openmap.layer.etopo;
  */
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.io.BufferedInputStream;
 import java.io.EOFException;
 import java.io.FileNotFoundException;
@@ -196,8 +197,8 @@ public class ETOPOJarLayer extends ETOPOLayer {
             if (projection instanceof CADRG) {
 
                                 // get corners
-                LatLonPoint ul = projection.getUpperLeft();
-                LatLonPoint lr = projection.getLowerRight();
+                Point2D ul = projection.getUpperLeft();
+                Point2D lr = projection.getLowerRight();
 
                                 // set start/end indicies
                 Point ulp = projection.forward(ul);
@@ -211,7 +212,7 @@ public class ETOPOJarLayer extends ETOPOLayer {
 
             // get the center lat/lon (used by the HACK, see above in
             // method description)
-            LatLonPoint center = projection.getCenter();
+            Point2D center = projection.getCenter();
             LatLonPoint llp = new LatLonPoint();
 
             // build array
@@ -315,16 +316,16 @@ public class ETOPOJarLayer extends ETOPOLayer {
                         Color pix = null;
                         if (viewType == SLOPESHADING) {
                             // HACK (see method description above)
-                            if ((llp.getLatitude() == center.getLatitude())
-                                && (llp.getLongitude() == center.getLongitude()))
+                            if ((llp.getLatitude() == center.getY())
+                                && (llp.getLongitude() == center.getX()))
                                 gray = 0;
                             else
                                 gray = 127 + sl;
                             pix = new Color(gray, gray, gray, opaqueness);
                         } else if (viewType == COLOREDSHADING) {
                             // HACK (see method description above)
-                            if ((llp.getLatitude() == center.getLatitude())
-                                && (llp.getLongitude() == center.getLongitude()))
+                            if ((llp.getLatitude() == center.getY())
+                                && (llp.getLongitude() == center.getX()))
                                 pix = new Color(0, 0, 0, opaqueness);
                             else
                                 pix = getColor(el, sl);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.20 $
-// $Date: 2005/08/09 18:05:09 $
+// $Revision: 1.21 $
+// $Date: 2005/12/09 21:09:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -991,8 +991,14 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         if (tt instanceof String) {
             return (String) tt;
         }
-        
-        return "Demo Layer Object";
+
+        String classname = omg.getClass().getName();
+        int lio = classname.lastIndexOf('.');
+        if (lio != -1) {
+            classname = classname.substring(lio + 1);
+        }
+
+        return "Demo Layer Object: " + classname;
     }
 
     /**

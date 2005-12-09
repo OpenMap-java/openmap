@@ -14,15 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeUtils.java,v $
 // $RCSfile: ShapeUtils.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.IOException;
 
 import com.bbn.openmap.dataAccess.shape.ShapeConstants;
 import com.bbn.openmap.io.BinaryBufferedFile;
@@ -31,7 +32,7 @@ import com.bbn.openmap.io.BinaryBufferedFile;
  * Utilities for reading and writing the components of shape files.
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.4 $ $Date: 2004/10/14 18:06:05 $
+ * @version $Revision: 1.5 $ $Date: 2005/12/09 21:09:09 $
  */
 public class ShapeUtils implements ShapeConstants {
 

@@ -16,7 +16,7 @@
 
 package com.bbn.openmap.examples.beanbox;
 
-import java.util.*;
+import java.util.Vector;
 
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.ProjMath;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/MercatorView.java,v $
 // $RCSfile: MercatorView.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:23 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,7 +23,9 @@
 package com.bbn.openmap.proj;
 
 import java.awt.Point;
-import com.bbn.openmap.LatLonPoint;
+import java.awt.geom.Point2D;
+
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -70,7 +72,7 @@ public class MercatorView extends Mercator {
      * @param height height of screen
      */
     public MercatorView(LatLonPoint center, float scale, int width, int height) {
-        super(center, scale, width, height, MercatorViewType);
+        super(center, scale, width, height);
         computeParameters();
     }
 
@@ -100,11 +102,11 @@ public class MercatorView extends Mercator {
         if (uCtr == null) {
             uCtrLat = (float) 0.0;
             uCtrLon = (float) 0.0;
-            uCtr = new LatLonPoint(uCtrLat, uCtrLon);
+            uCtr = new LatLonPoint.Float(uCtrLat, uCtrLon);
         }
 
         if (helper == null) {
-            helper = new MercatorViewHelper(uCtr, scale, width, height);
+            helper = new MercatorViewHelper(uCtr, (float) scale, width, height);
         }
 
         synchronized (helper) {
@@ -126,7 +128,7 @@ public class MercatorView extends Mercator {
                     uCtrLat,
                     uCtrLon);
 
-            helper.forward(ctrLat, ctrLon, temp, true);
+            helper.forward(centerY, centerX, temp, true);
             sCtrX = temp.x;
             sCtrY = temp.y;
 
@@ -141,8 +143,8 @@ public class MercatorView extends Mercator {
 
         Debug.message("mercatorview", "User Center LL: " + uCtrLon + ","
                 + uCtrLat + " User Center xy: " + uCtrX + "," + uCtrY
-                + " Screen Center LL: " + ProjMath.radToDeg(ctrLon) + ","
-                + ProjMath.radToDeg(ctrLat) + " Screen Center xy: " + sCtrX
+                + " Screen Center LL: " + ProjMath.radToDeg(centerY) + ","
+                + ProjMath.radToDeg(centerX) + " Screen Center xy: " + sCtrX
                 + "," + sCtrY + " Screen wh: " + width + "x" + height
                 + " Screen halfwh: " + this.wx + "x" + this.hy + " Delta xy: "
                 + dUSX + "," + dUSY);
@@ -224,7 +226,7 @@ public class MercatorView extends Mercator {
      * @param llp resulting LatLonPoint
      * @return LatLonPoint llp
      */
-    public LatLonPoint inverse(Point pt, LatLonPoint llp) {
+    public Point2D inverse(Point pt, Point2D llp) {
         // convert from screen to user coordinates
         int x = pt.x - wx + dUSX;
         int y = this.hy - pt.y + dUSY;
@@ -244,17 +246,17 @@ public class MercatorView extends Mercator {
      * @return LatLonPoint llp
      * @see Proj#inverse(Point)
      */
-    public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
+    public Point2D inverse(int x, int y, Point2D llp) {
         // convert from screen to world coordinates
         int tx = x - wx + dUSX;
         int ty = this.hy - y + dUSY;
 
         // This is only to aid printing....
-        LatLonPoint tllp = helper.inverse(tx, ty, llp);
+        Point2D tllp = helper.inverse(tx, ty, llp);
 
         Debug.message("mercatorview-i", "xy: " + x + "," + y + " txty: " + tx
-                + "," + ty + " llp: " + tllp.getLongitude() + ","
-                + tllp.getLatitude());
+                + "," + ty + " llp: " + tllp.getY() + ","
+                + tllp.getX());
 
         return (helper.inverse(tx, ty, llp));
     }
@@ -267,7 +269,7 @@ public class MercatorView extends Mercator {
      * screen coordinate conversions (i.e this helper deals in user
      * space while its "super" deals in what it thinks is screen
      * space.
-     *  
+     * 
      */
 
     private class MercatorViewHelper extends Mercator {
@@ -284,7 +286,7 @@ public class MercatorView extends Mercator {
 
         public MercatorViewHelper(LatLonPoint center, float scale, int width,
                 int height) {
-            super(center, scale, width, height, MercatorType);
+            super(center, scale, width, height);
         }
 
         public void setAllParams(int hPixelsPerMeter, float hPlanetRadius,
@@ -304,8 +306,30 @@ public class MercatorView extends Mercator {
             this.scaled_radius = hScaled_radius;
             this.width = hWidth;
             this.height = hHeight;
-            this.ctrLat = hCtrLat;
-            this.ctrLon = hCtrLon;
+            this.centerY = hCtrLat;
+            this.centerX = hCtrLon;
+            this.computeParameters();
+        }
+
+        public void setAllParams(int hPixelsPerMeter, double hPlanetRadius,
+                                 double hPlanetPixelRadius,
+                                 double hPlanetPixelCircumference,
+                                 double hMinscale, double hMaxscale,
+                                 double hScale, double hScaled_radius,
+                                 int hWidth, int hHeight, float hCtrLat,
+                                 float hCtrLon) {
+            this.pixelsPerMeter = hPixelsPerMeter;
+            this.planetRadius = hPlanetRadius;
+            this.planetPixelRadius = hPlanetPixelRadius;
+            this.planetPixelCircumference = hPlanetPixelCircumference;
+            this.minscale = hMinscale;
+            this.maxscale = hMaxscale;
+            this.scale = hScale;
+            this.scaled_radius = hScaled_radius;
+            this.width = hWidth;
+            this.height = hHeight;
+            this.centerY = hCtrLat;
+            this.centerX = hCtrLon;
             this.computeParameters();
         }
 
@@ -347,17 +371,10 @@ public class MercatorView extends Mercator {
             return p;
         }
 
-        public LatLonPoint inverse(Point pt, LatLonPoint llp) {
-            int x = pt.x + this.wx;
-            int y = this.hy - pt.y;
-            return (super.inverse(x, y, llp));
-        }
-
-        public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
+        public Point2D inverse(int x, int y, Point2D llp) {
             x = x + this.wx;
             y = this.hy - y;
             return (super.inverse(x, y, llp));
         }
     }
 }
-

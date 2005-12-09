@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMLine.java,v $
 // $RCSfile: EditableOMLine.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/10 22:25:08 $
+// $Revision: 1.9 $
+// $Date: 2005/12/09 21:09:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,7 @@ package com.bbn.openmap.omGraphics;
 
 import java.awt.event.MouseEvent;
 
+import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.GraphicEditState;
 import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
@@ -276,8 +277,9 @@ public class EditableOMLine extends EditableOMAbstractLine {
         if (renderType == OMGraphic.RENDERTYPE_LATLON) {
             if (projection != null) {
                 float[] floats = new float[4];
-                com.bbn.openmap.LatLonPoint llp = projection.inverse(gp1.getX(),
-                        gp1.getY());
+                LatLonPoint llp = LatLonPoint.getLatLon(gp1.getX(),
+                        gp1.getY(),
+                        projection);
 
                 floats[0] = llp.getLatitude();
                 floats[1] = llp.getLongitude();
@@ -294,8 +296,9 @@ public class EditableOMLine extends EditableOMAbstractLine {
             // Do the offset point.
             if (projection != null) {
                 float[] floats = new float[4];
-                com.bbn.openmap.LatLonPoint llp = projection.inverse(gpo.getX(),
-                        gpo.getY());
+                LatLonPoint llp = LatLonPoint.getLatLon(gpo.getX(),
+                        gpo.getY(),
+                        projection);
 
                 floats[0] = llp.getLatitude();
                 floats[1] = llp.getLongitude();

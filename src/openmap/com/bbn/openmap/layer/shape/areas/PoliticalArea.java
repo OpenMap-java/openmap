@@ -14,21 +14,26 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/PoliticalArea.java,v $
 // $RCSfile: PoliticalArea.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:09:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape.areas;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.image.BufferedImageHelper;
-
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.TexturePaint;
+import java.awt.image.BufferedImage;
 import java.net.URL;
+
+import com.bbn.openmap.image.BufferedImageHelper;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGeometryList;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.util.Debug;
 
 /**
  * A PoliticalArea is a region that has a name (like "Oklahoma"), an

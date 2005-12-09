@@ -14,19 +14,20 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/MercatorLoader.java,v $
 // $RCSfile: MercatorLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2005/08/11 20:39:16 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.proj;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.Debug;
-
+import java.awt.geom.Point2D;
 import java.util.Properties;
+
+import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * ProjectionLoader to add the Mercator projection to an OpenMap
@@ -51,7 +52,7 @@ public class MercatorLoader extends BasicProjectionLoader implements
     public Projection create(Properties props) throws ProjectionException {
 
         try {
-            LatLonPoint llp = (LatLonPoint) props.get(ProjectionFactory.CENTER);
+            LatLonPoint llp = convertToLLP((Point2D) props.get(ProjectionFactory.CENTER));
             float scale = PropUtils.floatFromProperties(props,
                     ProjectionFactory.SCALE,
                     10000000);

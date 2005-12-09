@@ -16,9 +16,11 @@
 
 package com.bbn.openmap.examples.beanbox;
 
-import java.awt.*;
-import java.beans.*;
-import java.util.*;
+import java.awt.Image;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.beans.SimpleBeanInfo;
+import java.util.ArrayList;
 
 /**
  * A BeanInfo for the

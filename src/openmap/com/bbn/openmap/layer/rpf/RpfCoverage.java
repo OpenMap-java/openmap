@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCoverage.java,v $
 // $RCSfile: RpfCoverage.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/02/11 22:34:14 $
+// $Revision: 1.9 $
+// $Date: 2005/12/09 21:09:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,6 +45,7 @@ import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -616,10 +617,10 @@ public class RpfCoverage implements ActionListener, RpfConstants,
         float lrlon = 180f;
 
         if (projection != null) {
-            ullat = projection.getUpperLeft().getLatitude();
-            ullon = projection.getUpperLeft().getLongitude();
-            lrlat = projection.getLowerRight().getLatitude();
-            lrlon = projection.getLowerRight().getLongitude();
+            ullat = ((LatLonPoint)projection.getUpperLeft()).getLatitude();
+            ullon = ((LatLonPoint)projection.getUpperLeft()).getLongitude();
+            lrlat = ((LatLonPoint)projection.getLowerRight()).getLatitude();
+            lrlon = ((LatLonPoint)projection.getLowerRight()).getLongitude();
         }
 
         Debug.message("basic", "RpfCoverage.prepare(): doing it");

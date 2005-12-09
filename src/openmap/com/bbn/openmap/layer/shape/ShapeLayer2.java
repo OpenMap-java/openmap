@@ -14,19 +14,22 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/Attic/ShapeLayer2.java,v $
 // $RCSfile: ShapeLayer2.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:09:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape;
 
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 
-import com.bbn.openmap.*;
+import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGeometryList;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
@@ -60,7 +63,7 @@ import com.bbn.openmap.util.Debug;
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.3 $ $Date: 2004/10/14 18:06:05 $
+ * @version $Revision: 1.4 $ $Date: 2005/12/09 21:09:10 $
  * @see SpatialIndex
  */
 public class ShapeLayer2 extends ShapeLayer implements ActionListener {
@@ -110,12 +113,12 @@ public class ShapeLayer2 extends ShapeLayer implements ActionListener {
         }
 
         Projection projection = getProjection();
-        LatLonPoint ul = projection.getUpperLeft();
-        LatLonPoint lr = projection.getLowerRight();
-        float ulLat = ul.getLatitude();
-        float ulLon = ul.getLongitude();
-        float lrLat = lr.getLatitude();
-        float lrLon = lr.getLongitude();
+        Point2D ul = projection.getUpperLeft();
+        Point2D lr = projection.getLowerRight();
+        double ulLat = ul.getY();
+        double ulLon = ul.getX();
+        double lrLat = lr.getY();
+        double lrLon = lr.getX();
 
         OMGeometryList stuff = new OMGeometryList();
         drawingAttributes.setTo(stuff);
@@ -129,8 +132,8 @@ public class ShapeLayer2 extends ShapeLayer implements ActionListener {
                 Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
             }
 
-            double ymin = (double) Math.min(ulLat, lrLat);
-            double ymax = (double) Math.max(ulLat, lrLat);
+            double ymin = Math.min(ulLat, lrLat);
+            double ymax = Math.max(ulLat, lrLat);
 
             try {
                 ESRIRecord records1[] = spatialIndex.locateRecords(ulLon,

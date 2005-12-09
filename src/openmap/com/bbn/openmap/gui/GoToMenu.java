@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/08/09 19:14:52 $
+// $Revision: 1.14 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,6 +28,7 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -43,7 +44,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.gui.menu.DataBoundsViewMenuItem;
 import com.bbn.openmap.gui.menu.OMBasicMenu;
@@ -349,8 +349,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
         public void actionPerformed(ActionEvent ae) {
             if (map != null) {
                 Projection proj = map.getProjection();
-                LatLonPoint llp = proj.getCenter();
-                new GoToButton(llp.getLatitude(), llp.getLongitude(), proj.getScale(), proj.getName());
+                Point2D llp = proj.getCenter();
+                new GoToButton((float)llp.getY(), (float)llp.getX(), proj.getScale(), proj.getName());
             }
         }
     }
@@ -414,8 +414,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
                 }
 
                 Projection newProj = ProjectionFactory.makeProjection(projClass,
-                        latitude,
-                        longitude,
+                        new Point2D.Float(latitude, longitude),
                         scale,
                         oldProj.getWidth(),
                         oldProj.getHeight());

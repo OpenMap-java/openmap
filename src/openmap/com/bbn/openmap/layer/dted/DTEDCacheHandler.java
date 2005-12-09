@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCacheHandler.java,v $
 // $RCSfile: DTEDCacheHandler.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:53 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -158,10 +158,10 @@ public class DTEDCacheHandler {
      */
     public void setProjection(EqualArc proj) {
         setProjection(proj,
-                proj.getUpperLeft().getLatitude(),
-                proj.getUpperLeft().getLongitude(),
-                proj.getLowerRight().getLatitude(),
-                proj.getLowerRight().getLongitude());
+                (float)proj.getUpperLeft().getY(),
+                (float)proj.getUpperLeft().getX(),
+                (float)proj.getLowerRight().getY(),
+                (float)proj.getLowerRight().getX());
     }
 
     /**

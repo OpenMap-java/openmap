@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFFeatureGraphicWarehouse.java,v $
 // $RCSfile: VPFFeatureGraphicWarehouse.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/11 20:39:19 $
+// $Revision: 1.8 $
+// $Date: 2005/12/09 21:08:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,7 +32,6 @@ import java.util.Properties;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMColor;
@@ -40,6 +39,7 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 

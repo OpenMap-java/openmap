@@ -14,22 +14,25 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DateLayer.java,v $
 // $RCSfile: DateLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:52 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer;
 
-import java.awt.*;
-import java.util.*;
-import java.text.*;
+import java.awt.Graphics;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Properties;
+import java.util.TimeZone;
 
-import com.bbn.openmap.event.*;
+import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.Taskable;
 import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.Taskable;
 
 /**
  * Layer that displays date and time. This Layer is a Taskable

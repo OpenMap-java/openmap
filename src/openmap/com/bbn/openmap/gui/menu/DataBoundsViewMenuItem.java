@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/DataBoundsViewMenuItem.java,v
 // $
 // $RCSfile: DataBoundsViewMenuItem.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -58,7 +58,7 @@ public class DataBoundsViewMenuItem extends MapHandlerMenuItem implements
             if (bounds != null) {
                 java.awt.geom.Point2D center = bounds.getCenter();
                 if (center != null) {
-                    proj.setCenter((float) center.getY(), (float) center.getX());
+                    proj.setCenter(center.getY(), center.getX());
                     LatLonPoint llp1 = new LatLonPoint(bounds.getMax().getY(), bounds.getMin()
                             .getX());
 

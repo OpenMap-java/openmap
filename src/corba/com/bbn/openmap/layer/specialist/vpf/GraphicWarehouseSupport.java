@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/vpf/GraphicWarehouseSupport.java,v
 // $
 // $RCSfile: GraphicWarehouseSupport.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/11 19:30:01 $
+// $Revision: 1.7 $
+// $Date: 2005/12/09 21:09:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,23 +25,23 @@
 package com.bbn.openmap.layer.specialist.vpf;
 
 import java.awt.Component;
-import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import com.bbn.openmap.layer.vpf.LibrarySelectionTable;
-import com.bbn.openmap.layer.vpf.VPFGraphicWarehouse;
-import com.bbn.openmap.layer.vpf.CoordFloatString;
-import com.bbn.openmap.LatLonPoint;
+
 import com.bbn.openmap.CSpecialist.Comp;
-import com.bbn.openmap.CSpecialist.GraphicPackage.LineType;
-import com.bbn.openmap.CSpecialist.GraphicPackage.RenderType;
 import com.bbn.openmap.CSpecialist.LLPoint;
 import com.bbn.openmap.CSpecialist.UGraphic;
+import com.bbn.openmap.CSpecialist.GraphicPackage.LineType;
+import com.bbn.openmap.CSpecialist.GraphicPackage.RenderType;
 import com.bbn.openmap.layer.specialist.GraphicList;
 import com.bbn.openmap.layer.specialist.SColor;
 import com.bbn.openmap.layer.specialist.SPoly;
 import com.bbn.openmap.layer.specialist.SText;
+import com.bbn.openmap.layer.vpf.CoordFloatString;
+import com.bbn.openmap.layer.vpf.LibrarySelectionTable;
+import com.bbn.openmap.layer.vpf.VPFGraphicWarehouse;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public abstract class GraphicWarehouseSupport implements VPFGraphicWarehouse {
 

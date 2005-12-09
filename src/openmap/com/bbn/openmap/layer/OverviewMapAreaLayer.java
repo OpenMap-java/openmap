@@ -14,15 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OverviewMapAreaLayer.java,v $
 // $RCSfile: OverviewMapAreaLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:53 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer;
 
-import com.bbn.openmap.LatLonPoint;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.geom.Point2D;
+import java.util.Properties;
+
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.event.OverviewMapStatusListener;
 import com.bbn.openmap.event.ProjectionEvent;
@@ -31,10 +35,6 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.Projection;
-
-import java.awt.Graphics;
-import java.awt.Point;
-import java.util.Properties;
 
 /**
  * A class used to draw the rectangle representing the area covered by
@@ -48,8 +48,8 @@ public class OverviewMapAreaLayer extends Layer implements
     OMRect rectangle;
     float sourceScale;
     float overviewScale;
-    LatLonPoint ul;
-    LatLonPoint lr;
+    Point2D ul;
+    Point2D lr;
 
     DrawingAttributes boxAttributes = DrawingAttributes.getDefaultClone();
 
@@ -72,12 +72,12 @@ public class OverviewMapAreaLayer extends Layer implements
                 rectangle.setLocation(ulp.x, ulp.y, lrp.x, lrp.y);
                 rectangle.setLineType(OMGraphic.LINETYPE_STRAIGHT);
             } else {
-                //  HACK Would be nice if we didn't run into the
-                //  big-world problem.
-                rectangle.setLocation(ul.getLatitude(),
-                        ul.getLongitude(),
-                        lr.getLatitude(),
-                        lr.getLongitude(),
+                // HACK Would be nice if we didn't run into the
+                // big-world problem.
+                rectangle.setLocation((float) ul.getY(),
+                        (float) ul.getX(),
+                        (float) lr.getY(),
+                        (float) lr.getX(),
                         OMGraphic.LINETYPE_RHUMB);
             }
             rectangle.generate(proj);
@@ -130,4 +130,3 @@ public class OverviewMapAreaLayer extends Layer implements
     }
 
 }
-

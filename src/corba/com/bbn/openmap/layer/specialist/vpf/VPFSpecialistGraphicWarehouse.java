@@ -16,24 +16,31 @@
 // /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/vpf/VPFSpecialistGraphicWarehouse.java,v
 // $
 // $RCSfile: VPFSpecialistGraphicWarehouse.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:37 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:09:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.specialist.vpf;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.ArrayList;
 
-import com.bbn.openmap.layer.vpf.*;
-import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.specialist.SPoly;
 import com.bbn.openmap.layer.specialist.SText;
-import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.layer.vpf.AreaTable;
+import com.bbn.openmap.layer.vpf.CoordFloatString;
+import com.bbn.openmap.layer.vpf.CoverageTable;
+import com.bbn.openmap.layer.vpf.DcwRecordFile;
+import com.bbn.openmap.layer.vpf.EdgeTable;
+import com.bbn.openmap.layer.vpf.NodeTable;
+import com.bbn.openmap.layer.vpf.TextTable;
+import com.bbn.openmap.layer.vpf.VPFUtil;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class VPFSpecialistGraphicWarehouse extends GraphicWarehouseSupport {
 

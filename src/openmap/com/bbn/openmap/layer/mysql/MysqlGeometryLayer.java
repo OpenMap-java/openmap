@@ -21,22 +21,27 @@
 
 package com.bbn.openmap.layer.mysql;
 
-/*  Java Core  */
-import java.sql.*;
+/* Java Core */
+import java.awt.geom.Point2D;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 import java.util.Vector;
+
 import javax.swing.ImageIcon;
 
-/*  OpenMap  */
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * This layer is for the reading and display of any spatial data
@@ -62,21 +67,21 @@ import com.bbn.openmap.util.Debug;
  * Properties to be set:
  * 
  * <pre>
- * 
- * 
- *  mygeo.prettyName=&amp;ltYour Layer Name&amp;gt
- *  mygeo.dbUrl=&amp;lt Driver Class &amp;gt eg.  &quot;jdbc:mysql://localhost/openmap?user=me&amp;password=secret&quot;
- *  mygeo.dbClass=&amp;lt Driver Class &amp;gt eg. &quot;com.mysql.jdbc.Driver&quot;
- *  mygeo.geomTable=&amp;ltDatabase Tablename&amp;gt
- *  mygeo.geomColumn=&amp;ltColumn name which contains the geometry&amp;gt
- *  mygeo.pointSymbol=&amp;ltFilename and path for image to use for point objects&amp;gtDefault is 
- *  # Optional Properties - use as required
- *  # NOTE: There are default for each of these 
- *  mygeo.lineColor=&amp;ltColor for lines&amp;gtDefault is red
- *  mygeo.lineWidth=&amp;ltPixel width of lines&amp;gtDefault is 0
- *  mygeo.fillColor=&amp;ltColor of fill&amp;gtDefault is red
- * 
  *  
+ *  
+ *   mygeo.prettyName=&amp;ltYour Layer Name&amp;gt
+ *   mygeo.dbUrl=&amp;lt Driver Class &amp;gt eg.  &quot;jdbc:mysql://localhost/openmap?user=me&amp;password=secret&quot;
+ *   mygeo.dbClass=&amp;lt Driver Class &amp;gt eg. &quot;com.mysql.jdbc.Driver&quot;
+ *   mygeo.geomTable=&amp;ltDatabase Tablename&amp;gt
+ *   mygeo.geomColumn=&amp;ltColumn name which contains the geometry&amp;gt
+ *   mygeo.pointSymbol=&amp;ltFilename and path for image to use for point objects&amp;gtDefault is 
+ *   # Optional Properties - use as required
+ *   # NOTE: There are default for each of these 
+ *   mygeo.lineColor=&amp;ltColor for lines&amp;gtDefault is red
+ *   mygeo.lineWidth=&amp;ltPixel width of lines&amp;gtDefault is 0
+ *   mygeo.fillColor=&amp;ltColor of fill&amp;gtDefault is red
+ *  
+ *   
  * </pre>
  * 
  * Copyright 2003 by the Author <br>
@@ -203,19 +208,16 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
 
             stmt = conn.createStatement();
 
+            Point2D ul = getProjection().getUpperLeft();
+            Point2D lr = getProjection().getLowerRight();
+
             String q = "SELECT ID, AsText(" + geomColumn + ") FROM "
                     + geomTable
                     + " WHERE MBRIntersects(GEO, GeomFromText('Polygon(( "
-                    + getProjection().getUpperLeft().getLongitude() + " "
-                    + getProjection().getUpperLeft().getLatitude() + ", "
-                    + getProjection().getUpperLeft().getLongitude() + " "
-                    + getProjection().getLowerRight().getLatitude() + ", "
-                    + getProjection().getLowerRight().getLongitude() + " "
-                    + getProjection().getLowerRight().getLatitude() + ", "
-                    + getProjection().getLowerRight().getLongitude() + " "
-                    + getProjection().getUpperLeft().getLatitude() + ", "
-                    + getProjection().getUpperLeft().getLongitude() + " "
-                    + getProjection().getUpperLeft().getLatitude() + "))'))";
+                    + ul.getX() + " " + ul.getY() + ", " + ul.getX() + " "
+                    + lr.getY() + ", " + lr.getX() + " " + lr.getY() + ", "
+                    + lr.getX() + " " + ul.getY() + ", " + ul.getX() + " "
+                    + ul.getY() + "))'))";
 
             if (Debug.debugging("mysql")) {
                 Debug.output("MysqlGeometryLayer query: " + q);

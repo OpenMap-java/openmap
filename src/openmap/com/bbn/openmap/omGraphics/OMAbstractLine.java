@@ -2,7 +2,7 @@
  * Created on Jul 13, 2005
  * 
  * @author srosset
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 package com.bbn.openmap.omGraphics;
 
@@ -38,7 +38,7 @@ public abstract class OMAbstractLine extends OMGraphic {
     /**
      * The awt object representing the arrowhead.
      */
-    OMArrowHead arrowhead = null;
+    protected OMArrowHead arrowhead = null;
 
     /**
      * Construct a default OMAbstractLine.

@@ -2,17 +2,32 @@
 
 package com.bbn.openmap.gui.menu;
 
-import javax.swing.*;
-import java.awt.event.*;
-import java.awt.image.*;
-import java.awt.*;
-import java.util.*;
-import java.io.*;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
 
-import com.bbn.openmap.*;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.LayerHandler;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.image.AbstractImageFormatter;
+import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.image.*;
-import com.bbn.openmap.proj.*;
 
 /**
  * A MenuItem that is capable of looking at MapBean and saving it as
@@ -180,7 +195,7 @@ public class SaveAsVirtualImageMenuItem extends SaveAsImageMenuItem {
                     Proj tp0 = null;
 
                     MapBean mb = (MapBean) someObj;
-                    LatLonPoint cp = new LatLonPoint(mb.getCenter());
+                    Point2D cp = mb.getCenter();
 
                     double area1, area2, scaleMod;
                     int height = DW.getHeight();
@@ -198,8 +213,7 @@ public class SaveAsVirtualImageMenuItem extends SaveAsImageMenuItem {
                     BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
                     tp = (Proj) ProjectionFactory.makeProjection(mb.getProjection().getClass(),
-                            cp.getLatitude(),
-                            cp.getLongitude(),
+                            cp,
                             mb.getScale() * (float) scaleMod,
                             width,
                             height);

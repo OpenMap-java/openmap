@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UTMPoint.java,v $
 // $RCSfile: UTMPoint.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/10/24 14:37:41 $
+// $Revision: 1.12 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -207,14 +207,14 @@ public class UTMPoint {
         double eccPrimeSquared;
         double N, T, C, A, M;
 
-        double LatRad = llpoint.radlat_;
-        double LongRad = llpoint.radlon_;
+        double LatRad = llpoint.getY();
+        double LongRad = llpoint.getX();
         double LongOriginRad;
         int ZoneNumber;
 
         ZoneNumber = (int) ((Long + 180) / 6) + 1;
 
-        //Make sure the longitude 180.00 is in Zone 60
+        // Make sure the longitude 180.00 is in Zone 60
         if (Long == 180) {
             ZoneNumber = 60;
         }
@@ -235,9 +235,10 @@ public class UTMPoint {
             else if (Long >= 33.0f && Long < 42.0f)
                 ZoneNumber = 37;
         }
-        LongOrigin = (ZoneNumber - 1) * 6 - 180 + 3; //+3 puts origin
-                                                     // in middle of
-                                                     // zone
+        LongOrigin = (ZoneNumber - 1) * 6 - 180 + 3; // +3 puts
+                                                        // origin
+        // in middle of
+        // zone
         LongOriginRad = ProjMath.degToRad(LongOrigin);
 
         eccPrimeSquared = (eccSquared) / (1 - eccSquared);
@@ -273,8 +274,8 @@ public class UTMPoint {
                         / 24.0d + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared)
                         * A * A * A * A * A * A / 720.0d)));
         if (Lat < 0.0f) {
-            UTMNorthing += 10000000.0f; //10000000 meter offset for
-                                        // southern hemisphere
+            UTMNorthing += 10000000.0f; // 10000000 meter offset for
+            // southern hemisphere
         }
 
         if (utmpoint == null) {
@@ -355,32 +356,33 @@ public class UTMPoint {
                                       float UTMEasting, String UTMZone,
                                       LatLonPoint llpoint) {
 
-        //without the zone we can't calculate the Lat and Long
+        // without the zone we can't calculate the Lat and Long
         if (UTMZone == null || UTMZone.equals("")) {
             return null;
         }
 
         int ZoneNumber = 1;
-        char ZoneLetter = 'N'; //northern hemisphere by default if no
-                               // character is found
+        char ZoneLetter = 'N'; // northern hemisphere by default if
+                                // no
+        // character is found
 
-        //Break out the Zone number and zone letter from the UTMZone
-        //string We assume the string is a valid zone with a number
-        //followed by a zone letter If there is no Letter we assume
-        //that it's the Northern hemisphere
+        // Break out the Zone number and zone letter from the UTMZone
+        // string We assume the string is a valid zone with a number
+        // followed by a zone letter If there is no Letter we assume
+        // that it's the Northern hemisphere
         int ln = UTMZone.length() - 1;
         if (ln > 0) {
-            //If it's Zero then there is only one character and it
+            // If it's Zero then there is only one character and it
             // must be the Zone number
             ZoneLetter = UTMZone.charAt(ln);
             if (!Character.isLetter(ZoneLetter)) {
-                //No letter so assume it's missing & default to 'N'
+                // No letter so assume it's missing & default to 'N'
                 ZoneLetter = 'N';
                 ln++;
             }
         }
 
-        //convert the number but catch the exception if it's not
+        // convert the number but catch the exception if it's not
         // valid
         try {
             ZoneNumber = Integer.parseInt(UTMZone.substring(0, ln));
@@ -458,7 +460,7 @@ public class UTMPoint {
                                       float UTMEasting, int ZoneNumber,
                                       char ZoneLetter, LatLonPoint llpoint) {
 
-        //check the ZoneNummber is valid
+        // check the ZoneNummber is valid
         if (ZoneNumber < 0 || ZoneNumber > 60) {
             return null;
         }
@@ -474,22 +476,23 @@ public class UTMPoint {
         double mu, phi1Rad;
 
         // remove 500,000 meter offset for longitude
-        double x = UTMEasting - 500000.0d; 
+        double x = UTMEasting - 500000.0d;
         double y = UTMNorthing;
 
-        //We must know somehow if we are in the Northern or Southern
-        //hemisphere, this is the only time we use the letter So even
-        //if the Zone letter isn't exactly correct it should indicate
-        //the hemisphere correctly
+        // We must know somehow if we are in the Northern or Southern
+        // hemisphere, this is the only time we use the letter So even
+        // if the Zone letter isn't exactly correct it should indicate
+        // the hemisphere correctly
         if (ZoneLetter == 'S') {
-            y -= 10000000.0d;//remove 10,000,000 meter offset used
-                             // for southern hemisphere
+            y -= 10000000.0d;// remove 10,000,000 meter offset used
+            // for southern hemisphere
         }
 
-        //There are 60 zones with zone 1 being at West -180 to -174
-        LongOrigin = (ZoneNumber - 1) * 6 - 180 + 3; //+3 puts origin
-                                                     // in middle of
-                                                     // zone
+        // There are 60 zones with zone 1 being at West -180 to -174
+        LongOrigin = (ZoneNumber - 1) * 6 - 180 + 3; // +3 puts
+                                                        // origin
+        // in middle of
+        // zone
 
         eccPrimeSquared = (eccSquared) / (1 - eccSquared);
 
@@ -502,7 +505,7 @@ public class UTMPoint {
                 + (21 * e1 * e1 / 16 - 55 * e1 * e1 * e1 * e1 / 32)
                 * Math.sin(4 * mu) + (151 * e1 * e1 * e1 / 96)
                 * Math.sin(6 * mu);
-//        double phi1 = ProjMath.radToDeg(phi1Rad);
+        // double phi1 = ProjMath.radToDeg(phi1Rad);
 
         N1 = a
                 / Math.sqrt(1 - eccSquared * Math.sin(phi1Rad)
@@ -532,11 +535,10 @@ public class UTMPoint {
                 / Math.cos(phi1Rad);
         Long = LongOrigin + ProjMath.radToDeg(Long);
         if (llpoint != null) {
-            llpoint.setLatLon((float) Lat, (float) Long);
+            llpoint.setLatLon(Lat, Long);
             return llpoint;
         } else {
             return new LatLonPoint((float) Lat, (float) Long);
         }
     }
 }
-

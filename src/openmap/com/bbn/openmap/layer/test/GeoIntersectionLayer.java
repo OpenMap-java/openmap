@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoIntersectionLayer.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/08/09 18:51:46 $
+//$Revision: 1.2 $
+//$Date: 2005/12/09 21:09:13 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -33,6 +33,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -47,7 +48,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.dataAccess.shape.DbfTableModel;
 import com.bbn.openmap.dataAccess.shape.EsriGraphicList;
 import com.bbn.openmap.event.MapMouseEvent;
@@ -106,27 +106,27 @@ import com.bbn.openmap.util.PropUtils;
  * The properties for this layer are:
  * 
  * <pre>
- *   geo.class=com.bbn.openmap.layer.test.GeoIntersectionLayer
- *   geo.prettyName=GEO Intersections
- *   geo.editor=com.bbn.openmap.layer.editor.DrawingEditorTool
- *   geo.showAttributes=true
- *   geo.loaders=lines polys points
- *   geo.mouseModes=Gestures
- *   geo.lines.class=com.bbn.openmap.tools.drawing.OMLineLoader
- *   geo.polys.class=com.bbn.openmap.tools.drawing.OMPolyLoader
- *   geo.points.class=com.bbn.openmap.tools.drawing.OMPointLoader
- *   geo.shapeFileList=geocounties geolakes geocountries
- *   geo.geocounties=/data/shape/usa/counties.shp
- *   geo.geolakes=/data/shape/world/lakes.shp
- *   geo.geocountries=/data/shape/world/cntry02/cntry02.shp
- *   # Colors for regular, unselected data shapes
- *   geo.fillColor=FF333399
- *   geo.selectColor=ffff9900
- *   geo.mattingColor=ffff9900
- *   # Colors for data shapes intersected by drawn shapes
- *   geo.selected.fillColor=FFFFFF00
- *   geo.selected.selectColor=ffff9900
- *   geo.selected.mattingColor=ffff9900
+ *    geo.class=com.bbn.openmap.layer.test.GeoIntersectionLayer
+ *    geo.prettyName=GEO Intersections
+ *    geo.editor=com.bbn.openmap.layer.editor.DrawingEditorTool
+ *    geo.showAttributes=true
+ *    geo.loaders=lines polys points
+ *    geo.mouseModes=Gestures
+ *    geo.lines.class=com.bbn.openmap.tools.drawing.OMLineLoader
+ *    geo.polys.class=com.bbn.openmap.tools.drawing.OMPolyLoader
+ *    geo.points.class=com.bbn.openmap.tools.drawing.OMPointLoader
+ *    geo.shapeFileList=geocounties geolakes geocountries
+ *    geo.geocounties=/data/shape/usa/counties.shp
+ *    geo.geolakes=/data/shape/world/lakes.shp
+ *    geo.geocountries=/data/shape/world/cntry02/cntry02.shp
+ *    # Colors for regular, unselected data shapes
+ *    geo.fillColor=FF333399
+ *    geo.selectColor=ffff9900
+ *    geo.mattingColor=ffff9900
+ *    # Colors for data shapes intersected by drawn shapes
+ *    geo.selected.fillColor=FFFFFF00
+ *    geo.selected.selectColor=ffff9900
+ *    geo.selected.mattingColor=ffff9900
  * </pre>
  * 
  * @author dietrick
@@ -513,8 +513,8 @@ public class GeoIntersectionLayer extends EditorLayer implements
     public boolean mouseOver(MapMouseEvent mme) {
 
         if (regionIndex != null) {
-            LatLonPoint llp = mme.getLatLon();
-            GeoPoint geop = new GeoPoint.Impl(llp.getLatitude(), llp.getLongitude());
+            Point2D llp = mme.getLatLon();
+            GeoPoint geop = new GeoPoint.Impl((float) llp.getY(), (float) llp.getX());
             for (Iterator hits = Intersection.intersect(geop, regionIndex); hits.hasNext();) {
                 OMPolyRegion ompr = (OMPolyRegion) hits.next();
                 ompr.poly.select();
@@ -584,7 +584,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
             double h = r.getHeight();
             double w = r.getWidth();
             float[] rawll = ((OMPoly) omg).getLatLonArray();
-            LatLonPoint llHolder = new LatLonPoint();
+            Point2D llHolder = new Point2D.Double();
             Geo g = new Geo(0, 0);
             int[] pix = new int[(int) (h * w)];
 
@@ -594,8 +594,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
                     boolean inShape = s.contains(i + x, j + y);
                     p.inverse((int) (i + x), (int) (j + y), llHolder);
 
-                    g.initialize(llHolder.getLatitude(),
-                            llHolder.getLongitude());
+                    g.initialize(llHolder.getY(), llHolder.getX());
                     boolean inGeo = Intersection.isPointInPolygon(g,
                             rawll,
                             false);

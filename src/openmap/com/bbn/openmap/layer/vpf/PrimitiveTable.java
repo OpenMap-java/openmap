@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/PrimitiveTable.java,v $
 // $RCSfile: PrimitiveTable.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:09 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:08:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,8 +24,8 @@ package com.bbn.openmap.layer.vpf;
 
 import java.util.List;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * Parent class for reading VPF primitive tables.
@@ -47,8 +47,7 @@ public abstract class PrimitiveTable extends DcwRecordFile {
      * @param cov the coverage table that is our "parent"
      * @param tile the tile for the table
      * @param tablename must be a 3 character VPF tablename
-     * @exception FormatException if something goes wrong opening the
-     *            file
+     * @exception FormatException if something goes wrong opening the file
      */
     public PrimitiveTable(CoverageTable cov, TileDirectory tile,
             String tablename) throws FormatException {
@@ -81,39 +80,33 @@ public abstract class PrimitiveTable extends DcwRecordFile {
     }
 
     /**
-     * Parse the records for this tile, calling warehouse.createXXXX
-     * once for each record.
+     * Parse the records for this tile, calling warehouse.createXXXX once for
+     * each record.
      * 
-     * @param warehouse the warehouse used for createArea calls (must
-     *        not be null)
-     * @param dpplat threshold for latitude thinning (passed to
-     *        warehouse)
-     * @param dpplon threshold for longitude thinngin (passed to
-     *        warehouse)
+     * @param warehouse the warehouse used for createArea calls (must not be
+     *        null)
+     * @param dpplat threshold for latitude thinning (passed to warehouse)
+     * @param dpplon threshold for longitude thinngin (passed to warehouse)
      * @param ll1 upperleft of selection region (passed to warehouse)
-     * @param ll2 lowerright of selection region (passed to warehouse)
-     *        (passed to warehouse)
+     * @param ll2 lowerright of selection region (passed to warehouse) (passed
+     *        to warehouse)
      * @see VPFGraphicWarehouse
      */
     abstract public void drawTile(VPFGraphicWarehouse warehouse, float dpplat,
                                   float dpplon, LatLonPoint ll1, LatLonPoint ll2);
 
     /**
-     * Use the warehouse to create a graphic from a feature in the
-     * AreaTable.
+     * Use the warehouse to create a graphic from a feature in the AreaTable.
      * 
-     * @param warehouse the warehouse used for createXXXX calls (must
-     *        not be null)
-     * @param dpplat threshold for latitude thinning (passed to
-     *        warehouse)
-     * @param dpplon threshold for longitude thinngin (passed to
-     *        warehouse)
+     * @param warehouse the warehouse used for createXXXX calls (must not be
+     *        null)
+     * @param dpplat threshold for latitude thinning (passed to warehouse)
+     * @param dpplon threshold for longitude thinngin (passed to warehouse)
      * @param ll1 upperleft of selection region (passed to warehouse)
      * @param ll2 lowerright of selection region (passed to warehouse)
      * @param area a List containing the AreaTable row contents.
-     * @param featureType the string representing the feature type, in
-     *        case the warehouse wants to do some intelligent
-     *        rendering.
+     * @param featureType the string representing the feature type, in case the
+     *        warehouse wants to do some intelligent rendering.
      * @see VPFGraphicWarehouse#createEdge
      */
     abstract public void drawFeature(VPFFeatureWarehouse warehouse,

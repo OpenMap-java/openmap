@@ -16,7 +16,7 @@
 
 package com.bbn.openmap.examples.beanbox;
 
-import java.util.*;
+import java.util.List;
 
 import com.bbn.openmap.tools.beanbox.BeanLayoutManagerBeanInfo;
 

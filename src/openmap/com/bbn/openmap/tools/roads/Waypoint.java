@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/Waypoint.java,v
 // $
 // $RCSfile: Waypoint.java,v $
-// $Revision: 1.3 $
-// $Date: 2005/08/12 21:47:49 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:09:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -102,7 +102,7 @@ public abstract class Waypoint extends Visual implements Serializable {
     }
 
     public void setScreenLocation(Point loc) {
-        setLocation(getRoadLayer().getProjection().inverse(loc.x, loc.y));
+        setLocation(LatLonPoint.getLatLon(loc.x, loc.y, getRoadLayer().getProjection()));
     }
 
     public void update() {

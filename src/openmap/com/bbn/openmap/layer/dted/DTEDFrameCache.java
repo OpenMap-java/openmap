@@ -14,22 +14,22 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameCache.java,v $
 // $RCSfile: DTEDFrameCache.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 19:22:09 $
+// $Revision: 1.9 $
+// $Date: 2005/12/09 21:09:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.dted;
 
+import java.awt.geom.Point2D;
 import java.util.Properties;
 
+import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
 import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
 import com.bbn.openmap.proj.EqualArc;
-import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -383,13 +383,13 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
      *         DTED level.
      */
     public short[][] getElevations(EqualArc proj, int dtedLevel) {
-        LatLonPoint ul = proj.getUpperLeft();
-        LatLonPoint lr = proj.getLowerRight();
+        Point2D ul = proj.getUpperLeft();
+        Point2D lr = proj.getLowerRight();
 
-        return getElevations(ul.getLatitude(),
-                ul.getLongitude(),
-                lr.getLatitude(),
-                lr.getLongitude(),
+        return getElevations((float)ul.getY(),
+                (float)ul.getX(),
+                (float)lr.getY(),
+                (float)lr.getX(),
                 dtedLevel);
     }
 

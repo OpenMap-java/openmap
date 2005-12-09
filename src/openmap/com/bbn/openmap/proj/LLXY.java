@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LLXY.java,v $
 // $RCSfile: LLXY.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/22 14:22:15 $
+// $Revision: 1.8 $
+// $Date: 2005/12/09 21:09:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,7 +23,9 @@
 package com.bbn.openmap.proj;
 
 import java.awt.Point;
-import com.bbn.openmap.LatLonPoint;
+import java.awt.geom.Point2D;
+
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -37,17 +39,12 @@ public class LLXY extends Cylindrical implements EqualArc {
      */
     public final static transient String LLXYName = "LLXY";
 
-    /**
-     * The LLXY type of projection.
-     */
-    public final static transient int LLXYType = 6304;
-
     // world<->screen coordinate offsets
     protected int hy, wx;
-    protected float cLon;
-    protected float cLat;
+    protected double cLon;
+    protected double cLat;
     /** Pixel per degree */
-    protected float ppd;
+    protected double ppd;
 
     /**
      * Construct a LLXY projection.
@@ -58,16 +55,12 @@ public class LLXY extends Cylindrical implements EqualArc {
      * @param height height of screen
      */
     public LLXY(LatLonPoint center, float scale, int width, int height) {
-        super(center, scale, width, height, LLXYType);
+        super(center, scale, width, height);
     }
 
-    public LLXY(LatLonPoint center, float scale, int width, int height, int type) {
-        super(center, scale, width, height, type);
-    }
-
-    //      protected void finalize() {
-    //      Debug.message("gc", "LLXY finalized");
-    //      }
+    // protected void finalize() {
+    // Debug.message("gc", "LLXY finalized");
+    // }
 
     /**
      * Return stringified description of this projection.
@@ -94,22 +87,22 @@ public class LLXY extends Cylindrical implements EqualArc {
         hy = height / 2;
         wx = width / 2;
         // Degrees longitude of the center of the projection.
-        cLon = ProjMath.radToDeg(ctrLon);
-        cLat = ProjMath.radToDeg(ctrLat);
+        cLon = ProjMath.radToDeg(centerX);
+        cLat = ProjMath.radToDeg(centerY);
         ppd = world.x / 360f;
 
-        float latLimit = 90f - ((float) hy / ppd);
+        double latLimit = 90 - (hy / ppd);
 
-        //Add check for zoom allowing more than 90 degrees viewable
+        // Add check for zoom allowing more than 90 degrees viewable
         if (latLimit < 0.0f)
             latLimit = 0.0f;
 
         if (cLat > latLimit) {
             cLat = latLimit;
-            ctrLat = ProjMath.degToRad(cLat);
+            centerY = ProjMath.degToRad(cLat);
         } else if (cLat < -latLimit) {
             cLat = -latLimit;
-            ctrLat = ProjMath.degToRad(cLat);
+            centerY = ProjMath.degToRad(cLat);
         }
 
         if (Debug.debugging("llxy")) {
@@ -128,7 +121,7 @@ public class LLXY extends Cylindrical implements EqualArc {
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
      * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
      */
-    public float normalize_latitude(float lat) {
+    public double normalize_latitude(double lat) {
         if (lat > NORTH_POLE) {
             return NORTH_POLE;
         } else if (lat < SOUTH_POLE) {
@@ -146,31 +139,8 @@ public class LLXY extends Cylindrical implements EqualArc {
      * @param lon float longitude in decimal degrees
      * @return boolean
      */
-    public boolean isPlotable(float lat, float lon) {
+    public boolean isPlotable(double lat, double lon) {
         return true;
-    }
-
-    /**
-     * Projects a point from Lat/Lon space to X/Y space.
-     * 
-     * @param pt LatLonPoint
-     * @param p Point retval
-     * @return Point p
-     */
-    public Point forward(LatLonPoint pt, Point p) {
-        return forward(pt.getLatitude(), pt.getLongitude(), p, false);
-    }
-
-    /**
-     * Forward projects a lat,lon coordinates.
-     * 
-     * @param lat raw latitude in decimal degrees
-     * @param lon raw longitude in decimal degrees
-     * @param p Resulting XY Point
-     * @return Point p
-     */
-    public Point forward(float lat, float lon, Point p) {
-        return forward(lat, lon, p, false);
     }
 
     /**
@@ -183,19 +153,18 @@ public class LLXY extends Cylindrical implements EqualArc {
      *        arguments are in radians
      * @return Point p
      */
-    public Point forward(float lat, float lon, Point p, boolean isRadian) {
+    public Point forward(double lat, double lon, Point p, boolean isRadian) {
         if (isRadian) {
-            lat = ProjMath.radToDeg(normalize_latitude(lat));
-            lon = ProjMath.radToDeg(lon);
+            lat = Math.toDegrees(normalize_latitude(lat));
+            lon = Math.toDegrees(lon);
         } else {
-            lat = Length.DECIMAL_DEGREE.fromRadians(normalize_latitude(Length.DECIMAL_DEGREE.toRadians(lat)));
+            lat = Math.toDegrees(normalize_latitude(Math.toRadians(lat)));
         }
 
-        float newLon = Length.DECIMAL_DEGREE.fromRadians(wrap_longitude(Length.DECIMAL_DEGREE.toRadians(lon
-                - cLon)));
+        double newLon = Math.toDegrees(wrap_longitude(Math.toRadians(lon - cLon)));
 
-        p.x = wx + Math.round(newLon * ppd);
-        p.y = hy - Math.round((lat - cLat) * ppd);
+        p.x = wx + (int) Math.round(newLon * ppd);
+        p.y = hy - (int) Math.round((lat - cLat) * ppd);
 
         if (Debug.debugging("llxydetail")) {
             Debug.output("LLXY.forward(lon:" + ProjMath.radToDeg(lon)
@@ -208,17 +177,6 @@ public class LLXY extends Cylindrical implements EqualArc {
     }
 
     /**
-     * Inverse project a Point.
-     * 
-     * @param pt x,y Point
-     * @param llp resulting LatLonPoint
-     * @return LatLonPoint llp
-     */
-    public LatLonPoint inverse(Point pt, LatLonPoint llp) {
-        return inverse(pt.x, pt.y, llp);
-    }
-
-    /**
      * Inverse project x,y coordinates into a LatLonPoint.
      * 
      * @param x integer x coordinate
@@ -227,12 +185,12 @@ public class LLXY extends Cylindrical implements EqualArc {
      * @return LatLonPoint llp
      * @see Proj#inverse(Point)
      */
-    public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
+    public Point2D inverse(int x, int y, Point2D llp) {
 
         // convert from screen to world coordinates, and then
         // basically undo the math from the forward method.
-        llp.setLongitude(((x - wx) / ppd) + cLon);
-        llp.setLatitude(((hy - y) / ppd) + cLat);
+
+        llp.setLocation(((x - wx) / ppd) + cLon, ((hy - y) / ppd) + cLat);
 
         return llp;
     }
@@ -250,7 +208,7 @@ public class LLXY extends Cylindrical implements EqualArc {
      * number of pixels around the earth (360 degrees).
      */
     public double getXPixConstant() {
-        return (double) ppd * 360;
+        return ppd * 360.0;
     }
 
     /**
@@ -259,7 +217,7 @@ public class LLXY extends Cylindrical implements EqualArc {
      * number of pixels from 0 to 90 degrees.
      */
     public double getYPixConstant() {
-        return (double) ppd * 90;
+        return ppd * 90.0;
     }
 
 }

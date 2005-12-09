@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDLayer.java,v $
 // $RCSfile: DTEDLayer.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/09/13 14:33:11 $
+// $Revision: 1.13 $
+// $Date: 2005/12/09 21:09:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,8 +23,11 @@
 package com.bbn.openmap.layer.dted;
 
 /*  Java Core  */
-import java.awt.event.*;
-import java.io.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+import java.io.Serializable;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -34,11 +37,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-/*  OpenMap  */
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.event.InfoDisplayEvent;
 import com.bbn.openmap.event.LayerStatusEvent;
@@ -1059,10 +1060,10 @@ public class DTEDLayer extends Layer implements ActionListener,
 
     public boolean mouseReleased(MouseEvent e) {
         Projection projection = getProjection();
-        LatLonPoint ll = projection.inverse(e.getX(), e.getY());
+        Point2D ll = projection.inverse(e.getX(), e.getY());
         location = new DTEDLocation(e.getX(), e.getY());
-        location.setElevation(cache.getElevation(ll.getLatitude(),
-                ll.getLongitude()));
+        location.setElevation(cache.getElevation((float)ll.getY(),
+                (float)ll.getX()));
         location.generate(projection);
         repaint();
         return true;

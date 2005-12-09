@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCoverageManager.java,v $
 // $RCSfile: DTEDCoverageManager.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:54 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,15 +25,14 @@ package com.bbn.openmap.layer.dted;
 /*  Java Core  */
 import java.awt.Color;
 import java.awt.Paint;
+import java.awt.geom.Point2D;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
 
-/*  OpenMap  */
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.ProgressEvent;
 import com.bbn.openmap.event.ProgressListener;
 import com.bbn.openmap.event.ProgressSupport;
@@ -293,18 +292,18 @@ public class DTEDCoverageManager {
 
         int LineType;
 
-        LatLonPoint ul = proj.getUpperLeft();
-        LatLonPoint lr = proj.getLowerRight();
+        Point2D ul = proj.getUpperLeft();
+        Point2D lr = proj.getLowerRight();
 
-        int startx = (int) Math.floor(ul.getLongitude());
-        int endx = (int) Math.floor(lr.getLongitude());
+        int startx = (int) Math.floor(ul.getX());
+        int endx = (int) Math.floor(lr.getX());
         if (endx > 179)
             endx = 179;
         if (startx > 179)
             startx = 179;
 
-        int starty = (int) Math.floor(lr.getLatitude());
-        int endy = (int) Math.floor(ul.getLatitude());
+        int starty = (int) Math.floor(lr.getY());
+        int endy = (int) Math.floor(ul.getY());
         if (endy > 89)
             endy = 89;
         if (starty > 89)

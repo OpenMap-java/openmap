@@ -14,20 +14,20 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCacheManager.java,v $
 // $RCSfile: DTEDCacheManager.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/01/14 16:48:52 $
+// $Revision: 1.8 $
+// $Date: 2005/12/09 21:09:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.dted;
 
-import com.bbn.openmap.util.Debug;
+import java.awt.geom.Point2D;
 
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.EqualArc;
-import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The DTEDCacheManager is the object you need if you want to retrieve
@@ -235,15 +235,15 @@ public class DTEDCacheManager {
         int lat_minus = 2;
         int lon_minus = 2;
         // Set up checks for equator and dateline
-        LatLonPoint ll1 = proj.getUpperLeft();
-        LatLonPoint ll2 = proj.getLowerRight();
+        Point2D ll1 = proj.getUpperLeft();
+        Point2D ll2 = proj.getLowerRight();
 
-        lat[0] = ll1.getLatitude();
-        lon[0] = ll1.getLongitude();
-        lat[1] = ll2.getLatitude();
-        lon[1] = ll2.getLongitude();
-        lat[2] = ll2.getLatitude();
-        lon[2] = ll2.getLongitude();
+        lat[0] = (float)ll1.getY();
+        lon[0] = (float)ll1.getX();
+        lat[1] = (float)ll2.getY();
+        lon[1] = (float)ll2.getX();
+        lat[2] = (float)ll2.getY();
+        lon[2] = (float)ll2.getX();
 
         if (lon[0] > 0 && lon[2] < 0) {
             lon[1] = -179.999f; // put a little breather on the

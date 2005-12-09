@@ -16,9 +16,11 @@
 
 package com.bbn.openmap.examples.beanbox;
 
-import java.awt.*;
-import java.util.*;
-import java.beans.*;
+import java.awt.Image;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A BeanInfo for the {@link com.bbn.openmap.examples.beanbox.Fighter}

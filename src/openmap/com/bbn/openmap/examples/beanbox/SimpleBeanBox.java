@@ -16,16 +16,18 @@
 
 package com.bbn.openmap.examples.beanbox;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.*;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+import java.beans.BeanInfo;
+import java.util.Vector;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.SelectMouseMode;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMRasterObject;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.tools.beanbox.BeanBox;
 import com.bbn.openmap.tools.beanbox.BeanContainer;
 
@@ -168,10 +170,10 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
         Image img = beanInfo.getIcon(BeanInfo.ICON_COLOR_32x32);
         obj.setGraphicImage(img);
 
-        LatLonPoint llp = layer.getProjection().inverse(location.x, location.y);
+        Point2D llp = layer.getProjection().inverse(location.x, location.y);
 
-        obj.setLatitude(llp.getLatitude());
-        obj.setLongitude(llp.getLongitude());
+        obj.setLatitude((float)llp.getY());
+        obj.setLongitude((float)llp.getX());
 
         //System.out.println("Exit>
         // SimpleBeanBox.setBeanProperties");
@@ -222,7 +224,7 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
 
         float objLat = obj.getLatitude();
         float objLon = obj.getLongitude();
-        LatLonPoint llp = new LatLonPoint(objLat, objLon);
+        LatLonPoint llp = new LatLonPoint.Float(objLat, objLon);
 
         return findEnclosingContainer(llp);
     }
@@ -250,14 +252,14 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      * <code>LatLonPoint</code> is contained within the specified
      * <code>SimpleBeanContainer</code>.
      */
-    boolean encloses(SimpleBeanContainer container, LatLonPoint llp) {
+    boolean encloses(SimpleBeanContainer container, Point2D llp) {
 
         float topLat = container.getTopLatitude();
         float leftLon = container.getLeftLongitude();
         float botLat = container.getBottomLatitude();
         float rightLon = container.getRightLongitude();
-        float lat = llp.getLatitude();
-        float lon = llp.getLongitude();
+        float lat = (float)llp.getY();
+        float lon = (float)llp.getX();
 
         if ((lon > rightLon) || (lon < leftLon))
             return false;
@@ -277,7 +279,7 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      */
     BeanContainer findContainerBean(Point pointOnMap) {
         if (layer != null && layer.getProjection() != null) {
-            LatLonPoint llp = layer.getProjection().inverse(pointOnMap.x,
+            Point2D llp = layer.getProjection().inverse(pointOnMap.x,
                     pointOnMap.y);
             return findEnclosingContainer(llp);
         } else {
@@ -308,7 +310,7 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
                 continue;
 
             Point p2 = layer.getProjection()
-                    .forward(new LatLonPoint(obj.getLatitude(), obj.getLongitude()));
+                    .forward(new LatLonPoint.Float(obj.getLatitude(), obj.getLongitude()));
 
             double sep = almostEquals(pointOnMap, p2, 20);
 
@@ -383,7 +385,7 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
 
         SimpleBeanObject obj = (SimpleBeanObject) bean;
 
-        LatLonPoint llp = layer.getProjection().inverse(newLocation.x,
+        Point2D llp = layer.getProjection().inverse(newLocation.x,
                 newLocation.y);
 
         relocateSimpleBeanObject(obj, llp);
@@ -394,7 +396,7 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
     }
 
     /** relocates the specified SimpleBeanObject to the new location. */
-    void relocateSimpleBeanObject(SimpleBeanObject obj, LatLonPoint newllp) {
+    void relocateSimpleBeanObject(SimpleBeanObject obj, Point2D newllp) {
 
         SimpleBeanContainer oldContainer = null;
 
@@ -407,8 +409,8 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
         if (oldContainer != null)
             oldContainer.remove(obj);
 
-        obj.setLatitude(newllp.getLatitude());
-        obj.setLongitude(newllp.getLongitude());
+        obj.setLatitude((float)newllp.getY());
+        obj.setLongitude((float)newllp.getX());
 
         if (obj instanceof SimpleBeanContainer)
             ((SimpleBeanContainer) obj).validate();

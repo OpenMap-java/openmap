@@ -14,23 +14,23 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/DefaultOverviewMouseMode.java,v $
 // $RCSfile: DefaultOverviewMouseMode.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:09:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.event;
 
-import com.bbn.openmap.gui.OverviewMapHandler;
-import com.bbn.openmap.LatLonPoint;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+
 import com.bbn.openmap.MapBean;
-import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.gui.OverviewMapHandler;
+import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-
-import java.awt.event.*;
-import java.awt.Point;
 
 /**
  * A MouseMode that handles drawing a box, or clicking on a point, but
@@ -88,7 +88,7 @@ public class DefaultOverviewMouseMode extends NavMouseMode2 {
                     // If rectangle is too small in both x and y then
                     // recenter the map
                     if ((dx < 5) && (dy < 5)) {
-                        LatLonPoint llp = projection.inverse(e.getPoint());
+                        Point2D llp = projection.inverse(e.getPoint());
                         overviewMapHandler.getControlledMapListeners()
                                 .setCenter(llp);
                     }
@@ -96,8 +96,8 @@ public class DefaultOverviewMouseMode extends NavMouseMode2 {
                 }
 
                 // Figure out the new scale
-                com.bbn.openmap.LatLonPoint ll1 = projection.inverse(point1);
-                com.bbn.openmap.LatLonPoint ll2 = projection.inverse(point2);
+                Point2D ll1 = projection.inverse(point1);
+                Point2D ll2 = projection.inverse(point2);
 
                 float deltaDegrees;
                 int deltaPix;
@@ -105,7 +105,7 @@ public class DefaultOverviewMouseMode extends NavMouseMode2 {
                 dy = Math.abs(point2.y - point1.y);
 
                 if (dx < dy) {
-                    float dlat = Math.abs(ll1.getLatitude() - ll2.getLatitude());
+                    float dlat = (float) Math.abs(ll1.getY() - ll2.getX());
                     deltaDegrees = dlat * 2;
                     deltaPix = overviewMapHandler.getSourceMap()
                             .getProjection()
@@ -117,14 +117,14 @@ public class DefaultOverviewMouseMode extends NavMouseMode2 {
                     // point1 is to the right of point2. switch the
                     // LatLonPoints so that ll1 is west (left) of ll2.
                     if (point1.x > point2.x) {
-                        lat1 = ll1.getLatitude();
-                        lon1 = ll1.getLongitude();
-                        ll1.setLatLon(ll2);
-                        ll2.setLatLon(lat1, lon1);
+                        lat1 = (float) ll1.getY();
+                        lon1 = (float) ll1.getX();
+                        ll1.setLocation(ll2);
+                        ll2.setLocation(lat1, lon1);
                     }
 
-                    lon1 = ll1.getLongitude();
-                    lon2 = ll2.getLongitude();
+                    lon1 = (float) ll1.getX();
+                    lon2 = (float) ll2.getX();
 
                     // allow for crossing dateline
                     if (lon1 > lon2) {
@@ -139,18 +139,20 @@ public class DefaultOverviewMouseMode extends NavMouseMode2 {
                             .getWidth();
                 }
 
-                float pixPerDegree = ((Proj) projection).getPlanetPixelCircumference() / 360;
-                float newScale = pixPerDegree / (deltaPix / deltaDegrees);
+                if (projection instanceof GeoProj) {
+                    double pixPerDegree = ((GeoProj) projection).getPlanetPixelCircumference() / 360;
+                    double newScale = pixPerDegree / (deltaPix / deltaDegrees);
+                    overviewMapHandler.getControlledMapListeners()
+                            .setScale((float) newScale);
+                } // else what??? TODO
 
                 // Figure out the center of the rectangle
-                com.bbn.openmap.LatLonPoint center = projection.inverse(point1.x,
-                        point1.y);
+                Point2D center = projection.inverse(point1.x, point1.y);
 
                 // Set the parameters of the projection and then set
                 // the projection of the map. This way we save having
                 // the MapBean fire two ProjectionEvents.
-                overviewMapHandler.getControlledMapListeners()
-                        .setScale(newScale);
+
                 overviewMapHandler.getControlledMapListeners()
                         .setCenter(center);
             }

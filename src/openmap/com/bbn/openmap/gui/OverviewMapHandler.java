@@ -14,28 +14,60 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OverviewMapHandler.java,v $
 // $RCSfile: OverviewMapHandler.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.13 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.OverviewMapAreaLayer;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.*;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Insets;
+import java.awt.Paint;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.net.URL;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Vector;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+
+import com.bbn.openmap.BufferedMapBean;
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.LayerHandler;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.MapHandler;
+import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.event.DefaultOverviewMouseMode;
+import com.bbn.openmap.event.LayerEvent;
+import com.bbn.openmap.event.MapMouseMode;
+import com.bbn.openmap.event.OverviewMapStatusListener;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.event.ProjectionListener;
+import com.bbn.openmap.event.ProjectionSupport;
+import com.bbn.openmap.layer.OverviewMapAreaLayer;
+import com.bbn.openmap.proj.Mercator;
+import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.ProjectionFactory;
+import com.bbn.openmap.util.ComponentFactory;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The OverviewMapHandler contains a MapBean that contains a
@@ -73,34 +105,34 @@ import javax.swing.*;
  * the following properties to your openmap.properties file:
  * 
  * <pre>
- * 
- * 
- *  # First, add overviewMapHandler to the openmap.components marker name list.  Then, add:
- * 
- *  overviewMapHandler.class=com.bbn.opemap.gui.OverviewMapHandler
- *  overviewMapHandler.overviewLayers=overviewLayer
- *  overviewMapHandler.overviewScaleFactor=10f
- *  overviewMapHandler.overviewMinScale=10000000f
- * 
- *  # 'overviewStatusLayer' is a marker name for any attributes you may
- *  # want to pass to the overviewStatusLayer instance, in addition to
- *  # being used to define the class to use for that special layer.
- *  overviewMapHandler.overviewStatusLayer.class=com.bbn.openmap.layer.OverviewMapAreaLayer
- *  # Properties can be passed to the overview status layer by listing
- *  # them with the OverviewMapHandler prefix.
- * 
- *  # Set the line color for the coverage box outline...
- *  # overviewMapHandler.lineColor=FFFF0000
- * 
- *  # A sample overview map layer
- *  overviewLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
- *  overviewLayer.prettyName=Overview
- *  overviewLayer.shapeFile=/home/dietrick/dev/openmap/share/dcwpo-browse.shp
- *  overviewLayer.spatialIndex=/home/dietrick/dev/openmap/share/dcwpo-browse.ssx
- *  overviewLayer.lineColor=ff000000
- *  overviewLayer.fillColor=ffbdde83
- * 
  *  
+ *  
+ *   # First, add overviewMapHandler to the openmap.components marker name list.  Then, add:
+ *  
+ *   overviewMapHandler.class=com.bbn.opemap.gui.OverviewMapHandler
+ *   overviewMapHandler.overviewLayers=overviewLayer
+ *   overviewMapHandler.overviewScaleFactor=10f
+ *   overviewMapHandler.overviewMinScale=10000000f
+ *  
+ *   # 'overviewStatusLayer' is a marker name for any attributes you may
+ *   # want to pass to the overviewStatusLayer instance, in addition to
+ *   # being used to define the class to use for that special layer.
+ *   overviewMapHandler.overviewStatusLayer.class=com.bbn.openmap.layer.OverviewMapAreaLayer
+ *   # Properties can be passed to the overview status layer by listing
+ *   # them with the OverviewMapHandler prefix.
+ *  
+ *   # Set the line color for the coverage box outline...
+ *   # overviewMapHandler.lineColor=FFFF0000
+ *  
+ *   # A sample overview map layer
+ *   overviewLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
+ *   overviewLayer.prettyName=Overview
+ *   overviewLayer.shapeFile=/home/dietrick/dev/openmap/share/dcwpo-browse.shp
+ *   overviewLayer.spatialIndex=/home/dietrick/dev/openmap/share/dcwpo-browse.ssx
+ *   overviewLayer.lineColor=ff000000
+ *   overviewLayer.fillColor=ffbdde83
+ *  
+ *   
  * </pre>
  * 
  * <p>
@@ -339,14 +371,14 @@ public class OverviewMapHandler extends OMToolComponent implements
         if (projClass == null) {
             projClass = Mercator.class;
         }
-        
-        //  The scale, lat/lon and size shouldn't matter, because the
-        //  size will get reset when it is added to a component, and
-        //  the projection will change when it is added to a MapBean
-        //  as a projection listener.p
+
+        // The scale, lat/lon and size shouldn't matter, because the
+        // size will get reset when it is added to a component, and
+        // the projection will change when it is added to a MapBean
+        // as a projection listener.p
         return (Proj) ProjectionFactory.makeProjection(projClass,
-                Environment.getFloat(Environment.Latitude, 0f),
-                Environment.getFloat(Environment.Longitude, 0f),
+                new Point2D.Float(Environment.getFloat(Environment.Latitude, 0f), Environment.getFloat(Environment.Longitude,
+                        0f)),
                 Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY)
                         * scaleFactor,
                 INITIAL_WIDTH,
@@ -382,7 +414,7 @@ public class OverviewMapHandler extends OMToolComponent implements
         for (int i = 0; i < ncomponents; i++) {
             Layer layer = (Layer) comps[i];
             if (layer != statusLayer) { // Take care of the
-                                        // statusLayer later.
+                // statusLayer later.
                 layerList.append(" " + layer.getPropertyPrefix());
                 layer.getProperties(props);
             }
@@ -486,9 +518,9 @@ public class OverviewMapHandler extends OMToolComponent implements
             // this statement. Keeping commented code here for
             // reference in case behavior is weird. Seems to be
             // working as expected, though. DFD
-            //          if ((overviewWindowFrame != null &&
+            // if ((overviewWindowFrame != null &&
             // overviewWindowFrame.isShowing()) ||
-            //              (overviewWindow != null && overviewWindow.isShowing())
+            // (overviewWindow != null && overviewWindow.isShowing())
             // ||
 
             // Turns out non-tool overview maps weren't becoming
@@ -939,7 +971,7 @@ public class OverviewMapHandler extends OMToolComponent implements
          * 
          * @param llp the new centerpoint
          */
-        public void setCenter(LatLonPoint llp) {
+        public void setCenter(Point2D llp) {
             for (Iterator it = iterator(); it.hasNext();) {
                 ((MapBean) it.next()).setCenter(llp);
             }

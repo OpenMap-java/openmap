@@ -15,8 +15,8 @@ package com.bbn.openmap.event;
 import java.awt.Color;
 import java.awt.Transparency;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
@@ -72,20 +72,19 @@ public class ZoomMouseMode extends CoordMouseMode {
                     }
 
                     Projection proj = theMap.getProjection();
-                    LatLonPoint upperLeft = proj.inverse(squareUpperLeftX,
+                    Point2D upperLeft = proj.inverse(squareUpperLeftX,
                             squareUpperLeftY);
-                    LatLonPoint lowerRight = proj.inverse(squareUpperLeftX
+                    Point2D lowerRight = proj.inverse(squareUpperLeftX
                             + (int) (squareWidth), squareUpperLeftY
                             + (int) (squareHeight));
-                    LatLonPoint center = proj.inverse(squareCenterX,
+                    Point2D center = proj.inverse(squareCenterX,
                             squareCenterY);
                     double necessaryScale = proj.getScale(upperLeft,
                             lowerRight,
                             proj.forward(upperLeft),
                             proj.forward(lowerRight));
                     final Projection newProj = ProjectionFactory.makeProjection(Mercator.class,
-                            (float) center.getLatitude(),
-                            (float) center.getLongitude(),
+                            center,
                             (float) necessaryScale,
                             theMap.getWidth(),
                             theMap.getHeight());

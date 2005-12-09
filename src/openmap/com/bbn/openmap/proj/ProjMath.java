@@ -14,13 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjMath.java,v $
 // $RCSfile: ProjMath.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/02/11 22:37:16 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.proj;
+
+import java.awt.Point;
+import java.awt.geom.Point2D;
 
 import com.bbn.openmap.MoreMath;
 
@@ -120,7 +123,7 @@ public final class ProjMath {
      * 
      * @param deg degrees
      * @return long scoords
-     *  
+     * 
      */
     public final static long DEG_TO_SC(double deg) {
         return (long) (deg * 3600000);
@@ -143,7 +146,7 @@ public final class ProjMath {
      * @return double decimal degrees
      */
     public final static double radToDeg(double rad) {
-        return (rad * (180.0d / Math.PI));
+        return Math.toDegrees(rad);
     }
 
     /**
@@ -153,7 +156,7 @@ public final class ProjMath {
      * @return float decimal degrees
      */
     public final static float radToDeg(float rad) {
-        return (float) radToDeg((double)rad);
+        return (float) Math.toDegrees((double) rad);
     }
 
     /**
@@ -163,7 +166,7 @@ public final class ProjMath {
      * @return double radians
      */
     public final static double degToRad(double deg) {
-        return (deg * (Math.PI / 180.0d));
+        return Math.toRadians(deg);
     }
 
     /**
@@ -173,7 +176,7 @@ public final class ProjMath {
      * @return float radians
      */
     public final static float degToRad(float deg) {
-        return (float) degToRad((double)deg);
+        return (float) Math.toRadians((double) deg);
     }
 
     /**
@@ -182,16 +185,16 @@ public final class ProjMath {
      * @param lat latitude
      * @param lon longitude
      * @return int hashcode
-     *  
+     * 
      */
     public final static int hashLatLon(float lat, float lon) {
         if (lat == -0f)
-            lat = 0f;//handle negative zero (anything else?)
+            lat = 0f;// handle negative zero (anything else?)
         if (lon == -0f)
             lon = 0f;
         int tmp = Float.floatToIntBits(lat);
-        int hash = (tmp << 5) | (tmp >> 27);//rotate the lat bits
-        return hash ^ Float.floatToIntBits(lon);//XOR with lon
+        int hash = (tmp << 5) | (tmp >> 27);// rotate the lat bits
+        return hash ^ Float.floatToIntBits(lon);// XOR with lon
     }
 
     /**
@@ -251,6 +254,13 @@ public final class ProjMath {
     }
 
     /**
+     * @deprecated use normalizeLatitude instead.
+     */
+    public final static float normalize_latitude(float lat, float epsilon) {
+        return normalizeLatitude(lat, epsilon);
+    }
+
+    /**
      * Normalizes radian latitude. Normalizes latitude if at or
      * exceeds epsilon distance from a pole.
      * 
@@ -260,13 +270,20 @@ public final class ProjMath {
      * @see Proj#normalize_latitude(float)
      * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
      */
-    public final static float normalize_latitude(float lat, float epsilon) {
+    public final static float normalizeLatitude(float lat, float epsilon) {
         if (lat > NORTH_POLE_F - epsilon) {
             return NORTH_POLE_F - epsilon;
         } else if (lat < SOUTH_POLE_F + epsilon) {
             return SOUTH_POLE_F + epsilon;
         }
         return lat;
+    }
+
+    /**
+     * @deprecated use normalizeLatitude instead.
+     */
+    public final static double normalize_latitude(double lat, double epsilon) {
+        return normalizeLatitude(lat, epsilon);
     }
 
     /**
@@ -279,7 +296,7 @@ public final class ProjMath {
      * @see Proj#normalize_latitude(float)
      * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
      */
-    public final static double normalize_latitude(double lat, double epsilon) {
+    public final static double normalizeLatitude(double lat, double epsilon) {
         if (lat > NORTH_POLE_D - epsilon) {
             return NORTH_POLE_D - epsilon;
         } else if (lat < SOUTH_POLE_D + epsilon) {
@@ -289,13 +306,20 @@ public final class ProjMath {
     }
 
     /**
+     * @deprecated use wrapLongitde instead.
+     */
+    public final static float wrap_longitude(float lon) {
+        return wrapLongitude(lon);
+    }
+
+    /**
      * Sets radian longitude to something sane.
      * 
      * @param lon float longitude in radians
      * @return float longitude (-PI &lt;= lambda &lt; PI)
-     * @see com.bbn.openmap.LatLonPoint#wrap_longitude(float)
+     * @see com.bbn.openmap.LatLonPoint#wrapLongitude(float)
      */
-    public final static float wrap_longitude(float lon) {
+    public final static float wrapLongitude(float lon) {
         if ((lon < -DATELINE_F) || (lon > DATELINE_F)) {
             lon += DATELINE_F;
             lon = (lon % LON_RANGE_F);
@@ -305,13 +329,20 @@ public final class ProjMath {
     }
 
     /**
+     * @deprecated use wrapLongitde instead.
+     */
+    public final static double wrap_longitude(double lon) {
+        return wrapLongitude(lon);
+    }
+
+    /**
      * Sets radian longitude to something sane.
      * 
      * @param lon double longitude in radians
      * @return double longitude (-PI &lt;= lambda &lt; PI)
-     * @see #wrap_longitude(float)
+     * @see #wrapLongitude(float)
      */
-    public final static double wrap_longitude(double lon) {
+    public final static double wrapLongitude(double lon) {
         if ((lon < -DATELINE_D) || (lon > DATELINE_D)) {
             lon += DATELINE_D;
             lon = (lon % LON_RANGE_D);
@@ -349,6 +380,13 @@ public final class ProjMath {
     }
 
     /**
+     * @deprecated use geocentricLatitude instead.
+     */
+    public final static float geocentric_latitude(float lat, float lon) {
+        return geocentricLatitude(lat, lon);
+    }
+
+    /**
      * Calculate the geocentric latitude given a geographic latitude.
      * According to John Synder: <br>
      * "The geographic or geodetic latitude is the angle which a line
@@ -366,9 +404,16 @@ public final class ProjMath {
      * @return float geocentric latitude in radians
      * @see #geographic_latitude
      */
-    public final static float geocentric_latitude(float lat, float flat) {
+    public final static float geocentricLatitude(float lat, float flat) {
         float f = 1.0f - flat;
         return (float) Math.atan((f * f) * (float) Math.tan(lat));
+    }
+
+    /**
+     * @deprecated use geographicLoatitude instead.
+     */
+    public final static float geographic_latitude(float lat, float lon) {
+        return geographicLatitude(lat, lon);
     }
 
     /**
@@ -381,7 +426,7 @@ public final class ProjMath {
      * @return float geographic latitude in radians
      * @see #geocentric_latitude
      */
-    public final static float geographic_latitude(float lat, float flat) {
+    public final static float geographicLatitude(float lat, float flat) {
         float f = 1.0f - flat;
         return (float) Math.atan((float) Math.tan(lat) / (f * f));
     }
@@ -396,15 +441,13 @@ public final class ProjMath {
      * @param projection the projection to use for other projection
      *        parameters, like map width and map height.
      */
-    public static float getScale(com.bbn.openmap.LatLonPoint ll1,
-                                 com.bbn.openmap.LatLonPoint ll2,
-                                 Projection projection) {
+    public static float getScale(Point2D ll1, Point2D ll2, Projection projection) {
         if (projection == null) {
             return Float.MAX_VALUE;
         }
 
-        java.awt.Point point1 = projection.forward(ll1);
-        java.awt.Point point2 = projection.forward(ll2);
+        Point point1 = projection.forward(ll1);
+        Point point2 = projection.forward(ll2);
 
         return getScale(ll1, ll2, point1, point2, projection);
     }
@@ -423,15 +466,15 @@ public final class ProjMath {
      * @param projection the projection to use for other projection
      *        parameters, like map width and map height.
      */
-    public static float getScale(java.awt.Point point1, java.awt.Point point2,
+    public static float getScale(Point point1, Point point2,
                                  Projection projection) {
 
         if (projection == null) {
             return Float.MAX_VALUE;
         }
 
-        com.bbn.openmap.LatLonPoint ll1 = projection.inverse(point1);
-        com.bbn.openmap.LatLonPoint ll2 = projection.inverse(point2);
+        Point2D ll1 = projection.inverse(point1);
+        Point2D ll2 = projection.inverse(point2);
 
         return getScale(ll1, ll2, point1, point2, projection);
     }
@@ -452,10 +495,8 @@ public final class ProjMath {
      * @param projection the projection to use to query to get the
      *        scale for, for projection type and height and width.
      */
-    protected static float getScale(com.bbn.openmap.LatLonPoint ll1,
-                                    com.bbn.openmap.LatLonPoint ll2,
-                                    java.awt.Point point1,
-                                    java.awt.Point point2, Projection projection) {
+    protected static float getScale(Point2D ll1, Point2D ll2, Point point1,
+                                    Point point2, Projection projection) {
 
         return projection.getScale(ll1, ll2, point1, point2);
     }

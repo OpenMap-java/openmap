@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Proj.java,v $
 // $RCSfile: Proj.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/08/09 20:38:12 $
+// $Revision: 1.11 $
+// $Date: 2005/12/09 21:09:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,90 +24,56 @@ package com.bbn.openmap.proj;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Paint;
 import java.awt.Point;
-import java.awt.geom.Arc2D;
+import java.awt.Shape;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.bbn.openmap.Environment;
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.Debug;
 
 /**
  * Proj is the base class of all Projections.
  * <p>
- * You probably don't want to use this class unless you are hacking
- * your own projections, or need extended functionality. To be safe
- * you will want to use the Projection interface.
+ * You probably don't want to use this class unless you are hacking your own
+ * projections, or need extended functionality. To be safe you will want to use
+ * the Projection interface.
  * 
  * <h3>Notes:</h3>
  * 
  * <ul>
  * 
- * <li>We deal in radians internally. The outside world usually deals
- * in decimal degrees. If you have data in radians, DON'T bother
- * converting it into DD's since we'll convert it right back into
- * radians for the projection step. For more optimization tips, see
- * the OMPoly class.
+ * <li>There are no assumption made as to the units of the values provided to
+ * the projection, each projection type has its own interpretation of what the
+ * values are.
  * 
- * <li>We default to projecting our data using the WGS84 datum. You
- * can change the appropriate parameters of the projection after
- * construction if you need to use a different datum. And of course
- * you can derive your own projections from this class as you see fit.
+ * <li>The order of coordinate parameters changes, depending on the convention
+ * of the superclass object of the one being referred to. Coordinate tuples
+ * referring to projected coordinates are generally x, y, those referring to
+ * unprojected coordinates are y, x (lat/lon).
  * 
- * <li>The forward() and inverse() methods are currently implemented
- * using the algorithms given in John Synder's <i>Map Projections --A
- * Working Manual </i> for the sphere. This is sufficient for display
- * purposes, but you should use ellipsoidal algorithms in the
- * GreatCircle class to calculate distance and azimuths on the
- * ellipsoid. See each projection individually for more information.
+ * <li>This class is not thread safe. If two or more threads are using the same
+ * Proj, then they could disrupt each other. Occasionally you may need to call a
+ * <code>set</code> method of this class. This might interfere with another
+ * thread that's using the same projection for <code>forwardPoly</code> or
+ * another Projection interface method. In general, you should not need to call
+ * any of the <code>set</code> methods directly, but let the MapBean do it for
+ * you.
  * 
- * <li>This class is not thread safe. If two or more threads are
- * using the same Proj, then they could disrupt each other.
- * Occasionally you may need to call a <code>set</code> method of
- * this class. This might interfere with another thread that's using
- * the same projection for <code>forwardPoly</code> or another
- * Projection interface method. In general, you should not need to
- * call any of the <code>set</code> methods directly, but let the
- * MapBean do it for you.
- * 
- * <li>All the various <code>forwardOBJ()</code> methods for
- * ArrayList graphics ultimately go through <code>forwardPoly()</code>.
+ * <li>All the various <code>forwardOBJ()</code> methods for ArrayList
+ * graphics ultimately go through <code>forwardPoly()</code>.
  * 
  * </ul>
  * 
- * @see Projection
- * @see Cylindrical
- * @see Mercator
- * @see CADRG
- * @see Azimuth
- * @see Orthographic
- * @see Planet
- * @see GreatCircle
- * @see com.bbn.openmap.omGraphics.OMPoly
+ * @see Cartesian
+ * @see GeoProj
  * 
  */
-public abstract class Proj implements Projection, Cloneable {
-
-    // SOUTH_POLE <= phi <= NORTH_POLE (radians)
-    // -DATELINE <= lambda <= DATELINE (radians)
-
-    /**
-     * North pole latitude in radians.
-     */
-    public final static transient float NORTH_POLE = ProjMath.NORTH_POLE_F;
-
-    /**
-     * South pole latitude in radians.
-     */
-    public final static transient float SOUTH_POLE = ProjMath.SOUTH_POLE_F;
-
-    /**
-     * Dateline longitude in radians.
-     */
-    public final static transient float DATELINE = ProjMath.DATELINE_F;
+public abstract class Proj implements Projection, Cloneable, Serializable {
 
     /**
      * Minimum width of projection.
@@ -119,31 +85,13 @@ public abstract class Proj implements Projection, Cloneable {
      */
     public final static transient int MIN_HEIGHT = 10; // pixels
 
-    // Used for generating segments of ArrayList objects
-    protected static transient int NUM_DEFAULT_CIRCLE_VERTS = 64;
-    protected static transient int NUM_DEFAULT_GREAT_SEGS = 512;
-
-    // pixels per meter (an extra scaling factor).
-    protected int pixelsPerMeter = Planet.defaultPixelsPerMeter; // PPM
-    protected float planetRadius = Planet.wgs84_earthEquatorialRadiusMeters;// EARTH_RADIUS
-    protected float planetPixelRadius = planetRadius * pixelsPerMeter; // EARTH_PIX_RADIUS
-    protected float planetPixelCircumference = MoreMath.TWO_PI
-            * planetPixelRadius; // EARTH_PIX_CIRCUMFERENCE
-
     protected int width = 640, height = 480;
-    protected float minscale = 1.0f; // 1:minscale
-    protected float maxscale = (float) planetPixelCircumference / (float) width;// good
-    // for
-    // cylindrical
-    protected float scale = maxscale;
-    protected float scaled_radius = planetPixelRadius / scale;
-    protected float ctrLat = 0.0f; // center latitude in radians
-    protected float ctrLon = 0.0f; // center longitude in radians
-    protected int type = Mercator.MercatorType; // Mercator is default
-    protected String projID = null; // identifies this projection
-    protected Mercator mercator = null; // for rhumbline calculations
-
-    // (if needed)
+    protected double minscale = 1.0; // 1:minscale
+    protected double maxscale = Double.MAX_VALUE;
+    protected double scale = maxscale;
+    protected double centerX;
+    protected double centerY;
+    protected String projID = null; // identifies this projection (if needed)
 
     /**
      * Construct a projection.
@@ -155,88 +103,21 @@ public abstract class Proj implements Projection, Cloneable {
      * @param type projection type
      * @see ProjectionFactory
      */
-    public Proj(LatLonPoint center, float s, int w, int h, int type) {
+    public Proj(Point2D center, float s, int w, int h) {
         if (Debug.debugging("proj")) {
             Debug.output("Proj()");
         }
 
-        this.type = type;
         setParms(center, s, w, h);
         projID = null;
 
-        // for rhumbline projecting
-        if (!(this instanceof Mercator)) {
-            mercator = new Mercator(center, scale, width, height);
-        }
-    }
-
-    /**
-     * Set the pixels per meter constant.
-     * 
-     * @param ppm int Pixels Per Meter scale-factor constant
-     */
-    public void setPPM(int ppm) {
-        pixelsPerMeter = ppm;
-        if (pixelsPerMeter < 1) {
-            pixelsPerMeter = 1;
-        }
-        computeParameters();
-    }
-
-    /**
-     * Get the pixels-per-meter constant.
-     * 
-     * @return int Pixels Per Meter scale-factor constant
-     */
-    public int getPPM() {
-        return pixelsPerMeter;
-    }
-
-    /**
-     * Set the planet radius.
-     * 
-     * @param radius float planet radius in meters
-     */
-    public void setPlanetRadius(float radius) {
-        planetRadius = radius;
-        if (planetRadius < 1.0f) {
-            planetRadius = 1.0f;
-        }
-        computeParameters();
-    }
-
-    /**
-     * Get the planet radius.
-     * 
-     * @return float radius of planet in meters
-     */
-    public float getPlanetRadius() {
-        return planetRadius;
-    }
-
-    /**
-     * Get the planet pixel radius.
-     * 
-     * @return float radius of planet in pixels
-     */
-    public float getPlanetPixelRadius() {
-        return planetPixelRadius;
-    }
-
-    /**
-     * Get the planet pixel circumference.
-     * 
-     * @return float circumference of planet in pixels
-     */
-    public float getPlanetPixelCircumference() {
-        return planetPixelCircumference;
     }
 
     /**
      * Set the scale of the projection.
      * <p>
-     * Sets the projection to the scale 1:s iff minscale &lt; s &lt;
-     * maxscale. <br>
+     * Sets the projection to the scale 1:s iff minscale &lt; s &lt; maxscale.
+     * <br>
      * If s &lt; minscale, sets the projection to minscale. <br>
      * If s &gt; maxscale, sets the projection to maxscale. <br>
      * 
@@ -296,59 +177,72 @@ public abstract class Proj implements Projection, Cloneable {
     /**
      * Get the scale of the projection.
      * 
-     * @return float scale value
+     * @return double scale value
      */
     public float getScale() {
-        return scale;
+        return (float) scale;
     }
 
     /**
      * Get the maximum scale of the projection.
      * 
-     * @return float max scale value
+     * @return double max scale value
      */
     public float getMaxScale() {
-        return maxscale;
+        return (float) maxscale;
     }
 
     /**
      * Get minimum scale of the projection.
      * 
-     * @return float min scale value
+     * @return double min scale value
      */
     public float getMinScale() {
-        return minscale;
+        return (float) minscale;
     }
 
     /**
      * Set center point of projection.
      * 
-     * @param lat float latitude in decimal degrees
-     * @param lon float longitude in decimal degrees
+     * @param pt Point2D for center. Point2D values will be copied.
      */
-    public void setCenter(float lat, float lon) {
-        ctrLat = normalize_latitude(ProjMath.degToRad(lat));
-        ctrLon = wrap_longitude(ProjMath.degToRad(lon));
+    public void setCenter(Point2D pt) {
+        setCenter(pt.getY(), pt.getX());
+    }
+
+    /**
+     * Set center point of projection.
+     * 
+     * @param y vertical value of center.
+     * @param x horizontal value of center.
+     */
+    public void setCenter(double y, double x) {
+        // Since we need to re-run computeParameters and the projID,
+        // we better make a clone of the center, so whoever sets the
+        // center can't change it by simply changing the center's
+        // parameters without recalculating the parameters.
+        centerX = x;
+        centerY = y;
         computeParameters();
         projID = null;
     }
 
     /**
-     * Set center point of projection.
+     * Get center point of projection.
      * 
-     * @param pt LatLonPoint
+     * @return Point2D center of projection, created just for you.
      */
-    public void setCenter(LatLonPoint pt) {
-        setCenter(pt.getLatitude(), pt.getLongitude());
+    public Point2D getCenter() {
+        return new Point2D.Double(centerX, centerY);
     }
 
     /**
-     * Get center point of projection.
-     * 
-     * @return LatLonPoint center of projection
+     * Returns a center Point2D that was provided, with the location filled into
+     * the Point2D object. Calls Point2D.setLocation(x, y).
      */
-    public LatLonPoint getCenter() {
-        return new LatLonPoint(ctrLat, ctrLon, true);
+    public Point2D getCenter(Point2D center) {
+        center.setLocation(centerX, centerY);
+        return center;
     }
 
     /**
@@ -409,12 +303,13 @@ public abstract class Proj implements Projection, Cloneable {
      * @param width width of screen
      * @param height height of screen
      */
-    protected void setParms(LatLonPoint center, float scale, int width,
-                            int height) {
-        ctrLat = normalize_latitude(center.radlat_);
-        ctrLon = wrap_longitude(center.radlon_);
-
+    protected void setParms(Point2D center, float scale, int width, int height) {
+        centerX = center.getX();
+        centerY = center.getY();
         this.scale = scale;
+
+        init();
+
         if (this.scale < minscale) {
             this.scale = minscale;
         } else if (this.scale > maxscale) {
@@ -436,21 +331,24 @@ public abstract class Proj implements Projection, Cloneable {
     }
 
     /**
-     * Gets the projection type.
-     * 
-     * @return int projection type
+     * Called after the center and scale is set in setParams, but before the
+     * scale is checked for legitimacy. This is an opportunity to set constants
+     * in subclasses before anything else gets called or checked for validity.
+     * This is different than computeParameters() which is called after some
+     * checks. This is a good time to pre-calculate constants and set maxscale
+     * and minscale.
+     * <P>
+     * Make sure you call super.init() if you override this method.
      */
-    public int getProjectionType() {
-        return type;
-    }
+    protected void init() {}
 
     /**
-     * Sets the projection ID used for determining equality. The
-     * projection ID String is intern()ed for efficient comparison.
+     * Sets the projection ID used for determining equality. The projection ID
+     * String is intern()ed for efficient comparison.
      */
     protected void setProjectionID() {
-        projID = (":" + type + ":" + scale + ":" + ctrLat + ":" + ctrLon + ":"
-                + width + ":" + height + ":").intern();
+        projID = (getClass().getName() + ":" + scale + ":" + centerX + ":"
+                + centerY + ":" + width + ":" + height + ":").intern();
     }
 
     /**
@@ -467,35 +365,11 @@ public abstract class Proj implements Projection, Cloneable {
     /**
      * Called when some fundamental parameters change.
      * <p>
-     * Each projection will decide how to respond to this change. For
-     * instance, they may need to recalculate "constant" paramters
-     * used in the forward() and inverse() calls.
+     * Each projection will decide how to respond to this change. For instance,
+     * they may need to recalculate "constant" paramters used in the forward()
+     * and inverse() calls.
      */
     protected abstract void computeParameters();
-
-    /**
-     * Sets radian latitude to something sane.
-     * <p>
-     * Normalizes the latitude according to the particular projection.
-     * 
-     * @param lat float latitude in radians
-     * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
-     * @see ProjMath#normalize_latitude(float, float)
-     * @see LatLonPoint#normalize_latitude(float)
-     */
-    public abstract float normalize_latitude(float lat);
-
-    /**
-     * Sets radian longitude to something sane.
-     * 
-     * @param lon float longitude in radians
-     * @return float longitude (-PI &lt;= x &lt; PI)
-     * @see ProjMath#wrap_longitude(float)
-     * @see LatLonPoint#wrap_longitude(float)
-     */
-    public final static float wrap_longitude(float lon) {
-        return ProjMath.wrap_longitude(lon);
-    }
 
     /**
      * Stringify the projection.
@@ -504,11 +378,9 @@ public abstract class Proj implements Projection, Cloneable {
      * @see #getProjectionID
      */
     public String toString() {
-        return (" radius=" + planetRadius + " ppm=" + pixelsPerMeter
-                + " center(" + ProjMath.radToDeg(ctrLat) + ","
-                + ProjMath.radToDeg(ctrLon) + ") scale=" + scale + " maxscale="
-                + maxscale + " minscale=" + minscale + " width=" + width
-                + " height=" + height + "]");
+        return (" center(" + centerX + ":" + centerY + ") scale=" + scale
+                + " maxscale=" + maxscale + " minscale=" + minscale + " width="
+                + width + " height=" + height + "]");
     }
 
     /**
@@ -550,29 +422,11 @@ public abstract class Proj implements Projection, Cloneable {
      */
     public Object clone() {
         try {
-            Proj proj = (Proj) super.clone();
-            if (mercator != null) {
-                proj.mercator = (Mercator) mercator.clone();
-            }
-            return proj;
+            return (Proj) super.clone();
         } catch (CloneNotSupportedException e) {
             // this shouldn't happen, since we are Cloneable
             throw new InternalError();
         }
-    }
-
-    /**
-     * Checks if a LatLonPoint is plot-able.
-     * <p>
-     * Call this to check and see if a LatLonPoint can be plotted.
-     * This is meant to be used for checking before projecting and
-     * rendering Point objects (bitmaps for instance).
-     * 
-     * @param llpoint LatLonPoint
-     * @return boolean
-     */
-    public boolean isPlotable(LatLonPoint llpoint) {
-        return isPlotable(llpoint.getLatitude(), llpoint.getLongitude());
     }
 
     /**
@@ -583,8 +437,19 @@ public abstract class Proj implements Projection, Cloneable {
      * @param llp LatLonPoint to be projected
      * @return Point (new)
      */
-    public final Point forward(LatLonPoint llp) {
-        return forward(llp.radlat_, llp.radlon_, new Point(0, 0), true);
+    public Point forward(Point2D llp) {
+        return forward(llp.getY(), llp.getX(), new Point());
+    }
+
+    /**
+     * Forward projects a LatLonPoint into XY space and return a Point.
+     * 
+     * @param llp LatLonPoint to be projected
+     * @param pt Resulting XY Point
+     * @return Point pt
+     */
+    public Point forward(Point2D llp, Point pt) {
+        return forward(llp.getY(), llp.getX(), pt);
     }
 
     /**
@@ -594,8 +459,22 @@ public abstract class Proj implements Projection, Cloneable {
      * @param lon float longitude in decimal degrees
      * @return Point (new)
      */
-    public final Point forward(float lat, float lon) {
-        return forward(lat, lon, new Point(0, 0));
+    public Point forward(float lat, float lon) {
+        return forward((double) lat, (double) lon, new Point());
+    }
+
+    public Point forward(float lat, float lon, Point pt) {
+        return forward((double) lat, (double) lon, pt);
+    }
+
+    public Point forward(double lat, double lon) {
+        return forward(lat, lon, new Point());
+    }
+
+    public abstract Point forward(double lat, double lon, Point pt);
+
+    public Point2D inverse(Point point, Point2D llpt) {
+        return inverse(point.x, point.y, llpt);
     }
 
     /**
@@ -604,8 +483,8 @@ public abstract class Proj implements Projection, Cloneable {
      * @param point x,y Point
      * @return LatLonPoint (new)
      */
-    public final LatLonPoint inverse(Point point) {
-        return inverse(point, new LatLonPoint());
+    public Point2D inverse(Point point) {
+        return inverse(point.x, point.y, new Point2D.Double());
     }
 
     /**
@@ -616,32 +495,136 @@ public abstract class Proj implements Projection, Cloneable {
      * @return LatLonPoint (new)
      * @see #inverse(Point)
      */
-    public final LatLonPoint inverse(int x, int y) {
-        return inverse(x, y, new LatLonPoint());
+    public Point2D inverse(int x, int y) {
+        return inverse(x, y, new Point2D.Double());
+    }
+
+    public abstract Point2D inverse(int x, int y, Point2D llpt);
+
+    /**
+     * Simple shape projection, doesn't take into account what kind of lines
+     * should be drawn between shape points, assumes they should be 2D lines as
+     * rendered in 2D space, not interpolated for accuracy as Great Circle/Rhumb
+     * lines on a globe..
+     */
+    public Shape forwardShape(Shape shape) {
+        PathIterator pi = shape.getPathIterator(null);
+        double[] coords = new double[6];
+        Point2D world = new Point2D.Double();
+        Point2D world2 = new Point2D.Double();
+        Point2D world3 = new Point2D.Double();
+        Point screen = new Point();
+        Point screen2 = new Point();
+        Point screen3 = new Point();
+
+        GeneralPath path = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+
+        while (!pi.isDone()) {
+            int type = pi.currentSegment(coords);
+
+            world.setLocation(coords[0], coords[1]);
+            forward(world, screen);
+
+            if (type == PathIterator.SEG_MOVETO) {
+                path.moveTo(screen.x, screen.y);
+            } else if (type == PathIterator.SEG_LINETO) {
+                path.lineTo(screen.x, screen.y);
+            } else if (type == PathIterator.SEG_CLOSE) {
+                path.closePath();
+            } else {
+                world2.setLocation(coords[2], coords[3]);
+                forward(world2, screen2);
+                if (type == PathIterator.SEG_QUADTO) {
+                    path.quadTo(screen.x, screen.y, screen2.x, screen2.y);
+                } else if (type == PathIterator.SEG_CUBICTO) {
+                    world3.setLocation(coords[4], coords[5]);
+                    forward(world3, screen3);
+                    path.curveTo(screen.x,
+                            screen.y,
+                            screen2.x,
+                            screen2.y,
+                            screen3.x,
+                            screen3.y);
+                }
+            }
+
+            pi.next();
+        }
+
+        return path;
     }
 
     /**
-     * Forward project a line.
+     * Forward project a raw array of points. This assumes nothing about the
+     * array of coordinates. In no way does it assume the points are connected
+     * or that the composite figure is to be filled.
+     * <p>
+     * It does populate a visible array indicating whether the points are
+     * visible on the projected view of the world.
+     * <p>
      * 
-     * @param ll1 LatLonPoint
-     * @param ll2 LatLonPoint
-     * @param ltype LineType
-     * @param nsegs number of segments
-     * @return ArrayList
+     * @param rawllpts array of y, x world coordinates.
+     * @param rawoff offset into rawllpts.
+     * @param xcoords x projected horzontal map coordinates.
+     * @param ycoords y projected vertical map coordinates.
+     * @param visible coordinates visible?
+     * @param copyoff offset into x,y visible arrays.
+     * @param copylen number of coordinates (coordinate arrays should be at
+     *        least this long, rawllpts should be at least twice as long).
+     * @return boolean true if all points visible, false if some points not
+     *         visible.
      */
-    public ArrayList forwardLine(LatLonPoint ll1, LatLonPoint ll2, int ltype,
-                                 int nsegs) {
-        float[] rawllpts = { ll1.radlat_, ll1.radlon_, ll2.radlat_, ll2.radlon_ };
-        return forwardPoly(rawllpts, ltype, nsegs, false);
+    public boolean forwardRaw(float[] rawllpts, int rawoff, int[] xcoords,
+                              int[] ycoords, boolean[] visible, int copyoff,
+                              int copylen) {
+        Point temp = new Point();
+        int end = copylen + copyoff;
+        for (int i = copyoff, j = rawoff; i < end; i++, j += 2) {
+            forward(rawllpts[j], rawllpts[j + 1], temp);
+            xcoords[i] = temp.x;
+            ycoords[i] = temp.y;
+            visible[i] = true;
+        }
+        return true;
     }
 
     /**
-     * Forward project a lat/lon Line.
+     * Forward project a raw array of points. This assumes nothing about the
+     * array of coordinates. In no way does it assume the points are connected
+     * or that the composite figure is to be filled.
+     * <p>
+     * It does populate a visible array indicating whether the points are
+     * visible on the projected view of the world.
+     * <p>
      * 
-     * @see #forwardLine(LatLonPoint, LatLonPoint, int, int)
+     * @param rawllpts array of y, x world coordinates.
+     * @param rawoff offset into rawllpts.
+     * @param xcoords x projected horzontal map coordinates.
+     * @param ycoords y projected vertical map coordinates.
+     * @param visible coordinates visible?
+     * @param copyoff offset into x,y visible arrays.
+     * @param copylen number of coordinates (coordinate arrays should be at
+     *        least this long, rawllpts should be at least twice as long).
+     * @return boolean true if all points visible, false if some points not
+     *         visible.
      */
-    public ArrayList forwardLine(LatLonPoint ll1, LatLonPoint ll2, int ltype) {
-        return forwardLine(ll1, ll2, ltype, -1);
+    public boolean forwardRaw(double[] rawllpts, int rawoff, int[] xcoords,
+                              int[] ycoords, boolean[] visible, int copyoff,
+                              int copylen) {
+        Point temp = new Point();
+        int end = copylen + copyoff;
+        for (int i = copyoff, j = rawoff; i < end; i++, j += 2) {
+            forward(rawllpts[j], rawllpts[j + 1], temp);
+            xcoords[i] = temp.x;
+            ycoords[i] = temp.y;
+            visible[i] = true;
+        }
+        return true;
+    }
+
+    public ArrayList forwardLine(Point2D ll1, Point2D ll2) {
+        double[] rawllpts = { ll1.getY(), ll1.getX(), ll2.getY(), ll2.getX() };
+        return forwardPoly(rawllpts, false);
     }
 
     /**
@@ -649,564 +632,85 @@ public abstract class Proj implements Projection, Cloneable {
      * 
      * @param ll1 LatLonPoint
      * @param ll2 LatLonPoint
-     * @param ltype LineType
-     * @param nsegs number of segments
-     * @param isFilled filled poly?
      * @return ArrayList
      */
-    public ArrayList forwardRect(LatLonPoint ll1, LatLonPoint ll2, int ltype,
-                                 int nsegs, boolean isFilled) {
-        float[] rawllpts = { ll1.radlat_, ll1.radlon_, ll1.radlat_,
-                ll2.radlon_, ll2.radlat_, ll2.radlon_, ll2.radlat_,
-                ll1.radlon_,
+    public ArrayList forwardRect(Point2D ll1, Point2D ll2) {
+        double[] rawllpts = { ll1.getY(), ll1.getX(), ll1.getY(), ll2.getX(),
+                ll2.getY(), ll2.getX(), ll2.getY(), ll1.getX(),
                 // connect:
-                ll1.radlat_, ll1.radlon_ };
-        return forwardPoly(rawllpts, ltype, nsegs, isFilled);
+                ll1.getY(), ll1.getX() };
+        return forwardPoly(rawllpts, true);
     }
 
-    public ArrayList forwardRect(LatLonPoint ll1, LatLonPoint ll2, int ltype,
-                                 int nsegs) {
-        return forwardRect(ll1, ll2, ltype, nsegs, false);
-    }
+    public ArrayList forwardPoly(float[] rawllpts, boolean isFilled) {
+        // For regular OMGraphics, some of the rawllpts are in radians and must
+        // be translated into decimal degrees before they really are able to be
+        // displayed here, i.e.:
+        // wx = Math.toDegrees(wx);
+        // wy = Math.toDegrees(wy);
 
-    /**
-     * Forward project a lat/lon Rectangle.
-     * 
-     * @see #forwardRect(LatLonPoint, LatLonPoint, int, int)
-     */
-    public ArrayList forwardRect(LatLonPoint ll1, LatLonPoint ll2, int ltype) {
-        return forwardRect(ll1, ll2, ltype, -1, false);
-    }
+        int n, k;
 
-    /**
-     * Forward project an arc.
-     * 
-     * @param c LatLonPoint center
-     * @param radians boolean radius in radians?
-     * @param radius radius in radians or decimal degrees
-     * @param start the starting angle of the arc, zero being North
-     *        up. Units are dependent on radians parameter - the start
-     *        paramter is in radians if radians equals true, decimal
-     *        degrees if not.
-     * @param extent the angular extent angle of the arc, zero being
-     *        no length. Units are dependent on radians parameter -
-     *        the extent paramter is in radians if radians equals
-     *        true, decimal degrees if not.
-     */
-    public ArrayList forwardArc(LatLonPoint c, boolean radians, float radius,
-                                float start, float extent) {
-        return forwardArc(c,
-                radians,
-                radius,
-                -1,
-                start,
-                extent,
-                java.awt.geom.Arc2D.OPEN);
-    }
-
-    public ArrayList forwardArc(LatLonPoint c, boolean radians, float radius,
-                                int nverts, float start, float extent) {
-        return forwardArc(c,
-                radians,
-                radius,
-                nverts,
-                start,
-                extent,
-                java.awt.geom.Arc2D.OPEN);
-    }
-
-    /**
-     * Forward project a Lat/Lon Arc.
-     * <p>
-     * Arcs have the same restrictions as <a
-     * href="#poly_restrictions"> polys </a>.
-     * 
-     * @param c LatLonPoint center of circle
-     * @param radians radius in radians or decimal degrees?
-     * @param radius radius of circle (0 &lt; radius &lt; 180)
-     * @param nverts number of vertices of the circle poly.
-     * @param start the starting angle of the arc, zero being North
-     *        up. Units are dependent on radians parameter - the start
-     *        paramter is in radians if radians equals true, decimal
-     *        degrees if not.
-     * @param extent the angular extent angle of the arc, zero being
-     *        no length. Units are dependent on radians parameter -
-     *        the extent paramter is in radians if radians equals
-     *        true, decimal degrees if not.
-     * @param arcType type of arc to create - see java.awt.geom.Arc2D
-     *        for (OPEN, CHORD, PIE). Arc2D.OPEN means that the just
-     *        the points for the curved edge will be provided.
-     *        Arc2D.PIE means that addition lines from the edge of the
-     *        curve to the center point will be added. Arc2D.CHORD
-     *        means a single line from each end of the curve will be
-     *        drawn.
-     */
-    public ArrayList forwardArc(LatLonPoint c, boolean radians, float radius,
-                                int nverts, float start, float extent,
-                                int arcType) {
-        // HACK-need better decision for number of vertices.
-        if (nverts < 3)
-            nverts = NUM_DEFAULT_CIRCLE_VERTS;
-
-        float[] rawllpts;
-
-        switch (arcType) {
-        case Arc2D.PIE:
-            rawllpts = new float[(nverts << 1) + 4];// *2 for pairs +4
-            // connect
-            break;
-        case Arc2D.CHORD:
-            rawllpts = new float[(nverts << 1) + 2];// *2 for pairs +2
-            // connect
-            break;
-        default:
-            rawllpts = new float[(nverts << 1)];// *2 for pairs, no
-        // connect
-        }
-
-        GreatCircle.earth_circle(c.radlat_, c.radlon_, (radians) ? radius
-                : ProjMath.degToRad(radius), (radians) ? start
-                : ProjMath.degToRad(start), (radians) ? extent
-                : ProjMath.degToRad(extent), nverts, rawllpts);
-
-        int linetype = LineType.Straight;
-        boolean isFilled = false;
-
-        switch (arcType) {
-        case Arc2D.PIE:
-            rawllpts[rawllpts.length - 4] = c.radlat_;
-            rawllpts[rawllpts.length - 3] = c.radlon_;
-        case Arc2D.CHORD:
-            rawllpts[rawllpts.length - 2] = rawllpts[0];
-            rawllpts[rawllpts.length - 1] = rawllpts[1];
-            // Need to do this for the sides, not the arc part.
-            linetype = LineType.GreatCircle;
-            isFilled = true;
-            break;
-        default:
-        // Don't need to do anything, defaults are already set.
-        }
-
-        // forward project the arc-poly.
-        return forwardPoly(rawllpts, linetype, -1, isFilled);
-    }
-
-    /**
-     * Forward project a circle.
-     * 
-     * @param c LatLonPoint center
-     * @param radians boolean radius in radians?
-     * @param radius radius in radians or decimal degrees
-     */
-    public ArrayList forwardCircle(LatLonPoint c, boolean radians, float radius) {
-        return forwardCircle(c, radians, radius, -1, false);
-    }
-
-    public ArrayList forwardCircle(LatLonPoint c, boolean radians,
-                                   float radius, int nverts) {
-        return forwardCircle(c, radians, radius, nverts, false);
-    }
-
-    /**
-     * Forward project a Lat/Lon Circle.
-     * <p>
-     * Circles have the same restrictions as <a
-     * href="#poly_restrictions"> polys </a>.
-     * 
-     * @param c LatLonPoint center of circle
-     * @param radians radius in radians or decimal degrees?
-     * @param radius radius of circle (0 &lt; radius &lt; 180)
-     * @param nverts number of vertices of the circle poly.
-     * @param isFilled filled poly?
-     */
-    public ArrayList forwardCircle(LatLonPoint c, boolean radians,
-                                   float radius, int nverts, boolean isFilled) {
-        // HACK-need better decision for number of vertices.
-        if (nverts < 3)
-            nverts = NUM_DEFAULT_CIRCLE_VERTS;
-
-        float[] rawllpts = new float[(nverts << 1) + 2];// *2 for
-        // pairs +2
-        // connect
-        GreatCircle.earth_circle(c.radlat_, c.radlon_, (radians) ? radius
-                : ProjMath.degToRad(radius), nverts, rawllpts);
-        // connect the vertices.
-        rawllpts[rawllpts.length - 2] = rawllpts[0];
-        rawllpts[rawllpts.length - 1] = rawllpts[1];
-
-        // forward project the circle-poly
-        return forwardPoly(rawllpts, LineType.Straight, -1, isFilled);
-    }
-
-    // HACK
-    protected transient static int XTHRESHOLD = 16384;// half range
-    protected transient int XSCALE_THRESHOLD = 1000000;// dynamically
-
-    // calculated
-
-    public ArrayList forwardPoly(float[] rawllpts, int ltype, int nsegs) {
-        return forwardPoly(rawllpts, ltype, nsegs, false);
-    }
-
-    /**
-     * Forward project a lat/lon Poly.
-     * <p>
-     * Delegates to _forwardPoly(), and may do additional clipping for
-     * Java XWindows problem. Remember to specify vertices in radians!
-     * 
-     * @param rawllpts float[] of lat,lon,lat,lon,... in RADIANS!
-     * @param ltype line type (straight, rhumbline, greatcircle)
-     * @param nsegs number of segment points (only for greatcircle or
-     *        rhumbline line types, and if &lt; 1, this value is
-     *        generated internally)
-     * @param isFilled filled poly?
-     * @return ArrayList of x[], y[], x[], y[], ... projected poly
-     * @see #forwardRaw
-     * @see LineType#Straight
-     * @see LineType#Rhumb
-     * @see LineType#GreatCircle
-     */
-    public ArrayList forwardPoly(float[] rawllpts, int ltype, int nsegs,
-                                 boolean isFilled) {
-        ArrayList stuff = _forwardPoly(rawllpts, ltype, nsegs, isFilled);
-        // @HACK: workaround XWindows bug. simple clip to a boundary.
-        // this is ugly.
-        if (Environment.doingXWindowsWorkaround && (scale <= XSCALE_THRESHOLD)) {
-            int i, j, size = stuff.size();
-            int[] xpts, ypts;
-            for (i = 0; i < size; i += 2) {
-                xpts = (int[]) stuff.get(i);
-                ypts = (int[]) stuff.get(i + 1);
-                for (j = 0; j < xpts.length; j++) {
-                    if (xpts[j] <= -XTHRESHOLD) {
-                        xpts[j] = -XTHRESHOLD;
-                    } else if (xpts[j] >= XTHRESHOLD) {
-                        xpts[j] = XTHRESHOLD;
-                    }
-                    if (ypts[j] <= -XTHRESHOLD) {
-                        ypts[j] = -XTHRESHOLD;
-                    } else if (ypts[j] >= XTHRESHOLD) {
-                        ypts[j] = XTHRESHOLD;
-                    }
-                }
-                stuff.set(i, xpts);
-                stuff.set(i + 1, ypts);
-            }
-        }
-        return stuff;
-    }
-
-    /**
-     * Forward project a lat/lon Poly. Remember to specify vertices in
-     * radians!
-     * 
-     * @param rawllpts float[] of lat,lon,lat,lon,... in RADIANS!
-     * @param ltype line type (straight, rhumbline, greatcircle)
-     * @param nsegs number of segment points (only for greatcircle or
-     *        rhumbline line types, and if &lt; 1, this value is
-     *        generated internally)
-     * @param isFilled filled poly?
-     * @return ArrayList of x[], y[], x[], y[], ... projected poly
-     */
-    protected abstract ArrayList _forwardPoly(float[] rawllpts, int ltype,
-                                              int nsegs, boolean isFilled);
-
-    /**
-     * Forward project a rhumbline poly.
-     * <p>
-     * Draws rhumb lines between vertices of poly. Remember to specify
-     * vertices in radians! Check in-code comments for details about
-     * the algorithm.
-     * 
-     * @param rawllpts float[] of lat,lon,lat,lon,... in RADIANS!
-     * @param nsegs number of segments to draw for greatcircle or
-     *        rhumb lines (if &lt; 1, this value is generated
-     *        internally).
-     * @param isFilled filled poly?
-     * @return ArrayList of x[], y[], x[], y[], ... projected poly
-     * @see Projection#forwardPoly(float[], int, int, boolean)
-     */
-    protected ArrayList forwardRhumbPoly(float[] rawllpts, int nsegs,
-                                         boolean isFilled) {
-
-        // IDEA:
-        // Rhumblines are straight in the Mercator projection.
-        // So we can use the Mercator projection to calculate
-        // vertices along the rhumbline between two points. But
-        // if there's a better way to calculate loxodromes,
-        // someone please chime in (openmap@bbn.com)...
-        //
-        // ALG:
-        // Project pairs of vertices through the Mercator
-        // projection into screen XY space, pick intermediate
-        // segment points along the straight XY line, then
-        // convert all vertices back into LatLon space. Pass the
-        // augmented vertices to _forwardPoly() to be drawn as
-        // straight segments.
-        //
-        // WARNING:
-        // The algorithm fixes the Cylindrical-wrapping
-        // problem, and thus duplicates some code in
-        // Cylindrical._forwardPoly()
-        //
-        if (this instanceof Mercator) {// simple
-            return _forwardPoly(rawllpts, LineType.Straight, nsegs, isFilled);
-        }
-
-        int i, n, xp, flag = 0, xadj = 0, totalpts = 0;
-        Point from = new Point(0, 0);
-        Point to = new Point(0, 0);
-        LatLonPoint llp = null;
-        int len = rawllpts.length;
-
-        float[][] augllpts = new float[len >>> 1][0];
-
-        // lock access to object global, since this is probably not
-        // cloned and different layers may be accessing this.
-        // synchronized (mercator) {
-
-        // we now create a clone of the mercator variable in
-        // makeClone(), so since different objects should be using
-        // their clone instead of the main projection, the
-        // synchronization should be unneeded.
-
-        // use mercator projection to calculate rhumblines.
-        // mercator.setParms(
-        // new LatLonPoint(ctrLat, ctrLon, true),
-        // scale, width, height);
-
-        // Unnecessary to set parameters !! ^^^^^
-
-        // project everything through the Mercator projection,
-        // building up lat/lon points along the original rhumb
-        // line between vertices.
-        mercator.forward(rawllpts[0], rawllpts[1], from, true);
-        xp = from.x;
-        for (i = 0, n = 2; n < len; i++, n += 2) {
-            mercator.forward(rawllpts[n], rawllpts[n + 1], to, true);
-            // segment crosses longitude along screen edge
-            if (Math.abs(xp - to.x) >= mercator.half_world) {
-                flag += (xp < to.x) ? -1 : 1;// inc/dec the wrap
-                                                // count
-                xadj = flag * mercator.world.x;// adjustment to x
-                // coordinates
-                // Debug.output("flag=" + flag + " xadj=" + xadj);
-            }
-            xp = to.x;
-            if (flag != 0) {
-                to.x += xadj;// adjust x coordinate
-            }
-
-            augllpts[i] = mercator.rhumbProject(from, to, false, nsegs);
-            totalpts += augllpts[i].length;
-            from.x = to.x;
-            from.y = to.y;
-        }
-        llp = mercator.inverse(from);
-        // }// end synchronized around mercator
-
-        augllpts[i] = new float[2];
-        augllpts[i][0] = llp.radlat_;
-        augllpts[i][1] = llp.radlon_;
-        totalpts += 2;
-
-        // put together all the points
-        float[] newllpts = new float[totalpts];
-        int pos = 0;
-        for (i = 0; i < augllpts.length; i++) {
-            // Debug.output("copying " + augllpts[i].length + "
-            // floats");
-            System.arraycopy(
-            /* src */augllpts[i], 0,
-            /* dest */newllpts, pos, augllpts[i].length);
-            pos += augllpts[i].length;
-        }
-        // Debug.output("done copying " + totalpts + " total floats");
-
-        // free unused variables
-        augllpts = null;
-
-        // now delegate the work to the regular projection code.
-        return _forwardPoly(newllpts, LineType.Straight, -1, isFilled);
-    }
-
-    /**
-     * Forward project a greatcircle poly.
-     * <p>
-     * Draws great circle lines between vertices of poly. Remember to
-     * specify vertices in radians!
-     * 
-     * @param rawllpts float[] of lat,lon,lat,lon,... in RADIANS!
-     * @param nsegs number of segments to draw for greatcircle or
-     *        rhumb lines (if &lt; 1, this value is generated
-     *        internally).
-     * @param isFilled filled poly?
-     * @return ArrayList of x[], y[], x[], y[], ... projected poly
-     * @see Projection#forwardPoly(float[], int, int, boolean)
-     */
-    protected ArrayList forwardGreatPoly(float[] rawllpts, int nsegs,
-                                         boolean isFilled) {
-        int i, j, k, totalpts = 0;
-
-        Point from = new Point();
-        Point to = new Point();
-
-        int end = rawllpts.length >>> 1;
-        float[][] augllpts = new float[end][0];
-        end -= 1;// stop before last segment
-
-        // calculate extra vertices between all the original segments.
-        forward(rawllpts[0], rawllpts[1], from, true);
-        for (i = 0, j = 0, k = 2; i < end; i++, j += 2, k += 2) {
-            forward(rawllpts[k], rawllpts[k + 1], to, true);
-            augllpts[i] = getGreatVertices(rawllpts[j],
-                    rawllpts[j + 1],
-                    rawllpts[k],
-                    rawllpts[k + 1],
-                    from,
-                    to,
-                    false,
-                    nsegs);
-            from.x = to.x;
-            from.y = to.y;
-            totalpts += augllpts[i].length;
-        }
-        augllpts[i] = new float[2];
-        augllpts[i][0] = rawllpts[j];
-        augllpts[i][1] = rawllpts[j + 1];
-        totalpts += 2;
-
-        // put together all the points
-        float[] newllpts = new float[totalpts];
-        int pos = 0;
-        for (i = 0; i < augllpts.length; i++) {
-            System.arraycopy(
-            /* src */augllpts[i], 0,
-            /* dest */newllpts, pos, augllpts[i].length);
-            pos += augllpts[i].length;
-        }
-
-        // free unused variables
-        augllpts = null;
-
-        // now delegate the work to the regular projection code.
-        return _forwardPoly(newllpts, LineType.Straight, -1, isFilled);
-    }
-
-    /**
-     * Get the vertices along the great circle between two points.
-     * 
-     * @param latp previous float latitude
-     * @param lonp previous float longitude
-     * @param latn next float latitude
-     * @param lonn next float longitude
-     * @param from Point
-     * @param to Point
-     * @param include_last include n or n+1 points of the n segments?
-     * @return float[] lat/lon points in RADIANS!
-     * 
-     */
-    private float[] getGreatVertices(float latp, float lonp, float latn,
-                                     float lonn, Point from, Point to,
-                                     boolean include_last, int nsegs) {
-        if (nsegs < 1) {
-            // calculate pixel distance
-            int dist = DrawUtil.pixel_distance(from.x, from.y, to.x, to.y);
-
-            /*
-             * determine what would be a decent number of segments to
-             * draw. HACK: this is hardcoded calculated by what might
-             * look ok on screen. We also put a cap on the number of
-             * extra segments we draw.
-             */
-            nsegs = dist >> 3;// dist/8
-            if (nsegs == 0) {
-                nsegs = 1;
-            } else if (nsegs > NUM_DEFAULT_GREAT_SEGS) {
-                nsegs = NUM_DEFAULT_GREAT_SEGS;
-            }
-
-            // Debug.output(
-            // "("+from.x+","+from.y+")("+to.x+","+to.y+")
-            // dist="+dist+" nsegs="+nsegs);
-        }
-
-        // both of these return float[] radian coordinates!
-        return GreatCircle.great_circle(latp,
-                lonp,
-                latn,
-                lonn,
-                nsegs,
-                include_last);
-    }
-
-    /**
-     * Forward projects a raster.
-     * <p>
-     * HACK: not implemented yet.
-     * 
-     * @param llNW LatLonPoint of NorthWest corner of Image
-     * @param llSE LatLonPoint of SouthEast corner of Image
-     * @param image raster image
-     */
-    public ArrayList forwardRaster(LatLonPoint llNW, LatLonPoint llSE,
-                                   Image image) {
-        Debug.error("Proj.forwardRaster(): unimplemented!");
-        return null;
-    }
-
-    /**
-     * Check for complicated linetypes.
-     * <p>
-     * This depends on the line and this projection.
-     * 
-     * @param ltype int LineType
-     * @return boolean
-     */
-    public boolean isComplicatedLineType(int ltype) {
-        switch (ltype) {
-        case LineType.Straight:
-            return false;
-        case LineType.Rhumb:
-            return (getProjectionType() == Mercator.MercatorType) ? false
-                    : true;
-        case LineType.GreatCircle:
-            return true/*
-                         * (getProjectionType() ==
-                         * Gnomonic.GnomonicType) ? false : true
-                         */;
-        default:
-            Debug.error("Proj.isComplicatedLineType: invalid LineType!");
-            return false;
-        }
-    }
-
-    /**
-     * Generates a complicated poly.
-     * 
-     * @param rawllpts LatLonPoint[]
-     * @param ltype line type
-     * @param nsegs number of segments to draw for greatcircle or
-     *        rhumb lines (if &lt; 1, this value is generated
-     *        internally).
-     * @param isFilled filled poly?
-     * @return ArrayList
-     * @see Projection#forwardPoly
-     */
-    protected ArrayList doPolyDispatch(float[] rawllpts, int ltype, int nsegs,
-                                       boolean isFilled) {
-        switch (ltype) {
-        case LineType.Rhumb:
-            return forwardRhumbPoly(rawllpts, nsegs, isFilled);
-        case LineType.GreatCircle:
-            return forwardGreatPoly(rawllpts, nsegs, isFilled);
-        case LineType.Straight:
-            Debug.error("Proj.doPolyDispatch: Bad Dispatch!\n");
+        // determine length of pairs list
+        int len = rawllpts.length >> 1; // len/2, chop off extra
+        if (len < 2)
             return new ArrayList(0);
-        default:
-            Debug.error("Proj.doPolyDispatch: Invalid LType!\n");
-            return new ArrayList(0);
+
+        // determine when to stop
+        Point temp = new Point(0, 0);
+        int[] xs = new int[len];
+        int[] ys = new int[len];
+
+        // forward project the first point
+        forward(rawllpts[0], rawllpts[1], temp);
+        xs[0] = temp.x;
+        ys[0] = temp.y;
+        // forward project the other points
+        for (n = 1, k = 2; n < len; n++, k += 2) {
+            forward(rawllpts[k], rawllpts[k + 1], temp);
+            xs[n] = temp.x;
+            ys[n] = temp.y;
         }
+
+        // now create the return list
+        ArrayList ret_val = null;
+        ret_val = new ArrayList(2);
+        ret_val.add(xs);
+        ret_val.add(ys);
+
+        return ret_val;
+    }
+
+    public ArrayList forwardPoly(double[] rawllpts, boolean isFilled) {
+        int n, k;
+
+        // determine length of pairs list
+        int len = rawllpts.length >> 1; // len/2, chop off extra
+        if (len < 2)
+            return new ArrayList(0);
+
+        // determine when to stop
+        Point temp = new Point(0, 0);
+        int[] xs = new int[len];
+        int[] ys = new int[len];
+
+        // forward project the first point
+        forward(rawllpts[0], rawllpts[1], temp);
+        xs[0] = temp.x;
+        ys[0] = temp.y;
+        // forward project the other points
+        for (n = 1, k = 2; n < len; n++, k += 2) {
+            forward(rawllpts[k], rawllpts[k + 1], temp);
+            xs[n] = temp.x;
+            ys[n] = temp.y;
+        }
+
+        // now create the return list
+        ArrayList ret_val = null;
+        ret_val = new ArrayList(2);
+        ret_val.add(xs);
+        ret_val.add(ys);
+        return ret_val;
     }
 
     /**
@@ -1224,12 +728,7 @@ public abstract class Proj implements Projection, Cloneable {
      *        <code>-180 &lt;= Az &lt;= 180</code>
      * @param c arc distance in decimal degrees
      */
-    public void pan(float Az, float c) {
-        setCenter(GreatCircle.spherical_between(ctrLat,
-                ctrLon,
-                ProjMath.degToRad(c),
-                ProjMath.degToRad(Az)));
-    }
+    abstract public void pan(float Az, float c);
 
     /**
      * Pan the map/projection.
@@ -1336,18 +835,35 @@ public abstract class Proj implements Projection, Cloneable {
     }
 
     /**
+     */
+    public boolean isPlotable(float lat, float lon) {
+        return isPlotable((double) lat, (double) lon);
+    }
+
+    public boolean isPlotable(Point2D point) {
+        return isPlotable(point.getY(), point.getX());
+    }
+
+    /**
      * Draw the background for the projection.
      * 
      * @param g Graphics2D
-     * @param p Paint to use for the background
+     * @param paint java.awt.Paint to use for the background
      */
-    abstract public void drawBackground(Graphics2D g, Paint p);
+    public void drawBackground(Graphics2D g, java.awt.Paint paint) {
+        g.setPaint(paint);
+        drawBackground(g);
+    }
 
     /**
-     * Assume that the Graphics has been set with the Paint/Color
-     * needed, just render the shape of the background.
+     * Draw the background for the projection. Assume that the Graphics has been
+     * set with the Paint/Color needed, just render the shape of the background.
+     * 
+     * @param g Graphics
      */
-    abstract public void drawBackground(Graphics g);
+    public void drawBackground(Graphics g) {
+        g.fillRect(0, 0, getWidth(), getHeight());
+    }
 
     /**
      * Get the name string of the projection.
@@ -1357,72 +873,33 @@ public abstract class Proj implements Projection, Cloneable {
     }
 
     /**
-     * Given a couple of points representing a bounding box, find out
-     * what the scale should be in order to make those points appear
-     * at the corners of the projection.
+     * Given a couple of points representing a bounding box, find out what the
+     * scale should be in order to make those points appear at the corners of
+     * the projection.
      * 
      * @param ll1 the upper left coordinates of the bounding box.
      * @param ll2 the lower right coordinates of the bounding box.
-     * @param point1 a java.awt.Point reflecting a pixel spot on the
-     *        projection that matches the ll1 coordinate, the upper
-     *        left corner of the area of interest.
-     * @param point2 a java.awt.Point reflecting a pixel spot on the
-     *        projection that matches the ll2 coordinate, usually the
-     *        lower right corner of the area of interest.
+     * @param point1 a java.awt.Point reflecting a pixel spot on the projection
+     *        that matches the ll1 coordinate, the upper left corner of the area
+     *        of interest.
+     * @param point2 a java.awt.Point reflecting a pixel spot on the projection
+     *        that matches the ll2 coordinate, usually the lower right corner of
+     *        the area of interest.
      */
-    public float getScale(LatLonPoint ll1, LatLonPoint ll2, Point point1,
-                          Point point2) {
+    public abstract float getScale(Point2D ll1, Point2D ll2, Point point1,
+                                   Point point2);
 
-        try {
-
-            float deltaDegrees;
-            float pixPerDegree;
-            int deltaPix;
-            float dx = Math.abs(point2.x - point1.x);
-            float dy = Math.abs(point2.y - point1.y);
-
-            if (dx < dy) {
-                float dlat = Math.abs(ll1.getLatitude() - ll2.getLatitude());
-                deltaDegrees = dlat;
-                deltaPix = getHeight();
-
-                // This might not be correct for all projection types
-                pixPerDegree = getPlanetPixelCircumference() / 360f;
-            } else {
-                float dlon;
-                float lat1, lon1, lon2;
-
-                // point1 is to the right of point2. switch the
-                // LatLonPoints so that ll1 is west (left) of ll2.
-                if (point1.x > point2.x) {
-                    lat1 = ll1.getLatitude();
-                    lon1 = ll1.getLongitude();
-                    ll1.setLatLon(ll2);
-                    ll2.setLatLon(lat1, lon1);
-                }
-
-                lon1 = ll1.getLongitude();
-                lon2 = ll2.getLongitude();
-
-                // allow for crossing dateline
-                if (lon1 > lon2) {
-                    dlon = (180 - lon1) + (180 + lon2);
-                } else {
-                    dlon = lon2 - lon1;
-                }
-
-                deltaDegrees = dlon;
-                deltaPix = getWidth();
-
-                // This might not be correct for all projection types
-                pixPerDegree = getPlanetPixelCircumference() / 360f;
-            }
-
-            // The new scale...
-            return pixPerDegree / (deltaPix / deltaDegrees);
-        } catch (NullPointerException npe) {
-            com.bbn.openmap.util.Debug.error("ProjMath.getScale(): caught null pointer exception.");
-            return Float.MAX_VALUE;
-        }
+    /**
+     * Overridden to ensure that setParameters() are called with the read
+     * values.
+     * 
+     * @param in
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private void readObject(ObjectInputStream in) throws IOException,
+            ClassNotFoundException {
+        in.defaultReadObject();
+        computeParameters();
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.16 $
-// $Date: 2005/09/21 13:57:51 $
+// $Revision: 1.17 $
+// $Date: 2005/12/09 21:09:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,6 +37,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Vector;
@@ -60,9 +61,7 @@ import com.bbn.openmap.event.ZoomListener;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.LatLonPoint;
 
 /**
  * The MapBean is the main component of the OpenMap Development Kit.
@@ -478,7 +477,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * @return the center point of the map
      * @see Projection#getCenter
      */
-    public LatLonPoint getCenter() {
+    public Point2D getCenter() {
         return projection.getCenter();
     }
 
@@ -488,7 +487,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * @param newCenter the center point of the map
      * @see Proj#setCenter(LatLonPoint)
      */
-    public void setCenter(LatLonPoint newCenter) {
+    public void setCenter(Point2D newCenter) {
         projection.setCenter(newCenter);
         fireProjectionChanged();
     }
@@ -502,49 +501,24 @@ public class MapBean extends JComponent implements ComponentListener,
      *        degrees
      * @see Proj#setCenter(float, float)
      */
-    public void setCenter(float lat, float lon) {
-        projection.setCenter(lat, lon);
+    public void setCenter(double lat, double lon) {
+        projection.setCenter(new Point2D.Double(lon, lat));
         fireProjectionChanged();
     }
 
     /**
-     * Get the type of the projection.
+     * Sets the center of the map.
      * 
-     * @return int type
-     * @see Projection#getProjectionType
-     * @deprecated Projection Type integers are no longer really used.
-     *             The ProjectionFactory should be consulted for which
-     *             type are available, and the projection should be
-     *             created there.
+     * @param lat the latitude of center point of the map in decimal
+     *        degrees
+     * @param lon the longitude of center point of the map in decimal
+     *        degrees
+     * @see Proj#setCenter(float, float)
      */
-    public int getProjectionType() {
-        return projection.getProjectionType();
+    public void setCenter(float lat, float lon) {
+        setCenter((double)lat, (double)lon);
     }
-
-    /**
-     * Set the type of the projection. If different from the current
-     * type, this installs a new projection with the same center,
-     * scale, width, and height of the previous one.
-     * 
-     * @param newType the new projection type
-     * @deprecated Projection Type integers are no longer really used.
-     *             The ProjectionFactory should be consulted for which
-     *             type are available, and the projection should be
-     *             created there.
-     */
-    public void setProjectionType(int newType) {
-        int oldType = projection.getProjectionType();
-        if (oldType != newType) {
-            LatLonPoint ctr = projection.getCenter();
-            setProjection((Proj) (ProjectionFactory.makeProjection(newType,
-                    ctr.getLatitude(),
-                    ctr.getLongitude(),
-                    projection.getScale(),
-                    projection.getWidth(),
-                    projection.getHeight())));
-        }
-    }
-
+    
     /**
      * Set the background color of the map. If the background for this
      * MapBean is not null, the background of the projection will be
@@ -1097,7 +1071,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * null, or if the projection is not set in the MapBean. Allocates
      * new LatLonPoint with coordinates.
      */
-    public LatLonPoint getCoordinates(MouseEvent event) {
+    public Point2D getCoordinates(MouseEvent event) {
         return getCoordinates(event, null);
     }
 
@@ -1107,7 +1081,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * null, or if the projection is not set in the MapBean. Save on
      * memory allocation by sending in the LatLonPoint to fill.
      */
-    public LatLonPoint getCoordinates(MouseEvent event, LatLonPoint llp) {
+    public Point2D getCoordinates(MouseEvent event, Point2D llp) {
         Projection proj = getProjection();
         if (proj == null || event == null) {
             return null;

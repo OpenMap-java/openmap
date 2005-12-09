@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.18 $
-// $Date: 2005/05/23 20:25:33 $
+// $Revision: 1.19 $
+// $Date: 2005/12/09 21:08:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,7 +37,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -45,120 +44,121 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * Implement an OpenMap Layer for display of NIMA data sources in the
- * VPF (Mil-Std 2407) format.
+ * Implement an OpenMap Layer for display of NIMA data sources in the VPF
+ * (Mil-Std 2407) format.
  * <p>
- * The properties needed to configure this layer to display VPF data
- * include some "magic" strings specific to the VPF database you are
- * trying to display.
- * {@link com.bbn.openmap.layer.vpf.DescribeDB DescribeDB}is a
- * utility to help you figure out what those strings are.
+ * The properties needed to configure this layer to display VPF data include
+ * some "magic" strings specific to the VPF database you are trying to display.
+ * {@link com.bbn.openmap.layer.vpf.DescribeDB DescribeDB}is a utility to help
+ * you figure out what those strings are.
  * 
  * <pre>
- * 
- *  
  *   
- *   #-----------------------------
- *   # Properties for a VMAP political layer
- *   #-----------------------------
- *   # Mandatory properties
- *   # Mandatory for all layers
- *   vmapPol.class= com.bbn.openmap.layer.vpf.VPFLayer
- *   vmapPol.prettyName= Political Boundaries from VMAP
- *   # Mandatory - choose .vpfPath or .libraryBean
- *   # .vpfPath specifies a ';' separated list of paths to data, each of these
- *   #directories should have a &quot;lat&quot; or &quot;lat.&quot; file in them.
- *   vmapPol.vpfPath= e:/VMAPLV0
- *   # .libraryBean specifies a separate object in the properties file that
- *   # locates vpf data.  You should use this option if you have multiple VPF
- *   # layers displaying the same VPF database.  (For example, you have 3 VMAP
- *   # layers, displaying coastlines, railroads and rivers.  Each layer would
- *   # then specify the same libraryBean name.  This reduces the memory 
- *   # consumption of the VPF layers.)
- *   # See {@link com.bbn.openmap.layer.vpf.LibraryBean LibraryBean javadoc} for properties info. (Example below)
- *   vmapPol.libraryBean= VMAPdata
- *   VMAPData.class=com.bbn.openmap.layer.vpf.LibraryBean
- *   VMAPData.vpfPath=e:/VMAPLV0
- *   # Don't forget to add VMAPData to the openmap.components property list, too.
- *   #
- *   #Optional (default is true) changes how features are located.  Should
- *   #use this option for multiple coverage types, or when null pointer errors
- *   #are encountered.
- *   vmapPol.searchByFeature=true
- *  
- *   #Limit which VPF library is used (optional).  If not specified,
- *   #all available libraries will be checked and used.
- *   vmapPol.libraryName=noamer
- *   #
- *   # Choose either .defaultLayer or .coverageType
- *   #
- *   # .defaultLayer results in the layer looking up the remainder of the
- *   # properties in the defaultVPFLayers.properties files.
- *   vmapPol.defaultLayer= vmapPolitical
- *   #
- *   # .coverageType continues in this property file - chose the VMAP bnd
- *   # (Boundary) coverage
- *   vmapPol.coverageType= bnd
- *   # Select if we want edges (polylines), areas (filled polygons) or text
- *   # This is a space-separated list of &quot;edge&quot; &quot;area&quot; &quot;text&quot; &quot;epoint&quot; and &quot;cpoint&quot;
- *   vmapPol.featureTypes= edge area
- *   #For DCW, the remaining 3 properties are ignored
- *   #Select the text featureclasses we'd like to display.  Since we didn't
- *   #select text above, this is ignored
- *   vmapPol.text= 
- *   #Select the edge featureclasses we'd like to display. In this case,
- *   #draw political boundaries and coastline, but skip anything else.
- *   vmapPol.edge=polbndl coastl
- *   #Select the area featureclasses we'd like to display. In this case,
- *   #draw politcal areas, but skip anything else.
- *   vmapPol.area=polbnda
- *   #Selectable drawing attributes - for default values, they don't need to
- *   #be included.  A hex ARGB color looks like FF000000 for black.
- *   vmapPol.lineColor=hex ARGB color value - Black is default.
- *   vmapPol.fillColor=hex ARGB color value - Clear is default.
- *   vmapPol.lineWidth=float value, 1f is the default, 10f is the max.
- *  
- *   # The column name in the feature table that should be displayed.  The easiest 
- *   # way to find out what these columns should be for an application is to run the 
- *   # application with the other properties set for the layer, and then bring up 
- *   # the layer's palette.  When the feature is selected, there are additional 
- *   # controls that let you display the coverage column names and display type, 
- *   # and the coverage column names in the popup are the ones that can be used 
- *   # in the properties (the column names are in parenthesis).  NOTE:   The features 
- *   # have to be added to the map and visible (proper scale setting &lt; 30,000,000) 
- *   # in order for the palette controls to be visible.
- *   vmapPol.attribute=na2
- *   # How the attributes should be displayed, either 'label', 'tooltip', or 'information line'
- *   vmapPol.attributeDisplay=label
- *  
- *   #------------------------------------
- *   # End of properties for a VMAP political layer
- *   #------------------------------------
- *   
- *   ### Now a VMAP Coastline layer
- *   vmapCoast.class=com.bbn.openmap.layer.vpf.VPFLayer
- *   vmapCoast.prettyName=VMAP Coastline Layer
- *   vmapCoast.vpfPath=/u5/vmap/vmaplv0
- *   ## a predefined layer from the VPF predefined layer set found in
- *   ## com/bbn/openmap/layer/vpf/defaultVPFLayers.properties
- *   vmapCoast.defaultLayer=vmapCoastline
- *   
- *   ### Now a DCW Political layer
- *   # Basic political boundaries with DCW
- *   dcwPolitical.class=com.bbn.openmap.layer.vpf.VPFLayer
- *   dcwPolitical.prettyName=DCW Political Boundaries
- *   dcwPolitical.vpfPath=path to data
- *   dcwPolitical.coverageType=po
- *   dcwPolitical.featureTypes=edge area
  *    
- *   
- *  
+ *     
+ *     #-----------------------------
+ *     # Properties for a VMAP political layer
+ *     #-----------------------------
+ *     # Mandatory properties
+ *     # Mandatory for all layers
+ *     vmapPol.class= com.bbn.openmap.layer.vpf.VPFLayer
+ *     vmapPol.prettyName= Political Boundaries from VMAP
+ *     # Mandatory - choose .vpfPath or .libraryBean
+ *     # .vpfPath specifies a ';' separated list of paths to data, each of these
+ *     #directories should have a &quot;lat&quot; or &quot;lat.&quot; file in them.
+ *     vmapPol.vpfPath= e:/VMAPLV0
+ *     # .libraryBean specifies a separate object in the properties file that
+ *     # locates vpf data.  You should use this option if you have multiple VPF
+ *     # layers displaying the same VPF database.  (For example, you have 3 VMAP
+ *     # layers, displaying coastlines, railroads and rivers.  Each layer would
+ *     # then specify the same libraryBean name.  This reduces the memory 
+ *     # consumption of the VPF layers.)
+ *     # See {@link com.bbn.openmap.layer.vpf.LibraryBean LibraryBean javadoc} for properties info. (Example below)
+ *     vmapPol.libraryBean= VMAPdata
+ *     VMAPData.class=com.bbn.openmap.layer.vpf.LibraryBean
+ *     VMAPData.vpfPath=e:/VMAPLV0
+ *     # Don't forget to add VMAPData to the openmap.components property list, too.
+ *     #
+ *     #Optional (default is true) changes how features are located.  Should
+ *     #use this option for multiple coverage types, or when null pointer errors
+ *     #are encountered.
+ *     vmapPol.searchByFeature=true
+ *    
+ *     #Limit which VPF library is used (optional).  If not specified,
+ *     #all available libraries will be checked and used.
+ *     vmapPol.libraryName=noamer
+ *     #
+ *     # Choose either .defaultLayer or .coverageType
+ *     #
+ *     # .defaultLayer results in the layer looking up the remainder of the
+ *     # properties in the defaultVPFLayers.properties files.
+ *     vmapPol.defaultLayer= vmapPolitical
+ *     #
+ *     # .coverageType continues in this property file - chose the VMAP bnd
+ *     # (Boundary) coverage
+ *     vmapPol.coverageType= bnd
+ *     # Select if we want edges (polylines), areas (filled polygons) or text
+ *     # This is a space-separated list of &quot;edge&quot; &quot;area&quot; &quot;text&quot; &quot;epoint&quot; and &quot;cpoint&quot;
+ *     vmapPol.featureTypes= edge area
+ *     #For DCW, the remaining 3 properties are ignored
+ *     #Select the text featureclasses we'd like to display.  Since we didn't
+ *     #select text above, this is ignored
+ *     vmapPol.text= 
+ *     #Select the edge featureclasses we'd like to display. In this case,
+ *     #draw political boundaries and coastline, but skip anything else.
+ *     vmapPol.edge=polbndl coastl
+ *     #Select the area featureclasses we'd like to display. In this case,
+ *     #draw politcal areas, but skip anything else.
+ *     vmapPol.area=polbnda
+ *     #Selectable drawing attributes - for default values, they don't need to
+ *     #be included.  A hex ARGB color looks like FF000000 for black.
+ *     vmapPol.lineColor=hex ARGB color value - Black is default.
+ *     vmapPol.fillColor=hex ARGB color value - Clear is default.
+ *     vmapPol.lineWidth=float value, 1f is the default, 10f is the max.
+ *    
+ *     # The column name in the feature table that should be displayed.  The easiest 
+ *     # way to find out what these columns should be for an application is to run the 
+ *     # application with the other properties set for the layer, and then bring up 
+ *     # the layer's palette.  When the feature is selected, there are additional 
+ *     # controls that let you display the coverage column names and display type, 
+ *     # and the coverage column names in the popup are the ones that can be used 
+ *     # in the properties (the column names are in parenthesis).  NOTE:   The features 
+ *     # have to be added to the map and visible (proper scale setting &lt; 30,000,000) 
+ *     # in order for the palette controls to be visible.
+ *     vmapPol.attribute=na2
+ *     # How the attributes should be displayed, either 'label', 'tooltip', or 'information line'
+ *     vmapPol.attributeDisplay=label
+ *    
+ *     #------------------------------------
+ *     # End of properties for a VMAP political layer
+ *     #------------------------------------
+ *     
+ *     ### Now a VMAP Coastline layer
+ *     vmapCoast.class=com.bbn.openmap.layer.vpf.VPFLayer
+ *     vmapCoast.prettyName=VMAP Coastline Layer
+ *     vmapCoast.vpfPath=/u5/vmap/vmaplv0
+ *     ## a predefined layer from the VPF predefined layer set found in
+ *     ## com/bbn/openmap/layer/vpf/defaultVPFLayers.properties
+ *     vmapCoast.defaultLayer=vmapCoastline
+ *     
+ *     ### Now a DCW Political layer
+ *     # Basic political boundaries with DCW
+ *     dcwPolitical.class=com.bbn.openmap.layer.vpf.VPFLayer
+ *     dcwPolitical.prettyName=DCW Political Boundaries
+ *     dcwPolitical.vpfPath=path to data
+ *     dcwPolitical.coverageType=po
+ *     dcwPolitical.featureTypes=edge area
+ *      
+ *     
+ *    
  * </pre>
  */
 
@@ -167,23 +167,22 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
     /** property extension used to set the VPF root directory */
     public static final String pathProperty = "vpfPath";
     /**
-     * property extension used to set the desired coverage type.
-     * Examples of coverage types inclue "po" for DCW and "hyd" for
-     * VMAP Level 0.
+     * property extension used to set the desired coverage type. Examples of
+     * coverage types inclue "po" for DCW and "hyd" for VMAP Level 0.
      */
     public static final String coverageTypeProperty = "coverageType";
     /**
-     * Property extension used to set the desired feature types. e.g.
-     * line area text
+     * Property extension used to set the desired feature types. e.g. line area
+     * text
      */
     public static final String featureTypesProperty = "featureTypes";
     /** property extension used to specify a default property set */
     public static final String defaultLayerProperty = "defaultLayer";
     /**
-     * Property that lets you search for graphics via feature type.
-     * Dangerously slow for features that have many graphics spread
-     * out over several tiles. Set to true to search by feature, false
-     * (default) to get the tiles first, and then look for graphics.
+     * Property that lets you search for graphics via feature type. Dangerously
+     * slow for features that have many graphics spread out over several tiles.
+     * Set to true to search by feature, false (default) to get the tiles first,
+     * and then look for graphics.
      */
     public static final String searchByFeatureProperty = "searchByFeature";
     /** Property method for setting VPF data path */
@@ -202,8 +201,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
     protected String libraryBeanName = null;
 
     /**
-     * hang onto prefix used to initialize warehouse in
-     * setProperties()
+     * hang onto prefix used to initialize warehouse in setProperties()
      */
     protected String prefix;
     /** hang onto properties file used to initialize warehouse */
@@ -238,11 +236,9 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Sets the features (lines, areas, text, points) that get
-     * displayed.
+     * Sets the features (lines, areas, text, points) that get displayed.
      * 
-     * @param features a whitespace-separated list of features to
-     *        display.
+     * @param features a whitespace-separated list of features to display.
      */
     public void setFeatures(String features) {
         warehouse.setFeatures(features);
@@ -284,9 +280,9 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
             props = getDefaultProperties();
         }
 
-        //need to save these so we can call setProperties on the
+        // need to save these so we can call setProperties on the
         // warehouse,
-        //which we probably can't construct yet
+        // which we probably can't construct yet
         this.prefix = prefix;
         this.props = props;
 
@@ -308,7 +304,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
         }
 
         try {
-            //force lst and warehosue to re-init with current
+            // force lst and warehosue to re-init with current
             // properties
 
             // LST now set when paths are set.
@@ -366,15 +362,15 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
         if (defaultProps == null) {
             try {
                 InputStream in = VPFLayer.class.getResourceAsStream("defaultVPFlayers.properties");
-                //use a temporary so other threads won't see an
-                //empty properties file
+                // use a temporary so other threads won't see an
+                // empty properties file
                 Properties tmp = new Properties();
                 if (in != null) {
                     tmp.load(in);
                     in.close();
                 } else {
                     Debug.error("VPFLayer: can't load default properties file");
-                    //just use an empty properties file
+                    // just use an empty properties file
                 }
                 defaultProps = tmp;
             } catch (IOException io) {
@@ -530,7 +526,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
                     LibraryBean libraryBean = null;
                     Collection beanContext = getBeanContext();
                     if (beanContext == null) {
-                        //no bean context yet
+                        // no bean context yet
                         return;
                     }
                     for (Iterator i = beanContext.iterator(); i.hasNext();) {
@@ -583,11 +579,11 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
             }
         } catch (com.bbn.openmap.io.FormatException f) {
             throw new java.lang.IllegalArgumentException(f.getMessage());
-            //      } catch (NullPointerException npe) {
-            //          throw new
+            // } catch (NullPointerException npe) {
+            // throw new
             // java.lang.IllegalArgumentException("VPFLayer|" +
             // getName() +
-            //                                                       ": path name not valid");
+            // ": path name not valid");
         }
     }
 
@@ -600,8 +596,8 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * If the warehouse gets set as a result of this method being
-     * called, the properties will beed to be reset on it.
+     * If the warehouse gets set as a result of this method being called, the
+     * properties will beed to be reset on it.
      * 
      * @param sbf Search by features.
      */
@@ -626,10 +622,9 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Use doPrepare() method instead. This was the old method call to
-     * do the same thing doPrepare is now doing, from the
-     * OMGraphicHandler superclass. doPrepare() launches a thread to
-     * do the work.
+     * Use doPrepare() method instead. This was the old method call to do the
+     * same thing doPrepare is now doing, from the OMGraphicHandler superclass.
+     * doPrepare() launches a thread to do the work.
      * 
      * @deprecated use doPrepare() instead of computeLayer();
      */
@@ -638,8 +633,8 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Use prepare instead. This was the old method call to do the
-     * same thing prepare() is now doing.
+     * Use prepare instead. This was the old method call to do the same thing
+     * prepare() is now doing.
      * 
      * @deprecated use prepare() instead of getRectangle();
      */
@@ -648,8 +643,8 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Create the OMGraphicList to use on the map. OMGraphicHandler
-     * methods call this.
+     * Create the OMGraphicList to use on the map. OMGraphicHandler methods call
+     * this.
      */
     public synchronized OMGraphicList prepare() {
         if (lst == null) {
@@ -689,25 +684,29 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
 
         Projection p = getProjection();
 
-        if (p == null) {
-            Debug.error("VPFLayer.getRectangle() called without a projection set in the layer. Make sure a projection is set in the layer before calling getRectangle.");
+        if (p == null || !(p instanceof GeoProj)) {
+            if (Debug.debugging("vpf")) {
+                Debug.error("VPFLayer.getRectangle() called with a projection ("
+                        + p
+                        + ") set in the layer, which isn't being handled.");
+            }
             return new OMGraphicList();
         }
 
-        LatLonPoint upperleft = p.getUpperLeft();
-        LatLonPoint lowerright = p.getLowerRight();
+        LatLonPoint upperleft = (LatLonPoint) p.getUpperLeft();
+        LatLonPoint lowerright = (LatLonPoint) p.getLowerRight();
         if (Debug.debugging("vpfdetail")) {
             Debug.output("VPFLayer.getRectangle: " + coverageType /*
-                                                                   * + " " +
-                                                                   * dynamicArgs
-                                                                   */);
+                                                                     * + " " +
+                                                                     * dynamicArgs
+                                                                     */);
         }
 
         warehouse.clear();
 
-        //      int edgecount[] = new int[] { 0 , 0 };
-        //      int textcount[] = new int[] { 0 , 0 };
-        //      int areacount[] = new int[] { 0 , 0 };
+        // int edgecount[] = new int[] { 0 , 0 };
+        // int textcount[] = new int[] { 0 , 0 };
+        // int areacount[] = new int[] { 0 , 0 };
 
         // Check both dynamic args and palette values when
         // deciding what to draw.
@@ -741,14 +740,14 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
         }
         long stop = System.currentTimeMillis();
 
-        //      if (Debug.debugging("vpfdetail")) {
-        //          Debug.output("Returned " + edgecount[0] +
-        //                       " polys with " + edgecount[1] + " points\n" +
-        //                       "Returned " + textcount[0] +
-        //                       " texts with " + textcount[1] + " points\n" +
-        //                       "Returned " + areacount[0] +
-        //                       " areas with " + areacount[1] + " points");
-        //      }
+        // if (Debug.debugging("vpfdetail")) {
+        // Debug.output("Returned " + edgecount[0] +
+        // " polys with " + edgecount[1] + " points\n" +
+        // "Returned " + textcount[0] +
+        // " texts with " + textcount[1] + " points\n" +
+        // "Returned " + areacount[0] +
+        // " areas with " + areacount[1] + " points");
+        // }
 
         if (Debug.debugging("vpf")) {
             Debug.output("VPFLayer.getRectangle(): read time: "

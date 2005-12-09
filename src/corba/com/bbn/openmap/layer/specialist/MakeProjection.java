@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/MakeProjection.java,v
 // $
 // $RCSfile: MakeProjection.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:36 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:08:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,34 +25,50 @@
 package com.bbn.openmap.layer.specialist;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.CSpecialist.CProjection;
+import com.bbn.openmap.proj.CADRG;
+import com.bbn.openmap.proj.Mercator;
+import com.bbn.openmap.proj.Orthographic;
+import com.bbn.openmap.proj.Projection;
 
 public class MakeProjection {
     Projection p;
 
-    public MakeProjection(com.bbn.openmap.CSpecialist.CProjection mp) {
-        LatLonPoint center = new LatLonPoint(mp.center.lat, mp.center.lon);
+    public final static short MercatorType = 0;
+    public final static short CADRGType = 1;
+    public final static short OrthographicType = 2;
 
-        switch (mp.kind) {
-        case Mercator.MercatorType:
-            p = new Mercator(center, mp.scale, mp.width, mp.height);
-            break;
-        case CADRG.CADRGType:
-            p = new CADRG(center, mp.scale, mp.width, mp.height);
-            break;
-        case Orthographic.OrthographicType:
-            p = new Orthographic(center, mp.scale, mp.width, mp.height);
-            break;
-        //      case MassStatePlane.MassStatePlaneType:
-        //        p = new MassStatePlane(center, mp.scale, mp.width,
-        // mp.height);
-        //        break;
-        default:
-            p = new Mercator(center, mp.scale, mp.width, mp.height);
-        }
+    public MakeProjection(CProjection mp) {
+        p = getProjection(mp);
     }
 
     public Projection getProj() {
         return p;
+    }
+
+    public static Projection getProjection(CProjection mp) {
+        Projection p;
+        LatLonPoint center = new LatLonPoint(mp.center.lat, mp.center.lon);
+
+        switch (mp.kind) {
+        case CADRGType:
+            p = new CADRG(center, mp.scale, mp.width, mp.height);
+            break;
+        case OrthographicType:
+            p = new Orthographic(center, mp.scale, mp.width, mp.height);
+            break;
+        default:
+            p = new Mercator(center, mp.scale, mp.width, mp.height);
+        }
+        return p;
+    }
+    
+    public static short getProjectionType(Projection mp) {
+        if (mp instanceof CADRG) {
+            return CADRGType;
+        } else if (mp instanceof Orthographic) {
+            return OrthographicType;
+        }
+        return MercatorType;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/CRFPClient.java,v $
 // $RCSfile: CRFPClient.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 20:57:25 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,7 @@
 package com.bbn.openmap.layer.rpf.corba;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -240,8 +241,8 @@ public class CRFPClient implements RpfFrameProvider {
         if (serv == null)
             return new Vector();
 
-        LLPoint llpoint = new LLPoint(p.getCenter().getLatitude(), p.getCenter()
-                .getLongitude());
+        Point2D center = p.getCenter();
+        LLPoint llpoint = new LLPoint((float) center.getY(), (float) center.getX());
 
         CRFPCADRGProjection proj = new CRFPCADRGProjection(llpoint, (short) p.getHeight(), (short) p.getWidth(), p.getScale(), (short) p.getZone());
 
@@ -277,8 +278,8 @@ public class CRFPClient implements RpfFrameProvider {
         if (serv == null)
             return new Vector();
 
-        LLPoint llpoint = new LLPoint(p.getCenter().getLatitude(), p.getCenter()
-                .getLongitude());
+        Point2D center = p.getCenter();
+        LLPoint llpoint = new LLPoint((float) center.getY(), (float) center.getX());
 
         CRFPCADRGProjection proj = new CRFPCADRGProjection(llpoint, (short) p.getHeight(), (short) p.getWidth(), p.getScale(), (short) p.getZone());
 
@@ -334,7 +335,7 @@ public class CRFPClient implements RpfFrameProvider {
         // a boolean matrix of those subframes that let you figure out
         // how many of them are available. Calculate the percentage
         // off that.
-        //int pZone = p.getZone();
+        // int pZone = p.getZone();
         int i, x, y;
 
         double frameLatInterval = Double.MAX_VALUE;
@@ -385,13 +386,13 @@ public class CRFPClient implements RpfFrameProvider {
         for (y = 0; y < numVFrames; y++) {
             for (x = 0; x < numHFrames; x++) {
                 if (coverage[x][y] == true) {
-                    //                  System.out.print("X");
+                    // System.out.print("X");
                     count++;
                 } else {
-                    //                  System.out.print(".");
+                    // System.out.print(".");
                 }
             }
-            //          Debug.output("");
+            // Debug.output("");
         }
 
         return count / (float) (numHFrames * numVFrames);
@@ -564,13 +565,13 @@ public class CRFPClient implements RpfFrameProvider {
         return "";
     }
 
-    //////////////// Corba management
+    // ////////////// Corba management
 
     /**
      * get the server proxy.
      * 
      * @return Server server or null if error.
-     *  
+     * 
      */
     public Server getServer() {
         if (server == null)
@@ -580,7 +581,7 @@ public class CRFPClient implements RpfFrameProvider {
 
     /**
      * bind to the server.
-     *  
+     * 
      */
     private void initServer() {
         String ior = null;

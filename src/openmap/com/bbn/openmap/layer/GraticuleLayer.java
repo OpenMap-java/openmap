@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/08/09 18:05:08 $
+// $Revision: 1.14 $
+// $Date: 2005/12/09 21:09:08 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -30,6 +30,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.util.Properties;
 
 import javax.swing.Box;
@@ -642,10 +643,13 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
         if (showOneAndFiveLines || showRuler || showBelowOneLines) {
 
-            float left = projection.getUpperLeft().getLongitude();
-            float right = projection.getLowerRight().getLongitude();
-            float up = projection.getUpperLeft().getLatitude();
-            float down = projection.getLowerRight().getLatitude();
+            Point2D ul = projection.getUpperLeft();
+            Point2D lr = projection.getLowerRight();
+            
+            float left = (float)ul.getX();
+            float right = (float)lr.getX();
+            float up = (float)ul.getY();
+            float down = (float)lr.getY();
 
             if (up > 80.0f)
                 up = 80.0f;
@@ -887,7 +891,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 if (boxy) {
                     point = projection.forward(lat, west);
                     point.x = 0;
-                    llpoint = projection.inverse(point);
+                    llpoint = LatLonPoint.getLatLon(point.x, point.y, projection);
                 } else {
                     llpoint = new LatLonPoint(lat, west);
                     while (projection.forward(llpoint).x < 0) {
@@ -936,7 +940,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 if (boxy) {
                     point = projection.forward(south, lon);
                     point.y = projection.getHeight();
-                    llpoint = projection.inverse(point);
+                    llpoint = LatLonPoint.getLatLon(point.x, point.y, projection);
                 } else {
                     llpoint = new LatLonPoint(south, lon);
                     while (projection.forward(llpoint).y > projection.getHeight()) {
@@ -1070,7 +1074,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                     if (boxy) {
                         point = projection.forward(lat, west);
                         point.x = 0;
-                        llpoint = projection.inverse(point);
+                        llpoint = LatLonPoint.getLatLon(point.x, point.y, projection);
                     } else {
                         llpoint = new LatLonPoint(lat, west);
                         while (projection.forward(llpoint).x < 0) {
@@ -1098,7 +1102,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 if (boxy) {
                     point = projection.forward(south, lon);
                     point.y = projection.getHeight();
-                    llpoint = projection.inverse(point);
+                    llpoint = LatLonPoint.getLatLon(point.x, point.y, projection);
                 } else {
                     llpoint = new LatLonPoint(south, lon);
                     while (projection.forward(llpoint).y > projection.getHeight()) {

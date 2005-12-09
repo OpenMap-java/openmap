@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/Route.java,v
 // $
 // $RCSfile: Route.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/12 21:47:49 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -75,7 +75,7 @@ public class Route implements Cloneable, Serializable {
         LatLonPoint fromLoc = from.getLocation();
         float fromLat = fromLoc.getLatitude();
         float fromLon = fromLoc.getLongitude();
-        float timeLimitBase = GreatCircle.spherical_distance(toLat,
+        float timeLimitBase = GreatCircle.sphericalDistance(toLat,
                 toLon,
                 fromLat,
                 fromLon)
@@ -111,7 +111,7 @@ public class Route implements Cloneable, Serializable {
                         NodeInfo nextInfo = (NodeInfo) marks.get(nextIntersection);
                         if (nextInfo == null) {
                             LatLonPoint nextLoc = nextIntersection.getLocation();
-                            float crowsPathDistance = GreatCircle.spherical_distance(toLat,
+                            float crowsPathDistance = GreatCircle.sphericalDistance(toLat,
                                     toLon,
                                     nextLoc.getLatitude(),
                                     nextLoc.getLongitude());

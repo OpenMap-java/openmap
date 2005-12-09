@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DeclutterMatrix.java,v $
 // $RCSfile: DeclutterMatrix.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:52 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,6 +30,9 @@
  *
  *  Modification history:
  *  $Log: DeclutterMatrix.java,v $
+ *  Revision 1.6  2005/12/09 21:09:08  dietrick
+ *  Projection and LatLonPoint Paradigm shift!  Handling preprojected data.  Proj based on Point2D objects, new com.bbn.openmap.proj.coords.LatLonPoint to support that for Projection subclasses.  New Cartesian projection.  All other components seem to be updated and working with the changes.There will be incompatibilities with OpenMap 4.6 and previous versions of OpenMap, this is a new minor revision.
+ *
  *  Revision 1.5  2004/10/14 18:05:52  dietrick
  *  Copyright updates, removed extemporaneous import statements, cleaned up deprecations
  *
@@ -102,9 +105,10 @@
 
 package com.bbn.openmap.layer;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+
 import com.bbn.openmap.util.Debug;
 
 /**

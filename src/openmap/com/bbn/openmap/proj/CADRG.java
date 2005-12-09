@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/CADRG.java,v $
 // $RCSfile: CADRG.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 20:38:12 $
+// $Revision: 1.8 $
+// $Date: 2005/12/09 21:09:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,8 +23,10 @@
 package com.bbn.openmap.proj;
 
 import java.awt.Point;
-import com.bbn.openmap.LatLonPoint;
+import java.awt.geom.Point2D;
+
 import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -39,16 +41,11 @@ public class CADRG extends Cylindrical implements EqualArc {
      */
     public final static transient String CADRGName = "CADRG";
 
-    /**
-     * The CADRG type of projection.
-     */
-    public final static transient int CADRGType = 42;
-
-    public final static transient float epsilon = 0.0001f;
+    public final static transient double epsilon = 0.0001;
 
     // HACK -degrees
-    private static final float NORTH_LIMIT = ProjMath.degToRad(80.0f);
-    private static final float SOUTH_LIMIT = -NORTH_LIMIT;
+    private static final double NORTH_LIMIT = ProjMath.degToRad(80.0f);
+    private static final double SOUTH_LIMIT = -NORTH_LIMIT;
 
     private double spps_x, spps_y; // scaled pixels per SCoord
     private static final int CADRG_ARC_A[] = { 369664, 302592, 245760, 199168,
@@ -58,10 +55,10 @@ public class CADRG extends Cylindrical implements EqualArc {
             68, 72, 76, 80, 90 };
     private int /* ox, */oy;
     private double x_pix_constant, y_pix_constant;
-    private Point ul;//upper left
+    private Point ul;// upper left
 
-    private float[] lower_zone_extents;
-    private float[] upper_zone_extents;
+    private double[] lower_zone_extents;
+    private double[] upper_zone_extents;
 
     private int zone;
 
@@ -74,8 +71,8 @@ public class CADRG extends Cylindrical implements EqualArc {
      * @param height height of screen
      */
     public CADRG(LatLonPoint center, float scale, int width, int height) {
-        super(center, scale, width, height, CADRGType);
-        minscale = (float) 1000000 / (float) CADRG_SCALE_LIMIT;
+        super(center, scale, width, height);
+        minscale = 1000000 / CADRG_SCALE_LIMIT;
     }
 
     /**
@@ -86,9 +83,9 @@ public class CADRG extends Cylindrical implements EqualArc {
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
      * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
-     *  
+     * 
      */
-    public float normalize_latitude(float lat) {
+    public double normalize_latitude(double lat) {
         if (lat > NORTH_LIMIT) {
             lat = NORTH_LIMIT;
         } else if (lat < SOUTH_LIMIT) {
@@ -97,9 +94,9 @@ public class CADRG extends Cylindrical implements EqualArc {
         return lat;
     }
 
-    //    protected void finalize() {
-    //      Debug.message("proj", "CADRG finialized");
-    //    }
+    // protected void finalize() {
+    // Debug.message("proj", "CADRG finialized");
+    // }
 
     /**
      * Return stringified description of this projection.
@@ -107,7 +104,7 @@ public class CADRG extends Cylindrical implements EqualArc {
      * 
      * @return String
      * @see Projection#getProjectionID
-     *  
+     * 
      */
     public String toString() {
         return "CADRG[ spps_x=" + spps_x + " spps_y=" + spps_y + " x_pix="
@@ -147,9 +144,9 @@ public class CADRG extends Cylindrical implements EqualArc {
     /**
      * Get the planet pixel circumference.
      * 
-     * @return float circumference of planet in pixels
+     * @return double circumference of planet in pixels
      */
-    public float getPlanetPixelCircumference() {
+    public double getPlanetPixelCircumference() {
         // Why this algorithm? Well, the CADRG_ARC_A is a pixel count
         // that needs to be multiplied by 1000000 to normalize it
         // against the 1:1M factor reflected in the array values. The
@@ -157,13 +154,13 @@ public class CADRG extends Cylindrical implements EqualArc {
         // other calculations as that 100/150 thing. It works in
         // tests.
 
-        return (1000000 * (float) CADRG_ARC_A[zone - 1]) / 1.5f;
+        return (1000000 * CADRG_ARC_A[zone - 1]) / 1.5;
         // These are the same things...
-        //      return (float)getXPixConstant() * scale;
+        // return (float)getXPixConstant() * scale;
 
         // This is what the default return value is from the super
         // class.
-        //      return planetPixelCircumference; // the standard return for
+        // return planetPixelCircumference; // the standard return for
         // projections...
     }
 
@@ -176,9 +173,9 @@ public class CADRG extends Cylindrical implements EqualArc {
      * 
      * @param lat latitude
      * @param y_pix_constant pixel constant
-     *  
+     * 
      */
-    private int getZone(double lat, double y_pix_constant) {
+    protected int getZone(double lat, double y_pix_constant) {
         int NOT_SET = -1;
         int ret = NOT_SET;
 
@@ -190,10 +187,10 @@ public class CADRG extends Cylindrical implements EqualArc {
         double ppd = y_pix_constant / 90;
 
         if (upper_zone_extents == null) {
-            upper_zone_extents = new float[CADRG_get_zone_old_extents.length];
+            upper_zone_extents = new double[CADRG_get_zone_old_extents.length];
         }
         if (lower_zone_extents == null) {
-            lower_zone_extents = new float[CADRG_get_zone_old_extents.length + 1];
+            lower_zone_extents = new double[CADRG_get_zone_old_extents.length + 1];
         }
 
         /**
@@ -223,7 +220,7 @@ public class CADRG extends Cylindrical implements EqualArc {
             Debug.message("proj", "pivot = " + pivot);
             lower_zone_extents[x + 1] = (float) (pivot * 1536.0 / ppd);
             // Can't go further than the equator.
-            //          if (x == 0) lower_zone_extents[x] = 0;
+            // if (x == 0) lower_zone_extents[x] = 0;
             pivot++;
             upper_zone_extents[x] = (float) (pivot * 1536.0 / ppd);
             Debug.message("proj", "lower_zone_extents[" + x + "] = "
@@ -231,9 +228,8 @@ public class CADRG extends Cylindrical implements EqualArc {
             Debug.message("proj", "upper_zone_extents[" + x + "] = "
                     + upper_zone_extents[x]);
 
-            if ((lower_lat <= (double) upper_zone_extents[x])
-                    && (upper_lat <= (double) upper_zone_extents[x])
-                    && ret == NOT_SET)
+            if ((lower_lat <= upper_zone_extents[x])
+                    && (upper_lat <= upper_zone_extents[x]) && ret == NOT_SET)
                 ret = x + 1;
         }
         if (ret == NOT_SET)
@@ -265,7 +261,7 @@ public class CADRG extends Cylindrical implements EqualArc {
      * scale. This only makes sense if the projection is at the same
      * scale as the chart data you are interested in.
      */
-    public float getUpperZoneExtent(int zone) {
+    public double getUpperZoneExtent(int zone) {
         if (zone < 1)
             zone = 1;
         if (zone > 8)
@@ -278,7 +274,7 @@ public class CADRG extends Cylindrical implements EqualArc {
      * scale. This only makes sense if the projection is at the same
      * scale as the chart data you are interested in.
      */
-    public float getLowerZoneExtent(int zone) {
+    public double getLowerZoneExtent(int zone) {
         if (zone < 1)
             zone = 1;
         if (zone > 8)
@@ -327,7 +323,7 @@ public class CADRG extends Cylindrical implements EqualArc {
 
         // Increase, if necessary, to the next highest integer value
         x_pix = Math.ceil(x_pix);
-        x_pix = x_pix * 1.33333;//(512*100)/(150*256);
+        x_pix = x_pix * 1.33333;// (512*100)/(150*256);
 
         // Round the final result.
         x_pix = Math.round(x_pix);
@@ -340,7 +336,7 @@ public class CADRG extends Cylindrical implements EqualArc {
      * <p>
      * 
      * @return float maxscale
-     *  
+     * 
      */
     private float CADRG_calc_maxscale() {
         // Why 1.5? It was 150/100? Why?
@@ -353,7 +349,7 @@ public class CADRG extends Cylindrical implements EqualArc {
      * 
      * @param adrgscale scale adjusted to 1:1M (1M/real scale)
      * @return number of pixels from 0 to 90 degrees
-     *  
+     * 
      */
     private double CADRG_y_pix_constant(double adrgscale) {
         final int CADRG_ARC_B = 400384;
@@ -363,7 +359,7 @@ public class CADRG extends Cylindrical implements EqualArc {
         // Increase, if necessary, to the next highest integer value
         y_pix = Math.ceil(y_pix);
 
-        y_pix = y_pix * 0.33333;//(512*100)/(4*150*256);
+        y_pix = y_pix * 0.33333;// (512*100)/(4*150*256);
 
         // Round the final result.
         y_pix = Math.round(y_pix);
@@ -382,27 +378,9 @@ public class CADRG extends Cylindrical implements EqualArc {
      * @param lon float longitude in decimal degrees
      * @return boolean
      */
-    public boolean isPlotable(float lat, float lon) {
+    public boolean isPlotable(double lat, double lon) {
         lat = normalize_latitude(ProjMath.degToRad(lat));
         return ((lat - epsilon < NORTH_LIMIT) && (lat + epsilon > SOUTH_LIMIT));
-    }
-
-    /**
-     * Projects a point from Lat/Lon space to X/Y space.
-     * <p>
-     * 
-     * @param pt LatLonPoint
-     * @param ret_val Point retval
-     * @return Point ret_val
-     */
-    public Point forward(LatLonPoint pt, Point ret_val) {
-        float lon_ = wrap_longitude(pt.radlon_ - ctrLon);
-        float lat_ = normalize_latitude(pt.radlat_);
-
-        ret_val.x = (int) ProjMath.roundAdjust(spps_x * lon_) - ul.x;
-        ret_val.y = (int) ProjMath.roundAdjust(-spps_y * lat_) + ul.y + oy;
-
-        return ret_val;
     }
 
     /**
@@ -413,80 +391,17 @@ public class CADRG extends Cylindrical implements EqualArc {
      * @param ret_val Resulting XY Point
      * @return Point ret_val
      */
-    public Point forward(float lat, float lon, Point ret_val, boolean b) {
-        float lon_ = wrap_longitude(lon - ctrLon);
-        float lat_ = normalize_latitude(lat);
+    public Point forward(double lat, double lon, Point ret_val, boolean isRadians) {
+        if (!isRadians) {
+            lon = Math.toRadians(lon);
+            lat = Math.toRadians(lat);
+        }
+        
+        double lon_ = wrap_longitude(lon - centerX);
+        double lat_ = normalize_latitude(lat);
 
         ret_val.x = (int) ProjMath.roundAdjust(spps_x * lon_) - ul.x;
         ret_val.y = (int) ProjMath.roundAdjust(-spps_y * lat_) + ul.y + oy;
-        return ret_val;
-    }
-
-    /**
-     * Forward projects lat,lon coordinates.
-     * <p>
-     * 
-     * @param lat raw latitude in decimal degrees
-     * @param lon raw longitude in decimal degrees
-     * @param ret_val Resulting XY Point
-     * @return Point ret_val
-     */
-    public Point forward(float lat, float lon, Point ret_val) {
-        float lon_ = wrap_longitude(ProjMath.degToRad(lon) - ctrLon);
-        float lat_ = normalize_latitude(ProjMath.degToRad(lat));
-
-        ret_val.x = (int) ProjMath.roundAdjust(spps_x * lon_) - ul.x;
-        ret_val.y = (int) ProjMath.roundAdjust(-spps_y * lat_) + ul.y + oy;
-        return ret_val;
-    }
-
-    /**
-     * Inverse project a Point.
-     * 
-     * @param pt x,y Point
-     * @param ret_val resulting LatLonPoint
-     * @return LatLonPoint ret_val
-     *  
-     */
-    public LatLonPoint inverse(Point pt, LatLonPoint ret_val) {
-        //Debug.output("CADRG.inverse");
-        Point pixpoint = new Point(0, 0);
-
-        /* offset back into pixel space from Drawable space */
-        pixpoint.x = pt.x + ul.x/* - ox */;
-        pixpoint.y = -pt.y + ul.y + oy;
-
-        // Check bounds on the call (P Space). Mutate if needed.
-        if (pixpoint.x > (int) ProjMath.roundAdjust(world.x / 2.0)) {
-            pixpoint.x = (int) ProjMath.roundAdjust(world.x / 2.0);
-        } else if (pixpoint.x < (int) ProjMath.roundAdjust(-world.x / 2.0)) {
-            pixpoint.x = (int) ProjMath.roundAdjust(-world.x / 2.0);
-        }
-        if (pixpoint.y > (int) ProjMath.roundAdjust(world.y / 2.0)) {
-            pixpoint.y = (int) ProjMath.roundAdjust(world.y / 2.0);
-        } else if (pixpoint.y < (int) ProjMath.roundAdjust(-world.y / 2.0)) {
-            pixpoint.y = (int) ProjMath.roundAdjust(-world.y / 2.0);
-        }
-
-        // normalize_latitude on the way out.
-        float lat_ = normalize_latitude((float) ((double) pixpoint.y / (double) spps_y));
-        ret_val.setLatitude(ProjMath.radToDeg(lat_));
-        // longitude is wrapped as usual.
-        ret_val.setLongitude(ProjMath.radToDeg((float) ((double) pixpoint.x / (double) spps_x)
-                + ctrLon));
-
-        //      // normalize_latitude on the way out.
-        //      float lat_ =
-        // normalize_latitude(degToRad(((float)MoreMath.SC_TO_DEG(
-        //          (int)(ProjMath.roundAdjust((double)pixpoint.y/(double)spps_y))))));
-        //      ret_val.setLatitude((float)ProjMath.radToDeg(lat_));
-
-        //      // longitude is wrapped as usual.
-        //      ret_val.setLongitude((float)MoreMath.SC_TO_DEG(
-        //          (int)(ProjMath.roundAdjust((double)pixpoint.x/(double)spps_x)
-        // +
-        //                MoreMath.DEG_TO_SC(ProjMath.radToDeg(ctrLon)))));
-
         return ret_val;
     }
 
@@ -499,34 +414,32 @@ public class CADRG extends Cylindrical implements EqualArc {
      * @param ret_val LatLonPoint
      * @return LatLonPoint ret_val
      * @see Proj#inverse(Point)
-     *  
+     * 
      */
-    public LatLonPoint inverse(int x, int y, LatLonPoint ret_val) {
-        //Debug.output("CADRG.inverse");
-        Point pixpoint = new Point(0, 0);
+    public Point2D inverse(int x, int y, Point2D ret_val) {
+        // Debug.output("CADRG.inverse");
 
         /* offset back into pixel space from Drawable space */
-        pixpoint.x = x + ul.x/* - ox */;
-        pixpoint.y = -y + ul.y + oy;
+        double px = x + ul.x/* - ox */;
+        double py = -y + ul.y + oy;
 
         // Check bounds on the call (P Space). Mutate if needed.
-        if (pixpoint.x > (int) ProjMath.roundAdjust(world.x / 2.0)) {
-            pixpoint.x = (int) ProjMath.roundAdjust(world.x / 2.0);
-        } else if (pixpoint.x < (int) ProjMath.roundAdjust(-world.x / 2.0)) {
-            pixpoint.x = (int) ProjMath.roundAdjust(-world.x / 2.0);
+        if (px > ProjMath.roundAdjust(world.x / 2.0)) {
+            px = ProjMath.roundAdjust(world.x / 2.0);
+        } else if (px < ProjMath.roundAdjust(-world.x / 2.0)) {
+            px = ProjMath.roundAdjust(-world.x / 2.0);
         }
-        if (pixpoint.y > (int) ProjMath.roundAdjust(world.y / 2.0)) {
-            pixpoint.y = (int) ProjMath.roundAdjust(world.y / 2.0);
-        } else if (pixpoint.y < (int) ProjMath.roundAdjust(-world.y / 2.0)) {
-            pixpoint.y = (int) ProjMath.roundAdjust(-world.y / 2.0);
+        if (py > ProjMath.roundAdjust(world.y / 2.0)) {
+            py = ProjMath.roundAdjust(world.y / 2.0);
+        } else if (py < ProjMath.roundAdjust(-world.y / 2.0)) {
+            py = ProjMath.roundAdjust(-world.y / 2.0);
         }
 
         // normalize_latitude on the way out.
-        float lat_ = normalize_latitude((float) ((double) pixpoint.y / (double) spps_y));
-        ret_val.setLatitude(ProjMath.radToDeg(lat_));
-        // longitude is wrapped as usual.
-        ret_val.setLongitude(ProjMath.radToDeg((float) ((double) pixpoint.x / (double) spps_x)
-                + ctrLon));
+        double lat_ = normalize_latitude(py / spps_y);
+
+        ret_val.setLocation(ProjMath.radToDeg((px / spps_x) + centerX),
+                ProjMath.radToDeg(lat_));
 
         return ret_val;
     }
@@ -538,13 +451,13 @@ public class CADRG extends Cylindrical implements EqualArc {
      * instance, they may need to recalculate "constant" paramters
      * used in the forward() and inverse() calls.
      * <p>
-     *  
+     * 
      */
     protected void computeParameters() {
         int w, h;
 
         if (ul == null)
-            ul = new Point(0, 0); //HACK
+            ul = new Point(0, 0); // HACK
 
         // quick calculate the maxscale
         maxscale = CADRG_calc_maxscale();
@@ -552,8 +465,9 @@ public class CADRG extends Cylindrical implements EqualArc {
             scale = maxscale;
 
         // Compute the "ADRG" scale, which gets used below.
-        double adrgscale = 1000000.0 / scale; // 1 million (from ADRG
-                                              // spec)
+        double adrgscale = 1000000.0 / scale; // 1 million (from
+        // ADRG
+        // spec)
         if (adrgscale > CADRG_SCALE_LIMIT) {
             Debug.message("proj", "CADRG: adrgscale > CADRG_SCALE_LIMIT");
             adrgscale = CADRG_SCALE_LIMIT;
@@ -565,7 +479,7 @@ public class CADRG extends Cylindrical implements EqualArc {
             Debug.output("Y pix constant = " + y_pix_constant);
         }
         // What zone are we in?
-        zone = getZone(ProjMath.radToDeg(ctrLat), y_pix_constant);
+        zone = getZone(ProjMath.radToDeg(centerY), y_pix_constant);
         if (Debug.debugging("proj")) {
             Debug.output("Zone = " + zone);
         }
@@ -591,10 +505,10 @@ public class CADRG extends Cylindrical implements EqualArc {
         if (width > world.x) {
             Debug.message("proj", "CADRG: fixing small world");
             w = world.x;
-            //          ox = (int) ProjMath.roundAdjust((width - w) / 2.0);
+            // ox = (int) ProjMath.roundAdjust((width - w) / 2.0);
         } else {
             w = width;
-            //          ox = 0;
+            // ox = 0;
         }
         if (height > world.y) {
             h = (int) world.y;
@@ -605,7 +519,7 @@ public class CADRG extends Cylindrical implements EqualArc {
         }
 
         // compute the "upper left" adjustment.
-        long temp = (long) ProjMath.roundAdjust(spps_y * ctrLat);
+        long temp = (long) ProjMath.roundAdjust(spps_y * centerY);
         if (Debug.debugging("proj")) {
             Debug.output("CADRG.temp = " + temp);
         }
@@ -625,12 +539,12 @@ public class CADRG extends Cylindrical implements EqualArc {
 
         // Finally compute some useful cylindrical projection
         // parameters
-        //      maxscale = (CADRG_ARC_A[0] * (1000000/width));// HACK!!!
+        // maxscale = (CADRG_ARC_A[0] * (1000000/width));// HACK!!!
         half_world = world.x / 2;
         if (scale > maxscale) {
             scale = maxscale;
         }
-        //      scaled_radius = planetPixelRadius/scale;
+        // scaled_radius = planetPixelRadius/scale;
         Debug.message("proj", "CADRG.computeParameters(): maxscale: "
                 + maxscale);
     }
@@ -682,26 +596,26 @@ public class CADRG extends Cylindrical implements EqualArc {
 
         try {
 
-            float deltaDegrees;
-            float pixPerDegree;
+            double deltaDegrees;
+            double pixPerDegree;
             int deltaPix;
-            float ret;
-            float dx = Math.abs(point2.x - point1.x);
-            float dy = Math.abs(point2.y - point1.y);
+            double ret;
+            double dx = Math.abs(point2.x - point1.x);
+            double dy = Math.abs(point2.y - point1.y);
 
-            float nCenterLat = Math.min(ll1.getLatitude(), ll2.getLatitude())
+            double nCenterLat = Math.min(ll1.getLatitude(), ll2.getLatitude())
                     + Math.abs(ll1.getLatitude() - ll2.getLatitude()) / 2f;
-            float nCenterLon = Math.min(ll1.getLongitude(), ll2.getLongitude())
+            double nCenterLon = Math.min(ll1.getLongitude(), ll2.getLongitude())
                     + Math.abs(ll1.getLongitude() - ll2.getLongitude()) / 2f;
 
             if (dx < dy) {
-                float dlat = Math.abs(ll1.getLatitude() - ll2.getLatitude());
+                double dlat = Math.abs(ll1.getLatitude() - ll2.getLatitude());
                 deltaDegrees = dlat;
                 deltaPix = getHeight();
                 pixPerDegree = getScale() * (float) getYPixConstant() / 90f;
             } else {
-                float dlon;
-                float lat1, lon1, lon2;
+                double dlon;
+                double lat1, lon1, lon2;
 
                 // point1 is to the right of point2. switch the
                 // LatLonPoints so that ll1 is west (left) of ll2.
@@ -730,14 +644,14 @@ public class CADRG extends Cylindrical implements EqualArc {
             // The new scale...
             ret = pixPerDegree / (deltaPix / deltaDegrees);
 
-            //OK, now given the new scale at the apparent new center
-            //location, we need to test if the zone changes, because
-            //if it does, the values don't work out right because the
-            //pixel spacings are different. If the zones are
-            //different, we need to recalculate the scale based on
+            // OK, now given the new scale at the apparent new center
+            // location, we need to test if the zone changes, because
+            // if it does, the values don't work out right because the
+            // pixel spacings are different. If the zones are
+            // different, we need to recalculate the scale based on
             // the
-            //new zone.
-            CADRG newcadrg = new CADRG(new LatLonPoint(nCenterLat, nCenterLon), ret, getWidth(), getHeight());
+            // new zone.
+            CADRG newcadrg = new CADRG(new LatLonPoint.Double(nCenterLat, nCenterLon), (float) ret, getWidth(), getHeight());
 
             // Use the recursiveCount to prevent extended recalls. A
             // couple rounds should suffice.
@@ -749,7 +663,7 @@ public class CADRG extends Cylindrical implements EqualArc {
                         recursiveCount + 1);
             }
 
-            return ret;
+            return (float) ret;
         } catch (NullPointerException npe) {
             Debug.error("ProjMath.getScale(): caught null pointer exception.");
             return Float.MAX_VALUE;

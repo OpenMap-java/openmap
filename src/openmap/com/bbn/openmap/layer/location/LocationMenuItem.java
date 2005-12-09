@@ -14,19 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationMenuItem.java,v $
 // $RCSfile: LocationMenuItem.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:59 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:09:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.location;
 
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 
 import javax.swing.JMenuItem;
-
-import com.bbn.openmap.LatLonPoint;
 
 /**
  * This is an item that sits on the popup menu. It knows how to get
@@ -95,9 +95,9 @@ public class LocationMenuItem extends JMenuItem implements ActionListener {
         if (layer != null && e.getSource().equals(this)) {
             if (command == LocationLayer.recenter) {
                 MouseEvent evt = clp.getEvent();
-                LatLonPoint llp = layer.getProjection().inverse(evt.getX(),
+                Point2D llp = layer.getProjection().inverse(evt.getX(),
                         evt.getY());
-                clp.getMap().setCenter(llp.getLatitude(), llp.getLongitude());
+                clp.getMap().setCenter(llp.getY(), llp.getX());
             } else if (command.equals(LocationHandler.showdetails)) {
                 clp.getLoc().showDetails(layer);
             }

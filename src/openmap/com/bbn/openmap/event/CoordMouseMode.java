@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CoordMouseMode.java,v $
 // $RCSfile: CoordMouseMode.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.8 $
+// $Date: 2005/12/09 21:09:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,9 +23,9 @@
 package com.bbn.openmap.event;
 
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 
 import com.bbn.openmap.InformationDelegator;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.util.Debug;
 
@@ -117,7 +117,7 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
     public void fireMouseLocation(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        LatLonPoint llp = null;
+        Point2D llp = null;
         Debug.message("mousemodedetail",
                 "CoordMouseMode: firing mouse location");
 
@@ -144,10 +144,10 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
      * here.
      */
     protected String createCoordinateInformationLine(int x, int y,
-                                                     LatLonPoint llp) {
+                                                     Point2D llp) {
         if (llp != null) {
-            return "Lat, Lon (" + df.format(llp.getLatitude()) + ", "
-                    + df.format(llp.getLongitude()) + ") - x, y (" + x + ","
+            return "Lat, Lon (" + df.format(llp.getY()) + ", "
+                    + df.format(llp.getX()) + ") - x, y (" + x + ","
                     + y + ")";
         } else {
             return "x, y (" + x + "," + y + ")";

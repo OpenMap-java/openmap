@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/BufferedCSpecLayer.java,v $
 // $RCSfile: BufferedCSpecLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 20:59:19 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:08:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,16 +23,16 @@
 package com.bbn.openmap.layer.specialist;
 
 /*  CORBA  */
+import java.awt.geom.Point2D;
+
 import org.omg.CORBA.StringHolder;
+
 import com.bbn.openmap.CSpecialist.CProjection;
 import com.bbn.openmap.CSpecialist.LLPoint;
 import com.bbn.openmap.CSpecialist.Server;
 import com.bbn.openmap.CSpecialist.UGraphic;
-
-/*  OpenMap  */
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * BufferedCSpecLayer is a Layer which communicates to CORBA
@@ -40,7 +40,7 @@ import com.bbn.openmap.proj.Projection;
  */
 public class BufferedCSpecLayer extends CSpecLayer {
 
-//    private final static String[] debugTokens = { "debug.cspec" };
+    // private final static String[] debugTokens = { "debug.cspec" };
 
     // Cached graphics
     UGraphic[] graphics = null;
@@ -58,7 +58,7 @@ public class BufferedCSpecLayer extends CSpecLayer {
      * 
      * @param p Projection
      * @return UGraphic[] graphic list or null if error
-     *  
+     * 
      */
     protected UGraphic[] getSpecGraphics(Projection p) {
         CProjection cproj;
@@ -76,15 +76,15 @@ public class BufferedCSpecLayer extends CSpecLayer {
             return graphics;
         }
 
-        cproj = new CProjection((short) (p.getProjectionType()), new LLPoint(p.getCenter()
-                .getLatitude(), p.getCenter().getLongitude()), (short) p.getHeight(), (short) p.getWidth(), (int) p.getScale());
+        Point2D center = p.getCenter();
+        cproj = new CProjection(MakeProjection.getProjectionType(p), new LLPoint((float) center.getY(), (float) center.getX()), (short) p.getHeight(), (short) p.getWidth(), (int) p.getScale());
 
         // lat-lon "box", (depends on the projection)
-        LatLonPoint ul = p.getUpperLeft();
-        LatLonPoint lr = p.getLowerRight();
+        Point2D ul = p.getUpperLeft();
+        Point2D lr = p.getLowerRight();
 
-        //      ll1 = new LLPoint(ul.getLatitude(), ul.getLongitude());
-        //      ll2 = new LLPoint(lr.getLatitude(), lr.getLongitude());
+        // ll1 = new LLPoint(ul.getLatitude(), ul.getLongitude());
+        // ll2 = new LLPoint(lr.getLatitude(), lr.getLongitude());
         // Adjust lat/lon for total global area
         ll1 = new LLPoint(90.0f, -180.0f);
         ll2 = new LLPoint(-90.0f, 180.0f);

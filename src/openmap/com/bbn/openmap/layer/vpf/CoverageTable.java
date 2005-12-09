@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageTable.java,v $
-// $Revision: 1.12 $ $Date: 2005/08/11 20:39:19 $ $Author: dietrick $
+// $Revision: 1.13 $ $Date: 2005/12/09 21:08:58 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**

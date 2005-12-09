@@ -14,32 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMShape.java,v $
 // $RCSfile: OMShape.java,v $
-// $Revision: 1.1 $
-// $Date: 2005/08/09 20:01:46 $
+// $Revision: 1.2 $
+// $Date: 2005/12/09 21:09:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.PathIterator;
 import java.io.Serializable;
 
 import com.bbn.openmap.proj.Projection;
 
 /**
- * TODO - This is set up for LINETYPE_STRAIGHT. Need to think about
- * preparing the shape for generation better, perhaps doing the
- * conversion to radians, accepting choices for linetype. Might
- * require the shape be converted to GeneralPath for
- * LINETYPE_GREATCIRCLE/RHUMB. We ought to think about having
- * RENDERTYPE_XY being based on percentages relative to width/height
- * of window (ABSOLUTE/RELATIVE).
- * 
- * @author dietrick
+ * The OMShape object is an OMGraphic intended to be used with non-GeoProj
+ * projections, defining projected map object to be modified for different
+ * views. You can use it to provide OMGraphic functionality, with respect to
+ * colors and strokes and OMGraphicLists, to java.awt.Shape objects.
+ * <P>
+ * GeoProj projections will be able to display them, but they will be rendered
+ * as OMGraphic.RENDERTYPE_LATLON with OMGraphic.LINETYPE_STRAIGHT settings.
+ * Rendering can be unpredictable for large coordinate values.
  */
 public class OMShape extends OMGraphic implements Serializable {
 
@@ -62,27 +59,7 @@ public class OMShape extends OMGraphic implements Serializable {
         setNeedToRegenerate(true);
 
         if (origShape != null) {
-            PathIterator pi = shape.getPathIterator(null);
-            double[] coords = new double[6];
-            Point screen = new Point();
-
-            GeneralPath path = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
-
-            while (!pi.isDone()) {
-                int type = pi.currentSegment(coords);
-
-                proj.forward((float) coords[0], (float) coords[1], screen);
-
-                if (type == PathIterator.SEG_MOVETO) {
-                    path.moveTo((int) screen.getX(), (int) screen.getY());
-                } else if (type == PathIterator.SEG_LINETO) {
-                    path.lineTo((int) screen.getX(), (int) screen.getY());
-                } else if (type == PathIterator.SEG_CLOSE) {
-                    path.closePath();
-                }
-
-                pi.next();
-            }
+            shape = new GeneralPath(proj.forwardShape(origShape));
             setNeedToRegenerate(false);
             return true;
         }

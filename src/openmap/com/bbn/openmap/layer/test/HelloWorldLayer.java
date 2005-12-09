@@ -14,21 +14,22 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/test/HelloWorldLayer.java,v $
 // $RCSfile: HelloWorldLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:06 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:09:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.test;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
 
 import com.bbn.openmap.Layer;
+import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoly;
-import com.bbn.openmap.event.ProjectionEvent;
 
 /**
  * Layer objects are components which can be added to the MapBean to

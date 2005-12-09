@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode.java,v $
 // $RCSfile: NavMouseMode.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/08/09 17:37:09 $
+// $Revision: 1.10 $
+// $Date: 2005/12/09 21:09:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,8 +26,8 @@ import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
@@ -141,7 +141,7 @@ public class NavMouseMode extends CoordMouseMode {
                 // If rectangle is too small in both x and y then
                 // recenter the map
                 if ((dx < 5) && (dy < 5)) {
-                    LatLonPoint llp = projection.inverse(e.getPoint());
+                    Point2D llp = projection.inverse(e.getPoint());
 
                     boolean shift = e.isShiftDown();
                     boolean control = e.isControlDown();
@@ -173,16 +173,15 @@ public class NavMouseMode extends CoordMouseMode {
             // Figure out the center of the rectangle
             int centerx = Math.min(point1.x, point2.x) + dx / 2;
             int centery = Math.min(point1.y, point2.y) + dy / 2;
-            com.bbn.openmap.LatLonPoint center = projection.inverse(centerx,
-                    centery);
+            Point2D center = projection.inverse(centerx, centery);
 
             // Fire events on main map to change view to match rect1
-            //    Debug.output("point1: " +point1);
-            //    Debug.output("point2: " +point2);
-            //        Debug.output("Centerx: " +centerx +
-            //             " Centery: " + centery);
-            //          Debug.output("New Scale: " + newScale);
-            //          Debug.output("New Center: " +center);
+            // Debug.output("point1: " +point1);
+            // Debug.output("point2: " +point2);
+            // Debug.output("Centerx: " +centerx +
+            // " Centery: " + centery);
+            // Debug.output("New Scale: " + newScale);
+            // Debug.output("New Center: " +center);
 
             // Set the parameters of the projection and then set
             // the projection of the map. This way we save having
@@ -246,7 +245,7 @@ public class NavMouseMode extends CoordMouseMode {
     }
 
     // Mouse Motion Listener events
-    ///////////////////////////////
+    // /////////////////////////////
 
     /**
      * Handle a mouseDragged MouseMotionListener event. A rectangle is
@@ -271,7 +270,7 @@ public class NavMouseMode extends CoordMouseMode {
             // value.
             paintRectangle((MapBean) e.getSource(), point1, point2);
             // paint new rectangle
-            //          point2 = e.getPoint();
+            // point2 = e.getPoint();
             point2 = getRatioPoint((MapBean) e.getSource(),
                     point1,
                     e.getPoint());

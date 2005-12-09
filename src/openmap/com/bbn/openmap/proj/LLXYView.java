@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LLXYView.java,v $
 // $RCSfile: LLXYView.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:22 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,7 +23,9 @@
 package com.bbn.openmap.proj;
 
 import java.awt.Point;
-import com.bbn.openmap.LatLonPoint;
+import java.awt.geom.Point2D;
+
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -71,7 +73,7 @@ public class LLXYView extends LLXY {
      * @param height height of screen
      */
     public LLXYView(LatLonPoint center, float scale, int width, int height) {
-        super(center, scale, width, height, LLXYViewType);
+        super(center, scale, width, height);
         computeParameters();
     }
 
@@ -100,18 +102,18 @@ public class LLXYView extends LLXY {
         // compute the offsets
         this.hy = height / 2;
         this.wx = width / 2;
-        cLon = ProjMath.radToDeg(ctrLon);
+        cLon = ProjMath.radToDeg(centerX);
 
         // We have no way of constructing the User Space at anything
         // other than 0,0 for now.
         if (uCtr == null) {
             uCtrLat = (float) 0.0;
             uCtrLon = (float) 0.0;
-            uCtr = new LatLonPoint(uCtrLat, uCtrLon);
+            uCtr = new LatLonPoint.Float(uCtrLat, uCtrLon);
         }
 
         if (helper == null) {
-            helper = new LLXYViewHelper(uCtr, scale, width, height);
+            helper = new LLXYViewHelper(uCtr, (float)scale, width, height);
         }
 
         synchronized (helper) {
@@ -133,7 +135,7 @@ public class LLXYView extends LLXY {
                     uCtrLat,
                     uCtrLon);
 
-            helper.forward(ctrLat, ctrLon, temp, true);
+            helper.forward(centerY, centerX, temp, true);
             sCtrX = temp.x;
             sCtrY = temp.y;
 
@@ -148,8 +150,8 @@ public class LLXYView extends LLXY {
 
         Debug.message("LLXYView", "User Center LL: " + uCtrLon + "," + uCtrLat
                 + " User Center xy: " + uCtrX + "," + uCtrY
-                + " Screen Center LL: " + ProjMath.radToDeg(ctrLon) + ","
-                + ProjMath.radToDeg(ctrLat) + " Screen Center xy: " + sCtrX
+                + " Screen Center LL: " + ProjMath.radToDeg(centerY) + ","
+                + ProjMath.radToDeg(centerX) + " Screen Center xy: " + sCtrX
                 + "," + sCtrY + " Screen wh: " + width + "x" + height
                 + " Screen halfwh: " + this.wx + "x" + this.hy + " Delta xy: "
                 + dUSX + "," + dUSY);
@@ -232,22 +234,6 @@ public class LLXYView extends LLXY {
     }
 
     /**
-     * Inverse project a Point.
-     * 
-     * @param pt x,y Point
-     * @param llp resulting LatLonPoint
-     * @return LatLonPoint llp
-     */
-    public LatLonPoint inverse(Point pt, LatLonPoint llp) {
-        // convert from screen to user coordinates
-        int x = pt.x - this.wx + dUSX;
-        int y = this.hy - pt.y + dUSY;
-
-        // now convert to world coords
-        return (helper.inverse(x, y, llp));
-    }
-
-    /**
      * Inverse project x,y coordinates into a LatLonPoint.
      * 
      * @param x integer x coordinate
@@ -256,16 +242,16 @@ public class LLXYView extends LLXY {
      * @return LatLonPoint llp
      * @see Proj#inverse(Point)
      */
-    public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
+    public Point2D inverse(int x, int y, Point2D llp) {
         int tx = x - this.wx + dUSX;
         int ty = this.hy - y + dUSY;
 
         if (Debug.debugging("LLXYViewi")) {
             // This is only to aid printing....
-            LatLonPoint tllp = helper.inverse(tx, ty, llp);
+            helper.inverse(tx, ty, llp);
 
             Debug.output("xy: " + x + "," + y + " txty: " + tx + "," + ty
-                    + " llp: " + tllp.getLongitude() + "," + tllp.getLatitude());
+                    + " llp: " + llp.getY() + "," + llp.getX());
         }
 
         return (helper.inverse(tx, ty, llp));
@@ -278,7 +264,7 @@ public class LLXYView extends LLXY {
 
         public LLXYViewHelper(LatLonPoint center, float scale, int width,
                 int height) {
-            super(center, scale, width, height, LLXYViewType);
+            super(center, scale, width, height);
         }
 
         public void setAllParams(int hPixelsPerMeter, float hPlanetRadius,
@@ -299,11 +285,34 @@ public class LLXYView extends LLXY {
             this.scaled_radius = hScaled_radius;
             this.width = hWidth;
             this.height = hHeight;
-            this.ctrLat = hCtrLat;
-            this.ctrLon = hCtrLon;
+            this.centerY = hCtrLat;
+            this.centerX = hCtrLon;
             this.computeParameters();
         }
 
+        public void setAllParams(int hPixelsPerMeter, double hPlanetRadius,
+                                 double hPlanetPixelRadius,
+                                 double hPlanetPixelCircumference,
+                                 double hMinscale, double hMaxscale,
+                                 double hScale, double hScaled_radius,
+                                 int hWidth, int hHeight, float hCtrLat,
+                                 float hCtrLon) {
+
+            this.pixelsPerMeter = hPixelsPerMeter;
+            this.planetRadius = hPlanetRadius;
+            this.planetPixelRadius = hPlanetPixelRadius;
+            this.planetPixelCircumference = hPlanetPixelCircumference;
+            this.minscale = hMinscale;
+            this.maxscale = hMaxscale;
+            this.scale = hScale;
+            this.scaled_radius = hScaled_radius;
+            this.width = hWidth;
+            this.height = hHeight;
+            this.centerY = hCtrLat;
+            this.centerX = hCtrLon;
+            this.computeParameters();
+        }
+        
         public String toString() {
             return "LLXYViewHelper[" + super.toString();
         }
@@ -348,19 +357,11 @@ public class LLXYView extends LLXY {
             return p;
         }
 
-        public LatLonPoint inverse(Point pt, LatLonPoint llp) {
-            int x = pt.x + this.wx;
-            int y = this.hy - pt.y;
-
-            if (Debug.debugging("LLXYViewHelperi")) {
-                Debug.output("inverse helper x,y: " + x + "," + y);
-            }
-
-            // inverse project, using LLXY.inverse
-            return (super.inverse(x, y, llp));
+        public Point2D inverse(Point pt, Point2D llp) {
+            return this.inverse(pt.x, pt.y, llp);
         }
 
-        public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
+        public Point2D inverse(int x, int y, Point2D llp) {
             x = x + this.wx;
             y = this.hy - y;
 

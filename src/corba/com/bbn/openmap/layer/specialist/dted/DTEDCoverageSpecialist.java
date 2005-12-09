@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/dted/DTEDCoverageSpecialist.java,v $
 // $RCSfile: DTEDCoverageSpecialist.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/11 19:30:00 $
+// $Revision: 1.8 $
+// $Date: 2005/12/09 21:09:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,24 +23,31 @@
 package com.bbn.openmap.layer.specialist.dted;
 
 /*  Java Core  */
-import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.awt.Color;
+import java.io.File;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
-/*  OpenMap  */
-import com.bbn.openmap.*;
-import com.bbn.openmap.layer.dted.DTEDFrameColorTable;
+import org.omg.CORBA.StringHolder;
+
+import com.bbn.openmap.CSpecialist.CProjection;
+import com.bbn.openmap.CSpecialist.GraphicChange;
+import com.bbn.openmap.CSpecialist.LLPoint;
+import com.bbn.openmap.CSpecialist.UGraphic;
+import com.bbn.openmap.CSpecialist.XYPoint;
+import com.bbn.openmap.CSpecialist.CColorPackage.EColor;
+import com.bbn.openmap.CSpecialist.GraphicPackage.EGraphic;
+import com.bbn.openmap.CSpecialist.RectanglePackage.ERectangle;
 import com.bbn.openmap.layer.dted.DTEDCoverageManager;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.*;
-
-/* Specialist */
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.CColorPackage.*;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
-import com.bbn.openmap.CSpecialist.RectanglePackage.*;
-import com.bbn.openmap.layer.specialist.*;
+import com.bbn.openmap.layer.dted.DTEDFrameColorTable;
+import com.bbn.openmap.layer.specialist.MakeProjection;
+import com.bbn.openmap.layer.specialist.SGraphic;
+import com.bbn.openmap.layer.specialist.Specialist;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * HACK: this specialist copies functionality from the
@@ -106,9 +113,12 @@ public class DTEDCoverageSpecialist extends Specialist {
     /** The array of coverage for level 2 data. */
     protected boolean[][] level2Frames = new boolean[180][360];
 
-//    private final static transient String showLevel0Command = "showLevel0";
-//    private final static transient String showLevel1Command = "showLevel1";
-//    private final static transient String showLevel2Command = "showLevel2";
+    // private final static transient String showLevel0Command =
+    // "showLevel0";
+    // private final static transient String showLevel1Command =
+    // "showLevel1";
+    // private final static transient String showLevel2Command =
+    // "showLevel2";
     private final static transient XYPoint nullP1 = new XYPoint((short) 0, (short) 0);
 
     /** The property describing the locations of level 0 and 1 data. */
@@ -268,8 +278,8 @@ public class DTEDCoverageSpecialist extends Specialist {
      * 
      * @param p properties.
      * @param propName the name of the property.
-     * @param dfault the default color to use if the property value doesn't
-     *        work.
+     * @param dfault the default color to use if the property value
+     *        doesn't work.
      * @return the java Color.
      */
     protected Color parseColor(Properties p, String propName, Color dfault) {
@@ -304,36 +314,18 @@ public class DTEDCoverageSpecialist extends Specialist {
         }
     }
 
-    public UGraphic[] fillRectangle(
-                                    com.bbn.openmap.CSpecialist.CProjection p,
-                                    com.bbn.openmap.CSpecialist.LLPoint ll1,
-                                    com.bbn.openmap.CSpecialist.LLPoint ll2,
+    public UGraphic[] fillRectangle(CProjection p, LLPoint ll1, LLPoint ll2,
                                     String staticArgs,
-                                    org.omg.CORBA.StringHolder dynamicArgs,
-                                    com.bbn.openmap.CSpecialist.GraphicChange notifyOnChange,
+                                    StringHolder dynamicArgs,
+                                    GraphicChange notifyOnChange,
                                     String uniqueID) {
         System.out.println("DTEDCoverageSpecialist.fillRectangle()");
 
-        Projection proj;
-        switch (p.kind) {
-        case CADRG.CADRGType:
-            proj = new CADRG(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height);
-            break;
-        case Orthographic.OrthographicType:
-            proj = new Orthographic(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height);
-            break;
-        case Gnomonic.GnomonicType:
-            proj = new Gnomonic(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height);
-            break;
-        case Mercator.MercatorType:
-        default:
-            proj = new Mercator(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height);
-            break;
-        }
+        Projection proj = MakeProjection.getProjection(p);
 
         OMGraphicList[] omGraphicLists = coverageManager.getCoverageRects(proj);
 
-        /////////////////////
+        // ///////////////////
         // safe quit
         if (omGraphicLists != null) {
 

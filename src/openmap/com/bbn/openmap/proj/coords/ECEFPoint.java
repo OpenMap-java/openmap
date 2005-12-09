@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/ECEFPoint.java,v $
 // $RCSfile: ECEFPoint.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/11 20:39:18 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
 
 /**
@@ -229,7 +228,7 @@ public class ECEFPoint {
      * @param pt LatLonPoint
      */
     public void setLatLon(LatLonPoint pt) {
-        setLatLon(pt.getLatitude(), pt.getLongitude());
+        setLatLon((float)pt.getLatitude(), (float)pt.getLongitude());
     }
 
     /**
@@ -336,7 +335,7 @@ public class ECEFPoint {
         //    else height = z / sin_p1 + rn*(e2 - 1.0);
         // }
 
-        LatLonPoint dst = new LatLonPoint((float) latitude, (float) longitude);
+        LatLonPoint dst = new LatLonPoint.Float((float) latitude, (float) longitude);
         return dst;
     }
 }

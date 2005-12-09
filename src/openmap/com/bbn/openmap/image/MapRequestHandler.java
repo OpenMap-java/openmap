@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/MapRequestHandler.java,v $
 // $RCSfile: MapRequestHandler.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/08/09 19:17:31 $
+// $Revision: 1.12 $
+// $Date: 2005/12/09 21:09:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -459,9 +459,9 @@ public class MapRequestHandler extends ImageServer implements
             Debug.output("MSH: Invalid Azimuth");
         }
 
-        response = Math.round(projection.getCenter().getLatitude() * 100.0)
+        response = Math.round(projection.getCenter().getY() * 100.0)
                 / 100.0 + ":"
-                + Math.round(projection.getCenter().getLongitude() * 100.0)
+                + Math.round(projection.getCenter().getX() * 100.0)
                 / 100.0;
 
         HttpConnection.writeHttpResponse(out, contentType, response);
@@ -490,9 +490,9 @@ public class MapRequestHandler extends ImageServer implements
             Debug.output("MSH: Invalid Azimuth");
         }
 
-        response = Math.round(projection.getCenter().getLatitude() * 100.0)
+        response = Math.round(projection.getCenter().getY() * 100.0)
                 / 100.0 + ":"
-                + Math.round(projection.getCenter().getLongitude() * 100.0)
+                + Math.round(projection.getCenter().getX() * 100.0)
                 / 100.0;
 
         HttpConnection.writeHttpResponse(out, contentType, response);

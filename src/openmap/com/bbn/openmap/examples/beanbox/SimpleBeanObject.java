@@ -16,7 +16,7 @@
 
 package com.bbn.openmap.examples.beanbox;
 
-import java.awt.*;
+import java.awt.Image;
 
 /**
  * A simple bean object. Contains a unique long id, a lat, lon

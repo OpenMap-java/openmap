@@ -1,7 +1,7 @@
 /* **********************************************************************
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/wms/WMSPlugIn.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/10/14 18:06:21 $
+ * $Revision: 1.5 $
+ * $Date: 2005/12/09 21:09:15 $
  * $Author: dietrick $
  *
  * Code provided by Raj Singh, raj@rajsingh.org
@@ -157,10 +157,10 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         String width = "undefined";
 
         if (p != null) {
-            bbox = Float.toString(p.getUpperLeft().getLongitude()) + ","
-                    + Float.toString(p.getLowerRight().getLatitude()) + ","
-                    + Float.toString(p.getLowerRight().getLongitude()) + ","
-                    + Float.toString(p.getUpperLeft().getLatitude());
+            bbox = Double.toString(p.getUpperLeft().getX()) + ","
+                    + Double.toString(p.getLowerRight().getY()) + ","
+                    + Double.toString(p.getLowerRight().getX()) + ","
+                    + Double.toString(p.getUpperLeft().getY());
             height = Integer.toString(p.getHeight());
             width = Integer.toString(p.getWidth());
         }

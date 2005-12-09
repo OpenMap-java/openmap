@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/etopo/ETOPOLayer.java,v $
 // $RCSfile: ETOPOLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:55 $
+// $Revision: 1.9 $
+// $Date: 2005/12/09 21:09:10 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -23,15 +23,24 @@
 package com.bbn.openmap.layer.etopo;
 
 /*  Java Core  */
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-/*  OpenMap  */
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.FormatException;
@@ -44,15 +53,6 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
-
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
 
 /**
  * ETOPOLayer extends Layer to provide rendering of the ETOPO5 world
@@ -545,8 +545,8 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
             if (projection instanceof CADRG) {
 
                 // get corners
-                LatLonPoint ul = projection.getUpperLeft();
-                LatLonPoint lr = projection.getLowerRight();
+                Point2D ul = projection.getUpperLeft();
+                Point2D lr = projection.getLowerRight();
 
                 // set start/end indicies
                 Point ulp = projection.forward(ul);
@@ -560,7 +560,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 
             // get the center lat/lon (used by the HACK, see above in
             // method description)
-            LatLonPoint center = projection.getCenter();
+            Point2D center = projection.getCenter();
             LatLonPoint llp = new LatLonPoint();
             // build array
             for (int y = sy; y < ey; y++) {
@@ -608,16 +608,16 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
                         Color pix = null;
                         if (viewType == SLOPESHADING) {
                             // HACK (see method description above)
-                            if ((llp.getLatitude() == center.getLatitude())
-                                    && (llp.getLongitude() == center.getLongitude()))
+                            if ((llp.getLatitude() == center.getY())
+                                    && (llp.getLongitude() == center.getX()))
                                 gray = 0;
                             else
                                 gray = 127 + sl;
                             pix = new Color(gray, gray, gray, opaqueness);
                         } else if (viewType == COLOREDSHADING) {
                             // HACK (see method description above)
-                            if ((llp.getLatitude() == center.getLatitude())
-                                    && (llp.getLongitude() == center.getLongitude()))
+                            if ((llp.getLatitude() == center.getY())
+                                    && (llp.getLongitude() == center.getX()))
                                 pix = new Color(0, 0, 0, opaqueness);
                             else
                                 pix = getColor(el, sl);

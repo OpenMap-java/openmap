@@ -14,21 +14,30 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/08/11 20:39:17 $
+// $Revision: 1.13 $
+// $Date: 2005/12/09 21:09:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape;
 
-import java.awt.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.geom.Point2D;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import com.bbn.openmap.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+
+import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.Debug;
@@ -70,7 +79,7 @@ import com.bbn.openmap.util.PropUtils;
  *  
  * </pre></code>
  * 
- * @version $Revision: 1.12 $ $Date: 2005/08/11 20:39:17 $
+ * @version $Revision: 1.13 $ $Date: 2005/12/09 21:09:10 $
  * @see SpatialIndex
  */
 public class MultiShapeLayer extends ShapeLayer {
@@ -241,12 +250,12 @@ public class MultiShapeLayer extends ShapeLayer {
             return new OMGraphicList();
         }
 
-        LatLonPoint ul = projection.getUpperLeft();
-        LatLonPoint lr = projection.getLowerRight();
-        float ulLat = ul.getLatitude();
-        float ulLon = ul.getLongitude();
-        float lrLat = lr.getLatitude();
-        float lrLon = lr.getLongitude();
+        Point2D ul = projection.getUpperLeft();
+        Point2D lr = projection.getLowerRight();
+        double ulLat = ul.getY();
+        double ulLon = ul.getX();
+        double lrLat = lr.getY();
+        double lrLon = lr.getX();
 
         OMGraphicList masterList = new OMGraphicList();
         OMGraphicList list = null;
@@ -262,8 +271,8 @@ public class MultiShapeLayer extends ShapeLayer {
                 Debug.output("MultiShapeLayer.computeGraphics(): Dateline is on screen");
             }
 
-            double ymin = (double) Math.min(ulLat, lrLat);
-            double ymax = (double) Math.max(ulLat, lrLat);
+            double ymin = Math.min(ulLat, lrLat);
+            double ymax = Math.max(ulLat, lrLat);
 
             sii = spatialIndexes.iterator();
             while (sii.hasNext()) {

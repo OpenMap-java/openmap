@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMDistance.java,v $
 // $RCSfile: OMDistance.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/08/09 20:01:46 $
+// $Revision: 1.11 $
+// $Date: 2005/12/09 21:09:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -140,15 +140,25 @@ public class OMDistance extends OMPoly {
             return;
         }
 
-        Geo lastGeo = new Geo(rawllpts[0], rawllpts[1], false);
-        points.add(new OMPoint(ProjMath.radToDeg(rawllpts[0]), ProjMath.radToDeg(rawllpts[1]), 1));
+        Geo lastGeo = new Geo(rawllpts[0], rawllpts[1], units == DECIMAL_DEGREES);
+        float latpnt = rawllpts[0];
+        float lonpnt = rawllpts[1];
+        if (units == RADIANS) {
+            latpnt = ProjMath.radToDeg(latpnt);
+            lonpnt = ProjMath.radToDeg(lonpnt);
+        }
+        points.add(new OMPoint(latpnt, lonpnt, 1));
         Geo curGeo = null;
         float cumulativeDist = 0f;
         for (int p = 2; p < rawllpts.length; p += 2) {
             if (curGeo == null) {
-                curGeo = new Geo(rawllpts[p], rawllpts[p + 1], false);
+                curGeo = new Geo(rawllpts[p], rawllpts[p + 1], units == DECIMAL_DEGREES);
             } else {
-                curGeo.initializeRadians(rawllpts[p], rawllpts[p + 1]);
+                if (units == DECIMAL_DEGREES) {
+                    curGeo.initialize(rawllpts[p], rawllpts[p + 1]);
+                } else {
+                    curGeo.initializeRadians(rawllpts[p], rawllpts[p + 1]);
+                }
             }
 
             float dist = getDist(lastGeo, curGeo);
@@ -159,7 +169,14 @@ public class OMDistance extends OMPoly {
                     dist,
                     cumulativeDist,
                     distUnits));
-            points.add(new OMPoint(ProjMath.radToDeg(rawllpts[p]), ProjMath.radToDeg(rawllpts[p + 1]), 1));
+            latpnt = rawllpts[p];
+            lonpnt = rawllpts[p + 1];
+            if (units == RADIANS) {
+                latpnt = ProjMath.radToDeg(latpnt);
+                lonpnt = ProjMath.radToDeg(lonpnt);
+            }
+            
+            points.add(new OMPoint(latpnt, lonpnt, 1));
             lastGeo.initialize(curGeo);
         }
     }

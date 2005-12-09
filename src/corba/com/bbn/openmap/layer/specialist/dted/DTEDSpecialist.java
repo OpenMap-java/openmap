@@ -14,29 +14,44 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/dted/DTEDSpecialist.java,v $
 // $RCSfile: DTEDSpecialist.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:37 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.specialist.dted;
 
-import java.util.*;
+import java.util.StringTokenizer;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.layer.dted.*;
-import com.bbn.openmap.layer.specialist.*;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
+import org.omg.CORBA.StringHolder;
+
+import com.bbn.openmap.CSpecialist.CProjection;
+import com.bbn.openmap.CSpecialist.CTEntry;
+import com.bbn.openmap.CSpecialist.EComp;
+import com.bbn.openmap.CSpecialist.GraphicChange;
+import com.bbn.openmap.CSpecialist.LLPoint;
+import com.bbn.openmap.CSpecialist.MouseEvent;
+import com.bbn.openmap.CSpecialist.UGraphic;
+import com.bbn.openmap.CSpecialist.WidgetChange;
+import com.bbn.openmap.CSpecialist.XYPoint;
+import com.bbn.openmap.CSpecialist.CColorPackage.EColor;
+import com.bbn.openmap.CSpecialist.CStipplePackage.EStipple;
+import com.bbn.openmap.CSpecialist.GraphicPackage.DeclutterType;
+import com.bbn.openmap.CSpecialist.GraphicPackage.EGraphic;
+import com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType;
+import com.bbn.openmap.CSpecialist.GraphicPackage.RenderType;
+import com.bbn.openmap.CSpecialist.RasterPackage.ERaster;
+import com.bbn.openmap.layer.dted.DTEDCacheManager;
+import com.bbn.openmap.layer.dted.DTEDFrameSubframe;
+import com.bbn.openmap.layer.dted.DTEDFrameSubframeInfo;
+import com.bbn.openmap.layer.specialist.MakeProjection;
+import com.bbn.openmap.layer.specialist.Specialist;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.omGraphics.OMRasterObject;
+import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.util.Debug;
-
-// specialist stuff
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.CColorPackage.*;
-import com.bbn.openmap.CSpecialist.CStipplePackage.*;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
-import com.bbn.openmap.CSpecialist.RasterPackage.*;
 
 /**
  * Implement the Specialist interface so that we can serve graphics to
@@ -83,21 +98,18 @@ public class DTEDSpecialist extends Specialist {
         cache_manager.setSubframeInfo(dfsi);
     }
 
-    public UGraphic[] fillRectangle(
-                                    com.bbn.openmap.CSpecialist.CProjection p,
-                                    com.bbn.openmap.CSpecialist.LLPoint ll1,
-                                    com.bbn.openmap.CSpecialist.LLPoint ll2,
+    public UGraphic[] fillRectangle(CProjection p, LLPoint ll1, LLPoint ll2,
                                     String staticArgs,
-                                    org.omg.CORBA.StringHolder dynamicArgs,
-                                    com.bbn.openmap.CSpecialist.GraphicChange notifyOnChange,
+                                    StringHolder dynamicArgs,
+                                    GraphicChange notifyOnChange,
                                     String uniqueID) {
 
         System.out.println("DTEDSpecialist.fillRectangle()");
         try {
-            com.bbn.openmap.omGraphics.OMGraphicList omgraphics;
+            OMGraphicList omgraphics;
 
-            if ((p.kind == CADRG.CADRGType) && (p.scale < minScale)) {
-                omgraphics = cache_manager.getRectangle(new CADRG(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height));
+            if ((p.kind == MakeProjection.CADRGType) && (p.scale < minScale)) {
+                omgraphics = cache_manager.getRectangle((CADRG) MakeProjection.getProjection(p));
             } else {
                 System.out.println("DTEDSpecialist.fillRectangle(): wrong projection!");
                 return new UGraphic[0];

@@ -14,23 +14,25 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaShapeLayer.java,v $
 // $RCSfile: AreaShapeLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.7 $
+// $Date: 2005/12/09 21:09:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape.areas;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.MapMouseListener;
-import com.bbn.openmap.layer.shape.*;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.Projection;
-
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.util.Properties;
 import java.util.Vector;
+
+import com.bbn.openmap.event.MapMouseListener;
+import com.bbn.openmap.layer.shape.ShapeLayer;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.Projection;
 
 /**
  * A Layer to use an AreaHandler to display geographic regions on
@@ -83,12 +85,12 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
     public synchronized OMGraphicList prepare() {
 
         Projection projection = getProjection();
-        LatLonPoint ul = projection.getUpperLeft();
-        LatLonPoint lr = projection.getLowerRight();
-        float ulLat = ul.getLatitude();
-        float ulLon = ul.getLongitude();
-        float lrLat = lr.getLatitude();
-        float lrLon = lr.getLongitude();
+        Point2D ul = projection.getUpperLeft();
+        Point2D lr = projection.getLowerRight();
+        double ulLat = ul.getY();
+        double ulLon = ul.getX();
+        double lrLat = lr.getY();
+        double lrLon = lr.getX();
 
         OMGraphicList list = areas.getGraphics(ulLat, ulLon, lrLat, lrLon);
         list.generate(getProjection(), true);

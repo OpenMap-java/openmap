@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/earthImage/EarthImagePlugIn.java,v $
 // $RCSfile: EarthImagePlugIn.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 20:25:13 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -284,7 +284,7 @@ public class EarthImagePlugIn extends AbstractPlugIn implements
 
                 Point ctp = new Point();
                 LatLonPoint llp = new LatLonPoint();
-                LatLonPoint center = p.getCenter();
+                LatLonPoint center = (LatLonPoint) p.getCenter(new LatLonPoint());
 
                 for (int i = 0; i < projWidth; i++) {
                     for (int j = 0; j < projHeight; j++) {

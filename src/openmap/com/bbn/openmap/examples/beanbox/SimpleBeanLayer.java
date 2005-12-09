@@ -16,10 +16,15 @@
 
 package com.bbn.openmap.examples.beanbox;
 
-import java.awt.*;
-import javax.swing.*;
-import java.util.*;
-import java.lang.reflect.*;
+import java.awt.Graphics;
+import java.lang.reflect.Constructor;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.Vector;
+
+import javax.swing.ImageIcon;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.event.MapMouseListener;
@@ -29,8 +34,8 @@ import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.tools.beanbox.BeanBoxHandler;
 import com.bbn.openmap.tools.beanbox.BeanBox;
+import com.bbn.openmap.tools.beanbox.BeanBoxHandler;
 
 /**
  * An OpenMap Layer for displaying

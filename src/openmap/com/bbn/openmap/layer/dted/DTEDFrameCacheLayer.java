@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameCacheLayer.java,v $
 // $RCSfile: DTEDFrameCacheLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/09/13 14:33:11 $
+// $Revision: 1.10 $
+// $Date: 2005/12/09 21:09:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 
 import javax.swing.Box;
@@ -35,8 +36,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-/*  OpenMap  */
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.dataAccess.dted.DTEDConstants;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCacheHandler;
 import com.bbn.openmap.event.MapMouseListener;
@@ -79,40 +78,40 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  * 
  * <pre>
- * 
  *  
- *   #------------------------------
- *   # Properties for DTEDFrameCacheLayer
- *   #------------------------------
  *   
- *   # Level of DTED data to use 0, 1, 2
- *   dted.level=0
+ *    #------------------------------
+ *    # Properties for DTEDFrameCacheLayer
+ *    #------------------------------
+ *    
+ *    # Level of DTED data to use 0, 1, 2
+ *    dted.level=0
+ *    
+ *    # height (meters or feet) between color changes in band shading
+ *    dted.band.height=25
+ *    
+ *    # Minumum scale to display images. Larger numbers mean smaller scale, 
+ *    # and are more zoomed out.
+ *    dted.min.scale=20000000
+ *    
+ *    # Delete the cache if the layer is removed from the map.
+ *    dted.kill.cache=true
  *   
- *   # height (meters or feet) between color changes in band shading
- *   dted.band.height=25
+ *    # Need to set GeneratorLoaders for DTED rendering.  These properties get
+ *    # forwarded on to the DTEDFrameCacheHandler.
+ *    dted.generators=greys colors
+ *    dted.greys.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
+ *    dted.greys.prettyName=Slope Shading
+ *    dted.greys.colorsClass=com.bbn.openmap.omGraphics.grid.GreyscaleSlopeColors
+ *    dted.colors.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
+ *    dted.colors.prettyName=Elevation Shading
+ *    dted.colors.colorsClass=com.bbn.openmap.omGraphics.grid.ColoredShadingColors
  *   
- *   # Minumum scale to display images. Larger numbers mean smaller scale, 
- *   # and are more zoomed out.
- *   dted.min.scale=20000000
+ *    #-------------------------------------
+ *    # End of properties for DTEDFrameCacheLayer
+ *    #-------------------------------------
+ *    
  *   
- *   # Delete the cache if the layer is removed from the map.
- *   dted.kill.cache=true
- *  
- *   # Need to set GeneratorLoaders for DTED rendering.  These properties get
- *   # forwarded on to the DTEDFrameCacheHandler.
- *   dted.generators=greys colors
- *   dted.greys.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
- *   dted.greys.prettyName=Slope Shading
- *   dted.greys.colorsClass=com.bbn.openmap.omGraphics.grid.GreyscaleSlopeColors
- *   dted.colors.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
- *   dted.colors.prettyName=Elevation Shading
- *   dted.colors.colorsClass=com.bbn.openmap.omGraphics.grid.ColoredShadingColors
- *  
- *   #-------------------------------------
- *   # End of properties for DTEDFrameCacheLayer
- *   #-------------------------------------
- *   
- *  
  * </pre>
  * 
  * @see com.bbn.openmap.layer.rpf.ChangeCase
@@ -198,10 +197,11 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
      * The default constructor for the Layer. All of the attributes
      * are set to their default values.
      * 
-     * @param dfc paths to the DTED directories that hold
-     *        level 0 and 1 data.
+     * @param dfc paths to the DTED directories that hold level 0 and
+     *        1 data.
      */
-    public DTEDFrameCacheLayer(com.bbn.openmap.dataAccess.dted.DTEDFrameCache dfc) {
+    public DTEDFrameCacheLayer(
+            com.bbn.openmap.dataAccess.dted.DTEDFrameCache dfc) {
         this();
         setFrameCache(dfc);
     }
@@ -282,7 +282,7 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
      * (the thread that is running the prepare). If this Layer needs
      * to do any cleanups during the abort, it should do so, but
      * return out of the prepare asap.
-     *  
+     * 
      */
     public synchronized OMGraphicList prepare() {
 
@@ -337,11 +337,12 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
             omGraphicList = cache.getRectangle((EqualArc) projection);
         } else {
             fireRequestInfoLine("  The scale is too small for DTED viewing.");
-            Debug.error("DTEDFrameCacheLayer: scale (1:" + projection.getScale()
-                    + ") is smaller than minimum (1:" + maxScale + ") allowed.");
+            Debug.error("DTEDFrameCacheLayer: scale (1:"
+                    + projection.getScale() + ") is smaller than minimum (1:"
+                    + maxScale + ") allowed.");
             omGraphicList = new OMGraphicList();
         }
-        /////////////////////
+        // ///////////////////
         // safe quit
         int size = 0;
         if (omGraphicList != null) {
@@ -406,9 +407,9 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
         killCache = kc;
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // GUI
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /** The user interface palette for the DTED layer. */
     protected Box palette = null;
@@ -495,11 +496,11 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
         return palette;
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // MapMouseListener interface implementation. This will be
     // replaced with a subclass of StandardMouseModeInterpreter that
     // only receives the map mouse click.
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     public synchronized MapMouseListener getMapMouseListener() {
         return this;
@@ -516,10 +517,10 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
 
     public boolean mouseReleased(MouseEvent e) {
         Projection projection = getProjection();
-        LatLonPoint ll = projection.inverse(e.getX(), e.getY());
+        Point2D ll = projection.inverse(e.getX(), e.getY());
         location = new DTEDLocation(e.getX(), e.getY());
-        location.setElevation(cache.getElevation(ll.getLatitude(),
-                ll.getLongitude()));
+        location.setElevation(cache.getElevation((float) ll.getY(),
+                (float) ll.getX()));
         location.generate(projection);
         repaint();
         return true;

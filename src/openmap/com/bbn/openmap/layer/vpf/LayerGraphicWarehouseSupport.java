@@ -12,20 +12,27 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LayerGraphicWarehouseSupport.java,v $
-// $Revision: 1.11 $ $Date: 2005/08/09 19:29:39 $ $Author: dietrick $
+// $Revision: 1.12 $ $Date: 2005/12/09 21:08:57 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.omGraphics.*;
+import java.awt.Component;
+import java.util.List;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.FanCompress;
 import com.bbn.openmap.util.PropUtils;
-
-import java.awt.Component;
-import java.util.*;
 
 /**
  * Implement a graphic factory that builds OMGraphics.

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.14 $
-// $Date: 2005/08/09 18:08:42 $
+// $Revision: 1.15 $
+// $Date: 2005/12/09 21:09:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,7 @@ package com.bbn.openmap.layer.link;
 /*  Java Core  */
 import java.awt.Container;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -32,13 +33,9 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 
-/*  OpenMap  */
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -53,6 +50,8 @@ import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The LinkLayer is a Swing component, and an OpenMap layer, that
@@ -63,28 +62,28 @@ import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
  * <P>
  * 
  * <pre>
- * 
  *  
- *   
- *   
- *    # port number of server
- *    link.port=3031
- *   
- *    # host name of server
- *    link.host=host.com
- *   
- *    # URL of properties file for server attributes.  Properties
- *    # contained in this file are passed directly to the server to provide
- *    # additional information to the server about how to provide the
- *    # graphics.  Some standard properties are listed in the
- *    # LinkPropertiesConstants file, but any property can be passed to the
- *    # server.  How the server handles the property depends on the server,
- *    # but non-applicable properties are ignored.
- *    link.propertiesURL=http://location.of.properties.file.com
  *   
  *    
+ *    
+ *     # port number of server
+ *     link.port=3031
+ *    
+ *     # host name of server
+ *     link.host=host.com
+ *    
+ *     # URL of properties file for server attributes.  Properties
+ *     # contained in this file are passed directly to the server to provide
+ *     # additional information to the server about how to provide the
+ *     # graphics.  Some standard properties are listed in the
+ *     # LinkPropertiesConstants file, but any property can be passed to the
+ *     # server.  How the server handles the property depends on the server,
+ *     # but non-applicable properties are ignored.
+ *     link.propertiesURL=http://location.of.properties.file.com
+ *    
+ *     
+ *    
  *   
- *  
  * </pre>
  * 
  * You have to call setProperties() on this layer to set its
@@ -329,7 +328,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
         distanceLimit = PropUtils.intFromProperties(properties, realPrefix
                 + DistanceLimitProperty, distanceLimit);
 
-        //      listener = new LinkListener(linkManager, this,
+        // listener = new LinkListener(linkManager, this,
         // currentGenerator);
     }
 
@@ -409,9 +408,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                     + " lr = " + projection.getLowerRight());
         }
 
-        //      LinkOMGraphicList omGraphicList;
+        // LinkOMGraphicList omGraphicList;
 
-        ////////////// Call getRectangle for server....
+        // //////////// Call getRectangle for server....
         try {
             // We do want the link object here... If another thread is
             // using the link, wait.
@@ -423,7 +422,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             }
 
             synchronized (l) {
-                //              omGraphicList = getGraphics(l, projection);
+                // omGraphicList = getGraphics(l, projection);
                 sendMapRequest(l, projection);
             }
 
@@ -431,7 +430,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
 
         } catch (UnknownHostException uhe) {
             System.err.println("LinkLayer: unknown host!");
-            //      return currentList;
+            // return currentList;
         } catch (java.io.IOException ioe) {
             System.err.println("LinkLayer: IOException contacting server for map request!");
             System.err.println(ioe);
@@ -447,31 +446,31 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             System.err.println("LinkLayer: Communication error between "
                     + getName() + " layer\nand Link Server: Host: " + host
                     + ", Port: " + port);
-            //      return currentList;
+            // return currentList;
         }
 
-        /////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////
         // With asynchronous behavior, we don't listen to the reply
         // now. The LinkListener will handle setting the new
         // OMGraphicList if one is needed as decided by the server.
 
-        /////////////////////
+        // ///////////////////
         // safe quit
-        //      int size = 0;
-        //      if (omGraphicList != null) {
-        //          size = omGraphicList.size();
+        // int size = 0;
+        // if (omGraphicList != null) {
+        // size = omGraphicList.size();
 
-        //          if (Debug.debugging("basic")) {
-        //              System.out.println(getName()+
-        //                                 "|LinkLayer.prepare(): finished with "+
-        //                                 size+" graphics");
-        //          }
+        // if (Debug.debugging("basic")) {
+        // System.out.println(getName()+
+        // "|LinkLayer.prepare(): finished with "+
+        // size+" graphics");
+        // }
 
         // // omGraphicList.project(projection);
-        //      }
-        //      else
-        //          Debug.message("basic", getName()+
-        //            "|LinkLayer.prepare(): finished with null graphics list");
+        // }
+        // else
+        // Debug.message("basic", getName()+
+        // "|LinkLayer.prepare(): finished with null graphics list");
 
         return currentList;
     }
@@ -487,12 +486,12 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     protected void sendMapRequest(ClientLink link, Projection proj)
             throws IOException {
 
-        LatLonPoint ul = proj.getUpperLeft();
-        LatLonPoint lr = proj.getLowerRight();
-        float ulLat = ul.getLatitude();
-        float ulLon = ul.getLongitude();
-        float lrLat = lr.getLatitude();
-        float lrLon = lr.getLongitude();
+        Point2D ul = proj.getUpperLeft();
+        Point2D lr = proj.getLowerRight();
+        float ulLat = (float) ul.getY();
+        float ulLon = (float) ul.getX();
+        float lrLat = (float) lr.getY();
+        float lrLon = (float) lr.getX();
 
         LinkBoundingPoly[] boundingPolys = null;
 
@@ -513,8 +512,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             boundingPolys[0] = new LinkBoundingPoly(ulLon, lrLat, lrLon, ulLat);
         }
 
-        LinkMapRequest.write(proj.getCenter().getLatitude(),
-                proj.getCenter().getLongitude(),
+        LinkMapRequest.write((float) proj.getCenter().getY(),
+                (float) proj.getCenter().getX(),
                 proj.getScale(),
                 proj.getHeight(),
                 proj.getWidth(),
@@ -522,28 +521,28 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                 args,
                 link);
 
-        /////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////
         // With asynchronous behavior, we don't listen to the reply
         // now. The LinkListener will handle it.
 
-        //      link.readAndParse(proj, currentGenerator);
+        // link.readAndParse(proj, currentGenerator);
 
-        //      // While we are here, check for any change in gesture query
-        //      // requests.
-        //      LinkActionRequest lar = link.getActionRequest();
-        //      if (lar != null) {
-        //          setGestureDescriptor(lar.getDescriptor());
-        //      }
+        // // While we are here, check for any change in gesture query
+        // // requests.
+        // LinkActionRequest lar = link.getActionRequest();
+        // if (lar != null) {
+        // setGestureDescriptor(lar.getDescriptor());
+        // }
 
-        //      handleLinkGraphicList(link.getGraphicList());
-        /////////////////////////////////////////////////////
+        // handleLinkGraphicList(link.getGraphicList());
+        // ///////////////////////////////////////////////////
     }
 
     public void handleLinkGraphicList(LinkGraphicList lgl) {
         Debug.message("link", "LinkLayer.handleLinkGraphicList()");
 
         if (lgl != null) {
-            //Deal with all the messaging....
+            // Deal with all the messaging....
             handleMessages(lgl.getProperties());
             LinkOMGraphicList lomgl = lgl.getGraphics();
             setGraphicList(lomgl);
@@ -761,9 +760,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             fireRequestMessage(value);
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // MapMouseListener interface implementation
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     /** Return the MapMouseListener for the layer. */
     public synchronized MapMouseListener getMapMouseListener() {
         return this;
@@ -935,9 +934,10 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             }
 
             // Find out if a graphic is closeby...
-//            int gesGraphicIndex = graphics.findIndexOfClosest(e.getX(),
-//                    e.getY(),
-//                    distanceLimit);
+            // int gesGraphicIndex =
+            // graphics.findIndexOfClosest(e.getX(),
+            // e.getY(),
+            // distanceLimit);
 
             // We need to do this to deselect everything else too.
             OMGraphic gesGraphic = graphics.selectClosest(e.getX(),
@@ -962,7 +962,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                     return true;
                 }
 
-                //              needRepaint = true; // Why? At this point, we
+                // needRepaint = true; // Why? At this point, we
                 // should wait to see what the server wants us to do,
                 // we should only repaint if a graphic update comes
                 // back.
@@ -981,12 +981,12 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             }
 
             // Get the lat/lon point of the event
-            LatLonPoint llpoint = getProjection().inverse(e.getX(), e.getY());
+            Point2D llpoint = getProjection().inverse(e.getX(), e.getY());
 
             // Don't need these anymore, look below for explaination
             // for asynchronous operation.
-            //      LinkActionList lal;
-            //      LinkActionRequest lar;
+            // LinkActionList lal;
+            // LinkActionRequest lar;
 
             ClientLink l = linkManager.getLink(false);
 
@@ -1009,49 +1009,49 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                 // Send the query
                 LinkActionRequest.write(descriptor,
                         e,
-                        llpoint.getLatitude(),
-                        llpoint.getLongitude(),
+                        (float) llpoint.getY(),
+                        (float) llpoint.getX(),
                         args,
                         l);
 
-                /////////////////////////////////////////////////////
+                // ///////////////////////////////////////////////////
                 // With asynchronous behavior, we don't listen to the
                 // reply
                 // now. The LinkListener will handle it.
 
-                //              // Read the response
-                //              l.readAndParse(getProjection(), currentGenerator,
+                // // Read the response
+                // l.readAndParse(getProjection(), currentGenerator,
                 // this);
 
-                //              lal = l.getActionList();
-                //              lar = l.getActionRequest();
+                // lal = l.getActionList();
+                // lar = l.getActionRequest();
 
-                //              if (id != null) {
-                //                  args.remove(LPC_GRAPHICID);
-                //              }
-                /////////////////////////////////////////////////////
+                // if (id != null) {
+                // args.remove(LPC_GRAPHICID);
+                // }
+                // ///////////////////////////////////////////////////
 
             }
 
             linkManager.finLink();
 
-            /////////////////////////////////////////////////////
+            // ///////////////////////////////////////////////////
             // With asynchronous behavior, we don't listen to the
             // reply
             // now. The LinkListener will handle it.
 
-            //      handleLinkActionRequest(lar);
+            // handleLinkActionRequest(lar);
 
-            //      // If nothing else was returned concerning the gesture
+            // // If nothing else was returned concerning the gesture
             // query
-            //      if (lal == null) {
-            //          return false;
-            //      }
+            // if (lal == null) {
+            // return false;
+            // }
 
-            //      handleLinkActionList(lal);
-            //      return lal.consumedGesture();
+            // handleLinkActionList(lal);
+            // return lal.consumedGesture();
 
-            /////////////////////////////////////////////////////
+            // ///////////////////////////////////////////////////
 
             // I don't know what to answer here, we really don't know
             // at this point. There may be something we can do to set
@@ -1071,8 +1071,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
 
     // DrawingToolRequestor method
     public void drawingComplete(OMGraphic omg, OMAction action) {
-        ////////////// send the new graphic, along with instructions
-        //on what to do with it, to the server.
+        // //////////// send the new graphic, along with instructions
+        // on what to do with it, to the server.
         String id = null; // unknown
 
         Object obj = omg.getAppObject();
@@ -1116,13 +1116,13 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                 lal.end(Link.END_TOTAL);
             }
 
-            /////////////////////////////////////////////////////
+            // ///////////////////////////////////////////////////
             // With asynchronous behavior, we don't listen to the
             // reply
             // now. The LinkListener will handle it.
 
-            //      l.readAndParse(getProjection(), currentGenerator);
-            /////////////////////////////////////////////////////
+            // l.readAndParse(getProjection(), currentGenerator);
+            // ///////////////////////////////////////////////////
 
             linkManager.finLink();
 
@@ -1179,12 +1179,13 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     public void updateMap(LinkProperties props) {
 
         Proj projection = (Proj) getProjection();
+        Point2D center = projection.getCenter();
         float latitude = PropUtils.floatFromProperties(props,
                 LPC_CENTER_LAT,
-                projection.getCenter().getLatitude());
+                (float) center.getY());
         float longitude = PropUtils.floatFromProperties(props,
                 LPC_CENTER_LONG,
-                projection.getCenter().getLongitude());
+                (float) center.getX());
         float scale = PropUtils.floatFromProperties(props,
                 LPC_SCALE,
                 projection.getScale());
@@ -1205,20 +1206,20 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
         if (latmin >= -90.f && latmax <= 90.f && lonmin >= -180.f
                 && lonmax <= 180.f && latmin <= latmax && lonmin <= lonmax) {
             // Calculate center point
-            float dist = 0.5f * GreatCircle.spherical_distance(ProjMath.degToRad(latmax),
+            float dist = 0.5f * GreatCircle.sphericalDistance(ProjMath.degToRad(latmax),
                     ProjMath.degToRad(lonmin),
                     ProjMath.degToRad(latmin),
                     ProjMath.degToRad(lonmax));
-            float azimuth = GreatCircle.spherical_azimuth(ProjMath.degToRad(latmax),
+            float azimuth = GreatCircle.sphericalAzimuth(ProjMath.degToRad(latmax),
                     ProjMath.degToRad(lonmin),
                     ProjMath.degToRad(latmin),
                     ProjMath.degToRad(lonmax));
-            LatLonPoint center = GreatCircle.spherical_between(ProjMath.degToRad(latmax),
+            center = GreatCircle.sphericalBetween(ProjMath.degToRad(latmax),
                     ProjMath.degToRad(lonmin),
                     dist,
                     azimuth);
-            latitude = center.getLatitude();
-            longitude = center.getLongitude();
+            latitude = (float)center.getY();
+            longitude = (float)center.getX();
         }
 
         MapHandler mapHandler = (MapHandler) getBeanContext();
@@ -1229,20 +1230,21 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             if (mapBean == null) {
                 Debug.message("link", "Warning...mapBean = null");
             } else {
+                center = new Point2D.Float(latitude, longitude);
+                
                 if (projType != null) {
                     Class projClass = ProjectionFactory.getProjClassForName(projType);
                     if (projClass == null) {
                         projClass = Mercator.class;
                     }
                     projection = (Proj) ProjectionFactory.makeProjection(projClass,
-                            latitude,
-                            longitude,
+                            center,
                             scale,
                             width,
                             height);
                 } else {
                     projection = (Proj) mapBean.getProjection();
-                    projection.setCenter(latitude, longitude);
+                    projection.setCenter(center);
                     projection.setScale(scale);
                     projection.setWidth(width);
                     projection.setHeight(height);
@@ -1251,16 +1253,16 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                 if (latmin >= -90.f && latmax <= 90.f && lonmin >= -180.f
                         && lonmax <= 180.f && latmin <= latmax
                         && lonmin <= lonmax) {
-                    LatLonPoint upperLeft = new LatLonPoint(latmax, lonmin);
-                    LatLonPoint lowerRight = new LatLonPoint(latmin, lonmax);
+                    Point2D upperLeft = new Point2D.Float(latmax, lonmin);
+                    Point2D lowerRight = new Point2D.Float(latmin, lonmax);
                     scale = ProjMath.getScale(upperLeft, lowerRight, projection);
                     projection.setScale(scale);
-                    LatLonPoint ul = projection.getUpperLeft();
-                    LatLonPoint lr = projection.getLowerRight();
-                    float factor1 = (latmax - latmin)
-                            / (ul.getLatitude() - lr.getLatitude());
-                    float factor2 = (lonmax - lonmin)
-                            / (lr.getLongitude() - ul.getLongitude());
+                    Point2D ul = projection.getUpperLeft();
+                    Point2D lr = projection.getLowerRight();
+                    double factor1 = (latmax - latmin)
+                            / (ul.getY() - lr.getY());
+                    double factor2 = (lonmax - lonmin)
+                            / (lr.getX() - ul.getX());
                     if (factor2 > factor1)
                         factor1 = factor2;
                     if (factor1 > 1.0) {

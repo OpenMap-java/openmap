@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMCircle.java,v $
 // $RCSfile: OMCircle.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/01/10 16:58:33 $
+// $Revision: 1.9 $
+// $Date: 2005/12/09 21:09:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,8 +28,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Length;
-import com.bbn.openmap.proj.Projection;
 
 /**
  * Graphic object that represents a circle or an ellipse.
@@ -193,7 +193,7 @@ public class OMCircle extends OMArc implements Serializable {
      * position information and make a call to
      * Projection.forwardCircle.
      */
-    protected ArrayList getCoordLists(Projection proj, LatLonPoint center,
+    protected ArrayList getCoordLists(GeoProj proj, LatLonPoint center,
                                       float radius, int nverts) {
         return proj.forwardCircle(center, /* radians */
                 true,

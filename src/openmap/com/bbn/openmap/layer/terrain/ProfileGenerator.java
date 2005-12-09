@@ -14,24 +14,31 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileGenerator.java,v $
 // $RCSfile: ProfileGenerator.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 18:50:21 $
+// $Revision: 1.9 $
+// $Date: 2005/12/09 21:09:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.terrain;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Point;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.util.Vector;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.image.AcmeGifFormatter;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
-import com.bbn.openmap.layer.util.stateMachine.*;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.image.AcmeGifFormatter;
+import com.bbn.openmap.layer.util.stateMachine.State;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.proj.GeoProj;
+import com.bbn.openmap.proj.GreatCircle;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -148,8 +155,8 @@ public class ProfileGenerator implements TerrainTool {
                 points[0] = 0f;
                 points[1] = -6f;
             } else {
-                points[0] = ((LatLonPoint) coords.elementAt(0)).radlat_;
-                points[1] = ((LatLonPoint) coords.elementAt(0)).radlon_;
+                points[0] = (float)((LatLonPoint) coords.elementAt(0)).getRadLat();
+                points[1] = (float)((LatLonPoint) coords.elementAt(0)).getRadLon();
             }
 
             points[2] = points[0];
@@ -157,8 +164,8 @@ public class ProfileGenerator implements TerrainTool {
         } else {
             points = new float[coords.size() * 2];
             for (int i = 0; i < coords.size(); i++) {
-                points[i * 2] = ((LatLonPoint) coords.elementAt(i)).radlat_;
-                points[(i * 2) + 1] = ((LatLonPoint) coords.elementAt(i)).radlon_;
+                points[i * 2] = (float)((LatLonPoint) coords.elementAt(i)).getRadLat();
+                points[(i * 2) + 1] = (float)((LatLonPoint) coords.elementAt(i)).getRadLon();
             }
         }
         return points;
@@ -372,7 +379,7 @@ public class ProfileGenerator implements TerrainTool {
      * @param event Mouse event that supplies the location
      */
     protected void addProfileEvent(MouseEvent event) {
-        LatLonPoint llp = proj.inverse(event.getX(), event.getY());
+        LatLonPoint llp = LatLonPoint.getLatLon(event.getX(), event.getY(), proj);
         if (lastMouse != null) {
             // Check for proximity of the click, since a double
             // click means the end of the line.
@@ -409,8 +416,8 @@ public class ProfileGenerator implements TerrainTool {
      * @param ending the ending mouse event
      */
     protected void addGreatCirclePoints(MouseEvent beginning, MouseEvent ending) {
-        LatLonPoint beg = proj.inverse(beginning.getX(), beginning.getY());
-        LatLonPoint end = proj.inverse(ending.getX(), ending.getY());
+        LatLonPoint beg = LatLonPoint.getLatLon(beginning.getX(), beginning.getY(), proj);
+        LatLonPoint end = LatLonPoint.getLatLon(ending.getX(), ending.getY(), proj);
 
         int num_points = (TerrainLayer.numPixelsBetween(beginning.getX(),
                 beginning.getY(),
@@ -418,16 +425,21 @@ public class ProfileGenerator implements TerrainTool {
                 ending.getY()) - 2)
                 / MAX_SPACE_BETWEEN_PIXELS;
 
-        float[] radPoints = GreatCircle.great_circle(beg.radlat_,
-                beg.radlon_,
-                end.radlat_,
-                end.radlon_,
+        float[] radPoints = GreatCircle.greatCircle((float)beg.getRadLat(),
+                (float)beg.getRadLon(),
+                (float)end.getRadLat(),
+                (float)end.getRadLon(),
                 num_points,
                 true);
+        boolean geoProj = proj instanceof GeoProj;
         for (int i = 0; i < radPoints.length; i++) {
             coords.addElement(new LatLonPoint(radPoints[i], radPoints[i + 1], true));
             Point pt = new Point();
-            proj.forward(radPoints[i], radPoints[i + 1], pt, true);
+            if (geoProj) {
+                ((GeoProj)proj).forward(radPoints[i], radPoints[i + 1], pt, true);
+            } else {
+                proj.forward(Math.toDegrees(radPoints[i]), Math.toDegrees(radPoints[i + 1]), pt);
+            }
             xypoints.addElement(pt);
 
             //        System.out.println("addCGPoints: point " + i + " lat="

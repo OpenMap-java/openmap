@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/SlopeGenerator.java,v $
 // $RCSfile: SlopeGenerator.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/11 20:39:18 $
+// $Revision: 1.7 $
+// $Date: 2005/12/09 21:09:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -185,7 +185,7 @@ public class SlopeGenerator implements OMGridGenerator {
 
                 // OK, on the map.
                 point.setLocation(screenx, screeny);
-                llp = proj.inverse(point, llp);
+                llp = LatLonPoint.getLatLon(point.x, point.y, proj);
 
                 int yc = Math.round((llp.getLatitude() - grid.getLatitude())
                         / grid.getVerticalResolution());

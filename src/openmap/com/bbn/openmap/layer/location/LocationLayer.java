@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationLayer.java,v $
 // $RCSfile: LocationLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:59 $
+// $Revision: 1.8 $
+// $Date: 2005/12/09 21:09:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,14 +27,19 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import javax.swing.*;
 
-/* Openmap */
-import com.bbn.openmap.LatLonPoint;
+import javax.swing.Box;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.event.InfoDisplayEvent;
@@ -434,21 +439,21 @@ public class LocationLayer extends Layer implements MapMouseListener {
                     + projection.getLowerRight());
         }
 
-        LatLonPoint ul = projection.getUpperLeft();
-        LatLonPoint lr = projection.getLowerRight();
+        Point2D ul = projection.getUpperLeft();
+        Point2D lr = projection.getLowerRight();
 
         if (Debug.debugging("location")) {
-            float delta = lr.getLongitude() - ul.getLongitude();
+            double delta = lr.getX() - ul.getX();
             Debug.output(getName() + "|LocationLayer.prepare(): " + " ul.lon ="
-                    + ul.getLongitude() + " lr.lon = " + lr.getLongitude()
+                    + ul.getX() + " lr.lon = " + lr.getY()
                     + " delta = " + delta);
         }
         if (dataHandlers != null) {
             for (int i = 0; i < dataHandlers.length; i++) {
-                ((LocationHandler) dataHandlers[i]).get(ul.getLatitude(),
-                        ul.getLongitude(),
-                        lr.getLatitude(),
-                        lr.getLongitude(),
+                ((LocationHandler) dataHandlers[i]).get((float)ul.getY(),
+                        (float) ul.getX(),
+                        (float)lr.getY(),
+                        (float)lr.getX(),
                         omGraphicList);
             }
         }

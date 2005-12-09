@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/EdgeTable.java,v $
-// $Revision: 1.6 $ $Date: 2005/01/10 16:36:21 $ $Author: dietrick $
+// $Revision: 1.7 $ $Date: 2005/12/09 21:08:57 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -20,13 +20,12 @@ package com.bbn.openmap.layer.vpf;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
- * Read VPF format edge tables to generate polyline graphics for
- * OpenMap.
+ * Read VPF format edge tables to generate polyline graphics for OpenMap.
  */
 public class EdgeTable extends PrimitiveTable {
 
@@ -42,8 +41,7 @@ public class EdgeTable extends PrimitiveTable {
      * 
      * @param cov the coverage table that this tile is part of
      * @param tile the tile to parse
-     * @throws FormatException a problem was encountered initializing
-     *         this tile
+     * @throws FormatException a problem was encountered initializing this tile
      */
     public EdgeTable(CoverageTable cov, TileDirectory tile)
             throws FormatException {
@@ -88,9 +86,8 @@ public class EdgeTable extends PrimitiveTable {
      * Get the value of the right_face column
      * 
      * @param l the list to retrieve the value from
-     * @deprecated use the getRightFaceTilingAdapter method instead
-     *             (using this could cause a ClassCastException for
-     *             some VPF data)
+     * @deprecated use the getRightFaceTilingAdapter method instead (using this
+     *             could cause a ClassCastException for some VPF data)
      */
     public final DcwCrossTileID getRightFace(List l) {
         return (DcwCrossTileID) l.get(covtable.cachedLineSchema[3]);
@@ -107,9 +104,8 @@ public class EdgeTable extends PrimitiveTable {
      * Get the value of the left_face column
      * 
      * @param l the list to retrieve the value from
-     * @deprecated use the getLeftFaceTilingAdapter method instead
-     *             (using this could cause a ClassCastException for
-     *             some VPF data)
+     * @deprecated use the getLeftFaceTilingAdapter method instead (using this
+     *             could cause a ClassCastException for some VPF data)
      */
     public final DcwCrossTileID getLeftFace(List l) {
         return (DcwCrossTileID) l.get(covtable.cachedLineSchema[4]);
@@ -126,9 +122,8 @@ public class EdgeTable extends PrimitiveTable {
      * Get the value of the right_edge column
      * 
      * @param l the list to retrieve the value from
-     * @deprecated use the getRightEdgeTilingAdapter method instead
-     *             (using this could cause a ClassCastException for
-     *             some VPF data)
+     * @deprecated use the getRightEdgeTilingAdapter method instead (using this
+     *             could cause a ClassCastException for some VPF data)
      */
     public final DcwCrossTileID getRightEdge(List l) {
         return (DcwCrossTileID) l.get(covtable.cachedLineSchema[5]);
@@ -145,9 +140,8 @@ public class EdgeTable extends PrimitiveTable {
      * Get the value of the left_edge column
      * 
      * @param l the list to retrieve the value from
-     * @deprecated use the getLeftEdgeTilingAdapter method instead
-     *             (using this could cause a ClassCastException for
-     *             some VPF data)
+     * @deprecated use the getLeftEdgeTilingAdapter method instead (using this
+     *             could cause a ClassCastException for some VPF data)
      */
     public final DcwCrossTileID getLeftEdge(List l) {
         return (DcwCrossTileID) l.get(covtable.cachedLineSchema[6]);
@@ -175,12 +169,12 @@ public class EdgeTable extends PrimitiveTable {
      * @return the vpf topology level
      */
     public int topologyLevel() {
-        if (covtable.cachedLineSchema[1] == -1) {//no start_node,
-                                                 // topology level 0
+        if (covtable.cachedLineSchema[1] == -1) {// no start_node,
+            // topology level 0
             return 0;
         }
-        if (covtable.cachedLineSchema[3] == -1) {//no right_face,
-                                                 // level 1 or 2
+        if (covtable.cachedLineSchema[3] == -1) {// no right_face,
+            // level 1 or 2
             return 2;
         }
         return 3;
@@ -194,15 +188,13 @@ public class EdgeTable extends PrimitiveTable {
     }
 
     /**
-     * Parse the edge records for this tile, calling
-     * warehouse.createEdge once for each record.
+     * Parse the edge records for this tile, calling warehouse.createEdge once
+     * for each record.
      * 
-     * @param warehouse the warehouse used for createEdge calls (must
-     *        not be null)
-     * @param dpplat threshold for latitude thinning (passed to
-     *        warehouse)
-     * @param dpplon threshold for longitude thinngin (passed to
-     *        warehouse)
+     * @param warehouse the warehouse used for createEdge calls (must not be
+     *        null)
+     * @param dpplat threshold for latitude thinning (passed to warehouse)
+     * @param dpplon threshold for longitude thinngin (passed to warehouse)
      * @param ll1 upperleft of selection region (passed to warehouse)
      * @param ll2 lowerright of selection region (passed to warehouse)
      * @see VPFGraphicWarehouse#createEdge
@@ -233,20 +225,18 @@ public class EdgeTable extends PrimitiveTable {
     }
 
     /**
-     * Use the warehouse to create a graphic from the edge feature, if
-     * you aleady have the line from the edgetable.
+     * Use the warehouse to create a graphic from the edge feature, if you
+     * aleady have the line from the edgetable.
      * 
-     * @param warehouse the warehouse used for createEdge calls (must
-     *        not be null)
-     * @param dpplat threshold for latitude thinning (passed to
-     *        warehouse)
-     * @param dpplon threshold for longitude thinngin (passed to
-     *        warehouse)
+     * @param warehouse the warehouse used for createEdge calls (must not be
+     *        null)
+     * @param dpplat threshold for latitude thinning (passed to warehouse)
+     * @param dpplon threshold for longitude thinngin (passed to warehouse)
      * @param ll1 upperleft of selection region (passed to warehouse)
      * @param ll2 lowerright of selection region (passed to warehouse)
      * @param edge list containing the EdgeTable row contents.
-     * @param featureType the name of the feature. The warehouse may
-     *        want to do some intelligent rendering.
+     * @param featureType the name of the feature. The warehouse may want to do
+     *        some intelligent rendering.
      * @see VPFGraphicWarehouse#createEdge
      */
     public void drawFeature(VPFFeatureWarehouse warehouse, float dpplat,
@@ -269,4 +259,3 @@ public class EdgeTable extends PrimitiveTable {
     }
 
 }
-

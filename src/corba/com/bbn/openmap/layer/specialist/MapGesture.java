@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/MapGesture.java,v $
 // $RCSfile: MapGesture.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:36 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:08:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,7 +54,7 @@ public class MapGesture {
     // gesture modes
     public static final short Raw = 1;
     public static final short Cooked = 2;// HACK: cooked modes
-                                         // unimplemented
+    // unimplemented
     public static final short Burnt = 3;
     public static final short Charcoal = 4;
     private short mode = Raw;
@@ -82,7 +82,7 @@ public class MapGesture {
     }
 
     public void setMode(short m) {
-        mode = Raw;//HACK
+        mode = Raw;// HACK
     }
 
     public void setProjection(Projection proj) {
@@ -103,10 +103,14 @@ public class MapGesture {
             meta = me.isMetaDown();
             alt = me.isAltDown();
 
-            if (projection != null)
-                llpoint = projection.inverse(point);
-            else
+            if (projection != null) {
+                if (llpoint == null) {
+                    llpoint = new LatLonPoint();
+                }
+                projection.inverse(point, llpoint);
+            } else {
                 llpoint = new LatLonPoint(0f, 0f);
+            }
         }
 
         press = MouseDown;

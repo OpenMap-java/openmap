@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoint.java,v $
 // $RCSfile: OMPoint.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/01/10 16:58:33 $
+// $Revision: 1.10 $
+// $Date: 2005/12/09 21:09:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -134,7 +134,6 @@ public class OMPoint extends OMGraphic implements Serializable {
     public void set(float lat, float lon, int offsetx, int offsety) {
         setLat(lat);
         setLon(lon);
-        ;
         set(offsetx, offsety);
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/DMSCoordPanel.java,v $
 // $RCSfile: DMSCoordPanel.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:47 $
+// $Revision: 1.7 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,8 +26,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.Serializable;
 
-import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.CenterSupport;
@@ -147,7 +149,7 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
             secLon.setText(Float.toString(Math.abs(seclon)));
 
         } catch (NumberFormatException except) {
-            //  	    System.out.println(except.toString());
+            // System.out.println(except.toString());
             clearTextBoxes();
             return null;
         }
@@ -158,8 +160,8 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
         // I don't this gives the right behavior. The sign given to
         // the minutes and seconds should be ignored, giving way to
         // the sign of the degree value.
-        //  	lat = (float)(deglat + ((minlat * 60.0) + seclat)/3600);
-        //  	lon = (float)(deglon + ((minlon * 60.0) + seclon)/3600);
+        // lat = (float)(deglat + ((minlat * 60.0) + seclat)/3600);
+        // lon = (float)(deglon + ((minlon * 60.0) + seclon)/3600);
 
         // So, I'm going to keep track of the degree behavior, and the
         // minutes and seconds will just build on it. So for a
@@ -178,7 +180,7 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
             direction = -1f;
         lon = (float) (deglon + (Math.abs(minlon * 60.0f) + Math.abs(seclon))
                 / 3600f * direction);
-        //	System.out.println("lat: " +lat + " lon: "+lon);
+        // System.out.println("lat: " +lat + " lon: "+lon);
 
         return (new LatLonPoint(lat, lon));
     }

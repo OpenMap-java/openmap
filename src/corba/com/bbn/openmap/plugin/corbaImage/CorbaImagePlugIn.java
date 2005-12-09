@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/plugin/corbaImage/CorbaImagePlugIn.java,v $
 // $RCSfile: CorbaImagePlugIn.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 21:03:55 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -111,8 +111,8 @@ public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConst
         if (p != null) {
             buf.append(PROJTYPE + "=" + p.getName() + "&" +
                        SCALE + "=" + p.getScale() + "&" +
-                       LAT + "=" + p.getCenter().getLatitude() + "&" +
-                       LON + "=" + p.getCenter().getLongitude() + "&" +
+                       LAT + "=" + p.getCenter().getY() + "&" +
+                       LON + "=" + p.getCenter().getX() + "&" +
                        HEIGHT + "=" + p.getHeight() + "&" +
                        WIDTH + "=" + p.getWidth());
         } else {

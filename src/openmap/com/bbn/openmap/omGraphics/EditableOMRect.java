@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRect.java,v $
 // $RCSfile: EditableOMRect.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 20:01:47 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -395,28 +395,28 @@ public class EditableOMRect extends EditableOMGraphic {
                 // set the upper left and lower right points
                 // accordingly.
                 if (movingPoint == gpne) {
-                    llp1 = projection.inverse(gpne.getX(), gpne.getY());
+                    llp1 = LatLonPoint.getLatLon(gpne.getX(), gpne.getY(), projection);
                     rect.lat1 = llp1.getLatitude();
                     rect.lon2 = llp1.getLongitude();
                 } else if (movingPoint == gpnw) {
-                    llp1 = projection.inverse(gpnw.getX(), gpnw.getY());
+                    llp1 = LatLonPoint.getLatLon(gpnw.getX(), gpnw.getY(), projection);
                     rect.lat1 = llp1.getLatitude();
                     rect.lon1 = llp1.getLongitude();
                 } else if (movingPoint == gpsw) {
-                    llp1 = projection.inverse(gpsw.getX(), gpsw.getY());
+                    llp1 = LatLonPoint.getLatLon(gpsw.getX(), gpsw.getY(), projection);
                     rect.lat2 = llp1.getLatitude();
                     rect.lon1 = llp1.getLongitude();
                 } else if (movingPoint == gpse) {
-                    llp1 = projection.inverse(gpse.getX(), gpse.getY());
-                    LatLonPoint llp2 = projection.inverse(gpnw.getX(),
-                            gpnw.getY());
+                    llp1 = LatLonPoint.getLatLon(gpse.getX(), gpse.getY(), projection);
+                    LatLonPoint llp2 = LatLonPoint.getLatLon(gpnw.getX(),
+                            gpnw.getY(), projection);
                     rect.lat1 = llp2.getLatitude();
                     rect.lon1 = llp2.getLongitude();
                     rect.lat2 = llp1.getLatitude();
                     rect.lon2 = llp1.getLongitude();
                 } else {
                     //movingPoint == gpc
-                    llp1 = projection.inverse(gpc.getX(), gpc.getY());
+                    llp1 = LatLonPoint.getLatLon(gpc.getX(), gpc.getY(), projection);
                     rect.lat1 = llp1.getLatitude() + diffy;
                     rect.lon1 = llp1.getLongitude() - diffx;
                     rect.lat2 = llp1.getLatitude() - diffy;
@@ -432,7 +432,7 @@ public class EditableOMRect extends EditableOMGraphic {
         // If the center point is moving, the offset distance changes
         if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
-            llp1 = projection.inverse(gpo.getX(), gpo.getY());
+            llp1 = LatLonPoint.getLatLon(gpo.getX(), gpo.getY(), projection);
 
             rect.lat1 = llp1.getLatitude();
             rect.lon1 = llp1.getLongitude();

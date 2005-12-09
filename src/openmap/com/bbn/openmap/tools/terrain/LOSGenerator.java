@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/terrain/LOSGenerator.java,v $
 // $RCSfile: LOSGenerator.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:29 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -113,13 +113,13 @@ public class LOSGenerator {
         }
 
         int startTotalHeight = startObjHeight
-                + dtedCache.getElevation(startLLP.getLatitude(),
-                        startLLP.getLongitude());
+                + dtedCache.getElevation((float)startLLP.getLatitude(),
+                        (float)startLLP.getLongitude());
 
-        float[] llpoints = GreatCircle.great_circle(startLLP.radlat_,
-                startLLP.radlon_,
-                endLLP.radlat_,
-                endLLP.radlon_,
+        double[] llpoints = GreatCircle.greatCircle(startLLP.getY(),
+                startLLP.getX(),
+                endLLP.getY(),
+                endLLP.getX(),
                 numPoints,
                 true);
         LatLonPoint llp = new LatLonPoint();
@@ -192,16 +192,16 @@ public class LOSGenerator {
             return 0;
         }
 
-        float arc_dist = GreatCircle.spherical_distance(startLLP.radlat_,
-                startLLP.radlon_,
-                endLLP.radlat_,
-                endLLP.radlon_);
+        double arc_dist = GreatCircle.sphericalDistance(startLLP.getY(),
+                startLLP.getX(),
+                endLLP.getY(),
+                endLLP.getX());
 
         int endTotalHeight = endObjHeight
-                + dtedCache.getElevation(endLLP.getLatitude(),
-                        endLLP.getLongitude());
+                + dtedCache.getElevation((float)endLLP.getLatitude(),
+                        (float)endLLP.getLongitude());
 
-        return calculateLOSSlope(startTotalHeight, endTotalHeight, arc_dist);
+        return calculateLOSSlope(startTotalHeight, endTotalHeight, (float)arc_dist);
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.20 $
-// $Date: 2005/09/13 14:33:12 $
+// $Revision: 1.21 $
+// $Date: 2005/12/09 21:09:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.MalformedURLException;
@@ -38,7 +39,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -81,7 +81,7 @@ import com.bbn.openmap.util.PropUtils;
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.20 $ $Date: 2005/09/13 14:33:12 $
+ * @version $Revision: 1.21 $ $Date: 2005/12/09 21:09:10 $
  * @see SpatialIndex
  */
 public class ShapeLayer extends OMGraphicHandlerLayer implements
@@ -385,12 +385,12 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
             return new OMGraphicList();
         }
 
-        LatLonPoint ul = projection.getUpperLeft();
-        LatLonPoint lr = projection.getLowerRight();
-        float ulLat = ul.getLatitude();
-        float ulLon = ul.getLongitude();
-        float lrLat = lr.getLatitude();
-        float lrLon = lr.getLongitude();
+        Point2D ul = projection.getUpperLeft();
+        Point2D lr = projection.getLowerRight();
+        double ulLat = ul.getY();
+        double ulLon = ul.getX();
+        double lrLat = lr.getY();
+        double lrLon = lr.getX();
 
         OMGraphicList list = null;
 
@@ -403,8 +403,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                 Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
             }
 
-            double ymin = (double) Math.min(ulLat, lrLat);
-            double ymax = (double) Math.max(ulLat, lrLat);
+            double ymin = Math.min(ulLat, lrLat);
+            double ymax = Math.max(ulLat, lrLat);
 
             try {
                 ESRIRecord records1[] = spatialIndex.locateRecords(ulLon,

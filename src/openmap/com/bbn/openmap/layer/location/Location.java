@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/Location.java,v $
 // $RCSfile: Location.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/08/11 20:39:16 $
+// $Revision: 1.11 $
+// $Date: 2005/12/09 21:09:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,8 +27,8 @@ import java.awt.Graphics;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.layer.DeclutterMatrix;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -314,22 +314,21 @@ public abstract class Location extends OMGraphic {
      */
     public void setLocation(int x, int y, Projection proj) {
         int renderType = getRenderType();
-        LatLonPoint llp;
 
         switch (renderType) {
         case RENDERTYPE_LATLON:
             if (proj != null) {
-                llp = proj.inverse(x, y);
-                setLocation(llp.getLatitude(), llp.getLongitude());
+                Point2D llp = proj.inverse(x, y);
+                setLocation((float)llp.getY(), (float)llp.getX());
             } else {
                 Debug.error("Location can't set lat/lon coordinates without a projection");
             }
             break;
         case RENDERTYPE_OFFSET:
             if (proj != null) {
-                llp = proj.inverse(x, y);
-                setLocation(llp.getLatitude(),
-                        llp.getLongitude(),
+                Point2D llp = proj.inverse(x, y);
+                setLocation((float)llp.getY(),
+                        (float)llp.getX(),
                         this.xOffset,
                         this.yOffset);
             } else {

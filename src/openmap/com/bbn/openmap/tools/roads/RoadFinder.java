@@ -17,8 +17,8 @@
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/RoadFinder.java,v $
  * $RCSfile: RoadFinder.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/12 21:47:49 $
+ * $Revision: 1.6 $
+ * $Date: 2005/12/09 21:09:11 $
  * $Author: dietrick $
  *
  * **********************************************************************
@@ -525,7 +525,7 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
     }
 
     protected LatLonPoint createLatLonPoint(int x, int y) {
-        return getProjection().inverse(x, y);
+        return LatLonPoint.getLatLon(x, y, getProjection());
     }
 
     protected Intersection findIntersection(LatLonPoint loc, String name) {

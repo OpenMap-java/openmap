@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/08/09 20:01:47 $
+// $Revision: 1.10 $
+// $Date: 2005/12/09 21:09:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -318,7 +318,9 @@ public class EditableOMPoint extends EditableOMGraphic {
 
             if (projection != null) {
                 //movingPoint == gpc
-                llp1 = projection.inverse(gpc.getX(), gpc.getY());
+                llp1 = LatLonPoint.getLatLon(gpc.getX(),
+                        gpc.getY(),
+                        projection);
                 point.set(llp1.getLatitude(), llp1.getLongitude());
                 // point.setNeedToRegenerate set
             }
@@ -330,7 +332,9 @@ public class EditableOMPoint extends EditableOMGraphic {
         // If the center point is moving, the offset distance changes
         if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
-            llp1 = projection.inverse(gpo.getX(), gpo.getY());
+            llp1 = LatLonPoint.getLatLon(gpo.getX(),
+                    gpo.getY(),
+                    projection);
 
             point.setLat(llp1.getLatitude());
             point.setLon(llp1.getLongitude());

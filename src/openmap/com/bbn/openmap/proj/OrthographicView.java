@@ -14,16 +14,18 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/OrthographicView.java,v $
 // $RCSfile: OrthographicView.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:23 $
+// $Revision: 1.7 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.proj;
 
-import java.awt.*;
-import com.bbn.openmap.LatLonPoint;
+import java.awt.Point;
+import java.awt.geom.Point2D;
+
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -69,11 +71,11 @@ public class OrthographicView extends Orthographic {
      * @param scale float scale of projection
      * @param width width of screen
      * @param height height of screen
-     *  
+     * 
      */
     public OrthographicView(LatLonPoint center, float scale, int width,
             int height) {
-        super(center, scale, width, height, OrthographicType);
+        super(center, scale, width, height);
         setMinScale(1000.0f);
         computeParameters();
     }
@@ -84,7 +86,7 @@ public class OrthographicView extends Orthographic {
      * 
      * @return String
      * @see Projection#getProjectionID
-     *  
+     * 
      */
     public String toString() {
         return "OrthographicView[" + super.toString();
@@ -96,11 +98,11 @@ public class OrthographicView extends Orthographic {
      * 
      * @param lat float latitude in decimal degrees
      * @param lon float longitude in decimal degrees
-     *  
+     * 
      */
     public void setCenter(float lat, float lon) {
-        ctrLat = normalize_latitude(ProjMath.degToRad(lat));
-        ctrLon = wrap_longitude(ProjMath.degToRad(lon));
+        centerY = normalize_latitude(ProjMath.degToRad(lat));
+        centerX = wrap_longitude(ProjMath.degToRad(lon));
         computeParameters();
         projID = null;
     }
@@ -122,7 +124,7 @@ public class OrthographicView extends Orthographic {
      * instance, they may need to recalculate "constant" paramters
      * used in the forward() and inverse() calls.
      * <p>
-     *  
+     * 
      */
     protected void computeParameters() {
         Debug.message("orthographicview",
@@ -132,11 +134,11 @@ public class OrthographicView extends Orthographic {
         if (uCtr == null) {
             uCtrLat = (float) 0.0;
             uCtrLon = (float) 0.0;
-            uCtr = new LatLonPoint(uCtrLat, uCtrLon);
+            uCtr = new LatLonPoint.Float(uCtrLat, uCtrLon);
         }
 
         if (helper == null) {
-            helper = new OrthographicViewHelper(uCtr, scale, width, height);
+            helper = new OrthographicViewHelper(uCtr, (float) scale, width, height);
         }
 
         synchronized (helper) {
@@ -161,7 +163,7 @@ public class OrthographicView extends Orthographic {
             // compute the offsets
             this.hy = height / 2;
             this.wx = width / 2;
-            helper.forward(ctrLat, ctrLon, temp, true);
+            helper.forward(centerY, centerX, temp, true);
             sCtrX = temp.x;
             sCtrY = temp.y;
 
@@ -175,8 +177,8 @@ public class OrthographicView extends Orthographic {
         }
         Debug.message("orthographicview", "User Center LL: " + uCtrLon + ","
                 + uCtrLat + " User Center xy: " + uCtrX + "," + uCtrY
-                + " Screen Center LL: " + ProjMath.radToDeg(ctrLon) + ","
-                + ProjMath.radToDeg(ctrLat) + " Screen Center xy: " + sCtrX
+                + " Screen Center LL: " + ProjMath.radToDeg(centerY) + ","
+                + ProjMath.radToDeg(centerX) + " Screen Center xy: " + sCtrX
                 + "," + sCtrY + " Screen wh: " + width + "x" + height
                 + " Screen halfwh: " + this.wx + "x" + this.hy + " Delta xy: "
                 + dUSX + "," + dUSY);
@@ -218,64 +220,31 @@ public class OrthographicView extends Orthographic {
      * @param llp LatLonPoint
      * @return LatLonPoint llp
      * @see Proj#inverse(Point)
-     *  
+     * 
      */
-    public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
+    public Point2D inverse(int x, int y, Point2D llp) {
         // convert from screen to world coordinates
         int tx = x - this.wx + dUSX;
         int ty = this.hy - y + dUSY;
 
         // This is only to aid printing....
-        LatLonPoint tllp = helper.inverse(tx, ty, llp);
+        helper.inverse(tx, ty, llp);
 
         Debug.message("mercatorview-i", "xy: " + x + "," + y + " txty: " + tx
-                + "," + ty + " llp: " + tllp.getLongitude() + ","
-                + tllp.getLatitude());
+                + "," + ty + " llp: " + llp.getY() + "," + llp.getX());
 
         return (helper.inverse(tx, ty, llp));
     }
 
-    /**
-     * Inverse project a Point.
-     * <p>
-     * 
-     * @param pt x,y Point
-     * @param llp resulting LatLonPoint
-     * @return LatLonPoint llp
-     *  
-     */
-    public LatLonPoint inverse(Point pt, LatLonPoint llp) {
-        return inverse(pt.x, pt.y, llp);
-    }
-
-    /**
-     * Draw the background for the projection.
-     * 
-     * @param g Graphics2D
-     * @param paint java.awt.Paint to use for the background
-     */
-    public void drawBackground(Graphics2D g, java.awt.Paint paint) {
-        g.setPaint(paint);
-        drawBackground(g);
-    }
-
-    /**
-     * Assume that the Graphics has been set with the Paint/Color
-     * needed, just render the shape of the background.
-     */
-    public void drawBackground(Graphics g) {
-        g.fillRect(0, 0, getWidth(), getHeight());
-    }
-
-    public LatLonPoint getUpperLeft() {
+    public Point2D getUpperLeft() {
         return (helper.getUpperLeft());
     }
 
-    public LatLonPoint getLowerRight() {
+    public Point2D getLowerRight() {
         return (helper.getLowerRight());
     }
 
-    //////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////
     //
     //
     //
@@ -288,13 +257,13 @@ public class OrthographicView extends Orthographic {
     // screen
     // space.
     //
-    //////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////
 
     private class OrthographicViewHelper extends Orthographic {
 
         public OrthographicViewHelper(LatLonPoint center, float scale,
                 int width, int height) {
-            super(center, scale, width, height, OrthographicType);
+            super(center, scale, width, height);
         }
 
         public void setAllParams(int hPixelsPerMeter, float hPlanetRadius,
@@ -314,8 +283,30 @@ public class OrthographicView extends Orthographic {
             this.scaled_radius = hScaled_radius;
             this.width = hWidth;
             this.height = hHeight;
-            this.ctrLat = hCtrLat;
-            this.ctrLon = hCtrLon;
+            this.centerY = hCtrLat;
+            this.centerX = hCtrLon;
+            this.computeParameters();
+        }
+
+        public void setAllParams(int hPixelsPerMeter, double hPlanetRadius,
+                                 double hPlanetPixelRadius,
+                                 double hPlanetPixelCircumference,
+                                 double hMinscale, double hMaxscale,
+                                 double hScale, double hScaled_radius,
+                                 int hWidth, int hHeight, float hCtrLat,
+                                 float hCtrLon) {
+            this.pixelsPerMeter = hPixelsPerMeter;
+            this.planetRadius = hPlanetRadius;
+            this.planetPixelRadius = hPlanetPixelRadius;
+            this.planetPixelCircumference = hPlanetPixelCircumference;
+            this.minscale = hMinscale;
+            this.maxscale = hMaxscale;
+            this.scale = hScale;
+            this.scaled_radius = hScaled_radius;
+            this.width = hWidth;
+            this.height = hHeight;
+            this.centerY = hCtrLat;
+            this.centerX = hCtrLon;
             this.computeParameters();
         }
 
@@ -333,7 +324,7 @@ public class OrthographicView extends Orthographic {
             return p;
         }
 
-        public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
+        public Point2D inverse(int x, int y, Point2D llp) {
             x = x + this.wx;
             y = this.hy - y;
             return (super.inverse(x, y, llp));

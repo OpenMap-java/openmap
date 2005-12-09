@@ -14,21 +14,26 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayerGraphicWarehouse.java,v $
 // $RCSfile: VPFLayerGraphicWarehouse.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:10 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:08:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.io.FormatException;
 
 /**
  * Implement a graphic factory that builds OMGraphics.

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMScalingRaster.java,v $
 // $RCSfile: EditableOMScalingRaster.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/11 20:39:14 $
+// $Revision: 1.8 $
+// $Date: 2005/12/09 21:09:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -124,14 +124,17 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     public void createGraphic(GraphicAttributes ga) {
         init();
         stateMachine.setUndefined();
-        
+
         String pathToFile = null;
 
-        /// This would be an ideal place to bring up a chooser!
+        // / This would be an ideal place to bring up a chooser!
         if (!Environment.isApplet()) {
             pathToFile = com.bbn.openmap.util.FileUtils.getFilePathToOpenFromUser("Choose Image File for Raster");
         } else {
-            JOptionPane.showMessageDialog(null, "Can't search for images in an applet!", "Can't Choose Image", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "Can't search for images in an applet!",
+                    "Can't Choose Image",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         if (pathToFile == null)
@@ -178,7 +181,7 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     public void initRectSize() {
         diffx = Math.abs(raster.getLRLon() - raster.getULLon()) / 2f;
         diffy = Math.abs(raster.getULLat() - raster.getLRLat()) / 2f;
-        //      Debug.output("initRectSize(): diffx:" + diffx + ", diffy:"
+        // Debug.output("initRectSize(): diffx:" + diffx + ", diffy:"
         // + diffy);
     }
 
@@ -202,27 +205,27 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
         if (gpnw == null) {
             gpnw = new GrabPoint(-1, -1);
             gPoints[NW_POINT_INDEX] = gpnw;
-            //          gpnw.setFillPaint(Color.yellow);
+            // gpnw.setFillPaint(Color.yellow);
         }
         if (gpne == null) {
             gpne = new GrabPoint(-1, -1);
             gPoints[NE_POINT_INDEX] = gpne;
-            //          gpne.setFillPaint(Color.blue);
+            // gpne.setFillPaint(Color.blue);
         }
         if (gpsw == null) {
             gpsw = new GrabPoint(-1, -1);
             gPoints[SW_POINT_INDEX] = gpsw;
-            //          gpsw.setFillPaint(Color.green);
+            // gpsw.setFillPaint(Color.green);
         }
         if (gpse == null) {
             gpse = new GrabPoint(-1, -1);
             gPoints[SE_POINT_INDEX] = gpse;
-            //          gpse.setFillPaint(Color.orange);
+            // gpse.setFillPaint(Color.orange);
         }
 
         if (gpc == null) {
             gpc = new OffsetGrabPoint(-1, -1);
-            //          gpc.setFillPaint(Color.red);
+            // gpc.setFillPaint(Color.red);
             gPoints[CENTER_POINT_INDEX] = gpc;
             if (getGraphic().getRenderType() != OMGraphic.RENDERTYPE_LATLON) {
                 gpc.addGrabPoint(gpnw);
@@ -365,7 +368,7 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
                 int middley = (bottom - top) / 2;
                 gpc.set(left + middlex, top + middley);
                 gpc.updateOffsets();
-                //              Debug.output("Center setting x: " + gpc.getX() + ",
+                // Debug.output("Center setting x: " + gpc.getX() + ",
                 // y:" + gpc.getY());
             }
 
@@ -398,8 +401,10 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     protected void setGrabPointsForOMSI() {
 
         if (projection != null) {
-            //movingPoint == gpc
-            LatLonPoint llp1 = projection.inverse(gpc.getX(), gpc.getY());
+            // movingPoint == gpc
+            LatLonPoint llp1 = LatLonPoint.getLatLon(gpc.getX(),
+                    gpc.getY(),
+                    projection);
             raster.setLat(llp1.getLatitude());
             raster.setLon(llp1.getLongitude());
             // point.setNeedToRegenerate set
@@ -436,28 +441,39 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
                 // set the upper left and lower right points
                 // accordingly.
                 if (movingPoint == gpne) {
-                    llp1 = projection.inverse(gpne.getX(), gpne.getY());
+                    llp1 = LatLonPoint.getLatLon(gpne.getX(),
+                            gpne.getY(),
+                            projection);
                     raster.setULLat(llp1.getLatitude());
                     raster.setLRLon(llp1.getLongitude());
                 } else if (movingPoint == gpnw) {
-                    llp1 = projection.inverse(gpnw.getX(), gpnw.getY());
+                    llp1 = LatLonPoint.getLatLon(gpnw.getX(),
+                            gpnw.getY(),
+                            projection);
                     raster.setULLat(llp1.getLatitude());
                     raster.setULLon(llp1.getLongitude());
                 } else if (movingPoint == gpsw) {
-                    llp1 = projection.inverse(gpsw.getX(), gpsw.getY());
+                    llp1 = LatLonPoint.getLatLon(gpsw.getX(),
+                            gpsw.getY(),
+                            projection);
                     raster.setLRLat(llp1.getLatitude());
                     raster.setULLon(llp1.getLongitude());
                 } else if (movingPoint == gpse) {
-                    llp1 = projection.inverse(gpse.getX(), gpse.getY());
-                    LatLonPoint llp2 = projection.inverse(gpnw.getX(),
-                            gpnw.getY());
+                    llp1 = LatLonPoint.getLatLon(gpse.getX(),
+                            gpse.getY(),
+                            projection);
+                    LatLonPoint llp2 = LatLonPoint.getLatLon(gpnw.getX(),
+                            gpnw.getY(),
+                            projection);
                     raster.setULLat(llp2.getLatitude());
                     raster.setULLon(llp2.getLongitude());
                     raster.setLRLat(llp1.getLatitude());
                     raster.setLRLon(llp1.getLongitude());
                 } else {
-                    //movingPoint == gpc
-                    llp1 = projection.inverse(gpc.getX(), gpc.getY());
+                    // movingPoint == gpc
+                    llp1 = LatLonPoint.getLatLon(gpc.getX(),
+                            gpc.getY(),
+                            projection);
                     raster.setULLat(llp1.getLatitude() + diffy);
                     raster.setULLon(llp1.getLongitude() - diffx);
                     raster.setLRLat(llp1.getLatitude() - diffy);
@@ -473,7 +489,7 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
         // If the center point is moving, the offset distance changes
         if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
-            llp1 = projection.inverse(gpo.getX(), gpo.getY());
+            llp1 = LatLonPoint.getLatLon(gpo.getX(), gpo.getY(), projection);
 
             raster.setULLat(llp1.getLatitude());
             raster.setULLon(llp1.getLongitude());
@@ -484,10 +500,14 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
 
                 // Don't call rect.setLocation because we only want to
                 // setNeedToRegenerate if !settingOffset.
-                llp1 = projection.inverse(gpc.getX() - halfwidth - gpo.getX(),
-                        gpc.getY() - halfheight - gpo.getY());
-                LatLonPoint llp2 = projection.inverse(gpc.getX() + halfwidth
-                        - gpo.getX(), gpc.getY() + halfheight - gpo.getY());
+                llp1 = LatLonPoint.getLatLon(gpc.getX() - halfwidth
+                        - gpo.getX(),
+                        gpc.getY() - halfheight - gpo.getY(),
+                        projection);
+                LatLonPoint llp2 = LatLonPoint.getLatLon(gpc.getX() + halfwidth
+                        - gpo.getX(),
+                        gpc.getY() + halfheight - gpo.getY(),
+                        projection);
 
                 raster.setULLat(llp1.getLatitude());
                 raster.setULLon(llp1.getLongitude());
@@ -500,10 +520,11 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
                 Debug.message("eomg",
                         "EditableOMScalingRaster: updating offset rect");
                 if (movingPoint == gpnw || movingPoint == gpse) {
-                    llp1 = projection.inverse(gpnw.getX() - gpo.getX(),
-                            gpnw.getY() - gpo.getY());
-                    LatLonPoint llp2 = projection.inverse(gpse.getX()
-                            - gpo.getX(), gpse.getY() - gpo.getY());
+                    llp1 = LatLonPoint.getLatLon(gpnw.getX() - gpo.getX(),
+                            gpnw.getY() - gpo.getY(),
+                            projection);
+                    LatLonPoint llp2 = LatLonPoint.getLatLon(gpse.getX()
+                            - gpo.getX(), gpse.getY() - gpo.getY(), projection);
 
                     raster.setULLat(llp1.getLatitude());
                     raster.setULLon(llp1.getLongitude());
@@ -511,10 +532,11 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
                     raster.setLRLat(llp2.getLatitude());
                     raster.setLRLon(llp2.getLongitude());
                 } else if (movingPoint == gpne || movingPoint == gpsw) {
-                    llp1 = projection.inverse(gpsw.getX() - gpo.getX(),
-                            gpne.getY() - gpo.getY());
-                    LatLonPoint llp2 = projection.inverse(gpne.getX()
-                            - gpo.getX(), gpsw.getY() - gpo.getY());
+                    llp1 = LatLonPoint.getLatLon(gpsw.getX() - gpo.getX(),
+                            gpne.getY() - gpo.getY(),
+                            projection);
+                    LatLonPoint llp2 = LatLonPoint.getLatLon(gpne.getX()
+                            - gpo.getX(), gpsw.getY() - gpo.getY(), projection);
 
                     raster.setULLat(llp1.getLatitude());
                     raster.setULLon(llp1.getLongitude());
@@ -540,10 +562,10 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
                 int halfheight = (gpse.getY() - gpnw.getY()) / 2;
                 int halfwidth = (gpse.getX() - gpnw.getX()) / 2;
 
-                llp1 = projection.inverse(gpc.getX() - halfwidth, gpc.getY()
-                        - halfheight);
-                LatLonPoint llp2 = projection.inverse(gpc.getX() + halfwidth,
-                        gpc.getY() + halfheight);
+                llp1 = LatLonPoint.getLatLon(gpc.getX() - halfwidth, gpc.getY()
+                        - halfheight, projection);
+                LatLonPoint llp2 = LatLonPoint.getLatLon(gpc.getX() + halfwidth,
+                        gpc.getY() + halfheight, projection);
 
                 raster.setULLat(llp1.getLatitude());
                 raster.setULLon(llp1.getLongitude());
@@ -551,8 +573,8 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
                 raster.setLRLat(llp2.getLatitude());
                 raster.setLRLon(llp2.getLongitude());
             } else if (movingPoint == gpnw || movingPoint == gpse) {
-                llp1 = projection.inverse(gpnw.getX(), gpnw.getY());
-                LatLonPoint llp2 = projection.inverse(gpse.getX(), gpse.getY());
+                llp1 = LatLonPoint.getLatLon(gpnw.getX(), gpnw.getY(), projection);
+                LatLonPoint llp2 = LatLonPoint.getLatLon(gpse.getX(), gpse.getY(), projection);
 
                 raster.setULLat(llp1.getLatitude());
                 raster.setULLon(llp1.getLongitude());
@@ -560,8 +582,8 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
                 raster.setLRLat(llp2.getLatitude());
                 raster.setLRLon(llp2.getLongitude());
             } else if (movingPoint == gpne || movingPoint == gpsw) {
-                llp1 = projection.inverse(gpsw.getX(), gpne.getY());
-                LatLonPoint llp2 = projection.inverse(gpne.getX(), gpsw.getY());
+                llp1 = LatLonPoint.getLatLon(gpsw.getX(), gpne.getY(), projection);
+                LatLonPoint llp2 = LatLonPoint.getLatLon(gpne.getX(), gpsw.getY(), projection);
 
                 raster.setULLat(llp1.getLatitude());
                 raster.setULLon(llp1.getLongitude());

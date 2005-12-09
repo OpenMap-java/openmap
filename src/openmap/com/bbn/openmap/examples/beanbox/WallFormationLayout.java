@@ -16,11 +16,11 @@
 
 package com.bbn.openmap.examples.beanbox;
 
-import java.util.*;
+import java.util.Vector;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.tools.beanbox.BeanLayoutManager;
 
 /**
@@ -82,7 +82,7 @@ public class WallFormationLayout extends BeanLayoutManager {
         if (contents == null || contents.size() == 0)
             return;
 
-        LatLonPoint midllp = new LatLonPoint(container.getLatitude(), container.getLongitude());
+        LatLonPoint midllp = new LatLonPoint.Float(container.getLatitude(), container.getLongitude());
 
         LatLonPoint[] llps = new LatLonPoint[contents.size()];
 
@@ -95,15 +95,15 @@ public class WallFormationLayout extends BeanLayoutManager {
             float angle2Rad = (float) (angle2Deg * Math.PI / 180);
             int numBeans = contents.size();
             float spanNM = (numBeans - 1) * separationInNM;
-            LatLonPoint cornerllp1 = GreatCircle.spherical_between(midllp.radlat_,
-                    midllp.radlon_,
+            LatLonPoint cornerllp1 = GreatCircle.sphericalBetween(midllp.getRadLat(),
+                    midllp.getRadLon(),
                     Length.NM.toRadians(spanNM / 2),
                     angle1Rad);
             llps[0] = cornerllp1;
 
             for (int i = 1; i < contents.size(); i++)
-                llps[i] = GreatCircle.spherical_between(cornerllp1.radlat_,
-                        cornerllp1.radlon_,
+                llps[i] = GreatCircle.sphericalBetween((float)cornerllp1.getRadLat(),
+                        (float)cornerllp1.getRadLon(),
                         Length.NM.toRadians(separationInNM) * i,
                         angle2Rad);
         }

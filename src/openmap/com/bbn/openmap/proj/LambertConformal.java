@@ -4,8 +4,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LambertConformal.java,v $
 // $RCSfile: LambertConformal.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 20:38:12 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:01 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -16,9 +16,8 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -31,41 +30,29 @@ import com.bbn.openmap.util.Debug;
  * 
  * @author David J. Ward
  */
-public class LambertConformal extends Proj {
+public class LambertConformal extends GeoProj {
 
     /**
      * The LambertCC name.
      */
     public final static transient String LambertConformalName = "Lambert Conformal";
 
-    /**
-     * The LambertCC type of projection.
-     */
-    public final static transient int LambertConformalType = 4200;
+    protected double centralMeridian;
+    protected double lambert_sp_one;
+    protected double lambert_sp_two;
+    protected double referenceLatitude = 0.0;
+    protected double falseEasting = 0.0;
+    protected double falseNorthing = 0.0;
 
-    private double lambert_sp_one;
-    private double lambert_sp_two;
-    private double centralMeridian;
-
-    double angle_sp_one;
-    double angle_sp_two;
-    double distance_sp_one;
-    double distance_sp_two;
-    double lambert_lamn;
-    double lambert_lamf;
-
-    int locationCenterXPixel = 0;
-    int locationCenterYPixel = 0;
-    double locationCenterXLambert = 0.0;
-    double locationCenterYLambert = 0.0;
-    double locationPixelsPerLambert = 0.0;
-
-    double locationOriginX = 0.0;
-    double locationOriginY = 0.0;
-
-    double referenceLatitude = 0.0;
-    double falseEasting = 0.0;
-    double falseNorthing = 0.0;
+    protected transient double lambert_lamn;
+    protected transient double lambert_lamf;
+    protected transient int locationCenterXPixel = 0;
+    protected transient int locationCenterYPixel = 0;
+    protected transient double locationCenterXLambert = 0.0;
+    protected transient double locationCenterYLambert = 0.0;
+    protected transient double locationPixelsPerLambert = 0.0;
+    protected transient double locationOriginX = 0.0;
+    protected transient double locationOriginY = 0.0;
 
     /**
      * Construct a Lambert projection.
@@ -78,7 +65,7 @@ public class LambertConformal extends Proj {
      */
     protected LambertConformal(LatLonPoint center, float scale, int width,
             int height) {
-        super(center, scale, width, height, LambertConformalType);
+        super(center, scale, width, height);
     }
 
     /**
@@ -127,7 +114,7 @@ public class LambertConformal extends Proj {
             int height, double centralMeridian, double sp_one, double sp_two,
             double reference_latitude, double falseEasting, double falseNorthing) {
 
-        super(center, scale, width, height, LambertConformalType);
+        super(center, scale, width, height);
 
         this.centralMeridian = centralMeridian;
         this.lambert_sp_one = sp_one;
@@ -150,12 +137,12 @@ public class LambertConformal extends Proj {
      */
     public void computeParameters() {
 
-        angle_sp_one = ProjMath.degToRad(90.0f - lambert_sp_one);
-        angle_sp_two = ProjMath.degToRad(90.0f - lambert_sp_two);
+        double angle_sp_one = ProjMath.degToRad(90.0f - lambert_sp_one);
+        double angle_sp_two = ProjMath.degToRad(90.0f - lambert_sp_two);
 
-        distance_sp_one = Math.log(Math.sin(angle_sp_one))
+        double distance_sp_one = Math.log(Math.sin(angle_sp_one))
                 - Math.log(Math.sin(angle_sp_two));
-        distance_sp_two = Math.log(Math.tan(angle_sp_one / 2.0f))
+        double distance_sp_two = Math.log(Math.tan(angle_sp_one / 2.0f))
                 - Math.log(Math.tan(angle_sp_two / 2.0f));
 
         lambert_lamn = distance_sp_one / distance_sp_two;
@@ -173,12 +160,12 @@ public class LambertConformal extends Proj {
         locationPixelsPerLambert = getMaxScale() / getScale() * 100;
 
         Point2D lp = new Point2D.Double();
-        LatLonPoint origin = new LatLonPoint(referenceLatitude, centralMeridian);
+        LatLonPoint origin = new LatLonPoint.Double(referenceLatitude, centralMeridian);
         LLToWorld(origin.getLatitude(), origin.getLongitude(), lp);
         locationOriginX = lp.getX();
         locationOriginY = lp.getY();
 
-        LatLonPoint center = getCenter();
+        LatLonPoint center = (LatLonPoint) getCenter();
         LLToWorld(center.getLatitude(), center.getLongitude(), lp);
         locationCenterXLambert = lp.getX();
         locationCenterYLambert = lp.getY();
@@ -204,7 +191,7 @@ public class LambertConformal extends Proj {
      * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
      * 
      */
-    public float normalize_latitude(float lat) {
+    public double normalize_latitude(double lat) {
         if (lat > NORTH_POLE) {
             return NORTH_POLE;
         } else if (lat < SOUTH_POLE) {
@@ -307,7 +294,7 @@ public class LambertConformal extends Proj {
      *               coordinate.  It is given the lambert projections as the
      *               input, and the lat, lon coordinate as the output.
      *--------------------------------------------------------------------------*/
-    public LatLonPoint worldToLL(double x, double y, LatLonPoint llp) {
+    public Point2D worldToLL(double x, double y, Point2D llp) {
 
         double formula_two = Math.atan2(x, y);
         double formula_one = Math.sqrt(x * x + y * y);
@@ -321,7 +308,7 @@ public class LambertConformal extends Proj {
         if (lambert_lamn < 0.0)
             lat *= -1.0;
 
-        llp.setLatLon((float) lat, (float) lon);
+        llp.setLocation(lon, lat);
 
         return llp;
     } /* end of function worldToLL */
@@ -333,7 +320,7 @@ public class LambertConformal extends Proj {
      * DESCRIPTION:  This function converts pixel coordinate into lat, lon
      *               coordinate. 
      *--------------------------------------------------------------------------*/
-    public LatLonPoint pixelToLL(int xabs, int yabs, LatLonPoint llp) {
+    public Point2D pixelToLL(int xabs, int yabs, Point2D llp) {
 
         double x = locationCenterXLambert
                 + (((int) xabs - locationCenterXPixel) / locationPixelsPerLambert);
@@ -358,13 +345,13 @@ public class LambertConformal extends Proj {
      * @param lon longitude in degrees
      * @return true is plotable, otherwise false
      */
-    public boolean isPlotable(float lat, float lon) {
+    public boolean isPlotable(double lat, double lon) {
         // It is almost impossible to determine it the location
         // is plotable without calling forward() for the Point
         // and checking if the point is in bounds.
         // Be lazy and return true.
 
-        if (lat < -55f)
+        if (lat < -55)
             return false;
         forward(lat, lon, plotablePoint);
         if (plotablePoint.x >= 0 && plotablePoint.x < this.width
@@ -385,31 +372,6 @@ public class LambertConformal extends Proj {
     }
 
     /**
-     * Projects a point from Lat/Lon space to X/Y space.
-     * <p>
-     * 
-     * @param pt LatLonPoint
-     * @param p Point retval
-     * @return Point p
-     */
-    public Point forward(LatLonPoint pt, Point p) {
-        return forward(pt.radlat_, pt.radlon_, p, true);
-    }
-
-    /**
-     * Forward projects a lat,lon coordinates.
-     * <p>
-     * 
-     * @param lat raw latitude in decimal degrees
-     * @param lon raw longitude in decimal degrees
-     * @param p Resulting XY Point
-     * @return Point p
-     */
-    public Point forward(float lat, float lon, Point p) {
-        return forward(lat, lon, p, false);
-    }
-
-    /**
      * Forward projects lat,lon into XY space and returns a Point.
      * <p>
      * 
@@ -419,7 +381,7 @@ public class LambertConformal extends Proj {
      * @param p Resulting XY Point
      * @param isRadian indicates that lat,lon arguments are in radians
      */
-    public Point forward(float lat, float lon, Point p, boolean isRadian) {
+    public Point forward(double lat, double lon, Point p, boolean isRadian) {
 
         // Figure out the point for screen coordinates. Need to take
         // into account that the origin point of the projection may be
@@ -444,25 +406,13 @@ public class LambertConformal extends Proj {
      * @return LatLonPoint llp
      * @see Proj#inverse(Point)
      */
-    public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
+    public Point2D inverse(int x, int y, Point2D llp) {
         if (llp == null) {
-            llp = new LatLonPoint();
+            llp = new LatLonPoint.Float();
         }
         // convert from screen to world coordinates
         pixelToLL(x, y, llp);
         return llp;
-    }
-
-    /**
-     * Inverse project a Point.
-     * <p>
-     * 
-     * @return LatLonPoint llp
-     * @param pt Point
-     * @param llp resulting LatLonPoint
-     */
-    public LatLonPoint inverse(Point pt, LatLonPoint llp) {
-        return inverse(pt.x, pt.y, llp);
     }
 
     /**
@@ -475,11 +425,11 @@ public class LambertConformal extends Proj {
      * 
      * @return LatLonPoint
      */
-    public LatLonPoint getUpperLeft() {
+    public Point2D getUpperLeft() {
         // In a conic projection the upper left is meaningless
         // unless at realitively small scales.
         // Return 90.0 -180 until someone fugures out a better way.
-        return new LatLonPoint(90.0, -180.0);
+        return new LatLonPoint.Double(90.0, -180.0);
     }
 
     /**
@@ -492,11 +442,11 @@ public class LambertConformal extends Proj {
      * 
      * @return LatLonPoint
      */
-    public LatLonPoint getLowerRight() {
+    public Point2D getLowerRight() {
         // In a conic projection the upper left is meaningless
         // unless at realitively small scales.
         // Return 90.0 -180 until someone fugures out a better way.
-        return new LatLonPoint(-90.0, 180.0);
+        return new LatLonPoint.Double(-90.0, 180.0);
     }
 
     /**
@@ -533,6 +483,28 @@ public class LambertConformal extends Proj {
     public boolean forwardRaw(float[] rawllpts, int rawoff, int[] xcoords,
                               int[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
+        boolean visibleTotal = false;
+        // HACK grabbed from Cylindrical. Might need fixing.
+        Point temp = new Point();
+        int end = copylen + copyoff;
+        for (int i = copyoff, j = rawoff; i < end; i++, j += 2) {
+            forward(rawllpts[j], rawllpts[j + 1], temp, true);
+            xcoords[i] = temp.x;
+            ycoords[i] = temp.y;
+
+            visible[i] = (0 <= temp.x && temp.x <= width)
+                    && (0 <= temp.y && temp.y <= height);
+
+            if (visible[i] == true && visibleTotal == false) {
+                visibleTotal = true;
+            }
+
+        }
+        // if everything is visible
+        return visibleTotal;
+    }
+    
+    public boolean forwardRaw(double[] rawllpts, int rawoff, int[] xcoords, int[] ycoords, boolean[] visible, int copyoff, int copylen) {
         boolean visibleTotal = false;
         // HACK grabbed from Cylindrical. Might need fixing.
         Point temp = new Point();
@@ -617,24 +589,53 @@ public class LambertConformal extends Proj {
         return ret_val;
     }
 
-    /**
-     * Draw the background for the projection.
-     * 
-     * @param g Graphics2D
-     * @param paint java.awt.Paint to use for the background
-     */
-    public void drawBackground(java.awt.Graphics2D g, java.awt.Paint paint) {
-        g.setPaint(paint);
-        drawBackground(g);
-    }
+    public ArrayList _forwardPoly(double[] rawllpts, int ltype, int nsegs, boolean isFilled) {
 
-    /**
-     * Draw the background for the projection.
-     * 
-     * @param g Graphics
-     */
-    public void drawBackground(java.awt.Graphics g) {
-        g.fillRect(0, 0, getWidth(), getHeight());
+        int i, j;
+
+        // determine length of pairs
+        int len = rawllpts.length >> 1; // len/2, chop off extra
+        if (len < 2)
+            return new ArrayList(0);
+
+        // Not concerned with any polygons that are completely below
+        // 60S
+
+        double minlat = ProjMath.degToRad(-60f);
+        boolean allBelowMinLat = true;
+        for (i = 0, j = 0; i < len; i++, j += 2) {
+            double l = rawllpts[j + 1];
+            while (l < 0f)
+                l += Math.PI * 2f;
+            if (rawllpts[j] > minlat) {
+                allBelowMinLat = false;
+            }
+        }
+        if (allBelowMinLat) {
+            return new ArrayList(0);
+        }
+
+        // handle complicated line in specific routines
+        if (isComplicatedLineType(ltype))
+            return doPolyDispatch(rawllpts, ltype, nsegs, isFilled);
+
+        Point temp = new Point();
+        int[] xs = new int[len];
+        int[] ys = new int[len];
+
+        // forward project the points
+        for (i = 0, j = 0; i < len; i++, j += 2) {
+
+            temp = forward(rawllpts[j], rawllpts[j + 1], temp, true);
+            xs[i] = temp.x;
+            ys[i] = temp.y;
+        }
+
+        ArrayList ret_val = new ArrayList(2);
+        ret_val.add(xs);
+        ret_val.add(ys);
+
+        return ret_val;
     }
 
     /**
@@ -649,12 +650,13 @@ public class LambertConformal extends Proj {
 
         Debug.message("Lambert",
                 "proj = new LambertConformal(new LatLonPoint(0.0f, 0.0f), 100000.0f, 620, 480);");
-        proj = new LambertConformal(new LatLonPoint(0f, 0f), 100000.0f, 620, 480);
+        proj = new LambertConformal(new LatLonPoint.Float(0f, 0f), 100000.0f, 620, 480);
         proj.centralMeridian = 15.0f;
         proj.lambert_sp_one = 21.67f;
         proj.lambert_sp_two = 48.33f;
 
         Debug.message("Lambert", "" + proj.inverse(0, 0));
     }
+
 
 }

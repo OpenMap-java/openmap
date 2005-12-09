@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMLine.java,v $
 // $RCSfile: OMLine.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/08/10 22:25:08 $
+// $Revision: 1.12 $
+// $Date: 2005/12/09 21:09:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,27 +28,27 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.util.ArcCalc;
+import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
  * Graphic object that represents a simple line.
  * <p>
- * The OMLine is used to create simple lines, from one point on the
- * window to the other. If you want to have a line with several parts,
- * use OMPoly as a polyline with no fillColor.
+ * The OMLine is used to create simple lines, from one point on the window to
+ * the other. If you want to have a line with several parts, use OMPoly as a
+ * polyline with no fillColor.
  * <h3>NOTE:</h3>
- * See the <a
- * href="com.bbn.openmap.proj.Projection.html#line_restrictions">
- * RESTRICTIONS </a> on Lat/Lon lines. Not following the guidelines
- * listed may result in ambiguous/undefined shapes! Similar
- * assumptions apply to the other vector graphics that we define:
- * circles, ellipses, rects, polys.
+ * See the <a href="com.bbn.openmap.proj.Projection.html#line_restrictions">
+ * RESTRICTIONS </a> on Lat/Lon lines. Not following the guidelines listed may
+ * result in ambiguous/undefined shapes! Similar assumptions apply to the other
+ * vector graphics that we define: circles, ellipses, rects, polys.
  * <p>
  * 
  * @see OMPoly
@@ -64,14 +64,13 @@ public class OMLine extends OMAbstractLine implements Serializable {
     protected int[] pts = null;
 
     /**
-     * For x-y and offset lines, there is the ability to put a curve
-     * in the line. This setting is the amount of an angle, limited to
-     * a semi-circle (PI) that the curve will represent. In other
-     * words, the arc between the two end points is going to look like
-     * a 0 degrees of a circle (straight line, which is the default),
-     * or 180 degrees of a circle (full semi-circle). Given in
-     * radians, though, not degrees. The ArcCalc object handles all
-     * the details.
+     * For x-y and offset lines, there is the ability to put a curve in the
+     * line. This setting is the amount of an angle, limited to a semi-circle
+     * (PI) that the curve will represent. In other words, the arc between the
+     * two end points is going to look like a 0 degrees of a circle (straight
+     * line, which is the default), or 180 degrees of a circle (full
+     * semi-circle). Given in radians, though, not degrees. The ArcCalc object
+     * handles all the details.
      */
     protected ArcCalc arc = null;
 
@@ -90,8 +89,8 @@ public class OMLine extends OMAbstractLine implements Serializable {
      * @param lon_1 longitude of first point, decimal degrees.
      * @param lat_2 latitude of second point, decimal degrees.
      * @param lon_2 longitude of second point, decimal degrees.
-     * @param lineType a choice between LINETYPE_STRAIGHT,
-     *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB.
+     * @param lineType a choice between LINETYPE_STRAIGHT, LINETYPE_GREATCIRCLE
+     *        or LINETYPE_RHUMB.
      */
     public OMLine(float lat_1, float lon_1, float lat_2, float lon_2,
             int lineType) {
@@ -105,11 +104,11 @@ public class OMLine extends OMAbstractLine implements Serializable {
      * @param lon_1 longitude of first point, decimal degrees.
      * @param lat_2 latitude of second point, decimal degrees.
      * @param lon_2 longitude of second point, decimal degrees.
-     * @param lineType a choice between LINETYPE_STRAIGHT,
-     *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB.
-     * @param nsegs number of segment points (only for
-     *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and
-     *        if &lt; 1, this value is generated internally)
+     * @param lineType a choice between LINETYPE_STRAIGHT, LINETYPE_GREATCIRCLE
+     *        or LINETYPE_RHUMB.
+     * @param nsegs number of segment points (only for LINETYPE_GREATCIRCLE or
+     *        LINETYPE_RHUMB line types, and if &lt; 1, this value is generated
+     *        internally)
      */
     public OMLine(float lat_1, float lon_1, float lat_2, float lon_2,
             int lineType, int nsegs) {
@@ -125,14 +124,14 @@ public class OMLine extends OMAbstractLine implements Serializable {
     /**
      * Create a line between two xy points on the window.
      * 
-     * @param x1 the x location of the first point, in pixels from the
-     *        left of the window.
-     * @param y1 the y location of the first point, in pixels from the
-     *        top of the window.
-     * @param x2 the x location of the second point, in pixels from
-     *        the left of the window.
-     * @param y2 the y location of the second point, in pixels from
-     *        the top of the window.
+     * @param x1 the x location of the first point, in pixels from the left of
+     *        the window.
+     * @param y1 the y location of the first point, in pixels from the top of
+     *        the window.
+     * @param x2 the x location of the second point, in pixels from the left of
+     *        the window.
+     * @param y2 the y location of the second point, in pixels from the top of
+     *        the window.
      */
     public OMLine(int x1, int y1, int x2, int y2) {
         super(RENDERTYPE_XY, LINETYPE_STRAIGHT, DECLUTTERTYPE_NONE);
@@ -144,23 +143,23 @@ public class OMLine extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Create a line between two x-y points on the window, where the
-     * x-y points are offsets from a lat-lon point. It assumes that
-     * you'll want a straight window line between the points, so if
-     * you don't, use the setLineType() method to change it.
+     * Create a line between two x-y points on the window, where the x-y points
+     * are offsets from a lat-lon point. It assumes that you'll want a straight
+     * window line between the points, so if you don't, use the setLineType()
+     * method to change it.
      * 
-     * @param lat_1 the latitude of the reference point of the line,
-     *        in decimal degrees.
-     * @param lon_1 the longitude of the reference point of the line,
-     *        in decimal degrees.
-     * @param x1 the x location of the first point, in pixels from the
+     * @param lat_1 the latitude of the reference point of the line, in decimal
+     *        degrees.
+     * @param lon_1 the longitude of the reference point of the line, in decimal
+     *        degrees.
+     * @param x1 the x location of the first point, in pixels from the longitude
+     *        point.
+     * @param y1 the y location of the first point, in pixels from the latitude
+     *        point.
+     * @param x2 the x location of the second point, in pixels from the
      *        longitude point.
-     * @param y1 the y location of the first point, in pixels from the
-     *        latitude point.
-     * @param x2 the x location of the second point, in pixels from
-     *        the longitude point.
-     * @param y2 the y location of the second point, in pixels from
-     *        the latitude point.
+     * @param y2 the y location of the second point, in pixels from the latitude
+     *        point.
      */
     public OMLine(float lat_1, float lon_1, int x1, int y1, int x2, int y2) {
 
@@ -176,11 +175,10 @@ public class OMLine extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Set the lat lon values of the end points of the line from an
-     * array of floats - lat1, lon1, lat2, lon2. This does not look at
-     * the line render type, so it acts accordingly. LL1 is only used
-     * in RENDERTYPE_LATLON, RENDERTYPE_OFFSET, and LL2 is only used
-     * in RENDERTYPE_LATLON.
+     * Set the lat lon values of the end points of the line from an array of
+     * floats - lat1, lon1, lat2, lon2. This does not look at the line render
+     * type, so it acts accordingly. LL1 is only used in RENDERTYPE_LATLON,
+     * RENDERTYPE_OFFSET, and LL2 is only used in RENDERTYPE_LATLON.
      * 
      * @param lls array of floats - lat1, lon1, lat2, lon2
      */
@@ -190,11 +188,11 @@ public class OMLine extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Get the lat lon values of the end points of the line in an
-     * array of floats - lat1, lon1, lat2, lon2. Again, this does not
-     * look at the line render type, so it acts accordingly. LL1 is
-     * only used in RENDERTYPE_LATLON, RENDERTYPE_OFFSET, and LL2 is
-     * only used in RENDERTYPE_LATLON.
+     * Get the lat lon values of the end points of the line in an array of
+     * floats - lat1, lon1, lat2, lon2. Again, this does not look at the line
+     * render type, so it acts accordingly. LL1 is only used in
+     * RENDERTYPE_LATLON, RENDERTYPE_OFFSET, and LL2 is only used in
+     * RENDERTYPE_LATLON.
      * 
      * @return the lat lon array, and all are decimal degrees.
      */
@@ -203,10 +201,9 @@ public class OMLine extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Set the xy values of the end points of the line from an array
-     * of ints - x1, y1, x2, y2 . This does not look at the line
-     * render type, so it acts accordingly. p1 and p2 are only used in
-     * RENDERTYPE_XY, RENDERTYPE_OFFSET.
+     * Set the xy values of the end points of the line from an array of ints -
+     * x1, y1, x2, y2 . This does not look at the line render type, so it acts
+     * accordingly. p1 and p2 are only used in RENDERTYPE_XY, RENDERTYPE_OFFSET.
      * 
      * @param xys array of ints for the points - x1, y1, x2, y2
      */
@@ -216,10 +213,9 @@ public class OMLine extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Get the xy values of the end points of the line in an array of
-     * ints - x1, y1, x2, y2 . This does not look at the line render
-     * type, so it acts accordingly. p1 and p2 are only used in
-     * RENDERTYPE_XY, RENDERTYPE_OFFSET.
+     * Get the xy values of the end points of the line in an array of ints - x1,
+     * y1, x2, y2 . This does not look at the line render type, so it acts
+     * accordingly. p1 and p2 are only used in RENDERTYPE_XY, RENDERTYPE_OFFSET.
      * 
      * @return the array of x-y points, and all are pixel values
      */
@@ -228,9 +224,8 @@ public class OMLine extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Check to see if this line is a polyline. This is a polyline if
-     * it is LINETYPE_GREATCIRCLE or LINETYPE_RHUMB for
-     * RENDERTYPE_LATLON polys.
+     * Check to see if this line is a polyline. This is a polyline if it is
+     * LINETYPE_GREATCIRCLE or LINETYPE_RHUMB for RENDERTYPE_LATLON polys.
      * 
      * @return true if polyline false if not
      */
@@ -239,9 +234,9 @@ public class OMLine extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Set the number of segments of the lat/lon line. (This is only
-     * for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and if
-     * &lt; 1, this value is generated internally).
+     * Set the number of segments of the lat/lon line. (This is only for
+     * LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and if &lt; 1, this
+     * value is generated internally).
      * 
      * @param nsegs number of segment points
      */
@@ -250,8 +245,8 @@ public class OMLine extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Get the number of segments of the lat/lon line. (This is only
-     * for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types).
+     * Get the number of segments of the lat/lon line. (This is only for
+     * LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types).
      * 
      * @return int number of segment points
      */
@@ -260,16 +255,15 @@ public class OMLine extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Set the arc that is drawn between the points of a x-y or offset
-     * line.
+     * Set the arc that is drawn between the points of a x-y or offset line.
      */
     public void setArc(ArcCalc ac) {
         arc = ac;
     }
 
     /**
-     * Return the arc angle set for this line. Will only be set if it
-     * was set externally.
+     * Return the arc angle set for this line. Will only be set if it was set
+     * externally.
      * 
      * @return arc angle in radians.
      */
@@ -358,10 +352,17 @@ public class OMLine extends OMAbstractLine implements Serializable {
                 isPolyline = true;
 
             } else {
-                ArrayList lines = proj.forwardLine(new LatLonPoint(latlons[0], latlons[1]),
-                        new LatLonPoint(latlons[2], latlons[3]),
-                        lineType,
-                        nsegs);
+                ArrayList lines = null;
+                if (proj instanceof GeoProj) {
+                    lines = ((GeoProj) proj).forwardLine(new LatLonPoint(latlons[0], latlons[1]),
+                            new LatLonPoint(latlons[2], latlons[3]),
+                            lineType,
+                            nsegs);
+                } else {
+                    lines = proj.forwardLine(new Point2D.Float(latlons[1], latlons[0]),
+                            new Point2D.Float(latlons[3], latlons[2]));
+                }
+
                 int size = lines.size();
 
                 xpoints = new int[(int) (size / 2)][0];
@@ -440,22 +441,21 @@ public class OMLine extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * The OMLine should never render fill. It can think it does, if
-     * the geometry turns out to be curved. Returning false affects
-     * distance() and contains() methods.
+     * The OMLine should never render fill. It can think it does, if the
+     * geometry turns out to be curved. Returning false affects distance() and
+     * contains() methods.
      */
     public boolean shouldRenderFill() {
         return false;
     }
 
     /**
-     * This takes the area out of OMLines that may look like they have
-     * area, depending on their shape. Checks to see what
-     * shouldRenderFill() returns (false by default) to decide how to
-     * measure this. If shouldRenderFill == true, the super.contains()
-     * method is returned, which assumes the line shape has area if it
-     * is curved. Otherwise, it returns true if the point is on the
-     * line.
+     * This takes the area out of OMLines that may look like they have area,
+     * depending on their shape. Checks to see what shouldRenderFill() returns
+     * (false by default) to decide how to measure this. If shouldRenderFill ==
+     * true, the super.contains() method is returned, which assumes the line
+     * shape has area if it is curved. Otherwise, it returns true if the point
+     * is on the line.
      */
     public boolean contains(int x, int y) {
         if (shouldRenderFill()) {

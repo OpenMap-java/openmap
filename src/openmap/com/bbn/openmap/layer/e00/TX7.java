@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/TX7.java,v $
 // $RCSfile: TX7.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/11 20:39:18 $
+// $Revision: 1.7 $
+// $Date: 2005/12/09 21:09:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -253,7 +253,7 @@ public class TX7 extends OMGraphic {
         lt2 = llpoints[2 * nseg];
         ln2 = llpoints[2 * nseg + 1];
         llp2.setLatLon(lt2, ln2, true);
-        distance = GreatCircle.spherical_distance(lt1, ln1, lt2, ln2)
+        distance = GreatCircle.sphericalDistance(lt1, ln1, lt2, ln2)
                 * Planet.wgs84_earthEquatorialRadiusMeters;
         //System.out.println(nseg+" "+llp1+" "+llp2);
         setNeedToRegenerate(true);
@@ -277,9 +277,9 @@ public class TX7 extends OMGraphic {
                 i--;
                 nseg--;
             } else {
-                s += GreatCircle.spherical_distance(lt1, ln1, lt2, ln2);
+                s += GreatCircle.sphericalDistance(lt1, ln1, lt2, ln2);
                 ds[i] = s;
-                az[i] = GreatCircle.spherical_azimuth(lt1, ln1, lt2, ln2);
+                az[i] = GreatCircle.sphericalAzimuth(lt1, ln1, lt2, ln2);
                 if (i > 0) {
                     dz = (float) Math.tan((az[i] - az0) / 2);
                     if (dz < 0) {

@@ -12,47 +12,53 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayerDCWWarehouse.java,v $
-// $Revision: 1.5 $ $Date: 2005/08/09 19:29:38 $ $Author: dietrick $
+// $Revision: 1.6 $ $Date: 2005/12/09 21:08:58 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.io.FormatException;
 
 /**
- * Implement a graphic factory that builds OMGraphics. This one
- * handles DCW dtabases. It has some properties that can be added to
- * the VPFLayer property list that further control which types of
- * features will not be displayed for a coverage type.
+ * Implement a graphic factory that builds OMGraphics. This one handles DCW
+ * dtabases. It has some properties that can be added to the VPFLayer property
+ * list that further control which types of features will not be displayed for a
+ * coverage type.
  * <P>
  * 
- * If you use the com.bbn.openmap.layer.vpf.Server class, and run it
- * on a (coverage type)/int.vdt file:
+ * If you use the com.bbn.openmap.layer.vpf.Server class, and run it on a
+ * (coverage type)/int.vdt file:
  * 
  * <pre>
- * 
- * 
- *  java com.bbn.openmap.layer.vpf.Server /dcw/noamer/po/int.vdt
- * 
  *  
+ *  
+ *   java com.bbn.openmap.layer.vpf.Server /dcw/noamer/po/int.vdt
+ *  
+ *   
  * </pre>
  * 
- * You can use the values in column 3 to add to a list to have that
- * attribute type *NOT* show up.
+ * You can use the values in column 3 to add to a list to have that attribute
+ * type *NOT* show up.
  * 
  * <pre>
- * 
- * 
- *  vpflayer.areaTypeExclude=
- *  vpflayer.lineTypeExclude=9 (for po coverages, gets rid of tile boundaries)
- *  vpflayer.textTypeExclude=
  *  
+ *  
+ *   vpflayer.areaTypeExclude=
+ *   vpflayer.lineTypeExclude=9 (for po coverages, gets rid of tile boundaries)
+ *   vpflayer.textTypeExclude=
+ *   
  * </pre>
  * 
  * These are space-separated lists.
@@ -72,7 +78,7 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
     protected boolean DEBUG = false;
 
     /**
-     *  
+     * 
      */
     public VPFLayerDCWWarehouse() {
         super();
@@ -158,15 +164,15 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
     }
 
     /**
-     * Returns the list of features to draw - DCW doesn't have
-     * features, so returns an empty List
+     * Returns the list of features to draw - DCW doesn't have features, so
+     * returns an empty List
      */
     public List getFeatures() {
         return Collections.EMPTY_LIST;
     }
 
     /**
-     *  
+     * 
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
                            List facevec, LatLonPoint ll1, LatLonPoint ll2,
@@ -183,16 +189,16 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
             }
         }
 
-        //      if (areatype.value == 0) {//topology artifact
-        //          return;
-        //      }
+        // if (areatype.value == 0) {//topology artifact
+        // return;
+        // }
 
-        //      if (areatype.value == 2) {
-        //          if (Debug.debugging("vpf")) {
-        //              Debug.output("Skipping open ocean: " + descript);
-        //          }
-        //          return;
-        //      }
+        // if (areatype.value == 2) {
+        // if (Debug.debugging("vpf")) {
+        // Debug.output("Skipping open ocean: " + descript);
+        // }
+        // return;
+        // }
 
         int totalSize = 0;
         try {
@@ -213,9 +219,9 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
                 dpplon,
                 covtable.doAntarcticaWorkaround);
 
-        //      if (areatype.value == -1) {
-        //          areatype.value = 0;
-        //      }
+        // if (areatype.value == -1) {
+        // areatype.value = 0;
+        // }
 
         drawingAttributes.setTo(py);
 
@@ -227,17 +233,17 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
     }
 
     /**
-     *  
+     * 
      */
     public void createEdge(CoverageTable covtable, EdgeTable edgetable,
                            List edgevec, LatLonPoint ll1, LatLonPoint ll2,
                            float dpplat, float dpplon, CoordFloatString coords) {
-        //  Kept these here to keep in mind that it may be possible to
-        //  further figure out what exactly we have here.
+        // Kept these here to keep in mind that it may be possible to
+        // further figure out what exactly we have here.
         if (lineTypeExcludes != null) {
 
             MutableInt lineType = new MutableInt(-1);
-            //String desc = covtable.getLineDescription(edgevec, lineType);
+            // String desc = covtable.getLineDescription(edgevec, lineType);
 
             if (onList(lineTypeExcludes, lineType.value)) {
                 return;
@@ -251,17 +257,17 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
     }
 
     /**
-     *  
+     * 
      */
     public void createText(CoverageTable covtable, TextTable texttable,
                            List textvec, float latitude, float longitude,
                            String text) {
-        //  Kept these here to keep in mind that it may be possible to
-        //  further figure out what exactly we have here.
+        // Kept these here to keep in mind that it may be possible to
+        // further figure out what exactly we have here.
         if (textTypeExcludes != null) {
 
             MutableInt textType = new MutableInt(-1);
-            //String desc = covtable.getTextDescription(textvec, textType);
+            // String desc = covtable.getTextDescription(textvec, textType);
 
             if (onList(textTypeExcludes, textType.value)) {
                 return;
@@ -274,8 +280,7 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
     }
 
     /**
-     * Method called by the VPF reader code to construct a node
-     * feature.
+     * Method called by the VPF reader code to construct a node feature.
      */
     public void createNode(CoverageTable c, NodeTable t, List nodeprim,
                            float latitude, float longitude, boolean isEntityNode) {

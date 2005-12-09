@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrameCacheHandler.java,v $
 // $RCSfile: DTEDFrameCacheHandler.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:42 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,19 +23,22 @@
 package com.bbn.openmap.dataAccess.dted;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.beans.PropertyChangeListener;
+import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
-import javax.swing.*;
 
-import com.bbn.openmap.LatLonPoint;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
 import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
@@ -66,17 +69,17 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  * 
  * <pre>
- * 
- * 
- *  markerName.generators=greys colors
- *  markerName.greys.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
- *  markerName.greys.prettyName=Slope Shading
- *  markerName.greys.colorsClass=com.bbn.openmap.omGraphics.grid.GreyscaleSlopeColors
- *  markerName.colors.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
- *  markerName.colors.prettyName=Elevation Shading
- *  markerName.colors.colorsClass=com.bbn.openmap.omGraphics.grid.ColoredShadingColors
- * 
- *  
+ *   
+ *   
+ *    markerName.generators=greys colors
+ *    markerName.greys.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
+ *    markerName.greys.prettyName=Slope Shading
+ *    markerName.greys.colorsClass=com.bbn.openmap.omGraphics.grid.GreyscaleSlopeColors
+ *    markerName.colors.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
+ *    markerName.colors.prettyName=Elevation Shading
+ *    markerName.colors.colorsClass=com.bbn.openmap.omGraphics.grid.ColoredShadingColors
+ *   
+ *    
  * </pre>
  * 
  * The only properties that are required for the DTEDFrameCacheHandler
@@ -235,8 +238,8 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
                 setActiveGeneratorLoader(active);
             }
         });
-        //Put the JComboBox in a JPanel to get a nicer look.
-        JPanel comboBoxPane = new JPanel(); //use FlowLayout
+        // Put the JComboBox in a JPanel to get a nicer look.
+        JPanel comboBoxPane = new JPanel(); // use FlowLayout
         comboBoxPane.add(cb);
 
         pane.add(comboBoxPane, BorderLayout.NORTH);
@@ -270,23 +273,24 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
         int lat_minus = 2;
         int lon_minus = 2;
         // Set up checks for equator and dateline
-        LatLonPoint ll1 = proj.getUpperLeft();
-        LatLonPoint ll2 = proj.getLowerRight();
+        Point2D ll1 = proj.getUpperLeft();
+        Point2D ll2 = proj.getLowerRight();
 
-        lat[0] = ll1.getLatitude();
-        lon[0] = ll1.getLongitude();
-        lat[1] = ll2.getLatitude();
-        lon[1] = ll2.getLongitude();
-        lat[2] = ll2.getLatitude();
-        lon[2] = ll2.getLongitude();
+        lat[0] = (float) ll1.getY();
+        lon[0] = (float) ll1.getX();
+        lat[1] = (float) ll2.getY();
+        lon[1] = (float) ll2.getX();
+        lat[2] = (float) ll2.getY();
+        lon[2] = (float) ll2.getX();
 
         if (lon[0] > 0 && lon[2] < 0) {
             lon[1] = -179.999f; // put a little breather on the
-                                // dateline
+            // dateline
             lon_minus = 1;
         }
         if (lat[0] > 0 && lat[2] < 0) {
-            lat[1] = -0.0001f; // put a little breather on the equator
+            lat[1] = -0.0001f; // put a little breather on the
+            // equator
             lat_minus = 1;
         }
 
@@ -336,15 +340,15 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
         // Equator Split
         if (lat_minus == 1) {
             setProjection(proj, lat[0], lon[xa - lon_minus], -1f * lat[1], // flip
-                                                                           // breather
+                    // breather
                     lon[xa]);
             list = loadListFromHandler(list);
         }
 
         // Both!!
         if (lon_minus == 1 && lat_minus == 1) {
-            setProjection(proj, lat[0], lon[0], -1f * lat[1],//  flip
-                                                             // breather
+            setProjection(proj, lat[0], lon[0], -1f * lat[1],// flip
+                    // breather
                     -1f * lon[1]);// -1 to make it 180, not -180
             list = loadListFromHandler(list);
         }
@@ -387,10 +391,10 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
      */
     public void setProjection(EqualArc proj) {
         setProjection(proj,
-                proj.getUpperLeft().getLatitude(),
-                proj.getUpperLeft().getLongitude(),
-                proj.getLowerRight().getLatitude(),
-                proj.getLowerRight().getLongitude());
+                (float) proj.getUpperLeft().getY(),
+                (float) proj.getUpperLeft().getX(),
+                (float) proj.getLowerRight().getY(),
+                (float) proj.getLowerRight().getX());
     }
 
     /**
@@ -568,7 +572,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
         }
     }
 
-    ////// PropertyConsumer Interface Methods
+    // //// PropertyConsumer Interface Methods
 
     /**
      * Token uniquely identifying this component in the application
@@ -721,4 +725,3 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
     }
 
 }
-

@@ -14,15 +14,18 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIRecord.java,v $
 // $RCSfile: ESRIRecord.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:09:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGeometryList;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 
 /**
  * This is the base class for all shape record classes. It stores the
@@ -31,7 +34,7 @@ import com.bbn.openmap.omGraphics.*;
  * 
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.3 $ $Date: 2004/10/14 18:06:05 $
+ * @version $Revision: 1.4 $ $Date: 2005/12/09 21:09:10 $
  */
 public abstract class ESRIRecord extends ShapeUtils {
 

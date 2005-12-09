@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygonList.java,v $
 // $RCSfile: EsriPolygonList.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 17:21:28 $
+// $Revision: 1.9 $
+// $Date: 2005/12/09 21:09:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,10 +24,10 @@ package com.bbn.openmap.dataAccess.shape;
 
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.Vector;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMCircle;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -125,27 +125,27 @@ public class EsriPolygonList extends EsriGraphicList {
         super(initialCapacity);
     }
 
-    //converts rectangles into polygons
+    // converts rectangles into polygons
     public static OMPoly convert(OMRect omRect) {
         float[] rectPoints = new float[10];
 
-        //get the northwest corner
+        // get the northwest corner
         rectPoints[0] = (omRect.getNorthLat());
         rectPoints[1] = (omRect.getWestLon());
-        //get the southwest corner
+        // get the southwest corner
         rectPoints[2] = (omRect.getSouthLat());
         rectPoints[3] = (omRect.getWestLon());
-        //get the southeast corner
+        // get the southeast corner
         rectPoints[4] = (omRect.getSouthLat());
         rectPoints[5] = (omRect.getEastLon());
-        //get the northeast corner
+        // get the northeast corner
         rectPoints[6] = (omRect.getNorthLat());
         rectPoints[7] = (omRect.getEastLon());
-        //get the northwest corner again to close the polygon
+        // get the northwest corner again to close the polygon
         rectPoints[8] = (omRect.getNorthLat());
         rectPoints[9] = (omRect.getWestLon());
 
-        //using the OMRect data create an OMPoly
+        // using the OMRect data create an OMPoly
         OMPoly poly = new OMPoly(rectPoints, OMGraphic.DECIMAL_DEGREES, omRect.getLineType());
         poly.setAttributes(omRect.getAttributes());
         DrawingAttributes da = new DrawingAttributes();
@@ -154,11 +154,11 @@ public class EsriPolygonList extends EsriGraphicList {
         return poly;
     }
 
-    //converts circles into polygons
+    // converts circles into polygons
     public static OMPoly convert(OMCircle omCircle, Projection proj) {
         GeneralPath shape = omCircle.getShape();
 
-        //get the PathIterator that defines the outline of the circle
+        // get the PathIterator that defines the outline of the circle
         PathIterator circle = shape.getPathIterator(null);
         Vector initialPoints = new Vector();
         float[] segPoints = new float[2];
@@ -166,7 +166,7 @@ public class EsriPolygonList extends EsriGraphicList {
         while (!circle.isDone()) {
             // by passing segpoints the array is filled with each x\y
             // point iterated by the circle
-//            int segType = circle.currentSegment(segPoints);
+            // int segType = circle.currentSegment(segPoints);
             initialPoints.add(new Float(segPoints[0]));
             initialPoints.add(new Float(segPoints[1]));
             circle.next();
@@ -178,16 +178,16 @@ public class EsriPolygonList extends EsriGraphicList {
             return null;
         }
 
-        //convert the x/y points to lat/lon points
+        // convert the x/y points to lat/lon points
         for (int p = 0; p < initialPoints.size(); p += 2) {
-            LatLonPoint llp = proj.inverse(((Float) initialPoints.elementAt(p)).intValue(),
+            Point2D llp = proj.inverse(((Float) initialPoints.elementAt(p)).intValue(),
                     ((Float) initialPoints.elementAt(p + 1)).intValue());
 
-            circlePoints[p] = llp.getLatitude();
-            circlePoints[p + 1] = llp.getLongitude();
+            circlePoints[p] = (float) llp.getY();
+            circlePoints[p + 1] = (float) llp.getX();
         }
 
-        //using the circle data create an OMPoly
+        // using the circle data create an OMPoly
         OMPoly poly = new OMPoly(circlePoints, OMGraphic.DECIMAL_DEGREES, omCircle.getLineType());
         poly.setAttributes(omCircle.getAttributes());
         DrawingAttributes da = new DrawingAttributes();
@@ -196,20 +196,20 @@ public class EsriPolygonList extends EsriGraphicList {
         return poly;
     }
 
-    //converts range rings to circles which are passed to the
-    //convertCircles() method to be converted to OMPolys
+    // converts range rings to circles which are passed to the
+    // convertCircles() method to be converted to OMPolys
     public static OMGraphicList convert(OMRangeRings omRR, Projection proj) {
-        //get the array of circles
+        // get the array of circles
         OMCircle[] circles = omRR.createCircles();
         OMGraphicList circleList = new OMGraphicList();
         circleList.setAttributes(omRR.getAttributes());
 
-        //get the line color and fill color that are to be passed
+        // get the line color and fill color that are to be passed
         // with
-        //the dbf info
-        //          Color lineColor =
+        // the dbf info
+        // Color lineColor =
         // getColorString(dtlGraphic.getLineColor());
-        //          Color fillColor =
+        // Color fillColor =
         // getColorString(dtlGraphic.getFillColor());
 
         if (proj == null) {
@@ -217,18 +217,18 @@ public class EsriPolygonList extends EsriGraphicList {
         }
 
         for (int i = 0; i < circles.length; i++) {
-            //information passed to the dbflist includes the interval
-            //units and the interval
-            //              dbfList = getDbfList("RangeRings(" +
+            // information passed to the dbflist includes the interval
+            // units and the interval
+            // dbfList = getDbfList("RangeRings(" +
             // omRR.getIntervalUnits().toString() + "s)",
             // omRR.getInterval() * (i + 1), lineColor, fillColor);
 
-            //have to re-generate each circle in the range ring array
+            // have to re-generate each circle in the range ring array
             if (circles[i].generate(proj)) {
-                //call convertCircles to convert each ring to an
+                // call convertCircles to convert each ring to an
                 // OMPoly
                 OMPoly poly = convert((OMCircle) circles[i], proj);
-                //call the method to add this ring to the EsriLayer
+                // call the method to add this ring to the EsriLayer
                 if (poly != null) {
                     circleList.add(poly);
                 }
@@ -238,15 +238,15 @@ public class EsriPolygonList extends EsriGraphicList {
             }
         }
 
-        //the RangeRings.createCircles() method used above only
-        //creates the inner circles, therefore the RangeRing object
-        //provides the outer ring that must be added to the layer
+        // the RangeRings.createCircles() method used above only
+        // creates the inner circles, therefore the RangeRing object
+        // provides the outer ring that must be added to the layer
 
-        //information passed to the dbflist includes the interval
-        //units and the interval since we don't know the exact
-        //interval of the last ring the string "less than" is applied
-        //to the last rings interval
-        //          dbfList = getDbfList("RangeRings(" +
+        // information passed to the dbflist includes the interval
+        // units and the interval since we don't know the exact
+        // interval of the last ring the string "less than" is applied
+        // to the last rings interval
+        // dbfList = getDbfList("RangeRings(" +
         // omRR.getIntervalUnits().toString() + ")less than",
         // omRR.getInterval() * (i + 1), lineColor, fillColor);
 
@@ -268,4 +268,3 @@ public class EsriPolygonList extends EsriGraphicList {
         return ret;
     }
 }
-

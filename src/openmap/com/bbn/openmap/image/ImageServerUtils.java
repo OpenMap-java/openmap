@@ -14,20 +14,23 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServerUtils.java,v $
 // $RCSfile: ImageServerUtils.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:51 $
+// $Revision: 1.7 $
+// $Date: 2005/12/09 21:09:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.image;
 
-import com.bbn.openmap.proj.*;
+import java.awt.Color;
+import java.awt.geom.Point2D;
+import java.util.Properties;
+
+import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-
-import java.awt.Color;
-import java.util.Properties;
 
 /**
  * A class to contain convenience functions for parsing web image
@@ -55,13 +58,13 @@ public class ImageServerUtils implements ImageServerConstants {
         int width = PropUtils.intFromProperties(props,
                 WIDTH,
                 defaultProj.getWidth());
-        com.bbn.openmap.LatLonPoint llp = defaultProj.getCenter();
+        Point2D llp = defaultProj.getCenter();
         float longitude = PropUtils.floatFromProperties(props,
                 LON,
-                llp.getLongitude());
+                (float)llp.getX());
         float latitude = PropUtils.floatFromProperties(props,
                 LAT,
-                llp.getLatitude());
+                (float)llp.getY());
 
         Class projClass = null;
         String projType = props.getProperty(PROJTYPE);
@@ -82,8 +85,7 @@ public class ImageServerUtils implements ImageServerConstants {
         }
 
         Proj proj = (Proj) ProjectionFactory.makeProjection(projClass,
-                latitude,
-                longitude,
+                new Point2D.Float(latitude, longitude),
                 scale,
                 width,
                 height);

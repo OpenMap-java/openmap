@@ -14,17 +14,27 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/ASRPDirectory.java,v $
 // $RCSfile: ASRPDirectory.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/11 20:39:19 $
+// $Revision: 1.8 $
+// $Date: 2005/12/09 21:09:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.asrp;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.dataAccess.iso8211.*;
-import com.bbn.openmap.layer.util.cacheHandler.*;
+import java.awt.Color;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import com.bbn.openmap.dataAccess.iso8211.DDFField;
+import com.bbn.openmap.dataAccess.iso8211.DDFModule;
+import com.bbn.openmap.dataAccess.iso8211.DDFSubfield;
+import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
+import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
@@ -32,13 +42,6 @@ import com.bbn.openmap.omGraphics.OMScalingRaster;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-
-import java.awt.Color;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 /**
  * An ASRP directory contains information needed to view images. It
@@ -223,19 +226,19 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
         float lrlat = ullat - (degPerVerBlock * numVerBlocks_M);
         float lrlon = ullon + (degPerHorBlock * numHorBlocks_N);
 
-        LatLonPoint llp1 = proj.getUpperLeft();
-        LatLonPoint llp2 = proj.getLowerRight();
+        Point2D llp1 = proj.getUpperLeft();
+        Point2D llp2 = proj.getLowerRight();
 
-        int startX = (int) Math.floor((llp1.getLongitude() - ullon)
+        int startX = (int) Math.floor((llp1.getX() - ullon)
                 / degPerHorBlock);
-        int startY = (int) Math.floor((ullat - llp1.getLatitude())
+        int startY = (int) Math.floor((ullat - llp1.getY())
                 / degPerVerBlock);
 
         int endX = numHorBlocks_N
-                - (int) Math.floor((lrlon - llp2.getLongitude())
+                - (int) Math.floor((lrlon - llp2.getX())
                         / degPerHorBlock);
         int endY = numVerBlocks_M
-                - (int) Math.floor((llp2.getLatitude() - lrlat)
+                - (int) Math.floor((llp2.getY() - lrlat)
                         / degPerVerBlock);
 
         if (startX < 0)

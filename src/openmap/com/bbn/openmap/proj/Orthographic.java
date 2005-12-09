@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Orthographic.java,v $
 // $RCSfile: Orthographic.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:23 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,8 +23,10 @@
 package com.bbn.openmap.proj;
 
 import java.awt.Point;
-import com.bbn.openmap.LatLonPoint;
+import java.awt.geom.Point2D;
+
 import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -37,21 +39,15 @@ public class Orthographic extends Azimuth {
      */
     public final static transient String OrthographicName = "Orthographic";
 
-    /**
-     * The Orthographic type of projection.
-     */
-    public final static transient int OrthographicType = 7;
-
     protected int hy, wx;
 
     // almost constant projection parameters
-    protected float cosCtrLat;
-    protected float sinCtrLat;
+    protected double cosCtrLat;
+    protected double sinCtrLat;
 
-    public final static transient float epsilon = 0.0001f;
-    protected final static transient float NORTH_BOUNDARY = NORTH_POLE
-            - epsilon;
-    protected final static transient float SOUTH_BOUNDARY = -NORTH_BOUNDARY;
+    public final static transient double epsilon = 0.0001f;
+    protected final static double NORTH_BOUNDARY = NORTH_POLE - epsilon;
+    protected final static double SOUTH_BOUNDARY = -NORTH_BOUNDARY;
 
     /**
      * Construct an Orthographic projection.
@@ -62,28 +58,13 @@ public class Orthographic extends Azimuth {
      * @param height height of screen
      */
     public Orthographic(LatLonPoint center, float scale, int width, int height) {
-        super(center, scale, width, height, OrthographicType);
+        super(center, scale, width, height);
         setMinScale(1000.0f);
     }
 
-    /**
-     * Construct an Orthographic projection.
-     * 
-     * @param center LatLonPoint center of projection
-     * @param scale float scale of projection
-     * @param width width of screen
-     * @param height height of screen
-     * @param type subclass's type
-     */
-    public Orthographic(LatLonPoint center, float scale, int width, int height,
-            int type) {
-        super(center, scale, width, height, type);
-        setMinScale(1000.0f);
-    }
-
-    //    protected void finalize() {
-    //      Debug.message("proj", "Orthographic finalized");
-    //    }
+    // protected void finalize() {
+    // Debug.message("proj", "Orthographic finalized");
+    // }
 
     /**
      * Return stringified description of this projection.
@@ -108,8 +89,8 @@ public class Orthographic extends Azimuth {
         super.computeParameters();
 
         // do some precomputation of stuff
-        cosCtrLat = (float) Math.cos(ctrLat);
-        sinCtrLat = (float) Math.sin(ctrLat);
+        cosCtrLat = Math.cos(centerY);
+        sinCtrLat = Math.sin(centerY);
 
         // compute the offsets
         hy = height / 2;
@@ -125,9 +106,9 @@ public class Orthographic extends Azimuth {
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
      * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
-     *  
+     * 
      */
-    public float normalize_latitude(float lat) {
+    public double normalize_latitude(double lat) {
         if (lat > NORTH_BOUNDARY) {
             return NORTH_BOUNDARY;
         } else if (lat < SOUTH_BOUNDARY) {
@@ -148,7 +129,12 @@ public class Orthographic extends Azimuth {
      */
     final public static boolean hemisphere_clip(float phi1, float lambda0,
                                                 float phi, float lambda) {
-        return (GreatCircle.spherical_distance(phi1, lambda0, phi, lambda)/*-epsilon*/<= MoreMath.HALF_PI);
+        return (GreatCircle.sphericalDistance(phi1, lambda0, phi, lambda)/*-epsilon*/<= MoreMath.HALF_PI);
+    }
+
+    final public static boolean hemisphere_clip(double phi1, double lambda0,
+                                                double phi, double lambda) {
+        return (GreatCircle.sphericalDistance(phi1, lambda0, phi, lambda)/*-epsilon*/<= MoreMath.HALF_PI_D);
     }
 
     /**
@@ -161,22 +147,21 @@ public class Orthographic extends Azimuth {
      * @param p Point
      * @return Point p
      */
-    private Point edge_point(Point p, float current_azimuth) {
-        LatLonPoint tmpll = GreatCircle.spherical_between(ctrLat,
-                ctrLon,
-                MoreMath.HALF_PI/*-epsilon*/,
+    private Point edge_point(Point p, double current_azimuth) {
+        LatLonPoint tmpll = GreatCircle.sphericalBetween(centerY,
+                centerX,
+                MoreMath.HALF_PI_D/*-epsilon*/,
                 current_azimuth);
 
-        float phi = tmpll.radlat_;
-        float lambda = tmpll.radlon_;
-        float cosPhi = (float) Math.cos(phi);
-        float lambdaMinusCtrLon = (float) (lambda - ctrLon);
+        double phi = tmpll.getRadLat();
+        double lambda = tmpll.getRadLon();
+        double cosPhi = Math.cos(phi);
+        double lambdaMinusCtrLon = lambda - centerX;
 
-        p.x = (int) (scaled_radius * cosPhi * (float) Math.sin(lambdaMinusCtrLon))
-                + wx;
+        p.x = (int) (scaled_radius * cosPhi * Math.sin(lambdaMinusCtrLon)) + wx;
         p.y = hy
-                - (int) (scaled_radius * (cosCtrLat * (float) Math.sin(phi) - sinCtrLat
-                        * cosPhi * (float) Math.cos(lambdaMinusCtrLon)));
+                - (int) (scaled_radius * (cosCtrLat * Math.sin(phi) - sinCtrLat
+                        * cosPhi * Math.cos(lambdaMinusCtrLon)));
         return p;
     }
 
@@ -189,10 +174,10 @@ public class Orthographic extends Azimuth {
      * @param lon float longitude in decimal degrees
      * @return boolean
      */
-    public boolean isPlotable(float lat, float lon) {
+    public boolean isPlotable(double lat, double lon) {
         lat = normalize_latitude(ProjMath.degToRad(lat));
         lon = wrap_longitude(ProjMath.degToRad(lon));
-        return hemisphere_clip(ctrLat, ctrLon, lat, lon);
+        return hemisphere_clip(centerY, centerX, lat, lon);
     }
 
     /**
@@ -200,35 +185,37 @@ public class Orthographic extends Azimuth {
      * viewable hemisphere, return flags in AzimuthVar variable if
      * specified.
      * 
-     * @param phi float latitude in radians
-     * @param lambda float longitude in radians
+     * @param phi double latitude in radians
+     * @param lambda double longitude in radians
      * @param p Point
      * @param azVar AzimuthVar or null
      * @return Point pt
      */
-    protected Point _forward(float phi, float lambda, Point p, AzimuthVar azVar) {
-        float cosPhi = (float) Math.cos(phi);
-        float lambdaMinusCtrLon = (float) (lambda - ctrLon);
+    protected Point _forward(double phi, double lambda, Point p,
+                             AzimuthVar azVar) {
+        double cosPhi = Math.cos(phi);
+        double lambdaMinusCtrLon = lambda - centerX;
 
         // normalize invalid point to the edge of the sphere
-        if (!hemisphere_clip(ctrLat, ctrLon, phi, lambda)) {
-            float az = GreatCircle.spherical_azimuth(ctrLat,
-                    ctrLon,
+        if (!hemisphere_clip(centerY, centerX, phi, lambda)) {
+            double az = GreatCircle.sphericalAzimuth(centerY,
+                    centerX,
                     phi,
                     lambda);
             if (azVar != null) {
-                azVar.invalid_forward = true; // set the invalid flag
-                azVar.current_azimuth = az; // record azimuth of this
-                                            // point
+                // set the invalid flag
+                azVar.invalid_forward = true; 
+                // record azimuth of this point
+                azVar.current_azimuth = az; 
             }
             return edge_point(p, az);
         }
 
-        p.x = (int) (scaled_radius * cosPhi * (float) Math.sin(lambdaMinusCtrLon))
+        p.x = (int) (scaled_radius * cosPhi * Math.sin(lambdaMinusCtrLon))
                 + wx;
         p.y = hy
-                - (int) (scaled_radius * (cosCtrLat * (float) Math.sin(phi) - sinCtrLat
-                        * cosPhi * (float) Math.cos(lambdaMinusCtrLon)));
+                - (int) (scaled_radius * (cosCtrLat * Math.sin(phi) - sinCtrLat
+                        * cosPhi * Math.cos(lambdaMinusCtrLon)));
         return p;
     }
 
@@ -241,70 +228,59 @@ public class Orthographic extends Azimuth {
      * @return LatLonPoint llp
      * @see Proj#inverse(Point)
      */
-    public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
+    public Point2D inverse(int x, int y, Point2D llp) {
         // convert from screen to world coordinates
         x = x - wx;
         y = hy - y;
 
-        //      Debug.output("Orthographic.inverse: x,y=" + x + "," + y);
+        // Debug.output("Orthographic.inverse: x,y=" + x + "," + y);
 
         // sqrt(pt . pt)
-        float rho = (float) Math.sqrt(x * x + y * y);
-        if (rho == 0f) {
+        double rho = Math.sqrt(x * x + y * y);
+        if (rho == 0) {
             Debug.message("proj", "Orthographic.inverse: center!");
-            llp.setLatLon(ProjMath.radToDeg(ctrLat), ProjMath.radToDeg(ctrLon));
+            llp.setLocation(Math.toDegrees(centerX), Math.toDegrees(centerY));
             return llp;
         }
 
-        //float c = (float)Math.asin(rho/scaled_radius);
-        //float cosC = (float)Math.cos(c);
-        //float sinC = (float)Math.sin(c);
-        float sinC = rho / scaled_radius;
-        float cosC = (float) Math.sqrt(1 - sinC * sinC);
+        // float c = (float)Math.asin(rho/scaled_radius);
+        // float cosC = (float)Math.cos(c);
+        // float sinC = (float)Math.sin(c);
+        double sinC = rho / scaled_radius;
+        double cosC = Math.sqrt(1 - sinC * sinC);
 
         // calculate latitude
-        float lat = (float) Math.asin(cosC * sinCtrLat
+        double lat = Math.asin(cosC * sinCtrLat
                 + (y * sinC * (cosCtrLat / rho)));
 
         // calculate longitude
-        float lon;
-        if (ctrLat == NORTH_POLE) {
-            lon = ctrLon + (float) Math.atan2(x, -y);
-        } else if (ctrLat == SOUTH_POLE) {
-            lon = ctrLon + (float) Math.atan2(x, y);
+        double lon;
+        if (centerY == NORTH_POLE) {
+            lon = centerX + Math.atan2(x, -y);
+        } else if (centerY == SOUTH_POLE) {
+            lon = centerX + Math.atan2(x, y);
         } else {
-            lon = ctrLon
-                    + (float) Math.atan2((x * sinC),
-                            (rho * cosCtrLat * cosC - y * sinCtrLat * sinC));
+            lon = centerX
+                    + Math.atan2((x * sinC), (rho * cosCtrLat * cosC - y
+                            * sinCtrLat * sinC));
         }
-        //      Debug.output("Orthographic.inverse: lat,lon=" +
-        //                         ProjMath.radToDeg(lat) + "," +
-        //                         ProjMath.radToDeg(lon));
+        // Debug.output("Orthographic.inverse: lat,lon=" +
+        // ProjMath.radToDeg(lat) + "," +
+        // ProjMath.radToDeg(lon));
 
         // check if point in outer space
-        //      if (MoreMath.approximately_equal(lat, ctrLat) &&
-        //             MoreMath.approximately_equal(lon, ctrLon) &&
-        //             (Math.abs(x-(width/2))<2) &&
-        //             (Math.abs(y-(height/2))<2))
-        if (Float.isNaN(lat) || Float.isNaN(lon)) {
-            //          Debug.message("proj", "Orthographic.inverse(): outer
+        // if (MoreMath.approximately_equal(lat, ctrLat) &&
+        // MoreMath.approximately_equal(lon, ctrLon) &&
+        // (Math.abs(x-(width/2))<2) &&
+        // (Math.abs(y-(height/2))<2))
+        if (Double.isNaN(lat) || Double.isNaN(lon)) {
+            // Debug.message("proj", "Orthographic.inverse(): outer
             // space!");
-            lat = ctrLat;
-            lon = ctrLon;
+            lat = centerY;
+            lon = centerX;
         }
-        llp.setLatLon(ProjMath.radToDeg(lat), ProjMath.radToDeg(lon));
+        llp.setLocation(Math.toDegrees(lon), Math.toDegrees(lat));
         return llp;
-    }
-
-    /**
-     * Inverse project a Point.
-     * 
-     * @param pt x,y Point
-     * @param llp resulting LatLonPoint
-     * @return LatLonPoint llp
-     */
-    public LatLonPoint inverse(Point pt, LatLonPoint llp) {
-        return inverse(pt.x, pt.y, llp);
     }
 
     /**
@@ -317,9 +293,9 @@ public class Orthographic extends Azimuth {
      * 
      * @return LatLonPoint
      */
-    public LatLonPoint getUpperLeft() {
-        LatLonPoint tmp = new LatLonPoint();
-        float lat, lon;
+    public Point2D getUpperLeft() {
+        LatLonPoint tmp = new LatLonPoint.Double();
+        double lat, lon;
 
         // over north pole
         if (overNorthPole()) {
@@ -332,52 +308,55 @@ public class Orthographic extends Azimuth {
             lon = -DATELINE;
 
             // get the left top corner
-            tmp = inverse(0, 0, tmp);
+            inverse(0, 0, tmp);
 
             // check for invalid
-            if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
-                lat = ctrLat + MoreMath.HALF_PI;
+            if (MoreMath.approximately_equal(tmp.getRadLon(), centerX, 0.0001f)) {
+                lat = centerY + MoreMath.HALF_PI_D;
             } else {
                 // northernmost coord is left top
-                lat = tmp.radlat_;
+                lat = tmp.getY();
             }
         }
 
         // view in northern hemisphere
-        else if (ctrLat >= 0f) {
+        else if (centerY >= 0f) {
             // get the left top corner
-            tmp = inverse(0, 0, tmp);
+            inverse(0, 0, tmp);
 
             // check for invalid
-            if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
-                lat = inverse(width / 2, 0, tmp).radlat_;
+            if (MoreMath.approximately_equal(tmp.getRadLon(), centerX, 0.0001f)) {
+                inverse(width / 2, 0, tmp);
+                lat = tmp.getRadLat();
                 lon = -DATELINE;
             } else {
                 // westernmost coord is left top
-                lon = tmp.radlon_;
+                lon = tmp.getRadLon();
                 // northernmost coord is center top
-                lat = inverse(width / 2, 0, tmp).radlat_;
+                inverse(width / 2, 0, tmp);
+                lat = tmp.getRadLat();
             }
         }
 
         // view in southern hemisphere
         else {
             // get the left top corner
-            tmp = inverse(0, 0, tmp);
+            inverse(0, 0, tmp);
 
             // check for invalid
-            if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
-                lat = ctrLat + MoreMath.HALF_PI;
+            if (MoreMath.approximately_equal(tmp.getRadLon(), centerX, 0.0001f)) {
+                lat = centerY + MoreMath.HALF_PI_D;
                 lon = -DATELINE;
             } else {
                 // northernmost coord is left top
-                lat = tmp.radlat_;
+                lat = tmp.getRadLat();
                 // westernmost coord is left bottom
-                lon = inverse(0, height - 1, tmp).radlon_;
+                inverse(0, height - 1, tmp);
+                lon = tmp.getRadLon();
             }
         }
         tmp.setLatLon(lat, lon, true);
-        //      Debug.output("ul="+tmp);
+        // Debug.output("ul="+tmp);
         return tmp;
     }
 
@@ -393,23 +372,23 @@ public class Orthographic extends Azimuth {
      * 
      * @return LatLonPoint
      */
-    public LatLonPoint getLowerRight() {
-        LatLonPoint tmp = new LatLonPoint();
-        float lat, lon;
+    public Point2D getLowerRight() {
+        LatLonPoint tmp = new LatLonPoint.Double();
+        double lat, lon;
 
         // over north pole
         if (overNorthPole()) {
             lon = DATELINE;
 
             // get the right bottom corner
-            tmp = inverse(width - 1, height - 1, tmp);
+            inverse(width - 1, height - 1, tmp);
 
             // check for invalid
-            if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
-                lat = ctrLat - MoreMath.HALF_PI;
+            if (MoreMath.approximately_equal(tmp.getRadLon(), centerX, 0.0001f)) {
+                lat = centerY - MoreMath.HALF_PI_D;
             } else {
                 // southernmost coord is right bottom
-                lat = tmp.radlat_;
+                lat = tmp.getRadLat();
             }
         }
 
@@ -420,40 +399,43 @@ public class Orthographic extends Azimuth {
         }
 
         // view in northern hemisphere
-        else if (ctrLat >= 0f) {
+        else if (centerY >= 0f) {
             // get the right bottom corner
-            tmp = inverse(width - 1, height - 1, tmp);
+            inverse(width - 1, height - 1, tmp);
 
             // check for invalid
-            if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
-                lat = ctrLat - MoreMath.HALF_PI;
+            if (MoreMath.approximately_equal(tmp.getRadLon(), centerX, 0.0001f)) {
+                lat = centerY - MoreMath.HALF_PI_D;
                 lon = DATELINE;
             } else {
                 // southernmost coord is right bottom
-                lat = tmp.radlat_;
+                lat = tmp.getRadLat();
                 // easternmost coord is right top
-                lon = inverse(width - 1, 0, tmp).radlon_;
+                inverse(width - 1, 0, tmp);
+                lon = tmp.getRadLon();
             }
         }
 
         // view in southern hemisphere
         else {
             // get the right bottom corner
-            tmp = inverse(width - 1, height - 1, tmp);
+            inverse(width - 1, height - 1, tmp);
 
             // check for invalid
-            if (MoreMath.approximately_equal(tmp.radlon_, ctrLon, 0.0001f)) {
-                lat = inverse(width / 2, height - 1, tmp).radlat_;
+            if (MoreMath.approximately_equal(tmp.getRadLon(), centerX, 0.0001f)) {
+                inverse(width / 2, height - 1, tmp);
+                lat = tmp.getRadLat();
                 lon = DATELINE;
             } else {
                 // easternmost coord is right bottom
-                lon = tmp.radlon_;
+                lon = tmp.getRadLon();
                 // southernmost coord is center bottom
-                lat = inverse(width / 2, height - 1, tmp).radlat_;
+                inverse(width / 2, height - 1, tmp);
+                lat = tmp.getRadLat();
             }
         }
         tmp.setLatLon(lat, lon, true);
-        //      Debug.output("lr="+tmp);
+        // Debug.output("lr="+tmp);
         return tmp;
     }
 

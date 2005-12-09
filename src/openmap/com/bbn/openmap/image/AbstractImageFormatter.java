@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/AbstractImageFormatter.java,v $
 // $RCSfile: AbstractImageFormatter.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/11/23 20:51:23 $
+// $Revision: 1.9 $
+// $Date: 2005/12/09 21:09:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,7 @@ package com.bbn.openmap.image;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -160,7 +161,7 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
             map.addPropertyChangeListener(this);
 
             // Layers should be set...
-            com.bbn.openmap.LatLonPoint cp = new com.bbn.openmap.LatLonPoint(map.getCenter());
+            Point2D cp = map.getCenter();
 
             double scaleMod = 1f;// scale factor for image scale
             // If we need to scale the image,
@@ -178,8 +179,7 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
 
             Proj tp = (Proj) com.bbn.openmap.proj.ProjectionFactory.makeProjection(map.getProjection()
                     .getClass(),
-                    cp.getLatitude(),
-                    cp.getLongitude(),
+                    cp,
                     map.getScale() * (float) scaleMod,
                     width,
                     height);

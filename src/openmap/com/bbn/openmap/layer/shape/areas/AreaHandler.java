@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/08/12 20:59:56 $
+// $Revision: 1.10 $
+// $Date: 2005/12/09 21:09:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,51 +64,51 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  * 
  * <pre>
- *     
  *      
- *       layer.class=com.bbn.openmap.layer.shape.areas.AreaShapeLayer
- *       layer.prettyName=Layer Name
- *       layer.shapeFile=/usr/local/data/shape/shapefile.shp
- *       layer.spatialIndex=/usr/local/data/shape/shapefile.ssx
- *      
- *       # Now, provide a data file that says what the shapes in the .shp
- *       # file are.  You can use the DBF file:
- *       layer.dbfFile=/usr/local/data/shape/shapefile.dbf
- *       # OR a csv file, created yourself or from the .dbf file.  There
- *       # should be the same number of entries in the .csv file that are in
- *       # the .shp file.
- *       layer.csvFile=/usr/local/data/shape/shapefile.csv
- *       # An attribute to tell the AreaHandler to skip over the first row
- *       # of the csv file if it contains descriptive column header names.
- *       layer.csvFileHasHeader=true
- *      
- *       # Default DrawingAttributes properties for everything not defined
- *       # specifically:
- *       layer.lineColor=ff000000
- *       layer.fillColor=ffff00ff
- *      
- *       # Now add any other attributes accepted by the DrawingAttributes
- *       # object, with the prefix as stated above, i.e. layer.lineColor)
- *       #
- *       # The first column index is 0, not 1.
- *       #
- *       # The key index specifies which column in the csv file contains
- *       # unique area names that are listed in the areas list here in the
- *       # properties.  In this case, it's the column that contains MA in one
- *       # of its rows.
- *       layer.keyIndex=4
- *      
- *       # The name index is the column in the csv file that contains what
- *       # should be displayed in the application when a shape is chosen - the
- *       # object's proper name.
- *       layer.nameIndex=4
- *       layer.areas=MA RI
- *       layer.areas.MA.fillColor=ffff0000
- *       layer.areas.MA.lineColor=ff00ff00
- *       layer.areas.RI.fillColor=ffff0000
- *       layer.areas.RI.lineColor=ff00ff00
  *       
- *      
+ *        layer.class=com.bbn.openmap.layer.shape.areas.AreaShapeLayer
+ *        layer.prettyName=Layer Name
+ *        layer.shapeFile=/usr/local/data/shape/shapefile.shp
+ *        layer.spatialIndex=/usr/local/data/shape/shapefile.ssx
+ *       
+ *        # Now, provide a data file that says what the shapes in the .shp
+ *        # file are.  You can use the DBF file:
+ *        layer.dbfFile=/usr/local/data/shape/shapefile.dbf
+ *        # OR a csv file, created yourself or from the .dbf file.  There
+ *        # should be the same number of entries in the .csv file that are in
+ *        # the .shp file.
+ *        layer.csvFile=/usr/local/data/shape/shapefile.csv
+ *        # An attribute to tell the AreaHandler to skip over the first row
+ *        # of the csv file if it contains descriptive column header names.
+ *        layer.csvFileHasHeader=true
+ *       
+ *        # Default DrawingAttributes properties for everything not defined
+ *        # specifically:
+ *        layer.lineColor=ff000000
+ *        layer.fillColor=ffff00ff
+ *       
+ *        # Now add any other attributes accepted by the DrawingAttributes
+ *        # object, with the prefix as stated above, i.e. layer.lineColor)
+ *        #
+ *        # The first column index is 0, not 1.
+ *        #
+ *        # The key index specifies which column in the csv file contains
+ *        # unique area names that are listed in the areas list here in the
+ *        # properties.  In this case, it's the column that contains MA in one
+ *        # of its rows.
+ *        layer.keyIndex=4
+ *       
+ *        # The name index is the column in the csv file that contains what
+ *        # should be displayed in the application when a shape is chosen - the
+ *        # object's proper name.
+ *        layer.nameIndex=4
+ *        layer.areas=MA RI
+ *        layer.areas.MA.fillColor=ffff0000
+ *        layer.areas.MA.lineColor=ff00ff00
+ *        layer.areas.RI.fillColor=ffff0000
+ *        layer.areas.RI.lineColor=ff00ff00
+ *        
+ *       
  * </pre>
  * 
  * <P>
@@ -428,7 +428,7 @@ public class AreaHandler implements PropertyConsumer {
      * Get all the graphics from the shapefile, colored appropriately.
      */
     public OMGraphicList getGraphics() {
-        return getGraphics(90f, -180f, -90f, 180f);
+        return getGraphics(90, -180, -90, 180);
     }
 
     /**
@@ -442,7 +442,20 @@ public class AreaHandler implements PropertyConsumer {
      */
     public OMGraphicList getGraphics(float ulLat, float ulLon, float lrLat,
                                      float lrLon) {
+        return getGraphics((double)ulLat, (double)ulLon, (double)lrLat, (double)lrLon);
+    }
 
+    /**
+     * Get the graphics for a particular lat/lon area.
+     * 
+     * @param ulLat upper left latitude, in decimal degrees.
+     * @param ulLon upper left longitude, in decimal degrees.
+     * @param lrLat lower right latitude, in decimal degrees.
+     * @param lrLon lower right longitude, in decimal degrees.
+     * @return OMGraphicList
+     */
+    public OMGraphicList getGraphics(double ulLat, double ulLon, double lrLat,
+                                     double lrLon) {
         if (cacheURL != null) {
             return omgraphics;
         }
@@ -688,18 +701,18 @@ public class AreaHandler implements PropertyConsumer {
             return pa.drawingAttributes;
         }
     }
-    
+
     /**
-     * OK, we can't assume that we are assigning a string as a
-     * key, you might want to key in on a specific attribute that
-     * is a number, like the country coloring code that ESRI has
-     * in the country file. We're going to assume that if the
-     * number has an integer value, it shouldn't have decimal
-     * places. That is, a 1.0 will be truncated to 1, because that
-     * makes more sense in a data file where you are using a key
-     * as a factor. If the double value doesn't match the integer
-     * value, though, we'll assume that's what was meant and leave
-     * it alone.<p>
+     * OK, we can't assume that we are assigning a string as a key,
+     * you might want to key in on a specific attribute that is a
+     * number, like the country coloring code that ESRI has in the
+     * country file. We're going to assume that if the number has an
+     * integer value, it shouldn't have decimal places. That is, a 1.0
+     * will be truncated to 1, because that makes more sense in a data
+     * file where you are using a key as a factor. If the double value
+     * doesn't match the integer value, though, we'll assume that's
+     * what was meant and leave it alone.
+     * <p>
      */
     protected String createStringFromKeyObject(Object keyObj) {
         String key = null;
@@ -717,7 +730,8 @@ public class AreaHandler implements PropertyConsumer {
             try {
                 key = keyObj.toString().toUpperCase().intern();
             } catch (Exception e) {
-                Debug.error("AreaHandler.createStringFromKeyObject: bad key object:" + keyObj);
+                Debug.error("AreaHandler.createStringFromKeyObject: bad key object:"
+                        + keyObj);
             }
         }
         return key;

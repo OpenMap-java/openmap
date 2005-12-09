@@ -12,15 +12,16 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/NodeTable.java,v $
-// $Revision: 1.5 $ $Date: 2004/10/14 18:06:09 $ $Author: dietrick $
+// $Revision: 1.6 $ $Date: 2005/12/09 21:08:57 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * Read VPF format node tables to generate point graphics for OpenMap.

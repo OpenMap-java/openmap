@@ -14,26 +14,42 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/PilotPath.java,v $
 // $RCSfile: PilotPath.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:38 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.plugin.pilot;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.Point;
+import java.awt.geom.Point2D;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.Debug;
+import javax.media.j3d.Behavior;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.vecmath.Vector3d;
+
 import com.bbn.openmap.MapHandler;
-
-import javax.media.j3d.*;
-import javax.vecmath.*;
-import com.bbn.openmap.tools.j3d.*;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.proj.GreatCircle;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.tools.j3d.ControlledManager;
+import com.bbn.openmap.tools.j3d.NavBehaviorProvider;
+import com.bbn.openmap.tools.j3d.OM3DConstants;
+import com.bbn.openmap.tools.j3d.OMKeyBehavior;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The PilotPath is a definition of a path that a Java 3D window will
@@ -129,12 +145,10 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
             Debug.output("PilotPath.moveAlong(): segment " + (pathIndex / 2)
                     + " of " + (pathPoints.length / 2));
         }
-        float azimuth;
-        LatLonPoint newPoint;
 
         float[] latlons = getSegmentCoordinates(pathIndex);
 
-        float segLength = GreatCircle.spherical_distance(latlons[0],
+        float segLength = GreatCircle.sphericalDistance(latlons[0],
                 latlons[1],
                 latlons[2],
                 latlons[3]);
@@ -169,7 +183,7 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
                 }
             }
 
-            segLength = GreatCircle.spherical_distance(latlons[0],
+            segLength = GreatCircle.sphericalDistance(latlons[0],
                     latlons[1],
                     latlons[2],
                     latlons[3]);
@@ -183,23 +197,23 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
 
         // Staying on this segment, just calculate where the
         // next point on the segment is.
-        azimuth = GreatCircle.spherical_azimuth(latlons[0],
+        float azimuth = GreatCircle.sphericalAzimuth(latlons[0],
                 latlons[1],
                 latlons[2],
                 latlons[3]);
 
-        newPoint = GreatCircle.spherical_between(latlons[0],
+        Point2D newPoint = GreatCircle.sphericalBetween(latlons[0],
                 latlons[1],
                 currentSegDist + needToTravel,
                 azimuth);
 
-        setLat(newPoint.getLatitude());
-        setLon(newPoint.getLongitude());
+        setLat((float) newPoint.getY());
+        setLon((float) newPoint.getX());
 
-        currentSegDist = GreatCircle.spherical_distance(latlons[0],
+        currentSegDist = (float) GreatCircle.sphericalDistance(latlons[0],
                 latlons[1],
-                newPoint.radlat_,
-                newPoint.radlon_);
+                Math.toRadians(newPoint.getY()),
+                Math.toRadians(newPoint.getX()));
 
         // OK, now move the camera accordingly...
 
@@ -229,15 +243,15 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
         if (DEBUG)
             Debug.output("PP moving: " + translate);
 
-        //         translateTransform.set(scaleFactor, translate);
+        // translateTransform.set(scaleFactor, translate);
 
-        //         cameraTransformGroup.getTransform(translateTransform);
-        //         Transform3D toMove = new Transform3D();
+        // cameraTransformGroup.getTransform(translateTransform);
+        // Transform3D toMove = new Transform3D();
 
-        //         toMove.setTranslation(translate);
-        //         translateTransform.mul(toMove);
+        // toMove.setTranslation(translate);
+        // translateTransform.mul(toMove);
 
-        //         cameraTransformGroup.setTransform(translateTransform);
+        // cameraTransformGroup.setTransform(translateTransform);
 
         if (platformBehavior != null) {
 
@@ -314,7 +328,7 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
                 scaleFactor));
         // Trying to look down a little, didn't work. Should have,
         // though.
-        //      platformBehavior.doLookX(com.bbn.openmap.MoreMath.HALF_PI/2f);
+        // platformBehavior.doLookX(com.bbn.openmap.MoreMath.HALF_PI/2f);
         return platformBehavior;
     }
 

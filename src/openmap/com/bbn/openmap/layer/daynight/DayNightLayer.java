@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/daynight/DayNightLayer.java,v $
 // $RCSfile: DayNightLayer.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/08/09 18:05:34 $
+// $Revision: 1.11 $
+// $Date: 2005/12/09 21:09:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,12 +29,8 @@ import java.util.Properties;
 
 import javax.swing.Timer;
 
-/*  OpenMap  */
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMCircle;
@@ -45,6 +41,9 @@ import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The DayNightLayer is a layer that draws the day/Night terminator on
@@ -387,11 +386,11 @@ public class DayNightLayer extends OMGraphicHandlerLayer implements
         if (doPolyTerminator) {
             Debug.message("daynight",
                     "DayNightLayer:  Creating polygon terminator");
-            LatLonPoint darkPoint = GreatCircle.spherical_between(brightPoint.radlat_,
-                    brightPoint.radlon_,
-                    (float) Math.PI,
-                    (float) Math.PI / 4f);
-            OMCircle circle = new OMCircle(darkPoint, (projection instanceof Cylindrical) ? 90f
+            LatLonPoint darkPoint = GreatCircle.sphericalBetween(brightPoint.getRadLat(),
+                    brightPoint.getRadLon(),
+                    Math.PI,
+                    Math.PI / 4);
+            OMCircle circle = new OMCircle((float)darkPoint.getY(), (float)darkPoint.getX(), (projection instanceof Cylindrical) ? 90f
                     : 89.0f,//HACK
                     Length.DECIMAL_DEGREE, terminatorVerts);
             circle.setPolarCorrection(true);
@@ -418,10 +417,10 @@ public class DayNightLayer extends OMGraphicHandlerLayer implements
         int light = daytimeColor.getRGB();
 
         // Allocate the memory here for the testPoint
-        LatLonPoint testPoint = new LatLonPoint(0f, 0f);
+        LatLonPoint testPoint = new LatLonPoint.Float(0f, 0f);
         // great circle distance between the bright point and each
         // pixel.
-        float distance;
+        double distance;
 
         //  Set the darkeness value
         int dark = nighttimeColor.getRGB();// ARGB
@@ -436,11 +435,11 @@ public class DayNightLayer extends OMGraphicHandlerLayer implements
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
 
-                testPoint = projection.inverse(i, j, testPoint);
-                distance = GreatCircle.spherical_distance(brightPoint.radlat_,
-                        brightPoint.radlon_,
-                        testPoint.radlat_,
-                        testPoint.radlon_);
+                projection.inverse(i, j, testPoint);
+                distance = GreatCircle.sphericalDistance(brightPoint.getRadLat(),
+                        brightPoint.getRadLon(),
+                        testPoint.getRadLat(),
+                        testPoint.getRadLon());
 
                 if (distance > upperFadeLimit) {
                     pixels[j * width + i] = dark;

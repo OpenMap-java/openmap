@@ -11,10 +11,11 @@ import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * PanMouseMode it is a class for Pan operation on the visible map.
@@ -27,11 +28,12 @@ public class PanMouseMode extends CoordMouseMode {
     public final static transient String modeID = "Pan";
     private boolean isPanning = false;
 
-    private LatLonPoint llp = null;
+    private Point2D llp = null;
     private BufferedImage img = null;
     private MapBean mb = null;
     private int oX, oY;
-    //private Cursor myPointer;
+
+    // private Cursor myPointer;
 
     public PanMouseMode() {
         super(modeID, true);
@@ -116,11 +118,13 @@ public class PanMouseMode extends CoordMouseMode {
 
             x = arg0.getX();
             y = arg0.getY();
-            LatLonPoint lastLlp = ((MapBean) arg0.getSource()).getProjection()
+            Point2D lastLlp = ((MapBean) arg0.getSource()).getProjection()
                     .inverse(x, y);
-            float az = (float) Math.toDegrees(lastLlp.azimuth(llp));
-            float dist = (float) Math.toDegrees(lastLlp.distance(llp));
-            mb.pan(new PanEvent(mb, az, dist));
+            if (lastLlp instanceof LatLonPoint && llp instanceof LatLonPoint) {
+                float az = (float) Math.toDegrees(((LatLonPoint)lastLlp).azimuth((LatLonPoint)llp));
+                float dist = (float) Math.toDegrees(((LatLonPoint)lastLlp).distance((LatLonPoint)llp));
+                mb.pan(new PanEvent(mb, az, dist));
+            }
             isPanning = false;
         }
         super.mouseReleased(arg0);

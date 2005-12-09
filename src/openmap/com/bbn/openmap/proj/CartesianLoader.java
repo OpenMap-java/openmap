@@ -12,9 +12,9 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LLXYLoader.java,v $
-// $RCSfile: LLXYLoader.java,v $
-// $Revision: 1.4 $
+// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/CartesianLoader.java,v $
+// $RCSfile: CartesianLoader.java,v $
+// $Revision: 1.1 $
 // $Date: 2005/12/09 21:09:01 $
 // $Author: dietrick $
 // 
@@ -25,23 +25,22 @@ package com.bbn.openmap.proj;
 import java.awt.geom.Point2D;
 import java.util.Properties;
 
-import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * ProjectionLoader to add the LLXY projection to an OpenMap
+ * ProjectionLoader to add the Cartesian projection to an OpenMap
  * application.
  * 
  * @see BasicProjectionLoader
  */
-public class LLXYLoader extends BasicProjectionLoader implements
+public class CartesianLoader extends BasicProjectionLoader implements
         ProjectionLoader {
 
-    public LLXYLoader() {
-        super(LLXY.class,
-              LLXY.LLXYName,
-              "Equivalent projection, used for many web data sources.");
+    public CartesianLoader() {
+        super(Cartesian.class,
+              Cartesian.CartesianName,
+              "Cartesian projection for displaying projected data.");
     }
 
     /**
@@ -52,7 +51,7 @@ public class LLXYLoader extends BasicProjectionLoader implements
     public Projection create(Properties props) throws ProjectionException {
 
         try {
-            LatLonPoint llp = convertToLLP((Point2D) props.get(ProjectionFactory.CENTER));
+            Point2D center = (Point2D) props.get(ProjectionFactory.CENTER);
             float scale = PropUtils.floatFromProperties(props,
                     ProjectionFactory.SCALE,
                     10000000);
@@ -62,17 +61,16 @@ public class LLXYLoader extends BasicProjectionLoader implements
             int width = PropUtils.intFromProperties(props,
                     ProjectionFactory.WIDTH,
                     100);
-            return new LLXY(llp, scale, width, height);
+            return new Cartesian(center, scale, width, height);
 
         } catch (Exception e) {
             if (Debug.debugging("proj")) {
-                Debug.output("LLXYLoader: problem creating LLXY projection "
+                Debug.output("CartesianLoader: problem creating Cartesian projection "
                         + e.getMessage());
             }
         }
 
-        throw new ProjectionException("LLXYLoader: problem creating LLXY projection");
-
+        throw new ProjectionException("CartesianLoader: problem creating Cartesian projection");
     }
 
 }

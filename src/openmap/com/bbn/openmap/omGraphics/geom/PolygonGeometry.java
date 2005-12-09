@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/PolygonGeometry.java,v $
 // $RCSfile: PolygonGeometry.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 20:07:53 $
+// $Revision: 1.7 $
+// $Date: 2005/12/09 21:09:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.proj.DrawUtil;
+import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
@@ -324,10 +325,15 @@ public abstract class PolygonGeometry extends BasicGeometry implements
 
             // polygon/polyline project the polygon/polyline.
             // Vertices should already be in radians.
-            ArrayList vector = proj.forwardPoly(rawllpts,
-                    lineType,
-                    nsegs,
-                    isPolygon);
+            ArrayList vector;
+            if (proj instanceof GeoProj) {
+                vector = ((GeoProj) proj).forwardPoly(rawllpts,
+                        lineType,
+                        nsegs,
+                        isPolygon);
+            } else {
+                vector = proj.forwardPoly(rawllpts, isPolygon);
+            }
             int size = vector.size();
 
             if (!doShapes) {
@@ -727,7 +733,12 @@ public abstract class PolygonGeometry extends BasicGeometry implements
             int[] _y = new int[npts];
 
             // forward project the radian point
-            Point origin = proj.forward(lat, lon, new Point(0, 0), true);//radians
+            Point origin = new Point();
+            if (proj instanceof GeoProj) {
+                ((GeoProj)proj).forward(lat, lon, origin, true);//radians
+            } else {
+                proj.forward(Math.toDegrees(lat), Math.toDegrees(lon), origin);
+            }
 
             if (coordMode == COORDMODE_ORIGIN) {
                 for (i = 0; i < npts; i++) {

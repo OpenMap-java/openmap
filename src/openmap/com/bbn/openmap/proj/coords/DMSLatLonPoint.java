@@ -14,15 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/DMSLatLonPoint.java,v $
 // $RCSfile: DMSLatLonPoint.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:23 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.proj.coords;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.util.Assert;
 
 /**
@@ -99,18 +98,18 @@ public class DMSLatLonPoint implements Cloneable {
             int lon_degrees, int lon_minutes, float lon_seconds) {
 
         this.lat_isnegative = lat_isnegative;
-        this.lat_degrees = (int) LatLonPoint.normalize_latitude(lat_degrees);
+        this.lat_degrees = (int) LatLonPoint.normalizeLatitude(lat_degrees);
         if (this.lat_degrees < 0) {
-            //can't have a negative value
+            // can't have a negative value
             this.lat_degrees = -this.lat_degrees;
         }
         this.lat_minutes = normalize_value(lat_minutes);
         this.lat_seconds = normalize_value(lat_seconds);
 
         this.lon_isnegative = lon_isnegative;
-        this.lon_degrees = (int) LatLonPoint.wrap_longitude(lon_degrees);
+        this.lon_degrees = (int) LatLonPoint.wrapLongitude(lon_degrees);
         if (this.lon_degrees < 0) {
-            //can't have a negative value
+            // can't have a negative value
             this.lon_degrees = -this.lon_degrees;
         }
         this.lon_minutes = normalize_value(lon_minutes);
@@ -135,7 +134,7 @@ public class DMSLatLonPoint implements Cloneable {
      */
     static void getDMSLatLonPoint(LatLonPoint llp, DMSLatLonPoint dllp) {
 
-        //set everything to zero
+        // set everything to zero
         dllp.lat_degrees = 0;
         dllp.lat_minutes = 0;
         dllp.lat_seconds = 0f;
@@ -145,43 +144,44 @@ public class DMSLatLonPoint implements Cloneable {
         dllp.lon_seconds = 0f;
         dllp.lon_isnegative = false;
 
-        //First do the latitude
-        float val = llp.getLatitude();
+        // First do the latitude
+        float val = (float) llp.getLatitude();
 
         if (val < 0) {
             dllp.lat_isnegative = true;
             val = -val;
-        } //remove the sign but remember it
+        } // remove the sign but remember it
 
         dllp.lat_degrees = (int) Math.floor((double) val);
 
         if (val >= SECOND) {
-            //If it's less then a second then we assume zero...I
+            // If it's less then a second then we assume zero...I
             // guess
-            //we could round up
+            // we could round up
             int deg = (int) val;
-            //take out the whole degrees
+            // take out the whole degrees
             float rem = val - deg;
-            //Do we have anything left to convert to a minute
-            if (rem >= MINUTE) { //get the minutes
+            // Do we have anything left to convert to a minute
+            if (rem >= MINUTE) { // get the minutes
                 int min = (int) (rem * 60);
                 dllp.lat_minutes = min;
                 rem = rem - (min * MINUTE);
             }
-            //Any seconds left?
-            if (rem >= SECOND) { //get the seconds
+            // Any seconds left?
+            if (rem >= SECOND) { // get the seconds
                 float sec = (rem * 3600f);
                 dllp.lat_seconds = sec;
                 rem = rem - (sec * SECOND);
             }
         } else {
-            dllp.lat_isnegative = false; //we don't want a negative
-                                         // zero
+            dllp.lat_isnegative = false; // we don't want a
+                                            // negative
+            // zero
         }
 
-        //Next repeat the code for longitude, easiest just to repeat
-        //it
-        val = llp.getLongitude();
+        // Next repeat the code for longitude, easiest just to repeat
+        // it
+        val = (float) llp.getLongitude();
         if (val < 0) {
             dllp.lon_isnegative = true;
             val = -val;
@@ -229,7 +229,7 @@ public class DMSLatLonPoint implements Cloneable {
         float lat = getDecimalLatitude();
         float lon = getDecimalLongitude();
         if (llp == null) {
-            return new LatLonPoint(lat, lon);
+            return new LatLonPoint.Float(lat, lon);
         } else {
             llp.setLatLon(lat, lon);
             return llp;

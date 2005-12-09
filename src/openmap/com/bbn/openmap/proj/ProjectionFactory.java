@@ -14,26 +14,27 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionFactory.java,v $
 // $RCSfile: ProjectionFactory.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/08/11 20:39:16 $
+// $Revision: 1.13 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.proj;
 
-import com.bbn.openmap.Environment;
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MapBean;
-import com.bbn.openmap.OMComponent;
-import com.bbn.openmap.util.Debug;
-
+import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.OMComponent;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The ProjectionFactory creates Projections. It used to have
@@ -168,130 +169,14 @@ public class ProjectionFactory extends OMComponent {
     }
 
     /**
-     * Return an int representing the OpenMap projection, given the
-     * name of the projection. Useful for setting a projection based
-     * on the name stated in a properties file.
-     * 
-     * @param projName the projection name from the Projection class.
-     * @return the projection type number for that name.
-     * @deprecated The notion of a projection type number is going
-     *             away, use the class of the projection instead.
-     */
-    public static int getProjType(String projName) {
-
-        int projType = Mercator.MercatorType;
-
-        if (projName == null) {
-        } else if (projName.equalsIgnoreCase(Mercator.MercatorName))
-            projType = Mercator.MercatorType;
-        else if (projName.equalsIgnoreCase(MercatorView.MercatorViewName))
-            projType = MercatorView.MercatorViewType;
-        else if (projName.equalsIgnoreCase(Orthographic.OrthographicName))
-            projType = Orthographic.OrthographicType;
-        else if (projName.equalsIgnoreCase(OrthographicView.OrthographicViewName))
-            projType = OrthographicView.OrthographicViewType;
-        else if (projName.equalsIgnoreCase(LLXY.LLXYName))
-            projType = LLXY.LLXYType;
-        else if (projName.equalsIgnoreCase(LLXYView.LLXYViewName))
-            projType = LLXYView.LLXYViewType;
-        else if (projName.equalsIgnoreCase(CADRG.CADRGName))
-            projType = CADRG.CADRGType;
-        else if (projName.equalsIgnoreCase(Gnomonic.GnomonicName))
-            projType = Gnomonic.GnomonicType;
-
-        return projType;
-    }
-
-    /**
-     * Makes a new projection based on the given projection and given
-     * type.
-     * <p>
-     * The <code>centerLat</code>,<code>centerLon</code>,
-     * <code>scale</code>,<code>width</code>, and
-     * <code>height</code> parameters are taken from the given
-     * projection, and the type is taken from the type argument.
-     * 
-     * @param newProjType the type for the resulting projection
-     * @param p the projection from which to copy other parameters
-     * @deprecated The notion of a projection type number is going
-     *             away, use the class of the projection instead.
-     */
-    public static Projection makeProjection(int newProjType, Projection p) {
-        LatLonPoint ctr = p.getCenter();
-        return makeProjection(newProjType,
-                ctr.getLatitude(),
-                ctr.getLongitude(),
-                p.getScale(),
-                p.getWidth(),
-                p.getHeight());
-    }
-
-    /**
-     * Create a projection.
-     * 
-     * @param projType projection type
-     * @param centerLat center latitude in decimal degrees
-     * @param centerLon center latitude in decimal degrees
-     * @param scale float scale
-     * @param width pixel width of projection
-     * @param height pixel height of projection
-     * @return Projection
-     * @deprecated The notion of a projection type number is going
-     *             away, use the class of the projection instead.
-     */
-    public static Projection makeProjection(int projType, float centerLat,
-                                            float centerLon, float scale,
-                                            int width, int height) {
-
-        Class projClass = null;
-        switch (projType) {
-        case CADRG.CADRGType:
-            projClass = com.bbn.openmap.proj.CADRG.class;
-            break;
-        case Mercator.MercatorType:
-            projClass = com.bbn.openmap.proj.Mercator.class;
-            break;
-        case MercatorView.MercatorViewType:
-            projClass = com.bbn.openmap.proj.MercatorView.class;
-            break;
-        case LLXY.LLXYType:
-            projClass = com.bbn.openmap.proj.LLXY.class;
-            break;
-        case LLXYView.LLXYViewType:
-            projClass = com.bbn.openmap.proj.LLXYView.class;
-            break;
-        case Orthographic.OrthographicType:
-            projClass = com.bbn.openmap.proj.Orthographic.class;
-            break;
-        case OrthographicView.OrthographicViewType:
-            projClass = com.bbn.openmap.proj.OrthographicView.class;
-            break;
-        case Gnomonic.GnomonicType:
-            projClass = com.bbn.openmap.proj.Gnomonic.class;
-            break;
-        default:
-            System.err.println("Unknown projection type " + projType
-                    + " in ProjectionFactory.create()");
-        }
-
-        return makeProjection(projClass,
-                centerLat,
-                centerLon,
-                scale,
-                width,
-                height);
-    }
-
-    /**
      * Makes a new projection based on the given projection class name
      * and parameters from the given projection.
      */
     public static Projection makeProjection(String projClassName, Projection p) {
 
-        LatLonPoint ctr = p.getCenter();
+        Point2D ctr = p.getCenter();
         return makeProjection(projClassName,
-                ctr.getLatitude(),
-                ctr.getLongitude(),
+                ctr,
                 p.getScale(),
                 p.getWidth(),
                 p.getHeight());
@@ -302,16 +187,15 @@ public class ProjectionFactory extends OMComponent {
      * found, a Mercator projection will be returned.
      * 
      * @param projClassName the classname of the projection.
-     * @param centerLat center latitude in decimal degrees.
-     * @param centerLon center latitude in decimal degrees.
+     * @param center Point2D center of the projection.
      * @param scale float scale.
      * @param width pixel width of projection.
      * @param height pixel height of projection.
      * @return Projection
      */
     public static Projection makeProjection(String projClassName,
-                                            float centerLat, float centerLon,
-                                            float scale, int width, int height) {
+                                            Point2D center, float scale,
+                                            int width, int height) {
 
         if (projClassName == null) {
             throw new ProjectionException("No projection class name specified");
@@ -319,8 +203,7 @@ public class ProjectionFactory extends OMComponent {
 
         try {
             return makeProjection(Class.forName(projClassName),
-                    centerLat,
-                    centerLon,
+                    center,
                     scale,
                     width,
                     height);
@@ -335,16 +218,14 @@ public class ProjectionFactory extends OMComponent {
      * projection will be returned.
      * 
      * @param projClass the class of the projection.
-     * @param centerLat center latitude in decimal degrees.
-     * @param centerLon center latitude in decimal degrees.
+     * @param center Point2D center of the projection.
      * @param scale float scale.
      * @param width pixel width of projection.
      * @param height pixel height of projection.
      * @return Projection
      */
-    public static Projection makeProjection(Class projClass, float centerLat,
-                                            float centerLon, float scale,
-                                            int width, int height) {
+    public static Projection makeProjection(Class projClass, Point2D center,
+                                            float scale, int width, int height) {
 
         ProjectionFactory factory = getInstance();
 
@@ -357,12 +238,7 @@ public class ProjectionFactory extends OMComponent {
             }
         }
 
-        return factory.makeProjection(loader,
-                centerLat,
-                centerLon,
-                scale,
-                width,
-                height);
+        return factory.makeProjection(loader, center, scale, width, height);
     }
 
     /**
@@ -407,8 +283,8 @@ public class ProjectionFactory extends OMComponent {
 
         try {
             proj = ProjectionFactory.makeProjection(Environment.get(Environment.Projection),
-                    Environment.getFloat(Environment.Latitude, 0f),
-                    Environment.getFloat(Environment.Longitude, 0f),
+                    new LatLonPoint.Float(Environment.getFloat(Environment.Latitude,
+                            0f), Environment.getFloat(Environment.Longitude, 0f)),
                     Environment.getFloat(Environment.Scale,
                             Float.POSITIVE_INFINITY),
                     w,
@@ -423,8 +299,8 @@ public class ProjectionFactory extends OMComponent {
                         + ") property as a projection class, need a class name instead.  Using default of com.bbn.openmap.proj.Mercator.");
             }
             proj = ProjectionFactory.makeProjection(Mercator.class,
-                    Environment.getFloat(Environment.Latitude, 0f),
-                    Environment.getFloat(Environment.Longitude, 0f),
+                    new LatLonPoint.Float(Environment.getFloat(Environment.Latitude,
+                            0f), Environment.getFloat(Environment.Longitude, 0f)),
                     Environment.getFloat(Environment.Scale,
                             Float.POSITIVE_INFINITY),
                     w,
@@ -445,16 +321,9 @@ public class ProjectionFactory extends OMComponent {
      * @param width pixel width of projection.
      * @param height pixel height of projection.
      */
-    public Projection makeProjection(ProjectionLoader loader, float centerLat,
-                                     float centerLon, float scale, int width,
-                                     int height) {
-        return makeProjection(loader,
-                centerLat,
-                centerLon,
-                scale,
-                width,
-                height,
-                null);
+    public Projection makeProjection(ProjectionLoader loader, Point2D center,
+                                     float scale, int width, int height) {
+        return makeProjection(loader, center, scale, width, height, null);
     }
 
     /**
@@ -466,20 +335,19 @@ public class ProjectionFactory extends OMComponent {
      * parameters.
      * 
      * @param loader projection loader to use.
-     * @param centerLat center latitude in decimal degrees.
-     * @param centerLon center latitude in decimal degrees.
+     * @param center Point2D center of the projection.
      * @param scale float scale.
      * @param width pixel width of projection.
      * @param height pixel height of projection.
-     * @param projProps a Properties object to add the parameters
-     *        to, which can include extra parameters that are needed
-     *        by this particular projection loader. If null, a
-     *        Properties object will be created.
+     * @param projProps a Properties object to add the parameters to,
+     *        which can include extra parameters that are needed by
+     *        this particular projection loader. If null, a Properties
+     *        object will be created.
      * @return projection, or null if the projection can't be created.
      */
-    public Projection makeProjection(ProjectionLoader loader, float centerLat,
-                                     float centerLon, float scale, int width,
-                                     int height, Properties projProps) {
+    public Projection makeProjection(ProjectionLoader loader, Point2D center,
+                                     float scale, int width, int height,
+                                     Properties projProps) {
 
         Projection proj = null;
         if (loader == null) {
@@ -491,7 +359,7 @@ public class ProjectionFactory extends OMComponent {
             projProps = new Properties();
         }
 
-        projProps.put(CENTER, new LatLonPoint(centerLat, centerLon));
+        projProps.put(CENTER, center);
         projProps.put(SCALE, Float.toString(scale));
         projProps.put(WIDTH, Integer.toString(width));
         projProps.put(HEIGHT, Integer.toString(height));

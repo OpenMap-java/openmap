@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/CSpecLayer.java,v $
 // $RCSfile: CSpecLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 20:59:19 $
+// $Revision: 1.9 $
+// $Date: 2005/12/09 21:08:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,7 @@ package com.bbn.openmap.layer.specialist;
 /*  Java Core  */
 import java.awt.Component;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,7 +35,6 @@ import org.omg.CORBA.ShortHolder;
 import org.omg.CORBA.StringHolder;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.CSpecialist.CProjection;
 import com.bbn.openmap.CSpecialist.GraphicChange;
 import com.bbn.openmap.CSpecialist.LLPoint;
@@ -60,22 +60,22 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  * 
  * <pre>
- * 
- *  # If you have an ior for the server:
- *  cspeclayermarker.ior= URL to ior
- *  # If you are using the Naming Service:
- *  cspeclayermarker.name= SERVER NAME
- *  # Static Arguments for the server, to be sent on every map request:
- *  cspeclayermarker.staticArgs= space separated arguments
- *  # If the network setup allows the server to contact the client (no firewall)
- *  cspeclayermarker.allowServerUpdates=true/false (false is default)
- *  
+ *   
+ *    # If you have an ior for the server:
+ *    cspeclayermarker.ior= URL to ior
+ *    # If you are using the Naming Service:
+ *    cspeclayermarker.name= SERVER NAME
+ *    # Static Arguments for the server, to be sent on every map request:
+ *    cspeclayermarker.staticArgs= space separated arguments
+ *    # If the network setup allows the server to contact the client (no firewall)
+ *    cspeclayermarker.allowServerUpdates=true/false (false is default)
+ *    
  * </pre>
  */
 public class CSpecLayer extends OMGraphicHandlerLayer implements
         MapMouseListener {
 
-//    private final static String[] debugTokens = { "debug.cspec" };
+    // private final static String[] debugTokens = { "debug.cspec" };
 
     /** The property specifying the IOR URL. */
     public static final String iorUrlProperty = "ior";
@@ -170,7 +170,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     *  
+     * 
      */
     public void finalize() {
         if (Debug.debugging("cspec")) {
@@ -239,11 +239,11 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                 argBuf.append(" ").append(argv[i]);
             }
         }
-        //dbg
+        // dbg
         // Debug.output("----------------------------------------------");
-        //dbg Debug.output("CSpecLayer " + getName() + ":");
-        //dbg Debug.output("\tURL: " + url);
-        //dbg Debug.output("\targs: " + argBuf);
+        // dbg Debug.output("CSpecLayer " + getName() + ":");
+        // dbg Debug.output("\tURL: " + url);
+        // dbg Debug.output("\targs: " + argBuf);
 
         try {
             setIorUrl(new URL(url));
@@ -385,15 +385,15 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
         if (Debug.debugging("cspec"))
             Debug.output(getName() + "|CSpecLayer.getSpecGraphics()");
 
-        cproj = new CProjection((short) (p.getProjectionType()), new LLPoint(p.getCenter()
-                .getLatitude(), p.getCenter().getLongitude()), (short) p.getHeight(), (short) p.getWidth(), (int) p.getScale());
+        Point2D center = p.getCenter();
+        cproj = new CProjection(MakeProjection.getProjectionType(p), new LLPoint((float) center.getY(), (float) center.getX()), (short) p.getHeight(), (short) p.getWidth(), (int) p.getScale());
 
         // lat-lon "box", (depends on the projection)
-        LatLonPoint ul = p.getUpperLeft();
-        LatLonPoint lr = p.getLowerRight();
+        Point2D ul = p.getUpperLeft();
+        Point2D lr = p.getLowerRight();
 
-        ll1 = new LLPoint(ul.getLatitude(), ul.getLongitude());
-        ll2 = new LLPoint(lr.getLatitude(), lr.getLongitude());
+        ll1 = new LLPoint((float) ul.getY(), (float) ul.getX());
+        ll2 = new LLPoint((float) lr.getY(), (float) lr.getX());
 
         // check for cancellation
         if (isCancelled()) {
@@ -512,7 +512,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
             Debug.output(getName() + "|CSpecLayer.prepare(): doing it");
         }
 
-        dirtybits = 0;//reset the dirty bits
+        dirtybits = 0;// reset the dirty bits
 
         // Now we're going to shut off event processing. The only
         // thing that turns them on again is finishing successfully.
@@ -764,7 +764,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
     }
 
     // Mouse Listener events
-    ////////////////////////
+    // //////////////////////
 
     /**
      * Returns the MapMouseListener object (this object) that handles
@@ -844,7 +844,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
     }
 
     // Mouse Motion Listener events
-    ///////////////////////////////
+    // /////////////////////////////
 
     /**
      * Handle a mouse button being pressed while the mouse cursor is
@@ -923,7 +923,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                 Debug.output(getName()
                         + "|CSpecLayer.handleGesture(): null evt!");
             }
-            return false;//didn't consume gesture
+            return false;// didn't consume gesture
         }
 
         try {
@@ -951,10 +951,10 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                         if (Debug.debugging("cspec"))
                             Debug.output(getName()
                                     + "|CSpecLayer.handleGesture(): null action!");
-                        return false; //didn't consume gesture
+                        return false; // didn't consume gesture
                     }
                     if (action.length == 0) {
-                        return false; //didn't consume gesture
+                        return false; // didn't consume gesture
                     }
                 }
                 if (action == null) {
@@ -962,7 +962,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                         System.err.println(getName()
                                 + "|CSpecLayer.handleGesture(): null action!");
                     }
-                    return false; //didn't consume gesture
+                    return false; // didn't consume gesture
                 }
                 break;
             case (short) MapGesture.Cooked:
@@ -1064,7 +1064,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
         if (updated_graphics) {
             repaint();
         }
-        return true;//consumed the gesture
+        return true;// consumed the gesture
     }
 
     /**
@@ -1179,7 +1179,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                     System.err.println("CSpecLayer|"
                             + getName()
                             + "|updateGraphics: Graphics Update Type not implemented.");
-                    break;//HACK - unimplemented
+                    break;// HACK - unimplemented
 
                 // unknown update
                 default:
@@ -1210,21 +1210,21 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     *  
+     * 
      */
     protected void postMemoryErrorMsg(String msg) {
         fireRequestMessage(new InfoDisplayEvent(this, msg));
     }
 
     /**
-     *  
+     * 
      */
     protected void postCORBAErrorMsg(String msg) {
         fireRequestMessage(new InfoDisplayEvent(this, msg));
     }
 
     /**
-     *  
+     * 
      */
     protected void postException(String msg) {
         fireRequestMessage(new InfoDisplayEvent(this, msg));

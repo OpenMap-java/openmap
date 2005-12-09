@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Mercator.java,v $
 // $RCSfile: Mercator.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 20:38:12 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:08:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,8 +23,10 @@
 package com.bbn.openmap.proj;
 
 import java.awt.Point;
-import com.bbn.openmap.LatLonPoint;
+import java.awt.geom.Point2D;
+
 import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -37,27 +39,23 @@ public class Mercator extends Cylindrical {
      */
     public final static transient String MercatorName = "Mercator";
 
-    /**
-     * The Mercator type of projection.
-     */
-    public final static transient int MercatorType = 2;
-
     // maximum number of segments to draw for rhumblines.
-    protected static int MAX_RHUMB_SEGS = 512;
+    protected final static int MAX_RHUMB_SEGS = 512;
 
-    // HACK epsilon: skirt the edge of the infinite. If this is too
-    // small
-    // then we get too close to +-INFINITY when we forward project.
-    // Tweak
-    // this if you start getting Infinity or NaN's for forward().
-    protected static float epsilon = 0.01f;
+    /*
+     * HACK epsilon: skirt the edge of the infinite. If this is too
+     * small then we get too close to +-INFINITY when we forward
+     * project. Tweak this if you start getting Infinity or NaN's for
+     * forward().
+     */
+    protected static double epsilon = 0.01f;
 
     // world<->screen coordinate offsets
-    protected int hy, wx;
+    protected transient int hy, wx;
 
     // almost constant projection parameters
-    protected float tanCtrLat;
-    protected float asinh_of_tanCtrLat;
+    protected transient double tanCtrLat;
+    protected transient double asinh_of_tanCtrLat;
 
     /**
      * Construct a Mercator projection.
@@ -68,19 +66,12 @@ public class Mercator extends Cylindrical {
      * @param height height of screen
      */
     public Mercator(LatLonPoint center, float scale, int width, int height) {
-
-        super(center, scale, width, height, MercatorType);
+        super(center, scale, width, height);
     }
 
-    public Mercator(LatLonPoint center, float scale, int width, int height,
-            int type) {
-
-        super(center, scale, width, height, type);
-    }
-
-    //    protected void finalize() {
-    //      Debug.message("mercator", "Mercator finalized");
-    //    }
+    // protected void finalize() {
+    // Debug.message("mercator", "Mercator finalized");
+    // }
 
     /**
      * Return stringified description of this projection.
@@ -99,15 +90,15 @@ public class Mercator extends Cylindrical {
      * instance, they may need to recalculate "constant" paramters
      * used in the forward() and inverse() calls.
      * <p>
-     *  
+     * 
      */
     protected void computeParameters() {
         Debug.message("mercator", "Mercator.computeParameters()");
         super.computeParameters();
 
         // do some precomputation of stuff
-        tanCtrLat = (float) Math.tan(ctrLat);
-        asinh_of_tanCtrLat = (float) MoreMath.asinh(tanCtrLat);
+        tanCtrLat = Math.tan(centerY);
+        asinh_of_tanCtrLat = MoreMath.asinh(tanCtrLat);
 
         // compute the offsets
         hy = height / 2;
@@ -123,9 +114,9 @@ public class Mercator extends Cylindrical {
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
      * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
-     *  
+     * 
      */
-    public float normalize_latitude(float lat) {
+    public double normalize_latitude(double lat) {
         if (lat > NORTH_POLE - epsilon) {
             return NORTH_POLE - epsilon;
         } else if (lat < SOUTH_POLE + epsilon) {
@@ -134,16 +125,16 @@ public class Mercator extends Cylindrical {
         return lat;
     }
 
-    //    protected float forward_x(float lambda) {
-    //      return scaled_radius * wrap_longitude(lambda - ctrLon) +
+    // protected float forward_x(float lambda) {
+    // return scaled_radius * wrap_longitude(lambda - ctrLon) +
     // (float)wx;
-    //    }
+    // }
 
-    //    protected float forward_y(float phi) {
-    //      return (float)hy - (scaled_radius *
-    //          (MoreMath.asinh((float)Math.tan(phi)) -
-    //           asinh_of_tanCtrLat));
-    //    }
+    // protected float forward_y(float phi) {
+    // return (float)hy - (scaled_radius *
+    // (MoreMath.asinh((float)Math.tan(phi)) -
+    // asinh_of_tanCtrLat));
+    // }
 
     /**
      * Checks if a LatLonPoint is plot-able.
@@ -151,104 +142,42 @@ public class Mercator extends Cylindrical {
      * A point is always plot-able in the Mercator projection (even
      * the North and South poles since we normalize latitude).
      * 
-     * @param lat float latitude in decimal degrees
-     * @param lon float longitude in decimal degrees
+     * @param lat double latitude in decimal degrees
+     * @param lon double longitude in decimal degrees
      * @return boolean
      */
-    public boolean isPlotable(float lat, float lon) {
+    public boolean isPlotable(double lat, double lon) {
         return true;
-    }
-
-    /**
-     * Projects a point from Lat/Lon space to X/Y space.
-     * <p>
-     * 
-     * @param pt LatLonPoint
-     * @param p Point retval
-     * @return Point p
-     */
-    public Point forward(LatLonPoint pt, Point p) {
-        // first convert to radians, and handle infinity
-        float phi = normalize_latitude(pt.radlat_);
-        float lambda = pt.radlon_; // already wrapped
-
-        // same as forward_x and forward_y, and convert to screen
-        // coords
-        p.x = Math.round(scaled_radius * wrap_longitude(lambda - ctrLon)) + wx;
-        p.y = hy
-                - Math.round(scaled_radius
-                        * (MoreMath.asinh((float) Math.tan(phi)) - asinh_of_tanCtrLat));
-        return p;
-    }
-
-    /**
-     * Forward projects a lat,lon coordinates.
-     * <p>
-     * 
-     * @param lat raw latitude in decimal degrees
-     * @param lon raw longitude in decimal degrees
-     * @param p Resulting XY Point
-     * @return Point p
-     */
-    public Point forward(float lat, float lon, Point p) {
-        // first convert to radians, and normalize
-        float phi = normalize_latitude(ProjMath.degToRad(lat));
-        float lambda = wrap_longitude(ProjMath.degToRad(lon));
-
-        // same as forward_x and forward_y, and convert to screen
-        // coords
-        p.x = Math.round(scaled_radius * wrap_longitude(lambda - ctrLon)) + wx;
-        p.y = hy
-                - Math.round(scaled_radius
-                        * (MoreMath.asinh((float) Math.tan(phi)) - asinh_of_tanCtrLat));
-        return p;
     }
 
     /**
      * Forward projects lat,lon into XY space and returns a Point.
      * <p>
      * 
-     * @param lat float latitude in radians
-     * @param lon float longitude in radians
+     * @param lat double latitude in radians
+     * @param lon double longitude in radians
      * @param p Resulting XY Point
      * @param isRadian bogus argument indicating that lat,lon
      *        arguments are in radians
      * @return Point p
      */
-    public Point forward(float lat, float lon, Point p, boolean isRadian) {
+    public Point forward(double lat, double lon, Point p, boolean isRadian) {
+        if (!isRadian) {
+            lat = ProjMath.degToRad(lat);
+            lon = ProjMath.degToRad(lon);
+        }
         // first normalize
-        float phi = normalize_latitude(lat);
-        float lambda = wrap_longitude(lon);
+        lat = normalize_latitude(lat);
+        lon = wrap_longitude(lon);
 
         // same as forward_x and forward_y, and convert to screen
         // coords
-        p.x = Math.round(scaled_radius * wrap_longitude(lambda - ctrLon)) + wx;
+        p.x = (int) Math.round(scaled_radius * wrap_longitude(lon - centerX))
+                + wx;
         p.y = hy
-                - Math.round(scaled_radius
-                        * (MoreMath.asinh((float) Math.tan(phi)) - asinh_of_tanCtrLat));
+                - (int) Math.round(scaled_radius
+                        * (MoreMath.asinh(Math.tan(lat)) - asinh_of_tanCtrLat));
         return p;
-    }
-
-    /**
-     * Inverse project a Point.
-     * 
-     * @param pt x,y Point
-     * @param llp resulting LatLonPoint
-     * @return LatLonPoint llp
-     */
-    public LatLonPoint inverse(Point pt, LatLonPoint llp) {
-        // convert from screen to world coordinates
-        int x = pt.x - wx;
-        int y = hy - pt.y;
-
-        // inverse project
-        // See if you can take advantage of the precalculated array.
-        float wc = asinh_of_tanCtrLat * scaled_radius;
-        llp.setLatitude(ProjMath.radToDeg((float) Math.atan(MoreMath.sinh((y + wc)
-                / scaled_radius))));
-        llp.setLongitude(ProjMath.radToDeg((float) x / scaled_radius + ctrLon));
-
-        return llp;
     }
 
     /**
@@ -260,16 +189,16 @@ public class Mercator extends Cylindrical {
      * @return LatLonPoint llp
      * @see Proj#inverse(Point)
      */
-    public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
+    public Point2D inverse(int x, int y, Point2D llp) {
         // convert from screen to world coordinates
         x -= wx;
         y = hy - y;
 
         // inverse project
-        float wc = asinh_of_tanCtrLat * scaled_radius;
-        llp.setLatitude(ProjMath.radToDeg((float) Math.atan(MoreMath.sinh((y + wc)
-                / scaled_radius))));
-        llp.setLongitude(ProjMath.radToDeg((float) x / scaled_radius + ctrLon));
+        double wc = asinh_of_tanCtrLat * scaled_radius;
+
+        llp.setLocation(Math.toDegrees(x / scaled_radius + centerX),
+                Math.toDegrees(Math.atan(MoreMath.sinh((y + wc) / scaled_radius))));
 
         return llp;
     }
@@ -324,14 +253,15 @@ public class Mercator extends Cylindrical {
                 nsegs = MAX_RHUMB_SEGS;
         }
 
-        //      Debug.output(
-        //              "from=("+from.x+","+from.y+")to=("+to.x+","+to.y+")");
-        LatLonPoint llp = inverse(from.x, from.y, new LatLonPoint());
-//        LatLonPoint llp2 = inverse(to.x, to.y, new LatLonPoint());
-        //      Debug.output(
-        //              "invfrom=("+llp.getLatitude()+","+llp.getLongitude()+
-        //              ")invto=("+llp2.getLatitude()+","+llp2.getLongitude()+")");
-        //      Debug.output("nsegs="+nsegs);
+        // Debug.output(
+        // "from=("+from.x+","+from.y+")to=("+to.x+","+to.y+")");
+        LatLonPoint llp = new LatLonPoint.Double();
+        // inverse(from.x, from.y, llp);
+        // LatLonPoint llp2 = inverse(to.x, to.y, new LatLonPoint());
+        // Debug.output(
+        // "invfrom=("+llp.getLatitude()+","+llp.getLongitude()+
+        // ")invto=("+llp2.getLatitude()+","+llp2.getLongitude()+")");
+        // Debug.output("nsegs="+nsegs);
         // calculate nsegs(+1) extra vertices between endpoints
         int[] xypts = DrawUtil.lineSegments(from.x, from.y, // coords
                 to.x, to.y, nsegs, // number of segs between
@@ -341,12 +271,65 @@ public class Mercator extends Cylindrical {
 
         float[] llpts = new float[xypts.length];
         for (int i = 0; i < llpts.length; i += 2) {
-            //          System.out.print("("+xypts[i]+","+xypts[i+1]+")");
+            // System.out.print("("+xypts[i]+","+xypts[i+1]+")");
             inverse(xypts[i], xypts[i + 1], llp);
-            llpts[i] = llp.radlat_;
-            llpts[i + 1] = llp.radlon_;
+            llpts[i] = (float) llp.getRadLat();
+            llpts[i + 1] = (float) llp.getRadLon();
         }
-        //      Debug.output("");
+        // Debug.output("");
+        return llpts;
+    }
+
+    /**
+     * Calculates the points along a rhumbline between two XY points.
+     * <p>
+     * Loxodromes are straight in the Mercator projection. Calculate a
+     * bunch of extra points between the two points, inverse project
+     * back into LatLons and return all the vertices.
+     * 
+     * @param from Point
+     * @param to Point
+     * @param include_last include the very last point?
+     * @param nsegs number of segments
+     * @return double[] of lat, lon, lat, lon, ... in RADIANS!
+     */
+    protected double[] rhumbProjectDouble(Point from, Point to,
+                                          boolean include_last, int nsegs) {
+
+        // calculate pixel distance
+        if (nsegs < 1) {
+            // dynamically calculate the number of segments to draw
+            nsegs = DrawUtil.pixel_distance(from.x, from.y, to.x, to.y) >> 3;// /8
+            if (nsegs == 0)
+                nsegs = 1;
+            else if (nsegs > MAX_RHUMB_SEGS)
+                nsegs = MAX_RHUMB_SEGS;
+        }
+
+        // Debug.output(
+        // "from=("+from.x+","+from.y+")to=("+to.x+","+to.y+")");
+        LatLonPoint llp = new LatLonPoint.Double();
+        // inverse(from.x, from.y, llp);
+        // LatLonPoint llp2 = inverse(to.x, to.y, new LatLonPoint());
+        // Debug.output(
+        // "invfrom=("+llp.getLatitude()+","+llp.getLongitude()+
+        // ")invto=("+llp2.getLatitude()+","+llp2.getLongitude()+")");
+        // Debug.output("nsegs="+nsegs);
+        // calculate nsegs(+1) extra vertices between endpoints
+        int[] xypts = DrawUtil.lineSegments(from.x, from.y, // coords
+                to.x, to.y, nsegs, // number of segs between
+                include_last, // include last point
+                new int[nsegs << 1] // retval
+                );
+
+        double[] llpts = new double[xypts.length];
+        for (int i = 0; i < llpts.length; i += 2) {
+            // System.out.print("("+xypts[i]+","+xypts[i+1]+")");
+            inverse(xypts[i], xypts[i + 1], llp);
+            llpts[i] = llp.getRadLat();
+            llpts[i + 1] = llp.getRadLon();
+        }
+        // Debug.output("");
         return llpts;
     }
 
@@ -375,8 +358,7 @@ public class Mercator extends Cylindrical {
      * public static void main (String argv[]) { Mercator proj=null; //
      * proj = new Mercator(new LatLonPoint(0.0f, -180.0f), 1.0f, 620,
      * 480); proj = new Mercator(new LatLonPoint(0.0f, 0.0f), 1.0f,
-     * 620, 480);
-     *  // test on unit circle proj.setEarthRadius(1.0f);
+     * 620, 480); // test on unit circle proj.setEarthRadius(1.0f);
      * Debug.output("setEarthRadius("+proj.getEarthRadius()+")");
      * proj.setPPM(1); Debug.output("setPPM("+proj.getPPM()+")");
      * proj.setScale(1.0f);

@@ -14,21 +14,25 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/LabelLayer.java,v $
 // $RCSfile: LabelLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:52 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.util.Properties;
 
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.event.MapMouseListener;
+import com.bbn.openmap.event.SelectMouseMode;
+import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.Taskable;

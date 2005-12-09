@@ -14,15 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeIndex.java,v $
 // $RCSfile: ShapeIndex.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 18:48:03 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -43,7 +45,7 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.5 $ $Date: 2005/08/09 18:48:03 $
+ * @version $Revision: 1.6 $ $Date: 2005/12/09 21:09:10 $
  * @see SpatialIndex
  */
 public class ShapeIndex extends ShapeUtils {

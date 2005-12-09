@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeFileCrop.java,v $
 // $RCSfile: ShapeFileCrop.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 18:48:03 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,7 +24,7 @@
 
 package com.bbn.openmap.layer.shape;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
  * Class that supports cropping of ESRI Shapefiles with a simple
@@ -43,7 +43,7 @@ import java.io.*;
  * <p>
  * 
  * @author Eliot Lebsack <elebsack@mitre.org>
- * @version $Revision: 1.4 $ $Date: 2005/08/09 18:48:03 $
+ * @version $Revision: 1.5 $ $Date: 2005/12/09 21:09:10 $
  */
 public class ShapeFileCrop {
 

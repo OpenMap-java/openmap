@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCacheHandler.java,v $
 // $RCSfile: RpfCacheHandler.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 18:45:53 $
+// $Revision: 1.9 $
+// $Date: 2005/12/09 21:09:05 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -41,9 +41,9 @@ package com.bbn.openmap.layer.rpf;
 import java.awt.Point;
 import java.util.Vector;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.proj.CADRG;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -355,7 +355,7 @@ public class RpfCacheHandler {
             // Need to figure how much this will change for this scale
             // chart at this screen scale
             // Reference at 0, 0
-            LatLonPoint refllpt = viewAttributes.proj.getUpperLeft();
+            LatLonPoint refllpt = (LatLonPoint)viewAttributes.proj.getUpperLeft();
             refllpt.setLongitude(refllpt.getLongitude()
                     + (float) currentBox.subframeLonInterval);
             refllpt.setLatitude(refllpt.getLatitude()

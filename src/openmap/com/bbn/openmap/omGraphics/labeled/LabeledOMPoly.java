@@ -14,20 +14,23 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/labeled/LabeledOMPoly.java,v $
 // $RCSfile: LabeledOMPoly.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 20:09:53 $
+// $Revision: 1.7 $
+// $Date: 2005/12/09 21:09:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.labeled;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Point;
+
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.proj.GeoProj;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * This is an OMPoly that has been extended to manage a text label.
@@ -353,7 +356,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     protected Point getTextPoint(Projection proj) {
 
         // Assuming that the rendertype is not unknown...
-        if (renderType == RENDERTYPE_LATLON) {
+        if (renderType == RENDERTYPE_LATLON && proj instanceof GeoProj) {
             int numPoints = rawllpts.length / 2;
             if (rawllpts.length < 2) {
                 // off screen...
@@ -379,7 +382,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
                     index = 0;
                 if (index > numPoints)
                     index = numPoints - 1;
-                proj.forward(rawllpts[2 * index],
+                ((GeoProj)proj).forward(rawllpts[2 * index],
                         rawllpts[2 * index + 1],
                         handyPoint,
                         true);

@@ -12,19 +12,20 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/AreaTable.java,v $
-// $Revision: 1.4 $ $Date: 2004/10/14 18:06:07 $ $Author: dietrick $
+// $Revision: 1.5 $ $Date: 2005/12/09 21:08:58 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
- * Read VPF format edge, face, and ring tables to generate filled
- * polygon graphics for OpenMap.
+ * Read VPF format edge, face, and ring tables to generate filled polygon
+ * graphics for OpenMap.
  */
 public class AreaTable extends PrimitiveTable {
 
@@ -56,8 +57,7 @@ public class AreaTable extends PrimitiveTable {
      * @param cov the coverage table that is our "parent"
      * @param edg the edge table for the same tile as us (can be null)
      * @param tile the tile to parse
-     * @exception FormatException if something goes wrong reading the
-     *            area
+     * @exception FormatException if something goes wrong reading the area
      */
     public AreaTable(CoverageTable cov, EdgeTable edg, TileDirectory tile)
             throws FormatException {
@@ -91,9 +91,9 @@ public class AreaTable extends PrimitiveTable {
     }
 
     /**
-     * Close the files associated with this tile. If an edgetable was
-     * passed to the constructor, that table is NOT closed. If this
-     * instance created its own edgetable, it IS closed.
+     * Close the files associated with this tile. If an edgetable was passed to
+     * the constructor, that table is NOT closed. If this instance created its
+     * own edgetable, it IS closed.
      */
     public void close() {
         if (privateEdgeTable) {
@@ -104,15 +104,13 @@ public class AreaTable extends PrimitiveTable {
     }
 
     /**
-     * Computes the full set of points that determine the edge of the
-     * area.
+     * Computes the full set of points that determine the edge of the area.
      * 
      * @param facevec a row from the VPF face table for this area
-     * @param allLLPoints a List that gets modified to contain
-     *        CoordFloatString objects defining the area.
-     *        CoordFloatString objects with a negative element count
-     *        (e.g. -3) contain the absolute value of the count (e.g.
-     *        3), but must be traversed in reverse order.
+     * @param allLLPoints a List that gets modified to contain CoordFloatString
+     *        objects defining the area. CoordFloatString objects with a
+     *        negative element count (e.g. -3) contain the absolute value of the
+     *        count (e.g. 3), but must be traversed in reverse order.
      * @return the total number of points that define the polygon
      * @exception FormatException may throw FormatExceptions
      */
@@ -147,9 +145,9 @@ public class AreaTable extends PrimitiveTable {
                 firsttime = false;
             }
 
-            //Debug.message("dcwSpecialist",
-            //              "edge: " + nextedgeid + " start->end: "
-            //              + start_node + "->" + end_node);
+            // Debug.message("dcwSpecialist",
+            // "edge: " + nextedgeid + " start->end: "
+            // + start_node + "->" + end_node);
             CoordFloatString cfs = edges.getCoordinates(edge);
 
             if ((fac_id == rht_face) && (fac_id == lft_face)) {
@@ -167,7 +165,7 @@ public class AreaTable extends PrimitiveTable {
                 prev_node = end_node;
                 polySize += cfs.tcount;
                 allLLPoints.add(cfs);
-            } else if (fac_id == lft_face) { //reverse direction
+            } else if (fac_id == lft_face) { // reverse direction
                 nextedgeid = left_edge;
                 prev_node = start_node;
                 polySize += cfs.tcount;
@@ -181,15 +179,13 @@ public class AreaTable extends PrimitiveTable {
     }
 
     /**
-     * Parse the area records for this tile, calling
-     * warehouse.createArea once for each record.
+     * Parse the area records for this tile, calling warehouse.createArea once
+     * for each record.
      * 
-     * @param warehouse the warehouse used for createArea calls (must
-     *        not be null)
-     * @param dpplat threshold for latitude thinning (passed to
-     *        warehouse)
-     * @param dpplon threshold for longitude thinngin (passed to
-     *        warehouse)
+     * @param warehouse the warehouse used for createArea calls (must not be
+     *        null)
+     * @param dpplat threshold for latitude thinning (passed to warehouse)
+     * @param dpplon threshold for longitude thinngin (passed to warehouse)
      * @param ll1 upperleft of selection region (passed to warehouse)
      * @param ll2 lowerright of selection region (passed to warehouse)
      * @see VPFGraphicWarehouse#createArea
@@ -213,21 +209,17 @@ public class AreaTable extends PrimitiveTable {
     }
 
     /**
-     * Use the warehouse to create a graphic from a feature in the
-     * AreaTable.
+     * Use the warehouse to create a graphic from a feature in the AreaTable.
      * 
-     * @param warehouse the warehouse used for createArea calls (must
-     *        not be null)
-     * @param dpplat threshold for latitude thinning (passed to
-     *        warehouse)
-     * @param dpplon threshold for longitude thinngin (passed to
-     *        warehouse)
+     * @param warehouse the warehouse used for createArea calls (must not be
+     *        null)
+     * @param dpplat threshold for latitude thinning (passed to warehouse)
+     * @param dpplon threshold for longitude thinngin (passed to warehouse)
      * @param ll1 upperleft of selection region (passed to warehouse)
      * @param ll2 lowerright of selection region (passed to warehouse)
      * @param area a List containing the AreaTable row contents.
-     * @param featureType the string representing the feature type, in
-     *        case the warehouse wants to do some intelligent
-     *        rendering.
+     * @param featureType the string representing the feature type, in case the
+     *        warehouse wants to do some intelligent rendering.
      * @see VPFGraphicWarehouse#createEdge
      */
     public void drawFeature(VPFFeatureWarehouse warehouse, float dpplat,

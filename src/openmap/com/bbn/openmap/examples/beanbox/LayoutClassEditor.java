@@ -16,7 +16,7 @@
 
 package com.bbn.openmap.examples.beanbox;
 
-import java.beans.*;
+import java.beans.PropertyEditorSupport;
 
 /**
  * Custom property editor for the layout class property of a
@@ -34,4 +34,3 @@ public class LayoutClassEditor extends PropertyEditorSupport {
         return result;
     }
 }
-

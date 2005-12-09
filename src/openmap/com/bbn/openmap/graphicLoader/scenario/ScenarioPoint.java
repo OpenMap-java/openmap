@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/ScenarioPoint.java,v $
 // $RCSfile: ScenarioPoint.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/09/15 14:39:30 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -217,7 +217,7 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
             setLocation(previous.latitude, previous.longitude);
         } else {
             // Need to interpolate between the two.
-            float[] points = GreatCircle.great_circle(ProjMath.degToRad(previous.latitude),
+            float[] points = GreatCircle.greatCircle(ProjMath.degToRad(previous.latitude),
                     ProjMath.degToRad(previous.longitude),
                     ProjMath.degToRad(next.latitude),
                     ProjMath.degToRad(next.longitude),

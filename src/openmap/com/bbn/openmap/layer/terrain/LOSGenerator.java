@@ -14,25 +14,33 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/LOSGenerator.java,v $
 // $RCSfile: LOSGenerator.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 18:50:21 $
+// $Revision: 1.7 $
+// $Date: 2005/12/09 21:09:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.terrain;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.gui.ProgressListenerGauge;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
-import com.bbn.openmap.layer.util.stateMachine.*;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.ProgressEvent;
+import com.bbn.openmap.event.ProgressListener;
+import com.bbn.openmap.event.ProgressSupport;
+import com.bbn.openmap.gui.ProgressListenerGauge;
+import com.bbn.openmap.layer.util.stateMachine.State;
+import com.bbn.openmap.omGraphics.OMCircle;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.proj.GreatCircle;
+import com.bbn.openmap.proj.Planet;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.SwingWorker;
 
@@ -395,7 +403,7 @@ public class LOSGenerator implements TerrainTool {
         }
 
         // This needs to be before the next two lines after this
-        LatLonPoint cord = proj.inverse(x, y);
+        LatLonPoint cord = LatLonPoint.getLatLon(x, y, proj);
         x -= ox;
         y -= oy;
 
@@ -409,21 +417,21 @@ public class LOSGenerator implements TerrainTool {
             return;
         }
 
-        float centerRadLat = LOScenterLLP.radlat_;
-        float centerRadLon = LOScenterLLP.radlon_;
+        double centerRadLat = LOScenterLLP.getRadLat();
+        double centerRadLon = LOScenterLLP.getRadLon();
 
-        float arc_dist = GreatCircle.spherical_distance(centerRadLat,
+        double arc_dist = GreatCircle.sphericalDistance(centerRadLat,
                 centerRadLon,
-                cord.radlat_,
-                cord.radlon_);
+                cord.getRadLat(),
+                cord.getRadLon());
 
-        float slope = (float) calculateLOSslope(cord, arc_dist);
+        double slope = calculateLOSslope(cord, arc_dist);
 
-        float arc_angle = GreatCircle.spherical_azimuth(centerRadLat,
+        double arc_angle = GreatCircle.sphericalAzimuth(centerRadLat,
                 centerRadLon,
-                cord.radlat_,
-                cord.radlon_);
-        int index = Math.round(arc_angle / pix_arc_interval);
+                cord.getRadLat(),
+                cord.getRadLon());
+        int index = (int) Math.round(arc_angle / pix_arc_interval);
         int maxIndex = (LOSedge * 4) - 4; // 4 corners out for
         // redundancy
         if (index < 0)
@@ -440,11 +448,11 @@ public class LOSGenerator implements TerrainTool {
         if (azimuthVals[index] < slope) {
             for (int i = (index - range); i < index + range - 1; i++) {
                 if (i < 0)
-                    azimuthVals[maxIndex + i] = slope;
+                    azimuthVals[maxIndex + i] = (float)slope;
                 else if (i >= maxIndex)
-                    azimuthVals[i - maxIndex] = slope;
+                    azimuthVals[i - maxIndex] = (float)slope;
                 else
-                    azimuthVals[i] = slope;
+                    azimuthVals[i] = (float)slope;
             }
             color = colortable[VISIBLE];
         }
@@ -461,7 +469,7 @@ public class LOSGenerator implements TerrainTool {
      * image, on the earth. This slope calculation does take the
      * earth's curvature into account, based on the spherical model.
      */
-    protected double calculateLOSslope(LatLonPoint cord, float arc_dist) {
+    protected double calculateLOSslope(LatLonPoint cord, double arc_dist) {
         DTEDFrameCache frameCache = layer.frameCache;
 
         if (frameCache == null) {
@@ -516,7 +524,7 @@ public class LOSGenerator implements TerrainTool {
         graphics.clear();
         LOScenterP.x = event.getX();
         LOScenterP.y = event.getY();
-        LOScenterLLP = proj.inverse(LOScenterP.x, LOScenterP.y);
+        LOScenterLLP = LatLonPoint.getLatLon(LOScenterP.x, LOScenterP.y, proj);
         LOScenterHeight = LOSobjectHeight;
         if (layer.frameCache != null) {
             LOScenterHeight += layer.frameCache.getElevation(LOScenterLLP.getLatitude(),

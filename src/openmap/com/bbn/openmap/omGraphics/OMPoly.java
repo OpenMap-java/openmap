@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.17 $
-// $Date: 2005/08/11 20:39:14 $
+// $Revision: 1.18 $
+// $Date: 2005/12/09 21:09:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -32,6 +32,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.bbn.openmap.proj.DrawUtil;
+import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
@@ -41,46 +42,42 @@ import com.bbn.openmap.util.Debug;
  * (multi-line-segment-object).
  * <p>
  * 
- * The differentiator between polygons and polylines is the fill
- * color. If the fillPaint is equal to OMColor.clear, then the poly
- * will be considered a polyline. There are methods to override this
- * in the OMPoly class, but they do play around with the fillPaint,
- * depending on the order in which the methods are called. If you know
- * it's a polyline, call setIsPolygon(false) if you think that the
- * fillPaint could be set to anything other than the default,
+ * The differentiator between polygons and polylines is the fill color. If the
+ * fillPaint is equal to OMColor.clear, then the poly will be considered a
+ * polyline. There are methods to override this in the OMPoly class, but they do
+ * play around with the fillPaint, depending on the order in which the methods
+ * are called. If you know it's a polyline, call setIsPolygon(false) if you
+ * think that the fillPaint could be set to anything other than the default,
  * OMColor.clear.
  * <P>
  * 
- * All of the OMGraphics are moving to having their internal
- * representation as java.awt.Shape objects. Unfortunately, this has
- * the side effect of slowing OMPolys down, because the way that the
- * projection classes handle transformations cause more objects to be
- * allocated and more loops to be run through. So, by default, the
- * OMPoly does NOT use Shape objects internally, to keep layers that
- * throw down many, many polys running quickly. If you want to do some
- * spatial analysis on an OMPoly, call setDoShapes(true) on it, then
- * generate(Projection), and then call getShapes() to get the
- * java.awt.Shape objects for the poly. You can then run the different
- * Shape spatial analysis methods on the Shape objects.
+ * All of the OMGraphics are moving to having their internal representation as
+ * java.awt.Shape objects. Unfortunately, this has the side effect of slowing
+ * OMPolys down, because the way that the projection classes handle
+ * transformations cause more objects to be allocated and more loops to be run
+ * through. So, by default, the OMPoly does NOT use Shape objects internally, to
+ * keep layers that throw down many, many polys running quickly. If you want to
+ * do some spatial analysis on an OMPoly, call setDoShapes(true) on it, then
+ * generate(Projection), and then call getShapes() to get the java.awt.Shape
+ * objects for the poly. You can then run the different Shape spatial analysis
+ * methods on the Shape objects.
  * 
  * <h3>NOTES:</h3>
  * <ul>
  * <li>See the <a
  * href="../../../../com.bbn.openmap.proj.Projection.html#poly_restrictions">
- * RESTRICTIONS </a> on Lat/Lon polygons/polylines. Not following the
- * guidelines listed may result in ambiguous/undefined shapes! Similar
- * assumptions apply to the other vector graphics that we define:
- * circles, ellipses, rects, lines.
- * <li>LatLon OMPolys store latlon coordinates internally in radian
- * format for efficiency in projecting. Subclasses should follow this
- * model.
+ * RESTRICTIONS </a> on Lat/Lon polygons/polylines. Not following the guidelines
+ * listed may result in ambiguous/undefined shapes! Similar assumptions apply to
+ * the other vector graphics that we define: circles, ellipses, rects, lines.
+ * <li>LatLon OMPolys store latlon coordinates internally in radian format for
+ * efficiency in projecting. Subclasses should follow this model.
  * <li>Holes in the poly are not supported.
  * <p>
  * </ul>
  * <h3>TODO:</h3>
  * <ul>
- * <li>Polar filled-polygon correction for Cylindrical projections
- * (like OMCircle).
+ * <li>Polar filled-polygon correction for Cylindrical projections (like
+ * OMCircle).
  * </ul>
  * 
  * @see OMCircle
@@ -90,34 +87,34 @@ import com.bbn.openmap.util.Debug;
 public class OMPoly extends OMAbstractLine implements Serializable {
 
     /**
-     * Translation offsets. For RENDERTYPE_OFFSET, the xy points are
-     * relative to the position of fixed latlon point.
+     * Translation offsets. For RENDERTYPE_OFFSET, the xy points are relative to
+     * the position of fixed latlon point.
      */
     public final static int COORDMODE_ORIGIN = 0;
 
     /**
-     * Delta offsets. For RENDERTYPE_OFFSET, each xy point in the
-     * array is relative to the previous point, and the first point is
-     * relative to the fixed latlon point.
+     * Delta offsets. For RENDERTYPE_OFFSET, each xy point in the array is
+     * relative to the previous point, and the first point is relative to the
+     * fixed latlon point.
      */
     public final static int COORDMODE_PREVIOUS = 1;
 
     /**
-     * Radians or decimal degrees. After construction and conversion,
-     * this should always be radians.
+     * Radians or decimal degrees. After construction and conversion, this
+     * should always be radians.
      */
     protected int units = -1;// this should be set correctly at
     // construction
 
     /**
-     * For RENDERTYPE_OFFSET, the latitude of the starting point of
-     * the poly. Stored as radians!
+     * For RENDERTYPE_OFFSET, the latitude of the starting point of the poly.
+     * Stored as radians!
      */
     protected float lat = 0.0f;
 
     /**
-     * For RENDERTYPE_OFFSET, the longitude of the starting point of
-     * the poly. Stored as radians!
+     * For RENDERTYPE_OFFSET, the longitude of the starting point of the poly.
+     * Stored as radians!
      */
     protected float lon = 0.0f;
 
@@ -130,20 +127,18 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     protected int coordMode = COORDMODE_ORIGIN;
 
     /**
-     * The x array of ints, representing pixels, used for x/y or
-     * offset polys.
+     * The x array of ints, representing pixels, used for x/y or offset polys.
      */
     protected int[] xs = null;
 
     /**
-     * The y array of ints, representing pixels, used for x/y or
-     * offset polys.
+     * The y array of ints, representing pixels, used for x/y or offset polys.
      */
     protected int[] ys = null;
 
     /**
-     * Poly is a polygon or a polyline. This is true if the fillColor
-     * is not clear, false if it is.
+     * Poly is a polygon or a polyline. This is true if the fillColor is not
+     * clear, false if it is.
      */
     protected boolean isPolygon = false;
 
@@ -151,8 +146,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     protected float[] rawllpts = null;
 
     /**
-     * Flag for telling the OMPoly to use the Shape objects to
-     * represent itself internally. See intro for more info.
+     * Flag for telling the OMPoly to use the Shape objects to represent itself
+     * internally. See intro for more info.
      */
     protected boolean doShapes = false;
 
@@ -168,19 +163,17 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * <p>
      * NOTES:
      * <ul>
-     * <li>llPoints array is converted into radians IN PLACE for more
-     * efficient handling internally if it's not already in radians!
-     * For even better performance, you should send us an array
-     * already in radians format!
-     * <li>If you want the poly to be connected (as a polygon), you
-     * need to ensure that the first and last coordinate pairs are the
-     * same.
+     * <li>llPoints array is converted into radians IN PLACE for more efficient
+     * handling internally if it's not already in radians! For even better
+     * performance, you should send us an array already in radians format!
+     * <li>If you want the poly to be connected (as a polygon), you need to
+     * ensure that the first and last coordinate pairs are the same.
      * </ul>
      * 
-     * @param llPoints array of lat/lon points, arranged lat, lon,
-     *        lat, lon, etc.
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS
-     *        or OMGraphic.DECIMAL_DEGREES
+     * @param llPoints array of lat/lon points, arranged lat, lon, lat, lon,
+     *        etc.
+     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
+     *        OMGraphic.DECIMAL_DEGREES
      * @param lType line type, from a list defined in OMGraphic.
      */
     public OMPoly(float[] llPoints, int units, int lType) {
@@ -192,23 +185,21 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * <p>
      * NOTES:
      * <ul>
-     * <li>llPoints array is converted into radians IN PLACE for more
-     * efficient handling internally if it's not already in radians!
-     * For even better performance, you should send us an array
-     * already in radians format!
-     * <li>If you want the poly to be connected (as a polygon), you
-     * need to ensure that the first and last coordinate pairs are the
-     * same.
+     * <li>llPoints array is converted into radians IN PLACE for more efficient
+     * handling internally if it's not already in radians! For even better
+     * performance, you should send us an array already in radians format!
+     * <li>If you want the poly to be connected (as a polygon), you need to
+     * ensure that the first and last coordinate pairs are the same.
      * </ul>
      * 
-     * @param llPoints array of lat/lon points, arranged lat, lon,
-     *        lat, lon, etc.
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS
-     *        or OMGraphic.DECIMAL_DEGREES
+     * @param llPoints array of lat/lon points, arranged lat, lon, lat, lon,
+     *        etc.
+     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
+     *        OMGraphic.DECIMAL_DEGREES
      * @param lType line type, from a list defined in OMGraphic.
-     * @param nsegs number of segment points (only for
-     *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and
-     *        if &lt; 1, this value is generated internally)
+     * @param nsegs number of segment points (only for LINETYPE_GREATCIRCLE or
+     *        LINETYPE_RHUMB line types, and if &lt; 1, this value is generated
+     *        internally)
      */
     public OMPoly(float[] llPoints, int units, int lType, int nsegs) {
         super(RENDERTYPE_LATLON, lType, DECLUTTERTYPE_NONE);
@@ -217,9 +208,9 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Create an OMPoly from a list of xy pairs. If you want the poly
-     * to be connected, you need to ensure that the first and last
-     * coordinate pairs are the same.
+     * Create an OMPoly from a list of xy pairs. If you want the poly to be
+     * connected, you need to ensure that the first and last coordinate pairs
+     * are the same.
      * 
      * @param xypoints array of x/y points, arranged x, y, x, y, etc.
      */
@@ -229,9 +220,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Create an x/y OMPoly. If you want the poly to be connected, you
-     * need to ensure that the first and last coordinate pairs are the
-     * same.
+     * Create an x/y OMPoly. If you want the poly to be connected, you need to
+     * ensure that the first and last coordinate pairs are the same.
      * 
      * @param xPoints int[] of x coordinates
      * @param yPoints int[] of y coordinates
@@ -243,9 +233,9 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Create an x/y OMPoly at an offset from lat/lon. If you want the
-     * poly to be connected, you need to ensure that the first and
-     * last coordinate pairs are the same.
+     * Create an x/y OMPoly at an offset from lat/lon. If you want the poly to
+     * be connected, you need to ensure that the first and last coordinate pairs
+     * are the same.
      * 
      * @param latPoint latitude in decimal degrees
      * @param lonPoint longitude in decimal degrees
@@ -260,9 +250,9 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Create an x/y OMPoly at an offset from lat/lon. If you want the
-     * poly to be connected, you need to ensure that the first and
-     * last coordinate pairs are the same.
+     * Create an x/y OMPoly at an offset from lat/lon. If you want the poly to
+     * be connected, you need to ensure that the first and last coordinate pairs
+     * are the same.
      * 
      * @param latPoint latitude in decimal degrees
      * @param lonPoint longitude in decimal degrees
@@ -287,19 +277,18 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * <p>
      * NOTES:
      * <ul>
-     * <li>llPoints array is converted into radians IN PLACE for more
-     * efficient handling internally if it's not already in radians!
-     * If you don't want the array to be changed, send in a copy.
-     * <li>If you want the poly to be connected (as a polygon), you
-     * need to ensure that the first and last coordinate pairs are the
-     * same.
+     * <li>llPoints array is converted into radians IN PLACE for more efficient
+     * handling internally if it's not already in radians! If you don't want the
+     * array to be changed, send in a copy.
+     * <li>If you want the poly to be connected (as a polygon), you need to
+     * ensure that the first and last coordinate pairs are the same.
      * </ul>
      * This is for RENDERTYPE_LATLON polys.
      * 
-     * @param llPoints array of lat/lon points, arranged lat, lon,
-     *        lat, lon, etc.
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS
-     *        or OMGraphic.DECIMAL_DEGREES
+     * @param llPoints array of lat/lon points, arranged lat, lon, lat, lon,
+     *        etc.
+     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
+     *        OMGraphic.DECIMAL_DEGREES
      */
     public void setLocation(float[] llPoints, int units) {
         this.units = OMGraphic.RADIANS;
@@ -312,10 +301,9 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Set an OMPoly from a list of xy pixel pairs. If you want the
-     * poly to be connected, you need to ensure that the first and
-     * last coordinate pairs are the same. This is for RENDERTYPE_XY
-     * polys.
+     * Set an OMPoly from a list of xy pixel pairs. If you want the poly to be
+     * connected, you need to ensure that the first and last coordinate pairs
+     * are the same. This is for RENDERTYPE_XY polys.
      * 
      * @param xypoints array of x/y points, arranged x, y, x, y, etc.
      */
@@ -332,9 +320,9 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Set an OMPoly from a x/y coordinates. If you want the poly to
-     * be connected, you need to ensure that the first and last
-     * coordinate pairs are the same. This is for RENDERTYPE_XY polys.
+     * Set an OMPoly from a x/y coordinates. If you want the poly to be
+     * connected, you need to ensure that the first and last coordinate pairs
+     * are the same. This is for RENDERTYPE_XY polys.
      * 
      * @param xPoints int[] of x coordinates
      * @param yPoints int[] of y coordinates
@@ -347,15 +335,14 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Set the location based on a latitude, longitude, and some xy
-     * points. The coordinate mode and the polygon setting are the
-     * same as in the constructor used. This is for RENDERTYPE_OFFSET
-     * polys.
+     * Set the location based on a latitude, longitude, and some xy points. The
+     * coordinate mode and the polygon setting are the same as in the
+     * constructor used. This is for RENDERTYPE_OFFSET polys.
      * 
      * @param latPoint latitude in decimal degrees
      * @param lonPoint longitude in decimal degrees
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS
-     *        or OMGraphic.DECIMAL_DEGREES
+     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
+     *        OMGraphic.DECIMAL_DEGREES
      * @param xypoints array of x/y points, arranged x, y, x, y, etc.
      */
     public void setLocation(float latPoint, float lonPoint, int units,
@@ -380,15 +367,14 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Set the location based on a latitude, longitude, and some xy
-     * points. The coordinate mode and the polygon setting are the
-     * same as in the constructor used. This is for RENDERTYPE_OFFSET
-     * polys.
+     * Set the location based on a latitude, longitude, and some xy points. The
+     * coordinate mode and the polygon setting are the same as in the
+     * constructor used. This is for RENDERTYPE_OFFSET polys.
      * 
      * @param latPoint latitude in decimal degrees
      * @param lonPoint longitude in decimal degrees
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS
-     *        or OMGraphic.DECIMAL_DEGREES
+     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
+     *        OMGraphic.DECIMAL_DEGREES
      * @param xPoints int[] of x coordinates
      * @param yPoints int[] of y coordinates
      */
@@ -409,8 +395,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Return the rawllpts array. NOTE: this is an unsafe method to
-     * access the rawllpts array. Use with caution. These are RADIANS!
+     * Return the rawllpts array. NOTE: this is an unsafe method to access the
+     * rawllpts array. Use with caution. These are RADIANS!
      * 
      * @return float[] rawllpts of lat, lon, lat, lon
      */
@@ -453,8 +439,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Set the array of x points. For RENDERTYPE_OFFSET, RENDERTYPE_XY
-     * polys.
+     * Set the array of x points. For RENDERTYPE_OFFSET, RENDERTYPE_XY polys.
      */
     public void setXs(int[] x) {
         xs = x;
@@ -462,16 +447,14 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Get the array of x points. For RENDERTYPE_OFFSET, RENDERTYPE_XY
-     * polys.
+     * Get the array of x points. For RENDERTYPE_OFFSET, RENDERTYPE_XY polys.
      */
     public int[] getXs() {
         return xs;
     }
 
     /**
-     * Set the array of y points. For RENDERTYPE_OFFSET, RENDERTYPE_XY
-     * polys.
+     * Set the array of y points. For RENDERTYPE_OFFSET, RENDERTYPE_XY polys.
      */
     public void setYs(int[] y) {
         ys = y;
@@ -479,17 +462,16 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Get the array of y points. For RENDERTYPE_OFFSET, RENDERTYPE_XY
-     * polys.
+     * Get the array of y points. For RENDERTYPE_OFFSET, RENDERTYPE_XY polys.
      */
     public int[] getYs() {
         return ys;
     }
 
     /**
-     * Set the fill Paint of the poly. If the color value is
-     * non-clear, then the poly is a polygon (connected and filled),
-     * otherwise it's a polyline (non-filled).
+     * Set the fill Paint of the poly. If the color value is non-clear, then the
+     * poly is a polygon (connected and filled), otherwise it's a polyline
+     * (non-filled).
      * 
      * @param paint value Color
      */
@@ -499,9 +481,9 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Check if this is a polygon or a polyline. A polygon is a
-     * multi-segment line that has a non-clear fill color. A polyline
-     * is a multi-segment line that has no fill color.
+     * Check if this is a polygon or a polyline. A polygon is a multi-segment
+     * line that has a non-clear fill color. A polyline is a multi-segment line
+     * that has no fill color.
      * 
      * @return true if polygon false if polyline
      */
@@ -510,12 +492,11 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Set the Polyline/Polygon setting, if you know better. If the
-     * fillPaint is set after this method is called, then the
-     * fillPaint isPolygon rules apply. If the fillPaint is opaque,
-     * then it is assumed to be a Polygon and isPolygon will be set to
-     * true. If this is set to be false, the fillPaint will be set to
-     * clear.
+     * Set the Polyline/Polygon setting, if you know better. If the fillPaint is
+     * set after this method is called, then the fillPaint isPolygon rules
+     * apply. If the fillPaint is opaque, then it is assumed to be a Polygon and
+     * isPolygon will be set to true. If this is set to be false, the fillPaint
+     * will be set to clear.
      */
     public void setIsPolygon(boolean set) {
         if (!set) {
@@ -529,9 +510,9 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Set the number of subsegments for each segment in the poly.
-     * (This is only for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line
-     * types, and if &lt; 1, this value is generated internally).
+     * Set the number of subsegments for each segment in the poly. (This is only
+     * for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and if &lt; 1,
+     * this value is generated internally).
      * 
      * @param nsegs number of segment points
      */
@@ -540,9 +521,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Get the number of subsegments for each segment in the poly.
-     * (This is only for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line
-     * types).
+     * Get the number of subsegments for each segment in the poly. (This is only
+     * for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types).
      * 
      * @return int number of segment points
      */
@@ -629,7 +609,12 @@ public class OMPoly extends OMAbstractLine implements Serializable {
             int[] _y = new int[npts];
 
             // forward project the radian point
-            Point origin = proj.forward(lat, lon, new Point(0, 0), true);// radians
+            Point origin = new Point();
+            if (proj instanceof GeoProj) {
+                ((GeoProj) proj).forward(lat, lon, origin, true);// radians
+            } else {
+                proj.forward(Math.toDegrees(lat), Math.toDegrees(lon), origin);
+            }
 
             if (coordMode == COORDMODE_ORIGIN) {
                 for (i = 0; i < npts; i++) {
@@ -656,10 +641,24 @@ public class OMPoly extends OMAbstractLine implements Serializable {
         case RENDERTYPE_LATLON:
             // polygon/polyline project the polygon/polyline.
             // Vertices should already be in radians.
-            ArrayList vector = proj.forwardPoly(rawllpts,
-                    lineType,
-                    nsegs,
-                    isPolygon);
+            ArrayList vector;
+            if (proj instanceof GeoProj) {
+                if (units == DECIMAL_DEGREES) {
+                    ProjMath.arrayDegToRad(rawllpts);
+                    units = RADIANS;
+                }
+                vector = ((GeoProj) proj).forwardPoly(rawllpts,
+                        lineType,
+                        nsegs,
+                        isPolygon);
+            } else {
+                if (units == RADIANS) {
+                    ProjMath.arrayRadToDeg(rawllpts);
+                    units = DECIMAL_DEGREES;
+                }
+                vector = proj.forwardPoly(rawllpts, isPolygon);
+            }
+            
             int size = vector.size();
 
             xpoints = new int[(int) (size / 2)][0];
@@ -696,7 +695,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
         if (arrowhead != null) {
             arrowhead.generate(this);
         }
-        
+
         setNeedToRegenerate(false);
         createShape();
         return true;
@@ -718,8 +717,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Return true of the fill color/paint should be rendered (not
-     * clear).
+     * Return true of the fill color/paint should be rendered (not clear).
      */
     public boolean shouldRenderFill() {
         return !isClear(getFillPaint()) && isPolygon();
@@ -853,8 +851,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Return the shortest distance from the graphic to an XY-point.
-     * This works if generate() has been successful.
+     * Return the shortest distance from the graphic to an XY-point. This works
+     * if generate() has been successful.
      * 
      * @param x horizontal pixel location.
      * @param y vertical pixel location.
@@ -897,20 +895,19 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Get the array of java.awt.Shape objects that represent the
-     * projected graphic. The array will contain more than one Shape
-     * object of the object wraps around the earth and needs to show
-     * up in more than one place on the map.
+     * Get the array of java.awt.Shape objects that represent the projected
+     * graphic. The array will contain more than one Shape object of the object
+     * wraps around the earth and needs to show up in more than one place on the
+     * map.
      * <p>
      * 
-     * The java.awt.Shape object gives you the ability to do a little
-     * spatial analysis on the graphics.
+     * The java.awt.Shape object gives you the ability to do a little spatial
+     * analysis on the graphics.
      * 
-     * @return java.awt.geom.GeneralPath (Shape), or null if the
-     *         graphic needs to be generated with the current map
-     *         projection, or null if the OMGeometry hasn't been
-     *         updated to use Shape objects for its internal
-     *         representation.
+     * @return java.awt.geom.GeneralPath (Shape), or null if the graphic needs
+     *         to be generated with the current map projection, or null if the
+     *         OMGeometry hasn't been updated to use Shape objects for its
+     *         internal representation.
      */
     public GeneralPath getShape() {
         if (shape == null) {
@@ -922,9 +919,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /**
-     * Since OMPoly has the option to not create a Shape, this method
-     * is here to create it if it is asked for. The OMPoly needs to be
-     * generated.
+     * Since OMPoly has the option to not create a Shape, this method is here to
+     * create it if it is asked for. The OMPoly needs to be generated.
      */
     protected void createShape() {
 

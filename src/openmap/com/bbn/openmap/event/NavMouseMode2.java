@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode2.java,v $
 // $RCSfile: NavMouseMode2.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 17:37:09 $
+// $Revision: 1.9 $
+// $Date: 2005/12/09 21:09:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,8 +25,8 @@ package com.bbn.openmap.event;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
@@ -111,7 +111,7 @@ public class NavMouseMode2 extends NavMouseMode {
                     // If rectangle is too small in both x and y then
                     // recenter the map
                     if ((dx < 5) && (dy < 5)) {
-                        LatLonPoint llp = projection.inverse(e.getPoint());
+                        Point2D llp = projection.inverse(e.getPoint());
 
                         boolean shift = e.isShiftDown();
                         boolean control = e.isControlDown();
@@ -150,8 +150,7 @@ public class NavMouseMode2 extends NavMouseMode {
                         projection);
 
                 // Figure out the center of the rectangle
-                com.bbn.openmap.LatLonPoint center = projection.inverse(point1.x,
-                        point1.y);
+                Point2D center = projection.inverse(point1.x, point1.y);
 
                 // Set the parameters of the projection and then set
                 // the projection of the map. This way we save having
@@ -170,7 +169,7 @@ public class NavMouseMode2 extends NavMouseMode {
     }
 
     // Mouse Motion Listener events
-    ///////////////////////////////
+    // /////////////////////////////
 
     /**
      * Draws or erases boxes between two screen pixel points. The

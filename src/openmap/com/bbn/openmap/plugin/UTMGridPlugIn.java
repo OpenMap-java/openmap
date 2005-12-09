@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.14 $
-// $Date: 2005/10/24 14:36:36 $
+// $Revision: 1.15 $
+// $Date: 2005/12/09 21:09:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,6 +30,7 @@ import java.awt.Paint;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
@@ -542,7 +543,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
             list.add(horizontalList);
         }
 
-        LatLonPoint center = p.getCenter();
+        LatLonPoint center = (LatLonPoint)p.getCenter(new LatLonPoint());
         UTMPoint utm = new UTMPoint(center);
 
         if (show100kGrid) {
@@ -620,13 +621,13 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 
         if (showLabels && p.getScale() <= labelCutoffScale) {
             Debug.message("utmgrid", "Creating labels for map...");
-            LatLonPoint ul = p.getUpperLeft();
-            LatLonPoint lr = p.getLowerRight();
+            Point2D ul = p.getUpperLeft();
+            Point2D lr = p.getLowerRight();
 
-            Vector labels = labelTree.get(ul.getLatitude(),
-                    ul.getLongitude(),
-                    lr.getLatitude(),
-                    lr.getLongitude());
+            Vector labels = labelTree.get((float)ul.getY(),
+                    (float)ul.getX(),
+                    (float)lr.getY(),
+                    (float)lr.getX());
 
             labelList.setTargets(labels);
             labelList.setLinePaint(getUTMGridPaint());

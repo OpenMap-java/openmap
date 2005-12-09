@@ -12,14 +12,16 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/TextTable.java,v $
-// $Revision: 1.5 $ $Date: 2004/10/14 18:06:09 $ $Author: dietrick $
+// $Revision: 1.6 $ $Date: 2005/12/09 21:08:57 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import java.util.*;
-import com.bbn.openmap.LatLonPoint;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * Read VPF format text tables to generate text graphics for OpenMap.

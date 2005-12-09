@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/RoadLine.java,v
 // $
 // $RCSfile: RoadLine.java,v $
-// $Revision: 1.3 $
-// $Date: 2005/08/09 20:45:09 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:09:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,7 +52,7 @@ public class RoadLine extends Visual implements RoadObject {
     public RoadPoint addRoadPoint(int x, int y) {
         RoadLayer layer = road.getRoadLayer();
         Projection p = layer.getProjection();
-        RoadPoint rp = new RoadPoint(road, p.inverse(x, y), layer);
+        RoadPoint rp = new RoadPoint(road, LatLonPoint.getLatLon(x, y, p), layer);
         road.insertRoadPointAt(rp, index + 1);
         return rp;
     }

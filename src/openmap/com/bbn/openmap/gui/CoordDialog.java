@@ -14,23 +14,24 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/CoordDialog.java,v $
 // $RCSfile: CoordDialog.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:47 $
+// $Revision: 1.9 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.CenterListener;
+import java.awt.event.ActionListener;
+import java.io.Serializable;
+
+import javax.swing.JDialog;
+
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
-
-import javax.swing.*;
-
-import java.awt.event.*;
-import java.io.Serializable;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.LightMapHandlerChild;
+import com.bbn.openmap.event.CenterListener;
 
 /**
  * A Dialog box wrapper for a CombinedCoordPanel.

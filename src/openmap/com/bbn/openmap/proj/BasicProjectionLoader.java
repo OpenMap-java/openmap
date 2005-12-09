@@ -14,19 +14,21 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/BasicProjectionLoader.java,v $
 // $RCSfile: BasicProjectionLoader.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/11 20:39:16 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.proj;
 
+import java.awt.geom.Point2D;
+import java.util.Properties;
+
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.OMComponent;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.PropUtils;
-
-import java.util.Properties;
 
 /**
  * The BasicProjectionLoader is a base implementation of the
@@ -40,15 +42,15 @@ import java.util.Properties;
  * you to set thse properties for the Mercator projection:
  * 
  * <pre>
- * 
- *  
- *  
- *   projLoader.class=com.bbn.openmap.proj.MercatorLoader
- *   projLoader.prettyName=Mercator
- *   projLoader.description=Mercator Projection.
- *  
  *   
- *  
+ *    
+ *    
+ *     projLoader.class=com.bbn.openmap.proj.MercatorLoader
+ *     projLoader.prettyName=Mercator
+ *     projLoader.description=Mercator Projection.
+ *    
+ *     
+ *    
  * </pre>
  * 
  * The prettyName and description properties should have defaults, but
@@ -163,6 +165,18 @@ public abstract class BasicProjectionLoader extends OMComponent implements
                 + DescriptionProperty);
 
         return props;
+    }
+
+    public LatLonPoint convertToLLP(Point2D pt) {
+        LatLonPoint llp = null;
+        if (pt instanceof LatLonPoint) {
+            llp = (LatLonPoint) pt;
+        } else {
+            llp = new LatLonPoint.Float((float) pt.getY(), (float) pt.getX());
+        }
+
+        return llp;
+
     }
 
 }

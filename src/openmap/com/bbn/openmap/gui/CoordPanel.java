@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/CoordPanel.java,v $
 // $RCSfile: CoordPanel.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:47 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,15 +27,18 @@ import java.awt.GridBagLayout;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
-import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.CenterListener;
 import com.bbn.openmap.event.CenterSupport;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 
 /**
  * CoordPanel is a simple gui with entry boxes and labels for latitude

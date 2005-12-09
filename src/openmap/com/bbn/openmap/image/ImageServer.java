@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServer.java,v $
 // $RCSfile: ImageServer.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/08/09 17:56:10 $
+// $Revision: 1.10 $
+// $Date: 2005/12/09 21:09:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.RenderingHints;
+import java.awt.geom.Point2D;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,26 +80,26 @@ import com.bbn.openmap.util.PropUtils;
  * someday.
  * <P>
  * <code><pre>
- *  
  *   
  *    
- *     # If the ImageServer is created and given a prefix (in this example,
- *     # 'imageServer') the properties file should contain the properties:
- *     imageServer.layers=&lt;layer1 layer2 ...&gt;
- *     layer1.className=&lt;classname&gt;
- *     layer1.prettyName=&lt;pretty name of layer&gt;
- *     # Add other attributes as required by layer1...
- *     layer2.className=&lt;classname&gt;
- *     layer2.prettyName=&lt;pretty name of layer&gt;
- *     # Add other attributes as required by layer2...
- *     # First formatter listed is default.
- *     imageServer.formatters=&lt;formatter1 formatter2 ...&gt;
- *     formatter1.class=&lt;classname of formatter 1&gt;
- *     # Add other formatter1 properties
- *     formatter2.class=&lt;classname of formatter 2&gt;
+ *     
+ *      # If the ImageServer is created and given a prefix (in this example,
+ *      # 'imageServer') the properties file should contain the properties:
+ *      imageServer.layers=&lt;layer1 layer2 ...&gt;
+ *      layer1.className=&lt;classname&gt;
+ *      layer1.prettyName=&lt;pretty name of layer&gt;
+ *      # Add other attributes as required by layer1...
+ *      layer2.className=&lt;classname&gt;
+ *      layer2.prettyName=&lt;pretty name of layer&gt;
+ *      # Add other attributes as required by layer2...
+ *      # First formatter listed is default.
+ *      imageServer.formatters=&lt;formatter1 formatter2 ...&gt;
+ *      formatter1.class=&lt;classname of formatter 1&gt;
+ *      # Add other formatter1 properties
+ *      formatter2.class=&lt;classname of formatter 2&gt;
+ *      
  *     
  *    
- *   
  * </pre></code>
  * <P>
  * NOTE: If you simply hand the ImageServer a standard
@@ -898,13 +899,14 @@ public class ImageServer implements
                 projClass = Mercator.class;
             }
 
+            Point2D center = new Point2D.Float(PropUtils.floatFromProperties(props,
+                    Environment.Latitude,
+                    0f), PropUtils.floatFromProperties(props,
+                    Environment.Longitude,
+                    0f));
+
             proj = ProjectionFactory.makeProjection(projClass,
-                    PropUtils.floatFromProperties(props,
-                            Environment.Latitude,
-                            0f),
-                    PropUtils.floatFromProperties(props,
-                            Environment.Longitude,
-                            0f),
+                    center,
                     PropUtils.floatFromProperties(props,
                             Environment.Scale,
                             MapBean.DEFAULT_SCALE),
@@ -955,12 +957,12 @@ public class ImageServer implements
      * from a modified openmap.properties file.
      * 
      * <pre>
-     *  
      *   
-     *    java com.bbn.openmap.image.ImageServer -properties (path
-     *     to properties file) -file (path to output image) 
      *    
-     *   
+     *     java com.bbn.openmap.image.ImageServer -properties (path
+     *      to properties file) -file (path to output image) 
+     *     
+     *    
      * </pre>
      * 
      * <P>

@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/Road.java,v
 // $
 // $RCSfile: Road.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/12 21:47:49 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -118,7 +118,7 @@ public class Road implements RoadObject, Serializable {
         // ());
         for (int i = 1; i < points.length; i++) {
             LatLonPoint thisPoint = points[i].getLocation();
-            kilometers += GreatCircle.spherical_distance(prevPoint.getLatitude(),
+            kilometers += GreatCircle.sphericalDistance(prevPoint.getLatitude(),
                     prevPoint.getLongitude(),
                     thisPoint.getLatitude(),
                     thisPoint.getLongitude());
@@ -141,7 +141,7 @@ public class Road implements RoadObject, Serializable {
             LatLonPoint thisPoint = points[i].getLocation();
             float thisLat = thisPoint.getLatitude();
             float thisLon = thisPoint.getLongitude();
-            float thisLength = GreatCircle.spherical_distance(prevLat,
+            float thisLength = GreatCircle.sphericalDistance(prevLat,
                     prevLon,
                     thisLat,
                     thisLon);

@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMSpline.java,v $
 //$RCSfile: OMSpline.java,v $
-//$Revision: 1.9 $
-//$Date: 2005/09/06 20:02:10 $
+//$Revision: 1.10 $
+//$Date: 2005/12/09 21:09:03 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -28,6 +28,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
@@ -209,7 +210,12 @@ public class OMSpline extends OMPoly {
             int[] _y = new int[npts];
 
             // forward project the radian point
-            Point origin = proj.forward(lat, lon, new Point(0, 0), true);// radians
+            Point origin = new Point();
+            if (proj instanceof GeoProj) {
+                ((GeoProj)proj).forward(lat, lon, origin, true);// radians
+            } else {
+                proj.forward(Math.toDegrees(lat), Math.toDegrees(lon), origin);
+            }
 
             if (coordMode == COORDMODE_ORIGIN) {
                 for (i = 0; i < npts; i++) {
@@ -248,10 +254,15 @@ public class OMSpline extends OMPoly {
 
             // polygon/polyline project the polygon/polyline.
             // Vertices should already be in radians.
-            ArrayList vector = proj.forwardPoly(splinellpts,
-                    lineType,
-                    nsegs,
-                    isPolygon);
+            ArrayList vector;
+            if (proj instanceof GeoProj) {
+                vector = ((GeoProj) proj).forwardPoly(splinellpts,
+                        lineType,
+                        nsegs,
+                        isPolygon);
+            } else {
+                vector = proj.forwardPoly(rawllpts, isPolygon);
+            }
             int size = vector.size();
 
             xpoints = new int[(int) (size / 2)][0];

@@ -14,32 +14,38 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMCircle.java,v $
 // $RCSfile: EditableOMCircle.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:10 $
+// $Revision: 1.7 $
+// $Date: 2005/12/09 21:09:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.layer.util.stateMachine.State;
-import com.bbn.openmap.omGraphics.editable.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.Debug;
-
 import java.awt.event.MouseEvent;
 
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.layer.util.stateMachine.State;
+import com.bbn.openmap.omGraphics.editable.CircleStateMachine;
+import com.bbn.openmap.omGraphics.editable.GraphicEditState;
+import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
+import com.bbn.openmap.omGraphics.editable.GraphicSetOffsetState;
+import com.bbn.openmap.proj.DrawUtil;
+import com.bbn.openmap.proj.GeoProj;
+import com.bbn.openmap.proj.GreatCircle;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
+
 /**
- * The EditableOMCircle encompasses an OMCircle, providing methods for
- * modifying or creating it. This class only modifies circles in
- * lat/lon space (RENDERTYPE_LATLON) - and ellipses in screen space
- * (RENDERTYPE_XY or RENDERTYPE_OFFSET). When you grab at the circle,
- * you change the radius of the entire circle. Grabbing the center
- * point moves the circle. If there is an offset point, moving the
- * center point changes the circle's position in relation to the
- * offset point. Moving the offset point moves the circle, keeping the
- * distance to the center point constant.
+ * The EditableOMCircle encompasses an OMCircle, providing methods for modifying
+ * or creating it. This class only modifies circles in lat/lon space
+ * (RENDERTYPE_LATLON) - and ellipses in screen space (RENDERTYPE_XY or
+ * RENDERTYPE_OFFSET). When you grab at the circle, you change the radius of the
+ * entire circle. Grabbing the center point moves the circle. If there is an
+ * offset point, moving the center point changes the circle's position in
+ * relation to the offset point. Moving the offset point moves the circle,
+ * keeping the distance to the center point constant.
  */
 public class EditableOMCircle extends EditableOMGraphic {
 
@@ -72,24 +78,24 @@ public class EditableOMCircle extends EditableOMGraphic {
     public final static int OFFSET_POINT_INDEX = 10;
 
     /**
-     * Create the EditableOMCircle, setting the state machine to
-     * create the circle off of the gestures.
+     * Create the EditableOMCircle, setting the state machine to create the
+     * circle off of the gestures.
      */
     public EditableOMCircle() {
         createGraphic(null);
     }
 
     /**
-     * Create an EditableOMCircle with the circleType and renderType
-     * parameters in the GraphicAttributes object.
+     * Create an EditableOMCircle with the circleType and renderType parameters
+     * in the GraphicAttributes object.
      */
     public EditableOMCircle(GraphicAttributes ga) {
         createGraphic(ga);
     }
 
     /**
-     * Create the EditableOMCircle with an OMCircle already defined,
-     * ready for editing.
+     * Create the EditableOMCircle with an OMCircle already defined, ready for
+     * editing.
      * 
      * @param omc OMCircle that should be edited.
      */
@@ -98,10 +104,9 @@ public class EditableOMCircle extends EditableOMGraphic {
     }
 
     /**
-     * Create and initialize the state machine that interprets the
-     * modifying gestures/commands, as well as ititialize the grab
-     * points. Also allocates the grab point array needed by the
-     * EditableOMCircle.
+     * Create and initialize the state machine that interprets the modifying
+     * gestures/commands, as well as ititialize the grab points. Also allocates
+     * the grab point array needed by the EditableOMCircle.
      */
     public void init() {
         setCanGrabGraphic(false);
@@ -111,9 +116,9 @@ public class EditableOMCircle extends EditableOMGraphic {
     }
 
     /**
-     * Set the graphic within the state machine. If the graphic is
-     * null, then one shall be created, and located off screen until
-     * the gestures driving the state machine place it on the map.
+     * Set the graphic within the state machine. If the graphic is null, then
+     * one shall be created, and located off screen until the gestures driving
+     * the state machine place it on the map.
      */
     public void setGraphic(OMGraphic graphic) {
         init();
@@ -161,8 +166,8 @@ public class EditableOMCircle extends EditableOMGraphic {
     }
 
     /**
-     * Get whether a graphic can be manipulated by its edges, rather
-     * than just by its grab points.
+     * Get whether a graphic can be manipulated by its edges, rather than just
+     * by its grab points.
      */
     public boolean getCanGrabGraphic() {
         return canGrabGraphic
@@ -170,36 +175,34 @@ public class EditableOMCircle extends EditableOMGraphic {
     }
 
     /**
-     * Get the OMGraphic being created/modified by the
-     * EditableOMCircle.
+     * Get the OMGraphic being created/modified by the EditableOMCircle.
      */
     public OMGraphic getGraphic() {
         return circle;
     }
 
     /**
-     * Attach to the Moving OffsetGrabPoint so if it moves, it will
-     * move this EditableOMGraphic with it. EditableOMGraphic version
-     * doesn't do anything, each subclass has to decide which of its
-     * OffsetGrabPoints should be attached to it.
+     * Attach to the Moving OffsetGrabPoint so if it moves, it will move this
+     * EditableOMGraphic with it. EditableOMGraphic version doesn't do anything,
+     * each subclass has to decide which of its OffsetGrabPoints should be
+     * attached to it.
      */
     public void attachToMovingGrabPoint(OffsetGrabPoint gp) {
         gp.addGrabPoint(gpo);
     }
 
     /**
-     * Detach from a Moving OffsetGrabPoint. The EditableOMGraphic
-     * version doesn't do anything, each subclass should remove
-     * whatever GrabPoint it would have attached to an
-     * OffsetGrabPoint.
+     * Detach from a Moving OffsetGrabPoint. The EditableOMGraphic version
+     * doesn't do anything, each subclass should remove whatever GrabPoint it
+     * would have attached to an OffsetGrabPoint.
      */
     public void detachFromMovingGrabPoint(OffsetGrabPoint gp) {
         gp.removeGrabPoint(gpo);
     }
 
     /**
-     * Set the GrabPoint that is in the middle of being modified, as a
-     * result of a mouseDragged event, or other selection process.
+     * Set the GrabPoint that is in the middle of being modified, as a result of
+     * a mouseDragged event, or other selection process.
      */
     public void setMovingPoint(GrabPoint gp) {
         super.setMovingPoint(gp);
@@ -209,12 +212,11 @@ public class EditableOMCircle extends EditableOMGraphic {
     }
 
     /**
-     * Given a MouseEvent, find a GrabPoint that it is touching, and
-     * set the moving point to that GrabPoint.
+     * Given a MouseEvent, find a GrabPoint that it is touching, and set the
+     * moving point to that GrabPoint.
      * 
      * @param e MouseEvent
-     * @return GrabPoint that is touched by the MouseEvent, null if
-     *         none are.
+     * @return GrabPoint that is touched by the MouseEvent, null if none are.
      */
     public GrabPoint getMovingPoint(MouseEvent e) {
 
@@ -241,8 +243,8 @@ public class EditableOMCircle extends EditableOMGraphic {
     protected int lastRenderType = -1;
 
     /**
-     * Check to make sure the grab points are not null. If they are,
-     * allocate them, and them assign them to the array.
+     * Check to make sure the grab points are not null. If they are, allocate
+     * them, and them assign them to the array.
      */
     public void assertGrabPoints() {
         int rt = getGraphic().getRenderType();
@@ -339,9 +341,9 @@ public class EditableOMCircle extends EditableOMGraphic {
     }
 
     /**
-     * Set the grab points for the graphic provided, setting them on
-     * the extents of the graphic. Called when you want to set the
-     * grab points off the location of the graphic.
+     * Set the grab points for the graphic provided, setting them on the extents
+     * of the graphic. Called when you want to set the grab points off the
+     * location of the graphic.
      */
     public void setGrabPoints(OMGraphic graphic) {
         if (!(graphic instanceof OMCircle)) {
@@ -414,19 +416,19 @@ public class EditableOMCircle extends EditableOMGraphic {
                 gpsw.set(gpw.getX(), gps.getY());
                 gpc.updateOffsets();
 
-                //              Debug.output("***\nheight:" + height + ", width:" +
+                // Debug.output("***\nheight:" + height + ", width:" +
                 // width +
-                //                           "\n EditableOMCircle: east at x: " + gpe.getX() +
-                //                           ", y:" + gpe.getY());
-                //              Debug.output(" EditableOMCircle: north at x: " +
+                // "\n EditableOMCircle: east at x: " + gpe.getX() +
+                // ", y:" + gpe.getY());
+                // Debug.output(" EditableOMCircle: north at x: " +
                 // gpn.getX() +
-                //                           ", y:" + gpn.getY());
-                //              Debug.output(" EditableOMCircle: northeast at x: "
+                // ", y:" + gpn.getY());
+                // Debug.output(" EditableOMCircle: northeast at x: "
                 // + gpne.getX() +
-                //                           ", y:" + gpne.getY());
-                //              Debug.output(" EditableOMCircle: center at x: " +
+                // ", y:" + gpne.getY());
+                // Debug.output(" EditableOMCircle: center at x: " +
                 // centerx +
-                //                           ", y:" + centery);
+                // ", y:" + centery);
             }
 
             // Check to see if the circle is a offset circle, and set
@@ -444,9 +446,9 @@ public class EditableOMCircle extends EditableOMGraphic {
     }
 
     /**
-     * Take the current location of the GrabPoints, and modify the
-     * location parameters of the OMCircle with them. Called when you
-     * want the graphic to change according to the grab points.
+     * Take the current location of the GrabPoints, and modify the location
+     * parameters of the OMCircle with them. Called when you want the graphic to
+     * change according to the grab points.
      */
     public void setGrabPoints() {
 
@@ -471,12 +473,12 @@ public class EditableOMCircle extends EditableOMGraphic {
                 || renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
             GrabPoint llgp;
-            //  OK, to set the center, if the rendertype is offset,
-            //  then the center lat/lon has to be set to the offset
-            //  point. When the circle is initially defined, this is
-            //  OK because the offset x and y are 0, and the render
-            //  method knows not to render the point yet.
-            if (//movingPoint == gpo ||
+            // OK, to set the center, if the rendertype is offset,
+            // then the center lat/lon has to be set to the offset
+            // point. When the circle is initially defined, this is
+            // OK because the offset x and y are 0, and the render
+            // method knows not to render the point yet.
+            if (// movingPoint == gpo ||
             renderType == OMGraphic.RENDERTYPE_OFFSET) {
                 llgp = gpo;
             } else {
@@ -486,7 +488,9 @@ public class EditableOMCircle extends EditableOMGraphic {
             }
 
             if (projection != null) {
-                LatLonPoint llp = projection.inverse(llgp.getX(), llgp.getY());
+                LatLonPoint llp = LatLonPoint.getLatLon(llgp.getX(),
+                        llgp.getY(),
+                        projection);
 
                 circle.setLatLon(llp.getLatitude(), llp.getLongitude());
 
@@ -494,14 +498,26 @@ public class EditableOMCircle extends EditableOMGraphic {
                 if (renderType == OMGraphic.RENDERTYPE_LATLON
                         && movingPoint == gpr) {
 
-                    LatLonPoint llpm = projection.inverse(gpr.getX(),
-                            gpr.getY());
+                    LatLonPoint llpm = LatLonPoint.getLatLon(gpr.getX(),
+                            gpr.getY(),
+                            projection);
 
-                    float radius = GreatCircle.spherical_distance(llpm.radlat_,
-                            llpm.radlon_,
-                            llp.radlat_,
-                            llp.radlon_);
-                    circle.setRadius(Length.DECIMAL_DEGREE.fromRadians(radius));
+                    float radius;
+
+                    if (projection instanceof GeoProj) {
+                        radius = Length.DECIMAL_DEGREE.fromRadians((float) GreatCircle.sphericalDistance(llpm.getRadLat(),
+                                llpm.getRadLon(),
+                                llp.getRadLat(),
+                                llp.getRadLon()));
+                    } else {
+                        radius = DrawUtil.distance((float) llpm.getX(),
+                                (float) llpm.getY(),
+                                (float) llp.getX(),
+                                (float) llp.getY());
+                    }
+                    
+                    circle.setRadius(radius);
+
                 }
 
             } else {
@@ -548,10 +564,10 @@ public class EditableOMCircle extends EditableOMGraphic {
                 circle.setHeight(Math.abs(movingPoint.getY() - gpc.getY()) * 2);
             }
 
-            //          Debug.output("EditableOMCircle.setGrabPoints():
+            // Debug.output("EditableOMCircle.setGrabPoints():
             // movingPoint x:" +
-            //                       movingPoint.getX() + ", y:" + movingPoint.getY() +
-            //                       ", gpc.x:" + gpc.getX() + ", gpc.y:" + gpc.getY());
+            // movingPoint.getX() + ", y:" + movingPoint.getY() +
+            // ", gpc.x:" + gpc.getX() + ", gpc.y:" + gpc.getY());
         }
 
         if (projection != null) {
@@ -560,13 +576,12 @@ public class EditableOMCircle extends EditableOMGraphic {
     }
 
     /**
-     * Called to set the OffsetGrabPoint to the current mouse
-     * location, and update the OffsetGrabPoint with all the other
-     * GrabPoint locations, so everything can shift smoothly. Should
-     * also set the OffsetGrabPoint to the movingPoint. Should be
-     * called only once at the beginning of the general movement, in
-     * order to set the movingPoint. After that, redraw(e) should just
-     * be called, and the movingPoint will make the adjustments to the
+     * Called to set the OffsetGrabPoint to the current mouse location, and
+     * update the OffsetGrabPoint with all the other GrabPoint locations, so
+     * everything can shift smoothly. Should also set the OffsetGrabPoint to the
+     * movingPoint. Should be called only once at the beginning of the general
+     * movement, in order to set the movingPoint. After that, redraw(e) should
+     * just be called, and the movingPoint will make the adjustments to the
      * graphic that are needed.
      */
     public void move(java.awt.event.MouseEvent e) {
@@ -581,9 +596,9 @@ public class EditableOMCircle extends EditableOMGraphic {
     }
 
     /**
-     * Use the current projection to place the graphics on the screen.
-     * Has to be called to at least assure the graphics that they are
-     * ready for rendering. Called when the graphic position changes.
+     * Use the current projection to place the graphics on the screen. Has to be
+     * called to at least assure the graphics that they are ready for rendering.
+     * Called when the graphic position changes.
      * 
      * @param proj com.bbn.openmap.proj.Projection
      * @return true
@@ -599,18 +614,17 @@ public class EditableOMCircle extends EditableOMGraphic {
                 gp.generate(proj);
 
                 // Why is this here???
-                //              if (gp instanceof OffsetGrabPoint) {
-                //                  ((OffsetGrabPoint)gpo).updateOffsets();
-                //              }
+                // if (gp instanceof OffsetGrabPoint) {
+                // ((OffsetGrabPoint)gpo).updateOffsets();
+                // }
             }
         }
         return true;
     }
 
     /**
-     * Given a new projection, the grab points may need to be
-     * repositioned off the current position of the graphic. Called
-     * when the projection changes.
+     * Given a new projection, the grab points may need to be repositioned off
+     * the current position of the graphic. Called when the projection changes.
      */
     public void regenerate(Projection proj) {
         Debug.message("eomg", "EditableOMCircle.regenerate()");
@@ -622,9 +636,9 @@ public class EditableOMCircle extends EditableOMGraphic {
     }
 
     /**
-     * Draw the EditableOMCircle parts into the java.awt.Graphics
-     * object. The grab points are only rendered if the circle machine
-     * state is CircleSelectedState.CIRCLE_SELECTED.
+     * Draw the EditableOMCircle parts into the java.awt.Graphics object. The
+     * grab points are only rendered if the circle machine state is
+     * CircleSelectedState.CIRCLE_SELECTED.
      * 
      * @param graphics java.awt.Graphics.
      */
@@ -636,25 +650,25 @@ public class EditableOMCircle extends EditableOMGraphic {
         // All the rotation stuff isn't ready for primetime, yet.
         // Need to translate the mouse events, too.
 
-        //      graphics = graphics.create();
-        //      double rotationAngle = OMGraphic.DEFAULT_ROTATIONANGLE;
+        // graphics = graphics.create();
+        // double rotationAngle = OMGraphic.DEFAULT_ROTATIONANGLE;
 
         if (circle != null) {
             circle.setVisible(true);
             circle.render(graphics);
             circle.setVisible(false);
 
-            //          rotationAngle = circle.getRotationAngle();
+            // rotationAngle = circle.getRotationAngle();
         } else {
             Debug.message("eomg", "EditableOMCircle.render: null circle.");
         }
 
         int renderType = circle.getRenderType();
 
-        //      if (rotationAngle != OMGraphic.DEFAULT_ROTATIONANGLE) {
-        //          ((java.awt.Graphics2D)graphics).rotate(rotationAngle,
+        // if (rotationAngle != OMGraphic.DEFAULT_ROTATIONANGLE) {
+        // ((java.awt.Graphics2D)graphics).rotate(rotationAngle,
         // circle.getX(), circle.getY());
-        //      }
+        // }
 
         if (state instanceof GraphicSelectedState
                 || state instanceof GraphicEditState) {
@@ -687,20 +701,17 @@ public class EditableOMCircle extends EditableOMGraphic {
     }
 
     /**
-     * If this EditableOMGraphic has parameters that can be
-     * manipulated that are independent of other EditableOMGraphic
-     * types, then you can provide the widgets to control those
-     * parameters here. By default, returns the GraphicAttributes GUI
-     * widgets. If you don't want a GUI to appear when a widget is
-     * being created/edited, then don't call this method from the
-     * EditableOMGraphic implementation, and return a null Component
-     * from getGUI.
+     * If this EditableOMGraphic has parameters that can be manipulated that are
+     * independent of other EditableOMGraphic types, then you can provide the
+     * widgets to control those parameters here. By default, returns the
+     * GraphicAttributes GUI widgets. If you don't want a GUI to appear when a
+     * widget is being created/edited, then don't call this method from the
+     * EditableOMGraphic implementation, and return a null Component from
+     * getGUI.
      * 
-     * @param graphicAttributes the GraphicAttributes to use to get
-     *        the GUI widget from to control those parameters for this
-     *        EOMG.
-     * @return java.awt.Component to use to control parameters for
-     *         this EOMG.
+     * @param graphicAttributes the GraphicAttributes to use to get the GUI
+     *        widget from to control those parameters for this EOMG.
+     * @return java.awt.Component to use to control parameters for this EOMG.
      */
     public java.awt.Component getGUI(GraphicAttributes graphicAttributes) {
         Debug.message("eomg", "EditableOMCircle.getGUI");
@@ -712,4 +723,3 @@ public class EditableOMCircle extends EditableOMGraphic {
     }
 
 }
-

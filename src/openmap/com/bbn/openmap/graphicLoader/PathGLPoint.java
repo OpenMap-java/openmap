@@ -14,19 +14,23 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/PathGLPoint.java,v $
 // $RCSfile: PathGLPoint.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:46 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:09:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.graphicLoader;
 
-import java.awt.*;
+import java.awt.Graphics;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.proj.GreatCircle;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -101,7 +105,7 @@ public class PathGLPoint extends GLPoint {
 
         float[] latlons = getSegmentCoordinates(pathIndex);
 
-        float segLength = GreatCircle.spherical_distance(latlons[0],
+        float segLength = GreatCircle.sphericalDistance(latlons[0],
                 latlons[1],
                 latlons[2],
                 latlons[3]);
@@ -134,7 +138,7 @@ public class PathGLPoint extends GLPoint {
                 }
             }
 
-            segLength = GreatCircle.spherical_distance(latlons[0],
+            segLength = GreatCircle.sphericalDistance(latlons[0],
                     latlons[1],
                     latlons[2],
                     latlons[3]);
@@ -148,12 +152,12 @@ public class PathGLPoint extends GLPoint {
 
         // Staying on this segment, just calculate where the
         // next point on the segment is.
-        azimuth = GreatCircle.spherical_azimuth(latlons[0],
+        azimuth = GreatCircle.sphericalAzimuth(latlons[0],
                 latlons[1],
                 latlons[2],
                 latlons[3]);
 
-        newPoint = GreatCircle.spherical_between(latlons[0],
+        newPoint = GreatCircle.sphericalBetween(latlons[0],
                 latlons[1],
                 currentSegDist + needToTravel,
                 azimuth);
@@ -161,10 +165,10 @@ public class PathGLPoint extends GLPoint {
         setLat(newPoint.getLatitude());
         setLon(newPoint.getLongitude());
 
-        currentSegDist = GreatCircle.spherical_distance(latlons[0],
+        currentSegDist = GreatCircle.sphericalDistance(latlons[0],
                 latlons[1],
-                newPoint.radlat_,
-                newPoint.radlon_);
+                (float)newPoint.getRadLat(),
+                (float)newPoint.getRadLon());
     }
 
     public boolean generate(Projection p) {

@@ -12,8 +12,8 @@
  * **********************************************************************
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleDisplayLayer.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/08/09 19:20:29 $
+ * $Revision: 1.9 $
+ * $Date: 2005/12/09 21:09:08 $
  * $Author: dietrick $
  *
  * **********************************************************************
@@ -176,13 +176,13 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
         line.setLinePaint(lineColor);
         graphics.add(line);
 
-        LatLonPoint loc1 = projection.inverse(left_x, lower_y);
-        LatLonPoint loc2 = projection.inverse(right_x, lower_y);
+        LatLonPoint loc1 = LatLonPoint.getLatLon(left_x, lower_y, projection);
+        LatLonPoint loc2 = LatLonPoint.getLatLon(right_x, lower_y, projection);
 
-        float dist = GreatCircle.spherical_distance(loc1.radlat_,
-                loc1.radlon_,
-                loc2.radlat_,
-                loc2.radlon_);
+        double dist = GreatCircle.sphericalDistance(loc1.getRadLat(),
+                loc1.getRadLon(),
+                loc2.getRadLat(),
+                loc2.getRadLon());
         dist = uom.fromRadians(dist);
 
         if (dist > 1)

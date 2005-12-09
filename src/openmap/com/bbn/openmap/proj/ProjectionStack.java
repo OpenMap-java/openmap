@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionStack.java,v $
 // $RCSfile: ProjectionStack.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:23 $
+// $Revision: 1.6 $
+// $Date: 2005/12/09 21:09:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.proj;
 
@@ -27,9 +26,9 @@ import java.awt.Container;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.util.Stack;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.event.ProjectionEvent;
@@ -37,17 +36,17 @@ import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.util.Debug;
 
 /**
- *  Provides Projection Stack, to listen for projection changes and
- *  remember them as they pass by.  As a Tool, it provides a GUI so
- *  that past projections can be retrieved, and, if a past projection
- *  is being displayed, a forward projection stack is activated to
- *  provide a path to get to the last projection set in the MapBean.
- *  ProjectionStackTriggers should hook themselves up to the
- *  ProjectionStack.  The ProjectionStack is responsible for finding
- *  and connecting to the MapBean.
+ * Provides Projection Stack, to listen for projection changes and
+ * remember them as they pass by. As a Tool, it provides a GUI so that
+ * past projections can be retrieved, and, if a past projection is
+ * being displayed, a forward projection stack is activated to provide
+ * a path to get to the last projection set in the MapBean.
+ * ProjectionStackTriggers should hook themselves up to the
+ * ProjectionStack. The ProjectionStack is responsible for finding and
+ * connecting to the MapBean.
  */
-public class ProjectionStack extends OMComponent
-    implements ActionListener, ProjectionListener {
+public class ProjectionStack extends OMComponent implements ActionListener,
+        ProjectionListener {
 
     public final static int DEFAULT_MAX_SIZE = 10;
     public final static int REMEMBER_ALL = -1;
@@ -93,53 +92,51 @@ public class ProjectionStack extends OMComponent
 
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand().intern();
-        
-        Debug.message("projectionstack", 
-                      "ProjectionStack.actionPerformed(): " + command);
+
+        Debug.message("projectionstack", "ProjectionStack.actionPerformed(): "
+                + command);
 
         boolean changeProjection = false;
 
-        //  This is important.  We need to set the current projection
-        //  before setting the projection in the MapBean.  That way,
-        //  the projectionChanged method actions won't get fired
-        if (command == BackProjCmd && 
-            backStack != null && 
-            backStack.size() > 1) {
+        // This is important. We need to set the current projection
+        // before setting the projection in the MapBean. That way,
+        // the projectionChanged method actions won't get fired
+        if (command == BackProjCmd && backStack != null && backStack.size() > 1) {
 
             pop();
-            currentProjection = (ProjHolder)backStack.peek();
+            currentProjection = (ProjHolder) backStack.peek();
             changeProjection = true;
-        } else if (command == ForwardProjCmd &&
-                   forwardStack != null && 
-                   !forwardStack.empty()) {
-            
+        } else if (command == ForwardProjCmd && forwardStack != null
+                && !forwardStack.empty()) {
+
             currentProjection = backPop();
             changeProjection = true;
         } else {
             clearStacks((command == ClearBackStackCmd || command == ClearStacksCmd),
-                        (command == ClearForwardStackCmd || command == ClearStacksCmd));
+                    (command == ClearForwardStackCmd || command == ClearStacksCmd));
             // fireStackStatus is called in clearStacks
         }
 
         if (changeProjection && mapBean != null) {
             if (Debug.debugging("projectionstack")) {
-                Debug.output("ProjectionStack.actionPerformed() changing mapbean projection to : " + currentProjection);
+                Debug.output("ProjectionStack.actionPerformed() changing mapbean projection to : "
+                        + currentProjection);
             }
 
-            Projection currProj = 
-                currentProjection.create(mapBean.getWidth(),
-                                         mapBean.getHeight());
+            Projection currProj = currentProjection.create(mapBean.getWidth(),
+                    mapBean.getHeight());
             mapBean.setProjection(currProj);
             fireStackStatus();
         }
     }
-  
-    //------------------------------------------------------------
+
+    // ------------------------------------------------------------
     // ProjectionListener interface
-    //------------------------------------------------------------
-    
+    // ------------------------------------------------------------
+
     /**
-     * The Map projection has changed. 
+     * The Map projection has changed.
+     * 
      * @param e ProjectionEvent
      */
     public void projectionChanged(ProjectionEvent e) {
@@ -152,7 +149,8 @@ public class ProjectionStack extends OMComponent
         // and the new projection needs to get added to the stack,
         // with the forwardStack cleared.
         if (currentProjection == null || !currentProjection.equals(newProj)) {
-            Debug.message("projectionstack", "ProjectionStack.projectionChanged() pushing projection on backStack");
+            Debug.message("projectionstack",
+                    "ProjectionStack.projectionChanged() pushing projection on backStack");
             // push on the backStack, clear the forwardStack;
             currentProjection = push(new ProjHolder(newProj));
             if (forwardStack != null) {
@@ -160,17 +158,20 @@ public class ProjectionStack extends OMComponent
             }
             fireStackStatus();
         } else {
-            Debug.message("projectionstack", "ProjectionStack.projectionChanged() new projection matches current projection, no action.");
+            Debug.message("projectionstack",
+                    "ProjectionStack.projectionChanged() new projection matches current projection, no action.");
         }
     }
-    
+
     /**
      * Clear out the chosen projection stacks and fire an event to
      * update the triggers on stack status.
+     * 
      * @param clearBackStack clear out the backward projection stack.
-     * @param clearForwardStack clear out the forward projection stack.
+     * @param clearForwardStack clear out the forward projection
+     *        stack.
      */
-    public synchronized void clearStacks(boolean clearBackStack, 
+    public synchronized void clearStacks(boolean clearBackStack,
                                          boolean clearForwardStack) {
 
         if (clearBackStack && backStack != null) {
@@ -188,10 +189,11 @@ public class ProjectionStack extends OMComponent
     /**
      * Take a ProjHolder off the backStack, and push it on the forward
      * stack.
-     * @return the ProjHolder pushed onto the forwardStack. 
+     * 
+     * @return the ProjHolder pushed onto the forwardStack.
      */
     protected synchronized ProjHolder pop() {
-        ProjHolder proj = (ProjHolder)backStack.pop();
+        ProjHolder proj = (ProjHolder) backStack.pop();
 
         if (forwardStack == null) {
             forwardStack = new Stack();
@@ -205,11 +207,13 @@ public class ProjectionStack extends OMComponent
     }
 
     /**
-     * Take a ProjHolder off the forwardStack, and push it on the backStack.
+     * Take a ProjHolder off the forwardStack, and push it on the
+     * backStack.
+     * 
      * @return the ProjHolder pushed on the backStack.
      */
     protected synchronized ProjHolder backPop() {
-        ProjHolder proj = (ProjHolder)forwardStack.pop();
+        ProjHolder proj = (ProjHolder) forwardStack.pop();
 
         // This has almost no chance of happening...
         if (backStack == null) {
@@ -222,10 +226,11 @@ public class ProjectionStack extends OMComponent
         backStack.push(proj);
         return proj;
     }
-    
+
     /**
      * Put a new ProjHolder on the backStack, to remember for later in
      * case we need to back up.
+     * 
      * @param proj ProjHolder.
      * @return the ProjHolder pushed on the backStack.
      */
@@ -237,28 +242,28 @@ public class ProjectionStack extends OMComponent
         if (backStack.size() >= stackSize) {
             backStack.removeElementAt(0);
         }
-        return (ProjHolder)backStack.push(proj);
+        return (ProjHolder) backStack.push(proj);
     }
 
     public void fireStackStatus() {
         fireStackStatus((backStack != null && backStack.size() > 1),
-                        (forwardStack != null && !forwardStack.empty()));
+                (forwardStack != null && !forwardStack.empty()));
     }
 
-    public void fireStackStatus(boolean enableBackButton, 
+    public void fireStackStatus(boolean enableBackButton,
                                 boolean enableForwardButton) {
         if (triggers != null) {
             if (Debug.debugging("projectionstack")) {
-                Debug.output("ProjectionStack.fireStackStatus(" + 
-                             enableBackButton +
-                             ", " + enableForwardButton + ")");
+                Debug.output("ProjectionStack.fireStackStatus("
+                        + enableBackButton + ", " + enableForwardButton + ")");
             }
             triggers.fireStackStatus(enableBackButton, enableForwardButton);
         }
     }
 
     /**
-     * ProjectionStackTriggers should call this method, and all will be well.
+     * ProjectionStackTriggers should call this method, and all will
+     * be well.
      */
     public void addProjectionStackTrigger(ProjectionStackTrigger trigger) {
         trigger.addActionListener(this);
@@ -266,11 +271,13 @@ public class ProjectionStack extends OMComponent
             triggers = new ProjectionStackSupport();
         }
         triggers.add(trigger);
-        trigger.updateProjectionStackStatus((backStack != null && backStack.size() > 1), (forwardStack != null && !forwardStack.empty()));
+        trigger.updateProjectionStackStatus((backStack != null && backStack.size() > 1),
+                (forwardStack != null && !forwardStack.empty()));
     }
 
     /**
-     * ProjectionStackTriggers should call this method, and all will be well.
+     * ProjectionStackTriggers should call this method, and all will
+     * be well.
      */
     public void removeProjectionStackTrigger(ProjectionStackTrigger trigger) {
         trigger.removeActionListener(this);
@@ -282,32 +289,33 @@ public class ProjectionStack extends OMComponent
         }
     }
 
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
     // BeanContextMembershipListener and BeanContextChild interface
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
 
     /**
      * Look at the object received in a MapHandler status message and
-     * disconnect from it if necessary.  
+     * disconnect from it if necessary.
      */
     public void findAndUndo(Object someObj) {
         if (someObj instanceof com.bbn.openmap.MapBean) {
-            Debug.message("projectionstack","ProjectionStack removing a MapBean.");
+            Debug.message("projectionstack",
+                    "ProjectionStack removing a MapBean.");
             MapBean map = getMapBean();
-            if (map != null && map == (MapBean)someObj) {
+            if (map != null && map == (MapBean) someObj) {
                 setMapBean(null);
             }
         }
     }
-  
+
     /**
      * Look at the object received in a MapHandler status message and
-     * connect to it if necessary.  
+     * connect to it if necessary.
      */
     public void findAndInit(Object someObj) {
         if (someObj instanceof com.bbn.openmap.MapBean) {
-            Debug.message("projectionstack","ProjectionStack found a MapBean.");
-            setMapBean((MapBean)someObj);
+            Debug.message("projectionstack", "ProjectionStack found a MapBean.");
+            setMapBean((MapBean) someObj);
         }
     }
 
@@ -315,7 +323,7 @@ public class ProjectionStack extends OMComponent
 
         public Class projClass;
         public float scale;
-        public LatLonPoint center;
+        public Point2D center;
         protected Point tmpPoint1;
         protected Point tmpPoint2;
 
@@ -328,53 +336,46 @@ public class ProjectionStack extends OMComponent
         public boolean equals(Projection proj) {
             // For some reason, the ProjectionFactory can mess up the
             // center lat/lons, so that the center isn't EXACTLY what
-            // they were when the projection was created.  It's almost
+            // they were when the projection was created. It's almost
             // like it decides what map it can draw, and then figures
             // out what the coordinate of the center pixel of the
-            // projection it created was.  Doing this projection hack
+            // projection it created was. Doing this projection hack
             // seems to accurately determine what projections are
             // acutally identical visually, which is what you want to
             // know anyway.
             Point tmpPoint1 = proj.forward(proj.getCenter());
             Point tmpPoint2 = proj.forward(center);
 
-            boolean same = (projClass == proj.getClass() &&
-                            scale == proj.getScale() &&
+            boolean same = (projClass == proj.getClass()
+                    && scale == proj.getScale() &&
 
-                            // NOT GOOD ENOUGH!  Sometimes, the
-                            // slighest difference causes a false
-                            // false.
+                    // NOT GOOD ENOUGH! Sometimes, the
+                    // slighest difference causes a false
+                    // false.
 
-//                          MoreMath.approximately_equal(center.getLatitude(), 
-//                                                       proj.getCenter().getLatitude(), 
-//                                                       .00001f) &&
-//                          MoreMath.approximately_equal(center.getLongitude(), 
-//                                                       proj.getCenter().getLongitude(), 
-//                                                       .00001f)
-                            // This seems to work...
-                            tmpPoint1.x == tmpPoint2.x && tmpPoint1.y == tmpPoint2.y
-                            );
+                    // MoreMath.approximately_equal(center.getLatitude(),
+                    // proj.getCenter().getLatitude(),
+                    // .00001f) &&
+                    // MoreMath.approximately_equal(center.getLongitude(),
+                    // proj.getCenter().getLongitude(),
+                    // .00001f)
+                    // This seems to work...
+                    tmpPoint1.x == tmpPoint2.x && tmpPoint1.y == tmpPoint2.y);
             return same;
         }
 
         public Projection create(int width, int height) {
-            return ProjectionFactory.makeProjection(projClass, 
-                                                    center.getLatitude(),
-                                                    center.getLongitude(),
-                                                    scale, width, height);
+            return ProjectionFactory.makeProjection(projClass,
+                    center,
+                    scale,
+                    width,
+                    height);
         }
 
         public String toString() {
-            return ("[ProjHolder: class(" + projClass.getName() + "), scale(" +
-                    scale + "), center(" + center + ")]");
+            return ("[ProjHolder: class(" + projClass.getName() + "), scale("
+                    + scale + "), center(" + center + ")]");
         }
 
     }
 }
-
-
-
-
-
-
-

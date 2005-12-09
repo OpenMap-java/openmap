@@ -7,6 +7,7 @@ import java.awt.Point;
 import com.bbn.openmap.omGraphics.OMSpline;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.omGraphics.labeled.LabeledOMGraphic;
+import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
@@ -253,7 +254,7 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
         int avgy = 0;
 
         // Assuming that the rendertype is not unknown...
-        if (renderType == RENDERTYPE_LATLON) {
+        if (renderType == RENDERTYPE_LATLON && proj instanceof GeoProj) {
             int numPoints = rawllpts.length / 2;
             if (rawllpts.length < 2) {
                 // off screen...
@@ -262,7 +263,10 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
             }
             if (locateAtCenter) {
                 for (i = 0; i < rawllpts.length; i += 2) {
-                    proj.forward(rawllpts[i], rawllpts[i + 1], handyPoint, true);
+                    ((GeoProj) proj).forward(rawllpts[i],
+                            rawllpts[i + 1],
+                            handyPoint,
+                            true);
 
                     avgy += handyPoint.getY();
                     avgx += handyPoint.getX();
@@ -275,7 +279,7 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
                     index = 0;
                 if (index > numPoints)
                     index = numPoints - 1;
-                proj.forward(rawllpts[2 * index],
+                ((GeoProj) proj).forward(rawllpts[2 * index],
                         rawllpts[2 * index + 1],
                         handyPoint,
                         true);

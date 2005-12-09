@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFGraphicWarehouse.java,v $
 // $RCSfile: VPFGraphicWarehouse.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/01/10 16:36:21 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:08:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,7 +24,7 @@ package com.bbn.openmap.layer.vpf;
 
 import java.util.List;
 
-import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * Define an interface for a Graphic Factory for graphics read from

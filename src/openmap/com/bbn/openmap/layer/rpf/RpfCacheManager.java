@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCacheManager.java,v $
 // $RCSfile: RpfCacheManager.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:03 $
+// $Revision: 1.5 $
+// $Date: 2005/12/09 21:09:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,10 +24,11 @@ package com.bbn.openmap.layer.rpf;
 
 import java.io.Serializable;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -139,9 +140,9 @@ public class RpfCacheManager implements Serializable {
         auxCacheSize = auxSubframeCacheSize;
     }
 
-    //      public void finalize() {
-    //      Debug.message("gc", "RpfCacheManager: getting GC'd");
-    //      }
+    // public void finalize() {
+    // Debug.message("gc", "RpfCacheManager: getting GC'd");
+    // }
 
     /**
      * Reset the caches in the RpfCacheHandlers.
@@ -236,7 +237,7 @@ public class RpfCacheManager implements Serializable {
             if (viewAttributes.requireProjection) {
                 return new OMGraphicList();
             } else {
-                viewAttributes.proj = new CADRG(proj.getCenter(), proj.getScale(), proj.getWidth(), proj.getHeight());
+                viewAttributes.proj = new CADRG((LatLonPoint) proj.getCenter(new LatLonPoint.Float()), proj.getScale(), proj.getWidth(), proj.getHeight());
             }
         } else {
             viewAttributes.proj = (CADRG) proj;
@@ -264,8 +265,8 @@ public class RpfCacheManager implements Serializable {
         int lat_minus = 2;
         int lon_minus = 2;
         // Set up checks for equator and dateline
-        LatLonPoint ll1 = proj.getUpperLeft();
-        LatLonPoint ll2 = proj.getLowerRight();
+        LatLonPoint ll1 = (LatLonPoint)proj.getUpperLeft();
+        LatLonPoint ll2 = (LatLonPoint)proj.getLowerRight();
 
         lat[0] = ll1.getLatitude();
         lon[0] = ll1.getLongitude();
@@ -276,11 +277,12 @@ public class RpfCacheManager implements Serializable {
 
         if (lon[0] > 0 && lon[2] < 0) {
             lon[1] = -179.999f; // put a little breather on the
-                                // dateline
+            // dateline
             lon_minus = 1;
         }
         if (lat[0] > 0 && lat[2] < 0) {
-            lat[1] = -0.0001f; // put a little breather on the equator
+            lat[1] = -0.0001f; // put a little breather on the
+                                // equator
             lat_minus = 1;
         }
 
@@ -326,7 +328,7 @@ public class RpfCacheManager implements Serializable {
             }
             caches[1].setCache(lat[ya - lat_minus], lon[0], lat[ya], -1f
                     * lon[1], viewAttributes.proj); // -1 to make it
-                                                    // 180
+            // 180
 
             if (Debug.debugging("rpf"))
                 Debug.output("-- second cache used");
@@ -340,7 +342,7 @@ public class RpfCacheManager implements Serializable {
                 caches[2] = new RpfCacheHandler(frameProvider, viewAttributes, auxCacheSize);
             }
             caches[2].setCache(lat[0], lon[xa - lon_minus], -1f * lat[1], // flip
-                                                                          // breather
+                    // breather
                     lon[xa], viewAttributes.proj);
 
             if (Debug.debugging("rpf"))
@@ -354,11 +356,11 @@ public class RpfCacheManager implements Serializable {
             if (caches[3] == null) {
                 caches[3] = new RpfCacheHandler(frameProvider, viewAttributes, auxCacheSize);
             }
-            caches[3].setCache(lat[0], lon[0], -1f * lat[1],//  flip
-                                                            // breather
+            caches[3].setCache(lat[0], lon[0], -1f * lat[1],// flip
+                    // breather
                     -1f * lon[1], viewAttributes.proj);// -1 to make
-                                                       // it 180, not
-                                                       // -180
+            // it 180, not
+            // -180
 
             if (Debug.debugging("rpf"))
                 Debug.output("-- fourth cache used");
@@ -377,7 +379,7 @@ public class RpfCacheManager implements Serializable {
      */
     protected OMGraphic getSubframes() {
 
-        //      graphics = new RpfMaps(viewAttributes);
+        // graphics = new RpfMaps(viewAttributes);
         graphics.clear();
 
         if (Debug.debugging("rpf")) {
@@ -398,11 +400,11 @@ public class RpfCacheManager implements Serializable {
                 for (int subx = caches[nbox].start.x; subx <= caches[nbox].end.x; subx++) {
                     for (int suby = caches[nbox].start.y; suby <= caches[nbox].end.y; suby++) {
 
-                        ///////
+                        // /////
                         RpfSubframe subframe = caches[nbox].getCached(subx,
                                 suby,
                                 subframeRunningCount);
-                        ///////
+                        // /////
 
                         if (subframe == null) {
                             if (Debug.debugging("rpf")) {
@@ -482,4 +484,3 @@ public class RpfCacheManager implements Serializable {
     }
 
 }
-

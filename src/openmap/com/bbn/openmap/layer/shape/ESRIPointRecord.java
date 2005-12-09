@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPointRecord.java,v $
 // $RCSfile: ESRIPointRecord.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/05/23 20:18:49 $
+// $Revision: 1.8 $
+// $Date: 2005/12/09 21:09:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,15 +23,22 @@
 package com.bbn.openmap.layer.shape;
 
 import java.io.IOException;
+
 import javax.swing.ImageIcon;
-import com.bbn.openmap.omGraphics.*;
+
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGeometryList;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMRaster;
 
 /**
  * An ESRI Point record.
  * 
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.7 $ $Date: 2005/05/23 20:18:49 $
+ * @version $Revision: 1.8 $ $Date: 2005/12/09 21:09:10 $
  */
 public class ESRIPointRecord extends ESRIRecord {
 

@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibrarySelectionTable.java,v $
-// $Revision: 1.12 $ $Date: 2005/08/09 19:29:38 $ $Author: dietrick $
+// $Revision: 1.13 $ $Date: 2005/12/09 21:08:57 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -275,13 +275,13 @@ public class LibrarySelectionTable {
                     covname,
                     warehouse,
                     ll1,
-                    new LatLonPoint(ll2.getLatitude(), 180f - .00001f)/* 180-epsilon */);
+                    new LatLonPoint.Float(ll2.getLatitude(), 180f - .00001f)/* 180-epsilon */);
             drawTile(scale,
                     screenwidth,
                     screenheight,
                     covname,
                     warehouse,
-                    new LatLonPoint(ll1.getLatitude(), -180f),
+                    new LatLonPoint.Float(ll1.getLatitude(), -180f),
                     ll2);
             return;
         }
@@ -389,14 +389,14 @@ public class LibrarySelectionTable {
                     covname,
                     warehouse,
                     ll1,
-                    new LatLonPoint(ll2.getLatitude(), 180f - .00001f)//180-epsilon
+                    new LatLonPoint.Float(ll2.getLatitude(), 180f - .00001f)//180-epsilon
             );
             drawFeatures(scale,
                     screenwidth,
                     screenheight,
                     covname,
                     warehouse,
-                    new LatLonPoint(ll1.getLatitude(), -180f),
+                    new LatLonPoint.Float(ll1.getLatitude(), -180f),
                     ll2);
             return;
         }

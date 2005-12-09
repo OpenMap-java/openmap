@@ -14,23 +14,38 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/Pilot.java,v $
 // $RCSfile: Pilot.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:38 $
+// $Revision: 1.4 $
+// $Date: 2005/12/09 21:09:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.plugin.pilot;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.geom.Point2D;
+
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.omGraphics.OMPoint;
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.proj.GreatCircle;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 
@@ -86,13 +101,13 @@ public class Pilot extends OMPoint implements ActionListener, FocusListener {
     }
 
     public void move(int distance, Length units, float Az) {
-        LatLonPoint newLocation = GreatCircle.spherical_between(ProjMath.degToRad(getLat()),
+        Point2D newLocation = GreatCircle.sphericalBetween(ProjMath.degToRad(getLat()),
                 ProjMath.degToRad(getLon()),
                 units.toRadians(distance),
                 Az);
 
-        setLat(newLocation.getLatitude());
-        setLon(newLocation.getLongitude());
+        setLat((float) newLocation.getY());
+        setLon((float) newLocation.getX());
     }
 
     public void setStationary(boolean set) {
@@ -150,7 +165,7 @@ public class Pilot extends OMPoint implements ActionListener, FocusListener {
                                 desktop.repaint();
                             }
                             palette = null;
-                            //                          firePaletteEvent(false);
+                            // firePaletteEvent(false);
                         };
                     });
             // add the window to the desktop
@@ -164,7 +179,7 @@ public class Pilot extends OMPoint implements ActionListener, FocusListener {
                         getName(),
                         new ComponentAdapter() {
                             public void componentHidden(ComponentEvent e) {
-                            //                              firePaletteEvent(false);
+                            // firePaletteEvent(false);
                             };
                         });
             }

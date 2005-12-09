@@ -14,21 +14,26 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMGraphic.java,v $
 // $RCSfile: EditableOMGraphic.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/10/14 18:06:10 $
+// $Revision: 1.11 $
+// $Date: 2005/12/09 21:09:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-import java.awt.*;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.event.MapMouseAdapter;
 import com.bbn.openmap.omGraphics.editable.EOMGStateMachine;
-import com.bbn.openmap.omGraphics.event.*;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
+import com.bbn.openmap.omGraphics.event.EOMGListener;
+import com.bbn.openmap.omGraphics.event.EOMGListenerSupport;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
