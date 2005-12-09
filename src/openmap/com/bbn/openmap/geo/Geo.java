@@ -19,14 +19,13 @@ import java.util.Enumeration;
 import com.bbn.openmap.proj.Length;
 
 /**
- * A class that represents a point on the Earth as a three dimensional
- * unit length vector, rather than latitude and longitude. For the
- * theory and an efficient implementation using partial evaluation
- * see:
+ * A class that represents a point on the Earth as a three dimensional unit
+ * length vector, rather than latitude and longitude. For the theory and an
+ * efficient implementation using partial evaluation see:
  * http://openmap.bbn.com/~kanderso/lisp/performing-lisp/essence.ps
  * 
- * This implementation matches the theory carefully, but does not use
- * partial evaluation.
+ * This implementation matches the theory carefully, but does not use partial
+ * evaluation.
  * 
  * <p>
  * For the area calculation see: http://math.rice.edu/~pcmi/sphere/
@@ -35,42 +34,40 @@ import com.bbn.openmap.proj.Length;
  * @author Sachin Date
  * @author Ben Lubin
  * @author Michael Thome
- * @version $Revision: 1.22 $ on $Date: 2005/12/09 20:57:17 $
+ * @version $Revision: 1.23 $ on $Date: 2005/12/09 21:59:55 $
  */
 public class Geo {
 
-    /* ****************************************************************
+    /***************************************************************************
      * Constants for the shape of the earth. see
      * http://www.gfy.ku.dk/%7Eiag/HB2000/part4/groten.htm
-     *************************************************************** */
+     **************************************************************************/
     // Replaced by Length constants.
-    //     public static final double radiusKM = 6378.13662; // in KM.
-    //     public static final double radiusNM = 3443.9182; // in NM.
+    // public static final double radiusKM = 6378.13662; // in KM.
+    // public static final double radiusNM = 3443.9182; // in NM.
     // Replaced with WGS 84 constants
-    //     public static final double flattening = 1.0/298.25642;
+    // public static final double flattening = 1.0/298.25642;
     public static final double flattening = 1.0 / 298.257223563;
-    public static final double FLATTENING_C = (1.0 - flattening) * (1.0 - flattening);
-    
+    public static final double FLATTENING_C = (1.0 - flattening)
+            * (1.0 - flattening);
+
     public static final double METERS_PER_NM = 1852;
     private static final double NPD_LTERM1 = 111412.84 / METERS_PER_NM;
     private static final double NPD_LTERM2 = -93.5 / METERS_PER_NM;
     private static final double NPD_LTERM3 = 0.118 / METERS_PER_NM;
-    
+
     private double x;
     private double y;
     private double z;
 
-
     /**
-     * Compute nautical miles per degree at a specified latitude (in
-     * degrees). Calculation from NIMA:
-     * http://pollux.nss.nima.mil/calc/degree.html
+     * Compute nautical miles per degree at a specified latitude (in degrees).
+     * Calculation from NIMA: http://pollux.nss.nima.mil/calc/degree.html
      */
     public final static double npdAtLat(double latdeg) {
         double lat = (latdeg * Math.PI) / 180.0;
-        return ( NPD_LTERM1 * Math.cos(lat) + 
-                 NPD_LTERM2 * Math.cos(3 * lat) +
-                 NPD_LTERM3 * Math.cos(5 * lat) );
+        return (NPD_LTERM1 * Math.cos(lat) + NPD_LTERM2 * Math.cos(3 * lat) + NPD_LTERM3
+                * Math.cos(5 * lat));
     }
 
     /** Convert from geographic to geocentric latitude (radians) */
@@ -128,8 +125,8 @@ public class Geo {
      * 
      * @param lat latitude.
      * @param lon longitude.
-     * @param isDegrees should be true if the lat/lon are specified in
-     *        decimal degrees, false if they are radians.
+     * @param isDegrees should be true if the lat/lon are specified in decimal
+     *        degrees, false if they are radians.
      */
     public Geo(float lat, float lon, boolean isDegrees) {
         if (isDegrees) {
@@ -150,23 +147,21 @@ public class Geo {
     public Geo(Geo geo) {
         this(geo.x, geo.y, geo.z);
     }
-    
+
     public static final Geo makeGeoRadians(double latr, double lonr) {
         double rlat = geocentricLatitude(latr);
         double c = Math.cos(rlat);
-        return new Geo(c * Math.cos(lonr),
-                c * Math.sin(lonr),
-                Math.sin(rlat)); 
+        return new Geo(c * Math.cos(lonr), c * Math.sin(lonr), Math.sin(rlat));
     }
-    
+
     public static final Geo makeGeoDegrees(double latd, double lond) {
         return makeGeoRadians(radians(latd), radians(lond));
     }
-    
+
     public static final Geo makeGeo(double x, double y, double z) {
         return new Geo(x, y, z);
     }
-    
+
     public static final Geo makeGeo(Geo p) {
         return new Geo(p.x, p.y, p.z);
     }
@@ -191,7 +186,7 @@ public class Geo {
     public void initialize(double lat, double lon) {
         initializeRadians(radians(lat), radians(lon));
     }
-    
+
     /**
      * Initialize this Geo with to represent coordinates.
      * 
@@ -207,9 +202,8 @@ public class Geo {
     }
 
     /**
-     * Find the midpoint Geo between this one and another on a Great
-     * Circle line between the two. The result is undefined of the two
-     * points are antipodes.
+     * Find the midpoint Geo between this one and another on a Great Circle line
+     * between the two. The result is undefined of the two points are antipodes.
      * 
      * @param g2
      * @return midpoint Geo.
@@ -286,9 +280,8 @@ public class Geo {
 
     /** Vector cross product. */
     public Geo cross(Geo b) {
-        return new Geo(this.y() * b.z() - this.z() * b.y(), 
-                       this.z() * b.x() - this.x() * b.z(),
-                       this.x() * b.y() - this.y() * b.x());
+        return new Geo(this.y() * b.z() - this.z() * b.y(), this.z() * b.x()
+                - this.x() * b.z(), this.x() * b.y() - this.y() * b.x());
     }
 
     /** Eqvivalent to this.cross(b).length(). */
@@ -322,9 +315,9 @@ public class Geo {
     public Geo subtract(Geo b) {
         return new Geo(this.x() - b.x(), this.y() - b.y(), this.z() - b.z());
     }
-    
+
     public boolean equals(Geo v2) {
-        return this.x == v2.x  && this.y == v2.y && this.z == v2.z;
+        return this.x == v2.x && this.y == v2.y && this.z == v2.z;
     }
 
     /** Angular distance, in radians between this and v2. */
@@ -378,10 +371,9 @@ public class Geo {
     /** Azimuth in radians from this to v2. */
     public double azimuth(Geo v2) {
         /*
-         * n1 is the great circle representing the meridian of this.
-         * n2 is the great circle between this and v2. The azimuth is
-         * the angle between them but we specialized the cross
-         * product.
+         * n1 is the great circle representing the meridian of this. n2 is the
+         * great circle between this and v2. The azimuth is the angle between
+         * them but we specialized the cross product.
          */
         Geo n1 = north.cross(this);
         Geo n2 = v2.cross(this);
@@ -390,17 +382,17 @@ public class Geo {
     }
 
     /**
-     * Given 3 points on a sphere, p0, p1, p2, return the angle
-     * between them in radians.
+     * Given 3 points on a sphere, p0, p1, p2, return the angle between them in
+     * radians.
      */
     public static double angle(Geo p0, Geo p1, Geo p2) {
         return Math.PI - p0.cross(p1).distance(p1.cross(p2));
     }
-    
+
     /**
-     * Computes the area of a polygon on the surface of a unit sphere
-     * given an enumeration of its point.. For a non unit sphere,
-     * multiply this by the radius of sphere squared.
+     * Computes the area of a polygon on the surface of a unit sphere given an
+     * enumeration of its point.. For a non unit sphere, multiply this by the
+     * radius of sphere squared.
      */
     public static double area(Enumeration vs) {
         int count = 0;
@@ -432,29 +424,27 @@ public class Geo {
     }
 
     /**
-     * Is the point, p, within radius radians of the great circle
-     * segment between this and v2?
+     * Is the point, p, within radius radians of the great circle segment
+     * between this and v2?
      */
     public boolean isInside(Geo v2, double radius, Geo p) {
         /*
-         * gc is a unit vector perpendicular to the plane defined by
-         * v1 and v2
+         * gc is a unit vector perpendicular to the plane defined by v1 and v2
          */
         Geo gc = this.crossNormalize(v2);
 
         /*
-         * |gc . p| is the size of the projection of p onto gc (the
-         * normal of v1,v2) cos(pi/2-r) is effectively the size of the
-         * projection of a vector along gc of the radius length. If
-         * the former is larger than the latter, than p is further
-         * than radius from arc, so must not be isInside
+         * |gc . p| is the size of the projection of p onto gc (the normal of
+         * v1,v2) cos(pi/2-r) is effectively the size of the projection of a
+         * vector along gc of the radius length. If the former is larger than
+         * the latter, than p is further than radius from arc, so must not be
+         * isInside
          */
         if (Math.abs(gc.dot(p)) > Math.cos((Math.PI / 2.0) - radius))
             return false;
 
         /*
-         * If p is within radius of either endpoint, then we know it
-         * isInside
+         * If p is within radius of either endpoint, then we know it isInside
          */
         if (this.distance(p) <= radius || v2.distance(p) <= radius)
             return true;
@@ -479,8 +469,8 @@ public class Geo {
     }
 
     /**
-     * do the segments v1-v2 and p1-p2 come within radius (radians) of
-     * each other?
+     * do the segments v1-v2 and p1-p2 come within radius (radians) of each
+     * other?
      */
     public static boolean isInside(Geo v1, Geo v2, double radius, Geo p1, Geo p2) {
         return v1.isInside(v2, radius, p1) || v1.isInside(v2, radius, p2)
@@ -500,9 +490,8 @@ public class Geo {
     }
 
     /**
-     * Is Geo p inside the time bubble along the great circle segment
-     * from this to v2 looking forward forwardRadius and backward
-     * backwardRadius.
+     * Is Geo p inside the time bubble along the great circle segment from this
+     * to v2 looking forward forwardRadius and backward backwardRadius.
      */
     public boolean inBubble(Geo v2, double forwardRadius, double backRadius,
                             Geo p) {
@@ -517,34 +506,33 @@ public class Geo {
     }
 
     /**
-     * Find the intersection of the great circle between this and q
-     * and the great circle normal to r.
+     * Find the intersection of the great circle between this and q and the
+     * great circle normal to r.
      * <p>
      * 
      * That is, find the point, y, lying between this and q such that
      * 
      * <pre>
-     * 
-     *              y = [x*this + (1-x)*q]*c
-     *              where c = 1/y.dot(y) is a factor for normalizing y.
-     *              y.dot(r) = 0
-     *              substituting:
-     *              [x*this + (1-x)*q]*c.dot(r) = 0 or
-     *              [x*this + (1-x)*q].dot(r) = 0
-     *              x*this.dot(r) + (1-x)*q.dot(r) = 0
-     *              x*a + (1-x)*b = 0
-     *              x = -b/(a - b)
-     *           
+     *  
+     *               y = [x*this + (1-x)*q]*c
+     *               where c = 1/y.dot(y) is a factor for normalizing y.
+     *               y.dot(r) = 0
+     *               substituting:
+     *               [x*this + (1-x)*q]*c.dot(r) = 0 or
+     *               [x*this + (1-x)*q].dot(r) = 0
+     *               x*this.dot(r) + (1-x)*q.dot(r) = 0
+     *               x*a + (1-x)*b = 0
+     *               x = -b/(a - b)
+     *            
      * </pre>
      * 
-     * We assume that this and q are less than 180 degrees appart.
-     * When this and q are 180 degrees appart, the point -y is also a
-     * valid intersection.
+     * We assume that this and q are less than 180 degrees appart. When this and
+     * q are 180 degrees appart, the point -y is also a valid intersection.
      * <p>
      * Alternatively the intersection point, y, satisfies y.dot(r) = 0
      * y.dot(this.crossNormalize(q)) = 0 which is satisfied by y =
      * r.crossNormalize(this.crossNormalize(q));
-     *  
+     * 
      */
     public Geo intersect(Geo q, Geo r) {
         double a = this.dot(r);
@@ -552,230 +540,252 @@ public class Geo {
         double x = -b / (a - b);
         return this.scale(x).add(q.scale(1.0 - x)).normalize();
     }
-    
-    /** alias for computeCorridor(path, radius, radians(10), true) **/
+
+    /** alias for computeCorridor(path, radius, radians(10), true) * */
     public static Geo[] computeCorridor(Geo[] path, double radius) {
-      return computeCorridor(path, radius, radians(10.0), true);
+        return computeCorridor(path, radius, radians(10.0), true);
     }
-    
+
     /**
-     * Wrap a fixed-distance corridor around an (open) path, as specified by an array of Geo.
+     * Wrap a fixed-distance corridor around an (open) path, as specified by an
+     * array of Geo.
+     * 
      * @param path Open path
      * @param radius Distance from path to widen corridor, in angular radians.
-     * @param err maximum angle of rounded edges, in radians.  If 0, will directly cut outside bends.
+     * @param err maximum angle of rounded edges, in radians. If 0, will
+     *        directly cut outside bends.
      * @param capp iff true, will round end caps
-     * @return a closed polygon representing the specified corridor around the path.
-     *
+     * @return a closed polygon representing the specified corridor around the
+     *         path.
+     * 
      */
-    public static Geo[] computeCorridor(Geo[] path, double radius, double err, boolean capp) {
-      assert path!=null;
-      assert radius > 0.0;
-      
-      int pl = path.length;
-      if (pl<2) return null;
-      
-      // final polygon will be right[0],...,right[n],left[m],...,left[0]
-      ArrayList right = new ArrayList((int) (pl*1.5));
-      ArrayList left = new ArrayList((int) (pl*1.5));
-      
-      Geo g0 = null;            // previous point
-      Geo n0 = null;            // previous normal vector
-      Geo l0 = null;
-      Geo r0 = null;
-      
-      Geo g1 = path[0];         // current point
-      
-      for (int i=1; i<pl; i++) {
-        Geo g2 = path[i];       // next point
-        Geo n1 = g1.crossNormalize(g2);   // n is perpendicular to the vector from g1 to g2
-        n1 = n1.scale(radius);  // normalize to radius
-        // these are the offsets on the g2 side at g1
-        Geo r1b = g1.add(n1);
-        Geo l1b = g1.subtract(n1);
-        
-        if (n0 == null) {
-          if (capp && err>0) {
-            // start cap
-            Geo[] arc = approximateArc(g1,l1b,r1b,err);
-            for (int j=arc.length-1;j>=0;j--) {
-              right.add(arc[j]);
-            }
-          } else {
-            // no previous point - we'll just be square
-            right.add(l1b);
-            left.add(r1b);
-          }
-          // advance normals
-          l0 = l1b;
-          r0 = r1b;
-        } else {
-          // otherwise, compute a more complex shape
-          
-          // these are the right and left on the g0 side of g1
-          Geo r1a = g1.add(n0);
-          Geo l1a = g1.subtract(n0);
-          
-          double handed = g0.cross(g1).dot(g2);  // right or left handed divergence
-          if (handed>0) { // left needs two points, right needs 1
-            if (err>0) {
-              Geo[] arc = approximateArc(g1,l1b,l1a,err);
-              for (int j=arc.length-1;j>=0;j--) {
-                right.add(arc[j]);
-              }
-            } else {
-              right.add(l1a);
-              right.add(l1b);
-            }
-            l0 = l1b;
-            
-            Geo ip = Intersection.segmentsIntersect(r0, r1a, r1b, g2.add(n1));
-            // if they intersect, take the intersection, else use the points and punt
-            if (ip != null) {
-              left.add(ip);
-            } else {
-              left.add(r1a);
-              left.add(r1b);
-            }
-            r0 = ip;            
-          } else {
-            Geo ip = Intersection.segmentsIntersect(l0, l1a, l1b, g2.subtract(n1));
-            // if they intersect, take the intersection, else use the points and punt
-            if (ip != null) {
-              right.add(ip);
-            } else {
-              right.add(l1a);
-              right.add(l1b);
-            }
-            l0 = ip;
-            if (err>0) {
-              Geo[] arc = approximateArc(g1,r1a,r1b,err);
-              for (int j=0;j<arc.length;j++) {
-                left.add(arc[j]);
-              }
-            } else {
-              left.add(r1a);
-              left.add(r1b);
-            }
-            r0=r1b;
-          }
-        } 
-        
-        // advance points
-        g0=g1;
-        n0=n1;
-        g1=g2;
-      }
-      
-      // finish it off
-      Geo rn = g1.subtract(n0);
-      Geo ln = g1.add(n0);
-      if (capp && err>0) {
-        // end cap
-        Geo[] arc = approximateArc(g1,ln,rn,err);
-        for (int j=arc.length-1; j>=0; j--) {
-          right.add(arc[j]);
+    public static Geo[] computeCorridor(Geo[] path, double radius, double err,
+                                        boolean capp) {
+        if (path == null || radius <= 0.0) {
+            return new Geo[] {};
         }
-      } else {
-        right.add(rn);
-        left.add(ln);
-      }
-      
-      
-      int ll = right.size();
-      int rl = left.size();
-      Geo[] result = new Geo[ll+rl];
-      for (int i=0;i<ll;i++) {
-        result[i]=(Geo) right.get(i);
-      }
-      int j=ll;
-      for (int i=rl-1; i>=0; i--) {
-        result[j++]=(Geo) left.get(i);
-      }
-      return result;
+        // assert path!=null;
+        // assert radius > 0.0;
+
+        int pl = path.length;
+        if (pl < 2)
+            return null;
+
+        // final polygon will be right[0],...,right[n],left[m],...,left[0]
+        ArrayList right = new ArrayList((int) (pl * 1.5));
+        ArrayList left = new ArrayList((int) (pl * 1.5));
+
+        Geo g0 = null; // previous point
+        Geo n0 = null; // previous normal vector
+        Geo l0 = null;
+        Geo r0 = null;
+
+        Geo g1 = path[0]; // current point
+
+        for (int i = 1; i < pl; i++) {
+            Geo g2 = path[i]; // next point
+            Geo n1 = g1.crossNormalize(g2); // n is perpendicular to the vector
+                                            // from g1 to g2
+            n1 = n1.scale(radius); // normalize to radius
+            // these are the offsets on the g2 side at g1
+            Geo r1b = g1.add(n1);
+            Geo l1b = g1.subtract(n1);
+
+            if (n0 == null) {
+                if (capp && err > 0) {
+                    // start cap
+                    Geo[] arc = approximateArc(g1, l1b, r1b, err);
+                    for (int j = arc.length - 1; j >= 0; j--) {
+                        right.add(arc[j]);
+                    }
+                } else {
+                    // no previous point - we'll just be square
+                    right.add(l1b);
+                    left.add(r1b);
+                }
+                // advance normals
+                l0 = l1b;
+                r0 = r1b;
+            } else {
+                // otherwise, compute a more complex shape
+
+                // these are the right and left on the g0 side of g1
+                Geo r1a = g1.add(n0);
+                Geo l1a = g1.subtract(n0);
+
+                double handed = g0.cross(g1).dot(g2); // right or left handed
+                                                        // divergence
+                if (handed > 0) { // left needs two points, right needs 1
+                    if (err > 0) {
+                        Geo[] arc = approximateArc(g1, l1b, l1a, err);
+                        for (int j = arc.length - 1; j >= 0; j--) {
+                            right.add(arc[j]);
+                        }
+                    } else {
+                        right.add(l1a);
+                        right.add(l1b);
+                    }
+                    l0 = l1b;
+
+                    Geo ip = Intersection.segmentsIntersect(r0,
+                            r1a,
+                            r1b,
+                            g2.add(n1));
+                    // if they intersect, take the intersection, else use the
+                    // points and punt
+                    if (ip != null) {
+                        left.add(ip);
+                    } else {
+                        left.add(r1a);
+                        left.add(r1b);
+                    }
+                    r0 = ip;
+                } else {
+                    Geo ip = Intersection.segmentsIntersect(l0,
+                            l1a,
+                            l1b,
+                            g2.subtract(n1));
+                    // if they intersect, take the intersection, else use the
+                    // points and punt
+                    if (ip != null) {
+                        right.add(ip);
+                    } else {
+                        right.add(l1a);
+                        right.add(l1b);
+                    }
+                    l0 = ip;
+                    if (err > 0) {
+                        Geo[] arc = approximateArc(g1, r1a, r1b, err);
+                        for (int j = 0; j < arc.length; j++) {
+                            left.add(arc[j]);
+                        }
+                    } else {
+                        left.add(r1a);
+                        left.add(r1b);
+                    }
+                    r0 = r1b;
+                }
+            }
+
+            // advance points
+            g0 = g1;
+            n0 = n1;
+            g1 = g2;
+        }
+
+        // finish it off
+        Geo rn = g1.subtract(n0);
+        Geo ln = g1.add(n0);
+        if (capp && err > 0) {
+            // end cap
+            Geo[] arc = approximateArc(g1, ln, rn, err);
+            for (int j = arc.length - 1; j >= 0; j--) {
+                right.add(arc[j]);
+            }
+        } else {
+            right.add(rn);
+            left.add(ln);
+        }
+
+        int ll = right.size();
+        int rl = left.size();
+        Geo[] result = new Geo[ll + rl];
+        for (int i = 0; i < ll; i++) {
+            result[i] = (Geo) right.get(i);
+        }
+        int j = ll;
+        for (int i = rl - 1; i >= 0; i--) {
+            result[j++] = (Geo) left.get(i);
+        }
+        return result;
     }
-    
+
     /** simple vector angle (not geocentric!) */
     static double simpleAngle(Geo p1, Geo p2) {
-      return Math.acos(p1.dot(p2)/(p1.length() * p2.length()));
+        return Math.acos(p1.dot(p2) / (p1.length() * p2.length()));
     }
-    
-    /** compute a polygonal approximation of an arc centered at pc, beginning at
+
+    /**
+     * compute a polygonal approximation of an arc centered at pc, beginning at
      * p0 and ending at p1, going clockwise and including the two end points.
+     * 
      * @param pc center point
      * @param p0 starting point
      * @param p1 ending point
-     * @param err The maximum angle between approximates allowed, in radians.  Smaller values will
-     * look better but will result in more returned points.
+     * @param err The maximum angle between approximates allowed, in radians.
+     *        Smaller values will look better but will result in more returned
+     *        points.
      * @return
      */
     public static final Geo[] approximateArc(Geo pc, Geo p0, Geo p1, double err) {
-      
-      double theta = angle(p0,pc,p1);
-      // if the rest of the code is undefined in this situation, just skip it.
-      if (Double.isNaN(theta)) {
-        return new Geo[] {p0,p1};
-      }
-      
-      int n = (int) (2.0 + Math.abs(theta/err));  // number of points (counting the end points)
-      Geo[] result = new Geo[n];
-      result[0] = p0;
-      double dtheta = theta/(n-1);
-      
-      double rho = 0.0; // angle starts at 0 (directly at p0)
-      
-     for (int i = 1; i < n-1; i++) {
-        rho += dtheta;
-        // Rotate p0 around this so it has the right azimuth.
-        result[i] = (new Rotation(pc, 2.0*Math.PI - rho)).rotate(p0);
-      }
-      result[n-1] = p1;
-      
-      return result;
+
+        double theta = angle(p0, pc, p1);
+        // if the rest of the code is undefined in this situation, just skip it.
+        if (Double.isNaN(theta)) {
+            return new Geo[] { p0, p1 };
+        }
+
+        int n = (int) (2.0 + Math.abs(theta / err)); // number of points
+                                                        // (counting the end
+                                                        // points)
+        Geo[] result = new Geo[n];
+        result[0] = p0;
+        double dtheta = theta / (n - 1);
+
+        double rho = 0.0; // angle starts at 0 (directly at p0)
+
+        for (int i = 1; i < n - 1; i++) {
+            rho += dtheta;
+            // Rotate p0 around this so it has the right azimuth.
+            result[i] = (new Rotation(pc, 2.0 * Math.PI - rho)).rotate(p0);
+        }
+        result[n - 1] = p1;
+
+        return result;
     }
-    
+
     public final Geo[] approximateArc(Geo p0, Geo p1, double err) {
-      return approximateArc(this, p0, p1, err);
+        return approximateArc(this, p0, p1, err);
     }
-    
+
     /** @deprecated use </b>#offset(double, double) */
     public Geo geoAt(double distance, double azimuth) {
-      return offset(distance, azimuth);
+        return offset(distance, azimuth);
     }
-    
-    /** Returns a Geo that is distance (radians), and azimuth (radians)
-     * away from this. 
+
+    /**
+     * Returns a Geo that is distance (radians), and azimuth (radians) away from
+     * this.
+     * 
      * @param distance distance of this to the target point in radians.
-     * @param azimuth Direction of target point from this, in radians, clockwise from north.
-     * @note this is undefined at the north pole, at which point "azimuth" is undefined.
+     * @param azimuth Direction of target point from this, in radians, clockwise
+     *        from north.
+     * @note this is undefined at the north pole, at which point "azimuth" is
+     *       undefined.
      */
     public Geo offset(double distance, double azimuth) {
-      // m is normal the the meridian through this.
-      Geo m = this.crossNormalize(north);
-      // p is a point on the meridian distance <tt>distance</tt> from this.
-      Geo p = (new Rotation(m, distance)).rotate(this);
-      // Rotate p around this so it has the right azimuth.
-      return (new Rotation(this, 2.0*Math.PI - azimuth)).rotate(p);
+        // m is normal the the meridian through this.
+        Geo m = this.crossNormalize(north);
+        // p is a point on the meridian distance <tt>distance</tt> from this.
+        Geo p = (new Rotation(m, distance)).rotate(this);
+        // Rotate p around this so it has the right azimuth.
+        return (new Rotation(this, 2.0 * Math.PI - azimuth)).rotate(p);
     }
-    
+
     public Geo offset(Geo origin, double distance, double azimuth) {
-      return origin.offset(distance, azimuth);
+        return origin.offset(distance, azimuth);
     }
-    
+
     /*
-    //same as offset, except using trig instead of vector mathematics
-    public Geo trig_offset(double distance, double azimuth) {
-      double latr = getLatitudeRadians();
-      double lonr = getLongitudeRadians();
-      
-      double coslat = Math.cos(latr);
-      double sinlat = Math.sin(latr);
-      double cosaz = Math.cos(azimuth);
-      double sinaz = Math.sin(azimuth);
-      double sind = Math.sin(distance);
-      double cosd = Math.cos(distance);
-      
-      return makeGeoRadians(Math.asin(sinlat * cosd + coslat * sind * cosaz),
-                            Math.atan2(sind * sinaz, coslat * cosd - sinlat * sind * cosaz) + lonr);
-    }
-    */
+     * //same as offset, except using trig instead of vector mathematics public
+     * Geo trig_offset(double distance, double azimuth) { double latr =
+     * getLatitudeRadians(); double lonr = getLongitudeRadians();
+     * 
+     * double coslat = Math.cos(latr); double sinlat = Math.sin(latr); double
+     * cosaz = Math.cos(azimuth); double sinaz = Math.sin(azimuth); double sind =
+     * Math.sin(distance); double cosd = Math.cos(distance);
+     * 
+     * return makeGeoRadians(Math.asin(sinlat * cosd + coslat * sind * cosaz),
+     * Math.atan2(sind * sinaz, coslat * cosd - sinlat * sind * cosaz) + lonr); }
+     */
 }
