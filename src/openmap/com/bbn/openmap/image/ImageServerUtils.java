@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServerUtils.java,v $
 // $RCSfile: ImageServerUtils.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/12/09 21:09:08 $
+// $Revision: 1.8 $
+// $Date: 2005/12/15 17:08:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -85,7 +85,7 @@ public class ImageServerUtils implements ImageServerConstants {
         }
 
         Proj proj = (Proj) ProjectionFactory.makeProjection(projClass,
-                new Point2D.Float(latitude, longitude),
+                new Point2D.Float(longitude, latitude),
                 scale,
                 width,
                 height);
