@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/AbstractMouseMode.java,v $
 // $RCSfile: AbstractMouseMode.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/02/02 13:05:19 $
+// $Revision: 1.11 $
+// $Date: 2005/12/16 14:14:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,12 +24,17 @@ package com.bbn.openmap.event;
 
 import java.awt.Cursor;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.Properties;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.MapBean;
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.util.PropUtils;
 
@@ -324,6 +329,22 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
     public void mouseMoved(MouseEvent e) {
         mouseSupport.fireMapMouseMoved(e);
     }
+    
+    /**
+     * Invoked from the MouseWheelListener interface.
+     */
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        int rot = e.getWheelRotation();
+        if (e.getSource() instanceof MapBean) {
+            MapBean mb = (MapBean) e.getSource();
+            if (rot > 0) {
+                // Positive, zoom out
+                mb.zoom(new ZoomEvent(mb, ZoomEvent.RELATIVE, 1.1f));
+            } else {
+                mb.zoom(new ZoomEvent(mb, ZoomEvent.RELATIVE, .9f));
+            }
+        }
+    }
 
     /**
      * Part of the MapMouseMode interface. Called when the MouseMode
@@ -468,8 +489,29 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
 
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
-        props.put(PrettyNameProperty, "Presentable name for Mouse Mode.");
-        props.put(IDProperty, "Internal ID for Mouse Mode, used by Layers.");
+        
+        Class thisClass = getClass();
+        String internString = i18n.get(thisClass,
+                PrettyNameProperty,
+                I18n.TOOLTIP,
+                "Presentable name for Mouse Mode.");
+        props.put(Layer.AddToBeanContextProperty, internString);
+        internString = i18n.get(thisClass,
+                PrettyNameProperty,
+                "Name");
+        props.put(PrettyNameProperty + LabelEditorProperty, internString);
+        
+        
+        internString = i18n.get(thisClass,
+                IDProperty,
+                I18n.TOOLTIP,
+                "Internal ID for Mouse Mode, used by Layers.");
+        props.put(Layer.AddToBeanContextProperty, internString);
+        internString = i18n.get(thisClass,
+                IDProperty,
+                "ID");
+        props.put(IDProperty + LabelEditorProperty, internString);
+        
         return props;
     }
 

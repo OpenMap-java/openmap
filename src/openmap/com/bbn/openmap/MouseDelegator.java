@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MouseDelegator.java,v $
 // $RCSfile: MouseDelegator.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/11 20:39:16 $
+// $Revision: 1.7 $
+// $Date: 2005/12/16 14:14:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -462,6 +462,7 @@ public class MouseDelegator implements PropertyChangeListener,
             }
             map.addMouseListener(mm);
             map.addMouseMotionListener(mm);
+            map.addMouseWheelListener(mm);
             map.addPaintListener(mm);
             map.setCursor(activeMouseMode.getModeCursor());
             if (mm instanceof ProjectionListener) {
@@ -480,6 +481,7 @@ public class MouseDelegator implements PropertyChangeListener,
         if (map != null) {
             map.removeMouseListener(mm);
             map.removeMouseMotionListener(mm);
+            map.removeMouseWheelListener(mm);
             map.removePaintListener(mm);
             // should set map's cursor to some default value??
             if (mm instanceof ProjectionListener) {

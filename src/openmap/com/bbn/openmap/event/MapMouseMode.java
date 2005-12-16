@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseMode.java,v $
 // $RCSfile: MapMouseMode.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:45 $
+// $Revision: 1.7 $
+// $Date: 2005/12/16 14:14:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,7 @@ package com.bbn.openmap.event;
 import java.awt.Cursor;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.Icon;
 
@@ -42,7 +43,7 @@ import javax.swing.Icon;
  * @see NullMouseMode
  */
 public interface MapMouseMode extends MouseListener, MouseMotionListener,
-        PaintListener {
+        MouseWheelListener, PaintListener {
 
     /**
      * Returns the id (MapMouseMode name). This name should be unique
