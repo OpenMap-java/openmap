@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/GreyscaleSlopeColors.java,v $
 // $RCSfile: GreyscaleSlopeColors.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:18 $
+// $Revision: 1.4 $
+// $Date: 2005/12/22 18:46:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,6 +65,10 @@ public class GreyscaleSlopeColors implements ElevationColors {
         colors = clrs;
     }
 
+    public int[] getColortable() {
+        return getColors();
+    }
+    
     /**
      * Set the color to use for water/invalid data, zero elevation.
      */

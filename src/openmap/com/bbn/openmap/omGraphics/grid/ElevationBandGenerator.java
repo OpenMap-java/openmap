@@ -12,55 +12,57 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/Attic/ElevationMBandGenerator.java,v $
-// $RCSfile: ElevationMBandGenerator.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:18 $
+// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/ElevationBandGenerator.java,v $
+// $RCSfile: ElevationBandGenerator.java,v $
+// $Revision: 1.2 $
+// $Date: 2005/12/22 18:46:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.grid;
 
-/**
- * The ElevationMBandGenerator is an OMGridGenerator that creates an
- * OMRaster out of OMGrid data. The OMgrid data is assumed to be meter
- * elevation points, and the colors given to the pixels in the raster
- * reflect the meter values. The colortable given to the generator
- * determines the colors used, and the band height sets the elevation
- * range for each color.
- */
-public class ElevationMBandGenerator extends SimpleColorGenerator {
+import com.bbn.openmap.proj.Length;
 
-    public static final int DEFAULT_BANDHEIGHT = 50;
+/**
+ * The ElevationBandGenerator is an OMGridGenerator that creates an OMRaster out
+ * of OMGrid data. The OMgrid data is assumed to be meter elevation points, and
+ * the colors given to the pixels in the raster reflect the values as dictated
+ * by the Length units. The colortable given to the generator determines the
+ * colors used, and the band height sets the elevation range for each color.
+ */
+public class ElevationBandGenerator extends SimpleColorGenerator {
+
+    public static final int DEFAULT_BANDHEIGHT = 100;
     public static final int DEFAULT_ADJUST = 3;
 
     /**
-     * The colors to use. The colors[0] is assumed to be the 0
-     * elevation color, and by default, is a light blue color.
+     * The colors to use. The colors[0] is assumed to be the 0 elevation color,
+     * and by default, is a light blue color.
      */
     protected int[] colors;
     /**
-     * A number between 1-5 to adjust the contrast a little between
-     * the colors.
+     * A number between 1-5 to adjust the contrast a little between the colors.
      */
     protected int adjust = DEFAULT_ADJUST;
     /**
-     * The elevation difference between the edges of a color - or how
-     * much the elevation must change before a pixel gets the next
-     * color.
+     * The elevation difference between the edges of a color - or how much the
+     * elevation must change before a pixel gets the next color.
      */
     protected int bandHeight = DEFAULT_BANDHEIGHT; // meters
 
-    public ElevationMBandGenerator() {
+    protected Length dataUnits = Length.METER;
+
+    protected Length displayUnits = Length.METER;
+
+    public ElevationBandGenerator() {
         setColortable(createGreyscaleColors(216, 255));
     }
 
     /**
-     * Takes the value assigned to a pixel, as determined by it's
-     * location in the grid, and gives it a color to be painted by. In
-     * this case, the pixel is colored according to the elevation
-     * value.
+     * Takes the value assigned to a pixel, as determined by it's location in
+     * the grid, and gives it a color to be painted by. In this case, the pixel
+     * is colored according to the elevation value.
      * 
      * @param source a grid point value assigned to the raster pixel.
      * @return the ARGB to color the pixel.
@@ -74,6 +76,10 @@ public class ElevationMBandGenerator extends SimpleColorGenerator {
             return colors[0]; // water blue, assumed.
         }
 
+        if (displayUnits != dataUnits) {
+            source = (int) displayUnits.fromRadians(dataUnits.toRadians(source));
+        }
+        
         // I'm not really sure how all this works out - I wrote it a
         // while ago, and it works, so I'm leaving well enough alone.
         // Some notes from before:
@@ -98,6 +104,10 @@ public class ElevationMBandGenerator extends SimpleColorGenerator {
     public int[] getColortable() {
         return colors;
     }
+    
+    public void setColors(ElevationColors ec) {
+        setColortable(ec.getColortable());
+    }
 
     public void setBandHeight(int height) {
         if (height <= 0)
@@ -118,5 +128,20 @@ public class ElevationMBandGenerator extends SimpleColorGenerator {
     public int getAdjust() {
         return adjust;
     }
-}
 
+    public Length getDataUnits() {
+        return dataUnits;
+    }
+
+    public void setDataUnits(Length units) {
+        this.dataUnits = units;
+    }
+
+    public Length getDisplayUnits() {
+        return displayUnits;
+    }
+
+    public void setDisplayUnits(Length displayUnits) {
+        this.displayUnits = displayUnits;
+    }
+}

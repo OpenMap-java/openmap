@@ -14,22 +14,25 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/SlopeGenerator.java,v $
 // $RCSfile: SlopeGenerator.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/12/09 21:09:12 $
+// $Revision: 1.8 $
+// $Date: 2005/12/22 18:46:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.grid;
 
+import java.awt.Point;
+import java.awt.Shape;
+
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGrid;
+import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.omGraphics.SinkGraphic;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-
-import java.awt.Point;
-import java.awt.Shape;
 
 /**
  * The SlopeGenerator is an OMGridGenerator that looks at elevation

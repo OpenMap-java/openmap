@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/ColoredShadingColors.java,v $
 // $RCSfile: ColoredShadingColors.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:17 $
+// $Revision: 1.4 $
+// $Date: 2005/12/22 18:46:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,9 +27,8 @@ import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.proj.Length;
 
 /**
- * A holder for handling colors for elevations. This ElevationColors
- * object also takes into account slope when providing pixel int
- * values.
+ * A holder for handling colors for elevations. This ElevationColors object also
+ * takes into account slope when providing pixel int values.
  */
 public class ColoredShadingColors implements ElevationColors {
 
@@ -45,14 +44,13 @@ public class ColoredShadingColors implements ElevationColors {
             0xffd7cd8c, 0xffd9d9d9, 0xfff3f3e6 };
 
     /**
-     * Slope color adjustment, gets subtracted from the color for
-     * slopes of zerp or less. Default is 0x0a0a0a.
+     * Slope color adjustment, gets subtracted from the color for slopes of zerp
+     * or less. Default is 0x0a0a0a.
      */
     protected int slopeColorAdjustment = 0x000a0a0a;
 
     /*
-     * Default constructor, used default elevation cutoffs and color
-     * values.
+     * Default constructor, used default elevation cutoffs and color values.
      */
     public ColoredShadingColors() {
         getColors();
@@ -66,9 +64,9 @@ public class ColoredShadingColors implements ElevationColors {
     }
 
     /**
-     * Set the color factor to subtract from the colors for level or
-     * negative slopes. Should be the same for each byte, or the
-     * colors will change drastically.
+     * Set the color factor to subtract from the colors for level or negative
+     * slopes. Should be the same for each byte, or the colors will change
+     * drastically.
      */
     public void setSlopeColorAdjustment(int adj) {
         slopeColorAdjustment = adj;
@@ -79,7 +77,7 @@ public class ColoredShadingColors implements ElevationColors {
     }
 
     /**
-     * Get a List of colors.
+     * Get an array of colors with elevation values.
      */
     public ColorHelper[] getColors() {
         if (colors == null) {
@@ -89,11 +87,20 @@ public class ColoredShadingColors implements ElevationColors {
     }
 
     /**
-     * Set the list of ColorHelpers. The elevations of the
-     * ColorHelpers should be in order, from lowest to highest.
+     * Set the list of ColorHelpers. The elevations of the ColorHelpers should
+     * be in order, from lowest to highest.
      */
     public void setColors(ColorHelper[] clrs) {
         colors = clrs;
+    }
+
+    public int[] getColortable() {
+        ColorHelper[] helpers = getColors();
+        int[] cs = new int[helpers.length];
+        for (int i = 0; i < helpers.length; i++) {
+            cs[i] = helpers[i].value;
+        }
+        return cs;
     }
 
     /**
@@ -111,19 +118,18 @@ public class ColoredShadingColors implements ElevationColors {
     }
 
     /**
-     * Get the Color for the given elevation, with the provided units.
-     * The slope of the land, from the northwest to the southeast, is
-     * provided.
+     * Get the Color for the given elevation, with the provided units. The slope
+     * of the land, from the northwest to the southeast, is provided.
      */
     public Color getColor(int elevation, Length units, double slope) {
         return new Color(getARGB(elevation, units, slope));
     }
 
     /**
-     * Get the int argb value for a given elevation, with the provided
-     * units. The slope of the land, from the northwest to the
-     * southeast, is provided in case that should matter. It's not
-     * used in this version of the algorithm.
+     * Get the int argb value for a given elevation, with the provided units.
+     * The slope of the land, from the northwest to the southeast, is provided
+     * in case that should matter. It's not used in this version of the
+     * algorithm.
      */
     public int getARGB(int elevation, Length units, double slope) {
 
@@ -162,8 +168,8 @@ public class ColoredShadingColors implements ElevationColors {
     }
 
     /**
-     * A helper class that associates an int color value with an
-     * elevation. Elevation has to be in radians.
+     * A helper class that associates an int color value with an elevation.
+     * Elevation has to be in radians.
      */
     public static class ColorHelper {
         /** height value in radians. */
@@ -174,8 +180,7 @@ public class ColoredShadingColors implements ElevationColors {
         /**
          * Create a ColorHelper.
          * 
-         * @param radianHeight minimum elevation for color use, in
-         *        radians.
+         * @param radianHeight minimum elevation for color use, in radians.
          * @param val integer ARGB color value
          */
         public ColorHelper(double radianHeight, int val) {

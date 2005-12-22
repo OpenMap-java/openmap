@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/ElevationColors.java,v $
 // $RCSfile: ElevationColors.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:18 $
+// $Revision: 1.4 $
+// $Date: 2005/12/22 18:46:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,5 +44,10 @@ public interface ElevationColors {
      * southeast, is provided in case that should matter.
      */
     public int getARGB(int elevation, Length units, double slope);
+    
+    /**
+     * Get a colortable as an array of ints.
+     */
+    public int[] getColortable();
 
 }

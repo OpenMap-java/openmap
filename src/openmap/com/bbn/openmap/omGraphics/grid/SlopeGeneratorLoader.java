@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/SlopeGeneratorLoader.java,v
 // $
 // $RCSfile: SlopeGeneratorLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:18 $
+// $Revision: 1.4 $
+// $Date: 2005/12/22 18:46:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,47 +26,20 @@ package com.bbn.openmap.omGraphics.grid;
 
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
-import java.util.Properties;
-import javax.swing.*;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.bbn.openmap.util.ComponentFactory;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
-import com.bbn.openmap.util.PropUtils;
 
-public class SlopeGeneratorLoader extends GeneratorLoader {
+public class SlopeGeneratorLoader extends ColorGeneratorLoader {
 
-    public final static String ColorsClassProperty = "colorsClass";
-    public final static String COLORS_PROPERTY = "COLORS";
     public final static String CONTRAST_PROPERTY = "CONTRAST";
 
-    public final static String DEFAULT_COLORS_CLASS = "com.bbn.openmap.omGraphics.grid.ColoredShadingColors";
-
-    protected ElevationColors colors;
     protected int contrast = 5;
-
-    public void setColors(ElevationColors cols) {
-        ElevationColors oldColors = colors;
-        colors = cols;
-        if (oldColors != colors) {
-            firePropertyChange(COLORS_PROPERTY, oldColors, colors);
-        }
-    }
-
-    public ElevationColors getColors() {
-        if (colors == null) {
-            try {
-                colors = (ElevationColors) Class.forName(DEFAULT_COLORS_CLASS)
-                        .newInstance();
-            } catch (InstantiationException ie) {
-            } catch (IllegalAccessException iae) {
-            } catch (ClassNotFoundException cnfe) {
-            }
-        }
-        return colors;
-    }
 
     public void setContrast(int cont) {
         int oldValue = contrast;
@@ -98,7 +71,7 @@ public class SlopeGeneratorLoader extends GeneratorLoader {
         contrastSlide.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent ce) {
                 JSlider slider = (JSlider) ce.getSource();
-                if (slider.getValueIsAdjusting()) {
+                if (!slider.getValueIsAdjusting()) {
                     setContrast(slider.getValue());
                 }
             }
@@ -116,26 +89,14 @@ public class SlopeGeneratorLoader extends GeneratorLoader {
         return gen;
     }
 
-    public void setProperties(String prefix, Properties props) {
-        super.setProperties(prefix, props);
-        prefix = PropUtils.getScopedPropertyPrefix(prefix);
-        String colorsClassProperty = props.getProperty(prefix
-                + ColorsClassProperty);
-        if (colorsClassProperty != null) {
-            try {
-                setColors((ElevationColors) ComponentFactory.create(colorsClassProperty));
-            } catch (ClassCastException cce) {
-                Debug.output("SlopeGeneratorLoader created a "
-                        + colorsClassProperty
-                        + ", but it's not a ElevationColors object");
-            }
-        }
-
-    }
-
     public void addPropertyChangeListener(PropertyChangeListener pcl) {
         super.addPropertyChangeListener(CONTRAST_PROPERTY, pcl);
         super.addPropertyChangeListener(COLORS_PROPERTY, pcl);
     }
 
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+        super.removePropertyChangeListener(CONTRAST_PROPERTY, pcl);
+        super.removePropertyChangeListener(COLORS_PROPERTY, pcl);
+    }
+ 
 }
