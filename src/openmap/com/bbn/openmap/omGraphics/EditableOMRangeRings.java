@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRangeRings.java,v $
 // $RCSfile: EditableOMRangeRings.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/10 22:25:08 $
+// $Revision: 1.9 $
+// $Date: 2005/12/22 23:15:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -42,25 +43,27 @@ import com.bbn.openmap.util.Debug;
  */
 public class EditableOMRangeRings extends EditableOMCircle {
 
+    protected boolean snapToInterval = false;
+
     /**
-     * Create the EditableOMRangeRings, setting the state machine to
-     * create the circle off of the gestures.
+     * Create the EditableOMRangeRings, setting the state machine to create the
+     * circle off of the gestures.
      */
     public EditableOMRangeRings() {
         createGraphic(null);
     }
 
     /**
-     * Create an EditableOMRangeRings with the circleType and
-     * renderType parameters in the GraphicAttributes object.
+     * Create an EditableOMRangeRings with the circleType and renderType
+     * parameters in the GraphicAttributes object.
      */
     public EditableOMRangeRings(GraphicAttributes ga) {
         createGraphic(ga);
     }
 
     /**
-     * Create the EditableOMRangeRings with an OMCircle already
-     * defined, ready for editing.
+     * Create the EditableOMRangeRings with an OMCircle already defined, ready
+     * for editing.
      * 
      * @param omc OMCircle that should be edited.
      */
@@ -94,14 +97,12 @@ public class EditableOMRangeRings extends EditableOMCircle {
     }
 
     /**
-     * Modifies the gui to not include line type adjustments, and adds
-     * widgets to control range ring settings.
+     * Modifies the gui to not include line type adjustments, and adds widgets
+     * to control range ring settings.
      * 
-     * @param graphicAttributes the GraphicAttributes to use to get
-     *        the GUI widget from to control those parameters for this
-     *        EOMG.
-     * @return java.awt.Component to use to control parameters for
-     *         this EOMG.
+     * @param graphicAttributes the GraphicAttributes to use to get the GUI
+     *        widget from to control those parameters for this EOMG.
+     * @return java.awt.Component to use to control parameters for this EOMG.
      */
     public Component getGUI(GraphicAttributes graphicAttributes) {
         Debug.message("eomg", "EditableOMRangeRings.getGUI");
@@ -119,13 +120,26 @@ public class EditableOMRangeRings extends EditableOMCircle {
         if (intervalField != null) {
             intervalField.setText(Integer.toString(val));
         }
+
+        if (snapToInterval) {
+            setRadius(circle.getRadius());
+        }
         redraw(null, true);
     }
 
     public void updateInterval(String intervalStr) {
         int oldValue = ((OMRangeRings) circle).getInterval();
-        int value = oldValue;
+        int value = interpretValue(intervalStr);
 
+        if (value <= 0) {
+            value = oldValue;
+        }
+
+        updateInterval(value);
+    }
+
+    public int interpretValue(String intervalStr) {
+        int value = -1;
         try {
             if (intervalStr.toLowerCase().endsWith("m")) {
                 intervalStr = intervalStr.substring(0, intervalStr.length() - 1);
@@ -134,7 +148,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
                 intervalStr = intervalStr.substring(0, intervalStr.length() - 1);
                 value = df.parse(intervalStr).intValue() * 1000;
             } else if (intervalStr.trim().equals("")) {
-                value = oldValue;
+                // do nothing
             } else {
                 value = df.parse(intervalStr).intValue();
             }
@@ -143,13 +157,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
         } catch (NumberFormatException e) {
             Debug.error("RangeRing interval value not valid: " + intervalStr);
         }
-
-        if (value <= 0) {
-            value = oldValue;
-        }
-
-        updateInterval(value);
-
+        return value;
     }
 
     protected JTextField intervalField = null;
@@ -163,13 +171,14 @@ public class EditableOMRangeRings extends EditableOMCircle {
             rrToolBar.setFloatable(false);
             rrToolBar.setMargin(new Insets(0, 1, 0, 1));
 
-            //  JPanel intervalPanel =
+            // JPanel intervalPanel =
             // PaletteHelper.createPaletteJPanel("Interval");
             intervalField = new JTextField(Integer.toString(((OMRangeRings) circle).getInterval()), 5);
             intervalField.setMargin(new Insets(0, 1, 0, 1));
             intervalField.setHorizontalAlignment(JTextField.RIGHT);
-            intervalField.setToolTipText(i18n.get(this, "intervalField.tooltip"
-              , "Value for interval between rings."));
+            intervalField.setToolTipText(i18n.get(this,
+                    "intervalField.tooltip",
+                    "Value for interval between rings."));
             intervalField.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     updateInterval(((JTextField) (ae.getSource())).getText());
@@ -178,28 +187,28 @@ public class EditableOMRangeRings extends EditableOMCircle {
 
             rrToolBar.add(intervalField);
 
-            //  JSlider intervalSlide = new JSlider(
-            //      JSlider.HORIZONTAL, 1/*min*/, 200/*max*/,
-            //      ((OMRangeRings)circle).getInterval()/*inital*/);
-            //  java.util.Hashtable dict = new java.util.Hashtable();
-            //  dict.put(new Integer(1), new JLabel("1"));
-            //  dict.put(new Integer(50), new JLabel("50"));
-            //  dict.put(new Integer(100), new JLabel("100"));
-            //  dict.put(new Integer(150), new JLabel("150"));
-            //  dict.put(new Integer(200), new JLabel("200"));
-            //  intervalSlide.setLabelTable(dict);
-            //  intervalSlide.setPaintLabels(true);
-            //  intervalSlide.setMajorTickSpacing(10);
-            //  intervalSlide.setPaintTicks(true);
-            //  intervalSlide.setSnapToTicks(false);
-            //  intervalSlide.addChangeListener(new ChangeListener() {
-            //          public void stateChanged(ChangeEvent ce) {
-            //              JSlider slider = (JSlider) ce.getSource();
-            //              if (slider.getValueIsAdjusting()) {
-            //                  ((OMRangeRings)circle).setInterval(slider.getValue());
-            //              }
-            //          }
-            //      });
+            // JSlider intervalSlide = new JSlider(
+            // JSlider.HORIZONTAL, 1/*min*/, 200/*max*/,
+            // ((OMRangeRings)circle).getInterval()/*inital*/);
+            // java.util.Hashtable dict = new java.util.Hashtable();
+            // dict.put(new Integer(1), new JLabel("1"));
+            // dict.put(new Integer(50), new JLabel("50"));
+            // dict.put(new Integer(100), new JLabel("100"));
+            // dict.put(new Integer(150), new JLabel("150"));
+            // dict.put(new Integer(200), new JLabel("200"));
+            // intervalSlide.setLabelTable(dict);
+            // intervalSlide.setPaintLabels(true);
+            // intervalSlide.setMajorTickSpacing(10);
+            // intervalSlide.setPaintTicks(true);
+            // intervalSlide.setSnapToTicks(false);
+            // intervalSlide.addChangeListener(new ChangeListener() {
+            // public void stateChanged(ChangeEvent ce) {
+            // JSlider slider = (JSlider) ce.getSource();
+            // if (slider.getValueIsAdjusting()) {
+            // ((OMRangeRings)circle).setInterval(slider.getValue());
+            // }
+            // }
+            // });
 
             Length[] available = Length.getAvailable();
             String[] unitStrings = new String[available.length + 1];
@@ -218,7 +227,9 @@ public class EditableOMRangeRings extends EditableOMCircle {
                     currentIndex = i;
                 }
             }
-            unitStrings[unitStrings.length - 1] = i18n.get(this, "unitStrings.concentric", "concentric");
+            unitStrings[unitStrings.length - 1] = i18n.get(this,
+                    "unitStrings.concentric",
+                    "concentric");
 
             JComboBox unitList = new JComboBox(unitStrings);
             unitList.setBorder(new javax.swing.border.EmptyBorder(0, 1, 0, 1));
@@ -227,12 +238,68 @@ public class EditableOMRangeRings extends EditableOMCircle {
             unitList.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     JComboBox jcb = (JComboBox) e.getSource();
-                    ((OMRangeRings) circle).setIntervalUnits(Length.get((String) jcb.getSelectedItem()));
-                    updateInterval(intervalField.getText());
+                    OMRangeRings rr = (OMRangeRings) circle;
+                    Length newLength = Length.get((String) jcb.getSelectedItem());
+                    Length oldLength = rr.getIntervalUnits();
+
+                    /*
+                     * If newLength is not null and oldLength is not null, just
+                     * translate the distance that is current specified. If
+                     * newLength is null, then find out how many rings are on
+                     * the range ring and set the interval to that. If oldLength
+                     * is null, find out the radius and divide it by the number
+                     * of rings - 1.
+                     */
+
+                    int value = interpretValue(intervalField.getText());
+                    if (value <= 0) {
+                        value = 4;
+                    }
+
+
+                    if (newLength != null && oldLength != null) {
+                        value = (int) newLength.fromRadians(oldLength.toRadians(value));
+                    } else {
+                        int numSubCircles;
+                        if (rr.subCircles == null || rr.subCircles.length == 0) {
+                            numSubCircles = 1;
+                        } else {
+                            numSubCircles = rr.subCircles.length;
+                        }
+
+                        if (newLength == null) {
+                            value = numSubCircles;
+                        } else if (oldLength == null) {
+                            value = (int) newLength.fromRadians(Length.DECIMAL_DEGREE.toRadians(rr.getRadius()))
+                                    / numSubCircles;
+                        }
+                    }
+
+                    ((OMRangeRings) circle).setIntervalUnits(newLength);
+                    updateInterval(value);
                 }
             });
 
             rrToolBar.add(unitList);
+
+            String snapText = i18n.get(this, "snapToInterval", "Snap");
+            JCheckBox snapBox = new JCheckBox(snapText, isSnapToInterval());
+            snapText = i18n.get(this,
+                    "snapToInterval",
+                    I18n.TOOLTIP,
+                    "Round radius to nearest interval value.");
+            snapBox.setToolTipText(snapText);
+            snapBox.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    setSnapToInterval(((JCheckBox) ae.getSource()).isSelected());
+                    if (snapToInterval) {
+                        setRadius(circle.getRadius());
+                    }
+                    redraw(null, true);
+                }
+            });
+
+            rrToolBar.add(snapBox);
         }
         return rrToolBar;
     }
@@ -240,13 +307,12 @@ public class EditableOMRangeRings extends EditableOMCircle {
     protected boolean drawLabelsHolder = true;
 
     /**
-     * A convenience method that gives an EditableOMGraphic a chance
-     * to modify the OMGraphic so it can be drawn quickly, by turning
-     * off labels, etc, right before the XORpainting happens. The
-     * OMGraphic should be configured so that the render method does
-     * the least amount of painting possible. Note that the
-     * DrawingAttributes for the OMGraphic have already been set to
-     * DrawingAttributes.DEFAULT (black line, clear fill).
+     * A convenience method that gives an EditableOMGraphic a chance to modify
+     * the OMGraphic so it can be drawn quickly, by turning off labels, etc,
+     * right before the XORpainting happens. The OMGraphic should be configured
+     * so that the render method does the least amount of painting possible.
+     * Note that the DrawingAttributes for the OMGraphic have already been set
+     * to DrawingAttributes.DEFAULT (black line, clear fill).
      */
     protected void modifyOMGraphicForEditRender() {
         OMRangeRings omrr = (OMRangeRings) getGraphic();
@@ -255,15 +321,37 @@ public class EditableOMRangeRings extends EditableOMCircle {
     }
 
     /**
-     * A convenience method that gives an EditableOMGraphic a chance
-     * to reset the OMGraphic so it can be rendered normally, after it
-     * has been modified for quick paints. The DrawingAttributes for
-     * the OMGraphic have already been reset to their normal settings,
-     * from the DrawingAttributes.DEFAULT settings that were used for
-     * the quick paint.
+     * A convenience method that gives an EditableOMGraphic a chance to reset
+     * the OMGraphic so it can be rendered normally, after it has been modified
+     * for quick paints. The DrawingAttributes for the OMGraphic have already
+     * been reset to their normal settings, from the DrawingAttributes.DEFAULT
+     * settings that were used for the quick paint.
      */
     protected void resetOMGraphicAfterEditRender() {
         ((OMRangeRings) getGraphic()).setDrawLabels(drawLabelsHolder);
     }
 
+    public boolean isSnapToInterval() {
+        return snapToInterval;
+    }
+
+    public void setSnapToInterval(boolean snapToInterval) {
+        this.snapToInterval = snapToInterval;
+    }
+
+    protected void setRadius(float radius) {
+        if (circle != null) {
+            if (snapToInterval) {
+                OMRangeRings rr = (OMRangeRings) circle;
+                Length units = rr.getIntervalUnits();
+                if (units != null) {
+                    float rds = units.fromRadians(Length.DECIMAL_DEGREE.toRadians(radius));
+                    radius = Math.round(rds / rr.getInterval())
+                            * rr.getInterval();
+                    radius = Length.DECIMAL_DEGREE.fromRadians(units.toRadians(radius));
+                }
+            }
+            circle.setRadius(radius);
+        }
+    }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMCircle.java,v $
 // $RCSfile: EditableOMCircle.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/12/09 21:09:04 $
+// $Revision: 1.8 $
+// $Date: 2005/12/22 23:15:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -515,8 +515,8 @@ public class EditableOMCircle extends EditableOMGraphic {
                                 (float) llp.getX(),
                                 (float) llp.getY());
                     }
-                    
-                    circle.setRadius(radius);
+
+                    setRadius(radius);
 
                 }
 
@@ -572,6 +572,16 @@ public class EditableOMCircle extends EditableOMGraphic {
 
         if (projection != null) {
             regenerate(projection);
+        }
+    }
+
+    /**
+     * To be overloaded if needed when setting circle's radius.
+     * @param radius in DECIMAL_DEGREES
+     */
+    protected void setRadius(float radius) {
+        if (circle != null) {
+            circle.setRadius(radius);
         }
     }
 

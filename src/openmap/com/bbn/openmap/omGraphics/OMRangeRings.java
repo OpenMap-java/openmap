@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRangeRings.java,v $
 // $RCSfile: OMRangeRings.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/01/10 16:58:33 $
+// $Revision: 1.6 $
+// $Date: 2005/12/22 23:15:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,18 +30,17 @@ import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
 
 /**
- * An object that manages a series of range circles. It is really an
- * OMCircle that manages a set of inner circles and an OMPOint. The
- * location of these inner circles depend on two new variables, the
- * interval and intervalUnits. If the intervalUnits are null, then the
- * interval represents the number of inner circles, not including the
- * outer ring and the innermost point, that are spaced evenly between
- * them. If the intervalUnits are not null, then the interval
- * represents the number of intervalUnits where inner circles are
- * placed. For example, if the intervalUnits is Length.MILE, and the
- * interval is 5, then inner circles will be placed every 5 miles. If
- * the intervalUnits is null, then there will be 5 inner circles drawn
- * between the center point and the outer ring.
+ * An object that manages a series of range circles. It is really an OMCircle
+ * that manages a set of inner circles and an OMPOint. The location of these
+ * inner circles depend on two new variables, the interval and intervalUnits. If
+ * the intervalUnits are null, then the interval represents the number of inner
+ * circles, not including the outer ring and the innermost point, that are
+ * spaced evenly between them. If the intervalUnits are not null, then the
+ * interval represents the number of intervalUnits where inner circles are
+ * placed. For example, if the intervalUnits is Length.MILE, and the interval is
+ * 5, then inner circles will be placed every 5 miles. If the intervalUnits is
+ * null, then there will be 5 inner circles drawn between the center point and
+ * the outer ring.
  * 
  * @see OMCircle
  */
@@ -61,8 +60,8 @@ public class OMRangeRings extends OMCircle implements Serializable {
     /** The unit object specifying the interval meaning. */
     protected Length intervalUnits = null;
     /**
-     * The DrawingAttributes object used to reflect the outer circle
-     * properties to the inner circles.
+     * The DrawingAttributes object used to reflect the outer circle properties
+     * to the inner circles.
      */
     protected DrawingAttributes drawingAttributes = new DrawingAttributes();
     /** The center point of the range rings. */
@@ -75,8 +74,8 @@ public class OMRangeRings extends OMCircle implements Serializable {
     protected boolean drawLabels = true;
 
     /**
-     * Creates an OMRangeRings with a Lat-lon center and a lat-lon
-     * axis. Rendertype is RENDERTYPE_LATLON.
+     * Creates an OMRangeRings with a Lat-lon center and a lat-lon axis.
+     * Rendertype is RENDERTYPE_LATLON.
      * 
      * @param latPoint latitude of center point, decimal degrees
      * @param lonPoint longitude of center point, decimal degrees
@@ -91,12 +90,11 @@ public class OMRangeRings extends OMCircle implements Serializable {
     }
 
     /**
-     * Create an OMRangeRings with a lat/lon center and a physical
-     * distance radius. Rendertype is RENDERTYPE_LATLON.
+     * Create an OMRangeRings with a lat/lon center and a physical distance
+     * radius. Rendertype is RENDERTYPE_LATLON.
      * 
      * @param latPoint latitude of center of circle in decimal degrees
-     * @param lonPoint longitude of center of circle in decimal
-     *        degrees
+     * @param lonPoint longitude of center of circle in decimal degrees
      * @param radius distance
      * @param units com.bbn.openmap.proj.Length object.
      */
@@ -106,17 +104,15 @@ public class OMRangeRings extends OMCircle implements Serializable {
     }
 
     /**
-     * Create an OMRangeRings with a lat/lon center and a physical
-     * distance radius. Rendertype is RENDERTYPE_LATLON.
+     * Create an OMRangeRings with a lat/lon center and a physical distance
+     * radius. Rendertype is RENDERTYPE_LATLON.
      * 
      * @param latPoint latitude of center of circle in decimal degrees
-     * @param lonPoint longitude of center of circle in decimal
-     *        degrees
+     * @param lonPoint longitude of center of circle in decimal degrees
      * @param radius distance
-     * @param units com.bbn.openmap.proj.Length object specifying
-     *        units.
-     * @param nverts number of vertices for the poly-circle (if &lt;
-     *        3, value is generated internally)
+     * @param units com.bbn.openmap.proj.Length object specifying units.
+     * @param nverts number of vertices for the poly-circle (if &lt; 3, value is
+     *        generated internally)
      */
     public OMRangeRings(float latPoint, float lonPoint, float radius,
             Length units, int nverts) {
@@ -124,15 +120,15 @@ public class OMRangeRings extends OMCircle implements Serializable {
     }
 
     /**
-     * Create an OMRangeRings with a lat/lon center and a physical
-     * distance radius. Rendertype is RENDERTYPE_LATLON.
+     * Create an OMRangeRings with a lat/lon center and a physical distance
+     * radius. Rendertype is RENDERTYPE_LATLON.
      * 
      * @param center LatLon center of circle
      * @param radius distance
-     * @param units com.bbn.openmap.proj.Length object specifying
-     *        units for distance.
-     * @param nverts number of vertices for the poly-circle(if &lt; 3,
-     *        value is generated internally)
+     * @param units com.bbn.openmap.proj.Length object specifying units for
+     *        distance.
+     * @param nverts number of vertices for the poly-circle(if &lt; 3, value is
+     *        generated internally)
      */
     public OMRangeRings(LatLonPoint center, float radius, Length units,
             int nverts) {
@@ -146,11 +142,10 @@ public class OMRangeRings extends OMCircle implements Serializable {
     }
 
     /**
-     * Set the interval. If the interval units are null, then this
-     * interval represents the number of circles within the external,
-     * defined circle. If the interval units are not null, then this
-     * interval represents the unit intervals where range rings are
-     * placed.
+     * Set the interval. If the interval units are null, then this interval
+     * represents the number of circles within the external, defined circle. If
+     * the interval units are not null, then this interval represents the unit
+     * intervals where range rings are placed.
      */
     public void setInterval(int interval) {
         this.interval = interval;
@@ -171,10 +166,10 @@ public class OMRangeRings extends OMCircle implements Serializable {
     }
 
     /**
-     * Set the interval units. If this is null, then the interval
-     * value will represent the number of rings drawn within the
-     * defined outer ring. If this is not null, then it represents the
-     * units of the interval where the range rings are drawn.
+     * Set the interval units. If this is null, then the interval value will
+     * represent the number of rings drawn within the defined outer ring. If
+     * this is not null, then it represents the units of the interval where the
+     * range rings are drawn.
      */
     public void setIntervalUnits(Length units) {
         intervalUnits = units;
@@ -200,8 +195,8 @@ public class OMRangeRings extends OMCircle implements Serializable {
     }
 
     /**
-     * Set the format for the number labels. If null, the defaule will
-     * be used. This only applies to the labels with units.
+     * Set the format for the number labels. If null, the defaule will be used.
+     * This only applies to the labels with units.
      */
     public void setFormat(java.text.NumberFormat nf) {
         if (nf != null) {
@@ -220,11 +215,10 @@ public class OMRangeRings extends OMCircle implements Serializable {
 
     /**
      * Set the radius. This is meaningful only if the render type is
-     * RENDERTYPE_LATLON. Note that while the radius is specified as
-     * decimal degrees, it only means the distance along the ground
-     * that that number of degrees represents at the equator, *NOT* a
-     * radius of a number of degrees around a certain location. There
-     * is a difference.
+     * RENDERTYPE_LATLON. Note that while the radius is specified as decimal
+     * degrees, it only means the distance along the ground that that number of
+     * degrees represents at the equator, *NOT* a radius of a number of degrees
+     * around a certain location. There is a difference.
      * 
      * @param radius float radius in decimal degrees
      */
@@ -233,8 +227,8 @@ public class OMRangeRings extends OMCircle implements Serializable {
     }
 
     /**
-     * Set the radius with units. This is meaningful only if the
-     * render type is RENDERTYPE_LATLON.
+     * Set the radius with units. This is meaningful only if the render type is
+     * RENDERTYPE_LATLON.
      * 
      * @param radius float radius
      * @param units Length specifying unit type.
@@ -245,8 +239,8 @@ public class OMRangeRings extends OMCircle implements Serializable {
     }
 
     /**
-     * Take the interval and intervalUnits, and then create the proper
-     * inner circles.
+     * Take the interval and intervalUnits, and then create the proper inner
+     * circles.
      */
     public OMCircle[] createCircles() {
         OMCircle[] circles;
@@ -296,7 +290,11 @@ public class OMRangeRings extends OMCircle implements Serializable {
      */
     public boolean generate(Projection proj) {
         if (getNeedToRegenerate() == true) {
-            subCircles = createCircles();
+            if (interval > 0) {
+                subCircles = createCircles();
+            } else {
+                subCircles = null;
+            }
         }
 
         centerPoint = createCenterPoint();
@@ -367,16 +365,16 @@ public class OMRangeRings extends OMCircle implements Serializable {
         // Not sure whether the inner circles should be queried for
         // distance measurements.
         float tmpDist;
-        //      if (dist != 0 && subCircles != null) {
-        //          for (int i = 0; i < subCircles.length; i++) {
-        //              tmpDist = subCircles[i].distance(x, y);
-        //              if (tmpDist == 0) return tmpDist;
+        // if (dist != 0 && subCircles != null) {
+        // for (int i = 0; i < subCircles.length; i++) {
+        // tmpDist = subCircles[i].distance(x, y);
+        // if (tmpDist == 0) return tmpDist;
 
-        //              if (tmpDist < dist) {
-        //                  dist = tmpDist;
-        //              }
-        //          }
-        //      }
+        // if (tmpDist < dist) {
+        // dist = tmpDist;
+        // }
+        // }
+        // }
         tmpDist = centerPoint.distance(x, y);
         if (tmpDist < dist) {
             dist = tmpDist;
