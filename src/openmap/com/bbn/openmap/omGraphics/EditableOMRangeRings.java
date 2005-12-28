@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRangeRings.java,v $
 // $RCSfile: EditableOMRangeRings.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/12/22 23:15:14 $
+// $Revision: 1.10 $
+// $Date: 2005/12/28 22:28:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -270,8 +270,8 @@ public class EditableOMRangeRings extends EditableOMCircle {
                         if (newLength == null) {
                             value = numSubCircles;
                         } else if (oldLength == null) {
-                            value = (int) newLength.fromRadians(Length.DECIMAL_DEGREE.toRadians(rr.getRadius()))
-                                    / numSubCircles;
+                            value = (int) Math.ceil(newLength.fromRadians(Length.DECIMAL_DEGREE.toRadians(rr.getRadius()))
+                                    / numSubCircles);
                         }
                     }
 
