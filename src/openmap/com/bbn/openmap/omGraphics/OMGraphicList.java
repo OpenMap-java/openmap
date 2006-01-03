@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.17 $
-// $Date: 2005/08/09 20:01:45 $
+// $Revision: 1.18 $
+// $Date: 2006/01/03 15:41:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,52 +45,49 @@ import com.bbn.openmap.util.Debug;
 /**
  * This class encapsulates a List of OMGraphics.
  * <p>
- * There are several things that this list does that make it better
- * that any ol' List. You can make several common OMGraphic
- * modification calls on the list, and the list handles the iteration
- * and changing of all the graphics while taking into account a
- * travese order.
+ * There are several things that this list does that make it better that any ol'
+ * List. You can make several common OMGraphic modification calls on the list,
+ * and the list handles the iteration and changing of all the graphics while
+ * taking into account a travese order.
  * <p>
- * An additional benefit is that because the OMGraphicList extends
- * OMGraphic it can contain other instances of OMGraphicList. This way
- * you can manage groupings of graphics, (for instance, an
- * OMGraphicList of OMGraphicLists which each have an OMRaster and
- * OMText).
+ * An additional benefit is that because the OMGraphicList extends OMGraphic it
+ * can contain other instances of OMGraphicList. This way you can manage
+ * groupings of graphics, (for instance, an OMGraphicList of OMGraphicLists
+ * which each have an OMRaster and OMText).
  * <p>
- * Many methods, such as generate() and findClosest() traverse the
- * items in the GraphicsList recursively. The direction that the list
- * is traversed is controlled by then traverseMode variable. The
- * traverseMode mode lets you set whether the first or last object
- * added to the list (FIRST_ADDED_ON_TOP or LAST_ADDED_ON_TOP) is
- * drawn on top of the list and considered first for searches.
+ * Many methods, such as generate() and findClosest() traverse the items in the
+ * GraphicsList recursively. The direction that the list is traversed is
+ * controlled by then traverseMode variable. The traverseMode mode lets you set
+ * whether the first or last object added to the list (FIRST_ADDED_ON_TOP or
+ * LAST_ADDED_ON_TOP) is drawn on top of the list and considered first for
+ * searches.
  */
 public class OMGraphicList extends OMGraphic implements GraphicList,
         Serializable {
 
     /**
-     * Used to set the order in which the list is traversed to draw or
-     * search the objects. This means that the last things on the list
-     * will be on top of the map because they are drawn last, on top
-     * of everything else. For searches, objects added last to the
-     * list will be considered first for a search match.
+     * Used to set the order in which the list is traversed to draw or search
+     * the objects. This means that the last things on the list will be on top
+     * of the map because they are drawn last, on top of everything else. For
+     * searches, objects added last to the list will be considered first for a
+     * search match.
      */
     public final transient static int LAST_ADDED_ON_TOP = 0;
 
     /**
-     * Used to set the order in which the list is traversed to draw or
-     * search the objects. This means that the first things on the
-     * list will appear on top because they are drawn last, on top of
-     * everything else. For searches, objects added first to the list
-     * will be considered first for a search match. This is the
-     * default mode for the list.
+     * Used to set the order in which the list is traversed to draw or search
+     * the objects. This means that the first things on the list will appear on
+     * top because they are drawn last, on top of everything else. For searches,
+     * objects added first to the list will be considered first for a search
+     * match. This is the default mode for the list.
      */
     public final transient static int FIRST_ADDED_ON_TOP = 1;
 
     /**
-     * Used for searches, when OMDist doesn't have a graphic. The
-     * index of a null graphic is NONE. If you try to remove or insert
-     * a graphic at NONE, an exception will be thrown. If you try to
-     * get a graphic at NONE, you'll get null;
+     * Used for searches, when OMDist doesn't have a graphic. The index of a
+     * null graphic is NONE. If you try to remove or insert a graphic at NONE,
+     * an exception will be thrown. If you try to get a graphic at NONE, you'll
+     * get null;
      */
     public final static int NONE = -1;
 
@@ -100,27 +97,26 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     protected int traverseMode = FIRST_ADDED_ON_TOP;
 
     /**
-     * Flag to adjust behavior of OMGraphicList for certain queries.
-     * If OMGraphicList should act as OMGraphic, the entire list will
-     * be treated as one object. Otherwise, the list will act as a
-     * pass-through container, and internal OMGraphics will be
-     * returned. This applies to distance(), selectClosest(),
-     * findClosest(), getOMGraphicThatContains(), etc. This flag
-     * becomes really helpful for embedded OMGraphicLists, not so much
-     * for top-level OMGraphicLists.
+     * Flag to adjust behavior of OMGraphicList for certain queries. If
+     * OMGraphicList should act as OMGraphic, the entire list will be treated as
+     * one object. Otherwise, the list will act as a pass-through container, and
+     * internal OMGraphics will be returned. This applies to distance(),
+     * selectClosest(), findClosest(), getOMGraphicThatContains(), etc. This
+     * flag becomes really helpful for embedded OMGraphicLists, not so much for
+     * top-level OMGraphicLists.
      */
     protected boolean vague = false;
 
     /**
-     * The list of graphics. Once an OMGraphicList is constructed,
-     * this variable should never be null.
+     * The list of graphics. Once an OMGraphicList is constructed, this variable
+     * should never be null.
      */
     protected java.util.List graphics = null;
 
     /**
-     * Flag used to allow duplicates in the OMGraphicList. True by
-     * default - this prevents the list from doing the extra work for
-     * checking for duplicates at addition time.
+     * Flag used to allow duplicates in the OMGraphicList. True by default -
+     * this prevents the list from doing the extra work for checking for
+     * duplicates at addition time.
      */
     protected boolean allowDuplicates = true;
 
@@ -141,8 +137,8 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     };
 
     /**
-     * Construct an OMGraphicList with an initial capacity and a
-     * standard increment value.
+     * Construct an OMGraphicList with an initial capacity and a standard
+     * increment value.
      * 
      * @param initialCapacity the initial capacity of the list
      * @param capacityIncrement the capacityIncrement for resizing
@@ -153,10 +149,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     };
 
     /**
-     * Construct an OMGraphicList around a List of OMGraphics. The
-     * OMGraphicList assumes that all the objects on the list are
-     * OMGraphics, and never does checking. Live with the consequences
-     * if you put other stuff in there.
+     * Construct an OMGraphicList around a List of OMGraphics. The OMGraphicList
+     * assumes that all the objects on the list are OMGraphics, and never does
+     * checking. Live with the consequences if you put other stuff in there.
      * 
      * @param list List of OMGraphics.
      */
@@ -165,20 +160,19 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * OMGraphic method for returning a simple description of the
-     * list. This is really a debugging method.
+     * OMGraphic method for returning a simple description of the list. This is
+     * really a debugging method.
      */
     public String getDescription() {
         return getDescription(0);
     }
 
     /**
-     * OMGraphic method, for returning a simple description if the
-     * contents of the list. This method handles the spacing of
-     * sub-member descriptions. This is really a debugging method.
+     * OMGraphic method, for returning a simple description if the contents of
+     * the list. This method handles the spacing of sub-member descriptions.
+     * This is really a debugging method.
      * 
-     * @return String that represents the structure of the
-     *         OMGraphicList.
+     * @return String that represents the structure of the OMGraphicList.
      */
     public String getDescription(int level) {
         StringBuffer sb = new StringBuffer();
@@ -208,24 +202,23 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Set whether the list returns the specific OMGraphic in response
-     * to a query, or itself.
+     * Set whether the list returns the specific OMGraphic in response to a
+     * query, or itself.
      */
     public void setVague(boolean value) {
         vague = value;
     }
 
     /**
-     * Get whether the list returns the specific OMGraphic in response
-     * to a query, or itself.
+     * Get whether the list returns the specific OMGraphic in response to a
+     * query, or itself.
      */
     public boolean isVague() {
         return vague;
     }
 
     /**
-     * Add an OMGraphic to the GraphicList. The OMGraphic must not be
-     * null.
+     * Add an OMGraphic to the GraphicList. The OMGraphic must not be null.
      * 
      * @param g the non-null OMGraphic to add
      * @exception IllegalArgumentException if OMGraphic is null
@@ -250,9 +243,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Set the order in which the list is traversed to draw or search
-     * the objects. The possible modes for the list are
-     * FIRST_ADDED_ON_TOP or LAST_ADDED_ON_TOP.
+     * Set the order in which the list is traversed to draw or search the
+     * objects. The possible modes for the list are FIRST_ADDED_ON_TOP or
+     * LAST_ADDED_ON_TOP.
      * 
      * @param mode traversal mode
      */
@@ -261,9 +254,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Get the order in which the list is traversed to draw or search
-     * the objects. The possible modes for the list are
-     * FIRST_ADDED_ON_TOP or LAST_ADDED_ON_TOP.
+     * Get the order in which the list is traversed to draw or search the
+     * objects. The possible modes for the list are FIRST_ADDED_ON_TOP or
+     * LAST_ADDED_ON_TOP.
      * 
      * @return int traversal mode
      */
@@ -297,13 +290,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Set the graphic at the specified location. The OMGraphic must
-     * not be null.
+     * Set the graphic at the specified location. The OMGraphic must not be
+     * null.
      * 
      * @param graphic OMGraphic
      * @param index index of the OMGraphic to return
-     * @exception ArrayIndexOutOfBoundsException if index is
-     *            out-of-bounds
+     * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     public synchronized void setOMGraphicAt(OMGraphic graphic, int index) {
         graphics.set(index, graphic);
@@ -314,9 +306,8 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
      * 
      * @param location the location of the OMGraphic to return
      * @return OMGraphic or null if location &gt; list size
-     * @exception ArrayIndexOutOfBoundsException if
-     *            <code>location &lt; 0</code> or
-     *            <code>location &gt;=
+     * @exception ArrayIndexOutOfBoundsException if <code>location &lt; 0</code>
+     *            or <code>location &gt;=
      * this.size()</code>
      */
     public OMGraphic getOMGraphicAt(int location) {
@@ -328,9 +319,8 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
      * 
      * @param location the location of the OMGeometry to return
      * @return OMGraphic or null if location &gt; list size
-     * @exception ArrayIndexOutOfBoundsException if
-     *            <code>location &lt; 0</code> or
-     *            <code>location &gt;=
+     * @exception ArrayIndexOutOfBoundsException if <code>location &lt; 0</code>
+     *            or <code>location &gt;=
      * this.size()</code>
      */
     protected synchronized OMGeometry _getAt(int location) {
@@ -342,21 +332,20 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Set the geometry at the specified location. The OMGeometry must
-     * not be null.
+     * Set the geometry at the specified location. The OMGeometry must not be
+     * null.
      * 
      * @param graphic OMGeometry
      * @param index index of the OMGeometry to return
-     * @exception ArrayIndexOutOfBoundsException if index is
-     *            out-of-bounds
+     * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     protected synchronized void _setAt(OMGeometry graphic, int index) {
         graphics.set(index, graphic);
     }
 
     /**
-     * Get the graphic with the appObject. Traverse mode doesn't
-     * matter. Tests object identity first, then tries equality.
+     * Get the graphic with the appObject. Traverse mode doesn't matter. Tests
+     * object identity first, then tries equality.
      * 
      * @param appObj appObject of the wanted graphic.
      * @return OMGraphic or null if not found
@@ -369,14 +358,14 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Get the graphic with the appObject. Traverse mode doesn't
-     * matter. Tests object identity first, then tries equality.
+     * Get the graphic with the appObject. Traverse mode doesn't matter. Tests
+     * object identity first, then tries equality.
      * <p>
      * 
-     * If this list contains OMGraphicLists that are not vague, and
-     * the those lists' appObject doesn't match, the object will be
-     * passed to those lists as well for a check, with their OMGraphic
-     * being passed back with a successful search.
+     * If this list contains OMGraphicLists that are not vague, and the those
+     * lists' appObject doesn't match, the object will be passed to those lists
+     * as well for a check, with their OMGraphic being passed back with a
+     * successful search.
      * 
      * @param appObj appObject of the wanted graphic.
      * @return OMGraphic or null if not found
@@ -442,8 +431,8 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
 
     /**
      * Remove the graphic. If this list is not vague, it will also ask
-     * sub-OMGraphicLists to remove it if the geometry isn't found on
-     * this OMGraphicList.
+     * sub-OMGraphicLists to remove it if the geometry isn't found on this
+     * OMGraphicList.
      * 
      * @param geometry the OMGeometry object to remove.
      * @return true if geometry was on the list, false if otherwise.
@@ -469,8 +458,8 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
      * Return the index of the OMGraphic in the list.
      * 
      * @param graphic the graphic to look for
-     * @return the index in the list of the graphic, -1 if the object
-     *         is not found.
+     * @return the index in the list of the graphic, -1 if the object is not
+     *         found.
      */
     public int indexOf(OMGraphic graphic) {
         return _indexOf(graphic);
@@ -480,48 +469,45 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
      * Return the index of the OMGeometry in the list.
      * 
      * @param geometry the geometry to look for
-     * @return the index in the list of the geometry, -1 if the object
-     *         is not found.
+     * @return the index in the list of the geometry, -1 if the object is not
+     *         found.
      */
     protected synchronized int _indexOf(OMGeometry geometry) {
         return graphics.indexOf(geometry);
     }
 
     /**
-     * Insert the graphic at the location number. The OMGraphic must
-     * not be null.
+     * Insert the graphic at the location number. The OMGraphic must not be
+     * null.
      * 
      * @param graphic the OMGraphic to insert.
      * @param location the location of the OMGraphic to insert
      * @exception IllegalArgumentException if OMGraphic is null
-     * @exception ArrayIndexOutOfBoundsException if index is
-     *            out-of-bounds
+     * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     public void insertOMGraphicAt(OMGraphic graphic, int location) {
         _insert(graphic, location);
     }
 
     /**
-     * Insert the geometry at the location number. The OMGeometry must
-     * not be null.
+     * Insert the geometry at the location number. The OMGeometry must not be
+     * null.
      * 
      * @param geometry the OMGeometry to insert.
      * @param location the location of the OMGeometry to insert
      * @exception IllegalArgumentException if OMGeometry is null
-     * @exception ArrayIndexOutOfBoundsException if index is
-     *            out-of-bounds
+     * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     protected synchronized void _insert(OMGeometry geometry, int location) {
         graphics.add(location, geometry);
     }
 
     /**
-     * Moves the graphic at the given index to the part of the list
-     * where it will be drawn on top of one of the other graphics
-     * which is its neighbor on the list. This method does check to
-     * see what the traverseMode of the list is, and calls either
-     * moveIndexedToLast or moveIndexedToFirst, depending on what is
-     * appropriate.
+     * Moves the graphic at the given index to the part of the list where it
+     * will be drawn on top of one of the other graphics which is its neighbor
+     * on the list. This method does check to see what the traverseMode of the
+     * list is, and calls either moveIndexedToLast or moveIndexedToFirst,
+     * depending on what is appropriate.
      * 
      * @param location the index location of the graphic to move.
      * @see #moveIndexedOneToFront(int)
@@ -536,11 +522,10 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Moves the graphic at the given index to the part of the list
-     * where it will be drawn on top of the other graphics. This
-     * method does check to see what the traverseMode of the list is,
-     * and calls either moveIndexedToLast or moveIndexedToFirst,
-     * depending on what is appropriate.
+     * Moves the graphic at the given index to the part of the list where it
+     * will be drawn on top of the other graphics. This method does check to see
+     * what the traverseMode of the list is, and calls either moveIndexedToLast
+     * or moveIndexedToFirst, depending on what is appropriate.
      * 
      * @param location the index location of the graphic to move.
      */
@@ -553,11 +538,10 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Moves the graphic at the given index to the part of the list
-     * where it will be drawn under one of the other graphics, its
-     * neighbor on the list. This method does check to see what the
-     * traverseMode of the list is, and calls either
-     * moveIndexedOneToBack or moveIndexedOneToFront, depending on
+     * Moves the graphic at the given index to the part of the list where it
+     * will be drawn under one of the other graphics, its neighbor on the list.
+     * This method does check to see what the traverseMode of the list is, and
+     * calls either moveIndexedOneToBack or moveIndexedOneToFront, depending on
      * what is appropriate.
      * 
      * @param location the index location of the graphic to move.
@@ -573,11 +557,11 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Moves the graphic at the given index to the part of the list
-     * where it will be drawn under all of the other graphics. This
-     * method does check to see what the traverseMode of the list is,
-     * and calls either moveIndexedToLast or moveIndexedToFirst,
-     * depending on what is appropriate.
+     * Moves the graphic at the given index to the part of the list where it
+     * will be drawn under all of the other graphics. This method does check to
+     * see what the traverseMode of the list is, and calls either
+     * moveIndexedToLast or moveIndexedToFirst, depending on what is
+     * appropriate.
      * 
      * @param location the index location of the graphic to move.
      */
@@ -590,10 +574,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Moves the graphic at the given index to the front of the list,
-     * sliding the other graphics back on in the list in order. If the
-     * location is already at the beginning or beyond the end, nothing
-     * happens.
+     * Moves the graphic at the given index to the front of the list, sliding
+     * the other graphics back on in the list in order. If the location is
+     * already at the beginning or beyond the end, nothing happens.
      * 
      * @param location the index of the graphic to move.
      * @see #moveIndexedToBottom(int)
@@ -611,10 +594,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Moves the graphic at the given index toward the front of the
-     * list by one spot, sliding the other graphic back on in the list
-     * in order. If the location is already at the beginning or beyond
-     * the end, nothing happens.
+     * Moves the graphic at the given index toward the front of the list by one
+     * spot, sliding the other graphic back on in the list in order. If the
+     * location is already at the beginning or beyond the end, nothing happens.
      * 
      * @param location the index of the graphic to move.
      */
@@ -628,10 +610,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Moves the graphic at the given index to the end of the list,
-     * sliding the other graphics up on in the list in order. If the
-     * location is already at the end or less than zero, nothing
-     * happens.
+     * Moves the graphic at the given index to the end of the list, sliding the
+     * other graphics up on in the list in order. If the location is already at
+     * the end or less than zero, nothing happens.
      * 
      * @param location the index of the graphic to move.
      * @see #moveIndexedToBottom(int)
@@ -649,10 +630,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Moves the graphic at the given index toward the back of the
-     * list by one spot, sliding the other graphic up on in the list
-     * in order. If the location is already at the end or less than
-     * zero, nothing happens.
+     * Moves the graphic at the given index toward the back of the list by one
+     * spot, sliding the other graphic up on in the list in order. If the
+     * location is already at the end or less than zero, nothing happens.
      * 
      * @param location the index of the graphic to move.
      */
@@ -694,12 +674,11 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Set the texture mask for the OMGraphics on the list. If not
-     * null, then it will be rendered on top of the fill paint. If the
-     * fill paint is clear, the texture mask will not be used. If you
-     * just want to render the texture mask as is, set the fill paint
-     * of the graphic instead. This is really to be used to have a
-     * texture added to the graphic, with the fill paint still
+     * Set the texture mask for the OMGraphics on the list. If not null, then it
+     * will be rendered on top of the fill paint. If the fill paint is clear,
+     * the texture mask will not be used. If you just want to render the texture
+     * mask as is, set the fill paint of the graphic instead. This is really to
+     * be used to have a texture added to the graphic, with the fill paint still
      * influencing appearance.
      */
     public void setTextureMask(TexturePaint texture) {
@@ -766,12 +745,11 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Projects any graphics needing projection. Use this method to
-     * project any new or changed OMGeometrys before painting. to
-     * re-project the whole list, use
-     * <code>generate(Projection, boolean)</code> with
-     * <code>forceProjectAll</code> set to <code>true</code>.
-     * This is the same as calling <code> generate(p, false)</code>
+     * Projects any graphics needing projection. Use this method to project any
+     * new or changed OMGeometrys before painting. to re-project the whole list,
+     * use <code>generate(Projection, boolean)</code> with
+     * <code>forceProjectAll</code> set to <code>true</code>. This is the
+     * same as calling <code> generate(p, false)</code>
      * 
      * @param p a <code>Projection</code>
      * @see #generate(Projection, boolean)
@@ -781,13 +759,13 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Projects the OMGeometrys on the list. This is the same as
-     * calling <code>generate(p, forceProjectAll)</code>.
+     * Projects the OMGeometrys on the list. This is the same as calling
+     * <code>generate(p, forceProjectAll)</code>.
      * 
      * @param p a <code>Projection</code>
-     * @param forceProjectAll if true, all the graphics on the list
-     *        are generated with the new projection. If false they are
-     *        only generated if getNeedToRegenerate() returns true
+     * @param forceProjectAll if true, all the graphics on the list are
+     *        generated with the new projection. If false they are only
+     *        generated if getNeedToRegenerate() returns true
      * @see #generate(Projection, boolean)
      */
     public void project(Projection p, boolean forceProjectAll) {
@@ -808,14 +786,14 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Prepare the graphics for rendering. This must be done before
-     * calling <code>render()</code>! This recursively calls
-     * generate() on the OMGraphics on the list.
+     * Prepare the graphics for rendering. This must be done before calling
+     * <code>render()</code>! This recursively calls generate() on the
+     * OMGraphics on the list.
      * 
      * @param p a <code>Projection</code>
-     * @param forceProjectAll if true, all the graphics on the list
-     *        are generated with the new projection. If false they are
-     *        only generated if getNeedToRegenerate() returns true
+     * @param forceProjectAll if true, all the graphics on the list are
+     *        generated with the new projection. If false they are only
+     *        generated if getNeedToRegenerate() returns true
      * @see OMGraphic#generate
      * @see OMGraphic#regenerate
      */
@@ -835,11 +813,10 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Renders all the objects in the list a graphics context. This is
-     * the same as <code>paint()</code> for AWT components. The
-     * graphics are rendered in the order of traverseMode. Any
-     * graphics where <code>isVisible()</code> returns false are not
-     * rendered.
+     * Renders all the objects in the list a graphics context. This is the same
+     * as <code>paint()</code> for AWT components. The graphics are rendered
+     * in the order of traverseMode. Any graphics where <code>isVisible()</code>
+     * returns false are not rendered.
      * 
      * @param gr the AWT Graphics context
      */
@@ -869,12 +846,11 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Renders all the objects in the list a graphics context, in
-     * their 'selected' mode. This is the same as <code>paint()</code>
-     * for AWT components. The graphics are rendered in the order of
-     * traverseMode. Any graphics where <code>isVisible()</code>
-     * returns false are not rendered. All of the graphics on the list
-     * are returned to their deselected state.
+     * Renders all the objects in the list a graphics context, in their
+     * 'selected' mode. This is the same as <code>paint()</code> for AWT
+     * components. The graphics are rendered in the order of traverseMode. Any
+     * graphics where <code>isVisible()</code> returns false are not rendered.
+     * All of the graphics on the list are returned to their deselected state.
      * 
      * @param gr the AWT Graphics context
      */
@@ -908,35 +884,34 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Override flag for shouldProcess method. The setting will
-     * override the OMGraphicList from using the OMGraphic's
-     * visibility settings in determining which OMGraphics should be
-     * used in different distance, generate and render methods.
+     * Override flag for shouldProcess method. The setting will override the
+     * OMGraphicList from using the OMGraphic's visibility settings in
+     * determining which OMGraphics should be used in different distance,
+     * generate and render methods.
      */
     protected boolean processAllGeometries = false;
 
     /**
-     * This method is called internally for those methods where
-     * skipping invisible OMGeometries would save processing time and
-     * effort. If you don't want visiblilty to be considered when
-     * processing OMGeometries/OMGraphics, override this method and
-     * return true.
+     * This method is called internally for those methods where skipping
+     * invisible OMGeometries would save processing time and effort. If you
+     * don't want visiblilty to be considered when processing
+     * OMGeometries/OMGraphics, override this method and return true.
      */
     protected boolean shouldProcess(OMGeometry omg) {
         return processAllGeometries || omg.isVisible();
     }
 
     /**
-     * Set the programmatic override for shouldProcess method to
-     * always process geometries.
+     * Set the programmatic override for shouldProcess method to always process
+     * geometries.
      */
     public void setProcessAllGeometries(boolean set) {
         processAllGeometries = set;
     }
 
     /**
-     * Get the settings for the programmatic override for
-     * shouldProcess method to always process geometries.
+     * Get the settings for the programmatic override for shouldProcess method
+     * to always process geometries.
      */
     public boolean getProcessAllGeometries() {
         return processAllGeometries;
@@ -970,14 +945,14 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Find the closest Object and its distance. The search is always
-     * conducted from the topmost graphic to the bottommost, depending
-     * on the traverseMode.
+     * Find the closest Object and its distance. The search is always conducted
+     * from the topmost graphic to the bottommost, depending on the
+     * traverseMode.
      * 
      * @param x x coord
      * @param y y coord
-     * @param limit the max distance that a graphic has to be within
-     *        to be returned, in pixels.
+     * @param limit the max distance that a graphic has to be within to be
+     *        returned, in pixels.
      * @param resetSelect deselect any OMGraphic touched.
      * @return OMDist
      */
@@ -1047,25 +1022,24 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Test the omgraphic distance away from the x, y point, and
-     * compare it to the current OMDist passed in. If the graphic is
-     * the new closest, return the same OMDist object filled in with
-     * the new value. Otherwise, return null.
+     * Test the omgraphic distance away from the x, y point, and compare it to
+     * the current OMDist passed in. If the graphic is the new closest, return
+     * the same OMDist object filled in with the new value. Otherwise, return
+     * null.
      * 
-     * @param current the OMDist that contains the current best result
-     *        of a search.
-     * @param index the index in the graphic list of the provied
-     *        OMGeometry
+     * @param current the OMDist that contains the current best result of a
+     *        search.
+     * @param index the index in the graphic list of the provied OMGeometry
      * @param graphic the OMGeometry to test
      * @param x the window horiontal pixel value.
      * @param y the window vertical pixel value.
-     * @param resetSelect flag to call deselect on any OMGeometry
-     *        contacted. Used here to pass on in case the OMGeometry
-     *        provided is an OMGraphicList, and to use to decide if
-     *        deselect should be called on the provided graphic.
-     * @return OMDist with an OMGraphic if the graphic passed in is
-     *         the current closest. OMDist.graphic could be null,
-     *         OMDist.d could be Infinity.
+     * @param resetSelect flag to call deselect on any OMGeometry contacted.
+     *        Used here to pass on in case the OMGeometry provided is an
+     *        OMGraphicList, and to use to decide if deselect should be called
+     *        on the provided graphic.
+     * @return OMDist with an OMGraphic if the graphic passed in is the current
+     *         closest. OMDist.graphic could be null, OMDist.d could be
+     *         Infinity.
      */
     protected synchronized OMDist findClosestTest(OMDist current, int index,
                                                   OMGeometry graphic, int x,
@@ -1111,100 +1085,171 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Finds the object located the closest to the point, if the
-     * object distance away is within the limit. The search is always
-     * conducted from the topmost graphic to the bottommost, depending
-     * on the traverseMode. Any graphics where
-     * <code>isVisible()</code> returns false are not considered.
+     * Finds the object located the closest to the point, if the object distance
+     * away is within the limit. The search is always conducted from the topmost
+     * graphic to the bottommost, depending on the traverseMode. Any graphics
+     * where <code>isVisible()</code> returns false are not considered.
      * 
-     * @param x the x coordinate on the component the graphics are
-     *        displayed on.
-     * @param y the y coordinate on the component the graphics are
-     *        displayed on.
-     * @param limit the max distance that a graphic has to be within
-     *        to be returned, in pixels.
-     * @return OMGraphic the closest on the list within the limit, or
-     *         null if not found.
+     * @param x the x coordinate on the component the graphics are displayed on.
+     * @param y the y coordinate on the component the graphics are displayed on.
+     * @param limit the max distance that a graphic has to be within to be
+     *        returned, in pixels.
+     * @return OMGraphic the closest on the list within the limit, or null if
+     *         not found.
      */
     public OMGraphic findClosest(int x, int y, float limit) {
         return (OMGraphic) _findClosest(x, y, limit, false).omg;
     }
 
     /**
-     * Find all of the OMGraphics on this list that are located within
-     * the pixel limit of the x, y pixel location.
+     * Find all of the OMGraphics on this list that are located within the pixel
+     * limit of the x, y pixel location.
      * 
-     * @param x the x coordinate on the component the graphics are
-     *        displayed on.
-     * @param y the y coordinate on the component the graphics are
-     *        displayed on.
-     * @param limit the max distance that a graphic has to be within
-     *        to be returned, in pixels.
-     * @return OMGraphicList containing all of the OMGraphics within
-     *         the limit, or null if none are found.
+     * @param x the x coordinate on the component the graphics are displayed on.
+     * @param y the y coordinate on the component the graphics are displayed on.
+     * @param limit the max distance that a graphic has to be within to be
+     *        returned, in pixels.
+     * @return OMGraphicList containing all of the OMGraphics within the limit.
      */
-    //     public OMGraphicList findAll(int x, int y, float limit) {
-    //         return _findAll(x, y, limit, null);
-    //     }
-    //     protected synchronized OMGraphicList _findAll(int x, int y,
-    // float limit,
-    //                                                   boolean resetSelect, OMGraphicList addTo) {
-    //         if (addTo == null) {
-    //             addTo = new OMGraphicList();
-    //         }
-    //         ListIterator iterator;
-    //         int i;
-    //         if (size() != 0) {
-    //             if (traverseMode == FIRST_ADDED_ON_TOP) {
-    //                 i = 0;
-    //                 iterator = graphics.listIterator();
-    //                 while (iterator.hasNext()) {
-    //                     OMGeometry omg = (OMGeometry) iterator.next();
-    //                     if (omg instanceof OMGraphicList) {
-    //                         if (((OMGraphicList)omg).isVague()) {
-    //                         }
-    //                     }
-    //                 }
-    //             } else {
-    //                 i = graphics.size();
-    //                 iterator = graphics.listIterator(i);
-    //                 while (iterator.hasPrevious()) {
-    //                     tomd = findClosestTest(omd, i--, (OMGeometry)
-    // iterator.previous(),
-    //                                            x, y, limit, resetSelect);
-    //                     if (tomd == null) continue;
-    //                     omd = tomd; // for style
-    //                     if (omd.d == 0) break;
-    //                 }
-    //             }
-    //         }
-    //         if (Debug.debugging("omgraphics")) {
-    //             int size = size();
-    //             if (omd.omg != null && isVague()) {
-    //                 omd.omg = this;
-    //                 Debug.output(this.getClass().getName() + "(" + size +
-    //                              ") detecting hit and vagueness, returning " + omd);
-    //             } else if (omd.omg != null && !isVague()) {
-    //                 Debug.output(this.getClass().getName() + "(" + size +
-    //                              ") detecting hit, no vagueness, returning contained " + omd);
-    //             } else {
-    //                 Debug.output(this.getClass().getName() + "(" + size +
-    //                              ") omd.omg " + (omd.omg == null?"== null":"!= null"));
-    //             }
-    //         }
-    //         return null;
-    //     }
+    public OMGraphicList findAll(int x, int y, float limit) {
+        return findAll(x, y, limit, false, null);
+    }
+
     /**
-     * Finds the object located the closest to the point, regardless
-     * of how far away it is. This method returns null if the list is
-     * not valid. The search starts at the first-added graphic. <br>
+     * Find all of the OMGraphics on this list that are located within the pixel
+     * limit of the x, y pixel location.
+     * 
+     * @param x the x coordinate on the component the graphics are displayed on.
+     * @param y the y coordinate on the component the graphics are displayed on.
+     * @param limit the max distance that a graphic has to be within to be
+     *        returned, in pixels.
+     * @param resetSelect call deselect on OMGraphics not within limit.
+     * @param addTo OMGraphicList to add found OMGraphics to, if null a list
+     *        will be created.
+     * @return OMGraphicList containing all of the OMGraphics within the limit,
+     *         empty if none are found.
+     */
+    protected synchronized OMGraphicList findAll(int x, int y, float limit,
+                                                 boolean resetSelect,
+                                                 OMGraphicList addTo) {
+        if (addTo == null) {
+            addTo = new OMGraphicList();
+        }
+
+        OMDist omd = new OMDist();
+        ListIterator iterator;
+        if (size() != 0) {
+            if (traverseMode == FIRST_ADDED_ON_TOP) {
+                iterator = graphics.listIterator();
+                while (iterator.hasNext()) {
+                    if (!findAllTest(x,
+                            y,
+                            limit,
+                            resetSelect,
+                            addTo,
+                            (OMGeometry) iterator.next(),
+                            omd)) {
+                        break;
+                    }
+                }
+            } else {
+                iterator = graphics.listIterator(graphics.size());
+                while (iterator.hasPrevious()) {
+                    if (!findAllTest(x,
+                            y,
+                            limit,
+                            resetSelect,
+                            addTo,
+                            (OMGeometry) iterator.previous(),
+                            omd)) {
+                        break;
+                    }
+
+                }
+            }
+        }
+
+        if (Debug.debugging("omgraphics")) {
+            Debug.output(this.getClass().getName() + "(" + size()
+                    + ") detecting hits and vagueness, returning list with "
+                    + addTo.size() + " graphics.");
+        }
+
+        return addTo;
+    }
+
+    /**
+     * Test to find out if an OMGeometry is located within the pixel limit of
+     * the x, y pixel location.
+     * 
+     * @param x the x coordinate on the component the graphics are displayed on.
+     * @param y the y coordinate on the component the graphics are displayed on.
+     * @param limit the max distance that a graphic has to be within to be
+     *        returned, in pixels.
+     * @param resetSelect call deselect on OMGeometry not within limit.
+     * @param addTo OMGraphicList to add found OMGeometries to, if null a list
+     *        will be created.
+     * @param omg OMGeometry to test.
+     * @param omd OMDist to use for test, provided to avoid recurring memory
+     *        allocations for loops.
+     * @return true of this method should still be called again in a loop, false
+     *         of this list is vague and we have a hit.
+     */
+    protected boolean findAllTest(int x, int y, float limit,
+                                  boolean resetSelect, OMGraphicList addTo,
+                                  OMGeometry omg, OMDist omd) {
+
+        if (omg instanceof OMGraphicList) {
+            int oldSize = addTo.size();
+            ((OMGraphicList) omg).findAll(x, y, limit, resetSelect, addTo);
+            int newSize = addTo.size();
+
+            if (isVague() && oldSize != newSize) {
+                addTo.clear();
+                addTo.add(this);
+                return false;
+            }
+
+        } else {
+
+            omd = findClosestTest(omd,
+                    0 /* doesn't matter */,
+                    omg,
+                    x,
+                    y,
+                    limit,
+                    resetSelect);
+            
+            if (omd.omg == null) {
+                // no hit, but continue testing...
+                return true;
+            }
+
+            // Measurements passed, add OMGraphic to addTo list and
+            // continue
+            if (isVague()) {
+                addTo.add(this);
+                return false;
+            }
+
+            addTo.graphics.add(omd.omg);
+            omd.d = Float.MAX_VALUE; // reset for next OMGraphic
+            omd.omg = null;
+        }
+        return true;
+    }
+
+    /**
+     * Finds the object located the closest to the point, regardless of how far
+     * away it is. This method returns null if the list is not valid. The search
+     * starts at the first-added graphic. <br>
      * This is the same as calling
      * <code>findClosest(x, y, Float.MAX_VALUE)</code>.
      * 
-     * @param x the horizontal pixel position of the window, from the
-     *        left of the window.
-     * @param y the vertical pixel position of the window, from the
-     *        top of the window.
+     * @param x the horizontal pixel position of the window, from the left of
+     *        the window.
+     * @param y the vertical pixel position of the window, from the top of the
+     *        window.
      * @return the closest graphic to the xy window point.
      * @see #findClosest(int, int, float)
      */
@@ -1213,18 +1258,15 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Finds the object located the closest to the point, if the
-     * object distance away is within the limit. The search is always
-     * conducted from the topmost graphic to the bottommost, depending
-     * on the traverseMode. Any graphics where
-     * <code>isVisible()</code> returns false are not considered.
+     * Finds the object located the closest to the point, if the object distance
+     * away is within the limit. The search is always conducted from the topmost
+     * graphic to the bottommost, depending on the traverseMode. Any graphics
+     * where <code>isVisible()</code> returns false are not considered.
      * 
-     * @param x the x coordinate on the component the graphics are
-     *        displayed on.
-     * @param y the y coordinate on the component the graphics are
-     *        displayed on.
-     * @param limit the max distance that a graphic has to be within
-     *        to be returned, in pixels.
+     * @param x the x coordinate on the component the graphics are displayed on.
+     * @param y the y coordinate on the component the graphics are displayed on.
+     * @param limit the max distance that a graphic has to be within to be
+     *        returned, in pixels.
      * @return index of the closest on the list within the limit, or
      *         OMGeometryList.NONE if not found.
      */
@@ -1233,16 +1275,16 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Finds the object located the closest to the point, regardless
-     * of how far away it is. This method returns null if the list is
-     * not valid. The search starts at the first-added graphic. <br>
+     * Finds the object located the closest to the point, regardless of how far
+     * away it is. This method returns null if the list is not valid. The search
+     * starts at the first-added graphic. <br>
      * This is the same as calling
      * <code>findClosest(x, y, Float.MAX_VALUE)</code>.
      * 
-     * @param x the horizontal pixel position of the window, from the
-     *        left of the window.
-     * @param y the vertical pixel position of the window, from the
-     *        top of the window.
+     * @param x the horizontal pixel position of the window, from the left of
+     *        the window.
+     * @param y the vertical pixel position of the window, from the top of the
+     *        window.
      * @return index of the closest graphic to the xy window point, or
      *         OMGeometryList.NONE if not found.
      * @see #findIndexOfClosest(int, int, float)
@@ -1259,65 +1301,61 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Finds the object located the closest to the coordinates,
-     * regardless of how far away it is. Sets the select paint of that
-     * object, and resets the paint of all the other objects. The
-     * search starts at the first-added graphic.
+     * Finds the object located the closest to the coordinates, regardless of
+     * how far away it is. Sets the select paint of that object, and resets the
+     * paint of all the other objects. The search starts at the first-added
+     * graphic.
      * 
-     * @param x the x coordinate on the component the graphics are
-     *        displayed on.
-     * @param y the y coordinate on the component the graphics are
-     *        displayed on.
-     * @return the closest OMGraphic on the list, with selected having
-     *         been called on that OMGraphics. This OMGraphic will be
-     *         within the limit or null if none found. Will return
-     *         this list if this list is set to be vague.
+     * @param x the x coordinate on the component the graphics are displayed on.
+     * @param y the y coordinate on the component the graphics are displayed on.
+     * @return the closest OMGraphic on the list, with selected having been
+     *         called on that OMGraphics. This OMGraphic will be within the
+     *         limit or null if none found. Will return this list if this list
+     *         is set to be vague.
      */
     public OMGraphic selectClosest(int x, int y) {
         return (OMGraphic) _selectClosest(x, y, Float.MAX_VALUE);
     }
 
     /**
-     * Finds the object located the closest to the point, if the
-     * object distance away is within the limit, and sets the paint of
-     * that graphic to its select paint. It sets the paints to all the
-     * other objects to the regular paint. The search starts at the
-     * first-added graphic. Any graphics where
+     * Finds the object located the closest to the point, if the object distance
+     * away is within the limit, and sets the paint of that graphic to its
+     * select paint. It sets the paints to all the other objects to the regular
+     * paint. The search starts at the first-added graphic. Any graphics where
      * <code>isVisible()</code> returns false are not considered.
      * 
-     * @param x the horizontal pixel position of the window, from the
-     *        left of the window.
-     * @param y the vertical pixel position of the window, from the
-     *        top of the window.
-     * @param limit the max distance that a graphic has to be within
-     *        to be returned, in pixels.
-     * @return the closest OMGraphic on the list, with selected having
-     *         been called on that OMGraphics. This OMGraphic will be
-     *         within the limit or null if none found. Will return
-     *         this list if this list is set to be vague.
+     * @param x the horizontal pixel position of the window, from the left of
+     *        the window.
+     * @param y the vertical pixel position of the window, from the top of the
+     *        window.
+     * @param limit the max distance that a graphic has to be within to be
+     *        returned, in pixels.
+     * @return the closest OMGraphic on the list, with selected having been
+     *         called on that OMGraphics. This OMGraphic will be within the
+     *         limit or null if none found. Will return this list if this list
+     *         is set to be vague.
      */
     public OMGraphic selectClosest(int x, int y, float limit) {
         return (OMGraphic) _selectClosest(x, y, limit);
     }
 
     /**
-     * Finds the object located the closest to the point, if the
-     * object distance away is within the limit, and sets the paint of
-     * that graphic to its select paint. It sets the paints to all the
-     * other objects to the regular paint. The search starts at the
-     * first-added graphic. Any graphics where
+     * Finds the object located the closest to the point, if the object distance
+     * away is within the limit, and sets the paint of that graphic to its
+     * select paint. It sets the paints to all the other objects to the regular
+     * paint. The search starts at the first-added graphic. Any graphics where
      * <code>isVisible()</code> returns false are not considered.
      * 
-     * @param x the horizontal pixel position of the window, from the
-     *        left of the window.
-     * @param y the vertical pixel position of the window, from the
-     *        top of the window.
-     * @param limit the max distance that a graphic has to be within
-     *        to be returned, in pixels.
-     * @return the closest OMGraphic on the list, with selected having
-     *         been called on that OMGraphics. This OMGraphic will be
-     *         within the limit or null if none found. Will return
-     *         this list if this list is set to be vague.
+     * @param x the horizontal pixel position of the window, from the left of
+     *        the window.
+     * @param y the vertical pixel position of the window, from the top of the
+     *        window.
+     * @param limit the max distance that a graphic has to be within to be
+     *        returned, in pixels.
+     * @return the closest OMGraphic on the list, with selected having been
+     *         called on that OMGraphics. This OMGraphic will be within the
+     *         limit or null if none found. Will return this list if this list
+     *         is set to be vague.
      */
     protected synchronized OMGeometry _selectClosest(int x, int y, float limit) {
         OMDist omd = null;
@@ -1376,22 +1414,19 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * A variation on findClosestTest, manages select() and
-     * deselect().
+     * A variation on findClosestTest, manages select() and deselect().
      * 
-     * @param current the OMDist that contains the current best result
-     *        of a search.
-     * @param index the index in the graphic list of the provied
-     *        OMGeometry
+     * @param current the OMDist that contains the current best result of a
+     *        search.
+     * @param index the index in the graphic list of the provied OMGeometry
      * @param graphic the OMGeometry to test
      * @param x the window horiontal pixel value.
      * @param y the window vertical pixel value.
      * @return OMDist if the graphic passed in is the current closest.
-     *         OMGeometry will be set in OMDist and selected().
-     *         OMGeometry will be deselected if not the closest, and
-     *         the OMDist will be null. This method will return this
-     *         list if it is set to be vague and one of its children
-     *         meet the criteria.
+     *         OMGeometry will be set in OMDist and selected(). OMGeometry will
+     *         be deselected if not the closest, and the OMDist will be null.
+     *         This method will return this list if it is set to be vague and
+     *         one of its children meet the criteria.
      */
     protected OMDist selectClosestTest(OMDist current, int index,
                                        OMGeometry graphic, int x, int y,
@@ -1417,10 +1452,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * If you call select() on an OMGraphicList, it selects all the
-     * graphics it contains. This is really an OMGraphic method, but
-     * it makes OMGraphicLists embedded in other OMGraphicLists act
-     * correctly.
+     * If you call select() on an OMGraphicList, it selects all the graphics it
+     * contains. This is really an OMGraphic method, but it makes OMGraphicLists
+     * embedded in other OMGraphicLists act correctly.
      */
     public void select() {
         selectAll();
@@ -1428,33 +1462,31 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Finds the first OMGraphic (the one on top) that is under this
-     * pixel.
+     * Finds the first OMGraphic (the one on top) that is under this pixel.
      * 
-     * @param x the horizontal pixel position of the window, from the
-     *        left of the window.
-     * @param y the vertical pixel position of the window, from the
-     *        top of the window.
-     * @return the graphic that contains the pixel, NONE (null) if
-     *         none are found.
+     * @param x the horizontal pixel position of the window, from the left of
+     *        the window.
+     * @param y the vertical pixel position of the window, from the top of the
+     *        window.
+     * @return the graphic that contains the pixel, NONE (null) if none are
+     *         found.
      */
     public OMGraphic getOMGraphicThatContains(int x, int y) {
         return (OMGraphic) _getContains(x, y);
     }
 
     /**
-     * Finds the first OMGeometry (the one on top) that is under this
-     * pixel. If an OMGeometry is an OMGraphicList, its contents will
-     * be checked. If that check is successful and OMGraphicList is
-     * not vague, its OMGeometry will be returned - otherwise the list
-     * will be returned.
+     * Finds the first OMGeometry (the one on top) that is under this pixel. If
+     * an OMGeometry is an OMGraphicList, its contents will be checked. If that
+     * check is successful and OMGraphicList is not vague, its OMGeometry will
+     * be returned - otherwise the list will be returned.
      * 
-     * @param x the horizontal pixel position of the window, from the
-     *        left of the window.
-     * @param y the vertical pixel position of the window, from the
-     *        top of the window.
-     * @return the graphic that contains the pixel, NONE (null) if
-     *         none are found.
+     * @param x the horizontal pixel position of the window, from the left of
+     *        the window.
+     * @param y the vertical pixel position of the window, from the top of the
+     *        window.
+     * @return the graphic that contains the pixel, NONE (null) if none are
+     *         found.
      */
     protected synchronized OMGeometry _getContains(int x, int y) {
 
@@ -1520,10 +1552,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * If you call deselect() on an OMGraphicList, it deselects all
-     * the graphics it contains. This is really an OMGraphic method,
-     * but it makes OMGraphicLists embedded in other OMGraphicLists
-     * act correctly.
+     * If you call deselect() on an OMGraphicList, it deselects all the graphics
+     * it contains. This is really an OMGraphic method, but it makes
+     * OMGraphicLists embedded in other OMGraphicLists act correctly.
      */
     public void deselect() {
         deselectAll();
@@ -1549,20 +1580,20 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Perform an action on the provided graphic. If the graphic is
-     * not currently on the list, it is added (if the action doesn't
-     * say to delete it). If the graphic is null, the list checks for
-     * an action to take on the list (deselectAll).
+     * Perform an action on the provided graphic. If the graphic is not
+     * currently on the list, it is added (if the action doesn't say to delete
+     * it). If the graphic is null, the list checks for an action to take on the
+     * list (deselectAll).
      */
     public void doAction(OMGraphic graphic, OMAction action) {
         _doAction((OMGeometry) graphic, action);
     }
 
     /**
-     * Perform an action on the provided geometry. If the geometry is
-     * not currently on the list, it is added (if the action doesn't
-     * say to delete it). If the geometry is null, the list checks for
-     * an action to take on the list (deselectAll).
+     * Perform an action on the provided geometry. If the geometry is not
+     * currently on the list, it is added (if the action doesn't say to delete
+     * it). If the geometry is null, the list checks for an action to take on
+     * the list (deselectAll).
      */
     protected void _doAction(OMGeometry graphic, OMAction action) {
 
@@ -1640,9 +1671,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
 
     /**
      * Set the visibility variable. NOTE: <br>
-     * This is checked by the OMGeometryList when it iterates through
-     * its list for render and gesturing. It is not checked by the
-     * internal OMGeometry methods, although maybe it should be...
+     * This is checked by the OMGeometryList when it iterates through its list
+     * for render and gesturing. It is not checked by the internal OMGeometry
+     * methods, although maybe it should be...
      * 
      * @param visible boolean
      */
@@ -1653,8 +1684,8 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Get the visibility variable. For the OMGeometryList, if any
-     * part of it is visible, then it is considered visible.
+     * Get the visibility variable. For the OMGeometryList, if any part of it is
+     * visible, then it is considered visible.
      * 
      * @return boolean
      */
@@ -1668,37 +1699,34 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Set whether the list will allow duplicate entries added. If
-     * not, then the copy will be added, and the previous version
-     * removed.
+     * Set whether the list will allow duplicate entries added. If not, then the
+     * copy will be added, and the previous version removed.
      */
     public void setAllowDuplicates(boolean set) {
         allowDuplicates = set;
     }
 
     /**
-     * Get whether the list will allow duplicate entries added. If
-     * not, then the copy will be added, and the previous version
-     * removed.
+     * Get whether the list will allow duplicate entries added. If not, then the
+     * copy will be added, and the previous version removed.
      */
     public boolean getAllowDuplicates() {
         return allowDuplicates;
     }
 
     /**
-     * Convenience function for methods that may add a OMGeometry.
-     * Method checks to see if duplicates are allowed, and if they are
-     * not, it will remove the OMGeometry from the list. The calling
-     * method can be confident that it will be adding a unqiue
-     * OMGeometry. Internal methods that call this method should be
-     * synchronized on the graphics list.
+     * Convenience function for methods that may add a OMGeometry. Method checks
+     * to see if duplicates are allowed, and if they are not, it will remove the
+     * OMGeometry from the list. The calling method can be confident that it
+     * will be adding a unqiue OMGeometry. Internal methods that call this
+     * method should be synchronized on the graphics list.
      */
     protected synchronized void checkForDuplicate(OMGeometry g) {
         if (!allowDuplicates) {
             // Why check first, just remove it if it's found?!
-            //          if (graphics.contains(g)) {
+            // if (graphics.contains(g)) {
             graphics.remove(g);
-            //          }
+            // }
         }
     }
 
@@ -1723,16 +1751,15 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Goes through the list, finds the OMGrid objects, and sets the
-     * generator for all of them. If a projection is passed in, the
-     * generator will be used to create a displayable graphic within
-     * the grid.
+     * Goes through the list, finds the OMGrid objects, and sets the generator
+     * for all of them. If a projection is passed in, the generator will be used
+     * to create a displayable graphic within the grid.
      * 
-     * @param generator an OMGridGenerator to create a renderable
-     *        graphic from the OMGrid.
-     * @param proj a projection to use to generate the graphic. If
-     *        null, the generator will create a renderable graphic the
-     *        next time a projection is handed to the list.
+     * @param generator an OMGridGenerator to create a renderable graphic from
+     *        the OMGrid.
+     * @param proj a projection to use to generate the graphic. If null, the
+     *        generator will create a renderable graphic the next time a
+     *        projection is handed to the list.
      */
     public synchronized void setGridGenerator(OMGridGenerator generator,
                                               Projection proj) {
@@ -1749,18 +1776,16 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Get a reference to the graphics vector. This method is meant
-     * for use by methods that need to iterate over the graphics
-     * vector, or make at least two invocations on the graphics
-     * vector.
+     * Get a reference to the graphics vector. This method is meant for use by
+     * methods that need to iterate over the graphics vector, or make at least
+     * two invocations on the graphics vector.
      * <p>
-     * HACK this method should either return a clone of the graphics
-     * list or a quick reference. Currently it returns the latter for
-     * simplicity and minor speed improvement. We should allow a way
-     * for the user to set the desired behavior, depending on whether
-     * they want responsibility for list synchronization. Right now,
-     * the user is responsible for synchronizing the OMGeometryList if
-     * it's being used in two or more threads...
+     * HACK this method should either return a clone of the graphics list or a
+     * quick reference. Currently it returns the latter for simplicity and minor
+     * speed improvement. We should allow a way for the user to set the desired
+     * behavior, depending on whether they want responsibility for list
+     * synchronization. Right now, the user is responsible for synchronizing the
+     * OMGeometryList if it's being used in two or more threads...
      * 
      * @return a reference of the graphics List.
      */
@@ -1775,10 +1800,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * Set the List used to hold the OMGraphics. The OMGraphicList
-     * assumes that this list contains OMGraphics. Make *SURE* this is
-     * the case. The OMGraphicList will behave badly if there are
-     * non-OMGraphics on the list.
+     * Set the List used to hold the OMGraphics. The OMGraphicList assumes that
+     * this list contains OMGraphics. Make *SURE* this is the case. The
+     * OMGraphicList will behave badly if there are non-OMGraphics on the list.
      */
     public synchronized void setTargets(java.util.List list) {
         graphics = list;
@@ -1880,15 +1904,15 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * This sort method is a placeholder for OMGraphicList extensions
-     * to implement their own particular criteria for sorting an
-     * OMGraphicList. Does nothing for a generic OMGraphicList.
+     * This sort method is a placeholder for OMGraphicList extensions to
+     * implement their own particular criteria for sorting an OMGraphicList.
+     * Does nothing for a generic OMGraphicList.
      */
     public void sort() {}
 
     /**
-     * Convenience method to cast an object to an OMGraphic if it is
-     * one. Returns null if it isn't.
+     * Convenience method to cast an object to an OMGraphic if it is one.
+     * Returns null if it isn't.
      */
     protected OMGraphic objectToOMGraphic(Object obj) {
         if (obj instanceof OMGraphic) {
@@ -1899,8 +1923,8 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
     }
 
     /**
-     * @return a duplicate list full of shallow copies of each of the
-     *         OMGraphics contained on the list.
+     * @return a duplicate list full of shallow copies of each of the OMGraphics
+     *         contained on the list.
      */
     public synchronized Object clone() {
         OMGraphicList omgl = (OMGraphicList) super.clone();
