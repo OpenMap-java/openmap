@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/08/09 19:05:45 $
+// $Revision: 1.13 $
+// $Date: 2006/01/04 23:08:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -301,9 +301,9 @@ public class DbfTableModel extends AbstractTableModel implements
     }
 
     /**
-     * Retrieves the number of columns that exist in the model
+     * Retrieves the number of rows that exist in the model
      * 
-     * @return The number column that exist in the model
+     * @return The number rows that exist in the model
      */
     public int getRowCount() {
         if (_records == null) {
