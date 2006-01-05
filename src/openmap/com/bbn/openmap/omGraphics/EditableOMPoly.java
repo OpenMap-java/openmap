@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/12/09 21:09:03 $
+// $Revision: 1.14 $
+// $Date: 2006/01/05 15:21:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1410,6 +1410,6 @@ public class EditableOMPoly extends EditableOMAbstractLine {
     }
 
     public java.net.URL getImageURL(String imageName) {
-        return this.getClass().getResource(imageName);
+        return EditableOMPoly.class.getResource(imageName);
     }
 }
