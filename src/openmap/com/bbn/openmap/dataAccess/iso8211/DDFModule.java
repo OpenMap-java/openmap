@@ -239,7 +239,7 @@ public class DDFModule implements DDFConstants {
             nFieldLength = Integer.parseInt(new String(pachRecord, nEntryOffset, _sizeFieldLength));
 
             nEntryOffset += _sizeFieldLength;
-            nFieldPos = Integer.parseInt(new String(pachRecord, nEntryOffset, _sizeFieldLength));
+            nFieldPos = Integer.parseInt(new String(pachRecord, nEntryOffset, _sizeFieldPos));
 
             byte[] subPachRecord = new byte[nFieldLength];
             System.arraycopy(pachRecord,
