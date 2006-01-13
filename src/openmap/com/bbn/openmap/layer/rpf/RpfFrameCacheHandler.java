@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrameCacheHandler.java,v $
 // $RCSfile: RpfFrameCacheHandler.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/08/09 18:45:53 $
+// $Revision: 1.10 $
+// $Date: 2006/01/13 16:10:33 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -38,11 +38,11 @@ import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The RpfFrameCacheHandler does everything involved with handling RAW
- * RPF frames. If used locally, it can also deal with filling the role
- * of RpfFrameProvider. You create one of these with the paths to the
- * RPF directories, and then hand it to something that needs a
- * RpfFrameProvider, or that acts like one.
+ * The RpfFrameCacheHandler does everything involved with handling RAW RPF
+ * frames. If used locally, it can also deal with filling the role of
+ * RpfFrameProvider. You create one of these with the paths to the RPF
+ * directories, and then hand it to something that needs a RpfFrameProvider, or
+ * that acts like one.
  */
 public class RpfFrameCacheHandler extends CacheHandler implements
         RpfFrameProvider {
@@ -71,8 +71,8 @@ public class RpfFrameCacheHandler extends CacheHandler implements
     }
 
     /**
-     * The constructor to use if you want to modify the number of
-     * frames held in the cache..
+     * The constructor to use if you want to modify the number of frames held in
+     * the cache..
      * 
      * @param RpfPaths the directory paths to the RPF directories.
      */
@@ -83,30 +83,30 @@ public class RpfFrameCacheHandler extends CacheHandler implements
     }
 
     /**
-     * When you pre-initialize the RpfTocHandlers before giving them
-     * to the RpfFrameCacheHandler.
+     * When you pre-initialize the RpfTocHandlers before giving them to the
+     * RpfFrameCacheHandler.
      */
     public RpfFrameCacheHandler(RpfTocHandler[] tocHandlers) {
         tocs = tocHandlers;
         colortable = new RpfColortable();
     }
 
-    //      public void finalize() {
-    //      Debug.message("gc", "RpfFrameCacheHandler: getting GC'd");
-    //      }
+    // public void finalize() {
+    // Debug.message("gc", "RpfFrameCacheHandler: getting GC'd");
+    // }
 
     /**
-     * RpfFrameProvider interface method. If this is being used as a
-     * frame provider, it's local, right?
+     * RpfFrameProvider interface method. If this is being used as a frame
+     * provider, it's local, right?
      */
     public boolean needViewAttributeUpdates() {
         return false;
     }
 
     /**
-     * Should only be set via the object it is sending frame data to.
-     * Don't send in a null value, since this is assumed to be valid
-     * in other parts of the code.
+     * Should only be set via the object it is sending frame data to. Don't send
+     * in a null value, since this is assumed to be valid in other parts of the
+     * code.
      */
     public void setViewAttributes(RpfViewAttributes va) {
         viewAttributes = va;
@@ -118,8 +118,8 @@ public class RpfFrameCacheHandler extends CacheHandler implements
     }
 
     /**
-     * RpfFrameProvider interface method. Return all the
-     * RpfCoverageBoxes that fall in the area of interest.
+     * RpfFrameProvider interface method. Return all the RpfCoverageBoxes that
+     * fall in the area of interest.
      * 
      * @param ullat NW latitude.
      * @param ullon NW longitude.
@@ -156,11 +156,10 @@ public class RpfFrameCacheHandler extends CacheHandler implements
     }
 
     /**
-     * Given an area and a two-letter chart series code, find the
-     * percentage of coverage on the map that that chart series can
-     * offer. If you want specific coverage information, use the
-     * getCatalogCoverage call. Don't send a chart series code of ANY,
-     * since that doesn't make sense.
+     * Given an area and a two-letter chart series code, find the percentage of
+     * coverage on the map that that chart series can offer. If you want
+     * specific coverage information, use the getCatalogCoverage call. Don't
+     * send a chart series code of ANY, since that doesn't make sense.
      * 
      * @param ullat NW latitude.
      * @param ullon NW longitude.
@@ -247,33 +246,31 @@ public class RpfFrameCacheHandler extends CacheHandler implements
         for (y = 0; y < numVFrames; y++) {
             for (x = 0; x < numHFrames; x++) {
                 if (coverage[x][y] == true) {
-                    //              System.out.print("X");
+                    // System.out.print("X");
                     count++;
                 } else {
-                    //              System.out.print(".");
+                    // System.out.print(".");
                 }
             }
-            //      System.out.println("");
+            // System.out.println("");
         }
 
         return count / (float) (numHFrames * numVFrames);
     }
 
     /**
-     * Given a projection which describes the map (or area of
-     * interest), return the best RpfTocEntry, from all the A.TOC,
-     * that covers the area. RpfFrameProvider method.
+     * Given a projection which describes the map (or area of interest), return
+     * the best RpfTocEntry, from all the A.TOC, that covers the area.
+     * RpfFrameProvider method.
      * 
-     * 1. Fixed bug that was preventing it from actually returning the
-     * best coverage box in the first position of the Vector. 2.
-     * Prevented the method from returning early when it found a box
-     * that claimed perfect coverage. This was causing problems in
-     * some areas, where boxes that claimed coverage didn't actually
-     * have it. This could be a data problem, so maybe we can add the
-     * early return back in in the future. 3. Changed < to <= below.
-     * 4. Iterates thru list returned by RpcTocHandler since the
-     * return type for getBestCoverageEntry changed from RpfTocEntry
-     * to List.
+     * 1. Fixed bug that was preventing it from actually returning the best
+     * coverage box in the first position of the Vector. 2. Prevented the method
+     * from returning early when it found a box that claimed perfect coverage.
+     * This was causing problems in some areas, where boxes that claimed
+     * coverage didn't actually have it. This could be a data problem, so maybe
+     * we can add the early return back in in the future. 3. Changed < to <=
+     * below. 4. Iterates thru list returned by RpcTocHandler since the return
+     * type for getBestCoverageEntry changed from RpfTocEntry to List.
      * 
      * @param ullat NW latitude.
      * @param ullon NW longitude.
@@ -339,12 +336,12 @@ public class RpfFrameCacheHandler extends CacheHandler implements
                     // This could be a data problem, but in any case,
                     // this work-around returns all relevant coverage
                     // boxes.
-                    //if (currentCoverage.percentCoverage >= 100f &&
-                    //    scaleDifference(proj, currentCoverage) == 0) {
-                    //    coverageBoxes.removeAllElements();
-                    //    coverageBoxes.addElement(currentCoverage);
-                    //    return coverageBoxes;
-                    //} else {
+                    // if (currentCoverage.percentCoverage >= 100f &&
+                    // scaleDifference(proj, currentCoverage) == 0) {
+                    // coverageBoxes.removeAllElements();
+                    // coverageBoxes.addElement(currentCoverage);
+                    // return coverageBoxes;
+                    // } else {
 
                     // You now ought to at least make sure that the
                     // scales are the same for all A.TOCs. That way,
@@ -359,7 +356,7 @@ public class RpfFrameCacheHandler extends CacheHandler implements
                     int size = coverageArray.length;
 
                     // Set this here in case the vector is empty...
-                    //              float currentScale = currentEntry.info.scale;
+                    // float currentScale = currentEntry.info.scale;
 
                     if (size == 0) {
                         coverageBoxes.addElement(currentCoverage);
@@ -408,7 +405,7 @@ public class RpfFrameCacheHandler extends CacheHandler implements
                                             break;
                                         }
                                     } else { // rcb percent coverage
-                                             // is better
+                                        // is better
                                         coverageBoxes.addElement(rcb);
                                     }
                                 } else { // j!= 0
@@ -423,7 +420,7 @@ public class RpfFrameCacheHandler extends CacheHandler implements
                                         }
                                         coverageBoxes.add(rcb);
                                     } else { // rcb percent coverage
-                                             // is better
+                                        // is better
                                         // we already know that scale
                                         // matches since it was
                                         // added previously
@@ -456,7 +453,7 @@ public class RpfFrameCacheHandler extends CacheHandler implements
                             }
                         }
                     }
-                    //}
+                    // }
                 } else {
                     if (Debug.debugging("rpftoc")) {
                         System.out.println("RFCH: Toc " + i
@@ -470,19 +467,19 @@ public class RpfFrameCacheHandler extends CacheHandler implements
     }
 
     /**
-     * Given the indexes to a certain RpfTocEntry within a certain
-     * A.TOC, find the frame and return the attribute information. The
-     * tocNumber and entryNumber are given within the RpfCoverageBox
-     * received from a getCoverage call.
+     * Given the indexes to a certain RpfTocEntry within a certain A.TOC, find
+     * the frame and return the attribute information. The tocNumber and
+     * entryNumber are given within the RpfCoverageBox received from a
+     * getCoverage call.
      * 
-     * @param tocNumber the toc id for a RpfTocHandler for a
-     *        particular frame provider.
+     * @param tocNumber the toc id for a RpfTocHandler for a particular frame
+     *        provider.
      * @param entryNumber the RpfTocEntry id for a RpfTocHandler for a
      *        particular frame provider.
-     * @param x the horizontal subframe index, from the left side of a
-     *        boundary rectangle of the entry.
-     * @param y the vertical subframe index, from the top side of a
-     *        boundary rectangle of the entry.
+     * @param x the horizontal subframe index, from the left side of a boundary
+     *        rectangle of the entry.
+     * @param y the vertical subframe index, from the top side of a boundary
+     *        rectangle of the entry.
      * @see #getCoverage
      * @return string.
      */
@@ -510,26 +507,25 @@ public class RpfFrameCacheHandler extends CacheHandler implements
             return null;
 
         /*
-         * This should never fail, since all subframes should be
-         * present
+         * This should never fail, since all subframes should be present
          */
         return frame.getReport(x, y, frameEntry, entry.Cib);
     }
 
     /**
-     * Given the indexes to a certain RpfTocEntry within a certain
-     * A.TOC, find the frame/subframe data, decompress it, and return
-     * image pixels. The tocNumber and entryNumber are given within
-     * the RpfCoverageBox received from a getCoverage call.
+     * Given the indexes to a certain RpfTocEntry within a certain A.TOC, find
+     * the frame/subframe data, decompress it, and return image pixels. The
+     * tocNumber and entryNumber are given within the RpfCoverageBox received
+     * from a getCoverage call.
      * 
-     * @param tocNumber the toc id for a RpfTocHandler for a
-     *        particular frame provider.
+     * @param tocNumber the toc id for a RpfTocHandler for a particular frame
+     *        provider.
      * @param entryNumber the RpfTocEntry id for a RpfTocHandler for a
      *        particular frame provider.
-     * @param x the horizontal subframe index, from the left side of a
-     *        boundary rectangle of the entry.
-     * @param y the vertical subframe index, from the top side of a
-     *        boundary rectangle of the entry.
+     * @param x the horizontal subframe index, from the left side of a boundary
+     *        rectangle of the entry.
+     * @param y the vertical subframe index, from the top side of a boundary
+     *        rectangle of the entry.
      * @see #getCoverage
      * @return integer pixel data.
      */
@@ -559,8 +555,7 @@ public class RpfFrameCacheHandler extends CacheHandler implements
         checkColortable(frame, frameEntry, entry, tocNumber, entryNumber);
 
         /*
-         * This should never fail, since all subframes should be
-         * present
+         * This should never fail, since all subframes should be present
          */
         return frame.decompressSubframe(x, y, colortable);
     }
@@ -597,15 +592,14 @@ public class RpfFrameCacheHandler extends CacheHandler implements
     }
 
     /**
-     * Take a bunch of stuff that has already been calculated, and
-     * then figure out if a new colortable is needed. If it is, load
-     * it up with info. Called from two different places, which is why
-     * it exists.
+     * Take a bunch of stuff that has already been calculated, and then figure
+     * out if a new colortable is needed. If it is, load it up with info. Called
+     * from two different places, which is why it exists.
      * 
-     * It's been determined that, for each subframe, the colortable
-     * from it's parent frame should be used. Although RPF was
-     * designed and specified that the colortable should be constant
-     * across zones, that's not always the case.
+     * It's been determined that, for each subframe, the colortable from it's
+     * parent frame should be used. Although RPF was designed and specified that
+     * the colortable should be constant across zones, that's not always the
+     * case.
      */
     protected void checkColortable(RpfFrame frame, RpfFrameEntry frameEntry,
                                    RpfTocEntry entry, int tocNumber,
@@ -615,8 +609,8 @@ public class RpfFrameCacheHandler extends CacheHandler implements
         // read the proper one from the frame. All the frames inside
         // an entry, which is a boundary box, will certainly share a
         // colortable.
-        //      if (colortable.colors == null ||
-        //          !colortable.isSameATOCIndexes(tocNumber, entryNumber)) {
+        // if (colortable.colors == null ||
+        // !colortable.isSameATOCIndexes(tocNumber, entryNumber)) {
 
         // You know, we don't need to make the check - we should just
         // do this every time - the colortable is already created for
@@ -633,7 +627,10 @@ public class RpfFrameCacheHandler extends CacheHandler implements
             colortable.setCib(entry.Cib);
             colortable.setATOCIndexes(tocNumber, entryNumber);
 
-            // Seems like there ought to be a better way to do this.
+            // Seems like there ought to be a better way to do this, as this
+            // kills the colortable settings read in from the properties file
+            // and replaces them with the defaults created from the RpfFrames
+            // colortable creation.  You loose numberColors, for instance.
             colortable = frame.getColortable();
 
             colortable.zone = entry.zone;
@@ -641,8 +638,8 @@ public class RpfFrameCacheHandler extends CacheHandler implements
         }
 
         if (viewAttributes != null) {
-            //this is useless...
-            //              colortable.setNumColors(viewAttributes.numberOfColors);
+            // this is useless...
+            // colortable.setNumColors(viewAttributes.numberOfColors);
 
             colortable.setOpaqueness(viewAttributes.opaqueness);
         }
@@ -677,9 +674,9 @@ public class RpfFrameCacheHandler extends CacheHandler implements
 
     /**
      * A customized way to retrieve a frame from the cache, using a
-     * RpfFrameEntry. A RpfFrameEntry is the way to get the Dchum
-     * capability kicked off in the frame. If you don't care about
-     * Dchum, use the other get method. CacheHandler method.
+     * RpfFrameEntry. A RpfFrameEntry is the way to get the Dchum capability
+     * kicked off in the frame. If you don't care about Dchum, use the other get
+     * method. CacheHandler method.
      */
     public Object get(RpfFrameEntry rfe) {
 
@@ -737,8 +734,8 @@ public class RpfFrameCacheHandler extends CacheHandler implements
     }
 
     /**
-     * CacheHandler method. Need to clear memory, get gc moving, and
-     * ready for new objects
+     * CacheHandler method. Need to clear memory, get gc moving, and ready for
+     * new objects
      */
     public void resetCache() {
         super.resetCache();
@@ -753,4 +750,3 @@ public class RpfFrameCacheHandler extends CacheHandler implements
         return colortable;
     }
 }
-
