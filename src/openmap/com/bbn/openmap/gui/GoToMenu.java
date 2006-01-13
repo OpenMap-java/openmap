@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.15 $
-// $Date: 2006/01/13 22:01:15 $
+// $Revision: 1.16 $
+// $Date: 2006/01/13 22:16:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -441,14 +441,14 @@ public class GoToMenu extends AbstractOpenMapMenu {
         public NameFetcher(GoToButton buttonToName) {
 
             notifyThis = buttonToName;
-
+            setTitle(i18n.get(GoToMenu.class, "addViewTitle", "Add View"));
             JPanel palette = new JPanel();
             palette.setLayout(new BoxLayout(palette, BoxLayout.Y_AXIS));
 
             JPanel namePanel = new JPanel();
             namePanel.setLayout(new FlowLayout());
 
-            label = new JLabel("Name of View: ");
+            label = new JLabel(i18n.get(GoToMenu.class, "nameOfView", "Name of View: "));
             nameField = new JTextField("", 20);
 
             namePanel.add(label);
@@ -462,11 +462,11 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
             buttonPanel.setLayout(gridbag);
 
-            applybutton = new JButton("Add View");
+            applybutton = new JButton(i18n.get(GoToMenu.class, "addView", "Add View"));
             applybutton.addActionListener(this);
             gridbag.setConstraints(applybutton, c);
 
-            closebutton = new JButton("Close");
+            closebutton = new JButton(i18n.get(GoToMenu.class, "close", "Close"));
             closebutton.addActionListener(this);
             c.gridx = GridBagConstraints.RELATIVE;
             gridbag.setConstraints(closebutton, c);
