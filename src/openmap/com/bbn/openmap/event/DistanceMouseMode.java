@@ -44,43 +44,39 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * This mouse mode draws a rubberband line and circle between each
- * mouse click as the mouse is moved and displays the cumulative
- * distance in nautical miles (nm), kilometers (km), statute miles
- * (miles) and the azimuth angle in decimal degrees from north on the
- * status bar. Several distance segments are allowed. To erase
- * (terminate) double click the mouse.
+ * This mouse mode draws a rubberband line and circle between each mouse click
+ * as the mouse is moved and displays the cumulative distance in nautical miles
+ * (nm), kilometers (km), statute miles (miles) and the azimuth angle in decimal
+ * degrees from north on the status bar. Several distance segments are allowed.
+ * To erase (terminate) double click the mouse.
  * <p>
- * To use this mouse mode in the OpenMap demo (in setWidgets): create
- * the mouse mode, such as
+ * To use this mouse mode in the OpenMap demo (in setWidgets): create the mouse
+ * mode, such as
  * <p>
  * DistanceMouseMode distMode = new DistanceMouseMode(true, id,
  * DistanceMouseMode.DISTANCE_ALL);
  * <p>
- * Add the distance mouse mode to the mouse delegator
- * md.addMouseMode(distMode);
+ * Add the distance mouse mode to the mouse delegator md.addMouseMode(distMode);
  * <p>
- * This class can easily be extended, for example to create waypoints
- * for objects.
+ * This class can easily be extended, for example to create waypoints for
+ * objects.
  * <p>
- * NOTE: If some lines are not properly erased (because the mouse went
- * outside the map for example), just use the redraw from the menu.
+ * NOTE: If some lines are not properly erased (because the mouse went outside
+ * the map for example), just use the redraw from the menu.
  * <P>
  * 
- * You can set the units used for measurements by setting the
- * property:
+ * You can set the units used for measurements by setting the property:
  * 
  * <pre>
- *   
- *    prefix.units= &amp;lt name for Length.java (km, miles, meters, nm) &amp;gt
- *    
+ *     
+ *      prefix.units= &amp;lt name for Length.java (km, miles, meters, nm) &amp;gt
+ *      
  * </pre>
  */
 public class DistanceMouseMode extends CoordMouseMode {
 
     /**
-     * Mouse mode identifier, is "Distance". This is returned on
-     * getID()
+     * Mouse mode identifier, is "Distance". This is returned on getID()
      */
     public final static transient String modeID = "Distance".intern();
     public final static String UnitProperty = "units";
@@ -101,8 +97,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      */
     public boolean mousePressed = false;
     /**
-     * Vector to store all distance segments, first point and last
-     * point pairs
+     * Vector to store all distance segments, first point and last point pairs
      */
     public Vector segments = new Vector();
     /**
@@ -115,9 +110,8 @@ public class DistanceMouseMode extends CoordMouseMode {
     public double totalDistance = 0;
 
     /**
-     * The line type to be displayed, see OMGraphic.
-     * LINETYPE_GREATCIRCLE, LINETYPE_RHUMB, LINETYPE_STRAIGHT default
-     * LINETYPE_GREATCIRCLE
+     * The line type to be displayed, see OMGraphic. LINETYPE_GREATCIRCLE,
+     * LINETYPE_RHUMB, LINETYPE_STRAIGHT default LINETYPE_GREATCIRCLE
      */
     public static int lineType = OMGraphic.LINETYPE_GREATCIRCLE;
 
@@ -138,10 +132,9 @@ public class DistanceMouseMode extends CoordMouseMode {
     MapBean theMap;
 
     /**
-     * Construct a DistanceMouseMode. Default constructor. Sets the ID
-     * to the modeID, and the consume mode to true. You need to
-     * setInfoDelegator, setUnit and setLineType if you use this
-     * constructor.
+     * Construct a DistanceMouseMode. Default constructor. Sets the ID to the
+     * modeID, and the consume mode to true. You need to setInfoDelegator,
+     * setUnit and setLineType if you use this constructor.
      */
     public DistanceMouseMode() {
         this(true);
@@ -150,12 +143,12 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Construct a DistanceMouseMode. Lets you set the consume mode.
-     * If the events are consumed, then a MouseEvent is sent only to
-     * the first MapMouseListener that successfully processes the
-     * event. If they are not consumed, then all of the listeners get
-     * a chance to act on the event. You need to setInfoDelegator,
-     * setUnit and setLineType if you use this constructor.
+     * Construct a DistanceMouseMode. Lets you set the consume mode. If the
+     * events are consumed, then a MouseEvent is sent only to the first
+     * MapMouseListener that successfully processes the event. If they are not
+     * consumed, then all of the listeners get a chance to act on the event. You
+     * need to setInfoDelegator, setUnit and setLineType if you use this
+     * constructor.
      * 
      * @param consumeEvents the mode setting.
      */
@@ -166,15 +159,14 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Construct an DistanceMouseMode. For convenience for derived
-     * classes.
+     * Construct an DistanceMouseMode. For convenience for derived classes.
      * 
      * @param name the ID of the mode.
-     * @param consumeEvents if true, events are propagated to the
-     *        first MapMouseListener that successfully processes the
-     *        event, if false, events are propagated to all
-     *        MapMouseListeners. You need to setInfoDelegator, setUnit
-     *        and setLineType if you use this constructor.
+     * @param consumeEvents if true, events are propagated to the first
+     *        MapMouseListener that successfully processes the event, if false,
+     *        events are propagated to all MapMouseListeners. You need to
+     *        setInfoDelegator, setUnit and setLineType if you use this
+     *        constructor.
      */
     public DistanceMouseMode(String name, boolean consumeEvents) {
         super(name, consumeEvents);
@@ -183,18 +175,16 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Construct a DistanceMouseMode. Lets you set the consume mode.
-     * If the events are consumed, then a MouseEvent is sent only to
-     * the first MapMouseListener that successfully processes the
-     * event. If they are not consumed, then all of the listeners get
-     * a chance to act on the event. You need to the setLineType if
-     * you use this constructor.
+     * Construct a DistanceMouseMode. Lets you set the consume mode. If the
+     * events are consumed, then a MouseEvent is sent only to the first
+     * MapMouseListener that successfully processes the event. If they are not
+     * consumed, then all of the listeners get a chance to act on the event. You
+     * need to the setLineType if you use this constructor.
      * 
      * @param consumeEvents the mode setting.
      * @param id the calling object's info delegator.
-     * @param units the unit of distance that will be displayed, such
-     *        as Length.NM, Length.KM or Length.MILE. If null, display
-     *        all of them.
+     * @param units the unit of distance that will be displayed, such as
+     *        Length.NM, Length.KM or Length.MILE. If null, display all of them.
      */
     public DistanceMouseMode(boolean consumeEvents, InformationDelegator id,
             Length units) {
@@ -206,18 +196,16 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Construct a DistanceMouseMode. Lets you set the consume mode.
-     * If the events are consumed, then a MouseEvent is sent only to
-     * the first MapMouseListener that successfully processes the
-     * event. If they are not consumed, then all of the listeners get
-     * a chance to act on the event. You need to the setLineType if
-     * you use this constructor.
+     * Construct a DistanceMouseMode. Lets you set the consume mode. If the
+     * events are consumed, then a MouseEvent is sent only to the first
+     * MapMouseListener that successfully processes the event. If they are not
+     * consumed, then all of the listeners get a chance to act on the event. You
+     * need to the setLineType if you use this constructor.
      * 
      * @param consumeEvents the mode setting.
      * @param id the calling object's info delegator.
-     * @param units the unit of distance that will be displayed, such
-     *        as Length.NM, Length.KM or Length.MILE. If null, display
-     *        all of them.
+     * @param units the unit of distance that will be displayed, such as
+     *        Length.NM, Length.KM or Length.MILE. If null, display all of them.
      * @param lType the line type that will be dispalyed such as
      *        LINETYPE_GREATCIRCLE, LINETYPE_RHUMB, LINETYPE_STRAIGHT
      */
@@ -232,11 +220,10 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Construct a DistanceMouseMode. Lets you set the consume mode.
-     * If the events are consumed, then a MouseEvent is sent only to
-     * the first MapMouseListener that successfully processes the
-     * event. If they are not consumed, then all of the listeners get
-     * a chance to act on the event.
+     * Construct a DistanceMouseMode. Lets you set the consume mode. If the
+     * events are consumed, then a MouseEvent is sent only to the first
+     * MapMouseListener that successfully processes the event. If they are not
+     * consumed, then all of the listeners get a chance to act on the event.
      * 
      * @param consumeEvents the mode setting.
      * @param id the calling object's info delegator.
@@ -249,12 +236,11 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Construct a DistanceMouseMode. For convenience for derived
-     * classes. Lets you set the consume mode. If the events are
-     * consumed, then a MouseEvent is sent only to the first
-     * MapMouseListener that successfully processes the event. If they
-     * are not consumed, then all of the listeners get a chance to act
-     * on the event.
+     * Construct a DistanceMouseMode. For convenience for derived classes. Lets
+     * you set the consume mode. If the events are consumed, then a MouseEvent
+     * is sent only to the first MapMouseListener that successfully processes
+     * the event. If they are not consumed, then all of the listeners get a
+     * chance to act on the event.
      * 
      * @param name the ID of the mode.
      * @param consumeEvents the mode setting.
@@ -269,8 +255,8 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Process a mouseClicked event. Erase all drawn lines and circles
-     * upon a double mouse click
+     * Process a mouseClicked event. Erase all drawn lines and circles upon a
+     * double mouse click
      * 
      * @param e mouse event.
      */
@@ -297,8 +283,8 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Process a mouse pressed event. Add the mouse location to the
-     * segment vector. Calculate the cumulative total distance.
+     * Process a mouse pressed event. Add the mouse location to the segment
+     * vector. Calculate the cumulative total distance.
      * 
      * @param e mouse event.
      */
@@ -310,6 +296,11 @@ public class DistanceMouseMode extends CoordMouseMode {
             mousePressed = true;
             // erase the old circle if any
             eraseCircle();
+
+            if (theMap == null) {
+                theMap = (MapBean) e.getSource();
+            }
+
             // anchor the new first point of the line
             rPoint1 = theMap.getProjection().inverse(e.getPoint());
             // ensure the second point is not yet set.
@@ -322,9 +313,9 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Draw a rubberband line and circle as the mouse is moved.
-     * Calculate distance and azimuth angle as the mouse moves.
-     * Display distance and azimuth angle in on the infoDelegator.
+     * Draw a rubberband line and circle as the mouse is moved. Calculate
+     * distance and azimuth angle as the mouse moves. Display distance and
+     * azimuth angle in on the infoDelegator.
      * 
      * @param e mouse event.
      */
@@ -415,8 +406,7 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Process a mouseEntered event. Record the mouse source object, a
-     * map bean.
+     * Process a mouseEntered event. Record the mouse source object, a map bean.
      * 
      * @param e mouse event.
      */
@@ -427,11 +417,10 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Process a mouseExited event. If a line is being drawn (and
-     * mouse go off the map), it will be erased. The anchor point
-     * rPoint1 is kept in case the mouse comes back on the screen.
-     * Then, a new line will be drawn with the original mouse press
-     * position.
+     * Process a mouseExited event. If a line is being drawn (and mouse go off
+     * the map), it will be erased. The anchor point rPoint1 is kept in case the
+     * mouse comes back on the screen. Then, a new line will be drawn with the
+     * original mouse press position.
      * 
      * @param e mouse event.
      */
@@ -459,8 +448,7 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Draw a rubberband line between two points into the Graphics
-     * object.
+     * Draw a rubberband line between two points into the Graphics object.
      * 
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
@@ -585,9 +573,9 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Return the distance in the chosen unit between two points (in
-     * decimal degrees). Based on spherical arc distance between two
-     * points. See class GreatCircle.java
+     * Return the distance in the chosen unit between two points (in decimal
+     * degrees). Based on spherical arc distance between two points. See class
+     * GreatCircle.java
      * 
      * @param phi1 latitude in decimal degrees of start point
      * @param lambda0 longitude in decimal degrees of start point
@@ -626,8 +614,8 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Return the azimuth angle in decimal degrees from north. Based
-     * on spherical_azimuth. See class GreatCircle.java
+     * Return the azimuth angle in decimal degrees from north. Based on
+     * spherical_azimuth. See class GreatCircle.java
      * 
      * @param phi1 latitude in decimal degrees of start point
      * @param lambda0 longitude in decimal degrees of start point
@@ -667,16 +655,16 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Set the unit of distance to be displayed: Length.NM, Length.KM
-     * or Length.MILE. If null, displays all of them.
+     * Set the unit of distance to be displayed: Length.NM, Length.KM or
+     * Length.MILE. If null, displays all of them.
      */
     public void setUnit(Length units) {
         unit = units;
     }
 
     /**
-     * Return the unit of distance being displayed: Length.NM,
-     * Length.KM or Length.MILE. If null, displays all of them.
+     * Return the unit of distance being displayed: Length.NM, Length.KM or
+     * Length.MILE. If null, displays all of them.
      */
     public Length getUnit() {
         return unit;
@@ -685,8 +673,7 @@ public class DistanceMouseMode extends CoordMouseMode {
     /**
      * Switch the display of the azimuth angle on or off.
      * 
-     * @param onOff true to display the azimuth angle, false to turn
-     *        off
+     * @param onOff true to display the azimuth angle, false to turn off
      */
     public void showAzimuth(boolean onOff) {
         showAngle = onOff;
@@ -710,8 +697,8 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Return the line type either LINETYPE_GREATCIRCLE,
-     * LINETYPE_RHUMB, LINETYPE_STRAIGHT
+     * Return the line type either LINETYPE_GREATCIRCLE, LINETYPE_RHUMB,
+     * LINETYPE_STRAIGHT
      */
     public int getLineType() {
         return lineType;
@@ -803,8 +790,8 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Called by the MapBean when it repaints, to let the MouseMode
-     * know when to update itself on the map. PaintListener interface.
+     * Called by the MapBean when it repaints, to let the MouseMode know when to
+     * update itself on the map. PaintListener interface.
      */
     public void listenerPaint(java.awt.Graphics g) {
         for (int i = 0; i < segments.size() - 1; i++) {
