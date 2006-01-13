@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrameCacheHandler.java,v $
 // $RCSfile: DTEDFrameCacheHandler.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/12/09 21:09:16 $
+// $Revision: 1.6 $
+// $Date: 2006/01/13 22:05:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -607,6 +607,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
                 String loaderPrefix = realPrefix + (String) it.next();
                 String loaderClassnameProperty = loaderPrefix + ".class";
                 String classname = props.getProperty(loaderClassnameProperty);
+                
                 try {
                     GeneratorLoader loader = (GeneratorLoader) ComponentFactory.create(classname);
                     loader.setProperties(loaderPrefix, props);
@@ -620,6 +621,9 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
                 } catch (ClassCastException cce) {
                     Debug.output("DTEDFrameCacheHandler created " + classname
                             + ", but it's not a GeneratorLoader");
+                } catch (NullPointerException npe) {
+                    Debug.error("DTEDFrameCacheHandler:  problem creating generator loader: " + classname + " from " +
+                            loaderClassnameProperty);
                 }
             }
         }
