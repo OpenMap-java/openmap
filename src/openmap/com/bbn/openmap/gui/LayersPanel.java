@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/08/09 19:14:52 $
+// $Revision: 1.14 $
+// $Date: 2006/01/13 22:50:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,6 +50,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import com.bbn.openmap.BufferedLayerMapBean;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.LightMapHandlerChild;
@@ -61,79 +62,75 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The LayersPanel displays the list of layers that OpenMap can
- * display. The layer name is displayed accompanied by an on/off
- * button and a tool palette button. Pressing the on/off button will
- * cause the the map to display/remove the layer. Pressing the tool
- * palette button will cause a window to be displayed containing
- * widgets specific to that layer.
+ * The LayersPanel displays the list of layers that OpenMap can display. The
+ * layer name is displayed accompanied by an on/off button and a tool palette
+ * button. Pressing the on/off button will cause the the map to display/remove
+ * the layer. Pressing the tool palette button will cause a window to be
+ * displayed containing widgets specific to that layer.
  * <p>
  * 
- * The order of the layers in the list reflects the order that the
- * layers are displayed on the map, with the bottom-most layer listed
- * on the panel underneath all the the other layers displayed on the
- * map. The order of the layers is determined by their order in the
- * Layer[] passed in the setLayers method.
+ * The order of the layers in the list reflects the order that the layers are
+ * displayed on the map, with the bottom-most layer listed on the panel
+ * underneath all the the other layers displayed on the map. The order of the
+ * layers is determined by their order in the Layer[] passed in the setLayers
+ * method.
  * <p>
  * 
- * The order of the layers can be changed by sending the LayersPanel
- * an ActionEvent with one of the string commands in the class, or by
- * sending a PropertyChangeEvent with a command and a Layer as the new
- * value.
+ * The order of the layers can be changed by sending the LayersPanel an
+ * ActionEvent with one of the string commands in the class, or by sending a
+ * PropertyChangeEvent with a command and a Layer as the new value.
  * <P>
  * 
- * In the standard GUI, the order can be changed by selecting a layer
- * by clicking on the layer's name (or on either of buttons), then
- * clicking on one of the four buttons on the left side of the panel.
- * The four buttons signify, from top to bottom: Move the selected
- * layer to the top; Move the selected layer up one position; Move the
- * selected layer down one position; Move the selected layer to the
- * bottom.
+ * In the standard GUI, the order can be changed by selecting a layer by
+ * clicking on the layer's name (or on either of buttons), then clicking on one
+ * of the four buttons on the left side of the panel. The four buttons signify,
+ * from top to bottom: Move the selected layer to the top; Move the selected
+ * layer up one position; Move the selected layer down one position; Move the
+ * selected layer to the bottom.
  * <P>
  * 
- * The LayersPanel can be used within a BeanContext. If it is added to
- * a BeanConext, it will look for a LayerHandler to add itself to as a
- * LayerListener. The LayersPanel can only listen to one LayerHandler,
- * so if more than one is found, only the last one found will be used.
- * If another LayerHandler is added to the BeanContext later, the new
- * LayerHandler will be used. The LayersPanel is also considered to be
- * a Tool, which will cause a button that will bring up the
- * LayersPanel to be automatically added to the ToolPanel if a
- * ToolPanel is part of the BeanContext.
+ * The LayersPanel can be used within a BeanContext. If it is added to a
+ * BeanConext, it will look for a LayerHandler to add itself to as a
+ * LayerListener. The LayersPanel can only listen to one LayerHandler, so if
+ * more than one is found, only the last one found will be used. If another
+ * LayerHandler is added to the BeanContext later, the new LayerHandler will be
+ * used. The LayersPanel is also considered to be a Tool, which will cause a
+ * button that will bring up the LayersPanel to be automatically added to the
+ * ToolPanel if a ToolPanel is part of the BeanContext.
  * <P>
  * 
- * When the LayersPanel discovers a BufferedLayerMapBean is being
- * used, it adds a special LayerPane to its LayerPane list that shows
- * which layers are being buffered in the MapBean. This special
- * LayerPane shows up as a line in the list, and all layers below that
- * line are being specially buffered by the BufferedLayerMapBean.
+ * When the LayersPanel discovers a BufferedLayerMapBean is being used, it adds
+ * a special LayerPane to its LayerPane list that shows which layers are being
+ * buffered in the MapBean. This special LayerPane shows up as a line in the
+ * list, and all layers below that line are being specially buffered by the
+ * BufferedLayerMapBean.
  * <P>
  * 
  * The properties that can be set for the LayersPanel:
  * 
  * <pre>
- * 
- *  
  *   
- *    # Use LayerStatusPanes for the layers if true, otherwise
- *    # LayerPanes.  LayerStatusPanes turn the on/off bulbs to green/red
- *    # bulbs when the layer is resting/working.  LayerPanes just show
- *    # yellow bulbs when the layer is part of the map.
- *    showStatus=true
- *    # When the BufferedLayerMapBean is used, a divider will be
- *    # displayed in the list of layers showing which layers are in the
- *    # MapBean buffer (below the line).  Commands to move layers, by
- *    # default, respect this divider, requiring more commands to have
- *    # layers cross it.
- *    boundary=true
- *    # Add control buttons - use &quot;none&quot; for no button.  If undefined,
- *    # the LayerControlButtonPanel will be created automatically.
- *    controls=com.bbn.openmap.gui.LayerControlButtonPanel
- *    # Any control properties added here, prepended by &quot;controls&quot;...
- *    controls.configuration=WEST
  *    
- *   
- *  
+ *     
+ *      # Use LayerStatusPanes for the layers if true, otherwise
+ *      # LayerPanes.  LayerStatusPanes turn the on/off bulbs to green/red
+ *      # bulbs when the layer is resting/working.  LayerPanes just show
+ *      # yellow bulbs when the layer is part of the map.
+ *      showStatus=true
+ *      # When the BufferedLayerMapBean is used, a divider will be
+ *      # displayed in the list of layers showing which layers are in the
+ *      # MapBean buffer (below the line).  Commands to move layers, by
+ *      # default, respect this divider, requiring more commands to have
+ *      # layers cross it.
+ *      boundary=true
+ *      # Add control buttons - use &quot;none&quot; for no button.  If undefined,
+ *      # the LayerControlButtonPanel will be created automatically.
+ *      controls=com.bbn.openmap.gui.LayerControlButtonPanel
+ *      # Any control properties added here, prepended by &quot;controls&quot;...
+ *      controls.configuration=WEST
+ *      
+ *     
+ *    
  * </pre>
  */
 public class LayersPanel extends OMToolComponent implements Serializable,
@@ -153,36 +150,34 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     /** Action command for notification that a layer has been selected. */
     public final static String LayerSelectedCmd = "LayerSelected";
     /**
-     * Action command for notification that a layer has been
-     * deselected. Not so reliable. Usually a selection notification
-     * means that others are deselected.
+     * Action command for notification that a layer has been deselected. Not so
+     * reliable. Usually a selection notification means that others are
+     * deselected.
      */
     public final static String LayerDeselectedCmd = "LayerDeselected";
 
     /**
-     * A property to set the class to create for layer order controls.
-     * If undefined, a LayerControlButtonPanel in its default
-     * configuration will be created. For no controls added, use
-     * (none) for this property.
+     * A property to set the class to create for layer order controls. If
+     * undefined, a LayerControlButtonPanel in its default configuration will be
+     * created. For no controls added, use (none) for this property.
      */
     public final static String ControlButtonsProperty = "controls";
     /**
-     * A property that can be used for controlling how the to top and
-     * to bottom cammands will be interpreted when a
-     * BufferedLayerMapBean is used. See the definition of
-     * bufferedBoundary.
+     * A property that can be used for controlling how the to top and to bottom
+     * cammands will be interpreted when a BufferedLayerMapBean is used. See the
+     * definition of bufferedBoundary.
      */
     public final static String BufferedBoundaryProperty = "boundary";
     /**
-     * A property that can be used for controlling what type of
-     * LayerPanes are used. If true (default) a LayerStatusPane will
-     * be created for each layer. Otherwise, a LayerPane will be used.
+     * A property that can be used for controlling what type of LayerPanes are
+     * used. If true (default) a LayerStatusPane will be created for each layer.
+     * Otherwise, a LayerPane will be used.
      */
     public final static String ShowStatusProperty = "showStatus";
 
     /**
-     * A value for the (controls) property to not include control
-     * buttons in the interface.
+     * A value for the (controls) property to not include control buttons in the
+     * interface.
      */
     public final static String NO_CONTROLS = "none";
 
@@ -190,8 +185,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     public final static String defaultKey = "layerspanel";
 
     /**
-     * The LayerHandler to listen to for LayerEvents, and also to
-     * notify if the layer order should change.
+     * The LayerHandler to listen to for LayerEvents, and also to notify if the
+     * layer order should change.
      */
     protected transient LayerHandler layerHandler = null;
     /**
@@ -199,9 +194,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
      */
     protected transient LayerAddPanel layerAddPanel = null;
     /**
-     * The components holding the layer name label, the on/off
-     * indicator and on button, and the palette on/off indicator and
-     * palette on button.
+     * The components holding the layer name label, the on/off indicator and on
+     * button, and the palette on/off indicator and palette on button.
      */
     protected transient LinkedList panes;
     /** The internal component that holds the panes. */
@@ -213,48 +207,46 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     /** The ActionListener that will bring up the LayersPanel. */
     protected ActionListener actionListener;
     /**
-     * The frame used when the LayersPanel is used in an application
-     * and the actionListener is called.
+     * The frame used when the LayersPanel is used in an application and the
+     * actionListener is called.
      */
     protected transient JFrame layersWindowFrame;
     /**
-     * The frame used when the LayersPanel is used in an applet and
-     * the actionListener is called.
+     * The frame used when the LayersPanel is used in an applet and the
+     * actionListener is called.
      */
     protected transient JInternalFrame layersWindow;
     /** The set of buttons that control the layers. */
     protected LayerControlButtonPanel controls = null;
     /**
-     * Hashtable that tracks LayerPanes for layers, with the layer as
-     * the key and LayerPane as the value.
+     * Hashtable that tracks LayerPanes for layers, with the layer as the key
+     * and LayerPane as the value.
      */
     protected Hashtable paneLookUp = new Hashtable();
     /**
      * A special LayerPane used when the LayersPanel senses that a
-     * BufferedLayerMapBean is being used. This LayersPanel is a
-     * separating line showing which layers are part of the MapBean's
-     * buffer, and which are not.
+     * BufferedLayerMapBean is being used. This LayersPanel is a separating line
+     * showing which layers are part of the MapBean's buffer, and which are not.
      */
     protected LayerPane backgroundLayerSeparator = null;
     /**
-     * Behavior flag so that if there is a background buffered layer
-     * on the MapBean, and a buffered layer divider in the
-     * LayersPanel, whether commands instructing a layer to the top or
-     * bottom of the list should honor the virtual boundary between
-     * buffered and unbuffered layers. That is, if a layer is on the
-     * bottom of the buffered list and is instructed to go to the top
-     * of the overal list, it will only first travel to the top of the
-     * buffered layers. On a subsequent top command, it will go to the
-     * top of the list. The same behavior applies for going down. True
-     * is default. If set to false, these commands will just send the
-     * selected layer to the top and bottom of the entire list.
+     * Behavior flag so that if there is a background buffered layer on the
+     * MapBean, and a buffered layer divider in the LayersPanel, whether
+     * commands instructing a layer to the top or bottom of the list should
+     * honor the virtual boundary between buffered and unbuffered layers. That
+     * is, if a layer is on the bottom of the buffered list and is instructed to
+     * go to the top of the overal list, it will only first travel to the top of
+     * the buffered layers. On a subsequent top command, it will go to the top
+     * of the list. The same behavior applies for going down. True is default.
+     * If set to false, these commands will just send the selected layer to the
+     * top and bottom of the entire list.
      */
     protected boolean bufferedBoundary = true;
 
     /**
-     * Behavior flag that determines what kind of LayerPane is used
-     * for the layers. If true (default) the LayerStatusPane will be
-     * used. Otherwise, the LayerPane will be used instead.
+     * Behavior flag that determines what kind of LayerPane is used for the
+     * layers. If true (default) the LayerStatusPane will be used. Otherwise,
+     * the LayerPane will be used instead.
      */
     protected boolean showStatus = true;
 
@@ -265,7 +257,10 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         super();
         setKey(defaultKey);
         setLayout(new BorderLayout());
-        setWindowSupport(new WindowSupport(this, "Layers"));
+        // setWindowSupport(new WindowSupport(this, "Layers"));
+        setWindowSupport(new WindowSupport(this, i18n.get(LayersPanel.class,
+                "title",
+                "Layers")));
     }
 
     /**
@@ -279,24 +274,22 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Set the LayerHandler that the LayersPanel listens to. If the
-     * LayerHandler passed in is not null, the LayersMenu will be
-     * added to the LayerHandler LayerListener list, and the
-     * LayersMenu will receive a LayerEvent with the current layers.
+     * Set the LayerHandler that the LayersPanel listens to. If the LayerHandler
+     * passed in is not null, the LayersMenu will be added to the LayerHandler
+     * LayerListener list, and the LayersMenu will receive a LayerEvent with the
+     * current layers.
      * <P>
      * 
-     * If there is a LayerHandler that is already being listened to,
-     * then the LayersPanel will remove itself from current
-     * LayerHandler as a LayerListener, before adding itself to the
-     * new LayerHandler.
+     * If there is a LayerHandler that is already being listened to, then the
+     * LayersPanel will remove itself from current LayerHandler as a
+     * LayerListener, before adding itself to the new LayerHandler.
      * <P>
      * 
-     * Lastly, if the LayerHandler passed in is null, the LayersPanel
-     * will disconnect itself from any LayerHandler currently held,
-     * and reset itself with no layers.
+     * Lastly, if the LayerHandler passed in is null, the LayersPanel will
+     * disconnect itself from any LayerHandler currently held, and reset itself
+     * with no layers.
      * 
-     * @param lh LayerHandler to listen to, and to use to reorder the
-     *        layers.
+     * @param lh LayerHandler to listen to, and to use to reorder the layers.
      */
     public void setLayerHandler(LayerHandler lh) {
         if (layerHandler != null) {
@@ -312,8 +305,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Get the LayerHandler that the LayersPanel listens to and uses
-     * to reorder layers.
+     * Get the LayerHandler that the LayersPanel listens to and uses to reorder
+     * layers.
      * 
      * @return LayerHandler.
      */
@@ -334,10 +327,10 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * LayerListener interface method. A list of layers will be added,
-     * removed, or replaced based on on the type of LayerEvent. The
-     * LayersPanel only reacts to LayerEvent.ALL events, to reset the
-     * components in the LayersPanel.
+     * LayerListener interface method. A list of layers will be added, removed,
+     * or replaced based on on the type of LayerEvent. The LayersPanel only
+     * reacts to LayerEvent.ALL events, to reset the components in the
+     * LayersPanel.
      * 
      * @param evt a LayerEvent.
      */
@@ -352,8 +345,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Tool interface method. The retrieval tool's interface. This
-     * method creates a button that will bring up the LayersPanel.
+     * Tool interface method. The retrieval tool's interface. This method
+     * creates a button that will bring up the LayersPanel.
      * 
      * @return String The key for this tool.
      */
@@ -363,7 +356,11 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         if (getUseAsTool()) {
             layerButton = new JButton(new ImageIcon(OMToolSet.class.getResource("layers.gif"), "Layer Controls"));
             layerButton.setBorderPainted(false);
-            layerButton.setToolTipText("Layer Controls");
+            // layerButton.setToolTipText("Layer Controls");
+            layerButton.setToolTipText(i18n.get(LayersPanel.class,
+                    "layerButton",
+                    I18n.TOOLTIP,
+                    "Layer Controls"));
             layerButton.setMargin(new Insets(0, 0, 0, 0));
             layerButton.addActionListener(getActionListener());
         }
@@ -372,8 +369,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Get the ActionListener that triggers the LayersPanel. Useful to
-     * have to provide an alternative way to bring up the LayersPanel.
+     * Get the ActionListener that triggers the LayersPanel. Useful to have to
+     * provide an alternative way to bring up the LayersPanel.
      * 
      * @return ActionListener
      */
@@ -411,11 +408,11 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Set the layers that are in the LayersPanel. Make sure that the
-     * layer[] is the same as that passed to any other OpenMap
-     * component, like the LayersMenu. This method checks to see if
-     * the layer[] has actually changed, in order or in size. If it
-     * has, then createPanel() is called to rebuild the LayersPanel.
+     * Set the layers that are in the LayersPanel. Make sure that the layer[] is
+     * the same as that passed to any other OpenMap component, like the
+     * LayersMenu. This method checks to see if the layer[] has actually
+     * changed, in order or in size. If it has, then createPanel() is called to
+     * rebuild the LayersPanel.
      * 
      * @param inLayers the array of layers.
      */
@@ -473,8 +470,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         if (it.hasNext() || i < layers.length) {
             createPanel(layers);
         }
-        //  If we get here, it means that what we had is what we
-        //  wanted.
+        // If we get here, it means that what we had is what we
+        // wanted.
     }
 
     protected LinkedList getPanes() {
@@ -489,12 +486,12 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Create the panel that shows the LayerPanes. This method creates
-     * the on/off buttons, palette buttons, and layer labels, and adds
-     * them to the scrollPane used to display all the layers.
+     * Create the panel that shows the LayerPanes. This method creates the
+     * on/off buttons, palette buttons, and layer labels, and adds them to the
+     * scrollPane used to display all the layers.
      * 
-     * @param inLayers the Layer[] that reflects all possible layers
-     *        that can be added to the map.
+     * @param inLayers the Layer[] that reflects all possible layers that can be
+     *        added to the map.
      */
     public void createPanel(Layer[] inLayers) {
         Debug.message("layerspanel", "LayersPanel.createPanel()");
@@ -595,9 +592,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Called when a new LayerPane needs to be created for a layer.
-     * You can use this to extend LayerPane and return something else
-     * that fits your GUI.
+     * Called when a new LayerPane needs to be created for a layer. You can use
+     * this to extend LayerPane and return something else that fits your GUI.
      */
     protected LayerPane createLayerPaneForLayer(Layer layer,
                                                 LayerHandler layerHandler,
@@ -631,10 +627,9 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Set up the buttons used to move layers up and down, or
-     * add/remove layers. The button component should hook itself up
-     * to the LayersPanel, and assume that the LayersPanel has a
-     * BorderLayout with the list in the center spot.
+     * Set up the buttons used to move layers up and down, or add/remove layers.
+     * The button component should hook itself up to the LayersPanel, and assume
+     * that the LayersPanel has a BorderLayout with the list in the center spot.
      */
     protected void createControlButtons() {
         controls = new LayerControlButtonPanel(this);
@@ -642,7 +637,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
 
     /**
      * Should be called internally, when the LayersPanel creates the
-     * LayerControlButtonPanel.  If called from the LCBP, a loop will ensue.
+     * LayerControlButtonPanel. If called from the LCBP, a loop will ensue.
      * 
      * @param lcbp
      */
@@ -655,6 +650,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
 
     /**
      * Simply sets the controls.
+     * 
      * @param lcbp
      */
     public void setControls(LayerControlButtonPanel lcbp) {
@@ -666,9 +662,9 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Method associated with the ActionListener interface. This
-     * method listens for action events meant to change the order of
-     * the layers, as fired by the layer order buttons.
+     * Method associated with the ActionListener interface. This method listens
+     * for action events meant to change the order of the layers, as fired by
+     * the layer order buttons.
      * 
      * @param e ActionEvent
      */
@@ -701,8 +697,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Change a layer's position, with the layer represented by a
-     * LayerPane.
+     * Change a layer's position, with the layer represented by a LayerPane.
      */
     protected void moveLayer(LayerPane lp, String command) {
 
@@ -803,8 +798,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Find the selected LayerPane in the current LayerPane list. Will
-     * return null if there isn't a selected pane.
+     * Find the selected LayerPane in the current LayerPane list. Will return
+     * null if there isn't a selected pane.
      */
     protected LayerPane findSelectedPane() {
         Iterator it = getPanes().iterator();
@@ -890,8 +885,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Update the layer names - if a layer name has changed, tell the
-     * LayerPanes to check with their layers to update their labels.
+     * Update the layer names - if a layer name has changed, tell the LayerPanes
+     * to check with their layers to update their labels.
      */
     public synchronized void updateLayerLabels() {
         Iterator it = getPanes().iterator();
@@ -932,12 +927,11 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Called when the LayersPanel is added the BeanContext, or when
-     * another object is added to the BeanContext after the
-     * LayerHandler has been added. This allows the LayersPanel to
-     * keep up-to-date with any objects that it may be interested in,
-     * namely, the LayerHandler. If a LayerHandler has already been
-     * added, the new LayerHandler will replace it.
+     * Called when the LayersPanel is added the BeanContext, or when another
+     * object is added to the BeanContext after the LayerHandler has been added.
+     * This allows the LayersPanel to keep up-to-date with any objects that it
+     * may be interested in, namely, the LayerHandler. If a LayerHandler has
+     * already been added, the new LayerHandler will replace it.
      * 
      * @param someObj the object being added to the BeanContext
      */
@@ -963,10 +957,10 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * BeanContextMembershipListener method. Called when an object has
-     * been removed from the parent BeanContext. If a LayerHandler is
-     * removed, and it's the current one being listened to, then the
-     * layers in the panel will be wiped clean.
+     * BeanContextMembershipListener method. Called when an object has been
+     * removed from the parent BeanContext. If a LayerHandler is removed, and
+     * it's the current one being listened to, then the layers in the panel will
+     * be wiped clean.
      * 
      * @param someObj the object being removed from the BeanContext
      */
@@ -1031,20 +1025,46 @@ public class LayersPanel extends OMToolComponent implements Serializable,
 
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
-        props.put(ControlButtonsProperty,
+
+        String interString = i18n.get(LayersPanel.class,
+                ControlButtonsProperty,
+                I18n.TOOLTIP,
                 "Class to use for layer control buttons (Optional)");
+        props.put(ControlButtonsProperty, interString);
+        interString = i18n.get(LayersPanel.class,
+                ControlButtonsProperty,
+                "Button Panel Control");
+        props.put(ControlButtonsProperty + LabelEditorProperty, interString);
+
         LayerControlButtonPanel controls = getControls();
         if (controls != null) {
             controls.getPropertyInfo(props);
         }
-        props.put(BufferedBoundaryProperty,
+
+        interString = i18n.get(LayersPanel.class,
+                BufferedBoundaryProperty,
+                I18n.TOOLTIP,
                 "Force layer movement to respect background layer boundary.");
+        props.put(BufferedBoundaryProperty, interString);
+        interString = i18n.get(LayersPanel.class,
+                BufferedBoundaryProperty,
+                "Use Background Layers");
+        props.put(BufferedBoundaryProperty + LabelEditorProperty, interString);
         props.put(BufferedBoundaryProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        props.put(ShowStatusProperty, "Use Layer Panes that show layer status.");
+        
+        interString = i18n.get(LayersPanel.class,
+                ShowStatusProperty,
+                I18n.TOOLTIP,
+                "Use Layer Panes that show layer status.");
+        props.put(ShowStatusProperty, interString);
+        interString = i18n.get(LayersPanel.class,
+                ShowStatusProperty,
+                "Show Layer Status");
+        props.put(ShowStatusProperty + LabelEditorProperty, interString);
         props.put(ShowStatusProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        
         return props;
     }
 }
-

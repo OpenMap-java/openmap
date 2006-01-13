@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerPane.java,v $
 // $RCSfile: LayerPane.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/08/10 21:30:47 $
+// $Revision: 1.11 $
+// $Date: 2006/01/13 22:50:01 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -51,8 +51,8 @@ import com.bbn.openmap.util.Debug;
 
 /**
  * A LayerPane is a single instance of how a layer represented in the
- * LayersPanel. It contains three widgets: an on/off button; a palette
- * button; and a toggle button with the layer name.
+ * LayersPanel. It contains three widgets: an on/off button; a palette button;
+ * and a toggle button with the layer name.
  * <P>
  */
 public class LayerPane extends JPanel implements Serializable, ActionListener,
@@ -100,8 +100,8 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
     /**
      * @param layer the layer to be represented by the pane.
      * @param bg the buttongroup for the layer
-     * @param layerHandler the LayerHandler that contains information
-     *        about the Layers.
+     * @param layerHandler the LayerHandler that contains information about the
+     *        Layers.
      */
     public LayerPane(Layer layer, LayerHandler layerHandler, ButtonGroup bg) {
         super();
@@ -146,9 +146,8 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
     }
 
     /**
-     * Simply creates the AbstractButton object that turns the layer
-     * on/off. Override this if you want to change the kind of button
-     * used.
+     * Simply creates the AbstractButton object that turns the layer on/off.
+     * Override this if you want to change the kind of button used.
      * 
      * @return AbstractButton in an off state.
      */
@@ -157,9 +156,9 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
     }
 
     /**
-     * Calls createOnOFfButton to create the button, and then adds all
-     * the behavior settings to the button. Override this if you want
-     * to change everything about the button.
+     * Calls createOnOFfButton to create the button, and then adds all the
+     * behavior settings to the button. Override this if you want to change
+     * everything about the button.
      * 
      * @return AbstractButton in an off state.
      */
@@ -180,9 +179,8 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
     }
 
     /**
-     * Simply creates the AbstractButton object that turns the layer
-     * palette on/off. Override this if you want to change the kind of
-     * button used.
+     * Simply creates the AbstractButton object that turns the layer palette
+     * on/off. Override this if you want to change the kind of button used.
      * 
      * @return AbstractButton in an off state.
      */
@@ -191,9 +189,9 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
     }
 
     /**
-     * Calls createPaletteButton to create the button, and then adds
-     * all the behavior settings to the button. Override this if you
-     * want to change everything about the button.
+     * Calls createPaletteButton to create the button, and then adds all the
+     * behavior settings to the button. Override this if you want to change
+     * everything about the button.
      * 
      * @return AbstractButton in an off state.
      */
@@ -248,16 +246,15 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
     }
 
     /**
-     * @return LayerHandler if it has been found in the MapHandler or
-     *         set.
+     * @return LayerHandler if it has been found in the MapHandler or set.
      */
     protected LayerHandler getLayerHandler() {
         return layerHandler;
     }
 
     /**
-     * Same as cleanup, except the layer name toggle button gets
-     * removed from the given button group.
+     * Same as cleanup, except the layer name toggle button gets removed from
+     * the given button group.
      */
     public void cleanup(ButtonGroup bg) {
         if (bg != null) {
@@ -359,8 +356,8 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
     }
 
     /**
-     * Tell the pane to check with the layer to get the current layer
-     * name for it's label.
+     * Tell the pane to check with the layer to get the current layer name for
+     * it's label.
      */
     public void updateLayerLabel() {
         layerName.setText(getLayer().getName());
@@ -368,6 +365,10 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
 
     protected void showPalette() {
         layer.showPalette();
+        // This is needed in case the palette button is pressed, and the palette
+        // is already visible. Without this, the button toggles off even though
+        // the palette remains up.
+        setPaletteOn(true);
     }
 
     protected void hidePalette() {

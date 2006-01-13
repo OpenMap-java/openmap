@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersMenu.java,v $
 // $RCSfile: LayersMenu.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/05/23 19:51:56 $
+// $Revision: 1.10 $
+// $Date: 2006/01/13 22:50:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,7 +30,9 @@ import java.awt.event.ComponentListener;
 import java.beans.PropertyVetoException;
 import java.io.Serializable;
 
-import javax.swing.*;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
@@ -39,21 +41,19 @@ import com.bbn.openmap.event.LayerListener;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The LayersMenu is a JMenu which is a list of the layers of the map.
- * This LayersMenu expects to work with a LayerHandler containing all
- * the possible layers that may be added to the map. This list
- * defaults to being checkbuttons which add and remove the named layer
- * to/from the Map. You can also use an instance of this object to
- * show/hide layer palettes.
+ * The LayersMenu is a JMenu which is a list of the layers of the map. This
+ * LayersMenu expects to work with a LayerHandler containing all the possible
+ * layers that may be added to the map. This list defaults to being checkbuttons
+ * which add and remove the named layer to/from the Map. You can also use an
+ * instance of this object to show/hide layer palettes.
  * <P>
  * 
- * This object is interested in contacting a LayerHandler to find out
- * all the layers available, and optionally, a LayersPanel in order to
- * provide a menu item that will call up the GUI for the LayersPanel.
- * If this LayersMenu is a member of a BeanContext, it expects that
- * only one of each of these objects will be added, but if more than
- * one per type is added, the last one added to be BeanContext will be
- * the one hooked up to this LayersMenu.
+ * This object is interested in contacting a LayerHandler to find out all the
+ * layers available, and optionally, a LayersPanel in order to provide a menu
+ * item that will call up the GUI for the LayersPanel. If this LayersMenu is a
+ * member of a BeanContext, it expects that only one of each of these objects
+ * will be added, but if more than one per type is added, the last one added to
+ * be BeanContext will be the one hooked up to this LayersMenu.
  */
 public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
         LayerListener {
@@ -63,13 +63,12 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
      */
     public static final transient int LAYERS_ON_OFF = 1;
     /**
-     * Static value to set this menu to control layer palette
-     * visibility.
+     * Static value to set this menu to control layer palette visibility.
      */
     public static final transient int PALETTES_ON_OFF = 2;
     /**
-     * The flag setting the behavior of the menu, whether it controls
-     * the layers or the layers palettes.
+     * The flag setting the behavior of the menu, whether it controls the layers
+     * or the layers palettes.
      */
     protected int menuType = -1;
     /**
@@ -78,8 +77,8 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     protected transient LayerHandler layerHandler;
     /**
      * Used by the BeanContext methods to insure that the component we
-     * disconnect the edit button from is the same one being removed
-     * from the BeanContext.
+     * disconnect the edit button from is the same one being removed from the
+     * BeanContext.
      */
     protected transient LayersPanel layersPanel;
     /** A button on the bottom of the menu to bring up the layersPanel. */
@@ -120,7 +119,7 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
         super();
         this.menuType = menuType;
         setText(menuName);
-        setMnemonic('L');//HMMMM
+        setMnemonic('L');// HMMMM
 
         layerHandler = lHandler;
 
@@ -131,21 +130,20 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     }
 
     /**
-     * Set the LayerHandler that the LayersPanel listens to. If the
-     * LayerHandler is not null, the LayersMenu will be added to the
-     * LayerHandler LayerListener list, and the LayersMenu will
-     * receive a LayerEvent with the current layers.
+     * Set the LayerHandler that the LayersPanel listens to. If the LayerHandler
+     * is not null, the LayersMenu will be added to the LayerHandler
+     * LayerListener list, and the LayersMenu will receive a LayerEvent with the
+     * current layers.
      * <P>
      * 
-     * If there is a LayerHandler that is already being listened to,
-     * then the LayersPanel will remove itself from current
-     * LayerHandler as a LayerListener, before adding itself to the
-     * new LayerHandler.
+     * If there is a LayerHandler that is already being listened to, then the
+     * LayersPanel will remove itself from current LayerHandler as a
+     * LayerListener, before adding itself to the new LayerHandler.
      * <P>
      * 
-     * Lastly, if the LayerHandler passed in is null, the LayersPanel
-     * will disconnect itself from any LayerHandler currently held,
-     * and reset itself with no layers.
+     * Lastly, if the LayerHandler passed in is null, the LayersPanel will
+     * disconnect itself from any LayerHandler currently held, and reset itself
+     * with no layers.
      * 
      * @param lh the LayerHandler containing the layers.
      */
@@ -170,16 +168,16 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     }
 
     /**
-     * Set the LayersPanel privately to keep track of what object is
-     * being used from the BeanContext.
+     * Set the LayersPanel privately to keep track of what object is being used
+     * from the BeanContext.
      */
     protected void setLayersPanel(LayersPanel lp) {
         layersPanel = lp;
     }
 
     /**
-     * Get the LayersPanel, privately held to keep track of what
-     * object is being used from the BeanContext.
+     * Get the LayersPanel, privately held to keep track of what object is being
+     * used from the BeanContext.
      */
     protected LayersPanel getLayersPanel() {
         return layersPanel;
@@ -200,8 +198,8 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     }
 
     /**
-     * Set the edit menu item that tiggers the LayersPanel action
-     * listener. Assumes that it's already wired up.
+     * Set the edit menu item that tiggers the LayersPanel action listener.
+     * Assumes that it's already wired up.
      */
     public void setEdit(JMenuItem e) {
         edit = e;
@@ -224,16 +222,15 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     }
 
     /**
-     * Get the edit menu item that tiggers the LayersPanel action
-     * listener.
+     * Get the edit menu item that tiggers the LayersPanel action listener.
      */
     public JMenuItem getEdit() {
         return edit;
     }
 
     /**
-     * LayerListener interface method. A list of layers will be added,
-     * removed, or replaced based on on the type of LayerEvent.
+     * LayerListener interface method. A list of layers will be added, removed,
+     * or replaced based on on the type of LayerEvent.
      * 
      * @param evt a LayerEvent
      */
@@ -247,8 +244,7 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     }
 
     /**
-     * Set the layers that are on the menu. Calls setLayers(layers,
-     * true);
+     * Set the layers that are on the menu. Calls setLayers(layers, true);
      * 
      * @param inLayers the array of layers.
      */
@@ -278,9 +274,8 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     }
 
     /**
-     * Remove all the components from the menu. Also calls cleanup()
-     * on all the LayerCheckBoxMenuItems, so they can remove
-     * themselves from their layers.
+     * Remove all the components from the menu. Also calls cleanup() on all the
+     * LayerCheckBoxMenuItems, so they can remove themselves from their layers.
      */
     public void removeAll() {
         Component[] components = getMenuComponents();
@@ -339,24 +334,22 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
          * references.
          */
         public void cleanup() {
-            if (layer != null) {
-                layer.removeComponentListener(this);
-            }
+            layer.removeComponentListener(this);
             this.removeActionListener(this);
             layer = null;
         }
 
         /**
-         * If this widget is being used for bringing up palettes,
-         * bring up the layer's palette.
+         * If this widget is being used for bringing up palettes, bring up the
+         * layer's palette.
          */
         protected void showPalette() {
             layer.showPalette();
         }
 
         /**
-         * If this widget is being used for bringing up palettes, hide
-         * the layer's palette.
+         * If this widget is being used for bringing up palettes, hide the
+         * layer's palette.
          */
         protected void hidePalette() {
             layer.hidePalette();
@@ -369,8 +362,8 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
         public void componentMoved(ComponentEvent e) {}
 
         /**
-         * This menu item listens to the status of its layer. If the
-         * layer becomes visible, it makes the check box enabled.
+         * This menu item listens to the status of its layer. If the layer
+         * becomes visible, it makes the check box enabled.
          */
         public void componentShown(ComponentEvent e) {
             if (e.getComponent() == layer) {
@@ -388,8 +381,8 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
         }
 
         /**
-         * This menu item listens to the status of its layer. If the
-         * layer becomes invisible, it disables the check box.
+         * This menu item listens to the status of its layer. If the layer
+         * becomes invisible, it disables the check box.
          */
         public void componentHidden(ComponentEvent e) {
             if (e.getComponent() == layer) {
@@ -433,15 +426,16 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     }
 
     /**
-     * Given a LayersPanel, set up a JButton to add to the end of the
-     * LayersMenu that will trigger the action listener of the
-     * LayersPanel.
+     * Given a LayersPanel, set up a JButton to add to the end of the LayersMenu
+     * that will trigger the action listener of the LayersPanel.
      * 
      * @param lp the LayersPanel to ask for an ActionListener from.
      */
     public void setupEditLayersButton(LayersPanel lp) {
         // initalize the Edit Layers... button.
-        JMenuItem button = new JMenuItem(editLayersButtonTitle);
+        JMenuItem button = new JMenuItem(i18n.get(LayersMenu.class,
+                "editLayersButtonTitle",
+                editLayersButtonTitle));
         button.setActionCommand("edit");
         button.addActionListener(lp.getActionListener());
         setEdit(button);
@@ -453,7 +447,10 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
      */
     public void setupLayerAddButton(final LayerAddPanel menu) {
         final LayerAddPanel lap = menu;
-        JMenuItem button = new JMenuItem(addLayersButtonTitle);
+        // JMenuItem button = new JMenuItem(addLayersButtonTitle);
+        JMenuItem button = new JMenuItem(i18n.get(LayersMenu.class,
+                "addLayersButtonTitle",
+                addLayersButtonTitle));
         button.setActionCommand("add");
         button.addActionListener(lap);
         setAdd(button);
@@ -461,14 +458,13 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     }
 
     /**
-     * Called when the BeanContext membership changes with object from
-     * the BeanContext. This lets this object hook up with what it
-     * needs. It expects to find only one LayerHandler and LayersPanel
-     * in the BeanContext. If another LayerHandler/LayersPanel is
-     * somehow added to the BeanContext, however, it will drop the
-     * connection to the component it is set up to listen to, and
-     * rewire itself to reflect the status of the last version of the
-     * LayerHandler/LayersPanel found.
+     * Called when the BeanContext membership changes with object from the
+     * BeanContext. This lets this object hook up with what it needs. It expects
+     * to find only one LayerHandler and LayersPanel in the BeanContext. If
+     * another LayerHandler/LayersPanel is somehow added to the BeanContext,
+     * however, it will drop the connection to the component it is set up to
+     * listen to, and rewire itself to reflect the status of the last version of
+     * the LayerHandler/LayersPanel found.
      * 
      * @param someObj Object received in the BeanContext or
      *        BeanContextMembershipEvent.
@@ -487,11 +483,11 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     }
 
     /**
-     * Called when objects are removed from the BeanContext. Should be
-     * used to check for relevant objects that need to be disconnected
-     * from this object. This method does check to see if a
-     * LayerHandler or LayersPanel is being removed, that it is the
-     * same object currently being used by this LayersMenu.
+     * Called when objects are removed from the BeanContext. Should be used to
+     * check for relevant objects that need to be disconnected from this object.
+     * This method does check to see if a LayerHandler or LayersPanel is being
+     * removed, that it is the same object currently being used by this
+     * LayersMenu.
      * 
      * @param someObj the object being removed from the BeanContext
      */
@@ -538,23 +534,21 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     }
 
     /**
-     * Report a vetoable property update to any registered listeners.
-     * If anyone vetos the change, then fire a new event reverting
-     * everyone to the old value and then rethrow the
-     * PropertyVetoException.
+     * Report a vetoable property update to any registered listeners. If anyone
+     * vetos the change, then fire a new event reverting everyone to the old
+     * value and then rethrow the PropertyVetoException.
      * <P>
      * 
      * No event is fired if old and new are equal and non-null.
      * <P>
      * 
-     * @param name The programmatic name of the property that is about
-     *        to change
+     * @param name The programmatic name of the property that is about to change
      * 
      * @param oldValue The old value of the property
      * @param newValue - The new value of the property
      * 
-     * @throws PropertyVetoException if the recipient wishes the
-     *         property change to be rolled back.
+     * @throws PropertyVetoException if the recipient wishes the property change
+     *         to be rolled back.
      */
     public void fireVetoableChange(String name, Object oldValue, Object newValue)
             throws PropertyVetoException {
