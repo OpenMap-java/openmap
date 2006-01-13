@@ -1,7 +1,7 @@
 /* **********************************************************************
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/WebImagePlugIn.java,v $
- * $Revision: 1.5 $ 
- * $Date: 2004/10/14 18:06:20 $ 
+ * $Revision: 1.6 $ 
+ * $Date: 2006/01/13 21:05:22 $ 
  * $Author: dietrick $
  *
  * Code provided by Raj Singh from Syncline, rs@syncline.com
@@ -11,23 +11,31 @@
 
 package com.bbn.openmap.plugin;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.InputStream;
+import java.awt.Component;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
-import java.util.*;
-import javax.swing.*;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Vector;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.image.ImageServerConstants;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * This class asks for an image from a web server. How it asks for
- * that image is what is abstract.
+ * This class asks for an image from a web server. How it asks for that image is
+ * what is abstract.
  */
 public abstract class WebImagePlugIn extends AbstractPlugIn implements
         ImageServerConstants {
@@ -39,18 +47,17 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
     protected Projection currentProjection = null;
 
     /**
-     * Create the query to be sent to the server, based on current
-     * settings.
+     * Create the query to be sent to the server, based on current settings.
      */
     public abstract String createQueryString(Projection p);
 
     /**
-     * The getRectangle call is the main call into the PlugIn module.
-     * The module is expected to fill the graphics list with objects
-     * that are within the screen parameters passed.
+     * The getRectangle call is the main call into the PlugIn module. The module
+     * is expected to fill the graphics list with objects that are within the
+     * screen parameters passed.
      * 
-     * @param p projection of the screen, holding scale, center
-     *        coords, height, width.
+     * @param p projection of the screen, holding scale, center coords, height,
+     *        width.
      */
     public OMGraphicList getRectangle(Projection p) {
         OMGraphicList list = new OMGraphicList();
@@ -98,7 +105,7 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
                     message += st;
                 }
 
-                //                  Debug.error(message);
+                // Debug.error(message);
                 // How about we toss the message out to the user
                 // instead?
                 if (layer != null) {
@@ -119,6 +126,7 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
                 // the best way, no reconnect, but can be an
                 // additional 'in memory' image
                 InputStream in = urlc.getInputStream();
+                // ------- Testing without this
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 int buflen = 2048; // 2k blocks
                 byte buf[] = new byte[buflen];
@@ -129,6 +137,20 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
                 out.flush();
                 out.close();
                 ImageIcon ii = new ImageIcon(out.toByteArray());
+
+                // -------- To here, replaced by two lines below...
+
+                // DFD - I've seen problems with these lines below handling PNG
+                // images, and with some servers with some coverages, like there
+                // was something in the image under certain conditions that made
+                // it tough to view. So while it might be more memory efficient
+                // to do the code below, we'll error on the side of correctness
+                // until we figure out what's going on.
+
+                // FileCacheImageInputStream fciis = new
+                // FileCacheImageInputStream(in, null);
+                // BufferedImage ii = ImageIO.read(fciis);
+
                 OMRaster image = new OMRaster((int) 0, (int) 0, ii);
                 list.add(image);
             } // end if image
@@ -146,7 +168,7 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
 
         list.generate(p);
         return list;
-    } //end getRectangle
+    } // end getRectangle
 
     public abstract String getServerName();
 
@@ -215,4 +237,4 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
         redrawButton.setEnabled(layer != null);
     }
 
-} //end WMSPlugin
+} // end WMSPlugin

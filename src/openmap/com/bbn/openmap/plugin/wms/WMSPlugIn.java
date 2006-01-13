@@ -1,7 +1,7 @@
 /* **********************************************************************
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/wms/WMSPlugIn.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/12/09 21:09:15 $
+ * $Revision: 1.6 $
+ * $Date: 2006/01/13 21:05:23 $
  * $Author: dietrick $
  *
  * Code provided by Raj Singh, raj@rajsingh.org
@@ -14,40 +14,40 @@
 
 package com.bbn.openmap.plugin.wms;
 
-import java.util.*;
+import java.util.NoSuchElementException;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.image.WMTConstants;
-import com.bbn.openmap.plugin.*;
+import com.bbn.openmap.plugin.WebImagePlugIn;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * This class asks for an image from an OpenGIS compliant Web Map
- * Server (WMS). Make sure that OpenMap is using the LLXY projection,
- * because this plugin is only asking for images that are in the
- * Spatial Reference System EPS 4326 projection, and anything else
- * won't match up. This class will be growing to be more interactive
- * with the WMS.
+ * This class asks for an image from an OpenGIS compliant Web Map Server (WMS).
+ * Make sure that OpenMap is using the LLXY projection, because this plugin is
+ * only asking for images that are in the Spatial Reference System EPS 4326
+ * projection, and anything else won't match up. This class will be growing to
+ * be more interactive with the WMS.
  * 
- * It has some properties that you can set in the openmap.properties
- * file:
+ * It has some properties that you can set in the openmap.properties file:
  * 
  * <pre>
- * 
- *  #For the plugin layer, add wms_plugin to openmap.layers list
- *  wms_plugin=com.bbn.openmap.plugin.wms.WMSPlugIn
- *  wms_plugin.wmsserver=A URL for the WMS server (eg. http://host.domain.name/servlet/com.esri.wms.Esrimap)
- *  wms_plugin.wmsversion=OpenGIS WMS version number (eg. 1.1.0)
- *  wms_plugin.format=image format (eg. JPEG, GIF, PNG from WMTConstants.java)
- *  wms_plugin.transparent=true or false, depends on imageformat
- *  wms_plugin.backgroundcolor=RGB hex string (RRGGBB)
- *  wms_plugin.layers=comma separated list of map layer names (eg. SDE.SASAUS_BND_COASTL,SDE.SASAUS_BND_POLBNDL)
- *  wms_plugin.styles=comma separated list of layer rendering styles corresponding to the layers listed
- *  wms_plugin.vendorspecificnames=comma separated list of vendor specific parameter names in order (eg. SERVICENAME)
- *  wms_plugin.vendorspecificvalues=comma separated list of vendor specific parameter values in order (eg. default)
- *  
+ *    
+ *     #For the plugin layer, add wms_plugin to openmap.layers list
+ *     wms_plugin=com.bbn.openmap.plugin.wms.WMSPlugIn
+ *     wms_plugin.wmsserver=A URL for the WMS server (eg. http://host.domain.name/servlet/com.esri.wms.Esrimap)
+ *     wms_plugin.wmsversion=OpenGIS WMS version number (eg. 1.1.0)
+ *     wms_plugin.format=image format (eg. JPEG, GIF, PNG from WMTConstants.java)
+ *     wms_plugin.transparent=true or false, depends on imageformat
+ *     wms_plugin.backgroundcolor=RGB hex string (RRGGBB)
+ *     wms_plugin.layers=comma separated list of map layer names (eg. SDE.SASAUS_BND_COASTL,SDE.SASAUS_BND_POLBNDL)
+ *     wms_plugin.styles=comma separated list of layer rendering styles corresponding to the layers listed
+ *     wms_plugin.vendorspecificnames=comma separated list of vendor specific parameter names in order (eg. SERVICENAME)
+ *     wms_plugin.vendorspecificvalues=comma separated list of vendor specific parameter values in order (eg. default)
+ *     
  * </pre>
  * 
  * <p>
@@ -61,8 +61,8 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
     /** GIF, PNG, JPEG, etc. (anything the server supports) */
     protected String imageFormat = null;
     /**
-     * If using a lossy image format, such as jpeg, set this to high,
-     * medium or low
+     * If using a lossy image format, such as jpeg, set this to high, medium or
+     * low
      */
     protected String imageQuality = "MEDIUM";
     /** Specify the color for non-data areas of the image in r,g,b */
@@ -84,9 +84,9 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
     /** Keyword for map request. Changes to MAP for WMS version 1.0.0 */
     protected String mapRequestName = WMTConstants.GETMAP;
     /**
-     * Keyword for error handling. Changes to INIMAGE for WMS version
-     * under 1.1.0. Changes to application/vnd.ogc.se+inimage for
-     * versions greater than 1.1.1
+     * Keyword for error handling. Changes to INIMAGE for WMS version under
+     * 1.1.0. Changes to application/vnd.ogc.se+inimage for versions greater
+     * than 1.1.1
      */
     protected String errorHandling = "application/vnd.ogc.se_inimage";
 
@@ -121,13 +121,13 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
      */
     public void addLayers(String[] ls, String[] st) {
 
-        //DFD - do they have to be the same length? How about we just
-        //use the styles we have for that number of layers, and let
-        //the defaults take over for the rest.
+        // DFD - do they have to be the same length? How about we just
+        // use the styles we have for that number of layers, and let
+        // the defaults take over for the rest.
 
-        //      if (ls.length != st.length) {
-        //          return null;
-        //      }
+        // if (ls.length != st.length) {
+        // return null;
+        // }
 
         for (int j = 0; j < ls.length; j++) {
             layers += "," + ls[j];
@@ -143,8 +143,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
     }
 
     /**
-     * Create the query to be sent to the server, based on current
-     * settings.
+     * Create the query to be sent to the server, based on current settings.
      */
     public String createQueryString(Projection p) {
 
@@ -205,9 +204,8 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         }
 
         /*
-         * Included to allow for one or more vendor specific
-         * parameters to be specified such as ESRI's ArcIMS's
-         * "ServiceName" parameter.
+         * Included to allow for one or more vendor specific parameters to be
+         * specified such as ESRI's ArcIMS's "ServiceName" parameter.
          */
         if (vendorSpecificNames != null) {
             if (vendorSpecificValues != null) {
@@ -234,21 +232,20 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
     }
 
     /**
-     * Method to set the properties in the PropertyConsumer. The
-     * prefix is a string that should be prepended to each property
-     * key (in addition to a separating '.') in order for the
-     * PropertyConsumer to uniquely identify properies meant for it,
-     * in the midst of Properties meant for several objects.
+     * Method to set the properties in the PropertyConsumer. The prefix is a
+     * string that should be prepended to each property key (in addition to a
+     * separating '.') in order for the PropertyConsumer to uniquely identify
+     * properies meant for it, in the midst of Properties meant for several
+     * objects.
      * 
-     * @param prefix a String used by the PropertyConsumer to prepend
-     *        to each property value it wants to look up -
-     *        setList.getProperty(prefix.propertyKey). If the prefix
-     *        had already been set, then the prefix passed in should
-     *        replace that previous value.
+     * @param prefix a String used by the PropertyConsumer to prepend to each
+     *        property value it wants to look up -
+     *        setList.getProperty(prefix.propertyKey). If the prefix had already
+     *        been set, then the prefix passed in should replace that previous
+     *        value.
      * 
-     * @param setList a Properties object that the PropertyConsumer
-     *        can use to retrieve expected properties it can use for
-     *        configuration.
+     * @param setList a Properties object that the PropertyConsumer can use to
+     *        retrieve expected properties it can use for configuration.
      */
     public void setProperties(String prefix, Properties setList) {
         super.setProperties(prefix, setList);
@@ -263,44 +260,11 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
 
         imageFormat = setList.getProperty(prefix + ImageFormatProperty);
 
-        transparent = setList.getProperty(prefix + TransparentProperty);
+        setTransparent(setList.getProperty(prefix + TransparentProperty));
 
         backgroundColor = setList.getProperty(prefix + BackgroundColorProperty);
 
-        wmsVersion = setList.getProperty(prefix + WMSVersionProperty);
-        if (wmsVersion == null) {
-            wmsVersion = "1.1.0";
-            Debug.output("WMSPlugin: wmsVersion was null, now set to 1.1.0");
-        }
-
-        if (Debug.debugging("wms")) {
-            Debug.output("WMSPlugIn: set up with header \"" + queryHeader
-                    + "\"");
-        }
-
-        java.util.StringTokenizer st = new java.util.StringTokenizer(wmsVersion, ".");
-        int majorVersion = Integer.parseInt(st.nextToken());
-        int midVersion = Integer.parseInt(st.nextToken());
-        int minorVersion = Integer.parseInt(st.nextToken());
-
-        // set the REQUEST parameter
-        if (majorVersion == 1 && midVersion == 0 && minorVersion < 3) {
-            mapRequestName = WMTConstants.MAP;
-        }
-
-        // set the image type parameter
-        if (majorVersion == 1 && minorVersion > 7) {
-            imageFormat = "image/" + imageFormat;
-        }
-
-        // set the error handling parameter
-        if (majorVersion == 1 && midVersion == 0) {
-            errorHandling = "INIMAGE";
-        } else if (majorVersion == 1 && midVersion >= 1 && minorVersion > 1) {
-            errorHandling = "application/vnd.ogc.se+inimage";
-        } else if (majorVersion > 1) {
-            errorHandling = "application/vnd.ogc.se+inimage";
-        }
+        setWmsVersion(setList.getProperty(prefix + WMSVersionProperty));
 
         layers = setList.getProperty(prefix + LayersProperty);
         styles = setList.getProperty(prefix + StylesProperty);
@@ -313,7 +277,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         vendorSpecificValues = setList.getProperty(prefix
                 + VendorSpecificValuesProperty);
 
-    } //end setProperties
+    } // end setProperties
 
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
@@ -390,9 +354,150 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
             imageQuality = "LOW";
     }
 
+    public String getImageQuality() {
+        return imageQuality;
+    }
+
+    public void setImageQuality(String imageQuality) {
+        this.imageQuality = imageQuality;
+    }
+
+    public String getTransparent() {
+        return transparent;
+    }
+
+    public void setTransparent(String transparent) {
+        if (transparent != null) {
+            transparent = Boolean.valueOf(transparent).toString().toUpperCase();
+        }
+        this.transparent = transparent;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public String getErrorHandling() {
+        return errorHandling;
+    }
+
+    public void setErrorHandling(String errorHandling) {
+        this.errorHandling = errorHandling;
+    }
+
+    public String getLayers() {
+        return layers;
+    }
+
+    public void setLayers(String layers) {
+        this.layers = layers;
+    }
+
+    public String getMapRequestName() {
+        return mapRequestName;
+    }
+
+    public void setMapRequestName(String mapRequestName) {
+        this.mapRequestName = mapRequestName;
+    }
+
+    public String getQueryHeader() {
+        return queryHeader;
+    }
+
+    public void setQueryHeader(String queryHeader) {
+        this.queryHeader = queryHeader;
+    }
+
+    public String getStyles() {
+        return styles;
+    }
+
+    public void setStyles(String styles) {
+        this.styles = styles;
+    }
+
+    public String getVendorSpecificNames() {
+        return vendorSpecificNames;
+    }
+
+    public void setVendorSpecificNames(String vendorSpecificNames) {
+        this.vendorSpecificNames = vendorSpecificNames;
+    }
+
+    public String getVendorSpecificValues() {
+        return vendorSpecificValues;
+    }
+
+    public void setVendorSpecificValues(String vendorSpecificValues) {
+        this.vendorSpecificValues = vendorSpecificValues;
+    }
+
+    public String getWmsServer() {
+        return wmsServer;
+    }
+
+    public void setWmsServer(String wmsServer) {
+        this.wmsServer = wmsServer;
+    }
+
     // make this better!
     public String getServerName() {
         return wmsServer;
     }
 
-} //end WMSPlugin
+    public String getWmsVersion() {
+        return wmsVersion;
+    }
+
+    /**
+     * Does more than just set the version, it also adjusts other parameters
+     * based on version. Be careful calling this without knowing what it does
+     * and how it affects other settings.
+     * 
+     * @param wmsVer
+     */
+    public void setWmsVersion(String wmsVer) {
+        if (wmsVer == null) {
+            wmsVer = "1.1.0";
+            Debug.output("WMSPlugin: wmsVersion was null, now set to 1.1.0");
+        }
+
+        if (Debug.debugging("wms")) {
+            Debug.output("WMSPlugIn: set up with header \"" + queryHeader
+                    + "\"");
+        }
+
+        java.util.StringTokenizer st = new java.util.StringTokenizer(wmsVer, ".");
+        int majorVersion = Integer.parseInt(st.nextToken());
+        int midVersion = Integer.parseInt(st.nextToken());
+        int minorVersion = Integer.parseInt(st.nextToken());
+
+        // set the REQUEST parameter
+        if (majorVersion == 1 && midVersion == 0 && minorVersion < 3) {
+            mapRequestName = WMTConstants.MAP;
+        }
+
+        // set the image type parameter
+        if (majorVersion == 1 && minorVersion > 7
+                && !imageFormat.startsWith("image/")) {
+            imageFormat = "image/" + imageFormat;
+        }
+
+        // set the error handling parameter
+        if (majorVersion == 1 && midVersion == 0) {
+            errorHandling = "INIMAGE";
+        } else if (majorVersion == 1 && midVersion >= 1 && minorVersion > 1) {
+            errorHandling = "application/vnd.ogc.se+inimage";
+        } else if (majorVersion > 1) {
+            errorHandling = "application/vnd.ogc.se+inimage";
+        }
+
+        this.wmsVersion = wmsVer;
+    }
+
+} // end WMSPlugin
