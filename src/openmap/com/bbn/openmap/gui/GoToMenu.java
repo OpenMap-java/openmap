@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.14 $
-// $Date: 2005/12/09 21:09:02 $
+// $Revision: 1.15 $
+// $Date: 2006/01/13 22:01:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,45 +55,45 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * Menu that keeps track of different saved map views (lat/lon, scale
- * and projection type), and provides a way to set the map projection
- * to those views. There is a set of optional default views, but new
- * views can be added. If these views are added to the properties
- * file, they will be added to the menu automatically for later uses.
- * This menu can understand a set of properties:
+ * Menu that keeps track of different saved map views (lat/lon, scale and
+ * projection type), and provides a way to set the map projection to those
+ * views. There is a set of optional default views, but new views can be added.
+ * If these views are added to the properties file, they will be added to the
+ * menu automatically for later uses. This menu can understand a set of
+ * properties:
  * 
  * <pre>
- * 
- * 
- *  gotoMenu.class=com.bbn.openmap.gui.GoToMenu
- *  #Add the default, world view option
- *  gotoMenu.addDefaults=true
- *  #Add the menu for DataBoundsProviders
- *  gotoMenu.addDataViews=true
- *  #Additional views
- *  goto.views=Argentina India United_States Caspian_Sea
- *  Argentina.latitude=-39.760445
- *  Argentina.longitude=-65.92294
- *  Argentina.name=Argentina
- *  Argentina.projection=Mercator
- *  Argentina.scale=5.0E7
- *  India.latitude=20.895763
- *  India.longitude=80.437485
- *  India.name=India
- *  India.projection=Mercator
- *  India.scale=3.86688E7
- *  United_States.latitude=38.82259
- *  United_States.longitude=-96.74999
- *  United_States.name=United States
- *  United_States.projection=Mercator
- *  United_States.scale=5.186114E7
- *  Caspian_Sea.name=Caspian Sea
- *  Caspian_Sea.latitude=40f
- *  Caspian_Sea.longitude=47f
- *  Caspian_Sea.scale=1000000
- *  Caspian_Sea.projection=CADRG
- * 
  *  
+ *  
+ *   gotoMenu.class=com.bbn.openmap.gui.GoToMenu
+ *   #Add the default, world view option
+ *   gotoMenu.addDefaults=true
+ *   #Add the menu for DataBoundsProviders
+ *   gotoMenu.addDataViews=true
+ *   #Additional views
+ *   goto.views=Argentina India United_States Caspian_Sea
+ *   Argentina.latitude=-39.760445
+ *   Argentina.longitude=-65.92294
+ *   Argentina.name=Argentina
+ *   Argentina.projection=Mercator
+ *   Argentina.scale=5.0E7
+ *   India.latitude=20.895763
+ *   India.longitude=80.437485
+ *   India.name=India
+ *   India.projection=Mercator
+ *   India.scale=3.86688E7
+ *   United_States.latitude=38.82259
+ *   United_States.longitude=-96.74999
+ *   United_States.name=United States
+ *   United_States.projection=Mercator
+ *   United_States.scale=5.186114E7
+ *   Caspian_Sea.name=Caspian Sea
+ *   Caspian_Sea.latitude=40f
+ *   Caspian_Sea.longitude=47f
+ *   Caspian_Sea.scale=1000000
+ *   Caspian_Sea.projection=CADRG
+ *  
+ *   
  * </pre>
  */
 public class GoToMenu extends AbstractOpenMapMenu {
@@ -106,8 +106,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
     protected MapBean map;
 
     /**
-     * A space separated list of marker names for the views to be
-     * loaded from the properties.
+     * A space separated list of marker names for the views to be loaded from
+     * the properties.
      */
     public final static String ViewListProperty = "views";
     /** The name of the view to use in the GUI. */
@@ -123,8 +123,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
     /** Flag to use to add default views (World, each continent. */
     public final static String AddDefaultListProperty = "addDefaults";
     /**
-     * Flag to use to enable/disable the gathering of
-     * DataBoundsProviders.
+     * Flag to use to enable/disable the gathering of DataBoundsProviders.
      */
     public final static String AddDataViewsProperty = "addDataViews";
 
@@ -136,8 +135,15 @@ public class GoToMenu extends AbstractOpenMapMenu {
         setText(i18n.get(this, "goto", defaultText));
         setMnemonic(i18n.get(this, "goto", I18n.MNEMONIC, defaultMnemonic).charAt(0));
 
-        dataBoundsMenu = new OMBasicMenu("Go Over Data");
-        add(new AddNewViewButton("Add Saved View..."));
+        // dataBoundsMenu = new OMBasicMenu("Go Over Data");
+        dataBoundsMenu = new OMBasicMenu(i18n.get(this,
+                "goOverData",
+                "Go Over Data"));
+
+        // add(new AddNewViewButton("Add Saved View..."));
+        add(new AddNewViewButton(i18n.get(this,
+                "addSavedView",
+                "Add Saved View...")));
         add(dataBoundsMenu);
         add(new JSeparator());
     }
@@ -271,7 +277,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
     /** Add the default views to the menu. */
     public void addDefaultLocations() {
-        add(new GoToButton("World", 0, 0, Float.MAX_VALUE, Mercator.MercatorName));
+        add(new GoToButton(i18n.get(this, "world", "World"), 0, 0, Float.MAX_VALUE, Mercator.MercatorName));
     }
 
     Vector customViews = new Vector();
@@ -325,8 +331,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
     }
 
     /**
-     * Add a button to the menu that will set the map to a particular
-     * view.
+     * Add a button to the menu that will set the map to a particular view.
      */
     public void addView(GoToButton newOne) {
         customViews.add(newOne);
@@ -335,9 +340,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
     }
 
     /**
-     * This is the button that will bring up the dialog to actually
-     * name a new view being added. The new view will be the current
-     * projection of the map.
+     * This is the button that will bring up the dialog to actually name a new
+     * view being added. The new view will be the current projection of the map.
      */
     public class AddNewViewButton extends JMenuItem implements ActionListener {
 
@@ -408,13 +412,13 @@ public class GoToMenu extends AbstractOpenMapMenu {
             if (map != null) {
                 Projection oldProj = map.getProjection();
                 Class projClass = ProjectionFactory.getProjClassForName(projectionID);
-                
+
                 if (projClass == null) {
-                        projClass = com.bbn.openmap.proj.Mercator.class;
+                    projClass = com.bbn.openmap.proj.Mercator.class;
                 }
 
                 Projection newProj = ProjectionFactory.makeProjection(projClass,
-                        new Point2D.Float(latitude, longitude),
+                        new Point2D.Float(longitude, latitude),
                         scale,
                         oldProj.getWidth(),
                         oldProj.getHeight());
