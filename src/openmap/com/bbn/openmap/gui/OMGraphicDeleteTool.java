@@ -14,47 +14,52 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMGraphicDeleteTool.java,v $
 // $RCSfile: OMGraphicDeleteTool.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:48 $
+// $Revision: 1.7 $
+// $Date: 2006/01/18 17:44:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import com.bbn.openmap.MapBean;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.event.*;
-import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
-import com.bbn.openmap.tools.drawing.OMDrawingTool;
-import com.bbn.openmap.util.Debug;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Iterator;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
-import javax.swing.*;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JToolBar;
+
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicConstants;
+import com.bbn.openmap.omGraphics.event.SelectionEvent;
+import com.bbn.openmap.omGraphics.event.SelectionListener;
+import com.bbn.openmap.omGraphics.event.SelectionProvider;
+import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
+import com.bbn.openmap.tools.drawing.OMDrawingTool;
+import com.bbn.openmap.util.Debug;
 
 /**
- * The OMGraphicDeleteTool is a Swing component that contains a button
- * that listens for notifications that tell it that an OMGraphic has
- * been 'selected', and provides the capability to delete that
- * OMGraphic from the component that manages it. The
- * OMGraphicDeleteTool gathers SelectionEvents, which provide it
- * information about the OMGraphic and the DrawingToolRequestor that
- * can delete it from the map. If multiple events are received,
- * pressing the button will cause notifications to be sent to all the
- * DrawingToolRequestors to delete all the OMGraphics that are
- * currently selected. This component is also a
- * com.bbn.openmap.gui.Tool, so if the ToolPanel sees it in the
- * MapHandler, the button will automatically be added to it.
+ * The OMGraphicDeleteTool is a Swing component that contains a button that
+ * listens for notifications that tell it that an OMGraphic has been 'selected',
+ * and provides the capability to delete that OMGraphic from the component that
+ * manages it. The OMGraphicDeleteTool gathers SelectionEvents, which provide it
+ * information about the OMGraphic and the DrawingToolRequestor that can delete
+ * it from the map. If multiple events are received, pressing the button will
+ * cause notifications to be sent to all the DrawingToolRequestors to delete all
+ * the OMGraphics that are currently selected. This component is also a
+ * com.bbn.openmap.gui.Tool, so if the ToolPanel sees it in the MapHandler, the
+ * button will automatically be added to it.
  * <p>
- * To add the button to the OpenMap application, it just needs to be
- * added to the openmap.components property in the openmap.properties
- * file.
+ * To add the button to the OpenMap application, it just needs to be added to
+ * the openmap.components property in the openmap.properties file.
  */
 public class OMGraphicDeleteTool extends OMToolComponent implements
         SelectionListener, ActionListener, KeyListener {
@@ -87,7 +92,11 @@ public class OMGraphicDeleteTool extends OMToolComponent implements
         }
 
         deleteButton.addActionListener(this);
-        deleteButton.setToolTipText("Delete selected map graphic");
+        // deleteButton.setToolTipText("Delete selected map graphic");
+        deleteButton.setToolTipText(i18n.get(OMGraphicDeleteTool.class,
+                "deleteButton",
+                I18n.TOOLTIP,
+                "Delete selected map graphic"));
         deleteButton.setEnabled(false);
 
         jToolBar.add(deleteButton);
@@ -122,8 +131,8 @@ public class OMGraphicDeleteTool extends OMToolComponent implements
                 ((OMDrawingTool) itemSource).deactivate(OMGraphicConstants.DELETE_GRAPHIC_MASK);
 
             } else {
-                if (item != null) { //  is this check necessary? I
-                                    // doubt it.
+                if (item != null) { // is this check necessary? I
+                    // doubt it.
                     DrawingToolRequestor requestor = item.getRequestor();
                     OMGraphic omg = item.getOMGraphic();
                     if (requestor != null) {
@@ -164,10 +173,10 @@ public class OMGraphicDeleteTool extends OMToolComponent implements
         deleteButton.setEnabled(!deleteList.isEmpty());
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    //// MapHandlerChild methods to make the tool work with
-    //// the MapHandler to find any SelectionProviders.
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
+    // // MapHandlerChild methods to make the tool work with
+    // // the MapHandler to find any SelectionProviders.
+    // /////////////////////////////////////////////////////////////////////////
 
     public void findAndInit(Object obj) {
         if (obj instanceof SelectionProvider) {

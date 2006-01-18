@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v
 // $
 // $RCSfile: PropUtils.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/05/24 02:16:58 $
+// $Revision: 1.12 $
+// $Date: 2006/01/18 17:44:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,17 +41,17 @@ import java.util.Vector;
 import javax.swing.JFileChooser;
 
 import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 
 public class PropUtils {
 
     /**
-     * Parse a list of marker names from a space separated list within
-     * a String.
+     * Parse a list of marker names from a space separated list within a String.
      * <p>
      * 
-     * @param markerList a string containing a space delimited list of
-     *        marker names.
+     * @param markerList a string containing a space delimited list of marker
+     *        names.
      * @return Vector of marker names.
      */
     public static Vector parseSpacedMarkers(String markerList) {
@@ -59,14 +59,13 @@ public class PropUtils {
     }
 
     /**
-     * Parse a list of marker names from a space separated list within
-     * a String.
+     * Parse a list of marker names from a space separated list within a String.
      * <p>
      * 
-     * @param markerList a string containing a space delimited list of
-     *        marker names.
-     * @param delim the list of tokens to look for which separate the
-     *        list elements.
+     * @param markerList a string containing a space delimited list of marker
+     *        names.
+     * @param delim the list of tokens to look for which separate the list
+     *        elements.
      * @return Vector of marker names.
      */
     public static Vector parseMarkers(String markerList, String delim) {
@@ -104,18 +103,16 @@ public class PropUtils {
     public static final String propertySeparators = "&";
 
     /**
-     * Take a property list, defined in a single string, and return a
-     * Properties object. The properties, as key-value pairs, are
-     * separated by another type of symbol. In this method, the
-     * key-values are assumed to be separated from other key-value
-     * pairs by PropUtils.propertySeparators String characters, and
-     * each key is separated from its value by any character in the
-     * PropUtils.keyValueSeparators list.
+     * Take a property list, defined in a single string, and return a Properties
+     * object. The properties, as key-value pairs, are separated by another type
+     * of symbol. In this method, the key-values are assumed to be separated
+     * from other key-value pairs by PropUtils.propertySeparators String
+     * characters, and each key is separated from its value by any character in
+     * the PropUtils.keyValueSeparators list.
      * 
      * @param list the properties list string.
      * @return Properties object containing keys and values.
-     * @throws PropertyStringFormatException if a key doesn't have a
-     *         value.
+     * @throws PropertyStringFormatException if a key doesn't have a value.
      */
     public static Properties parsePropertyList(String list)
             throws PropertyStringFormatException {
@@ -123,19 +120,17 @@ public class PropUtils {
     }
 
     /**
-     * Take a property list, defined in a single string, and return a
-     * Properties object. The properties, as key-value pairs, are
-     * separated by another type of symbol.
+     * Take a property list, defined in a single string, and return a Properties
+     * object. The properties, as key-value pairs, are separated by another type
+     * of symbol.
      * 
      * @param list the properties list string.
      * @return Properties object containing keys and values.
-     * @param propertySeparators the key-values are assumed to be
-     *        separated from other key-value pairs by any character in
-     *        this String.
-     * @param keyValueSeparators each key is separated from its value
-     *        by any character in this String.
-     * @throws PropertyStringFormatException if a key doesn't have a
-     *         value.
+     * @param propertySeparators the key-values are assumed to be separated from
+     *        other key-value pairs by any character in this String.
+     * @param keyValueSeparators each key is separated from its value by any
+     *        character in this String.
+     * @throws PropertyStringFormatException if a key doesn't have a value.
      */
     public static Properties parsePropertyList(String list,
                                                String propertySeparators,
@@ -177,9 +172,8 @@ public class PropUtils {
 
     /**
      * Load the named file from the named directory into the given
-     * <code>Properties</code> instance. If the file is not found a
-     * warning is issued. If an IOException occurs, a fatal error is
-     * printed.
+     * <code>Properties</code> instance. If the file is not found a warning is
+     * issued. If an IOException occurs, a fatal error is printed.
      * 
      * @param props the instance to receive the loaded properties
      * @param dir the directory where the properties file resides
@@ -213,11 +207,10 @@ public class PropUtils {
     }
 
     /**
-     * Loads properties from a java resource. This will load the named
-     * resource identifier into the given properties instance.
+     * Loads properties from a java resource. This will load the named resource
+     * identifier into the given properties instance.
      * 
-     * @param properties the Properties instance to receive the
-     *        properties.
+     * @param properties the Properties instance to receive the properties.
      * @param propsIn an InputStream to read properties from
      * @return true if the properties file exists and was loaded.
      */
@@ -235,8 +228,8 @@ public class PropUtils {
     }
 
     /**
-     * A function that brings up a file chooser window in order to
-     * have the user look for a valid Java properties file.
+     * A function that brings up a file chooser window in order to have the user
+     * look for a valid Java properties file.
      * 
      * @return properties object with selected file contents.
      */
@@ -260,23 +253,21 @@ public class PropUtils {
     }
 
     /**
-     * It seems like every PropertyConsumer wrestles with having a
-     * prefix or not. This method lets you just get the prefix with a
-     * period on the end (for scoping purposes), or just returns an
-     * empty String. Either way, you get a String you can slap on the
-     * beginning of your defined propery names to get a valid property
-     * based on what the prefix is.
+     * It seems like every PropertyConsumer wrestles with having a prefix or
+     * not. This method lets you just get the prefix with a period on the end
+     * (for scoping purposes), or just returns an empty String. Either way, you
+     * get a String you can slap on the beginning of your defined propery names
+     * to get a valid property based on what the prefix is.
      */
     public static String getScopedPropertyPrefix(PropertyConsumer pc) {
         return getScopedPropertyPrefix(pc.getPropertyPrefix());
     }
 
     /**
-     * Given the string, check if it's null. If it is, return an empty
-     * string. If it isn't, check to see if it ends with a period, and
-     * do nothing if it does. If it doesn't end in a period, add one,
-     * and then return that. The returned string should be good for
-     * prepending to other properties.
+     * Given the string, check if it's null. If it is, return an empty string.
+     * If it isn't, check to see if it ends with a period, and do nothing if it
+     * does. If it doesn't end in a period, add one, and then return that. The
+     * returned string should be good for prepending to other properties.
      */
     public static String getScopedPropertyPrefix(String pre) {
         if (pre == null) {
@@ -289,10 +280,9 @@ public class PropUtils {
     }
 
     /**
-     * It kills Properties to have null values set. You can wrap a
-     * property value in this in PropertyConsumer.getProperties() to
-     * not worry about it. Returns "" if prop == null, else returns
-     * what was passed in.
+     * It kills Properties to have null values set. You can wrap a property
+     * value in this in PropertyConsumer.getProperties() to not worry about it.
+     * Returns "" if prop == null, else returns what was passed in.
      */
     public static String unnull(String prop) {
         if (prop == null) {
@@ -302,10 +292,9 @@ public class PropUtils {
     }
 
     /**
-     * Takes a string of `;' separated paths and returns an array of
-     * parsed strings. NOTE: this method currently doesn't support
-     * appropriate quoting of the `;' character, although it probably
-     * should...
+     * Takes a string of `;' separated paths and returns an array of parsed
+     * strings. NOTE: this method currently doesn't support appropriate quoting
+     * of the `;' character, although it probably should...
      * 
      * @param p properties
      * @param propName the name of the property
@@ -316,16 +305,14 @@ public class PropUtils {
     }
 
     /**
-     * Takes a string of `;' separated paths and returns an array of
-     * parsed strings. NOTE: this method currently doesn't support
-     * appropriate quoting of the `;' character, although it probably
-     * should...
+     * Takes a string of `;' separated paths and returns an array of parsed
+     * strings. NOTE: this method currently doesn't support appropriate quoting
+     * of the `;' character, although it probably should...
      * 
      * @param p properties
      * @param propName the name of the property
-     * @param defaultPaths the value of the paths to set if the
-     *        property doesn't exist, or if is doesn't contain
-     *        anything.
+     * @param defaultPaths the value of the paths to set if the property doesn't
+     *        exist, or if is doesn't contain anything.
      * @return Array of strings representing paths.
      */
     public static String[] initPathsFromProperties(Properties p,
@@ -341,14 +328,13 @@ public class PropUtils {
     }
 
     /**
-     * Gets an integer out of a properties object. Returns the default
-     * value if something goes wrong.
+     * Gets an integer out of a properties object. Returns the default value if
+     * something goes wrong.
      * 
      * @param p properties
-     * @param propName name of the property associated with the wanted
-     *        value.
-     * @param defaultValue what to return if the property name doesn't
-     *        exist, or if the value isn't a numerical value.
+     * @param propName name of the property associated with the wanted value.
+     * @param defaultValue what to return if the property name doesn't exist, or
+     *        if the value isn't a numerical value.
      * @return integer value associated with the property.
      */
     public static int intFromProperties(Properties p, String propName,
@@ -367,14 +353,13 @@ public class PropUtils {
     }
 
     /**
-     * Gets an float out of a properties object. Returns the default
-     * value if something goes wrong.
+     * Gets an float out of a properties object. Returns the default value if
+     * something goes wrong.
      * 
      * @param p properties
-     * @param propName name of the property associated with the wanted
-     *        value.
-     * @param defaultValue what to return if the property name doesn't
-     *        exist, or if the value isn't a numerical value.
+     * @param propName name of the property associated with the wanted value.
+     * @param defaultValue what to return if the property name doesn't exist, or
+     *        if the value isn't a numerical value.
      * @return float value associated with the property.
      */
     public static float floatFromProperties(Properties p, String propName,
@@ -393,14 +378,13 @@ public class PropUtils {
     }
 
     /**
-     * Gets an boolean out of a properties object. Returns the default
-     * value if something goes wrong.
+     * Gets an boolean out of a properties object. Returns the default value if
+     * something goes wrong.
      * 
      * @param p properties
-     * @param propName name of the property associated with the wanted
-     *        value.
-     * @param defaultValue what to return if the property name doesn't
-     *        exist, or if the value isn't a numerical value.
+     * @param propName name of the property associated with the wanted value.
+     * @param defaultValue what to return if the property name doesn't exist, or
+     *        if the value isn't a numerical value.
      * @return boolean value associated with the property.
      */
     public static boolean booleanFromProperties(Properties p, String propName,
@@ -415,13 +399,12 @@ public class PropUtils {
     }
 
     /**
-     * Creates an object out of a property name. If anything fails,
-     * return null.
+     * Creates an object out of a property name. If anything fails, return null.
      * 
      * @param p properties
      * @param propName name of class to instantiate.
-     * @return null on failure, otherwise, a default constructed
-     *         instance of the class named in the property.
+     * @return null on failure, otherwise, a default constructed instance of the
+     *         class named in the property.
      */
     public static Object objectFromProperties(Properties p, String propName) {
 
@@ -434,10 +417,9 @@ public class PropUtils {
     }
 
     /**
-     * Takes a string of representing token separated properties and
-     * returns an array of parsed strings. NOTE: this method currently
-     * doesn't support appropriate quoting of the token, although it
-     * probably should...
+     * Takes a string of representing token separated properties and returns an
+     * array of parsed strings. NOTE: this method currently doesn't support
+     * appropriate quoting of the token, although it probably should...
      * 
      * @param p properties
      * @param propName the name of the property
@@ -469,14 +451,13 @@ public class PropUtils {
     }
 
     /**
-     * Gets a double out of a properties object. Returns the default
-     * value if something goes wrong.
+     * Gets a double out of a properties object. Returns the default value if
+     * something goes wrong.
      * 
      * @param p properties
-     * @param propName name of the property associated with the wanted
-     *        value.
-     * @param defaultValue what to return if the property name doesn't
-     *        exist, or if the value isn't a numerical value.
+     * @param propName name of the property associated with the wanted value.
+     * @param defaultValue what to return if the property name doesn't exist, or
+     *        if the value isn't a numerical value.
      * @return double value associated with the property.
      */
     public static double doubleFromProperties(Properties p, String propName,
@@ -495,14 +476,13 @@ public class PropUtils {
     }
 
     /**
-     * Gets a long out of a properties object. Returns the default
-     * value if something goes wrong.
+     * Gets a long out of a properties object. Returns the default value if
+     * something goes wrong.
      * 
      * @param p properties
-     * @param propName name of the property associated with the wanted
-     *        value.
-     * @param defaultValue what to return if the property name doesn't
-     *        exist, or if the value isn't a numerical value.
+     * @param propName name of the property associated with the wanted value.
+     * @param defaultValue what to return if the property name doesn't exist, or
+     *        if the value isn't a numerical value.
      * @return long value associated with the property.
      */
     public static long longFromProperties(Properties p, String propName,
@@ -521,18 +501,17 @@ public class PropUtils {
     }
 
     /**
-     * Take a string from a properties file, representing the 24bit
-     * RGB or 32bit ARGB hex values for a color, and convert it to a
-     * java.awt.Color.
+     * Take a string from a properties file, representing the 24bit RGB or 32bit
+     * ARGB hex values for a color, and convert it to a java.awt.Color.
      * 
      * @param p properties
      * @param propName the name of the property
      * @param dfault color to use if the property value doesn't work
      * @return java.awt.Color
-     * @exception NumberFormatException if the specified string cannot
-     *            be interpreted as a hexidecimal integer
-     * @see ColorFactory#parseColorFromProperties(Properties, String,
-     *      String, boolean)
+     * @exception NumberFormatException if the specified string cannot be
+     *            interpreted as a hexidecimal integer
+     * @see ColorFactory#parseColorFromProperties(Properties, String, String,
+     *      boolean)
      */
     public static Color parseColorFromProperties(Properties p, String propName,
                                                  String dfault)
@@ -541,16 +520,15 @@ public class PropUtils {
     }
 
     /**
-     * Take a string from a properties file, representing the 24bit
-     * RGB or 32bit ARGB hex values for a color, and convert it to a
-     * java.awt.Color.
+     * Take a string from a properties file, representing the 24bit RGB or 32bit
+     * ARGB hex values for a color, and convert it to a java.awt.Color.
      * 
      * @param p properties
      * @param propName the name of the property
      * @param dfault color to use if the property value doesn't work
      * @return java.awt.Color
-     * @see ColorFactory#parseColorFromProperties(Properties, String,
-     *      String, boolean)
+     * @see ColorFactory#parseColorFromProperties(Properties, String, String,
+     *      boolean)
      */
     public static Paint parseColorFromProperties(Properties p, String propName,
                                                  Paint dfault) {
@@ -558,20 +536,19 @@ public class PropUtils {
     }
 
     /**
-     * Convert a string representing a 24/32bit hex color value into a
-     * Color value. NOTE:
+     * Convert a string representing a 24/32bit hex color value into a Color
+     * value. NOTE:
      * <ul>
-     * <li>Only 24bit (RGB) java.awt.Color is supported on the JDK
-     * 1.1 platform.
-     * <li>Both 24/32bit (ARGB) java.awt.Color is supported on the
-     * Java 2 platform.
+     * <li>Only 24bit (RGB) java.awt.Color is supported on the JDK 1.1
+     * platform.
+     * <li>Both 24/32bit (ARGB) java.awt.Color is supported on the Java 2
+     * platform.
      * </ul>
      * 
      * @param colorString the 24/32bit hex string value (ARGB)
-     * @return java.awt.Color (24bit RGB on JDK 1.1, 24/32bit ARGB on
-     *         JDK1.2)
-     * @exception NumberFormatException if the specified string cannot
-     *            be interpreted as a hexidecimal integer
+     * @return java.awt.Color (24bit RGB on JDK 1.1, 24/32bit ARGB on JDK1.2)
+     * @exception NumberFormatException if the specified string cannot be
+     *            interpreted as a hexidecimal integer
      * @see ColorFactory#parseColor(String, boolean)
      */
     public static Color parseColor(String colorString)
@@ -580,8 +557,8 @@ public class PropUtils {
     }
 
     /**
-     * Returns a string representing a color, properly buffered for
-     * zeros for different alpha values.
+     * Returns a string representing a color, properly buffered for zeros for
+     * different alpha values.
      * 
      * @param color
      * @return string for color with alpha values.
@@ -595,8 +572,8 @@ public class PropUtils {
     }
 
     /**
-     * Converts a properties object to an array of Strings. The
-     * resulting array will consist of alternating key-value strings.
+     * Converts a properties object to an array of Strings. The resulting array
+     * will consist of alternating key-value strings.
      * 
      * @param props the properties object to convert.
      * @return an array of Strings representing key-value pairs.
@@ -616,9 +593,8 @@ public class PropUtils {
     }
 
     /**
-     * Returns a URL that names either a resource, a local file, or an
-     * internet URL. Resources are checked for in the general
-     * classpath.
+     * Returns a URL that names either a resource, a local file, or an internet
+     * URL. Resources are checked for in the general classpath.
      * 
      * @param name name of the resource, file or URL.
      * @throws java.net.MalformedURLException
@@ -630,8 +606,8 @@ public class PropUtils {
     }
 
     /**
-     * Returns a URL that names either a resource, a local file, or an
-     * internet URL.
+     * Returns a URL that names either a resource, a local file, or an internet
+     * URL.
      * 
      * @param askingClass the object asking for the URL.
      * @param name name of the resource, file or URL.
@@ -645,8 +621,8 @@ public class PropUtils {
     }
 
     /**
-     * Returns a URL that names either a resource, a local file, or an
-     * internet URL.
+     * Returns a URL that names either a resource, a local file, or an internet
+     * URL.
      * 
      * @param askingClass the class asking for the URL. Can be null.
      * @param name name of the resource, file or URL.
@@ -743,5 +719,49 @@ public class PropUtils {
         }
 
         return retval;
+    }
+
+    /**
+     * Simple space saving implementation of common I18n Property Info setting.
+     * 
+     * @param i18n i18n object to use to search for internationalized strings.
+     * @param info the properties class being used to set information into.
+     * @param classToSetFor class to use for i18n search.
+     * @param propertyName property to set for.
+     * @param label label to use for GUI (can be null if N/A).
+     * @param tooltip tooltip to use for GUI (can be null if N/A).
+     * @param editor editor class string to use for GUI (can be null if N/A).
+     * @return Properties object passed in, or new one if null Properties passed
+     *         in.
+     */
+    public static Properties setI18NPropertyInfo(I18n i18n, Properties info,
+                                                 Class classToSetFor,
+                                                 String propertyName,
+                                                 String label, String tooltip,
+                                                 String editor) {
+        if (info == null) {
+            info = new Properties();
+        }
+        if (i18n != null) {
+            if (tooltip != null) {
+                String internString = i18n.get(classToSetFor,
+                        propertyName,
+                        I18n.TOOLTIP,
+                        tooltip);
+                info.put(propertyName, internString);
+            }
+            if (label != null) {
+                String internString = i18n.get(classToSetFor,
+                        propertyName,
+                        label);
+                info.put(propertyName + PropertyConsumer.LabelEditorProperty,
+                        internString);
+            }
+            if (editor != null) {
+                info.put(propertyName + PropertyConsumer.ScopedEditorProperty,
+                        editor);
+            }
+        }
+        return info;
     }
 }

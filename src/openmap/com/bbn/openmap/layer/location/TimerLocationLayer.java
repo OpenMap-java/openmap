@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/TimerLocationLayer.java,v $
 // $RCSfile: TimerLocationLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:59 $
+// $Revision: 1.6 $
+// $Date: 2006/01/18 17:44:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -249,12 +249,21 @@ public class TimerLocationLayer extends LocationLayer {
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
 
-        list.put(UpdateTimerIntervalProperty,
-                "Number of milliseconds for automatic file reloading.");
-        list.put(AutoTimerProperty,
-                "Flag to start/stop timer automatically when layer is on map.");
-        list.put(AutoTimerProperty + ScopedEditorProperty,
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                TimerLocationLayer.class,
+                UpdateTimerIntervalProperty,
+                "Timer interval",
+                "Number of milliseconds for automatic file reloading.", null);
+        
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                TimerLocationLayer.class,
+                AutoTimerProperty,
+                "Auto Timer",
+                "Flag to start/stop timer automatically when layer is on map.",
                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+
         return list;
     }
 

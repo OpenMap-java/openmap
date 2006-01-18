@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/AbstractLocationHandler.java,v $
-// $Revision: 1.8 $ $Date: 2005/08/09 18:15:13 $ $Author: dietrick $
+// $Revision: 1.9 $ $Date: 2006/01/18 17:44:15 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.location;
@@ -24,27 +24,29 @@ import java.util.Properties;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The <tt>AbstractLocationHandler</tt> class facilitates the
- * implementation of a <code>LocationHandler</code> by implementing
- * a number of methods. By extending this class, a developer need only
- * implement get(), setProperties(), and reloadData().
+ * The <tt>AbstractLocationHandler</tt> class facilitates the implementation
+ * of a <code>LocationHandler</code> by implementing a number of methods. By
+ * extending this class, a developer need only implement get(), setProperties(),
+ * and reloadData().
  * 
  * <pre>
- *   
- *    locationhandler.locationColor=FF0000
- *    locationhandler.nameColor=008C54
- *    locationhandler.showNames=false
- *    locationhandler.showLocations=true
- *    locationhandler.override=true
  *    
+ *     locationhandler.locationColor=FF0000
+ *     locationhandler.nameColor=008C54
+ *     locationhandler.showNames=false
+ *     locationhandler.showLocations=true
+ *     locationhandler.override=true
+ *     
  * </pre>
  * 
  * @see com.bbn.openmap.layer.location.LocationHandler
- * @version $Revision: 1.8 $ $Date: 2005/08/09 18:15:13 $
+ * @version $Revision: 1.9 $ $Date: 2006/01/18 17:44:15 $
  * @author Michael E. Los D530/23448
  */
 public abstract class AbstractLocationHandler implements LocationHandler {
@@ -77,41 +79,46 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     private boolean forceGlobal = true;
 
     /**
-     * Token uniquely identifying this LocationHandler in the
-     * application properties.
+     * Token uniquely identifying this LocationHandler in the application
+     * properties.
      */
     protected String propertyPrefix = null;
+
+    /**
+     * All LocationHandlers have access to an I18n object, which is provided by
+     * the Environment.
+     */
+    protected transient I18n i18n = Environment.getI18n();
 
     protected AbstractLocationHandler() {
         nameDrawingAttributes = new DrawingAttributes();
         locationDrawingAttributes = new DrawingAttributes();
 
-//        try {
-//            nameDrawingAttributes.setLinePaint(ColorFactory.parseColor(defaultNameColorString,
-//                    true));
-//            locationDrawingAttributes.setLinePaint(ColorFactory.parseColor(defaultLocationColorString,
-//                    true));
-//        } catch (NumberFormatException nfe) {
-//        }
+        // try {
+        // nameDrawingAttributes.setLinePaint(ColorFactory.parseColor(defaultNameColorString,
+        // true));
+        // locationDrawingAttributes.setLinePaint(ColorFactory.parseColor(defaultLocationColorString,
+        // true));
+        // } catch (NumberFormatException nfe) {
+        // }
     }
 
     /**
-     * The location layer passes a LocationPopupMenu to the handler
-     * when on of its locations has been clicked on. This is an
-     * opportunity for the handler to add options to the menu that can
-     * bring up further information about the location, or to change
-     * the appearance of the location. This implementation makes no
-     * changes to the popup menu.
+     * The location layer passes a LocationPopupMenu to the handler when on of
+     * its locations has been clicked on. This is an opportunity for the handler
+     * to add options to the menu that can bring up further information about
+     * the location, or to change the appearance of the location. This
+     * implementation makes no changes to the popup menu.
      * 
      * @param lpm LocationPopupMenu to add buttons to.
      */
     public void fillLocationPopUpMenu(LocationPopupMenu lpm) {}
 
     /**
-     * Set the layer the handler is responding to. This is needed in
-     * case the handler has updates that it wants to show, and needs
-     * to trigger a repaint. It can also be used to communicate with
-     * the information delegator.
+     * Set the layer the handler is responding to. This is needed in case the
+     * handler has updates that it wants to show, and needs to trigger a
+     * repaint. It can also be used to communicate with the information
+     * delegator.
      * 
      * @param l a LocationLayer
      */
@@ -139,16 +146,14 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     }
 
     /**
-     * See if the handler is displaying location graphics at a global
-     * level.
+     * See if the handler is displaying location graphics at a global level.
      */
     public boolean isShowLocations() {
         return showLocations;
     }
 
     /**
-     * Set the handler to show/hide location graphics at a global
-     * level.
+     * Set the handler to show/hide location graphics at a global level.
      */
     public void setShowLocations(boolean set) {
         showLocations = set;
@@ -197,9 +202,9 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     }
 
     /**
-     * A set of controls to manipulate and control the display of data
-     * from the handler. This implementation returns a JPanel with a
-     * "No Palette" message.
+     * A set of controls to manipulate and control the display of data from the
+     * handler. This implementation returns a JPanel with a "No Palette"
+     * message.
      * 
      * @return a JPanel with text, No Pallette
      */
@@ -211,18 +216,16 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     }
 
     /**
-     * Called by the LocationLayer when the layer is removed from the
-     * map. The LocationHandler should release expensive resources if
-     * this is called.
+     * Called by the LocationLayer when the layer is removed from the map. The
+     * LocationHandler should release expensive resources if this is called.
      */
     public void removed(java.awt.Container cont) {}
 
     /**
-     * Sets the properties for the handler. This particular method
-     * assumes that the marker name is not needed, because all of the
-     * contents of this Properties object are to be used for this
-     * object, and scoping the properties with a prefix is
-     * unnecessary.
+     * Sets the properties for the handler. This particular method assumes that
+     * the marker name is not needed, because all of the contents of this
+     * Properties object are to be used for this object, and scoping the
+     * properties with a prefix is unnecessary.
      * 
      * @param props the <code>Properties</code> object.
      */
@@ -231,15 +234,14 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     }
 
     /**
-     * Set up the properties of the handler. Part of the
-     * PropertyConsumer interface.
+     * Set up the properties of the handler. Part of the PropertyConsumer
+     * interface.
      * 
      * Supported properties include:
      * <UL>
-     * <LI>locationColor - number of seconds between attempts to
-     * retrieve Features data
-     * <LI>featuresSvcURL - URL to invoke to retrieve the XML
-     * Features document
+     * <LI>locationColor - number of seconds between attempts to retrieve
+     * Features data
+     * <LI>featuresSvcURL - URL to invoke to retrieve the XML Features document
      * </UL>
      */
     public void setProperties(String prefix, Properties properties) {
@@ -256,7 +258,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
                 properties);
         locationDrawingAttributes.setProperties(prefix + LocationPropertyPrefix,
                 properties);
-        
+
         // For backward compatibility
         setLocationColor((Color) PropUtils.parseColorFromProperties(properties,
                 prefix + LocationColorProperty,
@@ -271,22 +273,20 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     }
 
     /**
-     * PropertyConsumer method, to fill in a Properties object,
-     * reflecting the current values of the layer. If the layer has a
-     * propertyPrefix set, the property keys should have that prefix
-     * plus a separating '.' prepended to each propery key it uses for
-     * configuration. This method takes care of the basic
-     * LocationHandler parameters, so any LocationHandlers that extend
-     * the AbstractLocationHandler should call this method, too,
-     * before adding any specific properties.
+     * PropertyConsumer method, to fill in a Properties object, reflecting the
+     * current values of the layer. If the layer has a propertyPrefix set, the
+     * property keys should have that prefix plus a separating '.' prepended to
+     * each propery key it uses for configuration. This method takes care of the
+     * basic LocationHandler parameters, so any LocationHandlers that extend the
+     * AbstractLocationHandler should call this method, too, before adding any
+     * specific properties.
      * 
-     * @param props a Properties object to load the PropertyConsumer
-     *        properties into. If props equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param props a Properties object to load the PropertyConsumer properties
+     *        into. If props equals null, then a new Properties object should be
+     *        created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
         if (props == null) {
@@ -312,54 +312,75 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     }
 
     /**
-     * Method to fill in a Properties object with values reflecting
-     * the properties able to be set on this PropertyConsumer. The key
-     * for each property should be the raw property name (without a
-     * prefix) with a value that is a String that describes what the
-     * property key represents, along with any other information about
-     * the property that would be helpful (range, default value,
-     * etc.). This method takes care of the basic LocationHandler
-     * parameters, so any LocationHandlers that extend the
-     * AbstractLocationHandler should call this method, too, before
-     * adding any specific properties.
+     * Method to fill in a Properties object with values reflecting the
+     * properties able to be set on this PropertyConsumer. The key for each
+     * property should be the raw property name (without a prefix) with a value
+     * that is a String that describes what the property key represents, along
+     * with any other information about the property that would be helpful
+     * (range, default value, etc.). This method takes care of the basic
+     * LocationHandler parameters, so any LocationHandlers that extend the
+     * AbstractLocationHandler should call this method, too, before adding any
+     * specific properties.
      * 
-     * @param list a Properties object to load the PropertyConsumer
-     *        properties into. If getList equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param list a Properties object to load the PropertyConsumer properties
+     *        into. If getList equals null, then a new Properties object should
+     *        be created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
         if (list == null) {
             list = new Properties();
         }
 
-        list.put(ShowNamesProperty, "Display all the location name labels");
-        list.put(ShowNamesProperty + ScopedEditorProperty,
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                AbstractLocationHandler.class,
+                ShowNamesProperty,
+                "Show names",
+                "Display all the location name labels.",
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        list.put(NameColorProperty, "Color of name label");
-        list.put(NameColorProperty + ScopedEditorProperty,
+
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                AbstractLocationHandler.class,
+                NameColorProperty,
+                "Name label color",
+                "Color of name label text on map.",
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-        list.put(ShowLocationsProperty, "Display all the location markers");
-        list.put(ShowLocationsProperty + ScopedEditorProperty,
+        
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                AbstractLocationHandler.class,
+                ShowLocationsProperty,
+                "Show locations",
+                "Display all the location markers.",
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        list.put(LocationColorProperty, "Color of location marker");
-        list.put(LocationColorProperty + ScopedEditorProperty,
+        
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                AbstractLocationHandler.class,
+                LocationColorProperty,
+                "Location color",
+                "Color of location marker on map.",
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
-        list.put(ForceGlobalProperty,
-                "Layer settings override map object settings");
-        list.put(ForceGlobalProperty + ScopedEditorProperty,
+
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                AbstractLocationHandler.class,
+                ForceGlobalProperty,
+                "Layer Override",
+                "Layer settings override map object settings.",
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return list;
     }
 
     /**
-     * Set the property key prefix that should be used by the
-     * PropertyConsumer. The prefix, along with a '.', should be
-     * prepended to the property keys known by the PropertyConsumer.
+     * Set the property key prefix that should be used by the PropertyConsumer.
+     * The prefix, along with a '.', should be prepended to the property keys
+     * known by the PropertyConsumer.
      * 
      * @param prefix the prefix String.
      */
@@ -368,8 +389,8 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     }
 
     /**
-     * Get the property key prefix that is being used to prepend to
-     * the property keys for Properties lookups.
+     * Get the property key prefix that is being used to prepend to the property
+     * keys for Properties lookups.
      * 
      * @return the property prefix
      */

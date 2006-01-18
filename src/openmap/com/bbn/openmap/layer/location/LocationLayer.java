@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationLayer.java,v $
 // $RCSfile: LocationLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/12/09 21:09:07 $
+// $Revision: 1.9 $
+// $Date: 2006/01/18 17:44:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,6 +40,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.event.InfoDisplayEvent;
@@ -58,51 +59,49 @@ import com.bbn.openmap.util.SwingWorker;
 
 /**
  * The LocationLayer is a layer that displays graphics supplied by
- * LocationHandlers. When the layer receives a new projection, it goes
- * to each LocationHandler and asks it for additions to the layer's
- * graphic list. The LocationHandlers maintain the graphics, and the
- * layer maintains the overall list.
+ * LocationHandlers. When the layer receives a new projection, it goes to each
+ * LocationHandler and asks it for additions to the layer's graphic list. The
+ * LocationHandlers maintain the graphics, and the layer maintains the overall
+ * list.
  * 
- * The whole idea behind locations is that there are geographic places
- * that are to be marked with a graphic, and/or a text label. The
- * location handler handles the interface with the source and type of
- * location to be displayed, and the LocationLayer deals with all the
- * locations in a generic way. The LocationLayer is capable of using
- * more than one LocationHandler.
+ * The whole idea behind locations is that there are geographic places that are
+ * to be marked with a graphic, and/or a text label. The location handler
+ * handles the interface with the source and type of location to be displayed,
+ * and the LocationLayer deals with all the locations in a generic way. The
+ * LocationLayer is capable of using more than one LocationHandler.
  * <P>
  * 
- * As a side note, a Link is nothing more than a connection between
- * Locations, and is an extension of the Location Class. They have a
- * graphic representing the link, an optional label, and an extra set
- * of location coordinates.
+ * As a side note, a Link is nothing more than a connection between Locations,
+ * and is an extension of the Location Class. They have a graphic representing
+ * the link, an optional label, and an extra set of location coordinates.
  * <P>
  * 
- * The layer responds to gestures with pop-up menus. Which menu
- * appears depends if the gesture affects a graphic.
+ * The layer responds to gestures with pop-up menus. Which menu appears depends
+ * if the gesture affects a graphic.
  * <P>
  * 
  * The properties for this layer are:
  * <P>
  * 
  * <pre>
- * 
- *  ####################################
- *  # Properties for LocationLayer
- *  # Use the DeclutterMatrix to declutter the labels.
- *  locationlayer.useDeclutter=false
- *  # Which declutter matrix class to use.
- *  locationlayer.declutterMatrix=com.bbn.openmap.layer.DeclutterMatrix
- *  # Let the DeclutterMatrix have labels that run off the edge of the map.
- *  locationlayer.allowPartials=true
- *  # The list of location handler prefixes - each prefix should then
- *  # be used to further define the location handler properties.
- *  locationlayer.locationHandlers=handler1 handler2
- *  # Then come the handler properties...
- *  # At the least, each handler should have a .class property
- *  handler1.class=&lt;handler classname&gt;
- *  # plus any other properties handler1 needs - check the handler1 documentation.
- *  #################################### 
  *  
+ *   ####################################
+ *   # Properties for LocationLayer
+ *   # Use the DeclutterMatrix to declutter the labels.
+ *   locationlayer.useDeclutter=false
+ *   # Which declutter matrix class to use.
+ *   locationlayer.declutterMatrix=com.bbn.openmap.layer.DeclutterMatrix
+ *   # Let the DeclutterMatrix have labels that run off the edge of the map.
+ *   locationlayer.allowPartials=true
+ *   # The list of location handler prefixes - each prefix should then
+ *   # be used to further define the location handler properties.
+ *   locationlayer.locationHandlers=handler1 handler2
+ *   # Then come the handler properties...
+ *   # At the least, each handler should have a .class property
+ *   handler1.class=&lt;handler classname&gt;
+ *   # plus any other properties handler1 needs - check the handler1 documentation.
+ *   #################################### 
+ *   
  * </pre>
  */
 public class LocationLayer extends Layer implements MapMouseListener {
@@ -112,8 +111,8 @@ public class LocationLayer extends Layer implements MapMouseListener {
     /** Flag to use declutter matrix or not. */
     protected boolean useDeclutterMatrix = false;
     /**
-     * Flag to let objects appear partially off the edges of the map,
-     * when decluttering through the decluterr matrix.
+     * Flag to let objects appear partially off the edges of the map, when
+     * decluttering through the decluterr matrix.
      */
     protected boolean allowPartials = true;
     /** The graphic list of objects to draw. */
@@ -123,15 +122,15 @@ public class LocationLayer extends Layer implements MapMouseListener {
     /** Pretty names for the handlers, for GUIs and such. */
     protected String[] dataHandlerNames;
 
-    /////////////////////
+    // ///////////////////
     // Variables to manage the gesturing mechanisms
 
     /** Used for recentering commands off the pop-up menu. */
     protected MapBean map;
     /**
-     * What pops up if someone clicks on the background. The handler
-     * is responsible for suppling the pop-up menu when one of its
-     * objects is selected.
+     * What pops up if someone clicks on the background. The handler is
+     * responsible for suppling the pop-up menu when one of its objects is
+     * selected.
      */
     protected LocationPopupMenu backgroundMenu;
     /** What pops up if someone clicks on a location. */
@@ -146,19 +145,18 @@ public class LocationLayer extends Layer implements MapMouseListener {
     public static final String LocationHandlerListProperty = "locationHandlers";
 
     /**
-     * The swing worker that goes off in it's own thread to get
-     * graphics.
+     * The swing worker that goes off in it's own thread to get graphics.
      */
     protected LocationWorker currentWorker;
     /**
-     * Set when the projection has changed while a swing worker is
-     * gathering graphics, and we want him to stop early.
+     * Set when the projection has changed while a swing worker is gathering
+     * graphics, and we want him to stop early.
      */
     protected boolean cancelled = false;
 
     /**
-     * Since we can't have the main thread taking up the time to
-     * create images, we use this worker thread to do it.
+     * Since we can't have the main thread taking up the time to create images,
+     * we use this worker thread to do it.
      */
     class LocationWorker extends SwingWorker {
         /** Constructor used to create a worker thread. */
@@ -167,8 +165,7 @@ public class LocationLayer extends Layer implements MapMouseListener {
         }
 
         /**
-         * Compute the value to be returned by the <code>get</code>
-         * method.
+         * Compute the value to be returned by the <code>get</code> method.
          */
         public Object construct() {
             if (Debug.debugging("location")) {
@@ -189,9 +186,8 @@ public class LocationLayer extends Layer implements MapMouseListener {
         }
 
         /**
-         * Called on the event dispatching thread (not on the worker
-         * thread) after the <code>construct</code> method has
-         * returned.
+         * Called on the event dispatching thread (not on the worker thread)
+         * after the <code>construct</code> method has returned.
          */
         public void finished() {
             workerComplete(this);
@@ -200,17 +196,16 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values.
+     * The default constructor for the Layer. All of the attributes are set to
+     * their default values.
      */
     public LocationLayer() {}
 
     /**
-     * The properties and prefix are managed and decoded here, for the
-     * standard uses of the LocationLayer.
+     * The properties and prefix are managed and decoded here, for the standard
+     * uses of the LocationLayer.
      * 
-     * @param prefix string prefix used in the properties file for
-     *        this layer.
+     * @param prefix string prefix used in the properties file for this layer.
      * @param properties the properties set in the properties file.
      */
     public void setProperties(String prefix, Properties properties) {
@@ -234,8 +229,8 @@ public class LocationLayer extends Layer implements MapMouseListener {
             declutterMatrix.setAllowPartials(allowPartials);
             Debug.message("location",
                     "LocationLayer: Found DeclutterMatrix to use");
-            //          declutterMatrix.setXInterval(3);
-            //          declutterMatrix.setYInterval(3);
+            // declutterMatrix.setXInterval(3);
+            // declutterMatrix.setYInterval(3);
         } else {
             useDeclutterMatrix = false;
         }
@@ -276,10 +271,9 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * Used to set the cancelled flag in the layer. The swing worker
-     * checks this once in a while to see if the projection has
-     * changed since it started working. If this is set to true, the
-     * swing worker quits when it is safe.
+     * Used to set the cancelled flag in the layer. The swing worker checks this
+     * once in a while to see if the projection has changed since it started
+     * working. If this is set to true, the swing worker quits when it is safe.
      */
     public synchronized void setCancelled(boolean set) {
         cancelled = set;
@@ -295,9 +289,9 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * Tell the location handlers to reload their data from their
-     * sources. If you want these changes to appear on the map, you
-     * should call doPrepare() after this call.
+     * Tell the location handlers to reload their data from their sources. If
+     * you want these changes to appear on the map, you should call doPrepare()
+     * after this call.
      */
     public void reloadData() {
         if (dataHandlers != null) {
@@ -323,12 +317,11 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * The projectionListener interface method that lets the Layer
-     * know when the projection has changes, and therefore new
-     * graphics have to created /supplied for the screen.
+     * The projectionListener interface method that lets the Layer know when the
+     * projection has changes, and therefore new graphics have to created
+     * /supplied for the screen.
      * 
-     * @param e The projection event, most likely fired from a map
-     *        bean.
+     * @param e The projection event, most likely fired from a map bean.
      */
     public void projectionChanged(ProjectionEvent e) {
         if (Debug.debugging("basic")) {
@@ -351,9 +344,9 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * The LocationWorker calls this method on the layer when it is
-     * done working. If the calling worker is not the same as the
-     * "current" worker, then a new worker is created.
+     * The LocationWorker calls this method on the layer when it is done
+     * working. If the calling worker is not the same as the "current" worker,
+     * then a new worker is created.
      * 
      * @param worker the worker that has the graphics.
      */
@@ -370,10 +363,9 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * A method that will launch a Worker to fetch the data. This is
-     * the method to call if you want the layer to refresh it's
-     * graphics from the location handlers. The layer will repaint
-     * itself automatically.
+     * A method that will launch a Worker to fetch the data. This is the method
+     * to call if you want the layer to refresh it's graphics from the location
+     * handlers. The layer will repaint itself automatically.
      */
     public void doPrepare() {
         // If there isn't a worker thread working on a projection
@@ -388,14 +380,13 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * Prepares the graphics for the layer. This is where the
-     * getRectangle() method call is made on the location.
+     * Prepares the graphics for the layer. This is where the getRectangle()
+     * method call is made on the location.
      * <p>
-     * Occasionally it is necessary to abort a prepare call. When this
-     * happens, the map will set the cancel bit in the LayerThread,
-     * (the thread that is running the prepare). If this Layer needs
-     * to do any cleanups during the abort, it should do so, but
-     * return out of the prepare asap.
+     * Occasionally it is necessary to abort a prepare call. When this happens,
+     * the map will set the cancel bit in the LayerThread, (the thread that is
+     * running the prepare). If this Layer needs to do any cleanups during the
+     * abort, it should do so, but return out of the prepare asap.
      */
     public synchronized Vector prepare() {
 
@@ -445,20 +436,20 @@ public class LocationLayer extends Layer implements MapMouseListener {
         if (Debug.debugging("location")) {
             double delta = lr.getX() - ul.getX();
             Debug.output(getName() + "|LocationLayer.prepare(): " + " ul.lon ="
-                    + ul.getX() + " lr.lon = " + lr.getY()
-                    + " delta = " + delta);
+                    + ul.getX() + " lr.lon = " + lr.getY() + " delta = "
+                    + delta);
         }
         if (dataHandlers != null) {
             for (int i = 0; i < dataHandlers.length; i++) {
-                ((LocationHandler) dataHandlers[i]).get((float)ul.getY(),
+                ((LocationHandler) dataHandlers[i]).get((float) ul.getY(),
                         (float) ul.getX(),
-                        (float)lr.getY(),
-                        (float)lr.getX(),
+                        (float) lr.getY(),
+                        (float) lr.getX(),
                         omGraphicList);
             }
         }
 
-        /////////////////////
+        // ///////////////////
         // safe quit
         int size = 0;
         if (omGraphicList != null) {
@@ -541,9 +532,9 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * Parse the properties and set up the location handlers. The
-     * prefix will should be null, or a prefix string with a period at
-     * the end, for scoping purposes.
+     * Parse the properties and set up the location handlers. The prefix will
+     * should be null, or a prefix string with a period at the end, for scoping
+     * purposes.
      */
     protected void setLocationHandlers(String prefix, Properties p) {
 
@@ -597,8 +588,8 @@ public class LocationLayer extends Layer implements MapMouseListener {
                 }
 
                 Object obj = Class.forName(className).newInstance();// Works
-                                                                    // for
-                                                                    // applet!
+                // for
+                // applet!
                 if (obj instanceof LocationHandler) {
                     LocationHandler lh = (LocationHandler) obj;
                     lh.setProperties(handlerName, p);
@@ -607,8 +598,8 @@ public class LocationLayer extends Layer implements MapMouseListener {
                     goodNames.addElement(prettyName != null ? prettyName : "");
                 }
                 if (false)
-                    throw new java.io.IOException();//fool javac
-                                                    // compiler
+                    throw new java.io.IOException();// fool javac
+                // compiler
             } catch (java.lang.ClassNotFoundException e) {
                 Debug.error("Handler class not found: \"" + className
                         + "\"\nSkipping handler \"" + handlerName + "\"");
@@ -645,9 +636,8 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * Set the LocationHandlers for the layer. Make sure you update
-     * the LocationHandler names, too, so the names coorespond to
-     * these.
+     * Set the LocationHandlers for the layer. Make sure you update the
+     * LocationHandler names, too, so the names coorespond to these.
      * 
      * @param handlers an array of LocationHandlers.
      */
@@ -668,8 +658,8 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * Set the LocationHandler names suitable for a GUI. Make sure
-     * these end up cooresponding to the LocationHandlers.
+     * Set the LocationHandler names suitable for a GUI. Make sure these end up
+     * cooresponding to the LocationHandlers.
      * 
      * @param handlerNames an array of Strings.
      */
@@ -686,8 +676,8 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * Called when the LocationHandlers are reset, or their names are
-     * reset, to refresh the palette with the new information.
+     * Called when the LocationHandlers are reset, or their names are reset, to
+     * refresh the palette with the new information.
      */
     protected void resetPalette() {
         box = null;
@@ -695,22 +685,22 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * Overridden from Layer because we are placing our own scroll
-     * pane around the LocationHandler GUIs.
+     * Overridden from Layer because we are placing our own scroll pane around
+     * the LocationHandler GUIs.
      */
     protected WindowSupport createWindowSupport() {
         return new WindowSupport(getGUI(), getName());
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // GUI
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     protected Box box = null;
 
     /**
-     * Provides the palette widgets to control the options of showing
-     * maps, or attribute text.
+     * Provides the palette widgets to control the options of showing maps, or
+     * attribute text.
      * 
      * @return Component object representing the palette widgets.
      */
@@ -736,7 +726,7 @@ public class LocationLayer extends Layer implements MapMouseListener {
 
                 panels[i] = PaletteHelper.createPaletteJPanel(handlerName);
                 panels[i].add(dataHandlers[i].getGUI());
-                //                 box.add(panels[i]);
+                // box.add(panels[i]);
                 box2.add(panels[i]);
             }
 
@@ -749,7 +739,10 @@ public class LocationLayer extends Layer implements MapMouseListener {
 
             if (declutterMatrix != null) {
                 JPanel dbp = new JPanel(new GridLayout(0, 1));
-                JCheckBox declutterButton = new JCheckBox("Declutter Names", useDeclutterMatrix);
+
+                JCheckBox declutterButton = new JCheckBox(i18n.get(LocationLayer.class,
+                        "declutterNames",
+                        "Declutter Names"), useDeclutterMatrix);
                 declutterButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent ae) {
                         JCheckBox jcb = (JCheckBox) ae.getSource();
@@ -759,8 +752,10 @@ public class LocationLayer extends Layer implements MapMouseListener {
                         }
                     }
                 });
-                declutterButton.setToolTipText("<HTML><BODY>Move location names so they don't overlap.<br>This may take awhile if you are zoomed out.</BODY></HTML>");
-
+                declutterButton.setToolTipText(i18n.get(LocationLayer.class,
+                        "declutterNames",
+                        I18n.TOOLTIP,
+                        "<HTML><BODY>Move location names so they don't overlap.<br>This may take awhile if you are zoomed out.</BODY></HTML>"));
                 dbp.add(declutterButton);
                 box.add(dbp);
             }
@@ -768,9 +763,9 @@ public class LocationLayer extends Layer implements MapMouseListener {
         return box;
     }
 
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
     // MapMouseListener implementation
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
 
     /** Given a mouse event, find the closest location on the screen. */
     public Location findClosestLocation(MouseEvent evt) {
@@ -893,7 +888,7 @@ public class LocationLayer extends Layer implements MapMouseListener {
                 fireRequestInfoLine("");
                 setNameOnLine = false;
             }
-            return false; //pass through!!
+            return false; // pass through!!
         } else {
             fireRequestInfoLine(loc.getName());
             setNameOnLine = true;
@@ -902,23 +897,21 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     public void mouseMoved() {
-    //      fireRequestInfoLine("");
+    // fireRequestInfoLine("");
     }
 
     /**
-     * PropertyConsumer method, to fill in a Properties object,
-     * reflecting the current values of the layer. If the layer has a
-     * propertyPrefix set, the property keys should have that prefix
-     * plus a separating '.' prepended to each propery key it uses for
-     * configuration.
+     * PropertyConsumer method, to fill in a Properties object, reflecting the
+     * current values of the layer. If the layer has a propertyPrefix set, the
+     * property keys should have that prefix plus a separating '.' prepended to
+     * each propery key it uses for configuration.
      * 
-     * @param props a Properties object to load the PropertyConsumer
-     *        properties into. If props equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param props a Properties object to load the PropertyConsumer properties
+     *        into. If props equals null, then a new Properties object should be
+     *        created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
@@ -955,34 +948,55 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * Method to fill in a Properties object with values reflecting
-     * the properties able to be set on this PropertyConsumer. The key
-     * for each property should be the raw property name (without a
-     * prefix) with a value that is a String that describes what the
-     * property key represents, along with any other information about
-     * the property that would be helpful (range, default value,
-     * etc.). For Layer, this method should at least return the
-     * 'prettyName' property.
+     * Method to fill in a Properties object with values reflecting the
+     * properties able to be set on this PropertyConsumer. The key for each
+     * property should be the raw property name (without a prefix) with a value
+     * that is a String that describes what the property key represents, along
+     * with any other information about the property that would be helpful
+     * (range, default value, etc.). For Layer, this method should at least
+     * return the 'prettyName' property.
      * 
-     * @param list a Properties object to load the PropertyConsumer
-     *        properties into. If getList equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param list a Properties object to load the PropertyConsumer properties
+     *        into. If getList equals null, then a new Properties object should
+     *        be created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
 
-        list.put(UseDeclutterMatrixProperty,
-                "Flag for using the declutter matrix (true/false)");
-        list.put(DeclutterMatrixClassProperty,
-                "Class name of the declutter matrix to use");
-        list.put(AllowPartialsProperty,
-                "Flag to allow labels to run off the edge of the map (true/false)");
-        list.put(LocationHandlerListProperty,
-                "Space-separated list of unique names to use to scope the LocationHandler property definitions");
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                LocationLayer.class,
+                UseDeclutterMatrixProperty,
+                "Use Declutter Matrix",
+                "Flag for using the declutter matrix.",
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                LocationLayer.class,
+                DeclutterMatrixClassProperty,
+                "Declutter Matrix Class",
+                "Class name of the declutter matrix to use (com.bbn.openmap.layer.DeclutterMatrix).",
+                null);
+
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                LocationLayer.class,
+                AllowPartialsProperty,
+                "Allow partials",
+                "Flag to allow labels to run off the edge of the map.",
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                LocationLayer.class,
+                LocationHandlerListProperty,
+                "Location Handlers",
+                "Space-separated list of unique names to use to scope the LocationHandler property definitions.",
+                null);
 
         if (dataHandlers != null) {
             for (int i = 0; i < dataHandlers.length; i++) {
@@ -993,4 +1007,3 @@ public class LocationLayer extends Layer implements MapMouseListener {
         return list;
     }
 }
-

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.21 $
-// $Date: 2005/12/09 21:09:10 $
+// $Revision: 1.22 $
+// $Date: 2006/01/18 17:44:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,7 +38,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -51,37 +50,36 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * An OpenMap Layer that displays shape files. Note that the
- * ESRIRecords have been updated so that the OMGraphics that get
- * created from them are loaded with an Integer object that notes the
- * number of the record as it was read from the .shp file. This lets
- * you align the object with the correct attribute data in the .dbf
- * file.
+ * An OpenMap Layer that displays shape files. Note that the ESRIRecords have
+ * been updated so that the OMGraphics that get created from them are loaded
+ * with an Integer object that notes the number of the record as it was read
+ * from the .shp file. This lets you align the object with the correct attribute
+ * data in the .dbf file.
  * <p>
  * <code><pre>
- *  
  *   
  *    
  *     
- *      ############################
- *      # Properties for a shape layer
- *      shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
- *      shapeLayer.prettyName=Name_for_Menu
- *      shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
- *      shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
- *      shapeLayer.lineColor=ff000000
- *      shapeLayer.fillColor=ff000000
- *      # plus any other properties used by the DrawingAttributes object.
- *      shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
- *      ############################
+ *      
+ *       ############################
+ *       # Properties for a shape layer
+ *       shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
+ *       shapeLayer.prettyName=Name_for_Menu
+ *       shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
+ *       shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
+ *       shapeLayer.lineColor=ff000000
+ *       shapeLayer.fillColor=ff000000
+ *       # plus any other properties used by the DrawingAttributes object.
+ *       shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
+ *       ############################
+ *       
  *      
  *     
  *    
- *   
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.21 $ $Date: 2005/12/09 21:09:10 $
+ * @version $Revision: 1.22 $ $Date: 2006/01/18 17:44:15 $
  * @see SpatialIndex
  */
 public class ShapeLayer extends OMGraphicHandlerLayer implements
@@ -91,8 +89,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
     public final static String shapeFileProperty = "shapeFile";
 
     /**
-     * The name of the property that holds the name of the spatial
-     * index file.
+     * The name of the property that holds the name of the spatial index file.
      */
     public final static String spatialIndexProperty = "spatialIndex";
 
@@ -118,8 +115,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
     protected SpatialIndex spatialIndex;
 
     /**
-     * The DrawingAttributes object to describe the rendering of
-     * graphics.
+     * The DrawingAttributes object to describe the rendering of graphics.
      */
     protected DrawingAttributes drawingAttributes = (DrawingAttributes) DrawingAttributes.DEFAULT.clone();
 
@@ -151,12 +147,11 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
     /**
      * This method gets called from setProperties.
      * 
-     * @param realPrefix This prefix has already been scoped, which
-     *        means it is an empty string if setProperties was called
-     *        with a null prefix, or it's a String ending with a
-     *        period if it was defined with characters.
-     * @param props Properties containing information about files and
-     *        the layer.
+     * @param realPrefix This prefix has already been scoped, which means it is
+     *        an empty string if setProperties was called with a null prefix, or
+     *        it's a String ending with a period if it was defined with
+     *        characters.
+     * @param props Properties containing information about files and the layer.
      */
     protected void setFileProperties(String realPrefix, Properties props) {
         shapeFileName = props.getProperty(realPrefix + shapeFileProperty);
@@ -205,8 +200,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
     /**
      * Initializes this layer from the given properties.
      * 
-     * @param props the <code>Properties</code> holding settings for
-     *        this layer
+     * @param props the <code>Properties</code> holding settings for this
+     *        layer
      */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
@@ -253,25 +248,22 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Method to fill in a Properties object with values reflecting
-     * the properties able to be set on this PropertyConsumer. The key
-     * for each property should be the raw property name (without a
-     * prefix) with a value that is a String that describes what the
-     * property key represents, along with any other information about
-     * the property that would be helpful (range, default value,
-     * etc.).
+     * Method to fill in a Properties object with values reflecting the
+     * properties able to be set on this PropertyConsumer. The key for each
+     * property should be the raw property name (without a prefix) with a value
+     * that is a String that describes what the property key represents, along
+     * with any other information about the property that would be helpful
+     * (range, default value, etc.).
      * 
-     * @param list a Properties object to load the PropertyConsumer
-     *        properties into. If getList equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param list a Properties object to load the PropertyConsumer properties
+     *        into. If getList equals null, then a new Properties object should
+     *        be created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
-        String interString;
 
         DrawingAttributes da;
         if (drawingAttributes != null) {
@@ -285,64 +277,48 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
         list.put(initPropertiesProperty, shapeFileProperty + " "
                 + spatialIndexProperty + " " + pointImageURLProperty + " "
                 + shadowXProperty + " " + shadowYProperty
-                + da.getInitPropertiesOrder() + " " + AddToBeanContextProperty + " "
-                + MinScaleProperty + " " + MaxScaleProperty);
+                + da.getInitPropertiesOrder() + " " + AddToBeanContextProperty
+                + " " + MinScaleProperty + " " + MaxScaleProperty);
 
-        interString = i18n.get(ShapeLayer.class,
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                ShapeLayer.class,
                 shapeFileProperty,
-                I18n.TOOLTIP,
-                "Location of Shape file - .shp (File, URL or relative file path).");
-        list.put(shapeFileProperty, interString);
-        interString = i18n.get(ShapeLayer.class,
                 shapeFileProperty,
-                shapeFileProperty);
-        list.put(shapeFileProperty + LabelEditorProperty, interString);
-        list.put(shapeFileProperty + ScopedEditorProperty,
+                "Location of Shape file - .shp (File, CURL or relative file path).",
                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-        interString = i18n.get(ShapeLayer.class,
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                ShapeLayer.class,
                 spatialIndexProperty,
-                I18n.TOOLTIP,
-                "Location of Spatial Index file - .ssx (File, URL or relative file path).");
-        list.put(spatialIndexProperty, interString);
-        interString = i18n.get(ShapeLayer.class,
                 spatialIndexProperty,
-                spatialIndexProperty);
-        list.put(spatialIndexProperty + LabelEditorProperty, interString);
-        list.put(spatialIndexProperty + ScopedEditorProperty,
+                "Location of Spatial Index file - .ssx (File, URL or relative file path).",
                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-
-        interString = i18n.get(ShapeLayer.class,
+        
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                ShapeLayer.class,
                 pointImageURLProperty,
-                I18n.TOOLTIP,
-                "Image file to use for map location of point data (optional).");
-        list.put(pointImageURLProperty, interString);
-        interString = i18n.get(ShapeLayer.class,
                 pointImageURLProperty,
-                pointImageURLProperty);
-        list.put(pointImageURLProperty + LabelEditorProperty, interString);
-        list.put(pointImageURLProperty + ScopedEditorProperty,
+                "Image file to use for map location of point data (optional).",
                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-
-        interString = i18n.get(ShapeLayer.class,
+        
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                ShapeLayer.class,
                 shadowXProperty,
-                I18n.TOOLTIP,
-                "Horizontal pixel offset for shadow image for shapes.");
-        list.put(shadowXProperty, interString);
-        interString = i18n.get(ShapeLayer.class,
                 shadowXProperty,
-                shadowXProperty);
-        list.put(shadowXProperty + LabelEditorProperty, interString);
-
-        interString = i18n.get(ShapeLayer.class,
+                "Horizontal pixel offset for shadow image for shapes.",
+                null);
+        
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                ShapeLayer.class,
                 shadowYProperty,
-                I18n.TOOLTIP,
-                "Vertical pixel offset for shadow image for shapes.");
-        list.put(shadowYProperty, interString);
-        interString = i18n.get(ShapeLayer.class,
                 shadowYProperty,
-                shadowYProperty);
-        list.put(shadowYProperty + LabelEditorProperty, interString);
+                "Vertical pixel offset for shadow image for shapes.",
+                null);
 
         return list;
     }
