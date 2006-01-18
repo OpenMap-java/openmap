@@ -540,6 +540,11 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         // call the file chooser if no path is given
         if (filePath == null) {
             filePath = getFilePathFromUser();
+            
+            if (filePath == null) {
+                return; // User cancelled.
+            }
+            
             needConfirmation = true;
         }
 
