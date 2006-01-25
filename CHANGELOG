@@ -1,4 +1,154 @@
-2005-05-24  Don Dietrick  <dietrick@dhcp89-077-058.bbn.com>
+2006-01-24  Don Dietrick  <dietrick@bbn.com>
+
+	* Updated the ElevationBandGenerator in the
+	com.bbn.openmap.omGraphics.grid package, adding the loader and
+	ColorGeneratorLoader for it.
+
+	* Updated the CSVTiledImagePlugIn to use
+	FileCacheImageInputStreams to create BufferedImages, instead of
+	ImageIcons.  This is in an effort to reduce memory usage for tiled
+	images.
+
+	* Updated the com.bbn.openmap.util.FileUtils object for better
+	options presented to the user, as well as methods that copy files
+	and zip/unzip files.
+
+	* Updated the Directory and File property editors to provide
+	better control over the options offered to the user.
+
+	* Added com.bbn.openmap.omGraphics.OMAbstractLine, which is now
+	the superclass of OMLine and OMPoly.  Arrowheads were moved up to
+	this class, so polylines can now have arrowheads attached.
+	There's an editable version as well.
+
+	* EditableOMRangeRings were updated to estimate how may rings they
+	should have when changing units in the GUI.  It used to maintain
+	the number it had, which could result in it being overwhelmed with
+	the new settings.  Now it behaves as expected.
+
+	* Added bold and italic buttons to EditableOMText GUI.
+
+	* OMArrowHead was updated to allow more parameters to be chosen by
+	subclasses, making it easier to customize.
+
+	* Updated the OMGraphic serialization methods to handle strokes
+	better.
+
+	* OMGraphicList.findAll(...) method lets you give an x,y pixel point on
+	the map, and retrieve all of the OMGraphics under that point
+	within the provided pixel range.
+
+	* Added a Text Matte Color and Stroke, which, if set, will outline
+	the text characters with a matting rendered with that stroke.
+
+	* Updated the com.bbn.openmap.layer.vpf.VMAP2Shape class to use
+	the com.bbn.openmap.dataAccess.shape components to create shape
+	files.
+	
+	* Set LayerUtils to be deprecated, you should use PropUtils
+	instead.  The OpenMap components have been so updated.  PropUtils
+	was updated to have all the same methods as LayerUtils did, with
+	some new ones including one that will set the proper
+	internationalized strings (setI18NPropertyInfo(...)) for the
+	getPropertyInfo() call of a PropertyConsumer.
+	
+	* Added the RpfUtil class, which allows you to modify
+	(copy/delete/move) RPF data from RPF directories with filters that
+	let you specify scale, chart type, or location.
+
+	* Added Composites to the RenderPolicy API in
+	com.bbn.openmap.layer.policy.  This allows the addition of
+	Composites to be added to a render policy to modify the rendering
+	process for that layer.  You can add an AlphaComposite to a layer
+	this way in order to get it rendered with transparency.
+
+	* Updated AbstractLocationHandler to hold DrawingAttributes object
+	for names and location markers, instead of just holding a Color
+	for each.  The Property GUI hasn't been updated yet, so the old
+	Color GUI still works.  Added LocationHandler.NamePropertyPrefix
+	and LocationHandler.LocationPropertyPrefix to allow scoping for
+	properties.
+
+	"Fixed" the CSVLinkHandler, meaning that it works, but still needs
+	more work to be fully functional with property settings and
+	different rendering effects for lines and endpoints.
+
+	Updated CSVLocationHandler to have methods that can be overridden
+	when dealing with tokens and newly read info from the CSV file.
+	
+	* Updated the DTEDLayer minScale property code to set the new
+	Layer maxScale member variable, keeping with the meaning of the
+	Layer's version.  Removed the DTEDLayer's minScale property and
+	supporting methods.
+
+	* Added OMGraphicHandlerLayer.createLayerWorker() method to make
+	it easier to override and set customized LayerWorkers (threading
+	mechanism for layer work).
+
+	* Removed restriction from BinaryFile that caused it to check for
+	an "http://" lead on URLs.
+
+	* Added the MagicPlanetImageComponent to the com.bbn.openmap.image
+	package.  The MagicPlanet is a spherical display system (get more
+	information at http://www.globalimagination.com).  By adding this
+	component to an OpenMap application, images suitable for display
+	on the MagicPlanet can be created, at varing intervals and
+	resolution settings.  The MagicPlanet's StoryTeller software can
+	then be told where the images are stored, and can then manage the
+	images.
+	
+	* Updated the AbstractImageFormatter to reset an existing
+	projection back on a layer after the formatter has used it to
+	create a image.  This should help for situations where an active
+	map window wasn't behaving properly after being saved to a file.
+	Removed the AcmeJPEG* code, it didn't work and the Sun version
+	should be used instead.
+
+	* Updated the ScenarioGraphicLoader so that the mode settings are
+	more obvious, instead of being changing depending on the clock
+	setting.
+
+	* Updated the com.bbn.openmap.geo package, which now has the
+	capability to do spatial intersection and proximity analysis in
+	lat/lon space.  The ExtentIndex (and ExtentIndexImpl) contain
+	collections of GeoExtents which may be queried for intersection by
+	other GeoExtents.  The Ribbon object is an attempt at rendering
+	spatial areas around GeoExtents.
+
+	The com.bbn.openmap.layer.test.GeoIntersectionLayer is an example
+	of how to use the ExtentIndex.  That layer loads shape files into
+	the ExtentIndex, and then lets you draw on the map to test how the
+	drawn objects intersect with the shape file objects.  
+
+2006-01-23  Don Dietrick  <dietrick@bbn.com>
+
+	* Updated the com.bbn.openmap.dataAccess.shape package so its
+	components use the attributes of OMGraphics instead of using the
+	OMGraphic appObject directly.  The DbfTableModel might be stored
+	in the EsriGraphicList's DBF_ATTRIBUTE key.  In each of the
+	EsriGraphics, the index is stored under that EsriGraphic's
+	SHAPE_INDEX_ATTRIBUTE.  Updated DBF output to put numbers in
+	English locale number format.
+	
+	* Added the DTEDFrameACC object to the
+	com.bbn.openmap.dataAccess.dted package and DTEDFrame, to hold
+	DTED accuracy attribute information.  This class was submitted by
+	Matt Revelle.
+	
+	* Made the MouseModes MouseWheelListeners, and made the default
+	action for the OpenMap MapMouseModes to control zooming over the
+	map.
+	
+	* Added minScale and maxScale properties for layers, which hold
+	onto scale settings that the layer can use to determine if it
+	should react to a projection or not.  Also added an Icon member
+	variable to the Layer.  Note that the Layer doesn't actually use
+	the minScale and maxScale parameters, that's up to the Layer
+	subclass authors.
+
+	* Removed Makefiles, now that ant is the official build mechanism.
+
+2005-05-24  Don Dietrick  <dietrick@bbn.com>
 
 	* Refactored the FilePropertyEditor so it includes an uneditable
 	text area, and added callback methods for settings that all the
@@ -6,7 +156,7 @@
 	ColorPropertyEditor and choice PropertyEditor widgets to the left
 	instead of centered.
 
-2005-05-23  Don Dietrick  <dietrick@dhcp89-077-058.bbn.com>
+2005-05-23  Don Dietrick  <dietrick@bbn.com>
 
 	* ComponentFactory updated to contain a singleton instance, and
 	the static methods have been updated to use that singleton
@@ -56,15 +206,19 @@
 	* Updated InformationDelegator to use the Environment Desktop for
 	internal frames.
 
-2005-02-15  Donald Dietrick  <dietrick@dhcp89-077-080.bbn.com>
+2005-02-15  Donald Dietrick <dietrick@bbn.com>
 
-	* added the cntry02 world boundary shape files to the package and
+	* Released OpenMap 4.6.2
+	
+2005-02-15  Donald Dietrick  <dietrick@bbn.com>
+
+	* Added the cntry02 world boundary shape files to the package and
 	made them the default files used in the OpenMap application.
 	They're bigger files, and the application runs a little slower,
 	but they are much more accurate than the dcwpo-browse files.  The
 	dcwpo-browse files are still available if the old data is desired.
 
-2005-02-11  Donald Dietrick  <dietrick@jader.local>
+2005-02-11  Donald Dietrick  <dietrick@bbn.com>
 
 	* Updated many classes for internationalization, with help from
 	Piotr Kaminski and Jesper Berglund.
@@ -98,7 +252,7 @@
 	file was updated to show how to load the menu item to a generic
 	OMBasicMenu in order to temporarily add this class.
 
-2005-01-10  Donald Dietrick  <dietrick@dhcp89-077-058.bbn.com>
+2005-01-10  Donald Dietrick  <dietrick@bbn.com>
 
 	* Updated the com.bbn.openmap.tools.symbology.milStd2525
 	package, specifically, the SymbolReferenceLibrary and the
@@ -140,7 +294,7 @@
 	threads lauched form layers changes are performed in order to
 	preserve stability.
 
-2004-11-25  Donald Dietrick  <dietrick@jader.local>
+2004-11-25  Donald Dietrick  <dietrick@bbn.com>
 
 	* Modified the ProjectionSupport and LayerHandler to launch
 	threads for projection notifications to the layers and for layer
@@ -163,18 +317,18 @@
 	Updated OMAreaList to make that BasicGeometry append call with
 	the connect parameter.
 
-2004-11-01  Donald Dietrick  <dietrick@jader.local>
+2004-11-01  Donald Dietrick  <dietrick@bbn.com>
 
 	* Released OpenMap 4.6.1
 
-2004-10-15  Donald Dietrick  <dietrick@jader.local>
+2004-10-15  Donald Dietrick  <dietrick@bbn.com>
 
 	* Changed OMGrid to extend OMGraphicList instead of OMGraphic.
 	This provides better access to the OMGraphics that the
 	OMGridGenerator creates.  If that access is not wanted, just set
 	the OMGrid (OMGraphicList) to be vague.
 
-2004-10-05  Donald Dietrick  <dietrick@dhcp89-077-080.bbn.com>
+2004-10-05  Donald Dietrick  <dietrick@bbn.com>
 
 	* Updated the SwingWorker to match the latest version from Sun.
 
@@ -247,7 +401,7 @@
 	* Updated the com.bbn.openmap.dataAccess.dted components to be
 	able to handle .dt2 files.
 
-2004-05-24  Donald Dietrick  <dietrick@jader.local>
+2004-05-24  Donald Dietrick  <dietrick@bbn.com>
 
 	* Added the OptionPropertyEditor, a base class used for
 	presenting properties with a limited number of choices.  These
@@ -260,7 +414,7 @@
 	showing the hex representation.  The Inspector was modified to
 	handle PropertyConsumerPropertyEditors.
 
-2004-05-14  Donald Dietrick  <dietrick@jader.local>
+2004-05-14  Donald Dietrick  <dietrick@bbn.com>
 
 	* Modified the ProjectionFactory to dynamically manage
 	projections.  This involved changing the ProjectionFactory from a
@@ -305,7 +459,7 @@
 	* Modified when/how tooltips are cleared and reset in the
 	InformationDelegator.
 
-2004-05-10  Donald Dietrick  <dietrick@dhcp89-077-080.bbn.com>
+2004-05-10  Donald Dietrick  <dietrick@bbn.com>
 
 	* Modified the StandardPCPolicy so that has the option to be told
 	to always spawn a thread when a projection is received.  It used
@@ -361,7 +515,7 @@
 2004-04-16  Bill Mackiewicz <bmackiew@bbn.com>
 	* Replaced ext/jakarta-ant-1.5.1/ with ext/apache-ant-1.6.1/
 
-2004-02-13  Don Dietrick  <dietrick@dhcp89-077-065.bbn.com>
+2004-02-13  Don Dietrick  <dietrick@bbn.com>
 
 	* Added Gordon Vidaver's route calculation package (originally
 	derived from Ray Tomlinson's code)
