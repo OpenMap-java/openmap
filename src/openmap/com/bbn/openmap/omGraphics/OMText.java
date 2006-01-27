@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.16 $
-// $Date: 2005/09/06 20:02:11 $
+// $Revision: 1.17 $
+// $Date: 2006/01/27 15:22:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1083,11 +1083,12 @@ public class OMText extends OMGraphic implements Serializable {
             }
         }
 
-        if (isSelected()) {
-            setGraphicsColor(g, getSelectPaint());
-            draw(g);
-        } else if (isMatted()) {
-            setGraphicsColor(g, getMattingPaint());
+        if (isMatted()) {
+            if (isSelected()) {
+                setGraphicsColor(g, getSelectPaint());
+            } else {
+                setGraphicsColor(g, getMattingPaint());
+            }
             draw(g);
         }
 
