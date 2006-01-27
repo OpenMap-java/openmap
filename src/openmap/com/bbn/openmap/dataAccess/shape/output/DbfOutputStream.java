@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.12 $
-// $Date: 2006/01/27 18:34:09 $
+// $Revision: 1.13 $
+// $Date: 2006/01/27 18:36:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -228,7 +228,7 @@ public class DbfOutputStream {
                         // value = ""; 
                         // Instead of making up a value, try to
                         // represent it as true as possible.
-                        value = obj.toString();
+                        value = (value != null)?obj.toString():"";
                     }
                 } else {
                     value = (String) model.getValueAt(r, c);
