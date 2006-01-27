@@ -13,8 +13,8 @@
 // **********************************************************************
 // 
 // $RCSfile: OMColorChooser.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/11 20:39:14 $
+// $Revision: 1.9 $
+// $Date: 2006/01/27 15:14:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
@@ -71,7 +72,13 @@ public class OMColorChooser {
         ColorTracker ok = new ColorTracker(jcc);
 
         jcc.getSelectionModel().addChangeListener(ok);
-        jcc.setPreviewPanel(ok.getTransparancyAdjustment(initColor.getAlpha()));
+        /* WORKAROUND for Java bug #5029286 and #6199676 */
+        //        jcc.setPreviewPanel(ok.getTransparancyAdjustment(initColor.getAlpha()));
+        JComponent previewPanel = ok.getTransparancyAdjustment(initColor.getAlpha());
+        previewPanel.setSize(previewPanel.getPreferredSize());
+        previewPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 1, 0));
+        jcc.setPreviewPanel(previewPanel);
+        
         JDialog colorDialog = JColorChooser.createDialog(component,
                 title,
                 true,
