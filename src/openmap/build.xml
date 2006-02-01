@@ -92,7 +92,7 @@
 	Build the documentation.
 	############################ -->
 	<target name="docs.openmap" depends="init.openmap" description="Make the javadoc API html documents.">
-		<javadoc sourcepath="${openmap.src}:${openmap.src_ext}" destdir="${openmap.docs}/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*, Acme.*, dopplet.*, edu.*" author="true" version="true" use="true" windowtitle="OpenMap API" doctitle="OpenMap" bottom="Copyright (C) BBNT Solutions LLC; See http://openmap.bbn.com/ for details" />
+		<javadoc breakiterator="yes" sourcepath="${openmap.src}:${openmap.src_ext}" destdir="${openmap.docs}/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*, Acme.*, dopplet.*, edu.*" author="true" version="true" use="true" windowtitle="OpenMap API" doctitle="OpenMap" bottom="Copyright (C) BBNT Solutions LLC; See http://openmap.bbn.com/ for details" />
 	</target>
 
 	<!--  ############################
