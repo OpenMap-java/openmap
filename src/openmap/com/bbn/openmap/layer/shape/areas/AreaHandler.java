@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/12/09 21:09:12 $
+// $Revision: 1.11 $
+// $Date: 2006/02/13 16:56:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,68 +47,65 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * An object to organize graphics in a shapefile and their
- * corresponding attributes in OpenMap. A properties object can
- * determine how areas/graphics are to be colored, or you can grab the
- * graphics directly and color them yourself. It's called AreaHandler
- * because it was originally intended to be a management tool for
- * political boundary areas, but it should work for all shapefiles,
- * really. This object uses a CSV file created from the DBF file that
- * usually accompanies the shapefile. Also, this class does inflict a
- * startup burden on the map. Because all the organizational effort
- * occurs in setProperties(), it occurs even if the handler isn't used
- * in an active Layer.
+ * An object to organize graphics in a shapefile and their corresponding
+ * attributes in OpenMap. A properties object can determine how areas/graphics
+ * are to be colored, or you can grab the graphics directly and color them
+ * yourself. It's called AreaHandler because it was originally intended to be a
+ * management tool for political boundary areas, but it should work for all
+ * shapefiles, really. This object uses a CSV file created from the DBF file
+ * that usually accompanies the shapefile. Also, this class does inflict a
+ * startup burden on the map. Because all the organizational effort occurs in
+ * setProperties(), it occurs even if the handler isn't used in an active Layer.
  * <P>
- * Here is a sample of what this thing is looking for by way of
- * properties:
+ * Here is a sample of what this thing is looking for by way of properties:
  * <P>
  * 
  * <pre>
- *      
  *       
- *        layer.class=com.bbn.openmap.layer.shape.areas.AreaShapeLayer
- *        layer.prettyName=Layer Name
- *        layer.shapeFile=/usr/local/data/shape/shapefile.shp
- *        layer.spatialIndex=/usr/local/data/shape/shapefile.ssx
- *       
- *        # Now, provide a data file that says what the shapes in the .shp
- *        # file are.  You can use the DBF file:
- *        layer.dbfFile=/usr/local/data/shape/shapefile.dbf
- *        # OR a csv file, created yourself or from the .dbf file.  There
- *        # should be the same number of entries in the .csv file that are in
- *        # the .shp file.
- *        layer.csvFile=/usr/local/data/shape/shapefile.csv
- *        # An attribute to tell the AreaHandler to skip over the first row
- *        # of the csv file if it contains descriptive column header names.
- *        layer.csvFileHasHeader=true
- *       
- *        # Default DrawingAttributes properties for everything not defined
- *        # specifically:
- *        layer.lineColor=ff000000
- *        layer.fillColor=ffff00ff
- *       
- *        # Now add any other attributes accepted by the DrawingAttributes
- *        # object, with the prefix as stated above, i.e. layer.lineColor)
- *        #
- *        # The first column index is 0, not 1.
- *        #
- *        # The key index specifies which column in the csv file contains
- *        # unique area names that are listed in the areas list here in the
- *        # properties.  In this case, it's the column that contains MA in one
- *        # of its rows.
- *        layer.keyIndex=4
- *       
- *        # The name index is the column in the csv file that contains what
- *        # should be displayed in the application when a shape is chosen - the
- *        # object's proper name.
- *        layer.nameIndex=4
- *        layer.areas=MA RI
- *        layer.areas.MA.fillColor=ffff0000
- *        layer.areas.MA.lineColor=ff00ff00
- *        layer.areas.RI.fillColor=ffff0000
- *        layer.areas.RI.lineColor=ff00ff00
  *        
- *       
+ *         layer.class=com.bbn.openmap.layer.shape.areas.AreaShapeLayer
+ *         layer.prettyName=Layer Name
+ *         layer.shapeFile=/usr/local/data/shape/shapefile.shp
+ *         layer.spatialIndex=/usr/local/data/shape/shapefile.ssx
+ *        
+ *         # Now, provide a data file that says what the shapes in the .shp
+ *         # file are.  You can use the DBF file:
+ *         layer.dbfFile=/usr/local/data/shape/shapefile.dbf
+ *         # OR a csv file, created yourself or from the .dbf file.  There
+ *         # should be the same number of entries in the .csv file that are in
+ *         # the .shp file.
+ *         layer.csvFile=/usr/local/data/shape/shapefile.csv
+ *         # An attribute to tell the AreaHandler to skip over the first row
+ *         # of the csv file if it contains descriptive column header names.
+ *         layer.csvFileHasHeader=true
+ *        
+ *         # Default DrawingAttributes properties for everything not defined
+ *         # specifically:
+ *         layer.lineColor=ff000000
+ *         layer.fillColor=ffff00ff
+ *        
+ *         # Now add any other attributes accepted by the DrawingAttributes
+ *         # object, with the prefix as stated above, i.e. layer.lineColor)
+ *         #
+ *         # The first column index is 0, not 1.
+ *         #
+ *         # The key index specifies which column in the csv file contains
+ *         # unique area names that are listed in the areas list here in the
+ *         # properties.  In this case, it's the column that contains MA in one
+ *         # of its rows.
+ *         layer.keyIndex=4
+ *        
+ *         # The name index is the column in the csv file that contains what
+ *         # should be displayed in the application when a shape is chosen - the
+ *         # object's proper name.
+ *         layer.nameIndex=4
+ *         layer.areas=MA RI
+ *         layer.areas.MA.fillColor=ffff0000
+ *         layer.areas.MA.lineColor=ff00ff00
+ *         layer.areas.RI.fillColor=ffff0000
+ *         layer.areas.RI.lineColor=ff00ff00
+ *         
+ *        
  * </pre>
  * 
  * <P>
@@ -116,65 +113,59 @@ import com.bbn.openmap.util.PropUtils;
 public class AreaHandler implements PropertyConsumer {
 
     /**
-     * The known political areas, based on the list of OMGraphics each
-     * entry contains.
+     * The known political areas, based on the list of OMGraphics each entry
+     * contains.
      */
     protected Hashtable politicalAreas;
     /** The property that lists special colored areas. */
     public static final String areasProperty = "areas";
     /**
-     * A property that sets an image URL to use for point objects.
-     * Only one image for all point objects.
+     * A property that sets an image URL to use for point objects. Only one
+     * image for all point objects.
      */
     public static final String pointImageURLProperty = "pointImageURL";
     /**
-     * The property that specifies an index location for the area
-     * search key for a shape graphic in the database file. Default is
-     * 1. The contents of this column should match the area key used
-     * to specify the drawingattributes of that particular object as
-     * listed in these properties.
+     * The property that specifies an index location for the area search key for
+     * a shape graphic in the database file. Default is 1. The contents of this
+     * column should match the area key used to specify the drawingattributes of
+     * that particular object as listed in these properties.
      */
     public static final String keyIndexProperty = "keyIndex";
     /**
-     * The property that specifies an index location for the area name
-     * for a shape graphic in the database file. Default is 0.
+     * The property that specifies an index location for the area name for a
+     * shape graphic in the database file. Default is 0.
      */
     public static final String nameIndexProperty = "nameIndex";
     /**
-     * The resource name, URL or file name of the serialized graphics
-     * file.
+     * The resource name, URL or file name of the serialized graphics file.
      */
     public static final String CacheFileProperty = "cacheFile";
     /**
-     * The name of the property that holds the name of the CSV file
-     * with the area attributes, like the name and the abbreviation
-     * (or search Key).
+     * The name of the property that holds the name of the CSV file with the
+     * area attributes, like the name and the abbreviation (or search Key).
      */
     public final static String csvFileProperty = "csvFile";
     /** Set if the CSVFile has a header record. Default is true. */
     public final static String csvHeaderProperty = "csvFileHasHeader";
     /**
-     * The name of the property that holds the name of the DBF file
-     * with the area attributes, like the name and the abbreviation
-     * (or search Key).
+     * The name of the property that holds the name of the DBF file with the
+     * area attributes, like the name and the abbreviation (or search Key).
      */
     public final static String dbfFileProperty = "dbfFile";
     /**
-     * The list of areas that have special coloring needs. Used to
-     * write the properties back out.
+     * The list of areas that have special coloring needs. Used to write the
+     * properties back out.
      */
     protected Vector areasItems = new Vector();
     /**
-     * The index of the column that holds the name of the area. This
-     * name will be used for display in the GUI for a particular map
-     * object.
+     * The index of the column that holds the name of the area. This name will
+     * be used for display in the GUI for a particular map object.
      */
     protected int nameIndex = 0;
     /**
-     * The index of the column that holds the search key of the area.
-     * This is the field that is the key to use for the Hashtable
-     * holding all the area descriptions, and should be unique for
-     * each named area.
+     * The index of the column that holds the search key of the area. This is
+     * the field that is the key to use for the Hashtable holding all the area
+     * descriptions, and should be unique for each named area.
      */
     protected int keyIndex = 1;
     /** The URL location of the cached graphics file. */
@@ -183,8 +174,8 @@ public class AreaHandler implements PropertyConsumer {
     protected OMGraphicList omgraphics = null;
 
     /**
-     * Default draw parameters of the graphics that don't have
-     * something specific set for it.
+     * Default draw parameters of the graphics that don't have something
+     * specific set for it.
      */
     protected DrawingAttributes drawingAttributes;
 
@@ -195,8 +186,8 @@ public class AreaHandler implements PropertyConsumer {
     protected DbfTableModel dbfModel = null;
 
     /**
-     * Flag that specifies that the first line consists of header
-     * information, and should not be mapped to a graphic.
+     * Flag that specifies that the first line consists of header information,
+     * and should not be mapped to a graphic.
      */
     protected boolean csvHasHeader = true;
 
@@ -207,8 +198,8 @@ public class AreaHandler implements PropertyConsumer {
     // public AreaHandler() {}
 
     /**
-     * Construct an AreaHandler. Needs an external SpatialIndex, and
-     * default DrawingAttributes.
+     * Construct an AreaHandler. Needs an external SpatialIndex, and default
+     * DrawingAttributes.
      */
     public AreaHandler(SpatialIndex si, DrawingAttributes da) {
         setDrawingAttributes(da);
@@ -231,6 +222,10 @@ public class AreaHandler implements PropertyConsumer {
         return spatialIndex;
     }
 
+    public Hashtable getPoliticalAreas() {
+        return politicalAreas;
+    }
+
     public void setProperties(Properties props) {
         setProperties(null, props);
     }
@@ -238,8 +233,8 @@ public class AreaHandler implements PropertyConsumer {
     /**
      * Initializes this object from the given properties
      * 
-     * @param props the <code>Properties</code> holding settings for
-     *        this object
+     * @param props the <code>Properties</code> holding settings for this
+     *        object
      */
     public void setProperties(String prefix, Properties props) {
         if (Debug.debugging("areas")) {
@@ -283,11 +278,10 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * Go through the properties, loading the shapefile, information
-     * file and attributes files, and resolve how everything should be
-     * drawn. Might take awhile if the files are large. Called from
-     * getRectangle, which is called when the AreaShapeLayer is added
-     * to the map.
+     * Go through the properties, loading the shapefile, information file and
+     * attributes files, and resolve how everything should be drawn. Might take
+     * awhile if the files are large. Called from getRectangle, which is called
+     * when the AreaShapeLayer is added to the map.
      * 
      * @param prefix property file entry header name
      * @param props the properties to look through.
@@ -442,7 +436,10 @@ public class AreaHandler implements PropertyConsumer {
      */
     public OMGraphicList getGraphics(float ulLat, float ulLon, float lrLat,
                                      float lrLon) {
-        return getGraphics((double)ulLat, (double)ulLon, (double)lrLat, (double)lrLon);
+        return getGraphics((double) ulLat,
+                (double) ulLon,
+                (double) lrLat,
+                (double) lrLon);
     }
 
     /**
@@ -538,9 +535,9 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * Return the graphic name, given the infofile vector on the
-     * graphic. The AreaHandler knows which one is the name. Returns
-     * an empty string if something goes wrong.
+     * Return the graphic name, given the infofile vector on the graphic. The
+     * AreaHandler knows which one is the name. Returns an empty string if
+     * something goes wrong.
      */
     public String getName(Vector vector) {
         try {
@@ -552,9 +549,9 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * Get the name of the object at record number. The record number
-     * is the shapefile record number, which is one greater than the
-     * index number. Returns an empty string if something goes wrong.
+     * Get the name of the object at record number. The record number is the
+     * shapefile record number, which is one greater than the index number.
+     * Returns an empty string if something goes wrong.
      */
     public String getName(Integer integer) {
         try {
@@ -580,12 +577,11 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * Given the shapefile record number, find the drawing parameters
-     * that should be used for the shape. Note, this recordNumber is
-     * the shapefile record number, which starts at one. All our
-     * indexes start at 0, so this is taken into account here. Don't
-     * make the adjustment elsewhere. Returns the default coloring if
-     * the key for the drawing parameters isn't found.
+     * Given the shapefile record number, find the drawing parameters that
+     * should be used for the shape. Note, this recordNumber is the shapefile
+     * record number, which starts at one. All our indexes start at 0, so this
+     * is taken into account here. Don't make the adjustment elsewhere. Returns
+     * the default coloring if the key for the drawing parameters isn't found.
      */
     public DrawingAttributes getDrawParamsFromCSV(int recordNumber) {
         if (infoFile == null) {
@@ -642,10 +638,9 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * Given the shapefile record number, find the drawing parameters
-     * from the DBF model that should be used for the shape. Returns
-     * the default coloring if the key for the drawing parameters
-     * isn't found.
+     * Given the shapefile record number, find the drawing parameters from the
+     * DBF model that should be used for the shape. Returns the default coloring
+     * if the key for the drawing parameters isn't found.
      */
     public DrawingAttributes getDrawParamsFromDBF(int recordNumber) {
         if (dbfModel == null) {
@@ -703,15 +698,14 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * OK, we can't assume that we are assigning a string as a key,
-     * you might want to key in on a specific attribute that is a
-     * number, like the country coloring code that ESRI has in the
-     * country file. We're going to assume that if the number has an
-     * integer value, it shouldn't have decimal places. That is, a 1.0
-     * will be truncated to 1, because that makes more sense in a data
-     * file where you are using a key as a factor. If the double value
-     * doesn't match the integer value, though, we'll assume that's
-     * what was meant and leave it alone.
+     * OK, we can't assume that we are assigning a string as a key, you might
+     * want to key in on a specific attribute that is a number, like the country
+     * coloring code that ESRI has in the country file. We're going to assume
+     * that if the number has an integer value, it shouldn't have decimal
+     * places. That is, a 1.0 will be truncated to 1, because that makes more
+     * sense in a data file where you are using a key as a factor. If the double
+     * value doesn't match the integer value, though, we'll assume that's what
+     * was meant and leave it alone.
      * <p>
      */
     protected String createStringFromKeyObject(Object keyObj) {
@@ -738,9 +732,9 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * Given the shapefile record number, find the drawing parameters
-     * that should be used for the shape. Returns the default coloring
-     * if the key for the drawing parameters isn't found.
+     * Given the shapefile record number, find the drawing parameters that
+     * should be used for the shape. Returns the default coloring if the key for
+     * the drawing parameters isn't found.
      */
     public DrawingAttributes getDrawParams(int recordNumber) {
         if (dbfModel != null)
@@ -750,9 +744,9 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * This function takes an OMGraphicList and loads each one with
-     * the array representing the records in the dbf file. Each
-     * graphics stores the graphic in its object slot.
+     * This function takes an OMGraphicList and loads each one with the array
+     * representing the records in the dbf file. Each graphics stores the
+     * graphic in its object slot.
      */
     public void loadDbfModelIntoGraphics(OMGraphicList list) {
         if (list != null && dbfModel.getRowCount() > 0) {
@@ -800,12 +794,12 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * Find a PoliticalArea named by the search key. If the shapefile
-     * is large, the first query will take a little extra time on the
-     * first query to read in the files.
+     * Find a PoliticalArea named by the search key. If the shapefile is large,
+     * the first query will take a little extra time on the first query to read
+     * in the files.
      * 
-     * @param area_key the lookup key, of which the index for the
-     *        column was designated in the properties file.
+     * @param area_key the lookup key, of which the index for the column was
+     *        designated in the properties file.
      */
     public PoliticalArea findPoliticalArea(String area_key) {
 
@@ -846,12 +840,12 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * Find the graphics that are represented by an search key. If the
-     * shapefile is large, the first query will take a little extra
-     * time on the first query to read in the files.
+     * Find the graphics that are represented by an search key. If the shapefile
+     * is large, the first query will take a little extra time on the first
+     * query to read in the files.
      * 
-     * @param area_key the lookup key, of which the index for the
-     *        column was designated in the properties file.
+     * @param area_key the lookup key, of which the index for the column was
+     *        designated in the properties file.
      */
     public OMGeometryList findGraphics(String area_key) {
         PoliticalArea area = findPoliticalArea(area_key);
@@ -863,12 +857,11 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * DeterminePoliticalAreas goes over a list of omgraphics, and
-     * spits out a hashtable that holds PoliticalArea objects for
-     * every area key.
+     * DeterminePoliticalAreas goes over a list of omgraphics, and spits out a
+     * hashtable that holds PoliticalArea objects for every area key.
      * 
-     * @param graphicList the list of graphics. The top level graphic
-     *        entries on the list represent areas.
+     * @param graphicList the list of graphics. The top level graphic entries on
+     *        the list represent areas.
      */
     public Hashtable determinePoliticalAreas(OMGraphicList graphicList) {
         if (Debug.debugging("areas")) {
@@ -880,17 +873,15 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * DeterminePoliticalAreas goes over a list of omgraphics, and
-     * spits out a hashtable that holds PoliticalArea objects for
-     * every area key. When an ID is found in the graphics, it is
-     * checked in the hashtable for like graphics, and added to that
-     * PoliticalArea if found. If not found, a new PoliticalArea is
-     * created and placed in the Hashtable. This will duplicate
-     * graphics if you call it more than once for the same graphic
-     * list.
+     * DeterminePoliticalAreas goes over a list of omgraphics, and spits out a
+     * hashtable that holds PoliticalArea objects for every area key. When an ID
+     * is found in the graphics, it is checked in the hashtable for like
+     * graphics, and added to that PoliticalArea if found. If not found, a new
+     * PoliticalArea is created and placed in the Hashtable. This will duplicate
+     * graphics if you call it more than once for the same graphic list.
      * 
-     * @param graphicList the list of graphics. The top level graphic
-     *        entries on the list represent areas.
+     * @param graphicList the list of graphics. The top level graphic entries on
+     *        the list represent areas.
      */
     public Hashtable determinePoliticalAreas(OMGraphicList graphicList,
                                              Hashtable poli_areas) {
@@ -977,10 +968,10 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * This function would return a Color object for string such as
-     * red, green,.. (all that are available from java.awt.color
-     * class). It can also return a specific color represented by HEX
-     * or Octal number like 0xffeeffee
+     * This function would return a Color object for string such as red,
+     * green,.. (all that are available from java.awt.color class). It can also
+     * return a specific color represented by HEX or Octal number like
+     * 0xffeeffee
      */
     protected Color GetColorFromString(String token) {
         String tokstring = (String) token;
@@ -1030,9 +1021,9 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * This main function basically reads in the data sources (the
-     * shape file and the csv information file, and creates a
-     * serialized graphics file that will act like a cache later.
+     * This main function basically reads in the data sources (the shape file
+     * and the csv information file, and creates a serialized graphics file that
+     * will act like a cache later.
      */
     public static void main(String[] argv) {
         String propertiesFile = null;
