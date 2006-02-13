@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/AbstractLocationHandler.java,v $
-// $Revision: 1.9 $ $Date: 2006/01/18 17:44:15 $ $Author: dietrick $
+// $Revision: 1.10 $ $Date: 2006/02/13 16:54:18 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.location;
@@ -46,7 +46,7 @@ import com.bbn.openmap.util.PropUtils;
  * </pre>
  * 
  * @see com.bbn.openmap.layer.location.LocationHandler
- * @version $Revision: 1.9 $ $Date: 2006/01/18 17:44:15 $
+ * @version $Revision: 1.10 $ $Date: 2006/02/13 16:54:18 $
  * @author Michael E. Los D530/23448
  */
 public abstract class AbstractLocationHandler implements LocationHandler {
@@ -59,8 +59,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     // - - - - - - - - - - - - - -
     /** The default setting for the labels at startup. */
     private boolean showNames = false;
-    /** The color for the names. */
-    protected Color nameColor;
+    /** The rendering attributes for the names. */
     protected DrawingAttributes nameDrawingAttributes;
 
     // - - - - - - - - - - - - - -
@@ -68,8 +67,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     // - - - - - - - - - - - - - -
     /** The default setting for the locations at startup. */
     private boolean showLocations = true;
-    /** The color for the locations. */
-    protected Color locationColor;
+    /** The rendering attributes for the locations. */
     protected DrawingAttributes locationDrawingAttributes;
 
     /**
@@ -298,13 +296,13 @@ public abstract class AbstractLocationHandler implements LocationHandler {
         props.put(prefix + ShowNamesProperty, new Boolean(showNames).toString());
         props.put(prefix + ShowLocationsProperty,
                 new Boolean(showLocations).toString());
-        props.put(prefix + NameColorProperty,
-                Integer.toHexString(getNameColor().getRGB()));
-        props.put(prefix + LocationColorProperty,
-                Integer.toHexString(getLocationColor().getRGB()));
         props.put(prefix + ForceGlobalProperty,
                 new Boolean(forceGlobal).toString());
 
+        // Just to make sure.
+        nameDrawingAttributes.setPropertyPrefix(prefix + NamePropertyPrefix);
+        locationDrawingAttributes.setPropertyPrefix(prefix + LocationPropertyPrefix);
+        
         nameDrawingAttributes.getProperties(props);
         locationDrawingAttributes.getProperties(props);
 
@@ -341,14 +339,6 @@ public abstract class AbstractLocationHandler implements LocationHandler {
                 "Show names",
                 "Display all the location name labels.",
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-
-        PropUtils.setI18NPropertyInfo(i18n,
-                list,
-                AbstractLocationHandler.class,
-                NameColorProperty,
-                "Name label color",
-                "Color of name label text on map.",
-                "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
         
         PropUtils.setI18NPropertyInfo(i18n,
                 list,
@@ -357,14 +347,6 @@ public abstract class AbstractLocationHandler implements LocationHandler {
                 "Show locations",
                 "Display all the location markers.",
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        
-        PropUtils.setI18NPropertyInfo(i18n,
-                list,
-                AbstractLocationHandler.class,
-                LocationColorProperty,
-                "Location color",
-                "Color of location marker on map.",
-                "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
         PropUtils.setI18NPropertyInfo(i18n,
                 list,
@@ -373,6 +355,9 @@ public abstract class AbstractLocationHandler implements LocationHandler {
                 "Layer Override",
                 "Layer settings override map object settings.",
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        
+        nameDrawingAttributes.getPropertyInfo(list);
+        locationDrawingAttributes.getPropertyInfo(list);
 
         return list;
     }
