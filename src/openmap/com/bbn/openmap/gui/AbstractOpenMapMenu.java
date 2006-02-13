@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/AbstractOpenMapMenu.java,v $
 // $RCSfile: AbstractOpenMapMenu.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/02/02 13:14:26 $
+// $Revision: 1.10 $
+// $Date: 2006/02/13 16:58:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -176,7 +176,7 @@ abstract public class AbstractOpenMapMenu extends JMenu implements
      * findAndUndo(Object) instead, so subclasses and superclasses can
      * be given the opportunity to use the object, too.
      */
-    public void findAndUnInit(Iterator it) {
+    public void findAndUndo(Iterator it) {
         while (it.hasNext()) {
             findAndUndo(it.next());
         }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.17 $
-// $Date: 2005/08/11 20:39:14 $
+// $Revision: 1.18 $
+// $Date: 2006/02/13 16:58:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -439,13 +439,11 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
                 (pi instanceof BeanContextChild || (pi instanceof AbstractPlugIn && ((AbstractPlugIn) pi).getAddToBeanContext()))) {
 
             // Of course, we don't need all these conditions met to
-            // order
-            // the removal, but they are the ones in place that would
+            // order the removal, but they are the ones in place that would
             // cause it to be added, so we don't waste the effort
-            // unless
-            // the same conditions are met.
+            // unless the same conditions are met.
             bc.remove(pi);
         }
     }
-
+    
 }

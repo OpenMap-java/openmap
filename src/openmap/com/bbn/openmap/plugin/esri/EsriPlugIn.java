@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriPlugIn.java,v $
 // $RCSfile: EsriPlugIn.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/08/09 20:33:38 $
+// $Revision: 1.13 $
+// $Date: 2006/02/13 16:58:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -56,7 +56,7 @@ import com.bbn.openmap.dataAccess.shape.ShapeConstants;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.plugin.AbstractPlugIn;
+import com.bbn.openmap.plugin.BeanContextAbstractPlugIn;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.DataBoundsProvider;
@@ -183,7 +183,7 @@ import com.bbn.openmap.util.PropUtils;
  * @author Lonnie Goad from OptiMetrics provided selection bug
  *         solution and GUI interaction.
  */
-public class EsriPlugIn extends AbstractPlugIn implements ShapeConstants,
+public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConstants,
         DataBoundsProvider {
 
     private EsriGraphicList _list = null;

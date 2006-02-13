@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.16 $
-// $Date: 2006/01/13 22:16:21 $
+// $Revision: 1.17 $
+// $Date: 2006/02/13 16:58:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -326,6 +326,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
     public void removeDataBoundsProvider(DataBoundsProvider provider) {
         JMenuItem item = (DataBoundsViewMenuItem) dataBoundsProviders.get(provider);
         if (item != null) {
+            dataBoundsProviders.remove(provider);
             dataBoundsMenu.remove(item);
         }
     }
