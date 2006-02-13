@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LayerHandler.java,v $
 // $RCSfile: LayerHandler.java,v $
-// $Revision: 1.14 $
-// $Date: 2005/08/11 20:39:16 $
+// $Revision: 1.15 $
+// $Date: 2006/02/13 16:29:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,162 +38,123 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The LayerHandler is a component that keeps track of all Layers for
- * the MapBean, whether or not they are currently part of the map or
- * not. It is able to dynamically add and remove layers from the list
- * of available layers. Whether a layer is added to the MapBean
- * depends on the visibility setting of the layer. If
- * Layer.isVisible() is true, the layer will be added to the MapBean.
- * There are methods within the LayerHandler that let you change the
+ * The LayerHandler is a component that keeps track of all Layers for the
+ * MapBean, whether or not they are currently part of the map or not. It is able
+ * to dynamically add and remove layers from the list of available layers.
+ * Whether a layer is added to the MapBean depends on the visibility setting of
+ * the layer. If Layer.isVisible() is true, the layer will be added to the
+ * MapBean. There are methods within the LayerHandler that let you change the
  * visibility setting of a layer.
  * <P>
  * 
- * The LayerHandler is able to take a Properties object, and create
- * layers that are defined within it. The key property is "layers",
- * which may or may not have a prefix for it. If that property does
- * have a prefix (prefix.layers, i.e. openmap.layers), then that
- * prefix has to be known and passed in to the contructor or init
- * method. This layers property should fit the general openmap marker
- * list paradigm, where the marker names are listed in a space
- * separated list, and then each marker name is used as a prefix for
- * the properties for a particular layer. As a minimum, each layer
- * needs to have the class and prettyName properties defined. The
- * class property should define the class name to use for the layer,
- * and the prettyName property needs to be a name for the layer to be
- * used in the GUI. Any other property that the particular layer can
- * use should be listed in the Properties, with the applicable marker
- * name as a prefix. Each layer should have its available properties
- * defined in its documentation. For example:
+ * The LayerHandler is able to take a Properties object, and create layers that
+ * are defined within it. The key property is "layers", which may or may not
+ * have a prefix for it. If that property does have a prefix (prefix.layers,
+ * i.e. openmap.layers), then that prefix has to be known and passed in to the
+ * contructor or init method. This layers property should fit the general
+ * openmap marker list paradigm, where the marker names are listed in a space
+ * separated list, and then each marker name is used as a prefix for the
+ * properties for a particular layer. As a minimum, each layer needs to have the
+ * class and prettyName properties defined. The class property should define the
+ * class name to use for the layer, and the prettyName property needs to be a
+ * name for the layer to be used in the GUI. Any other property that the
+ * particular layer can use should be listed in the Properties, with the
+ * applicable marker name as a prefix. Each layer should have its available
+ * properties defined in its documentation. For example:
  * <P>
  * 
  * <pre>
  * 
- *  
- *   
- *    
- *     
- *      
- *       
- *        
- *         
- *          
- *           
- *            
- *             
- *              
- *                          openmap.layers=marker1 marker2 (etc)
- *                          marker1.class=com.bbn.openmap.layer.GraticuleLayer
- *                          marker1.prettyName=Graticule Layer
- *                          # false is default
- *                          marker1.addToBeanContext=false
- *                         
- *                          marker2.class=com.bbn.openmap.layer.shape.ShapeLayer
- *                          marker2.prettyName=Political Boundaries
- *                          marker2.shapeFile=pathToShapeFile
- *                          marker2.spatialIndex=pathToSpatialIndexFile
- *                          marker2.lineColor=FFFFFFFF
- *                          marker2.fillColor=FFFF0000
- *             
- *              
- *             
- *            
- *           
- *          
- *         
- *        
- *       
- *      
- *     
- *    
- *   
- *  
+ *   openmap.layers=marker1 marker2 (etc)
+ *   marker1.class=com.bbn.openmap.layer.GraticuleLayer
+ *   marker1.prettyName=Graticule Layer
+ *   # false is default
+ *   marker1.addToBeanContext=false
+ *                                              
+ *   marker2.class=com.bbn.openmap.layer.shape.ShapeLayer
+ *   marker2.prettyName=Political Boundaries
+ *   marker2.shapeFile=pathToShapeFile
+ *   marker2.spatialIndex=pathToSpatialIndexFile
+ *   marker2.lineColor=FFFFFFFF
+ *   marker2.fillColor=FFFF0000
+ *                                  
  * </pre>
  * 
  * <P>
  * 
- * The LayerHandler is a SoloMapComponent, which means that for a
- * particular map, there should only be one of them. When a
- * LayerHandler is added to a BeanContext, it will look for a MapBean
- * to connect to itself as a LayerListener so that the MapBean will
- * receive LayerEvents - this is the mechanism that adds and removes
- * layers on the map. If more than one MapBean is added to the
- * BeanContext, then the last MapBean added will be added as a
- * LayerListener, with any prior MapBeans added as a LayerListener
- * removed from the LayerHandler. The MapHandler controls the behavior
- * of multiple SoloMapComponent addition to the BeanContext.
+ * The LayerHandler is a SoloMapComponent, which means that for a particular
+ * map, there should only be one of them. When a LayerHandler is added to a
+ * BeanContext, it will look for a MapBean to connect to itself as a
+ * LayerListener so that the MapBean will receive LayerEvents - this is the
+ * mechanism that adds and removes layers on the map. If more than one MapBean
+ * is added to the BeanContext, then the last MapBean added will be added as a
+ * LayerListener, with any prior MapBeans added as a LayerListener removed from
+ * the LayerHandler. The MapHandler controls the behavior of multiple
+ * SoloMapComponent addition to the BeanContext.
  */
 public class LayerHandler extends OMComponent implements SoloMapComponent,
         Serializable {
 
     /**
-     * Property for space separated layers. If a prefix is needed,
-     * just use the methods that let you use the prefix - don't worry
-     * about the period, it will be added automatically.
+     * Property for space separated layers. If a prefix is needed, just use the
+     * methods that let you use the prefix - don't worry about the period, it
+     * will be added automatically.
      */
     public static final String layersProperty = "layers";
     /**
-     * Property for space separated layers to be displayed at startup.
-     * If a prefix is needed, just use the methods that let you use
-     * the prefix - don't worry about the period, it will be added
-     * automatically.
+     * Property for space separated layers to be displayed at startup. If a
+     * prefix is needed, just use the methods that let you use the prefix -
+     * don't worry about the period, it will be added automatically.
      */
     public static final String startUpLayersProperty = "startUpLayers";
     /**
-     * Flag to set synchronous threading on the LayerHandler, telling
-     * it to react to layer order changes and layer visibility
-     * requests within the calling thread. By default, this action is
-     * true. Setting it to false may eliminate pauses in GUI reactions
-     * by offloading work done by layers being added to the MapBean,
-     * but there have been reports that the asynchronous nature of the
-     * threading queue may be causing an unexpected state in layer
-     * order and/or availability under certain intense layer
-     * management conditions (created by automated processes, for
-     * example).
+     * Flag to set synchronous threading on the LayerHandler, telling it to
+     * react to layer order changes and layer visibility requests within the
+     * calling thread. By default, this action is true. Setting it to false may
+     * eliminate pauses in GUI reactions by offloading work done by layers being
+     * added to the MapBean, but there have been reports that the asynchronous
+     * nature of the threading queue may be causing an unexpected state in layer
+     * order and/or availability under certain intense layer management
+     * conditions (created by automated processes, for example).
      */
     public static final String SynchronousThreadingProperty = "synchronousThreading";
     /**
-     * The object holding on to all LayerListeners interested in the
-     * layer arrangement and availability. Not expected to be null.
+     * The object holding on to all LayerListeners interested in the layer
+     * arrangement and availability. Not expected to be null.
      */
     protected transient LayerSupport listeners = new LayerSupport(this);
     /**
-     * The list of all layers, even the ones that are not part of the
-     * map.
+     * The list of all layers, even the ones that are not part of the map.
      */
     protected Layer[] allLayers = new Layer[0];
     /**
-     * This handle is only here to keep it appraised of layer prefix
-     * names.
+     * This handle is only here to keep it appraised of layer prefix names.
      */
     protected PropertyHandler propertyHandler;
 
     /**
-     * If you use this constructor, the LayerHandler expects that the
-     * layers will be created and added later, either by addLayer() or
-     * init().
+     * If you use this constructor, the LayerHandler expects that the layers
+     * will be created and added later, either by addLayer() or init().
      */
     public LayerHandler() {}
 
     /**
-     * Start the LayerHandler, and have it create all the layers as
-     * defined in a properties file.
+     * Start the LayerHandler, and have it create all the layers as defined in a
+     * properties file.
      * 
-     * @param props properties as defined in an openmap.properties
-     *        file.
+     * @param props properties as defined in an openmap.properties file.
      */
     public LayerHandler(Properties props) {
         init(null, props);
     }
 
     /**
-     * Start the LayerHandler, and have it create all the layers as
-     * defined in a properties file.
+     * Start the LayerHandler, and have it create all the layers as defined in a
+     * properties file.
      * 
-     * @param prefix the prefix for the layers and startUpLayers
-     *        properties, as if they are listed as prefix.layers, and
-     *        prefix.startUpLayers.
-     * @param props properties as defined in an openmap.propertites
-     *        file.
+     * @param prefix the prefix for the layers and startUpLayers properties, as
+     *        if they are listed as prefix.layers, and prefix.startUpLayers.
+     * @param props properties as defined in an openmap.propertites file.
      */
     public LayerHandler(String prefix, Properties props) {
         init(prefix, props);
@@ -207,13 +168,12 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Extension of the OMComponent. If the LayerHandler is created by
-     * the ComponentFactory (via the PropertyHandler), this method
-     * will be called automatically. For the OpenMap applications,
-     * this method is rigged to handle the openmap.layers property by
-     * calling init("openmap", props). If you are using the
-     * LayerHandler in a different setting, then you might want to
-     * just call init() directly, or extend this class and have
+     * Extension of the OMComponent. If the LayerHandler is created by the
+     * ComponentFactory (via the PropertyHandler), this method will be called
+     * automatically. For the OpenMap applications, this method is rigged to
+     * handle the openmap.layers property by calling init("openmap", props). If
+     * you are using the LayerHandler in a different setting, then you might
+     * want to just call init() directly, or extend this class and have
      * setProperties do what you want.
      */
     public void setProperties(String prefix, Properties props) {
@@ -221,14 +181,13 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Initialize the LayerHandler by having it construct it's layers
-     * from a properties object. The properties should be created from
-     * an openmap.properties file.
+     * Initialize the LayerHandler by having it construct it's layers from a
+     * properties object. The properties should be created from an
+     * openmap.properties file.
      * 
-     * @param prefix the prefix to use for the layers and
-     *        startUpLayers properties.
-     * @param props properties as defined in an openmap.properties
-     *        file.
+     * @param prefix the prefix to use for the layers and startUpLayers
+     *        properties.
+     * @param props properties as defined in an openmap.properties file.
      */
     public void init(String prefix, Properties props) {
         init(getLayers(prefix, props));
@@ -240,8 +199,8 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Initialize the LayerHandler by having it construct it's layers
-     * from a URL containing an openmap.properties file.
+     * Initialize the LayerHandler by having it construct it's layers from a URL
+     * containing an openmap.properties file.
      * 
      * @param url a url for a properties file.
      */
@@ -250,11 +209,11 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Initialize the LayerHandler by having it construct it's layers
-     * from a URL containing an openmap.properties file.
+     * Initialize the LayerHandler by having it construct it's layers from a URL
+     * containing an openmap.properties file.
      * 
-     * @param prefix the prefix to use for the layers and
-     *        startUpLayers properties.
+     * @param prefix the prefix to use for the layers and startUpLayers
+     *        properties.
      * @param url a url for a properties file.
      */
     public void init(String prefix, java.net.URL url) {
@@ -272,14 +231,53 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Initialize from an array of layers. This will cause the
-     * LayerListeners, if they exist, to update themselves with the
-     * current list of layers.
+     * Initialize from an array of layers. This will cause the LayerListeners,
+     * if they exist, to update themselves with the current list of layers. This
+     * will check to add layers to the MapHandler.
      * 
      * @param layers the initial array of layers.
      */
     public void init(Layer[] layers) {
+
+        // Should get rid of the old layers properly.
+        removeAll();
+
+        // OK, we need to check the allLayers array, because at this point it
+        // could still be holding non-removable layers. If we just replace them,
+        // we've broken the contract of nonremoval. Move the nonremovable layers
+        // to the bottom and put the new layers on top. We also need to check to
+        // make sure that any duplicate layers on either list are parsed down to
+        // one layer. We use the Vector.contains() method for that check.
+        if (allLayers != null && allLayers.length > 0) {
+            int lLength = (layers != null ? layers.length : 0);
+            Vector newLayers = new Vector(allLayers.length + lLength);
+            if (layers != null) {
+                for (int i = 0; i < lLength; i++) {
+                    if (!newLayers.contains(layers[i])) {
+                        newLayers.add(layers[i]);
+                    }
+                }
+            }
+
+            for (int i = 0; i < allLayers.length; i++) {
+                if (!newLayers.contains(allLayers[i])) {
+                    newLayers.add(allLayers[i]);
+                }
+            }
+
+            layers = new Layer[newLayers.size()];
+            layers = (Layer[]) newLayers.toArray(layers);
+        }
+
         setLayers(layers);
+
+        // This should work for layers being reloaded from the PropertyHandler,
+        // it's better than doing it in the getLayers(...) method below. For the
+        // initial LayerHandler construction and Layer creation in an
+        // application, the BeanContext should be null at this point, so this
+        // method call will do nothing. But for resetting the layers with new
+        // ones, they will get dumped into the BeanContext/MapHandler.
+        addLayersToBeanContext(layers);
     }
 
     public void setPropertyHandler(PropertyHandler ph) {
@@ -291,15 +289,14 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * This is the method that gets used to parse the layer properties
-     * from an openmap.properties file, where the layer marker names
-     * are listed under a layers property, and each layer is then
-     * represented by a marker.class property, and a maker.prettyName
-     * property.
+     * This is the method that gets used to parse the layer properties from an
+     * openmap.properties file, where the layer marker names are listed under a
+     * layers property, and each layer is then represented by a marker.class
+     * property, and a maker.prettyName property.
      * 
-     * @param p properties containing layers property, the
-     *        startupLayers property listing the layers to make
-     *        visible immediately, and the layer properties as well.
+     * @param p properties containing layers property, the startupLayers
+     *        property listing the layers to make visible immediately, and the
+     *        layer properties as well.
      * @return Layer[] of layers created from the properties.
      */
     protected Layer[] getLayers(Properties p) {
@@ -307,16 +304,15 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * This is the method that gets used to parse the layer properties
-     * from an openmap.properties file, where the layer marker names
-     * are listed under a prefix.layers property, and each layer is
-     * then represented by a marker.class property, and a
-     * maker.prettyName property.
+     * This is the method that gets used to parse the layer properties from an
+     * openmap.properties file, where the layer marker names are listed under a
+     * prefix.layers property, and each layer is then represented by a
+     * marker.class property, and a maker.prettyName property.
      * 
-     * @param prefix the prefix to use to use for the layer list
-     *        (layers) property and the startUpLayers property. If it
-     *        is not null, this will cause the method to looke for
-     *        prefix.layers and prefix.startUpLayers.
+     * @param prefix the prefix to use to use for the layer list (layers)
+     *        property and the startUpLayers property. If it is not null, this
+     *        will cause the method to looke for prefix.layers and
+     *        prefix.startUpLayers.
      * @param p the properties to build the layers from.
      * @return Layer[]
      */
@@ -354,27 +350,27 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
 
         Layer[] layers = getLayers(layersValue, startuplayers, p);
 
-        // You don't want to do this, it sets up a cycle...
-        //      addLayersToBeanContext(layers);
-        //      loadLayers(null);
+        // You don't want to do this, it sets up a cycle. The layers are not yet
+        // set in the LayerHandler, so the LayerHandle won't know to ignore them
+        // when they show up in findAndInit().
+        // addLayersToBeanContext(layers);
 
         return layers;
     }
 
     /**
-     * A static method that lets you pass in a Properties object,
-     * along with two Vectors of strings, each Vector representing
-     * marker names for layers contained in the Properties.
+     * A static method that lets you pass in a Properties object, along with two
+     * Vectors of strings, each Vector representing marker names for layers
+     * contained in the Properties.
      * <P>
-     * If a PlugIn is listed in the properties, the LayerHandler will
-     * create a PlugInLayer for it and set the PlugIn in that layer.
+     * If a PlugIn is listed in the properties, the LayerHandler will create a
+     * PlugInLayer for it and set the PlugIn in that layer.
      * 
-     * @param layerList Vector of marker names to use to inspect the
-     *        properties with.
-     * @param visibleLayerList Vector of marker names representing the
-     *        layers that should initially be set to visible when
-     *        created, so that those layers are initially added to the
-     *        map.
+     * @param layerList Vector of marker names to use to inspect the properties
+     *        with.
+     * @param visibleLayerList Vector of marker names representing the layers
+     *        that should initially be set to visible when created, so that
+     *        those layers are initially added to the map.
      * @param p Properties object containing the layers properties.
      * @return Layer[]
      */
@@ -422,7 +418,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
             // and make it visible if it is...
             l.setVisible(visibleLayerList.contains(layerName));
             // The ComponentFactory does this now
-            //                  l.setProperties(layerName, p);
+            // l.setProperties(layerName, p);
 
             layers.addElement(l);
 
@@ -443,14 +439,13 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Add a LayerListener to the LayerHandler, in order to be told
-     * about layers that need to be added to the map. The new
-     * LayerListener will receive two events, one telling it all the
-     * layers available, and one telling it which layers are active
-     * (visible).
+     * Add a LayerListener to the LayerHandler, in order to be told about layers
+     * that need to be added to the map. The new LayerListener will receive two
+     * events, one telling it all the layers available, and one telling it which
+     * layers are active (visible).
      * 
-     * @param ll LayerListener, usually the MapBean or other GUI
-     *        components interested in providing layer controls.
+     * @param ll LayerListener, usually the MapBean or other GUI components
+     *        interested in providing layer controls.
      */
     public void addLayerListener(LayerListener ll) {
         Debug.message("layerhandler", "LayerHandler: adding layer listener");
@@ -463,11 +458,11 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Add a LayerListener to the LayerHandler, in order to be told
-     * about layers that need to be added to the map.
+     * Add a LayerListener to the LayerHandler, in order to be told about layers
+     * that need to be added to the map.
      * 
-     * @param ll LayerListener, usually the MapBean or other GUI
-     *        components interested in providing layer controls.
+     * @param ll LayerListener, usually the MapBean or other GUI components
+     *        interested in providing layer controls.
      */
     public void removeLayerListener(LayerListener ll) {
         if (listeners != null) {
@@ -476,10 +471,22 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Set all the layers held by the LayerHandler. The visible layers
-     * will be sent to listeners interested in visible layers
-     * (LayerEvent.REPLACE), and the list of all layers will be sent
-     * to listeners interested in LayerEvent.ALL events.
+     * Set all the layers held by the LayerHandler. The visible layers will be
+     * sent to listeners interested in visible layers (LayerEvent.REPLACE), and
+     * the list of all layers will be sent to listeners interested in
+     * LayerEvent.ALL events.
+     * <p>
+     * 
+     * This method will not add the layers to the MapHandler, so you can call
+     * this if you know the layers are already in the MapHandler or don't need
+     * to be. If you want layers to be added to the MapHandler (if the
+     * LayerHandler knows about it), call init(Layer[]) instead.
+     * <p>
+     * 
+     * Also, this method will disregard layer non-removable status for any
+     * layers currently held, and will simply replace all layers with the ones
+     * provided. If you want the non-removable flag to be adhered to, call
+     * init(Layers[]).
      * 
      * @param layers Layer array of all the layers to be held by the
      *        LayerHandler.
@@ -503,30 +510,28 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Returns the object responsible for holding on to objects
-     * listening to layer changes.
+     * Returns the object responsible for holding on to objects listening to
+     * layer changes.
      * 
-     * @return LayerSupport containing pointers to all objects
-     *         interested in the status (order, visibility) of the
-     *         available layers.
+     * @return LayerSupport containing pointers to all objects interested in the
+     *         status (order, visibility) of the available layers.
      */
     protected LayerSupport getListeners() {
         return listeners;
     }
 
     /**
-     * If you are futzing with the layer visibility outside the
-     * perview of the LayerHandler (not using the turnLayerOn()
-     * methods) then you can call this to get all the listeners using
-     * the current set of visible layers.
+     * If you are futzing with the layer visibility outside the perview of the
+     * LayerHandler (not using the turnLayerOn() methods) then you can call this
+     * to get all the listeners using the current set of visible layers.
      */
     public void setLayers() {
         setLayers(allLayers);
     }
 
     /**
-     * Tell anyone interested in the layers to update the layer pretty
-     * names. Same as setLayers().
+     * Tell anyone interested in the layers to update the layer pretty names.
+     * Same as setLayers().
      * 
      * @deprecated Replaced by setLayers().
      */
@@ -535,9 +540,9 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Get a layer array, of potential layers that CAN be added to the
-     * map, not the ones that are active on the map. A new array is
-     * returned, containing the current layers.
+     * Get a layer array, of potential layers that CAN be added to the map, not
+     * the ones that are active on the map. A new array is returned, containing
+     * the current layers.
      * 
      * @return new Layer[] containing new layers.
      */
@@ -552,8 +557,8 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Get the layers that are currently part of the Map - the ones
-     * that are visible.
+     * Get the layers that are currently part of the Map - the ones that are
+     * visible.
      * 
      * @return an Layer[] of visible Layers.
      */
@@ -585,19 +590,17 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Move a layer to a certain position. Returns true if the layer
-     * exists in the LayerHandler, false if is doesn't. No action is
-     * taken if the layer isn't already added to the LayerHandler
-     * stack. If the position is 0 or less the layer is moved on top.
-     * If the position is greater or equal to the number of layers,
-     * the layer is moved to the bottom of the pile.
+     * Move a layer to a certain position. Returns true if the layer exists in
+     * the LayerHandler, false if is doesn't. No action is taken if the layer
+     * isn't already added to the LayerHandler stack. If the position is 0 or
+     * less the layer is moved on top. If the position is greater or equal to
+     * the number of layers, the layer is moved to the bottom of the pile.
      * 
      * @param layer the layer to move.
-     * @param toPosition the array index to place it, shifting the
-     *        other layers up or down, depending on where the layer is
-     *        originally.
-     * @return true if the layer is already contained in the
-     *         LayerHandler, false if not.
+     * @param toPosition the array index to place it, shifting the other layers
+     *        up or down, depending on where the layer is originally.
+     * @return true if the layer is already contained in the LayerHandler, false
+     *         if not.
      */
     public boolean moveLayer(Layer layer, int toPosition) {
         boolean found = false;
@@ -649,8 +652,8 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Add a layer to the bottom of the layer stack. If the layer is
-     * already part of the layer stack, nothing is done.
+     * Add a layer to the bottom of the layer stack. If the layer is already
+     * part of the layer stack, nothing is done.
      * 
      * @param layer the layer to add.
      */
@@ -671,13 +674,12 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Add a layer to a certain position in the layer array. If the
-     * position is 0 or less, the layer is put up front (on top). If
-     * the position is greater than the length of the current array,
-     * the layer is put at the end, (on the bottom). The layer is
-     * placed on the map if it's visiblity is true. A Layer can only
-     * be added once. If you add a layer that is already added to the
-     * LayerHandler, it will be moved to the requested postition.
+     * Add a layer to a certain position in the layer array. If the position is
+     * 0 or less, the layer is put up front (on top). If the position is greater
+     * than the length of the current array, the layer is put at the end, (on
+     * the bottom). The layer is placed on the map if it's visiblity is true. A
+     * Layer can only be added once. If you add a layer that is already added to
+     * the LayerHandler, it will be moved to the requested postition.
      * 
      * @param layer the layer to add.
      * @param position the array index to place it.
@@ -718,26 +720,38 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
             }
         }
 
-        // Add the layer to the BeanContext, if it wants to be.
+        // Need to make this call before thinking about adding the Layer to the
+        // BeanContext, so when the Layer shows up in the findAndInit() method,
+        // it's already a part of the Layer list. One potential problem that may
+        // occur is that the Layer might not be ready to be added to the map and
+        // to other application components that get LayerEvents from the
+        // LayerHandler, and they will all know about the layer being in the
+        // stack after the setLayers() call.
+        setLayers(newLayers);
+
+        // Add the layer to the BeanContext, if it wants to be and it's not
+        // already in a BeanContext. Thought about making the BC check look for
+        // the same BC as the LayerHandler is a part of, but it's probably
+        // better just to do a null check in case the Layer is a member of a
+        // more restricted BeanContext with limited access.
         BeanContext bc = getBeanContext();
-        if (bc != null && layer.getAddToBeanContext()) {
+        if (bc != null && layer.getAddToBeanContext()
+                && layer.getBeanContext() == null) {
             bc.add(layer);
         }
 
-        setLayers(newLayers);
     }
 
     /**
-     * Add a layer to a certain position in the layer array. If the
-     * position is 0 or less, the layer is put up front (on top). If
-     * the position is greater thatn the length of the current array,
-     * the layer is put at the end, (on the bottom).
+     * Add a layer to a certain position in the layer array. If the position is
+     * 0 or less, the layer is put up front (on top). If the position is greater
+     * thatn the length of the current array, the layer is put at the end, (on
+     * the bottom).
      * 
      * @param layer the layer to add.
      * @param position the array index to place it.
      * @param addedLayerTurnedOn turn the layer on.
-     * @deprecated the layer will be turned on if its visibility is
-     *             true.
+     * @deprecated the layer will be turned on if its visibility is true.
      */
     public void addLayer(Layer layer, int position, boolean addedLayerTurnedOn) {
         layer.setVisible(addedLayerTurnedOn);
@@ -798,6 +812,10 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      * Remove all the layers (that are marked as removeable).
      */
     public void removeAll() {
+        if (allLayers == null || allLayers.length == 0) {
+            return;
+        }
+
         BeanContext bc = getBeanContext();
         Layer[] oldLayers = allLayers;
         Vector nonRemoveableLayers = null;
@@ -836,12 +854,10 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * The version that does the work. The other two functions do
-     * sanity checks. Calls setLayers(), and removes the layer from
-     * the BeanContext.
+     * The version that does the work. The other two functions do sanity checks.
+     * Calls setLayers(), and removes the layer from the BeanContext.
      * 
-     * @param currentLayers the current layers handled in the
-     *        LayersMenu.
+     * @param currentLayers the current layers handled in the LayersMenu.
      * @param index the validated index of the layer to remove.
      */
     protected void removeLayer(Layer[] currentLayers, int index) {
@@ -883,14 +899,14 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Take a layer that the LayersMenu knows about, that may or may
-     * not be a part of the map, and change its visibility by
-     * adding/removing it from the MapBean.
+     * Take a layer that the LayersMenu knows about, that may or may not be a
+     * part of the map, and change its visibility by adding/removing it from the
+     * MapBean.
      * 
      * @param setting true to add layer to the map.
      * @param index the index of the layer to turn on/off.
-     * @return true of index represented a layer, false if not or if
-     *         something went wrong.
+     * @return true of index represented a layer, false if not or if something
+     *         went wrong.
      */
     public boolean turnLayerOn(boolean setting, int index) {
         try {
@@ -905,15 +921,15 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Take a layer that the LayersMenu knows about, that may or may
-     * not be a part of the map, and change its visibility by
-     * adding/removing it from the MapBean. If the layer is not found,
-     * it's added and the visibility depends on the setting parameter.
+     * Take a layer that the LayersMenu knows about, that may or may not be a
+     * part of the map, and change its visibility by adding/removing it from the
+     * MapBean. If the layer is not found, it's added and the visibility depends
+     * on the setting parameter.
      * 
      * @param setting true to add layer to the map.
      * @param layer the layer to turn on.
-     * @return true if the layer was found, false if not or if
-     *         something went wrong.
+     * @return true if the layer was found, false if not or if something went
+     *         wrong.
      */
     public boolean turnLayerOn(boolean setting, Layer layer) {
 
@@ -932,17 +948,15 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Called from childrenAdded(), when a new component is added to
-     * the BeanContext, and from setBeanContext() when the
-     * LayerHandler is initially added to the BeanContext. This method
-     * takes the iterator provided when those methods are called, and
-     * looks for the objects that the LayerHandler is interested in,
-     * namely, the MapBean, the PropertyHandler, or any other
-     * LayerListeners. The LayerHandler handles multiple
-     * LayerListeners, and if one is found, it is added to the
-     * LayerListener list. If a PropertyHandler is found, then init()
-     * is called, effectively resetting the layers held by the
-     * LayerHandler.
+     * Called from childrenAdded(), when a new component is added to the
+     * BeanContext, and from setBeanContext() when the LayerHandler is initially
+     * added to the BeanContext. This method takes the iterator provided when
+     * those methods are called, and looks for the objects that the LayerHandler
+     * is interested in, namely, the MapBean, the PropertyHandler, or any other
+     * LayerListeners. The LayerHandler handles multiple LayerListeners, and if
+     * one is found, it is added to the LayerListener list. If a PropertyHandler
+     * is found, then init() is called, effectively resetting the layers held by
+     * the LayerHandler.
      * 
      * @param someObj an Object being added to the MapHandler/BeanContext.
      */
@@ -971,10 +985,9 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * A BeanContextMembershipListener interface method, which is
-     * called when new objects are removed from the BeanContext. If a
-     * LayerListener or Layer is found on this list, it is removed
-     * from the list of LayerListeners.
+     * A BeanContextMembershipListener interface method, which is called when
+     * new objects are removed from the BeanContext. If a LayerListener or Layer
+     * is found on this list, it is removed from the list of LayerListeners.
      * 
      * @param someObj an Object being removed from the MapHandler/BeanContext.
      */
@@ -997,9 +1010,9 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Add layers to the BeanContext, if they want to be. Since the
-     * BeanContext is a Collection, it doesn't matter if a layer is
-     * already there because duplicates aren't allowed.
+     * Add layers to the BeanContext, if they want to be. Since the BeanContext
+     * is a Collection, it doesn't matter if a layer is already there because
+     * duplicates aren't allowed.
      * 
      * @param layers layers to add, if they want to be.
      */
@@ -1010,16 +1023,35 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
         }
 
         for (int i = 0; i < layers.length; i++) {
-            if (layers[i].getAddToBeanContext()) {
+            if (layers[i].getAddToBeanContext()
+                    && layers[i].getBeanContext() == null) {
                 bc.add(layers[i]);
             }
         }
     }
 
     /**
-     * Called when the LayerHandler is added to a BeanContext. This
-     * method calls findAndInit() to hook up with any objects that may
-     * already be added to the BeanContext. A BeanContextChild method.
+     * Add layers to the BeanContext, if they want to be. Since the BeanContext
+     * is a Collection, it doesn't matter if a layer is already there because
+     * duplicates aren't allowed.
+     * 
+     * @param layers layers to add, if they want to be.
+     */
+    public void removeLayersFromBeanContext(Layer[] layers) {
+        BeanContext bc = getBeanContext();
+        if (bc == null || layers == null) {
+            return;
+        }
+
+        for (int i = 0; i < layers.length; i++) {
+            bc.remove(layers[i]);
+        }
+    }
+
+    /**
+     * Called when the LayerHandler is added to a BeanContext. This method calls
+     * findAndInit() to hook up with any objects that may already be added to
+     * the BeanContext. A BeanContextChild method.
      * 
      * @param in_bc BeanContext.
      */
@@ -1031,8 +1063,8 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
             in_bc.addBeanContextMembershipListener(this);
             beanContextChildSupport.setBeanContext(in_bc);
 
-            // findAndInit should be called after the layers and
-            // plugins are added to the MapHandler, so they can find
+            // This will cause findAndInit to be called on the layers and
+            // plugins after they are added to the MapHandler, so they can find
             // the components they need before they get added to the
             // map (if they are to be added at startup).
             addLayersToBeanContext(getLayers());
