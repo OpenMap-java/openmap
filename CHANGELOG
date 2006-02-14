@@ -1,4 +1,48 @@
-2006-02-01	Bill Mackiewicz <bmackiew@bbn.com
+2006-02-14  Don Dietrick  <dietrick@bbn.com>
+
+	* Updated LayerHandler to manage layers in the MapHandler better.
+	Layers will only be added to the MapHandler if they don't know
+	about it already.  Also, calling LayerHandler.init(Layer[]) has
+	been updated to check to see if Layers are removable, and honors
+	that setting.  Non-removable layers will be added to the bottom of
+	the layer stack as the new layers are added.  These layers will
+	also be added to the MapHandler as needed, where they previously
+	weren't.  This fixes the bug where layers added to the application
+	as a result of loading a new properties file weren't being added
+	to the MapHandler.
+
+	* Updated BeanContextPlugIn to remove itself from the
+	BeanContext/MapHandler when it sees its own PlugIn layer being
+	removed.  Made EsriPlugIn extend BeanContextPlugIn instead of
+	AbstractPlugIn.  Cleaned up how DataBoundsProviders were handled
+	as they were removed from the MapHandler.  PlugIns weren't being
+	removed properly.
+	
+	* Added an attribute Hashtable to Layer.
+
+	* Updated the MapRequestHandler and ImageServer classes to handle
+	background Paints better.  Map requests coming through the
+	MapRequestHandler no longer set the default background color, and
+	the ImageServer API has createImage(...) methods added to allow
+	the passing in of background Paint objects to be used for an
+	image.  The background color can be set in the properties.
+
+	* Updated WindowSupport to have WSDisplay inner classes that
+	handle the differences between showing components in JFrames,
+	JDialogs and JInternalFrames.  Components can specify which kind
+	of WSDisplay they wish to use when the create their WindowSupport
+	object, or they can let the WindowSupport object create the
+	default version for them.  If the Environment.useInternalFrames
+	flag is set, then JDialogs will be used for components that don't
+	specify which WSDisplays to use.  If the Environment flag is not
+	set, then the WindowSupport.defaultWindowSupportDisplayType static
+	member variable dictates what kind of window will be created.
+	Although the JFrame class is the default, there are accessors to
+	change that setting (WindowSupport.Frm.class,
+	WindowSupport.Dlg.class or WindowSupport.IntrnlFrm.class) 
+	to suit your application.
+
+2006-02-01 Bill Mackiewicz <bmackiew@bbn.com>
 	* OpenMap 4.6.3 released.
 
 2006-01-24  Don Dietrick  <dietrick@bbn.com>
