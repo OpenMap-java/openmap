@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.26 $
-// $Date: 2005/12/09 21:09:06 $
+// $Revision: 1.27 $
+// $Date: 2006/02/14 21:03:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,6 +44,7 @@ import com.bbn.openmap.event.ProgressEvent;
 import com.bbn.openmap.event.ProgressListener;
 import com.bbn.openmap.event.ProgressSupport;
 import com.bbn.openmap.gui.ProgressListenerGauge;
+import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.plugin.PlugIn;
 import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.ComponentFactory;
@@ -790,6 +791,7 @@ public class PropertyHandler extends MapHandlerChild implements
 
         try {
             plg = new ProgressListenerGauge("OpenMap Setup");
+            plg.setWindowSupport(new WindowSupport(plg, new WindowSupport.Frm("", true)));
             addProgressListener(plg);
         } catch (Exception e) {
             // Since ProgressListenerGauge is a Swing component, catch

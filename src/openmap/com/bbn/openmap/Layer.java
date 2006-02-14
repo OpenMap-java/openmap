@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.28 $
-// $Date: 2005/09/13 14:27:27 $
+// $Revision: 1.29 $
+// $Date: 2006/02/14 21:03:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,7 +31,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
@@ -42,14 +41,13 @@ import java.beans.beancontext.BeanContextMembershipEvent;
 import java.beans.beancontext.BeanContextMembershipListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
 
-import com.bbn.openmap.I18n;
-import com.bbn.openmap.ProjectionPainter;
 import com.bbn.openmap.event.InfoDisplayEvent;
 import com.bbn.openmap.event.InfoDisplayListener;
 import com.bbn.openmap.event.LayerStatusEvent;
@@ -66,24 +64,21 @@ import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.Inspector;
 
 /**
- * Layer objects are components which can be added to the MapBean to
- * make a map.
+ * Layer objects are components which can be added to the MapBean to make a map.
  * <p>
  * 
  * Layers implement the ProjectionListener interface to listen for
- * ProjectionEvents. When the projection changes, they may need to
- * refetch, regenerate their graphics, and then repaint themselves
- * into the new view.
+ * ProjectionEvents. When the projection changes, they may need to refetch,
+ * regenerate their graphics, and then repaint themselves into the new view.
  * <p>
  * 
  * When the Layer is added to the MapBean, it will start receiving
- * ProjectionEvents via the ProjectionListener.projectionChanged()
- * method it has to implement. There is a
- * setProjection(ProjectionEvent) methods that should be called from
- * there if you want to save the projection for later use (handling
- * MouseEvents, etc). If you call getProjection() before calling
- * setProjection(), getProjection() will return null, and your
- * OMGraphics will complain and probably freak out at some point.
+ * ProjectionEvents via the ProjectionListener.projectionChanged() method it has
+ * to implement. There is a setProjection(ProjectionEvent) methods that should
+ * be called from there if you want to save the projection for later use
+ * (handling MouseEvents, etc). If you call getProjection() before calling
+ * setProjection(), getProjection() will return null, and your OMGraphics will
+ * complain and probably freak out at some point.
  * 
  * <pre>
  * //// SAMPLE handling of the ProjectionListener interface.
@@ -122,62 +117,52 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     protected static final String SWING_PACKAGE = getPackage(JComponent.class);
 
     /**
-     * The String to use for a key lookup in a Properties object to
-     * find the name to use in a GUI relating to this layer.
+     * The String to use for a key lookup in a Properties object to find the
+     * name to use in a GUI relating to this layer.
      */
     public static final String PrettyNameProperty = "prettyName";
 
     /**
      * The property to set to add the layer to the BeanContext
-     * "addToBeanContext". This probably needs be set by the layer
-     * itself, because it knows whether it needs other components or
-     * not. However, this property is defined in case an option can be
-     * given to the user. If a Layer doesn't want this option given,
-     * it should reset the addToBeanContext variable after
-     * setProperties() is called. The Layer.setProperties() methods
-     * maintain the current state of the variable if undefined, which
-     * is true by default.
+     * "addToBeanContext". This probably needs be set by the layer itself,
+     * because it knows whether it needs other components or not. However, this
+     * property is defined in case an option can be given to the user. If a
+     * Layer doesn't want this option given, it should reset the
+     * addToBeanContext variable after setProperties() is called. The
+     * Layer.setProperties() methods maintain the current state of the variable
+     * if undefined, which is true by default.
      */
     public static final String AddToBeanContextProperty = "addToBeanContext";
 
     /**
-     * Property 'background' to designate this layer as a background
-     * layer, which will cause extra buffering to occur if the
-     * application can handle it. False by default.
+     * Property 'background' to designate this layer as a background layer,
+     * which will cause extra buffering to occur if the application can handle
+     * it. False by default.
      */
     public static final String AddAsBackgroundProperty = "background";
 
     /**
-     * Property 'removable' to designate this layer as removable from
-     * the application, or able to be deleted. True by default.
+     * Property 'removable' to designate this layer as removable from the
+     * application, or able to be deleted. True by default.
      */
     public static final String RemovableProperty = "removable";
+
     /**
-     * Misspelled property 'removeable' to designate this layer as
-     * removable from the application, or able to be deleted. True by
-     * default. Going away. Really.
-     * 
-     * @deprecated use RemovableProperty
-     */
-    public static final String RemoveableProperty = "removeable";
-    /**
-     * The property for designating the minimum projection scale value
-     * that the layer will respond to. This Layer class doesn't limit
-     * how subclasses will react to projections with scale values
-     * smaller than the specified value.
+     * The property for designating the minimum projection scale value that the
+     * layer will respond to. This Layer class doesn't limit how subclasses will
+     * react to projections with scale values smaller than the specified value.
      */
     public static final String MinScaleProperty = "minScale";
     /**
-     * The property for designating the maximum projection scale value
-     * that the layer will respond to. This Layer class doesn't limit
-     * how subclasses will react to projections with scale values
-     * greater than the specified value.
+     * The property for designating the maximum projection scale value that the
+     * layer will respond to. This Layer class doesn't limit how subclasses will
+     * react to projections with scale values greater than the specified value.
      */
     public static final String MaxScaleProperty = "maxScale";
 
     /**
-     * The property to show the palette when the layer is created -
-     * or, more accurately, when the properties are set.
+     * The property to show the palette when the layer is created - or, more
+     * accurately, when the properties are set.
      */
     public static final String AutoPaletteProperty = "autoPalette";
     /** Layer-defined action event command to display the palette. */
@@ -185,21 +170,20 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     /** Layer-defined action event command to hide the palette. */
     public static final String HidePaletteCmd = "hidePaletteCmd";
     /**
-     * Layer-defined action event command to display the properties
-     * using an Inspector.
+     * Layer-defined action event command to display the properties using an
+     * Inspector.
      */
     public static final String DisplayPropertiesCmd = "displayPropertiesCmd";
     /**
-     * Layer-defined action event command to force a redraw on the
-     * layer. The Layer class does not respond to this command, it's
-     * provided as a convenience.
+     * Layer-defined action event command to force a redraw on the layer. The
+     * Layer class does not respond to this command, it's provided as a
+     * convenience.
      */
     public static final String RedrawCmd = "redrawCmd";
 
     /**
-     * The listeners to the Layer that respond to requests for
-     * information displays, like messages, requests for URL displays,
-     * etc.
+     * The listeners to the Layer that respond to requests for information
+     * displays, like messages, requests for URL displays, etc.
      */
     protected ListenerSupport IDListeners = null;
 
@@ -209,23 +193,22 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     protected ListenerSupport lsListeners = null;
 
     /**
-     * Token uniquely identifying this layer in the application
-     * properties.
+     * Token uniquely identifying this layer in the application properties.
      */
     protected String propertyPrefix = null;
 
     /**
-     * Used by the LayerHandler to check if the layer should be added
-     * to the MapHandler BeanContext. See the comments under the
+     * Used by the LayerHandler to check if the layer should be added to the
+     * MapHandler BeanContext. See the comments under the
      * AddToBeanContextProperty. True by default.
      */
     protected boolean addToBeanContext = true;
 
     /**
-     * Flag used by the layer to indicate that it should be treated as
-     * a background layer, indicating that any cache mechanism
-     * available can enable extra buffering. This may prevent mouse
-     * events from being received by the layer.
+     * Flag used by the layer to indicate that it should be treated as a
+     * background layer, indicating that any cache mechanism available can
+     * enable extra buffering. This may prevent mouse events from being received
+     * by the layer.
      */
     protected boolean addAsBackground = false;
 
@@ -235,34 +218,32 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     protected boolean removable = true;
 
     /**
-     * A flag to have the layer display it's palette when the
-     * properties are set. If you are creating a layer manually, just
-     * call showPalette() instead.
+     * A flag to have the layer display it's palette when the properties are
+     * set. If you are creating a layer manually, just call showPalette()
+     * instead.
      */
     protected boolean autoPalette = false;
 
     /**
-     * A minimum projection scale value that the layer will respond
-     * to. Using this value for reacting to the projection depends on
-     * the Layer implementation, the Layer class doesn't limit
-     * subclasses from doing their own thing in response to the scale
-     * setting on a projection.
+     * A minimum projection scale value that the layer will respond to. Using
+     * this value for reacting to the projection depends on the Layer
+     * implementation, the Layer class doesn't limit subclasses from doing their
+     * own thing in response to the scale setting on a projection.
      */
     protected float minScale = Float.MIN_VALUE;
 
     /**
-     * A maximum projection scale value that the layer will respond
-     * to. Using this value for reacting to the projection depends on
-     * the Layer implementation, the Layer class doesn't limit
-     * subclasses from doing their own thing in response to the scale
-     * setting on a projection.
+     * A maximum projection scale value that the layer will respond to. Using
+     * this value for reacting to the projection depends on the Layer
+     * implementation, the Layer class doesn't limit subclasses from doing their
+     * own thing in response to the scale setting on a projection.
      */
     protected float maxScale = Float.MAX_VALUE;
 
     /**
-     * This is a convenience copy of the latest projection received
-     * from the MapBean, when the Layer is added to the map. If you
-     * need it, use the accessor!.
+     * This is a convenience copy of the latest projection received from the
+     * MapBean, when the Layer is added to the map. If you need it, use the
+     * accessor!.
      */
     private Projection projection = null;
 
@@ -272,28 +253,27 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     protected transient WindowSupport windowSupport;
 
     /**
-     * A helper component listener that is paying attention to the
-     * visibility of the palette.
+     * A helper component listener that is paying attention to the visibility of
+     * the palette.
      */
     protected transient ComponentListener paletteListener;
 
     /**
-     * A pointer to the JDialog or JInternalFrame. May be used by the
-     * layer's ComponentListeners to figure out if a component event
-     * is for the layer or for the palette.
+     * A pointer to the JDialog or JInternalFrame. May be used by the layer's
+     * ComponentListeners to figure out if a component event is for the layer or
+     * for the palette.
      */
     protected transient Container palette;
 
     /**
-     * The BeanContext allows Layers to find other components, and
-     * other components to find the layer, if the layer is added to
-     * it.
+     * The BeanContext allows Layers to find other components, and other
+     * components to find the layer, if the layer is added to it.
      */
     protected transient BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
 
     /**
-     * All layers have access to an I18n object, which is provided by
-     * the Environment.
+     * All layers have access to an I18n object, which is provided by the
+     * Environment.
      */
     protected transient I18n i18n = Environment.getI18n();
 
@@ -301,6 +281,13 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * Icon associated with layer.
      */
     private Icon icon = null;
+
+    /**
+     * Hashtable containing attribute information for the layer. For serialized
+     * layers, we're not really going out of our way to make sure that keys and
+     * values are serializable.
+     */
+    protected Hashtable attributes;
 
     /**
      * Returns the package of the given class as a string.
@@ -314,15 +301,13 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Override to only allow swing package listeners. If Listeners
-     * get added to the Layers, the mouse events don't make it to the
-     * map. Ever.
+     * Override to only allow swing package listeners. If Listeners get added to
+     * the Layers, the mouse events don't make it to the map. Ever.
      * <p>
-     * Swing popup menus, like <code>JPopupMenu</code> grab the
-     * JComponent by adding themselves as <code>MouseListener</code>
-     * s. So this method allows instances of classes in the xxx.swing
-     * package to be added as <code>MouseListener</code>s, and no
-     * one else.
+     * Swing popup menus, like <code>JPopupMenu</code> grab the JComponent by
+     * adding themselves as <code>MouseListener</code> s. So this method
+     * allows instances of classes in the xxx.swing package to be added as
+     * <code>MouseListener</code>s, and no one else.
      * 
      * @param l a mouse listener.
      */
@@ -347,11 +332,10 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Sets the properties for the <code>Layer</code>. This
-     * particular method assumes that the marker name is not needed,
-     * because all of the contents of this Properties object are to be
-     * used for this layer, and scoping the properties with a prefix
-     * is unnecessary.
+     * Sets the properties for the <code>Layer</code>. This particular method
+     * assumes that the marker name is not needed, because all of the contents
+     * of this Properties object are to be used for this layer, and scoping the
+     * properties with a prefix is unnecessary.
      * 
      * @param props the <code>Properties</code> object.
      */
@@ -361,8 +345,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
     /**
      * Sets the properties for the <code>Layer</code>. Part of the
-     * PropertyConsumer interface. Layers which override this method
-     * should do something like:
+     * PropertyConsumer interface. Layers which override this method should do
+     * something like:
      * 
      * <code><pre>
      * public void setProperties(String prefix, Properties props) {
@@ -371,8 +355,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * }
      * </pre></code>
      * 
-     * If the addToBeanContext property is not defined, it maintains
-     * the same state.
+     * If the addToBeanContext property is not defined, it maintains the same
+     * state.
      * 
      * @param prefix the token to prefix the property names
      * @param props the <code>Properties</code> object
@@ -400,10 +384,6 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
         setRemovable(PropUtils.booleanFromProperties(props, realPrefix
                 + RemovableProperty, removable));
-        // Remove this for 4.7, just covering for misspelled original
-        // version.
-        setRemovable(PropUtils.booleanFromProperties(props, realPrefix
-                + RemoveableProperty, isRemovable()));
 
         autoPalette = PropUtils.booleanFromProperties(props, realPrefix
                 + AutoPaletteProperty, autoPalette);
@@ -428,19 +408,17 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * PropertyConsumer method, to fill in a Properties object,
-     * reflecting the current values of the layer. If the layer has a
-     * propertyPrefix set, the property keys should have that prefix
-     * plus a separating '.' prepended to each propery key it uses for
-     * configuration.
+     * PropertyConsumer method, to fill in a Properties object, reflecting the
+     * current values of the layer. If the layer has a propertyPrefix set, the
+     * property keys should have that prefix plus a separating '.' prepended to
+     * each propery key it uses for configuration.
      * 
-     * @param props a Properties object to load the PropertyConsumer
-     *        properties into. If props equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param props a Properties object to load the PropertyConsumer properties
+     *        into. If props equals null, then a new Properties object should be
+     *        created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
         if (props == null) {
@@ -474,22 +452,20 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Method to fill in a Properties object with values reflecting
-     * the properties able to be set on this PropertyConsumer. The key
-     * for each property should be the raw property name (without a
-     * prefix) with a value that is a String that describes what the
-     * property key represents, along with any other information about
-     * the property that would be helpful (range, default value,
-     * etc.). For Layer, this method should at least return the
-     * 'prettyName' property.
+     * Method to fill in a Properties object with values reflecting the
+     * properties able to be set on this PropertyConsumer. The key for each
+     * property should be the raw property name (without a prefix) with a value
+     * that is a String that describes what the property key represents, along
+     * with any other information about the property that would be helpful
+     * (range, default value, etc.). For Layer, this method should at least
+     * return the 'prettyName' property.
      * 
-     * @param list a Properties object to load the PropertyConsumer
-     *        properties into. If getList equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param list a Properties object to load the PropertyConsumer properties
+     *        into. If getList equals null, then a new Properties object should
+     *        be created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
         if (list == null) {
@@ -580,9 +556,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Set the property key prefix that should be used by the
-     * PropertyConsumer. The prefix, along with a '.', should be
-     * prepended to the property keys known by the PropertyConsumer.
+     * Set the property key prefix that should be used by the PropertyConsumer.
+     * The prefix, along with a '.', should be prepended to the property keys
+     * known by the PropertyConsumer.
      * 
      * @param prefix the prefix String.
      */
@@ -591,8 +567,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Get the property key prefix that is being used to prepend to
-     * the property keys for Properties lookups.
+     * Get the property key prefix that is being used to prepend to the property
+     * keys for Properties lookups.
      * 
      * @return the property prefix for the layer
      */
@@ -601,8 +577,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Set the projection the layer should use for calculations. You
-     * probably don't need this if you are wondering if you do. Call
+     * Set the projection the layer should use for calculations. You probably
+     * don't need this if you are wondering if you do. Call
      * setProjection(projEvent) instead.
      */
     public void setProjection(Projection proj) {
@@ -610,17 +586,16 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * This method lets you take the ProjectionEvent received from the
-     * MapBean, and lets you know if you should do something with it.
-     * MUST to be called in the projectionChanged() method of your
-     * layer, if you want to refer to the projection later. If this
-     * methods returns null, you probably just want to call repaint()
-     * if your layer.paint() method is ready to paint what it should.
+     * This method lets you take the ProjectionEvent received from the MapBean,
+     * and lets you know if you should do something with it. MUST to be called
+     * in the projectionChanged() method of your layer, if you want to refer to
+     * the projection later. If this methods returns null, you probably just
+     * want to call repaint() if your layer.paint() method is ready to paint
+     * what it should.
      * 
-     * @param projEvent the ProjectionEvent from the
-     *        ProjectionListener method.
-     * @return The new Projection if it is different from the one we
-     *         already have, null if is the same as the current one.
+     * @param projEvent the ProjectionEvent from the ProjectionListener method.
+     * @return The new Projection if it is different from the one we already
+     *         have, null if is the same as the current one.
      */
     public Projection setProjection(ProjectionEvent projEvent) {
         Projection newProjection = projEvent.getProjection();
@@ -642,13 +617,12 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Returns the MapMouseListener object that handles the mouse
-     * events. This method is IGNORED in this class: it returns null.
-     * Derived Layers should return the appropriate object if they
-     * desire to receive MouseEvents. The easiest thing for a Layer to
-     * do in order to receive MouseEvents is to implement the
-     * MapMouseListener interface and return itself. A code snippet:
-     * <code><pre>
+     * Returns the MapMouseListener object that handles the mouse events. This
+     * method is IGNORED in this class: it returns null. Derived Layers should
+     * return the appropriate object if they desire to receive MouseEvents. The
+     * easiest thing for a Layer to do in order to receive MouseEvents is to
+     * implement the MapMouseListener interface and return itself. A code
+     * snippet: <code><pre>
      * public MapMouseListener getMapMouseListener() {
      *     return this;
      * }
@@ -666,8 +640,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
     /**
      * Gets the gui controls associated with the layer. This default
-     * implementation returns null indicating that the layer has no
-     * gui controls.
+     * implementation returns null indicating that the layer has no gui
+     * controls.
      * 
      * @return java.awt.Component or null
      */
@@ -705,9 +679,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Sends a request to the InfoDisplayListener to show the
-     * information in the InfoDisplay event on an single line display
-     * facility.
+     * Sends a request to the InfoDisplayListener to show the information in the
+     * InfoDisplay event on an single line display facility.
      * 
      * @param evt the InfoDisplay event carrying the string.
      */
@@ -723,9 +696,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Sends a request to the InfoDisplay listener to display the
-     * information on an single line display facility. The
-     * InfoDisplayEvent is created inside this function.
+     * Sends a request to the InfoDisplay listener to display the information on
+     * an single line display facility. The InfoDisplayEvent is created inside
+     * this function.
      * 
      * @param infoLine the string to put in the InfoDisplayEvent.
      */
@@ -734,9 +707,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Sends a request to the InfoDisplay listener to display the
-     * information on an single line display facility at preferred
-     * location. The InfoDisplayEvent is created inside this function.
+     * Sends a request to the InfoDisplay listener to display the information on
+     * an single line display facility at preferred location. The
+     * InfoDisplayEvent is created inside this function.
      * 
      * @param infoLine the string to put in the InfoDisplayEvent.
      * @param loc the index of a preferred location, starting at 0.
@@ -746,11 +719,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Sends a request to the InfoDisplay listener to display the
-     * information in the InfoDisplay event in a Browser.
+     * Sends a request to the InfoDisplay listener to display the information in
+     * the InfoDisplay event in a Browser.
      * 
-     * @param evt the InfoDisplayEvent holding the contents to put in
-     *        the Browser.
+     * @param evt the InfoDisplayEvent holding the contents to put in the
+     *        Browser.
      */
     public void fireRequestBrowserContent(InfoDisplayEvent evt) {
         if (IDListeners != null) {
@@ -764,9 +737,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Sends a request to the InfoDisplayListener to display the
-     * information in a Browser. The InfoDisplayEvent is created here
-     * holding the browserContent
+     * Sends a request to the InfoDisplayListener to display the information in
+     * a Browser. The InfoDisplayEvent is created here holding the
+     * browserContent
      * 
      * @param browserContent the contents to put in the Browser.
      */
@@ -775,11 +748,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Sends a request to the InfoDisplayListener to display a URL
-     * given in the InfoDisplay event in a Browser.
+     * Sends a request to the InfoDisplayListener to display a URL given in the
+     * InfoDisplay event in a Browser.
      * 
-     * @param evt the InfoDisplayEvent holding the url location to
-     *        give to the Browser.
+     * @param evt the InfoDisplayEvent holding the url location to give to the
+     *        Browser.
      */
     public void fireRequestURL(InfoDisplayEvent evt) {
         if (IDListeners != null) {
@@ -793,9 +766,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Sends a request to the InfoDisplayListener to display a URL in
-     * a browser. The InfoDisplayEvent is created here, and the URL
-     * location is put inside it.
+     * Sends a request to the InfoDisplayListener to display a URL in a browser.
+     * The InfoDisplayEvent is created here, and the URL location is put inside
+     * it.
      * 
      * @param url the url location to give to the Browser.
      */
@@ -804,8 +777,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Sends a request to the InfoDisplayListener to show a specific
-     * cursor over its component area.
+     * Sends a request to the InfoDisplayListener to show a specific cursor over
+     * its component area.
      * 
      * @param cursor the cursor to use.
      */
@@ -821,11 +794,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Sends a request to the InfoDisplayListener to put the
-     * information in the InfoDisplay event in a dialog window.
+     * Sends a request to the InfoDisplayListener to put the information in the
+     * InfoDisplay event in a dialog window.
      * 
-     * @param evt the InfoDisplayEvent holding the message to put into
-     *        the dialog window.
+     * @param evt the InfoDisplayEvent holding the message to put into the
+     *        dialog window.
      */
     public void fireRequestMessage(InfoDisplayEvent evt) {
         if (IDListeners != null) {
@@ -839,25 +812,14 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Sends a request to the InfoDisplayListener to display the
-     * information in a dialog window. The InfoDisplayEvent is created
-     * here, and the URL location is put inside it.
+     * Sends a request to the InfoDisplayListener to display the information in
+     * a dialog window. The InfoDisplayEvent is created here, and the URL
+     * location is put inside it.
      * 
      * @param message the message to put in the dialog window.
      */
     public void fireRequestMessage(String message) {
         fireRequestMessage(new InfoDisplayEvent(this, message));
-    }
-
-    /**
-     * Request to show the tool tips on the map.
-     * 
-     * @param me MouseEvent location for the tool tip.
-     * @param tip string to display.
-     * @deprecated use fireRequestToolTip(String tip) instead.
-     */
-    public void fireRequestToolTip(MouseEvent me, String tip) {
-        fireRequestToolTip(new InfoDisplayEvent(this, tip));
     }
 
     /**
@@ -871,16 +833,6 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
     /**
      * Request to hide the tool tips on the map.
-     * 
-     * @param me MouseEvent location.
-     * @deprecated use fireHideToolTip() instead.
-     */
-    public void fireHideToolTip(MouseEvent me) {
-        fireRequestToolTip((InfoDisplayEvent) null);
-    }
-
-    /**
-     * Request to hide the tool tips on the map.
      */
     public void fireHideToolTip() {
         fireRequestToolTip((InfoDisplayEvent) null);
@@ -888,19 +840,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
     /**
      * Fire off a Tool Tip request to the InfoDisplayListeners. If the
-     * InfoDisplayEvent is null, then a requestHideToolTip will be
-     * fired.
-     * 
-     * @deprecated use fireHideToolTip(InfoDisplayEvent) instead.
-     */
-    public void fireRequestToolTip(MouseEvent me, InfoDisplayEvent event) {
-        fireRequestToolTip(event);
-    }
-
-    /**
-     * Fire off a Tool Tip request to the InfoDisplayListeners. If the
-     * InfoDisplayEvent is null, then a requestHideToolTip will be
-     * fired.
+     * InfoDisplayEvent is null, then a requestHideToolTip will be fired.
      */
     public void fireRequestToolTip(InfoDisplayEvent event) {
         if (IDListeners != null) {
@@ -974,11 +914,10 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Repaint the layer. If you are using BufferedMapBean for your
-     * application, WE STRONGLY RECOMMEND THAT YOU DO NOT OVERRIDE
-     * THIS METHOD. This method marks the layer buffer so that it will
-     * be refreshed. If you override this method, and don't call
-     * super.repaint(), the layers will not be repainted.
+     * Repaint the layer. If you are using BufferedMapBean for your application,
+     * WE STRONGLY RECOMMEND THAT YOU DO NOT OVERRIDE THIS METHOD. This method
+     * marks the layer buffer so that it will be refreshed. If you override this
+     * method, and don't call super.repaint(), the layers will not be repainted.
      */
     public void repaint(long tm, int x, int y, int width, int height) {
         Component p = getParent();
@@ -1014,17 +953,16 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * This method is here to provide a default action for Layers as
-     * they act as a ProjectionPainter. Normally, ProjectionPainters
-     * are expected to receive the projection, gather/create
-     * OMGraphics that apply to the projection, and render them into
-     * the Graphics provided. This is supposed to be done in the same
-     * thread that calls this function, so the caller knows that when
-     * this method returns, everything that the ProjectionPainter
-     * needed to do is complete.
+     * This method is here to provide a default action for Layers as they act as
+     * a ProjectionPainter. Normally, ProjectionPainters are expected to receive
+     * the projection, gather/create OMGraphics that apply to the projection,
+     * and render them into the Graphics provided. This is supposed to be done
+     * in the same thread that calls this function, so the caller knows that
+     * when this method returns, everything that the ProjectionPainter needed to
+     * do is complete.
      * <P>
-     * If the layer doesn't override this method, then the
-     * paint(Graphics) method will be called.
+     * If the layer doesn't override this method, then the paint(Graphics)
+     * method will be called.
      * 
      * @param proj Projection of the map.
      * @param g java.awt.Graphics to draw into.
@@ -1037,10 +975,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Method that responds whether the Layer should render on the
-     * map, given a particular projection. The method currently just
-     * tests the projection's scale against the min and max values set
-     * on the layer.
+     * Method that responds whether the Layer should render on the map, given a
+     * particular projection. The method currently just tests the projection's
+     * scale against the min and max values set on the layer.
      * 
      * @param proj The projection to test against.
      * @return true if OK.
@@ -1057,34 +994,32 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     public void added(Container cont) {}
 
     /**
-     * This method is called after the layer is removed from the
-     * MapBean and when the projection changes. We recommend that
-     * Layers override this method and nullify memory-intensive
-     * variables.
+     * This method is called after the layer is removed from the MapBean and
+     * when the projection changes. We recommend that Layers override this
+     * method and nullify memory-intensive variables.
      * 
      * @param cont Container
      */
     public void removed(Container cont) {}
 
     /**
-     * Part of a layer hack to notify the component listener when the
-     * component is hidden. These components don't receive the
-     * ComponentHidden notification. Remove when it works.
+     * Part of a layer hack to notify the component listener when the component
+     * is hidden. These components don't receive the ComponentHidden
+     * notification. Remove when it works.
      */
     protected ListenerSupport localHackList;
 
     /**
-     * Part of a layer hack to notify the component listener when the
-     * component is hidden. These components don't receive the
-     * ComponentHidden notification. Remove when it works. Set to
-     * false to test.
+     * Part of a layer hack to notify the component listener when the component
+     * is hidden. These components don't receive the ComponentHidden
+     * notification. Remove when it works. Set to false to test.
      */
     protected boolean doHack = true;
 
     /**
-     * Part of a layer hack to notify the component listener when the
-     * component is hidden. These components don't receive the
-     * ComponentHidden notification. Remove when it works.
+     * Part of a layer hack to notify the component listener when the component
+     * is hidden. These components don't receive the ComponentHidden
+     * notification. Remove when it works.
      */
     public void setVisible(boolean show) {
         super.setVisible(show);
@@ -1094,9 +1029,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Part of a layer hack to notify the component listener when the
-     * component is hidden. These components don't receive the
-     * ComponentHidden notification. Remove when it works.
+     * Part of a layer hack to notify the component listener when the component
+     * is hidden. These components don't receive the ComponentHidden
+     * notification. Remove when it works.
      */
     public void addComponentListener(ComponentListener cl) {
         super.addComponentListener(cl);
@@ -1107,9 +1042,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Part of a layer hack to notify the component listener when the
-     * component is hidden. These components don't receive the
-     * ComponentHidden notification. Remove when it works.
+     * Part of a layer hack to notify the component listener when the component
+     * is hidden. These components don't receive the ComponentHidden
+     * notification. Remove when it works.
      */
     public void removeComponentListener(ComponentListener cl) {
         super.removeComponentListener(cl);
@@ -1119,9 +1054,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Part of a layer hack to notify the component listener when the
-     * component is hidden. These components don't receive the
-     * ComponentHidden notification. Remove when it works.
+     * Part of a layer hack to notify the component listener when the component
+     * is hidden. These components don't receive the ComponentHidden
+     * notification. Remove when it works.
      */
     public void notifyHideHack() {
         if (localHackList == null) {
@@ -1150,17 +1085,16 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Mark the layer as one that should be considered a background
-     * layer. What that means is up to the MapBean or application.
+     * Mark the layer as one that should be considered a background layer. What
+     * that means is up to the MapBean or application.
      */
     public void setAddAsBackground(boolean set) {
         addAsBackground = set;
     }
 
     /**
-     * Check to see if the layer is marked as one that should be
-     * considered a background layer. What that means is up to the
-     * MapBean or application.
+     * Check to see if the layer is marked as one that should be considered a
+     * background layer. What that means is up to the MapBean or application.
      * 
      * @return true if layer is a background layer.
      */
@@ -1169,41 +1103,17 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Mark the layer as removable, or one that can be deleted from
-     * the application. What that means is up to the LayerHandler or
-     * other application components. This is the misspelled version of
-     * the method, it's going away. Really.
-     * 
-     * @deprecated setRemovable() should be used instead.
-     */
-    public void setRemoveable(boolean set) {
-        setRemovable(set);
-    }
-
-    /**
-     * Check to see if the layer is marked as one that can be removed
-     * from an application. This is the misspelled version of the
-     * method, it's going away. Really.
-     * 
-     * @deprecated isRemovable() should be used instead.
-     * @return true if layer should be allowed to be deleted.
-     */
-    public boolean isRemoveable() {
-        return isRemovable();
-    }
-
-    /**
-     * Mark the layer as removable, or one that can be deleted from
-     * the application. What that means is up to the LayerHandler or
-     * other application components.
+     * Mark the layer as removable, or one that can be deleted from the
+     * application. What that means is up to the LayerHandler or other
+     * application components.
      */
     public void setRemovable(boolean set) {
         removable = set;
     }
 
     /**
-     * Check to see if the layer is marked as one that can be removed
-     * from an application.
+     * Check to see if the layer is marked as one that can be removed from an
+     * application.
      * 
      * @return true if layer should be allowed to be deleted.
      */
@@ -1221,19 +1131,16 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * This is the method that your layer can use to find other
-     * objects within the MapHandler (BeanContext). This method gets
-     * called when the Layer gets added to the MapHandler, or when
-     * another object gets added to the MapHandler after the Layer is
-     * a member. If the LayerHandler creates the Layer from
-     * properties, the LayerHandler will add the Layer to the
-     * BeanContext if Layer.addToBeanContext is true. It is false by
-     * default.
+     * This is the method that your layer can use to find other objects within
+     * the MapHandler (BeanContext). This method gets called when the Layer gets
+     * added to the MapHandler, or when another object gets added to the
+     * MapHandler after the Layer is a member. If the LayerHandler creates the
+     * Layer from properties, the LayerHandler will add the Layer to the
+     * BeanContext if Layer.addToBeanContext is true. It is false by default.
      * 
-     * For Layers, this method doesn't do anything by default. If you
-     * need your layer to get ahold of another object, then you can
-     * use the Iterator to go through the objects to look for the one
-     * you need.
+     * For Layers, this method doesn't do anything by default. If you need your
+     * layer to get ahold of another object, then you can use the Iterator to go
+     * through the objects to look for the one you need.
      */
     public void findAndInit(Iterator it) {
         while (it.hasNext()) {
@@ -1242,31 +1149,29 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * This method is called by the findAndInit(Iterator) method, once
-     * for every object inside the iterator. It's here to allow
-     * subclasses a way to receive objects and still let the super
-     * classes have a shot at the object. So, you can override this
-     * method can call super.findAndInit(obj), or override the
-     * findAndInit(Iterator) method and call super.findAndInit(obj).
-     * Whatever.
+     * This method is called by the findAndInit(Iterator) method, once for every
+     * object inside the iterator. It's here to allow subclasses a way to
+     * receive objects and still let the super classes have a shot at the
+     * object. So, you can override this method can call super.findAndInit(obj),
+     * or override the findAndInit(Iterator) method and call
+     * super.findAndInit(obj). Whatever.
      */
     public void findAndInit(Object obj) {}
 
     /**
-     * BeanContextMembershipListener method. Called when a new object
-     * is added to the BeanContext of this object.
+     * BeanContextMembershipListener method. Called when a new object is added
+     * to the BeanContext of this object.
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
         findAndInit(bcme.iterator());
     }
 
     /**
-     * BeanContextMembershipListener method. Called when a new object
-     * is removed from the BeanContext of this object. For the Layer,
-     * this method doesn't do anything. If your layer does something
-     * with the childrenAdded method, or findAndInit, you should take
-     * steps in this method to unhook the layer from the object used
-     * in those methods.
+     * BeanContextMembershipListener method. Called when a new object is removed
+     * from the BeanContext of this object. For the Layer, this method doesn't
+     * do anything. If your layer does something with the childrenAdded method,
+     * or findAndInit, you should take steps in this method to unhook the layer
+     * from the object used in those methods.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
         Iterator it = bcme.iterator();
@@ -1276,9 +1181,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * This is the method that does the opposite as the
-     * findAndInit(Object). Lets you call super classes with objects
-     * that need to be removed.
+     * This is the method that does the opposite as the findAndInit(Object).
+     * Lets you call super classes with objects that need to be removed.
      */
     public void findAndUndo(Object obj) {}
 
@@ -1288,8 +1192,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Method for BeanContextChild interface. Gets an iterator from
-     * the BeanContext to call findAndInit() over.
+     * Method for BeanContextChild interface. Gets an iterator from the
+     * BeanContext to call findAndInit() over.
      */
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
 
@@ -1300,10 +1204,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Layer method to just connect to the BeanContext, without
-     * grabbing the interator as in setBeanContext(). Good for
-     * protected sub-layers where you want to optimize the calling of
-     * the findAndInit() method over them.
+     * Layer method to just connect to the BeanContext, without grabbing the
+     * interator as in setBeanContext(). Good for protected sub-layers where you
+     * want to optimize the calling of the findAndInit() method over them.
      */
     public void connectToBeanContext(BeanContext in_bc)
             throws PropertyVetoException {
@@ -1315,10 +1218,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Method for BeanContextChild interface. Uses the
-     * BeanContextChildSupport to add a listener to this object's
-     * property. This listener wants to have the right to veto a
-     * property change.
+     * Method for BeanContextChild interface. Uses the BeanContextChildSupport
+     * to add a listener to this object's property. This listener wants to have
+     * the right to veto a property change.
      */
     public void addVetoableChangeListener(String propertyName,
                                           VetoableChangeListener in_vcl) {
@@ -1326,9 +1228,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Method for BeanContextChild interface. Uses the
-     * BeanContextChildSupport to remove a listener to this object's
-     * property. The listener has the power to veto property changes.
+     * Method for BeanContextChild interface. Uses the BeanContextChildSupport
+     * to remove a listener to this object's property. The listener has the
+     * power to veto property changes.
      */
     public void removeVetoableChangeListener(String propertyName,
                                              VetoableChangeListener in_vcl) {
@@ -1337,23 +1239,21 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Report a vetoable property update to any registered listeners.
-     * If anyone vetos the change, then fire a new event reverting
-     * everyone to the old value and then rethrow the
-     * PropertyVetoException.
+     * Report a vetoable property update to any registered listeners. If anyone
+     * vetos the change, then fire a new event reverting everyone to the old
+     * value and then rethrow the PropertyVetoException.
      * <P>
      * 
      * No event is fired if old and new are equal and non-null.
      * <P>
      * 
-     * @param name The programmatic name of the property that is about
-     *        to change
+     * @param name The programmatic name of the property that is about to change
      * 
      * @param oldValue The old value of the property
      * @param newValue - The new value of the property
      * 
-     * @throws PropertyVetoException if the recipient wishes the
-     *         property change to be rolled back.
+     * @throws PropertyVetoException if the recipient wishes the property change
+     *         to be rolled back.
      */
     public void fireVetoableChange(String name, Object oldValue, Object newValue)
             throws PropertyVetoException {
@@ -1385,9 +1285,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Fire a component event to the Layer component listeners, with
-     * the palette as the component, letting them know if it's visible
-     * or not.
+     * Fire a component event to the Layer component listeners, with the palette
+     * as the component, letting them know if it's visible or not.
      */
     public void firePaletteEvent(ComponentEvent event) {
         if (localHackList == null) {
@@ -1411,19 +1310,19 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Return the JDialog, or JInternalFrame, that serves as the
-     * palette for the layer. May be null.
+     * Return the JDialog, or JInternalFrame, that serves as the palette for the
+     * layer. May be null.
      */
     public Container getPalette() {
         return palette;
     }
 
     /**
-     * Called when something about the layer has changed that would
-     * require the palette to be reconfigured. Will cause getGUI() to
-     * be called again. You should take steps before calling this
-     * method to make sure that the getGUI() method is ready to
-     * recreate the palette components from scratch if needed.
+     * Called when something about the layer has changed that would require the
+     * palette to be reconfigured. Will cause getGUI() to be called again. You
+     * should take steps before calling this method to make sure that the
+     * getGUI() method is ready to recreate the palette components from scratch
+     * if needed.
      */
     protected void resetPalette() {
         java.awt.Container pal = getPalette();
@@ -1468,9 +1367,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Make the palette visible. Will automatically determine if we're
-     * running in an applet environment and will use a JInternalFrame
-     * over a JFrame if necessary.
+     * Make the palette visible. Will automatically determine if we're running
+     * in an applet environment and will use a JInternalFrame over a JFrame if
+     * necessary.
      */
     public void showPalette() {
 
@@ -1540,11 +1439,10 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * The default actionPerformed method for Layer. Make sure you
-     * call super.actionPerformed if you care about receiving palette
-     * show/hide commands. This method is also set up to receive the
-     * DisplayPropertiesCmd, and will bring up the Inspector for the
-     * layer.
+     * The default actionPerformed method for Layer. Make sure you call
+     * super.actionPerformed if you care about receiving palette show/hide
+     * commands. This method is also set up to receive the DisplayPropertiesCmd,
+     * and will bring up the Inspector for the layer.
      */
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand();
@@ -1565,8 +1463,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Handle Serialization a little bit better, replacing the I18n
-     * and BeanContextChildSupport.
+     * Handle Serialization a little bit better, replacing the I18n and
+     * BeanContextChildSupport.
      * 
      * @param in
      * @throws IOException
@@ -1610,4 +1508,20 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     public void setMinScale(float minScale) {
         this.minScale = minScale;
     }
+
+    public void putAttribute(Object key, Object value) {
+        if (attributes == null) {
+            attributes = new Hashtable();
+        }
+        attributes.put(key, value);
+    }
+
+    public Object getAttribute(Object key) {
+        Object ret = null;
+        if (key != null && attributes != null) {
+            ret = attributes.get(key);
+        }
+        return ret;
+    }
+
 }
