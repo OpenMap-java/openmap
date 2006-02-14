@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.19 $
-// $Date: 2005/08/10 22:32:45 $
+// $Revision: 1.20 $
+// $Date: 2006/02/14 21:04:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,7 +29,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -62,30 +61,29 @@ import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * This tool is a widget that calls the OMDrawingTool to create a
- * specific graphic. The launcher is completely configured by
- * EditToolLaunchers it gets told about from the DrawingTool, and
- * OMGraphicHandlers that it finds in a MapHandler. There are no
- * methods to manually add stuff to this GUI.
+ * This tool is a widget that calls the OMDrawingTool to create a specific
+ * graphic. The launcher is completely configured by EditToolLaunchers it gets
+ * told about from the DrawingTool, and OMGraphicHandlers that it finds in a
+ * MapHandler. There are no methods to manually add stuff to this GUI.
  * <p>
  * 
  * There are two properties that can be set for the launcher:
  * 
  * <pre>
- *  
- *   
  *    
- *    
- *     # Number of launcher buttons to place in a row in that part of the
- *     # GUI. -1 (the default) is to keep them all on one line.
- *     omdtl.horizNumLoaderButtons=-1
- *    
- *     # If set to true, a text popup will be used for the OMGraphic
- *     # loaders instead of buttons (false is default).
- *     omdtl.useTextLabels=false
  *     
- *    
- *   
+ *      
+ *      
+ *       # Number of launcher buttons to place in a row in that part of the
+ *       # GUI. -1 (the default) is to keep them all on one line.
+ *       omdtl.horizNumLoaderButtons=-1
+ *      
+ *       # If set to true, a text popup will be used for the OMGraphic
+ *       # loaders instead of buttons (false is default).
+ *       omdtl.useTextLabels=false
+ *       
+ *      
+ *     
  * </pre>
  */
 public class OMDrawingToolLauncher extends OMToolComponent implements
@@ -108,10 +106,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     protected JComboBox requestors;
 
     /**
-     * Property for setting the maximum number of loader buttons to
-     * allow in the horizontal direction in the GUI
-     * (horizNumLoaderButtons). -1 means to just lay them out in one
-     * row.
+     * Property for setting the maximum number of loader buttons to allow in the
+     * horizontal direction in the GUI (horizNumLoaderButtons). -1 means to just
+     * lay them out in one row.
      */
     public final static String HorizontalNumberOfLoaderButtonsProperty = "horizNumLoaderButtons";
     public final static String UseLoaderTextProperty = "useTextLabels";
@@ -245,9 +242,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     }
 
     /**
-     * Set the current requestor to receive a requested OMGraphic.
-     * Changes are reflected in the GUI, and setCurrentRequestor()
-     * will eventually be called.
+     * Set the current requestor to receive a requested OMGraphic. Changes are
+     * reflected in the GUI, and setCurrentRequestor() will eventually be
+     * called.
      */
     public void setRequestor(String aName) {
         if (requestors != null) {
@@ -562,9 +559,8 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     }
 
     /**
-     * Set the component that will receive the new/edited OMGraphic
-     * from the DrawingTool. Does not change the GUI. Called when the
-     * combo box changes.
+     * Set the component that will receive the new/edited OMGraphic from the
+     * DrawingTool. Does not change the GUI. Called when the combo box changes.
      * 
      * @param name GUI pretty name of requestor.
      */
@@ -584,19 +580,19 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
      * Set the next thing to be created to be whatever the pretty name
      * represents. Sets currentCreation.
      * 
-     * @param name GUI pretty name of thing to be created, from one of
-     *        the EditToolLoaders.
+     * @param name GUI pretty name of thing to be created, from one of the
+     *        EditToolLoaders.
      */
     public void setCurrentCreation(String name) {
         currentCreation = getEditableClassName(name);
     }
 
     /**
-     * Given a pretty name, look through the EditToolLoaders and find
-     * out the classname that goes with editing it.
+     * Given a pretty name, look through the EditToolLoaders and find out the
+     * classname that goes with editing it.
      * 
-     * @param prettyName GUI pretty name of tool, or thing to be
-     *        created, from one of the EditToolLoaders.
+     * @param prettyName GUI pretty name of tool, or thing to be created, from
+     *        one of the EditToolLoaders.
      */
     public String getEditableClassName(String prettyName) {
         for (Iterator it = getLoaders(); it.hasNext();) {
@@ -614,15 +610,14 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     }
 
     /**
-     * This is the method that your object can use to find other
-     * objects within the MapHandler (BeanContext). This method gets
-     * called when the object gets added to the MapHandler, or when
-     * another object gets added to the MapHandler after the object is
-     * a member.
+     * This is the method that your object can use to find other objects within
+     * the MapHandler (BeanContext). This method gets called when the object
+     * gets added to the MapHandler, or when another object gets added to the
+     * MapHandler after the object is a member.
      * 
-     * @param someObj the object that was added to the BeanContext
-     *        (MapHandler) that is being searched for. Find the ones
-     *        you need, and hook yourself up.
+     * @param someObj the object that was added to the BeanContext (MapHandler)
+     *        that is being searched for. Find the ones you need, and hook
+     *        yourself up.
      */
     public void findAndInit(Object someObj) {
         if (someObj instanceof OMDrawingTool) {
@@ -641,12 +636,11 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     }
 
     /**
-     * BeanContextMembershipListener method. Called when a new object
-     * is removed from the BeanContext of this object. For the Layer,
-     * this method doesn't do anything. If your layer does something
-     * with the childrenAdded method, or findAndInit, you should take
-     * steps in this method to unhook the layer from the object used
-     * in those methods.
+     * BeanContextMembershipListener method. Called when a new object is removed
+     * from the BeanContext of this object. For the Layer, this method doesn't
+     * do anything. If your layer does something with the childrenAdded method,
+     * or findAndInit, you should take steps in this method to unhook the layer
+     * from the object used in those methods.
      */
     public void findAndUndo(Object someObj) {
         if (someObj instanceof OMDrawingTool) {
@@ -665,9 +659,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
             }
             drawingToolRequestors.remove(someObj);
             if (drawingToolRequestors.size() == 0) {// there is no
-                                                    // Requestor, so
-                                                    // lets remove the
-                                                    // window.
+                // Requestor, so
+                // lets remove the
+                // window.
                 getWindowSupport().killWindow();
                 return;
             }
@@ -678,8 +672,8 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     }
 
     /**
-     * Tool interface method. The retrieval tool's interface. This
-     * method creates a button that will bring up the LauncherPanel.
+     * Tool interface method. The retrieval tool's interface. This method
+     * creates a button that will bring up the LauncherPanel.
      * 
      * @return String The key for this tool.
      */
@@ -703,26 +697,14 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     }
 
     /**
-     * Get the ActionListener that triggers the LauncherPanel. Useful
-     * to have to provide an alternative way to bring up the
-     * LauncherPanel.
+     * Get the ActionListener that triggers the LauncherPanel. Useful to have to
+     * provide an alternative way to bring up the LauncherPanel.
      * 
      * @return ActionListener
      */
     public ActionListener getActionListener() {
         return new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                // -1 will get size from pack();
-                int w = -1;
-                int h = -1;
-                int x = 10;
-                int y = 10;
-
-                Point loc = getWindowSupport().getComponentLocation();
-                if (loc != null) {
-                    x = (int) loc.getX();
-                    y = (int) loc.getY();
-                }
 
                 MapHandler mh = (MapHandler) getBeanContext();
                 Frame frame = null;
@@ -730,7 +712,10 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
                     frame = (Frame) mh.get(java.awt.Frame.class);
                 }
 
-                getWindowSupport().displayInWindow(frame, x, y, w, h);
+                // -1 will get size from pack(), and get location (initially) to
+                // the middle of the screen if the WindowSupport doesn't have
+                // memory of where it's been.
+                getWindowSupport().displayInWindow(frame, -1, -1, -1, -1);
             }
         };
     }
@@ -787,8 +772,8 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     }
 
     /**
-     * PropertyChangeListener method, to listen for the
-     * OMDrawingTool's list of loaders that may or may not change.
+     * PropertyChangeListener method, to listen for the OMDrawingTool's list of
+     * loaders that may or may not change.
      */
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getPropertyName() == OMDrawingTool.LoadersProperty) {
