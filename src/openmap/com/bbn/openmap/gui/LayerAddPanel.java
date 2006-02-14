@@ -14,43 +14,59 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerAddPanel.java,v $
 // $RCSfile: LayerAddPanel.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:48 $
+// $Revision: 1.9 $
+// $Date: 2006/02/14 20:55:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.Vector;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.plugin.*;
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.LayerHandler;
+import com.bbn.openmap.MapHandler;
+import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.PropertyHandler;
+import com.bbn.openmap.plugin.PlugIn;
+import com.bbn.openmap.plugin.PlugInLayer;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.propertyEditor.*;
+import com.bbn.openmap.util.propertyEditor.Inspector;
 
 /**
- * Class to interactively add a Layer to the map. A LayerAddPanel
- * utilizes the bean context mechanisms to keep up to date about the
- * applications LayerHandler and PropertyHandler (see findAndInit
- * method). A property is used to determine objects of which Layer
- * subclasses can be instantiated (see static String layerTypes), for
- * configuration of a layer-to-be an Inspector is invoked to inspect
- * and configure a Layer object through the PropertyConsumer
+ * Class to interactively add a Layer to the map. A LayerAddPanel utilizes the
+ * bean context mechanisms to keep up to date about the applications
+ * LayerHandler and PropertyHandler (see findAndInit method). A property is used
+ * to determine objects of which Layer subclasses can be instantiated (see
+ * static String layerTypes), for configuration of a layer-to-be an Inspector is
+ * invoked to inspect and configure a Layer object through the PropertyConsumer
  * interface.
  */
 public class LayerAddPanel extends OMComponentPanel implements Serializable,
         ActionListener {
     /**
-     * Constant field containing markers used in properties file for
-     * layers that can be created using the LayerAddPanel.
+     * Constant field containing markers used in properties file for layers that
+     * can be created using the LayerAddPanel.
      */
     public final static String layerTypes = "addableLayers";
 
@@ -63,8 +79,7 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
      */
     protected LayerHandler layerHandler = null;
     /**
-     * The list of available Layer classes. Is initiated with pretty
-     * names.
+     * The list of available Layer classes. Is initiated with pretty names.
      */
     protected JComboBox list = null;
     /** The String to use as a prefix for the new Layer's properties. */
@@ -88,7 +103,6 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
         }
         inspector = new Inspector();
         inspector.addActionListener((ActionListener) this);
-        setWindowSupport(new WindowSupport(this, "Add Layer"));
     }
 
     /**
@@ -121,27 +135,49 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
     public final static String DefaultLayerName = "Layer Name";
 
     /**
-     * Produces a dialog panel to add a layer. If the layers haven't
-     * been manually added through createPanel(layers), then the
-     * PropertyHandler is consulted and the layer list is built from
-     * the layerTypes property.
+     * Produces a dialog panel to add a layer. If the layers haven't been
+     * manually added through createPanel(layers), then the PropertyHandler is
+     * consulted and the layer list is built from the layerTypes property.
      */
     public void createPanel() {
         removeAll();
-        JButton configureButton = new JButton("Configure");
+        
+        JButton configureButton = new JButton(i18n.get(LayerAddPanel.class, "configureButton", "Configure"));
         configureButton.addActionListener(this);
         configureButton.setActionCommand(configureActionCommand);
 
-        prefixTextField = new JTextField(DefaultLayerName, 12);
+        String defaultLayerName = i18n.get(LayerAddPanel.class, "defaultLayerName", DefaultLayerName);
+        prefixTextField = new JTextField(defaultLayerName, 12);
 
         Object[] layerTypes = getLayerClasses().keySet().toArray();
-
+        
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        setLayout(gridbag);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0;
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.insets = new Insets(10, 10, 5, 10);
+        
         if (layerTypes.length == 0) {
-            add(new JLabel("No Layers available for creation."));
+            String message = i18n.get(LayerAddPanel.class,
+                    "noLayersAvailableMessage",
+                    "No Layers available for creation.");
+            JLabel label = new JLabel(message);
+            gridbag.setConstraints(label, c);
+            add(label);
         } else {
             list = new JComboBox(layerTypes);
+            
+            gridbag.setConstraints(list, c);
             add(list);
+            c.insets = new Insets(5, 10, 10, 10);
+            c.gridwidth = GridBagConstraints.RELATIVE;
+            gridbag.setConstraints(prefixTextField, c);
             add(prefixTextField);
+            
+            c.weightx = 0;
+            gridbag.setConstraints(configureButton, c);
             add(configureButton);
         }
         invalidate();
@@ -191,26 +227,24 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
     }
 
     /**
-     * Gets Layer information from PropertyHandler. These layers are
-     * defined in the application properties under the
-     * openmap.layerTypes property.
+     * Gets Layer information from PropertyHandler. These layers are defined in
+     * the application properties under the openmap.layerTypes property.
      * 
-     * @return Hashtable of prettyName String keys with classname
-     *         values. Empty Hashtable if no layers are available.
+     * @return Hashtable of prettyName String keys with classname values. Empty
+     *         Hashtable if no layers are available.
      */
     protected Hashtable getLayerTypes() {
         return getLayerTypes(null);
     }
 
     /**
-     * Gets Layer information from the given properties. These layers
-     * are defined in the application properties under the
-     * openmap.layerTypes property. If the given properties are null,
-     * then the property handler, if found, will be consulted
-     * directly.
+     * Gets Layer information from the given properties. These layers are
+     * defined in the application properties under the openmap.layerTypes
+     * property. If the given properties are null, then the property handler, if
+     * found, will be consulted directly.
      * 
-     * @return Hashtable of prettyName String keys with classname
-     *         values. Empty Hashtable if no layers are available.
+     * @return Hashtable of prettyName String keys with classname values. Empty
+     *         Hashtable if no layers are available.
      */
     protected Hashtable getLayerTypes(Properties props) {
         Hashtable layerHash = getLayerClasses();
@@ -317,10 +351,15 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
                 }
                 prefixTextField.setText(DefaultLayerName);
             } else if (layerHandler != null) {
-                JOptionPane.showMessageDialog(this,
+                String message = i18n.get(LayerAddPanel.class,
+                        "noLayerHandlerMessage",
                         "Layer Handler not found.\nCan't find anything to add the layer to.");
+                JOptionPane.showMessageDialog(this, message);
             } else {
-                JOptionPane.showMessageDialog(this, "No Layer instantiated");
+                String message = i18n.get(LayerAddPanel.class,
+                        "noLayerCreatedMessage",
+                        "No Layer instantiated.");
+                JOptionPane.showMessageDialog(this, message);
             }
         } else if (e.getActionCommand() == Inspector.cancelCommand) {
             if (layer != null && propertyHandler != null) {
@@ -335,16 +374,7 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
         createPanel();
         prefixTextField.setText(DefaultLayerName);
 
-        int x = 10;
-        int y = 10;
-
         WindowSupport ws = getWindowSupport();
-
-        Point loc = ws.getComponentLocation();
-        if (loc != null) {
-            x = (int) loc.getX();
-            y = (int) loc.getY();
-        }
 
         MapHandler mh = (MapHandler) getBeanContext();
         Frame frame = null;
@@ -352,7 +382,14 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
             frame = (Frame) mh.get(java.awt.Frame.class);
         }
 
-        ws.displayInWindow(frame, x, y, -1, -1);
+        if (ws == null) {
+            ws = new WindowSupport(this, i18n.get(LayerAddPanel.class,
+                    "title",
+                    "Add Layer"));
+            setWindowSupport(ws);
+        }
+
+        ws.displayInWindow(frame, -1, -1, -1, -1);
     }
 
     /**
@@ -393,4 +430,3 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
         lap.createPanel(layers);
     }
 }
-

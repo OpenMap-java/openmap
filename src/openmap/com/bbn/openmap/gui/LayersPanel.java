@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.14 $
-// $Date: 2006/01/13 22:50:01 $
+// $Revision: 1.15 $
+// $Date: 2006/02/14 20:55:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,8 +42,6 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -109,28 +107,28 @@ import com.bbn.openmap.util.PropUtils;
  * The properties that can be set for the LayersPanel:
  * 
  * <pre>
- *   
  *    
  *     
- *      # Use LayerStatusPanes for the layers if true, otherwise
- *      # LayerPanes.  LayerStatusPanes turn the on/off bulbs to green/red
- *      # bulbs when the layer is resting/working.  LayerPanes just show
- *      # yellow bulbs when the layer is part of the map.
- *      showStatus=true
- *      # When the BufferedLayerMapBean is used, a divider will be
- *      # displayed in the list of layers showing which layers are in the
- *      # MapBean buffer (below the line).  Commands to move layers, by
- *      # default, respect this divider, requiring more commands to have
- *      # layers cross it.
- *      boundary=true
- *      # Add control buttons - use &quot;none&quot; for no button.  If undefined,
- *      # the LayerControlButtonPanel will be created automatically.
- *      controls=com.bbn.openmap.gui.LayerControlButtonPanel
- *      # Any control properties added here, prepended by &quot;controls&quot;...
- *      controls.configuration=WEST
+ *      
+ *       # Use LayerStatusPanes for the layers if true, otherwise
+ *       # LayerPanes.  LayerStatusPanes turn the on/off bulbs to green/red
+ *       # bulbs when the layer is resting/working.  LayerPanes just show
+ *       # yellow bulbs when the layer is part of the map.
+ *       showStatus=true
+ *       # When the BufferedLayerMapBean is used, a divider will be
+ *       # displayed in the list of layers showing which layers are in the
+ *       # MapBean buffer (below the line).  Commands to move layers, by
+ *       # default, respect this divider, requiring more commands to have
+ *       # layers cross it.
+ *       boundary=true
+ *       # Add control buttons - use &quot;none&quot; for no button.  If undefined,
+ *       # the LayerControlButtonPanel will be created automatically.
+ *       controls=com.bbn.openmap.gui.LayerControlButtonPanel
+ *       # Any control properties added here, prepended by &quot;controls&quot;...
+ *       controls.configuration=WEST
+ *       
  *      
  *     
- *    
  * </pre>
  */
 public class LayersPanel extends OMToolComponent implements Serializable,
@@ -206,16 +204,6 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     protected transient ButtonGroup bg;
     /** The ActionListener that will bring up the LayersPanel. */
     protected ActionListener actionListener;
-    /**
-     * The frame used when the LayersPanel is used in an application and the
-     * actionListener is called.
-     */
-    protected transient JFrame layersWindowFrame;
-    /**
-     * The frame used when the LayersPanel is used in an applet and the
-     * actionListener is called.
-     */
-    protected transient JInternalFrame layersWindow;
     /** The set of buttons that control the layers. */
     protected LayerControlButtonPanel controls = null;
     /**
@@ -257,10 +245,9 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         super();
         setKey(defaultKey);
         setLayout(new BorderLayout());
-        // setWindowSupport(new WindowSupport(this, "Layers"));
-        setWindowSupport(new WindowSupport(this, i18n.get(LayersPanel.class,
-                "title",
-                "Layers")));
+        // setWindowSupport(new WindowSupport(this, i18n.get(LayersPanel.class,
+        // "title",
+        // "Layers")));
     }
 
     /**
@@ -378,6 +365,15 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         return new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 WindowSupport ws = getWindowSupport();
+
+                if (ws == null) {
+                    ws = new WindowSupport(LayersPanel.this, i18n.get(LayersPanel.class,
+                            "title",
+                            "Layers"));
+                    setWindowSupport(ws);
+                }                
+                
+                // Initial settings.
                 int w = 328;
                 int h = 300;
 
@@ -387,8 +383,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
                     h = (int) dim.getHeight();
                 }
 
-                int x = 10;
-                int y = 10;
+                int x = -1;
+                int y = -1;
 
                 Point loc = ws.getComponentLocation();
                 if (loc != null) {
@@ -1052,7 +1048,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         props.put(BufferedBoundaryProperty + LabelEditorProperty, interString);
         props.put(BufferedBoundaryProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        
+
         interString = i18n.get(LayersPanel.class,
                 ShowStatusProperty,
                 I18n.TOOLTIP,
@@ -1064,7 +1060,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         props.put(ShowStatusProperty + LabelEditorProperty, interString);
         props.put(ShowStatusProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        
+
         return props;
     }
 }

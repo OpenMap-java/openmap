@@ -16,19 +16,24 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ProgressListenerGauge.java,v
 // $
 // $RCSfile: ProgressListenerGauge.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.6 $
+// $Date: 2006/02/14 20:55:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.util.Debug;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 
-import java.awt.*;
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+
+import com.bbn.openmap.event.ProgressEvent;
+import com.bbn.openmap.event.ProgressListener;
 
 public class ProgressListenerGauge extends JPanel implements ProgressListener {
 
@@ -101,28 +106,12 @@ public class ProgressListenerGauge extends JPanel implements ProgressListener {
         }
     }
 
-    /**
-     * For applications, checks where the Environment says the window
-     * should be placed, and then uses the packed height and width to
-     * make adjustments.
-     */
-    protected synchronized void setPosition(Component comp) {
-        // get starting width and height
-        int w = comp.getWidth();
-        int h = comp.getHeight();
+    public WindowSupport getWindowSupport() {
+        return windowSupport;
+    }
 
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        Debug.message("basic", "Screen dimensions are " + d);
-        int x = d.width / 2 - w / 2;
-        int y = d.height / 2 - h / 2;
-
-        if (Debug.debugging("basic")) {
-            Debug.output("Setting PLG frame X and Y from properties to " + x
-                    + " " + y);
-        }
-
-        // compose the frame, but don't show it here
-        comp.setBounds(x, y, w, h);
+    public void setWindowSupport(WindowSupport windowSupport) {
+        this.windowSupport = windowSupport;
     }
 
 }

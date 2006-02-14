@@ -14,29 +14,55 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.18 $
-// $Date: 2005/08/09 17:49:51 $
+// $Revision: 1.19 $
+// $Date: 2006/02/14 20:55:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.Iterator;
-import javax.swing.*;
 
-import com.bbn.openmap.*;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLayeredPane;
+
+import com.bbn.openmap.Environment;
 import com.bbn.openmap.event.ListenerSupport;
 import com.bbn.openmap.util.Debug;
 
 /**
  * The WindowSupport class provides support for managing JFrames or
- * JInternalFrames for other components. The frame is disposed of when
- * the window is closed, and recreated when displayInWindow is called.
- * The WindowSupport remembers size and location changes for the
- * window when it is recreated.
+ * JInternalFrames for other components. The frame is disposed of when the
+ * window is closed, and recreated when displayInWindow is called. The
+ * WindowSupport remembers size and location changes for the window when it is
+ * recreated.
+ * <p>
+ * 
+ * The WindowSupport class now has inner classes that are used to create
+ * different types of windows for components. Dlg is used for JDialogs, which
+ * remain on top of the main application frame even when they don't have focus.
+ * IntrnlFrm is used for JInternalFrames, for windows that get clipped if the
+ * move off the area of the main application. Frm is used for a standard JFrame
+ * which can be obscured by the main application window. Components are free to
+ * specify which WSDisplay type they always want to be display in, or they can
+ * ask for a standard WindowSupport object which will use the static
+ * defaultWindowSupportDisplayType variable to determine the WSDisplay type (for
+ * a consistent feel across the application). The default setting for this
+ * variable is to use the Frm type.
  */
 public class WindowSupport extends ListenerSupport implements
         ComponentListener, ActionListener {
@@ -49,16 +75,9 @@ public class WindowSupport extends ListenerSupport implements
     public final static String DisplayWindowCmd = "displayWindowCmd";
     public final static String KillWindowCmd = "killWindowCmd";
 
-    /**
-     * The frame used when the DrawingToolLauncher is used in an
-     * applet, or if Environment.useInternalFrames == true;
-     */
-    protected transient JInternalFrame iFrame;
+    protected transient WSDisplay display;
 
-    /**
-     * The dialog used for non-internal windows.
-     */
-    protected transient JDialog dialog;
+    protected static Class defaultWindowSupportDisplayType = Frm.class;
 
     /**
      * Create the window support.
@@ -68,8 +87,17 @@ public class WindowSupport extends ListenerSupport implements
      */
     public WindowSupport(Component content, String windowTitle) {
         super(content);
-        this.content = content;
+        setContent(content);
         this.title = windowTitle;
+    }
+
+    public WindowSupport(Component content, WSDisplay display) {
+        super(content);
+        setContent(content);
+        setDisplay(display);
+        if (display != null) {
+            this.title = display.getTitle();
+        }
     }
 
     /**
@@ -105,14 +133,7 @@ public class WindowSupport extends ListenerSupport implements
      */
     public void componentResized(ComponentEvent e) {
         Component source = (Component) e.getSource();
-        if (source instanceof JFrame) {
-            source = ((JFrame) source).getContentPane();
-        } else if (source instanceof JInternalFrame) {
-            source = ((JInternalFrame) source).getContentPane();
-        } else if (source instanceof JDialog) {
-            source = ((JDialog) source).getContentPane();
-        }
-        setComponentSize(new Dimension(source.getWidth(), source.getHeight()));
+        setComponentSize(source.getSize());
 
         Iterator it = iterator();
         while (it.hasNext()) {
@@ -142,8 +163,8 @@ public class WindowSupport extends ListenerSupport implements
     }
 
     /**
-     * ComponentListener method. WindowSupport kills the window when
-     * it is hidden.
+     * ComponentListener method. WindowSupport kills the window when it is
+     * hidden.
      */
     public void componentHidden(ComponentEvent e) {
         Iterator it = iterator();
@@ -155,7 +176,7 @@ public class WindowSupport extends ListenerSupport implements
         // otherwise the component never finds out it's been hidden,
         // it gets removed as a ComponentListener at cleanup.
         Component source = (Component) e.getSource();
-        if (source == dialog || source == iFrame) {
+        if (display == source) {
             cleanUp();
         }
     }
@@ -180,10 +201,8 @@ public class WindowSupport extends ListenerSupport implements
      */
     public void setTitle(String tle) {
         title = tle;
-        if (iFrame != null) {
-            iFrame.setTitle(tle);
-        } else if (dialog != null) {
-            dialog.setTitle(tle);
+        if (display != null) {
+            display.setTitle(tle);
         }
     }
 
@@ -192,25 +211,21 @@ public class WindowSupport extends ListenerSupport implements
     }
 
     /**
-     * Subclass method to allow modifications to content, wrappers,
-     * etc. This version just returns comp.
-     */
-    public Component modifyContent(Component comp) {
-        return comp;
-    }
-
-    /**
      * Sets the content in the JInternalFrame/JDialog.
      */
     public void setContent(Component comp) {
+
+        if (content instanceof ComponentListener) {
+            removeComponentListener((ComponentListener) content);
+        }
+
         content = comp;
-        if (iFrame != null) {
-            iFrame.getContentPane().add(modifyContent(content));
-            iFrame.pack();
-        } else if (dialog != null) {
-            dialog.getContentPane().removeAll();
-            dialog.getContentPane().add(modifyContent(content));
-            dialog.pack();
+        if (display != null) {
+            display.setContent(comp);
+        }
+
+        if (content instanceof ComponentListener) {
+            addComponentListener((ComponentListener) content);
         }
     }
 
@@ -222,9 +237,9 @@ public class WindowSupport extends ListenerSupport implements
     protected int maxWidth = -1;
 
     /**
-     * Sets the maximum pixel size of the window. If you don't care
-     * about a particular dimension, set it to be less than zero and
-     * the natural size of the content will be displayed.
+     * Sets the maximum pixel size of the window. If you don't care about a
+     * particular dimension, set it to be less than zero and the natural size of
+     * the content will be displayed.
      */
     public void setMaxSize(int width, int height) {
         maxHeight = height;
@@ -232,16 +247,78 @@ public class WindowSupport extends ListenerSupport implements
     }
 
     /**
-     * Display the window, and find out what the natural or revised
-     * size and location are for the window.
+     * Called when a component hasn't specified what kind of window they want.
+     * If the Environment.useInternalFrames flag isn't set, then the
+     * getDefaultWindowSupportDisplayType() method is called to find out which
+     * WSDisplay type class should be created for the component. IF that returns
+     * null, a Frm is created.
+     * 
+     * @param owner
+     * @return WSDisplay
+     */
+    protected WSDisplay createDisplay(Frame owner) {
+        WSDisplay wsd;
+        if (Environment.getBoolean(Environment.UseInternalFrames)) {
+            wsd = new IntrnlFrm(title);
+        } else {
+            Class wTypeClass = getDefaultWindowSupportDisplayType();
+            if (wTypeClass == Dlg.class) {
+                wsd = new Dlg(owner, title);
+            } else if (wTypeClass == IntrnlFrm.class) {
+                wsd = new IntrnlFrm(title);
+            } else {
+                wsd = new Frm(title);
+            }
+        }
+        setDisplay(wsd);
+        return wsd;
+    }
+
+    protected static Class getDefaultWindowSupportDisplayType() {
+        return defaultWindowSupportDisplayType;
+    }
+
+    protected static void setDefaultWindowSupportDisplayType(
+                                                             Class defaultWindowSupportDisplayType) {
+        WindowSupport.defaultWindowSupportDisplayType = defaultWindowSupportDisplayType;
+    }
+
+    public void setDisplay(WSDisplay dis) {
+        if (display != null) {
+            display.removeComponentListener(this);
+        }
+
+        display = dis;
+        if (display != null) {
+            display.addComponentListener(this);
+            display.setContent(modifyContent(content));
+        }
+
+    }
+
+    /**
+     * Subclass method to allow modifications to content, wrappers, etc. This
+     * version just returns comp.
+     */
+    public Component modifyContent(Component comp) {
+        return comp;
+    }
+
+    public WSDisplay getDisplay() {
+        return display;
+    }
+
+    /**
+     * Display the window, and find out what the natural or revised size and
+     * location are for the window.
      */
     public void displayInWindow() {
         displayInWindow(null);
     }
 
     /**
-     * Display the window, and find out what the natural or revised
-     * size and location are for the window.
+     * Display the window, and find out what the natural or revised size and
+     * location are for the window.
      * 
      * @param owner Frame for JDialog
      */
@@ -254,16 +331,8 @@ public class WindowSupport extends ListenerSupport implements
 
         // -1 is a flag for the positioning code to recenter the
         // -window on the owner if it's not null, for JDialogs.
-        int x = -1; // these are now initialised at -1 instead of 10
-        int y = -1; // these are now initialised at -1 instead of 10
 
-        Point loc = getComponentLocation();
-        if (loc != null) {
-            x = (int) loc.getX();
-            y = (int) loc.getY();
-        }
-
-        displayInWindow(owner, x, y, -1, -1);
+        displayInWindow(owner, -1, -1, -1, -1);
     }
 
     /**
@@ -271,10 +340,10 @@ public class WindowSupport extends ListenerSupport implements
      * 
      * @param x the horizontal pixel location for the window.
      * @param y the vertical pixel location for the window.
-     * @param width the horizontal size of the window, if less than or
-     *        equal to zero the content size will be used.
-     * @param height the vertical size of the window, if less than or
-     *        equal to zero the content size will be used.
+     * @param width the horizontal size of the window, if less than or equal to
+     *        zero the content size will be used.
+     * @param height the vertical size of the window, if less than or equal to
+     *        zero the content size will be used.
      */
     public void displayInWindow(int x, int y, int width, int height) {
         displayInWindow(null, x, y, width, height);
@@ -286,10 +355,10 @@ public class WindowSupport extends ListenerSupport implements
      * @param owner Frame for JDialog
      * @param x the horizontal pixel location for the window.
      * @param y the vertical pixel location for the window.
-     * @param width the horizontal size of the window, if less than or
-     *        equal to zero the content size will be used.
-     * @param height the vertical size of the window, if less than or
-     *        equal to zero the content size will be used.
+     * @param width the horizontal size of the window, if less than or equal to
+     *        zero the content size will be used.
+     * @param height the vertical size of the window, if less than or equal to
+     *        zero the content size will be used.
      */
     public void displayInWindow(Frame owner, int x, int y, int width, int height) {
 
@@ -299,65 +368,32 @@ public class WindowSupport extends ListenerSupport implements
             return;
         }
 
-        if (iFrame == null && dialog == null) {
-
-            // Try to group the applet-specific stuff in here...
-            if (Environment.getBoolean(Environment.UseInternalFrames)) {
-
-                iFrame = new JInternalFrame(title,
-                /* resizable */true,
-                /* closable */true,
-                /* maximizable */true,
-                /* iconifiable */true);
-                iFrame.setOpaque(true);
-                iFrame.addComponentListener(this);
-
-                JLayeredPane desktop = Environment.getInternalFrameDesktop();
-
-                Debug.message("windows",
-                        "WindowSupport creating internal frame");
-
-                if (desktop != null) {
-                    desktop.remove(iFrame);
-                    desktop.add(iFrame, JLayeredPane.PALETTE_LAYER);
-                } else {
-                    Debug.output("WindowSupport:  No desktop set for internal frame");
-                }
-
-            } else { // Working as an application...
-                dialog = new JDialog(owner, title);
-                dialog.addComponentListener(this);
-                Debug.message("windows", "WindowSupport creating frame");
+        if (x < 0 && y < 0) {
+            // See if we can remember where we were...
+            Point loc = getComponentLocation();
+            if (loc != null) {
+                x = (int) loc.getX();
+                y = (int) loc.getY();
             }
         }
 
-        setContent(content);
-
-        if (content instanceof ComponentListener) {
-            addComponentListener((ComponentListener) content);
+        if (display == null) {
+            display = createDisplay(owner);
         }
 
-        if (iFrame != null) {
-            iFrame.pack();
-            checkBounds(iFrame, x, y, width, height);
-            iFrame.show();
-            iFrame.toFront();
-        } else if (dialog != null) {
-            dialog.pack();
-            checkBounds(dialog, x, y, width, height);
-            if (owner != null && x < 0 && y < 0) {
-                dialog.setLocationRelativeTo(owner);
-            } else if (owner == null) {
-                setPosition(dialog);
-            }
-            dialog.show();
-        }
+        Container displayWindow = display.getWindow();
+        checkBounds(displayWindow, x, y, width, height);
+
+        display.show(x, y);
+
+        setComponentLocation(displayWindow.getLocation());
+        setComponentSize(displayWindow.getSize());
     }
 
     /**
-     * Checks the component's dimensions against the requested values
-     * and against any maximum limits that may have been set in the
-     * WindowSupport. Calls setBounds() on the Component.
+     * Checks the component's dimensions against the requested values and
+     * against any maximum limits that may have been set in the WindowSupport.
+     * Calls setBounds() on the Component.
      */
     protected void checkBounds(Component comp, int x, int y, int width,
                                int height) {
@@ -384,11 +420,10 @@ public class WindowSupport extends ListenerSupport implements
     }
 
     /**
-     * For applications, checks where the Environment says the window
-     * should be placed, and then uses the packed height and width to
-     * make adjustments.
+     * For applications, checks where the Environment says the window should be
+     * placed, and then uses the packed height and width to make adjustments.
      */
-    protected void setPosition(Component comp) {
+    protected static void setDefaultPosition(Component comp) {
         // get starting width and height
         int w = comp.getWidth();
         int h = comp.getHeight();
@@ -409,23 +444,16 @@ public class WindowSupport extends ListenerSupport implements
 
     /**
      * Set the window to be hidden and fire a ComponentEvent for
-     * COMPONENT_HIDDEN. Normally, just setting the visibility of the
-     * window would be enough, but we're running into that problem we
-     * had with the layers not firing ComponentEvents when hidden.
-     * This method calls componentHidden, which in turn calls cleanUp.
+     * COMPONENT_HIDDEN. Normally, just setting the visibility of the window
+     * would be enough, but we're running into that problem we had with the
+     * layers not firing ComponentEvents when hidden. This method calls
+     * componentHidden, which in turn calls cleanUp.
      */
     public void killWindow() {
 
         ComponentEvent ce = null;
-        JDialog dialogLocal = dialog;
-        JInternalFrame iFrameLocal = iFrame;
-
-        if (dialogLocal != null) {
-            dialogLocal.setVisible(false);
-            ce = new ComponentEvent(dialogLocal, ComponentEvent.COMPONENT_HIDDEN);
-        } else if (iFrameLocal != null) {
-            iFrameLocal.setVisible(false);
-            ce = new ComponentEvent(iFrameLocal, ComponentEvent.COMPONENT_HIDDEN);
+        if (display != null) {
+            ce = display.kill();
         }
 
         if (ce != null) {
@@ -437,14 +465,10 @@ public class WindowSupport extends ListenerSupport implements
      * Get rid of the window used to display the content.
      */
     protected void cleanUp() {
-        if (dialog != null) {
-            dialog.removeComponentListener(this);
-            dialog.dispose();
-            dialog = null;
-        } else if (iFrame != null) {
-            iFrame.removeComponentListener(this);
-            iFrame.dispose();
-            iFrame = null;
+        if (display != null) {
+            WSDisplay wsd = display;
+            setDisplay(null);
+            wsd.dispose();
         }
 
         if (content instanceof ComponentListener) {
@@ -453,16 +477,16 @@ public class WindowSupport extends ListenerSupport implements
     }
 
     /**
-     * Add a component listener that is interested in hearing about
-     * what happens to the window.
+     * Add a component listener that is interested in hearing about what happens
+     * to the window.
      */
     public void addComponentListener(ComponentListener l) {
         addListener(l);
     }
 
     /**
-     * Remove a component listener that was interested in hearing
-     * about what happens to the window.
+     * Remove a component listener that was interested in hearing about what
+     * happens to the window.
      */
     public void removeComponentListener(ComponentListener l) {
         removeListener(l);
@@ -472,10 +496,182 @@ public class WindowSupport extends ListenerSupport implements
      * Return the window displaying the content. May be null.
      */
     public Container getWindow() {
-        if (dialog != null) {
-            return dialog;
+        if (display != null) {
+            return display.getWindow();
+        } else {
+            return null;
         }
-        return iFrame;
+    }
+
+    public static interface WSDisplay {
+
+        public void setTitle(String title);
+
+        public String getTitle();
+
+        public Container getWindow();
+
+        public void setContent(Component content);
+
+        public void show(int x, int y);
+
+        public ComponentEvent kill();
+
+        public void dispose();
+
+        public Dimension getContentSize();
+
+        public void addComponentListener(ComponentListener cl);
+
+        public void removeComponentListener(ComponentListener cl);
+
+    }
+
+    public static class IntrnlFrm extends JInternalFrame implements WSDisplay {
+
+        public IntrnlFrm(String title) {
+            super(title,
+            /* resizable */true,
+            /* closable */true,
+            /* maximizable */true,
+            /* iconifiable */true);
+            setOpaque(true);
+
+            JLayeredPane desktop = Environment.getInternalFrameDesktop();
+
+            Debug.message("windows", "WindowSupport creating internal frame");
+
+            if (desktop != null) {
+                desktop.remove(this);
+                desktop.add(this, JLayeredPane.PALETTE_LAYER);
+            } else {
+                Debug.output("WindowSupport:  No desktop set for internal frame");
+            }
+        }
+
+        public Container getWindow() {
+            return this;
+        }
+
+        public ComponentEvent kill() {
+            setVisible(false);
+            return new ComponentEvent(this, ComponentEvent.COMPONENT_HIDDEN);
+        }
+
+        public void setContent(Component content) {
+            Container cp = getContentPane();
+            // cp.removeAll();
+            cp.add(content);
+            pack();
+        }
+
+        public Dimension getContentSize() {
+            return getContentPane().getSize();
+        }
+
+        public void show(int x, int y) {
+            if (!isVisible()) {
+                super.show();
+            }
+            toFront();
+        }
+
+    }
+
+    public static class Dlg extends JDialog implements WSDisplay {
+
+        public Dlg(Frame owner, String title) {
+            super(owner, title);
+            Debug.message("windows", "WindowSupport creating frame");
+        }
+
+        public Container getWindow() {
+            return this;
+        }
+
+        public ComponentEvent kill() {
+            setVisible(false);
+            return new ComponentEvent(this, ComponentEvent.COMPONENT_HIDDEN);
+        }
+
+        public void setContent(Component content) {
+            Container cp = getContentPane();
+            cp.removeAll();
+            cp.add(content);
+            pack();
+        }
+
+        public Dimension getContentSize() {
+            return getContentPane().getSize();
+        }
+
+        public void show(int x, int y) {
+            if (!isVisible()) {
+                Window owner = getOwner();
+                if (x <= 0 && y <= 0) {
+                    if (owner != null) {
+                        setLocationRelativeTo(owner);
+                    } else if (owner == null) {
+                        setDefaultPosition(this);
+                    }
+                }
+            }
+            super.show();
+        }
+
+    }
+
+    public static class Frm extends JFrame implements WSDisplay {
+
+        public Frm(String title) {
+            super(title);
+            // Need to call this to get the frame to pay attention to requests
+            // on where to locate it if it should be centered on the screen.
+            setLocation(-1, -1);
+        }
+
+        public Frm(String title, boolean undecorated) {
+            super(title);
+            setUndecorated(undecorated);
+            // Need to call this to get the frame to pay attention to requests
+            // on where to locate it if it should be centered on the screen.
+            setLocation(-1, -1);
+        }
+
+        public Container getWindow() {
+            return this;
+        }
+
+        public ComponentEvent kill() {
+            setVisible(false);
+            return new ComponentEvent(this, ComponentEvent.COMPONENT_HIDDEN);
+        }
+
+        public void setContent(Component content) {
+            Container cp = getContentPane();
+            cp.removeAll();
+            cp.add(content);
+            pack();
+        }
+
+        public Dimension getContentSize() {
+            return getContentPane().getSize();
+        }
+
+        public void show(int x, int y) {
+            if (!isVisible()) {
+                Window owner = getOwner();
+                if (x <= 0 && y <= 0) {
+                    if (owner != null) {
+                        setLocationRelativeTo(owner);
+                    } else if (owner == null) {
+                        setDefaultPosition(this);
+                    }
+                }
+                super.show();
+            }
+            toFront();
+        }
     }
 
 }

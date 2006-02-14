@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OverviewMapHandler.java,v $
 // $RCSfile: OverviewMapHandler.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/12/09 21:09:02 $
+// $Revision: 1.14 $
+// $Date: 2006/02/14 20:55:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,7 +29,6 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Paint;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -70,75 +69,73 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The OverviewMapHandler contains a MapBean that contains a
- * projection that reflects another MapBean's projection. It manages
- * the two MapBeans and the differences in the projections betwen
- * them. The OverviewMapHandler can have a projection type independent
- * of that of the source MapBean (the MapBean that the
- * OverviewMapHandler's MapBean is paying attention to). It also
- * contains a scale factor, which is a multiplier to use against the
- * scale of the source MapBean's scale.
+ * The OverviewMapHandler contains a MapBean that contains a projection that
+ * reflects another MapBean's projection. It manages the two MapBeans and the
+ * differences in the projections betwen them. The OverviewMapHandler can have a
+ * projection type independent of that of the source MapBean (the MapBean that
+ * the OverviewMapHandler's MapBean is paying attention to). It also contains a
+ * scale factor, which is a multiplier to use against the scale of the source
+ * MapBean's scale.
  * <P>
  * 
- * The OverviewMapHandler MapBean can also be used to control the
- * source MapBean's projection center and scale. The source MapBean
- * just needs to be added to the OverviewMapHandler by
+ * The OverviewMapHandler MapBean can also be used to control the source
+ * MapBean's projection center and scale. The source MapBean just needs to be
+ * added to the OverviewMapHandler by
  * OverviewMapHandler.addControlledMap(MapBean).
  * <P>
  * 
  * The OverviewMapHandler needs to be added to the source MapBean as a
  * ProjectionListener. Then, the overview MapBean can be added to the
  * ContentPane of a Component by calling
- * Component.setContentPane(OverviewMapHandler.getMap()); The
- * OverviewMapHandler Should also be added as a ComponentListener to
- * the Component.
+ * Component.setContentPane(OverviewMapHandler.getMap()); The OverviewMapHandler
+ * Should also be added as a ComponentListener to the Component.
  * <P>
  * 
- * After the first projectionChanged() call is received, the
- * OverviewMapHandler knows about the source MapBean. Since the
- * OverviewMapHandler is a ComponentListener and will therefore find
- * out when it's parent is hidden, it will disengage and engage itself
- * from the source MapBean as it's visibility changes.
+ * After the first projectionChanged() call is received, the OverviewMapHandler
+ * knows about the source MapBean. Since the OverviewMapHandler is a
+ * ComponentListener and will therefore find out when it's parent is hidden, it
+ * will disengage and engage itself from the source MapBean as it's visibility
+ * changes.
  * <P>
  * 
- * To get the overview map to appear in the OpenMap application, add
- * the following properties to your openmap.properties file:
+ * To get the overview map to appear in the OpenMap application, add the
+ * following properties to your openmap.properties file:
  * 
  * <pre>
- *  
- *  
- *   # First, add overviewMapHandler to the openmap.components marker name list.  Then, add:
- *  
- *   overviewMapHandler.class=com.bbn.opemap.gui.OverviewMapHandler
- *   overviewMapHandler.overviewLayers=overviewLayer
- *   overviewMapHandler.overviewScaleFactor=10f
- *   overviewMapHandler.overviewMinScale=10000000f
- *  
- *   # 'overviewStatusLayer' is a marker name for any attributes you may
- *   # want to pass to the overviewStatusLayer instance, in addition to
- *   # being used to define the class to use for that special layer.
- *   overviewMapHandler.overviewStatusLayer.class=com.bbn.openmap.layer.OverviewMapAreaLayer
- *   # Properties can be passed to the overview status layer by listing
- *   # them with the OverviewMapHandler prefix.
- *  
- *   # Set the line color for the coverage box outline...
- *   # overviewMapHandler.lineColor=FFFF0000
- *  
- *   # A sample overview map layer
- *   overviewLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
- *   overviewLayer.prettyName=Overview
- *   overviewLayer.shapeFile=/home/dietrick/dev/openmap/share/dcwpo-browse.shp
- *   overviewLayer.spatialIndex=/home/dietrick/dev/openmap/share/dcwpo-browse.ssx
- *   overviewLayer.lineColor=ff000000
- *   overviewLayer.fillColor=ffbdde83
- *  
- *   
+ *     
+ *     
+ *      # First, add overviewMapHandler to the openmap.components marker name list.  Then, add:
+ *     
+ *      overviewMapHandler.class=com.bbn.opemap.gui.OverviewMapHandler
+ *      overviewMapHandler.overviewLayers=overviewLayer
+ *      overviewMapHandler.overviewScaleFactor=10f
+ *      overviewMapHandler.overviewMinScale=10000000f
+ *     
+ *      # 'overviewStatusLayer' is a marker name for any attributes you may
+ *      # want to pass to the overviewStatusLayer instance, in addition to
+ *      # being used to define the class to use for that special layer.
+ *      overviewMapHandler.overviewStatusLayer.class=com.bbn.openmap.layer.OverviewMapAreaLayer
+ *      # Properties can be passed to the overview status layer by listing
+ *      # them with the OverviewMapHandler prefix.
+ *     
+ *      # Set the line color for the coverage box outline...
+ *      # overviewMapHandler.lineColor=FFFF0000
+ *     
+ *      # A sample overview map layer
+ *      overviewLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
+ *      overviewLayer.prettyName=Overview
+ *      overviewLayer.shapeFile=/home/dietrick/dev/openmap/share/dcwpo-browse.shp
+ *      overviewLayer.spatialIndex=/home/dietrick/dev/openmap/share/dcwpo-browse.ssx
+ *      overviewLayer.lineColor=ff000000
+ *      overviewLayer.fillColor=ffbdde83
+ *     
+ *      
  * </pre>
  * 
  * <p>
  * 
- * If layers are not added to the overview map, then it won't show up
- * in the application.
+ * If layers are not added to the overview map, then it won't show up in the
+ * application.
  */
 public class OverviewMapHandler extends OMToolComponent implements
         ProjectionListener, Serializable, PropertyConsumer,
@@ -157,40 +154,37 @@ public class OverviewMapHandler extends OMToolComponent implements
     /** The multiplier to apply to the scale of the project received. */
     protected float scaleFactor;
     /**
-     * The minimum scale to use for the window. If it gets too small
-     * with a general type layer, it won't be any use.
+     * The minimum scale to use for the window. If it gets too small with a
+     * general type layer, it won't be any use.
      */
     protected float minScale;
     /** The map of the overview panel. */
     protected transient MapBean map;
     /**
-     * The source MapBean to show the overview of. Gets set when the
-     * first projectionChanged() gets called. Also used to disconnect
-     * from the MapBean when the component that this
-     * OverviewMapHandler is listening to is hidden, and to connect to
-     * the MapBean when the component is shown.
+     * The source MapBean to show the overview of. Gets set when the first
+     * projectionChanged() gets called. Also used to disconnect from the MapBean
+     * when the component that this OverviewMapHandler is listening to is
+     * hidden, and to connect to the MapBean when the component is shown.
      */
     protected transient MapBean sourceMap;
     /** The projection of the overview map bean. */
     protected transient Proj projection;
     /**
-     * A layer that can be set to constantly be on the top of the map.
-     * If the status layer is also a OverviewMapStatusListener, it
-     * also receives the source map projection when that changes,
-     * which gives it the capability to draw stuff based on that.
+     * A layer that can be set to constantly be on the top of the map. If the
+     * status layer is also a OverviewMapStatusListener, it also receives the
+     * source map projection when that changes, which gives it the capability to
+     * draw stuff based on that.
      */
     protected Layer statusLayer;
     /**
-     * The support to send the source MapBean setCenter and setScale
-     * commands if a controlled map is added - usually the source map
-     * bean.
+     * The support to send the source MapBean setCenter and setScale commands if
+     * a controlled map is added - usually the source map bean.
      */
     protected transient ControlledMapSupport listener;
     /** The mouse mode to use for the overview map. */
     protected MapMouseMode mmm;
     /**
-     * The thing listening for a request to bring up a JFrame or
-     * JInternalFrame.
+     * The thing listening for a request to bring up a JFrame or JInternalFrame.
      */
     protected ActionListener overviewFrameActionListener = null;
     /** Indicates if OverviewMap should be controlling sourceMap. */
@@ -203,8 +197,8 @@ public class OverviewMapHandler extends OMToolComponent implements
     public static final String defaultKey = "overviewmaphandler";
 
     /**
-     * Flag to change the background color to whatever the source
-     * map's is changed to. True byt default.
+     * Flag to change the background color to whatever the source map's is
+     * changed to. True byt default.
      */
     protected boolean backgroundSlave = true;
 
@@ -212,8 +206,8 @@ public class OverviewMapHandler extends OMToolComponent implements
     public final static int INITIAL_HEIGHT = 100;
 
     /**
-     * Default constructor. make sure init(someProperties) is called
-     * before you attempt to use this object
+     * Default constructor. make sure init(someProperties) is called before you
+     * attempt to use this object
      */
     public OverviewMapHandler() {
         super();
@@ -224,12 +218,14 @@ public class OverviewMapHandler extends OMToolComponent implements
         // Set up a default...
         projection = createStartingProjection(null);
         addComponentListener(this);
-        setWindowSupport(new WindowSupport(this, "Overview Map"));
+        // Create this when we need it.
+        // setWindowSupport(new WindowSupport(this, new WindowSupport.Dlg(null,
+        // "Overview Map")));
     }
 
     /**
-     * Create an OverviewMapHandler with properties that do not
-     * contain a prefix.
+     * Create an OverviewMapHandler with properties that do not contain a
+     * prefix.
      * 
      * @param props properties object.
      */
@@ -238,11 +234,10 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Create an OverviewMapHandler with properties that do contain a
-     * prefix.
+     * Create an OverviewMapHandler with properties that do contain a prefix.
      * 
-     * @param prefix the prefix for all the properties that apply to
-     *        the OverviewMapHandler.
+     * @param prefix the prefix for all the properties that apply to the
+     *        OverviewMapHandler.
      * @param props properties object.
      */
     public OverviewMapHandler(String prefix, Properties props) throws Exception {
@@ -255,10 +250,9 @@ public class OverviewMapHandler extends OMToolComponent implements
      * Create an OverviewMapHandler for given MapBean.
      * 
      * @param srcMap srcMapBean
-     * @param prefix the prefix to place in front of each property -
-     *        i.e., so that each property will be under
-     *        prefix.propertyName. The period between the two will be
-     *        added.
+     * @param prefix the prefix to place in front of each property - i.e., so
+     *        that each property will be under prefix.propertyName. The period
+     *        between the two will be added.
      * @param props properties object.
      */
     public OverviewMapHandler(MapBean srcMap, String prefix, Properties props)
@@ -268,8 +262,8 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Create the MapBean used for the overview map, and suppress the
-     * copyright message at the same time.
+     * Create the MapBean used for the overview map, and suppress the copyright
+     * message at the same time.
      */
     protected void createOverviewMap() {
         // We don't need another copyright message, right?
@@ -288,13 +282,12 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Initialize an OverviewMapHandler with properties that do
-     * contain a prefix.
+     * Initialize an OverviewMapHandler with properties that do contain a
+     * prefix.
      * 
-     * @param prefix the prefix to place in front of each property -
-     *        i.e., so that each property will be under
-     *        prefix.propertyName. The period between the two will be
-     *        added.
+     * @param prefix the prefix to place in front of each property - i.e., so
+     *        that each property will be under prefix.propertyName. The period
+     *        between the two will be added.
      * @param props properties object.
      * @deprecated use setProperties(prefix, props).
      */
@@ -304,16 +297,15 @@ public class OverviewMapHandler extends OMToolComponent implements
 
     /**
      * Sets the properties for the <code>Layer</code>. This allows
-     * <code>Layer</code> s to get a richer set of parameters than
-     * the <code>setArgs</code> method. Part of the PropertyConsumer
-     * interface. Layers which override this method should do
-     * something like: <code><pre>
+     * <code>Layer</code> s to get a richer set of parameters than the
+     * <code>setArgs</code> method. Part of the PropertyConsumer interface.
+     * Layers which override this method should do something like: <code><pre>
      * public void setProperties(String prefix, Properties props) {
      *     super.setProperties(prefix, props);
      *     // do local stuff
      * }
-     * </pre></code> If the addToBeanContext property is not defined, it is
-     * set to false here.
+     * </pre></code> If the addToBeanContext property is not defined, it is set to
+     * false here.
      * 
      * @param prefix the token to prefix the property names
      * @param props the <code>Properties</code> object
@@ -386,19 +378,17 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * PropertyConsumer method, to fill in a Properties object,
-     * reflecting the current values of the layer. If the layer has a
-     * propertyPrefix set, the property keys should have that prefix
-     * plus a separating '.' prepended to each propery key it uses for
-     * configuration.
+     * PropertyConsumer method, to fill in a Properties object, reflecting the
+     * current values of the layer. If the layer has a propertyPrefix set, the
+     * property keys should have that prefix plus a separating '.' prepended to
+     * each propery key it uses for configuration.
      * 
-     * @param props a Properties object to load the PropertyConsumer
-     *        properties into. If props equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param props a Properties object to load the PropertyConsumer properties
+     *        into. If props equals null, then a new Properties object should be
+     *        created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
         if (props == null) {
@@ -442,22 +432,20 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Method to fill in a Properties object with values reflecting
-     * the properties able to be set on this PropertyConsumer. The key
-     * for each property should be the raw property name (without a
-     * prefix) with a value that is a String that describes what the
-     * property key represents, along with any other information about
-     * the property that would be helpful (range, default value,
-     * etc.). For Layer, this method should at least return the
-     * 'prettyName' property.
+     * Method to fill in a Properties object with values reflecting the
+     * properties able to be set on this PropertyConsumer. The key for each
+     * property should be the raw property name (without a prefix) with a value
+     * that is a String that describes what the property key represents, along
+     * with any other information about the property that would be helpful
+     * (range, default value, etc.). For Layer, this method should at least
+     * return the 'prettyName' property.
      * 
-     * @param list a Properties object to load the PropertyConsumer
-     *        properties into. If getList equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param list a Properties object to load the PropertyConsumer properties
+     *        into. If getList equals null, then a new Properties object should
+     *        be created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
         if (list == null) {
@@ -489,11 +477,10 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Sets the sourceMap associated with this OverviewMap. if
-     * controlSourceMap property is set, srcMap will also be
-     * controlled by this OverviewHandler Passing a null value will
-     * remove the current sourceMap from the list of Maps that this
-     * handler is controlling and set sourceMap to null.
+     * Sets the sourceMap associated with this OverviewMap. if controlSourceMap
+     * property is set, srcMap will also be controlled by this OverviewHandler
+     * Passing a null value will remove the current sourceMap from the list of
+     * Maps that this handler is controlling and set sourceMap to null.
      * 
      * @param srcMap srcMap.
      */
@@ -554,8 +541,8 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Set whether the map's background mimics changes to the source
-     * map's background.
+     * Set whether the map's background mimics changes to the source map's
+     * background.
      * 
      * @param set true to enable mimicing.
      */
@@ -564,20 +551,19 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Get whether the map's background mimics changes to the source
-     * map's background.
+     * Get whether the map's background mimics changes to the source map's
+     * background.
      */
     public boolean getBackgroundSlave() {
         return backgroundSlave;
     }
 
     /**
-     * Default value of this property is true. if you want your
-     * sourceMap to be controlled by this OverviewMapHandler, set the
-     * value of this property for this OverviewHandler. This will
-     * allow, for instance, clicking on the overview map to recenter
-     * the source map. That depends on the overview map mouse mode,
-     * however.
+     * Default value of this property is true. if you want your sourceMap to be
+     * controlled by this OverviewMapHandler, set the value of this property for
+     * this OverviewHandler. This will allow, for instance, clicking on the
+     * overview map to recenter the source map. That depends on the overview map
+     * mouse mode, however.
      * 
      * @param value
      */
@@ -598,8 +584,8 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Set the layers in the Overview MapBean. An AreaLayer is
-     * automatically added on top.
+     * Set the layers in the Overview MapBean. An AreaLayer is automatically
+     * added on top.
      */
     public void setLayers(Layer[] layers) {
         map.setLayers(new LayerEvent(this, LayerEvent.REPLACE, new Layer[0]));
@@ -610,8 +596,8 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Part of the ProjectionListener interface. The new projections
-     * from the source MapBean arrive here.
+     * Part of the ProjectionListener interface. The new projections from the
+     * source MapBean arrive here.
      * 
      * @param projEvent the projection event from the source MapBean.
      */
@@ -643,9 +629,9 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Set the MapMouseMode for the overview map. If you want the
-     * status layer to listen to the mouse mode, you have to get the
-     * layer and wire it up yourself.
+     * Set the MapMouseMode for the overview map. If you want the status layer
+     * to listen to the mouse mode, you have to get the layer and wire it up
+     * yourself.
      */
     public void setMouseMode(MapMouseMode ammm) {
         // If we're removing a mouse mode, disconnect it from the map.
@@ -664,8 +650,8 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Adds the mouse mode as a listener to the overview map. If the
-     * mouse mode is null, the default is created.
+     * Adds the mouse mode as a listener to the overview map. If the mouse mode
+     * is null, the default is created.
      */
     public void activateMouseMode() {
         if (mmm == null) {
@@ -688,12 +674,11 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Add a controlled MapBean to the OverviewMapHandler. Use this
-     * method to add another MapBean to the overview map in order to
-     * have its projection controlled by the overview panel. If the
-     * overview panel is clicked on, the listening MapBean will be
-     * recentered. If a box is drawn with a mouse drag, the scale of
-     * the controlled map will be modified.
+     * Add a controlled MapBean to the OverviewMapHandler. Use this method to
+     * add another MapBean to the overview map in order to have its projection
+     * controlled by the overview panel. If the overview panel is clicked on,
+     * the listening MapBean will be recentered. If a box is drawn with a mouse
+     * drag, the scale of the controlled map will be modified.
      * 
      * @param l MapBean.
      */
@@ -748,45 +733,43 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Get the ControlledMapSupport, which usually contains the source
-     * map.
+     * Get the ControlledMapSupport, which usually contains the source map.
      */
     public ControlledMapSupport getControlledMapListeners() {
         return listener;
     }
 
     /**
-     * Set the ControlledMapSupport, which usually contains the source
-     * map.
+     * Set the ControlledMapSupport, which usually contains the source map.
      */
     public void setControlledMapListeners(ControlledMapSupport list) {
         listener = list;
     }
 
     /**
-     * Get the status layer, which is always drawn on top of the other
-     * layers, and maintained separately from other layers.
+     * Get the status layer, which is always drawn on top of the other layers,
+     * and maintained separately from other layers.
      */
     public Layer getStatusLayer() {
         return statusLayer;
     }
 
     /**
-     * Get the status layer, which is always drawn on top of the other
-     * layers, and maintained separately from other layers. If the
-     * layer is also an OverviewMapStatusListener, it will receive
-     * source map projection changes, so it can draw stuff on itself
-     * representing what's going on the source map.
+     * Get the status layer, which is always drawn on top of the other layers,
+     * and maintained separately from other layers. If the layer is also an
+     * OverviewMapStatusListener, it will receive source map projection changes,
+     * so it can draw stuff on itself representing what's going on the source
+     * map.
      */
     public void setStatusLayer(Layer layer) {
         statusLayer = layer;
     }
 
     /**
-     * Set the scale factor to use between the source MapBean and the
-     * overview MapBean. It's a direct multiplier, so the overview
-     * MapBean can actually be a magnified map, too. The overview map
-     * scale = source MapBean scale * scaleFactor.
+     * Set the scale factor to use between the source MapBean and the overview
+     * MapBean. It's a direct multiplier, so the overview MapBean can actually
+     * be a magnified map, too. The overview map scale = source MapBean scale *
+     * scaleFactor.
      * 
      * @param setting scale factor
      */
@@ -802,9 +785,9 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Set the projection of the overview MapBean. Lets you set the
-     * type, really. The scale and center will be reset when a
-     * projection event is received.
+     * Set the projection of the overview MapBean. Lets you set the type,
+     * really. The scale and center will be reset when a projection event is
+     * received.
      */
     public void setProjection(Proj proj) {
         projection = proj;
@@ -818,9 +801,9 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Set the minimum scale to use for the overview map. If this is
-     * set too small with a very general map layer, it won't be of any
-     * use, really, if it gets really zoomed in.
+     * Set the minimum scale to use for the overview map. If this is set too
+     * small with a very general map layer, it won't be of any use, really, if
+     * it gets really zoomed in.
      * 
      * @param setting the scale setting - 1:setting
      */
@@ -835,8 +818,8 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Invoked when component has been shown. This component should be
-     * the component that contains the OverviewMapHandler.
+     * Invoked when component has been shown. This component should be the
+     * component that contains the OverviewMapHandler.
      */
     public void componentShown(ComponentEvent e) {
         if (sourceMap != null) {
@@ -845,8 +828,8 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Invoked when component has been hidden. This component should
-     * be the component that contains the OverviewMapHandler.
+     * Invoked when component has been hidden. This component should be the
+     * component that contains the OverviewMapHandler.
      */
     public void componentHidden(ComponentEvent e) {
         if (sourceMap != null) {
@@ -859,16 +842,27 @@ public class OverviewMapHandler extends OMToolComponent implements
     public void componentMoved(ComponentEvent e) {}
 
     /**
-     * Return an ActionListener that will bring up an independent
-     * window with an Overview Map.
+     * Return an ActionListener that will bring up an independent window with an
+     * Overview Map.
      * 
-     * @return ActionListener that brings up a Window when an
-     *         actionPerformed is called.
+     * @return ActionListener that brings up a Window when an actionPerformed is
+     *         called.
      */
     public ActionListener getOverviewFrameActionListener() {
         return new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 WindowSupport ws = getWindowSupport();
+
+                MapHandler mh = (MapHandler) getBeanContext();
+                Frame frame = null;
+                if (mh != null) {
+                    frame = (Frame) mh.get(java.awt.Frame.class);
+                }
+
+                if (ws == null) {
+                    ws = new WindowSupport(OverviewMapHandler.this, new WindowSupport.Dlg(frame, "Overview Map"));
+                    setWindowSupport(ws);
+                }
 
                 int w = INITIAL_WIDTH;
                 int h = INITIAL_HEIGHT;
@@ -878,22 +872,7 @@ public class OverviewMapHandler extends OMToolComponent implements
                     h = (int) dim.getHeight();
                 }
 
-                int x = 10;
-                int y = 10;
-
-                Point loc = ws.getComponentLocation();
-                if (loc != null) {
-                    x = (int) loc.getX();
-                    y = (int) loc.getY();
-                }
-
-                MapHandler mh = (MapHandler) getBeanContext();
-                Frame frame = null;
-                if (mh != null) {
-                    frame = (Frame) mh.get(java.awt.Frame.class);
-                }
-
-                ws.displayInWindow(frame, x, y, w, h);
+                ws.displayInWindow(frame, -1, -1, w, h);
             }
         };
     }
@@ -913,14 +892,14 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Called when the OverviewMapHandler is added to the BeanContext,
-     * and whenever an object is added to the BeanContext after that.
-     * The OverviewMapHandler looks for a MapBean to use as a source
-     * map, and for a PropertiesHandler object to use to load itself
-     * with layers and other properties. If a source MapBean is
-     * already set and another MapBean is found, the last MapBean will
-     * be used as the source MapBean. Every time a PropertyHandler is
-     * found, the OverviewMapHandler will reinitialize itself.
+     * Called when the OverviewMapHandler is added to the BeanContext, and
+     * whenever an object is added to the BeanContext after that. The
+     * OverviewMapHandler looks for a MapBean to use as a source map, and for a
+     * PropertiesHandler object to use to load itself with layers and other
+     * properties. If a source MapBean is already set and another MapBean is
+     * found, the last MapBean will be used as the source MapBean. Every time a
+     * PropertyHandler is found, the OverviewMapHandler will reinitialize
+     * itself.
      * 
      * @param someObj the object being added to the BeanContext
      */
@@ -945,8 +924,8 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * Support for directing the setCenter and setScale calls to any
-     * MapBeans that care to be listening.
+     * Support for directing the setCenter and setScale calls to any MapBeans
+     * that care to be listening.
      */
     public class ControlledMapSupport extends ProjectionSupport {
 
@@ -990,8 +969,8 @@ public class OverviewMapHandler extends OMToolComponent implements
     }
 
     /**
-     * PropertyChangeListener method, to listen for the source map's
-     * background changes. Act on if necessary.
+     * PropertyChangeListener method, to listen for the source map's background
+     * changes. Act on if necessary.
      */
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getPropertyName() == MapBean.BackgroundProperty
