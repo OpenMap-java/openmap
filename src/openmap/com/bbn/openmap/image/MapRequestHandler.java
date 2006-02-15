@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/MapRequestHandler.java,v $
 // $RCSfile: MapRequestHandler.java,v $
-// $Revision: 1.13 $
-// $Date: 2006/02/14 17:15:02 $
+// $Revision: 1.14 $
+// $Date: 2006/02/15 22:28:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -353,9 +353,12 @@ public class MapRequestHandler extends ImageServer implements
             Debug.message("imageserver", "Format requested " + format);
         }
 
-        if (Debug.debugging("imageserver")
-                && (format == null || formatFound == false)) {
-            Debug.output("MRH: no formatter defined, using default");
+        if (Debug.debugging("imageserver")) {
+            if (format == null || formatFound == false) {
+                Debug.output("MRH: no formatter defined, using default");
+            }
+            
+            Debug.output("Creating image with projection: " + projection);
         }
 
         byte[] image;
