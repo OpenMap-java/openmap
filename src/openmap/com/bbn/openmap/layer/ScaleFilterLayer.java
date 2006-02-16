@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleFilterLayer.java,v $
 // $RCSfile: ScaleFilterLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/08/11 21:34:55 $
+// $Revision: 1.12 $
+// $Date: 2006/02/16 22:18:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -263,7 +263,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
                 } else {
                     obj = Class.forName(className).newInstance();
                 }
-                if (Debug.debugging("ScaleFilterLayer")) {
+                if (Debug.debugging("scalefilterlayer")) {
                     Debug.output("ScaleFilterLayer.parseLayers(): Instantiated "
                             + className);
                 }
