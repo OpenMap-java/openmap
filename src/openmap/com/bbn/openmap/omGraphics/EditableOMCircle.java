@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMCircle.java,v $
 // $RCSfile: EditableOMCircle.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/02/16 16:22:47 $
+// $Revision: 1.10 $
+// $Date: 2006/02/16 16:25:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -367,11 +367,9 @@ public class EditableOMCircle extends EditableOMGraphic {
 
                 if (projection != null) {
                     LatLonPoint center = circle.getLatLon();
-                    Debug.output("setGrabPoints(OMCircle): centerpoint: " + center);
                     Point2D p = projection.forward(center);
                     centerx = (int) p.getX();
                     centery = (int) p.getY();
-                    Debug.output("setGrabPoints(OMCircle): centerpoint: " + center + ", centerX: " + centerx + ", centerY: " + centery);
                 }
                 if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
                     gpo.setX(centerx);
@@ -496,21 +494,15 @@ public class EditableOMCircle extends EditableOMGraphic {
                         llgp.getY(),
                         projection);
 
-//                circle.setLatLon(llp.getLatitude(), llp.getLongitude());
                 circle.setCenter(llp);
-
-                Debug.output("setGrabPoints(): centerpoint: " + llp);
                 
                 // Do the radius for LATLON circles.
                 if (renderType == OMGraphic.RENDERTYPE_LATLON
                         && movingPoint == gpr) {
-
-                    LatLonPoint llpm = new LatLonPoint();
-                    projection.inverse(gpr.getX(), gpr.getY(), llpm);
                                         
-//                    LatLonPoint llpm = LatLonPoint.getLatLon(gpr.getX(),
-//                            gpr.getY(),
-//                            projection);
+                    LatLonPoint llpm = LatLonPoint.getLatLon(gpr.getX(),
+                            gpr.getY(),
+                            projection);
 
                     float radius;
 
