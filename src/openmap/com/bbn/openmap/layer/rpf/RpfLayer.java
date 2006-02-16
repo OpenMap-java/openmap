@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.19 $
-// $Date: 2005/12/09 21:09:05 $
+// $Revision: 1.20 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,9 +23,9 @@
 package com.bbn.openmap.layer.rpf;
 
 /*  Java Core  */
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.Properties;
 import java.util.Vector;
@@ -671,8 +671,8 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
         if (!(projection instanceof CADRG)) {
             cadrgProj = new CADRG((LatLonPoint) projection.getCenter(new LatLonPoint.Float()), projection.getScale(), projection.getWidth(), projection.getHeight());
 
-            Point ulp = cadrgProj.forward(projection.getUpperLeft());
-            Point lrp = cadrgProj.forward(projection.getLowerRight());
+            Point2D ulp = cadrgProj.forward(projection.getUpperLeft());
+            Point2D lrp = cadrgProj.forward(projection.getLowerRight());
 
             int w = (int) Math.abs(lrp.getX() - ulp.getX());
             int h = (int) Math.abs(lrp.getY() - ulp.getY());

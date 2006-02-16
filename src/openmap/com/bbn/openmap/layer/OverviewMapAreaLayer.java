@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OverviewMapAreaLayer.java,v $
 // $RCSfile: OverviewMapAreaLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/12/09 21:09:08 $
+// $Revision: 1.6 $
+// $Date: 2006/02/16 16:22:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,10 +37,10 @@ import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.Projection;
 
 /**
- * A class used to draw the rectangle representing the area covered by
- * the source MapBean projection. Used by the OverviewMapHandler. The
- * layer responds to DrawingAttributes properties being set, which are
- * forwarded on to the coverage box rectangle.
+ * A class used to draw the rectangle representing the area covered by the
+ * source MapBean projection. Used by the OverviewMapHandler. The layer responds
+ * to DrawingAttributes properties being set, which are forwarded on to the
+ * coverage box rectangle.
  */
 public class OverviewMapAreaLayer extends Layer implements
         OverviewMapStatusListener {
@@ -67,8 +67,8 @@ public class OverviewMapAreaLayer extends Layer implements
         if (ul != null || lr != null) {
 
             if (proj instanceof Cylindrical) {
-                Point ulp = proj.forward(ul);
-                Point lrp = proj.forward(lr);
+                Point ulp = (Point) proj.forward(ul, new Point());
+                Point lrp = (Point) proj.forward(lr, new Point());
                 rectangle.setLocation(ulp.x, ulp.y, lrp.x, lrp.y);
                 rectangle.setLineType(OMGraphic.LINETYPE_STRAIGHT);
             } else {
@@ -87,9 +87,9 @@ public class OverviewMapAreaLayer extends Layer implements
     }
 
     /**
-     * Set with the projection of the source MapBean, before changing
-     * the projection of the overview MapBean. That way, the rectangle
-     * coordinates are set before they get generated().
+     * Set with the projection of the source MapBean, before changing the
+     * projection of the overview MapBean. That way, the rectangle coordinates
+     * are set before they get generated().
      */
     public void setSourceMapProjection(Projection proj) {
         ul = proj.getUpperLeft();

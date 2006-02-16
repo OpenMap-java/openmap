@@ -14,15 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Projection.java,v $
 // $RCSfile: Projection.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/12/09 21:09:01 $
+// $Revision: 1.7 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.proj;
 
-import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -160,7 +159,7 @@ public interface Projection extends java.io.Serializable {
      * Checks if a point is plot-able.
      * <p>
      * Call this to check and see if a point can be plotted. This is meant to be
-     * used for checking before projecting and rendering Point objects (bitmaps
+     * used for checking before projecting and rendering Point2D objects (bitmaps
      * or text objects tacked at a specific location, for instance).
      * 
      * @param point Point2D
@@ -172,7 +171,7 @@ public interface Projection extends java.io.Serializable {
      * Checks if a location is plot-able.
      * <p>
      * Call this to check and see if a location can be plotted. This is meant to
-     * be used for checking before projecting and rendering Point objects
+     * be used for checking before projecting and rendering Point2D objects
      * (bitmaps or text objects tacked at a location, for instance).
      * 
      * @param lat vertical location component (units depend on the projection
@@ -187,7 +186,7 @@ public interface Projection extends java.io.Serializable {
      * Checks if a location is plot-able.
      * <p>
      * Call this to check and see if a location can be plotted. This is meant to
-     * be used for checking before projecting and rendering Point objects
+     * be used for checking before projecting and rendering Point2D objects
      * (bitmaps or text objects tacked at a location, for instance).
      * 
      * @param lat vertical location component (units depend on the projection
@@ -202,20 +201,20 @@ public interface Projection extends java.io.Serializable {
      * Forward project a world coordinate into XY pixel space.
      * 
      * @param coord Point2D
-     * @return Point (new)
+     * @return Point2D (new)
      */
-    public Point forward(Point2D coord);
+    public Point2D forward(Point2D coord);
 
     /**
-     * Forward projects a world coordinate into XY space and return a Point.
+     * Forward projects a world coordinate into XY space and return a Point2D.
      * 
-     * @param llp LatLonPoint to be projected
-     * @param pt A Point object to load the result into, a new Point object will
+     * @param llp Point2D containing coordinates to be projected
+     * @param pt A Point2D object to load the result into, a new Point2D object will
      *        be created if this is null.
-     * @return Point The Point object provided (for convenience) or created with
+     * @return Point2D The Point2D object provided (for convenience) or created with
      *         the result.
      */
-    public Point forward(Point2D llp, Point pt);
+    public Point2D forward(Point2D llp, Point2D pt);
 
     /**
      * Forward project y, x world coordinates into xy space.
@@ -224,9 +223,9 @@ public interface Projection extends java.io.Serializable {
      *        implementation).
      * @param lon float horizontal location component (units depend on
      *        projection implementation).
-     * @return Point (new)
+     * @return Point2D (new)
      */
-    public Point forward(float lat, float lon);
+    public Point2D forward(float lat, float lon);
 
     /**
      * Forward project y, x world coordinates into xy space.
@@ -235,39 +234,39 @@ public interface Projection extends java.io.Serializable {
      *        implementation).
      * @param lon double horizontal location component (units depend on
      *        projection implementation).
-     * @return Point (new)
+     * @return Point2D (new)
      */
-    public Point forward(double lat, double lon);
+    public Point2D forward(double lat, double lon);
 
     /**
      * Forward projects y, x world coordinates into XY space and returns a
-     * Point.
+     * Point2D.
      * 
      * @param lat float vertical location component (units depend on projection
      *        implementation).
      * @param lon float horizontal location component (units depend on
      *        projection implementation).
-     * @param pt A Point object to load the result into, a new Point object will
+     * @param pt A Point2D object to load the result into, a new Point2D object will
      *        be created if this is null.
-     * @return Point The Point object provided (for convenience) or created with
+     * @return Point2D The Point2D object provided (for convenience) or created with
      *         the result.
      */
-    public Point forward(float lat, float lon, Point pt);
+    public Point2D forward(float lat, float lon, Point2D pt);
 
     /**
      * Forward projects y, x world coordinates into XY space and returns a
-     * Point.
+     * Point2D.
      * 
      * @param lat double vertical location component (units depend on projection
      *        implementation).
      * @param lon double horizontal location component (units depend on
      *        projection implementation).
-     * @param pt A Point object to load the result into, a new Point object will
+     * @param pt A Point2D object to load the result into, a new Point2D object will
      *        be created if this is null.
-     * @return Point The Point object provided (for convenience) or created with
+     * @return Point2D The Point2D object provided (for convenience) or created with
      *         the result.
      */
-    public Point forward(double lat, double lon, Point pt);
+    public Point2D forward(double lat, double lon, Point2D pt);
 
     /**
      * Forward project a shape defined with world coordinates into map x, y
@@ -279,22 +278,22 @@ public interface Projection extends java.io.Serializable {
     public Shape forwardShape(Shape shape);
 
     /**
-     * Inverse project a Point from map x/y space into world coordinates.
+     * Inverse project a Point2D from map x/y space into world coordinates.
      * 
-     * @param point XY Point
+     * @param point XY Point2D
      * @return Point2D (new)
      */
-    public Point2D inverse(Point point);
+    public Point2D inverse(Point2D point);
 
     /**
-     * Inverse project a Point from map x/y space into world coordinates.
+     * Inverse project a Point2D from map x/y space into world coordinates.
      * 
-     * @param point XY Point
+     * @param point XY Point2D
      * @param llpt resulting Point2D object to load the result into, a new
      *        Point2D object will be created if this is null.
      * @return Point2D Object containing result.
      */
-    public Point2D inverse(Point point, Point2D llpt);
+    public Point2D inverse(Point2D point2D, Point2D llpt);
 
     /**
      * Inverse project x,y coordinates into world coordinates.
@@ -303,7 +302,7 @@ public interface Projection extends java.io.Serializable {
      * @param y integer y coordinate
      * @return Point2D (new)
      */
-    public Point2D inverse(int x, int y);
+    public Point2D inverse(double x, double y);
 
     /**
      * Inverse project x,y coordinates into world coordinates.
@@ -313,9 +312,9 @@ public interface Projection extends java.io.Serializable {
      * @param llpt Point2D to be loaded with the result. A new Point2D object
      *        will be created if this is null.
      * @return Point2D llpt
-     * @see Proj#inverse(Point)
+     * @see Proj#inverse(Point2D)
      */
-    public Point2D inverse(int x, int y, Point2D llpt);
+    public Point2D inverse(double x, double y, Point2D llpt);
 
     /**
      * Pan the map/projection.
@@ -456,13 +455,13 @@ public interface Projection extends java.io.Serializable {
      * 
      * @param ll1 the upper left coordinates of the bounding box.
      * @param ll2 the lower right coordinates of the bounding box.
-     * @param point1 a java.awt.Point reflecting a pixel spot on the
+     * @param point1 a java.awt.geom.Point2D reflecting a pixel spot on the
      *        projection that matches the ll1 coordinate, the upper left corner
      *        of the area of interest.
-     * @param point2 a java.awt.Point reflecting a pixel spot on the
+     * @param point2 a java.awt.geom.Point2D reflecting a pixel spot on the
      *        projection that matches the ll2 coordinate, usually the lower
      *        right corner of the area of interest.
      */
-    public float getScale(Point2D ll1, Point2D ll2, Point point1, Point point2);
+    public float getScale(Point2D ll1, Point2D ll2, Point2D point1, Point2D point2);
 
 }

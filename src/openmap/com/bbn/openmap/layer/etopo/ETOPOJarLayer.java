@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/etopo/ETOPOJarLayer.java,v $
 // $RCSfile: ETOPOJarLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/12/09 21:09:10 $
+// $Revision: 1.7 $
+// $Date: 2006/02/16 16:22:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,7 +28,6 @@ package com.bbn.openmap.layer.etopo;
  * @author John Watts from nextjet.com: 
  */
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.io.BufferedInputStream;
 import java.io.EOFException;
@@ -201,8 +200,8 @@ public class ETOPOJarLayer extends ETOPOLayer {
                 Point2D lr = projection.getLowerRight();
 
                                 // set start/end indicies
-                Point ulp = projection.forward(ul);
-                Point lrp = projection.forward(lr);
+                Point2D ulp = projection.forward(ul);
+                Point2D lrp = projection.forward(lr);
                 sx = (int) ulp.getX();
                 ex = (int) lrp.getX();
                 sy = (int) ulp.getY();

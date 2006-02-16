@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/MercatorView.java,v $
 // $RCSfile: MercatorView.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/12/09 21:09:01 $
+// $Revision: 1.6 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -311,7 +311,7 @@ public class MercatorView extends Mercator {
             this.computeParameters();
         }
 
-        public void setAllParams(int hPixelsPerMeter, double hPlanetRadius,
+        public void setAllParams(double hPixelsPerMeter, double hPlanetRadius,
                                  double hPlanetPixelRadius,
                                  double hPlanetPixelCircumference,
                                  double hMinscale, double hMaxscale,

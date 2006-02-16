@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingRaster.java,v $
 // $RCSfile: OMScalingRaster.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/08/09 20:01:47 $
+// $Revision: 1.12 $
+// $Date: 2006/02/16 16:22:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,6 +28,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
@@ -226,8 +227,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
             return false;
         }
 
-        point1 = proj.forward(lat, lon);
-        point2 = proj.forward(lat2, lon2);
+        point1 = (Point) proj.forward(lat, lon, new Point());
+        point2 = (Point) proj.forward(lat2, lon2, new Point());
 
         setNeedToReposition(false);
         return true;
@@ -554,8 +555,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     }
 
     public boolean isOnMap(Projection proj) {
-        Point p1 = proj.forward(lat, lon);
-        Point p2 = proj.forward(lat2, lon2);
+        Point2D p1 = proj.forward(lat, lon);
+        Point2D p2 = proj.forward(lat2, lon2);
         int h = (int) (p2.getY() - p1.getY());
         int w = (int) (p2.getX() - p1.getX());
 

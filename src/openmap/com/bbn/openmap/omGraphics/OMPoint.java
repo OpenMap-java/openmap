@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoint.java,v $
 // $RCSfile: OMPoint.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/12/09 21:09:04 $
+// $Revision: 1.11 $
+// $Date: 2006/02/16 16:22:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -263,7 +263,7 @@ public class OMPoint extends OMGraphic implements Serializable {
                 setNeedToRegenerate(true);//HMMM not the best flag
                 return false;
             }
-            Point p1 = proj.forward(lat1, lon1);
+            Point p1 = (Point) proj.forward(lat1, lon1, new Point());
 
             x1 = p1.x + x - radius;
             y1 = p1.y + y - radius;

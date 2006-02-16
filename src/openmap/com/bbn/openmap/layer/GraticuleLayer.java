@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.14 $
-// $Date: 2005/12/09 21:09:08 $
+// $Revision: 1.15 $
+// $Date: 2006/02/16 16:22:49 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -28,6 +28,7 @@ package com.bbn.openmap.layer;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
@@ -54,57 +55,56 @@ import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * Layer that draws graticule lines. If the showRuler property is set
- * to true, then longitude values are displayed on the bottom of the
- * map, and latitude values are displayed on the left side. If the
- * show1And5Lines property is true, then 5 degree lines are drawn when
- * there are &lt;= threshold ten degree latitude or longitude lines,
- * and 1 degree lines are drawn when there are &lt;= threshold five
- * degree latitude or longitude degree lines.
+ * Layer that draws graticule lines. If the showRuler property is set to true,
+ * then longitude values are displayed on the bottom of the map, and latitude
+ * values are displayed on the left side. If the show1And5Lines property is
+ * true, then 5 degree lines are drawn when there are &lt;= threshold ten degree
+ * latitude or longitude lines, and 1 degree lines are drawn when there are
+ * &lt;= threshold five degree latitude or longitude degree lines.
  * 
  * <P>
- * The openmap.properties file can control the layer with the
- * following settings: <code><pre>
- * 
+ * The openmap.properties file can control the layer with the following
+ * settings: <code><pre>
  *  
- *   # Show lat / lon spacing labels
- *   graticule.showRuler=true
- *   graticule.show1And5Lines=true
- *   # Controls when the five degree lines and one degree lines kick in
- *   #- when there is less than the threshold of ten degree lat or lon
- *   #lines, five degree lines are drawn. The same relationship is there
- *   #for one to five degree lines.
- *   graticule.threshold=2
- *   # the color of 10 degree spacing lines (Hex ARGB)
- *   graticule.10DegreeColor=FF000000
- *   # the color of 5 degree spacing lines (Hex ARGB)
- *   graticule.5DegreeColor=C7009900
- *   # the color of 1 degree spacing lines (Hex ARGB)
- *   graticule.1DegreeColor=C7003300
- *   # the color of the equator (Hex ARGB)
- *   graticule.equatorColor=FFFF0000
- *   # the color of the international dateline (Hex ARGB)
- *   graticule.datelineColor=7F000099
- *   # the color of the special lines (Hex ARGB)
- *   graticule.specialLineColor=FF000000
- *   # the color of the labels (Hex ARGB)
- *   graticule.textColor=FF000000
  *   
- *  
- * </pre></code> In addition, you can get this layer to work with the
- * OpenMap viewer by editing your openmap.properties file: <code><pre>
- * 
- *  
- *   # layers
- *   openmap.layers=graticule ...
- *   # class
- *   graticule.class=com.bbn.openmap.layer.GraticuleLayer
- *   # name
- *   graticule.prettyName=Graticule
+ *    # Show lat / lon spacing labels
+ *    graticule.showRuler=true
+ *    graticule.show1And5Lines=true
+ *    # Controls when the five degree lines and one degree lines kick in
+ *    #- when there is less than the threshold of ten degree lat or lon
+ *    #lines, five degree lines are drawn. The same relationship is there
+ *    #for one to five degree lines.
+ *    graticule.threshold=2
+ *    # the color of 10 degree spacing lines (Hex ARGB)
+ *    graticule.10DegreeColor=FF000000
+ *    # the color of 5 degree spacing lines (Hex ARGB)
+ *    graticule.5DegreeColor=C7009900
+ *    # the color of 1 degree spacing lines (Hex ARGB)
+ *    graticule.1DegreeColor=C7003300
+ *    # the color of the equator (Hex ARGB)
+ *    graticule.equatorColor=FFFF0000
+ *    # the color of the international dateline (Hex ARGB)
+ *    graticule.datelineColor=7F000099
+ *    # the color of the special lines (Hex ARGB)
+ *    graticule.specialLineColor=FF000000
+ *    # the color of the labels (Hex ARGB)
+ *    graticule.textColor=FF000000
+ *    
  *   
+ * </pre></code> In addition, you can get this layer to work with the OpenMap viewer
+ * by editing your openmap.properties file: <code><pre>
  *  
+ *   
+ *    # layers
+ *    openmap.layers=graticule ...
+ *    # class
+ *    graticule.class=com.bbn.openmap.layer.GraticuleLayer
+ *    # name
+ *    graticule.prettyName=Graticule
+ *    
+ *   
  * </pre></code>
- *  
+ * 
  */
 public class GraticuleLayer extends OMGraphicHandlerLayer implements
         ActionListener {
@@ -123,9 +123,9 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
      */
     protected boolean boxy = true;
     /**
-     * Threshold is the total number of ten lines on the screen before
-     * the five lines appear, and the total number of five lines on
-     * the screen before the one lines appear.
+     * Threshold is the total number of ten lines on the screen before the five
+     * lines appear, and the total number of five lines on the screen before the
+     * one lines appear.
      */
     protected int threshold = defaultThreshold;
     /** The ten degree latitude and longitude lines, premade. */
@@ -180,7 +180,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     public static final String ShowRulerProperty = "showRuler";
     public static final String ShowOneAndFiveProperty = "show1And5Lines";
     public static final String ShowBelowOneProperty = "showBelow1Lines";
-    public static final String FontSizeProperty = "fontSize"; //DNA
+    public static final String FontSizeProperty = "fontSize"; // DNA
 
     /**
      * Construct the GraticuleLayer.
@@ -192,11 +192,10 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * The properties and prefix are managed and decoded here, for the
-     * standard uses of the GraticuleLayer.
+     * The properties and prefix are managed and decoded here, for the standard
+     * uses of the GraticuleLayer.
      * 
-     * @param prefix string prefix used in the properties file for
-     *        this layer.
+     * @param prefix string prefix used in the properties file for this layer.
      * @param properties the properties set in the properties file.
      */
     public void setProperties(String prefix, java.util.Properties properties) {
@@ -290,8 +289,8 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * The properties and prefix are managed and decoded here, for the
-     * standard uses of the GraticuleLayer.
+     * The properties and prefix are managed and decoded here, for the standard
+     * uses of the GraticuleLayer.
      * 
      * @param properties the properties set in the properties file.
      */
@@ -358,7 +357,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         properties.put(prefix + TextColorProperty, colorString);
 
         properties.put(prefix + ThresholdProperty, Integer.toString(threshold));
-        properties.put(prefix + FontSizeProperty, Integer.toString(fontSize)); //DNA
+        properties.put(prefix + FontSizeProperty, Integer.toString(fontSize)); // DNA
 
         properties.put(prefix + ShowOneAndFiveProperty,
                 new Boolean(showOneAndFiveLines).toString());
@@ -373,8 +372,8 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * The properties and prefix are managed and decoded here, for the
-     * standard uses of the GraticuleLayer.
+     * The properties and prefix are managed and decoded here, for the standard
+     * uses of the GraticuleLayer.
      * 
      * @param properties the properties set in the properties file.
      */
@@ -383,7 +382,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         String interString;
         properties.put(initPropertiesProperty, TenDegreeColorProperty + " "
                 + FiveDegreeColorProperty + " " + OneDegreeColorProperty + " "
-                + /*BelowOneDegreeColorProperty + " " + */ EquatorColorProperty
+                + /* BelowOneDegreeColorProperty + " " + */EquatorColorProperty
                 + " " + DateLineColorProperty + " " + SpecialLineColorProperty
                 + " " + ShowOneAndFiveProperty /* + " " + ShowBelowOneProperty */
                 + " " + ShowRulerProperty + " " + ThresholdProperty + " "
@@ -540,7 +539,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         properties.put(ShowRulerProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
 
-        //DNA
+        // DNA
         interString = i18n.get(GraticuleLayer.class,
                 FontSizeProperty,
                 I18n.TOOLTIP,
@@ -550,7 +549,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 FontSizeProperty,
                 "Label Font Size");
         properties.put(FontSizeProperty + LabelEditorProperty, interString);
-        //DNA
+        // DNA
         return properties;
     }
 
@@ -576,14 +575,14 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Invoked when the projection has changed or this Layer has been
-     * added to the MapBean.
+     * Invoked when the projection has changed or this Layer has been added to
+     * the MapBean.
      * <p>
-     * Perform some extra checks to see if reprojection of the
-     * graphics is really necessary.
+     * Perform some extra checks to see if reprojection of the graphics is
+     * really necessary.
      * 
      * @param e ProjectionEvent
-     *  
+     * 
      */
     public void projectionChanged(ProjectionEvent e) {
 
@@ -620,12 +619,11 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
      * <p>
      * NOTES:
      * <ul>
-     * <li>Currently graticule lines are hardcoded to 10 degree
-     * intervals.
-     * <li>No thought has been given to clipping based on the view
-     * rectangle. For non-boxy projections performance may be degraded
-     * at very large scales. (But we make up for this by running the
-     * task in its own thread to support liveness).
+     * <li>Currently graticule lines are hardcoded to 10 degree intervals.
+     * <li>No thought has been given to clipping based on the view rectangle.
+     * For non-boxy projections performance may be degraded at very large
+     * scales. (But we make up for this by running the task in its own thread to
+     * support liveness).
      * </ul>
      * 
      * @return OMGraphicList new graphic list
@@ -645,11 +643,11 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
             Point2D ul = projection.getUpperLeft();
             Point2D lr = projection.getLowerRight();
-            
-            float left = (float)ul.getX();
-            float right = (float)lr.getX();
-            float up = (float)ul.getY();
-            float down = (float)lr.getY();
+
+            float left = (float) ul.getX();
+            float right = (float) lr.getX();
+            float up = (float) ul.getY();
+            float down = (float) lr.getY();
 
             if (up > 80.0f)
                 up = 80.0f;
@@ -747,20 +745,19 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Figure out which graticule lines should be drawn based on the
-     * treshold set in the layer, and the coordinates of the screen.
-     * Method checks for crossing of the dateline, but still assumes
-     * that the up and down latitude coordinates are less than
-     * abs(+/-80). This is because the projection shouldn't give
-     * anything above 90 degrees, and we limit the lines to less than
-     * 80..
+     * Figure out which graticule lines should be drawn based on the treshold
+     * set in the layer, and the coordinates of the screen. Method checks for
+     * crossing of the dateline, but still assumes that the up and down latitude
+     * coordinates are less than abs(+/-80). This is because the projection
+     * shouldn't give anything above 90 degrees, and we limit the lines to less
+     * than 80..
      * 
      * @param up northern latitude corrdinate, in decimal degrees,
      * @param down southern latitude coordinate, in decimal degrees.
      * @param left western longitude coordinate, in decimal degrees,
      * @param right eastern longitude coordinate, in decimal degrees.
-     * @return which lines should be shown, either SHOW_TENS,
-     *         SHOW_FIVES and SHOW_ONES.
+     * @return which lines should be shown, either SHOW_TENS, SHOW_FIVES and
+     *         SHOW_ONES.
      */
     protected int evaluateSpacing(float up, float down, float left, float right) {
         int ret = SHOW_TENS;
@@ -799,19 +796,18 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Construct the five degree and one degree graticule lines,
-     * depending on the showWhichLines setting. Assumes that the
-     * coordinates passed in do not cross the dateline, and that the
-     * up is not greater than 80 and that the south is not less than
-     * -80.
+     * Construct the five degree and one degree graticule lines, depending on
+     * the showWhichLines setting. Assumes that the coordinates passed in do not
+     * cross the dateline, and that the up is not greater than 80 and that the
+     * south is not less than -80.
      * 
      * @param up northern latitude corrdinate, in decimal degrees,
      * @param down southern latitude coordinate, in decimal degrees.
      * @param left western longitude coordinate, in decimal degrees,
      * @param right eastern longitude coordinate, in decimal degrees.
-     * @param showWhichLines indicator for which level of lines should
-     *        be included, either SHOW_FIVES or SHOW_ONES. SHOW_TENS
-     *        could be there, too, but then we wouldn't do anything.
+     * @param showWhichLines indicator for which level of lines should be
+     *        included, either SHOW_FIVES or SHOW_ONES. SHOW_TENS could be
+     *        there, too, but then we wouldn't do anything.
      */
     protected OMGraphicList constructGraticuleLines(float up, float down,
                                                     float left, float right,
@@ -850,7 +846,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         OMText currentText;
 
         // For calculating text locations
-        java.awt.Point point;
+        Point point = new Point();
         LatLonPoint llpoint;
 
         Projection projection = getProjection();
@@ -889,12 +885,14 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
             if (showRuler && (lat % 2) == 0) {
                 if (boxy) {
-                    point = projection.forward(lat, west);
+                    projection.forward(lat, west, point);
                     point.x = 0;
-                    llpoint = LatLonPoint.getLatLon(point.x, point.y, projection);
+                    llpoint = LatLonPoint.getLatLon(point.x,
+                            point.y,
+                            projection);
                 } else {
                     llpoint = new LatLonPoint(lat, west);
-                    while (projection.forward(llpoint).x < 0) {
+                    while (projection.forward(llpoint).getX() < 0) {
                         llpoint.setLongitude(llpoint.getLongitude() + stepSize);
                     }
                 }
@@ -938,12 +936,14 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
             if (showRuler && (lon % 2) == 0) {
                 if (boxy) {
-                    point = projection.forward(south, lon);
+                    projection.forward(south, lon, point);
                     point.y = projection.getHeight();
-                    llpoint = LatLonPoint.getLatLon(point.x, point.y, projection);
+                    llpoint = LatLonPoint.getLatLon(point.x,
+                            point.y,
+                            projection);
                 } else {
                     llpoint = new LatLonPoint(south, lon);
-                    while (projection.forward(llpoint).y > projection.getHeight()) {
+                    while (projection.forward(llpoint).getY() > projection.getHeight()) {
                         llpoint.setLatitude(llpoint.getLatitude() + stepSize);
                     }
                 }
@@ -991,7 +991,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         for (int i = 1; i < 18; i++) {
             for (int j = -1; j < 2; j += 2) {
                 float lon = (float) (10 * i * j);
-                //not quite 90.0 for beautification reasons.
+                // not quite 90.0 for beautification reasons.
                 float[] llp = { 80f, lon, 0f, lon, -80f, lon };
                 if (MoreMath.approximately_equal(Math.abs(lon), 90f, 0.001f)) {
                     llp[0] = 90f;
@@ -1013,10 +1013,9 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Constructs the labels for the tens lines. Called from within
-     * the constructGraticuleLines if the showRuler variable is true.
-     * Usually called only if the ones and fives lines are not being
-     * drawn.
+     * Constructs the labels for the tens lines. Called from within the
+     * constructGraticuleLines if the showRuler variable is true. Usually called
+     * only if the ones and fives lines are not being drawn.
      * 
      * @param up northern latitude corrdinate, in decimal degrees,
      * @param down southern latitude coordinate, in decimal degrees.
@@ -1059,7 +1058,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         OMText currentText;
 
         // For calculating text locations
-        java.awt.Point point;
+        Point point = new Point();
         LatLonPoint llpoint;
         Projection projection = getProjection();
 
@@ -1072,12 +1071,14 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
                 if ((lat % 2) == 0) {
                     if (boxy) {
-                        point = projection.forward(lat, west);
+                        projection.forward(lat, west, point);
                         point.x = 0;
-                        llpoint = LatLonPoint.getLatLon(point.x, point.y, projection);
+                        llpoint = LatLonPoint.getLatLon(point.x,
+                                point.y,
+                                projection);
                     } else {
                         llpoint = new LatLonPoint(lat, west);
-                        while (projection.forward(llpoint).x < 0) {
+                        while (projection.forward(llpoint).getX() < 0) {
                             llpoint.setLongitude(llpoint.getLongitude()
                                     + stepSize);
                         }
@@ -1100,12 +1101,14 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
             if ((lon % 2) == 0) {
                 if (boxy) {
-                    point = projection.forward(south, lon);
+                    projection.forward(south, lon, point);
                     point.y = projection.getHeight();
-                    llpoint = LatLonPoint.getLatLon(point.x, point.y, projection);
+                    llpoint = LatLonPoint.getLatLon(point.x,
+                            point.y,
+                            projection);
                 } else {
                     llpoint = new LatLonPoint(south, lon);
-                    while (projection.forward(llpoint).y > projection.getHeight()) {
+                    while (projection.forward(llpoint).getY() > projection.getHeight()) {
                         llpoint.setLatitude(llpoint.getLatitude() + stepSize);
                     }
                 }
@@ -1160,9 +1163,8 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Take a graphic list, and set all the items on the list to the
-     * line type specified, and project them into the current
-     * projection.
+     * Take a graphic list, and set all the items on the list to the line type
+     * specified, and project them into the current projection.
      * 
      * @param list the list containing the lines to change.
      * @param lineType the line type to cahnge the lines to.
@@ -1177,9 +1179,9 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         }
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // GUI
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /** The user interface palette for the DTED layer. */
     protected Box palette = null;
@@ -1226,15 +1228,15 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
             show15Button.addActionListener(al);
             show15Button.setActionCommand(ShowOneAndFiveProperty);
 
-//            showBelow1Button = new JCheckBox(i18n.get(GraticuleLayer.class,
-//                    "showSub1Button",
-//                    "Show Sub-1 Degree Lines"), showBelowOneLines);
-//            showBelow1Button.addActionListener(al);
-//            showBelow1Button.setActionCommand(ShowBelowOneProperty);
+            // showBelow1Button = new JCheckBox(i18n.get(GraticuleLayer.class,
+            // "showSub1Button",
+            // "Show Sub-1 Degree Lines"), showBelowOneLines);
+            // showBelow1Button.addActionListener(al);
+            // showBelow1Button.setActionCommand(ShowBelowOneProperty);
 
             layerPanel.add(showRulerButton);
             layerPanel.add(show15Button);
-//            layerPanel.add(showBelow1Button);
+            // layerPanel.add(showBelow1Button);
             palette.add(layerPanel);
 
             JPanel subbox3 = new JPanel(new GridLayout(0, 1));
@@ -1257,10 +1259,10 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         return palette;
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     // ActionListener interface implementation
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /**
      * Used just for the redraw button.
@@ -1270,7 +1272,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         String command = e.getActionCommand();
 
         if (command == RedrawCmd) {
-            //redrawbutton
+            // redrawbutton
             if (isVisible()) {
                 doPrepare();
             }
@@ -1278,4 +1280,3 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     }
 
 }
-

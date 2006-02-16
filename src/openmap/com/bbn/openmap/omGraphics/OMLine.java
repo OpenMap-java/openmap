@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMLine.java,v $
 // $RCSfile: OMLine.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/12/09 21:09:03 $
+// $Revision: 1.13 $
+// $Date: 2006/02/16 16:22:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -316,7 +316,7 @@ public class OMLine extends OMAbstractLine implements Serializable {
                 setNeedToRegenerate(true);// HMMM not the best flag
                 return false;
             }
-            Point p1 = proj.forward(latlons[0], latlons[1]);
+            Point p1 = (Point) proj.forward(latlons[0], latlons[1], new Point());
             if (arc != null) {
                 xpoints = new int[1][];
                 ypoints = new int[1][];
@@ -338,8 +338,8 @@ public class OMLine extends OMAbstractLine implements Serializable {
             break;
         case RENDERTYPE_LATLON:
             if (arc != null) {
-                p1 = proj.forward(latlons[0], latlons[1]);
-                Point p2 = proj.forward(latlons[2], latlons[3]);
+                p1 = (Point) proj.forward(latlons[0], latlons[1], new Point());
+                Point p2 = (Point) proj.forward(latlons[2], latlons[3], new Point());
                 xpoints = new int[1][];
                 ypoints = new int[1][];
                 arc.generate(p1.x, p1.y, p2.x, p2.y);

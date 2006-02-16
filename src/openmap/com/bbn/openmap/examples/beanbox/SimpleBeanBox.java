@@ -309,7 +309,7 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
             if (obj instanceof SimpleBeanContainer)
                 continue;
 
-            Point p2 = layer.getProjection()
+            Point2D p2 = layer.getProjection()
                     .forward(new LatLonPoint.Float(obj.getLatitude(), obj.getLongitude()));
 
             double sep = almostEquals(pointOnMap, p2, 20);
@@ -353,10 +353,10 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
      * specified tolerance amount, else returns Double.MAX_VALUE
      */
 
-    double almostEquals(Point p1, Point p2, double tol) {
+    double almostEquals(Point2D p1, Point2D p2, double tol) {
 
-        int sepX = p1.x - p2.x;
-        int sepY = p1.y - p2.y;
+        double sepX = p1.getX() - p2.getX();
+        double sepY = p1.getY() - p2.getY();
         double sep = Math.sqrt(sepX * sepX + sepY * sepY);
 
         if (sep <= tol)
@@ -364,7 +364,7 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
         else
             return Double.MAX_VALUE;
     }
-
+    
     /**
      * relocates the specified bean to the new location. This method
      * is called by the

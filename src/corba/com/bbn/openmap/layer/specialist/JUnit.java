@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JUnit.java,v
 // $
 // $RCSfile: JUnit.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:36 $
+// $Revision: 1.4 $
+// $Date: 2006/02/16 16:22:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -71,12 +71,12 @@ public class JUnit extends OMGraphic implements ImageObserver, JObjectHolder {
             point1 = new Point(eunit.p1.x, eunit.p1.y);
             break;
         case RENDERTYPE_OFFSET:
-            point1 = proj.forward(eunit.ll1.lat, eunit.ll1.lon);
+            point1 = (Point) proj.forward(eunit.ll1.lat, eunit.ll1.lon, new Point());
             point1.x += eunit.p1.x;
             point1.y += eunit.p1.y;
             break;
         case RENDERTYPE_LATLON:
-            point1 = proj.forward(eunit.ll1.lat, eunit.ll1.lon);
+            point1 = (Point) proj.forward(eunit.ll1.lat, eunit.ll1.lon, new Point());
             break;
         case RENDERTYPE_UNKNOWN:
             System.err.println("JUnit.generate: invalid RenderType");

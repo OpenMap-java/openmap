@@ -4,8 +4,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LambertConformal.java,v $
 // $RCSfile: LambertConformal.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/12/09 21:09:01 $
+// $Revision: 1.6 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -46,8 +46,8 @@ public class LambertConformal extends GeoProj {
 
     protected transient double lambert_lamn;
     protected transient double lambert_lamf;
-    protected transient int locationCenterXPixel = 0;
-    protected transient int locationCenterYPixel = 0;
+    protected transient double locationCenterXPixel = 0;
+    protected transient double locationCenterYPixel = 0;
     protected transient double locationCenterXLambert = 0.0;
     protected transient double locationCenterYLambert = 0.0;
     protected transient double locationPixelsPerLambert = 0.0;
@@ -150,8 +150,8 @@ public class LambertConformal extends GeoProj {
                 / (lambert_lamn * Math.pow(Math.tan(angle_sp_one / 2.0),
                         lambert_lamn));
 
-        locationCenterXPixel = (int) ((float) getWidth() / 2.0 + .5);
-        locationCenterYPixel = (int) ((float) getHeight() / 2.0 + .5);
+        locationCenterXPixel = (double) getWidth() / 2.0 + .5;
+        locationCenterYPixel = (double) getHeight() / 2.0 + .5;
 
         // Multiply by the cosmological constant of 100 to adjust
         // pixels per lambert
@@ -268,7 +268,7 @@ public class LambertConformal extends GeoProj {
      *               coordinate. 
      *--------------------------------------------------------------------------*/
 
-    public Point LLToPixel(double lat, double lon, Point p) {
+    public Point2D LLToPixel(double lat, double lon, Point2D p) {
         Point2D lp = new Point2D.Double();
 
         LLToWorld(lat, lon, lp);
@@ -279,9 +279,8 @@ public class LambertConformal extends GeoProj {
         xrel = locationCenterXPixel + (xrel * locationPixelsPerLambert) + .5;
         yrel = locationCenterYPixel + (yrel * locationPixelsPerLambert) + .5;
         if (p == null)
-            p = new Point();
-        p.x = (int) xrel;
-        p.y = (int) yrel;
+            p = new Point2D.Double();
+        p.setLocation(xrel, yrel);
 
         return p;
     } /* end of function LLToPixel */
@@ -320,7 +319,7 @@ public class LambertConformal extends GeoProj {
      * DESCRIPTION:  This function converts pixel coordinate into lat, lon
      *               coordinate. 
      *--------------------------------------------------------------------------*/
-    public Point2D pixelToLL(int xabs, int yabs, Point2D llp) {
+    public Point2D pixelToLL(double xabs, double yabs, Point2D llp) {
 
         double x = locationCenterXLambert
                 + (((int) xabs - locationCenterXPixel) / locationPixelsPerLambert);
@@ -332,7 +331,7 @@ public class LambertConformal extends GeoProj {
         return llp;
     } /* end of function pixelToLL */
 
-    protected Point plotablePoint = new Point();
+    protected Point2D plotablePoint = new Point2D.Double();
 
     /**
      * Determine if the location is plotable on the screen. The
@@ -354,8 +353,8 @@ public class LambertConformal extends GeoProj {
         if (lat < -55)
             return false;
         forward(lat, lon, plotablePoint);
-        if (plotablePoint.x >= 0 && plotablePoint.x < this.width
-                && plotablePoint.y >= 0 && plotablePoint.y < height) {
+        if (plotablePoint.getX() >= 0 && plotablePoint.getX() < this.width
+                && plotablePoint.getY() >= 0 && plotablePoint.getY() < height) {
             return true;
         }
         return false;
@@ -372,16 +371,16 @@ public class LambertConformal extends GeoProj {
     }
 
     /**
-     * Forward projects lat,lon into XY space and returns a Point.
+     * Forward projects lat,lon into XY space and returns a Point2D.
      * <p>
      * 
-     * @return Point p
+     * @return Point2D p
      * @param lat latitude
      * @param lon longitude
-     * @param p Resulting XY Point
+     * @param p Resulting XY Point2D
      * @param isRadian indicates that lat,lon arguments are in radians
      */
-    public Point forward(double lat, double lon, Point p, boolean isRadian) {
+    public Point2D forward(double lat, double lon, Point2D p, boolean isRadian) {
 
         // Figure out the point for screen coordinates. Need to take
         // into account that the origin point of the projection may be
@@ -406,7 +405,7 @@ public class LambertConformal extends GeoProj {
      * @return LatLonPoint llp
      * @see Proj#inverse(Point)
      */
-    public Point2D inverse(int x, int y, Point2D llp) {
+    public Point2D inverse(double x, double y, Point2D llp) {
         if (llp == null) {
             llp = new LatLonPoint.Float();
         }
@@ -577,7 +576,7 @@ public class LambertConformal extends GeoProj {
         // forward project the points
         for (i = 0, j = 0; i < len; i++, j += 2) {
 
-            temp = forward(rawllpts[j], rawllpts[j + 1], temp, true);
+            forward(rawllpts[j], rawllpts[j + 1], temp, true);
             xs[i] = temp.x;
             ys[i] = temp.y;
         }
@@ -626,7 +625,7 @@ public class LambertConformal extends GeoProj {
         // forward project the points
         for (i = 0, j = 0; i < len; i++, j += 2) {
 
-            temp = forward(rawllpts[j], rawllpts[j + 1], temp, true);
+            forward(rawllpts[j], rawllpts[j + 1], temp, true);
             xs[i] = temp.x;
             ys[i] = temp.y;
         }

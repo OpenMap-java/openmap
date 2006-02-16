@@ -14,15 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LLXY.java,v $
 // $RCSfile: LLXY.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/12/09 21:09:01 $
+// $Revision: 1.9 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.proj;
 
-import java.awt.Point;
 import java.awt.geom.Point2D;
 
 import com.bbn.openmap.proj.coords.LatLonPoint;
@@ -144,16 +143,16 @@ public class LLXY extends Cylindrical implements EqualArc {
     }
 
     /**
-     * Forward projects lat,lon into XY space and returns a Point.
+     * Forward projects lat,lon into XY space and returns a Point2D.
      * 
      * @param lat float latitude in radians
      * @param lon float longitude in radians
-     * @param p Resulting XY Point
+     * @param p Resulting XY Point2D
      * @param isRadian bogus argument indicating that lat,lon
      *        arguments are in radians
-     * @return Point p
+     * @return Point2D p
      */
-    public Point forward(double lat, double lon, Point p, boolean isRadian) {
+    public Point2D forward(double lat, double lon, Point2D p, boolean isRadian) {
         if (isRadian) {
             lat = Math.toDegrees(normalize_latitude(lat));
             lon = Math.toDegrees(lon);
@@ -163,16 +162,18 @@ public class LLXY extends Cylindrical implements EqualArc {
 
         double newLon = Math.toDegrees(wrap_longitude(Math.toRadians(lon - cLon)));
 
-        p.x = wx + (int) Math.round(newLon * ppd);
-        p.y = hy - (int) Math.round((lat - cLat) * ppd);
+        double x = wx + Math.round(newLon * ppd);
+        double y = hy - Math.round((lat - cLat) * ppd);
 
         if (Debug.debugging("llxydetail")) {
             Debug.output("LLXY.forward(lon:" + ProjMath.radToDeg(lon)
                     + ", lat:" + ProjMath.radToDeg(lat) + " isRadian:"
                     + isRadian + ")");
-            Debug.output("LLXY.forward   x:" + p.x + ", y:" + p.y + " scale: "
+            Debug.output("LLXY.forward   x:" + x + ", y:" + y + " scale: "
                     + (float) scale);
         }
+        
+        p.setLocation(x, y);
         return p;
     }
 
@@ -183,9 +184,9 @@ public class LLXY extends Cylindrical implements EqualArc {
      * @param y integer y coordinate
      * @param llp LatLonPoint
      * @return LatLonPoint llp
-     * @see Proj#inverse(Point)
+     * @see Proj#inverse(Point2D)
      */
-    public Point2D inverse(int x, int y, Point2D llp) {
+    public Point2D inverse(double x, double y, Point2D llp) {
 
         // convert from screen to world coordinates, and then
         // basically undo the math from the forward method.

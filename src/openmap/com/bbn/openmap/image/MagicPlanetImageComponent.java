@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: MagicPlanetImageComponent.java,v $
-//$Revision: 1.5 $
-//$Date: 2005/08/11 20:39:16 $
+//$Revision: 1.6 $
+//$Date: 2006/02/16 16:22:49 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -25,9 +25,9 @@
 package com.bbn.openmap.image;
 
 import java.awt.Paint;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -903,8 +903,8 @@ public class MagicPlanetImageComponent extends OMComponent implements
 
 		LatLonPoint center = new LatLonPoint();
 		LLXY llxy = new LLXY(center, scale, 2000, 1000);
-		Point p1 = llxy.forward(90f, -180f);
-		Point p2 = llxy.forward(-90f, 180f);
+		Point2D p1 = llxy.forward(90f, -180f);
+		Point2D p2 = llxy.forward(-90f, 180f);
 
 		int w = (int) (p2.getX() - p1.getX());
 		int h = (int) (p2.getY() - p1.getY());

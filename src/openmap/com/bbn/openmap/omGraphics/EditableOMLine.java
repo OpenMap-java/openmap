@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMLine.java,v $
 // $RCSfile: EditableOMLine.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/12/09 21:09:03 $
+// $Revision: 1.10 $
+// $Date: 2006/02/16 16:22:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,7 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.layer.util.stateMachine.State;
@@ -232,7 +233,7 @@ public class EditableOMLine extends EditableOMAbstractLine {
                 if (projection != null) {
 
                     float[] ll = line.getLL();
-                    java.awt.Point p = projection.forward(ll[0], ll[1]);
+                    Point2D p = projection.forward(ll[0], ll[1]);
                     gp1.set((int) p.getX(), (int) p.getY());
 
                     projection.forward(ll[2], ll[3], p);
@@ -255,7 +256,7 @@ public class EditableOMLine extends EditableOMAbstractLine {
                     && projection != null) {
 
                 float[] ll = line.getLL();
-                java.awt.Point p = projection.forward(ll[0], ll[1]);
+                Point2D p = projection.forward(ll[0], ll[1]);
 
                 gpo.set((int) p.getX(), (int) p.getY());
                 gpo.updateOffsets();

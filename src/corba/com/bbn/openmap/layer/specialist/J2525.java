@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/J2525.java,v
 // $
 // $RCSfile: J2525.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:36 $
+// $Revision: 1.4 $
+// $Date: 2006/02/16 16:22:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,7 +65,7 @@ public class J2525 extends OMGraphic implements JObjectHolder {
         case RENDERTYPE_OFFSET:
             break;
         case RENDERTYPE_LATLON:
-            point1 = proj.forward(e2525.ll1.lat, e2525.ll1.lon);
+            point1 = (Point) proj.forward(e2525.ll1.lat, e2525.ll1.lon, new Point());
 
             // I'm cheating and forcing all 2525 symbols to be
             // represented by a

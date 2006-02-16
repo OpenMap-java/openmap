@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/etopo/ETOPOLayer.java,v $
 // $RCSfile: ETOPOLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/12/09 21:09:10 $
+// $Revision: 1.10 $
+// $Date: 2006/02/16 16:22:48 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -25,7 +25,6 @@ package com.bbn.openmap.layer.etopo;
 /*  Java Core  */
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
@@ -549,8 +548,8 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
                 Point2D lr = projection.getLowerRight();
 
                 // set start/end indicies
-                Point ulp = projection.forward(ul);
-                Point lrp = projection.forward(lr);
+                Point2D ulp = projection.forward(ul);
+                Point2D lrp = projection.forward(lr);
                 sx = (int) ulp.getX();
                 ex = (int) lrp.getX();
                 sy = (int) ulp.getY();

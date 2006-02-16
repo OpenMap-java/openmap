@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/OrthographicView.java,v $
 // $RCSfile: OrthographicView.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/12/09 21:09:02 $
+// $Revision: 1.8 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -288,7 +288,7 @@ public class OrthographicView extends Orthographic {
             this.computeParameters();
         }
 
-        public void setAllParams(int hPixelsPerMeter, double hPlanetRadius,
+        public void setAllParams(double hPixelsPerMeter, double hPlanetRadius,
                                  double hPlanetPixelRadius,
                                  double hPlanetPixelCircumference,
                                  double hMinscale, double hMaxscale,

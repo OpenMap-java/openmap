@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingIcon.java,v $
 // $RCSfile: OMScalingIcon.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/11 20:39:15 $
+// $Revision: 1.9 $
+// $Date: 2006/02/16 16:22:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 
 import javax.swing.ImageIcon;
@@ -217,8 +218,8 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
 
         float scaleFactor = baseScale / shrinkScale;
 
-        point1 = proj.forward(lat, lon);
-        point2 = proj.forward(lat, lon);
+        point1 = (Point) proj.forward(lat, lon, new Point());
+        point2 = (Point) proj.forward(lat, lon, new Point());
 
         point1.setLocation((int) (point1.getX() + (scaleFactor * (getX() - sourceImage.getWidth() / 2))),
                 (int) (point1.getY() + (scaleFactor * (getY() - sourceImage.getHeight() / 2))));
@@ -238,8 +239,8 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
             return false;
         }
 
-        Point p1 = proj.forward(proj.getUpperLeft());
-        Point p2 = proj.forward(proj.getLowerRight());
+        Point2D p1 = proj.forward(proj.getUpperLeft());
+        Point2D p2 = proj.forward(proj.getLowerRight());
         int h = (int) (p2.getY() - p1.getY());
         int w = (int) (p2.getX() - p1.getX());
 

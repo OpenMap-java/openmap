@@ -17,8 +17,8 @@
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/RoadFinder.java,v $
  * $RCSfile: RoadFinder.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/12/09 21:09:11 $
+ * $Revision: 1.7 $
+ * $Date: 2006/02/16 16:22:48 $
  * $Author: dietrick $
  *
  * **********************************************************************
@@ -992,7 +992,7 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
                         + " is not an intersection on road " + road);
             }
 
-            Point pt = createPoint(proj.forward(from.getLocation()));
+            Point pt = createPoint((Point) proj.forward(from.getLocation(), new Point()));
 
             if (doLoopCheck) {
                 if (ptSet.contains(pt)) {
@@ -1025,7 +1025,7 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
             from = to;
         }
 
-        Point pt = createPoint(proj.forward(to.getLocation()));
+        Point pt = createPoint((Point) proj.forward(to.getLocation(), new Point()));
         if (ptSet.contains(pt)) {
             logger.warning("pt set has duplicate at " + pt);
         }
@@ -1050,11 +1050,11 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
         List newPoints = new ArrayList();
         if (reverse) {
             for (int i = roadPoints.length - 1; i > 0; i--) {
-                newPoints.add(createPoint(proj.forward(roadPoints[i].getLocation())));
+                newPoints.add(createPoint((Point) proj.forward(roadPoints[i].getLocation(), new Point())));
             }
         } else {
             for (int i = 0; i < roadPoints.length; i++) {
-                newPoints.add(createPoint(proj.forward(roadPoints[i].getLocation())));
+                newPoints.add(createPoint((Point) proj.forward(roadPoints[i].getLocation(), new Point())));
             }
         }
 

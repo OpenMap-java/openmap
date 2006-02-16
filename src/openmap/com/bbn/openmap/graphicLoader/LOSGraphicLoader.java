@@ -14,25 +14,40 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/LOSGraphicLoader.java,v $
 // $RCSfile: LOSGraphicLoader.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:46 $
+// $Revision: 1.6 $
+// $Date: 2006/02/16 16:22:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.graphicLoader;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Iterator;
-import javax.swing.*;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.BasicStrokeEditor;
+import com.bbn.openmap.omGraphics.GraphicAttributes;
+import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicHandler;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.proj.DrawUtil;
-import com.bbn.openmap.tools.drawing.*;
+import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
+import com.bbn.openmap.tools.drawing.OMDrawingTool;
 import com.bbn.openmap.tools.terrain.LOSGenerator;
 import com.bbn.openmap.util.Debug;
 
@@ -129,9 +144,9 @@ public class LOSGraphicLoader extends MMLGraphicLoader implements
         if (los != null) {
             int numPoints = 2;
             if (proj != null) {
-                Point p1 = proj.forward(pt1.getLat(), pt1.getLon());
-                Point p2 = proj.forward(pt2.getLat(), pt2.getLon());
-                numPoints = (int) DrawUtil.distance(p1.x, p1.y, p2.x, p2.y) / 2;
+                Point2D p1 = proj.forward(pt1.getLat(), pt1.getLon());
+                Point2D p2 = proj.forward(pt2.getLat(), pt2.getLon());
+                numPoints = (int) DrawUtil.distance(p1.getX(), p1.getY(), p2.getX(), p2.getY()) / 2;
             }
 
             boolean isLOS = los.isLOS(new LatLonPoint(pt1.getLat(), pt1.getLon()),

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/01/10 16:58:33 $
+// $Revision: 1.13 $
+// $Date: 2006/02/16 16:22:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -427,7 +427,7 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
                 setNeedToReposition(true);//so we don't render it!
                 return false;
             }
-            point1 = proj.forward(lat, lon);
+            point1 = (Point) proj.forward(lat, lon, new Point());
             break;
         case RENDERTYPE_XY:
             point1 = new Point(x, y);
@@ -440,7 +440,7 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
                 setNeedToReposition(true);//so we don't render it!
                 return false;
             }
-            point1 = proj.forward(lat, lon);
+            point1 = (Point) proj.forward(lat, lon, new Point());
             point1.x += x;
             point1.y += y;
             break;
@@ -465,7 +465,7 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
                     Debug.error("OMRasterObject: point is not plotable!");
                     return false;
                 }
-                point1 = proj.forward(lat, lon);
+                point1 = (Point) proj.forward(lat, lon, new Point());
             }
             break;
         }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/DrawUtil.java,v $
 // $RCSfile: DrawUtil.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:21 $
+// $Revision: 1.5 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -322,6 +322,22 @@ public class DrawUtil {
         return (float) Math.sqrt((float) (xdiff * xdiff + ydiff * ydiff));
     }
 
+    /**
+     * 2D distance formula.
+     * <p>
+     * 
+     * @param x1 x coord
+     * @param y1 y coord
+     * @param x2 x coord
+     * @param y2 y coord
+     * @return double distance
+     */
+    public final static double distance(double x1, double y1, double x2, double y2) {
+        double xdiff = x2 - x1;
+        double ydiff = y2 - y1;
+        return Math.sqrt((xdiff * xdiff + ydiff * ydiff));
+    }
+    
     /**
      * Calculate the "pixel distance" between two points (squaring not
      * envolved).

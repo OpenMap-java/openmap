@@ -14,13 +14,15 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRect.java,v $
 // $RCSfile: EditableOMRect.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/12/09 21:09:03 $
+// $Revision: 1.7 $
+// $Date: 2006/02/16 16:22:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
+
+import java.awt.geom.Point2D;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.layer.util.stateMachine.State;
@@ -296,7 +298,7 @@ public class EditableOMRect extends EditableOMGraphic {
                     float slat = rect.getSouthLat();
 
                     llp = new LatLonPoint(nlat, wlon);
-                    java.awt.Point p = projection.forward(llp);
+                    Point2D p = projection.forward(llp);
                     if (renderType == OMGraphic.RENDERTYPE_LATLON) {
                         doStraight = false;
                         top = (int) p.getY();

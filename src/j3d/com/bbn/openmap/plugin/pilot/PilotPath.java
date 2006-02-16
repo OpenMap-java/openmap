@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/PilotPath.java,v $
 // $RCSfile: PilotPath.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/12/09 21:09:06 $
+// $Revision: 1.6 $
+// $Date: 2006/02/16 16:22:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,7 +24,6 @@ package com.bbn.openmap.plugin.pilot;
 
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Point;
 import java.awt.geom.Point2D;
 
 import javax.media.j3d.Behavior;
@@ -224,7 +223,7 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
             return;
         }
 
-        Point newLoc = viewProjection.forward(newPoint);
+        Point2D newLoc = viewProjection.forward(newPoint);
 
         if (DEBUG)
             Debug.output(newLoc.toString() + ", compared with lastX, lastY: "
@@ -348,7 +347,7 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
                     + this.scaleFactor);
         Vector3d translate = new Vector3d();
 
-        Point pilotPoint = projection.forward(getLat(), getLon());
+        Point2D pilotPoint = projection.forward(getLat(), getLon());
 
         // scaleFactor of < 1 shrinks the object.(.5) is the scale.
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/CADRG.java,v $
 // $RCSfile: CADRG.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/12/09 21:09:01 $
+// $Revision: 1.9 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -384,14 +384,14 @@ public class CADRG extends Cylindrical implements EqualArc {
     }
 
     /**
-     * Forward projects lat,lon into XY space and returns a Point.
+     * Forward projects lat,lon into XY space and returns a Point2D.
      * 
      * @param lat float latitude in radians
      * @param lon float longitude in radians
-     * @param ret_val Resulting XY Point
-     * @return Point ret_val
+     * @param ret_val Resulting XY Point2D
+     * @return Point2D ret_val
      */
-    public Point forward(double lat, double lon, Point ret_val, boolean isRadians) {
+    public Point2D forward(double lat, double lon, Point2D ret_val, boolean isRadians) {
         if (!isRadians) {
             lon = Math.toRadians(lon);
             lat = Math.toRadians(lat);
@@ -400,8 +400,9 @@ public class CADRG extends Cylindrical implements EqualArc {
         double lon_ = wrap_longitude(lon - centerX);
         double lat_ = normalize_latitude(lat);
 
-        ret_val.x = (int) ProjMath.roundAdjust(spps_x * lon_) - ul.x;
-        ret_val.y = (int) ProjMath.roundAdjust(-spps_y * lat_) + ul.y + oy;
+        int x = (int) ProjMath.roundAdjust(spps_x * lon_) - ul.x;
+        int y = (int) ProjMath.roundAdjust(-spps_y * lat_) + ul.y + oy;
+        ret_val.setLocation(x, y);
         return ret_val;
     }
 
@@ -413,10 +414,10 @@ public class CADRG extends Cylindrical implements EqualArc {
      * @param y integer y coordinate
      * @param ret_val LatLonPoint
      * @return LatLonPoint ret_val
-     * @see Proj#inverse(Point)
+     * @see Proj#inverse(Point2D)
      * 
      */
-    public Point2D inverse(int x, int y, Point2D ret_val) {
+    public Point2D inverse(double x, double y, Point2D ret_val) {
         // Debug.output("CADRG.inverse");
 
         /* offset back into pixel space from Drawable space */
@@ -563,15 +564,15 @@ public class CADRG extends Cylindrical implements EqualArc {
      * 
      * @param ll1 the upper left coordinates of the bounding box.
      * @param ll2 the lower right coordinates of the bounding box.
-     * @param point1 a java.awt.Point reflecting a pixel spot on the
+     * @param point1 a Point2D reflecting a pixel spot on the
      *        projection that matches the ll1 coordinate, the upper
      *        left corner of the area of interest.
-     * @param point2 a java.awt.Point reflecting a pixel spot on the
+     * @param point2 a Point2D reflecting a pixel spot on the
      *        projection that matches the ll2 coordinate, usually the
      *        lower right corner of the area of interest.
      */
-    public float getScale(LatLonPoint ll1, LatLonPoint ll2, Point point1,
-                          Point point2) {
+    public float getScale(LatLonPoint ll1, LatLonPoint ll2, Point2D point1,
+                          Point2D point2) {
         return getScale(ll1, ll2, point1, point2, 0);
     }
 
@@ -582,17 +583,17 @@ public class CADRG extends Cylindrical implements EqualArc {
      * 
      * @param ll1 the upper left coordinates of the bounding box.
      * @param ll2 the lower right coordinates of the bounding box.
-     * @param point1 a java.awt.Point reflecting a pixel spot on the
+     * @param point1 a Point2D reflecting a pixel spot on the
      *        projection that matches the ll1 coordinate, the upper
      *        left corner of the area of interest.
-     * @param point2 a java.awt.Point reflecting a pixel spot on the
+     * @param point2 a Point2D reflecting a pixel spot on the
      *        projection that matches the ll2 coordinate, usually the
      *        lower right corner of the area of interest.
      * @param recursiveCount a protective count to keep this method
      *        from getting in a recursive death spiral.
      */
-    private float getScale(LatLonPoint ll1, LatLonPoint ll2, Point point1,
-                           Point point2, int recursiveCount) {
+    private float getScale(LatLonPoint ll1, LatLonPoint ll2, Point2D point1,
+                           Point2D point2, int recursiveCount) {
 
         try {
 
@@ -600,8 +601,8 @@ public class CADRG extends Cylindrical implements EqualArc {
             double pixPerDegree;
             int deltaPix;
             double ret;
-            double dx = Math.abs(point2.x - point1.x);
-            double dy = Math.abs(point2.y - point1.y);
+            double dx = Math.abs(point2.getX() - point1.getX());
+            double dy = Math.abs(point2.getY() - point1.getY());
 
             double nCenterLat = Math.min(ll1.getLatitude(), ll2.getLatitude())
                     + Math.abs(ll1.getLatitude() - ll2.getLatitude()) / 2f;
@@ -619,7 +620,7 @@ public class CADRG extends Cylindrical implements EqualArc {
 
                 // point1 is to the right of point2. switch the
                 // LatLonPoints so that ll1 is west (left) of ll2.
-                if (point1.x > point2.x) {
+                if (point1.getX() > point2.getX()) {
                     lat1 = ll1.getLatitude();
                     lon1 = ll1.getLongitude();
                     ll1.setLatLon(ll2);

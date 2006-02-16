@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjMath.java,v $
 // $RCSfile: ProjMath.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/12/09 21:09:02 $
+// $Revision: 1.7 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -198,8 +198,8 @@ public final class ProjMath {
     }
 
     /**
-     * Converts an array of decimal degrees float lat/lons to float
-     * radians in place.
+     * Converts an array of decimal degrees float lat/lons to float radians in
+     * place.
      * 
      * @param degs float[] lat/lons in decimal degrees
      * @return float[] lat/lons in radians
@@ -212,8 +212,7 @@ public final class ProjMath {
     }
 
     /**
-     * Converts an array of radian float lat/lons to decimal degrees
-     * in place.
+     * Converts an array of radian float lat/lons to decimal degrees in place.
      * 
      * @param rads float[] lat/lons in radians
      * @return float[] lat/lons in decimal degrees
@@ -226,8 +225,8 @@ public final class ProjMath {
     }
 
     /**
-     * Converts an array of decimal degrees double lat/lons to double
-     * radians in place.
+     * Converts an array of decimal degrees double lat/lons to double radians in
+     * place.
      * 
      * @param degs double[] lat/lons in decimal degrees
      * @return double[] lat/lons in radians
@@ -240,8 +239,7 @@ public final class ProjMath {
     }
 
     /**
-     * Converts an array of radian double lat/lons to decimal degrees
-     * in place.
+     * Converts an array of radian double lat/lons to decimal degrees in place.
      * 
      * @param rads double[] lat/lons in radians
      * @return double[] lat/lons in decimal degrees
@@ -261,8 +259,8 @@ public final class ProjMath {
     }
 
     /**
-     * Normalizes radian latitude. Normalizes latitude if at or
-     * exceeds epsilon distance from a pole.
+     * Normalizes radian latitude. Normalizes latitude if at or exceeds epsilon
+     * distance from a pole.
      * 
      * @param lat float latitude in radians
      * @param epsilon epsilon (&gt;= 0) radians distance from pole
@@ -287,8 +285,8 @@ public final class ProjMath {
     }
 
     /**
-     * Normalizes radian latitude. Normalizes latitude if at or
-     * exceeds epsilon distance from a pole.
+     * Normalizes radian latitude. Normalizes latitude if at or exceeds epsilon
+     * distance from a pole.
      * 
      * @param lat double latitude in radians
      * @param epsilon epsilon (&gt;= 0) radians distance from pole
@@ -352,10 +350,9 @@ public final class ProjMath {
     }
 
     /**
-     * Converts units (km, nm, miles, etc) to decimal degrees for a
-     * spherical planet. This does not check for arc distances &gt;
-     * 1/2 planet circumference, which are better represented as (2pi -
-     * calculated arc).
+     * Converts units (km, nm, miles, etc) to decimal degrees for a spherical
+     * planet. This does not check for arc distances &gt; 1/2 planet
+     * circumference, which are better represented as (2pi - calculated arc).
      * 
      * @param u units float value
      * @param uCircumference units circumference of planet
@@ -366,10 +363,9 @@ public final class ProjMath {
     }
 
     /**
-     * Converts units (km, nm, miles, etc) to arc radians for a
-     * spherical planet. This does not check for arc distances &gt;
-     * 1/2 planet circumference, which are better represented as (2pi -
-     * calculated arc).
+     * Converts units (km, nm, miles, etc) to arc radians for a spherical
+     * planet. This does not check for arc distances &gt; 1/2 planet
+     * circumference, which are better represented as (2pi - calculated arc).
      * 
      * @param u units float value
      * @param uCircumference units circumference of planet
@@ -387,17 +383,16 @@ public final class ProjMath {
     }
 
     /**
-     * Calculate the geocentric latitude given a geographic latitude.
-     * According to John Synder: <br>
+     * Calculate the geocentric latitude given a geographic latitude. According
+     * to John Synder: <br>
      * "The geographic or geodetic latitude is the angle which a line
-     * perpendicular to the surface of the ellipsoid at the given
-     * point makes with the plane of the equator. ...The geocentric
-     * latitude is the angle made by a line to the center of the
-     * ellipsoid with the equatorial plane". ( <i>Map Projections --A
-     * Working Manual </i>, p 13)
+     * perpendicular to the surface of the ellipsoid at the given point makes
+     * with the plane of the equator. ...The geocentric latitude is the angle
+     * made by a line to the center of the ellipsoid with the equatorial plane". (
+     * <i>Map Projections --A Working Manual </i>, p 13)
      * <p>
-     * Translated from Ken Anderson's lisp code <i>Freeing the Essence
-     * of Computation </i>
+     * Translated from Ken Anderson's lisp code <i>Freeing the Essence of
+     * Computation </i>
      * 
      * @param lat float geographic latitude in radians
      * @param flat float flatening factor
@@ -417,9 +412,8 @@ public final class ProjMath {
     }
 
     /**
-     * Calculate the geographic latitude given a geocentric latitude.
-     * Translated from Ken Anderson's lisp code <i>Freeing the Essence
-     * of Computation </i>
+     * Calculate the geographic latitude given a geocentric latitude. Translated
+     * from Ken Anderson's lisp code <i>Freeing the Essence of Computation </i>
      * 
      * @param lat float geocentric latitude in radians
      * @param flat float flatening factor
@@ -432,43 +426,59 @@ public final class ProjMath {
     }
 
     /**
-     * Given a couple of points representing a bounding box, find out
-     * what the scale should be in order to make those points appear
-     * at the corners of the projection.
+     * Given a couple of points representing a bounding box, find out what the
+     * scale should be in order to make those points appear at the corners of
+     * the projection.
      * 
      * @param ll1 the upper left coordinates of the bounding box.
      * @param ll2 the lower right coordinates of the bounding box.
-     * @param projection the projection to use for other projection
-     *        parameters, like map width and map height.
+     * @param projection the projection to use for other projection parameters,
+     *        like map width and map height.
      */
     public static float getScale(Point2D ll1, Point2D ll2, Projection projection) {
         if (projection == null) {
             return Float.MAX_VALUE;
         }
 
-        Point point1 = projection.forward(ll1);
-        Point point2 = projection.forward(ll2);
+        Point2D point1 = projection.forward(ll1);
+        Point2D point2 = projection.forward(ll2);
 
         return getScale(ll1, ll2, point1, point2, projection);
     }
 
     /**
-     * Given a couple of points representing a bounding box, find out
-     * what the scale should be in order to make those points appear
-     * at the corners of the projection.
+     * Given a couple of points representing a bounding box, find out what the
+     * scale should be in order to make those points appear at the corners of
+     * the projection. This method is generally called from objects dealing with
+     * MouseEvents.
      * 
-     * @param point1 a java.awt.Point reflecting a pixel spot on the
-     *        projection, usually the upper left corner of the area of
-     *        interest.
-     * @param point2 a java.awt.Point reflecting a pixel spot on the
-     *        projection, usually the lower right corner of the area
-     *        of interest.
-     * @param projection the projection to use for other projection
-     *        parameters, like map width and map height.
+     * @param point1 a java.awt.Point reflecting a pixel spot on the projection,
+     *        usually the upper left corner of the area of interest.
+     * @param point2 a java.awt.Point reflecting a pixel spot on the projection,
+     *        usually the lower right corner of the area of interest.
+     * @param projection the projection to use for other projection parameters,
+     *        like map width and map height.
      */
     public static float getScale(Point point1, Point point2,
                                  Projection projection) {
 
+        return getScaleFromProjected(point1, point2, projection);
+    }
+
+    /**
+     * Given a couple of points representing a bounding box of projected
+     * coordinates, find out what the scale should be in order to make those
+     * points appear at the corners of the projection.
+     * 
+     * @param point1 a java.awt.Point reflecting a pixel spot on the projection,
+     *        usually the upper left corner of the area of interest.
+     * @param point2 a java.awt.Point reflecting a pixel spot on the projection,
+     *        usually the lower right corner of the area of interest.
+     * @param projection the projection to use for other projection parameters,
+     *        like map width and map height.
+     */
+    public static float getScaleFromProjected(Point2D point1, Point2D point2,
+                                              Projection projection) {
         if (projection == null) {
             return Float.MAX_VALUE;
         }
@@ -480,23 +490,23 @@ public final class ProjMath {
     }
 
     /**
-     * Given a couple of points representing a bounding box, find out
-     * what the scale should be in order to make those points appear
-     * at the corners of the projection.
+     * Given a couple of points representing a bounding box, find out what the
+     * scale should be in order to make those points appear at the corners of
+     * the projection.
      * 
      * @param ll1 the upper left coordinates of the bounding box.
      * @param ll2 the lower right coordinates of the bounding box.
-     * @param point1 a java.awt.Point reflecting a pixel spot on the
-     *        projection that matches the ll1 coordinate, the upper
-     *        left corner of the area of interest.
-     * @param point2 a java.awt.Point reflecting a pixel spot on the
-     *        projection that matches the ll2 coordinate, usually the
-     *        lower right corner of the area of interest.
-     * @param projection the projection to use to query to get the
-     *        scale for, for projection type and height and width.
+     * @param point1 a java.awt.Point reflecting a pixel spot on the projection
+     *        that matches the ll1 coordinate, the upper left corner of the area
+     *        of interest.
+     * @param point2 a java.awt.Point reflecting a pixel spot on the projection
+     *        that matches the ll2 coordinate, usually the lower right corner of
+     *        the area of interest.
+     * @param projection the projection to use to query to get the scale for,
+     *        for projection type and height and width.
      */
-    protected static float getScale(Point2D ll1, Point2D ll2, Point point1,
-                                    Point point2, Projection projection) {
+    protected static float getScale(Point2D ll1, Point2D ll2, Point2D point1,
+                                    Point2D point2, Projection projection) {
 
         return projection.getScale(ll1, ll2, point1, point2);
     }
@@ -504,14 +514,14 @@ public final class ProjMath {
     /*
      * public static void main(String[] args) { float degs =
      * sphericalUnitsToRad( Planet.earthEquatorialRadius/2,
-     * Planet.earthEquatorialRadius); Debug.output("degs = " + degs);
-     * float LAT_DEC_RANGE = 90.0f; float LON_DEC_RANGE = 360.0f;
-     * float lat, lon; for (int i = 0; i < 100; i++) { lat =
+     * Planet.earthEquatorialRadius); Debug.output("degs = " + degs); float
+     * LAT_DEC_RANGE = 90.0f; float LON_DEC_RANGE = 360.0f; float lat, lon; for
+     * (int i = 0; i < 100; i++) { lat =
      * com.bbn.openmap.LatLonPoint.normalize_latitude(
      * (float)Math.random()*LAT_DEC_RANGE); lon =
      * com.bbn.openmap.LatLonPoint.wrap_longitude(
-     * (float)Math.random()*LON_DEC_RANGE); Debug.output( "(" + lat +
-     * "," + lon + ") : (" + degToRad(lat) + "," + degToRad(lon) + ") : (" +
-     * radToDeg(degToRad(lat)) + "," + radToDeg(degToRad(lon)) + ")"); } }
+     * (float)Math.random()*LON_DEC_RANGE); Debug.output( "(" + lat + "," + lon + ") : (" +
+     * degToRad(lat) + "," + degToRad(lon) + ") : (" + radToDeg(degToRad(lat)) +
+     * "," + radToDeg(degToRad(lon)) + ")"); } }
      */
 }

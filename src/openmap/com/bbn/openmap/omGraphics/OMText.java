@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.17 $
-// $Date: 2006/01/27 15:22:56 $
+// $Revision: 1.18 $
+// $Date: 2006/02/16 16:22:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -839,7 +839,7 @@ public class OMText extends OMGraphic implements Serializable {
                 setNeedToRegenerate(true);// so we don't render it!
                 return false;
             }
-            pt = proj.forward(lat, lon);
+            pt = (Point) proj.forward(lat, lon, new Point());
             pt.translate(point.x, point.y);
             break;
         case RENDERTYPE_LATLON:
@@ -849,7 +849,7 @@ public class OMText extends OMGraphic implements Serializable {
                 setNeedToRegenerate(true);// so we don't render it!
                 return false;
             }
-            pt = proj.forward(lat, lon);
+            pt = (Point) proj.forward(lat, lon, new Point());
             break;
         case RENDERTYPE_UNKNOWN:
             System.err.println("OMText.render.generate(): invalid RenderType");

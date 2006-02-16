@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Proj.java,v $
 // $RCSfile: Proj.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/12/09 21:09:00 $
+// $Revision: 1.12 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -308,14 +308,6 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         centerY = center.getY();
         this.scale = scale;
 
-        init();
-
-        if (this.scale < minscale) {
-            this.scale = minscale;
-        } else if (this.scale > maxscale) {
-            this.scale = maxscale;
-        }
-
         this.width = width;
         if (this.width < MIN_WIDTH) {
             Debug.message("proj", "Proj.setParms: width too small!");
@@ -326,7 +318,15 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
             Debug.message("proj", "Proj.setParms: height too small!");
             this.height = MIN_HEIGHT;
         }
+        
+        init();
 
+        if (this.scale < minscale) {
+            this.scale = minscale;
+        } else if (this.scale > maxscale) {
+            this.scale = maxscale;
+        }
+        
         computeParameters();
     }
 
@@ -432,23 +432,23 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
     /**
      * Forward project a LatLonPoint.
      * <p>
-     * Forward projects a LatLon point into XY space. Returns a Point.
+     * Forward projects a LatLon point into XY space. Returns a Point2D.
      * 
      * @param llp LatLonPoint to be projected
-     * @return Point (new)
+     * @return Point2D (new)
      */
-    public Point forward(Point2D llp) {
-        return forward(llp.getY(), llp.getX(), new Point());
+    public Point2D forward(Point2D llp) {
+        return forward(llp.getY(), llp.getX(), new Point2D.Float());
     }
 
     /**
-     * Forward projects a LatLonPoint into XY space and return a Point.
+     * Forward projects a LatLonPoint into XY space and return a java.awt.geom.Point2D.
      * 
      * @param llp LatLonPoint to be projected
-     * @param pt Resulting XY Point
-     * @return Point pt
+     * @param pt Resulting XY Point2D
+     * @return Point2D pt
      */
-    public Point forward(Point2D llp, Point pt) {
+    public Point2D forward(Point2D llp, Point2D pt) {
         return forward(llp.getY(), llp.getX(), pt);
     }
 
@@ -457,34 +457,34 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * 
      * @param lat float latitude in decimal degrees
      * @param lon float longitude in decimal degrees
-     * @return Point (new)
+     * @return Point2D (new)
      */
-    public Point forward(float lat, float lon) {
-        return forward((double) lat, (double) lon, new Point());
+    public Point2D forward(float lat, float lon) {
+        return forward((double) lat, (double) lon, new Point2D.Float());
     }
 
-    public Point forward(float lat, float lon, Point pt) {
+    public Point2D forward(float lat, float lon, Point2D pt) {
         return forward((double) lat, (double) lon, pt);
     }
 
-    public Point forward(double lat, double lon) {
-        return forward(lat, lon, new Point());
+    public Point2D forward(double lat, double lon) {
+        return forward(lat, lon, new Point2D.Double());
     }
 
-    public abstract Point forward(double lat, double lon, Point pt);
+    public abstract Point2D forward(double lat, double lon, Point2D pt);
 
-    public Point2D inverse(Point point, Point2D llpt) {
-        return inverse(point.x, point.y, llpt);
+    public Point2D inverse(Point2D point, Point2D llpt) {
+        return inverse(point.getX(), point.getY(), llpt);
     }
 
     /**
-     * Inverse project a Point from x,y space to LatLon space.
+     * Inverse project a Point2D from x,y space to LatLon space.
      * 
-     * @param point x,y Point
+     * @param point x,y Point2D
      * @return LatLonPoint (new)
      */
-    public Point2D inverse(Point point) {
-        return inverse(point.x, point.y, new Point2D.Double());
+    public Point2D inverse(Point2D point) {
+        return inverse(point.getX(), point.getY(), new Point2D.Double());
     }
 
     /**
@@ -495,11 +495,11 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @return LatLonPoint (new)
      * @see #inverse(Point)
      */
-    public Point2D inverse(int x, int y) {
+    public Point2D inverse(double x, double y) {
         return inverse(x, y, new Point2D.Double());
     }
 
-    public abstract Point2D inverse(int x, int y, Point2D llpt);
+    public abstract Point2D inverse(double x, double y, Point2D llpt);
 
     /**
      * Simple shape projection, doesn't take into account what kind of lines
@@ -879,15 +879,15 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * 
      * @param ll1 the upper left coordinates of the bounding box.
      * @param ll2 the lower right coordinates of the bounding box.
-     * @param point1 a java.awt.Point reflecting a pixel spot on the projection
+     * @param point1 a java.awt.geom.Point2D reflecting a pixel spot on the projection
      *        that matches the ll1 coordinate, the upper left corner of the area
      *        of interest.
-     * @param point2 a java.awt.Point reflecting a pixel spot on the projection
+     * @param point2 a java.awt.geom.Point2D reflecting a pixel spot on the projection
      *        that matches the ll2 coordinate, usually the lower right corner of
      *        the area of interest.
      */
-    public abstract float getScale(Point2D ll1, Point2D ll2, Point point1,
-                                   Point point2);
+    public abstract float getScale(Point2D ll1, Point2D ll2, Point2D point1,
+                                   Point2D point2);
 
     /**
      * Overridden to ensure that setParameters() are called with the read

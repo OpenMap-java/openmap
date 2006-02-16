@@ -10,8 +10,8 @@ import java.awt.AlphaComposite;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
-import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Properties;
 
@@ -170,7 +170,7 @@ public class PanMouseMode extends CoordMouseMode {
         if (isPanning && arg0.getSource() instanceof MapBean) {
             MapBean mb = (MapBean) arg0.getSource();
             Projection proj = mb.getProjection();
-            Point center = proj.forward(proj.getCenter());
+            Point2D center = proj.forward(proj.getCenter());
             center.setLocation(center.getX() - arg0.getX() + oX,  center.getY() - arg0.getY() + oY);
             mb.setCenter(proj.inverse(center));
             isPanning = false;

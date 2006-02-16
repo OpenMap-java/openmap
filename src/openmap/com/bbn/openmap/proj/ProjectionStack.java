@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionStack.java,v $
 // $RCSfile: ProjectionStack.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/12/09 21:09:02 $
+// $Revision: 1.7 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -343,8 +343,8 @@ public class ProjectionStack extends OMComponent implements ActionListener,
             // seems to accurately determine what projections are
             // acutally identical visually, which is what you want to
             // know anyway.
-            Point tmpPoint1 = proj.forward(proj.getCenter());
-            Point tmpPoint2 = proj.forward(center);
+            Point2D tmpPoint1 = proj.forward(proj.getCenter());
+            Point2D tmpPoint2 = proj.forward(center);
 
             boolean same = (projClass == proj.getClass()
                     && scale == proj.getScale() &&
@@ -360,7 +360,7 @@ public class ProjectionStack extends OMComponent implements ActionListener,
                     // proj.getCenter().getLongitude(),
                     // .00001f)
                     // This seems to work...
-                    tmpPoint1.x == tmpPoint2.x && tmpPoint1.y == tmpPoint2.y);
+                    tmpPoint1.getX() == tmpPoint2.getX() && tmpPoint1.getY() == tmpPoint2.getY());
             return same;
         }
 

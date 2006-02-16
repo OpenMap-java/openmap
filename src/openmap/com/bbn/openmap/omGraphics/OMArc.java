@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArc.java,v $
 // $RCSfile: OMArc.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/12/09 21:09:04 $
+// $Revision: 1.10 $
+// $Date: 2006/02/16 16:22:47 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -737,7 +737,7 @@ public class OMArc extends OMGraphic implements Serializable {
 
             if (proj instanceof GeoProj) {
 
-                Point p = proj.forward(center.getY(),
+                Point p = (Point) proj.forward(center.getY(),
                         center.getX(),
                         new Point());
 

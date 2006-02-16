@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCacheHandler.java,v $
 // $RCSfile: RpfCacheHandler.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/12/09 21:09:05 $
+// $Revision: 1.10 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -361,7 +361,7 @@ public class RpfCacheHandler {
             refllpt.setLatitude(refllpt.getLatitude()
                     - (float) currentBox.subframeLatInterval);
 
-            Point refpt = viewAttributes.proj.forward(refllpt);
+            Point refpt = (Point) viewAttributes.proj.forward(refllpt, new Point());
 
             scalingWidth = refpt.x;
             scalingHeight = refpt.y;

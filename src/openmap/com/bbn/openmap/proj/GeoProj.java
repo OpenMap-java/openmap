@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoProj.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/12/09 21:09:01 $
+//$Revision: 1.2 $
+//$Date: 2006/02/16 16:22:46 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -90,7 +90,7 @@ import com.bbn.openmap.util.Debug;
 public abstract class GeoProj extends Proj {
     // Used for generating segments of ArrayList objects
     protected static transient int NUM_DEFAULT_CIRCLE_VERTS = 64;
-    
+
     // SOUTH_POLE <= phi <= NORTH_POLE (radians)
     // -DATELINE <= lambda <= DATELINE (radians)
 
@@ -113,7 +113,7 @@ public abstract class GeoProj extends Proj {
     protected static transient int NUM_DEFAULT_GREAT_SEGS = 512;
 
     // pixels per meter (an extra scaling factor).
-    protected int pixelsPerMeter; // PPM
+    protected double pixelsPerMeter; // PPM
     protected double planetRadius;// EARTH_RADIUS
     protected double planetPixelRadius; // EARTH_PIX_RADIUS
     protected double planetPixelCircumference; // EARTH_PIX_CIRCUMFERENCE
@@ -140,7 +140,8 @@ public abstract class GeoProj extends Proj {
         planetRadius = Planet.wgs84_earthEquatorialRadiusMeters_D;// EARTH_RADIUS
         planetPixelRadius = planetRadius * pixelsPerMeter; // EARTH_PIX_RADIUS
         planetPixelCircumference = MoreMath.TWO_PI_D * planetPixelRadius; // EARTH_PIX_CIRCUMFERENCE
-
+        // the scaled_radius should also be set in computeParameters with the
+        // scale that has been checked against min/max scale
         scaled_radius = planetPixelRadius / scale;
         /* good for cylindrical */
         maxscale = planetPixelCircumference / width;
@@ -151,7 +152,7 @@ public abstract class GeoProj extends Proj {
      * 
      * @param ppm int Pixels Per Meter scale-factor constant
      */
-    public void setPPM(int ppm) {
+    public void setPPM(double ppm) {
         pixelsPerMeter = ppm;
         if (pixelsPerMeter < 1) {
             pixelsPerMeter = 1;
@@ -164,7 +165,7 @@ public abstract class GeoProj extends Proj {
      * 
      * @return int Pixels Per Meter scale-factor constant
      */
-    public int getPPM() {
+    public double getPPM() {
         return pixelsPerMeter;
     }
 
@@ -900,7 +901,8 @@ public abstract class GeoProj extends Proj {
      *        that matches the ll2 coordinate, usually the lower right corner of
      *        the area of interest.
      */
-    public float getScale(Point2D ll1, Point2D ll2, Point point1, Point point2) {
+    public float getScale(Point2D ll1, Point2D ll2, Point2D point1,
+                          Point2D point2) {
         if (ll1 instanceof LatLonPoint && ll2 instanceof LatLonPoint) {
             return getScale((LatLonPoint) ll1,
                     (LatLonPoint) ll2,
@@ -925,8 +927,8 @@ public abstract class GeoProj extends Proj {
      *        that matches the ll2 coordinate, usually the lower right corner of
      *        the area of interest.
      */
-    public float getScale(LatLonPoint ll1, LatLonPoint ll2, Point point1,
-                          Point point2) {
+    public float getScale(LatLonPoint ll1, LatLonPoint ll2, Point2D point1,
+                          Point2D point2) {
 
         try {
 
@@ -949,7 +951,7 @@ public abstract class GeoProj extends Proj {
 
                 // point1 is to the right of point2. switch the
                 // LatLonPoints so that ll1 is west (left) of ll2.
-                if (point1.x > point2.x) {
+                if (point1.getX() > point2.getX()) {
                     lat1 = ll1.getLatitude();
                     lon1 = ll1.getLongitude();
                     ll1.setLatLon(ll2);
@@ -984,7 +986,7 @@ public abstract class GeoProj extends Proj {
     /**
      * Forward project a point.
      */
-    public final Point forward(Point2D llp, Point pt) {
+    public Point2D forward(Point2D llp, Point2D pt) {
         return forward(llp.getY(), llp.getX(), pt, false);
     }
 
@@ -996,20 +998,20 @@ public abstract class GeoProj extends Proj {
      * @param llp LatLonPoint to be projected
      * @return Point (new)
      */
-    public Point forward(Point2D llp) {
-        return forward(llp.getY(), llp.getX(), new Point(), false);
+    public Point2D forward(Point2D llp) {
+        return forward(llp.getY(), llp.getX(), new Point2D.Float(), false);
     }
 
-    public Point forward(double lat, double lon, Point pt) {
+    public Point2D forward(double lat, double lon, Point2D pt) {
         return forward(lat, lon, pt, false);
     }
 
-    public Point forward(float lat, float lon, Point pt, boolean isRadian) {
+    public Point2D forward(float lat, float lon, Point2D pt, boolean isRadian) {
         return forward((double) lat, (double) lon, pt, isRadian);
     }
 
-    abstract public Point forward(double lat, double lon, Point pt,
-                                  boolean isRadian);
+    abstract public Point2D forward(double lat, double lon, Point2D pt,
+                                    boolean isRadian);
 
     /**
      * Inverse project a Point from x,y space to LatLon space.
@@ -1017,8 +1019,8 @@ public abstract class GeoProj extends Proj {
      * @param point x,y Point
      * @return LatLonPoint (new)
      */
-    public Point2D inverse(Point point) {
-        return inverse(point.x, point.y, new LatLonPoint.Double());
+    public Point2D inverse(Point2D point) {
+        return inverse(point.getX(), point.getY(), new LatLonPoint.Double());
     }
 
     /**
@@ -1027,7 +1029,7 @@ public abstract class GeoProj extends Proj {
      * @param x integer x coordinate
      * @param y integer y coordinate
      * @return LatLonPoint (new)
-     * @see #inverse(Point)
+     * @see #inverse(Point2D)
      */
     public Point2D inverse(int x, int y) {
         return inverse(x, y, new LatLonPoint.Double());

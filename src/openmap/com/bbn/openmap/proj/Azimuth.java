@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Azimuth.java,v $
 // $RCSfile: Azimuth.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/12/09 21:09:01 $
+// $Revision: 1.8 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import com.bbn.openmap.MoreMath;
@@ -169,7 +170,7 @@ public abstract class Azimuth extends GeoProj {
      * Forward project a point. Wrapper around Azimuth-specific
      * forwarding.
      */
-    public final Point forward(double lat, double lon, Point pt,
+    public final Point2D forward(double lat, double lon, Point2D pt,
                                boolean isRadian) {
         if (!isRadian) {
             lat = Math.toRadians(lat);
@@ -185,11 +186,11 @@ public abstract class Azimuth extends GeoProj {
      * 
      * @param lat latitude in radians
      * @param lon longitude in radians
-     * @param pt Point
+     * @param pt Point2D
      * @param azVar AzimuthVar or null
-     * @return Point pt
+     * @return Point2D pt
      */
-    protected abstract Point _forward(double lat, double lon, Point pt,
+    protected abstract Point2D _forward(double lat, double lon, Point2D pt,
                                       AzimuthVar azVar);
 
     /**
@@ -455,11 +456,11 @@ public abstract class Azimuth extends GeoProj {
      */
     public boolean overPoint(float lat, float lon) {
         AzimuthVar azVar = new AzimuthVar();
-        Point pt = _forward(lat, lon, new Point(), azVar);
+        Point2D pt = _forward(lat, lon, new Point2D.Float(), azVar);
         if (azVar.invalid_forward) {
             return false;
         }
-        if ((pt.x < 0) || (pt.x > width) || (pt.y < 0) || (pt.y > height)) {
+        if ((pt.getX() < 0) || (pt.getX() > width) || (pt.getY() < 0) || (pt.getY() > height)) {
             return false;
         }
         return true;

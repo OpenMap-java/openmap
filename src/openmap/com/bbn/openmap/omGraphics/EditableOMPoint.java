@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/12/09 21:09:03 $
+// $Revision: 1.11 $
+// $Date: 2006/02/16 16:22:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,7 @@ package com.bbn.openmap.omGraphics;
 
 import java.awt.Component;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -275,7 +276,7 @@ public class EditableOMPoint extends EditableOMGraphic {
                     float lat = point.getLat();
 
                     llp = new LatLonPoint(lat, lon);
-                    java.awt.Point p = projection.forward(llp);
+                    Point2D p = projection.forward(llp);
                     if (renderType == OMGraphic.RENDERTYPE_LATLON) {
                         doStraight = false;
                         gpc.set((int) p.getX(), (int) p.getY());

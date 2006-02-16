@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServerUtils.java,v $
 // $RCSfile: ImageServerUtils.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/02/14 17:15:02 $
+// $Revision: 1.10 $
+// $Date: 2006/02/16 16:22:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -81,7 +81,7 @@ public class ImageServerUtils implements ImageServerConstants {
             Debug.output("ImageServerUtils.createOMProjection: projection "
                     + projClass.getName() + ", with HEIGHT = " + height
                     + ", WIDTH = " + width + ", lat = " + latitude + ", lon = "
-                    + longitude);
+                    + longitude + ", scale = " + scale);
         }
 
         Proj proj = (Proj) ProjectionFactory.makeProjection(projClass,

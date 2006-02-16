@@ -14,15 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Cartesian.java,v $
 // $RCSfile: Cartesian.java,v $
-// $Revision: 1.1 $
-// $Date: 2005/12/09 21:08:58 $
+// $Revision: 1.2 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.proj;
 
-import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
@@ -101,15 +100,15 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
      * @param wx horizontal coordinate component in world units.
      * @param mapPoint screen point to load result into. OK if null, a new one
      *        will be created and returned.
-     * @return Point provided or new one created containing map coordinate.
+     * @return Point2D provided or new one created containing map coordinate.
      */
-    public Point forward(double wy, double wx, Point mapPoint) {
+    public Point2D forward(double wy, double wx, Point2D mapPoint) {
 
         double x = ((wx - centerX) * SFScale) + hWidth;
         double y = hHeight - ((wy - centerY) * SFScale);
 
         if (mapPoint == null) {
-            mapPoint = new Point((int) x, (int) y);
+            mapPoint = new Point2D.Double(x, y);
         } else {
             mapPoint.setLocation(x, y);
         }
@@ -138,7 +137,7 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
      *        one will be created if necessary.
      * @return Point2D provided or new one if created, containing the result.
      */
-    public Point2D inverse(int x, int y, Point2D worldPoint) {
+    public Point2D inverse(double x, double y, Point2D worldPoint) {
         double worldPointX = (x - hWidth) / SFScale + centerX;
         double worldPointY = (hHeight - y) / SFScale + centerY;
 
@@ -199,7 +198,7 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
     /**
      */
     public float getScale(Point2D ulWorldPoint, Point2D lrWorldPoint,
-                          Point point1, Point point2) {
+                          Point2D point1, Point2D point2) {
         try {
 
             double worldCoords;

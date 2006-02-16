@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Gnomonic.java,v $
 // $RCSfile: Gnomonic.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/12/09 21:09:02 $
+// $Revision: 1.9 $
+// $Date: 2006/02/16 16:22:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,7 +23,6 @@
 package com.bbn.openmap.proj;
 
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.geom.Point2D;
 
 import com.bbn.openmap.MoreMath;
@@ -97,9 +96,9 @@ public class Gnomonic extends Azimuth {
     /**
      * Called when some fundamental parameters change.
      * <p>
-     * Each projection will decide how to respond to this change. For
-     * instance, they may need to recalculate "constant" paramters
-     * used in the forward() and inverse() calls.
+     * Each projection will decide how to respond to this change. For instance,
+     * they may need to recalculate "constant" paramters used in the forward()
+     * and inverse() calls.
      * <p>
      * 
      */
@@ -136,17 +135,16 @@ public class Gnomonic extends Azimuth {
     }
 
     /**
-     * Assume that the Graphics has been set with the Paint/Color
-     * needed, just render the shape of the background.
+     * Assume that the Graphics has been set with the Paint/Color needed, just
+     * render the shape of the background.
      */
     public void drawBackground(Graphics g) {
         g.fillRect(0, 0, getWidth(), getHeight());
     }
 
     /**
-     * Sets radian latitude to something sane. This is an abstract
-     * function since some projections don't deal well with extreme
-     * latitudes.
+     * Sets radian latitude to something sane. This is an abstract function
+     * since some projections don't deal well with extreme latitudes.
      * <p>
      * 
      * @param lat float latitude in radians
@@ -164,8 +162,7 @@ public class Gnomonic extends Azimuth {
     }
 
     /**
-     * Get the distance c of the point from the center of the
-     * hemisphere.
+     * Get the distance c of the point from the center of the hemisphere.
      * 
      * @param phi1 latitude
      * @param lambda0 longitude
@@ -191,8 +188,7 @@ public class Gnomonic extends Azimuth {
      * @param lambda0 longitude
      * @param phi latitude
      * @param lambda longitude
-     * @return boolean true if within the visible hemisphere, false if
-     *         not
+     * @return boolean true if within the visible hemisphere, false if not
      */
     final public static boolean hemisphere_clip(float phi1, float lambda0,
                                                 float phi, float lambda) {
@@ -205,17 +201,16 @@ public class Gnomonic extends Azimuth {
     }
 
     /**
-     * Calculate point along edge of hemisphere (using center point
-     * and current azimuth).
+     * Calculate point along edge of hemisphere (using center point and current
+     * azimuth).
      * <p>
-     * This is invoked for points that aren't visible in the current
-     * hemisphere.
+     * This is invoked for points that aren't visible in the current hemisphere.
      * 
-     * @param p Point
-     * @return Point p
+     * @param p Point2D
+     * @return Point2D p
      * 
      */
-    private Point edge_point(Point p, double current_azimuth) {
+    private Point2D edge_point(Point2D p, double current_azimuth) {
         double c = HEMISPHERE_EDGE;
         LatLonPoint tmpll = GreatCircle.sphericalBetween(centerY,
                 centerX,
@@ -231,12 +226,12 @@ public class Gnomonic extends Azimuth {
         double cosLambdaMinusCtrLon = Math.cos(lambdaMinusCtrLon);
         double sinLambdaMinusCtrLon = Math.sin(lambdaMinusCtrLon);
 
-        p.x = (int) (scaled_radius * kPrime * cosPhi * sinLambdaMinusCtrLon)
+        double x = (scaled_radius * kPrime * cosPhi * sinLambdaMinusCtrLon)
                 + wx;
-        p.y = hy
-                - (int) (scaled_radius * kPrime * (cosCtrLat * sinPhi - sinCtrLat
+        double y = hy
+                - (scaled_radius * kPrime * (cosCtrLat * sinPhi - sinCtrLat
                         * cosPhi * cosLambdaMinusCtrLon));
-
+        p.setLocation(x, y);
         return p;
     }
 
@@ -256,33 +251,32 @@ public class Gnomonic extends Azimuth {
     }
 
     /**
-     * Forward project a point. If the point is not within the
-     * viewable hemisphere, return flags in AzimuthVar variable if
-     * specified.
+     * Forward project a point. If the point is not within the viewable
+     * hemisphere, return flags in AzimuthVar variable if specified.
      * 
      * @param phi float latitude in radians
      * @param lambda float longitude in radians
-     * @param p Point
+     * @param p Point2D
      * @param azVar AzimuthVar or null
-     * @return Point pt
+     * @return Point2D pt
      */
-    protected Point _forward(float phi, float lambda, Point p, AzimuthVar azVar) {
+    protected Point2D _forward(float phi, float lambda, Point2D p,
+                               AzimuthVar azVar) {
         return _forward((double) phi, (double) lambda, p, azVar);
     }
 
     /**
-     * Forward project a point. If the point is not within the
-     * viewable hemisphere, return flags in AzimuthVar variable if
-     * specified.
+     * Forward project a point. If the point is not within the viewable
+     * hemisphere, return flags in AzimuthVar variable if specified.
      * 
      * @param phi double latitude in radians
      * @param lambda double longitude in radians
-     * @param p Point
+     * @param p Point2D
      * @param azVar AzimuthVar or null
-     * @return Point pt
+     * @return Point2D pt
      */
-    protected Point _forward(double phi, double lambda, Point p,
-                             AzimuthVar azVar) {
+    protected Point2D _forward(double phi, double lambda, Point2D p,
+                               AzimuthVar azVar) {
         double c = hemisphere_distance(centerY, centerX, phi, lambda);
         // normalize invalid point to the edge of the sphere
         if (c > HEMISPHERE_EDGE) {
@@ -307,12 +301,12 @@ public class Gnomonic extends Azimuth {
         double cosLambdaMinusCtrLon = Math.cos(lambdaMinusCtrLon);
         double sinLambdaMinusCtrLon = Math.sin(lambdaMinusCtrLon);
 
-        p.x = (int) (scaled_radius * kPrime * cosPhi * sinLambdaMinusCtrLon)
+        double x = (scaled_radius * kPrime * cosPhi * sinLambdaMinusCtrLon)
                 + wx;
-        p.y = hy
-                - (int) (scaled_radius * kPrime * (cosCtrLat * sinPhi - sinCtrLat
+        double y = hy
+                - (scaled_radius * kPrime * (cosCtrLat * sinPhi - sinCtrLat
                         * cosPhi * cosLambdaMinusCtrLon));
-
+        p.setLocation(x, y);
         return p;
     }
 
@@ -323,10 +317,10 @@ public class Gnomonic extends Azimuth {
      * @param y integer y coordinate
      * @param llp LatLonPoint
      * @return LatLonPoint llp
-     * @see Proj#inverse(Point)
+     * @see Proj#inverse(Point2D)
      * 
      */
-    public Point2D inverse(int x, int y, Point2D llp) {
+    public Point2D inverse(double x, double y, Point2D llp) {
         // convert from screen to world coordinates
         x = x - wx;
         y = hy - y;
@@ -390,9 +384,8 @@ public class Gnomonic extends Azimuth {
      * Get the upper left (northernmost and westernmost) point of the
      * projection.
      * <p>
-     * Returns the upper left point (or closest equivalent) of the
-     * projection based on the center point and height and width of
-     * screen.
+     * Returns the upper left point (or closest equivalent) of the projection
+     * based on the center point and height and width of screen.
      * 
      * @return LatLonPoint
      */
@@ -454,9 +447,8 @@ public class Gnomonic extends Azimuth {
     /**
      * Get the lower right (southeast) point of the projection.
      * <p>
-     * Returns the lower right point (or closest equivalent) of the
-     * projection based on the center point and height and width of
-     * screen.
+     * Returns the lower right point (or closest equivalent) of the projection
+     * based on the center point and height and width of screen.
      * <p>
      * This is trivial for most cylindrical projections, but much more
      * complicated for azimuthal projections.
