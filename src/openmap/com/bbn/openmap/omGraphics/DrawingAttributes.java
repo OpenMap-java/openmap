@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.23 $
-// $Date: 2005/08/09 20:01:46 $
+// $Revision: 1.24 $
+// $Date: 2006/02/23 15:30:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -93,8 +93,6 @@ import com.bbn.openmap.util.PropUtils;
  *     lineColor=AARRGGBB (Hex ARGB Color, black is default)
  *     # The Fill color for 2D shapes
  *     fillColor=AARRGGBB (Hex ARGB Color, clean is default)
- *     # The Text Color for objects where any text should be different than the line color.
- *     textColor=AARRGGBB (Hex ARGB Color, black is default)
  *     # A highlight color to switch a graphic to when &quot;selected&quot;.
  *     selectColor=AARRGGBB (Hex ARGB Color, black is default)
  *     # A file or URL that can be used for a fill pattern, in place of the fill color.
@@ -365,6 +363,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
         clone.setStroke(stroke);
         clone.baseScale = baseScale;
         clone.matted = matted;
+        clone.pointOval = pointOval;
+        clone.pointRadius = pointRadius;
     }
 
     public boolean equals(DrawingAttributes da) {
