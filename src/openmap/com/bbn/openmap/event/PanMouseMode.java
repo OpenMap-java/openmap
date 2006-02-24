@@ -23,7 +23,14 @@ import com.bbn.openmap.util.PropUtils;
 
 /**
  * PanMouseMode it is a class for Pan operation on the visible map. This class
- * show actual map in transparent mode. 25-feb-2005
+ * show actual map in transparent mode. 25-feb-2005. There are a couple of
+ * properties that can be set in this mouse mode:
+ * <pre>
+ * # Floating number between 0-1, with 1 being opaque, default .5
+ * panmm.opaqueness=.5f
+ * # True/false, to leave old map up behind panned version.
+ * panmm.leaveShadow=true
+ * </pre>
  * 
  * @author cursor
  */
@@ -31,7 +38,7 @@ public class PanMouseMode extends CoordMouseMode {
 
     public final static String OpaquenessProperty = "opaqueness";
     public final static String LeaveShadowProperty = "leaveShadow";
-    
+
     public final float DEFAULT_OPAQUENESS = 0.5f;
     public final static transient String modeID = "Pan";
 
@@ -63,11 +70,13 @@ public class PanMouseMode extends CoordMouseMode {
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
-        
-        opaqueness = PropUtils.floatFromProperties(props, prefix + OpaquenessProperty, opaqueness);
-        leaveShadow = PropUtils.booleanFromProperties(props, prefix + LeaveShadowProperty, leaveShadow);
+
+        opaqueness = PropUtils.floatFromProperties(props, prefix
+                + OpaquenessProperty, opaqueness);
+        leaveShadow = PropUtils.booleanFromProperties(props, prefix
+                + LeaveShadowProperty, leaveShadow);
     }
-    
+
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
         String prefix = PropUtils.getScopedPropertyPrefix(this);
@@ -75,10 +84,10 @@ public class PanMouseMode extends CoordMouseMode {
         props.put(prefix + LeaveShadowProperty, Boolean.toString(leaveShadow));
         return props;
     }
-    
+
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
-        
+
         String internString = i18n.get(PanMouseMode.class,
                 OpaquenessProperty,
                 I18n.TOOLTIP,
@@ -88,7 +97,7 @@ public class PanMouseMode extends CoordMouseMode {
                 OpaquenessProperty,
                 "Opaqueness");
         props.put(OpaquenessProperty + LabelEditorProperty, internString);
-        
+
         internString = i18n.get(PanMouseMode.class,
                 LeaveShadowProperty,
                 I18n.TOOLTIP,
@@ -98,8 +107,9 @@ public class PanMouseMode extends CoordMouseMode {
                 LeaveShadowProperty,
                 "Shadow current map");
         props.put(LeaveShadowProperty + LabelEditorProperty, internString);
-        props.put(LeaveShadowProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        
+        props.put(LeaveShadowProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
         return props;
     }
 
@@ -144,7 +154,7 @@ public class PanMouseMode extends CoordMouseMode {
                  * initial position
                  */
                 if (leaveShadow) {
-                  gr2d.drawImage(img, 0, 0, null);
+                    gr2d.drawImage(img, 0, 0, null);
                 } else {
                     gr2d.setPaint(mb.getBckgrnd());
                     gr2d.fillRect(0, 0, mb.getWidth(), mb.getHeight());
@@ -171,7 +181,8 @@ public class PanMouseMode extends CoordMouseMode {
             MapBean mb = (MapBean) arg0.getSource();
             Projection proj = mb.getProjection();
             Point2D center = proj.forward(proj.getCenter());
-            center.setLocation(center.getX() - arg0.getX() + oX,  center.getY() - arg0.getY() + oY);
+            center.setLocation(center.getX() - arg0.getX() + oX, center.getY()
+                    - arg0.getY() + oY);
             mb.setCenter(proj.inverse(center));
             isPanning = false;
             img = null;
