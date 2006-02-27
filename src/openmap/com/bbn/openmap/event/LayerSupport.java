@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/LayerSupport.java,v $
 // $RCSfile: LayerSupport.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/05/25 19:48:38 $
+// $Revision: 1.7 $
+// $Date: 2006/02/27 23:19:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -74,7 +74,7 @@ public class LayerSupport extends ListenerSupport {
      * @param layers the list of layers
      * @see LayerEvent
      */
-    public synchronized void fireLayer(int type, Layer[] layers) {
+    public void fireLayer(int type, Layer[] layers) {
         Debug.message("layersupport", "LayerSupport | fireLayer");
 
         Iterator it = iterator();

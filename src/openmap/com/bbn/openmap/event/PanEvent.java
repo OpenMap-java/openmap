@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/PanEvent.java,v $
 // $RCSfile: PanEvent.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:45 $
+// $Revision: 1.4 $
+// $Date: 2006/02/27 23:19:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,7 +82,7 @@ public class PanEvent extends java.util.EventObject {
     /**
      * Create a PanEvent.
      * <ul>
-     * <li><code>pan(˜180)</code> pan south
+     * <li><code>pan(-180)</code> pan south
      * <li><code>pan(-90)</code> pan west
      * <li><code>pan(0)</code> pan north
      * <li><code>pan(90)</code> pan east
@@ -99,7 +99,7 @@ public class PanEvent extends java.util.EventObject {
     /**
      * Create a PanEvent.
      * <ul>
-     * <li><code>pan(˜180, c)</code> pan south `c' degrees
+     * <li><code>pan(-180, c)</code> pan south `c' degrees
      * <li><code>pan(-90, c)</code> pan west `c' degrees
      * <li><code>pan(0, c)</code> pan north `c' degrees
      * <li><code>pan(90, c)</code> pan east `c' degrees

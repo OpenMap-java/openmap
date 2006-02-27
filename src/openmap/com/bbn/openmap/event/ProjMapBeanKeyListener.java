@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProjMapBeanKeyListener.java,v $
 // $RCSfile: ProjMapBeanKeyListener.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:45 $
+// $Revision: 1.5 $
+// $Date: 2006/02/27 23:19:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -92,7 +92,8 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener implements
             }
 
             break;
-        case KeyEvent.VK_PLUS:
+            // VK_PLUS doesn't react on '+' events...
+        case KeyEvent.VK_EQUALS:
             zoomers.fireZoom(ZoomEvent.RELATIVE, 1f / zoomFactor);
             break;
         case KeyEvent.VK_MINUS:
