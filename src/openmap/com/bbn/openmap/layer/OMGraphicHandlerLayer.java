@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.28 $
-// $Date: 2005/09/21 13:54:11 $
+// $Revision: 1.29 $
+// $Date: 2006/02/27 20:46:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -867,7 +867,7 @@ public class OMGraphicHandlerLayer extends Layer implements
                 Iterator it = mmv.iterator();
                 int i = 0;
                 while (it.hasNext()) {
-                    mm[i] = (String) it.next();
+                    mm[i++] = (String) it.next();
                 }
                 setMouseModeIDsForEvents(mm);
             }
