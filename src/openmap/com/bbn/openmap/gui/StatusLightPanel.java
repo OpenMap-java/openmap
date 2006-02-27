@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/StatusLightPanel.java,v $
 // $RCSfile: StatusLightPanel.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 19:14:52 $
+// $Revision: 1.6 $
+// $Date: 2006/02/27 23:21:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -350,9 +350,14 @@ public class StatusLightPanel extends OMComponentPanel implements
             props = new Properties();
         }
 
-        props.put(LightTriggersProperty, "Lights should launch layer palettes");
-        props.put(LightTriggersProperty + ScopedEditorProperty,
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                StatusLightPanel.class,
+                LightTriggersProperty,
+                "Enable Triggers",
+                "Layer status indicators should launch layer palettes.",
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        
         return props;
     }
 }
