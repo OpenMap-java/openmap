@@ -802,4 +802,28 @@ public class DistanceMouseMode extends CoordMouseMode {
         paintRubberband(rPoint1, rPoint2, g);
     }
 
+    public boolean isDisplayCircle() {
+        return displayCircle;
+    }
+
+    public void setDisplayCircle(boolean displayCircle) {
+        this.displayCircle = displayCircle;
+    }
+
+    public boolean isShowAngle() {
+        return showAngle;
+    }
+
+    public void setShowAngle(boolean showAngle) {
+        this.showAngle = showAngle;
+    }
+
+    public double getTotalDistance() {
+        return totalDistance;
+    }
+
+    public void setTotalDistance(double totalDistance) {
+        this.totalDistance = totalDistance;
+    }
+
 }
