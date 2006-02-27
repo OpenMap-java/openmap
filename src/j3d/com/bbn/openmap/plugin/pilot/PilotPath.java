@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/PilotPath.java,v $
 // $RCSfile: PilotPath.java,v $
-// $Revision: 1.6 $
-// $Date: 2006/02/16 16:22:48 $
+// $Revision: 1.7 $
+// $Date: 2006/02/27 15:11:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -389,7 +389,7 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
                 new javax.media.j3d.Background(.3f, .3f, .3f),
                 OM3DConstants.CONTENT_MASK_OMGRAPHICHANDLERLAYERS
                         | OM3DConstants.CONTENT_MASK_OM3DGRAPHICHANDLERS);
-        viewer.show();
+        viewer.setVisible(true);
     }
 
     public final static String Launch3DCmd = "Launch3D";

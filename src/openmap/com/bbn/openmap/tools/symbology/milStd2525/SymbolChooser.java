@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolChooser.java,v $
 // $RCSfile: SymbolChooser.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/08/11 20:39:17 $
+// $Revision: 1.13 $
+// $Date: 2006/02/27 15:11:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -479,7 +479,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
         dialog.addComponentListener(new SymbolChooserDialog.DisposeOnClose());
         pane.setCode(defaultSymbolCode);
         pane.handleManualNameFieldUpdate(defaultSymbolCode);
-        dialog.show(); // blocks until user brings dialog down...
+        dialog.setVisible(true); // blocks until user brings dialog down...
 
         return ok.getImageIcon();
     }
@@ -844,7 +844,7 @@ class SymbolChooserDialog extends JDialog {
         }
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                hide();
+                setVisible(false);
             }
         });
         buttonPane.add(okButton);
@@ -857,7 +857,7 @@ class SymbolChooserDialog extends JDialog {
         }
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                hide();
+                setVisible(false);
             }
         });
         buttonPane.add(cancelButton);
@@ -880,7 +880,7 @@ class SymbolChooserDialog extends JDialog {
 
     public void show() {
         initialCode = chooserPane.getCode();
-        super.show();
+        super.setVisible(true);
     }
 
     public void reset() {
@@ -891,7 +891,7 @@ class SymbolChooserDialog extends JDialog {
     static class Closer extends WindowAdapter implements Serializable {
         public void windowClosing(WindowEvent e) {
             Window w = e.getWindow();
-            w.hide();
+            w.setVisible(false);
         }
     }
 

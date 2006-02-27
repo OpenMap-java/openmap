@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OM3DViewerLauncher.java,v $
 // $RCSfile: OM3DViewerLauncher.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/11 19:27:04 $
+// $Revision: 1.6 $
+// $Date: 2006/02/27 15:11:34 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -72,7 +72,7 @@ public class OM3DViewerLauncher extends MapHandlerChild implements
                     new javax.media.j3d.Background(.3f, .3f, .3f),
                     OM3DConstants.CONTENT_MASK_OMGRAPHICHANDLERLAYERS
                             | OM3DConstants.CONTENT_MASK_OM3DGRAPHICHANDLERS);
-            viewer.show();
+            viewer.setVisible(true);
         }
     }
 

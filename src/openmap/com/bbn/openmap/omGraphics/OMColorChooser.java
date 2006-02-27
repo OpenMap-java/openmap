@@ -13,8 +13,8 @@
 // **********************************************************************
 // 
 // $RCSfile: OMColorChooser.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/01/27 15:14:44 $
+// $Revision: 1.10 $
+// $Date: 2006/02/27 15:11:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -85,7 +85,7 @@ public class OMColorChooser {
                 jcc,
                 ok,
                 null);
-        colorDialog.show();
+        colorDialog.setVisible(true);
         return ok.getColor();
     }
 

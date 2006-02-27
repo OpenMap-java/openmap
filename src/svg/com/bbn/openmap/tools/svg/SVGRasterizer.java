@@ -285,7 +285,7 @@ public class SVGRasterizer {
             });
             frame.getContentPane().add(new JLabel(new ImageIcon(bi)));
             frame.pack();
-            frame.show();
+            frame.setVisible(true);
 
         } catch (TranscoderException e2) {
             e2.printStackTrace();

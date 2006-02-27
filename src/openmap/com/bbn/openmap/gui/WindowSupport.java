@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.19 $
-// $Date: 2006/02/14 20:55:52 $
+// $Revision: 1.20 $
+// $Date: 2006/02/27 15:11:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -616,7 +616,7 @@ public class WindowSupport extends ListenerSupport implements
                     }
                 }
             }
-            super.show();
+            super.setVisible(true);
         }
 
     }
@@ -668,7 +668,7 @@ public class WindowSupport extends ListenerSupport implements
                         setDefaultPosition(this);
                     }
                 }
-                super.show();
+                super.setVisible(true);
             }
             toFront();
         }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.17 $
-// $Date: 2006/02/13 16:58:32 $
+// $Revision: 1.18 $
+// $Date: 2006/02/27 15:11:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -389,7 +389,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
                 int h = map.getHeight();
                 nf.setLocation(x + (w-nf.getWidth())/2, y + (h - nf.getHeight())/2);
             }
-            nf.show();
+            nf.setVisible(true);
         }
 
         public void init(float lat, float lon, float s, String projID) {

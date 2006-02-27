@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileGenerator.java,v $
 // $RCSfile: ProfileGenerator.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/12/09 21:09:11 $
+// $Revision: 1.10 $
+// $Date: 2006/02/27 15:11:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -343,7 +343,7 @@ public class ProfileGenerator implements TerrainTool {
                 "Path Profile",
                 (ComponentListener) null);
 
-        jf.show();
+        jf.setVisible(true);
 
         //      byte[] imageBytes = formatter.getImageBytes();
         //      String tmppath = null;

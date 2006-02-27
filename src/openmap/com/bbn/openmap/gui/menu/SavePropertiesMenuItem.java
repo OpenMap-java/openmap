@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SavePropertiesMenuItem.java,v $
 // $RCSfile: SavePropertiesMenuItem.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.5 $
+// $Date: 2006/02/27 15:11:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,7 +55,7 @@ public class SavePropertiesMenuItem extends MapHandlerMenuItem implements
         }
 
         FileDialog fd = new FileDialog(new Frame(), "Saving the map as Properties file...", FileDialog.SAVE);
-        fd.show();
+        fd.setVisible(true);
 
         String fileName = fd.getFile();
         String dirName = fd.getDirectory();

@@ -53,7 +53,7 @@ public class CustomizerDialog extends Dialog implements ActionListener {
         int y = frame.getLocation().y + 100;
         setLocation(x, y);
 
-        show();
+        setVisible(true);
     }
 
     public void doLayout() {

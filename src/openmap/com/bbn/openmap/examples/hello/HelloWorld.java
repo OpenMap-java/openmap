@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/hello/HelloWorld.java,v $
 // $RCSfile: HelloWorld.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:46 $
+// $Revision: 1.5 $
+// $Date: 2006/02/27 15:11:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -170,7 +170,7 @@ public class HelloWorld extends JFrame {
             HelloWorld hello = new HelloWorld(helloProps);
             hello.setSize(700, 500);
             hello.pack();
-            hello.show();
+            hello.setVisible(true);
         } catch (MultipleSoloMapComponentException msmce) {
             // The MapHandler is only allowed to have one of certain
             // items. These items implement the SoloMapComponent

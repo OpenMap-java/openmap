@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrame.java,v $
 // $RCSfile: DTEDFrame.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/04 18:08:12 $
+// $Revision: 1.6 $
+// $Date: 2006/02/27 15:11:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -603,7 +603,7 @@ public class DTEDFrame implements Closable {
         });
 
         window.setSize(ras.getWidth(), ras.getHeight());
-        window.show();
+        window.setVisible(true);
         window.repaint();
     }
 }

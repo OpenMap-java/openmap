@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OpenMapFrame.java,v $
 // $RCSfile: OpenMapFrame.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/08/09 17:49:51 $
+// $Revision: 1.13 $
+// $Date: 2006/02/27 15:11:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -194,7 +194,7 @@ public class OpenMapFrame extends JFrame implements
 
             setPosition();
             invalidate();
-            show();
+            setVisible(true);
         }
 
         // We shouldn't find this if we've already defined one

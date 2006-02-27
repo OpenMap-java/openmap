@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.13 $
-// $Date: 2004/10/14 18:05:40 $
+// $Revision: 1.14 $
+// $Date: 2006/02/27 15:11:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -84,7 +84,7 @@ public class OpenMap {
         setWindowListenerOnFrame(omf);
         getMapHandler().add(omf);
 
-        omf.show();
+        omf.setVisible(true);
         mapPanel.getMapBean().showLayerPalettes();
         Debug.message("basic", "OpenMap: READY");
     }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconFactoryTestingTool.java,v $
 // $RCSfile: IconFactoryTestingTool.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:27 $
+// $Revision: 1.5 $
+// $Date: 2006/02/27 15:11:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -129,6 +129,6 @@ public class IconFactoryTestingTool implements Tool {
             }
         });
 
-        frame.show();
+        frame.setVisible(true);
     }
 }

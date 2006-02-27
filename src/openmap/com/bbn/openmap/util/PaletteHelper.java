@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PaletteHelper.java,v $
 // $RCSfile: PaletteHelper.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:30 $
+// $Revision: 1.4 $
+// $Date: 2006/02/27 15:11:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -277,7 +277,7 @@ public class PaletteHelper {
 
         dismiss.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.hide();
+                frame.setVisible(false);
             }
         });
         return frame;

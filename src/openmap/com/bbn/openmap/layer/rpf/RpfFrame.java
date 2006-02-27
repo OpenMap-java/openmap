@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrame.java,v $
 // $RCSfile: RpfFrame.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 18:45:53 $
+// $Revision: 1.9 $
+// $Date: 2006/02/27 15:11:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1096,6 +1096,6 @@ public class RpfFrame {
                 "RPF Frame",
                 null);
         frame.setSize(new Dimension(500, 500));
-        frame.show();
+        frame.setVisible(true);
     }
 }
