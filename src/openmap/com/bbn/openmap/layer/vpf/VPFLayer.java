@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.19 $
-// $Date: 2005/12/09 21:08:57 $
+// $Revision: 1.20 $
+// $Date: 2006/03/01 15:56:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -614,7 +614,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
             } else {
                 warehouse = new VPFLayerGraphicWarehouse();
             }
-        } else if ((sbf && warehouse instanceof VPFLayerGraphicWarehouse)
+        } else if ((sbf && !(warehouse instanceof VPFFeatureGraphicWarehouse))
                 || (!sbf && warehouse instanceof VPFFeatureGraphicWarehouse)) {
             warehouse = null;
             checkWarehouse(sbf);
