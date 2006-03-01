@@ -31,6 +31,8 @@ import com.bbn.openmap.util.Debug;
  * DDFFieldDefn. All subfields of a field will occur in each occurance
  * of that field (as a DDFField) in a DDFRecord. Subfield's actually
  * contain formatted data (as instances within a record).
+ * 
+ * @author Guillaume Pelletier provided fix for Big Endian support (important for S-57)
  */
 public class DDFSubfieldDefinition implements DDFConstants {
 
@@ -463,6 +465,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
             // abyData[nFormatWidth-i-1] = pachSourceData[i];
             // }
             // } else {
+//            System.arraycopy(pachSourceData, 0, abyData, 8-nFormatWidth, nFormatWidth);
             System.arraycopy(pachSourceData, 0, abyData, 0, nFormatWidth);
             // }
 
@@ -471,7 +474,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
             case DDFBinaryFormat.UInt:
             case DDFBinaryFormat.SInt:
             case DDFBinaryFormat.FloatReal:
-                return (double) MoreMath.BuildIntegerBE(abyData);
+                return (int) pszFormatString.charAt(0) =='B' ? MoreMath.BuildIntegerBE(abyData): MoreMath.BuildIntegerLE(abyData);
 
             // if (nFormatWidth == 1)
             // return(abyData[0]);
@@ -569,7 +572,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
 
         case 'B':
         case 'b':
-            byte[] abyData = new byte[8];
+            byte[] abyData = new byte[4];
             if (nFormatWidth > nMaxBytes) {
                 Debug.error("DDFSubfieldDefinition: format width is greater than max bytes for int");
                 return 0;
@@ -579,6 +582,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
                 pnConsumedBytes.value = nFormatWidth;
             }
 
+//           System.arraycopy(pachSourceData, 0, abyData, 4-nFormatWidth, nFormatWidth);
             System.arraycopy(pachSourceData, 0, abyData, 0, nFormatWidth);
 
             // Interpret the bytes of data.
@@ -586,7 +590,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
             case DDFBinaryFormat.UInt:
             case DDFBinaryFormat.SInt:
             case DDFBinaryFormat.FloatReal:
-                return (int) MoreMath.BuildIntegerBE(abyData);
+                return (int) pszFormatString.charAt(0) =='B' ? MoreMath.BuildIntegerBE(abyData): MoreMath.BuildIntegerLE(abyData);
 
             // case DDFBinaryFormat.UInt:
             // if (nFormatWidth == 4)
