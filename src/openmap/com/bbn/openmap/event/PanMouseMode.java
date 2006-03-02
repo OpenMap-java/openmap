@@ -8,15 +8,20 @@ package com.bbn.openmap.event;
 
 import java.awt.AlphaComposite;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Properties;
 
-import com.bbn.openmap.I18n;
-import com.bbn.openmap.Layer;
+import javax.swing.ImageIcon;
+import javax.swing.border.Border;
+
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.PropUtils;
@@ -25,197 +30,271 @@ import com.bbn.openmap.util.PropUtils;
  * PanMouseMode it is a class for Pan operation on the visible map. This class
  * show actual map in transparent mode. 25-feb-2005. There are a couple of
  * properties that can be set in this mouse mode:
+ * 
  * <pre>
- * # Floating number between 0-1, with 1 being opaque, default .5
- * panmm.opaqueness=.5f
- * # True/false, to leave old map up behind panned version.
- * panmm.leaveShadow=true
+ *         # Floating number between 0-1, with 1 being opaque, default .5
+ *         panmm.opaqueness=.5f
+ *         # True/false, to leave old map up behind panned version.
+ *         panmm.leaveShadow=true
  * </pre>
  * 
  * @author cursor
  */
-public class PanMouseMode extends CoordMouseMode {
+public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
 
-    public final static String OpaquenessProperty = "opaqueness";
-    public final static String LeaveShadowProperty = "leaveShadow";
+	public final static String OpaquenessProperty = "opaqueness";
 
-    public final float DEFAULT_OPAQUENESS = 0.5f;
-    public final static transient String modeID = "Pan";
+	public final static String LeaveShadowProperty = "leaveShadow";
 
-    private boolean isPanning = false;
-    private BufferedImage img = null;
-    private int oX, oY;
+	public final static String UseCursorProperty = "useCursor";
 
-    private float opaqueness = DEFAULT_OPAQUENESS;
-    private boolean leaveShadow = true;
+	public final float DEFAULT_OPAQUENESS = 0.5f;
 
-    // private Cursor myPointer;
+	public final static transient String modeID = "Pan";
 
-    public PanMouseMode() {
-        super(modeID, true);
+	private boolean isPanning = false;
 
-        setModeCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+	private BufferedImage bufferedMapImage = null;
 
-        /*
-         * For who like make his CustomCursor
-         * 
-         * Toolkit tk = Toolkit.getDefaultToolkit(); ImageIcon pointer = new
-         * ImageIcon(getClass().getResource("/icons/pan.gif")); myPointer=
-         * tk.createCustomCursor(pointer.getImage(), new Point(0,0), "PP");
-         * setModeCursor(myPointer);
-         */
+	private BufferedImage bufferedRenderingImage = null;
 
-    }
+	private int oX, oY;
 
-    public void setProperties(String prefix, Properties props) {
-        super.setProperties(prefix, props);
-        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+	private float opaqueness;
 
-        opaqueness = PropUtils.floatFromProperties(props, prefix
-                + OpaquenessProperty, opaqueness);
-        leaveShadow = PropUtils.booleanFromProperties(props, prefix
-                + LeaveShadowProperty, leaveShadow);
-    }
+	private boolean leaveShadow;
 
-    public Properties getProperties(Properties props) {
-        props = super.getProperties(props);
-        String prefix = PropUtils.getScopedPropertyPrefix(this);
-        props.put(prefix + OpaquenessProperty, Float.toString(opaqueness));
-        props.put(prefix + LeaveShadowProperty, Boolean.toString(leaveShadow));
-        return props;
-    }
+	private boolean useCursor;
 
-    public Properties getPropertyInfo(Properties props) {
-        props = super.getPropertyInfo(props);
+	public PanMouseMode() {
+		super(modeID, true);
+		setUseCursor(true);
+		setLeaveShadow(true);
+		setOpaqueness(DEFAULT_OPAQUENESS);
+	}
 
-        String internString = i18n.get(PanMouseMode.class,
-                OpaquenessProperty,
-                I18n.TOOLTIP,
-                "Transparency level for panned map (between 0 and 1).");
-        props.put(Layer.AddToBeanContextProperty, internString);
-        internString = i18n.get(PanMouseMode.class,
-                OpaquenessProperty,
-                "Opaqueness");
-        props.put(OpaquenessProperty + LabelEditorProperty, internString);
+	public void setActive(boolean val) {
+		if (!val) {
+			bufferedMapImage = null;
+			bufferedRenderingImage = null;
+		}
+	}
 
-        internString = i18n.get(PanMouseMode.class,
-                LeaveShadowProperty,
-                I18n.TOOLTIP,
-                "Flag to display current map while panning.");
-        props.put(Layer.AddToBeanContextProperty, internString);
-        internString = i18n.get(PanMouseMode.class,
-                LeaveShadowProperty,
-                "Shadow current map");
-        props.put(LeaveShadowProperty + LabelEditorProperty, internString);
-        props.put(LeaveShadowProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+	/**
+	 * @return Returns the useCursor.
+	 */
+	public boolean isUseCursor() {
+		return useCursor;
+	}
 
-        return props;
-    }
+	/**
+	 * @param useCursor
+	 *            The useCursor to set.
+	 */
+	public void setUseCursor(boolean useCursor) {
+		this.useCursor = useCursor;
+		if (useCursor) {
+			/*
+			 * For who like make his CustomCursor
+			 */
+			try {
+				Toolkit tk = Toolkit.getDefaultToolkit();
+				ImageIcon pointer = new ImageIcon(getClass().getResource(
+						"pan.gif"));
+				Dimension bestSize = tk.getBestCursorSize(pointer
+						.getIconWidth(), pointer.getIconHeight());
+				Image pointerImage = pointer.getImage().getScaledInstance(
+						(int) bestSize.getWidth(), (int) bestSize.getHeight(),
+						Image.SCALE_SMOOTH);
+				Cursor cursor = tk.createCustomCursor(pointerImage, new Point(
+						0, 0), "PP");
+				setModeCursor(cursor);
+				return;
+			} catch (Exception e) {
+				// Problem finding image probably, just move on.
+			}
+		}
 
-    /**
-     * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
-     *      The first click for drag, the image is generated. This image is
-     *      redrawing when the mouse is move, but, I need to repain the original
-     *      image.
-     */
-    public void mouseDragged(MouseEvent arg0) {
+		setModeCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+	}
 
-        int x = arg0.getX();
-        int y = arg0.getY();
+	public void setProperties(String prefix, Properties props) {
+		super.setProperties(prefix, props);
+		prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        MapBean mb = ((MapBean) arg0.getSource());
-        Graphics2D gr2d = (Graphics2D) mb.getGraphics();
+		opaqueness = PropUtils.floatFromProperties(props, prefix
+				+ OpaquenessProperty, opaqueness);
+		leaveShadow = PropUtils.booleanFromProperties(props, prefix
+				+ LeaveShadowProperty, leaveShadow);
 
-        if (!isPanning) {
-            int w = mb.getWidth();
-            int h = mb.getHeight();
+		setUseCursor(PropUtils.booleanFromProperties(props, prefix
+				+ UseCursorProperty, isUseCursor()));
 
-            /*
-             * Making the image
-             */
+	}
 
-            img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            Graphics2D g = (Graphics2D) ge.createGraphics(img);
-            g.setClip(0, 0, w, h);
-            mb.paintAll(g);
+	public Properties getProperties(Properties props) {
+		props = super.getProperties(props);
+		String prefix = PropUtils.getScopedPropertyPrefix(this);
+		props.put(prefix + OpaquenessProperty, Float.toString(getOpaqueness()));
+		props.put(prefix + LeaveShadowProperty, Boolean
+				.toString(isLeaveShadow()));
+		props.put(prefix + UseCursorProperty, Boolean.toString(isUseCursor()));
+		return props;
+	}
 
-            oX = x;
-            oY = y;
+	public Properties getPropertyInfo(Properties props) {
+		props = super.getPropertyInfo(props);
 
-            isPanning = true;
+		PropUtils.setI18NPropertyInfo(
+						i18n,
+						props,
+						PanMouseMode.class,
+						OpaquenessProperty,
+						"Transparency",
+						"Transparency level for moving map, between 0 (clear) and 1 (opaque).",
+						null);
+		PropUtils.setI18NPropertyInfo(i18n, props, PanMouseMode.class,
+				LeaveShadowProperty, "Leave Shadow",
+				"Display current map in background while panning.",
+				"com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        } else {
-            if (img != null) {
+		PropUtils.setI18NPropertyInfo(i18n, props, PanMouseMode.class,
+				UseCursorProperty, "Use Cursor",
+				"Use hand cursor for mouse mode.",
+				"com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+		
+		return props;
+	}
 
-                /*
-                 * Drawing original image whithout transparence and in the
-                 * initial position
-                 */
-                if (leaveShadow) {
-                    gr2d.drawImage(img, 0, 0, null);
-                } else {
-                    gr2d.setPaint(mb.getBckgrnd());
-                    gr2d.fillRect(0, 0, mb.getWidth(), mb.getHeight());
-                }
+	/**
+	 * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
+	 *      The first click for drag, the image is generated. This image is
+	 *      redrawing when the mouse is move, but, I need to repain the original
+	 *      image.
+	 */
+	public void mouseDragged(MouseEvent arg0) {
 
-                /*
-                 * Drawing image whith transparence and in the mouse position
-                 * minus origianl mouse click position
-                 */
-                gr2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                        opaqueness));
-                gr2d.drawImage(img, x - oX, y - oY, null);
-            }
-        }
-        super.mouseDragged(arg0);
-    }
+		int x = arg0.getX();
+		int y = arg0.getY();
 
-    /**
-     * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-     *      Make Pan event for the map.
-     */
-    public void mouseReleased(MouseEvent arg0) {
-        if (isPanning && arg0.getSource() instanceof MapBean) {
-            MapBean mb = (MapBean) arg0.getSource();
-            Projection proj = mb.getProjection();
-            Point2D center = proj.forward(proj.getCenter());
-            center.setLocation(center.getX() - arg0.getX() + oX, center.getY()
-                    - arg0.getY() + oY);
-            mb.setCenter(proj.inverse(center));
-            isPanning = false;
-            img = null;
-        }
-        super.mouseReleased(arg0);
-    }
+		MapBean mb = ((MapBean) arg0.getSource());
 
-    public boolean isLeaveShadow() {
-        return leaveShadow;
-    }
+		if (!isPanning) {
+			int w = mb.getWidth();
+			int h = mb.getHeight();
 
-    public void setLeaveShadow(boolean leaveShadow) {
-        this.leaveShadow = leaveShadow;
-    }
+			/*
+			 * Making the image
+			 */
+			
+			if (bufferedMapImage == null || bufferedRenderingImage == null) {
+				createBuffers(w, h);
+			}
 
-    public float getOpaqueness() {
-        return opaqueness;
-    }
+			GraphicsEnvironment ge = GraphicsEnvironment
+					.getLocalGraphicsEnvironment();
+			Graphics2D g = (Graphics2D) ge.createGraphics(bufferedMapImage);
+			g.setClip(0, 0, w, h);
+			Border border = mb.getBorder();
+			mb.setBorder(null);
+			mb.paintAll(g);
+			mb.setBorder(border);
 
-    public void setOpaqueness(float opaqueness) {
-        this.opaqueness = opaqueness;
-    }
+			oX = x;
+			oY = y;
 
-    public boolean isPanning() {
-        return isPanning;
-    }
+			isPanning = true;
 
-    public int getOX() {
-        return oX;
-    }
+		} else {
+			if (bufferedMapImage != null && bufferedRenderingImage != null) {
+				Graphics2D gr2d = (Graphics2D) bufferedRenderingImage
+						.getGraphics();
+				/*
+				 * Drawing original image whithout transparence and in the
+				 * initial position
+				 */
+				if (leaveShadow) {
+					gr2d.drawImage(bufferedMapImage, 0, 0, null);
+				} else {
+					gr2d.setPaint(mb.getBckgrnd());
+					gr2d.fillRect(0, 0, mb.getWidth(), mb.getHeight());
+				}
 
-    public int getOY() {
-        return oY;
-    }
+				/*
+				 * Drawing image whith transparence and in the mouse position
+				 * minus origianl mouse click position
+				 */
+				gr2d.setComposite(AlphaComposite.getInstance(
+						AlphaComposite.SRC_OVER, opaqueness));
+				gr2d.drawImage(bufferedMapImage, x - oX, y - oY, null);
 
+				((Graphics2D) mb.getGraphics()).drawImage(
+						bufferedRenderingImage, 0, 0, null);
+			}
+		}
+		super.mouseDragged(arg0);
+	}
+
+	/**
+	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 *      Make Pan event for the map.
+	 */
+	public void mouseReleased(MouseEvent arg0) {
+		if (isPanning && arg0.getSource() instanceof MapBean) {
+			MapBean mb = (MapBean) arg0.getSource();
+			Projection proj = mb.getProjection();
+			Point2D center = proj.forward(proj.getCenter());
+			center.setLocation(center.getX() - arg0.getX() + oX, center.getY()
+					- arg0.getY() + oY);
+			mb.setCenter(proj.inverse(center));
+			isPanning = false;
+			//bufferedMapImage = null; //clean up when not active...
+		}
+		super.mouseReleased(arg0);
+	}
+
+	public boolean isLeaveShadow() {
+		return leaveShadow;
+	}
+
+	public void setLeaveShadow(boolean leaveShadow) {
+		this.leaveShadow = leaveShadow;
+	}
+
+	public float getOpaqueness() {
+		return opaqueness;
+	}
+
+	public void setOpaqueness(float opaqueness) {
+		this.opaqueness = opaqueness;
+	}
+
+	public boolean isPanning() {
+		return isPanning;
+	}
+
+	public int getOX() {
+		return oX;
+	}
+
+	public int getOY() {
+		return oY;
+	}
+
+	public void projectionChanged(ProjectionEvent e) {
+		Object obj = e.getSource();
+		if (obj instanceof MapBean) {
+			MapBean mb = (MapBean) obj;
+			int w = mb.getWidth();
+			int h = mb.getHeight();
+			createBuffers(w, h);
+		}
+	}
+
+	public void createBuffers(int w, int h) {
+		bufferedMapImage = new BufferedImage(w, h,
+				BufferedImage.TYPE_INT_ARGB);
+		bufferedRenderingImage = new BufferedImage(w, h,
+				BufferedImage.TYPE_INT_ARGB);
+	}
 }
