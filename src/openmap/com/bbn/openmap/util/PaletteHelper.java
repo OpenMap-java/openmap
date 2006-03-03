@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PaletteHelper.java,v $
 // $RCSfile: PaletteHelper.java,v $
-// $Revision: 1.4 $
-// $Date: 2006/02/27 15:11:36 $
+// $Revision: 1.5 $
+// $Date: 2006/03/03 20:19:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,7 @@ package com.bbn.openmap.util;
 /*  AWT & Schwing  */
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,6 +47,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.event.InternalFrameListener;
 
 import com.bbn.openmap.Layer;
@@ -389,5 +391,15 @@ public class PaletteHelper {
         paletteWindow.pack();
 
         return paletteWindow;
+    }
+    
+    public static JComponent getToolBarFill(int orientation) {
+        Dimension dim = null;
+        if (orientation == SwingConstants.HORIZONTAL) {
+            dim = new Dimension(2, 0);
+        } else {
+            dim = new Dimension(0, 2);
+        }
+        return new Box.Filler(dim, dim, dim);
     }
 }
