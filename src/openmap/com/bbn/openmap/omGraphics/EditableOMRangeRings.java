@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRangeRings.java,v $
 // $RCSfile: EditableOMRangeRings.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/12/28 22:28:55 $
+// $Revision: 1.11 $
+// $Date: 2006/03/06 15:56:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,7 +29,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
@@ -107,7 +107,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
     public Component getGUI(GraphicAttributes graphicAttributes) {
         Debug.message("eomg", "EditableOMRangeRings.getGUI");
         if (graphicAttributes != null) {
-            JPanel panel = graphicAttributes.getColorAndLineGUI();
+            JComponent panel = graphicAttributes.getColorAndLineGUI();
             panel.add(getRangeRingGUI());
             return panel;
         } else {

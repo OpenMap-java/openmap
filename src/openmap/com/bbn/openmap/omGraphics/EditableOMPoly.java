@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.14 $
-// $Date: 2006/01/05 15:21:17 $
+// $Revision: 1.15 $
+// $Date: 2006/03/06 15:56:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,7 +36,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.gui.GridBagToolBar;
@@ -50,6 +50,7 @@ import com.bbn.openmap.omGraphics.editable.PolyUndefinedState;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PaletteHelper;
 
 /**
  * The EditableOMPoly encompasses an OMPoly, providing methods for modifying or
@@ -585,7 +586,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
 
                 float newlat;
                 float newlon;
-                
+
                 if (rads) {
                     newlat = (float) llp.getRadLat();
                     newlon = (float) llp.getRadLon();
@@ -593,10 +594,8 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                     newlat = (float) llp.getY();
                     newlon = (float) llp.getX();
                 }
-                
-                poly.setLocation(newlat, newlon,
-                        poly.getUnits(),
-                        ints);
+
+                poly.setLocation(newlat, newlon, poly.getUnits(), ints);
 
             } else {
 
@@ -1308,8 +1307,8 @@ public class EditableOMPoly extends EditableOMAbstractLine {
         if (graphicAttributes != null) {
             JMenu ahm = getArrowHeadMenu();
             graphicAttributes.setLineMenuAdditions(new JMenu[] { ahm });
-            Component gaGUI = graphicAttributes.getGUI();
-            ((JComponent) gaGUI).add(getPolyGUI());
+            JComponent gaGUI = (JComponent) graphicAttributes.getGUI();
+            getPolyGUI(graphicAttributes.getOrientation(), gaGUI);
             return gaGUI;
         } else {
             return getPolyGUI();
@@ -1335,14 +1334,34 @@ public class EditableOMPoly extends EditableOMAbstractLine {
         }
     }
 
-    public JToolBar getPolyGUI() {
-        return getPolyGUI(true, true, true);
+    public JComponent getPolyGUI() {
+        return getPolyGUI(true, true, true, SwingConstants.HORIZONTAL);
     }
 
-    public JToolBar getPolyGUI(boolean includeEnclose, boolean includeAdd,
-                               boolean includeDelete) {
-        JToolBar buttonBox = new GridBagToolBar();
+    public JComponent getPolyGUI(int orientation, JComponent toolbar) {
+        return getPolyGUI(true, true, true, orientation, toolbar);
+    }
 
+    public JComponent getPolyGUI(boolean includeEnclose, boolean includeAdd,
+                                 boolean includeDelete, int orientation) {
+        return getPolyGUI(includeEnclose,
+                includeAdd,
+                includeDelete,
+                orientation,
+                null);
+    }
+
+    public JComponent getPolyGUI(boolean includeEnclose, boolean includeAdd,
+                                 boolean includeDelete, int orientation,
+                                 JComponent buttonBox) {
+
+        if (buttonBox == null) {
+            buttonBox = new GridBagToolBar();
+            ((GridBagToolBar) buttonBox).setOrientation(orientation);
+        }
+        
+        buttonBox.add(PaletteHelper.getToolBarFill(orientation));
+        
         URL url;
         ImageIcon imageIcon;
         if (polygonButton == null) {

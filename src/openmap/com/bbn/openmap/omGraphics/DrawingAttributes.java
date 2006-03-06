@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.24 $
-// $Date: 2006/02/23 15:30:45 $
+// $Revision: 1.25 $
+// $Date: 2006/03/06 15:56:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,12 +52,13 @@ import java.util.StringTokenizer;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
@@ -68,120 +69,128 @@ import com.bbn.openmap.tools.icon.IconPartList;
 import com.bbn.openmap.tools.icon.OMIconFactory;
 import com.bbn.openmap.tools.icon.OpenMapAppPartCollection;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
 
 /**
- * DrawingAttributes provides a mechanism for loading and managing
- * different drawing attributes that may be used. Several layers need
- * to be able to have Properties define how objects should be drawn,
- * and the list of these drawing attributes tend to be the same. The
- * DrawingAttributes class fishes out the applicable properties for
- * you, creates the objects needed, and then lets you get those
- * objects when needed.
+ * DrawingAttributes provides a mechanism for loading and managing different
+ * drawing attributes that may be used. Several layers need to be able to have
+ * Properties define how objects should be drawn, and the list of these drawing
+ * attributes tend to be the same. The DrawingAttributes class fishes out the
+ * applicable properties for you, creates the objects needed, and then lets you
+ * get those objects when needed.
  * <P>
  * 
- * The list of properties that the DrawingAttributes object can handle
- * are listed below. If a property is not set, the default value will
- * be used.
+ * The list of properties that the DrawingAttributes object can handle are
+ * listed below. If a property is not set, the default value will be used.
  * 
  * <pre>
- * 
- *  
- *   
- *    
- *     # The Edge or Line color
- *     lineColor=AARRGGBB (Hex ARGB Color, black is default)
- *     # The Fill color for 2D shapes
- *     fillColor=AARRGGBB (Hex ARGB Color, clean is default)
- *     # A highlight color to switch a graphic to when &quot;selected&quot;.
- *     selectColor=AARRGGBB (Hex ARGB Color, black is default)
- *     # A file or URL that can be used for a fill pattern, in place of the fill color.
- *     fillPattern=file://file (default is N/A)
- *     # The line width of the edge of the graphic
- *     lineWidth=int (1 is default)
- *     # A pattern to use for a dashed line, reflected as a
- *     # space-separated list of numbers, which are interpreted as on dash
- *     # length, off dash length, on dash length, etc.  
- *     dashPattern=10 5 3 5 (5 5 is the default if an error occurs reading the numbers, a non-dashed line is the default.)  
- *     The phase for the dash pattern,
- *     dashPhase=0.0f (0 is the default)
- *     # The scale to use for certain measurements, so that fill patterns
- *     # can be scaled depending on the map scale compaired to the
- *     # baseScale.
- *     baseScale=XXXXXX (where 1:XXXXXX is the scale to use.  N/A for the default).
- *     # Set whether any OMPoints that are given to the DrawingAttributes object are oval or rectangle.
- *     pointOval=false
- *     # Set the pixel radius of any OMPoint given to the DrawingAttributes object.
- *     pointRadius=2
- *   
- *  
- * 
+ *          
+ *           
+ *            
+ *             
+ *              # The Edge or Line color
+ *              lineColor=AARRGGBB (Hex ARGB Color, black is default)
+ *              # The Fill color for 2D shapes
+ *              fillColor=AARRGGBB (Hex ARGB Color, clean is default)
+ *              # A highlight color to switch a graphic to when &quot;selected&quot;.
+ *              selectColor=AARRGGBB (Hex ARGB Color, black is default)
+ *              # A file or URL that can be used for a fill pattern, in place of the fill color.
+ *              fillPattern=file://file (default is N/A)
+ *              # The line width of the edge of the graphic
+ *              lineWidth=int (1 is default)
+ *              # A pattern to use for a dashed line, reflected as a
+ *              # space-separated list of numbers, which are interpreted as on dash
+ *              # length, off dash length, on dash length, etc.  
+ *              dashPattern=10 5 3 5 (5 5 is the default if an error occurs reading the numbers, a non-dashed line is the default.)  
+ *              The phase for the dash pattern,
+ *              dashPhase=0.0f (0 is the default)
+ *              # The scale to use for certain measurements, so that fill patterns
+ *              # can be scaled depending on the map scale compaired to the
+ *              # baseScale.
+ *              baseScale=XXXXXX (where 1:XXXXXX is the scale to use.  N/A for the default).
+ *              # Set whether any OMPoints that are given to the DrawingAttributes object are oval or rectangle.
+ *              pointOval=false
+ *              # Set the pixel radius of any OMPoint given to the DrawingAttributes object.
+ *              pointRadius=2
+ *            
+ *           
+ *          
  * 
  */
 public class DrawingAttributes implements ActionListener, Serializable,
         Cloneable, PropertyConsumer, PropertyChangeListener {
 
     /**
-     * The name of the property that holds the line paint of the
-     * graphics.
+     * The name of the property that holds the line paint of the graphics.
      */
     public final static String linePaintProperty = "lineColor";
-    //     /**
-    //      * The name of the property that holds the text paint for Text,
-    //      * in case that should be different for labels, etc.
-    //      */
-    //     public final static String textPaintProperty = "textColor";
+    // /**
+    // * The name of the property that holds the text paint for Text,
+    // * in case that should be different for labels, etc.
+    // */
+    // public final static String textPaintProperty = "textColor";
     /**
-     * The name of the property that holds the fill paint of the
-     * graphics.
+     * The name of the property that holds the fill paint of the graphics.
      */
     public final static String fillPaintProperty = "fillColor";
     /**
-     * The name of the property that holds the select paint of the
-     * graphics, which is the line paint that gets set with the
-     * default OMGraphic.select() action.
+     * The name of the property that holds the select paint of the graphics,
+     * which is the line paint that gets set with the default OMGraphic.select()
+     * action.
      */
     public final static String selectPaintProperty = "selectColor";
     /**
-     * The name of the property that holds the matting paint of the
-     * graphics, which is the wider line paint that gets set when
-     * matting is enabled.
+     * The name of the property that holds the matting paint of the graphics,
+     * which is the wider line paint that gets set when matting is enabled.
      */
     public final static String mattingPaintProperty = "mattingColor";
     /**
-     * The property that specifies an URL or file a image file to be
-     * used to construct the Paint object for a texture fill pattern.
-     * If the fillPattern is null, the fillPaint will be used.
+     * The property that specifies an URL or file a image file to be used to
+     * construct the Paint object for a texture fill pattern. If the fillPattern
+     * is null, the fillPaint will be used.
      */
     public static final String fillPatternProperty = "fillPattern";
     /**
-     * The name of the property that holds the lineWidth of the
-     * graphics.
+     * The name of the property that holds the lineWidth of the graphics.
      */
     public final static String lineWidthProperty = "lineWidth";
     /**
-     * The name of the property that holds a dashed pattern for lines.
-     * This will be used to build the stroke object for lines. This
-     * pattern should be two space-separated numbers, the first
-     * representing the pixel length of the line in the dash, the
-     * second being the space pixel length of the dash.
+     * The name of the property that holds a dashed pattern for lines. This will
+     * be used to build the stroke object for lines. This pattern should be two
+     * space-separated numbers, the first representing the pixel length of the
+     * line in the dash, the second being the space pixel length of the dash.
      */
     public final static String dashPatternProperty = "dashPattern";
     /**
-     * The name of the property that holds a dashed phase for lines.
-     * This will be used to build the stroke object for lines.
+     * The name of the property that holds a dashed phase for lines. This will
+     * be used to build the stroke object for lines.
      */
     public final static String dashPhaseProperty = "dashPhase";
     /**
-     * The base scale to use for the image provided for the fill
-     * pattern. As the scale of the map changes, the base scale can be
-     * used as a reference to change the resolution of the pattern.
-     * This scale will also be used for strokes.
+     * The name of the property that holds the cap for the ends of lines.
+     * BasicStroke values apply, CAP_BUTT, CAP_ROUND, CAP_SQUARE.
+     */
+    public final static String capProperty = "cap";
+    /**
+     * The name of the property that holds the join for lines. BasicStroke
+     * values apply, JOIN_MITER, JOIN_ROUND, JOIN_BEVEL.
+     */
+    public final static String joinProperty = "join";
+    /**
+     * The name of the property that controls miterLimits.
+     */
+    public final static String miterLimitProperty = "miterLimit";
+    /**
+     * The base scale to use for the image provided for the fill pattern. As the
+     * scale of the map changes, the base scale can be used as a reference to
+     * change the resolution of the pattern. This scale will also be used for
+     * strokes.
      */
     public static final String baseScaleProperty = "baseScale";
     /**
-     * Set whether a thin black matting should be drawing around the
-     * OMGraphic.
+     * Set whether a thin black matting should be drawing around the OMGraphic.
      */
     public static final String mattedProperty = "matted";
     /** Property for whether OMPoints should be oval. "pointOval" */
@@ -208,8 +217,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
 
     /** The paint to outline the shapes. */
     protected Paint linePaint = Color.black;
-    //     /** The paint for text. Default to black. */
-    //     protected Paint textPaint = linePaint;
+    // /** The paint for text. Default to black. */
+    // protected Paint textPaint = linePaint;
     /** The select paint for the shapes. */
     protected Paint selectPaint = Color.black;
     /** The paint to fill the shapes. */
@@ -218,15 +227,15 @@ public class DrawingAttributes implements ActionListener, Serializable,
     protected Paint mattingPaint = OMColor.black;
 
     /**
-     * A TexturePaint pattern, if defined. Overrules fillPaint if
-     * fillPaint is null or clear.
+     * A TexturePaint pattern, if defined. Overrules fillPaint if fillPaint is
+     * null or clear.
      */
     protected TexturePaint fillPattern = null;
     /** The line stroke, for dashes, etc. */
     protected transient Stroke stroke = new BasicStroke(1);
     /**
-     * The base scale for scaling the fill pattern image. If NONE,
-     * then the resolution of the raw image will always be used.
+     * The base scale for scaling the fill pattern image. If NONE, then the
+     * resolution of the raw image will always be used.
      */
     protected float baseScale = NONE;
     /**
@@ -248,8 +257,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
      */
     protected int pointRadius = OMPoint.DEFAULT_RADIUS;
     /**
-     * A good ol' generic DrawingAttributes object for all to use.
-     * Black lines, clear fill paint.
+     * A good ol' generic DrawingAttributes object for all to use. Black lines,
+     * clear fill paint.
      */
     public final static DrawingAttributes DEFAULT = new DrawingAttributes();
 
@@ -287,29 +296,29 @@ public class DrawingAttributes implements ActionListener, Serializable,
 
     protected transient BasicStrokeEditorMenu bse;
 
+    protected int orientation = SwingConstants.HORIZONTAL;
+
     /**
      * The JButton used to bring up the line menu.
      */
     protected JButton lineButton;
 
     /**
-     * Any additional JMenu items that should be added to the line
-     * menu.
+     * Any additional JMenu items that should be added to the line menu.
      */
     protected JMenu[] lineMenuAdditions = null;
 
     /**
-     * Create a DrawingAttributes with the default settings - clear
-     * fill paint and pattern, sold black edge line of width 1.
+     * Create a DrawingAttributes with the default settings - clear fill paint
+     * and pattern, sold black edge line of width 1.
      */
     public DrawingAttributes() {
         setProperties(null, null);
     }
 
     /**
-     * Create the DrawingAttributes and call setProperties without a
-     * prefix for the properties. Call setProperties without a prefix
-     * for the properties.
+     * Create the DrawingAttributes and call setProperties without a prefix for
+     * the properties. Call setProperties without a prefix for the properties.
      * 
      * @param props the Properties to look in.
      */
@@ -318,12 +327,11 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Create the DrawingAttributes and call setProperties with a
-     * prefix for the properties.
+     * Create the DrawingAttributes and call setProperties with a prefix for the
+     * properties.
      * 
      * @param prefix the prefix marker to use for a property, like
-     *        prefix.propertyName. The period is added in this
-     *        function.
+     *        prefix.propertyName. The period is added in this function.
      * @param props the Properties to look in.
      */
     public DrawingAttributes(String prefix, Properties props) {
@@ -355,7 +363,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
      */
     public void setTo(DrawingAttributes clone) {
         clone.linePaint = linePaint;
-        //      clone.textPaint = textPaint;
+        // clone.textPaint = textPaint;
         clone.selectPaint = selectPaint;
         clone.fillPaint = fillPaint;
         clone.mattingPaint = mattingPaint;
@@ -369,7 +377,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
 
     public boolean equals(DrawingAttributes da) {
         return (da.linePaint == linePaint &&
-        //              da.textPaint == textPaint &&
+        // da.textPaint == textPaint &&
                 da.selectPaint == selectPaint && da.fillPaint == fillPaint
                 && da.mattingPaint == mattingPaint
                 && da.fillPattern == fillPattern && da.stroke == stroke
@@ -377,8 +385,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * If you want to get a DEFAULT DrawingAttributes object that you
-     * may modify, get your own copy.
+     * If you want to get a DEFAULT DrawingAttributes object that you may
+     * modify, get your own copy.
      */
     public static DrawingAttributes getDefaultClone() {
         return (DrawingAttributes) DEFAULT.clone();
@@ -395,13 +403,12 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Look at the Properties, and fill in the drawing attributes
-     * based in it's contents. If a property is not in the properties,
-     * it's set to its default setting.
+     * Look at the Properties, and fill in the drawing attributes based in it's
+     * contents. If a property is not in the properties, it's set to its default
+     * setting.
      * 
      * @param prefix the prefix marker to use for a property, like
-     *        prefix.propertyName. The period is added in this
-     *        function.
+     *        prefix.propertyName. The period is added in this function.
      * @param props the Properties to look in.
      * @deprecated use setProperties(prefix, props).
      */
@@ -424,10 +431,10 @@ public class DrawingAttributes implements ActionListener, Serializable,
             // This requires that the JRE has a display, which may be
             // unnecessary in some situations where the editor is
             // never used.
-            //            BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
-            //            if (tmpbse != null) {
-            //                tmpbse.setBasicStroke((BasicStroke) stroke);
-            //            }
+            // BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
+            // if (tmpbse != null) {
+            // tmpbse.setBasicStroke((BasicStroke) stroke);
+            // }
         }
 
         if (propertyChangeSupport != null) {
@@ -445,8 +452,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Get the Stroke object, scaled for comparison to the base scale.
-     * If the base scale equals NONE, it's the same as getStroke().
+     * Get the Stroke object, scaled for comparison to the base scale. If the
+     * base scale equals NONE, it's the same as getStroke().
      * 
      * @param scale scale to compare to the base scale.
      */
@@ -471,14 +478,13 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Get the Paint for these attributes, and scale it for the scale
-     * compaired to the base scale set if the fill Paint is a
-     * TexturePattern. If the base scale equals NONE, or if the Paint
-     * is not a TexturePaint, it's the same as getFillPaint().
+     * Get the Paint for these attributes, and scale it for the scale compaired
+     * to the base scale set if the fill Paint is a TexturePattern. If the base
+     * scale equals NONE, or if the Paint is not a TexturePaint, it's the same
+     * as getFillPaint().
      * 
      * @param scale scale to compare to the base scale.
-     * @return a Paint object to use for the fill, scaled if
-     *         necessary.
+     * @return a Paint object to use for the fill, scaled if necessary.
      */
     public Paint getFillPaintForScale(float scale) {
         if (fillPattern != null) {
@@ -507,8 +513,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Set the edge paint for the graphics created for the coverage
-     * type.
+     * Set the edge paint for the graphics created for the coverage type.
      * 
      * @param lPaint the paint.
      */
@@ -533,8 +538,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Get the line paint for the graphics created for the coverage
-     * type.
+     * Get the line paint for the graphics created for the coverage type.
      * 
      * @return the line paint to use for the edges.
      */
@@ -543,8 +547,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Set the selected edge paint for the graphics created for the
-     * coverage type.
+     * Set the selected edge paint for the graphics created for the coverage
+     * type.
      * 
      * @param sPaint the paint.
      */
@@ -565,8 +569,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Get the line paint for the graphics created for the coverage
-     * type.
+     * Get the line paint for the graphics created for the coverage type.
      * 
      * @return the select line paint to use for the edges.
      */
@@ -575,8 +578,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Set the fill paint for the graphics created for the coverage
-     * type.
+     * Set the fill paint for the graphics created for the coverage type.
      * 
      * @param fPaint the paint.
      */
@@ -597,9 +599,9 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Get the fill paint for the graphics created for the coverage
-     * type. This used to return the fillPattern if it was defined.
-     * Now, it always returns the fillPaint.
+     * Get the fill paint for the graphics created for the coverage type. This
+     * used to return the fillPattern if it was defined. Now, it always returns
+     * the fillPaint.
      * 
      * @return the fill paint to use for the areas.
      */
@@ -608,11 +610,10 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Set the matting paint for the graphics created for the coverage
-     * type. The matting paint is the paint used for the matting line
-     * painted around the edge, two pixels wider than the edge line
-     * width. Black by default, only painted when the matting variable
-     * is set to true.
+     * Set the matting paint for the graphics created for the coverage type. The
+     * matting paint is the paint used for the matting line painted around the
+     * edge, two pixels wider than the edge line width. Black by default, only
+     * painted when the matting variable is set to true.
      * 
      * @param mPaint the paint.
      */
@@ -646,9 +647,9 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Set the fill pattern TexturePaint to be used as the fill color.
-     * If not null, the fillPattern will be returned from
-     * getFillPaint() instead of fillPaint.
+     * Set the fill pattern TexturePaint to be used as the fill color. If not
+     * null, the fillPattern will be returned from getFillPaint() instead of
+     * fillPaint.
      * 
      * @param fPattern the TexturePaint to set.
      */
@@ -675,9 +676,9 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Set the base scale to use for the texture paint and stroke. If
-     * this is set to a negative number, then no scaling of the paint
-     * or stroke will be performed.
+     * Set the base scale to use for the texture paint and stroke. If this is
+     * set to a negative number, then no scaling of the paint or stroke will be
+     * performed.
      * 
      * @param bScale the base scale to use - 1:bScale.
      */
@@ -690,9 +691,9 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Get the base scale that the texture paint and dashes are set
-     * for. If the texture paint and stroke are asked for with a
-     * scale, those values will be adjusted accordingly.
+     * Get the base scale that the texture paint and dashes are set for. If the
+     * texture paint and stroke are asked for with a scale, those values will be
+     * adjusted accordingly.
      * 
      * @return base scale for paint and stroke.
      */
@@ -750,8 +751,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Set the DrawingAttributes parameters based on the current
-     * settings of an OMGraphic.
+     * Set the DrawingAttributes parameters based on the current settings of an
+     * OMGraphic.
      */
     public void setFrom(OMGraphic graphic) {
         if (graphic == null)
@@ -778,7 +779,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
         // Don't want to call this here, it is CPU intensive.
         // resetGUI should be called only when the GUI needs to be
         // updated.
-        //      resetGUI();
+        // resetGUI();
 
         if (propertyChangeSupport != null) {
             propertyChangeSupport.firePropertyChange("all", true, true);
@@ -786,17 +787,16 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Set all the attributes for the graphic that are contained
-     * within this DrawingAttributes class.
+     * Set all the attributes for the graphic that are contained within this
+     * DrawingAttributes class.
      * <P>
      * 
-     * If the fillPattern is set to a TexturePaint, and the fillPaint
-     * is null or clear, then the fillPattern will be set as the fill
-     * paint. Otherwise, the fillPaint will be set in the OMGraphic,
-     * and the fillPattern will be set too. If the
-     * OMGraphic.textureMask is != null, then it will get painted on
-     * top of the fillPaint. Makes for effects if the fillPattern has
-     * some transparent spots.
+     * If the fillPattern is set to a TexturePaint, and the fillPaint is null or
+     * clear, then the fillPattern will be set as the fill paint. Otherwise, the
+     * fillPaint will be set in the OMGraphic, and the fillPattern will be set
+     * too. If the OMGraphic.textureMask is != null, then it will get painted on
+     * top of the fillPaint. Makes for effects if the fillPattern has some
+     * transparent spots.
      * 
      * @param graphic OMGraphic.
      */
@@ -831,11 +831,11 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Set the graphic attributes that only pertain to boundaries.
-     * This is good for polylines, where setting the fill paint will
-     * close up the polyline making it a polygon. So if you want to
-     * paint edge data, use this function. Sets line paint, line
-     * width, and stroke if graphic is a OMGraphic
+     * Set the graphic attributes that only pertain to boundaries. This is good
+     * for polylines, where setting the fill paint will close up the polyline
+     * making it a polygon. So if you want to paint edge data, use this
+     * function. Sets line paint, line width, and stroke if graphic is a
+     * OMGraphic
      * 
      * @param graphic OMGraphic
      */
@@ -851,11 +851,10 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Set all the attributes for the graphic that are contained
-     * within this DrawingAttributes class. Get the TexturePaint for
-     * these attributes, and scale it for the scale compaired to the
-     * base scale set. If the base scale equals NONE, the fill pattern
-     * is not changed with relation to scale.
+     * Set all the attributes for the graphic that are contained within this
+     * DrawingAttributes class. Get the TexturePaint for these attributes, and
+     * scale it for the scale compaired to the base scale set. If the base scale
+     * equals NONE, the fill pattern is not changed with relation to scale.
      * 
      * @param graphic OMGraphic.
      * @param scale scale to compare to the base scale.
@@ -866,12 +865,11 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Set the graphic attributes that only pertain to boundaries.
-     * This is good for polylines, where setting the fill paint will
-     * close up the polyline making it a polygon. So if you want to
-     * paint edge data, use this function. Sets line paint, line
-     * width, and stroke if graphic is a OMGraphic The stroke, if the
-     * base scale is set, is adjusted accordingly.
+     * Set the graphic attributes that only pertain to boundaries. This is good
+     * for polylines, where setting the fill paint will close up the polyline
+     * making it a polygon. So if you want to paint edge data, use this
+     * function. Sets line paint, line width, and stroke if graphic is a
+     * OMGraphic The stroke, if the base scale is set, is adjusted accordingly.
      * 
      * @param graphic OMGraphic.
      * @param scale scale to compare to the base scale.
@@ -889,14 +887,14 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * A lock to use to limit the number of JColorChoosers that can
-     * pop up for a given DrawingAttributes GUI.
+     * A lock to use to limit the number of JColorChoosers that can pop up for a
+     * given DrawingAttributes GUI.
      */
     private boolean colorChooserLock = false;
 
     /**
-     * Get the lock to use a JColorChooser. Returns true if you got
-     * the lock, false if you didn't.
+     * Get the lock to use a JColorChooser. Returns true if you got the lock,
+     * false if you didn't.
      */
     protected synchronized boolean getLock() {
         if (colorChooserLock == false) {
@@ -915,9 +913,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * The DrawingAttributes method for handling ActionEvents. Used to
-     * handle the GUI actions, like changing the colors, line widths,
-     * etc.
+     * The DrawingAttributes method for handling ActionEvents. Used to handle
+     * the GUI actions, like changing the colors, line widths, etc.
      */
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
@@ -980,17 +977,16 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * A convenience method to get a color from a JColorChooser. Null
-     * will be returned if the JColorChooser lock is in place, or if
-     * something else is done where the JColorChooser would normally
-     * return null.
+     * A convenience method to get a color from a JColorChooser. Null will be
+     * returned if the JColorChooser lock is in place, or if something else is
+     * done where the JColorChooser would normally return null.
      * 
      * @param source the source component for the JColorChooser.
      * @param title the String to label the JColorChooser window.
-     * @param startingColor the color to give to the JColorChooser to
-     *        start with. Returned if the cancel button is pressed.
-     * @return Color chosen from the JColorChooser, null if lock for
-     *         chooser can't be sequired.
+     * @param startingColor the color to give to the JColorChooser to start
+     *        with. Returned if the cancel button is pressed.
+     * @return Color chosen from the JColorChooser, null if lock for chooser
+     *         can't be sequired.
      */
     protected Color getNewPaint(Component source, String title,
                                 Color startingColor) {
@@ -1006,9 +1002,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
     protected JToolBar toolbar = null;
 
     /**
-     * Get the GUI components that control the DrawingAttributes. This
-     * method gets the color and line toolbar and embeds it into a
-     * JPanel.
+     * Get the GUI components that control the DrawingAttributes. This method
+     * gets the color and line toolbar and embeds it into a JPanel.
      */
     public Component getGUI() {
         if (Debug.debugging("drawingattributes")) {
@@ -1019,13 +1014,12 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Gets the JToolBar that contains controls for changing the
-     * colors and line stroke. You get the toolbar, so any additions
-     * to this tend to be a little permanent. You might want to wrap
-     * this in a JPanel if you just want to enhance the GUI, and add
-     * stuff to the panel instead.
+     * Gets the JToolBar that contains controls for changing the colors and line
+     * stroke. You get the toolbar, so any additions to this tend to be a little
+     * permanent. You might want to wrap this in a JPanel if you just want to
+     * enhance the GUI, and add stuff to the panel instead.
      */
-    protected JPanel getColorAndLineGUI() {
+    protected JComponent getColorAndLineGUI() {
 
         if (palette == null || toolbar == null) {
             palette = new JPanel();
@@ -1038,28 +1032,43 @@ public class DrawingAttributes implements ActionListener, Serializable,
             GridBagConstraints c = new GridBagConstraints();
             palette.setLayout(gridbag);
 
+            if (orientation == SwingConstants.VERTICAL) {
+                c.gridwidth = GridBagConstraints.REMAINDER;
+            }
+
             toolbar = new GridBagToolBar();
             gridbag.setConstraints(toolbar, c);
+
         }
 
         resetGUI();
         palette.removeAll(); // Remove cruft from past OMGraphics
         toolbar.removeAll(); // Remove cruft from past OMGraphics
-        palette.add(toolbar); // Add back the basic toolbar
+//        palette.add(toolbar); // Add back the basic toolbar
+        toolbar.setOrientation(orientation);
         toolbar.add(lineColorButton);
         toolbar.add(fillColorButton);
         toolbar.add(selectColorButton);
         toolbar.add(mattingColorButton);
-        toolbar.add(new JLabel(" "));
+
+        toolbar.add(PaletteHelper.getToolBarFill(orientation));
         toolbar.add(mattedCheckBox);
 
         if (stroke instanceof BasicStroke) {
             BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
+            tmpbse.setOrientation(getOrientation());
             if (tmpbse != null) {
+                int orientation = getOrientation();
+                int iWidth = 50;
+                int iHeight = icon_height;
+                if (orientation == SwingConstants.VERTICAL) {
+                    iHeight = iWidth;
+                    iWidth = icon_width;
+                }
                 ImageIcon icon = BasicStrokeEditorMenu.createIcon(tmpbse.getBasicStroke(),
-                        50,
-                        icon_height,
-                        true);
+                        iWidth,
+                        iHeight,
+                        orientation == SwingConstants.HORIZONTAL);
                 lineButton = new JButton(icon);
 
                 lineButton.setToolTipText(i18n.get(DrawingAttributes.class,
@@ -1093,12 +1102,13 @@ public class DrawingAttributes implements ActionListener, Serializable,
                     }
                 });
                 tmpbse.setLaunchButton(lineButton);
-                toolbar.add(new JLabel(" "));
+                toolbar.add(PaletteHelper.getToolBarFill(orientation));
                 toolbar.add(lineButton);
             }
         }
 
-        return palette;
+//        return palette;
+        return toolbar;
     }
 
     /**
@@ -1109,9 +1119,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Get the menu that adjusts the line type. DrawingAttributes
-     * doesn't know about this, but GraphicAttributes, the subclass,
-     * does.
+     * Get the menu that adjusts the line type. DrawingAttributes doesn't know
+     * about this, but GraphicAttributes, the subclass, does.
      */
     public JMenu getLineTypeMenu() {
         return null;
@@ -1130,8 +1139,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Updates the color and line stroke control buttons to match the
-     * current settings.
+     * Updates the color and line stroke control buttons to match the current
+     * settings.
      */
     public void resetGUI() {
         String interString;
@@ -1228,8 +1237,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Get the PropertyChangeSupport object to register anything that
-     * is interested in finding out when some parameter has changed.
+     * Get the PropertyChangeSupport object to register anything that is
+     * interested in finding out when some parameter has changed.
      */
     public PropertyChangeSupport getPropertyChangeSupport() {
         return propertyChangeSupport;
@@ -1271,11 +1280,10 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Sets the properties for the <code>DrawingAttributes</code>.
-     * This particular method assumes that the marker name is not
-     * needed, because all of the contents of this Properties object
-     * are to be used for this object, and scoping the properties with
-     * a prefix is unnecessary.
+     * Sets the properties for the <code>DrawingAttributes</code>. This
+     * particular method assumes that the marker name is not needed, because all
+     * of the contents of this Properties object are to be used for this object,
+     * and scoping the properties with a prefix is unnecessary.
      * 
      * @param props the <code>Properties</code> object.
      */
@@ -1297,9 +1305,9 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Sets the properties for the <code>DrawingAttributes</code>.
-     * Part of the PropertyConsumer interface. DrawingAttributess
-     * which override this method should do something like:
+     * Sets the properties for the <code>DrawingAttributes</code>. Part of
+     * the PropertyConsumer interface. DrawingAttributess which override this
+     * method should do something like:
      * 
      * <code><pre>
      * public void setProperties(String prefix, Properties props) {
@@ -1308,8 +1316,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
      * }
      * </pre></code>
      * 
-     * If the addToBeanContext property is not defined, it is set to
-     * false here.
+     * If the addToBeanContext property is not defined, it is set to false here.
      * 
      * @param prefix the token to prefix the property names
      * @param props the <code>Properties</code> object
@@ -1325,7 +1332,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
 
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        //  Set up the drawing attributes.
+        // Set up the drawing attributes.
         linePaint = PropUtils.parseColorFromProperties(props, realPrefix
                 + linePaintProperty, linePaint);
 
@@ -1335,10 +1342,10 @@ public class DrawingAttributes implements ActionListener, Serializable,
         mattingPaint = PropUtils.parseColorFromProperties(props, realPrefix
                 + mattingPaintProperty, mattingPaint);
 
-        //      textPaint =
-        //          PropUtils.parseColorFromProperties(
-        //              props, realPrefix + textPaintProperty,
-        //              textPaint);
+        // textPaint =
+        // PropUtils.parseColorFromProperties(
+        // props, realPrefix + textPaintProperty,
+        // textPaint);
 
         fillPaint = PropUtils.parseColorFromProperties(props, realPrefix
                 + fillPaintProperty, fillPaint);
@@ -1431,13 +1438,40 @@ public class DrawingAttributes implements ActionListener, Serializable,
                 }
             }
 
-            setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, lineDash, dashPhase));
+            String capPropertyString = props.getProperty(realPrefix
+                    + capProperty);
+            int cap = BasicStroke.CAP_BUTT;
+            if (capPropertyString != null) {
+                try {
+                    cap = java.awt.BasicStroke.class.getField(capPropertyString)
+                            .getInt(null);
+                } catch (NoSuchFieldException nsfe) {
+                } catch (IllegalAccessException iae) {
+                }
+            }
+
+            String joinPropertyString = props.getProperty(realPrefix
+                    + capProperty);
+            int join = BasicStroke.JOIN_MITER;
+            if (joinPropertyString != null) {
+                try {
+                    join = java.awt.BasicStroke.class.getField(joinPropertyString)
+                            .getInt(null);
+                } catch (NoSuchFieldException nsfe) {
+                } catch (IllegalAccessException iae) {
+                }
+            }
+
+            float miterLimit = PropUtils.floatFromProperties(props, realPrefix
+                    + miterLimitProperty, 10.0f);
+
+            setStroke(new BasicStroke(lineWidth, cap, join, miterLimit, lineDash, dashPhase));
 
         } else if (basicStrokeDefined) {
             setStroke(new BasicStroke(lineWidth));
         }
 
-        //  OK, Fill pattern next...
+        // OK, Fill pattern next...
         fPattern = props.getProperty(realPrefix + fillPatternProperty);
         if (fPattern != null && !fPattern.equals("")) {
 
@@ -1469,19 +1503,17 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * PropertyConsumer method, to fill in a Properties object,
-     * reflecting the current values of the layer. If the layer has a
-     * propertyPrefix set, the property keys should have that prefix
-     * plus a separating '.' prepended to each propery key it uses for
-     * configuration.
+     * PropertyConsumer method, to fill in a Properties object, reflecting the
+     * current values of the layer. If the layer has a propertyPrefix set, the
+     * property keys should have that prefix plus a separating '.' prepended to
+     * each propery key it uses for configuration.
      * 
-     * @param props a Properties object to load the PropertyConsumer
-     *        properties into. If props equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param props a Properties object to load the PropertyConsumer properties
+     *        into. If props equals null, then a new Properties object should be
+     *        created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
         if (props == null) {
@@ -1494,10 +1526,10 @@ public class DrawingAttributes implements ActionListener, Serializable,
             props.put(prefix + linePaintProperty,
                     PropUtils.getProperty((Color) linePaint));
         }
-        //      if (textPaint instanceof Color) {
-        //          props.put(prefix + textPaintProperty,
-        //                    PropUtils.getProperty((Color)textPaint));
-        //      }
+        // if (textPaint instanceof Color) {
+        // props.put(prefix + textPaintProperty,
+        // PropUtils.getProperty((Color)textPaint));
+        // }
         if (fillPaint instanceof Color) {
             props.put(prefix + fillPaintProperty,
                     PropUtils.getProperty((Color) fillPaint));
@@ -1540,6 +1572,14 @@ public class DrawingAttributes implements ActionListener, Serializable,
                 props.put(prefix + dashPatternProperty, "");
                 props.put(prefix + dashPhaseProperty, "");
             }
+
+            props.put(prefix + capProperty,
+                    Integer.toString(((BasicStroke) bs).getEndCap()));
+            props.put(prefix + joinProperty,
+                    Integer.toString(((BasicStroke) bs).getLineJoin()));
+            props.put(prefix + miterLimitProperty,
+                    Float.toString(((BasicStroke) bs).getMiterLimit()));
+
         }
 
         if (baseScale != NONE) {
@@ -1552,21 +1592,19 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Method to fill in a Properties object with values reflecting
-     * the properties able to be set on this PropertyConsumer. The key
-     * for each property should be the raw property name (without a
-     * prefix) with a value that is a String that describes what the
-     * property key represents, along with any other information about
-     * the property that would be helpful (range, default value,
-     * etc.).
+     * Method to fill in a Properties object with values reflecting the
+     * properties able to be set on this PropertyConsumer. The key for each
+     * property should be the raw property name (without a prefix) with a value
+     * that is a String that describes what the property key represents, along
+     * with any other information about the property that would be helpful
+     * (range, default value, etc.).
      * 
-     * @param list a Properties object to load the PropertyConsumer
-     *        properties into. If getList equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param list a Properties object to load the PropertyConsumer properties
+     *        into. If getList equals null, then a new Properties object should
+     *        be created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
         if (list == null) {
@@ -1586,9 +1624,9 @@ public class DrawingAttributes implements ActionListener, Serializable,
         list.put(linePaintProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        //      list.put(textPaintProperty, "Text color for graphics.");
-        //      list.put(textPaintProperty + ScopedEditorProperty,
-        //               "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        // list.put(textPaintProperty, "Text color for graphics.");
+        // list.put(textPaintProperty + ScopedEditorProperty,
+        // "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
         interString = i18n.get(DrawingAttributes.class,
                 fillPaintProperty,
@@ -1648,7 +1686,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
                 lineWidthProperty);
         list.put(lineWidthProperty + LabelEditorProperty, interString);
 
-        //      list.put(dashPatternProperty, "<HTML><BODY>Line dash
+        // list.put(dashPatternProperty, "<HTML><BODY>Line dash
         // pattern, represented by<br>space separated numbers<br> (on
         // off on ...)</BODY></HTML>");
         interString = i18n.get(DrawingAttributes.class,
@@ -1715,7 +1753,44 @@ public class DrawingAttributes implements ActionListener, Serializable,
         list.put(PointOvalProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        //         list.put(initPropertiesProperty, getInitPropertiesOrder());
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                DrawingAttributes.class,
+                capProperty,
+                "Line Cap",
+                "Type of cap to use on end of lines.",
+                "com.bbn.openmap.util.propertyEditor.ComboBoxPropertyEditor");
+
+        list.put(capProperty + OptionPropertyEditor.ScopedOptionsProperty,
+                "butt round square");
+        list.put(capProperty + ".butt", "CAP_BUTT");
+        list.put(capProperty + ".round", "CAP_ROUND");
+        list.put(capProperty + ".square", "CAP_SQUARE");
+
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                DrawingAttributes.class,
+                joinProperty,
+                "Line Join",
+                "Type of joint to use on corner of line joins.",
+                "com.bbn.openmap.util.propertyEditor.ComboBoxPropertyEditor");
+
+        list.put(joinProperty + OptionPropertyEditor.ScopedOptionsProperty,
+                "miter round bevel");
+        list.put(joinProperty + ".miter", "JOIN_MITER");
+        list.put(joinProperty + ".round", "JOIN_ROUND");
+        list.put(joinProperty + ".bevel", "JOIN_BEVEL");
+
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                DrawingAttributes.class,
+                miterLimitProperty,
+                "Miter Limit",
+                "Number of pixels to use for line joints.",
+                null);
+
+        // This line messes order up when called by classes using DrawingAttributes.
+        //list.put(initPropertiesProperty, getInitPropertiesOrder());
 
         return list;
     }
@@ -1726,14 +1801,15 @@ public class DrawingAttributes implements ActionListener, Serializable,
                 + /* textPaintProperty + " " + */mattingPaintProperty + " "
                 + fillPatternProperty + " " + mattedProperty + " "
                 + lineWidthProperty + " " + dashPatternProperty + " "
-                + dashPhaseProperty + " " + PointRadiusProperty + " "
+                + dashPhaseProperty + " " + capProperty + " " + joinProperty
+                + " " + miterLimitProperty + " " + PointRadiusProperty + " "
                 + PointOvalProperty;
     }
 
     /**
-     * Set the property key prefix that should be used by the
-     * PropertyConsumer. The prefix, along with a '.', should be
-     * prepended to the property keys known by the PropertyConsumer.
+     * Set the property key prefix that should be used by the PropertyConsumer.
+     * The prefix, along with a '.', should be prepended to the property keys
+     * known by the PropertyConsumer.
      * 
      * @param prefix the prefix String.
      */
@@ -1742,8 +1818,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Get the property key prefix that is being used to prepend to
-     * the property keys for Properties lookups.
+     * Get the property key prefix that is being used to prepend to the property
+     * keys for Properties lookups.
      * 
      * @return the prefix String.
      */
@@ -1761,7 +1837,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
         StringBuffer sb = new StringBuffer("DrawingAttributes[");
         sb.append("linePaint(" + linePaint + "), ");
         sb.append("selectPaint(" + selectPaint + "), ");
-        //      sb.append("textPaint(" + textPaint + "), ");
+        // sb.append("textPaint(" + textPaint + "), ");
         sb.append("mattingPaint(" + mattingPaint + "), ");
         sb.append("fillPaint(" + fillPaint + "), ");
         sb.append("fillPattern(" + fillPattern + "), ");
@@ -1772,28 +1848,27 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Render the Shape into the Graphics2D object, using the
-     * mattingPaint, fillPaint, fillPattern, linePaint and stroke
-     * contained in this DrawingAttributes object.
+     * Render the Shape into the Graphics2D object, using the mattingPaint,
+     * fillPaint, fillPattern, linePaint and stroke contained in this
+     * DrawingAttributes object.
      */
     public void render(Graphics2D g, Shape shape) {
         render(g, shape, false);
     }
 
     /**
-     * Render the Shape into the Graphics2D object, using the
-     * mattingPaint, fillPaint, fillPattern, linePaint and stroke
-     * contained in this DrawingAttributes object.
+     * Render the Shape into the Graphics2D object, using the mattingPaint,
+     * fillPaint, fillPattern, linePaint and stroke contained in this
+     * DrawingAttributes object.
      * 
      * @param g java.awt.Graphics2D object to render into
      * @param shape java.awt.Shape to draw
-     * @param replaceColorWithGradient flag to specify replacement of
-     *        fill and edge colors with a GradientPaint to give a
-     *        light to dark look. You can set the Paints in the
-     *        DrawingAttributes object with GradientPaints if you want
-     *        more control over the GradientPaint, but this will let
-     *        the DrawingAttributes object take a shot at creating one
-     *        for a Color that fits the shape given.
+     * @param replaceColorWithGradient flag to specify replacement of fill and
+     *        edge colors with a GradientPaint to give a light to dark look. You
+     *        can set the Paints in the DrawingAttributes object with
+     *        GradientPaints if you want more control over the GradientPaint,
+     *        but this will let the DrawingAttributes object take a shot at
+     *        creating one for a Color that fits the shape given.
      */
     public void render(Graphics2D g, Shape shape,
                        boolean replaceColorWithGradient) {
@@ -1941,6 +2016,14 @@ public class DrawingAttributes implements ActionListener, Serializable,
         parts.add(collection.get("SMALL_BOX", da));
 
         return OMIconFactory.getIcon(icon_width, icon_height, parts);
+    }
+
+    public int getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
     }
 
 }

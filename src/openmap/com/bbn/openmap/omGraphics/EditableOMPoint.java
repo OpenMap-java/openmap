@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
-// $Revision: 1.11 $
-// $Date: 2006/02/16 16:22:47 $
+// $Revision: 1.12 $
+// $Date: 2006/03/06 15:56:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,7 +26,7 @@ import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 import javax.swing.JToolBar;
 
 import com.bbn.openmap.LatLonPoint;
@@ -491,7 +491,7 @@ public class EditableOMPoint extends EditableOMGraphic {
     public Component getGUI(GraphicAttributes graphicAttributes) {
         Debug.message("eomg", "EditableOMPoint.getGUI");
         if (graphicAttributes != null) {
-            JPanel panel = graphicAttributes.getColorAndLineGUI();
+            JComponent panel = graphicAttributes.getColorAndLineGUI();
             panel.add(getPointGUI());
             return panel;
         } else {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMText.java,v $
 // $RCSfile: EditableOMText.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/02/16 16:22:46 $
+// $Revision: 1.11 $
+// $Date: 2006/03/06 15:56:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,11 +35,14 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
@@ -52,6 +55,7 @@ import com.bbn.openmap.omGraphics.editable.GraphicUndefinedState;
 import com.bbn.openmap.omGraphics.editable.TextStateMachine;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PaletteHelper;
 
 /**
  * Wrapper class to edit OMText objects. This component is used by the
@@ -73,24 +77,24 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     protected I18n i18n = Environment.getI18n();
 
     /**
-     * Create the EditableOMText, setting the state machine to create
-     * the point off of the gestures.
+     * Create the EditableOMText, setting the state machine to create the point
+     * off of the gestures.
      */
     public EditableOMText() {
         createGraphic(null);
     }
 
     /**
-     * Create an EditableOMText with the pointType and renderType
-     * parameters in the GraphicAttributes object.
+     * Create an EditableOMText with the pointType and renderType parameters in
+     * the GraphicAttributes object.
      */
     public EditableOMText(GraphicAttributes ga) {
         createGraphic(ga);
     }
 
     /**
-     * Create the EditableOMText with an OMText already defined, ready
-     * for editing.
+     * Create the EditableOMText with an OMText already defined, ready for
+     * editing.
      * 
      * @param omc OMText that should be edited.
      */
@@ -99,10 +103,9 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     }
 
     /**
-     * Create and initialize the state machine that interprets the
-     * modifying gestures/commands, as well as ititialize the grab
-     * points. Also allocates the grab point array needed by the
-     * EditableOMText.
+     * Create and initialize the state machine that interprets the modifying
+     * gestures/commands, as well as ititialize the grab points. Also allocates
+     * the grab point array needed by the EditableOMText.
      */
     public void init() {
         setCanGrabGraphic(false);
@@ -111,9 +114,9 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     }
 
     /**
-     * Set the graphic within the state machine. If the graphic is
-     * null, then one shall be created, and located off screen until
-     * the gestures driving the state machine place it on the map.
+     * Set the graphic within the state machine. If the graphic is null, then
+     * one shall be created, and located off screen until the gestures driving
+     * the state machine place it on the map.
      */
     public void setGraphic(OMGraphic graphic) {
         init();
@@ -166,40 +169,38 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     }
 
     /**
-     * Attach to the Moving OffsetGrabPoint so if it moves, it will
-     * move this EditableOMGraphic with it. EditableOMGraphic version
-     * doesn't do anything, each subclass has to decide which of its
-     * OffsetGrabPoints should be attached to it.
+     * Attach to the Moving OffsetGrabPoint so if it moves, it will move this
+     * EditableOMGraphic with it. EditableOMGraphic version doesn't do anything,
+     * each subclass has to decide which of its OffsetGrabPoints should be
+     * attached to it.
      */
     public void attachToMovingGrabPoint(OffsetGrabPoint gp) {
         gp.addGrabPoint(gpo);
     }
 
     /**
-     * Detach from a Moving OffsetGrabPoint. The EditableOMGraphic
-     * version doesn't do anything, each subclass should remove
-     * whatever GrabPoint it would have attached to an
-     * OffsetGrabPoint.
+     * Detach from a Moving OffsetGrabPoint. The EditableOMGraphic version
+     * doesn't do anything, each subclass should remove whatever GrabPoint it
+     * would have attached to an OffsetGrabPoint.
      */
     public void detachFromMovingGrabPoint(OffsetGrabPoint gp) {
         gp.removeGrabPoint(gpo);
     }
 
     /**
-     * Set the GrabPoint that is in the middle of being modified, as a
-     * result of a mouseDragged event, or other selection process.
+     * Set the GrabPoint that is in the middle of being modified, as a result of
+     * a mouseDragged event, or other selection process.
      */
     public void setMovingPoint(GrabPoint gp) {
         super.setMovingPoint(gp);
     }
 
     /**
-     * Given a MouseEvent, find a GrabPoint that it is touching, and
-     * set the moving point to that GrabPoint.
+     * Given a MouseEvent, find a GrabPoint that it is touching, and set the
+     * moving point to that GrabPoint.
      * 
      * @param e MouseEvent
-     * @return GrabPoint that is touched by the MouseEvent, null if
-     *         none are.
+     * @return GrabPoint that is touched by the MouseEvent, null if none are.
      */
     public GrabPoint getMovingPoint(MouseEvent e) {
 
@@ -224,8 +225,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     protected int lastRenderType = -1;
 
     /**
-     * Check to make sure the grab points are not null. If they are,
-     * allocate them, and them assign them to the array.
+     * Check to make sure the grab points are not null. If they are, allocate
+     * them, and them assign them to the array.
      */
     public void assertGrabPoints() {
         int rt = getGraphic().getRenderType();
@@ -256,9 +257,9 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     }
 
     /**
-     * Set the grab points for the graphic provided, setting them on
-     * the extents of the graphic. Called when you want to set the
-     * grab points off the location of the graphic.
+     * Set the grab points for the graphic provided, setting them on the extents
+     * of the graphic. Called when you want to set the grab points off the
+     * location of the graphic.
      */
     public void setGrabPoints(OMGraphic graphic) {
         if (!(graphic instanceof OMText)) {
@@ -312,9 +313,9 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     }
 
     /**
-     * Take the current location of the GrabPoints, and modify the
-     * location parameters of the OMPoint with them. Called when you
-     * want the graphic to change according to the grab points.
+     * Take the current location of the GrabPoints, and modify the location
+     * parameters of the OMPoint with them. Called when you want the graphic to
+     * change according to the grab points.
      */
     public void setGrabPoints() {
 
@@ -382,29 +383,28 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     }
 
     /**
-     * Get whether a graphic can be manipulated by its edges, rather
-     * than just by its grab points.
+     * Get whether a graphic can be manipulated by its edges, rather than just
+     * by its grab points.
      */
     public boolean getCanGrabGraphic() {
         return false;
     }
 
     /**
-     * Called to set the OffsetGrabPoint to the current mouse
-     * location, and update the OffsetGrabPoint with all the other
-     * GrabPoint locations, so everything can shift smoothly. Should
-     * also set the OffsetGrabPoint to the movingPoint. Should be
-     * called only once at the beginning of the general movement, in
-     * order to set the movingPoint. After that, redraw(e) should just
-     * be called, and the movingPoint will make the adjustments to the
+     * Called to set the OffsetGrabPoint to the current mouse location, and
+     * update the OffsetGrabPoint with all the other GrabPoint locations, so
+     * everything can shift smoothly. Should also set the OffsetGrabPoint to the
+     * movingPoint. Should be called only once at the beginning of the general
+     * movement, in order to set the movingPoint. After that, redraw(e) should
+     * just be called, and the movingPoint will make the adjustments to the
      * graphic that are needed.
      */
     public void move(java.awt.event.MouseEvent e) {}
 
     /**
-     * Use the current projection to place the graphics on the screen.
-     * Has to be called to at least assure the graphics that they are
-     * ready for rendering. Called when the graphic position changes.
+     * Use the current projection to place the graphics on the screen. Has to be
+     * called to at least assure the graphics that they are ready for rendering.
+     * Called when the graphic position changes.
      * 
      * @param proj com.bbn.openmap.proj.Projection
      * @return true
@@ -422,9 +422,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     }
 
     /**
-     * Given a new projection, the grab points may need to be
-     * repositioned off the current position of the graphic. Called
-     * when the projection changes.
+     * Given a new projection, the grab points may need to be repositioned off
+     * the current position of the graphic. Called when the projection changes.
      */
     public void regenerate(Projection proj) {
         if (text != null)
@@ -435,9 +434,9 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     }
 
     /**
-     * Draw the EditableOMtext parts into the java.awt.Graphics
-     * object. The grab points are only rendered if the point machine
-     * state is TextSelectedState.TEXT_SELECTED.
+     * Draw the EditableOMtext parts into the java.awt.Graphics object. The grab
+     * points are only rendered if the point machine state is
+     * TextSelectedState.TEXT_SELECTED.
      * 
      * @param graphics java.awt.Graphics.
      */
@@ -481,26 +480,26 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     }
 
     /**
-     * If this EditableOMGraphic has parameters that can be
-     * manipulated that are independent of other EditableOMGraphic
-     * types, then you can provide the widgets to control those
-     * parameters here. By default, returns the GraphicAttributes GUI
-     * widgets. If you don't want a GUI to appear when a widget is
-     * being created/edited, then don't call this method from the
-     * EditableOMGraphic implementation, and return a null Component
-     * from getGUI.
+     * If this EditableOMGraphic has parameters that can be manipulated that are
+     * independent of other EditableOMGraphic types, then you can provide the
+     * widgets to control those parameters here. By default, returns the
+     * GraphicAttributes GUI widgets. If you don't want a GUI to appear when a
+     * widget is being created/edited, then don't call this method from the
+     * EditableOMGraphic implementation, and return a null Component from
+     * getGUI.
      * 
-     * @param graphicAttributes the GraphicAttributes to use to get
-     *        the GUI widget from to control those parameters for this
-     *        EOMG.
-     * @return java.awt.Component to use to control parameters for
-     *         this EOMG.
+     * @param graphicAttributes the GraphicAttributes to use to get the GUI
+     *        widget from to control those parameters for this EOMG.
+     * @return java.awt.Component to use to control parameters for this EOMG.
      */
     public java.awt.Component getGUI(GraphicAttributes graphicAttributes) {
         Debug.message("eomg", "EditableOMPoly.getGUI");
         if (graphicAttributes != null) {
-            Component gaGUI = graphicAttributes.getGUI();
-            ((JComponent) gaGUI).add(getTextGUI());
+            JComponent gaGUI = (JComponent) graphicAttributes.getGUI();
+            // ((JComponent) gaGUI).add(getTextGUI());
+
+            getTextGUI(graphicAttributes.getOrientation(), gaGUI);
+
             return gaGUI;
         } else {
             return getTextGUI();
@@ -516,25 +515,74 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     public final static String TextFontCommand = "TextFont";
     public final static String TextRotationCommand = "TextRotation";
 
-    protected java.awt.Component getTextGUI() {
-        javax.swing.Box attributeBox = javax.swing.Box.createHorizontalBox();
+    protected JComponent getTextGUI() {
+        return getTextGUI(SwingConstants.HORIZONTAL, (JComponent) null);
+    }
 
-        attributeBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-        attributeBox.setAlignmentY(Component.CENTER_ALIGNMENT);
+    JComponent attributeBox;
+
+    /**
+     * Get the GUI associated with changing the Text.
+     * 
+     * @param orientation SwingConstants.HORIZONTAL/VERTICAL
+     * @param guiComp the JComponent to add stuff to. If the orientation is
+     *        HORIZONTAL, the components will be added directly to this
+     *        component, or to a new JComponent that is returned if null. If the
+     *        orientation is Vertical, a button will be added to the guiComp, or
+     *        returned. This button will call up a dialog box with the settings,
+     *        since they don't really lay out vertically.
+     * @return
+     */
+    protected JComponent getTextGUI(int orientation, JComponent guiComp) {
+        attributeBox = null;
+
+        if (guiComp == null || orientation == SwingConstants.VERTICAL) {
+            attributeBox = javax.swing.Box.createHorizontalBox();
+            attributeBox.add(PaletteHelper.getToolBarFill(orientation));
+
+            attributeBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+            attributeBox.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+            if (orientation == SwingConstants.HORIZONTAL) {
+                guiComp = attributeBox;
+            }
+        } else if (orientation == SwingConstants.HORIZONTAL) {
+            attributeBox = guiComp;
+        }
+
+        if (orientation == SwingConstants.VERTICAL) {
+            JButton launchButton = new JButton(getTextAccentToggleButtonImage(DrawingAttributes.icon_width,
+                    DrawingAttributes.icon_height, text.getFont(), "T"));
+            launchButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    if (attributeBox != null) {
+                        JDialog dialog = new JDialog();
+                        dialog.setContentPane(attributeBox);
+                        dialog.setModal(true);
+                        dialog.pack();
+                        dialog.setLocationRelativeTo((JButton)ae.getSource());
+                        dialog.setVisible(true);
+                    }
+                }
+            });
+            guiComp.add(launchButton);
+        }
 
         String textString = "Text";
         if (text != null) {
             textString = text.getData();
         }
 
+        attributeBox.add(PaletteHelper.getToolBarFill(SwingConstants.HORIZONTAL));
+        
         JTextField textField = new JTextField(textString, 25);
         textField.setActionCommand(TextFieldCommand);
         textField.addActionListener(this);
-        textField.setMargin(new Insets(0, 1, 0, 1));
         textField.setMinimumSize(new java.awt.Dimension(100, 20));
         textField.setPreferredSize(new java.awt.Dimension(100, 20));
         attributeBox.add(textField);
 
+        attributeBox.add(PaletteHelper.getToolBarFill(SwingConstants.HORIZONTAL));
         // JPanel palette =
         // PaletteHelper.createHorizontalPanel("Rotation");
         javax.swing.Box palette = javax.swing.Box.createHorizontalBox();
@@ -544,7 +592,6 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
                 "textField",
                 I18n.TOOLTIP,
                 "Text rotation in degrees"));
-        textField.setMargin(new Insets(0, 1, 0, 1));
         textField.addActionListener(this);
         textField.setMinimumSize(new java.awt.Dimension(30, 20));
         textField.setPreferredSize(new java.awt.Dimension(30, 20));
@@ -564,7 +611,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         sizesFont.addActionListener(this);
 
         int textButtonWidth = 10;
-        int textButtonHeight = 15;
+        int textButtonHeight = 20;
 
         boldFont = new JToggleButton();
         boldFont.setIcon(getTextAccentToggleButtonImage(textButtonWidth,
@@ -602,10 +649,11 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         italicFont.addActionListener(this);
 
         attributeBox.add(sizesFont);
+        attributeBox.add(PaletteHelper.getToolBarFill(SwingConstants.HORIZONTAL));
         attributeBox.add(boldFont);
         attributeBox.add(italicFont);
 
-        return attributeBox;
+        return guiComp;
     }
 
     private ImageIcon getTextAccentToggleButtonImage(int width, int height,
@@ -618,7 +666,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
 
         int stringWidth = fm.stringWidth(s);
         int stringHeight = f.getSize() - 2;
-        g.drawString(s, (width - stringWidth) / 2, height - (height - stringHeight) / 2);
+        g.drawString(s, (width - stringWidth) / 2, height
+                - (height - stringHeight) / 2);
         return new ImageIcon(bi);
     }
 
