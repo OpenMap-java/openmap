@@ -3,10 +3,7 @@
  * 8283 Greensboro Dr. 
  * McLean, VA 22102-3888
  * 
- * This software was developed by Booz|Allen|Hamilton under U.S
- * Government contracts, and may be reproduced by or for the U.S
- * Government pursuant to the copyright license under the clause at
- * DFARS 252.227-7013 5-06-05
+ * This software was developed by Booz | Allen | Hamilton.
  * 
  * @author Richard B. Lane
  */
@@ -18,13 +15,13 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
 import com.bbn.openmap.MapBean;
-import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjectionFactory;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
- * This mouse mode responds to a double click with an animation effect
- * of zooming in the map.
+ * This mouse mode responds to a double click with an animation effect of
+ * zooming in the map.
  */
 public class ZoomMouseMode extends CoordMouseMode {
     protected double squareWidth = 50;
@@ -47,43 +44,51 @@ public class ZoomMouseMode extends CoordMouseMode {
             theMap = (MapBean) e.getSource();
             if (e.getClickCount() == 2) {
                 if (e.getButton() == 1) {
-                    // int currCol = currX / ((int) squareWidth);
-                    // int currRow = currY / ((int) squareWidth);
-                    // int squareUpperLeftX =
-                    // (int)(currCol*squareWidth);
-                    // int squareUpperLeftY =
-                    // (int)(currRow*squareWidth);
                     int squareCenterX = currX;
                     int squareCenterY = currY;
-                    int squareUpperLeftX = currX - ((int) squareWidth / 2);
-                    int squareUpperLeftY = currY - ((int) squareWidth / 2);
+
                     double aspect = (double) theMap.getHeight()
                             / (double) theMap.getWidth();
                     double squareWidth = this.squareWidth;
                     double squareHeight = this.squareWidth;
                     if (aspect > 1) {
                         squareHeight *= aspect;
-                        squareUpperLeftY = squareCenterY
-                                - (int) (squareHeight / 2);
                     } else {
                         squareWidth /= aspect;
-                        squareUpperLeftX = squareCenterX
-                                - (int) (squareWidth / 2);
                     }
+                    int squareUpperLeftX = squareCenterX
+                            - ((int) squareWidth / 2);
+                    int squareUpperLeftY = squareCenterY
+                            - ((int) squareHeight / 2);
 
+                    if (squareUpperLeftX < 1) {
+                        squareUpperLeftX = 1;
+                        squareCenterX = (int) (squareUpperLeftX + squareWidth / 2);
+                    } else if (squareUpperLeftX + squareWidth >= theMap.getWidth()) {
+                        squareUpperLeftX = (int) (theMap.getWidth()
+                                - squareWidth - 1);
+                        squareCenterX = (int) (squareUpperLeftX + squareWidth / 2);
+                    }
+                    if (squareUpperLeftY < 1) {
+                        squareUpperLeftY = 1;
+                        squareCenterY = (int) (squareUpperLeftY + squareHeight / 2);
+                    } else if (squareUpperLeftY + squareHeight >= theMap.getHeight()) {
+                        squareUpperLeftY = (int) (theMap.getHeight()
+                                - squareHeight - 1);
+                        squareCenterY = (int) (squareUpperLeftY + squareHeight / 2);
+                    }
                     Projection proj = theMap.getProjection();
                     Point2D upperLeft = proj.inverse(squareUpperLeftX,
-                            squareUpperLeftY);
+                            squareUpperLeftY, new LatLonPoint.Double());
                     Point2D lowerRight = proj.inverse(squareUpperLeftX
                             + (int) (squareWidth), squareUpperLeftY
-                            + (int) (squareHeight));
-                    Point2D center = proj.inverse(squareCenterX,
-                            squareCenterY);
+                            + (int) (squareHeight), new LatLonPoint.Double());
+                    Point2D center = proj.inverse(squareCenterX, squareCenterY);
                     double necessaryScale = proj.getScale(upperLeft,
                             lowerRight,
                             proj.forward(upperLeft),
                             proj.forward(lowerRight));
-                    final Projection newProj = ProjectionFactory.makeProjection(Mercator.class,
+                    final Projection newProj = ProjectionFactory.makeProjection(proj.getClass(),
                             center,
                             (float) necessaryScale,
                             theMap.getWidth(),
