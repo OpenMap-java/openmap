@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.31 $
-// $Date: 2005/08/10 22:32:45 $
+// $Revision: 1.32 $
+// $Date: 2006/03/06 16:01:32 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -1093,6 +1093,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
         Component eomgc = null;
 
         graphicAttributes.setLineMenuAdditions(null);
+        graphicAttributes.setOrientation(getOrientation());
         if (currentEditable != null) {
             // GUI specific to a particular EditableOMGraphic type.
             eomgc = currentEditable.getGUI(graphicAttributes);

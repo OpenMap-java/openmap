@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconFactoryTestingTool.java,v $
 // $RCSfile: IconFactoryTestingTool.java,v $
-// $Revision: 1.5 $
-// $Date: 2006/02/27 15:11:35 $
+// $Revision: 1.6 $
+// $Date: 2006/03/06 16:01:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,17 +31,19 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 
 import com.bbn.openmap.gui.Tool;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 
 /**
- * An example class and example for how to use the OMIconFactory and
- * IconParts to create Icons. Can be run as a class, or can be used as
- * an OpenMap Tool to show up on the OpenMap ToolPanel.
+ * An example class and example for how to use the OMIconFactory and IconParts
+ * to create Icons. Can be run as a class, or can be used as an OpenMap Tool to
+ * show up on the OpenMap ToolPanel.
  */
 public class IconFactoryTestingTool implements Tool {
 
@@ -130,5 +132,12 @@ public class IconFactoryTestingTool implements Tool {
         });
 
         frame.setVisible(true);
+    }
+
+    public void setOrientation(int orientation) {
+    }
+
+    public int getOrientation() {
+        return SwingConstants.HORIZONTAL;
     }
 }
