@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OM3DViewerLauncher.java,v $
 // $RCSfile: OM3DViewerLauncher.java,v $
-// $Revision: 1.6 $
-// $Date: 2006/02/27 15:11:34 $
+// $Revision: 1.7 $
+// $Date: 2006/03/06 16:40:28 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -49,8 +49,7 @@ public class OM3DViewerLauncher extends MapHandlerChild implements
      */
     protected String key = defaultKey;
     /**
-     * The frame used when the DrawingToolLauncher is used in an
-     * application.
+     * The frame used when the DrawingToolLauncher is used in an application.
      */
     protected transient JFrame viewer;
 
@@ -77,32 +76,30 @@ public class OM3DViewerLauncher extends MapHandlerChild implements
     }
 
     /**
-     * This is the method that your object can use to find other
-     * objects within the MapHandler (BeanContext). This method gets
-     * called when the object gets added to the MapHandler, or when
-     * another object gets added to the MapHandler after the object is
-     * a member.
+     * This is the method that your object can use to find other objects within
+     * the MapHandler (BeanContext). This method gets called when the object
+     * gets added to the MapHandler, or when another object gets added to the
+     * MapHandler after the object is a member.
      * 
-     * @param it Iterator to use to go through a list of objects. Find
-     *        the ones you need, and hook yourself up.
+     * @param it Iterator to use to go through a list of objects. Find the ones
+     *        you need, and hook yourself up.
      */
     public void findAndInit(Iterator it) {}
 
     /**
-     * BeanContextMembershipListener method. Called when a new object
-     * is removed from the BeanContext of this object. For the Layer,
-     * this method doesn't do anything. If your layer does something
-     * with the childrenAdded method, or findAndInit, you should take
-     * steps in this method to unhook the layer from the object used
-     * in those methods.
+     * BeanContextMembershipListener method. Called when a new object is removed
+     * from the BeanContext of this object. For the Layer, this method doesn't
+     * do anything. If your layer does something with the childrenAdded method,
+     * or findAndInit, you should take steps in this method to unhook the layer
+     * from the object used in those methods.
      * 
      * @param bcme Description of the Parameter
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {}
 
     /**
-     * Tool interface method. The retrieval tool's interface. This
-     * method creates a button that will bring up the LauncherPanel.
+     * Tool interface method. The retrieval tool's interface. This method
+     * creates a button that will bring up the LauncherPanel.
      * 
      * @return String The key for this tool.
      */
@@ -147,6 +144,12 @@ public class OM3DViewerLauncher extends MapHandlerChild implements
      */
     public void addGraphicsToScene(MapContent mapContent) {
         curtain.addGraphicsToScene(mapContent);
+    }
+
+    public void setOrientation(int orientation) {}
+
+    public int getOrientation() {
+        return SwingConstants.HORIZONTAL;
     }
 
 }
