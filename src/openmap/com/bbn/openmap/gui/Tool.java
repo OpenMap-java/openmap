@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Tool.java,v $
 // $RCSfile: Tool.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.5 $
+// $Date: 2006/03/06 15:41:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,10 +25,9 @@ package com.bbn.openmap.gui;
 import java.awt.*;
 
 /**
- * Represents an item on the ToolPanel. If the Tool is a
- * PropertyConsumer and a property prefix is used, the prefix should
- * be used as the key as it is supposed to be unique and can be used
- * as a known discriminator.
+ * Represents an item on the ToolPanel. If the Tool is a PropertyConsumer and a
+ * property prefix is used, the prefix should be used as the key as it is
+ * supposed to be unique and can be used as a known discriminator.
  * 
  * @author john gash contributed to this notion of a Tool.
  */
@@ -55,4 +54,20 @@ public interface Tool {
      * @param aKey The key for this tool.
      */
     public void setKey(String aKey);
+
+    /**
+     * Set the orientation for the GUI of the Tool, SwingConstants.HORIZONTAL or
+     * SwingConstants.VERTICAL.
+     * 
+     * @param orientation
+     */
+    public void setOrientation(int orientation);
+
+    /**
+     * Set the orientation for the GUI of the Tool, SwingConstants.HORIZONTAL or
+     * SwingConstants.VERTICAL.
+     * 
+     * @param orientation
+     */
+    public int getOrientation();
 }

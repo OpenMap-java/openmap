@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ToolPanel.java,v $
 // $RCSfile: ToolPanel.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/05/23 19:51:56 $
+// $Revision: 1.13 $
+// $Date: 2006/03/06 15:41:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,19 +38,19 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * Represents the toolbar containing tools to apply to the map. Tools
- * can be added in sequential order, and retrieved using the tool's
- * keyword. NOTE: Every time a string is passed into a method of this
- * class, the interned version of it is used as a key.
+ * Represents the toolbar containing tools to apply to the map. Tools can be
+ * added in sequential order, and retrieved using the tool's keyword. NOTE:
+ * Every time a string is passed into a method of this class, the interned
+ * version of it is used as a key.
  * <P>
  * 
- * When the ToolPanel is part of the BeanContext, it looks for Tools
- * that have also been added to the BeanContext. If there is more than
- * one ToolPanel in a BeanContext at a time, both will show the same
- * Tool faces. The 'components' property can be used to control which
- * tools can be added to a specific instance of a ToolPanel. That
- * property should contain a space separated list of prefixes used for
- * Tools, which in turn should be set in the Tools as their keys.
+ * When the ToolPanel is part of the BeanContext, it looks for Tools that have
+ * also been added to the BeanContext. If there is more than one ToolPanel in a
+ * BeanContext at a time, both will show the same Tool faces. The 'components'
+ * property can be used to control which tools can be added to a specific
+ * instance of a ToolPanel. That property should contain a space separated list
+ * of prefixes used for Tools, which in turn should be set in the Tools as their
+ * keys.
  * 
  * @see Tool
  * @author john gash
@@ -62,8 +62,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     /** The set of tools contained on the toolbar. */
     protected Hashtable items = new Hashtable();
     /**
-     * A flag to note whether the ToolPanel inserts spaces between
-     * tools.
+     * A flag to note whether the ToolPanel inserts spaces between tools.
      */
     protected boolean autoSpace = false;
 
@@ -79,15 +78,15 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     protected String propertyPrefix = null;
 
     /**
-     * A list of components to use for filtering tools found in the
-     * MapHandler to add to this ToolPanel.
+     * A list of components to use for filtering tools found in the MapHandler
+     * to add to this ToolPanel.
      */
     public final static String ComponentsProperty = "components";
 
     /**
-     * A list of components to use for filtering out tools found in
-     * the MapHandler. Components added to this list will NOT be added
-     * to this ToolPanel.
+     * A list of components to use for filtering out tools found in the
+     * MapHandler. Components added to this list will NOT be added to this
+     * ToolPanel.
      */
     public final static String AvoidComponentsProperty = "avoid";
 
@@ -105,8 +104,8 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     protected GridBagConstraints c = new GridBagConstraints();
 
     /**
-     * Holder that expands in the GridBagLayout, keeping things pushed
-     * to the left side of the toolpanel.
+     * Holder that expands in the GridBagLayout, keeping things pushed to the
+     * left side of the toolpanel.
      */
     protected JLabel filler = null;
 
@@ -130,24 +129,22 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
     /**
-     * A little array used to track what indexes are already used, to
-     * prevent the GridBagLayout from placing things on top of each
-     * other.
+     * A little array used to track what indexes are already used, to prevent
+     * the GridBagLayout from placing things on top of each other.
      */
     protected boolean[] usedIndexes;
     public int MAX_INDEXES = 101;
 
     /**
-     * Provides the next available component index for placement,
-     * starting at 0.
+     * Provides the next available component index for placement, starting at 0.
      */
     protected int getNextAvailableIndex() {
         return getNextAvailableIndex(0);
     }
 
     /**
-     * Provides the next available component index for placement,
-     * given a starting index.
+     * Provides the next available component index for placement, given a
+     * starting index.
      */
     protected int getNextAvailableIndex(int startAt) {
 
@@ -174,13 +171,17 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
      * 
      * @param key The key associated with the item.
      * @param item The Tool to add.
-     * @param index The position index for placement of the tool. -1
-     *        puts it at the end, and if the position is greater than
-     *        the size, it is placed at the end. This class does not
-     *        remember where items were asked to be placed, so later
-     *        additions may mess up intended order.
+     * @param index The position index for placement of the tool. -1 puts it at
+     *        the end, and if the position is greater than the size, it is
+     *        placed at the end. This class does not remember where items were
+     *        asked to be placed, so later additions may mess up intended order.
      */
     public void add(String key, Tool item, int index) {
+
+        int orientation = getOrientation();
+        boolean hOrient = orientation == SwingConstants.HORIZONTAL;
+        item.setOrientation(orientation);
+        
         Container face = item.getFace();
 
         if (face != null) {
@@ -191,18 +192,31 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
                 index *= 2;
             }
 
-            c.gridy = 0;
-            c.weightx = 0;
-            c.anchor = GridBagConstraints.WEST;
-            c.gridx = getNextAvailableIndex(index);
+            if (hOrient) {
+                c.weightx = 0;
+                c.gridx = getNextAvailableIndex(index);
+                c.gridy = 0;
+                c.anchor = GridBagConstraints.WEST;
+            } else {
+                c.weighty = 0;
+                c.gridx = 0;
+                c.gridy = getNextAvailableIndex(index);
+                c.anchor = GridBagConstraints.NORTH;
+            }
 
             gridbag.setConstraints(face, c);
             add(face);
 
             if (filler == null) {
-                c.gridx = getNextAvailableIndex(MAX_INDEXES);
-                c.anchor = GridBagConstraints.EAST;
-                c.weightx = 1;
+                if (hOrient) {
+                    c.gridx = getNextAvailableIndex(MAX_INDEXES);
+                    c.anchor = GridBagConstraints.EAST;
+                    c.weightx = 1;
+                } else {
+                    c.gridy = getNextAvailableIndex(MAX_INDEXES);
+                    c.anchor = GridBagConstraints.SOUTH;
+                    c.weighty = 1;
+                }
 
                 filler = new JLabel("");
                 gridbag.setConstraints(filler, c);
@@ -220,8 +234,8 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
     /**
-     * Add an item to the tool bar. Assumes that the key will be
-     * picked out of the Tool.
+     * Add an item to the tool bar. Assumes that the key will be picked out of
+     * the Tool.
      * 
      * @param item The Tool to add.
      */
@@ -230,12 +244,11 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
     /**
-     * Add an item to the tool bar. Assumes that the key will be
-     * picked out of the Tool.
+     * Add an item to the tool bar. Assumes that the key will be picked out of
+     * the Tool.
      * 
      * @param item The Tool to add.
-     * @param index The position to add the Tool. -1 will add it to
-     *        the end.
+     * @param index The position to add the Tool. -1 will add it to the end.
      */
     public void add(Tool item, int index) {
         try {
@@ -303,43 +316,41 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
     /**
-     * Set the list of strings used by the ToolPanel to figure out
-     * which Tools should be added (in the findAndInit()) method and
-     * where they should go.
+     * Set the list of strings used by the ToolPanel to figure out which Tools
+     * should be added (in the findAndInit()) method and where they should go.
      */
     public void setComponentList(List list) {
         componentList = list;
     }
 
     /**
-     * Get the list of strings used by the ToolPanel to figure out
-     * which Tools should be added (in the findAndInit()) method and
-     * where they should go.
+     * Get the list of strings used by the ToolPanel to figure out which Tools
+     * should be added (in the findAndInit()) method and where they should go.
      */
     public List getComponentList() {
         return componentList;
     }
 
     /**
-     * Set the list of strings used by the ToolPanel to figure out
-     * which Tools should not be added (in the findAndInit()) method.
+     * Set the list of strings used by the ToolPanel to figure out which Tools
+     * should not be added (in the findAndInit()) method.
      */
     public void setAvoidList(List list) {
         avoidList = list;
     }
 
     /**
-     * Get the list of strings used by the ToolPanel to figure out
-     * which Tools should not be added (in the findAndInit()) method.
+     * Get the list of strings used by the ToolPanel to figure out which Tools
+     * should not be added (in the findAndInit()) method.
      */
     public List getAvoidList() {
         return avoidList;
     }
 
     /**
-     * Called when the ToolPanel is added to the BeanContext, and when
-     * new objects are added to the BeanContext after that. The
-     * ToolPanel looks for Tools that are part of the BeanContext.
+     * Called when the ToolPanel is added to the BeanContext, and when new
+     * objects are added to the BeanContext after that. The ToolPanel looks for
+     * Tools that are part of the BeanContext.
      * 
      * @param it iterator to use to go through the new objects.
      */
@@ -350,13 +361,12 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
     /**
-     * Figure out if the string key is in the provided list, and
-     * provide the location index of it is.
+     * Figure out if the string key is in the provided list, and provide the
+     * location index of it is.
      * 
      * @param key the key of the component to check for.
      * @param list the list of keys to check.
-     * @return -1 if not on the list, the index starting at 0 if it
-     *         is.
+     * @return -1 if not on the list, the index starting at 0 if it is.
      */
     protected int keyOnList(String key, List list) {
         int ret = -1;
@@ -403,8 +413,8 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
     /**
-     * BeanContextMembershipListener method. Called when objects have
-     * been added to the parent BeanContext.
+     * BeanContextMembershipListener method. Called when objects have been added
+     * to the parent BeanContext.
      * 
      * @param bcme the event containing the iterator with new objects.
      */
@@ -413,12 +423,11 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
     /**
-     * BeanContextMembershipListener method. Called when objects have
-     * been removed from the parent BeanContext. If the ToolPanel
-     * finds a Tool in the list, it removes it from the ToolPanel.
+     * BeanContextMembershipListener method. Called when objects have been
+     * removed from the parent BeanContext. If the ToolPanel finds a Tool in the
+     * list, it removes it from the ToolPanel.
      * 
-     * @param bcme the event containing the iterator with removed
-     *        objects.
+     * @param bcme the event containing the iterator with removed objects.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
         Iterator it = bcme.iterator();
@@ -439,8 +448,8 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
     /**
-     * Method for BeanContextChild interface. Called when the
-     * ToolPanel is added to the BeanContext.
+     * Method for BeanContextChild interface. Called when the ToolPanel is added
+     * to the BeanContext.
      * 
      * @param in_bc the BeanContext.
      */
@@ -523,13 +532,17 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
 
             if (preferredLocationString != null) {
                 setPreferredLocation(preferredLocationString);
+                if (preferredLocationString.equalsIgnoreCase("WEST")
+                        || preferredLocationString.equalsIgnoreCase("EAST")) {
+                    setOrientation(SwingConstants.VERTICAL);
+                }
             }
         }
     }
 
     /**
-     * Take a List of strings, and return a space-separated version.
-     * Return null if the List is null.
+     * Take a List of strings, and return a space-separated version. Return null
+     * if the List is null.
      */
     protected StringBuffer rebuildListProperty(List aList) {
         StringBuffer list = null;
@@ -576,9 +589,8 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
     /**
-     * If any of the components are visible, set the ToolPanel to be
-     * visible. If all of them are invisible, make the ToolPanel
-     * invisible.
+     * If any of the components are visible, set the ToolPanel to be visible. If
+     * all of them are invisible, make the ToolPanel invisible.
      */
     protected void setVisibility() {
         setVisible(areComponentsVisible());
@@ -613,4 +625,3 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
 }
-

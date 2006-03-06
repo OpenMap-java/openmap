@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMComponentPanel.java,v $
 // $RCSfile: OMComponentPanel.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/02/11 22:30:29 $
+// $Revision: 1.10 $
+// $Date: 2006/03/06 15:41:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
@@ -40,22 +41,23 @@ import com.bbn.openmap.LightMapHandlerChild;
 import com.bbn.openmap.PropertyConsumer;
 
 /**
- * The OMComponentPanel is a convienent super class intended to
- * provide an easy way to extend JPanel while also implementing the
- * common functions of an OMComponent (PropertyConsumer,
- * BeanContextMembershipListener and BeanContextChild). The
- * PropertyListener methods in the BeanContextChild aren't needed,
- * because the java.awt.Component provides them.
+ * The OMComponentPanel is a convienent super class intended to provide an easy
+ * way to extend JPanel while also implementing the common functions of an
+ * OMComponent (PropertyConsumer, BeanContextMembershipListener and
+ * BeanContextChild). The PropertyListener methods in the BeanContextChild
+ * aren't needed, because the java.awt.Component provides them.
  */
 public abstract class OMComponentPanel extends JPanel implements
         PropertyConsumer, BeanContextChild, BeanContextMembershipListener,
         LightMapHandlerChild {
 
     /**
-     * All OMComponentPanels have access to an I18n object, which is
-     * provided by the Environment.
+     * All OMComponentPanels have access to an I18n object, which is provided by
+     * the Environment.
      */
     protected I18n i18n = Environment.getI18n();
+
+    protected int orientation = SwingConstants.HORIZONTAL;
 
     /**
      * BeanContextChildSupport object provides helper functions for
@@ -77,13 +79,12 @@ public abstract class OMComponentPanel extends JPanel implements
         return windowSupport;
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    //// PropertyConsumer methods
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
+    // // PropertyConsumer methods
+    // /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Token uniquely identifying this compoentns in the application
-     * properties.
+     * Token uniquely identifying this compoentns in the application properties.
      */
     protected String propertyPrefix = null;
 
@@ -110,19 +111,17 @@ public abstract class OMComponentPanel extends JPanel implements
     }
 
     /**
-     * PropertyConsumer method, to fill in a Properties object,
-     * reflecting the current values of the OMComponent. If the
-     * component has a propertyPrefix set, the property keys should
-     * have that prefix plus a separating '.' prepended to each
-     * propery key it uses for configuration.
+     * PropertyConsumer method, to fill in a Properties object, reflecting the
+     * current values of the OMComponent. If the component has a propertyPrefix
+     * set, the property keys should have that prefix plus a separating '.'
+     * prepended to each propery key it uses for configuration.
      * 
-     * @param props a Properties object to load the PropertyConsumer
-     *        properties into. If props equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param props a Properties object to load the PropertyConsumer properties
+     *        into. If props equals null, then a new Properties object should be
+     *        created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
         if (props == null) {
@@ -136,22 +135,20 @@ public abstract class OMComponentPanel extends JPanel implements
     }
 
     /**
-     * Method to fill in a Properties object with values reflecting
-     * the properties able to be set on this PropertyConsumer. The key
-     * for each property should be the raw property name (without a
-     * prefix) with a value that is a String that describes what the
-     * property key represents, along with any other information about
-     * the property that would be helpful (range, default value,
-     * etc.). For Layer, this method should at least return the
-     * 'prettyName' property.
+     * Method to fill in a Properties object with values reflecting the
+     * properties able to be set on this PropertyConsumer. The key for each
+     * property should be the raw property name (without a prefix) with a value
+     * that is a String that describes what the property key represents, along
+     * with any other information about the property that would be helpful
+     * (range, default value, etc.). For Layer, this method should at least
+     * return the 'prettyName' property.
      * 
-     * @param list a Properties object to load the PropertyConsumer
-     *        properties into. If getList equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param list a Properties object to load the PropertyConsumer properties
+     *        into. If getList equals null, then a new Properties object should
+     *        be created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
         if (list == null) {
@@ -161,9 +158,9 @@ public abstract class OMComponentPanel extends JPanel implements
     }
 
     /**
-     * Set the property key prefix that should be used by the
-     * PropertyConsumer. The prefix, along with a '.', should be
-     * prepended to the property keys known by the PropertyConsumer.
+     * Set the property key prefix that should be used by the PropertyConsumer.
+     * The prefix, along with a '.', should be prepended to the property keys
+     * known by the PropertyConsumer.
      * 
      * @param prefix the prefix String.
      */
@@ -172,8 +169,8 @@ public abstract class OMComponentPanel extends JPanel implements
     }
 
     /**
-     * Get the property key prefix that is being used to prepend to
-     * the property keys for Properties lookups.
+     * Get the property key prefix that is being used to prepend to the property
+     * keys for Properties lookups.
      * 
      * @return the property prefix for the panel
      */
@@ -181,24 +178,23 @@ public abstract class OMComponentPanel extends JPanel implements
         return propertyPrefix;
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    //// MapHandlerChild methods to make the tool work with
-    //// the MapHandler to find any SelectionProviders.
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
+    // // MapHandlerChild methods to make the tool work with
+    // // the MapHandler to find any SelectionProviders.
+    // /////////////////////////////////////////////////////////////////////////
 
     public void findAndInit(Object obj) {}
 
     public void findAndUndo(Object obj) {}
 
     /**
-     * This is the method that your object can use to find other
-     * objects within the MapHandler (BeanContext). This method gets
-     * called when the object gets added to the MapHandler, or when
-     * another object gets added to the MapHandler after the object is
-     * a member.
+     * This is the method that your object can use to find other objects within
+     * the MapHandler (BeanContext). This method gets called when the object
+     * gets added to the MapHandler, or when another object gets added to the
+     * MapHandler after the object is a member.
      * 
-     * @param it Iterator to use to go through a list of objects. Find
-     *        the ones you need, and hook yourself up.
+     * @param it Iterator to use to go through a list of objects. Find the ones
+     *        you need, and hook yourself up.
      */
     public void findAndInit(Iterator it) {
         while (it.hasNext()) {
@@ -207,20 +203,19 @@ public abstract class OMComponentPanel extends JPanel implements
     }
 
     /**
-     * BeanContextMembershipListener method. Called when a new object
-     * is added to the BeanContext of this object.
+     * BeanContextMembershipListener method. Called when a new object is added
+     * to the BeanContext of this object.
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
         findAndInit(bcme.iterator());
     }
 
     /**
-     * BeanContextMembershipListener method. Called when a new object
-     * is removed from the BeanContext of this object. For the Layer,
-     * this method doesn't do anything. If your layer does something
-     * with the childrenAdded method, or findAndInit, you should take
-     * steps in this method to unhook the layer from the object used
-     * in those methods.
+     * BeanContextMembershipListener method. Called when a new object is removed
+     * from the BeanContext of this object. For the Layer, this method doesn't
+     * do anything. If your layer does something with the childrenAdded method,
+     * or findAndInit, you should take steps in this method to unhook the layer
+     * from the object used in those methods.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
         Iterator it = bcme.iterator();
@@ -236,9 +231,9 @@ public abstract class OMComponentPanel extends JPanel implements
 
     /**
      * Method for BeanContextChild interface. Adds this object as a
-     * BeanContextMembership listener, set the BeanContext in this
-     * objects BeanContextSupport, and receives the initial list of
-     * objects currently contained in the BeanContext.
+     * BeanContextMembership listener, set the BeanContext in this objects
+     * BeanContextSupport, and receives the initial list of objects currently
+     * contained in the BeanContext.
      */
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
 
@@ -250,10 +245,9 @@ public abstract class OMComponentPanel extends JPanel implements
     }
 
     /**
-     * Method for BeanContextChild interface. Uses the
-     * BeanContextChildSupport to add a listener to this object's
-     * property. This listener wants to have the right to veto a
-     * property change.
+     * Method for BeanContextChild interface. Uses the BeanContextChildSupport
+     * to add a listener to this object's property. This listener wants to have
+     * the right to veto a property change.
      */
     public void addVetoableChangeListener(String propertyName,
                                           VetoableChangeListener in_vcl) {
@@ -261,9 +255,9 @@ public abstract class OMComponentPanel extends JPanel implements
     }
 
     /**
-     * Method for BeanContextChild interface. Uses the
-     * BeanContextChildSupport to remove a listener to this object's
-     * property. The listener has the power to veto property changes.
+     * Method for BeanContextChild interface. Uses the BeanContextChildSupport
+     * to remove a listener to this object's property. The listener has the
+     * power to veto property changes.
      */
     public void removeVetoableChangeListener(String propertyName,
                                              VetoableChangeListener in_vcl) {
@@ -272,27 +266,33 @@ public abstract class OMComponentPanel extends JPanel implements
     }
 
     /**
-     * Report a vetoable property update to any registered listeners.
-     * If anyone vetos the change, then fire a new event reverting
-     * everyone to the old value and then rethrow the
-     * PropertyVetoException.
+     * Report a vetoable property update to any registered listeners. If anyone
+     * vetos the change, then fire a new event reverting everyone to the old
+     * value and then rethrow the PropertyVetoException.
      * <P>
      * 
      * No event is fired if old and new are equal and non-null.
      * <P>
      * 
-     * @param name The programmatic name of the property that is about
-     *        to change
+     * @param name The programmatic name of the property that is about to change
      * 
      * @param oldValue The old value of the property
      * @param newValue - The new value of the property
      * 
-     * @throws PropertyVetoException if the recipient wishes the
-     *         property change to be rolled back.
+     * @throws PropertyVetoException if the recipient wishes the property change
+     *         to be rolled back.
      */
     public void fireVetoableChange(String name, Object oldValue, Object newValue)
             throws PropertyVetoException {
         super.fireVetoableChange(name, oldValue, newValue);
         beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
+    }
+
+    public int getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
     }
 }
