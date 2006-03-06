@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/amp/AmpLinkLayer.java,v $
 // $RCSfile: AmpLinkLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:58 $
+// $Revision: 1.6 $
+// $Date: 2006/03/06 16:14:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,6 +31,7 @@ import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import com.bbn.openmap.gui.Tool;
 import com.bbn.openmap.layer.link.ClientLink;
@@ -83,6 +84,7 @@ public class AmpLinkLayer extends LinkLayer implements Tool {
     protected OMGraphicList extraGraphics = new OMGraphicList();
 
     protected DrawingTool drawingTool = null;
+    protected int orientation = SwingConstants.HORIZONTAL;
 
     /**
      * The default constructor for the Layer. All of the attributes
@@ -376,5 +378,13 @@ public class AmpLinkLayer extends LinkLayer implements Tool {
 
     public DrawingTool getDrawingTool() {
         return drawingTool;
+    }
+
+    public int getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
     }
 }

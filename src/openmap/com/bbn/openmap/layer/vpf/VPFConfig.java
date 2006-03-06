@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFConfig.java,v $
 // $RCSfile: VPFConfig.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/08/09 19:29:39 $
+// $Revision: 1.12 $
+// $Date: 2006/03/06 16:13:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.swing.JButton;
@@ -61,23 +62,23 @@ import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * A component that can look at the VPF configuration files at the top
- * level of the VPF directory structure, and provide an interface for
- * defining an OpenMap VPFLayer for chosen features.
+ * A component that can look at the VPF configuration files at the top level of
+ * the VPF directory structure, and provide an interface for defining an OpenMap
+ * VPFLayer for chosen features.
  * <p>
  * 
- * If the VPFConfig is provided a LayerHandler, it will have a button
- * that will create a layer with selected features. If it doesn't have
- * a LayerHandler, it will provide a button to print out the
- * properties for a VPFLayer for the selected features. This class can
- * be run in stand-alone mode to create properties.
+ * If the VPFConfig is provided a LayerHandler, it will have a button that will
+ * create a layer with selected features. If it doesn't have a LayerHandler, it
+ * will provide a button to print out the properties for a VPFLayer for the
+ * selected features. This class can be run in stand-alone mode to create
+ * properties.
  */
 public class VPFConfig extends JPanel implements ActionListener {
 
-    //private static boolean DEBUG = false;
+    // private static boolean DEBUG = false;
 
-    //Optionally play with line styles. Possible values are
-    //"Angled", "Horizontal", and "None" (the default).
+    // Optionally play with line styles. Possible values are
+    // "Angled", "Horizontal", and "None" (the default).
     private boolean playWithLineStyle = false;
     private String lineStyle = "Angled";
     protected boolean showAll = false;
@@ -156,7 +157,7 @@ public class VPFConfig extends JPanel implements ActionListener {
             paths = buf.toString();
         }
 
-        //Create the nodes.
+        // Create the nodes.
         DefaultMutableTreeNode top = new DefaultMutableTreeNode("VPF Data Libraries");
         try {
             createNodes(top, dataPaths);
@@ -175,7 +176,7 @@ public class VPFConfig extends JPanel implements ActionListener {
         this.layerHandler = layerHandler;
         this.layerName = layerName;
 
-        //Create the nodes.
+        // Create the nodes.
         DefaultMutableTreeNode top = new DefaultMutableTreeNode("VPF Data Libraries");
         try {
             createNodes(top, lb.getLibrarySelectionTable());
@@ -191,7 +192,7 @@ public class VPFConfig extends JPanel implements ActionListener {
         if (layer != null && layer.lst != null) {
             this.layer = layer;
             this.layerName = layer.getName();
-            //Create the nodes.
+            // Create the nodes.
             DefaultMutableTreeNode top = new DefaultMutableTreeNode("VPF Data Libraries");
             try {
                 createNodes(top, layer.lst);
@@ -207,13 +208,13 @@ public class VPFConfig extends JPanel implements ActionListener {
 
         layerFeatures = new Hashtable();
 
-        //Create a tree that allows one selection at a time.
+        // Create a tree that allows one selection at a time.
         final JTree tree = new JTree(top);
         tree.getSelectionModel()
                 .setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.setVisibleRowCount(10);
 
-        //Listen for when the selection changes.
+        // Listen for when the selection changes.
         tree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
@@ -237,7 +238,7 @@ public class VPFConfig extends JPanel implements ActionListener {
             tree.putClientProperty("JTree.lineStyle", lineStyle);
         }
 
-        //Create the scroll pane and add the tree to it.
+        // Create the scroll pane and add the tree to it.
         GridBagLayout outergridbag = new GridBagLayout();
         GridBagConstraints outerc = new GridBagConstraints();
 
@@ -343,8 +344,53 @@ public class VPFConfig extends JPanel implements ActionListener {
         outerc.anchor = GridBagConstraints.CENTER;
         outergridbag.setConstraints(configPanel, outerc);
         add(configPanel);
-    }
 
+        DrawingAttributes oldDrawingAttributes = (DrawingAttributes) drawingAttributes.clone();
+
+        if (layer != null) {
+            // initialize currentFeatures list with anything the layer might
+            // have
+            // already.
+            LayerGraphicWarehouseSupport warehouse = layer.getWarehouse();
+            List initialFeatureList = warehouse.getFeatures();
+
+            Iterator listIter = initialFeatureList.iterator();
+            while (listIter.hasNext()) {
+                // For each feature, find the corresponding tree node
+                // and perform the AddFeatureCmd command
+                loadCurrentFeatures(top.children(), (String) listIter.next(), warehouse);
+            }
+        }
+
+        oldDrawingAttributes.setTo(drawingAttributes);
+    }
+    
+    protected void loadCurrentFeatures(Enumeration treeEnum, String featureName, LayerGraphicWarehouseSupport warehouse) {
+        while (treeEnum.hasMoreElements()) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeEnum.nextElement();
+            Object obj = node.getUserObject();
+//            Debug.output(node.getUserObject().getClass().getName()
+//                    + ", " + node.getUserObject());
+            if (obj instanceof FeatureInfo) {
+                FeatureInfo fi = (FeatureInfo) obj;
+                if (fi.featureName.equals(featureName)) {
+                    currentFeature = node;
+
+                    if (warehouse instanceof VPFFeatureGraphicWarehouse) {
+                        FeatureDrawingAttributes fda = ((VPFFeatureGraphicWarehouse) warehouse).getAttributesForFeature(featureName);
+                        if (fda != null) {
+                            fda.setTo(drawingAttributes);
+                        }
+                    }
+
+                    actionPerformed(new ActionEvent(this, 0, AddFeatureCmd));
+                }
+            } else {
+                loadCurrentFeatures(node.children(), featureName, warehouse);
+            }
+        }
+    }
+    
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand();
 
@@ -467,12 +513,12 @@ public class VPFConfig extends JPanel implements ActionListener {
                 printProperties(layerProperties);
             }
 
-            featureList.clear();
-
-            currentFeatureList.setText(EMPTY_FEATURE_LIST);
-            createLayerButton.setEnabled(false);
-            addFeatureButton.setEnabled(false);
-            clearFeaturesButton.setEnabled(false);
+            // featureList.clear();
+            //
+            // currentFeatureList.setText(EMPTY_FEATURE_LIST);
+            // createLayerButton.setEnabled(false);
+            // addFeatureButton.setEnabled(false);
+            // clearFeaturesButton.setEnabled(false);
         }
     }
 

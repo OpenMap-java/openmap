@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/DrawingEditorTool.java,v $
 // $RCSfile: DrawingEditorTool.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:05:55 $
+// $Revision: 1.10 $
+// $Date: 2006/03/06 16:13:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -619,7 +619,9 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     public Container getFace() {
         if (face == null) {
             JToolBar faceTB = new GridBagToolBar();
-
+            int orientation = ((EditorLayer)getLayer()).getOrientation();
+            faceTB.setOrientation(orientation);
+            
             if (bg == null) {
                 bg = new ButtonGroup();
             }
@@ -634,6 +636,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
             faceTB.add(unpickBtn);
 
             if (drawingTool != null && showAttributes) {
+                drawingTool.setOrientation(orientation);
                 faceTB.add(drawingTool);
                 drawingTool.showPalette();
             }

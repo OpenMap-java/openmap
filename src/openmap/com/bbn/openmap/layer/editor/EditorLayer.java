@@ -14,13 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayer.java,v $
 // $RCSfile: EditorLayer.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/10/14 18:05:55 $
+// $Revision: 1.13 $
+// $Date: 2006/03/06 16:13:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.editor;
+
+import java.awt.Container;
+import java.util.Properties;
+
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.event.SelectMouseMode;
@@ -33,11 +39,6 @@ import com.bbn.openmap.tools.drawing.DrawingTool;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-
-import java.awt.Container;
-import java.util.Properties;
-
-import javax.swing.JPanel;
 
 /**
  * The EditorLayer is a layer that provides a specific set of tools to
@@ -77,6 +78,8 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      * constructor, this property will be ignored.
      */
     public final static String EditorToolProperty = "editor";
+    
+    protected int orientation = SwingConstants.HORIZONTAL;
 
     public EditorLayer() {
         super();
@@ -290,6 +293,14 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      */
     public void setKey(String aKey) {
         setPropertyPrefix(aKey);
+    }
+
+    public int getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
     }
 }
 

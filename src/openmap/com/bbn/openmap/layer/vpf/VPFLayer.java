@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.20 $
-// $Date: 2006/03/01 15:56:54 $
+// $Revision: 1.21 $
+// $Date: 2006/03/06 16:13:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -888,6 +888,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
 
         if (configWindowSupport != null) {
             configWindowSupport.setTitle(getName());
+            configWindowSupport.killWindow();
         }
     }
 

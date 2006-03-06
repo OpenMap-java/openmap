@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: FeatureDrawingAttributes.java,v $
-//$Revision: 1.4 $
-//$Date: 2005/08/11 20:39:19 $
+//$Revision: 1.5 $
+//$Date: 2006/03/06 16:13:59 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -44,18 +44,17 @@ import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
 
 /**
- * The FeatureDrawingAttributes class is used by the
- * VPFFeatureGraphicWarehouse to control the fetching and display of
- * feature attributes out of the feature attribute file, controlled by
- * the FeatureClassInfo class.
+ * The FeatureDrawingAttributes class is used by the VPFFeatureGraphicWarehouse
+ * to control the fetching and display of feature attributes out of the feature
+ * attribute file, controlled by the FeatureClassInfo class.
  * 
  * @author dietrick
  */
 public class FeatureDrawingAttributes extends DrawingAttributes {
 
     /**
-     * The main GUI panel containing the superclass GUI and
-     * attribute-fetching GUI.
+     * The main GUI panel containing the superclass GUI and attribute-fetching
+     * GUI.
      */
     protected JPanel guiPanel;
     /**
@@ -76,8 +75,8 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
      */
     protected JComboBox displayTypeJCB;
     /**
-     * The chosen display type, which gets set as a property in each
-     * OMGraphic for retrieval by the layer.
+     * The chosen display type, which gets set as a property in each OMGraphic
+     * for retrieval by the layer.
      */
     protected String displayType;
     /**
@@ -126,8 +125,8 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
     }
 
     /**
-     * PropertyConsumer method that retrieves the current values of
-     * settable properties.
+     * PropertyConsumer method that retrieves the current values of settable
+     * properties.
      */
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
@@ -140,8 +139,8 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
     }
 
     /**
-     * PropertyConsumer method that gathers information about the
-     * settable properties.
+     * PropertyConsumer method that gathers information about the settable
+     * properties.
      */
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
@@ -167,8 +166,7 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
      * Set the attributes chosen in the GUI on the OMGraphic.
      * 
      * @param omg the OMGraphic to set the attribute information on.
-     * @param id The ID number of the map feature that the OMGraphic
-     *        represents.
+     * @param id The ID number of the map feature that the OMGraphic represents.
      */
     public void setTo(OMGraphic omg, int id) {
         super.setTo(omg);
@@ -180,7 +178,7 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
             if (dt != null) {
                 String tooltip = fci.getAttribute(id, getAttributeCol(), null);
                 // Might want to to .equals here, test for speed effect.
-//                if (dt.equals(OMGraphicConstants.LABEL)) {
+                // if (dt.equals(OMGraphicConstants.LABEL)) {
                 if (dt == OMGraphicConstants.LABEL) {
                     OMTextLabeler omtl = new OMTextLabeler(tooltip);
                     super.setTo(omtl);
@@ -193,8 +191,8 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
     }
 
     /**
-     * Retrieve the column index number out of the feature class info
-     * file that is being used/displayed.
+     * Retrieve the column index number out of the feature class info file that
+     * is being used/displayed.
      * 
      * @return column index of attribute information.
      */
@@ -203,17 +201,16 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
     }
 
     /**
-     * Set the column index number in the feature class info file that
-     * will be used/displayed.
+     * Set the column index number in the feature class info file that will be
+     * used/displayed.
      */
     protected void setAttributeCol(int col) {
         attributeCol = col;
     }
 
     /**
-     * Return the GUI controls for this feature = the basic
-     * DrawingAttributes GUI from the superclass, plus the other
-     * attribute display controls.
+     * Return the GUI controls for this feature = the basic DrawingAttributes
+     * GUI from the superclass, plus the other attribute display controls.
      */
     public Component getGUI() {
         if (guiPanel == null) {
@@ -252,9 +249,10 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
                 public void actionPerformed(ActionEvent ae) {
                     JComboBox jcb = (JComboBox) ae.getSource();
                     FCIChoice fcic = (FCIChoice) jcb.getSelectedItem();
-                    setAttributeCol(fcic.getColumn());
-                    setAttributeColName(fcic.getAttribute());
-
+                    if (fcic != null) {
+                        setAttributeCol(fcic.getColumn());
+                        setAttributeColName(fcic.getAttribute());
+                    }
                 }
             });
             gridbag2.setConstraints(attributeJCB, c2);
@@ -306,7 +304,7 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
     }
 
     /**
-     *  
+     * 
      */
     protected void updateAttributeGUI() {
         if (attributePanel != null && attributeJCB != null
@@ -319,7 +317,7 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
                 int colCount = dci.length;
 
                 // StringBuffer sb = new StringBuffer();
-                
+
                 // Need to save current attributeColName, because
                 // setting a new choice on an empty combo box will set
                 // it to that first added attribute automatically.
@@ -327,8 +325,7 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
                 for (int i = 0; i < colCount; i++) {
                     FCIChoice fcic = new FCIChoice(dci[i].getColumnName(), dci[i].getColumnDescription(), i);
                     attributeJCB.addItem(fcic);
-                    if (dci[i].getColumnName()
-                            .equalsIgnoreCase(cacn)) {
+                    if (dci[i].getColumnName().equalsIgnoreCase(cacn)) {
                         attributeJCB.setSelectedItem(fcic);
                     }
                 }
@@ -356,7 +353,8 @@ public class FeatureDrawingAttributes extends DrawingAttributes {
     public void setDisplayType(String displayType) {
         this.displayType = displayType;
 
-        // Check and update for not-null, so that equality check can be used later 
+        // Check and update for not-null, so that equality check can be used
+        // later
         if (displayType != null) {
             if (displayType.equalsIgnoreCase(OMGraphicConstants.TOOLTIP)) {
                 displayType = OMGraphicConstants.TOOLTIP;

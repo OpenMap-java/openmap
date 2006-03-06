@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/ScenarioGraphicLoader.java,v $
 // $RCSfile: ScenarioGraphicLoader.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/09/15 14:39:30 $
+// $Revision: 1.9 $
+// $Date: 2006/03/06 16:13:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -208,7 +208,8 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
     protected int lonIndex;
     protected int timeIndex;
     protected boolean eastIsNeg = false;
-
+    protected int orientation = SwingConstants.HORIZONTAL;
+    
     /**
      * TimeFormat default is similar to IETF standard date syntax:
      * "Sat, 12 Aug 1995 13:30:00 GMT" represented by (EEE, d MMM yyyy
@@ -1196,6 +1197,14 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
         public void setPropertyPrefix(String p) {
             propPrefix = p;
         }
+    }
+
+    public int getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
     }
 
 }
