@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.16 $
-// $Date: 2005/08/09 20:06:54 $
+// $Revision: 1.17 $
+// $Date: 2006/03/09 20:02:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -385,22 +385,22 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
      * rightClick appropriately if there is an OMGraphic involved.
      * 
      * @param e MouseEvent
-     * @return true if the MouseEvent is a popup trigger.
+     * @return true if the MouseEvent is a popup trigger and has been consumed.
      */
     public boolean testForAndHandlePopupTrigger(MouseEvent e) {
+        boolean ret = false;
         if (e.isPopupTrigger()) {
             GeometryOfInterest goi = getClickInterest();
             // If there is a click interest
             if (goi != null) {
                 // Tell the policy it an OMGraphic was clicked.
                 goi.setLeftButton(false);
-                rightClick(goi.getGeometry(), e);
+                ret = rightClick(goi.getGeometry(), e);
             } else {
-                rightClick(e);
+                ret = rightClick(e);
             }
-            return true;
         }
-        return false;
+        return ret;
     }
 
     /**
