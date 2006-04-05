@@ -34,7 +34,7 @@ import com.bbn.openmap.proj.Length;
  * @author Sachin Date
  * @author Ben Lubin
  * @author Michael Thome
- * @version $Revision: 1.23 $ on $Date: 2005/12/09 21:59:55 $
+ * @version $Revision: 1.24 $ on $Date: 2006/04/05 21:21:20 $
  */
 public class Geo {
 
@@ -128,7 +128,7 @@ public class Geo {
      * @param isDegrees should be true if the lat/lon are specified in decimal
      *        degrees, false if they are radians.
      */
-    public Geo(float lat, float lon, boolean isDegrees) {
+    public Geo(double lat, double lon, boolean isDegrees) {
         if (isDegrees) {
             initialize(lat, lon);
         } else {
@@ -175,6 +175,19 @@ public class Geo {
         x = g.x;
         y = g.y;
         z = g.z;
+    }
+
+    /**
+     * Initialize this Geo with new parameters.
+     * 
+     * @param x
+     * @param y
+     * @param z
+     */
+    public void initialize(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     /**
@@ -237,17 +250,42 @@ public class Geo {
         return Math.atan2(y, x);
     }
 
-    // Readers
+    /**
+     * Reader for x, in internal axis representation (positive to the right side of screen).
+     * @return
+     */
     public final double x() {
         return this.x;
     }
 
+    /**
+     * Reader for y in internal axis reprensentation (positive into screen).
+     * @return
+     */
     public final double y() {
         return this.y;
     }
 
+    /**
+     * Reader for z in internal axis representation (positive going to top of screen).
+     * @return
+     */
     public final double z() {
         return this.z;
+    }
+
+    public void setLength(double r) {
+        // It's tempting to call getLatitudeRadians() here, but it changes the
+        // angle. I think we want to keep the angles the same, and just extend
+        // x, y, z, and then let the latitudes get refigured out for the
+        // ellipsoid when they are asked for.
+        double rlat = Math.atan2(z, Math.sqrt(x * x + y * y));
+        double rlon = getLongitudeRadians();
+
+        double c = r * Math.cos(rlat);
+        x = c * Math.cos(rlon);
+        y = c * Math.sin(rlon);
+        z = r * Math.sin(rlat);
     }
 
     /** North pole. */
@@ -513,17 +551,17 @@ public class Geo {
      * That is, find the point, y, lying between this and q such that
      * 
      * <pre>
-     *  
-     *               y = [x*this + (1-x)*q]*c
-     *               where c = 1/y.dot(y) is a factor for normalizing y.
-     *               y.dot(r) = 0
-     *               substituting:
-     *               [x*this + (1-x)*q]*c.dot(r) = 0 or
-     *               [x*this + (1-x)*q].dot(r) = 0
-     *               x*this.dot(r) + (1-x)*q.dot(r) = 0
-     *               x*a + (1-x)*b = 0
-     *               x = -b/(a - b)
-     *            
+     *          
+     *                       y = [x*this + (1-x)*q]*c
+     *                       where c = 1/y.dot(y) is a factor for normalizing y.
+     *                       y.dot(r) = 0
+     *                       substituting:
+     *                       [x*this + (1-x)*q]*c.dot(r) = 0 or
+     *                       [x*this + (1-x)*q].dot(r) = 0
+     *                       x*this.dot(r) + (1-x)*q.dot(r) = 0
+     *                       x*a + (1-x)*b = 0
+     *                       x = -b/(a - b)
+     *                    
      * </pre>
      * 
      * We assume that this and q are less than 180 degrees appart. When this and
@@ -585,7 +623,7 @@ public class Geo {
         for (int i = 1; i < pl; i++) {
             Geo g2 = path[i]; // next point
             Geo n1 = g1.crossNormalize(g2); // n is perpendicular to the vector
-                                            // from g1 to g2
+            // from g1 to g2
             n1 = n1.scale(radius); // normalize to radius
             // these are the offsets on the g2 side at g1
             Geo r1b = g1.add(n1);
@@ -614,7 +652,7 @@ public class Geo {
                 Geo l1a = g1.subtract(n0);
 
                 double handed = g0.cross(g1).dot(g2); // right or left handed
-                                                        // divergence
+                // divergence
                 if (handed > 0) { // left needs two points, right needs 1
                     if (err > 0) {
                         Geo[] arc = approximateArc(g1, l1b, l1a, err);
@@ -726,8 +764,8 @@ public class Geo {
         }
 
         int n = (int) (2.0 + Math.abs(theta / err)); // number of points
-                                                        // (counting the end
-                                                        // points)
+        // (counting the end
+        // points)
         Geo[] result = new Geo[n];
         result[0] = p0;
         double dtheta = theta / (n - 1);
