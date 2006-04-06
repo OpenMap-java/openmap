@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoUtils.java,v $
-//$Revision: 1.2 $
-//$Date: 2006/04/05 21:21:20 $
+//$Revision: 1.3 $
+//$Date: 2006/04/06 02:14:58 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -51,15 +51,28 @@ public class GeoUtils {
         Stack hullStack = new Stack();
         hullStack.push(pivot);
 
-        Iterator sortedGeoIt = sortedGeos.iterator();
         Geo gCross, midCross = null;
-        Geo geo, endGeo, midGeo = null;
+        Geo geo = null, endGeo = null, midGeo = null;
+
+        Iterator sortedGeoIt = sortedGeos.iterator();
         if (sortedGeoIt.hasNext()) {
             midGeo = (Geo) sortedGeoIt.next();
+            
+            while (midGeo.distance(pivot) == 0 && sortedGeoIt.hasNext()) {
+                midGeo = (Geo) sortedGeoIt.next();
+            }
         }
 
+        Geo lastGeoRead = midGeo;
+        
         while (sortedGeoIt.hasNext() && midGeo != null) {
             geo = (Geo) sortedGeoIt.next();
+            
+            if (geo.distance(lastGeoRead) == 0) {
+//                Debug.output("Skipping duplicate geo");
+                continue;
+            }
+            
             endGeo = (Geo) hullStack.peek();
 
             midCross = endGeo.crossNormalize(midGeo);
@@ -106,6 +119,8 @@ public class GeoUtils {
                     }
                 }
             }
+            
+            lastGeoRead = geo;
         }
 
         if (midGeo != null) {

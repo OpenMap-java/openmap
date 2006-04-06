@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BoundingCircle.java,v $
-//$Revision: 1.6 $
-//$Date: 2005/08/11 20:39:17 $
+//$Revision: 1.7 $
+//$Date: 2006/04/06 02:14:59 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -124,6 +124,10 @@ public interface BoundingCircle {
         
         public boolean intersects(Geo g, double r) {
             return this.center.distance(g) <= (getRadius() + r);
+        }
+        
+        public String toString() {
+            return "BoundingCircle: center(" + center + ") with radius (" + radius + ")";
         }
     }
 }
