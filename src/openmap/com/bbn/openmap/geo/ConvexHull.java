@@ -15,9 +15,9 @@
 //$Source:
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
-//$RCSfile: GeoUtils.java,v $
-//$Revision: 1.3 $
-//$Date: 2006/04/06 02:14:58 $
+//$RCSfile: ConvexHull.java,v $
+//$Revision: 1.2 $
+//$Date: 2006/04/06 14:14:25 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -30,14 +30,25 @@ import java.util.Iterator;
 import java.util.Stack;
 import java.util.TreeSet;
 
-public class GeoUtils {
+/**
+ * This class contains static methods that can be used to create convex hull
+ * GeoRegions from arrays of Geos. The only algorithm implemented is Graham's,
+ * where the highest point is selected (called the pivot), the other points are
+ * sorted according to their relative azimuths from the pivot, and then a path
+ * is created around the other points. Any right turn encountered traversing the
+ * points means that point should be skipped when creating the convex hull.
+ * 
+ * @author dietrick
+ */
+public class ConvexHull {
 
     /**
      * Using Graham's scan.
+     * 
      * @param geos
      * @return GeoRegion outlining the convex hull of the geos
      */
-    public static GeoRegion generateConvexHull(Geo[] geos) {
+    public static GeoRegion getRegion(Geo[] geos) {
 
         Geo pivot = findHighest(geos);
         TreeSet sortedGeos = new TreeSet(new PivotAngleComparator(pivot));
@@ -57,34 +68,34 @@ public class GeoUtils {
         Iterator sortedGeoIt = sortedGeos.iterator();
         if (sortedGeoIt.hasNext()) {
             midGeo = (Geo) sortedGeoIt.next();
-            
+
             while (midGeo.distance(pivot) == 0 && sortedGeoIt.hasNext()) {
                 midGeo = (Geo) sortedGeoIt.next();
             }
         }
 
         Geo lastGeoRead = midGeo;
-        
+
         while (sortedGeoIt.hasNext() && midGeo != null) {
             geo = (Geo) sortedGeoIt.next();
-            
+
             if (geo.distance(lastGeoRead) == 0) {
-//                Debug.output("Skipping duplicate geo");
+                // Debug.output("Skipping duplicate geo");
                 continue;
             }
-            
+
             endGeo = (Geo) hullStack.peek();
 
             midCross = endGeo.crossNormalize(midGeo);
             gCross = midGeo.crossNormalize(geo);
             Geo i = gCross.crossNormalize(midCross).antipode();
 
-//            Debug.output("Evaluating:\n\tendGeo: " + endGeo + "\n\tmidGeo: "
-//                    + midGeo + "\n\tto " + geo
-//                    + "\n ****** intersection point: " + i);
+            // Debug.output("Evaluating:\n\tendGeo: " + endGeo + "\n\tmidGeo: "
+            // + midGeo + "\n\tto " + geo
+            // + "\n ****** intersection point: " + i);
 
             if (midGeo.distance(i) < Math.PI / 2) {
-//                Debug.output("+++++++++++++ midGeo to hull");
+                // Debug.output("+++++++++++++ midGeo to hull");
 
                 // left turn, OK for hull
                 hullStack.push(midGeo);
@@ -96,7 +107,7 @@ public class GeoUtils {
                 // right turn, need to backtrack
                 while (hullStack.size() > 1) {
 
-//                    Debug.output("-------- midGeo dropped");
+                    // Debug.output("-------- midGeo dropped");
 
                     midGeo = (Geo) hullStack.pop();
                     endGeo = (Geo) hullStack.peek();
@@ -105,13 +116,13 @@ public class GeoUtils {
                     gCross = midGeo.crossNormalize(geo);
                     i = gCross.crossNormalize(midCross).antipode();
 
-//                    Debug.output("Evaluating:\n\tendGeo: " + endGeo
-//                            + "\n\tmidGeo: " + midGeo + "\n\tto " + geo
-//                            + "\n ****** intersection point: " + i);
+                    // Debug.output("Evaluating:\n\tendGeo: " + endGeo
+                    // + "\n\tmidGeo: " + midGeo + "\n\tto " + geo
+                    // + "\n ****** intersection point: " + i);
 
                     if (midGeo.distance(i) < Math.PI / 2) {
 
-//                        Debug.output("+++++++++++++ midGeo to hull");
+                        // Debug.output("+++++++++++++ midGeo to hull");
 
                         hullStack.push(midGeo);
                         midGeo = geo;
@@ -119,7 +130,7 @@ public class GeoUtils {
                     }
                 }
             }
-            
+
             lastGeoRead = geo;
         }
 
@@ -154,7 +165,7 @@ public class GeoUtils {
         return ret;
     }
 
-    public static class PivotAngleComparator implements Comparator,
+    protected static class PivotAngleComparator implements Comparator,
             Serializable {
 
         Geo pivot;
