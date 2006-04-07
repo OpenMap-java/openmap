@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMShape.java,v $
 // $RCSfile: OMShape.java,v $
-// $Revision: 1.2 $
-// $Date: 2005/12/09 21:09:03 $
+// $Revision: 1.3 $
+// $Date: 2006/04/07 15:38:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,6 +41,8 @@ import com.bbn.openmap.proj.Projection;
 public class OMShape extends OMGraphic implements Serializable {
 
     protected Shape origShape = null;
+
+    protected OMShape() {}
 
     public OMShape(Shape shapeIn) {
         origShape = shapeIn;
