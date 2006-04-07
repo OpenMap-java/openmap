@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/CADRG.java,v $
 // $RCSfile: CADRG.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/02/16 16:22:46 $
+// $Revision: 1.10 $
+// $Date: 2006/04/07 15:21:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,10 +82,10 @@ public class CADRG extends Cylindrical implements EqualArc {
      * 
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
-     * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
+     * @see com.bbn.openmap.LatLonPoint#normalizeLatitude(float)
      * 
      */
-    public double normalize_latitude(double lat) {
+    public double normalizeLatitude(double lat) {
         if (lat > NORTH_LIMIT) {
             lat = NORTH_LIMIT;
         } else if (lat < SOUTH_LIMIT) {
@@ -379,7 +379,7 @@ public class CADRG extends Cylindrical implements EqualArc {
      * @return boolean
      */
     public boolean isPlotable(double lat, double lon) {
-        lat = normalize_latitude(ProjMath.degToRad(lat));
+        lat = normalizeLatitude(ProjMath.degToRad(lat));
         return ((lat - epsilon < NORTH_LIMIT) && (lat + epsilon > SOUTH_LIMIT));
     }
 
@@ -397,8 +397,8 @@ public class CADRG extends Cylindrical implements EqualArc {
             lat = Math.toRadians(lat);
         }
         
-        double lon_ = wrap_longitude(lon - centerX);
-        double lat_ = normalize_latitude(lat);
+        double lon_ = wrapLongitude(lon - centerX);
+        double lat_ = normalizeLatitude(lat);
 
         int x = (int) ProjMath.roundAdjust(spps_x * lon_) - ul.x;
         int y = (int) ProjMath.roundAdjust(-spps_y * lat_) + ul.y + oy;
@@ -437,10 +437,9 @@ public class CADRG extends Cylindrical implements EqualArc {
         }
 
         // normalize_latitude on the way out.
-        double lat_ = normalize_latitude(py / spps_y);
-
-        ret_val.setLocation(ProjMath.radToDeg((px / spps_x) + centerX),
-                ProjMath.radToDeg(lat_));
+        double lat_ = normalizeLatitude(py / spps_y);
+        double lon_ = wrapLongitude((px / spps_x) + centerX);
+        ret_val.setLocation(Math.toDegrees(lon_), Math.toDegrees(lat_));
 
         return ret_val;
     }

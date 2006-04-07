@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjMath.java,v $
 // $RCSfile: ProjMath.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/02/16 16:22:46 $
+// $Revision: 1.8 $
+// $Date: 2006/04/07 15:21:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -265,8 +265,8 @@ public final class ProjMath {
      * @param lat float latitude in radians
      * @param epsilon epsilon (&gt;= 0) radians distance from pole
      * @return float latitude (-PI/2 &lt;= phi &lt;= PI/2)
-     * @see Proj#normalize_latitude(float)
-     * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
+     * @see Proj#normalizeLatitude(float)
+     * @see com.bbn.openmap.LatLonPoint#normalizeLatitude(float)
      */
     public final static float normalizeLatitude(float lat, float epsilon) {
         if (lat > NORTH_POLE_F - epsilon) {
@@ -291,8 +291,8 @@ public final class ProjMath {
      * @param lat double latitude in radians
      * @param epsilon epsilon (&gt;= 0) radians distance from pole
      * @return double latitude (-PI/2 &lt;= phi &lt;= PI/2)
-     * @see Proj#normalize_latitude(float)
-     * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
+     * @see Proj#normalizeLatitude(float)
+     * @see com.bbn.openmap.LatLonPoint#normalizeLatitude(float)
      */
     public final static double normalizeLatitude(double lat, double epsilon) {
         if (lat > NORTH_POLE_D - epsilon) {

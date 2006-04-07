@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LLXY.java,v $
 // $RCSfile: LLXY.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/02/16 16:22:46 $
+// $Revision: 1.10 $
+// $Date: 2006/04/07 15:21:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -120,7 +120,7 @@ public class LLXY extends Cylindrical implements EqualArc {
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
      * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
      */
-    public double normalize_latitude(double lat) {
+    public double normalizeLatitude(double lat) {
         if (lat > NORTH_POLE) {
             return NORTH_POLE;
         } else if (lat < SOUTH_POLE) {
@@ -154,13 +154,13 @@ public class LLXY extends Cylindrical implements EqualArc {
      */
     public Point2D forward(double lat, double lon, Point2D p, boolean isRadian) {
         if (isRadian) {
-            lat = Math.toDegrees(normalize_latitude(lat));
+            lat = Math.toDegrees(normalizeLatitude(lat));
             lon = Math.toDegrees(lon);
         } else {
-            lat = Math.toDegrees(normalize_latitude(Math.toRadians(lat)));
+            lat = Math.toDegrees(normalizeLatitude(Math.toRadians(lat)));
         }
 
-        double newLon = Math.toDegrees(wrap_longitude(Math.toRadians(lon - cLon)));
+        double newLon = Math.toDegrees(wrapLongitude(Math.toRadians(lon - cLon)));
 
         double x = wx + Math.round(newLon * ppd);
         double y = hy - Math.round((lat - cLat) * ppd);

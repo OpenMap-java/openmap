@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/OrthographicView.java,v $
 // $RCSfile: OrthographicView.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/02/16 16:22:46 $
+// $Revision: 1.9 $
+// $Date: 2006/04/07 15:22:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -101,8 +101,8 @@ public class OrthographicView extends Orthographic {
      * 
      */
     public void setCenter(float lat, float lon) {
-        centerY = normalize_latitude(ProjMath.degToRad(lat));
-        centerX = wrap_longitude(ProjMath.degToRad(lon));
+        centerY = normalizeLatitude(ProjMath.degToRad(lat));
+        centerX = wrapLongitude(ProjMath.degToRad(lon));
         computeParameters();
         projID = null;
     }

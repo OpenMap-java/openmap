@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Azimuth.java,v $
 // $RCSfile: Azimuth.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/02/16 16:22:46 $
+// $Revision: 1.9 $
+// $Date: 2006/04/07 15:21:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -176,7 +176,7 @@ public abstract class Azimuth extends GeoProj {
             lat = Math.toRadians(lat);
             lon = Math.toRadians(lon);
         }
-        return _forward(normalize_latitude(lat), wrap_longitude(lon), pt, null);
+        return _forward(normalizeLatitude(lat), wrapLongitude(lon), pt, null);
     }
 
     /**

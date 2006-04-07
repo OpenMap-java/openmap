@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Cartesian.java,v $
 // $RCSfile: Cartesian.java,v $
-// $Revision: 1.3 $
-// $Date: 2006/02/24 20:43:27 $
+// $Revision: 1.4 $
+// $Date: 2006/04/07 15:21:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -359,8 +359,8 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
      * Returns a GeneralPath.
      */
     public Shape forwardShape(Shape shape) {
-
-        return transform4.createTransformedShape(transform2.createTransformedShape(transform1.createTransformedShape(shape)));
+        return super.forwardShape(shape);
+//        return transform4.createTransformedShape(transform2.createTransformedShape(transform1.createTransformedShape(shape)));
 
         // Set Proj.java for the iterator way of doing this.
     }

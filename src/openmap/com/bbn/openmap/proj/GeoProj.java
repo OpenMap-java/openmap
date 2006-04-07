@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoProj.java,v $
-//$Revision: 1.2 $
-//$Date: 2006/02/16 16:22:46 $
+//$Revision: 1.3 $
+//$Date: 2006/04/07 15:21:10 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -132,8 +132,8 @@ public abstract class GeoProj extends Proj {
 
     protected void init() {
 
-        centerX = wrap_longitude(Math.toRadians(centerX));
-        centerY = normalize_latitude(Math.toRadians(centerY));
+        centerX = wrapLongitude(Math.toRadians(centerX));
+        centerY = normalizeLatitude(Math.toRadians(centerY));
 
         // pixels per meter (an extra scaling factor).
         pixelsPerMeter = Planet.defaultPixelsPerMeter; // PPM
@@ -241,8 +241,8 @@ public abstract class GeoProj extends Proj {
             lon = Math.toRadians(lon);
         }
 
-        centerX = wrap_longitude(lon);
-        centerY = normalize_latitude(lat);
+        centerX = wrapLongitude(lon);
+        centerY = normalizeLatitude(lat);
         computeParameters();
         projID = null;
     }
@@ -273,13 +273,13 @@ public abstract class GeoProj extends Proj {
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
      * @see ProjMath#normalizeLatitude(float, float)
-     * @see LatLonPoint#normalize_latitude(float)
+     * @see LatLonPoint#normalizeLatitude(float)
      */
-    public float normalize_latitude(float lat) {
-        return (float) normalize_latitude((double) lat);
+    public float normalizeLatitude(float lat) {
+        return (float) normalizeLatitude((double) lat);
     }
 
-    abstract public double normalize_latitude(double lat);
+    abstract public double normalizeLatitude(double lat);
 
     /**
      * Sets radian longitude to something sane.
@@ -289,12 +289,26 @@ public abstract class GeoProj extends Proj {
      * @see ProjMath#wrapLongitude(float)
      * @see LatLonPoint#wrapLongitude(float)
      */
-    public final static float wrap_longitude(float lon) {
+    public final static float wrapLongitude(float lon) {
         return ProjMath.wrapLongitude(lon);
     }
 
-    public final static double wrap_longitude(double lon) {
+    public final static double wrapLongitude(double lon) {
         return ProjMath.wrapLongitude(lon);
+    }
+    
+    /**
+     * @deprecated use normalizeLatitude() instead.
+     */
+    public final double normalize_latitude(double lat) {
+        return normalizeLatitude(lat);
+    }
+    
+    /**
+     * @deprecated use wrapLongitude() instead.
+     */
+    public final static double wrap_longitude(double lon) {
+        return wrapLongitude(lon);
     }
 
     /**

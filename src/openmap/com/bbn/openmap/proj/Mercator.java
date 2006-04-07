@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Mercator.java,v $
 // $RCSfile: Mercator.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/02/16 16:22:46 $
+// $Revision: 1.8 $
+// $Date: 2006/04/07 15:21:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -110,10 +110,10 @@ public class Mercator extends Cylindrical {
      * 
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
-     * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
+     * @see com.bbn.openmap.LatLonPoint#normalizeLatitude(float)
      * 
      */
-    public double normalize_latitude(double lat) {
+    public double normalizeLatitude(double lat) {
         if (lat > NORTH_POLE - epsilon) {
             return NORTH_POLE - epsilon;
         } else if (lat < SOUTH_POLE + epsilon) {
@@ -164,13 +164,13 @@ public class Mercator extends Cylindrical {
             lon = ProjMath.degToRad(lon);
         }
         // first normalize
-        lat = normalize_latitude(lat);
-        lon = wrap_longitude(lon);
+        lat = normalizeLatitude(lat);
+        lon = wrapLongitude(lon);
 
         // same as forward_x and forward_y, and convert to screen
         // coords
         double x = (int) Math.round(scaled_radius
-                * wrap_longitude(lon - centerX))
+                * wrapLongitude(lon - centerX))
                 + wx;
         double y = hy
                 - (int) Math.round(scaled_radius
@@ -196,8 +196,8 @@ public class Mercator extends Cylindrical {
         // inverse project
         double wc = asinh_of_tanCtrLat * scaled_radius;
 
-        llp.setLocation(Math.toDegrees(x / scaled_radius + centerX),
-                Math.toDegrees(Math.atan(MoreMath.sinh((y + wc) / scaled_radius))));
+        llp.setLocation(Math.toDegrees(wrapLongitude(x / scaled_radius + centerX)),
+                Math.toDegrees(normalizeLatitude(Math.atan(MoreMath.sinh((y + wc) / scaled_radius)))));
 
         return llp;
     }

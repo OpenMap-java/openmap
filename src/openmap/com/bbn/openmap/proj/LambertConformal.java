@@ -4,8 +4,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LambertConformal.java,v $
 // $RCSfile: LambertConformal.java,v $
-// $Revision: 1.6 $
-// $Date: 2006/02/16 16:22:46 $
+// $Revision: 1.7 $
+// $Date: 2006/04/07 15:21:10 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -188,10 +188,10 @@ public class LambertConformal extends GeoProj {
      * 
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
-     * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
+     * @see com.bbn.openmap.LatLonPoint#normalizeLatitude(float)
      * 
      */
-    public double normalize_latitude(double lat) {
+    public double normalizeLatitude(double lat) {
         if (lat > NORTH_POLE) {
             return NORTH_POLE;
         } else if (lat < SOUTH_POLE) {
