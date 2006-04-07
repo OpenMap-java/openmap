@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/daynight/DayNightLayer.java,v $
 // $RCSfile: DayNightLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/12/09 21:09:16 $
+// $Revision: 1.12 $
+// $Date: 2006/04/07 17:36:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -108,9 +108,9 @@ public class DayNightLayer extends OMGraphicHandlerLayer implements
     public static final int DO_NOT_UPDATE = -1;
 
     /** The color of daytime - default is white and clear. */
-    protected Color daytimeColor = new Color(0x00FFFFFF);
+    protected Color daytimeColor = new Color(0x00FFFFFF, true);
     /** the color of darkness - default is black. */
-    protected Color nighttimeColor = new Color(0x7F000000);
+    protected Color nighttimeColor = new Color(0x7F000000, true);
 
     /**
      * Percentage of the distance from the horizon to the brightest
