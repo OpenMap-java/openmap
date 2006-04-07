@@ -54,8 +54,7 @@
 	</target>
 
 	<target name="jar.geo" depends="init.openmap" description="Builds the omgeo.jar, containing the Geo package.">
-
-		<jar jarfile="${omgeo.jar}" basedir="${openmap.classes}" includes="com/bbn/openmap/geo/*.class, com/bbn/openmap/proj/Length.class" />
+		<jar jarfile="${omgeo.jar}" basedir="${openmap.classes}" excludes="com/bbn/openmap/geo/OM**.class" includes="com/bbn/openmap/geo/*.class, com/bbn/openmap/proj/Length.class" />
 	</target>
 
 	<!--  ############################
