@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoCrossDemoLayer.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/08/09 18:51:46 $
+//$Revision: 1.2 $
+//$Date: 2006/04/07 17:39:00 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -137,17 +137,18 @@ public class GeoCrossDemoLayer extends EditorLayer {
                 list.add(line2);
 
                 Geo i = gc.crossNormalize(ogc);
-
+                Color iColor = Color.white;
                 if (!(Intersection.isOnSegment(g1, g2, i) || Intersection.isOnSegment(g3,
                         g4,
                         i))) {
                     i = i.antipode();
+                    iColor = Color.black;
                 }
 
                 p = new OMPoint((float) i.getLatitude(), (float) i.getLongitude(), 3);
                 p.setOval(true);
                 p.setLinePaint(line.getLinePaint());
-                p.setFillPaint(Color.white);
+                p.setFillPaint(iColor);
                 p.setStroke(line.getStroke());
 
                 list.add(p);
