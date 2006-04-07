@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/ShapeConstants.java,v
 // $
 // $RCSfile: ShapeConstants.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 17:21:28 $
+// $Revision: 1.7 $
+// $Date: 2006/04/07 17:29:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,6 +59,16 @@ public interface ShapeConstants {
 
     /** The indicator for a multipoint shape type, value of 8. */
     public static final int SHAPE_TYPE_MULTIPOINT = 8;
+
+    public static final int SHAPE_TYPE_POINTZ = 11;
+    public static final int SHAPE_TYPE_POLYLINEZ = 13;
+    public static final int SHAPE_TYPE_POLYGONZ = 15;
+    public static final int SHAPE_TYPE_MUILTIPOINTZ = 18;
+    public static final int SHAPE_TYPE_POINTM = 21;
+    public static final int SHAPE_TYPE_POLYLINEM = 23;
+    public static final int SHAPE_TYPE_POLYGONM = 25;
+    public static final int SHAPE_TYPE_MULTIPOINTM = 28;
+    public static final int SHAPE_TYPE_MULTIPATCH = 31;
 
     public static final Byte DBF_TYPE_CHARACTER = new Byte((byte) 67);
     public static final String DBF_CHARACTER = "Character";
