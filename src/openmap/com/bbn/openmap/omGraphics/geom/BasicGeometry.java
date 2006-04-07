@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.16 $
-// $Date: 2005/08/11 20:39:15 $
+// $Revision: 1.17 $
+// $Date: 2006/04/07 15:31:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -420,7 +420,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
                 atts.put(APP_OBJECT_KEY, appObj);
             }
         }
-
+        atts.put(ATT_MAP_KEY, atts);
         setAppObject(atts, false);
     }
 
