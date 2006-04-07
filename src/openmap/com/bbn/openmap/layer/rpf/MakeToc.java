@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/MakeToc.java,v $
 // $RCSfile: MakeToc.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/09/15 14:04:01 $
+// $Revision: 1.12 $
+// $Date: 2006/04/07 17:42:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1693,9 +1693,6 @@ public class MakeToc {
                 group.zone = frame.zone;
                 group.cib = frame.cib;
                 group.cdted = frame.cdted;
-
-                group.cib = false;
-                group.cdted = false;
 
                 frame.x = group.left;
                 /*
