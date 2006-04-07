@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolChooser.java,v $
 // $RCSfile: SymbolChooser.java,v $
-// $Revision: 1.13 $
-// $Date: 2006/02/27 15:11:35 $
+// $Revision: 1.14 $
+// $Date: 2006/04/07 15:28:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -81,12 +81,12 @@ import com.bbn.openmap.util.FileUtils;
 import com.bbn.openmap.util.PaletteHelper;
 
 /**
- * The SymbolChooser is a GUI symbol builder. It can be used in
- * stand-alone mode to create image files, or be integrated into a
- * java application to create ImageIcons.
+ * The SymbolChooser is a GUI symbol builder. It can be used in stand-alone mode
+ * to create image files, or be integrated into a java application to create
+ * ImageIcons.
  * <P>
- * To bring up this chooser, run this class as a standalone
- * application, or call showDialog(..)
+ * To bring up this chooser, run this class as a standalone application, or call
+ * showDialog(..)
  */
 public class SymbolChooser extends JPanel implements ActionListener {
 
@@ -129,8 +129,8 @@ public class SymbolChooser extends JPanel implements ActionListener {
     }
 
     /**
-     * Update the GUI with the contents of the provided
-     * SymbolTreeHolder, reflecting a new set of symbols.
+     * Update the GUI with the contents of the provided SymbolTreeHolder,
+     * reflecting a new set of symbols.
      * 
      * @param sth
      */
@@ -144,8 +144,8 @@ public class SymbolChooser extends JPanel implements ActionListener {
     }
 
     /**
-     * Convenience function to get a standard blank image for those
-     * SymbolParts that are not found by the SymbolImageMaker.
+     * Convenience function to get a standard blank image for those SymbolParts
+     * that are not found by the SymbolImageMaker.
      * 
      * @return DEFAULT_SYMBOL_IMAGE
      */
@@ -161,16 +161,15 @@ public class SymbolChooser extends JPanel implements ActionListener {
     }
 
     /**
-     * Create the GUI based on the contents of the
-     * SymbolReferenceLibrary and the SymbolPartTrees created from the
-     * options.
+     * Create the GUI based on the contents of the SymbolReferenceLibrary and
+     * the SymbolPartTrees created from the options.
      * 
      * @param srl
      * @param trees
      */
     protected void init(SymbolReferenceLibrary srl, List trees) {
 
-        /////////////////////
+        // ///////////////////
         // Create the tree window by creating the scroll pane and add
         // the tree to it.
         GridBagLayout outergridbag = new GridBagLayout();
@@ -223,14 +222,14 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
         add(symbolPanel);
 
-        /////////////////////
+        // ///////////////////
 
         optionPanel = PaletteHelper.createVerticalPanel(" Symbol Attributes ");
         optionPanel.add(((SymbolTreeHolder) setChoices.getSelectedItem()).getOptionPanel());
         outergridbag.setConstraints(optionPanel, outerc);
         add(optionPanel);
 
-        /////////////////////
+        // ///////////////////
         // gridbag2 is for the name panel and the recent symbols.
         GridBagLayout gridbag2 = new GridBagLayout();
         GridBagConstraints c2 = new GridBagConstraints();
@@ -267,7 +266,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
         outerc.gridwidth = GridBagConstraints.REMAINDER;
         outergridbag.setConstraints(namePanel, outerc);
         add(namePanel);
-        /////////////////////
+        // ///////////////////
         // Just call this to make sure that the stuff in the name
         // field matches the selected JTree
         setSelectedTreeHolder(currentSymbolTreeHolder);
@@ -558,8 +557,8 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
     public class SymbolTreeHolder extends ListenerSupport implements
             TreeSelectionListener {
-        //Optionally play with line styles. Possible values are
-        //"Angled", "Horizontal", and "None" (the default).
+        // Optionally play with line styles. Possible values are
+        // "Angled", "Horizontal", and "None" (the default).
         protected boolean playWithTreeLineStyle = false;
         protected String treeLineStyle = "Angled";
 
@@ -652,8 +651,8 @@ public class SymbolChooser extends JPanel implements ActionListener {
         }
 
         /**
-         * Given an text string, have the options available to the
-         * current SymbolTreeHolder reflect those updates.
+         * Given an text string, have the options available to the current
+         * SymbolTreeHolder reflect those updates.
          * 
          * @param text
          */
@@ -807,9 +806,9 @@ public class SymbolChooser extends JPanel implements ActionListener {
 }
 
 /*
- * Class which builds a symbol chooser dialog consisting of a
- * SymbolChooser with "Ok", "Cancel", and "Reset" buttons. This class
- * is based on the contents of the JColorChooser components.
+ * Class which builds a symbol chooser dialog consisting of a SymbolChooser with
+ * "Ok", "Cancel", and "Reset" buttons. This class is based on the contents of
+ * the JColorChooser components.
  */
 
 class SymbolChooserDialog extends JDialog {
@@ -878,9 +877,11 @@ class SymbolChooserDialog extends JDialog {
         setLocationRelativeTo(c);
     }
 
-    public void show() {
-        initialCode = chooserPane.getCode();
-        super.setVisible(true);
+    public void setVisible(boolean val) {
+        if (val) {
+            initialCode = chooserPane.getCode();
+        }
+        super.setVisible(val);
     }
 
     public void reset() {
@@ -914,12 +915,21 @@ class SymbolTracker implements ActionListener, Serializable {
     }
 
     public void actionPerformed(ActionEvent e) {
-        icon = chooser.library.getIcon(chooser.getCode(),
-                chooser.getDesiredIconDimension());
+    // This is subject to too many timing problems, it's easier if we just get the icon
+    // when asked in getImageIcon.
+
+    // icon = chooser.library.getIcon(chooser.getCode(),
+    // chooser.getDesiredIconDimension());
     }
 
     public ImageIcon getImageIcon() {
-        return icon;
+        try {
+            return chooser.library.getIcon(chooser.getCode(),
+                    chooser.getDesiredIconDimension());
+        } catch (NullPointerException npe) {
+            Debug.error("SymbolChooser.SymbolTracker: something messed up with chooser:");
+            npe.printStackTrace();
+        }
+        return null;
     }
 }
-

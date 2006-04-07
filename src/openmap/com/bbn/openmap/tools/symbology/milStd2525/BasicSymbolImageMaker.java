@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BasicSymbolImageMaker.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/08/11 20:39:17 $
+//$Revision: 1.3 $
+//$Date: 2006/04/07 15:28:07 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -75,8 +75,8 @@ public class BasicSymbolImageMaker extends OMComponent implements
 
     /**
      * @param code
-     * @return URL for a file containing the symbol for the given
-     *         code, null if it's not available.
+     * @return URL for a file containing the symbol for the given code, null if
+     *         it's not available.
      * @throws MalformedURLException
      */
     protected URL getFileURL(String code) throws MalformedURLException {
@@ -91,11 +91,10 @@ public class BasicSymbolImageMaker extends OMComponent implements
     }
 
     /**
-     * Return the file extension of this particular SymbolImageMaker,
-     * added to the symbol name after the code has been massaged into
-     * a file name. The BasicSymbolImageLaker doesn't add an
-     * extension. If you override, include the dot at the beginning of
-     * the return string.
+     * Return the file extension of this particular SymbolImageMaker, added to
+     * the symbol name after the code has been massaged into a file name. The
+     * BasicSymbolImageLaker doesn't add an extension. If you override, include
+     * the dot at the beginning of the return string.
      */
     public String getFileExtension() {
         return "";
@@ -103,8 +102,8 @@ public class BasicSymbolImageMaker extends OMComponent implements
 
     /**
      * @param code
-     * @return code that has any wildcard characters changed for the
-     *         sake of the symbol database.
+     * @return code that has any wildcard characters changed for the sake of the
+     *         symbol database.
      */
     protected String massageCode(String code) {
         code = code.replace('*', '-').toLowerCase();
@@ -119,6 +118,10 @@ public class BasicSymbolImageMaker extends OMComponent implements
      *      java.awt.Dimension)
      */
     public ImageIcon getIcon(String code, Dimension di) {
+
+        if (code == null) {
+            return null;
+        }
 
         try {
             URL fileURL = getFileURL(code);
@@ -135,8 +138,10 @@ public class BasicSymbolImageMaker extends OMComponent implements
             e.printStackTrace();
         } catch (NullPointerException npe) {
             if (Debug.debugging("symbology")) {
-                Debug.output("BasicSymbolImageMaker: didn't find data for image");
-                npe.printStackTrace();
+                Debug.output("BasicSymbolImageMaker: didn't find data for image: " + code);
+                if (Debug.debugging("symbologydetail")) {
+                    npe.printStackTrace();
+                }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
