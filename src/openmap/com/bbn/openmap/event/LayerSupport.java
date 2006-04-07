@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/LayerSupport.java,v $
 // $RCSfile: LayerSupport.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/02/27 23:19:31 $
+// $Revision: 1.8 $
+// $Date: 2006/04/07 17:27:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,7 +36,7 @@ import com.bbn.openmap.util.Debug;
  */
 public class LayerSupport extends ListenerSupport {
 
-    protected boolean synchronous = false;
+    protected boolean synchronous = true;
 
     /**
      * Construct a LayerSupport.
