@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/BufferedImageHelper.java,v $
 // $RCSfile: BufferedImageHelper.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/12/10 14:11:57 $
+// $Revision: 1.8 $
+// $Date: 2006/04/07 17:33:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -217,6 +217,10 @@ public class BufferedImageHelper {
                                                  int h)
             throws InterruptedException {
 
+        if (url == null) {
+            return null;
+        }
+        
         BufferedImage bi = getJAIBufferedImage("url", url, x, y, w, h);
 
         if (bi != null) {
