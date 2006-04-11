@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayer.java,v $
 // $RCSfile: EditorLayer.java,v $
-// $Revision: 1.13 $
-// $Date: 2006/03/06 16:13:59 $
+// $Revision: 1.14 $
+// $Date: 2006/04/11 00:15:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -155,6 +155,7 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
         return elmm;
     }
 
+
     /**
      * DrawingToolRequestor method. It's actually pretty important to
      * call EditorTool.drawingComplete() from here, too, if you create
@@ -233,6 +234,14 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      */
     public MapMouseInterpreter getMouseEventInterpreter() {
         return mouseEventInterpreter;
+    }
+
+    public EditorTool getEditorTool() {
+        return editorTool;
+    }
+
+    public void setEditorTool(EditorTool editorTool) {
+        this.editorTool = editorTool;
     }
 
     /**

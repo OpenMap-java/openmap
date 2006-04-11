@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/DrawingEditorTool.java,v $
 // $RCSfile: DrawingEditorTool.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/03/06 16:13:59 $
+// $Revision: 1.11 $
+// $Date: 2006/04/11 00:15:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,45 +65,44 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The DrawingEditorTool is a EditorTool for the EditorLayer that will
- * use a custom OMDrawingTool to create OMGraphics as needed by the
- * EditorTool. This is a class that lets you define which
- * EditToolLoaders the internal OMDrawingTool will use for its own,
- * targeted use. These definitions are specified in the properties for
- * the EditorLayer using this tool. This class provides the
- * OMDrawingTool and all the button mechanisms organized for smooth
+ * The DrawingEditorTool is a EditorTool for the EditorLayer that will use a
+ * custom OMDrawingTool to create OMGraphics as needed by the EditorTool. This
+ * is a class that lets you define which EditToolLoaders the internal
+ * OMDrawingTool will use for its own, targeted use. These definitions are
+ * specified in the properties for the EditorLayer using this tool. This class
+ * provides the OMDrawingTool and all the button mechanisms organized for smooth
  * behavior integrated with the regular OpenMap mouse modes.
  * 
  * Properties for an EditorLayer using the DrawingEditorTool:
  * 
  * <pre>
- * 
  *  
- *  # Layer declaration, dtlayer has to go in openmap.layers property
- *  dtlayer.class=com.bbn.openmap.layer.editor.EditorLayer
- *  # GUI name for layer, will also be the ID of the 'hidden' mouse mode used for tool.
- *  dtlayer.prettyName=Drawing Layer
- *  # List of other MouseModes to respond to for the layer, when *not* in editing mode.
- *  dtlayer.mouseModes=Gestures
- *  # Editor Tool to use with layer
- *  dtlayer.editor=com.bbn.openmap.layer.editor.DrawingEditorTool
- *  # This tool lets you hide the drawing attribute controls (lines,
- *  # colors) for the different objects. Default is true.
- *  dtlayer.showAttributes=false
- * 
- *  # List of EditToolLoaders to use in DrawingEditorTool
- *  dtlayer.loaders=polys points lines
- *  # EditToolLoader class to use for the polys
- *  dtlayer.polys.class=com.bbn.openmap.tools.drawing.OMPolyLoader
- *  # Set the DrawingAttributes class to use for polys
- *  dtlayer.polys.attributesClass=com.bbn.openmap.omGraphics.DrawingAttributes
- *  # Polys have specific line color, defaults for other settings.
- *  dtlayer.polys.lineColor=FFFF0000
- * 
- *  # EditToolLoader classes for points and lines, they get rendered
- *  # with whatever color was set last for the DrawingEditorTool.
- *  dtlayer.points.class=com.bbn.openmap.tools.drawing.OMPointLoader
- *  dtlayer.lines.class=com.bbn.openmap.tools.drawing.OMLineLoader
+ *   
+ *   # Layer declaration, dtlayer has to go in openmap.layers property
+ *   dtlayer.class=com.bbn.openmap.layer.editor.EditorLayer
+ *   # GUI name for layer, will also be the ID of the 'hidden' mouse mode used for tool.
+ *   dtlayer.prettyName=Drawing Layer
+ *   # List of other MouseModes to respond to for the layer, when *not* in editing mode.
+ *   dtlayer.mouseModes=Gestures
+ *   # Editor Tool to use with layer
+ *   dtlayer.editor=com.bbn.openmap.layer.editor.DrawingEditorTool
+ *   # This tool lets you hide the drawing attribute controls (lines,
+ *   # colors) for the different objects. Default is true.
+ *   dtlayer.showAttributes=false
+ *  
+ *   # List of EditToolLoaders to use in DrawingEditorTool
+ *   dtlayer.loaders=polys points lines
+ *   # EditToolLoader class to use for the polys
+ *   dtlayer.polys.class=com.bbn.openmap.tools.drawing.OMPolyLoader
+ *   # Set the DrawingAttributes class to use for polys
+ *   dtlayer.polys.attributesClass=com.bbn.openmap.omGraphics.DrawingAttributes
+ *   # Polys have specific line color, defaults for other settings.
+ *   dtlayer.polys.lineColor=FFFF0000
+ *  
+ *   # EditToolLoader classes for points and lines, they get rendered
+ *   # with whatever color was set last for the DrawingEditorTool.
+ *   dtlayer.points.class=com.bbn.openmap.tools.drawing.OMPointLoader
+ *   dtlayer.lines.class=com.bbn.openmap.tools.drawing.OMLineLoader
  * 
  */
 public class DrawingEditorTool extends AbstractEditorTool implements
@@ -114,18 +113,17 @@ public class DrawingEditorTool extends AbstractEditorTool implements
      */
     protected OMDrawingTool drawingTool = null;
     /**
-     * A handler on the OMDrawingToolMouseMode that the OMDrawingTool
-     * is using, for convenience. If this handle is not null, then
-     * that's an internal signal for this EditorTool to know that it's
-     * active and interpreting MouseEvents. If this is null, and the
-     * EditorTool wants events, that's a signal to create a new
-     * OMGraphic (see mousePressed).
+     * A handler on the OMDrawingToolMouseMode that the OMDrawingTool is using,
+     * for convenience. If this handle is not null, then that's an internal
+     * signal for this EditorTool to know that it's active and interpreting
+     * MouseEvents. If this is null, and the EditorTool wants events, that's a
+     * signal to create a new OMGraphic (see mousePressed).
      */
     protected OMDrawingToolMouseMode omdtmm = null;
     /**
-     * The class name of the next thing to create. Used as a signal to
-     * this EditorTool that when the next appropriate MouseEvent comes
-     * in, this "thing" should be created.
+     * The class name of the next thing to create. Used as a signal to this
+     * EditorTool that when the next appropriate MouseEvent comes in, this
+     * "thing" should be created.
      */
     protected String thingToCreate = null;
     /**
@@ -134,25 +132,22 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     protected ButtonGroup bg = null;
 
     /**
-     * The button that unpicks all the rest of the tool buttons. It is
-     * kept invisible, but a member of all the other button's
-     * ButtonGroup. When selected, all of the other buttons are
-     * deselected.
+     * The button that unpicks all the rest of the tool buttons. It is kept
+     * invisible, but a member of all the other button's ButtonGroup. When
+     * selected, all of the other buttons are deselected.
      */
     protected JToggleButton unpickBtn = null;
 
     protected GraphicAttributes ga = null;
 
     /**
-     * The MouseDelegator that is controlling the MouseModes. We need
-     * to keep track of what's going on so we can adjust our tools
-     * accordingly.
+     * The MouseDelegator that is controlling the MouseModes. We need to keep
+     * track of what's going on so we can adjust our tools accordingly.
      */
     protected MouseDelegator mouseDelegator;
 
     /**
-     * The ArrayList containing the EditToolLoaders for the drawing
-     * tool.
+     * The ArrayList containing the EditToolLoaders for the drawing tool.
      */
     protected ArrayList loaderList = new ArrayList();
 
@@ -164,8 +159,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     protected String propertyPrefix;
 
     /**
-     * Hashtable that holds default DrawingAttributes for different
-     * loaders.
+     * Hashtable that holds default DrawingAttributes for different loaders.
      */
     protected Hashtable drawingAttributesTable;
 
@@ -177,10 +171,9 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     public final static String DefaultDrawingAttributesClass = "com.bbn.openmap.omGraphics.DrawingAttributes";
 
     /**
-     * The general constructor that can be called from subclasses to
-     * initialize the drawing tool and interface. All that is left to
-     * do for subclasses is to add EditToolLoaders to the
-     * DrawingEditorTool subclass.
+     * The general constructor that can be called from subclasses to initialize
+     * the drawing tool and interface. All that is left to do for subclasses is
+     * to add EditToolLoaders to the DrawingEditorTool subclass.
      */
     public DrawingEditorTool(EditorLayer layer) {
         super(layer);
@@ -225,8 +218,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     }
 
     /**
-     * Add the default (line, poly, rectangle, circle/range rings,
-     * point) capabilities to the tool.
+     * Add the default (line, poly, rectangle, circle/range rings, point)
+     * capabilities to the tool.
      */
     public void initDefaultDrawingToolLoaders() {
         addEditToolLoader(new OMDistanceLoader());
@@ -238,8 +231,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     }
 
     /**
-     * The main method for getting the tool ready to create something.
-     * When called, it sets the thingToCreate from the command, calls
+     * The main method for getting the tool ready to create something. When
+     * called, it sets the thingToCreate from the command, calls
      * setWantEvents(true), which calls resetForNewGraphic().
      */
     protected void setWantsEvents(String command) {
@@ -254,8 +247,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     }
 
     /**
-     * The EditorTool method, with the added bonus of resetting the
-     * tool if it doesn't want events.
+     * The EditorTool method, with the added bonus of resetting the tool if it
+     * doesn't want events.
      */
     public void setWantsEvents(boolean value) {
         super.setWantsEvents(value);
@@ -272,13 +265,12 @@ public class DrawingEditorTool extends AbstractEditorTool implements
 
         if (drawingTool != null) {
             drawingTool.setVisible(showAttributes);// Just to make
-                                                   // sure...
+            // sure...
         }
     }
 
     /**
-     * Called by findAndInit(Iterator) so subclasses can find objects,
-     * too.
+     * Called by findAndInit(Iterator) so subclasses can find objects, too.
      */
     public void findAndInit(Object someObj) {
         super.findAndInit(someObj);
@@ -321,8 +313,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     }
 
     /**
-     * When a graphic is complete, the drawing tool gets ready to make
-     * another.
+     * When a graphic is complete, the drawing tool gets ready to make another.
      */
     public void drawingComplete(OMGraphic omg, OMAction action) {
         // Watch out, gets called when drawingTool.deactivate() gets
@@ -336,13 +327,12 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     }
 
     /**
-     * Called when the Tool should be reset to draw a new graphic.
-     * Currently sets the OMDrawingToolMouseMode to null, which is a
-     * signal to the DrawingEditorTool that if an appropriate
-     * MouseEvent is provided, that the DrawingTool should be
-     * configured to create a new OMGraphic. If the
-     * OMDrawingToolMouseMode is not null, then the MouseEvent is just
-     * given to it.
+     * Called when the Tool should be reset to draw a new graphic. Currently
+     * sets the OMDrawingToolMouseMode to null, which is a signal to the
+     * DrawingEditorTool that if an appropriate MouseEvent is provided, that the
+     * DrawingTool should be configured to create a new OMGraphic. If the
+     * OMDrawingToolMouseMode is not null, then the MouseEvent is just given to
+     * it.
      */
     public void resetForNewGraphic() {
         // if thingToCreate is null, then omdtmm will be set to null
@@ -353,8 +343,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     }
 
     /**
-     * Does everything to make the DrawingEditorTool go to sleep, and
-     * disable all buttons.
+     * Does everything to make the DrawingEditorTool go to sleep, and disable
+     * all buttons.
      */
     public void totalReset() {
         // Need to check if the tool wants events before just
@@ -382,6 +372,26 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     public OMDrawingTool getDrawingTool() {
         return drawingTool;
     }
+
+    public GraphicAttributes getGraphicAttributes() {
+        return ga;
+    }
+    
+
+    public void setGraphicAttributes(GraphicAttributes ga) {
+        this.ga = ga;
+    }
+    
+
+    public boolean isShowAttributes() {
+        return showAttributes;
+    }
+    
+
+    public void setShowAttributes(boolean showAttributes) {
+        this.showAttributes = showAttributes;
+    }
+    
 
     /**
      * actionPerformed - Handle the mouse clicks on the button(s)
@@ -411,13 +421,13 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     }
 
     /**
-     * Method to set up the drawing tool with default behavior in
-     * order to create a new OMGraphic. Will try to deactivate the
-     * OMDrawingTool if it thinks it's busy.
+     * Method to set up the drawing tool with default behavior in order to
+     * create a new OMGraphic. Will try to deactivate the OMDrawingTool if it
+     * thinks it's busy.
      * 
      * @param ttc thingToCreate, classname of thing to create
-     * @return OMDrawingToolMouseMode of DrawingTool if all goes well,
-     *         null if the drawing tool can't create the new thingy.
+     * @return OMDrawingToolMouseMode of DrawingTool if all goes well, null if
+     *         the drawing tool can't create the new thingy.
      */
     protected OMDrawingToolMouseMode activateDrawingTool(String ttc) {
         if (drawingTool != null && ttc != null) {
@@ -458,9 +468,9 @@ public class DrawingEditorTool extends AbstractEditorTool implements
         return null;
     }
 
-    ////////////////////////
+    // //////////////////////
     // Mouse Listener events
-    ////////////////////////
+    // //////////////////////
 
     /**
      * Invoked when a mouse button has been pressed on a component.
@@ -547,13 +557,13 @@ public class DrawingEditorTool extends AbstractEditorTool implements
         }
     }
 
-    ///////////////////////////////
+    // /////////////////////////////
     // Mouse Motion Listener events
-    ///////////////////////////////
+    // /////////////////////////////
 
     /**
-     * Invoked when a mouse button is pressed on a component and then
-     * dragged. The listener will receive these events if it
+     * Invoked when a mouse button is pressed on a component and then dragged.
+     * The listener will receive these events if it
      * 
      * @param e MouseEvent
      * @return false
@@ -572,8 +582,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     }
 
     /**
-     * Invoked when the mouse button has been moved on a component
-     * (with no buttons down).
+     * Invoked when the mouse button has been moved on a component (with no
+     * buttons down).
      * 
      * @param e MouseEvent
      * @return false
@@ -600,9 +610,9 @@ public class DrawingEditorTool extends AbstractEditorTool implements
         }
     }
 
-    ///////////////////////////////
+    // /////////////////////////////
     // Tool interface methods
-    ///////////////////////////////
+    // /////////////////////////////
 
     public void setVisible(boolean value) {
         super.setVisible(value);
@@ -619,9 +629,9 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     public Container getFace() {
         if (face == null) {
             JToolBar faceTB = new GridBagToolBar();
-            int orientation = ((EditorLayer)getLayer()).getOrientation();
+            int orientation = ((EditorLayer) getLayer()).getOrientation();
             faceTB.setOrientation(orientation);
-            
+
             if (bg == null) {
                 bg = new ButtonGroup();
             }
@@ -670,8 +680,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     }
 
     /**
-     * Set the MouseDelegator used to hold the different MouseModes
-     * available to the map.
+     * Set the MouseDelegator used to hold the different MouseModes available to
+     * the map.
      */
     public void setMouseDelegator(MouseDelegator md) {
         if (mouseDelegator != null) {
@@ -693,22 +703,21 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     }
 
     /**
-     * Get the MouseDelegator used to control mouse gestures over the
-     * map.
+     * Get the MouseDelegator used to control mouse gestures over the map.
      */
     public MouseDelegator getMouseDelegator() {
         return mouseDelegator;
     }
 
     /**
-     * Listen for changes to the active mouse mode and for any changes
-     * to the list of available mouse modes
+     * Listen for changes to the active mouse mode and for any changes to the
+     * list of available mouse modes
      */
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
             /*
-             * If the mouse mode changes, we want to reset ourselves
-             * to be ready to just adjust what's on our layer.
+             * If the mouse mode changes, we want to reset ourselves to be ready
+             * to just adjust what's on our layer.
              */
             String mmID = ((MapMouseMode) evt.getNewValue()).getID();
 
