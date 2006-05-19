@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.18 $
-// $Date: 2006/01/03 15:41:18 $
+// $Revision: 1.19 $
+// $Date: 2006/05/19 14:35:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1220,7 +1220,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
                     limit,
                     resetSelect);
             
-            if (omd.omg == null) {
+            if (omg == null || omd.omg == null) {
                 // no hit, but continue testing...
                 return true;
             }
