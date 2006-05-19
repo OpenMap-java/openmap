@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Cylindrical.java,v $
 // $RCSfile: Cylindrical.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/12/09 21:08:58 $
+// $Revision: 1.9 $
+// $Date: 2006/05/19 14:57:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -87,9 +87,9 @@ public abstract class Cylindrical extends GeoProj {
     /**
      * Called when some fundamental parameters change.
      * <p>
-     * Each projection will decide how to respond to this change. For
-     * instance, they may need to recalculate "constant" parameters
-     * used in the forward() and inverse() calls.
+     * Each projection will decide how to respond to this change. For instance,
+     * they may need to recalculate "constant" parameters used in the forward()
+     * and inverse() calls.
      * <p>
      */
     protected void computeParameters() {
@@ -165,9 +165,8 @@ public abstract class Cylindrical extends GeoProj {
     /**
      * Get the upper left (northwest) point of the projection.
      * <p>
-     * Returns the upper left point (or closest equivalent) of the
-     * projection based on the center point and height and width of
-     * screen.
+     * Returns the upper left point (or closest equivalent) of the projection
+     * based on the center point and height and width of screen.
      * <p>
      * 
      * @return LatLonPoint
@@ -180,26 +179,24 @@ public abstract class Cylindrical extends GeoProj {
     /**
      * Get the lower right (southeast) point of the projection.
      * <p>
-     * Returns the lower right point (or closest equivalent) of the
-     * projection based on the center point and height and width of
-     * screen.
+     * Returns the lower right point (or closest equivalent) of the projection
+     * based on the center point and height and width of screen.
      * <p>
      * 
      * @return LatLonPoint
      * 
      */
     public Point2D getLowerRight() {
-        return inverse(width, height);
+        return inverse(width - 1, height - 1);
     }
 
     /**
-     * Forward project a raw array of radian points. This assumes
-     * nothing about the array of coordinates. In no way does it
-     * assume the points are connected or that the composite figure is
-     * to be filled.
+     * Forward project a raw array of radian points. This assumes nothing about
+     * the array of coordinates. In no way does it assume the points are
+     * connected or that the composite figure is to be filled.
      * <p>
-     * It does populate a visible array indicating whether the points
-     * are visible on the projected view of the world.
+     * It does populate a visible array indicating whether the points are
+     * visible on the projected view of the world.
      * <p>
      * 
      * @param rawllpts array of lat,lon,... in radians
@@ -208,11 +205,10 @@ public abstract class Cylindrical extends GeoProj {
      * @param ycoords y coordinates
      * @param visible coordinates visible?
      * @param copyoff offset into x,y,visible arrays
-     * @param copylen number of coordinates (coordinate arrays should
-     *        be at least this long, rawllpts should be at least twice
-     *        as long).
-     * @return boolean true if all points visible, false if some
-     *         points not visible.
+     * @param copylen number of coordinates (coordinate arrays should be at
+     *        least this long, rawllpts should be at least twice as long).
+     * @return boolean true if all points visible, false if some points not
+     *         visible.
      */
     public boolean forwardRaw(float[] rawllpts, int rawoff, int[] xcoords,
                               int[] ycoords, boolean[] visible, int copyoff,
@@ -231,13 +227,12 @@ public abstract class Cylindrical extends GeoProj {
     }
 
     /**
-     * Forward project a raw array of radian points. This assumes
-     * nothing about the array of coordinates. In no way does it
-     * assume the points are connected or that the composite figure is
-     * to be filled.
+     * Forward project a raw array of radian points. This assumes nothing about
+     * the array of coordinates. In no way does it assume the points are
+     * connected or that the composite figure is to be filled.
      * <p>
-     * It does populate a visible array indicating whether the points
-     * are visible on the projected view of the world.
+     * It does populate a visible array indicating whether the points are
+     * visible on the projected view of the world.
      * <p>
      * 
      * @param rawllpts array of lat,lon,... in radians
@@ -246,11 +241,10 @@ public abstract class Cylindrical extends GeoProj {
      * @param ycoords y coordinates
      * @param visible coordinates visible?
      * @param copyoff offset into x,y,visible arrays
-     * @param copylen number of coordinates (coordinate arrays should
-     *        be at least this long, rawllpts should be at least twice
-     *        as long).
-     * @return boolean true if all points visible, false if some
-     *         points not visible.
+     * @param copylen number of coordinates (coordinate arrays should be at
+     *        least this long, rawllpts should be at least twice as long).
+     * @return boolean true if all points visible, false if some points not
+     *         visible.
      */
     public boolean forwardRaw(double[] rawllpts, int rawoff, int[] xcoords,
                               int[] ycoords, boolean[] visible, int copyoff,
@@ -272,35 +266,34 @@ public abstract class Cylindrical extends GeoProj {
      * Forward project a raw float[] Poly.
      * <p>
      * <strong>Implementation: </strong> <br>
-     * For the cylindrical "boxy" family of projections, we project
-     * all the points, and check the horizontal (longitudinal) spacing
-     * between vertices as we go. If the spacing is greater than half
-     * the world width (circumference) in pixels, we assume that the
-     * segment has wrapped off one edge of the screen and back onto
-     * the other side. (NOTE that our restrictions on line segments
-     * mentioned in the Projection interface do not allow for lines
-     * &gt;= 180 degrees of arc or for the difference in longitude
-     * between two points to be &gt;= 180 degrees of arc).
+     * For the cylindrical "boxy" family of projections, we project all the
+     * points, and check the horizontal (longitudinal) spacing between vertices
+     * as we go. If the spacing is greater than half the world width
+     * (circumference) in pixels, we assume that the segment has wrapped off one
+     * edge of the screen and back onto the other side. (NOTE that our
+     * restrictions on line segments mentioned in the Projection interface do
+     * not allow for lines &gt;= 180 degrees of arc or for the difference in
+     * longitude between two points to be &gt;= 180 degrees of arc).
      * <p>
-     * For the case where a segment wraps offscreen, we keep track of
-     * the wrapping adjustment factor, and shift the points as we go.
-     * After projecting and shifting all the points, we have a single
-     * continuous x-y polygon. We then need to make shifted copies of
-     * this polygon for the maxima and minima wrap values calculated
-     * during the projection process. This allows us to see the
-     * discontinuous (wrapped) sections on the screen when they are
-     * drawn.
+     * For the case where a segment wraps offscreen, we keep track of the
+     * wrapping adjustment factor, and shift the points as we go. After
+     * projecting and shifting all the points, we have a single continuous x-y
+     * polygon. We then need to make shifted copies of this polygon for the
+     * maxima and minima wrap values calculated during the projection process.
+     * This allows us to see the discontinuous (wrapped) sections on the screen
+     * when they are drawn.
      * <p>
      * 
      * @param rawllpts float[] of lat,lon,lat,lon,... in RADIANS!
      * @param ltype line type (straight, rhumbline, greatcircle)
-     * @param nsegs number of segments between vertices (or if &lt; 0,
-     *        generate this value internally)
-     * @param isFilled filled poly? this is currently ignored for
-     *        cylindrical projections.
+     * @param nsegs number of segments between vertices (or if &lt; 0, generate
+     *        this value internally)
+     * @param isFilled filled poly? this is currently ignored for cylindrical
+     *        projections.
      * @return ArrayList of x[], y[], x[], y[], ... the projected poly
      */
-    protected ArrayList _forwardPoly(float[] rawllpts, int ltype, int nsegs, boolean isFilled) {
+    protected ArrayList _forwardPoly(float[] rawllpts, int ltype, int nsegs,
+                                     boolean isFilled) {
         int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
 
         // determine length of pairs list
@@ -365,8 +358,7 @@ public abstract class Cylindrical extends GeoProj {
             ret_val.add(altx);
             ret_val.add(ys);
             /*
-             * if (Debug.debugging("proj")) { dumpPoly(rawllpts, altx,
-             * ys); }
+             * if (Debug.debugging("proj")) { dumpPoly(rawllpts, altx, ys); }
              */
         }
 
@@ -380,8 +372,7 @@ public abstract class Cylindrical extends GeoProj {
             ret_val.add(altx);
             ret_val.add(ys);
             /*
-             * if (Debug.debugging("proj")) { dumpPoly(rawllpts, altx,
-             * ys); }
+             * if (Debug.debugging("proj")) { dumpPoly(rawllpts, altx, ys); }
              */
         }
 
@@ -392,35 +383,34 @@ public abstract class Cylindrical extends GeoProj {
      * Forward project a raw float[] Poly.
      * <p>
      * <strong>Implementation: </strong> <br>
-     * For the cylindrical "boxy" family of projections, we project
-     * all the points, and check the horizontal (longitudinal) spacing
-     * between vertices as we go. If the spacing is greater than half
-     * the world width (circumference) in pixels, we assume that the
-     * segment has wrapped off one edge of the screen and back onto
-     * the other side. (NOTE that our restrictions on line segments
-     * mentioned in the Projection interface do not allow for lines
-     * &gt;= 180 degrees of arc or for the difference in longitude
-     * between two points to be &gt;= 180 degrees of arc).
+     * For the cylindrical "boxy" family of projections, we project all the
+     * points, and check the horizontal (longitudinal) spacing between vertices
+     * as we go. If the spacing is greater than half the world width
+     * (circumference) in pixels, we assume that the segment has wrapped off one
+     * edge of the screen and back onto the other side. (NOTE that our
+     * restrictions on line segments mentioned in the Projection interface do
+     * not allow for lines &gt;= 180 degrees of arc or for the difference in
+     * longitude between two points to be &gt;= 180 degrees of arc).
      * <p>
-     * For the case where a segment wraps offscreen, we keep track of
-     * the wrapping adjustment factor, and shift the points as we go.
-     * After projecting and shifting all the points, we have a single
-     * continuous x-y polygon. We then need to make shifted copies of
-     * this polygon for the maxima and minima wrap values calculated
-     * during the projection process. This allows us to see the
-     * discontinuous (wrapped) sections on the screen when they are
-     * drawn.
+     * For the case where a segment wraps offscreen, we keep track of the
+     * wrapping adjustment factor, and shift the points as we go. After
+     * projecting and shifting all the points, we have a single continuous x-y
+     * polygon. We then need to make shifted copies of this polygon for the
+     * maxima and minima wrap values calculated during the projection process.
+     * This allows us to see the discontinuous (wrapped) sections on the screen
+     * when they are drawn.
      * <p>
      * 
      * @param rawllpts float[] of lat,lon,lat,lon,... in RADIANS!
      * @param ltype line type (straight, rhumbline, greatcircle)
-     * @param nsegs number of segments between vertices (or if &lt; 0,
-     *        generate this value internally)
-     * @param isFilled filled poly? this is currently ignored for
-     *        cylindrical projections.
+     * @param nsegs number of segments between vertices (or if &lt; 0, generate
+     *        this value internally)
+     * @param isFilled filled poly? this is currently ignored for cylindrical
+     *        projections.
      * @return ArrayList of x[], y[], x[], y[], ... the projected poly
      */
-    protected ArrayList _forwardPoly(double[] rawllpts, int ltype, int nsegs, boolean isFilled) {
+    protected ArrayList _forwardPoly(double[] rawllpts, int ltype, int nsegs,
+                                     boolean isFilled) {
         int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
 
         // determine length of pairs list
@@ -485,8 +475,7 @@ public abstract class Cylindrical extends GeoProj {
             ret_val.add(altx);
             ret_val.add(ys);
             /*
-             * if (Debug.debugging("proj")) { dumpPoly(rawllpts, altx,
-             * ys); }
+             * if (Debug.debugging("proj")) { dumpPoly(rawllpts, altx, ys); }
              */
         }
 
@@ -500,8 +489,7 @@ public abstract class Cylindrical extends GeoProj {
             ret_val.add(altx);
             ret_val.add(ys);
             /*
-             * if (Debug.debugging("proj")) { dumpPoly(rawllpts, altx,
-             * ys); }
+             * if (Debug.debugging("proj")) { dumpPoly(rawllpts, altx, ys); }
              */
         }
 
