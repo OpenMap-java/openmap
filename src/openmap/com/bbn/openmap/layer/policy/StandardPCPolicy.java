@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardPCPolicy.java,v $
 // $RCSfile: StandardPCPolicy.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/09/13 14:33:11 $
+// $Revision: 1.9 $
+// $Date: 2006/05/19 16:44:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -141,7 +141,7 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
                         Debug.output(getLayer().getName()
                                 + ": StandardPCPolicy projectionChanged with NEW projection, handling it within current thread.");
                     }
- 
+                    layer.fireStatusUpdate(LayerStatusEvent.START_WORKING);
                     if (layer.isProjectionOK(proj)) {
                         layer.prepare();
                     }
