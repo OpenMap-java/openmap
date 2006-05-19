@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphic.java,v $
 // $RCSfile: OMGraphic.java,v $
-// $Revision: 1.14 $
-// $Date: 2005/09/06 20:02:11 $
+// $Revision: 1.15 $
+// $Date: 2006/05/19 17:54:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,42 +41,38 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * Used to be the base class of OpenMap graphics, but now inherits
- * from BasicGeometry, which now contains all the information about
- * the geometry of the OMGraphic. The OMGraphic also contains
- * information about how the geometry should be drawn.
+ * Used to be the base class of OpenMap graphics, but now inherits from
+ * BasicGeometry, which now contains all the information about the geometry of
+ * the OMGraphic. The OMGraphic also contains information about how the geometry
+ * should be drawn.
  * <P>
- * The OMGraphics are raster and vector graphic objects that know how
- * to position and render themselves on a given x-y window or lat-lon
- * map projection. All you have to do is supply the location data
- * (x/y, lat/lon) and drawing information (color, line width) and the
- * graphic handles the rest.
+ * The OMGraphics are raster and vector graphic objects that know how to
+ * position and render themselves on a given x-y window or lat-lon map
+ * projection. All you have to do is supply the location data (x/y, lat/lon) and
+ * drawing information (color, line width) and the graphic handles the rest.
  * <p>
  * 
- * This class contains parameters that are common to most types of
- * graphics. If a parameter doesn't make sense for a particular
- * graphic type, it is ignored.
+ * This class contains parameters that are common to most types of graphics. If
+ * a parameter doesn't make sense for a particular graphic type, it is ignored.
  * <p>
  * 
- * The OMGraphics are being updated to be able to provide
- * java.awt.Shape representations of themselves after they have been
- * generated(). The getShape() method returns a java.awt.Shape object.
- * With the Shape object, you can do some spatial analysis (object
- * operations) on the projected OMGraphics.
+ * The OMGraphics are being updated to be able to provide java.awt.Shape
+ * representations of themselves after they have been generated(). The
+ * getShape() method returns a java.awt.Shape object. With the Shape object, you
+ * can do some spatial analysis (object operations) on the projected OMGraphics.
  * 
  * NOTES:
  * <ul>
- * <li>Color values cannot be set to null, but can be set to
- * OMGraphic.clear. Actually, if you set them to null, they will set
- * themselves to be clear.
- * <li>XY Rendering: Java specifies that the origin is the top left
- * of the window, x increases to the right, y increases down.
- * <li>LatLon Rendering: Defined by the Projection object. The center
- * of the window usually corresponds to the center of the projection.
- * OMGraphics should project themselves using the appropriate
- * forward() method listed in the Projection interface
- * <li>Offset Rendering: same as XY, but with origin set to a
- * projected LatLon point.
+ * <li>Color values cannot be set to null, but can be set to OMGraphic.clear.
+ * Actually, if you set them to null, they will set themselves to be clear.
+ * <li>XY Rendering: Java specifies that the origin is the top left of the
+ * window, x increases to the right, y increases down.
+ * <li>LatLon Rendering: Defined by the Projection object. The center of the
+ * window usually corresponds to the center of the projection. OMGraphics should
+ * project themselves using the appropriate forward() method listed in the
+ * Projection interface
+ * <li>Offset Rendering: same as XY, but with origin set to a projected LatLon
+ * point.
  * </ul>
  * 
  * @see OMBitmap
@@ -93,110 +89,104 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
         OMGraphicConstants, Cloneable, Serializable {
 
     /**
-     * The Java2D Stroke. This is used for lineWidth, and dashing of
-     * the lines and polygon edges.
+     * The Java2D Stroke. This is used for lineWidth, and dashing of the lines
+     * and polygon edges.
      */
     protected transient Stroke stroke = BASIC_STROKE;
 
     /**
-     * This color is the real foreground color of the object. It is
-     * kept so that the object knows how to de-highlight itself. It
-     * defaults to black.
+     * This color is the real foreground color of the object. It is kept so that
+     * the object knows how to de-highlight itself. It defaults to black.
      */
     protected Paint linePaint = Color.black;
 
     /**
-     * This paint is used for the matting area around the edge of an
-     * OMGraphic painted when the matted variable is set to true.
+     * This paint is used for the matting area around the edge of an OMGraphic
+     * painted when the matted variable is set to true.
      */
     protected Paint mattingPaint = Color.black;
 
     /**
-     * The color that the object is displayed with. This color changes
-     * back and forth between the selectColor and the lineColor,
-     * depending on the if the object is selected or not.
+     * The color that the object is displayed with. This color changes back and
+     * forth between the selectColor and the lineColor, depending on the if the
+     * object is selected or not.
      */
     protected Paint displayPaint = linePaint;
 
     /**
-     * This color is the fill color of the object. It defaults to a
-     * black color that is transparent.
+     * This color is the fill color of the object. It defaults to a black color
+     * that is transparent.
      */
     protected Paint fillPaint = clear;
 
     /**
-     * This Paint object is the fill texture mask of the object. It
-     * defaults to null. If this texture mask is set, the fill paint
-     * will still be used to fill the OMGraphic shape, but then this
-     * paint will be rendered on top. If the textureMask has
-     * transparency, the fill paint still influences appearance.
+     * This Paint object is the fill texture mask of the object. It defaults to
+     * null. If this texture mask is set, the fill paint will still be used to
+     * fill the OMGraphic shape, but then this paint will be rendered on top. If
+     * the textureMask has transparency, the fill paint still influences
+     * appearance.
      */
     protected TexturePaint textureMask = null;
 
     /**
-     * This color is the highlight color that can be used when the
-     * object is selected. The default color is black, just like the
-     * line color.
+     * This color is the highlight color that can be used when the object is
+     * selected. The default color is black, just like the line color.
      */
     protected Paint selectPaint = Color.black;
 
     /**
-     * Flag to indicate that the object has/hasnot been put in a
-     * special mode as a result of some event. Set through the
-     * select()/deselect methods().
+     * Flag to indicate that the object has/hasnot been put in a special mode as
+     * a result of some event. Set through the select()/deselect methods().
      */
     protected boolean selected = false;
 
     /**
-     * A flag for whether an EditableOMGraphic should show it's
-     * palette if the OMGraphic is modified.
+     * A flag for whether an EditableOMGraphic should show it's palette if the
+     * OMGraphic is modified.
      */
     protected boolean showEditablePalette = true;
 
     /**
-     * Flag to note if the current edge color matches the fill color.
-     * Can be used to save from rendering the edge if rendering the
-     * filled area already takes care of it.
+     * Flag to note if the current edge color matches the fill color. Can be
+     * used to save from rendering the edge if rendering the filled area already
+     * takes care of it.
      */
     protected boolean edgeMatchesFill = false;
 
     /**
-     * The renderType describes the relation of the object to the
-     * window. RENDERTYPE_LATLON means the object is positioned
-     * relative to lat/lon points. RENDERTYPE_XY means the object is
-     * positioned relative to window pixel coordinates.
-     * RENDERTYPE_OFFSET means the object is drawn at a pixel offset
-     * to a lat/lon point.
+     * The renderType describes the relation of the object to the window.
+     * RENDERTYPE_LATLON means the object is positioned relative to lat/lon
+     * points. RENDERTYPE_XY means the object is positioned relative to window
+     * pixel coordinates. RENDERTYPE_OFFSET means the object is drawn at a pixel
+     * offset to a lat/lon point.
      */
     protected int renderType = RENDERTYPE_UNKNOWN;
 
     /**
-     * Decluttering is not supported by OpenMap yet. But, when it is,
-     * these parameters will describe the way the object is
-     * manipulated on the window relative to its neighbors.
-     * DECLUTTERTYPE_NONE means the object will be drawn where its
-     * attributes say it should be. DECLUTTERTYPE_SPACE indicates that
-     * the window space of the object should be marked as taken, but
-     * the object should not be moved. DECLUTTERTYPE_MOVE means the
-     * object should be moved to the nearest open location closest to
-     * the position indicated by its attributes. DECLUTTERTYPE_LINE is
-     * the same as MOVE, but in addition, a line is drawn from the
-     * current position to its original position.
+     * Decluttering is not supported by OpenMap yet. But, when it is, these
+     * parameters will describe the way the object is manipulated on the window
+     * relative to its neighbors. DECLUTTERTYPE_NONE means the object will be
+     * drawn where its attributes say it should be. DECLUTTERTYPE_SPACE
+     * indicates that the window space of the object should be marked as taken,
+     * but the object should not be moved. DECLUTTERTYPE_MOVE means the object
+     * should be moved to the nearest open location closest to the position
+     * indicated by its attributes. DECLUTTERTYPE_LINE is the same as MOVE, but
+     * in addition, a line is drawn from the current position to its original
+     * position.
      */
     protected int declutterType = DECLUTTERTYPE_NONE;
 
     /**
-     * Flag for determining when the matting around the edge of an
-     * OMGraphic. Matting is a line, two pixels wider than the edge,
-     * painted under the edge. It makes the OMGraphic stand out on
-     * busy backgrounds.
+     * Flag for determining when the matting around the edge of an OMGraphic.
+     * Matting is a line, two pixels wider than the edge, painted under the
+     * edge. It makes the OMGraphic stand out on busy backgrounds.
      */
     protected boolean matted = false;
 
     /**
-     * The flag set in generate that causes the OMGraphic to look for
-     * an OMLabeler attribute in render. This flag prevents an
-     * unnecessary hashtable lookup every render call.
+     * The flag set in generate that causes the OMGraphic to look for an
+     * OMLabeler attribute in render. This flag prevents an unnecessary
+     * hashtable lookup every render call.
      */
     protected transient boolean hasLabel = false;
 
@@ -204,8 +194,7 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
      * Checks if the Paint is clear.
      * 
      * @param paint Paint or null.
-     * @return true if Paint is null or is a Color with a 0 alpha
-     *         value.
+     * @return true if Paint is null or is a Color with a 0 alpha value.
      */
     public static boolean isClear(Paint paint) {
         if (paint instanceof Color) {
@@ -223,9 +212,9 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     protected OMGraphic() {}
 
     /**
-     * Construct an OMGraphic. Standard simple constructor that the
-     * child OMGraphics usually call. All of the other parameters get
-     * set to their default values.
+     * Construct an OMGraphic. Standard simple constructor that the child
+     * OMGraphics usually call. All of the other parameters get set to their
+     * default values.
      * 
      * @param rType render type
      * @param lType line type
@@ -238,8 +227,8 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Construct an OMGraphic. More complex constructor that lets you
-     * set the rest of the parameters.
+     * Construct an OMGraphic. More complex constructor that lets you set the
+     * rest of the parameters.
      * 
      * @param rType render type
      * @param lType line type
@@ -258,9 +247,8 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
 
     /**
      * Set the render type of the graphic. Accepts RENDERTYPE_LATLON,
-     * RENDERTYPE_XY and RENDERTYPE_OFFSET. All weird values get set
-     * to RENDERTYPE_XY. See the definition on the renderType
-     * parameter.
+     * RENDERTYPE_XY and RENDERTYPE_OFFSET. All weird values get set to
+     * RENDERTYPE_XY. See the definition on the renderType parameter.
      * 
      * @param value the rendertype for the object.
      */
@@ -275,20 +263,18 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     /**
      * Return the render type.
      * 
-     * @return the rendertype of the object - RENDERTYPE_LATLON,
-     *         RENDERTYPE_XY, RENDERTYPE_OFFSET and
-     *         RENDERTYPE_UNKNOWN.
+     * @return the rendertype of the object - RENDERTYPE_LATLON, RENDERTYPE_XY,
+     *         RENDERTYPE_OFFSET and RENDERTYPE_UNKNOWN.
      */
     public int getRenderType() {
         return renderType;
     }
 
     /**
-     * OMGraphic method for returning a simple description of the
-     * OMGraphic.
+     * OMGraphic method for returning a simple description of the OMGraphic.
      * 
-     * @param level used by OMGraphicLists to provide an offset, or a
-     *        notion of embedding.
+     * @param level used by OMGraphicLists to provide an offset, or a notion of
+     *        embedding.
      */
     public String getDescription(int level) {
         if (level == 0) {
@@ -299,8 +285,7 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * OMGraphic method for returning a simple description of the
-     * OMGraphic.
+     * OMGraphic method for returning a simple description of the OMGraphic.
      */
     public String getDescription() {
         String cname = getClass().getName();
@@ -312,23 +297,20 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Set the declutter setting for the graphic. Accepts
-     * DECLUTTERTYPE_SPACE, DECLUTTERTYPE_MOVE, DECLUTTERTYPE_LINE,
-     * and DECLUTTERTYPE_NONE. All weird values are set to
-     * DECLUTTERTYPE_NONE.
+     * Set the declutter setting for the graphic. Accepts DECLUTTERTYPE_SPACE,
+     * DECLUTTERTYPE_MOVE, DECLUTTERTYPE_LINE, and DECLUTTERTYPE_NONE. All weird
+     * values are set to DECLUTTERTYPE_NONE.
      * <p>
-     * Right now, this is unimplemented in OpenMap. But for
-     * information, DECLUTTERTYPE_NONE means the object has no impact
-     * on the placement of objects. DECLUTTERTYPE_SPACE means the
-     * object shouldn't have things placed on it, but to draw it where
-     * the coordinates dictate. DECLUTTERTYPE_MOVE means to put the
-     * object in an open space, and DELCUTTERTYPE_LINE adds the
-     * feature that if the object is not drawn where it's coordinates
-     * say it should be, then a line should be drawn showing where the
-     * original position is.
+     * Right now, this is unimplemented in OpenMap. But for information,
+     * DECLUTTERTYPE_NONE means the object has no impact on the placement of
+     * objects. DECLUTTERTYPE_SPACE means the object shouldn't have things
+     * placed on it, but to draw it where the coordinates dictate.
+     * DECLUTTERTYPE_MOVE means to put the object in an open space, and
+     * DELCUTTERTYPE_LINE adds the feature that if the object is not drawn where
+     * it's coordinates say it should be, then a line should be drawn showing
+     * where the original position is.
      * <P>
-     * Decluttering of geometries is not supported. This flag is not
-     * used.
+     * Decluttering of geometries is not supported. This flag is not used.
      * 
      * @param value the declutter type value.
      */
@@ -350,8 +332,8 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Given a java.awt.Graphics object, set the Stroke and Paint
-     * parameters of it to match the OMGraphic's edge settings.
+     * Given a java.awt.Graphics object, set the Stroke and Paint parameters of
+     * it to match the OMGraphic's edge settings.
      * 
      * @param g java.awt.Graphics
      * @see #setGraphicsColor
@@ -364,8 +346,8 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Given a java.awt.Graphics object, set the Paint to be the
-     * OMGraphic's fillPaint setting.
+     * Given a java.awt.Graphics object, set the Paint to be the OMGraphic's
+     * fillPaint setting.
      * 
      * @param g java.awt.Graphics
      * @see #setGraphicsColor
@@ -378,9 +360,9 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Set the Paint in the given Graphics. If the Graphics is not an
-     * instance of Graphics2D, then the Color of the graphics is set
-     * if the Paint is an instance of Color.
+     * Set the Paint in the given Graphics. If the Graphics is not an instance
+     * of Graphics2D, then the Color of the graphics is set if the Paint is an
+     * instance of Color.
      * 
      * @param g java.awt.Graphics
      * @param paint java.awt.Paint
@@ -394,16 +376,15 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Set the line color of the graphic object. The line color is the
-     * normal display edge color of the object. This color is used as
-     * the display color when the object is NOT selected
-     * (hightlighted). The display color is set to the select color in
-     * this method if <code>selected</code> boolean attribute is
-     * false.
+     * Set the line color of the graphic object. The line color is the normal
+     * display edge color of the object. This color is used as the display color
+     * when the object is NOT selected (hightlighted). The display color is set
+     * to the select color in this method if <code>selected</code> boolean
+     * attribute is false.
      * 
      * @param value the real line color
-     * @deprecated Use setLinePaint instead. Now taking advantage of
-     *             the Java2D API.
+     * @deprecated Use setLinePaint instead. Now taking advantage of the Java2D
+     *             API.
      */
     public void setLineColor(Color value) {
         setLinePaint(value);
@@ -412,8 +393,7 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     /**
      * Return the normal foreground color of the object.
      * 
-     * @return the line color. Returns null if the Paint is not a
-     *         Color.
+     * @return the line color. Returns null if the Paint is not a Color.
      */
     public Color getLineColor() {
         if (linePaint instanceof Color) {
@@ -424,11 +404,10 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Set the line Paint. The line Paint is the normal display edge
-     * paint of the graphic. This Paint is used as the display Paint
-     * when the object is NOT selected (hightlighted). The display
-     * Paint is set to the select Paint in this method if
-     * <code>selected</code> boolean attribute is false.
+     * Set the line Paint. The line Paint is the normal display edge paint of
+     * the graphic. This Paint is used as the display Paint when the object is
+     * NOT selected (hightlighted). The display Paint is set to the select Paint
+     * in this method if <code>selected</code> boolean attribute is false.
      * 
      * @param paint the real line Paint
      */
@@ -455,26 +434,25 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Set the select color of the graphic object. The selected color
-     * is used as the display color when the object is selected
-     * (highlighted). The display color is set to the select color in
-     * this method if <code>selected</code> boolean attribute is
-     * true.
+     * Set the select color of the graphic object. The selected color is used as
+     * the display color when the object is selected (highlighted). The display
+     * color is set to the select color in this method if <code>selected</code>
+     * boolean attribute is true.
      * 
      * @param value the selected color.
-     * @deprecated Use setSelectPaint instead. Now taking advantage of
-     *             the Java2D API.
+     * @deprecated Use setSelectPaint instead. Now taking advantage of the
+     *             Java2D API.
      */
     public void setSelectColor(Color value) {
         setSelectPaint(value);
     }
 
     /**
-     * Return the selected color, which is the line or foreground
-     * color used when the graphic is "selected".
+     * Return the selected color, which is the line or foreground color used
+     * when the graphic is "selected".
      * 
-     * @return the selected mode line color. Returns null if the
-     *         select Paint is not a Color.
+     * @return the selected mode line color. Returns null if the select Paint is
+     *         not a Color.
      */
     public Color getSelectColor() {
         if (selectPaint instanceof Color) {
@@ -485,11 +463,10 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Set the select Paint. The select Paint is the display edge
-     * paint of the graphic. This Paint is used as the display Paint
-     * when the object IS selected (hightlighted). The display Paint
-     * is set to the select Paint in this method if
-     * <code>selected</code> boolean attribute is true.
+     * Set the select Paint. The select Paint is the display edge paint of the
+     * graphic. This Paint is used as the display Paint when the object IS
+     * selected (hightlighted). The display Paint is set to the select Paint in
+     * this method if <code>selected</code> boolean attribute is true.
      * 
      * @param paint the real select Paint
      */
@@ -516,15 +493,14 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Return the color that should be used for display. This color
-     * changes, depending on whether the object is selected or not.
-     * The display color is also set when the line color or the select
-     * color is set, depending on the statue of the
-     * <code>selected</code> boolean attribute.
+     * Return the color that should be used for display. This color changes,
+     * depending on whether the object is selected or not. The display color is
+     * also set when the line color or the select color is set, depending on the
+     * statue of the <code>selected</code> boolean attribute.
      * 
-     * @return the color used as the edge color or foreground color,
-     *         in the present selected state. If the displayPaint is
-     *         not a Color, this method returns null.
+     * @return the color used as the edge color or foreground color, in the
+     *         present selected state. If the displayPaint is not a Color, this
+     *         method returns null.
      */
     public Color getDisplayColor() {
         if (displayPaint instanceof Color) {
@@ -535,22 +511,21 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Return the Paint that should be used for display. This Paint
-     * changes, depending on whether the object is selected or not.
-     * The display Paint is also set when the line Paint or the select
-     * Paint is set, depending on the statue of the
-     * <code>selected</code> boolean attribute.
+     * Return the Paint that should be used for display. This Paint changes,
+     * depending on whether the object is selected or not. The display Paint is
+     * also set when the line Paint or the select Paint is set, depending on the
+     * statue of the <code>selected</code> boolean attribute.
      * 
-     * @return the Paint used as the edge Paint or foreground Paint,
-     *         in the present selected state.
+     * @return the Paint used as the edge Paint or foreground Paint, in the
+     *         present selected state.
      */
     public Paint getDisplayPaint() {
         return displayPaint;
     }
 
     /**
-     * Set the selected attribute to true, and sets the color to the
-     * select color.
+     * Set the selected attribute to true, and sets the color to the select
+     * color.
      */
     public void select() {
         selected = true;
@@ -559,8 +534,7 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Set the selected attribute to false, sets the color to the line
-     * color.
+     * Set the selected attribute to false, sets the color to the line color.
      */
     public void deselect() {
         selected = false;
@@ -576,8 +550,7 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Calls select() or deselect() depending on the boolean (select
-     * is true).
+     * Calls select() or deselect() depending on the boolean (select is true).
      */
     public void setSelected(boolean set) {
         if (set) {
@@ -605,16 +578,16 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
      * Set the background color of the graphic object.
      * 
      * @param value java.awt.Color.
-     * @deprecated Use setFillPaint instead. Now taking advantage of
-     *             the Java2D API.
+     * @deprecated Use setFillPaint instead. Now taking advantage of the Java2D
+     *             API.
      */
     public void setFillColor(Color value) {
         setFillPaint(value);
     }
 
     /**
-     * Return the background color of the graphic object. If the fill
-     * Paint is not a color, this method will return null.
+     * Return the background color of the graphic object. If the fill Paint is
+     * not a color, this method will return null.
      * 
      * @return the color used for the background.
      */
@@ -627,8 +600,8 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Set the fill Paint for this graphic. If the paint value is
-     * null, it will be set to OMGraphicConstants.clear.
+     * Set the fill Paint for this graphic. If the paint value is null, it will
+     * be set to OMGraphicConstants.clear.
      * 
      * @param paint the Paint object.
      */
@@ -649,13 +622,12 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Set the texture mask for the OMGraphic. If not null, then it
-     * will be rendered on top of the fill paint. If the fill paint is
-     * clear, the texture mask will not be used. If you just want to
-     * render the texture mask as is, set the fill paint of the
-     * graphic instead. This is really to be used to have a texture
-     * added to the graphic, with the fill paint still influencing
-     * appearance.
+     * Set the texture mask for the OMGraphic. If not null, then it will be
+     * rendered on top of the fill paint. If the fill paint is clear, the
+     * texture mask will not be used. If you just want to render the texture
+     * mask as is, set the fill paint of the graphic instead. This is really to
+     * be used to have a texture added to the graphic, with the fill paint still
+     * influencing appearance.
      */
     public void setTextureMask(TexturePaint texture) {
         textureMask = texture;
@@ -704,10 +676,10 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Set the Stroke that should be used for the graphic edges. Using
-     * a BasicStroke, you can set a stroke that defines the line
-     * width, the dash interval and phase. If a null value is passed
-     * in, a default BasicStroke will be used.
+     * Set the Stroke that should be used for the graphic edges. Using a
+     * BasicStroke, you can set a stroke that defines the line width, the dash
+     * interval and phase. If a null value is passed in, a default BasicStroke
+     * will be used.
      * 
      * @param s the stroke to use for the graphic edge.
      * @see java.awt.Stroke
@@ -732,33 +704,31 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Set whether an EditableOMGraphic modifying this graphic should
-     * show it's palette.
+     * Set whether an EditableOMGraphic modifying this graphic should show it's
+     * palette.
      */
     public void setShowEditablePalette(boolean set) {
         showEditablePalette = set;
     }
 
     /**
-     * Get whether an EditableOMGraphic modifying this graphic should
-     * show it's palette.
+     * Get whether an EditableOMGraphic modifying this graphic should show it's
+     * palette.
      */
     public boolean getShowEditablePalette() {
         return showEditablePalette;
     }
 
     /**
-     * A function that takes a float distance, which presumably
-     * represents the pixel distance from a point to a graphic, and
-     * subtracts half of the line width of the graphic from the
-     * distance if the graphic line width is greater than one. This
-     * should give a true pixel distance from the graphic, taking into
-     * account an embellished line.
+     * A function that takes a float distance, which presumably represents the
+     * pixel distance from a point to a graphic, and subtracts half of the line
+     * width of the graphic from the distance if the graphic line width is
+     * greater than one. This should give a true pixel distance from the
+     * graphic, taking into account an embellished line.
      * 
-     * @param distance pixel distance to the graphic edge with a line
-     *        width of one.
-     * @return the pixel distance to the true display edge of the
-     *         graphic.
+     * @param distance pixel distance to the graphic edge with a line width of
+     *        one.
+     * @return the pixel distance to the true display edge of the graphic.
      */
     public float normalizeDistanceForLineWidth(float distance) {
 
@@ -781,15 +751,14 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     // ////////////////////////////////////////////////////////////////////////
 
     /**
-     * Prepare the graphic for rendering. This must be done before
-     * calling <code>render()</code>! If a vector graphic has
-     * lat-lon components, then we project these vertices into x-y
-     * space. For raster graphics we prepare in a different fashion.
+     * Prepare the graphic for rendering. This must be done before calling
+     * <code>render()</code>! If a vector graphic has lat-lon components,
+     * then we project these vertices into x-y space. For raster graphics we
+     * prepare in a different fashion.
      * <p>
-     * If the generate is unsuccessful, it's usually because of some
-     * oversight, (for instance if <code>proj</code> is null), and
-     * if debugging is enabled, a message may be output to the
-     * controlling terminal.
+     * If the generate is unsuccessful, it's usually because of some oversight,
+     * (for instance if <code>proj</code> is null), and if debugging is
+     * enabled, a message may be output to the controlling terminal.
      * <p>
      * 
      * @param proj Projection
@@ -799,17 +768,16 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     public abstract boolean generate(Projection proj);
 
     /**
-     * Paint the graphic. This paints the graphic into the Graphics
-     * context. This is similar to <code>paint()</code> function of
-     * java.awt.Components. Note that if the graphic has not been
-     * generated, it will not be rendered.
+     * Paint the graphic. This paints the graphic into the Graphics context.
+     * This is similar to <code>paint()</code> function of
+     * java.awt.Components. Note that if the graphic has not been generated, it
+     * will not be rendered.
      * <P>
      * 
-     * This method used to be abstract, but with the conversion of
-     * OMGraphics to internally represent themselves as java.awt.Shape
-     * objects, it's a more generic method. If the OMGraphic hasn't
-     * been updated to use Shape objects, it should have its own
-     * render method.
+     * This method used to be abstract, but with the conversion of OMGraphics to
+     * internally represent themselves as java.awt.Shape objects, it's a more
+     * generic method. If the OMGraphic hasn't been updated to use Shape
+     * objects, it should have its own render method.
      * 
      * @param g Graphics2D context to render into.
      */
@@ -817,7 +785,9 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
 
         if (matted) {
             if (g instanceof Graphics2D && stroke instanceof BasicStroke) {
-                ((Graphics2D) g).setStroke(new BasicStroke(((BasicStroke) stroke).getLineWidth() + 2f));
+                BasicStroke bs = (BasicStroke) stroke;
+                ((Graphics2D) g).setStroke(new BasicStroke(bs.getLineWidth() + 2f, bs.getEndCap(), bs.getLineJoin()));
+
                 setGraphicsColor(g, mattingPaint);
                 draw(g);
             }
@@ -842,9 +812,9 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Calls super.setShape(), but also checks the attributes for a
-     * label and moves the label accordingly. The label will be placed
-     * in the center of the bounding box around the path.
+     * Calls super.setShape(), but also checks the attributes for a label and
+     * moves the label accordingly. The label will be placed in the center of
+     * the bounding box around the path.
      */
     public void setShape(GeneralPath gp) {
         super.setShape(gp);
@@ -866,12 +836,11 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Quick check of the flag to see if a label attribute has been
-     * set. Labels are stored in the attribute table, and that table
-     * should only be checked in a generate() method call, and not in
-     * the render(). The setShape() and initLabelingDuringGenerate()
-     * method calls set this flag which is used to opt-out of labeling
-     * methods for better performance.
+     * Quick check of the flag to see if a label attribute has been set. Labels
+     * are stored in the attribute table, and that table should only be checked
+     * in a generate() method call, and not in the render(). The setShape() and
+     * initLabelingDuringGenerate() method calls set this flag which is used to
+     * opt-out of labeling methods for better performance.
      * 
      * @return true if OMGraphic has label set.
      */
@@ -880,18 +849,18 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * The method only needs to be called in an OMGraphic's generate
-     * method if the setShape() method isn't called there. The
-     * appropriate setLabelLocation method for where the label should
-     * be set should be called if this method is going to be used.
+     * The method only needs to be called in an OMGraphic's generate method if
+     * the setShape() method isn't called there. The appropriate
+     * setLabelLocation method for where the label should be set should be
+     * called if this method is going to be used.
      */
     protected void initLabelingDuringGenerate() {
         setHasLabel(getAttribute(LABEL) != null);
     }
 
     /**
-     * Sets the label location at the center of the polygon points. If
-     * the hasLabel variable hasn't been set, it no-ops.
+     * Sets the label location at the center of the polygon points. If the
+     * hasLabel variable hasn't been set, it no-ops.
      * 
      * @param xpoints
      * @param ypoints
@@ -906,8 +875,8 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Sets the label location at the given point. If the hasLabel
-     * variable hasn't been set, it no-ops.
+     * Sets the label location at the given point. If the hasLabel variable
+     * hasn't been set, it no-ops.
      * 
      * @param p
      */
@@ -921,8 +890,8 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Sets the label location at the center of the bounding box of
-     * the path. If the hasLabel variable hasn't been set, it no-ops.
+     * Sets the label location at the center of the bounding box of the path. If
+     * the hasLabel variable hasn't been set, it no-ops.
      * 
      * @param gp
      */
@@ -936,9 +905,9 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Checks to see if a label should be painted based on what
-     * methods were called in generate(), and renders the label if
-     * necessary. If the label wasn't set up, a quick no-op occurs.
+     * Checks to see if a label should be painted based on what methods were
+     * called in generate(), and renders the label if necessary. If the label
+     * wasn't set up, a quick no-op occurs.
      * 
      * @param g
      */
@@ -952,16 +921,15 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Return true of the fill color/paint should be rendered (not
-     * clear).
+     * Return true of the fill color/paint should be rendered (not clear).
      */
     public boolean shouldRenderFill() {
         return !isClear(getFillPaint());
     }
 
     /**
-     * Return true if the edge color/paint should be rendered (not
-     * clear, or doesn't match the fill color).
+     * Return true if the edge color/paint should be rendered (not clear, or
+     * doesn't match the fill color).
      */
     public boolean shouldRenderEdge() {
         // OK, so isClear on the displayPaitn could be inaccurate if
@@ -974,17 +942,15 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
      * Return the shortest distance from the graphic to an XY-point.
      * <p>
      * 
-     * This method used to be abstract, but with the conversion of
-     * OMGraphics to internally represent themselves as java.awt.Shape
-     * objects, it's a more generic method. If the OMGraphic hasn't
-     * been updated to use Shape objects, it should have its own
-     * distance method.
+     * This method used to be abstract, but with the conversion of OMGraphics to
+     * internally represent themselves as java.awt.Shape objects, it's a more
+     * generic method. If the OMGraphic hasn't been updated to use Shape
+     * objects, it should have its own distance method.
      * 
      * @param x X coordinate of the point.
      * @param y Y coordinate of the point.
-     * @return float distance, in pixels, from graphic to the point.
-     *         Returns Float.POSITIVE_INFINITY if the graphic isn't
-     *         ready (ungenerated).
+     * @return float distance, in pixels, from graphic to the point. Returns
+     *         Float.POSITIVE_INFINITY if the graphic isn't ready (ungenerated).
      */
     public float distance(int x, int y) {
         float distance = Float.POSITIVE_INFINITY;
@@ -1012,15 +978,14 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Invoke this to regenerate a "dirty" graphic. This method is a
-     * wrapper around the <code>generate()</code> method. It invokes
-     * <code>generate()</code> only if</code> needToRegenerate()
-     * </code> on the graphic returns true. To force a graphic to be
-     * generated, call <code>generate()</code> directly.
+     * Invoke this to regenerate a "dirty" graphic. This method is a wrapper
+     * around the <code>generate()</code> method. It invokes
+     * <code>generate()</code> only if</code> needToRegenerate() </code> on
+     * the graphic returns true. To force a graphic to be generated, call <code>generate()</code>
+     * directly.
      * 
      * @param proj the Projection
-     * @return true if generated, false if didn't do it (maybe a
-     *         problem).
+     * @return true if generated, false if didn't do it (maybe a problem).
      * @see #generate
      */
     public boolean regenerate(Projection proj) {
@@ -1040,16 +1005,16 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     }
 
     /**
-     * Used by the GraphicAttributes object to provide a choice on
-     * whether the line type choice can be changed.
+     * Used by the GraphicAttributes object to provide a choice on whether the
+     * line type choice can be changed.
      */
     protected boolean hasLineTypeChoice() {
         return true;
     }
 
     /**
-     * Generic return of SinkGraphic for subclasses that don't
-     * implement clone properly for some reason.
+     * Generic return of SinkGraphic for subclasses that don't implement clone
+     * properly for some reason.
      */
     public Object clone() {
         try {
@@ -1068,7 +1033,8 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
         // Now write the Stroke. Take into account the stroke member
         // could be null.
 
-        boolean writeStroke = (stroke != OMGraphic.BASIC_STROKE) && stroke != null;
+        boolean writeStroke = (stroke != OMGraphic.BASIC_STROKE)
+                && stroke != null;
 
         if (writeStroke) {
             // First write a flag indicating if a Stroke is on the
@@ -1076,7 +1042,6 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
             oos.writeBoolean(true);
             if (stroke instanceof BasicStroke) {
                 BasicStroke s = (BasicStroke) stroke;
-
 
                 // Then write flag indicating stroke is a BasicStroke
                 oos.writeBoolean(true);
