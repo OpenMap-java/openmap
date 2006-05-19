@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v
 // $
 // $RCSfile: PropUtils.java,v $
-// $Revision: 1.12 $
-// $Date: 2006/01/18 17:44:15 $
+// $Revision: 1.13 $
+// $Date: 2006/05/19 15:23:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -270,7 +270,7 @@ public class PropUtils {
      * returned string should be good for prepending to other properties.
      */
     public static String getScopedPropertyPrefix(String pre) {
-        if (pre == null) {
+        if (pre == null || pre.length() == 0) {
             return "";
         } else if (pre.endsWith(".")) {
             return pre;
