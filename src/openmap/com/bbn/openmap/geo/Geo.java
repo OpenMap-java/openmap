@@ -34,7 +34,7 @@ import com.bbn.openmap.proj.Length;
  * @author Sachin Date
  * @author Ben Lubin
  * @author Michael Thome
- * @version $Revision: 1.24 $ on $Date: 2006/04/05 21:21:20 $
+ * @version $Revision: 1.25 $ on $Date: 2006/05/19 16:39:08 $
  */
 public class Geo {
 
@@ -413,8 +413,11 @@ public class Geo {
          * great circle between this and v2. The azimuth is the angle between
          * them but we specialized the cross product.
          */
-        Geo n1 = north.cross(this);
-        Geo n2 = v2.cross(this);
+//        Geo n1 = north.cross(this);
+//        Geo n2 = v2.cross(this);
+		// crossNormalization is needed to geos of different length.
+        Geo n1 = north.crossNormalize(this);
+        Geo n2 = v2.crossNormalize(this);
         double az = Math.atan2(-north.dot(n2), n1.dot(n2));
         return (az > 0.0) ? az : 2.0 * Math.PI + az;
     }
