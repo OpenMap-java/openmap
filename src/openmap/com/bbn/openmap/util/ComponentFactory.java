@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ComponentFactory.java,v $
 // $RCSfile: ComponentFactory.java,v $
-// $Revision: 1.14 $
-// $Date: 2005/08/11 20:39:15 $
+// $Revision: 1.15 $
+// $Date: 2006/05/19 15:26:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -480,7 +480,7 @@ public class ComponentFactory {
                 Debug.output("ComponentFactory.create: " + className);
             }
 
-            Class newObjClass = Class.forName(className);
+            Class newObjClass = Class.forName(className.trim());
             if (DEBUG)
                 Debug.output(" - got class for " + className);
 
