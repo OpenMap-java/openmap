@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPoly.java,v $
 // $RCSfile: ESRIPoly.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:04 $
+// $Revision: 1.4 $
+// $Date: 2006/05/19 14:40:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,7 @@ import com.bbn.openmap.util.Debug;
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
  * @author HACK-author blame it on aculline
- * @version $Revision: 1.3 $ $Date: 2004/10/14 18:06:04 $
+ * @version $Revision: 1.4 $ $Date: 2006/05/19 14:40:49 $
  */
 public abstract class ESRIPoly extends ShapeUtils {
 
@@ -132,6 +132,7 @@ public abstract class ESRIPoly extends ShapeUtils {
         public float[] getRadians() {
             if (!isRadians) {
                 ProjMath.arrayDegToRad(radians);
+                isRadians = true;
             }
             return radians;
         }
@@ -146,6 +147,7 @@ public abstract class ESRIPoly extends ShapeUtils {
         public float[] getDecimalDegrees() {
             if (isRadians) {
                 ProjMath.arrayRadToDeg(radians);
+                isRadians = false;
             }
             return radians;
         }
