@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/CombinedCoordPanel.java,v $
 // $RCSfile: CombinedCoordPanel.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/12/09 21:09:02 $
+// $Revision: 1.8 $
+// $Date: 2006/05/22 23:53:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,10 +31,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.CenterEvent;
 import com.bbn.openmap.event.CenterListener;
 import com.bbn.openmap.event.CenterSupport;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * A JPanel containing a tabbed set of CoordPanels. Hitting the apply
@@ -200,7 +200,7 @@ public class CombinedCoordPanel extends OMComponentPanel implements
     }
 
     public void center(CenterEvent centerEvent) {
-        setLatLon(new LatLonPoint(centerEvent.getLatitude(), centerEvent.getLongitude()));
+        setLatLon(new LatLonPoint.Double(centerEvent.getLatitude(), centerEvent.getLongitude()));
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/UTMCoordPanel.java,v $
 // $RCSfile: UTMCoordPanel.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 17:49:51 $
+// $Revision: 1.8 $
+// $Date: 2006/05/22 23:53:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,14 +25,17 @@ package com.bbn.openmap.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.Serializable;
-import javax.swing.*;
-import javax.swing.border.*;
 
-import com.bbn.openmap.LatLonPoint;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.CenterSupport;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.proj.coords.UTMPoint;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.I18n;
 
 /**
  * UTMCoordPanel is a simple gui with entry boxes and labels for Zone

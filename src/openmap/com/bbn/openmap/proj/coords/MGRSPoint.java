@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.14 $
-// $Date: 2005/10/24 14:37:40 $
+// $Revision: 1.15 $
+// $Date: 2006/05/22 23:55:30 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -31,7 +31,6 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PrintStream;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.Ellipsoid;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
@@ -214,7 +213,7 @@ public class MGRSPoint extends ZonedUTMPoint {
      * ellisoid.
      */
     public LatLonPoint toLatLonPoint() {
-        return toLatLonPoint(Ellipsoid.WGS_84, new LatLonPoint());
+        return toLatLonPoint(Ellipsoid.WGS_84, new LatLonPoint.Double());
     }
 
     /**
@@ -222,7 +221,7 @@ public class MGRSPoint extends ZonedUTMPoint {
      * ellipsoid.
      */
     public LatLonPoint toLatLonPoint(Ellipsoid ellip) {
-        return toLatLonPoint(ellip, new LatLonPoint());
+        return toLatLonPoint(ellip, new LatLonPoint.Double());
     }
 
     /**
@@ -1003,7 +1002,7 @@ public class MGRSPoint extends ZonedUTMPoint {
                     lat = Float.parseFloat(tmp);
                     tmp = record.substring(index);
                     lon = Float.parseFloat(tmp);
-                    LatLonPoint llp = new LatLonPoint(lat, lon);
+                    LatLonPoint llp = new LatLonPoint.Double(lat, lon);
                     // UTMPoint utmp = LLtoUTM(llp);
                     MGRSPoint mgrsp = LLtoMGRS(llp);
                     outStr1.append(record + " to UTM: " + mgrsp.zone_number
@@ -1087,7 +1086,7 @@ public class MGRSPoint extends ZonedUTMPoint {
                 float lat = Float.parseFloat(arg[0]);
                 float lon = Float.parseFloat(arg[1]);
 
-                LatLonPoint llp = new LatLonPoint(lat, lon);
+                LatLonPoint llp = new LatLonPoint.Double(lat, lon);
                 MGRSPoint mgrsp = LLtoMGRS(llp);
                 UTMPoint utmp = LLtoUTM(llp);
 

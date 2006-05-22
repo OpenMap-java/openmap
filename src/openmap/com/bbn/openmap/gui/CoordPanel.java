@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/CoordPanel.java,v $
 // $RCSfile: CoordPanel.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/12/09 21:09:02 $
+// $Revision: 1.7 $
+// $Date: 2006/05/22 23:53:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,9 +35,9 @@ import javax.swing.border.TitledBorder;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.CenterListener;
 import com.bbn.openmap.event.CenterSupport;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -130,7 +130,7 @@ public class CoordPanel extends JPanel implements Serializable {
                     + lon);
         }
 
-        return (new LatLonPoint(lat, lon));
+        return (new LatLonPoint.Double(lat, lon));
     }
 
     /**

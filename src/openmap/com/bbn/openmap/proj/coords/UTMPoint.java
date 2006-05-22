@@ -14,15 +14,14 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UTMPoint.java,v $
 // $RCSfile: UTMPoint.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/12/09 21:09:02 $
+// $Revision: 1.13 $
+// $Date: 2006/05/22 23:55:30 $
 // $Author: dietrick $
 //
 // **********************************************************************
 
 package com.bbn.openmap.proj.coords;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.Ellipsoid;
 import com.bbn.openmap.proj.ProjMath;
 
@@ -127,7 +126,7 @@ public class UTMPoint {
      * ellisoid.
      */
     public LatLonPoint toLatLonPoint() {
-        return UTMtoLL(this, Ellipsoid.WGS_84, new LatLonPoint());
+        return UTMtoLL(this, Ellipsoid.WGS_84, new LatLonPoint.Double());
     }
 
     /**
@@ -135,7 +134,7 @@ public class UTMPoint {
      * ellipsoid.
      */
     public LatLonPoint toLatLonPoint(Ellipsoid ellip) {
-        return UTMtoLL(this, ellip, new LatLonPoint());
+        return UTMtoLL(this, ellip, new LatLonPoint.Double());
     }
 
     /**
@@ -538,7 +537,7 @@ public class UTMPoint {
             llpoint.setLatLon(Lat, Long);
             return llpoint;
         } else {
-            return new LatLonPoint((float) Lat, (float) Long);
+            return new LatLonPoint.Float((float) Lat, (float) Long);
         }
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.15 $
-// $Date: 2005/12/09 21:09:15 $
+// $Revision: 1.16 $
+// $Date: 2006/05/22 23:55:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,6 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMColorChooser;
 import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGeometryList;
@@ -54,6 +53,7 @@ import com.bbn.openmap.omGraphics.geom.PolygonGeometry;
 import com.bbn.openmap.omGraphics.geom.PolylineGeometry;
 import com.bbn.openmap.proj.Ellipsoid;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.proj.coords.MGRSPoint;
 import com.bbn.openmap.proj.coords.UTMPoint;
 import com.bbn.openmap.util.Debug;
@@ -202,7 +202,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         // zone letters are N and S for the hemisphere, which isn't
         // very interesting.
         UTMPoint utm = new MGRSPoint();
-        LatLonPoint llp = new LatLonPoint();
+        LatLonPoint llp = new LatLonPoint.Double();
         float latitude;
         float longitude;
 
@@ -258,12 +258,12 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         // Used to calculate the endpoints of the horizontal lines.
         UTMPoint utm1 = new UTMPoint(utm);
         UTMPoint utm2 = new UTMPoint(utm);
-        LatLonPoint point1 = new LatLonPoint();
-        LatLonPoint point2 = new LatLonPoint();
+        LatLonPoint point1 = new LatLonPoint.Double();
+        LatLonPoint point2 = new LatLonPoint.Double();
 
         // Used to calculate the pieces of the vertical lines.
         UTMPoint utmp = new UTMPoint(utm);
-        LatLonPoint llp = new LatLonPoint();
+        LatLonPoint llp = new LatLonPoint.Double();
 
         int i;
         OMLine line;
@@ -464,7 +464,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         int zone_number = mgrsBasePoint.zone_number;
         char zone_letter = mgrsBasePoint.zone_letter;
 
-        LatLonPoint llp1 = new LatLonPoint();
+        LatLonPoint llp1 = new LatLonPoint.Double();
         MGRSPoint.MGRStoLL(ellipsoid,
                 northing,
                 easting,
@@ -543,7 +543,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
             list.add(horizontalList);
         }
 
-        LatLonPoint center = (LatLonPoint)p.getCenter(new LatLonPoint());
+        LatLonPoint center = (LatLonPoint)p.getCenter(new LatLonPoint.Double());
         UTMPoint utm = new UTMPoint(center);
 
         if (show100kGrid) {
@@ -578,7 +578,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                         "Creating labels for distance lines ...");
 
                 OMGraphicList textList = new OMGraphicList();
-                LatLonPoint llp = new LatLonPoint();
+                LatLonPoint llp = new LatLonPoint.Double();
                 Point point = new Point();
                 Iterator it = geoList.iterator();
                 while (it.hasNext()) {

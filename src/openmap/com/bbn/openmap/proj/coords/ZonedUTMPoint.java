@@ -16,15 +16,14 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ZonedUTMPoint.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/08/11 20:39:18 $
+//$Revision: 1.3 $
+//$Date: 2006/05/22 23:55:30 $
 //$Author: dietrick $
 //
 //**********************************************************************
 
 package com.bbn.openmap.proj.coords;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.Ellipsoid;
 
 /**

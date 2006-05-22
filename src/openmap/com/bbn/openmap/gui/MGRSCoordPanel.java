@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MGRSCoordPanel.java,v $
 // $RCSfile: MGRSCoordPanel.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 17:49:51 $
+// $Revision: 1.7 $
+// $Date: 2006/05/22 23:53:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,11 +26,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.Serializable;
 
-import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.CenterSupport;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.proj.coords.MGRSPoint;
 
 /**

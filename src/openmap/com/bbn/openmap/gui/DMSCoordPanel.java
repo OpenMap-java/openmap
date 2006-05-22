@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/DMSCoordPanel.java,v $
 // $RCSfile: DMSCoordPanel.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/12/09 21:09:02 $
+// $Revision: 1.8 $
+// $Date: 2006/05/22 23:53:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,8 +31,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.CenterSupport;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -182,7 +182,7 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
                 / 3600f * direction);
         // System.out.println("lat: " +lat + " lon: "+lon);
 
-        return (new LatLonPoint(lat, lon));
+        return (new LatLonPoint.Double(lat, lon));
     }
 
     /**
@@ -246,7 +246,7 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
         Debug.init();
         Debug.put("coordpanel");
         DMSCoordPanel dms = new DMSCoordPanel();
-        dms.setLatLon(new LatLonPoint(40.8000000000f, -75.200000000000f));
+        dms.setLatLon(new LatLonPoint.Double(40.8000000000f, -75.200000000000f));
         System.exit(0);
     }
 }
