@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerPane.java,v $
 // $RCSfile: LayerPane.java,v $
-// $Revision: 1.11 $
-// $Date: 2006/01/13 22:50:01 $
+// $Revision: 1.12 $
+// $Date: 2006/06/13 21:33:42 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -201,7 +201,7 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
         paletteButton.setBorderPainted(false);
 
         String interString;
-        if (layer.getGUI() == null) {
+        if (!layer.hasGUI()) {
             interString = i18n.get(LayerPane.class,
                     "paletteButton.noPaletteAvailable.tooltip",
                     "No tools available for \"{0}\" layer",

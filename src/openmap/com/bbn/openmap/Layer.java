@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.29 $
-// $Date: 2006/02/14 21:03:21 $
+// $Revision: 1.30 $
+// $Date: 2006/06/13 21:33:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,6 +41,7 @@ import java.beans.beancontext.BeanContextMembershipEvent;
 import java.beans.beancontext.BeanContextMembershipListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
@@ -636,6 +637,29 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      */
     public MapMouseListener getMapMouseListener() {
         return null;
+    }
+
+    /**
+     * A GUI query method for other components to use to display whether gui
+     * controls are available for this layer. If your layer provides gui
+     * controls and the LayersPanel is being used in your application, you
+     * should override this method in your layer to return true. This will allow
+     * the other gui components to know that your layer has controls, while
+     * still not actually building those controls until they are needed by the
+     * user.
+     * 
+     * @return
+     */
+    public boolean hasGUI() {
+        boolean hasGUI = false;
+        try {
+            Method guiMethod = getClass().getMethod("getGUI", (Class[]) null);
+            hasGUI = (guiMethod.getDeclaringClass() != Layer.class);
+        } catch (Exception e) {
+            hasGUI = getGUI() != null;
+        }
+
+        return hasGUI;
     }
 
     /**
