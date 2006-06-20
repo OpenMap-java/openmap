@@ -34,7 +34,7 @@ import com.bbn.openmap.proj.Length;
  * @author Sachin Date
  * @author Ben Lubin
  * @author Michael Thome
- * @version $Revision: 1.25 $ on $Date: 2006/05/19 16:39:08 $
+ * @version $Revision: 1.26 $ on $Date: 2006/06/20 20:11:43 $
  */
 public class Geo {
 
@@ -813,7 +813,7 @@ public class Geo {
         return (new Rotation(this, 2.0 * Math.PI - azimuth)).rotate(p);
     }
 
-    public Geo offset(Geo origin, double distance, double azimuth) {
+    public static Geo offset(Geo origin, double distance, double azimuth) {
         return origin.offset(distance, azimuth);
     }
 

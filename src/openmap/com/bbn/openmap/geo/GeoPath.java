@@ -14,10 +14,9 @@
 package com.bbn.openmap.geo;
 
 /**
- * An abstraction of an arbitrary geographic path. A path is assumed
- * to mean a chain of points that although it may share a common
- * starting and end point, it will not not represent an area in that
- * case.
+ * An abstraction of an arbitrary geographic path. A path is assumed to mean a
+ * chain of points that although it may share a common starting and end point,
+ * it will not not represent an area in that case.
  * 
  * @author mthome@bbn.com
  */
@@ -33,10 +32,9 @@ public interface GeoPath extends GeoExtent {
     boolean isSegmentNear(GeoSegment s, double epsilon);
 
     /**
-     * Return the points that make up the path as an array of Geo
-     * object. Closed paths are not specially marked. Specifically,
-     * closed paths do not have equal first and last Geo points in the
-     * returned array.
+     * Return the points that make up the path as an array of Geo object. Closed
+     * paths are not specially marked. Specifically, closed paths do not have
+     * equal first and last Geo points in the returned array.
      * 
      * @return the Geo points of the Path
      */
@@ -52,15 +50,15 @@ public interface GeoPath extends GeoExtent {
         boolean hasNext();
 
         /**
-         * standard implementation of Iterator.next() returns the same
-         * value as nextSegment(), albeit needing casting to GSegment.
+         * standard implementation of Iterator.next() returns the same value as
+         * nextSegment(), albeit needing casting to GSegment.
          */
         Object next();
 
         /**
-         * Advance to the next pegment. Some implementations will also
-         * implement GSegment, so that #next() returns the iterator
-         * instance itself, but this should not be depended on.
+         * Advance to the next pegment. Some implementations will also implement
+         * GSegment, so that #next() returns the iterator instance itself, but
+         * this should not be depended on.
          * 
          * @return the next GSegment
          */
@@ -72,15 +70,15 @@ public interface GeoPath extends GeoExtent {
         boolean hasNext();
 
         /**
-         * standard implementation of Iterator.next() returns the same
-         * value as nextPoint(), albeit needing casting to GPoint.
+         * standard implementation of Iterator.next() returns the same value as
+         * nextPoint(), albeit needing casting to GPoint.
          */
         Object next();
 
         /**
-         * Advance to the next point. Some implementations will also
-         * implement GPoint, so that #next() returns the iterator
-         * instance itself, but this should not be depended on.
+         * Advance to the next point. Some implementations will also implement
+         * GPoint, so that #next() returns the iterator instance itself, but
+         * this should not be depended on.
          * 
          * @return the next GPoint
          */
@@ -88,8 +86,8 @@ public interface GeoPath extends GeoExtent {
     }
 
     /**
-     * An implementation of Path that takes an alternating lat/lon
-     * array and (optionally) an array of altitudes.
+     * An implementation of Path that takes an alternating lat/lon array and
+     * (optionally) an array of altitudes.
      */
     public static class Impl implements GeoPath {
         protected Geo[] pts;
@@ -110,8 +108,7 @@ public interface GeoPath extends GeoExtent {
          * Create a path of LatLon pairs.
          * 
          * @param lls alternating lat/lon values.
-         * @param isDegrees true if lat/lon are in degrees, false if
-         *        in radians.
+         * @param isDegrees true if lat/lon are in degrees, false if in radians.
          */
         public Impl(float[] lls, boolean isDegrees) {
             int al = lls.length;
@@ -132,9 +129,10 @@ public interface GeoPath extends GeoExtent {
         public Impl(Geo[] geos) {
             setPoints(geos);
         }
-        
+
         /**
          * Method for subclasses to set pts and length of Geos.
+         * 
          * @param points
          */
         protected void setPoints(Geo[] points) {
@@ -151,9 +149,7 @@ public interface GeoPath extends GeoExtent {
         }
 
         public boolean isSegmentNear(GeoSegment s, double epsilon) {
-            return Intersection.isSegmentNearPoly(s,
-                    toPointArray(),
-                    epsilon) != null;
+            return Intersection.isSegmentNearPoly(s, toPointArray(), epsilon) != null;
         }
 
         protected transient BoundingCircle bc = null;
@@ -178,26 +174,24 @@ public interface GeoPath extends GeoExtent {
         }
 
         /**
-         * Callback for the SegIt to find out how the LatLonPath wants
-         * the segment IDed.
+         * Callback for the SegIt to find out how the LatLonPath wants the
+         * segment IDed.
          * 
          * @param i The index of the segment in question.
-         * @return Object that IDs the segment, could be this path,
-         *         too. Depends on what the Intersection Algorithm
-         *         wants to do in consider().
+         * @return Object that IDs the segment, could be this path, too. Depends
+         *         on what the Intersection Algorithm wants to do in consider().
          */
         protected Object getSegID(int i) {
             return new Integer(i);
         }
 
         /**
-         * Callback for the PointIt to find out how the LatLonPath
-         * wants the points IDed.
+         * Callback for the PointIt to find out how the LatLonPath wants the
+         * points IDed.
          * 
          * @param i The index of the point in question.
-         * @return Object that IDs the point, could be this path, too.
-         *         Depends on what the Intersection Algorithm wants to
-         *         do in consider().
+         * @return Object that IDs the point, could be this path, too. Depends
+         *         on what the Intersection Algorithm wants to do in consider().
          */
         protected Object getPointID(int i) {
             return new Integer(i);
@@ -239,22 +233,20 @@ public interface GeoPath extends GeoExtent {
             /**
              * GSegment method.
              * 
-             * @return the current segment as a two-element array of
-             *         Geo The first point is the "current point" and
-             *         the second is the next. TODO If there isn't
-             *         another point available, will throw an
-             *         indexOutOfBounds exception.
+             * @return the current segment as a two-element array of Geo The
+             *         first point is the "current point" and the second is the
+             *         next. TODO If there isn't another point available, will
+             *         throw an indexOutOfBounds exception.
              */
             public Geo[] getSeg() {
                 return seg;
             }
 
             /**
-             * @return the current segment as a float[]. The first
-             *         point is the "current point" and the second is
-             *         the next. TODO If there isn't another point
-             *         available, will throw an indexOutOfBounds
-             *         exception.
+             * @return the current segment as a float[]. The first point is the
+             *         "current point" and the second is the next. TODO If there
+             *         isn't another point available, will throw an
+             *         indexOutOfBounds exception.
              */
             public float[] getSegArray() {
                 return new float[] { (float) seg[0].getLatitude(),
@@ -277,7 +269,7 @@ public interface GeoPath extends GeoExtent {
             public PointIt() {}
 
             public boolean hasNext() {
-                return i < length;
+                return i < (length - 1); // need -1, because of the i++ in nextPoint.
             }
 
             public Object next() {
@@ -294,7 +286,7 @@ public interface GeoPath extends GeoExtent {
             }
 
             public Geo getPoint() {
-                return pts[i];
+                 return pts[i];
             }
 
             public Object getPointId() {
