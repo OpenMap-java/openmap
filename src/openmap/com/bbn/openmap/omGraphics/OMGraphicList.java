@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.19 $
-// $Date: 2006/05/19 14:35:41 $
+// $Revision: 1.20 $
+// $Date: 2006/06/20 20:25:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -824,6 +824,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
         OMGraphic graphic;
         ListIterator iterator;
 
+        if (isVague() && !isVisible())
+            return;
+
         if (traverseMode == FIRST_ADDED_ON_TOP) {
             iterator = graphics.listIterator(graphics.size());
             while (iterator.hasPrevious()) {
@@ -1219,7 +1222,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
                     y,
                     limit,
                     resetSelect);
-            
+
             if (omg == null || omd.omg == null) {
                 // no hit, but continue testing...
                 return true;
@@ -1678,8 +1681,11 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
      * @param visible boolean
      */
     public synchronized void setVisible(boolean visible) {
-        for (Iterator it = iterator(); it.hasNext();) {
-            ((OMGeometry) it.next()).setVisible(visible);
+        super.setVisible(visible);
+        if (!isVague()) {
+            for (Iterator it = iterator(); it.hasNext();) {
+                ((OMGeometry) it.next()).setVisible(visible);
+            }
         }
     }
 
@@ -1690,12 +1696,16 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
      * @return boolean
      */
     public synchronized boolean isVisible() {
-        for (Iterator it = iterator(); it.hasNext();) {
-            if (((OMGeometry) it.next()).isVisible()) {
-                return true;
+        if (!isVague()) {
+            for (Iterator it = iterator(); it.hasNext();) {
+                if (((OMGeometry) it.next()).isVisible()) {
+                    return true;
+                }
             }
+            return false;
+        } else {
+            return super.isVisible();
         }
-        return false;
     }
 
     /**
