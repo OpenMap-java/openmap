@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/FeatureClassInfo.java,v $
 // $RCSfile: FeatureClassInfo.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/11 20:39:19 $
+// $Revision: 1.8 $
+// $Date: 2006/06/20 20:14:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -475,7 +475,7 @@ public class FeatureClassInfo extends DcwRecordFile implements
 //            }
         } else if (dciVDT == Constants.charVDTTableName) {
             String val = (String) colObj;
-            s = ctable.getDescription(tablename, dci.getColumnName(), val);
+            s = ctable.getDescription(tablename, dci.getColumnName(), val) + " (" + val + ")";
 //            if (s == null) {
 //                s = "[" + val + "]";
 //            }
