@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.15 $
-// $Date: 2006/05/22 23:55:30 $
+// $Revision: 1.16 $
+// $Date: 2006/06/26 13:48:19 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -393,7 +393,7 @@ public class MGRSPoint extends ZonedUTMPoint {
 
         // get Zone number
         while (!Character.isLetter(testChar = mgrsString.charAt(i))) {
-            if (i > 2) {
+            if (i >= 2) {
                 throw new NumberFormatException("MGRSPoint bad conversion from: "
                         + mgrsString);
             }
