@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UTMPoint.java,v $
 // $RCSfile: UTMPoint.java,v $
-// $Revision: 1.13 $
-// $Date: 2006/05/22 23:55:30 $
+// $Revision: 1.14 $
+// $Date: 2006/07/07 21:56:57 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -206,8 +206,8 @@ public class UTMPoint {
         double eccPrimeSquared;
         double N, T, C, A, M;
 
-        double LatRad = llpoint.getY();
-        double LongRad = llpoint.getX();
+        double LatRad = llpoint.getRadLat();
+        double LongRad = llpoint.getRadLon();
         double LongOriginRad;
         int ZoneNumber;
 
