@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/FileUtils.java,v
 // $
 // $RCSfile: FileUtils.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/11/23 20:47:03 $
+// $Revision: 1.6 $
+// $Date: 2006/07/10 23:22:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,6 +67,17 @@ public class FileUtils {
         return ret;
     }
 
+    public static String getPathToOpenFromUser(String title, FileFilter ff, int fileSelectionMode, String acceptButtonText) {
+        JFileChooser chooser = getChooser(title);
+        chooser.setFileSelectionMode(fileSelectionMode);
+        if (ff != null) {
+            chooser.setFileFilter(ff);
+        }
+        int state = chooser.showDialog(null, acceptButtonText);
+        String ret = handleResponse(chooser, state);
+        return ret;
+    }
+    
     public static JFileChooser getChooser(String title) {
         // setup the file chooser
         File startingPoint = new File(Environment.get("lastchosendirectory",
