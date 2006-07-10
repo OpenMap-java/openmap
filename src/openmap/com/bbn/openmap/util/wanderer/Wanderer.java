@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/Wanderer.java,v $
 // $RCSfile: Wanderer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/12/08 01:10:46 $
+// $Revision: 1.7 $
+// $Date: 2006/07/10 23:24:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,10 +28,9 @@ import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 
 /**
- * A Wanderer is a class that traverses a directory tree and finds
- * files and directories. It then makes a method call on the
- * WandererCallback class to have something done on those directories
- * or files.
+ * A Wanderer is a class that traverses a directory tree and finds files and
+ * directories. It then makes a method call on the WandererCallback class to
+ * have something done on those directories or files.
  */
 public class Wanderer {
 
@@ -55,9 +54,8 @@ public class Wanderer {
     }
 
     /**
-     * Given a file representing a top-level directory, start
-     * wandering the tree and call handleDirectory or handleFile on
-     * the WandererCallback.
+     * Given a file representing a top-level directory, start wandering the tree
+     * and call handleDirectory or handleFile on the WandererCallback.
      * 
      * @param file File (directory) to start at.
      */
@@ -69,8 +67,8 @@ public class Wanderer {
 
             try {
                 java.lang.reflect.Method method = file.getClass()
-                        .getDeclaredMethod("isDirectory", (Class[])null);
-                Object obj = method.invoke(file, null);
+                        .getDeclaredMethod("isDirectory", (Class[]) null);
+                Object obj = method.invoke(file, (Object) null);
                 if (obj instanceof Boolean) {
                     dirTest = ((Boolean) obj).booleanValue();
                 }
@@ -115,11 +113,11 @@ public class Wanderer {
     }
 
     /**
-     * Given a set of files or directories, parade through them to
-     * change their case.
+     * Given a set of files or directories, parade through them to change their
+     * case.
      * 
-     * @param argv paths to files or directories, use -h to get a
-     *        usage statement.
+     * @param argv paths to files or directories, use -h to get a usage
+     *        statement.
      */
     public static void main(String[] argv) {
         Debug.init();
