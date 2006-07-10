@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.15 $
-// $Date: 2006/02/14 20:55:52 $
+// $Revision: 1.16 $
+// $Date: 2006/07/10 23:20:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,8 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -38,7 +40,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Properties;
 
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -107,28 +108,28 @@ import com.bbn.openmap.util.PropUtils;
  * The properties that can be set for the LayersPanel:
  * 
  * <pre>
- *    
- *     
- *      
- *       # Use LayerStatusPanes for the layers if true, otherwise
- *       # LayerPanes.  LayerStatusPanes turn the on/off bulbs to green/red
- *       # bulbs when the layer is resting/working.  LayerPanes just show
- *       # yellow bulbs when the layer is part of the map.
- *       showStatus=true
- *       # When the BufferedLayerMapBean is used, a divider will be
- *       # displayed in the list of layers showing which layers are in the
- *       # MapBean buffer (below the line).  Commands to move layers, by
- *       # default, respect this divider, requiring more commands to have
- *       # layers cross it.
- *       boundary=true
- *       # Add control buttons - use &quot;none&quot; for no button.  If undefined,
- *       # the LayerControlButtonPanel will be created automatically.
- *       controls=com.bbn.openmap.gui.LayerControlButtonPanel
- *       # Any control properties added here, prepended by &quot;controls&quot;...
- *       controls.configuration=WEST
  *       
- *      
- *     
+ *        
+ *         
+ *          # Use LayerStatusPanes for the layers if true, otherwise
+ *          # LayerPanes.  LayerStatusPanes turn the on/off bulbs to green/red
+ *          # bulbs when the layer is resting/working.  LayerPanes just show
+ *          # yellow bulbs when the layer is part of the map.
+ *          showStatus=true
+ *          # When the BufferedLayerMapBean is used, a divider will be
+ *          # displayed in the list of layers showing which layers are in the
+ *          # MapBean buffer (below the line).  Commands to move layers, by
+ *          # default, respect this divider, requiring more commands to have
+ *          # layers cross it.
+ *          boundary=true
+ *          # Add control buttons - use &quot;none&quot; for no button.  If undefined,
+ *          # the LayerControlButtonPanel will be created automatically.
+ *          controls=com.bbn.openmap.gui.LayerControlButtonPanel
+ *          # Any control properties added here, prepended by &quot;controls&quot;...
+ *          controls.configuration=WEST
+ *          
+ *         
+ *        
  * </pre>
  */
 public class LayersPanel extends OMToolComponent implements Serializable,
@@ -371,8 +372,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
                             "title",
                             "Layers"));
                     setWindowSupport(ws);
-                }                
-                
+                }
+
                 // Initial settings.
                 int w = 328;
                 int h = 300;
@@ -481,6 +482,9 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         panes = lpa;
     }
 
+    GridBagLayout gridbag;
+    GridBagConstraints c;
+
     /**
      * Create the panel that shows the LayerPanes. This method creates the
      * on/off buttons, palette buttons, and layer labels, and adds them to the
@@ -492,9 +496,9 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     public void createPanel(Layer[] inLayers) {
         Debug.message("layerspanel", "LayersPanel.createPanel()");
 
-        if (scrollPane != null) {
-            remove(scrollPane);
-        }
+        // if (scrollPane != null) {
+        // remove(scrollPane);
+        // }
 
         Layer[] layers = inLayers;
         if (layers == null) {
@@ -503,11 +507,22 @@ public class LayersPanel extends OMToolComponent implements Serializable,
 
         if (panesPanel == null) {
             panesPanel = new JPanel();
-            panesPanel.setLayout(new BoxLayout(panesPanel, BoxLayout.Y_AXIS));
-            panesPanel.setAlignmentX(LEFT_ALIGNMENT);
-            panesPanel.setAlignmentY(BOTTOM_ALIGNMENT);
+            gridbag = new GridBagLayout();
+            c = new GridBagConstraints();
+
+            panesPanel.setLayout(gridbag);
+
+            c.gridwidth = GridBagConstraints.REMAINDER;
+            c.anchor = GridBagConstraints.NORTHWEST;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.weightx = 1.0f;
+
+            // panesPanel.setLayout(new BoxLayout(panesPanel,
+            // BoxLayout.Y_AXIS));
+            // panesPanel.setAlignmentX(LEFT_ALIGNMENT);
+            // panesPanel.setAlignmentY(BOTTOM_ALIGNMENT);
         } else {
-            ((BoxLayout) panesPanel.getLayout()).invalidateLayout(panesPanel);
+            ((GridBagLayout) panesPanel.getLayout()).invalidateLayout(panesPanel);
             panesPanel.removeAll();
         }
 
@@ -548,6 +563,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
                 backgroundPanes.add(lpane);
             } else {
                 panes.add(lpane);
+
+                gridbag.setConstraints(lpane, c);
                 panesPanel.add(lpane);
             }
         }
@@ -557,12 +574,15 @@ public class LayersPanel extends OMToolComponent implements Serializable,
                 Debug.output("Adding BackgroundLayerSeparator");
             }
             panes.add(backgroundLayerSeparator);
+            gridbag.setConstraints(backgroundLayerSeparator, c);
             panesPanel.add(backgroundLayerSeparator);
             panes.addAll(backgroundPanes);
 
             Iterator it = backgroundPanes.iterator();
             while (it.hasNext()) {
-                panesPanel.add((LayerPane) it.next());
+                LayerPane lp = (LayerPane) it.next();
+                gridbag.setConstraints(lp, c);
+                panesPanel.add(lp);
             }
 
         } else if (backgroundLayerSeparator != null) {
@@ -570,21 +590,40 @@ public class LayersPanel extends OMToolComponent implements Serializable,
                 Debug.output("No layers are background layers, adding separator");
             }
             panes.add(backgroundLayerSeparator);
+            gridbag.setConstraints(backgroundLayerSeparator, c);
             panesPanel.add(backgroundLayerSeparator);
         }
 
+        addFillerToPanesPanel();
+
         setPanes(panes);
 
-        if (scrollPane != null) {
-            remove(scrollPane);
-            scrollPane.removeAll();
-            scrollPane = null;
+        // if (scrollPane != null) {
+        // remove(scrollPane);
+        // scrollPane.removeAll();
+        // scrollPane = null;
+        // }
+        //
+        // scrollPane = new JScrollPane(panesPanel,
+        // ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        // ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        if (scrollPane == null) {
+            scrollPane = new JScrollPane(panesPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            add(scrollPane, BorderLayout.CENTER);
         }
 
-        scrollPane = new JScrollPane(panesPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-        add(scrollPane, BorderLayout.CENTER);
         revalidate();
+    }
+
+    protected void addFillerToPanesPanel() {
+        JPanel filler = new JPanel();
+        c.fill = GridBagConstraints.BOTH;
+        c.weighty = 1.0f;
+        gridbag.setConstraints(filler, c);
+        panesPanel.add(filler);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 0.0f;
     }
 
     /**
@@ -823,6 +862,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         int selectedRow = -1;
 
         panesPanel.removeAll();
+        gridbag.invalidateLayout(panesPanel);
 
         LinkedList panes = getPanes();
         LinkedList layerList = new LinkedList();
@@ -836,6 +876,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
             LayerPane pane = (LayerPane) it.next();
 
             if (pane == backgroundLayerSeparator) {
+                gridbag.setConstraints(pane, c);
                 panesPanel.add(backgroundLayerSeparator);
                 bufferIndex = i++;
                 continue;
@@ -843,6 +884,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
 
             Layer layer = pane.getLayer();
             layer.setAddAsBackground(i > bufferIndex);
+            gridbag.setConstraints(pane, c);
             panesPanel.add(pane);
             layerList.add(layer);
 
@@ -851,6 +893,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
             }
             i++;
         }
+
+        addFillerToPanesPanel();
 
         scrollPane.revalidate();
 
