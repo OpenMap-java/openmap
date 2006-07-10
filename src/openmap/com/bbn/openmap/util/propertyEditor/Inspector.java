@@ -45,25 +45,23 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * Class to inspect a PropertyConsumer. Used by the LayerAddPanel
- * class to interactively configure a Layer object before it gets
- * added to the map. This class should suffice to "inspect" any
- * PropertyConsumer on a very basic level, handling is more convinient
- * if property editor classes are available. The behavior of the
- * Inspector is configured through properties; the propertiesInfo
- * object of a PropertyConsumer may contain a initPropertiesProperty
- * which determines which properties are to be shown and in which
- * order, in a space seperated list, i.e.
+ * Class to inspect a PropertyConsumer. Used by the LayerAddPanel class to
+ * interactively configure a Layer object before it gets added to the map. This
+ * class should suffice to "inspect" any PropertyConsumer on a very basic level,
+ * handling is more convinient if property editor classes are available. The
+ * behavior of the Inspector is configured through properties; the
+ * propertiesInfo object of a PropertyConsumer may contain a
+ * initPropertiesProperty which determines which properties are to be shown and
+ * in which order, in a space seperated list, i.e.
  * 
  * <code>
  * initPropertiesProperty=class prettyName shapeFile
  *
- * </code> If this property is not defined, then all the properties
- * will be displayed, in alphabetical order.
+ * </code> If this property is not defined, then all the properties will be
+ * displayed, in alphabetical order.
  * 
- * For each property there may be a editorProperty entry giving a
- * PropertyEditor class to instanciate as an editor for the property,
- * i.e. <code>
+ * For each property there may be a editorProperty entry giving a PropertyEditor
+ * class to instanciate as an editor for the property, i.e. <code>
  * shapeFile.editor=com.bbn.openmap.util.propertyEditor.FilePropertyEditor
  * </code>.
  */
@@ -73,8 +71,7 @@ public class Inspector implements ActionListener {
     protected final String defaultEditorClass = "com.bbn.openmap.util.propertyEditor.TextPropertyEditor";
 
     /**
-     * The PropertyConsumer being inspected. Set in
-     * inspectPropertyConsumer.
+     * The PropertyConsumer being inspected. Set in inspectPropertyConsumer.
      */
     protected PropertyConsumer propertyConsumer = null;
 
@@ -82,16 +79,16 @@ public class Inspector implements ActionListener {
     protected WindowSupport windowSupport = null;
 
     /** Action command for the cancelButton. */
-    //  public so it can be referenced from the actionListener
+    // public so it can be referenced from the actionListener
     public final static String cancelCommand = "cancelCommand";
 
     /** The action command for the doneButton. */
-    //  public so it can be referenced from the actionListener
+    // public so it can be referenced from the actionListener
     public final static String doneCommand = "doneCommand";
 
     /**
-     * Hashtable containing property names, and their editors. Used to
-     * fetch user inputs for configuring a property consumer.
+     * Hashtable containing property names, and their editors. Used to fetch
+     * user inputs for configuring a property consumer.
      */
     protected Hashtable editors = null;
 
@@ -102,16 +99,14 @@ public class Inspector implements ActionListener {
 
     /**
      * Flag to print out the properties. Used when the Inspector is in
-     * stand-alone mode, so that the properties are directed to
-     * stdout.
+     * stand-alone mode, so that the properties are directed to stdout.
      */
     protected boolean print = false;
 
     /**
-     * Set an Actionlistener for callbacks. Once a Layer object is
-     * configured, ie the "Add" button has been clicked, an
-     * ActionListener that invoked this Inspector can register here to
-     * be notified.
+     * Set an Actionlistener for callbacks. Once a Layer object is configured,
+     * ie the "Add" button has been clicked, an ActionListener that invoked this
+     * Inspector can register here to be notified.
      */
     public void addActionListener(ActionListener al) {
         actionListener = al;
@@ -126,10 +121,9 @@ public class Inspector implements ActionListener {
     }
 
     /**
-     * Inspect and configure a PropertyConsumer object. Main method of
-     * this class. The argument PropertyConsumer is inspected through
-     * the ProperyConsumer interface, the properties are displayed to
-     * be edited.
+     * Inspect and configure a PropertyConsumer object. Main method of this
+     * class. The argument PropertyConsumer is inspected through the
+     * ProperyConsumer interface, the properties are displayed to be edited.
      */
     public void inspectPropertyConsumer(PropertyConsumer propertyConsumer) {
         String prefix = propertyConsumer.getPropertyPrefix();
@@ -149,24 +143,24 @@ public class Inspector implements ActionListener {
     public Vector sortKeys(Collection keySet) {
         Vector vector = new Vector(keySet.size());
 
-        //  OK, ok, this isn't the most efficient way to do this, but
-        //  it's simple. Shouldn't matter for what we are using it
-        //  for...
+        // OK, ok, this isn't the most efficient way to do this, but
+        // it's simple. Shouldn't matter for what we are using it
+        // for...
         Iterator it = keySet.iterator();
         while (it.hasNext()) {
             String key = (String) it.next();
             int size = vector.size();
             for (int i = 0; i <= size; i++) {
                 if (i == size) {
-                    //                  System.out.println("Adding " + key + " at " +
+                    // System.out.println("Adding " + key + " at " +
                     // i);
                     vector.add(key);
                     break;
                 } else {
                     int compare = key.compareTo((String) vector.elementAt(i));
                     if (compare < 0) {
-                        //                      System.out.println(key + " goes before " +
-                        //                                         vector.elementAt(i) + " at " + i);
+                        // System.out.println(key + " goes before " +
+                        // vector.elementAt(i) + " at " + i);
                         vector.add(i, key);
                         break;
                     }
@@ -177,12 +171,11 @@ public class Inspector implements ActionListener {
     }
 
     /**
-     * Creates a JComponent with the properties to be changed. This
-     * component is suitable for inclusion into a GUI.
+     * Creates a JComponent with the properties to be changed. This component is
+     * suitable for inclusion into a GUI.
      * 
      * @param pc The property consumer to create a gui for.
-     * @return JComponent, a panel holding the interface to set the
-     *         properties.
+     * @return JComponent, a panel holding the interface to set the properties.
      */
     public JComponent createPropertyGUI(PropertyConsumer pc) {
         // fill variables
@@ -197,26 +190,24 @@ public class Inspector implements ActionListener {
     }
 
     /**
-     * Creates a JComponent with the properties to be changed. This
-     * component is suitable for inclusion into a GUI. Don't use this
-     * method directly! Use the createPropertyGUI(PropertyConsumer)
-     * instead. You will get a NullPointerException if you use this
-     * method without setting the PropertyConsumer in the Inspector.
+     * Creates a JComponent with the properties to be changed. This component is
+     * suitable for inclusion into a GUI. Don't use this method directly! Use
+     * the createPropertyGUI(PropertyConsumer) instead. You will get a
+     * NullPointerException if you use this method without setting the
+     * PropertyConsumer in the Inspector.
      * 
-     * @param prefix the property prefix for the property consumer.
-     *        Received from the PropertyConsumer.getPropertyPrefix()
-     *        method. Properties that start with this prefix will have
-     *        the prefix removed from the display, so the GUI will
-     *        only show the actual property name.
+     * @param prefix the property prefix for the property consumer. Received
+     *        from the PropertyConsumer.getPropertyPrefix() method. Properties
+     *        that start with this prefix will have the prefix removed from the
+     *        display, so the GUI will only show the actual property name.
      * @param props the properties received from the
      *        PropertyConsumer.getProperties() method.
      * @param info the properties received from the
-     *        PropertyConsumer.getPropertyInfo() method, containing
-     *        descriptions and any specific PropertyEditors that
-     *        should be used for a particular property named in the
-     *        PropertyConsumer.getProperties() properties.
-     * @return JComponent, a panel holding the interface to set the
-     *         properties.
+     *        PropertyConsumer.getPropertyInfo() method, containing descriptions
+     *        and any specific PropertyEditors that should be used for a
+     *        particular property named in the PropertyConsumer.getProperties()
+     *        properties.
+     * @return JComponent, a panel holding the interface to set the properties.
      */
     public JComponent createPropertyGUI(String prefix, Properties props,
                                         Properties info) {
@@ -344,7 +335,7 @@ public class Inspector implements ActionListener {
 
         // create the palette's scroll pane
         JScrollPane scrollPane = new JScrollPane(propertyPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        //      scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+        // scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         scrollPane.setAlignmentY(Component.TOP_ALIGNMENT);
         component.add(scrollPane, BorderLayout.CENTER);
 
@@ -370,9 +361,8 @@ public class Inspector implements ActionListener {
     }
 
     /**
-     * Implement the ActionListener interface. The actions registering
-     * here should be generated by the two buttons in the Inspector
-     * GUI.
+     * Implement the ActionListener interface. The actions registering here
+     * should be generated by the two buttons in the Inspector GUI.
      */
     public void actionPerformed(ActionEvent e) {
         final String actionCommand = e.getActionCommand();
@@ -382,7 +372,9 @@ public class Inspector implements ActionListener {
             Properties props = collectProperties();
 
             if (!print) {
-                windowSupport.killWindow();
+                if (windowSupport != null) {
+                    windowSupport.killWindow();
+                }
                 propertyConsumer.setProperties(prefix, props);
                 if (actionListener != null) {
                     actionListener.actionPerformed(e);
@@ -401,7 +393,9 @@ public class Inspector implements ActionListener {
                 actionListener.actionPerformed(e);
             }
             propertyConsumer = null; // to be garb. coll'd
-            windowSupport.killWindow();
+            if (windowSupport != null) {
+                windowSupport.killWindow();
+            }
 
             if (print) {
                 System.exit(0);
