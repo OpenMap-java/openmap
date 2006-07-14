@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/MakeToc.java,v $
 // $RCSfile: MakeToc.java,v $
-// $Revision: 1.12 $
-// $Date: 2006/04/07 17:42:12 $
+// $Revision: 1.13 $
+// $Date: 2006/07/14 21:25:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1082,9 +1082,9 @@ public class MakeToc {
                 String tmpDir = null;
 
                 if (relativeFramePaths) {
-                    int rpfIndex = direct[i].indexOf("RPF");
+                    int rpfIndex = direct[i].lastIndexOf("RPF");
                     if (rpfIndex == -1) {
-                        rpfIndex = direct[i].indexOf("rpf");
+                        rpfIndex = direct[i].lastIndexOf("rpf");
                     }
                     if (rpfIndex != -1) {
                         rpfIndex += 3;
