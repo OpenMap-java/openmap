@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/Wanderer.java,v $
 // $RCSfile: Wanderer.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/07/10 23:24:54 $
-// $Author: dietrick $
+// $Revision: 1.8 $
+// $Date: 2006/07/17 17:31:46 $
+// $Author: mthome $
 // 
 // **********************************************************************
 
@@ -68,7 +68,7 @@ public class Wanderer {
             try {
                 java.lang.reflect.Method method = file.getClass()
                         .getDeclaredMethod("isDirectory", (Class[]) null);
-                Object obj = method.invoke(file, (Object) null);
+                Object obj = method.invoke(file, (Object[]) null);
                 if (obj instanceof Boolean) {
                     dirTest = ((Boolean) obj).booleanValue();
                 }
