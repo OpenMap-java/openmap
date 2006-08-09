@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCacheHandler.java,v $
 // $RCSfile: RpfCacheHandler.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/02/16 16:22:46 $
+// $Revision: 1.11 $
+// $Date: 2006/08/09 21:08:31 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -47,10 +47,10 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The RpfCacheHandler handles everything to do with the decompressed
- * subframes, which is what gets put up on the screen. It interfaces
- * with the RpfFrameProvider to get the information about the data. It
- * also is usually handled by the RpfCacheManager.
+ * The RpfCacheHandler handles everything to do with the decompressed subframes,
+ * which is what gets put up on the screen. It interfaces with the
+ * RpfFrameProvider to get the information about the data. It also is usually
+ * handled by the RpfCacheManager.
  */
 public class RpfCacheHandler {
     /* Lowered from 128 - used too much memory */
@@ -74,26 +74,22 @@ public class RpfCacheHandler {
     /** The subframe cache. */
     protected SubframeCache cache;
     /**
-     * The current description of the TOC entry that currently
-     * applies.
+     * The current description of the TOC entry that currently applies.
      */
     protected Vector coverageBoxes;
     /**
-     * The array of indexes for subframes contained in the
-     * RpfTocEntry.
+     * The array of indexes for subframes contained in the RpfTocEntry.
      */
     protected int[][] subframeIndex;
     /**
-     * The array of version markers for subframes contained in the
-     * RpfTocEntry.
+     * The array of version markers for subframes contained in the RpfTocEntry.
      */
     protected int[][] subframeVersion;
 
     /** The size of the subframe cache. */
     protected int subframeCacheSize;
     /**
-     * Description of how the frames should be constructed and
-     * displayed.
+     * Description of how the frames should be constructed and displayed.
      */
     protected RpfViewAttributes viewAttributes;
     /** The place to look for for image data. */
@@ -103,23 +99,22 @@ public class RpfCacheHandler {
     /** The lower right subframe index on screen. */
     protected Point end = new Point();
     /**
-     * A flag to let the cache manager know that the subframes needed
-     * for the map make sense.
+     * A flag to let the cache manager know that the subframes needed for the
+     * map make sense.
      */
     protected boolean goodData = false;
     /**
-     * The subframe cache is mapped by a 2D matrix based on the number
-     * of subframes that will fit in the RpfCoverageBox area. The
-     * subframeBuffer is used to put additional subframe entries in
-     * the matrix, so that subframes retrieved outside of the
-     * RpfCoverageBox area can still be cached. The subframeBuffer
-     * refers to the number of subframes added on each side of the
-     * matrix.
+     * The subframe cache is mapped by a 2D matrix based on the number of
+     * subframes that will fit in the RpfCoverageBox area. The subframeBuffer is
+     * used to put additional subframe entries in the matrix, so that subframes
+     * retrieved outside of the RpfCoverageBox area can still be cached. The
+     * subframeBuffer refers to the number of subframes added on each side of
+     * the matrix.
      */
     protected int subframeBuffer = DEFAULT_SUBFRAMEBUFFER;
     /**
-     * Used in setCache to see if new coverage is needed with a
-     * projection change.
+     * Used in setCache to see if new coverage is needed with a projection
+     * change.
      */
     private float lastScaleDifference = -1f;
 
@@ -165,13 +160,13 @@ public class RpfCacheHandler {
 
     }
 
-    //      public void finalize() {
-    //      Debug.message("gc", "RpfCacheHandler: getting GC'd");
-    //      }
+    // public void finalize() {
+    // Debug.message("gc", "RpfCacheHandler: getting GC'd");
+    // }
 
     /**
-     * Set the view attributes for the layer. The frame provider view
-     * attributes are updated, and the cache is cleared.
+     * Set the view attributes for the layer. The frame provider view attributes
+     * are updated, and the cache is cleared.
      * 
      * @param rva the RpfViewAttributes used for the layer.
      */
@@ -191,9 +186,8 @@ public class RpfCacheHandler {
     }
 
     /**
-     * Set the RpfFrameProvider for the layer. Clears out the cache,
-     * and the frame provider gets the RpfViewAttributes held by the
-     * layer.
+     * Set the RpfFrameProvider for the layer. Clears out the cache, and the
+     * frame provider gets the RpfViewAttributes held by the layer.
      * 
      * @param fp the frame provider.
      */
@@ -213,10 +207,9 @@ public class RpfCacheHandler {
     }
 
     /**
-     * This only needs to be called if the frame provider is not
-     * local. In that case, updates to the view attributes object will
-     * not be reflected on the server side. This will update the
-     * parameters.
+     * This only needs to be called if the frame provider is not local. In that
+     * case, updates to the view attributes object will not be reflected on the
+     * server side. This will update the parameters.
      */
     public void updateViewAttributes() {
         if (frameProvider != null) {
@@ -225,10 +218,9 @@ public class RpfCacheHandler {
     }
 
     /**
-     * Returns the Vector containing RpfCoverageBoxes that was
-     * returned from the RpfFrameProvider as a result of the last
-     * setCache call. These provide rudimentary knowledge about what
-     * is being displayed.
+     * Returns the Vector containing RpfCoverageBoxes that was returned from the
+     * RpfFrameProvider as a result of the last setCache call. These provide
+     * rudimentary knowledge about what is being displayed.
      * 
      * @return Vector of RpfCoverageBoxes.
      */
@@ -237,10 +229,10 @@ public class RpfCacheHandler {
     }
 
     /**
-     * Called to prepare the cache for subframes that will fit into
-     * the next request. The subframe entry from the TOC is known and
-     * tracked, and if it changes, the frame cache gets tossed and
-     * recreated via setScreenSubframes.
+     * Called to prepare the cache for subframes that will fit into the next
+     * request. The subframe entry from the TOC is known and tracked, and if it
+     * changes, the frame cache gets tossed and recreated via
+     * setScreenSubframes.
      * 
      * @param ullat NW latitude.
      * @param ullon NW longitude.
@@ -350,18 +342,19 @@ public class RpfCacheHandler {
         // be one of the big problems if we were going to merge
         // different data types.
         if (viewAttributes.scaleImages) {
-            //Do the work for a great scaling factor here...
+            // Do the work for a great scaling factor here...
 
             // Need to figure how much this will change for this scale
             // chart at this screen scale
             // Reference at 0, 0
-            LatLonPoint refllpt = (LatLonPoint)viewAttributes.proj.getUpperLeft();
+            LatLonPoint refllpt = (LatLonPoint) viewAttributes.proj.getUpperLeft();
             refllpt.setLongitude(refllpt.getLongitude()
                     + (float) currentBox.subframeLonInterval);
             refllpt.setLatitude(refllpt.getLatitude()
                     - (float) currentBox.subframeLatInterval);
 
-            Point refpt = (Point) viewAttributes.proj.forward(refllpt, new Point());
+            Point refpt = (Point) viewAttributes.proj.forward(refllpt,
+                    new Point());
 
             scalingWidth = refpt.x;
             scalingHeight = refpt.y;
@@ -372,9 +365,9 @@ public class RpfCacheHandler {
 
         // See NOTE below on setScalingTo
         if (cache != null) {
-            //          (cache.subframe[0].image.getFilteredHeight() !=
+            // (cache.subframe[0].image.getFilteredHeight() !=
             // scalingHeight ||
-            //           cache.subframe[0].image.getFilteredWidth() !=
+            // cache.subframe[0].image.getFilteredWidth() !=
             // scalingWidth)) {
 
             for (i = 0; i < subframeCacheSize; i++) {
@@ -384,10 +377,9 @@ public class RpfCacheHandler {
     }
 
     /**
-     * Resets the indicators in the subframe cache, so that none of
-     * the current contents will be used - they'll have to be loaded
-     * with data first. The cache mananagement is also set for the
-     * current main RpfCoverageBox.
+     * Resets the indicators in the subframe cache, so that none of the current
+     * contents will be used - they'll have to be loaded with data first. The
+     * cache mananagement is also set for the current main RpfCoverageBox.
      */
     protected void resetSubframeIndex(int vertFrames, int horizFrames) {
         /* Allocate the indices into the subframe cache */
@@ -415,21 +407,21 @@ public class RpfCacheHandler {
     }
 
     /**
-     * Return true if the cache handler knows about good data in the
-     * current situation.
+     * Return true if the cache handler knows about good data in the current
+     * situation.
      */
     public boolean getGoodData() {
         return goodData;
     }
 
-    ///////////////////////////////////////////////////////////
-    //  SUBFRAME CACHE HANDLING
-    ///////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////
+    // SUBFRAME CACHE HANDLING
+    // /////////////////////////////////////////////////////////
 
     protected void initCache(boolean newCache) {
         int i;
 
-        //      Don't have a cache.
+        // Don't have a cache.
         if (subframeCacheSize <= 0) {
             cache = null;
             return;
@@ -463,8 +455,8 @@ public class RpfCacheHandler {
             cache.subframe[i].setScalingTo(scalingWidth, scalingHeight);
             cache.subframe[i].version = 0;
 
-            //  Here's where I messed up - forgot to hook up the ends
-            //  of the chain...
+            // Here's where I messed up - forgot to hook up the ends
+            // of the chain...
             if (i < subframeCacheSize - 1) {
                 cache.subframe[i].nextSubframe = i + 1;
             } else {
@@ -479,8 +471,7 @@ public class RpfCacheHandler {
     }
 
     /**
-     * Get the index of the least recently used entry from the
-     * subframe cache.
+     * Get the index of the least recently used entry from the subframe cache.
      */
     protected int getLRU() {
         if (cache != null) {
@@ -541,58 +532,54 @@ public class RpfCacheHandler {
     }
 
     /**
-     * Find out the size of the subframe cache. From the start and end
-     * indexes, you can figure out the number of subframes the map
-     * needs. If that number is bigger than this cache size, you'll
-     * need to use the getCached that lets you supply the subframe
-     * number that you are requesting, so that the RpfCacheHandler
-     * knows when to stop caching subframes during a retrival..
-     * Otherwise, the cache will overwrite data and subframes will not
-     * show up on the map.
+     * Find out the size of the subframe cache. From the start and end indexes,
+     * you can figure out the number of subframes the map needs. If that number
+     * is bigger than this cache size, you'll need to use the getCached that
+     * lets you supply the subframe number that you are requesting, so that the
+     * RpfCacheHandler knows when to stop caching subframes during a retrival..
+     * Otherwise, the cache will overwrite data and subframes will not show up
+     * on the map.
      */
     public int getCacheSize() {
         return subframeCacheSize;
     }
 
     /**
-     * Get a subframe from one of the other RpfCoverageBoxes. Keep
-     * going through them until there is a subframe returned, or if
-     * there's nothing. Use this method when you are sure that the
-     * subframe cache is big enough to handle all the subframes on the
-     * map.
+     * Get a subframe from one of the other RpfCoverageBoxes. Keep going through
+     * them until there is a subframe returned, or if there's nothing. Use this
+     * method when you are sure that the subframe cache is big enough to handle
+     * all the subframes on the map.
      * 
-     * @param x the x index of subframe in the FIRST RpfCoverageBox
-     *        space - translation needed.
-     * @param y the y index of subframe in the FIRST RpfCoverageBox
-     *        space - translation needed.
+     * @param x the x index of subframe in the FIRST RpfCoverageBox space -
+     *        translation needed.
+     * @param y the y index of subframe in the FIRST RpfCoverageBox space -
+     *        translation needed.
      */
     protected RpfSubframe getSubframeFromOtherTOC(int x, int y) {
         return getSubframeFromOtherTOC(x, y, -1);
     }
 
     /**
-     * Get a subframe from one of the other RpfCoverageBoxes. Keep
-     * going through them until there is a subframe returned, or if
-     * there nothing. If you are not sure that the number of subframes
-     * that go on the map is less than or equal to the size of the
-     * subframe cache, then use this method to provide a running count
-     * of how many subframes you've already called for to use in the
-     * current map. If this number gets bigger than the cache size,
-     * then the RpfCacheHandler will keep fetching data without
-     * storing the extra subframes in the cache. Otherwise, the
-     * previous images in the cache would be replaced before they were
-     * painted, and they would not appear on the map. If subframeCount
-     * is less than subframe size, then the latest retrieved subframe
-     * will be stored in the cache.
+     * Get a subframe from one of the other RpfCoverageBoxes. Keep going through
+     * them until there is a subframe returned, or if there nothing. If you are
+     * not sure that the number of subframes that go on the map is less than or
+     * equal to the size of the subframe cache, then use this method to provide
+     * a running count of how many subframes you've already called for to use in
+     * the current map. If this number gets bigger than the cache size, then the
+     * RpfCacheHandler will keep fetching data without storing the extra
+     * subframes in the cache. Otherwise, the previous images in the cache would
+     * be replaced before they were painted, and they would not appear on the
+     * map. If subframeCount is less than subframe size, then the latest
+     * retrieved subframe will be stored in the cache.
      * 
-     * @param x the x index of subframe in the FIRST RpfCoverageBox
-     *        space - translation needed.
-     * @param y the y index of subframe in the FIRST RpfCoverageBox
-     *        space - translation needed.
-     * @param subframeCount a running count of the number of subframes
-     *        retrieved so far for the current map. Should be used it
-     *        there is concern that the number of subframes needed for
-     *        the map is greater than the size of the subframe.
+     * @param x the x index of subframe in the FIRST RpfCoverageBox space -
+     *        translation needed.
+     * @param y the y index of subframe in the FIRST RpfCoverageBox space -
+     *        translation needed.
+     * @param subframeCount a running count of the number of subframes retrieved
+     *        so far for the current map. Should be used it there is concern
+     *        that the number of subframes needed for the map is greater than
+     *        the size of the subframe.
      */
     protected RpfSubframe getSubframeFromOtherTOC(int x, int y,
                                                   int subframeCount) {
@@ -633,16 +620,16 @@ public class RpfCacheHandler {
                 int offsetX = x - start.x;
                 int offsetY = y - start.y;
                 // previous values were:
-                //int offsetX = start.x - x;
-                //int offsetY = start.y - y;
+                // int offsetX = start.x - x;
+                // int offsetY = start.y - y;
 
                 int newX = currentBox.startIndexes.x + offsetX;
                 int newY = currentBox.startIndexes.y + offsetY;
 
                 if (cacheIt) {
                     /*
-                     * Subframe isn't cached; allocate new entry and
-                     * decompress it
+                     * Subframe isn't cached; allocate new entry and decompress
+                     * it
                      */
                     index = getLRU();
                     if (index < 0 || index >= subframeCacheSize
@@ -681,12 +668,11 @@ public class RpfCacheHandler {
     }
 
     /**
-     * Get a subframe from the cache if possible, otherwise allocate a
-     * new cache entry and decompress it. Each cache entry has a
-     * version number that is incremented whenever it is replaced by a
-     * new subframe. This ensures the replacement is detected. Use
-     * this method when you are sure that the subframe cache is big
-     * enough to handle all the subframes on the map.
+     * Get a subframe from the cache if possible, otherwise allocate a new cache
+     * entry and decompress it. Each cache entry has a version number that is
+     * incremented whenever it is replaced by a new subframe. This ensures the
+     * replacement is detected. Use this method when you are sure that the
+     * subframe cache is big enough to handle all the subframes on the map.
      * 
      * @param cbx the x index of subframe in the rcbIndex A.TOC space.
      * @param cby the y index of subframe in the rcbIndex A.TOC space.
@@ -696,28 +682,26 @@ public class RpfCacheHandler {
     }
 
     /**
-     * Get a subframe from the cache if possible, otherwise allocate a
-     * new cache entry and decompress it. Each cache entry has a
-     * version number that is incremented whenever it is replaced by a
-     * new subframe. This ensures the replacement is detected. If you
-     * are not sure that the number of subframes that go on the map is
-     * less than or equal to the size of the subframe cache, then use
-     * this method to provide a running count of how many subframes
-     * you've already called for to use in the current map. If this
-     * number gets bigger than the cache size, then the
-     * RpfCacheHandler will keep fetching data without storing the
-     * extra subframes in the cache. Otherwise, the previous images in
-     * the cache would be replaced before they were painted, and they
-     * would not appear on the map. If subframeCount is less than
-     * subframe size, then the latest retrieved subframe will be
+     * Get a subframe from the cache if possible, otherwise allocate a new cache
+     * entry and decompress it. Each cache entry has a version number that is
+     * incremented whenever it is replaced by a new subframe. This ensures the
+     * replacement is detected. If you are not sure that the number of subframes
+     * that go on the map is less than or equal to the size of the subframe
+     * cache, then use this method to provide a running count of how many
+     * subframes you've already called for to use in the current map. If this
+     * number gets bigger than the cache size, then the RpfCacheHandler will
+     * keep fetching data without storing the extra subframes in the cache.
+     * Otherwise, the previous images in the cache would be replaced before they
+     * were painted, and they would not appear on the map. If subframeCount is
+     * less than subframe size, then the latest retrieved subframe will be
      * stored in the cache.
      * 
      * @param cbx the x index of subframe in the rcbIndex A.TOC space.
      * @param cby the y index of subframe in the rcbIndex A.TOC space.
-     * @param subframeCount a running count of the number of subframes
-     *        retrieved so far for the current map. Should be used if
-     *        there is concern that the number of subframes needed for
-     *        the map is greater than the size of the subframe.
+     * @param subframeCount a running count of the number of subframes retrieved
+     *        so far for the current map. Should be used if there is concern
+     *        that the number of subframes needed for the map is greater than
+     *        the size of the subframe.
      */
     protected RpfSubframe getCached(int cbx, int cby, int subframeCount) {
 
@@ -762,12 +746,14 @@ public class RpfCacheHandler {
             if (viewAttributes.colorModel == OMRasterObject.COLORMODEL_DIRECT) {
                 if (ret.opaqueness != viewAttributes.opaqueness) {
                     int[] pixels = ret.image.getPixels();
-                    ret.opaqueness = viewAttributes.opaqueness;
-                    for (int i = 0; i < pixels.length; i++) {
-                        pixels[i] = (0x00FFFFFF & pixels[i])
-                                | (viewAttributes.opaqueness << 24);
+                    if (pixels != null) {
+                        ret.opaqueness = viewAttributes.opaqueness;
+                        for (int i = 0; i < pixels.length; i++) {
+                            pixels[i] = (0x00FFFFFF & pixels[i])
+                                    | (viewAttributes.opaqueness << 24);
+                        }
+                        ret.image.setNeedToRegenerate(true);
                     }
-                    ret.image.setNeedToRegenerate(true);
                 }
             } else {
                 if (ret.opaqueness != viewAttributes.opaqueness) {
@@ -777,9 +763,9 @@ public class RpfCacheHandler {
                 }
             }
 
-            //Check to see if the attribute text has even been
-            //retrieved from the RpfFrameProvider. If it hasn't, and
-            //needs to be, get it.
+            // Check to see if the attribute text has even been
+            // retrieved from the RpfFrameProvider. If it hasn't, and
+            // needs to be, get it.
             if (frameProvider != null
                     && viewAttributes.showInfo
                     && (ret.getAttributeText() == null || ret.getAttributeText()
@@ -806,8 +792,7 @@ public class RpfCacheHandler {
         } else {
 
             /*
-             * Subframe isn't cached; allocate new entry and
-             * decompress it
+             * Subframe isn't cached; allocate new entry and decompress it
              */
             index = getLRU();
             // Meet the requirements for not caching...
@@ -842,8 +827,7 @@ public class RpfCacheHandler {
     }
 
     /**
-     * Contacts the frame provider to put the subframe image in the
-     * RpfSubframe.
+     * Contacts the frame provider to put the subframe image in the RpfSubframe.
      * 
      * @param subframe the RpfSubframe to load the image data into.
      * @param coverageBox that has toc and entry numbers to use.
@@ -861,7 +845,9 @@ public class RpfCacheHandler {
                     "RpfCacheHandler.loadSubframes(): null frameProvider");
             return false;
         }
-
+        
+        subframe.opaqueness = viewAttributes.opaqueness;
+        
         if (viewAttributes.colorModel == OMRasterObject.COLORMODEL_DIRECT) {
             pixels = frameProvider.getSubframeData(coverageBox.tocNumber,
                     coverageBox.entryNumber,
@@ -879,7 +865,6 @@ public class RpfCacheHandler {
 
             if (riid != null && riid.imageData != null
                     && riid.colortable != null) {
-                subframe.opaqueness = viewAttributes.opaqueness;
                 subframe.image.setBits(riid.imageData);
                 subframe.image.setColors(riid.colortable);
                 subframe.image.setTransparent(viewAttributes.opaqueness);
@@ -891,8 +876,8 @@ public class RpfCacheHandler {
             return false;
         }
 
-        if (good == true) {
-            //LOAD UP the geographic stuff into
+        if (good) {
+            // LOAD UP the geographic stuff into
             // cache.subframe[index].image
             float lat, lon, lat2, lon2;
             double xlloffset, ylloffset;
@@ -933,4 +918,3 @@ public class RpfCacheHandler {
     }
 
 }
-

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingRaster.java,v $
 // $RCSfile: OMScalingRaster.java,v $
-// $Revision: 1.12 $
-// $Date: 2006/02/16 16:22:48 $
+// $Revision: 1.13 $
+// $Date: 2006/08/09 21:08:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -90,7 +90,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         super();
     }
 
-    ///////////////////////////////////// INT PIXELS - DIRECT
+    // /////////////////////////////////// INT PIXELS - DIRECT
     // COLORMODEL
 
     /**
@@ -113,7 +113,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         lon2 = lrlon;
     }
 
-    ////////////////////////////////////// IMAGEICON
+    // //////////////////////////////////// IMAGEICON
 
     /**
      * Create an OMRaster, Lat/Lon placement with an ImageIcon.
@@ -151,7 +151,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         setImage(ii);
     }
 
-    ////////////////////////////////////// BYTE PIXELS with
+    // //////////////////////////////////// BYTE PIXELS with
     // COLORTABLE
 
     /**
@@ -248,7 +248,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      */
     public boolean generate(Projection proj) {
         this.shape = null;
-        
+
         // Position sets the position for the OMRaster!!!!
         if (!position(proj)) {
             if (DEBUG) {
@@ -267,6 +267,11 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                 super.generate(proj);
                 // bitmap is set to a BufferedImage
                 setImage(bitmap);
+
+                // Since we have a source image that is going to be reused,
+                // let's get rid of the memory that we won't use anymore.
+                pixels = null;
+                bits = null;
             }
         }
 
@@ -287,6 +292,9 @@ public class OMScalingRaster extends OMRaster implements Serializable {
             setShape(createBoxShape(point1.x, point1.y, w, h));
 
             setNeedToRegenerate(false);
+        } else {
+            // Make the label go away if it is off-screen.
+            hasLabel = false;
         }
         return true;
     }
@@ -345,13 +353,13 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
         // Now we have everything we need to sort out this new
         // projection.
-        //boolean currentVisibility = isVisible();
+        // boolean currentVisibility = isVisible();
 
         // Assume we will not see it, in order to see if any part of
         // the
         // image will appear on map. If so, then reset visibility to
         // what's needed.
-        //setVisible(false);
+        // setVisible(false);
         clipRect = null;
 
         Rectangle iRect = winRect.intersection(projRect);
@@ -370,33 +378,33 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
                 // If it didn't all fit
                 if (!winRect.contains(projRect)) {
-                    //   calc X scale factor
+                    // calc X scale factor
                     float xScaleFactor = (float) sourceRect.width
                             / (float) projRect.width;
-                    //   and Y scale factor
+                    // and Y scale factor
                     float yScaleFactor = (float) sourceRect.height
                             / (float) projRect.height;
-                    int xOffset = (int) ((iRect.x - projRect.x)); //   and
-                                                                  // x
-                                                                  // offset
-                    int yOffset = (int) ((iRect.y - projRect.y)); //   and
-                                                                  // y
-                                                                  // offset
-                    clipRect.x = (int) (xOffset * xScaleFactor); //   scale
-                                                                 // the
-                                                                 // x
-                                                                 // position
-                    clipRect.y = (int) (yOffset * yScaleFactor); //   scale
-                                                                 // the
-                                                                 // y
-                                                                 // position
+                    int xOffset = (int) ((iRect.x - projRect.x)); // and
+                    // x
+                    // offset
+                    int yOffset = (int) ((iRect.y - projRect.y)); // and
+                    // y
+                    // offset
+                    clipRect.x = (int) (xOffset * xScaleFactor); // scale
+                    // the
+                    // x
+                    // position
+                    clipRect.y = (int) (yOffset * yScaleFactor); // scale
+                    // the
+                    // y
+                    // position
 
                     // Do Math.ceil because the icon was getting
                     // clipped a little if it started to move off the
                     // screen a little.
                     clipRect.width = (int) Math.ceil(iRect.width * xScaleFactor); // scale
-                                                                                  // the
-                                                                                  // width
+                    // the
+                    // width
                     clipRect.height = (int) Math.ceil(iRect.height
                             * yScaleFactor); // scale the height
 
@@ -435,7 +443,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                 // Create the transform op.
                 AffineTransformOp xformOp = new AffineTransformOp(xform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
                 // Scale clip area -> newImage
-                //   extract sub-image
+                // extract sub-image
                 BufferedImage newImage = xformOp.filter(sourceImage.getSubimage(clipRect.x,
                         clipRect.y,
                         clipRect.width,
@@ -444,7 +452,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
                 bitmap = newImage;
                 point1.setLocation(iRect.x, iRect.y);
-                //setVisible(currentVisibility);
+                // setVisible(currentVisibility);
             }
         } else {
             bitmap = null;
@@ -573,4 +581,3 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     }
 
 }
-

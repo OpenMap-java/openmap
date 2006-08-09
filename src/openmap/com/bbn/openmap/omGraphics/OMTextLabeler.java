@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: OMTextLabeler.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/09/21 13:56:12 $
+//$Revision: 1.3 $
+//$Date: 2006/08/09 21:08:34 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -36,6 +36,18 @@ import java.awt.geom.GeneralPath;
  */
 public class OMTextLabeler extends OMText implements OMLabeler {
 
+    public final static int ANCHOR_TOPLEFT = 0;
+    public final static int ANCHOR_TOP = 1;
+    public final static int ANCHOR_TOPRIGHT = 2;
+    public final static int ANCHOR_LEFT = 3;
+    public final static int ANCHOR_CENTER = 4;
+    public final static int ANCHOR_RIGHT = 5;
+    public final static int ANCHOR_BOTTOMLEFT = 6;
+    public final static int ANCHOR_BOTTOM = 7;
+    public final static int ANCHOR_BOTTOMRIGHT = 8;
+    
+    protected int anchor = ANCHOR_CENTER;
+    
     /**
      * 
      */
@@ -48,7 +60,11 @@ public class OMTextLabeler extends OMText implements OMLabeler {
      * @param just
      */
     public OMTextLabeler(String stuff, int just) {
-        this(stuff, DEFAULT_FONT, just);
+        this(stuff, DEFAULT_FONT, just, ANCHOR_CENTER);
+    }
+    
+    public OMTextLabeler(String stuff, int just, int loc) {
+        this(stuff, DEFAULT_FONT, just, loc);
     }
 
     /**
@@ -57,16 +73,37 @@ public class OMTextLabeler extends OMText implements OMLabeler {
      * @param just
      */
     public OMTextLabeler(String stuff, Font font, int just) {
+        this(stuff, font, just, ANCHOR_CENTER);
+    }
+    
+    public OMTextLabeler(String stuff, Font font, int just, int loc) {
         setRenderType(RENDERTYPE_XY);
         setData(stuff);
         setFont(font);
         setJustify(just);
+        setAnchor(loc);
     }
 
     public void setLocation(GeneralPath gp) {
         if (gp != null) {
             Rectangle rect = gp.getBounds();
-            setLocation(new Point((int) (rect.getX() + rect.getWidth() / 2), (int) (rect.getY() + rect.getHeight() / 2)));
+            
+            double x = rect.getX();
+            double y = rect.getY();
+            
+            if (anchor == ANCHOR_TOP || anchor == ANCHOR_CENTER || anchor == ANCHOR_BOTTOM) {
+                x += rect.getWidth() / 2;
+            } else if (anchor == ANCHOR_TOPRIGHT || anchor == ANCHOR_RIGHT || anchor == ANCHOR_BOTTOMRIGHT) {
+                x += rect.getWidth();
+            }
+            
+            if (anchor == ANCHOR_LEFT || anchor == ANCHOR_CENTER || anchor == ANCHOR_RIGHT) {
+                y += rect.getHeight() / 2;
+            } else if (anchor == ANCHOR_BOTTOMLEFT || anchor == ANCHOR_BOTTOM || anchor == ANCHOR_BOTTOMRIGHT) {
+                y += rect.getHeight();
+            }
+            
+            setLocation(new Point((int) x, (int) y));
         }
     }
 
@@ -99,7 +136,7 @@ public class OMTextLabeler extends OMText implements OMLabeler {
      * from some australian astronomy website =)
      * http://astronomy.swin.edu.au/~pbourke/geometry/polyarea
      */
-    protected double calculateProjectedArea(int[] xpts, int[] ypts) {
+    protected static double calculateProjectedArea(int[] xpts, int[] ypts) {
         int j = 0;
         double area = 0.0;
 
@@ -119,7 +156,7 @@ public class OMTextLabeler extends OMText implements OMLabeler {
      * Algorithm used is from some australian astronomy website =)
      * http://astronomy.swin.edu.au/~pbourke/geometry/polyarea
      */
-    protected Point getCenter(int[] xpts, int[] ypts) {
+    protected static Point getCenter(int[] xpts, int[] ypts) {
         float cx = 0.0f;
         float cy = 0.0f;
         double A = calculateProjectedArea(xpts, ypts);
@@ -156,6 +193,14 @@ public class OMTextLabeler extends OMText implements OMLabeler {
 
         Point center = new Point(Math.round(cx), Math.round(cy));
         return center;
+    }
+
+    public int getAnchor() {
+        return anchor;
+    }
+
+    public void setAnchor(int anchor) {
+        this.anchor = anchor;
     }
 
 }

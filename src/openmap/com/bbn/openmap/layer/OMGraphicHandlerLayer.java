@@ -14,20 +14,28 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.29 $
-// $Date: 2006/02/27 20:46:48 $
+// $Revision: 1.30 $
+// $Date: 2006/08/09 21:08:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer;
 
+import java.awt.AlphaComposite;
+import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Shape;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
@@ -50,6 +58,7 @@ import com.bbn.openmap.omGraphics.event.StandardMapMouseInterpreter;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.SwingWorker;
 
@@ -135,24 +144,24 @@ import com.bbn.openmap.util.SwingWorker;
  * be set that dictate important behavior:
  * 
  * <pre>
- *   
- *    
- *    
- *     layer.projectionChangePolicy=pcp
- *     layer.pcp.class=com.bbn.openmap.layer.policy.StandardPCPolicy
- *    
- *     layer.renderPolicy=srp
- *     layer.srp.class=com.bbn.openmap.layer.policy.StandardRenderPolicy
- *     # or
- *     layer.renderPolicy=ta
- *     layer.ta.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
- *     layer.ta.renderingHints=KEY_TEXT_ANTIALIASING
- *     layer.ta.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
- *    
- *     layer.mouseModes=Gestures
- *     layer.consumeEvents=true
  *     
- *    
+ *      
+ *      
+ *       layer.projectionChangePolicy=pcp
+ *       layer.pcp.class=com.bbn.openmap.layer.policy.StandardPCPolicy
+ *      
+ *       layer.renderPolicy=srp
+ *       layer.srp.class=com.bbn.openmap.layer.policy.StandardRenderPolicy
+ *       # or
+ *       layer.renderPolicy=ta
+ *       layer.ta.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
+ *       layer.ta.renderingHints=KEY_TEXT_ANTIALIASING
+ *       layer.ta.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
+ *      
+ *       layer.mouseModes=Gestures
+ *       layer.consumeEvents=true
+ *       
+ *      
  * </pre>
  */
 public class OMGraphicHandlerLayer extends Layer implements
@@ -198,6 +207,13 @@ public class OMGraphicHandlerLayer extends Layer implements
      * you need to be.
      */
     public final static String ConsumeEventsProperty = "consumeEvents";
+
+    /**
+     * The property to tell the layer how transparent it is. 0 is totally clear,
+     * 1f is opaque.
+     */
+    public final static String TransparencyProperty = "transparency";
+    
 
     /**
      * Filter support that can be used to manage OMGraphics.
@@ -875,6 +891,8 @@ public class OMGraphicHandlerLayer extends Layer implements
 
         consumeEvents = PropUtils.booleanFromProperties(props, realPrefix
                 + ConsumeEventsProperty, consumeEvents);
+        
+        setTransparency(PropUtils.floatFromProperties(props, realPrefix + TransparencyProperty, getTransparency()));
     }
 
     /**
@@ -946,6 +964,8 @@ public class OMGraphicHandlerLayer extends Layer implements
             }
             props.put(prefix + MouseModesProperty, sb.toString());
         }
+        
+        props.put(prefix + TransparencyProperty, Float.toString(getTransparency()));
 
         return props;
     }
@@ -976,9 +996,14 @@ public class OMGraphicHandlerLayer extends Layer implements
         if (policyPrefix == null) {
             policyPrefix = "pcp";
         }
-
-        list.put(policyPrefix + ".class",
-                "Class name of ProjectionChangePolicy (optional)");
+        
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                OMGraphicHandlerLayer.class,
+                policyPrefix + ".class",
+                "Projection Change Policy",
+                "Class name of ProjectionChangePolicy (optional)",
+                null);
 
         RenderPolicy rp = getRenderPolicy();
         if (rp instanceof PropertyConsumer) {
@@ -999,16 +1024,37 @@ public class OMGraphicHandlerLayer extends Layer implements
             policyPrefix = "rp";
         }
 
-        list.put(policyPrefix + ".class",
-                "Class name of RenderPolicy (optional)");
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                OMGraphicHandlerLayer.class,
+                policyPrefix + ".class",
+                "Rendering Policy",
+                "Class name of RenderPolicy (optional)",
+                null);
 
-        list.put(ConsumeEventsProperty,
-                "Flag that tells the layer to consume MouseEvents, or let others use them as well.");
-        list.put(ConsumeEventsProperty + ScopedEditorProperty,
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                OMGraphicHandlerLayer.class,
+                ConsumeEventsProperty,
+                "Consume mouse events",
+                "Flag that tells the layer to consume mouse events, or let other layers use them as well.",
                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+     
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                OMGraphicHandlerLayer.class,
+                MouseModesProperty,
+                "Mouse modes",
+                "Space-separated list of MouseMode IDs to receive events from.",
+                null);
 
-        list.put(MouseModesProperty,
-                "Space-separated list of MouseMode IDs to receive events from.");
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                OMGraphicHandlerLayer.class,
+                TransparencyProperty,
+                "Transparency",
+                "Transparency setting for layer, between 0 (clear) and 1",
+                null);
 
         return list;
     }
@@ -1360,6 +1406,77 @@ public class OMGraphicHandlerLayer extends Layer implements
      */
     public boolean leftClick(MapMouseEvent mme) {
         return false;
+    }
+
+    /**
+     * Create a JPanel that has a slider to control the layer transparency. An
+     * action listener that calls layer repaint() when the value changes will be
+     * added to the slider.
+     * 
+     * @param label the label for the panel around the slider.
+     * @param orientation JSlider.HORIZONTAL/JSlider.VERTICAL
+     * @param initialValue an initial transparency value between 0-1, 0 being clear.
+     * @return
+     */
+    public JPanel getTransparencyAdjustmentPanel(String label, int orientation,
+                                                 float initialValue) {
+        JPanel opaquePanel = PaletteHelper.createPaletteJPanel(label);
+        JSlider opaqueSlide = new JSlider(orientation, 0/* min */, 255/* max */, (int) (255f *initialValue)/* inital */);
+        java.util.Hashtable dict = new java.util.Hashtable();
+        dict.put(new Integer(0), new JLabel(i18n.get(OMGraphicHandlerLayer.class,
+                "clearSliderLabel",
+                "clear")));
+        dict.put(new Integer(255), new JLabel(i18n.get(OMGraphicHandlerLayer.class,
+                "opqueSliderLabel",
+                "opaque")));
+        opaqueSlide.setLabelTable(dict);
+        opaqueSlide.setPaintLabels(true);
+        opaqueSlide.setMajorTickSpacing(50);
+        opaqueSlide.setPaintTicks(true);
+        opaqueSlide.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent ce) {
+                JSlider slider = (JSlider) ce.getSource();
+                if (slider.getValueIsAdjusting()) {
+                    OMGraphicHandlerLayer.this.setTransparency((float) slider.getValue() / 255f);
+                    repaint();
+                }
+            }
+        });
+        opaquePanel.add(opaqueSlide);
+        return opaquePanel;
+    }
+
+    /**
+     * Set the transparency of the layer. This transparency is applied during
+     * rendering.
+     * 
+     * @param value 0f for clear, 1f for opaque.
+     */
+    public void setTransparency(float value) {
+        AlphaComposite ac = null;
+        if (value != 1f) {
+            ac = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, value);
+        }
+        getRenderPolicy().setComposite(ac);
+    }
+
+    /**
+     * Get the transparency value for this layer.
+     * 
+     * @return 1 if opaque, 0 for clear.
+     */
+    public float getTransparency() {
+        float ret = 1f;
+        RenderPolicy rp = getRenderPolicy();
+
+        if (rp != null) {
+            Composite comp = rp.getComposite();
+            if (comp instanceof AlphaComposite) {
+                ret = ((AlphaComposite) comp).getAlpha();
+            }
+        }
+
+        return ret;
     }
 
 }

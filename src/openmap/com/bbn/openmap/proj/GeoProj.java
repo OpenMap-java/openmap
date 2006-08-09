@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoProj.java,v $
-//$Revision: 1.3 $
-//$Date: 2006/04/07 15:21:10 $
+//$Revision: 1.4 $
+//$Date: 2006/08/09 21:08:32 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -296,14 +296,14 @@ public abstract class GeoProj extends Proj {
     public final static double wrapLongitude(double lon) {
         return ProjMath.wrapLongitude(lon);
     }
-    
+
     /**
      * @deprecated use normalizeLatitude() instead.
      */
     public final double normalize_latitude(double lat) {
         return normalizeLatitude(lat);
     }
-    
+
     /**
      * @deprecated use wrapLongitude() instead.
      */
@@ -1241,7 +1241,7 @@ public abstract class GeoProj extends Proj {
             break;
         default:
             rawllpts = new float[(nverts << 1)];// *2 for pairs, no
-        // connect
+            // connect
         }
 
         GreatCircle.earthCircle((float) c.getRadLat(),
@@ -1267,7 +1267,7 @@ public abstract class GeoProj extends Proj {
             isFilled = true;
             break;
         default:
-        // Don't need to do anything, defaults are already set.
+            // Don't need to do anything, defaults are already set.
         }
 
         // forward project the arc-poly.
@@ -1511,6 +1511,25 @@ public abstract class GeoProj extends Proj {
     protected abstract ArrayList _forwardPoly(double[] rawllpts, int ltype,
                                               int nsegs, boolean isFilled);
 
+    /**
+     * Get the unprojected coordinates units of measure.
+     * 
+     * @return Length.DECIMAL_DEGREE
+     */
+    public Length getUcuom() {
+        return Length.DECIMAL_DEGREE;
+    }
+
+    /**
+     * Can't set the unprojected coordinates units of measure for a GeoProj,
+     * it's always Length.DECIMAL_DEGREE.
+     * 
+     * @param ucuom
+     */
+    public void setUcuom(Length ucuom) {
+    // no-op
+    }
+    
     //
     // public Point2D inverse(int x, int y, Point2D llpt) {
     // // TODO Auto-generated method stub

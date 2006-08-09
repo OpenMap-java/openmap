@@ -20,7 +20,6 @@ package com.bbn.openmap.geo;
  * 
  * @author mthome@bbn.com
  */
-
 public interface GeoPath extends GeoExtent {
     /** @return an iterator over the segments of the path * */
     GeoPath.SegmentIterator segmentIterator();
@@ -44,6 +43,8 @@ public interface GeoPath extends GeoExtent {
      * @return the number of points in the path.
      */
     int length();
+    
+    Object getPathID();
 
     interface SegmentIterator extends java.util.Iterator {
         /** Asking if there is another segment. * */
@@ -92,7 +93,8 @@ public interface GeoPath extends GeoExtent {
     public static class Impl implements GeoPath {
         protected Geo[] pts;
         protected int length;
-
+        protected Object id = GeoPath.Impl.this;
+        
         protected Impl() {}
 
         /**
@@ -174,7 +176,7 @@ public interface GeoPath extends GeoExtent {
         }
 
         /**
-         * Callback for the SegIt to find out how the LatLonPath wants the
+         * Callback for the SegIt to find out how the GeoPath wants the
          * segment IDed.
          * 
          * @param i The index of the segment in question.
@@ -186,7 +188,7 @@ public interface GeoPath extends GeoExtent {
         }
 
         /**
-         * Callback for the PointIt to find out how the LatLonPath wants the
+         * Callback for the PointIt to find out how the GeoPath wants the
          * points IDed.
          * 
          * @param i The index of the point in question.
@@ -296,6 +298,10 @@ public interface GeoPath extends GeoExtent {
             public BoundingCircle getBoundingCircle() {
                 return new BoundingCircle.Impl(pts[i], 0.0);
             }
+        }
+
+        public Object getPathID() {
+            return id;
         }
     }
 

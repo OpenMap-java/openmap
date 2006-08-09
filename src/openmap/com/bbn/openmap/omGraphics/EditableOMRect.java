@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRect.java,v $
 // $RCSfile: EditableOMRect.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/02/16 16:22:47 $
+// $Revision: 1.8 $
+// $Date: 2006/08/09 21:08:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -168,6 +168,26 @@ public class EditableOMRect extends EditableOMGraphic {
      */
     public OMGraphic getGraphic() {
         return rect;
+    }
+    
+    /**
+     * Attach to the Moving OffsetGrabPoint so if it moves, it will
+     * move this EditableOMGraphic with it. EditableOMGraphic version
+     * doesn't do anything, each subclass has to decide which of its
+     * OffsetGrabPoints should be attached to it.
+     */
+    public void attachToMovingGrabPoint(OffsetGrabPoint gp) {
+        gp.addGrabPoint(gpo);
+    }
+
+    /**
+     * Detach from a Moving OffsetGrabPoint. The EditableOMGraphic
+     * version doesn't do anything, each subclass should remove
+     * whatever GrabPoint it would have attached to an
+     * OffsetGrabPoint.
+     */
+    public void detachFromMovingGrabPoint(OffsetGrabPoint gp) {
+        gp.removeGrabPoint(gpo);
     }
 
     /**

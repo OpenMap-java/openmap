@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.27 $
-// $Date: 2006/02/14 21:03:21 $
+// $Revision: 1.28 $
+// $Date: 2006/08/09 21:08:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,65 +52,60 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The PropertyHandler object is the organizer of properties, looking
- * for settings on how to configure OpenMap components. It is designed
- * to look through a series of locations to find properties files,
- * loading them in order. If there is a name conflict for a property,
- * the last version of the property set is the one that gets used.
- * This object isn't really interested in hooking up with other
- * objects. It's assumed that many objects will want to contact this
- * object, and find the properties that apply to them. There is one
- * exception this: When components start implementing the
- * PropertyProvider interface, and the PropertyHandler becomes capable
- * of creating an openmap.properties file, then the PropertyHandler
- * will be able to use the BeanContext to query PropertyProviders to
- * get their properties to put in the properties file.
+ * The PropertyHandler object is the organizer of properties, looking for
+ * settings on how to configure OpenMap components. It is designed to look
+ * through a series of locations to find properties files, loading them in
+ * order. If there is a name conflict for a property, the last version of the
+ * property set is the one that gets used. This object isn't really interested
+ * in hooking up with other objects. It's assumed that many objects will want to
+ * contact this object, and find the properties that apply to them. There is one
+ * exception this: When components start implementing the PropertyProvider
+ * interface, and the PropertyHandler becomes capable of creating an
+ * openmap.properties file, then the PropertyHandler will be able to use the
+ * BeanContext to query PropertyProviders to get their properties to put in the
+ * properties file.
  * <P>
  * 
- * The PropertyHandler looks in several places for an
- * openmap.properties file:
+ * The PropertyHandler looks in several places for an openmap.properties file:
  * <UL>
  * <LI>as a resource in the code base.
  * <LI>in the configDir set as a system property at runtime.
  * <LI>in the user's home directory.
  * </UL>
  * 
- * For each openmap.properties file, a check is performed to look
- * within for an openmap.include property containing a marker name
- * list. That list is parsed, and each item is checked
- * (markerName.URL) for an URL to another properties file.
+ * For each openmap.properties file, a check is performed to look within for an
+ * openmap.include property containing a marker name list. That list is parsed,
+ * and each item is checked (markerName.URL) for an URL to another properties
+ * file.
  * <P>
  * 
- * Also significant, the PropertyHandler can be given a BeanContext to
- * load components. For this, the openmap.components property contains
- * a marker name list for openmap objects. Each member of the list is
- * then used to look for another property (markername.class) which
- * specifies which class names are to be instantiated and added to the
- * BeanContext. Intelligent components are smart enough to wire
- * themselves together. Order does matter for the openmap.components
- * property, especially for components that get added to lists and
- * menus. Place the components in the list in the order that you want
+ * Also significant, the PropertyHandler can be given a BeanContext to load
+ * components. For this, the openmap.components property contains a marker name
+ * list for openmap objects. Each member of the list is then used to look for
+ * another property (markername.class) which specifies which class names are to
+ * be instantiated and added to the BeanContext. Intelligent components are
+ * smart enough to wire themselves together. Order does matter for the
+ * openmap.components property, especially for components that get added to
+ * lists and menus. Place the components in the list in the order that you want
  * components added to the MapHandler.
  * <P>
  * 
- * If the debug.showprogress environment variable is set, the
- * PropertyHandler will display a progress bar when it is creating
- * components. If the debug.properties file is set, the steps that the
- * PropertyHandler takes in looking for property files will be
- * displayed.
+ * If the debug.showprogress environment variable is set, the PropertyHandler
+ * will display a progress bar when it is creating components. If the
+ * debug.properties file is set, the steps that the PropertyHandler takes in
+ * looking for property files will be displayed.
  * <P>
  * 
- * If the PropertyHandler is created with an empty constructor or with
- * a null Properties object, it will do the search for an
- * openmap.properties file. If you don't want it to do that search,
- * create it with an empty Properties object.
+ * If the PropertyHandler is created with an empty constructor or with a null
+ * Properties object, it will do the search for an openmap.properties file. If
+ * you don't want it to do that search, create it with an empty Properties
+ * object.
  */
 public class PropertyHandler extends MapHandlerChild implements
         SoloMapComponent {
 
     /**
-     * The name of the properties file to read. (openmap.properties is
-     * default)
+     * The name of the properties file to read. (openmap.properties is default)
      */
     public final static String propsFileName = "openmap.properties";
 
@@ -121,9 +116,9 @@ public class PropertyHandler extends MapHandlerChild implements
     public final static String configDirProperty = "openmap.configDir";
 
     /**
-     * The property name used to hold a list of marker names. Each
-     * marker name is used to create another property to look for to
-     * create a component to add to a BeanContext. For example:
+     * The property name used to hold a list of marker names. Each marker name
+     * is used to create another property to look for to create a component to
+     * add to a BeanContext. For example:
      * <P>
      * 
      * <PRE>
@@ -138,9 +133,9 @@ public class PropertyHandler extends MapHandlerChild implements
     public final static String componentProperty = "openmap.components";
 
     /**
-     * The property name used to hold a list of marker names. Each
-     * marker name is used to create another property to look for to
-     * connect to a URL to load a properties file. For example:
+     * The property name used to hold a list of marker names. Each marker name
+     * is used to create another property to look for to connect to a URL to
+     * load a properties file. For example:
      * <P>
      * 
      * <PRE>
@@ -154,12 +149,11 @@ public class PropertyHandler extends MapHandlerChild implements
     public final static String includeProperty = "openmap.include";
 
     /**
-     * The property name used to hold a file, resorce or URL of a file
-     * to use containing localized properties, like layer names. This
-     * is optional, if it's not in the openmap.properties file or the
-     * properties file being read in, an openmap_&ltlocalization
-     * string&gt.properties file will be searched for in the classpath
-     * (i.e. openmap.localized=openmap_en_US.properties).
+     * The property name used to hold a file, resorce or URL of a file to use
+     * containing localized properties, like layer names. This is optional, if
+     * it's not in the openmap.properties file or the properties file being read
+     * in, an openmap_&ltlocalization string&gt.properties file will be searched
+     * for in the classpath (i.e. openmap.localized=openmap_en_US.properties).
      */
     public final static String localizedProperty = "openmap.localized";
 
@@ -167,56 +161,51 @@ public class PropertyHandler extends MapHandlerChild implements
     protected Properties properties = new Properties();
 
     /**
-     * Container to hold prefixes for components that have been
-     * created, in order to determine if duplicates might have been
-     * made. Important if properties are going to be written out, so
-     * that property scoping can occur properly. This collection holds
-     * prefixes of objects that have been created by this
-     * PropertyHandler, and also prefixes that have been given out on
-     * request.
+     * Container to hold prefixes for components that have been created, in
+     * order to determine if duplicates might have been made. Important if
+     * properties are going to be written out, so that property scoping can
+     * occur properly. This collection holds prefixes of objects that have been
+     * created by this PropertyHandler, and also prefixes that have been given
+     * out on request.
      */
     protected Set usedPrefixes = Collections.synchronizedSet(new HashSet());
 
     protected ProgressSupport progressSupport;
 
     /**
-     * Flag to set whether the PropertyHandler should provide status
-     * updates to any progress listeners, when it is building
-     * components.
+     * Flag to set whether the PropertyHandler should provide status updates to
+     * any progress listeners, when it is building components.
      */
     protected boolean updateProgress = false;
 
     /**
-     * A hashtable to keep track of property prefixes and the objects
-     * that were created for them.
+     * A hashtable to keep track of property prefixes and the objects that were
+     * created for them.
      */
     protected Hashtable prefixLibrarian = new Hashtable();
 
     protected boolean DEBUG = false;
 
     /**
-     * Create a PropertyHandler object that checks in the default
-     * order for openmap.properties files. It checks for the
-     * openmap.properties file as a resource, in the configDir if
-     * specified as a system property, and lastly, in the user's home
-     * directory. If you want an empty PropertyHandler that doesn't do
-     * the search, use the constructor that takes a
-     * java.util.Properties object and provide it with empty
-     * Properties.
+     * Create a PropertyHandler object that checks in the default order for
+     * openmap.properties files. It checks for the openmap.properties file as a
+     * resource, in the configDir if specified as a system property, and lastly,
+     * in the user's home directory. If you want an empty PropertyHandler that
+     * doesn't do the search, use the constructor that takes a
+     * java.util.Properties object and provide it with empty Properties.
      */
     public PropertyHandler() {
         this(false);
     }
 
     /**
-     * Create a PropertyHandler object that checks in the default
-     * order for openmap.properties files. It checks for the
-     * openmap.properties file as a resource, in the configDir if
-     * specified as a system property, and lastly, in the user's home
-     * directory.
+     * Create a PropertyHandler object that checks in the default order for
+     * openmap.properties files. It checks for the openmap.properties file as a
+     * resource, in the configDir if specified as a system property, and lastly,
+     * in the user's home directory.
      * 
-     * @param provideProgressUpdates if true, a progress bar will be
-     *        displayed to show the progress of building components.
+     * @param provideProgressUpdates if true, a progress bar will be displayed
+     *        to show the progress of building components.
      */
     public PropertyHandler(boolean provideProgressUpdates) {
         DEBUG = Debug.debugging("properties");
@@ -225,8 +214,8 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Constructor to take resource name, file path or URL string as
-     * argument, to create context for a particular map.
+     * Constructor to take resource name, file path or URL string as argument,
+     * to create context for a particular map.
      */
     public PropertyHandler(String urlString) throws MalformedURLException,
             IOException {
@@ -234,8 +223,8 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Constructor to take path (URL) as argument, to create context
-     * for a particular map.
+     * Constructor to take path (URL) as argument, to create context for a
+     * particular map.
      */
     public PropertyHandler(URL url) throws IOException {
         DEBUG = Debug.debugging("properties");
@@ -256,8 +245,8 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Constructor to take Properties object as argument, to create
-     * context for a particular map.
+     * Constructor to take Properties object as argument, to create context for
+     * a particular map.
      */
     public PropertyHandler(Properties props) {
         DEBUG = Debug.debugging("properties");
@@ -266,10 +255,9 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Look for openmap.properties files as a resource in the
-     * classpath, in the config directory, and in the user's home
-     * directory, in that order. If any property is duplicated in any
-     * version, last one wins.
+     * Look for openmap.properties files as a resource in the classpath, in the
+     * config directory, and in the user's home directory, in that order. If any
+     * property is duplicated in any version, last one wins.
      */
     protected void searchForAndLoadProperties() {
 
@@ -450,11 +438,10 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Load the localized properties that will take precidence over
-     * all other properties. If the localizedPropertyFile is null, a
-     * localized version of the openmap.properties file will be
-     * searched for in the classpath and in the user home directory
-     * (if that isn't null as well).
+     * Load the localized properties that will take precidence over all other
+     * properties. If the localizedPropertyFile is null, a localized version of
+     * the openmap.properties file will be searched for in the classpath and in
+     * the user home directory (if that isn't null as well).
      */
     protected Properties getLocalizedProperties(String localizedPropertyFile,
                                                 String userHomeDirectory) {
@@ -507,18 +494,17 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Initialize internal properties from Properties object. Appends
-     * all the properties it finds, overwriting the ones with the same
-     * key. Called by the two constructors where a Properties object
-     * is passed in, or when a URL for a Properties file is provided.
-     * This is not called by the consstructor that has to go looking
-     * for the properties to use.
+     * Initialize internal properties from Properties object. Appends all the
+     * properties it finds, overwriting the ones with the same key. Called by
+     * the two constructors where a Properties object is passed in, or when a
+     * URL for a Properties file is provided. This is not called by the
+     * consstructor that has to go looking for the properties to use.
      * 
-     * @param props the properties to merge into the properties held
-     *        by the PropertyHandler.
-     * @param howString a string describing where the properties come
-     *        from. Just used for debugging purposes, so passing in a
-     *        null value is no big deal.
+     * @param props the properties to merge into the properties held by the
+     *        PropertyHandler.
+     * @param howString a string describing where the properties come from. Just
+     *        used for debugging purposes, so passing in a null value is no big
+     *        deal.
      * @return the properties contained in this PropertyHandler.
      */
     protected void init(Properties props, String howString) {
@@ -541,17 +527,16 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Take a marker name list (space separated names), and open the
-     * properties files listed in the propertu with keys of
-     * marker.URL.
+     * Take a marker name list (space separated names), and open the properties
+     * files listed in the propertu with keys of marker.URL.
      * 
-     * @param markerList space separated marker names in a single
-     *        string that needs to be parsed.
-     * @param props the properties that the markerList comes from, in
-     *        order to get the marker.URL properties.
-     * @return an allocated Properties object containing all the
-     *         properties from the inlude files. If no include files
-     *         are listed, the Properties object is empty, not null.
+     * @param markerList space separated marker names in a single string that
+     *        needs to be parsed.
+     * @param props the properties that the markerList comes from, in order to
+     *        get the marker.URL properties.
+     * @return an allocated Properties object containing all the properties from
+     *         the inlude files. If no include files are listed, the Properties
+     *         object is empty, not null.
      */
     protected Properties getIncludeProperties(String markerList,
                                               Properties props) {
@@ -626,8 +611,8 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Take the from properties, copy them into the internal
-     * PropertyHandler properties.
+     * Take the from properties, copy them into the internal PropertyHandler
+     * properties.
      * 
      * @param from the source properties.
      */
@@ -646,41 +631,35 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Take the from properties, copy them into the internal
-     * PropertyHandler properties. The what and where are simple for a
-     * more clearly defined Debug statement. The what and where are
-     * only used for debugging statements when there are no properties
-     * found, so don't put too much work into creating them, like
-     * adding strings together before passing them in. The what and
-     * where fit into a debug output statement like:
+     * Take the from properties, copy them into the internal PropertyHandler
+     * properties. The what and where are simple for a more clearly defined
+     * Debug statement. The what and where are only used for debugging
+     * statements when there are no properties found, so don't put too much work
+     * into creating them, like adding strings together before passing them in.
+     * The what and where fit into a debug output statement like:
      * PropertyHandler.merge(): no _what_ found in _where_.
      * 
      * @param from the source properties.
-     * @param what a description of what the from properties
-     *        represent.
-     * @param where a description of where the properties were read
-     *        from.
+     * @param what a description of what the from properties represent.
+     * @param where a description of where the properties were read from.
      */
     protected void merge(Properties from, String what, String where) {
         merge(from, getProperties(), what, where);
     }
 
     /**
-     * Take the from properties, copy them into the to properties. The
-     * what and where are simple for a more clearly defined Debug
-     * statement. The what and where are only used for debugging
-     * statements when there are no properties found, so don't put too
-     * much work into creating them, like adding strings together
-     * before passing them in. The what and where fit into a debug
-     * output statement like: PropertyHandler.merge(): no _what_ found
-     * in _where_.
+     * Take the from properties, copy them into the to properties. The what and
+     * where are simple for a more clearly defined Debug statement. The what and
+     * where are only used for debugging statements when there are no properties
+     * found, so don't put too much work into creating them, like adding strings
+     * together before passing them in. The what and where fit into a debug
+     * output statement like: PropertyHandler.merge(): no _what_ found in
+     * _where_.
      * 
      * @param from the source properties.
      * @param to the destination properties.
-     * @param what a description of what the from properties
-     *        represent.
-     * @param where a description of where the properties were read
-     *        from.
+     * @param what a description of what the from properties represent.
+     * @param where a description of where the properties were read from.
      */
     protected void merge(Properties from, Properties to, String what,
                          String where) {
@@ -717,17 +696,16 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Given a property prefix, or markername, from the properties
-     * file, get the object that was created for it. This method uses
-     * the prefix librarian.
+     * Given a property prefix, or markername, from the properties file, get the
+     * object that was created for it. This method uses the prefix librarian.
      */
     public Object get(String markername) {
         return prefixLibrarian.get(markername.intern());
     }
 
     /**
-     * Get a properties object containing all the properties with the
-     * given prefix.
+     * Get a properties object containing all the properties with the given
+     * prefix.
      */
     public Properties getProperties(String prefix) {
         Properties prefixProperties = new Properties();
@@ -753,27 +731,26 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Remove an object from the prefix librarian register, returning
-     * that object if it has been found.
+     * Remove an object from the prefix librarian register, returning that
+     * object if it has been found.
      */
     public Object remove(String markername) {
         return prefixLibrarian.remove(markername);
     }
 
     /**
-     * Get the Hashtable being held that matches property prefix
-     * strings with components.
+     * Get the Hashtable being held that matches property prefix strings with
+     * components.
      */
     public Hashtable getPrefixLibrarian() {
         return prefixLibrarian;
     }
 
     /**
-     * Given a BeanContext (actually a MapHandler, to handle
-     * SoloMapComponents), look for the openmap.components property in
-     * the current properties, and parse the list given as that
-     * property. From that list of marker names, look for the
-     * marker.class properties and create those Java objects. Those
+     * Given a BeanContext (actually a MapHandler, to handle SoloMapComponents),
+     * look for the openmap.components property in the current properties, and
+     * parse the list given as that property. From that list of marker names,
+     * look for the marker.class properties and create those Java objects. Those
      * objects will be added to the BeanContext given.
      * 
      * @param mapHandler BeanContext.
@@ -841,7 +818,13 @@ public class PropertyHandler extends MapHandlerChild implements
                     continue;
                 }
 
-                mapHandler.add(obj);
+                // mapHandler.add(obj);
+
+                // The call to add(obj) above was replaced by the call to
+                // addLayer() below. This seems to speed up the startup process,
+                // but if some other component calls mapHandler.add(obj), then
+                // this list will be purged.
+                mapHandler.addLater(obj);
 
                 String markerName = ((String) componentList.elementAt(i)).intern();
                 prefixLibrarian.put(markerName, obj);
@@ -854,6 +837,9 @@ public class PropertyHandler extends MapHandlerChild implements
             }
         }
 
+        // Added as a result of the addLater(obj) call above...
+        mapHandler.purgeLaterList();
+
         fireProgressUpdate(ProgressEvent.DONE,
                 "Created all components, ready...",
                 size,
@@ -862,20 +848,17 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Creates a Properties object containing the current settings as
-     * defined by OpenMap components held by the MapHandler. If the
-     * MapHandler contains a PropertyHandler, that property handler
-     * will be consulted for properties for different objects in case
-     * those objects don't know how to provide their settings
-     * correctly.
+     * Creates a Properties object containing the current settings as defined by
+     * OpenMap components held by the MapHandler. If the MapHandler contains a
+     * PropertyHandler, that property handler will be consulted for properties
+     * for different objects in case those objects don't know how to provide
+     * their settings correctly.
      * 
-     * @param mapHandler MapHandler containing components to use for
-     *        Properties.
-     * @param ps PrintStream to write properties to, may be null if
-     *        you just want the Properties object that is returned.
-     * @return Properties object containing everything written (or
-     *         that would have been written, if the PrintStream is
-     *         null) to PrintStream.
+     * @param mapHandler MapHandler containing components to use for Properties.
+     * @param ps PrintStream to write properties to, may be null if you just
+     *        want the Properties object that is returned.
+     * @return Properties object containing everything written (or that would
+     *         have been written, if the PrintStream is null) to PrintStream.
      */
     public static Properties createOpenMapProperties(MapHandler mapHandler,
                                                      PrintStream ps) {
@@ -964,8 +947,8 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * A simple helper method that writes key-value pairs to a print
-     * stream or Properties, whatever is not null.
+     * A simple helper method that writes key-value pairs to a print stream or
+     * Properties, whatever is not null.
      */
     protected static void printProperties(String key, String value,
                                           PrintStream ps,
@@ -979,14 +962,14 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * A helper function to createOpenMapProperties that gets the
-     * current properties of the MapBean and prints them out to the
-     * PrintStream and the provided Properties object.
+     * A helper function to createOpenMapProperties that gets the current
+     * properties of the MapBean and prints them out to the PrintStream and the
+     * provided Properties object.
      * 
      * @param mapBean MapBean to get parameters from.
      * @param ps PrintStream to write properties to, may be null.
-     * @param createdProperties Properties object to store properties
-     *        in, may be null.
+     * @param createdProperties Properties object to store properties in, may be
+     *        null.
      */
     protected static void printMapProperties(MapBean mapBean, PrintStream ps,
                                              Properties createdProperties) {
@@ -998,12 +981,12 @@ public class PropertyHandler extends MapHandlerChild implements
         Point2D llp = proj.getCenter();
 
         printProperties(Environment.Latitude,
-                Float.toString((float)llp.getY()),
+                Float.toString((float) llp.getY()),
                 ps,
                 createdProperties);
 
         printProperties(Environment.Longitude,
-                Float.toString((float)llp.getX()),
+                Float.toString((float) llp.getX()),
                 ps,
                 createdProperties);
 
@@ -1027,19 +1010,19 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * A helper function to createOpenMapProperties that gets the
-     * current properties of the given components and prints them out
-     * to the PrintStream and the provided Properties object.
+     * A helper function to createOpenMapProperties that gets the current
+     * properties of the given components and prints them out to the PrintStream
+     * and the provided Properties object.
      * 
      * @param components Vector of components to get parameters from.
-     * @param ph PropertyHandler that may have properties to use as a
-     *        foundation for the properties for the components. If the
-     *        component can't provide properties reflecting its
-     *        settings, the property handler will be consulted for
-     *        properties it knows about for that component.
+     * @param ph PropertyHandler that may have properties to use as a foundation
+     *        for the properties for the components. If the component can't
+     *        provide properties reflecting its settings, the property handler
+     *        will be consulted for properties it knows about for that
+     *        component.
      * @param ps PrintStream to write properties to, may be null.
-     * @param createdProperties Properties object to store properties
-     *        in, may be null.
+     * @param createdProperties Properties object to store properties in, may be
+     *        null.
      */
     protected static void printComponentProperties(Vector components,
                                                    PropertyHandler ph,
@@ -1188,19 +1171,19 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * A helper function to createOpenMapProperties that gets the
-     * current properties of the layers in the LayerHandler and prints
-     * them out to the PrintStream and the provided Properties object.
+     * A helper function to createOpenMapProperties that gets the current
+     * properties of the layers in the LayerHandler and prints them out to the
+     * PrintStream and the provided Properties object.
      * 
      * @param layerHandler LayerHandler to get layers from.
-     * @param ph PropertyHandler that may have properties to use as a
-     *        foundation for the properties for the components. If the
-     *        component can't provide properties reflecting its
-     *        settings, the property handler will be consulted for
-     *        properties it knows about for that component.
+     * @param ph PropertyHandler that may have properties to use as a foundation
+     *        for the properties for the components. If the component can't
+     *        provide properties reflecting its settings, the property handler
+     *        will be consulted for properties it knows about for that
+     *        component.
      * @param ps PrintStream to write properties to, may be null.
-     * @param createdProperties Properties object to store properties
-     *        in, may be null.
+     * @param createdProperties Properties object to store properties in, may be
+     *        null.
      */
     protected static void printLayerProperties(LayerHandler layerHandler,
                                                PropertyHandler ph,
@@ -1300,10 +1283,10 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Given a MapHandler and a Java Properties object, the
-     * LayerHandler will be cleared of it's current layers, and
-     * reloaded with the layers in the properties. The MapBean will be
-     * set to the projection settings listed in the properties.
+     * Given a MapHandler and a Java Properties object, the LayerHandler will be
+     * cleared of it's current layers, and reloaded with the layers in the
+     * properties. The MapBean will be set to the projection settings listed in
+     * the properties.
      */
     public void loadProjectionAndLayers(MapHandler mapHandler, Properties props) {
 
@@ -1336,18 +1319,16 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * If you are creating a new object, it's important to get a
-     * unique prefix for its properties. This function takes a prefix
-     * string and checks it against all others it knows about. If
-     * there is a conflict, it adds a number to the end until it
-     * becomes unique. This prefix will be logged by the
-     * PropertyHandler as a name given out, so duplicate instances of
-     * that string will not be given out later. It doesn't, however,
-     * log that name in the prefixLibrarian. That only occurs when the
-     * object is programmatically registered with the prefixLibrarian
-     * or when the PropertyHandler finds that object in the MapHandler
-     * (and even then that object must be a PropertyConsumer to be
-     * registered this way).
+     * If you are creating a new object, it's important to get a unique prefix
+     * for its properties. This function takes a prefix string and checks it
+     * against all others it knows about. If there is a conflict, it adds a
+     * number to the end until it becomes unique. This prefix will be logged by
+     * the PropertyHandler as a name given out, so duplicate instances of that
+     * string will not be given out later. It doesn't, however, log that name in
+     * the prefixLibrarian. That only occurs when the object is programmatically
+     * registered with the prefixLibrarian or when the PropertyHandler finds
+     * that object in the MapHandler (and even then that object must be a
+     * PropertyConsumer to be registered this way).
      */
     public String getUniquePrefix(String prefix) {
         prefix = prefix.replace(' ', '_');
@@ -1365,8 +1346,8 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Changes ' ' characters to '_', and then tries to add it to the
-     * used prefix list. Returns true if successful.
+     * Changes ' ' characters to '_', and then tries to add it to the used
+     * prefix list. Returns true if successful.
      */
     public boolean addUsedPrefix(String prefix) {
         prefix = prefix.replace(' ', '_');
@@ -1375,8 +1356,8 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Changes ' ' characters to '_', and then tries to remove it to
-     * the used prefix list. Returns true if successful.
+     * Changes ' ' characters to '_', and then tries to remove it to the used
+     * prefix list. Returns true if successful.
      */
     public boolean removeUsedPrefix(String prefix) {
         prefix = prefix.replace(' ', '_');
@@ -1438,8 +1419,8 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Set a flag that will trigger the PropertyHandler to fire
-     * progress events when it is going through the creation process.
+     * Set a flag that will trigger the PropertyHandler to fire progress events
+     * when it is going through the creation process.
      */
     public void setUpdateProgress(boolean set) {
         updateProgress = set;
@@ -1469,33 +1450,31 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Add in the properties from the given URL. Any existing
-     * properties will be overwritten except for openmap.components,
-     * openmap.layers and openmap.startUpLayers which will be
-     * appended.
+     * Add in the properties from the given URL. Any existing properties will be
+     * overwritten except for openmap.components, openmap.layers and
+     * openmap.startUpLayers which will be appended.
      */
     public void addProperties(URL urlToProperties) {
         addProperties(fetchProperties(urlToProperties));
     }
 
     /**
-     * Add in the properties from the given source, which can be a
-     * resorce, file or URL. Any existing properties will be
-     * overwritten except for openmap.components, openmap.layers and
-     * openmap.startUpLayers which will be appended.
+     * Add in the properties from the given source, which can be a resorce, file
+     * or URL. Any existing properties will be overwritten except for
+     * openmap.components, openmap.layers and openmap.startUpLayers which will
+     * be appended.
      * 
-     * @throws MalformedURLException if propFile doesn't resolve
-     *         properly.
+     * @throws MalformedURLException if propFile doesn't resolve properly.
      */
     public void addProperties(String propFile) throws MalformedURLException {
         addProperties(fetchProperties(PropUtils.getResourceOrFileOrURL(propFile)));
     }
 
     /**
-     * Add in the properties from the given Properties object. Any
-     * existing properties will be overwritten except for
-     * openmap.components, openmap.layers and openmap.startUpLayers
-     * where values will be prepended to any existing lists.
+     * Add in the properties from the given Properties object. Any existing
+     * properties will be overwritten except for openmap.components,
+     * openmap.layers and openmap.startUpLayers where values will be prepended
+     * to any existing lists.
      */
     public void addProperties(Properties p) {
         String[] specialProps = new String[] {
@@ -1565,14 +1544,14 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Load a Properties object from the classpath. The method always
-     * returns a <code>Properties</code> object. If there was an
-     * error loading the properties from <code>propsURL</code>, an
-     * empty <code>Properties</code> object is returned.
+     * Load a Properties object from the classpath. The method always returns a
+     * <code>Properties</code> object. If there was an error loading the
+     * properties from <code>propsURL</code>, an empty
+     * <code>Properties</code> object is returned.
      * 
      * @param propsURL the URL of the properties to be loaded
-     * @return the loaded properties, or an empty Properties object if
-     *         there was an error.
+     * @return the loaded properties, or an empty Properties object if there was
+     *         an error.
      */
     public static Properties fetchProperties(URL propsURL) {
         if (Debug.debugging("properties")) {
@@ -1595,8 +1574,7 @@ public class PropertyHandler extends MapHandlerChild implements
 
     /**
      * All the PropertyHandler does with the MapHandler is look for
-     * PropertyConsumers and register their prefixes with the
-     * prefixLibarian.
+     * PropertyConsumers and register their prefixes with the prefixLibarian.
      */
     public void findAndInit(Object obj) {
         if (obj instanceof PropertyConsumer) {

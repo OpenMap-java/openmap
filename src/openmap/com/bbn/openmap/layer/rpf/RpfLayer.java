@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.20 $
-// $Date: 2006/02/16 16:22:46 $
+// $Revision: 1.21 $
+// $Date: 2006/08/09 21:08:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,11 +33,8 @@ import java.util.Vector;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.ProjectionEvent;
@@ -49,7 +46,6 @@ import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -801,31 +797,11 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
             topbox.add(box1);
             box.add(topbox);
 
-            JPanel opaquePanel = PaletteHelper.createPaletteJPanel("Map Opaqueness");
-            JSlider opaqueSlide = new JSlider(JSlider.HORIZONTAL, 0/* min */, 255/* max */, viewAttributes.opaqueness/* inital */);
-            java.util.Hashtable dict = new java.util.Hashtable();
-            dict.put(new Integer(0), new JLabel("clear"));
-            dict.put(new Integer(255), new JLabel("opaque"));
-            opaqueSlide.setLabelTable(dict);
-            opaqueSlide.setPaintLabels(true);
-            opaqueSlide.setMajorTickSpacing(50);
-            opaqueSlide.setPaintTicks(true);
-            opaqueSlide.addChangeListener(new ChangeListener() {
-                public void stateChanged(ChangeEvent ce) {
-                    JSlider slider = (JSlider) ce.getSource();
-                    if (slider.getValueIsAdjusting()) {
-                        int opaqueval = slider.getValue();
-                        viewAttributes.opaqueness = opaqueval;
-                        fireRequestInfoLine("RPF Opaqueness set to "
-                                + viewAttributes.opaqueness
-                                + " for future requests.");
-                        if (coverage != null) {
-                            coverage.setOpaqueness(opaqueval);
-                        }
-                    }
-                }
-            });
-            opaquePanel.add(opaqueSlide);
+            JPanel opaquePanel = getTransparencyAdjustmentPanel(i18n.get(RpfLayer.class,
+                    "layerTransparencyGUILabel",
+                    "Layer Transparency"),
+                    JSlider.HORIZONTAL,
+                    viewAttributes.opaqueness / 255f);
             box.add(opaquePanel);
 
             JButton redraw = new JButton("Redraw RPF Layer");
@@ -834,6 +810,11 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
             box.add(subbox2);
         }
         return box;
+    }
+
+    public void setTransparency(float value) {
+        super.setTransparency(value);
+        viewAttributes.opaqueness = (int) (value * 255f);
     }
 
     // ----------------------------------------------------------------------

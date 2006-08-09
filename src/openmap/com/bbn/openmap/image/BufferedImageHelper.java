@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/BufferedImageHelper.java,v $
 // $RCSfile: BufferedImageHelper.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/04/07 17:33:04 $
+// $Revision: 1.9 $
+// $Date: 2006/08/09 21:08:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
+import java.awt.image.WritableRaster;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -396,8 +397,17 @@ public class BufferedImageHelper {
             Debug.output("BufferedImageHelper.getBufferedImage(): Got buffered image...");
         }
 
-        bi.setRGB(0, 0, w, h, pixels, 0, w);
-
+//        bi.setRGB(0, 0, w, h, pixels, 0, w);
+        /**
+         * Looking at the standard BufferedImage code, an int[0] is
+         * allocated for every pixel. Maybe the memory usage is
+         * optimized for that, but it goes through a call stack for
+         * every pixel to do it. Let's just cycle through the data and
+         * write the pixels directly into the raster.
+         */
+        WritableRaster raster = (WritableRaster) bi.getRaster();
+        raster.setDataElements(0, 0, w, h, pixels);
+        
         if (Debug.debugging("imagehelper")) {
             Debug.output("BufferedImageHelper.getBufferedImage(): set pixels in image...");
         }

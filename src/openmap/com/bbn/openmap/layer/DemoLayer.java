@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.21 $
-// $Date: 2005/12/09 21:09:08 $
+// $Revision: 1.22 $
+// $Date: 2006/08/09 21:08:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -382,6 +382,10 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
                 omsi.setBaseScale(1000000);
                 omsi.setMinScale(1000000);
                 omsi.setMaxScale(5000000);
+
+                omsi.putAttribute(OMGraphicConstants.LABEL,
+                        new OMTextLabeler("SFPPV-----*****", OMText.JUSTIFY_LEFT, OMTextLabeler.ANCHOR_RIGHT));
+                                
                 omList.add(omsi);
 
                 SymbolPart sp = srl.getSymbolPartForCode("SFPPV-----*****");

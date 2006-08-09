@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPointRecord.java,v $
 // $RCSfile: ESRIPointRecord.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/12/09 21:09:10 $
+// $Revision: 1.9 $
+// $Date: 2006/08/09 21:08:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,7 +38,7 @@ import com.bbn.openmap.omGraphics.OMRaster;
  * 
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.8 $ $Date: 2005/12/09 21:09:10 $
+ * @version $Revision: 1.9 $ $Date: 2006/08/09 21:08:41 $
  */
 public class ESRIPointRecord extends ESRIRecord {
 
@@ -101,7 +101,7 @@ public class ESRIPointRecord extends ESRIRecord {
 
         int shapeType = readLEInt(b, ptr);
         ptr += 4;
-        if (shapeType != SHAPE_TYPE_POINT) {
+        if (shapeType != SHAPE_TYPE_POINT && shapeType != SHAPE_TYPE_NULL) {
             throw new IOException("Invalid point record.  Expected shape "
                     + "type " + SHAPE_TYPE_POINT + " but found " + shapeType);
         }

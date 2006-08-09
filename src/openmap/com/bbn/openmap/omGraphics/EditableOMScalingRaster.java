@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMScalingRaster.java,v $
 // $RCSfile: EditableOMScalingRaster.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/02/16 16:22:47 $
+// $Revision: 1.10 $
+// $Date: 2006/08/09 21:08:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -126,10 +126,10 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     public void createGraphic(GraphicAttributes ga) {
         init();
         stateMachine.setUndefined();
-
+        
         String pathToFile = null;
 
-        // / This would be an ideal place to bring up a chooser!
+        /// This would be an ideal place to bring up a chooser!
         if (!Environment.isApplet()) {
             pathToFile = com.bbn.openmap.util.FileUtils.getFilePathToOpenFromUser("Choose Image File for Raster");
         } else {
@@ -166,10 +166,28 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     public OMGraphic getGraphic() {
         return raster;
     }
-
+    
     /**
      * Set the GrabPoint that is in the middle of being modified, as a result of
      * a mouseDragged event, or other selection process.
+     */
+    public void attachToMovingGrabPoint(OffsetGrabPoint gp) {
+        gp.addGrabPoint(gpo);
+    }
+
+    /**
+     * Detach from a Moving OffsetGrabPoint. The EditableOMGraphic
+     * version doesn't do anything, each subclass should remove
+     * whatever GrabPoint it would have attached to an
+     * OffsetGrabPoint.
+     */
+    public void detachFromMovingGrabPoint(OffsetGrabPoint gp) {
+        gp.removeGrabPoint(gpo);
+    }
+    
+    /**
+     * Set the GrabPoint that is in the middle of being modified, as a
+     * result of a mouseDragged event, or other selection process.
      */
     public void setMovingPoint(GrabPoint gp) {
         super.setMovingPoint(gp);
@@ -182,7 +200,7 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     public void initRectSize() {
         diffx = Math.abs(raster.getLRLon() - raster.getULLon()) / 2f;
         diffy = Math.abs(raster.getULLat() - raster.getLRLat()) / 2f;
-        // Debug.output("initRectSize(): diffx:" + diffx + ", diffy:"
+        //      Debug.output("initRectSize(): diffx:" + diffx + ", diffy:"
         // + diffy);
     }
 
@@ -206,27 +224,27 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
         if (gpnw == null) {
             gpnw = new GrabPoint(-1, -1);
             gPoints[NW_POINT_INDEX] = gpnw;
-            // gpnw.setFillPaint(Color.yellow);
+            //          gpnw.setFillPaint(Color.yellow);
         }
         if (gpne == null) {
             gpne = new GrabPoint(-1, -1);
             gPoints[NE_POINT_INDEX] = gpne;
-            // gpne.setFillPaint(Color.blue);
+            //          gpne.setFillPaint(Color.blue);
         }
         if (gpsw == null) {
             gpsw = new GrabPoint(-1, -1);
             gPoints[SW_POINT_INDEX] = gpsw;
-            // gpsw.setFillPaint(Color.green);
+            //          gpsw.setFillPaint(Color.green);
         }
         if (gpse == null) {
             gpse = new GrabPoint(-1, -1);
             gPoints[SE_POINT_INDEX] = gpse;
-            // gpse.setFillPaint(Color.orange);
+            //          gpse.setFillPaint(Color.orange);
         }
 
         if (gpc == null) {
             gpc = new OffsetGrabPoint(-1, -1);
-            // gpc.setFillPaint(Color.red);
+            //          gpc.setFillPaint(Color.red);
             gPoints[CENTER_POINT_INDEX] = gpc;
             if (getGraphic().getRenderType() != OMGraphic.RENDERTYPE_LATLON) {
                 gpc.addGrabPoint(gpnw);
@@ -369,7 +387,7 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
                 int middley = (bottom - top) / 2;
                 gpc.set(left + middlex, top + middley);
                 gpc.updateOffsets();
-                // Debug.output("Center setting x: " + gpc.getX() + ",
+                //              Debug.output("Center setting x: " + gpc.getX() + ",
                 // y:" + gpc.getY());
             }
 
@@ -402,7 +420,7 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     protected void setGrabPointsForOMSI() {
 
         if (projection != null) {
-            // movingPoint == gpc
+            //movingPoint == gpc
             LatLonPoint llp1 = LatLonPoint.getLatLon(gpc.getX(),
                     gpc.getY(),
                     projection);
@@ -470,7 +488,7 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
                     raster.setLRLat(llp1.getLatitude());
                     raster.setLRLon(llp1.getLongitude());
                 } else {
-                    // movingPoint == gpc
+                    //movingPoint == gpc
                     llp1 = LatLonPoint.getLatLon(gpc.getX(),
                             gpc.getY(),
                             projection);

@@ -34,7 +34,7 @@ import com.bbn.openmap.proj.Length;
  * @author Sachin Date
  * @author Ben Lubin
  * @author Michael Thome
- * @version $Revision: 1.27 $ on $Date: 2006/08/02 16:19:55 $
+ * @version $Revision: 1.28 $ on $Date: 2006/08/09 21:08:44 $
  */
 public class Geo {
 
@@ -251,7 +251,9 @@ public class Geo {
     }
 
     /**
-     * Reader for x, in internal axis representation (positive to the right side of screen).
+     * Reader for x, in internal axis representation (positive to the right side
+     * of screen).
+     * 
      * @return
      */
     public final double x() {
@@ -260,6 +262,7 @@ public class Geo {
 
     /**
      * Reader for y in internal axis reprensentation (positive into screen).
+     * 
      * @return
      */
     public final double y() {
@@ -267,7 +270,9 @@ public class Geo {
     }
 
     /**
-     * Reader for z in internal axis representation (positive going to top of screen).
+     * Reader for z in internal axis representation (positive going to top of
+     * screen).
+     * 
      * @return
      */
     public final double z() {
@@ -413,9 +418,9 @@ public class Geo {
          * great circle between this and v2. The azimuth is the angle between
          * them but we specialized the cross product.
          */
-//        Geo n1 = north.cross(this);
-//        Geo n2 = v2.cross(this);
-		// crossNormalization is needed to geos of different length.
+        // Geo n1 = north.cross(this);
+        // Geo n2 = v2.cross(this);
+        // crossNormalization is needed to geos of different length.
         Geo n1 = north.crossNormalize(this);
         Geo n2 = v2.crossNormalize(this);
         double az = Math.atan2(-north.dot(n2), n1.dot(n2));
@@ -554,17 +559,17 @@ public class Geo {
      * That is, find the point, y, lying between this and q such that
      * 
      * <pre>
-     *          
-     *                       y = [x*this + (1-x)*q]*c
-     *                       where c = 1/y.dot(y) is a factor for normalizing y.
-     *                       y.dot(r) = 0
-     *                       substituting:
-     *                       [x*this + (1-x)*q]*c.dot(r) = 0 or
-     *                       [x*this + (1-x)*q].dot(r) = 0
-     *                       x*this.dot(r) + (1-x)*q.dot(r) = 0
-     *                       x*a + (1-x)*b = 0
-     *                       x = -b/(a - b)
-     *                    
+     *           
+     *                        y = [x*this + (1-x)*q]*c
+     *                        where c = 1/y.dot(y) is a factor for normalizing y.
+     *                        y.dot(r) = 0
+     *                        substituting:
+     *                        [x*this + (1-x)*q]*c.dot(r) = 0 or
+     *                        [x*this + (1-x)*q].dot(r) = 0
+     *                        x*this.dot(r) + (1-x)*q.dot(r) = 0
+     *                        x*a + (1-x)*b = 0
+     *                        x = -b/(a - b)
+     *                     
      * </pre>
      * 
      * We assume that this and q are less than 180 degrees appart. When this and
@@ -591,7 +596,8 @@ public class Geo {
      * Wrap a fixed-distance corridor around an (open) path, as specified by an
      * array of Geo.
      * 
-     * @param path Open path, must not have repeated points or consecutive antipodes.
+     * @param path Open path, must not have repeated points or consecutive
+     *        antipodes.
      * @param radius Distance from path to widen corridor, in angular radians.
      * @param err maximum angle of rounded edges, in radians. If 0, will
      *        directly cut outside bends.
@@ -829,112 +835,114 @@ public class Geo {
      * return makeGeoRadians(Math.asin(sinlat * cosd + coslat * sind * cosaz),
      * Math.atan2(sind * sinaz, coslat * cosd - sinlat * sind * cosaz) + lonr); }
      */
-    
+
     //
     // Follows are a series of Geo array operations as useful utilities
     //
-    
-    /** convert a String containing space-separated pairs of comma-separated decimal lat-lon pairs
-     * into a Geo array.
+    /**
+     * convert a String containing space-separated pairs of comma-separated
+     * decimal lat-lon pairs into a Geo array.
      */
     public static Geo[] posToGa(String coords) {
-      return posToGa(coords.split(" "));
+        return posToGa(coords.split(" "));
     }
-    
-    /** Convert an array of strings with comma-separated decimal lat,lon pairs
+
+    /**
+     * Convert an array of strings with comma-separated decimal lat,lon pairs
      * into a Geo array
      */
     public static Geo[] posToGa(String[] coords) {
-      // convert to floating lat/lon degrees
-      Geo[] ga = new Geo[coords.length];
-      for (int i = 0; i < coords.length; i++) {
-        String[] ll = coords[i].split(",");
-        ga[i] = Geo.makeGeoDegrees(Double.parseDouble(ll[0]), Double.parseDouble(ll[1]));
-      }
-      return ga;
+        // convert to floating lat/lon degrees
+        Geo[] ga = new Geo[coords.length];
+        for (int i = 0; i < coords.length; i++) {
+            String[] ll = coords[i].split(",");
+            ga[i] = Geo.makeGeoDegrees(Double.parseDouble(ll[0]),
+                    Double.parseDouble(ll[1]));
+        }
+        return ga;
     }
-    
+
     /**
-     * Convert a Geo array into a floating point lat lon array (alternating lat and lon values)
+     * Convert a Geo array into a floating point lat lon array (alternating lat
+     * and lon values)
      */
     public static float[] GaToLLa(Geo[] ga) {
-      float[] lla = new float[2 * ga.length];
-      for (int i = 0; i < ga.length; i++) {
-        Geo g = ga[i];
-        lla[i*2] = (float) g.getLatitude();
-        lla[i*2+1] = (float) g.getLongitude();
-      }
-      return lla;
+        float[] lla = new float[2 * ga.length];
+        for (int i = 0; i < ga.length; i++) {
+            Geo g = ga[i];
+            lla[i * 2] = (float) g.getLatitude();
+            lla[i * 2 + 1] = (float) g.getLongitude();
+        }
+        return lla;
     }
-    
+
     /**
-     * Return a Geo array with the duplicates removed.
-     * May arbitrarily mutate the input array.
+     * Return a Geo array with the duplicates removed. May arbitrarily mutate
+     * the input array.
      */
     public static Geo[] removeDups(Geo[] ga) {
-      Geo[] r = new Geo[ga.length];
-      int p=0;
-      for (int i=0; i<ga.length; i++) {
-        if (p==0 || ! (r[p-1].equals(ga[i]))) {
-          r[p]=ga[i];
-          p++;
+        Geo[] r = new Geo[ga.length];
+        int p = 0;
+        for (int i = 0; i < ga.length; i++) {
+            if (p == 0 || !(r[p - 1].equals(ga[i]))) {
+                r[p] = ga[i];
+                p++;
+            }
         }
-      }
-      if (p != ga.length) {
-        Geo[] x = new Geo[p];
-        System.arraycopy(r,0,x,0,p);
-        return x;
-      } else {
-        return ga;
-      }
+        if (p != ga.length) {
+            Geo[] x = new Geo[p];
+            System.arraycopy(r, 0, x, 0, p);
+            return x;
+        } else {
+            return ga;
+        }
     }
-    
-    /** 
+
+    /**
      * Convert a float array of alternating lat and lon pairs into a Geo array.
      */
     public static Geo[] LLaToGa(float[] lla) {
-      Geo[] r = new Geo[lla.length/2];
-      for (int i = 0; i < lla.length/2; i++) {
-        r[i] = Geo.makeGeoDegrees(lla[i*2], lla[i*2+1]);
-      }
-      return r;
+        Geo[] r = new Geo[lla.length / 2];
+        for (int i = 0; i < lla.length / 2; i++) {
+            r[i] = Geo.makeGeoDegrees(lla[i * 2], lla[i * 2 + 1]);
+        }
+        return r;
     }
-    
+
     /**
-     * return a float array of alternating lat lon pairs where the first and last pair
-     * are the same, thus closing the path, by adding a point if needed.
-     * Does not mutate the input.
+     * return a float array of alternating lat lon pairs where the first and
+     * last pair are the same, thus closing the path, by adding a point if
+     * needed. Does not mutate the input.
      */
     public static float[] closeLLa(float[] lla) {
-      int l = lla.length;
-      int s = (l/2)-1;
-      if (lla[0]==lla[s*2] && lla[1]==lla[s*2+1]) {
-        return lla;
-      } else {
-        float[] llx = new float[l+2];
-        for (int i=0; i<l; i++) {
-          llx[i] = lla[i];
+        int l = lla.length;
+        int s = (l / 2) - 1;
+        if (lla[0] == lla[s * 2] && lla[1] == lla[s * 2 + 1]) {
+            return lla;
+        } else {
+            float[] llx = new float[l + 2];
+            for (int i = 0; i < l; i++) {
+                llx[i] = lla[i];
+            }
+            llx[l] = lla[0];
+            llx[l + 1] = lla[1];
+            return llx;
         }
-        llx[l] = lla[0];
-        llx[l+1] = lla[1];
-        return llx;
-      }
     }
-    
+
     /**
-     * return a Geo array where the first and last elements
-     * are the same, thus closing the path, by adding a point if needed.
-     * Does not mutate the input.
+     * return a Geo array where the first and last elements are the same, thus
+     * closing the path, by adding a point if needed. Does not mutate the input.
      */
     public static Geo[] closeGa(Geo[] ga) {
-      int l = ga.length;
-      if (ga[0].equals(ga[l-1])) {
-        return ga;
-      } else {
-        Geo[] x = new Geo[l+1];
-        System.arraycopy(ga,0,x,0,l);
-        x[l]=ga[0];
-        return x;
-      }
+        int l = ga.length;
+        if (ga[0].equals(ga[l - 1])) {
+            return ga;
+        } else {
+            Geo[] x = new Geo[l + 1];
+            System.arraycopy(ga, 0, x, 0, l);
+            x[l] = ga[0];
+            return x;
+        }
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMGraphicList.java,v $
 // $RCSfile: EditableOMGraphicList.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:11 $
+// $Revision: 1.4 $
+// $Date: 2006/08/09 21:08:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -242,12 +242,20 @@ public class EditableOMGraphicList extends EditableOMGraphic {
      * Remove an OMGraphic from being moved.
      */
     public void remove(OMGraphic omg) {
+        EditableOMGraphic eomg = null;
         for (Iterator it = getEditables().iterator(); it.hasNext();) {
-            EditableOMGraphic eomg = (EditableOMGraphic) it.next();
+            eomg = (EditableOMGraphic) it.next();
             if (eomg.getGraphic() == omg) {
-                remove(eomg);
-                list.remove(omg);
+                break;
             }
+            eomg = null;
+        }
+
+        // If we found the eomg for the omg, we broke out of the loop above and
+        // eomg is set to something.
+        if (eomg != null) {
+            remove(eomg);
+            list.remove(omg);
         }
     }
 

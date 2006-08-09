@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRaster.java,v $
 // $RCSfile: OMRaster.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/01/10 16:58:33 $
+// $Revision: 1.7 $
+// $Date: 2006/08/09 21:08:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,7 @@ package com.bbn.openmap.omGraphics;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.Serializable;
 
 import javax.swing.ImageIcon;
@@ -116,7 +117,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
         super(RENDERTYPE_UNKNOWN, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
     }
 
-    ///////////////////////////////////// INT PIXELS - DIRECT
+    // /////////////////////////////////// INT PIXELS - DIRECT
     // COLORMODEL
 
     /**
@@ -201,7 +202,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
         }
     }
 
-    ////////////////////////////////////// IMAGEICON
+    // //////////////////////////////////// IMAGEICON
 
     /**
      * Create an OMRaster, Lat/Lon placement with an ImageIcon.
@@ -297,7 +298,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
         setImage(ii);
     }
 
-    ////////////////////////////////////// BYTE PIXELS with
+    // //////////////////////////////////// BYTE PIXELS with
     // COLORTABLE
 
     /**
@@ -417,7 +418,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
         }
     }
 
-    //////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////
     /**
      * Just a simple check to see if the x, y pair actually fits into
      * the pixel array.
@@ -457,7 +458,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
             setNeedToRegenerate(true);
             return true;
         }
-        return false; //fail
+        return false; // fail
     }
 
     /**
@@ -471,7 +472,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
         if (boundsSafe(x, y)) {
             return pixels[(y * width) + x];
         }
-        return 0; //fail - but also the ct[0] - hmmmmm.
+        return 0; // fail - but also the ct[0] - hmmmmm.
     }
 
     /**
@@ -489,7 +490,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
             setNeedToRegenerate(true);
             return true;
         }
-        return false; //fail
+        return false; // fail
     }
 
     /**
@@ -504,7 +505,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
         if (boundsSafe(x, y) && bits != null) {
             return bits[(y * width) + x];
         }
-        return 0; //fail - but also the ct[0] - hmmmmm.
+        return 0; // fail - but also the ct[0] - hmmmmm.
     }
 
     /**
@@ -543,19 +544,19 @@ public class OMRaster extends OMRasterObject implements Serializable {
             pixels = null;
             computePixels();
         } else {
-            value <<= 24;//move to alpha position
+            value <<= 24;// move to alpha position
             // direct color model, touch each pixel in the image
             for (int i = 0; i < pixels.length; i++) {
 
-                //  Do this if we want to support images that have
-                //  transparent pixels, and we want each pixel to have
-                //  the most transparent pixel.
+                // Do this if we want to support images that have
+                // transparent pixels, and we want each pixel to have
+                // the most transparent pixel.
 
                 // Why don't we want to do this??? DFD
 
-                //              int pixAlpha = 0xFF000000 & pixels[i];
-                //              pixAlpha = (pixAlpha < value)?pixAlpha:value;
-                //              pixels[i] = (0x00ffffff & pixels[i]) | pixAlpha;
+                // int pixAlpha = 0xFF000000 & pixels[i];
+                // pixAlpha = (pixAlpha < value)?pixAlpha:value;
+                // pixels[i] = (0x00ffffff & pixels[i]) | pixAlpha;
 
                 pixels[i] = (0x00ffffff & pixels[i]) | value;
             }
@@ -619,11 +620,11 @@ public class OMRaster extends OMRasterObject implements Serializable {
                 // default OMava color model.
                 for (int i = 0; i < values.length; i++) {
 
-                    //  The transparent field can be set for the whole
-                    //  image, while the open part of the colortable
+                    // The transparent field can be set for the whole
+                    // image, while the open part of the colortable
                     // entry
-                    //  structure is the transparent setting for that
-                    //  particular color.
+                    // structure is the transparent setting for that
+                    // particular color.
                     if (transparent < 255) {
                         int argb = values[i].getRGB();
 
@@ -642,10 +643,10 @@ public class OMRaster extends OMRasterObject implements Serializable {
                         colors[i] = values[i].getRGB();
                     }
 
-                    //  Just check if all the colors are transparent -
-                    //  this is a pain to figure out if you are
-                    //  getting colors from some server that doesn't
-                    //  know about alpha values.
+                    // Just check if all the colors are transparent -
+                    // this is a pain to figure out if you are
+                    // getting colors from some server that doesn't
+                    // know about alpha values.
                     if (allTransparent && ((colors[i] >>> 24) != 0)) {
                         allTransparent = false;
                     }
@@ -655,9 +656,9 @@ public class OMRaster extends OMRasterObject implements Serializable {
                 }
             }
 
-            //This is wrong - we do need to force a computePixels,
+            // This is wrong - we do need to force a computePixels,
             // but in generate...
-            //      computePixels();
+            // computePixels();
             // This will do it....
             pixels = null;
             setNeedToRegenerate(true);
@@ -674,7 +675,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
         return colors;
     }
 
-    /////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////
     /**
      * Compute pixels is the function that resolves the color table
      * into pixel integer values used in the Image. It uses the bits
@@ -724,7 +725,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
 
             // make the alpha for this color the lessor of what the
             // colortable is, versus the transparent value
-            //              int pixAlpha;
+            // int pixAlpha;
 
             try {
                 if (b >= numColors) {
@@ -756,7 +757,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
                 // pixel color.
                 color = alpha | (0x00FFFFFF & color);
             } // Otherwise, just go with the alpha value set on the
-              // color...
+            // color...
 
             pixels[i] = color;
 
@@ -809,19 +810,29 @@ public class OMRaster extends OMRasterObject implements Serializable {
                         Debug.output("OMRaster: attempted to generate without pixels defined!");
                         return false;
                     }
-                    //                  Debug.output("OMRaster.generate: length(pixels)
+                    // Debug.output("OMRaster.generate: length(pixels)
                     // = " +
-                    //                               pixels.length);
+                    // pixels.length);
                 }
 
                 bitmap = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                ((BufferedImage) bitmap).setRGB(0,
-                        0,
-                        width,
-                        height,
-                        pixels,
-                        0,
-                        width);
+                // ((BufferedImage) bitmap).setRGB(0,
+                // 0,
+                // width,
+                // height,
+                // pixels,
+                // 0,
+                // width);
+
+                /**
+                 * Looking at the standard BufferedImage code, an int[0] is
+                 * allocated for every pixel. Maybe the memory usage is
+                 * optimized for that, but it goes through a call stack for
+                 * every pixel to do it. Let's just cycle through the data and
+                 * write the pixels directly into the raster.
+                 */
+                WritableRaster raster = (WritableRaster) ((BufferedImage) bitmap).getRaster();
+                raster.setDataElements(0, 0, width, height, pixels);
             }
 
             // REPLACING bitmap with the filtered version - keep a

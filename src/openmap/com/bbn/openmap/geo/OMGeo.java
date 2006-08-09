@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: OMGeo.java,v $
-//$Revision: 1.1 $
-//$Date: 2006/04/07 17:23:34 $
+//$Revision: 1.2 $
+//$Date: 2006/08/09 21:08:43 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -38,9 +38,18 @@ import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
-public abstract class OMGeo extends OMGraphic {
+/**
+ * This is a class (or set of classes) that map GeoExtents to OMGraphics. They
+ * can be used directly in a ExtentIndex and will render within OpenMap. This
+ * class is not considered to be part of the omgeo.jar package because of its
+ * dependencies on OpenMap, but resides in this package because of it's
+ * knowledge of it.
+ * 
+ * @author dietrick
+ */
+public abstract class OMGeo extends OMGraphic implements GeoExtent {
 
-    protected GeoExtent geos;
+    protected GeoExtent extent;
 
     protected OMGeo() {
         setRenderType(RENDERTYPE_LATLON);
@@ -51,19 +60,23 @@ public abstract class OMGeo extends OMGraphic {
     }
 
     protected OMGeo(GeoExtent ge, int lineType) {
-        setGeos(ge);
+        setExtent(ge);
         setLineType(lineType);
     }
 
-    public GeoExtent getGeos() {
-        return geos;
+    public GeoExtent getExtent() {
+        return extent;
     }
 
-    public void setGeos(GeoExtent ge) {
-        geos = ge;
+    public void setExtent(GeoExtent ge) {
+        extent = ge;
     }
 
-    public static class Pt extends OMGeo {
+    public BoundingCircle getBoundingCircle() {
+        return getExtent().getBoundingCircle();
+    }
+
+    public static class Pt extends OMGeo implements GeoPoint {
 
         protected int radius = OMPoint.DEFAULT_RADIUS;
         protected boolean isOval = true;
@@ -77,7 +90,7 @@ public abstract class OMGeo extends OMGraphic {
         }
 
         public Geo getGeo() {
-            return ((GeoPoint) getGeos()).getPoint();
+            return ((GeoPoint) getExtent()).getPoint();
         }
 
         public boolean generate(Projection proj) {
@@ -88,7 +101,7 @@ public abstract class OMGeo extends OMGraphic {
                 return false;
             }
 
-            Geo geo = ((GeoPoint) getGeos()).getPoint();
+            Geo geo = getPoint();
             double lat = geo.getLatitude();
             double lon = geo.getLongitude();
 
@@ -139,9 +152,17 @@ public abstract class OMGeo extends OMGraphic {
             this.radius = radius;
         }
 
+        public Geo getPoint() {
+            return ((GeoPoint) getExtent()).getPoint();
+        }
+
+        public Object getPointId() {
+            return OMGeo.Pt.this;
+        }
+
     }
 
-    public static class Line extends OMGeo {
+    public static class Line extends OMGeo implements GeoSegment {
 
         public Line(GeoSegment gs) {
             super(gs);
@@ -156,7 +177,7 @@ public abstract class OMGeo extends OMGraphic {
         }
 
         public Geo[] getGeoArray() {
-            return ((GeoSegment) getGeos()).getSeg();
+            return ((GeoSegment) getExtent()).getSeg();
         }
 
         public boolean generate(Projection proj) {
@@ -171,7 +192,7 @@ public abstract class OMGeo extends OMGraphic {
             // reset the internals
             initLabelingDuringGenerate();
 
-            float[] latlons = ((GeoSegment) getGeos()).getSegArray();
+            float[] latlons = getSegArray();
 
             ArrayList lines = null;
             if (proj instanceof GeoProj) {
@@ -209,34 +230,43 @@ public abstract class OMGeo extends OMGraphic {
             return true;
         }
 
+        public Geo[] getSeg() {
+            return ((GeoSegment) getExtent()).getSeg();
+        }
+
+        public float[] getSegArray() {
+            return ((GeoSegment) getExtent()).getSegArray();
+        }
+
+        public Object getSegId() {
+            return OMGeo.Line.this;
+        }
+
     }
 
-    public static class Poly extends OMGeo {
+    public static class Polyline extends OMGeo implements GeoPath {
 
-        protected boolean isPolygon;
-
-        public Poly(GeoPath gp) {
+        public Polyline(GeoPath gp) {
             super(gp);
         }
 
-        public Poly(GeoPath gp, int lineType) {
+        public Polyline(GeoPath gp, int lineType) {
             super(gp, lineType);
         }
 
-        public Poly(Geo[] gs, int lineType, boolean isPolygon) {
-            super((isPolygon ? new GeoRegion.Impl(gs) : new GeoPath.Impl(gs)),
-                  lineType);
+        public Polyline(Geo[] gs, int lineType) {
+            super(new GeoPath.Impl(gs), lineType);
         }
 
         public Geo[] toGeoArray() {
-            return ((GeoPath) getGeos()).toPointArray();
+            return ((GeoPath) getExtent()).toPointArray();
         }
 
         public boolean generate(Projection proj) {
             int i, j, npts;
             setShape(null);
             setNeedToRegenerate(true);
-            isPolygon = getGeos() instanceof GeoRegion;
+            boolean isPolygon = getExtent() instanceof GeoRegion;
 
             if (proj == null) {
                 Debug.message("omgraphic",
@@ -251,7 +281,7 @@ public abstract class OMGeo extends OMGraphic {
             // The only real new memory here is the array itself. We may want to
             // hold this to facilitate some speed.
 
-            Geo[] geos = ((GeoPath) getGeos()).toPointArray();
+            Geo[] geos = toPointArray();
             npts = geos.length;
             double[] rawllpts = new double[npts * 2];
             for (i = 0; i < npts; i++) {
@@ -317,6 +347,53 @@ public abstract class OMGeo extends OMGraphic {
             }
 
             return geometryClosed;
+        }
+
+        public boolean isSegmentNear(GeoSegment s, double epsilon) {
+            return ((GeoPath) getExtent()).isSegmentNear(s, epsilon);
+        }
+
+        public int length() {
+            return ((GeoPath) getExtent()).length();
+        }
+
+        public PointIterator pointIterator() {
+            return ((GeoPath) getExtent()).pointIterator();
+        }
+
+        public SegmentIterator segmentIterator() {
+            return ((GeoPath) getExtent()).segmentIterator();
+        }
+
+        public Geo[] toPointArray() {
+            return ((GeoPath) getExtent()).toPointArray();
+        }
+
+        public Object getPathID() {
+            return OMGeo.Polyline.this;
+        }
+    }
+
+    public static class Polygon extends Polyline implements GeoRegion {
+
+        public Polygon(GeoPath gp) {
+            super(gp);
+        }
+
+        public Polygon(GeoPath gp, int lineType) {
+            super(gp, lineType);
+        }
+
+        public Polygon(Geo[] gs, int lineType) {
+            super(new GeoRegion.Impl(gs), lineType);
+        }
+
+        public Object getRegionId() {
+            return OMGeo.Polygon.this;
+        }
+
+        public boolean isPointInside(Geo point) {
+            return ((GeoRegion) getExtent()).isPointInside(point);
         }
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Proj.java,v $
 // $RCSfile: Proj.java,v $
-// $Revision: 1.12 $
-// $Date: 2006/02/16 16:22:46 $
+// $Revision: 1.13 $
+// $Date: 2006/08/09 21:08:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -92,6 +92,11 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
     protected double centerX;
     protected double centerY;
     protected String projID = null; // identifies this projection (if needed)
+    
+    /**
+     * The unprojected coordinates units of measure.
+     */
+    protected Length ucuom = null;
 
     /**
      * Construct a projection.
@@ -901,5 +906,22 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
             ClassNotFoundException {
         in.defaultReadObject();
         computeParameters();
+    }
+
+    /**
+     * Get the unprojected coordinates units of measure.
+     * @return Length.  May be null if unknown.
+     * @see Length
+     */
+    public Length getUcuom() {
+        return ucuom;
+    }
+
+    /**
+     * Set the unprojected coordinates units of measure.
+     * @param ucuom
+     */
+    public void setUcuom(Length ucuom) {
+        this.ucuom = ucuom;
     }
 }

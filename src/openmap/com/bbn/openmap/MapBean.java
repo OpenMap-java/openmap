@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.17 $
-// $Date: 2005/12/09 21:09:06 $
+// $Revision: 1.18 $
+// $Date: 2006/08/09 21:08:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -534,7 +534,16 @@ public class MapBean extends JComponent implements ComponentListener,
         super.setBackground(color);
         setBckgrnd((Paint) color);
     }
-
+    
+    /**
+     * We override this to set the paint mode on the Graphics before the border
+     * is painted, otherwiser we get an XOR effect in the border.
+     */
+    public void paintBorder(Graphics g) {
+        g.setPaintMode();
+        super.paintBorder(g);
+    }
+    
     /**
      * Set the background of the map. If the background for this
      * MapBean is not null, the background of the projection will be

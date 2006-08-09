@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OverviewMapHandler.java,v $
 // $RCSfile: OverviewMapHandler.java,v $
-// $Revision: 1.14 $
-// $Date: 2006/02/14 20:55:52 $
+// $Revision: 1.15 $
+// $Date: 2006/08/09 21:08:41 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.gui;
@@ -60,8 +60,10 @@ import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.event.ProjectionSupport;
 import com.bbn.openmap.layer.OverviewMapAreaLayer;
+import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.ComponentFactory;
@@ -104,32 +106,36 @@ import com.bbn.openmap.util.PropUtils;
  * <pre>
  *     
  *     
- *      # First, add overviewMapHandler to the openmap.components marker name list.  Then, add:
+ *       # First, add overviewMapHandler to the openmap.components marker name list.  Then, add:
  *     
- *      overviewMapHandler.class=com.bbn.opemap.gui.OverviewMapHandler
- *      overviewMapHandler.overviewLayers=overviewLayer
- *      overviewMapHandler.overviewScaleFactor=10f
- *      overviewMapHandler.overviewMinScale=10000000f
+ *       overviewMapHandler.class=com.bbn.opemap.gui.OverviewMapHandler
+ *       overviewMapHandler.overviewLayers=overviewLayer
+ *       overviewMapHandler.overviewScaleFactor=10f
+ *       overviewMapHandler.overviewMinScale=100f
+ *       # Set the Unit of Measure for the overviewMinScale property
+ *       # Omission of  overviewMinScaleUom indicates that overviewMinScale
+ *       # is an projection map scale instead of a distance.
+ *       overviewMapHandler.overviewMinScaleUom=km
  *     
- *      # 'overviewStatusLayer' is a marker name for any attributes you may
- *      # want to pass to the overviewStatusLayer instance, in addition to
- *      # being used to define the class to use for that special layer.
- *      overviewMapHandler.overviewStatusLayer.class=com.bbn.openmap.layer.OverviewMapAreaLayer
- *      # Properties can be passed to the overview status layer by listing
- *      # them with the OverviewMapHandler prefix.
+ *       # 'overviewStatusLayer' is a marker name for any attributes you may
+ *       # want to pass to the overviewStatusLayer instance, in addition to
+ *       # being used to define the class to use for that special layer.
+ *       overviewMapHandler.overviewStatusLayer.class=com.bbn.openmap.layer.OverviewMapAreaLayer
+ *       # Properties can be passed to the overview status layer by listing
+ *       # them with the OverviewMapHandler prefix.
  *     
- *      # Set the line color for the coverage box outline...
- *      # overviewMapHandler.lineColor=FFFF0000
+ *       # Set the line color for the coverage box outline...
+ *       # overviewMapHandler.lineColor=FFFF0000
  *     
- *      # A sample overview map layer
- *      overviewLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
- *      overviewLayer.prettyName=Overview
- *      overviewLayer.shapeFile=/home/dietrick/dev/openmap/share/dcwpo-browse.shp
- *      overviewLayer.spatialIndex=/home/dietrick/dev/openmap/share/dcwpo-browse.ssx
- *      overviewLayer.lineColor=ff000000
- *      overviewLayer.fillColor=ffbdde83
+ *       # A sample overview map layer
+ *       overviewLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
+ *       overviewLayer.prettyName=Overview
+ *       overviewLayer.shapeFile=/home/dietrick/dev/openmap/share/dcwpo-browse.shp
+ *       overviewLayer.spatialIndex=/home/dietrick/dev/openmap/share/dcwpo-browse.ssx
+ *       overviewLayer.lineColor=ff000000
+ *       overviewLayer.fillColor=ffbdde83
  *     
- *      
+ *     
  * </pre>
  * 
  * <p>
@@ -145,11 +151,13 @@ public class OverviewMapHandler extends OMToolComponent implements
     public final static String ScaleFactorProperty = "overviewScaleFactor";
     public final static String ProjectionTypeProperty = "overviewProjectionType";
     public final static String MinScaleProperty = "overviewMinScale";
+    public final static String MinScaleUomProperty = "overviewMinScaleUom";
     public final static String StatusLayerProperty = "overviewStatusLayer";
     public final static String ControlSourceMapProperty = "overviewControlSourceMap";
     public final static String BackgroundSlaveProperty = "backgroundSlave";
     public final static float defaultScaleFactor = 20f;
     public final static float defaultMinScale = 500000f;
+    public final static Length defaultMinScaleUom = null;
 
     /** The multiplier to apply to the scale of the project received. */
     protected float scaleFactor;
@@ -158,6 +166,13 @@ public class OverviewMapHandler extends OMToolComponent implements
      * general type layer, it won't be any use.
      */
     protected float minScale;
+
+    /**
+     * The minimum scale unit of measure to use for the window. Use during
+     * initialization to compute a projection scale from a distance.
+     */
+    protected Length minScaleUom;
+
     /** The map of the overview panel. */
     protected transient MapBean map;
     /**
@@ -327,8 +342,16 @@ public class OverviewMapHandler extends OMToolComponent implements
 
         scaleFactor = PropUtils.floatFromProperties(props, prefix
                 + ScaleFactorProperty, defaultScaleFactor);
+
         minScale = PropUtils.floatFromProperties(props, prefix
                 + MinScaleProperty, defaultMinScale);
+
+        String uom = props.getProperty(prefix + MinScaleUomProperty);
+        if (uom != null) {
+            minScaleUom = Length.get(uom);
+            setMinScale(minScale, minScaleUom);
+        }
+
         backgroundSlave = PropUtils.booleanFromProperties(props, prefix
                 + BackgroundSlaveProperty, backgroundSlave);
 
@@ -616,7 +639,16 @@ public class OverviewMapHandler extends OMToolComponent implements
                 && statusLayer instanceof OverviewMapStatusListener) {
             ((OverviewMapStatusListener) statusLayer).setSourceMapProjection(proj);
         }
+
         float newScale = proj.getScale() * scaleFactor;
+
+        // Adjust the newScale based on the ratio of the
+        // source projection width and the overview
+        // map projection width.
+        Projection sourceProj = sourceMap.getProjection();
+        newScale *= (float) sourceProj.getWidth()
+                / (float) projection.getWidth();
+
         if (newScale < minScale) {
             newScale = minScale;
         }
@@ -810,6 +842,45 @@ public class OverviewMapHandler extends OMToolComponent implements
     public void setMinScale(float setting) {
         if (setting > 0) {
             minScale = setting;
+        }
+    }
+
+    /**
+     * Set the minimum scale to use for the overview map. If this is set too
+     * small with a very general map layer, it won't be of any use, really, if
+     * it gets really zoomed in.
+     * 
+     * @param setting the scale setting - 1:setting
+     */
+    public void setMinScale(float width, Length uom) {
+        if (width > 0) {
+            Projection p = map.getProjection();
+
+            Length projUom = p.getUcuom();
+
+            if (projUom == null) {
+                // We're going to assume meters, since this really only applies
+                // to pre-projected projections like Cartesian, and we might as
+                // well make it something. Not sure if it matters, as long as
+                // we're consistent.
+                projUom = Length.METER;
+            }
+
+            // This is really not the radius but the half width in radians.
+            float radius = uom.toRadians(width) / 2;
+
+            Point2D left = (Point2D) p.getCenter().clone();
+            Point2D right = (Point2D) p.getCenter().clone();
+
+            double newLeftX = projUom.fromRadians(projUom.toRadians(left.getX())
+                    - radius);
+            double newRightX = projUom.fromRadians(projUom.toRadians(right.getX())
+                    + radius);
+
+            left.setLocation(newLeftX, left.getY());
+            right.setLocation(newRightX, right.getY());
+
+            minScale = ProjMath.getScale(left, right, p);
         }
     }
 

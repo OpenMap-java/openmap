@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.13 $
-// $Date: 2006/02/16 16:22:47 $
+// $Revision: 1.14 $
+// $Date: 2006/08/09 21:08:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -328,7 +328,7 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
      * 
      * @param g java.awt.Graphics to draw the image on.
      */
-    public void render(Graphics g) {
+    public void render(Graphics graphics) {
         if (getNeedToRegenerate() || getNeedToReposition() || !isVisible()) {
             if (DEBUG) {
                 Debug.output("OMRasterObject.render(): need to regenerate or not visible!");
@@ -338,7 +338,7 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
 
         //copy the graphic, so our transform doesn't cascade to
         // others...
-        g = g.create();
+        Graphics g = graphics.create();
 
         // Just a little check to find out if someone is rushing
         // things. If a Image isn't fully loaded, the getWidth will
@@ -378,6 +378,7 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
                 Debug.output("OMRasterObject.render: ignoring null bitmap");
         }
 
+        renderLabel(graphics);
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Projection.java,v $
 // $RCSfile: Projection.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/02/16 16:22:46 $
+// $Revision: 1.8 $
+// $Date: 2006/08/09 21:08:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -463,5 +463,11 @@ public interface Projection extends java.io.Serializable {
      *        right corner of the area of interest.
      */
     public float getScale(Point2D ll1, Point2D ll2, Point2D point1, Point2D point2);
+    
+    /**
+     * Get the unprojected coordinates units of measure.
+     * @return Length.  May be null if unknown.
+     */
+    public Length getUcuom();
 
 }
