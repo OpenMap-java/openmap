@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/BinaryFile.java,v $
 // $RCSfile: BinaryFile.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/09/13 14:29:33 $
+// $Revision: 1.9 $
+// $Date: 2006/08/16 21:39:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -677,6 +677,10 @@ public class BinaryFile {
                 buildretval.append(tmp);
         } catch (EOFException e) {
             // allowable
+        } catch (FormatException fe) {
+            if (buildretval.length() == 0) {
+                throw fe;
+            }
         }
         return buildretval.toString();
     }
