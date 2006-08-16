@@ -14,18 +14,24 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/BinaryFile.java,v $
 // $RCSfile: BinaryFile.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/08/16 21:39:10 $
+// $Revision: 1.10 $
+// $Date: 2006/08/16 23:18:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.io;
 
-import java.io.*;
-import java.net.*;
-import java.util.Vector;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Vector;
+
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.Debug;
