@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: RpfUtil.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/08/24 20:20:40 $
+//$Revision: 1.3 $
+//$Date: 2006/08/17 15:19:06 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -255,7 +255,7 @@ public class RpfUtil {
                                 down,
                                 rlinterval,
                                 udinterval)) {
-                    String name = frame.directory + frame.filename;
+                    String name = frame.framePath.substring(frame.rpfdirIndex + 3);
 
                     frameList.add(name);
 

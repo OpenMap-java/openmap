@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/MakeToc.java,v $
 // $RCSfile: MakeToc.java,v $
-// $Revision: 1.13 $
-// $Date: 2006/07/14 21:25:23 $
+// $Revision: 1.14 $
+// $Date: 2006/08/17 15:19:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -98,19 +98,7 @@ import com.bbn.openmap.proj.coords.DMSLatLonPoint;
  * <pre>
  * 
  *  
- *   
- *    
- *     
- *      
- *       
- *        
- *         Usage:  java com.bbn.openmap.layer.rpf.MakeToc (RPF dir path) (RPF dir path) ...
- *         
- *        
- *       
- *      
- *     
- *    
+ *   Usage:  java com.bbn.openmap.layer.rpf.MakeToc (RPF dir path) (RPF dir path) ...
  *   
  *  
  * </pre>
@@ -121,19 +109,7 @@ import com.bbn.openmap.proj.coords.DMSLatLonPoint;
  * <pre>
  * 
  *  
- *   
- *    
- *     
- *      
- *       
- *        
- *         java com.bbn.openmap.layer.rpf.MakeToc -help
- *         
- *        
- *       
- *      
- *     
- *    
+ *   java com.bbn.openmap.layer.rpf.MakeToc -help
  *   
  *  
  * </pre>
@@ -556,8 +532,8 @@ public class MakeToc {
         int i;
 
         /* New, DKS */
-        //boolean Cib = false; /* CIB data flag: 1:I1(10M); 2:I2(5M) */
-        //boolean Cdted = false; /* CDTED data flag: 1: DT1(100M) */
+//        boolean Cib = false; /* CIB data flag: 1:I1(10M); 2:I2(5M) */
+//        boolean Cdted = false; /* CDTED data flag: 1: DT1(100M) */
 
         boolean isoverview = false;
         boolean islegend = false;
@@ -588,7 +564,6 @@ public class MakeToc {
             }
 
             try {
-
                 BinaryFile binFile = new BinaryBufferedFile(framePath);
 
                 // Frame file names are 8.3 notation, might want to
@@ -611,7 +586,7 @@ public class MakeToc {
                 if (!head.read(binFile)) {
                     // Not a RPF Frame file
                     if (Debug.debugging("maketoc")) {
-                        Debug.error("MakeToc: " + framePath
+                    Debug.error("MakeToc: " + framePath
                                 + " is not a RPF image file - ignoring");
                     }
                     continue;
@@ -740,7 +715,7 @@ public class MakeToc {
             } else if (scaleString.length() > scaleStringLength) {
                 scaleString = scaleString.substring(0, scaleStringLength);
             }
-            
+
             frame.scale = scaleString;
             frame.zone = head.filename.charAt(11);
 

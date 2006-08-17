@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocEntry.java,v $
 // $RCSfile: RpfTocEntry.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 18:45:53 $
+// $Revision: 1.5 $
+// $Date: 2006/08/17 15:19:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,7 +31,8 @@
 
 package com.bbn.openmap.layer.rpf;
 
-import com.bbn.openmap.io.*;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 
 /**
  * Reads and holds an entry in the RPF table of contents file.

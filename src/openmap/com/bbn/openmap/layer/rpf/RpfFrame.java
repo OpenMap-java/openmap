@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrame.java,v $
 // $RCSfile: RpfFrame.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/02/27 15:11:36 $
+// $Revision: 1.10 $
+// $Date: 2006/08/17 15:19:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,11 +55,11 @@ import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The object that organizes the information found within the RPF
- * frame file. The RpfFrame handles reading through the different
- * sections, and holds on to the compressed subframe data. The cache
- * handler gets the compressed subframe data and decompresses it
- * before storing the uncompressed subframe in the cache.
+ * The object that organizes the information found within the RPF frame file.
+ * The RpfFrame handles reading through the different sections, and holds on to
+ * the compressed subframe data. The cache handler gets the compressed subframe
+ * data and decompresses it before storing the uncompressed subframe in the
+ * cache.
  */
 public class RpfFrame {
 
@@ -104,30 +104,31 @@ public class RpfFrame {
     }
 
     /**
-     * Loads the RpfFrame, given the RpfFrameEntry that the
-     * RpfCacheHandler got from the RpfTocHandler.
+     * Loads the RpfFrame, given the RpfFrameEntry that the RpfCacheHandler got
+     * from the RpfTocHandler.
      */
     public RpfFrame(RpfFrameEntry rfe) {
         this(rfe.framePath);
 
-        if (!isValid() && rfe.exists && rfe.rpfdir != null) {
+        if (!isValid() && rfe.exists && rfe.rpfdirIndex != -1) {
             // Check lower case, if we think it exists and the rpf dir
             // is not null. If it is null, then the path we tried is
             // a complete file path (not a relative one) and should be
             // right.
 
-            String lowerCaseFramePath = rfe.directory + rfe.filename;
+            String lowerCaseFramePath = rfe.framePath.substring(rfe.rpfdirIndex + 3);
             lowerCaseFramePath = lowerCaseFramePath.toLowerCase();
+
+            String rpfDir = rfe.framePath.substring(0, rfe.rpfdirIndex + 3);
 
             if (DEBUG_RPFFRAME) {
                 Debug.output("RpfFrame " + rfe.framePath
-                        + " not found, checking " + rfe.rpfdir
-                        + lowerCaseFramePath);
+                        + " not found, checking " + rpfDir + lowerCaseFramePath);
             }
 
-            if (initFile(rfe.rpfdir + lowerCaseFramePath)) {
+            if (initFile(rpfDir + lowerCaseFramePath)) {
                 // Update it for the next time we check
-                rfe.framePath = rfe.rpfdir + lowerCaseFramePath;
+                rfe.framePath = rpfDir + lowerCaseFramePath;
             } else {
                 // Update check so we don't keep looking again.
                 rfe.exists = false;
@@ -135,12 +136,11 @@ public class RpfFrame {
         }
 
         Dchum = true;
-        chumVersion = Character.digit(rfe.filename.charAt(6), 10);
     }
 
-    //      public void finalize() {
-    //      Debug.message("gc", "RpfFrame: getting GC'd");
-    //      }
+    // public void finalize() {
+    // Debug.message("gc", "RpfFrame: getting GC'd");
+    // }
 
     protected boolean initFile(String framePath) {
         try {
@@ -167,11 +167,10 @@ public class RpfFrame {
     }
 
     /**
-     * Create the screen text used on a subframe. The internal string
-     * is set.
+     * Create the screen text used on a subframe. The internal string is set.
      * 
-     * @param Cib whether the frame is a Cib frame. The report is
-     *        different if it is.
+     * @param Cib whether the frame is a Cib frame. The report is different if
+     *        it is.
      */
     protected void setReport(boolean Cib) {
         if (attributes != null) {
@@ -191,9 +190,8 @@ public class RpfFrame {
     }
 
     /**
-     * Get the attribute text to display on the screen. This goes to
-     * the RpfSubframe object. The RpfCacheHandler knows about the
-     * four variables.
+     * Get the attribute text to display on the screen. This goes to the
+     * RpfSubframe object. The RpfCacheHandler knows about the four variables.
      * 
      * @param x subframe index within the array from the TocEntry.
      * @param y subframe index within the array from the TocEntry
@@ -208,7 +206,8 @@ public class RpfFrame {
         s.append("Subframe " + x + ", " + y + "\n");
         if (entry != null) {
             s.append("\nFrame Name: ");
-            s.append(entry.filename);
+            // s.append(entry.filename);
+            s.append(entry.framePath.substring(entry.filenameIndex));
         } else {
             s.append("\nFrame Name: Unavailable.");
         }
@@ -220,7 +219,8 @@ public class RpfFrame {
 
         s.append("\nFrom Frame Dir: ");
 
-        String actualFilePath = entry.rpfdir + entry.directory;
+        String actualFilePath = entry.framePath.substring(0,
+                entry.filenameIndex);
 
         if (actualFilePath.length() > 20) {
             int start = 0;
@@ -275,14 +275,13 @@ public class RpfFrame {
     }
 
     /**
-     * The only reason to call this is to read the colortable that is
-     * within the frame file, and set the colors that you will be
-     * using for all the frames accordingly. The RpfColortable is
-     * passed in so you can set the opaqueness, number of colors, and
-     * other colortable variables inside your own colortable object,
-     * and then read the color conversion tables as they apply (inside
-     * the frame file). Since the frame file is read when the RpfFrame
-     * is created, the fileSections object will (should) be valid.
+     * The only reason to call this is to read the colortable that is within the
+     * frame file, and set the colors that you will be using for all the frames
+     * accordingly. The RpfColortable is passed in so you can set the
+     * opaqueness, number of colors, and other colortable variables inside your
+     * own colortable object, and then read the color conversion tables as they
+     * apply (inside the frame file). Since the frame file is read when the
+     * RpfFrame is created, the fileSections object will (should) be valid.
      */
     public Color[] getColors(BinaryFile binFile, RpfColortable ct) {
 
@@ -291,15 +290,15 @@ public class RpfFrame {
     }
 
     /**
-     * Load the colortable with the colors from a particular frame
-     * file. Not needed, really, since the frame file is now loading
-     * it's own colortable at loadtime.
+     * Load the colortable with the colors from a particular frame file. Not
+     * needed, really, since the frame file is now loading it's own colortable
+     * at loadtime.
      */
     public static Color[] getColors(String framePath, RpfColortable ct) {
         BinaryFile binFile = null;
         try {
             binFile = new BinaryBufferedFile(framePath);
-            //          binFile = new BinaryFile(framePath);
+            // binFile = new BinaryFile(framePath);
             RpfFileSections rfs = new RpfFileSections();
             RpfHeader head = new RpfHeader();
 
@@ -336,7 +335,7 @@ public class RpfFrame {
         LookupTable[] lookupTable = new LookupTable[4];
         Image image;
 
-        int[][] indices = new int[6][6]; //ushort
+        int[][] indices = new int[6][6]; // ushort
         int i, j;
 
         /* bool (uchar) */
@@ -344,20 +343,20 @@ public class RpfFrame {
         boolean allSubframes;
         long currentPos; // uint
         long lookupOffsetTableOffset; // uint
-        int lookupTableOffsetRecLen; //ushort
+        int lookupTableOffsetRecLen; // ushort
 
-        long subframeMaskTableOffset; //uint
+        long subframeMaskTableOffset; // uint
         /* subframe offset (mask section) */
-        long[][] subframeOffset = new long[6][6];//uint[][]
+        long[][] subframeOffset = new long[6][6];// uint[][]
 
         /* for DCHUM */
         long fsave; /* saved file loc */
-        int chummedSubframe; //uint
+        int chummedSubframe; // uint
         int attributeId; // ushort
-        int attributeParamId; //uchar
-        long attributeRecOffset; //uint
-        int numAttributeOffsetRecs; //ushort
-        int numSubframesChummed; //ushort
+        int attributeParamId; // uchar
+        long attributeRecOffset; // uint
+        int numAttributeOffsetRecs; // ushort
+        int numSubframesChummed; // ushort
 
         if (DEBUG_RPFDETAIL) {
             Debug.output("ENTER RPFFRAME.READ");
@@ -417,8 +416,8 @@ public class RpfFrame {
                 binFile.seek(loc[0].componentLocation + 10);
             } else {
                 /*
-                 * DKS: Position at start of compression lookup table
-                 * offset record
+                 * DKS: Position at start of compression lookup table offset
+                 * record
                  */
                 if (DEBUG_RPFDETAIL) {
                     Debug.output("Comp lkup subsect: loc[2].componentLocation(264?): "
@@ -457,8 +456,7 @@ public class RpfFrame {
 
             for (i = 0; i < 4; i++) { /* Read compression lookup table */
                 /*
-                 * new position from compression lookup subsection:
-                 * loc[2]
+                 * new position from compression lookup subsection: loc[2]
                  */
                 binFile.seek(loc[2].componentLocation + lookupTable[i].offset);
                 if (DEBUG_RPFDETAIL) {
@@ -470,14 +468,13 @@ public class RpfFrame {
                     table[i][j] = binFile.readBytes(4, false);
 
             } /*
-               * for i=1 to 4 (# compression tables, 1 for each pixel
-               * row)
-               */
+                 * for i=1 to 4 (# compression tables, 1 for each pixel row)
+                 */
 
             /* seek to LOC_ATTRIB_SUBHEADER, ID=141 */
             if ((Dchum) && (chumVersion > 1)) { /*
-                                                 * Chum selected and
-                                                 * file version > 1
+                                                 * Chum selected and file
+                                                 * version > 1
                                                  */
                 if (loc[6] == null) {
                     Debug.output("RpfFrame: Can't find ATTRIBUTE_SUBHEADER section!");
@@ -511,7 +508,7 @@ public class RpfFrame {
                 for (i = 0; i < numAttributeOffsetRecs; i++) {
                     attributeId = (int) binFile.readShort();
                     attributeParamId = binFile.read();
-                    /**int tempc = */binFile.read(); // uchar
+                    /* tempc = */binFile.read();
                     attributeRecOffset = (long) binFile.readInteger();
 
                     /* # subframes impacted */
@@ -655,8 +652,8 @@ public class RpfFrame {
                 Debug.output("Not 6x6 subframes per frame: must be masked.");
             }
 
-            // int rowBytes = 256 / 4 * 3 / 2;
-            
+            // rowBytes = 256 / 4 * 3 / 2;
+
             // Is this section needed??
             /* fseek to LOC_IMAGE_DISPLAY_PARAM_SUBHEADER, ID=137 */
             if (loc[4] == null) {
@@ -676,14 +673,13 @@ public class RpfFrame {
                 Debug.output("WARNING: Can't find Image spatial data subsection in FrameFile:");
                 Debug.output("   Using alternate computation");
                 /*
-                 * DKS. skip 14 bytes of image display parameters
-                 * subheader instead
+                 * DKS. skip 14 bytes of image display parameters subheader
+                 * instead
                  */
                 binFile.seek(loc[4].componentLocation + 14);
             } else {
                 /*
-                 * DKS: Position at start of image spatial data
-                 * subsection
+                 * DKS: Position at start of image spatial data subsection
                  */
                 currentPos = binFile.getFilePointer();
                 if (DEBUG_RPFDETAIL) {
@@ -713,7 +709,7 @@ public class RpfFrame {
                         compressedSubframe[i][j] = new byte[6144];
                 }
             }
-            
+
         } catch (IOException e) {
             Debug.error("RpfFrame: read(): File IO Error!\n" + e);
             return false;
@@ -731,10 +727,10 @@ public class RpfFrame {
     } /* read */
 
     static public class Compression {
-        public int algorithm;//ushort
+        public int algorithm;// ushort
         /* New, dks */
-        public int numOffsetRecs;//ushort
-        public int numParmOffRecs;//ushort
+        public int numOffsetRecs;// ushort
+        public int numParmOffRecs;// ushort
 
         public Compression(BinaryFile binFile) {
             try {
@@ -758,10 +754,10 @@ public class RpfFrame {
     }
 
     static public class LookupTable {
-        int id; //ushort
-        long records; //uint
-        int values; //ushort
-        int bitLength; //ushort
+        int id; // ushort
+        long records; // uint
+        int values; // ushort
+        int bitLength; // ushort
         long offset; // uint
 
         public LookupTable(BinaryFile binFile) {
@@ -790,12 +786,12 @@ public class RpfFrame {
     }
 
     static public class Image {
-        int spectralGroups; //ushort
-        int subframeTables;//ushort
-        int spectralTables;//ushort
-        int spectralLines;//ushort
-        int horizSubframes, vertSubframes;//ushort
-        long outputColumns, outputRows;//uint
+        int spectralGroups; // ushort
+        int subframeTables;// ushort
+        int spectralTables;// ushort
+        int spectralLines;// ushort
+        int horizSubframes, vertSubframes;// ushort
+        long outputColumns, outputRows;// uint
 
         public Image(BinaryFile binFile) {
             try {
@@ -829,17 +825,16 @@ public class RpfFrame {
     }
 
     /**
-     * Decompress a subframe into a cache entry OMRaster
-     * (RpfSubframe). The RpfSubframe is returned, too, to emphasize
-     * what's happening.
+     * Decompress a subframe into a cache entry OMRaster (RpfSubframe). The
+     * RpfSubframe is returned, too, to emphasize what's happening.
      * 
      * @param x the x coord for the subframe
      * @param y the y coord for the subframe
-     * @param subframe the subframe to create the image for. The
-     *        resulting image will be loaded into the RpfSubframe. If
-     *        null, a new RpfSubframe will be created.
-     * @param colortable the colortable to use with this image. If
-     *        null, the colortable from this RpfFrame will be used.
+     * @param subframe the subframe to create the image for. The resulting image
+     *        will be loaded into the RpfSubframe. If null, a new RpfSubframe
+     *        will be created.
+     * @param colortable the colortable to use with this image. If null, the
+     *        colortable from this RpfFrame will be used.
      * @param viewAttributes our image generation parameters.
      * @return RpfSubframe containing the image data.
      */
@@ -878,8 +873,8 @@ public class RpfFrame {
     }
 
     /**
-     * Decompress a subframe into an array of bytes suitable for in
-     * indexed color model image.
+     * Decompress a subframe into an array of bytes suitable for in indexed
+     * color model image.
      * 
      * @param x the x coord for the subframe
      * @param y the y coord for the subframe
@@ -899,12 +894,10 @@ public class RpfFrame {
         byte[] compressedSubframe = this.compressedSubframe[y][x];
 
         /*
-         * This should never occur since all subframes should be
-         * present
+         * This should never occur since all subframes should be present
          */
         /*
-         * But if it does occur, just put up black pixels on the
-         * screen
+         * But if it does occur, just put up black pixels on the screen
          */
         if ((compressedSubframe == null) || masked[y][x]) {
             return null;
@@ -916,9 +909,9 @@ public class RpfFrame {
                     int secondByte = compressedSubframe[readptr++] & 0xff;
                     int thirdByte = compressedSubframe[readptr++] & 0xff;
 
-                    //because dealing with half-bytes is hard, we
-                    //uncompress two 4x4 tiles at the same time. (a
-                    //4x4 tile compressed is 12 bits )
+                    // because dealing with half-bytes is hard, we
+                    // uncompress two 4x4 tiles at the same time. (a
+                    // 4x4 tile compressed is 12 bits )
 
                     /* Get first 12-bit value as index into VQ table */
                     int val1 = (firstByte << 4) | (secondByte >> 4);
@@ -937,22 +930,22 @@ public class RpfFrame {
                             int pixindex = (i + t) * 256 + j + e;
                             pixels[pixindex] = (byte) tableVal1;
                             pixels[pixindex + 4] = (byte) tableVal2;
-                        } //for e
-                    } //for t
+                        } // for e
+                    } // for t
                 } /* for j */
-            } //for i
+            } // for i
             return pixels;
         } /* else */
     }
 
     /**
-     * Decompress a subframe into an array of ints suitable for a
-     * direct color model image. (argb format)
+     * Decompress a subframe into an array of ints suitable for a direct color
+     * model image. (argb format)
      * 
      * @param x the x coord for the subframe
      * @param y the y coord for the subframe
-     * @param colortable the colortable to use with this image. If
-     *        null, the RpfColortable from the frame will be used.
+     * @param colortable the colortable to use with this image. If null, the
+     *        RpfColortable from the frame will be used.
      */
     public int[] decompressSubframe(int x, int y, RpfColortable colortable) {
         // Convert x,y to the subframe index in the frame - they come
@@ -973,12 +966,10 @@ public class RpfFrame {
         }
 
         /*
-         * This should never occur since all subframes should be
-         * present
+         * This should never occur since all subframes should be present
          */
         /*
-         * But if it does occur, just put up black pixels on the
-         * screen
+         * But if it does occur, just put up black pixels on the screen
          */
         if ((compressedSubframe == null) || masked[y][x]) {
             return null;
@@ -990,9 +981,9 @@ public class RpfFrame {
                     int secondByte = compressedSubframe[readptr++] & 0xff;
                     int thirdByte = compressedSubframe[readptr++] & 0xff;
 
-                    //because dealing with half-bytes is hard, we
-                    //uncompress two 4x4 tiles at the same time. (a
-                    //4x4 tile compressed is 12 bits )
+                    // because dealing with half-bytes is hard, we
+                    // uncompress two 4x4 tiles at the same time. (a
+                    // 4x4 tile compressed is 12 bits )
 
                     /* Get first 12-bit value as index into VQ table */
                     int val1 = (firstByte << 4) | (secondByte >> 4);
@@ -1011,10 +1002,10 @@ public class RpfFrame {
                             int pixindex = (i + t) * 256 + j + e;
                             pixels[pixindex] = colortable.colors[tableVal1].getRGB();
                             pixels[pixindex + 4] = colortable.colors[tableVal2].getRGB();
-                        } //for e
-                    } //for t
+                        } // for e
+                    } // for t
                 } /* for j */
-            } //for i
+            } // for i
             return pixels;
         } /* else */
     }
@@ -1069,8 +1060,7 @@ public class RpfFrame {
     }
 
     /**
-     * A quick hack to pop up a window that displays the entire frame
-     * image.
+     * A quick hack to pop up a window that displays the entire frame image.
      */
     public void view() {
         int height = 256;

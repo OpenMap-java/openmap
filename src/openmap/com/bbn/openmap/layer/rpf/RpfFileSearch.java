@@ -14,16 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFileSearch.java,v $
 // $RCSfile: RpfFileSearch.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 18:45:53 $
+// $Revision: 1.8 $
+// $Date: 2006/08/17 15:19:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.rpf;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Vector;
 
 import com.bbn.openmap.util.Debug;
 

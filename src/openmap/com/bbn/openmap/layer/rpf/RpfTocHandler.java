@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocHandler.java,v $
 // $RCSfile: RpfTocHandler.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/11/23 20:49:06 $
+// $Revision: 1.14 $
+// $Date: 2006/08/17 15:19:06 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -50,23 +50,21 @@ import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The RpfTocHandler knows how to read A.TOC files for RPF raster
- * data. The A.TOC file describes the coverage found in the tree of
- * data that accompanies it. This coverage is described as a series of
- * rectangles describing the frame of groups of coverage, with
- * common-scale maps, types for different CADRG zones. The
- * RpfTocHandler can also provide a description of the frames and
+ * The RpfTocHandler knows how to read A.TOC files for RPF raster data. The
+ * A.TOC file describes the coverage found in the tree of data that accompanies
+ * it. This coverage is described as a series of rectangles describing the frame
+ * of groups of coverage, with common-scale maps, types for different CADRG
+ * zones. The RpfTocHandler can also provide a description of the frames and
  * subframes to use for a screen with a given projection.
  * <P>
  * 
- * The RPF specification says that the frame paths and file names,
- * from the RPF directory, should be in upper-case letters. The paths
- * and file names are stored in the A.TOC file this way. Sometimes,
- * however, through CDROM and downloading quirks, the paths and file
- * names, as stored on the hard drive, are actually transferred to
- * lower-case letters. This RpfTocHandler will check for lower case
- * letter paths, but only for all the letters to be lower case. The
- * frame will be marked as non-existant if some of the directories or
+ * The RPF specification says that the frame paths and file names, from the RPF
+ * directory, should be in upper-case letters. The paths and file names are
+ * stored in the A.TOC file this way. Sometimes, however, through CDROM and
+ * downloading quirks, the paths and file names, as stored on the hard drive,
+ * are actually transferred to lower-case letters. This RpfTocHandler will check
+ * for lower case letter paths, but only for all the letters to be lower case.
+ * The frame will be marked as non-existant if some of the directories or
  * filenames have be transformed to uppercase.
  */
 public class RpfTocHandler {
@@ -74,7 +72,7 @@ public class RpfTocHandler {
     public final static String RPF_TOC_FILE_NAME = "A.TOC";
     public final static String LITTLE_RPF_TOC_FILE_NAME = "a.toc";
     public final static int DEFAULT_FRAME_SPACE = 300; // frame file
-                                                       // in kilobytes
+    // in kilobytes
 
     protected RpfHeader head;
     protected BinaryFile binFile;
@@ -88,8 +86,8 @@ public class RpfTocHandler {
     protected long currencyTime;
     protected boolean valid = false;
     /**
-     * Set by the RpfFrameProvider, and used to track down this
-     * particular TOC to get to the frames offered by it's coverages.
+     * Set by the RpfFrameProvider, and used to track down this particular TOC
+     * to get to the frames offered by it's coverages.
      */
     private int tocNumber = 0;
     /**
@@ -97,11 +95,11 @@ public class RpfTocHandler {
      */
     protected Vector entryResponses = new Vector();
     /**
-     * Flag to note whether absolute pathnames are used in the A.TOC.
-     * Set to false, because it's not supposed to be that way,
-     * according to the specification. This is reset automatically
-     * when the A.TOC file is read. If the first two characters of the
-     * directory paths are ./, then it stays false.
+     * Flag to note whether absolute pathnames are used in the A.TOC. Set to
+     * false, because it's not supposed to be that way, according to the
+     * specification. This is reset automatically when the A.TOC file is read.
+     * If the first two characters of the directory paths are ./, then it stays
+     * false.
      */
     protected boolean fullPathsInATOC = false;
 
@@ -129,18 +127,17 @@ public class RpfTocHandler {
     }
 
     /**
-     * Should be used in situations where it is certain that this is
-     * the only A.TOC in town.
+     * Should be used in situations where it is certain that this is the only
+     * A.TOC in town.
      */
     public RpfTocHandler(String parentDir) {
         this(parentDir, 0);
     }
 
     /**
-     * Used when there is more than one A.TOC being used, or where
-     * there is a possibility of that happening, like in the RPF
-     * layer. The TOC number should be unique for a certain
-     * RpfFrameProvider.
+     * Used when there is more than one A.TOC being used, or where there is a
+     * possibility of that happening, like in the RPF layer. The TOC number
+     * should be unique for a certain RpfFrameProvider.
      * 
      * @param parentDir the RPF directory
      * @param TOCNumber a unique number to identify this TOC for a
@@ -155,14 +152,12 @@ public class RpfTocHandler {
         if (!valid) {
             Debug.error("RpfTocHandler: Invalid TOC File in " + parentDir);
         }
-
     }
 
     /**
-     * Given a parent RPF directory, find the a.toc file directly
-     * inside it, as dictated by the specification. Not called anymore -
-     * the BinaryFile does the searching, and can find URL and jar
-     * files.
+     * Given a parent RPF directory, find the a.toc file directly inside it, as
+     * dictated by the specification. Not called anymore - the BinaryFile does
+     * the searching, and can find URL and jar files.
      * 
      * @param parentDir Path to the RPF directory.
      * @return File
@@ -173,9 +168,9 @@ public class RpfTocHandler {
         if (!file.exists()) {
             file = new File(parentDir + "/" + LITTLE_RPF_TOC_FILE_NAME);
             if (!file.exists()) {
-                //              Debug.error("RpfTocHandler: getTocFile(): file in
+                // Debug.error("RpfTocHandler: getTocFile(): file in
                 // "+
-                //                           parentDir + " not found");
+                // parentDir + " not found");
                 return null;
             }
         }
@@ -195,21 +190,20 @@ public class RpfTocHandler {
     }
 
     /**
-     * A way to check if the status of the A.TOC file is different, in
-     * case another one has taken its place. Handy if the A.TOC is on
-     * a CDROM drive and the disk has been swapped. Not valid anymore,
-     * with the advent of the new BinaryFile, where the file
-     * information may not be available.
+     * A way to check if the status of the A.TOC file is different, in case
+     * another one has taken its place. Handy if the A.TOC is on a CDROM drive
+     * and the disk has been swapped. Not valid anymore, with the advent of the
+     * new BinaryFile, where the file information may not be available.
      */
     public boolean hasChanged() {
-        //      File tmpFile = getTocFile(dir);
-        //      if (tmpFile == null) {
-        //          return valid;
-        //      }
-        //      if (tmpFile.lastModified() != currencyTime && valid) {
-        //          valid = false;
-        //          return true;
-        //      }
+        // File tmpFile = getTocFile(dir);
+        // if (tmpFile == null) {
+        // return valid;
+        // }
+        // if (tmpFile.lastModified() != currencyTime && valid) {
+        // valid = false;
+        // return true;
+        // }
         return false;
     }
 
@@ -245,7 +239,7 @@ public class RpfTocHandler {
 
             // With the new BinaryFile, we can't get to this
             // info, because we aren't using File objects anymore.
-            //          currencyTime = file.lastModified();
+            // currencyTime = file.lastModified();
 
             if (!parseToc(binFile)) {
                 ret = false;
@@ -271,25 +265,19 @@ public class RpfTocHandler {
         // DKS new
         long pathOffset; // uint, offset of frame file pathname
         int boundaryRecordLength; // ushort
-        int numPathnameRecords; //ushort
-        int indexRecordLength; //ushort, frame file index record
-                               // length
-        //int indexSubheaderLength = 9; //ushort, frame file index
-                                      // subheader length
+        int numPathnameRecords; // ushort
+        int indexRecordLength; // ushort, frame file index record
+        // length
+//        int indexSubheaderLength = 9; // ushort, frame file index
+        // subheader length
 
         long boundRectTableOffset; // uint, Bound. rect. table offset
         long frameIndexTableOffset; // uint, Frame file index table
-                                    // offset
+        // offset
 
         if (DEBUG_RPFTOC) {
             Debug.output("ENTER TOC parsing...");
         }
-
-        // Stuff that used this is now commented out below...
-//        boolean local = false;
-//        if (binFile.getInputReader() instanceof FileInputReader) {
-//            local = true;
-//        }
 
         try {
             // binFile should be set to the beginning at this point
@@ -443,7 +431,7 @@ public class RpfTocHandler {
                 // DKS. switched from horizFrames to vertFrames
                 // DKS NEW: CHANGED FROM 1 to 0 to agree w/spec. ALSO
                 // COL below
-                //    if (frameRow < 1 || frameRow > entry->vertFrames)
+                // if (frameRow < 1 || frameRow > entry->vertFrames)
                 if (frameRow > entry.vertFrames - 1) {
                     Debug.output(" Bad row number: " + frameRow
                             + ", in FF index record " + i);
@@ -500,7 +488,7 @@ public class RpfTocHandler {
 
                 // 1st part of directory name is passed as arg:
                 // e.g. "../RPF2/"
-                frame.rpfdir = dir;
+                String rpfdir = dir;
                 StringBuffer sBuf = new StringBuffer();
 
                 // read rest of directory name from toc
@@ -522,98 +510,60 @@ public class RpfTocHandler {
 
                 // Add the trim because it looks like NIMA doesn't
                 // always get the pathLength correct...
-                frame.directory = sBuf.toString().trim();
+                String directory = sBuf.toString().trim();
                 if (DEBUG_RPFTOCFRAMEDETAIL) {
                     Debug.output("RpfTocHandler: parseToc(): frame directory: "
-                            + frame.directory);
+                            + directory);
                 }
 
                 /* Go back to get filename tail */
                 binFile.seek(currentPosition);
 
-                frame.filename = binFile.readFixedLengthString(12);
+                String filename = binFile.readFixedLengthString(12);
                 if (DEBUG_RPFTOCFRAMEDETAIL) {
                     Debug.output("RpfTocHandler: parseToc(): frame filename: "
-                            + frame.filename);
+                            + filename);
                 }
 
                 // Figure out the chart series ID
-                int dot = frame.filename.lastIndexOf('.');
+                int dot = filename.lastIndexOf('.');
                 // Interned so we can look it up in the catalog
                 // later...
-                entry.setInfo(frame.filename.substring(dot + 1, dot + 3)
-                        .toUpperCase().intern());
+                entry.setInfo(filename.substring(dot + 1, dot + 3).intern());
 
                 // We duplicate this below!!!
-                //              frame.framePath = new String(frame.rpfdir +
+                // frame.framePath = new String(frame.rpfdir +
                 // frame.directory +
-                //                                           "/" + frame.filename);
+                // "/" + frame.filename);
 
                 // DKS new DCHUM. Fill in last digit v of vv version
                 // #. fffffvvp.JNz or ffffffvp.IMz for CIB boundaryId
                 // will equal frame file number: 1 boundary rect. per
                 // frame.
 
-                //              if (Dchum)
-                //                  entries[boundaryId].version =
+                // if (Dchum)
+                // entries[boundaryId].version =
                 // frame.filename.charAt(6);
 
-                // do diskspace calculations
                 String tempPath;
 
                 if (!fullPathsInATOC) {
-                    tempPath = frame.rpfdir + frame.directory + frame.filename;
+                    tempPath = rpfdir + directory + filename;
+                    frame.rpfdirIndex = (short) (rpfdir.length() - 3);
+                    frame.filenameIndex = (short) (rpfdir.length() + directory.length());
                 } else {
-                    tempPath = frame.directory + frame.filename;
-                    frame.rpfdir = null; // The path to the rpf dir is
-                                         // in frame.directory
+                    tempPath = directory + filename;
+                    frame.filenameIndex = (short) directory.length();
                 }
-
-                long diskspace = 288000;
-                
-                // boolean exists = true;
-
-                // Turns out this check is wicked expensive!!!!!!
-                // Assume it's there, the RPFFrame has been modified
-                // to try lower case names if needed.
-
-                //                 if (local) {
-                //                     exists = BinaryFile.exists(tempPath);
-
-                //                     // This may fail because of FTP and/or CDROM
-                // filename
-                //                     // shinanagins. The A.TOC file should always think
-                //                     // that the filenames are uppercase. They may get
-                //                     // copied as lowercase, so we'll check that here.
-                // If
-                //                     // they are actually lowercase, we'll change it
-                // here
-                //                     // so that everything will work at runtime. - DFD
-                // 8/20/99
-
-                //                     // OK, with the advent of the new BinaryFile that
-                //                     // will let these files be read from a jar file or
-                //                     // from a URL, we have to assume that the files
-                //                     // are there, and deal with it if they are not.
-                //                 }
-
-                //                 if (exists) {
-                frame.diskspace = diskspace;
+    
                 frame.framePath = tempPath;
                 frame.exists = true;
-                //                 } else if (!fullPathsInATOC) {
-
-                //                     // This should only be an issue for local files.
-                //                     tempPath = frame.rpfdir +
-                // frame.directory.toLowerCase() +
-                //                         frame.filename.toLowerCase();
-
-                // // if (BinaryFile.exists(tempPath)) {
-                //                         frame.diskspace = diskspace;
-                //                         frame.framePath = tempPath;
-                //                         frame.exists = true;
-                // // }
-                //                 }
+                
+                // You don't want to check for the existance of frames here, do
+                // it at load time, and then mark the entry if the load fails.
+                // If you do the check here, you waste a lot of I/O time and
+                // effort. Assume it's there, the RPFFrame has been modified
+                // to try lower case names if needed.
 
                 if (frame.framePath == null) {
                     Debug.output("RpfTocHandler: Frame "
@@ -637,8 +587,8 @@ public class RpfTocHandler {
     }
 
     /**
-     * Util-like function that translates a long to the string
-     * representation found in the A>TOC file.
+     * Util-like function that translates a long to the string representation
+     * found in the A>TOC file.
      */
     public static String translateScaleToSeries(long scale) {
         if (scale == 0)
@@ -668,8 +618,8 @@ public class RpfTocHandler {
     }
 
     /**
-     * Given the scale string found in the A.TOC file, decode it into
-     * a 'long' scale.
+     * Given the scale string found in the A.TOC file, decode it into a 'long'
+     * scale.
      */
     public static long textScaleToLong(String textScale) {
 
@@ -765,18 +715,18 @@ public class RpfTocHandler {
     }
 
     /**
-     * Given a coordinate box and a scale, return the entries that
-     * have coverage over the given area. The chart types returned are
-     * dictated by the chartSeriesCode passed in, which must be an
-     * entry from an RpfProductInfo.seriesCode.
+     * Given a coordinate box and a scale, return the entries that have coverage
+     * over the given area. The chart types returned are dictated by the
+     * chartSeriesCode passed in, which must be an entry from an
+     * RpfProductInfo.seriesCode.
      * 
      * @param ullat upper left latitude, in decimal degrees
      * @param ullon upper left longitude, in decimal degrees
      * @param lrlat lower right latitude, in decimal degrees
      * @param lrlon lower right longitude, in decimal degrees
      * @param proj CADRG projection describing map.
-     * @param chartSeriesCode chart selection. If null, all coverage
-     *        boxes fitting on the screen will be returned.
+     * @param chartSeriesCode chart selection. If null, all coverage boxes
+     *        fitting on the screen will be returned.
      * @param coverages a list of potential coverages
      * @return a Vector of applicable RpfCoverageBoxes.
      */
@@ -814,27 +764,25 @@ public class RpfTocHandler {
     }
 
     /**
-     * Given a coordinate box and a scale, find the entry in the table
-     * of contents file with the right data. Zone is always of the
-     * northern hemisphere, and is transformed to southern inside if
-     * needed. The box will get filled in with the correct
-     * information. The subframe description will have scaling
-     * information for the subframes to be scaled to match the scale.
-     * If proj is null, only exact matches will be found
+     * Given a coordinate box and a scale, find the entry in the table of
+     * contents file with the right data. Zone is always of the northern
+     * hemisphere, and is transformed to southern inside if needed. The box will
+     * get filled in with the correct information. The subframe description will
+     * have scaling information for the subframes to be scaled to match the
+     * scale. If proj is null, only exact matches will be found
      * 
      * NOTE: method getZone() of the CADRG projection is only relevant
-     * (according to OpenMap documentation) when you're viewing a map
-     * type (ONC, etc) at its proper scale (i.e. 1:1mil for ONC).
-     * There was a method in RpfTocHandler that only checked a TOC for
-     * coverage if the TOC zone matched the zone of the projection.
-     * This caused gaps of coverage when viewing the maps at large
-     * scales that were different from their proper scale (e.g.
-     * viewing JNC at 1:10mil). Modified this method so that it
-     * obtains all the possible zones the current map projection could
-     * be in, and compares the TOC zones to that set.
+     * (according to OpenMap documentation) when you're viewing a map type (ONC,
+     * etc) at its proper scale (i.e. 1:1mil for ONC). There was a method in
+     * RpfTocHandler that only checked a TOC for coverage if the TOC zone
+     * matched the zone of the projection. This caused gaps of coverage when
+     * viewing the maps at large scales that were different from their proper
+     * scale (e.g. viewing JNC at 1:10mil). Modified this method so that it
+     * obtains all the possible zones the current map projection could be in,
+     * and compares the TOC zones to that set.
      * 
-     * Note that this now returns a list of coverage entries instead
-     * of just one.
+     * Note that this now returns a list of coverage entries instead of just
+     * one.
      * 
      * @param ullat upper left latitude, in decimal degrees
      * @param ullon upper left longitude, in decimal degrees
@@ -894,7 +842,7 @@ public class RpfTocHandler {
             // coverage, so reset the entry for this particular query.
             currentEntry.coverage.reset();
 
-            //  Find the scale of the boundary rectangle
+            // Find the scale of the boundary rectangle
             if (currentEntry.info == null
                     || currentEntry.info.scale == RpfConstants.Various) {
 
@@ -1185,4 +1133,3 @@ public class RpfTocHandler {
     }
 
 }
-
