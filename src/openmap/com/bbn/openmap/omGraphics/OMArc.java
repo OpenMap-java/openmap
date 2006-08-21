@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArc.java,v $
 // $RCSfile: OMArc.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/02/16 16:22:47 $
+// $Revision: 1.11 $
+// $Date: 2006/08/21 20:09:10 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -111,13 +111,13 @@ public class OMArc extends OMGraphic implements Serializable {
      * Used to render arc in Cylindrical projections when the arc encompases a
      * pole.
      */
-    private GeneralPath polarShapeLine = null;
+    private transient GeneralPath polarShapeLine = null;
     /**
      * Indicates that the polarShapeLine should be used for rendering.
      */
-    private boolean correctFill = false;
+    private transient boolean correctFill = false;
     /** Force the correct polar hack. */
-    private boolean correctPolar = false;
+    private transient boolean correctPolar = false;
 
     /**
      * Number of vertices to draw for lat/lon poly-arcs.
