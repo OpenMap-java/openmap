@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.13 $
-// $Date: 2006/01/04 23:08:35 $
+// $Revision: 1.14 $
+// $Date: 2006/08/25 15:36:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -57,10 +57,9 @@ import com.bbn.openmap.util.FileUtils;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * An implemention of TableModel that manages tabular data read from a
- * dbf file and enables the user to stored data store herein to be
- * saved to a file conforming to the DBF III file format
- * specification.
+ * An implemention of TableModel that manages tabular data read from a dbf file
+ * and enables the user to stored data store herein to be saved to a file
+ * conforming to the DBF III file format specification.
  * 
  * To create a three one column model:
  * 
@@ -97,21 +96,20 @@ public class DbfTableModel extends AbstractTableModel implements
     public static final int TYPE_MEMO = 77;
 
     /**
-     * Edit button mask, to allow adding/removing rows. Be very
-     * careful with this option if you plan on using this file with a
-     * shape file - the number of records has to match the number of
-     * graphics in a shape file, so if you add or delete, you should
-     * add/delete the graphic in the shape file, too.
+     * Edit button mask, to allow adding/removing rows. Be very careful with
+     * this option if you plan on using this file with a shape file - the number
+     * of records has to match the number of graphics in a shape file, so if you
+     * add or delete, you should add/delete the graphic in the shape file, too.
      */
     public static final int MODIFY_ROW_MASK = 1 << 0;
     /**
-     * Edit button mask, to allow adding/removing columns in the
-     * attribute table.
+     * Edit button mask, to allow adding/removing columns in the attribute
+     * table.
      */
     public static final int MODIFY_COLUMN_MASK = 1 << 1;
     /**
-     * Button mask to drop the frame quietly, with the modifications
-     * to the table complete.
+     * Button mask to drop the frame quietly, with the modifications to the
+     * table complete.
      */
     public static final int DONE_MASK = 1 << 3;
 
@@ -121,14 +119,13 @@ public class DbfTableModel extends AbstractTableModel implements
     public static final int SAVE_MASK = 1 << 4;
 
     /**
-     * An array of bytes that contain the character lengths for each
-     * column
+     * An array of bytes that contain the character lengths for each column
      */
     protected int[] _lengths = null;
 
     /**
-     * An array of bytes that contain the number of decimal places for
-     * each column
+     * An array of bytes that contain the number of decimal places for each
+     * column
      */
     protected byte[] _decimalCounts = null;
 
@@ -142,8 +139,7 @@ public class DbfTableModel extends AbstractTableModel implements
     protected ArrayList _records = null;
 
     /**
-     * Class scope variable for the number of columns that exist in
-     * the model
+     * Class scope variable for the number of columns that exist in the model
      */
     protected int _columnCount = -1;
 
@@ -191,11 +187,10 @@ public class DbfTableModel extends AbstractTableModel implements
     /**
      * Adds a row of data to the the model
      * 
-     * @param columns A collection of columns that comprise the row of
-     *        data
-     * @exception An exception is thrown if the number of elements in
-     *            the passed in collection does not match the number
-     *            of columns in the model
+     * @param columns A collection of columns that comprise the row of data
+     * @exception An exception is thrown if the number of elements in the passed
+     *            in collection does not match the number of columns in the
+     *            model
      */
     public void addRecord(ArrayList columns) {
         if (columns.size() != _columnCount) {
@@ -270,8 +265,7 @@ public class DbfTableModel extends AbstractTableModel implements
     }
 
     /**
-     * Retrieves the number of decimal places for the passed in column
-     * index
+     * Retrieves the number of decimal places for the passed in column index
      * 
      * @param column The column index
      * @return The number of decimal places for the given column index
@@ -301,9 +295,9 @@ public class DbfTableModel extends AbstractTableModel implements
     }
 
     /**
-     * Retrieves the number of rows that exist in the model
+     * Retrieves the number of columns that exist in the model
      * 
-     * @return The number rows that exist in the model
+     * @return The number column that exist in the model
      */
     public int getRowCount() {
         if (_records == null) {
@@ -348,8 +342,8 @@ public class DbfTableModel extends AbstractTableModel implements
      * Sets the decimal count for the passed in field index
      * 
      * @param column The index to the column
-     * @param decimalCount The number of decimals places to assign to
-     *        the passed in column
+     * @param decimalCount The number of decimals places to assign to the passed
+     *        in column
      */
     public void setDecimalCount(int column, byte decimalCount) {
         _decimalCounts[column] = decimalCount;
@@ -359,8 +353,8 @@ public class DbfTableModel extends AbstractTableModel implements
      * Set the character length fro the passed-in field index
      * 
      * @param column The column index
-     * @param length The character length to assign for the passed-in
-     *        column index
+     * @param length The character length to assign for the passed-in column
+     *        index
      */
     public void setLength(int column, int length) {
         _lengths[column] = length;
@@ -370,8 +364,7 @@ public class DbfTableModel extends AbstractTableModel implements
      * Sets the column type for the passed-in field index
      * 
      * @param column The column index
-     * @param type The type of column to assign for the passed-in
-     *        column index
+     * @param type The type of column to assign for the passed-in column index
      */
     public void setType(int column, byte type) {
         _types[column] = type;
@@ -632,8 +625,8 @@ public class DbfTableModel extends AbstractTableModel implements
     }
 
     /**
-     * Delete a column, iterating through all the records and deleting
-     * that part of each record.
+     * Delete a column, iterating through all the records and deleting that part
+     * of each record.
      */
     protected void deleteColumn(int columnIndex) {
         Iterator rows = getRecords();
@@ -684,8 +677,8 @@ public class DbfTableModel extends AbstractTableModel implements
     }
 
     /**
-     * The types in the ArrayList are set - String, Byte, Integer,
-     * Integer - to match the format of the header.
+     * The types in the ArrayList are set - String, Byte, Integer, Integer - to
+     * match the format of the header.
      */
     protected void addColumn(ArrayList recordColumn) {
 
@@ -736,9 +729,8 @@ public class DbfTableModel extends AbstractTableModel implements
     }
 
     /**
-     * Create another DbfTableModel with the same structure as this
-     * one (number of columns, column names, lengths and decimal
-     * counts).
+     * Create another DbfTableModel with the same structure as this one (number
+     * of columns, column names, lengths and decimal counts).
      */
     public DbfTableModel headerClone() {
         int size = getColumnCount();
@@ -762,14 +754,12 @@ public class DbfTableModel extends AbstractTableModel implements
         DbfTableModel model = null;
         try {
             InputStream is = dbf.openStream();
-            try {
-                model = new DbfTableModel(new DbfInputStream(is));
-            } catch (Exception exception) {
-                System.out.println(exception);
-            }
+            model = new DbfTableModel(new DbfInputStream(is));
             is.close();
         } catch (Exception exception) {
-            System.out.println(exception);
+            if (Debug.debugging("shape")) {
+                Debug.error("problem loading DBF file" + exception.getMessage());
+            }
         }
         return model;
     }

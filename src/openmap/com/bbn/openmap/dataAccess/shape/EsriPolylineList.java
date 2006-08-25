@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolylineList.java,v $
 // $RCSfile: EsriPolylineList.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 17:21:28 $
+// $Revision: 1.9 $
+// $Date: 2006/08/25 15:36:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,8 +32,7 @@ import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.util.Debug;
 
 /**
- * An EsriGraphicList ensures that only EsriPolygons are added to its
- * list.
+ * An EsriGraphicList ensures that only EsriPolygons are added to its list.
  * 
  * @author Doug Van Auken
  * @author Don Dietrick
@@ -41,46 +40,50 @@ import com.bbn.openmap.util.Debug;
 public class EsriPolylineList extends EsriGraphicList {
 
     /**
-     * Over-ride the add( ) method to trap for inconsistent shape
-     * geometry. If you are adding a OMGraphic that is not a list,
-     * make sure this list is a sub-list containing multiple geometry
-     * parts. Only add another list to a top level EsriGraphicList.
+     * Over-ride the add( ) method to trap for inconsistent shape geometry. If
+     * you are adding a OMGraphic that is not a list, make sure this list is a
+     * sub-list containing multiple geometry parts. Only add another list to a
+     * top level EsriGraphicList.
      * 
      * @param shape the non-null OMGraphic to add
      */
     public void add(OMGraphic shape) {
         try {
-
-            if (!(shape instanceof EsriPolyline) && shape instanceof OMPoly) {
-                shape = EsriPolyline.convert((OMPoly) shape);
-            } else if (shape instanceof OMLine) {
-                shape = EsriPolyline.convert(EsriPolylineList.convert((OMLine) shape));
-            }
-
-            if (shape instanceof OMGraphicList) {
-                OMGraphicList list = (OMGraphicList) shape;
-                EsriGraphic graphic = (EsriGraphic) list.getOMGraphicAt(0);
-
-                if (graphic instanceof EsriPolyline
-                        || graphic instanceof EsriPolylineList) {
-                    graphics.add(shape);
-                    addExtents(((EsriGraphicList) shape).getExtents());
-                } else if (graphic instanceof OMGraphic) {
-                    // Try recursively...
-                    add((OMGraphic) graphic);
-                } else {
-                    Debug.message("esri",
-                            "EsriPolylineList.add()- graphic list isn't EsriPolylineList, can't add.");
-                }
-            } else if (shape instanceof EsriPolyline) {
+            if (typeMatches(shape)) {
                 graphics.add(shape);
-                addExtents(((EsriPolyline) shape).getExtents());
+                addExtents(((EsriGraphic) shape).getExtents());
+            } else if (shape instanceof OMPoly) {
+                EsriPolyline eg = convert((OMPoly) shape);
+                if (typeMatches(eg)) {
+                    graphics.add(eg);
+                }
+            } else if (shape instanceof OMLine) {
+                OMPoly omp = EsriPolylineList.convert((OMLine) shape);
+                if (omp != null) {
+                    EsriPolyline eg = convert(omp);
+                    if (typeMatches(eg)) {
+                        graphics.add(eg);
+                    }
+                }
+            } else if (shape instanceof OMGraphicList
+                    && !((OMGraphicList) shape).isVague()) {
+                for (Iterator it = ((OMGraphicList) shape).iterator(); it.hasNext();) {
+                    add((OMGraphic) it.next());
+                }
             } else {
                 Debug.message("esri",
-                        "EsriPolylineList.add()- graphic isn't EsriPolyline, can't add.");
+                        "EsriPolygonList.add()- graphic isn't a EsriPoly or OMPoly, can't add.");
             }
         } catch (ClassCastException cce) {
         }
+    }
+
+    public EsriPolyline convert(OMPoly ompoly) {
+        return EsriPolyline.convert(ompoly);
+    }
+
+    public boolean typeMatches(OMGraphic omg) {
+        return (omg instanceof EsriGraphic && ((EsriGraphic) omg).getType() == getType());
     }
 
     /**
@@ -107,8 +110,8 @@ public class EsriPolylineList extends EsriGraphicList {
     }
 
     /**
-     * Construct an EsriPolylineList with an initial capacity and a
-     * standard increment value.
+     * Construct an EsriPolylineList with an initial capacity and a standard
+     * increment value.
      * 
      * @param initialCapacity the initial capacity of the list
      * @param capacityIncrement the capacityIncrement for resizing
@@ -140,4 +143,3 @@ public class EsriPolylineList extends EsriGraphicList {
         return ret;
     }
 }
-

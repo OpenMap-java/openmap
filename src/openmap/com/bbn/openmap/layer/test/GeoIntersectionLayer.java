@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoIntersectionLayer.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/12/09 21:09:13 $
+//$Revision: 1.3 $
+//$Date: 2006/08/25 15:36:16 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -372,7 +372,6 @@ public class GeoIntersectionLayer extends EditorLayer implements
                 da.setSelectPaint(new Color(200, 100, 100, 200));
 
                 EsriGraphicList shapeList = EsriGraphicList.getEsriGraphicList(shpFile.toURL(),
-                        new File(shpFilePath.replaceAll(".shp", ".shx")).toURL(),
                         da,
                         DbfTableModel.getDbfTableModel(new File(shpFilePath.replaceAll(".shp",
                                 ".dbf")).toURL()));

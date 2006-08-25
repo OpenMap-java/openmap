@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.11 $
-// $Date: 2006/02/13 16:56:43 $
+// $Revision: 1.12 $
+// $Date: 2006/08/25 15:36:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,9 +23,11 @@
 package com.bbn.openmap.layer.shape.areas;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -33,16 +35,18 @@ import java.util.Vector;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.shape.DbfTableModel;
+import com.bbn.openmap.dataAccess.shape.ShapeConstants;
 import com.bbn.openmap.dataAccess.shape.input.DbfInputStream;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.shape.CSVShapeInfoFile;
-import com.bbn.openmap.layer.shape.ESRIRecord;
 import com.bbn.openmap.layer.shape.ShapeLayer;
 import com.bbn.openmap.layer.shape.SpatialIndex;
+import com.bbn.openmap.layer.shape.SpatialIndex.Entry;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGeometryList;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -61,51 +65,51 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  * 
  * <pre>
- *       
- *        
- *         layer.class=com.bbn.openmap.layer.shape.areas.AreaShapeLayer
- *         layer.prettyName=Layer Name
- *         layer.shapeFile=/usr/local/data/shape/shapefile.shp
- *         layer.spatialIndex=/usr/local/data/shape/shapefile.ssx
- *        
- *         # Now, provide a data file that says what the shapes in the .shp
- *         # file are.  You can use the DBF file:
- *         layer.dbfFile=/usr/local/data/shape/shapefile.dbf
- *         # OR a csv file, created yourself or from the .dbf file.  There
- *         # should be the same number of entries in the .csv file that are in
- *         # the .shp file.
- *         layer.csvFile=/usr/local/data/shape/shapefile.csv
- *         # An attribute to tell the AreaHandler to skip over the first row
- *         # of the csv file if it contains descriptive column header names.
- *         layer.csvFileHasHeader=true
- *        
- *         # Default DrawingAttributes properties for everything not defined
- *         # specifically:
- *         layer.lineColor=ff000000
- *         layer.fillColor=ffff00ff
- *        
- *         # Now add any other attributes accepted by the DrawingAttributes
- *         # object, with the prefix as stated above, i.e. layer.lineColor)
- *         #
- *         # The first column index is 0, not 1.
- *         #
- *         # The key index specifies which column in the csv file contains
- *         # unique area names that are listed in the areas list here in the
- *         # properties.  In this case, it's the column that contains MA in one
- *         # of its rows.
- *         layer.keyIndex=4
- *        
- *         # The name index is the column in the csv file that contains what
- *         # should be displayed in the application when a shape is chosen - the
- *         # object's proper name.
- *         layer.nameIndex=4
- *         layer.areas=MA RI
- *         layer.areas.MA.fillColor=ffff0000
- *         layer.areas.MA.lineColor=ff00ff00
- *         layer.areas.RI.fillColor=ffff0000
- *         layer.areas.RI.lineColor=ff00ff00
- *         
- *        
+ *                
+ *                 
+ *                  layer.class=com.bbn.openmap.layer.shape.areas.AreaShapeLayer
+ *                  layer.prettyName=Layer Name
+ *                  layer.shapeFile=/usr/local/data/shape/shapefile.shp
+ *                  layer.spatialIndex=/usr/local/data/shape/shapefile.ssx
+ *                 
+ *                  # Now, provide a data file that says what the shapes in the .shp
+ *                  # file are.  You can use the DBF file:
+ *                  layer.dbfFile=/usr/local/data/shape/shapefile.dbf
+ *                  # OR a csv file, created yourself or from the .dbf file.  There
+ *                  # should be the same number of entries in the .csv file that are in
+ *                  # the .shp file.
+ *                  layer.csvFile=/usr/local/data/shape/shapefile.csv
+ *                  # An attribute to tell the AreaHandler to skip over the first row
+ *                  # of the csv file if it contains descriptive column header names.
+ *                  layer.csvFileHasHeader=true
+ *                 
+ *                  # Default DrawingAttributes properties for everything not defined
+ *                  # specifically:
+ *                  layer.lineColor=ff000000
+ *                  layer.fillColor=ffff00ff
+ *                 
+ *                  # Now add any other attributes accepted by the DrawingAttributes
+ *                  # object, with the prefix as stated above, i.e. layer.lineColor)
+ *                  #
+ *                  # The first column index is 0, not 1.
+ *                  #
+ *                  # The key index specifies which column in the csv file contains
+ *                  # unique area names that are listed in the areas list here in the
+ *                  # properties.  In this case, it's the column that contains MA in one
+ *                  # of its rows.
+ *                  layer.keyIndex=4
+ *                 
+ *                  # The name index is the column in the csv file that contains what
+ *                  # should be displayed in the application when a shape is chosen - the
+ *                  # object's proper name.
+ *                  layer.nameIndex=4
+ *                  layer.areas=MA RI
+ *                  layer.areas.MA.fillColor=ffff0000
+ *                  layer.areas.MA.lineColor=ff00ff00
+ *                  layer.areas.RI.fillColor=ffff0000
+ *                  layer.areas.RI.lineColor=ff00ff00
+ *                  
+ *                 
  * </pre>
  * 
  * <P>
@@ -363,9 +367,8 @@ public class AreaHandler implements PropertyConsumer {
         // Now, match the attributes to the graphics. Find the
         // indexes of the name and the search key. Also figure out
         // which areas have special coloring needs.
-        keyIndex = PropUtils.intFromProperties(props,
-                prefix + keyIndexProperty,
-                keyIndex);
+        keyIndex = PropUtils.intFromProperties(props, prefix
+                + keyIndexProperty, keyIndex);
         nameIndex = PropUtils.intFromProperties(props, prefix
                 + nameIndexProperty, nameIndex);
         String areas = props.getProperty(prefix + areasProperty);
@@ -422,24 +425,32 @@ public class AreaHandler implements PropertyConsumer {
      * Get all the graphics from the shapefile, colored appropriately.
      */
     public OMGraphicList getGraphics() {
-        return getGraphics(90, -180, -90, 180);
-    }
+        if (omgraphics == null) {
+            omgraphics = new OMGraphicList();
+            try {
+                spatialIndex.getOMGraphics(-180,
+                        -90,
+                        180,
+                        90,
+                        omgraphics,
+                        drawingAttributes,
+                        (Projection) null,
+                        (Projection) null);
 
-    /**
-     * Get the graphics for a particular lat/lon area.
-     * 
-     * @param ulLat upper left latitude, in decimal degrees.
-     * @param ulLon upper left longitude, in decimal degrees.
-     * @param lrLat lower right latitude, in decimal degrees.
-     * @param lrLon lower right longitude, in decimal degrees.
-     * @return OMGraphicList
-     */
-    public OMGraphicList getGraphics(float ulLat, float ulLon, float lrLat,
-                                     float lrLon) {
-        return getGraphics((double) ulLat,
-                (double) ulLon,
-                (double) lrLat,
-                (double) lrLon);
+                for (Iterator it = omgraphics.iterator(); it.hasNext();) {
+                    OMGraphic omg = (OMGraphic) it.next();
+                    Integer recNum = (Integer) omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE);
+                    if (recNum != null) {
+                        getDrawParams(recNum.intValue()).setTo(omg);
+                    }
+                }
+            } catch (IOException ioe) {
+                Debug.error(ioe.getMessage());
+            } catch (FormatException fe) {
+                Debug.error(fe.getMessage());
+            }
+        }
+        return omgraphics;
     }
 
     /**
@@ -453,6 +464,22 @@ public class AreaHandler implements PropertyConsumer {
      */
     public OMGraphicList getGraphics(double ulLat, double ulLon, double lrLat,
                                      double lrLon) {
+        return getGraphics(ulLat, ulLon, lrLat, lrLon, (Projection) null);
+    }
+
+    /**
+     * Get the graphics for a particular lat/lon area.
+     * 
+     * @param ulLat upper left latitude, in decimal degrees.
+     * @param ulLon upper left longitude, in decimal degrees.
+     * @param lrLat lower right latitude, in decimal degrees.
+     * @param lrLon lower right longitude, in decimal degrees.
+     * @param proj the current map projection.
+     * @return OMGraphicList
+     */
+    public OMGraphicList getGraphics(double ulLat, double ulLon, double lrLat,
+                                     double lrLon, Projection proj) {
+
         if (cacheURL != null) {
             return omgraphics;
         }
@@ -465,73 +492,72 @@ public class AreaHandler implements PropertyConsumer {
             initialize(originalPrefix, originalProperties);
         }
 
-        OMGraphicList list = null;
-        DrawingAttributes drawParams;
+        OMGraphicList list = new OMGraphicList();
 
         // check for dateline anomaly on the screen. we check for
-        // ulLon >=
-        // lrLon, but we need to be careful of the check for equality
-        // because
-        // of floating point arguments...
+        // ulLon >= lrLon, but we need to be careful of the check for
+        // equality because of floating point arguments...
         if ((ulLon > lrLon)
                 || MoreMath.approximately_equal(ulLon, lrLon, .001f)) {
-            if (Debug.debugging("areas")) {
-                Debug.output("AreaHandler.getGraphics(): Dateline is on screen");
+            if (Debug.debugging("shape")) {
+                Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
             }
 
-            double ymin = (double) Math.min(ulLat, lrLat);
-            double ymax = (double) Math.max(ulLat, lrLat);
+            double ymin = Math.min(ulLat, lrLat);
+            double ymax = Math.max(ulLat, lrLat);
 
-            try {
-                ESRIRecord records1[] = spatialIndex.locateRecords(ulLon,
-                        ymin,
-                        180.0d,
-                        ymax);
-                ESRIRecord records2[] = spatialIndex.locateRecords(-180.0d,
-                        ymin,
-                        lrLon,
-                        ymax);
-                int nRecords1 = records1.length;
-                int nRecords2 = records2.length;
-                list = new OMGraphicList(nRecords1 + nRecords2);
-                for (int i = 0; i < nRecords1; i++) {
-                    drawParams = getDrawParams(records1[i].getRecordNumber());
-                    list.addOMGraphic(recordList(records1[i], drawParams));
-                }
-                for (int i = 0; i < nRecords2; i++) {
-                    drawParams = getDrawParams(records2[i].getRecordNumber());
-                    list.addOMGraphic(recordList(records2[i], drawParams));
-                }
-            } catch (java.io.IOException ex) {
-                ex.printStackTrace();
-            } catch (FormatException fe) {
-                fe.printStackTrace();
-            }
+            checkSpatialIndexEntries(ulLon, ymin, 180.0d, ymax, list, proj);
+            checkSpatialIndexEntries(-180.0d, ymin, lrLon, ymax, list, proj);
+
         } else {
 
-            double xmin = (double) Math.min(ulLon, lrLon);
-            double xmax = (double) Math.max(ulLon, lrLon);
-            double ymin = (double) Math.min(ulLat, lrLat);
-            double ymax = (double) Math.max(ulLat, lrLat);
+            double xmin = Math.min(ulLon, lrLon);
+            double xmax = Math.max(ulLon, lrLon);
+            double ymin = Math.min(ulLat, lrLat);
+            double ymax = Math.max(ulLat, lrLat);
 
-            try {
-                ESRIRecord records[] = spatialIndex.locateRecords(xmin,
-                        ymin,
-                        xmax,
-                        ymax);
-                int nRecords = records.length;
-                list = new OMGraphicList(nRecords);
-                for (int i = 0; i < nRecords; i++) {
-                    drawParams = getDrawParams(records[i].getRecordNumber());
-                    list.addOMGraphic(recordList(records[i], drawParams));
-                }
-            } catch (java.io.IOException ex) {
-                ex.printStackTrace();
-            } catch (FormatException fe) {
-                fe.printStackTrace();
-            }
+            checkSpatialIndexEntries(xmin, ymin, xmax, ymax, list, proj);
         }
+
         return list;
+    }
+
+    /**
+     * Uses the SpatialIndex object to create the OMGraphics that fit within the
+     * boundaries.
+     * 
+     * @param xmin
+     * @param ymin
+     * @param xmax
+     * @param ymax
+     * @param retList
+     * @param proj
+     */
+    protected void checkSpatialIndexEntries(double xmin, double ymin,
+                                            double xmax, double ymax,
+                                            OMGraphicList retList,
+                                            Projection proj) {
+
+        try {
+            // There should be the same number of objects in both iterators.
+            Iterator entryIt = spatialIndex.entryIterator();
+            Iterator omgIt = getGraphics().iterator();
+            while (entryIt.hasNext() && omgIt.hasNext()) {
+                Entry entry = (Entry) entryIt.next();
+                OMGraphic omg = (OMGraphic) omgIt.next();
+                if (entry.intersects(xmin, ymin, xmax, ymax)) {
+                     if (proj != null) {
+                        omg.generate(proj);
+                    }
+                    retList.add(omg);
+                }
+            }
+
+        } catch (IOException ioe) {
+            Debug.error(ioe.getMessage());
+        } catch (FormatException fe) {
+            Debug.error(fe.getMessage());
+        }
     }
 
     /**
@@ -755,12 +781,13 @@ public class AreaHandler implements PropertyConsumer {
             for (int i = 0; i < numgraphics; i++) {
                 try {
                     OMGraphic omg = list.getOMGraphicAt(i);
-                    Integer recnum = (Integer) (omg.getAppObject());
+                    Integer recnum = (Integer) (omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE));
                     // OFF BY ONE!!! The shape record numbers
                     // assigned to the records start with 1, while
                     // everything else we do starts with 0...
                     Object inforec = dbfModel.getRecord(recnum.intValue() - 1);
-                    omg.setAppObject(inforec);
+                    omg.putAttribute(ShapeConstants.SHAPE_DBF_INFO_ATTRIBUTE,
+                            inforec);
                 } catch (ClassCastException cce) {
                     if (Debug.debugging("shape")) {
                         cce.printStackTrace();
@@ -770,27 +797,6 @@ public class AreaHandler implements PropertyConsumer {
                 }
             }
         }
-    }
-
-    /**
-     * Gets the record graphics for a record with multiple graphics.
-     * 
-     * @return OMGraphicList
-     */
-    protected OMGraphicList recordList(ESRIRecord rec,
-                                       DrawingAttributes drawParams) {
-        int recNumber = rec.getRecordNumber();
-        OMGraphicList recList = new OMGraphicList(10);
-
-        if (drawParams != null) {
-            rec.addOMGraphics(recList, drawParams);
-        } else {
-            rec.addOMGraphics(recList, DrawingAttributes.getDefaultClone());
-        }
-        // Remember recordNumber to work with .dbf file
-        recList.setAppObject(new Integer(recNumber));
-
-        return recList;
     }
 
     /**
@@ -897,10 +903,10 @@ public class AreaHandler implements PropertyConsumer {
                 // below should be a vector like [ "Massachusetts",
                 // "MA" ];
 
-                Object obj = graphic.getAppObject();
+                Object obj = graphic.getAttribute(ShapeConstants.SHAPE_DBF_INFO_ATTRIBUTE);
                 if (obj == null) {
                     if (Debug.debugging("verbose")) {
-                        Debug.error("AreaHandler: Caught a null app object for graphic #"
+                        Debug.error("AreaHandler: No attributes for graphic #"
                                 + i);
                     }
                     continue;

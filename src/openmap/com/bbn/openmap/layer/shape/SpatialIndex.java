@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/08/09 18:48:03 $
+// $Revision: 1.11 $
+// $Date: 2006/08/25 15:36:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,22 +29,29 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
+import com.bbn.openmap.dataAccess.shape.EsriGraphicFactory;
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.BinaryFile;
-import com.bbn.openmap.io.Closable;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * A Spatial Index is a variation on a Shape Index, adding the
- * bounding box of the shape to the index.
+ * A Spatial Index is a variation on a Shape Index, adding the bounding box of
+ * the shape to the index.
  * <p>
- * The file has a 100 byte header identical to a Shape Index followed
- * by <i>n </i> records.
+ * The file has a 100 byte header identical to a Shape Index followed by <i>n
+ * </i> records.
  * <p>
  * The record layout of the spatial index is as follows:
  * <p>
@@ -101,28 +108,25 @@ import com.bbn.openmap.util.Debug;
  * </TABLE>
  * 
  * <H2>Usage</H2>
- * <DT>java com.bbn.openmap.layer.shape.SpatialIndex -d file.ssx
- * </DT>
- * <DD><i>Dumps spatial index information, excluding bounding boxes
- * to stdout. Useful for comparing to a shape index. </i></DD>
+ * <DT>java com.bbn.openmap.layer.shape.SpatialIndex -d file.ssx </DT>
+ * <DD><i>Dumps spatial index information, excluding bounding boxes to stdout.
+ * Useful for comparing to a shape index. </i></DD>
  * <p>
- * <DT>java com.bbn.openmap.layer.shape.SpatialIndex -d -b file.ssx
- * </DT>
- * <DD><i>Dumps spatial index information including bounding boxes to
- * stdout. </i></DD>
+ * <DT>java com.bbn.openmap.layer.shape.SpatialIndex -d -b file.ssx </DT>
+ * <DD><i>Dumps spatial index information including bounding boxes to stdout.
+ * </i></DD>
  * <p>
- * <DT>java com.bbn.openmap.layer.shape.SpatialIndex -c file.ssx
- * file.shp</DT>
- * <DD><i>Creates spatial index <code>file.ssx</code> from shape
- * file <code>file.shp</code>. </i></DD>
+ * <DT>java com.bbn.openmap.layer.shape.SpatialIndex -c file.ssx file.shp</DT>
+ * <DD><i>Creates spatial index <code>file.ssx</code> from shape file
+ * <code>file.shp</code>. </i></DD>
  * <p>
  * 
  * <H2>Notes</H2>
- * When reading the Shape file, the content length is the length of
- * the record's contents, exclusive of the record header (8 bytes). So
- * the size that we need to read in from the Shape file is actually
- * denoted as ((contentLength * 2) + 8). This converts from 16bit
- * units to 8 bit bytes and adds the 8 bytes for the record header.
+ * When reading the Shape file, the content length is the length of the record's
+ * contents, exclusive of the record header (8 bytes). So the size that we need
+ * to read in from the Shape file is actually denoted as ((contentLength * 2) +
+ * 8). This converts from 16bit units to 8 bit bytes and adds the 8 bytes for
+ * the record header.
  * 
  * <H2>To Do</H2>
  * <UL>
@@ -131,10 +135,10 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.10 $ $Date: 2005/08/09 18:48:03 $
+ * @version $Revision: 1.11 $ $Date: 2006/08/25 15:36:14 $
  * @see ShapeIndex
  */
-public class SpatialIndex extends ShapeUtils implements Closable {
+public class SpatialIndex extends ShapeUtils {
 
     /** Size of a shape file header in bytes. */
     public final static int SHAPE_FILE_HEADER_LENGTH = 100;
@@ -164,6 +168,16 @@ public class SpatialIndex extends ShapeUtils implements Closable {
     protected ESRIBoundingBox bounds = null;
 
     /**
+     * A cached list of the SpatialIndex file entries, for repeated reference.
+     */
+    protected List entries;
+
+    /**
+     * A factory object to use to create OMGraphics from the shp file.
+     */
+    EsriGraphicFactory factory = new EsriGraphicFactory();
+
+    /**
      * Opens a spatial index file for reading.
      * 
      * @param ssxFilename the name of the spatial index file
@@ -178,8 +192,7 @@ public class SpatialIndex extends ShapeUtils implements Closable {
      * 
      * @param ssxFilename the name of the spatial index file
      * @param shpFilename the name of the shape file
-     * @exception IOException if something goes wrong opening the
-     *            files
+     * @exception IOException if something goes wrong opening the files
      */
     public SpatialIndex(String ssxFilename, String shpFilename)
             throws IOException {
@@ -209,17 +222,17 @@ public class SpatialIndex extends ShapeUtils implements Closable {
     }
 
     /**
-     * Reset the bounds so they will be recalculated the next time a
-     * file is read.
+     * Reset the bounds so they will be recalculated the next time a file is
+     * read.
      */
     public void resetBounds() {
         bounds = null;
     }
 
     /**
-     * Creates a record instance from the shape file data. Calls the
-     * appropriate record constructor based on the shapeType, and
-     * passes the buffer and offset to that constructor.
+     * Creates a record instance from the shape file data. Calls the appropriate
+     * record constructor based on the shapeType, and passes the buffer and
+     * offset to that constructor.
      * 
      * @param shapeType the shape file's shape type, enumerated in
      *        <code>ShapeUtils</code>
@@ -234,16 +247,16 @@ public class SpatialIndex extends ShapeUtils implements Closable {
         case SHAPE_TYPE_NULL:
             return null;
         case SHAPE_TYPE_POINT:
-            //          return new ESRIPointRecord(b, off);
+            // return new ESRIPointRecord(b, off);
             return new ESRIPointRecord(b, off, pointIcon);
         case SHAPE_TYPE_POLYGON:
         case SHAPE_TYPE_ARC:
-            //      case SHAPE_TYPE_POLYLINE:
+            // case SHAPE_TYPE_POLYLINE:
             return new ESRIPolygonRecord(b, off);
         case SHAPE_TYPE_MULTIPOINT:
             Debug.output("SpatialIndex.makeESRIRecord: Arc NYI");
             return null;
-        //          return new ESRIMultipointRecord(b, off);
+            // return new ESRIMultipointRecord(b, off);
         default:
             return null;
         }
@@ -251,16 +264,15 @@ public class SpatialIndex extends ShapeUtils implements Closable {
 
     /**
      * Locates records in the shape file that intersect with the given
-     * rectangle. The spatial index is searched for intersections and
-     * the appropriate records are read from the shape file.
+     * rectangle. The spatial index is searched for intersections and the
+     * appropriate records are read from the shape file.
      * 
      * @param xmin the smaller of the x coordinates
      * @param ymin the smaller of the y coordinates
      * @param xmax the larger of the x coordinates
      * @param ymax the larger of the y coordinates
      * @return an array of records that intersect the given rectangle
-     * @exception IOException if something goes wrong reading the
-     *            files
+     * @exception IOException if something goes wrong reading the files
      */
     public ESRIRecord[] locateRecords(double xmin, double ymin, double xmax,
                                       double ymax) throws IOException,
@@ -288,18 +300,18 @@ public class SpatialIndex extends ShapeUtils implements Closable {
         // Need to figure out what the shape type is...
         ssx.seek(32);
 
-        //      int shapeType = readLEInt(ssx);
-        ///
+        // int shapeType = readLEInt(ssx);
+        // /
         ssx.byteOrder(false);
         int shapeType = ssx.readInteger();
-        ///
+        // /
         ssx.seek(100); // skip the file header
 
         while (true) {
             int result = ssx.read(ixRecord, 0, SPATIAL_INDEX_RECORD_LENGTH);
-            //          if (result == -1) {
+            // if (result == -1) {
             if (result <= 0) {
-                break;//EOF
+                break;// EOF
             } else {
                 recNum++;
                 double xmin2 = readLEDouble(ixRecord, 8);
@@ -330,8 +342,8 @@ public class SpatialIndex extends ShapeUtils implements Closable {
                     int byteOffset = offset * 2;
                     int contentLength = readBEInt(ixRecord, 4);
                     int recordSize = (contentLength * 2) + 8;
-                    //                  System.out.print(".");
-                    //                  System.out.flush();
+                    // System.out.print(".");
+                    // System.out.flush();
 
                     if (recordSize < 0) {
                         Debug.error("SpatialIndex: supposed to read record size of "
@@ -392,9 +404,189 @@ public class SpatialIndex extends ShapeUtils implements Closable {
     }
 
     /**
-     * Determines if two rectangles intersect. Actually, this method
-     * determines if two rectangles don't intersect, and then returns
-     * a negation of that result. But the bottom line is the same.
+     * The factory is used to filter and create OMGraphics from a shape file.
+     * This accessor is provided in order to allow you to modify the data
+     * projection it uses, or the line type.
+     * 
+     * @return
+     */
+    public EsriGraphicFactory getFactory() {
+        if (factory == null) {
+            factory = new EsriGraphicFactory();
+        }
+        return factory;
+    }
+
+    public void setFactory(EsriGraphicFactory factory) {
+        this.factory = factory;
+    }
+
+    /**
+     * Locates OMGraphics in the shape file that intersect with the given
+     * rectangle. The spatial index is searched for intersections and the
+     * appropriate OMGraphics are created from the shape file.
+     * 
+     * @param xmin the smaller of the x coordinates
+     * @param ymin the smaller of the y coordinates
+     * @param xmax the larger of the x coordinates
+     * @param ymax the larger of the y coordinates
+     * @param list OMGraphicList to add OMGraphics to and return, if null one
+     *        will be created.
+     * @param drawingAttributes DrawingAttributes to set on the OMGraphics.
+     * @param mapProj the Map Projection for the OMGraphics so they can be
+     *        generated right after creation.
+     * @param dataProj for preprojected data, the data's projection to use to
+     *        translate the coordinates to decimal degree lat/lon. Can be null
+     *        to leave the coordinates untouched.
+     * @return an OMGraphicList containing OMGraphics that intersect the given
+     *         rectangle
+     * @exception IOException if something goes wrong reading the files
+     */
+    public OMGraphicList getOMGraphics(double xmin, double ymin, double xmax,
+                                       double ymax, OMGraphicList list,
+                                       DrawingAttributes drawingAttributes,
+                                       Projection mapProj, Projection dataProj)
+            throws IOException, FormatException {
+
+        if (Debug.debugging("spatialindex")) {
+            Debug.output("locateRecords:");
+            Debug.output("\txmin: " + xmin + "; ymin: " + ymin);
+            Debug.output("\txmax: " + xmax + "; ymax: " + ymax);
+        }
+
+        if (list == null) {
+            list = new OMGraphicList();
+        }
+
+        if (ssx == null || shp == null) {
+            return list;
+        }
+
+        EsriGraphicFactory.ReadByteTracker byteTracker = new EsriGraphicFactory.ReadByteTracker();
+        EsriGraphicFactory factory = getFactory();
+
+        for (Iterator it = entryIterator(); it.hasNext();) {
+            Entry entry = (Entry) it.next();
+
+            if (entry.intersects(xmin, ymin, xmax, ymax)) {
+
+                try {
+
+                    OMGraphic omg = (OMGraphic) factory.makeEsriGraphicFromRecord(entry.getByteOffset(),
+                            shp,
+                            drawingAttributes,
+                            pointIcon,
+                            byteTracker);
+
+                    if (omg != null) {
+                        omg.generate(mapProj);
+                        list.add(omg);
+                    }
+
+                } catch (IOException ioe) {
+                    Debug.error("SpatialIndex.locateRecords: IOException. ");
+                    ioe.printStackTrace();
+                    break;
+                }
+            }
+        }
+
+        return list;
+
+    }
+
+    /**
+     * Skips the BinaryFile for the shp data to the offset and reads the record
+     * data there, creating an OMGraphic from that data.
+     * 
+     * @param byteOffset, usually gotten from an Entry object.
+     * @param drawingAttributes
+     * @return
+     * @throws IOException
+     * @throws FormatException
+     */
+    public OMGraphic getOMGraphicAtOffset(int byteOffset,
+                                          DrawingAttributes drawingAttributes)
+            throws IOException, FormatException {
+        return (OMGraphic) getFactory().makeEsriGraphicFromRecord(byteOffset,
+                shp,
+                drawingAttributes,
+                pointIcon,
+                new EsriGraphicFactory.ReadByteTracker());
+    }
+
+    /**
+     * Provides an iterator over the SpatialIndex entries.
+     * 
+     * @return
+     * @throws IOException
+     * @throws FormatException
+     */
+    public Iterator entryIterator() throws IOException, FormatException {
+        if (entries == null) {
+            boolean gatherBounds = false;
+            if (bounds == null) {
+                bounds = new ESRIBoundingBox();
+                gatherBounds = true;
+            }
+
+            entries = readIndexFile(gatherBounds ? bounds : null);
+        }
+
+        return entries.iterator();
+    }
+
+    /**
+     * 
+     * @param bounds if not null, add min/max values to them.
+     * @return
+     * @throws IOException
+     * @throws FormatException
+     */
+    protected List readIndexFile(ESRIBoundingBox bounds) throws IOException,
+            FormatException {
+        entries = new ArrayList();
+
+        byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
+        ssx.byteOrder(false);
+        ssx.seek(100); // skip the file header
+
+        while (true) {
+            int result = ssx.read(ixRecord, 0, SPATIAL_INDEX_RECORD_LENGTH);
+            if (result <= 0) {
+                break;// EOF
+            } else {
+                double xmin = readLEDouble(ixRecord, 8);
+                double ymin = readLEDouble(ixRecord, 16);
+                double xmax = readLEDouble(ixRecord, 24);
+                double ymax = readLEDouble(ixRecord, 32);
+                int byteOffset = readBEInt(ixRecord, 0) * 2;
+
+                if (Debug.debugging("spatialindexdetail")) {
+                    Debug.output("  " + xmin + ", " + ymin + "\n  " + xmax
+                            + ", " + ymax);
+                }
+
+                Entry entry = new Entry(xmin, ymin, xmax, ymax, byteOffset);
+                entries.add(entry);
+
+                if (bounds != null) {
+                    bounds.addPoint(xmin, ymin);
+                    bounds.addPoint(xmax, ymax);
+                }
+            }
+        }
+
+        ssx.close();
+
+        return entries;
+
+    }
+
+    /**
+     * Determines if two rectangles intersect. Actually, this method determines
+     * if two rectangles don't intersect, and then returns a negation of that
+     * result. But the bottom line is the same.
      * 
      * @param xmin1 the small x of rectangle 1
      * @param ymin1 the small y of rectangle 1
@@ -427,10 +619,10 @@ public class SpatialIndex extends ShapeUtils implements Closable {
         ssx.seek(100); // skip the file header
         while (true) {
             int result = ssx.read(ixRecord, 0, SPATIAL_INDEX_RECORD_LENGTH);
-            //          if (result == -1) {
+            // if (result == -1) {
             if (result <= 0) {
-                //              Debug.output("Processed " + recNum + " records");
-                break;//EOF
+                // Debug.output("Processed " + recNum + " records");
+                break;// EOF
             } else {
                 recNum++;
                 int offset = readBEInt(ixRecord, 0);
@@ -463,8 +655,9 @@ public class SpatialIndex extends ShapeUtils implements Closable {
         byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
         byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
         int result;
+        int shapeType;
         int nRecords = 0;
-        int recLengthWords, recLengthBytes;
+        int recLengthWords, recLengthBytes /* , recNumber */;
         long recOffset;
         int recBufSize = 100000;
         byte recBuf[] = new byte[recBufSize];
@@ -482,7 +675,7 @@ public class SpatialIndex extends ShapeUtils implements Closable {
                 } else {
                     nRecords++;
                     recOffset = ptr;
-                    /*int recNumber = */readBEInt(rHdr, 0);
+                    /* recNumber = */readBEInt(rHdr, 0);
                     recLengthWords = readBEInt(rHdr, 4);
                     recLengthBytes = recLengthWords * 2;
 
@@ -494,7 +687,13 @@ public class SpatialIndex extends ShapeUtils implements Closable {
                     }
 
                     result = is.read(recBuf, 0, recLengthBytes);
-                    polyBounds = readBox(recBuf, 4);
+                    // Null shapes are allowed in any shape file, at any time.
+                    shapeType = readLEInt(recBuf, 0);
+                    if (shapeType != SHAPE_TYPE_NULL) {
+                        polyBounds = readBox(recBuf, 4);
+                    } else {
+                        polyBounds = new ESRIBoundingBox();
+                    }
                     ptr += recLengthBytes + 8;
 
                     writeBEInt(outBuf, 0, (int) (recOffset / 2));
@@ -529,12 +728,13 @@ public class SpatialIndex extends ShapeUtils implements Closable {
         byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
         int result;
         int nRecords = 0;
-        int recLengthWords, recLengthBytes;
+        int recLengthWords, recLengthBytes/* , recNumber */;
         long recOffset;
+        int shapeType;
         int recBufSize = 20;
         byte recBuf[] = new byte[recBufSize];
-        double x;
-        double y;
+        double x = 0;
+        double y = 0;
 
         try {
             while (moreRecords) {
@@ -546,7 +746,7 @@ public class SpatialIndex extends ShapeUtils implements Closable {
                 } else {
                     nRecords++;
                     recOffset = ptr;
-                    /* int recNumber = */readBEInt(rHdr, 0);
+                    /* recNumber = */readBEInt(rHdr, 0);
                     recLengthWords = readBEInt(rHdr, 4);
                     recLengthBytes = recLengthWords * 2;
 
@@ -558,8 +758,12 @@ public class SpatialIndex extends ShapeUtils implements Closable {
                     }
 
                     result = is.read(recBuf, 0, recLengthBytes);
-                    x = readLEDouble(recBuf, 4);
-                    y = readLEDouble(recBuf, 12);
+                    // Null shapes are allowed in any shape file, at any time.
+                    shapeType = readLEInt(recBuf, 0);
+                    if (shapeType != SHAPE_TYPE_NULL) {
+                        x = readLEDouble(recBuf, 4);
+                        y = readLEDouble(recBuf, 12);
+                    }
                     ptr += recLengthBytes + 8;
 
                     writeBEInt(outBuf, 0, (int) (recOffset / 2));
@@ -582,9 +786,73 @@ public class SpatialIndex extends ShapeUtils implements Closable {
     }
 
     /**
-     * Creates a spatial index for a shape file. Reads the records
-     * from the shape file, writing appropriate index records to the
-     * spatial index file.
+     * Writes the spatial index for a null shape file.
+     * 
+     * @param is the shape file input stream
+     * @param ptr the current position in the file
+     * @param os the spatial index file output stream
+     */
+    protected static void indexNulls(InputStream is, long ptr, OutputStream os) {
+        boolean moreRecords = true;
+        byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
+        byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
+        int result;
+        int nRecords = 0;
+        int recLengthWords, recLengthBytes/* , recNumber */;
+        long recOffset;
+        int recBufSize = 20;
+        byte recBuf[] = new byte[recBufSize];
+        double x;
+        double y;
+
+        try {
+            while (moreRecords) {
+                result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
+                if (result < 0) {
+                    moreRecords = false;
+                    Debug.output("Found " + nRecords + " records");
+                    Debug.output("recBufSize = " + recBufSize);
+                } else {
+                    nRecords++;
+                    recOffset = ptr;
+                    /* recNumber = */readBEInt(rHdr, 0);
+                    recLengthWords = readBEInt(rHdr, 4);
+                    recLengthBytes = recLengthWords * 2;
+
+                    if (recLengthBytes > recBufSize) {
+                        Debug.output("Shapefile SpatialIndex increasing recBufSize to "
+                                + recLengthBytes);
+                        recBufSize = recLengthBytes;
+                        recBuf = new byte[recBufSize];
+                    }
+
+                    result = is.read(recBuf, 0, recLengthBytes);
+                    x = 0;
+                    y = 0;
+                    ptr += recLengthBytes + 8;
+
+                    writeBEInt(outBuf, 0, (int) (recOffset / 2));
+                    writeBEInt(outBuf, 4, recLengthWords);
+                    writeLEDouble(outBuf, 8, x);
+                    writeLEDouble(outBuf, 16, y);
+                    writeLEDouble(outBuf, 24, x);
+                    writeLEDouble(outBuf, 32, y);
+                    os.write(outBuf, 0, SPATIAL_INDEX_RECORD_LENGTH);
+                }
+            }
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (java.io.IOException e) {
+            }
+        }
+    }
+
+    /**
+     * Creates a spatial index for a shape file. Reads the records from the
+     * shape file, writing appropriate index records to the spatial index file.
      * 
      * @param inFile the shape file
      * @param outFile the spatial index file
@@ -602,20 +870,24 @@ public class SpatialIndex extends ShapeUtils implements Closable {
             shapeType = readLEInt(fileHeader, 32);
             switch (shapeType) {
             case SHAPE_TYPE_NULL:
-                Debug.error("Unable to index shape type NULL");
+                indexNulls(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
                 break;
             case SHAPE_TYPE_POINT:
+            case SHAPE_TYPE_POINTZ:
+            case SHAPE_TYPE_POINTM:
                 indexPoints(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
                 break;
-            case SHAPE_TYPE_ARC:
-                //          case SHAPE_TYPE_POLYLINE:
-                indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
-                break;
-            case SHAPE_TYPE_POLYGON:
-                indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
-                break;
             case SHAPE_TYPE_MULTIPOINT:
-                Debug.error("Shapefile SpatialIndex: Unable to index shape type MULTIPOINT");
+            case SHAPE_TYPE_MULTIPOINTZ:
+            case SHAPE_TYPE_MULTIPOINTM:
+                // case SHAPE_TYPE_ARC:
+            case SHAPE_TYPE_POLYLINE:
+            case SHAPE_TYPE_POLYLINEZ:
+            case SHAPE_TYPE_POLYLINEM:
+            case SHAPE_TYPE_POLYGON:
+            case SHAPE_TYPE_POLYGONZ:
+            case SHAPE_TYPE_POLYGONM:
+                indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
                 break;
             default:
                 Debug.error("Shapefile SpatialIndex.createIndex:  Unknown shape type: "
@@ -634,8 +906,8 @@ public class SpatialIndex extends ShapeUtils implements Closable {
     }
 
     /**
-     * Prints a usage statement describing how to use this class from
-     * the command line.
+     * Prints a usage statement describing how to use this class from the
+     * command line.
      * 
      * @param out The output stream to use for output
      */
@@ -660,11 +932,9 @@ public class SpatialIndex extends ShapeUtils implements Closable {
     }
 
     /**
-     * Locate file 'fileName' in classpath, if it is not an absolute
-     * file name.
+     * Locate file 'fileName' in classpath, if it is not an absolute file name.
      * 
-     * @return absolute name of the file as a string if found, null
-     *         otherwise.
+     * @return absolute name of the file as a string if found, null otherwise.
      */
     public static String locateFile(String name) {
         File file = new File(name);
@@ -673,9 +943,9 @@ public class SpatialIndex extends ShapeUtils implements Closable {
         } else {
             java.net.URL url = ClassLoader.getSystemResource(name);
 
-            //OK, now we want to look around for the file, in the
-            //classpaths, and as a resource. It may be a file in
-            //a classpath, available for direct access.
+            // OK, now we want to look around for the file, in the
+            // classpaths, and as a resource. It may be a file in
+            // a classpath, available for direct access.
             if (url != null) {
                 String newname = url.getFile();
                 file = new File(newname);
@@ -688,9 +958,9 @@ public class SpatialIndex extends ShapeUtils implements Closable {
     }
 
     /**
-     * Create a SpatialIndex object with just a shape file name. If
-     * the shape file is local, this method will attempt to build the
-     * spatial index file and place it next to the shape file.
+     * Create a SpatialIndex object with just a shape file name. If the shape
+     * file is local, this method will attempt to build the spatial index file
+     * and place it next to the shape file.
      */
     public static SpatialIndex locateAndSetShapeData(String shapeFileName) {
         SpatialIndex spi = null;
@@ -785,14 +1055,14 @@ public class SpatialIndex extends ShapeUtils implements Closable {
     }
 
     /**
-     * The driver for the command line interface. Reads the command
-     * line arguments and executes appropriate calls.
+     * The driver for the command line interface. Reads the command line
+     * arguments and executes appropriate calls.
      * <p>
      * See the file documentation for usage.
      * 
      * @param argv the command line arguments
-     * @exception IOException if something goes wrong reading or
-     *            writing the file
+     * @exception IOException if something goes wrong reading or writing the
+     *            file
      */
     public static void main(String argv[]) throws IOException {
         int argc = argv.length;
@@ -858,12 +1128,52 @@ public class SpatialIndex extends ShapeUtils implements Closable {
             if (ssx != null) {
                 ssx.close();
             }
-            
+
             return true;
         } catch (IOException ioe) {
 
         }
 
         return false;
+    }
+
+    public static class Entry {
+
+        double xMin;
+        double yMin;
+        double xMax;
+        double yMax;
+        int byteOffset;
+
+        public Entry(double xMin, double yMin, double xMax, double yMax,
+                int byteOffset) {
+            this.xMin = xMin;
+            this.yMin = yMin;
+            this.xMax = xMax;
+            this.yMax = yMax;
+            this.byteOffset = byteOffset;
+        }
+
+        public boolean intersects(double xmin, double ymin, double xmax,
+                                  double ymax) {
+            return SpatialIndex.intersects(xmin,
+                    ymin,
+                    xmax,
+                    ymax,
+                    xMin,
+                    yMin,
+                    xMax,
+                    yMax);
+        }
+
+        public int getByteOffset() {
+            return byteOffset;
+        }
+
+        public void addToBounds(ESRIBoundingBox bounds) {
+            bounds.addPoint(xMin, yMin);
+            bounds.addPoint(xMax, yMax);
+        }
+
     }
 }

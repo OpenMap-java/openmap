@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.22 $
-// $Date: 2006/01/18 17:44:15 $
+// $Revision: 1.23 $
+// $Date: 2006/08/25 15:36:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -57,29 +57,29 @@ import com.bbn.openmap.util.PropUtils;
  * data in the .dbf file.
  * <p>
  * <code><pre>
- *   
  *    
  *     
  *      
- *       ############################
- *       # Properties for a shape layer
- *       shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
- *       shapeLayer.prettyName=Name_for_Menu
- *       shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
- *       shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
- *       shapeLayer.lineColor=ff000000
- *       shapeLayer.fillColor=ff000000
- *       # plus any other properties used by the DrawingAttributes object.
- *       shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
- *       ############################
+ *       
+ *        ############################
+ *        # Properties for a shape layer
+ *        shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
+ *        shapeLayer.prettyName=Name_for_Menu
+ *        shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
+ *        shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
+ *        shapeLayer.lineColor=ff000000
+ *        shapeLayer.fillColor=ff000000
+ *        # plus any other properties used by the DrawingAttributes object.
+ *        shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
+ *        ############################
+ *        
  *       
  *      
  *     
- *    
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.22 $ $Date: 2006/01/18 17:44:15 $
+ * @version $Revision: 1.23 $ $Date: 2006/08/25 15:36:14 $
  * @see SpatialIndex
  */
 public class ShapeLayer extends OMGraphicHandlerLayer implements
@@ -295,7 +295,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                 spatialIndexProperty,
                 "Location of Spatial Index file - .ssx (File, URL or relative file path).",
                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-        
+
         PropUtils.setI18NPropertyInfo(i18n,
                 list,
                 ShapeLayer.class,
@@ -303,7 +303,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                 pointImageURLProperty,
                 "Image file to use for map location of point data (optional).",
                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-        
+
         PropUtils.setI18NPropertyInfo(i18n,
                 list,
                 ShapeLayer.class,
@@ -311,7 +311,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                 shadowXProperty,
                 "Horizontal pixel offset for shadow image for shapes.",
                 null);
-        
+
         PropUtils.setI18NPropertyInfo(i18n,
                 list,
                 ShapeLayer.class,
@@ -344,15 +344,11 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
     /**
      * Create the OMGraphics using the shape file and SpatialIndex.
      * 
-     * @return OMGraphicList
+     * @return OMGraphicList 
      */
     public synchronized OMGraphicList prepare() {
 
-        if (spatialIndex == null) {
-            Debug.message("shape", "ShapeLayer: spatialIndex is null!");
-            return new OMGraphicList();
-        }
-
+        OMGraphicList list = getList();
         Projection projection = getProjection();
 
         if (projection == null) {
@@ -361,14 +357,31 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
             return new OMGraphicList();
         }
 
+        if (spatialIndex == null) {
+            Debug.message("shape", "ShapeLayer: spatialIndex is null!");
+
+            if (list != null) {
+                list.generate(projection, true);// all new graphics
+                return list;
+            } else {
+                // What we'd really like to do is make this a buffered layer at
+                // this point, if we can't find an ssx file and can't create
+                // one.
+                return new OMGraphicList();
+            }
+        }
+
         Point2D ul = projection.getUpperLeft();
         Point2D lr = projection.getLowerRight();
         double ulLat = ul.getY();
         double ulLon = ul.getX();
         double lrLat = lr.getY();
         double lrLon = lr.getX();
-
-        OMGraphicList list = null;
+        
+        if (list != null) {
+            list.clear();
+            list = new OMGraphicList();
+        }
 
         // check for dateline anomaly on the screen. we check for
         // ulLon >= lrLon, but we need to be careful of the check for
@@ -383,23 +396,24 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
             double ymax = Math.max(ulLat, lrLat);
 
             try {
-                ESRIRecord records1[] = spatialIndex.locateRecords(ulLon,
+
+                list = spatialIndex.getOMGraphics(ulLon,
                         ymin,
                         180.0d,
-                        ymax);
-                ESRIRecord records2[] = spatialIndex.locateRecords(-180.0d,
+                        ymax,
+                        list,
+                        drawingAttributes,
+                        projection,
+                        null);
+                list = spatialIndex.getOMGraphics(-180.0d,
                         ymin,
                         lrLon,
-                        ymax);
-                int nRecords1 = records1.length;
-                int nRecords2 = records2.length;
-                list = new OMGraphicList(nRecords1 + nRecords2);
-                for (int i = 0; i < nRecords1; i++) {
-                    records1[i].addOMGraphics(list, drawingAttributes);
-                }
-                for (int i = 0; i < nRecords2; i++) {
-                    records2[i].addOMGraphics(list, drawingAttributes);
-                }
+                        ymax,
+                        list,
+                        drawingAttributes,
+                        projection,
+                        null);
+
             } catch (InterruptedIOException iioe) {
                 // This means that the thread has been interrupted,
                 // probably due to a projection change. Not a big
@@ -413,21 +427,20 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
             }
         } else {
 
-            double xmin = (double) Math.min(ulLon, lrLon);
-            double xmax = (double) Math.max(ulLon, lrLon);
-            double ymin = (double) Math.min(ulLat, lrLat);
-            double ymax = (double) Math.max(ulLat, lrLat);
+            double xmin = Math.min(ulLon, lrLon);
+            double xmax = Math.max(ulLon, lrLon);
+            double ymin = Math.min(ulLat, lrLat);
+            double ymax = Math.max(ulLat, lrLat);
 
             try {
-                ESRIRecord records[] = spatialIndex.locateRecords(xmin,
+                list = spatialIndex.getOMGraphics(xmin,
                         ymin,
                         xmax,
-                        ymax);
-                int nRecords = records.length;
-                list = new OMGraphicList(nRecords);
-                for (int i = 0; i < nRecords; i++) {
-                    records[i].addOMGraphics(list, drawingAttributes);
-                }
+                        ymax,
+                        list,
+                        drawingAttributes,
+                        projection,
+                        null);
             } catch (InterruptedIOException iioe) {
                 // This means that the thread has been interrupted,
                 // probably due to a projection change. Not a big
@@ -439,10 +452,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
             } catch (FormatException fe) {
                 fe.printStackTrace();
             }
-        }
-
-        if (list != null) {
-            list.generate(projection, true);// all new graphics
         }
 
         return list;

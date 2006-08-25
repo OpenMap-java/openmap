@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/MetaDbfTableModel.java,v $
 // $RCSfile: MetaDbfTableModel.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 17:21:28 $
+// $Revision: 1.5 $
+// $Date: 2006/08/25 15:36:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,11 +38,10 @@ import com.bbn.openmap.dataAccess.shape.input.DbfInputStream;
 import com.bbn.openmap.util.Debug;
 
 /**
- * An extension of the DbfTableModel that allows editing of the format
- * of the TbfTableModel, allowing addition and deletion of columns of
- * the DbfTableModel. The original DbfTableModel column headers are
- * scanned and put into records, and edited the rows. Be careful with
- * this.
+ * An extension of the DbfTableModel that allows editing of the format of the
+ * TbfTableModel, allowing addition and deletion of columns of the
+ * DbfTableModel. The original DbfTableModel column headers are scanned and put
+ * into records, and edited the rows. Be careful with this.
  */
 public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
 
@@ -53,8 +52,8 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
 
     protected DbfTableModel source = null;
     /**
-     * Keeps track of the original columns. If a name is changed the
-     * row will be deleted in all the records.
+     * Keeps track of the original columns. If a name is changed the row will be
+     * deleted in all the records.
      */
     protected int originalColumnNumber = 0;
 
@@ -86,8 +85,8 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
     }
 
     /**
-     * Set up the columns of this DbfTableModel, so the parameters of
-     * the source header rows are listed.
+     * Set up the columns of this DbfTableModel, so the parameters of the source
+     * header rows are listed.
      */
     protected void init() {
         _names[META_RECORDNAME_COLUMN_NUMBER] = "Column Name";
@@ -113,8 +112,7 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
 
     /**
      * Remove the record at the index. This extension decreases the
-     * originalColumnNumber which controls which rows[0] can be
-     * edited.
+     * originalColumnNumber which controls which rows[0] can be edited.
      */
     public ArrayList remove(int columnIndex) {
         ArrayList ret = super.remove(columnIndex);
@@ -133,8 +131,8 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
     }
 
     /**
-     * Sets an object at a certain location. The type is translated
-     * from integer values to names for easier use.
+     * Sets an object at a certain location. The type is translated from integer
+     * values to names for easier use.
      */
     public void setValueAt(Object object, int row, int column) {
 
@@ -192,9 +190,8 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
     }
 
     /**
-     * Create a new record, corresponding to a new column in the
-     * source DbfTableModel. Filled in with standard things that can
-     * be edited.
+     * Create a new record, corresponding to a new column in the source
+     * DbfTableModel. Filled in with standard things that can be edited.
      */
     public void addBlankRecord() {
         ArrayList record = new ArrayList();

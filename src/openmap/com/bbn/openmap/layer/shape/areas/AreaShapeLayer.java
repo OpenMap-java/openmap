@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaShapeLayer.java,v $
 // $RCSfile: AreaShapeLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/12/09 21:09:12 $
+// $Revision: 1.8 $
+// $Date: 2006/08/25 15:36:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,9 +35,8 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 
 /**
- * A Layer to use an AreaHandler to display geographic regions on
- * OpenMap. See the AreaHandler for more information on how to set
- * this layer up.
+ * A Layer to use an AreaHandler to display geographic regions on OpenMap. See
+ * the AreaHandler for more information on how to set this layer up.
  * 
  * @see com.bbn.openmap.layer.shape.areas.AreaHandler
  */
@@ -54,8 +53,8 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
     /**
      * Initializes this layer from the given properties.
      * 
-     * @param props the <code>Properties</code> holding settings for
-     *        this layer
+     * @param props the <code>Properties</code> holding settings for this
+     *        layer
      */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
@@ -92,8 +91,11 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
         double lrLat = lr.getY();
         double lrLon = lr.getX();
 
-        OMGraphicList list = areas.getGraphics(ulLat, ulLon, lrLat, lrLon);
-        list.generate(getProjection(), true);
+        OMGraphicList list = areas.getGraphics(ulLat,
+                ulLon,
+                lrLat,
+                lrLon,
+                getProjection());
         return list;
     }
 
@@ -112,9 +114,9 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
         return areas.findPoliticalArea(area_abbrev);
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // MapMouseListener interface
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     private OMGraphic selectedGraphic;
 
     public boolean mouseMoved(MouseEvent e) {
@@ -163,9 +165,8 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
     }
 
     /**
-     * Return a list of the modes that are interesting to the
-     * MapMouseListener. You MUST override this with the modes you're
-     * interested in.
+     * Return a list of the modes that are interesting to the MapMouseListener.
+     * You MUST override this with the modes you're interested in.
      */
     public String[] getMouseModeServiceList() {
         String[] modes = new String[1];
@@ -175,7 +176,7 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
     }
 
     // Mouse Listener events
-    ////////////////////////
+    // //////////////////////
 
     /**
      * Invoked when a mouse button has been pressed on a component.
@@ -222,11 +223,11 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
     public void mouseExited(MouseEvent e) {}
 
     // Mouse Motion Listener events
-    ///////////////////////////////
+    // /////////////////////////////
 
     /**
-     * Invoked when a mouse button is pressed on a component and then
-     * dragged. The listener will receive these events if it
+     * Invoked when a mouse button is pressed on a component and then dragged.
+     * The listener will receive these events if it
      * 
      * @param e MouseEvent
      * @return false
@@ -236,10 +237,9 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
     }
 
     /**
-     * Handle a mouse cursor moving without the button being pressed.
-     * Another layer has consumed the event.
+     * Handle a mouse cursor moving without the button being pressed. Another
+     * layer has consumed the event.
      */
     public void mouseMoved() {}
 
 }
-

@@ -14,20 +14,23 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/LittleEndianInputStream.java,v $
 // $RCSfile: LittleEndianInputStream.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.6 $
+// $Date: 2006/08/25 15:36:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape.input;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UTFDataFormatException;
 
 /**
- * Provides methods for reading data streams in Little Endian and Big
- * Endian. Adapted from the book, Java IO, Elliotte Rusty Harold, Ch.
- * 7.
+ * Provides methods for reading data streams in Little Endian and Big Endian.
+ * Adapted from the book, Java IO, Elliotte Rusty Harold, Ch. 7.
  * 
  * @author Doug Van Auken
  */
@@ -200,4 +203,3 @@ public class LittleEndianInputStream extends DataInputStream {
         return Float.intBitsToFloat(this.readLEInt());
     }
 }
-

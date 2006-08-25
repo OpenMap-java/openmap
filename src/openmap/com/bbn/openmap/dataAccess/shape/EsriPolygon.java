@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygon.java,v $
 // $RCSfile: EsriPolygon.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 17:21:28 $
+// $Revision: 1.9 $
+// $Date: 2006/08/25 15:36:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,9 +28,9 @@ import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.proj.ProjMath;
 
 /**
- * An extension to OMPoly for polygons that typecasts a specific Esri
- * graphic type. Used to ensure that all OMGraphics added to a
- * EsriGraphicList is of the same type.
+ * An extension to OMPoly for polygons that typecasts a specific Esri graphic
+ * type. Used to ensure that all OMGraphics added to a EsriGraphicList is of the
+ * same type.
  * 
  * @author Doug Van Auken
  */
@@ -40,30 +40,39 @@ public class EsriPolygon extends OMPoly implements Cloneable, EsriGraphic {
 
     public EsriPolygon(float[] points, int units, int lineType) {
         super(points, units, lineType);
-        float[] degreePoints = new float[points.length];
-        System.arraycopy(points, 0, degreePoints, 0, points.length);
-        addExtents(ProjMath.arrayRadToDeg(degreePoints));
     }
 
     /**
-     * The lat/lon extent of the EsriGraphic, assumed to contain miny,
-     * minx, maxy maxx in order of the array.
+     * The lat/lon extent of the EsriGraphic, assumed to contain miny, minx,
+     * maxy maxx in order of the array.
      */
     public void setExtents(float[] extents) {
         this.extents = extents;
     }
 
     /**
-     * The lat/lon extent of the EsriGraphic, returned as miny, minx,
-     * maxy maxx in order of the array.
+     * The lat/lon extent of the EsriGraphic, returned as miny, minx, maxy maxx
+     * in order of the array.
      */
     public float[] getExtents() {
         if (extents == null) {
             // These are set to their opposites to guarantee some
             // movement.
             extents = new float[] { 90f, 180f, -90f, -180f };
+
+            float[] points = super.getLatLonArray();
+            float[] degreePoints = new float[points.length];
+            System.arraycopy(points, 0, degreePoints, 0, points.length);
+            addExtents(ProjMath.arrayRadToDeg(degreePoints));
         }
         return extents;
+    }
+
+    /** No-op. */
+    public void setType(int t) {}
+
+    public int getType() {
+        return SHAPE_TYPE_POLYGON;
     }
 
     public void addExtents(float[] graphicExtents) {
@@ -82,11 +91,11 @@ public class EsriPolygon extends OMPoly implements Cloneable, EsriGraphic {
                 ex[3] = graphicExtents[i + 1];
         }
 
-        //      System.out.println("extents of Polygon: " +
-        //                         ex[1] + ", " +
-        //                         ex[0] + ", " +
-        //                         ex[3] + ", " +
-        //                         ex[2]);
+        // System.out.println("extents of Polygon: " +
+        // ex[1] + ", " +
+        // ex[0] + ", " +
+        // ex[3] + ", " +
+        // ex[2]);
     }
 
     public static EsriPolygon convert(OMPoly ompoly) {

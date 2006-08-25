@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/ShpInputStream.java,v $
 // $RCSfile: ShpInputStream.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 17:23:43 $
+// $Revision: 1.9 $
+// $Date: 2006/08/25 15:36:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.bbn.openmap.dataAccess.shape.EsriGraphic;
+import com.bbn.openmap.dataAccess.shape.EsriGraphicFactory;
 import com.bbn.openmap.dataAccess.shape.EsriGraphicList;
 import com.bbn.openmap.dataAccess.shape.EsriPoint;
 import com.bbn.openmap.dataAccess.shape.EsriPointList;
@@ -40,6 +41,7 @@ import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -49,8 +51,7 @@ import com.bbn.openmap.util.Debug;
  */
 public class ShpInputStream implements ShapeConstants {
     /**
-     * An input stream to process primitives in Little Endian or Big
-     * Endian
+     * An input stream to process primitives in Little Endian or Big Endian
      */
     private LittleEndianInputStream _leis = null;
 
@@ -85,27 +86,47 @@ public class ShpInputStream implements ShapeConstants {
      * 
      * @param indexData The index data retreived from the .shx file
      * @return EsriGraphicList A list of geometry
+     * @deprecated use getGeometry() instead, indexData isn't used.
      */
     public EsriGraphicList getGeometry(int[][] indexData) throws Exception {
-        EsriGraphicList list = null;
-        int shapeType = readHeader();
-        if (shapeType == 1) {
-            list = getPointGeometry(indexData);
-        } else if (shapeType == 3) {
-            list = getPolyGeometry(indexData, 3);
-        } else if (shapeType == 5) {
-            list = getPolyGeometry(indexData, 5);
-        }
-        return list;
+        return getGeometry();
     }
 
     /**
-     * Creates an array that specifies at what index a parts geometry
-     * begins with
+     * Reads geometry from a .shp file. This method will create an
+     * EsriGraphicFactory with the default settings (LINETYPE_STRAIGHT and no
+     * data projection available).
      * 
-     * @return An array whose elements denote the position where a
-     *         part begins witin an array of point data for a given
-     *         shape
+     * @return EsriGraphicList A list of geometry
+     */
+    public EsriGraphicList getGeometry() throws Exception {
+        return getGeometry(new EsriGraphicFactory());
+    }
+
+    /**
+     * Reads geometry from a .shp file. This method will use the provided
+     * EsriGraphicFactory.
+     * 
+     * @param factory an EsriGraphicFactory to be used to read from the internal
+     *        stream.
+     * @return EsriGraphicList A list of geometry
+     */
+    public EsriGraphicList getGeometry(EsriGraphicFactory factory)
+            throws Exception {
+        return (EsriGraphicList) factory.getEsriGraphics(_leis,
+                drawingAttributes,
+                (Object) null,
+                (Projection) null,
+                (OMGraphicList) null);
+    }
+
+    /**
+     * Creates an array that specifies at what index a parts geometry begins
+     * with
+     * 
+     * @return An array whose elements denote the position where a part begins
+     *         witin an array of point data for a given shape
+     * @deprecated not used.
      */
     protected int[] getPartOffsets(OMGraphicList sublist) {
         int pos = 0;
@@ -120,54 +141,52 @@ public class ShpInputStream implements ShapeConstants {
     }
 
     /**
-     * Iterates through the given input stream to contruct geometry
-     * objects
+     * Iterates through the given input stream to contruct geometry objects
      * 
-     * @param indexData A list of offsets obtained by iterating
-     *        through the associated SHX file
-     * @return list An OMGraphicList that contains the collection of
-     *         objects created by iterating through this input stream
+     * @param indexData A list of offsets obtained by iterating through the
+     *        associated SHX file
+     * @return list An OMGraphicList that contains the collection of objects
+     *         created by iterating through this input stream *
+     * @deprecated not used.
      */
     public EsriGraphicList getPointGeometry(int[][] indexData) throws Exception {
 
         EsriGraphicList list = new EsriPointList();
-        double lambda, phi;
         int numShapes = indexData[1].length;
 
         EsriPoint point;
         for (int i = 0; i < numShapes; i++) {
-            Integer shpRecordIndex = new Integer(_leis.readInt());
-            /*int shpContentLength = */_leis.readInt();
-            /*int shpType = */_leis.readLEInt();
+            int shpRecord = _leis.readInt();
+            /* int shpContentLength = */_leis.readInt();
+            int shpType = _leis.readLEInt();
+            if (shpType != SHAPE_TYPE_NULL) {
 
-            lambda = _leis.readLEDouble();
-            phi = _leis.readLEDouble();
+                double lambda = _leis.readLEDouble();
+                double phi = _leis.readLEDouble();
 
-            Double d1 = new Double(lambda);
-            Double d2 = new Double(phi);
+                float f1 = (float) lambda;
+                float f2 = (float) phi;
 
-            float f1 = d1.floatValue();
-            float f2 = d2.floatValue();
-
-            point = new EsriPoint(f2, f1);
-            //point.setAppObject(new Integer(shpRecord));
-            point.putAttribute(SHAPE_INDEX_ATTRIBUTE, shpRecordIndex);
-            if (drawingAttributes != null) {
-                drawingAttributes.setTo(point);
-            } else {
-                DrawingAttributes.DEFAULT.setTo(point);
+                point = new EsriPoint(f2, f1);
+                point.putAttribute(SHAPE_INDEX_ATTRIBUTE,
+                        new Integer(shpRecord));
+                if (drawingAttributes != null) {
+                    drawingAttributes.setTo(point);
+                } else {
+                    DrawingAttributes.DEFAULT.setTo(point);
+                }
+                list.add(point);
             }
-            list.add(point);
         }
         return list;
     }
 
     /**
-     * Iterates through each part of shape to obtain the total number
-     * of points
+     * Iterates through each part of shape to obtain the total number of points
      * 
      * @param sublist A list that contains multiple parts
      * @return The total number of points for a given shape
+     * @deprecated not used.
      */
     protected int getPointsPerShape(OMGraphicList sublist) {
         int numPoints = 0;
@@ -181,14 +200,14 @@ public class ShpInputStream implements ShapeConstants {
     }
 
     /**
-     * Iterates through the given input stream to contruct geometry
-     * objects
+     * Iterates through the given input stream to contruct geometry objects
      * 
      * @param shapeType the type of shape to read
-     * @param indexData A list of offsets obtained by iterating
-     *        through the associated SHX file
-     * @return list An OMGraphicList that contains the collection of
-     *         objects created by iterating through this input stream
+     * @param indexData A list of offsets obtained by iterating through the
+     *        associated SHX file
+     * @return list An OMGraphicList that contains the collection of objects
+     *         created by iterating through this input stream *
+     * @deprecated not used.
      */
     public EsriGraphicList getPolyGeometry(int[][] indexData, int shapeType)
             throws Exception {
@@ -206,113 +225,111 @@ public class ShpInputStream implements ShapeConstants {
 
         for (int t = 0; t < numShapes; t++) {
             Integer shpRecordIndex = new Integer(_leis.readInt());
-            /*int shpContentLength = */_leis.readInt();
-            /*int shpType = */_leis.readLEInt();
+            /* int shpContentLength = */_leis.readInt();
+            int shpType = _leis.readLEInt();
 
-            /*double xLeft = */_leis.readLEDouble();
-            /*double xBottom = */_leis.readLEDouble();
-            /*double xRight = */_leis.readLEDouble();
-            /*double xTop = */_leis.readLEDouble();
-            int numParts = _leis.readLEInt();
-            int numPoints = _leis.readLEInt();
+            if (shpType != SHAPE_TYPE_NULL) {
 
-            int[] offsets = new int[numParts];
+                /* double xLeft = */_leis.readLEDouble();
+                /* double xBottom = */_leis.readLEDouble();
+                /* double xRight = */_leis.readLEDouble();
+                /* double xTop = */_leis.readLEDouble();
+                int numParts = _leis.readLEInt();
+                int numPoints = _leis.readLEInt();
 
-            // OK, we don't want to create a sublist unless the poly
-            // has multiple parts. Remember that. sublist will only
-            // be created if there is more than one part.
+                int[] offsets = new int[numParts];
 
-            for (int n = 0; n < numParts; n++) {
-                offsets[n] = _leis.readLEInt();
-            }
+                // OK, we don't want to create a sublist unless the poly
+                // has multiple parts. Remember that. sublist will only
+                // be created if there is more than one part.
 
-            float[] points;
-            OMGraphic poly = null;
-            EsriGraphicList sublist = null;
-
-            if (numParts > 1) {
-                if (shapeType == SHAPE_TYPE_POLYLINE) {
-                    sublist = new EsriPolylineList();
-                } else if (shapeType == SHAPE_TYPE_POLYGON) {
-                    sublist = new EsriPolygonList();
+                for (int n = 0; n < numParts; n++) {
+                    offsets[n] = _leis.readLEInt();
                 }
 
-                sublist.setVague(true); // Treat sublist as one
-                // OMGraphic.
-                sublist.putAttribute(SHAPE_INDEX_ATTRIBUTE, shpRecordIndex);
-                //sublist.setAppObject(new Integer(shpRecord));
-            }
+                float[] points;
+                OMGraphic poly = null;
+                EsriGraphicList sublist = null;
 
-            for (int j = 0; j < numParts; j++) {
-                int i = 0;
-                if (j != numParts - 1) {
-                    numVertices = (offsets[j + 1]) - offsets[j];
-                    points = new float[numVertices * 2];
-                } else {
-                    numVertices = (numPoints - offsets[j]);
-                    points = new float[numVertices * 2];
-                }
-                for (int n = 0; n < numVertices; n++) {
-                    double lambda = _leis.readLEDouble();
-                    double phi = _leis.readLEDouble();
+                if (numParts > 1) {
+                    if (shapeType == SHAPE_TYPE_POLYLINE) {
+                        sublist = new EsriPolylineList();
+                    } else if (shapeType == SHAPE_TYPE_POLYGON) {
+                        sublist = new EsriPolygonList();
+                    }
 
-                    Double d1 = new Double(phi);
-                    Double d2 = new Double(lambda);
-
-                    points[i++] = d1.floatValue();
-                    points[i++] = d2.floatValue();
+                    sublist.setVague(true); // Treat sublist as one
+                    // OMGraphic.
+                    sublist.putAttribute(SHAPE_INDEX_ATTRIBUTE,
+                            shpRecordIndex);
                 }
 
-                if (shapeType == SHAPE_TYPE_POLYLINE) {
-                    poly = new EsriPolyline(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
-                } else if (shapeType == SHAPE_TYPE_POLYGON) {
-                    poly = new EsriPolygon(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
+                for (int j = 0; j < numParts; j++) {
+                    int i = 0;
+                    if (j != numParts - 1) {
+                        numVertices = (offsets[j + 1]) - offsets[j];
+                        points = new float[numVertices * 2];
+                    } else {
+                        numVertices = (numPoints - offsets[j]);
+                        points = new float[numVertices * 2];
+                    }
+                    for (int n = 0; n < numVertices; n++) {
+                        double lambda = _leis.readLEDouble();
+                        double phi = _leis.readLEDouble();
+
+                        points[i++] = (float) Math.toRadians(phi);
+                        points[i++] = (float) Math.toRadians(lambda);
+                    }
+
+                    if (shapeType == SHAPE_TYPE_POLYLINE) {
+                        poly = new EsriPolyline(points, OMGraphic.RADIANS, OMGraphic.LINETYPE_GREATCIRCLE);
+                    } else if (shapeType == SHAPE_TYPE_POLYGON) {
+                        poly = new EsriPolygon(points, OMGraphic.RADIANS, OMGraphic.LINETYPE_GREATCIRCLE);
+                    }
+
+                    if (drawingAttributes != null) {
+                        drawingAttributes.setTo(poly);
+                    } else {
+                        DrawingAttributes.DEFAULT.setTo(poly);
+                    }
+
+                    if (poly instanceof EsriPolyline) {
+                        // Just to make sure it gets rendered as a
+                        // polyline. The OMPoly code will render it as a
+                        // polygon if the fill color is not clear.
+                        poly.setFillPaint(OMColor.clear);
+                    }
+
+                    // sublist is null for non multi-part geometries.
+                    if (sublist != null) {
+                        sublist.addOMGraphic(poly);
+                    } else {
+                        poly.putAttribute(SHAPE_INDEX_ATTRIBUTE,
+                                shpRecordIndex);
+                    }
                 }
 
-                //poly.setAppObject(new Integer(shpRecord));
-                poly.putAttribute(SHAPE_INDEX_ATTRIBUTE, shpRecordIndex);
-
-                if (drawingAttributes != null) {
-                    drawingAttributes.setTo(poly);
-                } else {
-                    DrawingAttributes.DEFAULT.setTo(poly);
-                }
-
-                if (poly instanceof EsriPolyline) {
-                    // Just to make sure it gets rendered as a
-                    // polyline. The OMPoly code will render it as a
-                    // polygon if the fill color is not clear.
-                    poly.setFillPaint(OMColor.clear);
-                }
-
+                // sublist is null for non multi-part geometries.
                 if (sublist != null) {
-                    sublist.addOMGraphic(poly);
-                }
-            }
-
-            // sublist is null for non multi-part geometries.
-
-            if (sublist != null) {
-                list.add(sublist);
-            } else {
-                list.add(poly);
-            }
-
-            if (Debug.debugging("esri")) {
-                EsriGraphic eg = null;
-                if (sublist == null) {
-                    eg = (EsriGraphic) poly;
+                    list.add(sublist);
                 } else {
-                    eg = sublist;
+                    list.add(poly);
                 }
 
-                float[] ex1 = eg.getExtents();
-                Debug.output("extents of list: xmin=" + ex1[1] + ", ymin="
-                        + ex1[0] + ", xmax=" + ex1[3] + ", ymax=" + ex1[2]);
-                Debug.output("list.size=" + list.size());
-            }
+                if (Debug.debugging("esri")) {
+                    EsriGraphic eg = null;
+                    if (sublist == null) {
+                        eg = (EsriGraphic) poly;
+                    } else {
+                        eg = sublist;
+                    }
 
-            
+                    float[] ex1 = eg.getExtents();
+                    Debug.output("extents of list: xmin=" + ex1[1] + ", ymin="
+                            + ex1[0] + ", xmax=" + ex1[3] + ", ymax=" + ex1[2]);
+                    Debug.output("list.size=" + list.size());
+                }
+            }
         }
 
         if (Debug.debugging("esri")) {
@@ -328,22 +345,22 @@ public class ShpInputStream implements ShapeConstants {
      * Reads the header section of a .shp file
      * 
      * @return the shape type
+     * @deprecated not used.
      */
     public int readHeader() throws IOException {
-        /*int fileCode = */_leis.readInt();
+        /* int fileCode = */_leis.readInt();
         _leis.skipBytes(20);
-        /*int fileLength = */_leis.readInt();
-        /*int version = */_leis.readLEInt();
+        /* int fileLength = */_leis.readInt();
+        /* int version = */_leis.readLEInt();
         int shapeType = _leis.readLEInt();
-        /*double xMin = */_leis.readLEDouble();
-        /*double yMin = */_leis.readLEDouble();
-        /*double xMax = */_leis.readLEDouble();
-        /*double yMax = */_leis.readLEDouble();
-        /*double zMin = */_leis.readLEDouble();
-        /*double zMax = */_leis.readLEDouble();
-        /*double mMin = */_leis.readLEDouble();
-        /*double mMax = */_leis.readLEDouble();
+        /* double xMin = */_leis.readLEDouble();
+        /* double yMin = */_leis.readLEDouble();
+        /* double xMax = */_leis.readLEDouble();
+        /* double yMax = */_leis.readLEDouble();
+        /* double zMin = */_leis.readLEDouble();
+        /* double zMax = */_leis.readLEDouble();
+        /* double mMin = */_leis.readLEDouble();
+        /* double mMax = */_leis.readLEDouble();
         return shapeType;
     }
 }
-

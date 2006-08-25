@@ -7,42 +7,15 @@
  */
 package com.bbn.openmap.dataAccess.shape;
 
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
+import javax.swing.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import com.bbn.openmap.dataAccess.shape.output.DbfOutputStream;
-import com.bbn.openmap.dataAccess.shape.output.ShpOutputStream;
-import com.bbn.openmap.dataAccess.shape.output.ShxOutputStream;
-import com.bbn.openmap.geo.Geo;
-import com.bbn.openmap.geo.OMGeo;
-import com.bbn.openmap.omGraphics.BasicStrokeEditor;
-import com.bbn.openmap.omGraphics.DrawingAttributes;
-import com.bbn.openmap.omGraphics.OMCircle;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicConstants;
-import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.omGraphics.OMLine;
-import com.bbn.openmap.omGraphics.OMPoint;
-import com.bbn.openmap.omGraphics.OMPoly;
-import com.bbn.openmap.omGraphics.OMRangeRings;
-import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.dataAccess.shape.output.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.ColorFactory;
@@ -60,8 +33,8 @@ import com.bbn.openmap.util.PropUtils;
  * one to three different lists as needed, for points, lines and polygons.
  * <P>
  * 
- * If the OMGraphicList holds it's DbfTableModel as a DBF_ATTRIBUTE attribute,
- * if so, it will be used for the shape file database file.
+ * If the OMGraphicList's AppObject holds a DbfTableModel, it will be used for
+ * the shape file database file.
  */
 public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
 
@@ -72,7 +45,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
 
     /**
      * The optional DbfTableModel that describes properties for the OMGraphics.
-     * This should be set as the DBF_ATTRIBUTE attribute of the OMGraphicList.
+     * This should be set in the AppObject of the OMGraphicList.
      */
     protected DbfTableModel masterDBF = null;
 
@@ -149,15 +122,13 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
     }
 
     /**
-     * Set the OMGraphicList to use for export. If the DBF_ATTRIBUTE object in
-     * the attribute hashtable of the OMGraphicList holds a DbfTableModel, it
-     * will be used in the export.
+     * Set the OMGraphicList to use for export. If the AppObject in the
+     * OMGraphicList holds a DbfTableModel, it will be used in the export.
      */
     public void setGraphicList(OMGraphicList list) {
         graphicList = list;
 
         if (list != null) {
-
             Object obj = list.getAttribute(DBF_ATTRIBUTE);
             // Do this check for backward compatibility
             if (obj == null) {
@@ -219,10 +190,10 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
 
     /**
      * Return the point list, create it if needed. If the masterDBF object
-     * exists, then a new one is created, which matching structure, and put
-     * under the DBF_ATTRIBUTE attribute key the new list that is returned. If
-     * there isn't a masterDBF object, then a default one will be created under
-     * that key.
+     * exists, then a new one is created, which matching structure, and put in
+     * the AppObject of the new list that is returned. If there isn't a
+     * masterDBF object, then the AppObject is set to null, and a default one
+     * will be created.
      */
     protected EsriPointList getPointList() {
         if (pointList == null) {
@@ -262,8 +233,8 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
 
     /**
      * Set the DbfTableModel representing the dbf file for the main
-     * OMGraphicList. Can also be passed to this object as an attribute under
-     * the DBF_ATTRIBUTE key within the top level OMGraphicList.
+     * OMGraphicList. Can also be passed to this object as an attribute in the
+     * EsriGraphicList under the DBF_ATTRIBUTE key.
      */
     public void setMasterDBF(DbfTableModel dbf) {
         masterDBF = dbf;
@@ -403,8 +374,8 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * level iteration to cause the method to fetch the record from the
      * masterDBF, if it exists. If the list is an EsriGraphicList, then the
      * export for EsriGraphicLists will be called. The DbfTableModel for the
-     * list should be stored in the DBF_ATTRIBUTE attribute of the
-     * EsriGraphicList.
+     * list should be stored as an attribute in the EsriGraphicList under the
+     * DBF_ATTRIBUTE key.
      * 
      * @param list the OMGraphicList to write.
      * @param masterRecord the record for the current list, used if the list is
@@ -509,31 +480,6 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
                     Debug.output("ESE: handling OMPoint");
                 addPoint(dtlGraphic, record);
             }
-
-            else if (dtlGraphic instanceof OMGeo.Pt) {
-                Geo geo = ((OMGeo.Pt) dtlGraphic).getGeo();
-                OMPoint pt = new OMPoint((float) geo.getLatitude(), (float) geo.getLongitude());
-                pt.setAttributes(dtlGraphic.getAttributes());
-                DrawingAttributes da = (DrawingAttributes) DrawingAttributes.getDefaultClone()
-                        .clone();
-                da.setFrom(dtlGraphic);
-                da.setTo(pt);
-                addPoint(pt, record);
-            } else if (dtlGraphic instanceof OMGeo.Polyline) {
-                Geo[] geos = ((OMGeo.Polyline) dtlGraphic).toGeoArray();
-                float[] latlons = new float[geos.length * 2];
-                for (int i = 0; i < geos.length; i += 2) {
-                    latlons[i * 2] = (float) geos[i].getLatitude();
-                    latlons[i * 2 + 1] = (float) geos[i + 1].getLongitude();
-                }
-
-                OMPoly poly = new OMPoly(latlons, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE);
-                DrawingAttributes da = (DrawingAttributes) DrawingAttributes.getDefaultClone()
-                        .clone();
-                da.setFrom(dtlGraphic);
-                da.setTo(poly);
-                addPolygon(poly, record);
-            }
         }
         // (end)for (int i = 0; i < dtlGraphicList.size(); i++)
 
@@ -553,11 +499,11 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         // call the file chooser if no path is given
         if (filePath == null) {
             filePath = getFilePathFromUser();
-
+            
             if (filePath == null) {
                 return; // User cancelled.
             }
-
+            
             needConfirmation = true;
         }
 
@@ -594,18 +540,18 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
     /**
      * Writes out EsriGraphicLists as shape files, assumes that the
      * DbfTableModel representing the attribute data for the list objects is
-     * stored in the appObject member variable of the EsriGraphicList. This
-     * export handles multi-part geometries, because it's assumed that the
-     * sorting of the graphic types have been handled and that any sub-lists are
-     * meant to be multi-part geometries. If the filePath hasn't been set in the
-     * EsriShapeExport class, the user will be asked to provide it.
+     * stored as an attribute in the EsriGraphicList under the DBF_ATTRIBUTE
+     * key. This export handles multi-part geometries, because it's assumed that
+     * the sorting of the graphic types have been handled and that any sub-lists
+     * are meant to be multi-part geometries. If the filePath hasn't been set in
+     * the EsriShapeExport class, the user will be asked to provide it.
      */
     protected void export(EsriGraphicList egList) {
 
         Object obj = egList.getAttribute(DBF_ATTRIBUTE);
         // Backward compatibility
         if (obj == null) {
-            egList.getAppObject();
+            obj = egList.getAppObject();
         }
 
         if (obj == null) {
@@ -855,7 +801,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * Fetches a file path from the user, via a JFileChooser. Returns null if
      * the user cancels.
      * 
-     * @see com.bbn.openmap.util.FileUtils
+     * @see com.bbn.openmap.util.FileUtils.getFilePathFromUser
      */
     public String getFilePathFromUser() {
         return FileUtils.getFilePathToSaveFromUser("Select Name for Shape File Set...");
@@ -880,19 +826,13 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         String[] files = ap.getArgValues("shp");
         if (files != null && files[0] != null) {
             String shp = files[0];
-            String shx = null;
             String dbf = null;
 
             try {
-                shx = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_SHX;
                 dbf = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_DBF;
 
-                DbfTableModel model = DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(null,
-                        dbf));
-
-                EsriGraphicList list = EsriGraphicList.getEsriGraphicList(PropUtils.getResourceOrFileOrURL(null,
-                        shp),
-                        PropUtils.getResourceOrFileOrURL(null, shx),
+                DbfTableModel model = DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(dbf));
+                EsriGraphicList list = EsriGraphicList.getEsriGraphicList(PropUtils.getResourceOrFileOrURL(shp),
                         null,
                         null);
 

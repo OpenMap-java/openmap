@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.22 $
-// $Date: 2006/08/09 21:08:30 $
+// $Revision: 1.23 $
+// $Date: 2006/08/25 15:36:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,6 +29,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -60,6 +61,7 @@ import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMScalingIcon;
+import com.bbn.openmap.omGraphics.OMShape;
 import com.bbn.openmap.omGraphics.OMSpline;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.omGraphics.OMTextLabeler;
@@ -397,6 +399,26 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
             }
         }
 
+        
+        GeneralPath gp = new GeneralPath();
+        gp.moveTo(20, 20);
+        gp.lineTo(20, -20);
+        gp.lineTo(-20, -20);
+        gp.lineTo(-20, 20);
+        gp.lineTo(20, 20);
+        gp.moveTo(10, 10);
+        gp.lineTo(10, -10);
+        gp.lineTo(-10, -10);
+        gp.lineTo(-10, 10);
+        gp.lineTo(10, 10);
+        OMShape oms = new OMShape(gp);
+        oms.setFillPaint(Color.orange);
+        
+        omList.add(oms);
+        
+        
+        
+        
         return omList;
     }
 

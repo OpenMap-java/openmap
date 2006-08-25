@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/DbfInputStream.java,v $
 // $RCSfile: DbfInputStream.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/08/12 14:25:49 $
+// $Revision: 1.10 $
+// $Date: 2006/08/25 15:36:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,39 +33,34 @@ import com.bbn.openmap.dataAccess.shape.DbfTableModel;
 import com.bbn.openmap.util.Debug;
 
 /**
- * Reads the contents of a DBF file and provides access to what it has
- * read through several get methods
+ * Reads the contents of a DBF file and provides access to what it has read
+ * through several get methods
  * 
  * @author Doug Van Auken
  */
 public class DbfInputStream {
     /**
-     * An input stream to process primitives in Little Endian or Big
-     * Endian
+     * An input stream to process primitives in Little Endian or Big Endian
      */
     private LittleEndianInputStream _leis = null;
 
     /**
-     * An array of column names, as read from the field descripter
-     * array
+     * An array of column names, as read from the field descripter array
      */
     private String[] _columnNames = null;
 
     /**
-     * An array of column lengths, as read from the field descripter
-     * array
+     * An array of column lengths, as read from the field descripter array
      */
     private int[] _lengths = null;
 
     /**
-     * An array of decimal counts, as read from the field descripter
-     * array
+     * An array of decimal counts, as read from the field descripter array
      */
     private byte[] _decimalCounts = null;
 
     /**
-     * An array of column types, as read from the field descripter
-     * array
+     * An array of column types, as read from the field descripter array
      */
     private byte[] _types = null;
 
@@ -81,17 +76,16 @@ public class DbfInputStream {
     /** The record length */
     // private short _recordLength = -1; // Unused
     /**
-     * An ArrayList with each element representing a record, which
-     * itself is an ArrayList
+     * An ArrayList with each element representing a record, which itself is an
+     * ArrayList
      */
     private ArrayList _records = null;
 
     /**
-     * Creates a LittleEndianInputStream then uses it to read the
-     * contents of the DBF file
+     * Creates a LittleEndianInputStream then uses it to read the contents of
+     * the DBF file
      * 
-     * @param is An inputstream used to create a
-     *        LittleEndianInputStream
+     * @param is An inputstream used to create a LittleEndianInputStream
      */
     public DbfInputStream(InputStream is) throws Exception {
         BufferedInputStream bis = new BufferedInputStream(is);
@@ -181,8 +175,8 @@ public class DbfInputStream {
     }
 
     /**
-     * Initializes arrays that hold column names, column types,
-     * character lengths, and decimal counts, then populates them
+     * Initializes arrays that hold column names, column types, character
+     * lengths, and decimal counts, then populates them
      */
     private void readFieldDescripters() throws IOException {
         _columnNames = new String[_columnCount];
@@ -209,8 +203,7 @@ public class DbfInputStream {
     }
 
     /**
-     * Reads the data and places data in a class scope ArrayList of
-     * records
+     * Reads the data and places data in a class scope ArrayList of records
      */
     public void readData() throws IOException {
 
@@ -241,9 +234,13 @@ public class DbfInputStream {
                         // ", expected number and got " + cell);
                         // record.add(c, new Double(0));
                     } catch (java.text.ParseException pe) {
-                        Debug.error("DbfInputStream:  error parsing column "
-                                + c + ", row " + r
-                                + ", expected number and got " + cell);
+                        if (Debug.debugging("shape")) {
+                            Debug.error("DbfInputStream:  error parsing column "
+                                    + c
+                                    + ", row "
+                                    + r
+                                    + ", expected number and got " + cell);
+                        }
                         record.add(c, new Double(0));
                     }
                 } else {

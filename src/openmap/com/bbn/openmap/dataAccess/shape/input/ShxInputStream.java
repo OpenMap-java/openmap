@@ -14,15 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/ShxInputStream.java,v $
 // $RCSfile: ShxInputStream.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 17:23:43 $
+// $Revision: 1.7 $
+// $Date: 2006/08/25 15:36:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape.input;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Reads index data from a .shx file
@@ -32,14 +34,7 @@ import java.io.*;
 public class ShxInputStream {
 
     /**
-     * An integer specifying the type of layer, as defined by Esri's
-     * shape file format specifications
-     */
-    //private int _type = -1; // Unused
-
-    /**
-     * An input stream to process primitives in Little Endian or Big
-     * Endian
+     * An input stream to process primitives in Little Endian or Big Endian
      */
     private LittleEndianInputStream _leis = null;
 
@@ -52,12 +47,11 @@ public class ShxInputStream {
     }
 
     /**
-     * Processes the SHX file to obtain a list of offsets, which
-     * classes derived from AbstractSupport will use to iterate
-     * through the associated SHP file
+     * Processes the SHX file to obtain a list of offsets, which classes derived
+     * from AbstractSupport will use to iterate through the associated SHP file
      * 
-     * @return an array of offsets, which will be passed into the open
-     *         method of classes which extend AbstractSupport.
+     * @return an array of offsets, which will be passed into the open method of
+     *         classes which extend AbstractSupport.
      */
     public int[][] getIndex() {
         int[][] indexData = null;
@@ -85,4 +79,3 @@ public class ShxInputStream {
         _leis.close();
     }
 }
-

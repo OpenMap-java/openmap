@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/PoliticalArea.java,v $
 // $RCSfile: PoliticalArea.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/12/09 21:09:12 $
+// $Revision: 1.5 $
+// $Date: 2006/08/25 15:36:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,14 +36,14 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.util.Debug;
 
 /**
- * A PoliticalArea is a region that has a name (like "Oklahoma"), an
- * identifier (like "OK"), and a list of OMGraphics that define its
- * geography (ie: the polygons that define it's borders).
+ * A PoliticalArea is a region that has a name (like "Oklahoma"), an identifier
+ * (like "OK"), and a list of OMGraphics that define its geography (ie: the
+ * polygons that define it's borders).
  * <P>
- * NOTE: The name of this class is somewhat misleading - the graphic
- * doesn't have to represent an area - the graphic can be any graphic
- * created from the shapefile. This class just provides a way to
- * associate an id with the graphic.
+ * NOTE: The name of this class is somewhat misleading - the graphic doesn't
+ * have to represent an area - the graphic can be any graphic created from the
+ * shapefile. This class just provides a way to associate an id with the
+ * graphic.
  */
 public class PoliticalArea {
     public final String id;
@@ -58,8 +58,8 @@ public class PoliticalArea {
     }
 
     /**
-     * Create a political area with a name, and an identifier which is
-     * used as a key by the AreaHandler.
+     * Create a political area with a name, and an identifier which is used as a
+     * key by the AreaHandler.
      */
     public PoliticalArea(String name, String identifier) {
         this.id = identifier;
@@ -87,8 +87,8 @@ public class PoliticalArea {
     }
 
     /**
-     * Get the paint used for the fill paint for all the graphics in
-     * the political area, if one was set.
+     * Get the paint used for the fill paint for all the graphics in the
+     * political area, if one was set.
      * 
      * @return Paint if set, null if it wasn't.
      */
@@ -97,10 +97,9 @@ public class PoliticalArea {
     }
 
     /**
-     * Set the fill pattern of all the graphics in the List. This will
-     * override the fill paint, if you've set that as well. There are
-     * sections of code in this method that need to be commented out
-     * if you are not using jdk 1.2.x.
+     * Set the fill pattern of all the graphics in the List. This will override
+     * the fill paint, if you've set that as well. There are sections of code in
+     * this method that need to be commented out if you are not using jdk 1.2.x.
      * 
      * @param fillPatternURL url of image file to use as fill.
      */
@@ -129,10 +128,9 @@ public class PoliticalArea {
     }
 
     /**
-     * Set the fill pattern of all the graphics in the List. This will
-     * override the fill paint, if you've set that as well. There are
-     * sections of code in this method that need to be commented out
-     * if you are not using jdk 1.2.x.
+     * Set the fill pattern of all the graphics in the List. This will override
+     * the fill paint, if you've set that as well. There are sections of code in
+     * this method that need to be commented out if you are not using jdk 1.2.x.
      * 
      * @param texture TexturePaint object to use as fill.
      */
@@ -142,8 +140,8 @@ public class PoliticalArea {
     }
 
     /**
-     * Get the TexturePaint used as fill for all the graphics in the
-     * political area, if one was set.
+     * Get the TexturePaint used as fill for all the graphics in the political
+     * area, if one was set.
      * 
      * @return TexturePaint if set, null if it wasn't.
      */
@@ -162,8 +160,8 @@ public class PoliticalArea {
     }
 
     /**
-     * Get the paint used for the line paint for all the graphics in
-     * the political area, if one was set.
+     * Get the paint used for the line paint for all the graphics in the
+     * political area, if one was set.
      * 
      * @return Paint if set, null if it wasn't.
      */
@@ -182,8 +180,8 @@ public class PoliticalArea {
     }
 
     /**
-     * Get the paint used for the select paint for all the graphics in
-     * the political area, if one was set.
+     * Get the paint used for the select paint for all the graphics in the
+     * political area, if one was set.
      * 
      * @return Paint if set, null if it wasn't.
      */

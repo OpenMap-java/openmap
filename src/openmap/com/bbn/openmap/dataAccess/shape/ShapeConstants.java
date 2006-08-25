@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/ShapeConstants.java,v
 // $
 // $RCSfile: ShapeConstants.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/04/07 17:29:59 $
+// $Revision: 1.8 $
+// $Date: 2006/08/25 15:36:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,10 +47,10 @@ public interface ShapeConstants {
     public static final int SHAPE_TYPE_ARC = 3;
 
     /**
-     * The indicator for a polyline (arc) shape type, value of 3.
-     * NOTE: ESRI decided to rename the `arc' type as the `polyline'
-     * type as of their July 1998 Shapefile Technical Description
-     * paper. Maybe they should rename Arc/Info as Polyline/Info?...
+     * The indicator for a polyline (arc) shape type, value of 3. NOTE: ESRI
+     * decided to rename the `arc' type as the `polyline' type as of their July
+     * 1998 Shapefile Technical Description paper. Maybe they should rename
+     * Arc/Info as Polyline/Info?...
      */
     public static final int SHAPE_TYPE_POLYLINE = 3;
 
@@ -63,7 +63,7 @@ public interface ShapeConstants {
     public static final int SHAPE_TYPE_POINTZ = 11;
     public static final int SHAPE_TYPE_POLYLINEZ = 13;
     public static final int SHAPE_TYPE_POLYGONZ = 15;
-    public static final int SHAPE_TYPE_MUILTIPOINTZ = 18;
+    public static final int SHAPE_TYPE_MULTIPOINTZ = 18;
     public static final int SHAPE_TYPE_POINTM = 21;
     public static final int SHAPE_TYPE_POLYLINEM = 23;
     public static final int SHAPE_TYPE_POLYGONM = 25;
@@ -94,21 +94,62 @@ public interface ShapeConstants {
     public static final String SHAPE_DBF_DASHPHASE = DrawingAttributes.dashPhaseProperty;
 
     /**
-     * Attribute Key for DbfTableModel stored in an EsriGraphicList.
-     * or for a row of attribute information (ArrayList) from the DBF
-     * file on a Shape feature.
+     * Attribute Key for DbfTableModel stored in an EsriGraphicList. or for a
+     * row of attribute information (ArrayList) from the DBF file on a Shape
+     * feature.
      */
     public static final String DBF_ATTRIBUTE = "DBF_ATTRIBUTE";
     /**
-     * Attribute key for row of attribute information (ArrayList) from
-     * the DBF file on a Shape feature.
+     * Attribute key for row of attribute information (ArrayList) from the DBF
+     * file on a Shape feature.
      */
     public static final String SHAPE_DBF_INFO_ATTRIBUTE = "SHAPE_DBF_INFO_ATTRIBUTE";
     /**
-     * Attribute key for index Integer for a shape feature, indicating
-     * the shape index into the file for the feature. Caution! Shape
-     * indexes start at 1, not zero!
+     * Attribute key for index Integer for a shape feature, indicating the shape
+     * index into the file for the feature. Caution! Shape indexes start at 1,
+     * not zero!
      */
     public static final String SHAPE_INDEX_ATTRIBUTE = "SHAPE_INDEX_ATTRIBUTE";
+
+    /**
+     * For Z and M shape types, the measure value will be stored as a Double in
+     * the attribute table in the EsriGraphic under this key.
+     */
+    public static final String SHAPE_MEASURE_ATTRIBUTE = "SMA";
+    /**
+     * For multi-part Z and M shape types, the minimum SHAPE_MEASURE_ATTRIBUTE
+     * value will be stored under this key in the multi-part graphic attribute
+     * table, as a Double.
+     */
+    public static final String SHAPE_MIN_MEASURE_ATTRIBUTE = "MIN_SMA";
+    /**
+     * For multi-part Z and M shape types, the maximum SHAPE_MEASURE_ATTRIBUTE
+     * value will be stored under this key in the multi-part graphic attribute
+     * table, as a Double.
+     */
+    public static final String SHAPE_MAX_MEASURE_ATTRIBUTE = "MAX_SMA";
+
+    /**
+     * For Z shape types, the z value will be stored as a Double in the
+     * attribute table in the EsriGraphic under this key.
+     */
+    public static final String SHAPE_Z_ATTRIBUTE = "SZA";
+    /**
+     * For multi-part Z shape types, the minimum SHAPE_Z_ATTRIBUTE value will be
+     * stored under this key in the multi-part graphic attribute table, as a
+     * Double.
+     */
+    public static final String SHAPE_MIN_Z_ATTRIBUTE = "MIN_Z";
+    /**
+     * For multi-part Z shape types, the maximum SHAPE_Z_ATTRIBUTE value will be
+     * stored under this key in the multi-part graphic attribute table, as a
+     * Double.
+     */
+    public static final String SHAPE_MAX_Z_ATTRIBUTE = "MAX_Z";
+
+    /**
+     * Attribute key for storing a bounding box in an attribute map for a record.
+     */
+    public static final String SHAPE_BOUNDS_ATTRIBUTE = "BOUNDS";
 
 }

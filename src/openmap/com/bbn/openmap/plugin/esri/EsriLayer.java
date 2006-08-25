@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriLayer.java,v $
 // $RCSfile: EsriLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/08/09 20:33:38 $
+// $Revision: 1.10 $
+// $Date: 2006/08/25 15:36:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -203,7 +203,6 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
         drawingAttributes = da;
         setModel(DbfTableModel.getDbfTableModel(dbf));
         setList(EsriGraphicList.getEsriGraphicList(shp,
-                shx,
                 drawingAttributes,
                 getModel()));
     }
@@ -310,7 +309,6 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
             try {
                 setModel(DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(dbf)));
                 setList(EsriGraphicList.getEsriGraphicList(PropUtils.getResourceOrFileOrURL(shp),
-                        PropUtils.getResourceOrFileOrURL(shx),
                         drawingAttributes,
                         getModel()));
             } catch (Exception exception) {

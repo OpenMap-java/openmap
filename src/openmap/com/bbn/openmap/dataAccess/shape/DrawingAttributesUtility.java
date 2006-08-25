@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DrawingAttributesUtility.java,v $
 // $RCSfile: DrawingAttributesUtility.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 17:21:28 $
+// $Revision: 1.5 $
+// $Date: 2006/08/25 15:36:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,10 +34,9 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.util.ColorFactory;
 
 /**
- * A class to help out with looking in a DBF file, and setting
- * OMGraphics with DrawingAttributes settings that may reside in the
- * DBF. The DBF column header names should be the same as the
- * DrawingAttributes property strings.
+ * A class to help out with looking in a DBF file, and setting OMGraphics with
+ * DrawingAttributes settings that may reside in the DBF. The DBF column header
+ * names should be the same as the DrawingAttributes property strings.
  */
 public class DrawingAttributesUtility implements ShapeConstants {
 
@@ -177,10 +176,9 @@ public class DrawingAttributesUtility implements ShapeConstants {
 
     /**
      * Iterate through the list, and look in the DbfTableModel for
-     * DrawingAttributes parameters, setting the DrawingAttributes on
-     * the list contents with anything found in the DBF file.
-     * Otherwise, use the DrawingAttributes.DEFAULT settings if no
-     * attribute parameters found.
+     * DrawingAttributes parameters, setting the DrawingAttributes on the list
+     * contents with anything found in the DBF file. Otherwise, use the
+     * DrawingAttributes.DEFAULT settings if no attribute parameters found.
      */
     public static void setDrawingAttributes(EsriGraphicList list,
                                             DbfTableModel model) {
@@ -189,18 +187,19 @@ public class DrawingAttributesUtility implements ShapeConstants {
 
     /**
      * Iterate through the list, and look in the DbfTableModel for
-     * DrawingAttributes parameters, setting the DrawingAttributes on
-     * the list contents with anything found in the DBF file.
-     * Otherwise, use the default DrawingAttributes settings if no
-     * attribute parameters found.
+     * DrawingAttributes parameters, setting the DrawingAttributes on the list
+     * contents with anything found in the DBF file. Otherwise, use the default
+     * DrawingAttributes settings if no attribute parameters found.
      */
     public static void setDrawingAttributes(EsriGraphicList list,
                                             DbfTableModel model,
                                             DrawingAttributes defaultDA) {
         // Set it up;
+        if (list == null || model == null) {
+            return;
+        }
         DrawingAttributesUtility dau = new DrawingAttributesUtility(model);
         dau.setDefaultAttributes(defaultDA);
-
         Iterator graphics = list.iterator();
         int index = 0;
         while (graphics.hasNext()) {

@@ -12,10 +12,10 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPoint.java,v $
-// $RCSfile: EsriPoint.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/08/25 15:36:14 $
+// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriTextPoint.java,v $
+// $RCSfile: EsriTextPoint.java,v $
+// $Revision: 1.2 $
+// $Date: 2006/08/25 15:36:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,7 +24,7 @@ package com.bbn.openmap.dataAccess.shape;
 
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
-import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMText;
 
 /**
  * An extension to OMPoint that typecasts a specific Esri graphic
@@ -33,13 +33,13 @@ import com.bbn.openmap.omGraphics.OMPoint;
  * 
  * @author Doug Van Auken
  */
-public class EsriPoint extends OMPoint implements Cloneable, EsriGraphic,
+public class EsriTextPoint extends OMText  implements Cloneable, EsriGraphic,
         OMGraphicConstants {
 
-    protected int type = SHAPE_TYPE_POINT; 
+    protected int type = SHAPE_TYPE_POINT;
     
-    public EsriPoint(float lat, float lon) {
-        super(lat, lon);
+    public EsriTextPoint(float lat, float lon, String stuff, int justification) {
+        super(lat, lon, stuff, justification);
     }
 
     /**
@@ -70,22 +70,16 @@ public class EsriPoint extends OMPoint implements Cloneable, EsriGraphic,
     public int getType() {
         return type;
     }
-
-    public static EsriPoint convert(OMPoint ompoint) {
-        if (ompoint.getRenderType() == RENDERTYPE_LATLON) {
-            EsriPoint ePoint = new EsriPoint(ompoint.getLat(), ompoint.getLon());
-            ePoint.setAttributes(ompoint.getAttributes());
+    
+    public static EsriTextPoint convert(OMText omtext) {
+        if (omtext.getRenderType() == RENDERTYPE_LATLON) {
+            EsriTextPoint etp = new EsriTextPoint(omtext.getLat(), omtext.getLon(), omtext.getData(), omtext.getJustify());
+            etp.setAttributes(omtext.getAttributes());
             DrawingAttributes attributes = new DrawingAttributes();
-            attributes.setFrom(ompoint);
-            attributes.setTo(ePoint);
+            attributes.setFrom(omtext);
+            attributes.setTo(etp);
 
-            // Hmmm. looses drawing information, like Oval, etc.
-            // That's not even kept in the shape file, so it might be
-            // something for the drawing attributes. Better save it
-            // in case someone looks for it later.
-            ePoint.setOval(ompoint.isOval());
-            ePoint.setRadius(ompoint.getRadius());
-            return ePoint;
+            return etp;
         } else {
             return null;
         }
@@ -95,8 +89,8 @@ public class EsriPoint extends OMPoint implements Cloneable, EsriGraphic,
         return shallowCopyPoint();
     }
 
-    public EsriPoint shallowCopyPoint() {
-        return (EsriPoint) super.clone();
+    public EsriTextPoint shallowCopyPoint() {
+        return (EsriTextPoint) super.clone();
     }
 
 }

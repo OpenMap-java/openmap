@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndexHandler.java,v $
 // $RCSfile: SpatialIndexHandler.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/09 19:26:53 $
+// $Revision: 1.9 $
+// $Date: 2006/08/25 15:36:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,18 +42,19 @@ import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.layer.shape.SpatialIndex.Entry;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
-import com.bbn.openmap.omGraphics.OMGeometry;
-import com.bbn.openmap.omGraphics.OMGeometryList;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
  * The SpatialIndexHandler keeps track of all the stuff dealing with a
- * particular shape file - file names, colors, etc. You can ask it to
- * create OMGraphics based on a bounding box, and make adjustments to
- * it through its GUI.
+ * particular shape file - file names, colors, etc. You can ask it to create
+ * OMGraphics based on a bounding box, and make adjustments to it through its
+ * GUI.
  */
 public class SpatialIndexHandler implements PropertyConsumer {
     public SpatialIndex spatialIndex;
@@ -70,7 +71,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
     public final static String EnabledProperty = "enabled";
     public final static String BufferedProperty = "buffered";
 
-    //for internationalization
+    // for internationalization
     protected I18n i18n = Environment.getI18n();
 
     public SpatialIndexHandler() {}
@@ -95,7 +96,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
     public JComponent getGUI() {
         JPanel stuff = new JPanel();
         stuff.setBorder(BorderFactory.createRaisedBevelBorder());
-        //      stuff.add(new JLabel(prettyName));
+        // stuff.add(new JLabel(prettyName));
         stuff.add(drawingAttributes.getGUI());
 
         JPanel checks = new JPanel(new GridLayout(0, 1));
@@ -230,11 +231,11 @@ public class SpatialIndexHandler implements PropertyConsumer {
         }
         String interString;
 
-        //those strings are already internationalized in ShapeLayer.
+        // those strings are already internationalized in ShapeLayer.
         // So only thing to do is use
-        //keys and values from there.The main question is: what about
+        // keys and values from there.The main question is: what about
         // .class?
-        //What should I use as requestor field when calling
+        // What should I use as requestor field when calling
         // i18n.get(...) ? DFD - use the ShapeLayer class, so you
         // only have to modify one properties file with the
         // translation.
@@ -311,44 +312,60 @@ public class SpatialIndexHandler implements PropertyConsumer {
     }
 
     /**
-     * Create the OMGraphics out of the records that fall inside the
-     * bounding box.
+     * Create the OMGraphics out of the records that fall inside the bounding
+     * box.
      * 
-     * @param xmin double for the min horizontal limit of the bounding
-     *        box.
-     * @param ymin double for the min vertical limit of the bounding
-     *        box.
-     * @param xmax double for the max horizontal limit of the bounding
-     *        box.
-     * @param ymax double for the max vertical limit of the bounding
-     *        box.
+     * @param xmin double for the min horizontal limit of the bounding box.
+     * @param ymin double for the min vertical limit of the bounding box.
+     * @param xmax double for the max horizontal limit of the bounding box.
+     * @param ymax double for the max vertical limit of the bounding box.
      */
     public OMGraphicList getGraphics(double xmin, double ymin, double xmax,
                                      double ymax) throws IOException,
             FormatException {
-        return getGraphics(xmin, ymin, xmax, ymax, null);
+        return getGraphics(xmin,
+                ymin,
+                xmax,
+                ymax,
+                (OMGraphicList) null,
+                (Projection) null);
     }
 
     /**
-     * Given a bounding box, create OMGraphics from the ESRI records
-     * in the shape file.
+     * Given a bounding box, create OMGraphics from the ESRI records in the
+     * shape file.
      * 
-     * @param xmin double for the min horizontal limit of the bounding
-     *        box.
-     * @param ymin double for the min vertical limit of the bounding
-     *        box.
-     * @param xmax double for the max horizontal limit of the bounding
-     *        box.
-     * @param ymax double for the max vertical limit of the bounding
-     *        box.
-     * @param list OMGraphic list to add the new OMGraphics too. If
-     *        null, a new OMGraphicList will be created.
+     * @param xmin double for the min horizontal limit of the bounding box.
+     * @param ymin double for the min vertical limit of the bounding box.
+     * @param xmax double for the max horizontal limit of the bounding box.
+     * @param ymax double for the max vertical limit of the bounding box.
+     * @param list OMGraphic list to add the new OMGraphics too. If null, a new
+     *        OMGraphicList will be created.
      * @return OMGraphicList containing the new OMGraphics.
      */
     public OMGraphicList getGraphics(double xmin, double ymin, double xmax,
                                      double ymax, OMGraphicList list)
             throws IOException, FormatException {
+        return getGraphics(xmin, ymin, xmax, ymax, list, (Projection) null);
+    }
 
+    /**
+     * Given a bounding box, create OMGraphics from the ESRI records in the
+     * shape file.
+     * 
+     * @param xmin double for the min horizontal limit of the bounding box.
+     * @param ymin double for the min vertical limit of the bounding box.
+     * @param xmax double for the max horizontal limit of the bounding box.
+     * @param ymax double for the max vertical limit of the bounding box.
+     * @param list OMGraphic list to add the new OMGraphics too. If null, a new
+     *        OMGraphicList will be created.
+     * @param proj the projection to use to generate the OMGraphics.
+     * @return OMGraphicList containing the new OMGraphics.
+     */
+    public OMGraphicList getGraphics(double xmin, double ymin, double xmax,
+                                     double ymax, OMGraphicList list,
+                                     Projection proj) throws IOException,
+            FormatException {
         if (list == null) {
             list = new OMGraphicList();
         }
@@ -356,133 +373,73 @@ public class SpatialIndexHandler implements PropertyConsumer {
         if (!buffered) {
 
             // Clean up if buffering turned off.
-            if (masterList != null) {
-                masterList = null;
+            if (bufferedList != null) {
+                bufferedList = null;
             }
 
-            OMGeometryList geometrys = new OMGeometryList();
-            drawingAttributes.setTo(geometrys);
-            list.add(geometrys);
-
-            ESRIRecord records[] = spatialIndex.locateRecords(xmin,
+            spatialIndex.getOMGraphics(xmin,
                     ymin,
                     xmax,
-                    ymax);
-
-            int nRecords = records.length;
-
-            for (int i = 0; i < nRecords; i++) {
-                ESRIRecord rec = records[i];
-
-                OMGeometry geom = records[i].addOMGeometry(geometrys);
-                geom.setAppObject(new NumAndBox(rec.getRecordNumber(), rec.getBoundingBox()));
-            }
+                    ymax,
+                    list,
+                    drawingAttributes,
+                    proj,
+                    (Projection) null);
 
         } else {
-            // grab local refs
-            ESRIPoint min, max;
 
-            if (masterList == null) {
-                getWholePlanet();
+            if (bufferedList == null) {
+                bufferedList = getWholePlanet();
             }
 
-            drawingAttributes.setTo(masterList);
-            list.add(masterList);
+            checkSpatialIndexEntries(xmin,
+                    ymin,
+                    xmax,
+                    ymax,
+                    list,
+                    proj);
 
-            Iterator iterator = masterList.iterator();
-
-            while (iterator.hasNext()) {
-
-                OMGeometry geom = (OMGeometry) iterator.next();
-                Object obj = geom.getAppObject();
-
-                // If you can test for bounding box intersections,
-                // then use the check to see if you can eliminate the
-                // object from being drawn. Otherwise, just draw it
-                // and let Java clip it.
-                geom.setVisible(true);
-
-                if (obj != null && obj instanceof NumAndBox) {
-                    NumAndBox nab = (NumAndBox) obj;
-                    min = nab.getBoundingBox().min;
-                    max = nab.getBoundingBox().max;
-
-                    if (!SpatialIndex.intersects(xmin,
-                            ymin,
-                            xmax,
-                            ymax,
-                            min.x,
-                            min.y,
-                            max.x,
-                            max.y)) {
-                        geom.setVisible(false);
-                    }
-                }
-            }
         }
 
         return list;
     }
 
-    /**
-     * Gets the record graphics for a record with multiple graphics.
-     * 
-     * @return OMGraphicList
-     */
-    protected OMGraphicList RecordList(ESRIRecord rec,
-                                       DrawingAttributes drawingAttributes) {
-        int recNumber = rec.getRecordNumber();
-        OMGraphicList recList = new OMGraphicList(10);
-        if (drawingAttributes == null) {
-            drawingAttributes = new DrawingAttributes();
+    protected void checkSpatialIndexEntries(double xmin, double ymin,
+                                            double xmax, double ymax,
+                                            OMGraphicList retList,
+                                            Projection proj) {
+        // There should be the same number of objects in both iterators.
+        Iterator entryIt = spatialIndex.entries.iterator();
+        Iterator omgIt = bufferedList.iterator();
+        while (entryIt.hasNext() && omgIt.hasNext()) {
+            Entry entry = (Entry) entryIt.next();
+            OMGraphic omg = (OMGraphic) omgIt.next();
+            omg.generate(proj);
+            if (entry.intersects(xmin, ymin, xmax, ymax)) {
+                drawingAttributes.setTo(omg);
+                retList.add(omg);
+            }
         }
-        rec.addOMGraphics(recList, drawingAttributes);
-
-        // Remember recordNumber to work with .dbf file
-        recList.setAppObject(new Integer(recNumber));
-        return recList;
     }
 
     /**
      * Master list for buffering. Only used if buffering is enabled.
      */
-    protected OMGeometryList masterList = null;
+    protected OMGraphicList bufferedList = null;
 
     /**
      * Get the graphics for the entire planet.
      */
-    protected void getWholePlanet() throws FormatException {
-
-        masterList = new OMGeometryList();
-
-        if (Debug.debugging("shape")) {
-            Debug.output(prettyName
-                    + "|SpatialIndexHolder.getWholePlanet(): fetching all graphics.");
-        }
-        try {
-            ESRIRecord records[] = spatialIndex.locateRecords(-180d,
-                    -90d,
-                    180d,
-                    90d);
-            int nRecords = records.length;
-
-            for (int i = 0; i < nRecords; i++) {
-                OMGeometry geom = records[i].addOMGeometry(masterList);
-                geom.setAppObject(new NumAndBox(records[i].getRecordNumber(), records[i].getBoundingBox()));
-            }
-
-        } catch (java.io.IOException ex) {
-            ex.printStackTrace();
-            return;
-        } catch (java.lang.NullPointerException npe) {
-            Debug.error(prettyName + "|SpatialIndexHolder can't access files.");
-            return;
-        }
-
-        if (Debug.debugging("shape")) {
-            Debug.output(prettyName
-                    + "|SpatialIndexHolder.getWholePlanet(): finished fetch.");
-        }
+    protected OMGraphicList getWholePlanet() throws IOException,
+            FormatException {
+        return spatialIndex.getOMGraphics(-180,
+                -90,
+                180,
+                90,
+                (OMGraphicList) null,
+                drawingAttributes,
+                (Projection) null,
+                (Projection) null);
     }
 
     public void setPrettyName(String set) {
@@ -520,7 +477,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
     public boolean close(boolean done) {
         if (spatialIndex != null) {
             return spatialIndex.close(done);
-        }
+		}
         return false;
     }
 }
