@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriPlugIn.java,v $
 // $RCSfile: EsriPlugIn.java,v $
-// $Revision: 1.15 $
-// $Date: 2006/08/25 15:36:16 $
+// $Revision: 1.16 $
+// $Date: 2006/08/29 14:51:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -575,8 +575,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
 
         JPanel holder = new JPanel(new BorderLayout());
 
-        JPanel daGUI = (JPanel) drawingAttributes.getGUI();
-        holder.add(daGUI, BorderLayout.CENTER);
+        holder.add(drawingAttributes.getGUI(), BorderLayout.CENTER);
 
         JPanel btnPanel = new JPanel(new GridLayout(3, 1));
 
