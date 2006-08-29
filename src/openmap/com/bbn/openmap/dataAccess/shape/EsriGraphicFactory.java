@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: EsriGraphicFactory.java,v $
-//$Revision: 1.2 $
-//$Date: 2006/08/25 15:36:13 $
+//$Revision: 1.3 $
+//$Date: 2006/08/29 14:47:54 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -25,7 +25,10 @@
 package com.bbn.openmap.dataAccess.shape;
 
 import java.awt.geom.Point2D;
+import java.io.EOFException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
@@ -43,7 +46,9 @@ import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 
 public class EsriGraphicFactory implements ShapeConstants {
-
+    
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.EsriGraphicFactory");
+    
     protected int lineType = OMGraphic.LINETYPE_STRAIGHT;
     protected Projection dataProjection = null;
 
@@ -61,6 +66,9 @@ public class EsriGraphicFactory implements ShapeConstants {
             throws IOException, FormatException {
         shp.seek(0);
         Header header = new Header(shp);
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine(header.toString());
+        }
         if (list == null) {
             list = createEsriGraphicList(header.shapeType);
         }
@@ -74,22 +82,32 @@ public class EsriGraphicFactory implements ShapeConstants {
                     pointRepresentation,
                     byteTracker);
             // 8 for shape type and record length
-            offset += byteTracker.totalCount + 8;
+            offset += byteTracker.currentCount + 8;
 
-            while (offset < header.fileLength) {
+            while (offset != header.fileLength) {
                 projGraphicAndAdd(eg, list, mapProj);
-
-                eg = makeEsriGraphicFromRecord(offset,
-                        shp,
-                        drawingAttributes,
-                        pointRepresentation,
-                        byteTracker);
+                try {
+                    eg = makeEsriGraphicFromRecord(offset,
+                            shp,
+                            drawingAttributes,
+                            pointRepresentation,
+                            byteTracker);
+                } catch (EOFException eof) {
+                    logger.fine("File length ("
+                            + header.fileLength
+                            + " bytes) is incorrect, file was read as much as possible ("
+                            + offset + " bytes).");
+                    eg = null;
+                    break;
+                }
                 // 8 for shape type and record length
-                offset += byteTracker.totalCount + 8;
+                offset += byteTracker.currentCount + 8;
             }
             
-            projGraphicAndAdd(eg, list, mapProj);
-            
+            if (eg != null) {
+                projGraphicAndAdd(eg, list, mapProj);
+            }
+
         } catch (FormatException fe) {
             fe.printStackTrace();
         }
@@ -103,6 +121,9 @@ public class EsriGraphicFactory implements ShapeConstants {
                                          Projection mapProj, OMGraphicList list)
             throws IOException, FormatException {
         Header header = new Header(iStream);
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine(header.toString());
+        }
         if (list == null) {
             list = createEsriGraphicList(header.shapeType);
         }
@@ -116,30 +137,41 @@ public class EsriGraphicFactory implements ShapeConstants {
                     pointRepresentation,
                     byteTracker);
             // 8 for shape type and record length
-            offset += byteTracker.totalCount + 8;
+            offset += byteTracker.currentCount + 8;
 
-            while (offset < header.fileLength) {
+            while (offset != header.fileLength) {
                 projGraphicAndAdd(eg, list, mapProj);
-
-                eg = makeEsriGraphicFromRecord(offset,
-                        iStream,
-                        drawingAttributes,
-                        pointRepresentation,
-                        byteTracker);
+                try {
+                    eg = makeEsriGraphicFromRecord(offset,
+                            iStream,
+                            drawingAttributes,
+                            pointRepresentation,
+                            byteTracker);
+                } catch (EOFException eof) {
+                    logger.fine("File length ("
+                            + header.fileLength
+                            + " bytes) is incorrect, file was read as much as possible ("
+                            + offset + " bytes).");
+                    eg = null;
+                    break;
+                }
                 // 8 for shape type and record length
-                offset += byteTracker.totalCount + 8;
+                offset += byteTracker.currentCount + 8;
             }
 
-            projGraphicAndAdd(eg, list, mapProj);
-            
+            if (eg != null) {
+                projGraphicAndAdd(eg, list, mapProj);
+            }
+
         } catch (FormatException fe) {
             fe.printStackTrace();
         }
 
         return list;
     }
-    
-    protected void projGraphicAndAdd(OMGraphic eg, OMGraphicList list, Projection mapProj) {
+
+    protected void projGraphicAndAdd(OMGraphic eg, OMGraphicList list,
+                                     Projection mapProj) {
         if (eg != null) {
             if (mapProj != null) {
                 eg.generate(mapProj);
@@ -1607,6 +1639,10 @@ public class EsriGraphicFactory implements ShapeConstants {
             zMax = iStream.readLEDouble();
             mMin = iStream.readLEDouble();
             mMax = iStream.readLEDouble();
+        }
+        
+        public String toString() {
+            return "header[fc=" + fileCode + ",len=" + fileLength + ",ver=" + version + ",type=" + shapeType + "]"; 
         }
     }
 }
