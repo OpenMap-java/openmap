@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/BasicIconPart.java,v $
 // $RCSfile: BasicIconPart.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:27 $
+// $Revision: 1.5 $
+// $Date: 2006/08/29 23:07:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,19 +63,34 @@ public class BasicIconPart implements IconPart {
     protected boolean gradient = false;
 
     /**
-     * Create a BasicIconPart with a java.awt.Shape object for a
-     * geometry.
+     * Create a BasicIconPart with a java.awt.Shape object for a geometry.
      */
     public BasicIconPart(Shape shape) {
-        this(shape, null);
+        this(shape, null, DrawingAttributes.DEFAULT);
     }
 
     /**
-     * Create a BasicIconPart with a java.awt.Shape object for a
-     * geometry, along with an AffineTransform that may be applied to
-     * the geometry at rendertime.
+     * Create a BasicIconPart with a java.awt.Shape object for a geometry, along
+     * with an AffineTransform that may be applied to the geometry at
+     * rendertime.
      */
     public BasicIconPart(Shape shape, AffineTransform transform) {
+        this(shape, transform, DrawingAttributes.DEFAULT);
+    }
+    
+    /**
+     * Create a BasicIconPart with a java.awt.Shape object for a geometry.
+     */
+    public BasicIconPart(Shape shape, DrawingAttributes da) {
+        this(shape, (AffineTransform) null, da);
+    }
+
+    /**
+     * Create a BasicIconPart with a java.awt.Shape object for a geometry, along
+     * with an AffineTransform that may be applied to the geometry at
+     * rendertime.
+     */
+    public BasicIconPart(Shape shape, AffineTransform transform, DrawingAttributes da) {
         geometry = shape;
 
         if (transform == null) {
@@ -83,6 +98,7 @@ public class BasicIconPart implements IconPart {
         }
 
         baseTransform = transform;
+        setRenderingAttributes(da);
     }
 
     /**
