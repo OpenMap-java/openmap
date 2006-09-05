@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolylineM.java,v $
 // $RCSfile: EsriPolylineM.java,v $
-// $Revision: 1.2 $
-// $Date: 2006/08/25 15:36:13 $
+// $Revision: 1.3 $
+// $Date: 2006/09/05 14:18:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,7 +40,7 @@ public class EsriPolylineM extends EsriPolyline implements EsriGraphic,
         super(points, units, lineType);
     }
 
-    public static EsriPolylineM convert(OMPoly ompoly) {
+    public static EsriPolyline convert(OMPoly ompoly) {
         if (ompoly.getRenderType() == RENDERTYPE_LATLON) {
 
             float[] rawLL = ompoly.getLatLonArray();
@@ -63,7 +63,7 @@ public class EsriPolylineM extends EsriPolyline implements EsriGraphic,
         return SHAPE_TYPE_POLYLINEM;
     }
 
-    public EsriPolylineM shallowCopyPolyline() {
+    public EsriPolyline shallowCopyPolyline() {
         return (EsriPolylineM) clone();
     }
 }

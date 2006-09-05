@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygonM.java,v $
 // $RCSfile: EsriPolygonM.java,v $
-// $Revision: 1.2 $
-// $Date: 2006/08/25 15:36:12 $
+// $Revision: 1.3 $
+// $Date: 2006/09/05 14:18:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,7 @@ public class EsriPolygonM extends EsriPolygon implements Cloneable, EsriGraphic 
         super(points, units, lineType);
     }
 
-    public static EsriPolygonM convert(OMPoly ompoly) {
+    public static EsriPolygon convert(OMPoly ompoly) {
         if (ompoly.getRenderType() == RENDERTYPE_LATLON) {
 
             float[] rawLL = ompoly.getLatLonArray();
@@ -64,7 +64,7 @@ public class EsriPolygonM extends EsriPolygon implements Cloneable, EsriGraphic 
         return SHAPE_TYPE_POLYGONM;
     }
 
-    public EsriPolygonM shallowCopyPolygon() {
+    public EsriPolygon shallowCopyPolygon() {
         return (EsriPolygonM) clone();
     }
 }
