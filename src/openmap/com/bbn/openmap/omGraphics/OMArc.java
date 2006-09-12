@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArc.java,v $
 // $RCSfile: OMArc.java,v $
-// $Revision: 1.11 $
-// $Date: 2006/08/21 20:09:10 $
+// $Revision: 1.12 $
+// $Date: 2006/09/12 17:56:43 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -765,7 +765,7 @@ public class OMArc extends OMGraphic implements Serializable {
                     }
 
                     correctFill = proj instanceof Cylindrical
-                            && ((shouldCenterBeInShape() && !shape.contains(x1,
+                            && ((shouldCenterBeInShape() && shape != null && !shape.contains(x1,
                                     y1)) || correctPolar);
 
                     if (correctFill) {
