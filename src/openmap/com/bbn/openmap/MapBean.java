@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.18 $
-// $Date: 2006/08/09 21:08:39 $
+// $Revision: 1.19 $
+// $Date: 2006/09/12 17:46:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,6 +53,7 @@ import com.bbn.openmap.event.PaintListener;
 import com.bbn.openmap.event.PaintListenerSupport;
 import com.bbn.openmap.event.PanEvent;
 import com.bbn.openmap.event.PanListener;
+import com.bbn.openmap.event.ProjectionChangeVetoException;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.event.ProjectionSupport;
@@ -64,40 +65,36 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The MapBean is the main component of the OpenMap Development Kit.
- * It is a Java Bean that manages and displays a map. A map is
- * comprised of a projection and a list of layers, and this class has
- * methods that allow you to control the projection parameters and to
- * add and remove layers. Layers that are part of the map receive
- * dynamic notifications of changes to the underlying view and
- * projection.
+ * The MapBean is the main component of the OpenMap Development Kit. It is a
+ * Java Bean that manages and displays a map. A map is comprised of a projection
+ * and a list of layers, and this class has methods that allow you to control
+ * the projection parameters and to add and remove layers. Layers that are part
+ * of the map receive dynamic notifications of changes to the underlying view
+ * and projection.
  * <p>
- * Most of the methods in the MapBean are called from the Java AWT and
- * Swing code. These methods make the MapBean a good "Swing citizen"
- * to its parent components, and you should not need to invoke them.
- * In general there are only two reasons to call MapBean methods:
- * controlling the projection, and adding or removing layers.
+ * Most of the methods in the MapBean are called from the Java AWT and Swing
+ * code. These methods make the MapBean a good "Swing citizen" to its parent
+ * components, and you should not need to invoke them. In general there are only
+ * two reasons to call MapBean methods: controlling the projection, and adding
+ * or removing layers.
  * <p>
- * When controlling the MapBean projection, simply call the method
- * that applies - setCenter, pan, zoom, etc. NOTE: If you are setting
- * more than one parameter of the projection, it's more efficient to
- * getProjection(), directly set the parameters of the projection
- * object, and then call setProjection() with the modified projection.
- * That way, each ProjectionListener of the MapBean (each layer) will
- * only receive one projectionChanged() method call, as opposed to
+ * When controlling the MapBean projection, simply call the method that applies -
+ * setCenter, pan, zoom, etc. NOTE: If you are setting more than one parameter
+ * of the projection, it's more efficient to getProjection(), directly set the
+ * parameters of the projection object, and then call setProjection() with the
+ * modified projection. That way, each ProjectionListener of the MapBean (each
+ * layer) will only receive one projectionChanged() method call, as opposed to
  * receiving one for each projection adjustment.
  * <p>
- * To add or remove layers, use the add() and remove() methods that
- * the MapBean inherits from java.awt.Container. The add() method can
- * be called with an integer that indicates its desired position in
- * the layer list.
+ * To add or remove layers, use the add() and remove() methods that the MapBean
+ * inherits from java.awt.Container. The add() method can be called with an
+ * integer that indicates its desired position in the layer list.
  * <P>
- * Changing the default clipping area may cause some Layers to not be
- * drawn completely, depending on what the clipping area is set to and
- * when the layer is trying to get itself painted. When manually
- * adjusting clipping area, make sure that when restricted clipping is
- * over that a full repaint occurs if there is a chance that another
- * layer may be trying to paint itself.
+ * Changing the default clipping area may cause some Layers to not be drawn
+ * completely, depending on what the clipping area is set to and when the layer
+ * is trying to get itself painted. When manually adjusting clipping area, make
+ * sure that when restricted clipping is over that a full repaint occurs if
+ * there is a chance that another layer may be trying to paint itself.
  * 
  * @see Layer
  */
@@ -112,6 +109,8 @@ public class MapBean extends JComponent implements ComponentListener,
     public static final String BackgroundProperty = "MapBean.background";
 
     public static final String ProjectionProperty = "MapBean.projection";
+    
+    public static final String ProjectionVetoedProperty = "MapBean.projectionVetoed";
 
     /**
      * OpenMap title.
@@ -124,8 +123,8 @@ public class MapBean extends JComponent implements ComponentListener,
     public static final String version = "4.7";
 
     /**
-     * Suppress the copyright message on initialization. But remember,
-     * the OpenMap License says you can't do this!
+     * Suppress the copyright message on initialization. But remember, the
+     * OpenMap License says you can't do this!
      */
     public static boolean suppressCopyright = false;
 
@@ -142,7 +141,7 @@ public class MapBean extends JComponent implements ComponentListener,
 
     public final static float DEFAULT_CENTER_LON = 0.0f;
 
-    //zoomed all the way out
+    // zoomed all the way out
     public final static float DEFAULT_SCALE = Float.MAX_VALUE;
 
     public final static int DEFAULT_WIDTH = 640;
@@ -158,49 +157,45 @@ public class MapBean extends JComponent implements ComponentListener,
     protected ProjectionSupport projectionSupport;
 
     /**
-     * Layers that are removed from the MapBean are held until the
-     * next projection change. When the projection changes, they are
-     * notified that they have been removed from the map. This list is
-     * kept so that toggling a layer on and off won't cause them to
-     * get rid of their resources, in case the user is just creating
-     * different views of the map.
+     * Layers that are removed from the MapBean are held until the next
+     * projection change. When the projection changes, they are notified that
+     * they have been removed from the map. This list is kept so that toggling a
+     * layer on and off won't cause them to get rid of their resources, in case
+     * the user is just creating different views of the map.
      */
     protected Vector removedLayers = new Vector(0);
 
     /**
-     * Some users may want the layers deleted immediately when they
-     * are removed from the map. This flag controls that. The default
-     * behavior is to hold a reference to a layer and actually release
-     * it when the projection changes (default = true). Set to false
-     * if you want the MapBean to tell a Layer it has been removed
-     * immediately when it happens.
+     * Some users may want the layers deleted immediately when they are removed
+     * from the map. This flag controls that. The default behavior is to hold a
+     * reference to a layer and actually release it when the projection changes
+     * (default = true). Set to false if you want the MapBean to tell a Layer it
+     * has been removed immediately when it happens.
      */
     protected boolean layerRemovalDelayed = true;
 
     /**
-     * This vector is to let the layers know when they have been added
-     * to the map.
+     * This vector is to let the layers know when they have been added to the
+     * map.
      */
     protected Vector addedLayers = new Vector(0);
 
     /**
-     * The PaintListeners want to know when the map has been
-     * repainted.
+     * The PaintListeners want to know when the map has been repainted.
      */
     protected PaintListenerSupport painters = null;
 
     /**
-     * The background color for this particular MapBean. If null, the
-     * setting for the projection, which in turn is set in the
-     * Environment class, will be used.
+     * The background color for this particular MapBean. If null, the setting
+     * for the projection, which in turn is set in the Environment class, will
+     * be used.
      */
     protected Paint background = null;
 
     /**
-     * The MapBeanRepaintPolicy to use to handler/filter/pace layer
-     * repaint() requests. If not set, a StandardMapBeanRepaintPolicy
-     * will be used, which forwards repaint requests to Swing
-     * normally.
+     * The MapBeanRepaintPolicy to use to handler/filter/pace layer repaint()
+     * requests. If not set, a StandardMapBeanRepaintPolicy will be used, which
+     * forwards repaint requests to Swing normally.
      */
     protected MapBeanRepaintPolicy repaintPolicy = null;
 
@@ -236,12 +231,12 @@ public class MapBean extends JComponent implements ComponentListener,
         addComponentListener(this);
         addContainerListener(this);
 
-        //----------------------------------------
+        // ----------------------------------------
         // In a builder tool it seems that the OverlayLayout
         // makes the MapBean fail to resize. And since it has
         // no children by default, it has no size. So I add
         // a null Layer here to give it a default size.
-        //----------------------------------------
+        // ----------------------------------------
         if (java.beans.Beans.isDesignTime()) {
             add(new Layer() {
                 public void projectionChanged(ProjectionEvent e) {}
@@ -269,10 +264,10 @@ public class MapBean extends JComponent implements ComponentListener,
      *----------------------------------------------------------------------*/
 
     /**
-     * Adds additional constraints on possible children components.
-     * The new component must be a Layer. This method included as a
-     * good container citizen, and should not be called directly. Use
-     * the add() methods inherited from java.awt.Container instead.
+     * Adds additional constraints on possible children components. The new
+     * component must be a Layer. This method included as a good container
+     * citizen, and should not be called directly. Use the add() methods
+     * inherited from java.awt.Container instead.
      * 
      * @param comp Component
      * @param constraints Object
@@ -287,25 +282,25 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Prevents changing the LayoutManager. Don't let anyone change
-     * the LayoutManager! This is called by the parent component and
-     * should not be called directly.
+     * Prevents changing the LayoutManager. Don't let anyone change the
+     * LayoutManager! This is called by the parent component and should not be
+     * called directly.
      */
     public final void setLayout(LayoutManager mgr) {
         throw new IllegalArgumentException("cannot change layout of Map");
     }
 
     /**
-     * Return the minimum size of the MapBean window. Included here to
-     * be a good citizen.
+     * Return the minimum size of the MapBean window. Included here to be a good
+     * citizen.
      */
     public Dimension getMinimumSize() {
         return new Dimension(minWidth, minHeight);
     }
 
     /**
-     * Set the minimum size of the MapBean window. Included here to be
-     * a good citizen.
+     * Set the minimum size of the MapBean window. Included here to be a good
+     * citizen.
      */
     public void setMinimumSize(Dimension dim) {
         minWidth = (int) dim.getWidth();
@@ -315,9 +310,9 @@ public class MapBean extends JComponent implements ComponentListener,
     /**
      * Get the Insets of the MapBean. This returns 0-length Insets.
      * <p>
-     * This makes sure that there will be no +x,+y offset when drawing
-     * graphics. This is ok since any borders around the MapBean will
-     * get drawn afterwards on top.
+     * This makes sure that there will be no +x,+y offset when drawing graphics.
+     * This is ok since any borders around the MapBean will get drawn afterwards
+     * on top.
      * 
      * @return Insets 0-length Insets
      */
@@ -332,9 +327,9 @@ public class MapBean extends JComponent implements ComponentListener,
      *----------------------------------------------------------------------*/
 
     /**
-     * ComponentListener interface method. Should not be called
-     * directly. Invoked when component has been resized, and kicks
-     * off a projection change.
+     * ComponentListener interface method. Should not be called directly.
+     * Invoked when component has been resized, and kicks off a projection
+     * change.
      * 
      * @param e ComponentEvent
      */
@@ -348,24 +343,24 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * ComponentListener interface method. Should not be called
-     * directly. Invoked when component has been moved.
+     * ComponentListener interface method. Should not be called directly.
+     * Invoked when component has been moved.
      * 
      * @param e ComponentEvent
      */
     public void componentMoved(ComponentEvent e) {}
 
     /**
-     * ComponentListener interface method. Should not be called
-     * directly. Invoked when component has been shown.
+     * ComponentListener interface method. Should not be called directly.
+     * Invoked when component has been shown.
      * 
      * @param e ComponentEvent
      */
     public void componentShown(ComponentEvent e) {}
 
     /**
-     * ComponentListener interface method. Should not be called
-     * directly. Invoked when component has been hidden.
+     * ComponentListener interface method. Should not be called directly.
+     * Invoked when component has been hidden.
      * 
      * @param e ComponentEvent
      */
@@ -376,11 +371,10 @@ public class MapBean extends JComponent implements ComponentListener,
      *----------------------------------------------------------------------*/
 
     /**
-     * Add a ProjectionListener to the MapBean. You do not need to
-     * call this method to add layers as ProjectionListeners. This
-     * method is called for the layer when it is added to the MapBean.
-     * Use this method for other objects that you want to know about
-     * the MapBean's projection.
+     * Add a ProjectionListener to the MapBean. You do not need to call this
+     * method to add layers as ProjectionListeners. This method is called for
+     * the layer when it is added to the MapBean. Use this method for other
+     * objects that you want to know about the MapBean's projection.
      * 
      * @param l ProjectionListener
      */
@@ -391,11 +385,10 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Remove a ProjectionListener from the MapBean. You do not need
-     * to call this method to remove layers that are
-     * ProjectionListeners. This method is called for the layer when
-     * it is removed from the MapBean. Use this method for other
-     * objects that you want to remove from receiving projection
+     * Remove a ProjectionListener from the MapBean. You do not need to call
+     * this method to remove layers that are ProjectionListeners. This method is
+     * called for the layer when it is removed from the MapBean. Use this method
+     * for other objects that you want to remove from receiving projection
      * events.
      * 
      * @param l ProjectionListener
@@ -405,8 +398,8 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Called from within the MapBean when its projection listeners
-     * need to know about a projection change.
+     * Called from within the MapBean when its projection listeners need to know
+     * about a projection change.
      */
     protected void fireProjectionChanged() {
         // Fire the property change, so the messages get cleared out.
@@ -415,14 +408,20 @@ public class MapBean extends JComponent implements ComponentListener,
         if (Debug.debugging("proj")) {
             Debug.output("MapBean firing projection: " + getProjection());
         }
-        firePropertyChange(ProjectionProperty, null, getProjection());
+        try {
+            firePropertyChange(ProjectionProperty, null, getProjection());
+        } catch (ProjectionChangeVetoException pcve) {
+            firePropertyChange(ProjectionVetoedProperty, getProjection(), pcve);
+            pcve.updateWithParameters(this);
+            return;
+        }
         projectionSupport.fireProjectionChanged(getProjection());
         purgeAndNotifyRemovedLayers();
     }
 
     /**
-     * Clear the vector containing all of the removed layers, and let
-     * those layers know they have been removed from the map.
+     * Clear the vector containing all of the removed layers, and let those
+     * layers know they have been removed from the map.
      */
     public void purgeAndNotifyRemovedLayers() {
         // Tell any layers that have been removed that they have
@@ -459,9 +458,9 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Sets the scale of the map. The Projection may silently
-     * disregard this setting, setting it to a <strong>maxscale
-     * </strong> or <strong>minscale </strong> value.
+     * Sets the scale of the map. The Projection may silently disregard this
+     * setting, setting it to a <strong>maxscale </strong> or <strong>minscale
+     * </strong> value.
      * 
      * @param newScale the new scale
      * @see Proj#setScale
@@ -495,10 +494,8 @@ public class MapBean extends JComponent implements ComponentListener,
     /**
      * Sets the center of the map.
      * 
-     * @param lat the latitude of center point of the map in decimal
-     *        degrees
-     * @param lon the longitude of center point of the map in decimal
-     *        degrees
+     * @param lat the latitude of center point of the map in decimal degrees
+     * @param lon the longitude of center point of the map in decimal degrees
      * @see Proj#setCenter(float, float)
      */
     public void setCenter(double lat, double lon) {
@@ -509,20 +506,17 @@ public class MapBean extends JComponent implements ComponentListener,
     /**
      * Sets the center of the map.
      * 
-     * @param lat the latitude of center point of the map in decimal
-     *        degrees
-     * @param lon the longitude of center point of the map in decimal
-     *        degrees
+     * @param lat the latitude of center point of the map in decimal degrees
+     * @param lon the longitude of center point of the map in decimal degrees
      * @see Proj#setCenter(float, float)
      */
     public void setCenter(float lat, float lon) {
-        setCenter((double)lat, (double)lon);
+        setCenter((double) lat, (double) lon);
     }
-    
+
     /**
-     * Set the background color of the map. If the background for this
-     * MapBean is not null, the background of the projection will be
-     * used.
+     * Set the background color of the map. If the background for this MapBean
+     * is not null, the background of the projection will be used.
      * 
      * @param color java.awt.Color.
      */
@@ -534,7 +528,7 @@ public class MapBean extends JComponent implements ComponentListener,
         super.setBackground(color);
         setBckgrnd((Paint) color);
     }
-    
+
     /**
      * We override this to set the paint mode on the Graphics before the border
      * is painted, otherwiser we get an XOR effect in the border.
@@ -543,11 +537,10 @@ public class MapBean extends JComponent implements ComponentListener,
         g.setPaintMode();
         super.paintBorder(g);
     }
-    
+
     /**
-     * Set the background of the map. If the background for this
-     * MapBean is not null, the background of the projection will be
-     * used.
+     * Set the background of the map. If the background for this MapBean is not
+     * null, the background of the projection will be used.
      * 
      * @param paint java.awt.Paint.
      */
@@ -563,11 +556,11 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Get the background color of the map. If the background color
-     * for this MapBean has been explicitly set, that value will be
-     * returned. Otherwise, the background color of the projection
-     * will be returned. If the background is not a color (as opposed
-     * to Paint) this method will return null.
+     * Get the background color of the map. If the background color for this
+     * MapBean has been explicitly set, that value will be returned. Otherwise,
+     * the background color of the projection will be returned. If the
+     * background is not a color (as opposed to Paint) this method will return
+     * null.
      * 
      * @return color java.awt.Color.
      */
@@ -581,16 +574,16 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Get the background of the map. If the background for this
-     * MapBean has been explicitly set, that value will be returned.
-     * Otherwise, the background of the projection will be returned.
+     * Get the background of the map. If the background for this MapBean has
+     * been explicitly set, that value will be returned. Otherwise, the
+     * background of the projection will be returned.
      * 
      * @return color java.awt.Color.
      */
     public Paint getBckgrnd() {
         Paint ret = background;
         if (ret == null) {
-            //          ret = projection.getBackgroundColor();
+            // ret = projection.getBackgroundColor();
             ret = super.getBackground();
         }
         return ret;
@@ -606,8 +599,7 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Set the projection. Shouldn't be null, and won't do anything if
-     * it is.
+     * Set the projection. Shouldn't be null, and won't do anything if it is.
      * 
      * @param aProjection Projection
      */
@@ -620,9 +612,9 @@ public class MapBean extends JComponent implements ComponentListener,
         }
     }
 
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
     // CenterListener interface
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
 
     /**
      * Handles incoming <code>CenterEvents</code>.
@@ -633,9 +625,9 @@ public class MapBean extends JComponent implements ComponentListener,
         setCenter(evt.getLatitude(), evt.getLongitude());
     }
 
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
     // PanListener interface
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
 
     /**
      * Handles incoming <code>PanEvents</code>.
@@ -657,14 +649,13 @@ public class MapBean extends JComponent implements ComponentListener,
         fireProjectionChanged();
     }
 
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
     // ZoomListener interface
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
 
     /**
-     * Zoom the Map. Part of the ZoomListener interface. Sets the
-     * scale of the MapBean projection, based on a relative or
-     * absolute amount.
+     * Zoom the Map. Part of the ZoomListener interface. Sets the scale of the
+     * MapBean projection, based on a relative or absolute amount.
      * 
      * @param evt the ZoomEvent describing the new scale.
      */
@@ -680,18 +671,18 @@ public class MapBean extends JComponent implements ComponentListener,
         setScale(newScale);
     }
 
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
     // ContainerListener interface
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
 
     protected transient Layer[] currentLayers = new Layer[0];
 
     protected transient boolean doContainerChange = true;
 
     /**
-     * ContainerListener Interface method. Should not be called
-     * directly. Part of the ContainerListener interface, and it's
-     * here to make the MapBean a good Container citizen.
+     * ContainerListener Interface method. Should not be called directly. Part
+     * of the ContainerListener interface, and it's here to make the MapBean a
+     * good Container citizen.
      * 
      * @param value boolean
      */
@@ -706,9 +697,9 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * ContainerListener Interface method. Should not be called
-     * directly. Part of the ContainerListener interface, and it's
-     * here to make the MapBean a good Container citizen.
+     * ContainerListener Interface method. Should not be called directly. Part
+     * of the ContainerListener interface, and it's here to make the MapBean a
+     * good Container citizen.
      * 
      * @return boolean
      */
@@ -717,9 +708,9 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * ContainerListener Interface method. Should not be called
-     * directly. Part of the ContainerListener interface, and it's
-     * here to make the MapBean a good Container citizen.
+     * ContainerListener Interface method. Should not be called directly. Part
+     * of the ContainerListener interface, and it's here to make the MapBean a
+     * good Container citizen.
      * 
      * @param e ContainerEvent
      */
@@ -740,15 +731,14 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * ContainerListener Interface method. Should not be called
-     * directly. Part of the ContainerListener interface, and it's
-     * here to make the MapBean a good Container citizen. Layers that
-     * are removed are added to a list, which is cleared when the
-     * projection changes. If they are added to the MapBean again
-     * before the projection changes, they are taken off the list,
-     * added back to the MapBean, and are simply repainted. This
-     * prevents layers from doing unnecessary work if they are toggled
-     * on and off without projection changes.
+     * ContainerListener Interface method. Should not be called directly. Part
+     * of the ContainerListener interface, and it's here to make the MapBean a
+     * good Container citizen. Layers that are removed are added to a list,
+     * which is cleared when the projection changes. If they are added to the
+     * MapBean again before the projection changes, they are taken off the list,
+     * added back to the MapBean, and are simply repainted. This prevents layers
+     * from doing unnecessary work if they are toggled on and off without
+     * projection changes.
      * 
      * @param e ContainerEvent
      * @see com.bbn.openmap.MapBean#purgeAndNotifyRemovedLayers
@@ -762,9 +752,9 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * ContainerListener Interface method. Should not be called
-     * directly. Part of the ContainerListener interface, and it's
-     * here to make the MapBean a good Container citizen.
+     * ContainerListener Interface method. Should not be called directly. Part
+     * of the ContainerListener interface, and it's here to make the MapBean a
+     * good Container citizen.
      * 
      * @param e ContainerEvent
      */
@@ -792,13 +782,12 @@ public class MapBean extends JComponent implements ComponentListener,
 
     }
 
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
     // ProjectionListener interface
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
 
     /**
-     * ProjectionListener interface method. Should not be called
-     * directly.
+     * ProjectionListener interface method. Should not be called directly.
      * 
      * @param e ProjectionEvent
      */
@@ -820,9 +809,9 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * In addition to adding the PropertyChangeListener as the
-     * JComponent method does, this method also provides the listener
-     * with the initial version of the Layer and Cursor properties.
+     * In addition to adding the PropertyChangeListener as the JComponent method
+     * does, this method also provides the listener with the initial version of
+     * the Layer and Cursor properties.
      */
     public void addPropertyChangeListener(PropertyChangeListener pcl) {
         super.addPropertyChangeListener(pcl);
@@ -840,9 +829,8 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Same as JComponent.paint(), except if there are no children
-     * (Layers), the projection still paints the background and the
-     * border is painted.
+     * Same as JComponent.paint(), except if there are no children (Layers), the
+     * projection still paints the background and the border is painted.
      */
     public void paint(Graphics g) {
         if (getComponentCount() == 0 && projection != null) {
@@ -854,8 +842,8 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Convenience method to test if Graphics is Graphics2D object,
-     * and to try to do the right thing.
+     * Convenience method to test if Graphics is Graphics2D object, and to try
+     * to do the right thing.
      */
     protected void drawProjectionBackground(Graphics g) {
         if (g instanceof Graphics2D) {
@@ -867,18 +855,18 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Same as JComponent.paintChildren() except any PaintListeners
-     * are notified and the border is painted over the children.
+     * Same as JComponent.paintChildren() except any PaintListeners are notified
+     * and the border is painted over the children.
      */
     public void paintChildren(Graphics g) {
         paintChildren(g, null);
     }
 
     /**
-     * Same as paintChildren, but allows you to set a clipping area to
-     * paint. Be careful with this, because if the clipping area is
-     * set while some layer decides to paint itself, that layer may
-     * not have all it's objects painted.
+     * Same as paintChildren, but allows you to set a clipping area to paint. Be
+     * careful with this, because if the clipping area is set while some layer
+     * decides to paint itself, that layer may not have all it's objects
+     * painted.
      */
     public void paintChildren(Graphics g, Rectangle clip) {
 
@@ -906,9 +894,9 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Method that provides an option of whether or not to draw the
-     * border when painting. Usually called from another object trying
-     * to control the Map appearance when events are flying around.
+     * Method that provides an option of whether or not to draw the border when
+     * painting. Usually called from another object trying to control the Map
+     * appearance when events are flying around.
      */
     public void paintChildrenWithBorder(Graphics g, boolean drawBorder) {
         drawProjectionBackground(g);
@@ -949,13 +937,13 @@ public class MapBean extends JComponent implements ComponentListener,
         }
     }
 
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
     // LayerListener interface
-    //------------------------------------------------------------
+    // ------------------------------------------------------------
 
     /**
-     * LayerListener interface method. A list of layers will be added,
-     * removed, or replaced based on on the type of LayerEvent.
+     * LayerListener interface method. A list of layers will be added, removed,
+     * or replaced based on on the type of LayerEvent.
      * 
      * @param evt a LayerEvent
      */
@@ -1042,30 +1030,29 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * A call to try and get the MapBean to reduce flashing by
-     * controlling when repaints happen, waiting for lower layers to
-     * call for a repaint(), too. Calls shouldForwardRepaint(Layer),
-     * which acts as a policy for whether to forward the repaint up
-     * the Swing tree.
+     * A call to try and get the MapBean to reduce flashing by controlling when
+     * repaints happen, waiting for lower layers to call for a repaint(), too.
+     * Calls shouldForwardRepaint(Layer), which acts as a policy for whether to
+     * forward the repaint up the Swing tree.
      */
     public void repaint(Layer layer) {
-        //      Debug.output(layer.getName() + " - wants a repaint()");
+        // Debug.output(layer.getName() + " - wants a repaint()");
         getMapBeanRepaintPolicy().repaint(layer);
     }
 
     /**
-     * Set the MapBeanRepaintPolicy used by the MapBean. This policy
-     * can be used to pace/filter layer repaint() requests.
+     * Set the MapBeanRepaintPolicy used by the MapBean. This policy can be used
+     * to pace/filter layer repaint() requests.
      */
     public void setMapBeanRepaintPolicy(MapBeanRepaintPolicy mbrp) {
         repaintPolicy = mbrp;
     }
 
     /**
-     * Get the MapBeanRepaintPolicy used by the MapBean. This policy
-     * can be used to pace/filter layer repaint() requests. If no
-     * policy has been set, a StandardMapBeanRepaintPolicy will be
-     * created, which simply forwards all requests.
+     * Get the MapBeanRepaintPolicy used by the MapBean. This policy can be used
+     * to pace/filter layer repaint() requests. If no policy has been set, a
+     * StandardMapBeanRepaintPolicy will be created, which simply forwards all
+     * requests.
      */
     public MapBeanRepaintPolicy getMapBeanRepaintPolicy() {
         if (repaintPolicy == null) {
@@ -1075,20 +1062,20 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Convenience function to get the LatLonPoint representing a
-     * screen location from a MouseEvent. Returns null if the event is
-     * null, or if the projection is not set in the MapBean. Allocates
-     * new LatLonPoint with coordinates.
+     * Convenience function to get the LatLonPoint representing a screen
+     * location from a MouseEvent. Returns null if the event is null, or if the
+     * projection is not set in the MapBean. Allocates new LatLonPoint with
+     * coordinates.
      */
     public Point2D getCoordinates(MouseEvent event) {
         return getCoordinates(event, null);
     }
 
     /**
-     * Convenience function to get the LatLonPoint representing a
-     * screen location from a MouseEvent. Returns null if the event is
-     * null, or if the projection is not set in the MapBean. Save on
-     * memory allocation by sending in the LatLonPoint to fill.
+     * Convenience function to get the LatLonPoint representing a screen
+     * location from a MouseEvent. Returns null if the event is null, or if the
+     * projection is not set in the MapBean. Save on memory allocation by
+     * sending in the LatLonPoint to fill.
      */
     public Point2D getCoordinates(MouseEvent event, Point2D llp) {
         Projection proj = getProjection();
@@ -1104,19 +1091,19 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Interface-like method to query if the MapBean is buffered, so
-     * you can control behavior better. Allows the removal of specific
-     * instance-like quieries for, say, BufferedMapBean, when all you
-     * really want to know is if you have the data is buffered, and if
-     * so, should be buffer be cleared. For the MapBean, always false.
+     * Interface-like method to query if the MapBean is buffered, so you can
+     * control behavior better. Allows the removal of specific instance-like
+     * quieries for, say, BufferedMapBean, when all you really want to know is
+     * if you have the data is buffered, and if so, should be buffer be cleared.
+     * For the MapBean, always false.
      */
     public boolean isBuffered() {
         return false;
     }
 
     /**
-     * Interface-like method to set a buffer dirty, if there is one.
-     * In MapBean, there isn't.
+     * Interface-like method to set a buffer dirty, if there is one. In MapBean,
+     * there isn't.
      * 
      * @param value boolean
      */
@@ -1125,19 +1112,18 @@ public class MapBean extends JComponent implements ComponentListener,
     /**
      * Checks whether the image buffer should be repainted.
      * 
-     * @return boolean whether the layer buffer is dirty. Always true
-     *         for MapBean, because a paint is always gonna need to
-     *         happen.
+     * @return boolean whether the layer buffer is dirty. Always true for
+     *         MapBean, because a paint is always gonna need to happen.
      */
     public boolean isBufferDirty() {
         return true;
     }
 
     /**
-     * If true (default) layers are held when they are removed, and
-     * then released and notified of removal when the projection
-     * changes. This saves the layers from releasing resources if the
-     * layer is simply being toggled on/off for different map views.
+     * If true (default) layers are held when they are removed, and then
+     * released and notified of removal when the projection changes. This saves
+     * the layers from releasing resources if the layer is simply being toggled
+     * on/off for different map views.
      */
     public void setLayerRemovalDelayed(boolean set) {
         layerRemovalDelayed = set;
@@ -1151,8 +1137,8 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Go through the layers, and for all of them that have the
-     * autoPalette variable turned on, show their palettes.
+     * Go through the layers, and for all of them that have the autoPalette
+     * variable turned on, show their palettes.
      */
     public void showLayerPalettes() {
         Component[] comps = this.getComponents();
