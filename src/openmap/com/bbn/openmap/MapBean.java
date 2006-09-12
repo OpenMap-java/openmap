@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.19 $
-// $Date: 2006/09/12 17:46:47 $
+// $Revision: 1.20 $
+// $Date: 2006/09/12 17:53:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -95,6 +95,22 @@ import com.bbn.openmap.util.Debug;
  * is trying to get itself painted. When manually adjusting clipping area, make
  * sure that when restricted clipping is over that a full repaint occurs if
  * there is a chance that another layer may be trying to paint itself.
+ * <P>
+ * PropertyChangeListeners and ProjectionListeners both receive notifications of
+ * the projection changes, but the PropertyChangeListeners receive them first.
+ * If you want to have a component that limits the MapBean's projection
+ * parameters, it should be a PropertyChangeListener on the MapBean, and throw a
+ * ProjectionChangeVetoException whenever a Projection setting falls outside of
+ * the limits. The ProjectionChangeVetoException should hold the alternate
+ * settings allowed by the listener. When a ProjectionChangeVetoException is
+ * thrown, all of the PropertyChangeListeners will receive another
+ * PropertyChangeEvent notification, under the MapBean.projectionVetoed property
+ * name. The old value for that property will be the rejected Projection object,
+ * and the new value will be the ProjectionChangeVetoException containing the
+ * new suggestions. The MapBean will then apply the suggestions and launch
+ * another round of projection change notifications. The ProjectionListeners
+ * only receive notification of Projections that have passed through the
+ * PropertyChangeListeners.
  * 
  * @see Layer
  */
@@ -109,7 +125,7 @@ public class MapBean extends JComponent implements ComponentListener,
     public static final String BackgroundProperty = "MapBean.background";
 
     public static final String ProjectionProperty = "MapBean.projection";
-    
+
     public static final String ProjectionVetoedProperty = "MapBean.projectionVetoed";
 
     /**
