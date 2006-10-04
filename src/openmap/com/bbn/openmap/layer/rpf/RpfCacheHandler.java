@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCacheHandler.java,v $
 // $RCSfile: RpfCacheHandler.java,v $
-// $Revision: 1.11 $
-// $Date: 2006/08/09 21:08:31 $
+// $Revision: 1.12 $
+// $Date: 2006/10/04 14:46:13 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -80,14 +80,14 @@ public class RpfCacheHandler {
     /**
      * The array of indexes for subframes contained in the RpfTocEntry.
      */
-    protected int[][] subframeIndex;
+    protected byte[][] subframeIndex;
     /**
      * The array of version markers for subframes contained in the RpfTocEntry.
      */
-    protected int[][] subframeVersion;
+    protected byte[][] subframeVersion;
 
     /** The size of the subframe cache. */
-    protected int subframeCacheSize;
+    protected int subframeCacheSize = SUBFRAME_CACHE_SIZE;
     /**
      * Description of how the frames should be constructed and displayed.
      */
@@ -149,7 +149,12 @@ public class RpfCacheHandler {
         frameProvider = provider;
         viewAttributes = rva;
         updateViewAttributes();
-        subframeCacheSize = subframe_cache_size;
+
+        if (subframe_cache_size > Byte.MAX_VALUE) {
+            subframeCacheSize = Byte.MAX_VALUE;
+        } else if (subframe_cache_size >= 0) {
+            subframeCacheSize = subframe_cache_size;
+        }
 
         initCache(true); // subframe cache, and it's new
 
@@ -382,13 +387,19 @@ public class RpfCacheHandler {
      * cache mananagement is also set for the current main RpfCoverageBox.
      */
     protected void resetSubframeIndex(int vertFrames, int horizFrames) {
-        /* Allocate the indices into the subframe cache */
-        int matrixheight = (vertFrames * 6) + (subframeBuffer * 2);
-        int matrixwidth = (horizFrames * 6) + (subframeBuffer * 2);
 
-        subframeIndex = new int[matrixheight][matrixwidth];
-        subframeVersion = new int[matrixheight][matrixwidth];
-        clearCache();
+        if (subframeCacheSize > 0) {
+            /* Allocate the indices into the subframe cache */
+            int matrixheight = (vertFrames * 6) + (subframeBuffer * 2);
+            int matrixwidth = (horizFrames * 6) + (subframeBuffer * 2);
+
+            subframeIndex = new byte[matrixheight][matrixwidth];
+            subframeVersion = new byte[matrixheight][matrixwidth];
+            clearCache();
+        } else {
+            subframeIndex = null;
+            subframeVersion = null;
+        }
     }
 
     /**
@@ -444,28 +455,32 @@ public class RpfCacheHandler {
                     cache = null;
 
                     subframeCacheSize = i;
-                    Debug.output("RpfCacheHandler: reseting cache size to "
-                            + subframeCacheSize);
+                    if (DEBUG_RPF) {
+                        Debug.output("RpfCacheHandler: reseting cache size to "
+                                + subframeCacheSize);
+                    }
                     initCache(true);
                     return;
                 }
             }
 
+            RpfSubframe subframe = cache.subframe[i];
+
             // See NOTE below on setScalingTo
-            cache.subframe[i].setScalingTo(scalingWidth, scalingHeight);
-            cache.subframe[i].version = 0;
+            subframe.setScalingTo(scalingWidth, scalingHeight);
+            subframe.version = 0;
 
             // Here's where I messed up - forgot to hook up the ends
             // of the chain...
             if (i < subframeCacheSize - 1) {
-                cache.subframe[i].nextSubframe = i + 1;
+                subframe.nextSubframe = i + 1;
             } else {
-                cache.subframe[i].nextSubframe = 0;
+                subframe.nextSubframe = 0;
             }
             if (i > 0) {
-                cache.subframe[i].prevSubframe = i - 1;
+                subframe.prevSubframe = i - 1;
             } else {
-                cache.subframe[i].prevSubframe = subframeCacheSize - 1;
+                subframe.prevSubframe = subframeCacheSize - 1;
             }
         }
     }
@@ -601,7 +616,8 @@ public class RpfCacheHandler {
         } else {
 
             /* If beyond the cache boundary, don't cache it. */
-            if (y < 0 || x < 0 || y >= subframeIndex.length
+            if (subframeIndex == null || y < 0 || x < 0
+                    || y >= subframeIndex.length
                     || x >= subframeIndex[0].length
                     || subframeCount >= subframeCacheSize) {
                 cacheIt = false;
@@ -636,11 +652,14 @@ public class RpfCacheHandler {
                             || subframeCount >= subframeCacheSize) {
                         ret = null;
                     } else {
-
                         referenceCache(index);
-                        cache.subframe[index].version++;
-                        subframeIndex[y][x] = index;
-                        subframeVersion[y][x] = cache.subframe[index].version;
+                        RpfSubframe subframe = cache.subframe[index];
+                        // DFD - not sure we need to do this.  It seems like it's more important to make sure the version changes to some other value that matches what's in the subframe, rather than keep it stuck on MAX_VALUE.
+                        // if (subframe.version < Byte.MAX_VALUE) {
+                        //     subframe.version++;
+                        // }
+                        subframeIndex[y][x] = (byte) index;
+                        subframeVersion[y][x] = subframe.version;
                         ret = cache.subframe[index];
                     }
                 }
@@ -701,7 +720,7 @@ public class RpfCacheHandler {
      * @param subframeCount a running count of the number of subframes retrieved
      *        so far for the current map. Should be used if there is concern
      *        that the number of subframes needed for the map is greater than
-     *        the size of the subframe.
+     *        the size of the cache.
      */
     protected RpfSubframe getCached(int cbx, int cby, int subframeCount) {
 
@@ -712,9 +731,9 @@ public class RpfCacheHandler {
         int y = cby + subframeBuffer;
 
         /* If beyond the image boundary, forget it */
-        if (coverageBoxes == null || coverageBoxes.size() == 0 || y < 0
-                || x < 0 || y >= subframeIndex.length
-                || x >= subframeVersion[0].length) {
+        if (subframeIndex != null
+                && (coverageBoxes == null || coverageBoxes.size() == 0 || y < 0
+                        || x < 0 || y >= subframeIndex.length || x >= subframeIndex[0].length)) {
             return null;
         }
 
@@ -724,7 +743,11 @@ public class RpfCacheHandler {
             return null;
         }
 
-        int index = subframeIndex[y][x];
+        int index = NOT_CACHED;
+
+        if (subframeIndex != null) {
+            index = subframeIndex[y][x];
+        }
 
         if (index == NOT_PRESENT) {
             return null;
@@ -809,10 +832,15 @@ public class RpfCacheHandler {
                 }
             } else { // or set the cache for the new subframe
                 referenceCache(index);
+                // DFD - I'm not sure it ever gets to the point where version
+                // gets bigger than a byte can hold, and we don't
+                // want the byte overrunning, do we? Then again, does it matter,
+                // if the frame version number matches the array setting for it,
+                // even
+                // if it's negative?
                 cache.subframe[index].version++;
-                subframeIndex[y][x] = index;
+                subframeIndex[y][x] = (byte) index;
                 subframeVersion[y][x] = cache.subframe[index].version;
-
                 ret = cache.subframe[index];
             }
 
@@ -820,7 +848,9 @@ public class RpfCacheHandler {
                 return ret;
             } else {
                 freeCache(index);
-                subframeIndex[y][x] = NOT_PRESENT;
+                if (subframeIndex != null) {
+                    subframeIndex[y][x] = NOT_PRESENT;
+                }
             }
         }
         return null;
@@ -845,9 +875,9 @@ public class RpfCacheHandler {
                     "RpfCacheHandler.loadSubframes(): null frameProvider");
             return false;
         }
-        
+
         subframe.opaqueness = viewAttributes.opaqueness;
-        
+
         if (viewAttributes.colorModel == OMRasterObject.COLORMODEL_DIRECT) {
             pixels = frameProvider.getSubframeData(coverageBox.tocNumber,
                     coverageBox.entryNumber,

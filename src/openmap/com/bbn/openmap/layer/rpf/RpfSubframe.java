@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfSubframe.java,v $
 // $RCSfile: RpfSubframe.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:04 $
+// $Revision: 1.6 $
+// $Date: 2006/10/04 14:46:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,12 +41,14 @@ import com.bbn.openmap.omGraphics.OMScalingRaster;
 import com.bbn.openmap.omGraphics.OMText;
 
 /**
- * The RpfSubframe is a holder for images and attributes within the
- * cache.
+ * The RpfSubframe is a holder for images and attributes within the cache.
  */
 public class RpfSubframe {
-    /** The version of the subframe. */
-    public int version;
+    /**
+     * The version of the subframe, used by the cache for marking how recently
+     * used the subframe was.
+     */
+    public byte version;
     /** The subframe image. */
     public OMScalingRaster image;
     /** The attribute text. */
@@ -118,8 +120,8 @@ public class RpfSubframe {
      * 
      * @param lat latitude of upper left point, in decimal degrees.
      * @param lon longitude of upper left point, in decimal degrees.
-     * @deprecated use the other setLocation, with upper left and
-     *             lower right coordinates.
+     * @deprecated use the other setLocation, with upper left and lower right
+     *             coordinates.
      */
     public void setLocation(float lat, float lon) {
         image.setLat(lat);
@@ -157,25 +159,23 @@ public class RpfSubframe {
     }
 
     /**
-     * setScalingTo has to be called after this for the changes to
-     * take place, or else you need to call the information.setData()
-     * methods directly.
+     * setScalingTo has to be called after this for the changes to take place,
+     * or else you need to call the information.setData() methods directly.
      */
     public void setAttributeText(String text) {
         data = text;
     }
 
     /**
-     * getAttributeText retrieves the text that would be displayed as
-     * attribute information about the subframe.
+     * getAttributeText retrieves the text that would be displayed as attribute
+     * information about the subframe.
      */
     public String getAttributeText() {
         return data;
     }
 
-    //      public void finalize() {
-    //      Debug.message("gc", " RpfSubframe: getting GC'd");
-    //      }
+    // public void finalize() {
+    // Debug.message("gc", " RpfSubframe: getting GC'd");
+    // }
 
 }
-
