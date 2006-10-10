@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkConstants.java,v $
 // $RCSfile: LinkConstants.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.4 $
+// $Date: 2006/10/10 22:05:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -83,6 +83,8 @@ public interface LinkConstants {
     public static final String POINT_HEADER = "<OMLINK:POINT>";
     /** Arc graphic object header. */
     public static final String ARC_HEADER = "<OMLINK:ARC>";
+    /** Ellipse graphic object header. */
+    public static final String ELLIPSE_HEADER = "<OMLINK:ELLIPSE>";
 
     /** Graphics action object header. */
     public static final String UPDATE_GRAPHICS = "<OMLINK:UPDATE_GRAPHICS>";

@@ -14,14 +14,15 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/include/Link.h,v $
  * $RCSfile: Link.h,v $
- * $Revision: 1.2 $
- * $Date: 2004/01/26 19:07:09 $
+ * $Revision: 1.3 $
+ * $Date: 2006/10/10 22:05:18 $
  * $Author: dietrick $
  * 
  * **********************************************************************
  */
 
-/** The Link object is the main mechanism for communications between a
+/**
+ * The Link object is the main mechanism for communications between a
  * LinkClient (most liekly a LinkLayer) and a LinkServer. This object 
  * defines the communications that either side can make
  *
@@ -77,7 +78,7 @@ enum RENDERTYPE {RENDERTYPE_UNKNOWN, RENDERTYPE_LATLON, RENDERTYPE_XY, RENDERTYP
 enum GRAPHICTYPE {GRAPHICTYPE_GRAPHIC, GRAPHICTYPE_BITMAP, GRAPHICTYPE_TEXT, 
                   GRAPHICTYPE_POLY, GRAPHICTYPE_LINE, GRAPHICTYPE_RECTANGLE,
                   GRAPHICTYPE_CIRCLE, GRAPHICTYPE_RASTER,
-                  GRAPHICTYPE_GRID, GRAPHICTYPE_POINT};
+                  GRAPHICTYPE_GRID, GRAPHICTYPE_POINT, GRAPHICTYPE_ELLIPSE};
 
 /**
  * Geographic units.
@@ -133,6 +134,8 @@ enum ACTIONTYPE {ACTIONGRAPHIC, ACTIONGUI};
 #define lBITMAP_HEADER strlen(BITMAP_HEADER)
 #define CIRCLE_HEADER "<OMLINK:CIRCLE>"
 #define lCIRCLE_HEADER strlen(CIRCLE_HEADER)
+#define ELLIPSE_HEADER "<OMLINK:ELLIPSE>"
+#define lELLIPSE_HEADER strlen(ELLIPSE_HEADER)
 #define GRID_HEADER "<OMLINK:GRID>"
 #define lGRID_HEADER strlen(GRID_HEADER)
 #define LINE_HEADER "<OMLINK:LINE>"

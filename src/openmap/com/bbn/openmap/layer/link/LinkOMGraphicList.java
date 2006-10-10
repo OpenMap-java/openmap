@@ -14,21 +14,23 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkOMGraphicList.java,v $
 // $RCSfile: LinkOMGraphicList.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.7 $
+// $Date: 2006/10/10 22:05:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.proj.Projection;
-
 import java.awt.Graphics;
 import java.util.HashMap;
 import java.util.ListIterator;
+
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * This class extends the OMGraphicList by allowing searches on the

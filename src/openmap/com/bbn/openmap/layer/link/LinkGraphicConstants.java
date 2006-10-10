@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGraphicConstants.java,v $
 // $RCSfile: LinkGraphicConstants.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.4 $
+// $Date: 2006/10/10 22:05:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -92,7 +92,7 @@ public interface LinkGraphicConstants {
     public final static int GRAPHICTYPE_LINE = 4;
     /** A rectangle type. */
     public final static int GRAPHICTYPE_RECTANGLE = 5;
-    /** A ellipse/circle type. */
+    /** A circle type. */
     public final static int GRAPHICTYPE_CIRCLE = 6;
     /** A raster type. */
     public final static int GRAPHICTYPE_RASTER = 7;
@@ -102,6 +102,8 @@ public interface LinkGraphicConstants {
     public final static int GRAPHICTYPE_POINT = 9;
     /** An arc type. */
     public final static int GRAPHICTYPE_ARC = 10;
+    /** An ellipse type. */
+    public final static int GRAPHICTYPE_ELLIPSE = 11;
 
     /** The float coordinates are in decimal degrees. */
     public final static int DECIMAL_DEGREES = 0;

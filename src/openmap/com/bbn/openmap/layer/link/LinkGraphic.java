@@ -16,16 +16,23 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGraphic.java,v
 // $
 // $RCSfile: LinkGraphic.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.5 $
+// $Date: 2006/10/10 22:05:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.link;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Paint;
+import java.io.IOException;
+import java.util.Iterator;
+
 import com.bbn.openmap.omGraphics.OMBitmap;
 import com.bbn.openmap.omGraphics.OMCircle;
+import com.bbn.openmap.omGraphics.OMEllipse;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMGrid;
@@ -37,12 +44,6 @@ import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
-
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Paint;
-import java.io.IOException;
-import java.util.Iterator;
 
 public class LinkGraphic implements LinkConstants, LinkPropertiesConstants {
 
@@ -98,6 +99,8 @@ public class LinkGraphic implements LinkConstants, LinkPropertiesConstants {
             LinkBitmap.write((OMBitmap) omGraphic, link, props);
         } else if (omGraphic instanceof OMCircle) {
             LinkCircle.write((OMCircle) omGraphic, link, props);
+        } else if (omGraphic instanceof OMEllipse) {
+            LinkEllipse.write((OMEllipse) omGraphic, link, props);
         } else if (omGraphic instanceof OMGrid) {
             LinkGrid.write((OMGrid) omGraphic, link, props);
         } else if (omGraphic instanceof OMLine) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMEllipse.java,v $
 // $RCSfile: OMEllipse.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/12/09 21:09:03 $
+// $Revision: 1.5 $
+// $Date: 2006/10/10 22:05:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,6 +46,16 @@ public class OMEllipse extends OMCircle {
     protected double minorAxisSpan;
     protected float[] rawllpts;
 
+    /**
+     * Create a OMEllipse, positioned with a lat-lon center and a lat-lon axis.
+     * Rendertype is RENDERTYPE_LATLON.
+     * 
+     * @param centerPoint latitude/longitude of center point, decimal degrees
+     * @param majorAxisSpan horizontal diameter of circle/ellipse, pixels
+     * @param minorAxisSpan vertical diameter of circle/ellipse, in given units
+     * @param units com.bbn.openmap.proj.Length object.
+     * @param rotateAngle angle of rotation in Radians
+     */
     public OMEllipse(LatLonPoint centerPoint, double majorAxisSpan,
             double minorAxisSpan, Length units, double rotateAngle) {
         setRenderType(RENDERTYPE_LATLON);
@@ -53,6 +63,60 @@ public class OMEllipse extends OMCircle {
 
         setCenter(centerPoint);
         setAxis(majorAxisSpan, minorAxisSpan, units);
+        setRotationAngle(rotateAngle);
+    }
+
+    /**
+     * Create a OMEllipse, positioned with a x-y center with x-y axis.
+     * Rendertype is RENDERTYPE_XY.
+     * 
+     * @param x1 window position of center point from left of window, in pixels
+     * @param y1 window position of center point from top of window, in pixels
+     * @param majorAxisSpan horizontal diameter of circle/ellipse, pixels
+     * @param minorAxisSpan vertical diameter of circle/ellipse, pixels
+     * @param rotateAngle angle of rotation in Radians
+     */
+    public OMEllipse(int x1, int y1, int majorAxisSpan, int minorAxisSpan,
+            double rotateAngle) {
+        super(x1, y1, majorAxisSpan, minorAxisSpan);
+        setRotationAngle(rotateAngle);
+    }
+
+    /**
+     * Create a OMEllipse, positioned with a lat-lon center and x-y axis.
+     * Rendertype is RENDERTYPE_OFFSET.
+     * 
+     * @param centerPoint latitude/longitude of center point, decimal degrees
+     * @param w horizontal diameter of circle/ellipse, pixels
+     * @param h vertical diameter of circle/ellipse, pixels
+     * @param rotateAngle angle of rotation in Radians
+     */
+    public OMEllipse(LatLonPoint centerPoint, int w, int h, double rotateAngle) {
+        // Use circle constructor
+        super(centerPoint.getLatitude(), centerPoint.getLongitude(), 0, 0, w, h);
+        setRotationAngle(rotateAngle);
+    }
+
+    /**
+     * Create a OMEllipse, positioned at a Lat-lon location, x-y offset, x-y
+     * axis. Rendertype is RENDERTYPE_OFFSET.
+     * 
+     * @param centerPoint latitude/longitude of center point, decimal degrees
+     * @param offset_x1 # pixels to the right the center will be moved from
+     *        lonPoint.
+     * @param offset_y1 # pixels down that the center will be moved from
+     *        latPoint.
+     * @param w horizontal diameter of circle/ellipse, pixels.
+     * @param h vertical diameter of circle/ellipse, pixels.
+     */
+    public OMEllipse(LatLonPoint centerPoint, int offset_x1, int offset_y1,
+            int w, int h, double rotateAngle) {
+        super(centerPoint.getLatitude(),
+              centerPoint.getLongitude(),
+              offset_x1,
+              offset_y1,
+              w,
+              h);
         setRotationAngle(rotateAngle);
     }
 
@@ -171,6 +235,10 @@ public class OMEllipse extends OMCircle {
     }
 
     public boolean generate(Projection proj) {
+        if (renderType == RENDERTYPE_XY || renderType == RENDERTYPE_OFFSET) {
+            return super.generate(proj); // generate using circle's generate
+        }
+        // RENDERTYPE_LATLON should go in here
         setShape(null);
 
         if (proj == null) {

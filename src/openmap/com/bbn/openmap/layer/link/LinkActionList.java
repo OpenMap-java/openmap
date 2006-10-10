@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkActionList.java,v $
 // $RCSfile: LinkActionList.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 18:08:42 $
+// $Revision: 1.7 $
+// $Date: 2006/10/10 22:05:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,11 +37,10 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 
 /**
- * The LinkActionList carries information about actions that the
- * client should perform in response to a gesture query. The possible
- * actions include URLs and HTML text to display in a browser,
- * information to display in a pop-up window or status display, or
- * changes to make to graphics.
+ * The LinkActionList carries information about actions that the client should
+ * perform in response to a gesture query. The possible actions include URLs and
+ * HTML text to display in a browser, information to display in a pop-up window
+ * or status display, or changes to make to graphics.
  */
 public class LinkActionList implements LinkActionConstants,
         LinkPropertiesConstants {
@@ -53,16 +52,15 @@ public class LinkActionList implements LinkActionConstants,
     /** */
     protected boolean reacted = false;
     /**
-     * This flag tells whether properties have been received that note
-     * how to update the map.
+     * This flag tells whether properties have been received that note how to
+     * update the map.
      */
     protected boolean mapUpdate = false;
     /** Use these properties to set the map */
     protected LinkProperties mapProperties;
     /**
-     * Instead of allocating a new empty vector for each gesture
-     * response, even if there isn't a graphic update, use this to
-     * return an empty vector.
+     * Instead of allocating a new empty vector for each gesture response, even
+     * if there isn't a graphic update, use this to return an empty vector.
      */
     protected static Vector emptyGraphicUpdates = new Vector();
     /** Graphics list received. */
@@ -73,8 +71,7 @@ public class LinkActionList implements LinkActionConstants,
     protected LinkProperties properties;
 
     /**
-     * Write a gesture response section to the link, from the server
-     * side.
+     * Write a gesture response section to the link, from the server side.
      * 
      * @param link the Link to write to.
      * @throws IOException
@@ -93,8 +90,8 @@ public class LinkActionList implements LinkActionConstants,
      * @param link the link to read from.
      * @param layer the client layer.
      * @param proj the projection to use on graphic updates.
-     * @param generator an OMGridGenerator that knows how to render
-     *        grid objects.
+     * @param generator an OMGridGenerator that knows how to render grid
+     *        objects.
      * @throws IOException
      * @throws EOFException
      */
@@ -105,9 +102,9 @@ public class LinkActionList implements LinkActionConstants,
     }
 
     /**
-     * After reading the gesture response, this returns the section
-     * ending string terminating the gesture section, either
-     * Link.END_TOTAL or Link.END_SECTION.
+     * After reading the gesture response, this returns the section ending
+     * string terminating the gesture section, either Link.END_TOTAL or
+     * Link.END_SECTION.
      * 
      * @return either Link.END_TOTAL or Link.END_SECTION.
      */
@@ -116,9 +113,9 @@ public class LinkActionList implements LinkActionConstants,
     }
 
     /**
-     * Get the properties for the LinkActionList. Any information
-     * messages can be picked up from within the properties - html,
-     * URL, messages, text and information lines.
+     * Get the properties for the LinkActionList. Any information messages can
+     * be picked up from within the properties - html, URL, messages, text and
+     * information lines.
      * 
      * @return properties
      */
@@ -136,8 +133,8 @@ public class LinkActionList implements LinkActionConstants,
     }
 
     /**
-     * Return all the graphic updates that came across the link, in
-     * the form of a Vector of LinkActionList.GraphicUpdate objects.
+     * Return all the graphic updates that came across the link, in the form of
+     * a Vector of LinkActionList.GraphicUpdate objects.
      * 
      * @return Vector of GraphicUpdate objects.
      */
@@ -150,14 +147,14 @@ public class LinkActionList implements LinkActionConstants,
     }
 
     /**
-     * The server method that needs to be called at the end of sending
-     * a gesture response. This will tell the link what type of
-     * teminator to put on the end of the gesture response section,
-     * and also tell the link to fluxh the output stream..
+     * The server method that needs to be called at the end of sending a gesture
+     * response. This will tell the link what type of teminator to put on the
+     * end of the gesture response section, and also tell the link to fluxh the
+     * output stream..
      * 
-     * @param endType use Link.END_SECTION if you want to add more
-     *        types of responses. Use Link.END_TOTAL at the end of the
-     *        total transmission.
+     * @param endType use Link.END_SECTION if you want to add more types of
+     *        responses. Use Link.END_TOTAL at the end of the total
+     *        transmission.
      * @throws IOException
      */
     public void end(String endType) throws IOException {
@@ -165,22 +162,20 @@ public class LinkActionList implements LinkActionConstants,
     }
 
     /**
-     * If a ACTIONS_HEADER has been encountered coming off the link,
-     * then this method should be called to read the string of gesture
-     * that follows. The gestures are read and reacted to directly -
-     * the responses that involve the Information Delegator are
-     * handled here, and all graphic updates are stored in the
-     * graphicUpdates Vector. Assumes the ACTIONS_HEADER has been
+     * If a ACTIONS_HEADER has been encountered coming off the link, then this
+     * method should be called to read the string of gesture that follows. The
+     * gestures are read and reacted to directly - the responses that involve
+     * the Information Delegator are handled here, and all graphic updates are
+     * stored in the graphicUpdates Vector. Assumes the ACTIONS_HEADER has been
      * read.
      * 
      * @param layer the layer that wants the gesture results..
-     * @param proj If you want the gesture graphic to be projected as
-     *        it comes off the wire, add a projection here. Otherwise,
-     *        use null.
-     * @param generator an OMGridGenerator that knows how to render
-     *        grid objects.
-     * @return Link.END_TOTAL or Link.END_SECTION, depending on how
-     *         the section ends.
+     * @param proj If you want the gesture graphic to be projected as it comes
+     *        off the wire, add a projection here. Otherwise, use null.
+     * @param generator an OMGridGenerator that knows how to render grid
+     *        objects.
+     * @return Link.END_TOTAL or Link.END_SECTION, depending on how the section
+     *         ends.
      * @throws IOException
      * @throws EOFException
      */
@@ -257,13 +252,13 @@ public class LinkActionList implements LinkActionConstants,
     }
 
     /**
-     * Read a graphic's particulars, for upates and additions. Assumes
-     * that the gesture type and graphic action has been read.
+     * Read a graphic's particulars, for upates and additions. Assumes that the
+     * gesture type and graphic action has been read.
      * 
      * @param graphicAction the action to take on the graphic.
      * @param proj the projection to apply to the graphic.
-     * @param generator an OMGridGenerator that knows how to render
-     *        grid objects.
+     * @param generator an OMGridGenerator that knows how to render grid
+     *        objects.
      * @throws IOException.
      */
     protected GraphicUpdate readGraphic(int graphicAction, Projection proj,
@@ -295,6 +290,9 @@ public class LinkActionList implements LinkActionConstants,
             break;
         case LinkGraphicList.GRAPHICTYPE_CIRCLE:
             graphic = LinkCircle.read(link.dis);
+            break;
+        case LinkGraphicList.GRAPHICTYPE_ELLIPSE:
+            graphic = LinkEllipse.read(link.dis);
             break;
         case LinkGraphicList.GRAPHICTYPE_RASTER:
             graphic = LinkRaster.read(link.dis);
@@ -336,17 +334,16 @@ public class LinkActionList implements LinkActionConstants,
     }
 
     /**
-     * Sets whether a set of MapUpdate parameters needs to be fetched.
-     * Should be reset to false after the map projection has been
-     * updated.
+     * Sets whether a set of MapUpdate parameters needs to be fetched. Should be
+     * reset to false after the map projection has been updated.
      */
     public void setNeedMapUpdate(boolean value) {
         mapUpdate = value;
     }
 
     /**
-     * The server method for writing a request to the client to
-     * deselect all the graphics.
+     * The server method for writing a request to the client to deselect all the
+     * graphics.
      * 
      * @throws IOException.
      */
@@ -355,19 +352,17 @@ public class LinkActionList implements LinkActionConstants,
         link.dos.writeInt(ACTION_GRAPHICS);
         link.dos.writeInt(MODIFY_DESELECTALL_GRAPHIC_MASK);
         LinkProperties.EMPTY_PROPERTIES.write(link.dos); // Write
-                                                         // empty
+        // empty
     }
 
     /**
-     * Server can use this method to modify a graphic with an action
-     * described by the MODIFY mask values. Assumes that you don't
-     * want to update or add a graphic, because that requires the
-     * graphic being added.
+     * Server can use this method to modify a graphic with an action described
+     * by the MODIFY mask values. Assumes that you don't want to update or add a
+     * graphic, because that requires the graphic being added.
      * 
-     * @param maskDescription an integer with the applicable
-     *        MODIFY_MASKS set.
-     * @param props property list containing the identifier used by
-     *        the client to know which graphic to modify.
+     * @param maskDescription an integer with the applicable MODIFY_MASKS set.
+     * @param props property list containing the identifier used by the client
+     *        to know which graphic to modify.
      * @throws IOException
      */
     public void modifyGraphic(int maskDescription, LinkProperties props)
@@ -379,12 +374,12 @@ public class LinkActionList implements LinkActionConstants,
     }
 
     /**
-     * Used by the graphic methods to write the correct mask and
-     * graphic header when a graphic is updated. Should not be called
-     * directly unless you understand the protocol.
+     * Used by the graphic methods to write the correct mask and graphic header
+     * when a graphic is updated. Should not be called directly unless you
+     * understand the protocol.
      * 
-     * @param graphicUpdateMask the masked integer to describe the
-     *        action on the graphic.
+     * @param graphicUpdateMask the masked integer to describe the action on the
+     *        graphic.
      * @throws IOException
      */
     public void writeGraphicGestureHeader(int graphicUpdateMask)
@@ -425,10 +420,8 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Update an arc with x/y placement.
      * 
-     * @param x1 window position of center point from left of window,
-     *        in pixels
-     * @param y1 window position of center point from top of window,
-     *        in pixels
+     * @param x1 window position of center point from left of window, in pixels
+     * @param y1 window position of center point from top of window, in pixels
      * @param w horizontal diameter of arc, pixels
      * @param h vertical diameter of arc, pixels
      * @param s starting angle of arc, decimal degrees
@@ -448,10 +441,10 @@ public class LinkActionList implements LinkActionConstants,
      * 
      * @param latPoint latitude of center of arc.
      * @param lonPoint longitude of center of arc.
-     * @param offset_x1 # pixels to the right the center will be moved
-     *        from lonPoint.
-     * @param offset_y1 # pixels down that the center will be moved
-     *        from latPoint.
+     * @param offset_x1 # pixels to the right the center will be moved from
+     *        lonPoint.
+     * @param offset_y1 # pixels down that the center will be moved from
+     *        latPoint.
      * @param w horizontal diameter of arc, pixels.
      * @param h vertical diameter of arc, pixels.
      * @param s starting angle of arc, decimal degrees
@@ -477,8 +470,8 @@ public class LinkActionList implements LinkActionConstants,
     }
 
     /**
-     * Update an arc with a certain radius at a Lat/Lon location.
-     * Assumes the radius is in decimal degrees.
+     * Update an arc with a certain radius at a Lat/Lon location. Assumes the
+     * radius is in decimal degrees.
      * 
      * @param latPoint latitude of center point, decimal degrees
      * @param lonPoint longitude of center point, decimal degrees
@@ -504,14 +497,14 @@ public class LinkActionList implements LinkActionConstants,
     }
 
     /**
-     * Update an arc with a certain radius at a Lat/Lon location, and
-     * allows you to specify units of the radius.
+     * Update an arc with a certain radius at a Lat/Lon location, and allows you
+     * to specify units of the radius.
      * 
      * @param latPoint latitude of center of arc in decimal degrees
      * @param lonPoint longitude of center of arc in decimal degrees
      * @param radius distance
-     * @param units integer value for units for distance - KM, MILES,
-     *        NMILES. If &lt; 0, assume decimal degrees.
+     * @param units integer value for units for distance - KM, MILES, NMILES. If
+     *        &lt; 0, assume decimal degrees.
      * @param s starting angle of arc, decimal degrees
      * @param e angular extent of arc, decimal degrees
      * @param properties attributes for the arc.
@@ -534,18 +527,17 @@ public class LinkActionList implements LinkActionConstants,
     }
 
     /**
-     * Update an arc with a certain radius at a Lat/Lon location, and
-     * allows you to specify units of the radius, as well as the
-     * number of verticies to use to approximate the arc.
+     * Update an arc with a certain radius at a Lat/Lon location, and allows you
+     * to specify units of the radius, as well as the number of verticies to use
+     * to approximate the arc.
      * 
      * @param latPoint latitude of center of arc in decimal degrees
      * @param lonPoint longitude of center of arc in decimal degrees
      * @param radius distance
      * @param units integer value for units for distance - OMArc.KM,
-     *        OMArc.MILES, OMArc.NMILES. If &lt; 0, assume decimal
-     *        degrees.
-     * @param nverts number of vertices for the poly-arc (if &lt; 3,
-     *        value is generated internally).
+     *        OMArc.MILES, OMArc.NMILES. If &lt; 0, assume decimal degrees.
+     * @param nverts number of vertices for the poly-arc (if &lt; 3, value is
+     *        generated internally).
      * @param s starting angle of arc, decimal degrees
      * @param e angular extent of arc, decimal degrees
      * @param properties attributes for the arc.
@@ -571,14 +563,12 @@ public class LinkActionList implements LinkActionConstants,
      * Update the bitmap.
      * 
      * @param lt latitude of placement of upper left corner of bitmap.
-     * @param ln longitude of placement of upper left corner of
-     *        bitmap.
+     * @param ln longitude of placement of upper left corner of bitmap.
      * @param w pixel width of bitmap.
      * @param h pixel height of bitmap.
      * @param bytes bitmap data.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkBitmap
      */
@@ -598,8 +588,7 @@ public class LinkActionList implements LinkActionConstants,
      * @param h pixel height of bitmap.
      * @param bytes bitmap data.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkBitmap
      */
@@ -614,18 +603,14 @@ public class LinkActionList implements LinkActionConstants,
      * Write a bitmap in the response.
      * 
      * @param lt latitude of placement of upper left corner of bitmap.
-     * @param ln longitude of placement of upper left corner of
-     *        bitmap.
-     * @param offset_x1 horizontal offset of upper left corner of
-     *        bitmap.
-     * @param offset_y1 vertical offset of upper left corner of
-     *        bitmap.
+     * @param ln longitude of placement of upper left corner of bitmap.
+     * @param offset_x1 horizontal offset of upper left corner of bitmap.
+     * @param offset_y1 vertical offset of upper left corner of bitmap.
      * @param w pixel width of bitmap.
      * @param h pixel height of bitmap.
      * @param bytes bitmap data.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkBitmap
      */
@@ -653,8 +638,7 @@ public class LinkActionList implements LinkActionConstants,
      * @param w pixel width of circle.
      * @param h pixel height of circle.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
@@ -673,8 +657,7 @@ public class LinkActionList implements LinkActionConstants,
      * @param w pixel width of circle.
      * @param h pixel height of circle.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
@@ -695,8 +678,7 @@ public class LinkActionList implements LinkActionConstants,
      * @param w width of circle.
      * @param h height of circle.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
@@ -722,8 +704,7 @@ public class LinkActionList implements LinkActionConstants,
      * @param lonPoint longitude of placement of center of circle.
      * @param radius radius of circle, in decimal degrees..
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
@@ -748,8 +729,7 @@ public class LinkActionList implements LinkActionConstants,
      * @param radius radius of circle, in decimal degrees..
      * @param units units of the radius - km, miles, nmiles, degrees..
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
@@ -773,12 +753,10 @@ public class LinkActionList implements LinkActionConstants,
      * @param lonPoint longitude of placement of center of circle.
      * @param radius radius of circle, in decimal degrees..
      * @param units units of the radius - km, miles, nmiles, degrees..
-     * @param nverts number of points to use to approximate the
-     *        circle. If negative, the client algorithm will figure
-     *        out what is best.
+     * @param nverts number of points to use to approximate the circle. If
+     *        negative, the client algorithm will figure out what is best.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkCircle
      */
@@ -796,22 +774,134 @@ public class LinkActionList implements LinkActionConstants,
     }
 
     /**
+     * Write an ellipse in the response.
+     * 
+     * @param latPoint latitude of center of circle in decimal degrees
+     * @param lonPoint longitude of center of circle in decimal degrees
+     * @param majorAxisSpan x axis value, units
+     * @param minorAxisSpan y axis value, units
+     * @param units integer value for units for distance - OMCircle.KM,
+     *        OMCircle.MILES, OMCircle.NMILES. If &lt; 0, assume decimal
+     *        degrees.
+     * @param rotationAngle The angle by which the circle/ellipse is to be
+     *        rotated, in radians
+     * 
+     * @param properties attributes for the circle.
+     * @throws IOException
+     */
+    public void updateEllipse(float latPoint, float lonPoint,
+                              float majorAxisSpan, float minorAxisSpan,
+                              int units, float rotationAngle,
+                              LinkProperties properties, int graphicUpdateMask)
+            throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkEllipse.write(latPoint,
+                lonPoint,
+                majorAxisSpan,
+                minorAxisSpan,
+                units,
+                rotationAngle,
+                properties,
+                link.dos);
+    }
+
+    /**
+     * Write an ellipse in the response.
+     * 
+     * @param x1 window position of center point from left of window, in pixels
+     * @param y1 window position of center point from top of window, in pixels
+     * @param majorAxisSpan horizontal diameter of circle/ellipse, pixels
+     * @param minorAxisSpan vertical diameter of circle/ellipse, pixels
+     * @param rotateAngle angle of rotation in Radians *
+     * @param properties the LinkProperties describing the attributes of the
+     *        ellipse.
+     */
+    public void updateEllipse(int x1, int y1, int majorAxisSpan,
+                              int minorAxisSpan, float rotateAngle,
+                              LinkProperties properties, int graphicUpdateMask)
+            throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkEllipse.write(x1,
+                y1,
+                majorAxisSpan,
+                minorAxisSpan,
+                rotateAngle,
+                properties,
+                link.dos);
+    }
+
+    /**
+     * Write an ellipse in the response.
+     * 
+     * @param latPoint latitude of center of circle in decimal degrees
+     * @param lonPoint longitude of center of circle in decimal degrees
+     * @param w horizontal diameter of circle/ellipse, pixels
+     * @param h vertical diameter of circle/ellipse, pixels
+     * @param rotateAngle angle of rotation in Radians
+     * @param properties the LinkProperties describing the attributes of the
+     *        ellipse.
+     */
+    public void updateEllipse(float latPoint, float lonPoint, int w, int h,
+                              float rotateAngle, LinkProperties properties,
+                              int graphicUpdateMask) throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkEllipse.write(latPoint,
+                lonPoint,
+                w,
+                h,
+                rotateAngle,
+                properties,
+                link.dos);
+    }
+
+    /**
+     * Write an ellipse in the response.
+     * 
+     * @param latPoint latitude of center of circle in decimal degrees
+     * @param lonPoint longitude of center of circle in decimal degrees
+     * @param offset_x1 # pixels to the right the center will be moved from
+     *        lonPoint.
+     * @param offset_y1 # pixels down that the center will be moved from
+     *        latPoint.
+     * @param w horizontal diameter of circle/ellipse, pixels.
+     * @param h vertical diameter of circle/ellipse, pixels.
+     * @param rotateAngle the rotation of the ellipse around the center point,
+     *        in radians.
+     * @param properties the LinkProperties describing the attributes of the
+     *        ellipse.
+     */
+    public void updateEllipse(float latPoint, float lonPoint, int offset_x1,
+                              int offset_y1, int w, int h, float rotateAngle,
+                              LinkProperties properties, int graphicUpdateMask)
+            throws IOException {
+        writeGraphicGestureHeader(graphicUpdateMask);
+        LinkEllipse.write(latPoint,
+                lonPoint,
+                offset_x1,
+                offset_y1,
+                w,
+                h,
+                rotateAngle,
+                properties,
+                link.dos);
+    }
+
+    /**
      * Lat/Lon placement grid.
      * 
      * @param lt latitude of the top of the grid.
      * @param ln longitude of the left side of the grid.
      * @param rows number of vertical points of the grid.
      * @param columns number of horizontal points of the grid.
-     * @param orientation the direction of the vertical axits of the
-     *        grid, in radians from up ( North).
+     * @param orientation the direction of the vertical axits of the grid, in
+     *        radians from up ( North).
      * @param vResolution degrees/point between rows of the grid.
      * @param hResolution degrees/point between columns of the grid.
-     * @param major designation of the presentation of the data, as
-     *        columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
+     * @param major designation of the presentation of the data, as columns
+     *        (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @see com.bbn.openmap.layer.link.LinkGrid
      * @throws IOException
      */
@@ -841,16 +931,15 @@ public class LinkActionList implements LinkActionConstants,
      * @param y1 window location of the top of the grid.
      * @param rows number of vertical points of the grid.
      * @param columns number of horizontal points of the grid.
-     * @param orientation the direction of the vertical axits of the
-     *        grid, in radians from up ( North).
+     * @param orientation the direction of the vertical axits of the grid, in
+     *        radians from up ( North).
      * @param vResolution pixels/point between rows of the grid.
      * @param hResolution pixels/point between columns of the grid.
-     * @param major designation of the presentation of the data, as
-     *        columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
+     * @param major designation of the presentation of the data, as columns
+     *        (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @see com.bbn.openmap.layer.link.LinkGrid
      * @throws IOException
      */
@@ -877,22 +966,20 @@ public class LinkActionList implements LinkActionConstants,
      * Lat/lon placement with XY offset.
      * 
      * @param lt latitude of the top of the image, before the offset.
-     * @param ln longitude of the left side of the image, before the
-     *        offset.
+     * @param ln longitude of the left side of the image, before the offset.
      * @param offset_x1 number of pixels to move image to the right.
      * @param offset_y1 number of pixels to move image down.
      * @param rows number of vertical points of the grid.
      * @param columns number of horizontal points of the grid.
-     * @param orientation the direction of the vertical axits of the
-     *        grid, in radians from up ( North).
+     * @param orientation the direction of the vertical axits of the grid, in
+     *        radians from up ( North).
      * @param vResolution pixels/point between rows of the grid.
      * @param hResolution pixels/point between columns of the grid.
-     * @param major designation of the presentation of the data, as
-     *        columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
+     * @param major designation of the presentation of the data, as columns
+     *        (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @see com.bbn.openmap.layer.link.LinkGrid
      * @throws IOException
      */
@@ -926,8 +1013,7 @@ public class LinkActionList implements LinkActionConstants,
      * @param lon_2 longitude of placement of end of line.
      * @param lineType type of line - straight, rhumb, great circle..
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkLine
      */
@@ -952,11 +1038,9 @@ public class LinkActionList implements LinkActionConstants,
      * @param lat_2 latitude of placement of end of line.
      * @param lon_2 longitude of placement of end of line.
      * @param lineType type of line - straight, rhumb, great circle..
-     * @param nsegs number of points to use to approximate curved
-     *        line..
+     * @param nsegs number of points to use to approximate curved line..
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkLine
      */
@@ -982,8 +1066,7 @@ public class LinkActionList implements LinkActionConstants,
      * @param x2 Horizontal pixel placement of end of line.
      * @param y2 Vertical pixel placement of end of line.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkLine
      */
@@ -1004,8 +1087,7 @@ public class LinkActionList implements LinkActionConstants,
      * @param x2 Horizontal pixel offset of end of line.
      * @param y2 Vertical pixel offset of end of line.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkLine
      */
@@ -1020,12 +1102,10 @@ public class LinkActionList implements LinkActionConstants,
      * Write a raster in the response.
      * 
      * @param lt latitude of placement of upper left corner of raster.
-     * @param ln longitude of placement of upper left corner of
-     *        raster.
+     * @param ln longitude of placement of upper left corner of raster.
      * @param ii ImageIcon to place on the map..
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @throws InterruptedException
      * @see com.bbn.openmap.layer.link.LinkRaster
@@ -1040,14 +1120,11 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a raster in the response.
      * 
-     * @param x1 horizontal pixel location of upper left corner of
-     *        raster.
-     * @param y1 vertical pixel location of upper left corner of
-     *        raster.
+     * @param x1 horizontal pixel location of upper left corner of raster.
+     * @param y1 vertical pixel location of upper left corner of raster.
      * @param ii ImageIcon to place on the map..
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @throws InterruptedException
      * @see com.bbn.openmap.layer.link.LinkRaster
@@ -1063,16 +1140,12 @@ public class LinkActionList implements LinkActionConstants,
      * Write a raster in the response.
      * 
      * @param lt latitude of placement of upper left corner of raster.
-     * @param ln longitude of placement of upper left corner of
-     *        raster.
-     * @param offset_x1 horizontal pixel offset of upper left corner
-     *        of raster.
-     * @param offset_y1 vertical pixel offset of upper left corner of
-     *        raster.
+     * @param ln longitude of placement of upper left corner of raster.
+     * @param offset_x1 horizontal pixel offset of upper left corner of raster.
+     * @param offset_y1 vertical pixel offset of upper left corner of raster.
      * @param ii ImageIcon to place on the map..
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @throws InterruptedException
      * @see com.bbn.openmap.layer.link.LinkRaster
@@ -1089,14 +1162,12 @@ public class LinkActionList implements LinkActionConstants,
      * Write a bitmap in the response.
      * 
      * @param lt latitude of placement of upper left corner of bitmap.
-     * @param ln longitude of placement of upper left corner of
-     *        bitmap.
+     * @param ln longitude of placement of upper left corner of bitmap.
      * @param image_width width of bitmap.
      * @param image_height height of bitmap.
      * @param image the java.awt.Image.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @throws InterruptedException
      * @see com.bbn.openmap.layer.link.LinkRaster
@@ -1118,16 +1189,13 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a raster in the response.
      * 
-     * @param x1 horizontal pixel location of upper left corner of
-     *        raster.
-     * @param y1 vertical pixel location of upper left corner of
-     *        raster.
+     * @param x1 horizontal pixel location of upper left corner of raster.
+     * @param y1 vertical pixel location of upper left corner of raster.
      * @param image Image to place on map.
      * @param image_width width of image.
      * @param image_height height of image.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @throws InterruptedException
      * @see com.bbn.openmap.layer.link.LinkRaster
@@ -1150,18 +1218,14 @@ public class LinkActionList implements LinkActionConstants,
      * Write a raster in the response.
      * 
      * @param lt latitude of placement of upper left corner of raster.
-     * @param ln longitude of placement of upper left corner of
-     *        raster.
-     * @param offset_x1 horizontal pixel offset of upper left corner
-     *        of raster.
-     * @param offset_y1 vertical pixel offset of upper left corner of
-     *        raster.
+     * @param ln longitude of placement of upper left corner of raster.
+     * @param offset_x1 horizontal pixel offset of upper left corner of raster.
+     * @param offset_y1 vertical pixel offset of upper left corner of raster.
      * @param image Image to place on map.
      * @param image_width width of image.
      * @param image_height height of image.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @throws InterruptedException
      * @see com.bbn.openmap.layer.link.LinkRaster
@@ -1186,14 +1250,12 @@ public class LinkActionList implements LinkActionConstants,
      * Write a raster in the response.
      * 
      * @param lt latitude of placement of upper left corner of raster.
-     * @param ln longitude of placement of upper left corner of
-     *        raster.
+     * @param ln longitude of placement of upper left corner of raster.
      * @param w width of raster.
      * @param h height of raster.
      * @param pix integer image pixel data.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
@@ -1207,16 +1269,13 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a raster in the response.
      * 
-     * @param x1 horizontal pixel location of upper left corner of
-     *        raster.
-     * @param y1 vertical pixel location of upper left corner of
-     *        raster.
+     * @param x1 horizontal pixel location of upper left corner of raster.
+     * @param y1 vertical pixel location of upper left corner of raster.
      * @param w width of raster.
      * @param h height of raster.
      * @param pix integer image pixel data.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
@@ -1231,18 +1290,14 @@ public class LinkActionList implements LinkActionConstants,
      * Write a raster in the response.
      * 
      * @param lt latitude of placement of upper left corner of bitmap.
-     * @param ln longitude of placement of upper left corner of
-     *        bitmap.
-     * @param offset_x1 horizontal pixel offset of upper left corner
-     *        of raster.
-     * @param offset_y1 vertical pixel offset of upper left corner of
-     *        raster.
+     * @param ln longitude of placement of upper left corner of bitmap.
+     * @param offset_x1 horizontal pixel offset of upper left corner of raster.
+     * @param offset_y1 vertical pixel offset of upper left corner of raster.
      * @param w width of raster.
      * @param h height of raster.
      * @param pix integer image pixel data.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
@@ -1266,12 +1321,10 @@ public class LinkActionList implements LinkActionConstants,
      * Write a raster in the response.
      * 
      * @param lt latitude of placement of upper left corner of raster.
-     * @param ln longitude of placement of upper left corner of
-     *        raster.
+     * @param ln longitude of placement of upper left corner of raster.
      * @param url the url to download image from.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
@@ -1285,14 +1338,11 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a raster in the response.
      * 
-     * @param x1 horizontal pixel location of upper left corner of
-     *        raster.
-     * @param y1 vertical pixel location of upper left corner of
-     *        raster.
+     * @param x1 horizontal pixel location of upper left corner of raster.
+     * @param y1 vertical pixel location of upper left corner of raster.
      * @param url the url to download the image from.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
@@ -1307,16 +1357,12 @@ public class LinkActionList implements LinkActionConstants,
      * Write a raster in the response.
      * 
      * @param lt latitude of placement of upper left corner of raster.
-     * @param ln longitude of placement of upper left corner of
-     *        raster.
-     * @param offset_x1 horizontal pixel offset of upper left corner
-     *        of raster.
-     * @param offset_y1 vertical pixel offset of upper left corner of
-     *        raster.
+     * @param ln longitude of placement of upper left corner of raster.
+     * @param offset_x1 horizontal pixel offset of upper left corner of raster.
+     * @param offset_y1 vertical pixel offset of upper left corner of raster.
      * @param url the url to download the image from.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
@@ -1337,17 +1383,14 @@ public class LinkActionList implements LinkActionConstants,
      * Write a raster in the response.
      * 
      * @param lt latitude of placement of upper left corner of raster.
-     * @param ln longitude of placement of upper left corner of
-     *        raster.
+     * @param ln longitude of placement of upper left corner of raster.
      * @param w width of image.
      * @param h height of image.
      * @param bytes the image data, indexes into the colortable.
-     * @param colorTable RGB integers representing colortable of
-     *        image.
+     * @param colorTable RGB integers representing colortable of image.
      * @param trans the transparency of image.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
@@ -1370,19 +1413,15 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a raster in the response.
      * 
-     * @param x1 horizontal pixel location of upper left corner of
-     *        raster.
-     * @param y1 vertical pixel location of upper left corner of
-     *        raster.
+     * @param x1 horizontal pixel location of upper left corner of raster.
+     * @param y1 vertical pixel location of upper left corner of raster.
      * @param w width of image.
      * @param h height of image.
      * @param bytes the image data, indexes into the colortable.
-     * @param colorTable RGB integers representing colortable of
-     *        image.
+     * @param colorTable RGB integers representing colortable of image.
      * @param trans the transparency of image.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
@@ -1406,21 +1445,16 @@ public class LinkActionList implements LinkActionConstants,
      * Write a raster in the response.
      * 
      * @param lt latitude of placement of upper left corner of raster.
-     * @param ln longitude of placement of upper left corner of
-     *        raster.
-     * @param offset_x1 horizontal pixel offset of upper left corner
-     *        of raster.
-     * @param offset_y1 vertical pixel offset of upper left corner of
-     *        raster.
+     * @param ln longitude of placement of upper left corner of raster.
+     * @param offset_x1 horizontal pixel offset of upper left corner of raster.
+     * @param offset_y1 vertical pixel offset of upper left corner of raster.
      * @param w width of image.
      * @param h height of image.
      * @param bytes the image data, indexes into the colortable.
-     * @param colorTable RGB integers representing colortable of
-     *        image.
+     * @param colorTable RGB integers representing colortable of image.
      * @param trans the transparency of image.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRaster
      */
@@ -1445,19 +1479,14 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a rectangle in the response.
      * 
-     * @param lt1 latitude of placement of upper left corner of
-     *        rectangle.
-     * @param ln1 longitude of placement of upper left corner of
-     *        rectangle.
-     * @param lt2 latitude of placement of lower right corner of
-     *        rectangle.
-     * @param ln2 longitude of placement of lower right corner of
-     *        rectangle.
-     * @param lType the line type to use for the rectangle - straight,
-     *        rhumb, great circle.
+     * @param lt1 latitude of placement of upper left corner of rectangle.
+     * @param ln1 longitude of placement of upper left corner of rectangle.
+     * @param lt2 latitude of placement of lower right corner of rectangle.
+     * @param ln2 longitude of placement of lower right corner of rectangle.
+     * @param lType the line type to use for the rectangle - straight, rhumb,
+     *        great circle.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRectangle
      */
@@ -1471,21 +1500,15 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a rectangle in the response.
      * 
-     * @param lt1 latitude of placement of upper left corner of
-     *        rectangle.
-     * @param ln1 longitude of placement of upper left corner of
-     *        rectangle.
-     * @param lt2 latitude of placement of lower right corner of
-     *        rectangle.
-     * @param ln2 longitude of placement of lower right corner of
-     *        rectangle.
-     * @param lType the line type to use for the rectangle - straight,
-     *        rhumb, great circle.
-     * @param nsegs number of segments to use to approximate curved
-     *        rectangle.
+     * @param lt1 latitude of placement of upper left corner of rectangle.
+     * @param ln1 longitude of placement of upper left corner of rectangle.
+     * @param lt2 latitude of placement of lower right corner of rectangle.
+     * @param ln2 longitude of placement of lower right corner of rectangle.
+     * @param lType the line type to use for the rectangle - straight, rhumb,
+     *        great circle.
+     * @param nsegs number of segments to use to approximate curved rectangle.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRectangle
      */
@@ -1507,17 +1530,12 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a rectangle in the response.
      * 
-     * @param x1 Horizontal pixel offset of upper left corner of
-     *        rectangle..
-     * @param y1 Vertical pixel offset of upper left corner of
-     *        rectangle.
-     * @param x2 Horizontal pixel offset of lower right corner of
-     *        rectangle..
-     * @param y2 Vertical pixel offset of lower right corner of
-     *        rectangle.
+     * @param x1 Horizontal pixel offset of upper left corner of rectangle..
+     * @param y1 Vertical pixel offset of upper left corner of rectangle.
+     * @param x2 Horizontal pixel offset of lower right corner of rectangle..
+     * @param y2 Vertical pixel offset of lower right corner of rectangle.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRectangle
      */
@@ -1531,21 +1549,14 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a rectangle in the response.
      * 
-     * @param lt1 latitude of placement of upper left corner of
-     *        bitmap.
-     * @param ln1 longitude of placement of upper left corner of
-     *        bitmap.
-     * @param x1 Horizontal pixel offset of upper left corner of
-     *        rectangle..
-     * @param y1 Vertical pixel offset of upper left corner of
-     *        rectangle.
-     * @param x2 Horizontal pixel offset of lower right corner of
-     *        rectangle..
-     * @param y2 Vertical pixel offset of lower right corner of
-     *        rectangle.
+     * @param lt1 latitude of placement of upper left corner of bitmap.
+     * @param ln1 longitude of placement of upper left corner of bitmap.
+     * @param x1 Horizontal pixel offset of upper left corner of rectangle..
+     * @param y1 Vertical pixel offset of upper left corner of rectangle.
+     * @param x2 Horizontal pixel offset of lower right corner of rectangle..
+     * @param y2 Vertical pixel offset of lower right corner of rectangle.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkRectangle
      */
@@ -1563,8 +1574,7 @@ public class LinkActionList implements LinkActionConstants,
      * @param ln1 longitude of point.
      * @param radius the radius of the point graphic.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoint
      */
@@ -1582,8 +1592,7 @@ public class LinkActionList implements LinkActionConstants,
      * @param y1 the vertical screen pixel location of the point.
      * @param radius the pixel radius size of the point.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoint
      */
@@ -1597,17 +1606,13 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a point in the response.
      * 
-     * @param lt1 latitude of placement of upper left corner of
-     *        bitmap.
-     * @param ln1 longitude of placement of upper left corner of
-     *        bitmap.
-     * @param x1 Horizontal pixel offset of upper left corner of
-     *        point..
+     * @param lt1 latitude of placement of upper left corner of bitmap.
+     * @param ln1 longitude of placement of upper left corner of bitmap.
+     * @param x1 Horizontal pixel offset of upper left corner of point..
      * @param y1 Vertical pixel offset of upper left corner of point.
      * @param radius the pixel size of the point.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoint
      */
@@ -1621,13 +1626,11 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a poly in the response.
      * 
-     * @param llPoints alternating latitude and logitude points of
-     *        poly.
+     * @param llPoints alternating latitude and logitude points of poly.
      * @param units degrees or radians.
      * @param lType straight, rhumb, great circle.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
@@ -1641,15 +1644,12 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a poly in the response.
      * 
-     * @param llpoints alternating latitude and logitude points of
-     *        poly.
+     * @param llpoints alternating latitude and logitude points of poly.
      * @param units degrees or radians.
      * @param lType straight, rhumb, great circle.
-     * @param nsegs number of segments to use to approimate curved
-     *        poly lines..
+     * @param nsegs number of segments to use to approimate curved poly lines..
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
@@ -1665,8 +1665,7 @@ public class LinkActionList implements LinkActionConstants,
      * 
      * @param xypoints alternating x and y pixel locations of poly.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
@@ -1682,8 +1681,7 @@ public class LinkActionList implements LinkActionConstants,
      * @param xpoints horizontal pixel locations of poly.
      * @param ypoints vertical pixel locations of poly.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
@@ -1700,12 +1698,11 @@ public class LinkActionList implements LinkActionConstants,
      * @param latPoint the latitude anchor point of the poly.
      * @param lonPoint the longitude anchor point of the poly.
      * @param xypoints alternating x and y offset polygon points.
-     * @param cMode Coordinate Mode (Origin or Previous) that indicate
-     *        whether the x and y points are relative to the first
-     *        point, or to the previous point. .
+     * @param cMode Coordinate Mode (Origin or Previous) that indicate whether
+     *        the x and y points are relative to the first point, or to the
+     *        previous point. .
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
@@ -1728,12 +1725,11 @@ public class LinkActionList implements LinkActionConstants,
      * @param lonPoint the longitude anchor point of the poly.
      * @param xpoints horizontal pixel offset polygon points.
      * @param ypoints vertical pixel offset polygon points.
-     * @param cMode Coordinate Mode (Origin or Previous) that indicate
-     *        whether the x and y points are relative to the first
-     *        point, or to the previous point. .
+     * @param cMode Coordinate Mode (Origin or Previous) that indicate whether
+     *        the x and y points are relative to the first point, or to the
+     *        previous point. .
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
@@ -1756,11 +1752,9 @@ public class LinkActionList implements LinkActionConstants,
      * @param latPoint latitude of placement of text.
      * @param lonPoint longitude of placement of text.
      * @param stuff the text.
-     * @param justify place the text left, right or centered on
-     *        location.
+     * @param justify place the text left, right or centered on location.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkText
      */
@@ -1783,11 +1777,9 @@ public class LinkActionList implements LinkActionConstants,
      * @param x Horizontal pixel location of text.
      * @param y Vertical pixel location of text.
      * @param stuff the text.
-     * @param justify place the text left, right or centered on
-     *        location.
+     * @param justify place the text left, right or centered on location.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkText
      */
@@ -1812,11 +1804,9 @@ public class LinkActionList implements LinkActionConstants,
      * @param offset_x Horizontal pixel offset of text.
      * @param offset_y Vertical pixel offset of text.
      * @param stuff the text.
-     * @param justify place the text left, right or centered on
-     *        location.
+     * @param justify place the text left, right or centered on location.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkText
      */
@@ -1843,11 +1833,9 @@ public class LinkActionList implements LinkActionConstants,
      * @param lonPoint longitude of placement of text.
      * @param stuff the text.
      * @param font a text representation of the font.
-     * @param justify place the text left, right or centered on
-     *        location.
+     * @param justify place the text left, right or centered on location.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkText
      */
@@ -1871,11 +1859,9 @@ public class LinkActionList implements LinkActionConstants,
      * @param y Vertical pixel location of text.
      * @param stuff the text.
      * @param font a text representation of the font.
-     * @param justify place the text left, right or centered on
-     *        location.
+     * @param justify place the text left, right or centered on location.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkText
      */
@@ -1895,11 +1881,9 @@ public class LinkActionList implements LinkActionConstants,
      * @param offset_y Vertical pixel offset of text.
      * @param stuff the text.
      * @param font a text representation of the font.
-     * @param justify place the text left, right or centered on
-     *        location.
+     * @param justify place the text left, right or centered on location.
      * @param properties description of drawing attributes.
-     * @param graphicUpdateMask the mask describing the graphic
-     *        update.
+     * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkText
      */

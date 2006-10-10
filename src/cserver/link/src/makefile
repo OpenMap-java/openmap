@@ -17,8 +17,8 @@
 #  
 #  $Source: /cvs/distapps/openmap/src/cserver/link/src/makefile,v $
 #  $RCSfile: makefile,v $
-#  $Revision: 1.1.1.1 $
-#  $Date: 2003/02/14 21:35:48 $
+#  $Revision: 1.2 $
+#  $Date: 2006/10/10 22:05:18 $
 #  $Author: dietrick $
 # ------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ SERVERM.c 	=	LinkServer.c
 SERVERM.o 	=	$(SERVERM.c:.c=.o)  
 
 SERVER.c 	=	LatLonPoint.c Response.c \
-			LinkBitmap.c LinkCircle.c LinkRectangle.c LinkText.c\
+			LinkBitmap.c LinkCircle.c LinkEllipse.c LinkRectangle.c LinkText.c\
 			LinkSocket.c LinkArgs.c LinkPoly.c LinkGrid.c\
 			Request.c LinkLine.c LinkRaster.c LinkImage.c \
 			MapRequest.c ActionRequest.c Link.c LinkPoint.c

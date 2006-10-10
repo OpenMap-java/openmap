@@ -5,7 +5,7 @@
   </head>
 
   <body>
-    <h1>Link Protocol for Client-Server Communication, v0.4</h1> 
+    <h1>Link Protocol for Client-Server Communication, v0.5</h1> 
     <h3>Basic Description</h3>
 
       This document will describe the Link Protocol for Link
@@ -57,6 +57,7 @@
       display. There were also additional defined properties added to
       enhance the rendering options passed through the properties,
       include different line style and fill pattern definitions.
+      <LI> v0.5 added the LinkEllipse.
     </UL>
 
   <P>
@@ -130,6 +131,7 @@
       <LI><a href="#Arc">Arc</a>
       <LI><a href="#Bitmap">Bitmap</a>
       <LI><a href="#Circle">Circle</a>
+      <LI><a href="#Ellipse">Ellipse</a>
       <LI><a href="#Grid">Grid</a>
       <LI><a href="#Line">Line</a>
       <LI><a href="#Point">Point</a>
@@ -227,6 +229,9 @@
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Circle</TD>
 	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:CIRCLE&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Ellipse</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:ELLIPSE&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Grid</TD>
 	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:GRID&gt;</TD></TR>
@@ -1880,6 +1885,277 @@
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Height of the circle, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+<HR>
+<a name="Ellipse"></a>
+
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Ellipse at Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ELLIPSE&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Ellipses, the value is 11.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For Lat/Lon
+              rendering, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the ellipse's center, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the ellipse's center, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Major axis value of the ellipse, in units defined in the next field.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Minor axis value of the ellipse, in units defined in the next field.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Units of the axis measurements. Values can be:<BR>
+              Decimal Degrees = -1<BR>
+              Kilometers = 0<BR>
+              Miles = 1<BR>
+              Nautical Miles = 2</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Rotation angle in radians.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Ellipse at X/Y Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ELLIPSE&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Ellipses, the value is 11.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For X/Y
+              rendering, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the left side of the map, of the
+              ellipse's center, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the top of the map, of the
+              ellipse's center, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Major axis length of the ellipse, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Minor axis length of the ellipse, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Rotation angle in radians.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Ellipse at X/Y Offset from Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ELLIPSE&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Ellipses, the value is 11.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For offset
+              rendering, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the ellipse's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the ellipse's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the longitude map anchor
+              point location, of the ellipse's center, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the latitude map anchor point
+              location, of the ellipse's center, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the ellipse, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Height of the ellipse, in pixels.</TD>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the ellipse, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Height of the ellipse, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Rotation angle in radians.</TD>
 	  </TR>
 	  <TR>
 	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
