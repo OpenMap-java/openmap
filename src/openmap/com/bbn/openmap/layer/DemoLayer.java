@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.23 $
-// $Date: 2006/08/25 15:36:16 $
+// $Revision: 1.24 $
+// $Date: 2006/10/13 16:03:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,17 +82,16 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 
 /**
- * This layer demonstrates interactive capabilities of OpenMap.
- * Instantiating this layer should show an icon loaded using HTTP
- * Protocol, which represents Boston, MA in USA. Above Boston it
- * should show a square that would change color when mouse is moved
- * over it in 'Gesture' mode. Also clicking once brings up a message
- * box and more than once brings up browser.
+ * This layer demonstrates interactive capabilities of OpenMap. Instantiating
+ * this layer should show an icon loaded using HTTP Protocol, which represents
+ * Boston, MA in USA. Above Boston it should show a square that would change
+ * color when mouse is moved over it in 'Gesture' mode. Also clicking once
+ * brings up a message box and more than once brings up browser.
  * <P>
  * 
- * The DemoLayer has also been modified to demonstrate the first uses
- * of the OMDrawingTool. The Palette has buttons that can be used to
- * start the tool in several different ways.
+ * The DemoLayer has also been modified to demonstrate the first uses of the
+ * OMDrawingTool. The Palette has buttons that can be used to start the tool in
+ * several different ways.
  * 
  * @see com.bbn.openmap.layer.DemoLayer
  * 
@@ -111,18 +110,17 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
      */
     protected SymbolReferenceLibrary srl;
     /**
-     * Used by the internal ActionListeners for a callback, see
-     * getGUI().
+     * Used by the internal ActionListeners for a callback, see getGUI().
      */
     protected final com.bbn.openmap.tools.drawing.DrawingToolRequestor layer = this;
     /**
-     * Used by geometries created in GUI for specify if the spatial
-     * filter is for objects inside the drawn shape.
+     * Used by geometries created in GUI for specify if the spatial filter is
+     * for objects inside the drawn shape.
      */
     protected final static String internalKey = "ik";
     /**
-     * Used by geometries created in GUI for specify if the spatial
-     * filter is for objects outside the drawn shape.
+     * Used by geometries created in GUI for specify if the spatial filter is
+     * for objects outside the drawn shape.
      */
     protected final static String externalKey = "ek";
     protected GraphicAttributes filterGA = null;
@@ -315,7 +313,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         OMArc arc = new OMArc((float) 40.0, (float) 65.0, (float) 750.0, Length.MILE, (float) 20.0, (float) 95.0);
         arc.setLinePaint(Color.red);
         arc.setFillPaint(new Color(120, 0, 0, 128));
-        arc.setArcType(java.awt.geom.Arc2D.PIE);
+        arc.setArcType(java.awt.geom.Arc2D.OPEN);
         arc.putAttribute(OMGraphicConstants.LABEL,
                 new OMTextLabeler("Arc Label", OMText.JUSTIFY_CENTER));
         omList.add(arc);
@@ -387,7 +385,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
 
                 omsi.putAttribute(OMGraphicConstants.LABEL,
                         new OMTextLabeler("SFPPV-----*****", OMText.JUSTIFY_LEFT, OMTextLabeler.ANCHOR_RIGHT));
-                                
+
                 omList.add(omsi);
 
                 SymbolPart sp = srl.getSymbolPartForCode("SFPPV-----*****");
@@ -399,7 +397,6 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
             }
         }
 
-        
         GeneralPath gp = new GeneralPath();
         gp.moveTo(20, 20);
         gp.lineTo(20, -20);
@@ -413,12 +410,9 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         gp.lineTo(10, 10);
         OMShape oms = new OMShape(gp);
         oms.setFillPaint(Color.orange);
-        
+
         omList.add(oms);
-        
-        
-        
-        
+
         return omList;
     }
 
@@ -428,16 +422,15 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * This is an important Layer method to override. The prepare
-     * method gets called when the layer is added to the map, or when
-     * the map projection changes. We need to make sure the
-     * OMGraphicList returned from this method is what we want painted
-     * on the map. The OMGraphics need to be generated with the
-     * current projection. We test for a null OMGraphicList in the
-     * layer to see if we need to create the OMGraphics. This layer
-     * doesn't change it's OMGraphics for different projections, if
-     * your layer does, you need to clear out the OMGraphicList and
-     * add the OMGraphics you want for the current projection.
+     * This is an important Layer method to override. The prepare method gets
+     * called when the layer is added to the map, or when the map projection
+     * changes. We need to make sure the OMGraphicList returned from this method
+     * is what we want painted on the map. The OMGraphics need to be generated
+     * with the current projection. We test for a null OMGraphicList in the
+     * layer to see if we need to create the OMGraphics. This layer doesn't
+     * change it's OMGraphics for different projections, if your layer does, you
+     * need to clear out the OMGraphicList and add the OMGraphics you want for
+     * the current projection.
      */
     public OMGraphicList prepare() {
         OMGraphicList list = getList();
@@ -898,8 +891,8 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Called when the DrawingTool is complete, providing the layer
-     * with the modified OMGraphic.
+     * Called when the DrawingTool is complete, providing the layer with the
+     * modified OMGraphic.
      */
     public void drawingComplete(OMGraphic omg, OMAction action) {
         Debug.message("demo", "DemoLayer: DrawingTool complete");
@@ -930,12 +923,12 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Called when a component that is needed, and not available with
-     * an appropriate interator from the BeanContext. This lets this
-     * object hook up with what it needs. For Layers, this method
-     * doesn't do anything by default. If you need your layer to get
-     * ahold of another object, then you can use the Iterator to go
-     * through the objects to look for the one you need.
+     * Called when a component that is needed, and not available with an
+     * appropriate interator from the BeanContext. This lets this object hook up
+     * with what it needs. For Layers, this method doesn't do anything by
+     * default. If you need your layer to get ahold of another object, then you
+     * can use the Iterator to go through the objects to look for the one you
+     * need.
      */
     public void findAndInit(Object someObj) {
         if (someObj instanceof DrawingTool) {
@@ -949,8 +942,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Set the MilStd2525 SymbolReferenceLibrary object used to create
-     * symbols.
+     * Set the MilStd2525 SymbolReferenceLibrary object used to create symbols.
      * 
      * @param library
      */
@@ -963,12 +955,11 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * BeanContextMembershipListener method. Called when a new object
-     * is removed from the BeanContext of this object. For the Layer,
-     * this method doesn't do anything. If your layer does something
-     * with the childrenAdded method, or findAndInit, you should take
-     * steps in this method to unhook the layer from the object used
-     * in those methods.
+     * BeanContextMembershipListener method. Called when a new object is removed
+     * from the BeanContext of this object. For the Layer, this method doesn't
+     * do anything. If your layer does something with the childrenAdded method,
+     * or findAndInit, you should take steps in this method to unhook the layer
+     * from the object used in those methods.
      */
     public void findAndUndo(Object someObj) {
         if (someObj instanceof DrawingTool) {
@@ -979,9 +970,9 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Query that an OMGraphic can be highlighted when the mouse moves
-     * over it. If the answer is true, then highlight with this
-     * OMGraphics will be called.
+     * Query that an OMGraphic can be highlighted when the mouse moves over it.
+     * If the answer is true, then highlight with this OMGraphics will be
+     * called.
      */
     public boolean isHighlightable(OMGraphic omg) {
         return true;
@@ -996,8 +987,8 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Query for what text should be placed over the information bar
-     * when the mouse is over a particular OMGraphic.
+     * Query for what text should be placed over the information bar when the
+     * mouse is over a particular OMGraphic.
      */
     public String getInfoText(OMGraphic omg) {
         DrawingTool dt = getDrawingTool();
@@ -1009,8 +1000,8 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Query for what tooltip to display for an OMGraphic when the
-     * mouse is over it.
+     * Query for what tooltip to display for an OMGraphic when the mouse is over
+     * it.
      */
     public String getToolTipTextFor(OMGraphic omg) {
         Object tt = omg.getAttribute(OMGraphic.TOOLTIP);
@@ -1029,8 +1020,8 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
 
     /**
      * Called if isSelectable(OMGraphic) was true, so the list has the
-     * OMGraphic. A list is used in case underlying code is written to
-     * handle more than one OMGraphic being selected at a time.
+     * OMGraphic. A list is used in case underlying code is written to handle
+     * more than one OMGraphic being selected at a time.
      */
     public void select(OMGraphicList list) {
         if (list != null && list.size() > 0) {
