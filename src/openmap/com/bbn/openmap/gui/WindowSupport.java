@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.20 $
-// $Date: 2006/02/27 15:11:35 $
+// $Revision: 1.21 $
+// $Date: 2006/10/13 16:44:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -471,9 +471,14 @@ public class WindowSupport extends ListenerSupport implements
             wsd.dispose();
         }
 
-        if (content instanceof ComponentListener) {
-            removeComponentListener((ComponentListener) content);
-        }
+        // This seems to half-disconnect the window support from the content,
+        // and I am not sure it's necessary to remove the listeners. This was
+        // originally done to make it easier to release memory, but having the
+        // WindowSupport hold on to listeners won't prevent that from happening.
+        
+//        if (content instanceof ComponentListener) {
+//            removeComponentListener((ComponentListener) content);
+//        }
     }
 
     /**
