@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleFilterLayer.java,v $
 // $RCSfile: ScaleFilterLayer.java,v $
-// $Revision: 1.12 $
-// $Date: 2006/02/16 22:18:50 $
+// $Revision: 1.13 $
+// $Date: 2006/10/13 16:03:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,7 +43,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.OverlayLayout;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.MouseDelegator;
@@ -62,33 +61,32 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * An OpenMap Layer that encapsulates other layers and acts as a scale
- * filter. It will delegate responsibility to one of several layers
- * depending on the scale.
+ * An OpenMap Layer that encapsulates other layers and acts as a scale filter.
+ * It will delegate responsibility to one of several layers depending on the
+ * scale.
  * <p>
- * To use this layer, list it as a layer in the openmap.properties
- * file in the openmap.layers properties, as you would add any other
- * layer. Then, add these properties to the openmap.properties file.
- * The layers added to the ScaleFilterLayer do not get added to the
- * openmap.layers property, but instead get added to the
- * scaledFilterLayer.layers property listed here. Then, the properties
- * for these layers are added to the openmap.properties file like any
+ * To use this layer, list it as a layer in the openmap.properties file in the
+ * openmap.layers properties, as you would add any other layer. Then, add these
+ * properties to the openmap.properties file. The layers added to the
+ * ScaleFilterLayer do not get added to the openmap.layers property, but instead
+ * get added to the scaledFilterLayer.layers property listed here. Then, the
+ * properties for these layers are added to the openmap.properties file like any
  * other layer. <BR>
  * The properties for this layer look like this: <BR>
  * <BR>
  * <code><pre>
- * 
- *  #######################################
- *  # Properties for ScaleFilterLayer
- *  #######################################
- *  scaledFilterLayer.class=com.bbn.openmap.layer.ScaleFilterLayer
- *  scaledFilterLayer.prettyName=&amp;ltPretty name used on menu&amp;ge
- *  # List 2 or more layers, larger scale layers first
- *  scaledFilterLayer.layers=layer_1 layer_2 layer_3 ...
- *  # List the transition scales to switch between layers
- *  scaledFilterLayer.transitionScales= (transition scale from layer 1 to 2) (transition scale from layer 2 to 3) (...)
- *  #######################################
- *  
+ *       
+ *        #######################################
+ *        # Properties for ScaleFilterLayer
+ *        #######################################
+ *        scaledFilterLayer.class=com.bbn.openmap.layer.ScaleFilterLayer
+ *        scaledFilterLayer.prettyName=&amp;ltPretty name used on menu&amp;ge
+ *        # List 2 or more layers, larger scale layers first
+ *        scaledFilterLayer.layers=layer_1 layer_2 layer_3 ...
+ *        # List the transition scales to switch between layers
+ *        scaledFilterLayer.transitionScales= (transition scale from layer 1 to 2) (transition scale from layer 2 to 3) (...)
+ *        #######################################
+ *        
  * </pre></code>
  */
 public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
@@ -128,16 +126,22 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * Initializes an empty layer.
      */
     public ScaleFilterLayer() {
-        setLayout(new OverlayLayout(this));
+        // Setting the overlay layout seemed like a good idea at the time, but
+        // it introduces a strange bug where the bounds of the layer get set
+        // between the center of the map and the lower left corner. This only
+        // happens for the BufferedLayerMapBean, when there are buffered layers
+        // active. Very strange, but not setting an overlay seems to work OK,
+        // too.
+        // setLayout(new OverlayLayout(this));
+
         // To get MouseDelegator, to make decisions on receiving mouse
         // modes for child layers.
         setAddToBeanContext(true);
     }
 
     /**
-     * Get the Vector holding the Layers. If it hasn't been asked for
-     * yet, a new, empty Vector will be returned, one that will be
-     * used internally.
+     * Get the Vector holding the Layers. If it hasn't been asked for yet, a
+     * new, empty Vector will be returned, one that will be used internally.
      */
     public Vector getLayers() {
         if (layers == null) {
@@ -154,14 +158,13 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * Programmatic way to set layers and scales. There should be one
-     * more layer on the list than there is scale in the float array.
-     * Layers that should be displayed for larger scale numbers
-     * (smaller scale) should be at the front of the Vector list, and
-     * larger numbers should be at the front of the scale array. For
-     * scale numbers larger than the first number in the array, the
-     * first layer will be displayed. As the scale number decreases,
-     * other layers will be displayed.
+     * Programmatic way to set layers and scales. There should be one more layer
+     * on the list than there is scale in the float array. Layers that should be
+     * displayed for larger scale numbers (smaller scale) should be at the front
+     * of the Vector list, and larger numbers should be at the front of the
+     * scale array. For scale numbers larger than the first number in the array,
+     * the first layer will be displayed. As the scale number decreases, other
+     * layers will be displayed.
      * 
      * @param list Vector of layers
      * @param scales Array of transition scales.
@@ -174,14 +177,25 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Initializes this layer from the given properties.
      * 
-     * @param props the <code>Properties</code> holding settings for
-     *        this layer
+     * @param props the <code>Properties</code> holding settings for this
+     *        layer
      */
     public void setProperties(String prefix, Properties props) {
+        // Clear out layer and scale state
+        setLayersAndScales(null, null);
+
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
         parseLayers(prefix, props);
         parseScales(prefix, props);
+
+        // Update our target layer. If there is a current projection and this
+        // layer is active, we need to pass it along.
+        if (getProjection() != null) {
+            Layer currentLayer = configureAppropriateLayer(getProjection().getScale());
+            fireStatusUpdate(LayerStatusEvent.START_WORKING);
+            currentLayer.projectionChanged(new ProjectionEvent((Object) null, getProjection()));
+        }
     }
 
     public Properties getProperties(Properties props) {
@@ -209,10 +223,9 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * Get the layer that's appropriate at the current scale. The
-     * targetedIndex needs to be set before this is called. The
-     * targetedIndex is the index to the layers array representing the
-     * current layer.
+     * Get the layer that's appropriate at the current scale. The targetedIndex
+     * needs to be set before this is called. The targetedIndex is the index to
+     * the layers array representing the current layer.
      * 
      * @return Layer
      */
@@ -285,8 +298,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * Create the transition scales from a property value string. If
-     * there are N layers, there should be N-1 transition scales.
+     * Create the transition scales from a property value string. If there are N
+     * layers, there should be N-1 transition scales.
      * 
      * @param prefix String
      * @param props Properties
@@ -349,13 +362,12 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * Calculate the index of the target layer. If there are N layers,
-     * there are N-1 transitionScales. The ith layer is chosen if the
-     * scale is greater than the ith transitionScale.
+     * Calculate the index of the target layer. If there are N layers, there are
+     * N-1 transitionScales. The ith layer is chosen if the scale is greater
+     * than the ith transitionScale.
      * 
      * @param scale the current map scale
-     * @return true if the targetIndex has changed as a result of the
-     *         new scale.
+     * @return true if the targetIndex has changed as a result of the new scale.
      */
     public boolean setTargetIndex(float scale) {
         boolean changed = false;
@@ -384,17 +396,27 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * Handles projection change notification events. Throws out old
-     * graphics, and requests new graphics from the spatial index
-     * based on the bounding rectangle of the new
-     * <code>Projection</code>.
+     * Handles projection change notification events. Throws out old graphics,
+     * and requests new graphics from the spatial index based on the bounding
+     * rectangle of the new <code>Projection</code>.
      * 
      * @param ev the new projection event
      */
     public void projectionChanged(ProjectionEvent ev) {
+        // Lets the ScaleFilterLayer remember the projection, just in case.
+        setProjection(ev);
+
         Projection proj = ev.getProjection();
+        // get the appropriate layer and invoke projectionChanged
+        Layer layer = configureAppropriateLayer(proj.getScale());
+
+        fireStatusUpdate(LayerStatusEvent.START_WORKING);
+        layer.projectionChanged(ev);
+    }
+
+    protected Layer configureAppropriateLayer(float scale) {
         Layer currentLayer = getAppropriateLayer();
-        boolean changed = setTargetIndex(proj.getScale());
+        boolean changed = setTargetIndex(scale);
 
         // get the appropriate layer and invoke projectionChanged
         Layer layer = getAppropriateLayer();
@@ -410,8 +432,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
             checkMouseMode();
         }
 
-        fireStatusUpdate(LayerStatusEvent.START_WORKING);
-        layer.projectionChanged(ev);
+        return layer;
     }
 
     /**
@@ -425,10 +446,9 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * Try to handle receiving LayerStatusEvents from child layers.
-     * May not always work, depending on what thread sends/receives
-     * this event - usually in the Swing thread, and the GUI can't
-     * always be updated as expected.
+     * Try to handle receiving LayerStatusEvents from child layers. May not
+     * always work, depending on what thread sends/receives this event - usually
+     * in the Swing thread, and the GUI can't always be updated as expected.
      * 
      * @param evt LayerStatusEvent
      */
@@ -440,10 +460,9 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     protected JTabbedPane tabs = null;
 
     /**
-     * Get the GUI (palettes) for the layers. The BufferedLayer
-     * actually creates a JTabbedPane holding the palettes for all of
-     * its layers, and also has a pane for itself that provides
-     * visibility control for the group layers.
+     * Get the GUI (palettes) for the layers. The BufferedLayer actually creates
+     * a JTabbedPane holding the palettes for all of its layers, and also has a
+     * pane for itself that provides visibility control for the group layers.
      */
     public Component getGUI() {
         if (panel == null) {
@@ -516,9 +535,9 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
         }
     }
 
-    ////////////////////////////////
+    // //////////////////////////////
     // InfoDisplayListener Methods
-    ////////////////////////////////
+    // //////////////////////////////
 
     /**
      * Request to have a URL displayed in a Browser.
@@ -539,8 +558,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * Request to have an information line displayed in an application
-     * status window.
+     * Request to have an information line displayed in an application status
+     * window.
      * 
      * @param event InfoDisplayEvent
      */
@@ -569,8 +588,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Request a tool tip be shown.
      * 
-     * @param event The InfoDisplayEvent containing the text and
-     *        requestor.
+     * @param event The InfoDisplayEvent containing the text and requestor.
      */
     public void requestShowToolTip(InfoDisplayEvent event) {
         fireRequestToolTip(new InfoDisplayEvent(this, event.getInformation()));
@@ -593,20 +611,20 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /** The current active mouse mode ID. */
     protected String mmID = null;
     /**
-     * Flag to specify that the current layer wants events from the
-     * current active mouse mode.
+     * Flag to specify that the current layer wants events from the current
+     * active mouse mode.
      */
     protected boolean coolMM = false;
     /**
-     * The current MapMouseListener from the currently appropriate
-     * layer.
+     * The current MapMouseListener from the currently appropriate layer.
      */
     protected MapMouseListener clmml = null; // current layer map
-                                             // mouse listener
+
+    // mouse listener
 
     /**
-     * Set the coolMM flag, whenever the scale-appropriate layer
-     * changes, or if the active mouse mode changes.
+     * Set the coolMM flag, whenever the scale-appropriate layer changes, or if
+     * the active mouse mode changes.
      */
     public synchronized boolean checkMouseMode() {
         // check the current MouseMode with the current layer
@@ -627,25 +645,24 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * Pre-set the MapMouseListener to received events if the current
-     * layer wants them.
+     * Pre-set the MapMouseListener to received events if the current layer
+     * wants them.
      */
     public void setCurrentLayerMapMouseListener(MapMouseListener mml) {
         clmml = mml;
     }
 
     /**
-     * Get the MapMouseListener to received events if the current
-     * layer wants them. May be null, but coolMM should be false in
-     * that case.
+     * Get the MapMouseListener to received events if the current layer wants
+     * them. May be null, but coolMM should be false in that case.
      */
     public MapMouseListener getCurrentLayerMapMouseListener() {
         return clmml;
     }
 
     /**
-     * Listen for changes to the active mouse mode and for any changes
-     * to the list of available mouse modes
+     * Listen for changes to the active mouse mode and for any changes to the
+     * list of available mouse modes
      */
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
@@ -655,12 +672,11 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * Return a list of the modes that are interesting to the
-     * MapMouseListener. The source MouseEvents will only get sent to
-     * the MapMouseListener if the mode is set to one that the
-     * listener is interested in. Layers interested in receiving
-     * events should register for receiving events in "select" mode:
-     * <code>
+     * Return a list of the modes that are interesting to the MapMouseListener.
+     * The source MouseEvents will only get sent to the MapMouseListener if the
+     * mode is set to one that the listener is interested in. Layers interested
+     * in receiving events should register for receiving events in "select"
+     * mode: <code>
      * <pre>
      * return new String[] { SelectMouseMode.modeID };
      * </pre>
@@ -693,7 +709,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     // Mouse Listener events
-    ////////////////////////
+    // //////////////////////
 
     /**
      * Invoked when a mouse button has been pressed on a component.
@@ -724,13 +740,12 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * Invoked when the mouse has been clicked on a component. The
-     * listener will receive this event if it successfully processed
-     * <code>mousePressed()</code>, or if no other listener
-     * processes the event. If the listener successfully processes
-     * <code>mouseClicked()</code>, then it will receive the next
-     * <code>mouseClicked()</code> notifications that have a click
-     * count greater than one.
+     * Invoked when the mouse has been clicked on a component. The listener will
+     * receive this event if it successfully processed
+     * <code>mousePressed()</code>, or if no other listener processes the
+     * event. If the listener successfully processes <code>mouseClicked()</code>,
+     * then it will receive the next <code>mouseClicked()</code> notifications
+     * that have a click count greater than one.
      * <p>
      * 
      * @param e MouseEvent
@@ -769,13 +784,12 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     // Mouse Motion Listener events
-    ///////////////////////////////
+    // /////////////////////////////
 
     /**
-     * Invoked when a mouse button is pressed on a component and then
-     * dragged. The listener will receive these events if it
-     * successfully processes mousePressed(), or if no other listener
-     * processes the event.
+     * Invoked when a mouse button is pressed on a component and then dragged.
+     * The listener will receive these events if it successfully processes
+     * mousePressed(), or if no other listener processes the event.
      * 
      * @param e MouseEvent
      * @return true if the listener was able to process the event.
@@ -789,8 +803,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * Invoked when the mouse button has been moved on a component
-     * (with no buttons down).
+     * Invoked when the mouse button has been moved on a component (with no
+     * buttons down).
      * 
      * @param e MouseEvent
      * @return true if the listener was able to process the event.
@@ -805,12 +819,11 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * Handle a mouse cursor moving without the button being pressed.
-     * This event is intended to tell the listener that there was a
-     * mouse movement, but that the event was consumed by another
-     * layer. This will allow a mouse listener to clean up actions
-     * that might have happened because of another motion event
-     * response.
+     * Handle a mouse cursor moving without the button being pressed. This event
+     * is intended to tell the listener that there was a mouse movement, but
+     * that the event was consumed by another layer. This will allow a mouse
+     * listener to clean up actions that might have happened because of another
+     * motion event response.
      */
     public void mouseMoved() {
         if (coolMM) {
@@ -831,8 +844,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * MapHandler child methods, passing found objects to child
-     * layers.
+     * MapHandler child methods, passing found objects to child layers.
      */
     public void findAndInit(Object obj) {
         if (obj instanceof MouseDelegator) {
@@ -844,8 +856,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     /**
-     * MapHandler child methods, passing removed objects to child
-     * layers.
+     * MapHandler child methods, passing removed objects to child layers.
      */
     public void findAndUndo(Object obj) {
         if (obj instanceof MouseDelegator) {
