@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocEntry.java,v $
 // $RCSfile: RpfTocEntry.java,v $
-// $Revision: 1.5 $
-// $Date: 2006/08/17 15:19:06 $
+// $Revision: 1.6 $
+// $Date: 2006/10/19 20:30:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -118,14 +118,29 @@ public class RpfTocEntry {
 
         coverage.subframeLatInterval = vertInterval * 256.0;
         coverage.subframeLonInterval = horizInterval * 256.0;
+    }
+    
+    protected boolean isFramesLoaded() {
+        return frames != null;
+    }
+    
+    protected RpfFrameEntry[][] getFrames() {
+        if (frames == null) {
+            frames = new RpfFrameEntry[vertFrames][horizFrames];
 
-        frames = new RpfFrameEntry[vertFrames][horizFrames];
-
-        for (int j = 0; j < vertFrames; j++) {
-            for (int k = 0; k < horizFrames; k++) {
-                frames[j][k] = new RpfFrameEntry();
+            for (int j = 0; j < vertFrames; j++) {
+                for (int k = 0; k < horizFrames; k++) {
+                    frames[j][k] = new RpfFrameEntry();
+                }
             }
         }
+        
+        return frames;
+    }
+    
+    protected RpfFrameEntry getFrame(int row, int column) {
+        RpfFrameEntry[][] frames = getFrames();
+        return frames[row][column];
     }
 
     public String toString() {

@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocHandler.java,v $
 // $RCSfile: RpfTocHandler.java,v $
-// $Revision: 1.14 $
-// $Date: 2006/08/17 15:19:06 $
+// $Revision: 1.15 $
+// $Date: 2006/10/19 20:30:25 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -75,6 +75,8 @@ public class RpfTocHandler {
     // in kilobytes
 
     protected RpfHeader head;
+    protected String aTocFilePath;
+    protected boolean aTocByteOrder;
     protected BinaryFile binFile;
     protected RpfFileSections.RpfLocationRecord[] locations;
     /** The boundary rectangles in the A.TOC file. */
@@ -83,6 +85,9 @@ public class RpfTocHandler {
     protected boolean Dchum;
     protected long estimateDiskSpace; // uint
     protected int numBoundaries;
+    protected long numFrameIndexRecords; // uint # frame file index records
+    protected int indexRecordLength; // ushort, frame file index record
+    // length
     protected long currencyTime;
     protected boolean valid = false;
     /**
@@ -224,8 +229,10 @@ public class RpfTocHandler {
 
             if (BinaryFile.exists(upperCaseVersion)) {
                 binFile = new BinaryBufferedFile(upperCaseVersion);
+                aTocFilePath = upperCaseVersion;
             } else if (BinaryFile.exists(lowerCaseVersion)) {
                 binFile = new BinaryBufferedFile(lowerCaseVersion);
+                aTocFilePath = lowerCaseVersion;
             }
 
             if (binFile == null)
@@ -245,6 +252,9 @@ public class RpfTocHandler {
                 ret = false;
                 Debug.error("RpfTocHandler: loadFile(): error parsing A.TOC file!!");
             }
+
+            aTocByteOrder = binFile.byteOrder();
+
             binFile.close();
         } catch (IOException e) {
             ret = false;
@@ -254,26 +264,6 @@ public class RpfTocHandler {
     }
 
     protected boolean parseToc(BinaryFile binFile) {
-        RpfTocEntry entry;
-        RpfFrameEntry frame;
-
-        int n, pathLength; // ushort
-        int i, currentPosition;
-        int boundaryId, frameRow, frameCol; // ushort
-        long numFrameIndexRecords; // uint # frame file index records
-
-        // DKS new
-        long pathOffset; // uint, offset of frame file pathname
-        int boundaryRecordLength; // ushort
-        int numPathnameRecords; // ushort
-        int indexRecordLength; // ushort, frame file index record
-        // length
-//        int indexSubheaderLength = 9; // ushort, frame file index
-        // subheader length
-
-        long boundRectTableOffset; // uint, Bound. rect. table offset
-        long frameIndexTableOffset; // uint, Frame file index table
-        // offset
 
         if (DEBUG_RPFTOC) {
             Debug.output("ENTER TOC parsing...");
@@ -298,7 +288,7 @@ public class RpfTocHandler {
             // Everything must be OK to reach here...
             // DKS. fseek to start of location section: 48
             // DFD not necessarily 48! New A.TOCs are different.
-            RpfFileSections.RpfLocationRecord[] locations = rfs.getLocations(RpfFileSections.TOC_LOCATION_KEY);
+            locations = rfs.getLocations(RpfFileSections.TOC_LOCATION_KEY);
 
             // Read boundary rectangles
             // Number of Boundary records
@@ -311,14 +301,14 @@ public class RpfTocHandler {
             binFile.seek(locations[0].componentLocation);
 
             // NEW
-            boundRectTableOffset = (long) binFile.readInteger();
+            long boundRectTableOffset = (long) binFile.readInteger();
 
             if (DEBUG_RPFTOCDETAIL) {
                 Debug.output("RpfTocHandler: parseToc(): BoundRectTableOffset: "
                         + boundRectTableOffset);
             }
 
-            n = (int) binFile.readShort();
+            int n = (int) binFile.readShort();
             if (DEBUG_RPFTOCDETAIL) {
                 Debug.output("RpfTocHandler: parseToc(): # Boundary rect. recs: "
                         + n);
@@ -328,7 +318,7 @@ public class RpfTocHandler {
 
             // DKS new
             // Boundary record length
-            boundaryRecordLength = (int) binFile.readShort();
+            int boundaryRecordLength = (int) binFile.readShort();
 
             if (DEBUG_RPFTOCDETAIL) {
                 Debug.output("RpfTocHandler: parseToc(): should be 132: "
@@ -344,7 +334,7 @@ public class RpfTocHandler {
             entries = new RpfTocEntry[numBoundaries];
 
             // Read Boundary rectangle records
-            for (i = 0; i < n; i++) {
+            for (int i = 0; i < n; i++) {
                 if (DEBUG_RPFTOCDETAIL) {
                     Debug.output("RpfTocHandler: parseToc(): read boundary rec#: "
                             + i);
@@ -376,9 +366,9 @@ public class RpfTocHandler {
             binFile.seek(locations[2].componentLocation + 1);
 
             // NEW
-            frameIndexTableOffset = (long) binFile.readInteger();
+            long frameIndexTableOffset = (long) binFile.readInteger();
             numFrameIndexRecords = (long) binFile.readInteger();
-            numPathnameRecords = (int) binFile.readShort();
+            int numPathnameRecords = (int) binFile.readShort();
             // indexRecordLength should now be 33, not 35
             indexRecordLength = (int) binFile.readShort();
 
@@ -393,184 +383,20 @@ public class RpfTocHandler {
                         + indexRecordLength);
             }
 
-            // Read frame file index records
-            for (i = 0; i < numFrameIndexRecords; i++) {
-                if (DEBUG_RPFTOCFRAMEDETAIL) {
-                    Debug.output("RpfTocHandler: parseToc(): Read frame file index rec #: "
-                            + i);
-                }
+            // In previous version of the RpfTocHandler, we went ahead and read
+            // in all of the RPF frame file paths. For very large collections of
+            // data, expecially with large scale charts and imagery, this turns
+            // out to use a huge amount of data. The code has been reorganized
+            // to skip this part until it's been determined that those files are
+            // actually going to be used by the layer.
 
-                // Index_subhdr_len (9) instead of table_offset (11)
-                // indexRecordLength (33) instead of 35
-                // componentLocation, not index
-                // locations[3] is frame file index table subsection
-                binFile.seek(locations[3].componentLocation + indexRecordLength
-                        * i);
+            // readFrameInformation(binFile);
 
-                boundaryId = (int) binFile.readShort();
-
-                if (DEBUG_RPFTOCFRAMEDETAIL) {
-                    Debug.output("boundary id for frame: " + i + " is "
-                            + boundaryId);
-                }
-
-                // DKS NEW: changed from 1 to 0 to agree w/ spec. -1
-                // added also.
-                // if (boundaryId < 0 || boundaryId > numBoundaries -
-                // 1 )
-                if (boundaryId > numBoundaries - 1) {
-                    Debug.output("Bad boundary id in FF index record " + i);
-                    return false;
-                }
-                // DKS NEW: -1 removed to match spec
-                entry = entries[boundaryId];
-
-                frameRow = (int) binFile.readShort();
-                frameCol = (int) binFile.readShort();
-
-                // DKS. switched from horizFrames to vertFrames
-                // DKS NEW: CHANGED FROM 1 to 0 to agree w/spec. ALSO
-                // COL below
-                // if (frameRow < 1 || frameRow > entry->vertFrames)
-                if (frameRow > entry.vertFrames - 1) {
-                    Debug.output(" Bad row number: " + frameRow
-                            + ", in FF index record " + i);
-                    Debug.output(" Min row num=0;  Max. row num:"
-                            + (entry.horizFrames - 1));
-                    return false;
-                }
-
-                // DKS. switched from vertFrames to horizFrames
-                if (frameCol > entry.horizFrames - 1) {
-                    Debug.output(" Bad col number in FF index record " + i);
-                    return false;
-                }
-
-                // DKS NEW: -1 removed on frameRow, col
-                // JRB
-                // frame = &entry->frames[frameRow][frameCol];
-
-                // [(entry->vertFrames - 1L)-frameRow] flips the array
-                // over, so that the frames can be referenced
-                // correctly from the top left, instead of the
-                // specification notation of bottom left.
-
-                frame = entry.frames[(entry.vertFrames - 1) - frameRow][frameCol];
-
-                if (frame.exists && DEBUG_RPFTOCDETAIL) {
-                    Debug.output("FF " + i + " is a duplicate");
-                }
-
-                // DKS: phys_loc deleted
-
-                // pathname offset
-                pathOffset = (long) binFile.readInteger();
-
-                // Save file position for later
-                currentPosition = (int) binFile.getFilePointer();
-
-                // Go to start of pathname record
-                // DKS. New pathOffset offset from start of frame file
-                // index section of TOC??
-                if (DEBUG_RPFTOCFRAMEDETAIL) {
-                    Debug.output("RpfTocHandler: parseToc(): locations[1].componentLocation: "
-                            + locations[1].componentLocation);
-                }
-                // DKS. Add pathoffset wrt frame file index table
-                // subsection (loc[3])
-                binFile.seek(locations[3].componentLocation + pathOffset);
-
-                pathLength = (int) binFile.readShort();
-                if (DEBUG_RPFTOCFRAMEDETAIL) {
-                    Debug.output("RpfTocHandler: parseToc(): pathLength:"
-                            + pathLength);
-                }
-
-                // 1st part of directory name is passed as arg:
-                // e.g. "../RPF2/"
-                String rpfdir = dir;
-                StringBuffer sBuf = new StringBuffer();
-
-                // read rest of directory name from toc
-                // DKS: skip 1st 2 chars: "./":
-                String pathTest = binFile.readFixedLengthString(2);
-                if (pathTest.equals("./")) {
-                    fullPathsInATOC = false;
-                } else {
-                    fullPathsInATOC = true;
-                }
-
-                if (!fullPathsInATOC) {
-                    // DKS: Make up for skipped 2 chars
-                    sBuf.append(binFile.readFixedLengthString(pathLength - 2));
-                } else {
-                    sBuf.append(pathTest);
-                    sBuf.append(binFile.readFixedLengthString(pathLength - 2));
-                }
-
-                // Add the trim because it looks like NIMA doesn't
-                // always get the pathLength correct...
-                String directory = sBuf.toString().trim();
-                if (DEBUG_RPFTOCFRAMEDETAIL) {
-                    Debug.output("RpfTocHandler: parseToc(): frame directory: "
-                            + directory);
-                }
-
-                /* Go back to get filename tail */
-                binFile.seek(currentPosition);
-
-                String filename = binFile.readFixedLengthString(12);
-                if (DEBUG_RPFTOCFRAMEDETAIL) {
-                    Debug.output("RpfTocHandler: parseToc(): frame filename: "
-                            + filename);
-                }
-
-                // Figure out the chart series ID
-                int dot = filename.lastIndexOf('.');
-                // Interned so we can look it up in the catalog
-                // later...
-                entry.setInfo(filename.substring(dot + 1, dot + 3).intern());
-
-                // We duplicate this below!!!
-                // frame.framePath = new String(frame.rpfdir +
-                // frame.directory +
-                // "/" + frame.filename);
-
-                // DKS new DCHUM. Fill in last digit v of vv version
-                // #. fffffvvp.JNz or ffffffvp.IMz for CIB boundaryId
-                // will equal frame file number: 1 boundary rect. per
-                // frame.
-
-                // if (Dchum)
-                // entries[boundaryId].version =
-                // frame.filename.charAt(6);
-
-                String tempPath;
-
-                if (!fullPathsInATOC) {
-                    tempPath = rpfdir + directory + filename;
-                    frame.rpfdirIndex = (short) (rpfdir.length() - 3);
-                    frame.filenameIndex = (short) (rpfdir.length() + directory.length());
-                } else {
-                    tempPath = directory + filename;
-                    frame.filenameIndex = (short) directory.length();
-                }
-    
-                frame.framePath = tempPath;
-                frame.exists = true;
-                
-                // You don't want to check for the existance of frames here, do
-                // it at load time, and then mark the entry if the load fails.
-                // If you do the check here, you waste a lot of I/O time and
-                // effort. Assume it's there, the RPFFrame has been modified
-                // to try lower case names if needed.
-
-                if (frame.framePath == null) {
-                    Debug.output("RpfTocHandler: Frame "
-                            + tempPath
-                            + " doesn't exist.  Please rebuild A.TOC file using MakeToc, or check read permissions for the file.");
-                }
-            } /* for i = numFrameIndexRecords */
+            // One thing that we still need to do at this point, is query some
+            // of the frame file paths to find out what chart type is being held
+            // for each RpfTocEntry, so during the coverage determination we can
+            // decide whether to use an RpfTocEntry or not.
+            figureOutChartSeriesForEntries(binFile);
 
         } catch (IOException ioe) {
             Debug.error("RpfTocHandler: IO ERROR parsing file!\n\t" + ioe);
@@ -584,6 +410,296 @@ public class RpfTocHandler {
             Debug.output("LEAVE TOC parsing...");
         }
         return true;
+    }
+
+    /**
+     * Method that looks at one frame file for each RpfTocEntry, in order to
+     * check the suffix and load the chart series information into the
+     * RpfTocEntry. This is needed for when the RpfTocHandler is asked for
+     * matching RpfTocEntries for a given scale and location when the chart type
+     * has been limited to a certain chart code.
+     * 
+     * @param binFile
+     * @throws IOException
+     * @throws FormatException
+     */
+    protected void figureOutChartSeriesForEntries(BinaryFile binFile)
+            throws IOException, FormatException {
+
+        RpfTocEntry[] entriesAlreadyChecked = new RpfTocEntry[entries.length];
+        System.arraycopy(entries, 0, entriesAlreadyChecked, 0, entries.length);
+
+        // We just need the name of one file, just to see what the series code
+        // is.
+
+        for (int i = 0; i < numFrameIndexRecords; i++) {
+            // Read frame file index records
+            if (DEBUG_RPFTOCFRAMEDETAIL) {
+                Debug.output("RpfTocHandler: parseToc(): Read frame file index rec #: "
+                        + i);
+            }
+
+            // Index_subhdr_len (9) instead of table_offset (11)
+            // indexRecordLength (33) instead of 35
+            // componentLocation, not index
+            // locations[3] is frame file index table subsection
+            binFile.seek(locations[3].componentLocation + indexRecordLength * i);
+
+            int boundaryId = (int) binFile.readShort();
+
+            if (DEBUG_RPFTOCFRAMEDETAIL) {
+                Debug.output("boundary id for frame: " + i + " is "
+                        + boundaryId);
+            }
+
+            if (boundaryId > numBoundaries - 1) {
+                throw new FormatException("Bad boundary id in FF index record "
+                        + i);
+            }
+
+            RpfTocEntry entry = entriesAlreadyChecked[boundaryId];
+
+            if (entry == null) {
+                continue; // already checked.
+            } else {
+                entriesAlreadyChecked[boundaryId] = null;
+            }
+
+            /* int frameRow = (int) */binFile.readShort();
+            /* int frameCol = (int) */binFile.readShort();
+            /* long pathOffset = (long) */binFile.readInteger();
+            String filename = binFile.readFixedLengthString(12);
+
+            // Figure out the chart series ID
+            int dot = filename.lastIndexOf('.');
+            // Interned so we can look it up in the catalog
+            // later...
+            entry.setInfo(filename.substring(dot + 1, dot + 3).intern());
+        } /* for i = numFrameIndexRecords */
+    }
+
+    /**
+     * Should be called by the RpfFrameCacheHandler before any frame files are
+     * loaded from a RpfTocEntry. The RpfFrameCacheHandler should ask the
+     * RpfTocEntry if the frames have been loaded, and call this if they have
+     * not.
+     */
+    protected void loadFrameInformation(RpfTocEntry rpfTocEntry) {
+        try {
+            if (binFile == null && aTocFilePath != null) {
+                binFile = new BinaryBufferedFile(aTocFilePath);
+                binFile.byteOrder(aTocByteOrder);
+                readFrameInformation(binFile, rpfTocEntry);
+                binFile.close();
+                binFile = null;
+            }
+        } catch (IOException ioe) {
+            Debug.error("RpfTocHandler: IO ERROR parsing file for frame information!\n\t"
+                    + ioe);
+        } catch (FormatException fe) {
+            Debug.error("RpfTocHandler: Format ERROR parsing file for frame information!\n\t"
+                    + fe);
+        }
+    }
+
+    /**
+     * Reads the BinaryFile to retrieve the Frame file information for the entry.
+     * @param binFile a valid, open BinaryFile.
+     * @param entry the RpfTocEntry to fill.
+     * @throws IOException
+     * @throws FormatException
+     */
+    protected void readFrameInformation(BinaryFile binFile, RpfTocEntry entry)
+            throws IOException, FormatException {
+        int boundaryId, frameRow, frameCol; // ushort
+        int currentPosition;
+        int pathLength;
+        long pathOffset; // uint, offset of frame file pathname
+        RpfFrameEntry frame;
+
+        int currentBoundaryIdForEntry = entry.coverage.entryNumber;
+
+        // Read frame file index records
+        for (int i = 0; i < numFrameIndexRecords; i++) {
+            if (DEBUG_RPFTOCFRAMEDETAIL) {
+                Debug.output("RpfTocHandler: parseToc(): Read frame file index rec #: "
+                        + i);
+            }
+
+            // Index_subhdr_len (9) instead of table_offset (11)
+            // indexRecordLength (33) instead of 35
+            // componentLocation, not index
+            // locations[3] is frame file index table subsection
+            binFile.seek(locations[3].componentLocation + indexRecordLength * i);
+
+            boundaryId = (int) binFile.readShort();
+
+            if (boundaryId != currentBoundaryIdForEntry) {
+                // Only load the frame names of the entry we are using...
+                continue;
+            }
+
+            if (DEBUG_RPFTOCFRAMEDETAIL) {
+                Debug.output("boundary id for frame: " + i + " is "
+                        + boundaryId);
+            }
+
+            // DKS NEW: changed from 1 to 0 to agree w/ spec. -1
+            // added also.
+            // if (boundaryId < 0 || boundaryId > numBoundaries -
+            // 1 )
+            if (boundaryId > numBoundaries - 1) {
+                throw new FormatException("Bad boundary id in FF index record "
+                        + i);
+            }
+
+            frameRow = (int) binFile.readShort();
+            frameCol = (int) binFile.readShort();
+
+            // DKS. switched from horizFrames to vertFrames
+            // DKS NEW: CHANGED FROM 1 to 0 to agree w/spec. ALSO
+            // COL below
+            // if (frameRow < 1 || frameRow > entry->vertFrames)
+            if (frameRow > entry.vertFrames - 1) {
+                throw new FormatException("Bad row number: " + frameRow
+                        + ", in FF index record " + i
+                        + ", Min row num=0;  Max. row num:"
+                        + (entry.horizFrames - 1));
+            }
+
+            // DKS. switched from vertFrames to horizFrames
+            if (frameCol > entry.horizFrames - 1) {
+                throw new FormatException(" Bad col number in FF index record "
+                        + i);
+            }
+
+            // DKS NEW: -1 removed on frameRow, col
+            // JRB
+            // frame = &entry->frames[frameRow][frameCol];
+
+            // [(entry->vertFrames - 1L)-frameRow] flips the array
+            // over, so that the frames can be referenced
+            // correctly from the top left, instead of the
+            // specification notation of bottom left.
+
+            frame = entry.getFrame((entry.vertFrames - 1) - frameRow, frameCol);
+
+            if (frame.exists && DEBUG_RPFTOCDETAIL) {
+                Debug.output("FF " + i + " is a duplicate");
+            }
+
+            // DKS: phys_loc deleted
+
+            // pathname offset
+            pathOffset = (long) binFile.readInteger();
+
+            if (pathOffset < 0) {
+                continue;
+            }
+
+            // Save file position for later
+            currentPosition = (int) binFile.getFilePointer();
+
+            // Go to start of pathname record
+            // DKS. New pathOffset offset from start of frame file
+            // index section of TOC??
+
+            // DKS. Add pathoffset wrt frame file index table
+            // subsection (loc[3])
+            binFile.seek(locations[3].componentLocation + pathOffset);
+
+            pathLength = (int) binFile.readShort();
+            if (DEBUG_RPFTOCFRAMEDETAIL) {
+                Debug.output("RpfTocHandler: parseToc(): pathLength:"
+                        + pathLength);
+            }
+
+            // 1st part of directory name is passed as arg:
+            // e.g. "../RPF2/"
+            String rpfdir = dir;
+            StringBuffer sBuf = new StringBuffer(pathLength);
+
+            // read rest of directory name from toc
+            // DKS: skip 1st 2 chars: "./":
+            String pathTest = binFile.readFixedLengthString(2);
+            if (pathTest.equals("./")) {
+                fullPathsInATOC = false;
+            } else {
+                fullPathsInATOC = true;
+            }
+
+            if (!fullPathsInATOC) {
+                // DKS: Make up for skipped 2 chars
+                sBuf.append(binFile.readFixedLengthString(pathLength - 2));
+            } else {
+                sBuf.append(pathTest);
+                sBuf.append(binFile.readFixedLengthString(pathLength - 2));
+            }
+
+            // Add the trim because it looks like NIMA doesn't
+            // always get the pathLength correct...
+            String directory = sBuf.toString().trim();
+            if (DEBUG_RPFTOCFRAMEDETAIL) {
+                Debug.output("RpfTocHandler: parseToc(): frame directory: "
+                        + directory);
+            }
+
+            /* Go back to get filename tail */
+            binFile.seek(currentPosition);
+
+            String filename = binFile.readFixedLengthString(12);
+            if (DEBUG_RPFTOCFRAMEDETAIL) {
+                Debug.output("RpfTocHandler: parseToc(): frame filename: "
+                        + filename);
+            }
+
+            // Figure out the chart series ID
+            int dot = filename.lastIndexOf('.');
+            // Interned so we can look it up in the catalog
+            // later...
+            entry.setInfo(filename.substring(dot + 1, dot + 3).intern());
+
+            // We duplicate this below!!!
+            // frame.framePath = new String(frame.rpfdir +
+            // frame.directory +
+            // "/" + frame.filename);
+
+            // DKS new DCHUM. Fill in last digit v of vv version
+            // #. fffffvvp.JNz or ffffffvp.IMz for CIB boundaryId
+            // will equal frame file number: 1 boundary rect. per
+            // frame.
+
+            // if (Dchum)
+            // entries[boundaryId].version =
+            // frame.filename.charAt(6);
+
+            String tempPath;
+
+            if (!fullPathsInATOC) {
+                tempPath = rpfdir + directory + filename;
+                frame.rpfdirIndex = (short) (rpfdir.length() - 3);
+                frame.filenameIndex = (short) (rpfdir.length() + directory.length());
+            } else {
+                tempPath = directory + filename;
+                frame.filenameIndex = (short) directory.length();
+            }
+
+            frame.framePath = tempPath;
+            frame.exists = true;
+
+            // You don't want to check for the existance of frames here, do
+            // it at load time, and then mark the entry if the load fails.
+            // If you do the check here, you waste a lot of I/O time and
+            // effort. Assume it's there, the RPFFrame has been modified
+            // to try lower case names if needed.
+
+            if (frame.framePath == null) {
+                Debug.output("RpfTocHandler: Frame "
+                        + tempPath
+                        + " doesn't exist.  Please rebuild A.TOC file using MakeToc, or check read permissions for the file.");
+            }
+        } /* for i = numFrameIndexRecords */
+
     }
 
     /**
@@ -627,6 +743,17 @@ public class RpfTocHandler {
         Long realValue;
         int expLetter; // location of m, M, K
         int expLetterSmall;
+
+        // Make sure there are no commas, commas seem to kill Long parsing.
+        int commaIndex = textScale.indexOf(',');
+        while (commaIndex != -1) {
+            StringBuffer buf = new StringBuffer(textScale.substring(0,
+                    commaIndex));
+            buf.append(textScale.substring(commaIndex + 1));
+            textScale = buf.toString();
+            commaIndex = textScale.indexOf(',');
+        }
+
         int colon = textScale.indexOf(":");
 
         try {
@@ -1109,6 +1236,22 @@ public class RpfTocHandler {
     /** Return the list of grouped frames. */
     public RpfTocEntry[] getEntries() {
         return entries;
+    }
+
+    public String getATocFilePath() {
+        return aTocFilePath;
+    }
+
+    public void setATocFilePath(String tocFilePath) {
+        aTocFilePath = tocFilePath;
+    }
+
+    public boolean isFullPathsInATOC() {
+        return fullPathsInATOC;
+    }
+
+    public void setFullPathsInATOC(boolean fullPathsInATOC) {
+        this.fullPathsInATOC = fullPathsInATOC;
     }
 
     public static void main(String[] args) {

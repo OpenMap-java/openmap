@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.21 $
-// $Date: 2006/08/09 21:08:31 $
+// $Revision: 1.22 $
+// $Date: 2006/10/19 20:30:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -85,7 +85,7 @@ import com.bbn.openmap.util.PropUtils;
  *           #-----------------------------
  *           # Mandatory properties
  *           # This property should reflect the paths to the RPF directories
- *           rpf.paths=/usr/local/matt/data/RPF /usr/local/matt/data/CIB/RPF
+ *           rpf.paths=/usr/local/matt/data/RPF;/usr/local/matt/data/CIB/RPF
  *           
  *           # Optional Properties - the default will be set if these are not 
  *           # included in the properties file: 

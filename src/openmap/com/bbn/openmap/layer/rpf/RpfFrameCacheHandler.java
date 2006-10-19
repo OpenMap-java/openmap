@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrameCacheHandler.java,v $
 // $RCSfile: RpfFrameCacheHandler.java,v $
-// $Revision: 1.11 $
-// $Date: 2006/08/17 15:19:06 $
+// $Revision: 1.12 $
+// $Date: 2006/10/19 20:30:26 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -500,8 +500,11 @@ public class RpfFrameCacheHandler extends CacheHandler implements
 
             return null;
         }
-
-        RpfFrameEntry frameEntry = entry.frames[y / 6][x / 6];
+        
+        if (!entry.isFramesLoaded()) {
+            tocs[tocNumber].loadFrameInformation(entry);
+        }
+        RpfFrameEntry frameEntry = entry.getFrame(y / 6, x / 6);
 
         /* Get the right frame from the frame cache */
         RpfFrame frame = (RpfFrame) get(frameEntry);
@@ -546,8 +549,11 @@ public class RpfFrameCacheHandler extends CacheHandler implements
                 || x >= entry.horizFrames * 6) {
             return null;
         }
-
-        RpfFrameEntry frameEntry = entry.frames[y / 6][x / 6];
+        
+        if (!entry.isFramesLoaded()) {
+            tocs[tocNumber].loadFrameInformation(entry);
+        }
+        RpfFrameEntry frameEntry = entry.getFrame(y / 6, x / 6);
 
         /* Get the right frame from the frame cache */
         RpfFrame frame = (RpfFrame) get(frameEntry);
@@ -579,8 +585,10 @@ public class RpfFrameCacheHandler extends CacheHandler implements
 
             return null;
         }
-
-        RpfFrameEntry frameEntry = entry.frames[y / 6][x / 6];
+        if (!entry.isFramesLoaded()) {
+            tocs[tocNumber].loadFrameInformation(entry);
+        }
+        RpfFrameEntry frameEntry = entry.getFrame(y / 6, x / 6);
 
         /* Get the right frame from the frame cache */
         RpfFrame frame = (RpfFrame) get(frameEntry);
