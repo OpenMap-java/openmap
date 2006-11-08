@@ -21,13 +21,6 @@
 
 package com.bbn.openmap.event;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-import java.util.Properties;
-import java.util.Vector;
-
 import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
@@ -35,13 +28,15 @@ import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.OMCircle;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMLine;
-import com.bbn.openmap.proj.GreatCircle;
-import com.bbn.openmap.proj.Length;
-import com.bbn.openmap.proj.Planet;
-import com.bbn.openmap.proj.ProjMath;
-import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
+
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+import java.util.Properties;
+import java.util.Vector;
 
 /**
  * This mouse mode draws a rubberband line and circle between each mouse click
@@ -69,9 +64,12 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * <pre>
  *     
- *      prefix.units= &amp;lt name for Length.java (km, miles, meters, nm) &amp;gt
+ *      prefix.units= &amp;lt name for Length.java (km, miles, meters, nm, all) &amp;gt
  *      
  * </pre>
+ *
+ * Note that "all" will display nm, km, and miles.
+ * 
  */
 public class DistanceMouseMode extends CoordMouseMode {
 
@@ -83,6 +81,11 @@ public class DistanceMouseMode extends CoordMouseMode {
     public final static String ShowCircleProperty = "showCircle";
     public final static String ShowAngleProperty = "showAngle";
     public final static String RepaintToCleanProperty = "repaintToClean";
+
+    /**
+     * Special units value for displaying all units ... use only in properties file
+     */
+    public final static String AllUnitsPropertyValue = "all";
 
     /**
      * rPoint1 is the anchor point of a line segment
@@ -741,6 +744,8 @@ public class DistanceMouseMode extends CoordMouseMode {
             Length length = Length.get(name);
             if (length != null) {
                 setUnit(length);
+            } else if (name.equals(AllUnitsPropertyValue)) {
+                setUnit(null);
             }
         }
 
@@ -762,7 +767,8 @@ public class DistanceMouseMode extends CoordMouseMode {
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        getList.put(prefix + UnitProperty, unit.toString());
+        String unitValue = (unit != null ? unit.toString() : AllUnitsPropertyValue);
+        getList.put(prefix + UnitProperty, unitValue);
         getList.put(prefix + ShowCircleProperty,
                 new Boolean(getShowCircle()).toString());
         getList.put(prefix + ShowAngleProperty,
