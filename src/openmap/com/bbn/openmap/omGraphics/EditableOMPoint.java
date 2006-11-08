@@ -14,31 +14,25 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
-// $Revision: 1.12 $
-// $Date: 2006/03/06 15:56:53 $
-// $Author: dietrick $
+// $Revision: 1.13 $
+// $Date: 2006/11/08 22:33:44 $
+// $Author: kratkiew $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.Component;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-
-import javax.swing.JComponent;
-import javax.swing.JToolBar;
-
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.layer.util.stateMachine.State;
-import com.bbn.openmap.omGraphics.editable.GraphicEditState;
-import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
-import com.bbn.openmap.omGraphics.editable.GraphicSetOffsetState;
-import com.bbn.openmap.omGraphics.editable.GraphicUndefinedState;
-import com.bbn.openmap.omGraphics.editable.PointStateMachine;
+import com.bbn.openmap.omGraphics.editable.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 
 /**
  * An EditableOMGraphic that encapsulates an OMPoint.
@@ -405,7 +399,7 @@ public class EditableOMPoint extends EditableOMGraphic {
     public boolean generate(Projection proj) {
         Debug.message("eomgdetail", "EditableOMPoint.generate()");
         if (point != null)
-            point.regenerate(proj);
+            point.generate(proj);
 
         for (int i = 0; i < gPoints.length; i++) {
             GrabPoint gp = gPoints[i];
@@ -424,7 +418,7 @@ public class EditableOMPoint extends EditableOMGraphic {
     public void regenerate(Projection proj) {
         Debug.message("eomg", "EditableOMPoint.regenerate()");
         if (point != null)
-            point.regenerate(proj);
+            point.generate(proj);
 
         setGrabPoints(point);
         generate(proj);
