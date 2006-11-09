@@ -30,7 +30,7 @@ import java.util.List;
  * 
  * @author Sachin Date
  * @author Ken Anderson
- * @version $Revision: 1.13 $ on $Date: 2005/10/26 18:39:28 $
+ * @version $Revision: 1.14 $ on $Date: 2006/11/09 18:00:02 $
  */
 public class Intersection {
 
@@ -148,11 +148,17 @@ public class Intersection {
                 }
               }
             } else {
+            	// usually, getting here means poly region vs radial region
                 BoundingCircle bc = extent.getBoundingCircle();
                 BoundingCircle rbc = r.getBoundingCircle();
+              	// first pass check - the bounding circles intersect
                 if (rbc.intersects(bc.getCenter(), bc.getRadius()
                         + filter.getHRange())) {
-                    collector.collect(r, extent);
+                	Geo[] pts = r.toPointArray();
+                	if (isPointInPolygon(bc.getCenter(), pts) ||
+                			isPointNearPoly(bc.getCenter(), pts, bc.getRadius()+filter.getHRange())) {
+                		collector.collect(r, extent);
+                	} // else no intersection
                 }
             }
         }
