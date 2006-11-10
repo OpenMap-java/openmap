@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.18 $
-// $Date: 2005/12/09 21:09:04 $
+// $Revision: 1.19 $
+// $Date: 2006/11/10 21:34:26 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -401,6 +401,14 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @return float[] rawllpts of lat, lon, lat, lon
      */
     public float[] getLatLonArray() {
+        // If the OMPoly has been generated with a non GeoProj projection, these
+        // coordinates are going to be in decimal degrees, to make that that
+        // generation easier. They should be translated back into radians, for
+        // consistency.
+        if (units == DECIMAL_DEGREES) {
+            ProjMath.arrayDegToRad(rawllpts);
+            units = RADIANS;
+        }
         return rawllpts;
     }
 
@@ -658,7 +666,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                 }
                 vector = proj.forwardPoly(rawllpts, isPolygon);
             }
-            
+
             int size = vector.size();
 
             xpoints = new int[(int) (size / 2)][0];
