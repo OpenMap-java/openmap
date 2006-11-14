@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolChooser.java,v $
 // $RCSfile: SymbolChooser.java,v $
-// $Revision: 1.15 $
-// $Date: 2006/11/14 22:41:06 $
+// $Revision: 1.16 $
+// $Date: 2006/11/14 22:44:08 $
 // $Author: kratkiew $
 // 
 // **********************************************************************
@@ -58,7 +58,7 @@ import java.util.List;
  * To bring up this chooser, run this class as a standalone application, or call
  * showDialog(..)
  */
-public class SymbolChooser extends JPanel implements ActionListener, FocusListener {
+public class SymbolChooser extends JPanel implements ActionListener {
 
     public final static String CREATE_IMAGE_CMD = "CREATE_IMAGE_CMD";
     public final static String NAMEFIELD_CMD = "NAMEFIELD_CMD";
@@ -527,13 +527,6 @@ public class SymbolChooser extends JPanel implements ActionListener, FocusListen
         }
 
         System.exit(0);
-    }
-
-    public void focusGained(FocusEvent e) {
-    }
-
-    public void focusLost(FocusEvent e) {
-         setDesiredIconDimension(dqp.getDimension());
     }
 
     public class SymbolTreeHolder extends ListenerSupport implements
