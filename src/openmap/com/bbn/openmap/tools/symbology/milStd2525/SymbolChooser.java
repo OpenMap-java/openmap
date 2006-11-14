@@ -14,59 +14,13 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolChooser.java,v $
 // $RCSfile: SymbolChooser.java,v $
-// $Revision: 1.14 $
-// $Date: 2006/04/07 15:28:07 $
-// $Author: dietrick $
+// $Revision: 1.15 $
+// $Date: 2006/11/14 22:41:06 $
+// $Author: kratkiew $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.tools.symbology.milStd2525;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.HeadlessException;
-import java.awt.Insets;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTree;
-import javax.swing.UIManager;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
 
 import com.bbn.openmap.event.ListenerSupport;
 import com.bbn.openmap.gui.DimensionQueryPanel;
@@ -80,6 +34,22 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.FileUtils;
 import com.bbn.openmap.util.PaletteHelper;
 
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
+import java.util.List;
+
 /**
  * The SymbolChooser is a GUI symbol builder. It can be used in stand-alone mode
  * to create image files, or be integrated into a java application to create
@@ -88,7 +58,7 @@ import com.bbn.openmap.util.PaletteHelper;
  * To bring up this chooser, run this class as a standalone application, or call
  * showDialog(..)
  */
-public class SymbolChooser extends JPanel implements ActionListener {
+public class SymbolChooser extends JPanel implements ActionListener, FocusListener {
 
     public final static String CREATE_IMAGE_CMD = "CREATE_IMAGE_CMD";
     public final static String NAMEFIELD_CMD = "NAMEFIELD_CMD";
@@ -216,7 +186,6 @@ public class SymbolChooser extends JPanel implements ActionListener {
         outergridbag.setConstraints(symbolPanel, outerc);
 
         dqp = new DimensionQueryPanel(getDesiredIconDimension());
-        dqp.addActionListener(this);
         outergridbag.setConstraints(dqp, outerc);
         symbolPanel.add(dqp);
 
@@ -276,6 +245,15 @@ public class SymbolChooser extends JPanel implements ActionListener {
         String command = ae.getActionCommand();
 
         if (command == CREATE_IMAGE_CMD && library != null && nameField != null) {
+            try {
+                setDesiredIconDimension(dqp.getDimension());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this,
+                        "Width and height must be integers.",
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             Dimension d = getDesiredIconDimension();
             ImageIcon ii = library.getIcon(getCode(), d);
 
@@ -313,10 +291,6 @@ public class SymbolChooser extends JPanel implements ActionListener {
             handleManualNameFieldUpdate(getCode());
         }
 
-        if (command == DimensionQueryPanel.WIDTH_CMD
-                || command == DimensionQueryPanel.HEIGHT_CMD) {
-            setDesiredIconDimension(dqp.getDimension());
-        }
     }
 
     /**
@@ -553,6 +527,13 @@ public class SymbolChooser extends JPanel implements ActionListener {
         }
 
         System.exit(0);
+    }
+
+    public void focusGained(FocusEvent e) {
+    }
+
+    public void focusLost(FocusEvent e) {
+         setDesiredIconDimension(dqp.getDimension());
     }
 
     public class SymbolTreeHolder extends ListenerSupport implements

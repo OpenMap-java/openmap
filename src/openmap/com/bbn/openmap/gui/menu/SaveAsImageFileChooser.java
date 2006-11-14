@@ -14,21 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SaveAsImageFileChooser.java,v $
 // $RCSfile: SaveAsImageFileChooser.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/12/10 14:08:54 $
-// $Author: dietrick $
+// $Revision: 1.6 $
+// $Date: 2006/11/14 22:41:05 $
+// $Author: kratkiew $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui.menu;
 
-import java.awt.BorderLayout;
-
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-
 import com.bbn.openmap.gui.DimensionQueryPanel;
 import com.bbn.openmap.util.PaletteHelper;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * A class extended from a JFileChooser that adds fields for
@@ -43,8 +41,8 @@ public class SaveAsImageFileChooser extends JFileChooser {
      */
     public SaveAsImageFileChooser(int width, int height) {
         super();
-        dqp.setHeight(height);
-        dqp.setWidth(width);
+        dqp.setFieldHeight(height);
+        dqp.setFieldWidth(width);
         JPanel imageSizePanel = PaletteHelper.createPaletteJPanel(" Set Image Size ");
         imageSizePanel.setLayout(new BorderLayout());
         imageSizePanel.add(dqp, BorderLayout.CENTER);
@@ -55,28 +53,28 @@ public class SaveAsImageFileChooser extends JFileChooser {
      * Set the value of the image width setting from the GUI.
      */
     public void setImageWidth(int w) {
-        dqp.setWidth(w);
+        dqp.setFieldWidth(w);
     }
 
     /**
      * Get the value of the image width setting from the GUI.
      */
     public int getImageWidth() {
-        return dqp.getWidth();
+        return dqp.getFieldWidth();
     }
 
     /**
      * Set the value of the image height setting from the GUI.
      */
     public void setImageHeight(int h) {
-        dqp.setHeight(h);
+        dqp.setFieldHeight(h);
     }
 
     /**
      * Get the value of the image height setting from the GUI.
      */
     public int getImageHeight() {
-        return dqp.getHeight();
+        return dqp.getFieldHeight();
     }
 
 }

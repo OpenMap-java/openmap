@@ -16,24 +16,19 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: DimensionQueryPanel.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/08/11 20:39:19 $
-//$Author: dietrick $
+//$Revision: 1.3 $
+//$Date: 2006/11/14 22:41:05 $
+//$Author: kratkiew $
 //
 //**********************************************************************
 
 package com.bbn.openmap.gui;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class DimensionQueryPanel extends JPanel {
 
@@ -60,28 +55,28 @@ public class DimensionQueryPanel extends JPanel {
         htext.setHorizontalAlignment(SwingConstants.RIGHT);
         vtext = new JLabel("Height: ");
         vtext.setHorizontalAlignment(SwingConstants.RIGHT);
-        hfield = new JTextField(Integer.toString(width), 5);
+        hfield = new DimensionQueryField(Integer.toString(width), 5);
         hfield.setActionCommand(WIDTH_CMD);
-        vfield = new JTextField(Integer.toString(height), 5);
+        vfield = new DimensionQueryField(Integer.toString(height), 5);
         vfield.setActionCommand(HEIGHT_CMD);
         ptext1 = new JLabel(" pixels");
         ptext2 = new JLabel(" pixels");
         layoutPanel();
     }
 
-    public void setWidth(int width) {
+    public void setFieldWidth(int width) {
         hfield.setText(Integer.toString(width));
     }
 
-    public int getWidth() {
+    public int getFieldWidth() {
         return Integer.parseInt(hfield.getText());
     }
 
-    public void setHeight(int height) {
+    public void setFieldHeight(int height) {
         vfield.setText(Integer.toString(height));
     }
 
-    public int getHeight() {
+    public int getFieldHeight() {
         return Integer.parseInt(vfield.getText());
     }
 
@@ -155,15 +150,36 @@ public class DimensionQueryPanel extends JPanel {
      * @param d
      */
     public void setDimension(Dimension d) {
-        setWidth((int)d.getWidth());
-        setHeight((int)d.getHeight());
+        setFieldWidth((int)d.getWidth());
+        setFieldHeight((int)d.getHeight());
     }
 
     /**
      * @return Dimension of panel.
      */
     public Dimension getDimension() {
-        return new Dimension(getWidth(), getHeight());
+        return new Dimension(getFieldWidth(), getFieldHeight());
+    }
+
+    /**
+     * Customized text field that sends an action event when focus is lost (in
+     * addition to when the user hits "enter"). Fixes situations where listeners
+     * were not getting dimension updates when user failed to hit enter (a
+     * common occurance).
+     */
+    private class DimensionQueryField extends JTextField implements FocusListener {
+
+        private DimensionQueryField(String text, int columns) {
+            super(text, columns);
+            this.addFocusListener(this);
+        }
+
+        public void focusGained(FocusEvent e) {
+        }
+
+        public void focusLost(FocusEvent e) {
+            fireActionPerformed();
+        }
     }
 }
 
