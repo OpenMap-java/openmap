@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.21 $
-// $Date: 2006/10/13 16:44:39 $
+// $Revision: 1.22 $
+// $Date: 2006/11/20 20:17:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -258,10 +258,11 @@ public class WindowSupport extends ListenerSupport implements
      */
     protected WSDisplay createDisplay(Frame owner) {
         WSDisplay wsd;
-        if (Environment.getBoolean(Environment.UseInternalFrames)) {
+        if (persistentDisplayType == null && Environment.getBoolean(Environment.UseInternalFrames)) {
             wsd = new IntrnlFrm(title);
         } else {
-            Class wTypeClass = getDefaultWindowSupportDisplayType();
+            Class wTypeClass = persistentDisplayType == null ? getDefaultWindowSupportDisplayType()
+                    : persistentDisplayType;
             if (wTypeClass == Dlg.class) {
                 wsd = new Dlg(owner, title);
             } else if (wTypeClass == IntrnlFrm.class) {
@@ -461,11 +462,14 @@ public class WindowSupport extends ListenerSupport implements
         }
     }
 
+    protected Class persistentDisplayType;
+
     /**
      * Get rid of the window used to display the content.
      */
     protected void cleanUp() {
         if (display != null) {
+            persistentDisplayType = display.getClass();
             WSDisplay wsd = display;
             setDisplay(null);
             wsd.dispose();
@@ -475,10 +479,10 @@ public class WindowSupport extends ListenerSupport implements
         // and I am not sure it's necessary to remove the listeners. This was
         // originally done to make it easier to release memory, but having the
         // WindowSupport hold on to listeners won't prevent that from happening.
-        
-//        if (content instanceof ComponentListener) {
-//            removeComponentListener((ComponentListener) content);
-//        }
+
+        // if (content instanceof ComponentListener) {
+        // removeComponentListener((ComponentListener) content);
+        // }
     }
 
     /**
