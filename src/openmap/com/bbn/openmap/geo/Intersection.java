@@ -30,7 +30,7 @@ import java.util.List;
  * 
  * @author Sachin Date
  * @author Ken Anderson
- * @version $Revision: 1.14 $ on $Date: 2006/11/09 18:00:02 $
+ * @version $Revision: 1.15 $ on $Date: 2006/12/04 15:35:02 $
  */
 public class Intersection {
 
@@ -155,8 +155,11 @@ public class Intersection {
                 if (rbc.intersects(bc.getCenter(), bc.getRadius()
                         + filter.getHRange())) {
                 	Geo[] pts = r.toPointArray();
-                	if (isPointInPolygon(bc.getCenter(), pts) ||
-                			isPointNearPoly(bc.getCenter(), pts, bc.getRadius()+filter.getHRange())) {
+                	if (isPointInPolygon(bc.getCenter(), pts)) {
+                		// the center of extent is inside r
+                		collector.collect(r, extent);
+                	} else if (isPointNearPoly(bc.getCenter(), pts, bc.getRadius()+filter.getHRange())) {
+                		// Center+radius of extent is within range an edge of the r
                 		collector.collect(r, extent);
                 	} // else no intersection
                 }
