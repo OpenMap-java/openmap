@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocHandler.java,v $
 // $RCSfile: RpfTocHandler.java,v $
-// $Revision: 1.15 $
-// $Date: 2006/10/19 20:30:25 $
+// $Revision: 1.16 $
+// $Date: 2006/12/13 16:45:24 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -503,7 +503,9 @@ public class RpfTocHandler {
     }
 
     /**
-     * Reads the BinaryFile to retrieve the Frame file information for the entry.
+     * Reads the BinaryFile to retrieve the Frame file information for the
+     * entry.
+     * 
      * @param binFile a valid, open BinaryFile.
      * @param entry the RpfTocEntry to fill.
      * @throws IOException
@@ -739,8 +741,8 @@ public class RpfTocHandler {
      */
     public static long textScaleToLong(String textScale) {
 
-        Long resolution;
-        Long realValue;
+        long resolution = 1l;
+        long realValue;
         int expLetter; // location of m, M, K
         int expLetterSmall;
 
@@ -762,18 +764,20 @@ public class RpfTocHandler {
                 expLetter = textScale.indexOf("m");
                 if (expLetter == -1) {
                     expLetter = textScale.indexOf("M");
-                    if (expLetter == -1)
-                        return -1; // ERROR
                 }
 
-                resolution = new Long(textScale.substring(0, expLetter));
-                return (long) (resolution.longValue() / .000150);
+                if (expLetter != -1) {
+                    resolution = Long.parseLong(textScale.substring(0, expLetter));
+                    return (long) (resolution / .000150);
+                }
+
+                // If we get here, we're dealing with a chart scale that doesn't
+                // have a 1: at the front of it, so continue on...
             }
 
             // dealing with a map scale
             String expValue = "";
-
-            resolution = new Long(textScale.substring(0, colon));
+            
             expLetter = textScale.lastIndexOf('K');
             expLetterSmall = textScale.lastIndexOf('k');
 
@@ -794,14 +798,15 @@ public class RpfTocHandler {
                 if (expLetter == -1) {
                     expLetter = expLetterSmall;
                 }
+                // If there isn't a colon, this should be OK
                 buf = new StringBuffer(textScale.substring(colon + 1, expLetter));
                 buf.append(expValue);
             } else {
                 buf = new StringBuffer(textScale.substring(colon + 1));
             }
-
+            
             String longString = buf.toString().trim();
-            realValue = new Long(longString);
+            realValue = Long.parseLong(longString);
 
         } catch (NumberFormatException nfe) {
             if (Debug.debugging("rpftoc")) {
@@ -817,7 +822,11 @@ public class RpfTocHandler {
             return (long) RpfConstants.UK.scale;
         }
 
-        long ret = (realValue.longValue() / resolution.longValue());
+        if (colon != -1) {
+            resolution = Long.parseLong(textScale.substring(0, colon));
+        }
+        
+        long ret = (realValue / resolution);
 
         if (Debug.debugging("rpftoc")) {
             Debug.output("RpfTocHandler: textScaleToLong converted "

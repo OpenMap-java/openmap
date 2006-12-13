@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocEntry.java,v $
 // $RCSfile: RpfTocEntry.java,v $
-// $Revision: 1.6 $
-// $Date: 2006/10/19 20:30:26 $
+// $Revision: 1.7 $
+// $Date: 2006/12/13 16:45:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -98,6 +98,8 @@ public class RpfTocEntry {
          * scale inside the info, and a scaleString.
          */
         scale = binFile.readFixedLengthString(12);
+        coverage.scale = RpfTocHandler.textScaleToLong(scale);
+
         zone = binFile.readChar(); /* char: 1-9 A-J */
         producer = binFile.readFixedLengthString(5);
 

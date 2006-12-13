@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCoverageBox.java,v $
 // $RCSfile: RpfCoverageBox.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:03 $
+// $Revision: 1.8 $
+// $Date: 2006/12/13 16:45:24 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -92,7 +92,7 @@ public class RpfCoverageBox {
         s.append(" nw_lat " + nw_lat + ", nw_lon " + nw_lon + "\n");
         s.append(" se_lat " + se_lat + ", se_lon " + se_lon + "\n");
         s.append(" chart code " + chartCode + "\n");
-        s.append(" scale " + scale + "\n");
+        s.append(" scale (parsed and decoded) " + scale + "\n");
         s.append(" vertical subframes " + verticalSubframes() + "\n");
         s.append(" horizontal subframes " + horizontalSubframes() + "\n");
         s.append(" percent coverage " + percentCoverage);
