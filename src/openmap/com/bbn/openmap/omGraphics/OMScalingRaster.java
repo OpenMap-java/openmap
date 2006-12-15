@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingRaster.java,v $
 // $RCSfile: OMScalingRaster.java,v $
-// $Revision: 1.14 $
-// $Date: 2006/11/02 15:32:54 $
+// $Revision: 1.15 $
+// $Date: 2006/12/15 18:39:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,20 +39,18 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * This is an extension to OMRaster that automatically scales itelf to
- * match the current projection. It is only lat/lon based, and takes
- * the coordinates of the upper left and lower right corners of the
- * image. It does straight scaling - it does not force the image
- * projection to match the map projection! So, your mileage may vary -
- * you have to understand the projection of the image, and know how it
- * fits the projection type of the map. Of course, at larger scales,
+ * This is an extension to OMRaster that automatically scales itelf to match the
+ * current projection. It is only lat/lon based, and takes the coordinates of
+ * the upper left and lower right corners of the image. It does straight scaling -
+ * it does not force the image projection to match the map projection! So, your
+ * mileage may vary - you have to understand the projection of the image, and
+ * know how it fits the projection type of the map. Of course, at larger scales,
  * it might not matter so much.
  * 
- * This class was inspired by, and created from parts of the
- * ImageLayer submission from Adrian Lumsden@sss, on 25-Jan-2002. Used
- * the scaling and trimming code from that submission. That code was
- * also developed with assistance from Steve McDonald at
- * SiliconSpaceships.com.
+ * This class was inspired by, and created from parts of the ImageLayer
+ * submission from Adrian Lumsden@sss, on 25-Jan-2002. Used the scaling and
+ * trimming code from that submission. That code was also developed with
+ * assistance from Steve McDonald at SiliconSpaceships.com.
  * 
  * @see OMRaster
  * @see OMRasterObject
@@ -60,26 +58,25 @@ import com.bbn.openmap.util.Debug;
 public class OMScalingRaster extends OMRaster implements Serializable {
 
     /**
-     * The latitude of the lower right corner for the image, in
-     * decimal degrees.
+     * The latitude of the lower right corner for the image, in decimal degrees.
      */
     protected float lat2 = 0.0f;
 
     /**
-     * The longitude of the lower right corner for the image, in
-     * decimal degrees.
+     * The longitude of the lower right corner for the image, in decimal
+     * degrees.
      */
     protected float lon2 = 0.0f;
 
     /**
-     * This the original version of the image, which we keep around
-     * for rescaling later.
+     * This the original version of the image, which we keep around for
+     * rescaling later.
      */
     protected BufferedImage sourceImage = null;
 
     /**
-     * The rectangle in screen co-ordinates that the scaled image
-     * projects to after clipping.
+     * The rectangle in screen co-ordinates that the scaled image projects to
+     * after clipping.
      */
     protected Rectangle clipRect;
 
@@ -94,8 +91,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     // COLORMODEL
 
     /**
-     * Creates an OMRaster images, Lat/Lon placement with a direct
-     * colormodel image.
+     * Creates an OMRaster images, Lat/Lon placement with a direct colormodel
+     * image.
      * 
      * @param ullat latitude of the top of the image.
      * @param ullon longitude of the left side of the image.
@@ -155,8 +152,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     // COLORTABLE
 
     /**
-     * Lat/Lon placement with a indexed colormodel, which is using a
-     * colortable and a byte array to contruct the int[] pixels.
+     * Lat/Lon placement with a indexed colormodel, which is using a colortable
+     * and a byte array to contruct the int[] pixels.
      * 
      * @param ullat latitude of the top of the image.
      * @param ullon longitude of the left side of the image.
@@ -177,11 +174,10 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     }
 
     /**
-     * Creates a BufferedImage version of the image. A new
-     * BufferedImage object is created, and the image is copied into
-     * it. You can get rid of the input image after calling this
-     * method. The OMRaster variables height, width and bitmap are set
-     * here to the values for the new BufferedImage.
+     * Creates a BufferedImage version of the image. A new BufferedImage object
+     * is created, and the image is copied into it. You can get rid of the input
+     * image after calling this method. The OMRaster variables height, width and
+     * bitmap are set here to the values for the new BufferedImage.
      * 
      * @param image the input image.
      */
@@ -212,12 +208,11 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     }
 
     /**
-     * Since the image doesn't necessarily need to be regenerated when
-     * it is merely moved, raster objects have this function, called
-     * from generate() and when a placement attribute is changed.
+     * Since the image doesn't necessarily need to be regenerated when it is
+     * merely moved, raster objects have this function, called from generate()
+     * and when a placement attribute is changed.
      * 
-     * @return true if enough information is in the object for proper
-     *         placement.
+     * @return true if enough information is in the object for proper placement.
      * @param proj projection of window.
      */
     protected boolean position(Projection proj) {
@@ -237,15 +232,13 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     }
 
     /**
-     * Prepare the graphics for rendering. For all image types, it
-     * positions the image relative to the projection. For direct and
-     * indexed colormodel images, it creates the ImageIcon used for
-     * drawing to the window (internal to object). For indexed
-     * colormodel images, it also calls computePixels, to resolve the
-     * colortable and the bytes to create the image pixels.
+     * Prepare the graphics for rendering. For all image types, it positions the
+     * image relative to the projection. For direct and indexed colormodel
+     * images, it creates the ImageIcon used for drawing to the window (internal
+     * to object). For indexed colormodel images, it also calls computePixels,
+     * to resolve the colortable and the bytes to create the image pixels.
      * 
-     * @param proj Projection used to position the image on the
-     *        window.
+     * @param proj Projection used to position the image on the window.
      * @return true if the image is ready to paint.
      */
     public boolean generate(Projection proj) {
@@ -275,6 +268,10 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                 pixels = null;
                 bits = null;
             }
+        } else {
+            if (!updateImageForProjection(proj)) {
+                return false;
+            }
         }
 
         // point1 and point2 are already set in position()
@@ -302,10 +299,20 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     }
 
     /**
-     * Since the OMScalingRaster changes height and width depending on
-     * scale, we need to rotate the image over that point and factor
-     * in the scaled height and width of the image. Called from within
-     * OMRasterObject.render().
+     * No op for this class, can be use to manage image use for subclasses.
+     * Called from within generate.
+     * 
+     * @param proj current projection.
+     * @return false if the rest of generate() should be skipped.
+     */
+    protected boolean updateImageForProjection(Projection proj) {
+        return true;
+    }
+
+    /**
+     * Since the OMScalingRaster changes height and width depending on scale, we
+     * need to rotate the image over that point and factor in the scaled height
+     * and width of the image. Called from within OMRasterObject.render().
      */
     protected void rotate(Graphics2D g) {
         int rotOffsetX = point1.x + (point2.x - point1.x) / 2;
@@ -314,21 +321,18 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     }
 
     /**
-     * Take the current projection and the sourceImage, and make the
-     * image that gets displayed fit the projection. If the source
-     * image isn't over the map, then this OMGraphic is set to be
-     * invisible. If part of the image is on the map, only that part
-     * is used. The OMRaster bitmap variable is set with an image that
-     * is created from the source image, and the point1 variable is
-     * set to the point where the image should be placed. For
-     * instance, if the source image upper left corner is off the map
-     * to the NorthWest, then the OMRaster bitmap is set to a image,
-     * clipped from the source, that is entirely on the map. The
-     * OMRaster point1 is set to 0, 0, since that is where the clipped
-     * image should be placed.
+     * Take the current projection and the sourceImage, and make the image that
+     * gets displayed fit the projection. If the source image isn't over the
+     * map, then this OMGraphic is set to be invisible. If part of the image is
+     * on the map, only that part is used. The OMRaster bitmap variable is set
+     * with an image that is created from the source image, and the point1
+     * variable is set to the point where the image should be placed. For
+     * instance, if the source image upper left corner is off the map to the
+     * NorthWest, then the OMRaster bitmap is set to a image, clipped from the
+     * source, that is entirely on the map. The OMRaster point1 is set to 0, 0,
+     * since that is where the clipped image should be placed.
      * 
-     * @param thisProj the projection that the image should be scaled
-     *        to.
+     * @param thisProj the projection that the image should be scaled to.
      */
     protected void scaleTo(Projection thisProj) {
 
@@ -462,11 +466,10 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     }
 
     /**
-     * Return the rectangle in screen co-ordinates that the scaled
-     * image has been clipped to. This may return a null rectangle
-     * (i.e. the image is out of the window). Otherwise the returned
-     * rectangle should always at least partially lie within the
-     * bounds of the window.
+     * Return the rectangle in screen co-ordinates that the scaled image has
+     * been clipped to. This may return a null rectangle (i.e. the image is out
+     * of the window). Otherwise the returned rectangle should always at least
+     * partially lie within the bounds of the window.
      */
     public Rectangle getClippedRectangle() {
         return clipRect;
@@ -551,8 +554,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     }
 
     /**
-     * Set the rectangle, based on the location and size of the image
-     * after scaling.
+     * Set the rectangle, based on the location and size of the image after
+     * scaling.
      */
     public void setShape() {
 
@@ -567,15 +570,15 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     public boolean isOnMap(Projection proj) {
         Point2D p1 = proj.forward(lat, lon);
         Point2D p2 = proj.forward(lat2, lon2);
-        int h = (int) (p2.getY() - p1.getY());
-        int w = (int) (p2.getX() - p1.getX());
+        int h = (int) Math.abs(p2.getY() - p1.getY());
+        int w = (int) Math.abs(p2.getX() - p1.getX());
 
         Rectangle imageRect = new Rectangle((int) p1.getX(), (int) p1.getY(), w, h);
 
         proj.forward(proj.getUpperLeft(), p1);
         proj.forward(proj.getLowerRight(), p2);
-        h = (int) (p2.getY() - p1.getY());
-        w = (int) (p2.getX() - p1.getX());
+        h = (int) Math.abs(p2.getY() - p1.getY());
+        w = (int) Math.abs(p2.getX() - p1.getX());
 
         Rectangle mapRect = new Rectangle((int) p1.getX(), (int) p1.getY(), w, h);
 

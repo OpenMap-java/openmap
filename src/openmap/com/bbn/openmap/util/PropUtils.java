@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v
 // $
 // $RCSfile: PropUtils.java,v $
-// $Revision: 1.13 $
-// $Date: 2006/05/19 15:23:23 $
+// $Revision: 1.14 $
+// $Date: 2006/12/15 18:39:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -93,6 +93,11 @@ public class PropUtils {
         return vector;
     }
 
+    /**
+     * A string used in marker names for property editors, when a custom editor
+     * used by an Inspector can set several top-level properties.
+     */
+    public final static String DUMMY_MARKER_NAME = "DUMMY_MARKER_NAME";
     /** Borrowed from Properites.java */
     public static final String keyValueSeparators = "=: \t\r\n\f";
     /** Borrowed from Properites.java */
@@ -277,6 +282,53 @@ public class PropUtils {
         } else {
             return pre + ".";
         }
+    }
+
+    /**
+     * Should be called by a PropertyConsumer in the
+     * getPropertiesInfo(Properties) method to create a property marker name for
+     * a custom PropertyEditor that will modify several top-level properties,
+     * i.e. the com.bbn.openmap.omGraphics.DrawingAttributesPropertyEditor.
+     * 
+     * @param realComponentPropertyPrefix the top-level prefix that the
+     *        PropertyConsumer being set with the properties has. Can be null.
+     * @param anyDesiredScoper an additional scoping mechanism if there are more
+     *        than one custom editors being used for a given getPropertyInfo
+     *        call.
+     * @return The string that is used for a marker for a custom editor.
+     */
+    public static String getDummyMarkerForPropertyInfo(
+                                                       String realComponentPropertyPrefix,
+                                                       String anyDesiredScoper) {
+        return DUMMY_MARKER_NAME
+                + (anyDesiredScoper != null ? anyDesiredScoper : "")
+                + "."
+                + (realComponentPropertyPrefix != null ? realComponentPropertyPrefix
+                        : "");
+    }
+
+    /**
+     * Should be used inside a
+     * PropertyConsumerPropertyEditor.setProperties(String, Properties) method
+     * to set the real property prefix. The PropertyConsumer that the Inspector
+     * is looking at should use the getDummyMarker() call to create the marker
+     * for the getPropertyInfor(Properties) call.
+     * 
+     * @param possibleDummyMarker
+     * @return the encoded 'real' property prefix for the PropertyConsumer
+     *         embedded in the dummy marker, or the possibleDummyMarker if it's
+     *         not a dummy marker.
+     */
+    public static String decodeDummyMarkerFromPropertyInfo(
+                                                           String possibleDummyMarker) {
+        if (possibleDummyMarker != null
+                && possibleDummyMarker.startsWith(DUMMY_MARKER_NAME)) {
+            int lastDot = possibleDummyMarker.lastIndexOf(".");
+            if (lastDot != -1) {
+                possibleDummyMarker = possibleDummyMarker.substring(lastDot + 1);
+            }
+        }
+        return possibleDummyMarker;
     }
 
     /**

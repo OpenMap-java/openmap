@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.14 $
-// $Date: 2006/08/09 21:08:35 $
+// $Revision: 1.15 $
+// $Date: 2006/12/15 18:39:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,7 +30,6 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AreaAveragingScaleFilter;
-import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageConsumer;
 import java.awt.image.ImageFilter;
@@ -355,21 +354,16 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
 
         if (bitmap != null) {
 
-            if (isSelected() || Debug.debugging("rasterobjects")) {
-
-                super.render(g);
-            }
-
             if (DEBUG) {
                 Debug.output("OMRasterObject.render() | drawing " + width + "x"
                         + height + " image at " + point1.x + ", " + point1.y);
             }
             if (g instanceof Graphics2D && bitmap instanceof RenderedImage) {
                 // Affine translation for placement...
-                ((Graphics2D) g).drawRenderedImage((BufferedImage) bitmap,
+                ((Graphics2D) g).drawRenderedImage((RenderedImage) bitmap,
                         new AffineTransform(1f, 0f, 0f, 1f, point1.x, point1.y));
-                // Undo the affine translation for future graphics??
-                ((Graphics2D) g).translate(-point1.x, -point1.y);
+                // Undo the affine translation for future graphics??  Apparently not...
+//              ((Graphics2D) g).translate(-point1.x, -point1.y);
             } else {
                 g.drawImage(bitmap, point1.x, point1.y, this);
             }
@@ -378,6 +372,10 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
                 Debug.output("OMRasterObject.render: ignoring null bitmap");
         }
 
+        if (isSelected() || Debug.debugging("rasterobjects")) {
+            super.render(g);
+        }
+        
         renderLabel(graphics);
     }
 

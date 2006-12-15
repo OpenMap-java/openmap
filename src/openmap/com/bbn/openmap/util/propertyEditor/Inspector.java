@@ -416,7 +416,7 @@ public class Inspector implements ActionListener {
                 // If it's not defined with text, don't put it in the
                 // properties. The layer should handle this and use
                 // its default settings.
-                if (!stuff.equals("")) {
+                if (stuff != null && !stuff.equals("")) {
                     props.put(key, stuff);
                 }
 
