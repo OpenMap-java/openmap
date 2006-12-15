@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.23 $
-// $Date: 2006/08/25 15:36:14 $
+// $Revision: 1.24 $
+// $Date: 2006/12/15 18:40:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -57,29 +57,29 @@ import com.bbn.openmap.util.PropUtils;
  * data in the .dbf file.
  * <p>
  * <code><pre>
- *    
  *     
  *      
  *       
- *        ############################
- *        # Properties for a shape layer
- *        shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
- *        shapeLayer.prettyName=Name_for_Menu
- *        shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
- *        shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
- *        shapeLayer.lineColor=ff000000
- *        shapeLayer.fillColor=ff000000
- *        # plus any other properties used by the DrawingAttributes object.
- *        shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
- *        ############################
+ *        
+ *         ############################
+ *         # Properties for a shape layer
+ *         shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
+ *         shapeLayer.prettyName=Name_for_Menu
+ *         shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
+ *         shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
+ *         shapeLayer.lineColor=ff000000
+ *         shapeLayer.fillColor=ff000000
+ *         # plus any other properties used by the DrawingAttributes object.
+ *         shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
+ *         ############################
+ *         
  *        
  *       
  *      
- *     
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.23 $ $Date: 2006/08/25 15:36:14 $
+ * @version $Revision: 1.24 $ $Date: 2006/12/15 18:40:44 $
  * @see SpatialIndex
  */
 public class ShapeLayer extends OMGraphicHandlerLayer implements
@@ -265,20 +265,22 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
 
-        DrawingAttributes da;
-        if (drawingAttributes != null) {
-            da = drawingAttributes;
-        } else {
-            da = DrawingAttributes.DEFAULT;
-        }
+        String dummyMarker = PropUtils.getDummyMarkerForPropertyInfo(getPropertyPrefix(),
+                null);
 
-        da.getPropertyInfo(list);
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                ShapeLayer.class,
+                dummyMarker,
+                "Rendering Attributes",
+                "Attributes that determine how the shapes will be drawn.",
+                "com.bbn.openmap.omGraphics.DrawingAttributesPropertyEditor");
 
         list.put(initPropertiesProperty, shapeFileProperty + " "
                 + spatialIndexProperty + " " + pointImageURLProperty + " "
-                + shadowXProperty + " " + shadowYProperty
-                + da.getInitPropertiesOrder() + " " + AddToBeanContextProperty
-                + " " + MinScaleProperty + " " + MaxScaleProperty);
+                + shadowXProperty + " " + shadowYProperty + " " + dummyMarker + " "
+                + AddToBeanContextProperty + " " + MinScaleProperty + " "
+                + MaxScaleProperty);
 
         PropUtils.setI18NPropertyInfo(i18n,
                 list,
@@ -344,7 +346,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
     /**
      * Create the OMGraphics using the shape file and SpatialIndex.
      * 
-     * @return OMGraphicList 
+     * @return OMGraphicList
      */
     public synchronized OMGraphicList prepare() {
 
@@ -377,7 +379,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
         double ulLon = ul.getX();
         double lrLat = lr.getY();
         double lrLon = lr.getX();
-        
+
         if (list != null) {
             list.clear();
             list = new OMGraphicList();
