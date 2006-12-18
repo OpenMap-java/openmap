@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode.java,v $
 // $RCSfile: NavMouseMode.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/12/09 21:09:07 $
+// $Revision: 1.11 $
+// $Date: 2006/12/18 20:39:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,16 +34,15 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The Navigation Mouse Mode interprets mouse clicks and mouse drags
- * to recenter and rescale the map. The map is centered on the
- * location where a click occurs. If a box is drawn by clicking down
- * and dragging the mouse, the map is centered on the dot in the
- * center of the box, and the scale is adjusted so the screen fills
- * the area designated by the box.
+ * The Navigation Mouse Mode interprets mouse clicks and mouse drags to recenter
+ * and rescale the map. The map is centered on the location where a click
+ * occurs. If a box is drawn by clicking down and dragging the mouse, the map is
+ * centered on the dot in the center of the box, and the scale is adjusted so
+ * the screen fills the area designated by the box.
  * <p>
- * You MUST add this MouseMode as a ProjectionListener to the MapBean
- * to get it to work. If you use a MouseDelegator with the bean, it
- * will take care of that for you.
+ * You MUST add this MouseMode as a ProjectionListener to the MapBean to get it
+ * to work. If you use a MouseDelegator with the bean, it will take care of that
+ * for you.
  */
 public class NavMouseMode extends CoordMouseMode {
 
@@ -56,20 +55,18 @@ public class NavMouseMode extends CoordMouseMode {
     protected boolean autoZoom = false;
 
     /**
-     * Construct a NavMouseMode. Sets the ID of the mode to the
-     * modeID, the consume mode to true, and the cursor to the
-     * crosshair.
+     * Construct a NavMouseMode. Sets the ID of the mode to the modeID, the
+     * consume mode to true, and the cursor to the crosshair.
      */
     public NavMouseMode() {
         this(true);
     }
 
     /**
-     * Construct a NavMouseMode. Lets you set the consume mode. If the
-     * events are consumed, then a MouseEvent is sent only to the
-     * first MapMouseListener that successfully processes the event.
-     * If they are not consumed, then all of the listeners get a
-     * chance to act on the event.
+     * Construct a NavMouseMode. Lets you set the consume mode. If the events
+     * are consumed, then a MouseEvent is sent only to the first
+     * MapMouseListener that successfully processes the event. If they are not
+     * consumed, then all of the listeners get a chance to act on the event.
      * 
      * @param shouldConsumeEvents the mode setting.
      */
@@ -80,9 +77,9 @@ public class NavMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Handle a mousePressed MouseListener event. Erases the old
-     * navigation rectangle if there is one, and then keeps the press
-     * point for reference later.
+     * Handle a mousePressed MouseListener event. Erases the old navigation
+     * rectangle if there is one, and then keeps the press point for reference
+     * later.
      * 
      * @param e MouseEvent to be handled
      */
@@ -103,12 +100,11 @@ public class NavMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Handle a mouseReleased MouseListener event. If there was no
-     * drag events, or if there was only a small amount of dragging
-     * between the occurence of the mousePressed and this event, then
-     * recenter the map. Otherwise we get the second corner of the
-     * navigation rectangle and try to figure out the best scale and
-     * location to zoom in to based on that rectangle.
+     * Handle a mouseReleased MouseListener event. If there was no drag events,
+     * or if there was only a small amount of dragging between the occurence of
+     * the mousePressed and this event, then recenter the map. Otherwise we get
+     * the second corner of the navigation rectangle and try to figure out the
+     * best scale and location to zoom in to based on that rectangle.
      * 
      * @param e MouseEvent to be handled
      */
@@ -120,7 +116,8 @@ public class NavMouseMode extends CoordMouseMode {
 
         mouseSupport.fireMapMouseReleased(e);
 
-        if (!(obj instanceof MapBean) || !autoZoom || point1 == null)
+        if (!(obj instanceof MapBean) || !autoZoom || point1 == null
+                || point2 == null)
             return;
 
         MapBean map = (MapBean) obj;
@@ -128,7 +125,10 @@ public class NavMouseMode extends CoordMouseMode {
         Proj p = (Proj) projection;
 
         synchronized (this) {
-            point2 = e.getPoint();
+
+            point2 = getRatioPoint((MapBean) e.getSource(),
+                    point1,
+                    e.getPoint());
             int dx = Math.abs(point2.x - point1.x);
             int dy = Math.abs(point2.y - point1.y);
 
@@ -199,9 +199,9 @@ public class NavMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Handle a mouseEntered MouseListener event. The boolean autoZoom
-     * is set to true, which will make the delegate ask the map to
-     * zoom in to a box that is drawn.
+     * Handle a mouseEntered MouseListener event. The boolean autoZoom is set to
+     * true, which will make the delegate ask the map to zoom in to a box that
+     * is drawn.
      * 
      * @param e MouseEvent to be handled
      */
@@ -214,12 +214,11 @@ public class NavMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Handle a mouseExited MouseListener event. The boolean autoZoom
-     * is set to false, which will cause the delegate to NOT ask the
-     * map to zoom in on a box. If a box is being drawn, it will be
-     * erased. The point1 is kept in case the mouse comes back on the
-     * screen with the button still down. Then, a new box will be
-     * drawn with the original mouse press position.
+     * Handle a mouseExited MouseListener event. The boolean autoZoom is set to
+     * false, which will cause the delegate to NOT ask the map to zoom in on a
+     * box. If a box is being drawn, it will be erased. The point1 is kept in
+     * case the mouse comes back on the screen with the button still down. Then,
+     * a new box will be drawn with the original mouse press position.
      * 
      * @param e MouseEvent to be handled
      */
@@ -248,10 +247,9 @@ public class NavMouseMode extends CoordMouseMode {
     // /////////////////////////////
 
     /**
-     * Handle a mouseDragged MouseMotionListener event. A rectangle is
-     * drawn from the mousePressed point, since I'm assuming that I'm
-     * drawing a box to zoom the map to. If a previous box was drawn,
-     * it is erased.
+     * Handle a mouseDragged MouseMotionListener event. A rectangle is drawn
+     * from the mousePressed point, since I'm assuming that I'm drawing a box to
+     * zoom the map to. If a previous box was drawn, it is erased.
      * 
      * @param e MouseEvent to be handled
      */
@@ -279,10 +277,9 @@ public class NavMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Given a MapBean, which provides the projection, and the
-     * starting point of a box (pt1), look at pt2 to see if it
-     * represents the ratio of the projection map size. If it doesn't,
-     * provide a point that does.
+     * Given a MapBean, which provides the projection, and the starting point of
+     * a box (pt1), look at pt2 to see if it represents the ratio of the
+     * projection map size. If it doesn't, provide a point that does.
      */
     protected Point getRatioPoint(MapBean map, Point pt1, Point pt2) {
         Projection proj = map.getProjection();
@@ -310,13 +307,12 @@ public class NavMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Draws or erases boxes between two screen pixel points. The
-     * graphics from the map is set to XOR mode, and this method uses
-     * two colors to make the box disappear if on has been drawn at
-     * these coordinates, and the box to appear if it hasn't.
+     * Draws or erases boxes between two screen pixel points. The graphics from
+     * the map is set to XOR mode, and this method uses two colors to make the
+     * box disappear if on has been drawn at these coordinates, and the box to
+     * appear if it hasn't.
      * 
-     * @param pt1 one corner of the box to drawn, in window pixel
-     *        coordinates.
+     * @param pt1 one corner of the box to drawn, in window pixel coordinates.
      * @param pt2 the opposite corner of the box.
      */
     protected void paintRectangle(MapBean map, Point pt1, Point pt2) {
@@ -326,13 +322,12 @@ public class NavMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Draws or erases boxes between two screen pixel points. The
-     * graphics from the map is set to XOR mode, and this method uses
-     * two colors to make the box disappear if on has been drawn at
-     * these coordinates, and the box to appear if it hasn't.
+     * Draws or erases boxes between two screen pixel points. The graphics from
+     * the map is set to XOR mode, and this method uses two colors to make the
+     * box disappear if on has been drawn at these coordinates, and the box to
+     * appear if it hasn't.
      * 
-     * @param pt1 one corner of the box to drawn, in window pixel
-     *        coordinates.
+     * @param pt1 one corner of the box to drawn, in window pixel coordinates.
      * @param pt2 the opposite corner of the box.
      */
     protected void paintRectangle(Graphics g, Point pt1, Point pt2) {
@@ -360,8 +355,8 @@ public class NavMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Called by the MapBean when it repaints, to let the MouseMode
-     * know when to update itself on the map. PaintListener interface.
+     * Called by the MapBean when it repaints, to let the MouseMode know when to
+     * update itself on the map. PaintListener interface.
      */
     public void listenerPaint(java.awt.Graphics g) {
         // will be properly rejected of point1, point2 == null
