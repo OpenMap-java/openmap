@@ -30,7 +30,7 @@ import java.util.List;
  * 
  * @author Sachin Date
  * @author Ken Anderson
- * @version $Revision: 1.15 $ on $Date: 2006/12/04 15:35:02 $
+ * @version $Revision: 1.16 $ on $Date: 2007/01/09 18:39:10 $
  */
 public class Intersection {
 
@@ -518,6 +518,14 @@ public class Intersection {
         }
     }
 
+    /** Test if [p1-p2] and [p3-p4] intersect 
+     */
+    public static final boolean segIntersects(Geo p1, Geo p2, Geo p3, Geo p4) {
+    	Geo[] r = getSegIntersection(p1, p2, p3, p4);
+    	return (r[0]!= null || r[1]!=null);
+    }
+    
+    
     /**
      * returns the distance in NM between the point (lat, lon) and the
      * point of intersection of the great circle passing through (lat,
@@ -888,6 +896,51 @@ public class Intersection {
             llp[3] = ((float) i2.getLongitude());
         }
         return llp;
+    }
+    
+    /** Find the intersection(s) between [p1-p2] and [p3-p4]
+     */
+    public static final Geo[] getSegIntersection(Geo p1, Geo p2, Geo p3, Geo p4) {
+
+    	Geo geoCross1 = p1.crossNormalize(p2);
+    	Geo geoCross2 = p3.crossNormalize(p4);
+
+    	Geo i1 = geoCross1.crossNormalize(geoCross2);
+    	Geo i2 = i1.antipode();
+
+    	// check if the point of intersection lies on both segs
+    	// length of seg1
+    	double d1 = p1.distance(p2);
+    	// length of seg2
+    	double d2 = p3.distance(p4);
+
+    	// between seg1 endpoints and first point of intersection
+    	double d111 = p1.distance(i1);
+    	double d121 = p2.distance(i1);
+
+    	// between seg1 endpoints and second point of intersection
+    	double d112 = p1.distance(i2);
+    	double d122 = p2.distance(i2);
+
+    	// between seg2 endpoints and first point of intersection
+    	double d211 = p3.distance(i1);
+    	double d221 = p4.distance(i1);
+
+    	// between seg2 endpoints and second point of intersection
+    	double d212 = p3.distance(i2);
+    	double d222 = p4.distance(i2);
+
+    	Geo[] result = new Geo[] { null, null };
+
+    	// check if first point of intersection lies on both segments
+    	if (d1 >= d111 && d1 >= d121 && d2 >= d211 && d2 >= d221) {
+    		result[0]=i1;
+    	}
+    	// check if second point of intersection lies on both segments
+    	if (d1 >= d112 && d1 >= d122 && d2 >= d212 && d2 >= d222) {
+    		result[1] = i2;
+    	}
+    	return result;
     }
 
     // /**
