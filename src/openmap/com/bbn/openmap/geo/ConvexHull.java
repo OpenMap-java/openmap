@@ -16,9 +16,9 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ConvexHull.java,v $
-//$Revision: 1.2 $
-//$Date: 2006/04/06 14:14:25 $
-//$Author: dietrick $
+//$Revision: 1.3 $
+//$Date: 2007/01/09 18:40:20 $
+//$Author: mthome $
 //
 //**********************************************************************
 
@@ -41,117 +41,128 @@ import java.util.TreeSet;
  * @author dietrick
  */
 public class ConvexHull {
+	private ConvexHull() {}
 
-    /**
-     * Using Graham's scan.
-     * 
-     * @param geos
-     * @return GeoRegion outlining the convex hull of the geos
-     */
-    public static GeoRegion getRegion(Geo[] geos) {
+  /**
+   * Using Graham's scan.
+   * 
+   * @param geos
+   * @return GeoRegion outlining the convex hull of the geos
+   */
+  public static final GeoRegion getRegion(Geo[] geos) {
+      Geo[] regionGeos = hull(geos);
+      return new GeoRegion.Impl(regionGeos);
+  }
+  
+  /**
+   * Using Graham's scan.
+   * 
+   * @param geos
+   * @return a convex hull of the geos
+   */
+  public static final Geo[] hull(Geo[] geos) {
+      Geo pivot = findHighest(geos);
+      TreeSet sortedGeos = new TreeSet(new PivotAngleComparator(pivot));
+      for (int i = 0; i < geos.length; i++) {
+          Geo g = geos[i];
+          if (g != pivot) {
+              sortedGeos.add(g);
+          }
+      }
 
-        Geo pivot = findHighest(geos);
-        TreeSet sortedGeos = new TreeSet(new PivotAngleComparator(pivot));
-        for (int i = 0; i < geos.length; i++) {
-            Geo g = geos[i];
-            if (g != pivot) {
-                sortedGeos.add(g);
-            }
-        }
+      Stack hullStack = new Stack();
+      hullStack.push(pivot);
 
-        Stack hullStack = new Stack();
-        hullStack.push(pivot);
+      Geo gCross, midCross = null;
+      Geo geo = null, endGeo = null, midGeo = null;
 
-        Geo gCross, midCross = null;
-        Geo geo = null, endGeo = null, midGeo = null;
+      Iterator sortedGeoIt = sortedGeos.iterator();
+      if (sortedGeoIt.hasNext()) {
+          midGeo = (Geo) sortedGeoIt.next();
 
-        Iterator sortedGeoIt = sortedGeos.iterator();
-        if (sortedGeoIt.hasNext()) {
-            midGeo = (Geo) sortedGeoIt.next();
+          while (midGeo.distance(pivot) == 0 && sortedGeoIt.hasNext()) {
+              midGeo = (Geo) sortedGeoIt.next();
+          }
+      }
 
-            while (midGeo.distance(pivot) == 0 && sortedGeoIt.hasNext()) {
-                midGeo = (Geo) sortedGeoIt.next();
-            }
-        }
+      Geo lastGeoRead = midGeo;
 
-        Geo lastGeoRead = midGeo;
+      while (sortedGeoIt.hasNext() && midGeo != null) {
+          geo = (Geo) sortedGeoIt.next();
 
-        while (sortedGeoIt.hasNext() && midGeo != null) {
-            geo = (Geo) sortedGeoIt.next();
+          if (geo.distance(lastGeoRead) == 0) {
+              // Debug.output("Skipping duplicate geo");
+              continue;
+          }
 
-            if (geo.distance(lastGeoRead) == 0) {
-                // Debug.output("Skipping duplicate geo");
-                continue;
-            }
+          endGeo = (Geo) hullStack.peek();
 
-            endGeo = (Geo) hullStack.peek();
+          midCross = endGeo.crossNormalize(midGeo);
+          gCross = midGeo.crossNormalize(geo);
+          Geo i = gCross.crossNormalize(midCross).antipode();
 
-            midCross = endGeo.crossNormalize(midGeo);
-            gCross = midGeo.crossNormalize(geo);
-            Geo i = gCross.crossNormalize(midCross).antipode();
+          // Debug.output("Evaluating:\n\tendGeo: " + endGeo + "\n\tmidGeo: "
+          // + midGeo + "\n\tto " + geo
+          // + "\n ****** intersection point: " + i);
 
-            // Debug.output("Evaluating:\n\tendGeo: " + endGeo + "\n\tmidGeo: "
-            // + midGeo + "\n\tto " + geo
-            // + "\n ****** intersection point: " + i);
+          if (midGeo.distance(i) < Math.PI / 2) {
+              // Debug.output("+++++++++++++ midGeo to hull");
 
-            if (midGeo.distance(i) < Math.PI / 2) {
-                // Debug.output("+++++++++++++ midGeo to hull");
+              // left turn, OK for hull
+              hullStack.push(midGeo);
+              endGeo = midGeo;
+              midGeo = geo;
 
-                // left turn, OK for hull
-                hullStack.push(midGeo);
-                endGeo = midGeo;
-                midGeo = geo;
+          } else {
 
-            } else {
+              // right turn, need to backtrack
+              while (hullStack.size() > 1) {
 
-                // right turn, need to backtrack
-                while (hullStack.size() > 1) {
+                  // Debug.output("-------- midGeo dropped");
 
-                    // Debug.output("-------- midGeo dropped");
+                  midGeo = (Geo) hullStack.pop();
+                  endGeo = (Geo) hullStack.peek();
 
-                    midGeo = (Geo) hullStack.pop();
-                    endGeo = (Geo) hullStack.peek();
+                  midCross = endGeo.crossNormalize(midGeo);
+                  gCross = midGeo.crossNormalize(geo);
+                  i = gCross.crossNormalize(midCross).antipode();
 
-                    midCross = endGeo.crossNormalize(midGeo);
-                    gCross = midGeo.crossNormalize(geo);
-                    i = gCross.crossNormalize(midCross).antipode();
+                  // Debug.output("Evaluating:\n\tendGeo: " + endGeo
+                  // + "\n\tmidGeo: " + midGeo + "\n\tto " + geo
+                  // + "\n ****** intersection point: " + i);
 
-                    // Debug.output("Evaluating:\n\tendGeo: " + endGeo
-                    // + "\n\tmidGeo: " + midGeo + "\n\tto " + geo
-                    // + "\n ****** intersection point: " + i);
+                  if (midGeo.distance(i) < Math.PI / 2) {
 
-                    if (midGeo.distance(i) < Math.PI / 2) {
+                      // Debug.output("+++++++++++++ midGeo to hull");
 
-                        // Debug.output("+++++++++++++ midGeo to hull");
+                      hullStack.push(midGeo);
+                      midGeo = geo;
+                      break;
+                  }
+              }
+          }
 
-                        hullStack.push(midGeo);
-                        midGeo = geo;
-                        break;
-                    }
-                }
-            }
+          lastGeoRead = geo;
+      }
 
-            lastGeoRead = geo;
-        }
+      if (midGeo != null) {
+          hullStack.push(midGeo);
+      }
 
-        if (midGeo != null) {
-            hullStack.push(midGeo);
-        }
+      hullStack.push(pivot);
 
-        hullStack.push(pivot);
+      Geo[] regionGeos = new Geo[hullStack.size()];
 
-        Geo[] regionGeos = new Geo[hullStack.size()];
+      int i = 0;
+      // Need to reverse order to get inside of poly on the right side of
+      // line.
+      while (!hullStack.isEmpty()) {
+          regionGeos[i++] = (Geo) hullStack.pop();
+      }
 
-        int i = 0;
-        // Need to reverse order to get inside of poly on the right side of
-        // line.
-        while (!hullStack.isEmpty()) {
-            regionGeos[i++] = (Geo) hullStack.pop();
-        }
-
-        return new GeoRegion.Impl(regionGeos);
-    }
-
+      return regionGeos;
+  }
+   
     protected static Geo findHighest(Geo[] geos) {
         Geo ret = null;
         double highest = Double.NEGATIVE_INFINITY;
@@ -165,10 +176,9 @@ public class ConvexHull {
         return ret;
     }
 
-    protected static class PivotAngleComparator implements Comparator,
-            Serializable {
-
-        Geo pivot;
+    // XXX: does this need to be serializable?
+    protected static final class PivotAngleComparator implements Comparator, Serializable {
+    	private Geo pivot;
 
         public PivotAngleComparator(Geo pivot) {
             this.pivot = pivot;
@@ -198,9 +208,20 @@ public class ConvexHull {
 
             return ret;
         }
+        
+        public Geo getPivot() {
+        	return pivot;
+        }
 
         public boolean equals(Object obj) {
-            return obj.hashCode() == this.hashCode();
+        	if (obj instanceof PivotAngleComparator) {
+        		return pivot.equals(((PivotAngleComparator)obj).pivot);
+        	} else {
+        		return false;
+        	}
+        }
+        public int hashCode() {
+        	return pivot.hashCode();
         }
     }
 
