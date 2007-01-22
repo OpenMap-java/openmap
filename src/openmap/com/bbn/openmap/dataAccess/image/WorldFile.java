@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: WorldFile.java,v $
-//$Revision: 1.1 $
-//$Date: 2007/01/22 15:47:36 $
+//$Revision: 1.2 $
+//$Date: 2007/01/22 16:35:39 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -162,7 +162,7 @@ public class WorldFile {
                 
                 if (x < -180 || x > 180 || y > 90 || y < -90) {
                     logger.info("Looks like an unsupported projection: " + wf.toString());
-                    wf = new ErrWorldFile("World File (" + worldFileNameBase + extension + ") doesn't contain GCC coordinates");
+                    wf = new ErrWorldFile("World File (" + worldFileNameBase + extension + ") doesn't contain decimal degree coordinates");
                 }
             }
 

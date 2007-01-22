@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ImageTileLayer.java,v $
-//$Revision: 1.2 $
-//$Date: 2007/01/22 15:47:39 $
+//$Revision: 1.3 $
+//$Date: 2007/01/22 16:35:40 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -135,7 +135,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     public final static String ImageFilePathProperty = "imageFilePath";
     public final static String ImageReaderLoadersProperty = "imageReaderLoaders";
     public final static String ImageCacheSizeProperty = "imageCacheSize";
-    public final static String ImageCutoffScaleProperty = "imageCutoffScale";
+    public final static String ImageCutoffRatioProperty = "imageCutoffRatio";
 
     protected String SHOW_TILES_TITLE;
     protected String HIDE_TILES_TITLE;
@@ -179,8 +179,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         imageCache.resetCache(PropUtils.intFromProperties(props, prefix
                 + ImageCacheSizeProperty, imageCache.getCacheSize()));
 
-        imageCache.setCutoffScale(PropUtils.floatFromProperties(props, prefix
-                + ImageCutoffScaleProperty, imageCache.getCutoffScale()));
+        imageCache.setCutoffScaleRatio(PropUtils.floatFromProperties(props, prefix
+                + ImageCutoffRatioProperty, imageCache.getCutoffScaleRatio()));
 
         String imageReaderLoaderString = props.getProperty(prefix
                 + ImageReaderLoadersProperty);
@@ -276,8 +276,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
 
         props.put(prefix + ImageCacheSizeProperty,
                 Integer.toString(imageCache.getCacheSize()));
-        props.put(prefix + ImageCutoffScaleProperty,
-                Float.toString(imageCache.getCutoffScale()));
+        props.put(prefix + ImageCutoffRatioProperty,
+                Float.toString(imageCache.getCutoffScaleRatio()));
 
         return props;
     }
@@ -309,7 +309,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         PropUtils.setI18NPropertyInfo(i18n,
                 props,
                 ImageTileLayer.class,
-                ImageCutoffScaleProperty,
+                ImageCutoffRatioProperty,
                 "Cutoff Scale",
                 "Projection scale where larger values won't cause images to be loaded and displayed.",
                 null);
@@ -326,7 +326,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 "com.bbn.openmap.omGraphics.DrawingAttributesPropertyEditor");
 
         props.put(initPropertiesProperty, ImageFilePathProperty + " "
-                + ImageCacheSizeProperty + " " + ImageCutoffScaleProperty + " "
+                + ImageCacheSizeProperty + " " + ImageCutoffRatioProperty + " "
                 + dummyMarker);
         return props;
     }

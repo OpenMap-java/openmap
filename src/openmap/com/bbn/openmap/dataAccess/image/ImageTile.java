@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/image/ImageTile.java,v $
 // $RCSfile: ImageTile.java,v $
-// $Revision: 1.3 $
-// $Date: 2007/01/22 15:47:34 $
+// $Revision: 1.4 $
+// $Date: 2007/01/22 16:35:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,7 @@ package com.bbn.openmap.dataAccess.image;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 
@@ -123,6 +124,22 @@ public class ImageTile extends OMScalingRaster implements Serializable {
             super.setSelected(setting);
         }
     }
+    
+    protected boolean shouldFetchForProjection(Projection proj) {
+        Point2D anchor1 = new Point2D.Double(lat, lon);
+        Point2D anchor2 = new Point2D.Double(lat2, lon2);
+
+        float imageScale = com.bbn.openmap.proj.ProjMath.getScale(anchor1,
+                anchor2,
+                proj);
+        
+        float scaleRatio = Cache.DEFAULT_SCALE_RATIO;  // Something somewhat reasonable, a default.
+        if (cache instanceof Cache) {
+            scaleRatio = ((Cache) cache).getCutoffScaleRatio();
+        }
+
+        return (imageScale * scaleRatio) <= proj.getScale();
+    }
 
     /**
      * No op for this class, can be use to manage image use for subclasses.
@@ -144,8 +161,7 @@ public class ImageTile extends OMScalingRaster implements Serializable {
             }
 
             // Check the scale against the cache to see if we should do anything.
-            if (cache instanceof Cache
-                    && !((Cache) cache).shouldFetchForScale(proj.getScale())) {
+            if (shouldFetchForProjection(proj)) {
                 bitmap = null;
 
                 if (realSelection == null) {
@@ -192,7 +208,9 @@ public class ImageTile extends OMScalingRaster implements Serializable {
 
     public static class Cache extends CacheHandler {
 
-        protected float cutoffScale = 1000000;
+        public final static float DEFAULT_SCALE_RATIO = 5f;
+        
+        protected float cutoffScaleRatio = DEFAULT_SCALE_RATIO;
 
         public Cache() {
             super(10);
@@ -202,16 +220,12 @@ public class ImageTile extends OMScalingRaster implements Serializable {
             super(maxSize);
         }
 
-        public void setCutoffScale(float scale) {
-            cutoffScale = scale;
+        public void setCutoffScaleRatio(float scale) {
+            cutoffScaleRatio = scale;
         }
 
-        public float getCutoffScale() {
-            return cutoffScale;
-        }
-
-        public boolean shouldFetchForScale(float scale) {
-            return scale <= cutoffScale;
+        public float getCutoffScaleRatio() {
+            return cutoffScaleRatio;
         }
 
         /**
