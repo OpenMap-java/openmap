@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: WorldFile.java,v $
-//$Revision: 1.2 $
-//$Date: 2007/01/22 16:35:39 $
+//$Revision: 1.3 $
+//$Date: 2007/01/22 16:39:14 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -37,12 +38,12 @@ import java.util.logging.Logger;
  * an image on a map. It looks like this:
  * 
  * <pre>
- *           20.154 &lt;the dimension of a pixel in map units in the x direction&gt;
- *           0.000 &lt;rotation term for row&gt;
- *           0.000 &lt;rotation term for column&gt;
- *           -20.154 &lt;the dimension of a pixel in map units in the y direction&gt;
- *           424178 &lt;the x coordinate of the center of pixel 1,1 (upper-left pixel)&gt;
- *           4313415 &lt;the y coordinate of the center of pixel 1,1 (upper-left pixel)&gt;
+ *            20.154 &lt;the dimension of a pixel in map units in the x direction&gt;
+ *            0.000 &lt;rotation term for row&gt;
+ *            0.000 &lt;rotation term for column&gt;
+ *            -20.154 &lt;the dimension of a pixel in map units in the y direction&gt;
+ *            424178 &lt;the x coordinate of the center of pixel 1,1 (upper-left pixel)&gt;
+ *            4313415 &lt;the y coordinate of the center of pixel 1,1 (upper-left pixel)&gt;
  * </pre>
  * 
  * The naming convention of the world file is that it should have the same name
@@ -83,9 +84,9 @@ public class WorldFile {
     protected double y;
 
     protected WorldFile() {
-        // For subclasses.
+    // For subclasses.
     }
-    
+
     public WorldFile(URL fileURL) throws MalformedURLException, IOException {
         read(fileURL.openStream());
     }
@@ -129,8 +130,10 @@ public class WorldFile {
                 extension = startingString.substring(extensionIndex);
                 worldFileNameBase = startingString.substring(0, extensionIndex);
 
-                logger.info("base name for image: " + worldFileNameBase);
-                logger.info("image extension: " + extension);
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("base name for image: " + worldFileNameBase);
+                    logger.fine("image extension: " + extension);
+                }
 
                 // Try adding w to extension and seeing if that file is there.
                 is = checkValidityAndGetStream(worldFileNameBase + extension
@@ -156,13 +159,16 @@ public class WorldFile {
                 // Check for coordinates of pixel to see if they make sense. If
                 // they are greater than 180, then they are probably meters, and
                 // we can't handle them right now.
-                
+
                 double x = wf.getX();
                 double y = wf.getY();
-                
+
                 if (x < -180 || x > 180 || y > 90 || y < -90) {
-                    logger.info("Looks like an unsupported projection: " + wf.toString());
-                    wf = new ErrWorldFile("World File (" + worldFileNameBase + extension + ") doesn't contain decimal degree coordinates");
+                    logger.warning("Looks like an unsupported projection: "
+                            + wf.toString());
+                    wf = new ErrWorldFile("World File (" + worldFileNameBase
+                            + extension
+                            + ") doesn't contain decimal degree coordinates");
                 }
             }
 
@@ -177,13 +183,13 @@ public class WorldFile {
 
     protected static InputStream checkValidityAndGetStream(String wfURLString) {
         try {
-            logger.info("checking for world file: " + wfURLString);
+            logger.fine("checking for world file: " + wfURLString);
             URL wfURL = new URL(wfURLString);
             return wfURL.openStream();
         } catch (MalformedURLException murle) {
-            logger.info("MalformedURLException for " + wfURLString);
+            logger.warning("MalformedURLException for " + wfURLString);
         } catch (IOException ioe) {
-            logger.info("IOException for " + wfURLString);
+            logger.warning("IOException for " + wfURLString);
         }
         return null;
 
