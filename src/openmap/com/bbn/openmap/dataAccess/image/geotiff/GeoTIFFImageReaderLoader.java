@@ -15,9 +15,9 @@
 //$Source:
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
-//$RCSfile: GeoTIFFImageDecoderLoader.java,v $
-//$Revision: 1.2 $
-//$Date: 2006/12/15 18:28:29 $
+//$RCSfile: GeoTIFFImageReaderLoader.java,v $
+//$Revision: 1.1 $
+//$Date: 2007/01/22 15:47:36 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -26,14 +26,19 @@ package com.bbn.openmap.dataAccess.image.geotiff;
 
 import java.net.URL;
 
-import com.bbn.openmap.dataAccess.image.ImageDecoder;
-import com.bbn.openmap.dataAccess.image.ImageDecoderLoader;
+import com.bbn.openmap.dataAccess.image.ImageReader;
+import com.bbn.openmap.dataAccess.image.ImageReaderLoader;
 
-public class GeoTIFFImageDecoderLoader implements ImageDecoderLoader {
-    public GeoTIFFImageDecoderLoader() {}
+/**
+ * An ImageReaderLoader that looks for GeoTIFF images to pass to GeoTIFFImageReaders.
+ * 
+ * @author dietrick
+ */
+public class GeoTIFFImageReaderLoader implements ImageReaderLoader {
+    public GeoTIFFImageReaderLoader() {}
 
-    public ImageDecoder getImageDecoder(URL fileURL) {
-       return new GeoTIFFImageDecoder(fileURL);
+    public ImageReader getImageReader(URL fileURL) {
+       return new GeoTIFFImageReader(fileURL);
     }
 
     public boolean isLoadable(String fileName) {

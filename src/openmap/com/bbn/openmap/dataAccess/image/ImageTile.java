@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/image/ImageTile.java,v $
 // $RCSfile: ImageTile.java,v $
-// $Revision: 1.2 $
-// $Date: 2006/12/15 18:28:28 $
+// $Revision: 1.3 $
+// $Date: 2007/01/22 15:47:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,7 +54,7 @@ import com.bbn.openmap.util.cacheHandler.CacheObject;
  */
 public class ImageTile extends OMScalingRaster implements Serializable {
 
-    protected ImageDecoder imageDecoder;
+    protected ImageReader imageDecoder;
     protected CacheHandler cache;
 
     /**
@@ -78,7 +78,7 @@ public class ImageTile extends OMScalingRaster implements Serializable {
      * @param ii ImageIcon used for the image.
      */
     public ImageTile(float ullat, float ullon, float lrlat, float lrlon,
-            ImageDecoder imageDecoder, CacheHandler cache) {
+            ImageReader imageDecoder, CacheHandler cache) {
         super();
         setRenderType(OMGraphic.RENDERTYPE_LATLON);
         setColorModel(COLORMODEL_IMAGEICON);
@@ -123,7 +123,7 @@ public class ImageTile extends OMScalingRaster implements Serializable {
             super.setSelected(setting);
         }
     }
-    
+
     /**
      * No op for this class, can be use to manage image use for subclasses.
      * Called from within generate.
@@ -182,11 +182,11 @@ public class ImageTile extends OMScalingRaster implements Serializable {
         return generate(p);
     }
 
-    public ImageDecoder getImageDecoder() {
+    public ImageReader getImageDecoder() {
         return imageDecoder;
     }
 
-    public void setImageDecoder(ImageDecoder imageDecoder) {
+    public void setImageDecoder(ImageReader imageDecoder) {
         this.imageDecoder = imageDecoder;
     }
 
@@ -222,14 +222,14 @@ public class ImageTile extends OMScalingRaster implements Serializable {
         public CacheObject load(Object key) {
 
             try {
-                if (key instanceof ImageDecoder) {
+                if (key instanceof ImageReader) {
                     // URL imageURL = PropUtils.getResourceOrFileOrURL(key);
                     //
                     // FileCacheImageInputStream fciis = new
                     // FileCacheImageInputStream(imageURL.openStream(), null);
                     // BufferedImage fileImage = ImageIO.read(fciis);
 
-                    BufferedImage fileImage = ((ImageDecoder) key).getBufferedImage();
+                    BufferedImage fileImage = ((ImageReader) key).getBufferedImage();
 
                     return new CacheObject(key, fileImage);
                 }

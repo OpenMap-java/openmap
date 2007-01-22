@@ -15,9 +15,9 @@
 //$Source:
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
-//$RCSfile: GeoTIFFImageDecoder.java,v $
-//$Revision: 1.2 $
-//$Date: 2006/12/15 18:28:29 $
+//$RCSfile: GeoTIFFImageReader.java,v $
+//$Revision: 1.1 $
+//$Date: 2007/01/22 15:47:37 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -31,14 +31,19 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.bbn.openmap.dataAccess.image.ImageDecoder;
+import com.bbn.openmap.dataAccess.image.ImageReader;
 import com.bbn.openmap.dataAccess.image.ImageTile;
 
-public class GeoTIFFImageDecoder implements ImageDecoder {
+/**
+ * An ImageReader that handles GeoTIFFs.
+ * 
+ * @author dietrick
+ */
+public class GeoTIFFImageReader implements ImageReader {
     public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.imageTile.GeoTIFFImageDecoder");
     GeoTIFFFile gtfFile;
 
-    public GeoTIFFImageDecoder(URL fileURL) {
+    public GeoTIFFImageReader(URL fileURL) {
         try {
             gtfFile = new GeoTIFFFile(fileURL);
         } catch (IllegalArgumentException iae) {

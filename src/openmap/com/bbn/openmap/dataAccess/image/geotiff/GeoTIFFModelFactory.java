@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoTIFFModelFactory.java,v $
-//$Revision: 1.2 $
-//$Date: 2006/12/15 18:28:28 $
+//$Revision: 1.3 $
+//$Date: 2007/01/22 15:47:36 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import org.geotiff.image.KeyRegistry;
 import org.geotiff.image.jai.GeoTIFFDirectory;
 
+import com.bbn.openmap.dataAccess.image.ErrImageTile;
 import com.bbn.openmap.dataAccess.image.ImageTile;
 
 public class GeoTIFFModelFactory {
@@ -48,11 +49,12 @@ public class GeoTIFFModelFactory {
         return getImageTile(null, null);
     }
 
-    public ImageTile getImageTile(GeoTIFFImageDecoder gtid,
+    public ImageTile getImageTile(GeoTIFFImageReader gtid,
                                   ImageTile.Cache cache) throws IOException {
 
         int modelType = gtfFile.getModelType();
-
+        ImageTile ret = null;
+        String errorMessage = null;
         /*
          * ModelTypeProjected = 1 (Projection Coordinate System)
          * ModelTypeGeographic = 2 Geographic latitude-longitude System)
@@ -62,32 +64,43 @@ public class GeoTIFFModelFactory {
         switch (modelType) {
         case 1:
             modelID = gtfFile.getProjectedCSType();
+            errorMessage = "Projection Model type (" + modelID + ", "
+                    + KeyRegistry.getKey(KeyRegistry.EPSG_PCS, modelID)
+                    + ") not handled yet";
+
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("Model type (" + modelID + "): "
-                        + KeyRegistry.getKey(KeyRegistry.EPSG_PCS, modelID));
+                logger.info(errorMessage);
             }
 
+            ret = new ErrImageTile("Image can't be positioned: "
+                    + errorMessage);
             break;
         case 2:
         case 3:
             modelID = gtfFile.getGeographicType();
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("GeoModel type (" + modelID + "): "
+                logger.info("GeoModel type (" + modelID + "): "
                         + KeyRegistry.getKey(KeyRegistry.EPSG_GCS, modelID));
             }
 
             switch (modelID) {
             case 4326:
-                return get4326(gtid, cache);
+                ret = get4326(gtid, cache);
+                break;
             default:
-                logger.info("GeoModel type (" + modelID + ") not handled yet");
+                errorMessage = "GeoModel type (" + modelID + ", "
+                        + KeyRegistry.getKey(KeyRegistry.EPSG_GCS, modelID)
+                        + ") not handled yet";
+                logger.info(errorMessage);
+                ret = new ErrImageTile("Image can't be positioned: "
+                        + errorMessage);
             }
         }
 
-        return null;
+        return ret;
     }
 
-    protected ImageTile get4326(GeoTIFFImageDecoder gtid, ImageTile.Cache cache)
+    protected ImageTile get4326(GeoTIFFImageReader gtid, ImageTile.Cache cache)
             throws IOException {
         // GCS_WGS_84
         GeoTIFFDirectory gtfd = gtfFile.getGtfDirectory();
@@ -108,7 +121,7 @@ public class GeoTIFFModelFactory {
         double rlon = tiePoints[3] + imageWidth * scaleMatrix[0];
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("Image should be at: " + ulat + ", " + llon
+            logger.info("Image should be at: " + ulat + ", " + llon
                     + " - to - " + llat + ", " + rlon);
         }
 

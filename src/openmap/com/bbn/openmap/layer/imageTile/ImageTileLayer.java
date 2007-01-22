@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ImageTileLayer.java,v $
-//$Revision: 1.1 $
-//$Date: 2006/12/15 18:29:11 $
+//$Revision: 1.2 $
+//$Date: 2007/01/22 15:47:39 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -31,12 +31,14 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
@@ -50,6 +52,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -69,54 +72,60 @@ import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
-import com.bbn.openmap.dataAccess.image.ImageDecoder;
-import com.bbn.openmap.dataAccess.image.ImageDecoderLoader;
+import com.bbn.openmap.dataAccess.image.ErrImageTile;
+import com.bbn.openmap.dataAccess.image.ImageReader;
+import com.bbn.openmap.dataAccess.image.ImageReaderLoader;
 import com.bbn.openmap.dataAccess.image.ImageTile;
 import com.bbn.openmap.event.LayerStatusEvent;
 import com.bbn.openmap.gui.LayerControlButtonPanel;
 import com.bbn.openmap.gui.LayersPanel;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.tools.icon.BasicIconPart;
+import com.bbn.openmap.tools.icon.IconPart;
+import com.bbn.openmap.tools.icon.IconPartList;
+import com.bbn.openmap.tools.icon.OMIconFactory;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.PropUtils;
 
 /**
  * The ImageTileLayer is a layer that manages georeferenced images over a map.
- * The layer uses ImageDecoders to figure out how to load images from a file,
+ * The layer uses ImageReaders to figure out how to load images from a file,
  * create an ImageTile object from the image data, and deduce where the
  * ImageTile should be located from the information provided with/in the image
  * data.
  * <P>
  * 
- * ImageDecoderLoader objects are held by the layer to assist in finding the
- * appropriate ImageDecoder for an image file.
+ * ImageReaderLoader objects are held by the layer to assist in finding the
+ * appropriate ImageReader for an image file.
  * <P>
  * 
  * The properties for this layer are:
  * 
  * <pre>
- *              
- *              # semi-colon separated paths to image files or directories containing images
- *              imageTileLayer.imageFilePath=path/to/file1;path/to/directory;path/to/file2
- *              
- *              # optional - image cache size specifies how many images will be held in memory for fast retrieval.
- *              imageTileLayer.imageCacheSize=20
- *              
- *              # optional - image cutoff scale specifies the scale that images will not load when the projection is zoomed out from it.
- *              imageTileLayer.imageCutoffScale=1000000
- *              
- *              # optional - image decoder loaders specify which image files are handled
- *              imageTileLayer.iamgeDecoderLoaders=geotiff
- *              imageTileLayer.geotiff=com.bbn.openmap.dataAccess.image.geotiff.GeoTIFFImageDecoder.Loader
- *              
- *              # optional - Drawing attributes properties for image highlighting
- *              imageTileLayer.lineWidth=2
- *              imageTileLayer.selectColor=FFFFFF00
- *              
- *              @author dietrick
+ * # semi-colon separated paths to image files or directories containing images
+ * imageTileLayer.imageFilePath=path/to/file1;path/to/directory;path/to/file2
+ *                        
+ * # optional - image cache size specifies how many images will be held in memory for fast retrieval.
+ * imageTileLayer.imageCacheSize=20
+ *                         
+ * # optional - image cutoff scale specifies the scale that images will not load when the projection is zoomed out from it.
+ * imageTileLayer.imageCutoffScale=1000000
+ *                     
+ * # optional - image Reader loaders specify which image files are handled
+ * imageTileLayer.iamgeReaderLoaders=geotiff
+ * imageTileLayer.geotiff=com.bbn.openmap.dataAccess.image.geotiff.GeoTIFFImageReader.Loader
+ *                       
+ * # optional - Drawing attributes properties for image highlighting
+ * imageTileLayer.lineWidth=2
+ * imageTileLayer.selectColor=FFFFFF00
+ * </pre>
+ * 
+ * @author dietrick
  * 
  */
 public class ImageTileLayer extends OMGraphicHandlerLayer {
@@ -124,16 +133,16 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.imageTile.ImageTileLayer");
 
     public final static String ImageFilePathProperty = "imageFilePath";
-    public final static String ImageDecoderLoadersProperty = "imageDecoderLoaders";
+    public final static String ImageReaderLoadersProperty = "imageReaderLoaders";
     public final static String ImageCacheSizeProperty = "imageCacheSize";
     public final static String ImageCutoffScaleProperty = "imageCutoffScale";
-    
+
     protected String SHOW_TILES_TITLE;
     protected String HIDE_TILES_TITLE;
 
     protected Vector filePaths;
 
-    protected Vector imageDecoderLoaders;
+    protected Vector imageReaderLoaders;
 
     protected ImageTile.Cache imageCache;
 
@@ -145,7 +154,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
      */
     public ImageTileLayer() {
 
-        configureImageDecoderLoaders();
+        configureImageReaderLoaders();
         imageCache = new ImageTile.Cache();
 
         SHOW_TILES_TITLE = i18n.get(ImageTileLayer.class,
@@ -172,24 +181,24 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
 
         imageCache.setCutoffScale(PropUtils.floatFromProperties(props, prefix
                 + ImageCutoffScaleProperty, imageCache.getCutoffScale()));
-        
-        String imageDecoderLoaderString = props.getProperty(prefix
-                + ImageDecoderLoadersProperty);
 
-        if (imageDecoderLoaders == null) {
-            imageDecoderLoaders = new Vector();
+        String imageReaderLoaderString = props.getProperty(prefix
+                + ImageReaderLoadersProperty);
+
+        if (imageReaderLoaders == null) {
+            imageReaderLoaders = new Vector();
         }
 
-        if (imageDecoderLoaderString != null) {
-            imageDecoderLoaders.clear();
-            Vector idls = PropUtils.parseSpacedMarkers(imageDecoderLoaderString);
+        if (imageReaderLoaderString != null) {
+            imageReaderLoaders.clear();
+            Vector idls = PropUtils.parseSpacedMarkers(imageReaderLoaderString);
             for (Iterator it = idls.iterator(); it.hasNext();) {
                 String idlMarkerName = (String) it.next();
                 String idlClassName = props.getProperty(prefix + idlMarkerName);
 
                 Object obj = ComponentFactory.create(idlClassName);
-                if (obj != null && obj instanceof ImageDecoderLoader) {
-                    imageDecoderLoaders.add((ImageDecoderLoader) obj);
+                if (obj != null && obj instanceof ImageReaderLoader) {
+                    imageReaderLoaders.add((ImageReaderLoader) obj);
                 }
             }
         }
@@ -197,18 +206,25 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
 
     /**
      * Internal callback method for subclasses to use to be able to configure
-     * imageDecoderLoader Vector with specific ImageDecoderLoaders. By default,
-     * loads GeoTIFFImageDecoder.Loader.
+     * imageReaderLoader Vector with specific ImageReaderLoaders. By default,
+     * loads GeoTIFFImageReader.Loader.
      */
-    protected void configureImageDecoderLoaders() {
-        imageDecoderLoaders = new Vector();
+    protected void configureImageReaderLoaders() {
+        imageReaderLoaders = new Vector();
 
-        ImageDecoderLoader idl = (ImageDecoderLoader) ComponentFactory.create("com.bbn.openmap.dataAccess.image.geotiff.GeoTIFFImageDecoderLoader");
+        ImageReaderLoader idl = (ImageReaderLoader) ComponentFactory.create("com.bbn.openmap.dataAccess.image.geotiff.GeoTIFFImageReaderLoader");
 
         if (idl != null) {
-            imageDecoderLoaders.add(idl);
+            imageReaderLoaders.add(idl);
         } else {
-            logger.warning("ImageTileLayer needs JAI installed in order to use GeoTIFF Image Decoder.");
+            logger.warning("ImageTileLayer needs JAI installed in order to use GeoTIFF Image Reader.");
+        }
+
+        idl = (ImageReaderLoader) ComponentFactory.create("com.bbn.openmap.dataAccess.image.WorldFileImageReaderLoader");
+        if (idl != null) {
+            imageReaderLoaders.add(idl);
+        } else {
+            logger.warning("ImageTileLayer needs JAI installed in order to use World File Image Reader.");
         }
     }
 
@@ -238,11 +254,11 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             props.put(prefix + ImageFilePathProperty, buf.toString());
         }
 
-        if (imageDecoderLoaders != null) {
+        if (imageReaderLoaders != null) {
             int count = 0;
             StringBuffer sbuf = null;
-            for (Iterator it = imageDecoderLoaders.iterator(); it.hasNext(); count++) {
-                ImageDecoderLoader idl = (ImageDecoderLoader) it.next();
+            for (Iterator it = imageReaderLoaders.iterator(); it.hasNext(); count++) {
+                ImageReaderLoader idl = (ImageReaderLoader) it.next();
                 props.put(prefix + "idl" + count, idl.getClass().getName());
 
                 if (sbuf == null) {
@@ -254,15 +270,15 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             }
 
             if (sbuf != null) {
-                props.put(prefix + ImageDecoderLoadersProperty, sbuf.toString());
+                props.put(prefix + ImageReaderLoadersProperty, sbuf.toString());
             }
         }
-        
+
         props.put(prefix + ImageCacheSizeProperty,
                 Integer.toString(imageCache.getCacheSize()));
         props.put(prefix + ImageCutoffScaleProperty,
                 Float.toString(imageCache.getCutoffScale()));
-        
+
         return props;
     }
 
@@ -279,7 +295,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 ImageTileLayer.class,
                 ImageFilePathProperty,
                 "Images",
-                "A list of images or directories to display (separated by ;)",
+                "A list of images or directories to display (separated by ;).",
                 "com.bbn.openmap.util.propertyEditor.MultiDirFilePropertyEditor");
 
         PropUtils.setI18NPropertyInfo(i18n,
@@ -287,7 +303,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 ImageTileLayer.class,
                 ImageCacheSizeProperty,
                 "Cache Size",
-                "Number of images to keep in cache",
+                "Number of images to keep in cache.",
                 null);
 
         PropUtils.setI18NPropertyInfo(i18n,
@@ -297,7 +313,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 "Cutoff Scale",
                 "Projection scale where larger values won't cause images to be loaded and displayed.",
                 null);
-        
+
         String dummyMarker = PropUtils.getDummyMarkerForPropertyInfo(getPropertyPrefix(),
                 null);
 
@@ -306,7 +322,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 ImageTileLayer.class,
                 dummyMarker,
                 "Highlight Settings",
-                "Settings for annototations on highlighted images",
+                "Settings for annototations on highlighted images.",
                 "com.bbn.openmap.omGraphics.DrawingAttributesPropertyEditor");
 
         props.put(initPropertiesProperty, ImageFilePathProperty + " "
@@ -368,7 +384,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     }
 
     /**
-     * If filePath is a file, the ImageDecoderLoaders are used to try to load
+     * If filePath is a file, the ImageReaderLoaders are used to try to load
      * and place the image. If filePath is a directory, this method is called
      * for each file contained within. ImageTile objects are created from the
      * image files.
@@ -391,42 +407,36 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             try {
                 URL fileURL = PropUtils.getResourceOrFileOrURL(filePath);
                 if (fileURL != null) {
-                    if (imageDecoderLoaders != null) {
-                        for (Iterator it = imageDecoderLoaders.iterator(); it.hasNext();) {
-                            ImageDecoderLoader idl = (ImageDecoderLoader) it.next();
+                    if (imageReaderLoaders != null) {
+                        ImageTile imageTile = null;
+                        for (Iterator it = imageReaderLoaders.iterator(); it.hasNext();) {
+                            ImageReaderLoader idl = (ImageReaderLoader) it.next();
                             if (idl.isLoadable(filePath)) {
-                                ImageDecoder id = idl.getImageDecoder(fileURL);
-                                ImageTile imageTile = id.getImageTile(imageCache);
+                                ImageReader id = idl.getImageReader(fileURL);
+                                ImageTile tmpImageTile = id.getImageTile(imageCache);
 
-                                if (imageTile != null) {
-                                    imageTile.generate(getProjection());
-                                    ret.add(imageTile);
-                                    addImageTileToList(imageTile);
+                                if (imageTile == null) {
+                                    imageTile = tmpImageTile;
+                                } else if (tmpImageTile != null
+                                        && imageTile instanceof ErrImageTile) {
+                                    imageTile = tmpImageTile;
+                                }
 
-                                    imageTile.putAttribute(FILE_PATH_ATTRIBUTE,
-                                            fileURL.getPath());
-                                    // Probably need to check for the last slash
-                                    // and
-                                    // grab that part.
-                                    imageTile.putAttribute(NAME_ATTRIBUTE,
-                                            fileURL.getFile());
-
-                                    selectedDrawingAttributes.setTo(imageTile);
-
-                                    // Let's just assume that we're working with
-                                    // the
-                                    // main list here at the top level, and we
-                                    // can
-                                    // paint the images we have.
-                                    repaint();
-                                    if (resultsList != null) {
-                                        resultsList.repaint();
-                                    }
+                                if (imageTile != null
+                                        && !(imageTile instanceof ErrImageTile)) {
+                                    break;
                                 }
                             }
                         }
+
+                        // Need to check for null in case none of the
+                        // ImageReaders could handle the file.
+                        if (imageTile != null) {
+                            addImageToLists(imageTile, ret, fileURL);
+                        }
+
                     } else {
-                        logger.warning("ImageDecoders not configured in "
+                        logger.warning("ImageReaders not configured in "
                                 + getName() + " ImageTileLayer.");
                     }
                 } else {
@@ -435,6 +445,36 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
 
             } catch (MalformedURLException murle) {
             }
+        }
+    }
+
+    /**
+     * A method to handle a newly created ImageTile object from the loadImage
+     * method.
+     * 
+     * @param imageTile The new ImageTile
+     * @param ret An OMGraphicList to add the ImageTile to.
+     * @param fileURL A URL describing the location of the source image file.
+     */
+    protected void addImageToLists(ImageTile imageTile, OMGraphicList ret,
+                                   URL fileURL) {
+        imageTile.generate(getProjection());
+        ret.add(imageTile);
+        addImageTileToList(imageTile);
+
+        imageTile.putAttribute(FILE_PATH_ATTRIBUTE, fileURL.getPath());
+        // Probably need to check for the last slash
+        // and grab that part.
+        imageTile.putAttribute(NAME_ATTRIBUTE, fileURL.getFile());
+
+        selectedDrawingAttributes.setTo(imageTile);
+
+        // Let's just assume that we're working with
+        // the main list here at the top level, and we
+        // can paint the images we have.
+        repaint();
+        if (resultsList != null) {
+            resultsList.repaint();
         }
     }
 
@@ -585,7 +625,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             String cmd = ae.getActionCommand();
 
             if (cmd == LayersPanel.LayerAddCmd) {
-                addNewImages();
+                addNewImagesWithFileChooser();
             } else if (cmd == LayersPanel.LayerRemoveCmd) {
                 removeImages(getSelectedTiles());
             } else if (cmd == LayersPanel.LayerDownCmd) {
@@ -609,6 +649,10 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             up.setEnabled(somethingSelected);
             down.setEnabled(somethingSelected);
             bottom.setEnabled(somethingSelected);
+        }
+
+        public void setGUIDeleteButtonEnableState(boolean state) {
+            delete.setEnabled(state);
         }
     }
 
@@ -856,12 +900,12 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
 
     /**
      * Asks the user to choose a new file or directory to load. The
-     * ImageDecoderLoaders are consulted to only allow files that can be handled
+     * ImageReaderLoaders are consulted to only allow files that can be handled
      * to be selectable.
      */
-    protected void addNewImages() {
+    protected void addNewImagesWithFileChooser() {
         // Need to get File Chooser, and allow the user to add a directory or
-        // file. We could even set up filters to check the ImageDecoderLoaders
+        // file. We could even set up filters to check the ImageReaderLoaders
         // available to this Layer and limit file selection based on matches. We
         // should also report to the user what files were loaded using a dialog
         // window,
@@ -876,7 +920,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         chooser.setDialogTitle(title);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
-        chooser.setFileFilter(new ImageLoaderFileFilter(imageDecoderLoaders));
+        chooser.setFileFilter(new ImageLoaderFileFilter(imageReaderLoaders));
         String acceptButtonText = i18n.get(ImageTileLayer.class,
                 "acceptButtonText",
                 "Add");
@@ -1066,9 +1110,30 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
      */
     protected void setSelectedTiles(ImageTile[] sTiles) {
         selectedTiles = sTiles;
-        setGUIButtonEnableState(sTiles != null && sTiles.length > 0);
+        boolean allTilesDefective = areAllTilesDefective(sTiles);
+        setGUIButtonEnableState(sTiles != null && sTiles.length > 0
+                && !allTilesDefective);
+
+        if (allTilesDefective && icbp != null) {
+            icbp.setGUIDeleteButtonEnableState(allTilesDefective);
+        }
 
         checkShowHideStatus();
+    }
+
+    protected boolean areAllTilesDefective(ImageTile[] sTiles) {
+        boolean allTilesDefective = false;
+        if (sTiles != null && sTiles.length > 0) {
+            allTilesDefective = true;
+            for (int i = 0; i < sTiles.length; i++) {
+                if (!(sTiles[i] instanceof ErrImageTile)) {
+                    allTilesDefective = false;
+                    break;
+                }
+            }
+        }
+
+        return allTilesDefective;
     }
 
     /**
@@ -1156,8 +1221,15 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         }
 
         public void mouseMoved(MouseEvent e) {
-        // TODO Auto-generated method stub
-
+            int selectedIndex = getResultListIndex(e);
+            if (selectedIndex >= 0) {
+                Object it = getListModel().getElementAt(selectedIndex);
+                if (it instanceof ErrImageTile) {
+                    resultsList.setToolTipText(((ErrImageTile) it).getProblemMessage());
+                    return;
+                }
+            }
+            resultsList.setToolTipText(null);
         }
     }
 
@@ -1172,6 +1244,10 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
 
         if (resultsList != null) {
             double height = getResultsListCellHeight();
+
+            if (height == 0) {
+                return index;
+            }
 
             int nIndex = e.getY() / (int) height;
 
@@ -1193,12 +1269,63 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         if (resultsList != null) {
             int rlFVI = resultsList.getFirstVisibleIndex();
             Rectangle bounds = resultsList.getCellBounds(rlFVI, rlFVI);
+
             if (bounds != null) {
                 height = bounds.getHeight();
             }
         }
 
         return height;
+    }
+
+    public static int buttonSize = 16;
+    public static ImageIcon warningImage;
+    public static ImageIcon invisibleImage;
+
+    protected static void initIcons() {
+        DrawingAttributes blackDa = new DrawingAttributes();
+
+        DrawingAttributes invisDa = new DrawingAttributes();
+        invisDa.setLinePaint(OMColor.clear);
+        invisDa.setFillPaint(OMColor.clear);
+
+        DrawingAttributes yellowDa = new DrawingAttributes();
+        yellowDa.setLinePaint(OMColor.yellow);
+        yellowDa.setFillPaint(OMColor.yellow);
+
+        IconPart ip = new BasicIconPart(new Rectangle2D.Double(0, 0, 100, 100));
+        ip.setRenderingAttributes(invisDa);
+        invisibleImage = OMIconFactory.getIcon(buttonSize, buttonSize, ip);
+
+        IconPartList ipl = new IconPartList();
+
+        Polygon triangle = new Polygon(new int[] { 50, 90, 10, 50 }, new int[] {
+                10, 90, 90, 10 }, 4);
+
+        BasicIconPart bip = new BasicIconPart(triangle);
+        bip.setRenderingAttributes(yellowDa);
+        ipl.add(bip);
+
+        bip = new BasicIconPart(triangle);
+        bip.setRenderingAttributes(yellowDa);
+        ipl.add(bip);
+        bip = new BasicIconPart(triangle);
+        bip.setRenderingAttributes(blackDa);
+        ipl.add(bip);
+        bip = new BasicIconPart(new Line2D.Double(49, 35, 49, 65));
+        bip.setRenderingAttributes(blackDa);
+        ipl.add(bip);
+        bip = new BasicIconPart(new Line2D.Double(49, 75, 49, 77));
+        bip.setRenderingAttributes(blackDa);
+        ipl.add(bip);
+        bip = new BasicIconPart(new Line2D.Double(51, 35, 51, 65));
+        bip.setRenderingAttributes(blackDa);
+        ipl.add(bip);
+        bip = new BasicIconPart(new Line2D.Double(51, 75, 51, 77));
+        bip.setRenderingAttributes(blackDa);
+        ipl.add(bip);
+        warningImage = OMIconFactory.getIcon(buttonSize, buttonSize, ipl);
+
     }
 
     /**
@@ -1208,8 +1335,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             ListCellRenderer {
         protected int buttonSize = 16;
         protected JLabel label = new JLabel();
-        protected JLabel timeMark = new JLabel();
-        protected JLabel ratingMark = new JLabel();
+        protected JLabel statusMark = new JLabel();
 
         public static Color fontColor = Color.BLACK;
         public static Color altFontColor = Color.BLACK;
@@ -1218,6 +1344,10 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         public static Color regularBackgroundColor = Color.WHITE;
 
         public ImageListCellRenderer() {
+            if (warningImage == null) {
+                initIcons();
+            }
+
             setOpaque(true);
             GridBagLayout gridbag = new GridBagLayout();
             GridBagConstraints c = new GridBagConstraints();
@@ -1230,10 +1360,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
 
             c.fill = GridBagConstraints.NONE;
             c.weightx = 0f;
-            gridbag.setConstraints(ratingMark, c);
-            this.add(ratingMark);
-            gridbag.setConstraints(timeMark, c);
-            this.add(timeMark);
+            gridbag.setConstraints(statusMark, c);
+            this.add(statusMark);
 
             Font f = label.getFont();
             f = new Font(f.getName(), f.getStyle(), f.getSize() - 1);
@@ -1255,6 +1383,13 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                     label.setForeground(imageTile.isVisible() ? fontColor
                             : notVisibleColor);
                 }
+
+                if (value instanceof ErrImageTile) {
+                    statusMark.setIcon(warningImage);
+                } else {
+                    statusMark.setIcon(invisibleImage);
+                }
+
             }
 
             setBackground(isSelected ? selectColor : regularBackgroundColor);
@@ -1263,16 +1398,16 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     }
 
     /**
-     * File filter created based on what the ImageDecoders can handle.
+     * File filter created based on what the ImageReaders can handle.
      * 
      * @author dietrick
      */
     class ImageLoaderFileFilter extends FileFilter {
 
-        Vector imageDecoderLoaders;
+        Vector imageReaderLoaders;
 
         public ImageLoaderFileFilter(Vector imgDcdrLdrs) {
-            imageDecoderLoaders = imgDcdrLdrs;
+            imageReaderLoaders = imgDcdrLdrs;
         }
 
         public boolean accept(File f) {
@@ -1280,9 +1415,9 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 return true;
             }
 
-            if (imageDecoderLoaders != null) {
-                for (Iterator it = imageDecoderLoaders.iterator(); it.hasNext();) {
-                    if (((ImageDecoderLoader) it.next()).isLoadable(f.getName())) {
+            if (imageReaderLoaders != null) {
+                for (Iterator it = imageReaderLoaders.iterator(); it.hasNext();) {
+                    if (((ImageReaderLoader) it.next()).isLoadable(f.getName())) {
                         return true;
                     }
                 }

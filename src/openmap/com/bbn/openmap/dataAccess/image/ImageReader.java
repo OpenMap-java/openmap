@@ -15,9 +15,9 @@
 //$Source:
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
-//$RCSfile: ImageDecoder.java,v $
-//$Revision: 1.2 $
-//$Date: 2006/12/15 18:28:28 $
+//$RCSfile: ImageReader.java,v $
+//$Revision: 1.1 $
+//$Date: 2007/01/22 15:47:35 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -26,7 +26,7 @@ package com.bbn.openmap.dataAccess.image;
 
 import java.awt.image.BufferedImage;
 
-public interface ImageDecoder {
+public interface ImageReader {
     /**
      * Should be called by the the object managing the ImageTiles.
      * 

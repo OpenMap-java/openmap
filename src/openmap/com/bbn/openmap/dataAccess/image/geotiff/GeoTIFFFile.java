@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoTIFFFile.java,v $
-//$Revision: 1.2 $
-//$Date: 2006/12/15 18:28:29 $
+//$Revision: 1.3 $
+//$Date: 2007/01/22 15:47:37 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -521,7 +521,7 @@ public class GeoTIFFFile {
         return gtmf.getImageTile();
     }
 
-    public ImageTile getImageTile(GeoTIFFImageDecoder id, ImageTile.Cache cache)
+    public ImageTile getImageTile(GeoTIFFImageReader id, ImageTile.Cache cache)
             throws IOException {
         GeoTIFFModelFactory gtmf = new GeoTIFFModelFactory(this);
         return gtmf.getImageTile(id, cache);
