@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionFactory.java,v $
 // $RCSfile: ProjectionFactory.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/12/09 21:09:02 $
+// $Revision: 1.14 $
+// $Date: 2007/01/25 22:11:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,7 +26,11 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -109,7 +113,6 @@ public class ProjectionFactory extends OMComponent {
      */
     private ProjectionFactory() {
         pcs = new PropertyChangeSupport(this);
-        projLoaders = new Vector();
     }
 
     /**
@@ -130,11 +133,15 @@ public class ProjectionFactory extends OMComponent {
     public static String[] getAvailableProjections() {
         ProjectionFactory factory = getInstance();
 
-        int nProjections = factory.numProjections();
+        // duplicate List to handle multiple simultanous requests
+        List projLoaders = new ArrayList(factory.getProjectionLoaders());
+        int nProjections = projLoaders.size();
         String projNames[] = new String[nProjections];
         int i = 0;
-        for (Iterator it = factory.iterator(); it.hasNext(); projNames[i++] = ((ProjectionLoader) it.next()).getPrettyName())
-            ;
+
+        for (Iterator it = projLoaders.iterator(); it.hasNext();) {
+            projNames[i++] = ((ProjectionLoader) it.next()).getPrettyName();
+        }
 
         return projNames;
     }
@@ -404,6 +411,10 @@ public class ProjectionFactory extends OMComponent {
         return projLoaders.size();
     }
 
+    public Collection getProjectionLoaders() {
+        return Collections.unmodifiableCollection(projLoaders);
+    }
+    
     protected void fireLoadersChanged() {
         pcs.firePropertyChange(AvailableProjectionProperty, null, projLoaders);
     }

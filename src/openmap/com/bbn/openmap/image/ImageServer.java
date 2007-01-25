@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServer.java,v $
 // $RCSfile: ImageServer.java,v $
-// $Revision: 1.11 $
-// $Date: 2006/02/14 17:15:02 $
+// $Revision: 1.12 $
+// $Date: 2007/01/25 22:11:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -286,7 +287,7 @@ public class ImageServer implements
      * @return a byte[] representing the formatted image.
      */
     public byte[] createImage(Projection proj, int scaledWidth,
-                              int scaledHeight, Vector showLayers) {
+                              int scaledHeight, List showLayers) {
         return createImage(proj,
                 scaledWidth,
                 scaledHeight,
@@ -313,7 +314,7 @@ public class ImageServer implements
      * @return a byte[] representing the formatted image.
      */
     public byte[] createImage(Projection proj, int scaledWidth,
-                              int scaledHeight, Vector showLayers,
+                              int scaledHeight, List showLayers,
                               Paint background) {
 
         Debug.message("imageserver",
@@ -339,7 +340,7 @@ public class ImageServer implements
         if (showLayers != null) {
             for (int j = size - 1; j >= 0; j--) {
                 for (int i = layers.length - 1; i >= 0; i--) {
-                    String layerName = (String) showLayers.elementAt(j);
+                    String layerName = (String) showLayers.get(j);
                     Layer layer = layers[i];
                     if (layerName.equals(layer.getPropertyPrefix())) {
                         layer.renderDataForProjection(proj, graphics);

@@ -1,0 +1,55 @@
+<!DOCTYPE web-app 
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN" 
+    "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+<web-app>
+
+    <display-name>OGC Web Map Server Servlet</display-name>
+    <description>
+    </description>
+
+    <!--
+    <context-param>
+      <param-name>mapDefinition</param-name>
+      <param-value>E:/home/tomrak/devel/tide/ommod/res/cfg/openmapexample/openmap.properties</param-value>
+      <description>
+        Configuration file for openmap. Default value is "openmap.properties"
+      </description>
+    </context-param>
+    -->
+    
+    <context-param>
+      <param-name>port</param-name>
+      <param-value>7070</param-value>
+      <description>
+         Server port number
+      </description>
+    </context-param>
+    
+    <context-param>
+      <param-name>path</param-name>
+      <param-value>/omwms</param-value>
+      <description>
+         Path on servlet container
+      </description>
+    </context-param>
+    
+    <servlet>
+      <servlet-name>OgcWmsServlet</servlet-name>
+      <description>
+        This servlet is the entry doing for most of the work.
+      </description>
+      <servlet-class>com.bbn.openmap.wmsservlet.OgcWmsServlet</servlet-class>
+      <!-- Load this servlet at server startup time 
+      <load-on-startup>5</load-on-startup> -->
+    </servlet>
+
+    <servlet-mapping>
+      <servlet-name>OgcWmsServlet</servlet-name>
+      <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+    <session-config>
+      <session-timeout>30</session-timeout>    <!-- 30 minutes -->
+    </session-config>
+
+</web-app>

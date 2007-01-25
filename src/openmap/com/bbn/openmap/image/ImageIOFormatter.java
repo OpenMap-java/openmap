@@ -7,8 +7,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ImageIOFormatter.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/01/10 16:14:07 $
+//$Revision: 1.2 $
+//$Date: 2007/01/25 22:11:40 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -48,6 +48,24 @@ public abstract class ImageIOFormatter extends AbstractImageFormatter {
             Debug.error("ImageIOFormatter caught IOException formatting image!");
             return new byte[0];
         }
+    }
+    
+    /**
+     * Return the applicable Graphics to use to paint the layers into.
+     * If the internal BufferedImage hasn't been created yet, or has
+     * been set to null, then a new buffered Image is created, set to
+     * the size specified by the height and width. The ImageGenerator
+     * extends MapBean. Remember to dispose of the graphics object
+     * when you are done with it. Uses the BufferedImage.TYPE_INT_ARGB
+     * colormodel.
+     * 
+     * @param width pixel width of Graphics.
+     * @param height pixel height of Graphics.
+     * @return java.awt.Graphics object to use.
+     * @see java.awt.image.BufferedImage
+     */
+    public java.awt.Graphics getGraphics(int width, int height) {
+        return getGraphics(width, height, BufferedImage.TYPE_INT_ARGB);
     }
 
 }

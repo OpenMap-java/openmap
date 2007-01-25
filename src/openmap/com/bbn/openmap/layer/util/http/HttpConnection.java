@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/HttpConnection.java,v $
 // $RCSfile: HttpConnection.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 18:57:51 $
+// $Revision: 1.8 $
+// $Date: 2007/01/25 22:11:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,6 +55,10 @@ public class HttpConnection extends Thread {
     public final static String CONTENT_GIF = "image/gif";
     public final static String CONTENT_PPM = "image/ppm";
     public final static String CONTENT_PNG = "image/png";
+    public final static String CONTENT_TIFF = "image/tiff";
+    public final static String CONTENT_GEOTIFF = "image/geotiff";
+    public final static String CONTENT_WBMP = "image/wbmp";
+    public final static String CONTENT_SVG = "image/svg";
     public final static String CONTENT_HTML = "text/html";
     public final static String CONTENT_MOV = "video/quicktime";
     public final static String CONTENT_PLAIN = "text/plain";
@@ -93,7 +97,9 @@ public class HttpConnection extends Thread {
 
     public static String[] getAllContentTypes() {
         return new String[] { CONTENT_JPEG, CONTENT_GIF, CONTENT_HTML,
-                CONTENT_MOV, CONTENT_PLAIN, CONTENT_XML, CONTENT_PPM };
+                CONTENT_MOV, CONTENT_PLAIN, CONTENT_XML, CONTENT_PPM, 
+                CONTENT_PNG, CONTENT_SVG, CONTENT_GEOTIFF, CONTENT_TIFF,
+                CONTENT_WBMP};
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/WMTConstants.java,v $
 // $RCSfile: WMTConstants.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:05:51 $
+// $Revision: 1.3 $
+// $Date: 2007/01/25 22:11:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,10 +34,24 @@ public interface WMTConstants {
      */
     public final static String VERSION = "VERSION";
     /**
-     * After WMS version 1.0, use this parameter to identify the map
+     * After WMS version 1.0, use this parameter to identify the service
+     */
+    public final static String SERVICE = "SERVICE";
+    /**
+     * After WMS version 1.0, use this parameter to identify the feature info
      * request
      */
     public final static String GETMAP = "GetMap";
+    /**
+     * After WMS version 1.0, use this parameter to identify the capabilities
+     * request
+     */
+    public final static String GETCAPABILITIES = "GetCapabilities";
+    /**
+     * After WMS version 1.0, use this parameter to identify the feature info
+     * request
+     */
+    public final static String GETFEATUREINFO = "GetFeatureInfo";
     /**
      * WMT Version (WMTVER), floating point industry. Required for WMT
      * requests.
@@ -60,6 +74,11 @@ public interface WMTConstants {
      * requests.
      */
     public final static String SRS = "SRS";
+    /**
+     * Coordinate Reference System identifier (CRS). Required for WMS
+     * GetMap requests.
+     */
+    public final static String CRS = "CRS";
     /**
      * Bounding Box (BBOX) consisting of xmin, ymin, xmax, ymax list,
      * in SRS units. Required for WMT requests.
