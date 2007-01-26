@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/wmsservlet/WEB-INF/src/com/bbn/openmap/wmsservlet/OgcWmsServlet.java,v $
-// $Revision: 1.2 $ $Date: 2007/01/25 22:11:41 $ $Author: dietrick $
+// $Revision: 1.3 $ $Date: 2007/01/26 15:04:52 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.wmsservlet;
 
@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.wms.WMSException;
-import com.bbn.openmap.wms.WmsRequestHandler;
+import com.bbn.openmap.image.wms.WMSException;
+import com.bbn.openmap.image.wms.WmsRequestHandler;
 
 /**
  * 
