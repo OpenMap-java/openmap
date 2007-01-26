@@ -1,18 +1,18 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwColumnInfo.java,v $
-// $Revision: 1.5 $ $Date: 2004/10/14 18:06:08 $ $Author: dietrick $
+// $Revision: 1.6 $ $Date: 2007/01/26 15:57:18 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -78,7 +78,7 @@ public class DcwColumnInfo {
 
     /**
      * Construct a DcwColumnInfo from the specified input stream.
-     * 
+     *
      * @param inputFile the filestream to construct from
      * @exception EOFException when the first character read is a ';',
      *            indicating that we've reached the end of the column
@@ -96,7 +96,8 @@ public class DcwColumnInfo {
         do {
             buildstring.append(Character.toLowerCase(delim));
         } while ((delim = inputFile.readChar()) != '=');
-        columnName = buildstring.toString().intern();
+
+        columnName = buildstring.toString().trim().intern();// Collapse all blanks
 
         fieldType = inputFile.readChar();
 
@@ -188,7 +189,7 @@ public class DcwColumnInfo {
     /**
      * Reads a string until the field separator is detected, the
      * column record separator is detected, or and end-of-file is hit.
-     * 
+     *
      * @return the string read from the file
      * @param inputFile the file to read the field from
      * @param toLower convert the string to lower-case
@@ -221,7 +222,7 @@ public class DcwColumnInfo {
      * Reads a string until the field separator is detected, the
      * column record separator is detected, or and end-of-file is hit,
      * and converts in to lowercase.
-     * 
+     *
      * @return the string read from the file, all in lowercase
      * @param inputFile the file to read the field from
      * @param toLower convert the string to lower-case
@@ -253,7 +254,7 @@ public class DcwColumnInfo {
 
     /**
      * Claim that the column has a particular schema
-     * 
+     *
      * @param type the FieldType (datatype) this column is expected to
      *        contain legal values are specified by the VPF standard.
      *        the non-standard value 'i' is also accepted (equivalent
@@ -279,7 +280,7 @@ public class DcwColumnInfo {
     /**
      * the number of bytes a field of this type takes in the input
      * file
-     * 
+     *
      * @return the number of bytes (-1 for a variable-length field)
      * @exception FormatException the FieldType of this Column is not
      *            a valid VPF fieldtype
@@ -326,7 +327,7 @@ public class DcwColumnInfo {
 
     /**
      * get the name of the column
-     * 
+     *
      * @return the name of the column
      */
     public String getColumnName() {
@@ -335,7 +336,7 @@ public class DcwColumnInfo {
 
     /**
      * get the VPF datatype of the column
-     * 
+     *
      * @return the VPF datatype
      */
     public char getFieldType() {
@@ -344,7 +345,7 @@ public class DcwColumnInfo {
 
     /**
      * get the number of elements
-     * 
+     *
      * @return the number of elements
      */
     public int getNumberOfElements() {
@@ -354,7 +355,7 @@ public class DcwColumnInfo {
     /**
      * get the VPF key type (one of VPF_COLUMN_PRIMARY_KEY,
      * VPF_COLUMN_FOREIGN_KEY, or VPF_COLUMN_NON_KEY)
-     * 
+     *
      * @return the vpf key type
      */
     public char getKeyType() {
@@ -365,7 +366,7 @@ public class DcwColumnInfo {
      * Return <code>true</code> if this column is a primary key. For
      * any valid column, exactly one of isPrimaryKey, isForeignKey and
      * isNonKey will be <code>true</code>.
-     * 
+     *
      * @return true for a primary key, false otherwise.
      * @see #isForeignKey()
      * @see #isNonKey()
@@ -378,7 +379,7 @@ public class DcwColumnInfo {
      * Return <code>true</code> if this column is a foreign key. For
      * any valid column, exactly one of isPrimaryKey, isForeignKey and
      * isNonKey will be <code>true</code>.
-     * 
+     *
      * @return true for a foreign key, false otherwise.
      * @see #isPrimaryKey()
      * @see #isNonKey()
@@ -391,7 +392,7 @@ public class DcwColumnInfo {
      * Return <code>true</code> if this column is not a key column.
      * For any valid column, exactly one of isPrimaryKey, isForeignKey
      * and isNonKey will be <code>true</code>.
-     * 
+     *
      * @return false for a primary or foreign key, true otherwise.
      * @see #isForeignKey()
      * @see #isPrimaryKey()
@@ -402,7 +403,7 @@ public class DcwColumnInfo {
 
     /**
      * Get the column description
-     * 
+     *
      * @return the column description (possibly <code>null</code>)
      */
     public String getColumnDescription() {
@@ -411,7 +412,7 @@ public class DcwColumnInfo {
 
     /**
      * Get the name of the value description table
-     * 
+     *
      * @return the name of the value description table (possibly
      *         <code>null</code>). The same as getVDT()
      * @see #getVDT()
@@ -422,7 +423,7 @@ public class DcwColumnInfo {
 
     /**
      * Get the name of the value description table
-     * 
+     *
      * @return the name of the value description table (possibly
      *         <code>null</code>). The same as
      *         getValueDescriptionTable
@@ -434,7 +435,7 @@ public class DcwColumnInfo {
 
     /**
      * get the name of the thematic index
-     * 
+     *
      * @return the thematic index name (possibly <code>null</code>)
      */
     public String getThematicIndexName() {
@@ -443,7 +444,7 @@ public class DcwColumnInfo {
 
     /**
      * get the name of the narrative table
-     * 
+     *
      * @return the name of the narrative table (possibly
      *         <code>null</code>)
      */
@@ -453,7 +454,7 @@ public class DcwColumnInfo {
 
     /**
      * Read an element of the type specified by the column
-     * 
+     *
      * @return the value read from the input file
      * @exception EOFException an end-of-file was encountered before
      *            reading any of the field
@@ -569,7 +570,7 @@ public class DcwColumnInfo {
 
     /**
      * produce a nice printed version of all our contained information
-     * 
+     *
      * @return a nice little string
      */
     public String toString() {
