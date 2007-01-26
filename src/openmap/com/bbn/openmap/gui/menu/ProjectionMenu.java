@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/ProjectionMenu.java,v $
 // $RCSfile: ProjectionMenu.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/02/02 13:13:13 $
+// $Revision: 1.7 $
+// $Date: 2007/01/26 14:13:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,7 +28,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JMenuItem;
@@ -68,7 +68,7 @@ public class ProjectionMenu extends AbstractOpenMapMenu implements
 
     }
 
-    public void configure(Vector loaders) {
+    public void configure(List loaders) {
         removeAll();
         JRadioButtonMenuItem rb;
         ButtonGroup group = new ButtonGroup();
@@ -115,7 +115,7 @@ public class ProjectionMenu extends AbstractOpenMapMenu implements
 
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getPropertyName() == ProjectionFactory.AvailableProjectionProperty) {
-            configure((Vector) pce.getNewValue());
+            configure((List) pce.getNewValue());
         }
     }
 
