@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: J3DGeo.java,v $
-//$Revision: 1.1 $
-//$Date: 2006/04/07 17:44:37 $
+//$Revision: 1.2 $
+//$Date: 2007/01/30 21:25:32 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -70,7 +70,7 @@ public class J3DGeo extends Geo {
     }
 
     /**
-     * Reader for x in J2D axis representation (positive going to right of screen).
+     * Reader for x in J3D axis representation (positive going to right of screen).
      * @return
      */
     public double getX() {
@@ -78,7 +78,7 @@ public class J3DGeo extends Geo {
     }
     
     /**
-     * Reader for y in J2D axis representation (positive going to top of screen).
+     * Reader for y in J3D axis representation (positive going to top of screen).
      * @return
      */
     public double getY() {
@@ -86,7 +86,7 @@ public class J3DGeo extends Geo {
     }
 
     /**
-     * Reader for z in J2D axis representation (positive coming out of screen).
+     * Reader for z in J3D axis representation (positive coming out of screen).
      * @return
      */
     public double getZ() {
