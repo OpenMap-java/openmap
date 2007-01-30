@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: OMGeo.java,v $
-//$Revision: 1.2 $
-//$Date: 2006/08/09 21:08:43 $
+//$Revision: 1.3 $
+//$Date: 2007/01/30 20:37:03 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -50,6 +50,7 @@ import com.bbn.openmap.util.Debug;
 public abstract class OMGeo extends OMGraphic implements GeoExtent {
 
     protected GeoExtent extent;
+    protected Object id = OMGeo.this;
 
     protected OMGeo() {
         setRenderType(RENDERTYPE_LATLON);
@@ -76,6 +77,14 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
         return getExtent().getBoundingCircle();
     }
 
+    public Object getID() {
+        return id;
+    }
+    
+    public void setID(Object id) {
+        this.id = id;
+    }
+
     public static class Pt extends OMGeo implements GeoPoint {
 
         protected int radius = OMPoint.DEFAULT_RADIUS;
@@ -87,6 +96,10 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
 
         public Pt(Geo g) {
             super(new GeoPoint.Impl(g));
+        }
+        
+        public Pt(double lat, double lon, boolean isDegrees) {
+            super(new GeoPoint.Impl(lat, lon, isDegrees));
         }
 
         public Geo getGeo() {
@@ -155,11 +168,6 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
         public Geo getPoint() {
             return ((GeoPoint) getExtent()).getPoint();
         }
-
-        public Object getPointId() {
-            return OMGeo.Pt.this;
-        }
-
     }
 
     public static class Line extends OMGeo implements GeoSegment {
@@ -236,10 +244,6 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
 
         public float[] getSegArray() {
             return ((GeoSegment) getExtent()).getSegArray();
-        }
-
-        public Object getSegId() {
-            return OMGeo.Line.this;
         }
 
     }
@@ -368,10 +372,6 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
         public Geo[] toPointArray() {
             return ((GeoPath) getExtent()).toPointArray();
         }
-
-        public Object getPathID() {
-            return OMGeo.Polyline.this;
-        }
     }
 
     public static class Polygon extends Polyline implements GeoRegion {
@@ -386,10 +386,6 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
 
         public Polygon(Geo[] gs, int lineType) {
             super(new GeoRegion.Impl(gs), lineType);
-        }
-
-        public Object getRegionId() {
-            return OMGeo.Polygon.this;
         }
 
         public boolean isPointInside(Geo point) {

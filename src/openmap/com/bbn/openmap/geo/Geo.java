@@ -34,7 +34,7 @@ import com.bbn.openmap.proj.Length;
  * @author Sachin Date
  * @author Ben Lubin
  * @author Michael Thome
- * @version $Revision: 1.28 $ on $Date: 2006/08/09 21:08:44 $
+ * @version $Revision: 1.29 $ on $Date: 2007/01/30 20:37:05 $
  */
 public class Geo {
 
@@ -559,17 +559,17 @@ public class Geo {
      * That is, find the point, y, lying between this and q such that
      * 
      * <pre>
-     *           
-     *                        y = [x*this + (1-x)*q]*c
-     *                        where c = 1/y.dot(y) is a factor for normalizing y.
-     *                        y.dot(r) = 0
-     *                        substituting:
-     *                        [x*this + (1-x)*q]*c.dot(r) = 0 or
-     *                        [x*this + (1-x)*q].dot(r) = 0
-     *                        x*this.dot(r) + (1-x)*q.dot(r) = 0
-     *                        x*a + (1-x)*b = 0
-     *                        x = -b/(a - b)
-     *                     
+     *               
+     *                            y = [x*this + (1-x)*q]*c
+     *                            where c = 1/y.dot(y) is a factor for normalizing y.
+     *                            y.dot(r) = 0
+     *                            substituting:
+     *                            [x*this + (1-x)*q]*c.dot(r) = 0 or
+     *                            [x*this + (1-x)*q].dot(r) = 0
+     *                            x*this.dot(r) + (1-x)*q.dot(r) = 0
+     *                            x*a + (1-x)*b = 0
+     *                            x = -b/(a - b)
+     *                         
      * </pre>
      * 
      * We assume that this and q are less than 180 degrees appart. When this and
@@ -864,16 +864,48 @@ public class Geo {
 
     /**
      * Convert a Geo array into a floating point lat lon array (alternating lat
-     * and lon values)
+     * and lon values).
+     * 
+     * @return the ll array provided, or a new array of lla is null.
      */
-    public static float[] GaToLLa(Geo[] ga) {
-        float[] lla = new float[2 * ga.length];
+    public static double[] GaToLLa(Geo[] ga, double[] lla) {
+        if (lla == null) {
+            lla = new double[2 * ga.length];
+        }
+
+        for (int i = 0; i < ga.length; i++) {
+            Geo g = ga[i];
+            lla[i * 2] = g.getLatitude();
+            lla[i * 2 + 1] = g.getLongitude();
+        }
+        return lla;
+    }
+
+    /**
+     * Convert a Geo array into a floating point lat lon array (alternating lat
+     * and lon values).
+     * 
+     * @return the ll array provided, or a new array of lla is null.
+     */
+    public static float[] GaToLLa(Geo[] ga, float[] lla) {
+        if (lla == null) {
+            lla = new float[2 * ga.length];
+        }
+
         for (int i = 0; i < ga.length; i++) {
             Geo g = ga[i];
             lla[i * 2] = (float) g.getLatitude();
             lla[i * 2 + 1] = (float) g.getLongitude();
         }
         return lla;
+    }
+
+    /**
+     * Convert a Geo array into a floating point lat lon array (alternating lat
+     * and lon values)
+     */
+    public static float[] GaToLLa(Geo[] ga) {
+        return GaToLLa(ga, new float[2 * ga.length]);
     }
 
     /**
@@ -902,9 +934,42 @@ public class Geo {
      * Convert a float array of alternating lat and lon pairs into a Geo array.
      */
     public static Geo[] LLaToGa(float[] lla) {
+        return LLaToGa(lla, true);
+    }
+
+    /**
+     * Convert a float array of alternating lat and lon pairs into a Geo array.
+     */
+    public static Geo[] LLaToGa(float[] lla, boolean isDegrees) {
         Geo[] r = new Geo[lla.length / 2];
         for (int i = 0; i < lla.length / 2; i++) {
-            r[i] = Geo.makeGeoDegrees(lla[i * 2], lla[i * 2 + 1]);
+            if (isDegrees) {
+                r[i] = Geo.makeGeoDegrees(lla[i * 2], lla[i * 2 + 1]);
+            } else {
+                r[i] = Geo.makeGeoRadians(lla[i * 2], lla[i * 2 + 1]);
+            }
+        }
+        return r;
+    }
+
+    /**
+     * Convert a double array of alternating lat and lon pairs into a Geo array.
+     */
+    public static Geo[] LLaToGa(double[] lla) {
+        return LLaToGa(lla, true);
+    }
+
+    /**
+     * Convert a double array of alternating lat and lon pairs into a Geo array.
+     */
+    public static Geo[] LLaToGa(double[] lla, boolean isDegrees) {
+        Geo[] r = new Geo[lla.length / 2];
+        for (int i = 0; i < lla.length / 2; i++) {
+            if (isDegrees) {
+                r[i] = Geo.makeGeoDegrees(lla[i * 2], lla[i * 2 + 1]);
+            } else {
+                r[i] = Geo.makeGeoRadians(lla[i * 2], lla[i * 2 + 1]);
+            }
         }
         return r;
     }

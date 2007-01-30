@@ -43,8 +43,6 @@ public interface GeoPath extends GeoExtent {
      * @return the number of points in the path.
      */
     int length();
-    
-    Object getPathID();
 
     interface SegmentIterator extends java.util.Iterator {
         /** Asking if there is another segment. * */
@@ -94,7 +92,7 @@ public interface GeoPath extends GeoExtent {
         protected Geo[] pts;
         protected int length;
         protected Object id = GeoPath.Impl.this;
-        
+
         protected Impl() {}
 
         /**
@@ -176,8 +174,8 @@ public interface GeoPath extends GeoExtent {
         }
 
         /**
-         * Callback for the SegIt to find out how the GeoPath wants the
-         * segment IDed.
+         * Callback for the SegIt to find out how the GeoPath wants the segment
+         * IDed.
          * 
          * @param i The index of the segment in question.
          * @return Object that IDs the segment, could be this path, too. Depends
@@ -188,8 +186,8 @@ public interface GeoPath extends GeoExtent {
         }
 
         /**
-         * Callback for the PointIt to find out how the GeoPath wants the
-         * points IDed.
+         * Callback for the PointIt to find out how the GeoPath wants the points
+         * IDed.
          * 
          * @param i The index of the point in question.
          * @return Object that IDs the point, could be this path, too. Depends
@@ -259,10 +257,22 @@ public interface GeoPath extends GeoExtent {
 
             /**
              * Return Object ID for current segment.
+             * 
+             * @deprecated
              */
             public Object getSegId() {
                 return GeoPath.Impl.this.getSegID(i);
             }
+
+            /**
+             * GeoExtent method
+             * 
+             * @return Object ID for current segment.
+             */
+            public Object getID() {
+                return GeoPath.Impl.this.getSegID(i);
+            }
+
         }
 
         protected class PointIt implements GeoPath.PointIterator, GeoPoint {
@@ -271,7 +281,8 @@ public interface GeoPath extends GeoExtent {
             public PointIt() {}
 
             public boolean hasNext() {
-                return i < (length - 1); // need -1, because of the i++ in nextPoint.
+                return i < (length - 1); // need -1, because of the i++ in
+                                            // nextPoint.
             }
 
             public Object next() {
@@ -288,10 +299,22 @@ public interface GeoPath extends GeoExtent {
             }
 
             public Geo getPoint() {
-                 return pts[i];
+                return pts[i];
             }
 
+            /**
+             * @deprecated use getID() instead.
+             */
             public Object getPointId() {
+                return GeoPath.Impl.this.getPointID(i);
+            }
+
+            /**
+             * GeoExtent method
+             * 
+             * @return Object ID for current point.
+             */
+            public Object getID() {
                 return GeoPath.Impl.this.getPointID(i);
             }
 
@@ -300,8 +323,19 @@ public interface GeoPath extends GeoExtent {
             }
         }
 
+        /**
+         * @deprecated use getID() instead.
+         */
         public Object getPathID() {
             return id;
+        }
+
+        public Object getID() {
+            return id;
+        }
+
+        public void setID(Object id) {
+            this.id = id;
         }
     }
 

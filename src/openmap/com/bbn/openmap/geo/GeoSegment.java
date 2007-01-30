@@ -21,27 +21,19 @@ package com.bbn.openmap.geo;
 
 public interface GeoSegment extends GeoExtent {
     /**
-     * @return the current segment as a two-element array of Geo The
-     *         first point is the "current point" and the second is
-     *         the next. If there isn't another point available, will
-     *         throw an indexOutOfBounds exception.
+     * @return the current segment as a two-element array of Geo The first point
+     *         is the "current point" and the second is the next. If there isn't
+     *         another point available, will throw an indexOutOfBounds
+     *         exception.
      */
     Geo[] getSeg();
 
     /**
-     * @return the current segment as a float[]. The first point is
-     *         the "current point" and the second is the next. If
-     *         there isn't another point available, will throw an
-     *         indexOutOfBounds exception.
+     * @return the current segment as a float[]. The first point is the "current
+     *         point" and the second is the next. If there isn't another point
+     *         available, will throw an indexOutOfBounds exception.
      */
     float[] getSegArray();
-
-    /**
-     * @return an opaque indicator for which segment is being current.
-     *         Different implementations may document the type to be
-     *         returned.
-     */
-    Object getSegId();
 
     public static class Impl implements GeoSegment {
         protected Geo[] seg;
@@ -55,7 +47,7 @@ public interface GeoSegment extends GeoExtent {
         public Impl(Geo[] segment) {
             seg = segment;
         }
-        
+
         public Geo[] getSeg() {
             return seg;
         }
@@ -69,12 +61,26 @@ public interface GeoSegment extends GeoExtent {
         public BoundingCircle getBoundingCircle() {
             return new BoundingCircle.Impl(seg);
         }
-        
+
+        /**
+         * @deprecated use getID() instead.
+         */
         public void setSegId(Object segId) {
             id = segId;
         }
-        
+
+        /**
+         * @deprecated use getID() instead.
+         */
         public Object getSegId() {
+            return id;
+        }
+
+        public void setID(Object pid) {
+            id = pid;
+        }
+
+        public Object getID() {
             return id;
         }
     }

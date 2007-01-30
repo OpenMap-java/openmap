@@ -14,8 +14,8 @@
 package com.bbn.openmap.geo;
 
 /**
- * An arbitrary space described in terms of Geo objects. GeoRegions
- * are assumed to be closed paths representing areas.
+ * An arbitrary space described in terms of Geo objects. GeoRegions are assumed
+ * to be closed paths representing areas.
  */
 public interface GeoRegion extends GeoPath {
 
@@ -27,14 +27,11 @@ public interface GeoRegion extends GeoPath {
      */
     boolean isPointInside(Geo point);
 
-    Object getRegionId();
-
     // ------------------------------
     // Basic Implementation
     // ------------------------------
 
     public static class Impl extends GeoPath.Impl implements GeoRegion {
-        protected Object id = GeoRegion.Impl.this;
 
         public Impl(Geo[] coords) {
             super(coords);
@@ -53,17 +50,22 @@ public interface GeoRegion extends GeoPath {
          * Create a region of LatLon pairs.
          * 
          * @param lls alternating lat/lon values.
-         * @param isDegrees true if lat/lon are in degrees, false if
-         *        in radians.
+         * @param isDegrees true if lat/lon are in degrees, false if in radians.
          */
         public Impl(float[] lls, boolean isDegrees) {
             super(lls, isDegrees);
         }
 
+        /**
+         * @deprecated use getID() instead.
+         */
         public void setRegionId(Object rid) {
             id = rid;
         }
 
+        /**
+         * @deprecated use getID() instead.
+         */
         public Object getRegionId() {
             return id;
         }

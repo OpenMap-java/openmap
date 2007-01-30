@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoExtent.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/07/21 22:58:27 $
+//$Revision: 1.3 $
+//$Date: 2007/01/30 20:37:04 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -30,6 +30,8 @@ package com.bbn.openmap.geo;
  * plotted on a map.
  */
 public interface GeoExtent {
-    /** compute a point and radius around the extent * */
+    /** compute a point and radius around the extent. */
     BoundingCircle getBoundingCircle();
+    /** return an object that this extent represents. */
+    Object getID();
 }

@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoIntersectionLayer.java,v $
-//$Revision: 1.3 $
-//$Date: 2006/08/25 15:36:16 $
+//$Revision: 1.4 $
+//$Date: 2007/01/30 20:37:06 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -770,7 +770,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
             poly = omp;
         }
 
-        public Object getRegionId() {
+        public Object getID() {
             return GeoIntersectionLayer.OMPolyRegion.this;
         }
 
@@ -808,9 +808,9 @@ public class GeoIntersectionLayer extends EditorLayer implements
         /*
          * (non-Javadoc)
          * 
-         * @see com.bbn.openmap.geo.GeoSegment#getSegId()
+         * @see com.bbn.openmap.geo.GeoExtent#getID()
          */
-        public Object getSegId() {
+        public Object getID() {
             return this;
         }
 
