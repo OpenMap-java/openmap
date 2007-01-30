@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: EsriGraphicFactory.java,v $
-//$Revision: 1.5 $
-//$Date: 2007/01/30 18:39:36 $
+//$Revision: 1.6 $
+//$Date: 2007/01/30 20:15:19 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -44,6 +44,7 @@ import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class EsriGraphicFactory implements ShapeConstants {
 
@@ -74,6 +75,9 @@ public class EsriGraphicFactory implements ShapeConstants {
         }
         int offset = 100; // next byte past header;
 
+        // Put a flag in here to force the file to be read until EOF
+        boolean ignoreFileLength = logger.isLoggable(Level.FINE);
+
         EsriGraphicFactory.ReadByteTracker byteTracker = new EsriGraphicFactory.ReadByteTracker();
         try {
             OMGraphic eg = makeEsriGraphicFromRecord(offset,
@@ -84,7 +88,7 @@ public class EsriGraphicFactory implements ShapeConstants {
             // 8 for shape type and record length
             offset += byteTracker.currentCount + 8;
 
-            while (offset != header.fileLength) {
+            while (offset != header.fileLength || ignoreFileLength) {
                 projGraphicAndAdd(eg, list, mapProj);
                 try {
                     eg = makeEsriGraphicFromRecord(offset,
@@ -131,7 +135,7 @@ public class EsriGraphicFactory implements ShapeConstants {
 
         // Put a flag in here to force the file to be read until EOF
         boolean ignoreFileLength = logger.isLoggable(Level.FINE);
-        
+
         EsriGraphicFactory.ReadByteTracker byteTracker = new EsriGraphicFactory.ReadByteTracker();
         try {
             OMGraphic eg = makeEsriGraphicFromRecord(offset,
@@ -1008,8 +1012,10 @@ public class EsriGraphicFactory implements ShapeConstants {
                 ms[i] = shpFile.readDouble();
             }
 
-            omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE, new Double(minM));
-            omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE, new Double(maxM));
+            omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
+                    new Double(minM));
+            omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
+                    new Double(maxM));
             omg.putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE, ms);
             byteTracker.addRead((2 + numPoints) * 8);
         }
@@ -1063,8 +1069,10 @@ public class EsriGraphicFactory implements ShapeConstants {
                 ms[i] = iStream.readLEDouble();
             }
 
-            omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE, new Double(minM));
-            omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE, new Double(maxM));
+            omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
+                    new Double(minM));
+            omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
+                    new Double(maxM));
             omg.putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE, ms);
             byteTracker.addRead((2 + numPoints) * 8);
         }
@@ -1150,8 +1158,10 @@ public class EsriGraphicFactory implements ShapeConstants {
             }
 
             OMGraphic omg = (OMGraphic) ret;
-            omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE, new Double(minM));
-            omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE, new Double(maxM));
+            omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
+                    new Double(minM));
+            omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
+                    new Double(maxM));
             omg.putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE, ms);
             byteTracker.addRead((2 + numPoints) * 8);
         }
@@ -1193,8 +1203,10 @@ public class EsriGraphicFactory implements ShapeConstants {
             }
 
             OMGraphic omg = (OMGraphic) ret;
-            omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE, new Double(minM));
-            omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE, new Double(maxM));
+            omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
+                    new Double(minM));
+            omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
+                    new Double(maxM));
             omg.putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE, ms);
             byteTracker.addRead((2 + numPoints) * 8);
         }
@@ -1335,19 +1347,25 @@ public class EsriGraphicFactory implements ShapeConstants {
 
         float[] coords = new float[isPolygon ? length * 2 + 2 : length * 2];
         int j = 0;
+
+        LatLonPoint llp = null;
+        if (dataProj != null) {
+            llp = new LatLonPoint.Double();
+        }
+
         for (j = 0; j < length; j++) {
             double x = shpFile.readDouble();
             double y = shpFile.readDouble();
             bitTracker.addRead(2 * 8);
 
             if (dataProj != null) {
-                Point2D llp = dataProj.inverse(x, y);
-                x = llp.getX();
-                y = llp.getY();
+                dataProj.inverse(x, y, llp);
+                x = llp.getRadLon();
+                y = llp.getRadLat();
+            } else {
+                x = ProjMath.degToRad(x);
+                y = ProjMath.degToRad(y);
             }
-
-            x = ProjMath.degToRad(x);
-            y = ProjMath.degToRad(y);
 
             coords[j * 2] = (float) y;
             coords[j * 2 + 1] = (float) x;
@@ -1368,20 +1386,26 @@ public class EsriGraphicFactory implements ShapeConstants {
 
         float[] coords = new float[isPolygon ? length * 2 + 2 : length * 2];
         int j = 0;
+        
+        LatLonPoint llp = null;
+        if (dataProj != null) {
+            llp = new LatLonPoint.Double();
+        }
+        
         for (j = 0; j < length; j++) {
             double x = iStream.readLEDouble();
             double y = iStream.readLEDouble();
             bitTracker.addRead(2 * 8);
 
             if (dataProj != null) {
-                Point2D llp = dataProj.inverse(x, y);
-                x = llp.getX();
-                y = llp.getY();
+                dataProj.inverse(x, y, llp);
+                x = llp.getRadLon();
+                y = llp.getRadLat();
+            } else {
+                x = ProjMath.degToRad(x);
+                y = ProjMath.degToRad(y);
             }
-
-            x = ProjMath.degToRad(x);
-            y = ProjMath.degToRad(y);
-
+            
             coords[j * 2] = (float) y;
             coords[j * 2 + 1] = (float) x;
         }
@@ -1400,20 +1424,26 @@ public class EsriGraphicFactory implements ShapeConstants {
 
         double[] coords = new double[length * 2];
         int j = 0;
+        
+        LatLonPoint llp = null;
+        if (dataProj != null) {
+            llp = new LatLonPoint.Double();
+        }
+        
         for (j = 0; j < length; j++) {
             double x = shpFile.readDouble();
             double y = shpFile.readDouble();
             bitTracker.addRead(2 * 8);
 
             if (dataProj != null) {
-                Point2D llp = dataProj.inverse(x, y);
-                x = llp.getX();
-                y = llp.getY();
+                dataProj.inverse(x, y, llp);
+                x = llp.getRadLon();
+                y = llp.getRadLat();
+            } else {
+                x = ProjMath.degToRad(x);
+                y = ProjMath.degToRad(y);
             }
-
-            x = ProjMath.degToRad(x);
-            y = ProjMath.degToRad(y);
-
+            
             coords[j * 2] = y;
             coords[j * 2 + 1] = x;
         }
@@ -1433,20 +1463,26 @@ public class EsriGraphicFactory implements ShapeConstants {
 
         double[] coords = new double[length * 2];
         int j = 0;
+        
+        LatLonPoint llp = null;
+        if (dataProj != null) {
+            llp = new LatLonPoint.Double();
+        }
+        
         for (j = 0; j < length; j++) {
             double x = iStream.readLEDouble();
             double y = iStream.readLEDouble();
             bitTracker.addRead(2 * 8);
 
             if (dataProj != null) {
-                Point2D llp = dataProj.inverse(x, y);
-                x = llp.getX();
-                y = llp.getY();
+                dataProj.inverse(x, y, llp);
+                x = llp.getRadLon();
+                y = llp.getRadLat();
+            } else {
+                x = ProjMath.degToRad(x);
+                y = ProjMath.degToRad(y);
             }
-
-            x = ProjMath.degToRad(x);
-            y = ProjMath.degToRad(y);
-
+            
             coords[j * 2] = y;
             coords[j * 2 + 1] = x;
         }
@@ -1643,9 +1679,10 @@ public class EsriGraphicFactory implements ShapeConstants {
             mMin = iStream.readLEDouble();
             mMax = iStream.readLEDouble();
         }
-        
+
         public String toString() {
-            return "header[fc=" + fileCode + ",len=" + fileLength + ",ver=" + version + ",type=" + shapeType + "]"; 
+            return "header[fc=" + fileCode + ",len=" + fileLength + ",ver="
+                    + version + ",type=" + shapeType + "]";
         }
     }
 }

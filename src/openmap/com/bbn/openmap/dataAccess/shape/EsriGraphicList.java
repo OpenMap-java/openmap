@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriGraphicList.java,v $
 // $RCSfile: EsriGraphicList.java,v $
-// $Revision: 1.8 $
-// $Date: 2007/01/30 18:39:35 $
+// $Revision: 1.9 $
+// $Date: 2007/01/30 20:15:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,12 +23,15 @@
 package com.bbn.openmap.dataAccess.shape;
 
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.net.URL;
 
 import com.bbn.openmap.dataAccess.shape.input.ShpInputStream;
+import com.bbn.openmap.dataAccess.shape.input.ShxInputStream;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -176,7 +179,7 @@ public abstract class EsriGraphicList extends OMGraphicList implements
         // Backward compatibility
         if (obj == null) {
             obj = getAppObject();
-}
+        }
         if (obj instanceof DbfTableModel) {
             return (DbfTableModel) obj;
         } else {
@@ -271,26 +274,71 @@ public abstract class EsriGraphicList extends OMGraphicList implements
 
         return list;
     }
-    
+
     public static void main(String[] args) {
         Debug.init();
-        if (args.length < 1) {
+
+        ArgParser ap = new ArgParser("ArgParser");
+        ap.add("fixcl", "Check and fix content length of Shape file", 1);
+        ap.add("print", "Display text structure of shapes in Shape file", 1);
+
+        if (!ap.parse(args)) {
+            ap.printUsage();
             System.exit(0);
         }
 
-        try {
+        String[] fixit = ap.getArgValues("fixcl");
+        if (fixit != null) {
+            String shape = fixit[0];
+            if (shape.endsWith(".shp")) {
+                shape = shape.substring(0, shape.length() - 4);
 
-            URL eglURL = PropUtils.getResourceOrFileOrURL(args[0]);
-
-            EsriGraphicList egl = EsriGraphicList.getEsriGraphicList(eglURL, null, null);
-            
-            if (egl != null) {
-                System.out.println(egl.getDescription());
+                try {
+                    URL shx = PropUtils.getResourceOrFileOrURL(shape + ".shx");
+                    InputStream is = shx.openStream();
+                    ShxInputStream pis = new ShxInputStream(is);
+                    int[][] index = pis.getIndex();
+                    is.close();
+                    
+                    RandomAccessFile raf = new RandomAccessFile(shape + ".shp", "rw");
+                    raf.seek(24);
+                    int contentLength = raf.readInt();
+                    
+                    int indexedContentLength = index[0][index[0].length - 1] + index[1][index[1].length - 1];
+                    
+                    if (contentLength != indexedContentLength) {
+                        System.out.println(shape + " content length - shp: " + contentLength + ", shx: " + indexedContentLength);
+                        raf.seek(24);
+                        raf.writeInt(indexedContentLength);
+                    }
+                    raf.close();
+                    
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                
+            } else {
+                System.out.println("Shape " + shape
+                        + " doesn't look like a shape file");
             }
-            
-        } catch (Exception e) {
-            Debug.error(e.getMessage());
-            e.printStackTrace();
+        }
+
+        String[] printit = ap.getArgValues("print");
+        if (printit != null) {
+            try {
+
+                URL eglURL = PropUtils.getResourceOrFileOrURL(printit[0]);
+                EsriGraphicList egl = EsriGraphicList.getEsriGraphicList(eglURL,
+                        null,
+                        null);
+                if (egl != null) {
+                    System.out.println(egl.getDescription());
+                }
+
+            } catch (Exception e) {
+                Debug.error(e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 }
