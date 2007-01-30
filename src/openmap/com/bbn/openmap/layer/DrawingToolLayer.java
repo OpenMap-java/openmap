@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.31 $
-// $Date: 2005/08/11 20:39:15 $
+// $Revision: 1.32 $
+// $Date: 2007/01/30 18:39:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,6 +45,8 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import com.bbn.openmap.I18n;
+import com.bbn.openmap.dataAccess.shape.DbfTableModel;
+import com.bbn.openmap.dataAccess.shape.EsriGraphicList;
 import com.bbn.openmap.dataAccess.shape.EsriShapeExport;
 import com.bbn.openmap.event.MapMouseEvent;
 import com.bbn.openmap.event.MapMouseMode;
@@ -65,39 +67,37 @@ import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.Inspector;
 
 /**
- * This layer can receive graphics from the OMDrawingToolLauncher, and
- * also sent it's graphics to the OMDrawingTool for editing.
+ * This layer can receive graphics from the OMDrawingToolLauncher, and also sent
+ * it's graphics to the OMDrawingTool for editing.
  * <P>
  * 
- * The projectionChanged() method is taken care of in the
- * OMGraphicHandlerLayer superclass.
+ * The projectionChanged() method is taken care of in the OMGraphicHandlerLayer
+ * superclass.
  * <P>
  * 
- * This class responds to all the properties that the
- * OMGraphicHandlerLayer repsonds to, including the mouseModes
- * property. If the mouseModes property isn't set, the
- * SelectMouseMode.modeID mode ID is set. When the MapMouseInterpreter
- * calls select(OMGraphic), the OMGraphic is passed to the
- * DrawingTool. This class also responds to the showHints property
- * (true by default), which dictates if tooltips and information
- * delegator text is displayed when the layer's contents are moused
- * over.
+ * This class responds to all the properties that the OMGraphicHandlerLayer
+ * repsonds to, including the mouseModes property. If the mouseModes property
+ * isn't set, the SelectMouseMode.modeID mode ID is set. When the
+ * MapMouseInterpreter calls select(OMGraphic), the OMGraphic is passed to the
+ * DrawingTool. This class also responds to the showHints property (true by
+ * default), which dictates if tooltips and information delegator text is
+ * displayed when the layer's contents are moused over.
  * 
  * <pre>
+ *                                
+ *                                # Properties for DrawingToolLayer:
+ *                                drawingToolLayer.class=com.bbn.openmap.layer.DrawingToolLayer
  *                               
- *                               # Properties for DrawingToolLayer:
- *                               drawingToolLayer.class=com.bbn.openmap.layer.DrawingToolLayer
- *                              
- *                               drawingToolLayer.prettyName=General Layer
- *                              
- *                               # optional flag to tell layer to display tooltip queues over it's OMGraphics
- *                               drawingToolLayer.showHints=true
- *                              
- *                               # optional flag to specify file to store and read OMGraphics.  A Save button 
- *                               # is available on the palette.  If it's not specified and the Save button is 
- *                               # chosen, the user will queried for this location.
- *                               drawingToolLayer.file=file to read OMGraphics from
- *  
+ *                                drawingToolLayer.prettyName=General Layer
+ *                               
+ *                                # optional flag to tell layer to display tooltip queues over it's OMGraphics
+ *                                drawingToolLayer.showHints=true
+ *                               
+ *                                # optional flag to specify file to store and read OMGraphics.  A Save button 
+ *                                # is available on the palette.  If it's not specified and the Save button is 
+ *                                # chosen, the user will queried for this location.
+ *                                drawingToolLayer.file=file to read OMGraphics from
+ *   
  * </pre>
  */
 public class DrawingToolLayer extends OMGraphicHandlerLayer implements
@@ -112,14 +112,14 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     protected boolean showHints = true;
 
     /**
-     * A property that can control whether mouse events generate hints
-     * over map objects (showHints).
+     * A property that can control whether mouse events generate hints over map
+     * objects (showHints).
      */
     public final static String ShowHintsProperty = "showHints";
 
     /**
-     * A property to specify the file to use to read and save map
-     * objects in (file).
+     * A property to specify the file to use to read and save map objects in
+     * (file).
      */
     public final static String SerializedURLNameProperty = "file";
 
@@ -131,7 +131,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     protected boolean DTL_DEBUG = false;
 
     public DrawingToolLayer() {
-        //setList(new OMGraphicList());
+        // setList(new OMGraphicList());
         setAddToBeanContext(true);
 
         DTL_DEBUG = Debug.debugging("dtl");
@@ -257,8 +257,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * If the DrawingToolLayer is using a hidden OMDrawingTool,
-     * release the proxy lock on the active MapMouseMode.
+     * If the DrawingToolLayer is using a hidden OMDrawingTool, release the
+     * proxy lock on the active MapMouseMode.
      */
     public void releaseProxyMouseMode() {
         MapMouseMode pmmm = getProxyMouseMode();
@@ -282,8 +282,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Called by findAndInit(Iterator) so subclasses can find objects,
-     * too.
+     * Called by findAndInit(Iterator) so subclasses can find objects, too.
      */
     public void findAndInit(Object someObj) {
         if (someObj instanceof OMDrawingTool) {
@@ -293,8 +292,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * BeanContextMembershipListener method. Called when a new object
-     * is removed from the BeanContext of this object.
+     * BeanContextMembershipListener method. Called when a new object is removed
+     * from the BeanContext of this object.
      */
     public void findAndUndo(Object someObj) {
         if (someObj instanceof DrawingTool && getDrawingTool() == someObj) {
@@ -306,36 +305,33 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     protected MapMouseMode proxyMMM = null;
 
     /**
-     * Set the ProxyMouseMode for the internal drawing tool, if there
-     * is one. Can be null. Used to reset the mouse mode when
-     * drawing's complete.
+     * Set the ProxyMouseMode for the internal drawing tool, if there is one.
+     * Can be null. Used to reset the mouse mode when drawing's complete.
      */
     protected synchronized void setProxyMouseMode(MapMouseMode mmm) {
         proxyMMM = mmm;
     }
 
     /**
-     * Get the ProxyMouseMode for the internal drawing tool, if there
-     * is one. May be null. Used to reset the mouse mode when
-     * drawing's complete.
+     * Get the ProxyMouseMode for the internal drawing tool, if there is one.
+     * May be null. Used to reset the mouse mode when drawing's complete.
      */
     protected synchronized MapMouseMode getProxyMouseMode() {
         return proxyMMM;
     }
 
     /**
-     * A method called from within different MapMouseListener methods
-     * to check whether an OMGraphic *should* be edited if the
-     * OMDrawingTool is able to edit it. Can be used by subclasses to
-     * delineate between OMGraphics that are non-relocatable versus
-     * those that can be moved. This method should work together with
-     * the getToolTipForOMGraphic() method so that OMGraphics that
-     * shouldn't be edited don't provide tooltips that suggest that
-     * they can be.
+     * A method called from within different MapMouseListener methods to check
+     * whether an OMGraphic *should* be edited if the OMDrawingTool is able to
+     * edit it. Can be used by subclasses to delineate between OMGraphics that
+     * are non-relocatable versus those that can be moved. This method should
+     * work together with the getToolTipForOMGraphic() method so that OMGraphics
+     * that shouldn't be edited don't provide tooltips that suggest that they
+     * can be.
      * <P>
      * 
-     * By default, this method always returns true because the
-     * DrawingToolLayer always thinks the OMGraphic should be edited.
+     * By default, this method always returns true because the DrawingToolLayer
+     * always thinks the OMGraphic should be edited.
      */
     public boolean shouldEdit(OMGraphic omgr) {
         return true;
@@ -362,14 +358,16 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             gridbag.setConstraints(jcb, c);
             box.add(jcb);
 
-
             JPanel goPanel = new JPanel();
             gridbag.setConstraints(goPanel, c);
             box.add(goPanel);
-            
+
             interString = i18n.get(DrawingToolLayer.class, "OK", "OK");
             JButton button = new JButton(interString);
-            interString = i18n.get(DrawingToolLayer.class, "OK", I18n.TOOLTIP, "Do action and dismiss window.");
+            interString = i18n.get(DrawingToolLayer.class,
+                    "OK",
+                    I18n.TOOLTIP,
+                    "Do action and dismiss window.");
             button.setToolTipText(interString);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
@@ -378,10 +376,13 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                 }
             });
             goPanel.add(button);
-            
+
             interString = i18n.get(DrawingToolLayer.class, "Apply", "Apply");
             button = new JButton(interString);
-            interString = i18n.get(DrawingToolLayer.class, "Apply", I18n.TOOLTIP, "Do action and leave window up.");
+            interString = i18n.get(DrawingToolLayer.class,
+                    "Apply",
+                    I18n.TOOLTIP,
+                    "Do action and leave window up.");
             button.setToolTipText(interString);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
@@ -389,10 +390,13 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                 }
             });
             goPanel.add(button);
-            
+
             interString = i18n.get(DrawingToolLayer.class, "Cancel", "Cancel");
             button = new JButton(interString);
-            interString = i18n.get(DrawingToolLayer.class, "Cancel", I18n.TOOLTIP, "Do nothing and dismiss window.");
+            interString = i18n.get(DrawingToolLayer.class,
+                    "Cancel",
+                    I18n.TOOLTIP,
+                    "Do nothing and dismiss window.");
             button.setToolTipText(interString);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
@@ -413,8 +417,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * You can override this class if you want to provide more, fewer
-     * or different actions to the user.
+     * You can override this class if you want to provide more, fewer or
+     * different actions to the user.
      * 
      * @return Vector of Actions
      */
@@ -434,7 +438,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
 
             public void actionPerformed(ActionEvent e) {
                 OMGraphicList list = getList();
-                if (list != null) {
+                if (list != null && list.size() > 0) {
                     EsriShapeExport ese = new EsriShapeExport(list, getProjection(), null);
                     ese.export();
                 } else {
@@ -477,14 +481,14 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                         "Change preferences");
             }
         });
-  
+
         return actions;
     }
 
     /**
-     * Get the current OMGraphicList and save it out to the file named
-     * in this class. If that's null, the user will be asked for one.
-     *  
+     * Get the current OMGraphicList and save it out to the file named in this
+     * class. If that's null, the user will be asked for one.
+     * 
      */
     public void saveOMGraphics() {
         if (fileName == null) {
@@ -524,9 +528,14 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             try {
                 URL url = PropUtils.getResourceOrFileOrURL(fileName);
                 if (url != null) {
-                    ObjectInputStream ois = new ObjectInputStream(url.openStream());
-                    list = (OMGraphicList) ois.readObject();
-                    ois.close();
+                    if (fileName.endsWith("shp")) {
+                        DbfTableModel dbf = DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(fileName.replace(".shp", ".dbf")));;
+                        list = EsriGraphicList.getEsriGraphicList(url, null, dbf);
+                    } else {
+                        ObjectInputStream ois = new ObjectInputStream(url.openStream());
+                        list = (OMGraphicList) ois.readObject();
+                        ois.close();
+                    }
                     return list;
                 }
             } catch (FileNotFoundException e) {
@@ -571,10 +580,9 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Query that an OMGraphic can be highlighted when the mouse moves
-     * over it. If the answer is true, then highlight with this
-     * OMGraphics will be called, in addition to getInfoText() and
-     * getToolTipTextFor()
+     * Query that an OMGraphic can be highlighted when the mouse moves over it.
+     * If the answer is true, then highlight with this OMGraphics will be
+     * called, in addition to getInfoText() and getToolTipTextFor()
      */
     public boolean isHighlightable(OMGraphic omg) {
         return showHints;
@@ -593,8 +601,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             "Click to edit.");
 
     /**
-     * Query for what text should be placed over the information bar
-     * when the mouse is over a particular OMGraphic.
+     * Query for what text should be placed over the information bar when the
+     * mouse is over a particular OMGraphic.
      */
     public String getInfoText(OMGraphic omg) {
         DrawingTool dt = getDrawingTool();
@@ -606,8 +614,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Query for what tooltip to display for an OMGraphic when the
-     * mouse is over it.
+     * Query for what tooltip to display for an OMGraphic when the mouse is over
+     * it.
      */
     public String getToolTipTextFor(OMGraphic omgr) {
         OMDrawingTool dt = getDrawingTool();
@@ -639,10 +647,10 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
 
         if (dt != null && dt.canEdit(omg.getClass())) {
 
-            //          if (dt.isEditing(omg)) {
-            //              dt.deselect(omg);
-            //              return;
-            //          }
+            // if (dt.isEditing(omg)) {
+            // dt.deselect(omg);
+            // return;
+            // }
 
             dt.resetBehaviorMask();
 

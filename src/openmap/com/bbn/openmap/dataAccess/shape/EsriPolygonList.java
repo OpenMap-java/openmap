@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygonList.java,v $
 // $RCSfile: EsriPolygonList.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/08/25 15:36:13 $
+// $Revision: 1.11 $
+// $Date: 2007/01/30 18:39:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,6 +64,7 @@ public class EsriPolygonList extends EsriGraphicList {
                 EsriPolygon eg = convert((OMPoly) shape);
                 if (typeMatches(eg)) {
                     graphics.add(eg);
+                    addExtents(eg.getExtents());
                 }
             } else if (shape instanceof OMGraphicList
                     && !((OMGraphicList) shape).isVague()) {

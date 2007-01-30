@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriGraphicList.java,v $
 // $RCSfile: EsriGraphicList.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/08/25 15:36:14 $
+// $Revision: 1.8 $
+// $Date: 2007/01/30 18:39:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,6 +30,7 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * EsriGraphicList ensures that only supported geometry types are added to its
@@ -269,5 +270,27 @@ public abstract class EsriGraphicList extends OMGraphicList implements
         }
 
         return list;
+    }
+    
+    public static void main(String[] args) {
+        Debug.init();
+        if (args.length < 1) {
+            System.exit(0);
+        }
+
+        try {
+
+            URL eglURL = PropUtils.getResourceOrFileOrURL(args[0]);
+
+            EsriGraphicList egl = EsriGraphicList.getEsriGraphicList(eglURL, null, null);
+            
+            if (egl != null) {
+                System.out.println(egl.getDescription());
+            }
+            
+        } catch (Exception e) {
+            Debug.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

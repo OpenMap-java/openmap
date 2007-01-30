@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolylineList.java,v $
 // $RCSfile: EsriPolylineList.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/08/25 15:36:14 $
+// $Revision: 1.10 $
+// $Date: 2007/01/30 18:39:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -56,6 +56,7 @@ public class EsriPolylineList extends EsriGraphicList {
                 EsriPolyline eg = convert((OMPoly) shape);
                 if (typeMatches(eg)) {
                     graphics.add(eg);
+                    addExtents(eg.getExtents());
                 }
             } else if (shape instanceof OMLine) {
                 OMPoly omp = EsriPolylineList.convert((OMLine) shape);
@@ -63,6 +64,7 @@ public class EsriPolylineList extends EsriGraphicList {
                     EsriPolyline eg = convert(omp);
                     if (typeMatches(eg)) {
                         graphics.add(eg);
+                        addExtents(eg.getExtents());
                     }
                 }
             } else if (shape instanceof OMGraphicList

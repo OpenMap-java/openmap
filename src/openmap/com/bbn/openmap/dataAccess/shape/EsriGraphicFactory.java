@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: EsriGraphicFactory.java,v $
-//$Revision: 1.4 $
-//$Date: 2006/09/05 14:18:29 $
+//$Revision: 1.5 $
+//$Date: 2007/01/30 18:39:36 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -129,6 +129,9 @@ public class EsriGraphicFactory implements ShapeConstants {
         }
         int offset = 100; // next byte past header;
 
+        // Put a flag in here to force the file to be read until EOF
+        boolean ignoreFileLength = logger.isLoggable(Level.FINE);
+        
         EsriGraphicFactory.ReadByteTracker byteTracker = new EsriGraphicFactory.ReadByteTracker();
         try {
             OMGraphic eg = makeEsriGraphicFromRecord(offset,
@@ -139,7 +142,7 @@ public class EsriGraphicFactory implements ShapeConstants {
             // 8 for shape type and record length
             offset += byteTracker.currentCount + 8;
 
-            while (offset != header.fileLength) {
+            while (offset != header.fileLength || ignoreFileLength) {
                 projGraphicAndAdd(eg, list, mapProj);
                 try {
                     eg = makeEsriGraphicFromRecord(offset,

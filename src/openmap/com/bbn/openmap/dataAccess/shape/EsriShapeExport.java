@@ -499,11 +499,11 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         // call the file chooser if no path is given
         if (filePath == null) {
             filePath = getFilePathFromUser();
-            
+
             if (filePath == null) {
                 return; // User cancelled.
             }
-            
+
             needConfirmation = true;
         }
 
@@ -958,6 +958,13 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
                 if (filePath == null) {
                     return;
                 }
+            }
+
+            // This helps when a file chooser has been used to pick a file to be
+            // replaced.
+            if (filePath.endsWith(".shp") || filePath.endsWith(".shx")
+                    || filePath.endsWith(".dbf")) {
+                filePath = filePath.substring(0, filePath.length() - 4);
             }
 
             shpFile = new File(filePath + ".shp");

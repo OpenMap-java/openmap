@@ -14,18 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/ShpOutputStream.java,v $
 // $RCSfile: ShpOutputStream.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 17:25:09 $
+// $Revision: 1.6 $
+// $Date: 2007/01/30 18:39:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape.output;
 
-import java.io.*;
-import com.bbn.openmap.omGraphics.*;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Logger;
+
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.dataAccess.shape.*;
+import com.bbn.openmap.dataAccess.shape.EsriGraphic;
+import com.bbn.openmap.dataAccess.shape.EsriGraphicList;
+import com.bbn.openmap.dataAccess.shape.EsriPointList;
+import com.bbn.openmap.dataAccess.shape.EsriPolygonList;
+import com.bbn.openmap.dataAccess.shape.EsriPolylineList;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMPoly;
 
 /**
  * Writes data to a .shp file
@@ -33,9 +44,12 @@ import com.bbn.openmap.dataAccess.shape.*;
  * @author Doug Van Auken
  */
 public class ShpOutputStream {
+
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.shape.output.ShpOutputStream");
+
     /**
-     * An outputstream that writes primitive data types in little
-     * endian or big endian
+     * An outputstream that writes primitive data types in little endian or big
+     * endian
      */
     private LittleEndianOutputStream _leos = null;
 
@@ -65,9 +79,9 @@ public class ShpOutputStream {
     }
 
     /**
-     * Calculates the content length for each record, in terms of
-     * words as defined by ESRI documentation. A word is 16 bits, so a
-     * double is 4 words and an int is 2 words.
+     * Calculates the content length for each record, in terms of words as
+     * defined by ESRI documentation. A word is 16 bits, so a double is 4 words
+     * and an int is 2 words.
      * 
      * @param list The EsriGraphicList to write
      * @return The index data that is used to create the .shx file
@@ -77,12 +91,12 @@ public class ShpOutputStream {
 
         int pos = 50;
         for (int i = 0; i < list.size(); i++) {
-            //OMGraphicList sublist =
+            // OMGraphicList sublist =
             // (OMGraphicList)list.getOMGraphicAt(i);
             int contentLength = 0;
-            contentLength += 2; //Shape Type
-            contentLength += 4; //X
-            contentLength += 4; //Y
+            contentLength += 2; // Shape Type
+            contentLength += 4; // X
+            contentLength += 4; // Y
             indexData[1][i] = contentLength;
             indexData[0][i] = pos;
             pos += contentLength + 4;
@@ -91,10 +105,9 @@ public class ShpOutputStream {
     }
 
     /**
-     * Creates a two dimensional array holding a list of shape content
-     * lengths and shape content length offsets, as defined in Esri
-     * shape file documentation. This array is used to create the .shx
-     * file
+     * Creates a two dimensional array holding a list of shape content lengths
+     * and shape content length offsets, as defined in Esri shape file
+     * documentation. This array is used to create the .shx file
      * 
      * @param list The list from which to create the respective array
      * @return The index data that is used to create the .shx file
@@ -109,10 +122,10 @@ public class ShpOutputStream {
             int contentLength = 0;
             OMGraphic graphic = (OMGraphic) list.getOMGraphicAt(i);
 
-            contentLength += 2; //Shape Type
-            contentLength += 16; //Box
-            contentLength += 2; //NumParts
-            contentLength += 2; //NumPoints
+            contentLength += 2; // Shape Type
+            contentLength += 16; // Box
+            contentLength += 2; // NumParts
+            contentLength += 2; // NumPoints
 
             if (graphic instanceof OMGraphicList) {
                 OMGraphicList sublist = (OMGraphicList) graphic;
@@ -122,7 +135,7 @@ public class ShpOutputStream {
                     OMPoly poly = (OMPoly) sublist.getOMGraphicAt(j);
                     data = poly.getLatLonArray();
 
-                    //each value equals 4 words
+                    // each value equals 4 words
                     contentLength += data.length * 4;
                 }
             } else {
@@ -130,7 +143,7 @@ public class ShpOutputStream {
 
                 // Should be an EsriPolyline
                 data = ((OMPoly) graphic).getLatLonArray();
-                //each value equals 4 words
+                // each value equals 4 words
                 contentLength += data.length * 4;
             }
 
@@ -142,8 +155,8 @@ public class ShpOutputStream {
     }
 
     /**
-     * Creates an array whose elements specify at what index a shapes
-     * geometry begins
+     * Creates an array whose elements specify at what index a shapes geometry
+     * begins
      * 
      * @param contentLengths The array for which to get offsets from
      * @return An array of record offsets
@@ -159,8 +172,8 @@ public class ShpOutputStream {
     }
 
     /**
-     * Creates an array whose elements specifies at what index a parts
-     * geometry begins
+     * Creates an array whose elements specifies at what index a parts geometry
+     * begins
      * 
      * @param sublist A list of shapes
      * @return An array of part offsets
@@ -178,8 +191,8 @@ public class ShpOutputStream {
     }
 
     /**
-     * Iterates through a list of shapes, summing the points per part
-     * to determine the number of points per shape
+     * Iterates through a list of shapes, summing the points per part to
+     * determine the number of points per shape
      * 
      * @param sublist A list of shapes
      * @return The number of points for a given shape
@@ -204,7 +217,7 @@ public class ShpOutputStream {
         if (extents[0] == 90f && extents[1] == 180f && extents[2] == -90f
                 && extents[3] == -180f) {
 
-            //Whoa! not set from defaults correctly!
+            // Whoa! not set from defaults correctly!
             // use old, hardcoded way.
             _leos.writeLEDouble(-180.0);
             _leos.writeLEDouble(-90.0);
@@ -221,53 +234,55 @@ public class ShpOutputStream {
     }
 
     /**
-     * Writes polygon geometry to the class scope
-     * LittleEndianInputStream.
+     * Writes polygon geometry to the class scope LittleEndianInputStream.
      * 
      * @param list The list of geometry objects to save
-     * @return A two dimensional array containing shape offsets and
-     *         content lengths
+     * @return A two dimensional array containing shape offsets and content
+     *         lengths
      */
     public int[][] writePolyGeometry(EsriGraphicList list) throws IOException {
 
         OMPoly poly;
 
-        _leos.writeInt(9994); //Byte 0 File Code
-        _leos.writeInt(0); //Byte 4 Unused
-        _leos.writeInt(0); //Byte 8 Unused
-        _leos.writeInt(0); //Byte 12 Unused
-        _leos.writeInt(0); //Byte 16 Unused
-        _leos.writeInt(0); //Byte 20 Unused
+        _leos.writeInt(9994); // Byte 0 File Code
+        _leos.writeInt(0); // Byte 4 Unused
+        _leos.writeInt(0); // Byte 8 Unused
+        _leos.writeInt(0); // Byte 12 Unused
+        _leos.writeInt(0); // Byte 16 Unused
+        _leos.writeInt(0); // Byte 20 Unused
 
         int[][] indexData = createPolyIndex(list);
-        int contentLength = list.size();
-        contentLength *= 4; //Multiply each shape by 4 words
-        contentLength += 50; //Add 50 words for the header section.
+        int contentLength = 50;
 
-        _leos.writeInt(contentLength); //Byte 24 File Length
-        _leos.writeLEInt(1000); //Byte 28 Version
-        _leos.writeLEInt(list.getType()); //Byte 32 Shape Type
+        if (list.size() > 0) {
+            contentLength = indexData[0][indexData[0].length - 1]
+                    + indexData[1][indexData[0].length - 1];
+        }
 
-        //Writes bounding box.
+        _leos.writeInt(contentLength); // Byte 24 File Length
+        _leos.writeLEInt(1000); // Byte 28 Version
+        _leos.writeLEInt(list.getType()); // Byte 32 Shape Type
+
+        // Writes bounding box.
         float[] extents = list.getExtents();
         writeExtents(extents);
 
-        _leos.writeDouble(0.0); //Byte 68
-        _leos.writeDouble(0.0); //Byte 76
-        _leos.writeDouble(0.0); //Byte 84
-        _leos.writeDouble(0.0); //Byte 92
+        _leos.writeDouble(0.0); // Byte 68
+        _leos.writeDouble(0.0); // Byte 76
+        _leos.writeDouble(0.0); // Byte 84
+        _leos.writeDouble(0.0); // Byte 92
 
-        //Iterate through the list
+        // Iterate through the list
         for (int i = 0; i < list.size(); i++) {
 
             OMGraphic graphic = list.getOMGraphicAt(i);
 
-            //Record header
+            // Record header
             _leos.writeInt(i + 1); // Record numbers start with 1
             _leos.writeInt(indexData[1][i]);
 
-            //Beginning of Geometry data
-            _leos.writeLEInt(list.getType()); //Little endian
+            // Beginning of Geometry data
+            _leos.writeLEInt(list.getType()); // Little endian
 
             // More stuff needs to be written out for just the OMPoly
             // case...
@@ -280,26 +295,26 @@ public class ShpOutputStream {
                 // changing.
                 EsriGraphicList sublist = (EsriGraphicList) graphic;
 
-                //Writes bounding box.
+                // Writes bounding box.
                 extents = sublist.getExtents();
                 writeExtents(extents);
 
-                //Writes number of parts
+                // Writes number of parts
                 int numParts = sublist.size();
                 _leos.writeLEInt(numParts);
 
-                //Write number of points per shape
+                // Write number of points per shape
                 int numPoints = getPointsPerShape(sublist);
                 _leos.writeLEInt(numPoints);
 
-                //Write the offsets to each part for a given shape
+                // Write the offsets to each part for a given shape
                 int[] offsets = getPartOffsets(sublist);
 
                 for (int j = 0; j < offsets.length; j++) {
                     _leos.writeLEInt(offsets[j]);
                 }
 
-                //Write the geometry for each part
+                // Write the geometry for each part
                 for (int j = 0; j < sublist.size(); j++) {
                     poly = (OMPoly) sublist.getOMGraphicAt(j);
                     float[] data = poly.getLatLonArray();
@@ -315,16 +330,16 @@ public class ShpOutputStream {
                 extents = ((EsriGraphic) graphic).getExtents();
                 writeExtents(extents);
 
-                //Writes number of parts for shape (1)
+                // Writes number of parts for shape (1)
                 _leos.writeLEInt(1);
 
                 poly = (OMPoly) graphic;
                 float[] data = poly.getLatLonArray();
 
-                //Write number of points for shape
+                // Write number of points for shape
                 _leos.writeLEInt(data.length / 2);
 
-                //Write the offsets to this shape
+                // Write the offsets to this shape
                 _leos.writeLEInt(0);
 
                 int n = 0;
@@ -342,29 +357,33 @@ public class ShpOutputStream {
     }
 
     /**
-     * Writes point geometry to the class scope
-     * LittleEndianOutputStream.
+     * Writes point geometry to the class scope LittleEndianOutputStream.
      * 
      * @param list An EsriGraphicList of points
-     * @return A two dimensional array containing shape offsets and
-     *         content lengths
+     * @return A two dimensional array containing shape offsets and content
+     *         lengths
      */
     public int[][] writePointGeometry(EsriGraphicList list) throws IOException {
-        _leos.writeInt(9994); //Big
-        _leos.writeInt(0); //Big
-        _leos.writeInt(0); //Big
-        _leos.writeInt(0); //Big
-        _leos.writeInt(0); //Big
-        _leos.writeInt(0); //Big
+        _leos.writeInt(9994); // Big
+        _leos.writeInt(0); // Big
+        _leos.writeInt(0); // Big
+        _leos.writeInt(0); // Big
+        _leos.writeInt(0); // Big
+        _leos.writeInt(0); // Big
 
         int[][] indexData = createPointIndex(list);
-        int contentLength = list.size() * 4 + 50;
+        int contentLength = 50;
 
-        _leos.writeInt(contentLength); //Big
-        _leos.writeLEInt(1000); //Little
+        if (list.size() > 0) {
+            contentLength = indexData[0][indexData[0].length - 1]
+                    + indexData[1][indexData[0].length - 1];
+        }
+
+        _leos.writeInt(contentLength); // Big
+        _leos.writeLEInt(1000); // Little
         _leos.writeLEInt(list.getType());
 
-        //Writes bounding box.
+        // Writes bounding box.
         float[] extents = list.getExtents();
         writeExtents(extents);
 
@@ -377,11 +396,11 @@ public class ShpOutputStream {
             OMPoint point = (OMPoint) list.getOMGraphicAt(i);
             LatLonPoint pt = new LatLonPoint(point.getLat(), point.getLon());
 
-            //Record header...
+            // Record header...
             _leos.writeInt(i + 1); // Record numbers start with 1
             _leos.writeInt(indexData[1][i]);
 
-            //Beginning of Geometry data
+            // Beginning of Geometry data
             _leos.writeLEInt(list.getType());
 
             Float lat = new Float(pt.getLatitude());

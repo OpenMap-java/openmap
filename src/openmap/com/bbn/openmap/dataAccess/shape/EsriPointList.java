@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPointList.java,v $
 // $RCSfile: EsriPointList.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/08/25 15:36:12 $
+// $Revision: 1.9 $
+// $Date: 2007/01/30 18:39:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,6 +50,7 @@ public class EsriPointList extends EsriGraphicList {
             if (typeMatches(shape)) {
                 graphics.add(shape);
                 addExtents(((EsriGraphic) shape).getExtents());
+                return;
             } else if (shape instanceof OMPoint) {
                 shape = EsriPoint.convert((OMPoint) shape);
                 // test for null in next if statement.
@@ -62,11 +63,21 @@ public class EsriPointList extends EsriGraphicList {
                 for (Iterator it = ((OMGraphicList) shape).iterator(); it.hasNext();) {
                     add((OMGraphic) it.next());
                 }
+                
+                return;
+                
             } else {
                 Debug.message("esri",
                         "EsriPointList.add()- graphic isn't an EsriGraphic with matching type, can't add.");
                 return;
             }
+            
+            // Test for and add shapes for point, text and scaling icon instances.
+            if (shape instanceof EsriGraphic) {
+                graphics.add(shape);
+                addExtents(((EsriGraphic) shape).getExtents());
+            }
+            
         } catch (ClassCastException cce) {
         }
     }
