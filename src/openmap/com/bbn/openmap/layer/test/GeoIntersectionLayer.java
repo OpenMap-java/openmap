@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoIntersectionLayer.java,v $
-//$Revision: 1.4 $
-//$Date: 2007/01/30 20:37:06 $
+//$Revision: 1.5 $
+//$Date: 2007/02/05 19:45:59 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -73,60 +73,61 @@ import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.OMTextLabeler;
 import com.bbn.openmap.omGraphics.SinkGraphic;
+import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.FileUtils;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * This layer demonstrates the use of the com.bbn.openmap.geo package
- * to do intersection calculations in lat/lon space. It allows you to
- * load shape files for sample data sets, and then draw lines,
- * polygons and points on the map to as test cases for intersections
- * on the sample data sets. The ToolPanel will hold controls for
- * choosing what kind of things to draw, and how they should be
- * rendered. The palette for this layer controls the sample data sets,
+ * This layer demonstrates the use of the com.bbn.openmap.geo package to do
+ * intersection calculations in lat/lon space. It allows you to load shape files
+ * for sample data sets, and then draw lines, polygons and points on the map to
+ * as test cases for intersections on the sample data sets. The ToolPanel will
+ * hold controls for choosing what kind of things to draw, and how they should
+ * be rendered. The palette for this layer controls the sample data sets,
  * letting you add and remove data files and change their colors.
  * <P>
  * 
- * If you draw a line, polyline or point, the shapes in the data sets
- * that intersect with them will be rendered in the 'select' colors.
- * If you draw a closed polygon with a fill color, the data set shapes
- * inside the polygon will also be selected. The palette has controls
- * for showing the actual points of intersection for paths and their
- * sample data regions. There is also an option to allow mouse clicks
- * on a data set region to create an image over the bounding rectangle
- * for that region, checking the Geo point intersection algorithm
- * against the Java 2D algorithm for the shape in projected pixel
- * space. An all-green image is good, pixels where the algorithms
- * differ will be red.
+ * If you draw a line, polyline or point, the shapes in the data sets that
+ * intersect with them will be rendered in the 'select' colors. If you draw a
+ * closed polygon with a fill color, the data set shapes inside the polygon will
+ * also be selected. The palette has controls for showing the actual points of
+ * intersection for paths and their sample data regions. There is also an option
+ * to allow mouse clicks on a data set region to create an image over the
+ * bounding rectangle for that region, checking the Geo point intersection
+ * algorithm against the Java 2D algorithm for the shape in projected pixel
+ * space. An all-green image is good, pixels where the algorithms differ will be
+ * red.
  * <P>
  * 
  * The properties for this layer are:
  * 
  * <pre>
- *    geo.class=com.bbn.openmap.layer.test.GeoIntersectionLayer
- *    geo.prettyName=GEO Intersections
- *    geo.editor=com.bbn.openmap.layer.editor.DrawingEditorTool
- *    geo.showAttributes=true
- *    geo.loaders=lines polys points
- *    geo.mouseModes=Gestures
- *    geo.lines.class=com.bbn.openmap.tools.drawing.OMLineLoader
- *    geo.polys.class=com.bbn.openmap.tools.drawing.OMPolyLoader
- *    geo.points.class=com.bbn.openmap.tools.drawing.OMPointLoader
- *    geo.shapeFileList=geocounties geolakes geocountries
- *    geo.geocounties=/data/shape/usa/counties.shp
- *    geo.geolakes=/data/shape/world/lakes.shp
- *    geo.geocountries=/data/shape/world/cntry02/cntry02.shp
- *    # Colors for regular, unselected data shapes
- *    geo.fillColor=FF333399
- *    geo.selectColor=ffff9900
- *    geo.mattingColor=ffff9900
- *    # Colors for data shapes intersected by drawn shapes
- *    geo.selected.fillColor=FFFFFF00
- *    geo.selected.selectColor=ffff9900
- *    geo.selected.mattingColor=ffff9900
+ *        geo.class=com.bbn.openmap.layer.test.GeoIntersectionLayer
+ *        geo.prettyName=GEO Intersections
+ *        geo.editor=com.bbn.openmap.layer.editor.DrawingEditorTool
+ *        geo.showAttributes=true
+ *        geo.loaders=lines polys points
+ *        geo.mouseModes=Gestures
+ *        geo.lines.class=com.bbn.openmap.tools.drawing.OMLineLoader
+ *        geo.polys.class=com.bbn.openmap.tools.drawing.OMPolyLoader
+ *        geo.points.class=com.bbn.openmap.tools.drawing.OMPointLoader
+ *        geo.shapeFileList=geocounties geolakes geocountries
+ *        geo.geocounties=/data/shape/usa/counties.shp
+ *        geo.geolakes=/data/shape/world/lakes.shp
+ *        geo.geocountries=/data/shape/world/cntry02/cntry02.shp
+ *        # Colors for regular, unselected data shapes
+ *        geo.fillColor=FF333399
+ *        geo.selectColor=ffff9900
+ *        geo.mattingColor=ffff9900
+ *        # Colors for data shapes intersected by drawn shapes
+ *        geo.selected.fillColor=FFFFFF00
+ *        geo.selected.selectColor=ffff9900
+ *        geo.selected.mattingColor=ffff9900
  * </pre>
  * 
  * @author dietrick
@@ -139,8 +140,8 @@ public class GeoIntersectionLayer extends EditorLayer implements
     /** This list holds the EsriGraphicLists from the Shape files. */
     protected OMGraphicList fileDataList = new OMGraphicList();
     /**
-     * This list holds the BoundaryCrossings and the image masks
-     * created from Intersection queries.
+     * This list holds the BoundaryCrossings and the image masks created from
+     * Intersection queries.
      */
     protected OMGraphicList intersectionResultList = new OMGraphicList();
     /** The RegionIndex organizing the Shape OMGraphics for searching. */
@@ -211,8 +212,30 @@ public class GeoIntersectionLayer extends EditorLayer implements
 
         // If we created any pixel intersection images before, time to
         // get rid of them.
-        intersectionResultList.clear();
 
+        calculateIntersectionsWithDrawnList();
+
+        list.add(intersectionResultList);
+        list.add(drawnList);
+        if (DEBUG)
+            Debug.output("GeoIntersectLayer(" + getName()
+                    + "): Adding lines to main list");
+        list.add(fileDataList);
+        if (DEBUG)
+            Debug.output("GeoIntersectLayer(" + getName()
+                    + "): Adding shapes to main list");
+
+        list.generate(getProjection());
+        if (DEBUG)
+            Debug.output("GeoIntersectLayer(" + getName()
+                    + "): Projected main list, returning");
+
+        return list;
+
+    }
+
+    public void calculateIntersectionsWithDrawnList() {
+        intersectionResultList.clear();
         ExtentIndex rIndex = getRegionIndex(true);
 
         for (Iterator it = drawnList.iterator(); it.hasNext();) {
@@ -288,24 +311,6 @@ public class GeoIntersectionLayer extends EditorLayer implements
                 }
             }
         }
-
-        list.add(intersectionResultList);
-        list.add(drawnList);
-        if (DEBUG)
-            Debug.output("GeoIntersectLayer(" + getName()
-                    + "): Adding lines to main list");
-        list.add(fileDataList);
-        if (DEBUG)
-            Debug.output("GeoIntersectLayer(" + getName()
-                    + "): Adding shapes to main list");
-
-        list.generate(getProjection());
-        if (DEBUG)
-            Debug.output("GeoIntersectLayer(" + getName()
-                    + "): Projected main list, returning");
-
-        return list;
-
     }
 
     protected void setRegionAsSelected(OMPolyRegion ompr) {
@@ -333,8 +338,8 @@ public class GeoIntersectionLayer extends EditorLayer implements
     }
 
     /**
-     * Query the user for a shape file, and add the contents to the
-     * region list or line list if a valid file is selected.
+     * Query the user for a shape file, and add the contents to the region list
+     * or line list if a valid file is selected.
      */
     public void addShapeFileFromUser() {
         String shpFileName = FileUtils.getFilePathToOpenFromUser("Pick Shape File",
@@ -356,8 +361,8 @@ public class GeoIntersectionLayer extends EditorLayer implements
     }
 
     /**
-     * Add the data from a shape file to the region list or edge list,
-     * depending on the content type.
+     * Add the data from a shape file to the region list or edge list, depending
+     * on the content type.
      * 
      * @param shpFile
      */
@@ -503,6 +508,10 @@ public class GeoIntersectionLayer extends EditorLayer implements
         if (editorTool != null) {
             editorTool.drawingComplete(omg, action);
         }
+    }
+
+    public OMGraphicList getDrawnIntersectorList() {
+        return drawnList;
     }
 
     public boolean receivesMapEvents() {
@@ -871,5 +880,90 @@ public class GeoIntersectionLayer extends EditorLayer implements
 
     public void setCreatePointCheck(boolean createPointCheck) {
         this.createPointCheck = createPointCheck;
+    }
+
+    public static void main(String[] argv) {
+        Debug.init();
+        ArgParser argp = new ArgParser("GeoIntersectionLayer");
+
+        argp.add("shape", "Shape file to use for GeoRegions in index.", 1);
+
+        argp.parse(argv);
+        String[] files = argp.getArgValues("shape");
+        if (files != null && files.length > 0 && files[0].endsWith(".shp")) {
+            File file = new File(files[0]);
+
+            GeoIntersectionLayer gil = new GeoIntersectionLayer();
+            Debug.output("Loading shape file: " + file.getName());
+            long startTime = System.currentTimeMillis();
+            gil.addShapeFile(file);
+            long endTime = System.currentTimeMillis();
+
+            Debug.output(" time to load file: " + (endTime - startTime) + " ms");
+
+            Projection proj = new Mercator(new LatLonPoint.Float(35f, -90f), 100000000, 800, 800);
+
+            startTime = System.currentTimeMillis();
+            gil.setProjection(proj.makeClone());
+            gil.calculateIntersectionsWithDrawnList();
+            endTime = System.currentTimeMillis();
+            Debug.output(" time to calculate without Intersection: "
+                    + (endTime - startTime) + " ms");
+
+            OMGraphic omg = new OMLine(20f, -125f, 30f, -70f, OMGraphic.LINETYPE_GREATCIRCLE);
+            gil.getDrawnIntersectorList().add(omg);
+            startTime = System.currentTimeMillis();
+            gil.calculateIntersectionsWithDrawnList();
+            endTime = System.currentTimeMillis();
+            Debug.output(" time to calculate with Intersection line: "
+                    + (endTime - startTime) + " ms");
+
+            gil.setShowCrossingPoints(true);
+            startTime = System.currentTimeMillis();
+            gil.calculateIntersectionsWithDrawnList();
+            endTime = System.currentTimeMillis();
+            Debug.output(" time to calculate with Intersection line with crossing points: "
+                    + (endTime - startTime) + " ms");
+
+            gil.getDrawnIntersectorList().clear();
+            gil.setShowCrossingPoints(false);
+            float[] coords = new float[] { 33.4f, -77.2f, 34f, -79.5f, 35f,
+                    -90f, 40f, -100f, 45f, -101f, 50f, -83.2f, 35f, -65.7f,
+                    -34f, -70.5f, 33.4f, -77.2f };
+
+            omg = new OMPoly(coords, OMPoly.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE);
+            gil.getDrawnIntersectorList().add(omg);
+            startTime = System.currentTimeMillis();
+            gil.calculateIntersectionsWithDrawnList();
+            endTime = System.currentTimeMillis();
+            Debug.output(" time to calculate with Intersection poly: "
+                    + (endTime - startTime) + " ms");
+
+            gil.setShowCrossingPoints(true);
+            startTime = System.currentTimeMillis();
+            gil.calculateIntersectionsWithDrawnList();
+            endTime = System.currentTimeMillis();
+            Debug.output(" time to calculate with Intersection poly with crossing points: "
+                    + (endTime - startTime) + " ms");
+
+            omg.setFillPaint(Color.red);
+            gil.setShowCrossingPoints(false);
+            startTime = System.currentTimeMillis();
+            gil.calculateIntersectionsWithDrawnList();
+            endTime = System.currentTimeMillis();
+            Debug.output(" time to calculate with Intersection Containment poly: "
+                    + (endTime - startTime) + " ms");
+
+            gil.setShowCrossingPoints(true);
+            startTime = System.currentTimeMillis();
+            gil.calculateIntersectionsWithDrawnList();
+            endTime = System.currentTimeMillis();
+            Debug.output(" time to calculate with Intersection Containment poly and crossing points: "
+                    + (endTime - startTime) + " ms");
+
+        } else {
+            argp.printUsage();
+            System.exit(0);
+        }
     }
 }
