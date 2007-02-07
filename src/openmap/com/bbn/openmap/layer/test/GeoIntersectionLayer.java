@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoIntersectionLayer.java,v $
-//$Revision: 1.5 $
-//$Date: 2007/02/05 19:45:59 $
+//$Revision: 1.6 $
+//$Date: 2007/02/07 17:52:18 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -881,6 +881,104 @@ public class GeoIntersectionLayer extends EditorLayer implements
     public void setCreatePointCheck(boolean createPointCheck) {
         this.createPointCheck = createPointCheck;
     }
+    
+    public void runGeoTests(int numIterations, int numToSkipAtStart) {
+        Projection proj = new Mercator(new LatLonPoint.Float(35f, -90f), 100000000, 800, 800);
+
+        double[] results = new double[7];
+
+        for (int i = 0; i < numIterations; i++) {
+
+            boolean countThisIteration = (i >= numToSkipAtStart);
+
+            long startTime = System.currentTimeMillis();
+            setProjection(proj.makeClone());
+            calculateIntersectionsWithDrawnList();
+            long endTime = System.currentTimeMillis();
+            if (countThisIteration) {
+                results[0] += endTime - startTime;
+            }
+
+            OMGraphic omg = new OMLine(20f, -125f, 30f, -70f, OMGraphic.LINETYPE_GREATCIRCLE);
+            getDrawnIntersectorList().add(omg);
+            startTime = System.currentTimeMillis();
+            calculateIntersectionsWithDrawnList();
+            endTime = System.currentTimeMillis();
+            if (countThisIteration) {
+                results[1] += endTime - startTime;
+            }
+
+            setShowCrossingPoints(true);
+            startTime = System.currentTimeMillis();
+            calculateIntersectionsWithDrawnList();
+            endTime = System.currentTimeMillis();
+            if (countThisIteration) {
+                results[2] += endTime - startTime;
+            }
+
+            getDrawnIntersectorList().clear();
+            setShowCrossingPoints(false);
+            float[] coords = new float[] { 33.4f, -77.2f, 34f, -79.5f, 35f,
+                    -90f, 40f, -100f, 45f, -101f, 50f, -83.2f, 35f, -65.7f,
+                    -34f, -70.5f, 33.4f, -77.2f };
+
+            omg = new OMPoly(coords, OMPoly.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE);
+            getDrawnIntersectorList().add(omg);
+            startTime = System.currentTimeMillis();
+            calculateIntersectionsWithDrawnList();
+            endTime = System.currentTimeMillis();
+            if (countThisIteration) {
+                results[3] += endTime - startTime;
+            }
+
+            setShowCrossingPoints(true);
+            startTime = System.currentTimeMillis();
+            calculateIntersectionsWithDrawnList();
+            endTime = System.currentTimeMillis();
+            if (countThisIteration) {
+                results[4] += endTime - startTime;
+            }
+
+            omg.setFillPaint(Color.red);
+            setShowCrossingPoints(false);
+            startTime = System.currentTimeMillis();
+            calculateIntersectionsWithDrawnList();
+            endTime = System.currentTimeMillis();
+            if (countThisIteration) {
+                results[5] += endTime - startTime;
+            }
+
+            setShowCrossingPoints(true);
+            startTime = System.currentTimeMillis();
+            calculateIntersectionsWithDrawnList();
+            endTime = System.currentTimeMillis();
+            if (countThisIteration) {
+                results[6] += endTime - startTime;
+            }
+
+            System.out.print(".");
+            System.out.flush();
+            
+        }
+
+        double numIterationsCounted = numIterations - numToSkipAtStart;
+        Debug.output("For " + numIterationsCounted + " iterations");
+        Debug.output(" avg time to calculate without Intersection: "
+                + (results[0] / numIterationsCounted) + " ms");
+        Debug.output(" avg time to calculate with Intersection line: "
+                + (results[1] / numIterationsCounted) + " ms");
+        Debug.output(" avg time to calculate with Intersection line with crossing points: "
+                + (results[2] / numIterationsCounted) + " ms");
+        Debug.output(" avg time to calculate with Intersection poly: "
+                + (results[3] / numIterationsCounted) + " ms");
+        Debug.output(" avg time to calculate with Intersection poly with crossing points: "
+                + (results[4] / numIterationsCounted) + " ms");
+        Debug.output(" avg time to calculate with Intersection Containment poly: "
+                + (results[5] / numIterationsCounted) + " ms");
+        Debug.output(" avg time to calculate with Intersection Containment poly and crossing points: "
+                + (results[6] / numIterationsCounted) + " ms");
+
+    }
 
     public static void main(String[] argv) {
         Debug.init();
@@ -901,66 +999,8 @@ public class GeoIntersectionLayer extends EditorLayer implements
 
             Debug.output(" time to load file: " + (endTime - startTime) + " ms");
 
-            Projection proj = new Mercator(new LatLonPoint.Float(35f, -90f), 100000000, 800, 800);
-
-            startTime = System.currentTimeMillis();
-            gil.setProjection(proj.makeClone());
-            gil.calculateIntersectionsWithDrawnList();
-            endTime = System.currentTimeMillis();
-            Debug.output(" time to calculate without Intersection: "
-                    + (endTime - startTime) + " ms");
-
-            OMGraphic omg = new OMLine(20f, -125f, 30f, -70f, OMGraphic.LINETYPE_GREATCIRCLE);
-            gil.getDrawnIntersectorList().add(omg);
-            startTime = System.currentTimeMillis();
-            gil.calculateIntersectionsWithDrawnList();
-            endTime = System.currentTimeMillis();
-            Debug.output(" time to calculate with Intersection line: "
-                    + (endTime - startTime) + " ms");
-
-            gil.setShowCrossingPoints(true);
-            startTime = System.currentTimeMillis();
-            gil.calculateIntersectionsWithDrawnList();
-            endTime = System.currentTimeMillis();
-            Debug.output(" time to calculate with Intersection line with crossing points: "
-                    + (endTime - startTime) + " ms");
-
-            gil.getDrawnIntersectorList().clear();
-            gil.setShowCrossingPoints(false);
-            float[] coords = new float[] { 33.4f, -77.2f, 34f, -79.5f, 35f,
-                    -90f, 40f, -100f, 45f, -101f, 50f, -83.2f, 35f, -65.7f,
-                    -34f, -70.5f, 33.4f, -77.2f };
-
-            omg = new OMPoly(coords, OMPoly.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE);
-            gil.getDrawnIntersectorList().add(omg);
-            startTime = System.currentTimeMillis();
-            gil.calculateIntersectionsWithDrawnList();
-            endTime = System.currentTimeMillis();
-            Debug.output(" time to calculate with Intersection poly: "
-                    + (endTime - startTime) + " ms");
-
-            gil.setShowCrossingPoints(true);
-            startTime = System.currentTimeMillis();
-            gil.calculateIntersectionsWithDrawnList();
-            endTime = System.currentTimeMillis();
-            Debug.output(" time to calculate with Intersection poly with crossing points: "
-                    + (endTime - startTime) + " ms");
-
-            omg.setFillPaint(Color.red);
-            gil.setShowCrossingPoints(false);
-            startTime = System.currentTimeMillis();
-            gil.calculateIntersectionsWithDrawnList();
-            endTime = System.currentTimeMillis();
-            Debug.output(" time to calculate with Intersection Containment poly: "
-                    + (endTime - startTime) + " ms");
-
-            gil.setShowCrossingPoints(true);
-            startTime = System.currentTimeMillis();
-            gil.calculateIntersectionsWithDrawnList();
-            endTime = System.currentTimeMillis();
-            Debug.output(" time to calculate with Intersection Containment poly and crossing points: "
-                    + (endTime - startTime) + " ms");
-
+            gil.runGeoTests(25, 3);
+            
         } else {
             argp.printUsage();
             System.exit(0);
