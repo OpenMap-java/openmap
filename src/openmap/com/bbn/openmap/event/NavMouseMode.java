@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode.java,v $
 // $RCSfile: NavMouseMode.java,v $
-// $Revision: 1.11 $
-// $Date: 2006/12/18 20:39:25 $
+// $Revision: 1.12 $
+// $Date: 2007/02/12 17:36:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -98,6 +98,40 @@ public class NavMouseMode extends CoordMouseMode {
             autoZoom = true;
         }
     }
+    
+    public void mouseClicked(MouseEvent e) {
+        Object obj = e.getSource();
+
+        mouseSupport.fireMapMouseClicked(e);
+
+        if (!(obj instanceof MapBean) || point1 == null)
+            return;
+        
+        MapBean map = (MapBean) obj;
+        Projection projection = map.getProjection();
+        Proj p = (Proj) projection;
+        
+        Point2D llp = projection.inverse(e.getPoint());
+
+        boolean shift = e.isShiftDown();
+        boolean control = e.isControlDown();
+
+        if (control) {
+            if (shift) {
+                p.setScale(p.getScale() * 2.0f);
+            } else {
+                p.setScale(p.getScale() / 2.0f);
+            }
+        }
+
+        // reset the points here so the point doesn't get
+        // rendered on the repaint.
+        point1 = null;
+        point2 = null;
+
+        p.setCenter(llp);
+        map.setProjection(p);
+    }
 
     /**
      * Handle a mouseReleased MouseListener event. If there was no drag events,
@@ -116,6 +150,7 @@ public class NavMouseMode extends CoordMouseMode {
 
         mouseSupport.fireMapMouseReleased(e);
 
+        // point2 is always going to be null for a click.
         if (!(obj instanceof MapBean) || !autoZoom || point1 == null
                 || point2 == null)
             return;
