@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: OMGeo.java,v $
-//$Revision: 1.3 $
-//$Date: 2007/01/30 20:37:03 $
+//$Revision: 1.4 $
+//$Date: 2007/02/13 20:02:11 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -34,7 +34,6 @@ import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.proj.GeoProj;
-import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
@@ -80,7 +79,7 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
     public Object getID() {
         return id;
     }
-    
+
     public void setID(Object id) {
         this.id = id;
     }
@@ -97,7 +96,7 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
         public Pt(Geo g) {
             super(new GeoPoint.Impl(g));
         }
-        
+
         public Pt(double lat, double lon, boolean isDegrees) {
             super(new GeoPoint.Impl(lat, lon, isDegrees));
         }
@@ -262,12 +261,16 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
             super(new GeoPath.Impl(gs), lineType);
         }
 
-        public Geo[] toGeoArray() {
-            return ((GeoPath) getExtent()).toPointArray();
+//        public Geo[] toGeoArray() {
+//            return ((GeoPath) getExtent()).getPoints().toPointArray();
+//        }
+        
+        public GeoArray getPoints() {
+            return ((GeoPath) getExtent()).getPoints();
         }
 
         public boolean generate(Projection proj) {
-            int i, j, npts;
+            int i, j;
             setShape(null);
             setNeedToRegenerate(true);
             boolean isPolygon = getExtent() instanceof GeoRegion;
@@ -282,31 +285,18 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
             // calculations. The set method forces the calculation for
             // the query.
 
-            // The only real new memory here is the array itself. We may want to
-            // hold this to facilitate some speed.
-
-            Geo[] geos = toPointArray();
-            npts = geos.length;
-            double[] rawllpts = new double[npts * 2];
-            for (i = 0; i < npts; i++) {
-                Geo geo = geos[i];
-                rawllpts[2 * i] = geo.getLatitudeRadians();
-                rawllpts[2 * i + 1] = geo.getLongitudeRadians();
-            }
-
-            // isGeometryClosed(rawllpts);
-
             // polygon/polyline project the polygon/polyline.
             // Vertices should already be in radians.
+            
+            // We might want to cache the latlon points retrieved from the GeoArray at some point.
             ArrayList vector;
             if (proj instanceof GeoProj) {
-                vector = ((GeoProj) proj).forwardPoly(rawllpts,
+                vector = ((GeoProj) proj).forwardPoly(getPoints().toLLRadians(),
                         lineType,
                         -1,
                         isPolygon);
             } else {
-                ProjMath.arrayRadToDeg(rawllpts);
-                vector = proj.forwardPoly(rawllpts, isPolygon);
+                vector = proj.forwardPoly(getPoints().toLLDegrees(), isPolygon);
             }
 
             int size = vector.size();
@@ -369,9 +359,9 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
             return ((GeoPath) getExtent()).segmentIterator();
         }
 
-        public Geo[] toPointArray() {
-            return ((GeoPath) getExtent()).toPointArray();
-        }
+//        public Geo[] toPointArray() {
+//            return ((GeoPath) getExtent()).getPoints().toPointArray();
+//        }
     }
 
     public static class Polygon extends Polyline implements GeoRegion {

@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BoundingCircle.java,v $
-//$Revision: 1.8 $
-//$Date: 2006/06/20 20:11:43 $
+//$Revision: 1.9 $
+//$Date: 2007/02/13 20:02:10 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -65,20 +65,12 @@ public interface BoundingCircle {
             init(center, radius);
         }
 
-        public Impl(GeoRegion region) {
-            init(region.toPointArray());
+        public Impl(GeoArray arrayPoints) {
+            init(arrayPoints);
         }
 
         public Impl(GeoPath path) {
-
-            Geo[] region = new Geo[path.length()];
-
-            int i = 0;
-            for (GeoPath.PointIterator pi = path.pointIterator(); pi.hasNext(); i++) {
-                region[i] = ((GeoPoint) pi.next()).getPoint();
-            }
-            
-            init(region);
+            init(path.getPoints());
         }
         
         public Impl(Geo[] gs) {
@@ -97,6 +89,26 @@ public interface BoundingCircle {
             int length = region.length;
             for (int i = 0; i < length; i++) {
                 double pr = c.distance(region[i]);
+                if (pr > r) {
+                    r = pr;
+                }
+            }
+
+            init(c, r);
+        }
+        
+        /**
+         * Works by computing the centroid, then finding the
+         * largest radius. This will not, in general, produce the
+         * minimal bounding circle.
+         */
+        protected void init(GeoArray region) {
+            Geo c = Intersection.center(region, new Geo()); // centroid
+            Geo storage = new Geo();
+            double r = 0.0;
+            int length = region.getSize();
+            for (int i = 0; i < length; i++) {
+                double pr = c.distance(region.get(i, storage));
                 if (pr > r) {
                     r = pr;
                 }

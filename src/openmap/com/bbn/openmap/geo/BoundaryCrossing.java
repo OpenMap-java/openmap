@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BoundaryCrossing.java,v $
-//$Revision: 1.4 $
-//$Date: 2005/07/27 21:58:12 $
+//$Revision: 1.5 $
+//$Date: 2007/02/13 20:02:13 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -200,7 +200,7 @@ public class BoundaryCrossing {
             }
 
             boolean goinin = !Intersection.isPointInPolygon(start,
-                    region.toPointArray());
+                    region.getPoints());
             for (Iterator it = orderedList.iterator(); it.hasNext();) {
                 BoundaryCrossing bc = (BoundaryCrossing) it.next();
 
@@ -304,7 +304,7 @@ public class BoundaryCrossing {
         public boolean considerSegmentXRegion(GeoSegment segment,
                                               GeoRegion region) {
             List hits = Intersection.segmentNearPoly(segment,
-                    region.toPointArray(),
+                    region.getPoints(),
                     0.0);
 
             if (hits != null) {

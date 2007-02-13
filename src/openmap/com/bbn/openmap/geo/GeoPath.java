@@ -37,7 +37,9 @@ public interface GeoPath extends GeoExtent {
      * 
      * @return the Geo points of the Path
      */
-    Geo[] toPointArray();
+//    Geo[] toPointArray();
+
+    GeoArray getPoints();
 
     /**
      * @return the number of points in the path.
@@ -89,7 +91,7 @@ public interface GeoPath extends GeoExtent {
      * (optionally) an array of altitudes.
      */
     public static class Impl implements GeoPath {
-        protected Geo[] pts;
+        protected GeoArray pts;
         protected int length;
         protected Object id = GeoPath.Impl.this;
 
@@ -111,14 +113,12 @@ public interface GeoPath extends GeoExtent {
          * @param isDegrees true if lat/lon are in degrees, false if in radians.
          */
         public Impl(float[] lls, boolean isDegrees) {
-            int al = lls.length;
-            int length = al / 2;
-            Geo[] pts = new Geo[length];
-            for (int i = 0, p = 0; i < al; i = i + 2) {
-                pts[p] = new Geo(lls[i], lls[i + 1], isDegrees);
-                p++;
+            if (isDegrees) {
+                pts = GeoArray.Float.createFromLatLonDegrees(lls);
+            } else {
+                pts = GeoArray.Float.createFromLatLonRadians(lls);
             }
-            setPoints(pts);
+            length = pts.getSize();
         }
 
         /**
@@ -130,26 +130,39 @@ public interface GeoPath extends GeoExtent {
             setPoints(geos);
         }
 
+        public void setPoints(GeoArray ga) {
+            pts = ga;
+            if (pts != null) {
+                length = pts.getSize();
+            } else {
+                length = 0;
+            }
+        }
+
+        public GeoArray getPoints() {
+            return pts;
+        }
+
         /**
          * Method for subclasses to set pts and length of Geos.
          * 
          * @param points
          */
         protected void setPoints(Geo[] points) {
-            pts = points;
+            pts = new GeoArray.Float(points);
             if (pts != null) {
-                length = pts.length;
+                length = pts.getSize();
             } else {
                 length = 0;
             }
         }
 
-        public Geo[] toPointArray() {
-            return pts;
-        }
+//        public Geo[] toPointArray() {
+//            return pts.toPointArray();
+//        }
 
         public boolean isSegmentNear(GeoSegment s, double epsilon) {
-            return Intersection.isSegmentNearPoly(s, toPointArray(), epsilon) != null;
+            return Intersection.isSegmentNearPoly(s, getPoints(), epsilon) != null;
         }
 
         protected transient BoundingCircle bc = null;
@@ -199,10 +212,10 @@ public interface GeoPath extends GeoExtent {
 
         protected class SegIt implements GeoPath.SegmentIterator, GeoSegment {
             int i = -1;
-            Geo[] seg = new Geo[2];
+            Geo[] seg = new Geo[] { new Geo(), new Geo() };
 
             public SegIt() {
-                seg[1] = pts[0];
+                pts.get(0, seg[1]);
             }
 
             /** Constructs a new bounding circle instance each call. * */
@@ -221,8 +234,8 @@ public interface GeoPath extends GeoExtent {
 
             public GeoSegment nextSegment() {
                 i++;
-                seg[0] = seg[1];
-                seg[1] = pts[i + 1];
+                seg[0].initialize(seg[1]);
+                pts.get(i + 1, seg[1]);
                 return this;
             }
 
@@ -277,12 +290,13 @@ public interface GeoPath extends GeoExtent {
 
         protected class PointIt implements GeoPath.PointIterator, GeoPoint {
             int i = -1;
-
+            Geo pt = new Geo();
+            
             public PointIt() {}
 
             public boolean hasNext() {
                 return i < (length - 1); // need -1, because of the i++ in
-                                            // nextPoint.
+                // nextPoint.
             }
 
             public Object next() {
@@ -299,7 +313,7 @@ public interface GeoPath extends GeoExtent {
             }
 
             public Geo getPoint() {
-                return pts[i];
+                return pts.get(i, pt);
             }
 
             /**
@@ -319,7 +333,7 @@ public interface GeoPath extends GeoExtent {
             }
 
             public BoundingCircle getBoundingCircle() {
-                return new BoundingCircle.Impl(pts[i], 0.0);
+                return new BoundingCircle.Impl(pts.get(i), 0.0);
             }
         }
 

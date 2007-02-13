@@ -72,12 +72,13 @@ public interface GeoRegion extends GeoPath {
 
         public boolean isSegmentNear(GeoSegment s, double epsilon) {
             return Intersection.isSegmentNearPolyRegion(s,
-                    toPointArray(),
+                    getPoints(),
+//                    toPointArray(),
                     epsilon);
         }
 
         public boolean isPointInside(Geo p) {
-            return Intersection.isPointInPolygon(p, toPointArray());
+            return Intersection.isPointInPolygon(p, getPoints()/*toPointArray()*/);
         }
 
         public BoundingCircle getBoundingCircle() {

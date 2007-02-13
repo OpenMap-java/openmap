@@ -34,7 +34,7 @@ import com.bbn.openmap.proj.Length;
  * @author Sachin Date
  * @author Ben Lubin
  * @author Michael Thome
- * @version $Revision: 1.29 $ on $Date: 2007/01/30 20:37:05 $
+ * @version $Revision: 1.30 $ on $Date: 2007/02/13 20:02:14 $
  */
 public class Geo {
 
@@ -109,6 +109,8 @@ public class Geo {
     public static double nmToAngle(double nm) {
         return Length.NM.toRadians(nm);
     }
+
+    public Geo() {}
 
     /**
      * Construct a Geo from its latitude and longitude.
@@ -225,8 +227,32 @@ public class Geo {
         return add(g2).normalize();
     }
 
+    /**
+     * Find the midpoint Geo between this one and another on a Great Circle line
+     * between the two. The result is undefined of the two points are antipodes.
+     * 
+     * @param g2
+     * @param ret a Geo value to set returned values in. Do not pass in a null
+     *        value.
+     * @return midpoint Geo.
+     */
+    public Geo midPoint(Geo g2, Geo ret) {
+        return add(g2).normalize(ret);
+    }
+
     public Geo interpolate(Geo g2, double x) {
         return scale(x).add(g2.scale(1 - x)).normalize();
+    }
+
+    /**
+     * 
+     * @param g2
+     * @param x
+     * @param ret Do not pass in a null value.
+     * @return
+     */
+    public Geo interpolate(Geo g2, double x, Geo ret) {
+        return scale(x).add(g2.scale(1 - x, ret), ret).normalize(ret);
     }
 
     public String toString() {
@@ -313,7 +339,18 @@ public class Geo {
 
     /** Multiply this by s. * */
     public Geo scale(double s) {
-        return new Geo(this.x() * s, this.y() * s, this.z() * s);
+        return scale(s, new Geo());
+    }
+
+    /**
+     * Multiply this by s.
+     * 
+     * @return ret that was passed in, filled in with scaled values. Do not pass
+     *         in a null value.
+     */
+    public Geo scale(double s, Geo ret) {
+        ret.initialize(this.x() * s, this.y() * s, this.z() * s);
+        return ret;
     }
 
     /** Returns a unit length vector parallel to this. */
@@ -321,10 +358,29 @@ public class Geo {
         return this.scale(1.0 / this.length());
     }
 
+    /**
+     * Returns a unit length vector parallel to this.
+     * 
+     * @return ret with normalized values. Do not pass in a null value.
+     */
+    public Geo normalize(Geo ret) {
+        return this.scale(1.0 / this.length(), ret);
+    }
+
     /** Vector cross product. */
     public Geo cross(Geo b) {
-        return new Geo(this.y() * b.z() - this.z() * b.y(), this.z() * b.x()
+        return cross(b, new Geo());
+    }
+
+    /**
+     * Vector cross product.
+     * 
+     * @return ret Do not pass in a null value.
+     */
+    public Geo cross(Geo b, Geo ret) {
+        ret.initialize(this.y() * b.z() - this.z() * b.y(), this.z() * b.x()
                 - this.x() * b.z(), this.x() * b.y() - this.y() * b.x());
+        return ret;
     }
 
     /** Eqvivalent to this.cross(b).length(). */
@@ -337,26 +393,59 @@ public class Geo {
 
     /** Eqvivalent to <code>this.cross(b).normalize()</code>. */
     public Geo crossNormalize(Geo b) {
+        return crossNormalize(b, new Geo());
+    }
+
+    /**
+     * Eqvivalent to <code>this.cross(b).normalize()</code>.
+     * 
+     * @return ret Do not pass in a null value.
+     */
+    public Geo crossNormalize(Geo b, Geo ret) {
         double x = this.y() * b.z() - this.z() * b.y();
         double y = this.z() * b.x() - this.x() * b.z();
         double z = this.x() * b.y() - this.y() * b.x();
         double L = Math.sqrt(x * x + y * y + z * z);
-        return new Geo(x / L, y / L, z / L);
+
+        ret.initialize(x / L, y / L, z / L);
+        return ret;
     }
 
-    /** Eqvivalent to <code>this.cross(b).normalize()</code>. */
-    public static Geo crossNormalize(Geo a, Geo b) {
-        return a.crossNormalize(b);
+    /**
+     * Eqvivalent to <code>this.cross(b).normalize()</code>.
+     * 
+     * @return ret Do not pass in a null value.
+     */
+    public static Geo crossNormalize(Geo a, Geo b, Geo ret) {
+        return a.crossNormalize(b, ret);
     }
 
     /** Returns this + b. */
     public Geo add(Geo b) {
-        return new Geo(this.x() + b.x(), this.y() + b.y(), this.z() + b.z());
+        return add(b, new Geo());
+    }
+
+    /*
+     * @return ret Do not pass in a null value.
+     */
+    public Geo add(Geo b, Geo ret) {
+        ret.initialize(this.x() + b.x(), this.y() + b.y(), this.z() + b.z());
+        return ret;
     }
 
     /** Returns this - b. */
     public Geo subtract(Geo b) {
-        return new Geo(this.x() - b.x(), this.y() - b.y(), this.z() - b.z());
+        return subtract(b, new Geo());
+    }
+
+    /**
+     * Returns this - b. *
+     * 
+     * @return ret Do not pass in a null value.
+     */
+    public Geo subtract(Geo b, Geo ret) {
+        ret.initialize(this.x() - b.x(), this.y() - b.y(), this.z() - b.z());
+        return ret;
     }
 
     public boolean equals(Geo v2) {
@@ -474,10 +563,15 @@ public class Geo {
      * between this and v2?
      */
     public boolean isInside(Geo v2, double radius, Geo p) {
+        // Allocate a Geo to be reused for all of these calculations, instead of
+        // creating 3 of them that are just thrown away. There's one more we
+        // still need to allocate, for dp below.
+        Geo tmp = new Geo();
+
         /*
          * gc is a unit vector perpendicular to the plane defined by v1 and v2
          */
-        Geo gc = this.crossNormalize(v2);
+        Geo gc = this.crossNormalize(v2, tmp);
 
         /*
          * |gc . p| is the size of the projection of p onto gc (the normal of
@@ -496,16 +590,16 @@ public class Geo {
             return true;
 
         /* d is the vector from the v2 to v1 */
-        Geo d = v2.subtract(this);
+        Geo d = v2.subtract(this, tmp);
 
         /* L is the length of the vector d */
         double L = d.length();
 
         /* n is the d normalized to length=1 */
-        Geo n = d.normalize();
+        Geo n = d.normalize(tmp);
 
         /* dp is the vector from p to v1 */
-        Geo dp = p.subtract(this);
+        Geo dp = p.subtract(this, new Geo());
 
         /* size is the size of the projection of dp onto n */
         double size = n.dot(dp);
@@ -548,7 +642,16 @@ public class Geo {
 
     /** Returns the point opposite this point on the earth. */
     public Geo antipode() {
-        return this.scale(-1.0);
+        return this.scale(-1.0, new Geo());
+    }
+
+    /**
+     * Returns the point opposite this point on the earth. *
+     * 
+     * @return ret Do not pass in a null value.
+     */
+    public Geo antipode(Geo ret) {
+        return this.scale(-1.0, ret);
     }
 
     /**
@@ -559,17 +662,17 @@ public class Geo {
      * That is, find the point, y, lying between this and q such that
      * 
      * <pre>
-     *               
-     *                            y = [x*this + (1-x)*q]*c
-     *                            where c = 1/y.dot(y) is a factor for normalizing y.
-     *                            y.dot(r) = 0
-     *                            substituting:
-     *                            [x*this + (1-x)*q]*c.dot(r) = 0 or
-     *                            [x*this + (1-x)*q].dot(r) = 0
-     *                            x*this.dot(r) + (1-x)*q.dot(r) = 0
-     *                            x*a + (1-x)*b = 0
-     *                            x = -b/(a - b)
-     *                         
+     *                              
+     *  y = [x*this + (1-x)*q]*c
+     *  where c = 1/y.dot(y) is a factor for normalizing y.
+     *  y.dot(r) = 0
+     *  substituting:
+     *  [x*this + (1-x)*q]*c.dot(r) = 0 or
+     *  [x*this + (1-x)*q].dot(r) = 0
+     *  x*this.dot(r) + (1-x)*q.dot(r) = 0
+     *  x*a + (1-x)*b = 0
+     *  x = -b/(a - b)
+     *                                        
      * </pre>
      * 
      * We assume that this and q are less than 180 degrees appart. When this and
@@ -581,10 +684,46 @@ public class Geo {
      * 
      */
     public Geo intersect(Geo q, Geo r) {
+        return intersect(q, r, new Geo());
+    }
+
+    /**
+     * Find the intersection of the great circle between this and q and the
+     * great circle normal to r.
+     * <p>
+     * 
+     * That is, find the point, y, lying between this and q such that
+     * 
+     * <pre>
+     *                              
+     *  y = [x*this + (1-x)*q]*c
+     *  where c = 1/y.dot(y) is a factor for normalizing y.
+     *  y.dot(r) = 0
+     *  substituting:
+     *  [x*this + (1-x)*q]*c.dot(r) = 0 or
+     *  [x*this + (1-x)*q].dot(r) = 0
+     *  x*this.dot(r) + (1-x)*q.dot(r) = 0
+     *  x*a + (1-x)*b = 0
+     *  x = -b/(a - b)
+     *                                        
+     * </pre>
+     * 
+     * We assume that this and q are less than 180 degrees appart. When this and
+     * q are 180 degrees appart, the point -y is also a valid intersection.
+     * <p>
+     * Alternatively the intersection point, y, satisfies y.dot(r) = 0
+     * y.dot(this.crossNormalize(q)) = 0 which is satisfied by y =
+     * r.crossNormalize(this.crossNormalize(q));
+     * 
+     * @return ret Do not pass in a null value.
+     */
+    public Geo intersect(Geo q, Geo r, Geo ret) {
         double a = this.dot(r);
         double b = q.dot(r);
         double x = -b / (a - b);
-        return this.scale(x).add(q.scale(1.0 - x)).normalize();
+        // This still results in one Geo being allocated and lost, in the
+        // q.scale call.
+        return this.scale(x, ret).add(q.scale(1.0 - x), ret).normalize(ret);
     }
 
     /** alias for computeCorridor(path, radius, radians(10), true) * */
@@ -784,7 +923,7 @@ public class Geo {
         for (int i = 1; i < n - 1; i++) {
             rho += dtheta;
             // Rotate p0 around this so it has the right azimuth.
-            result[i] = (new Rotation(pc, 2.0 * Math.PI - rho)).rotate(p0);
+            result[i] = Rotation.rotate(pc, 2.0 * Math.PI - rho, p0, new Geo());
         }
         result[n - 1] = p1;
 
@@ -811,16 +950,45 @@ public class Geo {
      *       undefined.
      */
     public Geo offset(double distance, double azimuth) {
+        return offset(distance, azimuth, new Geo());
+    }
+
+    /**
+     * Returns a Geo that is distance (radians), and azimuth (radians) away from
+     * this.
+     * 
+     * @param distance distance of this to the target point in radians.
+     * @param azimuth Direction of target point from this, in radians, clockwise
+     *        from north.
+     * @note this is undefined at the north pole, at which point "azimuth" is
+     *       undefined.
+     * @return ret Do not pass in a null value.
+     */
+    public Geo offset(double distance, double azimuth, Geo ret) {
         // m is normal the the meridian through this.
-        Geo m = this.crossNormalize(north);
+        Geo m = this.crossNormalize(north, ret);
         // p is a point on the meridian distance <tt>distance</tt> from this.
-        Geo p = (new Rotation(m, distance)).rotate(this);
+        // Geo p = (new Rotation(m, distance)).rotate(this);
+        Geo p = Rotation.rotate(m, distance, this, ret);
         // Rotate p around this so it has the right azimuth.
-        return (new Rotation(this, 2.0 * Math.PI - azimuth)).rotate(p);
+        return Rotation.rotate(this, 2.0 * Math.PI - azimuth, p, ret);
     }
 
     public static Geo offset(Geo origin, double distance, double azimuth) {
         return origin.offset(distance, azimuth);
+    }
+
+    /**
+     * 
+     * @param origin
+     * @param distance
+     * @param azimuth
+     * @param ret
+     * @return ret Do not pass in a null value.
+     */
+    public static Geo offset(Geo origin, double distance, double azimuth,
+                             Geo ret) {
+        return origin.offset(distance, azimuth, ret);
     }
 
     /*
