@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/CADRG.java,v $
 // $RCSfile: CADRG.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/04/07 15:21:10 $
+// $Revision: 1.11 $
+// $Date: 2007/02/19 18:44:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -154,7 +154,7 @@ public class CADRG extends Cylindrical implements EqualArc {
         // other calculations as that 100/150 thing. It works in
         // tests.
 
-        return (1000000 * CADRG_ARC_A[zone - 1]) / 1.5;
+        return (1000000 * (double) CADRG_ARC_A[zone - 1]) / 1.5;
         // These are the same things...
         // return (float)getXPixConstant() * scale;
 
@@ -604,15 +604,15 @@ public class CADRG extends Cylindrical implements EqualArc {
             double dy = Math.abs(point2.getY() - point1.getY());
 
             double nCenterLat = Math.min(ll1.getLatitude(), ll2.getLatitude())
-                    + Math.abs(ll1.getLatitude() - ll2.getLatitude()) / 2f;
+                    + Math.abs(ll1.getLatitude() - ll2.getLatitude()) / 2;
             double nCenterLon = Math.min(ll1.getLongitude(), ll2.getLongitude())
-                    + Math.abs(ll1.getLongitude() - ll2.getLongitude()) / 2f;
+                    + Math.abs(ll1.getLongitude() - ll2.getLongitude()) / 2;
 
             if (dx < dy) {
                 double dlat = Math.abs(ll1.getLatitude() - ll2.getLatitude());
                 deltaDegrees = dlat;
                 deltaPix = getHeight();
-                pixPerDegree = getScale() * (float) getYPixConstant() / 90f;
+                pixPerDegree = getScale() * getYPixConstant() / 90;
             } else {
                 double dlon;
                 double lat1, lon1, lon2;
@@ -638,7 +638,7 @@ public class CADRG extends Cylindrical implements EqualArc {
 
                 deltaDegrees = dlon;
                 deltaPix = getWidth();
-                pixPerDegree = getPlanetPixelCircumference() / 360f;
+                pixPerDegree = getPlanetPixelCircumference() / 360;
             }
 
             // The new scale...
