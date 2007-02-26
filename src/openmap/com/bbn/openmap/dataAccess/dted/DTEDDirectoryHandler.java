@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDDirectoryHandler.java,v $
 // $RCSfile: DTEDDirectoryHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:05:42 $
+// $Revision: 1.3 $
+// $Date: 2007/02/26 16:41:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,10 +30,10 @@ import com.bbn.openmap.util.PropUtils;
 import java.util.Properties;
 
 /**
- * DTEDDirectoryHandler is a wrapper for a DTEDNameTranslator used for
- * a DTED directory. The DTEDNameTranslator has the intelligence to
- * know how file names and paths are represented for different
- * lat/lon/level combinations for DTED files within a directory.
+ * DTEDDirectoryHandler is a wrapper for a DTEDNameTranslator used for a DTED
+ * directory. The DTEDNameTranslator has the intelligence to know how file names
+ * and paths are represented for different lat/lon/level combinations for DTED
+ * files within a directory.
  */
 public class DTEDDirectoryHandler implements PropertyConsumer {
 
@@ -43,9 +43,9 @@ public class DTEDDirectoryHandler implements PropertyConsumer {
     public final static String PathProperty = "path";
 
     /**
-     * The class name for the DTEDNameTranslator to be used for this
-     * path. If none is provided, the StandardDTEDNameTranslator will
-     * be used, which follows the DTED specification.
+     * The class name for the DTEDNameTranslator to be used for this path. If
+     * none is provided, the StandardDTEDNameTranslator will be used, which
+     * follows the DTED specification.
      */
     public final static String TranslatorClassProperty = "translator";
 
@@ -55,14 +55,24 @@ public class DTEDDirectoryHandler implements PropertyConsumer {
     protected String prefix;
 
     /**
-     * The DTEDNameTranslator for this handler, which knows how to
-     * match up lat/lons with a DTED file name. A
-     * StandardDTEDNameTranslator is set initially, but the actual
-     * object can be reset programmatically or with properties.
+     * The DTEDNameTranslator for this handler, which knows how to match up
+     * lat/lons with a DTED file name. A StandardDTEDNameTranslator is set
+     * initially, but the actual object can be reset programmatically or with
+     * properties.
      */
     protected DTEDNameTranslator translator = new StandardDTEDNameTranslator();
 
     public DTEDDirectoryHandler() {};
+
+    /**
+     * Create a DTEDDirectoryHandler with a StandardDTEDNameTranslator, looking
+     * at the provided dted directory.
+     * 
+     * @param dtedDirectory
+     */
+    public DTEDDirectoryHandler(String dtedDirectory) {
+        setDirectoryPath(dtedDirectory);
+    }
 
     /**
      * Set the DTEDNameTranslator for this DTEDDirectoryHandler.
@@ -79,8 +89,8 @@ public class DTEDDirectoryHandler implements PropertyConsumer {
     }
 
     /**
-     * Sets the DTED directory path on the translator if it isn't
-     * null. If the translator is null, this method does nothing.
+     * Sets the DTED directory path on the translator if it isn't null. If the
+     * translator is null, this method does nothing.
      */
     public void setDirectoryPath(String path) {
         if (translator != null) {
@@ -89,8 +99,8 @@ public class DTEDDirectoryHandler implements PropertyConsumer {
     }
 
     /**
-     * Gets the directory path from the translator. Will return null
-     * if the translator is null.
+     * Gets the directory path from the translator. Will return null if the
+     * translator is null.
      */
     public String getDirectoryPath() {
         if (translator != null) {
